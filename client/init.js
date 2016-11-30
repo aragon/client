@@ -1,6 +1,6 @@
 import {Module, Core} from './lib/modules'
 
-this.Root = new Core();
+this.Root = new Core()
 this.Root.modules = [
   new Module('main', 'home'),
   new Module('ownership', 'diamond'),
@@ -9,4 +9,4 @@ this.Root.modules = [
   new Module('rewards', 'users'),
   new Module('accounts', 'university'),
   new Module('settings', 'settings')
-];
+]
