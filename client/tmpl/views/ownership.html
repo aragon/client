@@ -1,0 +1,34 @@
+<template name="ownershipView">
+  <div class="sixteen wide column">
+    <div class="ui secondary menu">
+      <div class="fitted item">
+        <div class="ui icon input">
+          <input type="text" placeholder="Search...">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+      <div class="right menu">
+        <div class="fitted item">
+          <div class="ui primary button">
+            <i class="plus icon"></i>
+            Issue shares
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui hidden divider"></div>
+    <table class="ui very basic celled table">
+      <thead>
+        <tr>
+          <th>Shareholder</th>
+          <th>Type</th>
+          <th>#</th>
+        </tr>
+      </thead>
+      <tbody>
+        <shareholder v-for="shareholder in shareholders" v-bind:name="shareholder.name" v-bind:kind="shareholder.kind" v-bind:shares="shareholder.shares">
+        </shareholder>
+      </tbody>
+    </table>
+  </div>
+</template>

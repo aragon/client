@@ -11,6 +11,7 @@ routeObject = (routeName) => {
 }
 
 FlowRouter.route('/main', routeObject('main'))
+FlowRouter.route('/ownership', routeObject('ownership'))
 
 FlowRouter.notFound = {
   action: () => { FlowRouter.go('main') }
