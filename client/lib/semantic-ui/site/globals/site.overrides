@@ -1,0 +1,35 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body, input {
+  font-weight: lighter;
+}
+
+#topbar {
+  height: 5rem;
+  background: @black;
+  -webkit-app-region: drag;
+  padding: 0 0.75rem;
+
+  a {
+    color: white;
+  }
+}
+
+#sidebar {
+  margin-top: 5rem !important;
+}
+
+#container {
+  padding-top: 6rem !important;
+  padding-left: 15rem !important;
+}

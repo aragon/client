@@ -1,0 +1,14 @@
+/*******************************
+     User Global Variables
+*******************************/
+
+@violet : #8658c9;
+@blue : #42b4e4;
+@black : #191919;
+
+@importGoogleFonts: true;
+// @fontName: 'Poppins';
+@fontName: 'Nunito';
+@googleFontSizes: '300,400,700';
+@fontWeight: 300;
+@fontSmoothing: antialiased;

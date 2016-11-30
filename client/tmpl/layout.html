@@ -1,0 +1,49 @@
+<template name="layout">
+  <div id="app">
+    <div class="ui top fixed text menu" id="topbar">
+      <div class="header item">Hi</div>
+      <div class="right menu">
+        <router-link to="/inbox" active-class="active" class="item">
+          <i class="inbox large icon"></i>
+        </router-link>
+        <a class="item">
+          <img src="http://placekitten.com/g/32/32" class="ui mini right spaced circular image">
+          Luis Cuende
+        </a>
+      </div>
+    </div>
+
+    <div class="ui visible sidebar vertical pointing menu" id="sidebar">
+      <router-link to="/ownership" active-class="active" class="item">
+        <i class="diamond icon"></i>
+        Ownership
+      </router-link>
+      <router-link to="/voting" active-class="active" class="item">
+        <i class="announcement icon"></i>
+        Voting
+      </router-link>
+      <router-link to="/capital" active-class="active" class="item">
+        <i class="money icon"></i>
+        Capital
+      </router-link>
+      <router-link to="/rewards" active-class="active" class="item">
+        <i class="users icon"></i>
+        Rewards
+      </router-link>
+      <router-link to="/accounts" active-class="active" class="item">
+        <i class="university icon"></i>
+        Accounts
+      </router-link>
+
+      <router-link to="/settings" active-class="active" class="bottom item">
+        <i class="settings icon"></i>
+        Settings
+      </router-link>
+    </div>
+    <div class="ui fluid padded container" id="container">
+      <div class="ui very relaxed padded centered grid">
+        {{> Template.dynamic template=main data=data}}
+      </div>
+    </div>
+  </div>
+</template>
