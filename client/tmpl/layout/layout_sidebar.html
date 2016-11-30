@@ -1,0 +1,10 @@
+<template name="layout_sidebar">
+  <div class="ui visible sidebar vertical pointing menu" id="sidebar">
+    {{#each modules}}
+      <a href="/{{ routeName }}" class="item {{isActive}}">
+        <i class="{{icon}} icon"></i>
+        {{capitalized name}}
+      </a>
+    {{/each}}
+  </div>
+</template>
