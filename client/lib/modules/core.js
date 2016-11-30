@@ -18,14 +18,14 @@ class Core {
 
   setupRoutes(modules) {
     this.modules
-      .map((module) => { return module.route })
-      .forEach((route) => FlowRouter.route(`/${route.name}`, route));
+      .map(module => (module.route))
+      .forEach(route => FlowRouter.route(`/${route.name}`, route));
   }
 
   setup() {
     BlazeLayout.setRoot('body');
     FlowRouter.notFound = {
-      action: () => { FlowRouter.go('main') }
+      action: () => FlowRouter.go('main')
     }
   }
 }

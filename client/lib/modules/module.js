@@ -8,13 +8,11 @@ class Module {
   }
 
   get route() {
-    return {name: this.routeName, action: this.renderView(this.template)};
+    return {name: this.routeName, action: () => this.renderView()};
   }
 
-  renderView() {
-    return (params, queryParams) => {
-      BlazeLayout.render(this.layout, {main: this.templateName});
-    }
+  renderView(params, queryParams) {
+    BlazeLayout.render(this.layout, {main: this.templateName});
   }
 }
 
