@@ -1,4 +1,4 @@
-BlazeLayout.setRoot('body');
+BlazeLayout.setRoot('body')
 
 renderView = (name) => {
   return (params, queryParams) => {
@@ -10,8 +10,9 @@ routeObject = (routeName) => {
   return {name: routeName, action: renderView(routeName)}
 }
 
-FlowRouter.route('/main', routeObject('main'))
-FlowRouter.route('/ownership', routeObject('ownership'))
+let views = ['main', 'ownership']
+for (let view of views)
+  FlowRouter.route(`/${view}`, routeObject(view))
 
 FlowRouter.notFound = {
   action: () => { FlowRouter.go('main') }
