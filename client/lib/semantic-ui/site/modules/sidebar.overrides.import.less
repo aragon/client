@@ -3,6 +3,8 @@
 *******************************/
 
 .sidebar.vertical.menu {
+  box-shadow: @dividedBorder;
+
   .item {
     font-size: 1.25rem;
     font-weight: 300;
@@ -14,10 +16,7 @@
 
     &:before, &:hover, &.active, &.active:hover {
       background: none;
-    }
-
-    &.active {
-      color: @black;
+      color: @primaryColor;
     }
 
     .icon {

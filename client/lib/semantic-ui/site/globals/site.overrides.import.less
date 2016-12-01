@@ -30,6 +30,16 @@ body, input {
 }
 
 #container {
-  padding-top: 3rem !important;
-  padding-left: 15rem !important;
+  position: absolute;
+  top: 5rem;
+  bottom: 0;
+  left: 15rem;
+  right: 0;
+
+  > .grid {
+    height: 100%;
+    &> .column {
+      padding-top: 2rem !important;
+    }
+  }
 }
