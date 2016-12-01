@@ -1,7 +1,6 @@
 <template name="module_ownershipIssueShares">
-  <h1>Issue Shares</h1>
-
-  <form class="ui form">
+  <form class="ui flex form">
+    <h1>Issue Shares</h1>
     <div class="field">
       <label>Receiver</label>
       {{> keybase_el}}
@@ -23,6 +22,6 @@
       <input type="number" name="first-name" placeholder="Number of shares">
     </div>
     <div class="ui spacer"></div>
-    <button class="ui fluid primary button" type="submit">Issue</button>
+    <button class="ui fluid big primary button" type="submit">Issue</button>
   </form>
 </template>
