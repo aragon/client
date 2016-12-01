@@ -1,0 +1,28 @@
+<template name="module_ownershipIssueShares">
+  <h1>Issue Shares</h1>
+
+  <form class="ui form">
+    <div class="field">
+      <label>Receiver</label>
+      {{> keybase_el}}
+    </div>
+    <div class="field">
+      <label>Kind</label>
+      <div class="ui selection dropdown">
+        <input type="hidden" name="gender">
+        <i class="dropdown icon"></i>
+        <div class="default text">Kind of shares</div>
+        <div class="menu">
+          <div class="item" data-value="1"><b>Without</b> voting rights</div>
+          <div class="item" data-value="0"><b>With</b> voting right</div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Number</label>
+      <input type="number" name="first-name" placeholder="Number of shares">
+    </div>
+    <div class="ui spacer"></div>
+    <button class="ui fluid primary button" type="submit">Issue</button>
+  </form>
+</template>

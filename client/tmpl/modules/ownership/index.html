@@ -1,10 +1,10 @@
 <template name="module_ownership">
-  <div class="sixteen wide column">
+  <div class="eight wide column">
     <div class="ui secondary menu">
       <div class="fitted item">
-        <div class="ui icon input">
-          <input type="text" placeholder="Search...">
+        <div class="ui left icon input">
           <i class="search link icon"></i>
+          <input type="text" placeholder="Search...">
         </div>
       </div>
       <div class="right menu">
@@ -30,5 +30,8 @@
         </shareholder>
       </tbody>
     </table>
+  </div>
+  <div class="eight wide lightgrey flex column">
+    {{> module_ownershipIssueShares}}
   </div>
 </template>
