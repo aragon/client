@@ -10,3 +10,6 @@ this.Root.modules = [
   new Module('accounts', 'university'),
   new Module('settings', 'settings')
 ]
+
+import Keybase from './lib/keybase'
+this.K = Keybase

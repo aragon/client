@@ -1,13 +1,24 @@
-export class Keybase {
+const keybaseBaseURL = "https://keybase.io/_/api/1.0"
+const kbfsBaseURL = "https://keybase-pub-proxy-lekobkzhwp.now.sh"
+
+class Keybase {
   // Returns {status, completions}
   static async autocomplete(str) {
-    let data = await fetch(`https://keybase.io/_/api/1.0/user/autocomplete.json?q=${str}`)
+    let data = await fetch(`${keybaseBaseURL}/user/autocomplete.json?q=${str}`)
     return data.json()
   }
 
   // Returns {status, them}
   static async lookup(username) {
-    let data = await fetch(`https://keybase.io/_/api/1.0/user/lookup.json?usernames=${username}`)
+    let data = await fetch(`${keybaseBaseURL}/user/lookup.json?usernames=${username}`)
     return data.json()
   }
+
+  static async getEthereumAddress(username) {
+    let data = await fetch(`${kbfsBaseURL}/ethereum.json?username=${username}`)
+    let responseBody = await data.json()
+    return responseBody.address
+  }
 }
+
+export default Keybase
