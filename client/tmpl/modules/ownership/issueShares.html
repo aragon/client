@@ -6,7 +6,9 @@
       <label>Receiver</label>
       <div class="two fields">
         <div class="field">
-          <input type="text" name="addr" placeholder="Ethereum address" value="{{recipientAddr}}">
+          {{#with selectedReceiver}}
+          <input type="text" name="addr" placeholder="Ethereum address" value="{{addressForUser username}}">
+          {{/with}}
         </div>
         <div class="field">
           {{> keybase_el}}

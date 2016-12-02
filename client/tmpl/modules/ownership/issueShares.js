@@ -1,9 +1,12 @@
+import Keybase from '/client/lib/keybase'
+
 Template.module_ownershipIssueShares.rendered = () => {
   this.$('.dropdown').dropdown()
 }
 
 Template.module_ownershipIssueShares.helpers({
-  recipientAddr: () => ((Session.get('selectedKeybaseUser') || {}).addr)
+  selectedReceiver: () => (TemplateVar.getFrom('#keybase_el', 'user')),
+  addressForUser: ReactivePromise(Keybase.getEthereumAddress)
 })
 
 Template.module_ownershipIssueShares.events({

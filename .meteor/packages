@@ -30,3 +30,5 @@ less
 jquery
 frozeman:template-var
 session
+deanius:promise
+ejson

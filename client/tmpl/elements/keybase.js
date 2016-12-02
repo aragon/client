@@ -1,6 +1,9 @@
-import Keybase from '/client/lib/keybase'
+Template.keybase_el.created = function() {
+  TemplateVar.set('user', {})
+}
 
-Template.keybase_el.rendered = () => {
+Template.keybase_el.rendered = function() {
+  let template = Template.instance()
   this.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
@@ -18,10 +21,6 @@ Template.keybase_el.rendered = () => {
       image: 'pic'
     },
     minCharacters: 2,
-    onSelect: async (user) => {
-      let addr = await Keybase.getEthereumAddress(user.username)
-      user.addr = addr
-      Session.set('selectedKeybaseUser', user)
-    }
+    onSelect: user => TemplateVar.set(template, 'user', user)
   })
 }
