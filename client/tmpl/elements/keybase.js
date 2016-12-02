@@ -1,4 +1,8 @@
+import Keybase from '/client/lib/keybase'
+
 Template.keybase_el.rendered = () => {
+  let tmplInstance = this
+
   this.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
@@ -21,6 +25,11 @@ Template.keybase_el.rendered = () => {
       description: 'username',
       image: 'pic'
     },
-    minCharacters: 2
+    minCharacters: 2,
+    onSelect: async (user) => {
+      let addr = await Keybase.getEthereumAddress(user.username)
+      user.addr = addr
+      Session.set('selectedKeybaseUser', user)
+    }
   })
 }

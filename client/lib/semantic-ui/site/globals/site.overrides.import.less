@@ -53,3 +53,28 @@ body, input {
     flex: auto;
   }
 }
+
+.lightgrey.column {
+  background: @lightGrey;
+}
+
+.empty {
+  display: flex !important;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+
+  i {
+    font-size: 10em !important;
+  }
+}
+
+@text-colors: blue, green, orange, pink, purple, red, teal, yellow, black, grey, white;
+.text {
+    .-(@i: length(@text-colors)) when (@i > 0) {
+        @c: extract(@text-colors, @i);
+        &.@{c} { color: @@c }
+        .-((@i - 1));
+    }.-;
+}

@@ -1,25 +1,33 @@
 <template name="module_ownershipIssueShares">
-  <form class="ui flex form">
-    <h1>Issue Shares</h1>
+  <div class="ui top right attached close label"><i class="ui large icon remove"></i></div>
+  <form class="ui flex attached form">
+    <h1 class="ui header">Issue Shares</h1>
     <div class="field">
       <label>Receiver</label>
-      {{> keybase_el}}
+      <div class="two fields">
+        <div class="field">
+          <input type="text" name="addr" placeholder="Ethereum address" value="{{recipientAddr}}">
+        </div>
+        <div class="field">
+          {{> keybase_el}}
+        </div>
+      </div>
     </div>
     <div class="field">
       <label>Kind</label>
       <div class="ui selection dropdown">
-        <input type="hidden" name="gender">
+        <input type="hidden" name="kind">
         <i class="dropdown icon"></i>
         <div class="default text">Kind of shares</div>
         <div class="menu">
           <div class="item" data-value="1"><b>Without</b> voting rights</div>
-          <div class="item" data-value="0"><b>With</b> voting right</div>
+          <div class="item" data-value="0"><b>With</b> voting rights</div>
         </div>
       </div>
     </div>
     <div class="field">
       <label>Number</label>
-      <input type="number" name="first-name" placeholder="Number of shares">
+      <input type="number" lang="en" name="number" placeholder="Number of shares">
     </div>
     <div class="ui spacer"></div>
     <button class="ui fluid big primary button" type="submit">Issue</button>

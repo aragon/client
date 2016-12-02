@@ -1,13 +1,7 @@
-const keybaseBaseURL = "https://keybase.io/_/api/1.0"
-const kbfsBaseURL = "https://keybase-pub-proxy-lekobkzhwp.now.sh"
+const keybaseBaseURL = "https://keybase.io/_/api/1.0",
+      kbfsBaseURL = "https://keybase-pub-proxy-lekobkzhwp.now.sh"
 
 class Keybase {
-  // Returns {status, completions}
-  static async autocomplete(str) {
-    let data = await fetch(`${keybaseBaseURL}/user/autocomplete.json?q=${str}`)
-    return data.json()
-  }
-
   // Returns {status, them}
   static async lookup(username) {
     let data = await fetch(`${keybaseBaseURL}/user/lookup.json?usernames=${username}`)
@@ -15,8 +9,8 @@ class Keybase {
   }
 
   static async getEthereumAddress(username) {
-    let data = await fetch(`${kbfsBaseURL}/ethereum.json?username=${username}`)
-    let responseBody = await data.json()
+    let data = await fetch(`${kbfsBaseURL}/ethereum.json?username=${username}`),
+        responseBody = await data.json()
     return responseBody.address
   }
 }

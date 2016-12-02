@@ -9,10 +9,10 @@
       </div>
       <div class="right menu">
         <div class="fitted item">
-          <div class="ui primary button">
+          <button class="ui primary button" id="issueShares">
             <i class="plus icon"></i>
             Issue shares
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -32,6 +32,6 @@
     </table>
   </div>
   <div class="eight wide lightgrey column">
-    {{> module_ownershipIssueShares}}
+    {{> Template.dynamic template=state}}
   </div>
 </template>

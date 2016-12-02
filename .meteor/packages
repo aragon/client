@@ -28,3 +28,5 @@ semantic:ui
 juliancwirko:postcss
 less
 jquery
+frozeman:template-var
+session
