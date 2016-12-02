@@ -10,7 +10,7 @@ Template.module_ownershipIssueShares.helpers({
 })
 
 Template.module_ownershipIssueShares.events({
-  "click .label.close": () => {
-    TemplateVar.setTo('#module_ownership', 'state', 'module_ownershipEmpty')
+  "click .label.close": (e, temp) => {
+    TemplateVar.set(temp.data.parent, 'state', 'module_ownershipEmpty')
   }
 })

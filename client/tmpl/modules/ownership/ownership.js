@@ -9,5 +9,6 @@ Template.module_ownership.events({
 })
 
 Template.module_ownership.helpers({
-  state: () => (TemplateVar.get('state'))
+  state: () => (TemplateVar.get('state')),
+  context: () => ({parent: Template.instance()})
 })
