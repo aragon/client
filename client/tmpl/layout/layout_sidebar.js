@@ -1,4 +1,4 @@
-Template['layout_sidebar'].helpers({
+Template.layout_sidebar.helpers({
   modules: () => (Root.modules),
-  isRouteActive: route => (FlowRouter.getRouteName().includes(route))
-});
+  isRouteActive: route => (FlowRouter.getRouteName().includes(route)),
+})

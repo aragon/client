@@ -1,4 +1,7 @@
-import {Module, Core} from './lib/modules'
+import { Module, Core } from './lib/modules'
+import Keybase from './lib/keybase'
+
+this.K = Keybase
 
 this.Root = new Core()
 this.Root.modules = [
@@ -8,8 +11,5 @@ this.Root.modules = [
   new Module('capital', 'money'),
   new Module('rewards', 'users'),
   new Module('accounts', 'university'),
-  new Module('settings', 'settings')
+  new Module('settings', 'settings'),
 ]
-
-import Keybase from './lib/keybase'
-this.K = Keybase
