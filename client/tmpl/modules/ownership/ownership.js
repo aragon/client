@@ -9,7 +9,5 @@ Template.module_ownership.events({
 })
 
 Template.module_ownership.helpers({
-  state() {
-    return Session.get('module_ownershipState')
-  }
+  state: () => (Session.get('module_ownershipState'))
 })

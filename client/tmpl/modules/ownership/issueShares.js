@@ -3,9 +3,7 @@ Template.module_ownershipIssueShares.rendered = () => {
 }
 
 Template.module_ownershipIssueShares.helpers({
-  recipientAddr() {
-    return (Session.get('selectedKeybaseUser') || {}).addr
-  }
+  recipientAddr: () => ((Session.get('selectedKeybaseUser') || {}).addr)
 })
 
 Template.module_ownershipIssueShares.events({
