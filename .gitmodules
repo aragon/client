@@ -1,0 +1,4 @@
+[submodule "imports/lib/contracts"]
+	path = imports/lib/contracts
+	url = git@gitlab.com:providentai/cosa-contracts.git
+	branch = master
