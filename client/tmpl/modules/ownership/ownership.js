@@ -11,4 +11,11 @@ Template.module_ownership.events({
 Template.module_ownership.helpers({
   state: () => (TemplateVar.get('state')),
   context: () => ({ parent: Template.instance() }),
+  shareholders: () => ([
+    {
+      name: 'Manolo',
+      kind: 'With voting rights',
+      shares: 9000,
+    },
+  ]),
 })

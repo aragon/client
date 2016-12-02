@@ -1,5 +1,5 @@
 <template name="module_ownership">
-  <div id="module_ownership" class="eight wide column">
+  <div id="module_ownership" class="nine wide column">
     <div class="ui secondary menu">
       <div class="fitted item">
         <div class="ui left icon input">
@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="ui hidden divider"></div>
-    <table class="ui very basic celled table">
+    <table class="ui very basic selectable celled table">
       <thead>
         <tr>
           <th>Shareholder</th>
@@ -26,12 +26,28 @@
         </tr>
       </thead>
       <tbody>
-        <shareholder v-for="shareholder in shareholders" v-bind:name="shareholder.name" v-bind:kind="shareholder.kind" v-bind:shares="shareholder.shares">
-        </shareholder>
+        {{#each shareholders}}
+        <tr>
+          <td>
+            <h4 class="ui image header">
+              <img src="http://placekitten.com/g/32/32" class="ui mini circular image">
+              <div class="content">
+                {{name}}
+              </div>
+            </h4>
+          </td>
+          <td>
+            {{kind}}
+          </td>
+          <td>
+            {{shares}}
+          </td>
+        </tr>
+        {{/each}}
       </tbody>
     </table>
   </div>
-  <div class="eight wide lightgrey column">
+  <div class="seven wide lightgrey column">
     {{> Template.dynamic template=state data=context }}
   </div>
 </template>
