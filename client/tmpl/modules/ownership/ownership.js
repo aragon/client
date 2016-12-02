@@ -1,13 +1,13 @@
-Template.module_ownership.onRendered(() => {
-  Session.set('module_ownershipState', 'module_ownershipEmpty')
-})
+Template.module_ownership.created = function () {
+  TemplateVar.set('state', 'module_ownershipEmpty')
+}
 
 Template.module_ownership.events({
   "click button#issueShares": () => {
-    Session.set('module_ownershipState', 'module_ownershipIssueShares')
+    TemplateVar.set('state', 'module_ownershipIssueShares')
   }
 })
 
 Template.module_ownership.helpers({
-  state: () => (Session.get('module_ownershipState'))
+  state: () => (TemplateVar.get('state'))
 })
