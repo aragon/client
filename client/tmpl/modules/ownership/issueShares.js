@@ -1,16 +1,8 @@
-import Keybase from '/client/lib/keybase'
+import ClosableSection from '/client/tmpl/elements/closableSection'
 
-Template.module_ownershipIssueShares.rendered = () => {
+const tmpl = Template.module_ownershipAssignShares
+ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
+
+tmpl.onRendered = () => {
   this.$('.dropdown').dropdown()
 }
-
-Template.module_ownershipIssueShares.helpers({
-  selectedReceiver: () => (TemplateVar.getFrom('#keybase_el', 'user')),
-  addressForUser: ReactivePromise(Keybase.getEthereumAddress),
-})
-
-Template.module_ownershipIssueShares.events({
-  'click .label.close': (e, temp) => {
-    TemplateVar.set(temp.data.parent, 'state', 'module_ownershipEmpty')
-  },
-})

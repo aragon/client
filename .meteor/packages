@@ -32,3 +32,4 @@ frozeman:template-var
 session
 deanius:promise
 ejson
+raix:handlebar-helpers

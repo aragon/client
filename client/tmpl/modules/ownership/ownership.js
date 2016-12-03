@@ -1,15 +1,14 @@
 Template.module_ownership.created = () => {
-  TemplateVar.set('state', 'module_ownershipEmpty')
+  TemplateVar.set('rightSection', 'module_ownershipEmpty')
 }
 
 Template.module_ownership.events({
-  'click button#issueShares': () => {
-    TemplateVar.set('state', 'module_ownershipIssueShares')
-  },
+  'click button#issueShares': () => (TemplateVar.set('rightSection', 'module_ownershipIssueShares')),
+  'click button#assignShares': () => (TemplateVar.set('rightSection', 'module_ownershipAssignShares')),
 })
 
 Template.module_ownership.helpers({
-  state: () => (TemplateVar.get('state')),
+  rightSection: () => (TemplateVar.get('rightSection')),
   context: () => ({ parent: Template.instance() }),
   shareholders: () => ([
     {

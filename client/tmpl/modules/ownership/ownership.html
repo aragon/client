@@ -14,6 +14,12 @@
             Issue shares
           </button>
         </div>
+        <div class="fitted item">
+          <button class="ui primary button" id="assignShares">
+            <i class="user icon"></i>
+            Assign shares
+          </button>
+        </div>
       </div>
     </div>
     <div class="ui hidden divider"></div>
@@ -48,6 +54,6 @@
     </table>
   </div>
   <div class="seven wide lightgrey column">
-    {{> Template.dynamic template=state data=context }}
+    {{> Template.dynamic template=rightSection data=context }}
   </div>
 </template>

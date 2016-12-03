@@ -1,8 +1,8 @@
-Template.keybase_el.created = () => {
+Template.el_keybase.created = () => {
   TemplateVar.set('user', {})
 }
 
-Template.keybase_el.rendered = () => {
+Template.el_keybase.rendered = () => {
   const template = Template.instance()
   this.$('.ui.search').search({
     apiSettings: {
