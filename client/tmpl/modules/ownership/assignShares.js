@@ -5,18 +5,19 @@ const tmpl = Template.module_ownershipAssignShares
 ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
 
 tmpl.rendered = () => {
-  // I don't like this
-  const tmplIns = Template.instance()
+  const parentTmplIns = Template.instance().data.parent
+  const dimmer = this.$('.dimmer')
+  TemplateVar.setTo(dimmer, 'onSuccessVar', ['rightSection', 'module_ownershipEmpty'])
 
   this.$('.dropdown').dropdown()
   this.$('.form').form({
     onSuccess: (e) => {
       e.preventDefault()
-      this.$('.dimmer').dimmer('show')
-      TemplateVar.set(tmplIns, 'processState', 'loading')
+      TemplateVar.setTo(dimmer, 'state', 'loading')
       setTimeout(() => {
-        TemplateVar.set(tmplIns, 'processState', 'success')
-      }, 2000)
+        TemplateVar.setTo(dimmer, 'state', 'success')
+        setTimeout(() => (TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')), 2500)
+      }, 2500)
       return false
     },
   })
@@ -25,5 +26,4 @@ tmpl.rendered = () => {
 tmpl.helpers({
   selectedReceiver: () => (TemplateVar.getFrom('#el_keybase', 'user')),
   addressForUser: ReactivePromise(Keybase.getEthereumAddress),
-  processState: () => (TemplateVar.get('processState')),
 })
