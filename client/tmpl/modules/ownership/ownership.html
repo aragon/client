@@ -24,7 +24,7 @@
     </div>
     {{#each stocks}}
     <div class="ui hidden divider"></div>
-    <table class="ui very basic selectable celled table">
+    <table class="ui very basic selectable striped padded fixed table">
       <thead>
         <tr>
           <th>Shareholder</th>
@@ -51,8 +51,21 @@
           </td>
         </tr>
         {{/each}}
+        <tr>
+          <td>
+            <h4 class="ui image header">
+              Not assigned shares
+            </h4>
+          </td>
+          <td>
+            {{ stock.symbol }}
+          </td>
+          <td>
+            {{ balance address company }}
+          </td>
+        </tr>
       </tbody>
-      Not assigned shares: {{ balance address company }}
+
     </table>
     {{/each}}
   </div>

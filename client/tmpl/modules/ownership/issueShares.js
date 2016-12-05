@@ -5,6 +5,8 @@ import Company from '/client/lib/ethereum/deployed'
 const Stocks = StockWatcher.Stocks
 const tmpl = Template.module_ownershipIssueShares
 
+window.Stocks = Stocks
+
 ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
 
 tmpl.helpers({
@@ -24,14 +26,15 @@ tmpl.rendered = () => {
     onSuccess: async (e) => {
       e.preventDefault()
 
-      const a = await issueStock($('input[name=kind]').val(), $('input[name=number]').val())
+      console.log(this.$('input[name=kind]').val())
+      console.log(this.$('input[name=number]').val())
+
+      const a = await issueStock(this.$('input[name=kind]').val(), this.$('input[name=number]').val())
       console.log(a)
 
-      TemplateVar.setTo(dimmer, 'state', 'loading')
-      setTimeout(() => {
-        TemplateVar.setTo(dimmer, 'state', 'success')
-        setTimeout(() => (TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')), 2500)
-      }, 500)
+      // TemplateVar.setTo(dimmer, 'state', 'loading')
+      TemplateVar.setTo(dimmer, 'state', 'success')
+      setTimeout(() => (TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')), 2500)
       return false
     },
   })
