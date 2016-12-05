@@ -25,12 +25,7 @@ tmpl.rendered = () => {
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
-
-      console.log(this.$('input[name=kind]').val())
-      console.log(this.$('input[name=number]').val())
-
-      const a = await issueStock(this.$('input[name=kind]').val(), this.$('input[name=number]').val())
-      console.log(a)
+      await issueStock(this.$('input[name=kind]').val(), this.$('input[name=number]').val())
 
       // TemplateVar.setTo(dimmer, 'state', 'loading')
       TemplateVar.setTo(dimmer, 'state', 'success')

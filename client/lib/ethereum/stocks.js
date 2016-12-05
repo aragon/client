@@ -15,7 +15,7 @@ class StockWatcher {
 
   listenForNewStock() {
     Company.IssuedStock({}).watch((err, ev) =>
-      this.getStock(ev.args.stockAddress, ev.args.stockIndex))
+      this.getStock(ev.args.stockAddress, ev.args.stockIndex.toNumber()))
   }
 
   async getAllStocks() {
