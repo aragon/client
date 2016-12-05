@@ -24,8 +24,7 @@ tmpl.rendered = () => {
     onSuccess: async (e) => {
       e.preventDefault()
 
-      const a = await issueStock($('input[name=kind]').val(), $('input[name=number]').val())
-      console.log(a)
+      await issueStock($('input[name=kind]').val(), $('input[name=number]').val())
 
       TemplateVar.setTo(dimmer, 'state', 'loading')
       setTimeout(() => {

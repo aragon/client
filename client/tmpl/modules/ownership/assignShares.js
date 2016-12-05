@@ -1,8 +1,17 @@
 import Keybase from '/client/lib/keybase'
 import ClosableSection from '/client/tmpl/elements/closableSection'
+import StockWatcher from '/client/lib/ethereum/stocks'
+import Company from '/client/lib/ethereum/deployed'
+
+const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.module_ownershipAssignShares
 ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
+
+assignStock = (kind, value, recipient) => {
+  console.log('assigning', kind, value, recipient)
+  return Company.grantStock(+kind, +value, recipient, { from: EthAccounts.findOne().address, gas: 3000000 })
+}
 
 tmpl.rendered = () => {
   const parentTmplIns = Template.instance().data.parent
@@ -10,8 +19,11 @@ tmpl.rendered = () => {
 
   this.$('.dropdown').dropdown()
   this.$('.form').form({
-    onSuccess: (e) => {
+    onSuccess: async (e) => {
       e.preventDefault()
+
+      await assignStock($('input[name=kind]').val(), $('input[name=number]').val(), $('input[name=addr]').val())
+
       TemplateVar.setTo(dimmer, 'state', 'loading')
       setTimeout(() => {
         TemplateVar.setTo(dimmer, 'state', 'success')
@@ -25,4 +37,5 @@ tmpl.rendered = () => {
 tmpl.helpers({
   selectedReceiver: () => (TemplateVar.getFrom('#el_keybase', 'user')),
   addressForUser: ReactivePromise(Keybase.getEthereumAddress),
+  stocks: () => Stocks.find(),
 })
