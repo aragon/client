@@ -8,9 +8,9 @@ const Stocks = StockWatcher.Stocks
 const tmpl = Template.module_ownershipAssignShares
 ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
 
-assignStock = (kind, value, recipient) => {
+const assignStock = (kind, value, recipient) => {
   console.log('assigning', kind, value, recipient)
-  return Company.grantStock(+kind, +value, recipient, { from: EthAccounts.findOne().address, gas: 3000000 })
+  return Company.grantStock(+kind, +value, recipient, { from: EthAccounts.findOne().address, gas: 150000})
 }
 
 tmpl.rendered = () => {
