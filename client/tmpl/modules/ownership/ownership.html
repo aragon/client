@@ -22,6 +22,7 @@
         </div>
       </div>
     </div>
+    {{#each stocks}}
     <div class="ui hidden divider"></div>
     <table class="ui very basic selectable celled table">
       <thead>
@@ -32,26 +33,29 @@
         </tr>
       </thead>
       <tbody>
-        {{#each shareholders}}
+        {{#each allShareholders this }}
         <tr>
           <td>
             <h4 class="ui image header">
               <img src="http://placekitten.com/g/32/32" class="ui mini circular image">
               <div class="content">
-                {{name}}
+                {{ shareholder }}
               </div>
             </h4>
           </td>
           <td>
-            {{kind}}
+            {{ stock.symbol }}
           </td>
           <td>
-            {{shares}}
+            {{ balance stock.address shareholder }}
           </td>
         </tr>
         {{/each}}
       </tbody>
+      Available shares: {{ balance address company }}
+      Last issued: {{ timestamp }}
     </table>
+    {{/each}}
   </div>
   <div class="seven wide lightgrey column">
     {{> Template.dynamic template=rightSection data=context }}

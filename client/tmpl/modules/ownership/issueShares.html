@@ -11,8 +11,9 @@
         <i class="dropdown icon"></i>
         <div class="default text">Kind of shares</div>
         <div class="menu">
-          <div class="item" data-value="1"><b>Without</b> voting rights</div>
-          <div class="item" data-value="0"><b>With</b> voting rights</div>
+          {{#each stocks}}
+          <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
+          {{/each}}
         </div>
       </div>
     </div>
