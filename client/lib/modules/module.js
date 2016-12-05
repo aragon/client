@@ -1,10 +1,10 @@
 class Module {
-  constructor(name, icon, routeName, templateName, layout) {
+  constructor(name, icon = 'help', routeName, templateName, layout = 'layout') {
     this.name = name
-    this.icon = icon || 'help'
+    this.icon = icon
     this.routeName = routeName || name
     this.templateName = templateName || `module_${this.routeName}`
-    this.layout = layout || 'layout'
+    this.layout = layout
   }
 
   get route() {

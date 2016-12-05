@@ -5,6 +5,7 @@ this.K = Keybase
 
 this.Root = new Core()
 this.Root.modules = [
+  new Module('inbox', 'inbox'),
   new Module('main', 'home'),
   new Module('ownership', 'diamond'),
   new Module('voting', 'announcement'),

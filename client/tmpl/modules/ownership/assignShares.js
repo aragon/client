@@ -7,7 +7,6 @@ ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
 tmpl.rendered = () => {
   const parentTmplIns = Template.instance().data.parent
   const dimmer = this.$('.dimmer')
-  TemplateVar.setTo(dimmer, 'onSuccessVar', ['rightSection', 'module_ownershipEmpty'])
 
   this.$('.dropdown').dropdown()
   this.$('.form').form({

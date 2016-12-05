@@ -1,4 +1,4 @@
-Template.processDimmer.rendered = () => {
+Template.el_processDimmer.rendered = () => {
   const tmplIns = Template.instance()
   const dimmer = this.$('.dimmer')
 
@@ -11,6 +11,6 @@ Template.processDimmer.rendered = () => {
   })
 }
 
-Template.processDimmer.helpers({
+Template.el_processDimmer.helpers({
   state: () => (TemplateVar.get('state')),
 })
