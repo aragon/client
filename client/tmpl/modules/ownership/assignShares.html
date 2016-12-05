@@ -1,9 +1,20 @@
-<template name="module_ownershipIssueShares">
+<template name="module_ownershipAssignShares">
   {{> el_processDimmer }}
   {{> el_closeSectionButton}}
   <form class="ui flex attached form">
-    <h1 class="ui header">Issue Shares</h1>
+    <h1 class="ui header">Assign Shares</h1>
     <div class="ui hidden divider"></div>
+    <div class="field">
+      <label>Receiver</label>
+      <div class="two fields">
+        <div class="field">
+          <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedReceiver}}{{addressForUser selectedReceiver.username}}{{/if}}">
+        </div>
+        <div class="field">
+          {{> el_keybase}}
+        </div>
+      </div>
+    </div>
     <div class="field">
       <label>Kind</label>
       <div class="ui selection dropdown">
@@ -21,6 +32,6 @@
       <input type="number" lang="en" name="number" placeholder="Number of shares">
     </div>
     <div class="ui spacer"></div>
-    <button class="ui fluid big primary button" type="submit">Issue</button>
+    <button class="ui fluid big primary button" type="submit">Assign</button>
   </form>
 </template>

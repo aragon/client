@@ -9,7 +9,12 @@
     "meteor-node-stubs": "~0.2.0"
   },
   "devDependencies": {
-    "autoprefixer": "^6.3.1"
+    "autoprefixer": "^6.3.1",
+    "eslint": "^3.11.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.7.1"
   },
   "postcss": {
     "plugins": {

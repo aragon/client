@@ -73,7 +73,7 @@
     "round": false,
     "rtl": false,
     "striped": false,
-    "timeline": false,
+    "timeline": true,
     "twitter": false
   }
 }

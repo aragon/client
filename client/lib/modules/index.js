@@ -1,4 +1,4 @@
-import Module from './module';
-import Core from './core';
+import Module from './module'
+import Core from './core'
 
-export {Module, Core};
+export { Module, Core }

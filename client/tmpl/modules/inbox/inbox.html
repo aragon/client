@@ -1,0 +1,32 @@
+<template name="module_inbox">
+  <div class="twelve wide column">
+    <h1>Your inbox</h1>
+    <div class="ui hidden divider"></div>
+    <div class="ui feed">
+      {{#each items}}
+      <div class="event">
+        <div class="label">
+          <i class="icon {{icon}}"></i>
+        </div>
+        <div class="content">
+          <div class="summary">
+            <a class="user">
+              {{from}}
+            </a> {{request}}
+            <div class="date">
+              {{time}}
+            </div>
+          </div>
+          {{#if action}}
+          <div class="meta">
+            <a>
+              <i class="icon {{actionIcon}}"></i> {{action}}
+            </a>
+          </div>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</template>

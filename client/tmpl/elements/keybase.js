@@ -1,9 +1,9 @@
-Template.keybase_el.created = function() {
+Template.el_keybase.created = () => {
   TemplateVar.set('user', {})
 }
 
-Template.keybase_el.rendered = function() {
-  let template = Template.instance()
+Template.el_keybase.rendered = () => {
+  const template = Template.instance()
   this.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
@@ -11,16 +11,16 @@ Template.keybase_el.rendered = function() {
         results: res.completions.map(c => ({
           username: c.components.username.val,
           name: (c.components.full_name || {}).val,
-          pic: c.thumbnail || 'http://placekitten.com/g/64/64'
-        }))
-      })
+          pic: c.thumbnail || 'http://placekitten.com/g/64/64',
+        })),
+      }),
     },
     fields: {
       title: 'name',
       description: 'username',
-      image: 'pic'
+      image: 'pic',
     },
     minCharacters: 2,
-    onSelect: user => TemplateVar.set(template, 'user', user)
+    onSelect: user => TemplateVar.set(template, 'user', user),
   })
 }

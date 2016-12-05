@@ -1,6 +1,7 @@
+import Keybase from '/client/lib/keybase'
 import ClosableSection from '/client/tmpl/elements/closableSection'
 
-const tmpl = Template.module_ownershipIssueShares
+const tmpl = Template.module_ownershipAssignShares
 ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
 
 tmpl.rendered = () => {
@@ -20,3 +21,8 @@ tmpl.rendered = () => {
     },
   })
 }
+
+tmpl.helpers({
+  selectedReceiver: () => (TemplateVar.getFrom('#el_keybase', 'user')),
+  addressForUser: ReactivePromise(Keybase.getEthereumAddress),
+})
