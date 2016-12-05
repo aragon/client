@@ -6,7 +6,8 @@
   },
   "dependencies": {
     "babel-runtime": "^6.18.0",
-    "meteor-node-stubs": "~0.2.0"
+    "meteor-node-stubs": "~0.2.0",
+    "web3": "^0.17.0-beta"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.1",
