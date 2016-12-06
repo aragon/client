@@ -24,13 +24,7 @@ Template.module_ownership.helpers({
   stocks: () => Stocks.find(),
   rightSection: () => TemplateVar.get('rightSection'),
   context: () => ({ parent: Template.instance() }),
-  allShareholders: ReactivePromise((s) => {
-    const stock = Stock.at(s.address)
-    const convert = shareholder => ({ shareholder, stock: s })
-    const shareholders = _.range(s.shareholders)
-                          .map(i => stock.shareholders.call(i).then(convert))
-    return Promise.all(shareholders)
-  }, [], []),
+  allShareholders: ReactivePromise(StockWatcher.allShareholders, [{ address: 'loading...' }], []),
   balance: ReactivePromise((stock, shareholder) => (
     Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
   )),

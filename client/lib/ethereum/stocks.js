@@ -34,6 +34,15 @@ class StockWatcher {
     await this.updateStock(address, index)
   }
 
+  async allShareholders(s) {
+    if (!s.address) return
+    const stock = Stock.at(s.address)
+    const convert = shareholder => ({ shareholder, stock: s })
+    const shareholders = _.range(s.shareholders)
+                          .map(i => stock.shareholders.call(i).then(convert))
+    return await Promise.all(shareholders)
+  }
+
   trackStock(address) {
     console.log('Tracking stock at', address)
     Stock.at(address).Transfer({}).watch(() => {
