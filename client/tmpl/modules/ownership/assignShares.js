@@ -1,11 +1,11 @@
 import Keybase from '/client/lib/keybase'
-import ClosableSection from '/client/tmpl/elements/closableSection'
+import ClosableSection from '/client/tmpl/components/closableSection'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
 
 const Stocks = StockWatcher.Stocks
 
-const tmpl = Template.module_ownershipAssignShares.extend([ClosableSection])
+const tmpl = Template.Module_Ownership_AssignShares.extend([ClosableSection])
 
 const assignStock = (kind, value, recipient) => (
   Company.grantStock(+kind, +value, recipient,
@@ -27,7 +27,7 @@ tmpl.rendered = () => {
 }
 
 tmpl.helpers({
-  selectedReceiver: () => (TemplateVar.getFrom('#el_keybase', 'user')),
+  selectedReceiver: () => (TemplateVar.getFrom('#Element_KeybaseAutocomplete', 'user')),
   addressForUser: ReactivePromise(Keybase.getEthereumAddress),
   stocks: () => Stocks.find(),
 })

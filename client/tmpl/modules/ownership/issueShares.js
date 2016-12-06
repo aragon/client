@@ -1,10 +1,10 @@
-import ClosableSection from '/client/tmpl/elements/closableSection'
+import ClosableSection from '/client/tmpl/components/closableSection'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
 
 const Stocks = StockWatcher.Stocks
 
-const tmpl = Template.module_ownershipIssueShares.extend([ClosableSection])
+const tmpl = Template.Module_Ownership_IssueShares.extend([ClosableSection])
 
 const issueStock = (kind, value) => (
   Company.issueStock(kind, value, { from: EthAccounts.findOne().address })

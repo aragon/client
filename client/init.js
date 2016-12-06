@@ -5,14 +5,14 @@ this.K = Keybase
 
 this.Root = new Core()
 this.Root.modules = [
-  new Module('inbox', 'inbox', false),
-  new Module('main', 'home'),
-  new Module('ownership', 'diamond'),
-  new Module('voting', 'announcement'),
-  new Module('capital', 'money'),
-  new Module('rewards', 'users'),
-  new Module('accounts', 'university'),
-  new Module('settings', 'settings'),
+  new Module('Inbox', 'inbox', false),
+  new Module('Main', 'home'),
+  new Module('Ownership', 'diamond'),
+  new Module('Voting', 'announcement'),
+  new Module('Capital', 'money'),
+  new Module('Rewards', 'users'),
+  new Module('Accounts', 'university'),
+  new Module('Settings', 'settings'),
 
-  new Module('entity', 'entity', false),
+  new Module('Entity', 'entity', false),
 ]

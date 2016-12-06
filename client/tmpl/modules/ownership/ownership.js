@@ -4,15 +4,15 @@ import Company from '/client/lib/ethereum/deployed'
 
 const Stocks = StockWatcher.Stocks
 
-const tmpl = Template.module_ownership.extend()
+const tmpl = Template.Module_Ownership.extend()
 
 tmpl.created = () => {
-  TemplateVar.set('rightSection', 'module_ownershipCharts')
+  TemplateVar.set('rightSection', 'Module_Ownership_Charts')
 }
 
 tmpl.events({
-  'click button#issueShares': () => TemplateVar.set('rightSection', 'module_ownershipIssueShares'),
-  'click button#assignShares': () => TemplateVar.set('rightSection', 'module_ownershipAssignShares'),
+  'click button#issueShares': () => TemplateVar.set('rightSection', 'Module_Ownership_IssueShares'),
+  'click button#assignShares': () => TemplateVar.set('rightSection', 'Module_Ownership_AssignShares'),
   'click table tr': (e) => {
     const shareholder = $(e.currentTarget).data('shareholder')
     if (shareholder) {
@@ -21,7 +21,7 @@ tmpl.events({
     }
   },
   'success #issueShares, success #assignShares, closed div': (e, instance) => {
-    TemplateVar.set(instance, 'rightSection', 'module_ownershipCharts')
+    TemplateVar.set(instance, 'rightSection', 'Module_Ownership_Charts')
   },
 })
 

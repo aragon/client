@@ -6,7 +6,7 @@ import { Stock } from '/client/lib/ethereum/contracts'
 
 const Stocks = StockWatcher.Stocks
 
-const tmpl = Template.module_ownershipCharts
+const tmpl = Template.Module_Ownership_Charts
 
 const colorFromAddress = address => `#${address.substr(-6)}`
 

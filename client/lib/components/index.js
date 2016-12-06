@@ -2,16 +2,8 @@ Template.prototype.extend = function (components = []) {
   for (const c of components) {
     c.extend(this)
   }
-
   this.onCreated(() => {
     const ins = Template.instance()
-
-    // ins.emit = (e, params = {}) => ($(ins.findAll('> *')).trigger(e, params))
-
-    // ins.getVar = (key) => (TemplateVar.get(ins, key))
-
-    // ins.setVar = (key, val) => (TemplateVar.set(ins, key, val))
-
     ins.parent = () => (ins.data.parent)
   })
   this.helpers({

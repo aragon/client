@@ -1,8 +1,8 @@
-Template.el_keybase.created = () => {
+Template.Element_KeybaseAutocomplete.created = () => {
   TemplateVar.set('user', {})
 }
 
-Template.el_keybase.rendered = () => {
+Template.Element_KeybaseAutocomplete.rendered = () => {
   const template = Template.instance()
   this.$('.ui.search').search({
     apiSettings: {

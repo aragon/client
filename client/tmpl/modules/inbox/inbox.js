@@ -1,4 +1,4 @@
-const tmpl = Template.module_inbox
+const tmpl = Template.Module_Inbox
 
 tmpl.helpers({
   items: () => (

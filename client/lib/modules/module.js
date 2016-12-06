@@ -1,10 +1,10 @@
 class Module {
-  constructor(name, icon = 'help', sidebarItem = true, routeName, templateName, layout = 'layout') {
+  constructor(name, icon = 'help', sidebarItem = true, routeName, templateName, layout = 'Layout') {
     this.name = name
     this.icon = icon
     this.sidebarItem = sidebarItem
-    this.routeName = routeName || name
-    this.templateName = templateName || `module_${this.routeName}`
+    this.routeName = routeName || name.toLowerCase()
+    this.templateName = templateName || `Module_${this.name}`
     this.layout = layout
   }
 
