@@ -1,12 +1,11 @@
 import Chart from 'chart.js'
-
 import StockWatcher from '/client/lib/ethereum/stocks'
 // import Company from '/client/lib/ethereum/deployed'
 import { Stock } from '/client/lib/ethereum/contracts'
 
 const Stocks = StockWatcher.Stocks
 
-const tmpl = Template.Module_Ownership_Charts
+const tmpl = Template.Module_Ownership_Charts.extend()
 
 const colorFromAddress = address => `#${address.substr(-6)}`
 
