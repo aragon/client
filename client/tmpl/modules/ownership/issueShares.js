@@ -13,7 +13,7 @@ tmpl.helpers({
   stocks: () => Stocks.find(),
 })
 
-issueStock = (kind, value) => (
+const issueStock = (kind, value) => (
   Company.issueStock(kind, value, { from: EthAccounts.findOne().address })
 )
 
