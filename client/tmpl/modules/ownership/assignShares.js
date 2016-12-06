@@ -6,7 +6,7 @@ import Company from '/client/lib/ethereum/deployed'
 const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.module_ownershipAssignShares
-ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
+ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipCharts')
 
 const assignStock = (kind, value, recipient) => {
   console.log('assigning', kind, value, recipient)
@@ -21,9 +21,7 @@ tmpl.rendered = () => {
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
-
       await assignStock($('input[name=kind]').val(), $('input[name=number]').val(), $('input[name=addr]').val())
-
       TemplateVar.setTo(dimmer, 'state', 'success')
       return false
     },
@@ -37,7 +35,7 @@ tmpl.helpers({
   onSuccess: () => {
     const parentTmplIns = Template.instance().data.parent
     return () => {
-      TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')
+      TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipCharts')
     }
   },
 })

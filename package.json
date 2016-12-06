@@ -6,6 +6,8 @@
   },
   "dependencies": {
     "babel-runtime": "^6.18.0",
+    "chart.js": "^2.4.0",
+    "color-scheme": "0.0.5",
     "meteor-node-stubs": "~0.2.0",
     "web3": "^0.17.0-beta"
   },

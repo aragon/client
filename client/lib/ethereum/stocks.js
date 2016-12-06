@@ -34,6 +34,15 @@ class StockWatcher {
     await this.updateStock(address, index)
   }
 
+  async allShareholders(s) {
+    if (!s.address) return
+    const stock = Stock.at(s.address)
+    const convert = shareholder => ({ shareholder, stock: s })
+    const shareholders = _.range(s.shareholders)
+                          .map(i => stock.shareholders.call(i).then(convert))
+    return await Promise.all(shareholders)
+  }
+
   trackStock(address) {
     console.log('Tracking stock at', address)
     Stock.at(address).Transfer({}).watch(() => {
@@ -42,16 +51,15 @@ class StockWatcher {
   }
 
   async updateStock(address, index) {
-    const timestamp = Math.floor(+new Date() / 1000)
     const stock = Stock.at(address)
     const stockObject = {
       name: stock.name.call(),
       symbol: stock.symbol.call(),
-      votesPerShare: stock.votesPerShare.call().then(x => +x.valueOf()),
-      shareholders: stock.shareholderIndex.call().then(x => +x.valueOf()),
+      votesPerShare: stock.votesPerShare.call().then(x => x.toNumber()),
+      shareholders: stock.shareholderIndex.call().then(x => x.toNumber()),
+      totalSupply: stock.totalSupply.call().then(x => x.toNumber()),
       index,
       address,
-      timestamp,
     }
     const stockInfo = await Promise.allProperties(stockObject)
     this.Stocks.upsert(`s_${address}`, stockInfo)
