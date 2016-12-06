@@ -11,6 +11,12 @@ ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
 
 tmpl.helpers({
   stocks: () => Stocks.find(),
+  onSuccess: () => {
+    const parentTmplIns = Template.instance().data.parent
+    return () => {
+      TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')
+    }
+  },
 })
 
 const issueStock = (kind, value) => (
@@ -18,7 +24,6 @@ const issueStock = (kind, value) => (
 )
 
 tmpl.rendered = () => {
-  const parentTmplIns = Template.instance().data.parent
   const dimmer = this.$('.dimmer')
 
   this.$('.dropdown').dropdown()
@@ -27,9 +32,7 @@ tmpl.rendered = () => {
       e.preventDefault()
       await issueStock(this.$('input[name=kind]').val(), this.$('input[name=number]').val())
 
-      // TemplateVar.setTo(dimmer, 'state', 'loading')
       TemplateVar.setTo(dimmer, 'state', 'success')
-      setTimeout(() => (TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')), 2500)
       return false
     },
   })
