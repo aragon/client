@@ -4,7 +4,7 @@
       <div class="fitted item">
         <div class="ui left icon input">
           <i class="search link icon"></i>
-          <input type="text" placeholder="Search">
+          <input type="text" placeholder="Search" value="{{TemplateVar.get 'searchString'}}" id="searchInput">
         </div>
       </div>
       <div class="right menu">
@@ -22,10 +22,9 @@
         </div>
       </div>
     </div>
-    {{#each stocks}}
-    <h3 class="ui centered header">{{name}} ({{symbol}})</h3>
+
     <div class="ui hidden divider"></div>
-    <table class="ui very basic selectable striped padded fixed table">
+    <table class="ui very basic sortable selectable striped padded fixed table">
       <thead>
         <tr>
           <th>Shareholder</th>
@@ -34,7 +33,8 @@
         </tr>
       </thead>
       <tbody>
-        {{#each allShareholders this }}
+        {{#each shareholders}}
+        {{#if $contains (TemplateVar.get 'searchString') shareholder}}
         <tr data-shareholder="{{ shareholder }}">
           <td>
             <h4 class="ui image header">
@@ -51,24 +51,25 @@
             {{ balance stock.address shareholder }}
           </td>
         </tr>
+        {{/if}}
         {{/each}}
+        {{#each stocks}}
         <tr>
           <td>
             <h4 class="ui image header">
-              Not assigned shares
+              Not assigned
             </h4>
           </td>
           <td>
-            {{ stock.symbol }}
+            {{ symbol }}
           </td>
           <td>
             {{ balance address company }}
           </td>
         </tr>
+        {{/each}}
       </tbody>
-
     </table>
-    {{/each}}
   </div>
   <div class="seven wide lightgrey column">
     {{> Template.dynamic template=rightSection }}

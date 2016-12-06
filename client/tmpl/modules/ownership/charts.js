@@ -28,7 +28,8 @@ tmpl.onRendered(function () {
     const stocks = Stocks.find({}).fetch()
     drawChart($('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
 
-    const allShares = await Promise.all(stocks.map(StockWatcher.allShareholders))
+    const allShares = await StockWatcher.allShareholders()
+    console.log(allShares)
     const globalBalances = {}
     const votingPower = {}
 

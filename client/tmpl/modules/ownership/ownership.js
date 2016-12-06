@@ -10,7 +10,12 @@ tmpl.created = () => {
   TemplateVar.set('rightSection', 'Module_Ownership_Charts')
 }
 
+tmpl.onRendered(() => {
+  $('table').tablesort()
+})
+
 tmpl.events({
+  'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
   'click button#issueShares': () => TemplateVar.set('rightSection', 'Module_Ownership_IssueShares'),
   'click button#assignShares': () => TemplateVar.set('rightSection', 'Module_Ownership_AssignShares'),
   'click table tr': (e) => {
@@ -28,7 +33,9 @@ tmpl.events({
 tmpl.helpers({
   stocks: () => Stocks.find(),
   rightSection: () => TemplateVar.get('rightSection'),
-  allShareholders: ReactivePromise(StockWatcher.allShareholders, [{ address: 'loading...' }], []),
+  shareholders: ReactivePromise(() => (
+    StockWatcher.allShareholders().then(x => [].concat(...x))
+  )),
   balance: ReactivePromise((stock, shareholder) => (
     Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
   )),

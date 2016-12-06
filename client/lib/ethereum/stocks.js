@@ -1,6 +1,8 @@
 import { Stock } from './contracts'
 import Company from './deployed'
 
+const Stocks = new Mongo.Collection('stock_collection', { connection: null })
+
 class StockWatcher {
   constructor() {
     this.setupCollections()
@@ -9,7 +11,7 @@ class StockWatcher {
   }
 
   setupCollections() {
-    this.Stocks = new Mongo.Collection('stock_collection', { connection: null })
+    this.Stocks = Stocks
     this.persistentStock = new PersistentMinimongo(this.Stocks)
   }
 
@@ -34,13 +36,22 @@ class StockWatcher {
     await this.updateStock(address, index)
   }
 
-  async allShareholders(s) {
-    if (!s.address) return
-    const stock = Stock.at(s.address)
-    const convert = shareholder => ({ shareholder, stock: s })
-    const shareholders = _.range(s.shareholders)
-                          .map(i => stock.shareholders.call(i).then(convert))
-    return await Promise.all(shareholders)
+  async allShareholders(stocks) {
+    if (!stocks) {
+      stocks = Stocks.find()
+    }
+
+    const promises = []
+    stocks.forEach((s) => {
+      if (!s.address) return
+      const stock = Stock.at(s.address)
+      const convert = shareholder => ({ shareholder, stock: s })
+      const shareholders = _.range(s.shareholders)
+                            .map(i => stock.shareholders.call(i).then(convert))
+      promises.push(Promise.all(shareholders))
+    })
+
+    return await Promise.all(promises)
   }
 
   trackStock(address) {

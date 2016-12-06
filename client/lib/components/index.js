@@ -8,6 +8,7 @@ Template.prototype.extend = function (components = []) {
   })
   this.helpers({
     parent: () => ({ parent: Template.instance() }),
+    $contains: (a, b) => (!a || b.indexOf(a) !== -1),
   })
   return this
 }
