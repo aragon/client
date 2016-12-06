@@ -6,7 +6,11 @@ Template.el_processDimmer.rendered = () => {
     const state = TemplateVar.get(tmplIns, 'state')
     dimmer.dimmer(state ? 'show' : 'hide')
     if (state === 'success') {
-      setTimeout(() => TemplateVar.set(tmplIns, 'state', null), 2500)
+      setTimeout(() => {
+        TemplateVar.set(tmplIns, 'state', null)
+        const cb = tmplIns.data.onSuccess
+        if (cb) cb()
+      }, 2500)
     }
   })
 }

@@ -1,5 +1,5 @@
 <template name="module_ownershipAssignShares">
-  {{> el_processDimmer }}
+  {{> el_processDimmer onSuccess=onSuccess }}
   {{> el_closeSectionButton}}
   <form class="ui flex attached form">
     <h1 class="ui header">Assign Shares</h1>
@@ -11,7 +11,7 @@
           <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedReceiver}}{{addressForUser selectedReceiver.username}}{{/if}}">
         </div>
         <div class="field">
-          {{> el_keybase}}
+          {{> el_keybase onSelect=onSelect}}
         </div>
       </div>
     </div>

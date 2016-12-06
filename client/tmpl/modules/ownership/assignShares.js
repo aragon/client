@@ -9,12 +9,11 @@ const tmpl = Template.module_ownershipAssignShares
 ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
 
 assignStock = (kind, value, recipient) => {
-  console.log('assigning', kind, value, recipient)
-  return Company.grantStock(+kind, +value, recipient, { from: EthAccounts.findOne().address, gas: 3000000 })
+  return Company.grantStock(+kind, +value, recipient,
+    { from: EthAccounts.findOne().address, gas: 3000000 })
 }
 
 tmpl.rendered = () => {
-  const parentTmplIns = Template.instance().data.parent
   const dimmer = this.$('.dimmer')
 
   this.$('.dropdown').dropdown()
@@ -24,11 +23,7 @@ tmpl.rendered = () => {
 
       await assignStock($('input[name=kind]').val(), $('input[name=number]').val(), $('input[name=addr]').val())
 
-      TemplateVar.setTo(dimmer, 'state', 'loading')
-      setTimeout(() => {
-        TemplateVar.setTo(dimmer, 'state', 'success')
-        setTimeout(() => (TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')), 2500)
-      }, 2500)
+      TemplateVar.setTo(dimmer, 'state', 'success')
       return false
     },
   })
@@ -38,4 +33,10 @@ tmpl.helpers({
   selectedReceiver: () => (TemplateVar.getFrom('#el_keybase', 'user')),
   addressForUser: ReactivePromise(Keybase.getEthereumAddress),
   stocks: () => Stocks.find(),
+  onSuccess: () => {
+    const parentTmplIns = Template.instance().data.parent
+    return () => {
+      TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')
+    }
+  },
 })
