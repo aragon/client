@@ -14,7 +14,8 @@ class StockWatcher {
   }
 
   listenForNewStock() {
-    Company.IssuedStock({}).watch((err, ev) => this.getStock(ev.args.stockAddress, +ev.args.stockIndex.valueOf()))
+    Company.IssuedStock({}).watch((err, ev) =>
+      this.getStock(ev.args.stockAddress, +ev.args.stockIndex.valueOf()))
   }
 
   async getAllStocks() {
@@ -41,16 +42,15 @@ class StockWatcher {
   }
 
   async updateStock(address, index) {
-    const timestamp = Math.floor(+new Date() / 1000)
     const stock = Stock.at(address)
     const stockObject = {
       name: stock.name.call(),
       symbol: stock.symbol.call(),
-      votesPerShare: stock.votesPerShare.call().then(x => +x.valueOf()),
-      shareholders: stock.shareholderIndex.call().then(x => +x.valueOf()),
+      votesPerShare: stock.votesPerShare.call().then(x => x.toNumber()),
+      shareholders: stock.shareholderIndex.call().then(x => x.toNumber()),
+      totalSupply: stock.totalSupply.call().then(x => x.toNumber()),
       index,
       address,
-      timestamp,
     }
     const stockInfo = await Promise.allProperties(stockObject)
     this.Stocks.upsert(`s_${address}`, stockInfo)

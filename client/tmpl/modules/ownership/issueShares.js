@@ -5,7 +5,7 @@ import Company from '/client/lib/ethereum/deployed'
 const Stocks = StockWatcher.Stocks
 const tmpl = Template.module_ownershipIssueShares
 
-ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipEmpty')
+ClosableSection.bind(tmpl, 'rightSection', 'module_ownershipCharts')
 
 tmpl.helpers({
   stocks: () => Stocks.find(),
@@ -29,7 +29,7 @@ tmpl.rendered = () => {
       TemplateVar.setTo(dimmer, 'state', 'loading')
       setTimeout(() => {
         TemplateVar.setTo(dimmer, 'state', 'success')
-        setTimeout(() => (TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipEmpty')), 2500)
+        setTimeout(() => (TemplateVar.set(parentTmplIns, 'rightSection', 'module_ownershipCharts')), 2500)
       }, 500)
       return false
     },

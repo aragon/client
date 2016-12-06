@@ -23,6 +23,7 @@
       </div>
     </div>
     {{#each stocks}}
+    <h3 class="ui centered header">{{name}} ({{symbol}})</h3>
     <div class="ui hidden divider"></div>
     <table class="ui very basic selectable celled table">
       <thead>
@@ -34,7 +35,7 @@
       </thead>
       <tbody>
         {{#each allShareholders this }}
-        <tr>
+        <tr data-shareholder="{{ shareholder }}">
           <td>
             <h4 class="ui image header">
               <img src="http://placekitten.com/g/32/32" class="ui mini circular image">
