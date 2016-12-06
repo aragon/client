@@ -1,20 +1,15 @@
-Template.el_processDimmer.rendered = () => {
-  const tmplIns = Template.instance()
-  const dimmer = this.$('.dimmer')
+const tmpl = Template.el_processDimmer.extend()
 
-  Tracker.autorun(() => {
-    const state = TemplateVar.get(tmplIns, 'state')
-    dimmer.dimmer(state ? 'show' : 'hide')
-    if (state === 'success') {
+tmpl.events({
+  'finished .dimmer': (e, instance, data) => {
+    const dimmer = instance.$('.dimmer')
+    TemplateVar.set(instance, 'state', data.state)
+    dimmer.dimmer(data.state ? 'show' : 'hide')
+    if (data.state === 'success') {
       setTimeout(() => {
-        TemplateVar.set(tmplIns, 'state', null)
-        const cb = tmplIns.data.onSuccess
-        if (cb) cb()
+        TemplateVar.set(instance, 'state', null)
+        dimmer.trigger('success')
       }, 2500)
     }
-  })
-}
-
-Template.el_processDimmer.helpers({
-  state: () => TemplateVar.get('state'),
+  },
 })

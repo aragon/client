@@ -4,11 +4,13 @@ import Company from '/client/lib/ethereum/deployed'
 
 const Stocks = StockWatcher.Stocks
 
-Template.module_ownership.created = () => {
+const tmpl = Template.module_ownership.extend()
+
+tmpl.created = () => {
   TemplateVar.set('rightSection', 'module_ownershipCharts')
 }
 
-Template.module_ownership.events({
+tmpl.events({
   'click button#issueShares': () => TemplateVar.set('rightSection', 'module_ownershipIssueShares'),
   'click button#assignShares': () => TemplateVar.set('rightSection', 'module_ownershipAssignShares'),
   'click table tr': (e) => {
@@ -18,12 +20,14 @@ Template.module_ownership.events({
       TemplateVar.set('selectedShareholder', $(e.currentTarget).data('shareholder'))
     }
   },
+  'success #issueShares, success #assignShares, closed div': (e, instance) => {
+    TemplateVar.set(instance, 'rightSection', 'module_ownershipCharts')
+  },
 })
 
-Template.module_ownership.helpers({
+tmpl.helpers({
   stocks: () => Stocks.find(),
   rightSection: () => TemplateVar.get('rightSection'),
-  context: () => ({ parent: Template.instance() }),
   allShareholders: ReactivePromise(StockWatcher.allShareholders, [{ address: 'loading...' }], []),
   balance: ReactivePromise((stock, shareholder) => (
     Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
