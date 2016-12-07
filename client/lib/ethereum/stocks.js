@@ -38,17 +38,16 @@ class StockWatcher {
 
   async allShareholders(stocks) {
     if (!stocks) {
-      stocks = Stocks.find()
+      stocks = Stocks.find({}).fetch()
     }
 
-    const promises = []
-    stocks.forEach((s) => {
-      if (!s.address) return
+    const promises = stocks.map((s) => {
+      if (!s.address) return []
       const stock = Stock.at(s.address)
       const convert = shareholder => ({ shareholder, stock: s })
       const shareholders = _.range(s.shareholders)
                             .map(i => stock.shareholders.call(i).then(convert))
-      promises.push(Promise.all(shareholders))
+      return Promise.all(shareholders)
     })
 
     return await Promise.all(promises)
