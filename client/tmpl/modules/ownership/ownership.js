@@ -7,7 +7,8 @@ const Stocks = StockWatcher.Stocks
 const tmpl = Template.Module_Ownership.extend()
 
 tmpl.created = () => {
-  TemplateVar.set('rightSection', 'Module_Ownership_Charts')
+  const rightSection = Stocks.find().count() ? 'Module_Ownership_Charts' : 'Module_Ownership_Empty'
+  TemplateVar.set('rightSection', rightSection)
 }
 
 tmpl.onRendered(() => {
