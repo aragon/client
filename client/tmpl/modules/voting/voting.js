@@ -16,10 +16,7 @@ tmpl.events({
   'click #pastVotings': () => (
     TemplateVar.set('pastVotings', !TemplateVar.get('pastVotings'))
   ),
-  'click tbody tr': () => {
-    // TemplateVar.set('rightSection', 'Module_Voting_Card')
-    FlowRouter.go('/voting/0')
-  },
+  'click tbody tr': (e) => (FlowRouter.go(`/voting/${e.currentTarget.dataset.voting}`)),
 })
 
 tmpl.helpers({
@@ -27,20 +24,24 @@ tmpl.helpers({
     {
       description: 'Issuing 1,000 new CVS shares',
       endTime: new Date(2016, 11, 10),
+      address: 'manolo',
     },
     {
       description: 'Raising 1000BTC',
       endTime: new Date(2016, 11, 20),
+      address: 'manolazo',
     },
   ],
   pastVotings: () => [
     {
       description: 'Issuing 2,000 new CVS shares',
       outcome: true,
+      address: 'pastManolo',
     },
     {
       description: 'Raising 1BTC',
       outcome: false,
+      address: 'pastManolazo',
     },
   ],
   now: () => (moment()),

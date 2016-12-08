@@ -35,7 +35,7 @@
       <tbody>
         {{#each votings}}
         {{#if $contains (TemplateVar.get 'searchString') description}}
-        <tr data-shareholder="{{ voting }}">
+        <tr data-voting="{{ address }}">
           <td>
             {{ description }}
           </td>
@@ -58,7 +58,7 @@
       <tbody>
         {{#each pastVotings}}
         {{#if $contains (TemplateVar.get 'searchString') description}}
-        <tr data-shareholder="{{ voting }}">
+        <tr data-voting="{{ address }}">
           <td>
             {{ description }}
           </td>

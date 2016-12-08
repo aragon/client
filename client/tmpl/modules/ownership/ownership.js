@@ -27,7 +27,7 @@ tmpl.events({
     const shareholder = $(e.currentTarget).data('shareholder')
     if (shareholder) {
       TemplateVar.set('rightSection', 'module_entity')
-      TemplateVar.set('selectedShareholder', $(e.currentTarget).data('shareholder'))
+      TemplateVar.set('selectedShareholder', e.currentTarget.dataset.shareholder)
     }
   },
 })

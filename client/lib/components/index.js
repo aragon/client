@@ -46,12 +46,8 @@ Template.prototype.extend = function (components = []) {
         FlowRouter.watchPathChange()
         const path = FlowRouter.current().route.path
         let leanPath = path.replace(RegExp(`^(/${moduleName(this)})`), '')
-        if (leanPath === '') {
-          leanPath = '/'
-        }
-        if (this.routesObj[leanPath]) {
-          this.routesObj[leanPath].call(this, FlowRouter.current())
-        }
+        if (leanPath === '') leanPath = '/'
+        this.routesObj[leanPath] && this.routesObj[leanPath].call(this, FlowRouter.current())
       })
     }
   })
@@ -65,11 +61,9 @@ Template.prototype.routes = function (routes) {
 
 Blaze.TemplateInstance.prototype.parent = function (levels) {
   let view = this.view
-  if (typeof levels === 'undefined') {
-    levels = 1
-  }
+  let ls = (typeof levels === 'undefined') ? 1 : levels
   while (view) {
-    if (view.name.substring(0, 9) === 'Template.' && !(levels--)) {
+    if (view.name.substring(0, 9) === 'Template.' && !(ls--)) {
       return view.templateInstance
     }
     view = view.parentView
