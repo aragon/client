@@ -12,19 +12,17 @@ const assignStock = (kind, value, recipient) => (
     { from: EthAccounts.findOne().address, gas: 150000 })
 )
 
-tmpl.rendered = () => {
-  const dimmer = this.$('.dimmer')
-
+tmpl.onRendered(function () {
   this.$('.dropdown').dropdown()
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
       await assignStock($('input[name=kind]').val(), $('input[name=number]').val(), $('input[name=addr]').val())
-      dimmer.trigger('finished', { state: 'success' })
+      this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
     },
   })
-}
+})
 
 tmpl.helpers({
   selectedReceiver: () => (TemplateVar.getFrom('#Element_KeybaseAutocomplete', 'user')),
@@ -33,6 +31,5 @@ tmpl.helpers({
 })
 
 tmpl.events({
-  'success .dimmer': (e, instance) =>
-    (instance.$('#assignShares').trigger('success')),
+  'success .dimmer': () => FlowRouter.go('/ownership'),
 })

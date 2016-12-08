@@ -5,11 +5,9 @@ tmpl.routes({
   '/:id': () => TemplateVar.set('rightSection', 'Module_Voting_Card'),
 })
 
-tmpl.onCreated(() => {
-  TemplateVar.set('rightSection', 'Module_Voting_Empty')
-})
+tmpl.onCreated(() => TemplateVar.set('rightSection', 'Module_Voting_Empty'))
 
-tmpl.onRendered(() => {
+tmpl.onRendered(function () {
   this.$('.button.toggle').state()
 })
 
@@ -18,13 +16,9 @@ tmpl.events({
   'click #pastVotings': () => (
     TemplateVar.set('pastVotings', !TemplateVar.get('pastVotings'))
   ),
-  'click table tr': () => {
+  'click tbody tr': () => {
     // TemplateVar.set('rightSection', 'Module_Voting_Card')
     FlowRouter.go('/voting/0')
-  },
-  'closed div': () => {
-    TemplateVar.set('rightSection', 'Module_Voting_Empty')
-    FlowRouter.go('/voting')
   },
 })
 

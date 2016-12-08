@@ -7,31 +7,28 @@ const Stocks = StockWatcher.Stocks
 const tmpl = Template.Module_Ownership.extend()
 
 tmpl.routes({
-  '/shares/issue': () => TemplateVar.set('rightSection', 'Module_Ownership_IssueShares'),
-  '/shares/assign': () => TemplateVar.set('rightSection', 'Module_Ownership_AssignShares'),
+  '/': () => TemplateVar.set('rightSection', 'Module_Ownership_Charts'),
+  '/issue': () => TemplateVar.set('rightSection', 'Module_Ownership_IssueShares'),
+  '/assign': () => TemplateVar.set('rightSection', 'Module_Ownership_AssignShares'),
 })
 
-tmpl.created = () => {
+tmpl.onCreated(() => {
   const rightSection = Stocks.find().count() ? 'Module_Ownership_Charts' : 'Module_Ownership_Empty'
   TemplateVar.set('rightSection', rightSection)
-}
+})
 
-tmpl.rendered = () => {
+tmpl.onRendered(function () {
   this.$('table').tablesort()
-}
+})
 
 tmpl.events({
   'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
-  'click table tr': (e) => {
+  'click tbody tr': (e) => {
     const shareholder = $(e.currentTarget).data('shareholder')
     if (shareholder) {
       TemplateVar.set('rightSection', 'module_entity')
       TemplateVar.set('selectedShareholder', $(e.currentTarget).data('shareholder'))
     }
-  },
-  'success #issueShares, success #assignShares, closed div': (e, instance) => {
-    TemplateVar.set('rightSection', 'Module_Ownership_Charts')
-    FlowRouter.go('/ownership')
   },
 })
 

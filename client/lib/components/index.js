@@ -45,7 +45,10 @@ Template.prototype.extend = function (components = []) {
       Template.instance().autorun(() => {
         FlowRouter.watchPathChange()
         const path = FlowRouter.current().route.path
-        const leanPath = path.replace(RegExp(`^(/${moduleName(this)})`), '')
+        let leanPath = path.replace(RegExp(`^(/${moduleName(this)})`), '')
+        if (leanPath === '') {
+          leanPath = '/'
+        }
         if (this.routesObj[leanPath]) {
           this.routesObj[leanPath].call(this, FlowRouter.current())
         }
