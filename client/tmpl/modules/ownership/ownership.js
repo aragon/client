@@ -11,9 +11,9 @@ tmpl.created = () => {
   TemplateVar.set('rightSection', rightSection)
 }
 
-tmpl.onRendered(() => {
-  $('table').tablesort()
-})
+tmpl.rendered = () => {
+  this.$('table').tablesort()
+}
 
 tmpl.events({
   'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
@@ -26,14 +26,13 @@ tmpl.events({
       TemplateVar.set('selectedShareholder', $(e.currentTarget).data('shareholder'))
     }
   },
-  'success #issueShares, success #assignShares, closed div': (e, instance) => {
+  'success #issueShares, success #assignShares, closed div': (e, instance) => (
     TemplateVar.set(instance, 'rightSection', 'Module_Ownership_Charts')
-  },
+  ),
 })
 
 tmpl.helpers({
   stocks: () => Stocks.find(),
-  rightSection: () => TemplateVar.get('rightSection'),
   shareholders: ReactivePromise(() => (
     StockWatcher.allShareholders().then(x => [].concat(...x))
   )),

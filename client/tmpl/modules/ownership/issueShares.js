@@ -12,7 +12,6 @@ const issueStock = (kind, value) => (
 
 tmpl.rendered = () => {
   const dimmer = this.$('.dimmer')
-  console.log('rendered')
 
   this.$('.dropdown').dropdown()
   this.$('.form').form({

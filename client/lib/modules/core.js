@@ -18,7 +18,10 @@ class Core {
   setupRoutes() {
     this.modules
       .map(module => (module.route))
-      .forEach(route => FlowRouter.route(`/${route.name}`, route))
+      .forEach((route) => {
+        FlowRouter.route(`/${route.name}`, route)
+        FlowRouter.route(`/${route.name}/*`, route)
+      })
   }
 
   static setup() {
