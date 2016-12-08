@@ -47,9 +47,9 @@ class VotingWatcher {
 
     const votingObject = {
       options: votingOptions,
+      closingTime: new Date(closingTime),
       index,
       address,
-      closingTime,
     }
     console.log(votingObject)
 

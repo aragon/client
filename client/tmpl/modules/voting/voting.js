@@ -24,19 +24,8 @@ tmpl.events({
 })
 
 tmpl.helpers({
-  votings: () => Votings.find(),
-  pastVotings: () => [
-    {
-      description: 'Issuing 2,000 new CVS shares',
-      outcome: true,
-      address: 'pastManolo',
-    },
-    {
-      description: 'Raising 1BTC',
-      outcome: false,
-      address: 'pastManolazo',
-    },
-  ],
+  votings: () => Votings.find({ closingTime: { $gt: new Date() } }),
+  pastVotings: () => Votings.find({ closingTime: { $lt: new Date() } }),
   now: () => (moment()),
   timeRange: (a, b) => (moment(a).twix(b).humanizeLength()),
   displayOutcome: (outcome) => ((outcome) ? '👍' : '👎'),
