@@ -10,25 +10,22 @@ const issueStock = (kind, value) => (
   Company.issueStock(kind, value, { from: EthAccounts.findOne().address })
 )
 
-tmpl.rendered = () => {
-  const dimmer = this.$('.dimmer')
-
+tmpl.onRendered(function () {
   this.$('.dropdown').dropdown()
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
       await issueStock(this.$('input[name=kind]').val(), this.$('input[name=number]').val())
-      dimmer.trigger('finished', { state: 'success' })
+      this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
     },
   })
-}
+})
 
 tmpl.helpers({
   stocks: () => Stocks.find(),
 })
 
 tmpl.events({
-  'success .dimmer': (e, instance) =>
-    (instance.$('#issueShares').trigger('success')),
+  'success .dimmer': () => FlowRouter.go('/ownership'),
 })

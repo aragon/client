@@ -6,10 +6,7 @@ tmpl.events({
     TemplateVar.set(instance, 'state', data.state)
     dimmer.dimmer(data.state ? 'show' : 'hide')
     if (data.state === 'success') {
-      setTimeout(() => {
-        TemplateVar.set(instance, 'state', null)
-        dimmer.trigger('success')
-      }, 2500)
+      setTimeout(() => (dimmer.trigger('success')), 2500)
     }
   },
 })

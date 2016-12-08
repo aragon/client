@@ -50,6 +50,5 @@ tmpl.onRendered(function () {
 
     drawChart($('#capitalChart'), 'Global shareholder stake', Object.keys(globalBalances), Object.values(globalBalances))
     drawChart($('#votingChart'), 'Voting stake', Object.keys(votingPower), Object.values(votingPower))
-
   })
 })

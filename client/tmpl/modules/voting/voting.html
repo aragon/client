@@ -1,0 +1,78 @@
+<template name="Module_Voting">
+  <div class="nine wide column" id="Module_Voting">
+    <div class="ui secondary menu">
+      <div class="fitted item">
+        <div class="ui left icon input">
+          <i class="search link icon"></i>
+          <input type="text" placeholder="Search" value="{{TemplateVar.get 'searchString'}}" id="searchInput">
+        </div>
+      </div>
+      <div class="right menu">
+        <div class="item">
+          <button class="ui basic toggle button" id="pastVotings">
+            <i class="history icon"></i>
+            Past votings
+          </button>
+        </div>
+        <div class="fitted item">
+          <button class="ui primary button" id="newVoting">
+            <i class="plus icon"></i>
+            New voting
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui hidden divider"></div>
+    {{#unless TemplateVar.get 'pastVotings'}}
+    <table class="ui very basic sortable selectable striped padded fixed table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Time remaining</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each votings}}
+        {{#if $contains (TemplateVar.get 'searchString') description}}
+        <tr data-voting="{{ address }}">
+          <td>
+            {{ description }}
+          </td>
+          <td>
+            {{ timeRange now endTime }}
+          </td>
+        </tr>
+        {{/if}}
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <table class="ui very basic sortable selectable striped padded fixed table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each pastVotings}}
+        {{#if $contains (TemplateVar.get 'searchString') description}}
+        <tr data-voting="{{ address }}">
+          <td>
+            {{ description }}
+          </td>
+          <td>
+            {{ displayOutcome outcome }}
+          </td>
+        </tr>
+        {{/if}}
+        {{/each}}
+      </tbody>
+    </table>
+    {{/unless}}
+  </div>
+  <div class="seven wide lightgrey column">
+    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
+  </div>
+</template>
