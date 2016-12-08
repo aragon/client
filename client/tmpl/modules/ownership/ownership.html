@@ -37,12 +37,7 @@
         {{#if $contains (TemplateVar.get 'searchString') shareholder}}
         <tr data-shareholder="{{ shareholder }}">
           <td>
-            <h4 class="ui image header">
-              <img src="http://placekitten.com/g/32/32" class="ui mini circular image">
-              <div class="content">
-                {{ shareholder }}
-              </div>
-            </h4>
+            {{ shareholder }}
           </td>
           <td>
             {{ stock.symbol }}
@@ -56,9 +51,7 @@
         {{#each stocks}}
         <tr>
           <td>
-            <h4 class="ui image header">
-              Not assigned
-            </h4>
+            Unassigned
           </td>
           <td>
             {{ symbol }}

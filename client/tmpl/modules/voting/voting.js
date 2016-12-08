@@ -1,8 +1,12 @@
+import VotingWatcher from '/client/lib/ethereum/votings'
+
+const Votings = VotingWatcher.Votings
+
 const tmpl = Template.Module_Voting.extend()
 
 tmpl.routes({
   '/': () => TemplateVar.set('rightSection', 'Module_Voting_Empty'),
-  '/:id': () => TemplateVar.set('rightSection', 'Module_Voting_Card'),
+  '/:id': () => TemplateVar.set('rightSection', 'Module_Voting_Section'),
 })
 
 tmpl.onCreated(() => TemplateVar.set('rightSection', 'Module_Voting_Empty'))
@@ -20,18 +24,7 @@ tmpl.events({
 })
 
 tmpl.helpers({
-  votings: () => [
-    {
-      description: 'Issuing 1,000 new CVS shares',
-      endTime: new Date(2016, 11, 10),
-      address: 'manolo',
-    },
-    {
-      description: 'Raising 1000BTC',
-      endTime: new Date(2016, 11, 20),
-      address: 'manolazo',
-    },
-  ],
+  votings: () => Votings.find(),
   pastVotings: () => [
     {
       description: 'Issuing 2,000 new CVS shares',
