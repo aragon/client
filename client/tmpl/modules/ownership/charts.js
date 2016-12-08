@@ -22,7 +22,7 @@ const drawChart = (ctx, title, labels, data, colors) => {
   })
 }
 
-tmpl.onRendered(() => {
+tmpl.onRendered(function () {
   this.autorun(async () => {
     const stocks = Stocks.find({}).fetch()
     drawChart($('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))

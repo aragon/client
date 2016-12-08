@@ -1,14 +1,8 @@
 const tmpl = Template.Module_Voting.extend()
 
 tmpl.routes({
-  '/': () => {
-    console.log('Called2')
-    TemplateVar.set('rightSection', 'Module_Voting_Empty')
-  },
-  '/:id': () => {
-    console.log('Called')
-    TemplateVar.set('rightSection', 'Module_Voting_Card')
-  },
+  '/': () => TemplateVar.set('rightSection', 'Module_Voting_Empty'),
+  '/:id': () => TemplateVar.set('rightSection', 'Module_Voting_Card'),
 })
 
 tmpl.onCreated(() => {
@@ -30,7 +24,7 @@ tmpl.events({
   },
   'closed div': () => {
     TemplateVar.set('rightSection', 'Module_Voting_Empty')
-    FlowRouter.go('/')
+    FlowRouter.go('/voting')
   },
 })
 
