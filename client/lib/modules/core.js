@@ -27,7 +27,7 @@ class Core {
   static setup() {
     BlazeLayout.setRoot('body')
     FlowRouter.notFound = {
-      action: () => FlowRouter.go('main'),
+      action: () => FlowRouter.go('home'),
     }
   }
 }
