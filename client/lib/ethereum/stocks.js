@@ -31,8 +31,7 @@ class StockWatcher {
   }
 
   async getStock(address, index) {
-    console.log('updating', index)
-    this.trackStock(address)
+    this.trackStock(address, index)
     await this.updateStock(address, index)
   }
 
@@ -53,10 +52,9 @@ class StockWatcher {
     return await Promise.all(promises)
   }
 
-  trackStock(address) {
-    console.log('Tracking stock at', address)
+  trackStock(address, index) {
     Stock.at(address).Transfer({}).watch(() => {
-      this.updateStock(address)
+      this.updateStock(address, index)
     })
   }
 
@@ -68,8 +66,8 @@ class StockWatcher {
       votesPerShare: stock.votesPerShare.call().then(x => x.toNumber()),
       shareholders: stock.shareholderIndex.call().then(x => x.toNumber()),
       totalSupply: stock.totalSupply.call().then(x => x.toNumber()),
-      index,
       address,
+      index,
     }
     const stockInfo = await Promise.allProperties(stockObject)
     this.Stocks.upsert(`s_${address}`, stockInfo)

@@ -8,6 +8,7 @@
     <p>Ending: {{ timeRange now closingTime }}</p>
     <p>{{description}}</p>
 
+    <div class="ui spacer"></div>
     <div class="ui buttons">
       {{#each options}}
       <button data-option="{{@index}}" class="ui {{#if equals @index (plus options.length -1)}} negative {{else}} positive {{/if}} button">{{this}}</button>

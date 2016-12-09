@@ -1,9 +1,9 @@
-Template.Element_KeybaseAutocomplete.created = () => {
-  TemplateVar.set('user', {})
-}
+const tmpl = Template.Element_KeybaseAutocomplete
 
-Template.Element_KeybaseAutocomplete.rendered = () => {
-  const template = Template.instance()
+tmpl.onCreated(() => TemplateVar.set('user', {}))
+
+tmpl.onRendered(function () {
+  const tmplIns = Template.instance()
   this.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
@@ -21,6 +21,6 @@ Template.Element_KeybaseAutocomplete.rendered = () => {
       image: 'pic',
     },
     minCharacters: 2,
-    onSelect: user => TemplateVar.set(template, 'user', user),
+    onSelect: user => TemplateVar.set(tmplIns, 'user', user),
   })
-}
+})

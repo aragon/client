@@ -12,8 +12,8 @@ tmpl.helpers({
 })
 
 const castVote = async option => {
-  console.log(EthAccounts.findOne().address)
-  const result = await Company.castVote(voting().index, option, { from: EthAccounts.findOne().address, gas: 4000000 })
+  const result = await Company.castVote(voting().index, option,
+                  { from: EthAccounts.findOne().address, gas: 4800000 })
   console.log(result)
 }
 

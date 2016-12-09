@@ -3,7 +3,6 @@
   {{> Element_CloseSectionButton href='/ownership'}}
   <form class="ui flex attached form" id="issueShares">
     <h1 class="ui header">Issue Shares</h1>
-    <p>To issue shares a voting is needed.</p>
     <div class="ui hidden divider"></div>
     <div class="field">
       <label>Kind</label>
@@ -23,6 +22,13 @@
       <input type="number" lang="en" name="number" placeholder="Number of shares">
     </div>
     <div class="ui spacer"></div>
-    <button class="ui fluid big primary button" type="submit">Create Issue shares poll</button>
+    <div class="ui icon small message">
+      <i class="info icon"></i>
+      <div class="content">
+        <div class="header">To issue shares a voting is needed.</div>
+        <p>Voting power will have 7 days to vote.</p>
+      </div>
+    </div>
+    <button class="ui fluid big primary button" type="submit">Issue</button>
   </form>
 </template>
