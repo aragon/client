@@ -1,5 +1,3 @@
-import Helpers from './helpers'
-
 function moduleName(tmpl) {
   return tmpl.viewName.split('.')[1].split('_')[1].toLowerCase()
 }
@@ -51,7 +49,6 @@ Template.prototype.extend = function (components = []) {
       })
     }
   })
-  this.helpers(Helpers)
   return this
 }
 
