@@ -25,7 +25,7 @@
 
     <div class="ui hidden divider"></div>
     {{#unless TemplateVar.get 'pastVotings'}}
-    <table class="ui very basic sortable selectable striped padded fixed table">
+    <table class="ui very basic selectable striped padded fixed table">
       <thead>
         <tr>
           <th>Description</th>
@@ -37,10 +37,11 @@
         {{#if $contains (TemplateVar.get 'searchString') description}}
         <tr data-voting="{{ address }}">
           <td>
-            {{ description }}
+            <!--{{ description }}-->
+            {{address}}
           </td>
           <td>
-            {{ timeRange now endTime }}
+            {{ timeRange now closingTime }}
           </td>
         </tr>
         {{/if}}
@@ -48,7 +49,7 @@
       </tbody>
     </table>
     {{else}}
-    <table class="ui very basic sortable selectable striped padded fixed table">
+    <table class="ui very basic selectable striped padded fixed table">
       <thead>
         <tr>
           <th>Description</th>
@@ -60,10 +61,12 @@
         {{#if $contains (TemplateVar.get 'searchString') description}}
         <tr data-voting="{{ address }}">
           <td>
-            {{ description }}
+            <!--{{ description }}-->
+            {{address}}
           </td>
           <td>
-            {{ displayOutcome outcome }}
+            <!--{{ displayOutcome outcome }}-->
+            {{ timeRange now closingTime }} ago
           </td>
         </tr>
         {{/if}}

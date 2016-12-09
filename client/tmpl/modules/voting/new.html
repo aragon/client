@@ -1,0 +1,27 @@
+<template name="Module_Voting_New">
+  {{> Element_ProcessDimmer}}
+  {{> Element_CloseSectionButton href='/ownership'}}
+  <form class="ui flex attached form" id="newVoting">
+    <h1 class="ui header">New voting</h1>
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <label>Kind</label>
+      <div class="ui selection dropdown">
+        <input type="hidden" name="kind">
+        <i class="dropdown icon"></i>
+        <div class="default text">Kind of shares</div>
+        <div class="menu">
+          {{#each stocks}}
+          <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Number</label>
+      <input type="number" lang="en" name="number" placeholder="Number of shares">
+    </div>
+    <div class="ui spacer"></div>
+    <button class="ui fluid big primary button" type="submit">Open</button>
+  </form>
+</template>

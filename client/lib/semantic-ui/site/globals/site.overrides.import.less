@@ -56,6 +56,16 @@ body, input {
   .spacer {
     flex: auto;
   }
+
+  .expand {
+    flex: 1;
+  }
+
+  &.centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .lightgrey.column {
@@ -76,6 +86,16 @@ body, input {
   h2 {
     font-weight: lighter !important;
   }
+}
+
+#homePlaceholder {
+  background-image: linear-gradient(to top, fade(@violet, 10%), transparent);
+}
+
+#homeMenu {
+  left: 15rem !important;
+  right: 0;
+  width: auto !important;
 }
 
 @text-colors: blue, green, orange, pink, purple, red, teal, yellow, black, grey, white;
