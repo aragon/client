@@ -19,9 +19,15 @@ class VotingWatcher {
   }
 
   listenForNewVotings() {
-    Stock.at(Stocks.findOne().address).NewPoll().watch(async (err, ev) => {
-      const votingAddr = await Company.votings.call(ev.args.id)
-      this.getVoting(votingAddr, ev.args.id)
+    const self = this
+    Stocks.find().observeChanges({
+      added(id, fields) {
+        console.log(fields)
+        Stock.at(fields.address).NewPoll().watch(async (err, ev) => {
+          const votingAddr = await Company.votings.call(ev.args.id)
+          self.getVoting(votingAddr, ev.args.id)
+        })
+      },
     })
   }
 

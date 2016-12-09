@@ -1,12 +1,12 @@
 <template name="Module_Voting_Section">
   {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/voting'}}
-  <div class="ui attached flex container">
+  <div class="ui attached flex container" id="votingSection">
     {{#with voting}}
-    <h1 class="ui header">Voting</h1>
-    <p>{{title}}</p>
-    <p>Ending: {{ timeRange now closingTime }}</p>
-    <p>{{description}}</p>
+    <h1 class="ui header">
+      {{title}} <a class="ui left pointing red basic label">Ends in {{ timeRange now closingTime }}</a>
+      <div class="sub header">{{description}}</div>
+    </h1>
 
     <div class="ui spacer"></div>
     <div class="ui buttons">

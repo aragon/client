@@ -37,8 +37,7 @@
         {{#if $contains (TemplateVar.get 'searchString') description}}
         <tr data-voting="{{ address }}">
           <td>
-            <!--{{ description }}-->
-            {{address}}
+            {{ description }}
           </td>
           <td>
             {{ timeRange now closingTime }}

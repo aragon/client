@@ -6,7 +6,10 @@ const tmpl = Template.Module_Voting.extend()
 
 tmpl.routes({
   '/': () => TemplateVar.set('rightSection', 'Module_Voting_Empty'),
-  '/:id': () => TemplateVar.set('rightSection', 'Module_Voting_Section'),
+  '/:id': (q) => {
+    TemplateVar.set('rightSection', 'Module_Voting_Section')
+    Template.instance().$('#votingSection').trigger('reload')
+  },
 })
 
 tmpl.onCreated(() => TemplateVar.set('rightSection', 'Module_Voting_Empty'))

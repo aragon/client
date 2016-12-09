@@ -9,7 +9,7 @@ const tmpl = Template.Module_Ownership_IssueShares.extend([ClosableSection])
 
 const issueStock = async (kind, value) => {
   const supportNeeded = 70
-  const description = `Voting to issue ${value} ${Stocks.findOne({ index: +kind }).symbol} stocks`
+  const description = `Issue ${value} ${Stocks.findOne({ index: +kind }).symbol} shares`
   const addr = EthAccounts.findOne().address
   const oneWeekFromNow = +moment().add(7, 'days')
   const voting = await IssueStockVoting.new(kind, value, supportNeeded, description,
