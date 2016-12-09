@@ -6,9 +6,15 @@ const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Ownership_IssueShares.extend([ClosableSection])
 
-const issueStock = (kind, value) => (
-  Company.issueStock(kind, value, { from: EthAccounts.findOne().address })
-)
+const issueStock = async (kind, value) => {
+  const supportNeeded = 70
+  const description = `Voting to issue ${value} ${Stocks.findOne({ index: +kind }).symbol} stocks`
+  const addr = EthAccounts.findOne().address
+  const oneWeekFromNow = parseInt(+new Date() / 1000) + 24 * 3600 *7
+  console.log(oneWeekFromNow)
+  const voting = await IssueStockVoting.new(kind, value, supportNeeded, description, { from: addr, gas: 1000000 })
+  return await Company.beginPoll(voting.address, oneWeekFromNow, { from: addr, gas: 100000 })
+}
 
 tmpl.onRendered(function () {
   this.$('.dropdown').dropdown()

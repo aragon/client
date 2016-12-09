@@ -22,7 +22,7 @@ class VotingWatcher {
 
   async getAllVotings() {
     const lastId = await Company.votingIndex.call().then(x => x.toNumber())
-    const addressesPromises = _.range(lastId).map(id => Company.votings.call(id))
+    const addressesPromises = _.range(lastId-1).map(id => Company.votings.call(id+1))
     const votingAddresses = await Promise.all(addressesPromises)
     await Promise.all(votingAddresses.map((a, i) => this.getVoting(a, i)))
 
@@ -30,8 +30,6 @@ class VotingWatcher {
   }
 
   async getVoting(address, index) {
-    //console.log('updating', index)
-    //this.trackStock(address)
     await this.updateVoting(address, index)
   }
 
@@ -39,21 +37,26 @@ class VotingWatcher {
     const voting = Voting.at(address)
     const lastId = await voting.optionsIndex.call().then(x => x.toNumber())
     const optionsPromises = _.range(lastId).map(id => voting.options.call(id))
-    console.log(address)
+
     window.so = Stock.at(Stocks.findOne().address)
     const closingTime = await Stock.at(Stocks.findOne().address).pollingUntil
                               .call(index).then(x => x.toNumber())
-    const votingOptions = await Promise.all(optionsPromises)
+
+    const supportNeeded = Promise.all([voting.neededSupport.call(), voting.supportBase.call()])
+                            .then(([s, b]) => s / b)
 
     const votingObject = {
-      options: votingOptions,
-      closingTime: new Date(closingTime),
+      title: voting.title.call(),
+      description: voting.description.call(),
+      options: Promise.all(optionsPromises),
+      closingTime: new Date(closingTime * 1000),
+      supportNeeded,
       index,
       address,
     }
-    console.log(votingObject)
 
     const votingInfo = await Promise.allProperties(votingObject)
+    console.log(votingInfo)
     this.Votings.upsert(`s_${address}`, votingInfo)
   }
 }

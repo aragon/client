@@ -26,7 +26,5 @@ tmpl.events({
 tmpl.helpers({
   votings: () => Votings.find({ closingTime: { $gt: new Date() } }),
   pastVotings: () => Votings.find({ closingTime: { $lt: new Date() } }),
-  now: () => (moment()),
-  timeRange: (a, b) => (moment(a).twix(b).humanizeLength()),
   displayOutcome: (outcome) => ((outcome) ? '👍' : '👎'),
 })

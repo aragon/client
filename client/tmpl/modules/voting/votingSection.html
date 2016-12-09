@@ -2,16 +2,20 @@
   {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/voting'}}
   <div class="ui attached flex container">
+    {{#with voting}}
     <h1 class="ui header">Voting</h1>
-    <p>Voting to issue 1,000 new CVS shares</p>
-    <p>End time: Dec 10, 2016</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <div class="ui spacer"></div>
+    <p>{{title}}</p>
+    <p>Ending: {{ timeRange now closingTime }}</p>
+    <p>{{description}}</p>
 
     <div class="ui buttons">
-      <button class="ui positive button">Yes</button>
-      <div class="or"></div>
-      <button class="ui negative button">No</button>
+      {{#each options}}
+      <button data-option="{{@index}}" class="ui {{#if equals @index (plus options.length -1)}} negative {{else}} positive {{/if}} button">{{this}}</button>
+      {{#unless equals @index (plus options.length -1) }}
+        <div class="or"></div>
+      {{/unless}}
+      {{/each}}
     </div>
+    {{/with}}
   </div>
 </template>
