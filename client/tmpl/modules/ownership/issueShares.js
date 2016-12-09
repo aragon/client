@@ -8,6 +8,9 @@ const tmpl = Template.Module_Ownership_IssueShares.extend([ClosableSection])
 
 const issueStock = async (kind, value) => {
   const supportNeeded = 70
+  console.log(kind)
+  console.log(Stocks.findOne())
+  console.log(Stocks.findOne({ index: +kind }).symbol)
   const description = `Voting to issue ${value} ${Stocks.findOne({ index: +kind }).symbol} stocks`
   const addr = EthAccounts.findOne().address
   const oneWeekFromNow = parseInt(+new Date() / 1000) + 24 * 3600 *7

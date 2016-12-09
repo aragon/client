@@ -8,11 +8,13 @@ const tmpl = Template.Module_Voting_Section.extend([ClosableSection])
 const voting = () => Votings.findOne({ address: FlowRouter.current().params.id })
 tmpl.helpers({
   voting,
-  options: (o) => voting().options,
+  options: () => voting().options,
 })
 
-const castVote = option => {
-
+const castVote = async option => {
+  console.log(EthAccounts.findOne().address)
+  const result = await Company.castVote(voting().index, option, { from: EthAccounts.findOne().address, gas: 4000000 })
+  console.log(result)
 }
 
 tmpl.events({

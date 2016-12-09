@@ -24,7 +24,7 @@ class VotingWatcher {
     const lastId = await Company.votingIndex.call().then(x => x.toNumber())
     const addressesPromises = _.range(lastId-1).map(id => Company.votings.call(id+1))
     const votingAddresses = await Promise.all(addressesPromises)
-    await Promise.all(votingAddresses.map((a, i) => this.getVoting(a, i)))
+    await Promise.all(votingAddresses.map((a, i) => this.getVoting(a, i+1)))
 
     this.Votings.remove({ address: { $nin: votingAddresses } })
   }
