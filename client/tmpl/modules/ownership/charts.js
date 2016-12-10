@@ -2,17 +2,29 @@ import Chart from 'chart.js'
 import StockWatcher from '/client/lib/ethereum/stocks'
 // import Company from '/client/lib/ethereum/deployed'
 import { Stock } from '/client/lib/ethereum/contracts'
+import Identity from '/client/lib/identity'
 
 const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Ownership_Charts.extend()
 
-const colorFromAddress = address => `#${address.substr(-6)}`
+const strToColor = (str) =>{
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  let color = '#'
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 0xFF
+    color += (`00${value.toString(16)}`).substr(-2)
+  }
+  return color
+}
 
 const drawChart = (ctx, title, labels, data, colors) => {
   const chartData = {
     labels,
-    datasets: [{ data, backgroundColor: colors || labels.map(colorFromAddress) }],
+    datasets: [{ data, backgroundColor: colors || labels.map(strToColor) }],
   }
 
   new Chart(ctx, {
@@ -40,7 +52,7 @@ tmpl.onRendered(function () {
       const balances = await Promise.all(balancePromises)
 
       for (const i in shareShareholders) {
-        const key = shareShareholders[i]
+        const key = Identity.format(shareShareholders[i])
         globalBalances[key] = balances[i] + (globalBalances[key] || 0)
         if (stock.votesPerShare) {
           votingPower[key] = (stock.votesPerShare * balances[i]) + (votingPower[key] || 0)
