@@ -1,5 +1,5 @@
 import ClosableSection from '/client/tmpl/components/closableSection'
-import Keybase from '/client/lib/keybase'
+import Keybase from '/client/lib/identity/keybase'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
 
