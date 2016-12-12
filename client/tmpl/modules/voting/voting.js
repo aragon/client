@@ -1,6 +1,6 @@
 import VotingWatcher from '/client/lib/ethereum/votings'
 
-const Votings = VotingWatcher.Votings
+Votings = VotingWatcher.Votings
 
 const tmpl = Template.Module_Voting.extend()
 const selectedVoting = new ReactiveVar()

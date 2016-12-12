@@ -20,12 +20,16 @@ class VotingWatcher {
 
   listenForNewVotings() {
     const self = this
+    const watch = async (err, ev) => {
+      const votingAddr = await Company.votings.call(ev.args.id)
+      console.log('updated voting', ev.args.id)
+      self.getVoting(votingAddr, ev.args.id.toNumber())
+    }
+
     Stocks.find().observeChanges({
       added: (id, fields) => {
-        Stock.at(fields.address).NewPoll().watch(async (err, ev) => {
-          const votingAddr = await Company.votings.call(ev.args.id)
-          self.getVoting(votingAddr, ev.args.id.toNumber())
-        })
+        Stock.at(fields.address).NewPoll().watch(watch)
+        Stock.at(fields.address).VoteCasted().watch(watch)
       },
     })
   }
@@ -43,10 +47,18 @@ class VotingWatcher {
     await this.updateVoting(address, index)
   }
 
+  async countVotes(index, optionId) {
+    const counted = await Company.countVotes.call(index, optionId)
+    const votes = counted[0].toNumber()
+    return { votes, relativeVotes: votes / counted[1].toNumber() }
+  }
+
   async updateVoting(address, index) {
     const voting = Voting.at(address)
     const lastId = await voting.optionsIndex.call().then(x => x.toNumber())
-    const optionsPromises = _.range(lastId).map(id => voting.options.call(id))
+    const ids = _.range(lastId)
+    const optionsPromises = ids.map(id => voting.options.call(id))
+    const votes = ids.map(id => this.countVotes(index, id))
     const closingTime = await Stock.at(Stocks.findOne().address).pollingUntil
                               .call(index).then(x => x.toNumber())
 
@@ -54,13 +66,14 @@ class VotingWatcher {
                             .then(([s, b]) => s / b)
     const voteExecuted = Company.voteExecuted.call(index)
                             .then(x => Promise.resolve(x.toNumber()))
-                            .then(x => (x > 0 ? x - 10: null))
+                            .then(x => (x > 0 ? x - 10 : null))
 
     const votingObject = {
       title: voting.title.call(),
       description: voting.description.call(),
       options: Promise.all(optionsPromises),
       closingTime: new Date(closingTime),
+      voteCounts: Promise.all(votes),
       voteExecuted,
       supportNeeded,
       index,
@@ -68,6 +81,7 @@ class VotingWatcher {
     }
 
     const votingInfo = await Promise.allProperties(votingObject)
+    console.log('setting new', votingInfo)
     this.Votings.upsert(`s_${address}`, votingInfo)
   }
 }

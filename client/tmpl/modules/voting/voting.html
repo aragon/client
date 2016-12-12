@@ -58,7 +58,7 @@
         {{#each pastVotings}}
         {{#if $contains (TemplateVar.get 'searchString') description}}
         <tr lass="{{#if isSelected address}} active {{/if}}" data-voting="{{ address }}">
-          <td>    
+          <td>
             {{ description }}
           </td>
           <td>
