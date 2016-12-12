@@ -29,7 +29,7 @@
           <td>
             {{ this }}
           </td>
-          {{#with countVotes @index voteId updatesHack }}
+          {{#with arrayAccess voteCounts @index updatesHack }}
           <td>
             {{ votes }}
           </td>
@@ -63,7 +63,7 @@
     </div>
     {{/if }}
 
-    {{#with executingOption options updatesHack }}
+    {{#with executingOption voteCounts options updatesHack }}
     <h4 class="ui centered header">Vote is called, it can be executed at any time.</h4>
       <button class="ui big {{ sentiment }} execute button" data-option="{{index}}" name="button">Execute {{name}}</button>
     {{/with}}

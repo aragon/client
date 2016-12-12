@@ -38,33 +38,24 @@ const votingPower = async () => {
   return allVotes.reduce((acc, v) => acc + v.toNumber(), 0)
 }
 
-const countVotes = async (optionId) => {
-  const counted = await Company.countVotes.call(voting().index, optionId)
-  const votes = counted[0].toNumber()
-  return { votes, relativeVotes: votes / counted[1].toNumber() }
-}
-
-const countAllVotes = async (options) => {
-  const votes = options.map((o, i) => Company.countVotes.call(voting().index, i))
-  return await Promise.all(votes)
-}
-
+// Pending votes stays here as it has to be updated in real time when more shares are assigned.
 const pendingVotes = async (options) => {
-  const allOptions = await countAllVotes(options)
+  const vs = options.map((o, i) => Company.countVotes.call(voting().index, i))
+  const allOptions = await Promise.all(vs)
   const total = allOptions[0][1].toNumber()
   const allVotes = allOptions.reduce((acc, v) => acc + v[0].toNumber(), 0)
   const votes = total - allVotes
   return { votes, relativeVotes: votes / total }
 }
 
-const canExecute = async (options) => {
+const canExecute = async (voteCounts, options) => {
   if (voting().voteExecuted !== null) return null
-  const possitiveVotes = await countVotes(0)
+  const possitiveVotes = voteCounts[0]
   if (possitiveVotes.relativeVotes > voting().supportNeeded) {
     return { sentiment: 'primary', index: 0, name: options[0] }
   }
 
-  const negativeVotes = await countVotes(1)
+  const negativeVotes = voteCounts[1]
   if (negativeVotes.relativeVotes > 1 - voting().supportNeeded) {
     return { sentiment: 'negative', index: 1, name: options[1] }
   }
@@ -72,16 +63,18 @@ const canExecute = async (options) => {
   return null
 }
 
-tmpl.onCreated(() => {
-  reload()
+tmpl.onCreated(function () {
+  this.autorun(() => {
+    reload()
+  })
 })
 
 tmpl.helpers({
   updatesHack: () => updated.get(),
   voting: () => votingVar.get(),
   options: () => votingVar.get().options,
+  voteCounts: () => votingVar.get().voteCounts,
   canVote: ReactivePromise(canVote),
-  countVotes: ReactivePromise(countVotes),
   pendingVotes: ReactivePromise(pendingVotes),
   votingPower: ReactivePromise(votingPower),
   executingOption: ReactivePromise(canExecute),
