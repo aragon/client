@@ -8,7 +8,42 @@
       <div class="sub header">{{description}}</div>
     </h1>
 
+    <table id="optionsTable" class="ui very basic selectable striped padded fixed table">
+      <thead>
+        <tr>
+          <th>Option</th>
+          <th>Votes</th>
+          <th>Percentaje</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ #each options }}
+        <tr data-option="{{ @index }}">
+          <td>
+            {{ this }}
+          </td>
+          {{#with countVotes @index voteId updatesHack }}
+          <td>
+            {{ votes }}
+          </td>
+          <td>
+            {{ percentaje }}%
+          </td>
+          {{/with}}
+        </tr>
+        {{/each}}
+        <tr>
+          <td>Pending votes</td>
+          {{#with pendingVotes options updatesHack }}
+          <td>{{ votes }}</td>
+          <td>{{ percentaje }}%</td>
+          {{/with}}
+        </tr>
+      </tbody>
+    </table>
+
     <div class="ui spacer"></div>
+
     <div class="ui buttons">
       {{#if canVote}}
       {{#each options}}
