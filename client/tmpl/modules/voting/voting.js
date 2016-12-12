@@ -33,8 +33,7 @@ tmpl.events({
 })
 
 tmpl.helpers({
-  votings: () => Votings.find({ closingTime: { $gt: new Date() } }),
-  pastVotings: () => Votings.find({ closingTime: { $lt: new Date() } }),
-  displayOutcome: (outcome) => ((outcome) ? '👍' : '👎'),
+  votings: () => Votings.find({ voteExecuted: null, closingTime: { $gt: new Date() } }),
+  pastVotings: () => Votings.find({ $or: [{voteExecuted: {$ne:null}}, {closingTime: { $lt: new Date() }}]}),
   isSelected: id => id === selectedVoting.get(),
 })

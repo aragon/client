@@ -52,12 +52,16 @@ class VotingWatcher {
 
     const supportNeeded = Promise.all([voting.neededSupport.call(), voting.supportBase.call()])
                             .then(([s, b]) => s / b)
+    const voteExecuted = Company.voteExecuted.call(index)
+                            .then(x => Promise.resolve(x.toNumber()))
+                            .then(x => (x > 0 ? x - 10: null))
 
     const votingObject = {
       title: voting.title.call(),
       description: voting.description.call(),
       options: Promise.all(optionsPromises),
       closingTime: new Date(closingTime),
+      voteExecuted,
       supportNeeded,
       index,
       address,

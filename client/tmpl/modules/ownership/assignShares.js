@@ -28,6 +28,7 @@ tmpl.helpers({
   selectedReceiver: () => (TemplateVar.getFrom('#Element_KeybaseAutocomplete', 'user')),
   addressForUser: ReactivePromise(Keybase.getEthereumAddress),
   stocks: () => Stocks.find(),
+  defaultAddress: () => EthAccounts.findOne().address,
 })
 
 tmpl.events({

@@ -8,7 +8,7 @@
       <label>Receiver</label>
       <div class="two fields">
         <div class="field">
-          <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedReceiver}}{{addressForUser selectedReceiver.username}}{{/if}}">
+          <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedReceiver}}{{addressForUser selectedReceiver.username}}{{else}}{{defaultAddress}}{{/if}}">
         </div>
         <div class="field">
           {{> Element_KeybaseAutocomplete onSelect=onSelect}}
