@@ -87,9 +87,8 @@ const castVote = async option => {
 }
 
 const executeVote = async option => {
-  const result = await Voting.at(voteId()).executeOnAction(option, Company.address,
+  await Voting.at(voteId()).executeOnAction(option, Company.address,
                   { from: EthAccounts.findOne().address, gas: 4800000 })
-  console.log('resu', result)
   reload()
 }
 
