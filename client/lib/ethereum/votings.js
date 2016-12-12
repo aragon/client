@@ -26,6 +26,8 @@ class VotingWatcher {
       self.getVoting(votingAddr, ev.args.id.toNumber())
     }
 
+    Company.VoteExecuted().watch(watch)
+
     Stocks.find().observeChanges({
       added: (id, fields) => {
         Stock.at(fields.address).NewPoll().watch(watch)
