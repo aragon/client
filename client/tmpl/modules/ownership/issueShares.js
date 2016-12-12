@@ -8,7 +8,7 @@ const Stocks = StockWatcher.Stocks
 const tmpl = Template.Module_Ownership_IssueShares.extend([ClosableSection])
 
 const issueStock = async (kind, value) => {
-  const supportNeeded = 70
+  const supportNeeded = 50
   const description = `Issue ${value} ${Stocks.findOne({ index: +kind }).symbol} shares`
   const addr = EthAccounts.findOne().address
   const oneWeekFromNow = +moment().add(7, 'days')

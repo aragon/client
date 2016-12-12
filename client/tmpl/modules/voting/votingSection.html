@@ -6,11 +6,13 @@
     <h1 class="ui header">
       {{title}}
       {{#if isNull voteExecuted}}
-        <a class="ui violet label">Requires {{ percentFormat supportNeeded }} support</a>
         <a class="ui left pointing red basic label">Ends in {{ timeRange now closingTime }}</a>
+        {{#if supportNeeded}}
+        <a class="ui violet label">Requires {{ percentFormat supportNeeded }} support</a>
+        {{/if}}
       {{else}}
-        <a class="ui violet label">{{arrayAccess options voteExecuted}}</a>
         <a class="ui left pointing red basic label">Closed</a>
+        <a class="ui violet label">{{arrayAccess options voteExecuted}}</a>
       {{/if}}
       <div class="sub header">{{description}}</div>
     </h1>

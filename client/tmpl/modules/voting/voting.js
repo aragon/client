@@ -5,9 +5,9 @@ Votings = VotingWatcher.Votings
 const tmpl = Template.Module_Voting.extend()
 const selectedVoting = new ReactiveVar()
 
-
 tmpl.routes({
   '/': () => TemplateVar.set('rightSection', 'Module_Voting_Empty'),
+  '/new': () => TemplateVar.set('rightSection', 'Module_Voting_New'),
   '/:id': () => {
     TemplateVar.set('rightSection', 'Module_Voting_Section')
     Template.instance().$('#votingSection').trigger('reload')
