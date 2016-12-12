@@ -3,7 +3,7 @@ import Company from './deployed'
 import StockWatcher from './stocks'
 
 const Stocks = StockWatcher.Stocks
-
+CC = Company
 const Votings = new Mongo.Collection('votings_collection', { connection: null })
 
 class VotingWatcher {
