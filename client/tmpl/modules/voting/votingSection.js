@@ -31,7 +31,7 @@ const canVote = async () => {
 const countVotes = async (optionId) => {
   const counted = await Company.countVotes.call(voting().index, optionId)
   const votes = counted[0].toNumber()
-  return { votes, percentaje: Math.round(10000 * (votes / counted[1].toNumber())) / 100 }
+  return { votes, relativeVotes: votes / counted[1].toNumber() }
 }
 
 const pendingVotes = async (options) => {
@@ -39,7 +39,7 @@ const pendingVotes = async (options) => {
   const total = allOptions[0][1].toNumber()
   const allVotes = allOptions.reduce((acc, v) => acc + v[0].toNumber(), 0)
   const votes = total - allVotes
-  return { votes, percentaje: Math.round(10000 * (votes / total)) / 100 }
+  return { votes, relativeVotes: votes / total }
 }
 
 tmpl.onCreated(() => {

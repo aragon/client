@@ -4,7 +4,9 @@
   <div class="ui attached flex container" id="votingSection">
     {{#with voting}}
     <h1 class="ui header">
-      {{title}} <a class="ui left pointing red basic label">Ends in {{ timeRange now closingTime }}</a>
+      {{title}}
+      <a class="ui violet label">Requires {{ percentFormat supportNeeded }} support</a>
+      <a class="ui left pointing red basic label">Ends in {{ timeRange now closingTime }}</a>
       <div class="sub header">{{description}}</div>
     </h1>
 
@@ -27,7 +29,7 @@
             {{ votes }}
           </td>
           <td>
-            {{ percentaje }}%
+            {{ percentFormat relativeVotes }}
           </td>
           {{/with}}
         </tr>
@@ -36,7 +38,7 @@
           <td>Pending votes</td>
           {{#with pendingVotes options updatesHack }}
           <td>{{ votes }}</td>
-          <td>{{ percentaje }}%</td>
+          <td>{{ percentFormat relativeVotes }}</td>
           {{/with}}
         </tr>
       </tbody>
