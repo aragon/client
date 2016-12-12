@@ -74,7 +74,7 @@ class VotingWatcher {
       title: voting.title.call(),
       description: voting.description.call(),
       options: Promise.all(optionsPromises),
-      closingTime: new Date(closingTime),
+      closingTime: new Date(closingTime * 1000),
       voteCounts: Promise.all(votes),
       voteExecuted,
       supportNeeded,

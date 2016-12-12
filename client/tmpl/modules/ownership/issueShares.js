@@ -11,7 +11,7 @@ const issueStock = async (kind, value) => {
   const supportNeeded = 50
   const description = `Issue ${value} ${Stocks.findOne({ index: +kind }).symbol} shares`
   const addr = EthAccounts.findOne().address
-  const oneWeekFromNow = +moment().add(7, 'days')
+  const oneWeekFromNow = +moment().add(7, 'days') / 1000
   const voting = await IssueStockVoting.new(kind, value, supportNeeded, description,
                         { from: addr, gas: 1000000 })
   return await Company.beginPoll(voting.address, oneWeekFromNow, { from: addr, gas: 100000 })
