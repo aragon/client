@@ -1,4 +1,5 @@
 import notify from "notifyjs"
+const Notify = notify.default
 
 class Notifications {
   startListening() {
