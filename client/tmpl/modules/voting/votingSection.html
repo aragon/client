@@ -10,12 +10,14 @@
 
     <div class="ui spacer"></div>
     <div class="ui buttons">
+      {{#if canVote}}
       {{#each options}}
       <button data-option="{{@index}}" class="ui {{#if equals @index (plus options.length -1)}} negative {{else}} positive {{/if}} button">{{this}}</button>
       {{#unless equals @index (plus options.length -1) }}
         <div class="or"></div>
       {{/unless}}
       {{/each}}
+      {{/if }}
     </div>
     {{/with}}
   </div>

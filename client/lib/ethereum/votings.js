@@ -21,11 +21,10 @@ class VotingWatcher {
   listenForNewVotings() {
     const self = this
     Stocks.find().observeChanges({
-      added(id, fields) {
-        console.log(fields)
+      added: (id, fields) => {
         Stock.at(fields.address).NewPoll().watch(async (err, ev) => {
           const votingAddr = await Company.votings.call(ev.args.id)
-          self.getVoting(votingAddr, ev.args.id)
+          self.getVoting(votingAddr, ev.args.id.toNumber())
         })
       },
     })
