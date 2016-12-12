@@ -1,4 +1,5 @@
 import { Module, Core } from './lib/modules'
+import Notifications from './notifications'
 
 this.Root = new Core()
 this.Root.modules = [
@@ -14,3 +15,5 @@ this.Root.modules = [
 
   new Module('Entity', 'entity', false),
 ]
+
+Notifications.startListening()
