@@ -10,6 +10,7 @@ tmpl.routes({
   '/': () => TemplateVar.set('rightSection', 'Module_Ownership_Charts'),
   '/issue': () => TemplateVar.set('rightSection', 'Module_Ownership_IssueShares'),
   '/assign': () => TemplateVar.set('rightSection', 'Module_Ownership_AssignShares'),
+  '/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
 
 tmpl.onCreated(() => {
@@ -23,13 +24,7 @@ tmpl.onRendered(function () {
 
 tmpl.events({
   'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
-  'click tbody tr': (e) => {
-    const shareholder = $(e.currentTarget).data('shareholder')
-    if (shareholder) {
-      TemplateVar.set('rightSection', 'module_entity')
-      TemplateVar.set('selectedShareholder', e.currentTarget.dataset.shareholder)
-    }
-  },
+  'click tbody tr': (e) => FlowRouter.go(`/ownership/entity/${$(e.currentTarget).data('shareholder')}`),
 })
 
 tmpl.helpers({
