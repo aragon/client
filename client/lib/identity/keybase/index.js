@@ -4,15 +4,17 @@ const kbfsBaseURL = 'https://keybase-pub-proxy-lekobkzhwp.now.sh'
 class Keybase {
   // Returns {status, them}
   static async lookup(username) {
-    const data = await fetch(`${keybaseBaseURL}/user/lookup.json?usernames=${username}`)
-    return data.json()
+    if (!username) return null
+    const res = await fetch(`${keybaseBaseURL}/user/lookup.json?usernames=${username}`)
+    const data = await res.json()
+    return data.them[0]
   }
 
   static async getEthereumAddress(username) {
     if (!username) return null
-    const data = await fetch(`${kbfsBaseURL}/ethereum.json?username=${username}`)
-    const responseBody = await data.json()
-    return responseBody.address
+    const res = await fetch(`${kbfsBaseURL}/ethereum.json?username=${username}`)
+    const data = await res.json()
+    return data.address
   }
 }
 
