@@ -1,3 +1,5 @@
+import Identity from '/client/lib/identity'
+
 Template.registerHelper('$contains', (a, b) => (!a || b.toLowerCase().indexOf(a.toLowerCase()) !== -1))
 
 Template.registerHelper('parent', () => ({ parent: Template.instance() }))
@@ -8,3 +10,5 @@ Template.registerHelper('displayAddress', (ethAddress) => {
   }
   return ethAddress
 })
+
+Template.registerHelper('currentEntity', ReactivePromise(() => Identity.get(EthAccounts.findOne().address)))

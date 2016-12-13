@@ -52,11 +52,11 @@ tmpl.onRendered(function () {
       const balances = await Promise.all(balancePromises)
 
       for (const i in shareShareholders) {
-        // const key = Identity.format(shareShareholders[i])
-        const key = shareShareholders[i]
-        globalBalances[key] = balances[i] + (globalBalances[key] || 0)
+        const entity = await Identity.get(shareShareholders[i])
+        globalBalances[entity.name] = balances[i] + (globalBalances[entity.name] || 0)
         if (stock.votesPerShare) {
-          votingPower[key] = (stock.votesPerShare * balances[i]) + (votingPower[key] || 0)
+          votingPower[entity.name] =
+            (stock.votesPerShare * balances[i]) + (votingPower[entity.name] || 0)
         }
       }
     }

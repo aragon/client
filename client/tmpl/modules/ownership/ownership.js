@@ -25,6 +25,7 @@ tmpl.onRendered(function () {
 tmpl.events({
   'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
   'click tbody tr': (e) => FlowRouter.go(`/ownership/entity/${$(e.currentTarget).data('shareholder')}`),
+  'close #entity': () => FlowRouter.go('/ownership'),
 })
 
 tmpl.helpers({

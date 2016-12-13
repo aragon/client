@@ -1,5 +1,5 @@
 <template name="Module_Entity">
-  <div class="flex">
+  <div class="flex" id="entity">
     {{> Element_CloseSectionButton}}
     {{#with entity}}
     <div class="ui top attached grid">
@@ -16,7 +16,7 @@
         {{#if cryptocurrencies.bitcoin}}
         <p><i class="bitcoin icon"></i> <a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>
         {{/if}}
-        <p><i class="lock icon"></i> {{ formatFingerprint pubkey.fingerprint }}</p>
+        <p><i class="key icon"></i> {{ formatFingerprint pubkey.fingerprint }}</p>
         {{#if social.twitter}}
         <p><i class="twitter icon"></i> <a href="https://twitter.com/{{ social.twitter }}" target="_blank">{{ social.twitter }}</a></p>
         {{/if}}
@@ -29,11 +29,13 @@
       </div>
     </div>
     <div class="ui spacer"></div>
-    <!--<div class="ui buttons">
-      <a class="ui yellow icon button" href="bitcoin:" target="_blank">
-        <i class="bitcoin icon"></i>
+    <div class="ui buttons">
+      {{#if $eq identityProvider 'keybase'}}
+      <a class="ui orange icon button" href="https://keybase.io/{{ username }}" target="_blank">
+        <i class="key icon"></i> Open on Keybase
       </a>
-    </div>-->
+      {{/if}}
+    </div>
     {{/with}}
   </div>
 </template>

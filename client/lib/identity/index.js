@@ -18,11 +18,15 @@ const lookupAddress = async (addr) => {
 
 class Identity {
   static format(entity) {
-    return providers[entity.identityProvider].format(entity.data)
-    /* if (addr === EthAccounts.findOne().address) {
-      return 'Me'
+    const formatted = providers[entity.identityProvider].format(entity.data)
+    formatted.identityProvider = entity.identityProvider
+    formatted.ethereumAddress = entity.ethereumAddress
+
+    if (entity.ethereumAddress === EthAccounts.findOne().address) {
+      formatted.name = 'Me'
     }
-    return addr*/
+
+    return formatted
   }
 
   static async get(addr, raw = false) {
@@ -42,6 +46,7 @@ class Identity {
 
   static set(addr, identityProvider, entityObj) {
     const entity = {
+      ethereumAddress: addr,
       identityProvider,
       data: entityObj,
     }

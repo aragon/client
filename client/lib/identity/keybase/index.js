@@ -22,6 +22,7 @@ class Keybase {
 
   static format(data) {
     return {
+      username: data.basics.username,
       name: data.profile.full_name,
       picture: data.pictures.primary.url,
       location: data.profile.location,
