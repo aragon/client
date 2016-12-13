@@ -62,6 +62,8 @@ Template.prototype.extend = function (components = []) {
 
   this.onDestroyed(() => {
     const module = moduleName(this)
+    if (FlowRouter.current().path.startsWith(`/${module}`)) return
+
     removeSubRoutes(module)
     FlowRouter.route(`/${module}/*`, {
       name: `${module}/*`,
