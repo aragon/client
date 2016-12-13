@@ -18,10 +18,4 @@ this.Root.modules = [
 ]
 
 BrowserNotifications.requestPermission()
-
-setTimeout(() => {
-  const testListener = new NotificationsListener(Company.TestNotification, 'Test', args => `hello ${args.test}`, () => '/inbox')
-  NotificationsManager.listen([testListener])
-}, 3500)
-
 // BrowserNotifications.showNotification("hola", "test notis", () => console.log('clicked'), () => console.log('closed :O'))

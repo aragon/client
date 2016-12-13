@@ -1,4 +1,5 @@
-import { NotificationsManager } from '/client/lib/notifications'
+import { NotificationsManager } from '/client/lib/notifications'
+
 const Notifications = NotificationsManager.Notifications
 
 const tmpl = Template.Module_Inbox

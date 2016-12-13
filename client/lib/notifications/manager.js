@@ -9,20 +9,29 @@ class NotificationsManager {
   }
 
   listen(listeners) {
+    if (this.lastWatchedBlock > this.lastBlock) {
+      this.lastWatchedBlock = this.lastBlock
+    }
     const threshold = this.lastBlock
     const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
+    console.log(threshold)
+    console.log(this.lastWatchedBlock)
+    console.log(missedPredicate)
+    console.log(streamingPredicate)
+
     listeners.forEach(listener => {
       listener.ev(listener.predicate, missedPredicate)
-        .get((err, evs) => {
-          evs.forEach(ev => this.saveNotification(listener, ev, true))
+        .get(async (err, evs) => {
+          await Promise.all(evs.map(ev => this.saveNotification(listener, ev, true)))
           this.sendMissingNotification(evs.length)
         })
       listener.ev(listener.predicate, streamingPredicate)
-        .watch((err, ev) => {
+        .watch(async (err, ev) => {
+          console.log('watch', ev)
           if (ev.blockNumber > threshold) {
-            this.showNotification(listener, ev)
+            await this.showNotification(listener, ev)
           }
         })
     })
@@ -35,8 +44,8 @@ class NotificationsManager {
     BrowserNotifications.showNotification(title, body, () => FlowRouter.go('/inbox'))
   }
 
-  showNotification(listener, ev) {
-    const notification = this.saveNotification(listener, ev, false)
+  async showNotification(listener, ev) {
+    const notification = await this.saveNotification(listener, ev, false)
     BrowserNotifications.showNotification(notification.title, notification.body, () => {
       this.performNotificationAction(notification)
     })
@@ -47,7 +56,7 @@ class NotificationsManager {
     FlowRouter.go(notification.uri)
   }
 
-  saveNotification(listener, ev, shown) {
+  async saveNotification(listener, ev, shown) {
     const hash = this.notificationHash(ev)
     const notification = {
       _id: this.notificationId(hash),
@@ -60,10 +69,12 @@ class NotificationsManager {
       shown,
     }
 
-    this.Notifications.upsert(notification._id, notification)
+    const notificationDetails = await Promise.allProperties(notification)
+
+    this.Notifications.upsert(notification._id, notificationDetails)
     this.lastWatchedBlock = ev.blockNumber
 
-    return notification
+    return notificationDetails
   }
 
   getBlockDate(blockNumber) {

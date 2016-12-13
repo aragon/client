@@ -1,4 +1,7 @@
+import { NotificationsManager } from '/client/lib/notifications'
+
 import web3 from './web3'
+import listeners from './listeners'
 
 if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1')
   Meteor.disconnect()
@@ -9,6 +12,10 @@ connectToNode = () => {
 
   EthAccounts.init()
   EthBlocks.init()
+
+  setTimeout(() => {
+    NotificationsManager.listen(listeners.all())
+  }, 100) // Somehow EthBlocks doesnt have blocks loaded right away
 
   console.timeEnd('startNode')
 }
