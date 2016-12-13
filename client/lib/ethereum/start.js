@@ -13,8 +13,9 @@ connectToNode = () => {
   EthAccounts.init()
   EthBlocks.init()
 
-  setTimeout(() => {
-    NotificationsManager.listen(listeners.all())
+  setTimeout(async () => {
+    const allListeners = await listeners.all()
+    NotificationsManager.listen(allListeners)
   }, 100) // Somehow EthBlocks doesnt have blocks loaded right away
 
   console.timeEnd('startNode')
