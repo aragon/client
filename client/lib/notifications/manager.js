@@ -19,8 +19,10 @@ class NotificationsManager {
     listeners.forEach(listener => {
       listener.ev(listener.predicate, missedPredicate)
         .get(async (err, evs) => {
-          await Promise.all(evs.map(ev => this.saveNotification(listener, ev, true)))
-          this.sendMissingNotification(evs.length)
+          const notis = evs.map(ev => this.saveNotification(listener, ev, true))
+          const filtered = (await Promise.all(notis)).filter(x => x !== null)
+
+          this.sendMissingNotification(filtered.length)
         })
       listener.ev(listener.predicate, streamingPredicate)
         .watch(async (err, ev) => {
@@ -40,6 +42,9 @@ class NotificationsManager {
 
   async showNotification(listener, ev) {
     const notification = await this.saveNotification(listener, ev, false)
+
+    if (!notification) { return }
+
     BrowserNotifications.showNotification(notification.title, notification.body, () => {
       this.performNotificationAction(notification)
     })
@@ -51,17 +56,24 @@ class NotificationsManager {
   }
 
   async saveNotification(listener, ev, shown) {
-    const hash = this.notificationHash(ev)
+    const hash = listener.uid(ev.args) || this.notificationHash(ev)
+    const _id = this.notificationId(hash)
+
+    if (this.Notifications.findOne(_id)) { return null } // Already processed with that id
+
     const notification = {
-      _id: this.notificationId(hash),
       body: listener.bodyFormatter(ev.args),
       uri: listener.uriFormatter(ev.args),
       title: listener.title,
       date: this.getBlockDate(ev.blockNumber),
       handled: false,
+      _id,
       hash,
       shown,
     }
+
+    // Add empty before awaiting in case same notification comes in while fetching.
+    this.Notifications.upsert(notification._id, {})
 
     const notificationDetails = await Promise.allProperties(notification)
 
