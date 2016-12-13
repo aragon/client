@@ -21,7 +21,6 @@ class VotingWatcher {
     const self = this
     const watch = async (err, ev) => {
       const votingAddr = await Company.votings.call(ev.args.id)
-      console.log('updated voting', ev.args.id)
       self.getVoting(votingAddr, ev.args.id.toNumber())
     }
 
@@ -82,7 +81,7 @@ class VotingWatcher {
     }
 
     const votingInfo = await Promise.allProperties(votingObject)
-    console.log('setting new', votingInfo)
+
     this.Votings.upsert(`s_${address}`, votingInfo)
   }
 }

@@ -16,11 +16,6 @@ class NotificationsManager {
     const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
-    console.log(threshold)
-    console.log(this.lastWatchedBlock)
-    console.log(missedPredicate)
-    console.log(streamingPredicate)
-
     listeners.forEach(listener => {
       listener.ev(listener.predicate, missedPredicate)
         .get(async (err, evs) => {
@@ -29,7 +24,6 @@ class NotificationsManager {
         })
       listener.ev(listener.predicate, streamingPredicate)
         .watch(async (err, ev) => {
-          console.log('watch', ev)
           if (ev.blockNumber > threshold) {
             await this.showNotification(listener, ev)
           }
