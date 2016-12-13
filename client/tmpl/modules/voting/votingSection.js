@@ -13,7 +13,8 @@ const votingVar = new ReactiveVar()
 const updated = new ReactiveVar()
 
 const voteId = () => FlowRouter.current().params.id
-const voting = () => Votings.findOne({ $or: [{ address: voteId() }, { index: voteId() }] })
+const voting = () => Votings.findOne({ $or: [{ address: voteId() }, { index: +voteId() }] })
+
 const reload = () => {
   votingVar.set(voting())
   updated.set(Math.random())
