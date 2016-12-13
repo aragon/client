@@ -1,4 +1,4 @@
-const tmpl = Template.Element_ProcessDimmer.extend()
+const tmpl = Template.Element_ProcessDimmer
 
 tmpl.events({
   'finished .dimmer': (e, instance, data) => {

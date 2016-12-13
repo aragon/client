@@ -2,7 +2,7 @@ function moduleName(tmpl) {
   return tmpl.viewName.split('.')[1].split('_')[1].toLowerCase()
 }
 
-function removeRoutes(module) {
+function removeGenericRoutes(module) {
   for (const route of FlowRouter._routes) {
     if (route.path === `/${module}/*`) {
       route.path = route.pathDef = `/${module}`
@@ -10,6 +10,16 @@ function removeRoutes(module) {
       FlowRouter._routesMap[route.name].pathDef = `/${module}`
     }
   }
+}
+
+function removeSubRoutes(module) {
+  FlowRouter._routes = FlowRouter._routes.filter((route) => {
+    if (route.path.startsWith(`/${module}/`)) {
+      delete FlowRouter._routesMap[route.name]
+      return false
+    }
+    return true
+  })
 }
 
 function addRoutes(tmpl, routes) {
@@ -32,7 +42,7 @@ Template.prototype.extend = function (components = []) {
     const ins = Template.instance()
     ins.parent = () => (ins.data.parent)
 
-    removeRoutes(moduleName(this))
+    removeGenericRoutes(moduleName(this))
     addRoutes(this, this.routesObj)
   })
 
@@ -49,6 +59,17 @@ Template.prototype.extend = function (components = []) {
       })
     }
   })
+
+  this.onDestroyed(() => {
+    const module = moduleName(this)
+    removeSubRoutes(module)
+    FlowRouter.route(`/${module}/*`, {
+      name: `${module}/*`,
+      action: () => (FlowRouter._routesMap[module]._action()),
+    })
+    FlowRouter.reload()
+  })
+
   return this
 }
 
