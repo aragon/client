@@ -1,5 +1,6 @@
 import { Module, Core } from './lib/modules'
-import Notifications from './notifications'
+import { NotificationsListener, BrowserNotifications, NotificationsManager } from './lib/notifications'
+import Company from '/client/lib/ethereum/deployed'
 
 this.Root = new Core()
 this.Root.modules = [
@@ -16,4 +17,12 @@ this.Root.modules = [
   new Module('Entity', 'entity', false),
 ]
 
-Notifications.startListening()
+BrowserNotifications.requestPermission()
+
+setTimeout(() => {
+  const testListener = new NotificationsListener(Company.TestNotification, 'Test', args => `hello ${args.test}`, () => '/inbox')
+  const manager = new NotificationsManager()
+  manager.listen([testListener])
+}, 3500)
+
+// BrowserNotifications.showNotification("hola", "test notis", () => console.log('clicked'), () => console.log('closed :O'))

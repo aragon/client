@@ -83,6 +83,7 @@ templating-compiler@1.2.15
 templating-runtime@1.2.15
 templating-tools@1.0.5
 tracker@1.1.1
+u2622:persistent-session@0.4.4
 ui@1.0.12
 underscore@1.0.10
 url@1.0.11
