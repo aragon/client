@@ -1,30 +1,39 @@
 <template name="Module_Entity">
   <div class="flex">
     {{> Element_CloseSectionButton}}
+    {{#with entity}}
     <div class="ui top attached grid">
       <div class="four wide column">
-        <img class="ui circular middle aligned image" src="{{ entity.data.pictures.primary.url }}">
+        <img class="ui circular middle aligned image" src="{{ picture }}">
       </div>
       <div class="twelve wide column">
-        <h1 class="header">{{ entity.data.profile.full_name }}</h1>
-        <p>Ethereum address: {{ address }}</p>
-        <p>PGP key: DC59 CF69 F198 01F5</p>
+        <h1 class="ui header">
+          {{ name }}
+          <div class="sub header">{{ location }}</div>
+        </h1>
+        <p>{{ bio }}</p>
+        <p><i class="ethereum icon"></i> <a href="https://etherscan.io/address/{{ address }}" target="_blank">{{ address }}</a></p>
+        {{#if cryptocurrencies.bitcoin}}
+        <p><i class="bitcoin icon"></i> <a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>
+        {{/if}}
+        <p><i class="lock icon"></i> {{ formatFingerprint pubkey.fingerprint }}</p>
+        {{#if social.twitter}}
+        <p><i class="twitter icon"></i> <a href="https://twitter.com/{{ social.twitter }}" target="_blank">{{ social.twitter }}</a></p>
+        {{/if}}
+        {{#if social.facebook}}
+        <p><i class="facebook icon"></i> <a href="https://facebook.com/{{ social.facebook }}" target="_blank">{{ social.facebook }}</a></p>
+        {{/if}}
+        {{#if social.github}}
+        <p><i class="github icon"></i> <a href="https://github.com/{{ social.github }}" target="_blank">{{ social.github }}</a></p>
+        {{/if}}
       </div>
     </div>
     <div class="ui spacer"></div>
-    <div class="ui buttons">
-      <a class="ui twitter icon button" href="https://twitter.com/" target="_blank">
-        <i class="twitter icon"></i>
-      </a>
-      <a class="ui facebook icon button" href="https://facebook.com/" target="_blank">
-        <i class="facebook icon"></i>
-      </a>
-      <a class="ui github icon button" href="https://github.com/" target="_blank">
-        <i class="github icon"></i>
-      </a>
+    <!--<div class="ui buttons">
       <a class="ui yellow icon button" href="bitcoin:" target="_blank">
         <i class="bitcoin icon"></i>
       </a>
-    </div>
+    </div>-->
+    {{/with}}
   </div>
 </template>

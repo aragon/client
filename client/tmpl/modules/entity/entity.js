@@ -14,4 +14,5 @@ const getEntity = async () => {
 tmpl.helpers({
   address: () => FlowRouter.current().params.address,
   entity: ReactivePromise(getEntity),
+  formatFingerprint: (fingerprint) => fingerprint.match(/.{1,4}/g).join(' '),
 })
