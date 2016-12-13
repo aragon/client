@@ -8,7 +8,7 @@ const Votings = new Mongo.Collection('votings_collection', { connection: null })
 class VotingWatcher {
   constructor() {
     this.setupCollections()
-    this.getAllVotings()
+    this.getMissingVotings()
     this.listenForUpdates()
   }
 
@@ -22,23 +22,43 @@ class VotingWatcher {
     const watch = async (err, ev) => {
       const votingAddr = await Company.votings.call(ev.args.id)
       self.getVoting(votingAddr, ev.args.id.toNumber())
+      this.lastWatchedBlock = ev.blockNumber
+    }
+
+    const get = async (err, evs) => {
+      await Promise.all(evs.map(ev => watch(err, ev)))
     }
 
     Company.VoteExecuted().watch(watch)
 
     Stocks.find().observeChanges({
       added: (id, fields) => {
-        Stock.at(fields.address).NewPoll().watch(watch)
-        Stock.at(fields.address).VoteCasted().watch(watch)
+        if (this.lastWatchedBlock > this.lastBlock) {
+          this.lastWatchedBlock = this.lastBlock
+        }
+        const threshold = this.lastBlock
+        const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
+        const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
+
+        Stock.at(fields.address).NewPoll({}, streamingPredicate).watch(watch)
+        Stock.at(fields.address).VoteCasted({}, streamingPredicate).watch(watch)
+
+        Stock.at(fields.address).NewPoll({}, missedPredicate).get(get)
+        Stock.at(fields.address).VoteCasted({}, missedPredicate).get(get)
       },
     })
   }
 
-  async getAllVotings() {
+  async getMissingVotings() {
     const lastId = await Company.votingIndex.call().then(x => x.toNumber())
     const addressesPromises = _.range(lastId - 1).map(id => Company.votings.call(id + 1))
     const votingAddresses = await Promise.all(addressesPromises)
-    await Promise.all(votingAddresses.map((a, i) => this.getVoting(a, i + 1)))
+    const fetchingVotes = votingAddresses.map((a, i) => {
+      if (this.Votings.findOne({ address: a })) { return null } // Filter existing
+      return this.getVoting(a, i + 1)
+    })
+
+    await Promise.all(fetchingVotes)
 
     this.Votings.remove({ address: { $nin: votingAddresses } })
   }
@@ -83,6 +103,22 @@ class VotingWatcher {
     const votingInfo = await Promise.allProperties(votingObject)
 
     this.Votings.upsert(`s_${address}`, votingInfo)
+  }
+
+  get lastBlockKey() {
+    return 'lB_v'
+  }
+
+  get lastWatchedBlock() {
+    return Session.get(this.lastBlockKey) || EthBlocks.latest.number
+  }
+
+  get lastBlock() {
+    return EthBlocks.latest.number
+  }
+
+  set lastWatchedBlock(block) {
+    return Session.setPersistent(this.lastBlockKey, block)
   }
 }
 
