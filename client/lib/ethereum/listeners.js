@@ -4,11 +4,14 @@ import SHA256 from 'crypto-js/sha256'
 import Company from './deployed'
 import { Stock, Voting } from './contracts'
 
+const flatten = (array) => [].concat.apply([], array)
+
 class Listeners {
   static async all() {
     const stocks = await this.allStocks()
 
     return [this.issueStockListener, this.executedVotingListener]
+            .concat(await this.shareTransfers(stocks))
             .concat(stocks.map(this.newPollListener))
   }
 
@@ -23,6 +26,37 @@ class Listeners {
       'Stock issued',
       body,
       () => '/ownership',
+    )
+  }
+
+  static async shareTransfers(stocks) {
+    const address = EthAccounts.findOne().address
+    const sharesTransfers = stocks.map(stock =>
+      ([this.sharesSent(stock, address), this.sharesReceived(stock, address)])
+    )
+    return await Promise.all(flatten(sharesTransfers))
+  }
+
+  static async sharesSent(stock, address) {
+    return await this.sharesTransferred(stock, { from: address }, 'sent')
+  }
+
+  static async sharesReceived(stock, address) {
+    return await this.sharesTransferred(stock, { to: address }, 'received')
+  }
+
+  static async sharesTransferred(stockAddress, predicate, verb) {
+    const stock = Stock.at(stockAddress)
+    const symbol = await stock.symbol.call()
+
+    const body = async args => `You just ${verb} ${args.value} ${symbol} shares`
+
+    return new Listener(
+      stock.Transfer,
+      'Shares transfer',
+      body,
+      args => '/ownership',
+      predicate,
     )
   }
 
