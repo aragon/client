@@ -54,7 +54,12 @@
     <div class="ui spacer"></div>
 
     {{#if canVote}}
-    <h4 class="ui centered header">You will cast {{ votingPower }} votes.</h4>
+    <div class="ui icon small message">
+      <i class="info icon"></i>
+      <div class="content">
+        <div class="header">You will cast {{ votingPower }} votes.</div>
+      </div>
+    </div>
     <div class="ui two buttons">
       {{#each options}}
       <button data-option="{{@index}}" class="ui {{#if equals @index (plus options.length -1)}} negative {{else}} positive {{/if}} voting button">{{this}}</button>
@@ -66,8 +71,13 @@
     {{/if }}
 
     {{#with executingOption voteCounts options updatesHack }}
-    <h4 class="ui centered header">Vote is called, it can be executed at any time.</h4>
-      <button class="ui big {{ sentiment }} execute button" data-option="{{index}}" name="button">Execute {{name}}</button>
+    <div class="ui icon small message">
+      <i class="info icon"></i>
+      <div class="content">
+        <div class="header">Vote is called, it can be executed at any time.</div>
+      </div>
+    </div>
+    <button class="ui big {{ sentiment }} execute button" data-option="{{index}}" name="button">Execute {{name}}</button>
     {{/with}}
     {{/with}}
   </div>
