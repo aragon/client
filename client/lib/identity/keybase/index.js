@@ -12,9 +12,8 @@ class Keybase {
 
   static async getEthereumAddress(username) {
     if (!username) return null
-    const res = await fetch(`${kbfsBaseURL}/ethereum.json?username=${username}`)
-    const data = await res.json()
-    return data.address
+    const res = await fetch(`${kbfsBaseURL}/eth?username=${username}`)
+    return await res.text()
   }
 }
 
