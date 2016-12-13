@@ -4,7 +4,11 @@ const Notifications = NotificationsManager.Notifications
 
 const tmpl = Template.Module_Inbox
 
-const performAction = id => NotificationsManager.performNotificationAction(Notifications.findOne(id))
+const performAction = id =>
+    NotificationsManager.performNotificationAction(Notifications.findOne(id))
+
+const clearAll = () =>
+    Notifications.update({ handled: false }, { handled: true }, { multi: true })
 
 tmpl.helpers({
   unhandledNotis: () => Notifications.find({ handled: false }, { sort: { date: -1 } }),
@@ -27,4 +31,5 @@ tmpl.helpers({
 
 tmpl.events({
   'click .action': e => performAction($(e.currentTarget).data('notification')),
+  'click .clear-all': clearAll
 })

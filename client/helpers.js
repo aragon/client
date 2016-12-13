@@ -10,6 +10,7 @@ helpers.percentFormat = x => `${Math.round(10000 * (x || 0)) / 100}%`
 helpers.arrayAccess = (array, index) => array[index]
 helpers.isNull = (x) => helpers.equals(x, null)
 helpers.isNotNull = (x) => !helpers.isNull(x)
+helpers.count = (x) => x.count()
 
 helpers.unhandledNotifications = () => Notifications.find({ handled: false }).count()
 

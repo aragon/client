@@ -1,6 +1,13 @@
 <template name="Module_Inbox">
   <div class="twelve wide column">
-    <h1>Your inbox</h1>
+    <h1>Your inbox
+      {{ #if greaterThan (count unhandledNotis) 0 }}
+      <a class="ui button clear-all">
+        <i class="recycle icon"></i>
+        Clear all
+      </a>
+      {{ /if }}
+    </h1>
     <div class="ui hidden divider"></div>
     <div class="ui feed">
       {{ #each unhandledNotis }}
