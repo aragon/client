@@ -11,6 +11,7 @@
     "no-new": 0,
     "class-methods-use-this": 0,
     "no-restricted-syntax": 0,
-    "guard-for-in":0
+    "guard-for-in": 0,
+    "no-underscore-dangle": 0,
   }
 }

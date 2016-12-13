@@ -1,6 +1,13 @@
+import SHA256 from 'crypto-js/sha256'
+
 import BrowserNotifications from './browser'
 
 class NotificationsManager {
+  constructor() {
+    this.Notifications = new Mongo.Collection('notification_collection', { connection: null })
+    this.persistentNotifications = new PersistentMinimongo(this.Notifications)
+  }
+
   listen(listeners) {
     const threshold = this.lastBlock
     const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
@@ -21,24 +28,45 @@ class NotificationsManager {
   showNotification(listener, ev) {
     const notification = this.saveNotification(listener, ev, false)
     BrowserNotifications.showNotification(notification.title, notification.body, () => {
-      console.log('clicked notification', notification)
+      this.performNotificationAction(notification)
     })
   }
 
-  saveNotification(listener, ev, seen) {
-    console.log('attemp save', ev.args, seen)
-    if (!ev.args) return null
+  performNotificationAction(notification) {
+    this.Notifications.update(notification._id, { $set: { handled: true } })
+    FlowRouter.go(notification.uri)
+  }
 
+  saveNotification(listener, ev, shown) {
+    const hash = this.notificationHash(ev)
     const notification = {
+      _id: this.notificationId(hash),
       body: listener.bodyFormatter(ev.args),
       uri: listener.uriFormatter(ev.args),
       title: listener.title,
-      seen,
+      date: this.getBlockDate(ev.blockNumber),
+      handled: false,
+      hash,
+      shown,
     }
 
+    this.Notifications.upsert(notification._id, notification)
     this.lastWatchedBlock = ev.blockNumber
 
     return notification
+  }
+
+  getBlockDate(blockNumber) {
+    const timestamp = (EthBlocks.findOne({ number: blockNumber }) || {}).timestamp
+    return timestamp ? new Date(timestamp / 1000) : new Date()
+  }
+
+  notificationId(hash) {
+    return `n_${hash}`
+  }
+
+  notificationHash(ev) {
+    return SHA256(ev.blockHash, ev.transactionHash, ev.logIndex, ev.event)
   }
 
   get lastBlockKey() {
@@ -58,4 +86,7 @@ class NotificationsManager {
   }
 }
 
-export default NotificationsManager
+const shared = new NotificationsManager()
+Notifications = shared.Notifications
+
+export default shared
