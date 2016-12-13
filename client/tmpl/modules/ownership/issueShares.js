@@ -14,7 +14,7 @@ const issueStock = async (kind, value) => {
   const oneWeekFromNow = +moment().add(7, 'days') / 1000
   const voting = await IssueStockVoting.new(kind, value, supportNeeded, description,
                         { from: addr, gas: 1000000 })
-  return await Company.beginPoll(voting.address, oneWeekFromNow, { from: addr, gas: 100000 })
+  return await Company.beginPoll(voting.address, oneWeekFromNow, { from: addr, gas: 120000 * Stocks.find().count() })
 }
 
 tmpl.onRendered(function () {
