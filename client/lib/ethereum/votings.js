@@ -9,7 +9,7 @@ class VotingWatcher {
   constructor() {
     this.setupCollections()
     this.getAllVotings()
-    this.listenForNewVotings()
+    this.listenForUpdates()
   }
 
   setupCollections() {
@@ -17,7 +17,7 @@ class VotingWatcher {
     this.persistentStock = new PersistentMinimongo(this.Votings)
   }
 
-  listenForNewVotings() {
+  listenForUpdates() {
     const self = this
     const watch = async (err, ev) => {
       const votingAddr = await Company.votings.call(ev.args.id)

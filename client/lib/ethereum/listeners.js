@@ -39,7 +39,7 @@ class Listeners {
       body,
       args => `/voting/${args.id.valueOf()}`,
       {},
-      args => SHA256(args.id.valueOf(), args.closes.valueOf()).toString(),
+      args => SHA256(args.id.valueOf() + args.closes.valueOf()).toString(),
     )
   }
 

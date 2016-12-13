@@ -59,7 +59,10 @@ class NotificationsManager {
     const hash = listener.uid(ev.args) || this.notificationHash(ev)
     const _id = this.notificationId(hash)
 
-    if (this.Notifications.findOne(_id)) { return null } // Already processed with that id
+    if (this.Notifications.findOne(_id)) {
+      console.log('rejecting for repetition', _id)
+      return null
+     } // Already processed with that id
 
     const notification = {
       body: listener.bodyFormatter(ev.args),
@@ -93,7 +96,7 @@ class NotificationsManager {
   }
 
   notificationHash(ev) {
-    return SHA256(ev.blockHash, ev.transactionHash, ev.logIndex, ev.event)
+    return SHA256(ev.blockHash + ev.transactionHash + ev.logIndex + ev.event).toString()
   }
 
   get lastBlockKey() {
