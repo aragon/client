@@ -10,7 +10,7 @@
           {{ /if }}
         </a>
         <a class="item">
-          <img src="{{ currentEntity.picture }}" class="ui mini right spaced circular image">
+          {{#with currentEntity}}<img src="{{ picture }}" class="ui mini right spaced circular image">{{/with}}
         </a>
       </div>
     </div>
