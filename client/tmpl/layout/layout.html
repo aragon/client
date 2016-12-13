@@ -5,7 +5,9 @@
       <div class="right menu">
         <a href="/inbox" class="item" id="inboxButton">
           <i class="inbox large icon"></i>
+          {{ #if notificationsPending }}
           <div class="ui floating red circular empty label"></div>
+          {{ /if }}
         </a>
         <a class="item">
           <img src="http://placekitten.com/g/32/32" class="ui mini right spaced circular image">

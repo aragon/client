@@ -3,27 +3,25 @@
     <h1>Your inbox</h1>
     <div class="ui hidden divider"></div>
     <div class="ui feed">
-      {{#each items}}
+      {{ #each unhandledNotis }}
       <div class="event">
         <div class="label">
-          <i class="icon {{icon}}"></i>
+          <i class="icon alarm"></i>
         </div>
         <div class="content">
           <div class="summary">
             <a class="user">
-              {{from}}
-            </a> {{request}}
+              {{ title }}
+            </a> {{ body }}
             <div class="date">
-              {{time}}
+              {{ timeRange date now }}
             </div>
           </div>
-          {{#if action}}
           <div class="meta">
-            <a>
-              <i class="icon {{actionIcon}}"></i> {{action}}
+            <a class="action" data-notification="{{ _id }}">
+              <i class="icon send"></i> Go
             </a>
           </div>
-          {{/if}}
         </div>
       </div>
       {{/each}}

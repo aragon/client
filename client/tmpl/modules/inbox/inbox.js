@@ -1,7 +1,13 @@
+import { NotificationsManager } from '/client/lib/notifications'
+const Notifications = NotificationsManager.Notifications
+
 const tmpl = Template.Module_Inbox
 
+const performAction = id => NotificationsManager.performNotificationAction(Notifications.findOne(id))
+
 tmpl.helpers({
-  items: () => (
+  unhandledNotis: () => Notifications.find({ handled: false }, { sort: { date: -1 } }),
+    /*
     [{
       icon: 'check',
       from: 'Manolo',
@@ -15,5 +21,9 @@ tmpl.helpers({
       request: '1,000BTC Investment',
       time: '10/10/2016',
     }]
-  ),
+  ),*/
+})
+
+tmpl.events({
+  'click .action': e => performAction($(e.currentTarget).data('notification')),
 })
