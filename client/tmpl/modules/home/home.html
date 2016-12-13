@@ -3,8 +3,16 @@
     <h2 class="ui icon header">
       <i class="rocket icon"></i>
       <div class="content">
-        Welcome, Luis
+        Welcome, Manolo
         <div class="sub header">Provident Tech, Dec.</div>
+        <div class="ui hidden divider"></div>
+        <div class="sub header">
+        {{ #if greaterThan unhandledNotifications 0 }}
+        There are <a href="/inbox">{{ unhandledNotifications }} notifications</a> you need to handle.
+        {{else}}
+        Your notifications are clean. Good job!
+        {{ /if }}
+        </div>
       </div>
     </h2>
   </div>

@@ -14,21 +14,22 @@ class NotificationsManager {
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
     listeners.forEach(listener => {
+      listener.ev(listener.predicate, missedPredicate)
+        .get((err, evs) => {
+          evs.forEach(ev => this.saveNotification(listener, ev, true))
+          this.sendMissingNotification(evs.length)
+        })
       listener.ev(listener.predicate, streamingPredicate)
         .watch((err, ev) => {
           if (ev.blockNumber > threshold) {
             this.showNotification(listener, ev)
           }
         })
-      listener.ev(listener.predicate, missedPredicate)
-        .get((err, evs) => {
-          evs.forEach(ev => this.saveNotification(listener, ev, true))
-          this.sendMissingNotification(evs.length)
-        })
     })
   }
 
   sendMissingNotification(count) {
+    if (!(count > 0)) { return }
     const title = 'Missing notifications'
     const body = `You got ${count} notifications while you were away`
     BrowserNotifications.showNotification(title, body, () => FlowRouter.go('/inbox'))

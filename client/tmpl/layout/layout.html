@@ -5,7 +5,7 @@
       <div class="right menu">
         <a href="/inbox" class="item" id="inboxButton">
           <i class="inbox large icon"></i>
-          {{ #if notificationsPending }}
+          {{ #if greaterThan unhandledNotifications 0 }}
           <div class="ui floating red circular empty label"></div>
           {{ /if }}
         </a>
