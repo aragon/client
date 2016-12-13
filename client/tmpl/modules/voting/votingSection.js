@@ -13,7 +13,7 @@ const votingVar = new ReactiveVar()
 const updated = new ReactiveVar()
 
 const voteId = () => FlowRouter.current().params.id
-const voting = () => Votings.findOne({ address: voteId() })
+const voting = () => Votings.findOne({ $or: [{ address: voteId() }, { index: voteId() }] })
 const reload = () => {
   votingVar.set(voting())
   updated.set(Math.random())
@@ -87,7 +87,7 @@ const castVote = async option => {
 }
 
 const executeVote = async option => {
-  await Voting.at(voteId()).executeOnAction(option, Company.address,
+  await Voting.at(voting().address).executeOnAction(option, Company.address,
                   { from: EthAccounts.findOne().address, gas: 4800000 })
   reload()
 }
