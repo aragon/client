@@ -28,6 +28,13 @@
         {{/if}}
       </div>
     </div>
+    {{#if isMode 'ownership' }}
+    <div class="ui spacer"></div>
+    <h3 class="ui header">Stakes</h3>
+    <div class="chartContainer">
+      <canvas id="vestingChart" width="600" height="500"></canvas>
+    </div>
+    {{/if}}
     <div class="ui spacer"></div>
     <div class="ui buttons">
       {{#if $eq identityProvider 'keybase'}}
