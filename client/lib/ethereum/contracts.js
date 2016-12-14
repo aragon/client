@@ -3,6 +3,7 @@ import Stock from '/imports/lib/contracts/build/contracts/Stock.sol.js'
 import BinaryVoting from '/imports/lib/contracts/build/contracts/BinaryVoting.sol.js'
 import BinaryPoll from '/imports/lib/contracts/build/contracts/BinaryPoll.sol.js'
 import IssueStockVoting from '/imports/lib/contracts/build/contracts/IssueStockVoting.sol.js'
+import GrantVestedStockVoting from '/imports/lib/contracts/build/contracts/GrantVestedStockVoting.sol.js'
 
 import web3 from './web3'
 
@@ -11,5 +12,6 @@ Stock.setProvider(web3.currentProvider)
 BinaryVoting.setProvider(web3.currentProvider)
 BinaryPoll.setProvider(web3.currentProvider)
 IssueStockVoting.setProvider(web3.currentProvider)
+GrantVestedStockVoting.setProvider(web3.currentProvider)
 
-export { Company, Stock, BinaryVoting as Voting, BinaryPoll as Poll, IssueStockVoting }
+export { Company, Stock, BinaryVoting as Voting, BinaryPoll as Poll, IssueStockVoting, GrantVestedStockVoting }

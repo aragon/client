@@ -15,3 +15,5 @@ helpers.count = (x) => x.count()
 helpers.unhandledNotifications = () => Notifications.find({ handled: false }).count()
 
 Object.keys(helpers).forEach(k => Template.registerHelper(k, helpers[k]))
+
+export default helpers

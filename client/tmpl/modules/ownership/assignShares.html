@@ -1,8 +1,14 @@
 <template name="Module_Ownership_AssignShares">
   {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/ownership'}}
+
   <form class="ui flex attached form" id="assignShares">
     <h1 class="ui header">Assign Shares</h1>
+    <div class="ui hidden divider"></div>
+    <div class="ui fluid two item menu mode">
+      <a data-issue="true" class="item {{ #if TemplateVar.get 'assignMode' }} active {{ /if }}">Issued stock</a>
+      <a data-issue="false" class="item {{ #unless TemplateVar.get 'assignMode' }} active {{ /unless }}">Stock grant</a>
+    </div>
     <div class="ui hidden divider"></div>
     <div class="field">
       <label>Receiver</label>
@@ -32,7 +38,43 @@
       <label>Number</label>
       <input type="number" lang="en" name="number" placeholder="Number of shares">
     </div>
+    {{ #unless TemplateVar.get 'assignMode' }}
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <h4 class="ui header">Vesting calendar</h4>
+
+      <div class="two fields">
+        <div class="field">
+          <label>Cliff date</label>
+          <input type="date" name="cliff">
+        </div>
+        <div class="field">
+          <label>Vesting date</label>
+          <input type="date" name="vesting">
+        </div>
+      </div>
+    </div>
+    {{ /unless }}
     <div class="ui spacer"></div>
+    <div class="ui icon small message">
+      <i class="info icon"></i>
+      <div class="content">
+        <div class="header">
+          {{ #if TemplateVar.get 'assignMode' }}
+          There are {{ availableShares (TemplateVar.get 'selectedStock') }} issued shares to assign
+          {{ else }}
+          Creating a stock grant requires a vote.
+          {{ /if }}
+        </div>
+        <p>
+          {{ #if TemplateVar.get 'assignMode' }}
+          Assigning this shares doesn't require a vote.
+          {{ else }}
+          When approved, granted stock will be issued and assigned with the vesting calendar specified.
+          {{ /if }}
+          </p>
+      </div>
+    </div>
     <button class="ui fluid big primary button" type="submit">Assign</button>
   </form>
 </template>
