@@ -32,7 +32,7 @@
           <th>#</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody data-updated="{{ updated }}">
         {{#each shareholders}}
         {{#if $contains (TemplateVar.get 'searchString') shareholder}}
         <tr data-shareholder="{{ shareholder }}">

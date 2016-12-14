@@ -8,6 +8,7 @@ class StockWatcher {
     this.setupCollections()
     this.getAllStocks()
     this.listenForNewStock()
+    this.listenForStockTransfers()
   }
 
   setupCollections() {
@@ -18,6 +19,16 @@ class StockWatcher {
   listenForNewStock() {
     Company.IssuedStock({}).watch((err, ev) =>
       this.getStock(ev.args.stockAddress, ev.args.stockIndex.toNumber()))
+  }
+
+  listenForStockTransfers() {
+    Stocks.find().observeChanges({
+      added: (id, fields) => {
+        Stock.at(fields.address).Transfer({}).watch(() => {
+          Stocks.update(id, { $set: { updated: new Date() } })
+        })
+      },
+    })
   }
 
   async getAllStocks() {
@@ -35,10 +46,8 @@ class StockWatcher {
     await this.updateStock(address, index)
   }
 
-  async allShareholders(stocks) {
-    if (!stocks) {
-      stocks = Stocks.find({}).fetch()
-    }
+  async allShareholders(_stocks) {
+    const stocks = _stocks || Stocks.find({}).fetch()
 
     const promises = stocks.map((s) => {
       if (!s.address) return []
@@ -66,10 +75,12 @@ class StockWatcher {
       votesPerShare: stock.votesPerShare.call().then(x => x.toNumber()),
       shareholders: stock.shareholderIndex.call().then(x => x.toNumber()),
       totalSupply: stock.totalSupply.call().then(x => x.toNumber()),
+      updated: new Date(),
       address,
       index,
     }
     const stockInfo = await Promise.allProperties(stockObject)
+    console.log('upserting')
     this.Stocks.upsert(`s_${address}`, stockInfo)
   }
 }
