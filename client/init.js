@@ -1,6 +1,5 @@
 import { Module, Core } from './lib/modules'
-import { NotificationsListener, BrowserNotifications, NotificationsManager } from './lib/notifications'
-import Company from '/client/lib/ethereum/deployed'
+import { BrowserNotifications } from './lib/notifications'
 
 this.Root = new Core()
 this.Root.modules = [
@@ -18,4 +17,3 @@ this.Root.modules = [
 ]
 
 BrowserNotifications.requestPermission()
-// BrowserNotifications.showNotification("hola", "test notis", () => console.log('clicked'), () => console.log('closed :O'))

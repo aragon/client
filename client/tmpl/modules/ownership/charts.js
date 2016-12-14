@@ -6,9 +6,9 @@ import Identity from '/client/lib/identity'
 
 const Stocks = StockWatcher.Stocks
 
-const tmpl = Template.Module_Ownership_Charts.extend()
+const tmpl = Template.Module_Ownership_Charts
 
-const strToColor = (str) =>{
+const strToColor = (str) => {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
