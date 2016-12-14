@@ -4,7 +4,7 @@ import SHA256 from 'crypto-js/sha256'
 import Company from './deployed'
 import { Stock, Voting } from './contracts'
 
-const flatten = (array) => [].concat.apply([], array)
+const flatten = (array) => [].concat(...array)
 
 class Listeners {
   static async all() {
@@ -32,7 +32,7 @@ class Listeners {
   static async shareTransfers(stocks) {
     const address = EthAccounts.findOne().address
     const sharesTransfers = stocks.map(stock =>
-      ([this.sharesSent(stock, address), this.sharesReceived(stock, address)])
+      ([this.sharesSent(stock, address), this.sharesReceived(stock, address)]),
     )
     return await Promise.all(flatten(sharesTransfers))
   }
@@ -64,12 +64,12 @@ class Listeners {
     const body = async args => {
       const votingAddress = await Company.votings.call(args.id)
       const title = await Voting.at(votingAddress).title.call()
-      return `New vote '${title}' was created. You can now vote.`
+      return `New voting '${title}' was created. You can now vote.`
     }
 
     return new Listener(
       Stock.at(stock).NewPoll,
-      'New vote',
+      'Voting started',
       body,
       args => `/voting/${args.id.valueOf()}`,
       {},
@@ -86,7 +86,7 @@ class Listeners {
 
     return new Listener(
       Company.VoteExecuted,
-      'Vote finished',
+      'Voting finished',
       body,
       (args) => `/voting/${args.id.valueOf()}`,
     )
