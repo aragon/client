@@ -29,6 +29,7 @@ ejson
 raix:handlebar-helpers
 frozeman:persistent-minimongo
 izqui:meteor-promise-all-properties
+momentjs:moment
 momentjs:twix
 autopublish
 insecure

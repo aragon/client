@@ -11,4 +11,7 @@ Template.registerHelper('displayAddress', (ethAddress) => {
   return ethAddress
 })
 
-Template.registerHelper('currentEntity', ReactivePromise(() => Identity.get(EthAccounts.findOne().address)))
+Template.registerHelper('currentEntity', ReactivePromise(() => {
+  if (!web3.isConnected()) return {}
+  return Identity.get(EthAccounts.findOne().address)
+}))

@@ -1,0 +1,7 @@
+{
+  "name": "cosa-app",
+  "version": "0.1.0",
+  "dependencies": {
+    "electron": "^1.4.12"
+  }
+}
