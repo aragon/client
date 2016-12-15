@@ -41,6 +41,7 @@
           {{/with}}
         </tr>
         {{/each}}
+        {{#unless isClosed this }}
         <tr>
           <td>Pending votes</td>
           {{#with pendingVotes options updatesHack }}
@@ -48,6 +49,7 @@
           <td>{{ percentFormat relativeVotes }}</td>
           {{/with}}
         </tr>
+        {{/unless}}
       </tbody>
     </table>
 

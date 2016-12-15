@@ -75,6 +75,7 @@ tmpl.helpers({
   voting: () => votingVar.get(),
   options: () => votingVar.get().options,
   voteCounts: () => votingVar.get().voteCounts,
+  isClosed: vote => vote.voteExecuted !== null || vote.closingTime < new Date(),
   canVote: ReactivePromise(canVote),
   pendingVotes: ReactivePromise(pendingVotes),
   votingPower: ReactivePromise(votingPower),
