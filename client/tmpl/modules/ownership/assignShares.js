@@ -27,8 +27,10 @@ const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
                   kind, value, recipient,
                   +moment(cliff) / 1000, +moment(vesting) / 1000,
                   supportNeeded, description,
-                  { from: addr, gas: 1000000 })
-
+                  { from: addr, gas: 1500000 })
+  console.log('created voting', voting)
+  await voting.setTxid(voting.transactionHash, { from: addr, gas: 150000 })
+  console.log('submited txid')
   return await Company.beginPoll(voting.address, oneWeekFromNow,
                 { from: addr, gas: 120000 * Stocks.find().count() })
 }

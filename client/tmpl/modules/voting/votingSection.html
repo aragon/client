@@ -54,6 +54,16 @@
     </table>
 
     <div class="ui spacer"></div>
+    <h3 class="ui header">Voting code</h3>
+    {{ #if verified }}
+    <p>Vote is {{verified}}</p>
+    {{else}}
+    <button id="verifyCode" class="ui basic button">
+      <i class="icon verify"></i>
+      Verify code
+    </button>
+    {{/if}}
+    <div class="ui spacer"></div>
 
     {{#if canVote}}
     <div class="ui icon small message">

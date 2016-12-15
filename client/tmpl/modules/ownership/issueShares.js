@@ -14,6 +14,7 @@ const issueStock = async (kind, value) => {
   const oneWeekFromNow = +moment().add(7, 'days') / 1000
   const voting = await IssueStockVoting.new(kind, value, supportNeeded, description,
                         { from: addr, gas: 1000000 })
+  await voting.setTxid(voting.transactionHash, { from: addr, gas: 150000 })
   return await Company.beginPoll(voting.address, oneWeekFromNow,
                 { from: addr, gas: 120000 * Stocks.find().count() })
 }

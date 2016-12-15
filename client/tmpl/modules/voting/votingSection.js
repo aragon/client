@@ -2,7 +2,7 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 import VotingWatcher from '/client/lib/ethereum/votings'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
-import { Stock, Voting } from '/client/lib/ethereum/contracts'
+import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting } from '/client/lib/ethereum/contracts'
 
 const Votings = VotingWatcher.Votings
 const Stocks = StockWatcher.Stocks
@@ -11,12 +11,16 @@ const tmpl = Template.Module_Voting_Section.extend([ClosableSection])
 
 const votingVar = new ReactiveVar()
 const updated = new ReactiveVar()
+const verifiedVar = new ReactiveVar()
 
 const voteId = () => FlowRouter.current().params.id
 const voting = () => Votings.findOne({ $or: [{ address: voteId() }, { index: +voteId() }] })
 
 const reload = () => {
-  votingVar.set(voting())
+  const newVoting = voting()
+  verifiedVar.set(null)
+  console.log('null it')
+  votingVar.set(newVoting)
   updated.set(Math.random())
 }
 
@@ -65,6 +69,7 @@ const canExecute = async (voteCounts, options) => {
 }
 
 tmpl.onCreated(function () {
+  verifiedVar.set(null)
   this.autorun(() => {
     reload()
   })
@@ -72,6 +77,7 @@ tmpl.onCreated(function () {
 
 tmpl.helpers({
   updatesHack: () => updated.get(),
+  verified: () => verifiedVar.get(),
   voting: () => votingVar.get(),
   options: () => votingVar.get().options,
   voteCounts: () => votingVar.get().voteCounts,
@@ -94,9 +100,34 @@ const executeVote = async option => {
   reload()
 }
 
+const verify = async () => {
+  const knownContracts = [Poll, IssueStockVoting, GrantVestedStockVoting]
+  const contract = Voting.at(voting().address)
+
+  const txid = await contract.txid.call()
+  if (!txid) {
+    return verifiedVar.set('unable to verify, txid not set')
+  }
+
+  if (contract.address !== web3.eth.getTransactionReceipt(txid).contractAddress) {
+    return verifiedVar.set('contract not found in tx, probably tampered')
+  }
+
+  const bytecode = web3.eth.getTransaction(txid).input
+
+  for (const c of knownContracts) {
+    if (bytecode.indexOf(c.binary) === 0) { // Account for constructor values at end of input
+      return verifiedVar.set(c.contract_name)
+    }
+  }
+
+  return verifiedVar.set('unknown')
+}
+
 tmpl.events({
   'click .voting.button': (e) => castVote($(e.currentTarget).data('option')),
   'click .execute.button': (e) => executeVote($(e.currentTarget).data('option')),
   'success .dimmer': () => FlowRouter.go('/voting'),
   'reload #votingSection': reload,
+  'click #verifyCode': verify,
 })
