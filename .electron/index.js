@@ -1,16 +1,26 @@
 const { app, BrowserWindow } = require('electron')
+const windowStateKeeper = require('electron-window-state')
 
 let win = null
 
 const meteorRootURL = 'http://localhost:3000'
 
 function createWindow() {
+  const windowState = windowStateKeeper({
+    defaultWidth: 1280,
+    defaultHeight: 800,
+  })
+
   win = new BrowserWindow({
-    width: 1200,
-    height: 900,
+    x: windowState.x,
+    y: windowState.y,
+    width: windowState.width,
+    height: windowState.height,
     titleBarStyle: 'hidden',
     'node-integration': false,
   })
+
+  windowState.manage(win)
 
   win.loadURL(meteorRootURL)
 
