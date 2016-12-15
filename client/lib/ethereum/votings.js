@@ -3,7 +3,7 @@ import Company from './deployed'
 import StockWatcher from './stocks'
 
 const Stocks = StockWatcher.Stocks
-const Votings = new Mongo.Collection('votings_collection', { connection: null })
+const Votings = new LocalCollection('votings')
 
 class VotingWatcher {
   constructor() {
@@ -14,7 +14,7 @@ class VotingWatcher {
 
   setupCollections() {
     this.Votings = Votings
-    this.persistentStock = new PersistentMinimongo2(this.Votings)
+    this.persistentStock = new PersistentMinimongo(this.Votings)
   }
 
   listenForUpdates() {
@@ -102,7 +102,7 @@ class VotingWatcher {
 
     const votingInfo = await Promise.allProperties(votingObject)
 
-    this.Votings.upsert(`s_${address}`, votingInfo)
+    this.Votings.upsert({ _id: `s_${address}` }, votingInfo)
   }
 
   get lastBlockKey() {

@@ -4,8 +4,6 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-base@1.0.4             # Packages every Meteor app needs to have
-mongo@1.1.14                   # The database Meteor supports right now
 blaze-html-templates@1.0.4 # Compile .html files into Meteor Blaze views
 reactive-var@1.0.11            # Reactive variable for tracker
 tracker@1.1.1                 # Meteor's client-side reactive programming library
@@ -29,7 +27,13 @@ session
 deanius:promise
 ejson
 raix:handlebar-helpers
-frozeman:persistent-minimongo2
+frozeman:persistent-minimongo
 izqui:meteor-promise-all-properties
 momentjs:twix
-u2622:persistent-session
+autopublish
+insecure
+minimongo
+meteor
+webapp
+underscore
+hot-code-push
