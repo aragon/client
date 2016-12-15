@@ -5,7 +5,7 @@ import BrowserNotifications from './browser'
 class NotificationsManager {
   constructor() {
     this.Notifications = new Mongo.Collection('notification_collection', { connection: null })
-    this.persistentNotifications = new PersistentMinimongo(this.Notifications)
+    this.persistentNotifications = new PersistentMinimongo2(this.Notifications)
   }
 
   listen(listeners) {

@@ -14,7 +14,7 @@ class VotingWatcher {
 
   setupCollections() {
     this.Votings = Votings
-    this.persistentStock = new PersistentMinimongo(this.Votings)
+    this.persistentStock = new PersistentMinimongo2(this.Votings)
   }
 
   listenForUpdates() {

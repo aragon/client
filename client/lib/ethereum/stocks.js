@@ -13,7 +13,7 @@ class StockWatcher {
 
   setupCollections() {
     this.Stocks = Stocks
-    this.persistentStock = new PersistentMinimongo(this.Stocks)
+    this.persistentStock = new PersistentMinimongo2(this.Stocks)
   }
 
   listenForNewStock() {

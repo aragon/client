@@ -30,7 +30,6 @@ deanius:promise
 ejson
 raix:handlebar-helpers
 frozeman:persistent-minimongo2
-frozeman:persistent-minimongo
 izqui:meteor-promise-all-properties
 momentjs:twix
 u2622:persistent-session
