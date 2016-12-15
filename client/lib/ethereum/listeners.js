@@ -55,7 +55,8 @@ class Listeners {
       stock.Transfer,
       'Shares transfer',
       body,
-      args => '/ownership',
+      () => '/ownership',
+      null,
       predicate,
     )
   }
@@ -72,6 +73,7 @@ class Listeners {
       'Voting started',
       body,
       args => `/voting/${args.id.valueOf()}`,
+      'Vote now',
       {},
       args => SHA256(args.id.valueOf() + args.closes.valueOf()).toString(),
     )

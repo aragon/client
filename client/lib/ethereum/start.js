@@ -1,4 +1,5 @@
 import { NotificationsManager } from '/client/lib/notifications'
+import KeybaseProofs from '/client/lib/identity/keybase/proofs'
 
 import web3 from './web3'
 import listeners from './listeners'
@@ -13,9 +14,15 @@ connectToNode = () => {
   EthAccounts.init()
   EthBlocks.init()
 
+
   setTimeout(async () => {
     const allListeners = await listeners.all()
     NotificationsManager.listen(allListeners)
+
+    const proof = await KeybaseProofs.createProof('ji', EthAccounts.findOne().address)
+    console.log('proof', proof)
+    console.log('verified username', proof.username, 'for address', KeybaseProofs.verifyProof(proof))
+
   }, 100) // Somehow EthBlocks doesnt have blocks loaded right away
 
   console.timeEnd('startNode')

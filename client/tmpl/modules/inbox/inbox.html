@@ -16,18 +16,20 @@
         </div>
         <div class="content">
           <div class="summary">
-            <a class="user">
+            <a class="user action">
               {{ title }}
             </a> {{ body }}
             <div class="date">
               {{ timeRange date now }}
             </div>
           </div>
+          {{ #if callToAction }}
           <div class="meta">
             <a class="action" data-notification="{{ _id }}">
-              <i class="icon send"></i> Go
+              <i class="icon send"></i> {{ callToAction }}
             </a>
           </div>
+          {{/if}}
         </div>
       </div>
       {{/each}}

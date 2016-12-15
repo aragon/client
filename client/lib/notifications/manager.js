@@ -67,6 +67,7 @@ class NotificationsManager {
       title: listener.title,
       date: this.getBlockDate(ev.blockNumber),
       handled: false,
+      callToAction: listener.callToAction,
       _id,
       hash,
       shown,
