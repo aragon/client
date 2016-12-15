@@ -4,5 +4,8 @@
   "dependencies": {
     "electron": "^1.4.12",
     "electron-window-state": "^4.0.0"
+  },
+  "devDependencies": {
+    "devtron": "^1.4.0"
   }
 }

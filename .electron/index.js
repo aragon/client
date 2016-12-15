@@ -1,15 +1,18 @@
 const { app, BrowserWindow } = require('electron')
+const path = require('path')
 const windowStateKeeper = require('electron-window-state')
 
-let win = null
-
 const meteorRootURL = 'http://localhost:3000'
+
+let win = null
 
 function createWindow() {
   const windowState = windowStateKeeper({
     defaultWidth: 1280,
     defaultHeight: 800,
   })
+
+  console.log(path.join(__dirname, './preload.js'))
 
   win = new BrowserWindow({
     x: windowState.x,
@@ -18,6 +21,9 @@ function createWindow() {
     height: windowState.height,
     titleBarStyle: 'hidden',
     'node-integration': false,
+    webPreferences: {
+      preload: path.join(__dirname, './preload.js'),
+    },
   })
 
   windowState.manage(win)
