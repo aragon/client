@@ -27,8 +27,8 @@ const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
                   kind, value, recipient,
                   +moment(cliff) / 1000, +moment(vesting) / 1000,
                   supportNeeded, description,
-                  { from: addr, gas: 1000000 })
-
+                  { from: addr, gas: 1500000 })
+  await voting.setTxid(voting.transactionHash, { from: addr, gas: 150000 })
   return await Company.beginPoll(voting.address, oneWeekFromNow,
                 { from: addr, gas: 120000 * Stocks.find().count() })
 }
@@ -47,7 +47,7 @@ tmpl.onRendered(function () {
 
       const selectedStock = TemplateVar.get(self, 'selectedStock')
       const amount = $('input[name=number]').val()
-      const recipient =  $('input[name=addr]').val()
+      const recipient = $('input[name=addr]').val()
 
       if (TemplateVar.get(self, 'assignMode')) {
         await assignStock(selectedStock, amount, recipient)
