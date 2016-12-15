@@ -29,7 +29,6 @@ tmpl.onCreated(() => {
 tmpl.onRendered(function () {
   this.autorun(function() {
     const vote = selectedVoting.get()
-    console.log('sel', vote)
     if (vote) {
       const isClosed = vote.voteExecuted !== null || vote.closingTime < new Date()
       TemplateVar.set('pastVotings', isClosed)
