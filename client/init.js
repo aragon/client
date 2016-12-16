@@ -2,7 +2,7 @@ import { Module, Core } from './lib/modules'
 import { BrowserNotifications } from './lib/notifications'
 import KeybaseProofs from './lib/identity/keybase/proofs'
 
-import Intertron from './lib/intertron'
+import Intertron from './lib/intertron-client'
 
 this.Root = new Core()
 this.Root.modules = [

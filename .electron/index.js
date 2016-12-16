@@ -2,7 +2,7 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
 
-const Intertron = require('./intertron.js')
+const Intertron = require('./intertron')
 const Keybase = require('./keybase')
 
 new Intertron({ Keybase })
