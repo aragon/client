@@ -1,6 +1,7 @@
 import Keybase from './keybase'
 
-const Entities = new Mongo.Collection('entities_collection', { connection: null })
+const Entities = new LocalCollection('entities')
+window.Entities = Entities
 
 const providers = {
   keybase: Keybase,
@@ -50,8 +51,7 @@ class Identity {
       identityProvider,
       data: entityObj,
     }
-    console.log(entity)
-    Entities.upsert(`e_${addr}`, entity)
+    Entities.upsert({ _id: `e_${addr}` }, entity)
   }
 }
 

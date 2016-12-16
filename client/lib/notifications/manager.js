@@ -4,7 +4,7 @@ import BrowserNotifications from './browser'
 
 class NotificationsManager {
   constructor() {
-    this.Notifications = new Mongo.Collection('notification_collection', { connection: null })
+    this.Notifications = new LocalCollection('notification')
     this.persistentNotifications = new PersistentMinimongo(this.Notifications)
   }
 
@@ -74,11 +74,11 @@ class NotificationsManager {
     }
 
     // Add empty before awaiting in case same notification comes in while fetching.
-    this.Notifications.upsert(notification._id, {})
+    this.Notifications.upsert({ _id: notification._id }, {})
 
     const notificationDetails = await Promise.allProperties(notification)
 
-    this.Notifications.upsert(notification._id, notificationDetails)
+    this.Notifications.upsert({ _id: notification._id }, notificationDetails)
     this.lastWatchedBlock = ev.blockNumber
 
     return notificationDetails

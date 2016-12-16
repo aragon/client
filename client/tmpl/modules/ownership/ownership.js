@@ -30,7 +30,11 @@ tmpl.events({
 
 tmpl.helpers({
   stocks: () => Stocks.find(),
-  updated: () => Stocks.findOne({}, { sort: { updated: -1 } }).updated,
+  updated: () => {
+    const stock = Stocks.findOne({}, { sort: { updated: -1 } })
+    if (stock) return stock.updated
+    return {}
+  },
   shareholders: ReactivePromise(() => (
     StockWatcher.allShareholders().then(x => [].concat(...x))
   )),

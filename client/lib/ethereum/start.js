@@ -4,8 +4,9 @@ import KeybaseProofs from '/client/lib/identity/keybase/proofs'
 import web3 from './web3'
 import listeners from './listeners'
 
-if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1')
+if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
   Meteor.disconnect()
+}
 
 const keybaseSign = async () => {
   console.log('creating proof')
@@ -16,7 +17,7 @@ const keybaseSign = async () => {
 
 connectToNode = () => {
   console.time('startNode')
-  console.log('Connect to node...')
+  console.log('Connecting to node')
 
   EthAccounts.init()
   EthBlocks.init()
@@ -36,7 +37,6 @@ web3.eth.isSyncing((error, syncing) => {
       console.time('nodeRestarted')
       console.log('Node started syncing, stopping app operation')
       web3.reset(true)
-
     } else if (_.isObject(syncing)) {
       syncing.progress = Math.floor(((syncing.currentBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100)
       syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0')
@@ -56,30 +56,27 @@ web3.eth.isSyncing((error, syncing) => {
 
 const connect = () => {
   if (web3.isConnected()) {
-    // only start app operation, when the node is not syncing (or the eth_syncing property doesn't exists)
-    web3.eth.getSyncing(function(e, sync) {
-      if(e || !sync)
-      connectToNode()
+    // Only start app operation, when the node is not syncing (or the eth_syncing property doesn't exists)
+    web3.eth.getSyncing(function (e, sync) {
+      if (e || !sync) connectToNode()
     })
-
   } else {
     // make sure the modal is rendered after all routes are executed
-    Meteor.setTimeout(function(){
+    Meteor.setTimeout(function () {
       // if in mist, tell to start geth, otherwise start with RPC
-      var gethRPC = (web3.admin) ? 'geth' : 'geth --rpc --rpccorsdomain "'+window.location.protocol + '//' + window.location.host+'"'
+      const gethRPC = (web3.admin) ? 'geth' : 'geth --rpc --rpccorsdomain "'+window.location.protocol + '//' + window.location.host+'"'
 
       EthElements.Modal.question({
         text: new Spacebars.SafeString(TAPi18n.__('wallet.app.texts.connectionError' + (web3.admin ? 'Mist' : 'Browser'),
-        {node: gethRPC})),
-        ok: function(){
-          Tracker.afterFlush(function(){
+        { node: gethRPC })),
+        ok: () => {
+          Tracker.afterFlush(() => {
             connect()
           })
-        }
+        },
       }, {
-        closeable: false
+        closeable: false,
       })
-
     }, 600)
   }
 }

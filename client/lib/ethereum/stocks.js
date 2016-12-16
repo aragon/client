@@ -1,7 +1,7 @@
 import { Stock } from './contracts'
 import Company from './deployed'
 
-const Stocks = new Mongo.Collection('stock_collection', { connection: null })
+const Stocks = new LocalCollection('stock')
 
 class StockWatcher {
   constructor() {
@@ -81,7 +81,7 @@ class StockWatcher {
     }
     const stockInfo = await Promise.allProperties(stockObject)
     console.log('upserting')
-    this.Stocks.upsert(`s_${address}`, stockInfo)
+    this.Stocks.upsert({ _id: `s_${address}` }, stockInfo)
   }
 }
 
