@@ -1,8 +1,8 @@
+import IntertronClient from 'intertron-client'
+
 import { Module, Core } from './lib/modules'
 import { BrowserNotifications } from './lib/notifications'
 import KeybaseProofs from './lib/identity/keybase/proofs'
-
-import Intertron from './lib/intertron-client'
 
 this.Root = new Core()
 this.Root.modules = [
@@ -22,7 +22,7 @@ this.Root.modules = [
 BrowserNotifications.requestPermission()
 
 const start = async () => {
-  const intertron = new Intertron()
+  const intertron = new IntertronClient()
   const username = await intertron.call('Keybase.getUsername')
   console.log('Your Keybase username is', username)
 
@@ -32,4 +32,4 @@ const start = async () => {
   console.log('saved proof', proofPayload)
 }
 
-setTimeout(start, 4000) // web3 <-> node start up time
+setTimeout(start, 500) // web3 <-> node start up time

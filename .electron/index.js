@@ -2,7 +2,7 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
 
-const Intertron = require('./intertron')
+const Intertron = require('intertron')
 const Keybase = require('./keybase')
 
 new Intertron({ Keybase })
@@ -23,8 +23,8 @@ function createWindow() {
     width: windowState.width,
     height: windowState.height,
     titleBarStyle: 'hidden',
-    'node-integration': false,
     webPreferences: {
+      nodeIntegration: false,
       preload: path.join(__dirname, './preload.js'),
     },
   })
