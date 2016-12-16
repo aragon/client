@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const proofFilename = 'ethereum_test.json'
+const proofFilename = 'ethereum_test.json' // TODO: Some day it won't be a test lol
 const keybasePublicDirectory = user => path.join('/keybase/public', user || String())
 const proofPath = user => path.join(keybasePublicDirectory(user), proofFilename)
 

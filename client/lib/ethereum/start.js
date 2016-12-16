@@ -1,18 +1,10 @@
 import { NotificationsManager } from '/client/lib/notifications'
-import KeybaseProofs from '/client/lib/identity/keybase/proofs'
 
 import web3 from './web3'
 import listeners from './listeners'
 
 if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
   Meteor.disconnect()
-}
-
-const keybaseSign = async () => {
-  console.log('creating proof')
-  const proof = await KeybaseProofs.createProof('ji', '0xf22ecbee06572d0e193d3e2ec3a64143cb55f461')
-  console.log('proof', JSON.stringify(proof))
-  console.log('verified username', proof.username, 'for address', KeybaseProofs.verifyProof(proof))
 }
 
 connectToNode = () => {
