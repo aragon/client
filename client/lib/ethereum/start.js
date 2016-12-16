@@ -7,6 +7,13 @@ import listeners from './listeners'
 if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1')
   Meteor.disconnect()
 
+const keybaseSign = async () => {
+  console.log('creating proof')
+  const proof = await KeybaseProofs.createProof('ji', '0xf22ecbee06572d0e193d3e2ec3a64143cb55f461')
+  console.log('proof', JSON.stringify(proof))
+  console.log('verified username', proof.username, 'for address', KeybaseProofs.verifyProof(proof))
+}
+
 connectToNode = () => {
   console.time('startNode')
   console.log('Connect to node...')
@@ -14,15 +21,9 @@ connectToNode = () => {
   EthAccounts.init()
   EthBlocks.init()
 
-
   setTimeout(async () => {
     const allListeners = await listeners.all()
     NotificationsManager.listen(allListeners)
-
-    const proof = await KeybaseProofs.createProof('ji', EthAccounts.findOne().address)
-    console.log('proof', proof)
-    console.log('verified username', proof.username, 'for address', KeybaseProofs.verifyProof(proof))
-
   }, 100) // Somehow EthBlocks doesnt have blocks loaded right away
 
   console.timeEnd('startNode')
@@ -84,7 +85,9 @@ const connect = () => {
 }
 
 Meteor.startup(() => {
+  keybaseSign()
   Meteor.setTimeout(() => {
+
     connect()
   }, 3000)
 })
