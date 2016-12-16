@@ -2,3 +2,7 @@
 	path = imports/lib/contracts
 	url = git@gitlab.com:providentai/cosa-contracts.git
 	branch = master
+[submodule ".electron"]
+	path = .electron
+	url = git@gitlab.com:providentai/aragon-wrapper.git
+	branch = master
