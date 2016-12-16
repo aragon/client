@@ -2,6 +2,11 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
 
+const Intertron = require('./intertron.js')
+const Keybase = require('./keybase')
+
+new Intertron({ Keybase })
+
 const meteorRootURL = 'http://localhost:3000'
 
 let win = null
@@ -11,8 +16,6 @@ function createWindow() {
     defaultWidth: 1280,
     defaultHeight: 800,
   })
-
-  console.log(path.join(__dirname, './preload.js'))
 
   win = new BrowserWindow({
     x: windowState.x,
