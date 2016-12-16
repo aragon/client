@@ -38,3 +38,4 @@ meteor
 webapp
 underscore
 hot-code-push
+u2622:persistent-session
