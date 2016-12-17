@@ -55,7 +55,7 @@ minifier-js@1.2.15
 minimongo@1.0.19
 modules@0.7.7
 modules-runtime@0.7.7
-momentjs:moment@2.10.6
+momentjs:moment@2.17.1
 momentjs:twix@0.9.0
 mongo@1.1.14
 mongo-id@1.0.6

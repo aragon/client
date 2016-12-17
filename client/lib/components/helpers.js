@@ -15,3 +15,9 @@ Template.registerHelper('currentEntity', ReactivePromise(() => {
   if (!web3.isConnected()) return {}
   return Identity.get(EthAccounts.findOne().address)
 }))
+
+Template.registerHelper('entityName', ReactivePromise(async (address) => {
+  if (!web3.isConnected()) return {}
+  const identity = await Identity.get(address)
+  return identity.name
+}))

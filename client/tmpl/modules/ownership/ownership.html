@@ -37,7 +37,7 @@
         {{#if $contains (TemplateVar.get 'searchString') shareholder}}
         <tr data-shareholder="{{ shareholder }}">
           <td>
-            {{ displayAddress sharehol8der }}
+            {{ entityName shareholder }}
           </td>
           <td>
             {{ stock.symbol }}
