@@ -1,7 +1,11 @@
 const helpers = {}
 
 helpers.now = () => moment()
-helpers.timeRange = (a, b) => moment(a).twix(b).humanizeLength()
+helpers.timeRange = (a, b) => {
+  let timeDiff = moment(a).twix(b).humanizeLength()
+  timeDiff = b < new Date() ? `${timeDiff} ago` : timeDiff
+  return timeDiff
+}
 helpers.session = name => Session.get(name)
 helpers.plus = (a, b) => a + b
 helpers.greaterThan = (a, b) => a > b

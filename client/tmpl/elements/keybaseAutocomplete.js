@@ -1,9 +1,12 @@
+import Identity from '/client/lib/identity'
+
 const tmpl = Template.Element_KeybaseAutocomplete
 
 tmpl.onCreated(() => TemplateVar.set('user', {}))
 
 tmpl.onRendered(function () {
   const tmplIns = Template.instance()
+  const keybaseEl = tmplIns.$('.keybaseEl')
   this.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
@@ -21,6 +24,9 @@ tmpl.onRendered(function () {
       image: 'pic',
     },
     minCharacters: 2,
-    onSelect: user => TemplateVar.set(tmplIns, 'user', user),
+    onSelect: async (user) => {
+      const entity = await Identity.getUsername(user.username, 'keybase')
+      keybaseEl.trigger('select', entity)
+    },
   })
 })

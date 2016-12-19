@@ -3,7 +3,7 @@
   {{> Element_CloseSectionButton href='/ownership'}}
 
   <form class="ui flex attached form" id="assignShares">
-    <h1 class="ui header">Assign Shares</h1>
+    <h1 class="ui header">Assign shares</h1>
     <div class="ui hidden divider"></div>
     <div class="ui fluid two item menu mode">
       <a data-issue="true" class="item {{ #if TemplateVar.get 'assignMode' }} active {{ /if }}">Issued stock</a>
@@ -11,10 +11,10 @@
     </div>
     <div class="ui hidden divider"></div>
     <div class="field">
-      <label>Receiver</label>
+      <label>Recipient</label>
       <div class="two fields">
         <div class="field">
-          <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedReceiver}}{{addressForUser selectedReceiver.username}}{{else}}{{defaultAddress}}{{/if}}">
+          <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedRecipient}}{{selectedRecipient.ethereumAddress}}{{else}}{{defaultAddress}}{{/if}}">
         </div>
         <div class="field">
           {{> Element_KeybaseAutocomplete onSelect=onSelect}}

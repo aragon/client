@@ -45,6 +45,21 @@ class Identity {
     return entity
   }
 
+  static async getUsername(username, providerName, raw = false) {
+    // Usually we will want to store addr => username but not the other way around
+    // let entity = Entities.findOne(({'data.basics.username': username})
+    const ethereumAddress = await providers[providerName].getEthAddress(username)
+    const data = await providers[providerName].lookup(username)
+    let entity = {
+      identityProvider: providerName,
+      ethereumAddress,
+      data,
+    }
+
+    if (!raw) entity = Identity.format(entity)
+    return entity
+  }
+
   static set(addr, identityProvider, entityObj) {
     const entity = {
       ethereumAddress: addr,

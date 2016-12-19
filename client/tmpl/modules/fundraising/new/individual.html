@@ -1,9 +1,21 @@
-<template name="Module_Ownership_IssueShares">
+<template name="Module_Fundraising_New_Individual">
   {{> Element_ProcessDimmer}}
-  {{> Element_CloseSectionButton href='/ownership'}}
-  <form class="ui flex attached form" id="issueShares">
-    <h1 class="ui header">Issue shares</h1>
+  {{> Element_CloseSectionButton href='/fundraising/new'}}
+  <form class="ui flex attached form" id="newIndividualRaise">
+    <h1 class="ui header">New individual raise</h1>
     <div class="ui hidden divider"></div>
+
+    <div class="field">
+      <label>Recipient</label>
+      <div class="two fields">
+        <div class="field">
+          <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedRecipient}}{{selectedRecipient.ethereumAddress}}{{else}}{{defaultAddress}}{{/if}}">
+        </div>
+        <div class="field">
+          {{> Element_KeybaseAutocomplete onSelect=onSelect}}
+        </div>
+      </div>
+    </div>
     <div class="field">
       <label>Kind</label>
       <div class="ui selection dropdown">
@@ -21,14 +33,15 @@
       <label>Number</label>
       <input type="number" lang="en" name="number" placeholder="Number of shares">
     </div>
+
     <div class="ui spacer"></div>
     <div class="ui icon small message">
       <i class="info icon"></i>
       <div class="content">
-        <div class="header">To issue shares a voting is needed.</div>
+        <div class="header">A voting is needed to open a raise.</div>
         <p>Voting power will have 7 days to vote.</p>
       </div>
     </div>
-    <button class="ui fluid big primary button" type="submit">Issue</button>
+    <button class="ui fluid big primary button" type="submit">Open raise</button>
   </form>
 </template>

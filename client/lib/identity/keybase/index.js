@@ -10,7 +10,7 @@ class Keybase {
     return data.them[0]
   }
 
-  static async getEthereumAddress(username) {
+  static async getEthAddress(username) {
     if (!username) return null
     const res = await fetch(`${kbfsBaseURL}/eth?username=${username}`)
     return await res.text()

@@ -1,0 +1,51 @@
+<template name="Module_Fundraising">
+  <div id="Module_Fundraising" class="nine wide column">
+    <div class="ui secondary menu">
+      <div class="fitted item">
+        <div class="ui left icon input">
+          <i class="search link icon"></i>
+          <input type="text" placeholder="Search" value="{{TemplateVar.get 'searchString'}}" id="searchInput">
+        </div>
+      </div>
+      <div class="right menu">
+        <div class="fitted item">
+          <a class="ui primary button" href="/fundraising/new">
+            <i class="plus icon"></i>
+            New raise
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui hidden divider"></div>
+    <table class="ui very basic selectable striped padded fixed table">
+      <thead>
+        <tr>
+          <th>Raise name</th>
+          <th>Amount raised</th>
+          <th>Ending time</th>
+        </tr>
+      </thead>
+      <tbody data-updated="{{ updated }}">
+        {{#each raises}}
+        {{#if $contains (TemplateVar.get 'searchString') shareholder}}
+        <tr data-shareholder="{{ shareholder }}">
+          <td>
+            {{ name }}
+          </td>
+          <td>
+            {{ amount }}
+          </td>
+          <td>
+            {{ timeRange now ending }}
+          </td>
+        </tr>
+        {{/if}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="seven wide lightgrey column">
+    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
+  </div>
+</template>
