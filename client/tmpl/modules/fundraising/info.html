@@ -1,0 +1,20 @@
+<template name="Module_Fundraising_Info">
+  {{> Element_ProcessDimmer}}
+  {{> Element_CloseSectionButton href='/fundraising'}}
+  <div class="ui attached flex container" id="raise">
+    {{#with raise}}
+    <h1 class="ui header">
+      {{name}}
+      {{#if isOpen}}
+        <a class="ui left pointing red basic label">Ends in {{ timeRange now closingTime }}</a>
+      {{else}}
+        <a class="ui left pointing red basic label">Closed</a>
+      {{/if}}
+    </h1>
+
+    <h3>Amount: {{amount}} ETH</h3>
+
+    {{/with}}
+    <div class="ui spacer"></div>
+  </div>
+</template>

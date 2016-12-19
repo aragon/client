@@ -4,11 +4,16 @@ tmpl.routes({
   '/': () => TemplateVar.set('rightSection', 'Module_Fundraising_Empty'),
   '/new': () => TemplateVar.set('rightSection', 'Module_Fundraising_New'),
   '/new/individual': () => TemplateVar.set('rightSection', 'Module_Fundraising_New_Individual'),
-  '/raise/:address': () => TemplateVar.set('rightSection', 'Module_Fundraising_New'),
+  '/:id': () => TemplateVar.set('rightSection', 'Module_Fundraising_Info'),
 })
 
 tmpl.onCreated(() => {
   TemplateVar.set('rightSection', 'Module_Fundraising_Empty')
+})
+
+tmpl.events({
+  'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
+  'click tbody tr': (e) => FlowRouter.go(`/fundraising/${$(e.currentTarget).data('id')}`),
 })
 
 tmpl.helpers({
