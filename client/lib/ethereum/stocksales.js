@@ -10,7 +10,7 @@ class StockSalesWatcher {
     this.setupCollections()
     this.listenForNewSales()
     this.getNewSales()
-    // this.listenForSalesEvents()
+    this.listenForSalesEvents()
   }
 
   setupCollections() {
@@ -80,12 +80,13 @@ class StockSalesWatcher {
   async createBoundedSaleVote(address, stock, min, max, price, closes, title = 'Series Z') {
     const description = `Raise of max ${max} shares @ ${web3.fromWei(price, 'ether')}ETH`
     const saleVote = await BoundedStandardSaleVoting.new(stock, min, max, price, closes, 50, description, title,
-                           { from: address, gas: 2000000 })
+                           { from: address, gas: 3000000 })
     return await this.submitSaleVote(saleVote, address)
   }
 
   async submitSaleVote(saleVote, address) {
     const oneWeekFromNow = +moment().add(7, 'days') / 1000
+    console.log('submitting', saleVote)
     await saleVote.setTxid(saleVote.transactionHash, { from: address, gas: 120000 })
     return await Company.beginPoll(saleVote.address, oneWeekFromNow,
           { from: address, gas: 120000 * Stocks.find().count() })
