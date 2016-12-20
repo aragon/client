@@ -6,17 +6,6 @@
     <div class="ui hidden divider"></div>
 
     <div class="field">
-      <label>Recipient</label>
-      <div class="two fields">
-        <div class="field">
-          <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedRecipient}}{{selectedRecipient.ethereumAddress}}{{else}}{{defaultAddress}}{{/if}}">
-        </div>
-        <div class="field">
-          {{> Element_KeybaseAutocomplete onSelect=onSelect}}
-        </div>
-      </div>
-    </div>
-    <div class="field">
       <label>Kind</label>
       <div class="ui selection dropdown">
         <input type="hidden" name="kind">
@@ -29,9 +18,29 @@
         </div>
       </div>
     </div>
+
     <div class="field">
-      <label>Number</label>
-      <input type="number" lang="en" name="number" placeholder="Number of shares">
+      <label>Price (ETH)</label>
+      <input type="number" lang="en" name="price" placeholder="Price in eth">
+    </div>
+
+    <div class="field">
+      <h4 class="ui header">Raise bounds</h4>
+      <div class="two fields">
+        <div class="field">
+          <label>Minimum</label>
+          <input type="number" name="min">
+        </div>
+        <div class="field">
+          <label>Cap (maximum)</label>
+          <input type="number" name="cap">
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <h4 class="ui header">Round closes</h4><p>(if goal isn't reached, refund is available)</p>
+      <input type="date" name="date">
     </div>
 
     <div class="ui spacer"></div>
