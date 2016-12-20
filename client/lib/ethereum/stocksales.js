@@ -37,7 +37,6 @@ class StockSalesWatcher {
 
   async getSale(address, index) {
     const sale = StockSale.at(address)
-    console.log('getting ', sale)
     const saleObject = {
       min: sale.minUnits.call().then(x => x.toNumber()),
       cap: sale.maxUnits.call().then(x => x.toNumber()),
