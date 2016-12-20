@@ -6,6 +6,11 @@
     <div class="ui hidden divider"></div>
 
     <div class="field">
+      <label>Round title</label>
+      <input type="text" lang="en" name="title" placeholder="Series Z">
+    </div>
+
+    <div class="field">
       <label>Kind</label>
       <div class="ui selection dropdown">
         <input type="hidden" name="kind">
@@ -29,12 +34,12 @@
       <div class="two fields">
         <div class="field">
           <label>Number</label>
-          <input type="number" lang="en" name="number" placeholder="Number of shares">
+          <input type="number" lang="en" name="units" placeholder="Number of shares">
         </div>
 
         <div class="field">
           <label>Price (ETH)</label>
-          <input type="number" lang="en" name="price" placeholder="Price in eth">
+          <input type="number" step="any" min="0" lang="en" name="price" placeholder="Price in eth">
         </div>
       </div>
     </div>

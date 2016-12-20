@@ -1,6 +1,7 @@
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
+import StockSaleWatcher from '/client/lib/ethereum/stocksales'
 import Company from '/client/lib/ethereum/deployed'
 import { Stock } from '/client/lib/ethereum/contracts'
 import helpers from '/client/helpers'
@@ -21,18 +22,17 @@ tmpl.onRendered(function () {
     onSuccess: async (e) => {
       e.preventDefault()
 
+      const title = $('input[name=title]').val()
       const selectedStock = TemplateVar.get(self, 'selectedStock')
-      const amount = $('input[name=number]').val()
-      const recipient = $('input[name=addr]').val()
+      const price = web3.toWei($('input[name=price]').val(), 'ether')
+      const investor = $('input.prompt').val() // TODO: Proper extract
+      const units = $('input[name=units]').val()
+      const closes = +moment($('[type=date]').val()) / 1000
 
-      if (TemplateVar.get(self, 'assignMode')) {
-        await assignStock(selectedStock, amount, recipient)
-      } else {
-        const cliff = $('input[name=cliff]').val()
-        const vesting = $('input[name=vesting]').val()
+      const address = EthAccounts.findOne().address
 
-        await createStockGrant(selectedStock, amount, recipient, cliff, vesting)
-      }
+      console.log('creating with investor', investor)
+      await StockSaleWatcher.createIndividualInvestorVote(address, selectedStock, investor, price, units, closes, title)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
