@@ -12,14 +12,7 @@
     <div class="ui hidden divider"></div>
     <div class="field">
       <label>Recipient</label>
-      <div class="two fields">
-        <div class="field">
-          <input type="text" name="addr" placeholder="Ethereum address" value="{{#if selectedRecipient}}{{selectedRecipient.ethereumAddress}}{{else}}{{defaultAddress}}{{/if}}">
-        </div>
-        <div class="field">
-          {{> Element_KeybaseAutocomplete onSelect=onSelect}}
-        </div>
-      </div>
+      {{> Element_IdentityAutocomplete}}
     </div>
     <div class="field">
       <label>Kind</label>
