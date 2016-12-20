@@ -13,7 +13,7 @@ class StockSalesWatcher {
   }
 
   setupCollections() {
-    this.StockSales = new LocalCollection('sales')
+    this.StockSales = new Mongo.Collection('sales', { connection: null })
     this.persistentStockSales = new PersistentMinimongo(this.StockSales)
   }
 

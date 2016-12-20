@@ -4,7 +4,9 @@ import web3 from './web3'
 import listeners from './listeners'
 
 if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-  Meteor.disconnect()
+  if (Meteor) {
+    Meteor.disconnect()
+  }
 }
 
 connectToNode = () => {

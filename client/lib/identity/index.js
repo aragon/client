@@ -1,6 +1,8 @@
 import Keybase from './keybase'
 
-const Entities = new LocalCollection('entities')
+const Entities = new Mongo.Collection('entities', { connection: null })
+new PersistentMinimongo(Entities)
+
 window.Entities = Entities
 
 const providers = {

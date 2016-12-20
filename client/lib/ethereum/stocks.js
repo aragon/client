@@ -1,7 +1,7 @@
 import { Stock } from './contracts'
 import Company from './deployed'
 
-const Stocks = new LocalCollection('stock')
+const Stocks = new Mongo.Collection('stocks', { connection: null })
 
 class StockWatcher {
   constructor() {

@@ -3,7 +3,7 @@ import Company from './deployed'
 import StockWatcher from './stocks'
 
 const Stocks = StockWatcher.Stocks
-const Votings = new LocalCollection('votings')
+const Votings = new Mongo.Collection('votings', { connection: null })
 
 class VotingWatcher {
   constructor() {
@@ -14,7 +14,7 @@ class VotingWatcher {
 
   setupCollections() {
     this.Votings = Votings
-    this.persistentStock = new PersistentMinimongo(this.Votings)
+    this.persistentVotings = new PersistentMinimongo(this.Votings)
   }
 
   listenForUpdates() {
@@ -51,7 +51,7 @@ class VotingWatcher {
 
   async getMissingVotings() {
     const lastId = await Company.votingIndex.call().then(x => x.toNumber())
-    const addressesPromises = _.range(lastId - 1).map(id => Company.votings.call(id + 1))
+    const addressesPromises = _.range(1, lastId).map(id => Company.votings.call(id))
     const votingAddresses = await Promise.all(addressesPromises)
     const fetchingVotes = votingAddresses.map((a, i) => {
       if (this.Votings.findOne({ address: a })) { return null } // Filter existing
@@ -92,7 +92,7 @@ class VotingWatcher {
       title: voting.title.call(),
       description: voting.description.call(),
       options: Promise.all(optionsPromises),
-      closingTime: new Date(closingTime * 1000),
+      closingTime: +new Date(closingTime * 1000),
       voteCounts: Promise.all(votes),
       voteExecuted,
       supportNeeded,
@@ -102,7 +102,8 @@ class VotingWatcher {
 
     const votingInfo = await Promise.allProperties(votingObject)
 
-    this.Votings.upsert({ _id: `s_${address}` }, votingInfo)
+    console.log('upserting', address)
+    this.Votings.upsert({ _id: `v_${address}` }, votingInfo)
   }
 
   get lastBlockKey() {
