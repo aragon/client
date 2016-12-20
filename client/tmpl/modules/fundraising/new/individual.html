@@ -6,10 +6,6 @@
     <div class="ui hidden divider"></div>
 
     <div class="field">
-      <label>Recipient</label>
-      {{ > Element_IdentityAutocomplete }}
-    </div>
-    <div class="field">
       <label>Kind</label>
       <div class="ui selection dropdown">
         <input type="hidden" name="kind">
@@ -22,9 +18,30 @@
         </div>
       </div>
     </div>
+
     <div class="field">
-      <label>Number</label>
-      <input type="number" lang="en" name="number" placeholder="Number of shares">
+      <label>Investor</label>
+      {{ > Element_IdentityAutocomplete }}
+    </div>
+
+    <div class="field">
+      <h4 class="ui header">Round size</h4>
+      <div class="two fields">
+        <div class="field">
+          <label>Number</label>
+          <input type="number" lang="en" name="number" placeholder="Number of shares">
+        </div>
+
+        <div class="field">
+          <label>Price (ETH)</label>
+          <input type="number" lang="en" name="price" placeholder="Price in eth">
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <h4 class="ui header">Round closes</h4><p>(if not funded, offer expires)</p>
+      <input type="date" name="date">
     </div>
 
     <div class="ui spacer"></div>
