@@ -22,6 +22,7 @@
       <thead>
         <tr>
           <th>Raise name</th>
+          <th>Raise type</th>
           <th>Amount raised</th>
           <th>Ending time</th>
         </tr>
@@ -29,15 +30,18 @@
       <tbody data-updated="{{ updated }}">
         {{#each raises}}
         {{#if $contains (TemplateVar.get 'searchString') shareholder}}
-        <tr data-id="blablablabla">
+        <tr data-id="{{index}}">
           <td>
-            {{ name }}
+            {{ title }}
           </td>
           <td>
-            {{ amount }}
+            {{ type }}
           </td>
           <td>
-            {{ timeRange now ending }}
+            {{ ether raisedAmount }} ETH
+          </td>
+          <td>
+            {{ timeRange now closeDate }}
           </td>
         </tr>
         {{/if}}

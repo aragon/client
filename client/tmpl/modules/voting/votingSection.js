@@ -2,7 +2,7 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 import VotingWatcher from '/client/lib/ethereum/votings'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
-import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting } from '/client/lib/ethereum/contracts'
+import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting } from '/client/lib/ethereum/contracts'
 
 const Votings = VotingWatcher.Votings
 const Stocks = StockWatcher.Stocks
@@ -100,7 +100,7 @@ const executeVote = async option => {
 }
 
 const verify = async () => {
-  const knownContracts = [Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting]
+  const knownContracts = [Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting]
   const contract = Voting.at(voting().address)
 
   const txid = await contract.txid.call()
