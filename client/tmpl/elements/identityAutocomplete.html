@@ -1,0 +1,25 @@
+<template name="Element_IdentityAutocomplete">
+  {{#if entity}}
+  {{#with entity}}
+  <div class="ui fluid card">
+    <div class="content">
+      <img class="ui left floated mini image" src="{{ picture }}">
+      <i class="right floated remove icon"></i>
+      <div class="header">
+        {{ name }} ({{ username }})
+      </div>
+      <div class="meta">
+        {{ ethereumAddress }}
+      </div>
+    </div>
+  </div>
+  {{/with}}
+  {{else}}
+  <div class="ui search keybaseEl">
+    <div class="ui left icon input">
+      <input class="prompt" type="text" placeholder="Search by Keybase username">
+      <i class="user icon"></i>
+    </div>
+  </div>
+  {{/if}}
+</template>
