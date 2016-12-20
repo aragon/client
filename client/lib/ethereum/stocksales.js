@@ -10,6 +10,7 @@ class StockSalesWatcher {
     this.setupCollections()
     this.listenForNewSales()
     this.getNewSales()
+    // this.listenForSalesEvents()
   }
 
   setupCollections() {
@@ -20,6 +21,25 @@ class StockSalesWatcher {
   listenForNewSales() {
     Company.NewStockSale({}).watch((err, ev) => {
       this.getSale(ev.args.saleAddress, ev.args.saleIndex.toNumber())
+    })
+  }
+
+  listenForSalesEvents() {
+    if (this.lastWatchedBlock > this.lastBlock) {
+      this.lastWatchedBlock = this.lastBlock
+    }
+    const threshold = this.lastBlock
+    const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
+    const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
+
+    const update = sale => (() => this.getSale(sale.address, sale.index))
+
+    this.StockSales.find().fetch().forEach(sale => {
+      const stockSale = StockSale.at(sale.address)
+      stockSale.StockSold({}, streamingPredicate).watch(update(sale))
+      stockSale.StockBought({}, streamingPredicate).watch(update(sale))
+      stockSale.StockSold({}, missedPredicate).get(update(sale))
+      stockSale.StockBought({}, missedPredicate).get(update(sale))
     })
   }
 
@@ -69,6 +89,22 @@ class StockSalesWatcher {
     await saleVote.setTxid(saleVote.transactionHash, { from: address, gas: 120000 })
     return await Company.beginPoll(saleVote.address, oneWeekFromNow,
           { from: address, gas: 120000 * Stocks.find().count() })
+  }
+
+  get lastBlockKey() {
+    return 'lB_ss'
+  }
+
+  get lastWatchedBlock() {
+    return Session.get(this.lastBlockKey) || EthBlocks.latest.number
+  }
+
+  get lastBlock() {
+    return EthBlocks.latest.number
+  }
+
+  set lastWatchedBlock(block) {
+    return Session.setPersistent(this.lastBlockKey, block)
   }
 }
 
