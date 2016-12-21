@@ -19,14 +19,13 @@ const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
   const supportNeeded = 50
   const now = new Date()
 
-  const description = `Grant ${value} ${Stocks.findOne({ index: +kind }).symbol} shares to ${recipient} with ${timeRange(now, cliff)} cliff and ${timeRange(now, vesting)} vesting`
   const addr = EthAccounts.findOne().address
   const oneWeekFromNow = +moment().add(7, 'days') / 1000
 
   const voting = await GrantVestedStockVoting.new(
                   kind, value, recipient,
                   +moment(cliff) / 1000, +moment(vesting) / 1000,
-                  supportNeeded, description,
+                  supportNeeded,
                   { from: addr, gas: 1500000 })
   await voting.setTxid(voting.transactionHash, { from: addr, gas: 150000 })
   return await Company.beginPoll(voting.address, oneWeekFromNow,
