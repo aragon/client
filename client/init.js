@@ -11,7 +11,7 @@ this.Root.modules = [
   new Module('Voting', 'announcement'),
   new Module('Fundraising', 'money'),
   new Module('Rewards', 'users'),
-  new Module('Accounts', 'university'),
+  new Module('Accounting', 'university'),
   new Module('Settings', 'settings'),
 
   new Module('Inbox', 'inbox', false),

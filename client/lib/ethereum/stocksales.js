@@ -72,8 +72,9 @@ class StockSalesWatcher {
 
   async createIndividualInvestorVote(address, stock, investor, price, units, closes, title = 'Series Y') {
     const description = `${web3.fromWei(price * units, 'ether')}ETH raise from ${address}`
-    const saleVote = await IndividualInvestorSaleVoting.new(stock, investor, units, price, closes, 50, description, title,
-                          { from: address, gas: 2000000 })
+    const saleVote = await IndividualInvestorSaleVoting.new(
+                            stock, investor, units, price, closes, 50, description, title,
+                            { from: address, gas: 2000000 })
     return await this.submitSaleVote(saleVote, address)
   }
 

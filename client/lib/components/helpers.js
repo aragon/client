@@ -1,3 +1,5 @@
+import coinr from 'coinr'
+
 import Identity from '/client/lib/identity'
 
 Template.registerHelper('$contains', (a, b) => (!a || b.toLowerCase().indexOf(a.toLowerCase()) !== -1))
@@ -20,4 +22,12 @@ Template.registerHelper('entityName', ReactivePromise(async (address) => {
   if (!web3.isConnected()) return {}
   const identity = await Identity.get(address)
   return identity.name
+}))
+
+Template.registerHelper('ticker', ReactivePromise((currency) => coinr(currency)))
+
+Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount) => {
+  const eth = await coinr('eth')
+  console.log(eth)
+  return ethAmount * parseFloat(eth.price_usd)
 }))

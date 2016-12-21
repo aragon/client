@@ -18,6 +18,13 @@
   </div>
   <div class="ui bottom fixed text menu" id="homeMenu">
     <a class="item" href="https://blog.manolo.com" target="_blank">News in decentralized companies</a>
+    <div class="ui vertical divider"></div>
+    <a class="item" id="priceTicker">
+      ETH: {{ #with ticker 'eth' }}
+        <i class="icon arrow {{ #if $gte percent_change_24h 0 }}green up{{ else }}red down{{ /if }}"></i>
+        ${{ price_usd }}
+      {{ /with }}
+    </a>
     <div class="right menu">
       <a class="item" href="https://manolo.com" target="_blank">Powered by Manolo</a>
     </div>

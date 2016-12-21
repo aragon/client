@@ -1,5 +1,4 @@
 const keybaseBaseURL = 'https://keybase.io/_/api/1.0'
-const kbfsBaseURL = 'https://keybase-pub-proxy-lekobkzhwp.now.sh'
 
 class Keybase {
   // Returns {status, them}
@@ -12,7 +11,7 @@ class Keybase {
 
   static async getEthAddress(username) {
     if (!username) return null
-    const res = await fetch(`${kbfsBaseURL}/eth?username=${username}`)
+    const res = await fetch(`https://${username}.keybase.pub/eth`)
     return await res.text()
   }
 

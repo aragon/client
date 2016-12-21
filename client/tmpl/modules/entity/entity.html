@@ -27,14 +27,17 @@
         <p><i class="github icon"></i> <a href="https://github.com/{{ social.github }}" target="_blank">{{ social.github }}</a></p>
         {{/if}}
       </div>
+
+      <div class="sixteen wide column">
+        {{#if isMode 'ownership' }}
+        <h3 class="ui header">Stakes</h3>
+        <div class="chartContainer">
+          <canvas id="vestingChart" width="600" height="500"></canvas>
+        </div>
+        {{/if}}
+      </div>
     </div>
-    {{#if isMode 'ownership' }}
-    <div class="ui spacer"></div>
-    <h3 class="ui header">Stakes</h3>
-    <div class="chartContainer">
-      <canvas id="vestingChart" width="600" height="500"></canvas>
-    </div>
-    {{/if}}
+
     <div class="ui spacer"></div>
     <div class="ui buttons">
       {{#if $eq identityProvider 'keybase'}}
