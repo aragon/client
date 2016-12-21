@@ -3,7 +3,7 @@
     <h2 class="ui icon header">
       <i class="rocket icon"></i>
       <div class="content">
-        Welcome, Manolo
+        Welcome, {{ currentEntity.name }}
         <div class="sub header">Provident Tech, Dec.</div>
         <div class="ui hidden divider"></div>
         <div class="sub header">
@@ -17,6 +17,7 @@
     </h2>
   </div>
   <div class="ui bottom fixed text menu" id="homeMenu">
+    {{#if online}}
     <a class="item" href="https://blog.manolo.com" target="_blank">News in decentralized companies</a>
     <a class="item" id="priceTicker">
       ETH: {{ #with ticker 'eth' }}
@@ -27,5 +28,6 @@
     <div class="right menu">
       <a class="item" href="https://aragon.one" target="_blank">Powered by Aragon</a>
     </div>
+    {{/if}}
   </div>
 </template>

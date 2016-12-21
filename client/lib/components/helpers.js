@@ -31,3 +31,5 @@ Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount)
   console.log(eth)
   return ethAmount * parseFloat(eth.price_usd)
 }))
+
+Template.registerHelper('online', () => navigator.onLine)

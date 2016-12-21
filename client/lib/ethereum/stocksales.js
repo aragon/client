@@ -46,7 +46,7 @@ class StockSalesWatcher {
   async getNewSales() {
     const lastSavedIndex = (this.StockSales.findOne({}, { sort: { index: -1 } }) || { index: 0 }).index
     const lastCompanyIndex = Company.saleIndex.call().then(x => x.toNumber())
-    if (lastSavedIndex > lastCompanyIndex) { this.StockSales.remove({}) }
+    if (lastSavedIndex > lastCompanyIndex || lastCompanyIndex === 0) { this.StockSales.remove({}) }
     if (lastSavedIndex < lastCompanyIndex) {
       const allNewSales = _.range(lastSavedIndex + 1, lastCompanyIndex)
                             .map(i => Company.sales.call(i))
@@ -73,14 +73,14 @@ class StockSalesWatcher {
   async createIndividualInvestorVote(address, stock, investor, price, units, closes, title = 'Series Y') {
     const description = `${web3.fromWei(price * units, 'ether')}ETH raise from ${address}`
     const saleVote = await IndividualInvestorSaleVoting.new(
-                            stock, investor, units, price, closes, 50, description, title,
+                            stock, investor, units, price, closes, title, 50,
                             { from: address, gas: 2000000 })
     return await this.submitSaleVote(saleVote, address)
   }
 
   async createBoundedSaleVote(address, stock, min, max, price, closes, title = 'Series Z') {
     const description = `Raise of max ${max} shares @ ${web3.fromWei(price, 'ether')}ETH`
-    const saleVote = await BoundedStandardSaleVoting.new(stock, min, max, price, closes, 50, description, title,
+    const saleVote = await BoundedStandardSaleVoting.new(stock, min, max, price, closes, title, 50,
                            { from: address, gas: 3000000 })
     return await this.submitSaleVote(saleVote, address)
   }

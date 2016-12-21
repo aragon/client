@@ -9,11 +9,10 @@ const tmpl = Template.Module_Ownership_IssueShares.extend([ClosableSection])
 
 const issueStock = async (kind, value) => {
   const supportNeeded = 50
-  const description = `Issue ${value} ${Stocks.findOne({ index: +kind }).symbol} shares`
   const addr = EthAccounts.findOne().address
   const oneWeekFromNow = +moment().add(7, 'days') / 1000
-  const voting = await IssueStockVoting.new(kind, value, supportNeeded, description,
-                        { from: addr, gas: 1000000 })
+  const voting = await IssueStockVoting.new(kind, value, supportNeeded,
+                        { from: addr, gas: 1500000 })
   await voting.setTxid(voting.transactionHash, { from: addr, gas: 150000 })
   return await Company.beginPoll(voting.address, oneWeekFromNow,
                 { from: addr, gas: 120000 * Stocks.find().count() })

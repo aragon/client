@@ -1,6 +1,11 @@
-import { Stock, Voting } from './contracts'
+import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting } from './contracts'
+
 import Company from './deployed'
 import StockWatcher from './stocks'
+
+import helpers from '/client/helpers'
+
+const timeRange = helpers.timeRange
 
 const Stocks = StockWatcher.Stocks
 const Votings = new Mongo.Collection('votings', { connection: null })
@@ -88,9 +93,12 @@ class VotingWatcher {
                             .then(x => Promise.resolve(x.toNumber()))
                             .then(x => (x > 0 ? x - 10 : null))
 
+    const contractClass = await this.verifyVote(address)
+    const votingStrings = this.allVotes.filter(x => contractClass === x.contractClass)[0]
+
     const votingObject = {
-      title: voting.title.call(),
-      description: voting.description.call(),
+      title: votingStrings.title(address),
+      description: votingStrings.description(address),
       options: Promise.all(optionsPromises),
       closingTime: +new Date(closingTime * 1000),
       voteCounts: Promise.all(votes),
@@ -102,8 +110,29 @@ class VotingWatcher {
 
     const votingInfo = await Promise.allProperties(votingObject)
 
-    console.log('upserting', address)
     this.Votings.upsert({ _id: `v_${address}` }, votingInfo)
+  }
+
+  // Returns vote type
+  async verifyVote(address) {
+    const contract = Voting.at(address)
+
+    const txid = await contract.txid.call()
+    if (!txid) { return null }
+
+    if (contract.address !== web3.eth.getTransactionReceipt(txid).contractAddress) {
+      return null
+    }
+
+    const bytecode = web3.eth.getTransaction(txid).input
+
+    for (const c of this.knownContracts) {
+      if (bytecode.indexOf(c.binary) === 0) { // Account for constructor values at end of input
+        return c
+      }
+    }
+
+    return null
   }
 
   get lastBlockKey() {
@@ -120,6 +149,71 @@ class VotingWatcher {
 
   set lastWatchedBlock(block) {
     return Session.setPersistent(this.lastBlockKey, block)
+  }
+
+  get allVotes() {
+    return [
+      {
+        contractClass: Poll,
+        title: async () => Promise.resolve('Poll'),
+        description: async a => `Poll question: ${await Poll.at(a).title.call()}`,
+      },
+      {
+        contractClass: IssueStockVoting,
+        title: async () => Promise.resolve('Issue Stock'),
+        description: async a => {
+          const c = IssueStockVoting.at(a)
+          const amount = await c.amount.call().then(x => x.toNumber())
+          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
+          return `Issue ${amount} ${stock} shares`
+        },
+      },
+      {
+        contractClass: GrantVestedStockVoting,
+        title: async () => Promise.resolve('Grant Stock'),
+        description: async a => {
+          const c = GrantVestedStockVoting.at(a)
+          const amount = await c.amount.call().then(x => x.toNumber())
+          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
+          const to = await c.recipient.call()
+          const vesting = await c.vesting.call().then(x => moment(x.toNumber() * 1000))
+          const cliff = await c.cliff.call().then(x => moment(x.toNumber() * 1000))
+          const now = moment()
+          return `Grant ${amount} ${stock} shares to ${to} with ${timeRange(now, cliff)} cliff and ${timeRange(now, vesting)} vesting`
+        },
+      },
+      {
+        contractClass: BoundedStandardSaleVoting,
+        title: async a => `${await BoundedStandardSaleVoting.at(a).title.call()}`,
+        description: async a => {
+          const c = BoundedStandardSaleVoting.at(a)
+          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
+          const price = await c.price.call().then(x => web3.fromWei(x.toNumber(), 'ether'))
+          const cap = await c.max.call().then(x => x.toNumber())
+          const closes = await c.closeDate.call().then(x => moment(x.toNumber() * 1000))
+
+          return `Public fundraising of max ${cap} ${stock} shares @ ${price} ETH closing ${timeRange(moment(), closes)}`
+        },
+      },
+      {
+        contractClass: IndividualInvestorSaleVoting,
+        title: async a => `${await IndividualInvestorSaleVoting.at(a).title.call()}`,
+        description: async a => {
+          const c = IndividualInvestorSaleVoting.at(a)
+          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
+          const price = await c.price.call().then(x => web3.fromWei(x.toNumber(), 'ether'))
+          const units = await c.units.call().then(x => x.toNumber())
+          const investor = await c.investor.call()
+          const closes = await c.closeDate.call().then(x => moment(x.toNumber() * 1000))
+
+          return `Investment offer to ${investor} of ${units} ${stock} shares @ ${price} ETH closing ${timeRange(moment(), closes)}`
+        },
+      },
+    ]
+  }
+
+  get knownContracts() {
+    return this.allVotes.map(x => x.contractClass)
   }
 }
 

@@ -100,27 +100,8 @@ const executeVote = async option => {
 }
 
 const verify = async () => {
-  const knownContracts = [Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting]
-  const contract = Voting.at(voting().address)
-
-  const txid = await contract.txid.call()
-  if (!txid) {
-    return verifiedVar.set('unable to verify, txid not set')
-  }
-
-  if (contract.address !== web3.eth.getTransactionReceipt(txid).contractAddress) {
-    return verifiedVar.set('contract not found in tx, probably tampered')
-  }
-
-  const bytecode = web3.eth.getTransaction(txid).input
-
-  for (const c of knownContracts) {
-    if (bytecode.indexOf(c.binary) === 0) { // Account for constructor values at end of input
-      return verifiedVar.set(c.contract_name)
-    }
-  }
-
-  return verifiedVar.set('unknown')
+  const contract = await VotingWatcher.verifyVote(voting().address)
+  return verifiedVar.set(contract ? contract.contract_name : 'unknown')
 }
 
 tmpl.events({

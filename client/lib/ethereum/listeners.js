@@ -62,11 +62,7 @@ class Listeners {
   }
 
   static newPollListener(stock) {
-    const body = async args => {
-      const votingAddress = await Company.votings.call(args.id)
-      const title = await Voting.at(votingAddress).title.call()
-      return `New voting '${title}' was created. You can now vote.`
-    }
+    const body = async () => 'New voting was created. You can now vote.'
 
     return new Listener(
       Stock.at(stock).NewPoll,
@@ -81,9 +77,8 @@ class Listeners {
 
   static get executedVotingListener() {
     const body = async args => {
-      const title = await Voting.at(args.votingAddress).title.call()
       const winner = await Voting.at(args.votingAddress).options.call(args.outcome)
-      return `'${title}' voting outcome was '${winner}'`
+      return `Outcome was '${winner}'`
     }
 
     return new Listener(

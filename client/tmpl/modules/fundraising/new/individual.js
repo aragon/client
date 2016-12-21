@@ -24,8 +24,9 @@ tmpl.onRendered(function () {
 
       const title = $('input[name=title]').val()
       const selectedStock = TemplateVar.get(self, 'selectedStock')
+      const investor = TemplateVar.get(self, 'recipient').ethereumAddress
       const price = web3.toWei($('input[name=price]').val(), 'ether')
-      const investor = $('input.prompt').val() // TODO: Proper extract
+
       const units = $('input[name=units]').val()
       const closes = +moment($('[type=date]').val()) / 1000
 
