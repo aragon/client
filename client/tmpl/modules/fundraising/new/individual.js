@@ -25,7 +25,6 @@ tmpl.onRendered(function () {
       const title = $('input[name=title]').val()
       const selectedStock = TemplateVar.get(self, 'selectedStock')
       const investor = TemplateVar.get(self, 'recipient').ethereumAddress
-      console.log(investor)
       const price = web3.toWei($('input[name=price]').val(), 'ether')
 
       const units = $('input[name=units]').val()
