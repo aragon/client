@@ -21,6 +21,7 @@ const lookupAddress = async (addr) => {
 
 class Identity {
   static format(entity) {
+    console.log(entity)
     const formatted = providers[entity.identityProvider].format(entity.data)
     formatted.identityProvider = entity.identityProvider
     formatted.ethereumAddress = entity.ethereumAddress

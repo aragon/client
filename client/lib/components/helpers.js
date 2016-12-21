@@ -33,3 +33,5 @@ Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount)
 }))
 
 Template.registerHelper('online', () => navigator.onLine)
+
+Template.registerHelper('currentAccount', () => EthAccounts.findOne())
