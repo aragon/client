@@ -13,6 +13,7 @@
     "crypto-js": "^3.1.8",
     "electron": "^1.4.12",
     "ethereumjs-util": "^5.0.1",
+    "framed-msgpack-rpc": "^1.1.13",
     "intertron-client": "^1.0.2",
     "meteor-node-stubs": "~0.2.0",
     "moment": "^2.17.1",

@@ -7,13 +7,22 @@ const bindSearch = (tmplIns) => {
   tmplIns.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
-      onResponse: res => ({
-        results: res.completions.map(c => ({
-          username: c.components.username.val,
-          name: (c.components.full_name || {}).val,
-          pic: c.thumbnail || 'http://placekitten.com/g/64/64',
-        })),
-      }),
+      onResponse: res => {
+        let additionalElements = []
+        const query = $('.ui.search .prompt').val()
+
+        if (web3.isAddress(query)) {
+          additionalElements.push({ name: "Use address", username: query })
+        }
+
+        return {
+          results: res.completions.map(c => ({
+                      username: c.components.username.val,
+                      name: (c.components.full_name || {}).val,
+                      pic: c.thumbnail || 'http://placekitten.com/g/64/64',
+          })).concat(additionalElements)
+        }
+      }
     },
     fields: {
       title: 'name',
@@ -23,7 +32,12 @@ const bindSearch = (tmplIns) => {
     minCharacters: 2,
     onSelect: async (user) => {
       tmplIns.$('.ui.search').addClass('loading')
-      const entity = await Identity.getUsername(user.username, 'keybase')
+      let entity = {}
+      if (web3.isAddress(user.username)) {
+        entity = { ethereumAddress: user.username, name: 'Address' }
+      } else {
+        entity = await Identity.getUsername(user.username, 'keybase')
+      }
       TemplateVar.set(tmplIns, 'entity', entity)
       keybaseEl.trigger('select', entity)
     },

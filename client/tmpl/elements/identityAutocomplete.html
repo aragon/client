@@ -6,7 +6,7 @@
       <img class="ui left floated mini image" src="{{ picture }}">
       <i class="right floated remove icon"></i>
       <div class="header">
-        {{ name }} ({{ username }})
+        {{ name }} {{ #if username }}({{ username }}) {{/if}}
       </div>
       <div class="meta">
         {{ ethereumAddress }}

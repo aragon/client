@@ -46,7 +46,7 @@ class StockSalesWatcher {
   async getNewSales() {
     const lastSavedIndex = (this.StockSales.findOne({}, { sort: { index: -1 } }) || { index: 0 }).index
     const lastCompanyIndex = Company.saleIndex.call().then(x => x.toNumber())
-    if (lastSavedIndex > lastCompanyIndex) { this.StockSales.remove({}) }
+    if (lastSavedIndex > lastCompanyIndex || lastCompanyIndex === 0) { this.StockSales.remove({}) }
     if (lastSavedIndex < lastCompanyIndex) {
       const allNewSales = _.range(lastSavedIndex + 1, lastCompanyIndex)
                             .map(i => Company.sales.call(i))
