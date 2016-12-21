@@ -47,7 +47,8 @@ tmpl.onRendered(function () {
 
       const selectedStock = TemplateVar.get(self, 'selectedStock')
       const amount = $('input[name=number]').val()
-      const recipient = $('input[name=addr]').val()
+      console.log(TemplateVar.get(self, 'recipient'))
+      const recipient = TemplateVar.get(self, 'recipient').ethereumAddress
 
       if (TemplateVar.get(self, 'assignMode')) {
         await assignStock(selectedStock, amount, recipient)
