@@ -187,7 +187,7 @@ class VotingWatcher {
         title: async a => `${await BoundedStandardSaleVoting.at(a).title.call()}`,
         description: async a => {
           const c = BoundedStandardSaleVoting.at(a)
-          const stock = Stocks.findOne({ index: (await c.stockId.call().then(x => x.toNumber())) }).symbol
+          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
           const price = await c.price.call().then(x => web3.fromWei(x.toNumber(), 'ether'))
           const cap = await c.max.call().then(x => x.toNumber())
           const closes = await c.closeDate.call().then(x => moment(x.toNumber() * 1000))
@@ -200,7 +200,7 @@ class VotingWatcher {
         title: async a => `${await IndividualInvestorSaleVoting.at(a).title.call()}`,
         description: async a => {
           const c = IndividualInvestorSaleVoting.at(a)
-          const stock = Stocks.findOne({ index: (await c.stockId.call().then(x => x.toNumber())) }).symbol
+          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
           const price = await c.price.call().then(x => web3.fromWei(x.toNumber(), 'ether'))
           const units = await c.units.call().then(x => x.toNumber())
           const investor = await c.investor.call()

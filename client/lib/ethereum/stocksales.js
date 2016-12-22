@@ -45,9 +45,12 @@ class StockSalesWatcher {
 
   async getNewSales() {
     const lastSavedIndex = (this.StockSales.findOne({}, { sort: { index: -1 } }) || { index: 0 }).index
-    const lastCompanyIndex = Company.saleIndex.call().then(x => x.toNumber())
-    if (lastSavedIndex > lastCompanyIndex || lastCompanyIndex === 0) { this.StockSales.remove({}) }
+    const lastCompanyIndex = await Company.saleIndex.call().then(x => x.toNumber())
+    if (lastSavedIndex > lastCompanyIndex || lastCompanyIndex === 1) {
+      this.StockSales.remove({})
+    }
     if (lastSavedIndex < lastCompanyIndex) {
+      console.log('fethcng',lastSavedIndex + 1,lastCompanyIndex, _.range(lastSavedIndex + 1, lastCompanyIndex))
       const allNewSales = _.range(lastSavedIndex + 1, lastCompanyIndex)
                             .map(i => Company.sales.call(i))
                             .map((a, i) => this.getSale(a, i))

@@ -15,8 +15,12 @@ const bindSearch = (tmplIns) => {
           additionalElements.push({ name: "Use address", username: query })
         }
 
+        if (query === "") {
+          additionalElements.push({ name: "Your address", username: EthAccounts.findOne().address })
+        }
+
         return {
-          results: res.completions.map(c => ({
+          results: (res.completions || []).map(c => ({
                       username: c.components.username.val,
                       name: (c.components.full_name || {}).val,
                       pic: c.thumbnail || 'http://placekitten.com/g/64/64',
@@ -29,7 +33,7 @@ const bindSearch = (tmplIns) => {
       description: 'username',
       image: 'pic',
     },
-    minCharacters: 2,
+    minCharacters: 0,
     onSelect: async (user) => {
       tmplIns.$('.ui.search').addClass('loading')
       let entity = {}
