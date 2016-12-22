@@ -2,7 +2,7 @@ import { NotificationsListener as Listener } from '/client/lib/notifications'
 import SHA256 from 'crypto-js/sha256'
 
 import Company from './deployed'
-import { Stock, Voting } from './contracts'
+import { Stock, Voting, StockSale } from './contracts'
 
 const flatten = (array) => [].concat(...array)
 
@@ -10,7 +10,7 @@ class Listeners {
   static async all() {
     const stocks = await this.allStocks()
 
-    return [this.issueStockListener, this.executedVotingListener]
+    return [this.issueStockListener, this.executedVotingListener, this.newSaleListener]
             .concat(await this.shareTransfers(stocks))
             .concat(stocks.map(this.newPollListener))
   }
@@ -72,6 +72,17 @@ class Listeners {
       'Vote now',
       {},
       args => SHA256(args.id.valueOf() + args.closes.valueOf()).toString(),
+    )
+  }
+
+  static get newSaleListener() {
+    const body = async args => `New fundraising started shares at ${await StockSale.at(args.saleAddress).getBuyingPrice.call(1).then(x => web3.fromWei(x.toNumber()), 'ether')} ETH price`
+    return new Listener(
+      Company.NewStockSale,
+      'New sale',
+      body,
+      args => `/fundraising/${args.saleIndex.valueOf()}`,
+      'See sale',
     )
   }
 
