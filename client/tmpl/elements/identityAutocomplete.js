@@ -15,7 +15,7 @@ const bindSearch = (tmplIns) => {
           additionalElements.push({ name: "Use address", username: query })
         }
 
-        if (query === "") {
+        if (query === "" || query == "me") {
           additionalElements.push({ name: "Your address", username: EthAccounts.findOne().address })
         }
 

@@ -4,7 +4,7 @@
   <div class="ui attached flex container" id="raise">
     {{#with raise}}
     <h1 class="ui header">
-      {{name}}
+      {{type}}
       {{#if isOpen}}
         <a class="ui left pointing red basic label">Ends in {{ timeRange now closingTime }}</a>
       {{else}}
@@ -12,8 +12,8 @@
       {{/if}}
     </h1>
 
-    <h3>Amount: {{amount}} ETH</h3>
-
+    <h3>Address: {{address}}</h3>
+    <h3></h3>
     {{/with}}
     <div class="ui spacer"></div>
   </div>
