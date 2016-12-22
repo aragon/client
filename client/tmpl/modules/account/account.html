@@ -1,0 +1,38 @@
+<template name="Module_Account">
+  <div class="nine wide flex column" id="Module_Account">
+    <h1>Your account</h1>
+    <div class="ui hidden divider"></div>
+    <select class="ui fluid dropdown">
+      {{ #with currentAccount }}<option value="{{ address }}" selected>{{ name }} ({{ balance }} ether)</option>{{ /with }}
+      {{ #each accounts }}
+        {{ #if $neq currentAccount.address address }}
+        <option value="{{ address }}">{{ name }} ({{ balance }} ether)</option>
+        {{ /if }}
+      {{ /each }}
+    </select>
+
+    <div class="ui hidden divider"></div>
+
+    <div class="ui spacer"></div>
+
+    {{ #with currentEntity }}
+    <div class="ui grid">
+      {{#if $eq identityProvider 'keybase'}}
+      <div class="ten wide column">
+        <a class="ui orange icon fluid button" href="https://keybase.io/{{ username }}" target="_blank">
+          <i class="key icon"></i> Logged in with Keybase as {{ username }}
+        </a>
+      </div>
+      <div class="six wide column">
+        <a class="ui basic icon fluid button" data-content="People will not find you with your previous identity anymore" data-variation="inverted" id="logout">
+          <i class="sign out icon"></i> Unlink identity
+        </a>
+      </div>
+      {{/if}}
+    </div>
+    {{ /with }}
+  </div>
+  <div class="seven wide lightgrey column">
+    {{ > Module_Entity noClosable=true }}
+  </div>
+</template>

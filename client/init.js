@@ -11,9 +11,10 @@ this.Root.modules = [
   new Module('Voting', 'announcement'),
   new Module('Fundraising', 'money'),
   new Module('Rewards', 'users'),
-  new Module('Accounts', 'university'),
+  new Module('Accounting', 'university'),
   new Module('Settings', 'settings'),
 
+  new Module('Account', 'user', false),
   new Module('Inbox', 'inbox', false),
 
   new Module('Entity', 'entity', false),
@@ -23,6 +24,7 @@ BrowserNotifications.requestPermission()
 
 const start = async () => {
   const intertron = new IntertronClient()
+
   const username = await intertron.call('Keybase.getUsername')
   console.log('Your Keybase username is', username)
 

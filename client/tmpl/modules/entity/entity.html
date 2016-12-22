@@ -1,18 +1,21 @@
 <template name="Module_Entity">
   <div class="flex" id="entity">
-    {{> Element_CloseSectionButton}}
+    {{ #unless noClosable }}{{> Element_CloseSectionButton}}{{ /unless }}
     {{#with entity}}
     <div class="ui top attached grid">
-      <div class="four wide column">
-        <img class="ui circular middle aligned image" src="{{ picture }}">
-      </div>
       <div class="twelve wide column">
         <h1 class="ui header">
           {{ name }}
           <div class="sub header">{{ location }}</div>
         </h1>
         <p>{{ bio }}</p>
-        <p><i class="ethereum icon"></i> <a href="https://etherscan.io/address/{{ address }}" target="_blank">{{ address }}</a></p>
+      </div>
+      <div class="four wide column">
+        <img class="ui circular middle aligned image" src="{{ picture }}">
+      </div>
+
+      <div class="sixteen wide column">
+        <p><i class="ethereum icon"></i> <a href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">{{ ethereumAddress }}</a></p>
         {{#if cryptocurrencies.bitcoin}}
         <p><i class="bitcoin icon"></i> <a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>
         {{/if}}
@@ -26,15 +29,16 @@
         {{#if social.github}}
         <p><i class="github icon"></i> <a href="https://github.com/{{ social.github }}" target="_blank">{{ social.github }}</a></p>
         {{/if}}
+
+        {{#if isMode 'ownership' }}
+        <h3 class="ui header">Stakes</h3>
+        <div class="chartContainer">
+          <canvas id="vestingChart" width="600" height="500"></canvas>
+        </div>
+        {{/if}}
       </div>
     </div>
-    {{#if isMode 'ownership' }}
-    <div class="ui spacer"></div>
-    <h3 class="ui header">Stakes</h3>
-    <div class="chartContainer">
-      <canvas id="vestingChart" width="600" height="500"></canvas>
-    </div>
-    {{/if}}
+
     <div class="ui spacer"></div>
     <div class="ui buttons">
       {{#if $eq identityProvider 'keybase'}}

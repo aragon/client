@@ -48,7 +48,10 @@ tmpl.onRendered(async () => {
 tmpl.helpers({
   address: getAddress,
   entity: ReactivePromise(async () => {
-    if (FlowRouter.current()) return Identity.get(FlowRouter.current().params.address)
+    if (FlowRouter.current()) {
+      const address = FlowRouter.current().params.address || EthAccounts.findOne().address
+      return Identity.get(address)
+    }
     return {}
   }),
   formatFingerprint: (fingerprint) => (fingerprint && fingerprint.match(/.{1,4}/g).join(' ')),
