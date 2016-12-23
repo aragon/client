@@ -31,7 +31,7 @@
           {{ #with currentAccount }}<option value="{{ address }}" selected>{{ name }} ({{ balance }} ether)</option>{{ /with }}
           {{ #each accounts }}
             {{ #if $neq currentAccount.address address }}
-            <option value="{{ address }}">{{ name }} ({{ balance }} ether)</option>
+            <option value="{{ address }}">{{ name }} ({{ ether balance }} ether)</option>
             {{ /if }}
           {{ /each }}
         </select>
