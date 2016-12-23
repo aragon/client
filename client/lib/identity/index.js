@@ -1,4 +1,5 @@
 import Keybase from './keybase'
+import Anon from './anon'
 
 const Entities = new Mongo.Collection('entities', { connection: null })
 new PersistentMinimongo(Entities)
@@ -7,6 +8,7 @@ window.Entities = Entities
 
 const providers = {
   keybase: Keybase,
+  anon: Anon,
 }
 
 const lookupAddress = async (addr) => {
@@ -81,7 +83,6 @@ class Identity {
   }
 
   static setCurrentEthereumAccount(addr) {
-    console.log(addr)
     Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
   }
 

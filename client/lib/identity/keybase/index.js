@@ -1,6 +1,6 @@
 const keybaseBaseURL = 'https://keybase.io/_/api/1.0'
 
-class Keybase {
+export default class Keybase {
   // Returns {status, them}
   static async lookup(username) {
     if (!username) return null
@@ -42,7 +42,3 @@ class Keybase {
     }
   }
 }
-
-Keybase.name = 'keybase'
-
-export default Keybase
