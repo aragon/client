@@ -1,19 +1,27 @@
+import Identity from '/client/lib/identity'
+
 const tmpl = Template.Module_Account.extend()
 
 tmpl.onRendered(function () {
+  this.$('#logout').popup({ position: 'top center' })
+  this.$('#viewAllAccounts').popup({ position: 'bottom center' })
+
   this.autorun(() => {
     if (TemplateVar.get('viewAllAccounts')) {
-      requestAnimationFrame(() => this.$('.dropdown').dropdown())
+      requestAnimationFrame(() => {
+        this.$('.dropdown').dropdown({
+          onChange: (val) => {
+            console.log(val)
+            Identity.setCurrentEthereumAccount(val)
+          },
+        })
+      })
     }
   })
-  this.$('#logout').popup({ position: 'top center' })
 })
 
 tmpl.events({
-  'click #viewAllAccounts': () => {
-    alert('If you change your account, you will have to re-link your identity and you will have to take care of past transactions incurred with your current Ethereum account.\nProceed carefully.')
-    TemplateVar.set('viewAllAccounts', true)
-  },
+  'click #viewAllAccounts': () => TemplateVar.set('viewAllAccounts', true),
 })
 
 tmpl.helpers({

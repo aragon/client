@@ -1,8 +1,19 @@
 import IntertronClient from 'intertron-client'
 
+import Identity from '/client/lib/identity'
 import { Module, Core } from './lib/modules'
 import { BrowserNotifications } from './lib/notifications'
 import KeybaseProofs from './lib/identity/keybase/proofs'
+
+const setIdentity = async (username) => {
+  let current = await Identity.current()
+  console.log(current)
+  if (!current) {
+    current = await Identity.getUsername(username, 'keybase')
+    console.log(current)
+    Identity.setCurrent(current)
+  }
+}
 
 this.Root = new Core()
 this.Root.modules = [
@@ -27,6 +38,7 @@ const start = async () => {
 
   const username = await intertron.call('Keybase.getUsername')
   console.log('Your Keybase username is', username)
+  setIdentity(username)
 
   const proof = await KeybaseProofs.createProof(username, EthAccounts.findOne().address)
   const proofPayload = JSON.stringify(proof)

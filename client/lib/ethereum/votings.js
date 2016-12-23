@@ -1,9 +1,9 @@
-import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting } from './contracts'
+import helpers from '/client/helpers'
+import Identity from '/client/lib/identity'
 
+import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
-
-import helpers from '/client/helpers'
 
 const timeRange = helpers.timeRange
 
@@ -203,10 +203,11 @@ class VotingWatcher {
           const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
           const price = await c.price.call().then(x => web3.fromWei(x.toNumber(), 'ether'))
           const units = await c.units.call().then(x => x.toNumber())
-          const investor = await c.investor.call()
+          const investorAddress = await c.investor.call()
           const closes = await c.closeDate.call().then(x => moment(x.toNumber() * 1000))
+          const entity = await Identity.get(investorAddress)
 
-          return `Investment offer to ${investor} of ${units} ${stock} shares @ ${price} ETH closing ${timeRange(moment(), closes)}`
+          return `Investment offer to ${entity.name} of ${units} ${stock} shares @ ${price} ETH closing in ${timeRange(moment(), closes)}`
         },
       },
     ]

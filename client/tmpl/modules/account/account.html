@@ -16,7 +16,7 @@
         </div>
         <div class="six wide field">
           <label>Balance</label>
-          <input type="text" value="{{ balance }}" disabled>
+          <input type="text" value="{{ balance }} ETH" disabled>
         </div>
       </div>
       <div class="field">
@@ -37,7 +37,9 @@
         </select>
       </div>
       {{ else }}
-      <a href="#" id="viewAllAccounts">Choose another account...</a>
+      <div class="field">
+      <a href="#" id="viewAllAccounts" data-content="If you change your account, you will have to re-link your identity and you will have to take care of past transactions incurred with your current Ethereum account.\nProceed carefully." data-variation="inverted">Choose another account...</a>
+      </div>
       {{ /if }}
 
       <div class="ui hidden divider"></div>

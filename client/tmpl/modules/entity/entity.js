@@ -49,8 +49,11 @@ tmpl.helpers({
   address: getAddress,
   entity: ReactivePromise(async () => {
     if (FlowRouter.current()) {
-      const address = FlowRouter.current().params.address || EthAccounts.findOne().address
-      return Identity.get(address)
+      const address = FlowRouter.current().params.address
+      if (address) {
+        return Identity.get(address)
+      }
+      return Identity.current()
     }
     return {}
   }),

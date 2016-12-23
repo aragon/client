@@ -15,7 +15,7 @@ Template.registerHelper('displayAddress', (ethAddress) => {
 
 Template.registerHelper('currentEntity', ReactivePromise(() => {
   if (!web3.isConnected()) return {}
-  return Identity.get(EthAccounts.findOne().address)
+  return Identity.current()
 }))
 
 Template.registerHelper('entityName', ReactivePromise(async (address) => {
@@ -34,4 +34,8 @@ Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount)
 
 Template.registerHelper('online', () => navigator.onLine)
 
-Template.registerHelper('currentAccount', () => EthAccounts.findOne())
+Template.registerHelper('currentAccount', ReactivePromise(async () => {
+  const entity = await Identity.current()
+  console.log(entity)
+  return EthAccounts.findOne({ address: entity.ethereumAddress })
+}))

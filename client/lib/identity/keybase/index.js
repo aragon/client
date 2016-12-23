@@ -12,7 +12,8 @@ class Keybase {
   static async getEthAddress(username) {
     if (!username) return null
     const res = await fetch(`https://${username}.keybase.pub/eth`)
-    return await res.text()
+    const text = await res.text()
+    return text.trim()
   }
 
   static async lookupEthAddress(addr) {

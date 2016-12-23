@@ -21,7 +21,8 @@ const lookupAddress = async (addr) => {
 
 class Identity {
   static format(entity) {
-    console.log(entity)
+    if (!entity) return null
+
     const formatted = providers[entity.identityProvider].format(entity.data)
     formatted.identityProvider = entity.identityProvider
     formatted.ethereumAddress = entity.ethereumAddress
@@ -34,13 +35,13 @@ class Identity {
   }
 
   static async get(addr, raw = false) {
-    let entity = Entities.findOne({ _id: `e_${addr}` })
+    let entity = Entities.findOne({ ethereumAddress: addr })
 
     if (!entity) {
       const { providerName, data } = await lookupAddress(addr)
       if (providerName && data) {
         Identity.set(addr, providerName, data)
-        entity = Entities.findOne({ _id: `e_${addr}` })
+        entity = Entities.findOne({ ethereumAddress: addr })
       }
     }
 
@@ -48,13 +49,15 @@ class Identity {
     return entity
   }
 
-  static async getUsername(username, providerName, raw = false) {
+  static async getUsername(username, identityProvider, raw = false) {
     // Usually we will want to store addr => username but not the other way around
     // let entity = Entities.findOne(({'data.basics.username': username})
-    const ethereumAddress = await providers[providerName].getEthAddress(username)
-    const data = await providers[providerName].lookup(username)
+    const ethereumAddress = await providers[identityProvider].getEthAddress(username)
+    const data = await providers[identityProvider].lookup(username)
+    Identity.set(ethereumAddress, identityProvider, data)
+
     let entity = {
-      identityProvider: providerName,
+      identityProvider,
       ethereumAddress,
       data,
     }
@@ -69,7 +72,24 @@ class Identity {
       identityProvider,
       data: entityObj,
     }
-    Entities.upsert({ _id: `e_${addr}` }, entity)
+    Entities.upsert({ ethereumAddress: addr }, entity)
+  }
+
+  static setCurrent(entity) {
+    Entities.update({ current: true }, { $unset: { current: '' } })
+    Entities.update({ ethereumAddress: entity.ethereumAddress }, { $set: { current: true } })
+  }
+
+  static setCurrentEthereumAccount(addr) {
+    console.log(addr)
+    Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
+  }
+
+  static async current(raw = false) {
+    let entity = Entities.findOne({ current: true })
+
+    if (!raw) entity = Identity.format(entity)
+    return entity
   }
 }
 
