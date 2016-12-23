@@ -1,8 +1,11 @@
-const generateName = (str) => {
+// @flow
+import type { Entity } from '../entity'
+
+const generateName = (str: string) => {
   return 'Manolo'
 }
 
-const generatePic = (str) => {
+const generatePic = (str: string) => {
   return 'http://placekitten.com/128/128'
 }
 
@@ -12,10 +15,11 @@ export default class Anon {
   }
 
   static format(data) {
-    return {
+    const entity: Entity = {
       username: data.ethereumAddress,
       name: generateName(data.ethereumAddress),
       picture: generatePic(data.ethereumAddress),
     }
+    return entity
   }
 }

@@ -1,0 +1,30 @@
+[options]
+# Absolute path support:
+# e.g. "/collections/todos"
+module.name_mapper='^\/\(.*\)$' -> '<PROJECT_ROOT>/\1'
+
+# Meteor none core package support
+# e.g. "meteor/kadira:flow-router"
+module.name_mapper='^meteor\/\(.*\):\(.*\)$' -> '<PROJECT_ROOT>/.meteor/local/build/programs/server/packages/\1_\2'
+
+# Meteor core package support
+# e.g. "meteor/meteor"
+module.name_mapper='^meteor\/\(.*\)$' -> '<PROJECT_ROOT>/.meteor/local/build/programs/server/packages/\1'
+
+# Fallback for Meteor core client package
+# e.g. "meteor/meteor"
+module.name_mapper='^meteor\/\(.*\)$' -> '<PROJECT_ROOT>/.meteor/local/build/programs/web.browser/packages/\1'
+
+[ignore]
+# Ignore the `.meteor/local` packages that aren't important
+.*/.meteor/local/build/programs/server/app/.*
+.*/.meteor/local/build/programs/server/assets/.*
+.*/.meteor/local/build/programs/server/npm/.*
+.*/.meteor/local/build/programs/server/node_modules/.*
+.*/.meteor/local/build/programs/web.browser/app/.*
+.*/.meteor/local/plugin-cache/.*
+.*/.meteor/local/build/main.js
+.*/.meteor/packages/.*
+
+# This package can give you a lot of flow errors, better ignore it
+.*/node_modules/fbjs/.*

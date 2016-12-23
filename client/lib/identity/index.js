@@ -1,3 +1,8 @@
+// @flow
+import Mongo from 'meteor/mongo'
+import PersistentMinimongo from 'meteor/frozeman:persistent-minimongo'
+import EthAccounts from 'meteor/ethereum:accounts'
+
 import Keybase from './keybase'
 import Anon from './anon'
 
@@ -11,7 +16,7 @@ const providers = {
   anon: Anon,
 }
 
-const lookupAddress = async (addr) => {
+const lookupAddress = async (addr: string) => {
   let providerName = null
   let data = null
   for (providerName of Object.keys(providers)) {
@@ -36,7 +41,7 @@ class Identity {
     return formatted
   }
 
-  static async get(addr, raw = false) {
+  static async get(addr: string, raw: boolean = false) {
     let entity = Entities.findOne({ ethereumAddress: addr })
 
     if (!entity) {
