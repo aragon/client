@@ -29,7 +29,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#each investors}}
+        {{ #each investors }}
         <tr data-address="{{address}}">
           <td>
             {{ address }}
@@ -38,11 +38,16 @@
             {{ tokens }}
           </td>
         </tr>
-        {{/each}}
+        {{ /each }}
       </tbody>
     </table>
 
-    {{/with}}
     <div class="ui spacer"></div>
+
+    {{ #if isTransferAllowed this }}
+    <button class="ui big primary button" id="transfer" name="button">Move {{ ether (transferrableFunds this) }} ETH to company address</button>
+    {{ /if }}
+
+    {{/with}}
   </div>
 </template>

@@ -1,5 +1,6 @@
 import ClosableSection from '/client/tmpl/components/closableSection'
 import StockSalesWatcher from '/client/lib/ethereum/stocksales'
+import { StockSale } from '/client/lib/ethereum/contracts'
 
 const StockSales = StockSalesWatcher.StockSales
 
@@ -10,15 +11,29 @@ const reload = () => {
   reloadSaleId()
 }
 
-tmpl.onRendered(function () {
+const getRaise = () => StockSales.findOne({ index: TemplateVar.get('id') })
+const getSaleBalance = sale => web3.eth.getBalance(sale.address).toNumber()
+
+const canTransfer = sale => (
+  StockSale.at(sale.address).isFundsTransferAllowed.call()
+           .then(x => x && getSaleBalance(sale) > 0)
+)
+
+const transfer = async () => {
+  await StockSale.at(getRaise().address).transferFunds({ gas: 2000000, from: EthAccounts.findOne().address })
   reload()
-})
+}
+
+tmpl.onRendered(reload)
 
 tmpl.helpers({
-  raise: () => StockSales.findOne({ index: TemplateVar.get('id') }),
+  raise: getRaise,
+  transferrableFunds: getSaleBalance,
   isOpen: sale => moment() <= moment(sale.closeDate),
+  isTransferAllowed: ReactivePromise(canTransfer),
 })
 
 tmpl.events({
   'reload #raise': reload,
+  'click #transfer': transfer,
 })
