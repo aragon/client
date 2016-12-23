@@ -1,36 +1,69 @@
 <template name="Module_Account">
-  <div class="nine wide flex column" id="Module_Account">
-    <h1>Your account</h1>
-    <div class="ui hidden divider"></div>
-    <select class="ui fluid dropdown">
-      {{ #with currentAccount }}<option value="{{ address }}" selected>{{ name }} ({{ balance }} ether)</option>{{ /with }}
-      {{ #each accounts }}
-        {{ #if $neq currentAccount.address address }}
-        <option value="{{ address }}">{{ name }} ({{ balance }} ether)</option>
-        {{ /if }}
-      {{ /each }}
-    </select>
+  <div class="nine wide column" id="Module_Account">
+    <form class="ui flex attached form">
+      <h1 class="ui header">Your account</h1>
+      <div class="ui divider"></div>
 
-    <div class="ui hidden divider"></div>
-
-    <div class="ui spacer"></div>
-
-    {{ #with currentEntity }}
-    <div class="ui grid">
-      {{#if $eq identityProvider 'keybase'}}
-      <div class="ten wide column">
-        <a class="ui orange icon fluid button" href="https://keybase.io/{{ username }}" target="_blank">
-          <i class="key icon"></i> Logged in with Keybase as {{ username }}
-        </a>
+      <h3 class="ui header">
+        Ethereum
+        <div class="sub header">Ethereum provides a trustless cryptographic ledger to execute and store transactions securely.</div>
+      </h3>
+      {{ #with currentAccount }}
+      <div class="fields">
+        <div class="ten wide field">
+          <label>Name</label>
+          <input type="text" value="{{ name }}">
+        </div>
+        <div class="six wide field">
+          <label>Balance</label>
+          <input type="text" value="{{ balance }}" disabled>
+        </div>
       </div>
-      <div class="six wide column">
-        <a class="ui basic icon fluid button" data-content="People will not find you with your previous identity anymore" data-variation="inverted" id="logout">
-          <i class="sign out icon"></i> Unlink identity
-        </a>
+      <div class="field">
+        <label>Address</label>
+        <input value="{{ address }}" type="text" disabled>
       </div>
-      {{/if}}
-    </div>
-    {{ /with }}
+      {{ /with }}
+      {{ #if TemplateVar.get 'viewAllAccounts' }}
+      <div class="field" id="allAccounts">
+        <label>All accounts</label>
+        <select class="ui fluid dropdown">
+          {{ #with currentAccount }}<option value="{{ address }}" selected>{{ name }} ({{ balance }} ether)</option>{{ /with }}
+          {{ #each accounts }}
+            {{ #if $neq currentAccount.address address }}
+            <option value="{{ address }}">{{ name }} ({{ balance }} ether)</option>
+            {{ /if }}
+          {{ /each }}
+        </select>
+      </div>
+      {{ else }}
+      <a href="#" id="viewAllAccounts">Choose another account...</a>
+      {{ /if }}
+
+      <div class="ui hidden divider"></div>
+
+      <h3 class="ui header">
+        Identity
+        <div class="sub header">You can link your Ethereum account to your social identities or other kind of identifications so the people you interact with can verify your identity.</div>
+      </h3>
+
+      {{ #with currentEntity }}
+      <div class="ui grid">
+        {{#if $eq identityProvider 'keybase'}}
+        <div class="ten wide column">
+          <a class="ui positive icon fluid button" href="https://keybase.io/{{ username }}" target="_blank">
+            <i class="user icon"></i> Logged in with Keybase as {{ username }}
+          </a>
+        </div>
+        <div class="six wide column">
+          <a class="ui basic icon fluid button" data-content="People will not find you with your previous identity anymore" data-variation="inverted" id="logout">
+            <i class="sign out icon"></i> Unlink identity
+          </a>
+        </div>
+        {{/if}}
+      </div>
+      {{ /with }}
+    </form>
   </div>
   <div class="seven wide lightgrey column">
     {{ > Module_Entity noClosable=true }}

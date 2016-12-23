@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor run",
-    "dev": "MONGO_URL=0 meteor",
+    "dev": "MONGO_URL=0 METEOR_OFFLINE_CATALOG=1 meteor",
     "app": "./.electron/node_modules/.bin/electron .electron",
     "contracts": "cd imports/lib/contracts; rm -rf build; truffle compile; truffle migrate --reset"
   },
