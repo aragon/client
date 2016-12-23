@@ -21,7 +21,7 @@ class StockSalesWatcher {
   listenForNewSales() {
     Company.NewStockSale({}).watch(async (err, ev) => {
       const newsale = await this.getSale(ev.args.saleAddress, ev.args.saleIndex.toNumber())
-      listenForSalesEvents([newsale])
+      this.listenForSalesEvents([newsale])
     })
   }
 
@@ -70,6 +70,9 @@ class StockSalesWatcher {
 
   async getSale(address, index) {
     const sale = StockSale.at(address)
+    const investorAddresses = _.range(0, await sale.investorIndex.call())
+                                .map(i => sale.investors.call(i))
+
     const saleObject = {
       stock: sale.stockId.call().then(x => x.toNumber()),
       closeDate: sale.closeDate.call().then(x => new Date(x.toNumber() * 1000)),
@@ -78,6 +81,7 @@ class StockSalesWatcher {
       type: sale.saleType.call(),
       raiseTarget: sale.raiseTarget.call().then(x => x.toNumber()),
       raiseMaximum: sale.raiseMaximum.call().then(x => x.toNumber()),
+      investors: Promise.all(investorAddresses).then(x => [...new Set(x)]), // unique elements in array
       index,
       address,
     }

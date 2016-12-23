@@ -5,8 +5,8 @@
     {{#with raise}}
     <h1 class="ui header">
       {{type}}
-      {{#if isOpen}}
-        <a class="ui left pointing red basic label">Ends in {{ timeRange now closingTime }}</a>
+      {{#if isOpen this}}
+        <a class="ui left pointing red basic label">Ends in {{ timeRange now closeDate }}</a>
       {{else}}
         <a class="ui left pointing red basic label">Closed</a>
       {{/if}}
@@ -14,6 +14,9 @@
 
     <h3>Address: {{address}}</h3>
     <h3></h3>
+    <p><i class="ethereum icon"></i> Target: {{ ether raiseTarget }} ETH</p>
+    <p><i class="ethereum icon"></i> Cap: {{ ether raiseTarget }} ETH</p>
+    <p><i class="ethereum icon"></i> Currently raised: {{ ether raisedAmount }} ETH</p>
     {{/with}}
     <div class="ui spacer"></div>
   </div>

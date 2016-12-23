@@ -16,6 +16,7 @@ tmpl.onRendered(function () {
 
 tmpl.helpers({
   raise: () => StockSales.findOne({ index: TemplateVar.get('id') }),
+  isOpen: sale => moment() <= moment(sale.closeDate),
 })
 
 tmpl.events({
