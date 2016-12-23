@@ -1,5 +1,5 @@
 import Company from './deployed'
-import { StockSale, BoundedStandardSaleVoting, IndividualInvestorSaleVoting } from './contracts'
+import { StockSale, StockSaleVoting, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
 import StockWatcher from './stocks'
 
@@ -74,21 +74,21 @@ class StockSalesWatcher {
   }
 
   async createIndividualInvestorVote(address, stock, investor, price, units, closes, title = 'Series Y') {
-    const description = `${web3.fromWei(price * units, 'ether')}ETH raise from ${address}`
-    const saleVote = await IndividualInvestorSaleVoting.new(
-                            stock, investor, units, price, closes, title, 50,
+    const sale = await IndividualInvestorSale.new(
+                            Company.address, stock, investor, units, price, closes, title,
                             { from: address, gas: 2000000 })
-    return await this.submitSaleVote(saleVote, address)
+    return await this.submitSale(sale, title, address)
   }
 
   async createBoundedSaleVote(address, stock, min, max, price, closes, title = 'Series Z') {
-    const description = `Raise of max ${max} shares @ ${web3.fromWei(price, 'ether')}ETH`
-    const saleVote = await BoundedStandardSaleVoting.new(stock, min, max, price, closes, title, 50,
+    const sale = await BoundedStandardSale.new(Company.address, stock, min, max, price, closes, title,
                            { from: address, gas: 3000000 })
-    return await this.submitSaleVote(saleVote, address)
+    return await this.submitSale(sale, title, address)
   }
 
-  async submitSaleVote(saleVote, address) {
+  async submitSale(sale, title, address) {
+    await sale.setTxid(sale.transactionHash, { from: address, gas: 120000 })
+    const saleVote = await StockSaleVoting.new(sale.address, title, 50, { from: address, gas: 2000000 })
     const oneWeekFromNow = +moment().add(7, 'days') / 1000
     console.log('submitting', saleVote)
     await saleVote.setTxid(saleVote.transactionHash, { from: address, gas: 120000 })

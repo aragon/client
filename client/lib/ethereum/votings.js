@@ -1,7 +1,7 @@
 import helpers from '/client/helpers'
 import Identity from '/client/lib/identity'
 
-import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting } from './contracts'
+import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
 
@@ -183,32 +183,9 @@ class VotingWatcher {
         },
       },
       {
-        contractClass: BoundedStandardSaleVoting,
-        title: async a => `${await BoundedStandardSaleVoting.at(a).title.call()}`,
-        description: async a => {
-          const c = BoundedStandardSaleVoting.at(a)
-          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
-          const price = await c.price.call().then(x => web3.fromWei(x.toNumber(), 'ether'))
-          const cap = await c.max.call().then(x => x.toNumber())
-          const closes = await c.closeDate.call().then(x => moment(x.toNumber() * 1000))
-
-          return `Public fundraising of max ${cap} ${stock} shares @ ${price} ETH closing ${timeRange(moment(), closes)}`
-        },
-      },
-      {
-        contractClass: IndividualInvestorSaleVoting,
-        title: async a => `${await IndividualInvestorSaleVoting.at(a).title.call()}`,
-        description: async a => {
-          const c = IndividualInvestorSaleVoting.at(a)
-          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
-          const price = await c.price.call().then(x => web3.fromWei(x.toNumber(), 'ether'))
-          const units = await c.units.call().then(x => x.toNumber())
-          const investorAddress = await c.investor.call()
-          const closes = await c.closeDate.call().then(x => moment(x.toNumber() * 1000))
-          const entity = await Identity.get(investorAddress)
-
-          return `Investment offer to ${entity.name} of ${units} ${stock} shares @ ${price} ETH closing in ${timeRange(moment(), closes)}`
-        },
+        contractClass: StockSaleVoting,
+        title: async a => `${await StockSaleVoting.at(a).title.call()} voting`,
+        description: async a => `${await StockSaleVoting.at(a).title.call()} voting`,
       },
     ]
   }

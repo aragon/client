@@ -5,8 +5,7 @@ import BinaryVoting from '/imports/lib/contracts/build/contracts/BinaryVoting.so
 import BinaryPoll from '/imports/lib/contracts/build/contracts/BinaryPoll.sol.js'
 import IssueStockVoting from '/imports/lib/contracts/build/contracts/IssueStockVoting.sol.js'
 import GrantVestedStockVoting from '/imports/lib/contracts/build/contracts/GrantVestedStockVoting.sol.js'
-import BoundedStandardSaleVoting from '/imports/lib/contracts/build/contracts/BoundedStandardSaleVoting.sol.js'
-import IndividualInvestorSaleVoting from '/imports/lib/contracts/build/contracts/IndividualInvestorSaleVoting.sol.js'
+import StockSaleVoting from '/imports/lib/contracts/build/contracts/StockSaleVoting.sol.js'
 import StockSale from '/imports/lib/contracts/build/contracts/StockSale.sol.js'
 import BoundedStandardSale from '/imports/lib/contracts/build/contracts/BoundedStandardSale.sol.js'
 import IndividualInvestorSale from '/imports/lib/contracts/build/contracts/IndividualInvestorSale.sol.js'
@@ -20,10 +19,9 @@ BinaryVoting.setProvider(web3.currentProvider)
 BinaryPoll.setProvider(web3.currentProvider)
 IssueStockVoting.setProvider(web3.currentProvider)
 GrantVestedStockVoting.setProvider(web3.currentProvider)
-BoundedStandardSaleVoting.setProvider(web3.currentProvider)
-IndividualInvestorSaleVoting.setProvider(web3.currentProvider)
+StockSaleVoting.setProvider(web3.currentProvider)
 StockSale.setProvider(web3.currentProvider)
 BoundedStandardSale.setProvider(web3.currentProvider)
 IndividualInvestorSale.setProvider(web3.currentProvider)
 
-export { Company, Stock, GrantableStock, BinaryVoting as Voting, BinaryPoll as Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, StockSale, BoundedStandardSale, IndividualInvestorSale, IndividualInvestorSaleVoting }
+export { Company, Stock, GrantableStock, BinaryVoting as Voting, BinaryPoll as Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale, BoundedStandardSale, IndividualInvestorSale }
