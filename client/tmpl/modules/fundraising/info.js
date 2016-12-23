@@ -7,9 +7,7 @@ const StockSales = StockSalesWatcher.StockSales
 const tmpl = Template.Module_Fundraising_Info.extend([ClosableSection])
 const reloadSaleId = () => TemplateVar.set('id', +FlowRouter.current().params.id)
 
-const reload = () => {
-  reloadSaleId()
-}
+const reload = reloadSaleId
 
 const getRaise = () => StockSales.findOne({ index: TemplateVar.get('id') })
 const getSaleBalance = sale => web3.eth.getBalance(sale.address).toNumber()

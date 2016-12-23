@@ -1,7 +1,7 @@
 import helpers from '/client/helpers'
 import Identity from '/client/lib/identity'
 
-import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting } from './contracts'
+import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
 
@@ -185,7 +185,16 @@ class VotingWatcher {
       {
         contractClass: StockSaleVoting,
         title: async a => `${await StockSaleVoting.at(a).title.call()} voting`,
-        description: async a => `${await StockSaleVoting.at(a).title.call()} voting`,
+        description: async a => {
+          const sale = StockSale.at(await StockSaleVoting.at(a).sale.call())
+
+          const raiseTarget = sale.raiseTarget.call().then(x => x.toNumber())
+          const stock = sale.stockId.call().then(x => x.toNumber())
+          const buyingPrice = sale.getBuyingPrice.call(0).then(x => x.toNumber())
+          const availableTokens = sale.availableTokens.call().then(x => x.toNumber())
+
+          return `Voting to create a stock sale to raise ${web3.fromWei(await raiseTarget, 'ether')} at ${web3.fromWei(await buyingPrice, 'ether')} ETH per ${ Stocks.findOne({ index: +(await stock) }).symbol } share`
+        },
       },
     ]
   }
