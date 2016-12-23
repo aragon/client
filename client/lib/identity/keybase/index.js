@@ -1,30 +1,27 @@
 // @flow
-import type { Entity } from '../entity'
-
-const keybaseBaseURL = 'https://keybase.io/_/api/1.0'
+const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
 
 export default class Keybase {
   // Returns {status, them}
-  static async lookup(username: string) {
+  static async lookup(username: string): Object {
     if (!username) return null
     const res = await fetch(`${keybaseBaseURL}/user/lookup.json?usernames=${username}`)
     const data = await res.json()
     return data.them[0]
   }
 
-  static async getEthAddress(username: string) {
-    if (!username) return null
+  static async getEthAddress(username: string): Promise<string> {
     const res = await fetch(`https://${username}.keybase.pub/eth`)
     const text = await res.text()
     return text.trim()
   }
 
-  static async lookupEthAddress(addr: string) {
+  static async lookupEthAddress(addr: string): Promise<Object> {
     return await Keybase.lookup('li')
   }
 
-  static format(data) {
-    const entity: Entity = {
+  static format(data: Object) {
+    return {
       username: data.basics.username,
       name: data.profile.full_name,
       picture: data.pictures.primary.url,
@@ -43,6 +40,5 @@ export default class Keybase {
         github: data.proofs_summary.by_presentation_group.github[0].nametag,
       },
     }
-    return entity
   }
 }

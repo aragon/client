@@ -1,22 +1,21 @@
 // @flow
-import Mongo from 'meteor/mongo'
-import PersistentMinimongo from 'meteor/frozeman:persistent-minimongo'
-import EthAccounts from 'meteor/ethereum:accounts'
+import { Mongo } from 'meteor/mongo'
+import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
+import { EthAccounts } from 'meteor/ethereum:accounts'
 
+import type { Entity, FormattedEntity } from './entity'
 import Keybase from './keybase'
 import Anon from './anon'
 
 const Entities = new Mongo.Collection('entities', { connection: null })
 new PersistentMinimongo(Entities)
 
-window.Entities = Entities
-
 const providers = {
   keybase: Keybase,
   anon: Anon,
 }
 
-const lookupAddress = async (addr: string) => {
+const lookupAddress = async (addr: string): Object => {
   let providerName = null
   let data = null
   for (providerName of Object.keys(providers)) {
@@ -27,9 +26,7 @@ const lookupAddress = async (addr: string) => {
 }
 
 class Identity {
-  static format(entity) {
-    if (!entity) return null
-
+  static format(entity: Entity): FormattedEntity {
     const formatted = providers[entity.identityProvider].format(entity.data)
     formatted.identityProvider = entity.identityProvider
     formatted.ethereumAddress = entity.ethereumAddress
@@ -56,7 +53,7 @@ class Identity {
     return entity
   }
 
-  static async getUsername(username, identityProvider, raw = false) {
+  static async getUsername(username: string, identityProvider: string, raw: boolean = false) {
     // Usually we will want to store addr => username but not the other way around
     // let entity = Entities.findOne(({'data.basics.username': username})
     const ethereumAddress = await providers[identityProvider].getEthAddress(username)
@@ -73,8 +70,8 @@ class Identity {
     return entity
   }
 
-  static set(addr, identityProvider, entityObj) {
-    const entity = {
+  static set(addr: string, identityProvider: string, entityObj: Object) {
+    const entity: Entity = {
       ethereumAddress: addr,
       identityProvider,
       data: entityObj,
@@ -82,16 +79,16 @@ class Identity {
     Entities.upsert({ ethereumAddress: addr }, entity)
   }
 
-  static setCurrent(entity) {
+  static setCurrent(entity: Entity) {
     Entities.update({ current: true }, { $unset: { current: '' } })
     Entities.update({ ethereumAddress: entity.ethereumAddress }, { $set: { current: true } })
   }
 
-  static setCurrentEthereumAccount(addr) {
+  static setCurrentEthereumAccount(addr: string) {
     Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
   }
 
-  static async current(raw = false) {
+  static async current(raw: boolean = false) {
     let entity = Entities.findOne({ current: true })
 
     if (!raw) entity = Identity.format(entity)
