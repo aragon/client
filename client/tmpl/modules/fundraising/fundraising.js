@@ -9,7 +9,10 @@ tmpl.routes({
   '/new': () => TemplateVar.set('rightSection', 'Module_Fundraising_New'),
   '/new/individual': () => TemplateVar.set('rightSection', 'Module_Fundraising_New_Individual'),
   '/new/bounded': () => TemplateVar.set('rightSection', 'Module_Fundraising_New_Bounded'),
-  '/:id': () => TemplateVar.set('rightSection', 'Module_Fundraising_Info'),
+  '/:id': () => {
+    TemplateVar.set('rightSection', 'Module_Fundraising_Info')
+    setTimeout(() => $('#raise').trigger('reload'), 10)
+  },
 })
 
 tmpl.onCreated(() => {

@@ -56,10 +56,13 @@ class StockSalesWatcher {
       this.StockSales.remove({})
     }
     if (lastSavedIndex < lastCompanyIndex) {
-      const allNewSales = _.range(lastSavedIndex + 1, lastCompanyIndex)
+      const baseIndex = lastSavedIndex + 1
+      const allNewSalesAddresses = await Promise.all(
+                          _.range(baseIndex, lastCompanyIndex)
                             .map(i => Company.sales.call(i))
-                            .map((a, i) => this.getSale(a, i))
-      const newSales = await Promise.all(allNewSales)
+                          )
+      const newSales = await Promise.all(allNewSalesAddresses.map((a, i) => this.getSale(a, baseIndex + i)))
+
       console.log('fetched', newSales)
       this.listenForSalesEvents(newSales)
     }
@@ -73,6 +76,8 @@ class StockSalesWatcher {
       raisedAmount: sale.raisedAmount.call().then(x => x.toNumber()),
       title: sale.saleTitle.call(),
       type: sale.saleType.call(),
+      raiseTarget: sale.raiseTarget.call().then(x => x.toNumber()),
+      raiseMaximum: sale.raiseMaximum.call().then(x => x.toNumber()),
       index,
       address,
     }

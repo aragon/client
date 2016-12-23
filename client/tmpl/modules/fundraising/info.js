@@ -4,8 +4,20 @@ import StockSalesWatcher from '/client/lib/ethereum/stocksales'
 const StockSales = StockSalesWatcher.StockSales
 
 const tmpl = Template.Module_Fundraising_Info.extend([ClosableSection])
-const saleId = () => FlowRouter.current().params.id
+const reloadSaleId = () => TemplateVar.set('id', +FlowRouter.current().params.id)
+
+const reload = () => {
+  reloadSaleId()
+}
+
+tmpl.onRendered(function () {
+  reload()
+})
 
 tmpl.helpers({
-  raise: () => StockSales.findOne({ index: +saleId() }),
+  raise: () => StockSales.findOne({ index: TemplateVar.get('id') }),
+})
+
+tmpl.events({
+  'reload #raise': reload,
 })
