@@ -72,6 +72,8 @@ class StockSalesWatcher {
     const sale = StockSale.at(address)
     const investorAddresses = _.range(0, await sale.investorIndex.call())
                                 .map(i => sale.investors.call(i))
+    const investors = Promise.all(investorAddresses)
+                      .then(x => [...new Set(x)].map(a => Promise.allProperties({ address: a, tokens: sale.buyers.call(a).then(x => x.toNumber()) })))
 
     const saleObject = {
       stock: sale.stockId.call().then(x => x.toNumber()),
@@ -81,12 +83,16 @@ class StockSalesWatcher {
       type: sale.saleType.call(),
       raiseTarget: sale.raiseTarget.call().then(x => x.toNumber()),
       raiseMaximum: sale.raiseMaximum.call().then(x => x.toNumber()),
-      investors: Promise.all(investorAddresses).then(x => [...new Set(x)]), // unique elements in array
+      buyingPrice: sale.getBuyingPrice.call(0).then(x => x.toNumber()),
+      availableTokens: sale.availableTokens.call().then(x => x.toNumber()),
+      investors: Promise.all(await investors), // unique elements in array
       index,
       address,
     }
 
     const finalSale = await Promise.allProperties(saleObject)
+    console.log(finalSale)
+
     this.StockSales.upsert(`ss_${address}`, finalSale)
     return finalSale
   }

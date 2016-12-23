@@ -14,9 +14,34 @@
 
     <h3>Address: {{address}}</h3>
     <h3></h3>
+
+    <p><i class="ethereum icon"></i> Token price: {{ ether buyingPrice }} ETH</p>
+    <p><i class="ethereum icon"></i> Available tokens: {{ availableTokens }} shares</p>
     <p><i class="ethereum icon"></i> Target: {{ ether raiseTarget }} ETH</p>
-    <p><i class="ethereum icon"></i> Cap: {{ ether raiseTarget }} ETH</p>
+    <p><i class="ethereum icon"></i> Cap: {{ ether raiseMaximum }} ETH</p>
     <p><i class="ethereum icon"></i> Currently raised: {{ ether raisedAmount }} ETH</p>
+
+    <table class="ui very basic sortable selectable striped padded fixed table">
+      <thead>
+        <tr>
+          <th>Investor</th>
+          <th>Shares bought</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each investors}}
+        <tr data-address="{{address}}">
+          <td>
+            {{ address }}
+          </td>
+          <td>
+            {{ tokens }}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
     {{/with}}
     <div class="ui spacer"></div>
   </div>
