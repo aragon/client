@@ -19,12 +19,13 @@ class StockSalesWatcher {
   }
 
   listenForNewSales() {
-    Company.NewStockSale({}).watch((err, ev) => {
-      this.getSale(ev.args.saleAddress, ev.args.saleIndex.toNumber())
+    Company.NewStockSale({}).watch(async (err, ev) => {
+      const newsale = await this.getSale(ev.args.saleAddress, ev.args.saleIndex.toNumber())
+      listenForSalesEvents([newsale])
     })
   }
 
-  listenForSalesEvents() {
+  listenForSalesEvents(sales = this.StockSales.find().fetch()) {
     if (this.lastWatchedBlock > this.lastBlock) {
       this.lastWatchedBlock = this.lastBlock
     }
@@ -32,9 +33,14 @@ class StockSalesWatcher {
     const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
-    const update = sale => (() => this.getSale(sale.address, sale.index))
+    const update = sale => ((err, a) => {
+      if (a.length === 0) { return } // Discard empty get arrays
+      const ev = a[a.length - 1] || a
+      this.lastWatchedBlock = ev.blockNumber
+      this.getSale(sale.address, sale.index)
+    })
 
-    this.StockSales.find().fetch().forEach(sale => {
+    sales.forEach(sale => {
       const stockSale = StockSale.at(sale.address)
       stockSale.StockSold({}, streamingPredicate).watch(update(sale))
       stockSale.StockBought({}, streamingPredicate).watch(update(sale))
@@ -50,11 +56,12 @@ class StockSalesWatcher {
       this.StockSales.remove({})
     }
     if (lastSavedIndex < lastCompanyIndex) {
-      console.log('fethcng',lastSavedIndex + 1,lastCompanyIndex, _.range(lastSavedIndex + 1, lastCompanyIndex))
       const allNewSales = _.range(lastSavedIndex + 1, lastCompanyIndex)
                             .map(i => Company.sales.call(i))
                             .map((a, i) => this.getSale(a, i))
-      await Promise.all(allNewSales)
+      const newSales = await Promise.all(allNewSales)
+      console.log('fetched', newSales)
+      this.listenForSalesEvents(newSales)
     }
   }
 
@@ -70,7 +77,9 @@ class StockSalesWatcher {
       address,
     }
 
-    this.StockSales.upsert(`ss_${address}`, await Promise.allProperties(saleObject))
+    const finalSale = await Promise.allProperties(saleObject)
+    this.StockSales.upsert(`ss_${address}`, finalSale)
+    return finalSale
   }
 
   async createIndividualInvestorVote(address, stock, investor, price, units, closes, title = 'Series Y') {
