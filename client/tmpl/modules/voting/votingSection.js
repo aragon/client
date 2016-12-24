@@ -96,7 +96,7 @@ const castVote = async option => {
 
 const executeVote = async option => {
   await Voting.at(voting().address).executeOnAction(option, Company.address,
-                  { from: Identity.current(true).ethereumAddress, gas: 4800000 })
+                  { from: Identity.current(true).ethereumAddress, gas: 9900000 })
   reload()
 }
 
