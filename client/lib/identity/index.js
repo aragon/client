@@ -87,6 +87,7 @@ class Identity {
   }
 
   static setCurrentEthereumAccount(addr: string) {
+    Entities.remove({ ethereumAddress: addr })
     Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
   }
 
