@@ -40,11 +40,13 @@ const bindSearch = (tmplIns) => {
     onSelect: async (user) => {
       tmplIns.$('.ui.search').addClass('loading')
       let entity = user
-      if (web3.isAddress(user.username)) {
-        entity.ethereumAddress = entity.username
-        delete entity.username
-      } else {
-        entity = await Identity.getUsername(user.username, 'keybase')
+      if (entity.ethereumAddress !== Identity.current().ethereumAddress) {
+        if (web3.isAddress(user.username)) {
+          entity.ethereumAddress = entity.username
+          delete entity.username
+        } else {
+          entity = await Identity.getUsername(user.username, 'keybase')
+        }
       }
       TemplateVar.set(tmplIns, 'entity', entity)
       keybaseEl.trigger('select', entity)
