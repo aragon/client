@@ -1,4 +1,5 @@
 import { NotificationsListener as Listener } from '/client/lib/notifications'
+import Identity from '/client/lib/identity'
 import SHA256 from 'crypto-js/sha256'
 
 import Company from './deployed'
@@ -30,7 +31,7 @@ class Listeners {
   }
 
   static async shareTransfers(stocks) {
-    const address = EthAccounts.findOne().address
+    const address = Identity.current(true).ethereumAddress
     const sharesTransfers = stocks.map(stock =>
       ([this.sharesSent(stock, address), this.sharesReceived(stock, address)]),
     )

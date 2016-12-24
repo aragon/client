@@ -1,6 +1,5 @@
 import Chart from 'chart.js'
 import StockWatcher from '/client/lib/ethereum/stocks'
-// import Company from '/client/lib/ethereum/deployed'
 import { Stock } from '/client/lib/ethereum/contracts'
 import Identity from '/client/lib/identity'
 

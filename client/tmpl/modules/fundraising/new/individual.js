@@ -4,9 +4,7 @@ import StockWatcher from '/client/lib/ethereum/stocks'
 import StockSaleWatcher from '/client/lib/ethereum/stocksales'
 import Company from '/client/lib/ethereum/deployed'
 import { Stock } from '/client/lib/ethereum/contracts'
-import helpers from '/client/helpers'
 
-const timeRange = helpers.timeRange
 const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Fundraising_New_Individual.extend([ClosableSection])
@@ -31,10 +29,11 @@ tmpl.onRendered(function () {
       const units = $('input[name=units]').val()
       const closes = +moment($('[type=date]').val()) / 1000
 
-      const address = EthAccounts.findOne().address
+      const address = Identity.current(true).ethereumAddress
 
       console.log('creating with investor', investor)
-      await StockSaleWatcher.createIndividualInvestorVote(address, selectedStock, investor, price, units, closes, title)
+      await StockSaleWatcher.createIndividualInvestorVote(
+        address, selectedStock, investor, price, units, closes, title)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
@@ -46,7 +45,7 @@ tmpl.helpers({
   selectedRecipient: () => (TemplateVar.get('recipient')),
   entity: ReactivePromise(Identity.get),
   stocks: () => Stocks.find(),
-  defaultAddress: () => EthAccounts.findOne().address,
+  defaultAddress: () => Identity.current(true).ethereumAddress,
   availableShares: ReactivePromise((selectedStock) => {
     const stock = Stocks.findOne({ index: +selectedStock })
     if (!stock) { return Promise.reject() }
@@ -55,6 +54,6 @@ tmpl.helpers({
 })
 
 tmpl.events({
-  'select .keybaseEl': (e, instance, user) => (TemplateVar.set('recipient', user)),
+  'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
   'success .dimmer': () => FlowRouter.go('/fundraising'),
 })

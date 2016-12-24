@@ -1,25 +1,22 @@
 import ClosableSection from '/client/tmpl/components/closableSection'
-import Keybase from '/client/lib/identity/keybase'
+import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
 import { Stock, GrantVestedStockVoting } from '/client/lib/ethereum/contracts'
-import helpers from '/client/helpers'
 
-const timeRange = helpers.timeRange
 const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Ownership_AssignShares.extend([ClosableSection])
 
 const assignStock = (kind, value, recipient) => (
   Company.grantStock(+kind, +value, recipient,
-    { from: EthAccounts.findOne().address, gas: 150000 })
+    { from: Identity.current(true).ethereumAddress, gas: 150000 })
 )
 
 const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
   const supportNeeded = 50
-  const now = new Date()
 
-  const addr = EthAccounts.findOne().address
+  const addr = Identity.current(true).ethereumAddress
   const oneWeekFromNow = +moment().add(7, 'days') / 1000
 
   const voting = await GrantVestedStockVoting.new(
@@ -67,9 +64,8 @@ tmpl.onRendered(function () {
 
 tmpl.helpers({
   selectedRecipient: () => (TemplateVar.get('recipient')),
-  addressForUser: ReactivePromise(Keybase.getEthereumAddress),
   stocks: () => Stocks.find(),
-  defaultAddress: () => EthAccounts.findOne().address,
+  defaultAddress: () => Identity.current(true).ethereumAddress,
   availableShares: ReactivePromise((selectedStock) => {
     const stock = Stocks.findOne({ index: +selectedStock })
     if (!stock) { return Promise.reject() }
@@ -78,7 +74,7 @@ tmpl.helpers({
 })
 
 tmpl.events({
-  'select .keybaseEl': (e, instance, user) => (TemplateVar.set('recipient', user)),
+  'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
   'success .dimmer': () => FlowRouter.go('/ownership'),
   'click .ui.menu.mode a': (e) => TemplateVar.set('assignMode', $(e.currentTarget).data('issue')),
 })

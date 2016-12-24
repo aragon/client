@@ -4,7 +4,7 @@ import Anon from '/client/lib/identity/anon'
 const tmpl = Template.Element_IdentityAutocomplete
 
 const bindSearch = (tmplIns) => {
-  const keybaseEl = tmplIns.$('.keybaseEl')
+  const identityAutocomplete = tmplIns.$('.identityAutocomplete')
   tmplIns.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
@@ -40,7 +40,7 @@ const bindSearch = (tmplIns) => {
     onSelect: async (user) => {
       tmplIns.$('.ui.search').addClass('loading')
       let entity = user
-      if (entity.ethereumAddress !== Identity.current().ethereumAddress) {
+      if (entity.ethereumAddress !== Identity.current(true).ethereumAddress) {
         if (web3.isAddress(user.username)) {
           entity.ethereumAddress = entity.username
           delete entity.username
@@ -49,7 +49,7 @@ const bindSearch = (tmplIns) => {
         }
       }
       TemplateVar.set(tmplIns, 'entity', entity)
-      keybaseEl.trigger('select', entity)
+      identityAutocomplete.trigger('select', entity)
     },
   })
 }

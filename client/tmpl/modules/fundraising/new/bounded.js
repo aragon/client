@@ -29,7 +29,7 @@ tmpl.onRendered(function () {
       const cap = $('input[name=cap]').val()
       const closes = +moment($('[type=date]').val()) / 1000
 
-      const address = EthAccounts.findOne().address
+      const address = Identity.current(true).ethereumAddress
 
       await StockSaleWatcher
         .createBoundedSaleVote(address, selectedStock, min, cap, price, closes, title)
@@ -44,7 +44,7 @@ tmpl.helpers({
   selectedRecipient: () => (TemplateVar.get('recipient')),
   entity: ReactivePromise(Identity.get),
   stocks: () => Stocks.find(),
-  defaultAddress: () => EthAccounts.findOne().address,
+  defaultAddress: () => Identity.current(true).ethereumAddress,
   availableShares: ReactivePromise((selectedStock) => {
     const stock = Stocks.findOne({ index: +selectedStock })
     if (!stock) { return Promise.reject() }
@@ -53,6 +53,6 @@ tmpl.helpers({
 })
 
 tmpl.events({
-  'select .keybaseEl': (e, instance, user) => (TemplateVar.set('recipient', user)),
+  'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
   'success .dimmer': () => FlowRouter.go('/fundraising'),
 })

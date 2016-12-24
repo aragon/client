@@ -1,5 +1,6 @@
 import ClosableSection from '/client/tmpl/components/closableSection'
 import StockSalesWatcher from '/client/lib/ethereum/stocksales'
+import Identity from '/client/lib/identity'
 import { StockSale } from '/client/lib/ethereum/contracts'
 
 const StockSales = StockSalesWatcher.StockSales
@@ -18,7 +19,7 @@ const canTransfer = sale => (
 )
 
 const transfer = async () => {
-  await StockSale.at(getRaise().address).transferFunds({ gas: 2000000, from: EthAccounts.findOne().address })
+  await StockSale.at(getRaise().address).transferFunds({ gas: 2000000, from: Identity.current(true).ethereumAddress })
   reload()
 }
 

@@ -2,6 +2,7 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 import VotingWatcher from '/client/lib/ethereum/votings'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
+import Identity from '/client/lib/identity'
 import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting } from '/client/lib/ethereum/contracts'
 
 const Votings = VotingWatcher.Votings
@@ -26,7 +27,7 @@ const reload = () => {
 const allStocks = () => Stocks.find().fetch().map(s => Stock.at(s.address))
 
 const canVote = async () => {
-  const address = EthAccounts.findOne().address
+  const address = Identity.current(true).ethereumAddress
   const vote = voting().index
   const allVotes = allStocks().map(stock => stock.canVote.call(address, vote))
   const allResults = await Promise.all(allVotes)
@@ -35,7 +36,7 @@ const canVote = async () => {
 }
 
 const votingPower = async () => {
-  const address = EthAccounts.findOne().address
+  const address = Identity.current(true).ethereumAddress
   const vote = voting().index
   const allPower = allStocks().map(stock => stock.votingPowerForPoll.call(address, vote))
   const allVotes = await Promise.all(allPower)
@@ -89,13 +90,13 @@ tmpl.helpers({
 
 const castVote = async option => {
   await Company.castVote(voting().index, option,
-                  { from: EthAccounts.findOne().address, gas: 4800000 })
+                  { from: Identity.current(true).ethereumAddress, gas: 4800000 })
   reload()
 }
 
 const executeVote = async option => {
   await Voting.at(voting().address).executeOnAction(option, Company.address,
-                  { from: EthAccounts.findOne().address, gas: 4800000 })
+                  { from: Identity.current(true).ethereumAddress, gas: 4800000 })
   reload()
 }
 

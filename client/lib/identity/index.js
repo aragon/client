@@ -31,7 +31,7 @@ class Identity {
     formatted.identityProvider = entity.identityProvider
     formatted.ethereumAddress = entity.ethereumAddress
 
-    if (entity.ethereumAddress === EthAccounts.findOne().address) {
+    if (entity.ethereumAddress === Identity.current(true).ethereumAddress) {
       formatted.name = 'Me'
     }
 
@@ -53,8 +53,8 @@ class Identity {
     return entity
   }
 
-  static async getUsername(username: string, identityProvider: string, raw: boolean = false)
-    : Promise<Entity | FormattedEntity> {
+  static async getUsername(username: string, identityProvider: string, raw: boolean = false):
+    Promise<Entity | FormattedEntity> {
     // Usually we will want to store addr => username but not the other way around
     // let entity = Entities.findOne(({'data.basics.username': username})
     const ethereumAddress = await providers[identityProvider].getEthAddress(username)
@@ -105,7 +105,6 @@ class Identity {
     if (!username) return false
 
     const entity = await Identity.getUsername(username, identityProvider, true)
-    console.log(entity)
     Identity.setCurrent(entity)
     return true
   }
