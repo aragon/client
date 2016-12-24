@@ -90,7 +90,7 @@ class Identity {
     Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
   }
 
-  static async current(raw: boolean = false) {
+  static current(raw: boolean = false) {
     let entity = Entities.findOne({ current: true })
 
     if (!raw) entity = Identity.format(entity)
@@ -98,7 +98,7 @@ class Identity {
   }
 
   static async linkCurrent(identityProvider: string): Promise<boolean> {
-    const current = await Identity.current()
+    const current = Identity.current()
 
     const username = await providers[identityProvider].link(current.ethereumAddress)
     if (!username) return false

@@ -3,7 +3,7 @@ import { Module, Core } from './lib/modules'
 import { BrowserNotifications } from './lib/notifications'
 
 const setIdentity = async () => {
-  let current = await Identity.current(true)
+  let current = Identity.current(true)
   if (!current) {
     current = await Identity.get(EthAccounts.findOne().address, true)
     Identity.setCurrent(current)

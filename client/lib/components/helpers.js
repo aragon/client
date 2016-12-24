@@ -33,7 +33,7 @@ Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount)
 
 Template.registerHelper('online', () => navigator.onLine)
 
-Template.registerHelper('currentAccount', ReactivePromise(async () => {
-  const entity = await Identity.current()
+Template.registerHelper('currentAccount', ReactivePromise(() => {
+  const entity = Identity.current()
   return EthAccounts.findOne({ address: entity.ethereumAddress })
 }))

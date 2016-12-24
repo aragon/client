@@ -1,4 +1,5 @@
 import Identity from '/client/lib/identity'
+import Anon from '/client/lib/identity/anon'
 
 const tmpl = Template.Element_IdentityAutocomplete
 
@@ -7,38 +8,41 @@ const bindSearch = (tmplIns) => {
   tmplIns.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
-      onResponse: res => {
-        let additionalElements = []
+      onResponse: (res) => {
+        const additionalElements = []
         const query = $('.ui.search .prompt').val()
 
         if (web3.isAddress(query)) {
-          additionalElements.push({ name: "Use address", username: query })
+          additionalElements.push(Anon.format({ ethereumAddress: query }))
         }
 
-        if (query === "" || query == "me") {
-          additionalElements.push({ name: "Your address", username: EthAccounts.findOne().address })
+        if (query === '' || query === 'me') {
+          const cur = Identity.current()
+          cur.name = 'Me'
+          additionalElements.push(cur)
         }
 
         return {
-          results: (res.completions || []).map(c => ({
-                      username: c.components.username.val,
-                      name: (c.components.full_name || {}).val,
-                      pic: c.thumbnail || 'http://placekitten.com/g/64/64',
-          })).concat(additionalElements)
+          results: (res.completions||[]).map(c => ({
+            username: c.components.username.val,
+            name: (c.components.full_name || {}).val,
+            picture: c.thumbnail || 'http://placekitten.com/g/64/64',
+          })).concat(additionalElements),
         }
-      }
+      },
     },
     fields: {
       title: 'name',
       description: 'username',
-      image: 'pic',
+      image: 'picture',
     },
     minCharacters: 0,
     onSelect: async (user) => {
       tmplIns.$('.ui.search').addClass('loading')
-      let entity = {}
+      let entity = user
       if (web3.isAddress(user.username)) {
-        entity = { ethereumAddress: user.username, name: 'Address' }
+        entity.ethereumAddress = entity.username
+        delete entity.username
       } else {
         entity = await Identity.getUsername(user.username, 'keybase')
       }

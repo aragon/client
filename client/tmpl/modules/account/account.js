@@ -24,8 +24,8 @@ tmpl.onRendered(function () {
 
 tmpl.events({
   'click #viewAllAccounts': () => TemplateVar.set('viewAllAccounts', true),
-  'click #unlinkIdentity': async () => {
-    const entity = await Identity.current()
+  'click #unlinkIdentity': () => {
+    const entity = Identity.current()
     Identity.setCurrent({
       identityProvider: 'anon',
       ethereumAddress: entity.ethereumAddress,
