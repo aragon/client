@@ -16,8 +16,6 @@ export default class Anon {
   }
 
   static format(entity: Entity) {
-    console.log(entity.ethereumAddress)
-    console.log(haiku(entity.ethereumAddress))
     return {
       username: entity.ethereumAddress,
       name: haiku(entity.ethereumAddress),

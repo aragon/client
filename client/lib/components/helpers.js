@@ -28,7 +28,6 @@ Template.registerHelper('ticker', ReactivePromise((currency) => coinr(currency))
 
 Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount) => {
   const eth = await coinr('eth')
-  console.log(eth)
   return ethAmount * parseFloat(eth.price_usd)
 }))
 
@@ -36,6 +35,5 @@ Template.registerHelper('online', () => navigator.onLine)
 
 Template.registerHelper('currentAccount', ReactivePromise(async () => {
   const entity = await Identity.current()
-  console.log(entity)
   return EthAccounts.findOne({ address: entity.ethereumAddress })
 }))

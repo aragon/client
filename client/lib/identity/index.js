@@ -16,13 +16,13 @@ const providers = {
 }
 
 const lookupAddress = async (addr: string): Object => {
-  let providerName = null
+  let identityProvider = null
   let data = null
-  for (providerName of Object.keys(providers)) {
-    data = await providers[providerName].lookupEthAddress(addr)
+  for (identityProvider of Object.keys(providers)) {
+    data = await providers[identityProvider].lookupEthAddress(addr)
     if (data) break
   }
-  return { providerName, data }
+  return { identityProvider, data }
 }
 
 class Identity {
@@ -42,9 +42,9 @@ class Identity {
     let entity = Entities.findOne({ ethereumAddress: addr })
 
     if (!entity) {
-      const { providerName, data } = await lookupAddress(addr)
-      if (providerName && data) {
-        Identity.set(addr, providerName, data)
+      const { identityProvider, data } = await lookupAddress(addr)
+      if (identityProvider && data) {
+        Identity.set(addr, identityProvider, data)
         entity = Entities.findOne({ ethereumAddress: addr })
       }
     }
@@ -53,14 +53,15 @@ class Identity {
     return entity
   }
 
-  static async getUsername(username: string, identityProvider: string, raw: boolean = false) {
+  static async getUsername(username: string, identityProvider: string, raw: boolean = false)
+    : Promise<Entity | FormattedEntity> {
     // Usually we will want to store addr => username but not the other way around
     // let entity = Entities.findOne(({'data.basics.username': username})
     const ethereumAddress = await providers[identityProvider].getEthAddress(username)
     const data = await providers[identityProvider].lookup(username)
     Identity.set(ethereumAddress, identityProvider, data)
 
-    let entity = {
+    let entity: Entity | FormattedEntity = {
       identityProvider,
       ethereumAddress,
       data,
@@ -94,6 +95,18 @@ class Identity {
 
     if (!raw) entity = Identity.format(entity)
     return entity
+  }
+
+  static async linkCurrent(identityProvider: string): Promise<boolean> {
+    const current = await Identity.current()
+
+    const username = await providers[identityProvider].link(current.ethereumAddress)
+    if (!username) return false
+
+    const entity = await Identity.getUsername(username, identityProvider, true)
+    console.log(entity)
+    Identity.setCurrent(entity)
+    return true
   }
 }
 

@@ -1,17 +1,16 @@
-import IntertronClient from 'intertron-client'
-
 import Identity from '/client/lib/identity'
 import { Module, Core } from './lib/modules'
 import { BrowserNotifications } from './lib/notifications'
-import KeybaseProofs from './lib/identity/keybase/proofs'
 
-const setIdentity = async (username) => {
-  let current = await Identity.current()
+const setIdentity = async () => {
+  let current = await Identity.current(true)
   if (!current) {
-    current = await Identity.getUsername(username, 'keybase')
+    current = await Identity.get(EthAccounts.findOne().address, true)
     Identity.setCurrent(current)
   }
 }
+
+setIdentity()
 
 this.Root = new Core()
 this.Root.modules = [
@@ -30,18 +29,3 @@ this.Root.modules = [
 ]
 
 BrowserNotifications.requestPermission()
-
-const start = async () => {
-  const intertron = new IntertronClient()
-
-  const username = await intertron.call('Keybase.getUsername')
-  console.log('Your Keybase username is', username)
-  setIdentity(username)
-
-  const proof = await KeybaseProofs.createProof(username, EthAccounts.findOne().address)
-  const proofPayload = JSON.stringify(proof)
-  await intertron.call('Keybase.saveProof', proofPayload)
-  console.log('saved proof', proofPayload)
-}
-
-setTimeout(start, 500) // web3 <-> node start up time
