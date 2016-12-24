@@ -17,6 +17,8 @@ tmpl.onRendered(function () {
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
+      this.$('.dimmer').trigger('loading')
+
       const date = $('[type=date]').val()
       const time = $('[type=time]').val()
       await openPoll(this.$('textarea[name=description]').val(), moment(`${date}, ${time}`))

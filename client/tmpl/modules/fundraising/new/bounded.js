@@ -4,10 +4,8 @@ import StockWatcher from '/client/lib/ethereum/stocks'
 import StockSaleWatcher from '/client/lib/ethereum/stocksales'
 import Company from '/client/lib/ethereum/deployed'
 import { Stock } from '/client/lib/ethereum/contracts'
-import helpers from '/client/helpers'
 import web3 from '/client/lib/ethereum/web3'
 
-const timeRange = helpers.timeRange
 const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Fundraising_New_Bounded.extend([ClosableSection])
@@ -22,6 +20,7 @@ tmpl.onRendered(function () {
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
+      this.$('.dimmer').trigger('loading')
 
       const title = $('input[name=title]').val()
       const selectedStock = TemplateVar.get(self, 'selectedStock')
@@ -32,7 +31,8 @@ tmpl.onRendered(function () {
 
       const address = EthAccounts.findOne().address
 
-      await StockSaleWatcher.createBoundedSaleVote(address, selectedStock, min, cap, price, closes, title)
+      await StockSaleWatcher
+        .createBoundedSaleVote(address, selectedStock, min, cap, price, closes, title)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false

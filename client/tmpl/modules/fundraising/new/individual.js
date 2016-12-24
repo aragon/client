@@ -21,6 +21,7 @@ tmpl.onRendered(function () {
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
+      this.$('.dimmer').trigger('loading')
 
       const title = $('input[name=title]').val()
       const selectedStock = TemplateVar.get(self, 'selectedStock')

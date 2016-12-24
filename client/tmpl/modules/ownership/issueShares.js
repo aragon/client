@@ -23,6 +23,8 @@ tmpl.onRendered(function () {
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
+      this.$('.dimmer').trigger('loading')
+
       await issueStock(this.$('input[name=kind]').val(), this.$('input[name=number]').val())
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
