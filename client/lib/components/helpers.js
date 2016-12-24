@@ -6,16 +6,14 @@ Template.registerHelper('$contains', (a, b) => (!a || b.toLowerCase().indexOf(a.
 
 Template.registerHelper('parent', () => ({ parent: Template.instance() }))
 
-Template.registerHelper('displayAddress', (ethAddress) => {
-  if (ethAddress === EthAccounts.findOne().address) {
-    return 'Me'
-  }
-  return ethAddress
-})
-
 Template.registerHelper('currentEntity', ReactivePromise(() => {
   if (!web3.isConnected()) return {}
   return Identity.current()
+}))
+
+Template.registerHelper('currentAccount', ReactivePromise(() => {
+  const entity = Identity.current()
+  return EthAccounts.findOne({ address: entity.ethereumAddress })
 }))
 
 Template.registerHelper('entityName', ReactivePromise(async (address) => {
@@ -32,8 +30,3 @@ Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount)
 }))
 
 Template.registerHelper('online', () => navigator.onLine)
-
-Template.registerHelper('currentAccount', ReactivePromise(() => {
-  const entity = Identity.current()
-  return EthAccounts.findOne({ address: entity.ethereumAddress })
-}))
