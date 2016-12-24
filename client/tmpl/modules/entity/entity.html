@@ -19,7 +19,9 @@
         {{#if cryptocurrencies.bitcoin}}
         <p><i class="bitcoin icon"></i> <a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>
         {{/if}}
+        {{#if pubkey}}
         <p><i class="key icon"></i> {{ formatFingerprint pubkey.fingerprint }}</p>
+        {{/if}}
         {{#if social.twitter}}
         <p><i class="twitter icon"></i> <a href="https://twitter.com/{{ social.twitter }}" target="_blank">{{ social.twitter }}</a></p>
         {{/if}}
@@ -44,6 +46,11 @@
       {{#if $eq identityProvider 'keybase'}}
       <a class="ui orange icon button" href="https://keybase.io/{{ username }}" target="_blank">
         <i class="key icon"></i> Open on Keybase
+      </a>
+      {{/if}}
+      {{#if $eq identityProvider 'anon'}}
+      <a class="ui primary icon button" href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">
+        <i class="white ethereum icon"></i> Open on Etherscan
       </a>
       {{/if}}
     </div>

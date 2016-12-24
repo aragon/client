@@ -58,8 +58,20 @@
           </a>
         </div>
         <div class="six wide column">
-          <a class="ui basic icon fluid button" data-content="People will not find you with your previous identity anymore" data-variation="inverted" id="logout">
+          <a class="ui basic icon fluid button" data-content="People will not find you with your previous identity anymore" data-variation="inverted" id="unlinkIdentity">
             <i class="sign out icon"></i> Unlink identity
+          </a>
+        </div>
+        {{/if}}
+        {{#if $eq identityProvider 'anon'}}
+        <div class="ten wide column">
+          <a class="ui positive icon fluid button" href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">
+            <i class="user icon"></i> Using your Ethereum account's identity
+          </a>
+        </div>
+        <div class="six wide column">
+          <a class="ui orange basic icon fluid button" data-content="People will be able to recognize you and possibly track your transactions" data-variation="inverted" id="linkKeybase">
+            <i class="add icon"></i> Link Keybase identity
           </a>
         </div>
         {{/if}}

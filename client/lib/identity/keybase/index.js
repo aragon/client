@@ -1,4 +1,6 @@
 // @flow
+import type { Entity } from '../entity'
+
 const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
 
 export default class Keybase {
@@ -20,7 +22,8 @@ export default class Keybase {
     return await Keybase.lookup('li')
   }
 
-  static format(data: Object) {
+  static format(entity: Entity) {
+    const data = entity.data
     return {
       username: data.basics.username,
       name: data.profile.full_name,

@@ -1,10 +1,13 @@
 // @flow
-const generateName = (str: string): string => {
-  return 'Manolo'
-}
+import jdenticon from 'jdenticon'
 
-const generatePic = (str: string): string => {
-  return 'http://placekitten.com/128/128'
+import type { Entity } from '../entity'
+import haiku from './haiku'
+
+const identicon = (str: string): string => {
+  const svg = jdenticon.toSvg(str.slice(2), 128)
+  const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' })
+  return URL.createObjectURL(blob)
 }
 
 export default class Anon {
@@ -12,11 +15,13 @@ export default class Anon {
     return { ethereumAddress: addr }
   }
 
-  static format(data: Object) {
+  static format(entity: Entity) {
+    console.log(entity.ethereumAddress)
+    console.log(haiku(entity.ethereumAddress))
     return {
-      username: data.ethereumAddress,
-      name: generateName(data.ethereumAddress),
-      picture: generatePic(data.ethereumAddress),
+      username: entity.ethereumAddress,
+      name: haiku(entity.ethereumAddress),
+      picture: identicon(entity.ethereumAddress),
     }
   }
 }

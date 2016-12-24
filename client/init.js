@@ -7,10 +7,8 @@ import KeybaseProofs from './lib/identity/keybase/proofs'
 
 const setIdentity = async (username) => {
   let current = await Identity.current()
-  console.log(current)
   if (!current) {
     current = await Identity.getUsername(username, 'keybase')
-    console.log(current)
     Identity.setCurrent(current)
   }
 }

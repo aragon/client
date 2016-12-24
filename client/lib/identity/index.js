@@ -27,7 +27,7 @@ const lookupAddress = async (addr: string): Object => {
 
 class Identity {
   static format(entity: Entity): FormattedEntity {
-    const formatted = providers[entity.identityProvider].format(entity.data)
+    const formatted = providers[entity.identityProvider].format(entity)
     formatted.identityProvider = entity.identityProvider
     formatted.ethereumAddress = entity.ethereumAddress
 
@@ -81,7 +81,8 @@ class Identity {
 
   static setCurrent(entity: Entity) {
     Entities.update({ current: true }, { $unset: { current: '' } })
-    Entities.update({ ethereumAddress: entity.ethereumAddress }, { $set: { current: true } })
+    Entities.update({ ethereumAddress: entity.ethereumAddress },
+      { current: true, ...entity })
   }
 
   static setCurrentEthereumAccount(addr: string) {
