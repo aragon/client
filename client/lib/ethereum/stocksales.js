@@ -93,7 +93,7 @@ class StockSalesWatcher {
       buyingPrice: sale.getBuyingPrice.call(0).then(x => x.toNumber()),
       availableTokens: sale.availableTokens.call().then(x => x.toNumber()),
       investors: Promise.all(await investors), // unique elements in array
-      saleMetadata: verifiedSale.additionalProperties(address),
+      typeMetadata: verifiedSale.additionalProperties(address),
       index,
       address,
     }
