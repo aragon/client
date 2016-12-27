@@ -2,6 +2,7 @@ import Company from './deployed'
 import { StockSale, StockSaleVoting, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
 import StockWatcher from './stocks'
+import { verifyContractCode } from './verify'
 
 const Stocks = StockWatcher.Stocks
 
@@ -75,17 +76,24 @@ class StockSalesWatcher {
     const investors = Promise.all(investorAddresses)
                       .then(x => [...new Set(x)].map(a => Promise.allProperties({ address: a, tokens: sale.buyers.call(a).then(x => x.toNumber()) })))
 
+    const verifiedSale = await this.verifySale(address)
+
+    if (!verifiedSale) {
+      return console.error('Unknown sale')
+    }
+
     const saleObject = {
       stock: sale.stockId.call().then(x => x.toNumber()),
       closeDate: sale.closeDate.call().then(x => new Date(x.toNumber() * 1000)),
       raisedAmount: sale.raisedAmount.call().then(x => x.toNumber()),
       title: sale.saleTitle.call(),
-      type: sale.saleType.call(),
+      type: verifiedSale.contractClass.contract_name,
       raiseTarget: sale.raiseTarget.call().then(x => x.toNumber()),
       raiseMaximum: sale.raiseMaximum.call().then(x => x.toNumber()),
       buyingPrice: sale.getBuyingPrice.call(0).then(x => x.toNumber()),
       availableTokens: sale.availableTokens.call().then(x => x.toNumber()),
       investors: Promise.all(await investors), // unique elements in array
+      saleMetadata: verifiedSale.additionalProperties(address),
       index,
       address,
     }
@@ -95,6 +103,14 @@ class StockSalesWatcher {
 
     this.StockSales.upsert(`ss_${address}`, finalSale)
     return finalSale
+  }
+
+  async verifySale(address) {
+    const allClasses = this.allSales.map(s => s.contractClass)
+    const verifiedContract = await verifyContractCode(address, allClasses)
+
+    if (!verifiedContract) { return null }
+    return this.allSales.filter(x => x.contractClass == verifiedContract)[0]
   }
 
   async createIndividualInvestorVote(address, stock, investor, price, units, closes, title = 'Series Y') {
@@ -118,6 +134,23 @@ class StockSalesWatcher {
     await saleVote.setTxid(saleVote.transactionHash, { from: address, gas: 120000 })
     return await Company.beginPoll(saleVote.address, oneWeekFromNow,
           { from: address, gas: 120000 * Stocks.find().count() })
+  }
+
+  get allSales() {
+    return [
+      {
+        contractClass: IndividualInvestorSale,
+        additionalProperties: async a => {
+          const c = IndividualInvestorSale.at(a)
+          const investorAddress = c.investor.call()
+          return await Promise.allProperties({ investorAddress })
+        },
+      },
+      {
+        contractClass: BoundedStandardSale,
+        additionalProperties: () => ({}),
+      },
+    ]
   }
 
   get lastBlockKey() {

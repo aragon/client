@@ -94,12 +94,15 @@ class VotingWatcher {
                             .then(x => Promise.resolve(x.toNumber()))
                             .then(x => (x > 0 ? x - 10 : null))
 
-    const contractClass = await this.verifyVote(address)
-    const votingStrings = this.allVotes.filter(x => contractClass === x.contractClass)[0]
+    const verifiedContract = await this.verifyVote(address)
+
+    if (!verifiedContract) {
+      return console.error('Unknown voting')
+    }
 
     const votingObject = {
-      title: votingStrings.title(address),
-      description: votingStrings.description(address),
+      title: verifiedContract.title(address),
+      description: verifiedContract.description(address),
       options: Promise.all(optionsPromises),
       closingTime: +new Date(closingTime * 1000),
       voteCounts: Promise.all(votes),
@@ -116,7 +119,11 @@ class VotingWatcher {
 
   // Returns vote type
   async verifyVote(address) {
-    return await verifyContractCode(address, this.knownContracts)
+    const voteContracts = this.allVotes.map(x => x.contractClass)
+    const verifiedContract = await verifyContractCode(address, voteContracts)
+
+    if (!verifiedContract) { return null }
+    return this.allVotes.filter(x => verifiedContract === x.contractClass)[0]
   }
 
   get lastBlockKey() {
@@ -181,10 +188,6 @@ class VotingWatcher {
         },
       },
     ]
-  }
-
-  get knownContracts() {
-    return this.allVotes.map(x => x.contractClass)
   }
 }
 
