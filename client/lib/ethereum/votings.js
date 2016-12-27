@@ -4,6 +4,7 @@ import Identity from '/client/lib/identity'
 import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
+import { verifyContractCode } from './verify'
 
 const timeRange = helpers.timeRange
 
@@ -115,24 +116,7 @@ class VotingWatcher {
 
   // Returns vote type
   async verifyVote(address) {
-    const contract = Voting.at(address)
-
-    const txid = await contract.txid.call()
-    if (!txid) { return null }
-
-    if (contract.address !== web3.eth.getTransactionReceipt(txid).contractAddress) {
-      return null
-    }
-
-    const bytecode = web3.eth.getTransaction(txid).input
-
-    for (const c of this.knownContracts) {
-      if (bytecode.indexOf(c.binary) === 0) { // Account for constructor values at end of input
-        return c
-      }
-    }
-
-    return null
+    return await verifyContractCode(address, this.knownContracts)
   }
 
   get lastBlockKey() {
@@ -156,7 +140,7 @@ class VotingWatcher {
       {
         contractClass: Poll,
         title: async () => Promise.resolve('Poll'),
-        description: async a => `Poll question: ${await Poll.at(a).title.call()}`,
+        description: async a => `Poll question: ${await Poll.at(a).description.call()}`,
       },
       {
         contractClass: IssueStockVoting,
