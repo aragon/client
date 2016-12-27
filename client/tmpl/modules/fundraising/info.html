@@ -37,7 +37,7 @@
       <div class="statistic">
         <div class="value">
           <i class="ethereum icon"></i>
-          {{ ether raiseMaximum }} ETH
+          {{ ether raisedAmount }} ETH
         </div>
         <div class="label">Currently raised</div>
       </div>
@@ -62,6 +62,12 @@
         <i class="ethereum icon"></i>
         <div class="content">
           Address: {{address}}
+        </div>
+      </div>
+      <div class="item">
+        <i class="money icon"></i>
+        <div class="content">
+          Raised (dollars): ${{ traditionalCurrency (ether raisedAmount) }}
         </div>
       </div>
     </div>

@@ -1,3 +1,11 @@
+// @flow
+
+import { Template } from 'meteor/templating'
+import { ReactivePromise } from 'meteor/deanius:promise'
+import { EthAccounts } from 'meteor/ethereum:accounts'
+
+import web3 from '/client/lib/ethereum/web3'
+
 import coinr from 'coinr'
 
 import Identity from '/client/lib/identity'
@@ -31,7 +39,7 @@ Template.registerHelper('ticker', ReactivePromise((currency) => coinr(currency))
 
 Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount) => {
   const eth = await coinr('eth')
-  return ethAmount * parseFloat(eth.price_usd)
+  return (ethAmount * parseFloat(eth.price_usd)).toFixed(2)
 }))
 
 Template.registerHelper('online', () => navigator.onLine)
