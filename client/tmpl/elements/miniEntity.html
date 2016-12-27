@@ -3,7 +3,7 @@
   <div class="ui fluid card">
     <div class="content">
       {{ #if picture }}<img class="ui left floated mini image" src="{{ picture }}">{{ /if }}
-      <i class="right floated remove icon"></i>
+      {{ #if ../closable }}<i class="right floated remove icon"></i>{{ /if }}
       <div class="header">
         {{ name }} {{ #if username }}({{ username }}) {{/if}}
       </div>
