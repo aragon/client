@@ -1,7 +1,7 @@
 <template name="Module_Inbox">
   <div class="nine wide column">
     <h1>Your inbox
-      {{ #if greaterThan (count unhandledNotifs) 0 }}
+      {{ #if $gt (count unhandledNotifs) 0 }}
       <a class="ui right floated circular icon basic button clear-all">
         <i class="remove icon"></i>
       </a>

@@ -11,6 +11,11 @@ Template.registerHelper('currentEntity', ReactivePromise(() => {
   return Identity.current()
 }))
 
+Template.registerHelper('currentEntityName', ReactivePromise(() => {
+  if (!web3.isConnected()) return {}
+  return Identity.current(false, false).name.split(' ')[0]
+}))
+
 Template.registerHelper('currentAccount', ReactivePromise(() => {
   const entity = Identity.current()
   return EthAccounts.findOne({ address: entity.ethereumAddress })

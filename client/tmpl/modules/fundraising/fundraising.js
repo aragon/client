@@ -11,7 +11,7 @@ tmpl.routes({
   '/new/bounded': () => TemplateVar.set('rightSection', 'Module_Fundraising_New_Bounded'),
   '/:id': () => {
     TemplateVar.set('rightSection', 'Module_Fundraising_Info')
-    setTimeout(() => $('#raise').trigger('reload'), 10)
+    requestAnimationFrame(() => $('#raise').trigger('reload'))
   },
 })
 
@@ -20,7 +20,6 @@ tmpl.onCreated(() => {
 })
 
 tmpl.events({
-  'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
   'click tbody tr': (e) => FlowRouter.go(`/fundraising/${$(e.currentTarget).data('id')}`),
 })
 

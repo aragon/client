@@ -1,4 +1,12 @@
+// @flow
+
 import web3 from '/client/lib/ethereum/web3'
+import { moment } from 'meteor/momentjs:moment'
+import { Template } from 'meteor/templating'
+
+import { NotificationsManager } from '/client/lib/notifications'
+
+const Notifications = NotificationsManager.Notifications
 
 const helpers = {}
 
@@ -8,18 +16,16 @@ helpers.timeRange = (a, b) => {
   timeDiff = b < new Date() ? `${timeDiff} ago` : timeDiff
   return timeDiff
 }
-helpers.session = name => Session.get(name)
-helpers.plus = (a, b) => a + b
-helpers.greaterThan = (a, b) => a > b
-helpers.equals = (a, b) => a === b
-helpers.percentFormat = x => `${Math.round(10000 * (x || 0)) / 100}%`
-helpers.arrayAccess = (array, index) => array[index]
-helpers.isNull = x => helpers.equals(x, null)
-helpers.isNotNull = x => !helpers.isNull(x)
-helpers.count = x => x.count()
+// TODO: Some of this helpers are in raix:handlebar-helpers already
+helpers.plus = (a: number, b: number): number => a + b
+helpers.percentFormat = (x: number): string => `${Math.round(10000 * (x || 0)) / 100}%`
+helpers.arrayAccess = (array: Array<any>, index: number) => array[index]
+helpers.isNull = (x: any): boolean => x === null
+helpers.isNotNull = (x: any): boolean => x !== null
+helpers.count = (x: any): number => x.count()
 
 helpers.unhandledNotifications = () => Notifications.find({ handled: false }).count()
-helpers.ether = x => web3.fromWei(x, 'ether')
+helpers.ether = (x: number): string => parseFloat(web3.fromWei(x, 'ether')).toLocaleString()
 
 Object.keys(helpers).forEach(k => Template.registerHelper(k, helpers[k]))
 

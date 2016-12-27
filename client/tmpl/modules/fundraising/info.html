@@ -4,22 +4,67 @@
   <div class="ui attached flex container" id="raise">
     {{#with raise}}
     <h1 class="ui header">
-      {{type}}
+      {{ title }}
       {{#if isOpen this}}
         <a class="ui left pointing red basic label">Ends in {{ timeRange now closeDate }}</a>
       {{else}}
         <a class="ui left pointing red basic label">Closed</a>
       {{/if}}
+      <div class="sub header">{{ raiseTypeToHuman type }}</div>
     </h1>
 
-    <h3>Address: {{address}}</h3>
-    <h3></h3>
+    {{ #if $eq type 'IndividualInvestorSale' }}
+      {{ > Element_MiniEntity entity=investors.[0] }}
+    {{ /if }}
 
-    <p><i class="ethereum icon"></i> Token price: {{ ether buyingPrice }} ETH</p>
-    <p><i class="ethereum icon"></i> Available tokens: {{ availableTokens }} shares</p>
-    <p><i class="ethereum icon"></i> Target: {{ ether raiseTarget }} ETH</p>
-    <p><i class="ethereum icon"></i> Cap: {{ ether raiseMaximum }} ETH</p>
-    <p><i class="ethereum icon"></i> Currently raised: {{ ether raisedAmount }} ETH</p>
+    <div class="ui hidden divider"></div>
+
+    <div class="ui three mini statistics">
+      <div class="statistic">
+        <div class="value">
+          <i class="exchange icon"></i>
+          {{ ether buyingPrice }} ETH
+        </div>
+        <div class="label">Token price</div>
+      </div>
+      <div class="statistic">
+        <div class="value">
+          <i class="ticket icon"></i>
+          {{ availableTokens.toLocaleString }}
+      </div>
+        <div class="label">Available shares</div>
+      </div>
+      <div class="statistic">
+        <div class="value">
+          <i class="ethereum icon"></i>
+          {{ ether raiseMaximum }} ETH
+        </div>
+        <div class="label">Currently raised</div>
+      </div>
+    </div>
+
+    <div class="ui hidden divider"></div>
+
+    <div class="ui list">
+      <div class="item">
+        <i class="trophy icon"></i>
+        <div class="content">
+          Target: {{ ether raiseTarget }} ETH
+        </div>
+      </div>
+      <div class="item">
+        <i class="external square icon"></i>
+        <div class="content">
+          Cap: {{ ether raiseMaximum }} ETH
+        </div>
+      </div>
+      <div class="item">
+        <i class="ethereum icon"></i>
+        <div class="content">
+          Address: {{address}}
+        </div>
+      </div>
+    </div>
 
     <table class="ui very basic sortable selectable striped padded fixed table">
       <thead>

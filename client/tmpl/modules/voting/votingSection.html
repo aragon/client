@@ -54,16 +54,14 @@
     </table>
 
     <div class="ui spacer"></div>
-    <h3 class="ui header">Voting code</h3>
-    {{ #if verified }}
-    <p>Vote is {{verified}}</p>
-    {{else}}
-    <button id="verifyCode" class="ui basic button">
-      <i class="icon verify"></i>
-      Verify code
+
+    <button id="verifyCode" class="ui basic mini {{ #if verified }}positive disabled{{ /if }} button">
+      {{ #if verified }}
+        Voting is {{ verified }}
+      {{ else }}
+        Verify contract's code
+      {{/if}}
     </button>
-    {{/if}}
-    <div class="ui spacer"></div>
 
     {{#if canVote}}
     <div class="ui icon small message">
@@ -74,8 +72,8 @@
     </div>
     <div class="ui two buttons">
       {{#each options}}
-      <button data-option="{{@index}}" class="ui {{#if equals @index (plus options.length -1)}} negative {{else}} positive {{/if}} voting button">{{this}}</button>
-      {{#unless equals @index (plus options.length -1) }}
+      <button data-option="{{@index}}" class="ui {{#if $eq @index (plus options.length -1)}} negative {{else}} positive {{/if}} voting button">{{this}}</button>
+      {{#unless $eq @index (plus options.length -1) }}
         <div class="or"></div>
       {{/unless}}
       {{/each}}

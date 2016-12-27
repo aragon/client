@@ -1,3 +1,12 @@
+// @flow
+
+import { Template } from 'meteor/templating'
+import { TemplateVar } from 'meteor/frozeman:template-var'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { web3 } from 'meteor/ethereum:web3'
+import { moment } from 'meteor/momentjs:moment'
+import { ReactivePromise } from 'meteor/deanius:promise'
+
 import ClosableSection from '/client/tmpl/components/closableSection'
 import StockSalesWatcher from '/client/lib/ethereum/stocksales'
 import Identity from '/client/lib/identity'
@@ -19,17 +28,24 @@ const canTransfer = sale => (
 )
 
 const transfer = async () => {
-  await StockSale.at(getRaise().address).transferFunds({ gas: 2000000, from: Identity.current(true).ethereumAddress })
+  await StockSale.at(getRaise().address)
+    .transferFunds({ gas: 2000000, from: Identity.current(true).ethereumAddress })
   reload()
 }
 
 tmpl.onRendered(reload)
+
+const raiseTypes: Object = {
+  BoundedStandardSale: 'Public fundraise with stable price',
+  IndividualInvestorSale: 'Individual investor fundraise',
+}
 
 tmpl.helpers({
   raise: getRaise,
   transferrableFunds: getSaleBalance,
   isOpen: sale => moment() <= moment(sale.closeDate),
   isTransferAllowed: ReactivePromise(canTransfer),
+  raiseTypeToHuman: (raiseType: string): string => raiseTypes[raiseType],
 })
 
 tmpl.events({

@@ -1,19 +1,6 @@
 <template name="Element_IdentityAutocomplete">
   {{#if entity}}
-  {{#with entity}}
-  <div class="ui fluid card">
-    <div class="content">
-      {{ #if picture }}<img class="ui left floated mini image" src="{{ picture }}">{{ /if }}
-      <i class="right floated remove icon"></i>
-      <div class="header">
-        {{ name }} {{ #if username }}({{ username }}) {{/if}}
-      </div>
-      <div class="meta">
-        {{ ethereumAddress }}
-      </div>
-    </div>
-  </div>
-  {{/with}}
+  {{ > Element_MiniEntity entity=entity }}
   {{else}}
   <div class="ui fluid search identityAutocomplete">
     <div class="ui left icon input">

@@ -8,7 +8,6 @@ const tmpl = Template.Module_Entity.extend([ClosableSection])
 const isMode = mode => FlowRouter.current().path.indexOf(mode) > -1
 
 tmpl.onRendered(function () {
-  console.log('Mode', isMode('ownership'))
   if (isMode('ownership')) {
     requestAnimationFrame(() => renderOwnershipInfo())
   }

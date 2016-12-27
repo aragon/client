@@ -10,41 +10,44 @@
       <input type="text" lang="en" name="title" placeholder="Series Z">
     </div>
 
-    <div class="field">
-      <label>Kind</label>
-      <div class="ui selection dropdown">
-        <input type="hidden" name="kind">
-        <i class="dropdown icon"></i>
-        <div class="default text">Kind of shares</div>
-        <div class="menu">
-          {{#each stocks}}
-          <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
-          {{/each}}
+    <div class="two fields">
+      <div class="field">
+        <label>Kind</label>
+        <div class="ui selection dropdown">
+          <input type="hidden" name="kind">
+          <i class="dropdown icon"></i>
+          <div class="default text">Kind of shares</div>
+          <div class="menu">
+            {{#each stocks}}
+            <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
+            {{/each}}
+          </div>
         </div>
+      </div>
+      <div class="field">
+        <label>Price (ETH)</label>
+        <input type="number" step="any" min="0" lang="en" name="price" placeholder="Price in eth">
       </div>
     </div>
 
-    <div class="field">
-      <label>Price (ETH)</label>
-      <input type="number" step="any" min="0" lang="en" name="price" placeholder="Price in eth">
-    </div>
+    <div class="ui hidden divider"></div>
 
     <div class="field">
       <h4 class="ui header">Raise bounds</h4>
       <div class="two fields">
         <div class="field">
           <label>Minimum</label>
-          <input type="number" name="min">
+          <input type="number" name="min" min="0">
         </div>
         <div class="field">
           <label>Cap (maximum)</label>
-          <input type="number" name="cap">
+          <input type="number" name="cap" min="0">
         </div>
       </div>
     </div>
 
     <div class="field">
-      <h4 class="ui header">Round closes</h4><p>(if goal isn't reached, refund is available)</p>
+      <h4 class="ui header">Deadline</h4><p>(If goal isn't reached, refund is available)</p>
       <input type="date" name="date">
     </div>
 

@@ -26,12 +26,12 @@ const lookupAddress = async (addr: string): Object => {
 }
 
 class Identity {
-  static format(entity: Entity): FormattedEntity {
+  static format(entity: Entity, replaceMe: boolean = true): FormattedEntity {
     const formatted = providers[entity.identityProvider].format(entity)
     formatted.identityProvider = entity.identityProvider
     formatted.ethereumAddress = entity.ethereumAddress
 
-    if (entity.ethereumAddress === Identity.current(true).ethereumAddress) {
+    if (entity.ethereumAddress === Identity.current(true).ethereumAddress && replaceMe) {
       formatted.name = 'Me'
     }
 
@@ -91,10 +91,10 @@ class Identity {
     Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
   }
 
-  static current(raw: boolean = false) {
+  static current(raw: boolean = false, replaceMe: boolean = true) {
     let entity = Entities.findOne({ current: true })
 
-    if (!raw) entity = Identity.format(entity)
+    if (!raw) entity = Identity.format(entity, replaceMe)
     return entity
   }
 

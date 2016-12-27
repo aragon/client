@@ -1,12 +1,6 @@
 <template name="Module_Fundraising">
   <div id="Module_Fundraising" class="nine wide column">
     <div class="ui secondary menu">
-      <div class="fitted item">
-        <div class="ui left icon input">
-          <i class="search link icon"></i>
-          <input type="text" placeholder="Search" value="{{TemplateVar.get 'searchString'}}" id="searchInput">
-        </div>
-      </div>
       <div class="right menu">
         <div class="fitted item">
           <a class="ui primary button" href="/fundraising/new">
@@ -22,29 +16,17 @@
       <thead>
         <tr>
           <th>Raise name</th>
-          <th>Raise type</th>
           <th>Amount raised</th>
           <th>Ending time</th>
         </tr>
       </thead>
       <tbody data-updated="{{ updated }}">
         {{#each raises}}
-        {{#if $contains (TemplateVar.get 'searchString') shareholder}}
         <tr data-id="{{index}}">
-          <td>
-            {{ title }}
-          </td>
-          <td>
-            {{ type }}
-          </td>
-          <td>
-            {{ ether raisedAmount }} ETH
-          </td>
-          <td>
-            {{ timeRange now closeDate }}
-          </td>
+          <td>{{ title }}</td>
+          <td>{{ ether raisedAmount }} ETH</td>
+          <td>{{ timeRange now closeDate }}</td>
         </tr>
-        {{/if}}
         {{/each}}
       </tbody>
     </table>
