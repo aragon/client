@@ -42,6 +42,12 @@ const raiseTypes: Object = {
 
 tmpl.helpers({
   raise: getRaise,
+  investor: ReactivePromise(async () => {
+    const raise = getRaise()
+    console.log(raise)
+    const entity = await Identity.get(raise.typeMetadata.investorAddress)
+    return entity
+  }),
   transferrableFunds: getSaleBalance,
   isOpen: sale => moment() <= moment(sale.closeDate),
   isTransferAllowed: ReactivePromise(canTransfer),

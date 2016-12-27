@@ -13,10 +13,6 @@
       <div class="sub header">{{ raiseTypeToHuman type }}</div>
     </h1>
 
-    {{ #if $eq type 'IndividualInvestorSale' }}
-      {{ > Element_MiniEntity entity=investors.[0] }}
-    {{ /if }}
-
     <div class="ui hidden divider"></div>
 
     <div class="ui three mini statistics">
@@ -72,6 +68,12 @@
       </div>
     </div>
 
+    {{ #if $eq type 'IndividualInvestorSale' }}
+      <div class="ui hidden divider"></div>
+      <label>Investor:</label>
+      {{ > Element_MiniEntity entity=(getEntity typeMetadata.investorAddress) }}
+    {{ /if }}
+
     <table class="ui very basic sortable selectable striped padded fixed table">
       <thead>
         <tr>
@@ -83,7 +85,7 @@
         {{ #each investors }}
         <tr data-address="{{address}}">
           <td>
-            {{ address }}
+            {{ entityName address }}
           </td>
           <td>
             {{ tokens }}

@@ -24,9 +24,10 @@ Template.registerHelper('currentEntityName', ReactivePromise(() => {
   return Identity.current(false, false).name.split(' ')[0]
 }))
 
-Template.registerHelper('currentAccount', ReactivePromise(() => {
-  const entity = Identity.current()
-  return EthAccounts.findOne({ address: entity.ethereumAddress })
+Template.registerHelper('getEntity', ReactivePromise(async (address) => {
+  if (!web3.isConnected()) return {}
+  const identity = await Identity.get(address)
+  return identity
 }))
 
 Template.registerHelper('entityName', ReactivePromise(async (address) => {
@@ -34,6 +35,12 @@ Template.registerHelper('entityName', ReactivePromise(async (address) => {
   const identity = await Identity.get(address)
   return identity.name
 }))
+
+Template.registerHelper('currentAccount', ReactivePromise(() => {
+  const entity = Identity.current()
+  return EthAccounts.findOne({ address: entity.ethereumAddress })
+}))
+
 
 Template.registerHelper('ticker', ReactivePromise((currency) => coinr(currency)))
 
