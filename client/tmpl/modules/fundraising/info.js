@@ -3,7 +3,6 @@
 import { Template } from 'meteor/templating'
 import { TemplateVar } from 'meteor/frozeman:template-var'
 import { FlowRouter } from 'meteor/kadira:flow-router'
-import { web3 } from 'meteor/ethereum:web3'
 import { moment } from 'meteor/momentjs:moment'
 import { ReactivePromise } from 'meteor/deanius:promise'
 
@@ -11,6 +10,7 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 import StockSalesWatcher from '/client/lib/ethereum/stocksales'
 import Identity from '/client/lib/identity'
 import { StockSale } from '/client/lib/ethereum/contracts'
+import web3 from '/client/lib/ethereum/web3'
 
 const StockSales = StockSalesWatcher.StockSales
 
@@ -22,9 +22,9 @@ const reload = reloadSaleId
 const getRaise = () => StockSales.findOne({ index: TemplateVar.get('id') })
 const getSaleBalance = sale => web3.eth.getBalance(sale.address).toNumber()
 
-const canTransfer = sale => (
+const canTransfer = (sale: Object): Promise<boolean> => (
   StockSale.at(sale.address).isFundsTransferAllowed.call()
-           .then(x => x && getSaleBalance(sale) > 0)
+           .then((x: boolean): boolean => x && getSaleBalance(sale) > 0)
 )
 
 const transfer = async () => {
