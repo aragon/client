@@ -28,8 +28,11 @@ const allStocks = () => Stocks.find().fetch().map(s => Stock.at(s.address))
 
 const canVote = async () => {
   const address = Identity.current(true).ethereumAddress
-  const vote = voting().index
-  const allVotes = allStocks().map(stock => stock.canVote.call(address, vote))
+  const vote = voting()
+
+  if (vote.voteExecuted !== null) return false
+
+  const allVotes = allStocks().map(stock => stock.canVote.call(address, vote.index))
   const allResults = await Promise.all(allVotes)
   // as long as it can vote in any stock, return true
   return allResults.reduce((acc, v) => v || acc, false)

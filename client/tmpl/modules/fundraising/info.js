@@ -8,6 +8,7 @@ import { ReactivePromise } from 'meteor/deanius:promise'
 
 import ClosableSection from '/client/tmpl/components/closableSection'
 import StockSalesWatcher from '/client/lib/ethereum/stocksales'
+import Company from '/client/lib/ethereum/deployed'
 import Identity from '/client/lib/identity'
 import { StockSale } from '/client/lib/ethereum/contracts'
 import web3 from '/client/lib/ethereum/web3'
@@ -28,8 +29,8 @@ const canTransfer = (sale: Object): Promise<boolean> => (
 )
 
 const transfer = async () => {
-  await StockSale.at(getRaise().address)
-    .transferFunds({ gas: 2000000, from: Identity.current(true).ethereumAddress })
+  await Company.transferSaleFunds(getRaise().index,
+    { gas: 2000000, from: Identity.current(true).ethereumAddress })
   reload()
 }
 

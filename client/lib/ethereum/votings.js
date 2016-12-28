@@ -25,6 +25,7 @@ class VotingWatcher {
 
   listenForUpdates() {
     const self = this
+
     const watch = async (err, ev) => {
       const votingAddr = await Company.votings.call(ev.args.id)
       self.getVoting(votingAddr, ev.args.id.toNumber())
