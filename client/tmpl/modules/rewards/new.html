@@ -1,0 +1,44 @@
+<template name="Module_Rewards_New">
+  {{> Element_ProcessDimmer}}
+  {{> Element_CloseSectionButton href='/rewards'}}
+  <form class="ui flex attached form" id="newReward">
+    <h1 class="ui header">New reward</h1>
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <label>Recipient</label>
+      {{> Element_IdentityAutocomplete}}
+    </div>
+    <div class="field">
+      <label>Amount</label>
+      <input name="description" placeholder="ETH amount" type="number">
+    </div>
+    <div class="ui hidden divider"></div>
+    <div class="ui toggle checkbox">
+      <input type="checkbox" id="recurrent">
+      <label>Recurrent</label>
+    </div>
+    {{ #if TemplateVar.get 'isRecurrent' }}
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <label>Repeat on every</label>
+      <div class="two fields">
+        <div class="field">
+          <input type="date" name="date">
+        </div>
+        <div class="field">
+          <input type="time" name="time" value="00:00">
+        </div>
+      </div>
+    </div>
+    {{ /if }}
+    <div class="ui spacer"></div>
+    <div class="ui icon small message">
+      <i class="info icon"></i>
+      <div class="content">
+        <div class="header">For rewards of more than X ETH, a voting is needed.</div>
+        <p>Voting power will have a week to cast votes.</p>
+      </div>
+    </div>
+    <button class="ui fluid big primary button" type="submit">Issue reward</button>
+  </form>
+</template>
