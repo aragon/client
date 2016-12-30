@@ -44,7 +44,6 @@ tmpl.onRendered(function () {
 
       const selectedStock = TemplateVar.get(self, 'selectedStock')
       const amount = $('input[name=number]').val()
-      console.log(TemplateVar.get(self, 'recipient'))
       const recipient = TemplateVar.get(self, 'recipient').ethereumAddress
 
       if (TemplateVar.get(self, 'assignMode')) {
@@ -76,5 +75,5 @@ tmpl.helpers({
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
   'success .dimmer': () => FlowRouter.go('/ownership'),
-  'click .ui.menu.mode a': (e) => TemplateVar.set('assignMode', $(e.currentTarget).data('issue')),
+  'click #stockGrant': () => TemplateVar.set('assignMode', !TemplateVar.get('assignMode')),
 })
