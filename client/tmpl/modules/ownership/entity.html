@@ -1,0 +1,18 @@
+<template name="Module_Ownership_Entity">
+  <div class="flex">
+    {{> Element_CloseSectionButton}}
+    <div class="ui top attached container">
+      <h2 class="ui header">Shareholder details</h2>
+      <div class="ui hidden divider"></div>
+      {{ #with entity }}
+        {{ > Element_MiniEntity entity=entity }}
+      {{ /with }}
+      <div class="ui hidden divider"></div>
+      <h3 class="ui header">Stakes</h3>
+      <div>
+        <canvas id="vestingChart" width="800" height="800"></canvas>
+      </div>
+    </div>
+    <div class="ui hidden divider"></div>
+  </div>
+</template>

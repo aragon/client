@@ -30,6 +30,16 @@ const bindSearch = (tmplIns) => {
           })).concat(additionalElements),
         }
       },
+      // This is so Ethereum addresses can be inputed when offline
+      onAbort: async () => {
+        const query = $('.ui.search .prompt').val()
+
+        if (web3.isAddress(query)) {
+          const entity = await Identity.get(query)
+          TemplateVar.set(tmplIns, 'entity', entity)
+          identityAutocomplete.trigger('select', entity)
+        }
+      },
     },
     fields: {
       title: 'name',

@@ -1,17 +1,7 @@
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'
 
-import renderOwnershipInfo from './ownership'
-
 const tmpl = Template.Module_Entity.extend([ClosableSection])
-
-const isMode = mode => FlowRouter.current().path.indexOf(mode) > -1
-
-tmpl.onRendered(function () {
-  if (isMode('ownership')) {
-    requestAnimationFrame(() => renderOwnershipInfo())
-  }
-})
 
 tmpl.helpers({
   entity: ReactivePromise(async () => {
@@ -25,5 +15,4 @@ tmpl.helpers({
     return {}
   }),
   formatFingerprint: (fingerprint) => (fingerprint && fingerprint.match(/.{1,4}/g).join(' ')),
-  isMode,
 })
