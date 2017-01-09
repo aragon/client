@@ -1,7 +1,7 @@
 import helpers from '/client/helpers'
 import Identity from '/client/lib/identity'
 
-import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale } from './contracts'
+import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale, AccountingSettingsVoting } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
 import { verifyContractCode } from './verify'
@@ -187,6 +187,15 @@ class VotingWatcher {
           const availableTokens = sale.availableTokens.call().then(x => x.toNumber())
 
           return `Voting to create a stock sale to raise ${web3.fromWei(await raiseTarget, 'ether')} at ${web3.fromWei(await buyingPrice, 'ether')} ETH per ${ Stocks.findOne({ index: +(await stock) }).symbol } share`
+        },
+      },
+      {
+        contractClass: AccountingSettingsVoting,
+        title: async () => Promise.resolve('Change accounting settings'),
+        description: async a => {
+          const vote = AccountingSettingsVoting.at(a)
+
+          return `Voting to set accounting settings to:\n\n - Budget: ${web3.fromWei(await vote.budget.call(), 'ether')} ETH. \n - Period duration: ${timeRange(0, await vote.periodDuration.call().then(x => x.toNumber() * 1000))}\ - Divident threshold: ${web3.fromWei(await vote.dividendThreshold.call(), 'ether')} ETH`
         },
       },
     ]
