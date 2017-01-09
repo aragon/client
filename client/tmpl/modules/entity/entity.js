@@ -1,3 +1,8 @@
+// @flow
+import { Template } from 'meteor/templating'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { ReactivePromise } from 'meteor/deanius:promise'
+
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'
 
@@ -14,5 +19,5 @@ tmpl.helpers({
     }
     return {}
   }),
-  formatFingerprint: (fingerprint) => (fingerprint && fingerprint.match(/.{1,4}/g).join(' ')),
+  formatFingerprint: (fingerprint): string => (fingerprint && fingerprint.match(/.{1,4}/g).join(' ')),
 })

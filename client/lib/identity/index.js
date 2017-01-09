@@ -1,7 +1,6 @@
 // @flow
 import { Mongo } from 'meteor/mongo'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
-import { EthAccounts } from 'meteor/ethereum:accounts'
 
 import type { Entity, FormattedEntity } from './entity'
 import Keybase from './keybase'

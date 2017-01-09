@@ -1,9 +1,15 @@
+// @flow
+import { Template } from 'meteor/templating'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { ReactiveVar } from 'meteor/reactive-var'
+import { ReactivePromise } from 'meteor/deanius:promise'
+
 import ClosableSection from '/client/tmpl/components/closableSection'
 import VotingWatcher from '/client/lib/ethereum/votings'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
 import Identity from '/client/lib/identity'
-import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, BoundedStandardSaleVoting, IndividualInvestorSaleVoting } from '/client/lib/ethereum/contracts'
+import { Stock, Voting } from '/client/lib/ethereum/contracts'
 
 const Votings = VotingWatcher.Votings
 const Stocks = StockWatcher.Stocks

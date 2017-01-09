@@ -1,3 +1,10 @@
+// @flow
+import { Template } from 'meteor/templating'
+import { TemplateVar } from 'meteor/frozeman:template-var'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { ReactivePromise } from 'meteor/deanius:promise'
+import { moment } from 'meteor/momentjs:moment'
+
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
@@ -21,12 +28,12 @@ tmpl.onRendered(function () {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      const title = $('input[name=title]').val()
+      const title = this.$('input[name=title]').val()
       const selectedStock = TemplateVar.get(this, 'selectedStock')
-      const price = web3.toWei($('input[name=price]').val(), 'ether')
-      const min = $('input[name=min]').val()
-      const cap = $('input[name=cap]').val()
-      const closes = +moment($('[type=date]').val()) / 1000
+      const price = web3.toWei(this.$('input[name=price]').val(), 'ether')
+      const min = this.$('input[name=min]').val()
+      const cap = this.$('input[name=cap]').val()
+      const closes = +moment(this.$('[type=date]').val()) / 1000
 
       const address = Identity.current(true).ethereumAddress
 

@@ -1,3 +1,9 @@
+// @flow
+import { Template } from 'meteor/templating'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { TemplateVar } from 'meteor/frozeman:template-var'
+import { ReactiveVar } from 'meteor/reactive-var'
+
 import VotingWatcher from '/client/lib/ethereum/votings'
 
 Votings = VotingWatcher.Votings

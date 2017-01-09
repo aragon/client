@@ -1,3 +1,5 @@
+// @flow
+
 const adjs = ['autumn', 'hidden', 'bitter', 'misty', 'silent', 'empty', 'dry',
   'dark', 'summer', 'icy', 'delicate', 'quiet', 'white', 'cool', 'spring',
   'winter', 'patient', 'twilight', 'dawn', 'crimson', 'wispy', 'weathered',
@@ -18,9 +20,9 @@ const nouns = ['waterfall', 'river', 'breeze', 'moon', 'rain', 'wind', 'sea',
   'sun', 'wood', 'dream', 'cherry', 'tree', 'fog', 'frost', 'voice', 'paper',
   'frog', 'smoke', 'star']
 
-const upperCase = (str) => str[0].toUpperCase() + str.slice(1)
+const upperCase = (str: string): string => str[0].toUpperCase() + str.slice(1)
 
-export default haiku = (hex: string): string => {
+const haiku = (hex: string): string => {
   const n = Math.abs(Math.cos(parseInt(hex, 16)))
 
   const adj = upperCase(adjs[Math.floor(n*(adjs.length-1))])
@@ -28,3 +30,6 @@ export default haiku = (hex: string): string => {
 
   return `${adj} ${noun}`
 }
+
+
+export default haiku

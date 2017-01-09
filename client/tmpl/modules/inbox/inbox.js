@@ -1,3 +1,6 @@
+// @flow
+import { Template } from 'meteor/templating'
+
 import { NotificationsManager } from '/client/lib/notifications'
 
 const Notifications = NotificationsManager.Notifications

@@ -1,3 +1,8 @@
+// @flow
+import { Template } from 'meteor/templating'
+import { moment } from 'meteor/momentjs:moment'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+
 import ClosableSection from '/client/tmpl/components/closableSection'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { IssueStockVoting } from '/client/lib/ethereum/contracts'

@@ -1,3 +1,10 @@
+// @flow
+import { Template } from 'meteor/templating'
+import { moment } from 'meteor/momentjs:moment'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { TemplateVar } from 'meteor/frozeman:template-var'
+import { ReactivePromise } from 'meteor/deanius:promise'
+
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
@@ -42,14 +49,14 @@ tmpl.onRendered(function () {
       this.$('.dimmer').trigger('loading')
 
       const selectedStock = TemplateVar.get(this, 'selectedStock')
-      const amount = $('input[name=number]').val()
+      const amount = this.$('input[name=number]').val()
       const recipient = TemplateVar.get(this, 'recipient').ethereumAddress
 
       if (TemplateVar.get(this, 'assignMode')) {
         await assignStock(selectedStock, amount, recipient)
       } else {
-        const cliff = $('input[name=cliff]').val()
-        const vesting = $('input[name=vesting]').val()
+        const cliff = this.$('input[name=cliff]').val()
+        const vesting = this.$('input[name=vesting]').val()
 
         await createStockGrant(selectedStock, amount, recipient, cliff, vesting)
       }

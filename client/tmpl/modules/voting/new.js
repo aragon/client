@@ -1,3 +1,7 @@
+// @flow
+import { Template } from 'meteor/templating'
+import { moment } from 'meteor/momentjs:moment'
+
 import StockWatcher from '/client/lib/ethereum/stocks'
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Company from '/client/lib/ethereum/deployed'

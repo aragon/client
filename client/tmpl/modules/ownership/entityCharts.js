@@ -1,3 +1,7 @@
+// @flow
+import { moment } from 'meteor/momentjs:moment'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { GrantableStock } from '/client/lib/ethereum/contracts'
 

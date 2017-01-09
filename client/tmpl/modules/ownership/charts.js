@@ -1,3 +1,6 @@
+// @flow
+import { Template } from 'meteor/templating'
+
 import Chart from 'chart.js'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Stock } from '/client/lib/ethereum/contracts'

@@ -2,6 +2,7 @@
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { TemplateVar } from 'meteor/frozeman:template-var'
+import { moment } from 'meteor/momentjs:moment'
 
 import Identity from '/client/lib/identity'
 import Shake from '/client/lib/shake'
@@ -18,7 +19,8 @@ tmpl.onCreated(function () {
 
 tmpl.helpers({
   remainingBudget: ReactivePromise(Company.getAccountingPeriodRemainingBudget.call),
-  periodCloses: ReactivePromise(() => Company.getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
+  periodCloses: ReactivePromise(() =>
+                  Company.getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
 })
 
 const issueReward = (to, amount) => {
