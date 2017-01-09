@@ -10,7 +10,7 @@ tmpl.helpers({
       if (address) {
         return await Identity.get(address)
       }
-      return Identity.current()
+      return Identity.current(false, false)
     }
     return {}
   }),
