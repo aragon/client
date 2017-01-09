@@ -1,3 +1,5 @@
+// @flow
+
 export default class ClosableSection {
   static extend(tmpl) {
     tmpl.events({

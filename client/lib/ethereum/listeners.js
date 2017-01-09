@@ -1,3 +1,6 @@
+// @flow
+import { _ } from 'meteor/underscore'
+import { web3 } from 'meteor/ethereum:web3'
 import { NotificationsListener as Listener } from '/client/lib/notifications'
 import Identity from '/client/lib/identity'
 import SHA256 from 'crypto-js/sha256'
@@ -57,7 +60,7 @@ class Listeners {
       'Shares transfer',
       body,
       () => '/ownership',
-      null,
+      '',
       predicate,
     )
   }

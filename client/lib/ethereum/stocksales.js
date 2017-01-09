@@ -2,7 +2,7 @@ import Company from './deployed'
 import { StockSale, StockSaleVoting, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
 import StockWatcher from './stocks'
-import { verifyContractCode } from './verify'
+import verifyContractCode from './verify'
 
 const Stocks = StockWatcher.Stocks
 

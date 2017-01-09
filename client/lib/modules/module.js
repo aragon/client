@@ -1,5 +1,21 @@
+// @flow
+import { BlazeLayout } from 'meteor/kadira:blaze-layout'
+
 class Module {
-  constructor(name, icon = 'help', sidebarItem = true, routeName, templateName, layout = 'Layout') {
+  name: string
+  icon: string
+  sidebarItem: boolean
+  routeName: string
+  templateName: string
+  layout: string
+
+  constructor(
+  name: string,
+  icon: string = 'help',
+  sidebarItem: boolean = true,
+  routeName: string,
+  templateName: string,
+  layout: string = 'Layout') {
     this.name = name
     this.icon = icon
     this.sidebarItem = sidebarItem

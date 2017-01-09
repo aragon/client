@@ -1,3 +1,6 @@
+// @flow
+import { Meteor } from 'meteor/meteor'
+
 import { Company as CompanyContract } from './contracts'
 
 const Company = !Meteor.settings.deployed ?

@@ -1,3 +1,7 @@
+// @flow
+import { Template } from 'meteor/templating'
+import { TemplateVar } from 'meteor/frozeman:template-var'
+
 const tmpl = Template.Element_ProcessDimmer
 
 tmpl.events({

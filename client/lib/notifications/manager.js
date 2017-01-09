@@ -1,3 +1,6 @@
+// @flow
+import { Mongo } from 'meteor/mongo'
+import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 import SHA256 from 'crypto-js/sha256'
 
 import BrowserNotifications from './browser'
@@ -33,7 +36,7 @@ class NotificationsManager {
     })
   }
 
-  sendMissingNotification(count) {
+  sendMissingNotification(count: number) {
     if (!(count > 0)) { return }
     const title = 'Missing notifications'
     const body = `You got ${count} notifications while you were away`
@@ -84,12 +87,12 @@ class NotificationsManager {
     return notificationDetails
   }
 
-  getBlockDate(blockNumber) {
+  getBlockDate(blockNumber: number) {
     const timestamp = (EthBlocks.findOne({ number: blockNumber }) || {}).timestamp
     return timestamp ? new Date(timestamp / 1000) : new Date()
   }
 
-  notificationId(hash) {
+  notificationId(hash: string) {
     return `n_${hash}`
   }
 

@@ -1,5 +1,23 @@
+// @flow
+
 class NotificationsListener {
-  constructor(_event, _title = 'Notification', _bodyFormatter = () => 'empty', _uriFormatter = () => '/home', _callToAction = null, _predicate = {}, _uniqueId = () => null) {
+  ev: Object
+  title: string
+  bodyFormatter: Function
+  uriFormatter: Function
+  callToAction: string
+  predicate: Object
+  uid: Function
+
+  constructor(
+  // TODO: What's event's type?
+  _event: Object,
+  _title: string = 'Notification',
+  _bodyFormatter: Function = () => 'empty',
+  _uriFormatter: Function = () => '/home',
+  _callToAction: string = '',
+  _predicate: Object = {},
+  _uniqueId: Function = () => null) {
     this.ev = _event
     this.title = _title
     this.bodyFormatter = _bodyFormatter

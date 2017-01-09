@@ -4,7 +4,7 @@ import Identity from '/client/lib/identity'
 import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale, AccountingSettingsVoting } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
-import { verifyContractCode } from './verify'
+import verifyContractCode from './verify'
 
 const timeRange = helpers.timeRange
 

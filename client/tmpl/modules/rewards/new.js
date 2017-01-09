@@ -1,7 +1,9 @@
 // @flow
+import { web3 } from 'meteor/ethereum:web3'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { TemplateVar } from 'meteor/frozeman:template-var'
+import { ReactivePromise } from 'meteor/deanius:promise'
 import { moment } from 'meteor/momentjs:moment'
 
 import Identity from '/client/lib/identity'

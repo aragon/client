@@ -1,3 +1,9 @@
+// @flow
+import { _ } from 'meteor/underscore'
+import { Blaze } from 'meteor/blaze'
+import { Template } from 'meteor/templating'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+
 function moduleName(tmpl) {
   return tmpl.viewName.split('.')[1].split('_')[1].toLowerCase()
 }
@@ -75,11 +81,11 @@ Template.prototype.extend = function (components = []) {
   return this
 }
 
-Template.prototype.routes = function (routes) {
+Template.prototype.routes = function (routes: Array) {
   Object.assign(this.routesObj, routes)
 }
 
-Blaze.TemplateInstance.prototype.parent = function (levels) {
+Blaze.TemplateInstance.prototype.parent = function (levels): Blaze.TemplateInstance {
   let view = this.view
   let ls = (typeof levels === 'undefined') ? 1 : levels
   while (view) {
@@ -88,4 +94,5 @@ Blaze.TemplateInstance.prototype.parent = function (levels) {
     }
     view = view.parentView
   }
+  return {}
 }

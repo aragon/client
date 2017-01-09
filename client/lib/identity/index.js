@@ -37,7 +37,7 @@ class Identity {
     return formatted
   }
 
-  static async get(addr: string, raw: boolean = false) {
+  static async getRaw(addr: string) {
     let entity = Entities.findOne({ ethereumAddress: addr })
 
     if (!entity) {
@@ -48,8 +48,12 @@ class Identity {
       }
     }
 
-    if (!raw) entity = Identity.format(entity)
     return entity
+  }
+
+  static async get(addr: string) {
+    const entity = await Identity.getRaw(addr)
+    return Identity.format(entity)
   }
 
   static async getUsername(username: string, identityProvider: string, raw: boolean = false):

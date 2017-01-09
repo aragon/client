@@ -1,3 +1,5 @@
+// @flow
+
 class Core {
   constructor(modules = []) {
     Core.setup()

@@ -1,5 +1,4 @@
 // @flow
-
 import { Template } from 'meteor/templating'
 import { ReactivePromise } from 'meteor/deanius:promise'
 import { EthAccounts } from 'meteor/ethereum:accounts'

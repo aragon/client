@@ -1,9 +1,17 @@
+// @flow
+import { _ } from 'meteor/underscore'
+import { Mongo } from 'meteor/mongo'
+import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
+
 import { Stock } from './contracts'
 import Company from './deployed'
 
 const Stocks = new Mongo.Collection('stocks', { connection: null })
 
 class StockWatcher {
+  Stocks: Mongo.Collection
+  persistentStock: PersistentMinimongo
+
   constructor() {
     this.setupCollections()
     this.getAllStocks()
@@ -41,12 +49,12 @@ class StockWatcher {
     this.Stocks.remove({ address: { $nin: stockAddresses } })
   }
 
-  async getStock(address, index) {
+  async getStock(address: string, index: number) {
     this.trackStock(address, index)
     await this.updateStock(address, index)
   }
 
-  async allShareholders(_stocks) {
+  async allShareholders(_stocks: Stocks) {
     const stocks = _stocks || Stocks.find({}).fetch()
 
     const promises = stocks.map((s) => {
@@ -61,13 +69,13 @@ class StockWatcher {
     return await Promise.all(promises)
   }
 
-  trackStock(address, index) {
+  trackStock(address: string, index: number) {
     Stock.at(address).Transfer({}).watch(() => {
       this.updateStock(address, index)
     })
   }
 
-  async updateStock(address, index) {
+  async updateStock(address: string, index: number) {
     const stock = Stock.at(address)
     const stockObject = {
       name: stock.name.call(),

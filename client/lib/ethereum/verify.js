@@ -1,10 +1,11 @@
+// @flow
 import Txid from '/imports/lib/contracts/build/contracts/Txid.sol.js'
 
 import web3 from './web3'
 
 Txid.setProvider(web3.currentProvider)
 
-const verifyContractCode = async (address, candidateContracts) => {
+const verifyContractCode = async (address: string, candidateContracts) => {
   const contract = Txid.at(address)
 
   const txid = await contract.txid.call()
@@ -25,4 +26,4 @@ const verifyContractCode = async (address, candidateContracts) => {
   return null
 }
 
-export { verifyContractCode }
+export default verifyContractCode

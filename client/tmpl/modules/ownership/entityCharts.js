@@ -29,7 +29,7 @@ const interpolate = (from, to, steps) => {
   return _.range(steps).map(x => from + x * step)
 }
 
-export default renderOwnershipInfo = async () => {
+const renderOwnershipInfo = async () => {
   const address = FlowRouter.current().params.address
   const stock = GrantableStock.at(Stocks.findOne().address)
   const fullyVested = await stock.fullyVestedDate.call(address).then(x => x.toNumber())
@@ -44,3 +44,5 @@ export default renderOwnershipInfo = async () => {
 
   return drawStakeChart(this.$('#vestingChart'), 'Vesting calendar', dateLabels, points)
 }
+
+export default renderOwnershipInfo
