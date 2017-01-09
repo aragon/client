@@ -9,6 +9,7 @@
         <div class="sub header">Ethereum provides a trustless cryptographic ledger to execute and store transactions securely.</div>
       </h3>
       {{ #with currentAccount }}
+      {{ #unless TemplateVar.get 'viewAllAccounts' }}
       <div class="fields">
         <div class="ten wide field">
           <label>Name</label>
@@ -16,19 +17,20 @@
         </div>
         <div class="six wide field">
           <label>Balance</label>
-          <input type="text" value="{{ balance }} ETH" disabled>
+          <input type="text" value="{{ ether balance }} ETH" disabled>
         </div>
       </div>
       <div class="field">
         <label>Address</label>
         <input value="{{ address }}" type="text" disabled>
       </div>
+      {{ /unless }}
       {{ /with }}
       {{ #if TemplateVar.get 'viewAllAccounts' }}
       <div class="field" id="allAccounts">
         <label>All accounts</label>
         <select class="ui fluid dropdown">
-          {{ #with currentAccount }}<option value="{{ address }}" selected>{{ name }} ({{ balance }} ether)</option>{{ /with }}
+          {{ #with currentAccount }}<option value="{{ address }}" selected>{{ name }} ({{ ether balance }} ether)</option>{{ /with }}
           {{ #each accounts }}
             {{ #if $neq currentAccount.address address }}
             <option value="{{ address }}">{{ name }} ({{ ether balance }} ether)</option>
