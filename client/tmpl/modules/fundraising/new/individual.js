@@ -12,7 +12,6 @@ const tmpl = Template.Module_Fundraising_New_Individual.extend([ClosableSection]
 tmpl.onRendered(function () {
   TemplateVar.set('selectedStock', -1)
 
-  const self = this
   this.$('.dropdown').dropdown({
     onChange: (v) => TemplateVar.set(self, 'selectedStock', +v),
   })
@@ -22,8 +21,8 @@ tmpl.onRendered(function () {
       this.$('.dimmer').trigger('loading')
 
       const title = $('input[name=title]').val()
-      const selectedStock = TemplateVar.get(self, 'selectedStock')
-      const investor = TemplateVar.get(self, 'recipient').ethereumAddress
+      const selectedStock = TemplateVar.get(this, 'selectedStock')
+      const investor = TemplateVar.get(this, 'recipient').ethereumAddress
       const price = web3.toWei($('input[name=price]').val(), 'ether')
 
       const units = $('input[name=units]').val()

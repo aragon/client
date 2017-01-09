@@ -1,5 +1,5 @@
 // @flow
-
+import faker from 'faker'
 import type { ShakeUser } from './user'
 
 const authToken = '7396fcac-0ab4-4475-852e-0f1963ee356b'
@@ -24,6 +24,28 @@ type ShakeInvoice = {
 }
 
 export default class Shake {
+  static fakeUser(): ShakeUser {
+    return {
+      user: {
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        dateOfBirth: faker.date.past(),
+        phoneNumber: faker.phone.phoneNumber(),
+        email: faker.internet.email(),
+      },
+      address: {
+        address1: faker.address.streetAddress(),
+        city: faker.address.city(),
+        zipCode: faker.address.zipCode(),
+        country: faker.address.country(),
+      },
+      card: {
+        currency: 'USD',
+        type: 'virtual',
+      },
+    }
+  }
+
   static async createUser(userData: ShakeUser) {
     const res = await postJSON('users', userData)
     console.log(res)

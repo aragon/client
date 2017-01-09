@@ -15,7 +15,10 @@ tmpl.onRendered(function () {
     if (TemplateVar.get('viewAllAccounts')) {
       requestAnimationFrame(() => {
         this.$('.dropdown').dropdown({
-          onChange: (val) => Identity.setCurrentEthereumAccount(val),
+          onChange: (val) => {
+            Identity.setCurrentEthereumAccount(val)
+            TemplateVar.set(this, 'viewAllAccounts', false)
+          },
         })
       })
     }

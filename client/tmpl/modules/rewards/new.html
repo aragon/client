@@ -31,7 +31,48 @@
       </div>
     </div>
     {{ /if }}
-    <i class="credit card alternative icon"></i>
+    <div class="ui hidden divider"></div>
+    <div class="ui toggle checkbox">
+      <input type="checkbox" id="debitCard">
+      <label>Fill VISA debit card</label>
+    </div>
+    {{ #if TemplateVar.get 'isCard' }}
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <div class="two fields">
+        <div class="field">
+          <label>Currency</label>
+          <div class="ui selection dropdown">
+            <input type="hidden" name="currency" value="USD">
+            <i class="dropdown icon"></i>
+            <div class="default text"></div>
+            <div class="menu">
+              <div class="item" data-value="USD">USD</div>
+              <div class="item" data-value="EUR">EUR</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Type</label>
+          <div class="ui selection dropdown">
+            <input type="hidden" name="type" value="virtual">
+            <i class="dropdown icon"></i>
+            <div class="default text"></div>
+            <div class="menu">
+              <div class="selected item" data-value="virtual">Virtual</div>
+              <div class="item" data-value="physical">Physical</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{ #if TemplateVar.get 'isVirtualCard' }}
+    <div class="ui toggle checkbox" id="anonDebitCard">
+      <input type="checkbox">
+      <label>Anonimize debit card details</label>
+    </div>
+    {{ /if }}
+    {{ /if }}
     <div class="ui spacer"></div>
     <div class="ui icon small message">
       <i class="info icon"></i>

@@ -13,9 +13,8 @@ const tmpl = Template.Module_Fundraising_New_Bounded.extend([ClosableSection])
 tmpl.onRendered(function () {
   TemplateVar.set('selectedStock', -1)
 
-  const self = this
   this.$('.dropdown').dropdown({
-    onChange: (v) => TemplateVar.set(self, 'selectedStock', +v),
+    onChange: (v) => TemplateVar.set(this, 'selectedStock', +v),
   })
   this.$('.form').form({
     onSuccess: async (e) => {
@@ -23,7 +22,7 @@ tmpl.onRendered(function () {
       this.$('.dimmer').trigger('loading')
 
       const title = $('input[name=title]').val()
-      const selectedStock = TemplateVar.get(self, 'selectedStock')
+      const selectedStock = TemplateVar.get(this, 'selectedStock')
       const price = web3.toWei($('input[name=price]').val(), 'ether')
       const min = $('input[name=min]').val()
       const cap = $('input[name=cap]').val()

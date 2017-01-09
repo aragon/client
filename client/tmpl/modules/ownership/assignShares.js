@@ -33,20 +33,19 @@ tmpl.onRendered(function () {
   TemplateVar.set('assignMode', true)
   TemplateVar.set('selectedStock', -1)
 
-  const self = this
   this.$('.dropdown').dropdown({
-    onChange: (v) => TemplateVar.set(self, 'selectedStock', +v),
+    onChange: (v) => TemplateVar.set(this, 'selectedStock', +v),
   })
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      const selectedStock = TemplateVar.get(self, 'selectedStock')
+      const selectedStock = TemplateVar.get(this, 'selectedStock')
       const amount = $('input[name=number]').val()
-      const recipient = TemplateVar.get(self, 'recipient').ethereumAddress
+      const recipient = TemplateVar.get(this, 'recipient').ethereumAddress
 
-      if (TemplateVar.get(self, 'assignMode')) {
+      if (TemplateVar.get(this, 'assignMode')) {
         await assignStock(selectedStock, amount, recipient)
       } else {
         const cliff = $('input[name=cliff]').val()
