@@ -20,6 +20,7 @@ tmpl.routes({
     const id = FlowRouter.current().params.id
     selectedVoting.set(Votings.findOne({ $or: [{ address: id }, { index: +id }] }))
   },
+  '/:id/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
 
 tmpl.onCreated(() => {
@@ -47,6 +48,7 @@ tmpl.events({
 
 tmpl.helpers({
   votings: () => Votings.find({ voteExecuted: null, closingTime: { $gt: +new Date() } }),
-  pastVotings: () => Votings.find({ $or: [{ voteExecuted: { $ne: null } }, { closingTime: { $lt: +new Date() } }] }),
+  pastVotings: () => Votings.find({ $or: [{ voteExecuted: { $ne: null } },
+                      { closingTime: { $lt: +new Date() } }] }),
   isSelected: address => selectedVoting.get() && selectedVoting.get().address === address,
 })

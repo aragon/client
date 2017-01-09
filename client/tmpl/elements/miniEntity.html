@@ -1,6 +1,6 @@
 <template name="Element_MiniEntity">
   {{ #with entity }}
-  <a class="ui fluid card" href="{{ currentURL }}/entity">
+  <a class="ui fluid card" href="{{ currentURL }}/entity/{{ ethereumAddress }}">
     <div class="content">
       {{ #if picture }}<img class="ui left floated mini image" src="{{ picture }}">{{ /if }}
       {{ #if ../closable }}<i class="right floated remove icon"></i>{{ /if }}

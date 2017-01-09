@@ -25,7 +25,7 @@ type ShakeInvoice = {
 
 export default class Shake {
   static async createUser(userData: ShakeUser) {
-    const res = await postJSON('user', userData)
+    const res = await postJSON('users', userData)
     console.log(res)
   }
 

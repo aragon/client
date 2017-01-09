@@ -1,7 +1,7 @@
 <template name="Module_Entity">
   <div class="flex" id="entity">
     {{ #unless noClosable }}{{> Element_CloseSectionButton}}{{ /unless }}
-    {{#with entity}}
+    {{ #with entity }}
     <div class="ui top attached grid">
       <div class="twelve wide column">
         <h1 class="ui header">
@@ -16,37 +16,37 @@
 
       <div class="sixteen wide column">
         <p><i class="ethereum icon"></i> <a href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">{{ ethereumAddress }}</a></p>
-        {{#if cryptocurrencies.bitcoin}}
+        {{ #if cryptocurrencies.bitcoin }}
         <p><i class="bitcoin icon"></i> <a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>
-        {{/if}}
-        {{#if pubkey}}
+        {{ /if }}
+        {{ #if pubkey }}
         <p><i class="key icon"></i> {{ formatFingerprint pubkey.fingerprint }}</p>
-        {{/if}}
-        {{#if social.twitter}}
+        {{ /if}}
+        {{ #if social.twitter }}
         <p><i class="twitter icon"></i> <a href="https://twitter.com/{{ social.twitter }}" target="_blank">{{ social.twitter }}</a></p>
-        {{/if}}
-        {{#if social.facebook}}
+        {{ /if}}
+        {{ #if social.facebook }}
         <p><i class="facebook icon"></i> <a href="https://facebook.com/{{ social.facebook }}" target="_blank">{{ social.facebook }}</a></p>
-        {{/if}}
-        {{#if social.github}}
+        {{ /if}}
+        {{ #if social.github }}
         <p><i class="github icon"></i> <a href="https://github.com/{{ social.github }}" target="_blank">{{ social.github }}</a></p>
-        {{/if}}
+        {{ /if }}
       </div>
     </div>
 
     <div class="ui spacer"></div>
     <div class="ui buttons">
-      {{#if $eq identityProvider 'keybase'}}
+      {{ #if $eq identityProvider 'keybase' }}
       <a class="ui orange icon button" href="https://keybase.io/{{ username }}" target="_blank">
         <i class="key icon"></i> Open on Keybase
       </a>
-      {{/if}}
-      {{#if $eq identityProvider 'anon'}}
+      {{ /if}}
+      {{ #if $eq identityProvider 'anon' }}
       <a class="ui primary icon button" href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">
         <i class="white ethereum icon"></i> Open on Etherscan
       </a>
-      {{/if}}
+      {{ /if }}
     </div>
-    {{/with}}
+    {{ /with }}
   </div>
 </template>
