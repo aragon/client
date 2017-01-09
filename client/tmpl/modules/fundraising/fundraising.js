@@ -13,6 +13,7 @@ tmpl.routes({
     TemplateVar.set('rightSection', 'Module_Fundraising_Info')
     requestAnimationFrame(() => $('#raise').trigger('reload'))
   },
+  '/:id/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
 
 tmpl.onCreated(() => {
