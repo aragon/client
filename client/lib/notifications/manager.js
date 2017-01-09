@@ -1,17 +1,23 @@
 // @flow
 import { Mongo } from 'meteor/mongo'
+import { Session } from 'meteor/session'
+import { EthBlocks } from 'meteor/ethereum:blocks'
+import { FlowRouter } from 'meteor/kadira:flow-router'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 import SHA256 from 'crypto-js/sha256'
 
 import BrowserNotifications from './browser'
 
 class NotificationsManager {
+  Notifications: Mongo.Collection
+  persistentNotifications: PersistentMinimongo
+
   constructor() {
     this.Notifications = new Mongo.Collection('notification', { connection: null })
     this.persistentNotifications = new PersistentMinimongo(this.Notifications)
   }
 
-  listen(listeners) {
+  listen(listeners: Array<Function>) {
     if (this.lastWatchedBlock > this.lastBlock) {
       this.lastWatchedBlock = this.lastBlock
     }

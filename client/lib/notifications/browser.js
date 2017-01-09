@@ -8,7 +8,7 @@ class BrowserNotifications {
     Notify.requestPermission(cb)
   }
 
-  static showNotification(title: string, body: string, notifyClick?: void, notifyClose?: void) {
+  static showNotification(title: string, body: string, notifyClick?: Function, notifyClose?: void) {
     const show = () => {
       const notification = new Notify(title, { body, notifyClick, notifyClose })
       notification.show()

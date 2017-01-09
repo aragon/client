@@ -39,7 +39,7 @@ const drawChart = (ctx, title, labels, data, colors) => {
 tmpl.onRendered(function () {
   this.autorun(async () => {
     const stocks = Stocks.find({}).fetch()
-    drawChart($('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
+    drawChart(this.$('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
 
     const allShares = await StockWatcher.allShareholders(stocks)
     const globalBalances = {}
@@ -63,7 +63,7 @@ tmpl.onRendered(function () {
       }
     }
 
-    drawChart($('#capitalChart'), 'Global shareholder stake', Object.keys(globalBalances), Object.values(globalBalances))
+    drawChart(this.$('#capitalChart'), 'Global shareholder stake', Object.keys(globalBalances), Object.values(globalBalances))
     drawChart($('#votingChart'), 'Voting stake', Object.keys(votingPower), Object.values(votingPower))
   })
 })

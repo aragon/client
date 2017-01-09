@@ -56,22 +56,27 @@ class Identity {
     return Identity.format(entity)
   }
 
-  static async getUsername(username: string, identityProvider: string, raw: boolean = false):
-    Promise<Entity | FormattedEntity> {
+  static async getUsernameRaw(username: string, identityProvider: string):
+    Promise<Entity> {
     // Usually we will want to store addr => username but not the other way around
     // let entity = Entities.findOne(({'data.basics.username': username})
     const ethereumAddress = await providers[identityProvider].getEthAddress(username)
     const data = await providers[identityProvider].lookup(username)
     Identity.set(ethereumAddress, identityProvider, data)
 
-    let entity: Entity | FormattedEntity = {
+    const entity: Entity = {
       identityProvider,
       ethereumAddress,
       data,
     }
 
-    if (!raw) entity = Identity.format(entity)
     return entity
+  }
+
+  static async getUsername(username: string, identityProvider: string):
+    Promise<FormattedEntity> {
+    const entity = await Identity.getUsernameRaw(username, identityProvider)
+    return Identity.format(entity)
   }
 
   static set(addr: string, identityProvider: string, entityObj: Object) {
@@ -107,7 +112,7 @@ class Identity {
     const username = await providers[identityProvider].link(current.ethereumAddress)
     if (!username) return false
 
-    const entity = await Identity.getUsername(username, identityProvider, true)
+    const entity = await Identity.getUsernameRaw(username, identityProvider)
     Identity.setCurrent(entity)
     return true
   }

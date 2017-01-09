@@ -1,4 +1,5 @@
 // @flow
+import { _ } from 'meteor/underscore'
 import { moment } from 'meteor/momentjs:moment'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 

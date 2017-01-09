@@ -15,7 +15,7 @@ const bindSearch = (tmplIns) => {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
       onResponse: (res) => {
         const additionalElements = []
-        const query = $('.ui.search .prompt').val()
+        const query = this.$('.ui.search .prompt').val()
 
         if (web3.isAddress(query)) {
           additionalElements.push(Anon.format({ ethereumAddress: query }))

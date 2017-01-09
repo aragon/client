@@ -41,7 +41,7 @@ tmpl.onRendered(function () {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      const amount = $('input[name=rewardAmount]').val()
+      const amount = this.$('input[name=rewardAmount]').val()
       const to = TemplateVar.get(this, 'recipient').ethereumAddress
 
       try {
