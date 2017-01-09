@@ -11,6 +11,7 @@ const tmpl = Template.Module_Rewards_New.extend([ClosableSection])
 
 tmpl.onCreated(function () {
   TemplateVar.set('isVirtualCard', true)
+  TemplateVar.get('anonDebitCard', true)
 })
 
 tmpl.onRendered(function () {

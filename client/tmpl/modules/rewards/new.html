@@ -67,10 +67,15 @@
       </div>
     </div>
     {{ #if TemplateVar.get 'isVirtualCard' }}
-    <div class="ui toggle checkbox" id="anonDebitCard">
-      <input type="checkbox">
-      <label>Anonimize debit card details</label>
-    </div>
+      <div class="ui toggle checkbox" id="anonDebitCard">
+        <input type="checkbox" checked="checked">
+        <label>Anonimize debit card details</label>
+      </div>
+      {{ #unless TemplateVar.get 'anonDebitCard' }}
+        {{ > Module_Rewards_ShakeUserInfo }}
+      {{ /unless }}
+    {{ else }}
+      {{ > Module_Rewards_ShakeUserInfo }}
     {{ /if }}
     {{ /if }}
     <div class="ui spacer"></div>
@@ -82,5 +87,6 @@
       </div>
     </div>
     <button class="ui fluid big primary button" type="submit">Issue reward</button>
+    <div class="ui hidden divider"></div>
   </form>
 </template>

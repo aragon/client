@@ -67,7 +67,8 @@ const bindSearch = (tmplIns) => {
 tmpl.onRendered(() => bindSearch(Template.instance()))
 
 tmpl.events({
-  'click .remove': () => {
+  'click .remove': (e) => {
+    e.preventDefault()
     TemplateVar.set('entity', null)
     setTimeout(bindSearch.bind(this, Template.instance()), 100)
   },
