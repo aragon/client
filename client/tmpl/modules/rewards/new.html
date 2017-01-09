@@ -10,7 +10,7 @@
     </div>
     <div class="field">
       <label>Amount</label>
-      <input name="description" placeholder="ETH amount" type="number">
+      <input name="rewardAmount" min="{{ ether 1 }}" step="{{ ether 1 }}" placeholder="ETH amount" type="number">
     </div>
     <div class="ui hidden divider"></div>
     <div class="ui toggle checkbox">
@@ -82,8 +82,8 @@
     <div class="ui icon small message">
       <i class="info icon"></i>
       <div class="content">
-        <div class="header">For rewards of more than X ETH, a voting is needed.</div>
-        <p>Voting power will have a week to cast votes.</p>
+        <div class="header">There is {{ ether remainingBudget }} ETH in this period budget (period closes in {{ timeRange now periodCloses }})</div>
+        <p>If reward will go over-budget, please change settings.</p>
       </div>
     </div>
     <button class="ui fluid big primary button" type="submit">Issue reward</button>
