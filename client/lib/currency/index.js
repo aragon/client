@@ -3,10 +3,11 @@ import fx from 'money'
 import coinr from 'coinr'
 import { $ } from 'meteor/jquery'
 
-import Settings from '/client/lib/settings'
+// import Settings from '/client/lib/settings'
 
 fx.ready = false
-fx.base = Settings.get('displayCurrency')
+// fx.base = Settings.get('displayCurrency')
+fx.base = 'USD'
 
 const fetchRates = async () => {
   const eth = await coinr('eth')

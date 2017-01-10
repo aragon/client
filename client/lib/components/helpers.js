@@ -51,8 +51,9 @@ Template.registerHelper('Settings', () => ({
   get: ReactivePromise(key => Settings.get(key)),
 }))
 
-Template.registerHelper('displayCurrency', ReactivePromise(async (ethAmount) => {
-  console.log(fx(ethAmount).to('USD').toFixed(2))
-}))
+Template.registerHelper('displayCurrency', (ethAmount: number) => {
+  if (!ethAmount) return 0
+  return fx(ethAmount).from(Settings.get('displayCurrency')).to('ETH').toFixed(2)
+})
 
 Template.registerHelper('online', () => navigator.onLine)

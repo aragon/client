@@ -15,9 +15,6 @@ tmpl.onRendered(function () {
   })
 })
 
-tmpl.events({
-})
-
 tmpl.helpers({
   currencies: () => (
     Object.keys(currencies).map((symbol) => ({ name: currencies[symbol], symbol }))
