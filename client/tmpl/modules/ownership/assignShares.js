@@ -38,7 +38,6 @@ const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
 
 tmpl.onRendered(function () {
   TemplateVar.set('assignMode', true)
-  TemplateVar.set('selectedStock', -1)
 
   this.$('.dropdown').dropdown({
     onChange: (v) => TemplateVar.set(this, 'selectedStock', +v),
