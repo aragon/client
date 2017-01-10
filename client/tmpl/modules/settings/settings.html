@@ -8,16 +8,12 @@
 
       <div class="field">
         <label>Displaying currency</label>
-        <div class="ui fluid search selection dropdown">
-          <input type="hidden" name="currency">
-          <i class="dropdown icon"></i>
-          <div class="default text">Select Currency</div>
-          <div class="menu">
-            {{ #each currencies }}
-            <div class="item" data-value="{{ symbol }}">{{ name }} ({{ symbol }})</div>
-            {{ /each }}
-          </div>
-        </div>
+        <select class="ui fluid search selection dropdown" name="currency">
+          <option value="{{ Settings.get 'displayCurrency' }}" selected>{{ Settings.get 'displayCurrency' }}</option>
+          {{ #each currencies }}
+          <option value="{{ symbol }}">{{ name }} ({{ symbol }})</option>
+          {{ /each }}
+        </select>
       </div>
     </form>
   </div>

@@ -11,7 +11,7 @@ const tmpl = Template.Module_Settings.extend()
 tmpl.onRendered(function () {
   this.$('.dropdown').dropdown({
     fullTextSearch: true,
-    onChange: (cur) => (Settings.set('displayCurrency', cur)),
+    onChange: cur => Settings.set('displayCurrency', cur),
   })
 })
 

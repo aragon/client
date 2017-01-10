@@ -6,7 +6,6 @@ import { $ } from 'meteor/jquery'
 import Settings from '/client/lib/settings'
 
 fx.ready = false
-console.log(Settings.get('displayCurrency'))
 fx.base = Settings.get('displayCurrency')
 
 const fetchRates = async () => {
