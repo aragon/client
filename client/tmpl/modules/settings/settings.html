@@ -1,0 +1,24 @@
+<template name="Module_Settings">
+  <div class="nine wide column" id="Module_Settings">
+    <form class="ui flex attached form">
+      <h1 class="ui header">Your settings</h1>
+      <div class="ui divider"></div>
+
+      <div class="ui hidden divider"></div>
+
+      <div class="field">
+        <label>Displaying currency</label>
+        <div class="ui fluid search selection dropdown">
+          <input type="hidden" name="currency">
+          <i class="dropdown icon"></i>
+          <div class="default text">Select Currency</div>
+          <div class="menu">
+            {{ #each currencies }}
+            <div class="item" data-value="{{ symbol }}">{{ name }} ({{ symbol }})</div>
+            {{ /each }}
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</template>
