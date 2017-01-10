@@ -10,7 +10,7 @@
     </div>
     <div class="field">
       <label>Amount</label>
-      <input name="rewardAmount" min="{{ ether 1 }}" step="{{ ether 1 }}" placeholder="ETH amount" type="number">
+      <input name="rewardAmount" min="0" step="0.000000001" placeholder="ETH amount" type="number">
     </div>
     <div class="ui hidden divider"></div>
     <div class="ui toggle checkbox">
@@ -20,14 +20,9 @@
     {{ #if TemplateVar.get 'isRecurrent' }}
     <div class="ui hidden divider"></div>
     <div class="field">
-      <label>Repeat on every</label>
-      <div class="two fields">
-        <div class="field">
-          <input type="date" name="date">
-        </div>
-        <div class="field">
-          <input type="time" name="time" value="00:00">
-        </div>
+      <label>Repeat every x days</label>
+      <div class="field">
+        <input type="number" name="period">
       </div>
     </div>
     {{ /if }}
