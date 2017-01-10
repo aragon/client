@@ -21,7 +21,7 @@ tmpl.onRendered(function () {
   TemplateVar.set('selectedStock', -1)
 
   this.$('.dropdown').dropdown({
-    onChange: (v) => TemplateVar.set(self, 'selectedStock', +v),
+    onChange: v => TemplateVar.set(this, 'selectedStock', +v),
   })
   this.$('.form').form({
     onSuccess: async (e) => {

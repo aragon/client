@@ -10,6 +10,7 @@ tmpl.routes({
   '/': () => TemplateVar.set('rightSection', 'Module_Ownership_Charts'),
   '/issue': () => TemplateVar.set('rightSection', 'Module_Ownership_IssueShares'),
   '/assign': () => TemplateVar.set('rightSection', 'Module_Ownership_AssignShares'),
+  '/transfer': () => TemplateVar.set('rightSection', 'Module_Ownership_TransferShares'),
   '/shareholder/:address': () => TemplateVar.set('rightSection', 'Module_Ownership_Entity'),
   '/shareholder/:address/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
