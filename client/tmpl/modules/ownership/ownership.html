@@ -34,7 +34,7 @@
       </thead>
       <tbody data-updated="{{ updated }}">
         {{#each shareholders}}
-        {{#if $contains (TemplateVar.get 'searchString') shareholder}}
+        {{#if $contains (TemplateVar.get 'searchString') (entityName shareholder)}}
         <tr data-shareholder="{{ shareholder }}">
           <td>
             {{ entityName shareholder }}
