@@ -1,0 +1,6 @@
+<template name="Element_CurrencyAmount">
+  <div class="Element_CurrencyAmount">
+    <input name="{{ name }}" min="{{ min }}" step="{{ step }}" placeholder="{{ Settings.get 'displayCurrency' }} amount" lang="en" type="number">
+    <span>= {{ displayCurrency (TemplateVar.get 'amount') }} ETH</span>
+  </div>
+</template>

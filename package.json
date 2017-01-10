@@ -22,6 +22,7 @@
     "jdenticon": "^1.4.0",
     "meteor-node-stubs": "~0.2.0",
     "moment": "^2.17.1",
+    "money": "^0.2.0",
     "notifyjs": "^2.0.3",
     "web3": "^0.17.0-beta"
   },

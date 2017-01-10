@@ -10,7 +10,7 @@
     </div>
     <div class="field">
       <label>Amount</label>
-      <input name="rewardAmount" min="0" step="0.000000001" placeholder="ETH amount" type="number">
+      {{ > Element_CurrencyAmount name='rewardAmount' min=(ether 1) step='0.0000000000000000001' }}
     </div>
     <div class="ui hidden divider"></div>
     <div class="ui toggle checkbox">
