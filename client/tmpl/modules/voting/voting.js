@@ -26,7 +26,7 @@ tmpl.routes({
     const id = FlowRouter.current().params.id
     selectedVoting.set(Votings.findOne({ $or: [{ address: id }, { index: +id }] }))
   },
-  '/:id/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
+  '/*/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
 
 tmpl.onCreated(() => {

@@ -11,6 +11,7 @@ tmpl.routes({
   '/': () => TemplateVar.set('rightSection', 'Module_Rewards_Empty'),
   '/new': () => TemplateVar.set('rightSection', 'Module_Rewards_New'),
   '/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
+  '/*/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
 
 tmpl.onRendered(function () {

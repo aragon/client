@@ -36,6 +36,7 @@ const createRecurringReward = (to, amount, periodDays) => {
 }
 
 tmpl.onRendered(function () {
+  this.$('.dropdown').dropdown()
   this.$('.form').form({
     onSuccess: async (e) => {
       if (TemplateVar.get(this, 'anonDebitCard')) {
@@ -69,16 +70,19 @@ tmpl.onRendered(function () {
   this.autorun(() => {
     if (TemplateVar.get('isCard')) {
       requestAnimationFrame(() => {
-        this.$('.dropdown').dropdown({
-          onChange: (v) => {
-            TemplateVar.set(this, 'isVirtualCard', v === 'virtual')
-          },
+        this.$('#debitCardCurrency').dropdown()
+        this.$('#debitCardType').dropdown({
+          onChange: v => TemplateVar.set(this, 'isVirtualCard', v === 'virtual'),
         })
         this.$('#anonDebitCard').checkbox({
           onChange: () => (
             TemplateVar.set(this, 'anonDebitCard', this.$('#anonDebitCard input').prop('checked'))
           ),
         })
+      })
+    } else if (TemplateVar.get('isRecurrent')) {
+      requestAnimationFrame(() => {
+        this.$('#recurrentPeriodInterval').dropdown()
       })
     }
   })
