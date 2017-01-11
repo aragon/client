@@ -9,9 +9,8 @@
       <div class="field">
         <label>Displaying currency</label>
         <select class="ui fluid search selection dropdown" name="currency">
-          <option value="{{ Settings.get 'displayCurrency' }}" selected>{{ Settings.get 'displayCurrency' }}</option>
           {{ #each currencies }}
-          <option value="{{ symbol }}">{{ name }} ({{ symbol }})</option>
+          <option value="{{ symbol }}" selected="{{ #if $eq (Settings.get 'displayCurrency') symbol }}selected{{ /if }}">{{ name }} ({{ symbol }})</option>
           {{ /each }}
         </select>
       </div>

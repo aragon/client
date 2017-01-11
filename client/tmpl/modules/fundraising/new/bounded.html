@@ -25,8 +25,8 @@
         </div>
       </div>
       <div class="field">
-        <label>Price (ETH)</label>
-        <input type="number" step="any" min="0" lang="en" name="price" placeholder="Price in eth">
+        <label>Price</label>
+        {{ > Element_CurrencyAmount name='price' placeholder='Price' min=(ether 1) step='0.0000000000000000001' }}
       </div>
     </div>
 
