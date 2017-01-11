@@ -60,7 +60,7 @@ class Identity {
     Promise<Entity> {
     // Usually we will want to store addr => username but not the other way around
     // let entity = Entities.findOne(({'data.basics.username': username})
-    const ethereumAddress = await providers[identityProvider].getEthAddress(username)
+    const ethereumAddress = await providers[identityProvider].getVerifiedEthereumAddress(username)
     const data = await providers[identityProvider].lookup(username)
     Identity.set(ethereumAddress, identityProvider, data)
 
@@ -114,6 +114,7 @@ class Identity {
 
     const entity = await Identity.getUsernameRaw(username, identityProvider)
     Identity.setCurrent(entity)
+
     return true
   }
 }

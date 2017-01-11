@@ -23,11 +23,11 @@
       <label>Repeat every</label>
       <div class="two fields">
         <div class="field">
-          <input type="number" name="repeatNumber" value="0">
+          <input type="number" name="periodNumber" value="0">
         </div>
         <div class="field">
-          <div class="ui selection dropdown">
-            <input type="hidden" name="repeatInterval">
+          <div class="ui selection dropdown" id="recurrentPeriodInterval">
+            <input type="hidden" name="periodInterval">
             <i class="dropdown icon"></i>
             <div class="default text">Repeat every</div>
             <div class="menu">
@@ -52,7 +52,7 @@
       <div class="two fields">
         <div class="field">
           <label>Currency</label>
-          <div class="ui selection dropdown">
+          <div class="ui selection dropdown" id="debitCardCurrency">
             <input type="hidden" name="currency" value="USD">
             <i class="dropdown icon"></i>
             <div class="default text"></div>

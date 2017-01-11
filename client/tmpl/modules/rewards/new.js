@@ -26,9 +26,13 @@ tmpl.helpers({
 })
 
 const issueReward = (to, amount) => {
-  console.log('issueing', to, amount)
   const address = Identity.current(true).ethereumAddress
   return Company.issueReward(to, web3.toWei(amount, 'ether'), `Reward for ${to}`, { from: address, gas: 4000000 })
+}
+
+const createRecurringReward = (to, amount, periodDays) => {
+  const address = Identity.current(true).ethereumAddress
+  return Company.createRecurringReward(to, web3.toWei(amount, 'ether'), periodDays * 3600 * 24, `Recurring reward for ${to}`, { from: address, gas: 4000000 })
 }
 
 tmpl.onRendered(function () {
@@ -46,9 +50,16 @@ tmpl.onRendered(function () {
       const to = TemplateVar.get(this, 'recipient').ethereumAddress
 
       try {
-        await issueReward(to, amount)
+        if (TemplateVar.get(this, 'isRecurrent')) {
+          const periodDays = this.$('input[name=period]').val()
+          await createRecurringReward(to, amount, periodDays)
+        } else {
+          await issueReward(to, amount)
+        }
+
         this.$('.dimmer').trigger('finished', { state: 'success' })
       } catch (error) {
+        console.log(error)
         this.$('.dimmer').trigger('finished', { state: 'failure' }) // TODO: failure state
       }
 
@@ -59,16 +70,19 @@ tmpl.onRendered(function () {
   this.autorun(() => {
     if (TemplateVar.get('isCard')) {
       requestAnimationFrame(() => {
+        this.$('#debitCardCurrency').dropdown()
         this.$('#debitCardType').dropdown({
-          onChange: (v) => {
-            TemplateVar.set(this, 'isVirtualCard', v === 'virtual')
-          },
+          onChange: v => TemplateVar.set(this, 'isVirtualCard', v === 'virtual'),
         })
         this.$('#anonDebitCard').checkbox({
           onChange: () => (
             TemplateVar.set(this, 'anonDebitCard', this.$('#anonDebitCard input').prop('checked'))
           ),
         })
+      })
+    } else if (TemplateVar.get('isRecurrent')) {
+      requestAnimationFrame(() => {
+        this.$('#recurrentPeriodInterval').dropdown()
       })
     }
   })

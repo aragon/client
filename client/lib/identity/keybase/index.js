@@ -2,8 +2,12 @@
 import type { Entity } from '../entity'
 
 import link from './link'
+import Proofs from './proofs'
 
 const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
+
+const IS_DEV = true
+const proofFilename = `ethereum${IS_DEV ? '_dev' : ''}.json`
 
 export default class Keybase {
   // Returns {status, them}
@@ -14,10 +18,10 @@ export default class Keybase {
     return data.them[0]
   }
 
-  static async getEthAddress(username: string): Promise<string> {
-    const res = await fetch(`https://${username}.keybase.pub/eth`)
-    const text = await res.text()
-    return text.trim()
+  static async getVerifiedEthereumAddress(username: string): Promise<string> {
+    const res = await fetch(`https://${username}.keybase.pub/${proofFilename}`)
+    const proof = await res.json()
+    return Proofs.verifyProof(proof)
   }
 
   static async lookupEthAddress(addr: string): Promise<Object> {
@@ -52,6 +56,6 @@ export default class Keybase {
   }
 
   static link(addr: string): string {
-    return link(addr)
+    return link(addr, proofFilename)
   }
 }
