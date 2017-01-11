@@ -44,35 +44,35 @@ tmpl.onRendered(function () {
 
       const amount = parseFloat(this.$('input[name=rewardAmount]').val())
 
-      if (TemplateVar.get(this, 'anonDebitCard')) {
-        const debitCardCurrency = this.$('#debitCardCurrency input').val()
-        const shakeUser = Shake.fakeUser(debitCardCurrency)
-        console.log(shakeUser)
-        await Shake.createUser(shakeUser)
-        const invoice = await Shake.createInvoice({
-          email: shakeUser.user.email,
-          currency: debitCardCurrency,
-          amount
-        })
-        console.log(invoice)
-      }
-
-      return
-
-      const to = TemplateVar.get(this, 'recipient').ethereumAddress
-
-      try {
-        if (TemplateVar.get(this, 'isRecurrent')) {
-          const periodDays = this.$('input[name=period]').val()
-          await createRecurringReward(to, amount, periodDays)
-        } else {
-          await issueReward(to, amount)
+      if (TemplateVar.get(this, 'isCard')) {
+        if (TemplateVar.get(this, 'anonDebitCard')) {
+          const debitCardCurrency = this.$('#debitCardCurrency input').val()
+          const shakeUser = Shake.fakeUser(debitCardCurrency)
+          console.log(shakeUser)
+          await Shake.createUser(shakeUser)
+          const invoice = await Shake.createInvoice({
+            email: shakeUser.user.email,
+            currency: debitCardCurrency,
+            amount
+          })
+          console.log(invoice)
         }
+      } else {
+        const to = TemplateVar.get(this, 'recipient').ethereumAddress
 
-        this.$('.dimmer').trigger('finished', { state: 'success' })
-      } catch (error) {
-        console.log(error)
-        this.$('.dimmer').trigger('finished', { state: 'failure' }) // TODO: failure state
+        try {
+          if (TemplateVar.get(this, 'isRecurrent')) {
+            const periodDays = this.$('input[name=period]').val()
+            await createRecurringReward(to, amount, periodDays)
+          } else {
+            await issueReward(to, amount)
+          }
+
+          this.$('.dimmer').trigger('finished', { state: 'success' })
+        } catch (error) {
+          console.log(error)
+          this.$('.dimmer').trigger('finished', { state: 'failure' }) // TODO: failure state
+        }
       }
 
       return false
