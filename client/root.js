@@ -8,7 +8,8 @@ Root.modules = [
   new Module('Voting', 'announcement'),
   new Module('Fundraising', 'money'),
   new Module('Rewards', 'users'),
-  new Module('Accounting', 'university'),
+  new Module('Accounting', 'browser'),
+  new Module('Wallet', 'university'),
   new Module('Settings', 'settings'),
 
   new Module('Account', 'user', false),
