@@ -25,7 +25,7 @@ tmpl.events({
 
 tmpl.helpers({
   recipients: [{
-    address: Identity.current(),
+    address: () => Identity.current(),
     type: 'Recurrent',
   }],
 })
