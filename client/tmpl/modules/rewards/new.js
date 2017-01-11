@@ -32,6 +32,7 @@ const issueReward = (to, amount) => {
 }
 
 tmpl.onRendered(function () {
+  this.$('.dropdown').dropdown()
   this.$('.form').form({
     onSuccess: async (e) => {
       if (TemplateVar.get(this, 'anonDebitCard')) {
@@ -58,7 +59,7 @@ tmpl.onRendered(function () {
   this.autorun(() => {
     if (TemplateVar.get('isCard')) {
       requestAnimationFrame(() => {
-        this.$('.dropdown').dropdown({
+        this.$('#debitCardType').dropdown({
           onChange: (v) => {
             TemplateVar.set(this, 'isVirtualCard', v === 'virtual')
           },

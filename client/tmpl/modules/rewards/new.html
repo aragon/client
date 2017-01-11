@@ -20,13 +20,23 @@
     {{ #if TemplateVar.get 'isRecurrent' }}
     <div class="ui hidden divider"></div>
     <div class="field">
-      <label>Repeat on every</label>
+      <label>Repeat every</label>
       <div class="two fields">
         <div class="field">
-          <input type="date" name="date">
+          <input type="number" name="repeatNumber" value="0">
         </div>
         <div class="field">
-          <input type="time" name="time" value="00:00">
+          <div class="ui selection dropdown">
+            <input type="hidden" name="repeatInterval">
+            <i class="dropdown icon"></i>
+            <div class="default text">Repeat every</div>
+            <div class="menu">
+              <div class="item" data-value="day">Day</div>
+              <div class="item" data-value="week">Week</div>
+              <div class="item" data-value="month">Month</div>
+              <div class="item" data-value="year">Year</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -54,7 +64,7 @@
         </div>
         <div class="field">
           <label>Type</label>
-          <div class="ui selection dropdown">
+          <div class="ui selection dropdown" id="debitCardType">
             <input type="hidden" name="type" value="virtual">
             <i class="dropdown icon"></i>
             <div class="default text"></div>
@@ -71,6 +81,7 @@
         <input type="checkbox" checked="checked">
         <label>Anonimize debit card details</label>
       </div>
+      <div class="ui hidden divider"></div>
       {{ #unless TemplateVar.get 'anonDebitCard' }}
         {{ > Module_Rewards_ShakeUserInfo }}
       {{ /unless }}
@@ -83,7 +94,7 @@
       <i class="info icon"></i>
       <div class="content">
         <div class="header">There is {{ ether remainingBudget }} ETH in this period budget (period closes in {{ timeRange now periodCloses }})</div>
-        <p>If reward will go over-budget, please change settings.</p>
+        <p>If reward would go over-budget, please change settings.</p>
       </div>
     </div>
     <button class="ui fluid big primary button" type="submit">Issue reward</button>
