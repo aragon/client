@@ -1,4 +1,5 @@
 <template name="Layout">
+  {{ #if initFinished }}
   <div id="app">
     <div class="ui top fixed text menu" id="topbar">
       <div class="header item">Aragon</div>
@@ -23,4 +24,5 @@
       </div>
     </div>
   </div>
+  {{ /if }}
 </template>

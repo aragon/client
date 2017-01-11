@@ -1,5 +1,6 @@
 // @flow
 import { Mongo } from 'meteor/mongo'
+import { EthAccounts } from 'meteor/ethereum:accounts'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 
 import type { Entity, FormattedEntity } from './entity'
@@ -115,6 +116,12 @@ class Identity {
     const entity = await Identity.getUsernameRaw(username, identityProvider)
     Identity.setCurrent(entity)
 
+    return true
+  }
+
+  static async reset(): Promise<boolean> {
+    const current = await Identity.getRaw(EthAccounts.findOne().address, true)
+    Identity.setCurrent(current)
     return true
   }
 }

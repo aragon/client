@@ -32,11 +32,11 @@ class Settings {
       { $unset: { [key]: 1 } }
     )
   }
-}
 
-if (!doc()) {
-  for (const key of Object.keys(defaults)) {
-    Settings.set(key, defaults[key])
+  static reset() {
+    for (const key of Object.keys(defaults)) {
+      Settings.set(key, defaults[key])
+    }
   }
 }
 
