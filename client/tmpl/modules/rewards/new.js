@@ -48,11 +48,10 @@ tmpl.onRendered(function () {
         const debitCardCurrency = this.$('#debitCardCurrency input').val()
         const shakeUser = Shake.fakeUser(debitCardCurrency)
         console.log(shakeUser)
-        const user = await Shake.createUser(shakeUser)
-        console.log(user)
+        await Shake.createUser(shakeUser)
         const invoice = await Shake.createInvoice({
           email: shakeUser.user.email,
-          currency: shakeUser.card.currency,
+          currency: debitCardCurrency,
           amount
         })
         console.log(invoice)

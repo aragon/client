@@ -34,7 +34,7 @@ export default class Shake {
         lastName: faker.name.lastName(),
         dateOfBirth: faker.date.between('1950-01-01', '1999-01-01'),
         phoneNumber: faker.phone.phoneNumberFormat(2).replace(/-/g, ''),
-        email: faker.internet.email(),
+        email: faker.internet.email().toLowerCase(),
       },
       address: {
         address1: faker.address.streetAddress(),
