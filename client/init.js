@@ -9,13 +9,14 @@ import EthereumNode from '/client/lib/ethereum/node'
 import { BrowserNotifications } from '/client/lib/notifications'
 
 const initFinished = new ReactiveVar(false)
-initFinished.set(false)
 
 Template.Layout.helpers({
   initFinished: () => initFinished.get(),
 })
 
 Meteor.startup(async () => {
+  Meteor.disconnect()
+
   await EthereumNode.connect()
 
   const current = Identity.current(true)

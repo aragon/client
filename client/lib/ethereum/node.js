@@ -1,5 +1,4 @@
 // @flow
-import { Meteor } from 'meteor/meteor'
 import { EthAccounts } from 'meteor/ethereum:accounts'
 import { EthBlocks } from 'meteor/ethereum:blocks'
 
@@ -7,12 +6,6 @@ import { NotificationsManager } from '/client/lib/notifications'
 
 import web3 from './web3'
 import listeners from './listeners'
-
-if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-  if (Meteor) {
-    Meteor.disconnect()
-  }
-}
 
 const initCollections = async (): Promise<boolean> => {
   const promises = await Promise.all([
@@ -38,7 +31,7 @@ const initCollections = async (): Promise<boolean> => {
     })
   ])
 
-  if (promises[0] && promises[1]) return true
+  return promises[0] && promises[1]
 }
 
 const initConnection = async (): Promise<boolean> => (
