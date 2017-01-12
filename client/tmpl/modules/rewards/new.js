@@ -25,14 +25,14 @@ tmpl.helpers({
                   Company.getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
 })
 
-const issueReward = (to, amount) => {
+const issueReward = (to, amountWei) => {
   const address = Identity.current(true).ethereumAddress
-  return Company.issueReward(to, web3.toWei(amount, 'ether'), `Reward for ${to}`, { from: address, gas: 4000000 })
+  return Company.issueReward(to, amountWei, `Reward for ${to}`, { from: address, gas: 4000000 })
 }
 
-const createRecurringReward = (to, amount, periodDays) => {
+const createRecurringReward = (to, amountWei, periodDays) => {
   const address = Identity.current(true).ethereumAddress
-  return Company.createRecurringReward(to, web3.toWei(amount, 'ether'), periodDays * 3600 * 24, `Recurring reward for ${to}`, { from: address, gas: 4000000 })
+  return Company.createRecurringReward(to, amountWei, periodDays * 3600 * 24, `Recurring reward for ${to}`, { from: address, gas: 4000000 })
 }
 
 tmpl.onRendered(function () {
@@ -42,8 +42,9 @@ tmpl.onRendered(function () {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      const amount = parseFloat(this.$('input[name=rewardAmount]').val())
-
+      const amount = TemplateVar.getFrom('.Element_CurrencyAmount', 'amountWei')
+      const to = TemplateVar.get(this, 'recipient').ethereumAddress
+      /*
       if (TemplateVar.get(this, 'anonDebitCard')) {
         const debitCardCurrency = this.$('#debitCardCurrency input').val()
         const shakeUser = Shake.fakeUser(debitCardCurrency)
@@ -58,14 +59,17 @@ tmpl.onRendered(function () {
       }
 
       return
+      */
 
-      const to = TemplateVar.get(this, 'recipient').ethereumAddress
+
 
       try {
         if (TemplateVar.get(this, 'isRecurrent')) {
-          const periodDays = this.$('input[name=period]').val()
-          await createRecurringReward(to, amount, periodDays)
+          const periodDays = this.$('input[name=periodNumber]').val()
+          console.log(amount, to, periodDays)
+          await createRecurringReward(to, amount, periodDays) // implement multiply time unit
         } else {
+          console.log(amount, to)
           await issueReward(to, amount)
         }
 
