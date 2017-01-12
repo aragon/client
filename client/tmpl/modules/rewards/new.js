@@ -30,9 +30,9 @@ const issueReward = (to, amountWei) => {
   return Company.issueReward(to, amountWei, `Reward for ${to}`, { from: address, gas: 4000000 })
 }
 
-const createRecurringReward = (to, amountWei, periodDays) => {
+const createRecurringReward = (to, amountWei, period) => {
   const address = Identity.current(true).ethereumAddress
-  return Company.createRecurringReward(to, amountWei, periodDays * 3600 * 24, `Recurring reward for ${to}`, { from: address, gas: 4000000 })
+  return Company.createRecurringReward(to, amountWei, period, `Recurring reward for ${to}`, { from: address, gas: 4000000 })
 }
 
 tmpl.onRendered(function () {
@@ -61,15 +61,12 @@ tmpl.onRendered(function () {
       return
       */
 
-
-
       try {
         if (TemplateVar.get(this, 'isRecurrent')) {
-          const periodDays = this.$('input[name=periodNumber]').val()
-          console.log(amount, to, periodDays)
-          await createRecurringReward(to, amount, periodDays) // implement multiply time unit
+          const periodNumber = this.$('input[name=periodNumber]').val()
+          const periodUnit = $('#recurrentPeriodInterval').dropdown('get value')
+          await createRecurringReward(to, amount, periodNumber * periodUnit)
         } else {
-          console.log(amount, to)
           await issueReward(to, amount)
         }
 
