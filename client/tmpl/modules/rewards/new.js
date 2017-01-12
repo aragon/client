@@ -1,5 +1,4 @@
 // @flow
-import web3 from '/client/lib/ethereum/web3'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { TemplateVar } from 'meteor/frozeman:template-var'
