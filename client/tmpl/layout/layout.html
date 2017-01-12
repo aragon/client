@@ -1,28 +1,32 @@
 <template name="Layout">
   {{ #if initFinished }}
-  <div id="app">
-    <div class="ui top fixed text menu" id="topbar">
-      <div class="header item">Aragon</div>
-      <div class="right menu">
-        <a href="/inbox" class="item" id="inboxButton">
-          <i class="inbox large icon"></i>
-          {{ #if $gt unhandledNotifications 0 }}
-          <div class="ui floating red circular empty label"></div>
-          {{ /if }}
-        </a>
-        <a href="/account" class="item">
-          {{#with currentEntity}}<img src="{{ picture }}" class="ui mini right spaced circular image">{{/with}}
-        </a>
-      </div>
-    </div>
-
-    {{> Layout_Sidebar }}
-
-    <div id="container">
-      <div class="ui very relaxed padded divided grid">
-        {{> Template.dynamic template=main data=data}}
-      </div>
+  <div class="ui top fixed text menu" id="topbar">
+    <div class="header item">Aragon</div>
+    <div class="right menu">
+      <a class="item" id="walletButton">
+        <i class="lock large icon"></i>
+      </a>
+      <a href="/inbox" class="item" id="inboxButton">
+        <!--<i class="inbox large icon"></i>-->
+        <i class="alarm large icon"></i>
+        {{ #if $gt unhandledNotifications 0 }}
+        <div class="ui floating red circular empty label"></div>
+        {{ /if }}
+      </a>
+      <a href="/account" class="item">
+        {{#with currentEntity}}<img src="{{ picture }}" class="ui mini right spaced circular image">{{/with}}
+      </a>
     </div>
   </div>
+
+  {{> Layout_Sidebar }}
+
+  <div id="container">
+    <div class="ui very relaxed padded divided grid">
+      {{> Template.dynamic template=main data=data}}
+    </div>
+  </div>
+
+  {{ > Layout_MetaMask }}
   {{ /if }}
 </template>
