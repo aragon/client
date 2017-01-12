@@ -15,7 +15,7 @@ Template.Layout.helpers({
 })
 
 Meteor.startup(async () => {
-  Meteor.disconnect()
+  // Meteor.disconnect()
 
   await EthereumNode.connect()
 
@@ -25,7 +25,7 @@ Meteor.startup(async () => {
     Settings.reset()
   }
   await EthereumNode.bindListeners()
+  BrowserNotifications.requestPermission()
+
   initFinished.set(true)
 })
-
-BrowserNotifications.requestPermission()

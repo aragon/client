@@ -7,7 +7,10 @@
       <div class="ui hidden divider"></div>
 
       <div class="field">
-        <label>Displaying currency</label>
+        <h3 class="ui header">
+          Displaying currency
+          <div class="sub header">This will be the default currency for displaying purposes. It will be converted to eth under the hood.</div>
+        </h3>
         <select class="ui fluid search selection dropdown" name="currency">
           {{ #each currencies }}
           <option value="{{ symbol }}" selected="{{ #if $eq (Settings.get 'displayCurrency') symbol }}selected{{ /if }}">{{ name }} ({{ symbol }})</option>
