@@ -9,6 +9,8 @@ const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
 const IS_DEV = true
 const proofFilename = `ethereum${IS_DEV ? '_dev' : ''}.json`
 
+console.log(proofFilename)
+
 export default class Keybase {
   // Returns {status, them}
   static async lookup(username: string): Object {

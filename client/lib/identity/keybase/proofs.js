@@ -37,10 +37,8 @@ class KeybaseProofs {
   }
 
   static getProofString(username, address) {
-    return `I am ${username} on Keybase verifying my Ethereum address ${address} by signing this proof with its private key`
+    return `I am ${username} on Keybase verifying my Ethereum address ${address.toLowerCase()} by signing this proof with its private key`
   }
 }
-
-KP = KeybaseProofs
 
 export default KeybaseProofs
