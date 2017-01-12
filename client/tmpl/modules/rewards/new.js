@@ -61,9 +61,9 @@ tmpl.onRendered(function () {
         const to = TemplateVar.get(this, 'recipient').ethereumAddress
 
         try {
-          if (TemplateVar.get(this, 'isRecurrent')) {
+          if (TemplateVar.get(this, 'isRecurring')) {
             const periodNumber = this.$('input[name=periodNumber]').val()
-            const periodUnit = $('#recurrentPeriodInterval').dropdown('get value')
+            const periodUnit = $('#recurringPeriodInterval').dropdown('get value')
             await createRecurringReward(to, amount, periodNumber * periodUnit)
           } else {
             await issueReward(to, amount)
@@ -93,9 +93,9 @@ tmpl.onRendered(function () {
           ),
         })
       })
-    } else if (TemplateVar.get('isRecurrent')) {
+    } else if (TemplateVar.get('isRecurring')) {
       requestAnimationFrame(() => {
-        this.$('#recurrentPeriodInterval').dropdown()
+        this.$('#recurringPeriodInterval').dropdown()
       })
     }
   })
@@ -104,6 +104,6 @@ tmpl.onRendered(function () {
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
   'success .dimmer': () => FlowRouter.go('/rewards'),
-  'click #recurrent': () => TemplateVar.set('isRecurrent', !TemplateVar.get('isRecurrent')),
+  'click #recurring': () => TemplateVar.set('isRecurring', !TemplateVar.get('isRecurring')),
   'click #debitCard': () => TemplateVar.set('isCard', !TemplateVar.get('isCard')),
 })
