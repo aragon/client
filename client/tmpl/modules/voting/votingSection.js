@@ -99,13 +99,13 @@ tmpl.helpers({
 
 const castVote = async option => {
   await Company.castVote(voting().index, option,
-                  { from: Identity.current(true).ethereumAddress, gas: 4800000 })
+                  { from: Identity.current(true).ethereumAddress, gas: 3800000 })
   reload()
 }
 
 const executeVote = async option => {
   await Voting.at(voting().address).executeOnAction(option, Company.address,
-                  { from: Identity.current(true).ethereumAddress, gas: 9900000 })
+                  { from: Identity.current(true).ethereumAddress, gas: 3800000 })
   reload()
 }
 
