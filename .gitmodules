@@ -6,3 +6,6 @@
 	path = .electron
 	url = git@gitlab.com:providentai/aragon-wrapper.git
 	branch = master
+[submodule ".metamask"]
+	path = .metamask
+	url = git@github.com:AragonOne/metamask-plugin.git
