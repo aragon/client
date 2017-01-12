@@ -25,14 +25,14 @@ tmpl.helpers({
                   Company.getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
 })
 
-const issueReward = (to, amount) => {
+const issueReward = (to, amountWei) => {
   const address = Identity.current(true).ethereumAddress
-  return Company.issueReward(to, web3.toWei(amount, 'ether'), `Reward for ${to}`, { from: address, gas: 4000000 })
+  return Company.issueReward(to, amountWei, `Reward for ${to}`, { from: address, gas: 4000000 })
 }
 
-const createRecurringReward = (to, amount, periodDays) => {
+const createRecurringReward = (to, amountWei, period) => {
   const address = Identity.current(true).ethereumAddress
-  return Company.createRecurringReward(to, web3.toWei(amount, 'ether'), periodDays * 3600 * 24, `Recurring reward for ${to}`, { from: address, gas: 4000000 })
+  return Company.createRecurringReward(to, amountWei, period, `Recurring reward for ${to}`, { from: address, gas: 4000000 })
 }
 
 tmpl.onRendered(function () {
@@ -42,7 +42,7 @@ tmpl.onRendered(function () {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      const amount = parseFloat(this.$('input[name=rewardAmount]').val())
+      const amount = TemplateVar.getFrom('.Element_CurrencyAmount', 'amountWei')
 
       if (TemplateVar.get(this, 'isCard')) {
         if (TemplateVar.get(this, 'anonDebitCard')) {
@@ -61,9 +61,10 @@ tmpl.onRendered(function () {
         const to = TemplateVar.get(this, 'recipient').ethereumAddress
 
         try {
-          if (TemplateVar.get(this, 'isRecurrent')) {
-            const periodDays = this.$('input[name=period]').val()
-            await createRecurringReward(to, amount, periodDays)
+          if (TemplateVar.get(this, 'isRecurring')) {
+            const periodNumber = this.$('input[name=periodNumber]').val()
+            const periodUnit = $('#recurringPeriodInterval').dropdown('get value')
+            await createRecurringReward(to, amount, periodNumber * periodUnit)
           } else {
             await issueReward(to, amount)
           }
@@ -92,9 +93,9 @@ tmpl.onRendered(function () {
           ),
         })
       })
-    } else if (TemplateVar.get('isRecurrent')) {
+    } else if (TemplateVar.get('isRecurring')) {
       requestAnimationFrame(() => {
-        this.$('#recurrentPeriodInterval').dropdown()
+        this.$('#recurringPeriodInterval').dropdown()
       })
     }
   })
@@ -103,6 +104,6 @@ tmpl.onRendered(function () {
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
   'success .dimmer': () => FlowRouter.go('/rewards'),
-  'click #recurrent': () => TemplateVar.set('isRecurrent', !TemplateVar.get('isRecurrent')),
+  'click #recurring': () => TemplateVar.set('isRecurring', !TemplateVar.get('isRecurring')),
   'click #debitCard': () => TemplateVar.set('isCard', !TemplateVar.get('isCard')),
 })

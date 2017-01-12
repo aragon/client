@@ -5,7 +5,6 @@ import { EthAccounts } from 'meteor/ethereum:accounts'
 import coinr from 'coinr'
 
 import web3 from '/client/lib/ethereum/web3'
-import fx from '/client/lib/currency'
 import Identity from '/client/lib/identity'
 import Settings from '/client/lib/settings'
 
@@ -50,10 +49,5 @@ Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount)
 Template.registerHelper('Settings', () => ({
   get: ReactivePromise(key => Settings.get(key)),
 }))
-
-Template.registerHelper('displayCurrency', (ethAmount: number) => {
-  if (!ethAmount) return 0
-  return fx(ethAmount).from(Settings.get('displayCurrency')).to('ETH').toFixed(2)
-})
 
 Template.registerHelper('online', () => navigator.onLine)
