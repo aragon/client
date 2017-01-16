@@ -1,7 +1,8 @@
 // @flow
 import fx from 'money'
-import coinr from 'coinr'
 import { $ } from 'meteor/jquery'
+
+import Ticker from './ticker'
 
 // import Settings from '/client/lib/settings'
 
@@ -10,8 +11,8 @@ fx.ready = false
 fx.base = 'USD'
 
 const fetchRates = async () => {
-  const eth = await coinr('eth')
-  const btc = await coinr('btc')
+  const eth = await Ticker.get('ETH')
+  const btc = await Ticker.get('BTC')
 
   const data = await $.ajax({
     type: 'GET',
@@ -20,8 +21,8 @@ const fetchRates = async () => {
   })
 
   const rates = data.rates
-  rates.ETH = 1/parseFloat(eth.price_usd)
-  rates.BTC = 1/parseFloat(btc.price_usd)
+  rates.ETH = 1/parseFloat(eth.price)
+  rates.BTC = 1/parseFloat(btc.price)
 
   fx.rates = rates
   fx.ready = true

@@ -2,7 +2,7 @@
 import { Template } from 'meteor/templating'
 import { ReactivePromise } from 'meteor/deanius:promise'
 import { EthAccounts } from 'meteor/ethereum:accounts'
-import coinr from 'coinr'
+import Ticker from '/client/lib/currency/ticker'
 
 import web3 from '/client/lib/ethereum/web3'
 import Identity from '/client/lib/identity'
@@ -39,11 +39,11 @@ Template.registerHelper('currentAccount', ReactivePromise(() => {
   return EthAccounts.findOne({ address: entity.ethereumAddress })
 }))
 
-Template.registerHelper('ticker', ReactivePromise((currency) => coinr(currency)))
+Template.registerHelper('ticker', ReactivePromise((currency: string) => Ticker.get(currency)))
 
 Template.registerHelper('traditionalCurrency', ReactivePromise(async (ethAmount) => {
-  const eth = await coinr('eth')
-  return (ethAmount * parseFloat(eth.price_usd)).toFixed(2)
+  const eth = await Ticker.get('ETH')
+  return (ethAmount * parseFloat(eth.price)).toFixed(2)
 }))
 
 Template.registerHelper('Settings', () => ({

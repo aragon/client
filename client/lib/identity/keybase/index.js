@@ -21,7 +21,7 @@ export default class Keybase {
   }
 
   static async getVerifiedEthereumAddress(username: string): Promise<string> {
-    const res = await fetch(`https://${username}.keybase.pub/${proofFilename}`)
+    const res = await fetch(`cors://${username}.keybase.pub/${proofFilename}`)
     const proof = await res.json()
     return Proofs.verifyProof(proof)
   }
