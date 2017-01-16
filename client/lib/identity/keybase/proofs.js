@@ -7,7 +7,9 @@ class KeybaseProofs {
   static async createProof(username, address) {
     const proofString = this.getProofString(username, address)
     console.log('creating proof', utils.bufferToHex(utils.sha3(proofString)))
-    const signature = web3.eth.sign(address, utils.bufferToHex(utils.sha3(proofString)))
+    const signature = web3.eth.sign(address, utils.bufferToHex(utils.sha3(proofString)), (e, j) => {
+      console.log(e, j)
+    })
     console.log(signature)
     const proof = { username, address, proofString, signature }
     return proof

@@ -21,6 +21,11 @@ tmpl.onRendered(function () {
           },
         })
       })
+      // Handling the case of a Keybase Eth keypair not loaded
+      const addresses = EthAccounts.find().fetch().map(x => x.address)
+      if (addresses.indexOf(Identity.current().ethereumAddress) === -1) {
+        Identity.setCurrentEthereumAccount(addresses[0])
+      }
     }
   })
 })

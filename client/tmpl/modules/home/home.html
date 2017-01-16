@@ -21,8 +21,8 @@
     <a class="item" href="https://blog.manolo.com" target="_blank">News in decentralized companies</a>
     <a class="item" id="priceTicker">
       ETH: {{ #with ticker 'eth' }}
-        <i class="icon arrow {{ #if $gte percent_change_24h 0 }}green up{{ else }}red down{{ /if }}"></i>
-        ${{ price_usd }}
+        <i class="icon arrow {{ #if $gte change 0 }}green up{{ else }}red down{{ /if }}"></i>
+        ${{ price }}
       {{ /with }}
     </a>
     <div class="right menu">

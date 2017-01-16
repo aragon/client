@@ -12,7 +12,7 @@ const initCollections = async (): Promise<boolean> => {
     new Promise((resolve, reject) => {
       const accountObserver = EthAccounts.find().observe({
         addedAt: () => {
-          console.log('EthAccounts is ready')
+          console.log('EthAccounts: Ready')
           if (accountObserver) accountObserver.stop()
           resolve(true)
         },
@@ -22,7 +22,7 @@ const initCollections = async (): Promise<boolean> => {
     new Promise((resolve, reject) => {
       const blockObserver = EthBlocks.find().observe({
         addedAt: () => {
-          console.log('EthBlocks is ready')
+          console.log('EthBlocks: Ready')
           blockObserver.stop()
           resolve(true)
         },
@@ -36,11 +36,11 @@ const initCollections = async (): Promise<boolean> => {
 
 const initConnection = async (): Promise<boolean> => (
   new Promise((resolve, reject) => {
-    let timeout: number = 1
+    let timeout: number = 0
     const retry = () => {
-      timeout += timeout*10
-      console.log('trying in', timeout)
-      tryConnection(resolve, reject, timeout)
+      timeout += timeout+1000
+      console.log('EthereumNode: Trying connection in', timeout)
+      setTimeout(tryConnection, timeout)
     }
     const tryConnection = () => {
       if (!web3.isConnected()) return retry()
@@ -51,15 +51,16 @@ const initConnection = async (): Promise<boolean> => (
         return retry()
       })
     }
-    setTimeout(tryConnection, timeout)
+    setTimeout(tryConnection, 100)
   })
 )
 
 class EthereumNode {
   static async connect(): Promise<boolean> {
-    const promises = await Promise.all([initConnection(), initCollections()])
-    console.log('EthereumNode is ready')
-    return promises[0] && promises[1]
+    const nodeReady = await initConnection()
+    const collectionsReady = await initCollections()
+    console.log('EthereumNode: ready')
+    return nodeReady && collectionsReady
   }
 
   static async bindListeners() {

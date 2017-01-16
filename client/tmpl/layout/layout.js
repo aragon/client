@@ -5,11 +5,12 @@ import { $ } from 'meteor/jquery'
 const tmpl = Template.Layout
 
 tmpl.onRendered(() => {
-  const walletButton = $('#walletButton')
   $(document).on('click', (e) => {
+    const walletButton = $('#walletButton')
     if (e.target !== walletButton[0] && e.target !== walletButton.find('.icon')[0]) {
-      if ($('#Layout_MetaMask').is(':visible')) {
-        $('#Layout_MetaMask').transition('fade down')
+      const metaMask = $('#Layout_MetaMask')
+      if (metaMask.is(':visible')) {
+        metaMask.transition('fade down')
       }
     }
   })

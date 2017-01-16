@@ -15,8 +15,6 @@ Template.Layout.helpers({
 })
 
 Meteor.startup(async () => {
-  // Meteor.disconnect()
-
   await EthereumNode.connect()
 
   const current = Identity.current(true)
