@@ -18,6 +18,7 @@ Meteor.startup(async () => {
   // Meteor.disconnect()
 
   await EthereumNode.connect()
+  console.log('Connected')
 
   const current = Identity.current(true)
   if (!current) {
