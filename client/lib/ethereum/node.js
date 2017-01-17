@@ -45,7 +45,9 @@ const initConnection = async (): Promise<boolean> => (
     const tryConnection = () => {
       if (!web3.isConnected()) return retry()
 
-      web3.eth.getSyncing((e, sync) => {
+      if (web3.currentProvider.constructor.name === 'MetamaskInpageProvider') return resolve(true)
+
+      web3.eth.isSyncing((e, sync) => {
         if (e || !sync) return resolve(true)
 
         return retry()

@@ -26,6 +26,7 @@
     "moment": "^2.17.1",
     "money": "^0.2.0",
     "notifyjs": "^2.0.3",
+    "post-message-stream": "^1.0.0",
     "web3": "^0.17.0-beta"
   },
   "devDependencies": {
