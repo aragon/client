@@ -9,7 +9,7 @@ tmpl.onRendered(() => {
     const walletButton = $('#walletButton')
     if (e.target !== walletButton[0] && e.target !== walletButton.find('.icon')[0]) {
       const metaMask = $('#Layout_MetaMask')
-      if (metaMask.is(':visible')) {
+      if (metaMask.hasClass('visible')) {
         metaMask.transition('fade down')
       }
     }
