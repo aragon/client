@@ -1,5 +1,4 @@
 // @flow
-import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { ReactiveVar } from 'meteor/reactive-var'
 
@@ -14,9 +13,9 @@ Template.Layout.helpers({
   initFinished: () => initFinished.get(),
 })
 
-Template.Layout_MetaMask.onRendered(() => {
-  $('#Layout_MetaMask').load(async () => {
-    window._setupMetaMaskPageStream($('#Layout_MetaMask')[0])
+Template.Layout_MetaMask.onRendered(function () {
+  this.$('#Layout_MetaMask').load(async () => {
+    window._setupMetaMaskPageStream(this.$('#Layout_MetaMask')[0])
     await EthereumNode.connect()
 
     const current = Identity.current(true)
