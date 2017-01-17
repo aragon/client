@@ -47,8 +47,7 @@ const initConnection = async (): Promise<boolean> => (
 
       if (web3.currentProvider.constructor.name === 'MetamaskInpageProvider') return resolve(true)
 
-      fff = Session.get('isMetamask') ? web3.eth.isSyncing : web3.eth.getSyncing
-      fff((e, sync) => {
+      web3.eth.getSyncing((e, sync) => {
         if (e || !sync) return resolve(true)
 
         return retry()

@@ -26,7 +26,7 @@ const load = async () => {
   initFinished.set(true)
 }
 
-Session.set('isMetamask', false)
+Session.set('isMetamask', true)
 
 if (Session.get('isMetamask')) {
   Template.Layout_MetaMask.onRendered(function () {
