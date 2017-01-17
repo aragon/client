@@ -89,8 +89,11 @@ class VotingWatcher {
     const closingTime = await Stock.at(Stocks.findOne().address).pollingUntil
                               .call(index).then(x => x.toNumber())
 
-    const supportNeeded = Promise.all([voting.neededSupport.call(), voting.supportBase.call()])
-                            .then(([s, b]) => s / b)
+    const votingSupport = voting.votingSupport.call(Company.address)
+
+    const supportNeeded = votingSupport.then(([s, b]) => s / b)
+    const relativeMajorityOnClose = votingSupport.then(([s, b, r]) => r)
+
     const voteExecuted = Company.voteExecuted.call(index)
                             .then(x => Promise.resolve(x.toNumber()))
                             .then(x => (x > 0 ? x - 10 : null))
@@ -108,8 +111,10 @@ class VotingWatcher {
       closingTime: +new Date(closingTime * 1000),
       voteCounts: Promise.all(votes),
       creator: voting.creator.call(),
+      mainSignature: voting.mainSignature.call(),
       voteExecuted,
       supportNeeded,
+      relativeMajorityOnClose,
       index,
       address,
     }
