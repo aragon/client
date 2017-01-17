@@ -4,10 +4,7 @@ import { $ } from 'meteor/jquery'
 
 import Ticker from './ticker'
 
-// import Settings from '/client/lib/settings'
-
 fx.ready = false
-// fx.base = Settings.get('displayCurrency')
 fx.base = 'USD'
 
 const fetchRates = async () => {
