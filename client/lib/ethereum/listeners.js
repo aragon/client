@@ -14,7 +14,7 @@ class Listeners {
   static async all() {
     const stocks = await this.allStocks()
 
-    return [this.issueStockListener, this.executedVotingListener, this.newSaleListener]
+    return [this.issueStockListener, this.executedVotingListener, this.newSaleListener, this.bylawChangedListener]
             .concat(await this.shareTransfers(stocks))
             .concat(stocks.map(this.newPollListener))
   }
@@ -76,6 +76,16 @@ class Listeners {
       'Vote now',
       {},
       args => SHA256(args.id.valueOf() + args.closes.valueOf()).toString(),
+    )
+  }
+
+  static get bylawChangedListener() {
+    const body = args => `Signature: ${args.functionSignature}`
+    return new Listener(
+      Company.BylawChanged,
+      'Bylaw changed',
+      body,
+      args => `/bylaws/${args.functionSignature}`,
     )
   }
 
