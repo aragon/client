@@ -128,7 +128,7 @@ class StockSalesWatcher {
 
   async submitSale(sale, title, address) {
     await sale.setTxid(sale.transactionHash, { from: address, gas: 120000 })
-    const saleVote = await StockSaleVoting.new(sale.address, title, 50, { from: address, gas: 2000000 })
+    const saleVote = await StockSaleVoting.new(sale.address, title, { from: address, gas: 2000000 })
     const oneWeekFromNow = +moment().add(7, 'days') / 1000
     console.log('submitting', saleVote)
     await saleVote.setTxid(saleVote.transactionHash, { from: address, gas: 120000 })

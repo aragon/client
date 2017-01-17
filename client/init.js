@@ -13,19 +13,28 @@ Template.Layout.helpers({
   initFinished: () => initFinished.get(),
 })
 
-Template.Layout_MetaMask.onRendered(function () {
-  this.$('#Layout_MetaMask').load(async () => {
-    window._setupMetaMaskPageStream(this.$('#Layout_MetaMask')[0])
-    await EthereumNode.connect()
+const load = async () => {
+  await EthereumNode.connect()
+  const current = Identity.current(true)
+  if (!current) {
+    await Identity.reset()
+    Settings.reset()
+  }
+  await EthereumNode.bindListeners()
+  BrowserNotifications.requestPermission()
 
-    const current = Identity.current(true)
-    if (!current) {
-      await Identity.reset()
-      Settings.reset()
-    }
-    await EthereumNode.bindListeners()
-    BrowserNotifications.requestPermission()
+  initFinished.set(true)
+}
 
-    initFinished.set(true)
+Session.set('isMetamask', false)
+
+if (Session.get('isMetamask')) {
+  Template.Layout_MetaMask.onRendered(function () {
+    this.$('#Layout_MetaMask').load(async () => {
+      window._setupMetaMaskPageStream(this.$('#Layout_MetaMask')[0])
+      load()
+    })
   })
-})
+} else {
+  Meteor.startup(() => load())
+}

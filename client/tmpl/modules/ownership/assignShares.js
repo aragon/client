@@ -21,7 +21,6 @@ const assignStock = (kind, value, recipient) => (
 )
 
 const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
-  const supportNeeded = 50
 
   const addr = Identity.current(true).ethereumAddress
   const oneWeekFromNow = +moment().add(7, 'days') / 1000
@@ -29,7 +28,6 @@ const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
   const voting = await GrantVestedStockVoting.new(
                   kind, value, recipient,
                   +moment(cliff) / 1000, +moment(vesting) / 1000,
-                  supportNeeded,
                   { from: addr, gas: 1500000 })
   await voting.setTxid(voting.transactionHash, { from: addr, gas: 150000 })
   return await Company.beginPoll(voting.address, oneWeekFromNow,
