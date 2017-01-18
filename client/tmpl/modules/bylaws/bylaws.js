@@ -3,14 +3,15 @@ import { TemplateVar } from 'meteor/frozeman:template-var'
 import { Template } from 'meteor/templating'
 
 import actions from '/client/lib/action-dispatcher/actions'
+import { bylawForAction } from '/client/lib/action-dispatcher/bylaws'
 import BylawsWatcher from '/client/lib/ethereum/bylaws'
 
 const tmpl = Template.Module_Bylaws.extend()
 
 tmpl.onRendered(function () {
-  listBylawsActions()
+  console.log(listBylawsActions())
 
-  $('.ui.modal').modal({
+  this.$('.ui.modal').modal({
     inverted: true,
     // The callbacks are inverted since the recommended action is to cancel
     onApprove: () => {
@@ -25,28 +26,25 @@ tmpl.onRendered(function () {
   setTimeout(showModal.bind(this), 1000)
 })
 
+const triggerEnum = [
+  'voting',
+  'status',
+  'specialStatus',
+]
+
 const neededStatus = {
-  status: {
-    0: 'none',
-    1: 'employee',
-    2: 'executive',
-    3: 'god',
-  },
-  specialStatus: {
-    0: 'shareholder',
-    1: 'stockSale',
-  },
+  status: [
+    'none',
+    'employee',
+    'executive',
+    'god',
+  ],
+  specialStatus: [
+    'shareholder',
+    'stockSale',
+  ],
 }
 
-type NeededStatus = $Keys<typeof neededStatus>
-
-const triggerEnum = {
-  0: 'voting',
-  1: 'status',
-  2: 'specialStatus',
-}
-
-type TriggerType = $Keys<typeof triggerEnum>
 
 const humanReadableTriggerTypes = {
   voting: 'A voting will be created',
@@ -60,28 +58,60 @@ const humanReadableTriggerTypes = {
   },
 }
 
-const bylawToHuman: string = (bylaw: Object) => {
-  console.log(humanReadableTriggerTypes[triggerEnum[bylaw.type]])
+const neededStatusObj = Object.assign(humanReadableTriggerTypes.status,
+                                      humanReadableTriggerTypes.specialStatus)
+const neededStatusList = Object.keys(neededStatusObj).map((k) => ({
+  title: neededStatusObj[k],
+  value: k,
+}))
+
+const bylawToHuman = (bylaw: Object): string => {
+  let humanStr = ''
+  const triggerType = triggerEnum[bylaw.type]
+  const triggerStatus = neededStatus[triggerType]
+  if (bylaw.details.neededStatus) {
+    const triggerStatus = neededStatus[triggerType][bylaw.details.neededStatus]
+    humanStr = humanReadableTriggerTypes[triggerType][triggerStatus]
+  } else {
+    humanStr = humanReadableTriggerTypes[triggerType]
+  }
+  console.log(humanStr)
+  return humanStr
 }
 
-const showModal = () => {
-  this.$('.ui.modal').modal('show')
-}
+const showModal = function () { this.$('.ui.modal').modal('show') }
 
-const listBylawsActions = () => {
-  const bylaws = BylawsWatcher.Bylaws.find({ signature: { $in: Object.keys(actionsObj) } }).fetch()
-  const bylawsObj: Object = Object.assign(...bylaws.map(bylaw => ({ [bylaw.signature]: bylaw })))
-
+const listBylawsActions = (): Array<Object> => {
   const humanizedActions = []
-  for (const action of actions) {
+  const actionMap = new Map(Object.entries(actions))
+  for (const action of actionMap.values()) {
+    const bylaw: Object = bylawForAction(action)
+    if (!bylaw) break
     humanizedActions.push({
       title: action.name,
-      requirement: bylawToHuman(bylawsObj[action.signature])
+      requirement: bylaw,
     })
   }
   return humanizedActions
 }
 
+console.log(neededStatusList)
+
 tmpl.helpers({
-  bylaws: listBylawsActions(),
+  bylaws: () => listBylawsActions(),
+  triggers: [{
+    title: 'Requires a voting',
+    value: 'voting'
+  },
+  {
+    title: 'Requires a user with status',
+    value: 'status',
+  },
+  {
+    title: 'Requires a shareholder',
+    value: 'specialStatus',
+  }],
+  triggerToInt: (trigger: string) => triggerEnum.indexOf(trigger),
+  statuses: neededStatusList,
+  statusToInt: (status: string) => neededStatusList.indexOf(status),
 })

@@ -5,6 +5,7 @@ class Action {
   signature: string
   name: string
   description: string
+  companyFunction: Function
 
   constructor(signature: string, name: string, description: string = 'Action description goes here') {
     this.signature = signature

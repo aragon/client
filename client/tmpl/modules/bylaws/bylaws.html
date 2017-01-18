@@ -6,17 +6,32 @@
 
       <div class="ui hidden divider"></div>
 
+      {{ #each bylaws }}
       <div class="field">
         <h3 class="ui header">
-          Displaying currency
-          <div class="sub header">This will be the default currency for displaying purposes. It will be converted to eth under the hood.</div>
+          {{ title }}
+          <div class="sub header">Mi carro me lo robaron, estando de romería</div>
         </h3>
-        <select class="ui fluid search selection dropdown" name="currency">
-          {{ #each currencies }}
-          <option value="{{ symbol }}" selected="{{ #if $eq (Settings.get 'displayCurrency') symbol }}selected{{ /if }}">{{ name }} ({{ symbol }})</option>
-          {{ /each }}
-        </select>
+        <div class="two fields">
+          <div class="field">
+            <select class="ui fluid search selection dropdown" name="currency">
+              {{ #each triggers }}
+              <option value="{{ value }}" selected="{{ #if $eq ../requirement.type (triggerToInt value) }}selected{{ /if }}">{{ title }}</option>
+              {{ /each }}
+            </select>
+          </div>
+          {{ #if $eq requirement.type (triggerToInt 'status') }}
+          <div class="field">
+            <select class="ui fluid search selection dropdown" name="currency">
+              {{ #each statuses }}
+              <option value="{{ value }}" selected="{{ #if $eq ../requirement.details.neededStatus (statusToInt value) }}selected{{ /if }}">{{ title }}</option>
+              {{ /each }}
+            </select>
+          </div>
+          {{ /if }}
+        </div>
       </div>
+      {{ /each }}
     </form>
   </div>
 
