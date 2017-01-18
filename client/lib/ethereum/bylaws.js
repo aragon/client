@@ -33,12 +33,13 @@ class BylawsWatcher {
   }
 
   async updateBylaw(signature) {
-    const type = await Company.getBylawType.call(signature).then(x => x.toNumber())
+    const [type, updated, updatedBy] = await Company.getBylawType.call(signature)
+        .then(x => x.map(y => ((y.toNumber) ? y.toNumber() : y)))
     let details = Promise.resolve()
     if (type === 0) {
       details = Company.getVotingBylaw.call(signature)
         .then(x => x.map(y => ((y.toNumber) ? y.toNumber() : y)))
-        .then(([supportNeeded, supportBase, closingRelativeMajority]) => ({ supportNeeded, supportBase, closingRelativeMajority }))
+        .then(([supportNeeded, supportBase, closingRelativeMajority, minimumVotingTime]) => ({ supportNeeded, supportBase, closingRelativeMajority, minimumVotingTime }))
     } else {
       details = Company.getStatusBylaw.call(signature)
         .then(x => x.toNumber())
@@ -49,6 +50,9 @@ class BylawsWatcher {
       signature,
       type,
       details,
+      updatedBy,
+
+      updated: new Date(updated * 1000),
     })
 
     const signatureHash = utils.bufferToHex(utils.sha3(signature))
