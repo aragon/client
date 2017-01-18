@@ -1,5 +1,10 @@
+// @flow
 class Action {
-  constructor(signature, name, description = 'Action description goes here') {
+  signature: string
+  name: string
+  description: string
+
+  constructor(signature: string, name: string, description: string = 'Action description goes here') {
     this.signature = signature
     this.name = name
     this.description = description
