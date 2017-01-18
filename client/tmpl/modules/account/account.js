@@ -4,12 +4,18 @@ import { EthAccounts } from 'meteor/ethereum:accounts'
 import { Template } from 'meteor/templating'
 
 import Identity from '/client/lib/identity'
+import Settings from '/client/lib/settings'
+import currencies from './currencies'
 
 const tmpl = Template.Module_Account.extend()
 
 tmpl.onRendered(function () {
   this.$('#logout').popup({ position: 'top center' })
   this.$('#viewAllAccounts, #linkKeybase').popup({ position: 'bottom center' })
+  this.$('[name="currency"]').dropdown({
+    fullTextSearch: true,
+    onChange: cur => Settings.set('displayCurrency', cur),
+  })
 
   this.autorun(() => {
     if (TemplateVar.get('viewAllAccounts')) {
@@ -45,4 +51,7 @@ tmpl.events({
 
 tmpl.helpers({
   accounts: () => EthAccounts.find(),
+  currencies: () => (
+    Object.keys(currencies).map((symbol) => ({ name: currencies[symbol], symbol }))
+  ),
 })
