@@ -10,6 +10,12 @@
         {{#if supportNeeded}}
         <a class="ui violet label">Requires {{ percentFormat supportNeeded }} support</a>
         {{/if}}
+
+        {{#if relativeMajorityOnClose}}
+          <a class="ui violet basic label">Relative count on close</a>
+        {{else}}
+          <a class="ui violet label">Absolute count on close</a>
+        {{/if}}
       {{else}}
         <a class="ui left pointing red basic label">Closed</a>
         <a class="ui violet label">{{arrayAccess options voteExecuted}}</a>

@@ -32,21 +32,32 @@ class VotingWatcher {
       this.lastWatchedBlock = ev.blockNumber
     }
 
+    const watchBylaw = (err, ev) => {
+      const affectedVotings = Votings.find({ mainSignature: ev.args.functionSignature, voteExecuted: null, closingTime: { $gt: +new Date() } })
+      affectedVotings.forEach(v => self.getVoting(v.address, v.index))
+
+      this.lastWatchedBlock = ev.blockNumber
+    }
+
     const get = async (err, evs) => {
       await Promise.all(evs.map(ev => watch(err, ev)))
     }
 
-    Company.VoteExecuted().watch(watch)
+    if (this.lastWatchedBlock > this.lastBlock) {
+      this.lastWatchedBlock = this.lastBlock
+    }
+    const threshold = this.lastBlock
+    const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
+    const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
+
+    Company.VoteExecuted({}, missedPredicate).get(get)
+    Company.VoteExecuted({}, streamingPredicate).watch(watch)
+
+    Company.BylawChanged({}, missedPredicate).get((err, evs) => evs.map(ev => watchBylaw(err, ev)))
+    Company.BylawChanged({}, streamingPredicate).watch(watchBylaw)
 
     Stocks.find().observeChanges({
       added: (id, fields) => {
-        if (this.lastWatchedBlock > this.lastBlock) {
-          this.lastWatchedBlock = this.lastBlock
-        }
-        const threshold = this.lastBlock
-        const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
-        const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
-
         Stock.at(fields.address).NewPoll({}, streamingPredicate).watch(watch)
         Stock.at(fields.address).VoteCasted({}, streamingPredicate).watch(watch)
 
