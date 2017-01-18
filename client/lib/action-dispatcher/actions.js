@@ -1,4 +1,6 @@
 // @flow
+import Company from '/client/lib/ethereum/deployed'
+
 class Action {
   signature: string
   name: string
@@ -8,12 +10,16 @@ class Action {
     this.signature = signature
     this.name = name
     this.description = description
+    this.companyFunction = Company[signature.split('(')[0]]
   }
 }
 
-const allActions = [
-  new Action('beginPoll(address,uint64)', 'Begin voting'),
-  new Action('castVote(uint256,uint8)', 'Cast vote'),
-]
+const ActionFactory = {
+  beginPoll: new Action('beginPoll(address,uint64)', 'Begin voting'),
+  castVote: new Action('castVote(uint256,uint8)', 'Cast vote'),
+  issueStock: new Action('issueStock(uint8,uint256)', 'Issue stock'),
+}
 
-export default allActions
+AA = ActionFactory
+
+export default ActionFactory

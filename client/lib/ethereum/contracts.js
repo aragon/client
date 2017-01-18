@@ -11,6 +11,7 @@ import StockSale from '/imports/lib/contracts/build/contracts/StockSale.sol.js'
 import BoundedStandardSale from '/imports/lib/contracts/build/contracts/BoundedStandardSale.sol.js'
 import IndividualInvestorSale from '/imports/lib/contracts/build/contracts/IndividualInvestorSale.sol.js'
 import AccountingSettingsVoting from '/imports/lib/contracts/build/contracts/AccountingSettingsVoting.sol.js'
+import GenericBinaryVoting from '/imports/lib/contracts/build/contracts/GenericBinaryVoting.sol.js'
 
 import web3 from './web3'
 
@@ -27,10 +28,11 @@ const allContracts = [
   BoundedStandardSale,
   IndividualInvestorSale,
   AccountingSettingsVoting,
+  GenericBinaryVoting,
 ]
 
 allContracts.forEach(c => c.setProvider(web3.currentProvider))
 
 export { allContracts, Company, Stock, GrantableStock, BinaryVoting as Voting,
           BinaryPoll as Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting,
-          StockSale, BoundedStandardSale, IndividualInvestorSale, AccountingSettingsVoting }
+          StockSale, BoundedStandardSale, IndividualInvestorSale, AccountingSettingsVoting, GenericBinaryVoting }
