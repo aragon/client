@@ -29,8 +29,7 @@ class Dispatcher {
   }
 
   async createVoting(f, args, signature, votingTime) {
-    const rawData = f.request.apply(this, args).params[0].data
-    const txData = new BigNumber(rawData) //ethUtils.toBuffer(rawData)
+    const txData = f.request.apply(this, args).params[0].data
     const votingCloses = votingTime + (+new Date() / 1000)
 
     const voting = await GenericBinaryVoting.new(signature, txData, this.transactionParams)
