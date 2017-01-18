@@ -1,7 +1,7 @@
 import helpers from '/client/helpers'
 import Identity from '/client/lib/identity'
 
-import { Stock, Voting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale, AccountingSettingsVoting } from './contracts'
+import { Stock, Voting, GenericBinaryVoting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale, AccountingSettingsVoting } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
 import verifyContractCode from './verify'
@@ -162,6 +162,11 @@ class VotingWatcher {
 
   get allVotes() {
     return [
+      {
+        contractClass: GenericBinaryVoting,
+        title: async () => Promise.resolve('Generic Voting'),
+        description: async a => `Bytes are wonderful ${GenericBinaryVoting.at(a).data.call()}`,
+      },
       {
         contractClass: Poll,
         title: async () => Promise.resolve('Poll'),
