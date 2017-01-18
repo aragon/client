@@ -165,7 +165,7 @@ class VotingWatcher {
       {
         contractClass: GenericBinaryVoting,
         title: async () => Promise.resolve('Generic Voting'),
-        description: async a => `Bytes are wonderful ${GenericBinaryVoting.at(a).data.call()}`,
+        description: async a => `Bytes are wonderful ${await GenericBinaryVoting.at(a).data.call()}`,
       },
       {
         contractClass: Poll,
