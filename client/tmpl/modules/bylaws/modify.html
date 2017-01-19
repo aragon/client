@@ -9,15 +9,24 @@
     </h1>
     <div class="ui hidden divider"></div>
     <div class="field">
-      <select class="ui fluid selection dropdown" name="trigger" id="trigger">
-        {{ #each triggers }}
-        <option value="{{ value }}" selected="{{ #if $eq ../bylaw.type (triggerToInt value) }}selected{{ /if }}">{{ title }}</option>
-        {{ /each }}
-      </select>
+      <div class="ui selection dropdown" id="trigger">
+        <input type="hidden" name="trigger" value="{{ intToTrigger bylaw.type }}">
+        <i class="dropdown icon"></i>
+        <div class="default text">(triggers this).[(intToTrigger bylaw.type)]</div>
+        <div class="menu">
+          {{ #each triggers this }}
+          <div class="item" data-value="{{ value }}" data-disabled="{{ disabled }}">
+            {{ title }}
+          </div>
+          {{ /each }}
+        </div>
+      </div>
     </div>
-    {{ #if $eq requirement.type (triggerToInt 'status') }}
+    {{ #if $eq (TemplateVar.get 'selectedTrigger') 'voting' }}
+    {{ /if }}
+    {{ #if $eq (TemplateVar.get 'selectedTrigger') 'status' }}
     <div class="field">
-      <select class="ui fluid search selection dropdown" name="status" id="status">
+      <select class="ui fluid selection dropdown" name="status" id="status">
         {{ #each statuses }}
         <option value="{{ value }}" selected="{{ #if $eq ../bylaw.details.neededStatus (statusToInt value) }}selected{{ /if }}">{{ title }}</option>
         {{ /each }}
