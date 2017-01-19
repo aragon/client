@@ -9,6 +9,7 @@
     </h1>
     <div class="ui hidden divider"></div>
     <div class="field">
+      <label>Action requirement</label>
       <div class="ui selection dropdown" id="trigger">
         <input type="hidden" name="trigger" value="{{ intToTrigger bylaw.type }}">
         <i class="dropdown icon"></i>
@@ -23,9 +24,26 @@
       </div>
     </div>
     {{ #if $eq (TemplateVar.get 'selectedTrigger') 'voting' }}
+    <div class="two fields">
+      <div class="field">
+        <label>Support needed (%)</label>
+        <input type="number" name="supportNeeded" min="1" max="100" value="{{ numbersToPercentage bylaw.details.supportNeeded bylaw.details.supportBase }}">
+      </div>
+      <div class="field">
+        <label>Minimum voting time (days)</label>
+        <input type="number" name="minimumVotingTime" value="{{ secondsToDays bylaw.details.minimumVotingTime }}">
+      </div>
+    </div>
+    <div class="field">
+      <div class="ui toggle checkbox" id="closingRelativeMajority">
+        <input type="checkbox" tabindex="0" class="hidden" name="closingRelativeMajority" checked="{{ #if bylaw.details.closingRelativeMajority }}checked{{/if}}">
+        <label>Relative majority</label>
+      </div>
+    </div>
     {{ /if }}
     {{ #if $eq (TemplateVar.get 'selectedTrigger') 'status' }}
     <div class="field">
+      <label>Needed status</label>
       <select class="ui fluid selection dropdown" name="status" id="status">
         {{ #each statuses }}
         <option value="{{ value }}" selected="{{ #if $eq ../bylaw.details.neededStatus (statusToInt value) }}selected{{ /if }}">{{ title }}</option>
@@ -33,6 +51,8 @@
       </select>
     </div>
     {{ /if }}
+    <div class="ui spacer"></div>
+    <button class="ui fluid big primary button" type="submit">Save</button>
   </form>
   {{ /with }}
 

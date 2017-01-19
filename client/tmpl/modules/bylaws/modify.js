@@ -3,39 +3,28 @@ import { Template } from 'meteor/templating'
 import { TemplateVar } from 'meteor/frozeman:template-var'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 
-import ActionFactory from '/client/lib/action-dispatcher/actions'
-import Dispatcher from '/client/lib/action-dispatcher/dispatcher'
+import { dispatcher, actions } from '/client/lib/action-dispatcher'
 import { bylawForAction } from '/client/lib/action-dispatcher/bylaws'
-import BylawsWatcher from '/client/lib/ethereum/bylaws'
 import ClosableSection from '/client/tmpl/components/closableSection'
 
 const tmpl = Template.Module_Bylaws_Modify.extend([ClosableSection])
 
-let changeCb: Function = () => {}
-
-const showModal = function (cb) {
-  changeCb = cb
+const showModal = (cb) => {
   this.$('.ui.modal').modal('show')
 }
 
-const triggerEnum = [
+const triggerList = [
   'voting',
   'status',
   'specialStatus',
 ]
 
-const neededStatus = {
-  status: [
-    'none',
-    'employee',
-    'executive',
-    'god',
-  ],
-  specialStatus: [
-    'shareholder',
-    'stockSale',
-  ],
-}
+const statusList = [
+  'none',
+  'employee',
+  'executive',
+  'god',
+]
 
 const humanReadableTriggerTypes = {
   voting: 'A voting will be created',
@@ -49,80 +38,76 @@ const humanReadableTriggerTypes = {
   },
 }
 
-const neededStatusObj = Object.assign(humanReadableTriggerTypes.status,
-                                      humanReadableTriggerTypes.specialStatus)
-const neededStatusList = Object.keys(neededStatusObj).map((k) => ({
-  title: neededStatusObj[k],
-  value: k,
-}))
-
-const bylawToHuman = (bylaw: Object): string => {
-  let humanStr = ''
-  const triggerType = triggerEnum[bylaw.type]
-  const triggerStatus = neededStatus[triggerType]
-  if (bylaw.details.neededStatus) {
-    const triggerStatus = neededStatus[triggerType][bylaw.details.neededStatus]
-    humanStr = humanReadableTriggerTypes[triggerType][triggerStatus]
-  } else {
-    humanStr = humanReadableTriggerTypes[triggerType]
-  }
-  console.log(humanStr)
-  return humanStr
-}
-
 const setAction = () => {
-  const action = ActionFactory[FlowRouter.getParam('key')]
+  const action = actions[FlowRouter.getParam('key')]
   const completeAction = Object.assign(action, { bylaw: bylawForAction(action) })
   TemplateVar.set('action', completeAction)
-  console.log(completeAction)
-  TemplateVar.set('selectedTrigger', triggerEnum[completeAction.bylaw.type])
+  TemplateVar.set('selectedTrigger', triggerList[completeAction.bylaw.type])
 }
 
 tmpl.onCreated(setAction)
+
+const save = function () {
+  console.log(this)
+  const signature = TemplateVar.get(this, 'action').signature
+  console.log(signature)
+  const trigger = TemplateVar.get(this, 'selectedTrigger')
+  if (trigger === 'status') {
+    const statusIndex: number = statusList.indexOf(this.$('[name="status"]').val())
+    dispatcher.dispatch(actions.addStatusBylaw, signature, statusIndex)
+    console.log('MANOLA')
+    console.log(statusIndex)
+  } else if (trigger === 'specialStatus') {
+    dispatcher.dispatch(actions.addSpecialStatusBylaw, signature, 0)
+  } else if (trigger === 'voting') {
+    const supportNeeded = this.$('[name="supportNeeded"]').val()
+    const closingRelativeMajority = this.$('[name="supportNeeded"]').is(':checked')
+    const minimumVotingTime = parseInt(this.$('[name="minimumVotingTime"]').val(), 10) * 60 * 60 * 24
+    console.log(supportNeeded)
+    console.log(closingRelativeMajority)
+    console.log(minimumVotingTime)
+    dispatcher.dispatch(actions.addVotingBylaw, signature, supportNeeded, 100,
+                        closingRelativeMajority, minimumVotingTime, 0)
+  }
+}
 
 tmpl.onRendered(function () {
   this.$('.ui.modal').modal({
     inverted: true,
     // The callbacks are inverted since the recommended action is to cancel
     onApprove: () => {
-      console.log('Cancelled')
-      BlazeLayout.reset()
+      FlowRouter.reload()
     },
     onDeny: () => {
       console.log('Approved')
-      changeCb()
+      save.call(this)
+    },
+  })
+
+  this.$('.form').form({
+    onSuccess: (e) => {
+      e.preventDefault()
+      showModal()
+      return false
     },
   })
 
   const setStatusDropdown = () => {
-    this.$('#status').dropdown({
-      onChange: (v) => {
-        console.log(v)
-        showModal(() => {
-          const signature = TemplateVar.get('action').signature
-          const statusIndex = neededStatus.status.indexOf(v)
-          Dispatcher.dispatch(ActionFactory.addStatusBylaw, signature, statusIndex)
-          console.log('MANOLA')
-          console.log(signature)
-          console.log(statusIndex)
-        })
-      },
-    })
+    this.$('#status').dropdown()
+  }
+
+  const setVotingForm = () => {
+    $('#closingRelativeMajority').checkbox()
   }
 
   const setTriggerDropdown = () => {
     this.$('#trigger').dropdown({
       onChange: (v) => {
         TemplateVar.set(this, 'selectedTrigger', v)
-        console.log(v)
-        if (v === 'status') {
-          requestAnimationFrame(() => setStatusDropdown())
-        } else {
-          showModal(() => {
-            Dispatcher.dispatch(TemplateVar.get(this, 'action'), params)
-            console.log('MANOLA')
-          })
-        }
+        requestAnimationFrame(() => {
+          setStatusDropdown()
+          setVotingForm()
+        })
       },
     })
   }
@@ -133,14 +118,13 @@ tmpl.onRendered(function () {
     requestAnimationFrame(() => {
       setTriggerDropdown()
       setStatusDropdown()
+      setVotingForm()
     })
   })
 })
 
 tmpl.helpers({
-  triggers: (action) => {
-    console.log(action)
-    return [{
+  triggers: (action) => ([{
     title: 'Requires a voting',
     value: 'voting',
     disabled: (action.key === 'beginPoll' || action.key === 'castVote') ? 'disabled' : null,
@@ -150,11 +134,22 @@ tmpl.helpers({
   }, {
     title: 'Requires a shareholder',
     value: 'specialStatus',
-  }]},
-  triggerToInt: (trigger: string) => triggerEnum.indexOf(trigger),
-  intToTrigger: (trigger: number) => triggerEnum[trigger],
-  statuses: neededStatusList,
-  statusToInt: (status: string) => neededStatusList.indexOf(status),
+  }]),
+  triggerToInt: (trigger: string) => triggerList.indexOf(trigger),
+  intToTrigger: (trigger: number) => triggerList[trigger],
+  statuses: [{
+    value: 'none',
+    title: 'Everyone will be able to change it',
+  }, {
+    value: 'employee',
+    title: 'Employees and executives will be able to change it',
+  }, {
+    value: 'executive',
+    title: 'Executives will be able to change it',
+  }],
+  statusToInt: (status: string) => statusList.indexOf(status),
   action: () => TemplateVar.get('action'),
   selectedTrigger: () => TemplateVar.get('selectedTrigger'),
+  secondsToDays: (seconds: number): number => seconds / 60 / 60 / 24,
+  numbersToPercentage: (a: number, b: number): number => Math.round((a / b) * 100),
 })
