@@ -7,10 +7,9 @@ Root.modules = [
   new Module('Ownership', 'diamond'),
   new Module('Voting', 'announcement'),
   new Module('Fundraising', 'money'),
-  new Module('Rewards', 'users'),
+  // new Module('Rewards', 'users'),
   new Module('Accounting', 'browser'),
-  new Module('Wallet', 'university'),
-  new Module('Settings', 'settings'),
+  new Module('Bylaws', 'university'),
 
   new Module('Account', 'user', false),
   new Module('Inbox', 'inbox', false),

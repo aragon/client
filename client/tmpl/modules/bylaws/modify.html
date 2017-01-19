@@ -1,0 +1,50 @@
+<template name="Module_Bylaws_Modify">
+  {{> Element_ProcessDimmer}}
+  {{> Element_CloseSectionButton }}
+  {{ #with action }}
+  <form class="ui flex attached form">
+    <h1 class="ui header">
+      {{ name }}
+      <div class="sub header">{{ description }}</div>
+    </h1>
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <select class="ui fluid selection dropdown" name="trigger" id="trigger">
+        {{ #each triggers }}
+        <option value="{{ value }}" selected="{{ #if $eq ../bylaw.type (triggerToInt value) }}selected{{ /if }}">{{ title }}</option>
+        {{ /each }}
+      </select>
+    </div>
+    {{ #if $eq requirement.type (triggerToInt 'status') }}
+    <div class="field">
+      <select class="ui fluid search selection dropdown" name="status" id="status">
+        {{ #each statuses }}
+        <option value="{{ value }}" selected="{{ #if $eq ../bylaw.details.neededStatus (statusToInt value) }}selected{{ /if }}">{{ title }}</option>
+        {{ /each }}
+      </select>
+    </div>
+    {{ /if }}
+  </form>
+  {{ /with }}
+
+  <div class="ui small modal">
+    <div class="header">
+      Bylaws change confirmation
+    </div>
+    <div class="content">
+      <div class="description">
+        <p>Changing your company's bylaws has real implications on its functioning.</p>
+        <p>Please make sure this is a desired action.</p>
+        <p>A voting will be created and 90% of the voting power will be needed in order to confirm the change.</p>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="ui deny button">
+        Yes, I want to change the bylaws
+      </div>
+      <div class="ui positive button">
+        Cancel
+      </div>
+    </div>
+  </div>
+</template>
