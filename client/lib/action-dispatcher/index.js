@@ -1,3 +1,4 @@
 import dispatcher from './dispatcher'
+import actions from './actions'
 
-export default dispatcher
+export { dispatcher, actions }

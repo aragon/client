@@ -93,6 +93,4 @@ const ActionFactory = {
                         'How new bylaws actionable by a voting can be created'),
 }
 
-AA = ActionFactory
-
 export default ActionFactory
