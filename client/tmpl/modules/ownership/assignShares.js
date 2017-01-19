@@ -10,28 +10,18 @@ import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
 import { Stock, GrantVestedStockVoting } from '/client/lib/ethereum/contracts'
+import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Ownership_AssignShares.extend([ClosableSection])
 
 const assignStock = (kind, value, recipient) => (
-  Company.grantStock(+kind, +value, recipient,
-    { from: Identity.current(true).ethereumAddress, gas: 150000 })
+  dispatcher.dispatch(actions.grantStock, kind, value, recipient)
 )
 
 const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
-
-  const addr = Identity.current(true).ethereumAddress
-  const oneWeekFromNow = +moment().add(7, 'days') / 1000
-
-  const voting = await GrantVestedStockVoting.new(
-                  kind, value, recipient,
-                  +moment(cliff) / 1000, +moment(vesting) / 1000,
-                  { from: addr, gas: 1500000 })
-  await voting.setTxid(voting.transactionHash, { from: addr, gas: 150000 })
-  return await Company.beginPoll(voting.address, oneWeekFromNow,
-                { from: addr, gas: 120000 * Stocks.find().count() })
+  dispatcher.dispatch(actions.grantVestedStock, kind, value, recipient, +moment(cliff)/1000, +moment(vesting)/1000)
 }
 
 tmpl.onRendered(function () {
