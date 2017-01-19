@@ -8,6 +8,7 @@ import { moment } from 'meteor/momentjs:moment'
 import Identity from '/client/lib/identity'
 import Shake from '/client/lib/shake'
 import Company from '/client/lib/ethereum/deployed'
+import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 import ClosableSection from '/client/tmpl/components/closableSection'
 
@@ -24,15 +25,13 @@ tmpl.helpers({
                   Company.getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
 })
 
-const issueReward = (to, amountWei) => {
-  const address = Identity.current(true).ethereumAddress
-  return Company.issueReward(to, amountWei, `Reward for ${to}`, { from: address, gas: 4000000 })
-}
+const issueReward = (to, amountWei) => (
+  dispatcher.dispatch(actions.issueReward, to, amountWei, `Reward for ${to}`)
+)
 
-const createRecurringReward = (to, amountWei, period) => {
-  const address = Identity.current(true).ethereumAddress
-  return Company.createRecurringReward(to, amountWei, period, `Recurring reward for ${to}`, { from: address, gas: 4000000 })
-}
+const createRecurringReward = (to, amountWei, period) => (
+  dispatcher.dispatch(actions.createRecurringReward, to, amountWei, period, `Recurring reward for ${to}`)
+)
 
 tmpl.onRendered(function () {
   this.$('.dropdown').dropdown()
