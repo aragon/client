@@ -6,20 +6,26 @@ class Action {
   name: string
   description: string
   companyFunction: Function
+  votingDescription: (params: Array<string>) => (string)
 
-  constructor(signature: string, name: string, description: string = 'Action description goes here') {
+  constructor(signature: string, name: string, description: string = 'Action description goes here', votingDescription: (params: Array<string>) => (string) = args => `Args: ${args.join(' ')}`) {
     this.signature = signature
     this.name = name
     this.description = description
     this.companyFunction = Company[signature.split('(')[0]]
+    this.votingDescription = votingDescription
+  }
+
+  async votingDescriptionFor(args: Array<{type: string, value: string}>): Promise<string> {
+    return await this.votingDescription(args.map(a => a.value))
   }
 }
 
 const ActionFactory = {
   beginPoll: new Action('beginPoll(address,uint64)', 'Begin voting',
-                        'How votings and polls can be created'),
+                        'How votings and polls can be created', () => 'voting to create voting lol'),
   castVote: new Action('castVote(uint256,uint8)', 'Cast vote',
-                        'How votes can be casted in votings'),
+                        'How votes can be casted in votings', () => 'voting to vote lol'),
   addStock: new Action('addStock(address,uint256)', 'Add new stock',
                         'How a new type of stock can be assigned'),
   issueStock: new Action('issueStock(uint8,uint256)', 'Issue stock',
@@ -47,7 +53,5 @@ const ActionFactory = {
   addVotingBylaw: new Action('addVotingBylaw(string,uint256,uint256,bool,uint8)', 'Add bylaw by voting',
                         'How new bylaws actionable by a voting can be created'),
 }
-
-AA = ActionFactory
 
 export default ActionFactory

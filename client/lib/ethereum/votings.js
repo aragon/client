@@ -165,8 +165,8 @@ class VotingWatcher {
     return [
       {
         contractClass: GenericBinaryVoting,
-        title: async a => `Generic Voting ${actionFromData(await GenericBinaryVoting.at(a).data.call()).name}`,
-        description: async a => `Bytes are wonderful ${await GenericBinaryVoting.at(a).data.call()}`,
+        title: async a => `${actionFromData(await GenericBinaryVoting.at(a).data.call()).name} voting`,
+        description: async a => `${await actionFromData(await GenericBinaryVoting.at(a).data.call()).votingDescriptionFor(decode(await GenericBinaryVoting.at(a).data.call()))}`,
       },
       {
         contractClass: Poll,
