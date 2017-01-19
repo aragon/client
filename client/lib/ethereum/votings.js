@@ -1,5 +1,6 @@
 import helpers from '/client/helpers'
 import Identity from '/client/lib/identity'
+import { actionFromData, decode } from '/client/lib/action-dispatcher/decoder'
 
 import { Stock, Voting, GenericBinaryVoting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale, AccountingSettingsVoting } from './contracts'
 import Company from './deployed'
@@ -164,7 +165,7 @@ class VotingWatcher {
     return [
       {
         contractClass: GenericBinaryVoting,
-        title: async () => Promise.resolve('Generic Voting'),
+        title: async a => `Generic Voting ${actionFromData(await GenericBinaryVoting.at(a).data.call()).name}`,
         description: async a => `Bytes are wonderful ${await GenericBinaryVoting.at(a).data.call()}`,
       },
       {

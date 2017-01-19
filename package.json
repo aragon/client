@@ -17,6 +17,7 @@
     "color-scheme": "0.0.5",
     "crypto-js": "^3.1.8",
     "electron": "^1.4.12",
+    "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^5.0.1",
     "faker": "^3.1.0",
     "framed-msgpack-rpc": "^1.1.13",
