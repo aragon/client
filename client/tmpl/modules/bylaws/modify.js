@@ -1,8 +1,10 @@
 // @flow
-import { TemplateVar } from 'meteor/frozeman:template-var'
 import { Template } from 'meteor/templating'
+import { TemplateVar } from 'meteor/frozeman:template-var'
+import { FlowRouter } from 'meteor/kadira:flow-router'
 
 import ActionFactory from '/client/lib/action-dispatcher/actions'
+import Dispatcher from '/client/lib/action-dispatcher/dispatcher'
 import { bylawForAction } from '/client/lib/action-dispatcher/bylaws'
 import BylawsWatcher from '/client/lib/ethereum/bylaws'
 import ClosableSection from '/client/tmpl/components/closableSection'
@@ -15,32 +17,6 @@ const showModal = function (cb) {
   changeCb = cb
   this.$('.ui.modal').modal('show')
 }
-
-tmpl.onRendered(function () {
-  this.$('.ui.modal').modal({
-    inverted: true,
-    // The callbacks are inverted since the recommended action is to cancel
-    onApprove: () => {
-      console.log('Cancelled')
-      BlazeLayout.reset()
-    },
-    onDeny: () => {
-      console.log('Approved')
-      changeCb()
-    },
-  })
-
-  this.$('.ui.dropdown').dropdown({
-    onChange: function (v, e, b) {
-      console.log(this)
-      console.log(v)
-      console.log(b)
-      showModal(() => {
-        console.log('MANOLA')
-      })
-    },
-  })
-})
 
 const triggerEnum = [
   'voting',
@@ -94,26 +70,91 @@ const bylawToHuman = (bylaw: Object): string => {
   return humanStr
 }
 
+const setAction = () => {
+  const action = ActionFactory[FlowRouter.getParam('key')]
+  const completeAction = Object.assign(action, { bylaw: bylawForAction(action) })
+  TemplateVar.set('action', completeAction)
+  console.log(completeAction)
+  TemplateVar.set('selectedTrigger', triggerEnum[completeAction.bylaw.type])
+}
+
+tmpl.onCreated(setAction)
+
+tmpl.onRendered(function () {
+  this.$('.ui.modal').modal({
+    inverted: true,
+    // The callbacks are inverted since the recommended action is to cancel
+    onApprove: () => {
+      console.log('Cancelled')
+      BlazeLayout.reset()
+    },
+    onDeny: () => {
+      console.log('Approved')
+      changeCb()
+    },
+  })
+
+  const setStatusDropdown = () => {
+    this.$('#status').dropdown({
+      onChange: (v) => {
+        console.log(v)
+        showModal(() => {
+          const signature = TemplateVar.get('action').signature
+          const statusIndex = neededStatus.status.indexOf(v)
+          Dispatcher.dispatch(ActionFactory.addStatusBylaw, signature, statusIndex)
+          console.log('MANOLA')
+          console.log(signature)
+          console.log(statusIndex)
+        })
+      },
+    })
+  }
+
+  const setTriggerDropdown = () => {
+    this.$('#trigger').dropdown({
+      onChange: (v) => {
+        TemplateVar.set(this, 'selectedTrigger', v)
+        console.log(v)
+        if (v === 'status') {
+          requestAnimationFrame(() => setStatusDropdown())
+        } else {
+          showModal(() => {
+            Dispatcher.dispatch(TemplateVar.get(this, 'action'), params)
+            console.log('MANOLA')
+          })
+        }
+      },
+    })
+  }
+
+  this.autorun(() => {
+    FlowRouter.watchPathChange()
+    setAction()
+    requestAnimationFrame(() => {
+      setTriggerDropdown()
+      setStatusDropdown()
+    })
+  })
+})
+
 tmpl.helpers({
-  triggers: [{
+  triggers: (action) => {
+    console.log(action)
+    return [{
     title: 'Requires a voting',
     value: 'voting',
-  },
-  {
+    disabled: (action.key === 'beginPoll' || action.key === 'castVote') ? 'disabled' : null,
+  }, {
     title: 'Requires a user with status',
     value: 'status',
-  },
-  {
+  }, {
     title: 'Requires a shareholder',
     value: 'specialStatus',
-  }],
+  }]},
   triggerToInt: (trigger: string) => triggerEnum.indexOf(trigger),
+  intToTrigger: (trigger: number) => triggerEnum[trigger],
   statuses: neededStatusList,
   statusToInt: (status: string) => neededStatusList.indexOf(status),
-  action: () => {
-    const action = ActionFactory[FlowRouter.getParam('key')]
-    console.log(action)
-    console.log(bylawForAction(action))
-    return Object.assign(action, { bylaw: bylawForAction(action) })
-  },
+  action: () => TemplateVar.get('action'),
+  selectedTrigger: () => TemplateVar.get('selectedTrigger'),
 })
