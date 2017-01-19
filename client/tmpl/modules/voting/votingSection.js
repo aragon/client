@@ -10,6 +10,7 @@ import StockWatcher from '/client/lib/ethereum/stocks'
 import Company from '/client/lib/ethereum/deployed'
 import Identity from '/client/lib/identity'
 import { Stock, Voting } from '/client/lib/ethereum/contracts'
+import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 const Votings = VotingWatcher.Votings
 const Stocks = StockWatcher.Stocks
@@ -98,8 +99,7 @@ tmpl.helpers({
 })
 
 const castVote = async option => {
-  await Company.castVote(voting().index, option,
-                  { from: Identity.current(true).ethereumAddress, gas: 3800000 })
+  await dispatcher.dispatch(actions.castVote, voting().index, option)
   reload()
 }
 

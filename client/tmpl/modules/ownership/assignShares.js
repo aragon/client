@@ -20,9 +20,9 @@ const assignStock = (kind, value, recipient) => (
   dispatcher.dispatch(actions.grantStock, kind, value, recipient)
 )
 
-const createStockGrant = async (kind, value, recipient, cliff, vesting) => {
+const createStockGrant = async (kind, value, recipient, cliff, vesting) => (
   dispatcher.dispatch(actions.grantVestedStock, kind, value, recipient, +moment(cliff)/1000, +moment(vesting)/1000)
-}
+)
 
 tmpl.onRendered(function () {
   TemplateVar.set('assignMode', true)

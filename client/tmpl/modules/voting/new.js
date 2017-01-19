@@ -7,6 +7,7 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 import Company from '/client/lib/ethereum/deployed'
 import Identity from '/client/lib/identity'
 import { Poll } from '/client/lib/ethereum/contracts'
+import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 const Stocks = StockWatcher.Stocks
 
@@ -16,8 +17,7 @@ const openPoll = async (description, closingTime) => {
   const addr = Identity.current(true).ethereumAddress
   const poll = await Poll.new(description, { from: addr, gas: 3000000 })
   await poll.setTxid(poll.transactionHash, { from: addr, gas: 120000 })
-  return await Company.beginPoll(poll.address, +closingTime / 1000,
-    { from: addr, gas: 120000 * Stocks.find().count() })
+  return await dispatcher.dispatch(actions.beginPoll, poll.address, +closingTime / 1000)
 }
 
 tmpl.onRendered(function () {
