@@ -166,59 +166,16 @@ class VotingWatcher {
       {
         contractClass: GenericBinaryVoting,
         title: async a => `${actionFromData(await GenericBinaryVoting.at(a).data.call()).name} voting`,
-        description: async a => `${await actionFromData(await GenericBinaryVoting.at(a).data.call()).votingDescriptionFor(decode(await GenericBinaryVoting.at(a).data.call()))}`,
+        description: async a => {
+          const data = await GenericBinaryVoting.at(a).data.call()
+          const action = actionFromData(data)
+          return `${await action.votingDescriptionFor(decode(data))}`
+        },
       },
       {
         contractClass: Poll,
         title: async () => Promise.resolve('Poll'),
         description: async a => `Poll question: ${await Poll.at(a).description.call()}`,
-      },
-      {
-        contractClass: IssueStockVoting,
-        title: async () => Promise.resolve('Issue Stock'),
-        description: async a => {
-          const c = IssueStockVoting.at(a)
-          const amount = await c.amount.call().then(x => x.toNumber())
-          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
-          return `Issue ${amount} ${stock} shares`
-        },
-      },
-      {
-        contractClass: GrantVestedStockVoting,
-        title: async () => Promise.resolve('Grant Stock'),
-        description: async a => {
-          const c = GrantVestedStockVoting.at(a)
-          const amount = await c.amount.call().then(x => x.toNumber())
-          const stock = Stocks.findOne({ index: (await c.stock.call().then(x => x.toNumber())) }).symbol
-          const to = await c.recipient.call()
-          const vesting = await c.vesting.call().then(x => moment(x.toNumber() * 1000))
-          const cliff = await c.cliff.call().then(x => moment(x.toNumber() * 1000))
-          const now = moment()
-          return `Grant ${amount} ${stock} shares to ${to} with ${timeRange(now, cliff)} cliff and ${timeRange(now, vesting)} vesting`
-        },
-      },
-      {
-        contractClass: StockSaleVoting,
-        title: async a => `${await StockSaleVoting.at(a).title.call()} voting`,
-        description: async a => {
-          const sale = StockSale.at(await StockSaleVoting.at(a).sale.call())
-
-          const raiseTarget = sale.raiseTarget.call().then(x => x.toNumber())
-          const stock = sale.stockId.call().then(x => x.toNumber())
-          const buyingPrice = sale.getBuyingPrice.call(0).then(x => x.toNumber())
-          const availableTokens = sale.availableTokens.call().then(x => x.toNumber())
-
-          return `Voting to create a stock sale to raise ${web3.fromWei(await raiseTarget, 'ether')} at ${web3.fromWei(await buyingPrice, 'ether')} ETH per ${ Stocks.findOne({ index: +(await stock) }).symbol } share`
-        },
-      },
-      {
-        contractClass: AccountingSettingsVoting,
-        title: async () => Promise.resolve('Change accounting settings'),
-        description: async a => {
-          const vote = AccountingSettingsVoting.at(a)
-
-          return `Voting to set accounting settings to:\n\n - Budget: ${web3.fromWei(await vote.budget.call(), 'ether')} ETH. \n - Period duration: ${timeRange(0, await vote.periodDuration.call().then(x => x.toNumber() * 1000))}\ - Divident threshold: ${web3.fromWei(await vote.dividendThreshold.call(), 'ether')} ETH`
-        },
       },
     ]
   }
