@@ -97,7 +97,8 @@
         <p>If reward would go over-budget, please change settings.</p>
       </div>
     </div>
-    <button class="ui fluid big primary button" type="submit">Issue reward</button>
+    {{ > Element_BylawDisclose action=actionName }}
+    <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
     <div class="ui hidden divider"></div>
   </form>
 </template>

@@ -46,33 +46,7 @@
     </div>
     {{ /unless }}
     <div class="ui spacer"></div>
-    {{ #if TemplateVar.get 'assignMode' }}
-    {{ #if $exists (TemplateVar.get 'selectedStock') }}
-    <div class="ui icon small message">
-      <i class="info icon"></i>
-      <div class="content">
-        <div class="header">
-          There are {{ availableShares (TemplateVar.get 'selectedStock') }} issued shares to assign
-        </div>
-        <p>
-          Assigning these shares doesn't require a voting.
-        </p>
-      </div>
-    </div>
-    {{ /if }}
-    {{ else }}
-    <div class="ui icon small message">
-      <i class="info icon"></i>
-      <div class="content">
-        <div class="header">
-          Creating a stock grant requires a voting.
-        </div>
-        <p>
-          When approved, granted stock will be issued and assigned with the vesting calendar specified.
-        </p>
-      </div>
-    </div>
-    {{ /if }}
-    <button class="ui fluid big primary button" type="submit">Assign</button>
+    {{ > Element_BylawDisclose action=actionName }}
+    <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
   </form>
 </template>

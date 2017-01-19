@@ -3,6 +3,7 @@
 import web3 from '/client/lib/ethereum/web3'
 import { moment } from 'meteor/momentjs:moment'
 import { Template } from 'meteor/templating'
+import { callToActionForAction, bylawDisclaimerForAction } from '/client/lib/action-dispatcher/helpers'
 
 import { NotificationsManager } from '/client/lib/notifications'
 
@@ -23,6 +24,9 @@ helpers.arrayAccess = (array: Array<any>, index: number) => array[index]
 helpers.isNull = (x: any): boolean => x === null
 helpers.isNotNull = (x: any): boolean => x !== null
 helpers.count = (x: any): number => x.count()
+
+helpers.callToActionForAction = callToActionForAction
+helpers.bylawDisclaimerForAction = bylawDisclaimerForAction
 
 helpers.unhandledNotifications = () => Notifications.find({ handled: false }).count()
 helpers.ether = (x: number): string => parseFloat(web3.fromWei(x, 'ether')).toLocaleString()

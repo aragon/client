@@ -52,13 +52,7 @@
     </div>
 
     <div class="ui spacer"></div>
-    <div class="ui icon small message">
-      <i class="info icon"></i>
-      <div class="content">
-        <div class="header">A voting is needed to open a raise.</div>
-        <p>Voting power will have 7 days to vote.</p>
-      </div>
-    </div>
-    <button class="ui fluid big primary button" type="submit">Open raise</button>
+    {{ > Element_BylawDisclose action='beginSale' }}
+    <button class="ui fluid big primary button" type="submit">{{ callToActionForAction 'beginSale' }}</button>
   </form>
 </template>

@@ -26,4 +26,4 @@ const allContracts = [
 allContracts.forEach(c => c.setProvider(web3.currentProvider))
 
 export { allContracts, Company, Stock, GrantableStock, BinaryVoting as Voting,
-          BinaryPoll as Poll, BoundedStandardSale, IndividualInvestorSale, GenericBinaryVoting }
+          BinaryPoll as Poll, BoundedStandardSale, IndividualInvestorSale, GenericBinaryVoting, StockSale }

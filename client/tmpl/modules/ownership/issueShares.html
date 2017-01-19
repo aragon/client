@@ -22,13 +22,7 @@
       <input type="number" lang="en" name="number" placeholder="Number of shares" min="0">
     </div>
     <div class="ui spacer"></div>
-    <div class="ui icon small message">
-      <i class="info icon"></i>
-      <div class="content">
-        <div class="header">To issue shares a voting is needed.</div>
-        <p>Voting power will have 7 days to vote.</p>
-      </div>
-    </div>
-    <button class="ui fluid big primary button" type="submit">Issue</button>
+    {{ > Element_BylawDisclose action='issueStock' }}
+    <button class="ui fluid big primary button" type="submit">{{ callToActionForAction 'issueStock' }}</button>
   </form>
 </template>

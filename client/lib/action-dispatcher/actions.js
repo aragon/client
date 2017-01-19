@@ -1,5 +1,6 @@
 // @flow
 import Company from '/client/lib/ethereum/deployed'
+import { StockSale } from '/client/lib/ethereum/contracts'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import helpers from '/client/helpers'
 
@@ -38,27 +39,18 @@ const grantVestedStockDescription = ([stockIndex, amount, to, cliff, vesting]): 
 }
 
 const accountingSettingsDescription = ([budget, periodDuration, dividendThreshold]): string => (
-  `Voting to set accounting settings to:\n\n - Budget: ${web3.fromWei(budget, 'ether')} ETH. \n - Period duration: ${timeRange(0, +periodDuration * 1000)}\ - Dividend threshold: ${web3.fromWei(dividendThreshold, 'ether')} ETH`
+  `Set accounting settings to:\n\n - Budget: ${web3.fromWei(budget, 'ether')} ETH. \n - Period duration: ${timeRange(0, +periodDuration * 1000)}\ - Dividend threshold: ${web3.fromWei(dividendThreshold, 'ether')} ETH`
 )
 
-/*
-const x = [
-  {
-    contractClass: StockSaleVoting,
-    title: async a => `${await StockSaleVoting.at(a).title.call()} voting`,
-    description: async a => {
-      const sale = StockSale.at(await StockSaleVoting.at(a).sale.call())
+const stockSaleDescription = async ([saleAddress]) => {
+  const sale = StockSale.at(saleAddress)
 
-      const raiseTarget = sale.raiseTarget.call().then(x => x.toNumber())
-      const stock = sale.stockId.call().then(x => x.toNumber())
-      const buyingPrice = sale.getBuyingPrice.call(0).then(x => x.toNumber())
-      const availableTokens = sale.availableTokens.call().then(x => x.toNumber())
+  const raiseTarget = sale.raiseTarget.call().then(x => x.toNumber())
+  const stock = sale.stockId.call().then(x => x.toNumber())
+  const buyingPrice = sale.getBuyingPrice.call(0).then(x => x.toNumber())
 
-      return `Voting to create a stock sale to raise ${web3.fromWei(await raiseTarget, 'ether')} at ${web3.fromWei(await buyingPrice, 'ether')} ETH per ${ Stocks.findOne({ index: +(await stock) }).symbol } share`
-    },
-  },
-]
-*/
+  return `Create a stock sale to raise ${web3.fromWei(await raiseTarget, 'ether')} ETH at ${web3.fromWei(await buyingPrice, 'ether')} ETH per ${Stocks.findOne({ index: +(await stock) }).symbol} share`
+}
 
 const ActionFactory = {
   beginPoll: new Action('beginPoll(address,uint64)', 'Begin voting',
@@ -74,7 +66,7 @@ const ActionFactory = {
   grantVestedStock: new Action('grantVestedStock(uint8,uint256,address,uint64,uint64)', 'Issue and grant stock with vesting',
                         'How existing stock can be granted with a vesting schedule', grantVestedStockDescription),
   beginSale: new Action('beginSale(address)', 'Begin stock sale',
-                        'How stock sales can be started'),
+                        'How stock sales can be started', stockSaleDescription),
   transferSaleFunds: new Action('transferSaleFunds(uint256)', 'Transfer stock sale funds to company',
                         'How the transfer of funds from the stock sale contract to the company can be executed'),
   setAccountingSettings: new Action('setAccountingSettings(uint256,uint64,uint256)', 'Set accounting settings',

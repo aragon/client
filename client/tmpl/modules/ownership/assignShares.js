@@ -63,6 +63,7 @@ tmpl.helpers({
     if (!stock) { return Promise.reject() }
     return Stock.at(stock.address).balanceOf(Company.address).then(x => x.valueOf())
   }, '', '0'),
+  actionName: () => (TemplateVar.get('assignMode') ? 'grantStock' : 'grantVestedStock'),
 })
 
 tmpl.events({
