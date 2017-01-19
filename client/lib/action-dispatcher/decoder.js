@@ -5,11 +5,14 @@ import actions from './actions'
 
 const actionFromData = data => {
   const functionSig = data.slice(0, 10)
+
   for (const action of Object.values(actions)) {
     if (bufferToHex(sha3(action.signature)).indexOf(functionSig) === 0) {
       return action
     }
   }
+
+  console.warn('not found for function sig', functionSig)
   return null
 }
 

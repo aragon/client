@@ -89,7 +89,7 @@ const ActionFactory = {
                         'How new bylaws actionable by user status can be created'),
   addSpecialStatusBylaw: new Action('addSpecialStatusBylaw(string,uint8)', 'Add bylaw by special status',
                         'How new bylaws actionable by special user status (shareholder) can be created'),
-  addVotingBylaw: new Action('addVotingBylaw(string,uint256,uint256,bool,uint8)', 'Add bylaw by voting',
+  addVotingBylaw: new Action('addVotingBylaw(string,uint256,uint256,bool,uint64,uint8)', 'Add bylaw by voting',
                         'How new bylaws actionable by a voting can be created'),
 }
 
