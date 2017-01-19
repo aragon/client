@@ -1,5 +1,5 @@
 import Company from './deployed'
-import { StockSale, StockSaleVoting, IndividualInvestorSale, BoundedStandardSale } from './contracts'
+import { StockSale, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
 import StockWatcher from './stocks'
 import verifyContractCode from './verify'

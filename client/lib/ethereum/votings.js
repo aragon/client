@@ -1,13 +1,9 @@
-import helpers from '/client/helpers'
-import Identity from '/client/lib/identity'
 import { actionFromData, decode } from '/client/lib/action-dispatcher/decoder'
 
-import { Stock, Voting, GenericBinaryVoting, Poll, IssueStockVoting, GrantVestedStockVoting, StockSaleVoting, StockSale, AccountingSettingsVoting } from './contracts'
+import { Stock, Voting, GenericBinaryVoting, Poll } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
 import verifyContractCode from './verify'
-
-const timeRange = helpers.timeRange
 
 const Stocks = StockWatcher.Stocks
 const Votings = new Mongo.Collection('votings', { connection: null })
@@ -180,7 +176,5 @@ class VotingWatcher {
     ]
   }
 }
-
-window.VotingWatcher = VotingWatcher
 
 export default new VotingWatcher()
