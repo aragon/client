@@ -3,6 +3,7 @@ import { StockSale, StockSaleVoting, IndividualInvestorSale, BoundedStandardSale
 
 import StockWatcher from './stocks'
 import verifyContractCode from './verify'
+import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 const Stocks = StockWatcher.Stocks
 
@@ -113,27 +114,22 @@ class StockSalesWatcher {
     return this.allSales.filter(x => x.contractClass == verifiedContract)[0]
   }
 
-  async createIndividualInvestorVote(address, stock, investor, price, units, closes, title = 'Series Y') {
+  async createIndividualInvestorSale(address, stock, investor, price, units, closes, title = 'Series Y') {
     const sale = await IndividualInvestorSale.new(
                             Company.address, stock, investor, units, price, closes, title,
                             { from: address, gas: 2000000 })
-    return await this.submitSale(sale, title, address)
+    return await this.submitSale(sale, address)
   }
 
-  async createBoundedSaleVote(address, stock, min, max, price, closes, title = 'Series Z') {
+  async createBoundedSale(address, stock, min, max, price, closes, title = 'Series Z') {
     const sale = await BoundedStandardSale.new(Company.address, stock, min, max, price, closes, title,
                            { from: address, gas: 3000000 })
-    return await this.submitSale(sale, title, address)
+    return await this.submitSale(sale, address)
   }
 
-  async submitSale(sale, title, address) {
+  async submitSale(sale, address) {
     await sale.setTxid(sale.transactionHash, { from: address, gas: 120000 })
-    const saleVote = await StockSaleVoting.new(sale.address, title, { from: address, gas: 2000000 })
-    const oneWeekFromNow = +moment().add(7, 'days') / 1000
-    console.log('submitting', saleVote)
-    await saleVote.setTxid(saleVote.transactionHash, { from: address, gas: 120000 })
-    return await Company.beginPoll(saleVote.address, oneWeekFromNow,
-          { from: address, gas: 120000 * Stocks.find().count() })
+    return dispatcher.dispatch(actions.beginSale, sale.address)
   }
 
   get allSales() {

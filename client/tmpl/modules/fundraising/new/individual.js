@@ -39,7 +39,7 @@ tmpl.onRendered(function () {
       const address = Identity.current(true).ethereumAddress
 
       console.log('creating with investor', investor)
-      await StockSaleWatcher.createIndividualInvestorVote(
+      await StockSaleWatcher.createIndividualInvestorSale(
         address, selectedStock, investor, price, units, closes, title)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })

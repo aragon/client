@@ -38,7 +38,7 @@ tmpl.onRendered(function () {
       const address = Identity.current(true).ethereumAddress
 
       await StockSaleWatcher
-        .createBoundedSaleVote(address, selectedStock, min, cap, price, closes, title)
+        .createBoundedSale(address, selectedStock, min, cap, price, closes, title)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
