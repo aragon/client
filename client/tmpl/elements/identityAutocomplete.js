@@ -37,7 +37,7 @@ const bindSearch = (tmplIns) => {
       },
       // This is so Ethereum addresses can be inputed when offline
       onAbort: async () => {
-        const query = $('.ui.search .prompt').val()
+        const query = tmplIns.$('.ui.search .prompt').val()
 
         if (web3.isAddress(query)) {
           const entity = await Identity.get(query)

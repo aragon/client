@@ -1,8 +1,12 @@
-import StockWatcher from '/client/lib/ethereum/stocks'
-import { Stock } from '/client/lib/ethereum/contracts'
-import Company from '/client/lib/ethereum/deployed'
+// @flow
+import { $ } from 'meteor/jquery'
+import { Template } from 'meteor/templating'
+import { TemplateVar } from 'meteor/frozeman:template-var'
+import { FlowRouter } from 'meteor/kadira:flow-router'
 
-const Stocks = StockWatcher.Stocks
+import Identity from '/client/lib/identity'
+// import StockWatcher from '/client/lib/ethereum/stocks'
+// import { Stock } from '/client/lib/ethereum/contracts'
 
 const tmpl = Template.Module_Roles.extend()
 
@@ -24,18 +28,8 @@ tmpl.events({
   'click tbody tr': (e) => FlowRouter.go(`/roles/entity/${$(e.currentTarget).data('entity')}`),
 })
 
+window.id = Identity
+
 tmpl.helpers({
-  stocks: () => Stocks.find(),
-  updated: () => {
-    const stock = Stocks.findOne({}, { sort: { updated: -1 } })
-    if (stock) return stock.updated
-    return {}
-  },
-  shareholders: ReactivePromise(() => (
-    StockWatcher.allShareholders().then(x => [].concat(...x))
-  )),
-  balance: ReactivePromise((stock, shareholder) => (
-    Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
-  )),
-  company: () => Company.address,
+  entities: Identity.Entities.find(),
 })

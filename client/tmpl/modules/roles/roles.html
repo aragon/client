@@ -27,13 +27,13 @@
       </thead>
       <tbody data-updated="{{ updated }}">
         {{#each entities}}
-        {{#if $contains (TemplateVar.get 'searchString') (entityName entities)}}
+        {{#if $contains (TemplateVar.get 'searchString') (entityName entity)}}
         <tr data-entity="{{ entity }}">
           <td>
             {{ entityName entity }}
           </td>
           <td>
-            {{ entityRole entity }}
+            {{ entity.identityProvider }}
           </td>
         </tr>
         {{/if}}

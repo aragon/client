@@ -18,7 +18,7 @@ class Core {
     return this.modulesVar.get()
   }
 
-  set modules(newModules) {
+  set modules(newModules: Array) {
     this.modulesVar.set(newModules)
     this.setupRoutes()
   }

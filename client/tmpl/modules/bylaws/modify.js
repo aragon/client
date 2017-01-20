@@ -5,13 +5,10 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 import { bylawForAction } from '/client/lib/action-dispatcher/bylaws'
+import Status from '/client/lib/identity/status'
 import ClosableSection from '/client/tmpl/components/closableSection'
 
 const tmpl = Template.Module_Bylaws_Modify.extend([ClosableSection])
-
-const showModal = (cb) => {
-  this.$('.ui.modal').modal('show')
-}
 
 const triggerList = [
   'voting',
@@ -26,18 +23,6 @@ const statusList = [
   'god',
 ]
 
-const humanReadableTriggerTypes = {
-  voting: 'A voting will be created',
-  status: {
-    none: 'Everyone will be able to change it',
-    employee: 'Employees and executives will be able to change it',
-    executive: 'Executives will be able to change it',
-  },
-  specialStatus: {
-    shareholder: 'Shareholders will be able to change it',
-  },
-}
-
 const setAction = () => {
   const action = actions[FlowRouter.getParam('key')]
   const completeAction = Object.assign(action, { bylaw: bylawForAction(action) })
@@ -48,24 +33,17 @@ const setAction = () => {
 tmpl.onCreated(setAction)
 
 const save = function () {
-  console.log(this)
   const signature = TemplateVar.get(this, 'action').signature
-  console.log(signature)
   const trigger = TemplateVar.get(this, 'selectedTrigger')
   if (trigger === 'status') {
     const statusIndex: number = statusList.indexOf(this.$('[name="status"]').val())
     dispatcher.dispatch(actions.addStatusBylaw, signature, statusIndex)
-    console.log('MANOLA')
-    console.log(statusIndex)
   } else if (trigger === 'specialStatus') {
     dispatcher.dispatch(actions.addSpecialStatusBylaw, signature, 0)
   } else if (trigger === 'voting') {
     const supportNeeded = this.$('[name="supportNeeded"]').val()
     const closingRelativeMajority = this.$('[name="supportNeeded"]').is(':checked')
     const minimumVotingTime = parseInt(this.$('[name="minimumVotingTime"]').val(), 10) * 60 * 60 * 24
-    console.log(supportNeeded)
-    console.log(closingRelativeMajority)
-    console.log(minimumVotingTime)
     dispatcher.dispatch(actions.addVotingBylaw, signature, supportNeeded, 100,
                         closingRelativeMajority, minimumVotingTime, 0)
   }
@@ -75,11 +53,8 @@ tmpl.onRendered(function () {
   this.$('.ui.modal').modal({
     inverted: true,
     // The callbacks are inverted since the recommended action is to cancel
-    onApprove: () => {
-      FlowRouter.reload()
-    },
+    onApprove: () => {},
     onDeny: () => {
-      console.log('Approved')
       save.call(this)
     },
   })
@@ -87,7 +62,7 @@ tmpl.onRendered(function () {
   this.$('.form').form({
     onSuccess: (e) => {
       e.preventDefault()
-      showModal()
+      this.$('.ui.modal').modal('show')
       return false
     },
   })
@@ -97,7 +72,7 @@ tmpl.onRendered(function () {
   }
 
   const setVotingForm = () => {
-    $('#closingRelativeMajority').checkbox()
+    this.$('#closingRelativeMajority').checkbox()
   }
 
   const setTriggerDropdown = () => {
