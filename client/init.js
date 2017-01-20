@@ -1,5 +1,6 @@
 // @flow
 import { Meteor } from 'meteor/meteor'
+import { Session } from 'meteor/session'
 import { Template } from 'meteor/templating'
 import { ReactiveVar } from 'meteor/reactive-var'
 
@@ -33,11 +34,12 @@ const load = async () => {
   BrowserNotifications.requestPermission()
 
   initFinished.set(true)
+  $('#initialDimmer').remove()
 }
 
-Session.set('isMetamask', false)
+const isMetamask = true
 
-if (Session.get('isMetamask')) {
+if (isMetamask) {
   Template.Layout_MetaMask.onRendered(function () {
     this.$('#Layout_MetaMask').load(async () => {
       window._setupMetaMaskPageStream(this.$('#Layout_MetaMask')[0])

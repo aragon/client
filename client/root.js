@@ -6,6 +6,7 @@ Root.modules = [
   new Module('Home', 'home'),
   new Module('Ownership', 'diamond'),
   new Module('Voting', 'announcement'),
+  new Module('Roles', 'users'),
   new Module('Fundraising', 'money'),
   // new Module('Rewards', 'users'),
   new Module('Accounting', 'browser'),
