@@ -96,13 +96,13 @@ const addStatusBylawDescription = ([signature, statusNeeded]) => {
 }
 
 const addStatusSpecialBylawDescription = ([signature, statusNeeded]) => {
-  if (statusNeeded === 0) return `${getActionForSignature(signature).name} action can only be performed by shareholders`
+  if (+statusNeeded === 0) return `${getActionForSignature(signature).name} action can only be performed by shareholders`
   return 'negative v'
 }
 
 const addVotingBylawDescription = ([signature, supportNeeded, supportBase, relativeMajorityOnClose, minimumVotingTime, option]) => {
-  if (option !== 0) return 'negative v'
-  return `For ${getActionForSignature(signature).name} a voting with ${100 * d.supportNeeded / d.supportBase}% support in a ${d.minimumVotingTime / (24*3600)} day will be needed`
+  if (+option !== 0) return 'negative v'
+  return `For ${getActionForSignature(signature).name} a voting with ${100 * supportNeeded / supportBase}% support in a ${minimumVotingTime / (24*3600)} day will be needed`
 }
 
 const ActionFactory = {
