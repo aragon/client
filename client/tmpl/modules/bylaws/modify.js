@@ -55,6 +55,7 @@ tmpl.onRendered(function () {
   this.$('.form').form({
     onSuccess: (e) => {
       e.preventDefault()
+      console.log('modal')
       this.$('.ui.modal').modal('show')
       return false
     },

@@ -50,6 +50,8 @@ class Identity {
         Identity.set(addr, identityProvider, data)
         entity = Entities.findOne({ ethereumAddress: addr })
       }
+    } else if (!entity.identityProvider) {
+      entity.identityProvider = 'anon'
     }
 
     return entity
