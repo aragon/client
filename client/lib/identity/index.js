@@ -95,6 +95,7 @@ class Identity {
 
   static setCurrent(entity: Entity) {
     Entities.update({ current: true }, { $unset: { current: '' } })
+    delete entity._id
     Entities.update({ ethereumAddress: entity.ethereumAddress },
       { $set: { current: true, ...entity } })
   }
@@ -104,6 +105,7 @@ class Identity {
     // Entities.remove({ ethereumAddress: addr })
     // Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
     Entities.update({ current: true }, { $unset: { current: '' } })
+    delete current._id
     Entities.update({ ethereumAddress: addr }, { $set: { ...current } })
   }
 

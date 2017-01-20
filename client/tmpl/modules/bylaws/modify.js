@@ -5,6 +5,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 import { bylawForAction } from '/client/lib/action-dispatcher/bylaws'
+import Status from '/client/lib/identity/status'
 import ClosableSection from '/client/tmpl/components/closableSection'
 
 const tmpl = Template.Module_Bylaws_Modify.extend([ClosableSection])

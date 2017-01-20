@@ -7,6 +7,7 @@ export type Entity = {
   data: Object,
 
   current?: boolean,
+  _id?: string,
 }
 
 export type FormattedEntity = {
