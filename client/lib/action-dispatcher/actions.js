@@ -85,15 +85,22 @@ const getActionForSignature = (signature) => (
   Object.values(ActionFactory).filter(x => x.signature === signature)[0]
 )
 
-const addStatusBylawDescription = ([signature, statusNeeded]) => {
-  const statusList = [
-    'none',
-    'employee',
-    'executive',
-    'god',
-  ]
-  return `For ${getActionForSignature(signature).name} a minimum status of '${statusList[statusNeeded]}' will be needed`
-}
+// TODO: enum
+
+const statusList = [
+  'none',
+  'employee',
+  'executive',
+  'god',
+]
+
+const setEntityStatusDescription = ([entity, status]) => (
+  `Set ${entity} status to ${statusList[+status]}`
+)
+
+const addStatusBylawDescription = ([signature, statusNeeded]) => (
+  `For ${getActionForSignature(signature).name} a minimum status of '${statusList[statusNeeded]}' will be needed`
+)
 
 const addStatusSpecialBylawDescription = ([signature, statusNeeded]) => {
   if (+statusNeeded === 0) return `${getActionForSignature(signature).name} action can only be performed by shareholders`
@@ -110,6 +117,8 @@ const ActionFactory = {
                         'How votings and polls can be created', () => 'voting to create voting lol'),
   castVote: new Action('castVote(uint256,uint8)', 'Cast vote',
                         'How votes can be casted in votings', () => 'voting to vote lol'),
+  setEntityStatus: new Action('setEntityStatus(address,uint8)', 'Set entity status',
+                        'Setting company status for a given entity', setEntityStatusDescription),
   addStock: new Action('addStock(address,uint256)', 'Add new stock',
                         'How a new type of stock can be assigned', addStockDescription),
   issueStock: new Action('issueStock(uint8,uint256)', 'Issue stock',
