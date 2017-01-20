@@ -31,5 +31,4 @@ const haiku = (hex: string): string => {
   return `${adj} ${noun}`
 }
 
-
 export default haiku

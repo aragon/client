@@ -25,8 +25,7 @@ class StatusWatcher {
   }
 
   async updateStatus(ethereumAddress, _status) {
-    status = _status.toNumber()
-    console.log('st', ethereumAddress)
+    const status: number = _status.toNumber()
     Entities.upsert({ ethereumAddress }, { $set: { status } })
   }
 

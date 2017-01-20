@@ -5,8 +5,11 @@ import { TemplateVar } from 'meteor/frozeman:template-var'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 
 import Identity from '/client/lib/identity'
+import Status from '/client/lib/identity/status'
 // import StockWatcher from '/client/lib/ethereum/stocks'
 // import { Stock } from '/client/lib/ethereum/contracts'
+
+window.Entities = Identity.Entities
 
 const tmpl = Template.Module_Roles.extend()
 
@@ -17,8 +20,7 @@ tmpl.routes({
   '/*/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
 
-tmpl.onCreated(() => {
-})
+tmpl.onCreated(() => {})
 
 tmpl.onRendered(function () {
   this.$('table').tablesort()
@@ -29,8 +31,7 @@ tmpl.events({
   'click tbody tr': (e) => FlowRouter.go(`/roles/assign/${$(e.currentTarget).data('entity')}`),
 })
 
-window.id = Identity
-
 tmpl.helpers({
   entities: Identity.Entities.find(),
+  statusToString: n => Status.toString(n),
 })

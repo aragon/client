@@ -52,4 +52,7 @@ Template.registerHelper('Settings', () => ({
 
 Template.registerHelper('online', () => navigator.onLine)
 
-Template.registerHelper('capitalize', (str: string) => str.charAt(0).toUpperCase() + str.slice(1))
+Template.registerHelper('capitalize', (str: string) => {
+  if (!str) return ''
+  return str.charAt(0).toUpperCase() + str.slice(1)
+})
