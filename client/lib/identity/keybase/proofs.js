@@ -4,13 +4,18 @@ import web3 from '/client/lib/ethereum/web3'
 import utils from 'ethereumjs-util'
 
 class KeybaseProofs {
+  static signWrapper(address: string, payload: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      web3.eth.sign(address, utils.bufferToHex(utils.sha3(payload)), (e, j) => {
+        if (e) reject(e)
+        resolve(j)
+      })
+    })
+  }
+
   static async createProof(username, address) {
     const proofString = this.getProofString(username, address)
-    console.log('creating proof', utils.bufferToHex(utils.sha3(proofString)))
-    const signature = web3.eth.sign(address, utils.bufferToHex(utils.sha3(proofString)), (e, j) => {
-      console.log(e, j)
-    })
-    console.log(signature)
+    const signature = await this.signWrapper(address, proofString)
     const proof = { username, address, proofString, signature }
     return proof
   }
