@@ -42,21 +42,16 @@ const save = function () {
   }
 }
 
-tmpl.onRendered(function () {
-  this.$('.ui.modal').modal({
-    inverted: true,
-    // The callbacks are inverted since the recommended action is to cancel
-    onApprove: () => {},
-    onDeny: () => {
-      save.call(this)
-    },
-  })
+const confirmText =
+`Changing your company's bylaws has real implications on its functioning.\n
+Please make sure this is a desired action.\n
+A voting will be created and 90% of the voting power will be needed in order to confirm the change.\n`
 
+tmpl.onRendered(function () {
   this.$('.form').form({
     onSuccess: (e) => {
       e.preventDefault()
-      console.log('modal')
-      this.$('.ui.modal').modal('show')
+      if (confirm(confirmText)) save.call(this)
       return false
     },
   })
