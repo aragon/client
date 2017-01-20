@@ -51,3 +51,5 @@ Template.registerHelper('Settings', () => ({
 }))
 
 Template.registerHelper('online', () => navigator.onLine)
+
+Template.registerHelper('capitalize', (str: string) => str.charAt(0).toUpperCase() + str.slice(1))

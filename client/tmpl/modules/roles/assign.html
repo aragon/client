@@ -1,0 +1,28 @@
+<template name="Module_Roles_Assign">
+  {{> Element_ProcessDimmer}}
+  {{> Element_CloseSectionButton }}
+  <form class="ui flex attached form" id="assignRole">
+    <h1 class="ui header">Assign role</h1>
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <label>Recipient</label>
+      {{> Element_IdentityAutocomplete}}
+    </div>
+    <div class="field">
+      <label>Role</label>
+      <div class="ui selection dropdown">
+        <input type="hidden" name="kind">
+        <i class="dropdown icon"></i>
+        <div class="default text">Role</div>
+        <div class="menu">
+          {{#each statuses}}
+          <div class="item" data-value="{{ this }}">{{ capitalize this }}</div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <div class="ui spacer"></div>
+    {{ > Element_BylawDisclose action='setEntityStatus' }}
+    <button class="ui fluid big primary button" type="submit">{{callToActionForAction 'setEntityStatus'}}</button>
+  </form>
+</template>

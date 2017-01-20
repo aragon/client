@@ -16,13 +16,6 @@ const triggerList = [
   'specialStatus',
 ]
 
-const statusList = [
-  'none',
-  'employee',
-  'executive',
-  'god',
-]
-
 const setAction = () => {
   const action = actions[FlowRouter.getParam('key')]
   const completeAction = Object.assign(action, { bylaw: bylawForAction(action) })
@@ -36,7 +29,7 @@ const save = function () {
   const signature = TemplateVar.get(this, 'action').signature
   const trigger = TemplateVar.get(this, 'selectedTrigger')
   if (trigger === 'status') {
-    const statusIndex: number = statusList.indexOf(this.$('[name="status"]').val())
+    const statusIndex: number = Status.toNumber(this.$('[name="status"]').val())
     dispatcher.dispatch(actions.addStatusBylaw, signature, statusIndex)
   } else if (trigger === 'specialStatus') {
     dispatcher.dispatch(actions.addSpecialStatusBylaw, signature, 0)
@@ -122,7 +115,7 @@ tmpl.helpers({
     value: 'executive',
     title: 'Executives will be able to change it',
   }],
-  statusToInt: (status: string) => statusList.indexOf(status),
+  statusToInt: status => Status.toNumber(status),
   action: () => TemplateVar.get('action'),
   selectedTrigger: () => TemplateVar.get('selectedTrigger'),
   secondsToDays: (seconds: number): number => seconds / 60 / 60 / 24,

@@ -13,6 +13,7 @@ const tmpl = Template.Module_Roles.extend()
 tmpl.routes({
   '/': () => TemplateVar.set('rightSection', 'Module_Roles_Empty'),
   '/assign': () => TemplateVar.set('rightSection', 'Module_Roles_Assign'),
+  '/assign/:address': () => TemplateVar.set('rightSection', 'Module_Roles_Assign'),
   '/*/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
 
@@ -25,7 +26,7 @@ tmpl.onRendered(function () {
 
 tmpl.events({
   'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
-  'click tbody tr': (e) => FlowRouter.go(`/roles/entity/${$(e.currentTarget).data('entity')}`),
+  'click tbody tr': (e) => FlowRouter.go(`/roles/assign/${$(e.currentTarget).data('entity')}`),
 })
 
 window.id = Identity

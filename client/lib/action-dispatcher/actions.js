@@ -5,6 +5,7 @@ import Company from '/client/lib/ethereum/deployed'
 import { StockSale, Stock } from '/client/lib/ethereum/contracts'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import StockSalesWatcher from '/client/lib/ethereum/stocksales'
+import Status from '/client/lib/identity/status'
 import helpers from '/client/helpers'
 
 const timeRange = helpers.timeRange
@@ -88,21 +89,12 @@ const getActionForSignature = (signature): Object => (
   Object.values(ActionFactory).filter(x => x.signature === signature)[0]
 )
 
-// TODO: enum
-
-const statusList = [
-  'none',
-  'employee',
-  'executive',
-  'god',
-]
-
 const setEntityStatusDescription = ([entity, status]) => (
-  `Set ${entity} status to ${statusList[+status]}`
+  `Set ${entity} status to ${Status.toString(+status)}`
 )
 
 const addStatusBylawDescription = ([signature, statusNeeded]) => (
-  `For ${getActionForSignature(signature).name} a minimum status of '${statusList[statusNeeded]}' will be needed`
+  `For ${getActionForSignature(signature).name} a minimum status of '${Status.toString(statusNeeded)}' will be needed`
 )
 
 const addStatusSpecialBylawDescription = ([signature, statusNeeded]) => {

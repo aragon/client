@@ -25,7 +25,7 @@
           <th>Role</th>
         </tr>
       </thead>
-      <tbody data-updated="{{ updated }}">
+      <tbody>
         {{#each entities}}
         {{#if $contains (TemplateVar.get 'searchString') (entityName entity)}}
         <tr data-entity="{{ entity }}">
