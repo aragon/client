@@ -1,6 +1,5 @@
 import utils from 'ethereumjs-util'
 
-import actions from '/client/lib/action-dispatcher/actions'
 import Company from './deployed'
 
 Bylaws = new Mongo.Collection('bylaws', { connection: null })
@@ -31,6 +30,7 @@ class BylawsWatcher {
 
   async watchBylaw(err, ev) {
     if (!err && ev.args) await this.updateBylaw(ev.args.functionSignature)
+    this.lastWatchedBlock = ev.blockNumber
   }
 
   async updateBylaw(signature) {

@@ -136,3 +136,4 @@ class Identity {
 Identity.Entities = Entities
 
 export default Identity
+export { Entities }
