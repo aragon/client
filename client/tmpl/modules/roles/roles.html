@@ -1,0 +1,47 @@
+<template name="Module_Roles">
+  <div id="Module_Roles" class="nine wide column">
+    <div class="ui secondary menu">
+      <div class="fitted item">
+        <div class="ui left icon input">
+          <i class="search link icon"></i>
+          <input type="text" placeholder="Search" value="{{TemplateVar.get 'searchString'}}" id="searchInput">
+        </div>
+      </div>
+      <div class="right menu">
+        <div class="fitted item">
+          <a class="ui primary button" href="/roles/assign">
+            <i class="user icon"></i>
+            Assign a role
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui hidden divider"></div>
+    <table class="ui very basic sortable selectable striped padded fixed table">
+      <thead>
+        <tr>
+          <th>Entity</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody data-updated="{{ updated }}">
+        {{#each entities}}
+        {{#if $contains (TemplateVar.get 'searchString') (entityName entities)}}
+        <tr data-entity="{{ entity }}">
+          <td>
+            {{ entityName entity }}
+          </td>
+          <td>
+            {{ entityRole entity }}
+          </td>
+        </tr>
+        {{/if}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="seven wide lightgrey column">
+    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
+  </div>
+</template>

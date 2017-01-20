@@ -86,18 +86,21 @@ class Identity {
       identityProvider,
       data: entityObj,
     }
-    Entities.upsert({ ethereumAddress: addr }, entity)
+    Entities.upsert({ ethereumAddress: addr }, { $set: { ...entity } })
   }
 
   static setCurrent(entity: Entity) {
     Entities.update({ current: true }, { $unset: { current: '' } })
     Entities.update({ ethereumAddress: entity.ethereumAddress },
-      { current: true, ...entity })
+      { $set: { current: true, ...entity } })
   }
 
   static setCurrentEthereumAccount(addr: string) {
-    Entities.remove({ ethereumAddress: addr })
-    Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
+    const current = Identity.current(true)
+    // Entities.remove({ ethereumAddress: addr })
+    // Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
+    Entities.update({ current: true }, { $unset: { current: '' } })
+    Entities.update({ ethereumAddress: addr }, { $set: { ...current } })
   }
 
   static current(raw: boolean = false, replaceMe: boolean = true) {
