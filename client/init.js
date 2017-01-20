@@ -1,4 +1,5 @@
 // @flow
+import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { ReactiveVar } from 'meteor/reactive-var'
 
@@ -15,6 +16,8 @@ Template.Layout.helpers({
 })
 
 const load = async () => {
+  Meteor.disconnect()
+
   if (Company.address !== Session.get('knownCompany')) {
     localStorage.clear()
     Session.setPersistent('knownCompany', Company.address)
