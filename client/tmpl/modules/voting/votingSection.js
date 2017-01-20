@@ -1,4 +1,5 @@
 // @flow
+import { $ } from 'meteor/jquery'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { ReactiveVar } from 'meteor/reactive-var'

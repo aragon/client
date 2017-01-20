@@ -3,6 +3,7 @@
 export type Entity = {
   identityProvider: string,
   ethereumAddress: string,
+  status: number,
   data: Object,
 
   current?: boolean,
@@ -11,6 +12,7 @@ export type Entity = {
 export type FormattedEntity = {
   identityProvider: string,
   ethereumAddress: string,
+  status: string,
   username: string,
   name: string,
   picture: string,

@@ -1,4 +1,6 @@
 // @flow
+import { moment } from 'meteor/momentjs:moment'
+import web3 from '/client/lib/ethereum/web3'
 import Company from '/client/lib/ethereum/deployed'
 import { StockSale, Stock } from '/client/lib/ethereum/contracts'
 import StockWatcher from '/client/lib/ethereum/stocks'
@@ -16,7 +18,8 @@ class Action {
   companyFunction: Function
   votingDescription: (params: Array<string>) => (string)
 
-  constructor(signature: string, name: string, description: string = 'Action description goes here', votingDescription: (params: Array<string>) => (string) = args => `Args: ${args.join(' ')}`) {
+  constructor(signature: string, name: string, description: string = 'Action description goes here',
+              votingDescription: (params: Array<string>) => (string) = args => `Args: ${args.join(' ')}`) {
     this.signature = signature
     this.name = name
     this.description = description
@@ -44,7 +47,7 @@ const accountingSettingsDescription = ([budget, periodDuration, dividendThreshol
   `Set accounting settings to:\n\n - Budget: ${web3.fromWei(budget, 'ether')} ETH. \n - Period duration: ${timeRange(0, +periodDuration * 1000)}\ - Dividend threshold: ${web3.fromWei(dividendThreshold, 'ether')} ETH`
 )
 
-const stockSaleDescription = async ([saleAddress]) => {
+const stockSaleDescription = async ([saleAddress]): Promise<string> => {
   const sale = StockSale.at(saleAddress)
 
   const raiseTarget = sale.raiseTarget.call().then(x => x.toNumber())
@@ -54,7 +57,7 @@ const stockSaleDescription = async ([saleAddress]) => {
   return `Create a stock sale to raise ${web3.fromWei(await raiseTarget, 'ether')} ETH at ${web3.fromWei(await buyingPrice, 'ether')} ETH per ${Stocks.findOne({ index: +(await stock) }).symbol} share`
 }
 
-const addStockDescription = async ([address, tokens]) => {
+const addStockDescription = async ([address, tokens]): Promise<string> => {
   const stockSymbol = Stock.at(address).symbol.call()
   return `Add new stock type (${await stockSymbol}) to company and issue ${tokens} shares.`
 }
@@ -81,7 +84,7 @@ const issueRewardDescription = ([to, amount, concept]) => (
   `Issue reward of ${web3.fromWei(amount, 'ether')} ETH to ${to} for '${concept}'`
 )
 
-const getActionForSignature = (signature) => (
+const getActionForSignature = (signature): Object => (
   Object.values(ActionFactory).filter(x => x.signature === signature)[0]
 )
 
@@ -100,7 +103,8 @@ const addStatusSpecialBylawDescription = ([signature, statusNeeded]) => {
   return 'negative v'
 }
 
-const addVotingBylawDescription = ([signature, supportNeeded, supportBase, relativeMajorityOnClose, minimumVotingTime, option]) => {
+const addVotingBylawDescription = ([signature, supportNeeded, supportBase,
+                                    relativeMajorityOnClose, minimumVotingTime, option]) => {
   if (+option !== 0) return 'negative v'
   return `For ${getActionForSignature(signature).name} a voting with ${100 * supportNeeded / supportBase}% support in a ${minimumVotingTime / (24*3600)} day will be needed`
 }

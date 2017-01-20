@@ -61,7 +61,7 @@ Template.prototype.extend = function (components = []) {
         const path = FlowRouter.current().route.path
         let leanPath = path.replace(RegExp(`^(/${moduleName(this)})`), '')
         if (leanPath === '') leanPath = '/'
-        this.routesObj[leanPath] && this.routesObj[leanPath].call(this, FlowRouter.current())
+        if (this.routesObj[leanPath]) this.routesObj[leanPath].call(this, FlowRouter.current())
       })
     }
   })

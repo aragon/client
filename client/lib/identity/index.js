@@ -26,10 +26,13 @@ const lookupAddress = async (addr: string): Object => {
 }
 
 class Identity {
+  Entities: Mongo.Collection
+
   static format(entity: Entity, replaceMe: boolean = true): FormattedEntity {
     const formatted = providers[entity.identityProvider].format(entity)
     formatted.identityProvider = entity.identityProvider
     formatted.ethereumAddress = entity.ethereumAddress
+    formatted.status = entity.status || 'None'
 
     if (entity.ethereumAddress === Identity.current(true).ethereumAddress && replaceMe) {
       formatted.name = 'Me'
@@ -85,6 +88,7 @@ class Identity {
       ethereumAddress: addr,
       identityProvider,
       data: entityObj,
+      status: 0,
     }
     Entities.upsert({ ethereumAddress: addr }, { $set: { ...entity } })
   }
@@ -128,5 +132,7 @@ class Identity {
     return true
   }
 }
+
+Identity.Entities = Entities
 
 export default Identity

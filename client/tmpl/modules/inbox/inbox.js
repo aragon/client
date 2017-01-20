@@ -1,4 +1,5 @@
 // @flow
+import { $ } from 'meteor/jquery'
 import { Template } from 'meteor/templating'
 
 import { NotificationsManager } from '/client/lib/notifications'

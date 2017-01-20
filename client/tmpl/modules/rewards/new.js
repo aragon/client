@@ -1,11 +1,11 @@
 // @flow
+import { $ } from 'meteor/jquery'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { TemplateVar } from 'meteor/frozeman:template-var'
 import { ReactivePromise } from 'meteor/deanius:promise'
 import { moment } from 'meteor/momentjs:moment'
 
-import Identity from '/client/lib/identity'
 import Shake from '/client/lib/shake'
 import Company from '/client/lib/ethereum/deployed'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
@@ -14,7 +14,7 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 
 const tmpl = Template.Module_Rewards_New.extend([ClosableSection])
 
-tmpl.onCreated(function () {
+tmpl.onCreated(() => {
   TemplateVar.set('isVirtualCard', true)
   TemplateVar.get('anonDebitCard', true)
 })
@@ -23,7 +23,7 @@ tmpl.helpers({
   remainingBudget: ReactivePromise(Company.getAccountingPeriodRemainingBudget.call),
   periodCloses: ReactivePromise(() =>
                   Company.getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
-  actionName: () => TemplateVar.get('isRecurring') ? 'createRecurringReward' : 'issueReward'
+  actionName: () => (TemplateVar.get('isRecurring') ? 'createRecurringReward' : 'issueReward'),
 })
 
 const issueReward = (to, amountWei) => (
@@ -52,7 +52,7 @@ tmpl.onRendered(function () {
           const invoice = await Shake.createInvoice({
             email: shakeUser.user.email,
             currency: debitCardCurrency,
-            amount
+            amount,
           })
           console.log(invoice)
         }

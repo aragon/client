@@ -1,4 +1,5 @@
 // @flow
+import { $ } from 'meteor/jquery'
 import { Template } from 'meteor/templating'
 import { TemplateVar } from 'meteor/frozeman:template-var'
 import { FlowRouter } from 'meteor/kadira:flow-router'
