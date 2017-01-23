@@ -1,5 +1,6 @@
 // @flow
 import Company from '/imports/lib/contracts/build/contracts/Company.sol.js'
+import AccountingLib from '/imports/lib/contracts/build/contracts/AccountingLib.sol.js'
 import Stock from '/imports/lib/contracts/build/contracts/Stock.sol.js'
 import GrantableStock from '/imports/lib/contracts/build/contracts/GrantableStock.sol.js'
 import BinaryVoting from '/imports/lib/contracts/build/contracts/BinaryVoting.sol.js'
@@ -13,6 +14,7 @@ import web3 from './web3'
 
 const allContracts = [
   Company,
+  AccountingLib,
   Stock,
   GrantableStock,
   BinaryVoting,
@@ -25,5 +27,5 @@ const allContracts = [
 
 allContracts.forEach(c => c.setProvider(web3.currentProvider))
 
-export { allContracts, Company, Stock, GrantableStock, BinaryVoting as Voting,
+export { allContracts, Company, AccountingLib, Stock, GrantableStock, BinaryVoting as Voting,
           BinaryPoll as Poll, BoundedStandardSale, IndividualInvestorSale, GenericBinaryVoting, StockSale }

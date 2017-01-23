@@ -1,4 +1,4 @@
-import Company from '/client/lib/ethereum/deployed'
+import { Company } from '/client/lib/ethereum/deployed'
 import { GenericBinaryVoting } from '/client/lib/ethereum/contracts'
 import Identity from '/client/lib/identity'
 
