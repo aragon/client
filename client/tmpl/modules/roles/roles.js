@@ -9,8 +9,6 @@ import Status from '/client/lib/identity/status'
 // import StockWatcher from '/client/lib/ethereum/stocks'
 // import { Stock } from '/client/lib/ethereum/contracts'
 
-window.Entities = Identity.Entities
-
 const tmpl = Template.Module_Roles.extend()
 
 tmpl.routes({
