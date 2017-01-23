@@ -6,7 +6,11 @@
     <div class="ui hidden divider"></div>
     <div class="field">
       <label>Recipient</label>
-      {{> Element_IdentityAutocomplete}}
+      {{ #if TemplateVar.get 'entity' }}
+        {{ > Element_MiniEntity entity=(TemplateVar.get 'entity') }}
+      {{ else }}
+        {{ > Element_IdentityAutocomplete }}
+      {{ /if }}
     </div>
     <div class="field">
       <label>Role</label>
