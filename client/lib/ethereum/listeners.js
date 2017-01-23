@@ -5,7 +5,7 @@ import { NotificationsListener as Listener } from '/client/lib/notifications'
 import Identity from '/client/lib/identity'
 import SHA256 from 'crypto-js/sha256'
 
-import Company from './deployed'
+import { Company } from './deployed'
 import { Stock, Voting, StockSale } from './contracts'
 
 const flatten = (array) => [].concat(...array)
