@@ -31,12 +31,16 @@ tmpl.onRendered(function () {
   TemplateVar.set('assignMode', true)
 
   this.$('.dropdown').dropdown({
-    onChange: (v) => TemplateVar.set(this, 'selectedStatus', +v),
+    onChange: (v) => TemplateVar.set(this, 'selectedStatus', Status.toNumber(v)),
   })
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
+
+      const addr: string = TemplateVar.get(this, 'entity').ethereumAddress
+      const status: number = TemplateVar.get(this, 'selectedStatus')
+      await dispatcher.dispatch(actions.setEntityStatus, addr, status)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
@@ -49,7 +53,6 @@ tmpl.helpers({
 })
 
 tmpl.events({
-  'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
-  'success .dimmer': () => FlowRouter.go('/ownership'),
-  'click #stockGrant': () => TemplateVar.set('assignMode', !TemplateVar.get('assignMode')),
+  'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('entity', user)),
+  'success .dimmer': () => FlowRouter.go('/roles'),
 })

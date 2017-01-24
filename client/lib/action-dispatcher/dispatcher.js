@@ -1,4 +1,4 @@
-import { Company } from '/client/lib/ethereum/deployed'
+// @flow
 import { GenericBinaryVoting } from '/client/lib/ethereum/contracts'
 import Identity from '/client/lib/identity'
 
@@ -28,7 +28,7 @@ class Dispatcher {
     return f.sendTransaction.apply(this, args.concat([this.transactionParams]))
   }
 
-  async createVoting(f, args, signature, votingTime) {
+  async createVoting(f: Function, args: Array<mixed>, signature: string, votingTime: number) {
     const txData = f.request.apply(this, args).params[0].data
     const votingCloses = votingTime + Math.floor(+new Date() / 1000)
 

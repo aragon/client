@@ -25,6 +25,9 @@
         </div>
       </div>
     </div>
+    {{ #if $gt (totalStock (TemplateVar.get 'entity')) 0 }}
+    It is a shareholder having in total {{ totalStock (TemplateVar.get 'entity') }} shares
+    {{ /if }}
     <div class="ui spacer"></div>
     {{ > Element_BylawDisclose action='setEntityStatus' }}
     <button class="ui fluid big primary button" type="submit">{{callToActionForAction 'setEntityStatus'}}</button>

@@ -5,6 +5,7 @@ import { TemplateVar } from 'meteor/frozeman:template-var'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 
 import Identity from '/client/lib/identity'
+import Accounting from '/client/lib/ethereum/accounting'
 
 const tmpl = Template.Module_Accounting.extend()
 
@@ -23,7 +24,10 @@ tmpl.events({
   'click tbody tr': (e) => FlowRouter.go(`/accounting/${$(e.currentTarget).data('recipient')}`),
 })
 
+window.Accounting = Accounting
+
 tmpl.helpers({
+  transactions: Accounting.Transactions.find(),
   recipients: [{
     address: () => Identity.current(),
     type: 'Recurring',

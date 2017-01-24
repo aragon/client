@@ -1,9 +1,21 @@
+<<<<<<< HEAD
 import { Company } from './deployed'
+=======
+// @flow
+import { Mongo } from 'meteor/mongo'
+import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
+import { Company, AccountingLib } from './deployed'
+>>>>>>> c9dc58e9f999060f5999dd45f570063ec7630479
 
 const Transactions = new Mongo.Collection('transactions', { connection: null })
 const AccountingPeriods = new Mongo.Collection('accountingPeriod', { connection: null })
 
 class Accounting {
+  Transactions: Mongo.Collection
+  persistentTransactions: PersistentMinimongo
+  AccountingPeriods: Mongo.Collection
+  persistentAccountingPeriods: PersistentMinimongo
+
   constructor() {
     this.setupCollections()
     this.listenForChanges()
@@ -45,6 +57,7 @@ class Accounting {
     Company.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchRecurringRemoval(err, ev)))
     Company.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurringRemoval(err, ev))
+
   }
 
   watchPeriod(err, ev) {
