@@ -5,7 +5,7 @@
       {{ #if picture }}<img class="ui left floated mini image" src="{{ picture }}">{{ /if }}
       {{ #if ../closable }}<i class="right floated remove icon"></i>{{ /if }}
       <div class="header">
-        {{ name }} {{ #if username }}({{ username }}) {{/if}}
+        {{ name }} {{ #if $neq identityProvider 'anon' }}{{ #if username }}({{ username }}) {{ /if }}{{ /if }}
       </div>
       <div class="meta">
         {{ ethereumAddress }}

@@ -1,6 +1,6 @@
 <template name="Module_Ownership_Charts">
   <div class="ui secondary menu">
-    {{ totalStock currentEntity }}
+    <!-- TODO: This doesn't work for some reason relative to ReactivePromise -->
     {{ #if $gt (totalStock currentEntity) 0 }}<div class="header item">You own {{ totalStock currentEntity }} tokens</div>{{ /if }}
     <div class="right menu">
       <div class="fitted item">

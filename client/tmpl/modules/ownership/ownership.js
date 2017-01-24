@@ -26,7 +26,12 @@ tmpl.onRendered(function () {
 
 tmpl.events({
   'input #searchInput': (e) => (TemplateVar.set('searchString', e.target.value)),
-  'click tbody tr': (e) => FlowRouter.go(`/ownership/shareholder/${$(e.currentTarget).data('shareholder')}`),
+  'click tbody tr': (e) => {
+    const addr = $(e.currentTarget).data('shareholder')
+    if (addr) {
+      FlowRouter.go(`/ownership/shareholder/${addr}`)
+    }
+  },
 })
 
 tmpl.helpers({

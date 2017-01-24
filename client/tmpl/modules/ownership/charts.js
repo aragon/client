@@ -8,7 +8,7 @@ import Identity from '/client/lib/identity'
 
 const Stocks = StockWatcher.Stocks
 
-const tmpl = Template.Module_Ownership_Charts
+const tmpl = Template.Module_Ownership_Charts.extend()
 
 const strToColor = (str) => {
   let hash = 0
@@ -38,7 +38,7 @@ const drawChart = (ctx, title, labels, data, colors) => {
 
 tmpl.onRendered(function () {
   this.autorun(async () => {
-    const stocks = Stocks.find({}).fetch()
+    const stocks = Stocks.find().fetch()
     drawChart(this.$('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
 
     const allShares = await StockWatcher.allShareholders(stocks)
