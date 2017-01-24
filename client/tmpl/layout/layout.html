@@ -28,7 +28,7 @@
   </div>
   {{ /if }}
 
-  {{ > Layout_MetaMask }}
+  {{ #if isInjectedMetaMask }}{{ > Layout_MetaMask }}{{ /if }}
 
   <div class="ui active inverted dimmer" id="initialDimmer">
     <div class="ui text loader">Entering Aragon</div>

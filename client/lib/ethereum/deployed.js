@@ -3,8 +3,8 @@ import { Meteor } from 'meteor/meteor'
 
 import { Company as CompanyContract, AccountingLib as AL } from './contracts'
 
-const Company = !Meteor.settings.deployed ?
+const Company = !Meteor.settings.public.deployed ?
                   CompanyContract.deployed() :
-                  CompanyContract.at(Meteor.settings.deployed.company)
+                  CompanyContract.at(Meteor.settings.public.deployed.company)
 
 export default Company

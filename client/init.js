@@ -12,9 +12,11 @@ import Company from '/client/lib/ethereum/deployed'
 import { BrowserNotifications } from '/client/lib/notifications'
 
 const initFinished = new ReactiveVar(false)
+const isInjectedMetaMask = new ReactiveVar(false)
 
 Template.Layout.helpers({
   initFinished: () => initFinished.get(),
+  isInjectedMetaMask: () => isInjectedMetaMask.get(),
 })
 
 const load = async () => {
@@ -36,6 +38,7 @@ const load = async () => {
 
   initFinished.set(true)
   $('#initialDimmer').remove()
+  if (!isInjectedMetaMask.get()) $('#walletButton').remove()
 }
 
 const injectMetaMask = async () => {
@@ -62,6 +65,7 @@ const loadMetaMask = async () => {
 }
 
 if (window.injectMetaMask) {
+  isInjectedMetaMask.set(true)
   loadMetaMask()
 } else {
   Meteor.startup(() => load())
