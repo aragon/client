@@ -61,6 +61,8 @@ Template.registerHelper('capitalize', (str: string) => {
 })
 
 Template.registerHelper('totalStock', ReactivePromise((entity: Entity) => {
+  if (!entity) return 0
+
   const stocksArr = []
   StockWatcher.Stocks.find().forEach((item) => (
     stocksArr.push(Stock.at(item.address).balanceOf(entity.ethereumAddress))

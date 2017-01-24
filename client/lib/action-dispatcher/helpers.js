@@ -2,15 +2,21 @@ import { bylawForAction } from './bylaws'
 import actions from './actions'
 
 const callToActionForAction = (actionName: string): string => {
+  if (!actionName) return ''
+
   const action = actions[actionName]
   const bylaw = bylawForAction(action)
+  if (!bylaw) return ''
 
   return bylaw.type === 0 ? `Create '${action.name}' voting` : action.name
 }
 
 const bylawDisclaimerForAction = (actionName: string): {title: string, description: string} => {
+  if (!actionName) return {}
+
   const action = actions[actionName]
   const bylaw = bylawForAction(action)
+  if (!bylaw) return {}
 
   const title = bylaw.type === 0 ? `A voting will be needed to ${action.name}` : `${action.name} can be performed instantly`
   let description = ''

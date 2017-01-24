@@ -31,7 +31,7 @@
         {{#if $contains (TemplateVar.get 'searchString') (entityName entity)}}
         <tr data-entity="{{ this.ethereumAddress }}">
           <td>
-            {{ entityName entity }}
+            {{ entityName this.ethereumAddress }}
           </td>
           <td>
             {{ capitalize (statusToString this.status) }}
