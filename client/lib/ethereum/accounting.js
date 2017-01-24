@@ -97,7 +97,7 @@ class Accounting {
       transactions: transactions.toNumber(),
     }
 
-    this.AccountingPeriods.upsert(`p_${index}`, periodInfo)
+    this.AccountingPeriods.upsert(`p_${periodIndex}`, periodInfo)
   }
 
   async saveTransaction(periodIndex, transactionIndex) {
