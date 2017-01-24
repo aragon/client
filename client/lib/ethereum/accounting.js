@@ -1,4 +1,4 @@
-import { Company, AccountingLib } from './deployed'
+import { Company } from './deployed'
 
 const Transactions = new Mongo.Collection('transactions', { connection: null })
 const AccountingPeriods = new Mongo.Collection('accountingPeriod', { connection: null })
@@ -18,6 +18,7 @@ class Accounting {
   }
 
   listenForChanges() {
+    console.log('lsitening for accounign events')
     if (this.lastWatchedBlock > this.lastBlock) {
       this.lastWatchedBlock = this.lastBlock
     }
@@ -25,44 +26,47 @@ class Accounting {
     const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
-    AccountingLib.NewPeriod({}, missedPredicate).get((err, evs) =>
+    Company.NewPeriod({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchPeriod(err, ev)))
-    AccountingLib.NewPeriod({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
+    Company.NewPeriod({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
 
-    AccountingLib.PeriodClosed({}, missedPredicate).get((err, evs) =>
+    Company.PeriodClosed({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchPeriod(err, ev)))
-    AccountingLib.PeriodClosed({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
+    Company.PeriodClosed({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
 
-    AccountingLib.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
+    Company.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchRecurring(err, ev)))
-    AccountingLib.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurring(err, ev))
+    Company.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurring(err, ev))
 
-    AccountingLib.TransactionSaved({}, missedPredicate).get((err, evs) =>
+    Company.TransactionSaved({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchTransaction(err, ev)))
-    AccountingLib.TransactionSaved({}, streamingPredicate).watch((err, ev) => this.watchTransaction(err, ev))
+    Company.TransactionSaved({}, streamingPredicate).watch((err, ev) => this.watchTransaction(err, ev))
 
-    AccountingLib.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
+    Company.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchRecurringRemoval(err, ev)))
-    AccountingLib.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurringRemoval(err, ev))
+    Company.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurringRemoval(err, ev))
   }
 
   watchPeriod(err, ev) {
-    if (!err) this.updatePeriod(ev.args.newPeriod)
+      console.log('period', ev)
+    if (!err) this.updatePeriod(ev.args.newPeriod.toNumber())
     this.lastWatchedBlock = ev.blockNumber
   }
 
   watchRecurring(err, ev) {
-    if (!err) this.saveRecurringTransaction(ev.args.recurringIndex)
+      console.log('rec', ev)
+    if (!err) this.saveRecurringTransaction(ev.args.recurringIndex.toNumber())
     this.lastWatchedBlock = ev.blockNumber
   }
 
   watchTransaction(err, ev) {
-    if (!err) this.saveTransaction(ev.args.period, ev.args.transactionIndex)
+    console.log('trans', ev)
+    if (!err) this.saveTransaction(ev.args.period.toNumber(), ev.args.transactionIndex.toNumber())
     this.lastWatchedBlock = ev.blockNumber
   }
 
   watchRecurringRemoval(err, ev) {
-    if (!err) this.removeRecurringTransaction(ev.args.recurringIndex)
+    if (!err) this.removeRecurringTransaction(ev.args.recurringIndex.toNumber())
     this.lastWatchedBlock = ev.blockNumber
   }
 
@@ -88,6 +92,7 @@ class Accounting {
   }
 
   async saveTransaction(periodIndex, transactionIndex) {
+    console.log('fetching tx')
     const txArray = await Company.getTransactionInfo(periodIndex, transactionIndex)
     const [isExpense, from, to, approvedBy, amount, concept, timestamp] = txArray
 
@@ -104,6 +109,8 @@ class Accounting {
       concept,
       timestamp: timestamp.toNumber(),
     }
+
+    console.log('fetching tx', txInfo)
 
     this.Transactions.upsert(`p_${periodIndex}t_${transactionIndex}`, txInfo)
   }
