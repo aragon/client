@@ -18,8 +18,6 @@ tmpl.onRendered(function () {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      console.log(dispatcher, dispatcher.dispatch)
-
       await dispatcher.dispatch(actions.issueStock, this.$('input[name=kind]').val(), this.$('input[name=number]').val())
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false

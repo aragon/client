@@ -23,6 +23,7 @@
         <tr>
           <th>Entity</th>
           <th>Role</th>
+          <th>Shareholder</th>
         </tr>
       </thead>
       <tbody>
@@ -34,6 +35,13 @@
           </td>
           <td>
             {{ capitalize (statusToString this.status) }}
+          </td>
+          <td>
+            {{ #if $gt (totalStock entity) 0 }}
+              Yes ({{ totalStock entity }} shares)
+            {{ else }}
+              No
+            {{ /if }}
           </td>
         </tr>
         {{/if}}
