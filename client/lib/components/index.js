@@ -63,6 +63,12 @@ Template.prototype.extend = function (components = []) {
         if (leanPath === '') leanPath = '/'
         if (this.routesObj[leanPath]) this.routesObj[leanPath].call(this, FlowRouter.current())
       })
+    } else {
+      Template.instance().autorun(() => {
+        FlowRouter.watchPathChange()
+        console.log('Path changed, firing created callbacks')
+        Blaze._fireCallbacks(Template.instance().view, 'created')
+      })
     }
   })
 

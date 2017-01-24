@@ -10,21 +10,13 @@ import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 const tmpl = Template.Module_Roles_Assign.extend([ClosableSection])
 
-tmpl.onCreated(function () {
-  const setEntity = async () => {
-    if (FlowRouter.getParam('address')) {
-      const entity = await Identity.get(FlowRouter.getParam('address'))
-      TemplateVar.set(this, 'entity', entity)
-    } else {
-      TemplateVar.set(this, 'entity', undefined)
-    }
+tmpl.onCreated(async function () {
+  if (FlowRouter.getParam('address')) {
+    const entity = await Identity.get(FlowRouter.getParam('address'))
+    TemplateVar.set(this, 'entity', entity)
+  } else {
+    TemplateVar.set(this, 'entity', undefined)
   }
-
-  this.autorun(() => {
-    FlowRouter.watchPathChange()
-    setEntity()
-  })
-  setEntity()
 })
 
 tmpl.onRendered(function () {
