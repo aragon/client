@@ -6,7 +6,6 @@ import { allContracts } from './contracts'
 
 import { NotificationsManager } from '/client/lib/notifications'
 
-// 
 import listeners from './listeners'
 import initWatchers from './watchers'
 
