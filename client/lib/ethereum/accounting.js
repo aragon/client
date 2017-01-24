@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 import Company from './deployed'
 
-const Transactions = new Mongo.Collection('transactions', { connection: null })
+Transactions = new Mongo.Collection('transactions', { connection: null })
 const AccountingPeriods = new Mongo.Collection('accountingPeriod', { connection: null })
 
 class Accounting {
@@ -128,7 +128,7 @@ class Accounting {
       recurring: true,
       isExpense: true,
 
-      period,
+      period: period.toNumber(),
       index,
       to,
       approvedBy,

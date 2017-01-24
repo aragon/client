@@ -8,7 +8,7 @@ import { ReactiveVar } from 'meteor/reactive-var'
 import Identity from '/client/lib/identity'
 import Settings from '/client/lib/settings'
 import EthereumNode from '/client/lib/ethereum/node'
-import { Company } from '/client/lib/ethereum/deployed'
+import Company from '/client/lib/ethereum/deployed'
 import { BrowserNotifications } from '/client/lib/notifications'
 
 const initFinished = new ReactiveVar(false)
@@ -38,7 +38,7 @@ const load = async () => {
   $('#initialDimmer').remove()
 }
 
-const isMetamask = true
+const isMetamask = false
 
 if (isMetamask) {
   Template.Layout_MetaMask.onRendered(function () {

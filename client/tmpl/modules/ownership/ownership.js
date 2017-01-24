@@ -1,6 +1,6 @@
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Stock } from '/client/lib/ethereum/contracts'
-import { Company } from '/client/lib/ethereum/deployed'
+import Company from '/client/lib/ethereum/deployed'
 
 const Stocks = StockWatcher.Stocks
 

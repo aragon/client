@@ -7,4 +7,4 @@ const Company = !Meteor.settings.deployed ?
                   CompanyContract.deployed() :
                   CompanyContract.at(Meteor.settings.deployed.company)
 
-export { Company }
+export default Company
