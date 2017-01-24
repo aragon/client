@@ -2,7 +2,7 @@ import { Entities } from '/client/lib/identity'
 import Company from './deployed'
 
 class StatusWatcher {
-  constructor() {
+  listen() {
     this.listenForStatusChanges()
   }
 

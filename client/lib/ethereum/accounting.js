@@ -4,7 +4,7 @@ import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 
 import Company from './deployed'
 
-Transactions = new Mongo.Collection('transactions', { connection: null })
+const Transactions = new Mongo.Collection('transactions', { connection: null })
 const AccountingPeriods = new Mongo.Collection('accountingPeriod', { connection: null })
 
 class Accounting {
@@ -15,6 +15,9 @@ class Accounting {
 
   constructor() {
     this.setupCollections()
+  }
+
+  listen() {
     this.listenForChanges()
   }
 
@@ -162,4 +165,5 @@ class Accounting {
   }
 
 }
+
 export default new Accounting()

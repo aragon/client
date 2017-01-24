@@ -70,6 +70,6 @@ tmpl.onRendered(function () {
 
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
-  'success .dimmer': () => FlowRouter.go('/rewards'),
+  'success .dimmer': () => FlowRouter.go('/accounting'),
   'click #recurring': () => TemplateVar.set('isRecurring', !TemplateVar.get('isRecurring')),
 })

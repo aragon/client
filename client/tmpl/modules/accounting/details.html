@@ -1,0 +1,63 @@
+<template name="Module_Accounting_Details">
+  {{> Element_ProcessDimmer}}
+  {{> Element_CloseSectionButton }}
+  <div class="ui attached flex container">
+    {{ #with TemplateVar.get 'transaction' }}
+    <h1 class="ui header">
+      {{ concept }}
+      {{ #if isExpense }}<a class="ui left pointing red basic label">Expense</a>{{ /if }}
+    </h1>
+
+    <div class="ui hidden divider"></div>
+
+    <div class="ui list">
+      <div class="item">
+        <i class="exchange icon"></i>
+        <div class="content">
+          Amount: {{ ether amount }} ETH
+        </div>
+      </div>
+      <div class="item">
+        <i class="calendar icon"></i>
+        <div class="content">
+          Date:
+          {{ #if recurring }}
+            {{ formatDate lastTransactionDate }}
+          {{ else }}
+            {{ formatDate timestamp }}
+          {{ /if }}
+        </div>
+      </div>
+      <div class="item">
+        <i class="repeat icon"></i>
+        <div class="content">
+          Recurring:
+          {{ #if recurring }}
+            Yes
+          {{ else }}
+            No
+          {{ /if }}
+        </div>
+      </div>
+    </div>
+
+    <div class="ui hidden divider"></div>
+
+    <label>Recipient</label>
+    {{ > Element_MiniEntity entity=(getEntity to) }}
+
+    <div class="ui hidden divider"></div>
+
+    <label>Approved by</label>
+    {{ > Element_MiniEntity entity=(getEntity approvedBy) }}
+
+    <div class="ui spacer"></div>
+
+    {{ #if recurring }}
+    {{ > Element_BylawDisclose action='removeRecurringReward' }}
+    <button class="ui big primary button" id="stopRecurring" name="button">Stop recurring transaction</button>
+    {{ /if }}
+
+    {{/with}}
+  </div>
+</template>

@@ -1,6 +1,6 @@
 // @flow
 
-import web3 from '/client/lib/ethereum/web3'
+
 import utils from 'ethereumjs-util'
 
 class KeybaseProofs {

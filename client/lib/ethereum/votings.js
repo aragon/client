@@ -11,6 +11,9 @@ const Votings = new Mongo.Collection('votings', { connection: null })
 class VotingWatcher {
   constructor() {
     this.setupCollections()
+  }
+
+  listen() {
     this.getMissingVotings()
     this.listenForUpdates()
   }

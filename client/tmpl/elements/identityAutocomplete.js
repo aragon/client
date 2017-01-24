@@ -1,7 +1,7 @@
 // @flow
 import { Template } from 'meteor/templating'
 import { TemplateVar } from 'meteor/frozeman:template-var'
-import web3 from '/client/lib/ethereum/web3'
+
 
 import Identity from '/client/lib/identity'
 import Anon from '/client/lib/identity/anon'

@@ -7,6 +7,13 @@
       {{ > Element_MiniEntity entity=(TemplateVar.get 'entity') }}
       <div class="ui hidden divider"></div>
       <h3 class="ui header">Stakes</h3>
+      <ul>
+      {{#each stocks}}
+        {{ #with (TemplateVar.get 'entity') }}
+        <li>{{ ../symbol }}: {{ balance ../address ethereumAddress }}</li>
+        {{ /with }}
+      {{/each}}
+      </ul>
       <div>
         <canvas id="vestingChart" width="800" height="800"></canvas>
       </div>

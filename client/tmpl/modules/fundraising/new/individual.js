@@ -4,7 +4,7 @@ import { TemplateVar } from 'meteor/frozeman:template-var'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { ReactivePromise } from 'meteor/deanius:promise'
 import { moment } from 'meteor/momentjs:moment'
-import web3 from '/client/lib/ethereum/web3'
+
 
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'

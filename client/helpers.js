@@ -1,6 +1,6 @@
 // @flow
 
-import web3 from '/client/lib/ethereum/web3'
+
 import { moment } from 'meteor/momentjs:moment'
 import { Template } from 'meteor/templating'
 import { callToActionForAction, bylawDisclaimerForAction } from '/client/lib/action-dispatcher/helpers'

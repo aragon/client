@@ -2,9 +2,10 @@
 import { Template } from 'meteor/templating'
 import { ReactivePromise } from 'meteor/deanius:promise'
 import { EthAccounts } from 'meteor/ethereum:accounts'
+import { moment } from 'meteor/momentjs:moment'
+
 import Ticker from '/client/lib/currency/ticker'
 
-import web3 from '/client/lib/ethereum/web3'
 import Identity from '/client/lib/identity'
 import type { Entity } from '/client/lib/identity/entity'
 import Settings from '/client/lib/settings'
@@ -67,3 +68,7 @@ Template.registerHelper('totalStock', ReactivePromise(async (entity: Entity) => 
   const totalStock: number = stocks.map(s => s.toNumber()).reduce((a, b) => a + b, 0)
   return totalStock
 }))
+
+Template.registerHelper('formatDate', (timestamp: number) => (
+  moment(timestamp*1000).calendar()
+))

@@ -11,7 +11,7 @@ import StockWatcher from '/client/lib/ethereum/stocks'
 import StockSaleWatcher from '/client/lib/ethereum/stocksales'
 import Company from '/client/lib/ethereum/deployed'
 import { Stock } from '/client/lib/ethereum/contracts'
-import web3 from '/client/lib/ethereum/web3'
+
 
 const Stocks = StockWatcher.Stocks
 

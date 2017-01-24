@@ -1,6 +1,6 @@
 // @flow
 import { moment } from 'meteor/momentjs:moment'
-import web3 from '/client/lib/ethereum/web3'
+
 import Company from '/client/lib/ethereum/deployed'
 import { StockSale, Stock } from '/client/lib/ethereum/contracts'
 import StockWatcher from '/client/lib/ethereum/stocks'

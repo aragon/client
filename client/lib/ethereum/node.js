@@ -2,10 +2,12 @@
 import { EthAccounts } from 'meteor/ethereum:accounts'
 import { EthBlocks } from 'meteor/ethereum:blocks'
 
+import { allContracts } from './contracts'
+
 import { NotificationsManager } from '/client/lib/notifications'
 
-import web3 from './web3'
 import listeners from './listeners'
+import initWatchers from './watchers'
 
 const initCollections = async (): Promise<boolean> => {
   const promises = await Promise.all([
@@ -61,6 +63,10 @@ class EthereumNode {
   static async connect(): Promise<boolean> {
     const nodeReady = await initConnection()
     const collectionsReady = await initCollections()
+
+    allContracts.forEach(c => c.setProvider(web3.currentProvider))
+
+    initWatchers()
     console.log('EthereumNode: ready')
     return nodeReady && collectionsReady
   }
