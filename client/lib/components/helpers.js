@@ -5,7 +5,7 @@ import { EthAccounts } from 'meteor/ethereum:accounts'
 import { moment } from 'meteor/momentjs:moment'
 
 import Ticker from '/client/lib/currency/ticker'
-import web3 from '/client/lib/ethereum/web3'
+
 import Identity from '/client/lib/identity'
 import type { Entity } from '/client/lib/identity/entity'
 import Settings from '/client/lib/settings'

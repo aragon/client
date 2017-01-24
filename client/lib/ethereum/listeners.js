@@ -1,6 +1,6 @@
 // @flow
 import { _ } from 'meteor/underscore'
-import web3 from '/client/lib/ethereum/web3'
+
 import { NotificationsListener as Listener } from '/client/lib/notifications'
 import Identity from '/client/lib/identity'
 import SHA256 from 'crypto-js/sha256'

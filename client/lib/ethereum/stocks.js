@@ -14,6 +14,9 @@ class StockWatcher {
 
   constructor() {
     this.setupCollections()
+  }
+
+  listen() {
     this.getAllStocks()
     this.listenForNewStock()
     this.listenForStockTransfers()

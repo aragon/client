@@ -38,15 +38,31 @@ const load = async () => {
   $('#initialDimmer').remove()
 }
 
-const isMetamask = false
+const injectMetaMask = async () => {
+  const contentScriptReq = await fetch('metamask://app/scripts/contentscript.js')
+  const blob = await contentScriptReq.blob()
+  const s = document.createElement('script')
+  s.type = 'text/javascript'
+  s.src = URL.createObjectURL(blob)
+  document.getElementsByTagName('head')[0].appendChild(s)
+  return true
+}
 
-if (isMetamask) {
-  Template.Layout_MetaMask.onRendered(function () {
-    this.$('#Layout_MetaMask').load(async () => {
+const loadMetaMask = async () => {
+  Template.Layout_MetaMask.onRendered(async function () {
+    console.log('MetaMask: Template rendered')
+    await injectMetaMask()
+    console.log('MetaMask: Injected')
+    this.$('#Layout_MetaMask').load(() => {
+      console.log('MetaMask: Iframe loaded')
       window._setupMetaMaskPageStream(this.$('#Layout_MetaMask')[0])
       load()
     })
   })
+}
+
+if (window.injectMetaMask) {
+  loadMetaMask()
 } else {
   Meteor.startup(() => load())
 }

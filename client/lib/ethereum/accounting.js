@@ -15,6 +15,9 @@ class Accounting {
 
   constructor() {
     this.setupCollections()
+  }
+
+  listen() {
     this.listenForChanges()
   }
 
@@ -162,4 +165,5 @@ class Accounting {
   }
 
 }
+
 export default new Accounting()

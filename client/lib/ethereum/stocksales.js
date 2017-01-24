@@ -1,15 +1,15 @@
 import Company from './deployed'
 import { StockSale, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
-import StockWatcher from './stocks'
-import verifyContractCode from './verify'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
-
-const Stocks = StockWatcher.Stocks
+import verifyContractCode from './verify'
 
 class StockSalesWatcher {
   constructor() {
     this.setupCollections()
+  }
+
+  listen() {
     this.listenForNewSales()
     this.getNewSales()
     this.listenForSalesEvents()
@@ -166,6 +166,4 @@ class StockSalesWatcher {
   }
 }
 
-_StockSalesWatcher = new StockSalesWatcher()
-
-export default _StockSalesWatcher
+export default new StockSalesWatcher()

@@ -7,6 +7,9 @@ Bylaws = new Mongo.Collection('bylaws', { connection: null })
 class BylawsWatcher {
   constructor() {
     this.setupCollections()
+  }
+
+  listen() {
     this.listenForBylawChanges()
   }
 

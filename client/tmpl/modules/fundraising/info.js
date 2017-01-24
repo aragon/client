@@ -10,7 +10,7 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 import StockSalesWatcher from '/client/lib/ethereum/stocksales'
 import Identity from '/client/lib/identity'
 import { StockSale } from '/client/lib/ethereum/contracts'
-import web3 from '/client/lib/ethereum/web3'
+
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 const StockSales = StockSalesWatcher.StockSales
