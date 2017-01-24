@@ -49,7 +49,11 @@
             {{ /if }}
           </td>
           <td>
-            {{ formatDate timestamp }}
+            {{ #if recurring }}
+              {{ formatDate lastTransactionDate }}
+            {{ else }}
+              {{ formatDate timestamp }}
+            {{ /if }}
           </td>
         </tr>
         {{/if}}

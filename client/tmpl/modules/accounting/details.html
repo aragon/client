@@ -20,7 +20,12 @@
       <div class="item">
         <i class="calendar icon"></i>
         <div class="content">
-          Date: {{ formatDate timestamp }}
+          Date:
+          {{ #if recurring }}
+            {{ formatDate lastTransactionDate }}
+          {{ else }}
+            {{ formatDate timestamp }}
+          {{ /if }}
         </div>
       </div>
       <div class="item">
