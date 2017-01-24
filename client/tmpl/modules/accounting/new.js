@@ -6,17 +6,12 @@ import { TemplateVar } from 'meteor/frozeman:template-var'
 import { ReactivePromise } from 'meteor/deanius:promise'
 import { moment } from 'meteor/momentjs:moment'
 
-import Company from '/client/lib/ethereum/deployed'
+import { Company } from '/client/lib/ethereum/deployed'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 import ClosableSection from '/client/tmpl/components/closableSection'
 
 const tmpl = Template.Module_Accounting_New.extend([ClosableSection])
-
-tmpl.onCreated(() => {
-  TemplateVar.set('isVirtualCard', true)
-  TemplateVar.get('anonDebitCard', true)
-})
 
 tmpl.helpers({
   remainingBudget: ReactivePromise(Company.getAccountingPeriodRemainingBudget.call),
@@ -64,19 +59,7 @@ tmpl.onRendered(function () {
   })
 
   this.autorun(() => {
-    if (TemplateVar.get('isCard')) {
-      requestAnimationFrame(() => {
-        this.$('#debitCardCurrency').dropdown()
-        this.$('#debitCardType').dropdown({
-          onChange: v => TemplateVar.set(this, 'isVirtualCard', v === 'virtual'),
-        })
-        this.$('#anonDebitCard').checkbox({
-          onChange: () => (
-            TemplateVar.set(this, 'anonDebitCard', this.$('#anonDebitCard input').prop('checked'))
-          ),
-        })
-      })
-    } else if (TemplateVar.get('isRecurring')) {
+    if (TemplateVar.get('isRecurring')) {
       requestAnimationFrame(() => {
         this.$('#recurringPeriodInterval').dropdown()
       })
@@ -88,5 +71,4 @@ tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
   'success .dimmer': () => FlowRouter.go('/rewards'),
   'click #recurring': () => TemplateVar.set('isRecurring', !TemplateVar.get('isRecurring')),
-  'click #debitCard': () => TemplateVar.set('isCard', !TemplateVar.get('isCard')),
 })

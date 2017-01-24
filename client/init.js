@@ -38,7 +38,7 @@ const load = async () => {
   $('#initialDimmer').remove()
 }
 
-const isMetamask = false
+const isMetamask = true
 
 if (isMetamask) {
   Template.Layout_MetaMask.onRendered(function () {

@@ -1,9 +1,17 @@
+// @flow
+import { Mongo } from 'meteor/mongo'
+import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 import { Company, AccountingLib } from './deployed'
 
 const Transactions = new Mongo.Collection('transactions', { connection: null })
 const AccountingPeriods = new Mongo.Collection('accountingPeriod', { connection: null })
 
 class Accounting {
+  Transactions: Mongo.Collection
+  persistentTransactions: PersistentMinimongo
+  AccountingPeriods: Mongo.Collection
+  persistentAccountingPeriods: PersistentMinimongo
+
   constructor() {
     this.setupCollections()
     this.listenForChanges()
@@ -35,15 +43,18 @@ class Accounting {
 
     AccountingLib.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchRecurring(err, ev)))
-    AccountingLib.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurring(err, ev))
+    AccountingLib.NewRecurringTransaction({}, streamingPredicate).watch(
+      (err, ev) => this.watchRecurring(err, ev))
 
     AccountingLib.TransactionSaved({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchTransaction(err, ev)))
-    AccountingLib.TransactionSaved({}, streamingPredicate).watch((err, ev) => this.watchTransaction(err, ev))
+    AccountingLib.TransactionSaved({}, streamingPredicate).watch(
+      (err, ev) => this.watchTransaction(err, ev))
 
     AccountingLib.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchRecurringRemoval(err, ev)))
-    AccountingLib.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurringRemoval(err, ev))
+    AccountingLib.NewRecurringTransaction({}, streamingPredicate).watch(
+      (err, ev) => this.watchRecurringRemoval(err, ev))
   }
 
   watchPeriod(err, ev) {
