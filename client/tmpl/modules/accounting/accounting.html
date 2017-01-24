@@ -21,19 +21,35 @@
     <table class="ui very basic sortable selectable striped padded fixed table">
       <thead>
         <tr>
+          <th>Concept</th>
           <th>Recipient</th>
-          <th>Type</th>
+          <th>Amount</th>
+          <th>Recurring</th>
+          <th>Date</th>
         </tr>
       </thead>
       <tbody data-updated="{{ updated }}">
-        {{#each recipients}}
-        {{#if $contains (TemplateVar.get 'searchString') (entityName recipient)}}
-        <tr data-recipient="{{ recipient }}">
+        {{#each transactions}}
+        {{#if $contains (TemplateVar.get 'searchString') concept }}
+        <tr data-transaction="{{ transactionIndex }}">
           <td>
-            {{ entityName recipient }}
+            {{ concept }}
           </td>
           <td>
-            {{ type }}
+            {{ entityName to }}
+          </td>
+          <td>
+            {{ ether amount }} ETH
+          </td>
+          <td>
+            {{ #if recurring }}
+              Yes
+            {{ else }}
+              No
+            {{ /if }}
+          </td>
+          <td>
+            {{ formatDate timestamp }}
           </td>
         </tr>
         {{/if}}

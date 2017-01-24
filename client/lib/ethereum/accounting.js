@@ -1,13 +1,10 @@
 // @flow
 import { Mongo } from 'meteor/mongo'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
-<<<<<<< HEAD
-=======
 
->>>>>>> 00f04dff4f999c19bb647dc7a5f73db4d7418dc0
 import Company from './deployed'
 
-Transactions = new Mongo.Collection('transactions', { connection: null })
+const Transactions = new Mongo.Collection('transactions', { connection: null })
 const AccountingPeriods = new Mongo.Collection('accountingPeriod', { connection: null })
 
 class Accounting {
