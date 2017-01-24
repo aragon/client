@@ -25,6 +25,7 @@ class VotingWatcher {
 
   listenForUpdates() {
     const self = this
+    console.log('listen votings')
 
     const watch = async (err, ev) => {
       const votingAddr = await Company.votings.call(ev.args.id)
@@ -58,6 +59,8 @@ class VotingWatcher {
 
     Stocks.find().observeChanges({
       added: (id, fields) => {
+        console.log('ibserving voting', fields.address)
+
         Stock.at(fields.address).NewPoll({}, streamingPredicate).watch(watch)
         Stock.at(fields.address).VoteCasted({}, streamingPredicate).watch(watch)
 
@@ -68,6 +71,7 @@ class VotingWatcher {
   }
 
   async getMissingVotings() {
+    console.log('getting missing votings')
     const lastId = await Company.votingIndex.call().then(x => x.toNumber())
     const addressesPromises = _.range(1, lastId).map(id => Company.votings.call(id))
     const votingAddresses = await Promise.all(addressesPromises)
@@ -76,6 +80,7 @@ class VotingWatcher {
       return this.getVoting(a, i + 1)
     })
 
+    console.log(fetchingVotes)
     await Promise.all(fetchingVotes)
 
     this.Votings.remove({ address: { $nin: votingAddresses } })
@@ -92,6 +97,8 @@ class VotingWatcher {
   }
 
   async updateVoting(address, index) {
+    console.log('getting voting', address, index)
+
     const voting = Voting.at(address)
     const lastId = await voting.optionsIndex.call().then(x => x.toNumber())
     const ids = _.range(lastId)

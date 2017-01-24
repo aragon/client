@@ -56,7 +56,6 @@ class Accounting {
     Company.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchRecurringRemoval(err, ev)))
     Company.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurringRemoval(err, ev))
-
   }
 
   watchPeriod(err, ev) {
