@@ -26,7 +26,6 @@ class Accounting {
   }
 
   listenForChanges() {
-    console.log('lsitening for accounign events')
     if (this.lastWatchedBlock > this.lastBlock) {
       this.lastWatchedBlock = this.lastBlock
     }
@@ -57,19 +56,16 @@ class Accounting {
   }
 
   watchPeriod(err, ev) {
-      console.log('period', ev)
     if (!err) this.updatePeriod(ev.args.newPeriod.toNumber())
     this.lastWatchedBlock = ev.blockNumber
   }
 
   watchRecurring(err, ev) {
-      console.log('rec', ev)
     if (!err) this.saveRecurringTransaction(ev.args.recurringIndex.toNumber())
     this.lastWatchedBlock = ev.blockNumber
   }
 
   watchTransaction(err, ev) {
-    console.log('trans', ev)
     if (!err) this.saveTransaction(ev.args.period.toNumber(), ev.args.transactionIndex.toNumber())
     this.lastWatchedBlock = ev.blockNumber
   }
