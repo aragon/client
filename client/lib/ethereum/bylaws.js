@@ -23,8 +23,10 @@ class BylawsWatcher {
       this.lastWatchedBlock = this.lastBlock
     }
     const threshold = this.lastBlock
-    const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
+    const missedPredicate = { fromBlock: this.lastWatchedBlock - 10000, toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
+
+    console.log('listen for bylaw changes', missedPredicate, streamingPredicate)
 
     Company.BylawChanged({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchBylaw(err, ev)))
@@ -32,6 +34,7 @@ class BylawsWatcher {
   }
 
   async watchBylaw(err, ev) {
+    console.log('fetching bylaw', ev.args.functionSignature)
     if (!err && ev.args) await this.updateBylaw(ev.args.functionSignature)
     this.lastWatchedBlock = ev.blockNumber
   }
@@ -81,5 +84,7 @@ class BylawsWatcher {
     return Session.setPersistent(this.lastBlockKey, block)
   }
 }
+
+BW = BylawsWatcher
 
 export default new BylawsWatcher()

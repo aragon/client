@@ -1,7 +1,14 @@
 {
   "public": {
+<<<<<<< HEAD
     "deployed": {
       "company": "0x76ce0ab941d419596583b7cf9776b6db2ae65bd1"
     }
   }
+=======
+     "deployed": {
+         "company": "0x76ce0ab941d419596583b7cf9776b6db2ae65bd1"
+          }
+      }
+>>>>>>> d43a820d9e5816a22335b29883ea434a920a2bf0
 }

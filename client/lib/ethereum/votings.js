@@ -47,7 +47,7 @@ class VotingWatcher {
       this.lastWatchedBlock = this.lastBlock
     }
     const threshold = this.lastBlock
-    const missedPredicate = { fromBlock: this.lastWatchedBlock + 1, toBlock: threshold }
+    const missedPredicate = { fromBlock: this.lastWatchedBlock - 10000, toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
     Company.VoteExecuted({}, missedPredicate).get(get)
