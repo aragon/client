@@ -10,6 +10,8 @@ import Anon from './anon'
 const Entities = new Mongo.Collection('entities', { connection: null })
 new PersistentMinimongo(Entities)
 
+window.Entities = Entities
+
 const providers = {
   keybase: Keybase,
   anon: Anon,
@@ -42,6 +44,8 @@ class Identity {
   }
 
   static async getRaw(addr: string) {
+    if (!addr) return {}
+
     let entity = Entities.findOne({ ethereumAddress: addr })
 
     if (!entity) {
@@ -86,6 +90,8 @@ class Identity {
   }
 
   static set(addr: string, identityProvider: string, entityObj: Object) {
+    console.log(`Identity: Setting ${addr}`)
+
     const entity: Entity = {
       ethereumAddress: addr,
       identityProvider,
@@ -98,6 +104,7 @@ class Identity {
   static setCurrent(entity: Entity) {
     Entities.update({ current: true }, { $unset: { current: '' } })
     delete entity._id
+    console.log(`Identity: Setting ${entity.ethereumAddress} as current`)
     Entities.update({ ethereumAddress: entity.ethereumAddress },
       { $set: { current: true, ...entity } })
   }
@@ -106,6 +113,7 @@ class Identity {
     const current = Identity.current(true)
     // Entities.remove({ ethereumAddress: addr })
     // Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
+    console.log(`Identity: Setting ${addr} as current Ethereum account`)
     Entities.update({ current: true }, { $unset: { current: '' } })
     delete current._id
     Entities.update({ ethereumAddress: addr }, { $set: { ...current } })

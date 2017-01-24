@@ -1,6 +1,5 @@
 // @flow
 import { Template } from 'meteor/templating'
-import { ReactivePromise } from 'meteor/deanius:promise'
 
 import Chart from 'chart.js'
 import StockWatcher from '/client/lib/ethereum/stocks'
@@ -9,7 +8,7 @@ import Identity from '/client/lib/identity'
 
 const Stocks = StockWatcher.Stocks
 
-const tmpl = Template.Module_Ownership_Charts
+const tmpl = Template.Module_Ownership_Charts.extend()
 
 const strToColor = (str) => {
   let hash = 0
@@ -39,7 +38,7 @@ const drawChart = (ctx, title, labels, data, colors) => {
 
 tmpl.onRendered(function () {
   this.autorun(async () => {
-    const stocks = Stocks.find({}).fetch()
+    const stocks = Stocks.find().fetch()
     drawChart(this.$('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
 
     const allShares = await StockWatcher.allShareholders(stocks)
@@ -67,17 +66,4 @@ tmpl.onRendered(function () {
     drawChart(this.$('#capitalChart'), 'Global shareholder stake', Object.keys(globalBalances), Object.values(globalBalances))
     drawChart(this.$('#votingChart'), 'Voting stake', Object.keys(votingPower), Object.values(votingPower))
   })
-})
-
-tmpl.helpers({
-  totalBalance: ReactivePromise(() => {
-    const stocksArr = []
-    Stocks.find().forEach((item) => (
-      stocksArr.push(Stock.at(item.address).balanceOf(Identity.current().ethereumAddress))
-    ))
-    return Promise.all(stocksArr).then(stocks => {
-      const totalStock: number = stocks.map(s => s.toNumber()).reduce((a, b) => a + b, 0)
-      return totalStock
-    })
-  }),
 })

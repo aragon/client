@@ -6,7 +6,7 @@ import Ticker from '/client/lib/currency/ticker'
 
 import web3 from '/client/lib/ethereum/web3'
 import Identity from '/client/lib/identity'
-import type Entity from '/client/lib/identity/entity'
+import type { Entity } from '/client/lib/identity/entity'
 import Settings from '/client/lib/settings'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Stock } from '/client/lib/ethereum/contracts'
@@ -60,13 +60,10 @@ Template.registerHelper('capitalize', (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 })
 
-Template.registerHelper('totalStock', ReactivePromise((entity: Entity) => {
-  const stocksArr = []
-  StockWatcher.Stocks.find().forEach((item) => (
-    stocksArr.push(Stock.at(item.address).balanceOf(entity.ethereumAddress))
-  ))
-  return Promise.all(stocksArr).then(stocks => {
-    const totalStock: number = stocks.map(s => s.toNumber()).reduce((a, b) => a + b, 0)
-    return totalStock
-  })
+Template.registerHelper('totalStock', ReactivePromise(async (entity: Entity) => {
+  const stocksArr = StockWatcher.Stocks.find().fetch().map((item) =>
+    Stock.at(item.address).balanceOf(entity.ethereumAddress))
+  const stocks = await Promise.all(stocksArr)
+  const totalStock: number = stocks.map(s => s.toNumber()).reduce((a, b) => a + b, 0)
+  return totalStock
 }))

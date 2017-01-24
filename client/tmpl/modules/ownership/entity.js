@@ -9,10 +9,11 @@ import renderOwnershipInfo from './entityCharts'
 
 const tmpl = Template.Module_Ownership_Entity.extend([ClosableSection])
 
-tmpl.onRendered(function () {
-  renderOwnershipInfo()
+tmpl.onCreated(async function () {
+  const entity = await Identity.get(FlowRouter.current().params.address)
+  TemplateVar.set(this, 'entity', entity)
 })
 
-tmpl.helpers({
-  entity: ReactivePromise(() => Identity.get(FlowRouter.current().params.address)),
+tmpl.onRendered(function () {
+  renderOwnershipInfo()
 })

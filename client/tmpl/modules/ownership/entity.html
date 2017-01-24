@@ -4,9 +4,7 @@
     <div class="ui top attached container">
       <h2 class="ui header">Shareholder details</h2>
       <div class="ui hidden divider"></div>
-      {{ #with entity }}
-        {{ > Element_MiniEntity entity=entity }}
-      {{ /with }}
+      {{ > Element_MiniEntity entity=(TemplateVar.get 'entity') }}
       <div class="ui hidden divider"></div>
       <h3 class="ui header">Stakes</h3>
       <div>

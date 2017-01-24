@@ -26,7 +26,7 @@
       </div>
     </div>
     {{ #if $gt (totalStock (TemplateVar.get 'entity')) 0 }}
-    It is a shareholder having in total {{ totalStock (TemplateVar.get 'entity') }} shares
+      This entity also has role Shareholder (owns {{ totalStock (TemplateVar.get 'entity') }} shares)
     {{ /if }}
     <div class="ui spacer"></div>
     {{ > Element_BylawDisclose action='setEntityStatus' }}

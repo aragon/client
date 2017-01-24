@@ -28,17 +28,17 @@
       </thead>
       <tbody>
         {{#each entities}}
-        {{#if $contains (TemplateVar.get 'searchString') (entityName entity)}}
+        {{#if $contains (TemplateVar.get 'searchString') (entityName this.ethereumAddress)}}
         <tr data-entity="{{ this.ethereumAddress }}">
           <td>
-            {{ entityName entity }}
+            {{ entityName this.ethereumAddress }}
           </td>
           <td>
             {{ capitalize (statusToString this.status) }}
           </td>
           <td>
-            {{ #if $gt (totalStock entity) 0 }}
-              Yes ({{ totalStock entity }} shares)
+            {{ #if $gt (totalStock this) 0 }}
+              Yes
             {{ else }}
               No
             {{ /if }}
