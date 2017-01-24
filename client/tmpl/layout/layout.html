@@ -3,9 +3,11 @@
   <div class="ui top fixed text menu" id="topbar">
     <div class="header item">Aragon</div>
     <div class="right menu">
+      {{ #if isInjectedMetaMask }}
       <a class="item" id="walletButton">
         <i class="lock large icon"></i>
       </a>
+      {{ /if }}
       <a href="/inbox" class="item" id="inboxButton">
         <!--<i class="inbox large icon"></i>-->
         <i class="alarm large icon"></i>

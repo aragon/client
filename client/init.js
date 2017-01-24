@@ -38,7 +38,6 @@ const load = async () => {
 
   initFinished.set(true)
   $('#initialDimmer').remove()
-  if (!isInjectedMetaMask.get()) $('#walletButton').remove()
 }
 
 const injectMetaMask = async () => {
