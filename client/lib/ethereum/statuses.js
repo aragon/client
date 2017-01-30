@@ -11,7 +11,7 @@ class StatusWatcher {
       this.lastWatchedBlock = this.lastBlock
     }
     const threshold = this.lastBlock
-    const missedPredicate = { fromBlock: this.lastWatchedBlock - 10000, toBlock: threshold }
+    const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
     Company.EntityNewStatus({}, missedPredicate).get((err, evs) =>
