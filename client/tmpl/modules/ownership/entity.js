@@ -28,4 +28,7 @@ tmpl.helpers({
   balance: ReactivePromise((stock, shareholder) => (
     Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
   )),
+  transferrable: ReactivePromise((stock, shareholder) => (
+    Stock.at(stock).transferrable(shareholder).then(x => x.valueOf())
+  )),
 })

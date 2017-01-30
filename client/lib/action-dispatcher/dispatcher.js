@@ -35,7 +35,7 @@ class Dispatcher {
     const voting = await GenericBinaryVoting.new(signature, txData, this.transactionParams)
     await voting.setTxid(voting.transactionHash, this.transactionParams)
 
-    return await this.dispatch(actions.beginPoll, voting.address, votingCloses)
+    return await this.performTransaction(actions.beginPoll.companyFunction, [voting.address, votingCloses])
   }
 }
 

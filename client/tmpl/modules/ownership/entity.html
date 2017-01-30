@@ -10,7 +10,7 @@
       <ul>
       {{#each stocks}}
         {{ #with (TemplateVar.get 'entity') }}
-        <li>{{ ../symbol }}: {{ balance ../address ethereumAddress }}</li>
+        <li>{{ ../symbol }}: {{ balance ../address ethereumAddress }} (Transferrable: {{ transferrable ../address ethereumAddress }})</li>
         {{ /with }}
       {{/each}}
       </ul>
