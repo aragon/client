@@ -12,7 +12,7 @@ const watchers = [
   StatusWatcher,
   StockWatcher,
   StockSalesWatcher,
-  VotingWatcher
+  VotingWatcher,
 ]
 
 const initWatchers = () => {
