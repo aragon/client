@@ -11,7 +11,7 @@ class Dispatcher {
   }
 
   get transactionParams() {
-    return { from: this.address, gas: 3500000 }
+    return { from: this.address, gas: 5e6 }
   }
 
   async dispatch(action, ...params) {
