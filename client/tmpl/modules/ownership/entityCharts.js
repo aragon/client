@@ -21,7 +21,17 @@ const drawStakeChart = (ctx, title, labels, data) => {
   new Chart(ctx, {
     type: 'line',
     data: chartData,
-    options: { responsive: true, title: { display: true, text: title }, lineTension: 0.1 },
+    options: {
+      responsive: true,
+      title: { display: true, text: title },
+      lineTension: 0.1,
+      legend: { display: false },
+      tooltips: {
+        callbacks: {
+          label: tooltipItem => tooltipItem.yLabel,
+        },
+      },
+    },
   })
 }
 
@@ -33,9 +43,9 @@ const interpolate = (from, to, steps) => {
 const renderOwnershipInfo = async () => {
   const address = FlowRouter.current().params.address
   const stock = GrantableStock.at(Stocks.findOne().address)
-  const fullyVested = await stock.fullyVestedDate.call(address).then(x => x.toNumber())
-  const fullyVestedDate = moment(fullyVested * 1000)
-  if (moment() > fullyVestedDate) { return null } // already fully vested
+  const fullyVested = await stock.lastStockIsTransferrableEvent.call(address).then(x => x.toNumber())
+  const lastStockIsTransferrableEvent = moment(fullyVested * 1000 + (0.1 * (fullyVested - +new Date() / 1000)))
+  if (moment() > lastStockIsTransferrableEvent) { return null } // already fully vested
   const dates = interpolate(+moment() / 1000, fullyVested, 25)
   const pointsPromise = dates.map(t =>
       stock.transferrableShares.call(address, t).then(x => x.toNumber()))
@@ -43,7 +53,7 @@ const renderOwnershipInfo = async () => {
   const points = await Promise.all(pointsPromise)
   const dateLabels = dates.map(d => timeRange(moment(), moment(d*1000)))
 
-  return drawStakeChart(this.$('#vestingChart'), 'Vesting calendar', dateLabels, points)
+  return drawStakeChart(this.$('#vestingChart'), 'Transferrable shares (vesting)', dateLabels, points)
 }
 
 export default renderOwnershipInfo
