@@ -47,5 +47,5 @@ tmpl.helpers({
   balance: ReactivePromise((stock, shareholder) => (
     Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
   )),
-  company: () => Company.address,
+  company: () => Company().address,
 })

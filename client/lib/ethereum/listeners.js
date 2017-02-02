@@ -26,7 +26,7 @@ class Listeners {
     }
 
     return new Listener(
-      Company.IssuedStock,
+      Company().IssuedStock,
       'Stock issued',
       body,
       () => '/ownership',
@@ -82,7 +82,7 @@ class Listeners {
   static get bylawChangedListener() {
     const body = args => `Signature: ${args.functionSignature}`
     return new Listener(
-      Company.BylawChanged,
+      Company().BylawChanged,
       'Bylaw changed',
       body,
       args => `/bylaws/${args.functionSignature}`,
@@ -92,7 +92,7 @@ class Listeners {
   static get newSaleListener() {
     const body = async args => `New fundraising started shares at ${await StockSale.at(args.saleAddress).getBuyingPrice.call(1).then(x => web3.fromWei(x.toNumber()), 'ether')} ETH price`
     return new Listener(
-      Company.NewStockSale,
+      Company().NewStockSale,
       'New sale',
       body,
       args => `/fundraising/${args.saleIndex.valueOf()}`,
@@ -107,7 +107,7 @@ class Listeners {
     }
 
     return new Listener(
-      Company.VoteExecuted,
+      Company().VoteExecuted,
       'Voting finished',
       body,
       (args) => `/voting/${args.id.valueOf()}`,
@@ -115,8 +115,8 @@ class Listeners {
   }
 
   static async allStocks() {
-    const lastId = await Company.stockIndex.call().then(x => x.valueOf())
-    const addressesPromises = _.range(lastId).map(id => Company.stocks.call(id))
+    const lastId = await Company().stockIndex.call().then(x => x.valueOf())
+    const addressesPromises = _.range(lastId).map(id => Company().stocks.call(id))
     return await Promise.all(addressesPromises)
   }
 }

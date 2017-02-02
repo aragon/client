@@ -14,9 +14,9 @@ class StatusWatcher {
     const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
-    Company.EntityNewStatus({}, missedPredicate).get((err, evs) =>
+    Company().EntityNewStatus({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchStatus(err, ev)))
-    Company.EntityNewStatus({}, streamingPredicate).watch((err, ev) => this.watchStatus(err, ev))
+    Company().EntityNewStatus({}, streamingPredicate).watch((err, ev) => this.watchStatus(err, ev))
   }
 
   async watchStatus(err, ev) {

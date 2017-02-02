@@ -28,7 +28,7 @@ class StockWatcher {
   }
 
   listenForNewStock() {
-    Company.IssuedStock({}).watch((err, ev) =>
+    Company().IssuedStock({}).watch((err, ev) =>
       this.getStock(ev.args.stockAddress, ev.args.stockIndex.toNumber()))
   }
 
@@ -43,8 +43,8 @@ class StockWatcher {
   }
 
   async getAllStocks() {
-    const lastId = await Company.stockIndex.call().then(x => x.valueOf())
-    const addressesPromises = _.range(lastId).map(id => Company.stocks.call(id))
+    const lastId = await Company().stockIndex.call().then(x => x.valueOf())
+    const addressesPromises = _.range(lastId).map(id => Company().stocks.call(id))
     const stockAddresses = await Promise.all(addressesPromises)
 
     await Promise.all(stockAddresses.map((a, i) => this.getStock(a, i)))

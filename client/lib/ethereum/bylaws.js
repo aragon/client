@@ -28,9 +28,9 @@ class BylawsWatcher {
 
     console.log('listen for bylaw changes', missedPredicate, streamingPredicate)
 
-    Company.BylawChanged({}, missedPredicate).get((err, evs) =>
+    Company().BylawChanged({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchBylaw(err, ev)))
-    Company.BylawChanged({}, streamingPredicate).watch((err, ev) => this.watchBylaw(err, ev))
+    Company().BylawChanged({}, streamingPredicate).watch((err, ev) => this.watchBylaw(err, ev))
   }
 
   async watchBylaw(err, ev) {
@@ -40,16 +40,16 @@ class BylawsWatcher {
   }
 
   async updateBylaw(signature) {
-    const [type, updated, updatedBy] = await Company.getBylawType.call(signature)
+    const [type, updated, updatedBy] = await Company().getBylawType.call(signature)
         .then(x => x.map(y => ((y.toNumber) ? y.toNumber() : y)))
     let details = Promise.resolve()
     if (type === 0) {
-      details = Company.getVotingBylaw.call(signature)
+      details = Company().getVotingBylaw.call(signature)
         .then(x => x.map(y => ((y.toNumber) ? y.toNumber() : y)))
         .then(([supportNeeded, supportBase, closingRelativeMajority, minimumVotingTime]) =>
           ({ supportNeeded, supportBase, closingRelativeMajority, minimumVotingTime }))
     } else {
-      details = Company.getStatusBylaw.call(signature)
+      details = Company().getStatusBylaw.call(signature)
         .then(x => x.toNumber())
         .then(neededStatus => ({ neededStatus }))
     }

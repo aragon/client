@@ -15,9 +15,9 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 const tmpl = Template.Module_Accounting_New.extend([ClosableSection])
 
 tmpl.helpers({
-  remainingBudget: ReactivePromise(Company.getAccountingPeriodRemainingBudget.call),
+  remainingBudget: ReactivePromise(Company().getAccountingPeriodRemainingBudget.call),
   periodCloses: ReactivePromise(() =>
-                  Company.getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
+                  Company().getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
   actionName: () => (TemplateVar.get('isRecurring') ? 'createRecurringReward' : 'issueReward'),
 })
 

@@ -24,8 +24,12 @@ class Action {
     this.signature = signature
     this.name = name
     this.description = description
-    this.companyFunction = Company[signature.split('(')[0]]
+    this.companyFunction =
     this.votingDescription = votingDescription
+  }
+
+  get companyFunction() {
+    return Company()[this.signature.split('(')[0]]
   }
 
   async votingDescriptionFor(args: Array<{type: string, value: string}>): Promise<string> {

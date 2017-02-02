@@ -37,25 +37,25 @@ class Accounting {
     const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
-    Company.NewPeriod({}, missedPredicate).get((err, evs) =>
+    Company().NewPeriod({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchPeriod(err, ev)))
-    Company.NewPeriod({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
+    Company().NewPeriod({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
 
-    Company.PeriodClosed({}, missedPredicate).get((err, evs) =>
+    Company().PeriodClosed({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchPeriod(err, ev)))
-    Company.PeriodClosed({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
+    Company().PeriodClosed({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
 
-    Company.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
+    Company().NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchRecurring(err, ev)))
-    Company.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurring(err, ev))
+    Company().NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurring(err, ev))
 
-    Company.TransactionSaved({}, missedPredicate).get((err, evs) =>
+    Company().TransactionSaved({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchTransaction(err, ev)))
-    Company.TransactionSaved({}, streamingPredicate).watch((err, ev) => this.watchTransaction(err, ev))
+    Company().TransactionSaved({}, streamingPredicate).watch((err, ev) => this.watchTransaction(err, ev))
 
-    Company.NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
+    Company().NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
       evs.map(ev => this.watchRecurringRemoval(err, ev)))
-    Company.NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurringRemoval(err, ev))
+    Company().NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurringRemoval(err, ev))
   }
 
   watchPeriod(err, ev) {
@@ -83,7 +83,7 @@ class Accounting {
   }
 
   async updatePeriod(periodIndex) {
-    const periodArray = await Company.getPeriodInfo(periodIndex)
+    const periodArray = await Company().getPeriodInfo(periodIndex)
     const [transactions, startedDate, endedDate, revenue, expenses, dividends] = periodArray
 
     const periodInfo = {
@@ -101,7 +101,7 @@ class Accounting {
 
   async saveTransaction(periodIndex, transactionIndex) {
     console.log('fetching tx')
-    const txArray = await Company.getTransactionInfo(periodIndex, transactionIndex)
+    const txArray = await Company().getTransactionInfo(periodIndex, transactionIndex)
     const [isExpense, from, to, approvedBy, amount, concept, timestamp] = txArray
 
     const txInfo = {
@@ -124,7 +124,7 @@ class Accounting {
   }
 
   async saveRecurringTransaction(index) {
-    const txArray = await Company.getRecurringTransactionInfo(index)
+    const txArray = await Company().getRecurringTransactionInfo(index)
     const [period, lastTransactionDate, to, approvedBy, amount, concept] = txArray
 
     const txInfo = {

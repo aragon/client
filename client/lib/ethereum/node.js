@@ -66,7 +66,12 @@ class EthereumNode {
 
     allContracts.forEach(c => c.setProvider(web3.currentProvider))
 
+    if (Meteor.settings.public.landingNode) {
+      await deployNewCompany()
+    }
+
     initWatchers()
+
     console.log('EthereumNode: ready')
     return nodeReady && collectionsReady
   }

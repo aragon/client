@@ -56,7 +56,7 @@ const votingPower = async () => {
 
 // Pending votes stays here as it has to be updated in real time when more shares are assigned.
 const pendingVotes = async (options) => {
-  const vs = options.map((o, i) => Company.countVotes.call(voting().index, i))
+  const vs = options.map((o, i) => Company().countVotes.call(voting().index, i))
   const allOptions = await Promise.all(vs)
   const total = allOptions[0][1].toNumber()
   const allVotes = allOptions.reduce((acc, v) => acc + v[0].toNumber(), 0)
@@ -105,7 +105,7 @@ const castVote = async option => {
 }
 
 const executeVote = async option => {
-  await Voting.at(voting().address).executeOnAction(option, Company.address,
+  await Voting.at(voting().address).executeOnAction(option, Company().address,
                   { from: Identity.current(true).ethereumAddress, gas: 3800000 })
   reload()
 }

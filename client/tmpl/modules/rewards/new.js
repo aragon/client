@@ -20,9 +20,9 @@ tmpl.onCreated(() => {
 })
 
 tmpl.helpers({
-  remainingBudget: ReactivePromise(Company.getAccountingPeriodRemainingBudget.call),
+  remainingBudget: ReactivePromise(Company().getAccountingPeriodRemainingBudget.call),
   periodCloses: ReactivePromise(() =>
-                  Company.getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
+                  Company().getAccountingPeriodCloses.call().then(x => moment(x * 1000))),
   actionName: () => (TemplateVar.get('isRecurring') ? 'createRecurringReward' : 'issueReward'),
 })
 

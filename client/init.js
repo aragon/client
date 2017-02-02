@@ -22,9 +22,9 @@ Template.Layout.helpers({
 const load = async () => {
   Meteor.disconnect()
 
-  if (Company.address !== Session.get('knownCompany')) {
+  if (Company().address !== Session.get('knownCompany')) {
     localStorage.clear()
-    Session.setPersistent('knownCompany', Company.address)
+    Session.setPersistent('knownCompany', Company().address)
   }
 
   await EthereumNode.connect()

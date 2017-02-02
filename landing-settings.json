@@ -1,5 +1,18 @@
 {
   "public": {
-    "memoryBlockchain": true
+    "landingNode": "http://eth-rpc.provident.ai",
+    "deployed": {
+      "company": "0xf0160a179c8605f831188e0aa42ec67d6cda00ab",
+      "libs": [
+        {
+          "name": "AccountingLib",
+          "address": "0xbde75337b0351d0d76f121b8d54a77eb08ba8c62"
+        },
+        {
+          "name": "BylawsLib",
+          "address": "0x776bf4478a1dca0c46cb006f64ed4f84ab2f919f"
+        }
+      ]
+    }
   }
 }

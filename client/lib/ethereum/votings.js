@@ -28,7 +28,7 @@ class VotingWatcher {
     console.log('listen votings')
 
     const watch = async (err, ev) => {
-      const votingAddr = await Company.votings.call(ev.args.id)
+      const votingAddr = await Company().votings.call(ev.args.id)
       self.getVoting(votingAddr, ev.args.id.toNumber())
       this.lastWatchedBlock = ev.blockNumber
     }
@@ -51,11 +51,11 @@ class VotingWatcher {
     const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
     const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
 
-    Company.VoteExecuted({}, missedPredicate).get(get)
-    Company.VoteExecuted({}, streamingPredicate).watch(watch)
+    Company().VoteExecuted({}, missedPredicate).get(get)
+    Company().VoteExecuted({}, streamingPredicate).watch(watch)
 
-    Company.BylawChanged({}, missedPredicate).get((err, evs) => evs.map(ev => watchBylaw(err, ev)))
-    Company.BylawChanged({}, streamingPredicate).watch(watchBylaw)
+    Company().BylawChanged({}, missedPredicate).get((err, evs) => evs.map(ev => watchBylaw(err, ev)))
+    Company().BylawChanged({}, streamingPredicate).watch(watchBylaw)
 
     Stocks.find().observeChanges({
       added: (id, fields) => {
@@ -72,8 +72,8 @@ class VotingWatcher {
 
   async getMissingVotings() {
     console.log('getting missing votings')
-    const lastId = await Company.votingIndex.call().then(x => x.toNumber())
-    const addressesPromises = _.range(1, lastId).map(id => Company.votings.call(id))
+    const lastId = await Company().votingIndex.call().then(x => x.toNumber())
+    const addressesPromises = _.range(1, lastId).map(id => Company().votings.call(id))
     const votingAddresses = await Promise.all(addressesPromises)
     const fetchingVotes = votingAddresses.map((a, i) => {
       if (this.Votings.findOne({ address: a })) { return null } // Filter existing
@@ -91,7 +91,7 @@ class VotingWatcher {
   }
 
   async countVotes(index, optionId) {
-    const counted = await Company.countVotes.call(index, optionId)
+    const counted = await Company().countVotes.call(index, optionId)
     const votes = counted[0].toNumber()
     return { votes, relativeVotes: votes / counted[1].toNumber() }
   }
@@ -107,12 +107,12 @@ class VotingWatcher {
     const closingTime = await Stock.at(Stocks.findOne().address).pollingUntil
                               .call(index).then(x => x.toNumber())
 
-    const votingSupport = voting.votingSupport.call(Company.address)
+    const votingSupport = voting.votingSupport.call(Company().address)
 
     const supportNeeded = votingSupport.then(([s, b]) => s / b)
     const relativeMajorityOnClose = votingSupport.then(([s, b, r]) => r)
 
-    const voteExecuted = Company.voteExecuted.call(index)
+    const voteExecuted = Company().voteExecuted.call(index)
                             .then(x => Promise.resolve(x.toNumber()))
                             .then(x => (x > 0 ? x - 10 : null))
 

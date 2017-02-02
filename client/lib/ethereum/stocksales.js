@@ -21,7 +21,7 @@ class StockSalesWatcher {
   }
 
   listenForNewSales() {
-    Company.NewStockSale({}).watch(async (err, ev) => {
+    Company().NewStockSale({}).watch(async (err, ev) => {
       const newsale = await this.getSale(ev.args.saleAddress, ev.args.saleIndex.toNumber())
       this.listenForSalesEvents([newsale])
     })
@@ -53,7 +53,7 @@ class StockSalesWatcher {
 
   async getNewSales() {
     const lastSavedIndex = (this.StockSales.findOne({}, { sort: { index: -1 } }) || { index: 0 }).index
-    const lastCompanyIndex = await Company.saleIndex.call().then(x => x.toNumber())
+    const lastCompanyIndex = await Company().saleIndex.call().then(x => x.toNumber())
     if (lastSavedIndex > lastCompanyIndex || lastCompanyIndex === 1) {
       this.StockSales.remove({})
     }
@@ -61,7 +61,7 @@ class StockSalesWatcher {
       const baseIndex = lastSavedIndex + 1
       const allNewSalesAddresses = await Promise.all(
                           _.range(baseIndex, lastCompanyIndex)
-                            .map(i => Company.sales.call(i))
+                            .map(i => Company().sales.call(i))
                           )
       const newSales = await Promise.all(allNewSalesAddresses.map((a, i) => this.getSale(a, baseIndex + i)))
 
@@ -116,13 +116,13 @@ class StockSalesWatcher {
 
   async createIndividualInvestorSale(address, stock, investor, price, units, closes, title = 'Series Y') {
     const sale = await IndividualInvestorSale.new(
-                            Company.address, stock, investor, units, price, closes, title,
+                            Company().address, stock, investor, units, price, closes, title,
                             { from: address, gas: 2000000 })
     return await this.submitSale(sale, address)
   }
 
   async createBoundedSale(address, stock, min, max, price, closes, title = 'Series Z') {
-    const sale = await BoundedStandardSale.new(Company.address, stock, min, max, price, closes, title,
+    const sale = await BoundedStandardSale.new(Company().address, stock, min, max, price, closes, title,
                            { from: address, gas: 3000000 })
     return await this.submitSale(sale, address)
   }
