@@ -12,6 +12,12 @@ Company = () => (
 )
 
 deployNewCompany = async () => {
+  Identity.setCurrent({
+    identityProvider: 'anon',
+    ethereumAddress: EthAccounts.findOne({}, {skip: EthAccounts.find().count() * Math.random() }).address
+    data: {},
+  })
+
   console.log('deploying new company')
   const address = Identity.current(true).ethereumAddress
   const libs = Meteor.settings.public.deployed.libs
