@@ -115,7 +115,7 @@ class Identity {
     // Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
     console.log(`Identity: Setting ${addr} as current Ethereum account`)
     Entities.update({ current: true }, { $unset: { current: '' } })
-    delete current._id
+    if (current) delete current._id
     Entities.update({ ethereumAddress: addr }, { $set: { ...current } })
   }
 

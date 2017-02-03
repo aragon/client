@@ -11,15 +11,15 @@ Company = () => (
           CompanyContract.at(Meteor.settings.public.deployed.company)
 )
 
-deployNewCompany = async () => {
-  Identity.setCurrent({
-    identityProvider: 'anon',
-    ethereumAddress: EthAccounts.findOne({}, {skip: EthAccounts.find().count() * Math.random() }).address,
-    data: {},
-  })
+const getRandomAddress = () => {
+  return web3.eth.accounts[parseInt(Math.random() * web3.eth.accounts.length)]
+}
 
-  console.log('deploying new company')
-  const address = Identity.current(true).ethereumAddress
+deployNewCompany = async () => {
+  const address = getRandomAddress()
+  await Identity.setCurrentEthereumAccount(address)
+
+  console.log('deploying new company', 'ad', address)
   const libs = Meteor.settings.public.deployed.libs
   libs.forEach(({name, address}) => CompanyContract.link(name, address))
   const company = await CompanyContract.new({ gas: 5e6, value: 1e18, from: address })
