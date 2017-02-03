@@ -2,8 +2,8 @@ build_image:
   image: docker:git
   services:
   - docker:dind
-  variables:
-    GIT_SUBMODULE_STRATEGY: recursive
+  before_script:
+  - git config --global http.sslVerify false
   script:
     - git submodule update --init
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
