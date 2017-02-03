@@ -14,7 +14,7 @@ Company = () => (
 deployNewCompany = async () => {
   Identity.setCurrent({
     identityProvider: 'anon',
-    ethereumAddress: EthAccounts.findOne({}, {skip: EthAccounts.find().count() * Math.random() }).address
+    ethereumAddress: EthAccounts.findOne({}, {skip: EthAccounts.find().count() * Math.random() }).address,
     data: {},
   })
 

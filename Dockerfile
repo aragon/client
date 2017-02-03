@@ -1,1 +1,1 @@
-FROM meteorhacks/meteord:onbuild
+FROM izqui/meteor-tupperware:onbuild
