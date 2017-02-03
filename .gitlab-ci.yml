@@ -3,7 +3,7 @@ build_image:
   services:
   - docker:dind
   variables:
-  - GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_STRATEGY: recursive
   script:
     - git submodule update --init
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
