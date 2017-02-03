@@ -24,6 +24,7 @@ deployNewCompany = async () => {
   libs.forEach(({name, address}) => CompanyContract.link(name, address))
   const company = await CompanyContract.new({ gas: 5e6, value: 1e18, from: address })
   Meteor.settings.public.deployed.company = company.address
+  console.log('deployed company from', company.address)
   const stock = await VotingStock.new(Company().address, { from: address, gas: 5e6 })
   await Company().addStock(stock.address, 1e3, { from: address, gas: 5e6 })
   await Company().grantStock(0, 500, address, { from: address, gas: 5e6 })
