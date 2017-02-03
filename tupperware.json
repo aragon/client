@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "phantomJs": false,
+    "imageMagick": false
+  },
+  "preBuildCommands": [
+    "npm install --only dev", "npm install"
+  ],
+  "postBuildCommands": [],
+  "buildOptions": {
+    "mobileServerUrl": false,
+    "additionalFlags": false
+  }
+}
