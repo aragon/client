@@ -3,6 +3,8 @@ build_image:
   services:
   - docker:dind
   script:
+    - git submodule init
+    - git submodule update --recursive
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
     - docker build -t registry.gitlab.com/providentai/aragon .
     - docker push registry.gitlab.com/providentai/aragon:latest
