@@ -8,4 +8,4 @@
 	branch = master
 [submodule ".metamask"]
 	path = .metamask
-	url = https://github.com/AragonOne/metamask-plugin.git
+	url = http://github.com/AragonOne/metamask-plugin.git
