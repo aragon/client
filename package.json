@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "babel-plugin-transform-class-properties": "^6.19.0",
-    "babel-runtime": "^6.18.0",
+    "babel-runtime": "^6.22.0",
     "chart.js": "^2.4.0",
     "coinr": "^1.1.1",
     "color-scheme": "0.0.5",
