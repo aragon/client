@@ -4,7 +4,7 @@
     "imageMagick": false
   },
   "preBuildCommands": [
-    "npm install --only dev", "npm install"
+    "npm install --global node-gyp; npm install --only dev", "npm install"
   ],
   "postBuildCommands": [],
   "buildOptions": {
