@@ -1,16 +1,16 @@
 {
   "public": {
-    "landingNode": "http://eth-rpc.provident.ai",
+    "landingNode": "http://eth-rpc.aragon.one",
     "deployed": {
       "company": "0xf0160a179c8605f831188e0aa42ec67d6cda00ab",
       "libs": [
         {
           "name": "AccountingLib",
-          "address": "0xbde75337b0351d0d76f121b8d54a77eb08ba8c62"
+          "address": "0x7ec2ec99fa117aa2fac791563958952449073d41"
         },
         {
           "name": "BylawsLib",
-          "address": "0x776bf4478a1dca0c46cb006f64ed4f84ab2f919f"
+          "address": "0xbe73227fb7c1df30cb8848ff67aaab503fc6acde"
         }
       ]
     }
