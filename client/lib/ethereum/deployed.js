@@ -16,20 +16,31 @@ const getRandomAddress = () => {
 CC = CompanyContract
 VS = VotingStock
 
-deployNewCompany = async () => {
-  const address = getRandomAddress()
-  await Identity.setCurrentEthereumAccount(address)
+const getNetworkID = () => (
+  new Promise((resolve, reject) => {
+    web3.version.getNetwork((err, id) => {
+      if (err) reject(err)
+      else resolve(id)
+    })
+  })
+)
 
-  console.log('deploying new company', 'ad', address)
+deployNewCompany = async () => {
+  const addr = getRandomAddress()
+  await Identity.setCurrentEthereumAccount(addr)
+
+  console.log('deploying new company', 'ad', addr)
   const libs = Meteor.settings.public.deployed.libs
-  libs.forEach(({name, address}) => CompanyContract.link(name, address))
-  const company = await CompanyContract.new({ gas: 5e6, value: 1e18, from: address })
+  const networkID = await getNetworkID()
+  alert(networkID)
+  CompanyContract.setNetwork(networkID)
+  libs.forEach(({ name, address }) => CompanyContract.link(name, address))
+  const company = await CompanyContract.new({ gas: 5e6, value: 1e18, from: addr })
   Meteor.settings.public.deployed.company = company.address
-  console.log('deployed company: ', company.address)
-  const stock = await VotingStock.new(Company().address, { from: address, gas: 5e6 })
-  await Company().addStock(stock.address, 1e3, { from: address, gas: 5e6 })
-  await Company().grantStock(0, 500, address, { from: address, gas: 5e6 })
-  await Company().setInitialBylaws({ from: address, gas: 5e6 })
+  const stock = await VotingStock.new(Company().address, { from: addr, gas: 5e6 })
+  await Company().addStock(stock.address, 1e3, { from: addr, gas: 5e6 })
+  await Company().grantStock(0, 500, addr, { from: addr, gas: 5e6 })
+  await Company().setInitialBylaws({ from: addr, gas: 5e6 })
   console.log('finished', Company().address)
 }
 
