@@ -15,6 +15,7 @@ const getRandomAddress = () => {
 
 CC = CompanyContract
 VS = VotingStock
+ID = Identity
 
 deployNewCompany = async () => {
   const address = getRandomAddress()

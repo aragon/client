@@ -1,14 +1,7 @@
 // @flow
-import Txid from '/imports/lib/contracts/build/contracts/Txid'
-
-let providerIsSet = false
+import { Txid } from './contracts'
 
 const verifyContractCode = async (address: string, candidateContracts) => {
-  if (!providerIsSet) {
-    Txid.setProvider(web3.currentProvider)
-    providerIsSet = true
-  }
-
   const contract = Txid.at(address)
 
   const txid = await contract.txid.call()

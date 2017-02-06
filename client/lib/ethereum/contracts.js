@@ -10,6 +10,7 @@ import _BoundedStandardSale from '/imports/lib/contracts/build/contracts/Bounded
 import _IndividualInvestorSale from '/imports/lib/contracts/build/contracts/IndividualInvestorSale'
 import _GenericBinaryVoting from '/imports/lib/contracts/build/contracts/GenericBinaryVoting'
 import _VotingStock from '/imports/lib/contracts/build/contracts/VotingStock'
+import _Txid from '/imports/lib/contracts/build/contracts/Txid'
 
 import web3 from './web3'
 import contractify from 'truffle-contract'
@@ -26,6 +27,7 @@ StockSale = contractify(_StockSale)
 BoundedStandardSale = contractify(_BoundedStandardSale)
 IndividualInvestorSale = contractify(_IndividualInvestorSale)
 GenericBinaryVoting = contractify(_GenericBinaryVoting)
+Txid = contractify(_Txid)
 
 console.log(Company)
 
@@ -41,9 +43,10 @@ const allContracts = [
   BoundedStandardSale,
   IndividualInvestorSale,
   GenericBinaryVoting,
+  Txid,
 ]
 
 // allContracts.forEach(c => c.setProvider(web3.currentProvider))
 
 export { allContracts, Company, AccountingLib, Stock, VotingStock, GrantableStock, BinaryVoting as Voting,
-          BinaryPoll as Poll, BoundedStandardSale, IndividualInvestorSale, GenericBinaryVoting, StockSale }
+          BinaryPoll as Poll, BoundedStandardSale, IndividualInvestorSale, GenericBinaryVoting, StockSale, Txid }
