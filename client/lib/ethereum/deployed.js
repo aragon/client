@@ -47,7 +47,6 @@ deployNewCompany = async () => {
   const networkID = await getNetworkID()
 
   CompanyContract.setNetwork(networkID)
-  libs.forEach(({ name, address }) => CompanyContract.link(name, address))
   const company = await CompanyContract.new({ gas: 6e6, value: 1e18, from: addr })
   companyAddress = company.address
 
