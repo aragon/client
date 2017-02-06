@@ -1,5 +1,5 @@
 // @flow
-import Txid from '/imports/lib/contracts/build/contracts/Txid.sol.js'
+import Txid from '/imports/lib/contracts/build/contracts/Txid'
 
 let providerIsSet = false
 

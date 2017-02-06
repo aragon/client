@@ -1,15 +1,33 @@
 // @flow
-import Company from '/imports/lib/contracts/build/contracts/Company.sol.js'
-import AccountingLib from '/imports/lib/contracts/build/contracts/AccountingLib.sol.js'
-import Stock from '/imports/lib/contracts/build/contracts/Stock.sol.js'
-import GrantableStock from '/imports/lib/contracts/build/contracts/GrantableStock.sol.js'
-import BinaryVoting from '/imports/lib/contracts/build/contracts/BinaryVoting.sol.js'
-import BinaryPoll from '/imports/lib/contracts/build/contracts/BinaryPoll.sol.js'
-import StockSale from '/imports/lib/contracts/build/contracts/StockSale.sol.js'
-import BoundedStandardSale from '/imports/lib/contracts/build/contracts/BoundedStandardSale.sol.js'
-import IndividualInvestorSale from '/imports/lib/contracts/build/contracts/IndividualInvestorSale.sol.js'
-import GenericBinaryVoting from '/imports/lib/contracts/build/contracts/GenericBinaryVoting.sol.js'
-import VotingStock from '/imports/lib/contracts/build/contracts/VotingStock.sol.js'
+import _Company from '/imports/lib/contracts/build/contracts/Company'
+import _AccountingLib from '/imports/lib/contracts/build/contracts/AccountingLib'
+import _Stock from '/imports/lib/contracts/build/contracts/Stock'
+import _GrantableStock from '/imports/lib/contracts/build/contracts/GrantableStock'
+import _BinaryVoting from '/imports/lib/contracts/build/contracts/BinaryVoting'
+import _BinaryPoll from '/imports/lib/contracts/build/contracts/BinaryPoll'
+import _StockSale from '/imports/lib/contracts/build/contracts/StockSale'
+import _BoundedStandardSale from '/imports/lib/contracts/build/contracts/BoundedStandardSale'
+import _IndividualInvestorSale from '/imports/lib/contracts/build/contracts/IndividualInvestorSale'
+import _GenericBinaryVoting from '/imports/lib/contracts/build/contracts/GenericBinaryVoting'
+import _VotingStock from '/imports/lib/contracts/build/contracts/VotingStock'
+
+import web3 from './web3'
+import contractify from 'truffle-contract'
+// const contractify = contract => web3.eth.contract(contract.abi)
+
+Company = contractify(_Company)
+AccountingLib = contractify(_AccountingLib)
+Stock = contractify(_Stock)
+VotingStock = contractify(_VotingStock)
+GrantableStock = contractify(_GrantableStock)
+BinaryVoting = contractify(_BinaryVoting)
+BinaryPoll = contractify(_BinaryPoll)
+StockSale = contractify(_StockSale)
+BoundedStandardSale = contractify(_BoundedStandardSale)
+IndividualInvestorSale = contractify(_IndividualInvestorSale)
+GenericBinaryVoting = contractify(_GenericBinaryVoting)
+
+console.log(Company)
 
 const allContracts = [
   Company,

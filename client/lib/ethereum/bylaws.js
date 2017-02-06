@@ -40,7 +40,7 @@ class BylawsWatcher {
   }
 
   async updateBylaw(signature) {
-    const [type, updated, updatedBy] = await Company().getBylawType.call(signature)
+    const [type, updated, updatedBy] = await Company().getBylawType(signature)
         .then(x => x.map(y => ((y.toNumber) ? y.toNumber() : y)))
     let details = Promise.resolve()
     if (type === 0) {

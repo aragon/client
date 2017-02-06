@@ -5,11 +5,9 @@ import Identity from '/client/lib/identity'
 
 import { Company as CompanyContract, VotingStock } from './contracts'
 
-Company = () => (
-  !Meteor.settings.public.deployed ?
-          CompanyContract.deployed() :
-          CompanyContract.at(Meteor.settings.public.deployed.company)
-)
+const Company = () => {
+  return CompanyContract.at(Meteor.settings.public.deployed.company)
+}
 
 const getRandomAddress = () => {
   return web3.eth.accounts[parseInt(Math.random() * web3.eth.accounts.length)]

@@ -3,8 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor run",
-    "dev": "MONGO_URL=0 METEOR_OFFLINE_CATALOG=1 meteor",
-    "testnet-dev": "MONGO_URL=0 METEOR_OFFLINE_CATALOG=1 meteor --settings settings.json",
+    "dev": "MONGO_URL=0 METEOR_OFFLINE_CATALOG=1 meteor --settings settings.json",
     "landing": "MONGO_URL=0 METEOR_OFFLINE_CATALOG=1 meteor --settings landing-settings.json",
     "metamask-dev": "cd .metamask; gulp dev --debug=false --aragon=true",
     "testrpc": "testrpc --account='0xa45d10c15047c9d6790de40c8a6871cf71205d9323902738e5da600a786e460e,10000000000000000000000'",
@@ -30,7 +29,7 @@
     "money": "^0.2.0",
     "notifyjs": "^2.0.3",
     "post-message-stream": "^1.0.0",
-    "web3": "^0.18.0"
+    "truffle-contract": "^1.1.8"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.1",
