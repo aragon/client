@@ -113,9 +113,9 @@ const addVotingBylawDescription = ([signature, supportNeeded, supportBase,
 }
 
 const ActionFactory = {
-  beginPoll: new Action('beginPoll(address,uint64)', 'Begin voting',
+  beginPoll: new Action('beginPoll(address,uint64,bool,bool)', 'Begin voting',
                         'How votings and polls can be created', () => 'voting to create voting lol'),
-  castVote: new Action('castVote(uint256,uint8)', 'Cast vote',
+  castVote: new Action('castVote(uint256,uint8,bool)', 'Cast vote',
                         'How votes can be casted in votings', () => 'voting to vote lol'),
   setEntityStatus: new Action('setEntityStatus(address,uint8)', 'Set entity status',
                         'Setting company status for a given entity', setEntityStatusDescription),

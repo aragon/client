@@ -100,7 +100,8 @@ tmpl.helpers({
 })
 
 const castVote = async option => {
-  await dispatcher.dispatch(actions.castVote, voting().index, option)
+  const executesOnDecided = true
+  await dispatcher.dispatch(actions.castVote, voting().index, option, executesOnDecided)
   reload()
 }
 
