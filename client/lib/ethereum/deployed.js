@@ -35,7 +35,7 @@ if (Meteor.settings.public.deployed) {
 const Company = () => CompanyContract.at(companyAddress)
 
 const getRandomAddress = () => {
-  return web3.eth.accounts[parseInt(Math.random() * web3.eth.accounts.length)]
+  return web3.eth.accounts[0] // parseInt(Math.random() * web3.eth.accounts.length)]
 }
 
 deployNewCompany = async () => {
