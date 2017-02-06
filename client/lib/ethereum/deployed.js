@@ -45,7 +45,7 @@ deployNewCompany = async () => {
   console.log('deploying new company', 'ad', addr)
   const libs = Meteor.settings.public.deployed.libs
   const networkID = await getNetworkID()
-  alert(networkID)
+
   CompanyContract.setNetwork(networkID)
   libs.forEach(({ name, address }) => CompanyContract.link(name, address))
   const company = await CompanyContract.new({ gas: 6e6, value: 1e18, from: addr })
