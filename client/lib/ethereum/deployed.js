@@ -48,7 +48,7 @@ deployNewCompany = async () => {
   alert(networkID)
   CompanyContract.setNetwork(networkID)
   libs.forEach(({ name, address }) => CompanyContract.link(name, address))
-  const company = await CompanyContract.new({ gas: 5e6, value: 1e18, from: addr })
+  const company = await CompanyContract.new({ gas: 6e6, value: 1e18, from: addr })
   companyAddress = company.address
 
   const stock = await VotingStock.new(companyAddress, { from: addr, gas: 5e6 })
