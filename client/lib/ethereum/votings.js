@@ -145,6 +145,7 @@ class VotingWatcher {
   // Returns vote type
   async verifyVote(address) {
     const voteContracts = this.allVotes.map(x => x.contractClass)
+
     const verifiedContract = await verifyContractCode(address, voteContracts)
 
     if (!verifiedContract) { return null }
@@ -170,6 +171,7 @@ class VotingWatcher {
   get allVotes() {
     return [
       {
+        // Dear future developer, some day there might be a problem verifying because it is not linked to BytesHelper
         contractClass: GenericBinaryVoting,
         title: async a => `${actionFromData(await GenericBinaryVoting.at(a).data.call()).name} voting`,
         description: async a => {

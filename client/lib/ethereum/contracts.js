@@ -14,7 +14,6 @@ import _Txid from '/imports/lib/contracts/build/contracts/Txid'
 
 import web3 from './web3'
 import contractify from 'truffle-contract'
-// const contractify = contract => web3.eth.contract(contract.abi)
 
 Company = contractify(_Company)
 AccountingLib = contractify(_AccountingLib)
@@ -28,8 +27,6 @@ BoundedStandardSale = contractify(_BoundedStandardSale)
 IndividualInvestorSale = contractify(_IndividualInvestorSale)
 GenericBinaryVoting = contractify(_GenericBinaryVoting)
 Txid = contractify(_Txid)
-
-console.log(Company)
 
 const allContracts = [
   Company,
