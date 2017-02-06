@@ -32,7 +32,7 @@ class Dispatcher {
     const txData = f.request.apply(this, args).params[0].data
     const votingCloses = votingTime + Math.floor(+new Date() / 1000)
 
-    const voting = await GenericBinaryVoting.new(signature, txData, this.transactionParams)
+    const voting = await GenericBinaryVoting.new(txData, this.transactionParams)
     await voting.setTxid(voting.transactionHash, this.transactionParams)
 
     const votesOnCreate = true
