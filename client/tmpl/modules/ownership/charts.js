@@ -41,14 +41,15 @@ tmpl.onRendered(function () {
     const stocks = Stocks.find().fetch()
     drawChart(this.$('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
 
-    const allShares = await StockWatcher.allShareholders(stocks)
+    const allShares = stocks.map(s => s.shareholders)
     const globalBalances = {}
     const votingPower = {}
 
     for (const shareId in allShares) {
       const stock = stocks[shareId]
       const stockContract = Stock.at(stock.address)
-      const shareShareholders = allShares[shareId].map(a => a.shareholder)
+      const shareShareholders = allShares[shareId].map(x => x.shareholder)
+
       const balancePromises = shareShareholders
               .map(a => stockContract.balanceOf(a).then(x => x.toNumber()))
       const balances = await Promise.all(balancePromises)

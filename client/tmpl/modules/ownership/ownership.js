@@ -41,9 +41,12 @@ tmpl.helpers({
     if (stock) return stock.updated
     return {}
   },
-  shareholders: ReactivePromise(() => (
-    StockWatcher.allShareholders().then(x => [].concat(...x))
-  )),
+  reactive: ReactivePromise(x => x),
+  shareholders: () => {
+    const set = new Set()
+    Stocks.find().fetch().forEach(s => s.shareholders.forEach(set.add.bind(set)))
+    return ([...set])
+  },
   balance: ReactivePromise((stock, shareholder) => (
     Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
   )),
