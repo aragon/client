@@ -6,36 +6,31 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 import SHA256 from 'crypto-js/sha256'
 
+import Watcher from '../ethereum/watcher'
 import BrowserNotifications from './browser'
 
-class NotificationsManager {
+class NotificationsManager extends Watcher {
   Notifications: Mongo.Collection
   persistentNotifications: PersistentMinimongo
 
   constructor() {
+    super('n')
     this.Notifications = new Mongo.Collection('notification', { connection: null })
     this.persistentNotifications = new PersistentMinimongo(this.Notifications)
   }
 
   listen(listeners: Array<Function>) {
-    if (this.lastWatchedBlock > this.lastBlock) {
-      this.lastWatchedBlock = this.lastBlock
-    }
-    const threshold = this.lastBlock
-    const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
-    const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
-
     listeners.forEach(listener => {
-      listener.ev(listener.predicate, missedPredicate)
+      listener.ev(listener.predicate, this.missedPredicate)
         .get(async (err, evs) => {
           const notis = evs.map(ev => this.saveNotification(listener, ev, true))
           const filtered = (await Promise.all(notis)).filter(x => x !== null)
 
           this.sendMissingNotification(filtered.length)
         })
-      listener.ev(listener.predicate, streamingPredicate)
+      listener.ev(listener.predicate, this.streamingPredicate)
         .watch(async (err, ev) => {
-          if (ev.blockNumber > threshold) {
+          if (ev.blockNumber > this.threshold()) {
             await this.showNotification(listener, ev)
           }
         })
@@ -88,7 +83,6 @@ class NotificationsManager {
     const notificationDetails = await Promise.allProperties(notification)
 
     this.Notifications.upsert({ _id: notification._id }, notificationDetails)
-    this.lastWatchedBlock = ev.blockNumber
 
     return notificationDetails
   }
@@ -104,22 +98,6 @@ class NotificationsManager {
 
   notificationHash(ev) {
     return SHA256(ev.blockHash + ev.transactionHash + ev.logIndex + ev.event).toString()
-  }
-
-  get lastBlockKey() {
-    return 'lB'
-  }
-
-  get lastWatchedBlock() {
-    return Session.get(this.lastBlockKey) || EthBlocks.latest.number
-  }
-
-  get lastBlock() {
-    return EthBlocks.latest.number
-  }
-
-  set lastWatchedBlock(block) {
-    return Session.setPersistent(this.lastBlockKey, block)
   }
 }
 

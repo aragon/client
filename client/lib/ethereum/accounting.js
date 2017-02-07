@@ -4,21 +4,28 @@ import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 
 import Company from './deployed'
 
+import Watcher from './watcher'
+
 const Transactions = new Mongo.Collection('transactions', { connection: null })
 const AccountingPeriods = new Mongo.Collection('accountingPeriod', { connection: null })
 
-class Accounting {
+class AccountingWatcher extends Watcher {
   Transactions: Mongo.Collection
   persistentTransactions: PersistentMinimongo
   AccountingPeriods: Mongo.Collection
   persistentAccountingPeriods: PersistentMinimongo
 
   constructor() {
+    super('acc')
     this.setupCollections()
   }
 
   listen() {
-    this.listenForChanges()
+    this.watchEvent(Company().NewPeriod, this.watchPeriod)
+    this.watchEvent(Company().PeriodClosed, this.watchPeriod)
+    this.watchEvent(Company().NewRecurringTransaction, this.watchRecurring)
+    this.watchEvent(Company().TransactionSaved, this.watchTransaction)
+    this.watchEvent(Company().RemovedRecurringTransaction, this.watchRecurringRemoval)
   }
 
   setupCollections() {
@@ -29,53 +36,24 @@ class Accounting {
     this.persistentAccountingPeriods = new PersistentMinimongo(this.AccountingPeriods)
   }
 
-  listenForChanges() {
-    if (this.lastWatchedBlock > this.lastBlock) {
-      this.lastWatchedBlock = this.lastBlock
-    }
-    const threshold = this.lastBlock
-    const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
-    const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
-
-    Company().NewPeriod({}, missedPredicate).get((err, evs) =>
-      evs.map(ev => this.watchPeriod(err, ev)))
-    Company().NewPeriod({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
-
-    Company().PeriodClosed({}, missedPredicate).get((err, evs) =>
-      evs.map(ev => this.watchPeriod(err, ev)))
-    Company().PeriodClosed({}, streamingPredicate).watch((err, ev) => this.watchPeriod(err, ev))
-
-    Company().NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
-      evs.map(ev => this.watchRecurring(err, ev)))
-    Company().NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurring(err, ev))
-
-    Company().TransactionSaved({}, missedPredicate).get((err, evs) =>
-      evs.map(ev => this.watchTransaction(err, ev)))
-    Company().TransactionSaved({}, streamingPredicate).watch((err, ev) => this.watchTransaction(err, ev))
-
-    Company().NewRecurringTransaction({}, missedPredicate).get((err, evs) =>
-      evs.map(ev => this.watchRecurringRemoval(err, ev)))
-    Company().NewRecurringTransaction({}, streamingPredicate).watch((err, ev) => this.watchRecurringRemoval(err, ev))
-  }
-
   watchPeriod(err, ev) {
     if (!err) this.updatePeriod(ev.args.newPeriod.toNumber())
-    this.lastWatchedBlock = ev.blockNumber
+
   }
 
   watchRecurring(err, ev) {
     if (!err) this.saveRecurringTransaction(ev.args.recurringIndex.toNumber())
-    this.lastWatchedBlock = ev.blockNumber
+
   }
 
   watchTransaction(err, ev) {
     if (!err) this.saveTransaction(ev.args.period.toNumber(), ev.args.transactionIndex.toNumber())
-    this.lastWatchedBlock = ev.blockNumber
+
   }
 
   watchRecurringRemoval(err, ev) {
     if (!err) this.removeRecurringTransaction(ev.args.recurringIndex.toNumber())
-    this.lastWatchedBlock = ev.blockNumber
+
   }
 
   get currentPeriod() {
@@ -146,23 +124,6 @@ class Accounting {
   removeRecurringTransaction(index) {
     this.Transactions.remove({ recurring: true, index })
   }
-
-  get lastBlockKey() {
-    return 'lB_acc'
-  }
-
-  get lastWatchedBlock() {
-    return Session.get(this.lastBlockKey) || EthBlocks.latest.number
-  }
-
-  get lastBlock() {
-    return EthBlocks.latest.number
-  }
-
-  set lastWatchedBlock(block) {
-    return Session.setPersistent(this.lastBlockKey, block)
-  }
-
 }
 
-export default new Accounting()
+export default new AccountingWatcher()

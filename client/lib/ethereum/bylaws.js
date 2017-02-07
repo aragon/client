@@ -1,16 +1,18 @@
 import utils from 'ethereumjs-util'
 
 import Company from './deployed'
+import Watcher from './watcher'
 
 Bylaws = new Mongo.Collection('bylaws', { connection: null })
 
-class BylawsWatcher {
+class BylawsWatcher extends Watcher {
   constructor() {
+    super('byl')
     this.setupCollections()
   }
 
   listen() {
-    this.listenForBylawChanges()
+    this.watchEvent(Company().BylawChanged, this.watchBylaw)
   }
 
   setupCollections() {
@@ -18,25 +20,8 @@ class BylawsWatcher {
     this.persistentBylaws = new PersistentMinimongo(this.Bylaws)
   }
 
-  listenForBylawChanges() {
-    if (this.lastWatchedBlock > this.lastBlock) {
-      this.lastWatchedBlock = this.lastBlock
-    }
-    const threshold = this.lastBlock
-    const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
-    const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
-
-    console.log('listen for bylaw changes', missedPredicate, streamingPredicate)
-
-    Company().BylawChanged({}, missedPredicate).get((err, evs) =>
-      evs.map(ev => this.watchBylaw(err, ev)))
-    Company().BylawChanged({}, streamingPredicate).watch((err, ev) => this.watchBylaw(err, ev))
-  }
-
   async watchBylaw(err, ev) {
-    console.log('fetching bylaw', ev.args.functionSignature)
     if (!err && ev.args) await this.updateBylaw(ev.args.functionSignature)
-    this.lastWatchedBlock = ev.blockNumber
   }
 
   async updateBylaw(signature) {
@@ -67,24 +52,6 @@ class BylawsWatcher {
 
     this.Bylaws.upsert({ _id: `byl_${signatureHash}` }, bylawObject)
   }
-
-  get lastBlockKey() {
-    return 'lB_byl'
-  }
-
-  get lastWatchedBlock() {
-    return Session.get(this.lastBlockKey) || EthBlocks.latest.number
-  }
-
-  get lastBlock() {
-    return EthBlocks.latest.number
-  }
-
-  set lastWatchedBlock(block) {
-    return Session.setPersistent(this.lastBlockKey, block)
-  }
 }
-
-BW = BylawsWatcher
 
 export default new BylawsWatcher()

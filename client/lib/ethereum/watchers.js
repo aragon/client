@@ -6,7 +6,9 @@ import StockWatcher from './stocks'
 import StockSalesWatcher from './stocksales'
 import VotingWatcher from './votings'
 
-const watchers = [
+import Watcher from './watcher'
+
+const watchers: Array<Watcher> = [
   Accounting,
   BylawsWatcher,
   StatusWatcher,

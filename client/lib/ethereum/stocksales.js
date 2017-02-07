@@ -4,14 +4,16 @@ import { StockSale, IndividualInvestorSale, BoundedStandardSale } from './contra
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 import verifyContractCode from './verify'
 
-class StockSalesWatcher {
+import Watcher from './watcher'
+
+class StockSalesWatcher extends Watcher {
   constructor() {
+    super('ss')
     this.setupCollections()
   }
 
   listen() {
     this.listenForNewSales()
-    this.getNewSales()
     this.listenForSalesEvents()
   }
 
@@ -21,53 +23,25 @@ class StockSalesWatcher {
   }
 
   listenForNewSales() {
-    Company().NewStockSale({}).watch(async (err, ev) => {
+    this.watchEvent(Company().NewStockSale, async (err, ev) => {
       const newsale = await this.getSale(ev.args.saleAddress, ev.args.saleIndex.toNumber())
       this.listenForSalesEvents([newsale])
     })
   }
 
   listenForSalesEvents(sales = this.StockSales.find().fetch()) {
-    if (this.lastWatchedBlock > this.lastBlock) {
-      this.lastWatchedBlock = this.lastBlock
-    }
-    const threshold = this.lastBlock
-    const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
-    const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
-
     const update = sale => ((err, a) => {
       if (a.length === 0) { return } // Discard empty get arrays
       const ev = a[a.length - 1] || a
-      this.lastWatchedBlock = ev.blockNumber
+
       this.getSale(sale.address, sale.index)
     })
 
     sales.forEach(sale => {
       const stockSale = StockSale.at(sale.address)
-      stockSale.StockSold({}, streamingPredicate).watch(update(sale))
-      stockSale.StockBought({}, streamingPredicate).watch(update(sale))
-      stockSale.StockSold({}, missedPredicate).get(update(sale))
-      stockSale.StockBought({}, missedPredicate).get(update(sale))
+      this.watchEvent(stockSale.StockSold, update(sale))
+      this.watchEvent(stockSale.StockBought, update(sale))
     })
-  }
-
-  async getNewSales() {
-    const lastSavedIndex = (this.StockSales.findOne({}, { sort: { index: -1 } }) || { index: 0 }).index
-    const lastCompanyIndex = await Company().saleIndex.call().then(x => x.toNumber())
-    if (lastSavedIndex > lastCompanyIndex || lastCompanyIndex === 1) {
-      this.StockSales.remove({})
-    }
-    if (lastSavedIndex < lastCompanyIndex) {
-      const baseIndex = lastSavedIndex + 1
-      const allNewSalesAddresses = await Promise.all(
-                          _.range(baseIndex, lastCompanyIndex)
-                            .map(i => Company().sales.call(i))
-                          )
-      const newSales = await Promise.all(allNewSalesAddresses.map((a, i) => this.getSale(a, baseIndex + i)))
-
-      console.log('fetched', newSales)
-      this.listenForSalesEvents(newSales)
-    }
   }
 
   async getSale(address, index) {
@@ -111,7 +85,7 @@ class StockSalesWatcher {
     const verifiedContract = await verifyContractCode(address, allClasses)
 
     if (!verifiedContract) { return null }
-    return this.allSales.filter(x => x.contractClass == verifiedContract)[0]
+    return this.allSales.filter(x => x.contractClass === verifiedContract)[0]
   }
 
   async createIndividualInvestorSale(address, stock, investor, price, units, closes, title = 'Series Y') {
@@ -147,22 +121,6 @@ class StockSalesWatcher {
         additionalProperties: () => ({}),
       },
     ]
-  }
-
-  get lastBlockKey() {
-    return 'lB_ss'
-  }
-
-  get lastWatchedBlock() {
-    return Session.get(this.lastBlockKey) || EthBlocks.latest.number
-  }
-
-  get lastBlock() {
-    return EthBlocks.latest.number
-  }
-
-  set lastWatchedBlock(block) {
-    return Session.setPersistent(this.lastBlockKey, block)
   }
 }
 

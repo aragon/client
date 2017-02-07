@@ -1,5 +1,7 @@
 import { actionFromData, decode } from '/client/lib/action-dispatcher/decoder'
 
+import Watcher from './watcher'
+
 import { Stock, Voting, GenericBinaryVoting, Poll } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
@@ -8,13 +10,13 @@ import verifyContractCode from './verify'
 const Stocks = StockWatcher.Stocks
 const Votings = new Mongo.Collection('votings', { connection: null })
 
-class VotingWatcher {
+class VotingWatcher extends Watcher {
   constructor() {
+    super('v')
     this.setupCollections()
   }
 
   listen() {
-    this.getMissingVotings()
     this.listenForUpdates()
   }
 
@@ -30,60 +32,25 @@ class VotingWatcher {
     const watch = async (err, ev) => {
       const votingAddr = await Company().votings.call(ev.args.id)
       self.getVoting(votingAddr, ev.args.id.toNumber())
-      this.lastWatchedBlock = ev.blockNumber
     }
 
     const watchBylaw = (err, ev) => {
       const affectedVotings = Votings.find({ mainSignature: ev.args.functionSignature, voteExecuted: null, closingTime: { $gt: +new Date() } })
       affectedVotings.forEach(v => self.getVoting(v.address, v.index))
-
-      this.lastWatchedBlock = ev.blockNumber
     }
 
-    const get = async (err, evs) => {
-      await Promise.all(evs.map(ev => watch(err, ev)))
-    }
+    this.watchEvent(Company().VoteExecuted, watch)
+    this.watchEvent(Company().BylawChanged, watchBylaw)
 
-    if (this.lastWatchedBlock > this.lastBlock) {
-      this.lastWatchedBlock = this.lastBlock
-    }
-    const threshold = this.lastBlock
-    const missedPredicate = { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: threshold }
-    const streamingPredicate = { fromBlock: threshold, toBlock: 'latest' }
-
-    Company().VoteExecuted({}, missedPredicate).get(get)
-    Company().VoteExecuted({}, streamingPredicate).watch(watch)
-
-    Company().BylawChanged({}, missedPredicate).get((err, evs) => evs.map(ev => watchBylaw(err, ev)))
-    Company().BylawChanged({}, streamingPredicate).watch(watchBylaw)
-
+    // Problem, this assumes every time app loads, stocks are loaded
     Stocks.find().observeChanges({
       added: (id, fields) => {
-        console.log('ibserving voting', fields.address)
+        const stock = Stock.at(fields.address)
 
-        Stock.at(fields.address).NewPoll({}, streamingPredicate).watch(watch)
-        Stock.at(fields.address).VoteCasted({}, streamingPredicate).watch(watch)
-
-        Stock.at(fields.address).NewPoll({}, missedPredicate).get(get)
-        Stock.at(fields.address).VoteCasted({}, missedPredicate).get(get)
+        this.watchEvent(stock.NewPoll, watch)
+        this.watchEvent(stock.VoteCasted, watch)
       },
     })
-  }
-
-  async getMissingVotings() {
-    console.log('getting missing votings')
-    const lastId = await Company().votingIndex.call().then(x => x.toNumber())
-    const addressesPromises = _.range(1, lastId).map(id => Company().votings.call(id))
-    const votingAddresses = await Promise.all(addressesPromises)
-    const fetchingVotes = votingAddresses.map((a, i) => {
-      if (this.Votings.findOne({ address: a })) { return null } // Filter existing
-      return this.getVoting(a, i + 1)
-    })
-
-    console.log(fetchingVotes)
-    await Promise.all(fetchingVotes)
-
-    this.Votings.remove({ address: { $nin: votingAddresses } })
   }
 
   async getVoting(address, index) {
@@ -150,22 +117,6 @@ class VotingWatcher {
 
     if (!verifiedContract) { return null }
     return this.allVotes.filter(x => verifiedContract === x.contractClass)[0]
-  }
-
-  get lastBlockKey() {
-    return 'lB_v'
-  }
-
-  get lastWatchedBlock() {
-    return Session.get(this.lastBlockKey) || EthBlocks.latest.number
-  }
-
-  get lastBlock() {
-    return EthBlocks.latest.number
-  }
-
-  set lastWatchedBlock(block) {
-    return Session.setPersistent(this.lastBlockKey, block)
   }
 
   get allVotes() {

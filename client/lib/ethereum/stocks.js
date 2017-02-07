@@ -6,13 +6,16 @@ import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 import { Stock } from './contracts'
 import Company from './deployed'
 
+import Watcher from './watcher'
+
 const Stocks = new Mongo.Collection('stocks', { connection: null })
 
-class StockWatcher {
+class StockWatcher extends Watcher {
   Stocks: Mongo.Collection
   persistentStock: PersistentMinimongo
 
   constructor() {
+    super('s')
     this.setupCollections()
   }
 
@@ -28,8 +31,11 @@ class StockWatcher {
   }
 
   listenForNewStock() {
-    Company().IssuedStock({}).watch((err, ev) =>
-      this.getStock(ev.args.stockAddress, ev.args.stockIndex.toNumber()))
+    this.watchEvent(Company().IssuedStock, this.watchStock)
+  }
+
+  watchStock(err, ev) {
+    if (!err) this.getStock(ev.args.stockAddress, ev.args.stockIndex.toNumber())
   }
 
   listenForStockTransfers() {
