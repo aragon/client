@@ -2,17 +2,7 @@
   "public": {
     "landingNode": "https://eth-rpc.aragon.one",
     "deployed": {
-      "company": "0xf0160a179c8605f831188e0aa42ec67d6cda00ab",
-      "libs": [
-        {
-          "name": "AccountingLib",
-          "address": "0x3d31d7b8c6e60d2f8bcb0aa387e08389e75e4622"
-        },
-        {
-          "name": "BylawsLib",
-          "address": "0xd374235ee2f5b345255e01d433ee84c4be85bf37"
-        }
-      ]
+      "company": "0xf0160a179c8605f831188e0aa42ec67d6cda00ab"
     }
   }
 }
