@@ -47,7 +47,7 @@ const load = async () => {
 
   await EthereumNode.connect()
   if (Company().address !== Session.get('knownCompany')) {
-    localStorage.clear()
+    clearStorage()
     Session.setPersistent('knownCompany', Company().address)
   }
 
