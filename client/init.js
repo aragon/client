@@ -11,6 +11,13 @@ import EthereumNode from '/client/lib/ethereum/node'
 import Company from '/client/lib/ethereum/deployed'
 import { BrowserNotifications } from '/client/lib/notifications'
 
+import Accounting from '/client/lib/ethereum/accounting'
+import BylawsWatcher from '/client/lib/ethereum/bylaws'
+import StatusWatcher from '/client/lib/ethereum/statuses'
+import StockWatcher from '/client/lib/ethereum/stocks'
+import StockSalesWatcher from '/client/lib/ethereum/stocksales'
+import VotingWatcher from '/client/lib/ethereum/votings'
+
 const initFinished = new ReactiveVar(false)
 const isInjectedMetaMask = new ReactiveVar(false)
 
@@ -19,8 +26,24 @@ Template.Layout.helpers({
   isInjectedMetaMask: () => isInjectedMetaMask.get(),
 })
 
+const clearStorage = () => {
+  localStorage.clear()
+  const collections = [
+    StockWatcher.Stocks,
+    Accounting.Transactions, Accounting.AccountingPeriods,
+    BylawsWatcher.Bylaws,
+    VotingWatcher.Votings,
+    Entities,
+    StockSalesWatcher.StockSales,
+  ]
+  collections.forEach(c => c.remove({}))
+  localStorage.clear()
+}
+
 const load = async () => {
   Meteor.disconnect()
+
+  if (Meteor.settings.public.identityDisabled) clearStorage()
 
   await EthereumNode.connect()
   if (Company().address !== Session.get('knownCompany')) {
@@ -29,7 +52,7 @@ const load = async () => {
   }
 
   const current = Identity.current(true)
-  if (!current) {
+  if (!current && !Meteor.settings.public.identityDisabled) {
     await Identity.reset()
     Settings.reset()
   }

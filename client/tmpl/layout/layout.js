@@ -25,6 +25,10 @@ tmpl.events({
   'click #walletButton': () => $('#Layout_MetaMask').transition('fade down'),
 })
 
+tmpl.helpers({
+  identityDisabled: () => Meteor.settings.public.identityDisabled,
+})
+
 window.addEventListener('message', (msg) => {
   if (!msg.data.metaMask) return
   if (msg.data.metaMask === 'show') toggleMetaMask()

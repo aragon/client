@@ -38,7 +38,9 @@ class StockWatcher extends Watcher {
   }
 
   listenForStockTransfers(stocks = this.Stocks.find().fetch()) {
-    stocks.forEach(stock => this.watchEvent(Stock.at(stock.address).Transfer, () => console.log('DO SMTH')))
+    stocks.forEach(stock => {
+      this.watchEvent(Stock.at(stock.address).Transfer, () => this.getStock(stock.address, stock.index)) // todo: save balances
+    })
   }
 
   async getStock(address: string, index: number) {

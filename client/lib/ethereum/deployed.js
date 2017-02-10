@@ -35,12 +35,13 @@ if (Meteor.settings.public.deployed) {
 const Company = () => CompanyContract.at(companyAddress)
 
 const getRandomAddress = () => {
-  return web3.eth.accounts[0] // parseInt(Math.random() * web3.eth.accounts.length)]
+  return web3.eth.accounts[parseInt(Math.random() * web3.eth.accounts.length)]
 }
 
 deployNewCompany = async () => {
   const addr = getRandomAddress()
-  await Identity.setCurrentEthereumAccount(addr)
+  const current = await Identity.getRaw(addr, true)
+  Identity.setCurrent(current)
 
   console.log('deploying new company', 'ad', addr)
   const libs = Meteor.settings.public.deployed.libs

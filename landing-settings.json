@@ -3,6 +3,7 @@
     "landingNode": "https://eth-rpc.aragon.one",
     "deployed": {
       "company": "0xf0160a179c8605f831188e0aa42ec67d6cda00ab"
-    }
+    },
+    "identityDisabled": true
   }
 }

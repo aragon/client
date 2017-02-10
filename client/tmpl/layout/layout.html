@@ -15,9 +15,11 @@
         <div class="ui floating red circular empty label"></div>
         {{ /if }}
       </a>
+      {{ #unless identityDisabled }}
       <a href="/account" class="item">
         {{#with currentEntity}}<img src="{{ picture }}" class="ui mini right spaced circular image">{{/with}}
       </a>
+      {{ /unless }}
     </div>
   </div>
 
