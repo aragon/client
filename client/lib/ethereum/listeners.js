@@ -34,7 +34,8 @@ class Listeners {
   }
 
   static async shareTransfers(stocks) {
-    const address = Identity.current(true).ethereumAddress
+    console.log(Entities.findOne({current: true}))
+    const address = Entities.findOne({current: true}).ethereumAddress // Identity.current(true).ethereumAddress
     const sharesTransfers = stocks.map(stock =>
       ([this.sharesSent(stock, address), this.sharesReceived(stock, address)]),
     )

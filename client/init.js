@@ -37,6 +37,7 @@ const clearStorage = () => {
     StockSalesWatcher.StockSales,
   ]
   collections.forEach(c => c.remove({}))
+  console.log('removed everything')
   localStorage.clear()
 }
 
@@ -46,7 +47,7 @@ const load = async () => {
   if (Meteor.settings.public.identityDisabled) clearStorage()
 
   await EthereumNode.connect()
-  if (Company().address !== Session.get('knownCompany')) {
+  if (Company().address !== Session.get('knownCompany') && !Meteor.settings.public.identityDisabled) {
     clearStorage()
     Session.setPersistent('knownCompany', Company().address)
   }

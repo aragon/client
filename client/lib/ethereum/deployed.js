@@ -42,6 +42,7 @@ deployNewCompany = async () => {
   const addr = getRandomAddress()
   const current = await Identity.getRaw(addr, true)
   Identity.setCurrent(current)
+  Entities.update({ethereumAddress: addr}, {$set:{current:true}})
 
   console.log('deploying new company', 'ad', addr)
   const libs = Meteor.settings.public.deployed.libs
