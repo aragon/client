@@ -20,8 +20,8 @@ const assignStock = (kind, value, recipient) => (
   dispatcher.dispatch(actions.grantStock, kind, value, recipient)
 )
 
-const createStockGrant = async (kind, value, recipient, cliff, vesting) => (
-  dispatcher.dispatch(actions.grantVestedStock, kind, value, recipient, +moment(cliff)/1000, +moment(vesting)/1000)
+const createStockGrant = async (kind, value, recipient, start, cliff, vesting) => (
+  dispatcher.dispatch(actions.grantVestedStock, kind, value, recipient, start, +moment(cliff)/1000, +moment(vesting)/1000)
 )
 
 tmpl.onRendered(function () {
@@ -45,7 +45,8 @@ tmpl.onRendered(function () {
         const cliff = this.$('input[name=cliff]').val()
         const vesting = this.$('input[name=vesting]').val()
 
-        await createStockGrant(selectedStock, amount, recipient, cliff, vesting)
+        // TODO: UI for setting start date
+        await createStockGrant(selectedStock, amount, recipient, +new Date()/1000, cliff, vesting)
       }
 
       this.$('.dimmer').trigger('finished', { state: 'success' })

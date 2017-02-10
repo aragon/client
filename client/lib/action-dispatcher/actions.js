@@ -42,10 +42,10 @@ const issueStockDescription = ([stockIndex, amount]): string => {
   return `Issue ${amount} ${stock.symbol} shares`
 }
 
-const grantVestedStockDescription = ([stockIndex, amount, to, cliff, vesting]): string => {
+const grantVestedStockDescription = ([stockIndex, amount, to, start, cliff, vesting]): string => {
   const stock = Stocks.findOne({ index: +stockIndex })
   const now = moment()
-  return `Grant ${amount} ${stock.symbol} shares to ${to} with ${timeRange(now, +cliff * 1000)} cliff and ${timeRange(now, +vesting * 1000)} vesting`
+  return `Grant ${amount} ${stock.symbol} shares to ${to} starting ${timeRange(now, +start * 1000)} with ${timeRange(now, +cliff * 1000)} cliff and ${timeRange(now, +vesting * 1000)} vesting`
 }
 
 const accountingSettingsDescription = ([budget, periodDuration, dividendThreshold]): string => (
@@ -125,7 +125,7 @@ const ActionFactory = {
                         'How new stock can be issued', issueStockDescription),
   grantStock: new Action('grantStock(uint8,uint256,address)', 'Grant issued stock',
                         'How existing stock can be granted', grantIssuedStockDescription),
-  grantVestedStock: new Action('grantVestedStock(uint8,uint256,address,uint64,uint64)', 'Issue and grant stock with vesting',
+  grantVestedStock: new Action('grantVestedStock(uint8,uint256,address,uint64,uint64,uint64)', 'Issue and grant stock with vesting',
                         'How existing stock can be granted with a vesting schedule', grantVestedStockDescription),
   beginSale: new Action('beginSale(address)', 'Begin stock sale',
                         'How stock sales can be started', stockSaleDescription),

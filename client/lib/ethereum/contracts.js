@@ -11,6 +11,8 @@ import _IndividualInvestorSale from '/imports/lib/contracts/build/contracts/Indi
 import _GenericBinaryVoting from '/imports/lib/contracts/build/contracts/GenericBinaryVoting'
 import _VotingStock from '/imports/lib/contracts/build/contracts/VotingStock'
 import _Txid from '/imports/lib/contracts/build/contracts/Txid'
+import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
+
 
 import web3 from './web3'
 import contractify from 'truffle-contract'
@@ -26,6 +28,11 @@ StockSale = contractify(_StockSale)
 BoundedStandardSale = contractify(_BoundedStandardSale)
 IndividualInvestorSale = contractify(_IndividualInvestorSale)
 GenericBinaryVoting = contractify(_GenericBinaryVoting)
+
+const n = web3.version.network
+GenericBinaryVoting.setNetwork(n)
+GenericBinaryVoting.link('BytesHelper', _BytesHelper.networks[n].address)
+
 Txid = contractify(_Txid)
 
 const allContracts = [

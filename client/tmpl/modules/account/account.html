@@ -51,6 +51,7 @@
         <div class="sub header">You can link your Ethereum account to your social identities or other kind of identifications so the people you interact with can verify your identity.</div>
       </h3>
 
+      {{ #if currentEntity }}
       {{ #with currentEntity }}
       <div class="ui grid">
         {{#if $eq identityProvider 'keybase'}}
@@ -79,6 +80,7 @@
         {{/if}}
       </div>
       {{ /with }}
+      {{ /if }}
 
       <div class="ui hidden divider"></div>
       <div class="ui hidden divider"></div>

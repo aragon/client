@@ -36,7 +36,7 @@ class Dispatcher {
     await voting.setTxid(voting.transactionHash, this.transactionParams)
 
     const votesOnCreate = true
-    const executesOnDecided = true
+    const executesOnDecided = false
 
     return await this.performTransaction(actions.beginPoll.companyFunction, [voting.address, votingCloses, votesOnCreate, executesOnDecided])
   }
