@@ -39,8 +39,43 @@ class StockWatcher extends Watcher {
 
   listenForStockTransfers(stocks = this.Stocks.find().fetch()) {
     stocks.forEach(stock => {
-      this.watchEvent(Stock.at(stock.address).Transfer, () => this.getStock(stock.address, stock.index)) // todo: save balances
+      this.watchEvent(Stock.at(stock.address).Transfer, (err, ev) => {
+        this.saveStockTransfer(stock.index, stock.address, ev.args.from, ev.args.to, ev.args.value.toNumber())
+      })
     })
+  }
+
+  saveStockTransfer(stock, stockAddress, from, to, value) {
+    // this.updateBalance(stockAddress, from, -value, true)
+    // this.updateBalance(stockAddress, to, value, true)
+
+    // this could be deleted, if all updates correctly and in order and only once
+    this.setBalance(from, stockAddress)
+    this.setBalance(to, stockAddress)
+  }
+
+  async setBalance(holder, stockAddress) {
+    const balance = await Stock.at(stockAddress).balanceOf(holder)
+    this.updateBalance(stockAddress, holder, balance.toNumber())
+  }
+
+  updateBalance(stockAddress, ethereumAddress, balance, isIncrement = false) {
+    const predicate = { ethereumAddress }
+    const currentEntity = Entities.findOne(predicate)
+    let balances = {}
+    if (currentEntity && currentEntity.balances) {
+      balances = currentEntity.balances
+    }
+
+    if (isIncrement) {
+      balances[stockAddress] = (balances[stockAddress] || 0) + balance
+    } else {
+      balances[stockAddress] = balance
+    }
+
+    Entities.upsert(predicate, { $set: { balances } })
+    const update = { $addToSet: { shareholders: { $each: [ { shareholder: ethereumAddress, stock: { address: stockAddress }} ]}}, $set: { updated: new Date() } }
+    this.Stocks.upsert({ address: stockAddress }, update)
   }
 
   async getStock(address: string, index: number) {
@@ -51,7 +86,8 @@ class StockWatcher extends Watcher {
   allShareholdersForStock(s, shareholderIndex) {
     if (!s.address) return []
     const stock = Stock.at(s.address)
-    const convert = shareholder => ({ shareholder, stock: s })
+    const symbol = stock.symbol()
+    const convert = shareholder => ({ shareholder, stock: { address: s.address } })
     const shareholders = _.range(shareholderIndex)
                           .map(i => stock.shareholders.call(i).then(convert))
     return Promise.all(shareholders)
@@ -76,8 +112,10 @@ class StockWatcher extends Watcher {
       index,
     }
     const stockInfo = await Promise.allProperties(stockObject)
-    console.log('upserting')
-    this.Stocks.upsert({ _id: `s_${address}` }, stockInfo)
+
+    const predicate = { _id: `s_${address}` }
+    this.Stocks.upsert(predicate, stockInfo)
+    this.listenForStockTransfers(this.Stocks.find(predicate))
   }
 }
 

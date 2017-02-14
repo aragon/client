@@ -36,6 +36,12 @@ const drawChart = (ctx, title, labels, data, colors) => {
   })
 }
 
+const getBalance = (stock, ethereumAddress) => {
+  const entity = Entities.findOne({ ethereumAddress })
+  if (!entity || !entity.balances) return 0
+  return entity.balances[stock]
+}
+
 tmpl.onRendered(function () {
   this.autorun(async () => {
     const stocks = Stocks.find().fetch()
@@ -47,12 +53,9 @@ tmpl.onRendered(function () {
 
     for (const shareId in allShares) {
       const stock = stocks[shareId]
-      const stockContract = Stock.at(stock.address)
       const shareShareholders = allShares[shareId].map(x => x.shareholder)
 
-      const balancePromises = shareShareholders
-              .map(a => stockContract.balanceOf(a).then(x => x.toNumber()))
-      const balances = await Promise.all(balancePromises)
+      const balances = shareShareholders.map(a => getBalance(stock.address, a))
 
       for (const i in shareShareholders) {
         const entity = await Identity.get(shareShareholders[i])

@@ -25,9 +25,11 @@ tmpl.onRendered(function () {
 
 tmpl.helpers({
   stocks: () => Stocks.find(),
-  balance: ReactivePromise((stock, shareholder) => (
-    Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
-  )),
+  balance: (stock, ethereumAddress) => {
+    const entity = Entities.findOne({ ethereumAddress })
+    if (!entity || !entity.balances) return 0
+    return entity.balances[stock] || 0
+  },
   transferrable: ReactivePromise((stock, shareholder) => (
     Stock.at(stock).transferrable(shareholder).then(x => x.valueOf())
   )),

@@ -41,14 +41,16 @@ tmpl.helpers({
     if (stock) return stock.updated
     return {}
   },
-  reactive: ReactivePromise(x => x),
+  symbol: address => Stocks.findOne({ address }).symbol,
   shareholders: () => {
     const set = new Set()
     Stocks.find().fetch().forEach(s => s.shareholders.forEach(set.add.bind(set)))
     return ([...set])
   },
-  balance: ReactivePromise((stock, shareholder) => (
-    Stock.at(stock).balanceOf(shareholder).then(x => x.valueOf())
-  )),
+  balance: (stock, ethereumAddress) => {
+    const entity = Entities.findOne({ ethereumAddress })
+    if (!entity || !entity.balances) return 0
+    return entity.balances[stock]
+  },
   company: () => Company().address,
 })

@@ -40,7 +40,7 @@
             {{ entityName shareholder }}
           </td>
           <td>
-            {{ reactive stock.symbol }}
+            {{ symbol stock.address }}
           </td>
           <td>
             {{ balance stock.address shareholder }}
@@ -48,6 +48,7 @@
         </tr>
         {{/if}}
         {{/each}}
+        <!---
         {{#each stocks}}
         <tr>
           <td>
@@ -61,6 +62,7 @@
           </td>
         </tr>
         {{/each}}
+      -->
       </tbody>
     </table>
   </div>

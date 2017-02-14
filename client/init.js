@@ -27,6 +27,7 @@ Template.Layout.helpers({
 })
 
 const clearStorage = () => {
+  console.log('Clearing storage')
   localStorage.clear()
   const collections = [
     StockWatcher.Stocks,
@@ -37,7 +38,6 @@ const clearStorage = () => {
     StockSalesWatcher.StockSales,
   ]
   collections.forEach(c => c.remove({}))
-  console.log('removed everything')
   localStorage.clear()
 }
 

@@ -15,7 +15,7 @@ const transferStock = async (stockIndex: number, to: string, amount: number) => 
   const addr = Identity.current(true).ethereumAddress
 
   const stockAddr = Stocks.findOne({ index: stockIndex }).address
-  return await Stock.at(stockAddr).transfer(to, amount, { from: addr })
+  return await Stock.at(stockAddr).transfer(to, amount, { from: addr, gas: 3000000 })
 }
 
 const tmpl = Template.Module_Ownership_TransferShares.extend([ClosableSection])
@@ -46,7 +46,7 @@ tmpl.helpers({
   stocks: () => Stocks.find(),
   balance: ReactivePromise(async (stockIndex) => {
     const stockAddr = Stocks.findOne({ index: stockIndex }).address
-    const stock = await Stock.at(stockAddr).balanceOf(Identity.current().ethereumAddress)
+    const stock = await Stock.at(stockAddr).transferrable(Identity.current().ethereumAddress)
     return stock.toNumber()
   }),
 })
