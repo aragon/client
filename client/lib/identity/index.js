@@ -111,12 +111,13 @@ class Identity {
 
   static setCurrentEthereumAccount(addr: string) {
     const current = Identity.current(true)
-    // Entities.remove({ ethereumAddress: addr })
-    // Entities.update({ current: true }, { $set: { ethereumAddress: addr } })
     console.log(`Identity: Setting ${addr} as current Ethereum account`)
     Entities.update({ current: true }, { $unset: { current: '' } })
-    if (current) delete current._id
-    Entities.update({ ethereumAddress: addr }, { $set: { ...current } })
+    if (current) {
+      delete current.ethereumAddress
+      delete current._id
+    }
+    Entities.upsert({ ethereumAddress: addr }, { $set: { ...current } })
   }
 
   static current(raw: boolean = false, replaceMe: boolean = true) {
