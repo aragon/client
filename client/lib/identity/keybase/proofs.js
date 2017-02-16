@@ -36,7 +36,7 @@ class KeybaseProofs {
   static verifySignature(signature, message) {
     const r = utils.toBuffer(signature.slice(0, 66))
     const s = utils.toBuffer(`0x${signature.slice(66, 130)}`)
-    const v = 27 + utils.toBuffer(`0x${signature.slice(130, 132)}`)[0]
+    const v = 27 + utils.toBuffer(`0x${signature.slice(130, 132)}`)[0] - 27 // metamask
     const m = utils.toBuffer(utils.sha3(message))
     const pub = utils.ecrecover(m, v, r, s)
     const address = utils.pubToAddress(pub).toString('hex')
