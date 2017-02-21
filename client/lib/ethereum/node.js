@@ -2,12 +2,24 @@
 import { EthAccounts } from 'meteor/ethereum:accounts'
 import { EthBlocks } from 'meteor/ethereum:blocks'
 
-import { allContracts } from './contracts'
+import Build from '/client/lib/build'
+import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
+import { allContracts, GenericBinaryVoting } from './contracts'
+import { getDeployedAddress } from './deployed'
 
 import { NotificationsManager } from '/client/lib/notifications'
 
 import listeners from './listeners'
 import initWatchers from './watchers'
+
+const getNetworkID = () => (
+  new Promise((resolve, reject) => {
+    web3.version.getNetwork((err, id) => {
+      if (err) reject(err)
+      else resolve(id)
+    })
+  })
+)
 
 const initCollections = async (): Promise<boolean> => {
   const promises = await Promise.all([
@@ -65,10 +77,15 @@ class EthereumNode {
     const collectionsReady = await initCollections()
 
     allContracts.forEach(c => c.setProvider(web3.currentProvider))
+    const nID = await getNetworkID()
+    GenericBinaryVoting.setNetwork(nID)
+    GenericBinaryVoting.link('BytesHelper', _BytesHelper.networks[nID].address)
 
-    if (Meteor.settings.public.landingNode) {
+    if (Build.Settings.get('landingNode')) {
       await deployNewCompany()
     }
+
+    await getDeployedAddress()
 
     initWatchers()
 

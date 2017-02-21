@@ -14,8 +14,18 @@ export default class Keybase {
   static async lookup(username: string): Object {
     if (!username) return null
     const res = await fetch(`${keybaseBaseURL}/user/lookup.json?usernames=${username}`)
-    const data = await res.json()
-    return data.them[0]
+    const json = await res.json()
+    const data = json.them[0]
+    // Ugly hack because Minimongo decided not to tolerate dots in its props
+    if (data.proofs_summary.by_presentation_group) {
+      for (const key of Object.keys(data.proofs_summary.by_presentation_group)) {
+        if (key.indexOf('.') !== -1) {
+          data.proofs_summary.by_presentation_group[key.replace('.', '/')] = data.proofs_summary.by_presentation_group[key]
+          delete data.proofs_summary.by_presentation_group[key]
+        }
+      }
+    }
+    return data
   }
 
   static async getVerifiedEthereumAddress(username: string): Promise<string> {
@@ -49,6 +59,7 @@ export default class Keybase {
         data.cryptocurrency_addresses[cryptoName][0].address
     }
     for (const proofName of Object.keys(data.proofs_summary.by_presentation_group)) {
+      if (proofName.indexOf('.') !== -1) proofName.replace('/', '.')
       formatted.social[proofName] =
         data.proofs_summary.by_presentation_group[proofName][0].nametag
     }

@@ -8,7 +8,7 @@ import { ReactivePromise } from 'meteor/deanius:promise'
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
-import Company from '/client/lib/ethereum/deployed'
+import { Company } from '/client/lib/ethereum/deployed'
 import { Stock } from '/client/lib/ethereum/contracts'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
