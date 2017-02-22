@@ -3,7 +3,7 @@
 import { Meteor } from 'meteor/meteor'
 
 const deepValue = (obj, path) => {
-  let newObj = {}
+  let newObj = obj
   for (let i = 0, newPath = path.split('.'), len = newPath.length; i < len; i++) {
     newObj = newObj[newPath[i]]
   }

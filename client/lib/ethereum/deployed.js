@@ -18,16 +18,17 @@ const getNetworkID = () => (
 
 const getDeployedAddress = async () => {
   const nID = await getNetworkID()
-  if (companyJSON.networks[nID]) {
+  console.log(Build.Settings.get('deployed'))
+  console.log(Build.Settings.get('deployed.company'))
+  if (Build.Settings.get('deployed')) {
+    companyAddress = Build.Settings.get('deployed.company')
+  } else if (companyJSON.networks[nID]) {
+    console.log(companyJSON)
     companyAddress = companyJSON.networks[nID].address
     console.log('Set company address automatically', companyAddress)
   } else {
     console.error('Couldnt find company deployed on current network')
   }
-}
-
-if (Build.Settings.get('deployed')) {
-  companyAddress = Build.Settings.get('deployed.company')
 }
 
 const Company = () => (
