@@ -9,7 +9,8 @@
     "metamask-dev": "cd .metamask; gulp dev --debug=false --aragon=true",
     "testrpc": "testrpc --account='0xa45d10c15047c9d6790de40c8a6871cf71205d9323902738e5da600a786e460e,10000000000000000000000'",
     "app": "./.electron/node_modules/.bin/electron .electron",
-    "migrations": "cd imports/lib/contracts; truffle migrate --reset"
+    "migrations": "cd imports/lib/contracts; truffle migrate --reset",
+    "binaries": "electron-packager .electron/ Aragon --overwrite --platform=darwin --icon=.electron/icon.icns --out .electron/dist"
   },
   "dependencies": {
     "babel-plugin-transform-class-properties": "^6.19.0",

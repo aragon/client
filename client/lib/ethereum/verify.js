@@ -1,6 +1,24 @@
 // @flow
 import { Txid } from './contracts'
 
+const getReceipt = txid => {
+  return new Promise((resolve, reject) => {
+    web3.eth.getTransactionReceipt(txid, (err, tx) => {
+      if (err) reject(err)
+      resolve(tx)
+    })
+  })
+}
+
+const getTx = txid => {
+  return new Promise((resolve, reject) => {
+    web3.eth.getTransaction(txid, (err, tx) => {
+      if (err) reject(err)
+      resolve(tx)
+    })
+  })
+}
+
 const verifyContractCode = async (address: string, candidateContracts) => {
   const contract = Txid.at(address)
 
@@ -10,12 +28,12 @@ const verifyContractCode = async (address: string, candidateContracts) => {
     return null
   }
 
-  if (contract.address !== web3.eth.getTransactionReceipt(txid).contractAddress) {
+  if (contract.address !== (await getReceipt(txid)).contractAddress) {
     console.log('no c ad')
     return null
   }
 
-  const bytecode = web3.eth.getTransaction(txid).input
+  const bytecode = (await getTx(txid)).input
 
   for (const c of candidateContracts) {
     if (bytecode.indexOf(c.binary) === 0) { // Account for constructor values at end of input
