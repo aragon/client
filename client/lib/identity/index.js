@@ -92,6 +92,8 @@ class Identity {
   static set(addr: string, identityProvider: string, entityObj: Object) {
     console.log(`Identity: Setting ${addr}`)
 
+    console.log(entityObj)
+
     const entity: Entity = {
       ethereumAddress: addr,
       identityProvider,

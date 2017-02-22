@@ -1,9 +1,12 @@
-window.injectMetaMask = (typeof web3 === 'undefined' && !Meteor.settings.public.noMetamask)
+// @flow
 
-if (Meteor.settings.public.landingNode) {
-  window.web3 = new Web3(new Web3.providers.HttpProvider(Meteor.settings.public.landingNode))
+import Build from '/client/lib/build'
+
+if (Build.Settings.get('landingNode')) {
+  window.web3 = new Web3(new Web3.providers.HttpProvider(Build.Settings.get('landingNode')))
 } else {
-  window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+  // window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+  window.injectMetaMask = (typeof web3 === 'undefined' && !Build.Settings.get('noMetamask'))
 }
 
-export default web3
+export default window.web3

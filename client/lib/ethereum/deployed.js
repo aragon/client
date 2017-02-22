@@ -1,5 +1,5 @@
 // @flow
-import { Meteor } from 'meteor/meteor'
+import Build from '/client/lib/build'
 import companyJSON from '/imports/lib/contracts/build/contracts/Company'
 import Identity from '/client/lib/identity'
 
@@ -26,13 +26,13 @@ const getDeployedAddress = async () => {
   }
 }
 
-if (Meteor.settings.public.deployed) {
-  companyAddress = Meteor.settings.public.deployed.company
-} else {
-  getDeployedAddress()
+if (Build.Settings.get('deployed')) {
+  companyAddress = Build.Settings.get('deployed.company')
 }
 
-const Company = () => CompanyContract.at(companyAddress)
+const Company = () => (
+  CompanyContract.at(companyAddress)
+)
 
 const getRandomAddress = () => {
   return web3.eth.accounts[parseInt(Math.random() * web3.eth.accounts.length)]
@@ -45,7 +45,7 @@ deployNewCompany = async () => {
   Entities.update({ethereumAddress: addr}, {$set:{current:true}})
 
   console.log('deploying new company', 'ad', addr)
-  const libs = Meteor.settings.public.deployed.libs
+  const libs = Build.Settings.get('deployed.libs')
   const networkID = await getNetworkID()
 
   CompanyContract.setNetwork(networkID)
@@ -59,4 +59,4 @@ deployNewCompany = async () => {
   console.log('finished', Company().address)
 }
 
-export default Company
+export { Company, getDeployedAddress }

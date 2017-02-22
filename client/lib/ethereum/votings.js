@@ -3,7 +3,7 @@ import { actionFromData, decode } from '/client/lib/action-dispatcher/decoder'
 import Watcher from './watcher'
 
 import { Stock, Voting, GenericBinaryVoting, Poll } from './contracts'
-import Company from './deployed'
+import { Company } from './deployed'
 import StockWatcher from './stocks'
 import verifyContractCode from './verify'
 

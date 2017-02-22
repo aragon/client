@@ -2,6 +2,8 @@
 import { Template } from 'meteor/templating'
 import { $ } from 'meteor/jquery'
 
+import Build from '/client/lib/build'
+
 const tmpl = Template.Layout
 
 const toggleMetaMask = (show: boolean = true) => {
@@ -26,7 +28,7 @@ tmpl.events({
 })
 
 tmpl.helpers({
-  identityDisabled: () => Meteor.settings.public.identityDisabled,
+  identityDisabled: () => Build.Settings.get('identityDisabled'),
 })
 
 window.addEventListener('message', (msg) => {

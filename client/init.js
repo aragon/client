@@ -5,10 +5,11 @@ import { Session } from 'meteor/session'
 import { Template } from 'meteor/templating'
 import { ReactiveVar } from 'meteor/reactive-var'
 
+import Build from '/client/lib/build'
 import Identity from '/client/lib/identity'
 import Settings from '/client/lib/settings'
 import EthereumNode from '/client/lib/ethereum/node'
-import Company from '/client/lib/ethereum/deployed'
+import { Company } from '/client/lib/ethereum/deployed'
 import { BrowserNotifications } from '/client/lib/notifications'
 
 import Accounting from '/client/lib/ethereum/accounting'
@@ -44,16 +45,16 @@ const clearStorage = () => {
 const load = async () => {
   Meteor.disconnect()
 
-  if (Meteor.settings.public.identityDisabled) clearStorage()
+  if (Build.Settings.get('identityDisabled')) clearStorage()
 
   await EthereumNode.connect()
-  if (Company().address !== Session.get('knownCompany') && !Meteor.settings.public.identityDisabled) {
+  if (Company().address !== Session.get('knownCompany') && !Build.Settings.get('identityDisabled')) {
     clearStorage()
     Session.setPersistent('knownCompany', Company().address)
   }
 
   const current = Identity.current(true)
-  if (!current && !Meteor.settings.public.identityDisabled) {
+  if (!current && !Build.Settings.get('identityDisabled')) {
     await Identity.reset()
     Settings.reset()
   }
