@@ -4,7 +4,7 @@ import { Session } from 'meteor/session'
 import { EthBlocks } from 'meteor/ethereum:blocks'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
-import SHA256 from 'crypto-js/sha256'
+import utils from 'ethereumjs-util'
 
 import Watcher from '../ethereum/watcher'
 import BrowserNotifications from './browser'
@@ -97,7 +97,7 @@ class NotificationsManager extends Watcher {
   }
 
   notificationHash(ev) {
-    return SHA256(ev.blockHash + ev.transactionHash + ev.logIndex + ev.event).toString()
+    return utils.bufferToHex(utils.sha3(ev.blockHash + ev.transactionHash + ev.logIndex + ev.event))
   }
 }
 

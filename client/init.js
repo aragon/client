@@ -9,6 +9,7 @@ import Build from '/client/lib/build'
 import Identity from '/client/lib/identity'
 import Settings from '/client/lib/settings'
 import EthereumNode from '/client/lib/ethereum/node'
+import TxQueue from '/client/lib/queue'
 import { Company } from '/client/lib/ethereum/deployed'
 import { BrowserNotifications } from '/client/lib/notifications'
 
@@ -59,6 +60,8 @@ const load = async () => {
     Settings.reset()
   }
   await EthereumNode.bindListeners()
+  TxQueue.init()
+
   BrowserNotifications.requestPermission()
 
   initFinished.set(true)

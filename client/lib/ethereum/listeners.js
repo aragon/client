@@ -3,7 +3,7 @@ import { _ } from 'meteor/underscore'
 
 import { NotificationsListener as Listener } from '/client/lib/notifications'
 import Identity from '/client/lib/identity'
-import SHA256 from 'crypto-js/sha256'
+import utils from 'ethereumjs-util'
 
 import { Company } from './deployed'
 import { Stock, Voting, StockSale } from './contracts'
@@ -76,7 +76,7 @@ class Listeners {
       args => `/voting/${args.id.valueOf()}`,
       'Vote now',
       {},
-      args => SHA256(args.id.valueOf() + args.closes.valueOf()).toString(),
+      args => utils.bufferToHex(utils.sha3(args.id.valueOf() + args.closes.valueOf()))
     )
   }
 

@@ -25,7 +25,8 @@ const getDeployedAddress = async () => {
     companyAddress = companyJSON.networks[nID].address
     console.log('Set company address automatically', companyAddress)
   } else {
-    companyAddress = '0xfa7015947550c81dd2e9d4621ed6931610b5266e'
+    // companyAddress = '0xfa7015947550c81dd2e9d4621ed6931610b5266e'
+    companyAddress = '0x84d9b3cf9b2e0f9f4b51560ade1a8aad0a8187dd'
     console.error('Couldnt find company deployed on current network, using an example address')
   }
 }
