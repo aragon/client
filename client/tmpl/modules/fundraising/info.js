@@ -21,12 +21,20 @@ const reloadSaleId = () => TemplateVar.set('id', +FlowRouter.current().params.id
 const reload = reloadSaleId
 
 const getRaise = () => StockSales.findOne({ index: TemplateVar.get('id') })
-const getSaleBalance = sale => web3.eth.getBalance(sale.address).toNumber()
+const getBalance = address => {
+  return new Promise((resolve, reject) => {
+    web3.eth.getBalance(address, (err, balance) => {
+      if (err) return reject(err)
+      resolve(balance.toNumber())
+    })
+  })
+}
 
-const canTransfer = (sale: Object): Promise<boolean> => (
-  StockSale.at(sale.address).isFundsTransferAllowed.call()
-           .then((x: boolean): boolean => x && getSaleBalance(sale) > 0)
-)
+const canTransfer = async (sale: Object): Promise<boolean> => {
+  const allowed = await StockSale.at(sale.address).isFundsTransferAllowed()
+  const balance = await getBalance(sale.address)
+  return allowed && balance > 0
+}
 
 const transfer = async () => {
   await dispatcher.dispatch(actions.transferSaleFunds, getRaise().index)
@@ -47,7 +55,7 @@ tmpl.helpers({
     const entity = await Identity.get(raise.typeMetadata.investorAddress)
     return entity
   }),
-  transferrableFunds: getSaleBalance,
+  transferrableFunds: ReactivePromise(getBalance),
   isOpen: sale => moment() <= moment(sale.closeDate),
   isTransferAllowed: ReactivePromise(canTransfer),
   raiseTypeToHuman: (raiseType: string): string => raiseTypes[raiseType],

@@ -115,7 +115,7 @@ class VotingWatcher extends Watcher {
 
     const verifiedContract = await verifyContractCode(address, voteContracts)
 
-    if (!verifiedContract) { return null }
+    if (!verifiedContract) { return this.allVotes[0] } // TODO: Solve problem where someone makes contract with GBV interface but different logic
     return this.allVotes.filter(x => verifiedContract === x.contractClass)[0]
   }
 

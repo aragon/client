@@ -79,7 +79,7 @@ class EthereumNode {
     allContracts.forEach(c => c.setProvider(web3.currentProvider))
     const nID = await getNetworkID()
     GenericBinaryVoting.setNetwork(nID)
-    GenericBinaryVoting.link('BytesHelper', _BytesHelper.networks[nID].address)
+    GenericBinaryVoting.link('BytesHelper', (_BytesHelper.networks[nID] || _BytesHelper.networks[15] || { address: '0x0' }).address)
 
     if (Build.Settings.get('landingNode')) {
       await deployNewCompany()
