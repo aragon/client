@@ -11,7 +11,7 @@
     "testrpc": "testrpc --account='0xa45d10c15047c9d6790de40c8a6871cf71205d9323902738e5da600a786e460e,10000000000000000000000'",
     "app": "./.electron/node_modules/.bin/electron .electron",
     "migrations": "cd imports/lib/contracts; truffle migrate --reset",
-    "dist": "meteor-build-client .dist -p ''",
+    "dist": "./node_modules/.bin/meteor-build-client .dist -p ''",
     "pack:osx:copy:aragon": "cp -R .dist .electron/dist/Aragon-darwin-x64/Aragon.app/Contents/Resources/app/aragon",
     "pack:osx:copy:metamask": "cp -R .metamask/dist/chrome .electron/dist/Aragon-darwin-x64/Aragon.app/Contents/Resources/app/metamask",
     "pack:osx:copy": "npm run pack:osx:copy:aragon; npm run pack:osx:copy:metamask",
@@ -20,7 +20,8 @@
     "pack:linux64:copy:metamask": "cp -R .metamask/dist/chrome .electron/dist/Aragon-linux-x64/resources/app/metamask",
     "pack:linux64:copy": "npm run pack:linux64:copy:aragon; npm run pack:linux64:copy:metamask",
     "pack:linux64": "electron-packager .electron $npm_package_productName --out=.electron/dist --platform=linux --arch=x64 --overwrite; npm run pack:linux64:copy",
-    "pack": "npm run pack:osx; npm run pack:linux64"
+    "pack": "npm run pack:osx; npm run pack:linux64",
+    "deploy": "ipfs add -rq .dist | tail -n 1 | ipfs name publish"
   },
   "dependencies": {
     "babel-plugin-transform-class-properties": "^6.19.0",
@@ -52,7 +53,8 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.7.1",
-    "flow-bin": "^0.37.4"
+    "flow-bin": "^0.37.4",
+    "meteor-build-client": "github:aragonone/meteor-build-client"
   },
   "postcss": {
     "plugins": {
