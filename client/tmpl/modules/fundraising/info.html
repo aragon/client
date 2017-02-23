@@ -99,7 +99,7 @@
 
     {{ #if isTransferAllowed this }}
     {{ > Element_BylawDisclose action='transferSaleFunds' }}
-    <button class="ui big primary button" id="transfer" name="button">Move {{ ether (transferrableFunds this) }} ETH to company address</button>
+    <button class="ui big primary button" id="transfer" name="button">Move {{ ether (transferrableFunds address) }} ETH to company address</button>
     {{ /if }}
 
     {{/with}}
