@@ -33,7 +33,7 @@ tmpl.events({
     const companyAddress = r.logs.filter(e => e.event === 'NewCompany')[0].args.companyAddress
     console.log(2)
     const companyConfiguratorFactory = await CompanyConfiguratorFactory.deployed()
-    console.log(3)
+    console.log(3, companyAddress)
     const txID = await dispatcher.performTransaction(companyConfiguratorFactory.configureCompany, companyAddress, par.from)
     console.log(4)
     console.log(txID)
