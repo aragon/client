@@ -7,6 +7,33 @@ import Identity from '/client/lib/identity'
 import { bylawForAction } from './bylaws'
 import actions from './actions'
 
+const gasEstimate = p => {
+  return new Promise((resolve, reject) => {
+    web3.eth.estimateGas(p, (err, gas) => resolve(err ? -1 : gas))
+  })
+}
+
+const sendTransaction = p => {
+  return new Promise((resolve, reject) => {
+    web3.eth.sendTransaction(p, (err, txid) => {
+      if (err) return reject(err)
+      resolve(txid)
+    })
+  })
+}
+
+const promisedDeploy = (c, p) => {
+  let counter = 0 // Counter needed because contract deploy returns twice, one with txhash and later w txhash & address
+  return new Promise((resolve, reject) => {
+    c.new.apply(c, p.concat([(err, x) => {
+      if (counter > 0) return 0
+      if (err) return reject(err)
+      counter += 1
+      resolve(x.transactionHash)
+    }]))
+  })
+}
+
 class Dispatcher {
   get address() {
     return Identity.current(true).ethereumAddress
@@ -27,7 +54,10 @@ class Dispatcher {
   }
 
   async performTransaction(f, args) {
-    return f.sendTransaction.apply(this, args.concat([this.transactionParams]))
+    const [ params ] = f.request.apply(this, args.concat([this.transactionParams])).params
+    params.from = this.address
+    const txID = await sendTransaction(params)
+    this.addPendingTransaction(txID)
   }
 
   async signPayload(payload: string) {
@@ -41,6 +71,18 @@ class Dispatcher {
         resolve({ r, s, v })
       })
     })
+  }
+
+  async deployContract(contract, ...args) {
+    if (args.length < 1) return reject(new Error("No params for contract deployment provided"))
+    args[args.length-1].data = contract.binary // Last arg is transaction params, so we add the contract binary data
+
+    const txID = await promisedDeploy(web3.eth.contract(contract.abi), args)
+    this.addPendingTransaction(txID)
+  }
+
+  addPendingTransaction(txID: String) {
+    console.log('Queded txid', txID)
   }
 
   async createVoting(f: Function, args: Array<mixed>, signature: string, votingTime: number) {
@@ -58,9 +100,8 @@ class Dispatcher {
     const payload = await company.sigPayload(nonce)
     const { r, s, v } = await this.signPayload(payload)
 
-    console.log(txData, votingCloses, company.address, nonce, payload, r, s, v)
-
-    return await GenericBinaryVoting.new(txData, votingCloses, company.address, r, s, v, nonce, this.transactionParams)
+    const txid = await this.deployContract(GenericBinaryVoting, txData, votingCloses, company.address, r, s, v, nonce, this.transactionParams)
+    console.log('deployed on tx', txid)
   }
 }
 

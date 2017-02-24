@@ -4,7 +4,7 @@ import { moment } from 'meteor/momentjs:moment'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 
 import StockWatcher from '/client/lib/ethereum/stocks'
-import { GrantableStock } from '/client/lib/ethereum/contracts'
+import { Stock } from '/client/lib/ethereum/contracts'
 
 import helpers from '/client/helpers'
 
@@ -42,7 +42,7 @@ const interpolate = (from, to, steps) => {
 
 const renderOwnershipInfo = async () => {
   const address = FlowRouter.current().params.address
-  const stock = GrantableStock.at(Stocks.findOne().address)
+  const stock = Stock.at(Stocks.findOne().address)
   const fullyVested = await stock.lastStockIsTransferrableEvent.call(address).then(x => x.toNumber())
   const lastStockIsTransferrableEvent = moment(fullyVested * 1000 + (0.1 * (fullyVested - +new Date() / 1000)))
   if (moment() > lastStockIsTransferrableEvent) { return null } // already fully vested
