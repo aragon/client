@@ -47,21 +47,20 @@ const load = async () => {
   Meteor.disconnect()
 
   await EthereumNode.connect()
-  if (Build.Settings.get('deployed')) {
-    localStorage.setItem('companyAddress', Build.Settings.get('deployed.company'))
-  } else if (!localStorage.getItem('companyAddress')) {
+
+  const current = Identity.current(true)
+  if (!current.ethereumAddress) {
+    await Identity.reset()
+    Settings.reset()
+  }
+
+  if (!localStorage.getItem('companyAddress')) {
     TxQueue.init()
     initFinished.set(true)
     $('#initialDimmer').remove()
     return
   }
 
-  const current = Identity.current(true)
-  console.log(current)
-  if (!current.ethereumAddress) {
-    await Identity.reset()
-    Settings.reset()
-  }
   await EthereumNode.bindListeners()
   TxQueue.init()
 

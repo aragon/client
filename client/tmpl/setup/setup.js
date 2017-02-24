@@ -22,10 +22,16 @@ tmpl.onRendered(() => {
 tmpl.events({
   'click #createOrganization': async () => {
     const companyFactory = await CompanyFactory.deployed()
-    const r = await companyFactory.deploy(dispatcher.transactionParams)
+    console.log(dispatcher.transactionParams)
+    console.log(companyFactory.address)
+    const r = await companyFactory.deployCompany(dispatcher.transactionParams)
+    console.log(1)
     const companyAddress = r.logs.filter(e => e.event === 'NewCompany')[0].args.companyAddress
+    console.log(2)
     const companyConfiguratorFactory = await CompanyConfiguratorFactory.deployed()
+    console.log(3)
     const txID = await dispatcher.performTransaction(companyConfiguratorFactory.configureCompany, companyAddress)
+    console.log(4)
     console.log(txID)
     this.autorun(() => {
       const queue = TxQueue.queue.get()
