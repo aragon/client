@@ -60,6 +60,7 @@ class Dispatcher {
     params.from = this.address
     const txID = await sendTransaction(params)
     await this.addPendingTransaction(txID)
+    return txID
   }
 
   async signPayload(payload: string) {
@@ -81,6 +82,7 @@ class Dispatcher {
 
     const txID = await promisedDeploy(web3.eth.contract(contract.abi), args)
     await this.addPendingTransaction(txID)
+    return txID
   }
 
   async addPendingTransaction(txID: String) {
