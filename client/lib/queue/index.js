@@ -3,38 +3,51 @@ import { ReactiveVar } from 'meteor/reactive-var'
 
 import { actionFromData, decode } from '../action-dispatcher/decoder'
 
+const getTx = txid => {
+  return new Promise((resolve, reject) => {
+    web3.eth.getTransaction(txid, (err, tx) => {
+      if (err) reject(err)
+      resolve(tx)
+    })
+  })
+}
+
+const getBlock = blockHash => {
+  return new Promise((resolve, reject) => {
+    web3.eth.getBlock(blockHash, (err, block) => {
+      if (err) reject(err)
+      resolve(block)
+    })
+  })
+}
+
 class TxQueue {
   queue = ReactiveVar([])
 
   init() {
-    web3.eth.filter('pending', (err, txID) => {
+    web3.eth.filter('latest', async (err, blockHash) => {
       if (err) return
-      web3.eth.getTransaction(txID, (err, tx) => {
-        const action = actionFromData(tx.input)
-        console.log(action)
-        if (!action) return
-        action.txID = txID
-        this.add(action)
-      })
+      const block = await getBlock(blockHash)
+      block.transactions.forEach(this.remove.bind(this))
     })
+  }
 
-    web3.eth.filter('latest', (err, txID) => {
-      if (err) return
-      console.log('Saw', txID)
-      this.remove(txID)
-    })
+  async add(txID) {
+    const tx = await getTx(txID)
+    const action = actionFromData(tx.input)
+
+    if (!action) return
+    action.txID = txID
+
+    this.queue.set(this.queue.get().concat(action))
+    console.log('queued tx', action)
   }
-  add(tx) {
-    this.queue.set(this.queue.get().concat(tx))
-  }
+
   remove(txID) {
     const newArr = this.queue.get()
     this.queue.set(this.queue.get().filter((tx) => (
       tx.txID !== txID
     )))
-  }
-  resolve(txId) {
-
   }
 }
 

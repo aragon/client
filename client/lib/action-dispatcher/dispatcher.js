@@ -4,6 +4,8 @@ import { Company } from '/client/lib/ethereum/deployed'
 
 import Identity from '/client/lib/identity'
 
+import Queue from '/client/lib/queue'
+
 import { bylawForAction } from './bylaws'
 import actions from './actions'
 
@@ -57,7 +59,7 @@ class Dispatcher {
     const [ params ] = f.request.apply(this, args.concat([this.transactionParams])).params
     params.from = this.address
     const txID = await sendTransaction(params)
-    this.addPendingTransaction(txID)
+    await this.addPendingTransaction(txID)
   }
 
   async signPayload(payload: string) {
@@ -78,11 +80,11 @@ class Dispatcher {
     args[args.length-1].data = contract.binary // Last arg is transaction params, so we add the contract binary data
 
     const txID = await promisedDeploy(web3.eth.contract(contract.abi), args)
-    this.addPendingTransaction(txID)
+    await this.addPendingTransaction(txID)
   }
 
-  addPendingTransaction(txID: String) {
-    console.log('Queded txid', txID)
+  async addPendingTransaction(txID: String) {
+    await Queue.add(txID)
   }
 
   async createVoting(f: Function, args: Array<mixed>, signature: string, votingTime: number) {
