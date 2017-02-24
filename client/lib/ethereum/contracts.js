@@ -48,6 +48,8 @@ const allContracts = [
   IndividualInvestorSale,
   GenericBinaryVoting,
   Txid,
+  CompanyFactory,
+  CompanyConfiguratorFactory,
 ]
 
 // allContracts.forEach(c => c.setProvider(web3.currentProvider))
