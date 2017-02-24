@@ -2,7 +2,7 @@ import Company from './deployed'
 import { StockSale, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
-import verifyContractCode from './verify'
+import { verifyContractCode } from './verify'
 
 import Watcher from './watcher'
 
@@ -102,7 +102,7 @@ class StockSalesWatcher extends Watcher {
   }
 
   async submitSale(sale, address) {
-    await sale.setTxid(sale.transactionHash, { from: address, gas: 120000 })
+    await dispatcher.performTransaction(sale.setTxid, sale.transactionHash)
     return dispatcher.dispatch(actions.beginSale, sale.address)
   }
 

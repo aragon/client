@@ -52,10 +52,10 @@ class Dispatcher {
                                       action.signature, bylaw.details.minimumVotingTime)
     }
 
-    return await this.performTransaction(action.companyFunction, params)
+    return await this.performTransaction.apply(this, [action.companyFunction].concat(params))
   }
 
-  async performTransaction(f, args) {
+  async performTransaction(f, ...args) {
     const [ params ] = f.request.apply(this, args.concat([this.transactionParams])).params
     params.from = this.address
     const txID = await sendTransaction(params)

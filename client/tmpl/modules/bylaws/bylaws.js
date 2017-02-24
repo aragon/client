@@ -13,7 +13,8 @@ tmpl.routes({
 })
 
 tmpl.helpers({
-  actions: (): Array<Object> => (
-    Object.keys(ActionFactory).map(key => Object.assign(ActionFactory[key], { key }))
-  ),
+  actions: (): Array<Object> => {
+    const actions = Object.keys(ActionFactory).map(key => Object.assign(ActionFactory[key], { key }))
+    return actions.filter(action => action.isBylaw)
+  },
 })

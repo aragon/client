@@ -18,14 +18,15 @@ class Action {
   description: string
   companyFunction: Function
   votingDescription: (params: Array<string>) => (string)
+  isBylaw: bool
 
   constructor(signature: string, name: string, description: string = 'Action description goes here',
-              votingDescription: (params: Array<string>) => (string) = args => `Args: ${args.join(' ')}`) {
+              votingDescription: (params: Array<string>) => (string) = args => `Args: ${args.join(' ')}`, isBylaw: bool = true) {
     this.signature = signature
     this.name = name
     this.description = description
-    this.companyFunction =
     this.votingDescription = votingDescription
+    this.isBylaw = isBylaw
   }
 
   get companyFunction() {
@@ -145,6 +146,14 @@ const ActionFactory = {
                         'How new bylaws actionable by special user status (shareholder) can be created', addStatusSpecialBylawDescription),
   addVotingBylaw: new Action('addVotingBylaw(string,uint256,uint256,bool,uint64,uint8)', 'Add bylaw by voting',
                         'How new bylaws actionable by a voting can be created', addVotingBylawDescription),
+
+  // non-bylaw actions
+  transferTokens: new Action('transfer(address,uint)', 'Transfer tokens',
+                              'How tokens can be transfered', () => '', false),
+  setTxid: new Action('setTxid(string)', 'Setting transaction hash',
+                              '(temporary, only for code verification purposes)', () => '', false),
+  executeVoting: new Action('executeOnAction(uint8,address)', 'Executing voting',
+                              'Approved action will occur', () => '', false),
 }
 
 export default ActionFactory

@@ -5,7 +5,7 @@ import Watcher from './watcher'
 import { Stock, Voting, GenericBinaryVoting, Poll } from './contracts'
 import Company from './deployed'
 import StockWatcher from './stocks'
-import verifyContractCode from './verify'
+import { verifyContractCode } from './verify'
 
 const Stocks = StockWatcher.Stocks
 const Votings = new Mongo.Collection('votings', { connection: null })

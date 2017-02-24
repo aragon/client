@@ -8,14 +8,13 @@ import Identity from '/client/lib/identity'
 import ClosableSection from '/client/tmpl/components/closableSection'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Stock } from '/client/lib/ethereum/contracts'
+import { dispatcher } from '/client/lib/action-dispatcher'
 
 const Stocks = StockWatcher.Stocks
 
 const transferStock = async (stockIndex: number, to: string, amount: number) => {
-  const addr = Identity.current(true).ethereumAddress
-
   const stockAddr = Stocks.findOne({ index: stockIndex }).address
-  return await Stock.at(stockAddr).transfer(to, amount, { from: addr, gas: 3000000 })
+  return await dispatcher.performTransaction(Stock.at(stockAddr).transfer, to, amount)
 }
 
 const tmpl = Template.Module_Ownership_TransferShares.extend([ClosableSection])

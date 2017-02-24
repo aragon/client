@@ -19,6 +19,16 @@ const getTx = txid => {
   })
 }
 
+const verifyBytecode = (bytecode, candidateContracts) => {
+  for (const c of candidateContracts) {
+    if (bytecode.indexOf(c.binary) === 0) { // Account for constructor values at end of input
+      return c
+    }
+  }
+
+  return null
+}
+
 const verifyContractCode = async (address: string, candidateContracts) => {
   const contract = Txid.at(address)
 
@@ -34,14 +44,7 @@ const verifyContractCode = async (address: string, candidateContracts) => {
   }
 
   const bytecode = (await getTx(txid)).input
-
-  for (const c of candidateContracts) {
-    if (bytecode.indexOf(c.binary) === 0) { // Account for constructor values at end of input
-      return c
-    }
-  }
-
-  return null
+  return verifyBytecode(bytecode, candidateContracts)
 }
 
-export default verifyContractCode
+export { verifyContractCode, verifyBytecode }
