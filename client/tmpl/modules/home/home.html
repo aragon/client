@@ -3,8 +3,7 @@
     <h2 class="ui icon header">
       <i class="rocket icon"></i>
       <div class="content">
-        Welcome, <!-- {{ currentEntityName }} -->
-        <div class="sub header">Provident Tech, Dec.</div>
+        Welcome {{ currentEntityName }}
         <div class="ui hidden divider"></div>
         <div class="sub header">
         {{ #if $gt unhandledNotifications 0 }}
@@ -18,7 +17,7 @@
   </div>
   <div class="ui bottom fixed text menu" id="homeMenu">
     {{#if online}}
-    <a class="item" href="https://blog.manolo.com" target="_blank">News in decentralized companies</a>
+    <a class="item" href="https://medium.com/aragondec" target="_blank">News in decentralized companies</a>
     <a class="item" id="priceTicker">
       ETH: {{ #with ticker 'eth' }}
         <i class="icon arrow {{ #if $gte change 0 }}green up{{ else }}red down{{ /if }}"></i>
