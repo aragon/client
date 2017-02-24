@@ -5,7 +5,6 @@ import { EthBlocks } from 'meteor/ethereum:blocks'
 import Build from '/client/lib/build'
 import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
 import { allContracts, GenericBinaryVoting } from './contracts'
-import { getDeployedAddress } from './deployed'
 
 import { NotificationsManager } from '/client/lib/notifications'
 
@@ -81,19 +80,12 @@ class EthereumNode {
     GenericBinaryVoting.setNetwork(nID)
     GenericBinaryVoting.link('BytesHelper', (_BytesHelper.networks[nID] || _BytesHelper.networks[15] || { address: '0x0' }).address)
 
-    if (Build.Settings.get('landingNode')) {
-      await deployNewCompany()
-    }
-
-    await getDeployedAddress()
-
-    initWatchers()
-
     console.log('EthereumNode: ready')
     return nodeReady && collectionsReady
   }
 
   static async bindListeners() {
+    initWatchers()
     const allListeners = await listeners.all()
     NotificationsManager.listen(allListeners)
   }

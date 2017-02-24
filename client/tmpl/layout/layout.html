@@ -21,14 +21,13 @@
         <div class="ui floating red circular empty label"></div>
         {{ /if }}
       </a>
-      {{ #unless identityDisabled }}
       <a href="/account" class="item">
         {{#with currentEntity}}<img src="{{ picture }}" class="ui mini right spaced circular image">{{/with}}
       </a>
-      {{ /unless }}
     </div>
   </div>
 
+  {{ #if companyAddress }}
   {{ > Layout_Sidebar }}
 
   <div id="container">
@@ -36,6 +35,10 @@
       {{> Template.dynamic template=main data=data}}
     </div>
   </div>
+  {{ else }}
+  {{ > Setup }}
+  {{ /if }}
+
   {{ /if }}
 
   {{ #if isInjectedMetaMask }}{{ > Layout_MetaMask }}{{ /if }}

@@ -1,6 +1,6 @@
 import utils from 'ethereumjs-util'
 
-import { Company } from './deployed'
+import Company from './deployed'
 import Watcher from './watcher'
 
 Bylaws = new Mongo.Collection('bylaws', { connection: null })

@@ -1,8 +1,7 @@
 // @flow
 import { Template } from 'meteor/templating'
 import { $ } from 'meteor/jquery'
-
-import Build from '/client/lib/build'
+import { ReactivePromise } from 'meteor/deanius:promise'
 
 const tmpl = Template.Layout
 
@@ -28,7 +27,7 @@ tmpl.events({
 })
 
 tmpl.helpers({
-  identityDisabled: () => Build.Settings.get('identityDisabled'),
+  companyAddress: ReactivePromise(() => (localStorage.getItem('companyAddress'))),
 })
 
 window.addEventListener('message', (msg) => {

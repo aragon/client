@@ -5,34 +5,8 @@ import Identity from '/client/lib/identity'
 
 import { Company as CompanyContract, VotingStock } from './contracts'
 
-let companyAddress = null
-
-const getNetworkID = () => (
-  new Promise((resolve, reject) => {
-    web3.version.getNetwork((err, id) => {
-      if (err) reject(err)
-      else resolve(id)
-    })
-  })
-)
-
-const getDeployedAddress = async () => {
-  const nID = await getNetworkID()
-
-  if (Build.Settings.get('deployed')) {
-    companyAddress = Build.Settings.get('deployed.company')
-  } else if (companyJSON.networks[nID] && companyJSON.networks[nID].address) {
-    companyAddress = companyJSON.networks[nID].address
-    console.log('Set company address automatically', companyAddress)
-  } else {
-    // companyAddress = '0xfa7015947550c81dd2e9d4621ed6931610b5266e'
-    companyAddress = '0x84d9b3cf9b2e0f9f4b51560ade1a8aad0a8187dd'
-    console.error('Couldnt find company deployed on current network, using an example address')
-  }
-}
-
 const Company = () => (
-  CompanyContract.at(companyAddress)
+  CompanyContract.at(localStorage.getItem('companyAddress'))
 )
 
 const getRandomAddress = () => {
@@ -51,7 +25,8 @@ deployNewCompany = async () => {
 
   CompanyContract.setNetwork(networkID)
   const company = await CompanyContract.new({ gas: 6e6, value: 1e18, from: addr })
-  companyAddress = company.address
+  const companyAddress = company.address
+  localStorage.setItem('companyAddress', companyAddress)
 
   const stock = await VotingStock.new(companyAddress, { from: addr, gas: 5e6 })
   await Company().addStock(stock.address, 1e3, { from: addr, gas: 5e6 })
@@ -60,4 +35,4 @@ deployNewCompany = async () => {
   console.log('finished', Company().address)
 }
 
-export { Company, getDeployedAddress }
+export default Company

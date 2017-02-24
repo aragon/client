@@ -7,7 +7,7 @@ import { ReactivePromise } from 'meteor/deanius:promise'
 import { moment } from 'meteor/momentjs:moment'
 
 import Shake from '/client/lib/shake'
-import { Company } from '/client/lib/ethereum/deployed'
+import Company from '/client/lib/ethereum/deployed'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 import ClosableSection from '/client/tmpl/components/closableSection'

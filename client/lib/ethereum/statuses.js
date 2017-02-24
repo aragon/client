@@ -1,5 +1,5 @@
 import { Entities } from '/client/lib/identity'
-import { Company } from './deployed'
+import Company from './deployed'
 
 import Watcher from './watcher'
 

@@ -5,7 +5,7 @@ import { NotificationsListener as Listener } from '/client/lib/notifications'
 import Identity from '/client/lib/identity'
 import utils from 'ethereumjs-util'
 
-import { Company } from './deployed'
+import Company from './deployed'
 import { Stock, Voting, StockSale } from './contracts'
 
 const flatten = (array) => [].concat(...array)
@@ -34,8 +34,7 @@ class Listeners {
   }
 
   static async shareTransfers(stocks) {
-    console.log(Entities.findOne({current: true}))
-    const address = Entities.findOne({current: true}).ethereumAddress // Identity.current(true).ethereumAddress
+    const address = Identity.current(true).ethereumAddress
     const sharesTransfers = stocks.map(stock =>
       ([this.sharesSent(stock, address), this.sharesReceived(stock, address)]),
     )

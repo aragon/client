@@ -10,7 +10,7 @@ import Identity from '/client/lib/identity'
 import Settings from '/client/lib/settings'
 import EthereumNode from '/client/lib/ethereum/node'
 import TxQueue from '/client/lib/queue'
-import { Company } from '/client/lib/ethereum/deployed'
+import Company from '/client/lib/ethereum/deployed'
 import { BrowserNotifications } from '/client/lib/notifications'
 
 import Accounting from '/client/lib/ethereum/accounting'
@@ -46,16 +46,19 @@ const clearStorage = () => {
 const load = async () => {
   Meteor.disconnect()
 
-  if (Build.Settings.get('identityDisabled')) clearStorage()
-
   await EthereumNode.connect()
-  if (Company().address !== Session.get('knownCompany') && !Build.Settings.get('identityDisabled')) {
-    clearStorage()
-    Session.setPersistent('knownCompany', Company().address)
+  if (Build.Settings.get('deployed')) {
+    localStorage.setItem('companyAddress', Build.Settings.get('deployed.company'))
+  } else if (!localStorage.getItem('companyAddress')) {
+    TxQueue.init()
+    initFinished.set(true)
+    $('#initialDimmer').remove()
+    return
   }
 
   const current = Identity.current(true)
-  if (!current && !Build.Settings.get('identityDisabled')) {
+  console.log(current)
+  if (!current.ethereumAddress) {
     await Identity.reset()
     Settings.reset()
   }

@@ -126,7 +126,7 @@ class Identity {
     let entity = Entities.findOne({ current: true })
 
     if (!raw) entity = Identity.format(entity, replaceMe)
-    return entity
+    return entity || {}
   }
 
   static async linkCurrent(identityProvider: string): Promise<boolean> {

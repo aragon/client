@@ -6,7 +6,7 @@ import { TemplateVar } from 'meteor/frozeman:template-var'
 import { ReactivePromise } from 'meteor/deanius:promise'
 import { moment } from 'meteor/momentjs:moment'
 
-import { Company } from '/client/lib/ethereum/deployed'
+import Company from '/client/lib/ethereum/deployed'
 
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 

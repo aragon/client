@@ -4,7 +4,7 @@ import { Mongo } from 'meteor/mongo'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 
 import { Stock } from './contracts'
-import { Company } from './deployed'
+import Company from './deployed'
 
 import Watcher from './watcher'
 
