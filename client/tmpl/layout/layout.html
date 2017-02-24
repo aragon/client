@@ -1,8 +1,14 @@
 <template name="Layout">
   {{ #if initFinished }}
   <div class="ui top fixed text menu" id="topbar">
-    <div class="header item">Aragon</div>
+    <div class="header item">
+      <img src="/rsc/logotype.svg">
+    </div>
+    <div id="isotype">
+      <img src="/rsc/isotype.svg">
+    </div>
     <div class="right menu">
+      {{ > Layout_PendingTx }}
       {{ #if isInjectedMetaMask }}
       <a class="item" id="walletButton">
         <i class="lock large icon"></i>
@@ -23,7 +29,7 @@
     </div>
   </div>
 
-  {{> Layout_Sidebar }}
+  {{ > Layout_Sidebar }}
 
   <div id="container">
     <div class="ui very relaxed padded divided grid">

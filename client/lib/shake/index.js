@@ -1,5 +1,5 @@
 // @flow
-import faker from 'faker'
+// import faker from 'faker'
 import type { ShakeUser } from './user'
 import supportedCountries from './countries'
 
@@ -27,7 +27,7 @@ type ShakeInvoice = {
 }
 
 export default class Shake {
-  static fakeUser(currency: string): ShakeUser {
+  /* static fakeUser(currency: string): ShakeUser {
     return {
       user: {
         firstName: faker.name.firstName(),
@@ -48,7 +48,7 @@ export default class Shake {
         currency,
       },
     }
-  }
+  } */
 
   static async createUser(userData: ShakeUser): Object {
     return await postJSON('users', userData)
