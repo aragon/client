@@ -1,7 +1,25 @@
 import { sha3, bufferToHex } from 'ethereumjs-util'
 import abi from 'ethereumjs-abi'
 
+import { verifyBytecode } from '/client/lib/ethereum/verify'
+import { allContracts } from '/client/lib/ethereum/contracts'
+
 import actions from './actions'
+
+const checkContractDeployAction = data => {
+  const contract = verifyBytecode(data, allContracts)
+  if (!contract) return null
+
+  let description = `Deploy contract`
+  let name = contract._json.contract_name
+
+  if (name === 'GenericBinaryVoting') {
+    name = 'Creating new voting'
+    description = 'Voting power will be notified'
+  }
+
+  return { name, description }
+}
 
 const actionFromData = data => {
   const functionSig = data.slice(0, 10)
@@ -11,6 +29,9 @@ const actionFromData = data => {
       return action
     }
   }
+
+  const contractAction = checkContractDeployAction(data)
+  if (contractAction) return contractAction
 
   console.warn('not found for function sig', functionSig)
   return null

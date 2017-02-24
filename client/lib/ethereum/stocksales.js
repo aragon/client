@@ -2,7 +2,7 @@ import { Company } from './deployed'
 import { StockSale, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
-import verifyContractCode from './verify'
+import { verifyContractCode } from './verify'
 
 import Watcher from './watcher'
 
@@ -62,7 +62,7 @@ class StockSalesWatcher extends Watcher {
       closeDate: sale.closeDate.call().then(x => new Date(x.toNumber() * 1000)),
       raisedAmount: sale.raisedAmount.call().then(x => x.toNumber()),
       title: sale.saleTitle.call(),
-      type: verifiedSale.contractClass.contract_name,
+      type: verifiedSale._json.contract_name,
       raiseTarget: sale.raiseTarget.call().then(x => x.toNumber()),
       raiseMaximum: sale.raiseMaximum.call().then(x => x.toNumber()),
       buyingPrice: sale.getBuyingPrice.call(0).then(x => x.toNumber()),

@@ -24,7 +24,6 @@ class Action {
     this.signature = signature
     this.name = name
     this.description = description
-    this.companyFunction =
     this.votingDescription = votingDescription
   }
 
