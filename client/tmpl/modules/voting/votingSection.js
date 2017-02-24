@@ -113,7 +113,7 @@ const executeVote = async option => {
 
 const verify = async () => {
   const contract = await VotingWatcher.verifyVote(voting().address)
-  return verifiedVar.set(contract ? contract._json.contract_name : 'unknown')
+  return verifiedVar.set(contract ? contract.contractClass.contract_name : 'unknown')
 }
 
 tmpl.events({

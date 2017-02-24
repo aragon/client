@@ -13,7 +13,7 @@ const tmpl = Template.Module_Voting_New.extend([ClosableSection])
 const openPoll = async (description, closingTime) => {
   const addr = Identity.current(true).ethereumAddress
   const poll = await Poll.new(description, { from: addr, gas: 3000000 })
-  await poll.setTxid(poll.transactionHash, { from: addr, gas: 120000 })
+  await dispatcher.performTransaction(poll.setTxid, poll.transactionHash)
   return await dispatcher.dispatch(actions.beginPoll, poll.address, +closingTime / 1000)
 }
 

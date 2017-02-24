@@ -62,7 +62,7 @@ class StockSalesWatcher extends Watcher {
       closeDate: sale.closeDate.call().then(x => new Date(x.toNumber() * 1000)),
       raisedAmount: sale.raisedAmount.call().then(x => x.toNumber()),
       title: sale.saleTitle.call(),
-      type: verifiedSale._json.contract_name,
+      type: verifiedSale.contractClass.contract_name,
       raiseTarget: sale.raiseTarget.call().then(x => x.toNumber()),
       raiseMaximum: sale.raiseMaximum.call().then(x => x.toNumber()),
       buyingPrice: sale.getBuyingPrice.call(0).then(x => x.toNumber()),
@@ -102,7 +102,7 @@ class StockSalesWatcher extends Watcher {
   }
 
   async submitSale(sale, address) {
-    await sale.setTxid(sale.transactionHash, { from: address, gas: 120000 })
+    await dispatcher.performTransaction(sale.setTxid, sale.transactionHash)
     return dispatcher.dispatch(actions.beginSale, sale.address)
   }
 
