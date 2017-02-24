@@ -42,7 +42,7 @@ class Dispatcher {
   }
 
   get transactionParams() {
-    return { from: this.address }
+    return { from: this.address, gas: 4.7e6 }
   }
 
   async dispatch(action, ...params) {
@@ -58,6 +58,7 @@ class Dispatcher {
   async performTransaction(f, ...args) {
     const [ params ] = f.request.apply(this, args.concat([this.transactionParams])).params
     params.from = this.address
+
     const txID = await sendTransaction(params)
     await this.addPendingTransaction(txID)
     return txID
