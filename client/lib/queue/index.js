@@ -23,6 +23,7 @@ const getBlock = blockHash => {
 
 class TxQueue {
   queue = ReactiveVar([])
+  listeners = {}
 
   init() {
     web3.eth.filter('latest', async (err, blockHash) => {
@@ -40,7 +41,10 @@ class TxQueue {
     action.txID = txID
 
     this.queue.set(this.queue.get().concat(action))
-    console.log('queued tx', action)
+  }
+
+  async addListener(txID, callback) {
+    this.listeners[txID] = callback
   }
 
   remove(txID) {
@@ -48,6 +52,10 @@ class TxQueue {
     this.queue.set(this.queue.get().filter((tx) => (
       tx.txID !== txID
     )))
+    if (this.listeners[txID]) {
+      this.listeners[txID]()
+      delete this.listeners[txID]
+    }
   }
 }
 

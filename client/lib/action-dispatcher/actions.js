@@ -154,6 +154,10 @@ const ActionFactory = {
                               '(temporary, only for code verification purposes)', () => '', false),
   executeVoting: new Action('executeOnAction(uint8,address)', 'Executing voting',
                               'Approved action will occur', () => '', false),
+  deployCompany: new Action('deployCompany()', 'Deploying company',
+                              'Waiting for block confirmation', () => '', false),
+  configureCompany: new Action('configureCompany(address,address)', 'Company bootstrap',
+                                'Finishing company configuration', () => '', false),
 }
 
 export default ActionFactory

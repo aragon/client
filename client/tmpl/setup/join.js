@@ -9,3 +9,4 @@ tmpl.events({
     location.reload()
   },
 })
+ 
