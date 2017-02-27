@@ -15,10 +15,14 @@ export default class Anon {
     return { ethereumAddress: addr }
   }
 
+  static isCompany(address) {
+    return address === localStorage.getItem('companyAddress')
+  }
+
   static format(entity: Entity) {
     return {
       username: entity.ethereumAddress,
-      name: haiku(entity.ethereumAddress),
+      name: this.isCompany(entity.ethereumAddress) ? 'Company' : haiku(entity.ethereumAddress),
       picture: identicon(entity.ethereumAddress),
     }
   }
