@@ -21,34 +21,26 @@ tmpl.onRendered(() => {
   })
 })
 
+const setupFinished = companyAddress => {
+  localStorage.setItem('companyAddress', companyAddress)
+  location.reload()
+}
+
+const configureCompany = async companyAddress => {
+  const companyConfiguratorFactory = await CompanyConfiguratorFactory.deployed()
+  const txID = await dispatcher.performTransaction(companyConfiguratorFactory.configureCompany, companyAddress, dispatcher.transactionParams.from)
+  TxQueue.addListener(txID, () => setupFinished(companyAddress))
+}
+
 tmpl.events({
-  'click #createOrganization': async () => {
+  'click #createOrganization': async function() {
     const companyFactory = await CompanyFactory.deployed()
 
-    const par = dispatcher.transactionParams
-    par.value = 1e17
-    par.gas = 4.3e6
-    console.log(par)
-    console.log(companyFactory.address)
-    const r = await companyFactory.deployCompany(par)
-    console.log(1)
-    const companyAddress = r.logs.filter(e => e.event === 'NewCompany')[0].args.companyAddress
-    console.log(2)
-    const companyConfiguratorFactory = await CompanyConfiguratorFactory.deployed()
-    console.log(3, companyAddress)
-    const txID = await dispatcher.performTransaction(companyConfiguratorFactory.configureCompany, companyAddress, par.from)
-    console.log(4)
-    console.log(txID)
-    this.autorun(() => {
-      const queue = TxQueue.queue.get()
-      const txInQueue = queue.filter((tx) => {
-        console.log(tx)
-        return (tx.txID !== txID)
-      })
-      console.log(txInQueue)
+    await dispatcher.performTransaction(companyFactory.deployCompany)
+    companyFactory.NewCompany({ deployer: dispatcher.transactionParams.from }).watch((err, ev) => {
+      if (err) return console.error(err)
+      configureCompany(ev.args.companyAddress)
     })
-    localStorage.setItem('companyAddress', companyAddress)
-    location.reload()
   },
   'click #joinOrganization': () => TemplateVar.set('step', 'Setup_JoinOrganization'),
 })
