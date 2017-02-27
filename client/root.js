@@ -12,7 +12,7 @@ Root.modules = [
   new Module('Accounting', 'browser'),
   new Module('Bylaws', 'university'),
 
-  new Module('Account', 'user', false),
+  new Module('Settings', 'settings', true, 'settings', 'Module_Account'),
   new Module('Inbox', 'inbox', false),
 
   new Module('Entity', 'entity', false),
