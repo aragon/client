@@ -12,7 +12,9 @@
         <div class="content">
           <h4 class="header">{{ name }}</h4>
           <div class="description">{{ description }}</div>
-          <a href="{{ etherscan txID }}" target="_blank">See on etherscan</a>
+          <div class="extra">
+            <a href="{{ etherscan txID }}" target="_blank" style="color: black; text-decoration: underline;">See on etherscan</a>
+          </div>
         </div>
       </div>
       {{ /each }}
