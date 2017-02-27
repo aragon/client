@@ -158,6 +158,8 @@ const ActionFactory = {
                               'Waiting for block confirmation', () => '', false),
   configureCompany: new Action('configureCompany(address,address)', 'Company bootstrap',
                                 'Finishing company configuration', () => '', false),
+  keybaseRegistry: new Action('register(string,address)', 'Registering identity',
+                                'Mapping your address to your Keybase username', () => '', false)
 }
 
 export default ActionFactory

@@ -16,6 +16,7 @@ import _CompanyConfiguratorFactory from '/imports/lib/contracts/build/contracts/
 import _VotingStock from '/imports/lib/contracts/build/contracts/VotingStock'
 import _Txid from '/imports/lib/contracts/build/contracts/Txid'
 // import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
+import _KeybaseRegistry from '/imports/lib/contracts/node_modules/keybase-eth/build/contracts/KeybaseRegistry.json'
 
 const Company = contractify(_Company)
 const AccountingLib = contractify(_AccountingLib)
@@ -29,6 +30,7 @@ const IndividualInvestorSale = contractify(_IndividualInvestorSale)
 const GenericBinaryVoting = contractify(_GenericBinaryVoting)
 const CompanyFactory = contractify(_CompanyFactory)
 const CompanyConfiguratorFactory = contractify(_CompanyConfiguratorFactory)
+const KeybaseRegistry = contractify(_KeybaseRegistry)
 
 /* const n = web3.version.network
 GenericBinaryVoting.setNetwork(n)
@@ -50,10 +52,11 @@ const allContracts = [
   Txid,
   CompanyFactory,
   CompanyConfiguratorFactory,
+  KeybaseRegistry
 ]
 
 // allContracts.forEach(c => c.setProvider(web3.currentProvider))
 
 export { allContracts, Company, AccountingLib, Stock, VotingStock, BinaryVoting as Voting,
           BinaryPoll as Poll, BoundedStandardSale, IndividualInvestorSale, GenericBinaryVoting,
-          StockSale, Txid, CompanyFactory, CompanyConfiguratorFactory }
+          StockSale, Txid, CompanyFactory, CompanyConfiguratorFactory, KeybaseRegistry }
