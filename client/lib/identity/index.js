@@ -70,7 +70,7 @@ class Identity {
     Promise<Entity> {
     // Usually we will want to store addr => username but not the other way around
     // let entity = Entities.findOne(({'data.basics.username': username})
-    const ethereumAddress = await providers[identityProvider].getVerifiedEthereumAddress(username)
+    const ethereumAddress = await (providers[identityProvider] || Keybase).getVerifiedEthereumAddress(username)
     const data = await providers[identityProvider].lookup(username)
     Identity.set(ethereumAddress, identityProvider, data)
 
