@@ -18,7 +18,7 @@ tmpl.onRendered(function (){
     const accounts = EthAccounts.find()
     if (accounts.count() > 0) {
       $('#setupMetaMask').text('Continue').attr('id', 'continue')
-      toggleMetaMask(false)
+      // toggleMetaMask(false)
       const account = getAccount()
       if (account.balance < 1 || true) {
         faucetForAddress(account.address)
