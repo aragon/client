@@ -67,6 +67,10 @@ export default class Keybase {
   }
 
   static link(addr: string): string {
+    if (!window.ipcRenderer) {
+      alert('You need to use our desktop app and the Keybase desktop app in order to link your identity.')
+      return ''
+    }
     return link(addr, proofFilename)
   }
 }

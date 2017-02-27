@@ -54,9 +54,7 @@ const load = async () => {
     Settings.reset()
   }
 
-  if (localStorage.getItem('companyAddress')) {
-    await EthereumNode.bindListeners()
-  }
+  if (localStorage.getItem('companyAddress')) await EthereumNode.bindListeners()
 
   TxQueue.init()
 
