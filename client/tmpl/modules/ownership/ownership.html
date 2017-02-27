@@ -37,7 +37,7 @@
         {{#if $contains (TemplateVar.get 'searchString') (entityName shareholder)}}
         <tr data-shareholder="{{ shareholder }}">
           <td>
-            {{ entityName shareholder }}
+            {{ entityNameReserves shareholder }}
           </td>
           <td>
             {{ symbol stock.address }}
@@ -48,21 +48,6 @@
         </tr>
         {{/if}}
         {{/each}}
-        <!---
-        {{#each stocks}}
-        <tr>
-          <td>
-            Unassigned
-          </td>
-          <td>
-            {{ symbol }}
-          </td>
-          <td>
-            {{ balance address company }}
-          </td>
-        </tr>
-        {{/each}}
-      -->
       </tbody>
     </table>
   </div>
