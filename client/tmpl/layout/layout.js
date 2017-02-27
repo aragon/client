@@ -34,5 +34,3 @@ window.addEventListener('message', (msg) => {
   if (!msg.data.metaMask) return
   if (msg.data.metaMask === 'show') toggleMetaMask()
 })
-
-top.postMessage({ metaMask: 'show' }, '*')

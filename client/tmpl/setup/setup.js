@@ -8,10 +8,12 @@ import { CompanyFactory, CompanyConfiguratorFactory } from '/client/lib/ethereum
 const tmpl = Template.Setup
 
 tmpl.onCreated(() => {
-  TemplateVar.set('step', 'Setup_Welcome')
+  const initialTmpl = (window.injectMetaMask) ? 'Setup_MetaMask' : 'Setup_Welcome'
+  TemplateVar.set('step', initialTmpl)
 })
 
 tmpl.onRendered(() => {
+  $('#inboxButton, a[href="/account"]').hide()
   $('#pendingTxButton').popup({
     inline: true,
     on: 'click',
