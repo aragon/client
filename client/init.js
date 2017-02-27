@@ -54,14 +54,10 @@ const load = async () => {
     Settings.reset()
   }
 
-  if (!localStorage.getItem('companyAddress')) {
-    TxQueue.init()
-    initFinished.set(true)
-    $('#initialDimmer').remove()
-    return
+  if (localStorage.getItem('companyAddress')) {
+    await EthereumNode.bindListeners()
   }
 
-  await EthereumNode.bindListeners()
   TxQueue.init()
 
   BrowserNotifications.requestPermission()

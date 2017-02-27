@@ -1,7 +1,8 @@
 <template name="Module_Home">
   <div class="ui fluid center aligned flex centered container" id="homePlaceholder">
     <h2 class="ui icon header">
-      <i class="rocket icon"></i>
+      {{#with currentEntity}}<img src="{{ picture }}" class="ui small right spaced circular image">{{/with}}
+      <div class="ui hidden divider"></div>
       <div class="content">
         Welcome {{ currentEntityName }}
         <div class="ui hidden divider"></div>

@@ -5,7 +5,9 @@ import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 
 function moduleName(tmpl) {
-  return tmpl.viewName.split('.')[1].split('_')[1].toLowerCase()
+  let name = tmpl.viewName.split('.')[1]
+  if (name.split('_')[1]) name = name.split('_')[1]
+  return name.toLowerCase()
 }
 
 function removeGenericRoutes(module) {
