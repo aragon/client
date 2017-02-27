@@ -2,7 +2,22 @@
   <div class="ui very relaxed padded grid">
     <div class="eight wide flex centered column">
       <div class="ui spacer"></div>
-      <button class="ui big primary button" id="setupMetaMask">Setup your wallet</button>
+      <button class="ui big primary button {{ isButtonEnabled }}" id="setupMetaMask">Setup your wallet</button>
+      {{ #if account }}
+      {{ #with account }}
+        <br>
+        <br>
+        <br>
+        <p>You account <a href="{{ etherscanAddress address }}" target="_blank">{{ address }}</a> balance is: {{ ether balance }} ETH</p>
+        {{ #unless canContinue }}
+        <p>In order to continue:</p>
+          <ul>
+            <li>Get testnet ether for your address (needed to transact), we are sending some but if it doesn't appear in your account in one minute, <a href="http://faucet.ropsten.be:3001" target="_blank">try here</a></li>
+            <li>Aragon doesn't work in the mainnet, change network to Ropsten testnet in Metamask. Refresh after changing network.</li>
+          </ul>
+        {{ /unless }}
+      {{ /with }}
+      {{ /if }}
       <div class="ui spacer"></div>
     </div>
     <div class="eight wide lightgrey flex column">
@@ -18,6 +33,7 @@
       <div class="ui spacer"></div>
       <img src="/rsc/setup/metamask.png" class="ui centered image">
       <div class="ui spacer"></div>
+      <h4>Disclaimer: This is alpha software, it contains bugs. If something doesn't work do Command + R to refresh. If it is still broken, please report the bug.</h4>
     </div>
   </div>
 </template>

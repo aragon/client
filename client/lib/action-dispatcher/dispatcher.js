@@ -42,7 +42,7 @@ class Dispatcher {
   }
 
   get transactionParams() {
-    return { from: this.address, gas: 4.7e6 }
+    return { from: this.address }
   }
 
   async dispatch(action, ...params) {
