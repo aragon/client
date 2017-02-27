@@ -35,7 +35,7 @@ export default class Keybase {
   }
 
   static async lookupEthAddress(addr: string): Promise<Object> {
-    return await Keybase.lookup('li')
+    return null // TODO: The registry :_)
   }
 
   static format(entity: Entity) {
