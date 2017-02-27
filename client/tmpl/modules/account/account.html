@@ -5,7 +5,19 @@
       <div class="ui divider"></div>
 
       <h3 class="ui header">
-        Ethereum
+        Company
+        <div class="sub header">You company is deployed on the Ropsten testnet.
+        <a href="{{ etherscanAddress companyAddress }}" target="_blank" style="color: black; text-decoration: underline;">See on etherscan</a>
+        </div>
+      </h3>
+      <div class="field">
+        <label>Company address</label>
+        <input value="{{ companyAddress }}" type="text" disabled>
+      </div>
+      <a href="#" id="unlinkCompany" data-content="Your company will continue to exist on the network, but Aragon will be unlinked. Save the company address in case you want to recover it." data-variation="inverted">Unlink company...</a>
+
+      <h3 class="ui header">
+        Ethereum account
         <div class="sub header">Ethereum provides a trustless cryptographic ledger to execute and store transactions securely.</div>
       </h3>
       {{ #with currentAccount }}
@@ -87,7 +99,7 @@
 
       <div class="field">
         <h3 class="ui header">
-          Displaying currency
+          Currency
           <div class="sub header">This will be the default currency for displaying purposes. It will be converted to eth under the hood.</div>
         </h3>
         <select class="ui fluid search selection dropdown" name="currency">
