@@ -3,6 +3,8 @@ import { Template } from 'meteor/templating'
 import { TemplateVar } from 'meteor/frozeman:template-var'
 import { $ } from 'meteor/jquery'
 
+import Identity from '/client/lib/identity'
+
 const tmpl = Template.Setup_MetaMask
 
 const toggleMetaMask = (show: boolean = true) => {
@@ -17,6 +19,7 @@ tmpl.onRendered(function (){
   this.autorun(() => {
     const accounts = EthAccounts.find()
     if (accounts.count() > 0) {
+      if (!Entities.findOne({current: true})) Identity.reset()
       $('#setupMetaMask').text('Continue').attr('id', 'continue')
       // toggleMetaMask(false)
       const account = getAccount()

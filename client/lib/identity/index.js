@@ -121,6 +121,7 @@ class Identity {
 
   static current(raw: boolean = false, replaceMe: boolean = true) {
     let entity = Entities.findOne({ current: true })
+    if (!entity) return {}
 
     if (!raw) entity = Identity.format(entity, replaceMe)
     return entity || {}
@@ -139,9 +140,12 @@ class Identity {
   }
 
   static async reset(): Promise<boolean> {
-    const current = await Identity.getRaw(EthAccounts.findOne().address, true)
-    Identity.setCurrent(current)
-    return true
+    if (EthAccounts.findOne()) {
+      const current = await Identity.getRaw(EthAccounts.findOne().address, true)
+      Identity.setCurrent(current)
+      return true
+    }
+    return false
   }
 }
 

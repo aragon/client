@@ -31,6 +31,10 @@ const initCollections = async (): Promise<boolean> => {
         },
       })
       EthAccounts.init()
+      web3.eth.getAccounts((err, accs) => {
+        if (err) return reject(err)
+        else if (accs.length < 1) resolve(true)
+      })
     }),
     new Promise((resolve, reject) => {
       const blockObserver = EthBlocks.find().observe({
