@@ -44,7 +44,7 @@ less@2.7.9
 logging@1.1.17
 meteor@1.6.1
 minifier-css@1.2.16
-minifier-js@1.2.18
+minifier-js@1.2.17
 minimongo@1.0.20
 modules@0.7.9
 modules-runtime@0.7.9
