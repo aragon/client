@@ -6,10 +6,10 @@
 
 blaze-html-templates@1.0.4 # Compile .html files into Meteor Blaze views
 reactive-var@1.0.11            # Reactive variable for tracker
-tracker@1.1.1                 # Meteor's client-side reactive programming library
+tracker@1.1.2                 # Meteor's client-side reactive programming library
 
-ecmascript@0.6.1              # Enable ECMAScript2015+ syntax in app code
-shell-server@0.2.1            # Server-side component of the `meteor shell` command
+ecmascript@0.6.3              # Enable ECMAScript2015+ syntax in app code
+shell-server@0.2.2            # Server-side component of the `meteor shell` command
 
 ethereum:web3
 ethereum:blocks
@@ -18,7 +18,7 @@ kadira:flow-router
 kadira:blaze-layout
 semantic:ui
 juliancwirko:postcss
-less@2.7.8
+less@2.7.9
 jquery@1.11.10
 frozeman:template-var
 session@1.1.7
@@ -30,9 +30,9 @@ izqui:meteor-promise-all-properties
 momentjs:moment
 momentjs:twix
 insecure@1.0.7
-meteor@1.6.0
-webapp@1.3.12
+meteor@1.6.1
+webapp@1.3.13
 underscore@1.0.10
 u2622:persistent-session
-mongo@1.1.14
-http
+mongo@1.1.15
+http@1.2.11

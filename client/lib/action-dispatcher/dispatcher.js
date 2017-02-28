@@ -2,7 +2,7 @@
 import { GenericBinaryVoting } from '/client/lib/ethereum/contracts'
 import Company from '/client/lib/ethereum/deployed'
 
-import Identity from '/client/lib/identity'
+// import Identity from '/client/lib/identity'
 
 import Queue from '/client/lib/queue'
 
@@ -45,12 +45,8 @@ const toggleMetaMask = (show: boolean = true) => {
 }
 
 class Dispatcher {
-  get address() {
-    return Identity.current(true).ethereumAddress
-  }
-
   get transactionParams() {
-    return { from: this.address }
+    return { from: Identity.current(true).ethereumAddress }
   }
 
   async dispatch(action, ...params) {
@@ -65,7 +61,7 @@ class Dispatcher {
 
   async performTransaction(f, ...args) {
     const [ params ] = f.request.apply(this, args.concat([this.transactionParams])).params
-    params.from = this.address
+    params.from = Identity.current(true).ethereumAddress
     console.log(args.concat([this.transactionParams]))
     console.log(params)
 
@@ -77,7 +73,7 @@ class Dispatcher {
 
   async signPayload(payload: string) {
     return await new Promise((resolve, reject) => {
-      web3.eth.sign(this.address, payload, (e, signature) => {
+      web3.eth.sign(Identity.current(true).ethereumAddress, payload, (e, signature) => {
         if (e) return reject(e)
 
         const r = signature.slice(0, 66)

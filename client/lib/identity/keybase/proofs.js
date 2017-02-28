@@ -1,6 +1,4 @@
 // @flow
-
-
 import utils from 'ethereumjs-util'
 
 class KeybaseProofs {
