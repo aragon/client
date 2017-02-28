@@ -4,6 +4,8 @@ import type { Entity } from '../entity'
 import link from './link'
 import Proofs from './proofs'
 
+import { KeybaseRegistry } from '/client/lib/ethereum/contracts'
+
 const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
 
 const IS_DEV = true
@@ -35,7 +37,10 @@ export default class Keybase {
   }
 
   static async lookupEthAddress(addr: string): Promise<Object> {
-    return await Keybase.lookup('li')
+    const registry = await KeybaseRegistry.deployed()
+    const username = await registry.getUsername(addr)
+    if (!username || username === '') return {}
+    return await Keybase.lookup(username)
   }
 
   static format(entity: Entity) {
