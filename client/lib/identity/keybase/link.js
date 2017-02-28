@@ -3,7 +3,7 @@
 import IntertronClient from 'intertron-client'
 
 import { KeybaseRegistry } from '/client/lib/ethereum/contracts'
-import { dispatcher } from '/client/lib/action-dispatcher'
+import { dispatcher } from '/client/lib/action-dispatcher'
 
 import Proofs from './proofs'
 
