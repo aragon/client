@@ -70,7 +70,7 @@ class Identity {
     Promise<Entity> {
     // Usually we will want to store addr => username but not the other way around
     // let entity = Entities.findOne(({'data.basics.username': username})
-    const ethereumAddress = await providers[identityProvider].getVerifiedEthereumAddress(username)
+    const ethereumAddress = await (providers[identityProvider] || Keybase).getVerifiedEthereumAddress(username)
     const data = await providers[identityProvider].lookup(username)
     Identity.set(ethereumAddress, identityProvider, data)
 
@@ -121,6 +121,7 @@ class Identity {
 
   static current(raw: boolean = false, replaceMe: boolean = true) {
     let entity = Entities.findOne({ current: true })
+    if (!entity) return {}
 
     if (!raw) entity = Identity.format(entity, replaceMe)
     return entity || {}
@@ -129,7 +130,7 @@ class Identity {
   static async linkCurrent(identityProvider: string): Promise<boolean> {
     const current = Identity.current()
 
-    const username = await providers[identityProvider].link(current.ethereumAddress)
+    const username = await (providers[identityProvider] || Keybase).link(current.ethereumAddress)
     if (!username) return false
 
     const entity = await Identity.getUsernameRaw(username, identityProvider)
@@ -139,9 +140,12 @@ class Identity {
   }
 
   static async reset(): Promise<boolean> {
-    const current = await Identity.getRaw(EthAccounts.findOne().address, true)
-    Identity.setCurrent(current)
-    return true
+    if (EthAccounts.findOne()) {
+      const current = await Identity.getRaw(EthAccounts.findOne().address, true)
+      Identity.setCurrent(current)
+      return true
+    }
+    return false
   }
 }
 

@@ -1,6 +1,8 @@
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Stock } from '/client/lib/ethereum/contracts'
 import Company from '/client/lib/ethereum/deployed'
+import Identity from '/client/lib/identity'
+
 
 const Stocks = StockWatcher.Stocks
 
@@ -53,4 +55,9 @@ tmpl.helpers({
     return entity.balances[stock]
   },
   company: () => Company().address,
+  entityNameReserves: ReactivePromise(async addr => {
+    const entity = await Identity.get(addr)
+    if (entity.name === 'Company') entity.name = 'Company reserves'
+    return entity.name
+  }),
 })

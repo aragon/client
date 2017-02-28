@@ -1,5 +1,6 @@
 // @flow
 import type { Entity } from '../entity'
+import { KeybaseRegistry } from '/client/lib/ethereum/contracts'
 
 import link from './link'
 import Proofs from './proofs'
@@ -7,7 +8,7 @@ import Proofs from './proofs'
 const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
 
 const IS_DEV = true
-const proofFilename = `ethereum${IS_DEV ? '_dev' : ''}.json`
+const proofFilename = `ethereum${IS_DEV ? '_ropsten' : ''}.json`
 
 export default class Keybase {
   // Returns {status, them}
@@ -35,7 +36,11 @@ export default class Keybase {
   }
 
   static async lookupEthAddress(addr: string): Promise<Object> {
-    return await Keybase.lookup('li')
+    const registry = await KeybaseRegistry.deployed()
+    const username = await registry.getUsername(addr)
+    if (!username || username == '') return null
+
+    return await Keybase.lookup(username)
   }
 
   static format(entity: Entity) {

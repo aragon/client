@@ -59,8 +59,9 @@ tmpl.onRendered(function () {
 
       for (const i in shareShareholders) {
         const entity = await Identity.get(shareShareholders[i])
+        if (entity.name === 'Company') entity.name = 'Company reserves'
         globalBalances[entity.name] = balances[i] + (globalBalances[entity.name] || 0)
-        if (stock.votesPerShare) {
+        if (stock.votesPerShare && entity.name !== 'Company reserves') { // exclude from voting power chart
           votingPower[entity.name] =
             (stock.votesPerShare * balances[i]) + (votingPower[entity.name] || 0)
         }

@@ -11,7 +11,7 @@ const tmpl = Template.Module_Account.extend()
 
 tmpl.onRendered(function () {
   this.$('#logout').popup({ position: 'top center' })
-  this.$('#viewAllAccounts, #linkKeybase').popup({ position: 'bottom center' })
+  this.$('#viewAllAccounts, #linkKeybase, #unlinkCompany').popup({ position: 'bottom center' })
   this.$('[name="currency"]').dropdown({
     fullTextSearch: true,
     onChange: cur => Settings.set('displayCurrency', cur),
@@ -45,8 +45,12 @@ tmpl.events({
       ethereumAddress: entity.ethereumAddress,
       data: {},
     })
-  },
-  'click #linkKeybase': async () => Identity.linkCurrent('keybase'),
+    },
+    'click #unlinkCompany': () => {
+      localStorage.clear()
+      location.reload()
+    },
+    'click #linkKeybase': async () => Identity.linkCurrent('keybase'),
 })
 
 tmpl.helpers({
@@ -54,4 +58,5 @@ tmpl.helpers({
   currencies: () => (
     Object.keys(currencies).map((symbol) => ({ name: currencies[symbol], symbol }))
   ),
+  companyAddress: () => localStorage.getItem('companyAddress')
 })

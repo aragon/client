@@ -36,13 +36,21 @@ const promisedDeploy = (c, p) => {
   })
 }
 
+const toggleMetaMask = (show: boolean = true) => {
+  const metaMask = $('#Layout_MetaMask')
+  const toggleClass = (show) ? 'hidden' : 'visible'
+  if (metaMask.hasClass(toggleClass)) {
+    metaMask.transition('fade down')
+  }
+}
+
 class Dispatcher {
   get address() {
     return Identity.current(true).ethereumAddress
   }
 
   get transactionParams() {
-    return { from: this.address, gas: 4.7e6 }
+    return { from: this.address }
   }
 
   async dispatch(action, ...params) {
@@ -63,6 +71,7 @@ class Dispatcher {
 
     const txID = await sendTransaction(params)
     await this.addPendingTransaction(txID)
+    toggleMetaMask(false)
     return txID
   }
 
@@ -85,6 +94,7 @@ class Dispatcher {
 
     const txID = await promisedDeploy(web3.eth.contract(contract.abi), args)
     await this.addPendingTransaction(txID)
+    toggleMetaMask(false)
     return txID
   }
 
