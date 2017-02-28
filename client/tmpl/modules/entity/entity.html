@@ -43,7 +43,7 @@
       </a>
       {{ /if}}
       {{ #if $eq identityProvider 'anon' }}
-      <a class="ui primary icon button" href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">
+      <a class="ui primary icon button" href="{{ etherscanAddress ethereumAddress }}" target="_blank">
         <i class="white ethereum icon"></i> Open on Etherscan
       </a>
       {{ /if }}
