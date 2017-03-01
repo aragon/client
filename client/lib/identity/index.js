@@ -17,8 +17,6 @@ const providers = {
   anon: Anon,
 }
 
-console.log(providers)
-
 const lookupAddress = async (addr: string): Object => {
   let identityProvider = null
   let data = null
@@ -133,7 +131,7 @@ class Identity {
   static async linkCurrent(identityProvider: string): Promise<boolean> {
     const current = Identity.current()
 
-    const username = await (providers[identityProvider] || Keybase).link(current.ethereumAddress)
+    const username = await providers[identityProvider].link(current.ethereumAddress)
     if (!username) return false
 
     const entity = await Identity.getUsernameRaw(username, identityProvider)

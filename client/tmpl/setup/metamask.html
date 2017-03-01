@@ -13,7 +13,9 @@
         <p>In order to continue:</p>
           <ul>
             <li>Get testnet ether for your address (needed to transact), we are sending some but if it doesn't appear in your account in one minute, <a href="http://faucet.ropsten.be:3001" target="_blank">try here</a></li>
+            {{ #if isInWrongNetwork }}
             <li>Aragon doesn't work in the mainnet, change network to Ropsten testnet in Metamask. Refresh after changing network.</li>
+            {{ /if }}
           </ul>
         {{ /unless }}
       {{ /with }}

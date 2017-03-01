@@ -39,12 +39,16 @@ export default class Keybase {
   static async lookupEthAddress(addr: string): Promise<Object> {
     const registry = await KeybaseRegistry.deployed()
     const username = await registry.getUsername(addr)
-    if (!username || username === '') return {}
+    console.log('looked up username', username)
+    if (!username || username === '') return undefined
     return await Keybase.lookup(username)
   }
 
   static format(entity: Entity) {
     const data = entity.data
+    if (!data || data === {}) return null
+
+    console.log('the fucking ', data)
 
     const formatted = {
       username: data.basics.username,
