@@ -148,7 +148,7 @@ const ActionFactory = {
                         'How new bylaws actionable by a voting can be created', addVotingBylawDescription),
 
   // non-bylaw actions
-  transferTokens: new Action('transfer(address,uint)', 'Transfer tokens',
+  transferTokens: new Action('transfer(address,uint256)', 'Transfer tokens',
                               'How tokens can be transfered', () => '', false),
   setTxid: new Action('setTxid(string)', 'Setting transaction hash',
                               '(temporary, only for code verification purposes)', () => '', false),

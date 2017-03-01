@@ -48,8 +48,6 @@ export default class Keybase {
     const data = entity.data
     if (!data || data === {}) return null
 
-    console.log('the fucking ', data)
-
     const formatted = {
       username: data.basics.username,
       name: data.profile.full_name,

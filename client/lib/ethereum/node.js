@@ -89,9 +89,11 @@ class EthereumNode {
   }
 
   static async bindListeners() {
-    initWatchers()
-    const allListeners = await listeners.all()
-    NotificationsManager.listen(allListeners)
+    setTimeout(async () => {
+      initWatchers()
+      const allListeners = await listeners.all()
+      NotificationsManager.listen(allListeners)
+    }, 1000)
   }
 }
 
