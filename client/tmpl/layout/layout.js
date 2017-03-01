@@ -26,6 +26,7 @@ tmpl.onRendered(() => {
 
 tmpl.events({
   'click #walletButton': () => $('#Layout_MetaMask').transition('fade down'),
+  'click #refresh': () => location.reload(),
 })
 
 tmpl.helpers({
