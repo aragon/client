@@ -9,7 +9,7 @@ import { KeybaseRegistry } from '/client/lib/ethereum/contracts'
 const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
 
 const IS_DEV = true
-const proofFilename = `ethereum${IS_DEV ? '_dev' : ''}.json`
+const proofFilename = `ethereum${IS_DEV ? '_ropsten' : ''}.json`
 
 export default class Keybase {
   // Returns {status, them}
