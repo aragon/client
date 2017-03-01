@@ -46,8 +46,10 @@ const getNetworkID = () => (
   })
 )
 
+const isInWrongNetwork = async () => (await getNetworkID()) != deployedNetwork
+
 const canContinue = async () =>
-  getAccount().balance > 0 && (await getNetworkID()) == deployedNetwork
+  getAccount().balance > 0 && !(await isInWrongNetwork())
 
 const getAccount = () => EthAccounts.findOne()
 const deployedNetwork = 3 // ROPSTEN
@@ -58,7 +60,8 @@ tmpl.helpers({
   canContinue: ReactivePromise(canContinue),
   isButtonEnabled: ReactivePromise(async () => {
     return (await canContinue()) ? '' : 'disabled'
-  })
+  }),
+  isInWrongNetwork: ReactivePromise(isInWrongNetwork),
 })
 
 tmpl.events({

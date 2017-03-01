@@ -70,7 +70,7 @@ class Dispatcher {
 
   async signPayload(payload: string) {
     return await new Promise((resolve, reject) => {
-      web3.eth.sign(Identity.current(true).ethereumAddress, payload, (e, signature) => {
+      web3.eth.sign(this.transactionParams.from, payload, (e, signature) => {
         if (e) return reject(e)
 
         const r = signature.slice(0, 66)

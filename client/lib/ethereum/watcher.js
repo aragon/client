@@ -10,10 +10,12 @@ class Watcher {
   watchEvent(_event, callback, predicate = {}) {
     const realCallback = (err, ev) => {
       if (err) return callback.call(this, err)
-
+      this.lastWatchedBlock = ev.blockNumber
       return callback.call(this, err, ev)
     }
 
+    console.log('straming', this.key, this.streamingPredicate)
+    console.log('missed', this.key, this.missedPredicate)
     _event(predicate, this.streamingPredicate).watch(realCallback)
     _event(predicate, this.missedPredicate).get((err, evs) => {
       if (err) return realCallback(err)
@@ -22,7 +24,7 @@ class Watcher {
   }
 
   get missedPredicate() {
-    return { fromBlock: Math.max(0, this.lastWatchedBlock - 10000), toBlock: this.threshold() }
+    return { fromBlock: Math.max(0, this.lastWatchedBlock), toBlock: this.threshold() }
   }
 
   get streamingPredicate() {
@@ -42,7 +44,7 @@ class Watcher {
   }
 
   get lastWatchedBlock() {
-    return Session.get(this.lastBlockKey) || EthBlocks.latest.number
+    return Session.get(this.lastBlockKey) || (EthBlocks.latest.number - 15000)
   }
 
   get lastBlock() {
