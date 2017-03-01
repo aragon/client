@@ -43,6 +43,8 @@ const getBalance = (stock, ethereumAddress) => {
 }
 
 tmpl.onRendered(function () {
+  $('#ownershipInfoPopup').popup()
+
   this.autorun(async () => {
     const stocks = Stocks.find().fetch()
     drawChart(this.$('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
