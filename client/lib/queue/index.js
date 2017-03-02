@@ -34,7 +34,11 @@ class TxQueue {
   }
 
   async add(txID) {
+    console.log('Queuing', txID)
     const tx = await getTx(txID)
+    if (!tx) {
+      alert('Couldnt find transaction in pending transaction to add to queue. Most likely our web3 provider (Infura) isnt working properly.')
+    }
     const action = actionFromData(tx.input)
 
     if (!action) return
