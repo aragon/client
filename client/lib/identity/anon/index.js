@@ -16,7 +16,7 @@ export default class Anon {
   }
 
   static isCompany(address) {
-    return address === localStorage.getItem('companyAddress')
+    return address.toLowerCase() === localStorage.getItem('companyAddress').toLowerCase()
   }
 
   static format(entity: Entity) {

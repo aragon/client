@@ -42,35 +42,41 @@ const getBalance = (stock, ethereumAddress) => {
   return entity.balances[stock]
 }
 
+const drawWithStocks = async (stocks) => {
+  drawChart(this.$('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
+
+  const allShares = stocks.map(s => s.shareholders)
+  const globalBalances = {}
+  const votingPower = {}
+
+  for (const shareId in allShares) {
+    const stock = stocks[shareId]
+    const shareShareholders = allShares[shareId].map(x => x.shareholder)
+
+    const balances = shareShareholders.map(a => getBalance(stock.address, a))
+
+    for (const i in shareShareholders) {
+      const entity = await Identity.get(shareShareholders[i])
+      if (entity.name === 'Company') entity.name = 'Company reserves'
+      globalBalances[entity.name] = balances[i] + (globalBalances[entity.name] || 0)
+      if (stock.votesPerShare && entity.name !== 'Company reserves') { // exclude from voting power chart
+        votingPower[entity.name] =
+          (stock.votesPerShare * balances[i]) + (votingPower[entity.name] || 0)
+      }
+    }
+  }
+
+  drawChart(this.$('#capitalChart'), 'Global shareholder stake', Object.keys(globalBalances), Object.values(globalBalances))
+  drawChart(this.$('#votingChart'), 'Voting stake', Object.keys(votingPower), Object.values(votingPower))
+}
+
+const throttledDraw = _.throttle((stocks) => drawWithStocks(stocks), 5000)
+
 tmpl.onRendered(function () {
   $('#ownershipInfoPopup').popup()
 
   this.autorun(async () => {
-    const stocks = Stocks.find().fetch()
-    drawChart(this.$('#stockChart'), 'Stock types', stocks.map(s => s.symbol), stocks.map(s => s.totalSupply))
-
-    const allShares = stocks.map(s => s.shareholders)
-    const globalBalances = {}
-    const votingPower = {}
-
-    for (const shareId in allShares) {
-      const stock = stocks[shareId]
-      const shareShareholders = allShares[shareId].map(x => x.shareholder)
-
-      const balances = shareShareholders.map(a => getBalance(stock.address, a))
-
-      for (const i in shareShareholders) {
-        const entity = await Identity.get(shareShareholders[i])
-        if (entity.name === 'Company') entity.name = 'Company reserves'
-        globalBalances[entity.name] = balances[i] + (globalBalances[entity.name] || 0)
-        if (stock.votesPerShare && entity.name !== 'Company reserves') { // exclude from voting power chart
-          votingPower[entity.name] =
-            (stock.votesPerShare * balances[i]) + (votingPower[entity.name] || 0)
-        }
-      }
-    }
-
-    drawChart(this.$('#capitalChart'), 'Global shareholder stake', Object.keys(globalBalances), Object.values(globalBalances))
-    drawChart(this.$('#votingChart'), 'Voting stake', Object.keys(votingPower), Object.values(votingPower))
+    console.log('RUNNNNNNNNNNN')
+    throttledDraw(Stocks.find().fetch())
   })
 })
