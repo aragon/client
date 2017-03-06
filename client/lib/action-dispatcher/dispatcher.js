@@ -62,6 +62,7 @@ class Dispatcher {
   async performTransaction(f, ...args) {
     const [ params ] = f.request.apply(this, args.concat([this.transactionParams])).params
 
+    console.log('sending tx', params)
     const txID = await sendTransaction(params)
     await this.addPendingTransaction(txID)
     toggleMetaMask(false)

@@ -41,18 +41,19 @@ const getNetworkID = () => (
   new Promise((resolve, reject) => {
     web3.version.getNetwork((err, id) => {
       if (err) reject(err)
-      else resolve(id)
+      else resolve(parseInt(id))
     })
   })
 )
 
-const isInWrongNetwork = async () => (await getNetworkID()) != deployedNetwork
+const supportedNetworks = [3, 15]
+
+const isInWrongNetwork = async () => !_.contains(supportedNetworks, await getNetworkID())
 
 const canContinue = async () =>
   getAccount().balance > 0 && !(await isInWrongNetwork())
 
 const getAccount = () => EthAccounts.findOne()
-const deployedNetwork = 3 // ROPSTEN
 
 tmpl.helpers({
   account: getAccount,
