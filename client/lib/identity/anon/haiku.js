@@ -1,5 +1,7 @@
 // @flow
 
+import { sha3, bufferToHex } from 'ethereumjs-util'
+
 const adjs = ['autumn', 'hidden', 'bitter', 'misty', 'silent', 'empty', 'dry',
   'dark', 'summer', 'icy', 'delicate', 'quiet', 'white', 'cool', 'spring',
   'winter', 'patient', 'twilight', 'dawn', 'crimson', 'wispy', 'weathered',
@@ -23,10 +25,11 @@ const nouns = ['waterfall', 'river', 'breeze', 'moon', 'rain', 'wind', 'sea',
 const upperCase = (str: string): string => str[0].toUpperCase() + str.slice(1)
 
 const haiku = (hex: string): string => {
-  const n = Math.abs(Math.cos(parseInt(hex, 16)))
+  const n1 = parseInt(bufferToHex(sha3(hex)).slice(10, 15), 16)
+  const n2 = parseInt(bufferToHex(sha3(hex)).slice(20, 25), 16)
 
-  const adj = upperCase(adjs[Math.floor(n*(adjs.length-1))])
-  const noun = upperCase(nouns[Math.floor(n*(nouns.length-1))])
+  const adj = upperCase(adjs[n1 % (adjs.length-1)])
+  const noun = upperCase(nouns[n2 % (adjs.length-1)])
 
   return `${adj} ${noun}`
 }
