@@ -8,7 +8,7 @@ import Company from './deployed'
 
 import Watcher from './watcher'
 
-const Stocks = new Mongo.Collection('stocks', { connection: null })
+Stocks = new Mongo.Collection('stocks', { connection: null })
 
 class StockWatcher extends Watcher {
   Stocks: Mongo.Collection
@@ -115,7 +115,13 @@ class StockWatcher extends Watcher {
 
     const predicate = { _id: `s_${address}` }
     this.Stocks.upsert(predicate, stockInfo)
-    this.listenForStockTransfers(this.Stocks.find(predicate))
+
+    stockInfo.shareholders.forEach(({ shareholder }, i) => {
+      const entity = Entities.findOne({ ethereumAddress: shareholder })
+      if (i === 0 || !entity || !entity.balances || !entity.balances[stockInfo.address]) {
+        this.setBalance(shareholder, stockInfo.address)
+      }
+    })
   }
 }
 

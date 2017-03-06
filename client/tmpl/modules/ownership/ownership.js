@@ -51,7 +51,7 @@ tmpl.helpers({
   },
   balance: (stock, ethereumAddress) => {
     const entity = Entities.findOne({ ethereumAddress })
-    if (!entity || !entity.balances) return 0
+    if (!entity || !entity.balances) return -1
     return entity.balances[stock]
   },
   company: () => Company().address,

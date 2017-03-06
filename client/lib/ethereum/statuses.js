@@ -19,9 +19,9 @@ class StatusWatcher extends Watcher {
   async updateStatus(ethereumAddress, _status) {
     const status: number = _status.toNumber()
     console.log(`Updating status of ${ethereumAddress}`)
-    console.log('before', Entities.findOne({ current: true }))
+    console.log('before', Entities.findOne({ current: true }).balances)
     Entities.upsert({ ethereumAddress }, { $set: { status } })
-    console.log('after', Entities.findOne({ current: true }))
+    console.log('after', Entities.findOne({ current: true }).balances)
   }
 }
 

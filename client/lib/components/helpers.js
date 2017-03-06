@@ -34,7 +34,6 @@ Template.registerHelper('getEntity', ReactivePromise(async (address) => {
 
 Template.registerHelper('entityName', ReactivePromise(async (address) => {
   if (!web3.isConnected()) return {}
-  if (address === localStorage.getItem('companyAddress')) return 'Unassigned'
   const identity = await Identity.get(address)
   return identity.name
 }))
