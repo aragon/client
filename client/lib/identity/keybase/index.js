@@ -5,11 +5,11 @@ import link from './link'
 import Proofs from './proofs'
 
 import { KeybaseRegistry } from '/client/lib/ethereum/contracts'
+import { keybaseSuffixes } from '/client/lib/ethereum/networks'
 
 const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
 
-const IS_DEV = true
-const proofFilename = `ethereum${IS_DEV ? '_ropsten' : ''}.json`
+const proofFilename = (): string => `ethereum${keybaseSuffixes[Session.get('network')]}.json`
 
 export default class Keybase {
   // Returns {status, them}
@@ -31,7 +31,7 @@ export default class Keybase {
   }
 
   static async getVerifiedEthereumAddress(username: string): Promise<string> {
-    const res = await fetch(`cors://${username}.keybase.pub/${proofFilename}`)
+    const res = await fetch(`cors://${username}.keybase.pub/${proofFilename()}`)
     const proof = await res.json()
     return Proofs.verifyProof(proof)
   }
@@ -78,6 +78,6 @@ export default class Keybase {
       alert('You need to use our desktop app and the Keybase desktop app in order to link your identity.')
       return ''
     }
-    return link(addr, proofFilename)
+    return link(addr, proofFilename())
   }
 }

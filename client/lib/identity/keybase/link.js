@@ -15,10 +15,9 @@ const link = async (address: string, proofFilename: string): Promise<string> => 
 
   const proof = await Proofs.createProof(username, address)
   const proofPayload = JSON.stringify(proof)
-  await intertron.call('Keybase.saveProof', proofPayload, proofFilename)
-
   const chainRegistry = await KeybaseRegistry.deployed()
-  await dispatcher.performTransaction(chainRegistry.register, username, address)
+  dispatcher.performTransaction(chainRegistry.register, username, address)
+  await intertron.call('Keybase.saveProof', proofPayload, proofFilename)
 
   return username
 }

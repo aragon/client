@@ -46,7 +46,7 @@ const getNetworkID = () => (
   })
 )
 
-const supportedNetworks = [3, 15]
+const supportedNetworks = [3, 15, 42]
 
 const isInWrongNetwork = async () => !_.contains(supportedNetworks, await getNetworkID())
 

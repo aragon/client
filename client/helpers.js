@@ -30,8 +30,10 @@ helpers.bylawDisclaimerForAction = bylawDisclaimerForAction
 
 helpers.unhandledNotifications = () => Notifications.find({ handled: false }).count()
 helpers.ether = (x: number): string => parseFloat(web3.fromWei(x, 'ether')).toLocaleString()
-helpers.etherscan = (txId: string): string => `https://testnet.etherscan.io/tx/${txId}`
-helpers.etherscanAddress = (address: string): string => `https://testnet.etherscan.io/address/${address}`
+
+helpers.networkName = (): string => Session.get('networkName')
+helpers.etherscan = (txId: string): string => `https://${Session.get('etherscanSub')}etherscan.io/tx/${txId}`
+helpers.etherscanAddress = (address: string): string => `https://${Session.get('etherscanSub')}etherscan.io/address/${address}`
 
 Object.keys(helpers).forEach(k => Template.registerHelper(k, helpers[k]))
 
