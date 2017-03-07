@@ -4,6 +4,8 @@ import { TemplateVar } from 'meteor/frozeman:template-var'
 import { $ } from 'meteor/jquery'
 
 import Identity from '/client/lib/identity'
+import { faucets } from '/client/lib/ethereum/networks'
+import TxQueue from '/client/lib/queue'
 
 const tmpl = Template.Setup_MetaMask
 
@@ -22,18 +24,26 @@ tmpl.onRendered(function (){
       if (!Entities.findOne({current: true})) Identity.reset()
       $('#setupMetaMask').text('Continue').attr('id', 'continue')
       // toggleMetaMask(false)
-      const account = getAccount()
-      if (account.balance < 1 || true) {
-        faucetForAddress(account.address)
-      }
+      _.throttle(account => {
+        if (account.balance < 1) {
+          faucetForAddress(account.address)
+        }
+      }, 10000)(getAccount())
     }
   })
 })
 
 const faucetForAddress = (address, delay = 250) => {
-  console.log('Requesting ether to faucet for account', address)
-  HTTP.call('GET', `http://faucet.ropsten.be:3001/donate/${address}`, (err, success) => {
-    if (err) setTimeout(() => faucetForAddress(address, delay * 2), Math.min(delay, 10000))
+  const faucet = faucets[Session.get('network')]
+  if (!faucet) return
+
+  const url = faucet(address)
+  console.log('Requesting ether to faucet for account', address, url)
+
+  HTTP.call('GET', url, (err, success) => {
+    if (err) setTimeout(() => faucetForAddress(address, delay * 200), Math.min(delay, 1000000))
+    console.log('faucet', err, success)
+    if (success && success.data) TxQueue.add(success.data.txID)
   })
 }
 

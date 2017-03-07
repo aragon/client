@@ -19,4 +19,11 @@ const keybaseSuffixes = {
   42: '_kovan',
 }
 
-export { domains, names, keybaseSuffixes }
+const faucets = {
+  1: () => null,
+  3: address => `http://faucet.ropsten.be:3001/donate/${address}`,
+  15: () => null,
+  42: address => `https://kovan-faucet.aragon.one/address/${address}`,
+}
+
+export { domains, names, keybaseSuffixes, faucets }

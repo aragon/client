@@ -159,7 +159,9 @@ const ActionFactory = {
   configureCompany: new Action('configureCompany(address,address)', 'Company bootstrap',
                                 'Finishing company configuration', () => '', false),
   keybaseRegistry: new Action('register(string,address)', 'Registering identity',
-                                'Mapping your address to your Keybase username', () => '', false)
+                                'Mapping your address to your Keybase username', () => '', false),
+  faucet: new Action('faucet()', 'Funding your account',
+                                'Sending some testnet to your address to use it', () => '', false)
 }
 
 export default ActionFactory
