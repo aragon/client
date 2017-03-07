@@ -29,7 +29,7 @@ const haiku = (hex: string): string => {
   const n2 = parseInt(bufferToHex(sha3(hex)).slice(20, 25), 16)
 
   const adj = upperCase(adjs[n1 % (adjs.length-1)])
-  const noun = upperCase(nouns[n2 % (adjs.length-1)])
+  const noun = upperCase(nouns[n1 % (adjs.length-1)])
 
   return `${adj} ${noun}`
 }
