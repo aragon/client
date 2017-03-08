@@ -31,7 +31,7 @@
   {{ > Layout_Sidebar }}
 
   <div id="container">
-    <div class="ui very relaxed padded divided grid">
+    <div class="ui very relaxed padded grid">
       {{> Template.dynamic template=main data=data}}
     </div>
   </div>
@@ -44,6 +44,6 @@
   {{ #if isInjectedMetaMask }}{{ > Layout_MetaMask }}{{ /if }}
 
   <div class="ui active inverted dimmer" id="initialDimmer">
-    <div class="ui text loader"><br>Entering Aragon<br><br><small>If this gets stuck for >30 seconds, please <a href="/" id="reload">refresh</a></small></div>
+    <small>If this gets stuck for >30 seconds, please <a href="/" id="reload">refresh</a></small>
   </div>
 </template>

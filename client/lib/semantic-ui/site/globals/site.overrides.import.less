@@ -16,13 +16,13 @@ body {
   box-sizing: inherit;
 }
 
-body, input {
+/* body, input {
   font-weight: lighter;
-}
+} */
 
 #topbar {
   height: 5rem;
-  background: @black;
+  background: black;
   -webkit-app-region: drag;
   padding: 0 0.75rem;
   z-index: 1001;
@@ -53,6 +53,34 @@ body, input {
 
 #sidebar {
   margin-top: 5rem !important;
+
+  .item {
+    font-size: 1.25rem;
+    color: #333333;
+    padding: 1.5rem;
+
+    &:nth-child(1) {
+      margin-top: 1rem;
+    }
+
+    &:before, &:hover, &.active, &.active:hover {
+      background: none;
+      color: @primaryColor;
+    }
+
+    .icon {
+      float: none !important;
+      margin-right: 0.5rem !important;
+    }
+
+    &.bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transform: translateY(-150%);
+    }
+  }
 }
 
 #container {
@@ -127,6 +155,43 @@ body, input {
   left: 15rem !important;
   right: 0;
   width: auto !important;
+}
+
+a.underline {
+  cursor: pointer;
+  font-family: 'Maison Neue Mono';
+  color: @black;
+  position: relative;
+  display: inline-block;
+  &:link {
+    text-decoration: none;
+  }
+  &:hover {
+    &:before {
+      visibility: visible;
+      -webkit-transform: scaleX(1);
+      transform: scaleX(1);
+    }
+  }
+  &:before {
+    display: block;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    background-color: @blue;
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.25s ease-in-out 0s;
+  }
+}
+
+a:not(.underline) {
+  color: @primaryColor;
 }
 
 @text-colors: blue, green, orange, pink, purple, red, teal, yellow, black, grey, white;

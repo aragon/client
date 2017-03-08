@@ -61,7 +61,7 @@ const load = async () => {
   BrowserNotifications.requestPermission()
 
   initFinished.set(true)
-  $('#initialDimmer').remove()
+  $('#initialDimmer').fadeOut()
 }
 
 const injectMetaMask = async () => {

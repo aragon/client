@@ -1,6 +1,6 @@
 <template name="Module_Account">
   <div class="nine wide column" id="Module_Account">
-    <form class="ui flex attached form">
+    <form class="ui attached form">
       <h1 class="ui header">Your account</h1>
       <div class="ui divider"></div>
 
@@ -14,7 +14,11 @@
         <label>Company address</label>
         <input value="{{ companyAddress }}" type="text" disabled>
       </div>
-      <a href="#" id="unlinkCompany" data-content="Your company will continue to exist on the network, but Aragon will be unlinked. Save the company address in case you want to recover it." data-variation="inverted">Unlink company...</a>
+      <div class="field">
+        <a class="underline" id="unlinkCompany" data-content="Your company will continue to exist on the network, but Aragon will be unlinked. Save the company address in case you want to recover it." data-variation="inverted">Unlink company</a>
+      </div>
+
+      <div class="ui hidden divider"></div>
 
       <h3 class="ui header">
         Ethereum account
@@ -52,7 +56,7 @@
       </div>
       {{ else }}
       <div class="field">
-      <a href="#" id="viewAllAccounts" data-content="If you change your account, you will have to re-link your identity and you will have to take care of past transactions incurred with your current Ethereum account.\nProceed carefully." data-variation="inverted">Choose another account...</a>
+        <a class="underline" id="viewAllAccounts" data-content="If you change your account, you will have to re-link your identity and you will have to take care of past transactions incurred with your current Ethereum account. Proceed carefully." data-variation="inverted">Choose another account</a>
       </div>
       {{ /if }}
 
@@ -68,7 +72,7 @@
       <div class="ui grid">
         {{#if $eq identityProvider 'keybase'}}
         <div class="ten wide column">
-          <a class="ui positive icon fluid button" href="https://keybase.io/{{ username }}" target="_blank">
+          <a class="ui primary icon fluid button" href="https://keybase.io/{{ username }}" target="_blank">
             <i class="user icon"></i> Logged in with Keybase as {{ username }}
           </a>
         </div>
@@ -80,7 +84,7 @@
         {{/if}}
         {{#if $eq identityProvider 'anon'}}
         <div class="ten wide column">
-          <a class="ui positive icon fluid button" href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">
+          <a class="ui primary icon fluid button" href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">
             <i class="user icon"></i> Using your Ethereum account's identity
           </a>
         </div>

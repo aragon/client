@@ -3,33 +3,6 @@
 *******************************/
 
 .sidebar.vertical.menu {
-  box-shadow: @dividedBorder;
-
-  .item {
-    font-size: 1.25rem;
-    font-weight: 300;
-    color: @grey;
-
-    &:nth-child(1) {
-      margin-top: 1rem;
-    }
-
-    &:before, &:hover, &.active, &.active:hover {
-      background: none;
-      color: @primaryColor;
-    }
-
-    .icon {
-      float: none !important;
-      margin-right: 0.5rem !important;
-    }
-
-    &.bottom {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      transform: translateY(-150%);
-    }
-  }
+  box-shadow: none;
+  border-right: 2px #E1E1E1 solid;
 }

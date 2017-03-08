@@ -1,3 +1,7 @@
+html {
+  background-color: #1F1F1F;
+}
+
 #inboxButton {
   .floating.label {
     margin-left: -1.5rem !important;
@@ -8,5 +12,27 @@
 .electron {
   #topbar .header img {
     margin-top: 1rem;
+  }
+}
+
+#initialDimmer {
+  background-color: #1F1F1F;
+  background-image: url(/rsc/isotype.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 25%;
+
+  small {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+
+    a {
+      color: white;
+      font-weight: bold;
+      text-decoration: underline;
+    }
   }
 }
