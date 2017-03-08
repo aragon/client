@@ -63,14 +63,16 @@ class Dispatcher {
     const [ params ] = f.request.apply(this, args.concat([this.transactionParams])).params
 
     console.log('sending tx', params)
+    let txID = ''
     try {
-      const txID = await sendTransaction(params)
-      await this.addPendingTransaction(txID)
-      toggleMetaMask(false)
-      return txID
+      txID = await sendTransaction(params)
     } catch (e) {
-      alert('Transaction would fail if sent. If you believe this to be an error, contact support', e)
+      return alert('Transaction would fail if sent. If you believe this to be an error, contact support', e)
     }
+
+    await this.addPendingTransaction(txID)
+    toggleMetaMask(false)
+    return txID
   }
 
   async signPayload(payload: string) {
