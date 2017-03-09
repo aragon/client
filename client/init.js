@@ -20,6 +20,8 @@ import StockWatcher from '/client/lib/ethereum/stocks'
 import StockSalesWatcher from '/client/lib/ethereum/stocksales'
 import VotingWatcher from '/client/lib/ethereum/votings'
 
+import release from '../package.json'
+
 const initFinished = new ReactiveVar(false)
 const isInjectedMetaMask = new ReactiveVar(false)
 
@@ -45,6 +47,12 @@ const clearStorage = () => {
 
 const load = async () => {
   Meteor.disconnect()
+
+  if (localStorage.getItem('currentRelease') !== release.version) {
+    alert("We will reset your storage in order to upgrade your Aragon version.")
+    localStorage.clear()
+    localStorage.setItem('currentRelease', release.version)
+  }
 
   await EthereumNode.connect()
 
