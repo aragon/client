@@ -21,9 +21,11 @@ const getNetworkID = () => (
   })
 )
 
+const delay = t => new Promise(r => setTimeout(() => r(), t))
+
 const initCollections = async (): Promise<boolean> => {
   const promises = await Promise.all([
-    new Promise((resolve, reject) => {
+    new Promise(async (resolve, reject) => {
       const accountObserver = EthAccounts.find().observe({
         addedAt: () => {
           console.log('EthAccounts: Ready')
@@ -37,7 +39,7 @@ const initCollections = async (): Promise<boolean> => {
         else if (accs.length < 1) resolve(true)
       })
     }),
-    new Promise((resolve, reject) => {
+    new Promise(async (resolve, reject) => {
       const blockObserver = EthBlocks.find().observe({
         addedAt: () => {
           console.log('EthBlocks: Ready')
@@ -45,6 +47,7 @@ const initCollections = async (): Promise<boolean> => {
           resolve(true)
         },
       })
+      await delay(500)
       EthBlocks.init()
     })
   ])
