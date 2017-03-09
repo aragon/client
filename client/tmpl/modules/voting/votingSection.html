@@ -6,7 +6,7 @@
     <h1 class="ui header">
       {{title}}
       {{#if isNull voteExecuted}}
-        <a class="ui left pointing red basic label">Ends in {{ timeRange now closingTime }}</a>
+        <a class="ui red basic label">Ends in {{ timeRange now closingTime }}</a>
         {{#if supportNeeded}}
         <a class="ui violet label">Requires {{ percentFormat supportNeeded }} support</a>
         {{/if}}
