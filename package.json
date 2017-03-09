@@ -28,7 +28,7 @@
     "pack:win:copy": "npm run pack:win:copy:aragon; npm run pack:win:copy:metamask",
     "pack:win": "electron-packager .electron $npm_package_productName --out=.electron/dist --platform=win32 --arch=x64 --icon=.electron/icons/Aragon.ico; npm run pack:win:copy",
 
-    "pack": "npm run pack:osx; npm run pack:linux64; pack:win",
+    "pack": "npm run pack:osx; npm run pack:linux64; npm run pack:win",
 
     "release": "npm run dist; npm run pack",
     "deploy": "ipfs add -rq .dist | tail -n 1 | ipfs name publish"
