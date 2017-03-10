@@ -18,8 +18,6 @@ tmpl.routes({
   '/*/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
 
-tmpl.onCreated(() => {})
-
 tmpl.onRendered(function () {
   this.$('table').tablesort()
 })

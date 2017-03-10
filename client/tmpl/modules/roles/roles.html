@@ -29,6 +29,8 @@
       <tbody>
         {{#each entities}}
         {{#if $contains (TemplateVar.get 'searchString') (entityName this.ethereumAddress)}}
+        {{#unless $contains 'Company Factory' (entityName this.ethereumAddress)}}
+        {{#unless $contains 'Company Configurator Factory' (entityName this.ethereumAddress)}}
         <tr data-entity="{{ this.ethereumAddress }}">
           <td>
             {{ entityName this.ethereumAddress }}
@@ -44,6 +46,8 @@
             {{ /if }}
           </td>
         </tr>
+        {{/unless}}
+        {{/unless}}
         {{/if}}
         {{/each}}
       </tbody>
