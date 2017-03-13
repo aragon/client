@@ -73,7 +73,9 @@ class Dispatcher {
     }
 
     await this.addPendingTransaction(txID)
-    toggleMetaMask(false)
+
+    if (!this.dontHideMetamask) toggleMetaMask(false)
+
     return txID
   }
 
@@ -86,12 +88,12 @@ class Dispatcher {
   }
 
   async deployContract(contract, ...args) {
-    if (args.length < 1) return reject(new Error("No params for contract deployment provided"))
-    args[args.length-1].data = contract.binary // Last arg is transaction params, so we add the contract binary data
+    const params = this.transactionParams
+    params.data = contract.binary
 
-    const txID = await promisedDeploy(web3.eth.contract(contract.abi), args)
+    const txID = await promisedDeploy(web3.eth.contract(contract.abi), args.concat([params]))
     await this.addPendingTransaction(txID)
-    toggleMetaMask(false)
+    if (!this.dontHideMetamask) toggleMetaMask(false)
     return txID
   }
 
@@ -113,10 +115,9 @@ class Dispatcher {
     const nonce = parseInt(Math.random() * 1e15)
     const payload = await company.hashedPayload(company.address, nonce)
     const preauth = Buffer.concat([new Buffer('Voting pre-auth '), utils.toBuffer(payload)])
-    console.log('my length is', preauth.length, preauth)
     const { r, s, v } = await this.signPayload(utils.bufferToHex(preauth))
 
-    const txid = await this.deployContract(GenericBinaryVoting, txData, votingCloses, company.address, r, s, v, nonce, this.transactionParams)
+    const txid = await this.deployContract(GenericBinaryVoting, txData, votingCloses, company.address, r, s, v, nonce)
     console.log('deployed on tx', txid)
   }
 }

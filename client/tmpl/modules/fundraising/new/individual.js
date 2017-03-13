@@ -36,11 +36,9 @@ tmpl.onRendered(function () {
       const units = this.$('input[name=units]').val()
       const closes = +moment(this.$('[type=date]').val()) / 1000
 
-      const address = Identity.current(true).ethereumAddress
-
       console.log('creating with investor', investor)
       await StockSaleWatcher.createIndividualInvestorSale(
-        address, selectedStock, investor, price, units, closes, title)
+        selectedStock, investor, price, units, closes, title)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false

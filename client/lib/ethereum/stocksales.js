@@ -2,6 +2,7 @@ import { Company } from './deployed'
 import { StockSale, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
+import TxQueue from '/client/lib/queue'
 import { verifyContractCode } from './verify'
 
 import Watcher from './watcher'
@@ -88,21 +89,34 @@ class StockSalesWatcher extends Watcher {
     return this.allSales.filter(x => x.contractClass === verifiedContract)[0]
   }
 
-  async createIndividualInvestorSale(address, stock, investor, price, units, closes, title = 'Series Y') {
-    const sale = await IndividualInvestorSale.new(
-                            Company().address, stock, investor, units, price, closes, title,
-                            { from: address, gas: 2000000 })
-    return await this.submitSale(sale, address)
+  async createIndividualInvestorSale(stock, investor, price, units, closes, title = 'Series Y') {
+    const saleTx = await dispatcher.deployContract(IndividualInvestorSale,
+                          Company().address, stock, investor, units, price, closes, title)
+    return this.watchSaleDeployTransaction(saleTx)
   }
 
-  async createBoundedSale(address, stock, min, max, price, closes, title = 'Series Z') {
-    const sale = await BoundedStandardSale.new(Company().address, stock, min, max, price, closes, title,
-                           { from: address, gas: 3000000 })
-    return await this.submitSale(sale, address)
+  async createBoundedSale(stock, min, max, price, closes, title = 'Series Z') {
+    const saleTx = await dispatcher.deployContract(BoundedStandardSale,
+                         Company().address, stock, min, max, price, closes, title)
+    return this.watchSaleDeployTransaction(saleTx)
   }
 
-  async submitSale(sale, address) {
-    await dispatcher.performTransaction(sale.setTxid, sale.transactionHash)
+  watchSaleDeployTransaction(txId) {
+    TxQueue.addListener(txId, () => {
+      web3.eth.getTransactionReceipt(txId, (err, tx) => {
+        if (err) return console.error(err)
+        if (!tx.contractAddress) return console.error('error deploying sale', tx)
+        return this.submitSale(StockSale.at(tx.contractAddress), txId)
+      })
+    })
+  }
+
+  async submitSale(sale, txId) {
+    console.log('submitting sale', sale)
+    // Megahack
+    dispatcher.dontHideMetamask = true
+    await dispatcher.performTransaction(sale.setTxid, txId)
+    dispatcher.dontHideMetamask = false
     return dispatcher.dispatch(actions.beginSale, sale.address)
   }
 

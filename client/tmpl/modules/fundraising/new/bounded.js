@@ -35,10 +35,8 @@ tmpl.onRendered(function () {
       const cap = this.$('input[name=cap]').val()
       const closes = +moment(this.$('[type=date]').val()) / 1000
 
-      const address = Identity.current(true).ethereumAddress
-
       await StockSaleWatcher
-        .createBoundedSale(address, selectedStock, min, cap, price, closes, title)
+        .createBoundedSale(selectedStock, min, cap, price, closes, title)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
