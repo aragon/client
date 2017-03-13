@@ -52,7 +52,7 @@ const allContracts = [
   Txid,
   CompanyFactory,
   CompanyConfiguratorFactory,
-  KeybaseRegistry
+  KeybaseRegistry,
 ]
 
 // allContracts.forEach(c => c.setProvider(web3.currentProvider))
