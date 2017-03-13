@@ -44,7 +44,7 @@ class Watcher {
   }
 
   get lastWatchedBlock() {
-    return Session.get(this.lastBlockKey) || (EthBlocks.latest.number - 15000 * 3)
+    return Session.get(this.lastBlockKey) || (EthBlocks.latest.number - 15000 * 40)
   }
 
   get lastBlock() {

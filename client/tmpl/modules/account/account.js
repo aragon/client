@@ -50,7 +50,13 @@ tmpl.events({
       localStorage.clear()
       location.reload()
     },
-    'click #linkKeybase': async () => Identity.linkCurrent('keybase'),
+    'click #linkKeybase': async () => {
+      if (confirm('Do you have the Keybase app installed?')) {
+        Identity.linkCurrent('keybase')
+      } else if (confirm('Do you want to install it?')) {
+        window.open('https://keybase.io/download')
+      }
+    },
 })
 
 tmpl.helpers({
