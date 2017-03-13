@@ -9,18 +9,14 @@
     </div>
     <div class="right menu">
       {{ > Layout_PendingTx }}
+      {{ > Layout_Inbox }}
+
       {{ #if isInjectedMetaMask }}
       <a class="item" id="walletButton">
         <i class="lock large icon"></i>
       </a>
       {{ /if }}
-      <a href="/inbox" class="item" id="inboxButton">
-        <!--<i class="inbox large icon"></i>-->
-        <i class="alarm large icon"></i>
-        {{ #if $gt unhandledNotifications 0 }}
-        <div class="ui floating red circular empty label"></div>
-        {{ /if }}
-      </a>
+      
       <a href="/settings" class="item">
         {{#with currentEntity}}<img src="{{ picture }}" class="ui mini right spaced circular image">{{/with}}
       </a>

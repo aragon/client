@@ -22,6 +22,12 @@ tmpl.onRendered(() => {
       toggleMetaMask(false)
     }
   })
+
+  window.resizePopups = () => {
+    $('.ui.scrollable.popup').css('max-height', $(window).height() - 128)
+  }
+
+  $(window).resize(() => (window.resizePopups()))
 })
 
 tmpl.events({

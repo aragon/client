@@ -35,13 +35,13 @@
       <h4 class="ui header">Round size</h4>
       <div class="two fields">
         <div class="field">
-          <label>Number</label>
+          <label>Number of shares</label>
           <input type="number" lang="en" name="units" placeholder="Number of shares" min="0">
         </div>
 
         <div class="field">
-          <label>Price</label>
-          {{ > Element_CurrencyAmount name='price' placeholder='Price' min=(ether 1) step='0.0000000000000000001' }}
+          <label>Share price</label>
+          {{ > Element_CurrencyAmount name='price' placeholder='Price' min='0.00000001' step='any' }}
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ const helpers = {}
 helpers.now = () => moment()
 helpers.timeRange = (a, b) => {
   let timeDiff = moment(a).twix(b).humanizeLength()
-  timeDiff = b < new Date() ? `${timeDiff} ago` : timeDiff
+  timeDiff = b <= new Date() ? `${timeDiff} ago` : timeDiff
   return timeDiff
 }
 // TODO: Some of this helpers are in raix:handlebar-helpers already
