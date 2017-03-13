@@ -1,19 +1,13 @@
 // @flow
 import utils from 'ethereumjs-util'
+import { personalSign, personalECRecover } from '/client/lib/ethereum/sign'
+
+const toHex = s => utils.bufferToHex(new Buffer(s))
 
 class KeybaseProofs {
-  static signWrapper(address: string, payload: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      web3.eth.sign(address, utils.bufferToHex(utils.sha3(payload)), (e, j) => {
-        if (e) reject(e)
-        resolve(j)
-      })
-    })
-  }
-
   static async createProof(username, address) {
     const proofString = this.getProofString(username, address)
-    const signature = await this.signWrapper(address, proofString)
+    const signature = await personalSign(address, toHex(proofString))
     const proof = { username, address, proofString, signature }
     return proof
   }
@@ -32,13 +26,7 @@ class KeybaseProofs {
   }
 
   static verifySignature(signature, message) {
-    const r = utils.toBuffer(signature.slice(0, 66))
-    const s = utils.toBuffer(`0x${signature.slice(66, 130)}`)
-    const v = 27 + utils.toBuffer(`0x${signature.slice(130, 132)}`)[0] - 27 // metamask
-    const m = utils.toBuffer(utils.sha3(message))
-    const pub = utils.ecrecover(m, v, r, s)
-    const address = utils.pubToAddress(pub).toString('hex')
-    return `0x${address}`
+    return personalECRecover(toHex(message), signature)
   }
 
   static getProofString(username, address) {
