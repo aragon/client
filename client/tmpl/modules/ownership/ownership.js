@@ -45,12 +45,16 @@ tmpl.helpers({
   },
   symbol: address => Stocks.findOne({ address }).symbol,
   shareholders: () => {
-    const set = new Set()
-    Stocks.find().fetch().forEach(s => s.shareholders.forEach(set.add.bind(set)))
-    return ([...set])
+    let shareholders = []
+    Stocks.find().fetch().forEach(s => (shareholders.push(...s.shareholders)))
+
+    shareholders = shareholders.filter(
+      (s, index, self) => self.findIndex(t => t.shareholder === s.shareholder) === index)
+
+    return shareholders
   },
   balance: (stock, ethereumAddress) => {
-    const entity = Entities.findOne({ ethereumAddress })
+    const entity = Entities.findOne({ ethereumAddress })
     if (!entity || !entity.balances) return -1
     return entity.balances[stock]
   },
