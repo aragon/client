@@ -12,24 +12,19 @@
     "app": "./.electron/node_modules/.bin/electron .electron",
     "migrations": "cd imports/lib/contracts; truffle migrate --reset",
     "dist": "./node_modules/.bin/meteor-build-client .dist -p ''",
-
     "pack:osx:copy:aragon": "cp -R .dist .electron/dist/Aragon-darwin-x64/Aragon.app/Contents/Resources/app/aragon",
     "pack:osx:copy:metamask": "cp -R .metamask/dist/chrome .electron/dist/Aragon-darwin-x64/Aragon.app/Contents/Resources/app/metamask",
     "pack:osx:copy": "npm run pack:osx:copy:aragon; npm run pack:osx:copy:metamask",
     "pack:osx": "electron-packager .electron $npm_package_productName --out=.electron/dist --platform=darwin --arch=x64 --icon=.electron/icons/Aragon.icns --overwrite; npm run pack:osx:copy",
-
     "pack:linux64:copy:aragon": "cp -R .dist .electron/dist/Aragon-linux-x64/resources/app/aragon",
     "pack:linux64:copy:metamask": "cp -R .metamask/dist/chrome .electron/dist/Aragon-linux-x64/resources/app/metamask",
     "pack:linux64:copy": "npm run pack:linux64:copy:aragon; npm run pack:linux64:copy:metamask",
     "pack:linux64": "electron-packager .electron $npm_package_productName --out=.electron/dist --platform=linux --arch=x64 --overwrite; npm run pack:linux64:copy",
-
     "pack:win:copy:aragon": "cp -R .dist .electron/dist/Aragon-win32-x64/resources/app/aragon",
     "pack:win:copy:metamask": "cp -R .metamask/dist/chrome .electron/dist/Aragon-win32-x64/resources/app/metamask",
     "pack:win:copy": "npm run pack:win:copy:aragon; npm run pack:win:copy:metamask",
     "pack:win": "electron-packager .electron $npm_package_productName --out=.electron/dist --platform=win32 --arch=x64 --icon=.electron/icons/Aragon.ico; npm run pack:win:copy",
-
-    "pack": "npm run pack:osx; npm run pack:linux64; pack:win",
-
+    "pack": "npm run pack:osx; npm run pack:linux64; npm run pack:win",
     "release": "npm run dist; npm run pack",
     "deploy": "ipfs add -rq .dist | tail -n 1 | ipfs name publish"
   },
@@ -37,6 +32,7 @@
     "babel-runtime": "^6.23.0",
     "chart.js": "^2.4.0",
     "crypto-js": "^3.1.9-1",
+    "eth-sig-util": "^1.2.1",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^5.0.1",
     "intertron-client": "^1.0.2",

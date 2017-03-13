@@ -25,7 +25,7 @@ tmpl.onRendered(function (){
       $('#setupMetaMask').text('Continue').attr('id', 'continue')
       // toggleMetaMask(false)
       _.throttle(account => {
-        if (account.balance < 1) {
+        if (account.balance < 5e17) {
           faucetForAddress(account.address)
         }
       }, 10000)(getAccount())
