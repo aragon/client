@@ -1,4 +1,4 @@
-import ethUtil from 'ethereumjs-util'
+import utils from 'ethereumjs-util'
 import sigUtil from 'eth-sig-util'
 
 const personalSign = (from, payload) => {
@@ -22,4 +22,6 @@ const personalECRecover = (data, sig) => {
   return sigUtil.recoverPersonalSignature({ sig, data })
 }
 
-export { personalSign, personalECRecover }
+const toHex = s => utils.bufferToHex(new Buffer(s))
+
+export { personalSign, personalECRecover, toHex }

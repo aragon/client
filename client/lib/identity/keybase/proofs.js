@@ -1,8 +1,6 @@
 // @flow
 import utils from 'ethereumjs-util'
-import { personalSign, personalECRecover } from '/client/lib/ethereum/sign'
-
-const toHex = s => utils.bufferToHex(new Buffer(s))
+import { personalSign, personalECRecover, toHex } from '/client/lib/ethereum/sign'
 
 class KeybaseProofs {
   static async createProof(username, address) {

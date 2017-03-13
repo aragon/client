@@ -1,6 +1,8 @@
 // @flow
 import { GenericBinaryVoting } from '/client/lib/ethereum/contracts'
 import { Company } from '/client/lib/ethereum/deployed'
+import { personalSign, toHex } from '/client/lib/ethereum/sign'
+import utils from 'ethereumjs-util'
 
 // import Identity from '/client/lib/identity'
 
@@ -76,16 +78,11 @@ class Dispatcher {
   }
 
   async signPayload(payload: string) {
-    return await new Promise((resolve, reject) => {
-      web3.eth.sign(this.transactionParams.from, payload, (e, signature) => {
-        if (e) return reject(e)
-
-        const r = signature.slice(0, 66)
-        const s = `0x${signature.slice(66, 130)}`
-        const v = `0x${signature.slice(130, 132)}` // Assumes v = { 27, 28 }
-        resolve({ r, s, v })
-      })
-    })
+    const signature = await personalSign(this.transactionParams.from, payload)
+    const r = signature.slice(0, 66)
+    const s = `0x${signature.slice(66, 130)}`
+    const v = `0x${signature.slice(130, 132)}` // Assumes v = { 27, 28 }
+    return { r, s, v }
   }
 
   async deployContract(contract, ...args) {
@@ -114,7 +111,8 @@ class Dispatcher {
     */
 
     const nonce = parseInt(Math.random() * 1e15)
-    const payload = await company.sigPayload(nonce)
+    const payload = await company.hashedPayload(company.address, nonce)
+    //const preauth = Buffer.concat([new Buffer('Voting pre-auth '), utils.toBuffer(payload.slice(2))])
     const { r, s, v } = await this.signPayload(payload)
 
     const txid = await this.deployContract(GenericBinaryVoting, txData, votingCloses, company.address, r, s, v, nonce, this.transactionParams)
