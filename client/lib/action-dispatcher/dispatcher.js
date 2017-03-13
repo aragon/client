@@ -112,8 +112,9 @@ class Dispatcher {
 
     const nonce = parseInt(Math.random() * 1e15)
     const payload = await company.hashedPayload(company.address, nonce)
-    //const preauth = Buffer.concat([new Buffer('Voting pre-auth '), utils.toBuffer(payload.slice(2))])
-    const { r, s, v } = await this.signPayload(payload)
+    const preauth = Buffer.concat([new Buffer('Voting pre-auth '), utils.toBuffer(payload)])
+    console.log('my length is', preauth.length, preauth)
+    const { r, s, v } = await this.signPayload(utils.bufferToHex(preauth))
 
     const txid = await this.deployContract(GenericBinaryVoting, txData, votingCloses, company.address, r, s, v, nonce, this.transactionParams)
     console.log('deployed on tx', txid)

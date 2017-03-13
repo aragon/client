@@ -38,7 +38,6 @@ const faucetForAddress = (address, delay = 250) => {
   if (!faucet) return
 
   const url = faucet(address)
-  console.log('Requesting ether to faucet for account', address, url)
 
   HTTP.call('GET', url, (err, success) => {
     if (err) setTimeout(() => faucetForAddress(address, delay * 200), Math.min(delay, 1000000))
