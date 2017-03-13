@@ -33,11 +33,15 @@ const initCollections = async (): Promise<boolean> => {
           resolve(true)
         },
       })
-      EthAccounts.init()
-      web3.eth.getAccounts((err, accs) => {
-        if (err) return reject(err)
-        else if (accs.length < 1) resolve(true)
-      })
+      try {
+        EthAccounts.init()
+        web3.eth.getAccounts((err, accs) => {
+          if (err) return reject(err)
+          else if (accs.length < 1) resolve(true)
+        })
+      } catch (e) {
+        reject(e)
+      }
     }),
     new Promise(async (resolve, reject) => {
       const blockObserver = EthBlocks.find().observe({
@@ -47,8 +51,11 @@ const initCollections = async (): Promise<boolean> => {
           resolve(true)
         },
       })
-      await delay(500)
-      EthBlocks.init()
+      try {
+        EthBlocks.init()
+      } catch (e) {
+        reject(e)
+      }
     })
   ])
 
@@ -81,7 +88,20 @@ const initConnection = async (): Promise<boolean> => (
 class EthereumNode {
   static async connect(): Promise<boolean> {
     const nodeReady = await initConnection()
-    const collectionsReady = await initCollections()
+    var collectionsReady = false
+    try {
+      setTimeout(() => {
+        if (!collectionsReady) {
+          console.log('time passed, didnt start')
+          this.connect()
+        }
+      }, 1000)
+      collectionsReady = await initCollections()
+    } catch (e) {
+      console.log('Caught the exception', e)
+      delay(500)
+      this.connect()
+    }
 
     allContracts.forEach(c => c.setProvider(web3.currentProvider))
     const nID = await getNetworkID()
