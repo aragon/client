@@ -69,7 +69,7 @@ class Dispatcher {
     try {
       txID = await sendTransaction(params)
     } catch (e) {
-      return alert('Transaction would fail if sent. If you believe this to be an error, contact support', e)
+      return alert('Transaction failed. If you believe this to be an error, contact support', e)
     }
 
     await this.addPendingTransaction(txID)
