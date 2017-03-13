@@ -1,6 +1,6 @@
 // @flow
 import { GenericBinaryVoting } from '/client/lib/ethereum/contracts'
-import Company from '/client/lib/ethereum/deployed'
+import { Company } from '/client/lib/ethereum/deployed'
 
 // import Identity from '/client/lib/identity'
 

@@ -5,4 +5,8 @@ const Company = () => (
   CompanyContract.at(localStorage.getItem('companyAddress'))
 )
 
-export default Company
+const CompanyFactory = () => (window.CompanyFactory)
+
+const CompanyConfiguratorFactory = () => (window.CompanyConfiguratorFactory)
+
+export { Company, CompanyFactory, CompanyConfiguratorFactory }

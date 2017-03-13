@@ -1,4 +1,4 @@
-import Company from './deployed'
+import { Company } from './deployed'
 import { StockSale, IndividualInvestorSale, BoundedStandardSale } from './contracts'
 
 import { dispatcher, actions } from '/client/lib/action-dispatcher'

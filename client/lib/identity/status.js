@@ -8,7 +8,7 @@ class Status {
       'none',
       'employee',
       'executive',
-      'god',
+      'superuser',
     ]
   }
   toString(status: number) {

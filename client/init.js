@@ -10,8 +10,8 @@ import Identity from '/client/lib/identity'
 import Settings from '/client/lib/settings'
 import EthereumNode from '/client/lib/ethereum/node'
 import TxQueue from '/client/lib/queue'
-import Company from '/client/lib/ethereum/deployed'
 import { BrowserNotifications } from '/client/lib/notifications'
+import { CompanyFactory, CompanyConfiguratorFactory } from '/client/lib/ethereum/contracts'
 
 import Accounting from '/client/lib/ethereum/accounting'
 import BylawsWatcher from '/client/lib/ethereum/bylaws'
@@ -55,6 +55,10 @@ const load = async () => {
   }
 
   await EthereumNode.connect()
+
+  // TODO: Solve this the proper way and remove this code
+  window.CompanyFactory = await CompanyFactory.deployed()
+  window.CompanyConfiguratorFactory = await CompanyConfiguratorFactory.deployed()
 
   const current = Identity.current(true)
   if (!current.ethereumAddress) {
