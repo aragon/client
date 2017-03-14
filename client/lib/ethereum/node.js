@@ -87,6 +87,7 @@ const initConnection = async (): Promise<boolean> => (
 
 class EthereumNode {
   static async connect(): Promise<boolean> {
+    web3.reset(true)
     const nodeReady = await initConnection()
     var collectionsReady = false
     try {
