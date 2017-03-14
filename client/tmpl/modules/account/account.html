@@ -84,7 +84,7 @@
         {{/if}}
         {{#if $eq identityProvider 'anon'}}
         <div class="ten wide column">
-          <a class="ui primary icon fluid button" href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">
+          <a class="ui primary icon fluid button" href="{{ etherscanAddress ethereumAddress }}" target="_blank">
             <i class="user icon"></i> Using your Ethereum account's identity
           </a>
         </div>
