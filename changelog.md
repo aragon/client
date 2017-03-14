@@ -1,6 +1,6 @@
 # The changelog
 
-### To be released
+### Alpha 0.2.1
 
 - Major: Move all signing to 'personal_sign'
 - Major: New notifications UI.
