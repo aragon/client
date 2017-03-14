@@ -8,7 +8,7 @@
         <div class="ui hidden divider"></div>
         <div class="sub header">
         {{ #if $gt unhandledNotifications 0 }}
-        You have <a href="/inbox">{{ unhandledNotifications }} notifications</a>
+        You have <a href="#" id="openNotifs">{{ unhandledNotifications }} notifications</a>
         {{else}}
         Your notifications are clean. Good job!
         {{ /if }}

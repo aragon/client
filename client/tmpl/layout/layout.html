@@ -16,7 +16,7 @@
         <i class="lock large icon"></i>
       </a>
       {{ /if }}
-      
+
       <a href="/settings" class="item">
         {{#with currentEntity}}<img src="{{ picture }}" class="ui mini right spaced circular image">{{/with}}
       </a>
@@ -40,6 +40,6 @@
   {{ #if isInjectedMetaMask }}{{ > Layout_MetaMask }}{{ /if }}
 
   <div class="ui active inverted dimmer" id="initialDimmer">
-    <small>If this gets stuck for >30 seconds, please <a href="/" id="reload">refresh</a></small>
+    <div class="ui loader"></div>
   </div>
 </template>
