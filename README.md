@@ -18,8 +18,8 @@
 - Aragon now runs on the new **Kovan testnet**. You will notice the improve in speed and responsiveness!
 - New **UI styling**. Followed the advice of our designer to make the app look cleaner.
 - **Linux** and **Windows** support, in addition to macOS. Aragon is really multiplatform now.
-- Tons of bug fixes and annoyances have been solved.
+- Tons of bug fixes and annoyances have been solved. 
 
-### Alpha 0.1
+### Alpha 0.1
 
 - Initial alpha release
