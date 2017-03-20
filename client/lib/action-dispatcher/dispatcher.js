@@ -53,7 +53,7 @@ class Dispatcher {
 
   async dispatch(action, ...params) {
     const bylaw = bylawForAction(action)
-    if (bylaw.type === 0) {
+    if (bylaw && bylaw.type === 0 && bylaw.details.supportBase !== 0) {
       return await this.createVoting(action.companyFunction, params,
                                       action.signature, bylaw.details.minimumVotingTime)
     }

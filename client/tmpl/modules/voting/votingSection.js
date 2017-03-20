@@ -34,24 +34,24 @@ const reload = () => {
 
 const allStocks = () => Stocks.find().fetch().map(s => Stock.at(s.address))
 
-const canVote = async () => {
+const getVotingPower = async () => {
   const address = Identity.current(true).ethereumAddress
   const vote = voting()
 
-  if (vote.voteExecuted !== null) return false
+  console.log('getting power for', vote)
+  // returns [ votable, modificable ]
+  return await Company().votingPowerForVoting(vote.index, { from: address })
+}
 
-  const allVotes = allStocks().map(stock => stock.canVote.call(address, vote.index))
-  const allResults = await Promise.all(allVotes)
-  // as long as it can vote in any stock, return true
-  return allResults.reduce((acc, v) => v || acc, false)
+const canVote = async () => {
+  const votingPower = await getVotingPower()
+  console.log('the voting power')
+  return votingPower.filter(x => x.toNumber() > 0).length > 0
 }
 
 const votingPower = async () => {
-  const address = Identity.current(true).ethereumAddress
-  const vote = voting().index
-  const allPower = allStocks().map(stock => stock.votingPowerForPoll.call(address, vote))
-  const allVotes = await Promise.all(allPower)
-  return allVotes.reduce((acc, v) => acc + v.toNumber(), 0)
+  const [votable] = await getVotingPower()
+  return votable.toNumber()
 }
 
 // Pending votes stays here as it has to be updated in real time when more shares are assigned.
@@ -106,8 +106,7 @@ const castVote = async option => {
 }
 
 const executeVote = async option => {
-  await Voting.at(voting().address).executeOnAction(option, Company().address,
-                  { from: Identity.current(true).ethereumAddress, gas: 3800000 })
+  await dispatcher.performTransaction(Voting.at(voting().address).executeOnAction, option, Company().address)
   reload()
 }
 

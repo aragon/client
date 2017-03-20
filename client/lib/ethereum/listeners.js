@@ -14,9 +14,8 @@ class Listeners {
   static async all() {
     const stocks = await this.allStocks()
 
-    return [this.issueStockListener, this.executedVotingListener, this.newSaleListener, this.bylawChangedListener]
+    return [this.issueStockListener, this.newPollListener, this.executedVotingListener, this.newSaleListener, this.bylawChangedListener]
             .concat(await this.shareTransfers(stocks))
-            .concat(stocks.map(this.newPollListener))
   }
 
   static get issueStockListener() {
@@ -65,11 +64,11 @@ class Listeners {
     )
   }
 
-  static newPollListener(stock) {
+  static get newPollListener() {
     const body = async () => 'New voting was created. You can now vote.'
 
     return new Listener(
-      Stock.at(stock).NewPoll,
+      Company().NewVoting,
       'Voting started',
       body,
       args => `/voting/${args.id.valueOf()}`,
@@ -103,7 +102,7 @@ class Listeners {
   static get executedVotingListener() {
     const body = async args => {
       const winner = await Voting.at(args.votingAddress).options.call(args.outcome)
-      return `Outcome was '${winner}'`
+      return `Voting outcome was '${winner}'`
     }
 
     return new Listener(

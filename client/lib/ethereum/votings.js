@@ -30,8 +30,7 @@ class VotingWatcher extends Watcher {
     console.log('listen votings')
 
     const watch = async (err, ev) => {
-      const votingAddr = await Company().votings.call(ev.args.id)
-      self.getVoting(votingAddr, ev.args.id.toNumber())
+      self.getVoting(ev.args.votingAddress, ev.args.id.toNumber())
     }
 
     const watchBylaw = (err, ev) => {
@@ -40,17 +39,10 @@ class VotingWatcher extends Watcher {
     }
 
     this.watchEvent(Company().VoteExecuted, watch)
+    this.watchEvent(Company().NewVoting, watch)
+    this.watchEvent(Company().VoteCasted, watch)
+
     this.watchEvent(Company().BylawChanged, watchBylaw)
-
-    // Problem, this assumes every time app loads, stocks are loaded
-    Stocks.find().observeChanges({
-      added: (id, fields) => {
-        const stock = Stock.at(fields.address)
-
-        this.watchEvent(stock.NewPoll, watch)
-        this.watchEvent(stock.VoteCasted, watch)
-      },
-    })
   }
 
   async getVoting(address, index) {
@@ -66,25 +58,24 @@ class VotingWatcher extends Watcher {
   async updateVoting(address, index) {
     console.log('getting voting', address, index)
 
+    const company = Company()
+    const info = await Company().getVotingInfoForId(index)
+    const [vid, vad, startTime, closingTime, isExecuted, executed, voteClosed] = info
+
     const voting = Voting.at(address)
     const lastId = await voting.optionsIndex.call().then(x => x.toNumber())
     const ids = _.range(lastId)
     const optionsPromises = ids.map(id => voting.options.call(id))
     const votes = ids.map(id => this.countVotes(index, id))
-    const closingTime = await Stock.at(Stocks.findOne().address).pollingUntil
-                              .call(index).then(x => x.toNumber())
 
     const votingSupport = voting.votingSupport.call(Company().address)
 
     const supportNeeded = votingSupport.then(([s, b]) => s / b)
     const relativeMajorityOnClose = votingSupport.then(([s, b, r]) => r)
 
-    const voteExecuted = Company().voteExecuted.call(index)
-                            .then(x => Promise.resolve(x.toNumber()))
-                            .then(x => (x > 0 ? x - 10 : null))
+    const voteExecuted = isExecuted ? executed.toNumber() : null
 
     const verifiedContract = await this.verifyVote(address)
-
     if (!verifiedContract) {
       return console.error('Unknown voting')
     }
@@ -93,11 +84,13 @@ class VotingWatcher extends Watcher {
       title: verifiedContract.title(address),
       description: verifiedContract.description(address),
       options: Promise.all(optionsPromises),
-      closingTime: +new Date(closingTime * 1000),
+      startTime: +new Date(startTime.toNumber() * 1000),
+      closingTime: +new Date(closingTime.toNumber() * 1000),
       voteCounts: Promise.all(votes),
       creator: voting.creator.call(),
       mainSignature: voting.mainSignature.call(),
       voteExecuted,
+      voteClosed,
       supportNeeded,
       relativeMajorityOnClose,
       index,
