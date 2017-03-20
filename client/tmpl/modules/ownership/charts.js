@@ -59,9 +59,9 @@ const drawWithStocks = async (stocks) => {
       const entity = await Identity.get(shareShareholders[i])
       if (entity.name === 'Company') entity.name = 'Company reserves'
       globalBalances[entity.name] = balances[i] + (globalBalances[entity.name] || 0)
-      if (stock.votesPerShare && entity.name !== 'Company reserves') { // exclude from voting power chart
+      if (stock.votingPower && entity.name !== 'Company reserves') { // exclude from voting power chart
         votingPower[entity.name] =
-          (stock.votesPerShare * balances[i]) + (votingPower[entity.name] || 0)
+          (stock.votingPower * balances[i]) + (votingPower[entity.name] || 0)
       }
     }
   }

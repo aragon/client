@@ -104,7 +104,7 @@ class StockWatcher extends Watcher {
     const stockObject = {
       name: stock.name.call(),
       symbol: stock.symbol.call(),
-      votesPerShare: stock.votesPerShare.call().then(x => x.toNumber()),
+      votingPower: stock.votingPower.call().then(x => x.toNumber()),
       shareholders: this.allShareholdersForStock(stock, await stock.shareholderIndex.call().then(x => x.toNumber())),
       totalSupply: stock.totalSupply.call().then(x => x.toNumber()),
       updated: new Date(),
