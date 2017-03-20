@@ -103,7 +103,7 @@ class Dispatcher {
 
   async createVoting(f: Function, args: Array<mixed>, signature: string, votingTime: number) {
     const txData = f.request.apply(this, args).params[0].data
-    const votingCloses = votingTime + Math.floor(+new Date() / 1000)
+    const votingCloses = votingTime + Math.floor(+new Date() / 1000) + 300 // 300 extra seconds to account for delay included
 
     const company = Company()
     /*

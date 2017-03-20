@@ -46,7 +46,7 @@ const getVotingPower = async () => {
 const canVote = async () => {
   const votingPower = await getVotingPower()
   console.log('the voting power')
-  return votingPower.filter(x => x.toNumber() > 0).length > 0
+  return votingPower[0].toNumber() > 0 //.filter(x => x.toNumber() > 0).length > 0
 }
 
 const votingPower = async () => {

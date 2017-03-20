@@ -30,6 +30,7 @@ class VotingWatcher extends Watcher {
     console.log('listen votings')
 
     const watch = async (err, ev) => {
+      console.log('voting event', ev)
       self.getVoting(ev.args.votingAddress, ev.args.id.toNumber())
     }
 
@@ -59,8 +60,8 @@ class VotingWatcher extends Watcher {
     console.log('getting voting', address, index)
 
     const company = Company()
-    const info = await Company().getVotingInfoForId(index)
-    const [vid, vad, startTime, closingTime, isExecuted, executed, voteClosed] = info
+    const info = await Company().getVotingInfo(index)
+    const [vad, startTime, closingTime, isExecuted, executed, voteClosed] = info
 
     const voting = Voting.at(address)
     const lastId = await voting.optionsIndex.call().then(x => x.toNumber())
