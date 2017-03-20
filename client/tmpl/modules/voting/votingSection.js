@@ -58,7 +58,7 @@ const votingPower = async () => {
 const pendingVotes = async (options) => {
   const vs = options.map((o, i) => Company().countVotes.call(voting().index, i))
   const allOptions = await Promise.all(vs)
-  const total = allOptions[0][1].toNumber()
+  const total = allOptions[0][2].toNumber()
   const allVotes = allOptions.reduce((acc, v) => acc + v[0].toNumber(), 0)
   const votes = total - allVotes
   return { votes, relativeVotes: votes / total }
