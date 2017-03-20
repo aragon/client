@@ -124,7 +124,7 @@ const ActionFactory = {
                         'How new stock can be issued', issueStockDescription),
   grantStock: new Action('grantStock(uint8,uint256,address)', 'Grant issued stock',
                         'How existing stock can be granted', grantIssuedStockDescription),
-  grantVestedStock: new Action('grantVestedStock(uint8,uint256,address,uint64,uint64,uint64)', 'Issue and grant stock with vesting',
+  grantVestedStock: new Action('grantVestedStock(uint8,uint256,address,uint64,uint64,uint64)', 'Grant stock issued with vesting',
                         'How existing stock can be granted with a vesting schedule', grantVestedStockDescription),
   beginSale: new Action('beginSale(address)', 'Begin stock sale',
                         'How stock sales can be started', stockSaleDescription),
