@@ -31,6 +31,6 @@ tmpl.helpers({
     return entity.balances[stock] || 0
   },
   transferrable: ReactivePromise((stock, shareholder) => (
-    Stock.at(stock).transferrable(shareholder).then(x => x.valueOf())
+    Stock.at(stock).transferableTokens(shareholder, +new Date()/1000).then(x => x.valueOf())
   )),
 })

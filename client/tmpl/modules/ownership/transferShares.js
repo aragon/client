@@ -45,7 +45,7 @@ tmpl.helpers({
   stocks: () => Stocks.find(),
   balance: ReactivePromise(async (stockIndex) => {
     const stockAddr = Stocks.findOne({ index: stockIndex }).address
-    const stock = await Stock.at(stockAddr).transferrable(Identity.current().ethereumAddress)
+    const stock = await Stock.at(stockAddr).transferableTokens(Identity.current().ethereumAddress, new Date()/1000)
     return stock.toNumber()
   }),
 })
