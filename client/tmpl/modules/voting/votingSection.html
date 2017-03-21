@@ -38,7 +38,7 @@
       </thead>
       <tbody>
         {{ #each options }}
-        <tr data-option="{{ @index }}">
+        <tr data-option="{{ @index }}" class="{{ #if isExecuted @index }} bold {{ /if }}">
           <td>
             {{ this }}
           </td>

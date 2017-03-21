@@ -99,6 +99,7 @@ tmpl.helpers({
   pendingVotes: ReactivePromise(pendingVotes),
   votingPower: ReactivePromise(votingPower),
   executingOption: ReactivePromise(canExecute),
+  isExecuted: option => votingVar.get().voteClosed && votingVar.get().voteExecuted === option,
 })
 
 const castVote = async option => {
