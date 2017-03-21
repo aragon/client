@@ -21,6 +21,7 @@ const tmpl = Template.Module_Voting_Section.extend([ClosableSection])
 const votingVar = new ReactiveVar()
 const updated = new ReactiveVar()
 const verifiedVar = new ReactiveVar()
+const isModifying = new ReactiveVar()
 
 const voteId = () => FlowRouter.current().params.id
 const voting = () => Votings.findOne({ $or: [{ address: voteId() }, { index: +voteId() }] })
@@ -29,6 +30,7 @@ const reload = () => {
   const newVoting = voting()
   verifiedVar.set(null)
   votingVar.set(newVoting)
+  isModifying.set(false)
   updated.set(Math.random())
 }
 
@@ -45,6 +47,14 @@ const getVotingPower = async () => {
 const canVote = async () => {
   const votingPower = await getVotingPower()
   return !voting().voteClosed && votingPower[0].toNumber() > 0 //.filter(x => x.toNumber() > 0).length > 0
+}
+
+const hasVoted = async () => {
+  let [v, modificable, votedOption] = await getVotingPower()
+  modificable = modificable.toNumber()
+  votedOption = votedOption.toNumber()
+  const voted = modificable > 0
+  return { voted, votedOption, modificable }
 }
 
 const votingPower = async () => {
@@ -96,16 +106,29 @@ tmpl.helpers({
   voteCounts: () => votingVar.get().voteCounts,
   isClosed: vote => vote.voteClosed,
   canVote: ReactivePromise(canVote),
+  canVoteOrModify: ReactivePromise(async modifyMode => modifyMode || await canVote()),
   pendingVotes: ReactivePromise(pendingVotes),
   votingPower: ReactivePromise(votingPower),
   executingOption: ReactivePromise(canExecute),
   isExecuted: option => votingVar.get().voteClosed && votingVar.get().voteExecuted === option,
+  hasVoted: ReactivePromise(hasVoted),
+  canModifyVote: modificableVotes => !votingVar.get().voteClosed && modificableVotes > 0,
+  isModifying: () => isModifying.get(),
+  getOption: o => votingVar.get().options[o - 10],
 })
 
 const castVote = async option => {
   const executesOnDecided = true
-  await dispatcher.dispatch(actions.castVote, voting().index, option, executesOnDecided)
-  reload()
+  if (!isModifying.get()) { // TODO: OR is a removed delegated vote that wants to be modified
+    await dispatcher.dispatch(actions.castVote, voting().index, option, executesOnDecided)
+  } else {
+    await dispatcher.dispatch(actions.modifyVote, voting().index, option, false, executesOnDecided)
+    isModifying.set(false)
+  }
+}
+
+const removeVote = async () => {
+  await dispatcher.dispatch(actions.modifyVote, voting().index, 0, true, false)
 }
 
 const executeVote = async option => {
@@ -124,4 +147,6 @@ tmpl.events({
   'success .dimmer': () => FlowRouter.go('/voting'),
   'reload #votingSection': reload,
   'click #verifyCode': verify,
+  'click #modifyVote': () => isModifying.set(true),
+  'click #removeVote': () => removeVote(),
 })

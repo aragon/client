@@ -32,7 +32,7 @@
         <tr>
           <th>Option</th>
           <th class="center aligned">Votes</th>
-          <th class="center aligned">Absolute <span class="popups" data-html="Percentage of all voting power supporting an option." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span></th>
+          <th class="center aligned">Absolute <span class="popups" data-html="Percentage of all voting power supporting an option. For old votings, it may reflect it against current voting power." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span></th>
           <th class="center aligned">Relative <span class="popups" data-html="Percentage of all casted votes supporting an option." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span></th>
         </tr>
       </thead>
@@ -78,6 +78,26 @@
       {{/if}}
     </button>
 
+    {{#with hasVoted }}
+    {{#if voted}}
+    <div class="ui icon small message">
+      <i class="info icon"></i>
+      <div class="content">
+        <div class="header">You voted <span class="bold">{{ getOption votedOption }}</span> with {{ modificable }} votes.</div>
+      </div>
+    </div>
+    {{#if canModifyVote modificable }}
+    {{#unless isModifying}}
+    <div class="ui two buttons">
+      <button id="modifyVote" class="ui button">Modify vote</button>
+      <div class="or"></div>
+      <button id="removeVote" class="ui button">Remove vote</button>
+    </div>
+    {{/unless}}
+    {{/if}}
+    {{/if}}
+    {{/with}}
+
     {{#if canVote}}
     <div class="ui icon small message">
       <i class="info icon"></i>
@@ -85,6 +105,8 @@
         <div class="header">You will cast {{ votingPower }} votes.</div>
       </div>
     </div>
+    {{/if}}
+    {{#if canVoteOrModify isModifying }}
     <div class="ui two buttons">
       {{#each options}}
       <button data-option="{{@index}}" class="ui {{#if $eq @index (plus options.length -1)}} negative {{else}} positive {{/if}} voting button">{{this}}</button>
