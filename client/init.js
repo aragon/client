@@ -74,6 +74,16 @@ const load = async () => {
 
   initFinished.set(true)
   $('#initialDimmer').fadeOut('slow')
+
+  EthAccounts.find().observe({
+    addedAt: async () => {
+      if (EthAccounts.findOne().address != Identity.current(true).ethereumAddress) {
+        console.log('Detected account change, reseting')
+        await Identity.reset()
+        location.reload()
+      }
+    }
+  })
 }
 
 const injectMetaMask = async () => {
