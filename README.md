@@ -1,3 +1,5 @@
+<img src="https://github.com/aragonone/issues/master/logo.png" width="75%"/>
+
 # The changelog
 
 ### Alpha 0.2.1
