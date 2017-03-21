@@ -48,6 +48,13 @@
       <label>Token address:</label>
       {{> Element_IdentityAutocomplete}}
     </div>
+    {{ #if tokenDetails }}
+    {{ #with tokenDetails }}
+      <h5>Token name:</h5> {{ name }}
+      <h5>Token symbol:</h5> {{ symbol }}
+      <h5>Total supply:</h5> {{ supply }} {{ symbol }}
+    {{ /with }}
+    {{ /if }}
     {{ else }}
     <div class="ui hidden divider"></div>
     <div class="field">

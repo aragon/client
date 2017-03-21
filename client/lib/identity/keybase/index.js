@@ -38,6 +38,7 @@ export default class Keybase {
 
   static async lookupEthAddress(addr: string): Promise<Object> {
     const registry = await KeybaseRegistry.deployed()
+    if (!registry.address) return undefined
     const username = await registry.getUsername(addr)
     console.log('looked up username', username)
     if (!username || username === '') return undefined

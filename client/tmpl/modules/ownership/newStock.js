@@ -16,6 +16,8 @@ const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Ownership_NewStock.extend([ClosableSection])
 
+const tokenDetails = new ReactiveVar()
+
 const assignStock = (kind, value, recipient) => (
   dispatcher.dispatch(actions.grantStock, kind, value, recipient)
 )
@@ -64,7 +66,7 @@ tmpl.onRendered(function () {
         const initialSupply = this.$('input[name=initialSupply]').val()
         await deployCustomStock(name, symbol, votingPower, economicRights, initialSupply)
       } else {
-        const token = TemplateVar.get(this, 'parentToken').ethereumAddress
+        const token = TemplateVar.get(this, 'parentToken')
         await deployWrappedStock(token, name, symbol, votingPower, economicRights)
       }
 
@@ -84,10 +86,15 @@ const stockTemplates = [
 tmpl.helpers({
   actionName: () => 'addStock',
   stockTemplates: () => stockTemplates,
+  tokenDetails: () => tokenDetails.get(),
 })
 
 tmpl.events({
-  'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('parentToken', user)),
+  'select .identityAutocomplete': async (e, instance, user) => {
+    tokenDetails.set(null)
+    // TemplateVar.set('parentToken', user.ethereumAddress)
+    // tokenDetails.set(await getTokenDetails(user.ethereumAddress))
+  },
   'success .dimmer': () => FlowRouter.go('/ownership'),
   'click #existingTokenToggle': () => TemplateVar.set('existingToken', !TemplateVar.get('existingToken')),
   'click .stock-template': e => {

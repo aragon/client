@@ -17,7 +17,7 @@ import _CustomStock from '/imports/lib/contracts/build/contracts/CustomStock'
 import _WrappedCustomStock from '/imports/lib/contracts/build/contracts/WrappedCustomStock'
 import _Txid from '/imports/lib/contracts/build/contracts/Txid'
 // import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
-import _KeybaseRegistry from '/imports/lib/contracts/node_modules/keybase-eth/build/contracts/KeybaseRegistry.json'
+import _KeybaseRegistry from '/imports/lib/contracts/node_modules/keybase-eth/build/contracts/KeybaseRegistry'
 
 const Company = contractify(_Company)
 const AccountingLib = contractify(_AccountingLib)
