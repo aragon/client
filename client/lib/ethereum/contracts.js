@@ -13,7 +13,8 @@ import _GenericBinaryVoting from '/imports/lib/contracts/build/contracts/Generic
 import _CompanyFactory from '/imports/lib/contracts/build/contracts/CompanyFactory'
 import _CompanyConfiguratorFactory from '/imports/lib/contracts/build/contracts/CompanyConfiguratorFactory'
 
-import _VotingStock from '/imports/lib/contracts/build/contracts/VotingStock'
+import _CustomStock from '/imports/lib/contracts/build/contracts/CustomStock'
+import _WrappedCustomStock from '/imports/lib/contracts/build/contracts/WrappedCustomStock'
 import _Txid from '/imports/lib/contracts/build/contracts/Txid'
 // import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
 import _KeybaseRegistry from '/imports/lib/contracts/node_modules/keybase-eth/build/contracts/KeybaseRegistry.json'
@@ -21,7 +22,8 @@ import _KeybaseRegistry from '/imports/lib/contracts/node_modules/keybase-eth/bu
 const Company = contractify(_Company)
 const AccountingLib = contractify(_AccountingLib)
 const Stock = contractify(_Stock)
-const VotingStock = contractify(_VotingStock)
+const CustomStock = contractify(_CustomStock)
+const WrappedCustomStock = contractify(_WrappedCustomStock)
 const BinaryVoting = contractify(_BinaryVoting)
 const BinaryPoll = contractify(_BinaryPoll)
 const StockSale = contractify(_StockSale)
@@ -42,7 +44,8 @@ const allContracts = [
   Company,
   AccountingLib,
   Stock,
-  VotingStock,
+  CustomStock,
+  WrappedCustomStock,
   BinaryVoting,
   BinaryPoll,
   StockSale,
@@ -57,6 +60,6 @@ const allContracts = [
 
 // allContracts.forEach(c => c.setProvider(web3.currentProvider))
 
-export { allContracts, Company, AccountingLib, Stock, VotingStock, BinaryVoting as Voting,
+export { allContracts, Company, AccountingLib, Stock, CustomStock, WrappedCustomStock, BinaryVoting as Voting,
           BinaryPoll as Poll, BoundedStandardSale, IndividualInvestorSale, GenericBinaryVoting,
           StockSale, Txid, CompanyFactory, CompanyConfiguratorFactory, KeybaseRegistry }

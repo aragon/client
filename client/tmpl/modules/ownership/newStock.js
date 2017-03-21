@@ -9,7 +9,7 @@ import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Company } from '/client/lib/ethereum/deployed'
-import { Stock } from '/client/lib/ethereum/contracts'
+import { Stock, CustomStock, WrappedCustomStock } from '/client/lib/ethereum/contracts'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
 const Stocks = StockWatcher.Stocks
@@ -20,26 +20,53 @@ const assignStock = (kind, value, recipient) => (
   dispatcher.dispatch(actions.grantStock, kind, value, recipient)
 )
 
-const createStockGrant = async (kind, value, recipient, start, cliff, vesting) => (
-  dispatcher.dispatch(actions.grantVestedStock, kind, value, recipient, start, +moment(cliff)/1000, +moment(vesting)/1000)
-)
+const deployCustomStock = async (name, symbol, votingPower, economicRights, initialSupply) => {
+  const deployTx = await dispatcher.deployContract(CustomStock, Company().address, name, symbol, votingPower, economicRights)
+  return await watchStockDeployment(deployTx, initialSupply)
+}
+
+const deployWrappedStock = async (token, name, symbol, votingPower, economicRights) => {
+  const deployTx = await dispatcher.deployContract(WrappedCustomStock, Company().address, token, name, symbol, votingPower, economicRights)
+  return await watchStockDeployment(deployTx, 0)
+}
+
+const watchStockDeployment = async (txId, initialSupply) => {
+  return new Promise((resolve, reject) => {
+    TxQueue.addListener(txId, () => {
+      web3.eth.getTransactionReceipt(txId, (err, tx) => {
+        if (err) return reject(err)
+        if (!tx.contractAddress) return reject('error deploying stock', tx)
+        resolve(submitStock(tx.contractAddress, initialSupply))
+      })
+    })
+  })
+}
+
+const submitStock = (stockAddress, initialSupply) => {
+  return dispatcher.dispatch(actions.addStock, stockAddress, initialSupply)
+}
 
 tmpl.onRendered(function () {
   $('.popups').popup()
-  TemplateVar.set('existingToken', flase)
+  TemplateVar.set('existingToken', false)
 
-  this.$('.dropdown').dropdown({
-    onChange: (v) => TemplateVar.set(this, 'selectedStock', +v),
-  })
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      const selectedStock = TemplateVar.get(this, 'selectedStock')
-      const amount = this.$('input[name=number]').val()
-      const recipient = TemplateVar.get(this, 'recipient').ethereumAddress
+      const name = this.$('input[name=name]').val()
+      const symbol = this.$('input[name=symbol]').val()
+      const votingPower = this.$('input[name=votingPower]').val()
+      const economicRights = this.$('input[name=economicRights]').val()
 
+      if (!TemplateVar.get(this, 'existingToken')) {
+        const initialSupply = this.$('input[name=initialSupply]').val()
+        await deployCustomStock(name, symbol, votingPower, economicRights, initialSupply)
+      } else {
+        const token = TemplateVar.get(this, 'parentToken').ethereumAddress
+        await deployWrappedStock(token, name, symbol, votingPower, economicRights)
+      }
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
@@ -47,20 +74,30 @@ tmpl.onRendered(function () {
   })
 })
 
+const stockTemplates = [
+  { name: 'Voting Stock', symbol: 'ARN-a', votingPower: 1, economicRights: 1 },
+  { name: 'Non-voting Stock', symbol: 'ARN-b', votingPower: 0, economicRights: 1 },
+  { name: 'Founders Stock', symbol: 'ARN-c', votingPower: 5, economicRights: 1 },
+  { name: 'Unicorn Stock', symbol: 'ARN-🦄', votingPower: 10, economicRights: 10 },
+]
+
 tmpl.helpers({
-  selectedRecipient: () => (TemplateVar.get('recipient')),
-  stocks: () => Stocks.find(),
-  defaultAddress: () => Identity.current(true).ethereumAddress,
-  availableShares: ReactivePromise((selectedStock) => {
-    const stock = Stocks.findOne({ index: +selectedStock })
-    if (!stock) { return Promise.reject() }
-    return Stock.at(stock.address).balanceOf(Company().address).then(x => x.valueOf())
-  }, '', '0'),
   actionName: () => 'addStock',
+  stockTemplates: () => stockTemplates,
 })
 
 tmpl.events({
-  'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
+  'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('parentToken', user)),
   'success .dimmer': () => FlowRouter.go('/ownership'),
   'click #existingTokenToggle': () => TemplateVar.set('existingToken', !TemplateVar.get('existingToken')),
+  'click .stock-template': e => {
+    const selectedSymbol = $(e.currentTarget).data('stock')
+    const selectedTemplate = stockTemplates.filter(s => s.symbol === selectedSymbol)[0]
+    TemplateVar.set('existingToken', false)
+    this.$('input[name=name]').val(selectedTemplate.name)
+    this.$('input[name=symbol]').val(selectedTemplate.symbol)
+    this.$('input[name=initialSupply]').val(1000)
+    this.$('input[name=votingPower]').val(selectedTemplate.votingPower)
+    this.$('input[name=economicRights]').val(selectedTemplate.economicRights)
+  }
 })

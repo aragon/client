@@ -6,9 +6,9 @@
 
     <h5>Stock templates:</h5>
     <div id="stock-templates">
-      <a class="ui violet basic label stock-template">Voting stock</a>
-      <a class="ui violet basic label stock-template">Non-voting stock</a>
-      <a class="ui violet basic label stock-template">Founders stock</a>
+      {{ #each stockTemplates }}
+      <a class="ui violet basic label stock-template" data-stock="{{ symbol }}">{{ name }}</a>
+      {{ /each }}
     </div>
 
     <div class="ui hidden divider"></div>
@@ -52,7 +52,7 @@
     <div class="ui hidden divider"></div>
     <div class="field">
       <label>Initial supply</label>
-      <input type="number" lang="en" name="number" placeholder="Number of shares" min="0">
+      <input type="number" lang="en" name="initialSupply" placeholder="Number of shares" min="0">
     </div>
     {{ /if }}
     <div class="ui spacer"></div>
