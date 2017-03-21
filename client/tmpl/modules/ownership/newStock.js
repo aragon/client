@@ -12,6 +12,7 @@ import { Company } from '/client/lib/ethereum/deployed'
 import { Stock, CustomStock, WrappedCustomStock } from '/client/lib/ethereum/contracts'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
+const ERC20 = Stock
 const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Ownership_NewStock.extend([ClosableSection])
@@ -48,9 +49,24 @@ const submitStock = (stockAddress, initialSupply) => {
   return dispatcher.dispatch(actions.addStock, stockAddress, initialSupply)
 }
 
+const getTokenDetails = async tokenAddress => {
+  const token = ERC20.at(tokenAddress)
+
+  try {
+    return Promise.allProperties({
+      name: token.name.call(),
+      symbol: token.symbol.call(),
+      supply: token.totalSupply.call(),
+    })
+  } catch (e) {
+    return null
+  }
+}
+
 tmpl.onRendered(function () {
   $('.popups').popup()
   TemplateVar.set('existingToken', false)
+  tokenDetails.set(null)
 
   this.$('.form').form({
     onSuccess: async (e) => {
@@ -92,8 +108,8 @@ tmpl.helpers({
 tmpl.events({
   'select .identityAutocomplete': async (e, instance, user) => {
     tokenDetails.set(null)
-    // TemplateVar.set('parentToken', user.ethereumAddress)
-    // tokenDetails.set(await getTokenDetails(user.ethereumAddress))
+    TemplateVar.set('parentToken', user.ethereumAddress)
+    tokenDetails.set(await getTokenDetails(user.ethereumAddress))
   },
   'success .dimmer': () => FlowRouter.go('/ownership'),
   'click #existingTokenToggle': () => TemplateVar.set('existingToken', !TemplateVar.get('existingToken')),

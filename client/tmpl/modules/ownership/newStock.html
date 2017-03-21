@@ -50,9 +50,9 @@
     </div>
     {{ #if tokenDetails }}
     {{ #with tokenDetails }}
-      <h5>Token name:</h5> {{ name }}
-      <h5>Token symbol:</h5> {{ symbol }}
-      <h5>Total supply:</h5> {{ supply }} {{ symbol }}
+      <label><span class="bolded">Token name: </span>{{ name }}</label>
+      <label><span class="bolded">Token symbol: </span>{{ symbol }}</label>
+      <label><span class="bolded">Total supply: </span>{{ supply }} {{ symbol }}</label>
     {{ /with }}
     {{ /if }}
     {{ else }}
