@@ -10,7 +10,7 @@ const checkContractDeployAction = data => {
   const contract = verifyBytecode(data, allContracts)
   if (!contract) return null
 
-  let description = `Deploy contract`
+  let description = `Deploying contract`
   let name = contract._json.contract_name
 
   if (name === 'GenericBinaryVoting') {

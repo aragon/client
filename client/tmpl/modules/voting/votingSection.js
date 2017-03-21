@@ -38,15 +38,13 @@ const getVotingPower = async () => {
   const address = Identity.current(true).ethereumAddress
   const vote = voting()
 
-  console.log('getting power for', vote)
   // returns [ votable, modificable ]
   return await Company().votingPowerForVoting(vote.index, { from: address })
 }
 
 const canVote = async () => {
   const votingPower = await getVotingPower()
-  console.log('the voting power')
-  return votingPower[0].toNumber() > 0 //.filter(x => x.toNumber() > 0).length > 0
+  return !voting().voteClosed && votingPower[0].toNumber() > 0 //.filter(x => x.toNumber() > 0).length > 0
 }
 
 const votingPower = async () => {
@@ -92,7 +90,7 @@ tmpl.helpers({
   voting: () => votingVar.get(),
   options: () => votingVar.get().options,
   voteCounts: () => votingVar.get().voteCounts,
-  isClosed: vote => vote.voteExecuted !== null || vote.closingTime < new Date(),
+  isClosed: vote => vote.voteClosed,
   canVote: ReactivePromise(canVote),
   pendingVotes: ReactivePromise(pendingVotes),
   votingPower: ReactivePromise(votingPower),
