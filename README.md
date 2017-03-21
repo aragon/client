@@ -1,4 +1,6 @@
-<img src="https://github.com/aragonone/issues/master/logo.png" width="75%"/>
+*No source code in this repo yet, download the [alpha release](../../releases)*
+
+<img src="https://github.com/aragonone/issues/blob/master/logo.png" width="75%"/>
 
 # The changelog
 
