@@ -105,6 +105,7 @@ class StockWatcher extends Watcher {
       name: stock.name.call(),
       symbol: stock.symbol.call(),
       votingPower: stock.votingPower.call().then(x => x.toNumber()),
+      economicRights: stock.economicRights.call().then(x => x.toNumber()),
       shareholders: this.allShareholdersForStock(stock, await stock.shareholderIndex.call().then(x => x.toNumber())),
       totalSupply: stock.totalSupply.call().then(x => x.toNumber()),
       updated: new Date(),
