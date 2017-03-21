@@ -4,6 +4,12 @@
     {{ #if $gt (totalStock currentEntity) 0 }}<div class="header item">You own {{ totalStock currentEntity }} tokens</div>{{ /if }}
     <div class="right menu">
       <div class="fitted item">
+        <a class="ui primary button" href="/ownership/stock/new">
+          <i class="line chart icon"></i>
+          Add stock class
+        </a>
+      </div>
+      <div class="fitted item">
         <a class="ui primary button" href="/ownership/transfer">
           <i class="send outline icon"></i>
           Transfer tokens

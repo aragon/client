@@ -76,7 +76,6 @@ tmpl.onRendered(function () {
   $('#ownershipInfoPopup').popup()
 
   this.autorun(async () => {
-    console.log('RUNNNNNNNNNNN')
     throttledDraw(Stocks.find().fetch())
   })
 })
