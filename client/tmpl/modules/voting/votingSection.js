@@ -84,6 +84,10 @@ tmpl.onCreated(function () {
   })
 })
 
+tmpl.onRendered(() => {
+  $('.popups').popup()
+})
+
 tmpl.helpers({
   updatesHack: () => updated.get(),
   verified: () => verifiedVar.get(),

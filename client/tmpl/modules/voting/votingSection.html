@@ -12,9 +12,9 @@
         {{/if}}
 
         {{#if relativeMajorityOnClose}}
-          <a class="ui violet basic label">Relative count on close</a>
+          <span class="popups" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet basic label">Relative count on close</a></span>
         {{else}}
-          <a class="ui violet label">Absolute count on close</a>
+          <span class="popups" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet label">Absolute count on close </a></span>
         {{/if}}
       {{else}}
         <a class="ui left pointing red basic label">Closed</a>
@@ -31,8 +31,9 @@
       <thead>
         <tr>
           <th>Option</th>
-          <th>Votes</th>
-          <th>Percentage</th>
+          <th class="center aligned">Votes</th>
+          <th class="center aligned">Absolute <span class="popups" data-html="Percentage of all voting power supporting an option." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span></th>
+          <th class="center aligned">Relative <span class="popups" data-html="Percentage of all casted votes supporting an option." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span></th>
         </tr>
       </thead>
       <tbody>
@@ -42,10 +43,13 @@
             {{ this }}
           </td>
           {{#with arrayAccess voteCounts @index updatesHack }}
-          <td>
+          <td class="center aligned">
             {{ votes }}
           </td>
-          <td>
+          <td class="center aligned">
+            {{ percentFormat absoluteVotes }}
+          </td>
+          <td class="center aligned">
             {{ percentFormat relativeVotes }}
           </td>
           {{/with}}
@@ -55,8 +59,9 @@
         <tr>
           <td>Pending votes</td>
           {{#with pendingVotes options updatesHack }}
-          <td>{{ votes }}</td>
-          <td>{{ percentFormat relativeVotes }}</td>
+          <td class="center aligned">{{ votes }}</td>
+          <td class="center aligned">{{ percentFormat relativeVotes }}</td>
+          <td class="center aligned">-</td>
           {{/with}}
         </tr>
         {{/unless}}

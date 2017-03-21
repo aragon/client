@@ -53,7 +53,7 @@ class VotingWatcher extends Watcher {
   async countVotes(index, optionId) {
     const counted = await Company().countVotes.call(index, optionId)
     const votes = counted[0].toNumber()
-    return { votes, relativeVotes: votes / counted[1].toNumber() }
+    return { votes, relativeVotes: votes / counted[1].toNumber(), absoluteVotes: votes / counted[2].toNumber() }
   }
 
   async updateVoting(address, index) {
