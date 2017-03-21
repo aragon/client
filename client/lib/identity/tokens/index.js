@@ -18,6 +18,7 @@ export default class Token {
       return Promise.allProperties({
         name: token.name.call(),
         symbol: token.symbol.call(),
+        totalSupply: token.totalSupply.call().then(x => x.toNumber()),
       })
     } catch (e) {
       return undefined
@@ -36,6 +37,8 @@ export default class Token {
       username: entity.data.symbol,
       name: `Token: ${entity.data.name}`,
       picture: identicon(entity.ethereumAddress),
+      totalSupply: entity.data.totalSupply,
+      symbol: entity.data.symbol,
     }
   }
 }

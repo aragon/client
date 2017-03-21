@@ -5,6 +5,7 @@ import { ReactivePromise } from 'meteor/deanius:promise'
 
 import ClosableSection from '/client/tmpl/components/closableSection'
 import Identity from '/client/lib/identity'
+import Status from '/client/lib/identity/status'
 
 const tmpl = Template.Module_Entity.extend([ClosableSection])
 
@@ -19,5 +20,9 @@ tmpl.helpers({
     }
     return {}
   }),
+  getStatus: ethereumAddress => {
+    const s = Entities.findOne({ ethereumAddress }).status
+    return s > 0 ? Status.toString(s) : null
+  },
   formatFingerprint: (fingerprint): string => (fingerprint && fingerprint.match(/.{1,4}/g).join(' ')),
 })
