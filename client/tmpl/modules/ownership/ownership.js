@@ -48,8 +48,11 @@ tmpl.helpers({
     let shareholders = []
     Stocks.find().fetch().forEach(s => (shareholders.push(...s.shareholders)))
 
+    /*
+    // Commented out as it makes multiple stock types not to show
     shareholders = shareholders.filter(
       (s, index, self) => self.findIndex(t => t.shareholder === s.shareholder) === index)
+    */
 
     return shareholders
   },
