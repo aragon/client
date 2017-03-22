@@ -1,26 +1,24 @@
 // @flow
-import jdenticon from 'jdenticon'
+
+import identicon from '../helpers/identicon'
 
 import type { Entity } from '../entity'
 import { Stock as ERC20 } from '/client/lib/ethereum/contracts'
 
-const identicon = (str: string): string => {
-  const svg = jdenticon.toSvg(str.slice(2), 128)
-  const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' })
-  return URL.createObjectURL(blob)
-}
-
 export default class Token {
   static async getToken(addr: string) {
-    const token = ERC20.at(addr)
-
     try {
-      return Promise.allProperties({
-        name: token.name.call(),
-        symbol: token.symbol.call(),
-        totalSupply: token.totalSupply.call().then(x => x.toNumber()),
+      const token = ERC20.at(addr)
+      let totalSupply = await token.totalSupply.call()
+      totalSupply = totalSupply.toNumber()
+      if (totalSupply < 1) return undefined // Avoid errors getting strings Uncaught BigNumber Error: new BigNumber() not a base 16
+      return await Promise.allProperties({
+        name: token.name.call().catch(e => console.log('caught', e)),
+        symbol: token.symbol.call().catch(e => console.log('caught', e)),
+        totalSupply,
       })
     } catch (e) {
+      console.log('caught exception', e)
       return undefined
     }
   }
