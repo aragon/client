@@ -50,9 +50,15 @@
     </div>
     {{ #if tokenDetails }}
     {{ #with tokenDetails }}
+      {{ #if $gt parentTotalSupply 0 }}
+        <label><span class="bolded">Caution!</span> This is already a wrapped token. Beware of weird side effects!</label>
+      {{ /if }}
+      {{ #if isCompanyStock }}
+        <label><span class="bolded">Caution!</span> This token is already a company governance token. Beware of weird side effects!</label>
+      {{ /if}}
       <label><span class="bolded">Token name: </span>{{ name }}</label>
       <label><span class="bolded">Token symbol: </span>{{ symbol }}</label>
-      <label><span class="bolded">Total supply: </span>{{ supply }} {{ symbol }}</label>
+      <label><span class="bolded">Total supply: </span>{{ totalSupply }} {{ symbol }}</label>
     {{ /with }}
     {{ /if }}
     {{ else }}

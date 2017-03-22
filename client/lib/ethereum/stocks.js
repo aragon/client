@@ -60,7 +60,10 @@ class StockWatcher extends Watcher {
   }
 
   updateBalance(stockAddress, ethereumAddress, balance, isIncrement = false) {
+    if (ethereumAddress == '0x0000000000000000000000000000000000000000') return // We don't want 'burn' address as shareholder
+
     const predicate = { ethereumAddress }
+
     const currentEntity = Entities.findOne(predicate)
     let balances = {}
     if (currentEntity && currentEntity.balances) {

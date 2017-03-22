@@ -16,6 +16,7 @@ import _CompanyConfiguratorFactory from '/imports/lib/contracts/build/contracts/
 import _CustomStock from '/imports/lib/contracts/build/contracts/CustomStock'
 import _WrappedCustomStock from '/imports/lib/contracts/build/contracts/WrappedCustomStock'
 import _Txid from '/imports/lib/contracts/build/contracts/Txid'
+import _ERC20Wrap from '/imports/lib/contracts/build/contracts/ERC20Wrap'
 // import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
 import _KeybaseRegistry from '/imports/lib/contracts/node_modules/keybase-eth/build/contracts/KeybaseRegistry'
 
@@ -33,6 +34,7 @@ const GenericBinaryVoting = contractify(_GenericBinaryVoting)
 const CompanyFactory = contractify(_CompanyFactory)
 const CompanyConfiguratorFactory = contractify(_CompanyConfiguratorFactory)
 const KeybaseRegistry = contractify(_KeybaseRegistry)
+const ERC20Wrap = contractify(_ERC20Wrap)
 
 /* const n = web3.version.network
 GenericBinaryVoting.setNetwork(n)
@@ -56,10 +58,11 @@ const allContracts = [
   CompanyFactory,
   CompanyConfiguratorFactory,
   KeybaseRegistry,
+  ERC20Wrap,
 ]
 
 // allContracts.forEach(c => c.setProvider(web3.currentProvider))
 
 export { allContracts, Company, AccountingLib, Stock, CustomStock, WrappedCustomStock, BinaryVoting as Voting,
           BinaryPoll as Poll, BoundedStandardSale, IndividualInvestorSale, GenericBinaryVoting,
-          StockSale, Txid, CompanyFactory, CompanyConfiguratorFactory, KeybaseRegistry }
+          StockSale, Txid, CompanyFactory, CompanyConfiguratorFactory, KeybaseRegistry, ERC20Wrap }

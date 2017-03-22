@@ -10,9 +10,9 @@ import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Company } from '/client/lib/ethereum/deployed'
 import { Stock, CustomStock, WrappedCustomStock } from '/client/lib/ethereum/contracts'
+import Tokens from '/client/lib/ethereum/tokens'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
-const ERC20 = Stock
 const Stocks = StockWatcher.Stocks
 
 const tmpl = Template.Module_Ownership_NewStock.extend([ClosableSection])
@@ -47,20 +47,6 @@ const watchStockDeployment = async (txId, initialSupply) => {
 
 const submitStock = (stockAddress, initialSupply) => {
   return dispatcher.dispatch(actions.addStock, stockAddress, initialSupply)
-}
-
-const getTokenDetails = async tokenAddress => {
-  const token = ERC20.at(tokenAddress)
-
-  try {
-    return Promise.allProperties({
-      name: token.name.call(),
-      symbol: token.symbol.call(),
-      supply: token.totalSupply.call(),
-    })
-  } catch (e) {
-    return null
-  }
 }
 
 tmpl.onRendered(function () {
@@ -103,13 +89,17 @@ tmpl.helpers({
   actionName: () => 'addStock',
   stockTemplates: () => stockTemplates,
   tokenDetails: () => tokenDetails.get(),
+  isCompanyStock: () => {
+    const tokenAddress = TemplateVar.get(this, 'parentToken')
+    Stocks.findOne({ $or: [{ ethereumAddress: tokenAddress }, { 'parentToken.ethereumAddress': tokenAddress }] })
+  },
 })
 
 tmpl.events({
   'select .identityAutocomplete': async (e, instance, user) => {
     tokenDetails.set(null)
     TemplateVar.set('parentToken', user.ethereumAddress)
-    tokenDetails.set(await getTokenDetails(user.ethereumAddress))
+    tokenDetails.set(await Tokens.getTokenProperties(user.ethereumAddress))
   },
   'success .dimmer': () => FlowRouter.go('/ownership'),
   'click #existingTokenToggle': () => TemplateVar.set('existingToken', !TemplateVar.get('existingToken')),
