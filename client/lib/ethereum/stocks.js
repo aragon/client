@@ -3,8 +3,9 @@ import { _ } from 'meteor/underscore'
 import { Mongo } from 'meteor/mongo'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 
-import { Stock } from './contracts'
+import { Stock, ERC20Wrap } from './contracts'
 import { Company } from './deployed'
+import Tokens from './tokens'
 
 import Watcher from './watcher'
 
@@ -102,8 +103,16 @@ class StockWatcher extends Watcher {
     })
   }
 
+  async getParentToken(ethereumAddress: string) {
+    const parentAddress = await ERC20Wrap.at(ethereumAddress).parentToken()
+    if (parentAddress === '0x') return null
+
+    return { ethereumAddress, ...(await Tokens.getTokenProperties(parentAddress))}
+  }
+
   async updateStock(address: string, index: number) {
     const stock = Stock.at(address)
+
     const stockObject = {
       name: stock.name.call(),
       symbol: stock.symbol.call(),
@@ -112,6 +121,7 @@ class StockWatcher extends Watcher {
       shareholders: this.allShareholdersForStock(stock, await stock.shareholderIndex.call().then(x => x.toNumber())),
       totalSupply: stock.totalSupply.call().then(x => x.toNumber()),
       updated: new Date(),
+      parentToken: this.getParentToken(address),
       address,
       index,
     }
