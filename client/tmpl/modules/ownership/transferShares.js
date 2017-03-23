@@ -8,20 +8,27 @@ import Identity from '/client/lib/identity'
 import ClosableSection from '/client/tmpl/components/closableSection'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Stock } from '/client/lib/ethereum/contracts'
+import Tokens from '/client/lib/ethereum/tokens'
 import { dispatcher } from '/client/lib/action-dispatcher'
 
 const Stocks = StockWatcher.Stocks
 
-const transferStock = async (stockIndex: number, to: string, amount: number) => {
-  const stockAddr = Stocks.findOne({ index: stockIndex }).address
-  return await dispatcher.performTransaction(Stock.at(stockAddr).transfer, to, amount)
+const transferStock = async (address: string, to: string, amount: number) => {
+  return await dispatcher.performTransaction(Stock.at(address).transfer, to, amount)
 }
 
 const tmpl = Template.Module_Ownership_TransferShares.extend([ClosableSection])
+const selectedStock = new ReactiveVar()
 
 tmpl.onRendered(function () {
   this.$('.dropdown').dropdown({
-    onChange: v => TemplateVar.set(this, 'selectedStock', +v),
+    onChange: address => {
+      const stock = Stocks.findOne({ address })
+      if (stock) return selectedStock.set(stock)
+
+      const wrappedStock = Stocks.findOne({ 'parentToken.address': address })
+      selectedStock.set(wrappedStock.parentToken)
+    },
   })
 
   this.$('.form').form({
@@ -29,11 +36,12 @@ tmpl.onRendered(function () {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      const selectedStock = TemplateVar.get(this, 'selectedStock')
       const amount = this.$('input[name=number]').val()
       const recipient = TemplateVar.get(this, 'recipient').ethereumAddress
 
-      await transferStock(selectedStock, recipient, amount)
+      const stock = selectedStock.get()
+      console.log(stock, stock.address)
+      await transferStock(stock.address, recipient, amount)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
@@ -43,11 +51,8 @@ tmpl.onRendered(function () {
 
 tmpl.helpers({
   stocks: () => Stocks.find(),
-  balance: ReactivePromise(async (stockIndex) => {
-    const stockAddr = Stocks.findOne({ index: stockIndex }).address
-    const stock = await Stock.at(stockAddr).transferableTokens(Identity.current().ethereumAddress, new Date()/1000)
-    return stock.toNumber()
-  }),
+  transferrable: ReactivePromise(Tokens.getTransferableBalance),
+  selectedStock: () => selectedStock.get(),
 })
 
 tmpl.events({

@@ -10,7 +10,7 @@
       <ul>
       {{#each stocks}}
         {{ #with (TemplateVar.get 'entity') }}
-        <li>{{ ../symbol }}: {{ balance ../address ethereumAddress }} (Transferrable: {{ transferrable ../address ethereumAddress }})
+        <li>{{ ../symbol }}: {{ balance ../address ethereumAddress }} (Transferable: {{ transferrable ../address ethereumAddress }})
           {{#if isMe this }}
           {{#if ../parentToken }}
             {{#if $gt (liveTokenBalance ../parentToken.address ethereumAddress ) 0 }}

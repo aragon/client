@@ -32,9 +32,7 @@ tmpl.helpers({
     if (!entity || !entity.balances) return 0
     return entity.balances[stock] || 0
   },
-  transferrable: ReactivePromise((stock, shareholder) => (
-    Stock.at(stock).transferableTokens(shareholder, +new Date()/1000).then(x => x.valueOf())
-  )),
+  transferrable: ReactivePromise(Tokens.getTransferableBalance),
 })
 
 tmpl.events({
