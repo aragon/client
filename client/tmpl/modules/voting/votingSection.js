@@ -131,6 +131,7 @@ tmpl.helpers({
   isModifying: () => isModifying.get(),
   getOption: o => votingVar.get().options[o - 10],
   wrappableTokens: ReactivePromise(wrappableTokens, [], console.log),
+  stocks: Stocks.find(),
 })
 
 const castVote = async option => {
