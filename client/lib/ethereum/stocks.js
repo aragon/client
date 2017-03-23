@@ -103,11 +103,11 @@ class StockWatcher extends Watcher {
     })
   }
 
-  async getParentToken(ethereumAddress: string) {
-    const parentAddress = await ERC20Wrap.at(ethereumAddress).parentToken()
+  async getParentToken(address: string) {
+    const parentAddress = await ERC20Wrap.at(address).parentToken()
     if (parentAddress === '0x') return null
 
-    return { ethereumAddress, ...(await Tokens.getTokenProperties(parentAddress))}
+    return { address: parentAddress, ...(await Tokens.getTokenProperties(parentAddress))}
   }
 
   async updateStock(address: string, index: number) {

@@ -24,6 +24,7 @@ helpers.arrayAccess = (array: Array<any>, index: number) => array[index]
 helpers.isNull = (x: any): boolean => x === null
 helpers.isNotNull = (x: any): boolean => x !== null
 helpers.count = (x: any): number => x.count()
+helpers.isMe = (entity): boolean => entity.ethereumAddress === Entities.findOne({current: true}).ethereumAddress // can't use identity because of cyclic dep
 
 helpers.callToActionForAction = callToActionForAction
 helpers.bylawDisclaimerForAction = bylawDisclaimerForAction

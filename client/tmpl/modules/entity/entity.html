@@ -21,7 +21,7 @@
         <p><i class="money icon"></i>Token supply: {{ totalSupply }} {{ symbol }}</p>
         {{ /if }}
         {{ #if getStatus ethereumAddress }}
-        <p><i class="user icon"></i>{{ capitalize (getStatus ethereumAddress) }} status</p>
+        <p><i class="user icon"></i><span class="bolded">{{ capitalize (getStatus ethereumAddress) }}</span> role</p>
         {{ /if }}
         {{ #if cryptocurrencies.bitcoin }}
         <p><i class="bitcoin icon"></i><a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>

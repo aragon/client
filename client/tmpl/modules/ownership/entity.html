@@ -10,7 +10,23 @@
       <ul>
       {{#each stocks}}
         {{ #with (TemplateVar.get 'entity') }}
-        <li>{{ ../symbol }}: {{ balance ../address ethereumAddress }} (Transferrable: {{ transferrable ../address ethereumAddress }})</li>
+        <li>{{ ../symbol }}: {{ balance ../address ethereumAddress }} (Transferrable: {{ transferrable ../address ethereumAddress }})
+          {{#if isMe this }}
+          {{#if ../parentToken }}
+            {{#if $gt (liveBalance ../parentToken.address ethereumAddress ) 0 }}
+              You have <span class="bolded">{{ liveBalance ../parentToken.address ethereumAddress }} {{ ../parentToken.symbol }}</span>.
+              <a id="wrap" href="#" data-holder="{{ ethereumAddress }}" data-wrapper="{{ ../address }}" data-parent="{{ ../parentToken.address }}">
+                Convert to {{ ../symbol }}
+              </a>
+            {{/if}}
+            {{#if $gt (transferrable ../address ethereumAddress ) 0 }}
+              <a id="unwrap" href="#" data-holder="{{ ethereumAddress }}" data-wrapper="{{ ../address }}">
+                Convert to {{ ../parentToken.symbol }}
+              </a>
+            {{/if}}
+          {{/if}}
+          {{/if}}
+        </li>
         {{ /with }}
       {{/each}}
       </ul>

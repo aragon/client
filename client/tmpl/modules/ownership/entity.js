@@ -8,6 +8,7 @@ import Identity from '/client/lib/identity'
 import ClosableSection from '/client/tmpl/components/closableSection'
 import renderOwnershipInfo from './entityCharts'
 import StockWatcher from '/client/lib/ethereum/stocks'
+import Tokens from '/client/lib/ethereum/tokens'
 import { Stock } from '/client/lib/ethereum/contracts'
 
 const Stocks = StockWatcher.Stocks
@@ -21,6 +22,7 @@ tmpl.onCreated(async function () {
 
 tmpl.onRendered(function () {
   renderOwnershipInfo()
+  // reloadBalances()
 })
 
 tmpl.helpers({
@@ -30,7 +32,19 @@ tmpl.helpers({
     if (!entity || !entity.balances) return 0
     return entity.balances[stock] || 0
   },
+  liveBalance: ReactivePromise(Tokens.getBalance),
   transferrable: ReactivePromise((stock, shareholder) => (
     Stock.at(stock).transferableTokens(shareholder, +new Date()/1000).then(x => x.valueOf())
   )),
+})
+
+tmpl.events({
+  'click #wrap': (e) => {
+    const element = $(e.currentTarget)
+    Tokens.wrap(element.data('parent'), element.data('wrapper'), element.data('holder'))
+  },
+  'click #unwrap': (e) => {
+    const element = $(e.currentTarget)
+    Tokens.unwrap(element.data('wrapper'), element.data('holder'))
+  }
 })
