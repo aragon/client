@@ -16,6 +16,21 @@ body {
   box-sizing: inherit;
 }
 
+@iconLarge: 24px;
+
+i.icon {
+  font-family: 'Material Icons' !important;
+  vertical-align: top !important;
+}
+
+.menu {
+  > .item {
+    > .material-icons {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
 /* body, input {
   font-weight: lighter;
 } */
@@ -70,7 +85,8 @@ body {
 
     .icon {
       float: none !important;
-      margin-right: 0.5rem !important;
+      margin-right: 0.75rem !important;
+      vertical-align: -25% !important;
     }
 
     &.bottom {

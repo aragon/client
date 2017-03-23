@@ -1,10 +1,10 @@
 import StockWatcher from '/client/lib/ethereum/stocks'
-import { Stock } from '/client/lib/ethereum/contracts'
 import { Company } from '/client/lib/ethereum/deployed'
 import Identity from '/client/lib/identity'
 
-
 const Stocks = StockWatcher.Stocks
+
+window.Stocks = Stocks
 
 const tmpl = Template.Module_Ownership.extend()
 
@@ -25,6 +25,7 @@ tmpl.onCreated(() => {
 
 tmpl.onRendered(function () {
   this.$('table').tablesort()
+  this.$('.dropdown').dropdown({ action: 'hide' })
 })
 
 tmpl.events({
@@ -46,7 +47,7 @@ tmpl.helpers({
   },
   symbol: address => Stocks.findOne({ address }).symbol,
   shareholders: () => {
-    let shareholders = []
+    const shareholders = []
     Stocks.find().fetch().forEach(s => (shareholders.push(...s.shareholders)))
 
     /*
@@ -59,7 +60,7 @@ tmpl.helpers({
   },
   balance: (stock, ethereumAddress) => {
     const entity = Entities.findOne({ ethereumAddress })
-    if (!entity || !entity.balances) return -1
+    if (!entity || !entity.balances) return -1
     return entity.balances[stock]
   },
   company: () => Company().address,

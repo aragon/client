@@ -1,7 +1,6 @@
 <template name="Layout_Inbox">
-  <a class="item" id="inboxButton" style="{{ #unless unhandledNotifications }}display: none{{ /unless }}">
-    <i class="alarm large icon"></i>
-    <div class="ui floating red circular empty label"></div>
+  <a class="item" id="inboxButton">
+    <i class="icon large">{{ #if unhandledNotifications }}notifications{{ else }}notifications_none{{ /if }}</i>
   </a>
   <div class="ui special scrollable popup">
     <div class="ui very relaxed divided list" id="notifList">

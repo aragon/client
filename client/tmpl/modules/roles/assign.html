@@ -14,16 +14,12 @@
     </div>
     <div class="field">
       <label>Role</label>
-      <div class="ui selection dropdown">
-        <input type="hidden" name="kind">
-        <i class="dropdown icon"></i>
-        <div class="default text">Role</div>
-        <div class="menu">
-          {{#each statuses}}
-          <div class="item" data-value="{{ this }}">{{ capitalize this }}</div>
-          {{/each}}
-        </div>
-      </div>
+      <select>
+        <option selected disabled>Role</option>
+        {{#each statuses}}
+        <option value="{{ this }}">{{ capitalize this }}</option>
+        {{/each}}
+      </select>
     </div>
     {{ #if $gt (totalStock (TemplateVar.get 'entity')) 0 }}
       This entity also has role Shareholder (owns {{ totalStock (TemplateVar.get 'entity') }} shares)
