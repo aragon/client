@@ -98,6 +98,24 @@
     {{/if}}
     {{/with}}
 
+    {{ #with currentIdentity }}
+    {{ #if wrappableTokens ethereumAddress }}
+    <div class="ui icon small message">
+      <i class="info icon"></i>
+      <div class="content">
+      {{ #each wrappableTokens ethereumAddress }}
+        <p>You have <span class="bolded">{{ parentToken.balance }} {{ parentToken.symbol }}</span>.
+        <a id="wrap" href="#" data-holder="{{ ../ethereumAddress }}" data-wrapper="{{ address }}" data-parent="{{ parentToken.address }}">
+          Convert {{ parentToken.symbol }} to {{ symbol }} to vote.
+        </a></p>
+        <span class="popups" data-html="You will be able to convert back after voting is closed" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span>
+        <br>
+      {{/each}}
+      </div>
+    </div>
+    {{ /if }}
+    {{/with}}
+
     {{#if canVote}}
     <div class="ui icon small message">
       <i class="info icon"></i>

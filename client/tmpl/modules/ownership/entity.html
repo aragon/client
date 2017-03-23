@@ -13,8 +13,8 @@
         <li>{{ ../symbol }}: {{ balance ../address ethereumAddress }} (Transferrable: {{ transferrable ../address ethereumAddress }})
           {{#if isMe this }}
           {{#if ../parentToken }}
-            {{#if $gt (liveBalance ../parentToken.address ethereumAddress ) 0 }}
-              You have <span class="bolded">{{ liveBalance ../parentToken.address ethereumAddress }} {{ ../parentToken.symbol }}</span>.
+            {{#if $gt (liveTokenBalance ../parentToken.address ethereumAddress ) 0 }}
+              You have <span class="bolded">{{ liveTokenBalance ../parentToken.address ethereumAddress }} {{ ../parentToken.symbol }}</span>.
               <a id="wrap" href="#" data-holder="{{ ethereumAddress }}" data-wrapper="{{ ../address }}" data-parent="{{ ../parentToken.address }}">
                 Convert to {{ ../symbol }}
               </a>

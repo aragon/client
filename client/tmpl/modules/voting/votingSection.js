@@ -12,6 +12,7 @@ import { Company } from '/client/lib/ethereum/deployed'
 import Identity from '/client/lib/identity'
 import { Stock, Voting } from '/client/lib/ethereum/contracts'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
+import Tokens from '/client/lib/ethereum/tokens'
 
 const Votings = VotingWatcher.Votings
 const Stocks = StockWatcher.Stocks
@@ -98,6 +99,20 @@ tmpl.onRendered(() => {
   $('.popups').popup()
 })
 
+const wrappableTokens = async holder => {
+  const stocks = Stocks.find().fetch().filter(s => s.parentToken)
+  console.log('getting', stocks, holder)
+
+  const r = (await Promise.all(stocks.map(s => Promise.all([s, Tokens.getBalance(s.parentToken.address, holder)]))))
+    .filter(([stock, balance]) => balance > 0)
+    .map(([stock, balance]) => {
+      stock.parentToken.balance = balance
+      return stock
+    })
+  console.log('r', r)
+  return r
+}
+
 tmpl.helpers({
   updatesHack: () => updated.get(),
   verified: () => verifiedVar.get(),
@@ -115,6 +130,7 @@ tmpl.helpers({
   canModifyVote: modificableVotes => !votingVar.get().voteClosed && modificableVotes > 0,
   isModifying: () => isModifying.get(),
   getOption: o => votingVar.get().options[o - 10],
+  wrappableTokens: ReactivePromise(wrappableTokens, [], console.log),
 })
 
 const castVote = async option => {
@@ -149,4 +165,8 @@ tmpl.events({
   'click #verifyCode': verify,
   'click #modifyVote': () => isModifying.set(true),
   'click #removeVote': () => removeVote(),
+  'click #wrap': (e) => {
+    const element = $(e.currentTarget)
+    Tokens.wrap(element.data('parent'), element.data('wrapper'), element.data('holder'))
+  },
 })
