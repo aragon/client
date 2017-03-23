@@ -32,8 +32,8 @@
         <tr>
           <th>Option</th>
           <th class="center aligned">Votes</th>
-          <th class="center aligned">Absolute <span class="popups" data-html="Percentage of all voting power supporting an option. For old votings, it may reflect it against current voting power." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span></th>
-          <th class="center aligned">Relative <span class="popups" data-html="Percentage of all casted votes supporting an option." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span></th>
+          <th class="center aligned">Absolute <span class="popups" data-html="Percentage of all voting power supporting an option. For old votings, it may reflect it against current voting power." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></th>
+          <th class="center aligned">Relative <span class="popups" data-html="Percentage of all casted votes supporting an option." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></th>
         </tr>
       </thead>
       <tbody>
@@ -81,7 +81,7 @@
     {{#with hasVoted }}
     {{#if voted}}
     <div class="ui icon small message">
-      <i class="info icon"></i>
+      <i class="ui icon">info_outline</i>
       <div class="content">
         <div class="header">You voted <span class="bold">{{ getOption votedOption }}</span> with {{ modificable }} votes.</div>
       </div>
@@ -101,14 +101,14 @@
     {{ #with currentIdentity }}
     {{ #if wrappableTokens ethereumAddress }}
     <div class="ui icon small message">
-      <i class="info icon"></i>
+      <i class="ui icon">info_outline</i>
       <div class="content">
       {{ #each wrappableTokens ethereumAddress }}
         <p>You have <span class="bolded">{{ parentToken.balance }} {{ parentToken.symbol }}</span>.
         <a id="wrap" href="#" data-holder="{{ ../ethereumAddress }}" data-wrapper="{{ address }}" data-parent="{{ parentToken.address }}">
           Convert {{ parentToken.symbol }} to {{ symbol }} to vote.
         </a></p>
-        <span class="popups" data-html="You will be able to convert back after voting is closed" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span>
+        <span class="popups" data-html="You will be able to convert back after voting is closed" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span>
         <br>
       {{/each}}
       </div>
@@ -118,7 +118,7 @@
 
     {{#if canVote}}
     <div class="ui icon small message">
-      <i class="info icon"></i>
+      <i class="ui icon">info_outline</i>
       <div class="content">
         <div class="header">You will cast {{ votingPower }} votes.</div>
       </div>
@@ -137,7 +137,7 @@
 
     {{#with executingOption voteCounts options updatesHack }}
     <div class="ui icon small message">
-      <i class="info icon"></i>
+      <i class="ui icon">info_outline</i>
       <div class="content">
         <div class="header">Vote is called, it can be executed at any time.</div>
       </div>
