@@ -1,5 +1,5 @@
 // @flow
-import { ERC20Wrap, WrappedCustomStock } from '/client/lib/ethereum/contracts'
+import { ERC20Wrap, WrappedCustomStock, Stock } from '/client/lib/ethereum/contracts'
 import { dispatcher } from '/client/lib/action-dispatcher'
 import queue from '/client/lib/queue'
 
@@ -27,6 +27,10 @@ export default class Tokens {
 
   static async getBalance(token, hodler) {
     return ERC20Wrap.at(token).balanceOf(hodler).then(x => x.toNumber())
+  }
+
+  static async getTransferableBalance(token, hodler) {
+    return Stock.at(token).transferableTokens(hodler, +new Date()/1000).then(x => x.valueOf())
   }
 
   static async wrap(token, wrapper, holder) {

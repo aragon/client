@@ -16,8 +16,13 @@
         <div class="default text">Kind of shares</div>
         <div class="menu">
           {{#each stocks}}
-          <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
-          {{/each}}
+          <div class="item" data-value="{{address}}">{{name}} ({{symbol}})</div>
+          {{ #if parentToken }}
+            {{ #with parentToken }}
+            <div class="item" data-value="{{address}}">&gt; {{name}} ({{symbol}}) – parent of {{ ../symbol }}</div>
+            {{ /with }}
+          {{ /if }}
+          {{ /each }}
         </div>
       </div>
     </div>
@@ -27,13 +32,21 @@
     </div>
     <div class="ui hidden divider"></div>
     <div class="ui spacer"></div>
-    {{ #if $exists (TemplateVar.get 'selectedStock') }}
+    {{ #if selectedStock }}
     <div class="ui icon small message">
       <i class="info icon"></i>
       <div class="content">
+        {{ #with selectedStock }}
+        {{ #with currentIdentity }}
         <div class="header">
-          You have {{ balance (TemplateVar.get 'selectedStock') }} shares available for transfer
+          {{ #if ../_id }} <!-- Is a proper token -->
+            You have {{ transferrable ../address ethereumAddress }} {{ ../symbol }} available for transfer
+          {{ else }} <!-- Is the parent token that might not implement transferable -->
+            You have {{ liveTokenBalance ../address ethereumAddress }} {{ ../symbol }} tokens
+          {{ /if }}
         </div>
+        {{ /with}}
+        {{ /with }}
         <p>
           This will be irreversible
         </p>
