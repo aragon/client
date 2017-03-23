@@ -22,7 +22,7 @@
     <a class="item" href="https://medium.com/aragondec" target="_blank">News in decentralized companies</a>
     <a class="item" id="priceTicker">
       ETH: {{ #with ticker 'eth' }}
-        <i class="icon arrow {{ #if $gte change 0 }}green up{{ else }}red down{{ /if }}"></i>
+        <i class="icon {{ #if $gte change 0 }}green{{ else }}red{{ /if }}">{{ #if $gte change 0 }}arrow_upward{{ else }}arrow_downward{{ /if }}</i>
         ${{ price }}
       {{ /with }}
     </a>
