@@ -30,5 +30,5 @@ tmpl.helpers({
 
 tmpl.events({
   'click .extra a': e => performAction($(e.currentTarget).data('notification')),
-  'click .clear-all': clearAll,
+  'click #notifHeader i': clearAll,
 })
