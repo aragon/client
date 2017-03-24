@@ -25,7 +25,7 @@ tmpl.onRendered(function () {
 })
 
 tmpl.helpers({
-  stocks: () => Stocks.find(),
+  stocks: () => Stocks.find({ parentToken: null }), // Only issueable tokens
 })
 
 tmpl.events({
