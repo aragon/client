@@ -20,9 +20,17 @@ tmpl.onCreated(async function () {
   TemplateVar.set(this, 'entity', entity)
 })
 
+const reloadBalances = async ethereumAddress => {
+  const entity = Entities.findOne({ ethereumAddress })
+  for (const stock of Object.keys(entity.balances)) {
+    await StockWatcher.setBalance(ethereumAddress, stock)
+    console.log('updated balance on reload')
+  }
+}
+
 tmpl.onRendered(function () {
   renderOwnershipInfo()
-  // reloadBalances()
+  reloadBalances(FlowRouter.current().params.address)
 })
 
 tmpl.helpers({
