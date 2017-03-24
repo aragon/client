@@ -12,9 +12,9 @@
         {{/if}}
 
         {{#if relativeMajorityOnClose}}
-          <span class="popups" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet basic label">Relative count on close</a></span>
+          <span class="tooltip" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet basic label">Relative count on close</a></span>
         {{else}}
-          <span class="popups" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet label">Absolute count on close </a></span>
+          <span class="tooltip" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet label">Absolute count on close </a></span>
         {{/if}}
       {{else}}
         <a class="ui left pointing red basic label">Closed</a>
@@ -32,8 +32,8 @@
         <tr>
           <th>Option</th>
           <th class="center aligned">Votes</th>
-          <th class="center aligned">Absolute <span class="popups" data-html="Percentage of all voting power supporting an option. For old votings, it may reflect it against current voting power." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></th>
-          <th class="center aligned">Relative <span class="popups" data-html="Percentage of all casted votes supporting an option." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></th>
+          <th class="center aligned">Absolute <span class="tooltip" data-html="Percentage of all voting power supporting an option. For old votings, it may reflect it against current voting power." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></th>
+          <th class="center aligned">Relative <span class="tooltip" data-html="Percentage of all casted votes supporting an option." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></th>
         </tr>
       </thead>
       <tbody>
@@ -108,7 +108,7 @@
         <a id="wrap" href="#" data-holder="{{ ../ethereumAddress }}" data-wrapper="{{ address }}" data-parent="{{ parentToken.address }}">
           Convert {{ parentToken.symbol }} to {{ symbol }} to vote.
         </a></p>
-        <span class="popups" data-html="You will be able to convert back after voting is closed" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span>
+        <span class="tooltip" data-html="You will be able to convert back after voting is closed" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span>
         <br>
       {{/each}}
       </div>

@@ -28,18 +28,18 @@
     <div class="field">
       <div class="two fields">
         <div class="field">
-          <label>Voting power <span class="popups" data-html="Multiplayer for voting power in company governance. Whole numbers only. 0 is no voting power, 1 is one-token-one-vote, and above is x times normal distribution." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
+          <label>Voting power <span class="tooltip" data-html="Multiplayer for voting power in company governance. Whole numbers only. 0 is no voting power, 1 is one-token-one-vote, and above is x times normal distribution." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
           <input type="number" lang="en" name="votingPower" placeholder="1" min="0" max="255">
         </div>
         <div class="field">
-          <label>Economic rights <span class="popups" data-html="Multiplayer for economic rights in company. Whole numbers only. 0 is no dividends, 1 is normal distribution, and above is x times normal distribution." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
+          <label>Economic rights <span class="tooltip" data-html="Multiplayer for economic rights in company. Whole numbers only. 0 is no dividends, 1 is normal distribution, and above is x times normal distribution." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
           <input type="number" lang="en" name="economicRights" placeholder="1" min="0" max="255">
         </div>
       </div>
     </div>
     <div class="ui toggle checkbox">
       <input type="checkbox" id="existingTokenToggle">
-      <label>Use existing ERC20 token  <span class="popups" data-html="Token holders of parent token will be able to use this token for governance of the company." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
+      <label>Use existing ERC20 token  <span class="tooltip" data-html="Token holders of parent token will be able to use this token for governance of the company." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
     </div>
     {{ #if TemplateVar.get 'existingToken' }}
     <div class="ui hidden divider"></div>

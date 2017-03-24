@@ -73,7 +73,7 @@ const drawWithStocks = async (stocks) => {
 const throttledDraw = _.throttle((stocks) => drawWithStocks(stocks), 5000)
 
 tmpl.onRendered(function () {
-  $('#ownershipInfoPopup').popup()
+  $('.tooltip').popup()
 
   this.autorun(async () => {
     throttledDraw(Stocks.find().fetch())

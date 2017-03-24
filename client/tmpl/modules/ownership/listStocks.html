@@ -1,0 +1,68 @@
+<template name="Module_Ownership_Stocks">
+  {{> Element_CloseSectionButton }}
+  <form class="ui top attached form">
+    <h1 class="ui header">Stock classes</h1>
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <label>Class</label>
+      <select>
+        {{#each stocks}}
+          <option value="{{index}}">{{name}} ({{symbol}})</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="ui hidden divider"></div>
+    {{ #with selectedStock }}
+    <div class="ui list">
+      <div class="item">
+        <i class="icon">label</i>
+        <div class="content">
+          Name: <code>{{ name }}</code>
+        </div>
+      </div>
+      <div class="item">
+        <i class="icon">compare_arrows</i>
+        <div class="content">
+          Symbol: <code>{{ symbol }}</code>
+        </div>
+      </div>
+      <div class="item">
+        <i class="icon">show_chart</i>
+        <div class="content">
+          Total supply: <code>{{ #if parentToken }}{{ parentToken.totalSupply }}{{ else }}{{ totalSupply }}{{ /if }}</code>
+        </div>
+      </div>
+      <div class="item">
+        <i class="icon">thumbs_up_down</i>
+        <div class="content">
+          Voting power: <code>{{ votingPower }}</code>
+        </div>
+      </div>
+      <div class="item">
+        <i class="icon">compare_arrows</i>
+        <div class="content">
+          Economic rights: <code>{{ economicRights }}</code>
+        </div>
+      </div>
+
+      {{ #with parentToken }}
+      <div class="ui hidden divider"></div>
+      <h2 class="ui header">Parent token<span class="tooltip" data-content="Parent tokens are tokens created outside Aragon and imported so the organization can be governed with them." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></h2>
+      <div class="item">
+        <i class="icon">label</i>
+        <div class="content">
+          Name: <code>{{ name }}</code>
+        </div>
+      </div>
+      <div class="item">
+        <i class="icon">compare_arrows</i>
+        <div class="content">
+          Symbol: <code>{{ symbol }}</code>
+        </div>
+      </div>
+      {{ /with }}
+    </div>
+    {{ /with }}
+  </form>
+</template>
