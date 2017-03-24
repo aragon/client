@@ -11,17 +11,13 @@
     </div>
 
     <div class="field">
-      <label>Kind</label>
-      <div class="ui selection dropdown">
-        <input type="hidden" name="kind">
-        <i class="dropdown icon"></i>
-        <div class="default text">Kind of shares</div>
-        <div class="menu">
-          {{#each stocks}}
-          <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
-          {{/each}}
-        </div>
-      </div>
+      <label>Stock class</label>
+      <select name="class">
+        <option selected disabled>Stock class</option>
+        {{#each stocks}}
+          <option value="{{index}}">{{name}} ({{symbol}})</option>
+        {{/each}}
+      </select>
     </div>
 
     <div class="field">

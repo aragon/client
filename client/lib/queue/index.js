@@ -1,7 +1,7 @@
 // @flow
 import { ReactiveVar } from 'meteor/reactive-var'
 
-import { actionFromData, decode } from '../action-dispatcher/decoder'
+import { actionFromData } from '../action-dispatcher/decoder'
 
 const getTx = txid => {
   return new Promise((resolve, reject) => {
@@ -24,6 +24,7 @@ const getBlock = blockHash => {
 class TxQueue {
   queue = ReactiveVar([])
   listeners = {}
+  onEmpty = Function
 
   init() {
     web3.eth.filter('latest', async (err, blockHash) => {
@@ -33,7 +34,7 @@ class TxQueue {
     })
   }
 
-  async add(txID) {
+  async add(txID: string) {
     console.log('Queuing', txID)
     const tx = await getTx(txID)
     if (!tx) {
@@ -47,15 +48,18 @@ class TxQueue {
     this.queue.set(this.queue.get().concat(action))
   }
 
-  async addListener(txID, callback) {
+  async addListener(txID: string, callback: Function) {
     this.listeners[txID] = callback
   }
 
-  remove(txID) {
-    const newArr = this.queue.get()
-    this.queue.set(this.queue.get().filter((tx) => (
+  remove(txID: string) {
+    const newArr = this.queue.get().filter((tx) => (
       tx.txID !== txID
-    )))
+    ))
+    if (newArr.length === 0 && this.onEmpty) this.onEmpty()
+
+    setTimeout(() => (this.queue.set(newArr)), 500)
+
     if (this.listeners[txID]) {
       this.listeners[txID]()
       delete this.listeners[txID]

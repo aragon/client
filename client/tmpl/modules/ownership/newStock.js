@@ -3,13 +3,11 @@ import { Template } from 'meteor/templating'
 import { moment } from 'meteor/momentjs:moment'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { TemplateVar } from 'meteor/frozeman:template-var'
-import { ReactivePromise } from 'meteor/deanius:promise'
 
 import ClosableSection from '/client/tmpl/components/closableSection'
-import Identity from '/client/lib/identity'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Company } from '/client/lib/ethereum/deployed'
-import { Stock, CustomStock, WrappedCustomStock } from '/client/lib/ethereum/contracts'
+import { CustomStock, WrappedCustomStock } from '/client/lib/ethereum/contracts'
 import Tokens from '/client/lib/ethereum/tokens'
 import { dispatcher, actions } from '/client/lib/action-dispatcher'
 
@@ -19,17 +17,15 @@ const tmpl = Template.Module_Ownership_NewStock.extend([ClosableSection])
 
 const tokenDetails = new ReactiveVar()
 
-const assignStock = (kind, value, recipient) => (
-  dispatcher.dispatch(actions.grantStock, kind, value, recipient)
-)
-
 const deployCustomStock = async (name, symbol, votingPower, economicRights, initialSupply) => {
-  const deployTx = await dispatcher.deployContract(CustomStock, Company().address, name, symbol, votingPower, economicRights)
+  const deployTx = await dispatcher.deployContract(CustomStock, Company().address,
+                          name, symbol, votingPower, economicRights)
   return await watchStockDeployment(deployTx, initialSupply)
 }
 
 const deployWrappedStock = async (token, name, symbol, votingPower, economicRights) => {
-  const deployTx = await dispatcher.deployContract(WrappedCustomStock, Company().address, token, name, symbol, votingPower, economicRights)
+  const deployTx = await dispatcher.deployContract(WrappedCustomStock, Company().address,
+                          token, name, symbol, votingPower, economicRights)
   return await watchStockDeployment(deployTx, 0)
 }
 
@@ -50,7 +46,7 @@ const submitStock = (stockAddress, initialSupply) => {
 }
 
 tmpl.onRendered(function () {
-  $('.popups').popup()
+  $('.tooltip').popup()
   TemplateVar.set('existingToken', false)
   tokenDetails.set(null)
 

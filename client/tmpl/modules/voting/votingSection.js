@@ -99,7 +99,7 @@ tmpl.onCreated(function () {
 })
 
 tmpl.onRendered(() => {
-  $('.popups').popup()
+  $('.tooltip').popup()
 })
 
 const wrappableTokens = async holder => {

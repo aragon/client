@@ -56,34 +56,10 @@ tmpl.onRendered(function () {
     },
   })
 
-  const setStatusDropdown = () => {
-    this.$('#status').dropdown()
-  }
-
-  const setVotingForm = () => {
-    this.$('#closingRelativeMajority').checkbox()
-  }
-
-  const setTriggerDropdown = () => {
-    this.$('#trigger').dropdown({
-      onChange: (v) => {
-        TemplateVar.set(this, 'selectedTrigger', v)
-        requestAnimationFrame(() => {
-          setStatusDropdown()
-          setVotingForm()
-        })
-      },
-    })
-  }
-
   this.autorun(() => {
     FlowRouter.watchPathChange()
     setAction()
-    requestAnimationFrame(() => {
-      setTriggerDropdown()
-      setStatusDropdown()
-      setVotingForm()
-    })
+    requestAnimationFrame(() => (this.$('#closingRelativeMajority').checkbox()))
   })
 })
 
@@ -116,4 +92,11 @@ tmpl.helpers({
   selectedTrigger: () => TemplateVar.get('selectedTrigger'),
   secondsToDays: (seconds: number): number => seconds / 60 / 60 / 24,
   numbersToPercentage: (a: number, b: number): number => Math.round((a / b) * 100),
+})
+
+tmpl.events({
+  'change #trigger': (e) => {
+    TemplateVar.set('selectedTrigger', e.target.value)
+    requestAnimationFrame(() => (this.$('#closingRelativeMajority').checkbox()))
+  },
 })

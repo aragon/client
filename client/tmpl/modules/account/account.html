@@ -6,8 +6,8 @@
 
       <h3 class="ui header">
         Company
-        <div class="sub header">You company is deployed on {{ networkName }}.
-        <a href="{{ etherscanAddress companyAddress }}" target="_blank" style="color: black; text-decoration: underline;">See on etherscan</a>
+        <div class="sub header">You company is deployed on the {{ networkName }}.
+        <a href="{{ etherscanAddress companyAddress }}" target="_blank" style="color: black; text-decoration: underline;">See on etherscan</a>.
         </div>
       </h3>
       <div class="field">
@@ -45,7 +45,7 @@
       {{ #if TemplateVar.get 'viewAllAccounts' }}
       <div class="field" id="allAccounts">
         <label>All accounts</label>
-        <select class="ui fluid dropdown">
+        <select>
           {{ #with currentAccount }}<option value="{{ address }}" selected>{{ name }} ({{ ether balance }} ether)</option>{{ /with }}
           {{ #each accounts }}
             {{ #if $neq currentAccount.address address }}
@@ -106,12 +106,13 @@
           Currency
           <div class="sub header">This will be the default currency for displaying purposes. It will be converted to eth under the hood.</div>
         </h3>
-        <select class="ui fluid search selection dropdown" name="currency">
+        <select name="currency">
           {{ #each currencies }}
-          <option value="{{ symbol }}" selected="{{ #if $eq (Settings.get 'displayCurrency') symbol }}selected{{ /if }}">{{ name }} ({{ symbol }})</option>
+          <option value="{{ symbol }}" selected="{{ $eq (Settings.get 'displayCurrency') symbol }}">{{ name }} ({{ symbol }})</option>
           {{ /each }}
         </select>
       </div>
+      <div class="ui hidden divider"></div>
     </form>
   </div>
   <div class="seven wide lightgrey column">

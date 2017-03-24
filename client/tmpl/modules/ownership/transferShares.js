@@ -4,7 +4,6 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 import { TemplateVar } from 'meteor/frozeman:template-var'
 import { ReactivePromise } from 'meteor/deanius:promise'
 
-import Identity from '/client/lib/identity'
 import ClosableSection from '/client/tmpl/components/closableSection'
 import StockWatcher from '/client/lib/ethereum/stocks'
 import { Stock } from '/client/lib/ethereum/contracts'
@@ -21,16 +20,6 @@ const tmpl = Template.Module_Ownership_TransferShares.extend([ClosableSection])
 const selectedStock = new ReactiveVar()
 
 tmpl.onRendered(function () {
-  this.$('.dropdown').dropdown({
-    onChange: address => {
-      const stock = Stocks.findOne({ address })
-      if (stock) return selectedStock.set(stock)
-
-      const wrappedStock = Stocks.findOne({ 'parentToken.address': address })
-      selectedStock.set(wrappedStock.parentToken)
-    },
-  })
-
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
@@ -40,7 +29,6 @@ tmpl.onRendered(function () {
       const recipient = TemplateVar.get(this, 'recipient').ethereumAddress
 
       const stock = selectedStock.get()
-      console.log(stock, stock.address)
       await transferStock(stock.address, recipient, amount)
 
       this.$('.dimmer').trigger('finished', { state: 'success' })
@@ -57,5 +45,14 @@ tmpl.helpers({
 
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
+  'change select': (e) => {
+    const address = e.target.value
+    let stock = Stocks.findOne({ address })
+    if (!stock) {
+      const wrappedStock = Stocks.findOne({ 'parentToken.address': address })
+      stock = wrappedStock.parentToken
+    }
+    selectedStock.set(stock)
+  },
   'success .dimmer': () => FlowRouter.go('/ownership'),
 })

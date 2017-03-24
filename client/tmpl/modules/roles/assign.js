@@ -22,9 +22,6 @@ tmpl.onCreated(async function () {
 tmpl.onRendered(function () {
   TemplateVar.set('assignMode', true)
 
-  this.$('.dropdown').dropdown({
-    onChange: (v) => TemplateVar.set(this, 'selectedStatus', Status.toNumber(v)),
-  })
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
@@ -46,5 +43,8 @@ tmpl.helpers({
 
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('entity', user)),
+  'change select': (e) => (
+    TemplateVar.set(this, 'selectedStatus', Status.toNumber(e.target.value))
+  ),
   'success .dimmer': () => FlowRouter.go('/roles'),
 })
