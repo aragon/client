@@ -21,15 +21,13 @@ const assignStock = (kind, value, recipient) => (
 )
 
 const createStockGrant = async (kind, value, recipient, start, cliff, vesting) => (
-  dispatcher.dispatch(actions.grantVestedStock, kind, value, recipient, start, +moment(cliff)/1000, +moment(vesting)/1000)
+  dispatcher.dispatch(actions.grantVestedStock, kind, value, recipient, start,
+                      +moment(cliff)/1000, +moment(vesting)/1000)
 )
 
 tmpl.onRendered(function () {
   TemplateVar.set('assignMode', true)
 
-  this.$('.dropdown').dropdown({
-    onChange: (v) => TemplateVar.set(this, 'selectedStock', +v),
-  })
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
@@ -69,6 +67,7 @@ tmpl.helpers({
 
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
+  'change select': (e) => (TemplateVar.set('selectedStock', +e.target.value)),
   'success .dimmer': () => FlowRouter.go('/ownership'),
   'click #stockGrant': () => TemplateVar.set('assignMode', !TemplateVar.get('assignMode')),
 })

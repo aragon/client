@@ -26,17 +26,13 @@
           <input type="number" name="periodNumber" value="0">
         </div>
         <div class="field">
-          <div class="ui selection dropdown" id="recurringPeriodInterval">
-            <input type="hidden" name="periodInterval">
-            <i class="dropdown icon"></i>
-            <div class="default text">Time interval</div>
-            <div class="menu">
-              <div class="item" data-value="86400">Day</div>
-              <div class="item" data-value="604800">Week</div>
-              <div class="item" data-value="2592000">Month (30 days)</div>
-              <div class="item" data-value="31536000">Year</div>
-            </div>
-          </div>
+          <select id="recurringPeriodInterval" name="periodInterval">
+            <option selected disabled>Time interval</option>
+            <option value="86400">Day</option>
+            <option value="604800">Week</option>
+            <option value="2592000">Month (30 days)</option>
+            <option value="31536000">Year</option>
+          </select>
         </div>
       </div>
     </div>

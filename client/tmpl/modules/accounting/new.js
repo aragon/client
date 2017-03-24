@@ -30,7 +30,6 @@ const createRecurringReward = (to, amountWei, period) => (
 )
 
 tmpl.onRendered(function () {
-  this.$('.dropdown').dropdown()
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
@@ -43,7 +42,7 @@ tmpl.onRendered(function () {
       try {
         if (TemplateVar.get(this, 'isRecurring')) {
           const periodNumber = this.$('input[name=periodNumber]').val()
-          const periodUnit = $('#recurringPeriodInterval').dropdown('get value')
+          const periodUnit = this.$('#recurringPeriodInterval').val()
           await createRecurringReward(to, amount, periodNumber * periodUnit)
         } else {
           await issueReward(to, amount)
@@ -57,14 +56,6 @@ tmpl.onRendered(function () {
 
       return false
     },
-  })
-
-  this.autorun(() => {
-    if (TemplateVar.get('isRecurring')) {
-      requestAnimationFrame(() => {
-        this.$('#recurringPeriodInterval').dropdown()
-      })
-    }
   })
 })
 
