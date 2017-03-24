@@ -75,6 +75,9 @@ const pendingVotes = async (options) => {
 
 const canExecute = async (voteCounts, options) => {
   if (voting().voteExecuted !== null) return null
+
+  await Company().canPerformAction(voting().mainSignature, voting().address)
+
   const possitiveVotes = voteCounts[0]
   if (possitiveVotes.relativeVotes > voting().supportNeeded) {
     return { sentiment: 'primary', index: 0, name: options[0] }
