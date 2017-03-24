@@ -6,6 +6,8 @@ import TxQueue from '/client/lib/queue'
 
 window.TxQueue = TxQueue
 
+TxQueue.onEmpty = () => ($('#pendingTxButton').popup('hide'))
+
 const tmpl = Template.Layout_PendingTx
 
 tmpl.onRendered(() => {
