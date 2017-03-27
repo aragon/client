@@ -103,6 +103,7 @@ tmpl.events({
     const selectedSymbol = $(e.currentTarget).data('stock')
     const selectedTemplate = stockTemplates.filter(s => s.symbol === selectedSymbol)[0]
     TemplateVar.set('existingToken', false)
+    $('#existingTokenToggle').prop("checked", false)
     this.$('input[name=name]').val(selectedTemplate.name)
     this.$('input[name=symbol]').val(selectedTemplate.symbol)
     this.$('input[name=initialSupply]').val(1000)
