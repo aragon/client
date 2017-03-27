@@ -98,16 +98,24 @@ const setEntityStatusDescription = ([entity, status]) => (
   `Set ${entity} status to ${Status.toString(+status)}`
 )
 
-const addStatusBylawDescription = ([signature, statusNeeded]) => (
-  `For ${getActionForSignature(signature).name} a minimum status of '${Status.toString(statusNeeded)}' will be needed`
-)
-
-const addStatusSpecialBylawDescription = ([signature, statusNeeded]) => {
-  if (+statusNeeded === 0) return `${getActionForSignature(signature).name} action can only be performed by shareholders`
-  return 'negative v'
+const setStatusBylawDescription = ([signature, statusNeeded, isSpecialStatus]) => {
+  if (isSpecialStatus) {
+    if (+statusNeeded === 0) return `${getActionForSignature(signature).name} action can only be performed by shareholders`
+    return 'negative v'
+  } else {
+    return `For ${getActionForSignature(signature).name} a minimum status of '${Status.toString(statusNeeded)}' will be needed`
+  }
 }
 
-const addVotingBylawDescription = ([signature, supportNeeded, supportBase,
+const setAddressBylawDescription = ([signature, address, isOracle]) => {
+  if (isOracle === false || isOracle === 'false') {
+    return `Only ${address} will be able to perform '${getActionForSignature(signature).name}'`
+  }
+
+  return `To perform '${getActionForSignature(signature).name}', the oracle at address ${address} will be consulted`
+}
+
+const setVotingBylawDescription = ([signature, supportNeeded, supportBase,
                                     relativeMajorityOnClose, minimumVotingTime, option]) => {
   if (+option !== 0) return 'negative v'
   return `For ${getActionForSignature(signature).name} a voting with ${100 * supportNeeded / supportBase}% support in a ${minimumVotingTime / (24*3600)} day will be needed`
@@ -138,12 +146,12 @@ const ActionFactory = {
                         'How recurring payments can be removed', removeRecurringRewardDescription),
   issueReward: new Action('issueReward(address,uint256,string)', 'Issue reward',
                         'How new payments can be created', issueRewardDescription),
-  addStatusBylaw: new Action('addStatusBylaw(string,uint8)', 'Add bylaw by status',
-                        'How new bylaws actionable by user status can be created', addStatusBylawDescription),
-  addSpecialStatusBylaw: new Action('addSpecialStatusBylaw(string,uint8)', 'Add bylaw by special status',
-                        'How new bylaws actionable by special user status (shareholder) can be created', addStatusSpecialBylawDescription),
-  addVotingBylaw: new Action('addVotingBylaw(string,uint256,uint256,bool,uint64,uint8)', 'Add bylaw by voting',
-                        'How new bylaws actionable by a voting can be created', addVotingBylawDescription),
+  setStatusBylaw: new Action('setStatusBylaw(string,uint8,bool)', 'Set status bylaw',
+                        'How new bylaws actionable by user status can be created', setStatusBylawDescription),
+  setVotingBylaw: new Action('setVotingBylaw(string,uint256,uint256,bool,uint64,uint8)', 'Set voting bylaw',
+                        'How new bylaws actionable by a voting can be set', setVotingBylawDescription),
+  setAddressBylaw: new Action('setAddressBylaw(string,address,bool)', 'Set address bylaw',
+                        'How new bylaws actionable by addresses can be set', setAddressBylawDescription),
 
   // non-bylaw actions
   castVote: new Action('castVote(uint256,uint8,bool)', 'Cast vote',

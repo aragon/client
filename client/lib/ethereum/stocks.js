@@ -56,8 +56,8 @@ class StockWatcher extends Watcher {
   }
 
   async setBalance(holder, stockAddress) {
-    const balance = await Stock.at(stockAddress).balanceOf(holder)
-    this.updateBalance(stockAddress, holder, balance.toNumber())
+    const balance = await Tokens.getBalance(stockAddress, holder)
+    this.updateBalance(stockAddress, holder, balance)
   }
 
   updateBalance(stockAddress, ethereumAddress, balance, isIncrement = false) {

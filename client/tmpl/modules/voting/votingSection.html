@@ -120,6 +120,15 @@
       <i class="ui icon">info_outline</i>
       <div class="content">
         <div class="header">You will cast {{ votingPower }} votes.</div>
+        {{ #if willBeAbleToExecute }}
+        <br>
+        <div class="ui field">
+          <label for="">Your vote will be decisive.</label>
+          <br>
+          <input type="checkbox" checked id="executesIfDecided">
+          <label>Automatically <span class="bolded">execute voting</span>.</label>
+        </div>
+        {{ /if }}
       </div>
     </div>
     {{/if}}
