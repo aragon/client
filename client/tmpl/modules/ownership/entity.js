@@ -21,10 +21,9 @@ tmpl.onCreated(async function () {
 })
 
 const reloadBalances = async ethereumAddress => {
-  const entity = Entities.findOne({ ethereumAddress })
-  for (const stock of Object.keys(entity.balances)) {
-    await StockWatcher.setBalance(ethereumAddress, stock)
-    console.log('updated balance on reload')
+  const stocks = Stocks.find().fetch()
+  for (const stock of stocks) {
+    await StockWatcher.setBalance(ethereumAddress, stock.address)
   }
 }
 
