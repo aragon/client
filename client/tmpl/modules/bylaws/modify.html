@@ -2,7 +2,7 @@
   {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
   {{ #with action }}
-  <form class="ui flex attached form">
+  <form class="ui flex attached form" id="modifyBylaw">
     <h1 class="ui header">
       {{ name }}
       <div class="sub header">{{ description }}</div>
@@ -46,7 +46,14 @@
       </select>
     </div>
     {{ /if }}
+    {{ #if $eq actionName 'setAddressBylaw' }}
+    <div class="field">
+      <label>{{ #if $eq (TemplateVar.get 'selectedTrigger') 'oracle' }}Oracle address: {{ else }} Address: {{ /if }}</label>
+      {{> Element_IdentityAutocomplete }}
+    </div>
+    {{ /if }}
     <div class="ui spacer"></div>
+
     {{ > Element_BylawDisclose action=actionName }}
     <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
   </form>

@@ -22,8 +22,6 @@ const bylawDisclaimerForAction = (actionName: string): {title: string, descripti
   const title = bylaw.type === 0 ? `A voting will be needed to ${action.name}` : `${action.name} can be performed instantly`
   let description = ''
 
-  console.log(Status.list)
-
   const d = bylaw.details
 
   if (bylaw.type === 0) description = `Requires ${Math.round(10000 * (d.supportNeeded / d.supportBase || 0)) / 100}% support in a ${d.minimumVotingTime / (24*3600)} day voting`

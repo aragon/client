@@ -29,14 +29,17 @@ class BylawsWatcher extends Watcher {
         .then(x => x.map(y => ((y.toNumber) ? y.toNumber() : y)))
     let details = Promise.resolve()
     if (type === 0) {
-      details = Company().getVotingBylaw.call(signature)
+      details = Company().getVotingBylaw(signature)
         .then(x => x.map(y => ((y.toNumber) ? y.toNumber() : y)))
         .then(([supportNeeded, supportBase, closingRelativeMajority, minimumVotingTime]) =>
           ({ supportNeeded, supportBase, closingRelativeMajority, minimumVotingTime }))
-    } else {
-      details = Company().getStatusBylaw.call(signature)
+    } else if (type === 1 || type === 2){
+      details = Company().getStatusBylaw(signature)
         .then(x => x.toNumber())
         .then(neededStatus => ({ neededStatus }))
+    } else {
+      details = Company().getAddressBylaw(signature)
+        .then(address => ({ address }))
     }
 
     const bylawObject = await Promise.allProperties({
