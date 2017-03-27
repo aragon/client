@@ -1,7 +1,6 @@
 <template name="Module_Accounting_New">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/rewards'}}
-  <form class="ui flex attached form" id="newReward">
+  <form class="ui flex attached form lightgrey right column" id="newReward">
     <h1 class="ui header">New payment</h1>
     <div class="ui hidden divider"></div>
     <div class="field">
@@ -47,6 +46,7 @@
     </div>
     {{ > Element_BylawDisclose action=actionName }}
     <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
-    <div class="ui hidden divider"></div>
+
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

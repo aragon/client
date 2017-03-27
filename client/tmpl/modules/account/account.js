@@ -57,5 +57,6 @@ tmpl.helpers({
   currencies: () => (
     Object.keys(currencies).map((symbol) => ({ name: currencies[symbol], symbol }))
   ),
-  companyAddress: () => localStorage.getItem('companyAddress')
+  companyAddress: () => localStorage.getItem('companyAddress'),
+  isElectron: () => window.isElectron,
 })

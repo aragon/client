@@ -1,7 +1,6 @@
 <template name="Module_Ownership_IssueShares">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
-  <form class="ui flex attached form" id="issueShares">
+  <form class="ui flex attached form lightgrey right column" id="issueShares">
     <h1 class="ui header">Issue shares</h1>
     <div class="ui hidden divider"></div>
     <div class="field">
@@ -20,5 +19,7 @@
     <div class="ui spacer"></div>
     {{> Element_BylawDisclose action='issueStock' }}
     <button class="ui fluid big primary button" type="submit">{{ callToActionForAction 'issueStock' }}</button>
+
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

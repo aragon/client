@@ -1,10 +1,9 @@
 <template name="Module_Ownership_NewStock">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
-  <form class="ui flex attached form" id="assignShares">
+  <form class="ui flex attached form lightgrey right column" id="assignShares">
     <h1 class="ui header">Add stock class</h1>
 
-    <h5>Stock templates:</h5>
+    <label>Stock templates</label>
     <div id="stock-templates">
       {{ #each stockTemplates }}
       <a class="ui violet basic label stock-template" data-stock="{{ symbol }}">{{ name }}</a>
@@ -44,7 +43,7 @@
     {{ #if TemplateVar.get 'existingToken' }}
     <div class="ui hidden divider"></div>
     <div class="field">
-      <label>Token address:</label>
+      <label>Token address</label>
       {{> Element_IdentityAutocomplete}}
     </div>
     {{ #if tokenDetails }}
@@ -70,5 +69,7 @@
     <div class="ui spacer"></div>
     {{ > Element_BylawDisclose action=actionName }}
     <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
+
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

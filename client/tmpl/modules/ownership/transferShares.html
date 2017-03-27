@@ -1,7 +1,6 @@
 <template name="Module_Ownership_TransferShares">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
-  <form class="ui flex attached form" id="transferShares">
+  <form class="ui flex attached form lightgrey right column" id="transferShares">
     <h1 class="ui header">Transfer shares</h1>
     <div class="ui hidden divider"></div>
     <div class="field">
@@ -50,5 +49,7 @@
     </div>
     {{ /if }}
     <button class="ui fluid big primary button" type="submit">Transfer</button>
+
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

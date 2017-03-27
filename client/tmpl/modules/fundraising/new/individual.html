@@ -1,7 +1,6 @@
 <template name="Module_Fundraising_New_Individual">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/fundraising/new'}}
-  <form class="ui flex attached form" id="newIndividualRaise">
+  <form class="ui flex attached form lightgrey right column" id="newIndividualRaise">
     <h1 class="ui header">New individual raise</h1>
     <div class="ui hidden divider"></div>
 
@@ -50,5 +49,7 @@
     <div class="ui spacer"></div>
     {{ > Element_BylawDisclose action='beginSale' }}
     <button class="ui fluid big primary button" type="submit">{{ callToActionForAction 'beginSale' }}</button>
+
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

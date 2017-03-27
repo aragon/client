@@ -1,5 +1,5 @@
 <template name="Module_Bylaws">
-  <div class="nine wide column" id="Module_Bylaws">
+  <div class="main column" id="Module_Bylaws">
     <form class="ui flex attached form">
       <h1 class="ui header">
         Bylaws
@@ -20,7 +20,6 @@
       </div>
     </form>
   </div>
-  <div class="seven wide lightgrey column">
-    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
-  </div>
+
+  {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
 </template>
