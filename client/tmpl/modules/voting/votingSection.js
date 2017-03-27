@@ -28,6 +28,7 @@ const voteId = () => FlowRouter.current().params.id
 const voting = () => Votings.findOne({ $or: [{ address: voteId() }, { index: +voteId() }] })
 
 const reload = () => {
+  const identity = Identity.current(true) // so it reloads when balance reloads
   const newVoting = voting()
   verifiedVar.set(null)
   votingVar.set(newVoting)
@@ -73,21 +74,30 @@ const pendingVotes = async (options) => {
   return { votes, relativeVotes: votes / total }
 }
 
+const willBeAbleToExecute = async () => {
+  let [votable, modificable, votedOption] = await getVotingPower().then(xs => xs.map(x => x.toNumber()))
+  if (votedOption != 10) votable += modificable // if didn't vote approve but can modify it
+  const [currentVotes, totalVotes, totalVotingPower] = await Company().countVotes.call(voting().index, 0)
+  const futureVotes = currentVotes + votable
+
+  return futureVotes / totalVotingPower >= voting().supportNeeded
+}
+
 const canExecute = async (voteCounts, options) => {
   if (voting().voteExecuted !== null) return null
 
-  await Company().canPerformAction(voting().mainSignature, voting().address)
+  const canPerform = await Company().canPerformAction(voting().mainSignature, voting().address)
 
-  const possitiveVotes = voteCounts[0]
-  if (possitiveVotes.relativeVotes > voting().supportNeeded) {
+  if (canPerform) {
     return { sentiment: 'primary', index: 0, name: options[0] }
   }
 
+  /*
   const negativeVotes = voteCounts[1]
   if (negativeVotes.relativeVotes > 1 - voting().supportNeeded) {
     return { sentiment: 'negative', index: 1, name: options[1] }
   }
-
+  */
   return null
 }
 
@@ -135,10 +145,11 @@ tmpl.helpers({
   getOption: o => votingVar.get().options[o - 10],
   wrappableTokens: ReactivePromise(wrappableTokens, [], console.log),
   stocks: Stocks.find(),
+  willBeAbleToExecute: ReactivePromise(willBeAbleToExecute),
 })
 
 const castVote = async option => {
-  const executesOnDecided = true
+  const executesOnDecided = $('#executesIfDecided').prop('checked') || false
   if (!isModifying.get()) { // TODO: OR is a removed delegated vote that wants to be modified
     await dispatcher.dispatch(actions.castVote, voting().index, option, executesOnDecided)
   } else {
