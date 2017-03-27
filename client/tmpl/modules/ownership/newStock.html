@@ -1,7 +1,7 @@
 <template name="Module_Ownership_NewStock">
   {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
-  <form class="ui flex attached form" id="assignShares">
+  <form class="ui flex attached form lightgrey right column" id="assignShares">
     <h1 class="ui header">Add stock class</h1>
 
     <h5>Stock templates:</h5>
@@ -44,7 +44,7 @@
     {{ #if TemplateVar.get 'existingToken' }}
     <div class="ui hidden divider"></div>
     <div class="field">
-      <label>Token address:</label>
+      <label>Token address</label>
       {{> Element_IdentityAutocomplete}}
     </div>
     {{ #if tokenDetails }}

@@ -1,5 +1,5 @@
 <template name="Module_Accounting">
-  <div id="Module_Accounting" class="nine wide column">
+  <div id="Module_Accounting" class="main column">
     <div class="ui secondary menu">
       <div class="fitted item">
         <div class="ui left icon input">
@@ -61,9 +61,8 @@
       </tbody>
     </table>
   </div>
-  <div class="seven wide lightgrey column">
-    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
-  </div>
+
+  {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
 
   <!--
   <div class="field">
