@@ -14,11 +14,6 @@ const toggleMetaMask = (show: boolean = true) => {
 }
 
 tmpl.onRendered(() => {
-  if (navigator.userAgent.includes('Electron')) {
-    $(document.body).addClass('electron')
-    window.isElectron = true
-  }
-
   $(document).on('click', (e) => {
     const walletButton = $('#walletButton')
     if (e.target !== walletButton[0] && e.target !== walletButton.find('.icon')[0]) {
