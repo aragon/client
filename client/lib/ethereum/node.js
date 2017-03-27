@@ -108,8 +108,6 @@ class EthereumNode {
       collectionsReady = await initCollections()
     }
 
-    console.log(collectionsReady)
-
     allContracts.forEach(c => c.setProvider(web3.currentProvider))
     const nID = await getNetworkID()
 
