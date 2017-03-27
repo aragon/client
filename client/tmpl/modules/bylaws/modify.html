@@ -1,5 +1,4 @@
 <template name="Module_Bylaws_Modify">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
   {{ #with action }}
   <form class="ui flex attached form lightgrey right column">
@@ -48,6 +47,8 @@
     {{ /if }}
     <div class="ui spacer"></div>
     <button class="ui fluid big primary button" type="submit">Save</button>
+
+    {{> Element_ProcessDimmer}}
   </form>
   {{ /with }}
 </template>

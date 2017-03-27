@@ -1,5 +1,4 @@
 <template name="Module_Accounting_Details">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
   <div class="ui attached flex container right lightgrey column">
     {{ #with TemplateVar.get 'transaction' }}
@@ -56,6 +55,8 @@
     {{ #if recurring }}
     {{ > Element_BylawDisclose action='removeRecurringReward' }}
     <button class="ui big primary button" id="stopRecurring" name="button">Stop recurring transaction</button>
+
+    {{> Element_ProcessDimmer}}
     {{ /if }}
 
     {{/with}}

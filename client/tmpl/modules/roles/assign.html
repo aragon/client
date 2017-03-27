@@ -1,5 +1,4 @@
 <template name="Module_Roles_Assign">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
   <form class="ui flex attached form lightgrey right column" id="assignRole">
     <h1 class="ui header">Assign role</h1>
@@ -27,5 +26,7 @@
     <div class="ui spacer"></div>
     {{ > Element_BylawDisclose action='setEntityStatus' }}
     <button class="ui fluid big primary button" type="submit">{{callToActionForAction 'setEntityStatus'}}</button>
+
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

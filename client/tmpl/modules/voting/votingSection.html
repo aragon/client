@@ -1,5 +1,4 @@
 <template name="Module_Voting_Section">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/voting'}}
   <div class="ui attached flex container lightgrey right column" id="votingSection">
     {{#with voting}}
@@ -145,5 +144,7 @@
     <button class="ui big {{ sentiment }} execute button" data-option="{{index}}" name="button">Execute {{name}}</button>
     {{/with}}
     {{/with}}
+
+    {{> Element_ProcessDimmer}}
   </div>
 </template>
