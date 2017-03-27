@@ -138,10 +138,8 @@ const ActionFactory = {
                         'How recurring payments can be removed', removeRecurringRewardDescription),
   issueReward: new Action('issueReward(address,uint256,string)', 'Issue reward',
                         'How new payments can be created', issueRewardDescription),
-  addStatusBylaw: new Action('addStatusBylaw(string,uint8)', 'Add bylaw by status',
+  addStatusBylaw: new Action('addStatusBylaw(string,uint8,bool)', 'Add bylaw by status',
                         'How new bylaws actionable by user status can be created', addStatusBylawDescription),
-  addSpecialStatusBylaw: new Action('addSpecialStatusBylaw(string,uint8)', 'Add bylaw by special status',
-                        'How new bylaws actionable by special user status (shareholder) can be created', addStatusSpecialBylawDescription),
   addVotingBylaw: new Action('addVotingBylaw(string,uint256,uint256,bool,uint64,uint8)', 'Add bylaw by voting',
                         'How new bylaws actionable by a voting can be created', addVotingBylawDescription),
 

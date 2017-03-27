@@ -25,7 +25,8 @@ const bylawDisclaimerForAction = (actionName: string): {title: string, descripti
   console.log(Status.list)
 
   const d = bylaw.details
-  if (bylaw.type === 0) description = `Requires ${100 * d.supportNeeded / d.supportBase}% support in a ${d.minimumVotingTime / (24*3600)} day voting`
+
+  if (bylaw.type === 0) description = `Requires ${Math.round(10000 * (d.supportNeeded / d.supportBase || 0)) / 100}% support in a ${d.minimumVotingTime / (24*3600)} day voting`
   if (bylaw.type === 1) description = `Requires ${Status.list[d.neededStatus]} status in the company`
   if (bylaw.type === 2) description = 'Only shareholders can perform this action'
 

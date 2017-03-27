@@ -30,9 +30,9 @@ const save = function () {
   const trigger = TemplateVar.get(this, 'selectedTrigger')
   if (trigger === 'status') {
     const statusIndex: number = Status.toNumber(this.$('[name="status"]').val())
-    dispatcher.dispatch(actions.addStatusBylaw, signature, statusIndex)
+    dispatcher.dispatch(actions.addStatusBylaw, signature, statusIndex, false)
   } else if (trigger === 'specialStatus') {
-    dispatcher.dispatch(actions.addSpecialStatusBylaw, signature, 0)
+    dispatcher.dispatch(actions.addStatusBylaw, signature, 0, true)
   } else if (trigger === 'voting') {
     const supportNeeded = this.$('[name="supportNeeded"]').val()
     const closingRelativeMajority = this.$('[name="supportNeeded"]').is(':checked')
@@ -45,7 +45,7 @@ const save = function () {
 const confirmText =
 `Changing your company's bylaws has real implications on its functioning.\n
 Please make sure this is a desired action.\n
-A voting will be created and 90% of the voting power will be needed in order to confirm the change.\n`
+Your company may become locked for ever after a bad change`
 
 tmpl.onRendered(function () {
   this.$('.form').form({
@@ -92,6 +92,12 @@ tmpl.helpers({
   selectedTrigger: () => TemplateVar.get('selectedTrigger'),
   secondsToDays: (seconds: number): number => seconds / 60 / 60 / 24,
   numbersToPercentage: (a: number, b: number): number => Math.round((a / b) * 100),
+  actionName: () => {
+    const trigger = TemplateVar.get('selectedTrigger')
+    if (trigger === 'voting') return 'addVotingBylaw'
+    if (trigger === 'address' || trigger === 'oracle') return 'addAddresBylaw'
+    return 'addStatusBylaw'
+  }
 })
 
 tmpl.events({

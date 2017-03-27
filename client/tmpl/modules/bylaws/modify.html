@@ -47,7 +47,8 @@
     </div>
     {{ /if }}
     <div class="ui spacer"></div>
-    <button class="ui fluid big primary button" type="submit">Save</button>
+    {{ > Element_BylawDisclose action=actionName }}
+    <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
   </form>
   {{ /with }}
 </template>
