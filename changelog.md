@@ -1,6 +1,20 @@
 # The changelog
 
-### Alpha 0.2.1
+### Alpha 0.3 (To be released)
+
+- New feature: **BYOT** (*Bring your own token*), allow using Aragon with any `ERC20` token as a **governance token** for companies. Ability to wrap and unwrap tokens in votings and ownership entity.
+- New feature: Add two new bylaws, **specific address only** and **ask oracle contract for confirmation**. Stepping stone for more dynamic bylaws.
+- Major: Big internal refactor to voting logic, allows delegate voting (no UI yet).
+- Major: Added *Add stock class* view for easily adding new stock to company. Also new *View stock classes* view to see all company stock types in detail.
+- Major: UI improvements. New icons and action menus to avoid cluttering the top bars.
+
+- Improvement: Voting UI, added option to modify or remove a vote, automatically execute voting option and relative/absolute voting counts.
+- Support account changes in Metamask, useful for testing different roles in company.
+- Added *token identity provider* that will do a reverse lookup for tokens and display its details in entity views.
+- Improved action performing buttons and dialogs, disabled when user is not allowed to perform an action.
+- Added a button to clear all notifications.
+
+### Alpha 0.2.1 (Private: March 14th, 2017, public: March 20th, 2017)
 
 - Major: Move all signing to 'personal_sign'
 - Major: New notifications UI.
@@ -13,7 +27,7 @@
 - Renamed 'God' role to 'Superuser' https://github.com/AragonOne/issues/issues/5
 - Kickstart changelog. Very meta.
 
-### Alpha 0.2
+### Alpha 0.2 (Private: March 9th, 2017)
 
 - Aragon now runs on the new **Kovan testnet**. You will notice the improve in speed and responsiveness!
 - New **UI styling**. Followed the advice of our designer to make the app look cleaner.
