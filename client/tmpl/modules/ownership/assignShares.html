@@ -41,9 +41,7 @@
     </div>
     {{ /unless }}
     <div class="ui spacer"></div>
-    {{ > Element_BylawDisclose action=actionName }}
-    <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
-
+    {{ > Element_PerformAction action=actionName }}
     {{> Element_ProcessDimmer}}
   </form>
 </template>

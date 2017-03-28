@@ -53,6 +53,7 @@ class BylawsWatcher extends Watcher {
 
     const signatureHash = utils.bufferToHex(utils.sha3(signature))
 
+    console.log('updating bylaw', bylawObject)
     this.Bylaws.upsert({ _id: `byl_${signatureHash}` }, bylawObject)
   }
 }

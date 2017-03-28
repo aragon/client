@@ -24,8 +24,7 @@
       This entity also has role Shareholder (owns {{ totalStock (TemplateVar.get 'entity') }} shares)
     {{ /if }}
     <div class="ui spacer"></div>
-    {{ > Element_BylawDisclose action='setEntityStatus' }}
-    <button class="ui fluid big primary button" type="submit">{{callToActionForAction 'setEntityStatus'}}</button>
+    {{ > Element_PerformAction action='setEntityStatus' }}
 
     {{> Element_ProcessDimmer}}
   </form>

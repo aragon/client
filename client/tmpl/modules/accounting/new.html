@@ -44,8 +44,7 @@
         <p>If reward would go over-budget, please change settings.</p>
       </div>
     </div>
-    {{ > Element_BylawDisclose action=actionName }}
-    <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
+    {{ > Element_PerformAction action=actionName }}
 
     {{> Element_ProcessDimmer}}
   </form>

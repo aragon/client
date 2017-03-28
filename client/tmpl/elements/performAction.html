@@ -1,4 +1,4 @@
-<template name="Element_BylawDisclose">
+<template name="Element_PerformAction">
   {{#with bylawDisclaimerForAction action }}
   <div class="ui icon small message">
     <i class="icon">account_balance</i>
@@ -12,4 +12,7 @@
     </div>
   </div>
   {{/with}}
+  <button class="ui fluid big primary {{ canPerform action }} button" type="submit">
+    {{callToActionForAction action}}
+  </button>
 </template>

@@ -3,7 +3,7 @@
 
 import { moment } from 'meteor/momentjs:moment'
 import { Template } from 'meteor/templating'
-import { callToActionForAction, bylawDisclaimerForAction } from '/client/lib/action-dispatcher/helpers'
+import { callToActionForAction, bylawDisclaimerForAction, canPerformAction as bylawsCanPerformAction } from '/client/lib/action-dispatcher/helpers'
 
 import { NotificationsManager } from '/client/lib/notifications'
 import Tokens from '/client/lib/ethereum/tokens'
@@ -31,6 +31,8 @@ helpers.liveTokenBalance = ReactivePromise(Tokens.getBalance)
 
 helpers.callToActionForAction = callToActionForAction
 helpers.bylawDisclaimerForAction = bylawDisclaimerForAction
+
+helpers.composeFunction = (f, g, x) => f(g)(x)
 
 helpers.unhandledNotifications = () => Notifications.find({ handled: false }).count()
 helpers.ether = (x: number): string => parseFloat(web3.fromWei(x, 'ether')).toLocaleString()
