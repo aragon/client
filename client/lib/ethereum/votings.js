@@ -81,15 +81,20 @@ class VotingWatcher extends Watcher {
       return console.error('Unknown voting')
     }
 
+    const description = await verifiedContract.description(address)
+    const entities = description.split(' ').filter(web3.isAddress)
+
     const votingObject = {
       title: verifiedContract.title(address),
-      description: verifiedContract.description(address),
       options: Promise.all(optionsPromises),
       startTime: +new Date(startTime.toNumber() * 1000),
       closingTime: +new Date(closingTime.toNumber() * 1000),
       voteCounts: Promise.all(votes),
       creator: voting.creator.call(),
       mainSignature: voting.mainSignature.call(),
+
+      entities,
+      description,
       voteExecuted,
       voteClosed,
       supportNeeded,

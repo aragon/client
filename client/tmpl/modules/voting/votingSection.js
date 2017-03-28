@@ -126,6 +126,16 @@ const wrappableTokens = async holder => {
   return r
 }
 
+const formatEntity = entity => `<a href="${FlowRouter.current().path}/entity/${entity}" class="highlightedEntity">${entity}</a>`
+
+const formatDescription = voting => {
+  const space = ' '
+  return voting.description
+           .split(space)
+           .map(x => _.contains(voting.entities, x) ? formatEntity(x) : x)
+           .join(space)
+}
+
 tmpl.helpers({
   updatesHack: () => updated.get(),
   verified: () => verifiedVar.get(),
@@ -146,6 +156,7 @@ tmpl.helpers({
   wrappableTokens: ReactivePromise(wrappableTokens, [], console.log),
   stocks: Stocks.find(),
   willBeAbleToExecute: ReactivePromise(willBeAbleToExecute),
+  getDescription: formatDescription,
 })
 
 const castVote = async option => {
