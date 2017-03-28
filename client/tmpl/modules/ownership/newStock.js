@@ -75,10 +75,10 @@ tmpl.onRendered(function () {
 })
 
 const stockTemplates = [
-  { name: 'Voting Stock', symbol: 'ARN-a', votingPower: 1, economicRights: 1 },
-  { name: 'Non-voting Stock', symbol: 'ARN-b', votingPower: 0, economicRights: 1 },
-  { name: 'Founders Stock', symbol: 'ARN-c', votingPower: 5, economicRights: 1 },
-  { name: 'Unicorn Stock', symbol: 'ARN-🦄', votingPower: 10, economicRights: 10 },
+  { name: 'Voting', symbol: 'ARN-a', votingPower: 1, economicRights: 1 },
+  { name: 'Non-voting', symbol: 'ARN-b', votingPower: 0, economicRights: 1 },
+  { name: 'Founders', symbol: 'ARN-c', votingPower: 5, economicRights: 1 },
+  { name: 'Unicorn', symbol: 'ARN-🦄', votingPower: 10, economicRights: 10 },
 ]
 
 tmpl.helpers({
@@ -103,8 +103,8 @@ tmpl.events({
     const selectedSymbol = $(e.currentTarget).data('stock')
     const selectedTemplate = stockTemplates.filter(s => s.symbol === selectedSymbol)[0]
     TemplateVar.set('existingToken', false)
-    $('#existingTokenToggle').prop("checked", false)
-    this.$('input[name=name]').val(selectedTemplate.name)
+    $('#existingTokenToggle').prop('checked', false)
+    this.$('input[name=name]').val(`${selectedTemplate.name} Stock`)
     this.$('input[name=symbol]').val(selectedTemplate.symbol)
     this.$('input[name=initialSupply]').val(1000)
     this.$('input[name=votingPower]').val(selectedTemplate.votingPower)
