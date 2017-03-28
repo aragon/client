@@ -1,6 +1,7 @@
 <template name="Module_Home">
+
   <div class="ui fluid center aligned flex centered container" id="homePlaceholder">
-    <h2 class="ui icon header">
+    <h2 class="ui header">
       {{#with currentEntity}}<img src="{{ picture }}" class="ui small right spaced circular image">{{/with}}
       <div class="ui hidden divider"></div>
       <div class="content">
@@ -21,7 +22,7 @@
     <a class="item" href="https://medium.com/aragondec" target="_blank">News in decentralized companies</a>
     <a class="item" id="priceTicker">
       ETH: {{ #with ticker 'eth' }}
-        <i class="icon arrow {{ #if $gte change 0 }}green up{{ else }}red down{{ /if }}"></i>
+        <i class="icon {{ #if $gte change 0 }}green{{ else }}red{{ /if }}">{{ #if $gte change 0 }}arrow_upward{{ else }}arrow_downward{{ /if }}</i>
         ${{ price }}
       {{ /with }}
     </a>
@@ -30,4 +31,6 @@
     </div>
     {{/if}}
   </div>
+
+  <!--<iframe src="https://appear.in/aragonone" width="1000" height="700"></iframe>-->
 </template>

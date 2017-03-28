@@ -1,7 +1,7 @@
 <template name="Module_Fundraising_Info">
   {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/fundraising'}}
-  <div class="ui attached flex container" id="raise">
+  <div class="ui attached flex container lightgrey right column" id="raise">
     {{#with raise}}
     <h1 class="ui header">
       {{ title }}
@@ -98,7 +98,7 @@
     <div class="ui spacer"></div>
 
     {{ #if isTransferAllowed this }}
-    {{ > Element_BylawDisclose action='transferSaleFunds' }}
+    {{ > Element_PerformAction action='transferSaleFunds' }}
     <button class="ui big primary button" id="transfer" name="button">Move {{ ether (transferrableFunds address) }} ETH to company address</button>
     {{ /if }}
 

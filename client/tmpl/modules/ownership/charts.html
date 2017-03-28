@@ -1,37 +1,26 @@
 <template name="Module_Ownership_Charts">
-  <div class="ui secondary menu">
-    <!-- TODO: This doesn't work for some reason relative to ReactivePromise -->
-    {{ #if $gt (totalStock currentEntity) 0 }}<div class="header item">You own {{ totalStock currentEntity }} tokens</div>{{ /if }}
-    <div class="right menu">
-      <div class="fitted item">
-        <a class="ui primary button" href="/ownership/transfer">
-          <i class="send outline icon"></i>
-          Transfer tokens
-        </a>
+  <div class="flex lightgrey right column">
+    <div class="ui spacer"></div>
+    <div class="ui center aligned container">
+      <h2 class="ui centered header">Ownership distribution <span class="tooltip" data-content="Company reserves don't have voting power nor economic rights (on dividend splits)" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></h2>
+      <div class="ui hidden divider"></div>
+      <div class="charts">
+        <div class="chartContainer">
+          <canvas id="capitalChart" width="300" height="300"></canvas>
+        </div>
+        <div class="chartContainer">
+          <canvas id="stockChart" width="300" height="300"></canvas>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="ui hidden divider"></div>
-  <div class="ui hidden divider"></div>
-  <div class="ui center aligned container">
-    <h2 class="ui centered header">Ownership distribution <span id="ownershipInfoPopup" data-html="Company reserves don't have voting power nor economic rights (on dividend splits)" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui info circle icon"></i></span></h2>
-    <div class="ui hidden divider"></div>
-    <div class="charts">
-      <div class="chartContainer">
-        <canvas id="capitalChart" width="300" height="300"></canvas>
-      </div>
-      <div class="chartContainer">
-        <canvas id="stockChart" width="300" height="300"></canvas>
+    <div class="ui spacer"></div>
+    <div class="ui center aligned container">
+      <h2 class="ui centered header">Voting distribution</h2>
+      <div class="ui hidden divider"></div>
+      <div class="chartContainer centered">
+        <canvas id="votingChart" width="300" height="300"></canvas>
       </div>
     </div>
+    <div class="ui spacer"></div>
   </div>
-  <div class="ui hidden divider"></div>
-  <div class="ui center aligned container">
-    <h2 class="ui centered header">Voting distribution</h2>
-    <div class="ui hidden divider"></div>
-    <div class="chartContainer centered">
-      <canvas id="votingChart" width="300" height="300"></canvas>
-    </div>
-  </div>
-  <div class="ui spacer"></div>
 </template>

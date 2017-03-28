@@ -28,6 +28,6 @@ tmpl.events({
 })
 
 tmpl.helpers({
-  entities: Identity.Entities.find(),
+  entities: Identity.Entities.find({status: {$gt: 0}}),
   statusToString: n => Status.toString(n),
 })

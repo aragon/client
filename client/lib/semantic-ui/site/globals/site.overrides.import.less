@@ -16,6 +16,8 @@ body {
   box-sizing: inherit;
 }
 
+@iconLarge: 24px;
+
 /* body, input {
   font-weight: lighter;
 } */
@@ -69,8 +71,10 @@ body {
     }
 
     .icon {
-      float: none !important;
-      margin-right: 0.5rem !important;
+      float: none;
+      margin-right: 0.75rem;
+      vertical-align: -25% !important;
+      margin-left: 0.5rem;
     }
 
     &.bottom {
@@ -95,6 +99,22 @@ body {
     &> .column {
       padding-top: 2rem !important;
       overflow: auto;
+    }
+  }
+
+  .main.column {
+    flex: 1;
+  }
+
+  .right.column {
+    width: 480px;
+
+    .dimmer {
+      position: fixed;
+      width: 480px;
+      right: 0;
+      top: 5% !important;
+      left: auto !important;
     }
   }
 }

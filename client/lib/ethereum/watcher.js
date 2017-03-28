@@ -14,8 +14,6 @@ class Watcher {
       return callback.call(this, err, ev)
     }
 
-    console.log('straming', this.key, this.streamingPredicate)
-    console.log('missed', this.key, this.missedPredicate)
     _event(predicate, this.streamingPredicate).watch(realCallback)
     _event(predicate, this.missedPredicate).get((err, evs) => {
       if (err) return realCallback(err)

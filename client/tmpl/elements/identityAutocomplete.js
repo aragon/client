@@ -13,18 +13,19 @@ const bindSearch = (tmplIns) => {
   tmplIns.$('.ui.search').search({
     apiSettings: {
       url: 'https://keybase.io/_/api/1.0/user/autocomplete.json?q={query}',
-      onResponse: (res) => {
+      onResponse: async res => {
         const additionalElements = []
         const query = this.$('.ui.search .prompt').val()
 
         if (web3.isAddress(query)) {
-          additionalElements.push(Anon.format({ ethereumAddress: query }))
+          additionalElements.push(await Identity.lookupAndFormat(query))
         }
 
         if (query === '' || query === 'me') {
           const cur = Identity.current()
           cur.name = 'Me'
           additionalElements.push(cur)
+          console.log(cur)
         }
 
         return {
@@ -55,7 +56,8 @@ const bindSearch = (tmplIns) => {
     onSelect: async (user) => {
       tmplIns.$('.ui.search').addClass('loading')
       let entity = user
-      if (entity.ethereumAddress !== Identity.current(true).ethereumAddress) {
+      console.log('drawing', entity)
+      if (!web3.isAddress(entity.ethereumAddress)) {
         if (web3.isAddress(user.username)) {
           entity.ethereumAddress = entity.username
           delete entity.username

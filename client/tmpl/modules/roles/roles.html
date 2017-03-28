@@ -1,16 +1,16 @@
 <template name="Module_Roles">
-  <div id="Module_Roles" class="nine wide column">
+  <div id="Module_Roles" class="main column">
     <div class="ui secondary menu">
       <div class="fitted item">
         <div class="ui left icon input">
-          <i class="search link icon"></i>
+          <i class="link icon">search</i>
           <input type="text" placeholder="Search" value="{{TemplateVar.get 'searchString'}}" id="searchInput">
         </div>
       </div>
       <div class="right menu">
         <div class="fitted item">
           <a class="ui primary button" href="/roles/assign">
-            <i class="user icon"></i>
+            <i class="icon">person_outline</i>
             Assign a role
           </a>
         </div>
@@ -53,7 +53,6 @@
       </tbody>
     </table>
   </div>
-  <div class="seven wide lightgrey column">
-    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
-  </div>
+
+  {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
 </template>

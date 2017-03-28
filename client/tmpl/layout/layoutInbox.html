@@ -1,9 +1,13 @@
 <template name="Layout_Inbox">
-  <a class="item" id="inboxButton" style="{{ #unless unhandledNotifications }}display: none{{ /unless }}">
-    <i class="alarm large icon"></i>
-    <div class="ui floating red circular empty label"></div>
+  <a class="item" id="inboxButton">
+    <i class="icon large">{{ #if unhandledNotifications }}notifications{{ else }}notifications_none{{ /if }}</i>
   </a>
-  <div class="ui special scrollable popup">
+  <div class="ui special scrollable popup" id="notifs">
+    <div id="notifHeader">
+      Notifications
+      <i class="large link icon">clear_all</i>
+    </div>
+    {{ #if unhandledNotifications }}
     <div class="ui very relaxed divided list" id="notifList">
       {{ #each unhandledNotifs }}
       <div class="item">
@@ -23,5 +27,13 @@
       </div>
       {{ /each }}
     </div>
+    {{ else }}
+    <div id="notifEmpty">
+      <div class="ui hidden divider"></div>
+      <img class="ui small centered image" src="/rsc/isotype_mockup.png">
+      <div class="ui hidden divider"></div>
+      Yoo-hoo! You're clean
+    </div>
+    {{ /if }}
   </div>
 </template>

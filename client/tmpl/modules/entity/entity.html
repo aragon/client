@@ -17,11 +17,17 @@
 
       <div class="sixteen wide column">
         <p><i class="ethereum icon"></i> <a href="https://etherscan.io/address/{{ ethereumAddress }}" target="_blank">{{ ethereumAddress }}</a></p>
+        {{ #if totalSupply }}
+        <p><i class="money icon"></i>Token supply: {{ totalSupply }} {{ symbol }}</p>
+        {{ /if }}
+        {{ #if getStatus ethereumAddress }}
+        <p><i class="icon">person</i><span class="bolded">{{ capitalize (getStatus ethereumAddress) }}</span> role</p>
+        {{ /if }}
         {{ #if cryptocurrencies.bitcoin }}
-        <p><i class="bitcoin icon"></i> <a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>
+        <p><i class="bitcoin icon"></i><a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>
         {{ /if }}
         {{ #if pubkey }}
-        <p><i class="key icon"></i> {{ formatFingerprint pubkey.fingerprint }}</p>
+        <p><i class="icon">vpn_key</i> {{ formatFingerprint pubkey.fingerprint }}</p>
         {{ /if}}
         {{ #if social.twitter }}
         <p><i class="twitter icon"></i> <a href="https://twitter.com/{{ social.twitter }}" target="_blank">{{ social.twitter }}</a></p>
@@ -39,12 +45,17 @@
     <div class="ui buttons">
       {{ #if $eq identityProvider 'keybase' }}
       <a class="ui blue icon button" href="https://keybase.io/{{ username }}" target="_blank">
-        <i class="key icon"></i> Open on Keybase
+        <i class="icon">vpn_key</i> Open on Keybase
       </a>
       {{ /if}}
       {{ #if $eq identityProvider 'anon' }}
       <a class="ui primary icon button" href="{{ etherscanAddress ethereumAddress }}" target="_blank">
         <i class="white ethereum icon"></i> Open on Etherscan
+      </a>
+      {{ /if }}
+      {{ #if $eq identityProvider 'tokens' }}
+      <a class="ui primary icon button" href="{{ etherscanAddress ethereumAddress }}" target="_blank">
+        <i class="white ethereum icon"></i> Open token on Etherscan
       </a>
       {{ /if }}
     </div>

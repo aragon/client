@@ -1,10 +1,10 @@
 import StockWatcher from '/client/lib/ethereum/stocks'
-import { Stock } from '/client/lib/ethereum/contracts'
 import { Company } from '/client/lib/ethereum/deployed'
 import Identity from '/client/lib/identity'
 
-
 const Stocks = StockWatcher.Stocks
+
+window.Stocks = Stocks
 
 const tmpl = Template.Module_Ownership.extend()
 
@@ -13,6 +13,8 @@ tmpl.routes({
   '/issue': () => TemplateVar.set('rightSection', 'Module_Ownership_IssueShares'),
   '/assign': () => TemplateVar.set('rightSection', 'Module_Ownership_AssignShares'),
   '/transfer': () => TemplateVar.set('rightSection', 'Module_Ownership_TransferShares'),
+  '/stock/new': () => TemplateVar.set('rightSection', 'Module_Ownership_NewStock'),
+  '/stock/list': () => TemplateVar.set('rightSection', 'Module_Ownership_Stocks'),
   '/shareholder/:address': () => TemplateVar.set('rightSection', 'Module_Ownership_Entity'),
   '/*/entity/:address': () => TemplateVar.set('rightSection', 'Module_Entity'),
 })
@@ -24,6 +26,7 @@ tmpl.onCreated(() => {
 
 tmpl.onRendered(function () {
   this.$('table').tablesort()
+  this.$('.dropdown').dropdown({ action: 'hide' })
 })
 
 tmpl.events({
@@ -45,17 +48,20 @@ tmpl.helpers({
   },
   symbol: address => Stocks.findOne({ address }).symbol,
   shareholders: () => {
-    let shareholders = []
+    const shareholders = []
     Stocks.find().fetch().forEach(s => (shareholders.push(...s.shareholders)))
 
+    /*
+    // Commented out as it makes multiple stock types not to show
     shareholders = shareholders.filter(
       (s, index, self) => self.findIndex(t => t.shareholder === s.shareholder) === index)
+    */
 
     return shareholders
   },
   balance: (stock, ethereumAddress) => {
     const entity = Entities.findOne({ ethereumAddress })
-    if (!entity || !entity.balances) return -1
+    if (!entity || !entity.balances) return -1
     return entity.balances[stock]
   },
   company: () => Company().address,

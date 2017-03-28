@@ -1,8 +1,7 @@
 <template name="Module_Bylaws_Modify">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
   {{ #with action }}
-  <form class="ui flex attached form">
+  <form class="ui flex attached form lightgrey right column">
     <h1 class="ui header">
       {{ name }}
       <div class="sub header">{{ description }}</div>
@@ -10,18 +9,13 @@
     <div class="ui hidden divider"></div>
     <div class="field">
       <label>Action requirement</label>
-      <div class="ui selection dropdown" id="trigger">
-        <input type="hidden" name="trigger" value="{{ intToTrigger bylaw.type }}">
-        <i class="dropdown icon"></i>
-        <div class="default text">(triggers this).[(intToTrigger bylaw.type)]</div>
-        <div class="menu">
-          {{ #each triggers this }}
-          <div class="item" data-value="{{ value }}" data-disabled="{{ disabled }}">
-            {{ title }}
-          </div>
-          {{ /each }}
-        </div>
-      </div>
+      <select id="trigger" name="trigger">
+        {{ #each triggers this }}
+        <option value="{{ value }}" disabled="{{ disabled }}" selected="{{ $eq (intToTrigger ../bylaw.type) value }}">
+          {{ title }}
+        </option>
+        {{ /each }}
+      </select>
     </div>
     {{ #if $eq (TemplateVar.get 'selectedTrigger') 'voting' }}
     <div class="two fields">
@@ -44,15 +38,22 @@
     {{ #if $eq (TemplateVar.get 'selectedTrigger') 'status' }}
     <div class="field">
       <label>Needed status</label>
-      <select class="ui fluid selection dropdown" name="status" id="status">
+      <select name="status" id="status">
         {{ #each statuses }}
         <option value="{{ value }}" selected="{{ #if $eq ../bylaw.details.neededStatus (statusToInt value) }}selected{{ /if }}">{{ title }}</option>
         {{ /each }}
       </select>
     </div>
     {{ /if }}
+    {{ #if $eq actionName 'setAddressBylaw' }}
+    <div class="field">
+      <label>{{ #if $eq (TemplateVar.get 'selectedTrigger') 'oracle' }}Oracle address: {{ else }} Address: {{ /if }}</label>
+      {{> Element_IdentityAutocomplete }}
+    </div>
+    {{ /if }}
     <div class="ui spacer"></div>
-    <button class="ui fluid big primary button" type="submit">Save</button>
+    {{ > Element_PerformAction action=actionName }}
+    {{> Element_ProcessDimmer}}
   </form>
   {{ /with }}
 </template>

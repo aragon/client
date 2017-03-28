@@ -2,7 +2,7 @@
   <div class="ui visible sidebar vertical menu" id="sidebar">
     {{#each modules}}
       <a href="/{{routeName}}" class="item {{#if isRouteActive routeName}} active {{/if}}">
-        <i class="{{icon}} icon"></i>
+        <i class="icon large">{{icon}}</i>
         {{name}}
       </a>
     {{/each}}

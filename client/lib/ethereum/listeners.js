@@ -1,6 +1,9 @@
 // @flow
 import { _ } from 'meteor/underscore'
 
+import StockWatcher from '/client/lib/ethereum/stocks'
+const Stocks = StockWatcher.Stocks
+
 import { NotificationsListener as Listener } from '/client/lib/notifications'
 import Identity from '/client/lib/identity'
 import utils from 'ethereumjs-util'
@@ -14,9 +17,8 @@ class Listeners {
   static async all() {
     const stocks = await this.allStocks()
 
-    return [this.issueStockListener, this.executedVotingListener, this.newSaleListener, this.bylawChangedListener]
+    return [this.issueStockListener, this.newPollListener, this.executedVotingListener, this.newSaleListener, this.bylawChangedListener]
             .concat(await this.shareTransfers(stocks))
-            .concat(stocks.map(this.newPollListener))
   }
 
   static get issueStockListener() {
@@ -35,9 +37,13 @@ class Listeners {
 
   static async shareTransfers(stocks) {
     const address = Identity.current(true).ethereumAddress
-    const sharesTransfers = stocks.map(stock =>
+
+    const parentStocks = stocks.map(s => s.parentToken).filter(x => x)
+
+    const sharesTransfers = stocks.concat(parentStocks).map(stock =>
       ([this.sharesSent(stock, address), this.sharesReceived(stock, address)]),
     )
+
     return await Promise.all(flatten(sharesTransfers))
   }
 
@@ -49,15 +55,12 @@ class Listeners {
     return await this.sharesTransferred(stock, { to: address }, 'received')
   }
 
-  static async sharesTransferred(stockAddress, predicate, verb) {
-    const stock = Stock.at(stockAddress)
-    const symbol = await stock.symbol.call()
-
-    const body = async args => `You just ${verb} ${args.value} ${symbol} shares`
+  static async sharesTransferred(stock, predicate, verb) {
+    const body = async args => `You just ${verb} ${args.value} ${stock.symbol}`
 
     return new Listener(
-      stock.Transfer,
-      'Shares transfer',
+      Stock.at(stock.address).Transfer,
+      'Transfer',
       body,
       () => '/ownership',
       '',
@@ -65,11 +68,11 @@ class Listeners {
     )
   }
 
-  static newPollListener(stock) {
+  static get newPollListener() {
     const body = async () => 'New voting was created. You can now vote.'
 
     return new Listener(
-      Stock.at(stock).NewPoll,
+      Company().NewVoting,
       'Voting started',
       body,
       args => `/voting/${args.id.valueOf()}`,
@@ -103,7 +106,7 @@ class Listeners {
   static get executedVotingListener() {
     const body = async args => {
       const winner = await Voting.at(args.votingAddress).options.call(args.outcome)
-      return `Outcome was '${winner}'`
+      return `Voting outcome was '${winner}'`
     }
 
     return new Listener(
@@ -115,9 +118,7 @@ class Listeners {
   }
 
   static async allStocks() {
-    const lastId = await Company().stockIndex.call().then(x => x.valueOf())
-    const addressesPromises = _.range(lastId).map(id => Company().stocks.call(id))
-    return await Promise.all(addressesPromises)
+    return Stocks.find().fetch()
   }
 }
 

@@ -1,7 +1,6 @@
 <template name="Module_Ownership_AssignShares">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
-  <form class="ui flex attached form" id="assignShares">
+  <form class="ui flex attached form lightgrey right column" id="assignShares">
     <h1 class="ui header">Assign shares</h1>
     <div class="ui hidden divider"></div>
     <div class="field">
@@ -9,17 +8,13 @@
       {{> Element_IdentityAutocomplete}}
     </div>
     <div class="field">
-      <label>Kind</label>
-      <div class="ui selection dropdown">
-        <input type="hidden" name="kind">
-        <i class="dropdown icon"></i>
-        <div class="default text">Kind of shares</div>
-        <div class="menu">
-          {{#each stocks}}
-          <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
-          {{/each}}
-        </div>
-      </div>
+      <label>Class</label>
+      <select name="class">
+        <option selected disabled>Stock class</option>
+        {{#each stocks}}
+          <option value="{{index}}">{{name}} ({{symbol}})</option>
+        {{/each}}
+      </select>
     </div>
     <div class="field">
       <label>Number</label>
@@ -46,7 +41,7 @@
     </div>
     {{ /unless }}
     <div class="ui spacer"></div>
-    {{ > Element_BylawDisclose action=actionName }}
-    <button class="ui fluid big primary button" type="submit">{{callToActionForAction actionName}}</button>
+    {{ > Element_PerformAction action=actionName }}
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

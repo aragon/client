@@ -98,16 +98,24 @@ const setEntityStatusDescription = ([entity, status]) => (
   `Set ${entity} status to ${Status.toString(+status)}`
 )
 
-const addStatusBylawDescription = ([signature, statusNeeded]) => (
-  `For ${getActionForSignature(signature).name} a minimum status of '${Status.toString(statusNeeded)}' will be needed`
-)
-
-const addStatusSpecialBylawDescription = ([signature, statusNeeded]) => {
-  if (+statusNeeded === 0) return `${getActionForSignature(signature).name} action can only be performed by shareholders`
-  return 'negative v'
+const setStatusBylawDescription = ([signature, statusNeeded, isSpecialStatus]) => {
+  if (isSpecialStatus) {
+    if (+statusNeeded === 0) return `${getActionForSignature(signature).name} action can only be performed by shareholders`
+    return 'negative v'
+  } else {
+    return `For ${getActionForSignature(signature).name} a minimum status of '${Status.toString(statusNeeded)}' will be needed`
+  }
 }
 
-const addVotingBylawDescription = ([signature, supportNeeded, supportBase,
+const setAddressBylawDescription = ([signature, address, isOracle]) => {
+  if (isOracle === false || isOracle === 'false') {
+    return `Only ${address} will be able to perform '${getActionForSignature(signature).name}'`
+  }
+
+  return `To perform '${getActionForSignature(signature).name}', the oracle at address ${address} will be consulted`
+}
+
+const setVotingBylawDescription = ([signature, supportNeeded, supportBase,
                                     relativeMajorityOnClose, minimumVotingTime, option]) => {
   if (+option !== 0) return 'negative v'
   return `For ${getActionForSignature(signature).name} a voting with ${100 * supportNeeded / supportBase}% support in a ${minimumVotingTime / (24*3600)} day will be needed`
@@ -116,8 +124,6 @@ const addVotingBylawDescription = ([signature, supportNeeded, supportBase,
 const ActionFactory = {
   beginPoll: new Action('beginPoll(address,uint64,bool,bool)', 'Begin voting',
                         'How votings and polls can be created', () => 'voting to create voting lol'),
-  castVote: new Action('castVote(uint256,uint8,bool)', 'Cast vote',
-                        'How votes can be casted in votings', () => 'voting to vote lol'),
   setEntityStatus: new Action('setEntityStatus(address,uint8)', 'Set entity status',
                         'Setting company status for a given entity', setEntityStatusDescription),
   addStock: new Action('addStock(address,uint256)', 'Add new stock',
@@ -126,7 +132,7 @@ const ActionFactory = {
                         'How new stock can be issued', issueStockDescription),
   grantStock: new Action('grantStock(uint8,uint256,address)', 'Grant issued stock',
                         'How existing stock can be granted', grantIssuedStockDescription),
-  grantVestedStock: new Action('grantVestedStock(uint8,uint256,address,uint64,uint64,uint64)', 'Issue and grant stock with vesting',
+  grantVestedStock: new Action('grantVestedStock(uint8,uint256,address,uint64,uint64,uint64)', 'Grant stock issued with vesting',
                         'How existing stock can be granted with a vesting schedule', grantVestedStockDescription),
   beginSale: new Action('beginSale(address)', 'Begin stock sale',
                         'How stock sales can be started', stockSaleDescription),
@@ -140,20 +146,30 @@ const ActionFactory = {
                         'How recurring payments can be removed', removeRecurringRewardDescription),
   issueReward: new Action('issueReward(address,uint256,string)', 'Issue reward',
                         'How new payments can be created', issueRewardDescription),
-  addStatusBylaw: new Action('addStatusBylaw(string,uint8)', 'Add bylaw by status',
-                        'How new bylaws actionable by user status can be created', addStatusBylawDescription),
-  addSpecialStatusBylaw: new Action('addSpecialStatusBylaw(string,uint8)', 'Add bylaw by special status',
-                        'How new bylaws actionable by special user status (shareholder) can be created', addStatusSpecialBylawDescription),
-  addVotingBylaw: new Action('addVotingBylaw(string,uint256,uint256,bool,uint64,uint8)', 'Add bylaw by voting',
-                        'How new bylaws actionable by a voting can be created', addVotingBylawDescription),
+  setStatusBylaw: new Action('setStatusBylaw(string,uint8,bool)', 'Set status bylaw',
+                        'How new bylaws actionable by user status can be created', setStatusBylawDescription),
+  setVotingBylaw: new Action('setVotingBylaw(string,uint256,uint256,bool,uint64,uint8)', 'Set voting bylaw',
+                        'How new bylaws actionable by a voting can be set', setVotingBylawDescription),
+  setAddressBylaw: new Action('setAddressBylaw(string,address,bool)', 'Set address bylaw',
+                        'How new bylaws actionable by addresses can be set', setAddressBylawDescription),
 
   // non-bylaw actions
+  castVote: new Action('castVote(uint256,uint8,bool)', 'Cast vote',
+                        'Sending vote', () => 'voting to vote lol', false),
+  modifyVote: new Action('modifyVote(uint256,uint8,bool,bool)', 'Modify vote',
+                        'Modifying vote', () => 'voting to vote lol', false),
+  executeVote: new Action('executeOnAction(uint8,address)', 'Execute vote',
+                        'Executing the result of the vote', () => 'voting to vote lol', false),
   transferTokens: new Action('transfer(address,uint256)', 'Transfer tokens',
                               'How tokens can be transfered', () => '', false),
+  approveTokens: new Action('approve(address,uint256)', 'Approving token transfer',
+                              'This is action starts the wrap of tokens', () => '', false),
+  wrapTokens: new Action('wrap(uint256)', 'Wrapping tokens',
+                              'This is action finishes the wrap of tokens', () => '', false),
+  unwrapTokens: new Action('unwrap(uint256)', 'Unwrapping tokens',
+                              'This will transfer tokens to your address', () => '', false),
   setTxid: new Action('setTxid(string)', 'Setting transaction hash',
                               '(temporary, only for code verification purposes)', () => '', false),
-  executeVoting: new Action('executeOnAction(uint8,address)', 'Executing voting',
-                              'Approved action will occur', () => '', false),
   deployCompany: new Action('deployCompany()', 'Deploying company',
                               'Waiting for block confirmation', () => '', false),
   configureCompany: new Action('configureCompany(address,address)', 'Company bootstrap',

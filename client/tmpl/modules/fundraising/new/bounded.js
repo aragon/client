@@ -20,9 +20,6 @@ const tmpl = Template.Module_Fundraising_New_Bounded.extend([ClosableSection])
 tmpl.onRendered(function () {
   TemplateVar.set('selectedStock', -1)
 
-  this.$('.dropdown').dropdown({
-    onChange: (v) => TemplateVar.set(this, 'selectedStock', +v),
-  })
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
@@ -58,5 +55,6 @@ tmpl.helpers({
 
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('recipient', user)),
+  'change select': (e) => (TemplateVar.set('selectedStock', +e.target.value)),
   'success .dimmer': () => FlowRouter.go('/fundraising'),
 })

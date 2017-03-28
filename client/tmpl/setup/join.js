@@ -5,8 +5,9 @@ const tmpl = Template.Setup_JoinOrganization
 
 tmpl.events({
   'click #join': () => {
-    localStorage.setItem('companyAddress', this.$('#companyAddress').val())
+    const companyAddress = this.$('#companyAddress').val()
+    if (!web3.isAddress(companyAddress)) return alert('Not valid address')
+    localStorage.setItem('companyAddress', companyAddress)
     location.reload()
   },
 })
- 

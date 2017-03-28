@@ -12,13 +12,12 @@ const Stocks = StockWatcher.Stocks
 const tmpl = Template.Module_Ownership_IssueShares.extend([ClosableSection])
 
 tmpl.onRendered(function () {
-  this.$('.dropdown').dropdown()
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
       this.$('.dimmer').trigger('loading')
 
-      await dispatcher.dispatch(actions.issueStock, this.$('input[name=kind]').val(), this.$('input[name=number]').val())
+      await dispatcher.dispatch(actions.issueStock, this.$('input[name=class]').val(), this.$('input[name=number]').val())
       this.$('.dimmer').trigger('finished', { state: 'success' })
       return false
     },
@@ -26,7 +25,7 @@ tmpl.onRendered(function () {
 })
 
 tmpl.helpers({
-  stocks: () => Stocks.find(),
+  stocks: () => Stocks.find({ parentToken: null }), // Only issueable tokens
 })
 
 tmpl.events({

@@ -1,7 +1,6 @@
 <template name="Module_Fundraising_New_Individual">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/fundraising/new'}}
-  <form class="ui flex attached form" id="newIndividualRaise">
+  <form class="ui flex attached form lightgrey right column" id="newIndividualRaise">
     <h1 class="ui header">New individual raise</h1>
     <div class="ui hidden divider"></div>
 
@@ -11,17 +10,13 @@
     </div>
 
     <div class="field">
-      <label>Kind</label>
-      <div class="ui selection dropdown">
-        <input type="hidden" name="kind">
-        <i class="dropdown icon"></i>
-        <div class="default text">Kind of shares</div>
-        <div class="menu">
-          {{#each stocks}}
-          <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
-          {{/each}}
-        </div>
-      </div>
+      <label>Stock class</label>
+      <select name="class">
+        <option selected disabled>Stock class</option>
+        {{#each stocks}}
+          <option value="{{index}}">{{name}} ({{symbol}})</option>
+        {{/each}}
+      </select>
     </div>
 
     <div class="field">
@@ -52,7 +47,7 @@
     </div>
 
     <div class="ui spacer"></div>
-    {{ > Element_BylawDisclose action='beginSale' }}
-    <button class="ui fluid big primary button" type="submit">{{ callToActionForAction 'beginSale' }}</button>
+    {{ > Element_PerformAction action='beginSale' }}
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

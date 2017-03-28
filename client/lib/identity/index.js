@@ -5,6 +5,7 @@ import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 
 import type { Entity, FormattedEntity } from './entity'
 import Keybase from './keybase'
+import Tokens from './tokens'
 import Anon from './anon'
 
 const Entities = new Mongo.Collection('entities', { connection: null })
@@ -14,6 +15,7 @@ window.Entities = Entities
 
 const providers = {
   keybase: Keybase,
+  tokens: Tokens,
   anon: Anon,
 }
 
@@ -29,6 +31,10 @@ const lookupAddress = async (addr: string): Object => {
 
 class Identity {
   Entities: Mongo.Collection
+
+  static async lookupAndFormat(addr: string): FormattedEntity {
+    return this.format(await this.getRaw(addr))
+  }
 
   static format(entity: Entity, replaceMe: boolean = true): FormattedEntity {
     const formatted = providers[entity.identityProvider].format(entity)

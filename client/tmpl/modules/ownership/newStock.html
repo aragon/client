@@ -1,0 +1,78 @@
+<template name="Module_Ownership_NewStock">
+  {{> Element_CloseSectionButton }}
+  <form class="ui flex attached form lightgrey right column" id="assignShares">
+    <h1 class="ui header">Add stock class</h1>
+
+    <div class="ui hidden divider"></div>
+
+    <div class="field">
+      <label>Stock templates</label>
+
+      <div class="ui basic tiny buttons">
+        {{ #each stockTemplates }}
+        <a class="ui button stock-template" data-stock="{{ symbol }}">{{ name }}</a>
+        {{ /each }}
+      </div>
+    </div>
+
+    <div class="ui hidden divider"></div>
+
+    <div class="field">
+      <div class="two fields">
+        <div class="field">
+          <label>Stock name</label>
+          <input type="text" name="name" placeholder="Aragon common stock">
+        </div>
+        <div class="field">
+          <label>Stock symbol</label>
+          <input type="text" name="symbol" placeholder="ARN-A">
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="two fields">
+        <div class="field">
+          <label>Voting power <span class="tooltip" data-html="Multiplayer for voting power in company governance. Whole numbers only. 0 is no voting power, 1 is one-token-one-vote, and above is x times normal distribution." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
+          <input type="number" lang="en" name="votingPower" placeholder="1" min="0" max="255">
+        </div>
+        <div class="field">
+          <label>Economic rights <span class="tooltip" data-html="Multiplayer for economic rights in company. Whole numbers only. 0 is no dividends, 1 is normal distribution, and above is x times normal distribution." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
+          <input type="number" lang="en" name="economicRights" placeholder="1" min="0" max="255">
+        </div>
+      </div>
+    </div>
+    <div class="ui toggle checkbox">
+      <input type="checkbox" id="existingTokenToggle">
+      <label>Use existing ERC20 token  <span class="tooltip" data-html="Token holders of parent token will be able to use this token for governance of the company." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
+    </div>
+    {{ #if TemplateVar.get 'existingToken' }}
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <label>Token address</label>
+      {{> Element_IdentityAutocomplete}}
+    </div>
+    {{ #if tokenDetails }}
+    {{ #with tokenDetails }}
+      {{ #if $gt parentTotalSupply 0 }}
+        <label><span class="bolded">Caution!</span> This is already a wrapped token. Beware of weird side effects!</label>
+      {{ /if }}
+      {{ #if isCompanyStock }}
+        <label><span class="bolded">Caution!</span> This token is already a company governance token. Beware of weird side effects!</label>
+      {{ /if}}
+      <label><span class="bolded">Token name: </span>{{ name }}</label>
+      <label><span class="bolded">Token symbol: </span>{{ symbol }}</label>
+      <label><span class="bolded">Total supply: </span>{{ totalSupply }} {{ symbol }}</label>
+    {{ /with }}
+    {{ /if }}
+    {{ else }}
+    <div class="ui hidden divider"></div>
+    <div class="field">
+      <label>Initial supply</label>
+      <input type="number" lang="en" name="initialSupply" placeholder="Number of shares" min="0">
+    </div>
+    {{ /if }}
+    <div class="ui spacer"></div>
+    {{ > Element_PerformAction action=actionName }}
+    {{> Element_ProcessDimmer}}
+  </form>
+</template>

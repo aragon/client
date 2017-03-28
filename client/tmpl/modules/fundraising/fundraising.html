@@ -1,10 +1,10 @@
 <template name="Module_Fundraising">
-  <div id="Module_Fundraising" class="nine wide column">
+  <div id="Module_Fundraising" class="main column">
     <div class="ui secondary menu">
       <div class="right menu">
         <div class="fitted item">
           <a class="ui primary button" href="/fundraising/new">
-            <i class="plus icon"></i>
+            <i class="icon">add</i>
             New raise
           </a>
         </div>
@@ -31,7 +31,6 @@
       </tbody>
     </table>
   </div>
-  <div class="seven wide lightgrey column">
-    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
-  </div>
+
+  {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
 </template>

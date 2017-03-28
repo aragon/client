@@ -1,24 +1,41 @@
 <template name="Module_Ownership">
-  <div id="Module_Ownership" class="nine wide column">
+  <div id="Module_Ownership" class="main column">
     <div class="ui secondary menu">
       <div class="fitted item">
         <div class="ui left icon input">
-          <i class="search link icon"></i>
+          <i class="link icon">search</i>
           <input type="text" placeholder="Search" value="{{TemplateVar.get 'searchString'}}" id="searchInput">
         </div>
       </div>
       <div class="right menu">
         <div class="fitted item">
-          <a class="ui primary button" href="/ownership/issue">
-            <i class="plus icon"></i>
-            Issue shares
+          <a class="ui primary button" href="/ownership/transfer">
+            <i class="icon">send</i>
+            Transfer tokens
           </a>
         </div>
-        <div class="fitted item">
-          <a class="ui primary button" href="/ownership/assign">
-            <i class="user icon"></i>
-            Assign shares
-          </a>
+        <div class="ui fitted item">
+          <div class="ui icon top right pointing dropdown basic button">
+            <i class="icon">more_vert</i>
+            <div class="menu">
+              <a class="item" href="/ownership/issue">
+                <i class="icon">add</i>
+                Issue shares
+              </a>
+              <a class="item" href="/ownership/assign">
+                <i class="icon">person</i>
+                Assign shares
+              </a>
+              <a class="item" href="/ownership/stock/list">
+                <i class="icon">list</i>
+                View stock classes
+              </a>
+              <a class="item" href="/ownership/stock/new">
+                <i class="icon">trending_up</i>
+                Add stock class
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -28,8 +45,8 @@
       <thead>
         <tr>
           <th>Shareholder</th>
-          <th>Type</th>
-          <th>#</th>
+          <th>Stock class</th>
+          <th>Shares</th>
         </tr>
       </thead>
       <tbody data-updated="{{ updated }}">
@@ -51,7 +68,6 @@
       </tbody>
     </table>
   </div>
-  <div class="seven wide lightgrey column">
-    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
-  </div>
+
+  {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
 </template>

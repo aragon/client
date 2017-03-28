@@ -3,8 +3,9 @@ import { _ } from 'meteor/underscore'
 import { Mongo } from 'meteor/mongo'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'
 
-import { Stock } from './contracts'
+import { Stock, ERC20Wrap } from './contracts'
 import { Company } from './deployed'
+import Tokens from './tokens'
 
 import Watcher from './watcher'
 
@@ -55,12 +56,15 @@ class StockWatcher extends Watcher {
   }
 
   async setBalance(holder, stockAddress) {
-    const balance = await Stock.at(stockAddress).balanceOf(holder)
-    this.updateBalance(stockAddress, holder, balance.toNumber())
+    const balance = await Tokens.getBalance(stockAddress, holder)
+    this.updateBalance(stockAddress, holder, balance)
   }
 
   updateBalance(stockAddress, ethereumAddress, balance, isIncrement = false) {
+    if (ethereumAddress == '0x0000000000000000000000000000000000000000') return // We don't want 'burn' address as shareholder
+
     const predicate = { ethereumAddress }
+
     const currentEntity = Entities.findOne(predicate)
     let balances = {}
     if (currentEntity && currentEntity.balances) {
@@ -99,15 +103,25 @@ class StockWatcher extends Watcher {
     })
   }
 
+  async getParentToken(address: string) {
+    const parentAddress = await ERC20Wrap.at(address).parentToken()
+    if (parentAddress === '0x') return null
+
+    return { address: parentAddress, ...(await Tokens.getTokenProperties(parentAddress))}
+  }
+
   async updateStock(address: string, index: number) {
     const stock = Stock.at(address)
+
     const stockObject = {
       name: stock.name.call(),
       symbol: stock.symbol.call(),
-      votesPerShare: stock.votesPerShare.call().then(x => x.toNumber()),
+      votingPower: stock.votingPower.call().then(x => x.toNumber()),
+      economicRights: stock.economicRights.call().then(x => x.toNumber()),
       shareholders: this.allShareholdersForStock(stock, await stock.shareholderIndex.call().then(x => x.toNumber())),
       totalSupply: stock.totalSupply.call().then(x => x.toNumber()),
       updated: new Date(),
+      parentToken: this.getParentToken(address),
       address,
       index,
     }

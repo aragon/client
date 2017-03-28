@@ -18,7 +18,6 @@ tmpl.onRendered(() => {
   $('#inboxButton').popup({
     inline: true,
     on: 'click',
-    lastResort: 'bottom center',
     position: 'bottom center',
     onShow: () => (window.resizePopups()),
   })
@@ -30,5 +29,5 @@ tmpl.helpers({
 
 tmpl.events({
   'click .extra a': e => performAction($(e.currentTarget).data('notification')),
-  'click .clear-all': clearAll,
+  'click #notifHeader i': clearAll,
 })

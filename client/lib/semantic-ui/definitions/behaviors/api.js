@@ -479,7 +479,7 @@ $.api = $.fn.api = function(parameters) {
             always: function() {
               // nothing special
             },
-            done: function(response, textStatus, xhr) {
+            done: async function(response, textStatus, xhr) {
               var
                 context            = this,
                 elapsedTime        = (new Date().getTime() - requestStartTime),
@@ -487,9 +487,10 @@ $.api = $.fn.api = function(parameters) {
                 translatedResponse = ( $.isFunction(settings.onResponse) )
                   ? module.is.expectingJSON()
                     ? settings.onResponse.call(context, $.extend(true, {}, response))
-                    : settings.onResponse.call(context, response)
+                    : settings.onResponse(response)
                   : false
               ;
+              translatedResponse = await translatedResponse
               timeLeft = (timeLeft > 0)
                 ? timeLeft
                 : 0

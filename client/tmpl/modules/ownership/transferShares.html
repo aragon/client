@@ -1,7 +1,6 @@
 <template name="Module_Ownership_TransferShares">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton }}
-  <form class="ui flex attached form" id="transferShares">
+  <form class="ui flex attached form lightgrey right column" id="transferShares">
     <h1 class="ui header">Transfer shares</h1>
     <div class="ui hidden divider"></div>
     <div class="field">
@@ -9,17 +8,18 @@
       {{ > Element_IdentityAutocomplete }}
     </div>
     <div class="field">
-      <label>Kind</label>
-      <div class="ui selection dropdown">
-        <input type="hidden" name="kind">
-        <i class="dropdown icon"></i>
-        <div class="default text">Kind of shares</div>
-        <div class="menu">
-          {{#each stocks}}
-          <div class="item" data-value="{{index}}">{{name}} ({{symbol}})</div>
-          {{/each}}
-        </div>
-      </div>
+      <label>Class</label>
+      <select name="kind">
+        <option selected disabled>Stock class</option>
+        {{#each stocks}}
+        <option value="{{address}}">{{name}} ({{symbol}})</option>
+        {{ #if parentToken }}
+          {{ #with parentToken }}
+          <option value="{{address}}">- {{name}} ({{symbol}}) – parent of {{ ../symbol }}</option>
+          {{ /with }}
+        {{ /if }}
+        {{ /each }}
+      </select>
     </div>
     <div class="field">
       <label>Number</label>
@@ -27,13 +27,21 @@
     </div>
     <div class="ui hidden divider"></div>
     <div class="ui spacer"></div>
-    {{ #if $exists (TemplateVar.get 'selectedStock') }}
+    {{ #if selectedStock }}
     <div class="ui icon small message">
-      <i class="info icon"></i>
+      <i class="ui icon">info_outline</i>
       <div class="content">
+        {{ #with selectedStock }}
+        {{ #with currentIdentity }}
         <div class="header">
-          You have {{ balance (TemplateVar.get 'selectedStock') }} shares available for transfer
+          {{ #if ../_id }} <!-- Is a proper token -->
+            You have {{ transferrable ../address ethereumAddress }} {{ ../symbol }} available for transfer
+          {{ else }} <!-- Is the parent token that might not implement transferable -->
+            You have {{ liveTokenBalance ../address ethereumAddress }} {{ ../symbol }} tokens
+          {{ /if }}
         </div>
+        {{ /with}}
+        {{ /with }}
         <p>
           This will be irreversible
         </p>
@@ -41,5 +49,7 @@
     </div>
     {{ /if }}
     <button class="ui fluid big primary button" type="submit">Transfer</button>
+
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

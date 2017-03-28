@@ -1,7 +1,6 @@
 <template name="Module_Voting_New">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/voting'}}
-  <form class="ui flex attached form" id="newVoting">
+  <form class="ui flex attached form lightgrey right column">
     <h1 class="ui header">New poll</h1>
     <div class="ui hidden divider"></div>
     <div class="field">
@@ -21,13 +20,15 @@
     </div>
     <div class="ui spacer"></div>
     <div class="ui icon small message">
-      <i class="info icon"></i>
+      <i class="ui icon">info_outline</i>
       <div class="content">
-        <div class="header">This poll is informative.</div>
-        <p>Polls opened from here don't have any direct repercusion on the company.</p>
+        <div class="header">This poll is informative</div>
+        <p>Polls opened from here don't have any direct repercusion on the company</p>
       </div>
     </div>
-    {{> Element_BylawDisclose action='beginPoll' }}
+    {{> Element_PerformAction action='beginPoll' }}
     <button class="ui fluid big primary button" type="submit">Open</button>
+
+    {{> Element_ProcessDimmer}}
   </form>
 </template>

@@ -43,12 +43,12 @@ const interpolate = (from, to, steps) => {
 const renderOwnershipInfo = async () => {
   const address = FlowRouter.current().params.address
   const stock = Stock.at(Stocks.findOne().address)
-  const fullyVested = await stock.lastStockIsTransferrableEvent.call(address).then(x => x.toNumber())
+  const fullyVested = await stock.lastTokenIsTransferableDate.call(address).then(x => x.toNumber())
   const lastStockIsTransferrableEvent = moment(fullyVested * 1000 + (0.1 * (fullyVested - +new Date() / 1000)))
   if (moment() > lastStockIsTransferrableEvent) { return null } // already fully vested
   const dates = interpolate(+moment() / 1000, fullyVested, 25)
   const pointsPromise = dates.map(t =>
-      stock.transferrableShares.call(address, t).then(x => x.toNumber()))
+      stock.transferableTokens.call(address, t).then(x => x.toNumber()))
 
   const points = await Promise.all(pointsPromise)
   const dateLabels = dates.map(d => timeRange(moment(), moment(d*1000)))

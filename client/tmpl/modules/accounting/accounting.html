@@ -1,16 +1,16 @@
 <template name="Module_Accounting">
-  <div id="Module_Accounting" class="nine wide column">
+  <div id="Module_Accounting" class="main column">
     <div class="ui secondary menu">
       <div class="fitted item">
         <div class="ui left icon input">
-          <i class="search link icon"></i>
+          <i class="search icon"></i>
           <input type="text" placeholder="Search" value="{{TemplateVar.get 'searchString'}}" id="searchInput">
         </div>
       </div>
       <div class="right menu">
         <div class="fitted item">
           <a class="ui primary button" href="/accounting/payments/new">
-            <i class="plus icon"></i>
+            <i class="icon">add</i>
             New payment
           </a>
         </div>
@@ -61,7 +61,57 @@
       </tbody>
     </table>
   </div>
-  <div class="seven wide lightgrey column">
-    {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
+
+  {{> Template.dynamic template=(TemplateVar.get 'rightSection') }}
+
+  <!--
+  <div class="field">
+    <div class="two fields">
+      <div class="field">
+        <label>First Name</label>
+        <input type="text" name="firstName">
+      </div>
+      <div class="field">
+        <label>Last Name</label>
+        <input type="text" name="lastName">
+      </div>
+    </div>
   </div>
+  <div class="field">
+    <div class="three fields">
+      <div class="field">
+        <label>Date of birth</label>
+        <input type="text" name="birth">
+      </div>
+      <div class="field">
+        <label>Phone number</label>
+        <input type="text" name="phone">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="text" name="email">
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Address</label>
+    <input type="text" name="address">
+  </div>
+  <div class="field">
+    <div class="three fields">
+      <div class="field">
+        <label>ZIP Code</label>
+        <input type="text" name="zipCode">
+      </div>
+      <div class="field">
+        <label>City</label>
+        <input type="text" name="city">
+      </div>
+      <div class="field">
+        <label>Country</label>
+        <input type="text" name="country">
+      </div>
+    </div>
+  </div>
+  -->
 </template>

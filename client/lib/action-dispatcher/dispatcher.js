@@ -53,7 +53,7 @@ class Dispatcher {
 
   async dispatch(action, ...params) {
     const bylaw = bylawForAction(action)
-    if (bylaw.type === 0) {
+    if (bylaw && bylaw.type === 0 && bylaw.details.supportBase !== 0) {
       return await this.createVoting(action.companyFunction, params,
                                       action.signature, bylaw.details.minimumVotingTime)
     }
@@ -103,7 +103,7 @@ class Dispatcher {
 
   async createVoting(f: Function, args: Array<mixed>, signature: string, votingTime: number) {
     const txData = f.request.apply(this, args).params[0].data
-    const votingCloses = votingTime + Math.floor(+new Date() / 1000)
+    const votingCloses = votingTime + Math.floor(+new Date() / 1000) + 300 // 300 extra seconds to account for delay included
 
     const company = Company()
     /*
