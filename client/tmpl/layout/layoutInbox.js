@@ -18,9 +18,7 @@ tmpl.onRendered(() => {
   $('#inboxButton').popup({
     inline: true,
     on: 'click',
-    jitter: -1,
     position: 'bottom center',
-    lastResort: 'bottom right',
     onShow: () => (window.resizePopups()),
   })
 })

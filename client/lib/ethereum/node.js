@@ -89,19 +89,23 @@ class EthereumNode {
   static async connect(): Promise<boolean> {
     web3.reset(true)
     const nodeReady = await initConnection()
-    var collectionsReady = false
-    try {
-      setTimeout(() => {
-        if (!collectionsReady) {
-          console.log('time passed, didnt start')
-          this.connect()
-        }
-      }, 1000)
+    let collectionsReady = false
+    if (window.isElectron) {
+      try {
+        setTimeout(() => {
+          if (!collectionsReady) {
+            console.log('time passed, didnt start')
+            return this.connect()
+          }
+        }, 1000)
+        collectionsReady = await initCollections()
+      } catch (e) {
+        console.log('Caught the exception', e)
+        delay(500)
+        return this.connect()
+      }
+    } else {
       collectionsReady = await initCollections()
-    } catch (e) {
-      console.log('Caught the exception', e)
-      delay(500)
-      this.connect()
     }
 
     allContracts.forEach(c => c.setProvider(web3.currentProvider))

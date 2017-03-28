@@ -14,9 +14,7 @@ tmpl.onRendered(() => {
   $('#pendingTxButton').popup({
     inline: true,
     on: 'click',
-    jitter: -1,
     position: 'bottom center',
-    lastResort: 'bottom right',
   })
 })
 
