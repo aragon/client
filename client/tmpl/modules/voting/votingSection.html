@@ -4,29 +4,31 @@
     {{#with voting}}
     <h1 class="ui header">
       {{title}}
-      {{#if isNull voteExecuted}}
-        <a class="ui red basic label">Ends in {{ timeRange now closingTime }}</a>
-        {{#if supportNeeded}}
-        <a class="ui violet label">Requires {{ percentFormat supportNeeded }} support</a>
-        {{/if}}
-
-        {{#if relativeMajorityOnClose}}
-          <span class="tooltip" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet basic label">Relative count on close</a></span>
-        {{else}}
-          <span class="tooltip" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet label">Absolute count on close </a></span>
-        {{/if}}
-      {{else}}
-        <a class="ui left pointing red basic label">Closed</a>
-        <a class="ui violet label">{{arrayAccess options voteExecuted}}</a>
-      {{/if}}
       <div class="sub header">{{{ getDescription this }}}</div>
     </h1>
 
-    <div class="ui hidden divider"></div>
+    {{#if isNull voteExecuted}}
+      <label>Ends in {{ timeRange now closingTime }}</label>
+      {{#if supportNeeded}}
+      <label>Requires {{ percentFormat supportNeeded }} support</label>
+      {{/if}}
+
+      {{#if relativeMajorityOnClose}}
+        <label>Relative count on close <span class="tooltip" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
+      {{else}}
+        <label>Absolute count on close <span class="tooltip" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame." data-position="bottom center" data-variation="tiny" data-inverted=""></span></label>
+      {{/if}}
+    {{else}}
+      <label>Closed</label>
+      <label>{{arrayAccess options voteExecuted}}</label>
+    {{/if}}
+
+    <div class="ui spacer"></div>
+
     <label>Created by</label>
     {{ > Element_MiniEntity entity=(getEntity creator) }}
 
-    <table class="ui very basic padded fixed table" id="optionsTable">
+    <table class="ui very basic padded fixed small table" id="optionsTable">
       <thead>
         <tr>
           <th>Option</th>
@@ -56,7 +58,7 @@
         {{/each}}
         {{#unless isClosed this }}
         <tr>
-          <td>Pending votes</td>
+          <td>Pending</td>
           {{#with pendingVotes options updatesHack }}
           <td class="center aligned">{{ votes }}</td>
           <td class="center aligned">{{ percentFormat relativeVotes }}</td>
