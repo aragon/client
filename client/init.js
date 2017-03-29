@@ -44,11 +44,8 @@ const clearStorage = () => {
   localStorage.clear()
 }
 
-FlowRouter.wait()
 const load = async () => {
   Meteor.disconnect()
-
-  FlowRouter.initialize({hashbang: true})
 
   if (localStorage.getItem('currentRelease') !== release.version) {
     alert("We will reset your storage in order to upgrade your Aragon version.")
@@ -120,5 +117,9 @@ if (window.injectMetaMask) {
   isInjectedMetaMask.set(true)
   loadMetaMask()
 } else {
-  Meteor.startup(() => load())
+  FlowRouter.wait()
+  Meteor.startup(() => {
+    FlowRouter.initialize({ hashbang: true })
+    load()
+  })
 }
