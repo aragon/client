@@ -37,9 +37,9 @@ helpers.composeFunction = (f, g, x) => f(g)(x)
 helpers.unhandledNotifications = () => Notifications.find({ handled: false }).count()
 helpers.ether = (x: number): string => parseFloat(web3.fromWei(x, 'ether')).toLocaleString()
 
-helpers.networkName = (): string => Session.get('networkName')
-helpers.etherscan = (txId: string): string => `https://${Session.get('etherscanSub')}etherscan.io/tx/${txId}`
-helpers.etherscanAddress = (address: string): string => `https://${Session.get('etherscanSub')}etherscan.io/address/${address}`
+helpers.networkName = (): string => localStorage.getItem('networkName')
+helpers.etherscan = (txId: string): string => `https://${localStorage.getItem('etherscanSub')}etherscan.io/tx/${txId}`
+helpers.etherscanAddress = (address: string): string => `https://${localStorage.getItem('etherscanSub')}etherscan.io/address/${address}`
 
 Object.keys(helpers).forEach(k => Template.registerHelper(k, helpers[k]))
 

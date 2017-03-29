@@ -38,7 +38,6 @@
     "intertron-client": "^1.0.2",
     "jdenticon": "^1.4.0",
     "meteor-node-stubs": "~0.2.0",
-    "moment": "^2.17.1",
     "money": "^0.2.0",
     "notifyjs": "^2.0.3",
     "post-message-stream": "^1.0.0",

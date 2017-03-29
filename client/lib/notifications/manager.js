@@ -1,6 +1,5 @@
 // @flow
 import { Mongo } from 'meteor/mongo'
-import { Session } from 'meteor/session'
 import { EthBlocks } from 'meteor/ethereum:blocks'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { PersistentMinimongo } from 'meteor/frozeman:persistent-minimongo'

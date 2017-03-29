@@ -42,7 +42,7 @@ class Watcher {
   }
 
   get lastWatchedBlock() {
-    return Session.get(this.lastBlockKey) || (EthBlocks.latest.number - 15000 * 40)
+    return localStorage.getItem(this.lastBlockKey) || (EthBlocks.latest.number - (15000 * 40))
   }
 
   get lastBlock() {
@@ -50,7 +50,7 @@ class Watcher {
   }
 
   set lastWatchedBlock(block) {
-    return Session.setPersistent(this.lastBlockKey, block)
+    return localStorage.setItem(this.lastBlockKey, block)
   }
 }
 
