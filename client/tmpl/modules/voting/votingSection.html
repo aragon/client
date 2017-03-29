@@ -7,21 +7,53 @@
       <div class="sub header">{{{ getDescription this }}}</div>
     </h1>
 
+    <div class="ui list">
     {{#if isNull voteExecuted}}
-      <label>Ends in {{ timeRange now closingTime }}</label>
+      <div class="item">
+        <i class="icon">today</i>
+        <div class="content">
+          Ends in: {{ timeRange now closingTime }}
+        </div>
+      </div>
       {{#if supportNeeded}}
-      <label>Requires {{ percentFormat supportNeeded }} support</label>
+      <div class="item">
+        <i class="icon">compare_arrows</i>
+        <div class="content">
+          Support needed: {{ percentFormat supportNeeded }}
+        </div>
+      </div>
       {{/if}}
 
-      {{#if relativeMajorityOnClose}}
-        <label>Relative count on close <span class="tooltip" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span></label>
-      {{else}}
-        <label>Absolute count on close <span class="tooltip" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame." data-position="bottom center" data-variation="tiny" data-inverted=""></span></label>
-      {{/if}}
+      <div class="item">
+        <i class="icon">star_half</i>
+        <div class="content">
+          Count:
+          {{#if relativeMajorityOnClose}}
+            Relative
+            <span class="tooltip" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive." data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span>
+          {{else}}
+            Absolute
+            <span class="tooltip" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame." data-position="bottom center" data-variation="tiny" data-inverted=""></span>
+          {{/if}}
+        </div>
+      </div>
+
     {{else}}
-      <label>Closed</label>
-      <label>Outcome was {{arrayAccess options voteExecuted}}</label>
+
+      <div class="item">
+        <i class="icon">close</i>
+        <div class="content">
+          Closed
+        </div>
+      </div>
+      <div class="item">
+        <i class="icon">record_voice_over</i>
+        <div class="content">
+          Outcome: {{arrayAccess options voteExecuted}}
+        </div>
+      </div>
     {{/if}}
+    </div>
 
     <div class="ui spacer"></div>
 
