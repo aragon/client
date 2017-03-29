@@ -2,7 +2,7 @@
   <a class="item" id="pendingTxButton" style="{{ #unless txs }}display: none{{ /unless }}">
     <div class="ui active small inverted inline loader"></div>
   </a>
-  <div class="ui special popup" id="pendingTxs">
+  <div class="ui special scrollable popup" id="pendingTxs">
     <div class="ui very relaxed divided list">
       {{ #each txs }}
       <div class="item">
