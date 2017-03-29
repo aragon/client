@@ -2,12 +2,10 @@
 import { EthAccounts } from 'meteor/ethereum:accounts'
 import { EthBlocks } from 'meteor/ethereum:blocks'
 
-import Build from '/client/lib/build'
+import { NotificationsManager } from '/client/lib/notifications'
 import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
 import { allContracts, GenericBinaryVoting } from './contracts'
 import { domains, names } from './networks'
-
-import { NotificationsManager } from '/client/lib/notifications'
 
 import listeners from './listeners'
 import initWatchers from './watchers'
@@ -111,9 +109,9 @@ class EthereumNode {
     allContracts.forEach(c => c.setProvider(web3.currentProvider))
     const nID = await getNetworkID()
 
-    Session.set('network', nID)
-    Session.set('etherscanSub', domains[nID] || '')
-    Session.set('networkName', names[nID])
+    localStorage.setItem('network', nID)
+    localStorage.setItem('etherscanSub', domains[nID] || '')
+    localStorage.setItem('networkName', names[nID])
 
     GenericBinaryVoting.setNetwork(nID)
     GenericBinaryVoting.link('BytesHelper', (_BytesHelper.networks[nID] || _BytesHelper.networks[15] || { address: '0x0' }).address)

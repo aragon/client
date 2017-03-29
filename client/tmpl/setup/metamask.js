@@ -34,7 +34,7 @@ tmpl.onRendered(function (){
 })
 
 const faucetForAddress = (address, delay = 250) => {
-  const faucet = faucets[Session.get('network')]
+  const faucet = faucets[localStorage.getItem('network')]
   if (!faucet) return
 
   const url = faucet(address)

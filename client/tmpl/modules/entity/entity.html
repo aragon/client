@@ -1,7 +1,6 @@
 <template name="Module_Entity">
-  <div class="flex" id="entity">
-    {{ #unless noClosable }}{{> Element_CloseSectionButton}}{{ /unless }}
-    {{ #if entity }}
+  {{ #unless noClosable }}{{> Element_CloseSectionButton}}{{ /unless }}
+  <div class="flex lightgrey right column" id="entity">
     {{ #with entity }}
     <div class="ui top attached grid">
       <div class="twelve wide column">
@@ -60,6 +59,5 @@
       {{ /if }}
     </div>
     {{ /with }}
-    {{ /if }}
   </div>
 </template>

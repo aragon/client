@@ -9,7 +9,7 @@ import { keybaseSuffixes } from '/client/lib/ethereum/networks'
 
 const keybaseBaseURL: string = 'https://keybase.io/_/api/1.0'
 
-const proofFilename = (): string => `ethereum${keybaseSuffixes[Session.get('network')]}.json`
+const proofFilename = (): string => `ethereum${keybaseSuffixes[localStorage.getItem('network')]}.json`
 
 export default class Keybase {
   // Returns {status, them}

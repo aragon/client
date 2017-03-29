@@ -47,7 +47,7 @@
     {{ /if }}
     {{ #if $eq actionName 'setAddressBylaw' }}
     <div class="field">
-      <label>{{ #if $eq (TemplateVar.get 'selectedTrigger') 'oracle' }}Oracle address: {{ else }} Address: {{ /if }}</label>
+      <label>{{ #if $eq (TemplateVar.get 'selectedTrigger') 'oracle' }}Oracle address{{ else }}Address{{ /if }}</label>
       {{> Element_IdentityAutocomplete }}
     </div>
     {{ /if }}

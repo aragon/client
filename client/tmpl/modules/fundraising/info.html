@@ -5,11 +5,6 @@
     {{#with raise}}
     <h1 class="ui header">
       {{ title }}
-      {{#if isOpen this}}
-        <a class="ui left pointing red basic label">Ends in {{ timeRange now closeDate }}</a>
-      {{else}}
-        <a class="ui left pointing red basic label">Closed</a>
-      {{/if}}
       <div class="sub header">{{ raiseTypeToHuman type }}</div>
     </h1>
 
@@ -42,6 +37,22 @@
     <div class="ui hidden divider"></div>
 
     <div class="ui list">
+      {{#if isOpen this}}
+      <div class="item">
+        <i class="icon">today</i>
+        <div class="content">
+          Ends in: {{ timeRange now closeDate }}
+        </div>
+      </div>
+      {{else}}
+      <div class="item">
+        <i class="icon">close</i>
+        <div class="content">
+          Closed
+        </div>
+      </div>
+      {{/if}}
+      
       <div class="item">
         <i class="trophy icon"></i>
         <div class="content">
@@ -74,7 +85,7 @@
       {{ > Element_MiniEntity entity=(getEntity typeMetadata.investorAddress) }}
     {{ /if }}
 
-    <table class="ui very basic sortable selectable striped padded fixed table">
+    <table class="ui very basic sortable selectable striped padded fixed small table">
       <thead>
         <tr>
           <th>Investor</th>

@@ -4,29 +4,63 @@
     {{#with voting}}
     <h1 class="ui header">
       {{title}}
-      {{#if isNull voteExecuted}}
-        <a class="ui red basic label">Ends in {{ timeRange now closingTime }}</a>
-        {{#if supportNeeded}}
-        <a class="ui violet label">Requires {{ percentFormat supportNeeded }} support</a>
-        {{/if}}
-
-        {{#if relativeMajorityOnClose}}
-          <span class="tooltip" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet basic label">Relative count on close</a></span>
-        {{else}}
-          <span class="tooltip" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame." data-position="bottom center" data-variation="tiny" data-inverted=""><a class="ui violet label">Absolute count on close </a></span>
-        {{/if}}
-      {{else}}
-        <a class="ui left pointing red basic label">Closed</a>
-        <a class="ui violet label">{{arrayAccess options voteExecuted}}</a>
-      {{/if}}
       <div class="sub header">{{{ getDescription this }}}</div>
     </h1>
 
-    <div class="ui hidden divider"></div>
-    <label>Created by:</label>
+    <div class="ui list">
+    {{#if isNull voteExecuted}}
+      <div class="item">
+        <i class="icon">today</i>
+        <div class="content">
+          Ends in: {{ timeRange now closingTime }}
+        </div>
+      </div>
+      {{#if supportNeeded}}
+      <div class="item">
+        <i class="icon">compare_arrows</i>
+        <div class="content">
+          Support needed: {{ percentFormat supportNeeded }}
+        </div>
+      </div>
+      {{/if}}
+
+      <div class="item">
+        <i class="icon">star_half</i>
+        <div class="content">
+          Count:
+          {{#if relativeMajorityOnClose}}
+            Relative
+            <span class="tooltip" data-html="When voting close time passes, it will be considered approved if {{ percentFormat supportNeeded }} of all votes casted are positive" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span>
+          {{else}}
+            Absolute
+            <span class="tooltip" data-html="{{ percentFormat supportNeeded }} of all the company voting power need to approve this voting in the specified time frame" data-position="bottom center" data-variation="tiny" data-inverted=""><i class="ui icon">info_outline</i></span>
+          {{/if}}
+        </div>
+      </div>
+
+    {{else}}
+
+      <div class="item">
+        <i class="icon">close</i>
+        <div class="content">
+          Closed
+        </div>
+      </div>
+      <div class="item">
+        <i class="icon">record_voice_over</i>
+        <div class="content">
+          Outcome: {{arrayAccess options voteExecuted}}
+        </div>
+      </div>
+    {{/if}}
+    </div>
+
+    <div class="ui spacer"></div>
+
+    <label>Created by</label>
     {{ > Element_MiniEntity entity=(getEntity creator) }}
 
-    <table class="ui very basic padded fixed table" id="optionsTable">
+    <table class="ui very basic padded fixed small table" id="optionsTable">
       <thead>
         <tr>
           <th>Option</th>
@@ -56,7 +90,7 @@
         {{/each}}
         {{#unless isClosed this }}
         <tr>
-          <td>Pending votes</td>
+          <td>Pending</td>
           {{#with pendingVotes options updatesHack }}
           <td class="center aligned">{{ votes }}</td>
           <td class="center aligned">{{ percentFormat relativeVotes }}</td>

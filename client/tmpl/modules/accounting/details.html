@@ -3,8 +3,9 @@
   <div class="ui attached flex container right lightgrey column">
     {{ #with TemplateVar.get 'transaction' }}
     <h1 class="ui header">
-      {{ concept }}
-      {{ #if isExpense }}<a class="ui left pointing red basic label">Expense</a>{{ /if }}
+      Transaction
+      <div class="sub header">{{ concept }}</div>
+      {{ #if isExpense }}<a class="ui red basic label">Expense</a>{{ /if }}
     </h1>
 
     <div class="ui hidden divider"></div>
