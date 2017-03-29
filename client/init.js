@@ -83,6 +83,7 @@ const load = async () => {
   initFinished.set(true)
   $('#initialDimmer').fadeOut('slow')
 
+  console.log('Observing account changes')
   EthAccounts.find().observe({
     addedAt: async () => {
       if (EthAccounts.findOne().address != Identity.current(true).ethereumAddress) {
