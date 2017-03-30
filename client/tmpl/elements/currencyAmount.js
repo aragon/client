@@ -9,7 +9,7 @@ tmpl.onRendered(function() {
 })
 
 const convertCurrency = amount => (
-  web3.toWei(fx(amount).from(Settings.get('displayCurrency')).to('ETH'), 'ether')
+  web3.toWei(fx(amount).from(Settings.get('displayCurrency') || 'ETH').to('ETH'), 'ether')
 )
 
 const setAmount = amount => {

@@ -14,7 +14,7 @@ class NotificationsListener {
   _event: Object,
   _title: string = 'Notification',
   _bodyFormatter: Function = () => 'empty',
-  _uriFormatter: Function = () => '/home',
+  _uriFormatter: Function = () => ((window.isElectron) ? '/home' : '#!/home'),
   _callToAction: string = '',
   _predicate: Object = {},
   _uniqueId: Function = () => null) {

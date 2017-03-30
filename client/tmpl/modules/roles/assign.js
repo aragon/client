@@ -43,8 +43,9 @@ tmpl.helpers({
 
 tmpl.events({
   'select .identityAutocomplete': (e, instance, user) => (TemplateVar.set('entity', user)),
-  'change select': (e) => (
-    TemplateVar.set(this, 'selectedStatus', Status.toNumber(e.target.value))
-  ),
+  'change select': (e) => {
+    console.log(Status.toNumber(e.target.value))
+    TemplateVar.set('selectedStatus', Status.toNumber(e.target.value))
+  },
   'success .dimmer': () => FlowRouter.go('/roles'),
 })

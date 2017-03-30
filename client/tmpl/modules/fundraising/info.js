@@ -16,9 +16,7 @@ import { dispatcher, actions } from '/client/lib/action-dispatcher'
 const StockSales = StockSalesWatcher.StockSales
 
 const tmpl = Template.Module_Fundraising_Info.extend([ClosableSection])
-const reloadSaleId = () => TemplateVar.set('id', +FlowRouter.current().params.id)
-
-const reload = reloadSaleId
+const reloadSaleId = () => (TemplateVar.set('id', +FlowRouter.current().params.id))
 
 const getRaise = () => StockSales.findOne({ index: TemplateVar.get('id') })
 const getBalance = address => {
@@ -37,11 +35,15 @@ const canTransfer = async (sale: Object): Promise<boolean> => {
 }
 
 const transfer = async () => {
-  await dispatcher.dispatch(actions.transferSaleFunds, getRaise().index)
-  reload()
+  this.$('.dimmer').trigger('loading')
+
+  // await dispatcher.dispatch(actions.transferSaleFunds, getRaise().index)
+  reloadSaleId()
+
+  this.$('.dimmer').trigger('finished', { state: 'success' })
 }
 
-tmpl.onRendered(reload)
+tmpl.onRendered(reloadSaleId)
 
 const raiseTypes: Object = {
   BoundedStandardSale: 'Public fundraise with stable price',
@@ -62,6 +64,8 @@ tmpl.helpers({
 })
 
 tmpl.events({
-  'reload #raise': reload,
-  'click #transfer': transfer,
+  'reload #raise': () => reloadSaleId(),
+  'click button': () => {
+    transfer()
+  },
 })
