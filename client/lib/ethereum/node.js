@@ -109,6 +109,14 @@ class EthereumNode {
     allContracts.forEach(c => c.setProvider(web3.currentProvider))
     const nID = await getNetworkID()
 
+    const formerNetwork = localStorage.getItem('network')
+    if (formerNetwork != nID && localStorage.getItem('companyAddress')) {
+      if (confirm('You are in a different Ethereum network than the one you deployed your company at. Do you want to remove your company and start again in this network? Otherwise, chnage the network and then press cancel')) {
+        localStorage.clear()
+      }
+      return location.reload()
+    }
+
     localStorage.setItem('network', nID)
     localStorage.setItem('etherscanSub', domains[nID] || '')
     localStorage.setItem('networkName', names[nID])
