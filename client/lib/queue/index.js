@@ -31,10 +31,19 @@ class TxQueue {
       if (err) return
       const block = await getBlock(blockHash)
       block.transactions
-        .filter(t => _.contains(this.queue.get(), t.txId))
+        .filter(t => _.contains(this.queue.get().map(x => x.txId), t.txId))
         .forEach(this.remove.bind(this))
     })
-    setInterval(())
+
+    setInterval(() => {
+      this.queue.get().forEach(async txq => {
+        const tx = await getTx(txq.txId)
+        if (tx.blockNumber) {
+          console.log('Removed from pulling')
+          this.remove(txq.txId)
+        }
+      })
+    }, 2000)
   }
 
   async add(txID: string) {
