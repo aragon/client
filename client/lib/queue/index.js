@@ -30,8 +30,11 @@ class TxQueue {
     web3.eth.filter('latest', async (err, blockHash) => {
       if (err) return
       const block = await getBlock(blockHash)
-      block.transactions.forEach(this.remove.bind(this))
+      block.transactions
+        .filter(t => _.contains(this.queue.get(), t.txId))
+        .forEach(this.remove.bind(this))
     })
+    setInterval(())
   }
 
   async add(txID: string) {

@@ -99,11 +99,11 @@ const setEntityStatusDescription = ([entity, status]) => (
 )
 
 const setStatusBylawDescription = ([signature, statusNeeded, isSpecialStatus]) => {
-  if (isSpecialStatus) {
+  if (isSpecialStatus === false || isSpecialStatus === 'false') {
+    return `For ${getActionForSignature(signature).name} a minimum status of '${Status.toString(statusNeeded)}' will be needed`
+  } else {
     if (+statusNeeded === 0) return `${getActionForSignature(signature).name} action can only be performed by shareholders`
     return 'negative v'
-  } else {
-    return `For ${getActionForSignature(signature).name} a minimum status of '${Status.toString(statusNeeded)}' will be needed`
   }
 }
 
