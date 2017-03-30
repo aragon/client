@@ -52,7 +52,7 @@
         </div>
       </div>
       {{/if}}
-      
+
       <div class="item">
         <i class="trophy icon"></i>
         <div class="content">
@@ -110,7 +110,6 @@
 
     {{ #if isTransferAllowed this }}
     {{ > Element_PerformAction action='transferSaleFunds' }}
-    <button class="ui big primary button" id="transfer" name="button">Move {{ ether (transferrableFunds address) }} ETH to company address</button>
     {{ /if }}
 
     {{/with}}

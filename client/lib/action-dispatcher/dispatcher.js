@@ -48,7 +48,7 @@ const toggleMetaMask = (show: boolean = true) => {
 
 class Dispatcher {
   get transactionParams() {
-    return { from: Entities.findOne({current: true}).ethereumAddress } // dependency cycle :(
+    return { from: Entities.findOne({ current: true }).ethereumAddress } // dependency cycle :(
   }
 
   async dispatch(action, ...params) {
@@ -62,14 +62,14 @@ class Dispatcher {
   }
 
   async performTransaction(f, ...args) {
-    const [ params ] = f.request.apply(this, args.concat([this.transactionParams])).params
+    const [params] = f.request.apply(this, args.concat([this.transactionParams])).params
 
     console.log('sending tx', params)
     let txID = ''
     try {
       txID = await sendTransaction(params)
     } catch (e) {
-      return alert('Transaction failed. If you believe this to be an error, contact support', e)
+      return alert('Transaction failed. If you believe this to be an error, open an issue', e)
     }
 
     await this.addPendingTransaction(txID)
