@@ -1,5 +1,4 @@
 <template name="Module_Fundraising_Info">
-  {{> Element_ProcessDimmer}}
   {{> Element_CloseSectionButton href='/fundraising'}}
   <div class="ui attached flex container lightgrey right column" id="raise">
     {{#with raise}}
@@ -81,7 +80,7 @@
 
     {{ #if $eq type 'IndividualInvestorSale' }}
       <div class="ui hidden divider"></div>
-      <label>Investor:</label>
+      <label>Investor</label>
       {{ > Element_MiniEntity entity=(getEntity typeMetadata.investorAddress) }}
     {{ /if }}
 
@@ -110,6 +109,7 @@
 
     {{ #if isTransferAllowed this }}
     {{ > Element_PerformAction action='transferSaleFunds' }}
+    {{> Element_ProcessDimmer}}
     {{ /if }}
 
     {{/with}}
