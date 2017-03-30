@@ -1,12 +1,13 @@
 # The changelog
 
-### Alpha 0.3 (To be released)
+### Alpha 0.3 (March 30th, 2017)
 
 - New feature: **BYOT** (*Bring your own token*), allow using Aragon with any `ERC20` token as a **governance token** for companies. Ability to wrap and unwrap tokens in votings and ownership entity.
 - New feature: Add two new bylaws, **specific address only** and **ask oracle contract for confirmation**. Stepping stone for more dynamic bylaws.
 - Major: Big internal refactor to voting logic, allows delegate voting (no UI yet).
 - Major: Added *Add stock class* view for easily adding new stock to company. Also new *View stock classes* view to see all company stock types in detail.
 - Major: UI improvements. New icons and action menus to avoid cluttering the top bars.
+- Major: Aragon can now be used from any Ethereum web3 compatible browser (Mist, Parity or Metamask) without the native clients. [Try now!](https://alpha.aragon.one)
 
 - Improvement: Voting UI, added option to modify or remove a vote, automatically execute voting option and relative/absolute voting counts.
 - Support account changes in Metamask, useful for testing different roles in company.
