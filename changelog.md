@@ -13,6 +13,7 @@
 - Added *token identity provider* that will do a reverse lookup for tokens and display its details in entity views.
 - Improved action performing buttons and dialogs, disabled when user is not allowed to perform an action.
 - Added a button to clear all notifications.
+- Solves the infamous 'number' bug https://github.com/AragonOne/issues/issues/12
 
 ### Alpha 0.2.1 (Private: March 14th, 2017, public: March 20th, 2017)
 
