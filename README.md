@@ -13,6 +13,7 @@
 - Major: Big internal refactor to voting logic, allows delegate voting (no UI yet).
 - Major: Added *Add stock class* view for easily adding new stock to company. Also new *View stock classes* view to see all company stock types in detail.
 - Major: UI improvements. New icons and action menus to avoid cluttering the top bars.
+- Major: Aragon can now be used from any Ethereum web3 compatible browser (Mist, Parity or Metamask) without the native clients. [Try now!](https://alpha.aragon.one)
 
 - Improvement: Voting UI, added option to modify or remove a vote, automatically execute voting option and relative/absolute voting counts.
 - Support account changes in Metamask, useful for testing different roles in company.
