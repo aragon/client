@@ -34,7 +34,7 @@ class TxQueue {
         .filter(t => _.contains(this.queue.get(), t.txId))
         .forEach(this.remove.bind(this))
     })
-    setInterval(())
+    // setInterval(())
   }
 
   async add(txID: string) {
