@@ -5,7 +5,7 @@ import { EthBlocks } from 'meteor/ethereum:blocks'
 import { NotificationsManager } from '/client/lib/notifications'
 import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
 import { allContracts, GenericBinaryVoting } from './contracts'
-import { domains, names } from './networks'
+import { domains, names, supportedNetworks } from './networks'
 
 import listeners from './listeners'
 import initWatchers from './watchers'
@@ -107,11 +107,15 @@ class EthereumNode {
     }
 
     allContracts.forEach(c => c.setProvider(web3.currentProvider))
-    const nID = await getNetworkID()
+    const nID = parseInt(await getNetworkID())
+
+    if (!_.contains(supportedNetworks, nID)) {
+      return alert('Current Ethereum network not supported, please use Ropsten or Kovan testnets')
+    }
 
     const formerNetwork = localStorage.getItem('network')
     if (formerNetwork != nID && localStorage.getItem('companyAddress')) {
-      if (confirm('You are in a different Ethereum network than the one you deployed your company at. Do you want to remove your company and start again in this network? Otherwise, chnage the network and then press cancel')) {
+      if (confirm('You are in a different Ethereum network than the one you deployed your company at. Do you want to remove your company and start again in this network? Otherwise, change the network and then press cancel')) {
         localStorage.clear()
       }
       return location.reload()

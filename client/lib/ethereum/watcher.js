@@ -42,7 +42,8 @@ class Watcher {
   }
 
   get lastWatchedBlock() {
-    return localStorage.getItem(this.lastBlockKey) || (EthBlocks.latest.number - (15000 * 40))
+    const networkMultiplayer = localStorage.getItem('network') // hack TODO: Get from etherscan
+    return localStorage.getItem(this.lastBlockKey) || (EthBlocks.latest.number - (15000 * networkMultiplayer ))
   }
 
   get lastBlock() {

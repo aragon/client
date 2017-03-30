@@ -26,4 +26,6 @@ const faucets = {
   42: address => `https://kovan-faucet.aragon.one/address/${address}`,
 }
 
-export { domains, names, keybaseSuffixes, faucets }
+const supportedNetworks = [ 3, 15, 42 ]
+
+export { domains, names, keybaseSuffixes, faucets, supportedNetworks }
