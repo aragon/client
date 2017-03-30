@@ -137,7 +137,7 @@
       <i class="ui icon">info_outline</i>
       <div class="content">
       {{ #each wrappableTokens ethereumAddress }}
-        <p>You have <span class="bolded">{{ parentToken.balance }} {{ parentToken.symbol }}</span>.
+        <p>You have <b>{{ parentToken.balance }} {{ parentToken.symbol }}</b>.
         <a id="wrap" href="#" data-holder="{{ ../ethereumAddress }}" data-wrapper="{{ address }}" data-parent="{{ parentToken.address }}">
           Convert {{ parentToken.symbol }} to {{ symbol }} to vote.
         </a></p>
@@ -157,10 +157,10 @@
         {{ #if willBeAbleToExecute }}
         <br>
         <div class="ui field">
-          <label for="">Your vote will be decisive.</label>
+          Your vote will be decisive.
           <br>
           <input type="checkbox" checked id="executesIfDecided">
-          <label>Automatically <span class="bolded">execute voting</span>.</label>
+          <label>Automatically <b>execute voting</b></label>
         </div>
         {{ /if }}
       </div>

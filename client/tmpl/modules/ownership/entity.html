@@ -14,7 +14,7 @@
           {{#if isMe this }}
           {{#if ../parentToken }}
             {{#if $gt (liveTokenBalance ../parentToken.address ethereumAddress ) 0 }}
-              You have <span class="bolded">{{ liveTokenBalance ../parentToken.address ethereumAddress }} {{ ../parentToken.symbol }}</span>.
+              You have <b>{{ liveTokenBalance ../parentToken.address ethereumAddress }} {{ ../parentToken.symbol }}</b>.
               <a id="wrap" href="#" data-holder="{{ ethereumAddress }}" data-wrapper="{{ ../address }}" data-parent="{{ ../parentToken.address }}">
                 Convert to {{ ../symbol }}
               </a>
