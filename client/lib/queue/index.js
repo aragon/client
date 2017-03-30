@@ -37,13 +37,13 @@ class TxQueue {
 
     setInterval(() => {
       this.queue.get().forEach(async txq => {
-        const tx = await getTx(txq.txId)
+        const tx = await getTx(txq.txID)
         if (tx.blockNumber) {
           console.log('Removed from pulling')
-          this.remove(txq.txId)
+          this.remove(txq.txID)
         }
       })
-    }, 2000)
+    }, 500)
   }
 
   async add(txID: string) {
