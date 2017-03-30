@@ -20,7 +20,7 @@
         <p><i class="money icon"></i>Token supply: {{ totalSupply }} {{ symbol }}</p>
         {{ /if }}
         {{ #if getStatus ethereumAddress }}
-        <p><i class="icon">person</i><span class="bolded">{{ capitalize (getStatus ethereumAddress) }}</span> role</p>
+        <p><i class="icon">person</i><b>{{ capitalize (getStatus ethereumAddress) }}</b> role</p>
         {{ /if }}
         {{ #if cryptocurrencies.bitcoin }}
         <p><i class="bitcoin icon"></i><a href="bitcoin:{{ cryptocurrencies.bitcoin }}">{{ cryptocurrencies.bitcoin }}</a></p>
