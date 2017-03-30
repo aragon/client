@@ -1,6 +1,6 @@
 {
   "name": "aragon",
-  "version": "0.3",
+  "version": "0.3.0",
   "productName": "Aragon",
   "private": true,
   "scripts": {
