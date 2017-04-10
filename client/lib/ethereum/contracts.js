@@ -18,7 +18,6 @@ import _WrappedCustomStock from '/imports/lib/contracts/build/contracts/WrappedC
 import _Txid from '/imports/lib/contracts/build/contracts/Txid'
 import _ERC20Wrap from '/imports/lib/contracts/build/contracts/ERC20Wrap'
 import _BylawsLib from '/imports/lib/contracts/build/contracts/BylawsLib'
-// import _BytesHelper from '/imports/lib/contracts/build/contracts/BytesHelper'
 import _KeybaseRegistry from '/imports/lib/contracts/node_modules/keybase-eth/build/contracts/KeybaseRegistry'
 
 const Company = contractify(_Company)
@@ -38,9 +37,6 @@ const KeybaseRegistry = contractify(_KeybaseRegistry)
 const ERC20Wrap = contractify(_ERC20Wrap)
 const BylawsLib = contractify(_BylawsLib)
 
-/* const n = web3.version.network
-GenericBinaryVoting.setNetwork(n)
-GenericBinaryVoting.link('BytesHelper', _BytesHelper.networks[n].address) */
 
 const Txid = contractify(_Txid)
 

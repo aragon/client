@@ -121,7 +121,6 @@ class VotingWatcher extends Watcher {
   get allVotes() {
     return [
       {
-        // Dear future developer, some day there might be a problem verifying because it is not linked to BytesHelper
         contractClass: GenericBinaryVoting,
         title: async a => `${actionFromData(await GenericBinaryVoting.at(a).data.call()).name} voting`,
         description: async a => {

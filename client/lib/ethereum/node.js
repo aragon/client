@@ -125,9 +125,6 @@ class EthereumNode {
     localStorage.setItem('etherscanSub', domains[nID] || '')
     localStorage.setItem('networkName', names[nID])
 
-    GenericBinaryVoting.setNetwork(nID)
-    GenericBinaryVoting.link('BytesHelper', (_BytesHelper.networks[nID] || _BytesHelper.networks[15] || { address: '0x0' }).address)
-
     console.log('EthereumNode: ready')
     return nodeReady && collectionsReady
   }
