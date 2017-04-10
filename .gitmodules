@@ -1,11 +1,11 @@
 [submodule "imports/lib/contracts"]
 	path = imports/lib/contracts
-	url = ../../providentai/cosa-contracts.git
+	url = https://github.com/AragonOne/aragon-core.git
 	branch = master
 [submodule ".electron"]
 	path = .electron
-	url = ../../providentai/aragon-wrapper.git
+	url = https://github.com/AragonOne/aragon-native-wrapper.git
 	branch = master
 [submodule ".metamask"]
 	path = .metamask
-	url = http://github.com/AragonOne/metamask-plugin.git
+	url = https://github.com/AragonOne/metamask-plugin.git
