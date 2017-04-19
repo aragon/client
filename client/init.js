@@ -47,7 +47,7 @@ const clearStorage = () => {
 const load = async () => {
   Meteor.disconnect()
 
-  if (localStorage.getItem('currentRelease') !== release.version) {
+  if (localStorage.getItem('currentRelease') !== release.version && localStorage.length > 0) {
     alert("We will reset your storage in order to upgrade your Aragon version.")
     localStorage.clear()
     localStorage.setItem('currentRelease', release.version)
