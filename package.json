@@ -26,6 +26,7 @@
     "pack:win": "electron-packager .electron $npm_package_productName --out=.electron/dist --platform=win32 --arch=x64 --icon=.electron/icons/Aragon.ico; npm run pack:win:copy",
     "pack": "npm run pack:osx; npm run pack:linux64; npm run pack:win",
     "release": "npm run dist; npm run pack",
+    "binaries": "npm run release", 
     "deploy": "ipfs add -rq .dist | tail -n 1 | ipfs name publish",
     "deploy-contracts": "cd imports/lib/contracts; touch contracts/factories/CompanyFactory.sol; truffle migrate --reset --network kovan; truffle migrate --reset --network ropsten"
   },

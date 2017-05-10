@@ -89,7 +89,7 @@ class Dispatcher {
 
   async deployContract(contract, ...args) {
     const params = this.transactionParams
-    params.data = contract.binary
+    params.data = contract.binary.replace("__BytesHelper___________________________", "e011f6bd6d81b363aed8d88c04517eb16fa6224f")
 
     const txID = await promisedDeploy(web3.eth.contract(contract.abi), args.concat([params]))
     await this.addPendingTransaction(txID)

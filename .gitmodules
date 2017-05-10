@@ -1,7 +1,7 @@
 [submodule "imports/lib/contracts"]
 	path = imports/lib/contracts
 	url = https://github.com/AragonOne/aragon-core.git
-	branch = master
+	branch = monolith
 [submodule ".electron"]
 	path = .electron
 	url = https://github.com/AragonOne/aragon-native-wrapper.git
