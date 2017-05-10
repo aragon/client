@@ -6,4 +6,6 @@
 
 <img src="https://github.com/aragonone/issues/blob/master/logo.png" width="75%"/>
 
-_Please note that the code is still undocumented, and no contribution guidelines have been provided yet. Contributions are very welcome, just beware of the dragons_
+_Note 1: Please note that the code is still undocumented, and no contribution guidelines have been provided yet. Contributions are very welcome, just beware of the dragons_
+
+_Note 2: We will be refactoring the dapp not to use Meteor during the following months, so very crucial frontend architecture changes are to be expected_
