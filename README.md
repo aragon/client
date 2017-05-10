@@ -6,4 +6,4 @@
 
 <img src="https://github.com/aragonone/issues/blob/master/logo.png" width="75%"/>
 
-_Please note that the code is still undocumented, and no contribution guidelines have been provided yet_
+_Please note that the code is still undocumented, and no contribution guidelines have been provided yet. Contributions are very welcome, just beware of the dragons_
