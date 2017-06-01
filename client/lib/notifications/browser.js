@@ -5,7 +5,9 @@ const Notify = notify.default
 
 class BrowserNotifications {
   static requestPermission(cb?: Function) {
-    Notify.requestPermission(cb)
+    if (Notify.isSupported()) {
+      Notify.requestPermission(cb)
+    }
   }
 
   static showNotification(title: string, body: string, notifyClick?: Function, notifyClose?: void) {
