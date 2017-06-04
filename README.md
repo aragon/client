@@ -6,11 +6,11 @@
 
 #### 🚨 We will be refactoring the ÐApp to not use Meteor over the next few months, so huge changes in the architecture are expected.
 
-# Installation
+## Installation
 
 You can download the [alpha release here](http://github.com/aragon/releases).
 
-# Contributing
+## Contributing
 
 Please note that all of the code is still undocumented, and no contribution guidelines are in place.
 
