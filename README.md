@@ -1,11 +1,17 @@
-<img src="https://aragon.chat/badge.svg">
+# Aragon ÐApp <img align="right" src="https://github.com/aragonone/issues/blob/master/logo.png" height="80px" />
 
-*Please submit issues in our centralized [issue tracker](http://github.com/aragon/issues/issues)*
+![Slack](https://aragon.chat/badge.svg)
 
-*You can download the [alpha release](http://github.com/aragon/releases)*
+#### 📝 Please submit issues in our centralized [issue tracker](http://github.com/aragon/issues/issues).
 
-<img src="https://github.com/aragonone/issues/blob/master/logo.png" width="75%"/>
+#### 🚨 We will be refactoring the ÐApp to not use Meteor over the next few months, so huge changes in the architecture are expected.
 
-_Note 1: Please note that the code is still undocumented, and no contribution guidelines have been provided yet. Contributions are very welcome, just beware of the dragons_
+# Installation
 
-_Note 2: We will be refactoring the dapp not to use Meteor during the following months, so very crucial frontend architecture changes are to be expected_
+You can download the [alpha release here](http://github.com/aragon/releases).
+
+# Contributing
+
+Please note that all of the code is still undocumented, and no contribution guidelines are in place.
+
+Contributions are welcome, just beware of the dragons. 🐲
