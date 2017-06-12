@@ -10,7 +10,7 @@
 
 ## Installation
 
-You can download the [alpha release here](http://github.com/aragon/releases).
+You can download the [alpha release here](http://github.com/aragon/aragon/releases).
 
 ## Contributing
 
