@@ -27,12 +27,12 @@ export default class Tokens {
     }
   }
 
-  static async getBalance(token, hodler) {
-    return ERC20Wrap.at(token).balanceOf(hodler).then(x => x.toNumber())
+  static async getBalance(token, holder) {
+    return ERC20Wrap.at(token).balanceOf(holder).then(x => x.toNumber())
   }
 
-  static async getTransferableBalance(token, hodler) {
-    return Stock.at(token).transferableTokens(hodler, +new Date()/1000).then(x => x.valueOf())
+  static async getTransferableBalance(token, holder) {
+    return Stock.at(token).transferableTokens(holder, +new Date()/1000).then(x => x.valueOf())
   }
 
   static async wrap(token, wrapper, holder) {
