@@ -10,6 +10,8 @@
 
 ## Installation
 
+> Requires *macOS 10.9* (and later, 64 bit only), *Windows 7* (and later), or *Linux* (Ubuntu 12.04 and later, Fedora 21, Debian 8)
+
 You can download the [alpha release here](http://github.com/aragon/aragon/releases).
 
 ## Contributing
