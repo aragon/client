@@ -20,6 +20,11 @@ const tmpl = Template.Module_Fundraising_New_Individual.extend([ClosableSection]
 tmpl.onRendered(function () {
   TemplateVar.set('selectedStock', -1)
 
+  const today = moment().format('YYYY-MM-DD')
+  this.$('input[type=date]').attr({
+    min: today
+  })
+
   this.$('.form').form({
     onSuccess: async (e) => {
       e.preventDefault()
