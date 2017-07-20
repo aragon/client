@@ -5,9 +5,10 @@
   },
   "preBuildCommands": [
     "sudo apt-get update && sudo apt-get install -y build-essential python",
-    "npm install --global node-gyp",
+    "npm install --global node-gyp yarn",
     "npm install --only dev",
-    "npm install"
+    "npm install",
+    "yarn check --integrity"
   ],
   "postBuildCommands": [],
   "buildOptions": {
