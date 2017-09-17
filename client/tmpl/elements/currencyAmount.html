@@ -1,8 +1,0 @@
-<template name="Element_CurrencyAmount">
-  <div class="Element_CurrencyAmount">
-    <input name="{{ name }}" min="{{ min }}" step="{{ step }}" placeholder="{{ placeholder }} ({{ Settings.get 'displayCurrency' }})" lang="en" type="number">
-    {{ #unless $eq (Settings.get 'displayCurrency') 'ETH' }}
-    <span>= {{ ether (TemplateVar.get 'amountWei' ) }} ETH</span>
-    {{ /unless }}
-  </div>
-</template>
