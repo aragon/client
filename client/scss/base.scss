@@ -1,0 +1,140 @@
+$font-family-sans-serif: 'Maison Neue';
+@import "node_modules/bootstrap/scss/bootstrap.scss";
+@import "_fonts.scss";
+
+html, body
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+body
+  background-color: #f9fcfd;
+
+.full-height
+  height: 100%;
+
+.navbar
+  height: 64px;
+  margin-left: -15px;
+  margin-right: -15px;
+  box-shadow: 0 1px 0 0 #e8e8e8;
+
+  &.aragon-navbar
+    padding-left: 20px;
+
+  img
+    height: 40px;
+    width: auto;
+
+.left-panel
+  box-shadow: 1px 0 15px 0 #e8e8e8;
+  background-color: #fff;
+
+  .app-label
+    display: block;
+    margin-left: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 11px;
+
+  .navbar
+    margin-bottom: 23px;
+
+.right-panel
+  padding-left: 30px;
+  box-shadow: 0 -1px 0 0 #e8e8e8;
+  background-color: transparent;
+
+  > .row
+    // padding-top: 64px;
+
+  .app-navbar
+    box-shadow: 0 1px 0 0 #e8e8e8, inset 15px 0 15px -15px #e5e5e5;
+    margin-left: -30px;
+    padding-left: 30px;
+
+  .bottom-bar
+    height: 54px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -1px 0 0 #e8e8e8, inset 15px 0 15px -15px #e5e5e5;
+    margin-left: -30px;
+    padding-left: 30px;
+
+    .navbar-text
+      span
+        &:not(:first-child)
+          margin-left: 40px;
+
+.scrollable
+  overflow-y: auto;
+
+.app-panel
+  padding-top: 40px;
+  padding-right: 30px;
+  padding-bottom: 154px;
+
+  > .row
+    margin-top: 30px;
+
+.action-panel
+  background-color: #edf4f6;
+  padding-top: 40px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 100px;
+
+.main-heading
+  font-size: 0.85rem;
+
+.action-heading
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #d1d1d1;
+
+.card
+  padding: 66px 0 62px 0;
+  border-radius: 3px;
+
+  background-color: #ffffff;
+  border: solid 1px rgba(209, 209, 209, 0.5);
+
+  &:hover, &:focus
+    background-color: #feffff;
+    box-shadow: 0 9px 10px 0 rgba(101, 148, 170, 0.1);
+    border: solid 1px rgba(209, 209, 209, 0.5);
+
+  .card-body
+    h1, h2, h3, h4, h5, h6
+      &:last-child
+        margin-bottom: 0;
+
+  img
+    width: 60px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+
+.nav-link
+  color: #000;
+  &.active
+    font-weight: bold;
+
+.table
+  thead
+    th
+      border-top: 0;
+      border-bottom: 0;
+      padding-top: 0.25em;
+      padding-bottom: 0.25em;
+      color: #6c777b;
+      text-transform: uppercase;
+      font-size: 0.7em;
+      font-weight: normal;
+
+  tbody
+    border: solid 1px rgba(209, 209, 209, 0.5);
+
+    th, td
+      background: #fff;
