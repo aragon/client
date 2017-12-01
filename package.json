@@ -1,0 +1,44 @@
+{
+  "name": "aragon",
+  "description": "Aragon DApp",
+  "version": "0.5.0",
+  "private": true,
+  "license": "GPLv3",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/aragon/aragon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aragon/aragon/issues"
+  },
+  "homepage": "https://github.com/aragon/aragon#readme",
+  "keywords": [
+    "aragon",
+    "ethereum",
+    "dapp",
+    "blockchain",
+    "startups"
+  ],
+  "author": "Aragon Institution MTU <contact@aragon.one>",
+  "contributors": [
+    "Jorge Izquierdo <jorge@aragon.one>",
+    "Harsh Vakharia <harsh@aragon.one>"
+  ],
+  "dependencies": {
+    "@aragon/ui": "^0.3.0",
+    "date-fns": "^1.29.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-motion": "^0.5.2"
+  },
+  "devDependencies": {
+    "react-scripts": "1.0.17"
+  },
+  "scripts": {
+    "update-assets": "rm -r public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
+    "start": "npm run update-assets && react-scripts start",
+    "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build",
+    "test": "npm run update-assets && react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
