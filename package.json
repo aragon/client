@@ -35,7 +35,7 @@
     "react-scripts": "1.0.17"
   },
   "scripts": {
-    "update-assets": "rm -r public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
+    "update-assets": "rm -rf public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
     "start": "npm run update-assets && react-scripts start",
     "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build",
     "test": "npm run update-assets && react-scripts test --env=jsdom",
