@@ -32,13 +32,26 @@
     "react-motion": "^0.5.2"
   },
   "devDependencies": {
+    "babel-eslint": "^8.0.3",
+    "eslint": "^4.12.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-config-standard-react": "^5.0.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-prettier": "^2.3.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-standard": "^3.0.1",
+    "prettier": "^1.8.2",
     "react-scripts": "1.0.17"
   },
   "scripts": {
     "update-assets": "rm -rf public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
+    "lint": "eslint ./src",
     "start": "npm run update-assets && react-scripts start",
     "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build",
-    "test": "npm run update-assets && react-scripts test --env=jsdom",
+    "test": "npm run lint",
     "eject": "react-scripts eject"
   }
 }
