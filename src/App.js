@@ -1,7 +1,7 @@
 import React from 'react'
 import { AragonApp } from '@aragon/ui'
 import MenuPanel from './components/MenuPanel/MenuPanel'
-import { notifications } from './demo-state'
+import { apps, notifications } from './demo-state'
 
 class App extends React.Component {
   state = {
@@ -18,7 +18,7 @@ class App extends React.Component {
     const { notifications } = this.state
     return (
       <AragonApp publicUrl="/aragon-ui/">
-        <MenuPanel notifications={notifications} />
+        <MenuPanel apps={apps} notifications={notifications} />
       </AragonApp>
     )
   }

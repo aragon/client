@@ -7,7 +7,8 @@ class MenuPanelItem extends React.Component {
     this.props.onActivate(this.props.id)
   }
   render() {
-    const { active, icon, name } = this.props
+    const { id, icon, name, active } = this.props
+    const image = icon || <img src={`/apps-icons/${id}.svg`} alt="" />
     return (
       <Main onClick={this.handleClick} active={active}>
         <Motion
@@ -23,7 +24,7 @@ class MenuPanelItem extends React.Component {
             />
           )}
         </Motion>
-        <span className="icon">{icon}</span>
+        <span className="icon">{image}</span>
         <span className="name">{name}</span>
       </Main>
     )
@@ -43,6 +44,8 @@ const Main = styled.a.attrs({ role: 'button', tabIndex: '0' })`
   }
   .icon {
     display: flex;
+    width: 22px;
+    height: 22px;
     margin-right: 15px;
     color: ${({ active }) =>
       active ? theme.textPrimary : theme.textSecondary};

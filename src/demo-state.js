@@ -50,3 +50,21 @@ export const notifications = [
     unread: false,
   },
 ]
+
+export const apps = [
+  {
+    id: 'tokens',
+    name: 'Tokens',
+    instances: [{ name: 'ANT' }, { name: 'TOKEN' }],
+  },
+  { id: 'voting', name: 'Voting', instances: [{ name: 'ANT' }] },
+  {
+    id: 'groups',
+    name: 'Groups',
+    instances: [{ name: 'Core Devs' }, { name: 'Community Devs' }],
+  },
+  { id: 'finance', name: 'Finance' },
+  { id: 'fundraising', name: 'Fundraising', instances: [{ name: 'ANT' }] },
+  { id: 'permissions', name: 'Permissions' },
+  { id: 'identity', name: 'Identity' },
+]

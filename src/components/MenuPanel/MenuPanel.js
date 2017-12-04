@@ -6,13 +6,6 @@ import {
   unselectable,
   spring as springConf,
   IconHome,
-  IconTokens,
-  IconVoting,
-  IconGroups,
-  IconFinance,
-  IconFundraising,
-  IconPermissions,
-  IconIdentity,
   IconSettings,
   IconWallet,
   IconNotifications,
@@ -23,17 +16,8 @@ import MenuPanelItem from './MenuPanelItem'
 
 import logo from './assets/logo.svg'
 
-const items = [
-  { id: 'home', name: 'Home', icon: <IconHome /> },
-  { id: 'tokens', name: 'Tokens', icon: <IconTokens /> },
-  { id: 'voting', name: 'Voting', icon: <IconVoting /> },
-  { id: 'groups', name: 'Groups', icon: <IconGroups /> },
-  { id: 'finance', name: 'Finance', icon: <IconFinance /> },
-  { id: 'fundraising', name: 'Fundraising', icon: <IconFundraising /> },
-  { id: 'permissions', name: 'Permissions', icon: <IconPermissions /> },
-  { id: 'identity', name: 'Identity', icon: <IconIdentity /> },
-  { id: 'settings', name: 'Settings', icon: <IconSettings /> },
-]
+const appHome = { id: 'home', name: 'Home', icon: <IconHome /> }
+const appSettings = { id: 'settings', name: 'Settings', icon: <IconSettings /> }
 
 class MenuPanel extends React.Component {
   state = {
@@ -49,8 +33,9 @@ class MenuPanel extends React.Component {
     this.setState({ activeItem: id })
   }
   render() {
-    const { notifications } = this.props
+    const { apps, notifications } = this.props
     const { notificationsOpened, activeItem } = this.state
+    const menuApps = [appHome, ...apps, appSettings]
     return (
       <Main>
         <In>
@@ -73,13 +58,14 @@ class MenuPanel extends React.Component {
             <div className="in">
               <h1>Apps</h1>
               <ul>
-                {items.map(({ id, name, icon }) => (
+                {menuApps.map(({ id, name, icon, instances=[] }) => (
                   <li key={id}>
                     <MenuPanelItem
                       id={id}
                       name={name}
                       icon={icon}
                       active={id === activeItem}
+                      instances={instances}
                       onActivate={this.handleActivateItem}
                     />
                   </li>
