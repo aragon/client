@@ -26,6 +26,8 @@
   "dependencies": {
     "@aragon/ui": "^0.3.0",
     "date-fns": "^1.29.0",
+    "history": "^4.7.2",
+    "onecolor": "^3.0.5",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-motion": "^0.5.2"

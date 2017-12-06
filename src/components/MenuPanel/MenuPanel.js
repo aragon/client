@@ -12,7 +12,7 @@ import {
 } from '@aragon/ui'
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
 import { lerp } from '../../math-utils'
-import MenuPanelItem from './MenuPanelItem'
+import MenuPanelAppGroup from './MenuPanelAppGroup'
 
 import logo from './assets/logo.svg'
 
@@ -22,19 +22,22 @@ const appSettings = { id: 'settings', name: 'Settings', icon: <IconSettings /> }
 class MenuPanel extends React.Component {
   state = {
     notificationsOpened: false,
-    activeItem: 'home',
   }
   handleNotificationsClick = () => {
     this.setState({
       notificationsOpened: !this.state.notificationsOpened,
     })
   }
-  handleActivateItem = id => {
-    this.setState({ activeItem: id })
+  handleActivateItem = (app, instance) => {
+    const { onPathChange } = this.props
+    if (app === 'home') {
+      return onPathChange('/')
+    }
+    onPathChange(`/${app}${instance ? `/${instance}` : ''}`)
   }
   render() {
-    const { apps, notifications } = this.props
-    const { notificationsOpened, activeItem } = this.state
+    const { apps, notifications, activeApp, activeInstance } = this.props
+    const { notificationsOpened } = this.state
     const menuApps = [appHome, ...apps, appSettings]
     return (
       <Main>
@@ -58,14 +61,15 @@ class MenuPanel extends React.Component {
             <div className="in">
               <h1>Apps</h1>
               <ul>
-                {menuApps.map(({ id, name, icon, instances=[] }) => (
+                {menuApps.map(({ id, name, icon, instances = [] }) => (
                   <li key={id}>
-                    <MenuPanelItem
-                      id={id}
+                    <MenuPanelAppGroup
                       name={name}
                       icon={icon}
-                      active={id === activeItem}
+                      appId={id}
+                      active={id === activeApp}
                       instances={instances}
+                      activeInstance={activeInstance}
                       onActivate={this.handleActivateItem}
                     />
                   </li>
@@ -155,10 +159,10 @@ const Content = styled.nav`
   overflow-y: auto;
   height: 100%;
   .in {
-    padding: 10px 30px 10px;
+    padding: 10px 0 10px;
   }
   h1 {
-    margin: 10px 0;
+    margin: 10px 30px;
     color: ${theme.textSecondary};
     text-transform: lowercase;
     font-variant: small-caps;
@@ -170,7 +174,6 @@ const Content = styled.nav`
   li {
     display: flex;
     align-items: center;
-    height: 40px;
   }
 `
 

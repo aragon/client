@@ -55,16 +55,23 @@ export const apps = [
   {
     id: 'tokens',
     name: 'Tokens',
-    instances: [{ name: 'ANT' }, { name: 'TOKEN' }],
+    instances: [{ id: 'ant', name: 'ANT' }, { id: 'token', name: 'TOKEN' }],
   },
-  { id: 'voting', name: 'Voting', instances: [{ name: 'ANT' }] },
+  { id: 'voting', name: 'Voting', instances: [{ id: 'ant', name: 'ANT' }] },
   {
     id: 'groups',
     name: 'Groups',
-    instances: [{ name: 'Core Devs' }, { name: 'Community Devs' }],
+    instances: [
+      { id: 'core', name: 'Core Devs' },
+      { id: 'community', name: 'Community Devs' },
+    ],
   },
   { id: 'finance', name: 'Finance' },
-  { id: 'fundraising', name: 'Fundraising', instances: [{ name: 'ANT' }] },
+  {
+    id: 'fundraising',
+    name: 'Fundraising',
+    instances: [{ id: 'ant', name: 'ANT' }],
+  },
   { id: 'permissions', name: 'Permissions' },
   { id: 'identity', name: 'Identity' },
 ]
