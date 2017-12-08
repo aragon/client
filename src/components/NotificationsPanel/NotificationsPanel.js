@@ -66,9 +66,6 @@ const ActionLink = styled.a`
 const Content = styled.nav`
   overflow-y: auto;
   height: 100%;
-  ul {
-    list-style: none;
-  }
 `
 
 export default NotificationsPanel
