@@ -2,7 +2,7 @@ import React from 'react'
 import { styled, theme, font } from '@aragon/ui'
 import { distanceInWordsStrict, format } from 'date-fns'
 
-const NotificationItem = ({ title, description, date, unread = false }) => (
+const NotificationItem = ({ title, description, date, unread }) => (
   <Main>
     {unread && <Unread />}
     <Header>
@@ -14,6 +14,10 @@ const NotificationItem = ({ title, description, date, unread = false }) => (
     <p>{description}</p>
   </Main>
 )
+
+NotificationItem.defaultProps = {
+  unread: false,
+}
 
 const Main = styled.div`
   position: relative;
