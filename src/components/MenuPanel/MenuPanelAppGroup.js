@@ -5,6 +5,9 @@ import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
 class MenuPanelAppGroup extends React.Component {
+  static defaultProps = {
+    instances: [],
+  }
   handleAppClick = () => {
     if (this.props.active) return
     const firstInstance = this.props.instances[0]
@@ -17,14 +20,7 @@ class MenuPanelAppGroup extends React.Component {
     this.props.onActivate(this.props.appId, instanceId)
   }
   render() {
-    const {
-      appId,
-      icon,
-      name,
-      instances = [],
-      active,
-      activeInstance,
-    } = this.props
+    const { appId, icon, name, instances, active, activeInstance } = this.props
     const image = icon || <img src={`/apps-icons/${appId}.svg`} alt="" />
     return (
       <Motion
