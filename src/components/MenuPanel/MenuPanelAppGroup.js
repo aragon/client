@@ -100,9 +100,6 @@ const Main = styled.div`
     color: ${({ active }) =>
       active ? theme.textPrimary : theme.textSecondary};
   }
-  &:hover .icon {
-    color: ${theme.textPrimary};
-  }
   .instances {
     overflow: hidden;
   }
