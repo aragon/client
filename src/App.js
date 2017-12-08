@@ -1,6 +1,6 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
-import { AragonApp } from '@aragon/ui'
+import { styled, AragonApp } from '@aragon/ui'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import { apps, notifications } from './demo-state'
 
@@ -45,16 +45,32 @@ class App extends React.Component {
     const { app, instance } = this.appInstance()
     return (
       <AragonApp publicUrl="/aragon-ui/">
-        <MenuPanel
-          apps={apps}
-          activeApp={app}
-          activeInstance={instance}
-          notifications={notifications}
-          onPathChange={this.handlePathChange}
-        />
+        <Main>
+          <MenuPanel
+            apps={apps}
+            activeApp={app}
+            activeInstance={instance}
+            notifications={notifications}
+            onPathChange={this.handlePathChange}
+          />
+          <AppScreen />
+        </Main>
       </AragonApp>
     )
   }
 }
+
+const Main = styled.div`
+  display: flex;
+  align-items: stretch;
+  height: 100vh;
+`
+
+const AppScreen = styled.div`
+  flex-grow: 1;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+`
 
 export default App

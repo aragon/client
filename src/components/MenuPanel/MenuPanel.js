@@ -104,7 +104,7 @@ class MenuPanel extends React.Component {
 }
 
 const Main = styled.div`
-  position: fixed;
+  flex-shrink: 0;
   top: 0;
   bottom: 0;
   width: 220px;
