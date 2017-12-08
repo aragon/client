@@ -80,6 +80,9 @@ const Main = styled.div`
   width: 100%;
   padding: 0 10px 0 30px;
 
+  a[role=button] {
+    outline: 0;
+  }
   .item {
     display: flex;
     align-items: center;
