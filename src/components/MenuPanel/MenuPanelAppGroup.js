@@ -80,7 +80,7 @@ const Main = styled.div`
   width: 100%;
   padding: 0 10px 0 30px;
 
-  a[role=button] {
+  a[role='button'] {
     outline: 0;
   }
   .item {
