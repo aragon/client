@@ -7,7 +7,7 @@ const NotificationsPanel = ({ notifications = [] }) => (
     <Header>
       <Title>
         <span>Notifications</span>
-        <BadgeNumber number={4} />
+        <BadgeNumber number={4} title={`${4} unread messages`} />
       </Title>
       <ActionLink>Clear all</ActionLink>
     </Header>
