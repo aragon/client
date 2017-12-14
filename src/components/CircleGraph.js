@@ -13,10 +13,10 @@ const CircleGraph = ({ value, label, size }) => {
   const radius = (size - BORDER_WIDTH) / 2
   return (
     <Motion
-      defaultStyle={{ value: 0 }}
-      style={{ value: spring(value, springConf('slow')) }}
+      defaultStyle={{ progressValue: 0 }}
+      style={{ progressValue: spring(value, springConf('slow')) }}
     >
-      {({ value }) => (
+      {({ progressValue }) => (
         <svg
           width={size}
           height={size}
@@ -30,12 +30,12 @@ const CircleGraph = ({ value, label, size }) => {
             r={radius}
             style={{
               strokeDasharray: length,
-              strokeDashoffset: length - length * value / 2,
+              strokeDashoffset: length - length * progressValue / 2,
               strokeWidth: BORDER_WIDTH,
             }}
           />
           <Label x="50%" y="50%">
-            {label(value)}
+            {label(Math.min(value, Math.max(0, progressValue)))}
           </Label>
         </svg>
       )}
