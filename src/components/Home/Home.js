@@ -42,7 +42,9 @@ class Home extends React.Component {
   render() {
     return (
       <Main>
-        <AppBar title="Welcome!" />
+        <AppBarWrapper>
+          <AppBar title="Welcome!" />
+        </AppBarWrapper>
         <ScrollWrapper>
           <AppWrapper>
             <Content>
@@ -84,6 +86,10 @@ const Main = styled.div`
   justify-content: stretch;
 `
 
+const AppBarWrapper = styled.div`
+  flex-shrink: 0;
+`
+
 const ScrollWrapper = styled.div`
   overflow: auto;
   flex-grow: 2;
@@ -91,14 +97,15 @@ const ScrollWrapper = styled.div`
 
 const AppWrapper = styled.div`
   min-height: 100%;
-  display: flex;
   flex-grow: 2;
+  display: flex;
   align-items: stretch;
   justify-content: space-between;
 `
 
 const AppFooter = styled.div`
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   height: 54px;
   background: ${theme.contentBackground};
