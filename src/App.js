@@ -54,9 +54,7 @@ class App extends React.Component {
             notifications={notifications}
             onPathChange={this.handlePathChange}
           />
-          <AppScreen>
-            {app === 'home' && <Home />}
-          </AppScreen>
+          <AppScreen>{app === 'home' && <Home />}</AppScreen>
         </Main>
       </AragonApp>
     )
