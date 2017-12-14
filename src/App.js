@@ -1,6 +1,7 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
 import { styled, AragonApp } from '@aragon/ui'
+import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import { apps, notifications } from './demo-state'
 
@@ -53,7 +54,9 @@ class App extends React.Component {
             notifications={notifications}
             onPathChange={this.handlePathChange}
           />
-          <AppScreen />
+          <AppScreen>
+            {app === 'home' && <Home />}
+          </AppScreen>
         </Main>
       </AragonApp>
     )
