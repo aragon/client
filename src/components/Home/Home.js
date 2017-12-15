@@ -13,10 +13,10 @@ import imgVote from './assets/vote.svg'
 
 const LARGE_WIDTH = 1300
 
-const CARD_SETTINGS = {
-  small: { margin: 20, width: 160, height: 180 },
-  large: { margin: 30, width: 220, height: 220 },
-}
+const CARD_HEIGHT = 220
+const CARD_WIDTH_MIN = 190
+const CARD_WIDTH_MAX = 220
+const CARD_MARGIN = 30
 
 // Temporary: the action => icon mapping will be made by apps
 const imgActions = new Map()
@@ -110,6 +110,7 @@ const AppFooter = styled.div`
 `
 
 const Content = styled.div`
+  width: 100%;
   padding: 40px;
 `
 
@@ -121,44 +122,34 @@ const Title = styled.h1`
 const Cards = styled.div`
   display: flex;
   flex-wrap: wrap;
-  min-width: calc(
-    ${CARD_SETTINGS.small.width}px * 3 + ${CARD_SETTINGS.small.margin}px * 3
-  );
-  max-width: calc(
-    ${CARD_SETTINGS.large.width}px * 3 + ${CARD_SETTINGS.small.margin}px * 3
-  );
-  margin-left: -${CARD_SETTINGS.small.margin}px;
+  min-width: calc(${CARD_WIDTH_MIN}px * 2 + ${CARD_MARGIN}px * 2);
+  max-width: calc(${CARD_WIDTH_MAX}px * 2 + ${CARD_MARGIN}px * 2);
+  margin-left: -${CARD_MARGIN}px;
 
   @media (min-width: ${LARGE_WIDTH}px) {
-    min-width: calc(
-      ${CARD_SETTINGS.small.width}px * 3 + ${CARD_SETTINGS.large.margin}px * 3
-    );
-    max-width: calc(
-      ${CARD_SETTINGS.large.width}px * 3 + ${CARD_SETTINGS.large.margin}px * 3
-    );
-    margin-left: -${CARD_SETTINGS.large.margin}px;
+    min-width: calc(${CARD_WIDTH_MIN}px * 3 + ${CARD_MARGIN}px * 3);
+    min-width: calc(100% + ${CARD_MARGIN}px);
   }
 `
 
 const CardWrap = styled.div`
   flex-shrink: 0;
   flex-grow: 0;
-  width: calc(100% / 3 - ${CARD_SETTINGS.small.margin}px);
-  height: ${CARD_SETTINGS.small.height}px;
-  margin-top: ${CARD_SETTINGS.small.margin}px;
-  margin-left: ${CARD_SETTINGS.small.margin}px;
+  width: calc(100% / 2 - ${CARD_MARGIN}px);
+  max-width: ${CARD_WIDTH_MAX}px;
+  height: ${CARD_HEIGHT}px;
+  margin-top: ${CARD_MARGIN}px;
+  margin-left: ${CARD_MARGIN}px;
 
   @media (min-width: ${LARGE_WIDTH}px) {
-    width: calc(100% / 3 - ${CARD_SETTINGS.large.margin}px);
-    height: ${CARD_SETTINGS.large.height}px;
-    margin-top: ${CARD_SETTINGS.large.margin}px;
-    margin-left: ${CARD_SETTINGS.large.margin}px;
+    width: calc(100% / 3 - ${CARD_MARGIN}px);
   }
 `
 
 const Sidebar = styled.aside`
   flex-shrink: 0;
-  width: 364px;
+  flex-grow: 0;
+  width: 360px;
   min-height: 100%;
   padding: 40px 30px;
   background: #edf3f6;
