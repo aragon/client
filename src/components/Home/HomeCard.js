@@ -5,10 +5,17 @@ class HomeCard extends React.Component {
   handleClick = () => {
     this.props.onActivate(this.props.id)
   }
+  noDrag = event => event.preventDefault()
   render() {
     const { title, icon } = this.props
     return (
-      <Main width="auto" height="100%" tabIndex="0" onClick={this.handleClick}>
+      <Main
+        width="auto"
+        height="100%"
+        tabIndex="0"
+        onClick={this.handleClick}
+        onDragStart={this.noDrag}
+      >
         <div>
           <img width="60" height="60" src={icon} alt="" />
           <span>{title}</span>
