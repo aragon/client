@@ -30,14 +30,14 @@ const Main = styled(Card)`
   outline: 0;
   transition: all 100ms ease-in-out;
   border-color: ${colors.Alabaster};
-  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
 
   &:hover {
-    transform: translateY(-0.5px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
   }
   &:active {
-    transform: translateY(0.5px);
+    transform: translateY(1px);
     box-shadow: none;
   }
   div {
