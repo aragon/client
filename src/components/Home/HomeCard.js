@@ -1,8 +1,8 @@
 import React from 'react'
-import { styled, Card, unselectable, theme } from '@aragon/ui'
+import { styled, Card, unselectable, theme, colors } from '@aragon/ui'
 
 const HomeCard = ({ title, icon }) => (
-  <Main title={title} width="auto" height="100%" tabIndex="0">
+  <Main width="auto" height="100%" tabIndex="0">
     <div>
       <img width="60" height="60" src={icon} alt="" />
       <span>{title}</span>
@@ -20,10 +20,17 @@ const Main = styled(Card)`
   cursor: pointer;
   ${unselectable};
   outline: 0;
+  transition: all 100ms ease-in-out;
+  border-color: ${colors.Alabaster};
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15);
 
-  &:active,
-  &:focus {
-    border-color: ${theme.contentBorderActive};
+  &:hover {
+    transform: translateY(-0.5px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+  &:active {
+    transform: translateY(0.5px);
+    box-shadow: none;
   }
   div {
     display: flex;
