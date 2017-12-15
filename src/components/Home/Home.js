@@ -18,28 +18,18 @@ const CARD_SETTINGS = {
   large: { margin: 30, width: 220, height: 220 },
 }
 
-const apps = [
-  ['Transfer Tokens', imgTransferTokens],
-  ['Assign Tokens', imgAssignTokens],
-  ['Vote', imgVote],
-  ['View Groups', imgGroups],
-  ['Check Finance', imgFinance],
-  ['New Payment', imgPayment],
-]
-
-const tokens = [
-  { symbol: 'XVT', name: 'Voting Token', amount: '100097995', value: 70 },
-  { symbol: 'LIS', name: 'Lorem Ipsum Token', amount: '10002', value: 30 },
-]
-
-const prices = [
-  { symbol: 'ETH', value: '$302,91', status: 'up' },
-  { symbol: 'ANT', value: '$2.39', status: 'down' },
-  { symbol: 'DNT', value: '$0.35', status: 'down' },
-]
+// Temporary: the action => icon mapping will be made by apps
+const imgActions = new Map()
+imgActions.set('transfer-tokens', imgTransferTokens)
+imgActions.set('assign-tokens', imgAssignTokens)
+imgActions.set('vote', imgVote)
+imgActions.set('view-groups', imgGroups)
+imgActions.set('check-finance', imgFinance)
+imgActions.set('new-payment', imgPayment)
 
 class Home extends React.Component {
   render() {
+    const { tokens, prices, actions, onAction } = this.props
     return (
       <Main>
         <AppBarWrapper>
@@ -50,20 +40,24 @@ class Home extends React.Component {
             <Content>
               <Title>What do you want to do?</Title>
               <Cards>
-                {apps.map(([title, icon]) => (
-                  <CardWrap key={`${title}_${icon}`}>
-                    <HomeCard title={title} icon={icon} />
+                {actions.map(({ id, label }) => (
+                  <CardWrap key={id}>
+                    <HomeCard
+                      id={id}
+                      title={label}
+                      icon={imgActions.get(id)}
+                      onActivate={onAction}
+                    />
                   </CardWrap>
                 ))}
               </Cards>
             </Content>
             <Sidebar>
               <h1>Your tokens</h1>
-
               <ul>
                 {tokens.map(token => (
-                  <li>
-                    <Token key={token.symbol} {...token} />
+                  <li key={token.symbol}>
+                    <Token {...token} />
                   </li>
                 ))}
               </ul>

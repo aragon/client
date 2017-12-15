@@ -1,14 +1,22 @@
 import React from 'react'
 import { styled, Card, unselectable, colors } from '@aragon/ui'
 
-const HomeCard = ({ title, icon }) => (
-  <Main width="auto" height="100%" tabIndex="0">
-    <div>
-      <img width="60" height="60" src={icon} alt="" />
-      <span>{title}</span>
-    </div>
-  </Main>
-)
+class HomeCard extends React.Component {
+  handleClick = () => {
+    this.props.onActivate(this.props.id)
+  }
+  render() {
+    const { title, icon } = this.props
+    return (
+      <Main width="auto" height="100%" tabIndex="0" onClick={this.handleClick}>
+        <div>
+          <img width="60" height="60" src={icon} alt="" />
+          <span>{title}</span>
+        </div>
+      </Main>
+    )
+  }
+}
 
 const Main = styled(Card)`
   display: flex;

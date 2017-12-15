@@ -28,15 +28,14 @@ class MenuPanel extends React.Component {
       notificationsOpened: !this.state.notificationsOpened,
     })
   }
-  handleActivateItem = (app, instance) => {
-    const { onPathChange } = this.props
-    if (app === 'home') {
-      return onPathChange('/')
-    }
-    onPathChange(`/${app}${instance ? `/${instance}` : ''}`)
-  }
   render() {
-    const { apps, notifications, activeApp, activeInstance } = this.props
+    const {
+      apps,
+      notifications,
+      activeApp,
+      activeInstance,
+      onOpenApp,
+    } = this.props
     const { notificationsOpened } = this.state
     const menuApps = [appHome, ...apps, appSettings]
     return (
@@ -70,7 +69,7 @@ class MenuPanel extends React.Component {
                       active={id === activeApp}
                       instances={instances}
                       activeInstance={activeInstance}
-                      onActivate={this.handleActivateItem}
+                      onActivate={onOpenApp}
                     />
                   </li>
                 ))}

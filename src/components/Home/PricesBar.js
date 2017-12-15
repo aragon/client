@@ -17,7 +17,7 @@ const statusImg = status => {
 const PricesBar = ({ prices }) => (
   <Main>
     {prices.map(({ symbol, value, status }) => (
-      <Price>
+      <Price key={symbol}>
         <Symbol>{symbol}</Symbol>
         {statusImg(status)}
         {value}
