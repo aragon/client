@@ -91,13 +91,16 @@ const AppBarWrapper = styled.div`
 `
 
 const ScrollWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
   overflow: auto;
-  flex-grow: 2;
+  flex-grow: 1;
 `
 
 const AppWrapper = styled.div`
-  min-height: 100%;
-  flex-grow: 2;
+  flex-grow: 1;
+  min-height: min-content;
   display: flex;
   align-items: stretch;
   justify-content: space-between;
@@ -113,7 +116,7 @@ const AppFooter = styled.div`
 `
 
 const Content = styled.div`
-  padding: 40px 40px 20px;
+  padding: 40px;
 `
 
 const Title = styled.h1`
