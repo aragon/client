@@ -1,5 +1,5 @@
 import React from 'react'
-import { styled, Card, unselectable, theme, colors } from '@aragon/ui'
+import { styled, Card, unselectable, colors } from '@aragon/ui'
 
 const HomeCard = ({ title, icon }) => (
   <Main width="auto" height="100%" tabIndex="0">
