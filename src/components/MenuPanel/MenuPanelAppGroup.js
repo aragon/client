@@ -37,12 +37,12 @@ class MenuPanelAppGroup extends React.Component {
               }}
             />
 
-            <ActiveBackground style={{ opacity: openProgress }} />
+            <ActiveBackground style={{ opacity: Number(active) }} />
 
             <a
               role="button"
               tabIndex="0"
-              className="item"
+              className={`item ${active ? 'active' : ''}`}
               onClick={this.handleAppClick}
             >
               <span className="icon">{image}</span>
@@ -53,8 +53,8 @@ class MenuPanelAppGroup extends React.Component {
               className="instances"
               style={{
                 display: instances.length > 0 ? 'block' : 'none',
-                height: `${(instances.length * 30 + 10) * openProgress}px`,
-                paddingBottom: `${10 * openProgress}px`,
+                height: `${(instances.length * 30 + 5) * openProgress}px`,
+                paddingBottom: `${5 * openProgress}px`,
               }}
             >
               {instances.map(({ id, name }) => (
@@ -78,7 +78,6 @@ class MenuPanelAppGroup extends React.Component {
 const Main = styled.div`
   position: relative;
   width: 100%;
-  padding: 0 10px 0 30px;
 
   a[role='button'] {
     outline: 0;
@@ -88,6 +87,17 @@ const Main = styled.div`
     align-items: center;
     height: 40px;
     cursor: pointer;
+    padding: 0 10px 0 30px;
+    transition: background 150ms ease-in-out;
+    &:active {
+      background: ${color(theme.secondaryBackground)
+        .alpha(0.3)
+        .cssa()};
+    }
+    &.active {
+      transition: none;
+      background: none;
+    }
   }
   .name {
     font-weight: ${({ active }) => (active ? '800' : '400')};
@@ -102,6 +112,7 @@ const Main = styled.div`
   }
   .instances {
     overflow: hidden;
+    padding: 0 10px 0 30px;
   }
   .instances li {
     display: flex;
@@ -124,7 +135,6 @@ const MenuItemBar = styled.div`
   position: absolute;
   width: 4px;
   height: 100%;
-  margin-left: -30px;
   background: ${theme.accent};
 `
 
