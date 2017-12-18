@@ -7,6 +7,7 @@ import {
   spring as springConf,
   IconHome,
   IconSettings,
+  IconPermissions,
   IconWallet,
   IconNotifications,
 } from '@aragon/ui'
@@ -18,6 +19,7 @@ import logo from './assets/logo.svg'
 
 const appHome = { id: 'home', name: 'Home', icon: <IconHome /> }
 const appSettings = { id: 'settings', name: 'Settings', icon: <IconSettings /> }
+const appPermissions = { id: 'permissions', name: 'Permissions', icon: <IconPermissions /> }
 
 class MenuPanel extends React.Component {
   state = {
@@ -37,7 +39,7 @@ class MenuPanel extends React.Component {
       onOpenApp,
     } = this.props
     const { notificationsOpened } = this.state
-    const menuApps = [appHome, ...apps, appSettings]
+    const menuApps = [appHome, ...apps, appPermissions, appSettings]
     return (
       <Main>
         <In>

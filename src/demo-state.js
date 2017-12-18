@@ -80,7 +80,6 @@ export const apps = [
     instances: [{ id: 'ant', name: 'ANT' }],
     src: 'apps/demo',
   },
-  { id: 'permissions', name: 'Permissions' },
   { id: 'identity', name: 'Identity', src: 'apps/demo' },
 ]
 
