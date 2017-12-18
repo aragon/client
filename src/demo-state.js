@@ -75,3 +75,23 @@ export const apps = [
   { id: 'permissions', name: 'Permissions' },
   { id: 'identity', name: 'Identity' },
 ]
+
+export const tokens = [
+  { symbol: 'XVT', name: 'Voting Token', amount: '100097995', value: 70 },
+  { symbol: 'LIS', name: 'Lorem Ipsum Token', amount: '10002', value: 30 },
+]
+
+export const prices = [
+  { symbol: 'ETH', value: '$302,91', status: 'up' },
+  { symbol: 'ANT', value: '$2.39', status: 'down' },
+  { symbol: 'DNT', value: '$0.35', status: 'down' },
+]
+
+export const homeActions = [
+  { id: 'transfer-tokens', label: 'Transfer Tokens', app: 'tokens' },
+  { id: 'assign-tokens', label: 'Assign Tokens', app: 'tokens' },
+  { id: 'vote', label: 'Vote', app: 'voting' },
+  { id: 'view-groups', label: 'View Groups', app: 'groups' },
+  { id: 'check-finance', label: 'Check Finance', app: 'finance' },
+  { id: 'new-payment', label: 'New Payment', app: 'tokens' },
+]

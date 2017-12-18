@@ -1,8 +1,9 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
 import { styled, AragonApp } from '@aragon/ui'
+import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
-import { apps, notifications } from './demo-state'
+import { apps, notifications, tokens, prices, homeActions } from './demo-state'
 
 class App extends React.Component {
   state = {
@@ -26,12 +27,44 @@ class App extends React.Component {
       instance: matches[2],
     }
   }
+  openApp = (appId, instanceId) => {
+    const app = apps.find(app => app.id === appId)
+
+    if (appId === 'home') {
+      this.changePath('/')
+      return
+    }
+
+    if (appId === 'settings') {
+      this.changePath('/settings')
+      return
+    }
+
+    // Get the first instance found if instanceId is not passed
+    const instances = (app && app.instances) || []
+    const instance = instanceId
+      ? instances.find(({ id }) => id === instanceId)
+      : instances[0]
+
+    this.changePath(`/${app.id}${instance ? `/${instance.id}` : ''}`)
+  }
+  changePath = path => {
+    if (path !== this.state.path) {
+      this.history.push(path)
+    }
+  }
   handleNavigation = location => {
     this.setState({ path: location.pathname })
   }
   handlePathChange = path => {
     if (path !== this.state.path) {
       this.history.push(path)
+    }
+  }
+  handleAction = id => {
+    const action = homeActions.find(action => action.id === id)
+    if (action) {
+      this.openApp(action.app)
     }
   }
   openSidePanel = () => {
@@ -51,9 +84,18 @@ class App extends React.Component {
             activeApp={app}
             activeInstance={instance}
             notifications={notifications}
-            onPathChange={this.handlePathChange}
+            onOpenApp={this.openApp}
           />
-          <AppScreen />
+          <AppScreen>
+            {app === 'home' && (
+              <Home
+                tokens={tokens}
+                prices={prices}
+                actions={homeActions}
+                onAction={this.handleAction}
+              />
+            )}
+          </AppScreen>
         </Main>
       </AragonApp>
     )
