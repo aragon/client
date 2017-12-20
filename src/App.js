@@ -20,11 +20,11 @@ class App extends React.Component {
   appInstance() {
     const matches = this.state.path.match(/^\/?([a-z]+)\/?([a-zA-Z0-9]+)?/)
     if (!matches) {
-      return { app: 'home', instance: '' }
+      return { appId: 'home', instanceId: '' }
     }
     return {
-      app: matches[1],
-      instance: matches[2],
+      appId: matches[1],
+      instanceId: matches[2],
     }
   }
   openApp = (appId, instanceId) => {
@@ -64,19 +64,19 @@ class App extends React.Component {
   }
   render() {
     const { notifications } = this.state
-    const { app, instance } = this.appInstance()
+    const { appId, instanceId } = this.appInstance()
     return (
       <AragonApp publicUrl="/aragon-ui/">
         <Main>
           <MenuPanel
             apps={apps}
-            activeApp={app}
-            activeInstance={instance}
+            activeAppId={appId}
+            activeInstanceId={instanceId}
             handleAppNavigation={this.openApp}
             notifications={notifications}
           />
           <AppScreen>
-            {app === 'home' && (
+            {appId === 'home' && (
               <Home
                 tokens={tokens}
                 prices={prices}
