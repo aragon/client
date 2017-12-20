@@ -15,7 +15,7 @@ class App extends React.Component {
     super()
     this.history = createHistory()
     this.state.path = this.history.location.pathname
-    this.history.listen(this.handleNavigation)
+    this.history.listen(this.onNavigate)
   }
   appInstance() {
     const matches = this.state.path.match(/^\/?([a-z]+)\/?([a-zA-Z0-9]+)?/)
@@ -28,8 +28,6 @@ class App extends React.Component {
     }
   }
   openApp = (appId, instanceId) => {
-    const app = apps.find(app => app.id === appId)
-
     if (appId === 'home') {
       this.changePath('/')
       return
@@ -41,31 +39,22 @@ class App extends React.Component {
     }
 
     // Get the first instance found if instanceId is not passed
+    const app = apps.find(app => app.id === appId)
+
     const instances = (app && app.instances) || []
     const instance = instanceId
       ? instances.find(({ id }) => id === instanceId)
       : instances[0]
 
-    this.changePath(`/${app.id}${instance ? `/${instance.id}` : ''}`)
+    this.changePath(`/${appId}${instance ? `/${instance.id}` : ''}`)
   }
   changePath = path => {
     if (path !== this.state.path) {
       this.history.push(path)
     }
   }
-  handleNavigation = location => {
+  onNavigate = location => {
     this.setState({ path: location.pathname })
-  }
-  handlePathChange = path => {
-    if (path !== this.state.path) {
-      this.history.push(path)
-    }
-  }
-  handleAction = id => {
-    const action = homeActions.find(action => action.id === id)
-    if (action) {
-      this.openApp(action.app)
-    }
   }
   openSidePanel = () => {
     this.setState({ sidePanelOpened: true })
@@ -83,8 +72,8 @@ class App extends React.Component {
             apps={apps}
             activeApp={app}
             activeInstance={instance}
+            handleAppNavigation={this.openApp}
             notifications={notifications}
-            onOpenApp={this.openApp}
           />
           <AppScreen>
             {app === 'home' && (
@@ -92,7 +81,7 @@ class App extends React.Component {
                 tokens={tokens}
                 prices={prices}
                 actions={homeActions}
-                onAction={this.handleAction}
+                handleAppNavigation={this.openApp}
               />
             )}
           </AppScreen>
