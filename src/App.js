@@ -2,6 +2,7 @@ import React from 'react'
 import createHistory from 'history/createHashHistory'
 import { styled, AragonApp } from '@aragon/ui'
 import AppIFrame from './components/App/AppIFrame'
+import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import Permissions from './apps/Permissions/Permissions'
@@ -57,6 +58,13 @@ class App extends React.Component {
       params ? encodeURIComponent(JSON.stringify(params)) : null
     )
   }
+  isAppInstalled(appId) {
+    return (
+      appId === 'home' ||
+      appId === 'settings' ||
+      !!apps.find(app => app.id === appId)
+    )
+  }
   openApp = (appId, instanceId, params) => {
     if (appId === 'home') {
       this.changePath('/')
@@ -101,6 +109,7 @@ class App extends React.Component {
             onOpenApp={this.openApp}
           />
           <AppScreen>
+            {!this.isAppInstalled(appId) && <App404 appId={appId} />}
             {appId === 'home' && (
               <Home
                 tokens={tokens}
