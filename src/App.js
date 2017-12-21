@@ -18,7 +18,7 @@ class App extends React.Component {
     this.history.listen(this.handleNavigation)
   }
   appInstance() {
-    const matches = this.state.path.match(/^\/?([a-z]+)\/?([a-zA-Z0-9]+)?/)
+    const matches = this.state.path.match(/^\/?(\w+)\/?(\w+)?/)
     if (!matches) {
       return { app: 'home', instance: '' }
     }
