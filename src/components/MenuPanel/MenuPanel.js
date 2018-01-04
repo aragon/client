@@ -34,7 +34,7 @@ class MenuPanel extends React.Component {
       notifications,
       activeAppId,
       activeInstanceId,
-      handleAppNavigation,
+      onOpenApp,
     } = this.props
     const { notificationsOpened } = this.state
     const menuApps = [appHome, ...apps, appSettings]
@@ -69,7 +69,7 @@ class MenuPanel extends React.Component {
                       active={id === activeAppId}
                       instances={instances}
                       activeInstanceId={activeInstanceId}
-                      onActivate={handleAppNavigation}
+                      onActivate={onOpenApp}
                     />
                   </li>
                 ))}

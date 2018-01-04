@@ -29,10 +29,10 @@ imgActions.set('new-payment', imgPayment)
 
 class Home extends React.Component {
   handleCardAction = actionId => {
-    const { actions, handleAppNavigation } = this.props
+    const { actions, onOpenApp } = this.props
     const action = actions.find(action => action.id === actionId)
     if (action) {
-      handleAppNavigation(action.app)
+      onOpenApp(action.app)
     }
   }
   render() {

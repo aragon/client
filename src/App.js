@@ -15,7 +15,7 @@ class App extends React.Component {
     super()
     this.history = createHistory()
     this.state.path = this.history.location.pathname
-    this.history.listen(this.onNavigate)
+    this.history.listen(this.handleNavigation)
   }
   appInstance() {
     const matches = this.state.path.match(/^\/?([a-z]+)\/?([a-zA-Z0-9]+)?/)
@@ -27,7 +27,7 @@ class App extends React.Component {
       instanceId: matches[2],
     }
   }
-  openApp = (appId, instanceId) => {
+  handleOpenApp = (appId, instanceId) => {
     if (appId === 'home') {
       this.changePath('/')
       return
@@ -53,7 +53,7 @@ class App extends React.Component {
       this.history.push(path)
     }
   }
-  onNavigate = location => {
+  handleNavigation = location => {
     this.setState({ path: location.pathname })
   }
   openSidePanel = () => {
@@ -72,8 +72,8 @@ class App extends React.Component {
             apps={apps}
             activeAppId={appId}
             activeInstanceId={instanceId}
-            handleAppNavigation={this.openApp}
             notifications={notifications}
+            onOpenApp={this.handleOpenApp}
           />
           <AppScreen>
             {appId === 'home' && (
@@ -81,7 +81,7 @@ class App extends React.Component {
                 tokens={tokens}
                 prices={prices}
                 actions={homeActions}
-                handleAppNavigation={this.openApp}
+                onOpenApp={this.handleOpenApp}
               />
             )}
           </AppScreen>
