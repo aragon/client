@@ -27,6 +27,14 @@ class App extends React.Component {
       instanceId: matches[2],
     }
   }
+  changePath = path => {
+    if (path !== this.state.path) {
+      this.history.push(path)
+    }
+  }
+  handleNavigation = location => {
+    this.setState({ path: location.pathname })
+  }
   handleOpenApp = (appId, instanceId) => {
     if (appId === 'home') {
       this.changePath('/')
@@ -47,14 +55,6 @@ class App extends React.Component {
       : instances[0]
 
     this.changePath(`/${appId}${instance ? `/${instance.id}` : ''}`)
-  }
-  changePath = path => {
-    if (path !== this.state.path) {
-      this.history.push(path)
-    }
-  }
-  handleNavigation = location => {
-    this.setState({ path: location.pathname })
   }
   openSidePanel = () => {
     this.setState({ sidePanelOpened: true })
