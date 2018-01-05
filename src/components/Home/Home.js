@@ -28,8 +28,15 @@ imgActions.set('check-finance', imgFinance)
 imgActions.set('new-payment', imgPayment)
 
 class Home extends React.Component {
+  handleCardAction = actionId => {
+    const { actions, onOpenApp } = this.props
+    const action = actions.find(action => action.id === actionId)
+    if (action) {
+      onOpenApp(action.app)
+    }
+  }
   render() {
-    const { tokens, prices, actions, onAction } = this.props
+    const { tokens, prices, actions } = this.props
     return (
       <Main>
         <AppBarWrapper>
@@ -46,7 +53,7 @@ class Home extends React.Component {
                       id={id}
                       title={label}
                       icon={imgActions.get(id)}
-                      onActivate={onAction}
+                      onActivate={this.handleCardAction}
                     />
                   </CardWrap>
                 ))}

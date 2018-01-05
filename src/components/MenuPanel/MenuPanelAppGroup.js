@@ -20,7 +20,14 @@ class MenuPanelAppGroup extends React.Component {
     this.props.onActivate(this.props.appId, instanceId)
   }
   render() {
-    const { appId, icon, name, instances, active, activeInstance } = this.props
+    const {
+      appId,
+      icon,
+      name,
+      instances,
+      active,
+      activeInstanceId,
+    } = this.props
     const image = icon || <img src={`/apps-icons/${appId}.svg`} alt="" />
     return (
       <Motion
@@ -62,7 +69,7 @@ class MenuPanelAppGroup extends React.Component {
                   <MenuPanelInstance
                     id={id}
                     name={name}
-                    active={id === activeInstance}
+                    active={id === activeInstanceId}
                     onClick={this.handleInstanceClick}
                   />
                 </li>

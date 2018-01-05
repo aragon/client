@@ -20,16 +20,22 @@ class App extends React.Component {
   appInstance() {
     const matches = this.state.path.match(/^\/?(\w+)\/?(\w+)?/)
     if (!matches) {
-      return { app: 'home', instance: '' }
+      return { appId: 'home', instanceId: '' }
     }
     return {
-      app: matches[1],
-      instance: matches[2],
+      appId: matches[1],
+      instanceId: matches[2],
     }
   }
-  openApp = (appId, instanceId) => {
-    const app = apps.find(app => app.id === appId)
-
+  changePath = path => {
+    if (path !== this.state.path) {
+      this.history.push(path)
+    }
+  }
+  handleNavigation = location => {
+    this.setState({ path: location.pathname })
+  }
+  handleOpenApp = (appId, instanceId) => {
     if (appId === 'home') {
       this.changePath('/')
       return
@@ -41,31 +47,14 @@ class App extends React.Component {
     }
 
     // Get the first instance found if instanceId is not passed
+    const app = apps.find(app => app.id === appId)
+
     const instances = (app && app.instances) || []
     const instance = instanceId
       ? instances.find(({ id }) => id === instanceId)
       : instances[0]
 
-    this.changePath(`/${app.id}${instance ? `/${instance.id}` : ''}`)
-  }
-  changePath = path => {
-    if (path !== this.state.path) {
-      this.history.push(path)
-    }
-  }
-  handleNavigation = location => {
-    this.setState({ path: location.pathname })
-  }
-  handlePathChange = path => {
-    if (path !== this.state.path) {
-      this.history.push(path)
-    }
-  }
-  handleAction = id => {
-    const action = homeActions.find(action => action.id === id)
-    if (action) {
-      this.openApp(action.app)
-    }
+    this.changePath(`/${appId}${instance ? `/${instance.id}` : ''}`)
   }
   openSidePanel = () => {
     this.setState({ sidePanelOpened: true })
@@ -75,24 +64,24 @@ class App extends React.Component {
   }
   render() {
     const { notifications } = this.state
-    const { app, instance } = this.appInstance()
+    const { appId, instanceId } = this.appInstance()
     return (
       <AragonApp publicUrl="/aragon-ui/">
         <Main>
           <MenuPanel
             apps={apps}
-            activeApp={app}
-            activeInstance={instance}
+            activeAppId={appId}
+            activeInstanceId={instanceId}
             notifications={notifications}
-            onOpenApp={this.openApp}
+            onOpenApp={this.handleOpenApp}
           />
           <AppScreen>
-            {app === 'home' && (
+            {appId === 'home' && (
               <Home
                 tokens={tokens}
                 prices={prices}
                 actions={homeActions}
-                onAction={this.handleAction}
+                onOpenApp={this.handleOpenApp}
               />
             )}
           </AppScreen>
