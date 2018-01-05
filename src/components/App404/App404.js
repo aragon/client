@@ -2,9 +2,9 @@ import React from 'react'
 import { styled } from '@aragon/ui'
 import EmptyAppCard from './EmptyAppCard'
 
-const App404 = ({ appId }) => (
+const App404 = ({ onNavigateBack }) => (
   <Main>
-    <EmptyAppCard appId={appId} />
+    <EmptyAppCard onActivate={onNavigateBack} />
   </Main>
 )
 

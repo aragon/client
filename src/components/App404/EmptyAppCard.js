@@ -1,13 +1,14 @@
 import React from 'react'
-import { styled, Button, EmptyStateCard, IconSettings } from '@aragon/ui'
+import { styled, EmptyStateCard } from '@aragon/ui'
+import notFoundIcon from './assets/not-found.svg'
 
-const EmptyAppCard = ({ appId }) => (
+const EmptyAppCard = ({ onActivate }) => (
   <StyledEmptyStateCard
-    actionButton={StyledAnchorButton}
-    actionText="Contact us"
-    icon={IconSettings}
-    text={`Make sure this organization has properly installed this application.`}
-    title={`"${appId}" is not installed`}
+    actionText="Go back"
+    icon={NotFoundIcon}
+    onActivate={onActivate}
+    text="Are you trying to access an Aragon app that is not installed?"
+    title="Error: unknown app."
   />
 )
 
@@ -16,11 +17,8 @@ const StyledEmptyStateCard = styled(EmptyStateCard)`
   margin-bottom: 15px;
 `
 
-const StyledAnchorButton = styled(Button.Anchor).attrs({
-  href: 'mailto:help@aragon.one',
-})`
-  width: 150px;
-  margin-top: 20px;
-`
+const NotFoundIcon = () => (
+  <img width="60" height="60" src={notFoundIcon} alt="" />
+)
 
 export default EmptyAppCard
