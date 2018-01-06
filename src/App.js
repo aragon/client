@@ -10,6 +10,7 @@ import { apps, notifications, tokens, prices, homeActions } from './demo-state'
 
 class App extends React.Component {
   state = {
+    lastPath: '',
     path: '',
     search: '',
     sidePanelOpened: false,
@@ -50,8 +51,12 @@ class App extends React.Component {
   handleNavigateBack = () => {
     this.history.goBack()
   }
-  handleNavigation = ({ pathname, search }) => {
-    this.setState({ path: pathname, search })
+  handleNavigation = ({ pathname: path, search }) => {
+    this.setState({
+      path,
+      search,
+      lastPath: this.state.path,
+    })
   }
   handleParamsRequest = params => {
     const { appId, instanceId } = this.appInstance()
