@@ -1,5 +1,12 @@
 import React from 'react'
 import { styled } from '@aragon/ui'
+import { clamp, lerp } from '../../math-utils'
+import { noop } from '../../utils'
+import AppLoadingProgressBar from './AppLoadingProgressBar'
+
+const LOADING_START = 25 // Start loading indicator at 25%
+const LOADING_END = 100
+const LOADING_FUDGE_LIMIT = 75 // Limit arbitrary incremental movement of loading incator to 75%
 
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe for details about sandbox
 // `sandbox` works like a whitelist: by default, almost every functionality is restricted.
@@ -32,31 +39,94 @@ const SANDBOX = [
 ].join(' ')
 
 class AppIFrame extends React.Component {
+  state = {
+    loadProgress: 0,
+  }
+  componentWillMount() {
+    if (this.props.src) {
+      this.startProgress()
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.src !== this.props.src) {
+      this.resetProgress(() => {
+        this.setProgressTimeout(this.startProgress, 100)
+      })
+    }
+  }
+  componentWillUnmount() {
+    this.clearProgressTimeout()
+  }
   isHidden = () => {
     const { hidden, src } = this.props
     return !src || hidden
   }
+  setProgressTimeout = (...args) => {
+    this.progressTimer = setTimeout(...args)
+  }
+  clearProgressTimeout = () => {
+    clearTimeout(this.progressTimer)
+  }
+  startProgress = () => {
+    this.setState({ loadProgress: LOADING_START }, () => {
+      this.setProgressTimeout(this.fudgeProgress, 500)
+    })
+  }
+  fudgeProgress = () => {
+    const { loadProgress } = this.state
+    if (loadProgress < LOADING_FUDGE_LIMIT) {
+      const delay = clamp(Math.random() * 1000, 350, 650)
+      // Move progress ahead by 1.5% to 7.5%
+      const moveProgress = clamp(Math.random() / 10, 0.02, 0.1)
+      const nextProgress = lerp(moveProgress, loadProgress, LOADING_END)
+      this.setState({ loadProgress: nextProgress }, () => {
+        this.setProgressTimeout(this.fudgeProgress, delay)
+      })
+    }
+  }
+  endProgress = () => {
+    this.clearProgressTimeout()
+    this.setState({ loadProgress: LOADING_END }, () => {
+      this.setProgressTimeout(this.resetProgress, 1000)
+    })
+  }
+  resetProgress = (cb = noop) => {
+    this.setState({ loadProgress: 0 }, cb)
+  }
+  handleOnLoad = (...args) => {
+    const { onLoad } = this.props
+    this.endProgress()
+    if (typeof onLoad === 'function') {
+      onLoad(...args)
+    }
+  }
   render() {
     const { src, ...props } = this.props
+    const { loadProgress } = this.state
     const show = !this.isHidden()
+    const progressBar = show &&
+      !!loadProgress && <AppLoadingProgressBar percent={loadProgress} />
 
     // Remove onLoad prop as we wrap it with our own
     delete props.onLoad
 
     return (
-      <StyledIFrame
-        frameBorder={0}
-        onLoad={this.handleOnLoad}
-        ref={iframe => {
-          this.iframe = iframe
-        }}
-        sandbox={SANDBOX}
-        style={{
-          display: show ? 'initial' : 'none',
-        }}
-        src={src}
-        {...props}
-      />
+      <React.Fragment>
+        {progressBar}
+        <StyledIFrame
+          frameBorder={0}
+          onLoad={this.handleOnLoad}
+          ref={iframe => {
+            this.iframe = iframe
+          }}
+          sandbox={SANDBOX}
+          style={{
+            display: show ? 'initial' : 'none',
+          }}
+          src={src}
+          {...props}
+        />
+      </React.Fragment>
     )
   }
 }
