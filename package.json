@@ -50,8 +50,9 @@
   "scripts": {
     "update-assets": "rm -rf public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
     "lint": "eslint ./src",
-    "start": "npm run update-assets && react-scripts start",
-    "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build",
+    "start": "npm run update-assets && npm run build:demo && react-scripts start",
+    "build": "npm run update-assets && npm run build:demo && PUBLIC_URL=/ react-scripts build",
+    "build:demo": "webpack --config src/apps/demo/webpack.config.demo.js",
     "test": "npm run lint",
     "eject": "react-scripts eject"
   }
