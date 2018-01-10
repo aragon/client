@@ -171,7 +171,14 @@ export const permissions = {
   ],
 }
 
-export const network = 'rinkeby'
+export const settings = {
+  network: 'rinkeby',
+  networkName: 'Rinkeby testnet',
+  organizationAddress: '0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be',
+  currencies: ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY'],
+  defaultCurrency: 'EUR',
+}
+
 export const actionIntent = {
   description: 'perform a payment to',
   to: '0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be',

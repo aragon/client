@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
+import { Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
-import Permissions from './apps/Permissions/Permissions'
 import { getAppPath } from './routing'
 
 import {
@@ -196,6 +196,10 @@ class Wrapper extends React.Component {
           onParamsRequest={this.handleParamsRequest}
         />
       )
+    }
+
+    if (appId === 'settings') {
+      return <Settings />
     }
 
     const app = wrapper && apps.find(app => app.appId === appId)
