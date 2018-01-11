@@ -1,25 +1,36 @@
 import React from 'react'
-import { Line } from 'rc-progress'
 import ContainerDimensions from 'react-container-dimensions'
-import { styled } from '@aragon/ui'
+import { styled, theme } from '@aragon/ui'
+
+const { accent } = theme
 
 const AppLoadingProgressBar = props => (
   <ContainerDimensions>
-    {({ width }) => <StyledProgressBar width={width} {...props} />}
+    {({ width }) => (
+      <StyledProgressBar width={width} {...props}>
+        <StyledProgressPeg />
+      </StyledProgressBar>
+    )}
   </ContainerDimensions>
 )
 
-const StyledProgressBar = styled(Line).attrs({
-  // Mimic ncprogress
-  height: '2px',
-  strokeColor: '#29d',
-  strokeLinecap: 'square',
-  trailWidth: '0',
-})`
+// Mimic nprogress with our own accent colour
+const StyledProgressBar = styled.div`
   position: fixed;
   top: 0;
-  filter: drop-shadow(0px 0px 5px rgba(44, 154, 219, 0.3))
-    drop-shadow(0px 0px 10px rgba(44, 154, 219, 0.1));
+  height: 2px;
+  width: ${({ percent, width }) => `${width * percent / 100}px;`};
+  background-color: ${accent};
+`
+
+const StyledProgressPeg = styled.div`
+  position: absolute;
+  right: 0;
+  height: 2px;
+  width: 20px;
+  background-color: ${accent};
+  box-shadow: 0 0 10px ${accent}, 0 0 5px ${accent};
+  transform: rotate(10deg) translate(0px, -2px);
 `
 
 export default AppLoadingProgressBar
