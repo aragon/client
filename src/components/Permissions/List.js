@@ -4,7 +4,7 @@ import ListItem from './ListItem'
 import ColumnSection from '../ColumnSection/ColumnSection'
 
 const List = ({ title, items, onClick }) => (
-  <ColumnSection title={title} shiftTitle={true}>
+  <ColumnSection title={title} shiftTitle>
     <StyledList clickable={Boolean(onClick)}>
       {items.map(({ id, label, badge }) => (
         <ListItem
