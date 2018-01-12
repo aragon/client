@@ -116,6 +116,7 @@ class Permissions extends React.Component {
         </AppBarWrapper>
         <ScrollWrapper>
           <AppWrapper>
+            {/* TODO: actions and assigned should should be on a per-app basis */}
             {currentInstance ? (
               <InstancePermissions
                 actions={actions}
