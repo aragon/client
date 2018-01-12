@@ -1,5 +1,6 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
+import throttle from 'lodash.throttle'
 import {
   styled,
   theme,
@@ -7,6 +8,7 @@ import {
   unselectable,
   Text,
 } from '@aragon/ui'
+
 import arrow from './assets/arrow.svg'
 
 class ExpandableBox extends React.Component {
@@ -15,26 +17,30 @@ class ExpandableBox extends React.Component {
     drawerHeight: 0,
   }
   componentDidMount() {
-    this.setState({ drawerHeight: this.getDrawerHeight() })
+    this.updateDrawerHeight()
+    window.addEventListener('resize', this.updateDrawerHeight)
   }
-  getDrawerHeight() {
-    const rect = this.drawerElt.getBoundingClientRect()
-    return rect.height
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDrawerHeight)
   }
-  toggle = () => {
-    // Update the drawer height
-    this.setState({ drawerHeight: this.getDrawerHeight() })
 
-    // Externally controlled
-    const { onRequestToggle } = this.props
-    if (onRequestToggle) {
-      onRequestToggle()
+  // Update the drawer height in the state
+  updateDrawerHeight = throttle(() => {
+    const rect = this.drawerElt.getBoundingClientRect()
+    this.setState({ drawerHeight: rect.height })
+  }, 150)
+
+  toggle = () => {
+    // Externally controlled toggle
+    if (this.props.onRequestToggle) {
+      this.props.onRequestToggle()
       return
     }
 
-    // Self controlled
+    // Self controlled toggle
     this.setState({ selfExpanded: !this.state.selfExpanded })
   }
+
   render() {
     const { title, summary, topFooter, expanded, children } = this.props
     const { selfExpanded, drawerHeight } = this.state
