@@ -22,12 +22,13 @@ class App extends React.Component {
     this.history.listen(this.handleNavigation)
   }
   appInstance() {
-    const matches = this.state.path.match(/^\/?(\w+)\/?(\w+)?/)
+    const { path, search } = this.state
+
+    const matches = path.match(/^\/?(\w+)\/?(\w+)?/)
     if (!matches) {
       return { appId: 'home', instanceId: '' }
     }
 
-    const { search } = this.state
     const params = search && search.split('?params=')[1]
     return {
       appId: matches[1],
