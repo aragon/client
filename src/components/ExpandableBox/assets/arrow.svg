@@ -1,16 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="9px" height="5px" viewBox="0 0 9 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch Beta 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-    <title>Icon_arrow down</title>
-    <desc>Created with Sketch Beta.</desc>
-    <defs></defs>
-    <g id="WebApp-1366px---Permissions-Instance" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-751.000000, -146.000000)">
-        <g id="//Content" transform="translate(252.000000, 14.000000)" fill="#B3B3B3">
-            <g id="Open-a-new-voting" transform="translate(0.000000, 102.000000)">
-                <g id="New-voting">
-                    <polygon id="Icon_arrow-down" transform="translate(503.180000, 32.090000) scale(1, -1) translate(-503.180000, -32.090000) " points="499 30 507.36 30 503.18 34.18"></polygon>
-                </g>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="9" height="5" viewBox="0 0 9 5" xmlns="http://www.w3.org/2000/svg"><title>Icon_arrow down</title><path d="M0 4.18h8.36L4.18 0z" fill="#B3B3B3" fill-rule="evenodd"/></svg>
