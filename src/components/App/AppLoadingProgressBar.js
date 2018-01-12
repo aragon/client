@@ -5,11 +5,11 @@ import { styled, theme, spring as springConf } from '@aragon/ui'
 
 const { accent } = theme
 
-const AppLoadingProgressBar = ({ percent, ...props }) => (
+const AppLoadingProgressBar = ({ hide, percent, ...props }) => (
   <Motion
     defaultStyle={{ opacity: 0, percentProgress: 0 }}
     style={{
-      opacity: spring(1, springConf('fast')),
+      opacity: spring(Number(!hide), springConf('fast')),
       percentProgress: spring(percent, springConf('fast')),
     }}
   >

@@ -40,6 +40,7 @@ const SANDBOX = [
 
 class AppIFrame extends React.Component {
   state = {
+    hideProgressBar: false,
     loadProgress: 0,
   }
   componentWillMount() {
@@ -92,12 +93,14 @@ class AppIFrame extends React.Component {
   endProgress = () => {
     this.clearProgressTimeout()
     this.setState({ loadProgress: LOADING_END }, () => {
-      this.setProgressTimeout(this.resetProgress, 1000)
+      this.setProgressTimeout(() => {
+        this.setState({ hideProgressBar: true })
+      }, 1000)
     })
   }
   resetProgress = (cb = noop) => {
     this.clearProgressTimeout()
-    this.setState({ loadProgress: 0 }, cb)
+    this.setState({ hideProgressBar: false, loadProgress: 0 }, cb)
   }
   handleOnLoad = (...args) => {
     const { onLoad } = this.props
@@ -112,10 +115,11 @@ class AppIFrame extends React.Component {
   }
   render() {
     const { src, ...props } = this.props
-    const { loadProgress } = this.state
+    const { hideProgressBar, loadProgress } = this.state
     const show = !this.isHidden()
-    const progressBar = show &&
-      !!loadProgress && <AppLoadingProgressBar percent={loadProgress} />
+    const progressBar = show && (
+      <AppLoadingProgressBar hide={hideProgressBar} percent={loadProgress} />
+    )
 
     // Remove onLoad prop as we wrap it with our own
     delete props.onLoad
