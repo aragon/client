@@ -3,7 +3,7 @@ import { styled, AppBar, SidePanel, Button, Text } from '@aragon/ui'
 import List from './List'
 import AssignPermission from './AssignPermission'
 import InstancePermissions from './InstancePermissions'
-import Badge from '../Badge/Badge'
+import Badge from '../../components/Badge/Badge'
 import { permissions } from '../../demo-state'
 
 const { entities, actions, assigned } = permissions

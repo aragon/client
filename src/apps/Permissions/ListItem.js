@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled, theme } from '@aragon/ui'
-import Badge from '../Badge/Badge'
+import Badge from '../../components/Badge/Badge'
 
 class ListItem extends React.Component {
   handleClick = () => {

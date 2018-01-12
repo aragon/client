@@ -1,7 +1,7 @@
 import React from 'react'
 import { styled, theme } from '@aragon/ui'
 import ListItem from './ListItem'
-import ColumnSection from '../ColumnSection/ColumnSection'
+import ColumnSection from '../../components/ColumnSection/ColumnSection'
 
 const List = ({ title, items, onClick }) => (
   <ColumnSection title={title} shiftTitle>

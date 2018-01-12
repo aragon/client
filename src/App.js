@@ -4,7 +4,7 @@ import { styled, AragonApp } from '@aragon/ui'
 import AppIFrame from './components/App/AppIFrame'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
-import Permissions from './components/Permissions/Permissions'
+import Permissions from './apps/Permissions/Permissions'
 import { apps, notifications, tokens, prices, homeActions } from './demo-state'
 
 class App extends React.Component {

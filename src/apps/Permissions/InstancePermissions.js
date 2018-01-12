@@ -1,8 +1,8 @@
 import React from 'react'
 import { styled, theme, Text } from '@aragon/ui'
-import ColumnSection from '../ColumnSection/ColumnSection'
-import ExpandableBox from '../ExpandableBox/ExpandableBox'
-import Badge from '../Badge/Badge'
+import ColumnSection from '../../components/ColumnSection/ColumnSection'
+import ExpandableBox from '../../components/ExpandableBox/ExpandableBox'
+import Badge from '../../components/Badge/Badge'
 
 const InstancePermissions = ({
   actions,
