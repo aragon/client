@@ -123,6 +123,10 @@ const SummaryTopArea = styled.div`
   padding: 20px;
   border-bottom: 1px solid
     ${({ opened }) => (opened ? theme.contentBorder : theme.contentBackground)};
+
+  h1 {
+    margin-bottom: 10px;
+  }
 `
 
 const SummaryFooter = styled.div`
