@@ -109,10 +109,6 @@ const ExpandableBoxWrapper = styled.div`
 
 const ActionDetails = styled.div`
   display: flex;
-  h1 {
-    padding-left: ${({ shiftTitle }) => (shiftTitle ? '20px' : '0')};
-    padding-bottom: 5px;
-  }
   section {
     width: 50%;
   }

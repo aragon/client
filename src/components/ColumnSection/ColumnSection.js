@@ -14,7 +14,7 @@ const ColumnSection = ({ title, shiftTitle, children }) => (
 
 const Main = styled.section`
   ${unselectable};
-  h1 {
+  & > h1 {
     padding-left: ${({ shiftTitle }) => (shiftTitle ? '20px' : '0')};
     padding-bottom: 5px;
   }
