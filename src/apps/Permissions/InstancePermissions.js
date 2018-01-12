@@ -59,7 +59,7 @@ const InstancePermissions = ({
             <ExpandableBox
               title={permission.title}
               summary={permission.summary}
-              topFooter={
+              summaryFooter={
                 <RevokeFooter>
                   <p>
                     <em>Revokable by {permission.canRevoke}</em>

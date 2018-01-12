@@ -42,7 +42,7 @@ class ExpandableBox extends React.Component {
   }
 
   render() {
-    const { title, summary, topFooter, expanded, children } = this.props
+    const { title, summary, summaryFooter, expanded, children } = this.props
     const { selfExpanded, drawerHeight } = this.state
     const expandedFinal = expanded === undefined ? selfExpanded : expanded
     return (
@@ -60,7 +60,7 @@ class ExpandableBox extends React.Component {
                 transform: `rotate(${180 * (1 - openProgress)}deg)`,
               }}
             />
-            <Top
+            <Summary
               opened={openProgress > 0.1}
               onClick={this.toggle}
               style={{
@@ -75,15 +75,9 @@ class ExpandableBox extends React.Component {
                 </Text>
               </h1>
               <p>{summary}</p>
-              {topFooter && <div>{topFooter}</div>}
-            </Top>
-            <DrawerWrapper
-              style={
-                {
-                  // height: `${drawerHeight * openProgress}px`,
-                }
-              }
-            >
+              {summaryFooter && <div>{summaryFooter}</div>}
+            </Summary>
+            <DrawerWrapper>
               <Drawer
                 innerRef={elt => (this.drawerElt = elt)}
                 style={{
@@ -114,7 +108,7 @@ const Arrow = styled.img`
   right: 20px;
 `
 
-const Top = styled.div`
+const Summary = styled.div`
   position: relative;
   z-index: 1;
   cursor: pointer;
