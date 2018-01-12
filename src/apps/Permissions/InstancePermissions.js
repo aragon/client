@@ -10,7 +10,7 @@ class InstancePermissions extends React.Component {
     console.log(`Revoke ${permissionId}`)
   }
   render() {
-    const { actions, assigned, instance } = this.props
+    const { actions, assigned } = this.props
     return (
       <Content>
         <ContentColumn>
