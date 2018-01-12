@@ -62,20 +62,21 @@ class ExpandableBox extends React.Component {
             />
             <Summary
               opened={openProgress > 0.1}
-              onClick={this.toggle}
               style={{
                 boxShadow: `
                   0 7px 10px 0 rgba(101, 148, 170, ${0.08 * openProgress})
                 `,
               }}
             >
-              <h1>
-                <Text weight="bold" size="large">
-                  {title}
-                </Text>
-              </h1>
-              <p>{summary}</p>
-              {summaryFooter && <div>{summaryFooter}</div>}
+              <SummaryTopArea onClick={this.toggle}>
+                <h1>
+                  <Text weight="bold" size="large">
+                    {title}
+                  </Text>
+                </h1>
+                <p>{summary}</p>
+              </SummaryTopArea>
+              {summaryFooter && <SummaryFooter>{summaryFooter}</SummaryFooter>}
             </Summary>
             <DrawerWrapper>
               <Drawer
@@ -111,10 +112,21 @@ const Arrow = styled.img`
 const Summary = styled.div`
   position: relative;
   z-index: 1;
-  cursor: pointer;
-  padding: 20px 20px 20px 20px;
   border-bottom: 1px solid
     ${({ opened }) => (opened ? theme.contentBorder : theme.contentBackground)};
+`
+
+const SummaryTopArea = styled.div`
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  padding: 20px;
+  border-bottom: 1px solid
+    ${({ opened }) => (opened ? theme.contentBorder : theme.contentBackground)};
+`
+
+const SummaryFooter = styled.div`
+  padding: 0 20px 20px;
 `
 
 const DrawerWrapper = styled.div`
