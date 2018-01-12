@@ -48,9 +48,14 @@ class AppIFrame extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.src !== this.props.src) {
+    const { src: nextSrc } = nextProps
+    if (nextSrc !== this.props.src) {
       this.resetProgress(() => {
-        this.setProgressTimeout(this.startProgress, 100)
+        // If we're setting src=undefined, don't start the progress bar as we're
+        // not actually loading a page
+        if (nextSrc) {
+          this.setProgressTimeout(this.startProgress, 100)
+        }
       })
     }
   }
@@ -91,13 +96,18 @@ class AppIFrame extends React.Component {
     })
   }
   resetProgress = (cb = noop) => {
+    this.clearProgressTimeout()
     this.setState({ loadProgress: 0 }, cb)
   }
   handleOnLoad = (...args) => {
     const { onLoad } = this.props
-    this.endProgress()
-    if (typeof onLoad === 'function') {
-      onLoad(...args)
+    // As it turns out, setting src=undefined on an iframe also triggers the onLoad handler.
+    // We avoid doing anything in that case as the iframe hasn't really loaded a page.
+    if (this.props.src) {
+      this.endProgress()
+      if (typeof onLoad === 'function') {
+        onLoad(...args)
+      }
     }
   }
   render() {
