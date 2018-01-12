@@ -1,8 +1,8 @@
 import React from 'react'
 import { styled, AppBar, SidePanel, Button, Text } from '@aragon/ui'
-import List from './List'
 import AssignPermission from './AssignPermission'
 import InstancePermissions from './InstancePermissions'
+import PermissionsHome from './PermissionsHome'
 import Badge from '../../components/Badge/Badge'
 import { permissions } from '../../demo-state'
 
@@ -86,24 +86,6 @@ class Permissions extends React.Component {
   handleAppBarTitleClick = () => {
     this.props.onParamsRequest()
   }
-  renderHome() {
-    const { apps } = this.props
-    const appItems = this.getAppItems(apps)
-    return (
-      <Content>
-        <ContentColumn>
-          <List
-            title="Apps"
-            items={appItems}
-            onClick={this.handleInstanceClick}
-          />
-        </ContentColumn>
-        <ContentColumn>
-          <List title="Entities" items={entities} />
-        </ContentColumn>
-      </Content>
-    )
-  }
   render() {
     const { apps } = this.props
     const { currentInstance, assignOpened } = this.state
@@ -141,7 +123,11 @@ class Permissions extends React.Component {
                 instance={currentInstance}
               />
             ) : (
-              this.renderHome()
+              <PermissionsHome
+                appItems={appItems}
+                entities={entities}
+                onInstanceClick={this.handleInstanceClick}
+              />
             )}
           </AppWrapper>
         </ScrollWrapper>
@@ -204,20 +190,6 @@ const AppWrapper = styled.div`
   display: flex;
   align-items: stretch;
   justify-content: space-between;
-`
-
-const Content = styled.div`
-  display: flex;
-  width: 100%;
-  min-width: 600px;
-  padding: 40px;
-`
-
-const ContentColumn = styled.div`
-  width: 50%;
-  & + & {
-    margin-left: 30px;
-  }
 `
 
 export default Permissions
