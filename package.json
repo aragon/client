@@ -29,6 +29,7 @@
     "history": "^4.7.2",
     "onecolor": "^3.0.5",
     "react": "^16.2.0",
+    "react-container-dimensions": "^1.3.3",
     "react-dom": "^16.2.0",
     "react-motion": "^0.5.2"
   },
@@ -50,8 +51,9 @@
   "scripts": {
     "update-assets": "rm -rf public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
     "lint": "eslint ./src",
-    "start": "npm run update-assets && react-scripts start",
-    "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build",
+    "start": "npm run update-assets && npm run build:demo && react-scripts start",
+    "build": "npm run update-assets && npm run build:demo && PUBLIC_URL=/ react-scripts build",
+    "build:demo": "webpack --config src/apps/demo/webpack.config.demo.js",
     "test": "npm run lint",
     "eject": "react-scripts eject"
   }

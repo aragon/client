@@ -1,6 +1,7 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
 import { styled, AragonApp } from '@aragon/ui'
+import AppIFrame from './components/App/AppIFrame'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import { apps, notifications, tokens, prices, homeActions } from './demo-state'
@@ -31,6 +32,10 @@ class App extends React.Component {
     if (path !== this.state.path) {
       this.history.push(path)
     }
+  }
+  getAppSrc(appId) {
+    const app = apps.find(app => app.id === appId)
+    return (app && app.src) || ''
   }
   handleNavigation = location => {
     this.setState({ path: location.pathname })
@@ -84,6 +89,7 @@ class App extends React.Component {
                 onOpenApp={this.handleOpenApp}
               />
             )}
+            <AppIFrame src={this.getAppSrc(appId)} />
           </AppScreen>
         </Main>
       </AragonApp>
