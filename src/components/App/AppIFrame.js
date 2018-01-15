@@ -93,9 +93,7 @@ class AppIFrame extends React.Component {
   endProgress = () => {
     this.clearProgressTimeout()
     this.setState({ loadProgress: LOADING_END }, () => {
-      this.setProgressTimeout(() => {
-        this.setState({ hideProgressBar: true })
-      }, 1000)
+      this.setState({ hideProgressBar: true })
     })
   }
   resetProgress = (cb = noop) => {
