@@ -133,7 +133,7 @@ class AppIFrame extends React.Component {
           }}
           sandbox={SANDBOX}
           style={{
-            display: show ? 'initial' : 'none',
+            display: show ? 'block' : 'none',
           }}
           src={src}
           {...props}
