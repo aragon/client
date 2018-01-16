@@ -19,7 +19,11 @@ import logo from './assets/logo.svg'
 
 const appHome = { id: 'home', name: 'Home', icon: <IconHome /> }
 const appSettings = { id: 'settings', name: 'Settings', icon: <IconSettings /> }
-const appPermissions = { id: 'permissions', name: 'Permissions', icon: <IconPermissions /> }
+const appPermissions = {
+  id: 'permissions',
+  name: 'Permissions',
+  icon: <IconPermissions />,
+}
 
 class MenuPanel extends React.Component {
   state = {
