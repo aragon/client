@@ -49,7 +49,7 @@ class App extends React.Component {
     return (app && app.src) || ''
   }
   handleNavigateBack = () => {
-    this.history.goBack()
+    this.state.lastPath ? this.history.goBack() : this.history.replace('/')
   }
   handleNavigation = ({ pathname: path, search }) => {
     this.setState({
@@ -69,6 +69,7 @@ class App extends React.Component {
   isAppInstalled(appId) {
     return (
       appId === 'home' ||
+      appId === 'permissions' ||
       appId === 'settings' ||
       !!apps.find(app => app.id === appId)
     )
