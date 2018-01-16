@@ -9,7 +9,6 @@ class MenuPanelAppGroup extends React.Component {
     instances: [],
   }
   handleAppClick = () => {
-    if (this.props.active) return
     const firstInstance = this.props.instances[0]
     this.props.onActivate(
       this.props.appId,
@@ -59,7 +58,7 @@ class MenuPanelAppGroup extends React.Component {
             <ul
               className="instances"
               style={{
-                display: instances.length > 0 ? 'block' : 'none',
+                display: instances.length > 1 ? 'block' : 'none',
                 height: `${(instances.length * 30 + 5) * openProgress}px`,
                 paddingBottom: `${5 * openProgress}px`,
               }}
