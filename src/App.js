@@ -2,6 +2,7 @@ import React from 'react'
 import createHistory from 'history/createHashHistory'
 import { styled, AragonApp } from '@aragon/ui'
 import AppIFrame from './components/App/AppIFrame'
+import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import Permissions from './apps/Permissions/Permissions'
@@ -9,6 +10,7 @@ import { apps, notifications, tokens, prices, homeActions } from './demo-state'
 
 class App extends React.Component {
   state = {
+    lastPath: '',
     path: '',
     search: '',
     sidePanelOpened: false,
@@ -46,8 +48,15 @@ class App extends React.Component {
     const app = apps.find(app => app.id === appId)
     return (app && app.src) || ''
   }
-  handleNavigation = ({ pathname, search }) => {
-    this.setState({ path: pathname, search })
+  handleNavigateBack = () => {
+    this.state.lastPath ? this.history.goBack() : this.history.replace('/')
+  }
+  handleNavigation = ({ pathname: path, search }) => {
+    this.setState({
+      path,
+      search,
+      lastPath: this.state.path,
+    })
   }
   handleParamsRequest = params => {
     const { appId, instanceId } = this.appInstance()
@@ -55,6 +64,14 @@ class App extends React.Component {
       appId,
       instanceId,
       params ? encodeURIComponent(JSON.stringify(params)) : null
+    )
+  }
+  isAppInstalled(appId) {
+    return (
+      appId === 'home' ||
+      appId === 'permissions' ||
+      appId === 'settings' ||
+      !!apps.find(app => app.id === appId)
     )
   }
   openApp = (appId, instanceId, params) => {
@@ -101,6 +118,9 @@ class App extends React.Component {
             onOpenApp={this.openApp}
           />
           <AppScreen>
+            {!this.isAppInstalled(appId) && (
+              <App404 onNavigateBack={this.handleNavigateBack} />
+            )}
             {appId === 'home' && (
               <Home
                 tokens={tokens}
