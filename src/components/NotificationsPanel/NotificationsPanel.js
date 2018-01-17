@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, theme, font, BadgeNumber } from '@aragon/ui'
+import styled from 'styled-components'
+import { theme, font, BadgeNumber } from '@aragon/ui'
 import NotificationItem from './NotificationItem'
 
 const NotificationsPanel = ({ notifications = [] }) => (

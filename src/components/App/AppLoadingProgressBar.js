@@ -1,7 +1,8 @@
 import React from 'react'
+import styled from 'styled-components'
 import ContainerDimensions from 'react-container-dimensions'
 import { spring, Motion } from 'react-motion'
-import { styled, theme, spring as springConf } from '@aragon/ui'
+import { theme, spring as springConf } from '@aragon/ui'
 
 const { accent } = theme
 

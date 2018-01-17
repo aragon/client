@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, theme } from '@aragon/ui'
+import styled from 'styled-components'
+import { theme } from '@aragon/ui'
 
 import imgUp from './assets/price-up.svg'
 import imgDown from './assets/price-down.svg'

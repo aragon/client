@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, theme, Text, unselectable } from '@aragon/ui'
+import styled from 'styled-components'
+import { theme, Text, unselectable } from '@aragon/ui'
 
 const ColumnSection = ({ title, shiftTitle, children }) => (
   <Main shiftTitle={shiftTitle}>

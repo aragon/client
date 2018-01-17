@@ -1,6 +1,7 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
-import { styled, theme, spring as springConf } from '@aragon/ui'
+import styled from 'styled-components'
+import { theme, spring as springConf } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 

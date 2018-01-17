@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, theme, AppBar } from '@aragon/ui'
+import styled from 'styled-components'
+import { theme, AppBar } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import Token from './Token'
 import PricesBar from './PricesBar'

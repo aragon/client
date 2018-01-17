@@ -1,5 +1,5 @@
 import React from 'react'
-import { styled } from '@aragon/ui'
+import styled from 'styled-components'
 import { clamp, lerp } from '../../math-utils'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'

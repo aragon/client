@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, Card, unselectable, colors } from '@aragon/ui'
+import styled from 'styled-components'
+import { Card, unselectable, colors } from '@aragon/ui'
 
 class HomeCard extends React.Component {
   handleClick = () => {

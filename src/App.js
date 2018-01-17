@@ -1,6 +1,7 @@
 import React from 'react'
+import styled from 'styled-components'
 import createHistory from 'history/createHashHistory'
-import { styled, AragonApp } from '@aragon/ui'
+import { AragonApp } from '@aragon/ui'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'

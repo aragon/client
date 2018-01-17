@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, AragonApp, EmptyStateCard, IconSettings } from '@aragon/ui'
+import styled from 'styled-components'
+import { AragonApp, EmptyStateCard, IconSettings } from '@aragon/ui'
 
 const App = () => (
   <AragonApp publicUrl="/aragon-ui/">

@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, Button, Field, DropDown } from '@aragon/ui'
+import styled from 'styled-components'
+import { Button, Field, DropDown } from '@aragon/ui'
 
 class AssignPermission extends React.Component {
   state = {

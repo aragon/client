@@ -1,5 +1,5 @@
 import React from 'react'
-import { styled } from '@aragon/ui'
+import styled from 'styled-components'
 
 class MenuPanelInstance extends React.Component {
   handleClick = () => {

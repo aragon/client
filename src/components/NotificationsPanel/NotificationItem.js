@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, theme, font } from '@aragon/ui'
+import styled from 'styled-components'
+import { theme, font } from '@aragon/ui'
 import { distanceInWordsStrict, format } from 'date-fns'
 
 const NotificationItem = ({ title, description, date, unread }) => (
