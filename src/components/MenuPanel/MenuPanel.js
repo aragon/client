@@ -1,7 +1,7 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
+import styled from 'styled-components'
 import {
-  styled,
   theme,
   unselectable,
   spring as springConf,

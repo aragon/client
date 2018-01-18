@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, theme, Text } from '@aragon/ui'
+import styled from 'styled-components'
+import { theme, Text } from '@aragon/ui'
 import ColumnSection from '../../components/ColumnSection/ColumnSection'
 import ExpandableBox from '../../components/ExpandableBox/ExpandableBox'
 import Badge from '../../components/Badge/Badge'

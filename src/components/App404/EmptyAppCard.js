@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, EmptyStateCard } from '@aragon/ui'
+import styled from 'styled-components'
+import { EmptyStateCard } from '@aragon/ui'
 import notFoundIcon from './assets/not-found.svg'
 
 const EmptyAppCard = ({ onActivate }) => (

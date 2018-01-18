@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, AppBar, SidePanel, Button, Text } from '@aragon/ui'
+import styled from 'styled-components'
+import { AppBar, SidePanel, Button, Text } from '@aragon/ui'
 import AssignPermission from './AssignPermission'
 import InstancePermissions from './InstancePermissions'
 import PermissionsHome from './PermissionsHome'

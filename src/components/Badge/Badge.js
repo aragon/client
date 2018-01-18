@@ -1,4 +1,5 @@
-import { styled, theme, colors } from '@aragon/ui'
+import styled from 'styled-components'
+import { theme, colors } from '@aragon/ui'
 
 // TODO: Add the colors to the theme
 const Badge = styled.span`

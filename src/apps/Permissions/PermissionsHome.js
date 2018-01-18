@@ -1,6 +1,6 @@
 import React from 'react'
+import styled from 'styled-components'
 import List from './List'
-import { styled } from '@aragon/ui'
 
 const PermissionsHome = ({ appItems, entities, onInstanceClick }) => (
   <Content>

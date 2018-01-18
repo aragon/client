@@ -1,5 +1,6 @@
 import React from 'react'
-import { styled, spring as springConf } from '@aragon/ui'
+import styled from 'styled-components'
+import { spring as springConf } from '@aragon/ui'
 import { Motion, spring } from 'react-motion'
 
 const BORDER_WIDTH = 4

@@ -1,13 +1,8 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
+import styled from 'styled-components'
 import throttle from 'lodash.throttle'
-import {
-  styled,
-  theme,
-  spring as springConf,
-  unselectable,
-  Text,
-} from '@aragon/ui'
+import { theme, spring as springConf, unselectable, Text } from '@aragon/ui'
 
 import arrow from './assets/arrow.svg'
 
