@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { clamp, lerp } from '../../math-utils'
 import { noop } from '../../utils'
@@ -40,23 +41,17 @@ const SANDBOX = [
 
 class AppIFrame extends React.Component {
   state = {
-    hideProgressBar: false,
+    hideProgressBar: true,
     loadProgress: 0,
   }
-  componentWillMount() {
-    if (this.props.src) {
-      this.startProgress()
-    }
+  componentDidMount() {
+    this.navigateIFrame(this.props.src)
   }
   componentWillReceiveProps(nextProps) {
     const { src: nextSrc } = nextProps
-    if (nextSrc !== this.props.src) {
+    if (nextSrc !== this.src) {
       this.resetProgress(() => {
-        // If we're setting src=undefined, don't start the progress bar as we're
-        // not actually loading a page
-        if (nextSrc) {
-          this.setProgressTimeout(this.startProgress, 100)
-        }
+        this.navigateIFrame(nextSrc)
       })
     }
   }
@@ -67,6 +62,21 @@ class AppIFrame extends React.Component {
     const { hidden, src } = this.props
     return !src || hidden
   }
+  navigateIFrame = src => {
+    // Rather than load src=undefined, this component hides itself. That way, if the user later
+    // navigates back to the same src, we don't have to reload the iframe.
+    if (src) {
+      // Cache src to avoid cases where the iframe would load the same page as before
+      this.src = src
+      this.setProgressTimeout(this.startProgress(), 100)
+
+      // Detach the iframe from the DOM before setting the src to avoid adding history state
+      const containerNode = this.iframe.parentNode
+      this.iframe.remove()
+      this.iframe.src = src
+      containerNode.append(this.iframe)
+    }
+  }
   setProgressTimeout = (...args) => {
     this.progressTimer = setTimeout(...args)
   }
@@ -74,9 +84,15 @@ class AppIFrame extends React.Component {
     clearTimeout(this.progressTimer)
   }
   startProgress = () => {
-    this.setState({ loadProgress: LOADING_START }, () => {
-      this.setProgressTimeout(this.fudgeProgress, 500)
-    })
+    this.setState(
+      {
+        hideProgressBar: false,
+        loadProgress: LOADING_START,
+      },
+      () => {
+        this.setProgressTimeout(this.fudgeProgress, 500)
+      }
+    )
   }
   fudgeProgress = () => {
     const { loadProgress } = this.state
@@ -92,27 +108,23 @@ class AppIFrame extends React.Component {
   }
   endProgress = () => {
     this.clearProgressTimeout()
-    this.setState({ loadProgress: LOADING_END }, () => {
-      this.setState({ hideProgressBar: true })
+    this.setState({ hideProgressBar: true, loadProgress: LOADING_END }, () => {
+      this.setProgressTimeout(this.resetProgress, 500)
     })
   }
   resetProgress = (cb = noop) => {
     this.clearProgressTimeout()
-    this.setState({ hideProgressBar: false, loadProgress: 0 }, cb)
+    this.setState({ hideProgressBar: true, loadProgress: 0 }, cb)
   }
   handleOnLoad = (...args) => {
     const { onLoad } = this.props
-    // As it turns out, setting src=undefined on an iframe also triggers the onLoad handler.
-    // We avoid doing anything in that case as the iframe hasn't really loaded a page.
-    if (this.props.src) {
-      this.endProgress()
-      if (typeof onLoad === 'function') {
-        onLoad(...args)
-      }
+    this.endProgress()
+    if (typeof onLoad === 'function') {
+      onLoad(...args)
     }
   }
   render() {
-    const { src, ...props } = this.props
+    const { ...props } = this.props
     const { hideProgressBar, loadProgress } = this.state
     const show = !this.isHidden()
     const progressBar = show && (
@@ -122,6 +134,10 @@ class AppIFrame extends React.Component {
     // Remove onLoad prop as we wrap it with our own
     delete props.onLoad
 
+    // Remove src prop as we use manage the src ourselves to avoid adding duplicate history entries
+    // every time the src changes (see `navigateIFrame()`)
+    delete props.src
+
     return (
       <React.Fragment>
         {progressBar}
@@ -129,13 +145,12 @@ class AppIFrame extends React.Component {
           frameBorder={0}
           onLoad={this.handleOnLoad}
           ref={iframe => {
-            this.iframe = iframe
+            this.iframe = ReactDOM.findDOMNode(iframe)
           }}
           sandbox={SANDBOX}
           style={{
             display: show ? 'block' : 'none',
           }}
-          src={src}
           {...props}
         />
       </React.Fragment>
