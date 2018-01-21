@@ -96,7 +96,7 @@ class MenuPanel extends React.Component {
             <NotificationsWrapper
               style={{
                 transform: `translateX(${lerp(openProgress, -100, 0)}%)`,
-                boxShadow: `1px 0 15px rgba(232, 232, 232, ${openProgress})`,
+                boxShadow: `1px 0 15px rgba(0, 0, 0, ${openProgress * 0.1})`,
               }}
             >
               <NotificationsPanel notifications={notifications} />
@@ -124,7 +124,7 @@ const In = styled.div`
   height: 100%;
   background: #fff;
   border-right: 1px solid #e8e8e8;
-  box-shadow: 1px 0 15px #e8e8e8;
+  box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
 `
 
 const NotificationsWrapper = styled.div`
