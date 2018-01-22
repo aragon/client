@@ -63,7 +63,7 @@ export const apps = [
     id: 'voting',
     name: 'Voting',
     instances: [{ id: 'ant', name: 'ANT' }],
-    src: 'apps/demo',
+    src: 'http://localhost:3001/',
     alwaysDisplayInstances: true,
   },
   {
