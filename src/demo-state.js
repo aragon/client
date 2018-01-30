@@ -80,7 +80,7 @@ export const apps = [
     id: 'finance',
     name: 'Finance',
     instances: [{ id: 'finance', name: 'Finance' }],
-    src: 'apps/demo',
+    src: 'http://localhost:3002/',
     alwaysDisplayInstances: false,
   },
   {
