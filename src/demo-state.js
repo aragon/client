@@ -51,19 +51,26 @@ export const notifications = [
   },
 ]
 
+const appSrc = id => {
+  const port = {
+    voting: 3001,
+    finance: 3002,
+  }[id]
+  if (!port) return 'apps/demo'
+  return `${document.location.protocol}//${document.location.hostname}:${port}/`
+}
+
 export const apps = [
   {
     id: 'tokens',
     name: 'Tokens',
     instances: [{ id: 'ant', name: 'ANT' }, { id: 'token', name: 'TOKEN' }],
-    src: 'apps/demo',
     alwaysDisplayInstances: true,
   },
   {
     id: 'voting',
     name: 'Voting',
     instances: [{ id: 'ant', name: 'ANT' }],
-    src: 'http://localhost:3001/',
     alwaysDisplayInstances: true,
   },
   {
@@ -73,31 +80,27 @@ export const apps = [
       { id: 'core', name: 'Core Devs' },
       { id: 'community', name: 'Community Devs' },
     ],
-    src: 'apps/demo',
     alwaysDisplayInstances: true,
   },
   {
     id: 'finance',
     name: 'Finance',
     instances: [{ id: 'finance', name: 'Finance' }],
-    src: 'http://localhost:3002/',
     alwaysDisplayInstances: false,
   },
   {
     id: 'fundraising',
     name: 'Fundraising',
     instances: [{ id: 'fundraising', name: 'Fundraising' }],
-    src: 'apps/demo',
     alwaysDisplayInstances: false,
   },
   {
     id: 'identity',
     name: 'Identity',
     instances: [{ id: 'identity', name: 'Identity' }],
-    src: 'apps/demo',
     alwaysDisplayInstances: false,
   },
-]
+].map(app => ({ ...app, src: appSrc(app.id) }))
 
 export const tokens = [
   { symbol: 'XVT', name: 'Voting Token', amount: '100097995', value: 70 },
