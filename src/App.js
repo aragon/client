@@ -11,6 +11,7 @@ import { apps, notifications, tokens, prices, homeActions } from './demo-state'
 
 class App extends React.Component {
   state = {
+    appInstance: {},
     lastPath: '',
     path: '',
     search: '',
@@ -20,13 +21,16 @@ class App extends React.Component {
   constructor() {
     super()
     this.history = createHistory()
-    this.state.path = this.history.location.pathname
-    this.state.search = this.history.location.search || ''
     this.history.listen(this.handleNavigation)
-  }
-  appInstance() {
-    const { path, search } = this.state
 
+    const path = this.history.location.pathname
+    const search = this.history.location.search || ''
+    this.state.path = path
+    this.state.search = search
+    this.state.appInstance = this.appInstance(path, search)
+  }
+
+  appInstance(path, search) {
     const matches = path.match(/^\/?(\w+)\/?(\w+)?/)
     if (!matches) {
       return { appId: 'home', instanceId: '' }
@@ -56,11 +60,12 @@ class App extends React.Component {
     this.setState({
       path,
       search,
+      appInstance: this.appInstance(path, search),
       lastPath: this.state.path,
     })
   }
   handleParamsRequest = params => {
-    const { appId, instanceId } = this.appInstance()
+    const { appId, instanceId } = this.state.appInstance
     this.openApp(
       appId,
       instanceId,
@@ -106,8 +111,10 @@ class App extends React.Component {
     this.setState({ sidePanelOpened: false })
   }
   render() {
-    const { notifications } = this.state
-    const { appId, instanceId, params } = this.appInstance()
+    const {
+      appInstance: { appId, instanceId, params },
+      notifications,
+    } = this.state
     return (
       <AragonApp publicUrl="/aragon-ui/">
         <Main>
