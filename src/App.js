@@ -7,6 +7,8 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import Permissions from './apps/Permissions/Permissions'
+import Aragon, { IFrameMessenger, WorkerMessenger } from './aragon-mock'
+import { getBlobUrl } from './worker-utils'
 import {
   apps,
   notifications,
@@ -35,8 +37,20 @@ class App extends React.Component {
     this.state.path = path
     this.state.search = search
     this.state.appInstance = this.appInstance(path, search)
-  }
 
+    // Set up aragon-js mock
+    this.aragon = new Aragon()
+    this.workers = {}
+
+    // Set up workers once we've loaded the installed apps
+    this.aragon.getInstalledApps().then(this.launchAppWorkers)
+  }
+  componentDidMount() {
+    this.aragon.addMessenger(
+      'iframe',
+      new IFrameMessenger(this.appIFrame.getIFrame())
+    )
+  }
   appInstance(path, search) {
     const matches = path.match(/^\/?(\w+)\/?(\w+)?/)
     if (!matches) {
@@ -60,6 +74,10 @@ class App extends React.Component {
     const app = apps.find(app => app.id === appId)
     return (app && app.src) || ''
   }
+  handleIFrameMessage = event => {
+    const { appId } = this.state.appInstance
+    this.aragon.handleMessage(appId, event)
+  }
   handleNavigateBack = () => {
     this.state.lastPath ? this.history.goBack() : this.history.replace('/')
   }
@@ -79,6 +97,9 @@ class App extends React.Component {
       params ? encodeURIComponent(JSON.stringify(params)) : null
     )
   }
+  handleWorkerError = (appId, event) => {
+    console.error(`${appId}'s worker encountered an error:`, event)
+  }
   isAppInstalled(appId) {
     return (
       appId === 'home' ||
@@ -86,6 +107,26 @@ class App extends React.Component {
       appId === 'settings' ||
       !!apps.find(app => app.id === appId)
     )
+  }
+  launchAppWorkers = installedApps => {
+    installedApps.filter(app => app.script).forEach(async app => {
+      let url = ''
+      try {
+        url = await getBlobUrl(app.script)
+      } catch (e) {
+        console.error(`Failed to load ${app.id}'s script (${app.script}): `, e)
+        return
+      }
+
+      const worker = new Worker(url)
+      worker.onmessage = (...args) => this.aragon.handleMessage(app.id, ...args)
+      worker.onerror = (...args) => this.handleWorkerError(app.id, ...args)
+      this.workers[app.id] = worker
+      this.aragon.addMessenger(app.id, new WorkerMessenger(worker))
+
+      // Clean up the url we created to spawn the worker
+      URL.revokeObjectURL(url)
+    })
   }
   openApp = (appId, instanceId, params) => {
     if (appId === 'home') {
@@ -152,7 +193,11 @@ class App extends React.Component {
                 onParamsRequest={this.handleParamsRequest}
               />
             )}
-            <AppIFrame src={this.getAppSrc(appId)} />
+            <AppIFrame
+              onMessage={this.handleIFrameMessage}
+              ref={appIFrame => (this.appIFrame = appIFrame)}
+              src={this.getAppSrc(appId)}
+            />
           </AppScreen>
         </Main>
       </AragonApp>
