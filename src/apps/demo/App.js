@@ -1,15 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import { AragonApp, EmptyStateCard, IconSettings } from '@aragon/ui'
+import { AragonApp, EmptyStateCard } from '@aragon/ui'
+
+import icon from './assets/icon-demo.svg'
+
+const Icon = <img src={icon} alt="" />
 
 const App = () => (
   <AragonApp publicUrl="/aragon-ui/">
     <Main>
-      <EmptyStateCard
-        actionText="This is a demo!"
-        icon={IconSettings}
-        title="Demo app"
-      />
+      <EmptyStateCard actionText="Button" icon={() => Icon} title="Demo App" />
     </Main>
   </AragonApp>
 )
