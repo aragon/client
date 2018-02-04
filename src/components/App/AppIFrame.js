@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { clamp, lerp } from '../../math-utils'
 import { noop } from '../../utils'
@@ -147,9 +146,7 @@ class AppIFrame extends React.Component {
         <StyledIFrame
           frameBorder={0}
           onLoad={this.handleOnLoad}
-          ref={iframe => {
-            this.iframe = ReactDOM.findDOMNode(iframe)
-          }}
+          innerRef={iframe => (this.iframe = iframe)}
           sandbox={SANDBOX}
           style={{
             display: show ? 'block' : 'none',
