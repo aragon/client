@@ -60,6 +60,11 @@ const appSrc = id => {
   return `${document.location.protocol}//${document.location.hostname}:${port}/`
 }
 
+export const groups = [
+  { id: 'core', name: 'Core Devs' },
+  { id: 'community', name: 'Community Devs' },
+]
+
 export const apps = [
   {
     id: 'tokens',
@@ -71,15 +76,6 @@ export const apps = [
     id: 'voting',
     name: 'Voting',
     instances: [{ id: 'ant', name: 'ANT' }],
-    alwaysDisplayInstances: true,
-  },
-  {
-    id: 'groups',
-    name: 'Groups',
-    instances: [
-      { id: 'core', name: 'Core Devs' },
-      { id: 'community', name: 'Community Devs' },
-    ],
     alwaysDisplayInstances: true,
   },
   {
@@ -117,7 +113,7 @@ export const homeActions = [
   { id: 'transfer-tokens', label: 'Transfer Tokens', app: 'tokens' },
   { id: 'assign-tokens', label: 'Assign Tokens', app: 'tokens' },
   { id: 'vote', label: 'Vote', app: 'voting' },
-  { id: 'view-groups', label: 'View Groups', app: 'groups' },
+  { id: 'view-identity', label: 'Identity', app: 'identity' },
   { id: 'check-finance', label: 'Check Finance', app: 'finance' },
   { id: 'new-payment', label: 'New Payment', app: 'tokens' },
 ]

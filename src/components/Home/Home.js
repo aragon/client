@@ -7,7 +7,7 @@ import PricesBar from './PricesBar'
 
 import imgAssignTokens from './assets/assign-tokens.svg'
 import imgFinance from './assets/finance.svg'
-import imgGroups from './assets/groups.svg'
+import imgIdentity from './assets/identity.svg'
 import imgPayment from './assets/payment.svg'
 import imgTransferTokens from './assets/transfer-tokens.svg'
 import imgVote from './assets/vote.svg'
@@ -24,7 +24,7 @@ const imgActions = new Map()
 imgActions.set('transfer-tokens', imgTransferTokens)
 imgActions.set('assign-tokens', imgAssignTokens)
 imgActions.set('vote', imgVote)
-imgActions.set('view-groups', imgGroups)
+imgActions.set('view-identity', imgIdentity)
 imgActions.set('check-finance', imgFinance)
 imgActions.set('new-payment', imgPayment)
 

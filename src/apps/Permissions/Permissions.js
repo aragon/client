@@ -88,7 +88,7 @@ class Permissions extends React.Component {
     this.props.onParamsRequest()
   }
   render() {
-    const { apps } = this.props
+    const { apps, groups } = this.props
     const { currentInstance, assignOpened } = this.state
     const appItems = this.getAppItems(apps)
     return (
@@ -140,9 +140,7 @@ class Permissions extends React.Component {
         >
           <AssignPermission
             onDone={this.handleAssignPanelClose}
-            entities={apps
-              .find(({ id }) => id === 'groups')
-              .instances.map(({ name }) => `Groups (${name})`)}
+            entities={groups.map(({ name }) => `Groups (${name})`)}
             calls={appItems.map(
               ({ label, badge }) =>
                 `${label}${badge ? ` (${badge.label})` : ''}`
