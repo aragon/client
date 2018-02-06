@@ -7,7 +7,14 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import Permissions from './apps/Permissions/Permissions'
-import { apps, notifications, tokens, prices, homeActions } from './demo-state'
+import {
+  apps,
+  notifications,
+  tokens,
+  prices,
+  groups,
+  homeActions,
+} from './demo-state'
 
 class App extends React.Component {
   state = {
@@ -133,6 +140,7 @@ class App extends React.Component {
             {appId === 'permissions' && (
               <Permissions
                 apps={apps}
+                groups={groups}
                 params={params}
                 onParamsRequest={this.handleParamsRequest}
               />
