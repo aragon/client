@@ -24,7 +24,7 @@
     "Pierre Bertet <pierre@aragon.one>"
   ],
   "dependencies": {
-    "@aragon/ui": "^0.3.0",
+    "@aragon/ui": "^0.4.0",
     "date-fns": "^1.29.0",
     "history": "^4.7.2",
     "lodash.throttle": "^4.1.1",
