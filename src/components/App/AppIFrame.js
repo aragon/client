@@ -47,6 +47,7 @@ class AppIFrame extends React.Component {
     loadProgress: 0,
   }
   componentDidMount() {
+    window.addEventListener('message', this.handleReceiveMessage, false)
     this.navigateIFrame(this.props.src)
   }
   componentWillReceiveProps(nextProps) {
@@ -58,6 +59,7 @@ class AppIFrame extends React.Component {
     }
   }
   componentWillUnmount() {
+    window.removeEventListener('message', this.handleReceiveMessage, false)
     this.clearProgressTimeout()
   }
   isHidden = () => {
@@ -118,11 +120,26 @@ class AppIFrame extends React.Component {
     this.clearProgressTimeout()
     this.setState({ hideProgressBar: true, loadProgress: 0 }, cb)
   }
+  sendMessage = data => {
+    // Must use '*' for origin as we've sandboxed the iframe's origin
+    this.iframe.contentWindow.postMessage(data, '*')
+  }
   handleOnLoad = (...args) => {
     const { onLoad } = this.props
     this.endProgress()
     if (typeof onLoad === 'function') {
       onLoad(...args)
+    }
+  }
+  handleReceiveMessage = event => {
+    const { onMessage } = this.props
+    if (
+      typeof onMessage === 'function' &&
+      // Make sure the event actually came from the iframe window
+      // We can't use event.origin as it's always null due to the origin sandboxing
+      event.source === this.iframe.contentWindow
+    ) {
+      onMessage(event)
     }
   }
   render() {
@@ -144,6 +161,7 @@ class AppIFrame extends React.Component {
       <React.Fragment>
         {progressBar}
         <StyledIFrame
+          name="AppIFrame"
           frameBorder={0}
           onLoad={this.handleOnLoad}
           innerRef={iframe => (this.iframe = iframe)}
