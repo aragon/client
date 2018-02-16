@@ -19,7 +19,7 @@ const PATHS = {
   OUTPUT: path.resolve(__dirname, '../../../public/apps/demo'),
 }
 
-module.exports = {
+const app = {
   devtool: 'cheap-module-source-map',
   entry: [
     require.resolve('react-scripts/config/polyfills'),
@@ -136,3 +136,39 @@ module.exports = {
     }),
   ],
 }
+
+const worker = {
+  target: 'webworker',
+  devtool: 'cheap-module-source-map',
+  entry: path.resolve(PATHS.DEMO_SRC, 'worker.js'),
+  output: {
+    path: PATHS.OUTPUT,
+    filename: 'worker.js',
+    // Add /* filename */ comments to generated require()s in the output.
+    pathinfo: true,
+    // Point sourcemap entries to original disk location (format as URL on Windows)
+    devtoolModuleFilenameTemplate: info =>
+      path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
+  },
+  resolve: {
+    // Required for npm link to work properly (see https://github.com/webpack/webpack/issues/1866#issuecomment-284571531)
+    symlinks: false,
+  },
+  module: {
+    rules: [
+      // Process JS with Babel.
+      {
+        test: /\.(js|jsx|mjs)$/,
+        include: PATHS.DEMO_SRC,
+        loader: require.resolve('babel-loader'),
+        options: {
+          babelrc: false,
+          presets: [require.resolve('babel-preset-react-app')],
+          cacheDirectory: true,
+        },
+      },
+    ],
+  },
+}
+
+module.exports = [app, worker]

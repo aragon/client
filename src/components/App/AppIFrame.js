@@ -62,6 +62,9 @@ class AppIFrame extends React.Component {
     window.removeEventListener('message', this.handleReceiveMessage, false)
     this.clearProgressTimeout()
   }
+  getIFrame = () => {
+    return this.iframe
+  }
   isHidden = () => {
     const { hidden, src } = this.props
     return !src || hidden
