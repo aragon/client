@@ -1,7 +1,7 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
-import { theme, spring as springConf } from '@aragon/ui'
+import { theme, spring as springConf, IconBlank } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
@@ -28,7 +28,6 @@ class MenuPanelAppGroup extends React.Component {
       active,
       activeInstanceId,
     } = this.props
-    const image = icon || <img src={`/apps-icons/${appId}.svg`} alt="" />
     return (
       <Motion
         style={{
@@ -52,7 +51,7 @@ class MenuPanelAppGroup extends React.Component {
               className={`item ${active ? 'active' : ''}`}
               onClick={this.handleAppClick}
             >
-              <span className="icon">{image}</span>
+              <span className="icon">{icon || <IconBlank />}</span>
               <span className="name">{name}</span>
             </a>
 

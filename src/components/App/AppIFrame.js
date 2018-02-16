@@ -52,7 +52,7 @@ class AppIFrame extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     const { src: nextSrc } = nextProps
-    if (nextSrc !== this.src) {
+    if (nextSrc !== this.props.src) {
       this.resetProgress(() => {
         this.navigateIFrame(nextSrc)
       })
@@ -79,6 +79,11 @@ class AppIFrame extends React.Component {
       this.iframe.remove()
       this.iframe.src = src
       containerNode.append(this.iframe)
+
+      const { wrapper, app } = this.props
+      if (wrapper) {
+        wrapper.runApp(this.iframe.contentWindow, app.proxyAddress)
+      }
     }
   }
   setProgressTimeout = (...args) => {
@@ -132,6 +137,8 @@ class AppIFrame extends React.Component {
     }
   }
   handleReceiveMessage = event => {
+    console.log('[WRAPPER] MESSAGE RECEIVED', event.data)
+
     const { onMessage } = this.props
     if (
       typeof onMessage === 'function' &&
