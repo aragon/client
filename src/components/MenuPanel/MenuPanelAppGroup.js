@@ -20,14 +20,7 @@ class MenuPanelAppGroup extends React.Component {
     this.props.onActivate(this.props.appId, instanceId)
   }
   render() {
-    const {
-      appId,
-      icon,
-      name,
-      instances,
-      active,
-      activeInstanceId,
-    } = this.props
+    const { icon, name, instances, active, activeInstanceId } = this.props
     return (
       <Motion
         style={{
