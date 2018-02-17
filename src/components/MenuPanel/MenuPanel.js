@@ -8,7 +8,7 @@ import {
   IconHome,
   IconSettings,
   IconPermissions,
-  IconWallet,
+  // IconWallet,
   IconNotifications,
 } from '@aragon/ui'
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
