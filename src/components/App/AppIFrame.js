@@ -48,13 +48,18 @@ class AppIFrame extends React.Component {
   }
   componentDidMount() {
     window.addEventListener('message', this.handleReceiveMessage, false)
-    this.navigateIFrame(this.props.src)
+    this.navigateIFrame(this.props.src, this.props.wrapper, this.props.app)
   }
   componentWillReceiveProps(nextProps) {
-    const { src: nextSrc } = nextProps
-    if (nextSrc !== this.props.src) {
+    const { src: nextSrc, wrapper: nextWrapper, app: nextApp } = nextProps
+    const refreshIframe =
+      nextSrc !== this.props.src ||
+      nextWrapper !== this.props.wrapper ||
+      nextApp !== this.props.app
+
+    if (refreshIframe) {
       this.resetProgress(() => {
-        this.navigateIFrame(nextSrc)
+        this.navigateIFrame(nextSrc, nextWrapper, nextApp)
       })
     }
   }
@@ -66,24 +71,23 @@ class AppIFrame extends React.Component {
     const { hidden, src } = this.props
     return !src || hidden
   }
-  navigateIFrame = src => {
+  navigateIFrame = (src, wrapper, app) => {
     // Rather than load src=undefined, this component hides itself. That way, if the user later
     // navigates back to the same src, we don't have to reload the iframe.
-    if (src) {
-      // Cache src to avoid cases where the iframe would load the same page as before
-      this.src = src
-      this.setProgressTimeout(this.startProgress(), 100)
+    if (!src) return
 
-      // Detach the iframe from the DOM before setting the src to avoid adding history state
-      const containerNode = this.iframe.parentNode
-      this.iframe.remove()
-      this.iframe.src = src
-      containerNode.append(this.iframe)
+    // Cache src to avoid cases where the iframe would load the same page as before
+    this.src = src
+    this.setProgressTimeout(this.startProgress(), 100)
 
-      const { wrapper, app } = this.props
-      if (wrapper) {
-        wrapper.runApp(this.iframe.contentWindow, app.proxyAddress)
-      }
+    // Detach the iframe from the DOM before setting the src to avoid adding history state
+    const containerNode = this.iframe.parentNode
+    this.iframe.remove()
+    this.iframe.src = src
+    containerNode.append(this.iframe)
+
+    if (wrapper && app) {
+      wrapper.runApp(this.iframe.contentWindow, app.proxyAddress)
     }
   }
   setProgressTimeout = (...args) => {
@@ -137,8 +141,6 @@ class AppIFrame extends React.Component {
     }
   }
   handleReceiveMessage = event => {
-    console.log('[WRAPPER] MESSAGE RECEIVED', event.data)
-
     const { onMessage } = this.props
     if (
       typeof onMessage === 'function' &&
