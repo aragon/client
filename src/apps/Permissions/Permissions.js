@@ -38,7 +38,8 @@ class Permissions extends React.Component {
     if (!app) {
       return null
     }
-    const instance = app.instances.find(({ id }) => id === instanceId)
+    const instance =
+      app.instances && app.instances.find(({ id }) => id === instanceId)
     if (!instance) {
       return null
     }
@@ -57,7 +58,7 @@ class Permissions extends React.Component {
     return apps
       .filter(({ id }) => id !== 'permissions' && id !== 'identity')
       .reduce(
-        (items, { id, name, instances, alwaysDisplayInstances }) =>
+        (items, { id, name, instances = [], alwaysDisplayInstances }) =>
           items.concat(
             instances.map(instance => ({
               id: `${id}__${instance.id}`,

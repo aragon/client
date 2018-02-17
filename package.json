@@ -25,6 +25,8 @@
   ],
   "dependencies": {
     "@aragon/ui": "^0.4.0",
+    "@aragon/wrapper": "^2.0.0-beta.4",
+    "@babel/polyfill": "^7.0.0-beta.39",
     "date-fns": "^1.29.0",
     "history": "^4.7.2",
     "lodash.throttle": "^4.1.1",
@@ -33,7 +35,8 @@
     "react-container-dimensions": "^1.3.3",
     "react-dom": "^16.2.0",
     "react-motion": "^0.5.2",
-    "styled-components": "^2.4.0"
+    "styled-components": "^2.4.0",
+    "web3": "^1.0.0-beta.29"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.3",

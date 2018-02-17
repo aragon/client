@@ -7,8 +7,10 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import Permissions from './apps/Permissions/Permissions'
+import initWrapper from './aragonjs-wrapper'
+import Web3 from 'web3'
+
 import {
-  apps,
   notifications,
   tokens,
   prices,
@@ -16,8 +18,15 @@ import {
   homeActions,
 } from './demo-state'
 
+// TODO: make these depend on the env / URL
+const DAO = '0xc134cd72e5cb1a73ea7bc303981e7047c67f2d5c'
+const ENS = '0xbed25629e2385ba897291eb7d248829e01370bc6'
+const PROVIDER = new Web3.providers.WebsocketProvider('ws://localhost:8545')
+
 class App extends React.Component {
   state = {
+    apps: [],
+    wrapper: null,
     appInstance: {},
     lastPath: '',
     path: '',
@@ -35,6 +44,41 @@ class App extends React.Component {
     this.state.path = path
     this.state.search = search
     this.state.appInstance = this.appInstance(path, search)
+    this.state.apps = this.getCache().apps || []
+
+    initWrapper(DAO, ENS, { provider: PROVIDER }).then(wrapper => {
+      this.setState({ wrapper })
+    })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.updateWrapper(prevState.wrapper, this.state.wrapper)
+  }
+
+  // Update the aragon.js wrapper with a new instance
+  updateWrapper(prevWrapper, wrapper) {
+    if (prevWrapper === wrapper) {
+      return
+    }
+
+    // Remove any previous subscription
+    if (this.appsSubscription) {
+      this.appsSubscription.unsubscribe()
+      delete this.appsSubscription
+    }
+
+    if (wrapper && wrapper.apps) {
+      this.appsSubscription = wrapper.apps.subscribe(this.handleReceiveApps)
+    }
+  }
+
+  handleReceiveApps = apps => {
+    // TODO: detect apps without UI and remove the exception for "Vault"
+    const menuApps = apps
+      .filter(app => app.content && app.name !== 'Vault')
+      .map(app => ({ ...app, appSrc: this.getAppSrc(app) }))
+    this.setCache({ apps: menuApps })
+    this.setState({ apps: menuApps })
   }
 
   appInstance(path, search) {
@@ -56,10 +100,26 @@ class App extends React.Component {
       this.history.push(path + search)
     }
   }
-  getAppSrc(appId) {
-    const app = apps.find(app => app.id === appId)
-    return (app && app.src) || ''
+  getCache(obj) {
+    return JSON.parse(localStorage.getItem('wrapper-cache') || '{}')
   }
+  setCache(obj) {
+    localStorage.setItem('wrapper-cache', JSON.stringify(obj))
+  }
+
+  getAppSrc(app = {}) {
+    const hash = app.content && app.content.location
+    if (!hash) return ''
+
+    // TODO: move this in the env settings
+    // This is the Voting app hash in the dev template
+    if (hash === 'QmV5sEjshcZ6mu6uFUhJkWM5nTa53wbHfRFDD4Qy2Yx88m') {
+      return 'http://localhost:3001/'
+    }
+
+    return `https://gateway.ipfs.io/ipfs/${hash}/`
+  }
+
   handleNavigateBack = () => {
     this.state.lastPath ? this.history.goBack() : this.history.replace('/')
   }
@@ -80,11 +140,12 @@ class App extends React.Component {
     )
   }
   isAppInstalled(appId) {
+    const { apps } = this.state
     return (
       appId === 'home' ||
       appId === 'permissions' ||
       appId === 'settings' ||
-      !!apps.find(app => app.id === appId)
+      !!apps.find(app => app.appId === appId)
     )
   }
   openApp = (appId, instanceId, params) => {
@@ -99,7 +160,8 @@ class App extends React.Component {
     }
 
     // Get the first instance found if instanceId is not passed
-    const app = apps.find(app => app.id === appId)
+    const { apps } = this.state
+    const app = apps.find(app => app.appId === appId)
 
     const instances = (app && app.instances) || []
     const instance = instanceId
@@ -121,6 +183,7 @@ class App extends React.Component {
     const {
       appInstance: { appId, instanceId, params },
       notifications,
+      apps,
     } = this.state
     return (
       <AragonApp publicUrl="/aragon-ui/">
@@ -132,30 +195,41 @@ class App extends React.Component {
             notifications={notifications}
             onOpenApp={this.openApp}
           />
-          <AppScreen>
-            {!this.isAppInstalled(appId) && (
-              <App404 onNavigateBack={this.handleNavigateBack} />
-            )}
-            {appId === 'home' && (
-              <Home
-                tokens={tokens}
-                prices={prices}
-                actions={homeActions}
-                onOpenApp={this.openApp}
-              />
-            )}
-            {appId === 'permissions' && (
-              <Permissions
-                apps={apps}
-                groups={groups}
-                params={params}
-                onParamsRequest={this.handleParamsRequest}
-              />
-            )}
-            <AppIFrame src={this.getAppSrc(appId)} />
-          </AppScreen>
+          <AppScreen>{this.renderApp(appId, params)}</AppScreen>
         </Main>
       </AragonApp>
+    )
+  }
+  renderApp(appId, params) {
+    const { apps, wrapper } = this.state
+
+    if (appId === 'home') {
+      return (
+        <Home
+          tokens={tokens}
+          prices={prices}
+          actions={homeActions}
+          onOpenApp={this.openApp}
+        />
+      )
+    }
+
+    if (appId === 'permissions') {
+      return (
+        <Permissions
+          apps={apps}
+          groups={groups}
+          params={params}
+          onParamsRequest={this.handleParamsRequest}
+        />
+      )
+    }
+
+    const app = apps.find(app => app.appId === appId)
+    return app ? (
+      <AppIFrame src={app.appSrc} wrapper={wrapper} app={app} />
+    ) : (
+      <App404 onNavigateBack={this.handleNavigateBack} />
     )
   }
 }

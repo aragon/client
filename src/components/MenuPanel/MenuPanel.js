@@ -17,13 +17,23 @@ import MenuPanelAppGroup from './MenuPanelAppGroup'
 
 import logo from './assets/logo.svg'
 
-const appHome = { id: 'home', name: 'Home', icon: <IconHome /> }
-const appSettings = { id: 'settings', name: 'Settings', icon: <IconSettings /> }
+const appHome = { appId: 'home', name: 'Home', icon: <IconHome /> }
+const appSettings = {
+  appId: 'settings',
+  name: 'Settings',
+  icon: <IconSettings />,
+}
 const appPermissions = {
-  id: 'permissions',
+  appId: 'permissions',
   name: 'Permissions',
   icon: <IconPermissions />,
 }
+
+const addIcons = apps =>
+  apps.map(app => ({
+    ...app,
+    icon: <img src={`${app.appSrc}images/icon.svg`} alt="" />,
+  }))
 
 class MenuPanel extends React.Component {
   state = {
@@ -43,7 +53,7 @@ class MenuPanel extends React.Component {
       onOpenApp,
     } = this.props
     const { notificationsOpened } = this.state
-    const menuApps = [appHome, ...apps, appPermissions, appSettings]
+    const menuApps = [appHome, ...addIcons(apps), appPermissions, appSettings]
     return (
       <Main>
         <In>
@@ -66,13 +76,13 @@ class MenuPanel extends React.Component {
             <div className="in">
               <h1>Apps</h1>
               <ul>
-                {menuApps.map(({ id, name, icon, instances = [] }) => (
-                  <li key={id}>
+                {menuApps.map(({ appId, name, icon, instances = [] }) => (
+                  <li key={appId}>
                     <MenuPanelAppGroup
                       name={name}
                       icon={icon}
-                      appId={id}
-                      active={id === activeAppId}
+                      appId={appId}
+                      active={appId === activeAppId}
                       instances={instances}
                       activeInstanceId={activeInstanceId}
                       onActivate={onOpenApp}
