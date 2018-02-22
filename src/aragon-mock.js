@@ -74,7 +74,7 @@ export default class Aragon {
   }
   propagateCache = (appId, key) => {
     const matches = window.location.hash.match(/^#\/?(\w+)\/?(\w+)?/)
-    const currentAppId = matches[1]
+    const currentAppId = matches && matches[1]
     if (
       appId === currentAppId &&
       appId !== 'home' &&
