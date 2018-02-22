@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, Info, RadioGroup, SafeLink } from '@aragon/ui'
+import { Button, Info, RadioList, SafeLink } from '@aragon/ui'
 import { network } from '../../demo-state'
 
 const etherscanBaseUrl = `https://${
@@ -63,7 +63,7 @@ class ActionPathsContent extends React.Component {
               necessary permissions.
             </Info.Permissions>
             <Actions>
-              <RadioGroup
+              <RadioList
                 title="Action Requirement"
                 description={
                   paths.length > 1
