@@ -67,10 +67,10 @@ class ActionPathsContent extends React.Component {
       <React.Fragment>
         {showPaths ? (
           <ActionContainer>
-            {/*<Info.Permissions title="Permission note:">
+            {/* <Info.Permissions title="Permission note:">
               You cannot directly perform this action. You do not have the
               necessary permissions.
-            </Info.Permissions>*/}
+            </Info.Permissions> */}
             <Actions>
               <RadioList
                 title="Action Requirement"

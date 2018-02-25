@@ -24,8 +24,8 @@ import {
 // TODO: make these depend on the env / URL
 const PROVIDER = new Web3.providers.WebsocketProvider('ws://localhost:8545')
 const SIGNING_PROVIDER = window.web3.currentProvider
-const DAO = "0x6fe95e08427f67c917f5fe2a158f3bf203ff4559"
-const ENS = "0x409ba3dd291bb5d48d5b4404f5efa207441f6cba"
+const DAO = '0x6fe95e08427f67c917f5fe2a158f3bf203ff4559'
+const ENS = '0x409ba3dd291bb5d48d5b4404f5efa207441f6cba'
 
 class App extends React.Component {
   state = {
@@ -97,7 +97,7 @@ class App extends React.Component {
     }
   }
   sendAccountToApp = () => {
-    const {account}=this.state
+    const { account } = this.state
     if (account && this.appIframe) {
       this.appIframe.sendMessage({
         from: 'wrapper',
@@ -113,7 +113,7 @@ class App extends React.Component {
     this.appIframe = appIframe
     this.sendAccountToApp()
   }
-  handleAppIframeMessage = ({data}) => {
+  handleAppIframeMessage = ({ data }) => {
     if (data.from !== 'app') return
     if (data.name === 'ready') {
       this.sendAccountToApp()

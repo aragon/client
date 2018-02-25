@@ -71,10 +71,10 @@ const initWrapper = async (
     wrapper.init(),
 
     // getAccounts() doesn’t return a promise until 1.0
-    new Promise((accept, reject) => {
+    new Promise((resolve, reject) => {
       signingWeb3.eth.getAccounts((err, accounts) => {
         if (err) return reject(err)
-        accept(accounts)
+        resolve(accounts)
       })
     }).then(accounts => accounts[0]),
   ])
