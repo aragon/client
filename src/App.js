@@ -22,20 +22,22 @@ import {
 } from './demo-state'
 
 // TODO: make these depend on the env / URL
-const DAO = '0xc134cd72e5cb1a73ea7bc303981e7047c67f2d5c'
-const ENS = '0xbed25629e2385ba897291eb7d248829e01370bc6'
 const PROVIDER = new Web3.providers.WebsocketProvider('ws://localhost:8545')
+const SIGNING_PROVIDER = window.web3.currentProvider
+const DAO = "0x6fe95e08427f67c917f5fe2a158f3bf203ff4559"
+const ENS = "0x409ba3dd291bb5d48d5b4404f5efa207441f6cba"
 
 class App extends React.Component {
   state = {
     apps: [],
-    wrapper: null,
     appInstance: {},
     lastPath: '',
     path: '',
     search: '',
     notifications,
     signerOpened: false,
+    transactionBag: null,
+    account: '',
     web3Action: {},
   }
   constructor() {
@@ -48,46 +50,33 @@ class App extends React.Component {
     this.state.path = path
     this.state.search = search
     this.state.appInstance = this.appInstance(path, search)
-    this.state.apps = this.getCache().apps || []
-
-    // TODO: initialize web3 instance with browser-provided provider
-    this.web3 = {}
-
-    initWrapper(DAO, ENS, { provider: PROVIDER }).then(wrapper => {
-      this.setState({ wrapper })
+    this.state.apps = []
+  }
+  componentDidMount() {
+    initWrapper(DAO, ENS, {
+      provider: PROVIDER,
+      signingProvider: SIGNING_PROVIDER,
+      onWrapper: wrapper => {
+        this.wrapper = wrapper
+      },
+      onSigningWeb3: web3 => {
+        this.signingWeb3 = web3
+      },
+      onAccount: account => {
+        this.handleAccountChange(account)
+      },
+      onApps: apps => {
+        console.log('apps', apps)
+      },
+      onMenuApps: menuApps => {
+        this.setState({ apps: menuApps })
+      },
+      onForwarders: forwarders => {
+        console.log('forwarders', forwarders)
+      },
+      onTransaction: this.handleTransaction,
     })
   }
-
-  componentDidUpdate(prevProps, prevState) {
-    this.updateWrapper(prevState.wrapper, this.state.wrapper)
-  }
-
-  // Update the aragon.js wrapper with a new instance
-  updateWrapper(prevWrapper, wrapper) {
-    if (prevWrapper === wrapper) {
-      return
-    }
-
-    // Remove any previous subscription
-    if (this.appsSubscription) {
-      this.appsSubscription.unsubscribe()
-      delete this.appsSubscription
-    }
-
-    if (wrapper && wrapper.apps) {
-      this.appsSubscription = wrapper.apps.subscribe(this.handleReceiveApps)
-    }
-  }
-
-  handleReceiveApps = apps => {
-    // TODO: detect apps without UI and remove the exception for "Vault"
-    const menuApps = apps
-      .filter(app => app.content && app.name !== 'Vault')
-      .map(app => ({ ...app, appSrc: this.getAppSrc(app) }))
-    this.setCache({ apps: menuApps })
-    this.setState({ apps: menuApps })
-  }
-
   appInstance(path, search) {
     const matches = path.match(/^\/?(\w+)\/?(\w+)?/)
     if (!matches) {
@@ -107,26 +96,35 @@ class App extends React.Component {
       this.history.push(path + search)
     }
   }
-  getCache(obj) {
-    return JSON.parse(localStorage.getItem('wrapper-cache') || '{}')
-  }
-  setCache(obj) {
-    localStorage.setItem('wrapper-cache', JSON.stringify(obj))
-  }
-
-  getAppSrc(app = {}) {
-    const hash = app.content && app.content.location
-    if (!hash) return ''
-
-    // TODO: move this in the env settings
-    // This is the Voting app hash in the dev template
-    if (hash === 'QmV5sEjshcZ6mu6uFUhJkWM5nTa53wbHfRFDD4Qy2Yx88m') {
-      return 'http://localhost:3001/'
+  sendAccountToApp = () => {
+    const {account}=this.state
+    if (account && this.appIframe) {
+      this.appIframe.sendMessage({
+        from: 'wrapper',
+        name: 'account',
+        value: account,
+      })
     }
-
-    return `https://gateway.ipfs.io/ipfs/${hash}/`
   }
-
+  handleAccountChange = account => {
+    this.setState({ account: account || '' }, this.sendAccountToApp)
+  }
+  handleAppIframeRef = appIframe => {
+    this.appIframe = appIframe
+    this.sendAccountToApp()
+  }
+  handleAppIframeMessage = ({data}) => {
+    if (data.from !== 'app') return
+    if (data.name === 'ready') {
+      this.sendAccountToApp()
+    }
+  }
+  handleIframeNavigate = app => {
+    if (app && this.wrapper && this.appIframeElt) {
+      this.wrapper.runApp(this.appIframeElt.contentWindow, app.proxyAddress)
+      this.sendAccountToApp()
+    }
+  }
   handleNavigateBack = () => {
     this.state.lastPath ? this.history.goBack() : this.history.replace('/')
   }
@@ -146,9 +144,44 @@ class App extends React.Component {
       params ? encodeURIComponent(JSON.stringify(params)) : null
     )
   }
+  handleTransaction = transactionBag => {
+    const { transaction } = transactionBag
+    this.setState({ transactionBag }, () => {
+      this.showWeb3ActionSigner(
+        { to: transaction.to },
+        {
+          error: null,
+          paths: [
+            {
+              appName: transaction.from,
+              description: 'This account can perform the action.',
+              tx: transaction,
+            },
+          ],
+        }
+      )
+    })
+  }
+  handleSigningWeb3Tx = ({ data, from, to }) => {
+    const { transactionBag } = this.state
+    const { transaction, accept, reject } = transactionBag
+    this.signingWeb3.eth.sendTransaction(transaction, (err, res) => {
+      this.handleSignerClose()
+
+      if (err) {
+        this.showWeb3ActionSigner({ to: transaction.to }, { error: err })
+        reject(err)
+        console.error(err)
+        return
+      }
+
+      accept(res)
+    })
+  }
   handleSignerClose = () => {
     this.setState({
       signerOpened: false,
+      transactionBag: null,
     })
   }
   handleSignerTransitionEnd = opened => {
@@ -158,10 +191,6 @@ class App extends React.Component {
         web3Action: {},
       })
     }
-  }
-  handleSigningWeb3Tx = ({ data, from, to }) => {
-    // TODO: handle web3 signing before reseting signing state
-    Promise.resolve().then(this.handleSignerClose)
   }
   isAppInstalled(appId) {
     const { apps } = this.state
@@ -209,11 +238,11 @@ class App extends React.Component {
   }
   render() {
     const {
+      appInstance: { appId, instanceId, params },
       apps,
       notifications,
       signerOpened,
       web3Action,
-      appInstance: { appId, instanceId, params },
     } = this.state
     return (
       <AragonApp publicUrl="/aragon-ui/">
@@ -236,7 +265,7 @@ class App extends React.Component {
           <SignerPanelContent
             onClose={this.handleSignerClose}
             onSign={this.handleSigningWeb3Tx}
-            web3={this.web3}
+            web3={this.signingWeb3}
             {...web3Action}
           />
         </SidePanel>
@@ -244,7 +273,7 @@ class App extends React.Component {
     )
   }
   renderApp(appId, params) {
-    const { apps, wrapper } = this.state
+    const { apps } = this.state
 
     if (appId === 'home') {
       return (
@@ -268,9 +297,16 @@ class App extends React.Component {
       )
     }
 
-    const app = apps.find(app => app.appId === appId)
+    const app = this.wrapper && apps.find(app => app.appId === appId)
+
     return app ? (
-      <AppIFrame src={app.appSrc} wrapper={wrapper} app={app} />
+      <AppIFrame
+        app={app}
+        ref={this.handleAppIframeRef}
+        iframeRef={iframe => (this.appIframeElt = iframe)}
+        onNavigate={this.handleIframeNavigate}
+        onMessage={this.handleAppIframeMessage}
+      />
     ) : (
       <App404 onNavigateBack={this.handleNavigateBack} />
     )

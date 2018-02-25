@@ -23,6 +23,9 @@ const SANDBOX = [
   // Gotta run 'em all!
   'allow-scripts',
 
+  // Allow forms to be submitted
+  'allow-forms',
+
   // Note that we haven't enabled:
   //   - 'allow-same-origin':
   //       The most important security setting: leaving this disabled lets the
@@ -52,18 +55,13 @@ class AppIFrame extends React.Component {
   }
   componentDidMount() {
     window.addEventListener('message', this.handleReceiveMessage, false)
-    this.navigateIFrame(this.props.src, this.props.wrapper, this.props.app)
+    this.navigateIFrame(this.props.app.appSrc)
   }
   componentWillReceiveProps(nextProps) {
-    const { src: nextSrc, wrapper: nextWrapper, app: nextApp } = nextProps
-    const refreshIframe =
-      nextSrc !== this.props.src ||
-      nextWrapper !== this.props.wrapper ||
-      nextApp !== this.props.app
-
-    if (refreshIframe) {
+    const { app: nextApp } = nextProps
+    if (nextApp.appSrc !== this.props.app.appSrc) {
       this.resetProgress(() => {
-        this.navigateIFrame(nextSrc, nextWrapper, nextApp)
+        this.navigateIFrame(nextApp.appSrc)
       })
     }
   }
@@ -72,10 +70,10 @@ class AppIFrame extends React.Component {
     this.clearProgressTimeout()
   }
   isHidden = () => {
-    const { hidden, src } = this.props
-    return !src || hidden
+    const { hidden, app } = this.props
+    return !app || !app.appSrc || hidden
   }
-  navigateIFrame = (src, wrapper, app) => {
+  navigateIFrame = src => {
     // Rather than load src=undefined, this component hides itself. That way, if the user later
     // navigates back to the same src, we don't have to reload the iframe.
     if (!src) return
@@ -90,9 +88,7 @@ class AppIFrame extends React.Component {
     this.iframe.src = src
     containerNode.append(this.iframe)
 
-    if (wrapper && app) {
-      wrapper.runApp(this.iframe.contentWindow, app.proxyAddress)
-    }
+    this.props.onNavigate(this.props.app)
   }
   setProgressTimeout = (...args) => {
     this.progressTimer = setTimeout(...args)
@@ -151,6 +147,11 @@ class AppIFrame extends React.Component {
       onMessage(event)
     }
   }
+  handleIframeRef = iframe => {
+    const { iframeRef } = this.props
+    if (iframeRef) iframeRef(iframe)
+    this.iframe = iframe
+  }
   render() {
     const { ...props } = this.props
     const { hideProgressBar, loadProgress } = this.state
@@ -173,16 +174,18 @@ class AppIFrame extends React.Component {
           name="AppIFrame"
           frameBorder={0}
           onLoad={this.handleOnLoad}
-          innerRef={iframe => (this.iframe = iframe)}
+          innerRef={this.handleIframeRef}
           sandbox={SANDBOX}
-          style={{
-            display: show ? 'block' : 'none',
-          }}
+          style={{ display: show ? 'block' : 'none' }}
           {...props}
         />
       </React.Fragment>
     )
   }
+}
+
+AppIFrame.defaultProps = {
+  onNavigate: () => {},
 }
 
 const StyledIFrame = styled.iframe`
