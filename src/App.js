@@ -12,8 +12,8 @@ import initWrapper from './aragonjs-wrapper'
 import Web3 from 'web3'
 
 import {
-  actionIntent,
-  actionPaths,
+  // actionIntent,
+  // actionPaths,
   notifications,
   tokens,
   prices,
@@ -35,14 +35,8 @@ class App extends React.Component {
     path: '',
     search: '',
     notifications,
-    // signerOpened: false,
-    // web3Action: {},
-    signerOpened: true,
-    web3Action: {
-      error: null,
-      intent: actionIntent,
-      paths: actionPaths,
-    },
+    signerOpened: false,
+    web3Action: {},
   }
   constructor() {
     super()
