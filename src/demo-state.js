@@ -170,3 +170,23 @@ export const permissions = {
     },
   ],
 }
+
+export const network = 'rinkeby'
+export const actionIntent = {
+  description: 'perform a payment to',
+  to: '0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be',
+}
+export const actionPaths = [
+  {
+    appName: 'Voting (ANT)',
+    description:
+      'The Voting (ANT) app will create a new voting for ANT holders to decide whether to perform this action or not.',
+    tx: { from: null, to: null, data: null },
+  },
+  {
+    appName: 'Tokens (XVT) -> Voting (ANT)',
+    description:
+      '1. The Tokens (XVT) app will forward actions requested by XVT holders.\n2. The Voting (ANT) app will create a new voting for ANT holders to decide whether to perform this action or not.',
+    tx: { from: null, to: null, data: null },
+  },
+]

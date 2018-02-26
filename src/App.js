@@ -1,16 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
 import createHistory from 'history/createHashHistory'
-import { AragonApp } from '@aragon/ui'
+import { AragonApp, SidePanel } from '@aragon/ui'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
+import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import Permissions from './apps/Permissions/Permissions'
 import initWrapper from './aragonjs-wrapper'
 import Web3 from 'web3'
 
 import {
+  // actionIntent,
+  // actionPaths,
   notifications,
   tokens,
   prices,
@@ -31,8 +34,9 @@ class App extends React.Component {
     lastPath: '',
     path: '',
     search: '',
-    sidePanelOpened: false,
     notifications,
+    signerOpened: false,
+    web3Action: {},
   }
   constructor() {
     super()
@@ -45,6 +49,9 @@ class App extends React.Component {
     this.state.search = search
     this.state.appInstance = this.appInstance(path, search)
     this.state.apps = this.getCache().apps || []
+
+    // TODO: initialize web3 instance with browser-provided provider
+    this.web3 = {}
 
     initWrapper(DAO, ENS, { provider: PROVIDER }).then(wrapper => {
       this.setState({ wrapper })
@@ -139,6 +146,23 @@ class App extends React.Component {
       params ? encodeURIComponent(JSON.stringify(params)) : null
     )
   }
+  handleSignerClose = () => {
+    this.setState({
+      signerOpened: false,
+    })
+  }
+  handleSignerTransitionEnd = opened => {
+    // Reset signer state only after it has finished transitioning out
+    if (!opened) {
+      this.setState({
+        web3Action: {},
+      })
+    }
+  }
+  handleSigningWeb3Tx = ({ data, from, to }) => {
+    // TODO: handle web3 signing before reseting signing state
+    Promise.resolve().then(this.handleSignerClose)
+  }
   isAppInstalled(appId) {
     const { apps } = this.state
     return (
@@ -173,17 +197,23 @@ class App extends React.Component {
       params ? `?params=${params}` : ''
     )
   }
-  openSidePanel = () => {
-    this.setState({ sidePanelOpened: true })
-  }
-  closeSidePanel = () => {
-    this.setState({ sidePanelOpened: false })
+  showWeb3ActionSigner = (intent, { error, paths }) => {
+    this.setState({
+      signerOpened: true,
+      web3Action: {
+        error,
+        intent,
+        paths,
+      },
+    })
   }
   render() {
     const {
-      appInstance: { appId, instanceId, params },
-      notifications,
       apps,
+      notifications,
+      signerOpened,
+      web3Action,
+      appInstance: { appId, instanceId, params },
     } = this.state
     return (
       <AragonApp publicUrl="/aragon-ui/">
@@ -197,6 +227,19 @@ class App extends React.Component {
           />
           <AppScreen>{this.renderApp(appId, params)}</AppScreen>
         </Main>
+        <SidePanel
+          onClose={this.handleSignerClose}
+          onTransitionEnd={this.handleSignerTransitionEnd}
+          opened={signerOpened}
+          title="Sign Transaction"
+        >
+          <SignerPanelContent
+            onClose={this.handleSignerClose}
+            onSign={this.handleSigningWeb3Tx}
+            web3={this.web3}
+            {...web3Action}
+          />
+        </SidePanel>
       </AragonApp>
     )
   }
