@@ -2,12 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import createHistory from 'history/createHashHistory'
 import { AragonApp, SidePanel } from '@aragon/ui'
+import { Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
-import Permissions from './apps/Permissions/Permissions'
 import initWrapper from './aragonjs-wrapper'
 import Web3 from 'web3'
 
@@ -113,7 +113,6 @@ class App extends React.Component {
   setCache(obj) {
     localStorage.setItem('wrapper-cache', JSON.stringify(obj))
   }
-
   getAppSrc(app = {}) {
     const hash = app.content && app.content.location
     if (!hash) return ''
@@ -126,7 +125,6 @@ class App extends React.Component {
 
     return `https://gateway.ipfs.io/ipfs/${hash}/`
   }
-
   handleNavigateBack = () => {
     this.state.lastPath ? this.history.goBack() : this.history.replace('/')
   }
@@ -266,6 +264,10 @@ class App extends React.Component {
           onParamsRequest={this.handleParamsRequest}
         />
       )
+    }
+
+    if (appId === 'settings') {
+      return <Settings />
     }
 
     const app = apps.find(app => app.appId === appId)

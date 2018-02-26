@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button, Info, RadioList, SafeLink } from '@aragon/ui'
-import { network } from '../../demo-state'
+import { makeEtherscanBaseUrl } from '../../utils'
+import { settings } from '../../demo-state'
 
-const etherscanBaseUrl = `https://${
-  network === 'mainnet' ? '' : `${network}.`
-}etherscan.io`
+const { network } = settings
+const etherscanBaseUrl = makeEtherscanBaseUrl(network)
 
 const SignerPanelContent = ({
   error,
