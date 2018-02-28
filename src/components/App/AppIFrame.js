@@ -42,6 +42,10 @@ const SANDBOX = [
 ].join(' ')
 
 class AppIFrame extends React.Component {
+  static defaultProps = {
+    onMessage: noop,
+    onLoad: noop,
+  }
   state = {
     hideProgressBar: true,
     loadProgress: 0,
@@ -134,16 +138,12 @@ class AppIFrame extends React.Component {
     this.iframe.contentWindow.postMessage(data, '*')
   }
   handleOnLoad = (...args) => {
-    const { onLoad } = this.props
     this.endProgress()
-    if (typeof onLoad === 'function') {
-      onLoad(...args)
-    }
+    this.props.onLoad(...args)
   }
   handleReceiveMessage = event => {
     const { onMessage } = this.props
     if (
-      typeof onMessage === 'function' &&
       // Make sure the event actually came from the iframe window
       // We can't use event.origin as it's always null due to the origin sandboxing
       event.source === this.iframe.contentWindow
