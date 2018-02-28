@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button, Info, RadioList, SafeLink } from '@aragon/ui'
+import { noop } from '../../utils'
 import { network } from '../../demo-state'
 
 const etherscanBaseUrl = `https://${
@@ -30,8 +31,8 @@ const SignerPanelContent = ({
 SignerPanelContent.defaultProps = {
   intent: {},
   paths: [],
-  onClose: () => {},
-  onSign: () => {},
+  onClose: noop,
+  onSign: noop,
 }
 
 class ActionPathsContent extends React.Component {

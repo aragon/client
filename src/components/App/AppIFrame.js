@@ -43,8 +43,8 @@ const SANDBOX = [
 
 class AppIFrame extends React.Component {
   static defaultProps = {
-    onMessage: () => {},
-    onLoad: () => {},
+    onMessage: noop,
+    onLoad: noop,
   }
   state = {
     hideProgressBar: true,
