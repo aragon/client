@@ -10,14 +10,10 @@ class MenuPanelAppGroup extends React.Component {
     instances: [],
   }
   handleAppClick = () => {
-    const firstInstance = this.props.instances[0]
-    this.props.onActivate(
-      this.props.appId,
-      firstInstance ? firstInstance.id : ''
-    )
+    this.props.onActivate(this.props.appId)
   }
   handleInstanceClick = instanceId => {
-    this.props.onActivate(this.props.appId, instanceId)
+    this.props.onActivate(instanceId)
   }
   render() {
     const { icon, name, instances, active, activeInstanceId } = this.props

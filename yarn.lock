@@ -7985,7 +7985,7 @@ web3-shh@1.0.0-beta.30:
     web3-core-subscriptions "1.0.0-beta.30"
     web3-net "1.0.0-beta.30"
 
-web3-utils@1.0.0-beta.30, web3-utils@^1.0.0-beta.27:
+web3-utils@1.0.0-beta.30, web3-utils@^1.0.0-beta.27, web3-utils@^1.0.0-beta.30:
   version "1.0.0-beta.30"
   resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.0.0-beta.30.tgz#eae408cc8d6d6fecc8d5097cfead51773f231ff9"
   dependencies:

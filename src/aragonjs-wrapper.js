@@ -1,18 +1,11 @@
-// import Web3 from 'web3'
 import Aragon from '@aragon/wrapper'
 import { noop } from './utils'
+
+const ACCOUNTS_POLL_EVERY = 2000
 
 const IPFS_CONF_DEFAULT = {
   rpc: { host: 'ipfs.infura.io', port: '5001', protocol: 'https' },
 }
-
-const getCache = () => JSON.parse(localStorage.getItem('wrapper-cache') || '{}')
-
-const setCache = obj =>
-  localStorage.setItem(
-    'wrapper-cache',
-    JSON.stringify(Object.assign({}, getCache(), obj))
-  )
 
 const appSrc = (app = {}) => {
   const hash = app.content && app.content.location
@@ -28,7 +21,7 @@ const appSrc = (app = {}) => {
 }
 
 // Filter out apps without UI and add an appSrc property
-const prepareMenuApps = apps =>
+const prepareFrontendApps = apps =>
   apps
     .filter(app => app.content && app.name !== 'Vault')
     .map(app => ({ ...app, appSrc: appSrc(app) }))
@@ -38,61 +31,65 @@ const initWrapper = async (
   ensRegistryAddress,
   {
     provider,
-    signingProvider = null,
+    walletProvider = null,
     ipfsConf = IPFS_CONF_DEFAULT,
+    onError = noop,
     onApps = noop,
-    onMenuApps = noop,
     onForwarders = noop,
     onTransaction = noop,
-    onWrapper = noop,
-    onSigningWeb3 = noop,
-    onAccount = noop,
+    onWeb3 = noop,
+    onAccounts = noop,
   } = {}
 ) => {
-  const initialCache = getCache()
-
-  onApps(initialCache.apps || [])
-  onMenuApps(initialCache.menuApps || [])
-
   const wrapper = new Aragon(daoAddress, {
     ensRegistryAddress,
     provider,
     apm: { ipfs: ipfsConf },
   })
 
-  // TODO: using window.web3 instead of new Web3 for now,
-  // to make MetaMask work with Ganache.
-  // const signingWeb3 = new Web3(signingProvider || provider)
-  const signingWeb3 = window.web3
+  // TODO: using window.web3 instead of new Web3(provider) for now, to make
+  // MetaMask work with Ganache.
 
-  onSigningWeb3(signingWeb3)
+  // const web3 = new Web3(walletProvider || provider)
+  const web3 = window.web3
+  onWeb3(web3)
 
-  const [, account] = await Promise.all([
-    wrapper.init(),
+  const pollAccounts = () => {
+    web3.eth.getAccounts((err, accounts) => {
+      onAccounts(accounts || [])
+      setTimeout(pollAccounts, ACCOUNTS_POLL_EVERY)
+    })
+  }
+  pollAccounts()
 
-    // getAccounts() doesn’t return a promise until 1.0
-    new Promise((resolve, reject) => {
-      signingWeb3.eth.getAccounts((err, accounts) => {
-        if (err) return reject(err)
-        resolve(accounts)
-      })
-    }).then(accounts => accounts[0]),
-  ])
-  onAccount(account || null)
+  try {
+    await wrapper.init()
+  } catch (err) {
+    if (err.message === 'connection not open') {
+      onError('NO_CONNECTION')
+      return
+    }
+    throw err
+  }
 
   const { apps, forwarders, transactions } = wrapper
 
-  apps.subscribe(apps => {
-    const menuApps = prepareMenuApps(apps)
-    setCache({ apps, menuApps })
-    onApps(apps)
-    onMenuApps(menuApps)
-  })
+  const subscriptions = {
+    apps: apps.subscribe(apps => {
+      const frontendApps = prepareFrontendApps(apps)
+      onApps(frontendApps, apps)
+    }),
+    forwarders: forwarders.subscribe(onForwarders),
+    transactions: transactions.subscribe(onTransaction),
+  }
 
-  forwarders.subscribe(onForwarders)
-  transactions.subscribe(onTransaction)
+  wrapper.cancel = () => {
+    Object.values(subscriptions).forEach(subscription => {
+      subscription.unsubscribe()
+    })
+  }
 
-  onWrapper(wrapper)
+  return wrapper
 }
 
 export default initWrapper
