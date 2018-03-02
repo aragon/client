@@ -35,6 +35,8 @@ SignerPanelContent.defaultProps = {
   onSign: noop,
 }
 
+const RADIO_ITEM_TITLE_LENGTH = 30
+
 class ActionPathsContent extends React.Component {
   state = {
     selected: 0,
@@ -50,19 +52,25 @@ class ActionPathsContent extends React.Component {
   render() {
     const { intent: { description, to, tx }, paths } = this.props
     const { selected } = this.state
-    const radioItems = paths.map(({ appName, description }) => ({
-      description,
-      title: appName,
-    }))
+    const radioItems = paths.map(({ appName, description }) => {
+      const shortName =
+        appName.length > RADIO_ITEM_TITLE_LENGTH
+          ? appName.slice(0, RADIO_ITEM_TITLE_LENGTH) + '…'
+          : appName
+      return {
+        description,
+        title: <span title={appName}>{shortName}</span>,
+      }
+    })
     const showPaths = !tx && paths.length
     return (
       <React.Fragment>
         {showPaths ? (
           <ActionContainer>
-            <Info.Permissions title="Permission note:">
+            {/* <Info.Permissions title="Permission note:">
               You cannot directly perform this action. You do not have the
               necessary permissions.
-            </Info.Permissions>
+            </Info.Permissions> */}
             <Actions>
               <RadioList
                 title="Action Requirement"
