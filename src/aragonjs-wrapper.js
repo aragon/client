@@ -1,4 +1,5 @@
 import Aragon from '@aragon/wrapper'
+import Messenger, { providers } from '@aragon/messenger'
 import { noop } from './utils'
 
 const ACCOUNTS_POLL_EVERY = 2000
@@ -81,11 +82,24 @@ const initWrapper = async (
     }),
     forwarders: forwarders.subscribe(onForwarders),
     transactions: transactions.subscribe(onTransaction),
+    connectedApp: null,
+  }
+
+  wrapper.connectAppIframe = (iframeElt, proxyAddress) => {
+    const provider = new providers.WindowMessage(iframeElt.contentWindow)
+    const result = wrapper.runApp(provider, proxyAddress)
+    if (subscriptions.connectedApp) {
+      subscriptions.connectedApp.unsubscribe()
+    }
+    subscriptions.connectedApp = result.shutdown
+    return result
   }
 
   wrapper.cancel = () => {
     Object.values(subscriptions).forEach(subscription => {
-      subscription.unsubscribe()
+      if (subscription) {
+        subscription.unsubscribe()
+      }
     })
   }
 

@@ -46,6 +46,8 @@ const SANDBOX = [
 
 class AppIFrame extends React.Component {
   static defaultProps = {
+    onNavigate: noop,
+    iframeRef: noop,
     onMessage: noop,
     onLoad: noop,
   }
@@ -74,15 +76,18 @@ class AppIFrame extends React.Component {
     return !app || !app.appSrc || hidden
   }
   navigateIFrame = src => {
-    // Rather than load src=undefined, this component hides itself. That way, if the user later
-    // navigates back to the same src, we don't have to reload the iframe.
+    // Rather than load src=undefined, this component hides itself. That way,
+    // if the user later navigates back to the same src, we don't have to
+    // reload the iframe.
     if (!src) return
 
-    // Cache src to avoid cases where the iframe would load the same page as before
+    // Cache src to avoid cases where the iframe would load the same page as
+    // before
     this.src = src
     this.setProgressTimeout(this.startProgress(), 100)
 
-    // Detach the iframe from the DOM before setting the src to avoid adding history state
+    // Detach the iframe from the DOM before setting the src to avoid adding
+    // history state
     const containerNode = this.iframe.parentNode
     this.iframe.remove()
     this.iframe.src = src
@@ -149,7 +154,7 @@ class AppIFrame extends React.Component {
   }
   handleIframeRef = iframe => {
     const { iframeRef } = this.props
-    if (iframeRef) iframeRef(iframe)
+    iframeRef(iframe)
     this.iframe = iframe
   }
   render() {
@@ -163,8 +168,9 @@ class AppIFrame extends React.Component {
     // Remove onLoad prop as we wrap it with our own
     delete props.onLoad
 
-    // Remove src prop as we use manage the src ourselves to avoid adding duplicate history entries
-    // every time the src changes (see `navigateIFrame()`)
+    // Remove src prop as we use manage the src ourselves to avoid adding
+    // duplicate history entries every time the src changes (see
+    // `navigateIFrame()`)
     delete props.src
 
     return (
@@ -172,7 +178,7 @@ class AppIFrame extends React.Component {
         {progressBar}
         <StyledIFrame
           name="AppIFrame"
-          frameBorder={0}
+          frameBorder="0"
           onLoad={this.handleOnLoad}
           innerRef={this.handleIframeRef}
           sandbox={SANDBOX}
@@ -182,10 +188,6 @@ class AppIFrame extends React.Component {
       </React.Fragment>
     )
   }
-}
-
-AppIFrame.defaultProps = {
-  onNavigate: () => {},
 }
 
 const StyledIFrame = styled.iframe`

@@ -20,9 +20,11 @@ import {
 class Wrapper extends React.Component {
   static defaultProps = {
     wrapper: null,
+    web3: null,
     locator: {},
     apps: [],
     account: '',
+    transactionBag: null,
     historyBack: () => {},
     historyPush: () => {},
   }
@@ -30,18 +32,17 @@ class Wrapper extends React.Component {
     appInstance: {},
     notifications,
     signerOpened: false,
-    transactionBag: null,
     web3Action: {},
   }
-  componentWillReceiveProps({ account }) {
+  componentWillReceiveProps({ account, transactionBag }) {
     if (account && account !== this.props.account) {
-      console.log('account', account)
       this.sendAccountToApp(account)
+    }
+    if (transactionBag && transactionBag !== this.props.transactionBag) {
+      this.handleTransaction(transactionBag)
     }
   }
   openApp = (appId, params) => {
-    console.log('open app', appId, params)
-
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, appId: appId, params }))
   }
@@ -64,41 +65,41 @@ class Wrapper extends React.Component {
       this.sendAccountToApp()
     }
   }
-  handleIframeNavigate = app => {
-    if (app && this.props.wrapper && this.appIframeElt) {
-      this.props.wrapper.runApp(
-        this.appIframeElt.contentWindow,
-        app.proxyAddress
-      )
-      this.sendAccountToApp()
+  handleAppIframeLoad = event => {
+    const { apps, wrapper, locator: { appId } } = this.props
+    const app = wrapper && apps.find(app => app.appId === appId)
+
+    if (!app || !wrapper) {
+      console.error('The app cannot be connected to aragon.js')
     }
+
+    wrapper.connectAppIframe(event.target, app.proxyAddress)
+    this.appIframe.sendMessage({
+      from: 'wrapper',
+      name: 'ready',
+      value: true,
+    })
+    this.sendAccountToApp()
   }
   handleParamsRequest = params => {
     // const { appId, } = this.state.appInstance
     // this.openApp(appId, params)
   }
-  handleTransaction = transactionBag => {
-    const { transaction } = transactionBag
-    this.setState({ transactionBag }, () => {
-      this.showWeb3ActionSigner(
-        { to: transaction.to },
-        {
-          error: null,
-          paths: [
-            {
-              appName: transaction.from,
-              description: 'This account can perform the action.',
-              tx: transaction,
-            },
-          ],
-        }
-      )
-    })
+  handleTransaction = ({ transaction }) => {
+    this.showWeb3ActionSigner(
+      {
+        to: transaction.to,
+        tx: transaction,
+        description: transaction.description,
+      },
+      { error: null }
+    )
   }
   handleSigningWeb3Tx = ({ data, from, to }) => {
-    const { transactionBag } = this.state
+    const { transactionBag, web3 } = this.props
     const { transaction, accept, reject } = transactionBag
-    this.signingWeb3.eth.sendTransaction(transaction, (err, res) => {
+
+    web3.eth.sendTransaction(transaction, (err, res) => {
       this.handleSignerClose()
 
       if (err) {
@@ -112,10 +113,7 @@ class Wrapper extends React.Component {
     })
   }
   handleSignerClose = () => {
-    this.setState({
-      signerOpened: false,
-      transactionBag: null,
-    })
+    this.setState({ signerOpened: false })
   }
   handleSignerTransitionEnd = opened => {
     // Reset signer state only after it has finished transitioning out
@@ -146,7 +144,7 @@ class Wrapper extends React.Component {
   }
   render() {
     const { notifications, signerOpened, web3Action } = this.state
-    const { apps, locator: { appId, params } } = this.props
+    const { apps, web3, locator: { appId, params } } = this.props
     return (
       <React.Fragment>
         <Main>
@@ -168,7 +166,7 @@ class Wrapper extends React.Component {
           <SignerPanelContent
             onClose={this.handleSignerClose}
             onSign={this.handleSigningWeb3Tx}
-            web3={this.signingWeb3}
+            web3={web3}
             {...web3Action}
           />
         </SidePanel>
@@ -176,9 +174,7 @@ class Wrapper extends React.Component {
     )
   }
   renderApp(appId, params) {
-    const { apps } = this.props
-
-    console.log('APPID', appId)
+    const { apps, wrapper } = this.props
 
     if (appId === 'home') {
       return (
@@ -202,15 +198,14 @@ class Wrapper extends React.Component {
       )
     }
 
-    const app = this.props.wrapper && apps.find(app => app.appId === appId)
+    const app = wrapper && apps.find(app => app.appId === appId)
 
     return app ? (
       <AppIFrame
         app={app}
         ref={this.handleAppIframeRef}
-        iframeRef={iframe => (this.appIframeElt = iframe)}
-        onNavigate={this.handleIframeNavigate}
         onMessage={this.handleAppIframeMessage}
+        onLoad={this.handleAppIframeLoad}
       />
     ) : (
       <App404 onNavigateBack={this.props.historyBack} />

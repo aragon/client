@@ -49,6 +49,19 @@ class ActionPathsContent extends React.Component {
     const { selected } = this.state
     onSign(intent.tx || paths[selected].tx)
   }
+  renderDescription(showPaths, description, tx = {}, to = '') {
+    if (tx.description) {
+      return tx.description
+    }
+    return (
+      <span>
+        {`This transaction will ${
+          showPaths ? 'eventually' : ''
+        } ${description || 'perform an action on'}`}{' '}
+        {to ? <AddressLink to={to} /> : 'this app'}.
+      </span>
+    )
+  }
   render() {
     const { intent: { description, to, tx }, paths } = this.props
     const { selected } = this.state
@@ -90,11 +103,8 @@ class ActionPathsContent extends React.Component {
             You can directly perform this action:
           </DirectActionHeader>
         )}
-        <Info.Action icon={null} title="Action to be triggered">
-          {`This transaction will ${
-            showPaths ? 'eventually' : ''
-          } ${description || 'perform an action on'}`}{' '}
-          {to ? <AddressLink to={to} /> : 'this app'}.
+        <Info.Action icon={null} title="Action to be triggered:">
+          {this.renderDescription(showPaths, description, tx, to)}
         </Info.Action>
         <SignerButton onClick={this.handleSign}>Sign Transaction</SignerButton>
       </React.Fragment>

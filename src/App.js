@@ -19,7 +19,7 @@ class App extends React.Component {
     account: '',
     apps: [],
     web3: null,
-    txBag: null,
+    transactionBag: null,
   }
 
   history = createHistory()
@@ -97,9 +97,9 @@ class App extends React.Component {
       onForwarders: forwarders => {
         console.log('forwarders', forwarders)
       },
-      onTransaction: txBag => {
-        console.log('transaction bag', txBag)
-        this.setState({ txBag })
+      onTransaction: transactionBag => {
+        console.log('transaction bag', transactionBag)
+        this.setState({ transactionBag })
       },
     }).then(wrapper => {
       console.log('wrapper', wrapper)
@@ -108,7 +108,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { locator, wrapper, apps, account } = this.state
+    const { locator, wrapper, apps, account, transactionBag } = this.state
     const { mode } = locator
     if (!mode) return null
     return (
@@ -121,6 +121,8 @@ class App extends React.Component {
             wrapper={wrapper}
             apps={apps}
             account={account}
+            web3={window.web3}
+            transactionBag={transactionBag}
           />
         )}
         {(mode === 'home' || mode === 'setup') && (
