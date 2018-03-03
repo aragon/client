@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 
-#### 📝 Please submit support related issues in our centralized [issue tracker](http://github.com/aragon/issues/issues).
+#### 📝 Please submit support related issues in our centralized [issue tracker](http://github.com/aragon/aragon/issues).
 #### 🔧 For technical stuff, it is fine to use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat) channel in RocketChat.
 #### 🦋 For an overview of what change in every version check the [changelog](https://github.com/aragon/aragon/blob/master/changelog.md)
 
