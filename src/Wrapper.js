@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { providers } from '@aragon/messenger'
 import { SidePanel } from '@aragon/ui'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
@@ -16,6 +17,8 @@ import {
   groups,
   homeActions,
 } from './demo-state'
+
+const { WindowMessage } = providers
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -67,7 +70,7 @@ class Wrapper extends React.Component {
   handleIframeNavigate = app => {
     if (app && this.props.wrapper && this.appIframeElt) {
       this.props.wrapper.runApp(
-        this.appIframeElt.contentWindow,
+        WindowMessage(this.appIframeElt.contentWindow),
         app.proxyAddress
       )
       this.sendAccountToApp()
