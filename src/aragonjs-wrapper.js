@@ -1,5 +1,5 @@
 import Aragon from '@aragon/wrapper'
-import Messenger, { providers } from '@aragon/messenger'
+import { providers } from '@aragon/messenger'
 import { noop } from './utils'
 
 const ACCOUNTS_POLL_EVERY = 2000
@@ -57,7 +57,9 @@ const initWrapper = async (
 
   const pollAccounts = () => {
     web3.eth.getAccounts((err, accounts) => {
-      onAccounts(accounts || [])
+      if (!err) {
+        onAccounts(accounts || [])
+      }
       setTimeout(pollAccounts, ACCOUNTS_POLL_EVERY)
     })
   }
