@@ -9,13 +9,7 @@ import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath } from './routing'
 
-import {
-  notifications,
-  tokens,
-  prices,
-  groups,
-  homeActions,
-} from './demo-state'
+import { tokens, prices, groups, homeActions } from './demo-state'
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -30,7 +24,6 @@ class Wrapper extends React.Component {
   }
   state = {
     appInstance: {},
-    notifications,
     signerOpened: false,
     web3Action: {},
   }
@@ -80,6 +73,13 @@ class Wrapper extends React.Component {
       value: true,
     })
     this.sendAccountToApp()
+  }
+  handleNotificationsClearAll = () => {
+    const { wrapper } = this.props
+    wrapper && wrapper.clearNotifications()
+  }
+  handleNotificationNavigation = (id, app, context) => {
+    // TODO
   }
   handleParamsRequest = params => {
     // const { appId, } = this.state.appInstance
@@ -143,8 +143,8 @@ class Wrapper extends React.Component {
     })
   }
   render() {
-    const { notifications, signerOpened, web3Action } = this.state
-    const { apps, web3, locator: { appId, params } } = this.props
+    const { signerOpened, web3Action } = this.state
+    const { apps, web3, wrapper, locator: { appId, params } } = this.props
     return (
       <React.Fragment>
         <Main>
@@ -152,8 +152,10 @@ class Wrapper extends React.Component {
             apps={apps}
             activeAppId={appId}
             activeInstanceId={appId}
-            notifications={notifications}
+            notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
+            onClearAllNotifications={this.handleNotificationsClearAll}
+            onOpenNotification={this.handleNotificationNavigation}
           />
           <AppScreen>{this.renderApp(appId, params)}</AppScreen>
         </Main>

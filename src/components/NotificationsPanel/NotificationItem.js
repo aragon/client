@@ -3,21 +3,33 @@ import styled from 'styled-components'
 import { theme, font } from '@aragon/ui'
 import { distanceInWordsStrict, format } from 'date-fns'
 
-const NotificationItem = ({ title, description, date, unread }) => (
-  <Main>
-    {unread && <Unread />}
-    <Header>
-      <Title>{title}</Title>
-      <Time datetime={format(date)}>
-        {`${distanceInWordsStrict(date, new Date())} ago`}
-      </Time>
-    </Header>
-    <p>{description}</p>
-  </Main>
-)
-
-NotificationItem.defaultProps = {
-  unread: false,
+class NotificationItem extends React.Component {
+  static defaultProps = {
+    onOpen: () => {},
+  }
+  handleNotificationClick = () => {
+    const { notification, onOpen } = this.props
+    onOpen(notification)
+  }
+  render() {
+    const {
+      notification: { body, date, read, title },
+      onOpen: ignoredOnOpen,
+      ...props
+    } = this.props
+    return (
+      <Main onClick={this.handleNotificationClick} {...props}>
+        {!read && <Unread />}
+        <Header>
+          <Title>{title}</Title>
+          <Time datetime={format(date)}>
+            {`${distanceInWordsStrict(date, new Date())} ago`}
+          </Time>
+        </Header>
+        <p>{body}</p>
+      </Main>
+    )
+  }
 }
 
 const Main = styled.div`

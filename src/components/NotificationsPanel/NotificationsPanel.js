@@ -1,30 +1,51 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, font, BadgeNumber } from '@aragon/ui'
+import { theme, font, observe, redraw, BadgeNumber } from '@aragon/ui'
 import NotificationItem from './NotificationItem'
+import { compose } from '../../utils'
 
-const NotificationsPanel = ({ notifications = [] }) => (
-  <Main>
-    <Header>
-      <Title>
-        <span>Notifications</span>
-        <BadgeNumber number={4} title={`${4} unread messages`} />
-      </Title>
-      <ActionLink>Clear all</ActionLink>
-    </Header>
-    <Content>
-      {notifications.map(({ date, title, description, unread }, i) => (
-        <NotificationItem
-          key={`${date}${i}`}
-          date={date}
-          title={title}
-          description={description}
-          unread={unread}
-        />
-      ))}
-    </Content>
-  </Main>
-)
+const REDRAW_TIME = 30 * 1000 // refresh dates every 30 sec
+
+class NotificationsPanel extends React.Component {
+  static defaultProps = {
+    onClearAllNotifications: () => {},
+    onOpenNotification: () => {},
+  }
+  handleOpenNotification = notification => {
+    notification.acknowledge && notification.acknowledge()
+    this.props.onOpenNotification(notification)
+  }
+  render() {
+    const {
+      notifications,
+      onClearAllNotifications,
+      onOpenNotification: ignoredOnOpenNotification,
+      ...props
+    } = this.props
+
+    const unread = notifications.filter(({ read }) => !read).length
+    return (
+      <Main {...props}>
+        <Header>
+          <Title>
+            <span>Notifications</span>
+            <BadgeNumber number={unread} title={`${unread} unread messages`} />
+          </Title>
+          <ActionLink onClick={onClearAllNotifications}>Clear all</ActionLink>
+        </Header>
+        <Content>
+          {notifications.map(notification => (
+            <NotificationItem
+              key={notification.id}
+              notification={notification}
+              onOpen={this.handleOpenNotification}
+            />
+          ))}
+        </Content>
+      </Main>
+    )
+  }
+}
 
 const Main = styled.aside`
   display: flex;
@@ -69,4 +90,15 @@ const Content = styled.nav`
   height: 100%;
 `
 
-export default NotificationsPanel
+const enhance = compose(
+  observe(
+    observable =>
+      observable.map(notifications => ({
+        notifications: [...notifications].reverse(),
+      })),
+    { notifications: [] }
+  ),
+  redraw(REDRAW_TIME)
+)
+
+export default enhance(NotificationsPanel)
