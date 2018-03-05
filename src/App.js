@@ -58,7 +58,6 @@ class App extends React.Component {
 
     // New DAO: need to reinit the wrapper
     if (locator.dao && (!prevLocator || locator.dao !== prevLocator.dao)) {
-      this.setState({ dao: locator.dao })
       this.updateDao(locator.dao)
     }
 
