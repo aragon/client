@@ -15,8 +15,8 @@ import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import provideNetwork from '../../context/provideNetwork'
 import { compose } from '../../utils'
 
-// const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY']
-const AVAILABLE_CURRENCIES = ['USD'] // Only use USD for now
+const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY']
+// const AVAILABLE_CURRENCIES = ['USD'] // Only use USD for now
 
 const CACHE_KEY = 'settings'
 
