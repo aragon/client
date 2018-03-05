@@ -1,7 +1,8 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
 import { AragonApp } from '@aragon/ui'
-import { addresses, web3Providers } from './environment'
+import { networkContextType } from './context/provideNetwork'
+import { contractAddresses, network, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
   initDaoBuilder,
@@ -11,6 +12,9 @@ import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 
 class App extends React.Component {
+  static childContextTypes = {
+    network: networkContextType,
+  }
   state = {
     locator: {},
     prevLocator: null,
@@ -32,6 +36,10 @@ class App extends React.Component {
     pollMainAccount(web3Providers.wallet, (account = null) => {
       this.setState({ account })
     })
+  }
+
+  getChildContext() {
+    return { network }
   }
 
   // Handle URL changes
@@ -74,7 +82,7 @@ class App extends React.Component {
   async updateDaoBuilder() {
     const daoBuilder = initDaoBuilder(
       web3Providers.wallet,
-      addresses.ensRegistry
+      contractAddresses.ensRegistry
     )
     this.setState({ daoBuilder })
   }
@@ -105,7 +113,7 @@ class App extends React.Component {
       this.setState({ wrapper: null })
     }
     console.log('init the wrapper', dao)
-    initWrapper(dao, addresses.ensRegistry, {
+    initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
       onError: name => {

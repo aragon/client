@@ -2,17 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { AppBar, Button, DropDown, Field, TextInput, theme } from '@aragon/ui'
 import Option from './components/Option'
-import { makeEtherscanBaseUrl } from '../../utils'
-import { settings } from '../../demo-state'
+import provideNetwork from '../../context/provideNetwork'
 
-const {
-  currencies,
-  network,
-  networkName,
-  organizationAddress,
-  defaultCurrency,
-} = settings
-const etherscanBaseUrl = makeEtherscanBaseUrl(network)
+const currencies = ['USD'] // Keep to USD for now
+const defaultCurrency = currencies[0]
+const organizationAddress = '0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be'
 
 const Main = styled.div`
   display: flex;
@@ -54,8 +48,8 @@ class Settings extends React.Component {
     })
   }
   render() {
+    const { network } = this.props
     const { selectedCurrency } = this.state
-    const etherscanUrl = `${etherscanBaseUrl}/address/${organizationAddress}`
     return (
       <Main>
         <StyledAppBar title="Your Settings" />
@@ -63,14 +57,19 @@ class Settings extends React.Component {
           <Content>
             <Option
               name="Organization Address"
-              text={`This organization is deployed on the ${networkName}.`}
+              text={`This organization is deployed on the ${network.name}.`}
             >
               <Field label="Address:">
                 <TextInput readOnly wide value={organizationAddress} />
               </Field>
-              <LinkButton href={etherscanUrl} target="_blank">
-                See on Etherscan
-              </LinkButton>
+              {network.etherscanBaseUrl && (
+                <LinkButton
+                  href={`${network.etherscanBaseUrl}/address/${organizationAddress}`}
+                  target="_blank"
+                >
+                  See on Etherscan
+                </LinkButton>
+              )}
             </Option>
             <Option
               name="Currency"
@@ -91,4 +90,4 @@ class Settings extends React.Component {
   }
 }
 
-export default Settings
+export default provideNetwork(Settings)
