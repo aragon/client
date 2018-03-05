@@ -176,6 +176,10 @@ class Wrapper extends React.Component {
   renderApp(appId, params) {
     const { apps, wrapper } = this.props
 
+    if (!wrapper) {
+      return <LoadingApps />
+    }
+
     if (appId === 'home') {
       return (
         <Home
@@ -229,5 +233,7 @@ const AppScreen = styled.div`
   height: 100%;
   overflow: auto;
 `
+
+const LoadingApps = () => <div />
 
 export default Wrapper
