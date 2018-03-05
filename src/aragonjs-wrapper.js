@@ -56,6 +56,9 @@ const initWrapper = async (
   onWeb3(web3)
 
   const pollAccounts = () => {
+    if (!web3) {
+      return
+    }
     web3.eth.getAccounts((err, accounts) => {
       if (!err) {
         onAccounts(accounts || [])

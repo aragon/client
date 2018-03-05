@@ -9,7 +9,7 @@ import Onboarding from './onboarding/Onboarding'
 
 // TODO: make these depend on the env / URL
 const PROVIDER = new Web3.providers.WebsocketProvider('ws://localhost:8545')
-const WALLET_PROVIDER = window.web3.currentProvider
+const WALLET_PROVIDER = window.web3 && window.web3.currentProvider
 const ENS = '0x409ba3dd291bb5d48d5b4404f5efa207441f6cba'
 
 class App extends React.Component {
