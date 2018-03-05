@@ -8,7 +8,7 @@ import * as Steps from './steps'
 import StepsBar from './StepsBar'
 import PrevNext from './PrevNext'
 
-import Home from './Home'
+import Start from './Start'
 import Template from './Template'
 import Domain from './Domain'
 
@@ -29,15 +29,15 @@ class Onboarding extends React.Component {
     onComplete: noop,
   }
   state = {
-    step: Steps.Home,
+    step: Steps.Start,
     direction: 1, // 1 = forward, -1 = backward
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
-      this.setState({ step: Steps.Home })
+      this.setState({ step: Steps.Start })
     }
   }
-  handleHomeCreate = () => {
+  handleStartCreate = () => {
     this.setState({
       step: Steps.Template,
       direction: 1,
@@ -52,7 +52,7 @@ class Onboarding extends React.Component {
       return
     }
     const newStepIndex = index + direction
-    const newStep = Steps.ProgressBarSteps[index + direction] || Steps.Home
+    const newStep = Steps.ProgressBarSteps[index + direction] || Steps.Start
 
     if (newStepIndex === Steps.ProgressBarSteps.length) {
       this.props.onComplete()
@@ -98,10 +98,10 @@ class Onboarding extends React.Component {
             <View>
               <Window>
                 <StepsBar step={step} />
-                <Screen active={step === Steps.Home}>
-                  <Home
-                    visible={step === Steps.Home}
-                    onCreate={this.handleHomeCreate}
+                <Screen active={step === Steps.Start}>
+                  <Start
+                    visible={step === Steps.Start}
+                    onCreate={this.handleStartCreate}
                     onJoin={this.props.onComplete}
                   />
                 </Screen>

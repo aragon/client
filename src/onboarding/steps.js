@@ -1,4 +1,4 @@
-export const Home = Symbol('Home')
+export const Start = Symbol('Start')
 export const Template = Symbol('Template')
 export const Domain = Symbol('Domain')
 export const Configure = Symbol('Configure')

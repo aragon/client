@@ -6,7 +6,7 @@ import { noop } from '../utils'
 import { lerp } from '../math-utils'
 import logo from './assets/logo-welcome.svg'
 
-class Home extends React.Component {
+class Start extends React.Component {
   static defaultProps = {
     onCreate: noop,
     onJoin: noop,
@@ -118,4 +118,4 @@ const Title = styled.h1`
   margin-bottom: 40px;
 `
 
-export default Home
+export default Start
