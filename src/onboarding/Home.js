@@ -1,12 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
-import {
-  theme,
-  spring as springConf,
-  Text,
-  Button,
-} from '@aragon/ui'
+import { theme, spring as springConf, Text, Button } from '@aragon/ui'
 import { noop } from '../utils'
 import { lerp } from '../math-utils'
 import logo from './assets/logo-welcome.svg'

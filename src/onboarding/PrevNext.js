@@ -14,7 +14,7 @@ class PrevNext extends React.Component {
         {({ showProgress }) => (
           <Main
             style={{
-              pointerEvents: visible? 'auto' : 'none',
+              pointerEvents: visible ? 'auto' : 'none',
               transform: `translateY(${lerp(showProgress, 40, 0)}px)`,
               opacity: showProgress,
             }}

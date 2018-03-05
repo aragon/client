@@ -1,11 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
-import {
-  theme,
-  spring as springConf,
-  Text,
-} from '@aragon/ui'
+import { theme, spring as springConf, Text } from '@aragon/ui'
 import { lerp } from '../math-utils'
 
 class Domain extends React.Component {
