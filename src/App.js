@@ -5,6 +5,7 @@ import { AragonApp } from '@aragon/ui'
 import { parsePath } from './routing'
 import initWrapper from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
+import Onboarding from './onboarding/Onboarding'
 
 // TODO: make these depend on the env / URL
 const PROVIDER = new Web3.providers.WebsocketProvider('ws://localhost:8545')
@@ -113,38 +114,22 @@ class App extends React.Component {
     if (!mode) return null
     return (
       <AragonApp publicUrl="/aragon-ui/">
-        {mode === 'app' && (
-          <Wrapper
-            historyBack={this.historyBack}
-            historyPush={this.historyPush}
-            locator={locator}
-            wrapper={wrapper}
-            apps={apps}
-            account={account}
-            web3={window.web3}
-            transactionBag={transactionBag}
-          />
-        )}
-        {(mode === 'home' || mode === 'setup') && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100vh',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              lineHeight: '1.8',
-            }}
-          >
-            Pass the DAO address in the URL, e.g.<br />
-            <code>
-              {`${window.location.protocol}//${
-                window.location.host
-              }/#/0x6fe95e08427f67c917f5fe2a158f3bf203ff4559`}
-            </code>
-          </div>
-        )}
+        <Wrapper
+          historyBack={this.historyBack}
+          historyPush={this.historyPush}
+          locator={locator}
+          wrapper={wrapper}
+          apps={apps}
+          account={account}
+          web3={window.web3}
+          transactionBag={transactionBag}
+        />
+        <Onboarding
+          visible={mode === 'home' || mode === 'setup'}
+          onComplete={() => {
+            this.historyPush('/0x6fe95e08427f67c917f5fe2a158f3bf203ff4559')
+          }}
+        />
       </AragonApp>
     )
   }
