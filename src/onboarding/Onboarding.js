@@ -119,7 +119,8 @@ class Onboarding extends React.Component {
                 </Screen>
                 <Footer>
                   <PrevNext
-                    visible={step !== Steps.Home}
+                    visible={step !== Steps.Start}
+                    direction={direction}
                     onPrev={this.prevStep}
                     onNext={this.nextStep}
                   />

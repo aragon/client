@@ -6,7 +6,7 @@ import { lerp } from '../math-utils'
 
 class PrevNext extends React.Component {
   render() {
-    const { onPrev, onNext, visible } = this.props
+    const { onPrev, onNext, visible, direction } = this.props
     return (
       <Motion
         style={{ showProgress: spring(Number(visible), springConf('fast')) }}
@@ -15,7 +15,10 @@ class PrevNext extends React.Component {
           <Main
             style={{
               pointerEvents: visible ? 'auto' : 'none',
-              transform: `translateY(${lerp(showProgress, 40, 0)}px)`,
+              transform:
+                direction === 1
+                  ? `translateY(${lerp(showProgress, 40, 0)}px)`
+                  : 'none',
               opacity: showProgress,
             }}
           >
