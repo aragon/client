@@ -47,12 +47,15 @@ class Onboarding extends React.Component {
   // Set the direction to 1 (next) or -1 (prev)
   moveStep = (direction = 1) => {
     const { step } = this.state
-    const index = Steps.ProgressBarSteps.indexOf(step)
+    const index = Steps.ProgressBarSteps.findIndex(
+      ({ step: _step }) => _step === step
+    )
     if (index === -1) {
       return
     }
     const newStepIndex = index + direction
-    const newStep = Steps.ProgressBarSteps[index + direction] || Steps.Start
+    const newStepWrapper = Steps.ProgressBarSteps[index + direction]
+    const newStep = newStepWrapper ? newStepWrapper.step : Steps.Start
 
     if (newStepIndex === Steps.ProgressBarSteps.length) {
       this.props.onComplete()

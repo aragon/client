@@ -7,10 +7,12 @@ import { lerp } from '../math-utils'
 
 class ProgressBar extends React.Component {
   static defaultProps = {
-    step: Steps.ProgressBarSteps[0],
+    step: Steps.ProgressBarSteps[0].step,
   }
   currentStepIndex() {
-    return Steps.ProgressBarSteps.indexOf(this.props.step)
+    return Steps.ProgressBarSteps.findIndex(
+      ({ step }) => step === this.props.step
+    )
   }
   render() {
     const stepIndex = this.currentStepIndex()
@@ -41,10 +43,9 @@ class ProgressBar extends React.Component {
               />
 
               <StepsContainer>
-                {this.renderStep('Choose Template', 0, stepProgress)}
-                {this.renderStep('Claim Domain', 1, stepProgress)}
-                {this.renderStep('Configure', 2, stepProgress)}
-                {this.renderStep('Launch', 3, stepProgress)}
+                {Steps.ProgressBarSteps.map(({ label }, index) =>
+                  this.renderStep(label, index, stepProgress)
+                )}
               </StepsContainer>
             </Progress>
           </Main>
@@ -56,7 +57,7 @@ class ProgressBar extends React.Component {
     const currentStepIndex = this.currentStepIndex()
     const animVisible = stepProgress + 0.05 >= index
     return (
-      <Step>
+      <Step key={index}>
         <Text
           color={
             currentStepIndex === index && animVisible
@@ -76,6 +77,7 @@ class ProgressBar extends React.Component {
 const COLOR_TEXT = '#C0C0C0'
 const COLOR_INACTIVE = '#D8D8D8'
 const COLOR_ACTIVE = '#02B9E4'
+const STEPS_COUNT = Steps.ProgressBarSteps.length
 
 const Main = styled.div`
   position: absolute;
@@ -97,8 +99,8 @@ const Line = styled.div`
   position: absolute;
   z-index: 1;
   bottom: 4px;
-  width: 75%;
-  margin-left: calc(25% / 2);
+  width: ${100 - 100 / STEPS_COUNT}%;
+  margin-left: calc(${100 / STEPS_COUNT}% / 2);
   height: 2px;
   background: ${({ active }) => (active ? COLOR_ACTIVE : COLOR_INACTIVE)};
 `
@@ -115,7 +117,7 @@ const Step = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 25%;
+  width: ${100 / STEPS_COUNT}%;
   height: 100%;
   text-align: center;
   color: ${COLOR_TEXT};
