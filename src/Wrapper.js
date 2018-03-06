@@ -47,25 +47,25 @@ class Wrapper extends React.Component {
     historyPush(getAppPath({ dao: locator.dao, appId: appId, params }))
   }
   sendAccountToApp = account => {
-    if (this.appIframe) {
-      this.appIframe.sendMessage({
+    if (this.appIFrame) {
+      this.appIFrame.sendMessage({
         from: 'wrapper',
         name: 'account',
         value: account,
       })
     }
   }
-  handleAppIframeRef = appIframe => {
-    this.appIframe = appIframe
+  handleAppIFrameRef = appIFrame => {
+    this.appIFrame = appIFrame
     this.sendAccountToApp()
   }
-  handleAppIframeMessage = ({ data }) => {
+  handleAppIFrameMessage = ({ data }) => {
     if (data.from !== 'app') return
     if (data.name === 'ready') {
       this.sendAccountToApp()
     }
   }
-  handleAppIframeLoad = event => {
+  handleAppIFrameLoad = event => {
     const { apps, wrapper, locator: { appId } } = this.props
     const app = wrapper && apps.find(app => app.appId === appId)
 
@@ -73,8 +73,8 @@ class Wrapper extends React.Component {
       console.error('The app cannot be connected to aragon.js')
     }
 
-    wrapper.connectAppIframe(event.target, app.proxyAddress)
-    this.appIframe.sendMessage({
+    wrapper.connectAppIFrame(event.target, app.proxyAddress)
+    this.appIFrame.sendMessage({
       from: 'wrapper',
       name: 'ready',
       value: true,
@@ -203,9 +203,9 @@ class Wrapper extends React.Component {
     return app ? (
       <AppIFrame
         app={app}
-        ref={this.handleAppIframeRef}
-        onMessage={this.handleAppIframeMessage}
-        onLoad={this.handleAppIframeLoad}
+        ref={this.handleAppIFrameRef}
+        onMessage={this.handleAppIFrameMessage}
+        onLoad={this.handleAppIFrameLoad}
       />
     ) : (
       <App404 onNavigateBack={this.props.historyBack} />

@@ -90,7 +90,7 @@ const initWrapper = async (
     connectedApp: null,
   }
 
-  wrapper.connectAppIframe = (iframeElt, proxyAddress) => {
+  wrapper.connectAppIFrame = (iframeElt, proxyAddress) => {
     const provider = new providers.WindowMessage(iframeElt.contentWindow)
     const result = wrapper.runApp(provider, proxyAddress)
     if (subscriptions.connectedApp) {
