@@ -26,3 +26,20 @@ const fetchUrl = async url => {
 
   return res.text()
 }
+
+export class WorkerSubscriptionPool {
+  workers = new Map()
+  addWorker = ({ app, subscription, worker }) => {
+    this.workers.set(app.proxyAddress, { app, subscription, worker })
+  }
+  hasWorker = proxyAddress => {
+    return this.workers.has(proxyAddress)
+  }
+  unsubscribe = () => {
+    this.workers.forEach(({ subscription, worker }) => {
+      // TODO: ask worker to nicely terminate itself first
+      worker.terminate()
+      subscription.unsubscribe()
+    })
+  }
+}

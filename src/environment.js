@@ -13,6 +13,8 @@ export const appIds = {
   Vault: '0x7e852e0fcfce6551c13800f1e7476f982525c2b5277ba14b24339c68416336d1',
 }
 
+export const appDefaults = {}
+
 export const appLocator = {
   [appIds['Voting']]: 'http://localhost:3001/',
 }
