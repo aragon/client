@@ -4,7 +4,7 @@ import { Motion, spring } from 'react-motion'
 import { noop } from '../utils'
 
 import * as Steps from './steps'
-import Templates, { Multisig, Democracy } from './templates'
+import Templates from './templates'
 
 import StepsBar from './StepsBar'
 import PrevNext from './PrevNext'
@@ -135,7 +135,7 @@ class Onboarding extends React.Component {
     return true
   }
   render() {
-    const { step, direction, template, domain, } = this.state
+    const { step, direction, template, domain } = this.state
     const { visible } = this.props
     const enableNext = this.isNextEnabled()
     const enablePrev = this.isPrevEnabled()
