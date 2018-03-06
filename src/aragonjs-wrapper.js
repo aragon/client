@@ -1,31 +1,26 @@
 import Aragon from '@aragon/wrapper'
 import { providers } from '@aragon/messenger'
+import { appIds, appLocator, ipfsDefaultConf } from './environment'
 import { noop } from './utils'
 
 const ACCOUNTS_POLL_EVERY = 2000
 
-const IPFS_CONF_DEFAULT = {
-  rpc: { host: 'ipfs.infura.io', port: '5001', protocol: 'https' },
-}
-
-const appSrc = (app = {}) => {
+const appSrc = (app = {}, gateway = ipfsDefaultConf.gateway) => {
   const hash = app.content && app.content.location
   if (!hash) return ''
 
-  // TODO: move this in the env settings
-  // This is the Voting app hash in the dev template
-  if (hash === 'QmV5sEjshcZ6mu6uFUhJkWM5nTa53wbHfRFDD4Qy2Yx88m') {
-    return 'http://localhost:3001/'
+  if (appLocator[app.appId]) {
+    return appLocator[app.appId]
   }
 
-  return `https://gateway.ipfs.io/ipfs/${hash}/`
+  return `${gateway}/${hash}/`
 }
 
 // Filter out apps without UI and add an appSrc property
-const prepareFrontendApps = apps =>
+const prepareFrontendApps = (apps, gateway) =>
   apps
-    .filter(app => app.content && app.name !== 'Vault')
-    .map(app => ({ ...app, appSrc: appSrc(app) }))
+    .filter(app => app.content && app.appId !== appIds['Vault'])
+    .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
 
 const initWrapper = async (
   daoAddress,
@@ -33,7 +28,7 @@ const initWrapper = async (
   {
     provider,
     walletProvider = null,
-    ipfsConf = IPFS_CONF_DEFAULT,
+    ipfsConf = ipfsDefaultConf,
     onError = noop,
     onApps = noop,
     onForwarders = noop,
@@ -82,7 +77,7 @@ const initWrapper = async (
 
   const subscriptions = {
     apps: apps.subscribe(apps => {
-      const frontendApps = prepareFrontendApps(apps)
+      const frontendApps = prepareFrontendApps(apps, ipfsConf.gateway)
       onApps(frontendApps, apps)
     }),
     forwarders: forwarders.subscribe(onForwarders),
