@@ -52,8 +52,8 @@ class MenuPanelAppGroup extends React.Component {
                 paddingBottom: `${5 * openProgress}px`,
               }}
             >
-              {instances.map(({ id, name }) => (
-                <li key={name}>
+              {instances.map(({ id, name, proxyAddress }) => (
+                <li key={proxyAddress}>
                   <MenuPanelInstance
                     id={id}
                     name={name}
