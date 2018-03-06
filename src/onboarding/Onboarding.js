@@ -34,6 +34,8 @@ class Onboarding extends React.Component {
   state = {
     template: null,
     domain: '',
+    configuration: null,
+    configurationStep: 1,
     step: Steps.Start,
     direction: 1, // 1 = forward, -1 = backward
   }
@@ -63,6 +65,14 @@ class Onboarding extends React.Component {
     this.setState({ domain })
   }
 
+  handleConfigureScreen = screen => {
+    this.configureScreen = screen
+  }
+
+  handleConfigureDone = conf => {
+    this.moveStep(1)
+  }
+
   // Set the direction to 1 (next) or -1 (prev)
   moveStep = (direction = 1) => {
     const { step } = this.state
@@ -85,12 +95,27 @@ class Onboarding extends React.Component {
       return
     }
 
-    this.setState({
-      step: newStep,
-      direction,
-    })
+    // Arriving on the Configure step
+    if (newStep !== step && newStep === Steps.Configure) {
+      if (this.configureScreen) {
+        this.configureScreen.reset()
+        this.configureScreen = null
+      }
+      this.setState({
+        configurationStep: 1,
+        configuration: null,
+      })
+    }
+
+    this.setState({ step: newStep, direction })
   }
   nextStep = () => {
+    const { step } = this.state
+    if (step === Steps.Configure && this.configureScreen) {
+      this.configureScreen.nextStep()
+      return
+    }
+
     this.moveStep(1)
   }
   prevStep = () => {
@@ -110,7 +135,7 @@ class Onboarding extends React.Component {
     return true
   }
   render() {
-    const { step, direction, template, domain } = this.state
+    const { step, direction, template, domain, } = this.state
     const { visible } = this.props
     const enableNext = this.isNextEnabled()
     const enablePrev = this.isPrevEnabled()
@@ -164,6 +189,9 @@ class Onboarding extends React.Component {
                   <Configure
                     visible={step === Steps.Configure}
                     direction={direction}
+                    template={template}
+                    onConfigureScreen={this.handleConfigureScreen}
+                    onConfigureDone={this.handleConfigureDone}
                   />
                 </Screen>
                 <Screen active={step === Steps.Launch}>

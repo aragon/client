@@ -1,17 +1,24 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
-import {
-  theme,
-  spring as springConf,
-  Text,
-  TextInput,
-} from '@aragon/ui'
+import { spring as springConf } from '@aragon/ui'
 import { lerp } from '../math-utils'
+import { noop } from '../utils'
+import { Multisig, Democracy } from './templates'
 
-class Configure extends React.Component {
+import ConfigureDemocracy from './ConfigureDemocracy'
+// import ConfigureMultisig from './ConfigureMultisig'
+
+class Configure extends React.PureComponent {
+  static defaultProps = {
+    template: null,
+    onConfigureDone: noop,
+  }
+  handleOnConfigureDone = conf => {
+    this.props.onConfigureDone(conf)
+  }
   render() {
-    const { visible, direction } = this.props
+    const { visible, direction, template } = this.props
     return (
       <Motion
         style={{
@@ -34,22 +41,39 @@ class Configure extends React.Component {
                 )}%)`,
               }}
             >
-              <Title>Configure Template</Title>
+              {this.renderTemplate(template)}
             </Content>
           </Main>
         )}
       </Motion>
     )
   }
+  renderTemplate(template) {
+    if (!template) return null
+
+    if (template === Democracy) {
+      return (
+        <ConfigureDemocracy
+          ref={screen => this.props.onConfigureScreen(screen)}
+          onConfigureDone={this.handleOnConfigureDone}
+        />
+      )
+    }
+
+    if (template === Multisig) {
+      return null
+    }
+  }
 }
 
 const Main = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
   height: 100%;
   padding: 100px;
+  padding-top: 140px;
 `
 
 const Content = styled.div`
@@ -57,20 +81,6 @@ const Content = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
-
-const Title = styled.h1`
-  font-size: 37px;
-  margin-bottom: 40px;
-`
-
-const Field = styled.p`
-  display: flex;
-  align-items: center;
-  margin-top: 40px;
-  label {
-    margin: 0 15px 0 10px;
-  }
 `
 
 export default Configure

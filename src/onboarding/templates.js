@@ -1,5 +1,5 @@
-import imgBlank from './assets/template-blank.svg'
-import imgStartup from './assets/template-startup.svg'
+// import imgBlank from './assets/template-blank.svg'
+// import imgStartup from './assets/template-startup.svg'
 import imgMultisig from './assets/template-multisig.svg'
 import imgDemocracy from './assets/template-democracy.svg'
 

@@ -84,11 +84,12 @@ class Template extends React.Component {
 
 const Main = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
   height: 100%;
   padding: 100px;
+  padding-top: 140px;
 `
 
 const Content = styled.div`
