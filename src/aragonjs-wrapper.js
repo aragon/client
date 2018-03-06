@@ -1,6 +1,6 @@
 import Aragon from '@aragon/wrapper'
 import { providers } from '@aragon/messenger'
-import { appLocator, ipfsDefaultConf } from './environment'
+import { appIds, appLocator, ipfsDefaultConf } from './environment'
 import { noop } from './utils'
 
 const ACCOUNTS_POLL_EVERY = 2000
@@ -9,8 +9,8 @@ const appSrc = (app = {}, gateway = ipfsDefaultConf.gateway) => {
   const hash = app.content && app.content.location
   if (!hash) return ''
 
-  if (appLocator[app.name]) {
-    return appLocator[app.name]
+  if (appLocator[app.appId]) {
+    return appLocator[app.appId]
   }
 
   return `${gateway}/${hash}/`
@@ -19,7 +19,7 @@ const appSrc = (app = {}, gateway = ipfsDefaultConf.gateway) => {
 // Filter out apps without UI and add an appSrc property
 const prepareFrontendApps = (apps, gateway) =>
   apps
-    .filter(app => app.content && app.name !== 'Vault')
+    .filter(app => app.content && app.appId !== appIds['Vault'])
     .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
 
 const initWrapper = async (
