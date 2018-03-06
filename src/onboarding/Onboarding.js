@@ -4,6 +4,7 @@ import { Motion, spring } from 'react-motion'
 import { noop } from '../utils'
 
 import * as Steps from './steps'
+import Templates, { Multisig, Democracy } from './templates'
 
 import StepsBar from './StepsBar'
 import PrevNext from './PrevNext'
@@ -11,6 +12,8 @@ import PrevNext from './PrevNext'
 import Start from './Start'
 import Template from './Template'
 import Domain from './Domain'
+import Configure from './Configure'
+import Launch from './Launch'
 
 const SPRING_SHOW = {
   stiffness: 120,
@@ -29,6 +32,8 @@ class Onboarding extends React.Component {
     onComplete: noop,
   }
   state = {
+    template: null,
+    domain: '',
     step: Steps.Start,
     direction: 1, // 1 = forward, -1 = backward
   }
@@ -42,6 +47,20 @@ class Onboarding extends React.Component {
       step: Steps.Template,
       direction: 1,
     })
+  }
+  handleStartRest = () => {
+    // Unset the template and the domain when the home screen finishes its
+    // transition
+    const { step } = this.state
+    if (step === Steps.Start) {
+      this.setState({ template: null, domain: '' })
+    }
+  }
+  handleTemplateSelect = (template = null) => {
+    this.setState({ template })
+  }
+  handleDomainChange = domain => {
+    this.setState({ domain })
   }
 
   // Set the direction to 1 (next) or -1 (prev)
@@ -77,9 +96,24 @@ class Onboarding extends React.Component {
   prevStep = () => {
     this.moveStep(-1)
   }
+  isNextEnabled() {
+    const { template, step, domain } = this.state
+    if (step === Steps.Template && !template) {
+      return false
+    }
+    if (step === Steps.Domain && !domain) {
+      return false
+    }
+    return true
+  }
+  isPrevEnabled() {
+    return true
+  }
   render() {
-    const { step, direction } = this.state
+    const { step, direction, template, domain } = this.state
     const { visible } = this.props
+    const enableNext = this.isNextEnabled()
+    const enablePrev = this.isPrevEnabled()
     return (
       <Motion
         style={{
@@ -106,26 +140,47 @@ class Onboarding extends React.Component {
                     visible={step === Steps.Start}
                     onCreate={this.handleStartCreate}
                     onJoin={this.props.onComplete}
+                    onRest={this.handleStartRest}
                   />
                 </Screen>
                 <Screen active={step === Steps.Template}>
                   <Template
                     visible={step === Steps.Template}
                     direction={direction}
+                    templates={Templates}
+                    activeTemplate={template}
+                    onSelect={this.handleTemplateSelect}
                   />
                 </Screen>
                 <Screen active={step === Steps.Domain}>
                   <Domain
                     visible={step === Steps.Domain}
                     direction={direction}
+                    domain={domain}
+                    onDomainChange={this.handleDomainChange}
+                  />
+                </Screen>
+                <Screen active={step === Steps.Configure}>
+                  <Configure
+                    visible={step === Steps.Configure}
+                    direction={direction}
+                  />
+                </Screen>
+                <Screen active={step === Steps.Launch}>
+                  <Launch
+                    visible={step === Steps.Launch}
+                    direction={direction}
+                    onConfirm={this.nextStep}
                   />
                 </Screen>
                 <Footer>
                   <PrevNext
-                    visible={step !== Steps.Start}
+                    visible={step !== Steps.Start && step !== Steps.Launch}
                     direction={direction}
                     onPrev={this.prevStep}
                     onNext={this.nextStep}
+                    enableNext={enableNext}
+                    enablePrev={enablePrev}
                   />
                 </Footer>
               </Window>

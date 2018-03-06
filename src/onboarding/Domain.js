@@ -1,27 +1,31 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
-import { theme, spring as springConf, Text } from '@aragon/ui'
+import {
+  theme,
+  spring as springConf,
+  Text,
+  TextInput,
+  IconCheck,
+} from '@aragon/ui'
 import { lerp } from '../math-utils'
+import { noop } from '../utils'
 
 class Domain extends React.Component {
-  state = {
-    // canHide: false,
+  static defaultProps = {
+    domain: '',
+    onDomainChange: noop,
   }
-  handleRest = () => {
-    this.setState({
-      // canHide: !this.props.visible,
-    })
+  handleDomainChange = event => {
+    this.props.onDomainChange(event.target.value)
   }
   render() {
-    const { visible, direction } = this.props
-    // const { canHide } = this.state
+    const { visible, direction, domain } = this.props
     return (
       <Motion
         style={{
           showProgress: spring(Number(visible), springConf('slow')),
         }}
-        onRest={this.handleRest}
       >
         {({ showProgress }) => (
           <Main
@@ -47,9 +51,25 @@ class Domain extends React.Component {
 
               <p>
                 <Text size="large" color={theme.textSecondary}>
-                  Check if your chosen URL for your organisation is available
+                  Check if your chosen URL for your organization is available
                 </Text>
               </p>
+
+              <Field>
+                <TextInput
+                  id="domain-field"
+                  placeholder="organizationname"
+                  onChange={this.handleDomainChange}
+                  style={{ textAlign: 'right' }}
+                  value={domain}
+                />
+                <label htmlFor="domain-field">
+                  <Text weight="bold"> .aragonid.eth</Text>
+                </label>
+                <CheckContainer active={domain}>
+                  <IconCheck />
+                </CheckContainer>
+              </Field>
             </Content>
           </Main>
         )}
@@ -77,6 +97,22 @@ const Content = styled.div`
 const Title = styled.h1`
   font-size: 37px;
   margin-bottom: 40px;
+`
+
+const Field = styled.p`
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+  label {
+    margin: 0 15px 0 10px;
+  }
+`
+
+const CheckContainer = styled.span`
+  width: 20px;
+  transform: scale(${({ active }) => (active ? '1, 1' : '0, 0')});
+  transform-origin: 50% 50%;
+  transition: transform 100ms ease-in-out;
 `
 
 export default Domain

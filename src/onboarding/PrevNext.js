@@ -6,7 +6,14 @@ import { lerp } from '../math-utils'
 
 class PrevNext extends React.Component {
   render() {
-    const { onPrev, onNext, visible, direction } = this.props
+    const {
+      onPrev,
+      onNext,
+      enablePrev,
+      enableNext,
+      visible,
+      direction,
+    } = this.props
     return (
       <Motion
         style={{ showProgress: spring(Number(visible), springConf('fast')) }}
@@ -22,10 +29,10 @@ class PrevNext extends React.Component {
               opacity: showProgress,
             }}
           >
-            <Button mode="text" onClick={onPrev}>
+            <Button mode="text" onClick={onPrev} disabled={!enablePrev}>
               Back
             </Button>
-            <StrongButton mode="strong" onClick={onNext}>
+            <StrongButton mode="strong" onClick={onNext} disabled={!enableNext}>
               Next
             </StrongButton>
           </Main>

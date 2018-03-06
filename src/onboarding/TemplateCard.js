@@ -5,23 +5,23 @@ import { noop } from '../utils'
 
 class TemplateCard extends React.Component {
   static defaultProps = {
-    index: -1,
+    template: null,
     active: false,
     onSelect: noop,
     label: '',
   }
   handleClick = () => {
-    this.props.onSelect(this.props.index)
+    this.props.onSelect(this.props.template)
   }
   render() {
-    const { active, img, label } = this.props
+    const { active, icon, label } = this.props
     return (
       <Main onClick={this.handleClick} active={active}>
         <Content>
           <CheckContainer active={active}>
             <IconCheck />
           </CheckContainer>
-          <img src={img} alt="" />
+          <img src={icon} alt="" />
           {label}
         </Content>
       </Main>

@@ -6,38 +6,23 @@ import { noop } from '../utils'
 import { lerp } from '../math-utils'
 import TemplateCard from './TemplateCard'
 
-import imgBlank from './assets/template-blank.svg'
-import imgStartup from './assets/template-startup.svg'
-import imgDemocracy from './assets/template-democracy.svg'
-import imgMultisig from './assets/template-multisig.svg'
-
-const TEMPLATES = [
-  ['Blank', imgBlank],
-  ['Startup', imgStartup],
-  ['Token project with democracy', imgDemocracy],
-  ['Token project with multisig', imgMultisig],
-]
-
 class Template extends React.Component {
   static defaultProps = {
     onSelect: noop,
   }
   state = {
     canHide: false,
-    selected: -1,
   }
   handleRest = () => {
     this.setState({
       canHide: !this.props.visible,
     })
   }
-  handleTemplateSelect = index => {
-    this.setState({ selected: index })
-    this.props.onSelect(index)
+  handleTemplateSelect = template => {
+    this.props.onSelect(template)
   }
   render() {
-    const { visible, direction } = this.props
-    const { selected } = this.state
+    const { visible, direction, templates, activeTemplate } = this.props
     return (
       <Motion
         style={{
@@ -63,29 +48,31 @@ class Template extends React.Component {
             >
               <Title>
                 <Text size="great" weight="bold" color={theme.textDimmed}>
-                  Create a new organisation
+                  Create a new organization
                 </Text>
               </Title>
 
               <p>
                 <Text size="large" color={theme.textSecondary}>
-                  Choose a template to get started quickly. Don’t worry - you
-                  can change it later
+                  Choose a template to get started quickly. Don’t worry − you
+                  can change it later.
                 </Text>
               </p>
 
               <Templates>
-                {TEMPLATES.map(([label, img], i) => (
-                  <TemplateCardWrapper key={i}>
-                    <TemplateCard
-                      index={i}
-                      img={img}
-                      label={label}
-                      active={i === selected}
-                      onSelect={this.handleTemplateSelect}
-                    />
-                  </TemplateCardWrapper>
-                ))}
+                {[...templates.entries()].map(
+                  ([template, { label, icon }], i) => (
+                    <TemplateCardWrapper key={i}>
+                      <TemplateCard
+                        template={template}
+                        icon={icon}
+                        label={label}
+                        active={template === activeTemplate}
+                        onSelect={this.handleTemplateSelect}
+                      />
+                    </TemplateCardWrapper>
+                  )
+                )}
               </Templates>
             </Content>
           </Main>

@@ -10,6 +10,7 @@ class Start extends React.Component {
   static defaultProps = {
     onCreate: noop,
     onJoin: noop,
+    onRest: noop,
   }
   state = {
     canHide: false,
@@ -18,6 +19,7 @@ class Start extends React.Component {
     this.setState({
       canHide: !this.props.visible,
     })
+    this.props.onRest()
   }
   render() {
     const { visible, onCreate, onJoin } = this.props
@@ -51,8 +53,8 @@ class Start extends React.Component {
                 <Action>
                   <p>
                     <Text size="large" color={theme.textSecondary}>
-                      Get started by creating your new decentralised
-                      organisation
+                      Get started by creating your new decentralized
+                      organization
                     </Text>
                   </p>
                   <Button mode="strong" onClick={onCreate}>
