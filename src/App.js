@@ -1,16 +1,11 @@
-import Web3 from 'web3'
 import React from 'react'
 import createHistory from 'history/createHashHistory'
 import { AragonApp } from '@aragon/ui'
+import { addresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
-
-// TODO: make these depend on the env / URL
-const PROVIDER = new Web3.providers.WebsocketProvider('ws://localhost:8545')
-const WALLET_PROVIDER = window.web3 && window.web3.currentProvider
-const ENS = '0x409ba3dd291bb5d48d5b4404f5efa207441f6cba'
 
 class App extends React.Component {
   state = {
@@ -70,9 +65,9 @@ class App extends React.Component {
       this.setState({ wrapper: null })
     }
     console.log('init the wrapper', dao)
-    initWrapper(dao, ENS, {
-      provider: PROVIDER,
-      walletProvider: WALLET_PROVIDER,
+    initWrapper(dao, addresses.ensRegistry, {
+      provider: web3Providers.default,
+      walletProvider: web3Providers.wallet,
       onError: name => {
         if (name === 'NO_CONNECTION') {
           console.log('No Ethereum connection detected.')

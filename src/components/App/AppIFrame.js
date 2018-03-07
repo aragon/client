@@ -152,7 +152,7 @@ class AppIFrame extends React.Component {
       onMessage(event)
     }
   }
-  handleIframeRef = iframe => {
+  handleIFrameRef = iframe => {
     const { iframeRef } = this.props
     iframeRef(iframe)
     this.iframe = iframe
@@ -180,7 +180,7 @@ class AppIFrame extends React.Component {
           name="AppIFrame"
           frameBorder="0"
           onLoad={this.handleOnLoad}
-          innerRef={this.handleIframeRef}
+          innerRef={this.handleIFrameRef}
           sandbox={SANDBOX}
           style={{ display: show ? 'block' : 'none' }}
           {...props}
