@@ -76,19 +76,22 @@ class MenuPanel extends React.Component {
             <div className="in">
               <h1>Apps</h1>
               <ul>
-                {menuApps.map(({ appId, name, icon, instances = [] }) => (
-                  <li key={appId}>
-                    <MenuPanelAppGroup
-                      name={name}
-                      icon={icon}
-                      appId={appId}
-                      active={appId === activeAppId}
-                      instances={instances}
-                      activeInstanceId={activeInstanceId}
-                      onActivate={onOpenApp}
-                    />
-                  </li>
-                ))}
+                {menuApps.map(
+                  ({ appId, name, icon, instances = [] }) =>
+                    appId === 'permissions' ? null : (
+                      <li key={appId}>
+                        <MenuPanelAppGroup
+                          name={name}
+                          icon={icon}
+                          appId={appId}
+                          active={appId === activeAppId}
+                          instances={instances}
+                          activeInstanceId={activeInstanceId}
+                          onActivate={onOpenApp}
+                        />
+                      </li>
+                    )
+                )}
               </ul>
             </div>
           </Content>
