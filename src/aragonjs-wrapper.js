@@ -1,4 +1,5 @@
 import Aragon from '@aragon/wrapper'
+import Web3 from 'web3'
 import { providers } from '@aragon/messenger'
 import { appIds, appLocator, ipfsDefaultConf } from './environment'
 import { noop } from './utils'
@@ -43,11 +44,7 @@ const initWrapper = async (
     apm: { ipfs: ipfsConf },
   })
 
-  // TODO: using window.web3 instead of new Web3(provider) for now, to make
-  // MetaMask work with Ganache.
-
-  // const web3 = new Web3(walletProvider || provider)
-  const web3 = window.web3
+  const web3 = new Web3(walletProvider || provider)
   onWeb3(web3)
 
   const pollAccounts = () => {
