@@ -85,7 +85,7 @@ const subscribe = (
           worker.addEventListener(
             'error',
             err =>
-              console.log(
+              console.error(
                 `Error from worker for ${name}(${proxyAddress}):`,
                 err
               ),
