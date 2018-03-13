@@ -12,7 +12,15 @@ export const Democracy = Symbol('Democracy')
 
 // Map.set(Blank, { label: 'Blank', icon: imgBlank })
 // Map.set(Startup, { label: 'Startup', icon: imgStartup })
-Templates.set(Democracy, { label: 'Democracy', icon: imgDemocracy })
-Templates.set(Multisig, { label: 'Multisig', icon: imgMultisig })
+Templates.set(Democracy, {
+  name: 'democracy',
+  label: 'Token project with Democracy',
+  icon: imgDemocracy,
+})
+Templates.set(Multisig, {
+  name: 'multisig',
+  label: 'Token project with Multisig',
+  icon: imgMultisig,
+})
 
 export default Templates

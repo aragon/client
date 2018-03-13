@@ -11,7 +11,7 @@ class ConfigureDemocracy extends React.Component {
     step: 1,
     support: -1,
     minQuorum: -1,
-    duration: -1,
+    voteDuration: -1,
     firstAddress: '',
     tokenName: '',
     tokenSymbol: '',
@@ -22,10 +22,30 @@ class ConfigureDemocracy extends React.Component {
   nextStep = () => {
     const newStep = this.state.step + 1
     if (newStep > 2) {
-      this.props.onConfigureDone({})
+      this.props.onConfigureDone(this.getData())
       return
     }
     this.setState({ step: newStep })
+  }
+
+  getData = () => {
+    const {
+      firstAddress,
+      minQuorum,
+      support,
+      tokenName,
+      tokenSymbol,
+      voteDuration,
+    } = this.state
+
+    return {
+      holders: [firstAddress],
+      minAcceptanceQuorum: minQuorum / 100,
+      supportNeeded: support / 100,
+      tokenName,
+      tokenSymbol,
+      voteDuration: voteDuration * 60 * 60,
+    }
   }
 
   handleSupportChange = event => {
@@ -54,9 +74,9 @@ class ConfigureDemocracy extends React.Component {
     this.setState({ minQuorum: Math.min(100, Math.max(0, value)) })
   }
 
-  handleDurationChange = event => {
+  handleVoteDurationChange = event => {
     if (event.target.value === '') {
-      this.setState({ duration: -1 })
+      this.setState({ voteDuration: -1 })
       return
     }
 
@@ -64,7 +84,7 @@ class ConfigureDemocracy extends React.Component {
     if (isNaN(value)) {
       return
     }
-    this.setState({ duration: Math.max(0, value) })
+    this.setState({ voteDuration: Math.max(0, value) })
   }
 
   handleFirstAddressChange = event => {
@@ -82,7 +102,7 @@ class ConfigureDemocracy extends React.Component {
       step,
       support,
       minQuorum,
-      duration,
+      voteDuration,
       firstAddress,
       tokenName,
       tokenSymbol,
@@ -114,8 +134,8 @@ class ConfigureDemocracy extends React.Component {
               <Fields.HoursField label="Vote Duration">
                 <SymbolInput
                   placeholder="e.g. 24"
-                  onChange={this.handleDurationChange}
-                  value={duration === -1 ? '' : duration}
+                  onChange={this.handleVoteDurationChange}
+                  value={voteDuration === -1 ? '' : voteDuration}
                 />
               </Fields.HoursField>
             </Fields>

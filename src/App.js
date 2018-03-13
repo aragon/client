@@ -3,7 +3,7 @@ import createHistory from 'history/createHashHistory'
 import { AragonApp } from '@aragon/ui'
 import { addresses, web3Providers } from './environment'
 import { parsePath } from './routing'
-import initWrapper from './aragonjs-wrapper'
+import initWrapper, { initDaoBuilder } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 
@@ -51,6 +51,10 @@ class App extends React.Component {
     console.log('locator', locator)
     const { locator: prevLocator } = this.state
 
+    if (locator.mode === 'home' || locator.mode === 'setup') {
+      this.updateDaoBuilder()
+    }
+
     // New DAO: need to reinit the wrapper
     if (locator.dao && (!prevLocator || locator.dao !== prevLocator.dao)) {
       this.updateDao(locator.dao)
@@ -59,7 +63,33 @@ class App extends React.Component {
     this.setState({ locator, prevLocator })
   }
 
-  updateDao = dao => {
+  async updateDaoBuilder() {
+    const daoBuilder = initDaoBuilder(
+      web3Providers.wallet,
+      addresses.ensRegistry
+    )
+    this.setState({ daoBuilder })
+
+    // DEV: Create a DAO immediately
+    const dao = await daoBuilder('democracy', 'blablabla', {
+      holders: [
+        { address: '0xaEE8fC07eAF332b920A219A5888C0cd6891E26C5', balance: 1 },
+      ],
+      supportNeeded: 0.2,
+      minAcceptanceQuorum: 0.2,
+      voteDuration: 40,
+    })
+
+    console.log({dao})
+  }
+
+  handleBuildDao = (templateName, organizationName, data) => {
+    const { daoBuilder } = this.state
+    daoBuilder(templateName, organizationName, data)
+    console.log('BUILD DAO', data)
+  }
+
+  updateDao(dao) {
     if (this.state.wrapper) {
       this.state.wrapper.cancel()
       this.setState({ wrapper: null })
@@ -120,8 +150,9 @@ class App extends React.Component {
         />
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}
+          onBuildDao={this.handleBuildDao}
           onComplete={() => {
-            this.historyPush('/0x6fe95e08427f67c917f5fe2a158f3bf203ff4559')
+            // this.historyPush('/0x6fe95e08427f67c917f5fe2a158f3bf203ff4559')
           }}
         />
       </AragonApp>

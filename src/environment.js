@@ -3,7 +3,8 @@ import Web3 from 'web3'
 // TODO: make all these depend on env variables / URL
 
 export const addresses = {
-  ensRegistry: '0x409ba3dd291bb5d48d5b4404f5efa207441f6cba',
+  // ensRegistry: '0x409ba3dd291bb5d48d5b4404f5efa207441f6cba',
+  ensRegistry: '0x3635266b73b71760c3a193619cfc123245f37554',
 }
 
 export const appIds = {
@@ -26,6 +27,6 @@ export const ipfsDefaultConf = {
 }
 
 export const web3Providers = {
-  default: new Web3.providers.WebsocketProvider('ws://localhost:8545'),
+  default: new Web3.providers.WebsocketProvider('ws://localhost:8546'),
   wallet: window.web3 && window.web3.currentProvider,
 }

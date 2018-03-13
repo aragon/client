@@ -30,12 +30,11 @@ class Onboarding extends React.Component {
   static defaultProps = {
     visible: true,
     onComplete: noop,
+    onBuildDao: noop,
   }
   state = {
     template: null,
     domain: '',
-    configuration: null,
-    configurationStep: 1,
     step: Steps.Start,
     direction: 1, // 1 = forward, -1 = backward
   }
@@ -70,7 +69,14 @@ class Onboarding extends React.Component {
   }
 
   handleConfigureDone = conf => {
-    this.moveStep(1)
+    const { template, domain } = this.state
+
+    if (!Templates.has(template)) {
+      return
+    }
+
+    this.props.onBuildDao(Templates.get(template).name, domain, conf)
+    // this.moveStep(1)
   }
 
   // Set the direction to 1 (next) or -1 (prev)
@@ -101,10 +107,6 @@ class Onboarding extends React.Component {
         this.configureScreen.reset()
         this.configureScreen = null
       }
-      this.setState({
-        configurationStep: 1,
-        configuration: null,
-      })
     }
 
     this.setState({ step: newStep, direction })
