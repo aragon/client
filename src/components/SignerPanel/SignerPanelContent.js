@@ -126,7 +126,7 @@ const NeedWeb3Content = ({ intent: { description, to }, onClose }) => (
   <React.Fragment>
     <Info.Action title="You can't perform any actions">
       {`You need to be connected to a Web3 instance in order to ${description ||
-        'perform an action on'}`}{' '}
+        'perform this action on'}`}{' '}
       <AddressLink to={to} />.
       <InstallMessage>
         Please install or enable{' '}
@@ -153,7 +153,7 @@ const AddressLink = ({ to }) =>
       }
     </EtherscanLink>
   ) : (
-    'this app'
+    'an address or app'
   )
 
 const ActionContainer = styled.div`
