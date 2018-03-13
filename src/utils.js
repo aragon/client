@@ -12,3 +12,7 @@ export function compose(...funcs) {
 }
 
 export function noop() {}
+
+export function removeTrailingSlash(str) {
+  return str.replace(/\/+$/, '')
+}
