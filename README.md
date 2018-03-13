@@ -1,4 +1,4 @@
-# Aragon ÐApp <img align="right" src="https://github.com/aragonone/issues/blob/master/logo.png" height="80px" />
+# Aragon ÐApp <img align="right" src="https://github.com/aragon/design/blob/master/readme-logo.png" height="80px" />
 
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 
