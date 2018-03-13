@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button, Info, RadioList, SafeLink } from '@aragon/ui'
-import provideNetwork from '../../context/provideNetwork'
+import EtherscanLink from '../Etherscan/EtherscanLink'
 import { noop } from '../../utils'
 
 const SignerPanelContent = ({
@@ -139,15 +139,22 @@ const NeedWeb3Content = ({ intent: { description, to }, onClose }) => (
   </React.Fragment>
 )
 
-const AddressLink = provideNetwork(({ network: { etherscanBaseUrl }, to }) => {
-  return etherscanBaseUrl && to ? (
-    <SafeLink href={`${etherscanBaseUrl}/address/${to}`} target="_blank">
-      {to}
-    </SafeLink>
+const AddressLink = ({ to }) =>
+  to ? (
+    <EtherscanLink address={to}>
+      {url =>
+        url ? (
+          <SafeLink href={url} target="_blank">
+            {to}
+          </SafeLink>
+        ) : (
+          to
+        )
+      }
+    </EtherscanLink>
   ) : (
     'this app'
   )
-})
 
 const ActionContainer = styled.div`
   margin-bottom: 40px;

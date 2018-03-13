@@ -11,6 +11,7 @@ import {
 } from '@aragon/ui'
 import Option from './components/Option'
 import observeCache from '../../components/HOC/observeCache'
+import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import provideNetwork from '../../context/provideNetwork'
 import { compose } from '../../utils'
 
@@ -87,14 +88,15 @@ class Settings extends React.Component {
               <Field label="Address:">
                 <TextInput readOnly wide value={daoAddr} />
               </Field>
-              {network.etherscanBaseUrl && (
-                <LinkButton
-                  href={`${network.etherscanBaseUrl}/address/${daoAddr}`}
-                  target="_blank"
-                >
-                  See on Etherscan
-                </LinkButton>
-              )}
+              <EtherscanLink address={daoAddr}>
+                {url =>
+                  url ? (
+                    <LinkButton href={url} target="_blank">
+                      See on Etherscan
+                    </LinkButton>
+                  ) : null
+                }
+              </EtherscanLink>
             </Option>
             {Array.isArray(currencies) &&
               selectedCurrency && (
