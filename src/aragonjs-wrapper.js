@@ -1,8 +1,7 @@
 import Web3 from 'web3'
-import removeTrailingSlash from 'remove-trailing-slash'
 import Aragon, { providers, setupTemplates } from '@aragon/wrapper'
 import { appDefaults, appIds, appLocator, ipfsDefaultConf } from './environment'
-import { noop } from './utils'
+import { noop, removeTrailingSlash } from './utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 
 const ACCOUNTS_POLL_EVERY = 2000
