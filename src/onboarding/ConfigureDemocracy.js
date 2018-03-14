@@ -5,10 +5,12 @@ import { spring as springConf } from '@aragon/ui'
 import { Field, TextInput } from '@aragon/ui'
 import { lerp } from '../math-utils'
 import { noop } from '../utils'
+import { isAddress } from 'web3-utils'
 
-class ConfigureDemocracy extends React.Component {
+class ConfigureDemocracy extends React.PureComponent {
   static defaultProps = {
     onConfigureDone: noop,
+    onChange: noop,
   }
   state = {
     step: 1,
@@ -29,6 +31,26 @@ class ConfigureDemocracy extends React.Component {
       return
     }
     this.setState({ step: newStep })
+  }
+  isNextEnabled() {
+    const {
+      step,
+      firstAddress,
+      minQuorum,
+      support,
+      tokenName,
+      tokenSymbol,
+      voteDuration,
+    } = this.state
+    if (step === 1) {
+      return support !== -1 && minQuorum !== -1 && voteDuration !== -1
+    }
+    if (step === 2) {
+      return (
+        isAddress(firstAddress) && tokenName.length !== '' && tokenSymbol !== ''
+      )
+    }
+    return true
   }
 
   getData = () => {
@@ -62,6 +84,7 @@ class ConfigureDemocracy extends React.Component {
       return
     }
     this.setState({ support: Math.min(100, Math.max(0, value)) })
+    this.props.onChange()
   }
 
   handleMinQuorumChange = event => {
@@ -75,6 +98,7 @@ class ConfigureDemocracy extends React.Component {
       return
     }
     this.setState({ minQuorum: Math.min(100, Math.max(0, value)) })
+    this.props.onChange()
   }
 
   handleVoteDurationChange = event => {
@@ -88,16 +112,20 @@ class ConfigureDemocracy extends React.Component {
       return
     }
     this.setState({ voteDuration: Math.max(0, value) })
+    this.props.onChange()
   }
 
   handleFirstAddressChange = event => {
     this.setState({ firstAddress: event.target.value })
+    this.props.onChange()
   }
   handleTokenNameChange = event => {
     this.setState({ tokenName: event.target.value })
+    this.props.onChange()
   }
   handleTokenSymbolChange = event => {
     this.setState({ tokenSymbol: event.target.value })
+    this.props.onChange()
   }
 
   render() {
@@ -117,7 +145,7 @@ class ConfigureDemocracy extends React.Component {
                 style={{
                   opacity: step1Progress,
                   transform: `translateX(${lerp(step1Progress, -50, 0)}%)`,
-                  pointerEvents: step === 1 ? 'auto' : 'none',
+                  pointerEvents: step === 1 ? 'inherit' : 'none',
                 }}
               >
                 {this.renderStep1()}
@@ -126,7 +154,7 @@ class ConfigureDemocracy extends React.Component {
                 style={{
                   opacity: step2Progress,
                   transform: `translateX(${lerp(step2Progress, 50, 0)}%)`,
-                  pointerEvents: step === 2 ? 'auto' : 'none',
+                  pointerEvents: step === 2 ? 'inherit' : 'none',
                 }}
               >
                 {this.renderStep2()}
@@ -152,6 +180,7 @@ class ConfigureDemocracy extends React.Component {
               placeholder="e.g. 50"
               value={support === -1 ? '' : support}
               onChange={this.handleSupportChange}
+              type="number"
             />
           </Fields.PercentageField>
           <Fields.PercentageField label="Min. Quorum">
@@ -159,6 +188,7 @@ class ConfigureDemocracy extends React.Component {
               placeholder="e.g. 15"
               value={minQuorum === -1 ? '' : minQuorum}
               onChange={this.handleMinQuorumChange}
+              type="number"
             />
           </Fields.PercentageField>
           <Fields.HoursField label="Vote Duration">
@@ -166,6 +196,7 @@ class ConfigureDemocracy extends React.Component {
               placeholder="e.g. 24"
               onChange={this.handleVoteDurationChange}
               value={voteDuration === -1 ? '' : voteDuration}
+              type="number"
             />
           </Fields.HoursField>
         </Fields>

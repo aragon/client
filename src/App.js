@@ -73,7 +73,12 @@ class App extends React.Component {
 
   handleBuildDao = async (templateName, organizationName, data) => {
     const { daoBuilder } = this.state
-    const dao = await daoBuilder.build(templateName, organizationName, data)
+    const [token, dao] = await daoBuilder.build(
+      templateName,
+      organizationName,
+      data
+    )
+    console.log('DAO created', token, dao)
   }
 
   updateDao(dao) {

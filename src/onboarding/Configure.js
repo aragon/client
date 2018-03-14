@@ -28,8 +28,8 @@ class Configure extends React.PureComponent {
         {({ showProgress }) => (
           <Main
             style={{
-              pointerEvents: visible ? 'auto' : 'none',
               opacity: showProgress,
+              pointerEvents: visible ? 'inherit' : 'none',
             }}
           >
             <Content
@@ -51,13 +51,14 @@ class Configure extends React.PureComponent {
   renderTemplate(template) {
     const { visible } = this.props
 
-    if (!template || !visible) return null
+    if (!template) return null
 
     if (template === Democracy) {
       return (
         <ConfigureDemocracy
           ref={screen => this.props.onConfigureScreen(screen)}
           visible={visible}
+          onChange={this.props.onConfigureUpdate}
           onConfigureDone={this.handleOnConfigureDone}
         />
       )

@@ -31,7 +31,7 @@ const SPRING_HIDE = {
   precision: 0.001,
 }
 
-class Onboarding extends React.Component {
+class Onboarding extends React.PureComponent {
   static defaultProps = {
     visible: true,
     onComplete: noop,
@@ -42,6 +42,7 @@ class Onboarding extends React.Component {
     domain: '',
     step: Steps.Start,
     direction: 1, // 1 = forward, -1 = backward
+    configureScreen: null,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
@@ -97,7 +98,7 @@ class Onboarding extends React.Component {
   }
 
   handleConfigureScreen = screen => {
-    this.configureScreen = screen
+    this.setState({ configureScreen: screen })
   }
 
   handleConfigureDone = conf => {
@@ -113,7 +114,7 @@ class Onboarding extends React.Component {
 
   // Set the direction to 1 (next) or -1 (prev)
   moveStep = (direction = 1) => {
-    const { step } = this.state
+    const { step, configureScreen } = this.state
     const index = Steps.ProgressBarSteps.findIndex(
       ({ step: _step }) => _step === step
     )
@@ -135,18 +136,17 @@ class Onboarding extends React.Component {
 
     // Arriving on the Configure step
     if (newStep !== step && newStep === Steps.Configure) {
-      if (this.configureScreen) {
-        this.configureScreen.reset()
-        this.configureScreen = null
+      if (configureScreen) {
+        configureScreen.reset()
       }
     }
 
     this.setState({ step: newStep, direction })
   }
   nextStep = () => {
-    const { step } = this.state
-    if (step === Steps.Configure && this.configureScreen) {
-      this.configureScreen.nextStep()
+    const { step, configureScreen } = this.state
+    if (step === Steps.Configure && configureScreen) {
+      configureScreen.nextStep()
       return
     }
 
@@ -156,17 +156,31 @@ class Onboarding extends React.Component {
     this.moveStep(-1)
   }
   isNextEnabled() {
-    const { template, step, domain } = this.state
+    const {
+      template,
+      step,
+      domain,
+      domainCheckStatus,
+      configureScreen,
+    } = this.state
     if (step === Steps.Template && !template) {
       return false
     }
-    if (step === Steps.Domain && !domain) {
+    if (step === Steps.Domain && domainCheckStatus !== DomainCheckAccepted) {
       return false
+    }
+    if (step === Steps.Configure && configureScreen) {
+      return configureScreen.isNextEnabled()
     }
     return true
   }
   isPrevEnabled() {
     return true
+  }
+  handleConfigureUpdate = () => {
+    setTimeout(() => {
+      this.forceUpdate()
+    }, 0)
   }
   render() {
     const { step, direction, template, domain, domainCheckStatus } = this.state
@@ -226,6 +240,7 @@ class Onboarding extends React.Component {
                     direction={direction}
                     template={template}
                     onConfigureScreen={this.handleConfigureScreen}
+                    onConfigureUpdate={this.handleConfigureUpdate}
                     onConfigureDone={this.handleConfigureDone}
                   />
                 </Screen>

@@ -17,7 +17,7 @@ export const DomainCheckPending = Symbol('DomainCheckPending')
 export const DomainCheckAccepted = Symbol('DomainCheckAccepted')
 export const DomainCheckRejected = Symbol('DomainCheckRejected')
 
-class Domain extends React.Component {
+class Domain extends React.PureComponent {
   static defaultProps = {
     domain: '',
     domainCheckStatus: DomainCheckNone,
@@ -28,7 +28,6 @@ class Domain extends React.Component {
   }
   render() {
     const { visible, direction, domain, domainCheckStatus } = this.props
-    console.log(domainCheckStatus)
     return (
       <Motion
         style={{
