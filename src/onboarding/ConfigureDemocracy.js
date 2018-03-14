@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Motion, spring } from 'react-motion'
+import { spring as springConf } from '@aragon/ui'
 import { Field, TextInput } from '@aragon/ui'
+import { lerp } from '../math-utils'
 import { noop } from '../utils'
 
 class ConfigureDemocracy extends React.Component {
@@ -39,7 +42,7 @@ class ConfigureDemocracy extends React.Component {
     } = this.state
 
     return {
-      holders: [firstAddress],
+      holders: [{ address: firstAddress, balance: 1 }],
       minAcceptanceQuorum: minQuorum / 100,
       supportNeeded: support / 100,
       tokenName,
@@ -98,86 +101,115 @@ class ConfigureDemocracy extends React.Component {
   }
 
   render() {
-    const {
-      step,
-      support,
-      minQuorum,
-      voteDuration,
-      firstAddress,
-      tokenName,
-      tokenSymbol,
-    } = this.state
+    const { step } = this.state
     return (
       <div>
         <Title>Democracy Project</Title>
-        {step === 1 && (
-          <div>
-            <p>
-              Choose your configuration below. Hover on the info icons for help
-              on what each input means.
-            </p>
-            <Fields>
-              <Fields.PercentageField label="Support">
-                <SymbolInput
-                  placeholder="e.g. 50"
-                  value={support === -1 ? '' : support}
-                  onChange={this.handleSupportChange}
+        <Motion
+          style={{
+            step1Progress: spring(Number(step === 1), springConf('slow')),
+            step2Progress: spring(Number(step === 2), springConf('slow')),
+          }}
+        >
+          {({ step1Progress, step2Progress }) => (
+            <div>
+              <StepContainer
+                style={{
+                  opacity: step1Progress,
+                  transform: `translateX(${lerp(step1Progress, -50, 0)}%)`,
+                  pointerEvents: step === 1 ? 'auto' : 'none',
+                }}
+              >
+                {this.renderStep1()}
+              </StepContainer>
+              <StepContainer
+                style={{
+                  opacity: step2Progress,
+                  transform: `translateX(${lerp(step2Progress, 50, 0)}%)`,
+                  pointerEvents: step === 2 ? 'auto' : 'none',
+                }}
+              >
+                {this.renderStep2()}
+              </StepContainer>
+            </div>
+          )}
+        </Motion>
+      </div>
+    )
+  }
+
+  renderStep1() {
+    const { support, minQuorum, voteDuration } = this.state
+    return (
+      <div>
+        <p>
+          Choose your configuration below. Hover on the info icons for help on
+          what each input means.
+        </p>
+        <Fields>
+          <Fields.PercentageField label="Support">
+            <SymbolInput
+              placeholder="e.g. 50"
+              value={support === -1 ? '' : support}
+              onChange={this.handleSupportChange}
+            />
+          </Fields.PercentageField>
+          <Fields.PercentageField label="Min. Quorum">
+            <SymbolInput
+              placeholder="e.g. 15"
+              value={minQuorum === -1 ? '' : minQuorum}
+              onChange={this.handleMinQuorumChange}
+            />
+          </Fields.PercentageField>
+          <Fields.HoursField label="Vote Duration">
+            <SymbolInput
+              placeholder="e.g. 24"
+              onChange={this.handleVoteDurationChange}
+              value={voteDuration === -1 ? '' : voteDuration}
+            />
+          </Fields.HoursField>
+        </Fields>
+      </div>
+    )
+  }
+
+  renderStep2() {
+    const { firstAddress, tokenName, tokenSymbol } = this.state
+    return (
+      <div>
+        <p>
+          Choose the address for the first token received, and the token name
+          and symbol.
+        </p>
+        <Fields>
+          <Rows>
+            <Row>
+              <Fields.Field label="First Token Address">
+                <InputSized
+                  width={380}
+                  value={firstAddress}
+                  onChange={this.handleFirstAddressChange}
                 />
-              </Fields.PercentageField>
-              <Fields.PercentageField label="Min. Quorum">
-                <SymbolInput
-                  placeholder="e.g. 15"
-                  value={minQuorum === -1 ? '' : minQuorum}
-                  onChange={this.handleMinQuorumChange}
+              </Fields.Field>
+            </Row>
+            <Row>
+              <Fields.Field label="Token Name">
+                <InputSized
+                  width={200}
+                  value={tokenName}
+                  onChange={this.handleTokenNameChange}
                 />
-              </Fields.PercentageField>
-              <Fields.HoursField label="Vote Duration">
-                <SymbolInput
-                  placeholder="e.g. 24"
-                  onChange={this.handleVoteDurationChange}
-                  value={voteDuration === -1 ? '' : voteDuration}
+              </Fields.Field>
+              <Fields.Field label="Token Symbol">
+                <InputSized
+                  width={80}
+                  value={tokenSymbol}
+                  onChange={this.handleTokenSymbolChange}
                 />
-              </Fields.HoursField>
-            </Fields>
-          </div>
-        )}
-        {step === 2 && (
-          <div>
-            <p>
-              Choose the address for the first token received, and the token
-              name and symbol.
-            </p>
-            <Fields>
-              <Rows>
-                <Row>
-                  <Fields.Field label="First Token Address">
-                    <InputSized
-                      width={380}
-                      value={firstAddress}
-                      onChange={this.handleFirstAddressChange}
-                    />
-                  </Fields.Field>
-                </Row>
-                <Row>
-                  <Fields.Field label="Token Name">
-                    <InputSized
-                      width={200}
-                      value={tokenName}
-                      onChange={this.handleTokenNameChange}
-                    />
-                  </Fields.Field>
-                  <Fields.Field label="Token Symbol">
-                    <InputSized
-                      width={80}
-                      value={tokenSymbol}
-                      onChange={this.handleTokenSymbolChange}
-                    />
-                  </Fields.Field>
-                </Row>
-              </Rows>
-            </Fields>
-          </div>
-        )}
+              </Fields.Field>
+            </Row>
+          </Rows>
+        </Fields>
       </div>
     )
   }
@@ -187,6 +219,17 @@ const Title = styled.h1`
   text-align: center;
   font-size: 37px;
   margin-bottom: 40px;
+`
+
+const StepContainer = styled.div`
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding-top: 140px;
 `
 
 const InputSized = styled(TextInput)`
@@ -211,7 +254,7 @@ const Row = styled.div`
 const Fields = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 40px;
 `
 Fields.Field = styled(Field)`
   position: relative;

@@ -7,20 +7,28 @@ import {
   Text,
   TextInput,
   IconCheck,
+  IconCross,
 } from '@aragon/ui'
 import { lerp } from '../math-utils'
 import { noop } from '../utils'
 
+export const DomainCheckNone = Symbol('DomainCheckNone')
+export const DomainCheckPending = Symbol('DomainCheckPending')
+export const DomainCheckAccepted = Symbol('DomainCheckAccepted')
+export const DomainCheckRejected = Symbol('DomainCheckRejected')
+
 class Domain extends React.Component {
   static defaultProps = {
     domain: '',
+    domainCheckStatus: DomainCheckNone,
     onDomainChange: noop,
   }
   handleDomainChange = event => {
     this.props.onDomainChange(event.target.value)
   }
   render() {
-    const { visible, direction, domain } = this.props
+    const { visible, direction, domain, domainCheckStatus } = this.props
+    console.log(domainCheckStatus)
     return (
       <Motion
         style={{
@@ -66,9 +74,23 @@ class Domain extends React.Component {
                 <label htmlFor="domain-field">
                   <Text weight="bold"> .aragonid.eth</Text>
                 </label>
-                <CheckContainer active={domain}>
-                  <IconCheck />
-                </CheckContainer>
+                <Status>
+                  <CheckContainer
+                    active={domainCheckStatus === DomainCheckAccepted}
+                  >
+                    <IconCheck />
+                  </CheckContainer>
+                  <CheckContainer
+                    active={domainCheckStatus === DomainCheckRejected}
+                  >
+                    <IconCross />
+                  </CheckContainer>
+                  <CheckContainer
+                    active={domainCheckStatus === DomainCheckPending}
+                  >
+                    …
+                  </CheckContainer>
+                </Status>
               </Field>
             </Content>
           </Main>
@@ -109,8 +131,21 @@ const Field = styled.p`
   }
 `
 
-const CheckContainer = styled.span`
+const Status = styled.span`
+  position: relative;
   width: 20px;
+  height: 20px;
+`
+
+const CheckContainer = styled.span`
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
   transform: scale(${({ active }) => (active ? '1, 1' : '0, 0')});
   transform-origin: 50% 50%;
   transition: transform 100ms ease-in-out;

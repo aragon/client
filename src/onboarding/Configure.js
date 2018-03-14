@@ -49,12 +49,15 @@ class Configure extends React.PureComponent {
     )
   }
   renderTemplate(template) {
-    if (!template) return null
+    const { visible } = this.props
+
+    if (!template || !visible) return null
 
     if (template === Democracy) {
       return (
         <ConfigureDemocracy
           ref={screen => this.props.onConfigureScreen(screen)}
+          visible={visible}
           onConfigureDone={this.handleOnConfigureDone}
         />
       )

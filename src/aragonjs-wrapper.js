@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import Aragon, { providers, setupTemplates } from '@aragon/wrapper'
+import Aragon, { providers, setupTemplates, isNameUsed } from '@aragon/wrapper'
 import { appIds, appLocator, ipfsDefaultConf } from './environment'
 import { noop } from './utils'
 
@@ -168,33 +168,38 @@ export const initDaoBuilder = (
   provider,
   registryAddress,
   ipfsConf = ipfsDefaultConf
-) => async (templateName, organizationName, settings = {}) => {
-  if (!organizationName) {
-    throw new Error('No organization name set')
-  }
-  if (!templateName || !templateParamFilters[templateName]) {
-    throw new Error('The template name doesn’t exist')
-  }
+) => {
 
   // DEV only
   provider = new Web3.providers.WebsocketProvider('ws://localhost:8546')
 
-  const web3 = new Web3(provider)
+  return {
+    build: async (templateName, organizationName, settings = {}) => {
+      if (!organizationName) {
+        throw new Error('No organization name set')
+      }
+      if (!templateName || !templateParamFilters[templateName]) {
+        throw new Error('The template name doesn’t exist')
+      }
 
-  const account = await getMainAccount(web3)
-  console.log('Main account:', account)
+      const web3 = new Web3(provider)
+      const account = await getMainAccount(web3)
 
-  if (account === null) {
-    throw new Error(
-      'No accounts detected in the environment (try to unlock your wallet)'
-    )
+      if (account === null) {
+        throw new Error(
+          'No accounts detected in the environment (try to unlock your wallet)'
+        )
+      }
+
+      const templates = setupTemplates(provider, registryAddress, account)
+      const templateFilter = templateParamFilters[templateName]
+      const templateData = templateFilter(settings)
+
+      return templates.newDAO(templateName, organizationName, templateData)
+    },
+    isNameAvailable: async name =>
+      !await isNameUsed(name, { provider, registryAddress }),
   }
-
-  const templates = setupTemplates(provider, registryAddress, account)
-  const templateFilter = templateParamFilters[templateName]
-  const templateData = templateFilter(settings)
-
-  return templates.newDAO(templateName, organizationName, templateData)
 }
 
 export default initWrapper

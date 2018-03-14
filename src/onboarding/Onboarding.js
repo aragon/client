@@ -11,7 +11,12 @@ import PrevNext from './PrevNext'
 
 import Start from './Start'
 import Template from './Template'
-import Domain from './Domain'
+import Domain, {
+  DomainCheckNone,
+  DomainCheckPending,
+  DomainCheckAccepted,
+  DomainCheckRejected,
+} from './Domain'
 import Configure from './Configure'
 import Launch from './Launch'
 
@@ -61,7 +66,34 @@ class Onboarding extends React.Component {
     this.setState({ template })
   }
   handleDomainChange = domain => {
-    this.setState({ domain })
+    const { daoBuilder } = this.props
+    this.setState({
+      domain,
+      domainCheckStatus: DomainCheckPending,
+    })
+    clearTimeout(this.domainCheckTimer)
+
+    const filteredDomain = domain.trim()
+
+    // Empty name
+    if (!filteredDomain) {
+      this.setState({ domainCheckStatus: DomainCheckNone })
+      return
+    }
+
+    const checkName = async () => {
+      try {
+        const available = await daoBuilder.isNameAvailable(filteredDomain)
+        const status = available ? DomainCheckAccepted : DomainCheckRejected
+        this.setState({ domainCheckStatus: status })
+      } catch (err) {
+        // Retry every second
+        this.domainCheckTimer = setTimeout(checkName, 1000)
+      }
+    }
+
+    // Check the domain only after the field is not updated during 300ms
+    this.domainCheckTimer = setTimeout(checkName, 300)
   }
 
   handleConfigureScreen = screen => {
@@ -137,7 +169,7 @@ class Onboarding extends React.Component {
     return true
   }
   render() {
-    const { step, direction, template, domain } = this.state
+    const { step, direction, template, domain, domainCheckStatus } = this.state
     const { visible } = this.props
     const enableNext = this.isNextEnabled()
     const enablePrev = this.isPrevEnabled()
@@ -184,6 +216,7 @@ class Onboarding extends React.Component {
                     visible={step === Steps.Domain}
                     direction={direction}
                     domain={domain}
+                    domainCheckStatus={domainCheckStatus}
                     onDomainChange={this.handleDomainChange}
                   />
                 </Screen>

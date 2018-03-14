@@ -69,24 +69,11 @@ class App extends React.Component {
       addresses.ensRegistry
     )
     this.setState({ daoBuilder })
-
-    // DEV: Create a DAO immediately
-    const dao = await daoBuilder('democracy', 'blablabla', {
-      holders: [
-        { address: '0xaEE8fC07eAF332b920A219A5888C0cd6891E26C5', balance: 1 },
-      ],
-      supportNeeded: 0.2,
-      minAcceptanceQuorum: 0.2,
-      voteDuration: 40,
-    })
-
-    console.log({dao})
   }
 
-  handleBuildDao = (templateName, organizationName, data) => {
+  handleBuildDao = async (templateName, organizationName, data) => {
     const { daoBuilder } = this.state
-    daoBuilder(templateName, organizationName, data)
-    console.log('BUILD DAO', data)
+    const dao = await daoBuilder.build(templateName, organizationName, data)
   }
 
   updateDao(dao) {
@@ -133,7 +120,14 @@ class App extends React.Component {
   }
 
   render() {
-    const { locator, wrapper, apps, account, transactionBag } = this.state
+    const {
+      locator,
+      wrapper,
+      apps,
+      account,
+      transactionBag,
+      daoBuilder,
+    } = this.state
     const { mode } = locator
     if (!mode) return null
     return (
@@ -151,6 +145,7 @@ class App extends React.Component {
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}
           onBuildDao={this.handleBuildDao}
+          daoBuilder={daoBuilder}
           onComplete={() => {
             // this.historyPush('/0x6fe95e08427f67c917f5fe2a158f3bf203ff4559')
           }}
