@@ -1,11 +1,12 @@
 import Web3 from 'web3'
 import Aragon, { providers, setupTemplates, isNameUsed } from '@aragon/wrapper'
-import { appIds, appLocator, ipfsDefaultConf } from './environment'
-import { noop } from './utils'
+import { appDefaults, appIds, appLocator, ipfsDefaultConf } from './environment'
+import { noop, removeTrailingSlash } from './utils'
+import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 
 const ACCOUNTS_POLL_EVERY = 2000
 
-const appSrc = (app = {}, gateway = ipfsDefaultConf.gateway) => {
+const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
   const hash = app.content && app.content.location
   if (!hash) return ''
 
@@ -19,8 +20,93 @@ const appSrc = (app = {}, gateway = ipfsDefaultConf.gateway) => {
 // Filter out apps without UI and add an appSrc property
 const prepareFrontendApps = (apps, gateway) =>
   apps
-    .filter(app => app.content && app.appId !== appIds['Vault'])
+    .map(app => ({ ...(appDefaults[app.appId] || {}), ...app }))
+    .filter(app => app && app['short_url'] && app.appId !== appIds['Vault'])
     .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
+
+// Keep polling accounts to notice when the user unlocks their wallet
+const pollAccounts = (web3, onAccounts) => {
+  if (!web3) {
+    return
+  }
+  web3.eth.getAccounts((err, accounts) => {
+    if (!err) {
+      onAccounts(accounts || [])
+    }
+    setTimeout(pollAccounts, ACCOUNTS_POLL_EVERY)
+  })
+}
+
+// Subscribe to wrapper's observables
+const subscribe = (
+  wrapper,
+  { onApps, onForwarders, onTransaction },
+  { ipfsConf }
+) => {
+  const { apps, forwarders, transactions } = wrapper
+  const workerSubscriptionPool = new WorkerSubscriptionPool()
+
+  const subscriptions = {
+    apps: apps.subscribe(apps => {
+      const frontendApps = prepareFrontendApps(apps, ipfsConf.gateway)
+      onApps(frontendApps, apps)
+    }),
+    connectedApp: null,
+    connectedWorkers: workerSubscriptionPool,
+    forwarders: forwarders.subscribe(onForwarders),
+    transactions: transactions.subscribe(onTransaction),
+    workers: apps.subscribe(apps => {
+      // Asynchronously launch webworkers for each new app that has a background
+      // script defined
+      apps
+        .map(app => ({ ...(appDefaults[app.appId] || {}), ...app }))
+        .filter(app => app.script)
+        .filter(
+          ({ proxyAddress }) => !workerSubscriptionPool.hasWorker(proxyAddress)
+        )
+        .forEach(async app => {
+          const { name, proxyAddress, script } = app
+          const scriptUrl =
+            removeTrailingSlash(appSrc(app, ipfsConf.gateway)) + script
+          let workerUrl = ''
+          try {
+            // WebWorkers can only load scripts from the local origin, so we
+            // have to fetch the script as text and make a blob out of it
+            workerUrl = await getBlobUrl(scriptUrl)
+          } catch (e) {
+            console.error(
+              `Failed to load ${name}(${proxyAddress})'s script (${script}): `,
+              e
+            )
+            return
+          }
+
+          const worker = new Worker(workerUrl)
+          worker.addEventListener(
+            'error',
+            err =>
+              console.error(
+                `Error from worker for ${name}(${proxyAddress}):`,
+                err
+              ),
+            false
+          )
+
+          const provider = new providers.MessagePortMessage(worker)
+          workerSubscriptionPool.addWorker({
+            app,
+            worker,
+            subscription: wrapper.runApp(provider, proxyAddress).shutdown,
+          })
+
+          // Clean up the url we created to spawn the worker
+          URL.revokeObjectURL(workerUrl)
+        })
+    }),
+  }
+
+  return subscriptions
+}
 
 const initWrapper = async (
   daoAddress,
@@ -46,18 +132,7 @@ const initWrapper = async (
   const web3 = new Web3(walletProvider || provider)
   onWeb3(web3)
 
-  const pollAccounts = () => {
-    if (!web3) {
-      return
-    }
-    web3.eth.getAccounts((err, accounts) => {
-      if (!err) {
-        onAccounts(accounts || [])
-      }
-      setTimeout(pollAccounts, ACCOUNTS_POLL_EVERY)
-    })
-  }
-  pollAccounts()
+  pollAccounts(web3, onAccounts)
 
   try {
     await wrapper.init()
@@ -69,17 +144,17 @@ const initWrapper = async (
     throw err
   }
 
-  const { apps, forwarders, transactions } = wrapper
-
-  const subscriptions = {
-    apps: apps.subscribe(apps => {
-      const frontendApps = prepareFrontendApps(apps, ipfsConf.gateway)
-      onApps(frontendApps, apps)
-    }),
-    forwarders: forwarders.subscribe(onForwarders),
-    transactions: transactions.subscribe(onTransaction),
-    connectedApp: null,
-  }
+  const subscriptions = subscribe(
+    wrapper,
+    {
+      onApps,
+      onForwarders,
+      onTransaction,
+    },
+    {
+      ipfsConf,
+    }
+  )
 
   wrapper.connectAppIFrame = (iframeElt, proxyAddress) => {
     const provider = new providers.WindowMessage(iframeElt.contentWindow)
