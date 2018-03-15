@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
+import { spring as springConf } from '@aragon/ui'
 import { noop } from '../utils'
 
 import * as Steps from './steps'
@@ -17,7 +18,6 @@ import Domain, {
   DomainCheckAccepted,
   DomainCheckRejected,
 } from './Domain'
-import Configure from './Configure'
 import Launch from './Launch'
 
 const SPRING_SHOW = {
@@ -39,39 +39,139 @@ class Onboarding extends React.PureComponent {
   }
   state = {
     template: null,
+    templateData: [],
     domain: '',
-    step: Steps.Start,
+    stepIndex: 0,
     direction: 1, // 1 = forward, -1 = backward
-    configureScreen: null,
   }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
-      this.setState({ step: Steps.Start })
+      this.setState({ stepIndex: 0 })
     }
   }
-  handleStartCreate = () => {
-    this.setState({
-      step: Steps.Template,
-      direction: 1,
-    })
+
+  getSteps() {
+    const { template } = this.state
+
+    // Prepare the configure steps to be inserted
+    const configureSteps = Templates.has(template)
+      ? Templates.get(template).screens.map(step => ({
+          ...step,
+          group: Steps.Configure,
+        }))
+      : []
+
+    return [
+      { screen: 'start', group: Steps.Start },
+      { screen: 'template', group: Steps.Template },
+      { screen: 'domain', group: Steps.Domain },
+      ...configureSteps,
+      { screen: 'launch', group: Steps.Launch },
+    ]
   }
+
+  currentStep() {
+    const { stepIndex } = this.state
+    const steps = this.getSteps()
+    return steps[stepIndex] || { group: Steps.Start }
+  }
+
+  // Get the template data without the screen-by-screen structure
+  getTemplateData() {
+    const { templateData } = this.state
+
+    // Transforms:
+    //
+    // [
+    //   [ { name: 'foo', value: 1 }, … ],
+    //   [ { name: 'bar', value: 2 }, … ],
+    //   …
+    // ]
+    //
+    // Into:
+    //
+    // { foo: 1, bar: 2, … }
+    //
+    return templateData.reduce(
+      (fields, { data }) => ({
+        ...fields,
+        ...data.reduce(
+          (screenFields, { name, value }) => ({
+            ...screenFields,
+            [name]: value,
+          }),
+          {}
+        ),
+      }),
+      {}
+    )
+  }
+
+  getInitialDataFromTemplate(template) {
+    if (!Templates.has(template)) {
+      return []
+    }
+    return Templates.get(template).screens.map(({ screen, fields }) => ({
+      screen,
+      data: Object.entries(fields).map(([name, { defaultValue }]) => ({
+        name,
+        value: defaultValue(),
+      })),
+    }))
+  }
+
+  // Return a screen object from a template
+  getTemplateScreen(template, screen) {
+    if (!Templates.has(template)) {
+      return null
+    }
+    return (
+      Templates.get(template).screens.find(
+        screenData => screenData.screen === screen
+      ) || null
+    )
+  }
+
+  // Filters a field value by calling the corresponding filter on the template
+  filterConfigurationValue(template, screen, name, value) {
+    const screenData = this.getTemplateScreen(template, screen)
+    return screenData ? screenData.fields[name].filter(value) : null
+  }
+
+  // Check if the data is valid by calling validateScreen() on the template
+  validateConfigurationScreen(template, screen) {
+    const screenData = this.getTemplateScreen(template, screen)
+    return screenData
+      ? screenData.validateScreen(this.getTemplateData())
+      : false
+  }
+
+  handleStartCreate = () => {
+    this.moveStep(1)
+  }
+
   handleStartRest = () => {
-    // Unset the template and the domain when the home screen finishes its
-    // transition
-    const { step } = this.state
-    if (step === Steps.Start) {
+    // Unset the template and the domain when
+    // the home screen finishes its transition.
+    const { stepIndex } = this.state
+    if (stepIndex === 0) {
       this.setState({ template: null, domain: '' })
     }
   }
+
   handleTemplateSelect = (template = null) => {
-    this.setState({ template })
+    this.setState({
+      template,
+      templateData: this.getInitialDataFromTemplate(template),
+    })
   }
+
   handleDomainChange = domain => {
     const { daoBuilder } = this.props
-    this.setState({
-      domain,
-      domainCheckStatus: DomainCheckPending,
-    })
+
+    this.setState({ domain, domainCheckStatus: DomainCheckPending })
+
     clearTimeout(this.domainCheckTimer)
 
     const filteredDomain = domain.trim()
@@ -85,8 +185,12 @@ class Onboarding extends React.PureComponent {
     const checkName = async () => {
       try {
         const available = await daoBuilder.isNameAvailable(filteredDomain)
-        const status = available ? DomainCheckAccepted : DomainCheckRejected
-        this.setState({ domainCheckStatus: status })
+
+        // The domain could have changed in the meantime
+        if (domain === this.state.domain) {
+          const status = available ? DomainCheckAccepted : DomainCheckRejected
+          this.setState({ domainCheckStatus: status })
+        }
       } catch (err) {
         // Retry every second
         this.domainCheckTimer = setTimeout(checkName, 1000)
@@ -97,8 +201,37 @@ class Onboarding extends React.PureComponent {
     this.domainCheckTimer = setTimeout(checkName, 300)
   }
 
-  handleConfigureScreen = screen => {
-    this.setState({ configureScreen: screen })
+  handleConfigurationFieldUpdate = (screen, name, value) => {
+    this.setState(({ templateData, template }) => {
+      const filteredValue = this.filterConfigurationValue(
+        template,
+        screen,
+        name,
+        value
+      )
+
+      // If the filter returns null, the value is not updated
+      if (filteredValue === null) {
+        return {}
+      }
+
+      return {
+        templateData: templateData.map(screenData => {
+          if (screenData.screen !== screen) {
+            return screenData
+          }
+          return {
+            screen,
+            data: screenData.data.map(field => {
+              if (field.name !== name) {
+                return field
+              }
+              return { name, value: filteredValue }
+            }),
+          }
+        }),
+      }
+    })
   }
 
   handleConfigureDone = conf => {
@@ -114,79 +247,52 @@ class Onboarding extends React.PureComponent {
 
   // Set the direction to 1 (next) or -1 (prev)
   moveStep = (direction = 1) => {
-    const { step, configureScreen } = this.state
-    const index = Steps.ProgressBarSteps.findIndex(
-      ({ step: _step }) => _step === step
-    )
-    if (index === -1) {
-      return
-    }
-    const newStepIndex = index + direction
-    const newStepWrapper = Steps.ProgressBarSteps[index + direction]
-    const newStep = newStepWrapper ? newStepWrapper.step : Steps.Start
+    const { stepIndex } = this.state
+    const steps = this.getSteps()
 
-    if (newStepIndex === Steps.ProgressBarSteps.length) {
-      this.props.onComplete()
+    const newStepIndex = stepIndex + direction
+
+    if (newStepIndex > steps.length - 1 || newStepIndex < 0) {
       return
     }
 
-    if (!newStep) {
-      return
-    }
-
-    // Arriving on the Configure step
-    if (newStep !== step && newStep === Steps.Configure) {
-      if (configureScreen) {
-        configureScreen.reset()
-      }
-    }
-
-    this.setState({ step: newStep, direction })
+    this.setState({ stepIndex: newStepIndex, direction })
   }
   nextStep = () => {
-    const { step, configureScreen } = this.state
-    if (step === Steps.Configure && configureScreen) {
-      configureScreen.nextStep()
-      return
-    }
-
     this.moveStep(1)
   }
   prevStep = () => {
     this.moveStep(-1)
   }
   isNextEnabled() {
-    const {
-      template,
-      step,
-      domain,
-      domainCheckStatus,
-      configureScreen,
-    } = this.state
-    if (step === Steps.Template && !template) {
-      return false
+    const { template, domainCheckStatus } = this.state
+    const step = this.currentStep()
+    if (step.screen === 'template') {
+      return !!template
     }
-    if (step === Steps.Domain && domainCheckStatus !== DomainCheckAccepted) {
-      return false
+    if (step.screen === 'domain') {
+      return domainCheckStatus === DomainCheckAccepted
     }
-    if (step === Steps.Configure && configureScreen) {
-      return configureScreen.isNextEnabled()
+    if (step.group === Steps.Configure) {
+      return this.validateConfigurationScreen(template, step.screen)
     }
     return true
   }
   isPrevEnabled() {
     return true
   }
-  handleConfigureUpdate = () => {
-    setTimeout(() => {
-      this.forceUpdate()
-    }, 0)
+  isPrevNextVisible() {
+    const step = this.currentStep()
+    if (step.group === Steps.Start || step.group === Steps.Launch) {
+      return false
+    }
+    return true
   }
   render() {
-    const { step, direction, template, domain, domainCheckStatus } = this.state
+    const { direction, stepIndex } = this.state
     const { visible } = this.props
-    const enableNext = this.isNextEnabled()
-    const enablePrev = this.isPrevEnabled()
+    const step = this.currentStep()
+    const steps = this.getSteps()
     return (
       <Motion
         style={{
@@ -194,9 +300,10 @@ class Onboarding extends React.PureComponent {
             Number(visible),
             visible ? SPRING_SHOW : SPRING_HIDE
           ),
+          screenProgress: spring(stepIndex, springConf('slow')),
         }}
       >
-        {({ showProgress }) => (
+        {({ showProgress, screenProgress }) => (
           <Main
             style={{
               transform: visible
@@ -207,58 +314,26 @@ class Onboarding extends React.PureComponent {
           >
             <View>
               <Window>
-                <StepsBar step={step} />
-                <Screen active={step === Steps.Start}>
-                  <Start
-                    visible={step === Steps.Start}
-                    onCreate={this.handleStartCreate}
-                    onJoin={this.props.onComplete}
-                    onRest={this.handleStartRest}
-                  />
-                </Screen>
-                <Screen active={step === Steps.Template}>
-                  <Template
-                    visible={step === Steps.Template}
-                    direction={direction}
-                    templates={Templates}
-                    activeTemplate={template}
-                    onSelect={this.handleTemplateSelect}
-                  />
-                </Screen>
-                <Screen active={step === Steps.Domain}>
-                  <Domain
-                    visible={step === Steps.Domain}
-                    direction={direction}
-                    domain={domain}
-                    domainCheckStatus={domainCheckStatus}
-                    onDomainChange={this.handleDomainChange}
-                  />
-                </Screen>
-                <Screen active={step === Steps.Configure}>
-                  <Configure
-                    visible={step === Steps.Configure}
-                    direction={direction}
-                    template={template}
-                    onConfigureScreen={this.handleConfigureScreen}
-                    onConfigureUpdate={this.handleConfigureUpdate}
-                    onConfigureDone={this.handleConfigureDone}
-                  />
-                </Screen>
-                <Screen active={step === Steps.Launch}>
-                  <Launch
-                    visible={step === Steps.Launch}
-                    direction={direction}
-                    onConfirm={this.nextStep}
-                  />
-                </Screen>
+                <StepsBar activeGroup={step.group} />
+                <div>
+                  {steps.map(({ screen }, i) => (
+                    <Screen active={screen === step.screen} key={screen}>
+                      {this.renderScreen(
+                        screen,
+                        screen === step.screen,
+                        i - screenProgress
+                      )}
+                    </Screen>
+                  ))}
+                </div>
                 <Footer>
                   <PrevNext
-                    visible={step !== Steps.Start && step !== Steps.Launch}
+                    visible={this.isPrevNextVisible()}
                     direction={direction}
                     onPrev={this.prevStep}
                     onNext={this.nextStep}
-                    enableNext={enableNext}
-                    enablePrev={enablePrev}
+                    enableNext={this.isNextEnabled()}
+                    enablePrev={this.isPrevEnabled()}
                   />
                 </Footer>
               </Window>
@@ -266,6 +341,70 @@ class Onboarding extends React.PureComponent {
           </Main>
         )}
       </Motion>
+    )
+  }
+  renderScreen(screen, visible, hideProgress) {
+    const { template, domain, domainCheckStatus } = this.state
+
+    if (screen === 'start') {
+      return (
+        <Start
+          hideProgress={hideProgress}
+          onCreate={this.handleStartCreate}
+          onJoin={this.props.onComplete}
+          onRest={this.handleStartRest}
+        />
+      )
+    }
+    if (screen === 'template') {
+      return (
+        <Template
+          hideProgress={hideProgress}
+          templates={Templates}
+          activeTemplate={template}
+          onSelect={this.handleTemplateSelect}
+        />
+      )
+    }
+    if (screen === 'domain') {
+      return (
+        <Domain
+          hideProgress={hideProgress}
+          domain={domain}
+          domainCheckStatus={domainCheckStatus}
+          onDomainChange={this.handleDomainChange}
+        />
+      )
+    }
+    if (screen === 'launch') {
+      return <Launch hideProgress={hideProgress} onConfirm={this.nextStep} />
+    }
+
+    const steps = this.getSteps()
+    const configureScreen = steps.find(
+      step => step.screen === screen && step.group === Steps.Configure
+    )
+    if (!configureScreen) {
+      return null
+    }
+
+    const ConfigureScreen = configureScreen.Component
+    const screenData = this.state.templateData.find(
+      data => data.screen === screen
+    )
+    const fields = screenData
+      ? screenData.data.reduce(
+          (fields, { name, value }) => ({ ...fields, [name]: value }),
+          {}
+        )
+      : {}
+    return (
+      <ConfigureScreen
+        hideProgress={hideProgress}
+        screen={screen}
+        fields={fields}
+        onFieldUpdate={this.handleConfigurationFieldUpdate}
+      />
     )
   }
 }

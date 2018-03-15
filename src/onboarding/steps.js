@@ -4,21 +4,21 @@ export const Domain = Symbol('Domain')
 export const Configure = Symbol('Configure')
 export const Launch = Symbol('Launch')
 
-export const ProgressBarSteps = [
+export const ProgressBarGroups = [
   {
-    step: Template,
+    group: Template,
     label: 'Choose Template',
   },
   {
-    step: Domain,
+    group: Domain,
     label: 'Claim Domain',
   },
   {
-    step: Configure,
+    group: Configure,
     label: 'Configure',
   },
   {
-    step: Launch,
+    group: Launch,
     label: 'Launch',
   },
 ]

@@ -7,11 +7,11 @@ import { lerp } from '../math-utils'
 
 class ProgressBar extends React.Component {
   static defaultProps = {
-    step: Steps.ProgressBarSteps[0].step,
+    activeGroup: Steps.ProgressBarGroups[0].group,
   }
   currentStepIndex() {
-    return Steps.ProgressBarSteps.findIndex(
-      ({ step }) => step === this.props.step
+    return Steps.ProgressBarGroups.findIndex(
+      ({ group }) => group === this.props.activeGroup
     )
   }
   render() {
@@ -35,15 +35,10 @@ class ProgressBar extends React.Component {
           >
             <Progress>
               <Line />
-              <Line
-                style={{
-                  width: stepProgress * 25 + '%',
-                }}
-                active
-              />
+              <Line style={{ width: stepProgress * 25 + '%' }} active />
 
               <StepsContainer>
-                {Steps.ProgressBarSteps.map(({ label }, index) =>
+                {Steps.ProgressBarGroups.map(({ label }, index) =>
                   this.renderStep(label, index, stepProgress)
                 )}
               </StepsContainer>
@@ -77,7 +72,7 @@ class ProgressBar extends React.Component {
 const COLOR_TEXT = '#C0C0C0'
 const COLOR_INACTIVE = '#D8D8D8'
 const COLOR_ACTIVE = '#02B9E4'
-const STEPS_COUNT = Steps.ProgressBarSteps.length
+const STEPS_COUNT = Steps.ProgressBarGroups.length
 
 const Main = styled.div`
   position: absolute;

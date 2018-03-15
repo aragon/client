@@ -1,48 +1,31 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { theme, spring as springConf, Text, Button } from '@aragon/ui'
+import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
 
 class Launch extends React.Component {
   render() {
-    const { visible, direction, onConfirm } = this.props
+    const { hideProgress, onConfirm } = this.props
     return (
-      <Motion
+      <Main
         style={{
-          showProgress: spring(Number(visible), springConf('slow')),
+          opacity: 1 - Math.abs(hideProgress),
+          willChange: 'transform',
+          transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
         }}
-        onRest={this.handleRest}
       >
-        {({ showProgress }) => (
-          <Main
-            style={{
-              pointerEvents: visible ? 'auto' : 'none',
-              opacity: showProgress,
-            }}
-          >
-            <Content
-              style={{
-                transform: `translateX(${lerp(
-                  showProgress,
-                  50 * (visible ? direction : -direction),
-                  0
-                )}%)`,
-              }}
-            >
-              <Title>
-                <Text size="great" weight="bold" color={theme.textDimmed}>
-                  All done! Your decentralized organization will be ready in a
-                  moment.
-                </Text>
-              </Title>
-              <StyledButton mode="strong" onClick={onConfirm}>
-                Get Started
-              </StyledButton>
-            </Content>
-          </Main>
-        )}
-      </Motion>
+        <Content>
+          <Title>
+            <Text size="great" weight="bold" color={theme.textDimmed}>
+              All done! Your decentralized organization will be ready in a
+              moment.
+            </Text>
+          </Title>
+          <StyledButton mode="strong" onClick={onConfirm}>
+            Get Started
+          </StyledButton>
+        </Content>
+      </Main>
     )
   }
 }

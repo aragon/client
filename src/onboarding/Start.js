@@ -1,82 +1,55 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { theme, spring as springConf, Text, Button } from '@aragon/ui'
+import { theme, Text, Button } from '@aragon/ui'
 import { noop } from '../utils'
 import { lerp } from '../math-utils'
 import logo from './assets/logo-welcome.svg'
 
-class Start extends React.Component {
+class Start extends React.PureComponent {
   static defaultProps = {
+    hideProgress: 0,
     onCreate: noop,
     onJoin: noop,
-    onRest: noop,
-  }
-  state = {
-    canHide: false,
-  }
-  handleRest = () => {
-    this.setState({
-      canHide: !this.props.visible,
-    })
-    this.props.onRest()
   }
   render() {
-    const { visible, onCreate, onJoin } = this.props
-    const { canHide } = this.state
+    const { onCreate, onJoin, hideProgress } = this.props
     return (
-      <Motion
-        style={{
-          showProgress: spring(Number(visible), springConf('slow')),
-        }}
-        onRest={this.handleRest}
-      >
-        {({ showProgress }) =>
-          canHide && !visible ? null : (
-            <Main
-              style={{
-                pointerEvents: visible ? 'auto' : 'none',
-                opacity: showProgress,
-              }}
-            >
-              <Content
-                style={{
-                  transform: `translateX(${lerp(showProgress, -50, 0)}%)`,
-                }}
-              >
-                <Title>
-                  <Text size="great" weight="bold" color={theme.textDimmed}>
-                    Welcome to Aragon
-                  </Text>
-                </Title>
+      <Main style={{ opacity: 1 - Math.abs(hideProgress) }}>
+        <Content
+          style={{
+            willChange: 'transform',
+            transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
+          }}
+        >
+          <Title>
+            <Text size="great" weight="bold" color={theme.textDimmed}>
+              Welcome to Aragon
+            </Text>
+          </Title>
 
-                <Action>
-                  <p>
-                    <Text size="large" color={theme.textSecondary}>
-                      Get started by creating your new decentralized
-                      organization
-                    </Text>
-                  </p>
-                  <Button mode="strong" onClick={onCreate}>
-                    Create a new organization
-                  </Button>
-                </Action>
+          <Action>
+            <p>
+              <Text size="large" color={theme.textSecondary}>
+                Get started by creating your new decentralized organization
+              </Text>
+            </p>
+            <Button mode="strong" onClick={onCreate}>
+              Create a new organization
+            </Button>
+          </Action>
 
-                <Action>
-                  <p>
-                    <Text size="large" color={theme.textSecondary}>
-                      Or join an existing one
-                    </Text>
-                  </p>
-                  <Button mode="outline" onClick={onJoin}>
-                    Join an existing organization
-                  </Button>
-                </Action>
-              </Content>
-            </Main>
-          )
-        }
-      </Motion>
+          <Action>
+            <p>
+              <Text size="large" color={theme.textSecondary}>
+                Or join an existing one
+              </Text>
+            </p>
+            <Button mode="outline" onClick={onJoin}>
+              Join an existing organization
+            </Button>
+          </Action>
+        </Content>
+      </Main>
     )
   }
 }
