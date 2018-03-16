@@ -9,13 +9,15 @@
     rxjs "^5.5.6"
     uuid "^3.2.1"
 
-"@aragon/ui@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-0.5.0.tgz#f81d0842f1d8d2011a725c051598bd70bf467ffc"
+"@aragon/ui@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-0.6.0.tgz#1b82e77b2c80a49fd1f6b492383cf0841778a3a6"
   dependencies:
     babel-plugin-external-helpers "^6.22.0"
     date-fns "^2.0.0-alpha.7"
+    onecolor "^3.0.5"
     prop-types "^15.6.0"
+    react-display-name "^0.2.3"
     react-motion "^0.5.2"
     react-onclickout "^2.0.8"
 
@@ -7817,6 +7819,10 @@ react-dev-utils@6.0.0-next.9754a231:
     sockjs-client "1.1.4"
     strip-ansi "4.0.0"
     text-table "0.2.0"
+
+react-display-name@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/react-display-name/-/react-display-name-0.2.3.tgz#f50204d430c9ca819bc0bade0306e9175d8d1987"
 
 react-dom@^16.2.0:
   version "16.2.0"
