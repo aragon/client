@@ -91,23 +91,27 @@ const subscribe = (
             return
           }
 
-          const worker = new Worker(workerUrl)
-          worker.addEventListener(
-            'error',
-            err =>
-              console.error(
-                `Error from worker for ${name}(${proxyAddress}):`,
-                err
-              ),
-            false
-          )
+          // If another execution context already loaded this app's worker before we got to it here,
+          // let's short circuit
+          if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
+            const worker = new Worker(workerUrl)
+            worker.addEventListener(
+              'error',
+              err =>
+                console.error(
+                  `Error from worker for ${name}(${proxyAddress}):`,
+                  err
+                ),
+              false
+            )
 
-          const provider = new providers.MessagePortMessage(worker)
-          workerSubscriptionPool.addWorker({
-            app,
-            worker,
-            subscription: wrapper.runApp(provider, proxyAddress).shutdown,
-          })
+            const provider = new providers.MessagePortMessage(worker)
+            workerSubscriptionPool.addWorker({
+              app,
+              worker,
+              subscription: wrapper.runApp(provider, proxyAddress).shutdown,
+            })
+          }
 
           // Clean up the url we created to spawn the worker
           URL.revokeObjectURL(workerUrl)
