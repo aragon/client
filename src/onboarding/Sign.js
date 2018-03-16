@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { theme, Text, IconCheck, IconCross } from '@aragon/ui'
 import { lerp } from '../math-utils'
 
-class Domain extends React.PureComponent {
+class Sign extends React.Component {
   static defaultProps = {
     tokenStatus: 'pending',
     daoStatus: 'pending',
@@ -14,44 +14,53 @@ class Domain extends React.PureComponent {
       <Main>
         <Content
           style={{
-            willChange: 'transform',
             transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
             opacity: 1 - Math.abs(hideProgress),
           }}
         >
-          <Title>
-            <Text size="great" weight="bold" color={theme.textDimmed}>
-              Sign transactions
-            </Text>
-          </Title>
-
-          <p>
-            <Text size="large" color={theme.textSecondary}>
-              Your wallet should open and you need to sign these two
-              transactions after another.
-            </Text>
-          </p>
-
-          <Transactions>
-            <Transaction>
-              <h2>
-                <Text weight="bold" color={theme.textSecondary} smallcaps>
-                  Organisation creation
-                </Text>
-              </h2>
-              <TxFailure />
-            </Transaction>
-            <Transaction>
-              <h2>
-                <Text weight="bold" color={theme.textSecondary} smallcaps>
-                  Token creation
-                </Text>
-              </h2>
-              <TxSuccess />
-            </Transaction>
-          </Transactions>
+          <SignContent />
         </Content>
       </Main>
+    )
+  }
+}
+
+class SignContent extends React.PureComponent {
+  render() {
+    return (
+      <React.Fragment>
+        <Title>
+          <Text size="great" weight="bold" color={theme.textDimmed}>
+            Sign transactions
+          </Text>
+        </Title>
+
+        <p>
+          <Text size="large" color={theme.textSecondary}>
+            Your wallet should open and you need to sign these two transactions
+            after another.
+          </Text>
+        </p>
+
+        <Transactions>
+          <Transaction>
+            <h2>
+              <Text weight="bold" color={theme.textSecondary} smallcaps>
+                Organisation creation
+              </Text>
+            </h2>
+            <TxFailure />
+          </Transaction>
+          <Transaction>
+            <h2>
+              <Text weight="bold" color={theme.textSecondary} smallcaps>
+                Token creation
+              </Text>
+            </h2>
+            <TxSuccess />
+          </Transaction>
+        </Transactions>
+      </React.Fragment>
     )
   }
 }
@@ -119,4 +128,4 @@ const Transaction = styled.div`
   }
 `
 
-export default Domain
+export default Sign

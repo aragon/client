@@ -31,6 +31,7 @@ const SPRING_HIDE = {
   damping: 15,
   precision: 0.001,
 }
+const SPRING_SCREEN =  springConf('slow')
 
 class Onboarding extends React.PureComponent {
   static defaultProps = {
@@ -237,10 +238,7 @@ class Onboarding extends React.PureComponent {
   }
 
   buildDao = () => {
-    const {
-      template,
-      // domain,
-    } = this.state
+    const { template, domain } = this.state
 
     if (!Templates.has(template)) {
       return null
@@ -277,7 +275,7 @@ class Onboarding extends React.PureComponent {
   isNextEnabled() {
     const { template, domainCheckStatus } = this.state
     const step = this.currentStep()
-    if (step.screen === 'template') {
+    if (step.screen === 'template' || step.screen === 'start') {
       return !!template
     }
     if (step.screen === 'domain') {
@@ -316,10 +314,9 @@ class Onboarding extends React.PureComponent {
             Number(visible),
             visible ? SPRING_SHOW : SPRING_HIDE
           ),
-          screenProgress: spring(stepIndex, springConf('slow')),
         }}
       >
-        {({ showProgress, screenProgress }) => (
+        {({ showProgress }) => (
           <Main
             style={{
               transform: visible
@@ -330,29 +327,39 @@ class Onboarding extends React.PureComponent {
           >
             <View>
               <Window>
-                <StepsBar activeGroup={step.group} />
-                <div>
-                  {steps.map(({ screen }, i) => (
-                    <Screen active={screen === step.screen} key={screen}>
-                      {this.renderScreen(
-                        screen,
-                        screen === step.screen,
-                        i - screenProgress
-                      )}
-                    </Screen>
-                  ))}
-                </div>
-                <Footer>
-                  <PrevNext
-                    visible={this.isPrevNextVisible()}
-                    direction={direction}
-                    onPrev={this.prevStep}
-                    onNext={this.nextStep}
-                    enableNext={this.isNextEnabled()}
-                    enablePrev={this.isPrevEnabled()}
-                    signingNext={this.isSigningNext()}
-                  />
-                </Footer>
+                <Motion
+                  style={{
+                    screenProgress: spring(stepIndex, SPRING_SCREEN),
+                  }}
+                >
+                  {({ screenProgress }) => (
+                    <React.Fragment>
+                      <StepsBar activeGroup={step.group} />
+                      <div>
+                        {steps.map(({ screen }, i) => (
+                          <Screen active={screen === step.screen} key={screen}>
+                            {this.renderScreen(
+                              screen,
+                              screen === step.screen,
+                              i - screenProgress
+                            )}
+                          </Screen>
+                        ))}
+                      </div>
+                      <Footer>
+                        <PrevNext
+                          visible={this.isPrevNextVisible()}
+                          direction={direction}
+                          onPrev={this.prevStep}
+                          onNext={this.nextStep}
+                          enableNext={this.isNextEnabled()}
+                          enablePrev={this.isPrevEnabled()}
+                          signingNext={this.isSigningNext()}
+                        />
+                      </Footer>
+                    </React.Fragment>
+                  )}
+                </Motion>
               </Window>
             </View>
           </Main>
@@ -363,7 +370,8 @@ class Onboarding extends React.PureComponent {
   renderScreen(screen, visible, hideProgress) {
     const { template, domain, domainCheckStatus } = this.state
 
-    const extraStyles = Math.abs(hideProgress > 1.5) ? { display: 'none' } : {}
+    // No need to move the screens farther than one step
+    hideProgress = Math.min(1, Math.max(-1, hideProgress))
 
     if (screen === 'start') {
       return (
@@ -372,7 +380,6 @@ class Onboarding extends React.PureComponent {
           onCreate={this.handleStartCreate}
           onJoin={this.props.onComplete}
           onRest={this.handleStartRest}
-          style={extraStyles}
         />
       )
     }
@@ -383,7 +390,6 @@ class Onboarding extends React.PureComponent {
           templates={Templates}
           activeTemplate={template}
           onSelect={this.handleTemplateSelect}
-          style={extraStyles}
         />
       )
     }
@@ -394,21 +400,14 @@ class Onboarding extends React.PureComponent {
           domain={domain}
           domainCheckStatus={domainCheckStatus}
           onDomainChange={this.handleDomainChange}
-          style={extraStyles}
         />
       )
     }
     if (screen === 'sign') {
-      return <Sign hideProgress={hideProgress} style={extraStyles} />
+      return <Sign hideProgress={hideProgress} />
     }
     if (screen === 'launch') {
-      return (
-        <Launch
-          hideProgress={hideProgress}
-          onConfirm={this.nextStep}
-          style={extraStyles}
-        />
-      )
+      return <Launch hideProgress={hideProgress} onConfirm={this.nextStep} />
     }
 
     const steps = this.getSteps()
@@ -435,20 +434,10 @@ class Onboarding extends React.PureComponent {
         screen={screen}
         fields={fields}
         onFieldUpdate={this.handleConfigurationFieldUpdate}
-        style={extraStyles}
       />
     )
   }
 }
-
-const Screen = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: ${({ active }) => (active ? 'auto' : 'none')};
-`
 
 const Main = styled.div`
   position: fixed;
@@ -477,13 +466,22 @@ const View = styled.div`
 `
 
 const Window = styled.div`
-  overflow: hidden;
   position: relative;
   width: 1080px;
   height: 660px;
   background: #fff;
   border-radius: 3px;
   box-shadow: 0 10px 28px 0 rgba(11, 103, 157, 0.7);
+`
+
+const Screen = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: ${({ active }) => (active ? 'auto' : 'none')};
 `
 
 const Footer = styled.div`

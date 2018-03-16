@@ -9,7 +9,7 @@ export const DomainCheckPending = Symbol('DomainCheckPending')
 export const DomainCheckAccepted = Symbol('DomainCheckAccepted')
 export const DomainCheckRejected = Symbol('DomainCheckRejected')
 
-class Domain extends React.PureComponent {
+class Domain extends React.Component {
   static defaultProps = {
     domain: '',
     domainCheckStatus: DomainCheckNone,
@@ -24,52 +24,66 @@ class Domain extends React.PureComponent {
       <Main>
         <Content
           style={{
-            willChange: 'transform',
             transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
             opacity: 1 - Math.abs(hideProgress),
+            willChange: 'opacity, transform',
           }}
         >
-          <Title>
-            <Text size="great" weight="bold" color={theme.textDimmed}>
-              Claim a domain name
-            </Text>
-          </Title>
-
-          <p>
-            <Text size="large" color={theme.textSecondary}>
-              Check if your chosen URL for your organization is available
-            </Text>
-          </p>
-
-          <Field>
-            <TextInput
-              id="domain-field"
-              placeholder="organizationname"
-              onChange={this.handleDomainChange}
-              style={{ textAlign: 'right' }}
-              value={domain}
-            />
-            <label htmlFor="domain-field">
-              <Text weight="bold"> .aragonid.eth</Text>
-            </label>
-            <Status>
-              <CheckContainer
-                active={domainCheckStatus === DomainCheckAccepted}
-              >
-                <IconCheck />
-              </CheckContainer>
-              <CheckContainer
-                active={domainCheckStatus === DomainCheckRejected}
-              >
-                <IconCross />
-              </CheckContainer>
-              <CheckContainer active={domainCheckStatus === DomainCheckPending}>
-                …
-              </CheckContainer>
-            </Status>
-          </Field>
+          <DomainContent
+            handleDomainChange={this.handleDomainChange}
+            domain={domain}
+            domainCheckStatus={domainCheckStatus}
+          />
         </Content>
       </Main>
+    )
+  }
+}
+
+class DomainContent extends React.PureComponent {
+  render() {
+    return (
+      <React.Fragment>
+        <Title>
+          <Text size="great" weight="bold" color={theme.textDimmed}>
+            Claim a domain name
+          </Text>
+        </Title>
+        <p>
+          <Text size="large" color={theme.textSecondary}>
+            Check if your chosen URL for your organization is available
+          </Text>
+        </p>
+        <Field>
+          <TextInput
+            id="domain-field"
+            placeholder="organizationname"
+            onChange={this.props.handleDomainChange}
+            style={{ textAlign: 'right' }}
+            value={this.props.domain}
+          />
+          <label htmlFor="domain-field">
+            <Text weight="bold"> .aragonid.eth</Text>
+          </label>
+          <Status>
+            <CheckContainer
+              active={this.props.domainCheckStatus === DomainCheckAccepted}
+            >
+              <IconCheck />
+            </CheckContainer>
+            <CheckContainer
+              active={this.props.domainCheckStatus === DomainCheckRejected}
+            >
+              <IconCross />
+            </CheckContainer>
+            <CheckContainer
+              active={this.props.domainCheckStatus === DomainCheckPending}
+            >
+              …
+            </CheckContainer>
+          </Status>
+        </Field>
+      </React.Fragment>
     )
   }
 }

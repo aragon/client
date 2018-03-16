@@ -5,8 +5,9 @@ import { noop } from '../utils'
 import { lerp } from '../math-utils'
 import TemplateCard from './TemplateCard'
 
-class Template extends React.PureComponent {
+class Template extends React.Component {
   static defaultProps = {
+    hideProgress: 0,
     onSelect: noop,
   }
   handleTemplateSelect = template => {
@@ -18,39 +19,55 @@ class Template extends React.PureComponent {
       <Main>
         <Content
           style={{
-            willChange: 'transform',
             transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
             opacity: 1 - Math.abs(hideProgress),
+            willChange: 'opacity, transform',
           }}
         >
-          <Title>
-            <Text size="great" weight="bold" color={theme.textDimmed}>
-              Create a new organization
-            </Text>
-          </Title>
+          <TemplateContent
+            templates={templates}
+            activeTemplate={activeTemplate}
+            handleTemplateSelect={this.handleTemplateSelect}
+          />
+        </Content>
+      </Main>
+    )
+  }
+}
 
-          <p>
-            <Text size="large" color={theme.textSecondary}>
-              Choose a template to get started quickly. Don’t worry − you can
-              change it later.
-            </Text>
-          </p>
+class TemplateContent extends React.PureComponent {
+  render() {
+    return (
+      <React.Fragment>
+        <Title>
+          <Text size="great" weight="bold" color={theme.textDimmed}>
+            Create a new organization
+          </Text>
+        </Title>
 
-          <Templates>
-            {[...templates.entries()].map(([template, { label, icon }], i) => (
+        <p>
+          <Text size="large" color={theme.textSecondary}>
+            Choose a template to get started quickly. Don’t worry − you can
+            change it later.
+          </Text>
+        </p>
+
+        <Templates>
+          {[...this.props.templates.entries()].map(
+            ([template, { label, icon }], i) => (
               <TemplateCardWrapper key={i}>
                 <TemplateCard
                   template={template}
                   icon={icon}
                   label={label}
-                  active={template === activeTemplate}
-                  onSelect={this.handleTemplateSelect}
+                  active={template === this.props.activeTemplate}
+                  onSelect={this.props.handleTemplateSelect}
                 />
               </TemplateCardWrapper>
-            ))}
-          </Templates>
-        </Content>
-      </Main>
+            )
+          )}
+        </Templates>
+      </React.Fragment>
     )
   }
 }

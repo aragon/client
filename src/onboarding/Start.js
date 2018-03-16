@@ -5,51 +5,65 @@ import { noop } from '../utils'
 import { lerp } from '../math-utils'
 import logo from './assets/logo-welcome.svg'
 
-class Start extends React.PureComponent {
+class Start extends React.Component {
   static defaultProps = {
+    account: '',
     hideProgress: 0,
     onCreate: noop,
     onJoin: noop,
   }
   render() {
-    const { onCreate, onJoin, hideProgress } = this.props
+    const { hideProgress, onCreate, onJoin, account } = this.props
     return (
-      <Main style={{ opacity: 1 - Math.abs(hideProgress) }}>
+      <Main
+        style={{
+          opacity: 1 - Math.abs(hideProgress),
+          willChange: 'opacity',
+        }}
+      >
         <Content
           style={{
-            willChange: 'transform',
             transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
+            willChange: 'transform',
           }}
         >
-          <Title>
-            <Text size="great" weight="bold" color={theme.textDimmed}>
-              Welcome to Aragon
-            </Text>
-          </Title>
-
-          <Action>
-            <p>
-              <Text size="large" color={theme.textSecondary}>
-                Get started by creating your new decentralized organization
-              </Text>
-            </p>
-            <Button mode="strong" onClick={onCreate}>
-              Create a new organization
-            </Button>
-          </Action>
-
-          <Action>
-            <p>
-              <Text size="large" color={theme.textSecondary}>
-                Or join an existing one
-              </Text>
-            </p>
-            <Button mode="outline" onClick={onJoin}>
-              Join an existing organization
-            </Button>
-          </Action>
+          <StartContent onCreate={onCreate} onJoin={onJoin} account={account} />
         </Content>
       </Main>
+    )
+  }
+}
+
+class StartContent extends React.PureComponent {
+  render() {
+    return (
+      <React.Fragment>
+        <Title>
+          <Text size="great" weight="bold" color={theme.textDimmed}>
+            Welcome to Aragon
+          </Text>
+        </Title>
+        <Action>
+          <p>
+            <Text size="large" color={theme.textSecondary}>
+              Get started by creating your new decentralized organization
+            </Text>
+          </p>
+          <Button mode="strong" onClick={this.props.onCreate}>
+            Create a new organization
+          </Button>
+        </Action>
+        <Action>
+          <p>
+            <Text size="large" color={theme.textSecondary}>
+              Or join an existing one
+            </Text>
+          </p>
+          <Button mode="outline" onClick={this.props.onJoin}>
+            Join an existing organization
+          </Button>
+        </Action>
+      </React.Fragment>
     )
   }
 }

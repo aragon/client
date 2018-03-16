@@ -16,7 +16,9 @@ class PrevNext extends React.Component {
     } = this.props
     return (
       <Motion
-        style={{ showProgress: spring(Number(visible), springConf('fast')) }}
+        style={{
+          showProgress: spring(Number(visible), springConf('fast'))
+        }}
       >
         {({ showProgress }) => (
           <Main
@@ -29,15 +31,38 @@ class PrevNext extends React.Component {
               opacity: showProgress,
             }}
           >
-            <Button mode="text" onClick={onPrev} disabled={!enablePrev}>
-              Back
-            </Button>
-            <StrongButton mode="strong" onClick={onNext} disabled={!enableNext}>
-              Next
-            </StrongButton>
+            <PrevNextContent
+              onPrev={onPrev}
+              onNext={onNext}
+              enablePrev={enablePrev}
+              enableNext={enableNext}
+            />
           </Main>
         )}
       </Motion>
+    )
+  }
+}
+
+class PrevNextContent extends React.PureComponent {
+  render() {
+    return (
+      <React.Fragment>
+        <Button
+          mode="text"
+          onClick={this.props.onPrev}
+          disabled={!this.props.enablePrev}
+        >
+          Back
+        </Button>
+        <StrongButton
+          mode="strong"
+          onClick={this.props.onNext}
+          disabled={!this.props.enableNext}
+        >
+          Next
+        </StrongButton>
+      </React.Fragment>
     )
   }
 }

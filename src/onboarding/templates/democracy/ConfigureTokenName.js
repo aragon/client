@@ -4,7 +4,7 @@ import { Field, TextInput } from '@aragon/ui'
 import { lerp } from '../../../math-utils'
 import { noop } from '../../../utils'
 
-class ConfigureDemocracy extends React.PureComponent {
+class ConfigureTokenName extends React.Component {
   static defaultProps = {
     onConfigureDone: noop,
     onChange: noop,
@@ -26,42 +26,59 @@ class ConfigureDemocracy extends React.PureComponent {
       <Main
         style={{
           opacity: 1 - Math.abs(hideProgress),
-          willChange: 'transform',
           transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
+          willChange: 'opacity, transform',
         }}
       >
-        <Content>
-          <Title>Democracy Project</Title>
-          <StepContainer>
-            <div>
-              <p>
-                Choose the address for the first token received, and the token
-                name and symbol.
-              </p>
-              <Fields>
-                <Rows>
-                  <Row>
-                    <Fields.Field label="Token Name">
-                      <InputSized
-                        width={200}
-                        value={fields.tokenName}
-                        onChange={this.handleTokenNameChange}
-                      />
-                    </Fields.Field>
-                    <Fields.Field label="Token Symbol">
-                      <InputSized
-                        width={80}
-                        value={fields.tokenSymbol}
-                        onChange={this.handleTokenSymbolChange}
-                      />
-                    </Fields.Field>
-                  </Row>
-                </Rows>
-              </Fields>
-            </div>
-          </StepContainer>
-        </Content>
+        <ConfigureTokenNameContent
+          fields={fields}
+          handleTokenNameChange={this.handleTokenNameChange}
+          handleTokenSymbolChange={this.handleTokenSymbolChange}
+        />
       </Main>
+    )
+  }
+}
+
+class ConfigureTokenNameContent extends React.PureComponent {
+  render() {
+    const {
+      fields,
+      handleTokenNameChange,
+      handleTokenSymbolChange,
+    } = this.props
+    return (
+      <Content>
+        <Title>Democracy Project</Title>
+        <StepContainer>
+          <div>
+            <p>
+              Choose the address for the first token received, and the token
+              name and symbol.
+            </p>
+            <Fields>
+              <Rows>
+                <Row>
+                  <Fields.Field label="Token Name">
+                    <InputSized
+                      width={200}
+                      value={fields.tokenName}
+                      onChange={handleTokenNameChange}
+                    />
+                  </Fields.Field>
+                  <Fields.Field label="Token Symbol">
+                    <InputSized
+                      width={80}
+                      value={fields.tokenSymbol}
+                      onChange={handleTokenSymbolChange}
+                    />
+                  </Fields.Field>
+                </Row>
+              </Rows>
+            </Fields>
+          </div>
+        </StepContainer>
+      </Content>
     )
   }
 }
@@ -138,4 +155,4 @@ Fields.HoursField = styled(Fields.Field)`
   }
 `
 
-export default ConfigureDemocracy
+export default ConfigureTokenName

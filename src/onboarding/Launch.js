@@ -3,29 +3,36 @@ import styled from 'styled-components'
 import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
 
-class Launch extends React.PureComponent {
+class Launch extends React.Component {
   render() {
     const { hideProgress, onConfirm } = this.props
     return (
       <Main
         style={{
           opacity: 1 - Math.abs(hideProgress),
-          willChange: 'transform',
           transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
+          willChange: 'opacity, transform',
         }}
       >
-        <Content>
-          <Title>
-            <Text size="great" weight="bold" color={theme.textDimmed}>
-              All done! Your decentralized organization will be ready in a
-              moment.
-            </Text>
-          </Title>
-          <StyledButton mode="strong" onClick={onConfirm}>
-            Get Started
-          </StyledButton>
-        </Content>
+        <LaunchContent onConfirm={onConfirm} />
       </Main>
+    )
+  }
+}
+
+class LaunchContent extends React.PureComponent {
+  render() {
+    return (
+      <Content>
+        <Title>
+          <Text size="great" weight="bold" color={theme.textDimmed}>
+            All done! Your decentralized organization will be ready in a moment.
+          </Text>
+        </Title>
+        <StyledButton mode="strong" onClick={this.props.onConfirm}>
+          Get Started
+        </StyledButton>
+      </Content>
     )
   }
 }

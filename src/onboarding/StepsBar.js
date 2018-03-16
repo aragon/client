@@ -5,7 +5,9 @@ import { spring as springConf, Text } from '@aragon/ui'
 import * as Steps from './steps'
 import { lerp } from '../math-utils'
 
-class ProgressBar extends React.PureComponent {
+const STEPS_COUNT = Steps.ProgressBarGroups.length
+
+class ProgressBar extends React.Component {
   static defaultProps = {
     activeGroup: Steps.ProgressBarGroups[0].group,
   }
@@ -22,7 +24,8 @@ class ProgressBar extends React.PureComponent {
       <Motion
         style={{
           showProgress: spring(Number(visible), springConf('fast')),
-          stepProgress: spring(stepIndex, springConf('fast')),
+          stepProgress:
+            stepIndex > 0 ? spring(stepIndex, springConf('fast')) : 0,
         }}
       >
         {({ showProgress, stepProgress }) => (
@@ -35,12 +38,25 @@ class ProgressBar extends React.PureComponent {
           >
             <Progress>
               <Line />
-              <Line style={{ width: stepProgress * 25 + '%' }} active />
-
+              <Line
+                style={{
+                  transform: `scaleX(
+                    ${Math.max(0, stepProgress) / (STEPS_COUNT - 1)}
+                  )`,
+                }}
+                active
+              />
               <StepsContainer>
-                {Steps.ProgressBarGroups.map(({ label }, index) =>
-                  this.renderStep(label, index, stepProgress)
-                )}
+                {Steps.ProgressBarGroups.map(({ label }, index) => (
+                  <StepWrapper
+                    key={index}
+                    label={label}
+                    active={
+                      stepIndex >= index ||
+                      Math.floor(stepProgress + 0.05) >= index + 1
+                    }
+                  />
+                ))}
               </StepsContainer>
             </Progress>
           </Main>
@@ -48,22 +64,17 @@ class ProgressBar extends React.PureComponent {
       </Motion>
     )
   }
-  renderStep(label, index, stepProgress) {
-    const currentStepIndex = this.currentStepIndex()
-    const animVisible = stepProgress + 0.05 >= index
+}
+
+class StepWrapper extends React.PureComponent {
+  render() {
+    const { label, active } = this.props
     return (
-      <Step key={index}>
-        <Text
-          color={
-            currentStepIndex === index && animVisible
-              ? COLOR_ACTIVE
-              : COLOR_TEXT
-          }
-          smallcaps
-        >
+      <Step>
+        <Text color={active ? COLOR_ACTIVE : COLOR_TEXT} smallcaps>
           {label}
         </Text>
-        <Disc active={animVisible} />
+        <Disc active={active} />
       </Step>
     )
   }
@@ -72,7 +83,6 @@ class ProgressBar extends React.PureComponent {
 const COLOR_TEXT = '#C0C0C0'
 const COLOR_INACTIVE = '#D8D8D8'
 const COLOR_ACTIVE = '#02B9E4'
-const STEPS_COUNT = Steps.ProgressBarGroups.length
 
 const Main = styled.div`
   position: absolute;
@@ -98,6 +108,7 @@ const Line = styled.div`
   margin-left: calc(${100 / STEPS_COUNT}% / 2);
   height: 2px;
   background: ${({ active }) => (active ? COLOR_ACTIVE : COLOR_INACTIVE)};
+  transform-origin: 0 50%;
 `
 
 const StepsContainer = styled.div`

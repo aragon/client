@@ -4,7 +4,7 @@ import { Field, TextInput } from '@aragon/ui'
 import { lerp } from '../../../math-utils'
 import { noop } from '../../../utils'
 
-class ConfigureDemocracy extends React.PureComponent {
+class ConfigureVotingDefaults extends React.Component {
   static defaultProps = {
     onFieldUpdate: noop,
     onConfigureDone: noop,
@@ -30,47 +30,64 @@ class ConfigureDemocracy extends React.PureComponent {
       <Main
         style={{
           opacity: 1 - Math.abs(hideProgress),
-          willChange: 'transform',
           transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
+          willChange: 'opacity, transform',
         }}
       >
-        <Content>
-          <Title>Democracy Project</Title>
-          <StepContainer>
-            <div>
-              <p>
-                Choose your configuration below. Hover on the info icons for
-                help on what each input means.
-              </p>
-              <Fields>
-                <Fields.PercentageField label="Support">
-                  <SymbolInput
-                    placeholder="e.g. 50"
-                    value={fields.support === -1 ? '' : fields.support}
-                    onChange={this.handleSupportChange}
-                  />
-                </Fields.PercentageField>
-                <Fields.PercentageField label="Min. Quorum">
-                  <SymbolInput
-                    placeholder="e.g. 15"
-                    value={fields.minQuorum === -1 ? '' : fields.minQuorum}
-                    onChange={this.handleMinQuorumChange}
-                  />
-                </Fields.PercentageField>
-                <Fields.HoursField label="Vote Duration">
-                  <SymbolInput
-                    placeholder="e.g. 24"
-                    onChange={this.handleVoteDurationChange}
-                    value={
-                      fields.voteDuration === -1 ? '' : fields.voteDuration
-                    }
-                  />
-                </Fields.HoursField>
-              </Fields>
-            </div>
-          </StepContainer>
-        </Content>
+        <ConfigureVotingDefaultsContent
+          fields={fields}
+          handleSupportChange={this.handleSupportChange}
+          handleMinQuorumChange={this.handleMinQuorumChange}
+          handleVoteDurationChange={this.handleVoteDurationChange}
+        />
       </Main>
+    )
+  }
+}
+
+class ConfigureVotingDefaultsContent extends React.PureComponent {
+  render() {
+    const {
+      fields,
+      handleSupportChange,
+      handleMinQuorumChange,
+      handleVoteDurationChange,
+    } = this.props
+    return (
+      <Content>
+        <Title>Democracy Project</Title>
+        <StepContainer>
+          <div>
+            <p>
+              Choose your configuration below. Hover on the info icons for help
+              on what each input means.
+            </p>
+            <Fields>
+              <Fields.PercentageField label="Support">
+                <SymbolInput
+                  placeholder="e.g. 50"
+                  value={fields.support === -1 ? '' : fields.support}
+                  onChange={handleSupportChange}
+                />
+              </Fields.PercentageField>
+              <Fields.PercentageField label="Min. Quorum">
+                <SymbolInput
+                  placeholder="e.g. 15"
+                  value={fields.minQuorum === -1 ? '' : fields.minQuorum}
+                  onChange={handleMinQuorumChange}
+                />
+              </Fields.PercentageField>
+              <Fields.HoursField label="Vote Duration">
+                <SymbolInput
+                  placeholder="e.g. 24"
+                  onChange={handleVoteDurationChange}
+                  value={fields.voteDuration === -1 ? '' : fields.voteDuration}
+                />
+              </Fields.HoursField>
+            </Fields>
+          </div>
+        </StepContainer>
+      </Content>
     )
   }
 }
@@ -140,4 +157,4 @@ Fields.HoursField = styled(Fields.Field)`
   }
 `
 
-export default ConfigureDemocracy
+export default ConfigureVotingDefaults
