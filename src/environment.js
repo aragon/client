@@ -8,9 +8,11 @@ export const addresses = {
 }
 
 export const appIds = {
-  // TODO: add vault and finance
-  Voting: '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
+  // TODO: add finance
+  TokenManager:
+    '0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f',
   Vault: '0x7e852e0fcfce6551c13800f1e7476f982525c2b5277ba14b24339c68416336d1',
+  Voting: '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
 }
 
 export const appDefaults = {
@@ -18,10 +20,15 @@ export const appDefaults = {
     script: '/script.js',
     short_url: '/index.html',
   },
+  [appIds['TokenManager']]: {
+    script: '/script.js',
+    short_url: '/index.html',
+  },
 }
 
 export const appLocator = {
   [appIds['Voting']]: 'http://localhost:3001/',
+  [appIds['TokenManager']]: 'http://localhost:3003/',
 }
 
 export const ipfsDefaultConf = {
