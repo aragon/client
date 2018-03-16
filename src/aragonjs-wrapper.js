@@ -37,6 +37,16 @@ const pollAccounts = (web3, onAccounts) => {
   })
 }
 
+const getMainAccount = async web3 => {
+  try {
+    const accounts = await web3.eth.getAccounts()
+    return (accounts && accounts[0]) || null
+  } catch (err) {
+    console.error(err)
+    return null
+  }
+}
+
 // Subscribe to wrapper's observables
 const subscribe = (
   wrapper,
@@ -132,7 +142,14 @@ const initWrapper = async (
   const web3 = new Web3(walletProvider || provider)
   onWeb3(web3)
 
-  pollAccounts(web3, onAccounts)
+  // pollAccounts(web3, onAccounts)
+  const account = await getMainAccount(web3)
+  if (account === null) {
+    throw new Error(
+      'No accounts detected in the environment (try to unlock your wallet)'
+    )
+  }
+  onAccounts([account])
 
   try {
     await wrapper.init()
@@ -179,18 +196,15 @@ const initWrapper = async (
 
 const templateParamFilters = {
   democracy: (
-    // holders: Token holders. Structure: [ { address: '0x...', balance: 120 }, ... ]
     // supportNeeded: Number between 0 (0%) and 1 (100%).
     // minAcceptanceQuorum: Number between 0 (0%) and 1 (100%).
     // voteDuration: Duration in seconds.
-    { holders, supportNeeded, minAcceptanceQuorum, voteDuration }
+    { supportNeeded, minAcceptanceQuorum, voteDuration },
+    account
   ) => {
-    if (!holders || holders.length === 0) {
-      throw new Error('holders should contain at least one account:', holders)
-    }
-
     const tokenBase = Math.pow(10, 18)
     const percentageBase = Math.pow(10, 18)
+    const holders = [{ address: account, balance: 1 }]
 
     const [accounts, stakes] = holders.reduce(
       ([accounts, stakes], holder) => [
@@ -212,7 +226,8 @@ const templateParamFilters = {
   multisig: (
     // signers: Accounts corresponding to the signers.
     // neededSignatures: Minimum number of signatures needed.
-    { signers, neededSignatures }
+    { signers, neededSignatures },
+    account
   ) => {
     if (!signers || signers.length === 0) {
       throw new Error('signers should contain at least one account:', signers)
@@ -229,22 +244,11 @@ const templateParamFilters = {
   },
 }
 
-const getMainAccount = async web3 => {
-  try {
-    const accounts = await web3.eth.getAccounts()
-    return (accounts && accounts[0]) || null
-  } catch (err) {
-    console.error(err)
-    return null
-  }
-}
-
 export const initDaoBuilder = (
   provider,
   registryAddress,
   ipfsConf = ipfsDefaultConf
 ) => {
-
   // DEV only
   // provider = new Web3.providers.WebsocketProvider('ws://localhost:8546')
 
@@ -268,7 +272,7 @@ export const initDaoBuilder = (
 
       const templates = setupTemplates(provider, registryAddress, account)
       const templateFilter = templateParamFilters[templateName]
-      const templateData = templateFilter(settings)
+      const templateData = templateFilter(settings, account)
 
       return templates.newDAO(templateName, organizationName, templateData)
     },

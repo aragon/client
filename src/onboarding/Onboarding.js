@@ -19,6 +19,7 @@ import Domain, {
   DomainCheckRejected,
 } from './Domain'
 import Launch from './Launch'
+import Sign from './Sign'
 
 const SPRING_SHOW = {
   stiffness: 120,
@@ -67,6 +68,7 @@ class Onboarding extends React.PureComponent {
       { screen: 'template', group: Steps.Template },
       { screen: 'domain', group: Steps.Domain },
       ...configureSteps,
+      { screen: 'sign', group: Steps.Launch },
       { screen: 'launch', group: Steps.Launch },
     ]
   }
@@ -234,26 +236,34 @@ class Onboarding extends React.PureComponent {
     })
   }
 
-  handleConfigureDone = conf => {
-    const { template, domain } = this.state
+  buildDao = () => {
+    const {
+      template,
+      // domain,
+    } = this.state
 
     if (!Templates.has(template)) {
-      return
+      return null
     }
 
-    this.props.onBuildDao(Templates.get(template).name, domain, conf)
-    // this.moveStep(1)
+    const templateData = Templates.get(template)
+    const data = templateData.prepareData(this.getTemplateData())
+
+    console.log('build DAO', data)
+    // this.props.onBuildDao(templateData.name, domain, data)
   }
 
   // Set the direction to 1 (next) or -1 (prev)
   moveStep = (direction = 1) => {
     const { stepIndex } = this.state
     const steps = this.getSteps()
-
     const newStepIndex = stepIndex + direction
-
     if (newStepIndex > steps.length - 1 || newStepIndex < 0) {
       return
+    }
+
+    if (steps[newStepIndex].screen === 'sign') {
+      this.buildDao()
     }
 
     this.setState({ stepIndex: newStepIndex, direction })
@@ -283,10 +293,16 @@ class Onboarding extends React.PureComponent {
   }
   isPrevNextVisible() {
     const step = this.currentStep()
-    if (step.group === Steps.Start || step.group === Steps.Launch) {
-      return false
-    }
-    return true
+    return (
+      step.group !== Steps.Start &&
+      step.group !== Steps.Launch &&
+      step.group !== Steps.Sign
+    )
+  }
+  isSigningNext() {
+    const { stepIndex } = this.state
+    const steps = this.getSteps()
+    return steps[stepIndex + 1] && steps[stepIndex + 1].name === 'launch'
   }
   render() {
     const { direction, stepIndex } = this.state
@@ -334,6 +350,7 @@ class Onboarding extends React.PureComponent {
                     onNext={this.nextStep}
                     enableNext={this.isNextEnabled()}
                     enablePrev={this.isPrevEnabled()}
+                    signingNext={this.isSigningNext()}
                   />
                 </Footer>
               </Window>
@@ -346,6 +363,8 @@ class Onboarding extends React.PureComponent {
   renderScreen(screen, visible, hideProgress) {
     const { template, domain, domainCheckStatus } = this.state
 
+    const extraStyles = Math.abs(hideProgress > 1.5) ? { display: 'none' } : {}
+
     if (screen === 'start') {
       return (
         <Start
@@ -353,6 +372,7 @@ class Onboarding extends React.PureComponent {
           onCreate={this.handleStartCreate}
           onJoin={this.props.onComplete}
           onRest={this.handleStartRest}
+          style={extraStyles}
         />
       )
     }
@@ -363,6 +383,7 @@ class Onboarding extends React.PureComponent {
           templates={Templates}
           activeTemplate={template}
           onSelect={this.handleTemplateSelect}
+          style={extraStyles}
         />
       )
     }
@@ -373,11 +394,21 @@ class Onboarding extends React.PureComponent {
           domain={domain}
           domainCheckStatus={domainCheckStatus}
           onDomainChange={this.handleDomainChange}
+          style={extraStyles}
         />
       )
     }
+    if (screen === 'sign') {
+      return <Sign hideProgress={hideProgress} style={extraStyles} />
+    }
     if (screen === 'launch') {
-      return <Launch hideProgress={hideProgress} onConfirm={this.nextStep} />
+      return (
+        <Launch
+          hideProgress={hideProgress}
+          onConfirm={this.nextStep}
+          style={extraStyles}
+        />
+      )
     }
 
     const steps = this.getSteps()
@@ -404,6 +435,7 @@ class Onboarding extends React.PureComponent {
         screen={screen}
         fields={fields}
         onFieldUpdate={this.handleConfigurationFieldUpdate}
+        style={extraStyles}
       />
     )
   }

@@ -5,7 +5,7 @@ import { spring as springConf, Text } from '@aragon/ui'
 import * as Steps from './steps'
 import { lerp } from '../math-utils'
 
-class ProgressBar extends React.Component {
+class ProgressBar extends React.PureComponent {
   static defaultProps = {
     activeGroup: Steps.ProgressBarGroups[0].group,
   }

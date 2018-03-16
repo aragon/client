@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
 
-class Launch extends React.Component {
+class Launch extends React.PureComponent {
   render() {
     const { hideProgress, onConfirm } = this.props
     return (
