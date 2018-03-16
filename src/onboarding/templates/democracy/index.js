@@ -62,12 +62,12 @@ const template = {
       fields: {
         tokenName: {
           defaultValue: () => '',
-          filter: value => value.trim(),
+          filter: value => value,
           isValid: value => value.length > 0,
         },
         tokenSymbol: {
           defaultValue: () => '',
-          filter: value => value.trim().toUpperCase(),
+          filter: value => value.toUpperCase(),
           isValid: value => value.length > 0,
         },
       },
@@ -88,8 +88,8 @@ const template = {
       minAcceptanceQuorum: minQuorum / 100,
       supportNeeded: support / 100,
       voteDuration: voteDuration * 60 * 60,
-      tokenName,
-      tokenSymbol,
+      tokenName: tokenName.trim(),
+      tokenSymbol: tokenSymbol.trim(),
     }
   },
 }
