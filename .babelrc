@@ -21,7 +21,6 @@
   "plugins": [
     ["styled-components", {
       "displayName": true
-    }],
-    "transform-runtime"
+    }]
   ]
 }
