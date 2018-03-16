@@ -34,7 +34,7 @@ class MenuPanelAppGroup extends React.Component {
 
             <ActiveBackground style={{ opacity: Number(active) }} />
 
-            <a
+            <span
               role="button"
               tabIndex="0"
               className={`item ${active ? 'active' : ''}`}
@@ -42,7 +42,7 @@ class MenuPanelAppGroup extends React.Component {
             >
               <span className="icon">{icon || <IconBlank />}</span>
               <span className="name">{name}</span>
-            </a>
+            </span>
 
             <ul
               className="instances"

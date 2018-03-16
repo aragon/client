@@ -60,16 +60,13 @@ class MenuPanel extends React.Component {
           <Header>
             <img src={logo} alt="Aragon" height="36" />
             <div className="actions">
-              {/* <a role="button" tabIndex="0">
-                <IconWallet />
-              </a> */}
-              <a
+              <span
                 role="button"
                 tabIndex="0"
                 onClick={this.handleNotificationsClick}
               >
                 <IconNotifications />
-              </a>
+              </span>
             </div>
           </Header>
           <Content>
