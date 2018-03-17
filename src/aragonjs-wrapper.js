@@ -24,17 +24,34 @@ const prepareFrontendApps = (apps, gateway) =>
     .filter(app => app && app['short_url'] && app.appId !== appIds['Vault'])
     .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
 
-// Keep polling accounts to notice when the user unlocks their wallet
-const pollAccounts = (web3, onAccounts) => {
-  if (!web3) {
-    return
-  }
-  web3.eth.getAccounts((err, accounts) => {
-    if (!err) {
-      onAccounts(accounts || [])
+// Keep polling the main account.
+// See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
+export const pollMainAccount = (provider = null, onAccount = noop) => {
+  const web3 = new Web3(provider)
+  let timer = -1
+  let lastFound = null
+  let stop = false
+
+  const poll = async () => {
+    const account = await getMainAccount(web3)
+    if (account !== lastFound) {
+      lastFound = account
+      onAccount(account)
     }
-    setTimeout(pollAccounts, ACCOUNTS_POLL_EVERY)
-  })
+    if (stop) {
+      return
+    }
+    timer = setTimeout(poll, ACCOUNTS_POLL_EVERY)
+  }
+
+  poll()
+
+  return () => {
+    // In case we are waiting for getMainAccount
+    stop = true
+
+    clearTimeout(timer)
+  }
 }
 
 const getMainAccount = async web3 => {
@@ -42,7 +59,6 @@ const getMainAccount = async web3 => {
     const accounts = await web3.eth.getAccounts()
     return (accounts && accounts[0]) || null
   } catch (err) {
-    console.error(err)
     return null
   }
 }
@@ -146,7 +162,6 @@ const initWrapper = async (
   const web3 = new Web3(walletProvider || provider)
   onWeb3(web3)
 
-  // pollAccounts(web3, onAccounts)
   const account = await getMainAccount(web3)
   if (account === null) {
     throw new Error(

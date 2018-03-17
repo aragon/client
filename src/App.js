@@ -3,7 +3,10 @@ import createHistory from 'history/createHashHistory'
 import { AragonApp } from '@aragon/ui'
 import { addresses, web3Providers } from './environment'
 import { parsePath } from './routing'
-import initWrapper, { initDaoBuilder } from './aragonjs-wrapper'
+import initWrapper, {
+  initDaoBuilder,
+  pollMainAccount,
+} from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 
@@ -24,6 +27,9 @@ class App extends React.Component {
     const { pathname, search } = this.history.location
     this.handleHistoryChange({ pathname, search })
     this.history.listen(this.handleHistoryChange)
+    pollMainAccount(web3Providers.wallet, (account = null) => {
+      this.setState({ account })
+    })
   }
 
   // Handle URL changes
@@ -98,14 +104,6 @@ class App extends React.Component {
       onWeb3: web3 => {
         console.log('web3', web3)
         this.setState({ web3 })
-      },
-      onAccounts: accounts => {
-        const account = accounts[0]
-        if (this.state.account === account) {
-          return
-        }
-        console.log('account', account)
-        this.setState({ account })
       },
       onApps: apps => {
         console.log('apps', apps)
