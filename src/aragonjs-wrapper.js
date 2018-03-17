@@ -1,5 +1,10 @@
 import Web3 from 'web3'
-import Aragon, { providers, setupTemplates, isNameUsed } from '@aragon/wrapper'
+import Aragon, {
+  providers,
+  setupTemplates,
+  isNameUsed,
+  ensResolve,
+} from '@aragon/wrapper'
 import { appDefaults, appIds, appLocator, ipfsDefaultConf } from './environment'
 import { noop, removeTrailingSlash } from './utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
@@ -138,8 +143,19 @@ const subscribe = (
   return subscriptions
 }
 
+const resolveEnsDomain = async (domain, opts) => {
+  try {
+    return await ensResolve(domain, opts)
+  } catch (err) {
+    if (err.message === 'ENS name not defined.') {
+      return ''
+    }
+    throw err
+  }
+}
+
 const initWrapper = async (
-  daoAddress,
+  dao,
   ensRegistryAddress,
   {
     provider,
@@ -153,6 +169,20 @@ const initWrapper = async (
     onAccounts = noop,
   } = {}
 ) => {
+  const isDomain = /[a-z0-9]+\.aragonid\.eth/.test(dao)
+
+  const daoAddress = isDomain
+    ? await resolveEnsDomain(dao, {
+        provider,
+        registryAddress: ensRegistryAddress,
+      })
+    : dao
+
+  if (!daoAddress) {
+    console.log('Invalid DAO address')
+    return
+  }
+
   const wrapper = new Aragon(daoAddress, {
     ensRegistryAddress,
     provider,

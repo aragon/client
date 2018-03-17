@@ -24,10 +24,12 @@ const STATIC_APPS = new Map(
  *
  * App:
  *
- * /0x{dao_address}
- * /0x{dao_address}/settings
- * /0x{dao_address}/permissions
- * /0x{dao_address}/0x{app_instance_address}?params={app_params}
+ * Note: a dao_address can be either of the form /0xcafe… or abc.aragonid.eth
+ *
+ * /{dao_address}
+ * /{dao_address}/settings
+ * /{dao_address}/permissions
+ * /{dao_address}/0x{app_instance_address}?params={app_params}
  *
  *
  * Available modes:
@@ -51,8 +53,11 @@ export const parsePath = (pathname, search = '') => {
     return { ...locator, mode, step, parts: setupParts }
   }
 
+  const validAddress = isAddress(parts[0])
+  const validDomain = /[a-z0-9]+\.aragonid\.eth/.test(parts[0])
+
   // Exclude invalid DAO addresses
-  if (!isAddress(parts[0])) {
+  if (!validAddress && !validDomain) {
     return { ...locator, mode: 'unknown' }
   }
 
