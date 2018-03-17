@@ -1,15 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, Text, IconCheck, IconCross } from '@aragon/ui'
+import { theme, Text, IconCheck, IconCross, IconTime, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
+import { noop } from '../utils'
 
 class Sign extends React.Component {
   static defaultProps = {
     tokenStatus: 'pending',
     daoStatus: 'pending',
+    onTryAgain: noop,
   }
   render() {
-    const { hideProgress } = this.props
+    const { hideProgress, daoCreationStatus, onTryAgain } = this.props
     return (
       <Main>
         <Content
@@ -18,7 +20,10 @@ class Sign extends React.Component {
             opacity: 1 - Math.abs(hideProgress),
           }}
         >
-          <SignContent />
+          <SignContent
+            daoCreationStatus={daoCreationStatus}
+            onTryAgain={onTryAgain}
+          />
         </Content>
       </Main>
     )
@@ -27,6 +32,7 @@ class Sign extends React.Component {
 
 class SignContent extends React.PureComponent {
   render() {
+    const { daoCreationStatus, onTryAgain } = this.props
     return (
       <React.Fragment>
         <Title>
@@ -46,10 +52,10 @@ class SignContent extends React.PureComponent {
           <Transaction>
             <h2>
               <Text weight="bold" color={theme.textSecondary} smallcaps>
-                Organisation creation
+                Organization creation
               </Text>
             </h2>
-            <TxFailure />
+            {this.renderTxStatus(daoCreationStatus)}
           </Transaction>
           <Transaction>
             <h2>
@@ -57,11 +63,24 @@ class SignContent extends React.PureComponent {
                 Token creation
               </Text>
             </h2>
-            <TxSuccess />
+            {this.renderTxStatus(daoCreationStatus)}
           </Transaction>
         </Transactions>
+
+        {daoCreationStatus === 'error' && (
+          <TryAgain>
+            <Button mode="outline" compact onClick={onTryAgain}>
+              Try Again
+            </Button>
+          </TryAgain>
+        )}
       </React.Fragment>
     )
+  }
+  renderTxStatus(daoCreationStatus) {
+    if (daoCreationStatus === 'error') return <TxFailure />
+    if (daoCreationStatus === 'success') return <TxSuccess />
+    return <TxPending />
   }
 }
 
@@ -69,7 +88,7 @@ const TxSuccess = () => (
   <StyledTx>
     <IconCheck style={{ width: '100%', height: '40px' }} />
     <p>
-      <Text size="xsmall">Transaction signed!</Text>
+      <Text size="xsmall">Successful transaction!</Text>
     </p>
   </StyledTx>
 )
@@ -79,8 +98,17 @@ const TxFailure = () => (
     <IconCross style={{ width: '100%', height: '40px' }} />
     <p>
       <Text color={theme.negative} size="xsmall">
-        Error signing the transaction
+        Error signing the transaction.
       </Text>
+    </p>
+  </StyledTx>
+)
+
+const TxPending = () => (
+  <StyledTx>
+    <IconTime style={{ width: '100%', height: '40px' }} />
+    <p>
+      <Text size="xsmall">Transaction pending…</Text>
     </p>
   </StyledTx>
 )
@@ -126,6 +154,12 @@ const Transaction = styled.div`
   &:first-child {
     margin-right: 145px;
   }
+`
+
+const TryAgain = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
 `
 
 export default Sign

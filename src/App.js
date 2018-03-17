@@ -18,6 +18,8 @@ class App extends React.Component {
     account: '',
     apps: [],
     web3: null,
+    daoCreationStatus: 'none', // none / success / error
+    buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
   }
 
@@ -79,12 +81,24 @@ class App extends React.Component {
 
   handleBuildDao = async (templateName, organizationName, data) => {
     const { daoBuilder } = this.state
-    const [token, dao] = await daoBuilder.build(
-      templateName,
-      organizationName,
-      data
-    )
-    console.log('DAO created', token, dao)
+    try {
+      const [token, dao] = await daoBuilder.build(
+        templateName,
+        organizationName,
+        data
+      )
+      this.setState({
+        daoCreationStatus: 'success',
+        buildData: {
+          token,
+          dao,
+          domain: `${organizationName}.aragonid.eth`,
+        },
+      })
+    } catch (err) {
+      console.log(err)
+      this.setState({ daoCreationStatus: 'error' })
+    }
   }
 
   updateDao(dao) {
@@ -130,6 +144,7 @@ class App extends React.Component {
       account,
       transactionBag,
       daoBuilder,
+      daoCreationStatus,
     } = this.state
     const { mode } = locator
     if (!mode) return null
@@ -147,10 +162,16 @@ class App extends React.Component {
         />
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}
+          account={account}
           onBuildDao={this.handleBuildDao}
           daoBuilder={daoBuilder}
+          daoCreationStatus={daoCreationStatus}
           onComplete={() => {
-            // this.historyPush('/0x6fe95e08427f67c917f5fe2a158f3bf203ff4559')
+            const { domain } = this.state.buildData
+            this.historyPush(`/${domain}`)
+          }}
+          onOpenOrganization={address => {
+            this.historyPush(`/${address}`)
           }}
         />
       </AragonApp>

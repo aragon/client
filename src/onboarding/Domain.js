@@ -4,10 +4,12 @@ import { theme, Text, TextInput, IconCheck, IconCross } from '@aragon/ui'
 import { lerp } from '../math-utils'
 import { noop } from '../utils'
 
-export const DomainCheckNone = Symbol('DomainCheckNone')
-export const DomainCheckPending = Symbol('DomainCheckPending')
-export const DomainCheckAccepted = Symbol('DomainCheckAccepted')
-export const DomainCheckRejected = Symbol('DomainCheckRejected')
+import {
+  DomainCheckNone,
+  DomainCheckPending,
+  DomainCheckAccepted,
+  DomainCheckRejected,
+} from './domain-states'
 
 class Domain extends React.Component {
   static defaultProps = {
@@ -30,9 +32,9 @@ class Domain extends React.Component {
           }}
         >
           <DomainContent
-            handleDomainChange={this.handleDomainChange}
             domain={domain}
             domainCheckStatus={domainCheckStatus}
+            onDomainChange={this.handleDomainChange}
           />
         </Content>
       </Main>
@@ -58,7 +60,7 @@ class DomainContent extends React.PureComponent {
           <TextInput
             id="domain-field"
             placeholder="organizationname"
-            onChange={this.props.handleDomainChange}
+            onChange={this.props.onDomainChange}
             style={{ textAlign: 'right' }}
             value={this.props.domain}
           />
@@ -115,7 +117,7 @@ const Field = styled.p`
   align-items: center;
   margin-top: 40px;
   label {
-    margin: 0 15px 0 10px;
+    margin: 0 10px;
   }
 `
 

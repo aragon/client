@@ -12,14 +12,16 @@ import PrevNext from './PrevNext'
 
 import Start from './Start'
 import Template from './Template'
-import Domain, {
+import Domain from './Domain'
+import Launch from './Launch'
+import Sign from './Sign'
+
+import {
   DomainCheckNone,
   DomainCheckPending,
   DomainCheckAccepted,
   DomainCheckRejected,
-} from './Domain'
-import Launch from './Launch'
-import Sign from './Sign'
+} from './domain-states'
 
 const SPRING_SHOW = {
   stiffness: 120,
@@ -31,26 +33,51 @@ const SPRING_HIDE = {
   damping: 15,
   precision: 0.001,
 }
-const SPRING_SCREEN =  springConf('slow')
+const SPRING_SCREEN = springConf('slow')
+
+const initialState = {
+  template: null,
+  templateData: [],
+  domain: '',
+  domainCheckStatus: DomainCheckNone,
+  domainToOpen: '',
+  domainToOpenCheckStatus: DomainCheckNone,
+  stepIndex: 0,
+  direction: 1, // 1 = forward, -1 = backward
+}
 
 class Onboarding extends React.PureComponent {
   static defaultProps = {
+    account: '',
     visible: true,
+    daoCreationStatus: 'none',
     onComplete: noop,
     onBuildDao: noop,
+    onOpenOrganization: noop,
   }
   state = {
-    template: null,
-    templateData: [],
-    domain: '',
-    stepIndex: 0,
-    direction: 1, // 1 = forward, -1 = backward
+    ...initialState,
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.visible && !this.props.visible) {
+    const { props } = this
+
+    if (nextProps.visible && !props.visible) {
       this.setState({ stepIndex: 0 })
     }
+
+    if (
+      nextProps.daoCreationStatus !== props.daoCreationStatus &&
+      nextProps.daoCreationStatus === 'success'
+    ) {
+      setTimeout(() => {
+        this.nextStep()
+      }, 1000)
+    }
+  }
+
+  reset = () => {
+    this.setState({ ...initialState })
   }
 
   getSteps() {
@@ -170,18 +197,25 @@ class Onboarding extends React.PureComponent {
     })
   }
 
-  handleDomainChange = domain => {
+  checkDomain = (
+    domain,
+    domainKey,
+    domainStatusKey,
+    timerKey,
+    invertCheck = false
+  ) => {
     const { daoBuilder } = this.props
+    const filteredDomain = domain.trim().toLowerCase()
 
-    this.setState({ domain, domainCheckStatus: DomainCheckPending })
-
-    clearTimeout(this.domainCheckTimer)
-
-    const filteredDomain = domain.trim()
+    this.setState({
+      [domainKey]: filteredDomain,
+      [domainStatusKey]: DomainCheckPending,
+    })
+    clearTimeout(this[timerKey])
 
     // Empty name
     if (!filteredDomain) {
-      this.setState({ domainCheckStatus: DomainCheckNone })
+      this.setState({ [domainStatusKey]: DomainCheckNone })
       return
     }
 
@@ -190,18 +224,43 @@ class Onboarding extends React.PureComponent {
         const available = await daoBuilder.isNameAvailable(filteredDomain)
 
         // The domain could have changed in the meantime
-        if (domain === this.state.domain) {
-          const status = available ? DomainCheckAccepted : DomainCheckRejected
-          this.setState({ domainCheckStatus: status })
+        if (filteredDomain === this.state[domainKey]) {
+          const valid = invertCheck ? !available : available
+          const status = valid ? DomainCheckAccepted : DomainCheckRejected
+          this.setState({ [domainStatusKey]: status })
         }
       } catch (err) {
         // Retry every second
-        this.domainCheckTimer = setTimeout(checkName, 1000)
+        this[timerKey] = setTimeout(checkName, 1000)
       }
     }
 
     // Check the domain only after the field is not updated during 300ms
-    this.domainCheckTimer = setTimeout(checkName, 300)
+    this[timerKey] = setTimeout(checkName, 300)
+  }
+
+  handleDomainChange = domain => {
+    this.checkDomain(
+      domain,
+      'domain',
+      'domainCheckStatus',
+      'domainCheckTimer',
+      false
+    )
+  }
+
+  handleDomainToOpenChange = domain => {
+    this.checkDomain(
+      domain,
+      'domainToOpen',
+      'domainToOpenCheckStatus',
+      'domainToOpenCheckTimer',
+      true
+    )
+  }
+
+  handleOpenOrganization = () => {
+    this.props.onOpenOrganization(`${this.state.domainToOpen}.aragonid.eth`)
   }
 
   handleConfigurationFieldUpdate = (screen, name, value) => {
@@ -248,7 +307,7 @@ class Onboarding extends React.PureComponent {
     const data = templateData.prepareData(this.getTemplateData())
 
     console.log('build DAO', data)
-    // this.props.onBuildDao(templateData.name, domain, data)
+    this.props.onBuildDao(templateData.name, domain, data)
   }
 
   // Set the direction to 1 (next) or -1 (prev)
@@ -300,7 +359,7 @@ class Onboarding extends React.PureComponent {
   isSigningNext() {
     const { stepIndex } = this.state
     const steps = this.getSteps()
-    return steps[stepIndex + 1] && steps[stepIndex + 1].name === 'launch'
+    return steps[stepIndex + 1] && steps[stepIndex + 1].name === 'sign'
   }
   render() {
     const { direction, stepIndex } = this.state
@@ -368,7 +427,14 @@ class Onboarding extends React.PureComponent {
     )
   }
   renderScreen(screen, visible, hideProgress) {
-    const { template, domain, domainCheckStatus } = this.state
+    const {
+      template,
+      domain,
+      domainCheckStatus,
+      domainToOpen,
+      domainToOpenCheckStatus,
+    } = this.state
+    const { account, daoCreationStatus, onComplete } = this.props
 
     // No need to move the screens farther than one step
     hideProgress = Math.min(1, Math.max(-1, hideProgress))
@@ -377,9 +443,13 @@ class Onboarding extends React.PureComponent {
       return (
         <Start
           hideProgress={hideProgress}
+          enableCreate={!!account}
           onCreate={this.handleStartCreate}
-          onJoin={this.props.onComplete}
           onRest={this.handleStartRest}
+          domain={domainToOpen}
+          domainCheckStatus={domainToOpenCheckStatus}
+          onDomainChange={this.handleDomainToOpenChange}
+          onOpenOrganization={this.handleOpenOrganization}
         />
       )
     }
@@ -404,10 +474,18 @@ class Onboarding extends React.PureComponent {
       )
     }
     if (screen === 'sign') {
-      return <Sign hideProgress={hideProgress} />
+      return (
+        <Sign
+          hideProgress={hideProgress}
+          daoCreationStatus={daoCreationStatus}
+          onTryAgain={this.reset}
+        />
+      )
     }
     if (screen === 'launch') {
-      return <Launch hideProgress={hideProgress} onConfirm={this.nextStep} />
+      return (
+        <Launch hideProgress={hideProgress} onConfirm={this.props.onComplete} />
+      )
     }
 
     const steps = this.getSteps()
