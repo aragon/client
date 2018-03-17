@@ -178,6 +178,7 @@ class Onboarding extends React.PureComponent {
   }
 
   handleStartCreate = () => {
+    this.reset()
     this.moveStep(1)
   }
 
@@ -329,10 +330,15 @@ class Onboarding extends React.PureComponent {
     this.setState({ stepIndex: newStepIndex, direction })
   }
   nextStep = () => {
-    this.moveStep(1)
+    console.log('NEXT STEP?')
+    if (this.isNextEnabled()) {
+      this.moveStep(1)
+    }
   }
   prevStep = () => {
-    this.moveStep(-1)
+    if (this.isPrevEnabled()) {
+      this.moveStep(-1)
+    }
   }
   isNextEnabled() {
     const { template, domainCheckStatus } = this.state
@@ -473,6 +479,7 @@ class Onboarding extends React.PureComponent {
           domain={domain}
           domainCheckStatus={domainCheckStatus}
           onDomainChange={this.handleDomainChange}
+          onSubmit={this.nextStep}
         />
       )
     }
@@ -487,7 +494,7 @@ class Onboarding extends React.PureComponent {
     }
     if (screen === 'launch') {
       return (
-        <Launch hideProgress={hideProgress} onConfirm={this.props.onComplete} />
+        <Launch hideProgress={hideProgress} onConfirm={onComplete} />
       )
     }
 
@@ -515,6 +522,7 @@ class Onboarding extends React.PureComponent {
         screen={screen}
         fields={fields}
         onFieldUpdate={this.handleConfigurationFieldUpdate}
+        onSubmit={this.nextStep}
       />
     )
   }

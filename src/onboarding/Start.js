@@ -44,8 +44,6 @@ class Start extends React.Component {
       onCreate,
       domain,
       domainCheckStatus,
-      onDomainChange,
-      onOpenOrganization,
     } = this.props
     return (
       <Main
@@ -116,7 +114,7 @@ class StartContent extends React.PureComponent {
           <Action spaced>
             <p>
               <Text size="large" color={theme.textSecondary}>
-                Or open an existing organisation
+                Or open an existing organization
               </Text>
             </p>
 

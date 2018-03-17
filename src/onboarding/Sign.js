@@ -4,6 +4,10 @@ import { theme, Text, IconCheck, IconCross, IconTime, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
 import { noop } from '../utils'
 
+import imgPending from './assets/transaction-pending.svg'
+import imgSuccess from './assets/transaction-success.svg'
+import imgError from './assets/transaction-error.svg'
+
 class Sign extends React.Component {
   static defaultProps = {
     tokenStatus: 'pending',
@@ -43,7 +47,7 @@ class SignContent extends React.PureComponent {
 
         <p>
           <Text size="large" color={theme.textSecondary}>
-            Your wallet should open and you need to sign these two transactions
+            Your wallet should open and you need to sign two transactions, one
             after another.
           </Text>
         </p>
@@ -74,6 +78,16 @@ class SignContent extends React.PureComponent {
             </Button>
           </TryAgain>
         )}
+
+        {daoCreationStatus !== 'error' && (
+          <Note>
+            <Text size='xsmall' color={theme.textSecondary}>
+              It might take some time before these transactions get
+              processed, depending on the status of the network. Please be
+              patient and do not close this page until it finishes.
+            </Text>
+          </Note>
+        )}
       </React.Fragment>
     )
   }
@@ -86,19 +100,23 @@ class SignContent extends React.PureComponent {
 
 const TxSuccess = () => (
   <StyledTx>
-    <IconCheck style={{ width: '100%', height: '40px' }} />
+    <TxIconWrapper>
+      <img src={imgSuccess} alt="" />
+    </TxIconWrapper>
     <p>
-      <Text size="xsmall">Successful transaction!</Text>
+      <Text size="xsmall">Successful transaction.</Text>
     </p>
   </StyledTx>
 )
 
 const TxFailure = () => (
   <StyledTx>
-    <IconCross style={{ width: '100%', height: '40px' }} />
+    <TxIconWrapper>
+      <img src={imgError} alt="" />
+    </TxIconWrapper>
     <p>
       <Text color={theme.negative} size="xsmall">
-        Error signing the transaction.
+        Error with the transaction.
       </Text>
     </p>
   </StyledTx>
@@ -106,14 +124,27 @@ const TxFailure = () => (
 
 const TxPending = () => (
   <StyledTx>
-    <IconTime style={{ width: '100%', height: '40px' }} />
+    <TxIconWrapper>
+      <img src={imgPending} alt="" />
+    </TxIconWrapper>
     <p>
-      <Text size="xsmall">Transaction pending…</Text>
+      <Text size="xsmall">Waiting…</Text>
     </p>
   </StyledTx>
 )
 
+const TxIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+`
+
 const StyledTx = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding-top: 30px;
   p {
     margin-top: 30px;
@@ -154,6 +185,12 @@ const Transaction = styled.div`
   &:first-child {
     margin-right: 145px;
   }
+`
+
+const Note = styled.p`
+  max-width: 55%;
+  margin-top: 40px;
+  text-align: center;
 `
 
 const TryAgain = styled.div`

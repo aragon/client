@@ -16,9 +16,23 @@ class Domain extends React.Component {
     domain: '',
     domainCheckStatus: DomainCheckNone,
     onDomainChange: noop,
+    onSubmit: noop,
+  }
+  componentWillReceiveProps({ hideProgress }) {
+    if (hideProgress === 0 && hideProgress !== this.props.hideProgress) {
+      this.focusEl.focus()
+    }
   }
   handleDomainChange = event => {
     this.props.onDomainChange(event.target.value)
+  }
+  handleSubmit = event => {
+    event.preventDefault()
+    this.focusEl.blur()
+    this.props.onSubmit()
+  }
+  handleFocusElRef = el => {
+    this.focusEl = el
   }
   render() {
     const { hideProgress, domain, domainCheckStatus } = this.props
@@ -35,6 +49,8 @@ class Domain extends React.Component {
             domain={domain}
             domainCheckStatus={domainCheckStatus}
             onDomainChange={this.handleDomainChange}
+            onSubmit={this.handleSubmit}
+            focusElRef={this.handleFocusElRef}
           />
         </Content>
       </Main>
@@ -53,38 +69,41 @@ class DomainContent extends React.PureComponent {
         </Title>
         <p>
           <Text size="large" color={theme.textSecondary}>
-            Check if your chosen URL for your organization is available
+            Check if your organization name is available
           </Text>
         </p>
-        <Field>
-          <TextInput
-            id="domain-field"
-            placeholder="organizationname"
-            onChange={this.props.onDomainChange}
-            style={{ textAlign: 'right' }}
-            value={this.props.domain}
-          />
-          <label htmlFor="domain-field">
-            <Text weight="bold"> .aragonid.eth</Text>
-          </label>
-          <Status>
-            <CheckContainer
-              active={this.props.domainCheckStatus === DomainCheckAccepted}
-            >
-              <IconCheck />
-            </CheckContainer>
-            <CheckContainer
-              active={this.props.domainCheckStatus === DomainCheckRejected}
-            >
-              <IconCross />
-            </CheckContainer>
-            <CheckContainer
-              active={this.props.domainCheckStatus === DomainCheckPending}
-            >
-              …
-            </CheckContainer>
-          </Status>
-        </Field>
+        <form onSubmit={this.props.onSubmit}>
+          <Field>
+            <TextInput
+              id="domain-field"
+              innerRef={this.props.focusElRef}
+              placeholder="myorganization"
+              onChange={this.props.onDomainChange}
+              style={{ textAlign: 'right' }}
+              value={this.props.domain}
+            />
+            <label htmlFor="domain-field">
+              <Text weight="bold"> .aragonid.eth</Text>
+            </label>
+            <Status>
+              <CheckContainer
+                active={this.props.domainCheckStatus === DomainCheckAccepted}
+              >
+                <IconCheck />
+              </CheckContainer>
+              <CheckContainer
+                active={this.props.domainCheckStatus === DomainCheckRejected}
+              >
+                <IconCross />
+              </CheckContainer>
+              <CheckContainer
+                active={this.props.domainCheckStatus === DomainCheckPending}
+              >
+                …
+              </CheckContainer>
+            </Status>
+          </Field>
+        </form>
       </React.Fragment>
     )
   }

@@ -47,8 +47,7 @@ class TemplateContent extends React.PureComponent {
 
         <p>
           <Text size="large" color={theme.textSecondary}>
-            Choose a template to get started quickly. Don’t worry − you can
-            change it later.
+            Choose a template to get started
           </Text>
         </p>
 

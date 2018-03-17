@@ -1,24 +1,38 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Field, TextInput } from '@aragon/ui'
+import { Field, TextInput, Text, theme } from '@aragon/ui'
 import { lerp } from '../../../math-utils'
 import { noop } from '../../../utils'
 
 class ConfigureTokenName extends React.Component {
   static defaultProps = {
-    onConfigureDone: noop,
-    onChange: noop,
+    onFieldUpdate: noop,
+    onSubmit: noop,
+    fields: {},
   }
   constructor(props) {
     super(props)
     this.handleTokenNameChange = this.createChangeHandler('tokenName')
     this.handleTokenSymbolChange = this.createChangeHandler('tokenSymbol')
   }
+  componentWillReceiveProps({ hideProgress }) {
+    if (hideProgress === 0 && hideProgress !== this.props.hideProgress) {
+      this.formEl.elements[0].focus()
+    }
+  }
   createChangeHandler(name) {
     return event => {
       const { onFieldUpdate, screen } = this.props
       onFieldUpdate(screen, name, event.target.value)
     }
+  }
+  handleSubmit = event => {
+    event.preventDefault()
+    this.formEl.elements[0].blur()
+    this.props.onSubmit()
+  }
+  handleFormRef = el => {
+    this.formEl = el
   }
   render() {
     const { hideProgress, fields } = this.props
@@ -34,6 +48,8 @@ class ConfigureTokenName extends React.Component {
           fields={fields}
           handleTokenNameChange={this.handleTokenNameChange}
           handleTokenSymbolChange={this.handleTokenSymbolChange}
+          onSubmit={this.handleSubmit}
+          formRef={this.handleFormRef}
         />
       </Main>
     )
@@ -46,15 +62,19 @@ class ConfigureTokenNameContent extends React.PureComponent {
       fields,
       handleTokenNameChange,
       handleTokenSymbolChange,
+      onSubmit,
+      formRef,
     } = this.props
     return (
       <Content>
         <Title>Democracy Project</Title>
         <StepContainer>
-          <div>
-            <p>
-              Choose the address for the first token received, and the token
-              name and symbol.
+          <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
+            <p style={{ textAlign: 'center' }}>
+              <Text size="large" color={theme.textSecondary}>
+                Choose the token name and symbol. You can’t change these later,
+                so pick carefully.
+              </Text>
             </p>
             <Fields>
               <Rows>
@@ -64,6 +84,7 @@ class ConfigureTokenNameContent extends React.PureComponent {
                       width={200}
                       value={fields.tokenName}
                       onChange={handleTokenNameChange}
+                      placeholder="My Organization Token"
                     />
                   </Fields.Field>
                   <Fields.Field label="Token Symbol">
@@ -71,17 +92,25 @@ class ConfigureTokenNameContent extends React.PureComponent {
                       width={80}
                       value={fields.tokenSymbol}
                       onChange={handleTokenSymbolChange}
+                      placeholder="MOT"
                     />
                   </Fields.Field>
                 </Row>
               </Rows>
             </Fields>
-          </div>
+          </SubmitForm>
         </StepContainer>
       </Content>
     )
   }
 }
+
+const SubmitForm = ({ children, innerRef = noop, ...props }) => (
+  <form {...props} ref={innerRef}>
+    {children}
+    <input type="submit" style={{ display: 'none' }} />
+  </form>
+)
 
 const Main = styled.div`
   display: flex;

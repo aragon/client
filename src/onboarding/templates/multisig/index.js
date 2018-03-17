@@ -5,6 +5,7 @@ const template = {
   label: 'Token project with Multisig',
   icon,
   screens: [],
+  prepareData: () => ({}),
 }
 
 export default template
