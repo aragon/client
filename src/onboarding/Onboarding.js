@@ -166,7 +166,9 @@ class Onboarding extends React.PureComponent {
   // Filters a field value by calling the corresponding filter on the template
   filterConfigurationValue(template, screen, name, value) {
     const screenData = this.getTemplateScreen(template, screen)
-    return screenData ? screenData.fields[name].filter(value) : null
+    return screenData
+      ? screenData.fields[name].filter(value, this.getTemplateData())
+      : null
   }
 
   // Check if the data is valid by calling validateScreen() on the template
@@ -493,9 +495,7 @@ class Onboarding extends React.PureComponent {
       )
     }
     if (screen === 'launch') {
-      return (
-        <Launch hideProgress={hideProgress} onConfirm={onComplete} />
-      )
+      return <Launch hideProgress={hideProgress} onConfirm={onComplete} />
     }
 
     const steps = this.getSteps()

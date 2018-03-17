@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, Text, IconCheck, IconCross, IconTime, Button } from '@aragon/ui'
+import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
 import { noop } from '../utils'
 
@@ -81,10 +81,10 @@ class SignContent extends React.PureComponent {
 
         {daoCreationStatus !== 'error' && (
           <Note>
-            <Text size='xsmall' color={theme.textSecondary}>
-              It might take some time before these transactions get
-              processed, depending on the status of the network. Please be
-              patient and do not close this page until it finishes.
+            <Text size="xsmall" color={theme.textSecondary}>
+              It might take some time before these transactions get processed,
+              depending on the status of the network. Please be patient and do
+              not close this page until it finishes.
             </Text>
           </Note>
         )}

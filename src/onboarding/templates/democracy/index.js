@@ -78,18 +78,18 @@ const template = {
     },
   ],
   prepareData: ({
+    tokenName,
+    tokenSymbol,
     support,
     minQuorum,
     voteDuration,
-    tokenName,
-    tokenSymbol,
   }) => {
     return {
-      minAcceptanceQuorum: minQuorum / 100,
-      supportNeeded: support / 100,
-      voteDuration: voteDuration * 60 * 60,
       tokenName: tokenName.trim(),
       tokenSymbol: tokenSymbol.trim(),
+      supportNeeded: support / 100,
+      minAcceptanceQuorum: minQuorum / 100,
+      voteDuration: voteDuration * 60 * 60,
     }
   },
 }
