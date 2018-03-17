@@ -60,13 +60,9 @@ class MenuPanel extends React.Component {
           <Header>
             <img src={logo} alt="Aragon" height="36" />
             <div className="actions">
-              <span
-                role="button"
-                tabIndex="0"
-                onClick={this.handleNotificationsClick}
-              >
+              <IconButton role="button" onClick={this.handleNotificationsClick}>
                 <IconNotifications />
-              </span>
+              </IconButton>
             </div>
           </Header>
           <Content>
@@ -135,6 +131,10 @@ const In = styled.div`
   background: #fff;
   border-right: 1px solid #e8e8e8;
   box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
+`
+
+const IconButton = styled.span`
+  cursor: pointer;
 `
 
 const NotificationsWrapper = styled.div`

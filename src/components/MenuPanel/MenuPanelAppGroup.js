@@ -36,7 +36,6 @@ class MenuPanelAppGroup extends React.Component {
 
             <span
               role="button"
-              tabIndex="0"
               className={`item ${active ? 'active' : ''}`}
               onClick={this.handleAppClick}
             >
