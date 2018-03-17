@@ -26,7 +26,7 @@ const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
 const prepareFrontendApps = (apps, gateway) =>
   apps
     .map(app => ({ ...(appDefaults[app.appId] || {}), ...app }))
-    .filter(app => app && app['short_url'] && app.appId !== appIds['Vault'])
+    .filter(app => app && app['short_url'])
     .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
 
 // Keep polling the main account.
