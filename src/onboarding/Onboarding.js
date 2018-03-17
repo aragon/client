@@ -260,7 +260,10 @@ class Onboarding extends React.PureComponent {
   }
 
   handleOpenOrganization = () => {
-    this.props.onOpenOrganization(`${this.state.domainToOpen}.aragonid.eth`)
+    const { domainToOpenCheckStatus, domainToOpen } = this.state
+    if (domainToOpenCheckStatus === DomainCheckAccepted) {
+      this.props.onOpenOrganization(`${domainToOpen}.aragonid.eth`)
+    }
   }
 
   handleConfigurationFieldUpdate = (screen, name, value) => {
