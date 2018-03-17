@@ -145,6 +145,7 @@ class App extends React.Component {
       transactionBag,
       daoBuilder,
       daoCreationStatus,
+      web3,
     } = this.state
     const { mode } = locator
     if (!mode) return null
@@ -157,7 +158,7 @@ class App extends React.Component {
           wrapper={wrapper}
           apps={apps}
           account={account}
-          web3={window.web3}
+          web3={web3}
           transactionBag={transactionBag}
         />
         <Onboarding
