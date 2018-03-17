@@ -166,7 +166,6 @@ const initWrapper = async (
     onForwarders = noop,
     onTransaction = noop,
     onWeb3 = noop,
-    onAccounts = noop,
   } = {}
 ) => {
   const isDomain = /[a-z0-9]+\.aragonid\.eth/.test(dao)
@@ -198,7 +197,6 @@ const initWrapper = async (
       'No accounts detected in the environment (try to unlock your wallet)'
     )
   }
-  onAccounts([account])
 
   try {
     await wrapper.init()
