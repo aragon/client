@@ -136,6 +136,14 @@ class App extends React.Component {
     })
   }
 
+  handleCompleteOnboarding = () => {
+    const { domain } = this.state.buildData
+    this.historyPush(`/${domain}`)
+  }
+  handleOpenOrganization = address => {
+    this.historyPush(`/${address}`)
+  }
+
   render() {
     const {
       locator,
@@ -167,13 +175,8 @@ class App extends React.Component {
           onBuildDao={this.handleBuildDao}
           daoBuilder={daoBuilder}
           daoCreationStatus={daoCreationStatus}
-          onComplete={() => {
-            const { domain } = this.state.buildData
-            this.historyPush(`/${domain}`)
-          }}
-          onOpenOrganization={address => {
-            this.historyPush(`/${address}`)
-          }}
+          onComplete={this.handleCompleteOnboarding}
+          onOpenOrganization={this.handleOpenOrganization}
         />
       </AragonApp>
     )
