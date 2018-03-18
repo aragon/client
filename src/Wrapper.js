@@ -7,7 +7,7 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
-import { getAppPath } from './routing'
+import { getAppPath, staticApps } from './routing'
 
 import { tokens, prices, groups, homeActions } from './demo-state'
 
@@ -78,8 +78,11 @@ class Wrapper extends React.Component {
     const { wrapper } = this.props
     wrapper && wrapper.clearNotifications()
   }
-  handleNotificationNavigation = (id, app, context) => {
-    // TODO
+  handleNotificationNavigation = ({ context, app: appId }) => {
+    console.log(appId, context)
+    if (this.isAppInstalled(appId)) {
+      this.openApp(appId)
+    }
   }
   handleParamsRequest = params => {
     // const { appId, } = this.state.appInstance
@@ -125,12 +128,7 @@ class Wrapper extends React.Component {
   }
   isAppInstalled(appId) {
     const { apps } = this.props
-    return (
-      appId === 'home' ||
-      appId === 'permissions' ||
-      appId === 'settings' ||
-      !!apps.find(app => app.appId === appId)
-    )
+    return staticApps.has(appId) && !!apps.find(app => app.appId === appId)
   }
   showWeb3ActionSigner = (intent, { error, paths }) => {
     this.setState({
