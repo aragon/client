@@ -1,30 +1,49 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, font, BadgeNumber } from '@aragon/ui'
+import { theme, font, observe, BadgeNumber } from '@aragon/ui'
 import NotificationItem from './NotificationItem'
 
-const NotificationsPanel = ({ notifications = [] }) => (
-  <Main>
-    <Header>
-      <Title>
-        <span>Notifications</span>
-        <BadgeNumber number={4} title={`${4} unread messages`} />
-      </Title>
-      <ActionLink>Clear all</ActionLink>
-    </Header>
-    <Content>
-      {notifications.map(({ date, title, description, unread }, i) => (
-        <NotificationItem
-          key={`${date}${i}`}
-          date={date}
-          title={title}
-          description={description}
-          unread={unread}
-        />
-      ))}
-    </Content>
-  </Main>
-)
+class NotificationsPanel extends React.Component {
+  static defaultProps = {
+    onClearAllNotifications: () => {},
+    onOpenNotification: () => {},
+  }
+  handleOpenNotification = notification => {
+    notification.acknowledge && notification.acknowledge()
+    this.props.onOpenNotification(notification)
+  }
+  render() {
+    const {
+      notifications,
+      onClearAllNotifications,
+      onOpenNotification: ignoredOnOpenNotification,
+      ...props
+    } = this.props
+
+    const unread = notifications.filter(({ read }) => !read).length
+    return (
+      <Main {...props}>
+        <Header>
+          <Title>
+            <span>Notifications</span>
+            <BadgeNumber number={unread} title={`${unread} unread messages`} />
+          </Title>
+          <ActionLink onClick={onClearAllNotifications}>Clear all</ActionLink>
+        </Header>
+        <Content>
+          {notifications.map(notification => (
+            <NotificationItem
+              key={notification.id}
+              fromDate={notification.date}
+              notification={notification}
+              onOpen={this.handleOpenNotification}
+            />
+          ))}
+        </Content>
+      </Main>
+    )
+  }
+}
 
 const Main = styled.aside`
   display: flex;
@@ -69,4 +88,12 @@ const Content = styled.nav`
   height: 100%;
 `
 
-export default NotificationsPanel
+const enhance = observe(
+  observable =>
+    observable.map(notifications => ({
+      notifications: [...notifications].reverse(),
+    })),
+  { notifications: [] }
+)
+
+export default enhance(NotificationsPanel)
