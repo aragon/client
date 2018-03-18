@@ -22,3 +22,4 @@ yarn-error.log*
 
 /public/apps
 /public/aragon-ui
+package-lock.json
