@@ -47,10 +47,12 @@ class MenuPanel extends React.Component {
   render() {
     const {
       apps,
-      notifications,
       activeAppId,
       activeInstanceId,
+      notificationsObservable,
       onOpenApp,
+      onClearAllNotifications,
+      onOpenNotification,
     } = this.props
     const { notificationsOpened } = this.state
     const menuApps = [appHome, ...addIcons(apps), appPermissions, appSettings]
@@ -105,7 +107,11 @@ class MenuPanel extends React.Component {
                 boxShadow: `1px 0 15px rgba(0, 0, 0, ${openProgress * 0.1})`,
               }}
             >
-              <NotificationsPanel notifications={notifications} />
+              <NotificationsPanel
+                observable={notificationsObservable}
+                onClearAllNotifications={onClearAllNotifications}
+                onOpenNotification={onOpenNotification}
+              />
             </NotificationsWrapper>
           )}
         </Motion>

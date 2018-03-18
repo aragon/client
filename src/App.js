@@ -35,6 +35,9 @@ class App extends React.Component {
     this.history.listen(this.handleHistoryChange)
     pollMainAccount(web3Providers.wallet, (account = null) => {
       this.setState({ account })
+      if (this.state.wrapper) {
+        this.state.wrapper.setAccounts([account])
+      }
     })
   }
 
@@ -64,7 +67,6 @@ class App extends React.Component {
   }
 
   updateLocator = locator => {
-    console.log('locator', locator)
     const { locator: prevLocator } = this.state
 
     if (locator.mode === 'home' || locator.mode === 'setup') {
@@ -112,7 +114,7 @@ class App extends React.Component {
       this.state.wrapper.cancel()
       this.setState({ wrapper: null })
     }
-    console.log('init the wrapper', dao)
+    console.log('Wrapper init', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
@@ -139,6 +141,8 @@ class App extends React.Component {
     }).then(wrapper => {
       console.log('wrapper', wrapper)
       this.setState({ wrapper })
+    }).catch(err => {
+      console.error('Wrapper init error:', err)
     })
   }
 
