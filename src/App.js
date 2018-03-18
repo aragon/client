@@ -138,12 +138,14 @@ class App extends React.Component {
         console.log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
-    }).then(wrapper => {
-      console.log('wrapper', wrapper)
-      this.setState({ wrapper })
-    }).catch(err => {
-      console.error('Wrapper init error:', err)
     })
+      .then(wrapper => {
+        console.log('wrapper', wrapper)
+        this.setState({ wrapper })
+      })
+      .catch(err => {
+        console.error('Wrapper init error:', err)
+      })
   }
 
   handleCompleteOnboarding = () => {
