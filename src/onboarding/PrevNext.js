@@ -18,7 +18,7 @@ class PrevNext extends React.Component {
     return (
       <Motion
         style={{
-          showProgress: spring(Number(visible), springConf('fast'))
+          showProgress: spring(Number(visible), springConf('fast')),
         }}
       >
         {({ showProgress }) => (
@@ -62,7 +62,7 @@ class PrevNextContent extends React.PureComponent {
           onClick={this.props.onNext}
           disabled={!this.props.enableNext}
         >
-          {this.props.isSigningNext? 'Finish' : 'Next'}
+          {this.props.isSigningNext ? 'Finish' : 'Next'}
         </StrongButton>
       </React.Fragment>
     )

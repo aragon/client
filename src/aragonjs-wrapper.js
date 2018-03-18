@@ -5,7 +5,7 @@ import Aragon, {
   isNameUsed,
   ensResolve,
 } from '@aragon/wrapper'
-import { appDefaults, appIds, appLocator, ipfsDefaultConf } from './environment'
+import { appDefaults, appLocator, ipfsDefaultConf } from './environment'
 import { noop, removeTrailingSlash } from './utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 
