@@ -68,6 +68,7 @@ export const ipfsDefaultConf = {
 
 export const network = {
   chainId: 4,
+  type: 'rinkeby',
   etherscanBaseUrl: makeEtherscanBaseUrl('rinkeby'),
   name: 'Rinkeby testnet',
 }
