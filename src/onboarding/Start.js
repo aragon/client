@@ -94,7 +94,6 @@ class StartContent extends React.PureComponent {
       hasWallet,
       hasAccount,
       userNetwork,
-      balance,
       domain,
       domainCheckStatus,
       onDomainChange,
@@ -179,16 +178,7 @@ class StartContent extends React.PureComponent {
     )
   }
   renderWarning() {
-    const {
-      hasWallet,
-      hasAccount,
-      userNetwork,
-      domain,
-      domainCheckStatus,
-      onDomainChange,
-      onOpenOrganization,
-      balance,
-    } = this.props
+    const { hasWallet, hasAccount, userNetwork, balance } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
