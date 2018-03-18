@@ -1,10 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, font, observe, redraw, BadgeNumber } from '@aragon/ui'
+import { theme, font, observe, BadgeNumber } from '@aragon/ui'
 import NotificationItem from './NotificationItem'
-import { compose } from '../../utils'
-
-const REDRAW_TIME = 30 * 1000 // refresh dates every 30 sec
 
 class NotificationsPanel extends React.Component {
   static defaultProps = {
@@ -37,6 +34,7 @@ class NotificationsPanel extends React.Component {
           {notifications.map(notification => (
             <NotificationItem
               key={notification.id}
+              fromDate={notification.date}
               notification={notification}
               onOpen={this.handleOpenNotification}
             />
@@ -90,15 +88,12 @@ const Content = styled.nav`
   height: 100%;
 `
 
-const enhance = compose(
-  observe(
-    observable =>
-      observable.map(notifications => ({
-        notifications: [...notifications].reverse(),
-      })),
-    { notifications: [] }
-  ),
-  redraw(REDRAW_TIME)
+const enhance = observe(
+  observable =>
+    observable.map(notifications => ({
+      notifications: [...notifications].reverse(),
+    })),
+  { notifications: [] }
 )
 
 export default enhance(NotificationsPanel)

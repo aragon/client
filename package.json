@@ -27,7 +27,7 @@
     "@aragon/ui": "^0.6.2",
     "@aragon/wrapper": "^2.0.0-beta.4",
     "@babel/polyfill": "^7.0.0-beta.39",
-    "date-fns": "^1.29.0",
+    "date-fns": "^2.0.0-alpha.7",
     "history": "^4.7.2",
     "lodash.throttle": "^4.1.1",
     "onecolor": "^3.0.5",
