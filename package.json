@@ -66,7 +66,9 @@
     "update-assets": "rm -rf public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
     "lint": "eslint ./src",
     "start": "npm run update-assets && react-scripts start",
-    "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build",
+    "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build && npm run copy-apm-artifacts",
+    "copy-apm-artifacts": "cp arapp.json build/arapp.json && cp manifest.json build/manifest.json",
+    "publish:rinkeby": "aragon publish --files build/ --no-contract=true --keyfile ~/.rinkebykey.json 0x0000000000000000000000000000000000000000",
     "test": "npm run lint",
     "eject": "react-scripts eject"
   },
