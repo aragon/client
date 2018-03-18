@@ -332,7 +332,6 @@ class Onboarding extends React.PureComponent {
     this.setState({ stepIndex: newStepIndex, direction })
   }
   nextStep = () => {
-    console.log('NEXT STEP?')
     if (this.isNextEnabled()) {
       this.moveStep(1)
     }

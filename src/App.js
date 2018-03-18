@@ -87,14 +87,12 @@ class App extends React.Component {
         organizationName,
         data
       )
+      const domain = `${organizationName}.aragonid.eth`
       this.setState({
         daoCreationStatus: 'success',
-        buildData: {
-          token,
-          dao,
-          domain: `${organizationName}.aragonid.eth`,
-        },
+        buildData: { token, dao, domain },
       })
+      console.log('DAO created', dao, token, domain)
     } catch (err) {
       console.log(err)
       this.setState({ daoCreationStatus: 'error' })
