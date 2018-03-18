@@ -7,6 +7,7 @@ import { parsePath } from './routing'
 import initWrapper, {
   initDaoBuilder,
   pollMainAccount,
+  pollNetwork,
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
@@ -20,6 +21,8 @@ class App extends React.Component {
     prevLocator: null,
     wrapper: null,
     account: '',
+    balance: null,
+    network: '',
     apps: [],
     web3: null,
     daoCreationStatus: 'none', // none / success / error
@@ -33,11 +36,20 @@ class App extends React.Component {
     const { pathname, search } = this.history.location
     this.handleHistoryChange({ pathname, search })
     this.history.listen(this.handleHistoryChange)
-    pollMainAccount(web3Providers.wallet, (account = null) => {
-      this.setState({ account })
-      if (this.state.wrapper) {
+
+    if (!web3Providers.wallet) {
+      return
+    }
+
+    pollMainAccount(web3Providers.wallet, (account = null, balance) => {
+      this.setState({ account, balance })
+      if (account && this.state.wrapper) {
         this.state.wrapper.setAccounts([account])
       }
+    })
+
+    pollNetwork(web3Providers.wallet, network => {
+      this.setState({ network })
     })
   }
 
@@ -162,6 +174,8 @@ class App extends React.Component {
       wrapper,
       apps,
       account,
+      balance,
+      network,
       transactionBag,
       daoBuilder,
       daoCreationStatus,
@@ -184,6 +198,8 @@ class App extends React.Component {
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}
           account={account}
+          balance={balance}
+          network={network}
           onBuildDao={this.handleBuildDao}
           daoBuilder={daoBuilder}
           daoCreationStatus={daoCreationStatus}

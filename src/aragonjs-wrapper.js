@@ -1,4 +1,5 @@
 import Web3 from 'web3'
+import { BigNumber } from 'bignumber.js'
 import Aragon, {
   providers,
   setupTemplates,
@@ -9,7 +10,8 @@ import { appDefaults, appLocator, ipfsDefaultConf } from './environment'
 import { noop, removeTrailingSlash } from './utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 
-const ACCOUNTS_POLL_EVERY = 2000
+const POLL_DELAY_ACCOUNT = 2000
+const POLL_DELAY_NETWORK = 2000
 
 const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
   const hash = app.content && app.content.location
@@ -22,42 +24,25 @@ const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
   return `${gateway}/${hash}/`
 }
 
+// Cache web3 instances used in this module
+const getWeb3 = (() => {
+  const cache = new WeakMap()
+  return provider => {
+    if (cache.has(provider)) {
+      return cache.get(provider)
+    }
+    const web3 = new Web3(provider)
+    cache.set(provider, web3)
+    return web3
+  }
+})()
+
 // Filter out apps without UI and add an appSrc property
 const prepareFrontendApps = (apps, gateway) =>
   apps
     .map(app => ({ ...(appDefaults[app.appId] || {}), ...app }))
     .filter(app => app && app['short_url'])
     .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
-
-// Keep polling the main account.
-// See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
-export const pollMainAccount = (provider = null, onAccount = noop) => {
-  const web3 = new Web3(provider)
-  let timer = -1
-  let lastFound = null
-  let stop = false
-
-  const poll = async () => {
-    const account = await getMainAccount(web3)
-    if (account !== lastFound) {
-      lastFound = account
-      onAccount(account)
-    }
-    if (stop) {
-      return
-    }
-    timer = setTimeout(poll, ACCOUNTS_POLL_EVERY)
-  }
-
-  poll()
-
-  return () => {
-    // In case we are waiting for getMainAccount
-    stop = true
-
-    clearTimeout(timer)
-  }
-}
 
 const getMainAccount = async web3 => {
   try {
@@ -67,6 +52,72 @@ const getMainAccount = async web3 => {
     return null
   }
 }
+
+const pollEvery = (fn, delay) => {
+  let timer = -1
+  let stop = false
+  const poll = async (request, onResult) => {
+    const result = await request()
+    if (!stop) {
+      onResult(result)
+      timer = setTimeout(poll.bind(null, request, onResult), delay)
+    }
+  }
+  return (...params) => {
+    const { request, onResult } = fn(...params)
+    poll(request, onResult)
+    return () => {
+      stop = true
+      clearTimeout(timer)
+    }
+  }
+}
+
+// Keep polling the main account.
+// See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
+export const pollMainAccount = pollEvery((provider, onAccount) => {
+  const web3 = getWeb3(provider)
+  let lastAccount = null
+  let lastBalance = null
+  return {
+    request: () =>
+      getMainAccount(web3)
+        .then(account => {
+          if (!account) {
+            throw 'no account'
+          }
+          return web3.eth.getBalance(account).then(balance => ({
+            account,
+            balance: BigNumber(balance),
+          }))
+        })
+        .catch(() => {
+          return { account: null, balance: BigNumber(0) }
+        }),
+    onResult: ({ account, balance }) => {
+      if (account !== lastAccount || balance !== lastBalance) {
+        lastAccount = account
+        lastBalance = balance
+        onAccount(account, balance)
+      }
+    },
+  }
+}, POLL_DELAY_ACCOUNT)
+
+// Keep polling the network.
+export const pollNetwork = pollEvery((provider, onNetwork) => {
+  const web3 = getWeb3(provider)
+  let lastFound = null
+  return {
+    request: () => web3.eth.net.getNetworkType(),
+    onResult: network => {
+      if (network !== lastFound) {
+        lastFound = network
+        onNetwork(network)
+      }
+    },
+  }
+}, POLL_DELAY_NETWORK)
 
 // Subscribe to wrapper's observables
 const subscribe = (
@@ -188,7 +239,7 @@ const initWrapper = async (
     apm: { ipfs: ipfsConf },
   })
 
-  const web3 = new Web3(walletProvider || provider)
+  const web3 = getWeb3(walletProvider || provider)
   onWeb3(web3)
 
   const account = await getMainAccount(web3)
@@ -308,7 +359,7 @@ export const initDaoBuilder = (
         throw new Error('The template name doesn’t exist')
       }
 
-      const web3 = new Web3(provider)
+      const web3 = getWeb3(provider)
       const account = await getMainAccount(web3)
 
       if (account === null) {

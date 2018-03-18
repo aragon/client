@@ -49,6 +49,8 @@ const initialState = {
 class Onboarding extends React.PureComponent {
   static defaultProps = {
     account: '',
+    balance: null,
+    network: '',
     visible: true,
     daoCreationStatus: 'none',
     onComplete: noop,
@@ -444,7 +446,7 @@ class Onboarding extends React.PureComponent {
       domainToOpen,
       domainToOpenCheckStatus,
     } = this.state
-    const { account, daoCreationStatus, onComplete } = this.props
+    const { account, network, balance, daoCreationStatus, onComplete } = this.props
 
     // No need to move the screens farther than one step
     hideProgress = Math.min(1, Math.max(-1, hideProgress))
@@ -453,7 +455,9 @@ class Onboarding extends React.PureComponent {
       return (
         <Start
           hideProgress={hideProgress}
-          enableCreate={!!account}
+          hasAccount={!!account}
+          balance={balance}
+          network={network}
           onCreate={this.handleStartCreate}
           onRest={this.handleStartRest}
           domain={domainToOpen}
