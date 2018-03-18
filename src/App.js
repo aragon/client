@@ -112,7 +112,7 @@ class App extends React.Component {
       this.state.wrapper.cancel()
       this.setState({ wrapper: null })
     }
-    console.log('init the wrapper', dao)
+    console.log('Wrapper init', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
@@ -139,6 +139,8 @@ class App extends React.Component {
     }).then(wrapper => {
       console.log('wrapper', wrapper)
       this.setState({ wrapper })
+    }).catch(err => {
+      console.error('Wrapper init error:', err)
     })
   }
 
