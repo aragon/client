@@ -11,34 +11,48 @@ export const appIds = {
   Voting: '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
 }
 
-export const appDefaults = {
-  // Local settings
-  // [appIds['Finance']]: {
-  //   script: '/script.js',
-  //   short_url: '/index.html',
-  // },
-  // [appIds['TokenManager']]: {
-  //   script: '/script.js',
-  //   short_url: '/index.html',
-  // },
-  // [appIds['Voting']]: {
-  //   script: '/script.js',
-  //   short_url: '/index.html',
-  // },
+let appDefaults
+let appLocator
+
+if (process.env.NODE_ENV !== 'production') {
+  /******************
+   * Local settings *
+   ******************/
+  appDefaults = {
+    Local settings
+    [appIds['Finance']]: {
+      script: '/script.js',
+      short_url: '/index.html',
+    },
+    [appIds['TokenManager']]: {
+      script: '/script.js',
+      short_url: '/index.html',
+    },
+    [appIds['Voting']]: {
+      script: '/script.js',
+      short_url: '/index.html',
+    },
+  }
+
+  appLocator = {
+    [appIds['Finance']]: 'http://localhost:3002/',
+    [appIds['TokenManager']]: 'http://localhost:3003/',
+    [appIds['Voting']]: 'http://localhost:3001/',
+  }
+} else {
+  /***********************
+   * Production settings *
+   ***********************/
+  appDefaults = {}
+  appLocator = {
+    [appIds['Finance']]: 'https://finance.aragonpm.com/',
+    [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
+    [appIds['Voting']]: 'https://voting.aragonpm.com/',
+  }
 }
 
-// Load apps from http servers
-export const appLocator = {
-  // Local settings
-  // [appIds['Finance']]: 'http://localhost:3002/',
-  // [appIds['TokenManager']]: 'http://localhost:3003/',
-  // [appIds['Voting']]: 'http://localhost:3001/',
-
-  // Production settings
-  [appIds['Finance']]: 'https://finance.aragonpm.com/',
-  [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
-  [appIds['Voting']]: 'https://voting.aragonpm.com/',
-}
+export const appDefaults
+export const appLocator
 
 export const contractAddresses = {
   // Aragon's Rinkeby ENS
