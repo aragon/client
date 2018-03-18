@@ -64,7 +64,6 @@ class App extends React.Component {
   }
 
   updateLocator = locator => {
-    console.log('locator', locator)
     const { locator: prevLocator } = this.state
 
     if (locator.mode === 'home' || locator.mode === 'setup') {
