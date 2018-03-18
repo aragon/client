@@ -12,25 +12,32 @@ export const appIds = {
 }
 
 export const appDefaults = {
-  [appIds['Finance']]: {
-    script: '/script.js',
-    short_url: '/index.html',
-  },
-  [appIds['TokenManager']]: {
-    script: '/script.js',
-    short_url: '/index.html',
-  },
-  [appIds['Voting']]: {
-    script: '/script.js',
-    short_url: '/index.html',
-  },
+  // Local settings
+  // [appIds['Finance']]: {
+  //   script: '/script.js',
+  //   short_url: '/index.html',
+  // },
+  // [appIds['TokenManager']]: {
+  //   script: '/script.js',
+  //   short_url: '/index.html',
+  // },
+  // [appIds['Voting']]: {
+  //   script: '/script.js',
+  //   short_url: '/index.html',
+  // },
 }
 
-// Uncomment these to load apps from local servers
+// Load apps from http servers
 export const appLocator = {
+  // Local settings
   // [appIds['Finance']]: 'http://localhost:3002/',
   // [appIds['TokenManager']]: 'http://localhost:3003/',
   // [appIds['Voting']]: 'http://localhost:3001/',
+
+  // Production settings
+  [appIds['Finance']]: 'https://finance.aragonpm.com/',
+  [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
+  [appIds['Voting']]: 'https://voting.aragonpm.com/',
 }
 
 export const contractAddresses = {
