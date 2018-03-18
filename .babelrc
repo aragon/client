@@ -19,6 +19,8 @@
     "stage-2"
   ],
   "plugins": [
-    "transform-runtime"
+    ["styled-components", {
+      "displayName": true
+    }]
   ]
 }

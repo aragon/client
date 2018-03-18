@@ -10,14 +10,10 @@ class MenuPanelAppGroup extends React.Component {
     instances: [],
   }
   handleAppClick = () => {
-    const firstInstance = this.props.instances[0]
-    this.props.onActivate(
-      this.props.appId,
-      firstInstance ? firstInstance.id : ''
-    )
+    this.props.onActivate(this.props.appId)
   }
   handleInstanceClick = instanceId => {
-    this.props.onActivate(this.props.appId, instanceId)
+    this.props.onActivate(instanceId)
   }
   render() {
     const { icon, name, instances, active, activeInstanceId } = this.props
@@ -38,15 +34,14 @@ class MenuPanelAppGroup extends React.Component {
 
             <ActiveBackground style={{ opacity: Number(active) }} />
 
-            <a
+            <span
               role="button"
-              tabIndex="0"
               className={`item ${active ? 'active' : ''}`}
               onClick={this.handleAppClick}
             >
               <span className="icon">{icon || <IconBlank />}</span>
               <span className="name">{name}</span>
-            </a>
+            </span>
 
             <ul
               className="instances"
@@ -56,8 +51,8 @@ class MenuPanelAppGroup extends React.Component {
                 paddingBottom: `${5 * openProgress}px`,
               }}
             >
-              {instances.map(({ id, name }) => (
-                <li key={name}>
+              {instances.map(({ id, name, proxyAddress }) => (
+                <li key={proxyAddress}>
                   <MenuPanelInstance
                     id={id}
                     name={name}
