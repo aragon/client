@@ -3,8 +3,7 @@ import Web3 from 'web3'
 // TODO: make all these depend on env variables / URL
 
 export const addresses = {
-  // ensRegistry: '0x409ba3dd291bb5d48d5b4404f5efa207441f6cba',
-  ensRegistry: '0x3635266b73b71760c3a193619cfc123245f37554',
+  ensRegistry: '0xaa0ccb537289d226941745c4dd7a819a750897d0',
 }
 
 export const appIds = {
@@ -35,10 +34,6 @@ export const appLocator = {
   // [appIds['Finance']]: 'http://localhost:3002/',
   // [appIds['TokenManager']]: 'http://localhost:3003/',
   // [appIds['Voting']]: 'http://localhost:3001/',
-}
-
-export const contractAddresses = {
-  ensRegistry: '0xaa0ccb537289d226941745c4dd7a819a750897d0',
 }
 
 export const ipfsDefaultConf = {
