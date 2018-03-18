@@ -30,10 +30,15 @@ export const appDefaults = {
   },
 }
 
+// Uncomment these to load apps from local servers
 export const appLocator = {
-  [appIds['Finance']]: 'http://localhost:3002/',
-  [appIds['TokenManager']]: 'http://localhost:3003/',
-  [appIds['Voting']]: 'http://localhost:3001/',
+  // [appIds['Finance']]: 'http://localhost:3002/',
+  // [appIds['TokenManager']]: 'http://localhost:3003/',
+  // [appIds['Voting']]: 'http://localhost:3001/',
+}
+
+export const contractAddresses = {
+  ensRegistry: '0xaa0ccb537289d226941745c4dd7a819a750897d0',
 }
 
 export const ipfsDefaultConf = {
@@ -46,6 +51,6 @@ export const ipfsDefaultConf = {
 }
 
 export const web3Providers = {
-  default: new Web3.providers.WebsocketProvider('ws://localhost:8546'),
+  default: new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws'),
   wallet: window.web3 && window.web3.currentProvider,
 }
