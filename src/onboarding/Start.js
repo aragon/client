@@ -191,7 +191,7 @@ const Action = styled.div`
   align-items: center;
   width: 100%;
   padding-bottom: 30px;
-  padding-top: ${({ spaced }) => spaced ? '50px' : '0' }
+  padding-top: ${({ spaced }) => (spaced ? '50px' : '0')};
   p {
     margin-bottom: 35px;
   }
