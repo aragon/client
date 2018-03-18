@@ -1,18 +1,24 @@
 import React from 'react'
 import styled from 'styled-components'
-import { AppBar, Button, DropDown, Field, TextInput, theme } from '@aragon/ui'
+import {
+  AppBar,
+  Button,
+  DropDown,
+  Field,
+  TextInput,
+  observe,
+  theme,
+} from '@aragon/ui'
 import Option from './components/Option'
-import { makeEtherscanBaseUrl } from '../../utils'
-import { settings } from '../../demo-state'
+import observeCache from '../../components/HOC/observeCache'
+import EtherscanLink from '../../components/Etherscan/EtherscanLink'
+import provideNetwork from '../../context/provideNetwork'
+import { compose } from '../../utils'
 
-const {
-  currencies,
-  network,
-  networkName,
-  organizationAddress,
-  defaultCurrency,
-} = settings
-const etherscanBaseUrl = makeEtherscanBaseUrl(network)
+// const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY']
+const AVAILABLE_CURRENCIES = ['USD'] // Only use USD for now
+
+const CACHE_KEY = 'settings'
 
 const Main = styled.div`
   display: flex;
@@ -44,18 +50,32 @@ const LinkButton = styled(Button.Anchor).attrs({
 `
 
 class Settings extends React.Component {
-  state = {
-    selectedCurrency: defaultCurrency,
+  constructor(props) {
+    super(props)
+    this.correctCurrencyIfNecessary(props)
+  }
+  componentWillReceiveProps(nextProps) {
+    this.correctCurrencyIfNecessary(nextProps)
+  }
+  correctCurrencyIfNecessary({ cache, currencies, selectedCurrency }) {
+    if (
+      Array.isArray(currencies) &&
+      currencies.indexOf(selectedCurrency) === -1
+    ) {
+      // Oops, somehow the selected currency isn't in the available currencies
+      // Let's reset it to the first available currency
+      this.propagateSelectedCurrency(cache, currencies[0])
+    }
   }
   handleCurrencyChange = index => {
-    // TODO: this should propagate to cache in aragon.js
-    this.setState({
-      selectedCurrency: currencies[index],
-    })
+    const { cache, currencies } = this.props
+    this.propagateSelectedCurrency(cache, currencies[index])
+  }
+  propagateSelectedCurrency(cache, selectedCurrency) {
+    cache.update(CACHE_KEY, settings => ({ ...settings, selectedCurrency }))
   }
   render() {
-    const { selectedCurrency } = this.state
-    const etherscanUrl = `${etherscanBaseUrl}/address/${organizationAddress}`
+    const { currencies, daoAddr, network, selectedCurrency } = this.props
     return (
       <Main>
         <StyledAppBar title="Your Settings" />
@@ -63,27 +83,36 @@ class Settings extends React.Component {
           <Content>
             <Option
               name="Organization Address"
-              text={`This organization is deployed on the ${networkName}.`}
+              text={`This organization is deployed on the ${network.name}.`}
             >
               <Field label="Address:">
-                <TextInput readOnly wide value={organizationAddress} />
+                <TextInput readOnly wide value={daoAddr} />
               </Field>
-              <LinkButton href={etherscanUrl} target="_blank">
-                See on Etherscan
-              </LinkButton>
+              <EtherscanLink address={daoAddr}>
+                {url =>
+                  url ? (
+                    <LinkButton href={url} target="_blank">
+                      See on Etherscan
+                    </LinkButton>
+                  ) : null
+                }
+              </EtherscanLink>
             </Option>
-            <Option
-              name="Currency"
-              text="This will be the default currency for displaying purposes. It will be converted to ETH under the hood."
-            >
-              <Field label="Select currency">
-                <DropDown
-                  active={currencies.indexOf(selectedCurrency)}
-                  items={currencies}
-                  onChange={this.handleCurrencyChange}
-                />
-              </Field>
-            </Option>
+            {Array.isArray(currencies) &&
+              selectedCurrency && (
+                <Option
+                  name="Currency"
+                  text="This will be the default currency for displaying purposes. It will be converted to ETH under the hood."
+                >
+                  <Field label="Select currency">
+                    <DropDown
+                      active={currencies.indexOf(selectedCurrency)}
+                      items={currencies}
+                      onChange={this.handleCurrencyChange}
+                    />
+                  </Field>
+                </Option>
+              )}
           </Content>
         </ScrollWrapper>
       </Main>
@@ -91,4 +120,17 @@ class Settings extends React.Component {
   }
 }
 
-export default Settings
+const enhance = compose(
+  observeCache(CACHE_KEY, {
+    defaultValue: {
+      selectedCurrency: AVAILABLE_CURRENCIES[0],
+    },
+    forcedValue: {
+      currencies: AVAILABLE_CURRENCIES,
+    },
+  }),
+  observe(observable => observable.map(settings => ({ ...settings })), {}),
+  provideNetwork
+)
+
+export default enhance(Settings)
