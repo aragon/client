@@ -199,7 +199,7 @@ const initWrapper = async (
   }
 
   try {
-    await wrapper.init()
+    await wrapper.init([account])
   } catch (err) {
     if (err.message === 'connection not open') {
       onError('NO_CONNECTION')

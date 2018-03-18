@@ -35,6 +35,9 @@ class App extends React.Component {
     this.history.listen(this.handleHistoryChange)
     pollMainAccount(web3Providers.wallet, (account = null) => {
       this.setState({ account })
+      if (this.state.wrapper) {
+        this.state.wrapper.setAccounts([account])
+      }
     })
   }
 
