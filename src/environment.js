@@ -54,7 +54,7 @@ export { appDefaults, appLocator }
 
 export const contractAddresses = {
   // Aragon's Rinkeby ENS
-  ensRegistry: '0xaa0ccb537289d226941745c4dd7a819a750897d0',
+  ensRegistry: '0xfbae32d1cde62858bc45f51efc8cc4fa1415447e',
 }
 
 export const ipfsDefaultConf = {
