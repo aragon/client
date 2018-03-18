@@ -60,35 +60,31 @@ class MenuPanel extends React.Component {
           <Header>
             <img src={logo} alt="Aragon" height="36" />
             <div className="actions">
-              {/* <a role="button" tabIndex="0">
-                <IconWallet />
-              </a> */}
-              <a
-                role="button"
-                tabIndex="0"
-                onClick={this.handleNotificationsClick}
-              >
+              <IconButton role="button" onClick={this.handleNotificationsClick}>
                 <IconNotifications />
-              </a>
+              </IconButton>
             </div>
           </Header>
           <Content>
             <div className="in">
               <h1>Apps</h1>
               <ul>
-                {menuApps.map(({ appId, name, icon, instances = [] }) => (
-                  <li key={appId}>
-                    <MenuPanelAppGroup
-                      name={name}
-                      icon={icon}
-                      appId={appId}
-                      active={appId === activeAppId}
-                      instances={instances}
-                      activeInstanceId={activeInstanceId}
-                      onActivate={onOpenApp}
-                    />
-                  </li>
-                ))}
+                {menuApps.map(
+                  ({ appId, name, icon, instances = [] }) =>
+                    appId === 'permissions' ? null : (
+                      <li key={appId}>
+                        <MenuPanelAppGroup
+                          name={name}
+                          icon={icon}
+                          appId={appId}
+                          active={appId === activeAppId}
+                          instances={instances}
+                          activeInstanceId={activeInstanceId}
+                          onActivate={onOpenApp}
+                        />
+                      </li>
+                    )
+                )}
               </ul>
             </div>
           </Content>
@@ -135,6 +131,10 @@ const In = styled.div`
   background: #fff;
   border-right: 1px solid #e8e8e8;
   box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
+`
+
+const IconButton = styled.span`
+  cursor: pointer;
 `
 
 const NotificationsWrapper = styled.div`
