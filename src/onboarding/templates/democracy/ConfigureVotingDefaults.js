@@ -75,7 +75,7 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
           <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
             <p style={{ textAlign: 'center' }}>
               <Text size="large" color={theme.textSecondary} align="center">
-                Choose your voting defaults below. You can’t change these later,
+                Choose your voting settings below. You can’t change these later,
                 so pick carefully.
               </Text>
             </p>
