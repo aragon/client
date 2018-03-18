@@ -1,0 +1,9 @@
+{
+  "name": "Aragon",
+  "description": "The Aragon app",
+  "icons": [{
+    "src": "images/icon.png",
+    "sizes": "192x192"
+  }],
+  "start_url": "/build/index.html"
+}
