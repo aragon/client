@@ -11,8 +11,6 @@ import initWrapper, {
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 
-import { notifications } from './demo-state'
-
 class App extends React.Component {
   static childContextTypes = {
     network: networkContextType,
@@ -141,11 +139,6 @@ class App extends React.Component {
     }).then(wrapper => {
       console.log('wrapper', wrapper)
       this.setState({ wrapper })
-
-      // TODO: remove
-      notifications.forEach(({ app, body, title, date }) => {
-        wrapper.sendNotification(app, title, body, {}, date)
-      })
     })
   }
 
