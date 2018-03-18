@@ -31,11 +31,8 @@ const template = {
           },
         },
       },
-      validateScreen: ({ signers, neededSignatures }) => {
-        if (!signers.every(signer => isAddress(signer.trim()))) {
-          return false
-        }
-        return true
+      validateScreen: ({ signers }) => {
+        return signers.every(signer => isAddress(signer.trim()))
       },
       Component: ConfigureMultisigAddresses,
     },
