@@ -9,6 +9,7 @@ import {
   IconCheck,
   IconCross,
 } from '@aragon/ui'
+import { network, web3Providers } from '../environment'
 import { noop } from '../utils'
 import { lerp } from '../math-utils'
 import logo from './assets/logo-welcome.svg'
@@ -20,9 +21,13 @@ import {
   DomainCheckRejected,
 } from './domain-states'
 
+const MINIMUM_BALANCE = 10e17
+
 class Start extends React.Component {
   static defaultProps = {
-    enableCreate: true,
+    hasAccount: false,
+    network: 'private',
+    balance: null,
     hideProgress: 0,
     onCreate: noop,
     onDomainChange: noop,
@@ -40,7 +45,9 @@ class Start extends React.Component {
   render() {
     const {
       hideProgress,
-      enableCreate,
+      hasAccount,
+      network: userNetwork,
+      balance,
       onCreate,
       domain,
       domainCheckStatus,
@@ -60,7 +67,10 @@ class Start extends React.Component {
         >
           <StartContent
             onCreate={onCreate}
-            enableCreate={enableCreate}
+            hasWallet={!!web3Providers.wallet}
+            hasAccount={hasAccount}
+            userNetwork={userNetwork}
+            balance={balance}
             onDomainChange={this.handleDomainChange}
             domain={domain}
             domainCheckStatus={domainCheckStatus}
@@ -73,14 +83,28 @@ class Start extends React.Component {
 }
 
 class StartContent extends React.PureComponent {
+  enoughBalance() {
+    const { balance } = this.props
+    const enough =
+      balance && balance.isLessThan && !balance.isLessThan(MINIMUM_BALANCE)
+    return enough || false
+  }
   render() {
     const {
-      enableCreate,
+      hasWallet,
+      hasAccount,
+      userNetwork,
+      balance,
       domain,
       domainCheckStatus,
       onDomainChange,
       onOpenOrganization,
     } = this.props
+    const canCreate =
+      this.enoughBalance() &&
+      hasWallet &&
+      hasAccount &&
+      userNetwork === network.type
     return (
       <React.Fragment>
         <Title>
@@ -97,18 +121,11 @@ class StartContent extends React.PureComponent {
           <Button
             mode="strong"
             onClick={this.props.onCreate}
-            disabled={!enableCreate}
+            disabled={!canCreate}
           >
             Create a new organization
           </Button>
-          {!enableCreate && (
-            <ActionInfo>
-              Please install and unlock{' '}
-              <SafeLink href="https://metamask.io/" target="_blank">
-                MetaMask
-              </SafeLink>.
-            </ActionInfo>
-          )}
+          {this.renderWarning()}
         </Action>
         <form onSubmit={onOpenOrganization}>
           <Action spaced>
@@ -161,6 +178,47 @@ class StartContent extends React.PureComponent {
       </React.Fragment>
     )
   }
+  renderWarning() {
+    const {
+      hasWallet,
+      hasAccount,
+      userNetwork,
+      domain,
+      domainCheckStatus,
+      onDomainChange,
+      onOpenOrganization,
+      balance,
+    } = this.props
+    if (!hasWallet) {
+      return (
+        <ActionInfo>
+          Please install and unlock{' '}
+          <SafeLink href="https://metamask.io/" target="_blank">
+            MetaMask
+          </SafeLink>.
+        </ActionInfo>
+      )
+    }
+    if (!hasAccount) {
+      return <ActionInfo>Please unlock MetaMask.</ActionInfo>
+    }
+    if (userNetwork !== network.type) {
+      return (
+        <ActionInfo>
+          Please select the {network.type} network in MetaMask.
+        </ActionInfo>
+      )
+    }
+    if (!this.enoughBalance()) {
+      return (
+        <ActionInfo>
+          Please ensure your account has at least {MINIMUM_BALANCE / 10e18} ETH
+          (you have {Math.round(balance.toFixed() / 10e18 * 10e2) / 10e2} ETH).
+        </ActionInfo>
+      )
+    }
+    return null
+  }
 }
 
 const Main = styled.div`
@@ -201,6 +259,7 @@ const ActionInfo = styled.span`
   position: absolute;
   bottom: 0;
   font-size: 12px;
+  white-space: nowrap;
 `
 
 const Title = styled.h1`
