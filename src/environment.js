@@ -19,7 +19,6 @@ if (process.env.NODE_ENV !== 'production') {
    * Local settings *
    ******************/
   appDefaults = {
-    Local settings
     [appIds['Finance']]: {
       script: '/script.js',
       short_url: '/index.html',
@@ -51,8 +50,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-export const appDefaults
-export const appLocator
+export { appDefaults, appLocator }
 
 export const contractAddresses = {
   // Aragon's Rinkeby ENS
