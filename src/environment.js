@@ -1,10 +1,7 @@
 import Web3 from 'web3'
+import { makeEtherscanBaseUrl } from './utils'
 
 // TODO: make all these depend on env variables / URL
-
-export const addresses = {
-  ensRegistry: '0xaa0ccb537289d226941745c4dd7a819a750897d0',
-}
 
 export const appIds = {
   Finance: '0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae',
@@ -36,6 +33,11 @@ export const appLocator = {
   // [appIds['Voting']]: 'http://localhost:3001/',
 }
 
+export const contractAddresses = {
+  // Aragon's Rinkeby ENS
+  ensRegistry: '0xaa0ccb537289d226941745c4dd7a819a750897d0',
+}
+
 export const ipfsDefaultConf = {
   gateway: 'https://gateway.ipfs.io/ipfs',
   rpc: {
@@ -43,6 +45,12 @@ export const ipfsDefaultConf = {
     port: '5001',
     protocol: 'https',
   },
+}
+
+export const network = {
+  chainId: 4,
+  etherscanBaseUrl: makeEtherscanBaseUrl('rinkeby'),
+  name: 'Rinkeby testnet',
 }
 
 export const web3Providers = {

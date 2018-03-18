@@ -1,12 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button, Info, RadioList, SafeLink } from '@aragon/ui'
+import EtherscanLink from '../Etherscan/EtherscanLink'
 import { noop } from '../../utils'
-import { network } from '../../demo-state'
-
-const etherscanBaseUrl = `https://${
-  network === 'mainnet' ? '' : `${network}.`
-}etherscan.io`
 
 const SignerPanelContent = ({
   error,
@@ -58,7 +54,7 @@ class ActionPathsContent extends React.Component {
         {`This transaction will ${
           showPaths ? 'eventually' : ''
         } ${description || 'perform an action on'}`}{' '}
-        {to ? <AddressLink to={to} /> : 'this app'}.
+        <AddressLink to={to} />.
       </span>
     )
   }
@@ -116,7 +112,7 @@ const ImpossibleContent = ({ error, intent: { description, to }, onClose }) => (
   <React.Fragment>
     <Info.Permissions title="Action impossible">
       You cannot {description || 'perform this action on'}{' '}
-      {to ? <AddressLink to={to} /> : 'this app'}
+      <AddressLink to={to} />
       .{' '}
       {error
         ? 'An error occurred when we tried to find a path for this action.'
@@ -130,8 +126,8 @@ const NeedWeb3Content = ({ intent: { description, to }, onClose }) => (
   <React.Fragment>
     <Info.Action title="You can't perform any actions">
       {`You need to be connected to a Web3 instance in order to ${description ||
-        'perform an action on'}`}{' '}
-      {to ? <AddressLink to={to} /> : 'this app'}.
+        'perform this action on'}`}{' '}
+      <AddressLink to={to} />.
       <InstallMessage>
         Please install or enable{' '}
         <SafeLink href="https://metamask.io/" target="_blank">
@@ -143,11 +139,22 @@ const NeedWeb3Content = ({ intent: { description, to }, onClose }) => (
   </React.Fragment>
 )
 
-const AddressLink = ({ to }) => (
-  <SafeLink href={`${etherscanBaseUrl}/address/${to}`} target="_blank">
-    {to}
-  </SafeLink>
-)
+const AddressLink = ({ to }) =>
+  to ? (
+    <EtherscanLink address={to}>
+      {url =>
+        url ? (
+          <SafeLink href={url} target="_blank">
+            {to}
+          </SafeLink>
+        ) : (
+          to
+        )
+      }
+    </EtherscanLink>
+  ) : (
+    'an address or app'
+  )
 
 const ActionContainer = styled.div`
   margin-bottom: 40px;

@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
+import { Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
-import Permissions from './apps/Permissions/Permissions'
 import { getAppPath } from './routing'
 
 import {
@@ -174,7 +174,11 @@ class Wrapper extends React.Component {
     )
   }
   renderApp(appId, params) {
-    const { apps, wrapper } = this.props
+    const { apps, locator, wrapper } = this.props
+
+    if (!wrapper) {
+      return <LoadingApps />
+    }
 
     if (appId === 'home') {
       return (
@@ -196,6 +200,10 @@ class Wrapper extends React.Component {
           onParamsRequest={this.handleParamsRequest}
         />
       )
+    }
+
+    if (appId === 'settings') {
+      return <Settings cache={wrapper.cache} daoAddr={locator.dao} />
     }
 
     const app = wrapper && apps.find(app => app.appId === appId)
@@ -225,5 +233,7 @@ const AppScreen = styled.div`
   height: 100%;
   overflow: auto;
 `
+
+const LoadingApps = () => <div />
 
 export default Wrapper

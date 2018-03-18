@@ -171,7 +171,6 @@ export const permissions = {
   ],
 }
 
-export const network = 'rinkeby'
 export const actionIntent = {
   description: 'perform a payment to',
   to: '0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be',
