@@ -24,7 +24,7 @@
     "Pierre Bertet <pierre@aragon.one>"
   ],
   "dependencies": {
-    "@aragon/ui": "^0.6.2",
+    "@aragon/ui": "^0.7.0",
     "@aragon/wrapper": "^2.0.0-beta.4",
     "@babel/polyfill": "^7.0.0-beta.39",
     "date-fns": "^2.0.0-alpha.7",
