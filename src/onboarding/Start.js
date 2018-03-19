@@ -180,7 +180,7 @@ class StartContent extends React.PureComponent {
     )
   }
   renderWarning() {
-    const { hasWallet, hasAccount, userNetwork, balance = 0 } = this.props
+    const { hasWallet, hasAccount, userNetwork, balance } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
@@ -205,7 +205,8 @@ class StartContent extends React.PureComponent {
       return (
         <ActionInfo>
           Please ensure your account has at least {MINIMUM_BALANCE / 10e18} ETH
-          (you have {Math.round(balance.toFixed() / 10e18 * 10e2) / 10e2} ETH).
+          (you have {Math.round((balance || 0).toFixed() / 10e18 * 10e2) / 10e2}{' '}
+          ETH).
         </ActionInfo>
       )
     }

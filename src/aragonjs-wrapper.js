@@ -12,6 +12,7 @@ import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
+const POLL_DELAY_CONNECTIVITY = 2000
 
 const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
   const hash = app.content && app.content.location
@@ -109,6 +110,29 @@ export const pollMainAccount = pollEvery(
   },
   POLL_DELAY_ACCOUNT
 )
+
+export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
+  let lastFound = null
+  return {
+    request: async () => {
+      try {
+        await Promise.all(
+          providers.map(p => getWeb3(p).eth.net.getNetworkType())
+        )
+        return true
+      } catch (err) {
+        return false
+      }
+    },
+    onResult: connected => {
+      if (connected !== lastFound) {
+        lastFound = connected
+        onConnectivity(connected)
+      }
+    },
+  }
+  // web.eth.net.isListening()
+}, POLL_DELAY_CONNECTIVITY)
 
 // Keep polling the network.
 export const pollNetwork = pollEvery((provider, onNetwork) => {

@@ -9,10 +9,11 @@ import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath, staticApps } from './routing'
 
-import { tokens, prices, groups, homeActions } from './demo-state'
+import { groups } from './demo-state'
 
 class Wrapper extends React.Component {
   static defaultProps = {
+    connected: false,
     wrapper: null,
     web3: null,
     locator: {},
@@ -174,21 +175,14 @@ class Wrapper extends React.Component {
     )
   }
   renderApp(appId, params) {
-    const { apps, locator, wrapper } = this.props
+    const { apps, locator, wrapper, connected } = this.props
 
     if (!wrapper) {
       return <LoadingApps />
     }
 
     if (appId === 'home') {
-      return (
-        <Home
-          tokens={tokens}
-          prices={prices}
-          actions={homeActions}
-          onOpenApp={this.openApp}
-        />
-      )
+      return <Home connected={connected} />
     }
 
     if (appId === 'permissions') {
