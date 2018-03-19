@@ -154,8 +154,14 @@ const subscribe = (
         )
         .forEach(async app => {
           const { name, proxyAddress, script } = app
-          const scriptUrl =
-            removeTrailingSlash(appSrc(app, ipfsConf.gateway)) + script
+          const appUrl = appSrc(app, ipfsConf.gateway)
+
+          // If the app URL is empty, the script can’t be retrieved
+          if (!appUrl) {
+            return
+          }
+
+          const scriptUrl = removeTrailingSlash(appUrl) + script
           let workerUrl = ''
           try {
             // WebWorkers can only load scripts from the local origin, so we
