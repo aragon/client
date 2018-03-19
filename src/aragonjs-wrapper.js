@@ -79,7 +79,7 @@ export const pollMainAccount = pollEvery(
   (provider, { onAccount = () => {}, onBalance = () => {} } = {}) => {
     const web3 = getWeb3(provider)
     let lastAccount = null
-    let lastBalance = null
+    let lastBalance = -1
     return {
       request: () =>
         getMainAccount(web3)
@@ -93,14 +93,14 @@ export const pollMainAccount = pollEvery(
             }))
           })
           .catch(() => {
-            return { account: null, balance: BigNumber(0) }
+            return { account: null, balance: BigNumber(-1) }
           }),
       onResult: ({ account, balance }) => {
         if (account !== lastAccount) {
           lastAccount = account
           onAccount(account)
         }
-        if (!balance.isEqualTo(lastBalance || 0)) {
+        if (!balance.isEqualTo(lastBalance)) {
           lastBalance = balance
           onBalance(balance)
         }
