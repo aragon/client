@@ -215,8 +215,10 @@ class Wrapper extends React.Component {
         onMessage={this.handleAppIFrameMessage}
         onLoad={this.handleAppIFrameLoad}
       />
-    ) : (
+    ) : apps.length ? (
       <App404 onNavigateBack={this.props.historyBack} />
+    ) : (
+      <LoadingApps />
     )
   }
 }
