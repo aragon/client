@@ -41,11 +41,16 @@ class App extends React.Component {
       return
     }
 
-    pollMainAccount(web3Providers.wallet, (account = null, balance) => {
-      this.setState({ account, balance })
-      if (account && this.state.wrapper) {
-        this.state.wrapper.setAccounts([account])
-      }
+    pollMainAccount(web3Providers.wallet, {
+      onAccount: (account = null) => {
+        this.setState({ account })
+        if (account && this.state.wrapper) {
+          this.state.wrapper.setAccounts([account])
+        }
+      },
+      onBalance: balance => {
+        this.setState({ balance })
+      },
     })
 
     pollNetwork(web3Providers.wallet, network => {
