@@ -61,7 +61,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "find-pkg": "^1.0.0",
     "prettier": "^1.8.2",
-    "react-scripts": "^2.0.0-next.47d2d941"
+    "react-scripts": "^2.0.0-next.9754a231"
   },
   "scripts": {
     "update-assets": "rm -rf public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
