@@ -19,7 +19,10 @@ class ConfigureVotingDefaults extends React.Component {
     this.handleVoteDurationChange = this.createChangeHandler('voteDuration')
   }
   componentWillReceiveProps({ positionProgress }) {
-    if (positionProgress === 0 && positionProgress !== this.props.positionProgress) {
+    if (
+      positionProgress === 0 &&
+      positionProgress !== this.props.positionProgress
+    ) {
       this.formEl.elements[0].focus()
     }
   }
@@ -44,7 +47,7 @@ class ConfigureVotingDefaults extends React.Component {
         style={{
           opacity: 1 - Math.abs(positionProgress),
           transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-          willChange: warm? 'opacity, transform' : 'auto',
+          willChange: warm ? 'opacity, transform' : 'auto',
         }}
       >
         <ConfigureVotingDefaultsContent

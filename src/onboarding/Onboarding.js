@@ -510,12 +510,7 @@ class Onboarding extends React.PureComponent {
       )
     }
     if (screen === 'launch') {
-      return (
-        <Launch
-          onConfirm={onComplete}
-          {...sharedProps}
-        />
-      )
+      return <Launch onConfirm={onComplete} {...sharedProps} />
     }
 
     const steps = this.getSteps()

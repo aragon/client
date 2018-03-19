@@ -21,7 +21,10 @@ class Domain extends React.Component {
     onSubmit: noop,
   }
   componentWillReceiveProps({ positionProgress }) {
-    if (positionProgress === 0 && positionProgress !== this.props.positionProgress) {
+    if (
+      positionProgress === 0 &&
+      positionProgress !== this.props.positionProgress
+    ) {
       this.focusEl.focus()
     }
   }
@@ -44,7 +47,7 @@ class Domain extends React.Component {
           style={{
             transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
             opacity: 1 - Math.abs(positionProgress),
-            willChange: warm? 'opacity, transform' : 'auto',
+            willChange: warm ? 'opacity, transform' : 'auto',
           }}
         >
           <DomainContent
