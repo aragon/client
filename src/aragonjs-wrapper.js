@@ -75,34 +75,40 @@ const pollEvery = (fn, delay) => {
 
 // Keep polling the main account.
 // See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
-export const pollMainAccount = pollEvery((provider, onAccount) => {
-  const web3 = getWeb3(provider)
-  let lastAccount = null
-  let lastBalance = null
-  return {
-    request: () =>
-      getMainAccount(web3)
-        .then(account => {
-          if (!account) {
-            throw new Error('no account')
-          }
-          return web3.eth.getBalance(account).then(balance => ({
-            account,
-            balance: BigNumber(balance),
-          }))
-        })
-        .catch(() => {
-          return { account: null, balance: BigNumber(0) }
-        }),
-    onResult: ({ account, balance }) => {
-      if (account !== lastAccount || balance !== lastBalance) {
-        lastAccount = account
-        lastBalance = balance
-        onAccount(account, balance)
-      }
-    },
-  }
-}, POLL_DELAY_ACCOUNT)
+export const pollMainAccount = pollEvery(
+  (provider, { onAccount = () => {}, onBalance = () => {} } = {}) => {
+    const web3 = getWeb3(provider)
+    let lastAccount = null
+    let lastBalance = -1
+    return {
+      request: () =>
+        getMainAccount(web3)
+          .then(account => {
+            if (!account) {
+              throw new Error('no account')
+            }
+            return web3.eth.getBalance(account).then(balance => ({
+              account,
+              balance: BigNumber(balance),
+            }))
+          })
+          .catch(() => {
+            return { account: null, balance: BigNumber(-1) }
+          }),
+      onResult: ({ account, balance }) => {
+        if (account !== lastAccount) {
+          lastAccount = account
+          onAccount(account)
+        }
+        if (!balance.isEqualTo(lastBalance)) {
+          lastBalance = balance
+          onBalance(balance)
+        }
+      },
+    }
+  },
+  POLL_DELAY_ACCOUNT
+)
 
 // Keep polling the network.
 export const pollNetwork = pollEvery((provider, onNetwork) => {
