@@ -91,9 +91,9 @@ class Wrapper extends React.Component {
   handleTransaction = ({ transaction }) => {
     this.showWeb3ActionSigner(
       {
-        to: transaction.to,
+        to: transaction && transaction.to,
         tx: transaction,
-        description: transaction.description,
+        description: transaction && transaction.description,
       },
       { error: null }
     )
