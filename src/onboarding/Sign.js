@@ -57,19 +57,19 @@ class SignContent extends React.PureComponent {
 
         <Transactions>
           <Transaction>
-            <h2>
+            <TransactionTitle>
               <Text weight="bold" color={theme.textSecondary} smallcaps>
                 Token creation
               </Text>
-            </h2>
+            </TransactionTitle>
             {this.renderTxStatus(daoCreationStatus)}
           </Transaction>
           <Transaction>
-            <h2>
+            <TransactionTitle>
               <Text weight="bold" color={theme.textSecondary} smallcaps>
                 Organization creation
               </Text>
-            </h2>
+            </TransactionTitle>
             {this.renderTxStatus(daoCreationStatus)}
           </Transaction>
         </Transactions>
@@ -188,6 +188,10 @@ const Transaction = styled.div`
   &:first-child {
     margin-right: 145px;
   }
+`
+
+const TransactionTitle = styled.h2`
+  white-space: nowrap;
 `
 
 const Note = styled.p`
