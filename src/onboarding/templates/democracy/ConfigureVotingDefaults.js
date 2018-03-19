@@ -6,6 +6,8 @@ import { noop } from '../../../utils'
 
 class ConfigureVotingDefaults extends React.Component {
   static defaultProps = {
+    warm: false,
+    positionProgress: 0,
     onFieldUpdate: noop,
     onSubmit: noop,
     fields: {},
@@ -16,8 +18,8 @@ class ConfigureVotingDefaults extends React.Component {
     this.handleMinQuorumChange = this.createChangeHandler('minQuorum')
     this.handleVoteDurationChange = this.createChangeHandler('voteDuration')
   }
-  componentWillReceiveProps({ hideProgress }) {
-    if (hideProgress === 0 && hideProgress !== this.props.hideProgress) {
+  componentWillReceiveProps({ positionProgress }) {
+    if (positionProgress === 0 && positionProgress !== this.props.positionProgress) {
       this.formEl.elements[0].focus()
     }
   }
@@ -36,13 +38,13 @@ class ConfigureVotingDefaults extends React.Component {
     this.formEl = el
   }
   render() {
-    const { hideProgress, fields } = this.props
+    const { positionProgress, warm, fields } = this.props
     return (
       <Main
         style={{
-          opacity: 1 - Math.abs(hideProgress),
-          transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
-          willChange: 'opacity, transform',
+          opacity: 1 - Math.abs(positionProgress),
+          transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
+          willChange: warm? 'opacity, transform' : 'auto',
         }}
       >
         <ConfigureVotingDefaultsContent

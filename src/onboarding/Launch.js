@@ -4,14 +4,18 @@ import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
 
 class Launch extends React.Component {
+  static defaultProps = {
+    warm: false,
+    positionProgress: 0,
+  }
   render() {
-    const { hideProgress, onConfirm } = this.props
+    const { positionProgress, warm, onConfirm } = this.props
     return (
       <Main
         style={{
-          opacity: 1 - Math.abs(hideProgress),
-          transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
-          willChange: 'opacity, transform',
+          opacity: 1 - Math.abs(positionProgress),
+          transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
+          willChange: warm? 'opacity, transform' : 'auto',
         }}
       >
         <LaunchContent onConfirm={onConfirm} />

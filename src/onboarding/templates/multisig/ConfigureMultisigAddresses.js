@@ -6,12 +6,14 @@ import { noop } from '../../../utils'
 
 class ConfigureMultisigAddresses extends React.Component {
   static defaultProps = {
+    warm: false,
+    positionProgress: 0,
     onFieldUpdate: noop,
     onSubmit: noop,
     fields: {},
   }
-  componentWillReceiveProps({ hideProgress }) {
-    if (hideProgress === 0 && hideProgress !== this.props.hideProgress) {
+  componentWillReceiveProps({ positionProgress }) {
+    if (positionProgress === 0 && positionProgress !== this.props.positionProgress) {
       this.formEl.elements[0].focus()
     }
   }
@@ -45,13 +47,13 @@ class ConfigureMultisigAddresses extends React.Component {
     this.formEl = el
   }
   render() {
-    const { hideProgress, fields } = this.props
+    const { positionProgress, warm, fields } = this.props
     return (
       <Main
         style={{
-          opacity: 1 - Math.abs(hideProgress),
-          transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
-          willChange: 'opacity, transform',
+          opacity: 1 - Math.abs(positionProgress),
+          transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
+          willChange: warm? 'opacity, transform' : 'auto',
         }}
       >
         <ConfigureMultisigAddressesContent

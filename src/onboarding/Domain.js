@@ -13,13 +13,15 @@ import {
 
 class Domain extends React.Component {
   static defaultProps = {
+    warm: false,
+    positionProgress: 0,
     domain: '',
     domainCheckStatus: DomainCheckNone,
     onDomainChange: noop,
     onSubmit: noop,
   }
-  componentWillReceiveProps({ hideProgress }) {
-    if (hideProgress === 0 && hideProgress !== this.props.hideProgress) {
+  componentWillReceiveProps({ positionProgress }) {
+    if (positionProgress === 0 && positionProgress !== this.props.positionProgress) {
       this.focusEl.focus()
     }
   }
@@ -35,14 +37,14 @@ class Domain extends React.Component {
     this.focusEl = el
   }
   render() {
-    const { hideProgress, domain, domainCheckStatus } = this.props
+    const { positionProgress, warm, domain, domainCheckStatus } = this.props
     return (
       <Main>
         <Content
           style={{
-            transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
-            opacity: 1 - Math.abs(hideProgress),
-            willChange: 'opacity, transform',
+            transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
+            opacity: 1 - Math.abs(positionProgress),
+            willChange: warm? 'opacity, transform' : 'auto',
           }}
         >
           <DomainContent

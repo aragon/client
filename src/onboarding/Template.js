@@ -7,21 +7,22 @@ import TemplateCard from './TemplateCard'
 
 class Template extends React.Component {
   static defaultProps = {
-    hideProgress: 0,
+    warm: false,
+    positionProgress: 0,
     onSelect: noop,
   }
   handleTemplateSelect = template => {
     this.props.onSelect(template)
   }
   render() {
-    const { hideProgress, templates, activeTemplate } = this.props
+    const { positionProgress, warm, templates, activeTemplate } = this.props
     return (
       <Main>
         <Content
           style={{
-            transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
-            opacity: 1 - Math.abs(hideProgress),
-            willChange: 'opacity, transform',
+            transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
+            opacity: 1 - Math.abs(positionProgress),
+            willChange: warm? 'opacity, transform' : 'auto',
           }}
         >
           <TemplateContent

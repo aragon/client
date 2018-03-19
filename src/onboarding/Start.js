@@ -25,10 +25,11 @@ const MINIMUM_BALANCE = 10e17
 
 class Start extends React.Component {
   static defaultProps = {
+    warm: false,
+    positionProgress: 0,
     hasAccount: false,
     network: 'private',
     balance: null,
-    hideProgress: 0,
     onCreate: noop,
     onDomainChange: noop,
     domain: '',
@@ -44,7 +45,8 @@ class Start extends React.Component {
   }
   render() {
     const {
-      hideProgress,
+      positionProgress,
+      warm,
       hasAccount,
       network: userNetwork,
       balance,
@@ -55,14 +57,14 @@ class Start extends React.Component {
     return (
       <Main
         style={{
-          opacity: 1 - Math.abs(hideProgress),
-          willChange: 'opacity',
+          opacity: 1 - Math.abs(positionProgress),
+          willChange: warm ? 'opacity' : 'auto',
         }}
       >
         <Content
           style={{
-            transform: `translateX(${lerp(hideProgress, 0, 50)}%)`,
-            willChange: 'transform',
+            transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
+            willChange: warm ? 'transform' : 'auto',
           }}
         >
           <StartContent

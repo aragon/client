@@ -411,7 +411,7 @@ class Onboarding extends React.PureComponent {
                           <Screen active={screen === step.screen} key={screen}>
                             {this.renderScreen(
                               screen,
-                              screen === step.screen,
+                              i - stepIndex,
                               i - screenProgress
                             )}
                           </Screen>
@@ -438,7 +438,7 @@ class Onboarding extends React.PureComponent {
       </Motion>
     )
   }
-  renderScreen(screen, visible, hideProgress) {
+  renderScreen(screen, position, positionProgress) {
     const {
       template,
       domain,
@@ -446,6 +446,7 @@ class Onboarding extends React.PureComponent {
       domainToOpen,
       domainToOpenCheckStatus,
     } = this.state
+
     const {
       account,
       network,
@@ -455,12 +456,16 @@ class Onboarding extends React.PureComponent {
     } = this.props
 
     // No need to move the screens farther than one step
-    hideProgress = Math.min(1, Math.max(-1, hideProgress))
+    positionProgress = Math.min(1, Math.max(-1, positionProgress))
+
+    // Is the screen the previous / current / next one?
+    const warm = Math.abs(position) <= 1
+
+    const sharedProps = { positionProgress, warm }
 
     if (screen === 'start') {
       return (
         <Start
-          hideProgress={hideProgress}
           hasAccount={!!account}
           balance={balance}
           network={network}
@@ -470,41 +475,47 @@ class Onboarding extends React.PureComponent {
           domainCheckStatus={domainToOpenCheckStatus}
           onDomainChange={this.handleDomainToOpenChange}
           onOpenOrganization={this.handleOpenOrganization}
+          {...sharedProps}
         />
       )
     }
     if (screen === 'template') {
       return (
         <Template
-          hideProgress={hideProgress}
           templates={Templates}
           activeTemplate={template}
           onSelect={this.handleTemplateSelect}
+          {...sharedProps}
         />
       )
     }
     if (screen === 'domain') {
       return (
         <Domain
-          hideProgress={hideProgress}
           domain={domain}
           domainCheckStatus={domainCheckStatus}
           onDomainChange={this.handleDomainChange}
           onSubmit={this.nextStep}
+          {...sharedProps}
         />
       )
     }
     if (screen === 'sign') {
       return (
         <Sign
-          hideProgress={hideProgress}
           daoCreationStatus={daoCreationStatus}
           onTryAgain={this.reset}
+          {...sharedProps}
         />
       )
     }
     if (screen === 'launch') {
-      return <Launch hideProgress={hideProgress} onConfirm={onComplete} />
+      return (
+        <Launch
+          onConfirm={onComplete}
+          {...sharedProps}
+        />
+      )
     }
 
     const steps = this.getSteps()
@@ -527,11 +538,11 @@ class Onboarding extends React.PureComponent {
       : {}
     return (
       <ConfigureScreen
-        hideProgress={hideProgress}
         screen={screen}
         fields={fields}
         onFieldUpdate={this.handleConfigurationFieldUpdate}
         onSubmit={this.nextStep}
+        {...sharedProps}
       />
     )
   }
