@@ -446,7 +446,13 @@ class Onboarding extends React.PureComponent {
       domainToOpen,
       domainToOpenCheckStatus,
     } = this.state
-    const { account, network, balance, daoCreationStatus, onComplete } = this.props
+    const {
+      account,
+      network,
+      balance,
+      daoCreationStatus,
+      onComplete,
+    } = this.props
 
     // No need to move the screens farther than one step
     hideProgress = Math.min(1, Math.max(-1, hideProgress))

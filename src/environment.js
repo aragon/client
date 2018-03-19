@@ -71,6 +71,7 @@ export const network = {
   type: 'rinkeby',
   etherscanBaseUrl: makeEtherscanBaseUrl('rinkeby'),
   name: 'Rinkeby testnet',
+  type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
 }
 
 export const web3Providers = {

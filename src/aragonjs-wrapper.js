@@ -84,7 +84,7 @@ export const pollMainAccount = pollEvery((provider, onAccount) => {
       getMainAccount(web3)
         .then(account => {
           if (!account) {
-            throw 'no account'
+            throw new Error('no account')
           }
           return web3.eth.getBalance(account).then(balance => ({
             account,

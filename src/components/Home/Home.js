@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { theme, AppBar } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import Token from './Token'
-import PricesBar from './PricesBar'
 
 import imgAssignTokens from './assets/assign-tokens.svg'
 import imgFinance from './assets/finance.svg'
@@ -37,7 +36,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { tokens, prices, actions } = this.props
+    const { tokens, actions } = this.props
     return (
       <Main>
         <AppBarWrapper>
@@ -72,9 +71,7 @@ class Home extends React.Component {
             </Sidebar>
           </AppWrapper>
         </ScrollWrapper>
-        <AppFooter>
-          <PricesBar prices={prices} />
-        </AppFooter>
+        <AppFooter />
       </Main>
     )
   }
