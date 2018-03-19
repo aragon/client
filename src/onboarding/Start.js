@@ -180,7 +180,7 @@ class StartContent extends React.PureComponent {
     )
   }
   renderWarning() {
-    const { hasWallet, hasAccount, userNetwork, balance } = this.props
+    const { hasWallet, hasAccount, userNetwork, balance = 0 } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
