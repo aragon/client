@@ -74,6 +74,8 @@ export const network = {
 }
 
 export const web3Providers = {
-  default: new Web3.providers.WebsocketProvider('ws://rinkeby.aragon.network:8546'),
+  default: new Web3.providers.WebsocketProvider(
+    'ws://rinkeby.aragon.network:8546'
+  ),
   wallet: window.web3 && window.web3.currentProvider,
 }
