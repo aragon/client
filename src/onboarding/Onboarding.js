@@ -275,7 +275,7 @@ class Onboarding extends React.PureComponent {
 
   handleConfigurationFieldUpdate = (screen, name, value) => {
     this.setState(({ templateData, template }) => {
-      const filteredValue = this.filterConfigurationValue(
+      const updatedFields = this.filterConfigurationValue(
         template,
         screen,
         name,
@@ -283,7 +283,7 @@ class Onboarding extends React.PureComponent {
       )
 
       // If the filter returns null, the value is not updated
-      if (filteredValue === null) {
+      if (updatedFields === null) {
         return {}
       }
 
@@ -292,13 +292,14 @@ class Onboarding extends React.PureComponent {
           if (screenData.screen !== screen) {
             return screenData
           }
+
           return {
             screen,
             data: screenData.data.map(field => {
-              if (field.name !== name) {
+              if (!updatedFields[field.name]) {
                 return field
               }
-              return { name, value: filteredValue }
+              return { ...field, value: updatedFields[field.name] }
             }),
           }
         }),
