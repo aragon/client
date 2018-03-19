@@ -14,32 +14,46 @@ const template = {
       fields: {
         support: {
           defaultValue: () => -1,
-          filter: value => {
+          filter: (value, { minQuorum }) => {
             if (!isIntegerString(value)) {
-              return -1
+              return { support: -1 }
             }
             const intValue = parseInt(value, 10)
-            return isNaN(intValue) ? -1 : Math.min(100, Math.max(1, value))
+            const support = isNaN(intValue)
+              ? -1
+              : Math.min(100, Math.max(1, value))
+            return {
+              support,
+              minQuorum: support < minQuorum ? support : minQuorum,
+            }
           },
         },
         minQuorum: {
           defaultValue: () => -1,
-          filter: value => {
+          filter: (value, { support }) => {
             if (!isIntegerString(value)) {
-              return -1
+              return { minQuorum: -1 }
             }
             const intValue = parseInt(value, 10)
-            return isNaN(intValue) ? -1 : Math.min(100, Math.max(0, value))
+            const minQuorum = isNaN(intValue)
+              ? -1
+              : Math.min(100, Math.max(0, value))
+            return {
+              minQuorum,
+              support: support < minQuorum ? minQuorum : support,
+            }
           },
         },
         voteDuration: {
           defaultValue: () => -1,
           filter: value => {
             if (!isIntegerString(value)) {
-              return -1
+              return { voteDuration: -1 }
             }
             const intValue = parseInt(value, 10)
-            return isNaN(intValue) ? -1 : Math.max(1, value)
+            return {
+              voteDuration: isNaN(intValue) ? -1 : Math.max(1, value),
+            }
           },
         },
       },
@@ -62,12 +76,12 @@ const template = {
       fields: {
         tokenName: {
           defaultValue: () => '',
-          filter: value => value,
+          filter: value => ({ tokenName: value }),
           isValid: value => value.length > 0,
         },
         tokenSymbol: {
           defaultValue: () => '',
-          filter: value => value.toUpperCase(),
+          filter: value => ({ tokenSymbol: value.toUpperCase() }),
           isValid: value => value.length > 0,
         },
       },

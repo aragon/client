@@ -14,20 +14,21 @@ const template = {
         signers: {
           defaultValue: () => [''],
           filter: value => {
-            if (!Array.isArray(value)) {
-              return ['']
+            if (!Array.isArray(value) || value.length < 1) {
+              return { signers: [''] }
             }
-            if (value.length < 1) return ['']
-            return value
+            return { signers: value }
           },
         },
         neededSignatures: {
           defaultValue: () => 1,
           filter: (value, { signers }) => {
             const intValue = parseInt(value, 10)
-            return isNaN(intValue)
-              ? 1
-              : Math.min(signers.length, Math.max(1, value))
+            return {
+              neededSignatures: isNaN(intValue)
+                ? 1
+                : Math.min(signers.length, Math.max(1, value)),
+            }
           },
         },
       },
@@ -41,12 +42,12 @@ const template = {
       fields: {
         tokenName: {
           defaultValue: () => '',
-          filter: value => value,
+          filter: value => ({ tokenName: value }),
           isValid: value => value.length > 0,
         },
         tokenSymbol: {
           defaultValue: () => '',
-          filter: value => value.toUpperCase(),
+          filter: value => ({ tokenSymbol: value.toUpperCase() }),
           isValid: value => value.length > 0,
         },
       },
