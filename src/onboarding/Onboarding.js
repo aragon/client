@@ -417,17 +417,15 @@ class Onboarding extends React.PureComponent {
                           </Screen>
                         ))}
                       </div>
-                      <Footer>
-                        <PrevNext
-                          visible={this.isPrevNextVisible()}
-                          direction={direction}
-                          onPrev={this.prevStep}
-                          onNext={this.nextStep}
-                          enableNext={this.isNextEnabled()}
-                          enablePrev={this.isPrevEnabled()}
-                          signingNext={this.isSigningNext()}
-                        />
-                      </Footer>
+                      <PrevNext
+                        visible={this.isPrevNextVisible()}
+                        direction={direction}
+                        onPrev={this.prevStep}
+                        onNext={this.nextStep}
+                        enableNext={this.isNextEnabled()}
+                        enablePrev={this.isPrevEnabled()}
+                        signingNext={this.isSigningNext()}
+                      />
                     </React.Fragment>
                   )}
                 </Motion>
@@ -586,13 +584,6 @@ const Screen = styled.div`
   bottom: 0;
   overflow: hidden;
   pointer-events: ${({ active }) => (active ? 'auto' : 'none')};
-`
-
-const Footer = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
 `
 
 export default Onboarding
