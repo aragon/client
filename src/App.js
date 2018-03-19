@@ -106,6 +106,13 @@ class App extends React.Component {
     this.setState({ daoBuilder })
   }
 
+  handleResetDaoBuilder = () => {
+    this.setState({
+      daoCreationStatus: 'none',
+      buildData: null,
+    })
+  }
+
   handleBuildDao = async (templateName, organizationName, data) => {
     const { daoBuilder } = this.state
     try {
@@ -210,6 +217,7 @@ class App extends React.Component {
           daoCreationStatus={daoCreationStatus}
           onComplete={this.handleCompleteOnboarding}
           onOpenOrganization={this.handleOpenOrganization}
+          onResetDaoBuilder={this.handleResetDaoBuilder}
         />
       </AragonApp>
     )

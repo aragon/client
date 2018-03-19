@@ -56,6 +56,7 @@ class Onboarding extends React.PureComponent {
     onComplete: noop,
     onBuildDao: noop,
     onOpenOrganization: noop,
+    onResetDaoBuilder: noop,
   }
   state = {
     ...initialState,
@@ -80,6 +81,7 @@ class Onboarding extends React.PureComponent {
 
   reset = () => {
     this.setState({ ...initialState })
+    this.props.onResetDaoBuilder()
   }
 
   getSteps() {

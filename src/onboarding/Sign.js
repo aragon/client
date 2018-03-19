@@ -12,8 +12,7 @@ class Sign extends React.Component {
   static defaultProps = {
     warm: false,
     positionProgress: 0,
-    tokenStatus: 'pending',
-    daoStatus: 'pending',
+    daoCreationStatus: 'none',
     onTryAgain: noop,
   }
   render() {
