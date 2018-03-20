@@ -18,6 +18,13 @@
     "@aragon/apps-vault" "^1.0.0"
     "@aragon/os" "^3.0.8"
 
+"@aragon/apps-finance@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-finance/-/apps-finance-1.0.1.tgz#d7e68815287340b06693fe17e764e6f333836f61"
+  dependencies:
+    "@aragon/apps-vault" "^2.0.0"
+    "@aragon/os" "^3.1.1"
+
 "@aragon/apps-token-manager@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@aragon/apps-token-manager/-/apps-token-manager-1.0.0.tgz#d155e770e7c54c14e10d8a6454ba4e37907086d0"
@@ -29,6 +36,12 @@
   resolved "https://registry.yarnpkg.com/@aragon/apps-vault/-/apps-vault-1.0.0.tgz#56e54538e2e876a7de0b14159c7b837ca1da0bc9"
   dependencies:
     "@aragon/os" "^3.0.8"
+
+"@aragon/apps-vault@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-vault/-/apps-vault-2.0.0.tgz#88ebd57ae2e32bfff61551cff578177eeb59c934"
+  dependencies:
+    "@aragon/os" "^3.1.1"
 
 "@aragon/apps-voting@^1.0.0":
   version "1.0.0"
@@ -43,7 +56,7 @@
     rxjs "^5.5.6"
     uuid "^3.2.1"
 
-"@aragon/os@^3.0.8":
+"@aragon/os@^3.0.8", "@aragon/os@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@aragon/os/-/os-3.1.1.tgz#8a9adb5510eaae68e8f3a1de0f8aa66fb9c46db3"
   dependencies:
@@ -60,6 +73,13 @@
     "@aragon/apps-voting" "^1.0.0"
     "@aragon/os" "^3.0.8"
 
+"@aragon/templates-tokens@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@aragon/templates-tokens/-/templates-tokens-1.1.1.tgz#4c67078deb3ac0ebb7027614c68dfea0ef67b92e"
+  dependencies:
+    "@aragon/apps-finance" "^1.0.1"
+    "@aragon/apps-vault" "^2.0.0"
+
 "@aragon/ui@^0.9.0":
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-0.9.0.tgz#afcb1d2fc40c08e13174844742409e31035859ed"
@@ -72,9 +92,9 @@
     react-motion "^0.5.2"
     react-onclickout "^2.0.8"
 
-"@aragon/wrapper@^2.0.0-beta.21":
-  version "2.0.0-beta.21"
-  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-2.0.0-beta.21.tgz#557e777d315b209b2391117981f4d2251205fb11"
+"@aragon/wrapper@^2.0.0-beta.22":
+  version "2.0.0-beta.22"
+  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-2.0.0-beta.22.tgz#0271f84b1c63bd3bb4ed73b4027551902eb071c4"
   dependencies:
     "@aragon/apm" "^1.0.0-beta.8"
     "@aragon/messenger" "^1.0.0-beta.4"
