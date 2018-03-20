@@ -11,6 +11,36 @@ export const appIds = {
   Voting: '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
 }
 
+const appsOrder = ['TokenManager', 'Finance', 'Voting', 'Vault']
+
+// Utility to sort a pair of apps (to be used with Array.prototype.sort)
+export const sortAppsPair = (app1, app2) => {
+  const index1 = appsOrder.indexOf(app1.appId)
+  const index2 = appsOrder.indexOf(app2.appId)
+
+  // Try to sort it if the app exists in the list
+  if (index1 === -1 && index2 > -1) {
+    return 1
+  }
+  if (index1 > -1 && index2 === -1) {
+    return -1
+  }
+  if (index1 > -1 && index2 > -1) {
+    return index1 - index2
+  }
+
+  // Otherwise, alphabetical order
+  const id1 = app1.appId.toLowerCase()
+  const id2 = app2.appId.toLowerCase()
+  if (id1 < id2) {
+    return -1
+  }
+  if (id1 > id2) {
+    return 1
+  }
+  return 0
+}
+
 let appDefaults
 let appLocator
 
