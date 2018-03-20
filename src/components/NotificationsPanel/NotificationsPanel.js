@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { theme, font, observe, BadgeNumber } from '@aragon/ui'
 import NotificationItem from './NotificationItem'
 
-class NotificationsPanel extends React.Component {
+class NotificationsPanel extends React.PureComponent {
   static defaultProps = {
     onClearAllNotifications: () => {},
     onOpenNotification: () => {},
