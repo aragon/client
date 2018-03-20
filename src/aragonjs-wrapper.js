@@ -5,7 +5,12 @@ import Aragon, {
   isNameUsed,
   ensResolve,
 } from '@aragon/wrapper'
-import { appDefaults, appLocator, ipfsDefaultConf } from './environment'
+import {
+  appDefaults,
+  sortAppsPair,
+  appLocator,
+  ipfsDefaultConf,
+} from './environment'
 import { noop, removeTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
@@ -30,6 +35,7 @@ const prepareFrontendApps = (apps, gateway) =>
   apps
     .map(app => ({ ...(appDefaults[app.appId] || {}), ...app }))
     .filter(app => app && app['start_url'])
+    .sort(sortAppsPair)
     .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
 
 const getMainAccount = async web3 => {
