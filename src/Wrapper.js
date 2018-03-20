@@ -186,7 +186,7 @@ class Wrapper extends React.Component {
     }
 
     if (appId === 'settings') {
-      return <Settings cache={wrapper.cache} daoAddr={daoAddress} />
+      return <Settings cache={wrapper.cache} daoAddr={daoAddress} apps={apps} />
     }
 
     const app = wrapper && apps.find(app => app.appId === appId)
