@@ -1,5 +1,6 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
+import Web3 from 'web3'
 import { AragonApp } from '@aragon/ui'
 import { networkContextType } from './context/provideNetwork'
 import { contractAddresses, network, web3Providers } from './environment'
@@ -26,6 +27,7 @@ class App extends React.Component {
     network: '',
     connected: false,
     apps: [],
+    walletWeb3: null,
     web3: null,
     daoCreationStatus: 'none', // none / success / error
     buildData: null, // data returned by aragon.js when a DAO is created
@@ -42,6 +44,9 @@ class App extends React.Component {
     if (!web3Providers.wallet) {
       return
     }
+    this.setState({
+      walletWeb3: new Web3(web3Providers.wallet),
+    })
 
     pollMainAccount(web3Providers.wallet, {
       onAccount: (account = null) => {
@@ -198,6 +203,7 @@ class App extends React.Component {
       transactionBag,
       daoBuilder,
       daoCreationStatus,
+      walletWeb3,
       web3,
       connected,
     } = this.state
@@ -212,6 +218,7 @@ class App extends React.Component {
           wrapper={wrapper}
           apps={apps}
           account={account}
+          walletWeb3={walletWeb3}
           web3={web3}
           transactionBag={transactionBag}
           connected={connected}
