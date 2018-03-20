@@ -224,6 +224,7 @@ class App extends React.Component {
           wrapper={wrapper}
           apps={apps}
           account={account}
+          network={network}
           walletWeb3={walletWeb3}
           web3={web3}
           daoAddress={daoAddress}
