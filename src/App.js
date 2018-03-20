@@ -1,6 +1,5 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
-import Web3 from 'web3'
 import { AragonApp } from '@aragon/ui'
 import { networkContextType } from './context/provideNetwork'
 import { contractAddresses, network, web3Providers } from './environment'
@@ -13,6 +12,7 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
+import { getWeb3 } from './web3-utils'
 
 class App extends React.Component {
   static childContextTypes = {
@@ -45,7 +45,7 @@ class App extends React.Component {
       return
     }
     this.setState({
-      walletWeb3: new Web3(web3Providers.wallet),
+      walletWeb3: getWeb3(web3Providers.wallet),
     })
 
     pollMainAccount(web3Providers.wallet, {
