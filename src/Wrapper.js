@@ -30,9 +30,6 @@ class Wrapper extends React.Component {
     web3Action: {},
   }
   componentWillReceiveProps({ account, transactionBag }) {
-    if (account && account !== this.props.account) {
-      this.sendAccountToApp(account)
-    }
     if (transactionBag && transactionBag !== this.props.transactionBag) {
       this.handleTransaction(transactionBag)
     }
@@ -41,24 +38,8 @@ class Wrapper extends React.Component {
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, appId: appId, params }))
   }
-  sendAccountToApp = account => {
-    if (this.appIFrame) {
-      this.appIFrame.sendMessage({
-        from: 'wrapper',
-        name: 'account',
-        value: account,
-      })
-    }
-  }
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
-    this.sendAccountToApp()
-  }
-  handleAppIFrameMessage = ({ data }) => {
-    if (data.from !== 'app') return
-    if (data.name === 'ready') {
-      this.sendAccountToApp()
-    }
   }
   handleAppIFrameLoad = event => {
     const { apps, wrapper, locator: { appId } } = this.props
@@ -74,7 +55,6 @@ class Wrapper extends React.Component {
       name: 'ready',
       value: true,
     })
-    this.sendAccountToApp()
   }
   handleNotificationsClearAll = () => {
     const { wrapper } = this.props
@@ -214,7 +194,6 @@ class Wrapper extends React.Component {
       <AppIFrame
         app={app}
         ref={this.handleAppIFrameRef}
-        onMessage={this.handleAppIFrameMessage}
         onLoad={this.handleAppIFrameLoad}
       />
     ) : apps.length ? (
