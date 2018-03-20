@@ -8,6 +8,7 @@ import initWrapper, {
   initDaoBuilder,
   pollMainAccount,
   pollNetwork,
+  pollConnectivity,
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
@@ -23,6 +24,7 @@ class App extends React.Component {
     account: '',
     balance: null,
     network: '',
+    connected: false,
     apps: [],
     web3: null,
     daoCreationStatus: 'none', // none / success / error
@@ -55,6 +57,11 @@ class App extends React.Component {
 
     pollNetwork(web3Providers.wallet, network => {
       this.setState({ network })
+    })
+
+    // Only the default, because the app can work without the wallet
+    pollConnectivity([web3Providers.default], connected => {
+      this.setState({ connected })
     })
   }
 
@@ -192,6 +199,7 @@ class App extends React.Component {
       daoBuilder,
       daoCreationStatus,
       web3,
+      connected,
     } = this.state
     const { mode } = locator
     if (!mode) return null
@@ -206,6 +214,7 @@ class App extends React.Component {
           account={account}
           web3={web3}
           transactionBag={transactionBag}
+          connected={connected}
         />
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}
