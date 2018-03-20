@@ -29,6 +29,7 @@ class App extends React.Component {
     apps: [],
     walletWeb3: null,
     web3: null,
+    daoAddress: '',
     daoCreationStatus: 'none', // none / success / error
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
@@ -159,6 +160,10 @@ class App extends React.Component {
           console.log('No Ethereum connection detected.')
         }
       },
+      onDaoAddress: daoAddress => {
+        console.log('daoAddress', daoAddress)
+        this.setState({ daoAddress })
+      },
       onWeb3: web3 => {
         console.log('web3', web3)
         this.setState({ web3 })
@@ -206,6 +211,7 @@ class App extends React.Component {
       walletWeb3,
       web3,
       connected,
+      daoAddress,
     } = this.state
     const { mode } = locator
     if (!mode) return null
@@ -220,6 +226,7 @@ class App extends React.Component {
           account={account}
           walletWeb3={walletWeb3}
           web3={web3}
+          daoAddress={daoAddress}
           transactionBag={transactionBag}
           connected={connected}
         />

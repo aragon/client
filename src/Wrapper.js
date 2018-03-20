@@ -20,6 +20,7 @@ class Wrapper extends React.Component {
     locator: {},
     apps: [],
     account: '',
+    daoAddress: '',
     transactionBag: null,
     historyBack: () => {},
     historyPush: () => {},
@@ -163,7 +164,7 @@ class Wrapper extends React.Component {
     )
   }
   renderApp(appId, params) {
-    const { apps, locator, wrapper, connected } = this.props
+    const { apps, locator, wrapper, connected, daoAddress } = this.props
 
     if (!wrapper) {
       return <LoadingApps />
@@ -185,7 +186,7 @@ class Wrapper extends React.Component {
     }
 
     if (appId === 'settings') {
-      return <Settings cache={wrapper.cache} daoAddr={locator.dao} />
+      return <Settings cache={wrapper.cache} daoAddr={daoAddress} />
     }
 
     const app = wrapper && apps.find(app => app.appId === appId)
