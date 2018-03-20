@@ -21,15 +21,15 @@ if (process.env.NODE_ENV !== 'production') {
   appDefaults = {
     [appIds['Finance']]: {
       script: '/script.js',
-      short_url: '/index.html',
+      start_url: '/index.html',
     },
     [appIds['TokenManager']]: {
       script: '/script.js',
-      short_url: '/index.html',
+      start_url: '/index.html',
     },
     [appIds['Voting']]: {
       script: '/script.js',
-      short_url: '/index.html',
+      start_url: '/index.html',
     },
   }
 
