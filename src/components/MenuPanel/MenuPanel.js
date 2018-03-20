@@ -11,6 +11,7 @@ import {
   // IconWallet,
   IconNotifications,
 } from '@aragon/ui'
+import ClickOutHandler from 'react-onclickout'
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
 import { lerp } from '../../math-utils'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
@@ -39,10 +40,15 @@ class MenuPanel extends React.Component {
   state = {
     notificationsOpened: false,
   }
-  handleNotificationsClick = () => {
-    this.setState({
-      notificationsOpened: !this.state.notificationsOpened,
-    })
+  handleNotificationsClick = event => {
+    // Prevent clickout events  to trigger
+    event.nativeEvent.stopImmediatePropagation()
+    this.setState(({ notificationsOpened }) => ({
+      notificationsOpened: !notificationsOpened,
+    }))
+  }
+  handleCloseNotifications = () => {
+    this.setState({ notificationsOpened: false })
   }
   render() {
     const {
@@ -92,29 +98,31 @@ class MenuPanel extends React.Component {
           </Content>
         </In>
 
-        <Motion
-          style={{
-            openProgress: spring(
-              Number(notificationsOpened),
-              springConf('fast')
-            ),
-          }}
-        >
-          {({ openProgress }) => (
-            <NotificationsWrapper
-              style={{
-                transform: `translateX(${lerp(openProgress, -100, 0)}%)`,
-                boxShadow: `1px 0 15px rgba(0, 0, 0, ${openProgress * 0.1})`,
-              }}
-            >
-              <NotificationsPanel
-                observable={notificationsObservable}
-                onClearAllNotifications={onClearAllNotifications}
-                onOpenNotification={onOpenNotification}
-              />
-            </NotificationsWrapper>
-          )}
-        </Motion>
+        <ClickOutHandler onClickOut={this.handleCloseNotifications}>
+          <Motion
+            style={{
+              openProgress: spring(
+                Number(notificationsOpened),
+                springConf('fast')
+              ),
+            }}
+          >
+            {({ openProgress }) => (
+              <NotificationsWrapper
+                style={{
+                  transform: `translateX(${lerp(openProgress, -100, 0)}%)`,
+                  boxShadow: `1px 0 15px rgba(0, 0, 0, ${openProgress * 0.1})`,
+                }}
+              >
+                <NotificationsPanel
+                  observable={notificationsObservable}
+                  onClearAllNotifications={onClearAllNotifications}
+                  onOpenNotification={onOpenNotification}
+                />
+              </NotificationsWrapper>
+            )}
+          </Motion>
+        </ClickOutHandler>
       </Main>
     )
   }
