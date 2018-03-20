@@ -24,6 +24,7 @@
     "Pierre Bertet <pierre@aragon.one>"
   ],
   "dependencies": {
+    "@aragon/templates-tokens": "^1.1.1",
     "@aragon/ui": "^0.9.0",
     "@aragon/wrapper": "^2.0.0-beta.21",
     "@babel/polyfill": "^7.0.0-beta.39",
