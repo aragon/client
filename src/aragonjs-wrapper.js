@@ -29,7 +29,7 @@ const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
 const prepareFrontendApps = (apps, gateway) =>
   apps
     .map(app => ({ ...(appDefaults[app.appId] || {}), ...app }))
-    .filter(app => app && app['short_url'])
+    .map(app => app && (app['start_url'] || '/index.html'))
     .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
 
 const getMainAccount = async web3 => {
