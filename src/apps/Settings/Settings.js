@@ -38,7 +38,7 @@ const ScrollWrapper = styled.div`
 `
 
 const Content = styled.div`
-  width: 500px;
+  max-width: 600px;
   padding: 30px;
 `
 
@@ -49,7 +49,23 @@ const LinkButton = styled(Button.Anchor).attrs({
   background: ${theme.contentBackground};
 `
 
+const AppsList = styled.ul`
+  list-style: none;
+`
+
+const FieldTwoParts = styled.div`
+  display: flex;
+  input {
+    margin-right: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+`
+
 class Settings extends React.Component {
+  static defaultProps = {
+    apps: [],
+  }
   constructor(props) {
     super(props)
     this.correctCurrencyIfNecessary(props)
@@ -75,30 +91,59 @@ class Settings extends React.Component {
     cache.update(CACHE_KEY, settings => ({ ...settings, selectedCurrency }))
   }
   render() {
-    const { currencies, daoAddr, network, selectedCurrency } = this.props
+    const { currencies, daoAddr, network, selectedCurrency, apps } = this.props
     return (
       <Main>
-        <StyledAppBar title="Your Settings" />
+        <StyledAppBar title="Settings" />
         <ScrollWrapper>
           <Content>
             <Option
               name="Organization Address"
               text={`This organization is deployed on the ${network.name}.`}
             >
-              <Field label="Address:">
-                <TextInput readOnly wide value={daoAddr} />
+              <Field label="Address">
+                <FieldTwoParts>
+                  <TextInput readOnly wide value={daoAddr} />
+                  <EtherscanLink address={daoAddr}>
+                    {url =>
+                      url ? (
+                        <LinkButton href={url} target="_blank">
+                          See on Etherscan
+                        </LinkButton>
+                      ) : null
+                    }
+                  </EtherscanLink>
+                </FieldTwoParts>
               </Field>
-              <EtherscanLink address={daoAddr}>
-                {url =>
-                  url ? (
-                    <LinkButton href={url} target="_blank">
-                      See on Etherscan
-                    </LinkButton>
-                  ) : null
-                }
-              </EtherscanLink>
             </Option>
-            {Array.isArray(currencies) &&
+            {apps.length > 0 && (
+              <Option
+                name="Aragon Apps"
+                text={`This organization provides ${apps.length} apps.`}
+              >
+                <AppsList>
+                  {apps.map(({ name, proxyAddress, description }, i) => (
+                    <li title={description} key={i + proxyAddress}>
+                      <Field label={name}>
+                        <FieldTwoParts>
+                          <TextInput readOnly wide value={proxyAddress} />
+                          <EtherscanLink address={proxyAddress}>
+                            {url =>
+                              url ? (
+                                <LinkButton href={url} target="_blank">
+                                  See on Etherscan
+                                </LinkButton>
+                              ) : null
+                            }
+                          </EtherscanLink>
+                        </FieldTwoParts>
+                      </Field>
+                    </li>
+                  ))}
+                </AppsList>
+              </Option>
+            )}
+            {/*Array.isArray(currencies) &&
               selectedCurrency && (
                 <Option
                   name="Currency"
@@ -112,7 +157,7 @@ class Settings extends React.Component {
                     />
                   </Field>
                 </Option>
-              )}
+              )*/}
           </Content>
         </ScrollWrapper>
       </Main>
