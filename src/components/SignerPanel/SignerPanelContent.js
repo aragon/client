@@ -4,7 +4,10 @@ import { Button, Info, RadioList, SafeLink } from '@aragon/ui'
 import EtherscanLink from '../Etherscan/EtherscanLink'
 import { noop } from '../../utils'
 
+const RADIO_ITEM_TITLE_LENGTH = 30
+
 const SignerPanelContent = ({
+  account,
   error,
   intent,
   paths,
@@ -14,6 +17,9 @@ const SignerPanelContent = ({
 }) => {
   if (!web3) {
     return <NeedWeb3Content intent={intent} onClose={onClose} />
+  }
+  if (!account) {
+    return <NeedUnlockAccountContent intent={intent} onClose={onClose} />
   }
 
   const possible =
@@ -30,8 +36,6 @@ SignerPanelContent.defaultProps = {
   onClose: noop,
   onSign: noop,
 }
-
-const RADIO_ITEM_TITLE_LENGTH = 30
 
 class ActionPathsContent extends React.Component {
   state = {
@@ -118,6 +122,23 @@ const ImpossibleContent = ({ error, intent: { description, to }, onClose }) => (
         ? 'An error occurred when we tried to find a path for this action.'
         : 'You do not have the necessary permissions.'}
     </Info.Permissions>
+    <SignerButton onClick={onClose}>Close</SignerButton>
+  </React.Fragment>
+)
+
+const NeedUnlockAccountContent = ({ intent: { description, to }, onClose }) => (
+  <React.Fragment>
+    <Info.Action title="You can't perform any actions">
+      {`You need to unlock your account in order to ${description ||
+        'perform this action on'}`}{' '}
+      <AddressLink to={to} />.
+      <InstallMessage>
+        Please unlock or enable{' '}
+        <SafeLink href="https://metamask.io/" target="_blank">
+          MetaMask
+        </SafeLink>.
+      </InstallMessage>
+    </Info.Action>
     <SignerButton onClick={onClose}>Close</SignerButton>
   </React.Fragment>
 )

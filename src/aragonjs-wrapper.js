@@ -8,6 +8,7 @@ import Aragon, {
 } from '@aragon/wrapper'
 import { appDefaults, appLocator, ipfsDefaultConf } from './environment'
 import { noop, removeTrailingSlash } from './utils'
+import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 
 const POLL_DELAY_ACCOUNT = 2000
@@ -24,19 +25,6 @@ const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
 
   return `${gateway}/${hash}/`
 }
-
-// Cache web3 instances used in this module
-const getWeb3 = (() => {
-  const cache = new WeakMap()
-  return provider => {
-    if (cache.has(provider)) {
-      return cache.get(provider)
-    }
-    const web3 = new Web3(provider)
-    cache.set(provider, web3)
-    return web3
-  }
-})()
 
 // Filter out apps without UI and add an appSrc property
 const prepareFrontendApps = (apps, gateway) =>

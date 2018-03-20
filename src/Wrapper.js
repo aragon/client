@@ -15,6 +15,7 @@ class Wrapper extends React.Component {
   static defaultProps = {
     connected: false,
     wrapper: null,
+    walletWeb3: null,
     web3: null,
     locator: {},
     apps: [],
@@ -100,10 +101,10 @@ class Wrapper extends React.Component {
     )
   }
   handleSigningWeb3Tx = ({ data, from, to }) => {
-    const { transactionBag, web3 } = this.props
+    const { transactionBag, walletWeb3 } = this.props
     const { transaction, accept, reject } = transactionBag
 
-    web3.eth.sendTransaction(transaction, (err, res) => {
+    walletWeb3.eth.sendTransaction(transaction, (err, res) => {
       this.handleSignerClose()
 
       if (err) {
@@ -143,7 +144,13 @@ class Wrapper extends React.Component {
   }
   render() {
     const { signerOpened, web3Action } = this.state
-    const { apps, web3, wrapper, locator: { appId, params } } = this.props
+    const {
+      account,
+      apps,
+      walletWeb3,
+      wrapper,
+      locator: { appId, params },
+    } = this.props
     return (
       <React.Fragment>
         <Main>
@@ -165,9 +172,10 @@ class Wrapper extends React.Component {
           title="Sign Transaction"
         >
           <SignerPanelContent
+            account={account}
             onClose={this.handleSignerClose}
             onSign={this.handleSigningWeb3Tx}
-            web3={web3}
+            web3={walletWeb3}
             {...web3Action}
           />
         </SidePanel>

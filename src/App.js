@@ -12,6 +12,7 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
+import { getWeb3 } from './web3-utils'
 
 class App extends React.Component {
   static childContextTypes = {
@@ -26,6 +27,7 @@ class App extends React.Component {
     network: '',
     connected: false,
     apps: [],
+    walletWeb3: null,
     web3: null,
     daoCreationStatus: 'none', // none / success / error
     buildData: null, // data returned by aragon.js when a DAO is created
@@ -42,6 +44,9 @@ class App extends React.Component {
     if (!web3Providers.wallet) {
       return
     }
+    this.setState({
+      walletWeb3: getWeb3(web3Providers.wallet),
+    })
 
     pollMainAccount(web3Providers.wallet, {
       onAccount: (account = null) => {
@@ -198,6 +203,7 @@ class App extends React.Component {
       transactionBag,
       daoBuilder,
       daoCreationStatus,
+      walletWeb3,
       web3,
       connected,
     } = this.state
@@ -212,6 +218,7 @@ class App extends React.Component {
           wrapper={wrapper}
           apps={apps}
           account={account}
+          walletWeb3={walletWeb3}
           web3={web3}
           transactionBag={transactionBag}
           connected={connected}
