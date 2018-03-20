@@ -67,11 +67,12 @@ class MenuPanel extends React.Component {
         <In>
           <Header>
             <img src={logo} alt="Aragon" height="36" />
-            <div className="actions">
+            {/*<div className="actions">
               <IconButton role="button" onClick={this.handleNotificationsClick}>
                 <IconNotifications />
               </IconButton>
             </div>
+            */}
           </Header>
           <Content>
             <div className="in">
