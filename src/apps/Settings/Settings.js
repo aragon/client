@@ -199,7 +199,7 @@ class Settings extends React.Component {
               >
                 <AppsList>
                   {apps.map(({ name, proxyAddress, description }, i) => (
-                    <li title={description} key={i + proxyAddress}>
+                    <li title={description} key={proxyAddress}>
                       <Field label={name}>
                         <FieldTwoParts>
                           <TextInput readOnly wide value={proxyAddress} />
