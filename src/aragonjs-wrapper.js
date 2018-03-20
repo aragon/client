@@ -143,6 +143,10 @@ const subscribe = (
   { ipfsConf }
 ) => {
   const { apps, forwarders, transactions } = wrapper
+
+  // Init the wrapper apps first (e.g. home, settings)
+  onApps(prepareFrontendApps([], ipfsConf.gateway), [])
+
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
