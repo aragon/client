@@ -243,6 +243,7 @@ const initWrapper = async (
     onApps = noop,
     onForwarders = noop,
     onTransaction = noop,
+    onDaoAddress = noop,
     onWeb3 = noop,
   } = {}
 ) => {
@@ -259,6 +260,8 @@ const initWrapper = async (
     console.log('Invalid DAO address')
     return
   }
+
+  onDaoAddress(daoAddress)
 
   const wrapper = new Aragon(daoAddress, {
     ensRegistryAddress,
