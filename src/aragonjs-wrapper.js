@@ -279,14 +279,8 @@ const initWrapper = async (
   onWeb3(web3)
 
   const account = await getMainAccount(web3)
-  if (account === null) {
-    throw new Error(
-      'No accounts detected in the environment (try to unlock your wallet)'
-    )
-  }
-
   try {
-    await wrapper.init([account])
+    await wrapper.init(account && [account])
   } catch (err) {
     if (err.message === 'connection not open') {
       onError('NO_CONNECTION')
