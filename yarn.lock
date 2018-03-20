@@ -72,9 +72,9 @@
     react-motion "^0.5.2"
     react-onclickout "^2.0.8"
 
-"@aragon/wrapper@^2.0.0-beta.19":
-  version "2.0.0-beta.19"
-  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-2.0.0-beta.19.tgz#8d996428b83f6d9888d836a0559768171ec314db"
+"@aragon/wrapper@^2.0.0-beta.21":
+  version "2.0.0-beta.21"
+  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-2.0.0-beta.21.tgz#557e777d315b209b2391117981f4d2251205fb11"
   dependencies:
     "@aragon/apm" "^1.0.0-beta.8"
     "@aragon/messenger" "^1.0.0-beta.4"
@@ -88,7 +88,7 @@
     ipfs-api "^17.5.0"
     js-sha3 "^0.7.0"
     lowdb "^1.0.0"
-    radspec "^1.0.0-beta.2"
+    radspec "^1.0.0-beta.3"
     rxjs "^5.5.6"
     uuid "^3.2.1"
     web3 "1.0.0-beta.21"
@@ -8210,9 +8210,9 @@ querystringify@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-1.0.0.tgz#6286242112c5b712fa654e526652bf6a13ff05cb"
 
-radspec@^1.0.0-beta.2:
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/radspec/-/radspec-1.0.0-beta.2.tgz#670656c7cf186cc7b4f5a5e3bb65bdd0111e368a"
+radspec@^1.0.0-beta.3:
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/radspec/-/radspec-1.0.0-beta.3.tgz#6eb2758a3bb6731674edec0bb0d8eda15c36fff3"
   dependencies:
     bignumber.js "^5.0.0"
     web3-eth "^1.0.0-beta.26"
