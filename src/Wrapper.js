@@ -164,7 +164,7 @@ class Wrapper extends React.Component {
     )
   }
   renderApp(appId, params) {
-    const { apps, locator, wrapper, connected, daoAddress } = this.props
+    const { apps, wrapper, connected, daoAddress } = this.props
 
     if (!wrapper) {
       return <LoadingApps />
