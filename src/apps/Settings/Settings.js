@@ -104,6 +104,7 @@ const FieldTwoParts = styled.div`
 class Settings extends React.Component {
   static defaultProps = {
     apps: [],
+    currencies: [],
   }
   constructor(props) {
     super(props)
@@ -219,7 +220,7 @@ class Settings extends React.Component {
                 </AppsList>
               </Option>
             )}
-            {/*Array.isArray(currencies) &&
+            {currencies.length > 1 &&
               selectedCurrency && (
                 <Option
                   name="Currency"
@@ -233,7 +234,7 @@ class Settings extends React.Component {
                     />
                   </Field>
                 </Option>
-              )*/}
+              )}
           </Content>
         </ScrollWrapper>
       </Main>
