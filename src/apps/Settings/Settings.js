@@ -67,6 +67,14 @@ const FieldTwoParts = styled.div`
   }
 `
 
+const Note = styled.p`
+  margin-top: 10px;
+  font-size: 13px;
+  strong {
+    font-weight: 600;
+  }
+`
+
 class Settings extends React.Component {
   static defaultProps = {
     apps: [],
@@ -123,7 +131,7 @@ class Settings extends React.Component {
         <ScrollWrapper>
           <Content>
             <Option
-              name="Testing Tokens"
+              name="Test Tokens"
               text="Deposit some tokens into your organization for testing purposes."
             >
               <div>
@@ -132,7 +140,7 @@ class Settings extends React.Component {
                   onClick={this.handleDepositTestTokens}
                   disabled={!enableTransactions}
                 >
-                  Request Testing Tokens
+                  Request Test Tokens
                 </Button>
                 {!enableTransactions && (
                   <Text size="small" style={{ marginLeft: '10px' }}>
@@ -147,15 +155,17 @@ class Settings extends React.Component {
                   </Text>
                 )}
               </div>
-              <p style={{ marginTop: '10px' }}>
-                <Text size="small">
-                  The tokens are named after existing projects, but keep in mind
-                  they are not the real ones.{' '}
-                  <span role="img" aria-label="winking face">
-                    😉
-                  </span>
-                </Text>
-              </p>
+              <Note>
+                Requesting tokens will assign random <strong>TEST</strong>{' '}
+                tokens to your organization. The tokens are named after existing
+                projects, but keep in mind <strong>THEY ARE NOT</strong> the
+                real ones.{' '}
+                <span role="img" aria-label="winking face">
+                  😉
+                </span>{' '}
+                You can view the received tokens in the Token Balances on the
+                Finance app.
+              </Note>
             </Option>
             <Option
               name="Organization Address"
@@ -174,6 +184,11 @@ class Settings extends React.Component {
                     }
                   </EtherscanLink>
                 </FieldTwoParts>
+                <Note>
+                  <strong>Do not send Ether to this address!</strong> Use the
+                  Finance app address below for sending{' '}
+                  <strong>test Ether</strong> to your organization.
+                </Note>
               </Field>
             </Option>
             {apps.length > 0 && (
@@ -224,6 +239,7 @@ class Settings extends React.Component {
     )
   }
 }
+
 const enhance = compose(
   observeCache(CACHE_KEY, {
     defaultValue: {

@@ -18,8 +18,8 @@ class Home extends React.Component {
               <Title>Welcome to Aragon 0.5</Title>
               <p>
                 <Text color={theme.textSecondary}>
-                  Please have a look at the menu to interact with the apps
-                  installed with this organization.
+                  Please refer to the menu to interact with the apps installed
+                  on this organization.
                 </Text>
               </p>
             </Content>
