@@ -5,15 +5,16 @@ import { AppBar } from '@aragon/ui'
 class AppLayout extends React.Component {
   static defaultProps = {
     title: '',
-    maxWidth: -1,
   }
   render() {
-    const { title, children, maxWidth } = this.props
+    const { title, children, padding, maxWidth } = this.props
     return (
       <Main>
         <StyledAppBar title={title} />
         <ScrollWrapper>
-          <Content maxWidth={maxWidth}>{children}</Content>
+          <Content maxWidth={maxWidth} padding={padding}>
+            {children}
+          </Content>
         </ScrollWrapper>
       </Main>
     )
@@ -40,9 +41,7 @@ const ScrollWrapper = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: ${({ maxWidth }) => (maxWidth < 0 ? 'none' : `${maxWidth}px`)};
   min-height: 100%;
-  padding: 30px;
 `
 
 export default AppLayout

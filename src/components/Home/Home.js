@@ -96,8 +96,9 @@ const ConnectionBullet = styled.span`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  margin-top: 50px;
   padding: 40px;
   text-align: center;
 `

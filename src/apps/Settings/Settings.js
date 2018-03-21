@@ -25,6 +25,11 @@ const AVAILABLE_CURRENCIES = ['USD'] // Only use USD for now
 
 const CACHE_KEY = 'settings'
 
+const Content = styled.div`
+  max-width: 600px;
+  padding: 30px;
+`
+
 const LinkButton = styled(Button.Anchor).attrs({
   compact: true,
   mode: 'outline',
@@ -97,103 +102,105 @@ class Settings extends React.Component {
 
     const enableTransactions = !!account && userNetwork === network.type
     return (
-      <AppLayout title="Settings" maxWidth={600}>
-        <Option
-          name="Testing Tokens"
-          text="Deposit some tokens into your organization for testing purposes."
-        >
-          <div>
-            <Button
-              mode="secondary"
-              onClick={this.handleDepositTestTokens}
-              disabled={!enableTransactions}
-            >
-              Request Testing Tokens
-            </Button>
-            {!enableTransactions && (
-              <Text size="small" style={{ marginLeft: '10px' }}>
-                {(() => {
-                  if (userNetwork !== network.type) {
-                    return `Please select the ${
-                      network.type
-                    } network in MetaMask.`
-                  }
-                  return `Please unlock your account in MetaMask.`
-                })()}
-              </Text>
-            )}
-          </div>
-          <p style={{ marginTop: '10px' }}>
-            <Text size="small">
-              The tokens are named after existing projects, but keep in mind
-              they are not the real ones.{' '}
-              <span role="img" aria-label="winking face">
-                😉
-              </span>
-            </Text>
-          </p>
-        </Option>
-        <Option
-          name="Organization Address"
-          text={`This organization is deployed on the ${network.name}.`}
-        >
-          <Field label="Address">
-            <FieldTwoParts>
-              <TextInput readOnly wide value={daoAddr} />
-              <EtherscanLink address={daoAddr}>
-                {url =>
-                  url ? (
-                    <LinkButton href={url} target="_blank">
-                      See on Etherscan
-                    </LinkButton>
-                  ) : null
-                }
-              </EtherscanLink>
-            </FieldTwoParts>
-          </Field>
-        </Option>
-        {apps.length > 0 && (
+      <AppLayout title="Settings">
+        <Content>
           <Option
-            name="Aragon Apps"
-            text={`This organization provides ${apps.length} apps.`}
+            name="Testing Tokens"
+            text="Deposit some tokens into your organization for testing purposes."
           >
-            <AppsList>
-              {apps.map(({ name, proxyAddress, description }) => (
-                <li title={description} key={proxyAddress}>
-                  <Field label={name}>
-                    <FieldTwoParts>
-                      <TextInput readOnly wide value={proxyAddress} />
-                      <EtherscanLink address={proxyAddress}>
-                        {url =>
-                          url ? (
-                            <LinkButton href={url} target="_blank">
-                              See on Etherscan
-                            </LinkButton>
-                          ) : null
-                        }
-                      </EtherscanLink>
-                    </FieldTwoParts>
-                  </Field>
-                </li>
-              ))}
-            </AppsList>
+            <div>
+              <Button
+                mode="secondary"
+                onClick={this.handleDepositTestTokens}
+                disabled={!enableTransactions}
+              >
+                Request Testing Tokens
+              </Button>
+              {!enableTransactions && (
+                <Text size="small" style={{ marginLeft: '10px' }}>
+                  {(() => {
+                    if (userNetwork !== network.type) {
+                      return `Please select the ${
+                        network.type
+                      } network in MetaMask.`
+                    }
+                    return `Please unlock your account in MetaMask.`
+                  })()}
+                </Text>
+              )}
+            </div>
+            <p style={{ marginTop: '10px' }}>
+              <Text size="small">
+                The tokens are named after existing projects, but keep in mind
+                they are not the real ones.{' '}
+                <span role="img" aria-label="winking face">
+                  😉
+                </span>
+              </Text>
+            </p>
           </Option>
-        )}
-        {currencies.length > 1 &&
-          selectedCurrency && (
+          <Option
+            name="Organization Address"
+            text={`This organization is deployed on the ${network.name}.`}
+          >
+            <Field label="Address">
+              <FieldTwoParts>
+                <TextInput readOnly wide value={daoAddr} />
+                <EtherscanLink address={daoAddr}>
+                  {url =>
+                    url ? (
+                      <LinkButton href={url} target="_blank">
+                        See on Etherscan
+                      </LinkButton>
+                    ) : null
+                  }
+                </EtherscanLink>
+              </FieldTwoParts>
+            </Field>
+          </Option>
+          {apps.length > 0 && (
             <Option
-              name="Currency"
-              text="This will be the default currency for displaying purposes. It will be converted to ETH under the hood."
+              name="Aragon Apps"
+              text={`This organization provides ${apps.length} apps.`}
             >
-              <Field label="Select currency">
-                <DropDown
-                  active={currencies.indexOf(selectedCurrency)}
-                  items={currencies}
-                  onChange={this.handleCurrencyChange}
-                />
-              </Field>
+              <AppsList>
+                {apps.map(({ name, proxyAddress, description }) => (
+                  <li title={description} key={proxyAddress}>
+                    <Field label={name}>
+                      <FieldTwoParts>
+                        <TextInput readOnly wide value={proxyAddress} />
+                        <EtherscanLink address={proxyAddress}>
+                          {url =>
+                            url ? (
+                              <LinkButton href={url} target="_blank">
+                                See on Etherscan
+                              </LinkButton>
+                            ) : null
+                          }
+                        </EtherscanLink>
+                      </FieldTwoParts>
+                    </Field>
+                  </li>
+                ))}
+              </AppsList>
             </Option>
           )}
+          {currencies.length > 1 &&
+            selectedCurrency && (
+              <Option
+                name="Currency"
+                text="This will be the default currency for displaying purposes. It will be converted to ETH under the hood."
+              >
+                <Field label="Select currency">
+                  <DropDown
+                    active={currencies.indexOf(selectedCurrency)}
+                    items={currencies}
+                    onChange={this.handleCurrencyChange}
+                  />
+                </Field>
+              </Option>
+            )}
+        </Content>
       </AppLayout>
     )
   }
