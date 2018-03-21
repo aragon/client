@@ -22,54 +22,6 @@ import airdrop from '../../testnet/airdrop'
 // const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY']
 const AVAILABLE_CURRENCIES = ['USD'] // Only use USD for now
 
-const TEST_TOKENS = [
-  {
-    address: '0x0d5263b7969144a852d58505602f630f9b20239d',
-    symbol: 'ANT',
-    name: 'Aragon',
-  },
-  {
-    address: '0x6142214d83670226872d51e935fb57bec8832a60',
-    symbol: 'MANA',
-    name: 'Decentraland',
-  },
-  {
-    address: '0x1e1cab55639f67e70973586527ec1dfdaf9bf764',
-    symbol: 'BCC',
-    name: 'Bitconnect',
-  },
-  {
-    address: '0x5e381afb0104d374f1f3ccde5ba7fe8f5b8af0e6',
-    symbol: 'SPANK',
-    name: 'Spankchain',
-  },
-  {
-    address: '0xa53899a7eb70b309f05f8fdb344cdc8c8f272abe',
-    symbol: 'SNT',
-    name: 'Status',
-  },
-  {
-    address: '0x5b2fdbba47e8ae35b9d6f8e1480703334f48b96c',
-    symbol: 'DNT',
-    name: 'District0x',
-  },
-  /*{
-    address: '0x51e53b52555a4ab7227423a7761cc8e418b147c8',
-    symbol: '',
-    name: '',
-  },*/
-  {
-    address: '0xc42da14b1c0ae7d4dd3946633f1046c3d46f3101',
-    symbol: 'MKR',
-    name: 'MakerDAO',
-  },
-  {
-    address: '0x4fc6e3b791560f25ed4c1bf5e2db9ab0d0e80747',
-    symbol: 'SWT',
-    name: 'SwarmCity',
-  },
-]
-
 const CACHE_KEY = 'settings'
 
 const Main = styled.div`
@@ -90,7 +42,7 @@ const ScrollWrapper = styled.div`
 `
 
 const Content = styled.div`
-  max-width: 600px;
+  max-width: 550px;
   padding: 30px;
 `
 
@@ -125,11 +77,6 @@ class Settings extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      selectedTestToken: 0,
-      testTokens: TEST_TOKENS,
-    }
-
     this.correctCurrencyIfNecessary(props)
   }
   componentWillReceiveProps(nextProps) {
@@ -149,25 +96,15 @@ class Settings extends React.Component {
     const { cache, currencies } = this.props
     this.propagateSelectedCurrency(cache, currencies[index])
   }
-  handleDepositTestTokens = () => {
-    const { selectedTestToken, testTokens } = this.state
-    const { account } = this.props
-
-    const { apps } = this.props
-    const finance = apps.find(app => app.appId === appIds.Finance)
-    if (!finance || !finance.proxyAddress) {
-      return
-    }
-
-    airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
-  }
-  handleTestTokenChange = index => {
-    this.setState({
-      selectedTestToken: index,
-    })
-  }
   propagateSelectedCurrency(cache, selectedCurrency) {
     cache.update(CACHE_KEY, settings => ({ ...settings, selectedCurrency }))
+  }
+  handleDepositTestTokens = () => {
+    const { account, apps } = this.props
+    const finance = apps.find(app => app.appId === appIds.Finance)
+    if (finance && finance.proxyAddress) {
+      airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
+    }
   }
   render() {
     const {
@@ -178,10 +115,6 @@ class Settings extends React.Component {
       selectedCurrency,
       apps,
     } = this.props
-    const { selectedTestToken, testTokens } = this.state
-    const testTokenSymbols = testTokens.map(
-      ({ symbol, name }) => `${name} (${symbol})`
-    )
 
     const enableTransactions = !!account && userNetwork === network.type
     return (
@@ -194,41 +127,30 @@ class Settings extends React.Component {
               text="Deposit some tokens into your organization for testing purposes."
             >
               <div>
-                <Text color={theme.textSecondary} smallcaps>
-                  Select Token
-                </Text>
-                <FieldTwoParts>
-                  <DropDown
-                    active={selectedTestToken}
-                    items={testTokenSymbols}
-                    onChange={this.handleTestTokenChange}
-                    style={{ width: '400px' }}
-                    wide
-                  />
-                  {enableTransactions ? (
-                    <Button
-                      mode="secondary"
-                      onClick={this.handleDepositTestTokens}
-                      style={{ marginLeft: '10px' }}
-                    >
-                      Get tokens
-                    </Button>
-                  ) : (
-                    <Text size="small" style={{ marginLeft: '10px' }}>
-                      {(() => {
-                        if (userNetwork !== network.type) {
-                          return `Please select the ${network.type} network in MetaMask.`
-                        }
-                        return `Please unlock your account in MetaMask.`
-                      })()}
-                    </Text>
-                  )}
-                </FieldTwoParts>
+                <Button
+                  mode="secondary"
+                  onClick={this.handleDepositTestTokens}
+                  disabled={!enableTransactions}
+                >
+                  Request Testing Tokens
+                </Button>
+                {!enableTransactions && (
+                  <Text size="small" style={{ marginLeft: '10px' }}>
+                    {(() => {
+                      if (userNetwork !== network.type) {
+                        return `Please select the ${
+                          network.type
+                        } network in MetaMask.`
+                      }
+                      return `Please unlock your account in MetaMask.`
+                    })()}
+                  </Text>
+                )}
               </div>
               <p style={{ marginTop: '10px' }}>
                 <Text size="small">
-                  Note: these testing tokens are named after existing projects,
-                  but keep in mind they are not the real ones. 😉
+                  These tokens are named after existing projects, but they are
+                  not the real ones. <span role='img' aria-label='winking face'>😉</span>
                 </Text>
               </p>
             </Option>
