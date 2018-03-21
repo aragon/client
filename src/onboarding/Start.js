@@ -172,6 +172,14 @@ class StartContent extends React.PureComponent {
                     Open organization
                   </Button>
                 )}
+                {domainCheckStatus === DomainCheckRejected && (
+                  <Text
+                    size="xsmall"
+                    style={{ display: 'block', marginTop: '-10px' }}
+                  >
+                    No organization with that name exists.
+                  </Text>
+                )}
               </span>
             </OpenOrganization>
           </Action>
