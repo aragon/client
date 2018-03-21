@@ -214,9 +214,15 @@ class StartContent extends React.PureComponent {
     if (!this.enoughBalance()) {
       return (
         <ActionInfo>
-          Please ensure your account has at least {weiToEther(MINIMUM_BALANCE)}{' '}
-          ETH (you have{' '}
+          You need at least {weiToEther(MINIMUM_BALANCE)} ETH (you have{' '}
           {Math.round(weiToEther((balance || 0).toFixed()) * 1000) / 1000} ETH).
+          <br />
+          <SafeLink
+            target="_blank"
+            href="https://faucet.rinkeby.io/"
+          >
+            Request Ether on the Rinkeby Network
+          </SafeLink>
         </ActionInfo>
       )
     }
@@ -245,7 +251,6 @@ const Content = styled.div`
 `
 
 const Action = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -259,10 +264,13 @@ const Action = styled.div`
 `
 
 const ActionInfo = styled.span`
-  position: absolute;
-  bottom: 0;
+  position: relative;
+  z-index: 2;
+  height: 0;
+  margin-top: 8px;
   font-size: 12px;
   white-space: nowrap;
+  text-align: center;
 `
 
 const Title = styled.h1`
