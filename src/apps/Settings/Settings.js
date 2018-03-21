@@ -6,6 +6,7 @@ import {
   DropDown,
   Field,
   TextInput,
+  Text,
   observe,
   theme,
 } from '@aragon/ui'
@@ -14,6 +15,9 @@ import observeCache from '../../components/HOC/observeCache'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import provideNetwork from '../../context/provideNetwork'
 import { compose } from '../../utils'
+import { getWeb3 } from '../../web3-utils'
+import { web3Providers, network, appIds } from '../../environment'
+import airdrop from '../../testnet/airdrop'
 
 // const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY']
 const AVAILABLE_CURRENCIES = ['USD'] // Only use USD for now
@@ -55,6 +59,7 @@ const AppsList = styled.ul`
 
 const FieldTwoParts = styled.div`
   display: flex;
+  align-items: center;
   input {
     margin-right: 10px;
     padding-top: 4px;
@@ -65,9 +70,13 @@ const FieldTwoParts = styled.div`
 class Settings extends React.Component {
   static defaultProps = {
     apps: [],
+    currencies: [],
+    account: '',
+    network: '',
   }
   constructor(props) {
     super(props)
+
     this.correctCurrencyIfNecessary(props)
   }
   componentWillReceiveProps(nextProps) {
@@ -90,13 +99,64 @@ class Settings extends React.Component {
   propagateSelectedCurrency(cache, selectedCurrency) {
     cache.update(CACHE_KEY, settings => ({ ...settings, selectedCurrency }))
   }
+  handleDepositTestTokens = () => {
+    const { account, apps } = this.props
+    const finance = apps.find(app => app.appId === appIds.Finance)
+    if (finance && finance.proxyAddress) {
+      airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
+    }
+  }
   render() {
-    const { currencies, daoAddr, network, selectedCurrency, apps } = this.props
+    const {
+      currencies,
+      daoAddr,
+      account,
+      network: userNetwork,
+      selectedCurrency,
+      apps,
+    } = this.props
+
+    const enableTransactions = !!account && userNetwork === network.type
     return (
       <Main>
         <StyledAppBar title="Settings" />
         <ScrollWrapper>
           <Content>
+            <Option
+              name="Testing Tokens"
+              text="Deposit some tokens into your organization for testing purposes."
+            >
+              <div>
+                <Button
+                  mode="secondary"
+                  onClick={this.handleDepositTestTokens}
+                  disabled={!enableTransactions}
+                >
+                  Request Testing Tokens
+                </Button>
+                {!enableTransactions && (
+                  <Text size="small" style={{ marginLeft: '10px' }}>
+                    {(() => {
+                      if (userNetwork !== network.type) {
+                        return `Please select the ${
+                          network.type
+                        } network in MetaMask.`
+                      }
+                      return `Please unlock your account in MetaMask.`
+                    })()}
+                  </Text>
+                )}
+              </div>
+              <p style={{ marginTop: '10px' }}>
+                <Text size="small">
+                  The tokens are named after existing projects, but keep in mind
+                  they are not the real ones.{' '}
+                  <span role="img" aria-label="winking face">
+                    😉
+                  </span>
+                </Text>
+              </p>
+            </Option>
             <Option
               name="Organization Address"
               text={`This organization is deployed on the ${network.name}.`}
@@ -122,8 +182,8 @@ class Settings extends React.Component {
                 text={`This organization provides ${apps.length} apps.`}
               >
                 <AppsList>
-                  {apps.map(({ name, proxyAddress, description }, i) => (
-                    <li title={description} key={i + proxyAddress}>
+                  {apps.map(({ name, proxyAddress, description }) => (
+                    <li title={description} key={proxyAddress}>
                       <Field label={name}>
                         <FieldTwoParts>
                           <TextInput readOnly wide value={proxyAddress} />
@@ -143,7 +203,7 @@ class Settings extends React.Component {
                 </AppsList>
               </Option>
             )}
-            {/*Array.isArray(currencies) &&
+            {currencies.length > 1 &&
               selectedCurrency && (
                 <Option
                   name="Currency"
@@ -157,7 +217,7 @@ class Settings extends React.Component {
                     />
                   </Field>
                 </Option>
-              )*/}
+              )}
           </Content>
         </ScrollWrapper>
       </Main>
