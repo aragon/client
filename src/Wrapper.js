@@ -5,6 +5,7 @@ import { Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
+import ComingSoon from './components/ComingSoon/ComingSoon'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath, staticApps } from './routing'
@@ -184,11 +185,32 @@ class Wrapper extends React.Component {
 
     if (appId === 'permissions') {
       return (
-        <Permissions
-          apps={apps}
-          groups={groups}
-          params={params}
-          onParamsRequest={this.handleParamsRequest}
+        <ComingSoon
+          title="Permissions"
+          subtitle={`
+            The permissions app is not quite ready for prime time but will be
+            available soon.
+          `}
+        />
+      )
+      // return (
+      //   <Permissions
+      //     apps={apps}
+      //     groups={groups}
+      //     params={params}
+      //     onParamsRequest={this.handleParamsRequest}
+      //   />
+      // )
+    }
+
+    if (appId === 'apps') {
+      return (
+        <ComingSoon
+          title="Apps"
+          subtitle={`
+            The apps manager is not quite ready for prime time but will be
+            available soon.
+          `}
         />
       )
     }
