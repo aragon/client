@@ -50,9 +50,15 @@ const template = {
             if (!isIntegerString(value)) {
               return { voteDuration: -1 }
             }
-            const intValue = parseInt(value, 10)
+            const voteDuration = parseInt(value, 10)
+            if (isNaN(voteDuration)) {
+              return null
+            }
+            if (voteDuration > Number.MAX_SAFE_INTEGER) {
+              return null
+            }
             return {
-              voteDuration: isNaN(intValue) ? -1 : Math.max(1, value),
+              voteDuration: Math.max(1, value),
             }
           },
         },
