@@ -6,7 +6,7 @@ import Aragon, {
   ensResolve,
 } from '@aragon/wrapper'
 import {
-  appDefaults,
+  appOverrides,
   sortAppsPair,
   appLocator,
   ipfsDefaultConf,
@@ -30,13 +30,16 @@ const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
   return `${gateway}/${hash}/`
 }
 
+const applyAppOverrides = apps =>
+  apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
+
 // Filter out apps without UI and add an appSrc property
-const prepareFrontendApps = (apps, gateway) =>
-  apps
-    .map(app => ({ ...(appDefaults[app.appId] || {}), ...app }))
+const prepareFrontendApps = (apps, gateway) => {
+  return applyAppOverrides(apps)
     .filter(app => app && app['start_url'])
     .sort(sortAppsPair)
     .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
+}
 
 const getMainAccount = async web3 => {
   try {
@@ -167,8 +170,7 @@ const subscribe = (
     workers: apps.subscribe(apps => {
       // Asynchronously launch webworkers for each new app that has a background
       // script defined
-      apps
-        .map(app => ({ ...(appDefaults[app.appId] || {}), ...app }))
+      applyAppOverrides(apps)
         .filter(app => app.script)
         .filter(
           ({ proxyAddress }) => !workerSubscriptionPool.hasWorker(proxyAddress)

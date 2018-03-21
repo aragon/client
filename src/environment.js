@@ -41,14 +41,19 @@ export const sortAppsPair = (app1, app2) => {
   return 0
 }
 
-let appDefaults
 let appLocator
+let appOverrides
 
 if (process.env.NODE_ENV !== 'production') {
   /******************
    * Local settings *
    ******************/
-  appDefaults = {
+  appLocator = {
+    [appIds['Finance']]: 'http://localhost:3002/',
+    [appIds['TokenManager']]: 'http://localhost:3003/',
+    [appIds['Voting']]: 'http://localhost:3001/',
+  }
+  appOverrides = {
     [appIds['Finance']]: {
       script: '/script.js',
       start_url: '/index.html',
@@ -62,25 +67,19 @@ if (process.env.NODE_ENV !== 'production') {
       start_url: '/index.html',
     },
   }
-
-  appLocator = {
-    [appIds['Finance']]: 'http://localhost:3002/',
-    [appIds['TokenManager']]: 'http://localhost:3003/',
-    [appIds['Voting']]: 'http://localhost:3001/',
-  }
 } else {
   /***********************
    * Production settings *
    ***********************/
-  appDefaults = {}
   appLocator = {
     [appIds['Finance']]: 'https://finance.aragonpm.com/',
     [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
     [appIds['Voting']]: 'https://voting.aragonpm.com/',
   }
+  appOverrides = {}
 }
 
-export { appDefaults, appLocator }
+export { appLocator, appOverrides }
 
 export const contractAddresses = {
   // Aragon's Rinkeby ENS
