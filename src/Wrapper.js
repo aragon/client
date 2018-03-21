@@ -175,10 +175,6 @@ class Wrapper extends React.Component {
       daoAddress,
     } = this.props
 
-    if (!wrapper) {
-      return <LoadingApps />
-    }
-
     if (appId === 'home') {
       return <Home connected={connected} />
     }
@@ -213,6 +209,10 @@ class Wrapper extends React.Component {
           `}
         />
       )
+    }
+
+    if (!wrapper) {
+      return <LoadingApps />
     }
 
     if (appId === 'settings') {
@@ -256,6 +256,17 @@ const AppScreen = styled.div`
   overflow: auto;
 `
 
-const LoadingApps = () => <div />
+const LoadingApps = () => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+    }}
+  >
+    Loading apps…
+  </div>
+)
 
 export default Wrapper
