@@ -212,7 +212,15 @@ class Onboarding extends React.PureComponent {
     invertCheck = false
   ) => {
     const { daoBuilder } = this.props
-    const filteredDomain = domain.trim().toLowerCase()
+    const filteredDomain = domain
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '')
+
+    // No change
+    if (this.state[domainKey] === filteredDomain) {
+      return
+    }
 
     this.setState({
       [domainKey]: filteredDomain,
