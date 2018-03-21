@@ -42,7 +42,7 @@ const ScrollWrapper = styled.div`
 `
 
 const Content = styled.div`
-  max-width: 550px;
+  max-width: 600px;
   padding: 30px;
 `
 
@@ -149,8 +149,11 @@ class Settings extends React.Component {
               </div>
               <p style={{ marginTop: '10px' }}>
                 <Text size="small">
-                  These tokens are named after existing projects, but they are
-                  not the real ones. <span role='img' aria-label='winking face'>😉</span>
+                  The tokens are named after existing projects, but keep in mind
+                  they are not the real ones.{' '}
+                  <span role="img" aria-label="winking face">
+                    😉
+                  </span>
                 </Text>
               </p>
             </Option>
