@@ -8,6 +8,7 @@ import {
   IconHome,
   IconSettings,
   IconPermissions,
+  IconApps,
   // IconWallet,
   // IconNotifications,
 } from '@aragon/ui'
@@ -28,6 +29,11 @@ const appPermissions = {
   appId: 'permissions',
   name: 'Permissions',
   icon: <IconPermissions />,
+}
+const appApps = {
+  appId: 'apps',
+  name: 'Apps',
+  icon: <IconApps />,
 }
 
 const addIcons = apps =>
@@ -61,7 +67,13 @@ class MenuPanel extends React.Component {
       onOpenNotification,
     } = this.props
     const { notificationsOpened } = this.state
-    const menuApps = [appHome, ...addIcons(apps), appPermissions, appSettings]
+    const menuApps = [
+      appHome,
+      ...addIcons(apps),
+      appPermissions,
+      appApps,
+      appSettings,
+    ]
     return (
       <Main>
         <In>
@@ -79,22 +91,19 @@ class MenuPanel extends React.Component {
             <div className="in">
               <h1>Apps</h1>
               <ul>
-                {menuApps.map(
-                  ({ appId, name, icon, instances = [] }) =>
-                    appId === 'permissions' ? null : (
-                      <li key={appId}>
-                        <MenuPanelAppGroup
-                          name={name}
-                          icon={icon}
-                          appId={appId}
-                          active={appId === activeAppId}
-                          instances={instances}
-                          activeInstanceId={activeInstanceId}
-                          onActivate={onOpenApp}
-                        />
-                      </li>
-                    )
-                )}
+                {menuApps.map(({ appId, name, icon, instances = [] }) => (
+                  <li key={appId}>
+                    <MenuPanelAppGroup
+                      name={name}
+                      icon={icon}
+                      appId={appId}
+                      active={appId === activeAppId}
+                      instances={instances}
+                      activeInstanceId={activeInstanceId}
+                      onActivate={onOpenApp}
+                    />
+                  </li>
+                ))}
               </ul>
             </div>
           </Content>

@@ -15,7 +15,11 @@ class Home extends React.Component {
         <ScrollWrapper>
           <AppWrapper>
             <Content>
-              <Title>Welcome to Aragon 0.5</Title>
+              <Title>
+                <Text size="great" weight="bold">
+                  Welcome to Aragon 0.5
+                </Text>
+              </Title>
               <p>
                 <Text color={theme.textSecondary}>
                   Please refer to the menu to interact with the apps installed
@@ -96,11 +100,10 @@ const Content = styled.div`
   align-items: center;
   width: 100%;
   padding: 40px;
+  text-align: center;
 `
 
 const Title = styled.h1`
-  font-weight: 600;
-  font-size: 37px;
   margin-bottom: 30px;
 `
 
