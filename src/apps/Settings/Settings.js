@@ -224,7 +224,6 @@ class Settings extends React.Component {
     )
   }
 }
-
 const enhance = compose(
   observeCache(CACHE_KEY, {
     defaultValue: {
@@ -237,5 +236,4 @@ const enhance = compose(
   observe(observable => observable.map(settings => ({ ...settings })), {}),
   provideNetwork
 )
-
 export default enhance(Settings)

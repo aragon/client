@@ -9,7 +9,7 @@ import {
   IconSettings,
   IconPermissions,
   // IconWallet,
-  IconNotifications,
+  // IconNotifications,
 } from '@aragon/ui'
 import ClickOutHandler from 'react-onclickout'
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
@@ -67,7 +67,8 @@ class MenuPanel extends React.Component {
         <In>
           <Header>
             <img src={logo} alt="Aragon" height="36" />
-            {/*<div className="actions">
+            {/*
+            <div className="actions">
               <IconButton role="button" onClick={this.handleNotificationsClick}>
                 <IconNotifications />
               </IconButton>
@@ -148,9 +149,9 @@ const In = styled.div`
   box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
 `
 
-const IconButton = styled.span`
-  cursor: pointer;
-`
+// const IconButton = styled.span`
+//   cursor: pointer;
+// `
 
 const NotificationsWrapper = styled.div`
   position: fixed;
