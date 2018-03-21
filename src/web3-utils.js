@@ -10,3 +10,11 @@ export function getWeb3(provider) {
   cache.set(provider, web3)
   return web3
 }
+
+export function weiToEther(wei) {
+  return wei / 10e17
+}
+
+export function etherToWei(ether) {
+  return ether * 10e17
+}

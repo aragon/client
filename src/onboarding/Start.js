@@ -11,6 +11,7 @@ import {
 } from '@aragon/ui'
 import { network, web3Providers } from '../environment'
 import { noop } from '../utils'
+import { weiToEther, etherToWei } from '../web3-utils'
 import { lerp } from '../math-utils'
 import logo from './assets/logo-welcome.svg'
 
@@ -21,7 +22,7 @@ import {
   DomainCheckRejected,
 } from './domain-states'
 
-const MINIMUM_BALANCE = 10e17
+const MINIMUM_BALANCE = etherToWei(0.1)
 
 class Start extends React.Component {
   static defaultProps = {
@@ -106,6 +107,7 @@ class StartContent extends React.PureComponent {
       hasWallet &&
       hasAccount &&
       userNetwork === network.type
+
     return (
       <React.Fragment>
         <Title>
@@ -212,9 +214,9 @@ class StartContent extends React.PureComponent {
     if (!this.enoughBalance()) {
       return (
         <ActionInfo>
-          Please ensure your account has at least {MINIMUM_BALANCE / 10e18} ETH
-          (you have {Math.round((balance || 0).toFixed() / 10e18 * 10e2) / 10e2}{' '}
-          ETH).
+          Please ensure your account has at least {weiToEther(MINIMUM_BALANCE)}{' '}
+          ETH (you have{' '}
+          {Math.round(weiToEther((balance || 0).toFixed()) * 1000) / 1000} ETH).
         </ActionInfo>
       )
     }
