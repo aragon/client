@@ -17,7 +17,7 @@ import provideNetwork from '../../context/provideNetwork'
 import { compose } from '../../utils'
 import { getWeb3 } from '../../web3-utils'
 import { web3Providers, network, appIds } from '../../environment'
-import airdrop from '../../airdrop'
+import airdrop from '../../testnet/airdrop'
 
 // const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY']
 const AVAILABLE_CURRENCIES = ['USD'] // Only use USD for now
@@ -152,7 +152,6 @@ class Settings extends React.Component {
   handleDepositTestTokens = () => {
     const { selectedTestToken, testTokens } = this.state
     const { account } = this.props
-    const tokenAddress = testTokens[selectedTestToken]
 
     const { apps } = this.props
     const finance = apps.find(app => app.appId === appIds.Finance)
