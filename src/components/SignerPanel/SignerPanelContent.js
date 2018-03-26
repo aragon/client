@@ -135,7 +135,7 @@ const NeedUnlockAccountContent = ({ intent: { description, to }, onClose }) => (
   <React.Fragment>
     <Info.Action title="You can't perform any actions">
       {`You need to unlock your account in order to ${description ||
-        'perform this action on'}`}{' '}
+        'perform this action'}`}{' on '}
       <AddressLink to={to} />.
       <InstallMessage>
         Please unlock or enable{' '}
