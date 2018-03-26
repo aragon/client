@@ -73,14 +73,14 @@ class Wrapper extends React.Component {
     // const { appId, } = this.state.appInstance
     // this.openApp(appId, params)
   }
-  handleTransaction = ({ transaction }) => {
+  handleTransaction = ({ transaction, path }) => {
     this.showWeb3ActionSigner(
       {
         to: transaction && transaction.to,
         tx: transaction,
         description: transaction && transaction.description,
       },
-      { error: null }
+      { error: null, paths: [path] }
     )
   }
   handleSigningWeb3Tx = ({ data, from, to }) => {

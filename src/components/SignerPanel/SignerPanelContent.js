@@ -65,25 +65,30 @@ class ActionPathsContent extends React.Component {
   render() {
     const { intent: { description, to, tx }, paths } = this.props
     const { selected } = this.state
-    const radioItems = paths.map(({ appName, description }) => {
-      const shortName =
-        appName.length > RADIO_ITEM_TITLE_LENGTH
-          ? appName.slice(0, RADIO_ITEM_TITLE_LENGTH) + '…'
-          : appName
-      return {
-        description,
-        title: <span title={appName}>{shortName}</span>,
-      }
-    })
-    const showPaths = !tx && paths.length
+
+    // const showPaths = !tx && paths.length
+    const showPaths = paths.length && paths[0].length > 1
+    let radioItems = []
+    if (showPaths) {
+      radioItems = paths.map(([{ name, description }]) => {
+        const shortName =
+          name.length > RADIO_ITEM_TITLE_LENGTH
+            ? name.slice(0, RADIO_ITEM_TITLE_LENGTH) + '…'
+            : name
+        return {
+          description,
+          title: <span title={name}>{shortName}</span>,
+        }
+      })
+    }
     return (
       <React.Fragment>
         {showPaths ? (
           <ActionContainer>
-            {/* <Info.Permissions title="Permission note:">
+            <Info.Permissions title="Permission note:">
               You cannot directly perform this action. You do not have the
               necessary permissions.
-            </Info.Permissions> */}
+            </Info.Permissions>
             <Actions>
               <RadioList
                 title="Action Requirement"
@@ -104,7 +109,7 @@ class ActionPathsContent extends React.Component {
           </DirectActionHeader>
         )}
         <Info.Action icon={null} title="Action to be triggered:">
-          {this.renderDescription(showPaths, description, tx, to)}
+          {this.renderDescription(showPaths, description, paths[0][paths[0].length - 1], to)}
         </Info.Action>
         <SignerButton onClick={this.handleSign}>Sign Transaction</SignerButton>
       </React.Fragment>
