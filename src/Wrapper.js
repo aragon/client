@@ -1,7 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
-import { Permissions, Settings } from './apps'
+import {
+  // Permissions,
+  Settings,
+} from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -10,7 +13,7 @@ import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath, staticApps } from './routing'
 
-import { groups } from './demo-state'
+// import { groups } from './demo-state'
 
 class Wrapper extends React.Component {
   static defaultProps = {
