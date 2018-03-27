@@ -157,10 +157,8 @@ class App extends React.Component {
     initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
-      onError: name => {
-        if (name === 'NO_CONNECTION') {
-          log('No Ethereum connection detected.')
-        }
+      onError: err => {
+        log(`Wrapper init error: ${err.name}. ${err.message}.`)
       },
       onDaoAddress: daoAddress => {
         log('daoAddress', daoAddress)
