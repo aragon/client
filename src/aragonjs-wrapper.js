@@ -14,6 +14,7 @@ import {
 import { noop, removeTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
+import { InvalidAddress, NoConnection } from './errors'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -265,7 +266,7 @@ const initWrapper = async (
     : dao
 
   if (!daoAddress) {
-    onError('INVALID_DAO_ADDRESS')
+    onError(new InvalidAddress('The provided DAO address is invalid'))
     return
   }
 
@@ -285,7 +286,11 @@ const initWrapper = async (
     await wrapper.init(account && [account])
   } catch (err) {
     if (err.message === 'connection not open') {
-      onError('NO_CONNECTION')
+      onError(
+        new NoConnection(
+          'The wrapper can not be initialized without a connection'
+        )
+      )
       return
     }
     throw err
