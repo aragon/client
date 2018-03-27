@@ -13,6 +13,7 @@ import initWrapper, {
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 import { getWeb3 } from './web3-utils'
+import { log } from './utils'
 
 class App extends React.Component {
   static childContextTypes = {
@@ -139,9 +140,9 @@ class App extends React.Component {
         daoCreationStatus: 'success',
         buildData: { token, dao, domain },
       })
-      console.log('DAO created', dao, token, domain)
+      log('DAO created', dao, token, domain)
     } catch (err) {
-      console.log(err)
+      log(err)
       this.setState({ daoCreationStatus: 'error' })
     }
   }
@@ -151,37 +152,38 @@ class App extends React.Component {
       this.state.wrapper.cancel()
       this.setState({ wrapper: null })
     }
-    console.log('Wrapper init', dao)
+
+    log('Wrapper init', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
       onError: name => {
         if (name === 'NO_CONNECTION') {
-          console.log('No Ethereum connection detected.')
+          log('No Ethereum connection detected.')
         }
       },
       onDaoAddress: daoAddress => {
-        console.log('daoAddress', daoAddress)
+        log('daoAddress', daoAddress)
         this.setState({ daoAddress })
       },
       onWeb3: web3 => {
-        console.log('web3', web3)
+        log('web3', web3)
         this.setState({ web3 })
       },
       onApps: apps => {
-        console.log('apps', apps)
+        log('apps received', apps)
         this.setState({ apps })
       },
       onForwarders: forwarders => {
-        console.log('forwarders', forwarders)
+        log('forwarders', forwarders)
       },
       onTransaction: transactionBag => {
-        console.log('transaction bag', transactionBag)
+        log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
     })
       .then(wrapper => {
-        console.log('wrapper', wrapper)
+        log('wrapper', wrapper)
         this.setState({ wrapper })
       })
       .catch(err => {

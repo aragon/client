@@ -265,7 +265,7 @@ const initWrapper = async (
     : dao
 
   if (!daoAddress) {
-    console.log('Invalid DAO address')
+    onError('INVALID_DAO_ADDRESS')
     return
   }
 
