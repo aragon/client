@@ -219,7 +219,6 @@ class Settings extends React.Component {
     )
   }
 }
-
 const enhance = compose(
   observeCache(CACHE_KEY, {
     defaultValue: {
