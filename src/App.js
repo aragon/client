@@ -23,6 +23,7 @@ class App extends React.Component {
     locator: {},
     prevLocator: null,
     wrapper: null,
+    appsLoading: true,
     account: '',
     balance: null,
     network: '',
@@ -150,8 +151,9 @@ class App extends React.Component {
   updateDao(dao) {
     if (this.state.wrapper) {
       this.state.wrapper.cancel()
-      this.setState({ wrapper: null })
     }
+
+    this.setState({ wrapper: null, appsLoading: true })
 
     log('Wrapper init', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
@@ -159,6 +161,7 @@ class App extends React.Component {
       walletProvider: web3Providers.wallet,
       onError: err => {
         log(`Wrapper init error: ${err.name}. ${err.message}.`)
+        this.setState({ appsLoading: false })
       },
       onDaoAddress: daoAddress => {
         log('daoAddress', daoAddress)
@@ -168,9 +171,9 @@ class App extends React.Component {
         log('web3', web3)
         this.setState({ web3 })
       },
-      onApps: apps => {
-        log('apps received', apps)
-        this.setState({ apps })
+      onApps: (appsWithFrontend, apps) => {
+        log('apps received', appsWithFrontend)
+        this.setState({ apps: appsWithFrontend, appsLoading: !apps })
       },
       onForwarders: forwarders => {
         log('forwarders', forwarders)
@@ -212,6 +215,7 @@ class App extends React.Component {
       web3,
       connected,
       daoAddress,
+      appsLoading,
     } = this.state
     const { mode } = locator
     if (!mode) return null
@@ -223,6 +227,7 @@ class App extends React.Component {
           locator={locator}
           wrapper={wrapper}
           apps={apps}
+          appsLoading={appsLoading}
           account={account}
           network={network}
           walletWeb3={walletWeb3}

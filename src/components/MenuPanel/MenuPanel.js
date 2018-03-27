@@ -16,6 +16,7 @@ import ClickOutHandler from 'react-onclickout'
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
 import { lerp } from '../../math-utils'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
+import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 
 import logo from './assets/logo.svg'
 
@@ -59,21 +60,15 @@ class MenuPanel extends React.Component {
   render() {
     const {
       apps,
-      activeAppId,
-      activeInstanceId,
       notificationsObservable,
-      onOpenApp,
       onClearAllNotifications,
       onOpenNotification,
     } = this.props
     const { notificationsOpened } = this.state
-    const menuApps = [
-      appHome,
-      ...addIcons(apps),
-      appPermissions,
-      appApps,
-      appSettings,
-    ]
+
+    const daoApps = addIcons(apps)
+    const menuApps = [appHome, daoApps, appPermissions, appApps, appSettings]
+
     return (
       <Main>
         <In>
@@ -90,21 +85,7 @@ class MenuPanel extends React.Component {
           <Content>
             <div className="in">
               <h1>Apps</h1>
-              <ul>
-                {menuApps.map(({ appId, name, icon, instances = [] }) => (
-                  <li key={appId}>
-                    <MenuPanelAppGroup
-                      name={name}
-                      icon={icon}
-                      appId={appId}
-                      active={appId === activeAppId}
-                      instances={instances}
-                      activeInstanceId={activeInstanceId}
-                      onActivate={onOpenApp}
-                    />
-                  </li>
-                ))}
-              </ul>
+              <div>{menuApps.map(this.renderApp)}</div>
             </div>
           </Content>
         </In>
@@ -135,6 +116,33 @@ class MenuPanel extends React.Component {
           </Motion>
         </ClickOutHandler>
       </Main>
+    )
+  }
+  renderApp = app => {
+    const { activeAppId, activeInstanceId, onOpenApp, appsLoading } = this.props
+
+    // Wrap the DAO apps in the loader
+    if (Array.isArray(app)) {
+      return (
+        <MenuPanelAppsLoader key="menu-apps" loading={appsLoading}>
+          {app.map(this.renderApp)}
+        </MenuPanelAppsLoader>
+      )
+    }
+
+    const { appId, name, icon, instances = [] } = app
+    return (
+      <div key={appId}>
+        <MenuPanelAppGroup
+          name={name}
+          icon={icon}
+          appId={appId}
+          active={appId === activeAppId}
+          instances={instances}
+          activeInstanceId={activeInstanceId}
+          onActivate={onOpenApp}
+        />
+      </div>
     )
   }
 }
