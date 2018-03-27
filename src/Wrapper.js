@@ -13,8 +13,6 @@ import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath, staticApps } from './routing'
 
-// import { groups } from './demo-state'
-
 class Wrapper extends React.Component {
   static defaultProps = {
     connected: false,
