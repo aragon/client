@@ -28,3 +28,9 @@ export function noop() {}
 export function removeTrailingSlash(str) {
   return str.replace(/\/+$/, '')
 }
+
+export function log(...params) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(...params)
+  }
+}
