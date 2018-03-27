@@ -73,14 +73,31 @@ class Wrapper extends React.Component {
     // const { appId, } = this.state.appInstance
     // this.openApp(appId, params)
   }
-  handleTransaction = ({ transaction, path }) => {
+  reshapeTransactionBag(bag) {
+    // This is a temporary method to reshape the transaction bag
+    // to the future format we expect from Aragon.js
+    // When Aragon.js starts returning the new format, we can simply
+    // replace search and replace this function with `bag`, although
+    // it is probably only used in `handleTransaction`
+    const transaction = bag.path[bag.path.length - 1]
+    const intent = {
+      to: transaction && transaction.to,
+      transaction,
+      description: transaction && transaction.description
+    }
+    const direct = bag.path.length === 1
+
+    return {
+      intent,
+      direct,
+      paths: direct ? [] : [bag.path]
+    }
+  }
+  handleTransaction = (bag) => {
+    const { intent, direct, paths } = this.reshapeTransactionBag(bag)
     this.showWeb3ActionSigner(
-      {
-        to: transaction && transaction.to,
-        tx: transaction,
-        description: transaction && transaction.description,
-      },
-      { error: null, paths: [path] }
+      intent,
+      { direct, error: null, paths }
     )
   }
   handleSigningWeb3Tx = ({ data, from, to }) => {
@@ -115,13 +132,14 @@ class Wrapper extends React.Component {
     const { apps } = this.props
     return staticApps.has(appId) && !!apps.find(app => app.appId === appId)
   }
-  showWeb3ActionSigner = (intent, { error, paths }) => {
+  showWeb3ActionSigner = (intent, { direct, error, paths }) => {
     this.setState({
       signerOpened: true,
       web3Action: {
         error,
         intent,
         paths,
+        direct,
       },
     })
   }

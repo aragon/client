@@ -10,6 +10,7 @@ const SignerPanelContent = ({
   account,
   error,
   intent,
+  direct,
   paths,
   onClose,
   onSign,
@@ -23,9 +24,9 @@ const SignerPanelContent = ({
   }
 
   const possible =
-    (intent.tx || (Array.isArray(paths) && paths.length)) && !error
+    (direct || (Array.isArray(paths) && paths.length)) && !error
   return possible ? (
-    <ActionPathsContent intent={intent} paths={paths} onSign={onSign} />
+    <ActionPathsContent intent={intent} direct={direct} paths={paths} onSign={onSign} />
   ) : (
     <ImpossibleContent error={error} intent={intent} onClose={onClose} />
   )
@@ -45,13 +46,15 @@ class ActionPathsContent extends React.Component {
     this.setState({ selected })
   }
   handleSign = () => {
-    const { intent, paths, onSign } = this.props
+    const { intent, direct, paths, onSign } = this.props
     const { selected } = this.state
-    onSign(intent.tx || paths[selected].tx)
+    onSign(direct
+      ? intent.transaction
+      : paths[selected].transaction)
   }
-  renderDescription(showPaths, description, tx = {}, to = '') {
-    if (tx.description) {
-      return tx.description
+  renderDescription(showPaths, description, transaction = {}, to = '') {
+    if (transaction.description) {
+      return transaction.description
     }
     return (
       <span>
@@ -62,25 +65,37 @@ class ActionPathsContent extends React.Component {
       </span>
     )
   }
-  render() {
-    const { intent: { description, to, tx }, paths } = this.props
-    const { selected } = this.state
+  getPathRadioItem(path) {
+    // Slice off the intention (last transaction in the path)
+    path = path.slice(0, path.length - 1)
 
-    // const showPaths = !tx && paths.length
-    const showPaths = paths.length && paths[0].length > 1
-    let radioItems = []
-    if (showPaths) {
-      radioItems = paths.map(([{ name, description }]) => {
-        const shortName =
-          name.length > RADIO_ITEM_TITLE_LENGTH
-            ? name.slice(0, RADIO_ITEM_TITLE_LENGTH) + '…'
-            : name
-        return {
-          description,
-          title: <span title={name}>{shortName}</span>,
-        }
-      })
+    const title = path.map(({ name }, index) => {
+      const shortName =
+        name.length > RADIO_ITEM_TITLE_LENGTH
+          ? name.slice(0, RADIO_ITEM_TITLE_LENGTH) + '…'
+          : name
+
+      const isLastSegment = index === path.length - 1
+      return <span title={name}>{shortName}{!isLastSegment ? ' → ' : ''}</span>
+    })
+
+    const isOneHop = path.length === 1
+    const description = path.map(({ name, description }, index) => {
+      if (isOneHop) return description
+
+      return `${index + 1}. ${name}: ${description}`
+    }).join('\n')
+
+    return {
+      title,
+      description
     }
+  }
+  render() {
+    const { intent: { description, to, transaction }, direct, paths } = this.props
+    const { selected } = this.state
+    const showPaths = !direct
+    const radioItems = paths.map(this.getPathRadioItem)
     return (
       <React.Fragment>
         {showPaths ? (
@@ -109,7 +124,7 @@ class ActionPathsContent extends React.Component {
           </DirectActionHeader>
         )}
         <Info.Action icon={null} title="Action to be triggered:">
-          {this.renderDescription(showPaths, description, paths[0][paths[0].length - 1], to)}
+          {this.renderDescription(showPaths, description, transaction, to)}
         </Info.Action>
         <SignerButton onClick={this.handleSign}>Sign Transaction</SignerButton>
       </React.Fragment>
