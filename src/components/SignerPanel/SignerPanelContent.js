@@ -50,7 +50,7 @@ class ActionPathsContent extends React.Component {
     const { selected } = this.state
     onSign(direct
       ? intent.transaction
-      : paths[selected].transaction)
+      : paths[selected][0].transaction)
   }
   renderDescription(showPaths, description, transaction = {}, to = '') {
     if (transaction.description) {
