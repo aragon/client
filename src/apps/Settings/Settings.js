@@ -163,9 +163,9 @@ class Settings extends React.Component {
                 </EtherscanLink>
               </FieldTwoParts>
               <Note>
-                <strong>Do not send ether to this address!</strong> Follow the
-                instructions in the “Send ether to this Organization” section
-                below.
+                <strong>Do not send ether or tokens to this address!</strong>{' '}
+                Follow the instructions in the “Send ether to this organization”
+                section below.
               </Note>
             </Field>
           </Option>
