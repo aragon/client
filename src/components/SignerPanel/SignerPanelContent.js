@@ -52,16 +52,17 @@ class ActionPathsContent extends React.Component {
     // to kick off the forwarding path
     onSign(direct ? intent.transaction : paths[selected][0])
   }
-  renderDescription(showPaths, description, transaction = {}, to = '') {
+  renderDescription(showPaths, { description, to, toName, transaction = {} }) {
     if (transaction.description) {
       return transaction.description
     }
     return (
       <span>
-        {`This transaction will ${
-          showPaths ? 'eventually' : ''
-        } ${description || 'perform an action on'}`}{' '}
-        <AddressLink to={to} />.
+        This transaction will {showPaths && 'eventually'} perform{' '}
+        {description ? `"${description}"` : 'an action'}
+        {' on '}
+        <AddressLink to={to}>{toName}</AddressLink>
+        .
       </span>
     )
   }
@@ -103,11 +104,7 @@ class ActionPathsContent extends React.Component {
     }
   }
   render() {
-    const {
-      intent: { description, to, transaction },
-      direct,
-      paths,
-    } = this.props
+    const { intent, direct, paths } = this.props
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
@@ -139,7 +136,7 @@ class ActionPathsContent extends React.Component {
           </DirectActionHeader>
         )}
         <Info.Action icon={null} title="Action to be triggered:">
-          {this.renderDescription(showPaths, description, transaction, to)}
+          {this.renderDescription(showPaths, intent)}
         </Info.Action>
         <SignerButton onClick={this.handleSign}>Sign Transaction</SignerButton>
       </React.Fragment>
@@ -147,26 +144,35 @@ class ActionPathsContent extends React.Component {
   }
 }
 
-const ImpossibleContent = ({ error, intent: { description, to }, onClose }) => (
+const ImpossibleContent = ({
+  error,
+  intent: { description, to, toName },
+  onClose,
+}) => (
   <React.Fragment>
     <Info.Permissions title="Action impossible">
-      You cannot {description || 'perform this action on'}{' '}
-      <AddressLink to={to} />
+      The action {description && `"${description}"`} failed to execute on{' '}
+      <AddressLink to={to}>{toName}</AddressLink>
       .{' '}
       {error
-        ? 'An error occurred when we tried to find a path for this action.'
+        ? 'An error occurred when we tried to find a path or send a transaction for this action.'
         : 'You do not have the necessary permissions.'}
     </Info.Permissions>
     <SignerButton onClick={onClose}>Close</SignerButton>
   </React.Fragment>
 )
 
-const NeedUnlockAccountContent = ({ intent: { description, to }, onClose }) => (
+const NeedUnlockAccountContent = ({
+  intent: { description, to, toName },
+  onClose,
+}) => (
   <React.Fragment>
     <Info.Action title="You can't perform any actions">
-      {`You need to unlock your account in order to ${description ||
-        'perform this action'}`}{' on '}
-      <AddressLink to={to} />.
+      You need to unlock your account in order to perform{' '}
+      {description ? `"${description}"` : 'this action'}
+      {' on '}
+      <AddressLink to={to}>{toName}</AddressLink>
+      .
       <InstallMessage>
         Please unlock or enable{' '}
         <SafeLink href="https://metamask.io/" target="_blank">
@@ -178,12 +184,14 @@ const NeedUnlockAccountContent = ({ intent: { description, to }, onClose }) => (
   </React.Fragment>
 )
 
-const NeedWeb3Content = ({ intent: { description, to }, onClose }) => (
+const NeedWeb3Content = ({ intent: { description, to, toName }, onClose }) => (
   <React.Fragment>
     <Info.Action title="You can't perform any actions">
-      {`You need to be connected to a Web3 instance in order to ${description ||
-        'perform this action on'}`}{' '}
-      <AddressLink to={to} />.
+      You need to be connected to a Web3 instance in order to perform{' '}
+      {description ? `"${description}"` : 'this action'}
+      {' on '}
+      <AddressLink to={to}>{toName}</AddressLink>
+      .
       <InstallMessage>
         Please install or enable{' '}
         <SafeLink href="https://metamask.io/" target="_blank">
@@ -195,13 +203,13 @@ const NeedWeb3Content = ({ intent: { description, to }, onClose }) => (
   </React.Fragment>
 )
 
-const AddressLink = ({ to }) =>
+const AddressLink = ({ children, to }) =>
   to ? (
     <EtherscanLink address={to}>
       {url =>
         url ? (
           <SafeLink href={url} target="_blank">
-            {to}
+            {children || to}
           </SafeLink>
         ) : (
           to
