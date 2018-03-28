@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { spring, Motion } from 'react-motion'
 import { theme, AppBar, Text } from '@aragon/ui'
 import HomeCard from './HomeCard'
-import { homeActions as actions } from '../../demo-state'
 import { lerp } from '../../math-utils'
 
 import logo from './assets/logo-background.svg'
@@ -19,11 +18,32 @@ const CARD_MARGIN = 30
 
 const SPRING = { stiffness: 120, damping: 17, precision: 0.005 }
 
-const imgActions = new Map()
-imgActions.set('assign-tokens', imgAssignTokens)
-imgActions.set('vote', imgVote)
-imgActions.set('check-finance', imgFinance)
-imgActions.set('new-payment', imgPayment)
+const actions = [
+  {
+    id: 'assign-tokens',
+    label: 'Assign Tokens',
+    appName: 'Token Manager',
+    img: imgAssignTokens,
+  },
+  {
+    id: 'vote',
+    label: 'Vote',
+    appName: 'Voting',
+    img: imgVote,
+  },
+  {
+    id: 'check-finance',
+    label: 'Check Finance',
+    appName: 'Finance',
+    img: imgFinance,
+  },
+  {
+    id: 'new-payment',
+    label: 'New Payment',
+    appName: 'Finance',
+    img: imgPayment,
+  },
+]
 
 class Home extends React.Component {
   state = {
@@ -102,12 +122,12 @@ class Home extends React.Component {
                     }}
                   >
                     <Cards>
-                      {appActions.map(({ id, label }) => (
+                      {appActions.map(({ id, label , img}) => (
                         <CardWrap key={id}>
                           <HomeCard
                             id={id}
                             title={label}
-                            icon={imgActions.get(id)}
+                            icon={img}
                             onActivate={this.handleCardAction}
                           />
                         </CardWrap>

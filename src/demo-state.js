@@ -109,28 +109,6 @@ export const prices = [
   { symbol: 'DNT', value: '$0.35', status: 'down' },
 ]
 
-export const homeActions = [
-  {
-    id: 'assign-tokens',
-    label: 'Assign Tokens',
-    app: 'tokens',
-    appName: 'Token Manager',
-  },
-  { id: 'vote', label: 'Vote', app: 'voting', appName: 'Voting' },
-  {
-    id: 'check-finance',
-    label: 'Check Finance',
-    app: 'finance',
-    appName: 'Finance',
-  },
-  {
-    id: 'new-payment',
-    label: 'New Payment',
-    app: 'tokens',
-    appName: 'Finance',
-  },
-]
-
 export const permissions = {
   entities: [
     { id: 1, label: 'Wandering Thunder', badge: { label: 'You' } },
