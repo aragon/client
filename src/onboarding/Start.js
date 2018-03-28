@@ -217,10 +217,7 @@ class StartContent extends React.PureComponent {
           You need at least {weiToEther(MINIMUM_BALANCE)} ETH (you have{' '}
           {Math.round(weiToEther((balance || 0).toFixed()) * 1000) / 1000} ETH).
           <br />
-          <SafeLink
-            target="_blank"
-            href="https://faucet.rinkeby.io/"
-          >
+          <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
             Request Ether on the Rinkeby Network
           </SafeLink>
         </ActionInfo>

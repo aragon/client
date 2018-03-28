@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import {
-  AppBar,
   Button,
   DropDown,
   Field,
@@ -220,7 +219,6 @@ class Settings extends React.Component {
     )
   }
 }
-
 const enhance = compose(
   observeCache(CACHE_KEY, {
     defaultValue: {
