@@ -42,7 +42,7 @@ const template = {
     voteDuration: {
       defaultValue: () => -1,
       filter: value => {
-        if (!isIntegerString(value)) {
+        if (!isIntegerString(value) || value === '') {
           return { voteDuration: -1 }
         }
         const voteDuration = parseInt(value, 10)
