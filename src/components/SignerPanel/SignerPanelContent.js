@@ -48,7 +48,9 @@ class ActionPathsContent extends React.Component {
   handleSign = () => {
     const { intent, direct, paths, onSign } = this.props
     const { selected } = this.state
-    onSign(direct ? intent.transaction : paths[selected][0].transaction)
+    // In non-direct paths, the first transaction (0) is the one we need to sign
+    // to kick off the forwarding path
+    onSign(direct ? intent.transaction : paths[selected][0])
   }
   renderDescription(showPaths, description, transaction = {}, to = '') {
     if (transaction.description) {
