@@ -78,7 +78,7 @@ class Wrapper extends React.Component {
   makeTransactionIntent(transaction = {}) {
     const { apps } = this.props
     const { description, to } = transaction
-    const toApp = apps.filter(app => addressesEqual(app.proxyAddress, to))[0]
+    const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
     const toName = (toApp && toApp.name) || ''
 
     return {
