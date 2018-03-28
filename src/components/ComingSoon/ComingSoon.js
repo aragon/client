@@ -12,7 +12,9 @@ class ComingSoon extends React.Component {
         <Main>
           <Title>
             <h1>
-              <Text size="great" weight='bold'>Coming Soon</Text>
+              <Text size="great" weight="bold">
+                Coming Soon
+              </Text>
             </h1>
           </Title>
           <p>

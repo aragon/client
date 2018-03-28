@@ -1,7 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
-import { Permissions, Settings } from './apps'
+import {
+  // Permissions,
+  Settings,
+} from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -9,8 +12,6 @@ import ComingSoon from './components/ComingSoon/ComingSoon'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath, staticApps } from './routing'
-
-import { groups } from './demo-state'
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -132,6 +133,7 @@ class Wrapper extends React.Component {
       apps,
       walletWeb3,
       wrapper,
+      appsLoading,
       locator: { appId, params },
     } = this.props
     return (
@@ -139,6 +141,7 @@ class Wrapper extends React.Component {
         <Main>
           <MenuPanel
             apps={apps}
+            appsLoading={appsLoading}
             activeAppId={appId}
             activeInstanceId={appId}
             notificationsObservable={wrapper && wrapper.notifications}
@@ -171,6 +174,7 @@ class Wrapper extends React.Component {
       account,
       network,
       wrapper,
+      appsLoading,
       connected,
       daoAddress,
     } = this.props
@@ -211,7 +215,7 @@ class Wrapper extends React.Component {
       )
     }
 
-    if (!wrapper) {
+    if (!wrapper || appsLoading) {
       return <LoadingApps />
     }
 

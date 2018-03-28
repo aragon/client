@@ -154,15 +154,11 @@ const subscribe = (
 ) => {
   const { apps, forwarders, transactions } = wrapper
 
-  // Init the wrapper apps first (e.g. home, settings)
-  onApps(prepareFrontendApps([], ipfsConf.gateway), [])
-
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
     apps: apps.subscribe(apps => {
-      const frontendApps = prepareFrontendApps(apps, ipfsConf.gateway)
-      onApps(frontendApps, apps)
+      onApps(prepareFrontendApps(apps, ipfsConf.gateway), apps)
     }),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
@@ -298,14 +294,8 @@ const initWrapper = async (
 
   const subscriptions = subscribe(
     wrapper,
-    {
-      onApps,
-      onForwarders,
-      onTransaction,
-    },
-    {
-      ipfsConf,
-    }
+    { onApps, onForwarders, onTransaction },
+    { ipfsConf }
   )
 
   wrapper.connectAppIFrame = (iframeElt, proxyAddress) => {
