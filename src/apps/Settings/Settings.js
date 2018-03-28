@@ -163,21 +163,21 @@ class Settings extends React.Component {
                 </EtherscanLink>
               </FieldTwoParts>
               <Note>
-                <strong>Do not send Ether to this address!</strong> Follow the
-                instructions in the “Send Ethers to this Organization” section
+                <strong>Do not send ether to this address!</strong> Follow the
+                instructions in the “Send ether to this Organization” section
                 below.
               </Note>
             </Field>
           </Option>
           {financeApp && (
             <Option
-              name="Send Ethers to this Organization"
+              name="Send ether to this organization"
               text={
                 <span>
-                  To send <strong>test Ethers</strong> to this organization, use
+                  To send <strong>test ether</strong> to this organization, use
                   the address of the Finance app indicated below. Remember to
                   use the {network.name} network.{' '}
-                  <strong>DO NOT send real Ethers from the main network!</strong>
+                  <strong>DO NOT send real ether from the main network!</strong>
                 </span>
               }
             >
