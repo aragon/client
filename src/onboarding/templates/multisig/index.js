@@ -30,11 +30,11 @@ const template = {
     },
     tokenName: {
       defaultValue: () => '',
-      filter: value => ({ tokenName: value }),
+      filter: value => ({ tokenName: value.slice(0, 30) }),
     },
     tokenSymbol: {
       defaultValue: () => '',
-      filter: value => ({ tokenSymbol: value.toUpperCase() }),
+      filter: value => ({ tokenSymbol: value.toUpperCase().slice(0, 5) }),
     },
   },
   screens: [
