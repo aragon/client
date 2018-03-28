@@ -69,29 +69,33 @@ class ActionPathsContent extends React.Component {
     // Slice off the intention (last transaction in the path)
     path = path.slice(0, path.length - 1)
 
-    const title = path.map(({ name }, index) => {
+    const titleElements = path.reduce((titleElements, { name }, index) => {
       const shortName =
         name.length > RADIO_ITEM_TITLE_LENGTH
           ? name.slice(0, RADIO_ITEM_TITLE_LENGTH) + '…'
           : name
 
-      const isLastSegment = index === path.length - 1
-      return (
-        <span title={name}>
+      if (titleElements.length) {
+        titleElements.push(' → ')
+      }
+      titleElements.push(
+        <span key={index} title={name}>
           {shortName}
-          {!isLastSegment ? ' → ' : ''}
         </span>
       )
-    })
+      return titleElements
+    }, [])
+    const title = <React.Fragment>{titleElements}</React.Fragment>
 
-    const isOneHop = path.length === 1
-    const description = path
-      .map(({ name, description }, index) => {
-        if (isOneHop) return description
-
-        return `${index + 1}. ${name}: ${description}`
-      })
-      .join('\n')
+    const descriptionElements =
+      path.length === 1
+        ? path[0].description
+        : path.map(({ name, description }, index) => (
+            <p key={index}>
+              {index + 1}. {name}: {description}
+            </p>
+          ))
+    const description = <React.Fragment>{descriptionElements}</React.Fragment>
 
     return {
       description,
