@@ -37,7 +37,7 @@ const SPRING_SCREEN = springConf('slow')
 
 const initialState = {
   template: null,
-  templateData: [],
+  templateData: {},
   domain: '',
   domainCheckStatus: DomainCheckNone,
   domainToOpen: '',
@@ -111,48 +111,18 @@ class Onboarding extends React.PureComponent {
     return steps[stepIndex] || { group: Steps.Start }
   }
 
-  // Get the template data without the screen-by-screen structure
-  getTemplateData() {
-    const { templateData } = this.state
-
-    // Transforms:
-    //
-    // [
-    //   [ { name: 'foo', value: 1 }, … ],
-    //   [ { name: 'bar', value: 2 }, … ],
-    //   …
-    // ]
-    //
-    // Into:
-    //
-    // { foo: 1, bar: 2, … }
-    //
-    return templateData.reduce(
-      (fields, { data }) => ({
-        ...fields,
-        ...data.reduce(
-          (screenFields, { name, value }) => ({
-            ...screenFields,
-            [name]: value,
-          }),
-          {}
-        ),
-      }),
-      {}
-    )
-  }
-
   getInitialDataFromTemplate(template) {
     if (!Templates.has(template)) {
       return []
     }
-    return Templates.get(template).screens.map(({ screen, fields }) => ({
-      screen,
-      data: Object.entries(fields).map(([name, { defaultValue }]) => ({
-        name,
-        value: defaultValue(),
-      })),
-    }))
+    const fields = Templates.get(template).fields
+    return Object.entries(fields).reduce(
+      (fields, [name, { defaultValue }]) => ({
+        ...fields,
+        [name]: defaultValue(),
+      }),
+      {}
+    )
   }
 
   // Return a screen object from a template
@@ -168,19 +138,38 @@ class Onboarding extends React.PureComponent {
   }
 
   // Filters a field value by calling the corresponding filter on the template
-  filterConfigurationValue(template, screen, name, value) {
-    const screenData = this.getTemplateScreen(template, screen)
-    return screenData
-      ? screenData.fields[name].filter(value, this.getTemplateData())
-      : null
+  filterConfigurationValue(template, name, value) {
+    if (!Templates.has(template)) {
+      return null
+    }
+    return Templates.get(template).fields[name].filter(
+      value,
+      this.state.templateData
+    )
   }
 
-  // Check if the data is valid by calling validateScreen() on the template
+  // Check if the data is valid by calling validate() on the template screen
   validateConfigurationScreen(template, screen) {
     const screenData = this.getTemplateScreen(template, screen)
-    return screenData
-      ? screenData.validateScreen(this.getTemplateData())
-      : false
+    return screenData ? screenData.validate(this.state.templateData) : false
+  }
+
+  handleConfigurationFieldUpdate = (screen, name, value) => {
+    this.setState(({ templateData, template }) => {
+      const updatedFields = this.filterConfigurationValue(template, name, value)
+
+      // If the filter returns null, the value is not updated
+      if (updatedFields === null) {
+        return {}
+      }
+
+      return {
+        templateData: {
+          ...templateData,
+          ...updatedFields,
+        },
+      }
+    })
   }
 
   handleStartCreate = () => {
@@ -216,6 +205,7 @@ class Onboarding extends React.PureComponent {
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '')
+      .slice(0, 30)
 
     // No change
     if (this.state[domainKey] === filteredDomain) {
@@ -281,40 +271,6 @@ class Onboarding extends React.PureComponent {
     }
   }
 
-  handleConfigurationFieldUpdate = (screen, name, value) => {
-    this.setState(({ templateData, template }) => {
-      const updatedFields = this.filterConfigurationValue(
-        template,
-        screen,
-        name,
-        value
-      )
-
-      // If the filter returns null, the value is not updated
-      if (updatedFields === null) {
-        return {}
-      }
-
-      return {
-        templateData: templateData.map(screenData => {
-          if (screenData.screen !== screen) {
-            return screenData
-          }
-
-          return {
-            screen,
-            data: screenData.data.map(field => {
-              if (!updatedFields[field.name]) {
-                return field
-              }
-              return { ...field, value: updatedFields[field.name] }
-            }),
-          }
-        }),
-      }
-    })
-  }
-
   buildDao = () => {
     const { template, domain } = this.state
 
@@ -323,7 +279,7 @@ class Onboarding extends React.PureComponent {
     }
 
     const templateData = Templates.get(template)
-    const data = templateData.prepareData(this.getTemplateData())
+    const data = templateData.prepareData(this.state.templateData)
 
     console.log('build DAO', data)
     this.props.onBuildDao(templateData.name, domain, data)
@@ -365,6 +321,9 @@ class Onboarding extends React.PureComponent {
     }
     if (step.group === Steps.Configure) {
       return this.validateConfigurationScreen(template, step.screen)
+    }
+    if (step.screen === 'sign') {
+      return false
     }
     return true
   }
@@ -410,9 +369,7 @@ class Onboarding extends React.PureComponent {
             <View>
               <Window>
                 <Motion
-                  style={{
-                    screenProgress: spring(stepIndex, SPRING_SCREEN),
-                  }}
+                  style={{ screenProgress: spring(stepIndex, SPRING_SCREEN) }}
                 >
                   {({ screenProgress }) => (
                     <React.Fragment>
@@ -531,15 +488,7 @@ class Onboarding extends React.PureComponent {
     }
 
     const ConfigureScreen = configureScreen.Component
-    const screenData = this.state.templateData.find(
-      data => data.screen === screen
-    )
-    const fields = screenData
-      ? screenData.data.reduce(
-          (fields, { name, value }) => ({ ...fields, [name]: value }),
-          {}
-        )
-      : {}
+    const fields = this.state.templateData
     return (
       <ConfigureScreen
         screen={screen}

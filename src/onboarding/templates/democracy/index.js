@@ -8,62 +8,68 @@ const template = {
   name: 'democracy',
   label: 'Token project with Democracy',
   icon,
+  fields: {
+    support: {
+      defaultValue: () => -1,
+      filter: (value, { minQuorum }) => {
+        if (!isIntegerString(value)) {
+          return { support: -1 }
+        }
+        const intValue = parseInt(value, 10)
+        const support = isNaN(intValue) ? -1 : Math.min(100, Math.max(1, value))
+        return {
+          support,
+          minQuorum: support < minQuorum ? support : minQuorum,
+        }
+      },
+    },
+    minQuorum: {
+      defaultValue: () => -1,
+      filter: (value, { support }) => {
+        if (!isIntegerString(value)) {
+          return { minQuorum: -1 }
+        }
+        const intValue = parseInt(value, 10)
+        const minQuorum = isNaN(intValue)
+          ? -1
+          : Math.min(100, Math.max(0, value))
+        return {
+          minQuorum,
+          support: support < minQuorum ? minQuorum : support,
+        }
+      },
+    },
+    voteDuration: {
+      defaultValue: () => -1,
+      filter: value => {
+        if (!isIntegerString(value) || value === '') {
+          return { voteDuration: -1 }
+        }
+        const voteDuration = parseInt(value, 10)
+        if (isNaN(voteDuration)) {
+          return null
+        }
+        if (voteDuration > Number.MAX_SAFE_INTEGER) {
+          return null
+        }
+        return {
+          voteDuration: Math.max(1, value),
+        }
+      },
+    },
+    tokenName: {
+      defaultValue: () => '',
+      filter: value => ({ tokenName: value.slice(0, 30) }),
+    },
+    tokenSymbol: {
+      defaultValue: () => '',
+      filter: value => ({ tokenSymbol: value.toUpperCase().slice(0, 5) }),
+    },
+  },
   screens: [
     {
       screen: 'voting-defaults',
-      fields: {
-        support: {
-          defaultValue: () => -1,
-          filter: (value, { minQuorum }) => {
-            if (!isIntegerString(value)) {
-              return { support: -1 }
-            }
-            const intValue = parseInt(value, 10)
-            const support = isNaN(intValue)
-              ? -1
-              : Math.min(100, Math.max(1, value))
-            return {
-              support,
-              minQuorum: support < minQuorum ? support : minQuorum,
-            }
-          },
-        },
-        minQuorum: {
-          defaultValue: () => -1,
-          filter: (value, { support }) => {
-            if (!isIntegerString(value)) {
-              return { minQuorum: -1 }
-            }
-            const intValue = parseInt(value, 10)
-            const minQuorum = isNaN(intValue)
-              ? -1
-              : Math.min(100, Math.max(0, value))
-            return {
-              minQuorum,
-              support: support < minQuorum ? minQuorum : support,
-            }
-          },
-        },
-        voteDuration: {
-          defaultValue: () => -1,
-          filter: value => {
-            if (!isIntegerString(value)) {
-              return { voteDuration: -1 }
-            }
-            const voteDuration = parseInt(value, 10)
-            if (isNaN(voteDuration)) {
-              return null
-            }
-            if (voteDuration > Number.MAX_SAFE_INTEGER) {
-              return null
-            }
-            return {
-              voteDuration: Math.max(1, value),
-            }
-          },
-        },
-      },
-      validateScreen: ({ support, minQuorum, voteDuration }) => {
+      validate: ({ support, minQuorum, voteDuration }) => {
         if (support < 1 || support > 100) {
           return false
         }
@@ -79,19 +85,7 @@ const template = {
     },
     {
       screen: 'token-name',
-      fields: {
-        tokenName: {
-          defaultValue: () => '',
-          filter: value => ({ tokenName: value }),
-          isValid: value => value.length > 0,
-        },
-        tokenSymbol: {
-          defaultValue: () => '',
-          filter: value => ({ tokenSymbol: value.toUpperCase() }),
-          isValid: value => value.length > 0,
-        },
-      },
-      validateScreen: ({ tokenName, tokenSymbol }) => {
+      validate: ({ tokenName, tokenSymbol }) => {
         return tokenName.length > 0 && tokenSymbol.length > 0
       },
       Component: ConfigureTokenName,

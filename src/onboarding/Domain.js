@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { theme, Text, TextInput, IconCheck, IconCross } from '@aragon/ui'
 import { lerp } from '../math-utils'
 import { noop } from '../utils'
+import LoadingRing from '../components/LoadingRing'
 
 import {
   DomainCheckNone,
@@ -65,6 +66,7 @@ class Domain extends React.Component {
 
 class DomainContent extends React.PureComponent {
   render() {
+    const { domainCheckStatus } = this.props
     return (
       <React.Fragment>
         <Title>
@@ -92,22 +94,27 @@ class DomainContent extends React.PureComponent {
             </label>
             <Status>
               <CheckContainer
-                active={this.props.domainCheckStatus === DomainCheckAccepted}
+                active={domainCheckStatus === DomainCheckAccepted}
               >
                 <IconCheck />
               </CheckContainer>
               <CheckContainer
-                active={this.props.domainCheckStatus === DomainCheckRejected}
+                active={domainCheckStatus === DomainCheckRejected}
               >
                 <IconCross />
               </CheckContainer>
-              <CheckContainer
-                active={this.props.domainCheckStatus === DomainCheckPending}
-              >
-                …
+              <CheckContainer active={domainCheckStatus === DomainCheckPending}>
+                <LoadingRing spin={domainCheckStatus === DomainCheckPending} />
               </CheckContainer>
             </Status>
           </Field>
+          <p style={{ marginTop: '10px' }}>
+            {domainCheckStatus === DomainCheckRejected && (
+              <Text size="xsmall">
+                An organization with that name already exists.
+              </Text>
+            )}
+          </p>
         </form>
       </React.Fragment>
     )
