@@ -322,6 +322,9 @@ class Onboarding extends React.PureComponent {
     if (step.group === Steps.Configure) {
       return this.validateConfigurationScreen(template, step.screen)
     }
+    if (step.screen === 'sign') {
+      return false
+    }
     return true
   }
   isPrevEnabled() {
