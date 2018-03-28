@@ -83,7 +83,7 @@ const LoadCircle = styled.div`
 const LoadCircleIn = styled.div`
   position: relative;
   overflow: ${({ spin }) => (spin ? 'hidden' : 'visible')};
-  width: 11px;
+  width: 10px;
   height: 100%;
   &:before {
     content: '';
