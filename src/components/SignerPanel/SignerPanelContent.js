@@ -48,9 +48,7 @@ class ActionPathsContent extends React.Component {
   handleSign = () => {
     const { intent, direct, paths, onSign } = this.props
     const { selected } = this.state
-    onSign(direct
-      ? intent.transaction
-      : paths[selected][0].transaction)
+    onSign(direct ? intent.transaction : paths[selected][0].transaction)
   }
   renderDescription(showPaths, description, transaction = {}, to = '') {
     if (transaction.description) {
@@ -76,23 +74,34 @@ class ActionPathsContent extends React.Component {
           : name
 
       const isLastSegment = index === path.length - 1
-      return <span title={name}>{shortName}{!isLastSegment ? ' → ' : ''}</span>
+      return (
+        <span title={name}>
+          {shortName}
+          {!isLastSegment ? ' → ' : ''}
+        </span>
+      )
     })
 
     const isOneHop = path.length === 1
-    const description = path.map(({ name, description }, index) => {
-      if (isOneHop) return description
+    const description = path
+      .map(({ name, description }, index) => {
+        if (isOneHop) return description
 
-      return `${index + 1}. ${name}: ${description}`
-    }).join('\n')
+        return `${index + 1}. ${name}: ${description}`
+      })
+      .join('\n')
 
     return {
+      description,
       title,
-      description
     }
   }
   render() {
-    const { intent: { description, to, transaction }, direct, paths } = this.props
+    const {
+      intent: { description, to, transaction },
+      direct,
+      paths,
+    } = this.props
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)

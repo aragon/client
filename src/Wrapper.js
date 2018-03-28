@@ -83,22 +83,19 @@ class Wrapper extends React.Component {
     const intent = {
       to: transaction && transaction.to,
       transaction,
-      description: transaction && transaction.description
+      description: transaction && transaction.description,
     }
     const direct = bag.path.length === 1
 
     return {
       intent,
       direct,
-      paths: direct ? [] : [bag.path]
+      paths: direct ? [] : [bag.path],
     }
   }
-  handleTransaction = (bag) => {
+  handleTransaction = bag => {
     const { intent, direct, paths } = this.reshapeTransactionBag(bag)
-    this.showWeb3ActionSigner(
-      intent,
-      { direct, error: null, paths }
-    )
+    this.showWeb3ActionSigner(intent, { direct, error: null, paths })
   }
   handleSigningWeb3Tx = ({ data, from, to }) => {
     const { transactionBag, walletWeb3 } = this.props
