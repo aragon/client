@@ -311,6 +311,7 @@ class Onboarding extends React.PureComponent {
     }
   }
   isNextEnabled() {
+    const { daoCreationStatus } = this.props
     const { template, domainCheckStatus } = this.state
     const step = this.currentStep()
     if (step.screen === 'template' || step.screen === 'start') {
@@ -323,7 +324,7 @@ class Onboarding extends React.PureComponent {
       return this.validateConfigurationScreen(template, step.screen)
     }
     if (step.screen === 'sign') {
-      return false
+      return daoCreationStatus === 'success'
     }
     return true
   }

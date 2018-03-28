@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { spring, Motion } from 'react-motion'
-import { spring as springConf, theme } from '@aragon/ui'
+import { spring as springConf } from '@aragon/ui'
 import { lerp } from '../../math-utils'
 import LoadingRing from '../LoadingRing'
 

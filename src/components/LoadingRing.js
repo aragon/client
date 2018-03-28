@@ -13,7 +13,7 @@ class LoadingRing extends React.Component {
   }
 }
 
-const Main = styled.div`
+const Main = styled.span`
   position: relative;
   display: flex;
   align-items: center;
@@ -31,7 +31,7 @@ const Main = styled.div`
   animation: ${({ spin }) => (spin ? 'spin 1s infinite linear' : 'none')};
 `
 
-const Ring = styled.div`
+const Ring = styled.span`
   position: relative;
   overflow: ${({ spin }) => (spin ? 'hidden' : 'visible')};
   width: 10px;
