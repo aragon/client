@@ -240,7 +240,8 @@ class Wrapper extends React.Component {
       )
     }
 
-    if (!wrapper || appsLoading) {
+    // The Settings need the wrapper
+    if (!wrapper) {
       return <LoadingApps />
     }
 
@@ -254,6 +255,10 @@ class Wrapper extends React.Component {
           apps={apps}
         />
       )
+    }
+
+    if (appsLoading) {
+      return <LoadingApps />
     }
 
     const app = wrapper && apps.find(app => app.appId === appId)

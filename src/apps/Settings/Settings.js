@@ -108,11 +108,12 @@ class Settings extends React.Component {
     } = this.props
 
     const enableTransactions = !!account && userNetwork === network.type
+    const financeApp = apps.find(({ name }) => name === 'Finance')
     return (
       <AppLayout title="Settings">
         <Content>
           <Option
-            name="Test Tokens"
+            name="Request Test Tokens"
             text="Deposit some tokens into your organization for testing purposes."
           >
             <div>
@@ -140,12 +141,8 @@ class Settings extends React.Component {
               Requesting tokens will assign random <strong>TEST</strong> tokens
               to your organization. The tokens are named after existing
               projects, but keep in mind <strong>THEY ARE NOT</strong> the real
-              ones.{' '}
-              <span role="img" aria-label="winking face">
-                😉
-              </span>{' '}
-              You can view the received tokens in the Token Balances on the
-              Finance app.
+              ones. You can view the received tokens in the Token Balances on
+              the Finance app.
             </Note>
           </Option>
           <Option
@@ -166,12 +163,40 @@ class Settings extends React.Component {
                 </EtherscanLink>
               </FieldTwoParts>
               <Note>
-                <strong>Do not send Ether to this address!</strong> Use the
-                Finance app address below for sending{' '}
-                <strong>test Ether</strong> to your organization.
+                <strong>Do not send ether or tokens to this address!</strong>{' '}
+                Follow the instructions in the “Send ether to this organization”
+                section below.
               </Note>
             </Field>
           </Option>
+          {financeApp && (
+            <Option
+              name="Send ether to this organization"
+              text={
+                <span>
+                  To send <strong>test ether</strong> to this organization, use
+                  the address of the Finance app indicated below. Remember to
+                  use the {network.name} network.{' '}
+                  <strong>DO NOT send real ether from the main network!</strong>
+                </span>
+              }
+            >
+              <Field label="Funding Address (Finance App)">
+                <FieldTwoParts>
+                  <TextInput readOnly wide value={financeApp.proxyAddress} />
+                  <EtherscanLink address={financeApp.proxyAddress}>
+                    {url =>
+                      url ? (
+                        <LinkButton href={url} target="_blank">
+                          See on Etherscan
+                        </LinkButton>
+                      ) : null
+                    }
+                  </EtherscanLink>
+                </FieldTwoParts>
+              </Field>
+            </Option>
+          )}
           {apps.length > 0 && (
             <Option
               name="Aragon Apps"
