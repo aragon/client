@@ -205,6 +205,7 @@ class Onboarding extends React.PureComponent {
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '')
+      .slice(0, 30)
 
     // No change
     if (this.state[domainKey] === filteredDomain) {
