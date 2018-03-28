@@ -12,6 +12,7 @@ import ComingSoon from './components/ComingSoon/ComingSoon'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath, staticApps } from './routing'
+import { addressesEqual } from './web3-utils'
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -74,6 +75,19 @@ class Wrapper extends React.Component {
     // const { appId, } = this.state.appInstance
     // this.openApp(appId, params)
   }
+  makeTransactionIntent(transaction = {}) {
+    const { apps } = this.props
+    const { description, to } = transaction
+    const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
+    const toName = (toApp && toApp.name) || ''
+
+    return {
+      description,
+      to,
+      toName,
+      transaction,
+    }
+  }
   reshapeTransactionBag(bag) {
     // This is a temporary method to reshape the transaction bag
     // to the future format we expect from Aragon.js
@@ -81,16 +95,11 @@ class Wrapper extends React.Component {
     // replace search and replace this function with `bag`, although
     // it is probably only used in `handleTransaction`
     const transaction = bag.path[bag.path.length - 1]
-    const intent = {
-      to: transaction && transaction.to,
-      transaction,
-      description: transaction && transaction.description,
-    }
     const direct = bag.path.length === 1
 
     return {
-      intent,
       direct,
+      intent: this.makeTransactionIntent(transaction),
       paths: direct ? [] : [bag.path],
     }
   }
@@ -106,7 +115,8 @@ class Wrapper extends React.Component {
       this.handleSignerClose()
 
       if (err) {
-        this.showWeb3ActionSigner({ to: transaction.to }, { error: err })
+        const errorIntent = this.makeTransactionIntent(transaction)
+        this.showWeb3ActionSigner(errorIntent, { error: err })
         reject(err)
         console.error(err)
         return

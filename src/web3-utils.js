@@ -1,5 +1,12 @@
 import Web3 from 'web3'
 
+// Check address equality without checksums
+export function addressesEqual(first, second) {
+  first = first && first.toLowerCase()
+  second = second && second.toLowerCase()
+  return first === second
+}
+
 // Cache web3 instances used in the app
 const cache = new WeakMap()
 export function getWeb3(provider) {
