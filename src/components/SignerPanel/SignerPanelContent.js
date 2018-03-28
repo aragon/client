@@ -10,6 +10,7 @@ const SignerPanelContent = ({
   account,
   error,
   intent,
+  direct,
   paths,
   onClose,
   onSign,
@@ -23,9 +24,9 @@ const SignerPanelContent = ({
   }
 
   const possible =
-    (intent.tx || (Array.isArray(paths) && paths.length)) && !error
+    (direct || (Array.isArray(paths) && paths.length)) && !error
   return possible ? (
-    <ActionPathsContent intent={intent} paths={paths} onSign={onSign} />
+    <ActionPathsContent intent={intent} direct={direct} paths={paths} onSign={onSign} />
   ) : (
     <ImpossibleContent error={error} intent={intent} onClose={onClose} />
   )
@@ -45,13 +46,15 @@ class ActionPathsContent extends React.Component {
     this.setState({ selected })
   }
   handleSign = () => {
-    const { intent, paths, onSign } = this.props
+    const { intent, direct, paths, onSign } = this.props
     const { selected } = this.state
-    onSign(intent.tx || paths[selected].tx)
+    // In non-direct paths, the first transaction (0) is the one we need to sign
+    // to kick off the forwarding path
+    onSign(direct ? intent.transaction : paths[selected][0])
   }
-  renderDescription(showPaths, description, tx = {}, to = '') {
-    if (tx.description) {
-      return tx.description
+  renderDescription(showPaths, description, transaction = {}, to = '') {
+    if (transaction.description) {
+      return transaction.description
     }
     return (
       <span>
@@ -62,28 +65,60 @@ class ActionPathsContent extends React.Component {
       </span>
     )
   }
-  render() {
-    const { intent: { description, to, tx }, paths } = this.props
-    const { selected } = this.state
-    const radioItems = paths.map(({ appName, description }) => {
+  getPathRadioItem(path) {
+    // Slice off the intention (last transaction in the path)
+    path = path.slice(0, path.length - 1)
+
+    const titleElements = path.reduce((titleElements, { name }, index) => {
       const shortName =
-        appName.length > RADIO_ITEM_TITLE_LENGTH
-          ? appName.slice(0, RADIO_ITEM_TITLE_LENGTH) + '…'
-          : appName
-      return {
-        description,
-        title: <span title={appName}>{shortName}</span>,
+        name.length > RADIO_ITEM_TITLE_LENGTH
+          ? name.slice(0, RADIO_ITEM_TITLE_LENGTH) + '…'
+          : name
+
+      if (titleElements.length) {
+        titleElements.push(' → ')
       }
-    })
-    const showPaths = !tx && paths.length
+      titleElements.push(
+        <span key={index} title={name}>
+          {shortName}
+        </span>
+      )
+      return titleElements
+    }, [])
+    const title = <React.Fragment>{titleElements}</React.Fragment>
+
+    const descriptionElements =
+      path.length === 1
+        ? path[0].description
+        : path.map(({ name, description }, index) => (
+            <p key={index}>
+              {index + 1}. {name}: {description}
+            </p>
+          ))
+    const description = <React.Fragment>{descriptionElements}</React.Fragment>
+
+    return {
+      description,
+      title,
+    }
+  }
+  render() {
+    const {
+      intent: { description, to, transaction },
+      direct,
+      paths,
+    } = this.props
+    const { selected } = this.state
+    const showPaths = !direct
+    const radioItems = paths.map(this.getPathRadioItem)
     return (
       <React.Fragment>
         {showPaths ? (
           <ActionContainer>
-            {/* <Info.Permissions title="Permission note:">
+            <Info.Permissions title="Permission note:">
               You cannot directly perform this action. You do not have the
               necessary permissions.
-            </Info.Permissions> */}
+            </Info.Permissions>
             <Actions>
               <RadioList
                 title="Action Requirement"
@@ -104,7 +139,7 @@ class ActionPathsContent extends React.Component {
           </DirectActionHeader>
         )}
         <Info.Action icon={null} title="Action to be triggered:">
-          {this.renderDescription(showPaths, description, tx, to)}
+          {this.renderDescription(showPaths, description, transaction, to)}
         </Info.Action>
         <SignerButton onClick={this.handleSign}>Sign Transaction</SignerButton>
       </React.Fragment>
@@ -130,7 +165,7 @@ const NeedUnlockAccountContent = ({ intent: { description, to }, onClose }) => (
   <React.Fragment>
     <Info.Action title="You can't perform any actions">
       {`You need to unlock your account in order to ${description ||
-        'perform this action on'}`}{' '}
+        'perform this action'}`}{' on '}
       <AddressLink to={to} />.
       <InstallMessage>
         Please unlock or enable{' '}
