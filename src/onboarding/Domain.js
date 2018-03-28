@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { theme, Text, TextInput, IconCheck, IconCross } from '@aragon/ui'
 import { lerp } from '../math-utils'
 import { noop } from '../utils'
+import LoadingRing from '../components/LoadingRing'
 
 import {
   DomainCheckNone,
@@ -104,7 +105,9 @@ class DomainContent extends React.PureComponent {
               <CheckContainer
                 active={this.props.domainCheckStatus === DomainCheckPending}
               >
-                …
+                <LoadingRing
+                  spin={this.props.domainCheckStatus === DomainCheckPending}
+                />
               </CheckContainer>
             </Status>
           </Field>

@@ -13,6 +13,7 @@ import { network, web3Providers } from '../environment'
 import { noop } from '../utils'
 import { weiToEther, etherToWei } from '../web3-utils'
 import { lerp } from '../math-utils'
+import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
 
 import {
@@ -163,7 +164,9 @@ class StartContent extends React.PureComponent {
                   <CheckContainer
                     active={domainCheckStatus === DomainCheckPending}
                   >
-                    …
+                    <LoadingRing
+                      spin={this.props.domainCheckStatus === DomainCheckPending}
+                    />
                   </CheckContainer>
                 </Status>
               </Field>
