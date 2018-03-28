@@ -1,8 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, unselectable, colors } from '@aragon/ui'
+import { noop } from '../../utils'
 
 class HomeCard extends React.Component {
+  static defaultProps = {
+    onActivate: noop,
+  }
   handleClick = () => {
     this.props.onActivate(this.props.id)
   }

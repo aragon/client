@@ -110,12 +110,25 @@ export const prices = [
 ]
 
 export const homeActions = [
-  { id: 'transfer-tokens', label: 'Transfer Tokens', app: 'tokens' },
-  { id: 'assign-tokens', label: 'Assign Tokens', app: 'tokens' },
-  { id: 'vote', label: 'Vote', app: 'voting' },
-  { id: 'view-identity', label: 'Identity', app: 'identity' },
-  { id: 'check-finance', label: 'Check Finance', app: 'finance' },
-  { id: 'new-payment', label: 'New Payment', app: 'tokens' },
+  {
+    id: 'assign-tokens',
+    label: 'Assign Tokens',
+    app: 'tokens',
+    appName: 'Token Manager',
+  },
+  { id: 'vote', label: 'Vote', app: 'voting', appName: 'Voting' },
+  {
+    id: 'check-finance',
+    label: 'Check Finance',
+    app: 'finance',
+    appName: 'Finance',
+  },
+  {
+    id: 'new-payment',
+    label: 'New Payment',
+    app: 'tokens',
+    appName: 'Finance',
+  },
 ]
 
 export const permissions = {

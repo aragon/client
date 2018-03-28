@@ -205,7 +205,14 @@ class Wrapper extends React.Component {
     } = this.props
 
     if (appId === 'home') {
-      return <Home connected={connected} />
+      return (
+        <Home
+          connected={connected}
+          appsLoading={appsLoading}
+          onOpenApp={this.openApp}
+          apps={apps}
+        />
+      )
     }
 
     if (appId === 'permissions') {
