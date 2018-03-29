@@ -1,7 +1,7 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
-import { theme, spring as springConf, IconBlank } from '@aragon/ui'
+import { theme, spring as springConf, IconBlank, Badge } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
@@ -16,7 +16,14 @@ class MenuPanelAppGroup extends React.Component {
     this.props.onActivate(instanceId)
   }
   render() {
-    const { icon, name, instances, active, activeInstanceId } = this.props
+    const {
+      icon,
+      name,
+      instances,
+      active,
+      activeInstanceId,
+      comingSoon,
+    } = this.props
     return (
       <Motion
         style={{
@@ -34,14 +41,21 @@ class MenuPanelAppGroup extends React.Component {
 
             <ActiveBackground style={{ opacity: Number(active) }} />
 
-            <span
+            <ButtonItem
               role="button"
               className={`item ${active ? 'active' : ''}`}
               onClick={this.handleAppClick}
             >
-              <span className="icon">{icon || <IconBlank />}</span>
-              <span className="name">{name}</span>
-            </span>
+              <span>
+                <span className="icon">{icon || <IconBlank />}</span>
+                <span className="name">{name}</span>
+              </span>
+              {comingSoon && (
+                <span>
+                  <Badge shape="compact">soon</Badge>
+                </span>
+              )}
+            </ButtonItem>
 
             <ul
               className="instances"
@@ -110,6 +124,15 @@ const Main = styled.div`
   }
   .instances li {
     display: flex;
+  }
+`
+
+const ButtonItem = styled.span`
+  display: flex;
+  justify-content: space-between;
+  & > span {
+    display: flex;
+    flex-wrap: nowrap;
   }
 `
 

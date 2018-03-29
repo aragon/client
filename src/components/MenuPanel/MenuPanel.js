@@ -141,6 +141,7 @@ class MenuPanel extends React.Component {
           instances={instances}
           activeInstanceId={activeInstanceId}
           onActivate={onOpenApp}
+          comingSoon={['permissions', 'apps'].includes(appId)}
         />
       </div>
     )
