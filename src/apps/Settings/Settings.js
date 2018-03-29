@@ -97,6 +97,10 @@ class Settings extends React.Component {
       airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
     }
   }
+  handleRefreshCache = () => {
+    window.localStorage.clear()
+    window.location.reload()
+  }
   render() {
     const {
       currencies,
@@ -113,40 +117,7 @@ class Settings extends React.Component {
       <AppLayout title="Settings">
         <Content>
           <Option
-            name="Request Test Tokens"
-            text="Deposit some tokens into your organization for testing purposes."
-          >
-            <div>
-              <Button
-                mode="secondary"
-                onClick={this.handleDepositTestTokens}
-                disabled={!enableTransactions}
-              >
-                Request Test Tokens
-              </Button>
-              {!enableTransactions && (
-                <Text size="small" style={{ marginLeft: '10px' }}>
-                  {(() => {
-                    if (userNetwork !== network.type) {
-                      return `Please select the ${
-                        network.type
-                      } network in MetaMask.`
-                    }
-                    return `Please unlock your account in MetaMask.`
-                  })()}
-                </Text>
-              )}
-            </div>
-            <Note>
-              Requesting tokens will assign random <strong>TEST</strong> tokens
-              to your organization. The tokens are named after existing
-              projects, but keep in mind <strong>THEY ARE NOT</strong> the real
-              ones. You can view the received tokens in the Token Balances on
-              the Finance app.
-            </Note>
-          </Option>
-          <Option
-            name="Organization Address"
+            name="Organization address"
             text={`This organization is deployed on the ${network.name}.`}
           >
             <Field label="Address">
@@ -169,15 +140,47 @@ class Settings extends React.Component {
               </Note>
             </Field>
           </Option>
+          <Option
+            name="Request test tokens"
+            text="Deposit some tokens into your organization for testing purposes."
+          >
+            <div>
+              <Button
+                mode="secondary"
+                onClick={this.handleDepositTestTokens}
+                disabled={!enableTransactions}
+                style={{ opacity: enableTransactions ? 1 : 0.6 }}
+              >
+                Request test tokens
+              </Button>
+              {!enableTransactions && (
+                <Text size="small" style={{ marginLeft: '10px' }}>
+                  {(() => {
+                    if (userNetwork !== network.type) {
+                      return `Please select the ${
+                        network.type
+                      } network in MetaMask.`
+                    }
+                    return `Please unlock your account in MetaMask.`
+                  })()}
+                </Text>
+              )}
+            </div>
+            <Note>
+              Requesting tokens will assign random <strong>TEST</strong> tokens
+              to your organization. The tokens are named after existing
+              projects, but keep in mind <strong>THEY ARE NOT</strong> the real
+              ones. You can view the received tokens in the Token Balances on
+              the Finance app.
+            </Note>
+          </Option>
           {financeApp && (
             <Option
               name="Send ether to this organization"
               text={
                 <span>
                   To send <strong>test ether</strong> to this organization, use
-                  the address of the Finance app indicated below. Remember to
-                  use the {network.name} network.{' '}
-                  <strong>DO NOT send real ether from the main network!</strong>
+                  the address of the Finance app indicated below.
                 </span>
               }
             >
@@ -194,12 +197,16 @@ class Settings extends React.Component {
                     }
                   </EtherscanLink>
                 </FieldTwoParts>
+                <Note>
+                  Remember to use the {network.name} network.{' '}
+                  <strong>DO NOT send real ether from the main network!</strong>
+                </Note>
               </Field>
             </Option>
           )}
           {apps.length > 0 && (
             <Option
-              name="Aragon Apps"
+              name="Aragon apps"
               text={`This organization has ${apps.length} apps installed.`}
             >
               <AppsList>
@@ -239,6 +246,21 @@ class Settings extends React.Component {
                 </Field>
               </Option>
             )}
+          <Option
+            name="Troubleshooting"
+            text="Press this button to refresh the cache of the application in your browser."
+          >
+            <div>
+              <Button mode="secondary" onClick={this.handleRefreshCache}>
+                Clear application cache
+              </Button>
+            </div>
+            <Note>
+              This will only delete the data stored in your browser to make the
+              app load faster. No data related to the organization itself will
+              be altered.
+            </Note>
+          </Option>
         </Content>
       </AppLayout>
     )
