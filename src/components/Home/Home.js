@@ -122,7 +122,7 @@ class Home extends React.Component {
                     }}
                   >
                     <Cards>
-                      {appActions.map(({ id, label , img}) => (
+                      {appActions.map(({ id, label, img }) => (
                         <CardWrap key={id}>
                           <HomeCard
                             id={id}

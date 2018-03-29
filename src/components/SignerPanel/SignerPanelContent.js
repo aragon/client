@@ -23,10 +23,14 @@ const SignerPanelContent = ({
     return <NeedUnlockAccountContent intent={intent} onClose={onClose} />
   }
 
-  const possible =
-    (direct || (Array.isArray(paths) && paths.length)) && !error
+  const possible = (direct || (Array.isArray(paths) && paths.length)) && !error
   return possible ? (
-    <ActionPathsContent intent={intent} direct={direct} paths={paths} onSign={onSign} />
+    <ActionPathsContent
+      intent={intent}
+      direct={direct}
+      paths={paths}
+      onSign={onSign}
+    />
   ) : (
     <ImpossibleContent error={error} intent={intent} onClose={onClose} />
   )
