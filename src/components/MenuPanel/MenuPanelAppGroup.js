@@ -52,7 +52,7 @@ class MenuPanelAppGroup extends React.Component {
               </span>
               {comingSoon && (
                 <span>
-                  <Badge shape="compact">SOON</Badge>
+                  <Badge shape="compact" style={{ fontVariant: 'small-caps' }}>soon</Badge>
                 </span>
               )}
             </ButtonItem>
