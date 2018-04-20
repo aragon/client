@@ -17,6 +17,12 @@ import provideNetwork from '../../context/provideNetwork'
 import { compose } from '../../utils'
 import { getWeb3 } from '../../web3-utils'
 import { web3Providers, network, appIds } from '../../environment'
+import {
+  getDefaultEthNode,
+  getIpfsGateway,
+  setDefaultEthNode,
+  setIpfsGateway,
+} from '../../local-settings'
 import airdrop from '../../testnet/airdrop'
 
 // const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY']
@@ -60,10 +66,14 @@ const Note = styled.p`
 
 class Settings extends React.Component {
   static defaultProps = {
+    account: '',
     apps: [],
     currencies: [],
-    account: '',
     network: '',
+  }
+  state = {
+    defaultEthNode: getDefaultEthNode(),
+    ipfsGateway: getIpfsGateway(),
   }
   constructor(props) {
     super(props)
@@ -97,6 +107,19 @@ class Settings extends React.Component {
       airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
     }
   }
+  handleDefaultEthNodeChange = event => {
+    this.setState({ defaultEthNode: event.target.value })
+  }
+  handleIpfsGatewayChange = event => {
+    this.setState({ ipfsGateway: event.target.value })
+  }
+  handleNodeSettingsSave = () => {
+    const { defaultEthNode, ipfsGateway } = this.state
+    setDefaultEthNode(defaultEthNode)
+    setIpfsGateway(ipfsGateway)
+    // For now, we have to reload the page to propagate the changes
+    window.location.reload()
+  }
   handleRefreshCache = () => {
     window.localStorage.clear()
     window.location.reload()
@@ -110,6 +133,7 @@ class Settings extends React.Component {
       selectedCurrency,
       apps,
     } = this.props
+    const { defaultEthNode, ipfsGateway } = this.state
 
     const enableTransactions = !!account && userNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
@@ -246,6 +270,28 @@ class Settings extends React.Component {
                 </Field>
               </Option>
             )}
+          <Option
+            name="Node settings (advanced)"
+            text="Change which Ethereum and IPFS clients this app is connected to"
+          >
+            <Field label="Ethereum node">
+              <TextInput
+                onChange={this.handleDefaultEthNodeChange}
+                wide
+                value={defaultEthNode}
+              />
+            </Field>
+            <Field label="IPFS gateway">
+              <TextInput
+                onChange={this.handleIpfsGatewayChange}
+                wide
+                value={ipfsGateway}
+              />
+            </Field>
+            <Button mode="secondary" onClick={this.handleNodeSettingsSave}>
+              Save settings
+            </Button>
+          </Option>
           <Option
             name="Troubleshooting"
             text="Press this button to refresh the cache of the application in your browser."

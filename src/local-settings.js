@@ -9,10 +9,18 @@ export function getDefaultEthNode() {
   )
 }
 
+export function setDefaultEthNode(node) {
+  return window.localStorage.setItem(DEFAULT_ETH_NODE_KEY, node)
+}
+
 export function getIpfsGateway() {
   return (
     window.localStorage.getItem(IPFS_GATEWAY_KEY) ||
     process.env.REACT_APP_IPFS_GATEWAY ||
     'https://gateway.ipfs.io/ipfs'
   )
+}
+
+export function setIpfsGateway(gateway) {
+  return window.localStorage.setItem(IPFS_GATEWAY_KEY, gateway)
 }
