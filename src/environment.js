@@ -1,4 +1,5 @@
 import Web3 from 'web3'
+import { getDefaultEthNode, getIpfsGateway } from './local-settings'
 import { makeEtherscanBaseUrl } from './utils'
 
 // TODO: make all these depend on env variables / URL
@@ -87,7 +88,7 @@ export const contractAddresses = {
 }
 
 export const ipfsDefaultConf = {
-  gateway: 'https://gateway.ipfs.io/ipfs',
+  gateway: getIpfsGateway(),
   rpc: {
     host: 'ipfs.infura.io',
     port: '5001',
@@ -103,8 +104,6 @@ export const network = {
 }
 
 export const web3Providers = {
-  default: new Web3.providers.WebsocketProvider(
-    'ws://rinkeby.aragon.network:8546'
-  ),
+  default: new Web3.providers.WebsocketProvider(getDefaultEthNode()),
   wallet: window.web3 && window.web3.currentProvider,
 }
