@@ -10,7 +10,7 @@ class MenuPanelAppGroup extends React.Component {
     instances: [],
   }
   handleAppClick = () => {
-    this.props.onActivate(this.props.appId)
+    this.props.onActivate(this.props.proxyAddress)
   }
   handleInstanceClick = instanceId => {
     this.props.onActivate(instanceId)

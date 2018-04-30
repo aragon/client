@@ -15,8 +15,8 @@ const appsOrder = ['TokenManager', 'Finance', 'Voting', 'Vault']
 
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
 export const sortAppsPair = (app1, app2) => {
-  const index1 = appsOrder.indexOf(app1.appId)
-  const index2 = appsOrder.indexOf(app2.appId)
+  const index1 = appsOrder.indexOf(app1.proxyAddress)
+  const index2 = appsOrder.indexOf(app2.proxyAddress)
 
   // Try to sort it if the app exists in the list
   if (index1 === -1 && index2 > -1) {
@@ -30,8 +30,8 @@ export const sortAppsPair = (app1, app2) => {
   }
 
   // Otherwise, alphabetical order
-  const id1 = app1.appId.toLowerCase()
-  const id2 = app2.appId.toLowerCase()
+  const id1 = app1.proxyAddress.toLowerCase()
+  const id2 = app2.proxyAddress.toLowerCase()
   if (id1 < id2) {
     return -1
   }
@@ -49,9 +49,9 @@ if (process.env.NODE_ENV !== 'production') {
    * Local settings *
    ******************/
   appLocator = {
-    [appIds['Finance']]: 'http://localhost:3002/',
-    [appIds['TokenManager']]: 'http://localhost:3003/',
-    [appIds['Voting']]: 'http://localhost:3001/',
+    [appIds['Finance']]: 'https://finance.aragonpm.com/',
+    [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
+    [appIds['Voting']]: 'https://voting.aragonpm.com/',
   }
   appOverrides = {
     [appIds['Finance']]: {

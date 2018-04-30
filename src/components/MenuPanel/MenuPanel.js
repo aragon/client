@@ -20,19 +20,19 @@ import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 
 import logo from './assets/logo.svg'
 
-const appHome = { appId: 'home', name: 'Home', icon: <IconHome /> }
+const appHome = { proxyAddress: 'home', name: 'Home', icon: <IconHome /> }
 const appSettings = {
-  appId: 'settings',
+  proxyAddress: 'settings',
   name: 'Settings',
   icon: <IconSettings />,
 }
 const appPermissions = {
-  appId: 'permissions',
+  proxyAddress: 'permissions',
   name: 'Permissions',
   icon: <IconPermissions />,
 }
 const appApps = {
-  appId: 'apps',
+  proxyAddress: 'apps',
   name: 'Apps',
   icon: <IconApps />,
 }
@@ -119,7 +119,7 @@ class MenuPanel extends React.Component {
     )
   }
   renderApp = app => {
-    const { activeAppId, activeInstanceId, onOpenApp, appsLoading } = this.props
+    const { activeProxyAddress, activeInstanceId, onOpenApp, appsLoading } = this.props
 
     // Wrap the DAO apps in the loader
     if (Array.isArray(app)) {
@@ -130,18 +130,18 @@ class MenuPanel extends React.Component {
       )
     }
 
-    const { appId, name, icon, instances = [] } = app
+    const { proxyAddress, name, icon, instances = [] } = app
     return (
-      <div key={appId}>
+      <div key={proxyAddress}>
         <MenuPanelAppGroup
           name={name}
           icon={icon}
-          appId={appId}
-          active={appId === activeAppId}
+          proxyAddress={proxyAddress}
+          active={proxyAddress === activeProxyAddress}
           instances={instances}
           activeInstanceId={activeInstanceId}
           onActivate={onOpenApp}
-          comingSoon={['permissions', 'apps'].includes(appId)}
+          comingSoon={['permissions', 'apps'].includes(proxyAddress)}
         />
       </div>
     )

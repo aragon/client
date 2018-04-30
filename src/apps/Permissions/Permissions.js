@@ -140,7 +140,7 @@ class Permissions extends React.Component {
           onClose={this.handleAssignPanelClose}
         >
           <AssignPermission
-            onDone={this.handleAssignPanelClose}
+            onDone={this.handleAppBarTitleClick}
             entities={groups.map(({ name }) => `Groups (${name})`)}
             calls={appItems.map(
               ({ label, badge }) =>

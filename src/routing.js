@@ -64,23 +64,23 @@ export const parsePath = (pathname, search = '') => {
   // App
   const rawParams = search && search.split('?params=')[1]
   const params = rawParams ? JSON.parse(decodeURIComponent(rawParams)) : null
-  const [dao, appId, ...appParts] = parts
+  const [dao, proxyAddress, ...appParts] = parts
   return {
     ...locator,
     mode: 'app',
     dao,
-    appId: appId || 'home',
+    proxyAddress: proxyAddress || 'home',
     params,
     parts: appParts,
   }
 }
 
 // Return a path string for an app instance
-export const getAppPath = ({ dao, appId = 'home', params } = {}) => {
-  if (staticApps.has(appId)) {
-    return `/${dao}${staticApps.get(appId)}`
+export const getAppPath = ({ dao, proxyAddress = 'home', params } = {}) => {
+  if (staticApps.has(proxyAddress)) {
+    return `/${dao}${staticApps.get(proxyAddress)}`
   }
-  return `/${dao}/${appId}${
+  return `/${dao}/${proxyAddress}${
     params ? `?params=${encodeURIComponent(JSON.stringify(params))}` : ``
   }`
 }
