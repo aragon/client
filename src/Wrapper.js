@@ -10,7 +10,6 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import ComingSoon from './components/ComingSoon/ComingSoon'
 import MenuPanel from './components/MenuPanel/MenuPanel'
-import Permissions from './apps/Permissions/Permissions'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath, staticApps } from './routing'
 import { addressesEqual } from './web3-utils'
@@ -42,7 +41,9 @@ class Wrapper extends React.Component {
   }
   openApp = (proxyAddress, params) => {
     const { historyPush, locator } = this.props
-    historyPush(getAppPath({ dao: locator.dao, proxyAddress: proxyAddress, params }))
+    historyPush(
+      getAppPath({ dao: locator.dao, proxyAddress: proxyAddress, params })
+    )
   }
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
@@ -140,7 +141,10 @@ class Wrapper extends React.Component {
   }
   isAppInstalled(proxyAddress) {
     const { apps } = this.props
-    return staticApps.has(proxyAddress) && !!apps.find(app => app.proxyAddress === proxyAddress)
+    return (
+      staticApps.has(proxyAddress) &&
+      !!apps.find(app => app.proxyAddress === proxyAddress)
+    )
   }
   showWeb3ActionSigner = (intent, { direct, error, paths }) => {
     this.setState({
@@ -161,7 +165,7 @@ class Wrapper extends React.Component {
       walletWeb3,
       wrapper,
       appsLoading,
-      locator: { proxyAddress, appId, params },
+      locator: { proxyAddress, params },
     } = this.props
     return (
       <React.Fragment>
@@ -219,13 +223,13 @@ class Wrapper extends React.Component {
 
     if (proxyAddress === 'permissions') {
       return (
-       <ComingSoon
-         title="Permissions"
-         subtitle={`
-           The permissions app is not quite ready for prime time but will be
-           available soon.
-         `}
-       />
+        <ComingSoon
+          title="Permissions"
+          subtitle={`
+            The permissions app is not quite ready for prime time but will be
+            available soon.
+          `}
+        />
       )
       // return (
       //   <Permissions

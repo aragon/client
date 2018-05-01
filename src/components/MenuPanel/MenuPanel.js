@@ -119,7 +119,12 @@ class MenuPanel extends React.Component {
     )
   }
   renderApp = app => {
-    const { activeProxyAddress, activeInstanceId, onOpenApp, appsLoading } = this.props
+    const {
+      activeProxyAddress,
+      activeInstanceId,
+      onOpenApp,
+      appsLoading,
+    } = this.props
 
     // Wrap the DAO apps in the loader
     if (Array.isArray(app)) {
