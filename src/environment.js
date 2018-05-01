@@ -50,9 +50,9 @@ if (process.env.NODE_ENV !== 'production') {
    * Local settings *
    ******************/
   appLocator = {
-    [appIds['Finance']]: 'https://finance.aragonpm.com/',
-    [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
-    [appIds['Voting']]: 'https://voting.aragonpm.com/',
+    [appIds['Finance']]: 'http://localhost:3002/',
+    [appIds['TokenManager']]: 'http://localhost:3003/',
+    [appIds['Voting']]: 'http://localhost:3001/',
   }
   appOverrides = {
     [appIds['Finance']]: {

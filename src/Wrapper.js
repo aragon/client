@@ -74,8 +74,6 @@ class Wrapper extends React.Component {
     }
   }
   handleParamsRequest = params => {
-    console.log(this)
-    const perm = this.props.wrapper.permissions.subscribe(p => console.log(p))
     // const { proxyAddress, } = this.state.appInstance
     // this.openApp(proxyAddress, params)
   }
@@ -220,23 +218,23 @@ class Wrapper extends React.Component {
     }
 
     if (proxyAddress === 'permissions') {
-      //return (
-      //  <ComingSoon
-      //    title="Permissions"
-      //    subtitle={`
-      //      The permissions app is not quite ready for prime time but will be
-      //      available soon.
-      //    `}
-      //  />
-      //)
-       return (
-         <Permissions
-           apps={apps}
-           groups={apps}
-           params={params}
-           onParamsRequest={this.handleParamsRequest}
-         />
-       )
+      return (
+       <ComingSoon
+         title="Permissions"
+         subtitle={`
+           The permissions app is not quite ready for prime time but will be
+           available soon.
+         `}
+       />
+      )
+      // return (
+      //   <Permissions
+      //     apps={apps}
+      //     groups={apps}
+      //     params={params}
+      //     onParamsRequest={this.handleParamsRequest}
+      //   />
+      // )
     }
 
     if (proxyAddress === 'apps') {
