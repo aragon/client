@@ -56,7 +56,6 @@ class Wrapper extends React.Component {
       console.error('The app cannot be connected to aragon.js')
     }
 
-    console.log(app.proxyAddress)
     wrapper.connectAppIFrame(event.target, app.proxyAddress)
     this.appIFrame.sendMessage({
       from: 'wrapper',
