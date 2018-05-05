@@ -1,5 +1,10 @@
 import Web3 from 'web3'
-import { getDefaultEthNode, getIpfsGateway } from './local-settings'
+import {
+  getDefaultEthNode,
+  getEnsRegistryAddress,
+  getEthNetworkType,
+  getIpfsGateway,
+} from './local-settings'
 import { makeEtherscanBaseUrl } from './utils'
 
 // TODO: make all these depend on env variables / URL
@@ -83,8 +88,7 @@ if (process.env.NODE_ENV !== 'production') {
 export { appLocator, appOverrides }
 
 export const contractAddresses = {
-  // Aragon's Rinkeby ENS
-  ensRegistry: '0xfbae32d1cde62858bc45f51efc8cc4fa1415447e',
+  ensRegistry: getEnsRegistryAddress(),
 }
 
 export const ipfsDefaultConf = {
@@ -96,11 +100,23 @@ export const ipfsDefaultConf = {
   },
 }
 
-export const network = {
-  chainId: 4,
-  etherscanBaseUrl: makeEtherscanBaseUrl('rinkeby'),
-  name: 'Rinkeby testnet',
-  type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
+const expectedNetworkType = getEthNetworkType()
+const networkTypes = {
+  rinkeby: {
+    chainId: 4,
+    etherscanBaseUrl: makeEtherscanBaseUrl('rinkeby'),
+    name: 'Rinkeby testnet',
+    type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
+  },
+  local: {
+    name: 'Local test chain',
+    type: 'private',
+  },
+}
+export const network = networkTypes[expectedNetworkType] || {
+  // Expected network type isn't one of the above
+  name: `Unsupported (${expectedNetworkType})`,
+  type: 'unknown',
 }
 
 export const web3Providers = {

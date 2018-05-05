@@ -11,3 +11,14 @@
 Please note that all of the code is still undocumented, and no contribution guidelines are in place.
 
 Contributions are welcome, just beware of the dragons. 🐲
+
+## Environment options
+
+The app currently supports setting a few environment settings via environment variables:
+
+- `REACT_APP_DEFAULT_ETH_NODE`: Url of the default Ethereum node to read blockchain data from (must be WebSocket protocol)
+- `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that APM repos were registered on
+- `REACT_APP_ETH_NETWORK_TYPE`: Either one of `rinkeby` or `local`
+- `REACT_APP_IPFS_GATEWAY`: Url of the IPFS gateway to load APM repos from
+
+By default, the app is set up to connect to our Rinkeby deployment.
