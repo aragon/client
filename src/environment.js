@@ -109,7 +109,7 @@ const networkTypes = {
     type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
   },
   local: {
-    name: 'Local test chain',
+    name: 'Local testnet',
     type: 'private',
   },
 }

@@ -181,7 +181,7 @@ class Settings extends React.Component {
                 <Text size="small" style={{ marginLeft: '10px' }}>
                   {(() =>
                     network.type === 'unknown'
-                      ? 'You are using an unsupported chain. Please switch to rinkeby or a local test environment instead.'
+                      ? 'You are using an unsupported network. Please switch to rinkeby or a local test environment instead.'
                       : userNetwork !== network.type
                         ? sanitizeNetworkType(network.type)
                         : `Please unlock your account in MetaMask.`)()}

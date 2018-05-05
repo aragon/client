@@ -210,7 +210,7 @@ class StartContent extends React.PureComponent {
     if (network.type === 'unknown') {
       return (
         <ActionInfo>
-          You are using an unsupported chain. Please switch to rinkeby or a
+          You are using an unsupported network. Please switch to rinkeby or a
           local test environment instead.
         </ActionInfo>
       )
