@@ -10,7 +10,7 @@ import {
   IconCross,
 } from '@aragon/ui'
 import { network, web3Providers } from '../environment'
-import { noop } from '../utils'
+import { noop, sanitizeNetworkType } from '../utils'
 import { weiToEther, etherToWei } from '../web3-utils'
 import { lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
@@ -207,10 +207,19 @@ class StartContent extends React.PureComponent {
     if (!hasAccount) {
       return <ActionInfo>Please unlock MetaMask.</ActionInfo>
     }
+    if (network.type === 'unknown') {
+      return (
+        <ActionInfo>
+          You are using an unsupported chain. Please switch to rinkeby or a
+          local test environment instead.
+        </ActionInfo>
+      )
+    }
     if (userNetwork !== network.type) {
       return (
         <ActionInfo>
-          Please select the {network.type} network in MetaMask.
+          Please select the {sanitizeNetworkType(network.type)} network in
+          MetaMask.
         </ActionInfo>
       )
     }

@@ -14,7 +14,7 @@ import Option from './components/Option'
 import observeCache from '../../components/HOC/observeCache'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import provideNetwork from '../../context/provideNetwork'
-import { compose } from '../../utils'
+import { compose, sanitizeNetworkType } from '../../utils'
 import { getWeb3 } from '../../web3-utils'
 import { web3Providers, network, appIds } from '../../environment'
 import {
@@ -179,14 +179,12 @@ class Settings extends React.Component {
               </Button>
               {!enableTransactions && (
                 <Text size="small" style={{ marginLeft: '10px' }}>
-                  {(() => {
-                    if (userNetwork !== network.type) {
-                      return `Please select the ${
-                        network.type
-                      } network in MetaMask.`
-                    }
-                    return `Please unlock your account in MetaMask.`
-                  })()}
+                  {(() =>
+                    network.type === 'unknown'
+                      ? 'You are using an unsupported chain. Please switch to rinkeby or a local test environment instead.'
+                      : userNetwork !== network.type
+                        ? sanitizeNetworkType(network.type)
+                        : `Please unlock your account in MetaMask.`)()}
                 </Text>
               )}
             </div>
