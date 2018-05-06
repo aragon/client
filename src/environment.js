@@ -1,11 +1,10 @@
 import Web3 from 'web3'
 import {
   getDefaultEthNode,
-  getEnsRegistryAddress,
   getEthNetworkType,
   getIpfsGateway,
 } from './local-settings'
-import { makeEtherscanBaseUrl } from './utils'
+import { getNetworkConfig } from './network-config'
 
 // TODO: make all these depend on env variables / URL
 
@@ -87,10 +86,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 export { appLocator, appOverrides }
 
-export const contractAddresses = {
-  ensRegistry: getEnsRegistryAddress(),
-}
-
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
   rpc: {
@@ -101,22 +96,25 @@ export const ipfsDefaultConf = {
 }
 
 const expectedNetworkType = getEthNetworkType()
-const networkTypes = {
-  rinkeby: {
-    chainId: 4,
-    etherscanBaseUrl: makeEtherscanBaseUrl('rinkeby'),
-    name: 'Rinkeby testnet',
-    type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
-  },
-  local: {
-    name: 'Local testnet',
-    type: 'private',
-  },
+const networkConfig = getNetworkConfig(expectedNetworkType)
+export const network = networkConfig.settings
+
+export const contractAddresses = {
+  ensRegistry: networkConfig.addresses.ensRegistry,
 }
-export const network = networkTypes[expectedNetworkType] || {
-  // Expected network type isn't one of the above
-  name: `Unsupported (${expectedNetworkType})`,
-  type: 'unknown',
+if (process.env.NODE_ENV !== 'production') {
+  if (Object.values(contractAddresses).some(address => !address)) {
+    // Warn if any contracts are not given addresses in development
+    console.error(
+      'Some contracts are missing addresses in your environment! You most likely need to specify them as environment variables.'
+    )
+    console.error('Current contract address configuration', contractAddresses)
+  }
+  if (network.type === 'unknown') {
+    console.error(
+      'This app was built to connect to an unsupported network. You most likely need to change your network environment variables.'
+    )
+  }
 }
 
 export const web3Providers = {

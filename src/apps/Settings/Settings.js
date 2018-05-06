@@ -14,7 +14,8 @@ import Option from './components/Option'
 import observeCache from '../../components/HOC/observeCache'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import provideNetwork from '../../context/provideNetwork'
-import { compose, sanitizeNetworkType } from '../../utils'
+import { sanitizeNetworkType } from '../../network-config'
+import { compose } from '../../utils'
 import { getWeb3 } from '../../web3-utils'
 import { web3Providers, network, appIds } from '../../environment'
 import {
@@ -181,9 +182,11 @@ class Settings extends React.Component {
                 <Text size="small" style={{ marginLeft: '10px' }}>
                   {(() =>
                     network.type === 'unknown'
-                      ? 'You are using an unsupported network. Please switch to rinkeby or a local test environment instead.'
+                      ? 'This app was built to connect to an unsupported network. Please change the network environment settings.'
                       : userNetwork !== network.type
-                        ? sanitizeNetworkType(network.type)
+                        ? `Please select the ${sanitizeNetworkType(
+                            network.type
+                          )} network in MetaMask.`
                         : `Please unlock your account in MetaMask.`)()}
                 </Text>
               )}

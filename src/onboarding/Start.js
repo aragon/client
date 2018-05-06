@@ -10,7 +10,8 @@ import {
   IconCross,
 } from '@aragon/ui'
 import { network, web3Providers } from '../environment'
-import { noop, sanitizeNetworkType } from '../utils'
+import { sanitizeNetworkType } from '../network-config'
+import { noop } from '../utils'
 import { weiToEther, etherToWei } from '../web3-utils'
 import { lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
@@ -210,8 +211,8 @@ class StartContent extends React.PureComponent {
     if (network.type === 'unknown') {
       return (
         <ActionInfo>
-          You are using an unsupported network. Please switch to rinkeby or a
-          local test environment instead.
+          This app was built to connect to an unsupported network. Please change
+          the network environment settings.
         </ActionInfo>
       )
     }

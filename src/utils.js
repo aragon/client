@@ -29,10 +29,6 @@ export function removeTrailingSlash(str) {
   return str.replace(/\/+$/, '')
 }
 
-export function sanitizeNetworkType(networkType) {
-  return networkType === 'private' ? 'localhost' : networkType
-}
-
 export function log(...params) {
   if (process.env.NODE_ENV !== 'production') {
     console.log(...params)
