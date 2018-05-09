@@ -211,8 +211,8 @@ class StartContent extends React.PureComponent {
     if (network.type === 'unknown') {
       return (
         <ActionInfo>
-          This app was built to connect to an unsupported network. Please change
-          the network environment settings.
+          This app was configured to connect to an unsupported network. Please
+          change the network environment settings.
         </ActionInfo>
       )
     }

@@ -182,7 +182,7 @@ class Settings extends React.Component {
                 <Text size="small" style={{ marginLeft: '10px' }}>
                   {(() =>
                     network.type === 'unknown'
-                      ? 'This app was built to connect to an unsupported network. Please change the network environment settings.'
+                      ? 'This app was configured to connect to an unsupported network. Please change the network environment settings.'
                       : userNetwork !== network.type
                         ? `Please select the ${sanitizeNetworkType(
                             network.type
