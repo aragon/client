@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import { getDefaultEthNode, getIpfsGateway } from './local-settings'
+import { getDefaultEthNode, getIpfsGateway, getDefaultEnsRegistry } from './local-settings'
 import { makeEtherscanBaseUrl } from './utils'
 
 // TODO: make all these depend on env variables / URL
@@ -83,8 +83,7 @@ if (process.env.NODE_ENV !== 'production') {
 export { appLocator, appOverrides }
 
 export const contractAddresses = {
-  // Aragon's Rinkeby ENS
-  ensRegistry: '0xfbae32d1cde62858bc45f51efc8cc4fa1415447e',
+  ensRegistry: getDefaultEnsRegistry(),
 }
 
 export const ipfsDefaultConf = {
