@@ -16,9 +16,9 @@ Contributions are welcome, just beware of the dragons. 🐲
 
 The app currently supports setting a few environment settings via environment variables:
 
-- `REACT_APP_DEFAULT_ETH_NODE`: Url of the default Ethereum node to read blockchain data from (must be WebSocket protocol)
-- `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that APM repos were registered on
-- `REACT_APP_ETH_NETWORK_TYPE`: Either one of `rinkeby` or `local`
-- `REACT_APP_IPFS_GATEWAY`: Url of the IPFS gateway to load APM repos from
+- `REACT_APP_DEFAULT_ETH_NODE`: Url of the default Ethereum node to read blockchain data from (must be WebSocket protocol). If you intend to connect to a local ganache instance, by default you should set this to `ws://localhost:8545`.
+- `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that APM repos were registered on. If you've deployed aragonOS to a local network, you can find the ENS registry's address in the migration's console output.
+- `REACT_APP_ETH_NETWORK_TYPE`: Expected network to connect to. Either one of `rinkeby` or `local`.
+- `REACT_APP_IPFS_GATEWAY`: Url of the IPFS gateway to load APM repos from. If you intend to connect to a local IPFS daemon, by default you should set this to `http://localhost:8080`
 
 By default, the app is set up to connect to our Rinkeby deployment.

@@ -19,7 +19,7 @@ export function getEnsRegistryAddress() {
   return (
     window.localStorage.getItem(ENS_REGISTRY_ADDRESS_KEY) ||
     process.env.REACT_APP_ENS_REGISTRY_ADDRESS ||
-    '0xfbae32d1cde62858bc45f51efc8cc4fa1415447e' // Aragon's Rinkeby ENS
+    '' // Let the network configuration handle contract address defaults
   )
 }
 
