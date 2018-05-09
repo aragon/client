@@ -24,3 +24,11 @@ export function getIpfsGateway() {
 export function setIpfsGateway(gateway) {
   return window.localStorage.setItem(IPFS_GATEWAY_KEY, gateway)
 }
+
+export function getDefaultEnsRegistry() {
+  return (
+    process.env.REACT_APP_ENS_REGISTRY ||
+    // Aragon's Rinkeby ENS
+    '0xfbae32d1cde62858bc45f51efc8cc4fa1415447e'
+  )
+}
