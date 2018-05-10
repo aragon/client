@@ -20,5 +20,6 @@ The app currently supports setting a few environment settings via environment va
 - `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that APM repos were registered on. If you've deployed aragonOS to a local network, you can find the ENS registry's address in the migration's console output.
 - `REACT_APP_ETH_NETWORK_TYPE`: Expected network to connect to. Either one of `rinkeby` or `local`.
 - `REACT_APP_IPFS_GATEWAY`: Url of the IPFS gateway to load APM repos from. If you intend to connect to a local IPFS daemon, by default you should set this to `http://localhost:8080`
+- `REACT_APP_IPFS_RPC`: Url of the IPFS API endpoint to fetch blobs from. If you intend to connect to a local IPFS daemon, by default you should set this to `http://localhost:5001`
 
-By default, the app is set up to connect to our Rinkeby deployment.
+Without any settings, the app is configured to connect to our Rinkeby deployment.
