@@ -28,7 +28,7 @@ const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
     return appLocator[app.appId]
   }
 
-  return `${gateway}/${hash}/`
+  return `${gateway}/${hash}/${app.start_url || ''}`
 }
 
 const applyAppOverrides = apps =>
