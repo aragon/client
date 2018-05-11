@@ -47,7 +47,11 @@ class Wrapper extends React.Component {
     this.appIFrame = appIFrame
   }
   handleAppIFrameLoad = event => {
-    const { apps, wrapper, locator: { appId } } = this.props
+    const {
+      apps,
+      wrapper,
+      locator: { appId },
+    } = this.props
     const app = wrapper && apps.find(app => app.appId === appId)
 
     if (!app || !wrapper) {
