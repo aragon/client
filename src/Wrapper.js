@@ -39,24 +39,27 @@ class Wrapper extends React.Component {
       this.handleTransaction(transactionBag)
     }
   }
-  openApp = (proxyAddress, params) => {
+  openApp = (instanceId, params) => {
     const { historyPush, locator } = this.props
-    historyPush(
-      getAppPath({ dao: locator.dao, proxyAddress: proxyAddress, params })
-    )
+    historyPush(getAppPath({ dao: locator.dao, instanceId, params }))
   }
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
   }
   handleAppIFrameLoad = event => {
-    const { apps, wrapper, locator: { proxyAddress } } = this.props
-    const app = wrapper && apps.find(app => app.proxyAddress === proxyAddress)
+    const {
+      apps,
+      wrapper,
+      locator: { instanceId },
+    } = this.props
+
+    const app = wrapper && apps.find(app => app.instanceId === instanceId)
 
     if (!app || !wrapper) {
       console.error('The app cannot be connected to aragon.js')
     }
 
-    wrapper.connectAppIFrame(event.target, app.proxyAddress)
+    wrapper.connectAppIFrame(event.target, instanceId)
     this.appIFrame.sendMessage({
       from: 'wrapper',
       name: 'ready',
@@ -67,20 +70,19 @@ class Wrapper extends React.Component {
     const { wrapper } = this.props
     wrapper && wrapper.clearNotifications()
   }
-  handleNotificationNavigation = ({ context, app: proxyAddress }) => {
-    console.log(proxyAddress, context)
-    if (this.isAppInstalled(proxyAddress)) {
-      this.openApp(proxyAddress)
+  handleNotificationNavigation = ({ context, app: instanceId }) => {
+    if (this.isAppInstalled(instanceId)) {
+      this.openApp(instanceId)
     }
   }
   handleParamsRequest = params => {
-    // const { proxyAddress, } = this.state.appInstance
-    // this.openApp(proxyAddress, params)
+    // const { instanceId, } = this.state.appInstance
+    // this.openApp(instanceId, params)
   }
   makeTransactionIntent(transaction = {}) {
     const { apps } = this.props
     const { description, to } = transaction
-    const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
+    const toApp = apps.find(app => addressesEqual(app.instanceId, to))
     const toName = (toApp && toApp.name) || ''
 
     return {
@@ -138,11 +140,11 @@ class Wrapper extends React.Component {
       })
     }
   }
-  isAppInstalled(proxyAddress) {
+  isAppInstalled(instanceId) {
     const { apps } = this.props
     return (
-      staticApps.has(proxyAddress) &&
-      !!apps.find(app => app.proxyAddress === proxyAddress)
+      staticApps.has(instanceId) &&
+      !!apps.find(app => app.instanceId === instanceId)
     )
   }
   showWeb3ActionSigner = (intent, { direct, error, paths }) => {
@@ -164,7 +166,7 @@ class Wrapper extends React.Component {
       walletWeb3,
       wrapper,
       appsLoading,
-      locator: { proxyAddress, params },
+      locator: { instanceId, params },
     } = this.props
     return (
       <React.Fragment>
@@ -172,14 +174,14 @@ class Wrapper extends React.Component {
           <MenuPanel
             apps={apps}
             appsLoading={appsLoading}
-            activeProxyAddress={proxyAddress}
-            activeInstanceId={proxyAddress}
+            activeProxyAddress={instanceId}
+            activeInstanceId={instanceId}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
             onClearAllNotifications={this.handleNotificationsClearAll}
             onOpenNotification={this.handleNotificationNavigation}
           />
-          <AppScreen>{this.renderApp(proxyAddress, params)}</AppScreen>
+          <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
         </Main>
         <SidePanel
           onClose={this.handleSignerClose}
@@ -198,7 +200,7 @@ class Wrapper extends React.Component {
       </React.Fragment>
     )
   }
-  renderApp(proxyAddress, params) {
+  renderApp(instanceId, params) {
     const {
       apps,
       account,
@@ -209,7 +211,7 @@ class Wrapper extends React.Component {
       daoAddress,
     } = this.props
 
-    if (proxyAddress === 'home') {
+    if (instanceId === 'home') {
       return (
         <Home
           connected={connected}
@@ -220,7 +222,7 @@ class Wrapper extends React.Component {
       )
     }
 
-    if (proxyAddress === 'permissions') {
+    if (instanceId === 'permissions') {
       return (
         <ComingSoon
           title="Permissions"
@@ -240,7 +242,7 @@ class Wrapper extends React.Component {
       // )
     }
 
-    if (proxyAddress === 'apps') {
+    if (instanceId === 'apps') {
       return (
         <ComingSoon
           title="Apps"
@@ -257,7 +259,7 @@ class Wrapper extends React.Component {
       return <LoadingApps />
     }
 
-    if (proxyAddress === 'settings') {
+    if (instanceId === 'settings') {
       return (
         <Settings
           cache={wrapper.cache}
@@ -273,7 +275,7 @@ class Wrapper extends React.Component {
       return <LoadingApps />
     }
 
-    const app = wrapper && apps.find(app => app.proxyAddress === proxyAddress)
+    const app = wrapper && apps.find(app => app.proxyAddress === instanceId)
 
     return app ? (
       <AppIFrame

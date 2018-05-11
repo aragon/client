@@ -20,30 +20,53 @@ import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 
 import logo from './assets/logo.svg'
 
-const appHome = { proxyAddress: 'home', name: 'Home', icon: <IconHome /> }
+const appHome = {
+  appId: 'home',
+  name: 'Home',
+  icon: <IconHome />,
+  instances: [{ instanceId: 'home' }],
+}
 const appSettings = {
-  proxyAddress: 'settings',
+  appId: 'settings',
   name: 'Settings',
   icon: <IconSettings />,
+  instances: [{ instanceId: 'settings' }],
 }
 const appPermissions = {
-  proxyAddress: 'permissions',
+  appId: 'permissions',
   name: 'Permissions',
   icon: <IconPermissions />,
+  instances: [{ instanceId: 'permissions' }],
 }
 const appApps = {
-  proxyAddress: 'apps',
+  appId: 'apps',
   name: 'Apps',
   icon: <IconApps />,
+  instances: [{ instanceId: 'apps' }],
 }
 
-const addIcons = apps =>
-  apps.map(app => ({
-    ...app,
-    icon: <img src={`${app.appSrc}images/icon.svg`} alt="" />,
-  }))
+const prepareAppGroups = apps =>
+  apps.reduce((groups, app) => {
+    const group = groups.find(({ appId }) => appId === app.appId)
+    const instance = { ...app, instanceId: app.proxyAddress }
 
-class MenuPanel extends React.Component {
+    // Append the instance to the existing app group
+    if (group) {
+      group.instances.push(instance)
+      return groups
+    }
+
+    return groups.concat([
+      {
+        appId: app.appId,
+        name: app.name,
+        icon: <img src={`${app.appSrc}images/icon.svg`} alt="" />,
+        instances: [instance],
+      },
+    ])
+  }, [])
+
+class MenuPanel extends React.PureComponent {
   state = {
     notificationsOpened: false,
   }
@@ -66,8 +89,8 @@ class MenuPanel extends React.Component {
     } = this.props
     const { notificationsOpened } = this.state
 
-    const daoApps = addIcons(apps)
-    const menuApps = [appHome, daoApps, appPermissions, appApps, appSettings]
+    const appGroups = prepareAppGroups(apps)
+    const menuApps = [appHome, appGroups, appPermissions, appApps, appSettings]
 
     return (
       <Main>
@@ -85,7 +108,7 @@ class MenuPanel extends React.Component {
           <Content>
             <div className="in">
               <h1>Apps</h1>
-              <div>{menuApps.map(this.renderApp)}</div>
+              <div>{menuApps.map(this.renderAppGroup)}</div>
             </div>
           </Content>
         </In>
@@ -118,35 +141,39 @@ class MenuPanel extends React.Component {
       </Main>
     )
   }
-  renderApp = app => {
-    const {
-      activeProxyAddress,
-      activeInstanceId,
-      onOpenApp,
-      appsLoading,
-    } = this.props
+  renderAppGroup = (app, readyToExpand) => {
+    const { activeInstanceId, onOpenApp, appsLoading } = this.props
 
     // Wrap the DAO apps in the loader
     if (Array.isArray(app)) {
       return (
-        <MenuPanelAppsLoader key="menu-apps" loading={appsLoading}>
-          {app.map(this.renderApp)}
+        <MenuPanelAppsLoader
+          key="menu-apps"
+          loading={appsLoading}
+          itemsCount={app.length}
+        >
+          {done => app.map(app => this.renderAppGroup(app, done))}
         </MenuPanelAppsLoader>
       )
     }
 
-    const { proxyAddress, name, icon, instances = [] } = app
+    const { appId, name, icon, instances = [] } = app
+    const isActive =
+      instances.findIndex(
+        ({ instanceId }) => instanceId === activeInstanceId
+      ) !== -1
+
     return (
-      <div key={proxyAddress}>
+      <div key={appId}>
         <MenuPanelAppGroup
           name={name}
           icon={icon}
-          proxyAddress={proxyAddress}
-          active={proxyAddress === activeProxyAddress}
           instances={instances}
+          active={isActive}
+          expand={isActive && readyToExpand}
           activeInstanceId={activeInstanceId}
           onActivate={onOpenApp}
-          comingSoon={['permissions', 'apps'].includes(proxyAddress)}
+          comingSoon={['permissions', 'apps'].includes(appId)}
         />
       </div>
     )
