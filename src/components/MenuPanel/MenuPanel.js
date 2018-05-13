@@ -1,5 +1,6 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
+import resolvePathname from 'resolve-pathname'
 import styled from 'styled-components'
 import {
   theme,
@@ -40,7 +41,9 @@ const appApps = {
 const addIcons = apps =>
   apps.map(app => ({
     ...app,
-    icon: <img src={`${app.appSrc}images/icon.svg`} alt="" />,
+    icon: (
+      <img src={`${resolvePathname('images/icon.svg', app.baseUrl)}`} alt="" />
+    ),
   }))
 
 class MenuPanel extends React.Component {
