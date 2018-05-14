@@ -31,10 +31,7 @@ class MenuPanelAppGroup extends React.Component {
     return (
       <Motion
         style={{
-          openProgress: spring(
-            Number(active && expand),
-            springConf('fast')
-          ),
+          openProgress: spring(Number(active && expand), springConf('fast')),
         }}
       >
         {({ openProgress }) => (
@@ -74,16 +71,19 @@ class MenuPanelAppGroup extends React.Component {
                   paddingBottom: `${5 * openProgress}px`,
                 }}
               >
-                {instances.map(({ name, instanceId }) => (
-                  <li key={instanceId}>
-                    <MenuPanelInstance
-                      id={instanceId}
-                      name={instanceId && instanceId.slice(0, 10)}
-                      active={instanceId === activeInstanceId}
-                      onClick={this.handleInstanceClick}
-                    />
-                  </li>
-                ))}
+                {instances.map(({ name, instanceId, identifier }) => {
+                  const label = identifier || instanceId
+                  return label ? (
+                    <li key={instanceId}>
+                      <MenuPanelInstance
+                        id={instanceId}
+                        name={label}
+                        active={instanceId === activeInstanceId}
+                        onClick={this.handleInstanceClick}
+                      />
+                    </li>
+                  ) : null
+                })}
               </ul>
             )}
           </Main>
