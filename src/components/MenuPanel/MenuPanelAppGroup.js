@@ -10,24 +10,28 @@ class MenuPanelAppGroup extends React.Component {
     instances: [],
   }
   handleAppClick = () => {
-    this.props.onActivate(this.props.appId)
+    const instance = this.props.instances[0]
+    if (instance) {
+      this.props.onActivate(instance.instanceId)
+    }
   }
   handleInstanceClick = instanceId => {
     this.props.onActivate(instanceId)
   }
   render() {
     const {
-      icon,
       name,
+      icon,
       instances,
-      active,
       activeInstanceId,
+      active,
+      expand,
       comingSoon,
     } = this.props
     return (
       <Motion
         style={{
-          openProgress: spring(Number(active), springConf('fast')),
+          openProgress: spring(Number(active && expand), springConf('fast')),
         }}
       >
         {({ openProgress }) => (
@@ -59,25 +63,29 @@ class MenuPanelAppGroup extends React.Component {
               )}
             </ButtonItem>
 
-            <ul
-              className="instances"
-              style={{
-                display: instances.length > 1 ? 'block' : 'none',
-                height: `${(instances.length * 30 + 5) * openProgress}px`,
-                paddingBottom: `${5 * openProgress}px`,
-              }}
-            >
-              {instances.map(({ id, name, proxyAddress }) => (
-                <li key={proxyAddress}>
-                  <MenuPanelInstance
-                    id={id}
-                    name={name}
-                    active={id === activeInstanceId}
-                    onClick={this.handleInstanceClick}
-                  />
-                </li>
-              ))}
-            </ul>
+            {instances.length > 1 && (
+              <ul
+                className="instances"
+                style={{
+                  height: `${(instances.length * 30 + 5) * openProgress}px`,
+                  paddingBottom: `${5 * openProgress}px`,
+                }}
+              >
+                {instances.map(({ name, instanceId, identifier }) => {
+                  const label = identifier || instanceId
+                  return label ? (
+                    <li key={instanceId}>
+                      <MenuPanelInstance
+                        id={instanceId}
+                        name={label}
+                        active={instanceId === activeInstanceId}
+                        onClick={this.handleInstanceClick}
+                      />
+                    </li>
+                  ) : null
+                })}
+              </ul>
+            )}
           </Main>
         )}
       </Motion>

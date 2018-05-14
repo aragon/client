@@ -20,8 +20,11 @@ const appsOrder = ['TokenManager', 'Finance', 'Voting', 'Vault']
 
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
 export const sortAppsPair = (app1, app2) => {
-  const index1 = appsOrder.indexOf(app1.appId)
-  const index2 = appsOrder.indexOf(app2.appId)
+  const pairs = Object.entries(appIds)
+  const [name1] = pairs.find(([_, id]) => id === app1.appId)
+  const [name2] = pairs.find(([_, id]) => id === app2.appId)
+  const index1 = name1 ? appsOrder.indexOf(name1) : -1
+  const index2 = name2 ? appsOrder.indexOf(name2) : -1
 
   // Try to sort it if the app exists in the list
   if (index1 === -1 && index2 > -1) {
@@ -35,15 +38,12 @@ export const sortAppsPair = (app1, app2) => {
   }
 
   // Otherwise, alphabetical order
-  const id1 = app1.appId.toLowerCase()
-  const id2 = app2.appId.toLowerCase()
-  if (id1 < id2) {
-    return -1
+  const unknownName1 = app1.name.toLowerCase()
+  const unknownName2 = app2.name.toLowerCase()
+  if (unknownName1 === unknownName2) {
+    return 0
   }
-  if (id1 > id2) {
-    return 1
-  }
-  return 0
+  return unknownName1 < unknownName2 ? -1 : 1
 }
 
 let appLocator

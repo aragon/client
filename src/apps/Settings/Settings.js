@@ -104,8 +104,8 @@ class Settings extends React.Component {
   handleDepositTestTokens = () => {
     const { account, apps } = this.props
     const finance = apps.find(app => app.appId === appIds.Finance)
-    if (finance && finance.proxyAddress) {
-      airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
+    if (finance && finance.appId) {
+      airdrop(getWeb3(web3Providers.wallet), finance.appId, account)
     }
   }
   handleDefaultEthNodeChange = event => {
@@ -211,8 +211,8 @@ class Settings extends React.Component {
             >
               <Field label="Funding Address (Finance App)">
                 <FieldTwoParts>
-                  <TextInput readOnly wide value={financeApp.proxyAddress} />
-                  <EtherscanLink address={financeApp.proxyAddress}>
+                  <TextInput readOnly wide value={financeApp.appId} />
+                  <EtherscanLink address={financeApp.appId}>
                     {url =>
                       url ? (
                         <LinkButton href={url} target="_blank">
@@ -235,12 +235,12 @@ class Settings extends React.Component {
               text={`This organization has ${apps.length} apps installed.`}
             >
               <AppsList>
-                {apps.map(({ name, proxyAddress, description }) => (
-                  <li title={description} key={proxyAddress}>
+                {apps.map(({ name, appId, description }) => (
+                  <li title={description} key={appId}>
                     <Field label={name}>
                       <FieldTwoParts>
-                        <TextInput readOnly wide value={proxyAddress} />
-                        <EtherscanLink address={proxyAddress}>
+                        <TextInput readOnly wide value={appId} />
+                        <EtherscanLink address={appId}>
                           {url =>
                             url ? (
                               <LinkButton href={url} target="_blank">

@@ -8,25 +8,33 @@ import LoadingRing from '../LoadingRing'
 const SPRING = springConf('fast')
 
 class MenuPanelAppsLoader extends React.Component {
-  state = {
-    hideLoader: false,
-  }
+  state = { hideLoader: false, loadingTransitionDone: false }
+
   componentWillReceiveProps({ loading }) {
     if (loading && !this.props.loading) {
-      this.setState({ hideLoader: false })
+      this.setState({ hideLoader: false, loadingTransitionDone: false })
     }
   }
+
   handleRest = () => {
-    if (!this.props.loading) {
+    const { loading } = this.props
+
+    if (loading) {
+      return
+    }
+
+    if (!this.state.hideLoader) {
       // To trigger the Motion transition
       setTimeout(() => {
         this.setState({ hideLoader: true })
       }, 0)
+    } else {
+      this.setState({ loadingTransitionDone: true })
     }
   }
   render() {
-    const { children, loading } = this.props
-    const { hideLoader } = this.state
+    const { children, itemsCount, loading } = this.props
+    const { hideLoader, loadingTransitionDone } = this.state
     return (
       <Motion
         onRest={this.handleRest}
@@ -49,11 +57,13 @@ class MenuPanelAppsLoader extends React.Component {
             </Loader>
             <Apps
               style={{
-                height: `${lerp(prepareProgress, 40, children.length * 40)}px`,
+                height: loadingTransitionDone
+                  ? 'auto'
+                  : `${lerp(prepareProgress, 40, itemsCount * 40)}px`,
                 transform: `translateX(-${(1 - hideProgress) * 100}%)`,
               }}
             >
-              {children}
+              {children(loadingTransitionDone)}
             </Apps>
           </Main>
         )}
