@@ -10,6 +10,7 @@ import {
   IconCross,
 } from '@aragon/ui'
 import { network, web3Providers } from '../environment'
+import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
 import { weiToEther, etherToWei } from '../web3-utils'
 import { lerp } from '../math-utils'
@@ -207,10 +208,19 @@ class StartContent extends React.PureComponent {
     if (!hasAccount) {
       return <ActionInfo>Please unlock MetaMask.</ActionInfo>
     }
+    if (network.type === 'unknown') {
+      return (
+        <ActionInfo>
+          This app was configured to connect to an unsupported network. Please
+          change the network environment settings.
+        </ActionInfo>
+      )
+    }
     if (userNetwork !== network.type) {
       return (
         <ActionInfo>
-          Please select the {network.type} network in MetaMask.
+          Please select the {sanitizeNetworkType(network.type)} network in
+          MetaMask.
         </ActionInfo>
       )
     }
@@ -220,9 +230,13 @@ class StartContent extends React.PureComponent {
           You need at least {weiToEther(MINIMUM_BALANCE)} ETH (you have{' '}
           {Math.round(weiToEther((balance || 0).toFixed()) * 1000) / 1000} ETH).
           <br />
-          <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
-            Request Ether on the Rinkeby Network
-          </SafeLink>
+          {network.type === 'rinkeby' && (
+            <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
+              Request Ether on the Rinkeby Network
+            </SafeLink>
+          )}
+          {network.type === 'private' &&
+            'Please import an account with enough ETH.'}
         </ActionInfo>
       )
     }

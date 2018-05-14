@@ -52,7 +52,6 @@ class Wrapper extends React.Component {
       wrapper,
       locator: { instanceId },
     } = this.props
-
     const app = wrapper && apps.find(app => app.instanceId === instanceId)
 
     if (!app || !wrapper) {

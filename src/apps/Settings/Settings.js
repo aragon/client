@@ -14,6 +14,7 @@ import Option from './components/Option'
 import observeCache from '../../components/HOC/observeCache'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import provideNetwork from '../../context/provideNetwork'
+import { sanitizeNetworkType } from '../../network-config'
 import { compose } from '../../utils'
 import { getWeb3 } from '../../web3-utils'
 import { web3Providers, network, appIds } from '../../environment'
@@ -179,14 +180,14 @@ class Settings extends React.Component {
               </Button>
               {!enableTransactions && (
                 <Text size="small" style={{ marginLeft: '10px' }}>
-                  {(() => {
-                    if (userNetwork !== network.type) {
-                      return `Please select the ${
-                        network.type
-                      } network in MetaMask.`
-                    }
-                    return `Please unlock your account in MetaMask.`
-                  })()}
+                  {(() =>
+                    network.type === 'unknown'
+                      ? 'This app was configured to connect to an unsupported network. Please change the network environment settings.'
+                      : userNetwork !== network.type
+                        ? `Please select the ${sanitizeNetworkType(
+                            network.type
+                          )} network in MetaMask.`
+                        : `Please unlock your account in MetaMask.`)()}
                 </Text>
               )}
             </div>

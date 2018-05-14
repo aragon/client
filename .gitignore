@@ -22,4 +22,7 @@ yarn-error.log*
 
 /public/apps
 /public/aragon-ui
+
+# ignore lock files
 package-lock.json
+yarn.lock
