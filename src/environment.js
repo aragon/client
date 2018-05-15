@@ -3,6 +3,7 @@ import {
   getDefaultEthNode,
   getEthNetworkType,
   getIpfsGateway,
+  getIpfsRpc,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 
@@ -88,11 +89,7 @@ export { appLocator, appOverrides }
 
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
-  rpc: {
-    host: 'ipfs.infura.io',
-    port: '5001',
-    protocol: 'https',
-  },
+  rpc: getIpfsRpc(),
 }
 
 const expectedNetworkType = getEthNetworkType()
