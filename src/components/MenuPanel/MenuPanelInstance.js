@@ -14,7 +14,7 @@ class MenuPanelInstance extends React.Component {
         active={active}
         onClick={this.handleClick}
       >
-        {name}
+        <Label>{name}</Label>
       </Main>
     )
   }
@@ -24,11 +24,18 @@ const Main = styled.a`
   display: flex;
   align-items: center;
   width: 100%;
+  overflow: hidden;
   padding-left: calc(22px + 15px);
-  font-weight: ${({ active }) => (active ? '800' : '400')};
   line-height: 30px;
+  font-weight: ${({ active }) => (active ? '800' : '400')};
   font-size: 13px;
   cursor: pointer;
+`
+
+const Label = styled.span`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `
 
 export default MenuPanelInstance

@@ -71,7 +71,7 @@ class Home extends React.Component {
     }
     const app = apps.find(({ name }) => name === action.appName)
     if (app && onOpenApp) {
-      onOpenApp(app.appId)
+      onOpenApp(app.proxyAddress)
     }
   }
   render() {

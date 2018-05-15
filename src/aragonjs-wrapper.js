@@ -416,7 +416,7 @@ export const initDaoBuilder = (
       return templates.newDAO(templateName, organizationName, templateData)
     },
     isNameAvailable: async name =>
-      !await isNameUsed(name, { provider, registryAddress }),
+      !(await isNameUsed(name, { provider, registryAddress })),
   }
 }
 
