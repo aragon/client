@@ -1,5 +1,6 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
+import resolvePathname from 'resolve-pathname'
 import styled from 'styled-components'
 import {
   theme,
@@ -60,7 +61,7 @@ const prepareAppGroups = apps =>
       {
         appId: app.appId,
         name: app.name,
-        icon: <img src={`${app.appSrc}images/icon.svg`} alt="" />,
+        icon: <img src={`${resolvePathname('images/icon.svg', app.baseUrl)}`} alt="" />,
         instances: [instance],
       },
     ])

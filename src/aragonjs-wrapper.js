@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import resolvePathname from 'resolve-pathname'
 import Aragon, {
   providers,
   setupTemplates,
@@ -11,7 +12,7 @@ import {
   appLocator,
   ipfsDefaultConf,
 } from './environment'
-import { noop, removeTrailingSlash } from './utils'
+import { noop, removeStartingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
@@ -20,7 +21,7 @@ const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
 
-const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
+const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
   const hash = app.content && app.content.location
   if (!hash) return ''
 
@@ -34,12 +35,19 @@ const appSrc = (app, gateway = ipfsDefaultConf.gateway) => {
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
-// Filter out apps without UI and add an appSrc property
+// Filter out apps without UI and add an app source url properties
 const prepareFrontendApps = (apps, gateway) => {
   return applyAppOverrides(apps)
     .filter(app => app && app['start_url'])
     .sort(sortAppsPair)
-    .map(app => ({ ...app, appSrc: appSrc(app, gateway) }))
+    .map(app => {
+      const baseUrl = appBaseUrl(app, gateway)
+      // Remove the starting slash from the start_url field to force it to
+      // load relative to the app's base url
+      const startUrl = removeStartingSlash(app['start_url'])
+      const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
+      return { ...app, baseUrl, src }
+    })
 }
 
 const getMainAccount = async web3 => {
@@ -174,14 +182,20 @@ const subscribe = (
         )
         .forEach(async app => {
           const { name, proxyAddress, script } = app
-          const appUrl = appSrc(app, ipfsConf.gateway)
+          const baseUrl = appBaseUrl(app, ipfsConf.gateway)
 
           // If the app URL is empty, the script can’t be retrieved
-          if (!appUrl) {
+          if (!baseUrl) {
             return
           }
 
-          const scriptUrl = removeTrailingSlash(appUrl) + script
+          // Remove the starting slash from the script field to force it to
+          // load relative to the app's base url
+          const scriptUrl = resolvePathname(
+            removeStartingSlash(script),
+            baseUrl
+          )
+
           let workerUrl = ''
           try {
             // WebWorkers can only load scripts from the local origin, so we

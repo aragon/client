@@ -57,13 +57,13 @@ class AppIFrame extends React.Component {
   }
   componentDidMount() {
     window.addEventListener('message', this.handleReceiveMessage, false)
-    this.navigateIFrame(this.props.app.appSrc)
+    this.navigateIFrame(this.props.app.src)
   }
   componentWillReceiveProps(nextProps) {
     const { app: nextApp } = nextProps
-    if (nextApp.appSrc !== this.props.app.appSrc) {
+    if (nextApp.src !== this.props.app.src) {
       this.resetProgress(() => {
-        this.navigateIFrame(nextApp.appSrc)
+        this.navigateIFrame(nextApp.src)
       })
     }
   }
@@ -73,7 +73,7 @@ class AppIFrame extends React.Component {
   }
   isHidden = () => {
     const { hidden, app } = this.props
-    return !app || !app.appSrc || hidden
+    return !app || !app.src || hidden
   }
   navigateIFrame = src => {
     // Rather than load src=undefined, this component hides itself. That way,
