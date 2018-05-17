@@ -81,7 +81,7 @@ class Wrapper extends React.Component {
   makeTransactionIntent(transaction = {}) {
     const { apps } = this.props
     const { description, to } = transaction
-    const toApp = apps.find(app => addressesEqual(app.instanceId, to))
+    const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
     const toName = (toApp && toApp.name) || ''
 
     return {
@@ -274,7 +274,7 @@ class Wrapper extends React.Component {
       return <LoadingApps />
     }
 
-    const app = wrapper && apps.find(app => app.proxyAddress === instanceId)
+    const app = wrapper && apps.find(app => app.instanceId === instanceId || app.proxyAddress === instanceId)
 
     return app ? (
       <AppIFrame
