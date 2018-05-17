@@ -61,7 +61,12 @@ const prepareAppGroups = apps =>
       {
         appId: app.appId,
         name: app.name,
-        icon: <img src={`${resolvePathname('images/icon.svg', app.baseUrl)}`} alt="" />,
+        icon: (
+          <img
+            src={`${resolvePathname('images/icon.svg', app.baseUrl)}`}
+            alt=""
+          />
+        ),
         instances: [instance],
       },
     ])

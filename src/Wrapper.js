@@ -274,7 +274,11 @@ class Wrapper extends React.Component {
       return <LoadingApps />
     }
 
-    const app = wrapper && apps.find(app => app.instanceId === instanceId || app.proxyAddress === instanceId)
+    const app =
+      wrapper &&
+      apps.find(
+        app => app.instanceId === instanceId || app.proxyAddress === instanceId
+      )
 
     return app ? (
       <AppIFrame
