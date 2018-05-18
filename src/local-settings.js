@@ -23,9 +23,6 @@ const CONFIGURATION_KEYS = [
   {}
 )
 
-// (protocol)://(host):(port)
-const IPFS_RPC_REGEX = /^([\w]*):\/\/(.*):(\d*)$/
-
 export function getDefaultEthNode() {
   const keys = CONFIGURATION_KEYS[DEFAULT_ETH_NODE]
   return (
@@ -79,14 +76,15 @@ export function getIpfsRpc() {
     process.env[keys.environmentKey] ||
     ''
 
-  const parsed = rpc.match(IPFS_RPC_REGEX)
-  if (parsed) {
+  try {
+    const url = new URL(rpc)
     return {
-      host: parsed[2],
-      port: parsed[3],
-      protocol: parsed[1],
+      host: url.hostname,
+      port: url.port,
+      // The URL.protocol includes the final :, but ipfs-js doesn't like that so we trim it off
+      protocol: url.protocol.slice(0, -1),
     }
-  } else {
+  } catch (err) {
     if (rpc && process.env.NODE_ENV !== 'production') {
       console.error(
         `The provided IPFS RPC url (${rpc}) in the environment is incorrectly formatted.`,
