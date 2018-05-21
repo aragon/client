@@ -71,6 +71,7 @@
     "update-assets": "rm -rf public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
     "lint": "eslint ./src",
     "start": "npm run update-assets && react-scripts start",
+    "start:local": "scripts/dev-launch.sh",
     "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build && npm run copy-apm-artifacts",
     "build:analyze": "node scripts/build-analyze.js",
     "copy-apm-artifacts": "cp arapp.json build/arapp.json && cp manifest.json build/manifest.json",

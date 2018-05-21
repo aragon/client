@@ -1,62 +1,81 @@
-const DEFAULT_ETH_NODE_KEY = 'ETH_NODE_KEY'
-const ENS_REGISTRY_ADDRESS_KEY = 'ENS_REGISTRY_ADDRESS_KEY'
-const ETH_NETWORK_TYPE_KEY = 'ETH_NETWORK_TYPE_KEY'
-const IPFS_GATEWAY_KEY = 'IPFS_GATEWAY_KEY'
-const IPFS_RPC_KEY = 'IPFS_RPC_KEY'
+// List of configurable settings
+const DEFAULT_ETH_NODE = 'DEFAULT_ETH_NODE'
+const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
+const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
+const IPFS_GATEWAY = 'IPFS_GATEWAY'
+const IPFS_RPC = 'IPFS_RPC'
 
-// (protocol)://(host):(port)
-const IPFS_RPC_REGEX = /^([\w]*):\/\/(.*):(\d*)$/
+const CONFIGURATION_KEYS = [
+  DEFAULT_ETH_NODE,
+  ENS_REGISTRY_ADDRESS,
+  ETH_NETWORK_TYPE,
+  IPFS_GATEWAY,
+  IPFS_RPC,
+].reduce(
+  (acc, option) => ({
+    ...acc,
+    [option]: {
+      storageKey: `${option}_KEY`,
+      // REACT_APP_ prefix required for react-scripts
+      environmentKey: `REACT_APP_${option}`,
+    },
+  }),
+  {}
+)
 
-export function getDefaultEthNode() {
+function getLocalSetting(confKey, settingDefault) {
+  const keys = CONFIGURATION_KEYS[confKey]
   return (
-    window.localStorage.getItem(DEFAULT_ETH_NODE_KEY) ||
-    process.env.REACT_APP_DEFAULT_ETH_NODE ||
-    'ws://rinkeby.aragon.network:8546'
+    window.localStorage.getItem(keys.storageKey) ||
+    process.env[keys.environmentKey] ||
+    settingDefault
   )
 }
 
+function setLocalSetting(confKey, setting) {
+  const keys = CONFIGURATION_KEYS[confKey]
+  return window.localStorage.setItem(keys.storageKey, setting)
+}
+
+export function getDefaultEthNode() {
+  return getLocalSetting(DEFAULT_ETH_NODE, 'ws://rinkeby.aragon.network:8546')
+}
+
 export function setDefaultEthNode(node) {
-  return window.localStorage.setItem(DEFAULT_ETH_NODE_KEY, node)
+  return setLocalSetting(DEFAULT_ETH_NODE, node)
 }
 
 export function getEnsRegistryAddress() {
-  return (
-    window.localStorage.getItem(ENS_REGISTRY_ADDRESS_KEY) ||
-    process.env.REACT_APP_ENS_REGISTRY_ADDRESS ||
+  return getLocalSetting(
+    ENS_REGISTRY_ADDRESS,
     '' // Let the network configuration handle contract address defaults
   )
 }
 
 export function getEthNetworkType() {
-  return (
-    window.localStorage.getItem(ETH_NETWORK_TYPE_KEY) ||
-    process.env.REACT_APP_ETH_NETWORK_TYPE ||
-    'rinkeby'
-  )
+  return getLocalSetting(ETH_NETWORK_TYPE, 'rinkeby')
 }
 
 export function getIpfsGateway() {
-  return (
-    window.localStorage.getItem(IPFS_GATEWAY_KEY) ||
-    process.env.REACT_APP_IPFS_GATEWAY ||
-    'https://gateway.ipfs.io/ipfs'
-  )
+  return getLocalSetting(IPFS_GATEWAY, 'https://gateway.ipfs.io/ipfs')
+}
+
+export function setIpfsGateway(gateway) {
+  return setLocalSetting(IPFS_GATEWAY, gateway)
 }
 
 export function getIpfsRpc() {
-  const rpc =
-    window.localStorage.getItem(IPFS_RPC_KEY) ||
-    process.env.REACT_APP_IPFS_RPC ||
-    ''
+  const rpc = getLocalSetting(IPFS_RPC, '')
 
-  const parsed = rpc.match(IPFS_RPC_REGEX)
-  if (parsed) {
+  try {
+    const url = new URL(rpc)
     return {
-      host: parsed[2],
-      port: parsed[3],
-      protocol: parsed[1],
+      host: url.hostname,
+      port: url.port,
+      // The URL.protocol includes the final :, but ipfs-js doesn't like that so we trim it off
+      protocol: url.protocol.slice(0, -1),
     }
-  } else {
+  } catch (err) {
     if (rpc && process.env.NODE_ENV !== 'production') {
       console.error(
         `The provided IPFS RPC url (${rpc}) in the environment is incorrectly formatted.`,
@@ -70,8 +89,4 @@ export function getIpfsRpc() {
       protocol: 'https',
     }
   }
-}
-
-export function setIpfsGateway(gateway) {
-  return window.localStorage.setItem(IPFS_GATEWAY_KEY, gateway)
 }
