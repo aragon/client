@@ -22,8 +22,8 @@ const appsOrder = ['TokenManager', 'Finance', 'Voting', 'Vault']
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
 export const sortAppsPair = (app1, app2) => {
   const pairs = Object.entries(appIds)
-  const [name1] = pairs.find(([_, id]) => id === app1.appId)
-  const [name2] = pairs.find(([_, id]) => id === app2.appId)
+  const [name1] = pairs.find(([_, id]) => id === app1.appId) || []
+  const [name2] = pairs.find(([_, id]) => id === app2.appId) || []
   const index1 = name1 ? appsOrder.indexOf(name1) : -1
   const index2 = name2 ? appsOrder.indexOf(name2) : -1
 
