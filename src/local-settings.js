@@ -23,58 +23,49 @@ const CONFIGURATION_KEYS = [
   {}
 )
 
-export function getDefaultEthNode() {
-  const keys = CONFIGURATION_KEYS[DEFAULT_ETH_NODE]
+function getLocalSetting(confKey, settingDefault) {
+  const keys = CONFIGURATION_KEYS[confKey]
   return (
     window.localStorage.getItem(keys.storageKey) ||
     process.env[keys.environmentKey] ||
-    'ws://rinkeby.aragon.network:8546'
+    settingDefault
   )
 }
 
+function setLocalSetting(confKey, setting) {
+  const keys = CONFIGURATION_KEYS[confKey]
+  return window.localStorage.setItem(keys.storageKey, setting)
+}
+
+export function getDefaultEthNode() {
+  return getLocalSetting(DEFAULT_ETH_NODE, 'ws://rinkeby.aragon.network:8546')
+}
+
 export function setDefaultEthNode(node) {
-  const keys = CONFIGURATION_KEYS[DEFAULT_ETH_NODE]
-  return window.localStorage.setItem(keys.storageKey, node)
+  return setLocalSetting(DEFAULT_ETH_NODE, node)
 }
 
 export function getEnsRegistryAddress() {
-  const keys = CONFIGURATION_KEYS[ENS_REGISTRY_ADDRESS]
-  return (
-    window.localStorage.getItem(keys.storageKey) ||
-    process.env[keys.environmentKey] ||
+  return getLocalSetting(
+    ENS_REGISTRY_ADDRESS,
     '' // Let the network configuration handle contract address defaults
   )
 }
 
 export function getEthNetworkType() {
-  const keys = CONFIGURATION_KEYS[ETH_NETWORK_TYPE]
-  return (
-    window.localStorage.getItem(keys.storageKey) ||
-    process.env[keys.environmentKey] ||
-    'rinkeby'
-  )
+  return getLocalSetting(ETH_NETWORK_TYPE, 'rinkeby')
 }
 
 export function getIpfsGateway() {
-  const keys = CONFIGURATION_KEYS[IPFS_GATEWAY]
-  return (
-    window.localStorage.getItem(keys.storageKey) ||
-    process.env[keys.environmentKey] ||
-    'https://gateway.ipfs.io/ipfs'
-  )
+  return getLocalSetting(IPFS_GATEWAY, 'https://gateway.ipfs.io/ipfs')
 }
 
 export function setIpfsGateway(gateway) {
-  const keys = CONFIGURATION_KEYS[IPFS_GATEWAY]
-  return window.localStorage.setItem(keys.storageKey, gateway)
+  return setLocalSetting(IPFS_GATEWAY, gateway)
 }
 
 export function getIpfsRpc() {
-  const keys = CONFIGURATION_KEYS[IPFS_RPC]
-  const rpc =
-    window.localStorage.getItem(keys.storageKey) ||
-    process.env[keys.environmentKey] ||
-    ''
+  const rpc = getLocalSetting(IPFS_RPC, '')
 
   try {
     const url = new URL(rpc)
