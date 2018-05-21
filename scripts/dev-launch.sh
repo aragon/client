@@ -16,7 +16,7 @@ export REACT_APP_ETH_NETWORK_TYPE='local'
 if pgrep -x "ipfs" > /dev/null
 then
     echo "Found a local IPFS daemon running, so the app will be configured to connect to default gateway and rpc ports."
-    export REACT_APP_IPFS_GATEWAY='http://localhost:8080'
+    export REACT_APP_IPFS_GATEWAY='http://localhost:8080/ipfs'
     export REACT_APP_IPFS_RPC='http://localhost:5001'
 fi
 
