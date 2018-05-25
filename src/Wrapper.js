@@ -179,7 +179,6 @@ class Wrapper extends React.Component {
           <MenuPanel
             apps={apps}
             appsLoading={appsLoading}
-            activeProxyAddress={instanceId}
             activeInstanceId={instanceId}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
