@@ -52,7 +52,11 @@ class Wrapper extends React.Component {
       wrapper,
       locator: { instanceId },
     } = this.props
-    const app = wrapper && apps.find(app => app.instanceId === instanceId)
+    const app =
+      wrapper &&
+      apps.find(
+        app => app.instanceId === instanceId || app.proxyAddress === instanceId
+      )
 
     if (!app || !wrapper) {
       console.error('The app cannot be connected to aragon.js')
@@ -143,7 +147,9 @@ class Wrapper extends React.Component {
     const { apps } = this.props
     return (
       staticApps.has(instanceId) &&
-      !!apps.find(app => app.instanceId === instanceId)
+      !!apps.find(
+        app => app.instanceId === instanceId || app.proxyAddress === instanceId
+      )
     )
   }
   showWeb3ActionSigner = (intent, { direct, error, paths }) => {
