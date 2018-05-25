@@ -1,4 +1,5 @@
 // List of configurable settings
+const ASSET_BRIDGE = 'ASSET_BRIDGE'
 const DEFAULT_ETH_NODE = 'DEFAULT_ETH_NODE'
 const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
 const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
@@ -6,6 +7,7 @@ const IPFS_GATEWAY = 'IPFS_GATEWAY'
 const IPFS_RPC = 'IPFS_RPC'
 
 const CONFIGURATION_KEYS = [
+  ASSET_BRIDGE,
   DEFAULT_ETH_NODE,
   ENS_REGISTRY_ADDRESS,
   ETH_NETWORK_TYPE,
@@ -35,6 +37,10 @@ function getLocalSetting(confKey, settingDefault) {
 function setLocalSetting(confKey, setting) {
   const keys = CONFIGURATION_KEYS[confKey]
   return window.localStorage.setItem(keys.storageKey, setting)
+}
+
+export function getAssetBridge() {
+  return getLocalSetting(ASSET_BRIDGE, '')
 }
 
 export function getDefaultEthNode() {
