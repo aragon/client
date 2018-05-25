@@ -16,7 +16,6 @@ export const appIds = {
     '0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f',
   Vault: '0x7e852e0fcfce6551c13800f1e7476f982525c2b5277ba14b24339c68416336d1',
   Voting: '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
-  Survey: '0x030b2ab880b88e228f2da5a3d19a2a31bc10dbf91fb1143776a6de489389471e',
 }
 
 const appsOrder = ['TokenManager', 'Finance', 'Voting', 'Vault']
