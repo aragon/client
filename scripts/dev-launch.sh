@@ -22,7 +22,7 @@ then
     echo "The app will be configured to connect and serve assets from from the default gateway ($DEFAULT_IPFS_GATEWAY) and rpc ($DEFAULT_IPFS_RPC)."
     export REACT_APP_IPFS_GATEWAY="$DEFAULT_IPFS_GATEWAY"
     export REACT_APP_IPFS_RPC="$DEFAULT_IPFS_RPC"
-    export REACT_APP_ASSETS_BRIDGE='ipfs'
+    export REACT_APP_ASSET_BRIDGE='ipfs'
 fi
 
 npm start
