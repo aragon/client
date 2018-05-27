@@ -63,8 +63,8 @@ const prepareAppGroups = apps =>
         name: app.name,
         icon: (
           <img
-            src={`${resolvePathname('images/icon.svg', app.baseUrl)}`}
             alt=""
+            src={`${resolvePathname('images/icon.svg', app.baseUrl)}`}
           />
         ),
         instances: [instance],
@@ -114,7 +114,7 @@ class MenuPanel extends React.PureComponent {
           <Content>
             <div className="in">
               <h1>Apps</h1>
-              <div>{menuApps.map(this.renderAppGroup)}</div>
+              <div>{menuApps.map(app => this.renderAppGroup(app, false))}</div>
             </div>
           </Content>
         </In>

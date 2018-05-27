@@ -5,7 +5,7 @@ import { theme, spring as springConf, IconBlank, Badge } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
-class MenuPanelAppGroup extends React.Component {
+class MenuPanelAppGroup extends React.PureComponent {
   static defaultProps = {
     instances: [],
   }
@@ -28,22 +28,26 @@ class MenuPanelAppGroup extends React.Component {
       expand,
       comingSoon,
     } = this.props
+    const singleInstance = instances.length === 1
     return (
       <Motion
         style={{
-          openProgress: spring(Number(active && expand), springConf('fast')),
+          openProgress: spring(
+            Number(active && (singleInstance || expand)),
+            springConf('fast')
+          ),
         }}
       >
         {({ openProgress }) => (
           <Main active={active}>
+            <ActiveBackground style={{ opacity: Number(active) }} />
+
             <MenuItemBar
               style={{
-                transform: `translateX(-${(1 - openProgress) * 100}%)`,
                 opacity: openProgress,
+                transform: `translateX(-${(1 - openProgress) * 100}%)`,
               }}
             />
-
-            <ActiveBackground style={{ opacity: Number(active) }} />
 
             <ButtonItem
               role="button"
