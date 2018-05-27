@@ -60,9 +60,7 @@ class MenuPanelAppGroup extends React.PureComponent {
               </span>
               {comingSoon && (
                 <span>
-                  <Badge shape="compact" style={{ fontVariant: 'small-caps' }}>
-                    soon
-                  </Badge>
+                  <Soon />
                 </span>
               )}
             </ButtonItem>
@@ -167,6 +165,12 @@ const MenuItemBar = styled.div`
   width: 4px;
   height: 100%;
   background: ${theme.accent};
+`
+
+const Soon = styled(Badge).attrs({ shape: 'compact', children: 'Soon' })`
+  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 300;
 `
 
 export default MenuPanelAppGroup
