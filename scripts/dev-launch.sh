@@ -16,13 +16,17 @@ export REACT_APP_DEFAULT_ETH_NODE='ws://localhost:8545'
 export REACT_APP_ETH_NETWORK_TYPE='local'
 
 # Test if ipfs is running locally before using local settings
-if pgrep -x "ipfs" > /dev/null
-then
+if pgrep -x "ipfs" > /dev/null; then
     echo "Found a local IPFS daemon running..."
     echo "The app will be configured to connect and serve assets from from the default gateway ($DEFAULT_IPFS_GATEWAY) and rpc ($DEFAULT_IPFS_RPC)."
     export REACT_APP_IPFS_GATEWAY="$DEFAULT_IPFS_GATEWAY"
     export REACT_APP_IPFS_RPC="$DEFAULT_IPFS_RPC"
-    export REACT_APP_ASSET_BRIDGE='ipfs'
+    if [ -z "$REACT_APP_ASSET_BRIDGE" ]; then
+        echo "Defaulting asset bridge to IPFS"
+        export REACT_APP_ASSET_BRIDGE='ipfs'
+    fi
+else
+    export REACT_APP_ASSET_BRIDGE='local'
 fi
 
 npm start
