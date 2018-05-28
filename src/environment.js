@@ -1,5 +1,6 @@
 import Web3 from 'web3'
 import {
+  getAssetBridge,
   getDefaultEthNode,
   getEthNetworkType,
   getIpfsGateway,
@@ -49,9 +50,8 @@ export const sortAppsPair = (app1, app2) => {
 }
 
 let appLocator
-let appOverrides
-
-if (process.env.NODE_ENV !== 'production') {
+const assetBridge = getAssetBridge()
+if (assetBridge === 'local') {
   /******************
    * Local settings *
    ******************/
@@ -61,37 +61,28 @@ if (process.env.NODE_ENV !== 'production') {
     [appIds['Survey']]: 'http://localhost:3004/',
     [appIds['Voting']]: 'http://localhost:3001/',
   }
-  appOverrides = {
-    [appIds['Finance']]: {
-      script: '/script.js',
-      start_url: '/index.html',
-    },
-    [appIds['TokenManager']]: {
-      script: '/script.js',
-      start_url: '/index.html',
-    },
-    [appIds['Survey']]: {
-      script: '/script.js',
-      start_url: '/index.html',
-    },
-    [appIds['Voting']]: {
-      script: '/script.js',
-      start_url: '/index.html',
-    },
-  }
+} else if (assetBridge === 'ipfs') {
+  // We don't need to provide any thing here as by default, the apps will be loaded from IPFS
+  appLocator = {}
 } else {
-  /***********************
-   * Production settings *
-   ***********************/
+  if (assetBridge && assetBridge !== 'apm-serve') {
+    console.error(
+      `The specified asset bridge (${assetBridge}) in the configuration is not one of 'apm-serve', 'ipfs', or 'local'. Defaulting to using apm-serve.`
+    )
+  }
+  /**********************
+   * apm-serve settings *
+   **********************/
   appLocator = {
     [appIds['Finance']]: 'https://finance.aragonpm.com/',
     [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
     [appIds['Voting']]: 'https://voting.aragonpm.com/',
   }
-  appOverrides = {}
 }
+export { appLocator }
 
-export { appLocator, appOverrides }
+// Use appOverrides to override specific keys in an app instance, e.g. the start_url or script location
+export const appOverrides = {}
 
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),

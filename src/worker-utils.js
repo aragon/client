@@ -16,6 +16,9 @@ const fetchUrl = async url => {
   const res = await fetch(url, {
     method: 'GET',
     mode: 'cors',
+    headers: {
+      'content-type': 'application/javascript',
+    },
   })
 
   // If status is not a 2xx (based on Response.ok), assume it's an error
