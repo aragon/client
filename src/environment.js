@@ -8,7 +8,8 @@ import {
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 
-// TODO: make all these depend on env variables / URL
+const appsOrder = ['TokenManager', 'Finance', 'Voting', 'Vault']
+const networkType = getEthNetworkType()
 
 export const appIds = {
   Finance: '0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae',
@@ -18,8 +19,6 @@ export const appIds = {
   Vault: '0x7e852e0fcfce6551c13800f1e7476f982525c2b5277ba14b24339c68416336d1',
   Voting: '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
 }
-
-const appsOrder = ['TokenManager', 'Finance', 'Voting', 'Vault']
 
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
 export const sortAppsPair = (app1, app2) => {
@@ -49,48 +48,68 @@ export const sortAppsPair = (app1, app2) => {
   return unknownName1 < unknownName2 ? -1 : 1
 }
 
-let appLocator
+// Use appOverrides to override specific keys in an app instance, e.g. the start_url or script location
+const appOverrides = {}
+
+const appLocator = {}
 const assetBridge = getAssetBridge()
 if (assetBridge === 'local') {
   /******************
    * Local settings *
    ******************/
-  appLocator = {
+  Object.assign(appLocator, {
     [appIds['Finance']]: 'http://localhost:3002/',
     [appIds['TokenManager']]: 'http://localhost:3003/',
     [appIds['Survey']]: 'http://localhost:3004/',
     [appIds['Voting']]: 'http://localhost:3001/',
-  }
+  })
+  Object.assign(appOverrides, {
+    [appIds['Survey']]: {
+      icons: [
+        {
+          src: '/images/icon.png',
+          sizes: '192x192',
+        },
+      ],
+      script: '/script.js',
+      start_url: '/index.html',
+    },
+  })
 } else if (assetBridge === 'ipfs') {
   // We don't need to provide any thing here as by default, the apps will be loaded from IPFS
-  appLocator = {}
 } else {
   if (assetBridge && assetBridge !== 'apm-serve') {
     console.error(
       `The specified asset bridge (${assetBridge}) in the configuration is not one of 'apm-serve', 'ipfs', or 'local'. Defaulting to using apm-serve.`
     )
   }
-  /**********************
-   * apm-serve settings *
-   **********************/
-  appLocator = {
-    [appIds['Finance']]: 'https://finance.aragonpm.com/',
-    [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
-    [appIds['Voting']]: 'https://voting.aragonpm.com/',
+
+  if (networkType === 'mainnet') {
+    /******************************
+     * Mainnet apm-serve settings *
+     ******************************/
+    Object.assign(appLocator, {
+      [appIds['Survey']]: 'https://mainnet.survey.aragonpm.com/',
+    })
+  } else if (networkType === 'rinkeby') {
+    /******************************
+     * Rinkeby apm-serve settings *
+     ******************************/
+    Object.assign(appLocator, {
+      [appIds['Finance']]: 'https://finance.aragonpm.com/',
+      [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
+      [appIds['Voting']]: 'https://voting.aragonpm.com/',
+    })
   }
 }
-export { appLocator }
-
-// Use appOverrides to override specific keys in an app instance, e.g. the start_url or script location
-export const appOverrides = {}
+export { appLocator, appOverrides }
 
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
   rpc: getIpfsRpc(),
 }
 
-const expectedNetworkType = getEthNetworkType()
-const networkConfig = getNetworkConfig(expectedNetworkType)
+const networkConfig = getNetworkConfig(networkType)
 export const network = networkConfig.settings
 
 export const contractAddresses = {

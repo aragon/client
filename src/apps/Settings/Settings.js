@@ -24,7 +24,7 @@ import {
   setDefaultEthNode,
   setIpfsGateway,
 } from '../../local-settings'
-import airdrop from '../../testnet/airdrop'
+import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 
 // const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'RMB', 'JPY']
 const AVAILABLE_CURRENCIES = ['USD'] // Only use USD for now
@@ -165,40 +165,40 @@ class Settings extends React.Component {
               </Note>
             </Field>
           </Option>
-          <Option
-            name="Request test tokens"
-            text="Deposit some tokens into your organization for testing purposes."
-          >
-            <div>
-              <Button
-                mode="secondary"
-                onClick={this.handleDepositTestTokens}
-                disabled={!enableTransactions}
-                style={{ opacity: enableTransactions ? 1 : 0.6 }}
-              >
-                Request test tokens
-              </Button>
-              {!enableTransactions && (
-                <Text size="small" style={{ marginLeft: '10px' }}>
-                  {(() =>
-                    network.type === 'unknown'
-                      ? 'This app was configured to connect to an unsupported network. Please change the network environment settings.'
-                      : userNetwork !== network.type
+          {testTokensEnabled(network.type) && (
+            <Option
+              name="Request test tokens"
+              text="Deposit some tokens into your organization for testing purposes."
+            >
+              <div>
+                <Button
+                  mode="secondary"
+                  onClick={this.handleDepositTestTokens}
+                  disabled={!enableTransactions}
+                  style={{ opacity: enableTransactions ? 1 : 0.6 }}
+                >
+                  Request test tokens
+                </Button>
+                {!enableTransactions && (
+                  <Text size="small" style={{ marginLeft: '10px' }}>
+                    {(() =>
+                      userNetwork !== network.type
                         ? `Please select the ${sanitizeNetworkType(
                             network.type
                           )} network in MetaMask.`
                         : `Please unlock your account in MetaMask.`)()}
-                </Text>
-              )}
-            </div>
-            <Note>
-              Requesting tokens will assign random <strong>TEST</strong> tokens
-              to your organization. The tokens are named after existing
-              projects, but keep in mind <strong>THEY ARE NOT</strong> the real
-              ones. You can view the received tokens in the Token Balances on
-              the Finance app.
-            </Note>
-          </Option>
+                  </Text>
+                )}
+              </div>
+              <Note>
+                Requesting tokens will assign random <strong>TEST</strong>{' '}
+                tokens to your organization. The tokens are named after existing
+                projects, but keep in mind <strong>THEY ARE NOT</strong> the
+                real ones. You can view the received tokens in the Token
+                Balances on the Finance app.
+              </Note>
+            </Option>
+          )}
           {financeApp && (
             <Option
               name="Send ether to this organization"
