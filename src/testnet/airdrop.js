@@ -1,5 +1,9 @@
 import tokens from '@aragon/templates-tokens'
 
+export function testTokensEnabled(network) {
+  return !!tokens[network]
+}
+
 export default (web3, financeAddr, from, network = 'rinkeby') => {
   const ts = tokens[network]
   const depositer = new web3.eth.Contract(tokens.depositerABI, ts.depositer)
