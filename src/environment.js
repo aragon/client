@@ -89,7 +89,7 @@ if (assetBridge === 'local') {
      * Mainnet apm-serve settings *
      ******************************/
     Object.assign(appLocator, {
-      [appIds['Survey']]: 'https://mainnet.voting.aragonpm.com/',
+      [appIds['Survey']]: 'https://mainnet.survey.aragonpm.com/',
     })
   } else if (networkType === 'rinkeby') {
     /******************************
