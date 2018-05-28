@@ -5,7 +5,7 @@ import { theme, spring as springConf, IconBlank, Badge } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
-class MenuPanelAppGroup extends React.Component {
+class MenuPanelAppGroup extends React.PureComponent {
   static defaultProps = {
     instances: [],
   }
@@ -28,22 +28,26 @@ class MenuPanelAppGroup extends React.Component {
       expand,
       comingSoon,
     } = this.props
+    const singleInstance = instances.length === 1
     return (
       <Motion
         style={{
-          openProgress: spring(Number(active && expand), springConf('fast')),
+          openProgress: spring(
+            Number(active && (singleInstance || expand)),
+            springConf('fast')
+          ),
         }}
       >
         {({ openProgress }) => (
           <Main active={active}>
+            <ActiveBackground style={{ opacity: Number(active) }} />
+
             <MenuItemBar
               style={{
-                transform: `translateX(-${(1 - openProgress) * 100}%)`,
                 opacity: openProgress,
+                transform: `translateX(-${(1 - openProgress) * 100}%)`,
               }}
             />
-
-            <ActiveBackground style={{ opacity: Number(active) }} />
 
             <ButtonItem
               role="button"
@@ -56,9 +60,7 @@ class MenuPanelAppGroup extends React.Component {
               </span>
               {comingSoon && (
                 <span>
-                  <Badge shape="compact" style={{ fontVariant: 'small-caps' }}>
-                    soon
-                  </Badge>
+                  <Soon />
                 </span>
               )}
             </ButtonItem>
@@ -163,6 +165,12 @@ const MenuItemBar = styled.div`
   width: 4px;
   height: 100%;
   background: ${theme.accent};
+`
+
+const Soon = styled(Badge).attrs({ shape: 'compact', children: 'Soon' })`
+  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 300;
 `
 
 export default MenuPanelAppGroup
