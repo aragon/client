@@ -55,7 +55,9 @@ class Wrapper extends React.Component {
     const app =
       wrapper &&
       apps.find(
-        app => addressesEqual(app.instanceId, instanceId) || addressesEqual(app.proxyAddress, instanceId)
+        app =>
+          addressesEqual(app.instanceId, instanceId) ||
+          addressesEqual(app.proxyAddress, instanceId)
       )
 
     if (!app || !wrapper) {
@@ -148,7 +150,9 @@ class Wrapper extends React.Component {
     return (
       staticApps.has(instanceId) &&
       !!apps.find(
-        app => addressesEqual(app.instanceId, instanceId) || addressesEqual(app.proxyAddress, instanceId)
+        app =>
+          addressesEqual(app.instanceId, instanceId) ||
+          addressesEqual(app.proxyAddress, instanceId)
       )
     )
   }
@@ -282,7 +286,9 @@ class Wrapper extends React.Component {
     const app =
       wrapper &&
       apps.find(
-        app => addressesEqual(app.instanceId, instanceId) || addressesEqual(app.proxyAddress, instanceId)
+        app =>
+          addressesEqual(app.instanceId, instanceId) ||
+          addressesEqual(app.proxyAddress, instanceId)
       )
 
     return app ? (
