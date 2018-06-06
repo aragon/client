@@ -14,7 +14,6 @@ import {
 
 class Domain extends React.Component {
   static defaultProps = {
-    warm: false,
     positionProgress: 0,
     domain: '',
     domainCheckStatus: DomainCheckNone,
@@ -41,7 +40,7 @@ class Domain extends React.Component {
     this.focusEl = el
   }
   render() {
-    const { positionProgress, warm, domain, domainCheckStatus } = this.props
+    const { positionProgress, domain, domainCheckStatus } = this.props
     return (
       <Main>
         <Content

@@ -442,10 +442,7 @@ class Onboarding extends React.PureComponent {
     // No need to move the screens farther than one step
     positionProgress = Math.min(1, Math.max(-1, positionProgress))
 
-    // Is the screen the previous / current / next one?
-    const warm = Math.abs(position) <= 1
-
-    const sharedProps = { positionProgress, warm }
+    const sharedProps = { positionProgress }
 
     if (screen === 'start') {
       return (

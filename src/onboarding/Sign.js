@@ -10,13 +10,12 @@ import imgError from './assets/transaction-error.svg'
 
 class Sign extends React.Component {
   static defaultProps = {
-    warm: false,
     positionProgress: 0,
     daoCreationStatus: 'none',
     onTryAgain: noop,
   }
   render() {
-    const { positionProgress, warm, daoCreationStatus, onTryAgain } = this.props
+    const { positionProgress, daoCreationStatus, onTryAgain } = this.props
     return (
       <Main>
         <Content

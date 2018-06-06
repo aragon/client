@@ -7,7 +7,6 @@ import TemplateCard from './TemplateCard'
 
 class Template extends React.Component {
   static defaultProps = {
-    warm: false,
     positionProgress: 0,
     onSelect: noop,
   }
@@ -15,7 +14,7 @@ class Template extends React.Component {
     this.props.onSelect(template)
   }
   render() {
-    const { positionProgress, warm, templates, activeTemplate } = this.props
+    const { positionProgress, templates, activeTemplate } = this.props
     return (
       <Main>
         <Content
