@@ -8,7 +8,7 @@ import {
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 
-const appsOrder = ['TokenManager', 'Finance', 'Voting', 'Vault']
+const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault']
 const networkType = getEthNetworkType()
 
 export const appIds = {
