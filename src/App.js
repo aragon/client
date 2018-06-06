@@ -107,14 +107,13 @@ class App extends React.Component {
 
     // New DAO: need to reinit the wrapper
     if (locator.dao && (!prevLocator || locator.dao !== prevLocator.dao)) {
-      this.cancelWrapperSubscriptions()
       this.updateDao(locator.dao)
     }
 
     // Moving from a DAO to somewhere else (like onboarding):
     // need to cancel the subscribtions.
     if (!locator.dao && prevLocator && prevLocator.dao) {
-      this.cancelWrapperSubscriptions()
+      this.updateDao(null)
     }
 
     this.setState({ locator, prevLocator })
@@ -155,14 +154,15 @@ class App extends React.Component {
     }
   }
 
-  cancelWrapperSubscriptions() {
-    if (this.state.wrapper) {
+  updateDao(dao = null) {
+
+    // Cancel the subscriptions / unload the wrapper
+    if (dao === null && this.state.wrapper) {
       this.state.wrapper.cancel()
       this.setState({ wrapper: null })
+      return
     }
-  }
 
-  updateDao(dao) {
     this.setState({ appsLoading: true })
 
     log('Wrapper init', dao)
