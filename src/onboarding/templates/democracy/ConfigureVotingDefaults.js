@@ -47,7 +47,6 @@ class ConfigureVotingDefaults extends React.Component {
         style={{
           opacity: 1 - Math.abs(positionProgress),
           transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-          willChange: warm ? 'opacity, transform' : 'auto',
         }}
       >
         <ConfigureVotingDefaultsContent

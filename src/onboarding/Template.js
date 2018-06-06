@@ -22,7 +22,6 @@ class Template extends React.Component {
           style={{
             transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
             opacity: 1 - Math.abs(positionProgress),
-            willChange: warm ? 'opacity, transform' : 'auto',
           }}
         >
           <TemplateContent

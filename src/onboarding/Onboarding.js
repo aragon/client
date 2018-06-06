@@ -44,6 +44,7 @@ const initialState = {
   domainToOpenCheckStatus: DomainCheckNone,
   stepIndex: 0,
   direction: 1, // 1 = forward, -1 = backward
+  render: true,
 }
 
 class Onboarding extends React.PureComponent {
@@ -62,11 +63,16 @@ class Onboarding extends React.PureComponent {
     ...initialState,
   }
 
+  constructor(props) {
+    super(props)
+    this.state.render = props.visible
+  }
+
   componentWillReceiveProps(nextProps) {
     const { props } = this
 
     if (nextProps.visible && !props.visible) {
-      this.setState({ stepIndex: 0 })
+      this.setState({ stepIndex: 0, render: true })
     }
 
     if (
@@ -76,6 +82,12 @@ class Onboarding extends React.PureComponent {
       setTimeout(() => {
         this.nextStep()
       }, 1000)
+    }
+  }
+
+  handleTransitionRest = () => {
+    if (!this.props.visible) {
+      this.setState({ render: false })
     }
   }
 
@@ -281,7 +293,6 @@ class Onboarding extends React.PureComponent {
     const templateData = Templates.get(template)
     const data = templateData.prepareData(this.state.templateData)
 
-    console.log('build DAO', data)
     this.props.onBuildDao(templateData.name, domain, data)
   }
 
@@ -345,8 +356,13 @@ class Onboarding extends React.PureComponent {
     return steps[stepIndex + 1] && steps[stepIndex + 1].name === 'sign'
   }
   render() {
-    const { direction, stepIndex } = this.state
+    const { direction, stepIndex, render } = this.state
     const { visible } = this.props
+
+    if (!render && !visible) {
+      return null
+    }
+
     const step = this.currentStep()
     const steps = this.getSteps()
     return (
@@ -357,13 +373,14 @@ class Onboarding extends React.PureComponent {
             visible ? SPRING_SHOW : SPRING_HIDE
           ),
         }}
+        onRest={this.handleTransitionRest}
       >
         {({ showProgress }) => (
           <Main
             style={{
               transform: visible
                 ? 'none'
-                : `translateY(${100 * (1 - showProgress)}%)`,
+                : `translateY(${110 * (1 - showProgress)}%)`,
               opacity: visible ? showProgress : 1,
             }}
           >

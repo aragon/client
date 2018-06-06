@@ -61,13 +61,11 @@ class Start extends React.Component {
       <Main
         style={{
           opacity: 1 - Math.abs(positionProgress),
-          willChange: warm ? 'opacity' : 'auto',
         }}
       >
         <Content
           style={{
             transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-            willChange: warm ? 'transform' : 'auto',
           }}
         >
           <StartContent
