@@ -25,7 +25,7 @@
   ],
   "dependencies": {
     "@aragon/templates-tokens": "^1.1.1",
-    "@aragon/ui": "^0.11.0",
+    "@aragon/ui": "^0.15.0",
     "@aragon/wrapper": "^2.0.0-beta.38",
     "@babel/polyfill": "^7.0.0-beta.39",
     "bignumber.js": "^6.0.0",
@@ -68,16 +68,15 @@
     "webpack-bundle-analyzer": "^2.11.1"
   },
   "scripts": {
-    "update-assets": "rm -rf public/aragon-ui && cp -r node_modules/@aragon/ui/dist public/aragon-ui",
-    "lint": "eslint ./src",
-    "start": "npm run update-assets && react-scripts start",
+    "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./public",
+    "start": "npm run ui-assets && react-scripts start",
     "start:local": "scripts/dev-launch.sh",
-    "build": "npm run update-assets && PUBLIC_URL=/ react-scripts build && npm run copy-apm-artifacts",
+    "build": "npm run ui-assets && PUBLIC_URL=/ react-scripts build && npm run copy-apm-artifacts",
     "build:analyze": "node scripts/build-analyze.js",
-    "copy-apm-artifacts": "cp arapp.json build/arapp.json && cp manifest.json build/manifest.json",
-    "publish:rinkeby": "aragon publish --files build/ --no-contract=true --keyfile ~/.rinkebykey.json 0x0000000000000000000000000000000000000000",
+    "lint": "eslint ./src",
     "test": "npm run lint",
-    "eject": "react-scripts eject"
+    "copy-apm-artifacts": "cp arapp.json build/arapp.json && cp manifest.json build/manifest.json",
+    "publish:rinkeby": "aragon publish --files build/ --no-contract=true --keyfile ~/.rinkebykey.json 0x0000000000000000000000000000000000000000"
   },
   "browserslist": {
     "development": ">2%, last 1 edge versions, not ie > 0, not op_mini all",
