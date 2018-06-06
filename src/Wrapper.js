@@ -262,15 +262,10 @@ class Wrapper extends React.Component {
       )
     }
 
-    // The Settings need the wrapper
-    if (!wrapper) {
-      return <LoadingApps />
-    }
-
     if (instanceId === 'settings') {
       return (
         <Settings
-          cache={wrapper.cache}
+          cache={wrapper ? wrapper.cache : null}
           daoAddr={daoAddress}
           account={account}
           network={network}
@@ -279,7 +274,7 @@ class Wrapper extends React.Component {
       )
     }
 
-    if (appsLoading) {
+    if (!wrapper || appsLoading) {
       return <LoadingApps />
     }
 

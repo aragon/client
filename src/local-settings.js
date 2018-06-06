@@ -5,6 +5,7 @@ const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
 const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
 const IPFS_GATEWAY = 'IPFS_GATEWAY'
 const IPFS_RPC = 'IPFS_RPC'
+const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 
 const CONFIGURATION_KEYS = [
   ASSET_BRIDGE,
@@ -13,6 +14,7 @@ const CONFIGURATION_KEYS = [
   ETH_NETWORK_TYPE,
   IPFS_GATEWAY,
   IPFS_RPC,
+  SELECTED_CURRENCY,
 ].reduce(
   (acc, option) => ({
     ...acc,
@@ -95,4 +97,13 @@ export function getIpfsRpc() {
       protocol: 'https',
     }
   }
+}
+
+export function getSelectedCurrency() {
+  const currency = getLocalSetting(SELECTED_CURRENCY, 'USD')
+  return currency && currency.toUpperCase()
+}
+
+export function setSelectedCurrency(currency) {
+  return setLocalSetting(SELECTED_CURRENCY, currency.toUpperCase())
 }
