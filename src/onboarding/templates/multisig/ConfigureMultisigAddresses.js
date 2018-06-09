@@ -6,7 +6,6 @@ import { noop } from '../../../utils'
 
 class ConfigureMultisigAddresses extends React.Component {
   static defaultProps = {
-    warm: false,
     positionProgress: 0,
     onFieldUpdate: noop,
     onSubmit: noop,
@@ -50,13 +49,12 @@ class ConfigureMultisigAddresses extends React.Component {
     this.formEl = el
   }
   render() {
-    const { positionProgress, warm, fields } = this.props
+    const { positionProgress, fields } = this.props
     return (
       <Main
         style={{
           opacity: 1 - Math.abs(positionProgress),
           transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-          willChange: warm ? 'opacity, transform' : 'auto',
         }}
       >
         <ConfigureMultisigAddressesContent

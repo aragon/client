@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, font, redrawFromDate, formatHtmlDatetime } from '@aragon/ui'
+import { theme, font, RedrawFromDate, formatHtmlDatetime } from '@aragon/ui'
 import { formatDistanceStrict } from 'date-fns/esm'
 
 class NotificationItem extends React.Component {
@@ -22,9 +22,13 @@ class NotificationItem extends React.Component {
         {!read && <Unread />}
         <Header>
           <Title>{title}</Title>
-          <Time datetime={formatHtmlDatetime(date)}>
-            {`${formatDistanceStrict(date, new Date())} ago`}
-          </Time>
+          <RedrawFromDate fromDate={date}>
+            {() => (
+              <Time datetime={formatHtmlDatetime(date)}>
+                {`${formatDistanceStrict(date, new Date())} ago`}
+              </Time>
+            )}
+          </RedrawFromDate>
         </Header>
         <p>{body}</p>
       </Main>
@@ -59,4 +63,4 @@ const Unread = styled.div`
   border-radius: 2.5px;
 `
 
-export default redrawFromDate(NotificationItem)
+export default NotificationItem

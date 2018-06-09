@@ -28,7 +28,6 @@ const MINIMUM_BALANCE = etherToWei(0.1)
 
 class Start extends React.Component {
   static defaultProps = {
-    warm: false,
     positionProgress: 0,
     hasAccount: false,
     network: 'private',
@@ -49,7 +48,6 @@ class Start extends React.Component {
   render() {
     const {
       positionProgress,
-      warm,
       hasAccount,
       network: userNetwork,
       balance,
@@ -61,13 +59,11 @@ class Start extends React.Component {
       <Main
         style={{
           opacity: 1 - Math.abs(positionProgress),
-          willChange: warm ? 'opacity' : 'auto',
         }}
       >
         <Content
           style={{
             transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-            willChange: warm ? 'transform' : 'auto',
           }}
         >
           <StartContent
