@@ -100,8 +100,7 @@ export function getIpfsRpc() {
 }
 
 export function getSelectedCurrency() {
-  const currency = getLocalSetting(SELECTED_CURRENCY, 'USD')
-  return currency && currency.toUpperCase()
+  return getLocalSetting(SELECTED_CURRENCY, 'USD').toUpperCase()
 }
 
 export function setSelectedCurrency(currency) {
