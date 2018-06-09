@@ -155,7 +155,6 @@ class App extends React.Component {
   }
 
   updateDao(dao = null) {
-
     // Cancel the subscriptions / unload the wrapper
     if (dao === null && this.state.wrapper) {
       this.state.wrapper.cancel()

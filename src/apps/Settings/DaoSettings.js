@@ -1,10 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, Field, TextInput, Text } from '@aragon/ui'
+import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import provideNetwork from '../../context/provideNetwork'
 import { sanitizeNetworkType } from '../../network-config'
-import { compose } from '../../utils'
 import { getWeb3 } from '../../web3-utils'
 import { web3Providers, network, appIds } from '../../environment'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
@@ -15,7 +14,7 @@ const LinkButton = styled(Button.Anchor).attrs({
   compact: true,
   mode: 'outline',
 })`
-  background: #FFF;
+  background: ${theme.contentBackground};
 `
 
 const AppsList = styled.ul`
@@ -49,13 +48,7 @@ class DaoSettings extends React.Component {
     }
   }
   render() {
-    const {
-      daoAddr,
-      account,
-      network: userNetwork,
-      selectedCurrency,
-      apps,
-    } = this.props
+    const { daoAddr, account, network: userNetwork, apps } = this.props
     const enableTransactions = !!account && userNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     return (
