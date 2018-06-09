@@ -11,18 +11,12 @@ import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
 import Note from './Note'
 
-const LinkButton = ({ children }) => (
-  <Button.Anchor mode="outline" compact>
-    {children}
-  </Button.Anchor>
-)
-
-// const LinkButton = styled(Button.Anchor).attrs({
-// compact: true,
-// mode: 'outline',
-// })`
-// background: ${theme.contentBackground};
-// `
+const LinkButton = styled(Button.Anchor).attrs({
+  compact: true,
+  mode: 'outline',
+})`
+  background: #FFF;
+`
 
 const AppsList = styled.ul`
   list-style: none;
