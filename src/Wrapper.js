@@ -265,7 +265,6 @@ class Wrapper extends React.Component {
     if (instanceId === 'settings') {
       return (
         <Settings
-          cache={wrapper ? wrapper.cache : null}
           daoAddr={daoAddress}
           account={account}
           network={network}
