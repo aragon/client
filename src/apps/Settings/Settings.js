@@ -74,7 +74,7 @@ class Settings extends React.Component {
     return (
       <AppLayout title="Settings">
         <Content>
-          <DaoSettings daoAddr={daoAddr} apps={apps} />
+          <DaoSettings daoAddr={daoAddr} apps={apps} account={account} />
           {currencies.length > 1 &&
             selectedCurrency && (
               <Option
