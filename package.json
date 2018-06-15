@@ -71,6 +71,7 @@
     "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./public",
     "start": "npm run ui-assets && react-scripts start",
     "start:local": "scripts/dev-launch.sh",
+    "start:mainnet": "scripts/launch-mainnet.sh",
     "build": "npm run ui-assets && PUBLIC_URL=/ react-scripts build && npm run copy-apm-artifacts",
     "build:analyze": "node scripts/build-analyze.js",
     "lint": "eslint ./src",
