@@ -20,7 +20,7 @@ const AppLoadingProgressBar = ({ hide, percent, ...props }) => (
           <StyledProgressBar
             style={{
               opacity: opacity,
-              width: `${(width * percentProgress) / 100}px`,
+              width: `${width * percentProgress / 100}px`,
             }}
             {...props}
           >

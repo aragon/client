@@ -31,7 +31,7 @@ const CircleGraph = ({ value, label, size }) => {
             r={radius}
             style={{
               strokeDasharray: length,
-              strokeDashoffset: length - (length * progressValue) / 2,
+              strokeDashoffset: length - length * progressValue / 2,
               strokeWidth: BORDER_WIDTH,
             }}
           />
