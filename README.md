@@ -12,9 +12,18 @@ Please note that all of the code is still undocumented, and no contribution guid
 
 Contributions are welcome, just beware of the dragons. 🐲
 
+## Quick start
+
+`npm start` will launch the app, configured to connect to our Rinkeby deployment.
+
+For connecting to other chains / deployments, a few useful npm scripts are provided:
+
+- Mainnet: `npm run start:mainnet` will launch the app, configured to connect to our mainnet deployment
+- Local development: `npm run start:local` will launch the app, configured to connect to our [aragen](https://github.com/aragon/aragen) local development environment. It will also use the local IPFS daemon, if it detects one exists.
+
 ## Environment options
 
-The app currently supports setting a few environment settings via environment variables:
+The app can be configured in a number of ways via environment variables:
 
 - `REACT_APP_DEFAULT_ETH_NODE`: Url of the default Ethereum node to read blockchain data from (must be WebSocket protocol). If you intend to connect to a local ganache instance, by default you should set this to `ws://localhost:8545`.
 - `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that APM repos were registered on. If you've deployed aragonOS to a local network, you can find the ENS registry's address in the migration's console output.
@@ -23,4 +32,4 @@ The app currently supports setting a few environment settings via environment va
 - `REACT_APP_IPFS_RPC`: Url of the IPFS API endpoint to fetch blobs from. If you intend to connect to a local IPFS daemon, by default you should set this to `http://localhost:5001`
 - `REACT_APP_ASSET_BRIDGE`: Which source to load the app frontend assets from. Can be one of `apm-bridge` (`apm-serve`'s production hosts, e.g. `voting.aragonpm.eth`, `ipfs` (loads through the IPFS gateway configured), or `local` (local servers, running on `localhost:300x`). If you intend to serve from a local IPFS daemon, you should set this to `ipfs`.
 
-Without any settings, the app is configured to connect to our Rinkeby and `apm-serve` deployment.
+Without any settings, the app is configured to connect to our Rinkeby deployment using the `apm-serve` bridge.
