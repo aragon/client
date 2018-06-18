@@ -53,16 +53,12 @@ class Wrapper extends React.Component {
       wrapper,
       locator: { instanceId },
     } = this.props
-    const app =
-      wrapper &&
-      apps.find(
-        app =>
-          addressesEqual(app.instanceId, instanceId) ||
-          addressesEqual(app.proxyAddress, instanceId)
-      )
-
-    if (!app || !wrapper) {
+    if (
+      !wrapper ||
+      !apps.find(app => addressesEqual(app.proxyAddress, instanceId))
+    ) {
       console.error('The app cannot be connected to aragon.js')
+      return
     }
 
     wrapper.connectAppIFrame(event.target, instanceId)
@@ -150,11 +146,7 @@ class Wrapper extends React.Component {
     const { apps } = this.props
     return (
       staticApps.has(instanceId) &&
-      !!apps.find(
-        app =>
-          addressesEqual(app.instanceId, instanceId) ||
-          addressesEqual(app.proxyAddress, instanceId)
-      )
+      !!apps.find(app => addressesEqual(app.proxyAddress, instanceId))
     )
   }
   showWeb3ActionSigner = (intent, { direct, error, paths }) => {
@@ -278,13 +270,7 @@ class Wrapper extends React.Component {
       return <LoadingApps />
     }
 
-    const app =
-      wrapper &&
-      apps.find(
-        app =>
-          addressesEqual(app.instanceId, instanceId) ||
-          addressesEqual(app.proxyAddress, instanceId)
-      )
+    const app = apps.find(app => addressesEqual(app.proxyAddress, instanceId))
 
     return app ? (
       <AppIFrame
@@ -292,10 +278,8 @@ class Wrapper extends React.Component {
         ref={this.handleAppIFrameRef}
         onLoad={this.handleAppIFrameLoad}
       />
-    ) : apps.length ? (
-      <App404 onNavigateBack={this.props.historyBack} />
     ) : (
-      <LoadingApps />
+      <App404 onNavigateBack={this.props.historyBack} />
     )
   }
 }
