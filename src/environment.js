@@ -130,7 +130,8 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
+const defaultEthNode = getDefaultEthNode() || networkConfig.nodes.defaultEth
 export const web3Providers = {
-  default: new Web3.providers.WebsocketProvider(getDefaultEthNode()),
+  default: new Web3.providers.WebsocketProvider(defaultEthNode),
   wallet: window.web3 && window.web3.currentProvider,
 }

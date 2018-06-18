@@ -26,6 +26,9 @@ if [ "$quiet" = false ]; then
     printf "Running aragon/aragon on local environment settings...\n\n"
 fi
 
+# Set up defaults for development environment
+export REACT_APP_ETH_NETWORK_TYPE='local'
+
 # Default REACT_APP_ENS_REGISTRY_ADDRESS if not set
 if [ -z "$REACT_APP_ENS_REGISTRY_ADDRESS" ]; then
     export REACT_APP_ENS_REGISTRY_ADDRESS="$DEFAULT_LOCAL_ENS_ADDRESS"
@@ -35,10 +38,6 @@ if [ -z "$REACT_APP_ENS_REGISTRY_ADDRESS" ]; then
         printf "Warning: if you are not using aragen, restart this command with REACT_APP_ENS_REGISTRY_ADDRESS exported to your locally deployed ENS Registry's address.\n\n"
     fi
 fi
-
-# Set up defaults for development environment
-export REACT_APP_DEFAULT_ETH_NODE='ws://localhost:8545'
-export REACT_APP_ETH_NETWORK_TYPE='local'
 
 # Test if ipfs is running locally and use it if so
 if pgrep -x "ipfs" > /dev/null; then

@@ -46,7 +46,8 @@ export function getAssetBridge() {
 }
 
 export function getDefaultEthNode() {
-  return getLocalSetting(DEFAULT_ETH_NODE, 'ws://rinkeby.aragon.network:8546')
+  // Let the network configuration handle node defaults
+  return getLocalSetting(DEFAULT_ETH_NODE, '')
 }
 
 export function setDefaultEthNode(node) {
