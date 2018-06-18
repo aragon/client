@@ -97,7 +97,15 @@ class MenuPanel extends React.PureComponent {
           <Content>
             <div className="in">
               <h1>Apps</h1>
-              <div>{menuApps.map(app => this.renderAppGroup(app, false))}</div>
+              <div>
+                {menuApps.map(
+                  app =>
+                    // If it's an array, it's the group being loaded from the ACL
+                    Array.isArray(app)
+                      ? this.renderLoadedAppGroup(app)
+                      : this.renderAppGroup(app, false)
+                )}
+              </div>
             </div>
           </Content>
         </In>
@@ -131,20 +139,7 @@ class MenuPanel extends React.PureComponent {
     )
   }
   renderAppGroup = (app, readyToExpand) => {
-    const { activeInstanceId, onOpenApp, appsLoading } = this.props
-
-    // Wrap the DAO apps in the loader
-    if (Array.isArray(app)) {
-      return (
-        <MenuPanelAppsLoader
-          key="menu-apps"
-          loading={appsLoading}
-          itemsCount={app.length}
-        >
-          {done => app.map(app => this.renderAppGroup(app, done))}
-        </MenuPanelAppsLoader>
-      )
-    }
+    const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances = [] } = app
     const isActive =
@@ -165,6 +160,20 @@ class MenuPanel extends React.PureComponent {
           comingSoon={['permissions', 'apps'].includes(appId)}
         />
       </div>
+    )
+  }
+  renderLoadedAppGroup = apps => {
+    const { appsLoading } = this.props
+
+    // Wrap the DAO apps in the loader
+    return (
+      <MenuPanelAppsLoader
+        key="menu-apps"
+        loading={appsLoading}
+        itemsCount={apps.length}
+      >
+        {done => apps.map(app => this.renderAppGroup(app, done))}
+      </MenuPanelAppsLoader>
     )
   }
 }
