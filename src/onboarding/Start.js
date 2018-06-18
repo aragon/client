@@ -30,7 +30,7 @@ class Start extends React.Component {
   static defaultProps = {
     positionProgress: 0,
     hasAccount: false,
-    walletNetwork: 'private',
+    walletNetwork: '',
     balance: null,
     onCreate: noop,
     onDomainChange: noop,
