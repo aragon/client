@@ -5,7 +5,7 @@ import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import provideNetwork from '../../context/provideNetwork'
 import { sanitizeNetworkType } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
-import { web3Providers, network, appIds } from '../../environment'
+import { web3Providers, appIds } from '../../environment'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
 import Note from './Note'
@@ -48,8 +48,8 @@ class DaoSettings extends React.Component {
     }
   }
   render() {
-    const { daoAddr, account, network: userNetwork, apps } = this.props
-    const enableTransactions = !!account && userNetwork === network.type
+    const { account, apps, daoAddr, network, walletNetwork } = this.props
+    const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     return (
       <div>
@@ -97,7 +97,7 @@ class DaoSettings extends React.Component {
               {!enableTransactions && (
                 <Text size="small" style={{ marginLeft: '10px' }}>
                   {(() =>
-                    userNetwork !== network.type
+                    walletNetwork !== network.type
                       ? `Please select the ${sanitizeNetworkType(
                           network.type
                         )} network in MetaMask.`

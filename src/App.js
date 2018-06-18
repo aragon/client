@@ -26,7 +26,6 @@ class App extends React.Component {
     appsLoading: true,
     account: '',
     balance: null,
-    network: '',
     connected: false,
     apps: [],
     walletWeb3: null,
@@ -35,6 +34,7 @@ class App extends React.Component {
     daoCreationStatus: 'none', // none / success / error
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
+    walletNetwork: '',
   }
 
   history = createHistory()
@@ -63,8 +63,8 @@ class App extends React.Component {
       },
     })
 
-    pollNetwork(web3Providers.wallet, network => {
-      this.setState({ network })
+    pollNetwork(web3Providers.wallet, walletNetwork => {
+      this.setState({ walletNetwork })
     })
 
     // Only the default, because the app can work without the wallet
@@ -216,7 +216,7 @@ class App extends React.Component {
       apps,
       account,
       balance,
-      network,
+      walletNetwork,
       transactionBag,
       daoBuilder,
       daoCreationStatus,
@@ -238,7 +238,7 @@ class App extends React.Component {
           apps={apps}
           appsLoading={appsLoading}
           account={account}
-          network={network}
+          walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
           web3={web3}
           daoAddress={daoAddress}
@@ -249,7 +249,7 @@ class App extends React.Component {
           visible={mode === 'home' || mode === 'setup'}
           account={account}
           balance={balance}
-          network={network}
+          walletNetwork={walletNetwork}
           onBuildDao={this.handleBuildDao}
           daoBuilder={daoBuilder}
           daoCreationStatus={daoCreationStatus}

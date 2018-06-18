@@ -64,7 +64,7 @@ class Settings extends React.Component {
     window.location.reload()
   }
   render() {
-    const { daoAddr, account, apps } = this.props
+    const { account, apps, daoAddr, walletNetwork } = this.props
     const {
       defaultEthNode,
       ipfsGateway,
@@ -74,7 +74,12 @@ class Settings extends React.Component {
     return (
       <AppLayout title="Settings">
         <Content>
-          <DaoSettings daoAddr={daoAddr} apps={apps} account={account} />
+          <DaoSettings
+            apps={apps}
+            account={account}
+            daoAddr={daoAddr}
+            walletNetwork={walletNetwork}
+          />
           {currencies.length > 1 &&
             selectedCurrency && (
               <Option

@@ -30,7 +30,7 @@ class Start extends React.Component {
   static defaultProps = {
     positionProgress: 0,
     hasAccount: false,
-    network: 'private',
+    walletNetwork: 'private',
     balance: null,
     onCreate: noop,
     onDomainChange: noop,
@@ -49,7 +49,7 @@ class Start extends React.Component {
     const {
       positionProgress,
       hasAccount,
-      network: userNetwork,
+      walletNetwork,
       balance,
       onCreate,
       domain,
@@ -70,7 +70,7 @@ class Start extends React.Component {
             onCreate={onCreate}
             hasWallet={!!web3Providers.wallet}
             hasAccount={hasAccount}
-            userNetwork={userNetwork}
+            walletNetwork={walletNetwork}
             balance={balance}
             onDomainChange={this.handleDomainChange}
             domain={domain}
@@ -94,7 +94,7 @@ class StartContent extends React.PureComponent {
     const {
       hasWallet,
       hasAccount,
-      userNetwork,
+      walletNetwork,
       domain,
       domainCheckStatus,
       onDomainChange,
@@ -104,7 +104,7 @@ class StartContent extends React.PureComponent {
       this.enoughBalance() &&
       hasWallet &&
       hasAccount &&
-      userNetwork === network.type
+      walletNetwork === network.type
 
     return (
       <React.Fragment>
@@ -190,7 +190,7 @@ class StartContent extends React.PureComponent {
     )
   }
   renderWarning() {
-    const { hasWallet, hasAccount, userNetwork, balance } = this.props
+    const { hasWallet, hasAccount, walletNetwork, balance } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
@@ -212,7 +212,7 @@ class StartContent extends React.PureComponent {
         </ActionInfo>
       )
     }
-    if (userNetwork !== network.type) {
+    if (walletNetwork !== network.type) {
       return (
         <ActionInfo>
           Please select the {sanitizeNetworkType(network.type)} network in
