@@ -43,8 +43,8 @@ class DaoSettings extends React.Component {
   handleDepositTestTokens = () => {
     const { account, apps } = this.props
     const finance = apps.find(app => app.appId === appIds.Finance)
-    if (finance && finance.appId) {
-      airdrop(getWeb3(web3Providers.wallet), finance.appId, account)
+    if (finance && finance.proxyAddress) {
+      airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
     }
   }
   render() {
@@ -126,8 +126,8 @@ class DaoSettings extends React.Component {
           >
             <Field label="Funding Address (Finance App)">
               <FieldTwoParts>
-                <TextInput readOnly wide value={financeApp.appId} />
-                <EtherscanLink address={financeApp.appId}>
+                <TextInput readOnly wide value={financeApp.proxyAddress} />
+                <EtherscanLink address={financeApp.proxyAddress}>
                   {url =>
                     url ? (
                       <LinkButton href={url} target="_blank">
@@ -150,12 +150,12 @@ class DaoSettings extends React.Component {
             text={`This organization has ${apps.length} apps installed.`}
           >
             <AppsList>
-              {apps.map(({ name, appId, description }) => (
-                <li title={description} key={appId}>
+              {apps.map(({ name, description, proxyAddress }) => (
+                <li title={description} key={proxyAddress}>
                   <Field label={name}>
                     <FieldTwoParts>
-                      <TextInput readOnly wide value={appId} />
-                      <EtherscanLink address={appId}>
+                      <TextInput readOnly wide value={proxyAddress} />
+                      <EtherscanLink address={proxyAddress}>
                         {url =>
                           url ? (
                             <LinkButton href={url} target="_blank">

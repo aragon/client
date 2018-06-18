@@ -2,9 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { DropDown, Button, Field, TextInput } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
+import { defaultEthNode, ipfsDefaultConf } from '../../environment'
 import {
-  getDefaultEthNode,
-  getIpfsGateway,
   getSelectedCurrency,
   setDefaultEthNode,
   setIpfsGateway,
@@ -37,8 +36,8 @@ class Settings extends React.Component {
     apps: [],
   }
   state = {
-    defaultEthNode: getDefaultEthNode(),
-    ipfsGateway: getIpfsGateway(),
+    defaultEthNode,
+    ipfsGateway: ipfsDefaultConf.gateway,
     currencies: AVAILABLE_CURRENCIES,
     selectedCurrency: filterCurrency(getSelectedCurrency()),
   }
