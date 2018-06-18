@@ -6,45 +6,22 @@ import {
   theme,
   unselectable,
   spring as springConf,
-  IconHome,
-  IconSettings,
-  IconPermissions,
-  IconApps,
   // IconWallet,
   // IconNotifications,
 } from '@aragon/ui'
 import ClickOutHandler from 'react-onclickout'
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
 import { lerp } from '../../math-utils'
+import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 
 import logo from './assets/logo.svg'
 
-const appHome = {
-  appId: 'home',
-  name: 'Home',
-  icon: <IconHome />,
-  instances: [{ instanceId: 'home' }],
-}
-const appSettings = {
-  appId: 'settings',
-  name: 'Settings',
-  icon: <IconSettings />,
-  instances: [{ instanceId: 'settings' }],
-}
-const appPermissions = {
-  appId: 'permissions',
-  name: 'Permissions',
-  icon: <IconPermissions />,
-  instances: [{ instanceId: 'permissions' }],
-}
-const appApps = {
-  appId: 'apps',
-  name: 'Apps',
-  icon: <IconApps />,
-  instances: [{ instanceId: 'apps' }],
-}
+const APP_APPS_CENTER = staticApps.get('apps').app
+const APP_HOME = staticApps.get('home').app
+const APP_PERMISSIONS = staticApps.get('permissions').app
+const APP_SETTINGS = staticApps.get('settings').app
 
 const prepareAppGroups = apps =>
   apps.reduce((groups, app) => {
@@ -96,7 +73,13 @@ class MenuPanel extends React.PureComponent {
     const { notificationsOpened } = this.state
 
     const appGroups = prepareAppGroups(apps)
-    const menuApps = [appHome, appGroups, appPermissions, appApps, appSettings]
+    const menuApps = [
+      APP_HOME,
+      appGroups,
+      APP_PERMISSIONS,
+      APP_APPS_CENTER,
+      APP_SETTINGS,
+    ]
 
     return (
       <Main>
@@ -114,7 +97,15 @@ class MenuPanel extends React.PureComponent {
           <Content>
             <div className="in">
               <h1>Apps</h1>
-              <div>{menuApps.map(app => this.renderAppGroup(app, false))}</div>
+              <div>
+                {menuApps.map(
+                  app =>
+                    // If it's an array, it's the group being loaded from the ACL
+                    Array.isArray(app)
+                      ? this.renderLoadedAppGroup(app)
+                      : this.renderAppGroup(app, false)
+                )}
+              </div>
             </div>
           </Content>
         </In>
@@ -148,20 +139,7 @@ class MenuPanel extends React.PureComponent {
     )
   }
   renderAppGroup = (app, readyToExpand) => {
-    const { activeInstanceId, onOpenApp, appsLoading } = this.props
-
-    // Wrap the DAO apps in the loader
-    if (Array.isArray(app)) {
-      return (
-        <MenuPanelAppsLoader
-          key="menu-apps"
-          loading={appsLoading}
-          itemsCount={app.length}
-        >
-          {done => app.map(app => this.renderAppGroup(app, done))}
-        </MenuPanelAppsLoader>
-      )
-    }
+    const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances = [] } = app
     const isActive =
@@ -182,6 +160,20 @@ class MenuPanel extends React.PureComponent {
           comingSoon={['permissions', 'apps'].includes(appId)}
         />
       </div>
+    )
+  }
+  renderLoadedAppGroup = apps => {
+    const { appsLoading } = this.props
+
+    // Wrap the DAO apps in the loader
+    return (
+      <MenuPanelAppsLoader
+        key="menu-apps"
+        loading={appsLoading}
+        itemsCount={apps.length}
+      >
+        {done => apps.map(app => this.renderAppGroup(app, done))}
+      </MenuPanelAppsLoader>
     )
   }
 }

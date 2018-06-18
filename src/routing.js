@@ -1,12 +1,5 @@
 import { isAddress } from 'web3-utils'
-
-export const staticApps = new Map(
-  Object.entries({
-    home: '/',
-    settings: '/settings',
-    permissions: '/permissions',
-  })
-)
+import { staticApps } from './static-apps'
 
 /*
  * Parse a path and a search query and return a “locator” object.
@@ -78,7 +71,7 @@ export const parsePath = (pathname, search = '') => {
 // Return a path string for an app instance
 export const getAppPath = ({ dao, instanceId = 'home', params } = {}) => {
   if (staticApps.has(instanceId)) {
-    return `/${dao}${staticApps.get(instanceId)}`
+    return `/${dao}${staticApps.get(instanceId).route}`
   }
   return `/${dao}/${instanceId}${
     params ? `?params=${encodeURIComponent(JSON.stringify(params))}` : ``
