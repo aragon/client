@@ -11,7 +11,8 @@ import Home from './components/Home/Home'
 import ComingSoon from './components/ComingSoon/ComingSoon'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
-import { getAppPath, staticApps } from './routing'
+import { getAppPath } from './routing'
+import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
 
 class Wrapper extends React.Component {
