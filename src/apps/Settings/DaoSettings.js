@@ -2,10 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
-import provideNetwork from '../../context/provideNetwork'
 import { sanitizeNetworkType } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
-import { web3Providers, appIds } from '../../environment'
+import { appIds, network, web3Providers } from '../../environment'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
 import Note from './Note'
@@ -33,12 +32,9 @@ const FieldTwoParts = styled.div`
 
 class DaoSettings extends React.Component {
   static defaultProps = {
-    daoAddr: '',
     account: '',
     apps: [],
-
-    // HOC prop
-    network: '',
+    daoAddr: '',
   }
   handleDepositTestTokens = () => {
     const { account, apps } = this.props
@@ -48,7 +44,7 @@ class DaoSettings extends React.Component {
     }
   }
   render() {
-    const { account, apps, daoAddr, network, walletNetwork } = this.props
+    const { account, apps, daoAddr, walletNetwork } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     return (
@@ -176,4 +172,4 @@ class DaoSettings extends React.Component {
   }
 }
 
-export default provideNetwork(DaoSettings)
+export default DaoSettings

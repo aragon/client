@@ -1,8 +1,7 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
 import { AragonApp } from '@aragon/ui'
-import { networkContextType } from './context/provideNetwork'
-import { contractAddresses, network, web3Providers } from './environment'
+import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
   initDaoBuilder,
@@ -16,9 +15,6 @@ import { getWeb3 } from './web3-utils'
 import { log } from './utils'
 
 class App extends React.Component {
-  static childContextTypes = {
-    network: networkContextType,
-  }
   state = {
     locator: {},
     prevLocator: null,
@@ -71,10 +67,6 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
-  }
-
-  getChildContext() {
-    return { network }
   }
 
   // Handle URL changes
