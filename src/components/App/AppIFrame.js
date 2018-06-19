@@ -61,7 +61,11 @@ class AppIFrame extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     const { app: nextApp } = nextProps
-    if (nextApp.src !== this.props.app.src) {
+    if (
+      nextApp.src !== this.props.app.src ||
+      // Also navigate when it's the same app, but a different instance
+      nextApp.proxyAddress !== this.props.app.proxyAddress
+    ) {
       this.resetProgress(() => {
         this.navigateIFrame(nextApp.src)
       })
