@@ -4,7 +4,6 @@ import {
   getDefaultEthNode,
   getEthNetworkType,
   getIpfsGateway,
-  getIpfsRpc,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 
@@ -108,7 +107,6 @@ export { appLocator, appOverrides }
 
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
-  rpc: getIpfsRpc(),
 }
 
 const networkConfig = getNetworkConfig(networkType)

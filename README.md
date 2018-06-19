@@ -29,7 +29,6 @@ The app can be configured in a number of ways via environment variables:
 - `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that APM repos were registered on. If you've deployed aragonOS to a local network, you can find the ENS registry's address in the migration's console output.
 - `REACT_APP_ETH_NETWORK_TYPE`: Expected network to connect to. Either one of `mainnet`, `rinkeby` or `local`.
 - `REACT_APP_IPFS_GATEWAY`: Url of the IPFS gateway to load APM repos from. If you intend to connect to a local IPFS daemon, by default you should set this to `http://localhost:8080/ipfs`
-- `REACT_APP_IPFS_RPC`: Url of the IPFS API endpoint to fetch blobs from. If you intend to connect to a local IPFS daemon, by default you should set this to `http://localhost:5001`
 - `REACT_APP_ASSET_BRIDGE`: Which source to load the app frontend assets from. Can be one of `apm-bridge` (`apm-serve`'s production hosts, e.g. `voting.aragonpm.eth`, `ipfs` (loads through the IPFS gateway configured), or `local` (local servers, running on `localhost:300x`). If you intend to serve from a local IPFS daemon, you should set this to `ipfs`.
 
 Without any settings, the app is configured to connect to our Rinkeby deployment using the `apm-serve` bridge.

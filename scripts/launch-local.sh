@@ -20,7 +20,6 @@ done
 
 DEFAULT_LOCAL_ENS_ADDRESS="0x5f6F7E8cc7346a11ca2dEf8f827b7a0b612c56a1"
 DEFAULT_LOCAL_IPFS_GATEWAY="http://localhost:8080/ipfs"
-DEFAULT_LOCAL_IPFS_RPC="http://localhost:5001"
 
 if [ "$quiet" = false ]; then
     printf "Running aragon/aragon on local environment settings...\n\n"
@@ -42,11 +41,10 @@ fi
 # Test if ipfs is running locally and use it if so
 if pgrep -x "ipfs" > /dev/null; then
     export REACT_APP_IPFS_GATEWAY="$DEFAULT_LOCAL_IPFS_GATEWAY"
-    export REACT_APP_IPFS_RPC="$DEFAULT_LOCAL_IPFS_RPC"
 
     if [ "$quiet" = false ]; then
         echo "Found a local IPFS daemon running..."
-        echo "The app will be configured to connect and serve assets from from the default gateway ($DEFAULT_LOCAL_IPFS_GATEWAY) and rpc ($DEFAULT_LOCAL_IPFS_RPC)."
+        echo "The app will be configured to connect and serve assets from from the default gateway ($DEFAULT_LOCAL_IPFS_GATEWAY)."
     fi
 
     # If no asset bridge is defined, default to using IPFS as the bridge
