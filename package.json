@@ -75,6 +75,7 @@
     "start:rinkeby": "npm start",
     "build": "npm run ui-assets && PUBLIC_URL=/ react-scripts build && npm run copy-apm-artifacts",
     "build:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm run build",
+    "build:mainnet-infura": "REACT_APP_DEFAULT_ETH_NODE=wss://mainnet.infura.io/_ws npm run build:mainnet",
     "build:rinkeby": "npm run build",
     "build:analyze": "node scripts/build-analyze.js",
     "lint": "eslint ./src",
