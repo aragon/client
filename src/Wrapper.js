@@ -35,7 +35,7 @@ class Wrapper extends React.Component {
     signerOpened: false,
     web3Action: {},
   }
-  componentWillReceiveProps({ account, transactionBag }) {
+  componentWillReceiveProps({ transactionBag }) {
     if (transactionBag && transactionBag !== this.props.transactionBag) {
       this.handleTransaction(transactionBag)
     }
@@ -77,10 +77,12 @@ class Wrapper extends React.Component {
       this.openApp(instanceId)
     }
   }
+  /*
   handleParamsRequest = params => {
-    // const { instanceId, } = this.state.appInstance
-    // this.openApp(instanceId, params)
+    const { instanceId, } = this.state.appInstance
+    this.openApp(instanceId, params)
   }
+  */
   makeTransactionIntent(transaction = {}) {
     const { apps } = this.props
     const { description, to } = transaction
