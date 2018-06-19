@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { toChecksumAddress } from 'web3-utils'
 import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import { sanitizeNetworkType } from '../../network-config'
@@ -47,6 +48,11 @@ class DaoSettings extends React.Component {
     const { account, apps, daoAddr, walletNetwork } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
+    const checksummedDaoAddr = daoAddr && toChecksumAddress(daoAddr)
+    const checksummedAppProxies = apps.reduce((addrMap, app) => {
+      addrMap[app.appId] = toChecksumAddress(app.proxyAddress)
+      return addrMap
+    }, {})
     return (
       <div>
         <Option
@@ -55,8 +61,8 @@ class DaoSettings extends React.Component {
         >
           <Field label="Address">
             <FieldTwoParts>
-              <TextInput readOnly wide value={daoAddr} />
-              <EtherscanLink address={daoAddr}>
+              <TextInput readOnly wide value={checksummedDaoAddr} />
+              <EtherscanLink address={checksummedDaoAddr}>
                 {url =>
                   url ? (
                     <LinkButton href={url} target="_blank">
@@ -122,8 +128,14 @@ class DaoSettings extends React.Component {
           >
             <Field label="Funding Address (Finance App)">
               <FieldTwoParts>
-                <TextInput readOnly wide value={financeApp.proxyAddress} />
-                <EtherscanLink address={financeApp.proxyAddress}>
+                <TextInput
+                  readOnly
+                  wide
+                  value={checksummedAppProxies[financeApp.appId]}
+                />
+                <EtherscanLink
+                  address={checksummedAppProxies[financeApp.appId]}
+                >
                   {url =>
                     url ? (
                       <LinkButton href={url} target="_blank">
@@ -146,24 +158,31 @@ class DaoSettings extends React.Component {
             text={`This organization has ${apps.length} apps installed.`}
           >
             <AppsList>
-              {apps.map(({ name, description, proxyAddress }) => (
-                <li title={description} key={proxyAddress}>
-                  <Field label={name}>
-                    <FieldTwoParts>
-                      <TextInput readOnly wide value={proxyAddress} />
-                      <EtherscanLink address={proxyAddress}>
-                        {url =>
-                          url ? (
-                            <LinkButton href={url} target="_blank">
-                              See on Etherscan
-                            </LinkButton>
-                          ) : null
-                        }
-                      </EtherscanLink>
-                    </FieldTwoParts>
-                  </Field>
-                </li>
-              ))}
+              {apps.map(({ appId, description, name, proxyAddress }) => {
+                const checksummedProxyAddress = checksummedAppProxies[appId]
+                return (
+                  <li title={description} key={checksummedProxyAddress}>
+                    <Field label={name}>
+                      <FieldTwoParts>
+                        <TextInput
+                          readOnly
+                          wide
+                          value={checksummedProxyAddress}
+                        />
+                        <EtherscanLink address={checksummedProxyAddress}>
+                          {url =>
+                            url ? (
+                              <LinkButton href={url} target="_blank">
+                                See on Etherscan
+                              </LinkButton>
+                            ) : null
+                          }
+                        </EtherscanLink>
+                      </FieldTwoParts>
+                    </Field>
+                  </li>
+                )
+              })}
             </AppsList>
           </Option>
         )}
