@@ -51,7 +51,7 @@ class Onboarding extends React.PureComponent {
   static defaultProps = {
     account: '',
     balance: null,
-    network: '',
+    walletNetwork: '',
     visible: true,
     daoCreationStatus: 'none',
     onComplete: noop,
@@ -433,7 +433,7 @@ class Onboarding extends React.PureComponent {
 
     const {
       account,
-      network,
+      walletNetwork,
       balance,
       daoCreationStatus,
       onComplete,
@@ -449,7 +449,7 @@ class Onboarding extends React.PureComponent {
         <Start
           hasAccount={!!account}
           balance={balance}
-          network={network}
+          walletNetwork={walletNetwork}
           onCreate={this.handleStartCreate}
           onRest={this.handleStartRest}
           domain={domainToOpen}

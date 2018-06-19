@@ -17,18 +17,18 @@ import { addressesEqual } from './web3-utils'
 
 class Wrapper extends React.Component {
   static defaultProps = {
+    apps: [],
+    account: '',
     connected: false,
+    daoAddress: '',
+    historyBack: () => {},
+    historyPush: () => {},
+    locator: {},
+    walletNetwork: '',
+    transactionBag: null,
     wrapper: null,
     walletWeb3: null,
     web3: null,
-    locator: {},
-    apps: [],
-    account: '',
-    network: 'private',
-    daoAddress: '',
-    transactionBag: null,
-    historyBack: () => {},
-    historyPush: () => {},
   }
   state = {
     appInstance: {},
@@ -205,7 +205,7 @@ class Wrapper extends React.Component {
     const {
       apps,
       account,
-      network,
+      walletNetwork,
       wrapper,
       appsLoading,
       connected,
@@ -260,7 +260,7 @@ class Wrapper extends React.Component {
         <Settings
           daoAddr={daoAddress}
           account={account}
-          network={network}
+          walletNetwork={walletNetwork}
           apps={apps}
         />
       )

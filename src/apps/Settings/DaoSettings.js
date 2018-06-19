@@ -2,10 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
-import provideNetwork from '../../context/provideNetwork'
 import { sanitizeNetworkType } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
-import { web3Providers, network, appIds } from '../../environment'
+import { appIds, network, web3Providers } from '../../environment'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
 import Note from './Note'
@@ -33,23 +32,20 @@ const FieldTwoParts = styled.div`
 
 class DaoSettings extends React.Component {
   static defaultProps = {
-    daoAddr: '',
     account: '',
     apps: [],
-
-    // HOC prop
-    network: '',
+    daoAddr: '',
   }
   handleDepositTestTokens = () => {
     const { account, apps } = this.props
     const finance = apps.find(app => app.appId === appIds.Finance)
-    if (finance && finance.appId) {
-      airdrop(getWeb3(web3Providers.wallet), finance.appId, account)
+    if (finance && finance.proxyAddress) {
+      airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
     }
   }
   render() {
-    const { daoAddr, account, network: userNetwork, apps } = this.props
-    const enableTransactions = !!account && userNetwork === network.type
+    const { account, apps, daoAddr, walletNetwork } = this.props
+    const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     return (
       <div>
@@ -97,7 +93,7 @@ class DaoSettings extends React.Component {
               {!enableTransactions && (
                 <Text size="small" style={{ marginLeft: '10px' }}>
                   {(() =>
-                    userNetwork !== network.type
+                    walletNetwork !== network.type
                       ? `Please select the ${sanitizeNetworkType(
                           network.type
                         )} network in MetaMask.`
@@ -126,8 +122,8 @@ class DaoSettings extends React.Component {
           >
             <Field label="Funding Address (Finance App)">
               <FieldTwoParts>
-                <TextInput readOnly wide value={financeApp.appId} />
-                <EtherscanLink address={financeApp.appId}>
+                <TextInput readOnly wide value={financeApp.proxyAddress} />
+                <EtherscanLink address={financeApp.proxyAddress}>
                   {url =>
                     url ? (
                       <LinkButton href={url} target="_blank">
@@ -150,12 +146,12 @@ class DaoSettings extends React.Component {
             text={`This organization has ${apps.length} apps installed.`}
           >
             <AppsList>
-              {apps.map(({ name, appId, description }) => (
-                <li title={description} key={appId}>
+              {apps.map(({ name, description, proxyAddress }) => (
+                <li title={description} key={proxyAddress}>
                   <Field label={name}>
                     <FieldTwoParts>
-                      <TextInput readOnly wide value={appId} />
-                      <EtherscanLink address={appId}>
+                      <TextInput readOnly wide value={proxyAddress} />
+                      <EtherscanLink address={proxyAddress}>
                         {url =>
                           url ? (
                             <LinkButton href={url} target="_blank">
@@ -176,4 +172,4 @@ class DaoSettings extends React.Component {
   }
 }
 
-export default provideNetwork(DaoSettings)
+export default DaoSettings
