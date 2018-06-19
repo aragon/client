@@ -89,7 +89,9 @@ if (assetBridge === 'local') {
      * Mainnet apm-serve settings *
      ******************************/
     Object.assign(appLocator, {
-      [appIds['Survey']]: 'https://mainnet.survey.aragonpm.com/',
+      // Cloudflare doesn't let us use our certificate down to mainnet.survey.aragonpm, so we'll
+      // downgrade to HTTP for now
+      [appIds['Survey']]: 'http://mainnet.survey.aragonpm.com/',
     })
   } else if (networkType === 'rinkeby') {
     /******************************
