@@ -4,6 +4,7 @@
     "es6": true
   },
   "extends": [
+    "react-app",
     "standard",
     "standard-react",
     "prettier",
