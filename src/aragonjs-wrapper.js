@@ -25,6 +25,13 @@ const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
   const hash = app.content && app.content.location
   if (!hash) return ''
 
+  // Support HTTP URLs
+  if (/^https?:\/\//.test(hash)) {
+    return hash
+  }
+
+  // Support overriding app URLs.
+  // Mostly used in development, see network-config.js
   if (appLocator[app.appId]) {
     return appLocator[app.appId]
   }
