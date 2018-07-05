@@ -18,10 +18,5 @@ export function getWeb3(provider) {
   return web3
 }
 
-export function weiToEther(wei) {
-  return wei / 10e17
-}
-
-export function etherToWei(ether) {
-  return ether * 10e17
-}
+// Re-export some utilities from web3-utils
+export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'

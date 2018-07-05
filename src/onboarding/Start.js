@@ -12,7 +12,7 @@ import {
 import { network, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
-import { weiToEther, etherToWei } from '../web3-utils'
+import { fromWei, toWei } from '../web3-utils'
 import { lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
@@ -24,7 +24,7 @@ import {
   DomainCheckRejected,
 } from './domain-states'
 
-const MINIMUM_BALANCE = etherToWei(0.1)
+const MINIMUM_BALANCE = toWei('0.1')
 
 class Start extends React.Component {
   static defaultProps = {
@@ -223,8 +223,8 @@ class StartContent extends React.PureComponent {
     if (!this.enoughBalance()) {
       return (
         <ActionInfo>
-          You need at least {weiToEther(MINIMUM_BALANCE)} ETH (you have{' '}
-          {Math.round(weiToEther((balance || 0).toFixed()) * 1000) / 1000} ETH).
+          You need at least {fromWei(MINIMUM_BALANCE)} ETH (you have{' '}
+          {Math.round(fromWei(balance || '0') * 1000) / 1000} ETH).
           <br />
           {network.type === 'rinkeby' && (
             <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
