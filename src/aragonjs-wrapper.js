@@ -22,21 +22,20 @@ const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
 
 const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
-  const hash = app.content && app.content.location
-  if (!hash) return ''
-
-  // Support HTTP URLs
-  if (/^https?:\/\//.test(hash)) {
-    return hash
-  }
-
-  // Support overriding app URLs.
-  // Mostly used in development, see network-config.js
+  // Support overriding app URLs, see network-config.js
   if (appLocator[app.appId]) {
     return appLocator[app.appId]
   }
-
-  return `${gateway}/${hash}/`
+  if (!app.content) {
+    return ''
+  }
+  if (app.content.provider === 'ipfs') {
+    return `${gateway}/${app.content.location}/`
+  }
+  if (app.content.provider === 'http') {
+    return `http://${app.content.location}/`
+  }
+  return ''
 }
 
 const applyAppOverrides = apps =>
