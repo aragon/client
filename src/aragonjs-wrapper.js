@@ -12,7 +12,7 @@ import {
   appLocator,
   ipfsDefaultConf,
 } from './environment'
-import { noop, removeStartingSlash } from './utils'
+import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
@@ -21,6 +21,16 @@ const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
 
+/*
+ * Supported locations:
+ *   ipfs:{IPFS_HASH}
+ *   http:{HOST}
+ *   http:{HOST}:{PORT}
+ *   http:{HOST}:{PORT}/{PATH}
+ *   http:http(s)://{HOST}
+ *   http:http(s)://{HOST}:{PORT}
+ *   http:http(s)://{HOST}:{PORT}/{PATH}
+ */
 const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
   // Support overriding app URLs, see network-config.js
   if (appLocator[app.appId]) {
@@ -29,11 +39,15 @@ const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
   if (!app.content) {
     return ''
   }
-  if (app.content.provider === 'ipfs') {
-    return `${gateway}/${app.content.location}/`
+
+  const { provider, location } = app.content
+  if (provider === 'ipfs') {
+    return `${gateway}/${location}/`
   }
-  if (app.content.provider === 'http') {
-    return `http://${app.content.location}/`
+  if (provider === 'http') {
+    return /^https?:\/\//.test(location)
+      ? appendTrailingSlash(location)
+      : `http://${location}/`
   }
   return ''
 }
@@ -48,8 +62,8 @@ const prepareFrontendApps = (apps, gateway) => {
     .sort(sortAppsPair)
     .map(app => {
       const baseUrl = appBaseUrl(app, gateway)
-      // Remove the starting slash from the start_url field to force it to
-      // load relative to the app's base url
+      // Remove the starting slash from the start_url field
+      // so the absolute path can be resolved from baseUrl.
       const startUrl = removeStartingSlash(app['start_url'])
       const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
       return { ...app, baseUrl, src }
