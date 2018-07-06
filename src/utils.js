@@ -29,6 +29,11 @@ export function removeStartingSlash(str) {
   return str.replace(/^\/+/, '')
 }
 
+// Append a trailing slash if needed
+export function appendTrailingSlash(str) {
+  return str + (str.endsWith('/') ? '' : '/')
+}
+
 export function log(...params) {
   if (process.env.NODE_ENV !== 'production') {
     console.log(...params)
