@@ -11,6 +11,7 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
+import GlobalErrorHandler from './GlobalErrorHandler'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
 
@@ -222,33 +223,35 @@ class App extends React.Component {
     if (!mode) return null
     return (
       <AragonApp publicUrl="/aragon-ui/">
-        <Wrapper
-          historyBack={this.historyBack}
-          historyPush={this.historyPush}
-          locator={locator}
-          wrapper={wrapper}
-          apps={apps}
-          appsLoading={appsLoading}
-          account={account}
-          walletNetwork={walletNetwork}
-          walletWeb3={walletWeb3}
-          web3={web3}
-          daoAddress={daoAddress}
-          transactionBag={transactionBag}
-          connected={connected}
-        />
-        <Onboarding
-          visible={mode === 'home' || mode === 'setup'}
-          account={account}
-          balance={balance}
-          walletNetwork={walletNetwork}
-          onBuildDao={this.handleBuildDao}
-          daoBuilder={daoBuilder}
-          daoCreationStatus={daoCreationStatus}
-          onComplete={this.handleCompleteOnboarding}
-          onOpenOrganization={this.handleOpenOrganization}
-          onResetDaoBuilder={this.handleResetDaoBuilder}
-        />
+        <GlobalErrorHandler>
+          <Wrapper
+            historyBack={this.historyBack}
+            historyPush={this.historyPush}
+            locator={locator}
+            wrapper={wrapper}
+            apps={apps}
+            appsLoading={appsLoading}
+            account={account}
+            walletNetwork={walletNetwork}
+            walletWeb3={walletWeb3}
+            web3={web3}
+            daoAddress={daoAddress}
+            transactionBag={transactionBag}
+            connected={connected}
+          />
+          <Onboarding
+            visible={mode === 'home' || mode === 'setup'}
+            account={account}
+            balance={balance}
+            walletNetwork={walletNetwork}
+            onBuildDao={this.handleBuildDao}
+            daoBuilder={daoBuilder}
+            daoCreationStatus={daoCreationStatus}
+            onComplete={this.handleCompleteOnboarding}
+            onOpenOrganization={this.handleOpenOrganization}
+            onResetDaoBuilder={this.handleResetDaoBuilder}
+          />
+        </GlobalErrorHandler>
       </AragonApp>
     )
   }
