@@ -1,10 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
-import {
-  // Permissions,
-  Settings,
-} from './apps'
+import { Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -77,12 +74,10 @@ class Wrapper extends React.Component {
       this.openApp(instanceId)
     }
   }
-  /*
+  // params need to be a string
   handleParamsRequest = params => {
-    const { instanceId, } = this.state.appInstance
-    this.openApp(instanceId, params)
+    this.openApp(this.props.locator.instanceId, params)
   }
-  */
   makeTransactionIntent(transaction = {}) {
     const { apps } = this.props
     const { description, to } = transaction
@@ -229,22 +224,13 @@ class Wrapper extends React.Component {
 
     if (instanceId === 'permissions') {
       return (
-        <ComingSoon
-          title="Permissions"
-          subtitle={`
-            The permissions app is not quite ready for prime time but will be
-            available soon.
-          `}
+        <Permissions
+          apps={apps}
+          appsLoading={appsLoading}
+          params={params}
+          onParamsRequest={this.handleParamsRequest}
         />
       )
-      // return (
-      //   <Permissions
-      //     apps={apps}
-      //     groups={apps}
-      //     params={params}
-      //     onParamsRequest={this.handleParamsRequest}
-      //   />
-      // )
     }
 
     if (instanceId === 'apps') {

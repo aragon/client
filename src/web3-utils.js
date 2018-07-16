@@ -7,6 +7,13 @@ export function addressesEqual(first, second) {
   return first === second
 }
 
+export function shortenAddress(address, charsLength = 5) {
+  if (address.length < charsLength * 2) {
+    return address
+  }
+  return `${address.slice(0, charsLength)}…${address.slice(-charsLength)}`
+}
+
 // Cache web3 instances used in the app
 const cache = new WeakMap()
 export function getWeb3(provider) {

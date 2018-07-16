@@ -1,196 +1,113 @@
 import React from 'react'
 import styled from 'styled-components'
-import { AppBar, SidePanel, Button, Text } from '@aragon/ui'
-import AssignPermission from './AssignPermission'
-import InstancePermissions from './InstancePermissions'
-import PermissionsHome from './PermissionsHome'
-import Badge from '../../components/Badge/Badge'
-import { permissions } from '../../demo-state'
-
-const { entities, actions, assigned } = permissions
+import {
+  AppBar,
+  AppView,
+  NavigationBar,
+  SidePanel,
+  Button,
+  Badge,
+  Text,
+  Card,
+} from '@aragon/ui'
+import { shortenAddress } from '../../web3-utils'
+import AppCard from './AppCard'
 
 class Permissions extends React.Component {
-  state = {
-    assignOpened: false,
-    currentInstance: null,
+  goToHome = () => {
+    this.props.onParamsRequest(null)
   }
-  componentDidMount() {
-    this.updateParams(this.props.params)
+  handleOpenApp = proxyAddress => {
+    this.props.onParamsRequest(`app.${proxyAddress}`)
   }
-  componentWillReceiveProps(nextProps) {
-    this.updateParams(nextProps.params)
-  }
-  updateParams(params) {
-    if (!params) {
-      this.setState({ currentInstance: null })
-      return
-    }
-    const { appId, instanceId } = params
-    const instance = this.getInstance(appId, instanceId)
+  getOpenedApp() {
+    const { params } = this.props
+    if (!params) return null
 
-    this.setState({
-      currentInstance: instance || null,
-    })
-  }
-  getInstance(appId, instanceId) {
-    const { apps } = this.props
-    const app = apps.find(({ id }) => id === appId)
-    if (!app) {
-      return null
-    }
-    const instance =
-      app.instances && app.instances.find(({ id }) => id === instanceId)
-    if (!instance) {
-      return null
-    }
+    const proxyAddress = params.split('app.')[1]
+    if (!proxyAddress) return null
 
-    return {
-      appId,
-      appName: app.name,
-      instanceId,
-      instanceName: instance.name,
-    }
-  }
-
-  // Transforms the apps list into a list of app instances,
-  // ready to be displayed in List.
-  getAppItems(apps) {
-    return apps
-      .filter(({ id }) => id !== 'permissions' && id !== 'identity')
-      .reduce(
-        (items, { id, name, instances = [], alwaysDisplayInstances }) =>
-          items.concat(
-            instances.map(instance => ({
-              id: `${id}__${instance.id}`,
-              label: name,
-              badge: alwaysDisplayInstances
-                ? { label: instance.name, style: 'app' }
-                : null,
-            }))
-          ),
-        []
-      )
-  }
-  handleAssignClick = () => {
-    this.setState({
-      assignOpened: true,
-    })
-  }
-  handleAssignPanelClose = () => {
-    this.setState({
-      assignOpened: false,
-    })
-  }
-  handleInstanceClick = id => {
-    const [appId, instanceId] = id.split('__')
-    this.props.onParamsRequest({ appId, instanceId })
-  }
-  handleAppBarTitleClick = () => {
-    this.props.onParamsRequest()
+    return this.props.apps.find(app => app.proxyAddress === proxyAddress)
   }
   render() {
-    const { apps, groups } = this.props
-    const { currentInstance, assignOpened } = this.state
-    const appItems = this.getAppItems(apps)
+    const { apps, appsLoading, params } = this.props
+    const openedApp = this.getOpenedApp()
+    const navigationItems = ['Permissions']
+
+    if (openedApp) {
+      navigationItems.push(
+        <span>
+          <span style={{ marginRight: '20px' }}>{openedApp.name}</span>
+          <Badge.App>
+            {openedApp.identifier || shortenAddress(openedApp.proxyAddress)}
+          </Badge.App>
+        </span>
+      )
+    }
+
     return (
-      <Main>
-        <AppBarWrapper>
-          <AppBar
-            title="Permissions"
-            onTitleClick={currentInstance ? this.handleAppBarTitleClick : null}
-            endContent={
-              !currentInstance && (
-                <Button mode="strong" onClick={this.handleAssignClick}>
-                  Assign Permission
-                </Button>
-              )
-            }
-          >
-            {currentInstance && (
-              <AppBarContent>
-                <Text size="xxlarge">{currentInstance.appName}</Text>
-                <span>
-                  <Badge aspect="app">{currentInstance.instanceName}</Badge>
-                </span>
-              </AppBarContent>
-            )}
-          </AppBar>
-        </AppBarWrapper>
-        <ScrollWrapper>
-          <AppWrapper>
-            {/* TODO: actions and assigned should should be on a per-app basis */}
-            {currentInstance ? (
-              <InstancePermissions
-                actions={actions}
-                assigned={assigned}
-                instance={currentInstance}
-              />
-            ) : (
-              <PermissionsHome
-                appItems={appItems}
-                entities={entities}
-                onInstanceClick={this.handleInstanceClick}
-              />
-            )}
-          </AppWrapper>
-        </ScrollWrapper>
-        <SidePanel
-          title="Assign Permission"
-          opened={assignOpened}
-          onClose={this.handleAssignPanelClose}
+      <div>
+        <AppView
+          appBar={
+            <AppBar>
+              <NavigationBar items={navigationItems} onBack={this.goToHome} />
+            </AppBar>
+          }
         >
-          <AssignPermission
-            onDone={this.handleAssignPanelClose}
-            entities={groups.map(({ name }) => `Groups (${name})`)}
-            calls={appItems.map(
-              ({ label, badge }) =>
-                `${label}${badge ? ` (${badge.label})` : ''}`
-            )}
-            actions={appItems.map(
-              ({ label, badge }) =>
-                `${label}${badge ? ` (${badge.label})` : ''}`
-            )}
-          />
-        </SidePanel>
-      </Main>
+          {openedApp ? null : (
+            <div>
+              <Category>
+                <h1>Browse by App</h1>
+                {appsLoading ? (
+                  <EmptyState>Loading apps…</EmptyState>
+                ) : (
+                  <Apps>
+                    {apps.map(app => (
+                      <AppCard
+                        key={app.appId}
+                        app={app}
+                        onOpen={this.handleOpenApp}
+                      />
+                    ))}
+                  </Apps>
+                )}
+              </Category>
+              <Category>
+                <h1>Browse by entity</h1>
+                <EmptyState>No entities found.</EmptyState>
+              </Category>
+            </div>
+          )}
+        </AppView>
+      </div>
     )
   }
 }
 
-const Main = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: stretch;
-`
-
-const AppBarWrapper = styled.div`
-  flex-shrink: 0;
-`
-
-const AppBarContent = styled.div`
-  display: flex;
-  align-items: center;
-  & > *:first-child {
-    margin-right: 10px;
+const Category = styled.section`
+  > h1 {
+    margin-bottom: 30px;
+    font-weight: 600;
+  }
+  & + & {
+    margin-top: 50px;
   }
 `
 
-const ScrollWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  overflow: auto;
-  flex-grow: 1;
+const Apps = styled.div`
+  display: grid;
+  grid-auto-flow: row;
+  grid-gap: 25px;
+  justify-items: start;
+  grid-template-columns: repeat(auto-fill, 160px);
 `
 
-const AppWrapper = styled.div`
-  flex-grow: 1;
-  min-height: min-content;
+const EmptyState = styled(Card)`
   display: flex;
-  align-items: stretch;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 180px;
 `
 
 export default Permissions

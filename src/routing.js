@@ -33,7 +33,7 @@ import { staticApps } from './static-apps'
  */
 export const parsePath = (pathname, search = '') => {
   const locator = { path: pathname + search }
-  const [, ...parts] = locator.path.split('/')
+  const [, ...parts] = pathname.split('/')
 
   // Home
   if (!parts[0]) {
@@ -56,9 +56,18 @@ export const parsePath = (pathname, search = '') => {
 
   // App
   const rawParams = search && search.split('?params=')[1]
-  const params = rawParams ? JSON.parse(decodeURIComponent(rawParams)) : null
+  let params = null
+  if (rawParams) {
+    try {
+      params = decodeURIComponent(rawParams)
+    } catch (err) {
+      console.log('The “params” URL parameter is not valid.')
+    }
+  }
+
   const [dao, instanceId, ...appParts] = parts
-  return {
+
+  const completeLocator = {
     ...locator,
     mode: 'app',
     dao,
@@ -66,14 +75,15 @@ export const parsePath = (pathname, search = '') => {
     params,
     parts: appParts,
   }
+
+  return completeLocator
 }
 
 // Return a path string for an app instance
 export const getAppPath = ({ dao, instanceId = 'home', params } = {}) => {
+  const paramsPart = params ? `?params=${encodeURIComponent(params)}` : ``
   if (staticApps.has(instanceId)) {
-    return `/${dao}${staticApps.get(instanceId).route}`
+    return `/${dao}${staticApps.get(instanceId).route}${paramsPart}`
   }
-  return `/${dao}/${instanceId}${
-    params ? `?params=${encodeURIComponent(JSON.stringify(params))}` : ``
-  }`
+  return `/${dao}/${instanceId}${paramsPart}`
 }
