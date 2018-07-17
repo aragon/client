@@ -82,7 +82,9 @@ class ConfigureMultisigAddressesContent extends React.PureComponent {
       onSignerChange,
       onNeededSignaturesChange,
     } = this.props
-    const neededSignaturesItems = fields.signers.map((signer, i) => i + 1)
+    const neededSignaturesItems = fields.signers.map((signer, i) =>
+      String(i + 1)
+    )
     return (
       <Content>
         <Title>Token project with multisig</Title>
