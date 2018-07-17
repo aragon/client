@@ -28,7 +28,7 @@
     "@aragon/ui": "^0.16.0",
     "@aragon/wrapper": "^2.0.0-beta.40",
     "@babel/polyfill": "^7.0.0-beta.39",
-    "bignumber.js": "^6.0.0",
+    "bn.js": "4.11.6",
     "date-fns": "^2.0.0-alpha.7",
     "history": "^4.7.2",
     "lodash.throttle": "^4.1.1",

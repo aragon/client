@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import BN from 'bn.js'
 import {
   theme,
   Text,
@@ -24,7 +25,7 @@ import {
   DomainCheckRejected,
 } from './domain-states'
 
-const MINIMUM_BALANCE = toWei('0.1')
+const MINIMUM_BALANCE = new BN(toWei('0.1'))
 
 class Start extends React.Component {
   static defaultProps = {
@@ -86,9 +87,8 @@ class Start extends React.Component {
 class StartContent extends React.PureComponent {
   enoughBalance() {
     const { balance } = this.props
-    const enough =
-      balance && balance.isLessThan && !balance.isLessThan(MINIMUM_BALANCE)
-    return enough || false
+    const enough = balance && balance.lt && !balance.lt(MINIMUM_BALANCE)
+    return !!enough
   }
   render() {
     const {
