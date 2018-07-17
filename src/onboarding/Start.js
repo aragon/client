@@ -224,7 +224,8 @@ class StartContent extends React.PureComponent {
       return (
         <ActionInfo>
           You need at least {fromWei(MINIMUM_BALANCE)} ETH (you have{' '}
-          {Math.round(fromWei(balance || '0') * 1000) / 1000} ETH).
+          {Math.round(parseInt(fromWei(balance || '0'), 10) * 1000) / 1000}{' '}
+          ETH).
           <br />
           {network.type === 'rinkeby' && (
             <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
