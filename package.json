@@ -42,6 +42,7 @@
     "react-onclickout": "^2.0.8",
     "resolve-pathname": "^2.2.0",
     "styled-components": "^3.3.3",
+    "underscore": "1.8.3",
     "web3": "1.0.0-beta.33",
     "web3-utils": "1.0.0-beta.33"
   },
