@@ -1,4 +1,4 @@
-import { isAddress } from 'web3-utils'
+import { isAddress } from '../../../web3-utils'
 import ConfigureMultisigToken from './ConfigureMultisigToken'
 import ConfigureMultisigAddresses from './ConfigureMultisigAddresses'
 import icon from './assets/icon.svg'

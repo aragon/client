@@ -1,3 +1,8 @@
+/*
+ * This utils library is meant to capture all of the web3-related utilities
+ * that we use. Any utilities we need from web3-utils should be re-exported
+ * from this file.
+ */
 import Web3 from 'web3'
 
 // Check address equality without checksums
@@ -18,10 +23,5 @@ export function getWeb3(provider) {
   return web3
 }
 
-export function weiToEther(wei) {
-  return wei / 10e17
-}
-
-export function etherToWei(ether) {
-  return ether * 10e17
-}
+// Re-export some utilities from web3-utils
+export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
