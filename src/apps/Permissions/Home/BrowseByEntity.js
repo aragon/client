@@ -8,8 +8,8 @@ class BrowseByEntity extends React.Component {
     const { appsLoading, permissions, onOpenEntity } = this.props
     return (
       <Section title="Browse by entity">
-        {false && appsLoading ? (
-          <EmptyBlock>No entities found.</EmptyBlock>
+        {appsLoading ? (
+          <EmptyBlock>Loading permissions…</EmptyBlock>
         ) : (
           <div>
             <Table

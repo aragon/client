@@ -10,7 +10,7 @@ class AppCard extends React.PureComponent {
   }
   render() {
     const {
-      app: { appId, name, identifier, proxyAddress, baseUrl, icons },
+      app: { name, identifier, proxyAddress, baseUrl },
     } = this.props
     const iconUrl = resolvePathname('images/icon.svg', baseUrl)
     const instanceLabel = identifier || shortenAddress(proxyAddress)
@@ -26,7 +26,7 @@ class AppCard extends React.PureComponent {
         </div>
         <div className="link">
           <Text weight="bold" color={theme.textSecondary}>
-            <a>View</a>
+            View
           </Text>
         </div>
       </Main>

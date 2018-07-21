@@ -46,8 +46,6 @@ class Row extends React.PureComponent {
   }
   render() {
     const {
-      permissionId,
-      actionId,
       actionName,
       allowedFor,
       editableBy,
