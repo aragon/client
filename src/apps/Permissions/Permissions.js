@@ -1,113 +1,185 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  AppBar,
-  AppView,
-  NavigationBar,
-  SidePanel,
-  Button,
-  Badge,
-  Text,
-  Card,
-} from '@aragon/ui'
+import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
-import AppCard from './AppCard'
+import { permissions } from '../../demo-state'
+import Home from './Home/Home'
+import PermissionsList from './PermissionsList/PermissionsList'
+import NavigationItem from './NavigationItem'
+import PermissionPanel from './PermissionPanel'
 
 class Permissions extends React.Component {
+  state = {
+    permissions,
+
+    // editPermission can be set to:
+    //
+    //   - `null` (no edition)
+    //   - `true` (new)
+    //   - a permission object (edit)
+    //
+    editPermission: null,
+
+    // We use a separate property than `editPermission` to display the panel,
+    // in order to keep displaying the content during the close animation.
+    showPermissionPanel: false,
+  }
+
+  componentDidUpdate(prevProps) {
+    const prevScreen = this.getLocation(prevProps.params).screen
+    const screen = this.getLocation(this.props.params).screen
+    if (prevScreen !== screen) {
+      this._scrollTopElement.scrollIntoView()
+    }
+  }
+
+  getLocation(params) {
+    const home = { screen: 'home' }
+
+    if (!params) {
+      return home
+    }
+
+    if (params.startsWith('app.')) {
+      return {
+        screen: 'app',
+        app: this.getAppByProxyAddress(params.split('app.')[1]),
+      }
+    }
+    if (params.startsWith('entity.')) {
+      return {
+        screen: 'entity',
+        address: params.split('entity.')[1] || null,
+      }
+    }
+
+    return home
+  }
+
+  getAppByProxyAddress(proxyAddress) {
+    if (!proxyAddress) {
+      return null
+    }
+    return this.props.apps.find(app => app.proxyAddress === proxyAddress)
+  }
+
   goToHome = () => {
     this.props.onParamsRequest(null)
   }
+
   handleOpenApp = proxyAddress => {
     this.props.onParamsRequest(`app.${proxyAddress}`)
   }
-  getOpenedApp() {
-    const { params } = this.props
-    if (!params) return null
 
-    const proxyAddress = params.split('app.')[1]
-    if (!proxyAddress) return null
-
-    return this.props.apps.find(app => app.proxyAddress === proxyAddress)
+  handleOpenEntity = address => {
+    this.props.onParamsRequest(`entity.${address}`)
   }
+
+  createPermission = () => {
+    this.setState({ showPermissionPanel: true, editPermission: true })
+  }
+
+  editPermission = permissionId => {
+    const { appPermissions } = this.state.permissions
+    const permission = appPermissions.find(p => p.permissionId === permissionId)
+    this.setState({ showPermissionPanel: true, editPermission: permission })
+  }
+
+  closePermissionPanel = () => {
+    this.setState({ showPermissionPanel: false })
+  }
+
   render() {
     const { apps, appsLoading, params } = this.props
-    const openedApp = this.getOpenedApp()
-    const navigationItems = ['Permissions']
+    const { permissions, editPermission, showPermissionPanel } = this.state
 
-    if (openedApp) {
-      navigationItems.push(
-        <span>
-          <span style={{ marginRight: '20px' }}>{openedApp.name}</span>
-          <Badge.App>
-            {openedApp.identifier || shortenAddress(openedApp.proxyAddress)}
-          </Badge.App>
-        </span>
-      )
-    }
+    const location = this.getLocation(params)
+
+    const openedApp = location.screen === 'app' ? location.app : null
+    const openedEntityAddress =
+      location.screen === 'entity' ? location.address : null
+
+    // Assemble the navigation items
+    const navigationItems = [
+      'Permissions',
+
+      // Opened app
+      openedApp && (
+        <NavigationItem
+          title={openedApp.name}
+          badge={{
+            label:
+              openedApp.identifier || shortenAddress(openedApp.proxyAddress),
+          }}
+        />
+      ),
+
+      // Opened entity
+      openedEntityAddress && (
+        <NavigationItem
+          title="Entity permissions"
+          badge={{
+            label: shortenAddress(openedEntityAddress),
+            title: openedEntityAddress,
+          }}
+        />
+      ),
+    ].filter(Boolean) // remove the `undefined` entries
 
     return (
       <div>
         <AppView
           appBar={
-            <AppBar>
+            <AppBar
+              endContent={
+                <Button mode="strong" onClick={this.createPermission}>
+                  Add permission
+                </Button>
+              }
+            >
               <NavigationBar items={navigationItems} onBack={this.goToHome} />
             </AppBar>
           }
         >
-          {openedApp ? null : (
-            <div>
-              <Category>
-                <h1>Browse by App</h1>
-                {appsLoading ? (
-                  <EmptyState>Loading apps…</EmptyState>
-                ) : (
-                  <Apps>
-                    {apps.map(app => (
-                      <AppCard
-                        key={app.appId}
-                        app={app}
-                        onOpen={this.handleOpenApp}
-                      />
-                    ))}
-                  </Apps>
-                )}
-              </Category>
-              <Category>
-                <h1>Browse by entity</h1>
-                <EmptyState>No entities found.</EmptyState>
-              </Category>
-            </div>
+          <ScrollTopElement
+            innerRef={el => {
+              this._scrollTopElement = el
+            }}
+          />
+          {location.screen === 'home' && (
+            <Home
+              apps={apps}
+              appsLoading={appsLoading}
+              onOpenApp={this.handleOpenApp}
+              onOpenEntity={this.handleOpenEntity}
+              permissions={permissions}
+            />
+          )}
+          {['entity', 'app'].includes(location.screen) && (
+            <PermissionsList
+              appsLoading={appsLoading}
+              permissions={permissions.appPermissions}
+              onEdit={this.editPermission}
+            />
           )}
         </AppView>
+        <PermissionPanel
+          opened={showPermissionPanel}
+          permission={editPermission}
+          onClose={this.closePermissionPanel}
+        />
       </div>
     )
   }
 }
 
-const Category = styled.section`
-  > h1 {
-    margin-bottom: 30px;
-    font-weight: 600;
-  }
-  & + & {
-    margin-top: 50px;
-  }
-`
-
-const Apps = styled.div`
-  display: grid;
-  grid-auto-flow: row;
-  grid-gap: 25px;
-  justify-items: start;
-  grid-template-columns: repeat(auto-fill, 160px);
-`
-
-const EmptyState = styled(Card)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 180px;
+// This element is only used to reset the view scroll using scrollIntoView()
+const ScrollTopElement = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
 `
 
 export default Permissions
