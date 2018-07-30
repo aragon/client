@@ -38,6 +38,11 @@ export const sortAppsPair = (app1, app2) => {
     return index1 - index2
   }
 
+  // Missing app name
+  if (!(app1.name && app2.name)) {
+    return 0
+  }
+
   // Otherwise, alphabetical order
   const unknownName1 = app1.name.toLowerCase()
   const unknownName2 = app2.name.toLowerCase()

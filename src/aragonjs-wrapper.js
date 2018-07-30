@@ -13,7 +13,7 @@ import {
   ipfsDefaultConf,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
-import { getWeb3 } from './web3-utils'
+import { getWeb3, soliditySha3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
 
@@ -58,15 +58,19 @@ const applyAppOverrides = apps =>
 // Filter out apps without UI and add an app source url properties
 const prepareFrontendApps = (apps, gateway) => {
   return applyAppOverrides(apps)
-    .filter(app => app && app['start_url'])
     .sort(sortAppsPair)
     .map(app => {
       const baseUrl = appBaseUrl(app, gateway)
       // Remove the starting slash from the start_url field
       // so the absolute path can be resolved from baseUrl.
-      const startUrl = removeStartingSlash(app['start_url'])
+      const startUrl = removeStartingSlash(app['start_url'] || '')
       const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
-      return { ...app, baseUrl, src }
+      return {
+        ...app,
+        src,
+        baseUrl,
+        hasWebApp: Boolean(app['start_url']),
+      }
     })
 }
 
@@ -229,8 +233,8 @@ const subscribe = (
             return
           }
 
-          // If another execution context already loaded this app's worker before we got to it here,
-          // let's short circuit
+          // If another execution context already loaded this app's worker
+          // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
             const worker = new Worker(workerUrl)
             worker.addEventListener(

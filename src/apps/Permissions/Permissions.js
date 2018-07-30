@@ -1,8 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
+import { AppBar, AppView, NavigationBar, Button, springs } from '@aragon/ui'
+import { Transition, animated } from 'react-spring'
+import debounce from 'lodash.debounce'
 import { shortenAddress } from '../../web3-utils'
 import { permissions } from '../../demo-state'
+import Screen from './Screen'
 import Home from './Home/Home'
 import PermissionsList from './PermissionsList/PermissionsList'
 import NavigationItem from './NavigationItem'
@@ -146,23 +149,30 @@ class Permissions extends React.Component {
               this._scrollTopElement = el
             }}
           />
-          {location.screen === 'home' && (
-            <Home
-              apps={apps}
-              appsLoading={appsLoading}
-              onOpenApp={this.handleOpenApp}
-              onOpenEntity={this.handleOpenEntity}
-              permissions={permissions}
-            />
-          )}
-          {['entity', 'app'].includes(location.screen) && (
-            <PermissionsList
-              appsLoading={appsLoading}
-              permissions={permissions.appPermissions}
-              onEdit={this.editPermission}
-            />
-          )}
+
+          <Screen position={0}>
+            {location.screen === 'home' && (
+              <Home
+                apps={apps}
+                appsLoading={appsLoading}
+                onOpenApp={this.handleOpenApp}
+                onOpenEntity={this.handleOpenEntity}
+                permissions={permissions}
+              />
+            )}
+          </Screen>
+
+          <Screen position={1}>
+            {['entity', 'app'].includes(location.screen) && (
+              <PermissionsList
+                appsLoading={appsLoading}
+                permissions={permissions.appPermissions}
+                onEdit={this.editPermission}
+              />
+            )}
+          </Screen>
         </AppView>
+
         <PermissionPanel
           opened={showPermissionPanel}
           permission={editPermission}

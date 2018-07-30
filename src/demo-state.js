@@ -112,33 +112,33 @@ export const prices = [
 export const permissions = {
   byEntity: [
     {
-      entity: '0x2e05a304d3040f1389c8c20d4a9f659ae752105a',
+      entity: '0x2e05a304d3040f9c8c21380d4a9f659ae752105a',
       type: 'User',
       permissions: 'Assign tokens, Create groups, Create vote',
     },
     {
-      entity: '0x2e05a304d3040f1389c8c20d4a9f659ae752105a',
+      entity: '0x9f62e05a304d3040f1389c8c20d4a59ae752105a',
       type: 'User',
       permissions: 'Mint tokens',
     },
     {
-      entity: '0x2e05a304d3040f1389c8c20d4a9f659ae752105a',
+      entity: '0x5a32e004d3040f1389c8c20d4a9f659ae752105a',
       type: 'Group',
       permissions: 'Assign tokens, Create groups',
     },
     {
-      entity: '0x2e05a304d3040f1389c8c20d4a9f659ae752105a',
+      entity: '0x9c82e05a304d3040f138c20d4a9f659ae752105a',
       type: 'App',
       permissions:
         'Assign tokens, Mint new tokens, Revoke vesting, Create vote…',
     },
     {
-      entity: '0x2e05a304d3040f1389c8c20d4a9f659ae752105a',
+      entity: '0xa9f2e05a304d3040f1389c8c20d4659ae752105a',
       type: 'User',
       permissions: 'Assign tokens, Create groups, Create vote',
     },
     {
-      entity: '0x2e05a304d3040f1389c8c20d4a9f659ae752105a',
+      entity: '0x40f2e05a304d301389c8c20d4a9f659ae752105a',
       type: 'User',
       permissions: 'Assign tokens, Create groups, Create vote',
     },

@@ -14,7 +14,7 @@ class Home extends React.Component {
     return (
       <div>
         <BrowseByApp
-          apps={apps}
+          apps={apps.filter(app => app.hasWebApp)}
           appsLoading={appsLoading}
           onOpenApp={onOpenApp}
         />

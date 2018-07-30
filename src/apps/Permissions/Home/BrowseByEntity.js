@@ -2,6 +2,7 @@ import React from 'react'
 import Section from '../Section'
 import EmptyBlock from '../EmptyBlock'
 import { Table, TableHeader, TableRow, TableCell, Button } from '@aragon/ui'
+import IdentityBadge from '../../../components/IdentityBadge'
 
 class BrowseByEntity extends React.Component {
   render() {
@@ -45,7 +46,9 @@ class EntityPermissionsRow extends React.PureComponent {
     const { entity, type, permissions } = this.props
     return (
       <TableRow>
-        <TableCell>{entity}</TableCell>
+        <TableCell>
+          <IdentityBadge entity={entity} />
+        </TableCell>
         <TableCell>{type}</TableCell>
         <TableCell>{permissions}</TableCell>
         <TableCell>

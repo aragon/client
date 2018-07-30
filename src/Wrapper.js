@@ -173,7 +173,7 @@ class Wrapper extends React.Component {
       <React.Fragment>
         <Main>
           <MenuPanel
-            apps={apps}
+            apps={apps.filter(app => app.hasWebApp)}
             appsLoading={appsLoading}
             activeInstanceId={instanceId}
             notificationsObservable={wrapper && wrapper.notifications}

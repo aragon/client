@@ -7,11 +7,16 @@ export function addressesEqual(first, second) {
   return first === second
 }
 
-export function shortenAddress(address, charsLength = 5) {
-  if (address.length < charsLength * 2) {
+export function shortenAddress(address, charsLength = 4) {
+  const prefixLength = 2 // "0x"
+  if (address.length < charsLength * 2 + prefixLength) {
     return address
   }
-  return `${address.slice(0, charsLength)}…${address.slice(-charsLength)}`
+  return (
+    address.slice(0, charsLength + prefixLength) +
+    '…' +
+    address.slice(-charsLength)
+  )
 }
 
 // Cache web3 instances used in the app
@@ -32,3 +37,5 @@ export function weiToEther(wei) {
 export function etherToWei(ether) {
   return ether * 10e17
 }
+
+export const { soliditySha3, isAddress } = Web3.utils
