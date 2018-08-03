@@ -176,7 +176,7 @@ class Permissions extends React.Component {
             {['entity', 'app'].includes(location.screen) && (
               <PermissionsList
                 appsLoading={appsLoading}
-                permissions={permissions.appPermissions}
+                permissions={permissionsDemo.appPermissions}
                 onEdit={this.editPermission}
               />
             )}
