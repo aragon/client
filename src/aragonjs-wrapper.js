@@ -16,6 +16,7 @@ import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3, soliditySha3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
+import { permissionsByEntity } from './permissions'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -178,19 +179,22 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
   }
 }, POLL_DELAY_NETWORK)
 
-// Subscribe to wrapper's observables
+// Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  { onApps, onForwarders, onTransaction },
+  { onApps, onPermissions, onForwarders, onTransaction },
   { ipfsConf }
 ) => {
-  const { apps, forwarders, transactions } = wrapper
+  const { apps, permissions, forwarders, transactions } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
     apps: apps.subscribe(apps => {
       onApps(prepareFrontendApps(apps, ipfsConf.gateway), apps)
+    }),
+    permissions: permissions.subscribe(permissions => {
+      onPermissions(permissionsByEntity(permissions))
     }),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
@@ -284,6 +288,7 @@ const initWrapper = async (
     ipfsConf = ipfsDefaultConf,
     onError = noop,
     onApps = noop,
+    onPermissions = noop,
     onForwarders = noop,
     onTransaction = noop,
     onDaoAddress = noop,
@@ -291,7 +296,6 @@ const initWrapper = async (
   } = {}
 ) => {
   const isDomain = /[a-z0-9]+\.aragonid\.eth/.test(dao)
-
   const daoAddress = isDomain
     ? await resolveEnsDomain(dao, {
         provider,
@@ -332,7 +336,7 @@ const initWrapper = async (
 
   const subscriptions = subscribe(
     wrapper,
-    { onApps, onForwarders, onTransaction },
+    { onApps, onPermissions, onForwarders, onTransaction },
     { ipfsConf }
   )
 

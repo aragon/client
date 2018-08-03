@@ -7,20 +7,27 @@ class Home extends React.Component {
     const {
       apps,
       appsLoading,
+      permissions,
+      permissionsLoading,
       onOpenApp,
       onOpenEntity,
-      permissions,
+      daoAddress,
+      resolveEntity,
+      resolveRole,
     } = this.props
     return (
       <div>
         <BrowseByApp
           apps={apps.filter(app => app.hasWebApp)}
-          appsLoading={appsLoading}
+          loading={appsLoading}
           onOpenApp={onOpenApp}
         />
         <BrowseByEntity
-          permissions={permissions.byEntity}
-          appsLoading={appsLoading}
+          permissions={permissions}
+          daoAddress={daoAddress}
+          resolveEntity={resolveEntity}
+          resolveRole={resolveRole}
+          loading={permissionsLoading || !resolveEntity || !resolveRole}
           onOpenEntity={onOpenEntity}
         />
       </div>

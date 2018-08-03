@@ -2,9 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { AppBar, AppView, NavigationBar, Button, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-import debounce from 'lodash.debounce'
 import { shortenAddress } from '../../web3-utils'
-import { permissions } from '../../demo-state'
+import { permissions as permissionsDemo } from '../../demo-state'
 import Screen from './Screen'
 import Home from './Home/Home'
 import PermissionsList from './PermissionsList/PermissionsList'
@@ -13,7 +12,6 @@ import PermissionPanel from './PermissionPanel'
 
 class Permissions extends React.Component {
   state = {
-    permissions,
 
     // editPermission can be set to:
     //
@@ -83,7 +81,7 @@ class Permissions extends React.Component {
   }
 
   editPermission = permissionId => {
-    const { appPermissions } = this.state.permissions
+    const { appPermissions } = permissionsDemo
     const permission = appPermissions.find(p => p.permissionId === permissionId)
     this.setState({ showPermissionPanel: true, editPermission: permission })
   }
@@ -93,8 +91,17 @@ class Permissions extends React.Component {
   }
 
   render() {
-    const { apps, appsLoading, params } = this.props
-    const { permissions, editPermission, showPermissionPanel } = this.state
+    const {
+      apps,
+      appsLoading,
+      permissions,
+      permissionsLoading,
+      params,
+      daoAddress,
+      resolveEntity,
+      resolveRole,
+    } = this.props
+    const { editPermission, showPermissionPanel } = this.state
 
     const location = this.getLocation(params)
 
@@ -158,6 +165,9 @@ class Permissions extends React.Component {
                 onOpenApp={this.handleOpenApp}
                 onOpenEntity={this.handleOpenEntity}
                 permissions={permissions}
+                daoAddress={daoAddress}
+                resolveEntity={resolveEntity}
+                resolveRole={resolveRole}
               />
             )}
           </Screen>

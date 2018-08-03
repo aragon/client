@@ -13,17 +13,20 @@ import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
+import { roleResolver, entityResolver } from './permissions'
 
 class App extends React.Component {
   state = {
     locator: {},
     prevLocator: null,
     wrapper: null,
-    appsLoading: true,
     account: '',
     balance: null,
     connected: false,
     apps: [],
+    appsLoading: true,
+    permissions: [],
+    permissionsLoading: true,
     walletWeb3: null,
     web3: null,
     daoAddress: '',
@@ -31,6 +34,8 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
+    resolveRole: null,
+    resolveEntity: null,
   }
 
   history = createHistory()
@@ -174,7 +179,19 @@ class App extends React.Component {
       },
       onApps: (appsWithFrontend, apps) => {
         log('apps received', appsWithFrontend)
-        this.setState({ apps: appsWithFrontend, appsLoading: !apps })
+        this.setState({
+          appsLoading: !apps,
+          apps: appsWithFrontend,
+          resolveEntity: entityResolver(apps),
+          resolveRole: roleResolver(apps),
+        })
+      },
+      onPermissions: permissions => {
+        log('permissions received', permissions)
+        this.setState({
+          permissions,
+          permissionsLoading: false,
+        })
       },
       onForwarders: forwarders => {
         log('forwarders', forwarders)
@@ -206,6 +223,7 @@ class App extends React.Component {
       locator,
       wrapper,
       apps,
+      permissions,
       account,
       balance,
       walletNetwork,
@@ -217,9 +235,13 @@ class App extends React.Component {
       connected,
       daoAddress,
       appsLoading,
+      permissionsLoading,
+      resolveEntity,
+      resolveRole,
     } = this.state
     const { mode } = locator
     if (!mode) return null
+
     return (
       <AragonApp publicUrl="/aragon-ui/">
         <Wrapper
@@ -229,6 +251,8 @@ class App extends React.Component {
           wrapper={wrapper}
           apps={apps}
           appsLoading={appsLoading}
+          permissions={permissions}
+          permissionsLoading={permissionsLoading}
           account={account}
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
@@ -236,6 +260,8 @@ class App extends React.Component {
           daoAddress={daoAddress}
           transactionBag={transactionBag}
           connected={connected}
+          resolveEntity={resolveEntity}
+          resolveRole={resolveRole}
         />
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}

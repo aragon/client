@@ -53,6 +53,7 @@ class DaoSettings extends React.Component {
       addrMap[app.appId] = toChecksumAddress(app.proxyAddress)
       return addrMap
     }, {})
+    const webApps = apps.filter(app => app.hasWebApp)
     return (
       <div>
         <Option
@@ -152,37 +153,38 @@ class DaoSettings extends React.Component {
             </Field>
           </Option>
         )}
-        {apps.length > 0 && (
+        {webApps.length > 0 && (
           <Option
             name="Aragon apps"
-            text={`This organization has ${apps.length} apps installed.`}
+            text={`This organization has ${webApps.length} apps installed.`}
           >
             <AppsList>
-              {apps.map(({ appId, description, name, proxyAddress }) => {
-                const checksummedProxyAddress = checksummedAppProxies[appId]
-                return (
-                  <li title={description} key={checksummedProxyAddress}>
-                    <Field label={name}>
-                      <FieldTwoParts>
-                        <TextInput
-                          readOnly
-                          wide
-                          value={checksummedProxyAddress}
-                        />
-                        <EtherscanLink address={checksummedProxyAddress}>
-                          {url =>
-                            url ? (
-                              <LinkButton href={url} target="_blank">
-                                See on Etherscan
-                              </LinkButton>
-                            ) : null
-                          }
-                        </EtherscanLink>
-                      </FieldTwoParts>
-                    </Field>
-                  </li>
-                )
-              })}
+              {webApps
+                .map(({ appId, description, name, proxyAddress }) => {
+                  const checksummedProxyAddress = checksummedAppProxies[appId]
+                  return (
+                    <li title={description} key={checksummedProxyAddress}>
+                      <Field label={name}>
+                        <FieldTwoParts>
+                          <TextInput
+                            readOnly
+                            wide
+                            value={checksummedProxyAddress}
+                          />
+                          <EtherscanLink address={checksummedProxyAddress}>
+                            {url =>
+                              url ? (
+                                <LinkButton href={url} target="_blank">
+                                  See on Etherscan
+                                </LinkButton>
+                              ) : null
+                            }
+                          </EtherscanLink>
+                        </FieldTwoParts>
+                      </Field>
+                    </li>
+                  )
+                })}
             </AppsList>
           </Option>
         )}

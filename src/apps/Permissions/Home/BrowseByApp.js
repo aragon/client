@@ -6,10 +6,10 @@ import EmptyBlock from '../EmptyBlock'
 
 class BrowseByApp extends React.Component {
   render() {
-    const { appsLoading, apps, onOpenApp } = this.props
+    const { loading, apps, onOpenApp } = this.props
     return (
       <Section title="Browse by app">
-        {appsLoading ? (
+        {loading ? (
           <EmptyBlock>Loading apps…</EmptyBlock>
         ) : (
           <Apps>

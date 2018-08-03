@@ -7,6 +7,10 @@ class PermissionsList extends React.PureComponent {
   render() {
     const { permissions, onEdit } = this.props
 
+    if (!permissions) {
+      return null
+    }
+
     const activePermissions = permissions.filter(action => !action.pending)
     const pendingPermissions = permissions.filter(action => action.pending)
 

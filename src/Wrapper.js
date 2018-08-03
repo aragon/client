@@ -203,12 +203,16 @@ class Wrapper extends React.Component {
   renderApp(instanceId, params) {
     const {
       apps,
+      appsLoading,
+      permissions,
+      permissionsLoading,
       account,
       walletNetwork,
       wrapper,
-      appsLoading,
       connected,
       daoAddress,
+      resolveEntity,
+      resolveRole,
     } = this.props
 
     if (instanceId === 'home') {
@@ -227,8 +231,13 @@ class Wrapper extends React.Component {
         <Permissions
           apps={apps}
           appsLoading={appsLoading}
+          permissions={permissions}
+          permissionsLoading={permissionsLoading}
+          daoAddress={daoAddress}
           params={params}
           onParamsRequest={this.handleParamsRequest}
+          resolveEntity={resolveEntity}
+          resolveRole={resolveRole}
         />
       )
     }

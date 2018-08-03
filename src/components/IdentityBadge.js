@@ -13,15 +13,15 @@ class IdentityBadge extends React.PureComponent {
     const address = isAddress(entity) ? entity : null
     return (
       <Main title={address} onClick={this.handleClick}>
-        <Identicon>
-          {address && (
+        {address && (
+          <Identicon>
             <Blockies
               seed={address}
               size={IDENTICON_SQUARES}
               scale={IDENTICON_SCALE}
             />
-          )}
-        </Identicon>
+          </Identicon>
+        )}
         <Label>{address ? shortenAddress(address) : entity}</Label>
       </Main>
     )
