@@ -13,7 +13,7 @@ import {
   ipfsDefaultConf,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
-import { getWeb3, soliditySha3 } from './web3-utils'
+import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
 import { permissionsByEntity } from './permissions'

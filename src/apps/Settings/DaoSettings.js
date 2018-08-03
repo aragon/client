@@ -159,32 +159,31 @@ class DaoSettings extends React.Component {
             text={`This organization has ${webApps.length} apps installed.`}
           >
             <AppsList>
-              {webApps
-                .map(({ appId, description, name, proxyAddress }) => {
-                  const checksummedProxyAddress = checksummedAppProxies[appId]
-                  return (
-                    <li title={description} key={checksummedProxyAddress}>
-                      <Field label={name}>
-                        <FieldTwoParts>
-                          <TextInput
-                            readOnly
-                            wide
-                            value={checksummedProxyAddress}
-                          />
-                          <EtherscanLink address={checksummedProxyAddress}>
-                            {url =>
-                              url ? (
-                                <LinkButton href={url} target="_blank">
-                                  See on Etherscan
-                                </LinkButton>
-                              ) : null
-                            }
-                          </EtherscanLink>
-                        </FieldTwoParts>
-                      </Field>
-                    </li>
-                  )
-                })}
+              {webApps.map(({ appId, description, name, proxyAddress }) => {
+                const checksummedProxyAddress = checksummedAppProxies[appId]
+                return (
+                  <li title={description} key={checksummedProxyAddress}>
+                    <Field label={name}>
+                      <FieldTwoParts>
+                        <TextInput
+                          readOnly
+                          wide
+                          value={checksummedProxyAddress}
+                        />
+                        <EtherscanLink address={checksummedProxyAddress}>
+                          {url =>
+                            url ? (
+                              <LinkButton href={url} target="_blank">
+                                See on Etherscan
+                              </LinkButton>
+                            ) : null
+                          }
+                        </EtherscanLink>
+                      </FieldTwoParts>
+                    </Field>
+                  </li>
+                )
+              })}
             </AppsList>
           </Option>
         )}

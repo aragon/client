@@ -32,11 +32,7 @@ class EntityRow extends React.PureComponent {
       ({ role, appEntity }) => role.id + appEntity.app.proxyAddress
     )
     if (roles.length === 0) {
-      return (
-        <Text color={theme.textSecondary}>
-          Unknown roles
-        </Text>
-      )
+      return <Text color={theme.textSecondary}>Unknown roles</Text>
     }
     return roles.map(({ role, appEntity }, index) => {
       const { proxyAddress } = appEntity.app

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { AppBar, AppView, NavigationBar, Button, springs } from '@aragon/ui'
-import { Transition, animated } from 'react-spring'
+import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
 import { permissions as permissionsDemo } from '../../demo-state'
 import Screen from './Screen'
@@ -12,7 +11,6 @@ import PermissionPanel from './PermissionPanel'
 
 class Permissions extends React.Component {
   state = {
-
     // editPermission can be set to:
     //
     //   - `null` (no edition)
@@ -95,7 +93,6 @@ class Permissions extends React.Component {
       apps,
       appsLoading,
       permissions,
-      permissionsLoading,
       params,
       daoAddress,
       resolveEntity,
