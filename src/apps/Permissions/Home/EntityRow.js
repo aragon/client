@@ -34,7 +34,7 @@ class EntityRow extends React.PureComponent {
     if (roles.length === 0) {
       return (
         <Text color={theme.textSecondary}>
-          The role names couldn’t be resolved
+          Unknown roles
         </Text>
       )
     }
