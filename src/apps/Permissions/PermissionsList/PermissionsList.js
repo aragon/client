@@ -2,43 +2,63 @@ import React from 'react'
 import styled from 'styled-components'
 import { Table, TableHeader, TableRow, TableCell, Button } from '@aragon/ui'
 import Section from '../Section'
+import { entityRoles } from '../../../permissions'
 
 class PermissionsList extends React.PureComponent {
   render() {
-    const { permissions, onEdit } = this.props
+    const {
+      apps,
+      appsLoading,
+      entityAddress,
+      permissions,
+      onEdit,
+      daoAddress,
+      resolveEntity,
+      resolveRole,
+    } = this.props
 
-    if (!permissions) {
+    if (!permissions || !resolveEntity) {
       return null
     }
 
-    const activePermissions = permissions.filter(action => !action.pending)
-    const pendingPermissions = permissions.filter(action => action.pending)
+    console.log('ABC', entityAddress, resolveEntity(entityAddress, daoAddress))
+    console.log(permissions[entityAddress], apps)
+
+    const entity = resolveEntity(entityAddress, daoAddress)
+    const roles = entityRoles(
+      entityAddress,
+      permissions,
+      (role, proxyAddress) => ({
+        role: resolveRole(proxyAddress, role),
+        role2: role,
+        appEntity: resolveEntity(proxyAddress, daoAddress),
+      })
+    )
+
+    console.log('E', entity)
+    console.log('R', roles)
 
     return (
       <div>
-        {[
-          { title: 'Permissions', group: activePermissions },
-          { title: 'Pending permissions', group: pendingPermissions },
-        ].map(({ title, group }) => (
-          <Section title={title} key={title}>
-            <Table
-              header={
-                <TableRow>
-                  <TableHeader title="Action" />
-                  <TableHeader title="Allowed for" />
-                  <TableHeader title="Editable by" />
-                  <TableHeader title="Parameters" />
-                  <TableHeader title="Constraints" />
-                  <TableHeader />
-                </TableRow>
-              }
-            >
-              {group.map((action, i) => (
+        <Section title="Permissions">
+          <Table
+            header={
+              <TableRow>
+                <TableHeader title="Action" />
+                <TableHeader title="Allowed for" />
+                <TableHeader title="Editable by" />
+                <TableHeader title="Parameters" />
+                <TableHeader title="Constraints" />
+                <TableHeader />
+              </TableRow>
+            }
+          >
+            {null &&
+              permissions.map((action, i) => (
                 <Row key={i} {...action} onEdit={onEdit} />
               ))}
-            </Table>
-          </Section>
-        ))}
+          </Table>
+        </Section>
       </div>
     )
   }

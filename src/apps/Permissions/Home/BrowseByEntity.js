@@ -3,6 +3,7 @@ import { Table, TableHeader, TableRow } from '@aragon/ui'
 import Section from '../Section'
 import EmptyBlock from '../EmptyBlock'
 import EntityRow from './EntityRow'
+import { entityRoles } from '../../../permissions'
 
 class BrowseByEntity extends React.Component {
   render() {
@@ -32,7 +33,17 @@ class BrowseByEntity extends React.Component {
             >
               {Object.entries(permissions).map(([entityAddress, apps]) => {
                 const entity = resolveEntity(entityAddress, daoAddress)
-                const roles = Object.entries(apps)
+
+                const roles = entityRoles(
+                  entityAddress,
+                  permissions,
+                  (role, proxyAddress) => ({
+                    role: resolveRole(proxyAddress, role),
+                    appEntity: resolveEntity(proxyAddress, daoAddress),
+                  })
+                )
+
+                const roles2 = Object.entries(apps)
                   .reduce(
                     (roles, [proxyAddress, appRoles]) =>
                       roles.concat(

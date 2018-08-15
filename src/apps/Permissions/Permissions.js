@@ -170,11 +170,16 @@ class Permissions extends React.Component {
           </Screen>
 
           <Screen position={1}>
-            {['entity', 'app'].includes(location.screen) && (
+            {location.screen === 'entity' && (
               <PermissionsList
+                apps={apps}
                 appsLoading={appsLoading}
-                permissions={permissionsDemo.appPermissions}
+                entityAddress={location.address}
+                permissions={permissions}
                 onEdit={this.editPermission}
+                daoAddress={daoAddress}
+                resolveEntity={resolveEntity}
+                resolveRole={resolveRole}
               />
             )}
           </Screen>

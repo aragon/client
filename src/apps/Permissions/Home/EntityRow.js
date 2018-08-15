@@ -59,7 +59,7 @@ class EntityRow extends React.PureComponent {
         <TableCell>
           <div>{this.renderRoles(roles)}</div>
         </TableCell>
-        <TableCell>
+        <TableCell align="right">
           <Button mode="outline" onClick={this.handleClick} compact>
             View details
           </Button>

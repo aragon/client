@@ -23,22 +23,35 @@ export function permissionsByEntity(permissions) {
   return results
 }
 
+// Get the roles attached to an entity.
+export const entityRoles = (
+  entityAddress,
+  permissionsByEntity,
+  transform = (role, proxyAddress) => role
+) =>
+  Object.entries(permissionsByEntity[entityAddress])
+    .reduce(
+      (roles, [proxyAddress, appRoles]) =>
+        roles.concat(appRoles.map(role => transform(role, proxyAddress))),
+      []
+    )
+    .filter(Boolean)
+
 // Returns a function that resolves a role
 // using the provided apps, and caching the result.
-export function roleResolver(apps = []) {
-  return memoize((proxyAddress, roleBytes) => {
+export const roleResolver = (apps = []) =>
+  memoize((proxyAddress, roleBytes) => {
     const app = apps.find(app => app.proxyAddress === proxyAddress)
     if (!app || !app.roles) {
       return null
     }
     return app.roles.find(role => (role.bytes = roleBytes))
   }, (...args) => args[0] + args[1])
-}
 
 // Returns a function that resolves an entity
 // using the provided apps, and caching the result.
-export function entityResolver(apps = []) {
-  return memoize((address, daoAddress) => {
+export const entityResolver = (apps = []) =>
+  memoize((address, daoAddress) => {
     const entity = { address, type: 'address' }
     if (address === daoAddress) {
       return { ...entity, type: 'dao' }
@@ -49,4 +62,3 @@ export function entityResolver(apps = []) {
     const app = apps.find(app => app.proxyAddress === address)
     return app ? { ...entity, type: 'app', app } : entity
   }, (...args) => args[0] + args[1])
-}
