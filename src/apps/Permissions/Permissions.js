@@ -180,8 +180,7 @@ class Permissions extends React.Component {
           <Screen position={1} animate={animateScreens}>
             {location.screen === 'entity' && (
               <PermissionsList
-                apps={apps}
-                appsLoading={appsLoading}
+                loading={appsLoading}
                 entityAddress={location.address}
                 permissions={permissions}
                 onRevoke={this.revokePermission}

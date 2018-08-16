@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 import uniqBy from 'lodash.uniqby'
 import {
   Badge,
@@ -15,14 +14,11 @@ import { entityRoles } from '../../../permissions'
 import { shortenAddress } from '../../../web3-utils'
 
 class PermissionsList extends React.PureComponent {
-  render() {
+  getRoles() {
     const {
-      apps,
-      appsLoading,
+      daoAddress,
       entityAddress,
       permissions,
-      onRevoke,
-      daoAddress,
       resolveEntity,
       resolveRole,
     } = this.props
@@ -31,14 +27,27 @@ class PermissionsList extends React.PureComponent {
       return null
     }
 
-    const entity = resolveEntity(entityAddress, daoAddress)
-    const roles = uniqBy(
-      entityRoles(entityAddress, permissions, (role, proxyAddress) => ({
+    const roles = entityRoles(
+      entityAddress,
+      permissions,
+      (role, proxyAddress) => ({
         role: resolveRole(proxyAddress, role),
         appEntity: resolveEntity(proxyAddress, daoAddress),
-      })).filter(({ role }) => Boolean(role)),
+      })
+    )
+
+    return uniqBy(
+      roles.filter(({ role }) => Boolean(role)),
       ({ role, appEntity }) => role.id + appEntity.app.proxyAddress
     )
+  }
+  render() {
+    const { loading, onRevoke } = this.props
+    const roles = this.getRoles()
+
+    if (roles === null) {
+      return null
+    }
 
     return (
       <div>
