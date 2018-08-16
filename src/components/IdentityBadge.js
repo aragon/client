@@ -58,6 +58,8 @@ const Identicon = styled.div`
 
 const Label = styled.span`
   padding: 0 10px 0 5px;
+  white-space: nowrap;
+  font-size: 15px;
 `
 
 export default IdentityBadge

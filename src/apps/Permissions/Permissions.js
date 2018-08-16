@@ -11,6 +11,9 @@ import PermissionPanel from './PermissionPanel'
 
 class Permissions extends React.Component {
   state = {
+    // Only animate screens after the component is rendered once
+    animateScreens: false,
+
     // editPermission can be set to:
     //
     //   - `null` (no edition)
@@ -22,6 +25,10 @@ class Permissions extends React.Component {
     // We use a separate property than `editPermission` to display the panel,
     // in order to keep displaying the content during the close animation.
     showPermissionPanel: false,
+  }
+
+  componentDidMount() {
+    this.setState({ animateScreens: true })
   }
 
   componentDidUpdate(prevProps) {
@@ -84,6 +91,10 @@ class Permissions extends React.Component {
     this.setState({ showPermissionPanel: true, editPermission: permission })
   }
 
+  revokePermission = permissionId => {
+    console.log('Revoke permission', permissionId)
+  }
+
   closePermissionPanel = () => {
     this.setState({ showPermissionPanel: false })
   }
@@ -98,7 +109,7 @@ class Permissions extends React.Component {
       resolveEntity,
       resolveRole,
     } = this.props
-    const { editPermission, showPermissionPanel } = this.state
+    const { editPermission, showPermissionPanel, animateScreens } = this.state
 
     const location = this.getLocation(params)
 
@@ -125,10 +136,7 @@ class Permissions extends React.Component {
       openedEntityAddress && (
         <NavigationItem
           title="Entity permissions"
-          badge={{
-            label: shortenAddress(openedEntityAddress),
-            title: openedEntityAddress,
-          }}
+          address={openedEntityAddress}
         />
       ),
     ].filter(Boolean) // remove the `undefined` entries
@@ -154,7 +162,7 @@ class Permissions extends React.Component {
             }}
           />
 
-          <Screen position={0}>
+          <Screen position={0} animate={animateScreens}>
             {location.screen === 'home' && (
               <Home
                 apps={apps}
@@ -169,14 +177,14 @@ class Permissions extends React.Component {
             )}
           </Screen>
 
-          <Screen position={1}>
+          <Screen position={1} animate={animateScreens}>
             {location.screen === 'entity' && (
               <PermissionsList
                 apps={apps}
                 appsLoading={appsLoading}
                 entityAddress={location.address}
                 permissions={permissions}
-                onEdit={this.editPermission}
+                onRevoke={this.revokePermission}
                 daoAddress={daoAddress}
                 resolveEntity={resolveEntity}
                 resolveRole={resolveRole}

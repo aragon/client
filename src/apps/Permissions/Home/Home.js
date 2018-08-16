@@ -27,7 +27,9 @@ class Home extends React.Component {
           daoAddress={daoAddress}
           resolveEntity={resolveEntity}
           resolveRole={resolveRole}
-          loading={permissionsLoading || !resolveEntity || !resolveRole}
+          loading={
+            permissionsLoading || !resolveEntity || !resolveRole || appsLoading
+          }
           onOpenEntity={onOpenEntity}
         />
       </div>

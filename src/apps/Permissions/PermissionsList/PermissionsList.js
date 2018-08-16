@@ -1,8 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Table, TableHeader, TableRow, TableCell, Button } from '@aragon/ui'
+import uniqBy from 'lodash.uniqby'
+import {
+  Badge,
+  Button,
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+  Text,
+} from '@aragon/ui'
 import Section from '../Section'
 import { entityRoles } from '../../../permissions'
+import { shortenAddress } from '../../../web3-utils'
 
 class PermissionsList extends React.PureComponent {
   render() {
@@ -11,7 +21,7 @@ class PermissionsList extends React.PureComponent {
       appsLoading,
       entityAddress,
       permissions,
-      onEdit,
+      onRevoke,
       daoAddress,
       resolveEntity,
       resolveRole,
@@ -21,22 +31,14 @@ class PermissionsList extends React.PureComponent {
       return null
     }
 
-    console.log('ABC', entityAddress, resolveEntity(entityAddress, daoAddress))
-    console.log(permissions[entityAddress], apps)
-
     const entity = resolveEntity(entityAddress, daoAddress)
-    const roles = entityRoles(
-      entityAddress,
-      permissions,
-      (role, proxyAddress) => ({
+    const roles = uniqBy(
+      entityRoles(entityAddress, permissions, (role, proxyAddress) => ({
         role: resolveRole(proxyAddress, role),
-        role2: role,
         appEntity: resolveEntity(proxyAddress, daoAddress),
-      })
+      })).filter(({ role }) => Boolean(role)),
+      ({ role, appEntity }) => role.id + appEntity.app.proxyAddress
     )
-
-    console.log('E', entity)
-    console.log('R', roles)
 
     return (
       <div>
@@ -44,19 +46,22 @@ class PermissionsList extends React.PureComponent {
           <Table
             header={
               <TableRow>
+                <TableHeader title="App" />
                 <TableHeader title="Action" />
-                <TableHeader title="Allowed for" />
-                <TableHeader title="Editable by" />
-                <TableHeader title="Parameters" />
-                <TableHeader title="Constraints" />
+                <TableHeader title="Contract Label" />
                 <TableHeader />
               </TableRow>
             }
           >
-            {null &&
-              permissions.map((action, i) => (
-                <Row key={i} {...action} onEdit={onEdit} />
-              ))}
+            {roles.map(({ role, appEntity }, i) => (
+              <Row
+                key={i}
+                id={role.id}
+                action={role.name}
+                app={appEntity.app}
+                onRevoke={onRevoke}
+              />
+            ))}
           </Table>
         </Section>
       </div>
@@ -64,40 +69,39 @@ class PermissionsList extends React.PureComponent {
   }
 }
 
-class Row extends React.PureComponent {
-  handleEdit = () => {
-    this.props.onEdit(this.props.permissionId)
+class Row extends React.Component {
+  handleRevoke = () => {
+    this.props.onRevoke(this.props.id)
   }
   render() {
-    const {
-      actionName,
-      allowedFor,
-      editableBy,
-      parameters,
-      constraints,
-      pending,
-    } = this.props
+    const { action, id, app } = this.props
     return (
       <TableRow>
-        <TableCell>{actionName}</TableCell>
-        <TableCell>{allowedFor}</TableCell>
-        <TableCell>{editableBy}</TableCell>
-        <TableCell>{parameters}</TableCell>
-        <TableCell>{constraints ? 'View' : 'None'}</TableCell>
         <TableCell>
-          {pending ? (
-            'Pending vote'
-          ) : (
-            <ModifyButton onClick={this.handleEdit} />
-          )}
+          <div>
+            <span style={{ marginRight: '10px' }}>{app.name}</span>
+            <Badge.App title={app.proxyAddress}>
+              {app.identifier || shortenAddress(app.proxyAddress)}
+            </Badge.App>
+          </div>
+        </TableCell>
+        <TableCell>
+          <Text weight="bold">{action}</Text>
+        </TableCell>
+        <TableCell>{id}</TableCell>
+        <TableCell align="right">
+          <Button
+            mode="outline"
+            emphasis="negative"
+            compact
+            onClick={this.handleRevoke}
+          >
+            Revoke
+          </Button>
         </TableCell>
       </TableRow>
     )
   }
 }
-
-const ModifyButton = styled(Button).attrs({ mode: 'text', children: 'Modify' })`
-  text-decoration: underline;
-`
 
 export default PermissionsList
