@@ -64,7 +64,7 @@ export function getEthNetworkType() {
 }
 
 export function getIpfsGateway() {
-  return getLocalSetting(IPFS_GATEWAY, 'https://gateway.ipfs.io/ipfs')
+  return getLocalSetting(IPFS_GATEWAY, 'https://ipfs.infura.io/ipfs')
 }
 
 export function setIpfsGateway(gateway) {
