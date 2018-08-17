@@ -26,22 +26,26 @@ class EntityRow extends React.PureComponent {
     }
     return <IdentityBadge entity={entity.address} />
   }
+  roleTitle({ role, appEntity, proxyAddress }) {
+    if (!appEntity || !appEntity.app) {
+      return `${role.name} (from unknown)`
+    }
+    const { app } = appEntity
+    return `${role.name} (from app: ${appEntity.name || app.proxyAddress})`
+  }
   renderRoles(roles) {
-    roles = uniqBy(
-      roles,
-      ({ role, appEntity }) => role.id + appEntity.app.proxyAddress
-    )
+    roles = uniqBy(roles, ({ role, proxyAddress }) => {
+      return role.id + proxyAddress
+    })
     if (roles.length === 0) {
       return <Text color={theme.textSecondary}>Unknown roles</Text>
     }
-    return roles.map(({ role, appEntity }, index) => {
-      const { proxyAddress } = appEntity.app
+    return roles.map((roleData, index) => {
+      const { role, proxyAddress } = roleData
       return (
         <span key={role.id + proxyAddress}>
           {index > 0 && <span>, </span>}
-          <span title={`${role.name} (app: ${appEntity.name || proxyAddress})`}>
-            {role.name}
-          </span>
+          <span title={this.roleTitle(roleData)}>{role.name}</span>
         </span>
       )
     })

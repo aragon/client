@@ -10,6 +10,7 @@ import {
   Text,
 } from '@aragon/ui'
 import Section from './Section'
+import EmptyBlock from './EmptyBlock'
 import { entityRoles } from '../../permissions'
 import { shortenAddress } from '../../web3-utils'
 import { permissionsByEntity as byEntity } from '../../permissions'
@@ -35,46 +36,48 @@ class EntityPermissions extends React.PureComponent {
       permissionsByEntity,
       (role, proxyAddress) => ({
         role: resolveRole(proxyAddress, role),
-        entity: resolveEntity(proxyAddress, daoAddress),
+        appEntity: resolveEntity(proxyAddress, daoAddress),
+        proxyAddress,
       })
     )
 
     return uniqBy(
       roles.filter(({ role }) => Boolean(role)),
-      ({ role, entity }) => role.id + entity.app.proxyAddress
+      ({ role, proxyAddress }) => role.id + proxyAddress
     )
   }
   render() {
     const { loading, onRevoke } = this.props
     const roles = this.getRoles()
 
-    if (roles === null) {
-      return null
-    }
-
     return (
       <div>
         <Section title="Permissions">
-          <Table
-            header={
-              <TableRow>
-                <TableHeader title="App" />
-                <TableHeader title="Action" />
-                <TableHeader title="Contract Label" />
-                <TableHeader />
-              </TableRow>
-            }
-          >
-            {roles.map(({ role, entity }, i) => (
-              <Row
-                key={i}
-                id={role.id}
-                action={role.name}
-                app={entity.app}
-                onRevoke={onRevoke}
-              />
-            ))}
-          </Table>
+          {roles === null || loading ? (
+            <EmptyBlock>Loading entity permissions…</EmptyBlock>
+          ) : (
+            <Table
+              header={
+                <TableRow>
+                  <TableHeader title="App" />
+                  <TableHeader title="Action" />
+                  <TableHeader title="Contract Label" />
+                  <TableHeader />
+                </TableRow>
+              }
+            >
+              {roles.map(({ role, appEntity, proxyAddress }, i) => (
+                <Row
+                  key={i}
+                  id={role.id}
+                  action={role.name}
+                  app={appEntity.app}
+                  proxyAddress={proxyAddress}
+                  onRevoke={onRevoke}
+                />
+              ))}
+            </Table>
+          )}
         </Section>
       </div>
     )
@@ -85,18 +88,24 @@ class Row extends React.Component {
   handleRevoke = () => {
     this.props.onRevoke(this.props.id)
   }
+  renderApp() {
+    const { app, proxyAddress } = this.props
+    return (
+      <div>
+        <span style={{ marginRight: '10px' }}>
+          {app ? app.name : 'Unknown'}
+        </span>
+        <Badge.App title={proxyAddress}>
+          {(app && app.identifier) || shortenAddress(proxyAddress)}
+        </Badge.App>
+      </div>
+    )
+  }
   render() {
-    const { action, id, app } = this.props
+    const { action, id } = this.props
     return (
       <TableRow>
-        <TableCell>
-          <div>
-            <span style={{ marginRight: '10px' }}>{app.name}</span>
-            <Badge.App title={app.proxyAddress}>
-              {app.identifier || shortenAddress(app.proxyAddress)}
-            </Badge.App>
-          </div>
-        </TableCell>
+        <TableCell>{this.renderApp()}</TableCell>
         <TableCell>
           <Text weight="bold">{action}</Text>
         </TableCell>

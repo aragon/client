@@ -42,7 +42,6 @@ export const entityRoles = (
         roles.concat(appRoles.map(role => transform(role, proxyAddress))),
       []
     )
-    .filter(Boolean)
 
 // Get the roles attached to an app.
 export const appRoles = (

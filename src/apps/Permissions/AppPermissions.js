@@ -9,8 +9,9 @@ import {
   TableRow,
   Text,
 } from '@aragon/ui'
-import IdentityBadge from '../../components/IdentityBadge'
 import Section from './Section'
+import EmptyBlock from './EmptyBlock'
+import IdentityBadge from '../../components/IdentityBadge'
 import { entityRoles } from '../../permissions'
 import { shortenAddress } from '../../web3-utils'
 import { permissionsByEntity as byEntity, appRoles } from '../../permissions'
@@ -36,38 +37,36 @@ class AppPermissions extends React.PureComponent {
     }))
   }
   render() {
-    const { onRevoke } = this.props
+    const { loading, onRevoke } = this.props
     const roles = this.getRoles()
-
-    if (roles === null) {
-      return null
-    }
-
-    console.log('APP_ROLES', roles)
 
     return (
       <div>
         <Section title="Permissions">
-          <Table
-            header={
-              <TableRow>
-                <TableHeader title="Action" />
-                <TableHeader title="Contract Label" />
-                <TableHeader title="Allowed for" />
-                <TableHeader />
-              </TableRow>
-            }
-          >
-            {roles.map(({ role, entity }, i) => (
-              <Row
-                key={i}
-                id={role.id}
-                action={role.name}
-                entity={entity}
-                onRevoke={onRevoke}
-              />
-            ))}
-          </Table>
+          {roles === null || loading ? (
+            <EmptyBlock>Loading app permissions…</EmptyBlock>
+          ) : (
+            <Table
+              header={
+                <TableRow>
+                  <TableHeader title="Action" />
+                  <TableHeader title="Contract Label" />
+                  <TableHeader title="Allowed for" />
+                  <TableHeader />
+                </TableRow>
+              }
+            >
+              {roles.map(({ role, entity }, i) => (
+                <Row
+                  key={i}
+                  id={role.id}
+                  action={role.name}
+                  entity={entity}
+                  onRevoke={onRevoke}
+                />
+              ))}
+            </Table>
+          )}
         </Section>
       </div>
     )

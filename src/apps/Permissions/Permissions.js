@@ -49,9 +49,11 @@ class Permissions extends React.Component {
     if (params.startsWith('app.')) {
       return {
         screen: 'app',
+        address: params.split('app.')[1] || null,
         app: this.getAppByProxyAddress(params.split('app.')[1]),
       }
     }
+
     if (params.startsWith('entity.')) {
       return {
         screen: 'entity',
@@ -99,11 +101,44 @@ class Permissions extends React.Component {
     this.setState({ showPermissionPanel: false })
   }
 
+  // Assemble the navigation items
+  getNavigationItems(location) {
+    const items = ['Permissions']
+    const openedApp = location.screen === 'app' ? location.app : null
+    const openedEntityAddress =
+      location.screen === 'entity' ? location.address : null
+
+    if (location.screen === 'app') {
+      return [
+        ...items,
+        <NavigationItem
+          title={openedApp ? openedApp.name : 'Permissions'}
+          badge={{
+            label:
+              (openedApp && openedApp.identifier) ||
+              shortenAddress(location.address),
+          }}
+        />,
+      ]
+    }
+
+    if (openedEntityAddress) {
+      return [
+        ...items,
+        <NavigationItem
+          title="Entity permissions"
+          address={openedEntityAddress}
+        />,
+      ]
+    }
+  }
+
   render() {
     const {
       apps,
       appsLoading,
       permissions,
+      permissionsLoading,
       params,
       daoAddress,
       resolveEntity,
@@ -112,34 +147,7 @@ class Permissions extends React.Component {
     const { editPermission, showPermissionPanel, animateScreens } = this.state
 
     const location = this.getLocation(params)
-
-    const openedApp = location.screen === 'app' ? location.app : null
-    const openedEntityAddress =
-      location.screen === 'entity' ? location.address : null
-
-    // Assemble the navigation items
-    const navigationItems = [
-      'Permissions',
-
-      // Opened app
-      openedApp && (
-        <NavigationItem
-          title={openedApp.name}
-          badge={{
-            label:
-              openedApp.identifier || shortenAddress(openedApp.proxyAddress),
-          }}
-        />
-      ),
-
-      // Opened entity
-      openedEntityAddress && (
-        <NavigationItem
-          title="Entity permissions"
-          address={openedEntityAddress}
-        />
-      ),
-    ].filter(Boolean) // remove the `undefined` entries
+    const navigationItems = this.getNavigationItems(location)
 
     return (
       <div>
@@ -167,9 +175,10 @@ class Permissions extends React.Component {
               <Home
                 apps={apps}
                 appsLoading={appsLoading}
+                permissions={permissions}
+                permissionsLoading={permissionsLoading}
                 onOpenApp={this.handleOpenApp}
                 onOpenEntity={this.handleOpenEntity}
-                permissions={permissions}
                 daoAddress={daoAddress}
                 resolveEntity={resolveEntity}
                 resolveRole={resolveRole}
@@ -193,7 +202,7 @@ class Permissions extends React.Component {
                 )}
                 {location.screen === 'entity' && (
                   <EntityPermissions
-                    loading={appsLoading}
+                    loading={appsLoading || permissionsLoading}
                     entityAddress={location.address}
                     permissions={permissions}
                     onRevoke={this.revokePermission}

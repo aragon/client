@@ -45,8 +45,11 @@ class BrowseByEntity extends React.Component {
                     (role, proxyAddress) => ({
                       role: resolveRole(proxyAddress, role),
                       appEntity: resolveEntity(proxyAddress, daoAddress),
+                      proxyAddress,
                     })
-                  ).filter(({ role }) => Boolean(role))
+                  )
+                    // filter out the roles that couldn’t be found
+                    .filter(({ role }) => Boolean(role))
 
                   if (roles.length === 0) {
                     return null
