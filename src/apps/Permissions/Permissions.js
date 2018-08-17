@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
-import { permissions as permissionsDemo } from '../../demo-state'
 import Screen from './Screen'
 import Home from './Home/Home'
 import PermissionsList from './PermissionsList/PermissionsList'
@@ -86,9 +85,9 @@ class Permissions extends React.Component {
   }
 
   editPermission = permissionId => {
-    const { appPermissions } = permissionsDemo
-    const permission = appPermissions.find(p => p.permissionId === permissionId)
-    this.setState({ showPermissionPanel: true, editPermission: permission })
+    // const { appPermissions } = permissionsDemo
+    // const permission = appPermissions.find(p => p.permissionId === permissionId)
+    // this.setState({ showPermissionPanel: true, editPermission: permission })
   }
 
   revokePermission = permissionId => {
