@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Blockies from 'react-blockies'
 import { isAddress, shortenAddress } from '../web3-utils'
 
+const PX_RATIO = typeof devicePixelRatio === 'undefined' ? 2 : devicePixelRatio
 const IDENTICON_SQUARES = 8
 const IDENTICON_SCALE = 3
 const IDENTICON_WIDTH = IDENTICON_SQUARES * IDENTICON_SCALE
@@ -18,7 +19,7 @@ class IdentityBadge extends React.PureComponent {
             <Blockies
               seed={address}
               size={IDENTICON_SQUARES}
-              scale={IDENTICON_SCALE}
+              scale={IDENTICON_SCALE * PX_RATIO}
             />
           </Identicon>
         )}
@@ -43,6 +44,8 @@ const Identicon = styled.div`
   position: relative;
   width: ${IDENTICON_WIDTH}px;
   height: ${IDENTICON_WIDTH}px;
+  transform: scale(${1 / PX_RATIO});
+  transform-origin: 0 0;
   &:after {
     content: '';
     position: absolute;
