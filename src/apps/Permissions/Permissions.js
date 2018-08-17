@@ -4,7 +4,8 @@ import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
-import PermissionsList from './PermissionsList/PermissionsList'
+import AppPermissions from './AppPermissions'
+import EntityPermissions from './EntityPermissions'
 import NavigationItem from './NavigationItem'
 import PermissionPanel from './PermissionPanel'
 
@@ -177,15 +178,29 @@ class Permissions extends React.Component {
           </Screen>
 
           <Screen position={1} animate={animateScreens}>
+            {location.screen === 'app' && (
+              <AppPermissions
+                loading={appsLoading}
+                app={location.app}
+                permissions={permissions}
+                onRevoke={this.revokePermission}
+                daoAddress={daoAddress}
+                resolveRole={resolveRole}
+                resolveEntity={resolveEntity}
+              />
+            )}
+          </Screen>
+
+          <Screen position={1} animate={animateScreens}>
             {location.screen === 'entity' && (
-              <PermissionsList
+              <EntityPermissions
                 loading={appsLoading}
                 entityAddress={location.address}
                 permissions={permissions}
                 onRevoke={this.revokePermission}
                 daoAddress={daoAddress}
-                resolveEntity={resolveEntity}
                 resolveRole={resolveRole}
+                resolveEntity={resolveEntity}
               />
             )}
           </Screen>

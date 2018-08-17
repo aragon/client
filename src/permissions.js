@@ -37,6 +37,20 @@ export const entityRoles = (
     )
     .filter(Boolean)
 
+// Get the roles attached to an app.
+export const appRoles = (
+  app,
+  permissions,
+  transform = (entity, role) => [entity, role]
+) =>
+  Object.entries(permissions[app.proxyAddress])
+    .reduce(
+      (roles, [role, entities]) =>
+        roles.concat(entities.map(entity => transform(entity, role))),
+      []
+    )
+    .filter(Boolean)
+
 // Returns a function that resolves a role
 // using the provided apps, and caching the result.
 export const roleResolver = (apps = []) =>
@@ -45,7 +59,7 @@ export const roleResolver = (apps = []) =>
     if (!app || !app.roles) {
       return null
     }
-    return app.roles.find(role => (role.bytes = roleBytes))
+    return app.roles.find(role => role.bytes === roleBytes)
   }, (...args) => args[0] + args[1])
 
 // Returns a function that resolves an entity

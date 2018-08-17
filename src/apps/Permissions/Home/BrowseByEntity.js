@@ -3,7 +3,10 @@ import { Table, TableHeader, TableRow } from '@aragon/ui'
 import Section from '../Section'
 import EmptyBlock from '../EmptyBlock'
 import EntityRow from './EntityRow'
-import { entityRoles } from '../../../permissions'
+import {
+  entityRoles,
+  permissionsByEntity as byEntity,
+} from '../../../permissions'
 
 class BrowseByEntity extends React.Component {
   render() {
@@ -15,6 +18,7 @@ class BrowseByEntity extends React.Component {
       resolveEntity,
       resolveRole,
     } = this.props
+    const permissionsByEntity = byEntity(permissions)
     return (
       <Section title="Browse by entity">
         {loading ? (
@@ -31,31 +35,33 @@ class BrowseByEntity extends React.Component {
                 </TableRow>
               }
             >
-              {Object.entries(permissions).map(([entityAddress, apps]) => {
-                const entity = resolveEntity(entityAddress, daoAddress)
+              {Object.entries(permissionsByEntity).map(
+                ([entityAddress, apps]) => {
+                  const entity = resolveEntity(entityAddress, daoAddress)
 
-                const roles = entityRoles(
-                  entityAddress,
-                  permissions,
-                  (role, proxyAddress) => ({
-                    role: resolveRole(proxyAddress, role),
-                    appEntity: resolveEntity(proxyAddress, daoAddress),
-                  })
-                ).filter(({ role }) => Boolean(role))
+                  const roles = entityRoles(
+                    entityAddress,
+                    permissionsByEntity,
+                    (role, proxyAddress) => ({
+                      role: resolveRole(proxyAddress, role),
+                      appEntity: resolveEntity(proxyAddress, daoAddress),
+                    })
+                  ).filter(({ role }) => Boolean(role))
 
-                if (roles.length === 0) {
-                  return null
+                  if (roles.length === 0) {
+                    return null
+                  }
+
+                  return (
+                    <EntityRow
+                      key={entityAddress}
+                      entity={entity}
+                      roles={roles}
+                      onOpen={onOpenEntity}
+                    />
+                  )
                 }
-
-                return (
-                  <EntityRow
-                    key={entityAddress}
-                    entity={entity}
-                    roles={roles}
-                    onOpen={onOpenEntity}
-                  />
-                )
-              })}
+              )}
             </Table>
           </div>
         )}
