@@ -178,30 +178,31 @@ class Permissions extends React.Component {
           </Screen>
 
           <Screen position={1} animate={animateScreens}>
-            {location.screen === 'app' && (
-              <AppPermissions
-                loading={appsLoading}
-                app={location.app}
-                permissions={permissions}
-                onRevoke={this.revokePermission}
-                daoAddress={daoAddress}
-                resolveRole={resolveRole}
-                resolveEntity={resolveEntity}
-              />
-            )}
-          </Screen>
-
-          <Screen position={1} animate={animateScreens}>
-            {location.screen === 'entity' && (
-              <EntityPermissions
-                loading={appsLoading}
-                entityAddress={location.address}
-                permissions={permissions}
-                onRevoke={this.revokePermission}
-                daoAddress={daoAddress}
-                resolveRole={resolveRole}
-                resolveEntity={resolveEntity}
-              />
+            {['app', 'entity'].includes(location.screen) && (
+              <div>
+                {location.screen === 'app' && (
+                  <AppPermissions
+                    loading={appsLoading}
+                    app={location.app}
+                    permissions={permissions}
+                    onRevoke={this.revokePermission}
+                    daoAddress={daoAddress}
+                    resolveRole={resolveRole}
+                    resolveEntity={resolveEntity}
+                  />
+                )}
+                {location.screen === 'entity' && (
+                  <EntityPermissions
+                    loading={appsLoading}
+                    entityAddress={location.address}
+                    permissions={permissions}
+                    onRevoke={this.revokePermission}
+                    daoAddress={daoAddress}
+                    resolveRole={resolveRole}
+                    resolveEntity={resolveEntity}
+                  />
+                )}
+              </div>
             )}
           </Screen>
         </AppView>
