@@ -15,6 +15,10 @@ class Home extends React.Component {
       resolveEntity,
       resolveRole,
     } = this.props
+
+    const entitiesLoading =
+      appsLoading || permissionsLoading || !resolveEntity || !resolveRole
+
     return (
       <div>
         <BrowseByApp
@@ -27,9 +31,7 @@ class Home extends React.Component {
           daoAddress={daoAddress}
           resolveEntity={resolveEntity}
           resolveRole={resolveRole}
-          loading={
-            permissionsLoading || !resolveEntity || !resolveRole || appsLoading
-          }
+          loading={entitiesLoading}
           onOpenEntity={onOpenEntity}
         />
       </div>
