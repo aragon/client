@@ -2,6 +2,13 @@ import memoize from 'lodash.memoize'
 
 const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 
+const APP_MANAGER_ROLE = {
+  name: 'Manage apps',
+  id: 'APP_MANAGER',
+  params: [],
+  bytes: '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0'
+}
+
 // Get a list of roles assigned to entities.
 // Input:  app instances => roles => entities
 // Output: entities => app instances => roles
@@ -55,6 +62,9 @@ export const appRoles = (
 // using the provided apps, and caching the result.
 export const roleResolver = (apps = []) =>
   memoize((proxyAddress, roleBytes) => {
+    if (roleBytes === APP_MANAGER_ROLE.bytes) {
+      return APP_MANAGER_ROLE
+    }
     const app = apps.find(app => app.proxyAddress === proxyAddress)
     if (!app || !app.roles) {
       return null
