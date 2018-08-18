@@ -20,7 +20,7 @@ class Home extends React.Component {
       appsLoading || permissionsLoading || !resolveEntity || !resolveRole
 
     return (
-      <div>
+      <>
         <BrowseByApp
           apps={apps.filter(app => app.hasWebApp)}
           loading={appsLoading}
@@ -34,7 +34,7 @@ class Home extends React.Component {
           loading={entitiesLoading}
           onOpenEntity={onOpenEntity}
         />
-      </div>
+      </>
     )
   }
 }

@@ -12,7 +12,7 @@ class PermissionPanel extends React.PureComponent {
         onClose={onClose}
       >
         {permission && (
-          <div>
+          <>
             <Field label="Action">
               {mode === 'add' ? (
                 <DropDown items={['Assign tokens']} wide />
@@ -37,7 +37,7 @@ class PermissionPanel extends React.PureComponent {
             </Field>
 
             {mode === 'add' ? <AddPermissionInfo /> : <EditPermissionInfo />}
-          </div>
+          </>
         )}
       </SidePanel>
     )

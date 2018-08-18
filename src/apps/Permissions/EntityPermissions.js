@@ -44,7 +44,7 @@ class EntityPermissions extends React.PureComponent {
     const roles = this.getRoles()
 
     return (
-      <div>
+      <>
         <Section title="Permissions">
           {roles === null || loading ? (
             <EmptyBlock>Loading entity permissions…</EmptyBlock>
@@ -73,7 +73,7 @@ class EntityPermissions extends React.PureComponent {
             </Table>
           )}
         </Section>
-      </div>
+      </>
     )
   }
 }

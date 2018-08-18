@@ -41,7 +41,7 @@ class AppPermissions extends React.PureComponent {
     const roles = this.getRoles()
 
     return (
-      <div>
+      <>
         <Section title="Permissions">
           {roles === null || loading ? (
             <EmptyBlock>Loading app permissions…</EmptyBlock>
@@ -68,7 +68,7 @@ class AppPermissions extends React.PureComponent {
             </Table>
           )}
         </Section>
-      </div>
+      </>
     )
   }
 }

@@ -151,7 +151,7 @@ class Permissions extends React.Component {
     const navigationItems = this.getNavigationItems(location)
 
     return (
-      <div>
+      <>
         <AppView
           appBar={
             <AppBar
@@ -189,7 +189,7 @@ class Permissions extends React.Component {
 
           <Screen position={1} animate={animateScreens}>
             {['app', 'entity'].includes(location.screen) && (
-              <div>
+              <>
                 {location.screen === 'app' && (
                   <AppPermissions
                     loading={appsLoading}
@@ -212,7 +212,7 @@ class Permissions extends React.Component {
                     resolveEntity={resolveEntity}
                   />
                 )}
-              </div>
+              </>
             )}
           </Screen>
         </AppView>
@@ -222,7 +222,7 @@ class Permissions extends React.Component {
           permission={editPermission}
           onClose={this.closePermissionPanel}
         />
-      </div>
+      </>
     )
   }
 }
