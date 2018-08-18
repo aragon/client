@@ -55,7 +55,7 @@ const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
-// Filter out apps without UI and add an app source url properties
+// Sort apps, apply URL overrides, and attach data useful to the frontend
 const prepareFrontendApps = (apps, gateway) => {
   return applyAppOverrides(apps)
     .sort(sortAppsPair)
@@ -190,7 +190,7 @@ const subscribe = (
 
   const subscriptions = {
     apps: apps.subscribe(apps => {
-      onApps(prepareFrontendApps(apps, ipfsConf.gateway), apps)
+      onApps(prepareFrontendApps(apps, ipfsConf.gateway))
     }),
     permissions: permissions.subscribe(onPermissions),
     connectedApp: null,

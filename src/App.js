@@ -177,11 +177,11 @@ class App extends React.Component {
         log('web3', web3)
         this.setState({ web3 })
       },
-      onApps: (appsWithFrontend, apps) => {
-        log('apps received', appsWithFrontend)
+      onApps: apps => {
+        log('apps received', apps)
         this.setState({
-          appsLoading: !apps,
-          apps: appsWithFrontend,
+          apps,
+          appsLoading: false,
           resolveEntity: entityResolver(apps),
           resolveRole: roleResolver(apps),
         })
