@@ -2,15 +2,18 @@ import React from 'react'
 import styled from 'styled-components'
 import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
-import { permissions as permissionsDemo } from '../../demo-state'
 import Screen from './Screen'
 import Home from './Home/Home'
-import PermissionsList from './PermissionsList/PermissionsList'
+import AppPermissions from './AppPermissions'
+import EntityPermissions from './EntityPermissions'
 import NavigationItem from './NavigationItem'
 import PermissionPanel from './PermissionPanel'
 
 class Permissions extends React.Component {
   state = {
+    // Only animate screens after the component is rendered once
+    animateScreens: false,
+
     // editPermission can be set to:
     //
     //   - `null` (no edition)
@@ -22,6 +25,10 @@ class Permissions extends React.Component {
     // We use a separate property than `editPermission` to display the panel,
     // in order to keep displaying the content during the close animation.
     showPermissionPanel: false,
+  }
+
+  componentDidMount() {
+    this.setState({ animateScreens: true })
   }
 
   componentDidUpdate(prevProps) {
@@ -42,9 +49,11 @@ class Permissions extends React.Component {
     if (params.startsWith('app.')) {
       return {
         screen: 'app',
+        address: params.split('app.')[1] || null,
         app: this.getAppByProxyAddress(params.split('app.')[1]),
       }
     }
+
     if (params.startsWith('entity.')) {
       return {
         screen: 'entity',
@@ -79,13 +88,49 @@ class Permissions extends React.Component {
   }
 
   editPermission = permissionId => {
-    const { appPermissions } = permissionsDemo
-    const permission = appPermissions.find(p => p.permissionId === permissionId)
-    this.setState({ showPermissionPanel: true, editPermission: permission })
+    // const { appPermissions } = permissionsDemo
+    // const permission = appPermissions.find(p => p.permissionId === permissionId)
+    // this.setState({ showPermissionPanel: true, editPermission: permission })
+  }
+
+  revokePermission = permissionId => {
+    console.log('Revoke permission', permissionId)
   }
 
   closePermissionPanel = () => {
     this.setState({ showPermissionPanel: false })
+  }
+
+  // Assemble the navigation items
+  getNavigationItems(location) {
+    const items = ['Permissions']
+    const openedApp = location.screen === 'app' ? location.app : null
+    const openedEntityAddress =
+      location.screen === 'entity' ? location.address : null
+
+    if (location.screen === 'app') {
+      return [
+        ...items,
+        <NavigationItem
+          title={openedApp ? openedApp.name : 'Permissions'}
+          badge={{
+            label:
+              (openedApp && openedApp.identifier) ||
+              shortenAddress(location.address),
+          }}
+        />,
+      ]
+    }
+
+    if (openedEntityAddress) {
+      return [
+        ...items,
+        <NavigationItem
+          title="Entity permissions"
+          address={openedEntityAddress}
+        />,
+      ]
+    }
   }
 
   render() {
@@ -93,45 +138,16 @@ class Permissions extends React.Component {
       apps,
       appsLoading,
       permissions,
+      permissionsLoading,
       params,
       daoAddress,
       resolveEntity,
       resolveRole,
     } = this.props
-    const { editPermission, showPermissionPanel } = this.state
+    const { editPermission, showPermissionPanel, animateScreens } = this.state
 
     const location = this.getLocation(params)
-
-    const openedApp = location.screen === 'app' ? location.app : null
-    const openedEntityAddress =
-      location.screen === 'entity' ? location.address : null
-
-    // Assemble the navigation items
-    const navigationItems = [
-      'Permissions',
-
-      // Opened app
-      openedApp && (
-        <NavigationItem
-          title={openedApp.name}
-          badge={{
-            label:
-              openedApp.identifier || shortenAddress(openedApp.proxyAddress),
-          }}
-        />
-      ),
-
-      // Opened entity
-      openedEntityAddress && (
-        <NavigationItem
-          title="Entity permissions"
-          badge={{
-            label: shortenAddress(openedEntityAddress),
-            title: openedEntityAddress,
-          }}
-        />
-      ),
-    ].filter(Boolean) // remove the `undefined` entries
+    const navigationItems = this.getNavigationItems(location)
 
     return (
       <div>
@@ -154,14 +170,15 @@ class Permissions extends React.Component {
             }}
           />
 
-          <Screen position={0}>
+          <Screen position={0} animate={animateScreens}>
             {location.screen === 'home' && (
               <Home
                 apps={apps}
                 appsLoading={appsLoading}
+                permissions={permissions}
+                permissionsLoading={permissionsLoading}
                 onOpenApp={this.handleOpenApp}
                 onOpenEntity={this.handleOpenEntity}
-                permissions={permissions}
                 daoAddress={daoAddress}
                 resolveEntity={resolveEntity}
                 resolveRole={resolveRole}
@@ -169,13 +186,32 @@ class Permissions extends React.Component {
             )}
           </Screen>
 
-          <Screen position={1}>
-            {['entity', 'app'].includes(location.screen) && (
-              <PermissionsList
-                appsLoading={appsLoading}
-                permissions={permissionsDemo.appPermissions}
-                onEdit={this.editPermission}
-              />
+          <Screen position={1} animate={animateScreens}>
+            {['app', 'entity'].includes(location.screen) && (
+              <div>
+                {location.screen === 'app' && (
+                  <AppPermissions
+                    loading={appsLoading}
+                    app={location.app}
+                    permissions={permissions}
+                    onRevoke={this.revokePermission}
+                    daoAddress={daoAddress}
+                    resolveRole={resolveRole}
+                    resolveEntity={resolveEntity}
+                  />
+                )}
+                {location.screen === 'entity' && (
+                  <EntityPermissions
+                    loading={appsLoading || permissionsLoading}
+                    entityAddress={location.address}
+                    permissions={permissions}
+                    onRevoke={this.revokePermission}
+                    daoAddress={daoAddress}
+                    resolveRole={resolveRole}
+                    resolveEntity={resolveEntity}
+                  />
+                )}
+              </div>
             )}
           </Screen>
         </AppView>

@@ -16,7 +16,6 @@ import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
-import { permissionsByEntity } from './permissions'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -193,9 +192,7 @@ const subscribe = (
     apps: apps.subscribe(apps => {
       onApps(prepareFrontendApps(apps, ipfsConf.gateway), apps)
     }),
-    permissions: permissions.subscribe(permissions => {
-      onPermissions(permissionsByEntity(permissions))
-    }),
+    permissions: permissions.subscribe(onPermissions),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),

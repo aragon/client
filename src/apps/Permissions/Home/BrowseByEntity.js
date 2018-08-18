@@ -3,6 +3,10 @@ import { Table, TableHeader, TableRow } from '@aragon/ui'
 import Section from '../Section'
 import EmptyBlock from '../EmptyBlock'
 import EntityRow from './EntityRow'
+import {
+  entityRoles,
+  permissionsByEntity as byEntity,
+} from '../../../permissions'
 
 class BrowseByEntity extends React.Component {
   render() {
@@ -14,6 +18,7 @@ class BrowseByEntity extends React.Component {
       resolveEntity,
       resolveRole,
     } = this.props
+    const permissionsByEntity = byEntity(permissions)
     return (
       <Section title="Browse by entity">
         {loading ? (
@@ -30,30 +35,31 @@ class BrowseByEntity extends React.Component {
                 </TableRow>
               }
             >
-              {Object.entries(permissions).map(([entityAddress, apps]) => {
-                const entity = resolveEntity(entityAddress, daoAddress)
-                const roles = Object.entries(apps)
-                  .reduce(
-                    (roles, [proxyAddress, appRoles]) =>
-                      roles.concat(
-                        appRoles.map(role => ({
-                          role: resolveRole(proxyAddress, role),
-                          appEntity: resolveEntity(proxyAddress, daoAddress),
-                        }))
-                      ),
-                    []
-                  )
-                  .filter(({ role }) => Boolean(role))
+              {Object.entries(permissionsByEntity).map(
+                ([entityAddress, apps]) => {
+                  const entity = resolveEntity(entityAddress, daoAddress)
 
-                return (
-                  <EntityRow
-                    key={entityAddress}
-                    entity={entity}
-                    roles={roles}
-                    onOpen={onOpenEntity}
-                  />
-                )
-              })}
+                  const roles = entityRoles(
+                    entityAddress,
+                    permissionsByEntity,
+                    (roleBytes, proxyAddress) => ({
+                      role: resolveRole(proxyAddress, roleBytes),
+                      appEntity: resolveEntity(proxyAddress, daoAddress),
+                      proxyAddress,
+                      roleBytes,
+                    })
+                  )
+
+                  return (
+                    <EntityRow
+                      key={entityAddress}
+                      entity={entity}
+                      roles={roles}
+                      onOpen={onOpenEntity}
+                    />
+                  )
+                }
+              )}
             </Table>
           </div>
         )}

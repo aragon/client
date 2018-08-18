@@ -2,6 +2,7 @@ import React from 'react'
 import uniqBy from 'lodash.uniqby'
 import { TableRow, TableCell, Button, Text, theme } from '@aragon/ui'
 import IdentityBadge from '../../../components/IdentityBadge'
+import AppInstanceLabel from '../AppInstanceLabel'
 
 class EntityRow extends React.PureComponent {
   handleClick = () => {
@@ -22,29 +23,41 @@ class EntityRow extends React.PureComponent {
       return 'Any account'
     }
     if (entity.type === 'app' && entity.app.name) {
-      return entity.app.name
+      return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
     return <IdentityBadge entity={entity.address} />
   }
+  roleTitle({ role, roleBytes, appEntity, proxyAddress }) {
+    if (!appEntity || !appEntity.app) {
+      return `${role.name} (from unknown)`
+    }
+    const { app } = appEntity
+    const roleLabel = (role && role.name) || roleBytes
+    return `${roleLabel} (from app: ${appEntity.name || app.proxyAddress})`
+  }
   renderRoles(roles) {
-    roles = uniqBy(
-      roles,
-      ({ role, appEntity }) => role.id + appEntity.app.proxyAddress
-    )
+    roles = uniqBy(roles, ({ roleBytes, proxyAddress }) => {
+      return roleBytes + proxyAddress
+    })
     if (roles.length === 0) {
       return <Text color={theme.textSecondary}>Unknown roles</Text>
     }
-    return roles.map(({ role, appEntity }, index) => {
-      const { proxyAddress } = appEntity.app
-      return (
-        <span key={role.id + proxyAddress}>
+    return roles
+      .map(roleData => {
+        const { role, roleBytes, proxyAddress } = roleData
+        return {
+          key: roleBytes + proxyAddress,
+          title: this.roleTitle(roleData),
+          label: (role && role.name) || 'Unknown',
+        }
+      })
+      .sort(({ label }) => (label === 'Unknown' ? 1 : -1))
+      .map(({ key, title, label }, index) => (
+        <span key={key}>
           {index > 0 && <span>, </span>}
-          <span title={`${role.name} (app: ${appEntity.name || proxyAddress})`}>
-            {role.name}
-          </span>
+          <span title={title}>{label}</span>
         </span>
-      )
-    })
+      ))
   }
   render() {
     const { entity, roles } = this.props
@@ -59,7 +72,7 @@ class EntityRow extends React.PureComponent {
         <TableCell>
           <div>{this.renderRoles(roles)}</div>
         </TableCell>
-        <TableCell>
+        <TableCell align="right">
           <Button mode="outline" onClick={this.handleClick} compact>
             View details
           </Button>

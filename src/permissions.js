@@ -2,6 +2,13 @@ import memoize from 'lodash.memoize'
 
 const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 
+const APP_MANAGER_ROLE = {
+  name: 'Manage apps',
+  id: 'APP_MANAGER',
+  params: [],
+  bytes: '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0'
+}
+
 // Get a list of roles assigned to entities.
 // Input:  app instances => roles => entities
 // Output: entities => app instances => roles
@@ -23,22 +30,51 @@ export function permissionsByEntity(permissions) {
   return results
 }
 
+// Get the roles attached to an entity.
+export const entityRoles = (
+  entityAddress,
+  permissionsByEntity,
+  transform = (role, proxyAddress) => role
+) =>
+  Object.entries(permissionsByEntity[entityAddress])
+    .reduce(
+      (roles, [proxyAddress, appRoles]) =>
+        roles.concat(appRoles.map(role => transform(role, proxyAddress))),
+      []
+    )
+
+// Get the roles attached to an app.
+export const appRoles = (
+  app,
+  permissions,
+  transform = (entity, role) => [entity, role]
+) =>
+  Object.entries(permissions[app.proxyAddress])
+    .reduce(
+      (roles, [role, entities]) =>
+        roles.concat(entities.map(entity => transform(entity, role))),
+      []
+    )
+    .filter(Boolean)
+
 // Returns a function that resolves a role
 // using the provided apps, and caching the result.
-export function roleResolver(apps = []) {
-  return memoize((proxyAddress, roleBytes) => {
+export const roleResolver = (apps = []) =>
+  memoize((proxyAddress, roleBytes) => {
+    if (roleBytes === APP_MANAGER_ROLE.bytes) {
+      return APP_MANAGER_ROLE
+    }
     const app = apps.find(app => app.proxyAddress === proxyAddress)
     if (!app || !app.roles) {
       return null
     }
-    return app.roles.find(role => (role.bytes = roleBytes))
+    return app.roles.find(role => role.bytes === roleBytes)
   }, (...args) => args[0] + args[1])
-}
 
 // Returns a function that resolves an entity
 // using the provided apps, and caching the result.
-export function entityResolver(apps = []) {
-  return memoize((address, daoAddress) => {
+export const entityResolver = (apps = []) =>
+  memoize((address, daoAddress) => {
     const entity = { address, type: 'address' }
     if (address === daoAddress) {
       return { ...entity, type: 'dao' }
@@ -49,4 +85,3 @@ export function entityResolver(apps = []) {
     const app = apps.find(app => app.proxyAddress === address)
     return app ? { ...entity, type: 'app', app } : entity
   }, (...args) => args[0] + args[1])
-}

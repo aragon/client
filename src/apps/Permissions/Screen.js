@@ -5,12 +5,13 @@ import { Transition, animated } from 'react-spring'
 
 const SCREEN_SHIFT = 0.05
 
-const Screen = ({ position, children }) => (
+const Screen = ({ position, children, animate }) => (
   <Transition
     from={{ left: position === 0 ? -SCREEN_SHIFT : SCREEN_SHIFT, opacity: 0 }}
     enter={{ left: 0, opacity: 1 }}
     leave={{ left: position === 0 ? -SCREEN_SHIFT : SCREEN_SHIFT, opacity: 0 }}
     config={springs.lazy}
+    immediate={!animate}
     native
   >
     {children &&
