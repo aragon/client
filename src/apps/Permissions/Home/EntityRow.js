@@ -27,29 +27,37 @@ class EntityRow extends React.PureComponent {
     }
     return <IdentityBadge entity={entity.address} />
   }
-  roleTitle({ role, appEntity, proxyAddress }) {
+  roleTitle({ role, roleBytes, appEntity, proxyAddress }) {
     if (!appEntity || !appEntity.app) {
       return `${role.name} (from unknown)`
     }
     const { app } = appEntity
-    return `${role.name} (from app: ${appEntity.name || app.proxyAddress})`
+    const roleLabel = (role && role.name) || roleBytes
+    return `${roleLabel} (from app: ${appEntity.name || app.proxyAddress})`
   }
   renderRoles(roles) {
-    roles = uniqBy(roles, ({ role, proxyAddress }) => {
-      return role.id + proxyAddress
+    roles = uniqBy(roles, ({ roleBytes, proxyAddress }) => {
+      return roleBytes + proxyAddress
     })
     if (roles.length === 0) {
       return <Text color={theme.textSecondary}>Unknown roles</Text>
     }
-    return roles.map((roleData, index) => {
-      const { role, proxyAddress } = roleData
-      return (
-        <span key={role.id + proxyAddress}>
+    return roles
+      .map(roleData => {
+        const { role, roleBytes, proxyAddress } = roleData
+        return {
+          key: roleBytes + proxyAddress,
+          title: this.roleTitle(roleData),
+          label: (role && role.name) || 'Unknown',
+        }
+      })
+      .sort(({ label }) => (label === 'Unknown' ? 1 : -1))
+      .map(({ key, title, label }, index) => (
+        <span key={key}>
           {index > 0 && <span>, </span>}
-          <span title={this.roleTitle(roleData)}>{role.name}</span>
+          <span title={title}>{label}</span>
         </span>
-      )
-    })
+      ))
   }
   render() {
     const { entity, roles } = this.props

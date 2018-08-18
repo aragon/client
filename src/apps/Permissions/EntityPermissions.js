@@ -28,21 +28,15 @@ class EntityPermissions extends React.PureComponent {
       return null
     }
 
-    const permissionsByEntity = byEntity(permissions)
-
-    const roles = entityRoles(
+    return entityRoles(
       entityAddress,
-      permissionsByEntity,
-      (role, proxyAddress) => ({
-        role: resolveRole(proxyAddress, role),
+      byEntity(permissions),
+      (roleBytes, proxyAddress) => ({
+        role: resolveRole(proxyAddress, roleBytes),
         appEntity: resolveEntity(proxyAddress, daoAddress),
         proxyAddress,
+        roleBytes,
       })
-    )
-
-    return uniqBy(
-      roles.filter(({ role }) => Boolean(role)),
-      ({ role, proxyAddress }) => role.id + proxyAddress
     )
   }
   render() {
@@ -65,11 +59,12 @@ class EntityPermissions extends React.PureComponent {
                 </TableRow>
               }
             >
-              {roles.map(({ role, appEntity, proxyAddress }, i) => (
+              {roles.map(({ role, roleBytes, appEntity, proxyAddress }, i) => (
                 <Row
                   key={i}
-                  id={role.id}
-                  action={role.name}
+                  id={(role && role.id) || 'Unknown'}
+                  roleBytes={roleBytes}
+                  action={(role && role.name) || 'Unknown'}
                   app={appEntity.app}
                   proxyAddress={proxyAddress}
                   onRevoke={onRevoke}
@@ -97,7 +92,7 @@ class Row extends React.Component {
         <TableCell>
           <Text weight="bold">{action}</Text>
         </TableCell>
-        <TableCell>{id}</TableCell>
+        <TableCell title={roleBytes}>{id}</TableCell>
         <TableCell align="right">
           <Button
             mode="outline"
