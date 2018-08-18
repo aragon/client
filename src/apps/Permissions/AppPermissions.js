@@ -1,7 +1,6 @@
 import React from 'react'
 import uniqBy from 'lodash.uniqby'
 import {
-  Badge,
   Button,
   Table,
   TableCell,
@@ -11,6 +10,7 @@ import {
 } from '@aragon/ui'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
+import AppInstanceLabel from './AppInstanceLabel'
 import IdentityBadge from '../../components/IdentityBadge'
 import { entityRoles } from '../../permissions'
 import { shortenAddress } from '../../web3-utils'
@@ -77,20 +77,10 @@ class Row extends React.Component {
   handleRevoke = () => {
     this.props.onRevoke(this.props.id)
   }
-  renderApp(app) {
-    return (
-      <div>
-        <span style={{ marginRight: '10px' }}>{app.name}</span>
-        <Badge.App title={app.proxyAddress}>
-          {app.identifier || shortenAddress(app.proxyAddress)}
-        </Badge.App>
-      </div>
-    )
-  }
   renderEntity() {
     const { entity } = this.props
     if (entity.type === 'app') {
-      return this.renderApp(entity.app)
+      return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
     if (entity.type === 'any') {
       return 'Any account'

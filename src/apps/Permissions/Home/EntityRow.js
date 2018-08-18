@@ -2,6 +2,7 @@ import React from 'react'
 import uniqBy from 'lodash.uniqby'
 import { TableRow, TableCell, Button, Text, theme } from '@aragon/ui'
 import IdentityBadge from '../../../components/IdentityBadge'
+import AppInstanceLabel from '../AppInstanceLabel'
 
 class EntityRow extends React.PureComponent {
   handleClick = () => {
@@ -22,7 +23,7 @@ class EntityRow extends React.PureComponent {
       return 'Any account'
     }
     if (entity.type === 'app' && entity.app.name) {
-      return entity.app.name
+      return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
     return <IdentityBadge entity={entity.address} />
   }

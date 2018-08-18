@@ -1,7 +1,6 @@
 import React from 'react'
 import uniqBy from 'lodash.uniqby'
 import {
-  Badge,
   Button,
   Table,
   TableCell,
@@ -11,8 +10,8 @@ import {
 } from '@aragon/ui'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
+import AppInstanceLabel from './AppInstanceLabel'
 import { entityRoles } from '../../permissions'
-import { shortenAddress } from '../../web3-utils'
 import { permissionsByEntity as byEntity } from '../../permissions'
 
 class EntityPermissions extends React.PureComponent {
@@ -88,24 +87,13 @@ class Row extends React.Component {
   handleRevoke = () => {
     this.props.onRevoke(this.props.id)
   }
-  renderApp() {
-    const { app, proxyAddress } = this.props
-    return (
-      <div>
-        <span style={{ marginRight: '10px' }}>
-          {app ? app.name : 'Unknown'}
-        </span>
-        <Badge.App title={proxyAddress}>
-          {(app && app.identifier) || shortenAddress(proxyAddress)}
-        </Badge.App>
-      </div>
-    )
-  }
   render() {
-    const { action, id } = this.props
+    const { action, id, roleBytes, app, proxyAddress } = this.props
     return (
       <TableRow>
-        <TableCell>{this.renderApp()}</TableCell>
+        <TableCell>
+          <AppInstanceLabel app={app} proxyAddress={proxyAddress} />
+        </TableCell>
         <TableCell>
           <Text weight="bold">{action}</Text>
         </TableCell>
