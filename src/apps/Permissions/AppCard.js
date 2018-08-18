@@ -14,7 +14,7 @@ class AppCard extends React.PureComponent {
     } = this.props
     const iconUrl = resolvePathname('images/icon.svg', baseUrl)
     const instanceLabel = identifier || shortenAddress(proxyAddress)
-    const instanceTitle = identifier || proxyAddress
+    const instanceTitle = `Address: ${proxyAddress}`
     return (
       <Main width="100%" height="180px" onClick={this.handleClick}>
         <div className="icon">
