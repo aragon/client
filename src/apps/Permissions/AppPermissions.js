@@ -1,5 +1,4 @@
 import React from 'react'
-import uniqBy from 'lodash.uniqby'
 import {
   Button,
   Table,
@@ -12,9 +11,7 @@ import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import IdentityBadge from '../../components/IdentityBadge'
-import { entityRoles } from '../../permissions'
-import { shortenAddress } from '../../web3-utils'
-import { permissionsByEntity as byEntity, appRoles } from '../../permissions'
+import { appRoles } from '../../permissions'
 
 class AppPermissions extends React.PureComponent {
   getRoles() {
@@ -88,7 +85,7 @@ class Row extends React.Component {
     return <IdentityBadge entity={entity.address} />
   }
   render() {
-    const { action, id, entity } = this.props
+    const { action, id } = this.props
     return (
       <TableRow>
         <TableCell>

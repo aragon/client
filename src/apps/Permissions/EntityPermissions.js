@@ -1,5 +1,4 @@
 import React from 'react'
-import uniqBy from 'lodash.uniqby'
 import {
   Button,
   Table,
@@ -11,8 +10,7 @@ import {
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
-import { entityRoles } from '../../permissions'
-import { permissionsByEntity as byEntity } from '../../permissions'
+import { entityRoles, permissionsByEntity as byEntity } from '../../permissions'
 
 class EntityPermissions extends React.PureComponent {
   getRoles() {

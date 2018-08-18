@@ -6,7 +6,7 @@ const APP_MANAGER_ROLE = {
   name: 'Manage apps',
   id: 'APP_MANAGER',
   params: [],
-  bytes: '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0'
+  bytes: '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
 }
 
 // Get a list of roles assigned to entities.
@@ -36,12 +36,11 @@ export const entityRoles = (
   permissionsByEntity,
   transform = (role, proxyAddress) => role
 ) =>
-  Object.entries(permissionsByEntity[entityAddress])
-    .reduce(
-      (roles, [proxyAddress, appRoles]) =>
-        roles.concat(appRoles.map(role => transform(role, proxyAddress))),
-      []
-    )
+  Object.entries(permissionsByEntity[entityAddress]).reduce(
+    (roles, [proxyAddress, appRoles]) =>
+      roles.concat(appRoles.map(role => transform(role, proxyAddress))),
+    []
+  )
 
 // Get the roles attached to an app.
 export const appRoles = (
