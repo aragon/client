@@ -46,19 +46,20 @@ class Permissions extends React.Component {
       return home
     }
 
-    if (params.startsWith('app.')) {
+    // Note: `data` can not include the character ".".
+    // If it becomes needed, a regex could be used instead of `split()`.
+    const [screen, data = null] = params.split('.')
+
+    if (screen === 'app') {
       return {
-        screen: 'app',
-        address: params.split('app.')[1] || null,
-        app: this.getAppByProxyAddress(params.split('app.')[1]),
+        screen,
+        address: data,
+        app: this.getAppByProxyAddress(data),
       }
     }
 
-    if (params.startsWith('entity.')) {
-      return {
-        screen: 'entity',
-        address: params.split('entity.')[1] || null,
-      }
+    if (screen === 'entity') {
+      return { screen, address: data }
     }
 
     return home
