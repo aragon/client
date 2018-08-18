@@ -17,18 +17,18 @@ class AppCard extends React.PureComponent {
     const instanceTitle = `Address: ${proxyAddress}`
     return (
       <Main onClick={this.handleClick}>
-        <div className="icon">
+        <Icon>
           <img width="28" height="28" src={iconUrl} alt="" />
-        </div>
-        <p className="name">{name}</p>
-        <div className="identifier">
+        </Icon>
+        <Name>{name}</Name>
+        <IdentifierWrapper>
           <Identifier title={instanceTitle}>{instanceLabel}</Identifier>
-        </div>
-        <div className="link">
+        </IdentifierWrapper>
+        <Action>
           <Text weight="bold" color={theme.textSecondary}>
             View
           </Text>
-        </div>
+        </Action>
       </Main>
     )
   }
@@ -43,40 +43,41 @@ const Main = styled(Card).attrs({ width: '100%', height: '180px' })`
   align-items: center;
   padding-top: 25px;
   cursor: pointer;
-  .icon {
-    height: 28px;
-    margin-bottom: 5px;
-    img {
-      display: block;
-    }
+`
+
+const Icon = styled.div`
+  height: 28px;
+  margin-bottom: 5px;
+  img {
+    display: block;
   }
-  .name {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-  .identifier {
-    max-width: 100%;
-    padding: 0 20px;
-    margin-bottom: 10px;
-  }
-  .link {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding-bottom: 30px;
-    text-align: center;
-    a {
-      text-decoration: underline;
-    }
-  }
+`
+
+const Name = styled.p`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 10px;
+`
+
+const IdentifierWrapper = styled.div`
+  max-width: 100%;
+  padding: 0 20px;
+  margin-bottom: 10px;
 `
 
 const Identifier = styled(Badge.App)`
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
+`
+
+const Action = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-bottom: 30px;
+  text-align: center;
 `
 
 export default AppCard
