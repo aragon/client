@@ -16,7 +16,7 @@ class AppCard extends React.PureComponent {
     const instanceLabel = identifier || shortenAddress(proxyAddress)
     const instanceTitle = `Address: ${proxyAddress}`
     return (
-      <Main width="100%" height="180px" onClick={this.handleClick}>
+      <Main onClick={this.handleClick}>
         <div className="icon">
           <img width="28" height="28" src={iconUrl} alt="" />
         </div>
@@ -34,7 +34,7 @@ class AppCard extends React.PureComponent {
   }
 }
 
-const Main = styled(Card)`
+const Main = styled(Card).attrs({ width: '100%', height: '180px' })`
   ${unselectable};
   position: relative;
   overflow: hidden;
