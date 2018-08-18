@@ -1,4 +1,4 @@
-import { BigNumber } from 'bignumber.js'
+import BN from 'bn.js'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
   providers,
@@ -109,7 +109,7 @@ export const pollMainAccount = pollEvery(
   (provider, { onAccount = () => {}, onBalance = () => {} } = {}) => {
     const web3 = getWeb3(provider)
     let lastAccount = null
-    let lastBalance = -1
+    let lastBalance = new BN(-1)
     return {
       request: () =>
         getMainAccount(web3)
@@ -119,18 +119,18 @@ export const pollMainAccount = pollEvery(
             }
             return web3.eth.getBalance(account).then(balance => ({
               account,
-              balance: BigNumber(balance),
+              balance: new BN(balance),
             }))
           })
           .catch(() => {
-            return { account: null, balance: BigNumber(-1) }
+            return { account: null, balance: new BN(-1) }
           }),
       onResult: ({ account, balance }) => {
         if (account !== lastAccount) {
           lastAccount = account
           onAccount(account)
         }
-        if (!balance.isEqualTo(lastBalance)) {
+        if (!balance.eq(lastBalance)) {
           lastBalance = balance
           onBalance(balance)
         }

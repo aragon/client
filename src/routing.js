@@ -1,5 +1,5 @@
-import { isAddress } from 'web3-utils'
 import { staticApps } from './static-apps'
+import { isAddress } from './web3-utils'
 
 /*
  * Parse a path and a search query and return a “locator” object.

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import BN from 'bn.js'
 import {
   theme,
   Text,
@@ -12,7 +13,7 @@ import {
 import { network, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
-import { weiToEther, etherToWei } from '../web3-utils'
+import { fromWei, toWei } from '../web3-utils'
 import { lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
@@ -24,7 +25,7 @@ import {
   DomainCheckRejected,
 } from './domain-states'
 
-const MINIMUM_BALANCE = etherToWei(0.1)
+const MINIMUM_BALANCE = new BN(toWei('0.1'))
 
 class Start extends React.Component {
   static defaultProps = {
@@ -86,9 +87,8 @@ class Start extends React.Component {
 class StartContent extends React.PureComponent {
   enoughBalance() {
     const { balance } = this.props
-    const enough =
-      balance && balance.isLessThan && !balance.isLessThan(MINIMUM_BALANCE)
-    return enough || false
+    const enough = balance && balance.lt && !balance.lt(MINIMUM_BALANCE)
+    return !!enough
   }
   render() {
     const {
@@ -223,8 +223,9 @@ class StartContent extends React.PureComponent {
     if (!this.enoughBalance()) {
       return (
         <ActionInfo>
-          You need at least {weiToEther(MINIMUM_BALANCE)} ETH (you have{' '}
-          {Math.round(weiToEther((balance || 0).toFixed()) * 1000) / 1000} ETH).
+          You need at least {fromWei(MINIMUM_BALANCE)} ETH (you have{' '}
+          {Math.round(parseInt(fromWei(balance || '0'), 10) * 1000) / 1000}{' '}
+          ETH).
           <br />
           {network.type === 'rinkeby' && (
             <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
