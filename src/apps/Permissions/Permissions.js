@@ -156,9 +156,10 @@ class Permissions extends React.Component {
           appBar={
             <AppBar
               endContent={
-                <Button mode="strong" onClick={this.createPermission}>
+                null
+                /*<Button mode="strong" onClick={this.createPermission}>
                   Add permission
-                </Button>
+                </Button>*/
               }
             >
               <NavigationBar items={navigationItems} onBack={this.goToHome} />

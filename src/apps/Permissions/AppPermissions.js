@@ -48,8 +48,8 @@ class AppPermissions extends React.PureComponent {
                 <TableRow>
                   <TableHeader title="Action" />
                   <TableHeader title="Contract Label" />
-                  <TableHeader title="Allowed for" />
-                  <TableHeader />
+                  <TableHeader title="Allowed for" align="right" />
+                  {/*<TableHeader />*/}
                 </TableRow>
               }
             >
@@ -92,8 +92,8 @@ class Row extends React.Component {
           <Text weight="bold">{action}</Text>
         </TableCell>
         <TableCell>{id}</TableCell>
-        <TableCell>{this.renderEntity()}</TableCell>
-        <TableCell align="right">
+        <TableCell align="right">{this.renderEntity()}</TableCell>
+        {/*<TableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -102,7 +102,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell>
+        </TableCell>*/}
       </TableRow>
     )
   }
