@@ -109,6 +109,7 @@ class Permissions extends React.Component {
 
   // Assemble the navigation items
   getNavigationItems(location) {
+    const { resolveEntity, daoAddress } = this.props
     const items = ['Permissions']
     const openedApp = location.screen === 'app' ? location.app : null
     const openedEntityAddress =
@@ -134,9 +135,14 @@ class Permissions extends React.Component {
         <NavigationItem
           title="Entity permissions"
           address={openedEntityAddress}
+          entity={
+            resolveEntity && resolveEntity(openedEntityAddress, daoAddress)
+          }
         />,
       ]
     }
+
+    return items
   }
 
   render() {

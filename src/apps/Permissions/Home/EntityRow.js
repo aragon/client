@@ -20,7 +20,7 @@ class EntityRow extends React.PureComponent {
   }
   renderEntity(entity) {
     if (entity.type === 'any') {
-      return 'Any account'
+      return <IdentityBadge entity='Any account' />
     }
     if (entity.type === 'app' && entity.app.name) {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
