@@ -179,6 +179,8 @@ class MenuPanel extends React.PureComponent {
 }
 
 const Main = styled.div`
+  position: relative;
+  z-index: 2;
   flex-shrink: 0;
   top: 0;
   bottom: 0;
