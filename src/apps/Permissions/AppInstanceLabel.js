@@ -7,8 +7,8 @@ import AppIconKernel from './AppIconKernel'
 
 class AppInstanceLabel extends React.PureComponent {
   renderIcon() {
-    const { app, isKernel } = this.props
-    if (isKernel) {
+    const { app, coreRole } = this.props
+    if (coreRole) {
       return (
         <Icon>
           <AppIconKernel />
@@ -25,12 +25,12 @@ class AppInstanceLabel extends React.PureComponent {
     return null
   }
   render() {
-    const { app, proxyAddress, isKernel } = this.props
+    const { app, proxyAddress, coreRole } = this.props
     return (
       <Main>
         {this.renderIcon()}
         <AppName>
-          {isKernel ? 'Kernel' : (app && app.name) || 'Unknown'}
+          {coreRole ? coreRole.appName : (app && app.name) || 'Unknown'}
         </AppName>
         <Badge.App title={proxyAddress}>
           {(app && app.identifier) || shortenAddress(proxyAddress)}

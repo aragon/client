@@ -13,7 +13,7 @@ import AppInstanceLabel from './AppInstanceLabel'
 import {
   entityRoles,
   permissionsByEntity as byEntity,
-  isKernelRole,
+  getKnownRole,
 } from '../../permissions'
 
 class EntityPermissions extends React.PureComponent {
@@ -92,7 +92,7 @@ class Row extends React.Component {
           <AppInstanceLabel
             app={app}
             proxyAddress={proxyAddress}
-            isKernel={isKernelRole(roleBytes)}
+            coreRole={getKnownRole(roleBytes)}
           />
         </TableCell>
         <TableCell>

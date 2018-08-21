@@ -2,23 +2,43 @@ import memoize from 'lodash.memoize'
 
 const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 
-const KERNEL_ROLES = [
-  {
-    name: 'Manage apps',
-    id: 'APP_MANAGER',
-    params: [],
-    bytes: '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
-  },
-  {
-    name: 'Create permissions',
-    id: 'CREATE_PERMISSIONS',
-    params: [],
-    bytes: '0x0b719b33c83b8e5d300c521cb8b54ae9bd933996a14bef8c2f4e0285d2d2400a',
-  },
-]
+const KERNEL_ROLES = {
+  appName: 'Kernel',
+  roles: [
+    {
+      name: 'Manage apps',
+      id: 'APP_MANAGER_ROLE',
+      params: [],
+      bytes:
+        '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
+    },
+  ],
+}
 
-export const isKernelRole = roleBytes =>
-  Object.values(KERNEL_ROLES).find(role => role.bytes === roleBytes)
+const ACL_ROLES = {
+  appName: 'ACL',
+  roles: [
+    {
+      name: 'Create permissions',
+      id: 'CREATE_PERMISSIONS_ROLE',
+      params: [],
+      bytes:
+        '0x0b719b33c83b8e5d300c521cb8b54ae9bd933996a14bef8c2f4e0285d2d2400a',
+    },
+  ],
+}
+
+// Get a role from the known roles (see KNOWN_ROLES)
+export const getKnownRole = roleBytes => {
+  for (const group of [KERNEL_ROLES, ACL_ROLES]) {
+    for (const role of group.roles) {
+      if (roleBytes === role.bytes) {
+        return { appName: group.appName, role }
+      }
+    }
+  }
+  return null
+}
 
 // Get a list of roles assigned to entities.
 // Input:  app instances => roles => entities
@@ -71,11 +91,11 @@ export const appRoles = (
 // using the provided apps, and caching the result.
 export const roleResolver = (apps = []) =>
   memoize((proxyAddress, roleBytes) => {
-    for (const role of KERNEL_ROLES) {
-      if (roleBytes === role.bytes) {
-        return role
-      }
+    const knownRole = getKnownRole(roleBytes)
+    if (knownRole) {
+      return knownRole.role
     }
+
     const app = apps.find(app => app.proxyAddress === proxyAddress)
     if (!app || !app.roles) {
       return null
