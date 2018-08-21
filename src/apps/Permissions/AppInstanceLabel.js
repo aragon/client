@@ -2,13 +2,36 @@ import React from 'react'
 import styled from 'styled-components'
 import { Badge } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
+import AppIcon from './AppIcon'
+import AppIconKernel from './AppIconKernel'
 
 class AppInstanceLabel extends React.PureComponent {
+  renderIcon() {
+    const { app, isKernel } = this.props
+    if (isKernel) {
+      return (
+        <Icon>
+          <AppIconKernel />
+        </Icon>
+      )
+    }
+    if (app && app.baseUrl) {
+      return (
+        <Icon>
+          <AppIcon app={app} />
+        </Icon>
+      )
+    }
+    return null
+  }
   render() {
-    const { app, proxyAddress } = this.props
+    const { app, proxyAddress, isKernel } = this.props
     return (
       <Main>
-        <AppName>{(app && app.name) || 'Unknown'}</AppName>
+        {this.renderIcon()}
+        <AppName>
+          {isKernel ? 'Kernel' : (app && app.name) || 'Unknown'}
+        </AppName>
         <Badge.App title={proxyAddress}>
           {(app && app.identifier) || shortenAddress(proxyAddress)}
         </Badge.App>
@@ -20,9 +43,14 @@ class AppInstanceLabel extends React.PureComponent {
 const Main = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
 `
 
 const AppName = styled.span`
+  margin-right: 10px;
+`
+
+const Icon = styled.span`
   margin-right: 10px;
 `
 

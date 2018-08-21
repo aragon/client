@@ -10,7 +10,11 @@ import {
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
-import { entityRoles, permissionsByEntity as byEntity } from '../../permissions'
+import {
+  entityRoles,
+  permissionsByEntity as byEntity,
+  isKernelRole,
+} from '../../permissions'
 
 class EntityPermissions extends React.PureComponent {
   getRoles() {
@@ -26,12 +30,14 @@ class EntityPermissions extends React.PureComponent {
       return null
     }
 
+    console.log('ALLELE?', resolveEntity(entityAddress, daoAddress))
+
     return entityRoles(
       entityAddress,
       byEntity(permissions),
       (roleBytes, proxyAddress) => ({
         role: resolveRole(proxyAddress, roleBytes),
-        appEntity: resolveEntity(proxyAddress, daoAddress),
+        roleFrom: resolveEntity(proxyAddress, daoAddress),
         proxyAddress,
         roleBytes,
       })
@@ -57,13 +63,13 @@ class EntityPermissions extends React.PureComponent {
                 </TableRow>
               }
             >
-              {roles.map(({ role, roleBytes, appEntity, proxyAddress }, i) => (
+              {roles.map(({ role, roleBytes, roleFrom, proxyAddress }, i) => (
                 <Row
                   key={i}
                   id={(role && role.id) || 'Unknown'}
                   roleBytes={roleBytes}
                   action={(role && role.name) || 'Unknown'}
-                  app={appEntity.app}
+                  app={roleFrom.app}
                   proxyAddress={proxyAddress}
                   onRevoke={onRevoke}
                 />
@@ -85,7 +91,11 @@ class Row extends React.Component {
     return (
       <TableRow>
         <TableCell>
-          <AppInstanceLabel app={app} proxyAddress={proxyAddress} />
+          <AppInstanceLabel
+            app={app}
+            proxyAddress={proxyAddress}
+            isKernel={isKernelRole(roleBytes)}
+          />
         </TableCell>
         <TableCell>
           <Text weight="bold">{action}</Text>

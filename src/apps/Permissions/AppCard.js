@@ -1,24 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
-import resolvePathname from 'resolve-pathname'
 import { Text, Card, Badge, theme, unselectable } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
+import AppIcon from './AppIcon'
 
 class AppCard extends React.PureComponent {
   handleClick = () => {
     this.props.onOpen(this.props.app.proxyAddress)
   }
   render() {
-    const {
-      app: { name, identifier, proxyAddress, baseUrl },
-    } = this.props
-    const iconUrl = resolvePathname('images/icon.svg', baseUrl)
+    const { app } = this.props
+    const { name, identifier, proxyAddress, baseUrl } = app
     const instanceLabel = identifier || shortenAddress(proxyAddress)
     const instanceTitle = `Address: ${proxyAddress}`
     return (
       <Main onClick={this.handleClick}>
         <Icon>
-          <img width="28" height="28" src={iconUrl} alt="" />
+          <AppIcon app={app} />
         </Icon>
         <Name>{name}</Name>
         <IdentifierWrapper>
