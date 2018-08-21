@@ -110,54 +110,99 @@ export const prices = [
 ]
 
 export const permissions = {
-  entities: [
-    { id: 1, label: 'Wandering Thunder', badge: { label: 'You' } },
-    { id: 2, label: 'Black Wildflower' },
-    { id: 3, label: 'Black Wildflower' },
-    { id: 4, label: 'Black Wildflower' },
-    { id: 5, label: 'Black Wildflower' },
-    { id: 6, label: 'Black Wildflower' },
+  byEntity: [
+    {
+      entity: '0x2e05a304d3040f9c8c21380d4a9f659ae752105a',
+      type: 'User',
+      permissions: 'Assign tokens, Create groups, Create vote',
+    },
+    {
+      entity: '0x9f62e05a304d3040f1389c8c20d4a59ae752105a',
+      type: 'User',
+      permissions: 'Mint tokens',
+    },
+    {
+      entity: '0x5a32e004d3040f1389c8c20d4a9f659ae752105a',
+      type: 'Group',
+      permissions: 'Assign tokens, Create groups',
+    },
+    {
+      entity: '0x9c82e05a304d3040f138c20d4a9f659ae752105a',
+      type: 'App',
+      permissions:
+        'Assign tokens, Mint new tokens, Revoke vesting, Create vote…',
+    },
+    {
+      entity: '0xa9f2e05a304d3040f1389c8c20d4659ae752105a',
+      type: 'User',
+      permissions: 'Assign tokens, Create groups, Create vote',
+    },
+    {
+      entity: '0x40f2e05a304d301389c8c20d4a9f659ae752105a',
+      type: 'User',
+      permissions: 'Assign tokens, Create groups, Create vote',
+    },
   ],
-  actions: [
+  appPermissions: [
     {
-      title: 'Open a new voting',
-      summary: `
-        Approved votings will perform the given action as if they were executed
-        by this app
-      `,
-      canPerform: [['Tokens', 'ANT'], ['Multisig'], ['Groups', 'Core Devs']],
-      canRevoke: [['Multisig']],
+      permissionId: 'abc',
+      actionId: 'ASSIGN_TOKENS',
+      actionName: 'Assign tokens',
+      allowedFor: 'Voting',
+      editableBy: 'Voting',
+      parameters: 'Receiver, Amount',
+      constraints: null,
+      pending: false,
     },
     {
-      title: 'Stop an open voting',
-      summary: `
-        Will stop an open voting and won’t perform the voting’s action
-      `,
-      canPerform: [['Tokens', 'ANT'], ['Multisig'], ['Groups', 'Core Devs']],
-      canRevoke: [['Multisig']],
-    },
-  ],
-  assigned: [
-    {
-      title: 'Issue new tokens on Tokens (ANT)',
-      summary: `
-        Will mint new ANT tokens
-      `,
-      canRevoke: 'Multisig',
+      permissionId: 'def',
+      actionId: 'REVOKE_TOKENS',
+      actionName: 'Revoke tokens',
+      allowedFor: 'Voting',
+      editableBy: 'Voting',
+      parameters: 'Holder of vesting',
+      constraints: null,
+      pending: false,
     },
     {
-      title: 'Create new permissions on Kernel',
-      summary: `
-        Will create new permissions if the receiving actions and entities…
-      `,
-      canRevoke: 'Multisig',
+      permissionId: 'ghi',
+      actionId: 'MINT_NEW_TOKENS',
+      actionName: 'Mint new tokens',
+      allowedFor: 'Voting',
+      editableBy: 'Voting',
+      parameters: 'Amount',
+      constraints: [],
+      pending: false,
     },
     {
-      title: 'Create a new public token sale on Fundraising (ANT)',
-      summary: `
-        Will create a new public token sale and will be able to receive funds…
-      `,
-      canRevoke: 'Multisig',
+      permissionId: 'jkl',
+      actionId: 'MINT_NEW_TOKENS',
+      actionName: 'Mint new tokens',
+      allowedFor: 'DAO Factory',
+      editableBy: 'DAO Factory',
+      parameters: 'Amount',
+      constraints: [],
+      pending: false,
+    },
+    {
+      permissionId: 'mno',
+      actionId: 'ASSIGN_TOKENS',
+      actionName: 'Assign tokens',
+      allowedFor: 'SuperUsers',
+      editableBy: 'Voting',
+      parameters: 'Amount',
+      constraints: [],
+      pending: false,
+    },
+    {
+      permissionId: 'pqr',
+      actionId: 'ASSIGN_TOKENS',
+      actionName: 'Assign tokens',
+      allowedFor: '0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be',
+      editableBy: 'Voting',
+      parameters: 'Receiver, Amount',
+      constraints: null,
+      pending: true,
     },
   ],
 }

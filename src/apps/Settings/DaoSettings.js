@@ -52,6 +52,7 @@ class DaoSettings extends React.Component {
       addrMap[app.appId] = toChecksumAddress(app.proxyAddress)
       return addrMap
     }, {})
+    const webApps = apps.filter(app => app.hasWebApp)
     return (
       <div>
         <Option
@@ -151,13 +152,13 @@ class DaoSettings extends React.Component {
             </Field>
           </Option>
         )}
-        {apps.length > 0 && (
+        {webApps.length > 0 && (
           <Option
             name="Aragon apps"
-            text={`This organization has ${apps.length} apps installed.`}
+            text={`This organization has ${webApps.length} apps installed.`}
           >
             <AppsList>
-              {apps.map(({ appId, description, name, proxyAddress }) => {
+              {webApps.map(({ appId, description, name, proxyAddress }) => {
                 const checksummedProxyAddress = checksummedAppProxies[appId]
                 return (
                   <li title={description} key={checksummedProxyAddress}>

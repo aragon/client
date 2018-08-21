@@ -157,7 +157,7 @@ class MenuPanel extends React.PureComponent {
           expand={isActive && readyToExpand}
           activeInstanceId={activeInstanceId}
           onActivate={onOpenApp}
-          comingSoon={['permissions', 'apps'].includes(appId)}
+          comingSoon={appId === 'apps'}
         />
       </div>
     )

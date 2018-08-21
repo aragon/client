@@ -55,18 +55,22 @@ const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
-// Filter out apps without UI and add an app source url properties
+// Sort apps, apply URL overrides, and attach data useful to the frontend
 const prepareFrontendApps = (apps, gateway) => {
   return applyAppOverrides(apps)
-    .filter(app => app && app['start_url'])
     .sort(sortAppsPair)
     .map(app => {
       const baseUrl = appBaseUrl(app, gateway)
       // Remove the starting slash from the start_url field
       // so the absolute path can be resolved from baseUrl.
-      const startUrl = removeStartingSlash(app['start_url'])
+      const startUrl = removeStartingSlash(app['start_url'] || '')
       const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
-      return { ...app, baseUrl, src }
+      return {
+        ...app,
+        src,
+        baseUrl,
+        hasWebApp: Boolean(app['start_url']),
+      }
     })
 }
 
@@ -174,20 +178,21 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
   }
 }, POLL_DELAY_NETWORK)
 
-// Subscribe to wrapper's observables
+// Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  { onApps, onForwarders, onTransaction },
+  { onApps, onPermissions, onForwarders, onTransaction },
   { ipfsConf }
 ) => {
-  const { apps, forwarders, transactions } = wrapper
+  const { apps, permissions, forwarders, transactions } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
     apps: apps.subscribe(apps => {
-      onApps(prepareFrontendApps(apps, ipfsConf.gateway), apps)
+      onApps(prepareFrontendApps(apps, ipfsConf.gateway))
     }),
+    permissions: permissions.subscribe(onPermissions),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
@@ -229,8 +234,8 @@ const subscribe = (
             return
           }
 
-          // If another execution context already loaded this app's worker before we got to it here,
-          // let's short circuit
+          // If another execution context already loaded this app's worker
+          // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
             const worker = new Worker(workerUrl)
             worker.addEventListener(
@@ -280,6 +285,7 @@ const initWrapper = async (
     ipfsConf = ipfsDefaultConf,
     onError = noop,
     onApps = noop,
+    onPermissions = noop,
     onForwarders = noop,
     onTransaction = noop,
     onDaoAddress = noop,
@@ -287,7 +293,6 @@ const initWrapper = async (
   } = {}
 ) => {
   const isDomain = /[a-z0-9]+\.aragonid\.eth/.test(dao)
-
   const daoAddress = isDomain
     ? await resolveEnsDomain(dao, {
         provider,
@@ -328,7 +333,7 @@ const initWrapper = async (
 
   const subscriptions = subscribe(
     wrapper,
-    { onApps, onForwarders, onTransaction },
+    { onApps, onPermissions, onForwarders, onTransaction },
     { ipfsConf }
   )
 
