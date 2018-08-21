@@ -20,7 +20,7 @@ class EntityPermissions extends React.PureComponent {
   getRoles() {
     const {
       daoAddress,
-      entityAddress,
+      address,
       permissions,
       resolveEntity,
       resolveRole,
@@ -31,7 +31,7 @@ class EntityPermissions extends React.PureComponent {
     }
 
     return entityRoles(
-      entityAddress,
+      address,
       byEntity(permissions),
       (roleBytes, proxyAddress) => ({
         role: resolveRole(proxyAddress, roleBytes),
@@ -42,40 +42,42 @@ class EntityPermissions extends React.PureComponent {
     )
   }
   render() {
-    const { loading, onRevoke } = this.props
+    const { loading, onRevoke, title = 'Permissions' } = this.props
     const roles = this.getRoles()
 
     return (
-      <>
-        <Section title="Permissions">
-          {roles === null || loading ? (
-            <EmptyBlock>Loading entity permissions…</EmptyBlock>
-          ) : (
-            <Table
-              header={
-                <TableRow>
-                  <TableHeader title="App" />
-                  <TableHeader title="Action" />
-                  <TableHeader title="Contract Label" align="right" />
-                  {/* <TableHeader /> */}
-                </TableRow>
-              }
-            >
-              {roles.map(({ role, roleBytes, roleFrom, proxyAddress }, i) => (
-                <Row
-                  key={i}
-                  id={(role && role.id) || 'Unknown'}
-                  roleBytes={roleBytes}
-                  action={(role && role.name) || 'Unknown'}
-                  app={roleFrom.app}
-                  proxyAddress={proxyAddress}
-                  onRevoke={onRevoke}
-                />
-              ))}
-            </Table>
-          )}
-        </Section>
-      </>
+      <Section title={title}>
+        {loading || roles === null ? (
+          <EmptyBlock>
+            {loading
+              ? 'Loading entity permissions…'
+              : 'No permissions.'}
+          </EmptyBlock>
+        ) : (
+          <Table
+            header={
+              <TableRow>
+                <TableHeader title="App" />
+                <TableHeader title="Action" />
+                <TableHeader title="Role identifier" align="right" />
+                {/* <TableHeader /> */}
+              </TableRow>
+            }
+          >
+            {roles.map(({ role, roleBytes, roleFrom, proxyAddress }, i) => (
+              <Row
+                key={i}
+                id={(role && role.id) || 'Unknown'}
+                roleBytes={roleBytes}
+                action={(role && role.name) || 'Unknown'}
+                app={roleFrom.app}
+                proxyAddress={proxyAddress}
+                onRevoke={onRevoke}
+              />
+            ))}
+          </Table>
+        )}
+      </Section>
     )
   }
 }

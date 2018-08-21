@@ -12,6 +12,7 @@ import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import IdentityBadge from '../../components/IdentityBadge'
 import { appRoles } from '../../permissions'
+import EntityPermissions from './EntityPermissions'
 
 class AppPermissions extends React.PureComponent {
   getRoles() {
@@ -34,12 +35,20 @@ class AppPermissions extends React.PureComponent {
     }))
   }
   render() {
-    const { loading, onRevoke } = this.props
+    const {
+      loading,
+      permissions,
+      address,
+      daoAddress,
+      resolveRole,
+      resolveEntity,
+      onRevoke,
+    } = this.props
     const roles = this.getRoles()
 
     return (
       <>
-        <Section title="Permissions">
+        <Section title="Permissions on this app">
           {roles === null || loading ? (
             <EmptyBlock>Loading app permissions…</EmptyBlock>
           ) : (
@@ -47,7 +56,7 @@ class AppPermissions extends React.PureComponent {
               header={
                 <TableRow>
                   <TableHeader title="Action" />
-                  <TableHeader title="Contract Label" />
+                  <TableHeader title="Role identifier" />
                   <TableHeader title="Allowed for" align="right" />
                   {/* <TableHeader /> */}
                 </TableRow>
@@ -65,6 +74,16 @@ class AppPermissions extends React.PureComponent {
             </Table>
           )}
         </Section>
+        <EntityPermissions
+          title="Permissions granted to this app"
+          loading={loading}
+          address={address}
+          permissions={permissions}
+          daoAddress={daoAddress}
+          resolveRole={resolveRole}
+          resolveEntity={resolveEntity}
+          onRevoke={onRevoke}
+        />
       </>
     )
   }

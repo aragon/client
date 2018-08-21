@@ -67,11 +67,13 @@ export const entityRoles = (
   permissionsByEntity,
   transform = (role, proxyAddress) => role
 ) =>
-  Object.entries(permissionsByEntity[entityAddress]).reduce(
-    (roles, [proxyAddress, appRoles]) =>
-      roles.concat(appRoles.map(role => transform(role, proxyAddress))),
-    []
-  )
+  permissionsByEntity[entityAddress]
+    ? Object.entries(permissionsByEntity[entityAddress]).reduce(
+        (roles, [proxyAddress, appRoles]) =>
+          roles.concat(appRoles.map(role => transform(role, proxyAddress))),
+        []
+      )
+    : null
 
 // Get the roles attached to an app.
 export const appRoles = (

@@ -86,6 +86,9 @@ class Permissions extends React.Component {
   }
 
   handleOpenEntity = address => {
+    if (this.getAppByProxyAddress(address)) {
+      return this.handleOpenApp(address)
+    }
     this.props.onParamsRequest(`entity.${address}`)
   }
 
@@ -129,15 +132,28 @@ class Permissions extends React.Component {
       ]
     }
 
+    const entity =
+      resolveEntity && resolveEntity(openedEntityAddress, daoAddress)
+
+    if (entity && entity.type === 'app') {
+      return [
+        ...items,
+        <NavigationItem
+          title="Entity permissions"
+          badge={{
+            label: entity.app.identifier || shortenAddress(location.address),
+          }}
+        />,
+      ]
+    }
+
     if (openedEntityAddress) {
       return [
         ...items,
         <NavigationItem
           title="Entity permissions"
           address={openedEntityAddress}
-          entity={
-            resolveEntity && resolveEntity(openedEntityAddress, daoAddress)
-          }
+          entity={entity}
         />,
       ]
     }
@@ -206,6 +222,7 @@ class Permissions extends React.Component {
                   <AppPermissions
                     loading={appsLoading}
                     app={location.app}
+                    address={location.address}
                     permissions={permissions}
                     onRevoke={this.revokePermission}
                     daoAddress={daoAddress}
@@ -216,7 +233,7 @@ class Permissions extends React.Component {
                 {location.screen === 'entity' && (
                   <EntityPermissions
                     loading={appsLoading || permissionsLoading}
-                    entityAddress={location.address}
+                    address={location.address}
                     permissions={permissions}
                     onRevoke={this.revokePermission}
                     daoAddress={daoAddress}
