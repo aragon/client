@@ -197,7 +197,8 @@ class StartContent extends React.PureComponent {
           Please install and unlock{' '}
           <SafeLink href="https://metamask.io/" target="_blank">
             MetaMask
-          </SafeLink>.
+          </SafeLink>
+          .
         </ActionInfo>
       )
     }

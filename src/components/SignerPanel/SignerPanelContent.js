@@ -65,8 +65,7 @@ class ActionPathsContent extends React.Component {
         This transaction will {showPaths && 'eventually'} perform{' '}
         {description ? `"${description}"` : 'an action'}
         {' on '}
-        <AddressLink to={to}>{toName}</AddressLink>
-        .
+        <AddressLink to={to}>{toName}</AddressLink>.
       </span>
     )
   }
@@ -156,8 +155,7 @@ const ImpossibleContent = ({
   <React.Fragment>
     <Info.Permissions title="Action impossible">
       The action {description && `"${description}"`} failed to execute on{' '}
-      <AddressLink to={to}>{toName}</AddressLink>
-      .{' '}
+      <AddressLink to={to}>{toName}</AddressLink>.{' '}
       {error
         ? 'An error occurred when we tried to find a path or send a transaction for this action.'
         : 'You do not have the necessary permissions.'}
@@ -175,13 +173,13 @@ const NeedUnlockAccountContent = ({
       You need to unlock your account in order to perform{' '}
       {description ? `"${description}"` : 'this action'}
       {' on '}
-      <AddressLink to={to}>{toName}</AddressLink>
-      .
+      <AddressLink to={to}>{toName}</AddressLink>.
       <InstallMessage>
         Please unlock or enable{' '}
         <SafeLink href="https://metamask.io/" target="_blank">
           MetaMask
-        </SafeLink>.
+        </SafeLink>
+        .
       </InstallMessage>
     </Info.Action>
     <SignerButton onClick={onClose}>Close</SignerButton>
@@ -194,13 +192,13 @@ const NeedWeb3Content = ({ intent: { description, to, toName }, onClose }) => (
       You need to be connected to a Web3 instance in order to perform{' '}
       {description ? `"${description}"` : 'this action'}
       {' on '}
-      <AddressLink to={to}>{toName}</AddressLink>
-      .
+      <AddressLink to={to}>{toName}</AddressLink>.
       <InstallMessage>
         Please install or enable{' '}
         <SafeLink href="https://metamask.io/" target="_blank">
           MetaMask
-        </SafeLink>.
+        </SafeLink>
+        .
       </InstallMessage>
     </Info.Action>
     <SignerButton onClick={onClose}>Close</SignerButton>
