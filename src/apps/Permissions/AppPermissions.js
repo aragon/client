@@ -48,7 +48,7 @@ class AppPermissions extends React.PureComponent {
 
     return (
       <>
-        <Section title="Permissions on this app">
+        <Section title="Permissions set on this app">
           {roles === null || loading ? (
             <EmptyBlock>Loading app permissions…</EmptyBlock>
           ) : (
