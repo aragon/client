@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Button,
+  // Button,
   Table,
   TableCell,
   TableHeader,
@@ -49,7 +49,7 @@ class AppPermissions extends React.PureComponent {
                   <TableHeader title="Action" />
                   <TableHeader title="Contract Label" />
                   <TableHeader title="Allowed for" align="right" />
-                  {/*<TableHeader />*/}
+                  {/* <TableHeader /> */}
                 </TableRow>
               }
             >
@@ -93,7 +93,7 @@ class Row extends React.Component {
         </TableCell>
         <TableCell>{id}</TableCell>
         <TableCell align="right">{this.renderEntity()}</TableCell>
-        {/*<TableCell align="right">
+        {/* <TableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -102,7 +102,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell>*/}
+        </TableCell> */}
       </TableRow>
     )
   }

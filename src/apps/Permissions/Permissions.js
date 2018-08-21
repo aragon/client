@@ -1,6 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
+import {
+  AppBar,
+  AppView,
+  NavigationBar,
+  // Button,
+} from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
@@ -157,9 +162,9 @@ class Permissions extends React.Component {
             <AppBar
               endContent={
                 null
-                /*<Button mode="strong" onClick={this.createPermission}>
+                /* <Button mode="strong" onClick={this.createPermission}>
                   Add permission
-                </Button>*/
+                </Button> */
               }
             >
               <NavigationBar items={navigationItems} onBack={this.goToHome} />
