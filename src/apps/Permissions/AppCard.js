@@ -10,7 +10,7 @@ class AppCard extends React.PureComponent {
   }
   render() {
     const { app } = this.props
-    const { name, identifier, proxyAddress, baseUrl } = app
+    const { name, identifier, proxyAddress } = app
     const instanceLabel = identifier || shortenAddress(proxyAddress)
     const instanceTitle = `Address: ${proxyAddress}`
     return (
