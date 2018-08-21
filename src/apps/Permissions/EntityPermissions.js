@@ -30,8 +30,6 @@ class EntityPermissions extends React.PureComponent {
       return null
     }
 
-    console.log('ALLELE?', resolveEntity(entityAddress, daoAddress))
-
     return entityRoles(
       entityAddress,
       byEntity(permissions),
