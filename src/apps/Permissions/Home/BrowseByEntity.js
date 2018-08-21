@@ -35,8 +35,8 @@ class BrowseByEntity extends React.Component {
                 </TableRow>
               }
             >
-              {Object.entries(permissionsByEntity).map(
-                ([entityAddress, apps]) => {
+              {Object.entries(permissionsByEntity)
+                .map(([entityAddress, apps]) => {
                   const entity = resolveEntity(entityAddress, daoAddress)
 
                   const roles = entityRoles(
@@ -50,16 +50,29 @@ class BrowseByEntity extends React.Component {
                     })
                   )
 
-                  return (
-                    <EntityRow
-                      key={entityAddress}
-                      entity={entity}
-                      roles={roles}
-                      onOpen={onOpenEntity}
-                    />
-                  )
-                }
-              )}
+                  return {
+                    entity,
+                    entityAddress,
+                    roles,
+                  }
+                })
+                .sort((a, b) => {
+                  if (a.entity && a.entity.type === 'any') {
+                    return -1
+                  }
+                  if (b.entity && b.entity.type === 'any') {
+                    return 1
+                  }
+                  return 0
+                })
+                .map(({ entity, entityAddress, roles }) => (
+                  <EntityRow
+                    key={entityAddress}
+                    entity={entity}
+                    roles={roles}
+                    onOpen={onOpenEntity}
+                  />
+                ))}
             </Table>
           </>
         )}
