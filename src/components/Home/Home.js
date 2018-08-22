@@ -63,6 +63,9 @@ class Home extends React.Component {
       this.setState({ showApps: !appsLoading })
     }, appsLoading ? 0 : 1000)
   }
+  componentWillUnmount() {
+    clearTimeout(this.showAppsTimer)
+  }
   handleCardAction = actionId => {
     const { onOpenApp, apps } = this.props
     const action = actions.find(action => action.id === actionId)
