@@ -18,7 +18,7 @@ export function addressesEqual(first, second) {
 /**
  *  Takes a Wei balance and returns it rounded to the number of digits after the decimal point specified (by default 2 digits).
  * @param {string} balance - Balance in Wei
- * @param {Number} [digits=2] - Number of digits after the decimal point
+ * @param {number} [digits=2] - Number of digits after the decimal point
  */
 export function fromWeiRounded(balance, digits = 2) {
   var ethBalance = Web3.utils.fromWei(balance, 'ether')
@@ -36,7 +36,7 @@ export function fromWeiRounded(balance, digits = 2) {
  *   shortenAddress('0x197319')            // 0x197319 (already short enough)
  * 
  * @param {string} address - The address to shorten
- * @param {number }[charsLength=4] - The number of characters to change on both sides of the ellipsis
+ * @param {number}[charsLength=4] - The number of characters to change on both sides of the ellipsis
  */
 export function shortenAddress(address, charsLength = 4) {
   const prefixLength = 2 // "0x"
