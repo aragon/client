@@ -12,6 +12,12 @@ export function addressesEqual(first, second) {
   return first === second
 }
 
+export function fromWeiRounded(balance, digits = 2) {
+  var ethBalance = Web3.utils.fromWei(balance, 'ether')
+  var decimalIndex = ethBalance.indexOf('.') + 1
+  return ethBalance.substring(0, decimalIndex != -1 ? decimalIndex + digits : ethBalance.length)
+}
+
 // Shorten an Ethereum address. `charsLength` allows to change the number of
 // characters on both sides of the ellipsis.
 //

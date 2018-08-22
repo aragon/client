@@ -13,7 +13,7 @@ import {
 import { network, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
-import { fromWei, toWei } from '../web3-utils'
+import { fromWei, fromWeiRounded, toWei } from '../web3-utils'
 import { lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
@@ -225,7 +225,7 @@ class StartContent extends React.PureComponent {
       return (
         <ActionInfo>
           You need at least {fromWei(MINIMUM_BALANCE)} ETH (you have{' '}
-          {Math.round(parseInt(fromWei(balance || '0'), 10) * 1000) / 1000}{' '}
+          {fromWeiRounded(balance)}{' '}
           ETH).
           <br />
           {network.type === 'rinkeby' && (
