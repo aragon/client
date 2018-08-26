@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  // Button,
+  Button,
   Table,
   TableCell,
   TableHeader,
@@ -57,17 +57,17 @@ class AppPermissions extends React.PureComponent {
                 <TableRow>
                   <TableHeader title="Action" />
                   <TableHeader title="Role identifier" />
-                  <TableHeader title="Allowed for" align="right" />
-                  {/* <TableHeader /> */}
+                  <TableHeader title="Allowed for" />
+                  <TableHeader />
                 </TableRow>
               }
             >
               {roles.map(({ role, entity }, i) => (
                 <Row
                   key={i}
-                  id={role.id}
-                  action={role.name}
+                  role={role}
                   entity={entity}
+                  proxyAddress={address}
                   onRevoke={onRevoke}
                 />
               ))}
@@ -91,7 +91,8 @@ class AppPermissions extends React.PureComponent {
 
 class Row extends React.Component {
   handleRevoke = () => {
-    this.props.onRevoke(this.props.id)
+    const { onRevoke, role, entity, proxyAddress } = this.props
+    onRevoke({ proxyAddress, role, entityAddress: entity.address })
   }
   renderEntity() {
     const { entity } = this.props
@@ -104,15 +105,17 @@ class Row extends React.Component {
     return <IdentityBadge entity={entity.address} />
   }
   render() {
-    const { action, id } = this.props
+    const {
+      role: { name, id },
+    } = this.props
     return (
       <TableRow>
         <TableCell>
-          <Text weight="bold">{action}</Text>
+          <Text weight="bold">{name}</Text>
         </TableCell>
         <TableCell>{id}</TableCell>
-        <TableCell align="right">{this.renderEntity()}</TableCell>
-        {/* <TableCell align="right">
+        <TableCell>{this.renderEntity()}</TableCell>
+        <TableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -121,7 +124,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell> */}
+        </TableCell>
       </TableRow>
     )
   }

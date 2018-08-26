@@ -11,6 +11,7 @@ import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
+import { noop } from './utils'
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -18,14 +19,15 @@ class Wrapper extends React.Component {
     account: '',
     connected: false,
     daoAddress: '',
-    historyBack: () => {},
-    historyPush: () => {},
+    historyBack: noop,
+    historyPush: noop,
     locator: {},
     walletNetwork: '',
     transactionBag: null,
     wrapper: null,
     walletWeb3: null,
     web3: null,
+    acl: null,
   }
   state = {
     appInstance: {},
@@ -208,11 +210,13 @@ class Wrapper extends React.Component {
       permissionsLoading,
       account,
       walletNetwork,
+      walletWeb3,
       wrapper,
       connected,
       daoAddress,
       resolveEntity,
       resolveRole,
+      acl,
     } = this.props
 
     if (instanceId === 'home') {
@@ -230,6 +234,7 @@ class Wrapper extends React.Component {
       return (
         <Permissions
           apps={apps}
+          acl={acl}
           appsLoading={appsLoading}
           permissions={permissions}
           permissionsLoading={permissionsLoading}
@@ -238,6 +243,8 @@ class Wrapper extends React.Component {
           onParamsRequest={this.handleParamsRequest}
           resolveEntity={resolveEntity}
           resolveRole={resolveRole}
+          walletWeb3={walletWeb3}
+          account={account}
         />
       )
     }

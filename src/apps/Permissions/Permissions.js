@@ -1,11 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  AppBar,
-  AppView,
-  NavigationBar,
-  // Button,
-} from '@aragon/ui'
+import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
@@ -102,8 +97,18 @@ class Permissions extends React.Component {
     // this.setState({ showPermissionPanel: true, editPermission: permission })
   }
 
-  revokePermission = permissionId => {
-    console.log('Revoke permission', permissionId)
+  revokePermission = ({ entityAddress, proxyAddress, role }) => {
+    const { acl, walletWeb3, account } = this.props
+
+    const contract = acl.contract
+    // const contract = new walletWeb3.eth.Contract(
+    //   acl.contract.options.jsonInterface,
+    //   acl.address
+    // )
+
+    contract.methods
+      .revokePermission(entityAddress, proxyAddress, role.bytes)
+      .send({ from: account })
   }
 
   closePermissionPanel = () => {
@@ -183,10 +188,9 @@ class Permissions extends React.Component {
           appBar={
             <AppBar
               endContent={
-                null
-                /* <Button mode="strong" onClick={this.createPermission}>
+                <Button mode="strong" onClick={this.createPermission}>
                   Add permission
-                </Button> */
+                </Button>
               }
             >
               <NavigationBar items={navigationItems} onBack={this.goToHome} />

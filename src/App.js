@@ -186,6 +186,10 @@ class App extends React.Component {
           resolveRole: roleResolver(apps),
         })
       },
+      onAcl: acl => {
+        log('ACL received', acl)
+        this.setState({ acl })
+      },
       onPermissions: permissions => {
         log('permissions received', permissions)
         this.setState({
@@ -238,6 +242,7 @@ class App extends React.Component {
       permissionsLoading,
       resolveEntity,
       resolveRole,
+      acl,
     } = this.state
     const { mode } = locator
     if (!mode) return null
@@ -262,6 +267,7 @@ class App extends React.Component {
           connected={connected}
           resolveEntity={resolveEntity}
           resolveRole={resolveRole}
+          acl={acl}
         />
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}

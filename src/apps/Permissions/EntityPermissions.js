@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  // Button,
+  Button,
   Table,
   TableCell,
   TableHeader,
@@ -57,8 +57,8 @@ class EntityPermissions extends React.PureComponent {
               <TableRow>
                 <TableHeader title="App" />
                 <TableHeader title="Action" />
-                <TableHeader title="Role identifier" align="right" />
-                {/* <TableHeader /> */}
+                <TableHeader title="Role identifier" />
+                <TableHeader />
               </TableRow>
             }
           >
@@ -98,10 +98,8 @@ class Row extends React.Component {
         <TableCell>
           <Text weight="bold">{action}</Text>
         </TableCell>
-        <TableCell title={roleBytes} align="right">
-          {id}
-        </TableCell>
-        {/* <TableCell align="right">
+        <TableCell title={roleBytes}>{id}</TableCell>
+        <TableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -110,7 +108,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell> */}
+        </TableCell>
       </TableRow>
     )
   }
