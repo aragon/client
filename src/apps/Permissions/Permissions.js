@@ -98,7 +98,7 @@ class Permissions extends React.Component {
   }
 
   revokePermission = ({ entityAddress, proxyAddress, role }) => {
-    const { acl, walletWeb3, account } = this.props
+    const { acl, /* walletWeb3, */ account } = this.props
 
     const contract = acl.contract
     // const contract = new walletWeb3.eth.Contract(
