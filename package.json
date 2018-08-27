@@ -70,7 +70,6 @@
     "find-pkg": "^1.0.0",
     "parcel-bundler": "^1.9.7",
     "prettier": "^1.11.1",
-    "react-scripts": "^2.0.0-next.9754a231",
     "webpack-bundle-analyzer": "^2.11.1"
   },
   "scripts": {
