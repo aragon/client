@@ -170,7 +170,7 @@ class Wrapper extends React.Component {
       locator: { instanceId, params },
     } = this.props
     return (
-      <>
+      <React.Fragment>
         <Main>
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
@@ -197,7 +197,7 @@ class Wrapper extends React.Component {
             {...web3Action}
           />
         </SidePanel>
-      </>
+      </React.Fragment>
     )
   }
   renderApp(instanceId, params) {

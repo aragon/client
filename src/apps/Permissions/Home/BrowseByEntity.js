@@ -24,7 +24,7 @@ class BrowseByEntity extends React.Component {
         {loading ? (
           <EmptyBlock>Loading permissions…</EmptyBlock>
         ) : (
-          <>
+          <React.Fragment>
             <Table
               header={
                 <TableRow>
@@ -74,7 +74,7 @@ class BrowseByEntity extends React.Component {
                   />
                 ))}
             </Table>
-          </>
+          </React.Fragment>
         )}
       </Section>
     )
