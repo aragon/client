@@ -74,12 +74,12 @@
     "webpack-bundle-analyzer": "^2.11.1"
   },
   "scripts": {
-    "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./dist",
-    "start": "npm run ui-assets && parcel serve src/index.html --out-dir ./dist",
+    "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./build",
+    "start": "npm run ui-assets && parcel serve src/index.html --out-dir ./build",
     "start:local": "scripts/launch-local.sh",
     "start:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm start",
     "start:rinkeby": "npm start",
-    "build": "npm run ui-assets && PUBLIC_URL=/ react-scripts build && npm run copy-apm-artifacts",
+    "build": "npm run ui-assets && parcel build src/index.html --out-dir ./build && npm run copy-apm-artifacts",
     "build:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm run build",
     "build:mainnet-infura": "REACT_APP_DEFAULT_ETH_NODE=wss://mainnet.infura.io/_ws npm run build:mainnet",
     "build:rinkeby": "npm run build",
