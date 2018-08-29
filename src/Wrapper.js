@@ -245,6 +245,7 @@ class Wrapper extends React.Component {
           resolveRole={resolveRole}
           walletWeb3={walletWeb3}
           account={account}
+          wrapper={wrapper}
         />
       )
     }

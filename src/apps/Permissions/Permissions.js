@@ -97,7 +97,7 @@ class Permissions extends React.Component {
     // this.setState({ showPermissionPanel: true, editPermission: permission })
   }
 
-  revokePermission = ({ entityAddress, proxyAddress, role }) => {
+  revokePermission = async ({ entityAddress, proxyAddress, role }) => {
     const { acl, /* walletWeb3, */ account } = this.props
 
     const contract = acl.contract
@@ -106,9 +106,23 @@ class Permissions extends React.Component {
     //   acl.address
     // )
 
-    contract.methods
-      .revokePermission(entityAddress, proxyAddress, role.bytes)
-      .send({ from: account })
+    // contract.methods
+    //   .revokePermission(entityAddress, proxyAddress, role.bytes)
+    //   .send({ from: account })
+
+    const { wrapper } = this.props
+
+    const transaction = await wrapper.performACLIntent('revokePermission', [
+      entityAddress,
+      proxyAddress,
+      role.bytes,
+    ])
+
+    // console.log(paths, 'revokePermission', [
+    //   entityAddress,
+    //   proxyAddress,
+    //   role.bytes,
+    // ])
   }
 
   closePermissionPanel = () => {
@@ -188,7 +202,11 @@ class Permissions extends React.Component {
           appBar={
             <AppBar
               endContent={
-                <Button mode="strong" onClick={this.createPermission}>
+                <Button
+                  mode="strong"
+                  onClick={this.createPermission}
+                  disabled={appsLoading || permissionsLoading}
+                >
                   Add permission
                 </Button>
               }
