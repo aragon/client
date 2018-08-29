@@ -97,7 +97,7 @@ class Permissions extends React.Component {
     // this.setState({ showPermissionPanel: true, editPermission: permission })
   }
 
-  revokePermission = async ({ entityAddress, proxyAddress, role }) => {
+  revokePermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
     const { acl, /* walletWeb3, */ account } = this.props
 
     const contract = acl.contract
@@ -115,7 +115,7 @@ class Permissions extends React.Component {
     const transaction = await wrapper.performACLIntent('revokePermission', [
       entityAddress,
       proxyAddress,
-      role.bytes,
+      roleBytes,
     ])
 
     // console.log(paths, 'revokePermission', [

@@ -92,7 +92,7 @@ class AppPermissions extends React.PureComponent {
 class Row extends React.Component {
   handleRevoke = () => {
     const { onRevoke, role, entity, proxyAddress } = this.props
-    onRevoke({ proxyAddress, role, entityAddress: entity.address })
+    onRevoke({ proxyAddress, roleBytes: role.bytes, entityAddress: entity.address })
   }
   renderEntity() {
     const { entity } = this.props

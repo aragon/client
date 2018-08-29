@@ -42,7 +42,7 @@ class EntityPermissions extends React.PureComponent {
     )
   }
   render() {
-    const { loading, onRevoke, title = 'Permissions' } = this.props
+    const { address, loading, onRevoke, title = 'Permissions' } = this.props
     const roles = this.getRoles()
 
     return (
@@ -65,6 +65,7 @@ class EntityPermissions extends React.PureComponent {
             {roles.map(({ role, roleBytes, roleFrom, proxyAddress }, i) => (
               <Row
                 key={i}
+                entityAddress={address}
                 id={(role && role.id) || 'Unknown'}
                 roleBytes={roleBytes}
                 action={(role && role.name) || 'Unknown'}
@@ -82,7 +83,9 @@ class EntityPermissions extends React.PureComponent {
 
 class Row extends React.Component {
   handleRevoke = () => {
-    this.props.onRevoke(this.props.id)
+    const { entityAddress, onRevoke, roleBytes, proxyAddress } = this.props
+    const role = { bytes: roleBytes }
+    onRevoke({ entityAddress, proxyAddress, roleBytes })
   }
   render() {
     const { action, id, roleBytes, app, proxyAddress } = this.props
