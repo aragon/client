@@ -91,19 +91,18 @@ class Wrapper extends React.Component {
       transaction,
     }
   }
-  reshapeTransactionBag(bag) {
+  reshapeTransactionBag({ path, transaction }) {
     // This is a temporary method to reshape the transaction bag
     // to the future format we expect from Aragon.js
     // When Aragon.js starts returning the new format, we can simply
     // replace search and replace this function with `bag`, although
     // it is probably only used in `handleTransaction`
-    const transaction = bag.path[bag.path.length - 1]
-    const direct = bag.path.length === 1
+    const direct = path.length === 1
 
     return {
-      direct,
-      intent: this.makeTransactionIntent(transaction),
-      paths: direct ? [] : [bag.path],
+      direct: path.length === 1,
+      intent: transaction && this.makeTransactionIntent(transaction),
+      paths: path.length ? [path] : [],
     }
   }
   handleTransaction = bag => {
