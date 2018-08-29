@@ -47,7 +47,7 @@ class AppPermissions extends React.PureComponent {
     const roles = this.getRoles()
 
     return (
-      <>
+      <React.Fragment>
         <Section title="Permissions set on this app">
           {roles === null || loading ? (
             <EmptyBlock>Loading app permissions…</EmptyBlock>
@@ -84,7 +84,7 @@ class AppPermissions extends React.PureComponent {
           resolveEntity={resolveEntity}
           onRevoke={onRevoke}
         />
-      </>
+      </React.Fragment>
     )
   }
 }

@@ -6,37 +6,37 @@ const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
 const IPFS_GATEWAY = 'IPFS_GATEWAY'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 
-const CONFIGURATION_KEYS = [
-  ASSET_BRIDGE,
-  DEFAULT_ETH_NODE,
-  ENS_REGISTRY_ADDRESS,
-  ETH_NETWORK_TYPE,
-  IPFS_GATEWAY,
-  SELECTED_CURRENCY,
+// process.env vars have to be declared statically (to be replaced by parcel).
+const CONFIGURATION_VARS = [
+  [ASSET_BRIDGE, process.env.REACT_APP_ASSET_BRIDGE],
+  [DEFAULT_ETH_NODE, process.env.REACT_APP_DEFAULT_ETH_NODE],
+  [ENS_REGISTRY_ADDRESS, process.env.REACT_APP_ENS_REGISTRY_ADDRESS],
+  [ETH_NETWORK_TYPE, process.env.REACT_APP_ETH_NETWORK_TYPE],
+  [IPFS_GATEWAY, process.env.REACT_APP_IPFS_GATEWAY],
+  [SELECTED_CURRENCY, process.env.REACT_APP_SELECTED_CURRENCY],
 ].reduce(
-  (acc, option) => ({
+  (acc, [option, envValue]) => ({
     ...acc,
     [option]: {
       storageKey: `${option}_KEY`,
-      // REACT_APP_ prefix required for react-scripts
-      environmentKey: `REACT_APP_${option}`,
+      envValue: envValue || null,
     },
   }),
   {}
 )
 
 function getLocalSetting(confKey, settingDefault) {
-  const keys = CONFIGURATION_KEYS[confKey]
+  const confVar = CONFIGURATION_VARS[confKey]
   return (
-    window.localStorage.getItem(keys.storageKey) ||
-    process.env[keys.environmentKey] ||
+    window.localStorage.getItem(confVar.storageKey) ||
+    confVar.envValue ||
     settingDefault
   )
 }
 
 function setLocalSetting(confKey, setting) {
-  const keys = CONFIGURATION_KEYS[confKey]
-  return window.localStorage.setItem(keys.storageKey, setting)
+  const confVar = CONFIGURATION_VARS[confKey]
+  return window.localStorage.setItem(confVar.storageKey, setting)
 }
 
 export function getAssetBridge() {
