@@ -78,6 +78,7 @@ class AppPermissions extends React.PureComponent {
         </Section>
         <EntityPermissions
           title="Permissions granted to this app"
+          noPermissionsLabel="No permissions granted."
           loading={loading}
           address={address}
           permissions={permissions}
@@ -94,7 +95,11 @@ class AppPermissions extends React.PureComponent {
 class Row extends React.Component {
   handleRevoke = () => {
     const { onRevoke, role, entity, proxyAddress } = this.props
-    onRevoke({ proxyAddress, roleBytes: role.bytes, entityAddress: entity.address })
+    onRevoke({
+      proxyAddress,
+      roleBytes: role.bytes,
+      entityAddress: entity.address,
+    })
   }
   renderEntity() {
     const { entity } = this.props

@@ -42,14 +42,21 @@ class EntityPermissions extends React.PureComponent {
     )
   }
   render() {
-    const { address, loading, onRevoke, title = 'Permissions' } = this.props
+    const {
+      address,
+      loading,
+      onRevoke,
+      title = 'Permissions',
+      noPermissionsLabel = 'No permissions set.',
+      loadPermissionsLabel = 'Loading entity permissions…',
+    } = this.props
     const roles = this.getRoles()
 
     return (
       <Section title={title}>
         {loading || roles === null ? (
           <EmptyBlock>
-            {loading ? 'Loading entity permissions…' : 'No permissions set.'}
+            {loading ? loadPermissionsLabel : noPermissionsLabel}
           </EmptyBlock>
         ) : (
           <Table
