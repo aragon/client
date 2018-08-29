@@ -49,8 +49,10 @@ class AppPermissions extends React.PureComponent {
     return (
       <React.Fragment>
         <Section title="Permissions set on this app">
-          {roles === null || loading ? (
-            <EmptyBlock>Loading app permissions…</EmptyBlock>
+          {loading || roles === null || roles.length === 0 ? (
+            <EmptyBlock>
+              {loading ? 'Loading app permissions…' : 'No permissions set.'}
+            </EmptyBlock>
           ) : (
             <Table
               header={

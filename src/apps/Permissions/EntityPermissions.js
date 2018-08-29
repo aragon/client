@@ -49,7 +49,7 @@ class EntityPermissions extends React.PureComponent {
       <Section title={title}>
         {loading || roles === null ? (
           <EmptyBlock>
-            {loading ? 'Loading entity permissions…' : 'No permissions.'}
+            {loading ? 'Loading entity permissions…' : 'No permissions set.'}
           </EmptyBlock>
         ) : (
           <Table
