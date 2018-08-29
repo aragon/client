@@ -1,5 +1,4 @@
 import React from 'react'
-import memoize from 'memoize-one'
 import { noop } from '../utils'
 
 // Tries to load an image, while displaying an alternative.
@@ -7,31 +6,52 @@ import { noop } from '../utils'
 class RemoteImage extends React.Component {
   static defaultProps = {
     src: '',
-
     render: null, // render is an alias of children and takes priority
     children: noop,
   }
+
   state = { exists: false }
 
-  updateSrc = memoize(src => {
+  componentDidMount() {
+    this.startLoading()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.src !== this.props.src) {
+      this.startLoading()
+    }
+  }
+
+  componentWillUnmount() {
+    this.stopLoading()
+  }
+
+  startLoading() {
+    const { src } = this.props
+    this.stopLoading()
     this.setState(() => {
       this._img = new Image()
-      this._img.onload = () => {
-        this.setState({ exists: true })
-      }
+      this._img.addEventListener('load', this.handleLoad)
       this._img.src = src
-
       return { exists: false }
     })
-  })
+  }
+
+  stopLoading() {
+    if (this._img) {
+      this._img.removeEventListener('load', this.handleLoad)
+      this._img = null
+    }
+  }
+
+  handleLoad = () => {
+    this.stopLoading() // no need to keep the image around
+    this.setState({ exists: true })
+  }
 
   render() {
     const { exists } = this.state
     const { src, render, children } = this.props
-
-    // memoized, safe to be called here
-    this.updateSrc(src)
-
     return (render || children)({ exists })
   }
 }

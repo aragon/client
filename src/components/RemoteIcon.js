@@ -8,18 +8,27 @@ class RemoteIcon extends React.Component {
   static defaultProps = {
     src: '',
     alt: '',
+    size: 22,
 
     render: null, // render is an alias of children and takes priority
-    children: ({ alt, src }) => <img alt={alt} src={src} />,
+    children: ({ src, alt, size }) => (
+      <img src={src} alt={alt} width={size} height={size} />
+    ),
   }
 
   render() {
-    const { alt, src, render, children } = this.props
+    const { src, alt, size, render, children } = this.props
     const renderIcon = render || children
 
     return (
       <RemoteImage src={src}>
-        {({ exists }) => (exists ? renderIcon({ alt, src }) : <IconBlank />)}
+        {({ exists }) =>
+          exists ? (
+            renderIcon({ src, alt, size })
+          ) : (
+            <IconBlank width={size} height={size} />
+          )
+        }
       </RemoteImage>
     )
   }
