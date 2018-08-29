@@ -15,6 +15,7 @@ import { lerp } from '../../math-utils'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
+import RemoteIcon from '../RemoteIcon'
 
 import logo from './assets/logo.svg'
 
@@ -39,8 +40,7 @@ const prepareAppGroups = apps =>
         appId: app.appId,
         name: app.name,
         icon: (
-          <img
-            alt=""
+          <RemoteIcon
             src={`${resolvePathname('images/icon.svg', app.baseUrl)}`}
           />
         ),
