@@ -91,7 +91,6 @@ class EntityPermissions extends React.PureComponent {
 class Row extends React.Component {
   handleRevoke = () => {
     const { entityAddress, onRevoke, roleBytes, proxyAddress } = this.props
-    const role = { bytes: roleBytes }
     onRevoke({ entityAddress, proxyAddress, roleBytes })
   }
   render() {

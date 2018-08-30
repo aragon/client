@@ -98,31 +98,13 @@ class Permissions extends React.Component {
   }
 
   revokePermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
-    const { acl, /* walletWeb3, */ account } = this.props
-
-    const contract = acl.contract
-    // const contract = new walletWeb3.eth.Contract(
-    //   acl.contract.options.jsonInterface,
-    //   acl.address
-    // )
-
-    // contract.methods
-    //   .revokePermission(entityAddress, proxyAddress, role.bytes)
-    //   .send({ from: account })
-
-    const { wrapper } = this.props
-
-    const transaction = await wrapper.performACLIntent('revokePermission', [
+    const { performACLIntent } = this.props.wrapper
+    const transaction = await performACLIntent('revokePermission', [
       entityAddress,
       proxyAddress,
       roleBytes,
     ])
-
-    // console.log(paths, 'revokePermission', [
-    //   entityAddress,
-    //   proxyAddress,
-    //   role.bytes,
-    // ])
+    console.log('TX', transaction)
   }
 
   closePermissionPanel = () => {

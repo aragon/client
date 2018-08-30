@@ -88,7 +88,6 @@ export const appRoles = (
       []
     )
     .filter(Boolean)
-  
 
 // Returns a function that resolves a role
 // using the provided apps, and caching the result.
