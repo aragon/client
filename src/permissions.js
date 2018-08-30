@@ -48,9 +48,9 @@ export function permissionsByEntity(permissions) {
   // apps
   for (const [app, appPermissions] of Object.entries(permissions)) {
     // roles
-    for (const [role, entities] of Object.entries(appPermissions)) {
+    for (const [role, { allowedEntities }] of Object.entries(appPermissions)) {
       // entities
-      for (const entity of entities) {
+      for (const entity of allowedEntities) {
         if (!results[entity]) {
           results[entity] = {}
         }
@@ -83,11 +83,12 @@ export const appRoles = (
 ) =>
   Object.entries(permissions[app.proxyAddress])
     .reduce(
-      (roles, [role, entities]) =>
-        roles.concat(entities.map(entity => transform(entity, role))),
+      (roles, [role, { allowedEntities }]) =>
+        roles.concat(allowedEntities.map(entity => transform(entity, role))),
       []
     )
     .filter(Boolean)
+  
 
 // Returns a function that resolves a role
 // using the provided apps, and caching the result.
