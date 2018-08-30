@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Text, Card, Badge, theme, unselectable } from '@aragon/ui'
+import { appIconUrl } from '../../utils'
 import { shortenAddress } from '../../web3-utils'
-import AppIcon from './AppIcon'
+import RemoteIcon from '../../components/RemoteIcon'
 
 class AppCard extends React.PureComponent {
   handleClick = () => {
@@ -16,7 +17,7 @@ class AppCard extends React.PureComponent {
     return (
       <Main onClick={this.handleClick}>
         <Icon>
-          <AppIcon app={app} />
+          <RemoteIcon size={28} src={appIconUrl(app)} />
         </Icon>
         <Name>{name}</Name>
         <IdentifierWrapper>
@@ -46,9 +47,6 @@ const Main = styled(Card).attrs({ width: '100%', height: '180px' })`
 const Icon = styled.div`
   height: 28px;
   margin-bottom: 5px;
-  img {
-    display: block;
-  }
 `
 
 const Name = styled.p`

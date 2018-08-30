@@ -2,8 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Badge } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
-import AppIcon from './AppIcon'
+import { appIconUrl } from '../../utils'
 import AppIconKernel from './AppIconKernel'
+import RemoteIcon from '../../components/RemoteIcon'
 
 class AppInstanceLabel extends React.PureComponent {
   renderIcon() {
@@ -18,7 +19,7 @@ class AppInstanceLabel extends React.PureComponent {
     if (app && app.baseUrl) {
       return (
         <Icon>
-          <AppIcon app={app} />
+          <RemoteIcon size={28} src={appIconUrl(app)} />
         </Icon>
       )
     }
@@ -51,6 +52,7 @@ const AppName = styled.span`
 `
 
 const Icon = styled.span`
+  display: flex;
   margin-right: 10px;
 `
 
