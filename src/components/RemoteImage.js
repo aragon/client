@@ -51,7 +51,7 @@ class RemoteImage extends React.Component {
 
   render() {
     const { exists } = this.state
-    const { src, render, children } = this.props
+    const { render, children } = this.props
     return (render || children)({ exists })
   }
 }
