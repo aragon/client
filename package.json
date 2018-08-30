@@ -34,7 +34,6 @@
     "lodash.memoize": "^4.1.2",
     "lodash.throttle": "^4.1.1",
     "lodash.uniqby": "^4.7.0",
-    "memoize-one": "^4.0.0",
     "onecolor": "^3.0.5",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
