@@ -10,81 +10,67 @@ import {
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
-import {
-  entityRoles,
-  permissionsByEntity as byEntity,
-  getKnownRole,
-} from '../../permissions'
+import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { getKnownRole } from '../../permissions'
 
 class EntityPermissions extends React.PureComponent {
-  getRoles() {
-    const { address, permissions, resolveEntity, resolveRole } = this.props
-
-    if (!permissions || !resolveEntity) {
-      return null
-    }
-
-    return entityRoles(
-      address,
-      byEntity(permissions),
-      (roleBytes, proxyAddress) => ({
-        role: resolveRole(proxyAddress, roleBytes),
-        roleFrom: resolveEntity(proxyAddress),
-        proxyAddress,
-        roleBytes,
-      })
-    )
-  }
   render() {
     const {
       address,
       loading,
-      onRevoke,
       title = 'Permissions',
       noPermissionsLabel = 'No permissions set.',
       loadPermissionsLabel = 'Loading entity permissions…',
     } = this.props
-    const roles = this.getRoles()
 
     return (
-      <Section title={title}>
-        {loading || roles === null ? (
-          <EmptyBlock>
-            {loading ? loadPermissionsLabel : noPermissionsLabel}
-          </EmptyBlock>
-        ) : (
-          <Table
-            header={
-              <TableRow>
-                <TableHeader title="App" />
-                <TableHeader title="Action" />
-                <TableHeader title="Role identifier" />
-                <TableHeader />
-              </TableRow>
-            }
-          >
-            {roles.map(({ role, roleBytes, roleFrom, proxyAddress }, i) => (
-              <Row
-                key={i}
-                entityAddress={address}
-                id={(role && role.id) || 'Unknown'}
-                roleBytes={roleBytes}
-                action={(role && role.name) || 'Unknown'}
-                app={roleFrom.app}
-                proxyAddress={proxyAddress}
-                onRevoke={onRevoke}
-              />
-            ))}
-          </Table>
-        )}
-      </Section>
+      <PermissionsConsumer>
+        {({ revokePermission, getEntityRoles }) => {
+          const roles = getEntityRoles(address)
+          return (
+            <Section title={title}>
+              {loading || roles === null ? (
+                <EmptyBlock>
+                  {loading ? loadPermissionsLabel : noPermissionsLabel}
+                </EmptyBlock>
+              ) : (
+                <Table
+                  header={
+                    <TableRow>
+                      <TableHeader title="App" />
+                      <TableHeader title="Action" />
+                      <TableHeader title="Role identifier" />
+                      <TableHeader />
+                    </TableRow>
+                  }
+                >
+                  {roles.map(
+                    ({ role, roleBytes, roleFrom, proxyAddress }, i) => (
+                      <Row
+                        key={i}
+                        entityAddress={address}
+                        id={(role && role.id) || 'Unknown'}
+                        roleBytes={roleBytes}
+                        action={(role && role.name) || 'Unknown'}
+                        app={roleFrom.app}
+                        proxyAddress={proxyAddress}
+                        onRevoke={revokePermission}
+                      />
+                    )
+                  )}
+                </Table>
+              )}
+            </Section>
+          )
+        }}
+      </PermissionsConsumer>
     )
   }
 }
 
 class Row extends React.Component {
   handleRevoke = () => {
-    const { entityAddress, onRevoke, roleBytes, proxyAddress } = this.props
+    const { onRevoke, entityAddress, proxyAddress, roleBytes } = this.props
     onRevoke({ entityAddress, proxyAddress, roleBytes })
   }
   render() {

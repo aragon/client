@@ -1,44 +1,55 @@
 import React from 'react'
-import { SidePanel, DropDown, Info, Field, TextInput, Button } from '@aragon/ui'
+import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
+import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class PermissionPanel extends React.PureComponent {
   render() {
     const { permission, onClose, opened } = this.props
     const mode = permission === true ? 'add' : 'edit'
+
     return (
       <SidePanel
         title={mode === 'add' ? 'Add permission' : 'Modify permission'}
         opened={opened}
         onClose={onClose}
       >
-        {permission && (
-          <React.Fragment>
-            <Field label="Action">
-              {mode === 'add' ? (
-                <DropDown items={['Assign tokens']} wide />
-              ) : (
-                <p style={{ marginTop: '10px' }}>{permission.actionName}</p>
-              )}
-            </Field>
-            <Field label="Allowed for">
-              <DropDown items={['Voting']} wide />
-            </Field>
-            <Field label="Parameters">
-              <TextInput wide />
-            </Field>
-            <Field label="Editable by">
-              <DropDown items={['Voting']} wide />
-            </Field>
+        <PermissionsConsumer>
+          {({ permissions }) => {
+            return (
+              permission && (
+                <React.Fragment>
+                  <Field label="Action">
+                    {mode === 'add' ? (
+                      <DropDown items={['Assign tokens']} wide />
+                    ) : (
+                      <p style={{ marginTop: '10px' }}>
+                        {permission.actionName}
+                      </p>
+                    )}
+                  </Field>
+                  <Field label="Allowed for">
+                    <DropDown items={['Voting']} wide />
+                  </Field>
+                  <Field label="Editable by">
+                    <DropDown items={['Voting']} wide />
+                  </Field>
 
-            <Field>
-              <Button mode="strong" wide onClick={onClose}>
-                {mode === 'add' ? 'Add permission' : 'Modify permission'}
-              </Button>
-            </Field>
+                  <Field>
+                    <Button mode="strong" wide onClick={onClose}>
+                      {mode === 'add' ? 'Add permission' : 'Modify permission'}
+                    </Button>
+                  </Field>
 
-            {mode === 'add' ? <AddPermissionInfo /> : <EditPermissionInfo />}
-          </React.Fragment>
-        )}
+                  {mode === 'add' ? (
+                    <AddPermissionInfo />
+                  ) : (
+                    <EditPermissionInfo />
+                  )}
+                </React.Fragment>
+              )
+            )
+          }}
+        </PermissionsConsumer>
       </SidePanel>
     )
   }

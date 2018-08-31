@@ -3,79 +3,45 @@ import { Table, TableHeader, TableRow } from '@aragon/ui'
 import Section from '../Section'
 import EmptyBlock from '../EmptyBlock'
 import EntityRow from './EntityRow'
-import {
-  entityRoles,
-  permissionsByEntity as byEntity,
-} from '../../../permissions'
+import { PermissionsConsumer } from '../../../contexts/PermissionsContext'
 
 class BrowseByEntity extends React.Component {
   render() {
-    const {
-      loading,
-      permissions,
-      onOpenEntity,
-      resolveEntity,
-      resolveRole,
-    } = this.props
-    const permissionsByEntity = byEntity(permissions)
+    const { loading, onOpenEntity } = this.props
     return (
-      <Section title="Browse by entity">
-        {loading ? (
-          <EmptyBlock>Loading permissions…</EmptyBlock>
-        ) : (
-          <React.Fragment>
-            <Table
-              header={
-                <TableRow>
-                  <TableHeader title="Entity" />
-                  <TableHeader title="Type" />
-                  <TableHeader title="Roles" />
-                  <TableHeader title="" />
-                </TableRow>
-              }
-            >
-              {Object.entries(permissionsByEntity)
-                .map(([entityAddress, apps]) => {
-                  const entity = resolveEntity(entityAddress)
-
-                  const roles = entityRoles(
-                    entityAddress,
-                    permissionsByEntity,
-                    (roleBytes, proxyAddress) => ({
-                      role: resolveRole(proxyAddress, roleBytes),
-                      appEntity: resolveEntity(proxyAddress),
-                      proxyAddress,
-                      roleBytes,
-                    })
-                  )
-
-                  return {
-                    entity,
-                    entityAddress,
-                    roles,
+      <PermissionsConsumer>
+        {({ getRolesByEntity }) => (
+          <Section title="Browse by entity">
+            {loading ? (
+              <EmptyBlock>Loading permissions…</EmptyBlock>
+            ) : (
+              <React.Fragment>
+                <Table
+                  header={
+                    <TableRow>
+                      <TableHeader title="Entity" />
+                      <TableHeader title="Type" />
+                      <TableHeader title="Roles" />
+                      <TableHeader title="" />
+                    </TableRow>
                   }
-                })
-                .sort((a, b) => {
-                  if (a.entity && a.entity.type === 'any') {
-                    return -1
-                  }
-                  if (b.entity && b.entity.type === 'any') {
-                    return 1
-                  }
-                  return 0
-                })
-                .map(({ entity, entityAddress, roles }) => (
-                  <EntityRow
-                    key={entityAddress}
-                    entity={entity}
-                    roles={roles}
-                    onOpen={onOpenEntity}
-                  />
-                ))}
-            </Table>
-          </React.Fragment>
+                >
+                  {getRolesByEntity().map(
+                    ({ entity, entityAddress, roles }) => (
+                      <EntityRow
+                        key={entityAddress}
+                        entity={entity}
+                        roles={roles}
+                        onOpen={onOpenEntity}
+                      />
+                    )
+                  )}
+                </Table>
+              </React.Fragment>
+            )}
+          </Section>
         )}
-      </Section>
+      </PermissionsConsumer>
     )
   }
 }

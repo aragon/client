@@ -7,16 +7,10 @@ class Home extends React.Component {
     const {
       apps,
       appsLoading,
-      permissions,
       permissionsLoading,
       onOpenApp,
       onOpenEntity,
-      resolveEntity,
-      resolveRole,
     } = this.props
-
-    const entitiesLoading =
-      appsLoading || permissionsLoading || !resolveEntity || !resolveRole
 
     return (
       <React.Fragment>
@@ -26,10 +20,7 @@ class Home extends React.Component {
           onOpenApp={onOpenApp}
         />
         <BrowseByEntity
-          permissions={permissions}
-          resolveEntity={resolveEntity}
-          resolveRole={resolveRole}
-          loading={entitiesLoading}
+          loading={appsLoading || permissionsLoading}
           onOpenEntity={onOpenEntity}
         />
       </React.Fragment>

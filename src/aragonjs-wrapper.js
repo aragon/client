@@ -285,7 +285,6 @@ const initWrapper = async (
     ipfsConf = ipfsDefaultConf,
     onError = noop,
     onApps = noop,
-    onAcl = noop,
     onPermissions = noop,
     onForwarders = noop,
     onTransaction = noop,
@@ -331,8 +330,6 @@ const initWrapper = async (
     }
     throw err
   }
-
-  onAcl(wrapper.aclProxy)
 
   const subscriptions = subscribe(
     wrapper,

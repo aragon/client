@@ -27,7 +27,6 @@ class Wrapper extends React.Component {
     wrapper: null,
     walletWeb3: null,
     web3: null,
-    acl: null,
   }
   state = {
     appInstance: {},
@@ -132,6 +131,7 @@ class Wrapper extends React.Component {
       accept(res)
     })
   }
+
   handleSignerClose = () => {
     this.setState({ signerOpened: false })
   }
@@ -206,7 +206,6 @@ class Wrapper extends React.Component {
     const {
       apps,
       appsLoading,
-      permissions,
       permissionsLoading,
       account,
       walletNetwork,
@@ -214,9 +213,6 @@ class Wrapper extends React.Component {
       wrapper,
       connected,
       daoAddress,
-      resolveEntity,
-      resolveRole,
-      acl,
     } = this.props
 
     if (instanceId === 'home') {
@@ -234,15 +230,10 @@ class Wrapper extends React.Component {
       return (
         <Permissions
           apps={apps}
-          acl={acl}
           appsLoading={appsLoading}
-          permissions={permissions}
           permissionsLoading={permissionsLoading}
-          daoAddress={daoAddress}
           params={params}
           onParamsRequest={this.handleParamsRequest}
-          resolveEntity={resolveEntity}
-          resolveRole={resolveRole}
           walletWeb3={walletWeb3}
           account={account}
           wrapper={wrapper}

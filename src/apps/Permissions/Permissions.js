@@ -8,6 +8,7 @@ import AppPermissions from './AppPermissions'
 import EntityPermissions from './EntityPermissions'
 import NavigationItem from './NavigationItem'
 import PermissionPanel from './PermissionPanel'
+import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class Permissions extends React.Component {
   state = {
@@ -97,23 +98,12 @@ class Permissions extends React.Component {
     // this.setState({ showPermissionPanel: true, editPermission: permission })
   }
 
-  revokePermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
-    const { performACLIntent } = this.props.wrapper
-    const transaction = await performACLIntent('revokePermission', [
-      entityAddress,
-      proxyAddress,
-      roleBytes,
-    ])
-    console.log('TX', transaction)
-  }
-
   closePermissionPanel = () => {
     this.setState({ showPermissionPanel: false })
   }
 
   // Assemble the navigation items
-  getNavigationItems(location) {
-    const { resolveEntity } = this.props
+  getNavigationItems(location, resolveEntity) {
     const items = ['Permissions']
     const openedApp = location.screen === 'app' ? location.app : null
     const openedEntityAddress =
@@ -162,97 +152,89 @@ class Permissions extends React.Component {
   }
 
   render() {
-    const {
-      apps,
-      appsLoading,
-      permissions,
-      permissionsLoading,
-      params,
-      daoAddress,
-      resolveEntity,
-      resolveRole,
-    } = this.props
+    const { apps, appsLoading, permissionsLoading, params } = this.props
     const { editPermission, showPermissionPanel, animateScreens } = this.state
 
     const location = this.getLocation(params)
-    const navigationItems = this.getNavigationItems(location)
 
     return (
-      <React.Fragment>
-        <AppView
-          appBar={
-            <AppBar
-              endContent={
-                <Button
-                  mode="strong"
-                  onClick={this.createPermission}
-                  disabled={appsLoading || permissionsLoading}
-                >
-                  Add permission
-                </Button>
-              }
-            >
-              <NavigationBar items={navigationItems} onBack={this.goToHome} />
-            </AppBar>
-          }
-        >
-          <ScrollTopElement
-            innerRef={el => {
-              this._scrollTopElement = el
-            }}
-          />
+      <PermissionsConsumer>
+        {({ resolveEntity }) => {
+          const navigationItems = this.getNavigationItems(
+            location,
+            resolveEntity
+          )
 
-          <Screen position={0} animate={animateScreens}>
-            {location.screen === 'home' && (
-              <Home
-                apps={apps}
-                appsLoading={appsLoading}
-                permissions={permissions}
-                permissionsLoading={permissionsLoading}
-                onOpenApp={this.handleOpenApp}
-                onOpenEntity={this.handleOpenEntity}
-                resolveEntity={resolveEntity}
-                resolveRole={resolveRole}
+          return (
+            <React.Fragment>
+              <AppView
+                appBar={
+                  <AppBar
+                    endContent={
+                      <Button
+                        mode="strong"
+                        onClick={this.createPermission}
+                        disabled={appsLoading || permissionsLoading}
+                      >
+                        Add permission
+                      </Button>
+                    }
+                  >
+                    <NavigationBar
+                      items={navigationItems}
+                      onBack={this.goToHome}
+                    />
+                  </AppBar>
+                }
+              >
+                <ScrollTopElement
+                  innerRef={el => {
+                    this._scrollTopElement = el
+                  }}
+                />
+
+                <Screen position={0} animate={animateScreens}>
+                  {location.screen === 'home' && (
+                    <Home
+                      apps={apps}
+                      appsLoading={appsLoading}
+                      permissionsLoading={permissionsLoading}
+                      onOpenApp={this.handleOpenApp}
+                      onOpenEntity={this.handleOpenEntity}
+                    />
+                  )}
+                </Screen>
+
+                <Screen position={1} animate={animateScreens}>
+                  {['app', 'entity'].includes(location.screen) && (
+                    <React.Fragment>
+                      {location.screen === 'app' && (
+                        <AppPermissions
+                          app={location.app}
+                          loading={appsLoading}
+                          address={location.address}
+                        />
+                      )}
+                      {location.screen === 'entity' && (
+                        <EntityPermissions
+                          loading={appsLoading || permissionsLoading}
+                          address={location.address}
+                        />
+                      )}
+                    </React.Fragment>
+                  )}
+                </Screen>
+              </AppView>
+
+              <PermissionPanel
+                opened={showPermissionPanel}
+                permission={editPermission}
+                onClose={this.closePermissionPanel}
               />
-            )}
-          </Screen>
-
-          <Screen position={1} animate={animateScreens}>
-            {['app', 'entity'].includes(location.screen) && (
-              <React.Fragment>
-                {location.screen === 'app' && (
-                  <AppPermissions
-                    loading={appsLoading}
-                    app={location.app}
-                    address={location.address}
-                    permissions={permissions}
-                    onRevoke={this.revokePermission}
-                    daoAddress={daoAddress}
-                    resolveRole={resolveRole}
-                    resolveEntity={resolveEntity}
-                  />
-                )}
-                {location.screen === 'entity' && (
-                  <EntityPermissions
-                    loading={appsLoading || permissionsLoading}
-                    address={location.address}
-                    permissions={permissions}
-                    onRevoke={this.revokePermission}
-                    resolveRole={resolveRole}
-                    resolveEntity={resolveEntity}
-                  />
-                )}
-              </React.Fragment>
-            )}
-          </Screen>
-        </AppView>
-
-        <PermissionPanel
-          opened={showPermissionPanel}
-          permission={editPermission}
-          onClose={this.closePermissionPanel}
-        />
-      </React.Fragment>
+            </React.Fragment>
+          )
+        }}
+      </PermissionsConsumer>
     )
   }
 }

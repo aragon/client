@@ -11,76 +11,59 @@ import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import IdentityBadge from '../../components/IdentityBadge'
-import { appRoles } from '../../permissions'
 import EntityPermissions from './EntityPermissions'
+import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class AppPermissions extends React.PureComponent {
-  getRoles() {
-    const { app, loading, permissions, resolveRole, resolveEntity } = this.props
-
-    if (loading || !permissions || !app) {
-      return null
-    }
-
-    return appRoles(app, permissions, (entityAddress, role) => ({
-      role: resolveRole(app.proxyAddress, role),
-      entity: resolveEntity(entityAddress),
-    }))
-  }
   render() {
-    const {
-      loading,
-      permissions,
-      address,
-      daoAddress,
-      resolveRole,
-      resolveEntity,
-      onRevoke,
-    } = this.props
-    const roles = this.getRoles()
-
+    const { app, loading, address } = this.props
     return (
-      <React.Fragment>
-        <Section title="Permissions set on this app">
-          {loading || roles === null || roles.length === 0 ? (
-            <EmptyBlock>
-              {loading ? 'Loading app permissions…' : 'No permissions set.'}
-            </EmptyBlock>
-          ) : (
-            <Table
-              header={
-                <TableRow>
-                  <TableHeader title="Action" />
-                  <TableHeader title="Role identifier" />
-                  <TableHeader title="Allowed for" />
-                  <TableHeader />
-                </TableRow>
-              }
-            >
-              {roles.map(({ role, entity }, i) => (
-                <Row
-                  key={i}
-                  role={role}
-                  entity={entity}
-                  proxyAddress={address}
-                  onRevoke={onRevoke}
-                />
-              ))}
-            </Table>
-          )}
-        </Section>
-        <EntityPermissions
-          title="Permissions granted to this app"
-          noPermissionsLabel="No permissions granted."
-          loading={loading}
-          address={address}
-          permissions={permissions}
-          daoAddress={daoAddress}
-          resolveRole={resolveRole}
-          resolveEntity={resolveEntity}
-          onRevoke={onRevoke}
-        />
-      </React.Fragment>
+      <PermissionsConsumer>
+        {({ revokePermission, getAppRoles }) => {
+          const roles = getAppRoles(app)
+          return (
+            <React.Fragment>
+              <Section title="Permissions set on this app">
+                {loading || roles.length === 0 ? (
+                  <EmptyBlock>
+                    {loading
+                      ? 'Loading app permissions…'
+                      : 'No permissions set.'}
+                  </EmptyBlock>
+                ) : (
+                  <Table
+                    header={
+                      <TableRow>
+                        <TableHeader title="Action" />
+                        <TableHeader title="Role identifier" />
+                        <TableHeader title="Allowed for" />
+                        <TableHeader />
+                      </TableRow>
+                    }
+                  >
+                    {roles.map(({ role, entity }, i) => (
+                      <Row
+                        key={i}
+                        role={role}
+                        entity={entity}
+                        proxyAddress={address}
+                        onRevoke={revokePermission}
+                      />
+                    ))}
+                  </Table>
+                )}
+              </Section>
+              <EntityPermissions
+                title="Permissions granted to this app"
+                noPermissionsLabel="No permissions granted."
+                address={address}
+                loading={loading}
+                onRevoke={revokePermission}
+              />
+            </React.Fragment>
+          )
+        }}
+      </PermissionsConsumer>
     )
   }
 }
