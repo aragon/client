@@ -16,22 +16,15 @@ import EntityPermissions from './EntityPermissions'
 
 class AppPermissions extends React.PureComponent {
   getRoles() {
-    const {
-      app,
-      daoAddress,
-      loading,
-      permissions,
-      resolveRole,
-      resolveEntity,
-    } = this.props
+    const { app, loading, permissions, resolveRole, resolveEntity } = this.props
 
     if (loading || !permissions || !app) {
       return null
     }
 
-    return appRoles(app, permissions, (entity, role) => ({
+    return appRoles(app, permissions, (entityAddress, role) => ({
       role: resolveRole(app.proxyAddress, role),
-      entity: resolveEntity(entity, daoAddress),
+      entity: resolveEntity(entityAddress),
     }))
   }
   render() {

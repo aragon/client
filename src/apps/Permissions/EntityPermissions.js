@@ -18,13 +18,7 @@ import {
 
 class EntityPermissions extends React.PureComponent {
   getRoles() {
-    const {
-      daoAddress,
-      address,
-      permissions,
-      resolveEntity,
-      resolveRole,
-    } = this.props
+    const { address, permissions, resolveEntity, resolveRole } = this.props
 
     if (!permissions || !resolveEntity) {
       return null
@@ -35,7 +29,7 @@ class EntityPermissions extends React.PureComponent {
       byEntity(permissions),
       (roleBytes, proxyAddress) => ({
         role: resolveRole(proxyAddress, roleBytes),
-        roleFrom: resolveEntity(proxyAddress, daoAddress),
+        roleFrom: resolveEntity(proxyAddress),
         proxyAddress,
         roleBytes,
       })

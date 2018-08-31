@@ -113,7 +113,7 @@ class Permissions extends React.Component {
 
   // Assemble the navigation items
   getNavigationItems(location) {
-    const { resolveEntity, daoAddress } = this.props
+    const { resolveEntity } = this.props
     const items = ['Permissions']
     const openedApp = location.screen === 'app' ? location.app : null
     const openedEntityAddress =
@@ -133,8 +133,7 @@ class Permissions extends React.Component {
       ]
     }
 
-    const entity =
-      resolveEntity && resolveEntity(openedEntityAddress, daoAddress)
+    const entity = resolveEntity && resolveEntity(openedEntityAddress)
 
     if (entity && entity.type === 'app') {
       return [
@@ -212,7 +211,6 @@ class Permissions extends React.Component {
                 permissionsLoading={permissionsLoading}
                 onOpenApp={this.handleOpenApp}
                 onOpenEntity={this.handleOpenEntity}
-                daoAddress={daoAddress}
                 resolveEntity={resolveEntity}
                 resolveRole={resolveRole}
               />
@@ -240,7 +238,6 @@ class Permissions extends React.Component {
                     address={location.address}
                     permissions={permissions}
                     onRevoke={this.revokePermission}
-                    daoAddress={daoAddress}
                     resolveRole={resolveRole}
                     resolveEntity={resolveEntity}
                   />

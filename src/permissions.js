@@ -112,11 +112,8 @@ export const roleResolver = (apps = []) =>
 // using the provided apps, and caching the result.
 export const entityResolver = (apps = []) =>
   memoize(
-    (address, daoAddress) => {
+    address => {
       const entity = { address, type: 'address' }
-      if (address === daoAddress) {
-        return { ...entity, type: 'dao' }
-      }
       if (address === ANY_ADDRESS) {
         return { ...entity, type: 'any' }
       }

@@ -14,7 +14,6 @@ class BrowseByEntity extends React.Component {
       loading,
       permissions,
       onOpenEntity,
-      daoAddress,
       resolveEntity,
       resolveRole,
     } = this.props
@@ -37,14 +36,14 @@ class BrowseByEntity extends React.Component {
             >
               {Object.entries(permissionsByEntity)
                 .map(([entityAddress, apps]) => {
-                  const entity = resolveEntity(entityAddress, daoAddress)
+                  const entity = resolveEntity(entityAddress)
 
                   const roles = entityRoles(
                     entityAddress,
                     permissionsByEntity,
                     (roleBytes, proxyAddress) => ({
                       role: resolveRole(proxyAddress, roleBytes),
-                      appEntity: resolveEntity(proxyAddress, daoAddress),
+                      appEntity: resolveEntity(proxyAddress),
                       proxyAddress,
                       roleBytes,
                     })

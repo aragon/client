@@ -11,7 +11,6 @@ class Home extends React.Component {
       permissionsLoading,
       onOpenApp,
       onOpenEntity,
-      daoAddress,
       resolveEntity,
       resolveRole,
     } = this.props
@@ -28,7 +27,6 @@ class Home extends React.Component {
         />
         <BrowseByEntity
           permissions={permissions}
-          daoAddress={daoAddress}
           resolveEntity={resolveEntity}
           resolveRole={resolveRole}
           loading={entitiesLoading}
