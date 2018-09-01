@@ -11,29 +11,17 @@ import { keccak256 } from '../web3-utils'
 
 const { Provider, Consumer } = React.createContext()
 
-// props that are directly converted to state
-const PROPS_TO_STATE = ['apps', 'permissions', 'wrapper']
-
 class PermissionsProvider extends React.Component {
   static getDerivedStateFromProps(props, state) {
-    // Filter the received props
-    const updateEntries = Object.entries(props).filter(
-      ([key, value]) => PROPS_TO_STATE.includes(key) && value !== state[key]
-    )
-
-    if (updateEntries.length === 0) {
+    if (!props.apps || props.apps === state.apps) {
       return null
     }
 
-    const update = objectFromEntries(updateEntries)
-
-    // Update the entity / role resolvers on apps update
-    if (update.apps) {
-      update.resolveEntity = entityResolver(update.apps)
-      update.resolveRole = roleResolver(update.apps)
+    return {
+      apps: props.apps,
+      resolveEntity: entityResolver(props.apps),
+      resolveRole: roleResolver(props.apps),
     }
-
-    return update
   }
 
   async revokePermission({ entityAddress, proxyAddress, roleBytes }) {
@@ -86,7 +74,8 @@ class PermissionsProvider extends React.Component {
 
   // Get the roles assigned to an address
   getEntityRoles(address) {
-    const { permissions, resolveEntity, resolveRole } = this.state
+    const { resolveEntity, resolveRole } = this.state
+    const { permissions } = this.props
     if (!(permissions && resolveEntity && resolveRole)) {
       return []
     }
@@ -104,7 +93,8 @@ class PermissionsProvider extends React.Component {
 
   // Get the roles declared on an app
   getAppRoles(app) {
-    const { permissions, resolveEntity, resolveRole } = this.state
+    const { resolveEntity, resolveRole } = this.state
+    const { permissions } = this.props
     if (!(app && permissions && resolveEntity && resolveRole)) {
       return []
     }
@@ -116,7 +106,8 @@ class PermissionsProvider extends React.Component {
 
   // Get a list of entities with the roles assigned to them
   getRolesByEntity() {
-    const { permissions, resolveEntity, getEntityRoles } = this.state
+    const { resolveEntity, getEntityRoles } = this.state
+    const { permissions } = this.props
 
     if (!(permissions && resolveEntity && getEntityRoles)) {
       return []
@@ -147,16 +138,16 @@ class PermissionsProvider extends React.Component {
     getEntityRoles: this.getEntityRoles.bind(this),
     getAppRoles: this.getAppRoles.bind(this),
     getRolesByEntity: this.getRolesByEntity.bind(this),
-
-    // coming from the props
     apps: {},
-    permissions: {},
-    wrapper: null,
   }
 
   render() {
-    const { children } = this.props
-    return <Provider value={this.state}>{children}</Provider>
+    const { children, permissions, wrapper } = this.props
+    return (
+      <Provider value={{ ...this.state, permissions, wrapper }}>
+        {children}
+      </Provider>
+    )
   }
 }
 
