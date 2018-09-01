@@ -176,14 +176,14 @@ class App extends React.Component {
         this.setState({ web3 })
       },
       onApps: apps => {
-        log('apps received', apps)
+        log('apps updated', apps)
         this.setState({
           apps,
           appsLoading: false,
         })
       },
       onPermissions: permissions => {
-        log('permissions received', permissions)
+        log('permissions updated', permissions)
         this.setState({
           permissions,
           permissionsLoading: false,
