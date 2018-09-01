@@ -92,9 +92,9 @@ class Row extends React.Component {
     return (
       <TableRow>
         <TableCell>
-          <Text weight="bold">{role ? role.name : '?'}</Text>
+          <Text weight="bold">{role ? role.name : 'Unknown'}</Text>
         </TableCell>
-        <TableCell>{role ? role.id : '?'}</TableCell>
+        <TableCell>{role ? role.id : 'Unknown'}</TableCell>
         <TableCell>{this.renderEntity()}</TableCell>
         <TableCell align="right">
           <Button
