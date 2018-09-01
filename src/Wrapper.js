@@ -98,8 +98,6 @@ class Wrapper extends React.Component {
     // When Aragon.js starts returning the new format, we can simply
     // replace search and replace this function with `bag`, although
     // it is probably only used in `handleTransaction`
-    const direct = path.length === 1
-
     return {
       direct: path.length === 1,
       intent: transaction && this.makeTransactionIntent(transaction),
