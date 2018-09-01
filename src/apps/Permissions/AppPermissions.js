@@ -88,15 +88,13 @@ class Row extends React.Component {
     return <IdentityBadge entity={entity.address} />
   }
   render() {
-    const {
-      role: { name, id },
-    } = this.props
+    const { role } = this.props
     return (
       <TableRow>
         <TableCell>
-          <Text weight="bold">{name}</Text>
+          <Text weight="bold">{role ? role.name : '?'}</Text>
         </TableCell>
-        <TableCell>{id}</TableCell>
+        <TableCell>{role ? role.id : '?'}</TableCell>
         <TableCell>{this.renderEntity()}</TableCell>
         <TableCell align="right">
           <Button

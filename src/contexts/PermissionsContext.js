@@ -6,7 +6,8 @@ import {
   entityRoles,
   permissionsByEntity,
 } from '../permissions'
-import { objectFromEntries } from '../utils'
+import { objectFromEntries, log } from '../utils'
+import { keccak256 } from '../web3-utils'
 
 const { Provider, Consumer } = React.createContext()
 
@@ -45,7 +46,42 @@ class PermissionsProvider extends React.Component {
       proxyAddress,
       roleBytes,
     ])
-    console.log('TX', transaction)
+    log('revoke tx:', transaction)
+  }
+
+  // create (set a manager) and grant a permission
+  async createPermission({
+    entityAddress,
+    proxyAddress,
+    roleId = '',
+    roleBytes = null,
+    manager,
+  }) {
+    const { wrapper } = this.props
+    if (wrapper === null) {
+      return
+    }
+    const transaction = await wrapper.performACLIntent('createPermission', [
+      entityAddress,
+      proxyAddress,
+      roleBytes || keccak256(roleId.trim()),
+      manager,
+    ])
+    log('create tx:', transaction)
+  }
+
+  // grant a permission
+  async grantPermission({ entityAddress, proxyAddress, roleBytes }) {
+    const { wrapper } = this.props
+    if (wrapper === null) {
+      return
+    }
+    const transaction = await wrapper.performACLIntent('grantPermission', [
+      entityAddress,
+      proxyAddress,
+      roleBytes,
+    ])
+    log('grant tx:', transaction)
   }
 
   // Get the roles assigned to an address
@@ -106,6 +142,8 @@ class PermissionsProvider extends React.Component {
   state = {
     roles: [],
     revokePermission: this.revokePermission.bind(this),
+    createPermission: this.createPermission.bind(this),
+    grantPermission: this.grantPermission.bind(this),
     getEntityRoles: this.getEntityRoles.bind(this),
     getAppRoles: this.getAppRoles.bind(this),
     getRolesByEntity: this.getRolesByEntity.bind(this),

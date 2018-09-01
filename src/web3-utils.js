@@ -44,4 +44,10 @@ export function getWeb3(provider) {
 }
 
 // Re-export some utilities from web3-utils
-export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
+export {
+  fromWei,
+  isAddress,
+  toChecksumAddress,
+  toWei,
+  keccak256,
+} from 'web3-utils'
