@@ -14,12 +14,6 @@ class Permissions extends React.Component {
   state = {
     // Only animate screens after the component is rendered once
     animateScreens: false,
-
-    // Set to a permission object (edit / create) or null (no edition)
-    editPermission: null,
-
-    // We use a separate property than `editPermission` to display the panel,
-    // in order to keep displaying the content during the close animation.
     showCreatePermissionPanel: false,
   }
 
@@ -142,11 +136,7 @@ class Permissions extends React.Component {
 
   render() {
     const { apps, appsLoading, permissionsLoading, params } = this.props
-    const {
-      editPermission,
-      showCreatePermissionPanel,
-      animateScreens,
-    } = this.state
+    const { showCreatePermissionPanel, animateScreens } = this.state
 
     const location = this.getLocation(params)
 

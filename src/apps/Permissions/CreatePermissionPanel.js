@@ -78,10 +78,6 @@ class PermissionPanel extends React.PureComponent {
     return ['Select an app', ...this.appsLabels()]
   }
 
-  getAppsItems() {
-    return ['Select an app', ...this.appsLabels()]
-  }
-
   getRolesItems() {
     const roles = this.getRoles()
     const names = roles.map(role => role.name || '?')
@@ -149,13 +145,7 @@ class PermissionPanel extends React.PureComponent {
   }
 
   handleSubmit = () => {
-    const {
-      assignEntityIndex,
-      assignAddressValue,
-      roleIndex,
-      newRoleValue,
-      newRoleManagerValue,
-    } = this.state
+    const { roleIndex, newRoleValue, newRoleManagerValue } = this.state
 
     const { createPermission, grantPermission, onClose } = this.props
 
@@ -215,7 +205,7 @@ class PermissionPanel extends React.PureComponent {
   }
 
   render() {
-    const { opened, apps, onClose } = this.props
+    const { opened, onClose } = this.props
 
     const {
       assignEntityIndex,
