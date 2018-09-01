@@ -43,11 +43,6 @@ export function appendTrailingSlash(str) {
   return str + (str.endsWith('/') ? '' : '/')
 }
 
-// Opposite of Object.entries()
-export function objectFromEntries(entries) {
-  return entries.reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
-}
-
 export function log(...params) {
   if (process.env.NODE_ENV !== 'production') {
     console.log(...params)

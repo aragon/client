@@ -6,7 +6,7 @@ import {
   entityRoles,
   permissionsByEntity,
 } from '../permissions'
-import { objectFromEntries, log } from '../utils'
+import { log } from '../utils'
 import { keccak256 } from '../web3-utils'
 
 const { Provider, Consumer } = React.createContext()
