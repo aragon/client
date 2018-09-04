@@ -225,7 +225,7 @@ class StartContent extends React.PureComponent {
       return (
         <ActionInfo>
           You need at least {fromWei(MINIMUM_BALANCE)} ETH (you have{' '}
-          {fromWeiRounded(balance)}{' '}
+          {fromWeiRounded(balance || '0')}{' '}
           ETH).
           <br />
           {network.type === 'rinkeby' && (

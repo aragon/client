@@ -4,7 +4,6 @@
  * from this file.
  */
 import Web3 from 'web3'
-import BigNumber from 'bignumber.js'
 
 /** 
  * Check address equality without checksums
@@ -26,9 +25,14 @@ export function addressesEqual(first, second) {
  * @return {string} - The converted Wei value to the specified Ether subunit and rounded to the specified digits after the decimal point
  */
 export function fromWeiRounded(wei, digits = 2, unit = 'ether') {
-  var unitBalance = Web3.utils.fromWei(wei, unit)
-  unitBalance = new BigNumber(unitBalance)
-  return unitBalance.toFormat(digits).replace(/,/g, '')
+  let unitValue = Web3.utils.fromWei(wei, unit)
+  const decimalIndex = unitValue.indexOf('.')
+  if(decimalIndex != -1) {
+    unitValue = unitValue.substring(0, decimalIndex + digits + 2)
+    const roundedLastDigit = unitValue[unitValue.length-2].concat('.' + unitValue[unitValue.length -1])
+    unitValue = unitValue.substring(0, unitValue.length - 2).concat(Math.round(roundedLastDigit))
+  }
+  return unitValue
 }
 
 /** 
