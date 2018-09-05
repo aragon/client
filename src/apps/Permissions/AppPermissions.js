@@ -7,12 +7,13 @@ import {
   TableRow,
   Text,
 } from '@aragon/ui'
+import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import IdentityBadge from '../../components/IdentityBadge'
 import EntityPermissions from './EntityPermissions'
-import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import AppRoles from './AppRoles'
 
 class AppPermissions extends React.PureComponent {
   render() {
@@ -60,6 +61,7 @@ class AppPermissions extends React.PureComponent {
                 loading={loading}
                 onRevoke={revokePermission}
               />
+              <AppRoles app={app} loading={loading} />
             </React.Fragment>
           )
         }}
