@@ -96,7 +96,7 @@ class Permissions extends React.Component {
       return [
         ...items,
         <NavigationItem
-          title={openedApp ? openedApp.name : 'Permissions'}
+          title={openedApp ? openedApp.name || 'Unknown' : 'Permissions'}
           badge={{
             label:
               (openedApp && openedApp.identifier) ||

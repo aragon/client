@@ -81,13 +81,17 @@ class Row extends React.Component {
   }
   renderEntity() {
     const { entity } = this.props
+    if (!entity) {
+      return 'Unknown'
+    }
     if (entity.type === 'app') {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
-    if (entity.type === 'any') {
-      return 'Any account'
-    }
-    return <IdentityBadge entity={entity.address} />
+    return (
+      <IdentityBadge
+        entity={entity.type === 'any' ? 'Any account' : entity.address}
+      />
+    )
   }
   render() {
     const { role } = this.props
