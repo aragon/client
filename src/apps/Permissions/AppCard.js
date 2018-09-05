@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Text, Card, Badge, theme, unselectable } from '@aragon/ui'
-import { appIconUrl } from '../../utils'
 import { shortenAddress } from '../../web3-utils'
 import RemoteIcon from '../../components/RemoteIcon'
+import AppIcon from './AppIcon'
 
 class AppCard extends React.PureComponent {
   handleClick = () => {
@@ -16,10 +16,8 @@ class AppCard extends React.PureComponent {
     const instanceTitle = `Address: ${proxyAddress}`
     return (
       <Main onClick={this.handleClick}>
-        <Icon>
-          <RemoteIcon size={28} src={appIconUrl(app)} />
-        </Icon>
-        <Name>{name}</Name>
+        <AppIconCard isCoreApp={name === 'ACL'} app={app} size={28} />
+        <Name>{name || 'Unknown'}</Name>
         <IdentifierWrapper>
           <Identifier title={instanceTitle}>{instanceLabel}</Identifier>
         </IdentifierWrapper>
@@ -44,8 +42,7 @@ const Main = styled(Card).attrs({ width: '100%', height: '180px' })`
   cursor: pointer;
 `
 
-const Icon = styled.div`
-  height: 28px;
+const AppIconCard = styled(AppIcon)`
   margin-bottom: 5px;
 `
 

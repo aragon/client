@@ -33,7 +33,6 @@ const Main = styled.div`
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
   height: ${IDENTICON_SIZE}px;
   background: #daeaef;
   border-radius: 3px;
