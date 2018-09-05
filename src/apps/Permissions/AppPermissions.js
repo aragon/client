@@ -19,12 +19,12 @@ class AppPermissions extends React.PureComponent {
     const { app, loading, address } = this.props
     return (
       <PermissionsConsumer>
-        {({ revokePermission, getAppRoles }) => {
-          const roles = getAppRoles(app)
+        {({ revokePermission, getAppPermissions }) => {
+          const appPermissions = getAppPermissions(app)
           return (
             <React.Fragment>
               <Section title="Permissions set on this app">
-                {loading || roles.length === 0 ? (
+                {loading || appPermissions.length === 0 ? (
                   <EmptyBlock>
                     {loading
                       ? 'Loading app permissions…'
@@ -41,7 +41,7 @@ class AppPermissions extends React.PureComponent {
                       </TableRow>
                     }
                   >
-                    {roles.map(({ role, entity }, i) => (
+                    {appPermissions.map(({ role, entity }, i) => (
                       <Row
                         key={i}
                         role={role}

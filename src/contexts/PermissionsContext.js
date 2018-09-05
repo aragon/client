@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  appPermissions,
   appRoles,
   entityResolver,
   roleResolver,
@@ -91,17 +92,29 @@ class PermissionsProvider extends React.Component {
     )
   }
 
-  // Get the roles declared on an app
-  getAppRoles(app) {
+  // Get the permissions declared on an app
+  getAppPermissions(app) {
     const { resolveEntity, resolveRole } = this.state
     const { permissions } = this.props
     if (!(app && permissions && resolveEntity && resolveRole)) {
       return []
     }
-    return appRoles(app, permissions, (entityAddress, roleBytes) => ({
+    return appPermissions(app, permissions, (entityAddress, roleBytes) => ({
       role: resolveRole(app.proxyAddress, roleBytes),
       entity: resolveEntity(entityAddress),
     }))
+  }
+
+  // Get the roles of an app
+  getAppRoles(app) {
+    const { resolveRole } = this.state
+    const { permissions } = this.props
+    return app
+      ? appRoles(app, permissions).map(role => ({
+          ...role,
+          role: resolveRole(app.proxyAddress, role.roleBytes),
+        }))
+      : []
   }
 
   // Get a list of entities with the roles assigned to them
@@ -136,6 +149,7 @@ class PermissionsProvider extends React.Component {
     createPermission: this.createPermission.bind(this),
     grantPermission: this.grantPermission.bind(this),
     getEntityRoles: this.getEntityRoles.bind(this),
+    getAppPermissions: this.getAppPermissions.bind(this),
     getAppRoles: this.getAppRoles.bind(this),
     getRolesByEntity: this.getRolesByEntity.bind(this),
     apps: {},
