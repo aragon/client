@@ -103,33 +103,27 @@ export const appRoles = (app, permissions) =>
 // Returns a function that resolves a role
 // using the provided apps, and caching the result.
 export const roleResolver = (apps = []) =>
-  memoize(
-    (proxyAddress, roleBytes) => {
-      const knownRole = getKnownRole(roleBytes)
-      if (knownRole) {
-        return knownRole.role
-      }
+  memoize((proxyAddress, roleBytes) => {
+    const knownRole = getKnownRole(roleBytes)
+    if (knownRole) {
+      return knownRole.role
+    }
 
-      const app = apps.find(app => app.proxyAddress === proxyAddress)
-      if (!app || !app.roles) {
-        return null
-      }
-      return app.roles.find(role => role.bytes === roleBytes)
-    },
-    (...args) => args[0] + args[1]
-  )
+    const app = apps.find(app => app.proxyAddress === proxyAddress)
+    if (!app || !app.roles) {
+      return null
+    }
+    return app.roles.find(role => role.bytes === roleBytes)
+  }, (...args) => args[0] + args[1])
 
 // Returns a function that resolves an entity
 // using the provided apps, and caching the result.
 export const entityResolver = (apps = []) =>
-  memoize(
-    address => {
-      const entity = { address, type: 'address' }
-      if (address === ANY_ADDRESS) {
-        return { ...entity, type: 'any' }
-      }
-      const app = apps.find(app => app.proxyAddress === address)
-      return app ? { ...entity, type: 'app', app } : entity
-    },
-    (...args) => args[0] + args[1]
-  )
+  memoize(address => {
+    const entity = { address, type: 'address' }
+    if (address === ANY_ADDRESS) {
+      return { ...entity, type: 'any' }
+    }
+    const app = apps.find(app => app.proxyAddress === address)
+    return app ? { ...entity, type: 'app', app } : entity
+  }, (...args) => args[0] + args[1])
