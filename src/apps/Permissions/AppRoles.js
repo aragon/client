@@ -10,16 +10,12 @@ import {
 import IdentityBadge from '../../components/IdentityBadge'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
-import AppInstanceLabel from './AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { getKnownRole } from '../../permissions'
 
 class AppRoles extends React.PureComponent {
   render() {
     const {
       app,
-      title,
-      noRolesLabel,
       loading,
       loadingLabel = 'Loading roles…',
       emptyLabel = 'No roles found.',

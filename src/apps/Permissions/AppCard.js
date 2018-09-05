@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { Text, Card, Badge, theme, unselectable } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
-import RemoteIcon from '../../components/RemoteIcon'
 import AppIcon from './AppIcon'
 
 class AppCard extends React.PureComponent {

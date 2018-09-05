@@ -3,7 +3,6 @@ import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { ANY_ADDRESS } from '../../permissions'
 import { isAddress } from '../../web3-utils'
-import IdentityBadge from '../../components/IdentityBadge'
 import AppInstanceLabel from './AppInstanceLabel'
 
 const DEFAULT_STATE = {
@@ -130,7 +129,11 @@ class PermissionPanel extends React.PureComponent {
   handleSubmit = () => {
     const { roleIndex } = this.state
 
-    const { createPermission, grantPermission, onClose } = this.props
+    const {
+      // createPermission,
+      grantPermission,
+      onClose,
+    } = this.props
 
     const assignEntityItems = this.getAssignEntityItems()
     const appsItems = this.getAppsItems()
@@ -140,7 +143,7 @@ class PermissionPanel extends React.PureComponent {
     }
 
     const selectedApp = this.getSelectedApp()
-    const rolesItems = this.getRolesItems()
+    // const rolesItems = this.getRolesItems()
 
     const entityAddress = this.getEntityAddress()
     if (!entityAddress) {
@@ -210,7 +213,6 @@ class PermissionPanel extends React.PureComponent {
     const rolesItems = this.getRolesItems()
 
     const showAssignAddress = assignEntityIndex === assignEntityItems.length - 1
-    const showNewRole = roleIndex === rolesItems.length - 1
 
     return (
       <SidePanel
