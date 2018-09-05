@@ -14,11 +14,7 @@ class Home extends React.Component {
 
     return (
       <React.Fragment>
-        <BrowseByApp
-          apps={apps.filter(app => app.hasWebApp)}
-          loading={appsLoading}
-          onOpenApp={onOpenApp}
-        />
+        <BrowseByApp apps={apps} loading={appsLoading} onOpenApp={onOpenApp} />
         <BrowseByEntity
           loading={appsLoading || permissionsLoading}
           onOpenEntity={onOpenEntity}
