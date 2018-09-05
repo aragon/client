@@ -75,19 +75,30 @@ export const entityRoles = (
       )
     : null
 
-// Get the roles attached to an app.
-export const appRoles = (
+// Get the permissions declared on an app.
+export const appPermissions = (
   app,
   permissions,
   transform = (entity, role) => [entity, role]
-) =>
-  Object.entries(permissions[app.proxyAddress])
+) => {
+  return Object.entries(permissions[app.proxyAddress])
     .reduce(
       (roles, [role, { allowedEntities }]) =>
         roles.concat(allowedEntities.map(entity => transform(entity, role))),
       []
     )
     .filter(Boolean)
+}
+
+// Get the roles of an app.
+export const appRoles = (app, permissions) =>
+  Object.entries(permissions[app.proxyAddress]).map(
+    ([roleBytes, { allowedEntities, manager }]) => ({
+      roleBytes,
+      allowedEntities,
+      manager,
+    })
+  )
 
 // Returns a function that resolves a role
 // using the provided apps, and caching the result.
