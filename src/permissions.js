@@ -1,6 +1,6 @@
 import memoize from 'lodash.memoize'
 
-const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+export const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 
 const KERNEL_ROLES = {
   appName: 'Kernel',

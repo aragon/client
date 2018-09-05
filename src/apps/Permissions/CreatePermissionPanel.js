@@ -1,16 +1,16 @@
 import React from 'react'
 import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
-import uniqby from 'lodash.uniqby'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { ANY_ADDRESS } from '../../permissions'
 import { isAddress } from '../../web3-utils'
+import IdentityBadge from '../../components/IdentityBadge'
+import AppInstanceLabel from './AppInstanceLabel'
 
 const DEFAULT_STATE = {
   assignEntityIndex: 0,
   assignAddressValue: '',
   appIndex: 0,
   roleIndex: 0,
-  newRoleValue: '',
-  newRoleManagerValue: '',
 }
 
 // The permission panel, wrapped in a PermissionsContext (see end of file)
@@ -32,19 +32,7 @@ class PermissionPanel extends React.PureComponent {
   }
 
   handleRoleChange = index => {
-    this.setState({
-      roleIndex: index,
-      newRoleValue: '',
-      newRoleManagerValue: '',
-    })
-  }
-
-  handleNewRoleChange = event => {
-    this.setState({ newRoleValue: event.target.value })
-  }
-
-  handleNewRoleManagerChange = event => {
-    this.setState({ newRoleManagerValue: event.target.value })
+    this.setState({ roleIndex: index })
   }
 
   getNamedApps() {
@@ -56,22 +44,26 @@ class PermissionPanel extends React.PureComponent {
     const { getAppRoles } = this.props
     const app = this.getSelectedApp()
     const appRoles = app ? getAppRoles(app) : []
-    return uniqby(
-      appRoles
-        .filter(roleData =>
-          Boolean(roleData && roleData.role && roleData.role.bytes)
-        )
-        .map(({ role }) => role),
-      role => role.bytes
-    )
+    return appRoles.map(({ role }) => role)
   }
 
   appsLabels() {
-    return this.getNamedApps().map(app => app.name)
+    return this.getNamedApps().map(app => (
+      <AppInstanceLabel
+        app={app}
+        proxyAddress={app.proxyAddress}
+        coreRole={app.name === 'ACL' ? { appName: 'ACL' } : null}
+      />
+    ))
   }
 
   getAssignEntityItems() {
-    return ['Select an entity', ...this.appsLabels(), 'Custom address…']
+    return [
+      'Select an entity',
+      ...this.appsLabels(),
+      'Any account',
+      'Custom address…',
+    ]
   }
 
   getAppsItems() {
@@ -81,7 +73,7 @@ class PermissionPanel extends React.PureComponent {
   getRolesItems() {
     const roles = this.getRoles()
     const names = roles.map(role => role.name || '?')
-    return ['Select a role', ...names, 'Create a new role (advanced)…']
+    return ['Select a role', ...names]
   }
 
   getSelectedApp() {
@@ -99,7 +91,12 @@ class PermissionPanel extends React.PureComponent {
       return assignAddressValue.trim()
     }
 
-    // -1 for the “select an entity” entry
+    // any account
+    if (assignEntityIndex === items.length - 2) {
+      return ANY_ADDRESS
+    }
+
+    // app proxy address (in the menu, apps have two entries above them)
     const app = this.getNamedApps()[assignEntityIndex - 1]
 
     const address = app ? app.proxyAddress : null
@@ -107,13 +104,7 @@ class PermissionPanel extends React.PureComponent {
   }
 
   canSubmit(assignEntityItems, rolesItems) {
-    const {
-      assignEntityIndex,
-      assignAddressValue,
-      roleIndex,
-      newRoleValue,
-      newRoleManagerValue,
-    } = this.state
+    const { assignEntityIndex, assignAddressValue, roleIndex } = this.state
 
     // No entity selected
     if (assignEntityIndex === 0) {
@@ -133,19 +124,11 @@ class PermissionPanel extends React.PureComponent {
       return false
     }
 
-    // No custom role / role manager set
-    if (
-      roleIndex === rolesItems.length - 1 &&
-      (!newRoleValue.trim() || !isAddress(newRoleManagerValue.trim()))
-    ) {
-      return false
-    }
-
     return true
   }
 
   handleSubmit = () => {
-    const { roleIndex, newRoleValue, newRoleManagerValue } = this.state
+    const { roleIndex } = this.state
 
     const { createPermission, grantPermission, onClose } = this.props
 
@@ -164,28 +147,35 @@ class PermissionPanel extends React.PureComponent {
       return
     }
 
-    if (roleIndex === rolesItems.length - 1) {
-      console.log('CREATE', {
-        entityAddress,
-        proxyAddress: selectedApp.proxyAddress,
-        roleId: newRoleValue.trim(),
-        manager: newRoleManagerValue.trim(),
-      })
-      createPermission({
-        entityAddress,
-        proxyAddress: selectedApp.proxyAddress,
-        roleId: newRoleValue.trim(),
-        manager: newRoleManagerValue.trim(),
-      })
-      onClose()
-      return
-    }
+    // if (roleIndex === rolesItems.length - 1) {
+    //   console.log('CREATE', {
+    //     entityAddress,
+    //     proxyAddress: selectedApp.proxyAddress,
+    //     roleId: newRoleValue.trim(),
+    //     manager: newRoleManagerValue.trim(),
+    //   })
+    //   createPermission({
+    //     entityAddress,
+    //     proxyAddress: selectedApp.proxyAddress,
+    //     roleId: newRoleValue.trim(),
+    //     manager: newRoleManagerValue.trim(),
+    //   })
+    //   onClose()
+    //   return
+    // }
 
-    const role = this.getRoles()[roleIndex]
+    const role = this.getRoles()[roleIndex - 1]
     if (!role) {
       return
     }
 
+    console.log(
+      `grantPermission(${{
+        entityAddress,
+        proxyAddress: selectedApp.proxyAddress,
+        roleBytes: role.bytes,
+      }})`
+    )
     grantPermission({
       entityAddress,
       proxyAddress: selectedApp.proxyAddress,
@@ -212,8 +202,6 @@ class PermissionPanel extends React.PureComponent {
       assignAddressValue,
       appIndex,
       roleIndex,
-      newRoleValue,
-      newRoleManagerValue,
     } = this.state
 
     const assignEntityItems = this.getAssignEntityItems()
@@ -267,28 +255,6 @@ class PermissionPanel extends React.PureComponent {
                 items={rolesItems}
                 active={roleIndex}
                 onChange={this.handleRoleChange}
-                wide
-              />
-            </Field>
-          )}
-
-          {showNewRole && (
-            <Field label="New role identifier:">
-              <TextInput
-                placeholder="ALLOW_SOMETHING_ROLE"
-                value={newRoleValue}
-                onChange={this.handleNewRoleChange}
-                wide
-              />
-            </Field>
-          )}
-
-          {showNewRole && (
-            <Field label="New role manager:">
-              <TextInput
-                placeholder="0xcafe"
-                value={newRoleManagerValue}
-                onChange={this.handleNewRoleManagerChange}
                 wide
               />
             </Field>
