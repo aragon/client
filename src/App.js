@@ -250,7 +250,6 @@ class App extends React.Component {
             wrapper={wrapper}
             apps={apps}
             appsLoading={appsLoading}
-            permissions={permissions}
             permissionsLoading={permissionsLoading}
             account={account}
             walletNetwork={walletNetwork}
