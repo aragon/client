@@ -1,4 +1,5 @@
 import BN from 'bn.js'
+import throttle from 'lodash.throttle'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
   providers,
@@ -196,7 +197,7 @@ const subscribe = (
     apps: apps.subscribe(apps => {
       onApps(prepareFrontendApps(apps, ipfsConf.gateway))
     }),
-    permissions: permissions.subscribe(onPermissions),
+    permissions: permissions.subscribe(throttle(onPermissions, 100)),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
