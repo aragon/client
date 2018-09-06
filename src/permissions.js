@@ -98,16 +98,13 @@ function resolveEntity(apps, address) {
 
 // Returns a function that resolves an entity, caching the results
 export function entityResolver(apps = []) {
-  return memoize(
-    address => resolveEntity(apps, address),
-    (...args) => args[0] + args[1]
-  )
+  return memoize(address => resolveEntity(apps, address))
 }
 
 // Returns a function that resolves an role, caching the results
 export function roleResolver(apps = []) {
   return memoize(
     (proxyAddress, roleBytes) => resolveRole(apps, proxyAddress, roleBytes),
-    (...args) => args[0] + args[1]
+    (proxyAddress, roleBytes) => proxyAddress + roleBytes
   )
 }
