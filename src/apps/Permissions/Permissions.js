@@ -7,14 +7,14 @@ import Home from './Home/Home'
 import AppPermissions from './AppPermissions'
 import EntityPermissions from './EntityPermissions'
 import NavigationItem from './NavigationItem'
-import CreatePermissionPanel from './CreatePermissionPanel'
+import AssignPermissionPanel from './AssignPermissionPanel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class Permissions extends React.Component {
   state = {
     // Only animate screens after the component is rendered once
     animateScreens: false,
-    showCreatePermissionPanel: false,
+    showAssignPermissionPanel: false,
   }
 
   componentDidMount() {
@@ -78,11 +78,11 @@ class Permissions extends React.Component {
   }
 
   createPermission = () => {
-    this.setState({ showCreatePermissionPanel: true })
+    this.setState({ showAssignPermissionPanel: true })
   }
 
   closePanel = () => {
-    this.setState({ showCreatePermissionPanel: false })
+    this.setState({ showAssignPermissionPanel: false })
   }
 
   // Assemble the navigation items
@@ -136,7 +136,7 @@ class Permissions extends React.Component {
 
   render() {
     const { apps, appsLoading, permissionsLoading, params } = this.props
-    const { showCreatePermissionPanel, animateScreens } = this.state
+    const { showAssignPermissionPanel, animateScreens } = this.state
 
     const location = this.getLocation(params)
 
@@ -209,9 +209,9 @@ class Permissions extends React.Component {
                 </Screen>
               </AppView>
 
-              <CreatePermissionPanel
+              <AssignPermissionPanel
                 apps={apps}
-                opened={showCreatePermissionPanel}
+                opened={showAssignPermissionPanel}
                 onClose={this.closePanel}
               />
             </React.Fragment>

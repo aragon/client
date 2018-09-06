@@ -1,7 +1,7 @@
 import React from 'react'
 import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { ANY_ADDRESS } from '../../permissions'
+import { getAnyAddress } from '../../aragonos-utils'
 import { isAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 
@@ -13,7 +13,7 @@ const DEFAULT_STATE = {
 }
 
 // The permission panel, wrapped in a PermissionsContext (see end of file)
-class PermissionPanel extends React.PureComponent {
+class AssignPermissionPanel extends React.PureComponent {
   state = {
     ...DEFAULT_STATE,
   }
@@ -92,7 +92,7 @@ class PermissionPanel extends React.PureComponent {
 
     // any account
     if (assignEntityIndex === items.length - 2) {
-      return ANY_ADDRESS
+      return getAnyAddress()
     }
 
     // app proxy address (in the menu, apps have two entries above them)
@@ -273,24 +273,20 @@ class PermissionPanel extends React.PureComponent {
             </Button>
           </Field>
 
-          <AddPermissionInfo />
+          <Info.Action title="Adding the permission might create a vote">
+            If the permission is created by the Voting app, it will
+            automatically generate a new vote.
+          </Info.Action>
         </React.Fragment>
       </SidePanel>
     )
   }
 }
 
-const AddPermissionInfo = () => (
-  <Info.Action title="Adding the permission might create a vote">
-    If the permission is created by the Voting app, it will automatically
-    generate a new vote.
-  </Info.Action>
-)
-
 export default props => (
   <PermissionsConsumer>
     {({ getAppRoles, createPermission, grantPermission }) => (
-      <PermissionPanel
+      <AssignPermissionPanel
         {...props}
         {...{ getAppRoles, createPermission, grantPermission }}
       />
