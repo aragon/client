@@ -1,36 +1,9 @@
 import memoize from 'lodash.memoize'
-
-export const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
-
-const KERNEL_ROLES = {
-  appName: 'Kernel',
-  roles: [
-    {
-      name: 'Manage apps',
-      id: 'APP_MANAGER_ROLE',
-      params: [],
-      bytes:
-        '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
-    },
-  ],
-}
-
-const ACL_ROLES = {
-  appName: 'ACL',
-  roles: [
-    {
-      name: 'Create permissions',
-      id: 'CREATE_PERMISSIONS_ROLE',
-      params: [],
-      bytes:
-        '0x0b719b33c83b8e5d300c521cb8b54ae9bd933996a14bef8c2f4e0285d2d2400a',
-    },
-  ],
-}
+import { isAnyAddress, getCoreRoles } from './aragonos-utils'
 
 // Get a role from the known roles (see KNOWN_ROLES)
 export const getKnownRole = roleBytes => {
-  for (const group of [KERNEL_ROLES, ACL_ROLES]) {
+  for (const group of getCoreRoles()) {
     for (const role of group.roles) {
       if (roleBytes === role.bytes) {
         return { appName: group.appName, role }
@@ -100,30 +73,41 @@ export const appRoles = (app, permissions) =>
     })
   )
 
-// Returns a function that resolves a role
-// using the provided apps, and caching the result.
-export const roleResolver = (apps = []) =>
-  memoize((proxyAddress, roleBytes) => {
-    const knownRole = getKnownRole(roleBytes)
-    if (knownRole) {
-      return knownRole.role
-    }
+// Resolves a role using the provided apps
+function resolveRole(apps, proxyAddress, roleBytes) {
+  const knownRole = getKnownRole(roleBytes)
+  if (knownRole) {
+    return knownRole.role
+  }
+  const app = apps.find(app => app.proxyAddress === proxyAddress)
+  if (!app || !app.roles) {
+    return null
+  }
+  return app.roles.find(role => role.bytes === roleBytes)
+}
 
-    const app = apps.find(app => app.proxyAddress === proxyAddress)
-    if (!app || !app.roles) {
-      return null
-    }
-    return app.roles.find(role => role.bytes === roleBytes)
-  }, (...args) => args[0] + args[1])
+// Resolves an entity using the provided apps
+function resolveEntity(apps, address) {
+  const entity = { address, type: 'address' }
+  if (isAnyAddress(address)) {
+    return { ...entity, type: 'any' }
+  }
+  const app = apps.find(app => app.proxyAddress === address)
+  return app ? { ...entity, type: 'app', app } : entity
+}
 
-// Returns a function that resolves an entity
-// using the provided apps, and caching the result.
-export const entityResolver = (apps = []) =>
-  memoize(address => {
-    const entity = { address, type: 'address' }
-    if (address === ANY_ADDRESS) {
-      return { ...entity, type: 'any' }
-    }
-    const app = apps.find(app => app.proxyAddress === address)
-    return app ? { ...entity, type: 'app', app } : entity
-  }, (...args) => args[0] + args[1])
+// Returns a function that resolves an entity, caching the results
+export function entityResolver(apps = []) {
+  return memoize(
+    address => resolveEntity(apps, address),
+    (...args) => args[0] + args[1]
+  )
+}
+
+// Returns a function that resolves an role, caching the results
+export function roleResolver(apps = []) {
+  return memoize(
+    (proxyAddress, roleBytes) => resolveRole(apps, proxyAddress, roleBytes),
+    (...args) => args[0] + args[1]
+  )
+}

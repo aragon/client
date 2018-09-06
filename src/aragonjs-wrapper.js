@@ -17,9 +17,6 @@ import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
 
-const EVMSCRIPT_REGISTRY_APP_ID =
-  '0xddbcfd564f642ab5627cf68b9b7d374fb4f8a36e941a75d89c87998cef03bd61'
-
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
@@ -61,7 +58,6 @@ const applyAppOverrides = apps =>
 // Sort apps, apply URL overrides, and attach data useful to the frontend
 const prepareFrontendApps = (apps, gateway) => {
   return applyAppOverrides(apps)
-    .filter(app => app.appId !== EVMSCRIPT_REGISTRY_APP_ID)
     .sort(sortAppsPair)
     .map(app => {
       const baseUrl = appBaseUrl(app, gateway)
