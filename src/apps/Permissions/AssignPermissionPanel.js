@@ -48,11 +48,7 @@ class AssignPermissionPanel extends React.PureComponent {
 
   appsLabels() {
     return this.getNamedApps().map(app => (
-      <AppInstanceLabel
-        app={app}
-        proxyAddress={app.proxyAddress}
-        coreRole={app.name === 'ACL' ? { appName: 'ACL' } : null}
-      />
+      <AppInstanceLabel app={app} proxyAddress={app.proxyAddress} />
     ))
   }
 

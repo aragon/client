@@ -10,12 +10,12 @@ class AppCard extends React.PureComponent {
   }
   render() {
     const { app } = this.props
-    const { name, identifier, proxyAddress } = app
+    const { name, identifier, proxyAddress, appId } = app
     const instanceLabel = identifier || shortenAddress(proxyAddress)
     const instanceTitle = `Address: ${proxyAddress}`
     return (
       <Main onClick={this.handleClick}>
-        <AppIconCard isCoreApp={name === 'ACL'} app={app} size={28} />
+        <AppIconCard app={app} size={28} />
         <Name>{name || 'Unknown'}</Name>
         <IdentifierWrapper>
           <Identifier title={instanceTitle}>{instanceLabel}</Identifier>

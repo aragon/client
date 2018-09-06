@@ -78,11 +78,7 @@ class Row extends React.Component {
     return (
       <TableRow>
         <TableCell>
-          <AppInstanceLabel
-            app={app}
-            proxyAddress={proxyAddress}
-            coreRole={getKnownRole(roleBytes)}
-          />
+          <AppInstanceLabel app={app} proxyAddress={proxyAddress} />
         </TableCell>
         <TableCell>
           <Text weight="bold">{action}</Text>

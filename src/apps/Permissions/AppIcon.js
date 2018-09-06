@@ -4,20 +4,20 @@ import { IconBlank } from '@aragon/ui'
 import { appIconUrl } from '../../utils'
 import RemoteIcon from '../../components/RemoteIcon'
 import IconKernel from '../../icons/IconKernel'
+import { isCoreApp } from '../../aragonos-utils'
 
 class AppIcon extends React.Component {
   static defaultProps = {
     size: 22,
     app: null,
-    isCoreApp: false,
   }
   render() {
-    const { app, isCoreApp, size, ...props } = this.props
+    const { app, size, ...props } = this.props
 
     return (
       <Main {...props}>
         {(() => {
-          if (isCoreApp) {
+          if (isCoreApp(app.appId)) {
             return <IconKernel size={size} />
           }
           if (app && app.baseUrl) {
