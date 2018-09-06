@@ -75,7 +75,7 @@
   },
   "scripts": {
     "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./build",
-    "start": "npm run ui-assets && parcel serve src/index.html --port 3000 --out-dir ./build",
+    "start": "npm run ui-assets && parcel serve src/index.html --port 3000 --out-dir ./build --no-cache",
     "start:local": "scripts/launch-local.sh",
     "start:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm start",
     "start:rinkeby": "npm start",
