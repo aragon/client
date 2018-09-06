@@ -13,11 +13,10 @@ class AppIcon extends React.Component {
   }
   render() {
     const { app, size, ...props } = this.props
-
     return (
       <Main {...props}>
         {(() => {
-          if (isCoreApp(app.appId)) {
+          if (app && isCoreApp(app.appId)) {
             return <IconKernel size={size} />
           }
           if (app && app.baseUrl) {
