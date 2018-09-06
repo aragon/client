@@ -1,7 +1,7 @@
 import memoize from 'lodash.memoize'
 import { isAnyAddress, getCoreRoles } from './aragonos-utils'
 
-// Get a role from the known roles (see KNOWN_ROLES)
+// Get a role from the known (core) roles
 export const getKnownRole = roleBytes => {
   for (const group of getCoreRoles()) {
     for (const role of group.roles) {

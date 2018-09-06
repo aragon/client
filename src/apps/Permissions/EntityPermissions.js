@@ -11,7 +11,6 @@ import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { getKnownRole } from '../../permissions'
 
 class EntityPermissions extends React.PureComponent {
   render() {
