@@ -13,6 +13,9 @@ import EmptyBlock from './EmptyBlock'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class AppRoles extends React.PureComponent {
+  handleManageRole = roleBytes => {
+    this.props.onManageRole(this.props.app.proxyAddress, roleBytes)
+  }
   render() {
     const {
       app,
@@ -25,8 +28,6 @@ class AppRoles extends React.PureComponent {
       <PermissionsConsumer>
         {({ getAppRoles }) => {
           const roles = getAppRoles(app)
-            .map(({ role }) => role)
-            .filter(Boolean)
 
           return (
             <Section title="Roles available on this app">
@@ -43,8 +44,13 @@ class AppRoles extends React.PureComponent {
                     </TableRow>
                   }
                 >
-                  {roles.map((role, i) => (
-                    <Row key={i} role={role} />
+                  {roles.map(({ role, manager }, i) => (
+                    <RoleRow
+                      key={i}
+                      role={role}
+                      manager={manager}
+                      onManage={this.handleManageRole}
+                    />
                   ))}
                 </Table>
               )}
@@ -56,10 +62,17 @@ class AppRoles extends React.PureComponent {
   }
 }
 
-class Row extends React.Component {
+class RoleRow extends React.Component {
+  handleManageClick = () => {
+    this.props.onManage(this.props.role.bytes)
+  }
   render() {
-    const { role } = this.props
-    const { id, name, bytes } = role
+    const { role, manager } = this.props
+
+    const id = (role && role.id) || '?'
+    const name = (role && role.name) || 'Unknown role'
+    const bytes = role && role.bytes
+
     return (
       <TableRow>
         <TableCell>
@@ -67,10 +80,10 @@ class Row extends React.Component {
         </TableCell>
         <TableCell title={bytes}>{id}</TableCell>
         <TableCell>
-          <IdentityBadge entity="0xb4124ceb3451635dacedd11767f004d8a28c6ee7" />
+          <IdentityBadge entity={manager} />
         </TableCell>
         <TableCell align="right">
-          <Button mode="outline" compact onClick={this.handleRevoke}>
+          <Button mode="outline" compact onClick={this.handleManageClick}>
             Manage
           </Button>
         </TableCell>
