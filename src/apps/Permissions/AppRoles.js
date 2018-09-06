@@ -25,9 +25,12 @@ class AppRoles extends React.PureComponent {
       <PermissionsConsumer>
         {({ getAppRoles }) => {
           const roles = getAppRoles(app)
+            .map(({ role }) => role)
+            .filter(Boolean)
+
           return (
             <Section title="Roles available on this app">
-              {loading || roles === null ? (
+              {loading || roles.length === 0 ? (
                 <EmptyBlock>{loading ? loadingLabel : emptyLabel}</EmptyBlock>
               ) : (
                 <Table
@@ -40,7 +43,9 @@ class AppRoles extends React.PureComponent {
                     </TableRow>
                   }
                 >
-                  {roles.map(({ role }, i) => <Row key={i} role={role} />)}
+                  {roles.map((role, i) => (
+                    <Row key={i} role={role} />
+                  ))}
                 </Table>
               )}
             </Section>
