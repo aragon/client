@@ -1,6 +1,6 @@
 export const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 
-const CORE_APPS = new Set([
+const CORE_APPS = new Map([
   [
     '0xe3262375f45a6e2026b7e7b18c2b807434f2508fe1a2a3dfb493c7df8f4aad6a',
     { name: 'ACL' },
@@ -38,7 +38,11 @@ const ACL_ROLES = {
 }
 
 export function getCoreApp(appId) {
-  return KERNEL_APPS.get(appId)
+  return CORE_APPS.get(appId)
+}
+
+export function isCoreApp(appId) {
+  return CORE_APPS.has(appId)
 }
 
 export function getCoreRoles() {
