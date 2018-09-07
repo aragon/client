@@ -11,7 +11,7 @@ import IdentityBadge from '../../components/IdentityBadge'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { isEmptyAddress } from '../../aragonos-utils'
+import { isEmptyAddress } from '../../web3-utils'
 
 class AppRoles extends React.PureComponent {
   handleManageRole = roleBytes => {

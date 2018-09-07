@@ -17,7 +17,6 @@ import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
-import { getCoreApp } from './aragonos-utils'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -67,11 +66,9 @@ const prepareFrontendApps = (apps, gateway) => {
       // so the absolute path can be resolved from baseUrl.
       const startUrl = removeStartingSlash(app['start_url'] || '')
       const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
-      const coreApp = getCoreApp(app.appId)
 
       return {
         ...app,
-        name: coreApp ? coreApp.name : app.name,
         src,
         baseUrl,
         hasWebApp: Boolean(app['start_url']),

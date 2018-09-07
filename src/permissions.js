@@ -1,13 +1,20 @@
 import memoize from 'lodash.memoize'
-import { isAnyAddress, getCoreRoles } from './aragonos-utils'
+import { isAnyAddress } from './web3-utils'
 
-// Get a role from the known (core) roles
+const KERNEL_ROLES = [
+  {
+    name: 'Manage apps',
+    id: 'APP_MANAGER_ROLE',
+    params: [],
+    bytes: '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
+  },
+]
+
+// Get a role from the known roles (kernel)
 export const getKnownRole = roleBytes => {
-  for (const group of getCoreRoles()) {
-    for (const role of group.roles) {
-      if (roleBytes === role.bytes) {
-        return { appName: group.appName, role }
-      }
+  for (const role of KERNEL_ROLES) {
+    if (roleBytes === role.bytes) {
+      return { appName: 'Kernel', role }
     }
   }
   return null

@@ -1,8 +1,7 @@
 import React from 'react'
 import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { isEmptyAddress } from '../../aragonos-utils'
-import { isAddress } from '../../web3-utils'
+import { isAddress, isEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 import EntitySelector from './EntitySelector'
 
