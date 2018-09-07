@@ -1,4 +1,5 @@
 const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const CORE_APPS = new Map([
   [
@@ -53,6 +54,14 @@ export function isAnyAddress(address) {
   return address === ANY_ADDRESS
 }
 
+export function isEmptyAddress(address) {
+  return address === EMPTY_ADDRESS
+}
+
 export function getAnyAddress() {
   return ANY_ADDRESS
+}
+
+export function getEmptyAddress() {
+  return EMPTY_ADDRESS
 }
