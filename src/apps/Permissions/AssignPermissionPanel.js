@@ -1,7 +1,7 @@
 import React from 'react'
-import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
+import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { getAnyAddress, isEmptyAddress } from '../../aragonos-utils'
+import { isEmptyAddress } from '../../aragonos-utils'
 import { isAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 import EntitySelector from './EntitySelector'
@@ -45,15 +45,6 @@ class AssignPermissionPanel extends React.PureComponent {
     ))
   }
 
-  getAssignEntityItems() {
-    return [
-      'Select an entity',
-      ...this.appsLabels(),
-      'Any account',
-      'Custom address…',
-    ]
-  }
-
   getAppsItems() {
     return ['Select an app', ...this.appsLabels()]
   }
@@ -94,8 +85,6 @@ class AssignPermissionPanel extends React.PureComponent {
   handleSubmit = () => {
     const { roleIndex, assignEntityAddress } = this.state
     const { grantPermission, onClose } = this.props
-
-    const appsItems = this.getAppsItems()
 
     if (!this.canSubmit()) {
       return

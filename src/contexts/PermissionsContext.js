@@ -8,7 +8,6 @@ import {
   permissionsByEntity,
 } from '../permissions'
 import { log, noop } from '../utils'
-import { keccak256 } from '../web3-utils'
 
 const { Provider, Consumer } = React.createContext()
 

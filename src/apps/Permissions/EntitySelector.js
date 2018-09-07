@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 import { DropDown, Field, TextInput } from '@aragon/ui'
 import { getAnyAddress, getEmptyAddress } from '../../aragonos-utils'
 import AppInstanceLabel from './AppInstanceLabel'
@@ -68,7 +67,7 @@ class EntitySelector extends React.Component {
     const { customAddress } = this.state
     const { activeIndex, label, labelCustomAddress } = this.props
     const items = this.getItems()
-    const showAssignAddress = activeIndex === items.length - 1
+    const showCustomAddress = activeIndex === items.length - 1
     return (
       <React.Fragment>
         <Field label={label}>
@@ -80,8 +79,8 @@ class EntitySelector extends React.Component {
           />
         </Field>
 
-        {showAssignAddress && (
-          <Field label="Assign role to address">
+        {showCustomAddress && (
+          <Field label={labelCustomAddress}>
             <TextInput
               placeholder="0xcafe…"
               value={customAddress}

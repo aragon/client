@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { getAnyAddress, isEmptyAddress } from '../../aragonos-utils'
+import { isEmptyAddress } from '../../aragonos-utils'
 import { isAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 import IdentityBadge from '../../components/IdentityBadge'
@@ -197,7 +197,7 @@ class ManageRolePanel extends React.PureComponent {
   }
 
   render() {
-    const { opened, onClose, app, role, permissions } = this.props
+    const { opened, onClose, app, role } = this.props
     const { newRoleManagerValue, assignEntityIndex } = this.state
 
     const manager = this.getManager()
