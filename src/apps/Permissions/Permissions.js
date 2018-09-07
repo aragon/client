@@ -1,13 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
-import { shortenAddress } from '../../web3-utils'
+import { shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
 import AppPermissions from './AppPermissions'
 import EntityPermissions from './EntityPermissions'
 import NavigationItem from './NavigationItem'
 import AssignPermissionPanel from './AssignPermissionPanel'
+import ManageRolePanel from './ManageRolePanel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class Permissions extends React.Component {
@@ -36,19 +37,26 @@ class Permissions extends React.Component {
       return home
     }
 
-    // Note: `data` can not include the character ".".
-    // If it becomes needed, a regex could be used instead of `split()`.
-    const [screen, data = null] = params.split('.')
+    // Not using "/" as a separator because
+    // it would get encoded by encodeURIComponent().
+    const [
+      screen,
+      data = null,
+      secondaryScreen = null,
+      secondaryData = null,
+    ] = params.split('.')
 
-    if (screen === 'app') {
+    if (screen === 'app' && isAddress(data)) {
       return {
         screen,
         address: data,
         app: this.getAppByProxyAddress(data),
+        secondaryScreen,
+        secondaryData,
       }
     }
 
-    if (screen === 'entity') {
+    if (screen === 'entity' && isAddress(data)) {
       return { screen, address: data }
     }
 
@@ -77,12 +85,25 @@ class Permissions extends React.Component {
     this.props.onParamsRequest(`entity.${address}`)
   }
 
+  handleManageRole = (proxyAddress, roleBytes) => {
+    this.props.onParamsRequest(`app.${proxyAddress}.role.${roleBytes}`)
+  }
+
   createPermission = () => {
     this.setState({ showAssignPermissionPanel: true })
   }
 
-  closePanel = () => {
+  closeAssignPermissionPanel = () => {
     this.setState({ showAssignPermissionPanel: false })
+  }
+
+  closeManageRolePanel = () => {
+    const { params, onParamsRequest } = this.props
+    const location = this.getLocation(params)
+    const openedApp = location.screen === 'app' ? location.app : null
+    if (openedApp) {
+      onParamsRequest(`app.${openedApp.proxyAddress}`)
+    }
   }
 
   // Assemble the navigation items
@@ -142,11 +163,18 @@ class Permissions extends React.Component {
 
     return (
       <PermissionsConsumer>
-        {({ resolveEntity }) => {
+        {({ resolveEntity, resolveRole, permissions }) => {
           const navigationItems = this.getNavigationItems(
             location,
             resolveEntity
           )
+
+          const managedRole =
+            location.screen === 'app' &&
+            location.app &&
+            location.secondaryScreen === 'role'
+              ? resolveRole(location.app.proxyAddress, location.secondaryData)
+              : null
 
           return (
             <React.Fragment>
@@ -196,6 +224,7 @@ class Permissions extends React.Component {
                           app={location.app}
                           loading={appsLoading}
                           address={location.address}
+                          onManageRole={this.handleManageRole}
                         />
                       )}
                       {location.screen === 'entity' && (
@@ -213,7 +242,15 @@ class Permissions extends React.Component {
               <AssignPermissionPanel
                 apps={apps}
                 opened={showAssignPermissionPanel}
-                onClose={this.closePanel}
+                onClose={this.closeAssignPermissionPanel}
+              />
+
+              <ManageRolePanel
+                apps={apps}
+                opened={managedRole !== null}
+                onClose={this.closeManageRolePanel}
+                app={location.app}
+                role={managedRole}
               />
             </React.Fragment>
           )

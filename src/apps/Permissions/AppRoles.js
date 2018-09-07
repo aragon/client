@@ -11,6 +11,7 @@ import IdentityBadge from '../../components/IdentityBadge'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { isEmptyAddress } from '../../aragonos-utils'
 
 class AppRoles extends React.PureComponent {
   handleManageRole = roleBytes => {
@@ -80,7 +81,11 @@ class RoleRow extends React.Component {
         </TableCell>
         <TableCell title={bytes}>{id}</TableCell>
         <TableCell>
-          <IdentityBadge entity={manager} />
+          {isEmptyAddress(manager) ? (
+            'No manager set'
+          ) : (
+            <IdentityBadge entity={manager} />
+          )}
         </TableCell>
         <TableCell align="right">
           <Button mode="outline" compact onClick={this.handleManageClick}>

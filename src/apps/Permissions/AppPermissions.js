@@ -17,13 +17,18 @@ import AppRoles from './AppRoles'
 
 class AppPermissions extends React.PureComponent {
   render() {
-    const { app, loading, address } = this.props
+    const { app, loading, address, onManageRole } = this.props
     return (
       <PermissionsConsumer>
         {({ revokePermission, getAppPermissions }) => {
           const appPermissions = getAppPermissions(app)
           return (
             <React.Fragment>
+              <AppRoles
+                app={app}
+                loading={loading}
+                onManageRole={onManageRole}
+              />
               <Section title="Permissions set on this app">
                 {loading || appPermissions.length === 0 ? (
                   <EmptyBlock>
@@ -61,7 +66,6 @@ class AppPermissions extends React.PureComponent {
                 loading={loading}
                 onRevoke={revokePermission}
               />
-              <AppRoles app={app} loading={loading} />
             </React.Fragment>
           )
         }}

@@ -10,7 +10,7 @@ const PX_RATIO = typeof devicePixelRatio === 'undefined' ? 2 : devicePixelRatio
 
 class IdentityBadge extends React.PureComponent {
   render() {
-    const { entity } = this.props
+    const { entity, shorten = true } = this.props
     const address = isAddress(entity) ? entity : null
     return (
       <Main title={address} onClick={this.handleClick}>
@@ -23,7 +23,7 @@ class IdentityBadge extends React.PureComponent {
             />
           </Identicon>
         )}
-        <Label>{address ? shortenAddress(address) : entity}</Label>
+        <Label>{address && shorten ? shortenAddress(address) : entity}</Label>
       </Main>
     )
   }

@@ -6,10 +6,10 @@ import AppIcon from './AppIcon'
 
 class AppInstanceLabel extends React.PureComponent {
   render() {
-    const { app, proxyAddress } = this.props
+    const { app, proxyAddress, showIcon = true } = this.props
     return (
       <Main>
-        <AppIconInRow app={app} />
+        {showIcon && <AppIconInRow app={app} />}
         <AppName>{app ? app.name : 'Unknown'}</AppName>
         <Badge.App title={proxyAddress}>
           {(app && app.identifier) || shortenAddress(proxyAddress)}

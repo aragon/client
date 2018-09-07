@@ -7,12 +7,19 @@ import {
   entityRoles,
   permissionsByEntity,
 } from '../permissions'
-import { log } from '../utils'
+import { log, noop } from '../utils'
 import { keccak256 } from '../web3-utils'
 
 const { Provider, Consumer } = React.createContext()
 
 class PermissionsProvider extends React.Component {
+  state = {
+    roles: [],
+    apps: {},
+    resolveEntity: noop,
+    resolveRole: noop,
+  }
+
   static getDerivedStateFromProps(props, state) {
     if (!props.apps || props.apps === state.apps) {
       return null
@@ -25,7 +32,7 @@ class PermissionsProvider extends React.Component {
     }
   }
 
-  async revokePermission({ entityAddress, proxyAddress, roleBytes }) {
+  revokePermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
@@ -38,29 +45,28 @@ class PermissionsProvider extends React.Component {
     log('revoke tx:', transaction)
   }
 
-  // create (set a manager) and grant a permission
-  async createPermission({
+  // create a permission (= set a manager + grant a permission)
+  createPermission = async ({
     entityAddress,
     proxyAddress,
-    roleId = '',
     roleBytes = null,
     manager,
-  }) {
+  }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
+    console.log('CREATE', [entityAddress, proxyAddress, roleBytes, manager])
     const transaction = await wrapper.performACLIntent('createPermission', [
       entityAddress,
       proxyAddress,
-      roleBytes || keccak256(roleId.trim()),
+      roleBytes,
       manager,
     ])
-    log('create tx:', transaction)
+    log('createPermission tx:', transaction)
   }
 
-  // grant a permission
-  async grantPermission({ entityAddress, proxyAddress, roleBytes }) {
+  grantPermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
@@ -70,11 +76,36 @@ class PermissionsProvider extends React.Component {
       proxyAddress,
       roleBytes,
     ])
-    log('grant tx:', transaction)
+    log('grantPermission tx:', transaction)
+  }
+
+  removePermissionManager = async ({ proxyAddress, roleBytes }) => {
+    const { wrapper } = this.props
+    if (wrapper === null) {
+      return
+    }
+    const transaction = await wrapper.performACLIntent(
+      'removePermissionManager',
+      [proxyAddress, roleBytes]
+    )
+    log('removePermissionManager tx:', transaction)
+  }
+
+  setPermissionManager = async ({ entityAddress, proxyAddress, roleBytes }) => {
+    const { wrapper } = this.props
+    if (wrapper === null) {
+      return
+    }
+    const transaction = await wrapper.performACLIntent('setPermissionManager', [
+      entityAddress,
+      proxyAddress,
+      roleBytes,
+    ])
+    log('setPermissionManager tx:', transaction)
   }
 
   // Get the roles assigned to an address
-  getEntityRoles(address) {
+  getEntityRoles = address => {
     const { resolveEntity, resolveRole } = this.state
     const { permissions } = this.props
     if (!(permissions && resolveEntity && resolveRole)) {
@@ -93,7 +124,7 @@ class PermissionsProvider extends React.Component {
   }
 
   // Get the permissions declared on an app
-  getAppPermissions(app) {
+  getAppPermissions = app => {
     const { resolveEntity, resolveRole } = this.state
     const { permissions } = this.props
     if (!(app && permissions && resolveEntity && resolveRole)) {
@@ -106,7 +137,7 @@ class PermissionsProvider extends React.Component {
   }
 
   // Get the roles of an app
-  getAppRoles(app) {
+  getAppRoles = app => {
     const { resolveRole } = this.state
     const { permissions } = this.props
     return app
@@ -117,19 +148,27 @@ class PermissionsProvider extends React.Component {
       : []
   }
 
+  // Get the manager of a role
+  getRoleManager = (app, roleBytes) => {
+    const role = this.getAppRoles(app).find(
+      role => role.roleBytes === roleBytes
+    )
+    return (role && role.manager) || null
+  }
+
   // Get a list of entities with the roles assigned to them
-  getRolesByEntity() {
-    const { resolveEntity, getEntityRoles } = this.state
+  getRolesByEntity = () => {
+    const { resolveEntity } = this.state
     const { permissions } = this.props
 
-    if (!(permissions && resolveEntity && getEntityRoles)) {
+    if (!(permissions && resolveEntity)) {
       return []
     }
 
     return Object.entries(permissionsByEntity(permissions))
       .map(([entityAddress, apps]) => {
         const entity = resolveEntity(entityAddress)
-        const roles = getEntityRoles(entityAddress)
+        const roles = this.getEntityRoles(entityAddress)
         return { entity, entityAddress, roles }
       })
       .sort((a, b) => {
@@ -143,22 +182,26 @@ class PermissionsProvider extends React.Component {
       })
   }
 
-  state = {
-    roles: [],
-    revokePermission: this.revokePermission.bind(this),
-    createPermission: this.createPermission.bind(this),
-    grantPermission: this.grantPermission.bind(this),
-    getEntityRoles: this.getEntityRoles.bind(this),
-    getAppPermissions: this.getAppPermissions.bind(this),
-    getAppRoles: this.getAppRoles.bind(this),
-    getRolesByEntity: this.getRolesByEntity.bind(this),
-    apps: {},
-  }
-
   render() {
     const { children, permissions, wrapper } = this.props
     return (
-      <Provider value={{ ...this.state, permissions, wrapper }}>
+      <Provider
+        value={{
+          ...this.state,
+          permissions,
+          wrapper,
+          revokePermission: this.revokePermission,
+          createPermission: this.createPermission,
+          grantPermission: this.grantPermission,
+          removePermissionManager: this.removePermissionManager,
+          setPermissionManager: this.setPermissionManager,
+          getEntityRoles: this.getEntityRoles,
+          getAppPermissions: this.getAppPermissions,
+          getAppRoles: this.getAppRoles,
+          getRoleManager: this.getRoleManager,
+          getRolesByEntity: this.getRolesByEntity,
+        }}
+      >
         {children}
       </Provider>
     )

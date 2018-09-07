@@ -1,13 +1,14 @@
 import React from 'react'
 import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { getAnyAddress } from '../../aragonos-utils'
+import { getAnyAddress, isEmptyAddress } from '../../aragonos-utils'
 import { isAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
+import EntitySelector from './EntitySelector'
 
 const DEFAULT_STATE = {
   assignEntityIndex: 0,
-  assignAddressValue: '',
+  assignEntityAddress: '',
   appIndex: 0,
   roleIndex: 0,
 }
@@ -16,14 +17,6 @@ const DEFAULT_STATE = {
 class AssignPermissionPanel extends React.PureComponent {
   state = {
     ...DEFAULT_STATE,
-  }
-
-  handleAssignEntityChange = index => {
-    this.setState({ assignEntityIndex: index, assignAddressValue: '' })
-  }
-
-  handleAssignAddressChange = event => {
-    this.setState({ assignAddressValue: event.target.value })
   }
 
   handleAppChange = index => {
@@ -67,7 +60,10 @@ class AssignPermissionPanel extends React.PureComponent {
 
   getRolesItems() {
     const roles = this.getRoles()
-    const names = roles.map(role => role.name || '?')
+    const names = roles.map(
+      role =>
+        (role && role.name) || `Unknown role (${(role && role.id) || 'no ID'})`
+    )
     return ['Select a role', ...names]
   }
 
@@ -76,41 +72,14 @@ class AssignPermissionPanel extends React.PureComponent {
     return this.getNamedApps()[this.state.appIndex - 1]
   }
 
-  // Get the address of the selected entity
-  getEntityAddress() {
-    const { assignEntityIndex, assignAddressValue } = this.state
-    const items = this.getAssignEntityItems()
+  canSubmit() {
+    const { assignEntityAddress, roleIndex } = this.state
 
-    // custom address
-    if (assignEntityIndex === items.length - 1) {
-      return assignAddressValue.trim()
-    }
-
-    // any account
-    if (assignEntityIndex === items.length - 2) {
-      return getAnyAddress()
-    }
-
-    // app proxy address (in the menu, apps have two entries above them)
-    const app = this.getNamedApps()[assignEntityIndex - 1]
-
-    const address = app ? app.proxyAddress : null
-    return address && address.trim()
-  }
-
-  canSubmit(assignEntityItems, rolesItems) {
-    const { assignEntityIndex, assignAddressValue, roleIndex } = this.state
-
-    // No entity selected
-    if (assignEntityIndex === 0) {
+    if (!isAddress(assignEntityAddress)) {
       return false
     }
 
-    // No custom address set
-    if (
-      assignEntityIndex === assignEntityItems.length - 1 &&
-      !isAddress(assignAddressValue.trim())
-    ) {
+    if (isEmptyAddress(assignEntityAddress)) {
       return false
     }
 
@@ -123,63 +92,29 @@ class AssignPermissionPanel extends React.PureComponent {
   }
 
   handleSubmit = () => {
-    const { roleIndex } = this.state
+    const { roleIndex, assignEntityAddress } = this.state
+    const { grantPermission, onClose } = this.props
 
-    const {
-      // createPermission,
-      grantPermission,
-      onClose,
-    } = this.props
-
-    const assignEntityItems = this.getAssignEntityItems()
     const appsItems = this.getAppsItems()
 
-    if (!this.canSubmit(assignEntityItems, appsItems)) {
+    if (!this.canSubmit()) {
       return
     }
 
     const selectedApp = this.getSelectedApp()
     // const rolesItems = this.getRolesItems()
 
-    const entityAddress = this.getEntityAddress()
-    if (!entityAddress) {
-      return
-    }
-
-    // if (roleIndex === rolesItems.length - 1) {
-    //   console.log('CREATE', {
-    //     entityAddress,
-    //     proxyAddress: selectedApp.proxyAddress,
-    //     roleId: newRoleValue.trim(),
-    //     manager: newRoleManagerValue.trim(),
-    //   })
-    //   createPermission({
-    //     entityAddress,
-    //     proxyAddress: selectedApp.proxyAddress,
-    //     roleId: newRoleValue.trim(),
-    //     manager: newRoleManagerValue.trim(),
-    //   })
-    //   onClose()
-    //   return
-    // }
-
     const role = this.getRoles()[roleIndex - 1]
     if (!role) {
       return
     }
 
-    console.log(
-      `grantPermission(${{
-        entityAddress,
-        proxyAddress: selectedApp.proxyAddress,
-        roleBytes: role.bytes,
-      }})`
-    )
     grantPermission({
-      entityAddress,
+      entityAddress: assignEntityAddress,
       proxyAddress: selectedApp.proxyAddress,
       roleBytes: role.bytes,
     })
+
     onClose()
   }
 
@@ -189,26 +124,17 @@ class AssignPermissionPanel extends React.PureComponent {
     }
   }
 
-  close = () => {
-    this.props.onClose()
+  handleEntityChange = ({ index, address }) => {
+    this.setState({ assignEntityIndex: index, assignEntityAddress: address })
   }
 
   render() {
     const { opened, onClose } = this.props
+    const { assignEntityIndex, appIndex, roleIndex } = this.state
 
-    const {
-      assignEntityIndex,
-      assignAddressValue,
-      appIndex,
-      roleIndex,
-    } = this.state
-
-    const assignEntityItems = this.getAssignEntityItems()
     const appsItems = this.getAppsItems()
     const selectedApp = this.getSelectedApp()
     const rolesItems = this.getRolesItems()
-
-    const showAssignAddress = assignEntityIndex === assignEntityItems.length - 1
 
     return (
       <SidePanel
@@ -218,25 +144,13 @@ class AssignPermissionPanel extends React.PureComponent {
         onTransitionEnd={this.handlePanelTransitionEnd}
       >
         <React.Fragment>
-          <Field label="Assign role to">
-            <DropDown
-              items={assignEntityItems}
-              active={assignEntityIndex}
-              onChange={this.handleAssignEntityChange}
-              wide
-            />
-          </Field>
-
-          {showAssignAddress && (
-            <Field label="Assign role to address">
-              <TextInput
-                placeholder="0xcafe"
-                value={assignAddressValue}
-                onChange={this.handleAssignAddressChange}
-                wide
-              />
-            </Field>
-          )}
+          <EntitySelector
+            label="Assign role to"
+            labelCustomAddress="Assign role to"
+            apps={this.getNamedApps()}
+            onChange={this.handleEntityChange}
+            activeIndex={assignEntityIndex}
+          />
 
           <Field label="On app">
             <DropDown
@@ -262,7 +176,7 @@ class AssignPermissionPanel extends React.PureComponent {
             <Button
               mode="strong"
               onClick={this.handleSubmit}
-              disabled={!this.canSubmit(assignEntityItems, rolesItems)}
+              disabled={!this.canSubmit()}
               wide
             >
               {'Add permission'}
