@@ -27,6 +27,11 @@ export const sortAppsPair = (app1, app2) => {
   const index1 = name1 ? appsOrder.indexOf(name1) : -1
   const index2 = name2 ? appsOrder.indexOf(name2) : -1
 
+  // Internal apps first
+  if (app1.isAragonOsInternalApp !== app2.isAragonOsInternalApp) {
+    return app1.isAragonOsInternalApp ? -1 : 1
+  }
+
   // Try to sort it if the app exists in the list
   if (index1 === -1 && index2 > -1) {
     return 1

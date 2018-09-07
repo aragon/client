@@ -18,6 +18,21 @@ import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
 
+const KERNEL_BASE = {
+  name: 'Kernel',
+  appId: 'kernel',
+  isAragonOsInternalApp: true,
+  roles: [
+    {
+      name: 'Manage apps',
+      id: 'APP_MANAGER_ROLE',
+      params: [],
+      bytes:
+        '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
+    },
+  ],
+}
+
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
@@ -57,23 +72,30 @@ const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
 // Sort apps, apply URL overrides, and attach data useful to the frontend
-const prepareFrontendApps = (apps, gateway) => {
-  return applyAppOverrides(apps)
-    .sort(sortAppsPair)
-    .map(app => {
-      const baseUrl = appBaseUrl(app, gateway)
-      // Remove the starting slash from the start_url field
-      // so the absolute path can be resolved from baseUrl.
-      const startUrl = removeStartingSlash(app['start_url'] || '')
-      const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
+const prepareFrontendApps = (apps, daoAddress, gateway) => {
+  return [
+    {
+      ...KERNEL_BASE,
+      proxyAddress: daoAddress,
+      hasWebApp: false,
+    },
+    ...applyAppOverrides(apps)
+      .map(app => {
+        const baseUrl = appBaseUrl(app, gateway)
+        // Remove the starting slash from the start_url field
+        // so the absolute path can be resolved from baseUrl.
+        const startUrl = removeStartingSlash(app['start_url'] || '')
+        const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
 
-      return {
-        ...app,
-        src,
-        baseUrl,
-        hasWebApp: Boolean(app['start_url']),
-      }
-    })
+        return {
+          ...app,
+          src,
+          baseUrl,
+          hasWebApp: Boolean(app['start_url']),
+        }
+      })
+      .sort(sortAppsPair),
+  ]
 }
 
 const getMainAccount = async web3 => {
@@ -192,7 +214,9 @@ const subscribe = (
 
   const subscriptions = {
     apps: apps.subscribe(apps => {
-      onApps(prepareFrontendApps(apps, ipfsConf.gateway))
+      onApps(
+        prepareFrontendApps(apps, wrapper.kernelProxy.address, ipfsConf.gateway)
+      )
     }),
     permissions: permissions.subscribe(throttle(onPermissions, 100)),
     connectedApp: null,
