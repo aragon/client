@@ -208,11 +208,9 @@ class ManageRolePanel extends React.PureComponent {
     const action = this.getCurrentAction()
     const message = this.getMessage(action)
 
-    console.log('CURRENT ACTION', action)
-
     return (
       <SidePanel
-        title={'Manage role'}
+        title={action === CREATE_PERMISSION ? 'Initialize role' : 'Manage role'}
         opened={opened}
         onClose={onClose}
         onTransitionEnd={this.handlePanelTransitionEnd}

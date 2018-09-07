@@ -74,6 +74,8 @@ class RoleRow extends React.Component {
     const name = (role && role.name) || 'Unknown role'
     const bytes = role && role.bytes
 
+    const emptyManager = isEmptyAddress(manager)
+
     return (
       <TableRow>
         <TableCell>
@@ -81,15 +83,11 @@ class RoleRow extends React.Component {
         </TableCell>
         <TableCell title={bytes}>{id}</TableCell>
         <TableCell>
-          {isEmptyAddress(manager) ? (
-            'No manager set'
-          ) : (
-            <IdentityBadge entity={manager} />
-          )}
+          {emptyManager ? 'No manager set' : <IdentityBadge entity={manager} />}
         </TableCell>
         <TableCell align="right">
           <Button mode="outline" compact onClick={this.handleManageClick}>
-            Manage
+            {emptyManager ? 'Initialize' : 'Manage'}
           </Button>
         </TableCell>
       </TableRow>
