@@ -1,4 +1,5 @@
 import BN from 'bn.js'
+import throttle from 'lodash.throttle'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
   providers,
@@ -65,6 +66,7 @@ const prepareFrontendApps = (apps, gateway) => {
       // so the absolute path can be resolved from baseUrl.
       const startUrl = removeStartingSlash(app['start_url'] || '')
       const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
+
       return {
         ...app,
         src,
@@ -192,7 +194,7 @@ const subscribe = (
     apps: apps.subscribe(apps => {
       onApps(prepareFrontendApps(apps, ipfsConf.gateway))
     }),
-    permissions: permissions.subscribe(onPermissions),
+    permissions: permissions.subscribe(throttle(onPermissions, 100)),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),

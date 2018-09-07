@@ -1,6 +1,5 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
-import resolvePathname from 'resolve-pathname'
 import styled from 'styled-components'
 import {
   theme,
@@ -12,6 +11,7 @@ import {
 import ClickOutHandler from 'react-onclickout'
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
 import { lerp } from '../../math-utils'
+import { appIconUrl } from '../../utils'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
@@ -39,11 +39,7 @@ const prepareAppGroups = apps =>
       {
         appId: app.appId,
         name: app.name,
-        icon: (
-          <RemoteIcon
-            src={`${resolvePathname('images/icon.svg', app.baseUrl)}`}
-          />
-        ),
+        icon: <RemoteIcon src={appIconUrl(app)} size={22} />,
         instances: [instance],
       },
     ])

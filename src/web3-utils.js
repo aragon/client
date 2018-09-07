@@ -5,6 +5,9 @@
  */
 import Web3 from 'web3'
 
+const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 // Check address equality without checksums
 export function addressesEqual(first, second) {
   first = first && first.toLowerCase()
@@ -41,6 +44,24 @@ export function getWeb3(provider) {
   const web3 = new Web3(provider)
   cache.set(provider, web3)
   return web3
+}
+
+// Check if the address represents “Any address”
+export function isAnyAddress(address) {
+  return address === ANY_ADDRESS
+}
+
+// Check if the address represents an empty address
+export function isEmptyAddress(address) {
+  return address === EMPTY_ADDRESS
+}
+
+export function getAnyAddress() {
+  return ANY_ADDRESS
+}
+
+export function getEmptyAddress() {
+  return EMPTY_ADDRESS
 }
 
 // Re-export some utilities from web3-utils
