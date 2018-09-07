@@ -163,7 +163,7 @@ class Permissions extends React.Component {
 
     return (
       <PermissionsConsumer>
-        {({ resolveEntity, resolveRole, permissions }) => {
+        {({ resolveEntity, resolveRole, permissions, getPermissionsApps }) => {
           const navigationItems = this.getNavigationItems(
             location,
             resolveEntity
@@ -207,7 +207,7 @@ class Permissions extends React.Component {
                 <Screen position={0} animate={animateScreens}>
                   {location.screen === 'home' && (
                     <Home
-                      apps={apps}
+                      apps={getPermissionsApps()}
                       appsLoading={appsLoading}
                       permissionsLoading={permissionsLoading}
                       onOpenApp={this.handleOpenApp}

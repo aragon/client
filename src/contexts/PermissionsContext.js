@@ -181,6 +181,16 @@ class PermissionsProvider extends React.Component {
       })
   }
 
+  getPermissionsApps = () => {
+    // Internal apps first
+    return this.props.apps.sort((app1, app2) => {
+      if (app1 === app2) {
+        return 0
+      }
+      return app1.isAragonOsInternalApp ? -1 : 1
+    })
+  }
+
   render() {
     const { children, permissions, wrapper } = this.props
     return (
@@ -199,6 +209,7 @@ class PermissionsProvider extends React.Component {
           getAppRoles: this.getAppRoles,
           getRoleManager: this.getRoleManager,
           getRolesByEntity: this.getRolesByEntity,
+          getPermissionsApps: this.getPermissionsApps,
         }}
       >
         {children}
