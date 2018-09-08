@@ -12,13 +12,15 @@ const Screen = ({ position, children, animate }) => (
     leave={{ left: position === 0 ? -SCREEN_SHIFT : SCREEN_SHIFT, opacity: 0 }}
     config={springs.lazy}
     immediate={!animate}
+    active={Boolean(children)}
     native
   >
     {children &&
-      (({ opacity, left }) => (
+      (({ opacity, left, active }) => (
         <Main>
           <animated.div
             style={{
+              zIndex: active ? '2' : '1',
               opacity,
               transform: left.interpolate(
                 t => `translate3d(${t * 100}%, 0, 0)`
