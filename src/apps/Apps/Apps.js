@@ -1,29 +1,162 @@
 import React from 'react'
 import styled from 'styled-components'
-import { DropDown, Button, Field, TextInput } from '@aragon/ui'
-import ComingSoon from '../../components/ComingSoon/ComingSoon'
-import { AppBar } from '@aragon/ui'
-import { Text, theme } from '@aragon/ui'
+import { Card, Button, Badge, Text, SafeLink, theme, colors, unselectable } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
-import logo from '../../components/Home/assets/logo-background.svg'
+
+import espresso from './icons/espresso.png'
 
 class Apps extends React.Component {
   render() {
     return (
-      <ComingSoon
+      <AppLayout
         title='Apps'
-        subtitle='The ability to install apps is not ready yet'
         endContent={
-          <Button.Anchor mode="strong" href="https://hack.aragon.org/" target="_blank">
+          <DevPortalAnchor mode="strong" href="https://hack.aragon.org/" target="_blank">
             Create a new app
-          </Button.Anchor>
+          </DevPortalAnchor>
         }>
-        <br/>
-        <p>In this screen, you will be able to <b>browse</b> and <b>install</b> apps for your Aragon organization</p>
-        <p>In the meantime, you can <a href="https://hack.aragon.org/" target="_blank">learn how to create apps</a> if you are a developer</p>
-      </ComingSoon>
+        <Content>
+          <p>Soon you will be able to <b>browse</b> and <b>install</b> apps in your Aragon organization from here.</p>
+          <p>In the meantime, you can <a href="https://hack.aragon.org/" target="_blank">learn how to create apps</a> or browse some apps being developed.</p>
+
+          <h1>Apps in development</h1>
+          <AppsGrid>
+          {knownApps.map(app => (
+            <Main>
+              <Icon>
+                <Img width="64" height="64" src={app.icon} alt="" />
+              </Icon>
+              <Name>{app.name}</Name>
+              <TagWrapper>
+                <Tag background={statuses[app.status]}>{app.status}</Tag>
+              </TagWrapper>
+              <Description color={theme.textSecondary}>
+                {app.description}
+              </Description>
+              <Action href={app.link} target="_blank">
+                <Text weight="bold" color={theme.textSecondary}>
+                  Read more
+                </Text>
+              </Action>
+            </Main>
+          ))}
+          </AppsGrid>
+        </Content>
+      </AppLayout>
     )
   }
 }
+
+const DevPortalAnchor = styled(Button.Anchor)`
+  display: block;
+`
+
+const Content = styled.div`
+  padding: 30px;
+
+  > h1 {
+    margin: 30px 0;
+    font-weight: 600;
+  }
+`
+
+const AppsGrid = styled.div`
+  display: grid;
+  grid-auto-flow: row;
+  grid-gap: 25px;
+  justify-items: start;
+  grid-template-columns: repeat(auto-fill, 224px);
+`
+
+const Main = styled(Card).attrs({ width: '100%', height: '288px' })`
+  ${unselectable};
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 25px;
+  cursor: pointer;
+`
+
+const Icon = styled.div`
+  height: 64px;
+  margin-bottom: 5px;
+  img {
+    display: block;
+  }
+`
+
+const Img = styled.img`
+  display: block;
+`
+
+const Name = styled.p`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 10px;
+`
+
+const TagWrapper = styled.div`
+  max-width: 100%;
+  padding: 0 20px;
+  margin-bottom: 10px;
+`
+
+const Tag = styled(Badge)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  color: white;
+`
+
+const Description = styled(Text)`
+  padding: 0 1rem;
+  margin-bottom: 30px;
+`
+
+const Action = styled(SafeLink)`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-bottom: 30px;
+  text-align: center;
+  text-decoration: none;
+`
+
+const statuses = {
+  'pre-alpha': colors.Gold.Brandy,
+  'alpha': colors.Blue.Danube,
+  'ready': colors.Green['Spring Green'],
+}
+
+const knownApps = [
+  {
+    name: 'That Planning Tab',
+    status: 'alpha',
+    description: 'Suite for open and fluid organizations. Bounties, range voting, and more.',
+    link: 'https://github.com/giveth',
+  },
+  {
+    name: 'Payroll',
+    status: 'alpha',
+    description: 'Pay and get paid, by the block. Supports tokens and price feeds.',
+    link: 'https://github.com/aragon/aragon-apps',
+  },
+  {
+    icon: espresso,
+    name: 'Espresso',
+    status: 'pre-alpha',
+    description: 'Collaborative data vault. Encrypt and share data with people in your organization.',
+    link: 'https://github.com/espresso-org',
+  },
+  {
+    name: 'Liquid democracy',
+    status: 'pre-alpha',
+    description: 'Delegate your voting power to others, and vote on important matters.',
+    link: 'https://github.com/aragon/aragon-apps',
+  },
+]
 
 export default Apps
