@@ -162,6 +162,7 @@ class App extends React.Component {
     this.setState({ appsLoading: true })
 
     log('Wrapper init', dao)
+    this.setState({ daoName: dao })
     initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
@@ -233,6 +234,7 @@ class App extends React.Component {
       walletWeb3,
       web3,
       connected,
+      daoName,
       daoAddress,
       appsLoading,
       permissionsLoading,
@@ -257,6 +259,7 @@ class App extends React.Component {
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
           web3={web3}
+          daoName={daoName}
           daoAddress={daoAddress}
           transactionBag={transactionBag}
           connected={connected}

@@ -78,7 +78,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { connected, apps } = this.props
+    const { connected, apps, daoName } = this.props
     const { showApps } = this.state
 
     const appActions = actions.filter(({ appName }) =>
@@ -87,7 +87,7 @@ class Home extends React.Component {
     return (
       <Main>
         <AppBarWrapper>
-          <AppBar title="Welcome!" />
+          <AppBar title="Home" />
         </AppBarWrapper>
         <ScrollWrapper>
           <AppWrapper>
@@ -103,7 +103,15 @@ class Home extends React.Component {
                         fontSize: lerp(showAppsProgress, 37, 22) + 'px',
                       }}
                     >
-                      Welcome to Aragon 0.5 − The Architect
+                      Welcome to Aragon!
+                    </Text>
+                    <br></br>
+                    <Text
+                      style={{
+                        fontSize: lerp(showAppsProgress, 18, 14) + 'px',
+                      }}
+                    >
+                      You are interacting with {daoName}
                     </Text>
                   </Title>
                   <p style={{ marginBottom: '20px' }}>

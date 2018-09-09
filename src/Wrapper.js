@@ -208,6 +208,7 @@ class Wrapper extends React.Component {
       walletNetwork,
       wrapper,
       connected,
+      daoName,
       daoAddress,
       resolveEntity,
       resolveRole,
@@ -220,6 +221,7 @@ class Wrapper extends React.Component {
           appsLoading={appsLoading}
           onOpenApp={this.openApp}
           apps={apps}
+          daoName={daoName}
         />
       )
     }
