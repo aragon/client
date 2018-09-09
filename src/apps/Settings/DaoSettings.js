@@ -102,8 +102,8 @@ class DaoSettings extends React.Component {
                     walletNetwork !== network.type
                       ? `Please select the ${sanitizeNetworkType(
                           network.type
-                        )} network in MetaMask.`
-                      : `Please unlock your account in MetaMask.`)()}
+                        )} network in your Ethereum provider.`
+                      : `Please unlock your Ethereum provider.`)()}
                 </Text>
               )}
             </div>

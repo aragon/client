@@ -6,9 +6,9 @@ import logo from '../Home/assets/logo-background.svg'
 
 class ComingSoon extends React.Component {
   render() {
-    const { title, subtitle } = this.props
+    const { title, subtitle, endContent, children } = this.props
     return (
-      <AppLayout title={title}>
+      <AppLayout title={title} endContent={endContent}>
         <Main>
           <Title>
             <h1>
@@ -20,6 +20,7 @@ class ComingSoon extends React.Component {
           <p>
             <Text color={theme.textSecondary}>{subtitle}</Text>
           </p>
+          {children}
         </Main>
       </AppLayout>
     )

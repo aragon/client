@@ -217,7 +217,7 @@ class StartContent extends React.PureComponent {
       return (
         <ActionInfo>
           Please select the {sanitizeNetworkType(network.type)} network in
-          MetaMask.
+          your Ethereum provider.
         </ActionInfo>
       )
     }
