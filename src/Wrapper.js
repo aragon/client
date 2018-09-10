@@ -11,6 +11,7 @@ import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
+import { noop } from './utils'
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -18,8 +19,8 @@ class Wrapper extends React.Component {
     account: '',
     connected: false,
     daoAddress: '',
-    historyBack: () => {},
-    historyPush: () => {},
+    historyBack: noop,
+    historyPush: noop,
     locator: {},
     walletNetwork: '',
     transactionBag: null,
@@ -91,19 +92,16 @@ class Wrapper extends React.Component {
       transaction,
     }
   }
-  reshapeTransactionBag(bag) {
+  reshapeTransactionBag({ path, transaction }) {
     // This is a temporary method to reshape the transaction bag
     // to the future format we expect from Aragon.js
     // When Aragon.js starts returning the new format, we can simply
     // replace search and replace this function with `bag`, although
     // it is probably only used in `handleTransaction`
-    const transaction = bag.path[bag.path.length - 1]
-    const direct = bag.path.length === 1
-
     return {
-      direct,
-      intent: this.makeTransactionIntent(transaction),
-      paths: direct ? [] : [bag.path],
+      direct: path.length === 1,
+      intent: transaction && this.makeTransactionIntent(transaction),
+      paths: path.length ? [path] : [],
     }
   }
   handleTransaction = bag => {
@@ -130,6 +128,7 @@ class Wrapper extends React.Component {
       accept(res)
     })
   }
+
   handleSignerClose = () => {
     this.setState({ signerOpened: false })
   }
@@ -170,7 +169,7 @@ class Wrapper extends React.Component {
       locator: { instanceId, params },
     } = this.props
     return (
-      <>
+      <React.Fragment>
         <Main>
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
@@ -197,22 +196,20 @@ class Wrapper extends React.Component {
             {...web3Action}
           />
         </SidePanel>
-      </>
+      </React.Fragment>
     )
   }
   renderApp(instanceId, params) {
     const {
       apps,
       appsLoading,
-      permissions,
       permissionsLoading,
       account,
       walletNetwork,
+      walletWeb3,
       wrapper,
       connected,
       daoAddress,
-      resolveEntity,
-      resolveRole,
     } = this.props
 
     if (instanceId === 'home') {
@@ -231,13 +228,12 @@ class Wrapper extends React.Component {
         <Permissions
           apps={apps}
           appsLoading={appsLoading}
-          permissions={permissions}
           permissionsLoading={permissionsLoading}
-          daoAddress={daoAddress}
           params={params}
           onParamsRequest={this.handleParamsRequest}
-          resolveEntity={resolveEntity}
-          resolveRole={resolveRole}
+          walletWeb3={walletWeb3}
+          account={account}
+          wrapper={wrapper}
         />
       )
     }

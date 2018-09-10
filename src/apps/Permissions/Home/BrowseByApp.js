@@ -9,15 +9,21 @@ class BrowseByApp extends React.Component {
     const { loading, apps, onOpenApp } = this.props
     return (
       <Section title="Browse by app">
-        {loading ? (
-          <EmptyBlock>Loading apps…</EmptyBlock>
-        ) : (
-          <Apps>
-            {apps.map(app => (
-              <AppCard key={app.appId} app={app} onOpen={onOpenApp} />
-            ))}
-          </Apps>
-        )}
+        {(() => {
+          if (loading) {
+            return <EmptyBlock>Loading apps…</EmptyBlock>
+          }
+          if (apps.length === 0) {
+            return <EmptyBlock>No apps installed.</EmptyBlock>
+          }
+          return (
+            <Apps>
+              {apps.map(app => (
+                <AppCard key={app.appId} app={app} onOpen={onOpenApp} />
+              ))}
+            </Apps>
+          )
+        })()}
       </Section>
     )
   }

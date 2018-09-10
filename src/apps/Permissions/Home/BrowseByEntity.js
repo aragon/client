@@ -3,69 +3,36 @@ import { Table, TableHeader, TableRow } from '@aragon/ui'
 import Section from '../Section'
 import EmptyBlock from '../EmptyBlock'
 import EntityRow from './EntityRow'
-import {
-  entityRoles,
-  permissionsByEntity as byEntity,
-} from '../../../permissions'
+import { PermissionsConsumer } from '../../../contexts/PermissionsContext'
 
 class BrowseByEntity extends React.Component {
   render() {
-    const {
-      loading,
-      permissions,
-      onOpenEntity,
-      daoAddress,
-      resolveEntity,
-      resolveRole,
-    } = this.props
-    const permissionsByEntity = byEntity(permissions)
+    const { loading, onOpenEntity } = this.props
     return (
       <Section title="Browse by entity">
-        {loading ? (
-          <EmptyBlock>Loading permissions…</EmptyBlock>
-        ) : (
-          <>
-            <Table
-              header={
-                <TableRow>
-                  <TableHeader title="Entity" />
-                  <TableHeader title="Type" />
-                  <TableHeader title="Roles" />
-                  <TableHeader title="" />
-                </TableRow>
-              }
-            >
-              {Object.entries(permissionsByEntity)
-                .map(([entityAddress, apps]) => {
-                  const entity = resolveEntity(entityAddress, daoAddress)
+        <PermissionsConsumer>
+          {({ getRolesByEntity }) => {
+            if (loading) {
+              return <EmptyBlock>Loading permissions…</EmptyBlock>
+            }
 
-                  const roles = entityRoles(
-                    entityAddress,
-                    permissionsByEntity,
-                    (roleBytes, proxyAddress) => ({
-                      role: resolveRole(proxyAddress, roleBytes),
-                      appEntity: resolveEntity(proxyAddress, daoAddress),
-                      proxyAddress,
-                      roleBytes,
-                    })
-                  )
+            const roles = getRolesByEntity()
+            if (roles.length === 0) {
+              return <EmptyBlock>No roles found.</EmptyBlock>
+            }
 
-                  return {
-                    entity,
-                    entityAddress,
-                    roles,
-                  }
-                })
-                .sort((a, b) => {
-                  if (a.entity && a.entity.type === 'any') {
-                    return -1
-                  }
-                  if (b.entity && b.entity.type === 'any') {
-                    return 1
-                  }
-                  return 0
-                })
-                .map(({ entity, entityAddress, roles }) => (
+            return (
+              <Table
+                header={
+                  <TableRow>
+                    <TableHeader title="Entity" />
+                    <TableHeader title="Type" />
+                    <TableHeader title="Roles" />
+                    <TableHeader title="" />
+                  </TableRow>
+                }
+              >
+                {roles.map(({ entity, entityAddress, roles }) => (
                   <EntityRow
                     key={entityAddress}
                     entity={entity}
@@ -73,9 +40,10 @@ class BrowseByEntity extends React.Component {
                     onOpen={onOpenEntity}
                   />
                 ))}
-            </Table>
-          </>
-        )}
+              </Table>
+            )
+          }}
+        </PermissionsConsumer>
       </Section>
     )
   }

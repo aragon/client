@@ -15,10 +15,8 @@ class AppCard extends React.PureComponent {
     const instanceTitle = `Address: ${proxyAddress}`
     return (
       <Main onClick={this.handleClick}>
-        <Icon>
-          <AppIcon app={app} />
-        </Icon>
-        <Name>{name}</Name>
+        <AppIconCard app={app} size={28} />
+        <Name>{name || 'Unknown'}</Name>
         <IdentifierWrapper>
           <Identifier title={instanceTitle}>{instanceLabel}</Identifier>
         </IdentifierWrapper>
@@ -43,12 +41,8 @@ const Main = styled(Card).attrs({ width: '100%', height: '180px' })`
   cursor: pointer;
 `
 
-const Icon = styled.div`
-  height: 28px;
+const AppIconCard = styled(AppIcon)`
   margin-bottom: 5px;
-  img {
-    display: block;
-  }
 `
 
 const Name = styled.p`
