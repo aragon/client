@@ -12,7 +12,9 @@ import {
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 
-import espresso from './icons/espresso.png'
+import defaultIcon from './icons/default.png'
+import payrollIcon from './icons/payroll.png'
+import espressoIcon from './icons/espresso.png'
 
 class Apps extends React.Component {
   render() {
@@ -156,6 +158,7 @@ const statuses = {
 
 const knownApps = [
   {
+    icon: defaultIcon,
     name: 'That Planning Tab',
     status: 'alpha',
     description: `Suite for open and fluid organizations.
@@ -163,6 +166,7 @@ const knownApps = [
     link: 'https://github.com/Giveth/planning-app',
   },
   {
+    icon: payrollIcon,
     name: 'Payroll',
     status: 'alpha',
     description: `Pay and get paid, by the block.
@@ -170,7 +174,7 @@ const knownApps = [
     link: 'https://github.com/aragon/aragon-apps/tree/master/future-apps/payroll',
   },
   {
-    icon: espresso,
+    icon: espressoIcon,
     name: 'Espresso',
     status: 'pre-alpha',
     description: `Collaborative data vault.
@@ -178,6 +182,7 @@ const knownApps = [
     link: 'https://github.com/espresso-org',
   },
   {
+    icon: defaultIcon,
     name: 'Liquid democracy',
     status: 'pre-alpha',
     description: `Delegate your voting power to others,
