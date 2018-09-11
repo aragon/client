@@ -105,15 +105,16 @@ class Home extends React.Component {
                     >
                       Welcome to Aragon!
                     </Text>
-                    <br></br>
+                    <br />
+                    <br />
                     <Text
                       style={{
                         fontSize: lerp(showAppsProgress, 18, 14) + 'px',
                       }}
                     >
-                      {locator.dao.endsWith('.eth') ?
-                        `You are interacting with ${locator.dao}` :
-                        'You are using Aragon 0.5 — The Architect'}
+                      {locator.dao.endsWith('.eth')
+                        ? `You are interacting with ${locator.dao}`
+                        : 'You are using Aragon 0.5 — The Architect'}
                     </Text>
                   </Title>
                   <p style={{ marginBottom: '20px' }}>
