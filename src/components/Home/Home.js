@@ -78,7 +78,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { connected, apps, daoName } = this.props
+    const { connected, apps, locator } = this.props
     const { showApps } = this.state
 
     const appActions = actions.filter(({ appName }) =>
@@ -111,7 +111,9 @@ class Home extends React.Component {
                         fontSize: lerp(showAppsProgress, 18, 14) + 'px',
                       }}
                     >
-                      You are interacting with {daoName}
+                      {locator.dao.endsWith('.eth') ?
+                        `You are interacting with ${locator.dao}` :
+                        'You are using Aragon 0.5 — The Architect'}
                     </Text>
                   </Title>
                   <p style={{ marginBottom: '20px' }}>

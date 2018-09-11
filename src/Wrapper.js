@@ -200,6 +200,7 @@ class Wrapper extends React.Component {
   }
   renderApp(instanceId, params) {
     const {
+      locator,
       apps,
       appsLoading,
       permissions,
@@ -208,7 +209,6 @@ class Wrapper extends React.Component {
       walletNetwork,
       wrapper,
       connected,
-      daoName,
       daoAddress,
       resolveEntity,
       resolveRole,
@@ -220,8 +220,8 @@ class Wrapper extends React.Component {
           connected={connected}
           appsLoading={appsLoading}
           onOpenApp={this.openApp}
+          locator={locator}
           apps={apps}
-          daoName={daoName}
         />
       )
     }
