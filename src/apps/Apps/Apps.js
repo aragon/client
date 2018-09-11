@@ -1,6 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card, Button, Badge, Text, SafeLink, theme, colors, unselectable } from '@aragon/ui'
+import {
+  Card,
+  Button,
+  Badge,
+  Text,
+  SafeLink,
+  theme,
+  colors,
+  unselectable,
+} from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 
 import espresso from './icons/espresso.png'
@@ -9,37 +18,51 @@ class Apps extends React.Component {
   render() {
     return (
       <AppLayout
-        title='Apps'
+        title="Apps"
         endContent={
-          <DevPortalAnchor mode="strong" href="https://hack.aragon.org/" target="_blank">
+          <DevPortalAnchor
+            mode="strong"
+            href="https://hack.aragon.org/"
+            target="_blank"
+          >
             Create a new app
           </DevPortalAnchor>
-        }>
+        }
+      >
         <Content>
-          <p>Soon you will be able to <b>browse</b> and <b>install</b> apps in your Aragon organization from here.</p>
-          <p>In the meantime, you can <a href="https://hack.aragon.org/" target="_blank">learn how to create apps</a> or browse some apps being developed.</p>
+          <p>
+            Soon you will be able to <b>browse</b> and <b>install</b>
+            apps in your Aragon organization from here.
+          </p>
+          <p>
+            In the meantime, you can
+            <a href="https://hack.aragon.org/" target="_blank">
+              learn how to create apps
+            </a>
+            or browse some apps being developed.
+          </p>
 
           <h1>Apps in development</h1>
           <AppsGrid>
-          {knownApps.map(app => (
-            <Main>
-              <Icon>
-                <Img width="64" height="64" src={app.icon} alt="" />
-              </Icon>
-              <Name>{app.name}</Name>
-              <TagWrapper>
-                <Tag background={statuses[app.status]}>{app.status}</Tag>
-              </TagWrapper>
-              <Description color={theme.textSecondary}>
-                {app.description}
-              </Description>
-              <Action href={app.link} target="_blank">
-                <Text weight="bold" color={theme.textSecondary}>
-                  Read more
-                </Text>
-              </Action>
-            </Main>
-          ))}
+            {knownApps.map(app => (
+              <Main>
+                <Icon>
+                  <Img width="64" height="64" src={app.icon} alt="" />
+                </Icon>
+                <Name>{app.name}</Name>
+                <TagWrapper>
+                  <Tag background={statuses[app.status]}>{app.status}</Tag>
+                </TagWrapper>
+                <Description color={theme.textSecondary}>
+                  {app.description}
+                </Description>
+                <Action href={app.link} target="_blank">
+                  <Text weight="bold" color={theme.textSecondary}>
+                    Read more
+                  </Text>
+                </Action>
+              </Main>
+            ))}
           </AppsGrid>
         </Content>
       </AppLayout>
@@ -127,35 +150,39 @@ const Action = styled(SafeLink)`
 
 const statuses = {
   'pre-alpha': colors.Gold.Brandy,
-  'alpha': colors.Blue.Danube,
-  'ready': colors.Green['Spring Green'],
+  alpha: colors.Blue.Danube,
+  ready: colors.Green['Spring Green'],
 }
 
 const knownApps = [
   {
     name: 'That Planning Tab',
     status: 'alpha',
-    description: 'Suite for open and fluid organizations. Bounties, range voting, and more.',
-    link: 'https://github.com/giveth',
+    description: `Suite for open and fluid organizations.
+                  Bounties, range voting, and more.`,
+    link: 'https://github.com/Giveth/planning-app',
   },
   {
     name: 'Payroll',
     status: 'alpha',
-    description: 'Pay and get paid, by the block. Supports tokens and price feeds.',
-    link: 'https://github.com/aragon/aragon-apps',
+    description: `Pay and get paid, by the block.
+                  Supports tokens and price feeds.`,
+    link: 'https://github.com/aragon/aragon-apps/tree/master/future-apps/payroll',
   },
   {
     icon: espresso,
     name: 'Espresso',
     status: 'pre-alpha',
-    description: 'Collaborative data vault. Encrypt and share data with people in your organization.',
+    description: `Collaborative data vault.
+                  Encrypt and share data with people in your organization.`,
     link: 'https://github.com/espresso-org',
   },
   {
     name: 'Liquid democracy',
     status: 'pre-alpha',
-    description: 'Delegate your voting power to others, and vote on important matters.',
-    link: 'https://github.com/aragon/aragon-apps',
+    description: `Delegate your voting power to others,
+                  and vote on important matters.`,
+    link: 'https://github.com/aragonlabs/liquid-democracy',
   },
 ]
 

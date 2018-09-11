@@ -240,9 +240,7 @@ class Wrapper extends React.Component {
     }
 
     if (instanceId === 'apps') {
-      return (
-        <Apps/>
-      )
+      return <Apps />
     }
 
     if (instanceId === 'settings') {
