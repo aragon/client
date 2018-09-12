@@ -1,118 +1,112 @@
 import React from 'react'
 import {
-  // Button,
+  Button,
   Table,
   TableCell,
   TableHeader,
   TableRow,
   Text,
 } from '@aragon/ui'
+import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import IdentityBadge from '../../components/IdentityBadge'
-import { appRoles } from '../../permissions'
 import EntityPermissions from './EntityPermissions'
+import AppRoles from './AppRoles'
 
 class AppPermissions extends React.PureComponent {
-  getRoles() {
-    const {
-      app,
-      daoAddress,
-      loading,
-      permissions,
-      resolveRole,
-      resolveEntity,
-    } = this.props
-
-    if (loading || !permissions || !app) {
-      return null
-    }
-
-    return appRoles(app, permissions, (entity, role) => ({
-      role: resolveRole(app.proxyAddress, role),
-      entity: resolveEntity(entity, daoAddress),
-    }))
-  }
   render() {
-    const {
-      loading,
-      permissions,
-      address,
-      daoAddress,
-      resolveRole,
-      resolveEntity,
-      onRevoke,
-    } = this.props
-    const roles = this.getRoles()
-
+    const { app, loading, address, onManageRole } = this.props
     return (
-      <React.Fragment>
-        <Section title="Permissions set on this app">
-          {roles === null || loading ? (
-            <EmptyBlock>Loading app permissions…</EmptyBlock>
-          ) : (
-            <Table
-              header={
-                <TableRow>
-                  <TableHeader title="Action" />
-                  <TableHeader title="Role identifier" />
-                  <TableHeader title="Allowed for" align="right" />
-                  {/* <TableHeader /> */}
-                </TableRow>
-              }
-            >
-              {roles.map(({ role, entity }, i) => (
-                <Row
-                  key={i}
-                  id={role.id}
-                  action={role.name}
-                  entity={entity}
-                  onRevoke={onRevoke}
-                />
-              ))}
-            </Table>
-          )}
-        </Section>
-        <EntityPermissions
-          title="Permissions granted to this app"
-          loading={loading}
-          address={address}
-          permissions={permissions}
-          daoAddress={daoAddress}
-          resolveRole={resolveRole}
-          resolveEntity={resolveEntity}
-          onRevoke={onRevoke}
-        />
-      </React.Fragment>
+      <PermissionsConsumer>
+        {({ revokePermission, getAppPermissions }) => {
+          const appPermissions = getAppPermissions(app)
+          return (
+            <React.Fragment>
+              <AppRoles
+                app={app}
+                loading={loading}
+                onManageRole={onManageRole}
+              />
+              <Section title="Permissions set on this app">
+                {loading || appPermissions.length === 0 ? (
+                  <EmptyBlock>
+                    {loading
+                      ? 'Loading app permissions…'
+                      : 'No permissions set.'}
+                  </EmptyBlock>
+                ) : (
+                  <Table
+                    header={
+                      <TableRow>
+                        <TableHeader title="Action" />
+                        <TableHeader title="Role identifier" />
+                        <TableHeader title="Allowed for" />
+                        <TableHeader />
+                      </TableRow>
+                    }
+                  >
+                    {appPermissions.map(({ role, entity }, i) => (
+                      <Row
+                        key={i}
+                        role={role}
+                        entity={entity}
+                        proxyAddress={address}
+                        onRevoke={revokePermission}
+                      />
+                    ))}
+                  </Table>
+                )}
+              </Section>
+              <EntityPermissions
+                title="Permissions granted to this app"
+                noPermissionsLabel="No permissions granted."
+                address={address}
+                loading={loading}
+                onRevoke={revokePermission}
+              />
+            </React.Fragment>
+          )
+        }}
+      </PermissionsConsumer>
     )
   }
 }
 
 class Row extends React.Component {
   handleRevoke = () => {
-    this.props.onRevoke(this.props.id)
+    const { onRevoke, role, entity, proxyAddress } = this.props
+    onRevoke({
+      proxyAddress,
+      roleBytes: role.bytes,
+      entityAddress: entity.address,
+    })
   }
   renderEntity() {
     const { entity } = this.props
+    if (!entity) {
+      return 'Unknown'
+    }
     if (entity.type === 'app') {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
-    if (entity.type === 'any') {
-      return 'Any account'
-    }
-    return <IdentityBadge entity={entity.address} />
+    return (
+      <IdentityBadge
+        entity={entity.type === 'any' ? 'Any account' : entity.address}
+      />
+    )
   }
   render() {
-    const { action, id } = this.props
+    const { role } = this.props
     return (
       <TableRow>
         <TableCell>
-          <Text weight="bold">{action}</Text>
+          <Text weight="bold">{role ? role.name : 'Unknown'}</Text>
         </TableCell>
-        <TableCell>{id}</TableCell>
-        <TableCell align="right">{this.renderEntity()}</TableCell>
-        {/* <TableCell align="right">
+        <TableCell>{role ? role.id : 'Unknown'}</TableCell>
+        <TableCell>{this.renderEntity()}</TableCell>
+        <TableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -121,7 +115,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell> */}
+        </TableCell>
       </TableRow>
     )
   }

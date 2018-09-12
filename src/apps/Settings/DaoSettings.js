@@ -103,7 +103,7 @@ class DaoSettings extends React.Component {
                       ? `Please select the ${sanitizeNetworkType(
                           network.type
                         )} network in your Ethereum provider.`
-                      : `Please unlock your Ethereum provider.`)()}
+                      : `Please unlock your account in your Ethereum provider.`)()}
                 </Text>
               )}
             </div>
