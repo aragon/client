@@ -141,7 +141,9 @@ class ActionPathsContent extends React.Component {
         <Info.Action icon={null} title="Action to be triggered:">
           {this.renderDescription(showPaths, intent)}
         </Info.Action>
-        <SignerButton onClick={this.handleSign}>Create transaction</SignerButton>
+        <SignerButton onClick={this.handleSign}>
+          Create transaction
+        </SignerButton>
       </React.Fragment>
     )
   }
