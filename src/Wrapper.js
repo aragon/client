@@ -11,6 +11,7 @@ import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
+import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -296,6 +297,11 @@ const AppScreen = styled.div`
   overflow: auto;
 `
 
+const LoadingAnimation = styled.img`
+  display: block;
+  margin-bottom: 32px;
+`
+
 const LoadingApps = () => (
   <div
     style={{
@@ -303,8 +309,10 @@ const LoadingApps = () => (
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
+      flexDirection: 'column',
     }}
   >
+    <LoadingAnimation src={ethereumLoadingAnimation} />
     Loading apps…
   </div>
 )
