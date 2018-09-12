@@ -201,6 +201,7 @@ class Wrapper extends React.Component {
   }
   renderApp(instanceId, params) {
     const {
+      locator,
       apps,
       appsLoading,
       permissionsLoading,
@@ -218,6 +219,7 @@ class Wrapper extends React.Component {
           connected={connected}
           appsLoading={appsLoading}
           onOpenApp={this.openApp}
+          locator={locator}
           apps={apps}
         />
       )
