@@ -37,11 +37,11 @@ class Apps extends React.Component {
             apps in your Aragon organization from here.
           </p>
           <p>
-            In the meantime, you can
+            In the meantime, you can {' '}
             <a href="https://hack.aragon.org/" target="_blank">
               learn how to create apps
             </a>
-            or browse some apps being developed.
+            {' '} or browse some apps being developed.
           </p>
 
           <h1>Apps in development</h1>
