@@ -105,10 +105,9 @@ class Home extends React.Component {
                     >
                       Welcome to Aragon!
                     </Text>
-                    <br />
-                    <br />
                     <Text
                       style={{
+                        display: 'block',
                         fontSize: lerp(showAppsProgress, 18, 14) + 'px',
                       }}
                     >
