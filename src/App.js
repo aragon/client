@@ -13,7 +13,7 @@ import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
-import { roleResolver, entityResolver } from './permissions'
+import { PermissionsProvider } from './contexts/PermissionsContext'
 
 class App extends React.Component {
   state = {
@@ -34,8 +34,6 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
-    resolveRole: null,
-    resolveEntity: null,
   }
 
   history = createHistory()
@@ -178,16 +176,14 @@ class App extends React.Component {
         this.setState({ web3 })
       },
       onApps: apps => {
-        log('apps received', apps)
+        log('apps updated', apps)
         this.setState({
           apps,
           appsLoading: false,
-          resolveEntity: entityResolver(apps),
-          resolveRole: roleResolver(apps),
         })
       },
       onPermissions: permissions => {
-        log('permissions received', permissions)
+        log('permissions updated', permissions)
         this.setState({
           permissions,
           permissionsLoading: false,
@@ -236,33 +232,34 @@ class App extends React.Component {
       daoAddress,
       appsLoading,
       permissionsLoading,
-      resolveEntity,
-      resolveRole,
     } = this.state
     const { mode } = locator
     if (!mode) return null
 
     return (
       <AragonApp publicUrl="/aragon-ui/">
-        <Wrapper
-          historyBack={this.historyBack}
-          historyPush={this.historyPush}
-          locator={locator}
+        <PermissionsProvider
           wrapper={wrapper}
           apps={apps}
-          appsLoading={appsLoading}
           permissions={permissions}
-          permissionsLoading={permissionsLoading}
-          account={account}
-          walletNetwork={walletNetwork}
-          walletWeb3={walletWeb3}
-          web3={web3}
-          daoAddress={daoAddress}
-          transactionBag={transactionBag}
-          connected={connected}
-          resolveEntity={resolveEntity}
-          resolveRole={resolveRole}
-        />
+        >
+          <Wrapper
+            historyBack={this.historyBack}
+            historyPush={this.historyPush}
+            locator={locator}
+            wrapper={wrapper}
+            apps={apps}
+            appsLoading={appsLoading}
+            permissionsLoading={permissionsLoading}
+            account={account}
+            walletNetwork={walletNetwork}
+            walletWeb3={walletWeb3}
+            web3={web3}
+            daoAddress={daoAddress}
+            transactionBag={transactionBag}
+            connected={connected}
+          />
+        </PermissionsProvider>
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}
           account={account}

@@ -1,18 +1,36 @@
 import React from 'react'
 import styled from 'styled-components'
-import resolvePathname from 'resolve-pathname'
+import { IconBlank } from '@aragon/ui'
+import { appIconUrl } from '../../utils'
+import RemoteIcon from '../../components/RemoteIcon'
+import IconKernel from '../../icons/IconKernel'
 
-class AppIcon extends React.PureComponent {
+class AppIcon extends React.Component {
+  static defaultProps = {
+    size: 22,
+    app: null,
+  }
   render() {
-    const { app, iconUrl } = this.props
-    const src =
-      iconUrl || (app && resolvePathname('images/icon.svg', app.baseUrl))
-    return src ? <Img width="28" height="28" src={src} alt="" /> : null
+    const { app, size, ...props } = this.props
+    return (
+      <Main {...props}>
+        {(() => {
+          if (app && app.isAragonOsInternalApp) {
+            return <IconKernel size={size} />
+          }
+          if (app && app.baseUrl) {
+            return <RemoteIcon size={size} src={appIconUrl(app)} />
+          }
+          return <IconBlank width={size} height={size} />
+        })()}
+      </Main>
+    )
   }
 }
 
-const Img = styled.img`
-  display: block;
+const Main = styled.span`
+  display: flex;
+  align-items: center;
 `
 
 export default AppIcon

@@ -1,3 +1,5 @@
+import resolvePathname from 'resolve-pathname'
+
 // Stealing this from recompose / etc for now
 export function compose(...funcs) {
   if (funcs.length === 0) {
@@ -9,6 +11,13 @@ export function compose(...funcs) {
   }
 
   return funcs.reduce((a, b) => (...args) => a(b(...args)))
+}
+
+// Get the icon URL of an app
+export function appIconUrl(app) {
+  return app && app.baseUrl
+    ? resolvePathname('images/icon.svg', app.baseUrl)
+    : null
 }
 
 export function makeEtherscanBaseUrl(network) {
