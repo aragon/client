@@ -67,10 +67,13 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^7.5.1",
     "eslint-plugin-standard": "^3.0.1",
+    "execa": "^1.0.0",
     "find-pkg": "^1.0.0",
     "husky": "^1.0.0-rc.13",
+    "inquirer": "^6.2.0",
     "parcel-bundler": "^1.9.7",
     "prettier": "^1.11.1",
+    "semver": "^5.5.1",
     "webpack-bundle-analyzer": "^2.11.1"
   },
   "scripts": {
@@ -87,7 +90,8 @@
     "lint": "eslint ./src",
     "test": "npm run lint",
     "copy-apm-artifacts": "cp arapp.json build/arapp.json && cp manifest.json build/manifest.json",
-    "publish:rinkeby": "aragon publish --files build/ --no-contract=true --keyfile ~/.rinkebykey.json 0x0000000000000000000000000000000000000000"
+    "publish:rinkeby": "aragon publish --files build/ --no-contract=true --keyfile ~/.rinkebykey.json 0x0000000000000000000000000000000000000000",
+    "release": "node scripts/release.js"
   },
   "browserslist": {
     "development": ">2%, last 1 edge versions, not ie > 0, not op_mini all",
