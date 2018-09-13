@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
 import { Permissions, Settings } from './apps'
+import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -296,6 +297,11 @@ const AppScreen = styled.div`
   overflow: auto;
 `
 
+const LoadingAnimation = styled.img`
+  display: block;
+  margin-bottom: 32px;
+`
+
 const LoadingApps = () => (
   <div
     style={{
@@ -303,8 +309,10 @@ const LoadingApps = () => (
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
+      flexDirection: 'column',
     }}
   >
+    <LoadingAnimation src={ethereumLoadingAnimation} />
     Loading apps…
   </div>
 )
