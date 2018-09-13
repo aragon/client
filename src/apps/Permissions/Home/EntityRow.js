@@ -29,7 +29,7 @@ class EntityRow extends React.PureComponent {
   }
   roleTitle({ role, roleBytes, appEntity, proxyAddress }) {
     if (!appEntity || !appEntity.app) {
-      return `${role.name} (from unknown)`
+      return `${role ? role.name : 'Unknown'} (from unknown)`
     }
     const { app } = appEntity
     const roleLabel = (role && role.name) || roleBytes
