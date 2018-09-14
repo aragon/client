@@ -61,24 +61,30 @@ export const appPermissions = (
   permissions,
   transform = (entity, role) => [entity, role]
 ) => {
-  return Object.entries(permissions[app.proxyAddress])
-    .reduce(
-      (roles, [role, { allowedEntities }]) =>
-        roles.concat(allowedEntities.map(entity => transform(entity, role))),
-      []
-    )
-    .filter(Boolean)
+  const roles = permissions[app.proxyAddress]
+  const rolesReducer = (roles, [role, { allowedEntities }]) =>
+    roles.concat(allowedEntities.map(entity => transform(entity, role)))
+
+  return roles
+    ? Object.entries(roles)
+        .reduce(rolesReducer, [])
+        .filter(Boolean)
+    : []
 }
 
 // Get the roles of an app.
-export const appRoles = (app, permissions) =>
-  Object.entries(permissions[app.proxyAddress]).map(
-    ([roleBytes, { allowedEntities, manager }]) => ({
-      roleBytes,
-      allowedEntities,
-      manager,
-    })
-  )
+export const appRoles = (app, permissions) => {
+  const roles = permissions[app.proxyAddress]
+  return roles
+    ? Object.entries(roles).map(
+        ([roleBytes, { allowedEntities, manager }]) => ({
+          roleBytes,
+          allowedEntities,
+          manager,
+        })
+      )
+    : []
+}
 
 // Resolves a role using the provided apps
 function resolveRole(apps, proxyAddress, roleBytes) {
