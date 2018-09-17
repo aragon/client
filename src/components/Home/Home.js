@@ -63,6 +63,9 @@ class Home extends React.Component {
       this.setState({ showApps: !appsLoading })
     }, appsLoading ? 0 : 1000)
   }
+  componentWillUnmount() {
+    clearTimeout(this.showAppsTimer)
+  }
   handleCardAction = actionId => {
     const { onOpenApp, apps } = this.props
     const action = actions.find(action => action.id === actionId)
@@ -75,7 +78,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { connected, apps } = this.props
+    const { connected, apps, locator } = this.props
     const { showApps } = this.state
 
     const appActions = actions.filter(({ appName }) =>
@@ -84,7 +87,7 @@ class Home extends React.Component {
     return (
       <Main>
         <AppBarWrapper>
-          <AppBar title="Welcome!" />
+          <AppBar title="Home" />
         </AppBarWrapper>
         <ScrollWrapper>
           <AppWrapper>
@@ -100,7 +103,17 @@ class Home extends React.Component {
                         fontSize: lerp(showAppsProgress, 37, 22) + 'px',
                       }}
                     >
-                      Welcome to Aragon 0.5 − The Architect
+                      Welcome to Aragon!
+                    </Text>
+                    <Text
+                      style={{
+                        display: 'block',
+                        fontSize: lerp(showAppsProgress, 18, 14) + 'px',
+                      }}
+                    >
+                      {locator.dao.endsWith('.eth')
+                        ? `You are interacting with ${locator.dao}`
+                        : 'You are using Aragon 0.5 — The Architect'}
                     </Text>
                   </Title>
                   <p style={{ marginBottom: '20px' }}>

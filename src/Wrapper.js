@@ -1,10 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
-import {
-  // Permissions,
-  Settings,
-} from './apps'
+import { Permissions, Settings } from './apps'
+import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -14,6 +12,7 @@ import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
+import { noop } from './utils'
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -21,8 +20,8 @@ class Wrapper extends React.Component {
     account: '',
     connected: false,
     daoAddress: '',
-    historyBack: () => {},
-    historyPush: () => {},
+    historyBack: noop,
+    historyPush: noop,
     locator: {},
     walletNetwork: '',
     transactionBag: null,
@@ -77,12 +76,10 @@ class Wrapper extends React.Component {
       this.openApp(instanceId)
     }
   }
-  /*
+  // params need to be a string
   handleParamsRequest = params => {
-    const { instanceId, } = this.state.appInstance
-    this.openApp(instanceId, params)
+    this.openApp(this.props.locator.instanceId, params)
   }
-  */
   makeTransactionIntent(transaction = {}) {
     const { apps } = this.props
     const { description, to } = transaction
@@ -96,19 +93,16 @@ class Wrapper extends React.Component {
       transaction,
     }
   }
-  reshapeTransactionBag(bag) {
+  reshapeTransactionBag({ path, transaction }) {
     // This is a temporary method to reshape the transaction bag
     // to the future format we expect from Aragon.js
     // When Aragon.js starts returning the new format, we can simply
     // replace search and replace this function with `bag`, although
     // it is probably only used in `handleTransaction`
-    const transaction = bag.path[bag.path.length - 1]
-    const direct = bag.path.length === 1
-
     return {
-      direct,
-      intent: this.makeTransactionIntent(transaction),
-      paths: direct ? [] : [bag.path],
+      direct: path.length === 1,
+      intent: transaction && this.makeTransactionIntent(transaction),
+      paths: path.length ? [path] : [],
     }
   }
   handleTransaction = bag => {
@@ -135,6 +129,7 @@ class Wrapper extends React.Component {
       accept(res)
     })
   }
+
   handleSignerClose = () => {
     this.setState({ signerOpened: false })
   }
@@ -178,7 +173,7 @@ class Wrapper extends React.Component {
       <React.Fragment>
         <Main>
           <MenuPanel
-            apps={apps}
+            apps={apps.filter(app => app.hasWebApp)}
             appsLoading={appsLoading}
             activeInstanceId={instanceId}
             notificationsObservable={wrapper && wrapper.notifications}
@@ -207,11 +202,14 @@ class Wrapper extends React.Component {
   }
   renderApp(instanceId, params) {
     const {
+      locator,
       apps,
+      appsLoading,
+      permissionsLoading,
       account,
       walletNetwork,
+      walletWeb3,
       wrapper,
-      appsLoading,
       connected,
       daoAddress,
     } = this.props
@@ -222,6 +220,7 @@ class Wrapper extends React.Component {
           connected={connected}
           appsLoading={appsLoading}
           onOpenApp={this.openApp}
+          locator={locator}
           apps={apps}
         />
       )
@@ -229,22 +228,17 @@ class Wrapper extends React.Component {
 
     if (instanceId === 'permissions') {
       return (
-        <ComingSoon
-          title="Permissions"
-          subtitle={`
-            The permissions app is not quite ready for prime time but will be
-            available soon.
-          `}
+        <Permissions
+          apps={apps}
+          appsLoading={appsLoading}
+          permissionsLoading={permissionsLoading}
+          params={params}
+          onParamsRequest={this.handleParamsRequest}
+          walletWeb3={walletWeb3}
+          account={account}
+          wrapper={wrapper}
         />
       )
-      // return (
-      //   <Permissions
-      //     apps={apps}
-      //     groups={apps}
-      //     params={params}
-      //     onParamsRequest={this.handleParamsRequest}
-      //   />
-      // )
     }
 
     if (instanceId === 'apps') {
@@ -295,10 +289,17 @@ const Main = styled.div`
 `
 
 const AppScreen = styled.div`
+  position: relative;
+  z-index: 1;
   flex-grow: 1;
   width: 100%;
   height: 100%;
   overflow: auto;
+`
+
+const LoadingAnimation = styled.img`
+  display: block;
+  margin-bottom: 32px;
 `
 
 const LoadingApps = () => (
@@ -308,8 +309,10 @@ const LoadingApps = () => (
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
+      flexDirection: 'column',
     }}
   >
+    <LoadingAnimation src={ethereumLoadingAnimation} />
     Loading apps…
   </div>
 )

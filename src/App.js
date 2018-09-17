@@ -14,17 +14,20 @@ import Onboarding from './onboarding/Onboarding'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
+import { PermissionsProvider } from './contexts/PermissionsContext'
 
 class App extends React.Component {
   state = {
     locator: {},
     prevLocator: null,
     wrapper: null,
-    appsLoading: true,
     account: '',
     balance: null,
     connected: false,
     apps: [],
+    appsLoading: true,
+    permissions: [],
+    permissionsLoading: true,
     walletWeb3: null,
     web3: null,
     daoAddress: '',
@@ -173,9 +176,19 @@ class App extends React.Component {
         log('web3', web3)
         this.setState({ web3 })
       },
-      onApps: (appsWithFrontend, apps) => {
-        log('apps received', appsWithFrontend)
-        this.setState({ apps: appsWithFrontend, appsLoading: !apps })
+      onApps: apps => {
+        log('apps updated', apps)
+        this.setState({
+          apps,
+          appsLoading: false,
+        })
+      },
+      onPermissions: permissions => {
+        log('permissions updated', permissions)
+        this.setState({
+          permissions,
+          permissionsLoading: false,
+        })
       },
       onForwarders: forwarders => {
         log('forwarders', forwarders)
@@ -207,6 +220,7 @@ class App extends React.Component {
       locator,
       wrapper,
       apps,
+      permissions,
       account,
       balance,
       walletNetwork,
@@ -218,27 +232,36 @@ class App extends React.Component {
       connected,
       daoAddress,
       appsLoading,
+      permissionsLoading,
     } = this.state
     const { mode } = locator
     if (!mode) return null
+
     return (
       <AragonApp publicUrl="/aragon-ui/">
         <GlobalErrorHandler>
-          <Wrapper
-            historyBack={this.historyBack}
-            historyPush={this.historyPush}
-            locator={locator}
+          <PermissionsProvider
             wrapper={wrapper}
             apps={apps}
-            appsLoading={appsLoading}
-            account={account}
-            walletNetwork={walletNetwork}
-            walletWeb3={walletWeb3}
-            web3={web3}
-            daoAddress={daoAddress}
-            transactionBag={transactionBag}
-            connected={connected}
-          />
+            permissions={permissions}
+          >
+            <Wrapper
+              historyBack={this.historyBack}
+              historyPush={this.historyPush}
+              locator={locator}
+              wrapper={wrapper}
+              apps={apps}
+              appsLoading={appsLoading}
+              permissionsLoading={permissionsLoading}
+              account={account}
+              walletNetwork={walletNetwork}
+              walletWeb3={walletWeb3}
+              web3={web3}
+              daoAddress={daoAddress}
+              transactionBag={transactionBag}
+              connected={connected}
+            />
+          </PermissionsProvider>
           <Onboarding
             visible={mode === 'home' || mode === 'setup'}
             account={account}

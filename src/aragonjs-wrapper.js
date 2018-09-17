@@ -1,4 +1,5 @@
-import { BigNumber } from 'bignumber.js'
+import BN from 'bn.js'
+import throttle from 'lodash.throttle'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
   providers,
@@ -16,6 +17,21 @@ import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
+
+const KERNEL_BASE = {
+  name: 'Kernel',
+  appId: 'kernel',
+  isAragonOsInternalApp: true,
+  roles: [
+    {
+      name: 'Manage apps',
+      id: 'APP_MANAGER_ROLE',
+      params: [],
+      bytes:
+        '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
+    },
+  ],
+}
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -55,19 +71,31 @@ const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
-// Filter out apps without UI and add an app source url properties
-const prepareFrontendApps = (apps, gateway) => {
-  return applyAppOverrides(apps)
-    .filter(app => app && app['start_url'])
-    .sort(sortAppsPair)
-    .map(app => {
-      const baseUrl = appBaseUrl(app, gateway)
-      // Remove the starting slash from the start_url field
-      // so the absolute path can be resolved from baseUrl.
-      const startUrl = removeStartingSlash(app['start_url'])
-      const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
-      return { ...app, baseUrl, src }
-    })
+// Sort apps, apply URL overrides, and attach data useful to the frontend
+const prepareFrontendApps = (apps, daoAddress, gateway) => {
+  return [
+    {
+      ...KERNEL_BASE,
+      proxyAddress: daoAddress,
+      hasWebApp: false,
+    },
+    ...applyAppOverrides(apps)
+      .map(app => {
+        const baseUrl = appBaseUrl(app, gateway)
+        // Remove the starting slash from the start_url field
+        // so the absolute path can be resolved from baseUrl.
+        const startUrl = removeStartingSlash(app['start_url'] || '')
+        const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
+
+        return {
+          ...app,
+          src,
+          baseUrl,
+          hasWebApp: Boolean(app['start_url']),
+        }
+      })
+      .sort(sortAppsPair),
+  ]
 }
 
 const getMainAccount = async web3 => {
@@ -105,7 +133,7 @@ export const pollMainAccount = pollEvery(
   (provider, { onAccount = () => {}, onBalance = () => {} } = {}) => {
     const web3 = getWeb3(provider)
     let lastAccount = null
-    let lastBalance = -1
+    let lastBalance = new BN(-1)
     return {
       request: () =>
         getMainAccount(web3)
@@ -115,18 +143,18 @@ export const pollMainAccount = pollEvery(
             }
             return web3.eth.getBalance(account).then(balance => ({
               account,
-              balance: BigNumber(balance),
+              balance: new BN(balance),
             }))
           })
           .catch(() => {
-            return { account: null, balance: BigNumber(-1) }
+            return { account: null, balance: new BN(-1) }
           }),
       onResult: ({ account, balance }) => {
         if (account !== lastAccount) {
           lastAccount = account
           onAccount(account)
         }
-        if (!balance.isEqualTo(lastBalance)) {
+        if (!balance.eq(lastBalance)) {
           lastBalance = balance
           onBalance(balance)
         }
@@ -174,20 +202,23 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
   }
 }, POLL_DELAY_NETWORK)
 
-// Subscribe to wrapper's observables
+// Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  { onApps, onForwarders, onTransaction },
+  { onApps, onPermissions, onForwarders, onTransaction },
   { ipfsConf }
 ) => {
-  const { apps, forwarders, transactions } = wrapper
+  const { apps, permissions, forwarders, transactions } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
     apps: apps.subscribe(apps => {
-      onApps(prepareFrontendApps(apps, ipfsConf.gateway), apps)
+      onApps(
+        prepareFrontendApps(apps, wrapper.kernelProxy.address, ipfsConf.gateway)
+      )
     }),
+    permissions: permissions.subscribe(throttle(onPermissions, 100)),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
@@ -229,8 +260,8 @@ const subscribe = (
             return
           }
 
-          // If another execution context already loaded this app's worker before we got to it here,
-          // let's short circuit
+          // If another execution context already loaded this app's worker
+          // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
             const worker = new Worker(workerUrl)
             worker.addEventListener(
@@ -280,6 +311,7 @@ const initWrapper = async (
     ipfsConf = ipfsDefaultConf,
     onError = noop,
     onApps = noop,
+    onPermissions = noop,
     onForwarders = noop,
     onTransaction = noop,
     onDaoAddress = noop,
@@ -287,7 +319,6 @@ const initWrapper = async (
   } = {}
 ) => {
   const isDomain = /[a-z0-9]+\.aragonid\.eth/.test(dao)
-
   const daoAddress = isDomain
     ? await resolveEnsDomain(dao, {
         provider,
@@ -328,7 +359,7 @@ const initWrapper = async (
 
   const subscriptions = subscribe(
     wrapper,
-    { onApps, onForwarders, onTransaction },
+    { onApps, onPermissions, onForwarders, onTransaction },
     { ipfsConf }
   )
 

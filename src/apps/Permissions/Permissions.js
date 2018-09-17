@@ -1,196 +1,272 @@
 import React from 'react'
 import styled from 'styled-components'
-import { AppBar, SidePanel, Button, Text } from '@aragon/ui'
-import AssignPermission from './AssignPermission'
-import InstancePermissions from './InstancePermissions'
-import PermissionsHome from './PermissionsHome'
-import Badge from '../../components/Badge/Badge'
-import { permissions } from '../../demo-state'
-
-const { entities, actions, assigned } = permissions
+import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
+import { shortenAddress, isAddress } from '../../web3-utils'
+import Screen from './Screen'
+import Home from './Home/Home'
+import AppPermissions from './AppPermissions'
+import EntityPermissions from './EntityPermissions'
+import NavigationItem from './NavigationItem'
+import AssignPermissionPanel from './AssignPermissionPanel'
+import ManageRolePanel from './ManageRolePanel'
+import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class Permissions extends React.Component {
   state = {
-    assignOpened: false,
-    currentInstance: null,
+    // Only animate screens after the component is rendered once
+    animateScreens: false,
+    showAssignPermissionPanel: false,
   }
+
   componentDidMount() {
-    this.updateParams(this.props.params)
+    this.setState({ animateScreens: true })
   }
-  componentWillReceiveProps(nextProps) {
-    this.updateParams(nextProps.params)
+
+  componentDidUpdate(prevProps) {
+    const prevScreen = this.getLocation(prevProps.params).screen
+    const screen = this.getLocation(this.props.params).screen
+    if (prevScreen !== screen) {
+      this._scrollTopElement.scrollIntoView()
+    }
   }
-  updateParams(params) {
+
+  getLocation(params) {
+    const home = { screen: 'home' }
+
     if (!params) {
-      this.setState({ currentInstance: null })
-      return
+      return home
     }
-    const { appId, instanceId } = params
-    const instance = this.getInstance(appId, instanceId)
 
-    this.setState({
-      currentInstance: instance || null,
-    })
+    // Not using "/" as a separator because
+    // it would get encoded by encodeURIComponent().
+    const [
+      screen,
+      data = null,
+      secondaryScreen = null,
+      secondaryData = null,
+    ] = params.split('.')
+
+    if (screen === 'app' && isAddress(data)) {
+      return {
+        screen,
+        address: data,
+        app: this.getAppByProxyAddress(data),
+        secondaryScreen,
+        secondaryData,
+      }
+    }
+
+    if (screen === 'entity' && isAddress(data)) {
+      return { screen, address: data }
+    }
+
+    return home
   }
-  getInstance(appId, instanceId) {
-    const { apps } = this.props
-    const app = apps.find(({ id }) => id === appId)
-    if (!app) {
+
+  getAppByProxyAddress(proxyAddress) {
+    if (!proxyAddress) {
       return null
     }
-    const instance =
-      app.instances && app.instances.find(({ id }) => id === instanceId)
-    if (!instance) {
-      return null
-    }
-
-    return {
-      appId,
-      appName: app.name,
-      instanceId,
-      instanceName: instance.name,
-    }
+    return this.props.apps.find(app => app.proxyAddress === proxyAddress)
   }
 
-  // Transforms the apps list into a list of app instances,
-  // ready to be displayed in List.
-  getAppItems(apps) {
-    return apps
-      .filter(({ id }) => id !== 'permissions' && id !== 'identity')
-      .reduce(
-        (items, { id, name, instances = [], alwaysDisplayInstances }) =>
-          items.concat(
-            instances.map(instance => ({
-              id: `${id}__${instance.id}`,
-              label: name,
-              badge: alwaysDisplayInstances
-                ? { label: instance.name, style: 'app' }
-                : null,
-            }))
-          ),
-        []
-      )
+  goToHome = () => {
+    this.props.onParamsRequest(null)
   }
-  handleAssignClick = () => {
-    this.setState({
-      assignOpened: true,
-    })
+
+  handleOpenApp = proxyAddress => {
+    this.props.onParamsRequest(`app.${proxyAddress}`)
   }
-  handleAssignPanelClose = () => {
-    this.setState({
-      assignOpened: false,
-    })
+
+  handleOpenEntity = address => {
+    if (this.getAppByProxyAddress(address)) {
+      return this.handleOpenApp(address)
+    }
+    this.props.onParamsRequest(`entity.${address}`)
   }
-  handleInstanceClick = id => {
-    const [appId, instanceId] = id.split('__')
-    this.props.onParamsRequest({ appId, instanceId })
+
+  handleManageRole = (proxyAddress, roleBytes) => {
+    this.props.onParamsRequest(`app.${proxyAddress}.role.${roleBytes}`)
   }
-  handleAppBarTitleClick = () => {
-    this.props.onParamsRequest()
+
+  createPermission = () => {
+    this.setState({ showAssignPermissionPanel: true })
   }
+
+  closeAssignPermissionPanel = () => {
+    this.setState({ showAssignPermissionPanel: false })
+  }
+
+  closeManageRolePanel = () => {
+    const { params, onParamsRequest } = this.props
+    const location = this.getLocation(params)
+    const openedApp = location.screen === 'app' ? location.app : null
+    if (openedApp) {
+      onParamsRequest(`app.${openedApp.proxyAddress}`)
+    }
+  }
+
+  // Assemble the navigation items
+  getNavigationItems(location, resolveEntity) {
+    const items = ['Permissions']
+    const openedApp = location.screen === 'app' ? location.app : null
+    const openedEntityAddress =
+      location.screen === 'entity' ? location.address : null
+
+    if (location.screen === 'app') {
+      return [
+        ...items,
+        <NavigationItem
+          title={openedApp ? openedApp.name || 'Unknown app' : 'Permissions'}
+          badge={{
+            label:
+              (openedApp && openedApp.identifier) ||
+              shortenAddress(location.address),
+          }}
+        />,
+      ]
+    }
+
+    const entity = resolveEntity && resolveEntity(openedEntityAddress)
+
+    if (entity && entity.type === 'app') {
+      return [
+        ...items,
+        <NavigationItem
+          title="Entity permissions"
+          badge={{
+            label: entity.app.identifier || shortenAddress(location.address),
+          }}
+        />,
+      ]
+    }
+
+    if (openedEntityAddress) {
+      return [
+        ...items,
+        <NavigationItem
+          title="Entity permissions"
+          address={openedEntityAddress}
+          entity={entity}
+        />,
+      ]
+    }
+
+    return items
+  }
+
   render() {
-    const { apps, groups } = this.props
-    const { currentInstance, assignOpened } = this.state
-    const appItems = this.getAppItems(apps)
+    const { apps, appsLoading, permissionsLoading, params } = this.props
+    const { showAssignPermissionPanel, animateScreens } = this.state
+
+    const location = this.getLocation(params)
+
     return (
-      <Main>
-        <AppBarWrapper>
-          <AppBar
-            title="Permissions"
-            onTitleClick={currentInstance ? this.handleAppBarTitleClick : null}
-            endContent={
-              !currentInstance && (
-                <Button mode="strong" onClick={this.handleAssignClick}>
-                  Assign Permission
-                </Button>
-              )
-            }
-          >
-            {currentInstance && (
-              <AppBarContent>
-                <Text size="xxlarge">{currentInstance.appName}</Text>
-                <span>
-                  <Badge aspect="app">{currentInstance.instanceName}</Badge>
-                </span>
-              </AppBarContent>
-            )}
-          </AppBar>
-        </AppBarWrapper>
-        <ScrollWrapper>
-          <AppWrapper>
-            {/* TODO: actions and assigned should should be on a per-app basis */}
-            {currentInstance ? (
-              <InstancePermissions
-                actions={actions}
-                assigned={assigned}
-                instance={currentInstance}
+      <PermissionsConsumer>
+        {({ resolveEntity, resolveRole, permissions }) => {
+          const navigationItems = this.getNavigationItems(
+            location,
+            resolveEntity
+          )
+
+          const managedRole =
+            location.screen === 'app' &&
+            location.app &&
+            location.secondaryScreen === 'role'
+              ? resolveRole(location.app.proxyAddress, location.secondaryData)
+              : null
+
+          return (
+            <React.Fragment>
+              <AppView
+                appBar={
+                  <AppBar
+                    endContent={
+                      <Button
+                        mode="strong"
+                        onClick={this.createPermission}
+                        disabled={appsLoading || permissionsLoading}
+                      >
+                        Add permission
+                      </Button>
+                    }
+                  >
+                    <NavigationBar
+                      items={navigationItems}
+                      onBack={this.goToHome}
+                    />
+                  </AppBar>
+                }
+              >
+                <ScrollTopElement
+                  innerRef={el => {
+                    this._scrollTopElement = el
+                  }}
+                />
+
+                <Screen position={0} animate={animateScreens}>
+                  {location.screen === 'home' && (
+                    <Home
+                      apps={apps}
+                      appsLoading={appsLoading}
+                      permissionsLoading={permissionsLoading}
+                      onOpenApp={this.handleOpenApp}
+                      onOpenEntity={this.handleOpenEntity}
+                    />
+                  )}
+                </Screen>
+
+                <Screen position={1} animate={animateScreens}>
+                  {['app', 'entity'].includes(location.screen) && (
+                    <React.Fragment>
+                      {location.screen === 'app' && (
+                        <AppPermissions
+                          app={location.app}
+                          loading={appsLoading}
+                          address={location.address}
+                          onManageRole={this.handleManageRole}
+                        />
+                      )}
+                      {location.screen === 'entity' && (
+                        <EntityPermissions
+                          title="Permissions granted"
+                          loading={appsLoading || permissionsLoading}
+                          address={location.address}
+                        />
+                      )}
+                    </React.Fragment>
+                  )}
+                </Screen>
+              </AppView>
+
+              <AssignPermissionPanel
+                apps={apps}
+                opened={showAssignPermissionPanel}
+                onClose={this.closeAssignPermissionPanel}
               />
-            ) : (
-              <PermissionsHome
-                appItems={appItems}
-                entities={entities}
-                onInstanceClick={this.handleInstanceClick}
+
+              <ManageRolePanel
+                apps={apps}
+                opened={managedRole !== null}
+                onClose={this.closeManageRolePanel}
+                app={location.app}
+                role={managedRole}
               />
-            )}
-          </AppWrapper>
-        </ScrollWrapper>
-        <SidePanel
-          title="Assign Permission"
-          opened={assignOpened}
-          onClose={this.handleAssignPanelClose}
-        >
-          <AssignPermission
-            onDone={this.handleAssignPanelClose}
-            entities={groups.map(({ name }) => `Groups (${name})`)}
-            calls={appItems.map(
-              ({ label, badge }) =>
-                `${label}${badge ? ` (${badge.label})` : ''}`
-            )}
-            actions={appItems.map(
-              ({ label, badge }) =>
-                `${label}${badge ? ` (${badge.label})` : ''}`
-            )}
-          />
-        </SidePanel>
-      </Main>
+            </React.Fragment>
+          )
+        }}
+      </PermissionsConsumer>
     )
   }
 }
 
-const Main = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: stretch;
-`
-
-const AppBarWrapper = styled.div`
-  flex-shrink: 0;
-`
-
-const AppBarContent = styled.div`
-  display: flex;
-  align-items: center;
-  & > *:first-child {
-    margin-right: 10px;
-  }
-`
-
-const ScrollWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  overflow: auto;
-  flex-grow: 1;
-`
-
-const AppWrapper = styled.div`
-  flex-grow: 1;
-  min-height: min-content;
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
+// This element is only used to reset the view scroll using scrollIntoView()
+const ScrollTopElement = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
 `
 
 export default Permissions

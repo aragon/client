@@ -25,33 +25,38 @@
   ],
   "dependencies": {
     "@aragon/templates-tokens": "^1.1.1",
-    "@aragon/ui": "^0.15.0",
-    "@aragon/wrapper": "^2.0.0-beta.40",
-    "@babel/polyfill": "^7.0.0-beta.39",
-    "bignumber.js": "^6.0.0",
+    "@aragon/ui": "^0.18.1",
+    "@aragon/wrapper": "^2.0.0-beta.44",
+    "babel-polyfill": "^6.23.0",
+    "bn.js": "4.11.6",
     "date-fns": "^2.0.0-alpha.7",
     "history": "^4.7.2",
+    "lodash.memoize": "^4.1.2",
     "lodash.throttle": "^4.1.1",
+    "lodash.uniqby": "^4.7.0",
     "onecolor": "^3.0.5",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
+    "react-blockies": "^1.3.0",
     "react-container-dimensions": "^1.3.3",
     "react-display-name": "^0.2.3",
     "react-dom": "^16.3.2",
     "react-motion": "^0.5.2",
     "react-onclickout": "^2.0.8",
+    "react-spring": "^5.4.4",
     "resolve-pathname": "^2.2.0",
-    "styled-components": "3.2.6",
+    "styled-components": "^3.3.3",
+    "underscore": "1.8.3",
     "web3": "1.0.0-beta.33",
-    "web3-utils": "^1.0.0-beta.33"
+    "web3-utils": "1.0.0-beta.33"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.3",
     "babel-plugin-styled-components": "^1.5.1",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^7.0.0-beta.3",
-    "babel-preset-stage-2": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-2": "^6.23.0",
     "eslint": "4.15.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard": "^10.2.1",
@@ -63,17 +68,18 @@
     "eslint-plugin-react": "^7.5.1",
     "eslint-plugin-standard": "^3.0.1",
     "find-pkg": "^1.0.0",
+    "husky": "^1.0.0-rc.13",
+    "parcel-bundler": "^1.9.7",
     "prettier": "^1.11.1",
-    "react-scripts": "^2.0.0-next.9754a231",
     "webpack-bundle-analyzer": "^2.11.1"
   },
   "scripts": {
-    "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./public",
-    "start": "npm run ui-assets && react-scripts start",
+    "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./build",
+    "start": "npm run ui-assets && parcel serve src/index.html --port 3000 --out-dir ./build --no-cache",
     "start:local": "scripts/launch-local.sh",
     "start:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm start",
     "start:rinkeby": "npm start",
-    "build": "npm run ui-assets && PUBLIC_URL=/ react-scripts build && npm run copy-apm-artifacts",
+    "build": "npm run ui-assets && parcel build src/index.html --out-dir ./build && npm run copy-apm-artifacts",
     "build:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm run build",
     "build:mainnet-infura": "REACT_APP_DEFAULT_ETH_NODE=wss://mainnet.infura.io/_ws npm run build:mainnet",
     "build:rinkeby": "npm run build",
@@ -86,5 +92,10 @@
   "browserslist": {
     "development": ">2%, last 1 edge versions, not ie > 0, not op_mini all",
     "production": ">2%, last 1 edge versions, not ie > 0, not op_mini all"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
   }
 }

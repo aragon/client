@@ -1,10 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { toChecksumAddress } from 'web3-utils'
 import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
 import { sanitizeNetworkType } from '../../network-config'
-import { getWeb3 } from '../../web3-utils'
+import { getWeb3, toChecksumAddress } from '../../web3-utils'
 import { appIds, network, web3Providers } from '../../environment'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
@@ -53,6 +52,7 @@ class DaoSettings extends React.Component {
       addrMap[app.appId] = toChecksumAddress(app.proxyAddress)
       return addrMap
     }, {})
+    const webApps = apps.filter(app => app.hasWebApp)
     return (
       <div>
         <Option
@@ -102,8 +102,8 @@ class DaoSettings extends React.Component {
                     walletNetwork !== network.type
                       ? `Please select the ${sanitizeNetworkType(
                           network.type
-                        )} network in MetaMask.`
-                      : `Please unlock your account in MetaMask.`)()}
+                        )} network in your Ethereum provider.`
+                      : `Please unlock your account in your Ethereum provider.`)()}
                 </Text>
               )}
             </div>
@@ -152,13 +152,13 @@ class DaoSettings extends React.Component {
             </Field>
           </Option>
         )}
-        {apps.length > 0 && (
+        {webApps.length > 0 && (
           <Option
             name="Aragon apps"
-            text={`This organization has ${apps.length} apps installed.`}
+            text={`This organization has ${webApps.length} apps installed.`}
           >
             <AppsList>
-              {apps.map(({ appId, description, name, proxyAddress }) => {
+              {webApps.map(({ appId, description, name, proxyAddress }) => {
                 const checksummedProxyAddress = checksummedAppProxies[appId]
                 return (
                   <li title={description} key={checksummedProxyAddress}>
