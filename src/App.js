@@ -203,6 +203,7 @@ class App extends React.Component {
       })
       .catch(err => {
         console.error('Wrapper init error:', err)
+        this.setState({ appsLoading: false })
       })
   }
 
