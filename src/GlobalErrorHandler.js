@@ -33,7 +33,7 @@ class GlobalErrorHandler extends React.Component {
                 if the problem persists.
               </p>
             </TryAgain>
-            <Message title="Error:">{error.message}</Message>
+            <Message>{error.message}</Message>
             {errorStack && (
               <Details>
                 <DetailsLabel>More details…</DetailsLabel>
