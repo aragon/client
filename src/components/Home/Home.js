@@ -78,7 +78,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { connected, apps, locator } = this.props
+    const { connected, apps, locator, appsLoading } = this.props
     const { showApps } = this.state
 
     const appActions = actions.filter(({ appName }) =>
@@ -116,11 +116,16 @@ class Home extends React.Component {
                         : 'You are using Aragon 0.5 — The Architect'}
                     </Text>
                   </Title>
-                  <p style={{ marginBottom: '20px' }}>
-                    <Text color={theme.textSecondary}>
-                      {showApps ? 'What do you want to do?' : 'Loading apps…'}
-                    </Text>
-                  </p>
+                  {appsLoading ||
+                    (appActions.length > 0 && (
+                      <p style={{ marginBottom: '20px' }}>
+                        <Text color={theme.textSecondary}>
+                          {showApps
+                            ? 'What do you want to do?'
+                            : 'Loading apps…'}
+                        </Text>
+                      </p>
+                    ))}
                   <div
                     style={{
                       display: showApps ? 'block' : 'none',
