@@ -69,12 +69,7 @@ class MenuPanelAppsLoader extends React.Component {
               />
               <StatusContent>
                 <StatusIndicatorWrapper
-                  style={{
-                    alignSelf:
-                      appsStatus === APPS_STATUS_ERROR
-                        ? 'flex-start'
-                        : 'center',
-                  }}
+                  vAlign={appsStatus !== APPS_STATUS_ERROR}
                 >
                   {appsStatus === APPS_STATUS_ERROR ? (
                     <IconAttention />
@@ -131,6 +126,7 @@ const StatusIndicatorWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: ${({ vAlign }) => (vAlign ? 'center' : 'flex-start')}
   width: 22px;
   height: 22px;
   margin-right: 15px;
