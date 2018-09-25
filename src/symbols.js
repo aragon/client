@@ -1,0 +1,3 @@
+export const APPS_STATUS_ERROR = Symbol('APPS_STATUS_ERROR')
+export const APPS_STATUS_READY = Symbol('APPS_STATUS_READY')
+export const APPS_STATUS_LOADING = Symbol('APPS_STATUS_LOADING')
