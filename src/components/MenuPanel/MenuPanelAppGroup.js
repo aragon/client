@@ -26,7 +26,6 @@ class MenuPanelAppGroup extends React.PureComponent {
       activeInstanceId,
       active,
       expand,
-      comingSoon,
     } = this.props
     const singleInstance = instances.length === 1
     return (
@@ -58,11 +57,6 @@ class MenuPanelAppGroup extends React.PureComponent {
                 <span className="icon">{icon || <IconBlank />}</span>
                 <span className="name">{name}</span>
               </span>
-              {comingSoon && (
-                <span>
-                  <Soon />
-                </span>
-              )}
             </ButtonItem>
 
             {instances.length > 1 && (
