@@ -175,11 +175,7 @@ const NeedUnlockAccountContent = ({
       {' on '}
       <AddressLink to={to}>{toName}</AddressLink>.
       <InstallMessage>
-        Please unlock or enable{' '}
-        <SafeLink href="https://metamask.io/" target="_blank">
-          MetaMask
-        </SafeLink>
-        .
+        Please unlock or enable your Ethereum provider.
       </InstallMessage>
     </Info.Action>
     <SignerButton onClick={onClose}>Close</SignerButton>
@@ -194,11 +190,7 @@ const NeedWeb3Content = ({ intent: { description, to, toName }, onClose }) => (
       {' on '}
       <AddressLink to={to}>{toName}</AddressLink>.
       <InstallMessage>
-        Please install or enable{' '}
-        <SafeLink href="https://metamask.io/" target="_blank">
-          MetaMask
-        </SafeLink>
-        .
+        Please unlock or enable your Ethereum provider.
       </InstallMessage>
     </Info.Action>
     <SignerButton onClick={onClose}>Close</SignerButton>
