@@ -71,7 +71,7 @@
     "husky": "^1.0.0-rc.13",
     "parcel-bundler": "^1.9.7",
     "prettier": "^1.11.1",
-    "webpack-bundle-analyzer": "^2.11.1"
+    "parcel-plugin-bundle-visualiser": "^1.2.0"
   },
   "scripts": {
     "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./build",
@@ -83,7 +83,6 @@
     "build:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm run build",
     "build:mainnet-infura": "REACT_APP_DEFAULT_ETH_NODE=wss://mainnet.infura.io/_ws npm run build:mainnet",
     "build:rinkeby": "npm run build",
-    "build:analyze": "node scripts/build-analyze.js",
     "lint": "eslint ./src",
     "test": "npm run lint",
     "copy-apm-artifacts": "cp arapp.json build/arapp.json && cp manifest.json build/manifest.json",
