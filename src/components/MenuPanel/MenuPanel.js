@@ -153,7 +153,6 @@ class MenuPanel extends React.PureComponent {
           expand={isActive && readyToExpand}
           activeInstanceId={activeInstanceId}
           onActivate={onOpenApp}
-          comingSoon={appId === 'apps'}
         />
       </div>
     )

@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
-import { Permissions, Settings } from './apps'
+import { Apps, Permissions, Settings } from './apps'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
-import ComingSoon from './components/ComingSoon/ComingSoon'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath } from './routing'
@@ -242,15 +241,7 @@ class Wrapper extends React.Component {
     }
 
     if (instanceId === 'apps') {
-      return (
-        <ComingSoon
-          title="Apps"
-          subtitle={`
-            The apps manager is not quite ready for prime time but will be
-            available soon.
-          `}
-        />
-      )
+      return <Apps />
     }
 
     if (instanceId === 'settings') {
