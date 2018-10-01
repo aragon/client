@@ -33,15 +33,15 @@ class Apps extends React.Component {
       >
         <Content>
           <p>
-            Soon you will be able to <b>browse</b> and <b>install</b>
+            Soon you will be able to <em>browse</em> and <em>install</em>{' '}
             apps in your Aragon organization from here.
           </p>
           <p>
             In the meantime, you can{' '}
-            <a href="https://hack.aragon.org/" target="_blank">
+            <SafeLink href="https://hack.aragon.org/" target="_blank">
               learn how to create apps
-            </a>{' '}
-            or browse some apps being developed.
+            </SafeLink>{' '}
+            or preview some of the apps being developed.
           </p>
 
           <h1>Apps in development</h1>
@@ -101,7 +101,6 @@ const Main = styled(Card).attrs({ width: '100%', height: '288px' })`
   flex-direction: column;
   align-items: center;
   padding-top: 25px;
-  cursor: pointer;
 `
 
 const Icon = styled.div`
@@ -139,6 +138,7 @@ const Tag = styled(Badge)`
 const Description = styled(Text)`
   padding: 0 1rem;
   margin-bottom: 30px;
+  text-align: center;
 `
 
 const Action = styled(SafeLink)`
