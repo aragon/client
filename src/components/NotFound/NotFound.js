@@ -18,8 +18,7 @@ class NotFound extends React.Component {
       reload,
       detailsTitle,
       detailsContent,
-      children,
-      ...props
+      children
     } = this.props
     const { details } = this.state
     return (
@@ -142,7 +141,9 @@ const IssueLink = styled.div`
 
 NotFound.propTypes = {
   title: PropTypes.string,
-  className: PropTypes.string,
+  issue: PropTypes.bool,
+  reload: PropTypes.bool,
+  detailsTitle: PropTypes.string,  
 }
 
 NotFound.defaultProps = {

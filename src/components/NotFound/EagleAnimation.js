@@ -1,17 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
+import { TweenLite } from 'gsap/TweenMax'
 
 export default class EagleAnimation extends React.Component {
   componentDidMount() {
-    let Script
-    window.SMCX = window.SMCX || []
-    Script = document.createElement('script')
-    Script.async = !0
-    Script.type = 'text/javascript'
-    Script.src =
-      'https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.4/TweenMax.min.js'
-    document.getElementById('tweenMaxScript').appendChild(Script)
-
     window.addEventListener('mousemove', onMouseMove)
   }
 
@@ -104,11 +96,10 @@ function onMouseMove(event) {
 
   mouse.x = event.clientX
   mouse.y = event.clientY
-  const requestId = requestAnimationFrame(function() {
+  requestAnimationFrame(function() {
     const point = mouse.matrixTransform(svg.getScreenCTM().inverse())
     leftEye.rotateTo(point)
     rightEye.rotateTo(point)
-    const requestId = null
   })
 }
 
