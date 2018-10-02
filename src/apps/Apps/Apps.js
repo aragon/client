@@ -33,8 +33,8 @@ class Apps extends React.Component {
       >
         <Content>
           <p>
-            Soon you will be able to <em>browse</em> and <em>install</em>{' '}
-            apps in your Aragon organization from here.
+            Soon you will be able to <em>browse</em> and <em>install</em> apps
+            in your Aragon organization from here.
           </p>
           <p>
             In the meantime, you can{' '}

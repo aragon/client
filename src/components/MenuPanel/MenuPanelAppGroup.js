@@ -1,7 +1,7 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
-import { theme, spring as springConf, IconBlank, Badge } from '@aragon/ui'
+import { theme, spring as springConf, IconBlank } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
@@ -159,12 +159,6 @@ const MenuItemBar = styled.div`
   width: 4px;
   height: 100%;
   background: ${theme.accent};
-`
-
-const Soon = styled(Badge).attrs({ shape: 'compact', children: 'Soon' })`
-  text-transform: uppercase;
-  font-size: 9px;
-  font-weight: 300;
 `
 
 export default MenuPanelAppGroup
