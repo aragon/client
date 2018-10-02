@@ -18,7 +18,7 @@ class NotFound extends React.Component {
       reload,
       detailsTitle,
       detailsContent,
-      children
+      children,
     } = this.props
     const { details } = this.state
     return (
@@ -143,7 +143,7 @@ NotFound.propTypes = {
   title: PropTypes.string,
   issue: PropTypes.bool,
   reload: PropTypes.bool,
-  detailsTitle: PropTypes.string,  
+  detailsTitle: PropTypes.string,
 }
 
 NotFound.defaultProps = {
