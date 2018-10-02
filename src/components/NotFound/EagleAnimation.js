@@ -1,13 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 export default class EagleAnimation extends React.Component {
   componentDidMount() {
     let Script
+    window.SMCX = window.SMCX || []
     Script = document.createElement('script')
-    (Script.type = 'text/javascript'), (Script.async = !0)
-    Script.id = 'tweenMaxScript'
+    Script.async = !0
+    Script.type = 'text/javascript'
     Script.src =
       'https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.4/TweenMax.min.js'
     document.getElementById('tweenMaxScript').appendChild(Script)
