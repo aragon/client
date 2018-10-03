@@ -8,6 +8,7 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
+import { ModalProvider, ModalView } from './components/ModalManager/ModalManager'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
@@ -168,8 +169,10 @@ class Wrapper extends React.Component {
       appsLoading,
       locator: { instanceId, params },
     } = this.props
+
     return (
-      <React.Fragment>
+      <ModalProvider>
+        <ModalView />
         <Main>
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
@@ -196,7 +199,7 @@ class Wrapper extends React.Component {
             {...web3Action}
           />
         </SidePanel>
-      </React.Fragment>
+      </ModalProvider>
     )
   }
   renderApp(instanceId, params) {
