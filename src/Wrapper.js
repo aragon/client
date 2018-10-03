@@ -186,7 +186,7 @@ class Wrapper extends React.Component {
           onClose={this.handleSignerClose}
           onTransitionEnd={this.handleSignerTransitionEnd}
           opened={signerOpened}
-          title="Sign Transaction"
+          title="Create transaction"
         >
           <SignerPanelContent
             account={account}
