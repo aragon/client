@@ -2,18 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 import { EmptyStateCard } from '@aragon/ui'
 import notFoundIcon from './assets/not-found.svg'
-import NotFound from '../NotFound/NotFoundCard'
-
-// <StyledEmptyStateCard
-//   actionText="Go back"
-//   icon={NotFoundIcon}
-//   onActivate={onActivate}
-//   text="Are you trying to access an Aragon app that is not installed?"
-//   title="Error: unknown app."
-// />
 
 const EmptyAppCard = ({ onActivate }) => (
-  <NotFound detailsContent="fdkdh"></NotFound>
+  <StyledEmptyStateCard
+    actionText="Go back"
+    icon={NotFoundIcon}
+    onActivate={onActivate}
+    text="Are you trying to access an Aragon app that is not installed?"
+    title="Error: unknown app."
+  />
 )
 
 const StyledEmptyStateCard = styled(EmptyStateCard)`
