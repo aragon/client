@@ -8,8 +8,11 @@ const medium = css => breakpoint('medium', css)
 class NotFound extends React.Component {
   state = { details: false }
   clickMoreDetails = () => {
-    const details = this.state.details
+    const { details } = this.state
     this.setState({ details: !details })
+  }
+  handleReloadClick = () => {
+    location.reload()
   }
   render() {
     const {
@@ -30,7 +33,7 @@ class NotFound extends React.Component {
           {(detailsContent || detailsTitle) && (
             <div>
               <DetailsButton onClick={this.clickMoreDetails}>
-                {details ? 'Hide details...' : 'More details...'}
+                {details ? 'Hide details…' : 'More details…'}
               </DetailsButton>
               {details && (
                 <DetailsContainer>
@@ -54,7 +57,7 @@ class NotFound extends React.Component {
                 </IssueLink>
               )}
               {reload && (
-                <Button mode="strong" onClick={() => location.reload()}>
+                <Button mode="strong" onClick={this.handleReloadClick}>
                   Reload
                 </Button>
               )}
@@ -68,8 +71,6 @@ class NotFound extends React.Component {
 
 const Card = styled.div`
   background: white;
-  -webkit-box-shadow: 0px 0px 19px 0px #c9c9c9;
-  -moz-box-shadow: 0px 0px 19px 0px #c9c9c9;
   box-shadow: 0px 0px 19px 0px #c9c9c9;
   padding: 30px;
   border: solid 1px #c9c9c9;
@@ -96,11 +97,14 @@ const Card = styled.div`
   }
 `
 
-const DetailsButton = styled.p`
+const DetailsButton = styled.button`
   color: black;
   text-decoration: underline;
   margin: 20px 0;
   cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  outline: none;
 `
 
 const DetailsContainer = styled.div`
@@ -108,7 +112,7 @@ const DetailsContainer = styled.div`
   padding: 15px;
   border-radius: 4px;
   max-height: 200px;
-  overflow-y: scroll;
+  overflow-y: auto;
   color: ${theme.text};
   font-size: 14px;
   line-height: 1.6;
@@ -124,11 +128,6 @@ const ButtonBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  .issue-link {
-    margin-left: -10px;
-    color: inherit;
-    text-decoration: none;
-  }
 `
 
 const IssueLink = styled.div`
@@ -144,6 +143,7 @@ NotFound.propTypes = {
   issue: PropTypes.bool,
   reload: PropTypes.bool,
   detailsTitle: PropTypes.string,
+  detailsContent: PropTypes.node,
 }
 
 NotFound.defaultProps = {
