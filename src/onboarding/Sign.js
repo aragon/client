@@ -41,7 +41,7 @@ class SignContent extends React.PureComponent {
       <React.Fragment>
         <Title>
           <Text size="great" weight="bold" color={theme.textDimmed}>
-            Create transactions
+            Sign transactions
           </Text>
         </Title>
 
