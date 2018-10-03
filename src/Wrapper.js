@@ -8,7 +8,11 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
-import { ModalProvider, ModalView } from './components/ModalManager/ModalManager'
+import {
+  ModalProvider,
+  ModalView,
+} from './components/ModalManager/ModalManager'
+import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
@@ -20,6 +24,7 @@ class Wrapper extends React.Component {
     account: '',
     connected: false,
     daoAddress: '',
+    deprecatedDAO: false,
     historyBack: noop,
     historyPush: noop,
     locator: {},
@@ -167,12 +172,14 @@ class Wrapper extends React.Component {
       walletWeb3,
       wrapper,
       appsLoading,
-      locator: { instanceId, params },
+      locator: { instanceId, params, dao },
+      deprecatedDAO,
     } = this.props
 
     return (
       <ModalProvider>
         <ModalView />
+        {deprecatedDAO && <DeprecatedBanner dao={dao} />}
         <Main>
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
