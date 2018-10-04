@@ -1,16 +1,30 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-class EscapeOutside extends Component {
+class EscapeOutside extends React.Component {
   componentDidMount() {
-    document.addEventListener('keydown', this.onEscape)
-    document.addEventListener('click', this.onClick, true)
-    document.addEventListener('touchend', this.onClick, true)
+    document.addEventListener('keydown', this.handleEscape)
+    document.addEventListener('click', this.handleClick, true)
+    document.addEventListener('touchend', this.handleClick, true)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.onEscape)
-    document.removeEventListener('click', this.onClick, true)
-    document.removeEventListener('touchend', this.onClick, true)
+    document.removeEventListener('keydown', this.handleEscape)
+    document.removeEventListener('click', this.handleClick, true)
+    document.removeEventListener('touchend', this.handleClick, true)
+  }
+
+  handleClick = e => {
+    const { onEscapeOutside } = this.props
+    if (!this.node.contains(e.target) && onEscapeOutside) {
+      onEscapeOutside()
+    }
+  }
+
+  handleEscape = e => {
+    const { onEscapeOutside } = this.props
+    if (e.keyCode === 27 && onEscapeOutside) {
+      onEscapeOutside()
+    }
   }
 
   render() {
@@ -21,20 +35,6 @@ class EscapeOutside extends Component {
         {children}
       </div>
     )
-  }
-
-  onEscape = e => {
-    const { onEscapeOutside } = this.props
-    if (e.keyCode === 27 && onEscapeOutside) {
-      onEscapeOutside()
-    }
-  }
-
-  onClick = e => {
-    const { onEscapeOutside } = this.props
-    if (!this.node.contains(e.target) && onEscapeOutside) {
-      onEscapeOutside()
-    }
   }
 }
 

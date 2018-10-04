@@ -24,7 +24,7 @@ class Wrapper extends React.Component {
     account: '',
     connected: false,
     daoAddress: '',
-    deprecatedDAO: false,
+    isDaoDeprecated: false,
     historyBack: noop,
     historyPush: noop,
     locator: {},
@@ -173,13 +173,13 @@ class Wrapper extends React.Component {
       wrapper,
       appsLoading,
       locator: { instanceId, params, dao },
-      deprecatedDAO,
+      isDaoDeprecated,
     } = this.props
 
     return (
       <ModalProvider>
         <ModalView />
-        {deprecatedDAO && <DeprecatedBanner dao={dao} />}
+        {isDaoDeprecated && <DeprecatedBanner dao={dao} />}
         <Main>
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
