@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { springs } from '@aragon/ui'
-import throttle from  'lodash.throttle'
+import throttle from 'lodash.throttle'
 
 export default class EagleAnimation extends React.Component {
   state = {
@@ -25,8 +24,8 @@ export default class EagleAnimation extends React.Component {
     const svg = this.svgElement
     const mouse = svg.createSVGPoint()
 
-    const leftEyeAngle = this.createEye(this.leftEye);
-    const rightEyeAngle = this.createEye(this.rightEye);
+    const leftEyeAngle = this.createEye(this.leftEye)
+    const rightEyeAngle = this.createEye(this.rightEye)
 
     mouse.x = event.clientX
     mouse.y = event.clientY
@@ -47,25 +46,22 @@ export default class EagleAnimation extends React.Component {
     this.rightEye = element
   }
   createEye = element => {
-
     const bbox = element.getBBox()
     const centerX = bbox.x + bbox.width / 2
     const centerY = bbox.y + bbox.height / 2
 
-    return (point) => {
+    return point => {
       const dx = point.x - centerX
       const dy = point.y - centerY
 
-      return Math.atan2(dy, dx)/ Math.PI * 180 + 180
+      return (Math.atan2(dy, dx) / Math.PI) * 180 + 180
     }
   }
 
   render() {
     const { leftEyeAngle, rightEyeAngle } = this.state
     return (
-      <Spring
-        to={{ leftEyeAngle, rightEyeAngle }}
-      >
+      <Spring to={{ leftEyeAngle, rightEyeAngle }}>
         {({ leftEyeAngle, rightEyeAngle }) => (
           <SvgWrapper>
             <Svg innerRef={this.handleSvgRef} viewBox="0 0 300 300">
@@ -94,12 +90,18 @@ export default class EagleAnimation extends React.Component {
                 <path d="M52 96l10-10s-1-6-10-6v16z" fill="#D89144" />
               </g>
 
-              <Eye innerRef={this.handleLeftEyeRef} transform={`rotate(${leftEyeAngle}, 20, 45)`}>
+              <Eye
+                innerRef={this.handleLeftEyeRef}
+                transform={`rotate(${leftEyeAngle}, 20, 45)`}
+              >
                 <OuterCircle cx="30" cy="55" r="20" />
                 <InnerCircle cx="32" cy="65" r="6" />
               </Eye>
 
-              <Eye innerRef={this.handleRightEyeRef} transform={`rotate(${rightEyeAngle}, 66, 45)`}>
+              <Eye
+                innerRef={this.handleRightEyeRef}
+                transform={`rotate(${rightEyeAngle}, 66, 45)`}
+              >
                 <OuterCircle cx="76" cy="55" r="20" />
                 <InnerCircle cx="82" cy="65" r="6" />
               </Eye>
