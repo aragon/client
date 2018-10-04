@@ -6,14 +6,27 @@ import { theme, breakpoint, Button } from '@aragon/ui'
 const medium = css => breakpoint('medium', css)
 
 class NotFound extends React.Component {
+  static propTypes = {
+    title: PropTypes.string,
+    issue: PropTypes.bool,
+    reload: PropTypes.bool,
+    detailsTitle: PropTypes.string,
+    detailsContent: PropTypes.node,
+  }
+  static defaultProps = {
+    title: 'Not found :(',
+  }
+
   state = { details: false }
-  clickMoreDetails = () => {
-    const { details } = this.state
-    this.setState({ details: !details })
+
+  toggleMoreDetails = () => {
+    const { showDetails } = this.state
+    this.setState({ showDetails: !showDetails })
   }
   handleReloadClick = () => {
     location.reload()
   }
+
   render() {
     const {
       title,
@@ -23,7 +36,7 @@ class NotFound extends React.Component {
       detailsContent,
       children,
     } = this.props
-    const { details } = this.state
+    const { showDetails } = this.state
     return (
       <div>
         <EagleAnimation />
@@ -32,10 +45,10 @@ class NotFound extends React.Component {
           {children}
           {(detailsContent || detailsTitle) && (
             <div>
-              <DetailsButton onClick={this.clickMoreDetails}>
-                {details ? 'Hide details…' : 'More details…'}
+              <DetailsButton onClick={this.toggleMoreDetails}>
+                {showDetails ? 'Hide details…' : 'More details…'}
               </DetailsButton>
-              {details && (
+              {showDetails && (
                 <DetailsContainer>
                   {detailsTitle && <h2>{detailsTitle}</h2>}
                   {detailsContent}
@@ -46,14 +59,12 @@ class NotFound extends React.Component {
           {(issue || reload) && (
             <ButtonBox>
               {issue && (
-                <IssueLink>
-                  <Button.Anchor
-                    mode="text"
-                    href="https://github.com/aragon/aragon/issues"
-                    target="_blank"
-                  >
-                    Tell us what went wrong
-                  </Button.Anchor>
+                <IssueLink
+                  mode="text"
+                  href="https://github.com/aragon/aragon/issues"
+                  target="_blank"
+                >
+                  Tell us what went wrong
                 </IssueLink>
               )}
               {reload && (
@@ -130,24 +141,13 @@ const ButtonBox = styled.div`
   justify-content: space-between;
 `
 
-const IssueLink = styled.div`
-  a {
-    margin-left: -10px;
-    color: inherit;
-    text-decoration: none;
+const IssueLink = styled(Button.Anchor)`
+  margin-left: -10px;
+  color: ${theme.textSecondary} !important;
+  text-decoration: none;
+  &:hover {
+    color: ${theme.gradientStartActive} !important;
   }
 `
-
-NotFound.propTypes = {
-  title: PropTypes.string,
-  issue: PropTypes.bool,
-  reload: PropTypes.bool,
-  detailsTitle: PropTypes.string,
-  detailsContent: PropTypes.node,
-}
-
-NotFound.defaultProps = {
-  title: 'Not found :(',
-}
 
 export default NotFound
