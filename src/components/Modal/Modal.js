@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
+import EscapeOutside from '../EscapeOutside/EscapeOutside'
 import { Button, Text, breakpoint } from '@aragon/ui'
 
-const WrapModal = styled.div`
+const WrapModal = styled(EscapeOutside)`
   height: calc(100vh - 2em);
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -47,9 +48,17 @@ const Footer = styled.footer`
   justify-content: space-between;
 `
 
-const Modal = ({ title, body, hideText, moreText, onHide, onMore }) => {
+const Modal = ({
+  title,
+  body,
+  hideText,
+  moreText,
+  onHide,
+  onMore,
+  blocking,
+}) => {
   return (
-    <WrapModal role="alertdialog">
+    <WrapModal role="alertdialog" onEscapeOutside={!blocking && onHide}>
       <Header>
         <Text size="xxlarge">{title}</Text>
       </Header>
