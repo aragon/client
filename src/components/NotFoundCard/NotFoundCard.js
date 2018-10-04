@@ -17,7 +17,7 @@ class NotFound extends React.Component {
     title: 'Not found :(',
   }
 
-  state = { details: false }
+  state = { showDetails: false }
 
   toggleMoreDetails = () => {
     const { showDetails } = this.state
