@@ -24,8 +24,8 @@ export default class EagleAnimation extends React.Component {
     const svg = this.svgElement
     const mouse = svg.createSVGPoint()
 
-    const leftEyeAngle = this.createEye(this.leftEye)
-    const rightEyeAngle = this.createEye(this.rightEye)
+    const leftEyeAngle = this.createRotationFnForEye(this.leftEye)
+    const rightEyeAngle = this.createRotationFnForEye(this.rightEye)
 
     mouse.x = event.clientX
     mouse.y = event.clientY
@@ -45,7 +45,7 @@ export default class EagleAnimation extends React.Component {
   handleRightEyeRef = element => {
     this.rightEye = element
   }
-  createEye = element => {
+  createRotationFnForEye = element => {
     const bbox = element.getBBox()
     const centerX = bbox.x + bbox.width / 2
     const centerY = bbox.y + bbox.height / 2
