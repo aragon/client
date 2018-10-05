@@ -8,10 +8,7 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
-import {
-  ModalProvider,
-  ModalView,
-} from './components/ModalManager/ModalManager'
+import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
@@ -178,7 +175,6 @@ class Wrapper extends React.Component {
 
     return (
       <ModalProvider>
-        <ModalView />
         {isDaoDeprecated && <DeprecatedBanner dao={dao} />}
         <Main>
           <MenuPanel

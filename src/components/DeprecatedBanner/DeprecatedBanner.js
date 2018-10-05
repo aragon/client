@@ -1,9 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ModalConsumer } from '../ModalManager/ModalManager'
 import { theme, Text, SafeLink, Button } from '@aragon/ui'
 import Banner from '../Banner/Banner'
 import Modal from '../Modal/Modal'
+import { ModalConsumer } from '../ModalManager/ModalManager'
+
+const DEPRECATION_URL = 'https://blog.aragon.one/0-5-dao-deprecation/'
+
+const DEPRECATION_TITLE =
+  'Old 0.5 Rinkeby DAOs will be deprecated on Nov. 1, 2018'
 
 const { negative, negativeText, accent, textDimmed } = theme
 
@@ -25,7 +30,7 @@ class DeprecatedDao extends React.Component {
     return (
       <React.Fragment>
         <Banner
-          text="This Rinkeby DAO will be deprecated on 1/11/18"
+          text={DEPRECATION_TITLE}
           textColor={negativeText}
           onClick={this.handleClick}
           buttonText="More info"
@@ -42,39 +47,39 @@ const DeprecatedBody = ({ dao }) => (
   <React.Fragment>
     <TopParagraph color={textDimmed}>
       Over the last six months, we’ve made a lot of improvements to aragonOS.
-      Unfortunately a number of those improvements weren’t backwards-upgradeable
-      with the currently deployed contracts that you might have been using on
-      Rinkeby. So we’ve had to make the hard decision to deprecate those old
-      testnet DAOs. Please see{' '}
-      <StyledSafeLink
-        href="https://blog.aragon.one/0-5-dao-deprecation/"
-        target="_blank"
-      >
-        https://blog.aragon.one/0-5-dao-deprecation
+      Unfortunately, a number of those improvements weren’t
+      backwards-upgradeable with the contracts your DAOs were constructed with
+      on Rinkeby. As a result, we’ve made the tough decision to deprecate all
+      old testnet DAOs. Please see{' '}
+      <StyledSafeLink href={DEPRECATION_URL} target="_blank">
+        {DEPRECATION_URL}
       </StyledSafeLink>{' '}
       for more details.
     </TopParagraph>
     <Text.Paragraph color={textDimmed}>
-      What this means for this DAO is that on 1/11/18 it will no longer be
-      accessible at the current URL. To help manage this migration, and in case
-      you still need access to your old DAOs, we’ll be hosting this DAO created
-      with 0.5 at{' '}
-      <StyledSafeLink href="https://old-app.aragon.org/{dao}">
-        old-app.aragon.org/
+      On <time dateTime="2018-11-01">Nov. 1, 2018</time>, this DAO will no
+      longer be accessible on app.aragon.one. To help migrate, and in case you
+      still need access to this DAO, we will continue hosting this version of
+      Aragon Core on{' '}
+      <StyledSafeLink
+        href={`https://old-app.aragon.org/#/${dao}`}
+        target="_blank"
+      >
+        old-app.aragon.org/#/
         {dao}
       </StyledSafeLink>{' '}
-      for a few months after 1/11/18.
+      until the end of <time dateTime="2019-03">March, 2019</time>.
     </Text.Paragraph>
   </React.Fragment>
 )
 
 const DeprecatedModal = ({ onHide, dao }) => (
   <Modal
-    title="Deprecation notice for 0.5 Rinkeby DAOs"
+    title={DEPRECATION_TITLE}
     body={<DeprecatedBody dao={dao} />}
     onHide={onHide}
     More={
-      <Button.Anchor mode="strong" href="URL" target="_blank">
+      <Button.Anchor mode="strong" href={DEPRECATION_URL} target="_blank">
         Learn more
       </Button.Anchor>
     }

@@ -14,15 +14,15 @@ class EscapeOutside extends React.Component {
   }
 
   handleClick = e => {
-    const { onEscapeOutside } = this.props
-    if (!this.node.contains(e.target) && onEscapeOutside) {
+    const { onEscapeOutside = () => {} } = this.props
+    if (!this.node.contains(e.target)) {
       onEscapeOutside()
     }
   }
 
   handleEscape = e => {
-    const { onEscapeOutside } = this.props
-    if (e.keyCode === 27 && onEscapeOutside) {
+    const { onEscapeOutside = () => {} } = this.props
+    if (e.keyCode === 27) {
       onEscapeOutside()
     }
   }
