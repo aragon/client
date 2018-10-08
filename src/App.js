@@ -14,8 +14,14 @@ import Onboarding from './onboarding/Onboarding'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
+import { ModalProvider } from './components/ModalManager/ModalManager'
+import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 
 class App extends React.Component {
+  static defaultProps = {
+    isDaoDeprecated: false,
+  }
+
   state = {
     locator: {},
     prevLocator: null,
@@ -233,7 +239,7 @@ class App extends React.Component {
       appsLoading,
       permissionsLoading,
     } = this.state
-    const { mode } = locator
+    const { mode, dao } = locator
     if (!mode) return null
 
     return (
@@ -243,22 +249,25 @@ class App extends React.Component {
           apps={apps}
           permissions={permissions}
         >
-          <Wrapper
-            historyBack={this.historyBack}
-            historyPush={this.historyPush}
-            locator={locator}
-            wrapper={wrapper}
-            apps={apps}
-            appsLoading={appsLoading}
-            permissionsLoading={permissionsLoading}
-            account={account}
-            walletNetwork={walletNetwork}
-            walletWeb3={walletWeb3}
-            web3={web3}
-            daoAddress={daoAddress}
-            transactionBag={transactionBag}
-            connected={connected}
-          />
+          <ModalProvider>
+            {this.props.isDaoDeprecated && <DeprecatedBanner dao={dao} />}
+            <Wrapper
+              historyBack={this.historyBack}
+              historyPush={this.historyPush}
+              locator={locator}
+              wrapper={wrapper}
+              apps={apps}
+              appsLoading={appsLoading}
+              permissionsLoading={permissionsLoading}
+              account={account}
+              walletNetwork={walletNetwork}
+              walletWeb3={walletWeb3}
+              web3={web3}
+              daoAddress={daoAddress}
+              transactionBag={transactionBag}
+              connected={connected}
+            />
+          </ModalProvider>
         </PermissionsProvider>
         <Onboarding
           visible={mode === 'home' || mode === 'setup'}
