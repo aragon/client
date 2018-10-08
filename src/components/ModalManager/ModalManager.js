@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
-import { breakpoint } from '@aragon/ui'
 
 const ModalContext = React.createContext({
   modalComponent: null,
@@ -86,10 +85,6 @@ const Wrap = styled(animated.div)`
 
 const AnimatedWrap = styled(animated.div)`
   position: relative;
-  height: 100%;
-
-  /* desktop */
-  ${breakpoint('medium', `height: unset;`)};
 `
 
 export { ModalProvider, ModalConsumer, ModalView }

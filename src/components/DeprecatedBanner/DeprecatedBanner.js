@@ -2,13 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 import { theme, Text, SafeLink, Button } from '@aragon/ui'
 import Banner from '../Banner/Banner'
-import Modal from '../Modal/Modal'
+import Modal from '../ModalManager/Modal'
 import { ModalConsumer } from '../ModalManager/ModalManager'
 
 const DEPRECATION_URL = 'https://blog.aragon.one/0-5-dao-deprecation/'
 
 const DEPRECATION_TITLE =
   'Old 0.5 Rinkeby DAOs will be deprecated on Nov. 1, 2018'
+
+const OLD_DAO_URL = 'https://old-app.aragon.org/#/'
 
 const { negative, negativeText, accent, textDimmed } = theme
 
@@ -25,7 +27,7 @@ class DeprecatedDao extends React.Component {
   }
 
   render() {
-    const { children, dao } = this.props
+    const { children } = this.props
 
     return (
       <React.Fragment>
@@ -35,7 +37,6 @@ class DeprecatedDao extends React.Component {
           onClick={this.handleClick}
           buttonText="More info"
           color={negative}
-          dao={dao}
         />
         {children}
       </React.Fragment>
@@ -61,11 +62,8 @@ const DeprecatedBody = ({ dao }) => (
       longer be accessible on app.aragon.one. To help migrate, and in case you
       still need access to this DAO, we will continue hosting this version of
       Aragon Core on{' '}
-      <StyledSafeLink
-        href={`https://old-app.aragon.org/#/${dao}`}
-        target="_blank"
-      >
-        old-app.aragon.org/#/
+      <StyledSafeLink href={`${OLD_DAO_URL}${dao}`} target="_blank">
+        {OLD_DAO_URL}
         {dao}
       </StyledSafeLink>{' '}
       until the end of <time dateTime="2019-03">March, 2019</time>.

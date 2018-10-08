@@ -1,6 +1,11 @@
 import React from 'react'
+import { noop } from '../../utils'
 
 class EscapeOutside extends React.Component {
+  static defaultProps = {
+    onEscapeOutside: noop,
+  }
+
   componentDidMount() {
     document.addEventListener('keydown', this.handleEscape)
     document.addEventListener('click', this.handleClick, true)
@@ -14,14 +19,14 @@ class EscapeOutside extends React.Component {
   }
 
   handleClick = e => {
-    const { onEscapeOutside = () => {} } = this.props
+    const { onEscapeOutside } = this.props
     if (!this.node.contains(e.target)) {
       onEscapeOutside()
     }
   }
 
   handleEscape = e => {
-    const { onEscapeOutside = () => {} } = this.props
+    const { onEscapeOutside } = this.props
     if (e.keyCode === 27) {
       onEscapeOutside()
     }
