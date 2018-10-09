@@ -237,7 +237,7 @@ class App extends React.Component {
     if (!mode) return null
 
     return (
-      <AragonApp publicUrl="./aragon-ui/">
+      <AragonApp publicUrl="/aragon-ui/">
         <PermissionsProvider
           wrapper={wrapper}
           apps={apps}
