@@ -32,10 +32,8 @@ class AssignPermissionPanel extends React.PureComponent {
   }
 
   getRoles() {
-    const { getAppRoles } = this.props
     const app = this.getSelectedApp()
-    const appRoles = app ? getAppRoles(app) : []
-    return appRoles.map(({ role }) => role)
+    return (app && app.roles) || []
   }
 
   appsLabels() {
@@ -183,11 +181,8 @@ class AssignPermissionPanel extends React.PureComponent {
 
 export default props => (
   <PermissionsConsumer>
-    {({ getAppRoles, createPermission, grantPermission }) => (
-      <AssignPermissionPanel
-        {...props}
-        {...{ getAppRoles, createPermission, grantPermission }}
-      />
+    {({ createPermission, grantPermission }) => (
+      <AssignPermissionPanel {...props} createPermission grantPermission />
     )}
   </PermissionsConsumer>
 )
