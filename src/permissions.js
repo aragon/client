@@ -108,7 +108,7 @@ function resolveEntity(apps, address) {
     return { ...entity, type: 'any' }
   }
   const app = apps.find(app => app.proxyAddress === address)
-  return app ? { ...entity, type: 'app', app } : entity
+  return app ? { ...entity, app, type: 'app' } : entity
 }
 
 // Returns a function that resolves an entity, caching the results
