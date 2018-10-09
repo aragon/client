@@ -8,6 +8,7 @@ import {
   permissionsByEntity,
 } from '../permissions'
 import { log, noop } from '../utils'
+import { getEmptyAddress } from '../web3-utils'
 
 const { Provider, Consumer } = React.createContext()
 
@@ -152,7 +153,7 @@ class PermissionsProvider extends React.Component {
     const role = this.getAppRoles(app).find(
       role => role.roleBytes === roleBytes
     )
-    return (role && role.manager) || null
+    return (role && role.manager) || getEmptyAddress()
   }
 
   // Get a list of entities with the roles assigned to them
