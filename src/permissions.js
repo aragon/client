@@ -28,7 +28,9 @@ export function permissionsByEntity(permissions) {
   // apps
   for (const [app, appPermissions] of Object.entries(permissions)) {
     // roles
-    for (const [role, { allowedEntities }] of Object.entries(appPermissions)) {
+    for (const [role, { allowedEntities = [] }] of Object.entries(
+      appPermissions
+    )) {
       // entities
       for (const entity of allowedEntities) {
         if (!results[entity]) {
