@@ -111,7 +111,7 @@ class MenuPanel extends React.PureComponent {
             style={{
               openProgress: spring(
                 Number(notificationsOpened),
-                springConf('fast')
+                springConf['fast']
               ),
             }}
           >

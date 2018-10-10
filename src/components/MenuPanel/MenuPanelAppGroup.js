@@ -33,7 +33,7 @@ class MenuPanelAppGroup extends React.PureComponent {
         style={{
           openProgress: spring(
             Number(active && (singleInstance || expand)),
-            springConf('fast')
+            springConf['fast']
           ),
         }}
       >
