@@ -150,10 +150,11 @@ class PermissionsProvider extends React.Component {
 
   // Get the manager of a role
   getRoleManager = (app, roleBytes) => {
+    const { resolveEntity } = this.state
     const role = this.getAppRoles(app).find(
       role => role.roleBytes === roleBytes
     )
-    return (role && role.manager) || getEmptyAddress()
+    return resolveEntity((role && role.manager) || getEmptyAddress())
   }
 
   // Get a list of entities with the roles assigned to them
