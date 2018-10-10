@@ -27,8 +27,11 @@ class AppRoles extends React.PureComponent {
 
     return (
       <PermissionsConsumer>
-        {({ getAppRoles }) => {
-          const roles = getAppRoles(app)
+        {({ getRoleManager }) => {
+          const roles = ((app && app.roles) || []).map(role => ({
+            role,
+            manager: getRoleManager(app, role.bytes),
+          }))
 
           return (
             <Section title="Roles available on this app">
