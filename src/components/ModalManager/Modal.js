@@ -10,7 +10,7 @@ const Modal = ({ title, body, moreText, onHide, More, blocking }) => (
       <Header>
         <Text size="xxlarge">{title}</Text>
       </Header>
-      <Main>{body}</Main>
+      <Body>{body}</Body>
       <Footer>
         <Button mode="text" onClick={onHide}>
           Close
@@ -51,7 +51,7 @@ const Header = styled.header`
   margin-bottom: 1.5em;
 `
 
-const Main = styled.main`
+const Body = styled.main`
   margin-bottom: 30px;
   word-break: break-word;
 `

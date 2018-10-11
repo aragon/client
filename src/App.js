@@ -1,6 +1,6 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
-import { PublicUrl, BaseStyles, theme } from '@aragon/ui'
+import { PublicUrl, BaseStyles } from '@aragon/ui'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
