@@ -34,7 +34,7 @@ const AppLoadingProgressBar = ({ hide, percent, ...props }) => (
 
 // Mimic nprogress with our own accent colour
 const StyledProgressBar = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   height: 2px;
   background-color: ${accent};
