@@ -21,22 +21,33 @@ const DeprecatedBanner = props => (
 )
 
 class DeprecatedDao extends React.Component {
+  static defaultProps = {
+    lightMode: false,
+  }
+
   handleClick = () => {
     const { dao, showModal } = this.props
     showModal(DeprecatedModal, { dao })
   }
 
   render() {
-    const { children } = this.props
+    const { children, lightMode } = this.props
 
     return (
       <React.Fragment>
         <Banner
           text={DEPRECATION_TITLE}
-          textColor={negativeText}
-          onClick={this.handleClick}
-          buttonText="More info"
-          color={negative}
+          color={lightMode ? theme.infoBackground : negative}
+          textColor={lightMode ? theme.textPrimary : negativeText}
+          button={
+            <Button
+              onClick={this.handleClick}
+              mode={lightMode ? 'strong' : 'normal'}
+              size="mini"
+            >
+              More info
+            </Button>
+          }
         />
         {children}
       </React.Fragment>
