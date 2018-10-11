@@ -19,7 +19,7 @@ class BrowseByApp extends React.Component {
           return (
             <Apps>
               {apps.map(app => (
-                <AppCard key={app.appId} app={app} onOpen={onOpenApp} />
+                <AppCard key={app.proxyAddress} app={app} onOpen={onOpenApp} />
               ))}
             </Apps>
           )
