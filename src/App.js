@@ -1,6 +1,6 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
-import { AragonApp } from '@aragon/ui'
+import { PublicUrl, BaseStyles, theme } from '@aragon/ui'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -18,10 +18,6 @@ import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 
 class App extends React.Component {
-  static defaultProps = {
-    isDaoDeprecated: false,
-  }
-
   state = {
     locator: {},
     prevLocator: null,
@@ -40,6 +36,7 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
+    showDeprecatedBanner: true,
   }
 
   history = createHistory()
@@ -243,15 +240,17 @@ class App extends React.Component {
     if (!mode) return null
 
     return (
-      <AragonApp publicUrl="/aragon-ui/">
-        <PermissionsProvider
-          wrapper={wrapper}
-          apps={apps}
-          permissions={permissions}
-        >
-          <ModalProvider>
-            {this.props.isDaoDeprecated && <DeprecatedBanner dao={dao} />}
+      <PublicUrl.Provider url="/aragon-ui/">
+        <ModalProvider>
+          <BaseStyles />
+
+          <PermissionsProvider
+            wrapper={wrapper}
+            apps={apps}
+            permissions={permissions}
+          >
             <Wrapper
+              banner={<DeprecatedBanner dao={dao} />}
               historyBack={this.historyBack}
               historyPush={this.historyPush}
               locator={locator}
@@ -267,21 +266,23 @@ class App extends React.Component {
               transactionBag={transactionBag}
               connected={connected}
             />
-          </ModalProvider>
-        </PermissionsProvider>
-        <Onboarding
-          visible={mode === 'home' || mode === 'setup'}
-          account={account}
-          balance={balance}
-          walletNetwork={walletNetwork}
-          onBuildDao={this.handleBuildDao}
-          daoBuilder={daoBuilder}
-          daoCreationStatus={daoCreationStatus}
-          onComplete={this.handleCompleteOnboarding}
-          onOpenOrganization={this.handleOpenOrganization}
-          onResetDaoBuilder={this.handleResetDaoBuilder}
-        />
-      </AragonApp>
+          </PermissionsProvider>
+
+          <Onboarding
+            banner={<DeprecatedBanner dao={dao} lightMode />}
+            visible={mode === 'home' || mode === 'setup'}
+            account={account}
+            balance={balance}
+            walletNetwork={walletNetwork}
+            onBuildDao={this.handleBuildDao}
+            daoBuilder={daoBuilder}
+            daoCreationStatus={daoCreationStatus}
+            onComplete={this.handleCompleteOnboarding}
+            onOpenOrganization={this.handleOpenOrganization}
+            onResetDaoBuilder={this.handleResetDaoBuilder}
+          />
+        </ModalProvider>
+      </PublicUrl.Provider>
     )
   }
 }
