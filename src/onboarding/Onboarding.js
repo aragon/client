@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
 import { spring as springConf } from '@aragon/ui'
+import { isNameUsed } from '@aragon/wrapper'
+import { web3Providers, contractAddresses } from '../environment'
 import { noop } from '../utils'
 
 import * as Steps from './steps'
@@ -84,6 +86,12 @@ class Onboarding extends React.PureComponent {
       }, 1000)
     }
   }
+
+  isNameAvailable = async name =>
+    !(await isNameUsed(name, {
+      provider: web3Providers.default,
+      registryAddress: contractAddresses.ensRegistry,
+    }))
 
   handleTransitionRest = () => {
     if (!this.props.visible) {
@@ -212,7 +220,6 @@ class Onboarding extends React.PureComponent {
     timerKey,
     invertCheck = false
   ) => {
-    const { daoBuilder } = this.props
     const filteredDomain = domain
       .trim()
       .toLowerCase()
@@ -238,7 +245,7 @@ class Onboarding extends React.PureComponent {
 
     const checkName = async () => {
       try {
-        const available = await daoBuilder.isNameAvailable(filteredDomain)
+        const available = await this.isNameAvailable(filteredDomain)
 
         // The domain could have changed in the meantime
         if (filteredDomain === this.state[domainKey]) {

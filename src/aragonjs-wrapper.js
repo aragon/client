@@ -1,12 +1,7 @@
 import BN from 'bn.js'
 import throttle from 'lodash.throttle'
 import resolvePathname from 'resolve-pathname'
-import Aragon, {
-  providers,
-  setupTemplates,
-  isNameUsed,
-  ensResolve,
-} from '@aragon/wrapper'
+import Aragon, { providers, setupTemplates, ensResolve } from '@aragon/wrapper'
 import {
   appOverrides,
   sortAppsPair,
@@ -466,8 +461,6 @@ export const initDaoBuilder = (
 
       return templates.newDAO(templateName, organizationName, templateData)
     },
-    isNameAvailable: async name =>
-      !(await isNameUsed(name, { provider, registryAddress })),
   }
 }
 

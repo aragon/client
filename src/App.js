@@ -224,7 +224,6 @@ class App extends React.Component {
       balance,
       walletNetwork,
       transactionBag,
-      daoBuilder,
       daoCreationStatus,
       walletWeb3,
       web3,
@@ -266,7 +265,6 @@ class App extends React.Component {
           balance={balance}
           walletNetwork={walletNetwork}
           onBuildDao={this.handleBuildDao}
-          daoBuilder={daoBuilder}
           daoCreationStatus={daoCreationStatus}
           onComplete={this.handleCompleteOnboarding}
           onOpenOrganization={this.handleOpenOrganization}
