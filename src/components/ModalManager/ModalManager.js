@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
+import { springs } from '@aragon/ui'
 
 const ModalContext = React.createContext({
   modalComponent: null,
@@ -44,21 +45,24 @@ const ModalView = () => (
       <Transition
         blocking={!!ModalComponent}
         native
-        from={{ opacity: 0, top: 50 }}
-        enter={{ opacity: 1, top: 0 }}
-        leave={{ opacity: 0, top: 0 }}
+        from={{ opacity: 0, enterProgress: 0 }}
+        enter={{ opacity: 1, enterProgress: 1 }}
+        leave={{ opacity: 0, enterProgress: 1 }}
+        config={springs.lazy}
       >
         {ModalComponent &&
-          (({ opacity, top, blocking }) => (
-            <Wrap
-              style={{
-                opacity,
-                pointerEvents: blocking ? 'auto' : 'none',
-              }}
-            >
+          (({ opacity, enterProgress, blocking }) => (
+            <Wrap style={{ pointerEvents: blocking ? 'auto' : 'none' }}>
+              <Overlay style={{ opacity: opacity.interpolate(v => v * 0.5) }} />
               <AnimatedWrap
                 style={{
-                  transform: top.interpolate(v => `translate3d(0, ${v}px, 0)`),
+                  opacity,
+                  transform: enterProgress.interpolate(
+                    v => `
+                      translate3d(0, ${(1 - v) * 10}px, 0)
+                      scale3d(${1 - (1 - v) * 0.03}, ${1 - (1 - v) * 0.03}, 1)
+                    `
+                  ),
                 }}
               >
                 <ModalComponent onHide={hideModal} {...modalComponentProps} />
@@ -70,21 +74,32 @@ const ModalView = () => (
   </ModalConsumer>
 )
 
-const Wrap = styled(animated.div)`
-  position: absolute;
-  z-index: 11;
+const Overlay = styled(animated.div)`
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(59, 59, 59, 0.5);
+  background: rgb(59, 59, 59);
+`
+
+const Wrap = styled.div`
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow-y: auto;
 `
 
 const AnimatedWrap = styled(animated.div)`
   position: relative;
+  min-height: 0;
 `
 
 export { ModalProvider, ModalConsumer, ModalView }

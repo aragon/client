@@ -5,28 +5,32 @@ import { Button, Text, breakpoint } from '@aragon/ui'
 import { noop } from '../../utils'
 
 const Modal = ({ title, body, moreText, onHide, More, blocking }) => (
-  <WrapModal role="alertdialog" onEscapeOutside={blocking ? noop : onHide}>
-    <Header>
-      <Text size="xxlarge">{title}</Text>
-    </Header>
-    <Main>{body}</Main>
-    <Footer>
-      <Button mode="text" onClick={onHide}>
-        Close
-      </Button>
-      {More}
-    </Footer>
-  </WrapModal>
+  <Main>
+    <WrapModal role="alertdialog" onEscapeOutside={blocking ? noop : onHide}>
+      <Header>
+        <Text size="xxlarge">{title}</Text>
+      </Header>
+      <Main>{body}</Main>
+      <Footer>
+        <Button mode="text" onClick={onHide}>
+          Close
+        </Button>
+        {More}
+      </Footer>
+    </WrapModal>
+  </Main>
 )
 
-const WrapModal = styled(EscapeOutside)`
-  height: calc(100vh - 2em);
+const Main = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto;
+  padding: 20px;
+`
+
+const WrapModal = styled(EscapeOutside)`
   background: #fff;
-  padding: 2.5em 2.5em 1.5em 2.5em;
-  margin: 1em;
-  box-shadow: -2px 0px 20px rgba(0, 0, 0, 0.236894);
+  padding: 40px 40px 20px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 
   /* desktop */
@@ -35,8 +39,6 @@ const WrapModal = styled(EscapeOutside)`
     `
       height: unset;
       min-height: 40vh;
-      max-height: 70vh;
-      max-width: 90%;
       padding: 3.5em;
       margin: auto;
     `
@@ -52,7 +54,6 @@ const Header = styled.header`
 const Main = styled.main`
   margin-bottom: 30px;
   word-break: break-word;
-  overflow: auto;
 `
 
 const Footer = styled.footer`
