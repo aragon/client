@@ -8,7 +8,7 @@ import { ModalConsumer } from '../ModalManager/ModalManager'
 const DEPRECATION_URL = 'https://blog.aragon.one/0-5-dao-deprecation/'
 
 const DEPRECATION_TITLE =
-  'Old 0.5 Rinkeby DAOs will be deprecated on Nov. 1, 2018'
+  'Old 0.5 Rinkeby organizations will be deprecated on Nov. 1, 2018'
 
 const OLD_DAO_URL = 'https://old-app.aragon.org/#/'
 
@@ -49,19 +49,19 @@ const DeprecatedBody = ({ dao }) => (
     <TopParagraph color={textDimmed}>
       Over the last six months, we’ve made a lot of improvements to aragonOS.
       Unfortunately, a number of those improvements weren’t
-      backwards-upgradeable with the contracts your DAOs were constructed with
-      on Rinkeby. As a result, we’ve made the tough decision to deprecate all
-      old testnet DAOs. Please see{' '}
+      backwards-upgradeable with the contracts your organizations were
+      constructed with on Rinkeby. As a result, we’ve made the tough decision to
+      deprecate all old testnet organizations. Please see{' '}
       <StyledSafeLink href={DEPRECATION_URL} target="_blank">
         {DEPRECATION_URL}
       </StyledSafeLink>{' '}
       for more details.
     </TopParagraph>
     <Text.Paragraph color={textDimmed}>
-      On <time dateTime="2018-11-01">Nov. 1, 2018</time>, this DAO will no
-      longer be accessible on app.aragon.one. To help migrate, and in case you
-      still need access to this DAO, we will continue hosting this version of
-      Aragon Core on{' '}
+      On <time dateTime="2018-11-01">Nov. 1, 2018</time>, this organization will
+      no longer be accessible on app.aragon.one. To help migrate, and in case
+      you still need access to this organization, we will continue hosting this
+      version of Aragon Core on{' '}
       <StyledSafeLink href={`${OLD_DAO_URL}${dao}`} target="_blank">
         {OLD_DAO_URL}
         {dao}
