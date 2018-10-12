@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
-import { spring as springConf } from '@aragon/ui'
+import { springs } from '@aragon/ui'
 import { noop } from '../utils'
 
 import * as Steps from './steps'
@@ -33,7 +33,7 @@ const SPRING_HIDE = {
   damping: 15,
   precision: 0.001,
 }
-const SPRING_SCREEN = springConf('slow')
+const SPRING_SCREEN = springs['slow']
 
 const initialState = {
   template: null,
