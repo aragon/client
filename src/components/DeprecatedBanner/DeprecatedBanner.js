@@ -101,7 +101,6 @@ const TopParagraph = styled(Text.Paragraph)`
 const StyledSafeLink = styled(SafeLink)`
   text-decoration-color: ${accent};
   color: ${accent};
-  word-break: break-all;
 `
 
 export default DeprecatedBanner
