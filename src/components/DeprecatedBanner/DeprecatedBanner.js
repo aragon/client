@@ -5,14 +5,14 @@ import Banner from '../Banner/Banner'
 import Modal from '../ModalManager/Modal'
 import { ModalConsumer } from '../ModalManager/ModalManager'
 
+const { negative, negativeText, accent, textDimmed } = theme
+
+const CURRENT_DOMAIN = 'app.aragon.org'
 const OLD_DAO_DOMAIN = 'old-app.aragon.org'
-const OLD_DAO_URL = `https://${OLD_DAO_DOMAIN}/`
 const DEPRECATION_URL = 'https://blog.aragon.one/0-5-dao-deprecation/'
 
 const DEPRECATION_TITLE =
   'Old 0.5 Rinkeby organizations will be deprecated on Nov. 1, 2018'
-
-const { negative, negativeText, accent, textDimmed } = theme
 
 const DeprecatedBanner = props => (
   <ModalConsumer>
@@ -26,8 +26,8 @@ class DeprecatedDao extends React.Component {
   }
 
   handleClick = () => {
-    const { showModal } = this.props
-    showModal(DeprecatedModal)
+    const { dao, showModal } = this.props
+    showModal(DeprecatedModal, { dao })
   }
 
   render() {
@@ -55,7 +55,7 @@ class DeprecatedDao extends React.Component {
   }
 }
 
-const DeprecatedBody = () => (
+const DeprecatedBody = ({ dao }) => (
   <React.Fragment>
     <TopParagraph color={textDimmed}>
       Over the last six months, we’ve made a lot of improvements to aragonOS.
@@ -70,10 +70,14 @@ const DeprecatedBody = () => (
     </TopParagraph>
     <Text.Paragraph color={textDimmed}>
       On <time dateTime="2018-11-01">Nov. 1, 2018</time>, organizations created
-      on Rinkeby will no longer be accessible on app.aragon.org. To help
-      migrate, and in case you still need access to this organization, we will
-      continue hosting this version of Aragon Core on{' '}
-      <StyledSafeLink href={OLD_DAO_URL} target="_blank">
+      on Rinkeby will no longer be accessible on {CURRENT_DOMAIN}. To help
+      migrate, and in case you still need access to{' '}
+      {dao ? 'this organization' : 'old organizations'}, we will continue
+      hosting {dao ? 'it' : 'them'} on{' '}
+      <StyledSafeLink
+        href={`https://${OLD_DAO_DOMAIN}/${dao ? `#/${dao}` : ''}`}
+        target="_blank"
+      >
         {OLD_DAO_DOMAIN}
       </StyledSafeLink>{' '}
       until the end of <time dateTime="2019-03">March, 2019</time>.
@@ -81,10 +85,10 @@ const DeprecatedBody = () => (
   </React.Fragment>
 )
 
-const DeprecatedModal = ({ onHide }) => (
+const DeprecatedModal = ({ onHide, dao }) => (
   <Modal
     title={DEPRECATION_TITLE}
-    body={<DeprecatedBody />}
+    body={<DeprecatedBody dao={dao} />}
     onHide={onHide}
     More={
       <Button.Anchor mode="strong" href={DEPRECATION_URL} target="_blank">
