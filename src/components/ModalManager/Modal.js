@@ -28,10 +28,11 @@ const Main = styled.div`
 `
 
 const WrapModal = styled(EscapeOutside)`
-  background: #fff;
+  max-width: 800px;
   padding: 40px 40px 20px;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
+  background: #fff;
 
   /* desktop */
   ${breakpoint(
@@ -43,8 +44,6 @@ const WrapModal = styled(EscapeOutside)`
       margin: auto;
     `
   )};
-
-  ${breakpoint('large', `max-width: 800px;`)};
 `
 
 const Header = styled.header`
