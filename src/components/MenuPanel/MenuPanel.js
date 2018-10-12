@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import {
   theme,
   unselectable,
-  springs,
+  // springs,
   // IconWallet,
   // IconNotifications,
 } from '@aragon/ui'
