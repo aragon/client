@@ -1,12 +1,19 @@
 import BN from 'bn.js'
 import throttle from 'lodash.throttle'
 import resolvePathname from 'resolve-pathname'
-import Aragon, { providers, setupTemplates, ensResolve } from '@aragon/wrapper'
+import Aragon, {
+  providers,
+  setupTemplates,
+  isNameUsed,
+  ensResolve,
+} from '@aragon/wrapper'
 import {
   appOverrides,
   sortAppsPair,
   appLocator,
   ipfsDefaultConf,
+  web3Providers,
+  contractAddresses,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
@@ -428,6 +435,12 @@ const templateParamFilters = {
     return [signers, neededSignatures]
   },
 }
+
+export const isNameAvailable = async name =>
+  !(await isNameUsed(name, {
+    provider: web3Providers.default,
+    registryAddress: contractAddresses.ensRegistry,
+  }))
 
 export const initDaoBuilder = (
   provider,
