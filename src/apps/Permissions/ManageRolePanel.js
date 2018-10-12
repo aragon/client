@@ -73,7 +73,7 @@ class ManageRolePanel extends React.PureComponent {
   getCurrentAction() {
     const { updateAction } = this.state
     const manager = this.getManager()
-    return isEmptyAddress(manager) ? CREATE_PERMISSION : updateAction
+    return isEmptyAddress(manager.address) ? CREATE_PERMISSION : updateAction
   }
 
   getUpdateAction(index) {
@@ -91,7 +91,7 @@ class ManageRolePanel extends React.PureComponent {
 
   getManager() {
     const { getRoleManager, app, role } = this.props
-    return app && role ? getRoleManager(app, role && role.bytes) : null
+    return getRoleManager(app, role && role.bytes)
   }
 
   getNamedApps() {
@@ -195,11 +195,23 @@ class ManageRolePanel extends React.PureComponent {
     this.setState({ assignEntityIndex: index, assignEntityAddress: address })
   }
 
+  renderManager = () => {
+    const manager = this.getManager()
+    const emptyManager = isEmptyAddress(manager.address)
+    if (emptyManager) {
+      return 'No manager'
+    }
+    if (manager.type === 'app') {
+      return (
+        <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
+      )
+    }
+    return <IdentityBadge entity={manager.address} />
+  }
+
   render() {
     const { opened, onClose, app, role } = this.props
     const { newRoleManagerValue, assignEntityIndex } = this.state
-
-    const manager = this.getManager()
 
     const updateActionsItems = this.getUpdateActionsItems()
     const updateActionIndex = this.getUpdateActionIndex()
@@ -231,9 +243,7 @@ class ManageRolePanel extends React.PureComponent {
           {UPDATE_ACTIONS.has(action) && (
             <React.Fragment>
               <Field label="Role manager">
-                <FlexRow>
-                  {manager ? <IdentityBadge entity={manager} /> : 'No manager'}
-                </FlexRow>
+                <FlexRow>{this.renderManager()}</FlexRow>
               </Field>
               <Field label="Action">
                 <DropDown

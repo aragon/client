@@ -51,12 +51,12 @@ export function getWeb3(provider) {
 
 // Check if the address represents “Any address”
 export function isAnyAddress(address) {
-  return address === ANY_ADDRESS
+  return addressesEqual(address, ANY_ADDRESS)
 }
 
 // Check if the address represents an empty address
 export function isEmptyAddress(address) {
-  return address === EMPTY_ADDRESS
+  return addressesEqual(address, EMPTY_ADDRESS)
 }
 
 export function getAnyAddress() {
