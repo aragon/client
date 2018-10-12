@@ -38,17 +38,17 @@ const WrapModal = styled(EscapeOutside)`
     'medium',
     `
       height: unset;
-      min-height: 40vh;
-      padding: 3.5em;
+      min-height: 400px;
+      padding: 50px;
       margin: auto;
     `
   )};
 
-  ${breakpoint('large', `max-width: 70%;`)};
+  ${breakpoint('large', `max-width: 800px;`)};
 `
 
 const Header = styled.header`
-  margin-bottom: 1.5em;
+  margin-bottom: 20px;
 `
 
 const Body = styled.main`
