@@ -5,12 +5,12 @@ import Banner from '../Banner/Banner'
 import Modal from '../ModalManager/Modal'
 import { ModalConsumer } from '../ModalManager/ModalManager'
 
+const OLD_DAO_DOMAIN = 'old-app.aragon.org'
+const OLD_DAO_URL = `https://${OLD_DAO_DOMAIN}/`
 const DEPRECATION_URL = 'https://blog.aragon.one/0-5-dao-deprecation/'
 
 const DEPRECATION_TITLE =
   'Old 0.5 Rinkeby organizations will be deprecated on Nov. 1, 2018'
-
-const OLD_DAO_URL = 'https://old-app.aragon.org/#/'
 
 const { negative, negativeText, accent, textDimmed } = theme
 
@@ -26,8 +26,8 @@ class DeprecatedDao extends React.Component {
   }
 
   handleClick = () => {
-    const { dao, showModal } = this.props
-    showModal(DeprecatedModal, { dao })
+    const { showModal } = this.props
+    showModal(DeprecatedModal)
   }
 
   render() {
@@ -55,7 +55,7 @@ class DeprecatedDao extends React.Component {
   }
 }
 
-const DeprecatedBody = ({ dao }) => (
+const DeprecatedBody = () => (
   <React.Fragment>
     <TopParagraph color={textDimmed}>
       Over the last six months, we’ve made a lot of improvements to aragonOS.
@@ -64,28 +64,27 @@ const DeprecatedBody = ({ dao }) => (
       constructed with on Rinkeby. As a result, we’ve made the tough decision to
       deprecate all old testnet organizations. Please see{' '}
       <StyledSafeLink href={DEPRECATION_URL} target="_blank">
-        {DEPRECATION_URL}
+        our blog post
       </StyledSafeLink>{' '}
       for more details.
     </TopParagraph>
     <Text.Paragraph color={textDimmed}>
-      On <time dateTime="2018-11-01">Nov. 1, 2018</time>, this organization will
-      no longer be accessible on app.aragon.one. To help migrate, and in case
-      you still need access to this organization, we will continue hosting this
-      version of Aragon Core on{' '}
-      <StyledSafeLink href={`${OLD_DAO_URL}${dao}`} target="_blank">
-        {OLD_DAO_URL}
-        {dao}
+      On <time dateTime="2018-11-01">Nov. 1, 2018</time>, organizations created
+      on Rinkeby will no longer be accessible on app.aragon.org. To help
+      migrate, and in case you still need access to this organization, we will
+      continue hosting this version of Aragon Core on{' '}
+      <StyledSafeLink href={OLD_DAO_URL} target="_blank">
+        {OLD_DAO_DOMAIN}
       </StyledSafeLink>{' '}
       until the end of <time dateTime="2019-03">March, 2019</time>.
     </Text.Paragraph>
   </React.Fragment>
 )
 
-const DeprecatedModal = ({ onHide, dao }) => (
+const DeprecatedModal = ({ onHide }) => (
   <Modal
     title={DEPRECATION_TITLE}
-    body={<DeprecatedBody dao={dao} />}
+    body={<DeprecatedBody />}
     onHide={onHide}
     More={
       <Button.Anchor mode="strong" href={DEPRECATION_URL} target="_blank">
