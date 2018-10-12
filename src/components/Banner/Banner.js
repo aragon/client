@@ -1,27 +1,43 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text } from '@aragon/ui'
+import { Text, breakpoint } from '@aragon/ui'
 
 class Banner extends React.Component {
   render() {
     const { text, textColor, button, color } = this.props
     return (
-      <WrapBanner color={color}>
+      <BannerWrapper color={color}>
         <Text color={textColor}>{text}</Text>
-        <div>{button}</div>
-      </WrapBanner>
+        <ButtonWrapper>{button}</ButtonWrapper>
+      </BannerWrapper>
     )
   }
 }
 
-const WrapBanner = styled.div`
+const BannerWrapper = styled.div`
   display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 1em;
+  grid-template-rows: auto auto;
+  grid-gap: 5px;
   align-items: center;
   justify-content: center;
+  text-align: center;
   padding: 6px 10px;
   background-color: ${({ color }) => color};
+
+  ${breakpoint(
+    'medium',
+    `
+      grid-template-rows: none;
+      grid-template-columns: auto auto;
+      grid-gap: 10px;
+      text-align: left;
+    `
+  )};
+`
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
 `
 
 export default Banner
