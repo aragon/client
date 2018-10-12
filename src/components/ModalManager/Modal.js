@@ -1,15 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
-import { Button, Text, breakpoint } from '@aragon/ui'
+import { Button, Text, breakpoint, font } from '@aragon/ui'
 import { noop } from '../../utils'
 
 const Modal = ({ title, body, moreText, onHide, More, blocking }) => (
   <Main>
     <WrapModal role="alertdialog" onEscapeOutside={blocking ? noop : onHide}>
-      <Header>
-        <Text size="xxlarge">{title}</Text>
-      </Header>
+      <Header>{title}</Header>
       <Body>{body}</Body>
       <Footer>
         <Button mode="text" onClick={onHide}>
@@ -34,7 +32,6 @@ const WrapModal = styled(EscapeOutside)`
   border-radius: 4px;
   background: #fff;
 
-  /* desktop */
   ${breakpoint(
     'medium',
     `
@@ -48,6 +45,8 @@ const WrapModal = styled(EscapeOutside)`
 
 const Header = styled.header`
   margin-bottom: 20px;
+  ${font({ size: 'xlarge' })};
+  ${breakpoint('medium', font({ size: 'xxlarge' }))};
 `
 
 const Body = styled.main`

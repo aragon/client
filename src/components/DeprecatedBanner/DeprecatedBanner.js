@@ -95,7 +95,7 @@ const DeprecatedModal = ({ onHide }) => (
 )
 
 const TopParagraph = styled(Text.Paragraph)`
-  margin-bottom: 1em;
+  margin-bottom: 20px;
 `
 
 const StyledSafeLink = styled(SafeLink)`
