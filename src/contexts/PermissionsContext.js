@@ -42,7 +42,7 @@ class PermissionsProvider extends React.Component {
       proxyAddress,
       roleBytes,
     ])
-    log('revoke tx:', transaction)
+    log('revokePermission tx:', transaction)
   }
 
   // create a permission (= set a manager + grant a permission)
@@ -56,7 +56,7 @@ class PermissionsProvider extends React.Component {
     if (wrapper === null) {
       return
     }
-    console.log('CREATE', [entityAddress, proxyAddress, roleBytes, manager])
+    log('createPermission', [entityAddress, proxyAddress, roleBytes, manager])
     const transaction = await wrapper.performACLIntent('createPermission', [
       entityAddress,
       proxyAddress,
