@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import {
   theme,
   unselectable,
-  spring as springConf,
+  springs,
   // IconWallet,
   // IconNotifications,
 } from '@aragon/ui'
@@ -111,7 +111,7 @@ class MenuPanel extends React.PureComponent {
             style={{
               openProgress: spring(
                 Number(notificationsOpened),
-                springConf['fast']
+                springs['fast']
               ),
             }}
           >

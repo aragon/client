@@ -1,7 +1,7 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
-import { theme, spring as springConf, IconBlank } from '@aragon/ui'
+import { theme, springs, IconBlank } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
@@ -33,7 +33,7 @@ class MenuPanelAppGroup extends React.PureComponent {
         style={{
           openProgress: spring(
             Number(active && (singleInstance || expand)),
-            springConf['fast']
+            springs['fast']
           ),
         }}
       >
