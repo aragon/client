@@ -10,7 +10,7 @@ const Modal = ({ title, body, moreText, onHide, More, blocking }) => (
       <Header>{title}</Header>
       <Body>{body}</Body>
       <Footer>
-        <Button mode="text" onClick={onHide}>
+        <Button mode="text" onClick={onHide} style={{ paddingLeft: '0' }}>
           Close
         </Button>
         {More}
