@@ -36,7 +36,7 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
-    showDeprecatedBanner: true,
+    showDeprecatedBanner: false,
   }
 
   history = createHistory()
@@ -235,6 +235,7 @@ class App extends React.Component {
       daoAddress,
       appsLoading,
       permissionsLoading,
+      showDeprecatedBanner,
     } = this.state
     const { mode, dao } = locator
     if (!mode) return null
@@ -250,7 +251,7 @@ class App extends React.Component {
             permissions={permissions}
           >
             <Wrapper
-              banner={<DeprecatedBanner dao={dao} />}
+              banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
               historyBack={this.historyBack}
               historyPush={this.historyPush}
               locator={locator}
@@ -269,7 +270,9 @@ class App extends React.Component {
           </PermissionsProvider>
 
           <Onboarding
-            banner={<DeprecatedBanner dao={dao} lightMode />}
+            banner={
+              showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
+            }
             visible={mode === 'home' || mode === 'setup'}
             account={account}
             balance={balance}
