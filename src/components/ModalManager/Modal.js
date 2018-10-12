@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
-import { Button, Text, breakpoint, font } from '@aragon/ui'
+import { Button, breakpoint, font } from '@aragon/ui'
 import { noop } from '../../utils'
 
 const Modal = ({ title, body, moreText, onHide, More, blocking }) => (

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Text } from '@aragon/ui'
-import { noop } from '../../utils'
 
 class Banner extends React.Component {
   render() {
