@@ -27,6 +27,7 @@ class Wrapper extends React.Component {
     wrapper: null,
     walletWeb3: null,
     web3: null,
+    banner: null,
   }
   state = {
     appInstance: {},
@@ -167,10 +168,13 @@ class Wrapper extends React.Component {
       wrapper,
       appsLoading,
       locator: { instanceId, params },
+      banner,
     } = this.props
+
     return (
-      <React.Fragment>
-        <Main>
+      <Main>
+        <BannerWrapper>{banner}</BannerWrapper>
+        <Container>
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
             appsLoading={appsLoading}
@@ -181,7 +185,7 @@ class Wrapper extends React.Component {
             onOpenNotification={this.handleNotificationNavigation}
           />
           <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
-        </Main>
+        </Container>
         <SidePanel
           onClose={this.handleSignerClose}
           onTransitionEnd={this.handleSignerTransitionEnd}
@@ -196,7 +200,7 @@ class Wrapper extends React.Component {
             {...web3Action}
           />
         </SidePanel>
-      </React.Fragment>
+      </Main>
     )
   }
   renderApp(instanceId, params) {
@@ -275,8 +279,19 @@ class Wrapper extends React.Component {
 
 const Main = styled.div`
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
   height: 100vh;
+`
+
+const BannerWrapper = styled.div`
+  position: relative;
+  z-index: 2;
+`
+
+const Container = styled.div`
+  display: flex;
+  align-items: stretch;
+  height: 100%;
 `
 
 const AppScreen = styled.div`
