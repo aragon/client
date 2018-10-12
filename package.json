@@ -78,7 +78,7 @@
     "start:local": "scripts/launch-local.sh",
     "start:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm start",
     "start:rinkeby": "npm start",
-    "build": "npm run ui-assets && parcel build src/index.html --out-dir ./build && npm run copy-apm-artifacts",
+    "build": "npm run ui-assets && parcel build src/index.html --out-dir ./build --public-url ./ && npm run copy-apm-artifacts",
     "build:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm run build",
     "build:mainnet-infura": "REACT_APP_DEFAULT_ETH_NODE=wss://mainnet.infura.io/_ws npm run build:mainnet",
     "build:rinkeby": "npm run build",

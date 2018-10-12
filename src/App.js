@@ -240,7 +240,7 @@ class App extends React.Component {
     if (!mode) return null
 
     return (
-      <PublicUrl.Provider url="/aragon-ui/">
+      <PublicUrl.Provider url="./aragon-ui/">
         <ModalProvider>
           <BaseStyles />
 
