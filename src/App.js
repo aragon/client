@@ -1,6 +1,6 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
-import { AragonApp } from '@aragon/ui'
+import { PublicUrl, BaseStyles } from '@aragon/ui'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -14,6 +14,8 @@ import Onboarding from './onboarding/Onboarding'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
+import { ModalProvider } from './components/ModalManager/ModalManager'
+import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 
 class App extends React.Component {
   state = {
@@ -34,6 +36,7 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
+    showDeprecatedBanner: false,
   }
 
   history = createHistory()
@@ -231,46 +234,56 @@ class App extends React.Component {
       daoAddress,
       appsLoading,
       permissionsLoading,
+      showDeprecatedBanner,
     } = this.state
-    const { mode } = locator
+    const { mode, dao } = locator
     if (!mode) return null
 
     return (
-      <AragonApp publicUrl="./aragon-ui/">
-        <PermissionsProvider
-          wrapper={wrapper}
-          apps={apps}
-          permissions={permissions}
-        >
-          <Wrapper
-            historyBack={this.historyBack}
-            historyPush={this.historyPush}
-            locator={locator}
+      <PublicUrl.Provider url="./aragon-ui/">
+        <ModalProvider>
+          <BaseStyles />
+
+          <PermissionsProvider
             wrapper={wrapper}
             apps={apps}
-            appsLoading={appsLoading}
-            permissionsLoading={permissionsLoading}
+            permissions={permissions}
+          >
+            <Wrapper
+              banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
+              historyBack={this.historyBack}
+              historyPush={this.historyPush}
+              locator={locator}
+              wrapper={wrapper}
+              apps={apps}
+              appsLoading={appsLoading}
+              permissionsLoading={permissionsLoading}
+              account={account}
+              walletNetwork={walletNetwork}
+              walletWeb3={walletWeb3}
+              web3={web3}
+              daoAddress={daoAddress}
+              transactionBag={transactionBag}
+              connected={connected}
+            />
+          </PermissionsProvider>
+
+          <Onboarding
+            banner={
+              showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
+            }
+            visible={mode === 'home' || mode === 'setup'}
             account={account}
+            balance={balance}
             walletNetwork={walletNetwork}
-            walletWeb3={walletWeb3}
-            web3={web3}
-            daoAddress={daoAddress}
-            transactionBag={transactionBag}
-            connected={connected}
+            onBuildDao={this.handleBuildDao}
+            daoCreationStatus={daoCreationStatus}
+            onComplete={this.handleCompleteOnboarding}
+            onOpenOrganization={this.handleOpenOrganization}
+            onResetDaoBuilder={this.handleResetDaoBuilder}
           />
-        </PermissionsProvider>
-        <Onboarding
-          visible={mode === 'home' || mode === 'setup'}
-          account={account}
-          balance={balance}
-          walletNetwork={walletNetwork}
-          onBuildDao={this.handleBuildDao}
-          daoCreationStatus={daoCreationStatus}
-          onComplete={this.handleCompleteOnboarding}
-          onOpenOrganization={this.handleOpenOrganization}
-          onResetDaoBuilder={this.handleResetDaoBuilder}
-        />
-      </AragonApp>
+        </ModalProvider>
+      </PublicUrl.Provider>
     )
   }
 }

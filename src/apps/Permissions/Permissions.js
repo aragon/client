@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
-import { shortenAddress, isAddress } from '../../web3-utils'
+import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
 import AppPermissions from './AppPermissions'
@@ -67,7 +67,9 @@ class Permissions extends React.Component {
     if (!proxyAddress) {
       return null
     }
-    return this.props.apps.find(app => app.proxyAddress === proxyAddress)
+    return this.props.apps.find(app =>
+      addressesEqual(app.proxyAddress, proxyAddress)
+    )
   }
 
   goToHome = () => {
