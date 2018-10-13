@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
 import { spring as springConf } from '@aragon/ui'
 import { noop } from '../utils'
+import { isNameAvailable } from '../aragonjs-wrapper'
 
 import * as Steps from './steps'
 import Templates from './templates'
@@ -213,7 +214,6 @@ class Onboarding extends React.PureComponent {
     timerKey,
     invertCheck = false
   ) => {
-    const { daoBuilder } = this.props
     const filteredDomain = domain
       .trim()
       .toLowerCase()
@@ -239,7 +239,7 @@ class Onboarding extends React.PureComponent {
 
     const checkName = async () => {
       try {
-        const available = await daoBuilder.isNameAvailable(filteredDomain)
+        const available = await isNameAvailable(filteredDomain)
 
         // The domain could have changed in the meantime
         if (filteredDomain === this.state[domainKey]) {
