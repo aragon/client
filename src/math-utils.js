@@ -1,3 +1,20 @@
+export function formatNumber(num, decimals = 2) {
+  const multiplicator = Math.pow(10, decimals)
+  const roundedNum = Math.round(num * multiplicator) / multiplicator
+  const numString = String(roundedNum)
+
+  if (!decimals) {
+    return numString
+  }
+
+  const [whole, decimal = ''] = numString.split('.')
+  return `${whole}.${
+    decimal.length > decimal
+      ? decimal.slice(0, decimals)
+      : decimal.padEnd(decimals, '0')
+  }`
+}
+
 /**
  * Re-maps a number from one range to another.
  *
