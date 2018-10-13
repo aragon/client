@@ -26,6 +26,10 @@ import {
 } from './domain-states'
 
 const MINIMUM_BALANCE = new BN(toWei('0.1'))
+const BALANCE_DECIMALS = 3
+const formatBalance = (balance, decimals = BALANCE_DECIMALS) =>
+  // Don't show decimals if the user has no ETH
+  formatNumber(balance, balance ? decimals : 0)
 
 class Start extends React.Component {
   static defaultProps = {
@@ -225,12 +229,7 @@ class StartContent extends React.PureComponent {
       return (
         <ActionInfo>
           You need at least {fromWei(MINIMUM_BALANCE)} ETH (you have{' '}
-          {(() => {
-            const convertedBalance = parseFloat(fromWei(balance || '0'))
-            // Don't show decimals if the user has no ETH
-            return formatNumber(convertedBalance, convertedBalance ? 3 : 0)
-          })()}{' '}
-          ETH).
+          {formatBalance(parseFloat(fromWei(balance || '0')))} ETH).
           <br />
           {network.type === 'rinkeby' && (
             <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
