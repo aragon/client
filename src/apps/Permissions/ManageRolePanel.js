@@ -238,7 +238,6 @@ class ManageRolePanel extends React.PureComponent {
           </Field>
 
           <Field label="Role description">{role && role.name}</Field>
-          <Field label="Role identifier">{role && role.id}</Field>
 
           {UPDATE_ACTIONS.has(action) && (
             <React.Fragment>

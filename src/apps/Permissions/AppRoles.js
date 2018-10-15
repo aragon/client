@@ -42,8 +42,7 @@ class AppRoles extends React.PureComponent {
                 <Table
                   header={
                     <TableRow>
-                      <TableHeader title="Action" />
-                      <TableHeader title="Role identifier" />
+                      <TableHeader title="Action" style={{ width: '20%' }} />
                       <TableHeader title="Manager" />
                       <TableHeader />
                     </TableRow>
@@ -94,7 +93,6 @@ class RoleRow extends React.Component {
         <TableCell>
           <Text weight="bold">{name}</Text>
         </TableCell>
-        <TableCell title={bytes}>{id}</TableCell>
         <TableCell>
           {emptyManager ? 'No manager set' : this.renderManager()}
         </TableCell>
