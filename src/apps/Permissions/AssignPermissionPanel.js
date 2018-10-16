@@ -52,9 +52,10 @@ class AssignPermissionPanel extends React.PureComponent {
     const roles = this.getRoles()
     const names = roles.map(
       role =>
-        (role && role.name) || `Unknown role (${(role && role.id) || 'no ID'})`
+        (role && role.name) ||
+        `Unknown action (${(role && role.id) || 'no ID'})`
     )
-    return ['Select a role', ...names]
+    return ['Select an action', ...names]
   }
 
   getSelectedApp() {
@@ -132,14 +133,6 @@ class AssignPermissionPanel extends React.PureComponent {
         onTransitionEnd={this.handlePanelTransitionEnd}
       >
         <React.Fragment>
-          <EntitySelector
-            label="Assign role to"
-            labelCustomAddress="Assign role to"
-            apps={this.getNamedApps()}
-            onChange={this.handleEntityChange}
-            activeIndex={assignEntityIndex}
-          />
-
           <Field label="On app">
             <DropDown
               items={appsItems}
@@ -149,8 +142,16 @@ class AssignPermissionPanel extends React.PureComponent {
             />
           </Field>
 
+          <EntitySelector
+            label="Grant permission to"
+            labelCustomAddress="Grant permission to"
+            apps={this.getNamedApps()}
+            onChange={this.handleEntityChange}
+            activeIndex={assignEntityIndex}
+          />
+
           {selectedApp && (
-            <Field label="Role:">
+            <Field label="To perform action">
               <DropDown
                 items={rolesItems}
                 active={roleIndex}

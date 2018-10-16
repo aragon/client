@@ -17,7 +17,7 @@ const UPDATE_ACTIONS = new Map([
   [
     SET_PERMISSION_MANAGER,
     {
-      label: 'Change the role manager',
+      label: 'Change the permission manager',
       message: `
         The new permission manager will be the only account allowed to grant
         or revoke a permission, and to edit the permission manager itself.
@@ -27,11 +27,11 @@ const UPDATE_ACTIONS = new Map([
   [
     REMOVE_PERMISSION_MANAGER,
     {
-      label: 'Remove the role manager',
+      label: 'Remove the permission manager',
       message: `
-        After having removed the role manager, the role will have to be
-        initialized again, which is only allowed by the “Create permission”
-        role of the ACL app.
+        After having removed the permission manager, the permission will have
+        to be initialized again, which is only allowed by the permission to
+        “Create permission” on the ACL app.
       `,
     },
   ],
@@ -44,8 +44,8 @@ const ACTIONS = new Map([
     {
       label: null,
       message: `
-        The role need to be initialized, which requires to define a manager and
-        an entity on which to assign the role first.
+        The permission need to be initialized, which requires to define a
+        manager and an entity on which to grant the permission first.
       `,
     },
   ],
@@ -221,7 +221,11 @@ class ManageRolePanel extends React.PureComponent {
 
     return (
       <SidePanel
-        title={action === CREATE_PERMISSION ? 'Initialize role' : 'Manage role'}
+        title={
+          action === CREATE_PERMISSION
+            ? 'Initialize permission'
+            : 'Manage permission'
+        }
         opened={opened}
         onClose={onClose}
         onTransitionEnd={this.handlePanelTransitionEnd}
@@ -237,12 +241,11 @@ class ManageRolePanel extends React.PureComponent {
             )}
           </Field>
 
-          <Field label="Role description">{role && role.name}</Field>
-          <Field label="Role identifier">{role && role.id}</Field>
+          <Field label="Action description">{role && role.name}</Field>
 
           {UPDATE_ACTIONS.has(action) && (
             <React.Fragment>
-              <Field label="Role manager">
+              <Field label="Permission manager">
                 <FlexRow>{this.renderManager()}</FlexRow>
               </Field>
               <Field label="Action">
@@ -254,7 +257,7 @@ class ManageRolePanel extends React.PureComponent {
                 />
               </Field>
               {action === SET_PERMISSION_MANAGER && (
-                <Field label="New role manager">
+                <Field label="New permission manager">
                   <TextInput
                     wide
                     placeholder="0xcafe…"
@@ -268,7 +271,7 @@ class ManageRolePanel extends React.PureComponent {
 
           {action === CREATE_PERMISSION && (
             <React.Fragment>
-              <Field label="Role manager">
+              <Field label="Permission manager">
                 <TextInput
                   wide
                   placeholder="0xcafe…"
@@ -277,8 +280,8 @@ class ManageRolePanel extends React.PureComponent {
                 />
               </Field>
               <EntitySelector
-                label="Assign role to"
-                labelCustomAddress="Assign role to"
+                label="Grant permission to"
+                labelCustomAddress="Grant permission to"
                 apps={this.getNamedApps()}
                 onChange={this.handleEntityChange}
                 activeIndex={assignEntityIndex}
@@ -293,7 +296,9 @@ class ManageRolePanel extends React.PureComponent {
               disabled={!this.canSubmit()}
               wide
             >
-              {UPDATE_ACTIONS.has(action) ? 'Update role' : 'Initialize role'}
+              {UPDATE_ACTIONS.has(action)
+                ? 'Update permission'
+                : 'Initialize permission'}
             </Button>
           </Field>
 
