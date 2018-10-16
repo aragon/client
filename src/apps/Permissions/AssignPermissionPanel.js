@@ -52,7 +52,8 @@ class AssignPermissionPanel extends React.PureComponent {
     const roles = this.getRoles()
     const names = roles.map(
       role =>
-        (role && role.name) || `Unknown action (${(role && role.id) || 'no ID'})`
+        (role && role.name) ||
+        `Unknown action (${(role && role.id) || 'no ID'})`
     )
     return ['Select an action', ...names]
   }

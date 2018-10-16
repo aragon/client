@@ -72,7 +72,7 @@ class Row extends React.Component {
     onRevoke({ entityAddress, proxyAddress, roleBytes })
   }
   render() {
-    const { action, id, roleBytes, app, proxyAddress } = this.props
+    const { action, app, proxyAddress } = this.props
     return (
       <TableRow>
         <TableCell>

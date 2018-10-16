@@ -81,11 +81,7 @@ class RoleRow extends React.Component {
   }
   render() {
     const { role, manager } = this.props
-
-    const id = (role && role.id) || '?'
     const name = (role && role.name) || 'Unknown action'
-    const bytes = role && role.bytes
-
     const emptyManager = isEmptyAddress(manager.address)
 
     return (
