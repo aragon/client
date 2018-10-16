@@ -36,8 +36,8 @@ class EntityPermissions extends React.PureComponent {
                 <Table
                   header={
                     <TableRow>
-                      <TableHeader title="App" style={{ width: '20%' }} />
-                      <TableHeader title="Action" />
+                      <TableHeader title="Action" style={{ width: '20%' }} />
+                      <TableHeader title="On app" />
                       <TableHeader />
                     </TableRow>
                   }
@@ -76,10 +76,10 @@ class Row extends React.Component {
     return (
       <TableRow>
         <TableCell>
-          <AppInstanceLabel app={app} proxyAddress={proxyAddress} />
+          <Text weight="bold">{action}</Text>
         </TableCell>
         <TableCell>
-          <Text weight="bold">{action}</Text>
+          <AppInstanceLabel app={app} proxyAddress={proxyAddress} />
         </TableCell>
         <TableCell align="right">
           <Button
