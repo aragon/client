@@ -173,8 +173,8 @@ class AssignPermissionPanel extends React.PureComponent {
           </Field>
 
           <Info.Action title="Adding the permission might create a vote">
-            If the permission is created by the Voting app, it will
-            automatically generate a new vote.
+            The Voting app will automatically create a new vote if granting the
+            permission requires a vote to pass.
           </Info.Action>
         </React.Fragment>
       </SidePanel>
