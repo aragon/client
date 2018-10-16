@@ -25,6 +25,15 @@ export const getKnownRole = roleBytes => {
 // Output: entities => app instances => roles
 export function permissionsByEntity(permissions) {
   const results = {}
+
+  const addRole = (entity, app, role) => {
+    entity = entity.toLowerCase()
+    if (!results[entity]) {
+      results[entity] = {}
+    }
+    results[entity][app] = [...(results[entity][app] || []), role]
+  }
+
   // apps
   for (const [app, appPermissions] of Object.entries(permissions)) {
     // roles
@@ -33,13 +42,11 @@ export function permissionsByEntity(permissions) {
     )) {
       // entities
       for (const entity of allowedEntities) {
-        if (!results[entity]) {
-          results[entity] = {}
-        }
-        results[entity][app] = [...(results[entity][app] || []), role]
+        addRole(entity, app, role)
       }
     }
   }
+
   return results
 }
 
