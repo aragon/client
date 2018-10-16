@@ -27,7 +27,7 @@ class BrowseByEntity extends React.Component {
                   <TableRow>
                     <TableHeader title="Entity" style={{ width: '20%' }} />
                     <TableHeader title="Type" />
-                    <TableHeader title="Roles" />
+                    <TableHeader title="Actions" />
                     <TableHeader title="" />
                   </TableRow>
                 }

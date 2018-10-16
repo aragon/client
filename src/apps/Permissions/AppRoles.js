@@ -22,8 +22,8 @@ class AppRoles extends React.PureComponent {
     const {
       app,
       loading,
-      loadingLabel = 'Loading roles…',
-      emptyLabel = 'No roles found.',
+      loadingLabel = 'Loading actions…',
+      emptyLabel = 'No actions found.',
     } = this.props
 
     return (
@@ -35,7 +35,7 @@ class AppRoles extends React.PureComponent {
           }))
 
           return (
-            <Section title="Roles available on this app">
+            <Section title="Actions available on this app">
               {loading || roles.length === 0 ? (
                 <EmptyBlock>{loading ? loadingLabel : emptyLabel}</EmptyBlock>
               ) : (
@@ -43,7 +43,7 @@ class AppRoles extends React.PureComponent {
                   header={
                     <TableRow>
                       <TableHeader title="Action" style={{ width: '20%' }} />
-                      <TableHeader title="Manager" />
+                      <TableHeader title="Managed by" />
                       <TableHeader />
                     </TableRow>
                   }
@@ -83,7 +83,7 @@ class RoleRow extends React.Component {
     const { role, manager } = this.props
 
     const id = (role && role.id) || '?'
-    const name = (role && role.name) || 'Unknown role'
+    const name = (role && role.name) || 'Unknown action'
     const bytes = role && role.bytes
 
     const emptyManager = isEmptyAddress(manager.address)
