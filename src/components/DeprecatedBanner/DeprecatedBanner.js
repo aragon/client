@@ -8,11 +8,12 @@ import { ModalConsumer } from '../ModalManager/ModalManager'
 const { negative, negativeText, accent, textDimmed } = theme
 
 const CURRENT_DOMAIN = 'app.aragon.org'
-const OLD_DAO_DOMAIN = 'old-app.aragon.org'
-const DEPRECATION_URL = 'https://blog.aragon.one/0-5-dao-deprecation/'
+const OLD_DAO_DOMAIN = 'app-v05.aragon.org'
+const DEPRECATION_URL =
+  'https://blog.aragon.org/deprecation-notice-on-v0-5-rinkeby-daos'
 
 const DEPRECATION_TITLE =
-  'Old 0.5 Rinkeby organizations will be deprecated on Nov. 1, 2018'
+  'Old 0.5 Rinkeby organizations will be deprecated on Oct. 29, 2018'
 
 const DeprecatedBanner = props => (
   <ModalConsumer>
@@ -58,7 +59,7 @@ class DeprecatedDao extends React.Component {
 const DeprecatedBody = ({ dao }) => (
   <React.Fragment>
     <TopParagraph color={textDimmed}>
-      Over the last six months, we’ve made a lot of improvements to aragonOS.
+      Over the last seven months, we’ve made a lot of improvements to aragonOS.
       Unfortunately, a number of those improvements weren’t
       backwards-upgradeable with the contracts your organizations were
       constructed with on Rinkeby. As a result, we’ve made the tough decision to
@@ -69,7 +70,7 @@ const DeprecatedBody = ({ dao }) => (
       for more details.
     </TopParagraph>
     <Text.Paragraph color={textDimmed}>
-      On <time dateTime="2018-11-01">Nov. 1, 2018</time>, organizations created
+      On <time dateTime="2018-10-29">Oct. 29, 2018</time>, organizations created
       on Rinkeby will no longer be accessible on {CURRENT_DOMAIN}. To help
       migrate, and in case you still need access to{' '}
       {dao ? 'this organization' : 'old organizations'}, we will continue
