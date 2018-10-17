@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import EagleAnimation from './EagleAnimation'
-import { theme, breakpoint, Button, colors } from '@aragon/ui'
+import { theme, breakpoint, Button } from '@aragon/ui'
 const medium = css => breakpoint('medium', css)
 
 class ErrorCard extends React.Component {
