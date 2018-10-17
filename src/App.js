@@ -1,6 +1,5 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
-import { PublicUrl, BaseStyles } from '@aragon/ui'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -19,6 +18,7 @@ import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 
 class App extends React.Component {
   state = {
+    fatalError: null,
     locator: {},
     prevLocator: null,
     wrapper: null,
@@ -205,7 +205,8 @@ class App extends React.Component {
         this.setState({ wrapper })
       })
       .catch(err => {
-        console.error('Wrapper init error:', err)
+        console.error('Error:', err)
+        this.setState({ appsLoading: false })
       })
   }
 
@@ -219,6 +220,7 @@ class App extends React.Component {
 
   render() {
     const {
+      fatalError,
       locator,
       wrapper,
       apps,
@@ -236,54 +238,55 @@ class App extends React.Component {
       permissionsLoading,
       showDeprecatedBanner,
     } = this.state
+
     const { mode, dao } = locator
     if (!mode) return null
 
-    return (
-      <PublicUrl.Provider url="./aragon-ui/">
-        <ModalProvider>
-          <BaseStyles />
+    if (fatalError !== null) {
+      throw fatalError
+    }
 
-          <PermissionsProvider
+    return (
+      <ModalProvider>
+        <PermissionsProvider
+          wrapper={wrapper}
+          apps={apps}
+          permissions={permissions}
+        >
+          <Wrapper
+            banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
+            historyBack={this.historyBack}
+            historyPush={this.historyPush}
+            locator={locator}
             wrapper={wrapper}
             apps={apps}
-            permissions={permissions}
-          >
-            <Wrapper
-              banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
-              historyBack={this.historyBack}
-              historyPush={this.historyPush}
-              locator={locator}
-              wrapper={wrapper}
-              apps={apps}
-              appsLoading={appsLoading}
-              permissionsLoading={permissionsLoading}
-              account={account}
-              walletNetwork={walletNetwork}
-              walletWeb3={walletWeb3}
-              web3={web3}
-              daoAddress={daoAddress}
-              transactionBag={transactionBag}
-              connected={connected}
-            />
-          </PermissionsProvider>
-
-          <Onboarding
-            banner={
-              showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
-            }
-            visible={mode === 'home' || mode === 'setup'}
+            appsLoading={appsLoading}
+            permissionsLoading={permissionsLoading}
             account={account}
-            balance={balance}
             walletNetwork={walletNetwork}
-            onBuildDao={this.handleBuildDao}
-            daoCreationStatus={daoCreationStatus}
-            onComplete={this.handleCompleteOnboarding}
-            onOpenOrganization={this.handleOpenOrganization}
-            onResetDaoBuilder={this.handleResetDaoBuilder}
+            walletWeb3={walletWeb3}
+            web3={web3}
+            daoAddress={daoAddress}
+            transactionBag={transactionBag}
+            connected={connected}
           />
-        </ModalProvider>
-      </PublicUrl.Provider>
+        </PermissionsProvider>
+
+        <Onboarding
+          banner={
+            showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
+          }
+          visible={mode === 'home' || mode === 'setup'}
+          account={account}
+          balance={balance}
+          walletNetwork={walletNetwork}
+          onBuildDao={this.handleBuildDao}
+          daoCreationStatus={daoCreationStatus}
+          onComplete={this.handleCompleteOnboarding}
+          onOpenOrganization={this.handleOpenOrganization}
+          onResetDaoBuilder={this.handleResetDaoBuilder}
+        />
+      </ModalProvider>
     )
   }
 }
