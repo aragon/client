@@ -1,7 +1,7 @@
 {
   "name": "aragon",
   "description": "Aragon DApp",
-  "version": "0.5.0",
+  "version": "0.5.4",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "repository": {
@@ -81,7 +81,7 @@
     "build": "npm run ui-assets && parcel build src/index.html --out-dir ./build --public-url ./ && npm run copy-apm-artifacts",
     "build:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm run build",
     "build:mainnet-infura": "REACT_APP_DEFAULT_ETH_NODE=wss://mainnet.infura.io/_ws npm run build:mainnet",
-    "build:rinkeby": "npm run build",
+    "build:rinkeby": "scripts/build",
     "lint": "eslint ./src",
     "test": "npm run lint",
     "copy-apm-artifacts": "cp arapp.json build/arapp.json && cp manifest.json build/manifest.json",
