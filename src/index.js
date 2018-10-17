@@ -6,6 +6,17 @@ import { PublicUrl, BaseStyles } from '@aragon/ui'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import App from './App'
 
+const APP_VERSION = '0.5.4'
+const APP_VERSION_KEY = 'APP_VERSION'
+
+if (window && window.localStorage) {
+  const lastAppVersion = window.localStorage.getItem(APP_VERSION_KEY)
+  if (lastAppVersion !== APP_VERSION) {
+    window.localStorage.clear()
+    window.localStorage.setItem(APP_VERSION_KEY, APP_VERSION)
+  }
+}
+
 ReactDOM.render(
   <PublicUrl.Provider url="./aragon-ui/">
     <BaseStyles />
