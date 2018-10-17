@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { SafeLink } from '@aragon/ui'
 import ErrorCard from './components/ErrorCard/ErrorCard'
 
 class GlobalErrorHandler extends React.Component {
@@ -28,8 +29,11 @@ class GlobalErrorHandler extends React.Component {
             showReloadButton
           >
             Something went wrong and the application crashed. Reloading might
-            solve the problem, or you can create an issue on GitHub so we can
-            help.
+            solve the problem, or you can{' '}
+            <SafeLink href="https://github.com/aragon/aragon/issues/new">
+              create an issue
+            </SafeLink>{' '}
+            on GitHub so we can help.
           </ErrorCard>
         </In>
       </Main>
