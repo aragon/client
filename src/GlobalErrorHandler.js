@@ -46,8 +46,8 @@ const In = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -40px;
-  padding: 50px;
+  margin-top: -30px;
+  padding: 50px 20px 20px;
   min-height: 100%;
 `
 
