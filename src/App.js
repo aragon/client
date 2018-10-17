@@ -13,6 +13,8 @@ import Onboarding from './onboarding/Onboarding'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
+import { ModalProvider } from './components/ModalManager/ModalManager'
+import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 
 class App extends React.Component {
   state = {
@@ -34,6 +36,7 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
+    showDeprecatedBanner: false,
   }
 
   history = createHistory()
@@ -226,7 +229,6 @@ class App extends React.Component {
       balance,
       walletNetwork,
       transactionBag,
-      daoBuilder,
       daoCreationStatus,
       walletWeb3,
       web3,
@@ -234,9 +236,10 @@ class App extends React.Component {
       daoAddress,
       appsLoading,
       permissionsLoading,
+      showDeprecatedBanner,
     } = this.state
 
-    const { mode } = locator
+    const { mode, dao } = locator
     if (!mode) return null
 
     if (fatalError !== null) {
@@ -244,13 +247,14 @@ class App extends React.Component {
     }
 
     return (
-      <React.Fragment>
+      <ModalProvider>
         <PermissionsProvider
           wrapper={wrapper}
           apps={apps}
           permissions={permissions}
         >
           <Wrapper
+            banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
             historyBack={this.historyBack}
             historyPush={this.historyPush}
             locator={locator}
@@ -267,19 +271,22 @@ class App extends React.Component {
             connected={connected}
           />
         </PermissionsProvider>
+
         <Onboarding
+          banner={
+            showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
+          }
           visible={mode === 'home' || mode === 'setup'}
           account={account}
           balance={balance}
           walletNetwork={walletNetwork}
           onBuildDao={this.handleBuildDao}
-          daoBuilder={daoBuilder}
           daoCreationStatus={daoCreationStatus}
           onComplete={this.handleCompleteOnboarding}
           onOpenOrganization={this.handleOpenOrganization}
           onResetDaoBuilder={this.handleResetDaoBuilder}
         />
-      </React.Fragment>
+      </ModalProvider>
     )
   }
 }

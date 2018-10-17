@@ -1,16 +1,18 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { AragonApp } from '@aragon/ui'
+import { PublicUrl, BaseStyles } from '@aragon/ui'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import App from './App'
 
 ReactDOM.render(
-  <AragonApp publicUrl="/aragon-ui/">
+  <PublicUrl.Provider url="./aragon-ui/">
+    <BaseStyles />
+
     <GlobalErrorHandler>
       <App />
     </GlobalErrorHandler>
-  </AragonApp>,
+  </PublicUrl.Provider>,
   document.getElementById('root')
 )

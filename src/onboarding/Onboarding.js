@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
 import { spring as springConf } from '@aragon/ui'
 import { noop } from '../utils'
+import { isNameAvailable } from '../aragonjs-wrapper'
 
 import * as Steps from './steps'
 import Templates from './templates'
@@ -58,6 +59,7 @@ class Onboarding extends React.PureComponent {
     onBuildDao: noop,
     onOpenOrganization: noop,
     onResetDaoBuilder: noop,
+    banner: null,
   }
   state = {
     ...initialState,
@@ -212,7 +214,6 @@ class Onboarding extends React.PureComponent {
     timerKey,
     invertCheck = false
   ) => {
-    const { daoBuilder } = this.props
     const filteredDomain = domain
       .trim()
       .toLowerCase()
@@ -238,7 +239,7 @@ class Onboarding extends React.PureComponent {
 
     const checkName = async () => {
       try {
-        const available = await daoBuilder.isNameAvailable(filteredDomain)
+        const available = await isNameAvailable(filteredDomain)
 
         // The domain could have changed in the meantime
         if (filteredDomain === this.state[domainKey]) {
@@ -357,7 +358,7 @@ class Onboarding extends React.PureComponent {
   }
   render() {
     const { direction, stepIndex, render } = this.state
-    const { visible } = this.props
+    const { visible, banner } = this.props
 
     if (!render && !visible) {
       return null
@@ -380,10 +381,11 @@ class Onboarding extends React.PureComponent {
             style={{
               transform: visible
                 ? 'none'
-                : `translateY(${110 * (1 - showProgress)}%)`,
+                : `translate3d(0, ${110 * (1 - showProgress)}%, 0)`,
               opacity: visible ? showProgress : 1,
             }}
           >
+            <BannerWrapper>{banner}</BannerWrapper>
             <View>
               <Window>
                 <Motion
@@ -524,7 +526,9 @@ const Main = styled.div`
   right: 0;
   bottom: 0;
   overflow: auto;
-  height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background-image: linear-gradient(
       0deg,
       rgba(0, 0, 0, 0.08) 0%,
@@ -533,12 +537,17 @@ const Main = styled.div`
     linear-gradient(-226deg, #00f1e1 0%, #00b4e4 100%);
 `
 
+const BannerWrapper = styled.div`
+  position: relative;
+  z-index: 2;
+`
+
 const View = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 800px;
-  min-height: 100%;
+  height: 100%;
   padding: 50px;
 `
 

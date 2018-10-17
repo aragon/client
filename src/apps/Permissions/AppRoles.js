@@ -10,6 +10,7 @@ import {
 import IdentityBadge from '../../components/IdentityBadge'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
+import AppInstanceLabel from './AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isEmptyAddress } from '../../web3-utils'
 
@@ -27,8 +28,11 @@ class AppRoles extends React.PureComponent {
 
     return (
       <PermissionsConsumer>
-        {({ getAppRoles }) => {
-          const roles = getAppRoles(app)
+        {({ getRoleManager }) => {
+          const roles = ((app && app.roles) || []).map(role => ({
+            role,
+            manager: getRoleManager(app, role.bytes),
+          }))
 
           return (
             <Section title="Roles available on this app">
@@ -67,6 +71,15 @@ class RoleRow extends React.Component {
   handleManageClick = () => {
     this.props.onManage(this.props.role.bytes)
   }
+  renderManager() {
+    const { manager } = this.props
+    if (manager.type === 'app') {
+      return (
+        <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
+      )
+    }
+    return <IdentityBadge entity={manager.address} />
+  }
   render() {
     const { role, manager } = this.props
 
@@ -74,7 +87,7 @@ class RoleRow extends React.Component {
     const name = (role && role.name) || 'Unknown role'
     const bytes = role && role.bytes
 
-    const emptyManager = isEmptyAddress(manager)
+    const emptyManager = isEmptyAddress(manager.address)
 
     return (
       <TableRow>
@@ -83,7 +96,7 @@ class RoleRow extends React.Component {
         </TableCell>
         <TableCell title={bytes}>{id}</TableCell>
         <TableCell>
-          {emptyManager ? 'No manager set' : <IdentityBadge entity={manager} />}
+          {emptyManager ? 'No manager set' : this.renderManager()}
         </TableCell>
         <TableCell align="right">
           <Button mode="outline" compact onClick={this.handleManageClick}>

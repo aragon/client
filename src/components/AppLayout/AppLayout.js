@@ -7,10 +7,10 @@ class AppLayout extends React.Component {
     title: '',
   }
   render() {
-    const { title, children, padding, maxWidth } = this.props
+    const { title, endContent, children, padding, maxWidth } = this.props
     return (
       <Main>
-        <StyledAppBar title={title} />
+        <StyledAppBar title={title} endContent={endContent} />
         <ScrollWrapper>
           <Content maxWidth={maxWidth} padding={padding}>
             {children}

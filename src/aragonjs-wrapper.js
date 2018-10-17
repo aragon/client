@@ -12,6 +12,8 @@ import {
   sortAppsPair,
   appLocator,
   ipfsDefaultConf,
+  web3Providers,
+  contractAddresses,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
@@ -434,6 +436,12 @@ const templateParamFilters = {
   },
 }
 
+export const isNameAvailable = async name =>
+  !(await isNameUsed(name, {
+    provider: web3Providers.default,
+    registryAddress: contractAddresses.ensRegistry,
+  }))
+
 export const initDaoBuilder = (
   provider,
   registryAddress,
@@ -466,8 +474,6 @@ export const initDaoBuilder = (
 
       return templates.newDAO(templateName, organizationName, templateData)
     },
-    isNameAvailable: async name =>
-      !(await isNameUsed(name, { provider, registryAddress })),
   }
 }
 

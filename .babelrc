@@ -1,7 +1,7 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "modules": false,
         "targets": {
@@ -15,12 +15,10 @@
         },
         "useBuiltIns": false
       }
-    ],
-    "stage-2"
+    ]
   ],
   "plugins": [
-    ["styled-components", {
-      "displayName": true
-    }]
+    ["styled-components", { "displayName": true }],
+    "@babel/plugin-proposal-class-properties"
   ]
 }
