@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import EagleAnimation from './EagleAnimation'
-import { theme, breakpoint, Button } from '@aragon/ui'
+import { theme, breakpoint, Button, colors } from '@aragon/ui'
 const medium = css => breakpoint('medium', css)
 
 class ErrorCard extends React.Component {
@@ -44,7 +44,7 @@ class ErrorCard extends React.Component {
         <EagleAnimation />
         <Card>
           <h1>{title}</h1>
-          {children}
+          {children && <Content>{children}</Content>}
           {(detailsContent || detailsTitle) && (
             <div>
               <DetailsButton onClick={this.toggleMoreDetails}>
@@ -65,6 +65,7 @@ class ErrorCard extends React.Component {
                   Tell us what went wrong
                 </IssueLink>
               )}
+              {supportUrl && showReloadButton && <ButtonsSpacer />}
               {showReloadButton && (
                 <Button mode="strong" onClick={this.handleReloadClick} compact>
                   Reload
@@ -79,37 +80,47 @@ class ErrorCard extends React.Component {
 }
 
 const Card = styled.div`
-  background: white;
-  box-shadow: 0px 0px 19px 0px #c9c9c9;
+  position: relative;
+  z-index: 2;
   padding: 30px;
   border: solid 1px #c9c9c9;
   border-radius: 4px;
   max-width: 550px;
-  color: ${theme.textSecondary};
   margin: auto 15px;
   margin-top: -90px;
-  z-index: 2;
-  position: relative;
+  color: ${theme.textSecondary};
+  background: white;
+  box-shadow: 0px 0px 19px 0px #c9c9c9;
+  h1 {
+    color: ${theme.textDimmed};
+    margin-bottom: 10px;
+    font-size: 20px;
+    ${medium(`
+      margin-bottom: 20px;
+      font-size: 30px;
+    `)};
+  }
+`
+
+const Content = styled.div`
   a {
-    cursor: pointer;
     color: ${theme.accent};
   }
   a:hover,
   a:active {
-    color: ${theme.gradientStartActive};
+    color: ${colors['Eagle']['Dark Cerulean']};
   }
-  h1 {
-    color: ${theme.textDimmed};
-    font-size: 20px;
-    margin-bottom: 20px;
-    ${medium('font-size: 30px;')};
-  }
+`
+
+const ButtonsSpacer = styled.span`
+  width: 10px;
 `
 
 const DetailsButton = styled.button`
   color: black;
   text-decoration: underline;
   margin: 20px 0;
+  padding-left: 0;
   cursor: pointer;
   background: transparent;
   border-color: transparent;
@@ -117,14 +128,16 @@ const DetailsButton = styled.button`
 `
 
 const DetailsContainer = styled.div`
-  background: #f6f6f6;
+  overflow: auto;
   padding: 15px;
-  border-radius: 4px;
   max-height: 200px;
-  overflow-y: auto;
+  border-radius: 4px;
   color: ${theme.text};
   font-size: 14px;
   line-height: 1.6;
+  white-space: pre;
+  background: #f6f6f6;
+
   h2 {
     font-weight: bold;
     font-size: 16px;
@@ -141,10 +154,10 @@ const ButtonBox = styled.div`
 
 const IssueLink = styled(Button.Anchor)`
   margin-left: -10px;
-  color: ${theme.textSecondary} !important;
+  color: ${theme.textSecondary};
   text-decoration: none;
   &:hover {
-    color: ${theme.gradientStartActive} !important;
+    color: ${theme.textPrimary};
   }
 `
 
