@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SafeLink, Text, Info } from '@aragon/ui'
 import ErrorCard from './components/ErrorCard/ErrorCard'
 
 class GlobalErrorHandler extends React.Component {
