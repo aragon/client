@@ -8,13 +8,15 @@ const medium = css => breakpoint('medium', css)
 class ErrorCard extends React.Component {
   static propTypes = {
     title: PropTypes.string,
-    issue: PropTypes.bool,
-    reload: PropTypes.bool,
+    supportUrl: PropTypes.string,
+    showReloadButton: PropTypes.bool,
     detailsTitle: PropTypes.string,
     detailsContent: PropTypes.node,
   }
   static defaultProps = {
     title: 'Error :(',
+    supportUrl: '',
+    showReloadButton: false,
   }
 
   state = { showDetails: false }
@@ -30,8 +32,8 @@ class ErrorCard extends React.Component {
   render() {
     const {
       title,
-      issue,
-      reload,
+      supportUrl,
+      showReloadButton,
       detailsTitle,
       detailsContent,
       children,
@@ -56,19 +58,15 @@ class ErrorCard extends React.Component {
               )}
             </div>
           )}
-          {(issue || reload) && (
+          {(supportUrl || showReloadButton) && (
             <ButtonBox>
-              {issue && (
-                <IssueLink
-                  mode="text"
-                  href="https://github.com/aragon/aragon/issues"
-                  target="_blank"
-                >
+              {supportUrl && (
+                <IssueLink mode="text" href={supportUrl} target="_blank">
                   Tell us what went wrong
                 </IssueLink>
               )}
-              {reload && (
-                <Button mode="strong" onClick={this.handleReloadClick}>
+              {showReloadButton && (
+                <Button mode="strong" onClick={this.handleReloadClick} compact>
                   Reload
                 </Button>
               )}
