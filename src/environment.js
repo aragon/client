@@ -85,12 +85,11 @@ if (assetBridge === 'local') {
     },
   })
 } else if (assetBridge === 'ipfs') {
-  // We don't need to provide any thing here as by default, the apps will be loaded from IPFS
-  if (assetBridge && assetBridge !== 'ipfs') {
-    console.error(
-      `The specified asset bridge (${assetBridge}) in the configuration is not one of 'ipfs', or 'local'. Defaulting to using 'ipfs'.`
-    )
-  }
+  // We don't need to provide anything here as by default, the apps will be loaded from IPFS
+} else if (assetBridge) {
+  console.error(
+    `The specified asset bridge (${assetBridge}) in the configuration is not one of 'ipfs', or 'local'. Defaulting to using 'ipfs'.`
+  )
 }
 export { appLocator, appOverrides }
 
