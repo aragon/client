@@ -106,10 +106,6 @@ const Content = styled.div`
   a {
     color: ${theme.accent};
   }
-  a:hover,
-  a:active {
-    color: ${colors['Eagle']['Dark Cerulean']};
-  }
 `
 
 const ButtonsSpacer = styled.span`
