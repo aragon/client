@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SafeLink, Text, Info } from '@aragon/ui'
+import ErrorCard from './components/ErrorCard/ErrorCard'
 
 class GlobalErrorHandler extends React.Component {
   state = { error: null, errorStack: null }
@@ -20,27 +21,17 @@ class GlobalErrorHandler extends React.Component {
     return (
       <Main>
         <In>
-          <Error>
-            <h1>
-              <Text size="xxlarge">An unexpected error has occured</Text>
-            </h1>
-            <TryAgain>
-              <p>
-                Try to <a href="/">reload the application</a> or{' '}
-                <SafeLink href="https://aragon.chat/" _target="_blank">
-                  contact us
-                </SafeLink>{' '}
-                if the problem persists.
-              </p>
-            </TryAgain>
-            <Message>{error.message}</Message>
-            {errorStack && (
-              <Details>
-                <DetailsLabel>More details…</DetailsLabel>
-                <DetailsOutput>{errorStack}</DetailsOutput>
-              </Details>
-            )}
-          </Error>
+          <ErrorCard
+            title="Oops."
+            detailsTitle={error.message}
+            detailsContent={errorStack}
+            supportUrl="https://github.com/aragon/aragon/issues/new"
+            showReloadButton
+          >
+            Something went wrong and the application crashed. Reloading might
+            solve the problem, or you can create an issue on GitHub so we can
+            help.
+          </ErrorCard>
         </In>
       </Main>
     )
@@ -49,57 +40,16 @@ class GlobalErrorHandler extends React.Component {
 
 const Main = styled.div`
   height: 100vh;
-  overflow-y: auto;
+  overflow: auto;
 `
 
 const In = styled.div`
   display: flex;
   justify-content: center;
-  padding: 40px;
+  align-items: center;
+  margin-top: -40px;
+  padding: 50px;
   min-height: 100%;
-`
-
-const Error = styled.div`
-  flex-basis: 600px;
-  max-width: 600px;
-  min-width: 100px;
-  padding: 40px;
-  background: #fff;
-  border-radius: 3px;
-  box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
-  & > h1 {
-    margin-bottom: 40px;
-  }
-`
-
-const TryAgain = styled.div`
-  margin-bottom: 40px;
-`
-
-const Message = styled(Info)`
-  margin-bottom: 20px;
-  overflow: auto;
-`
-
-const Details = styled.details`
-  margin: 20px 0;
-`
-
-const DetailsLabel = styled.summary`
-  display: inline;
-  text-decoration: underline;
-  cursor: pointer;
-  &::-webkit-details-marker {
-    display: none;
-  }
-`
-
-const DetailsOutput = styled(Info)`
-  display: block;
-  overflow: auto;
-  margin-top: 20px;
-  white-space: pre;
-  background: #f6f6f6;
 `
 
 export default GlobalErrorHandler
