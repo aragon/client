@@ -36,7 +36,7 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
-    showDeprecatedBanner: false,
+    showDeprecatedBanner: true,
   }
 
   history = createHistory()
