@@ -5,7 +5,7 @@ import EagleAnimation from './EagleAnimation'
 import { theme, breakpoint, Button } from '@aragon/ui'
 const medium = css => breakpoint('medium', css)
 
-class NotFound extends React.Component {
+class ErrorCard extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     issue: PropTypes.bool,
@@ -14,7 +14,7 @@ class NotFound extends React.Component {
     detailsContent: PropTypes.node,
   }
   static defaultProps = {
-    title: 'Not found :(',
+    title: 'Error :(',
   }
 
   state = { showDetails: false }
@@ -150,4 +150,4 @@ const IssueLink = styled(Button.Anchor)`
   }
 `
 
-export default NotFound
+export default ErrorCard
