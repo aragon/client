@@ -6,14 +6,20 @@ import { PublicUrl, BaseStyles } from '@aragon/ui'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import App from './App'
 
-const APP_VERSION = '0.5.4'
-const APP_VERSION_KEY = 'APP_VERSION'
+const PACKAGE_VERSION = process.env.REACT_APP_PACKAGE_VERSION || ''
+const PACKAGE_VERSION_KEY = 'PACKAGE_VERSION_KEY'
 
+// Purge localstorage cache when upgrading between different minor versions
 if (window && window.localStorage) {
-  const lastAppVersion = window.localStorage.getItem(APP_VERSION_KEY)
-  if (lastAppVersion !== APP_VERSION) {
+  const lastAppVersion = window.localStorage.getItem(PACKAGE_VERSION_KEY) || ''
+  const [lastMajorVersion, lastMinorVersion] = lastAppVersion.split('.')
+  const [currentMajorVersion, currentMinorVersion] = PACKAGE_VERSION.split('.')
+  if (
+    lastMajorVersion !== currentMajorVersion ||
+    lastMinorVersion !== currentMinorVersion
+  ) {
     window.localStorage.clear()
-    window.localStorage.setItem(APP_VERSION_KEY, APP_VERSION)
+    window.localStorage.setItem(PACKAGE_VERSION_KEY, PACKAGE_VERSION)
   }
 }
 
