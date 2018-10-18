@@ -114,7 +114,7 @@ class MenuPanelAppsLoader extends React.Component {
                 ),
               }}
             >
-              {children(false)}
+              {children(showApps)}
             </Apps>
           </Main>
         )}
