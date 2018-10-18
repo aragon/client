@@ -1,7 +1,7 @@
 import React from 'react'
 import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
-import { theme, spring as springConf, IconBlank, Badge } from '@aragon/ui'
+import { theme, spring as springConf, IconBlank } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
@@ -26,7 +26,6 @@ class MenuPanelAppGroup extends React.PureComponent {
       activeInstanceId,
       active,
       expand,
-      comingSoon,
     } = this.props
     const singleInstance = instances.length === 1
     return (
@@ -45,7 +44,7 @@ class MenuPanelAppGroup extends React.PureComponent {
             <MenuItemBar
               style={{
                 opacity: openProgress,
-                transform: `translateX(-${(1 - openProgress) * 100}%)`,
+                transform: `translate3d(-${(1 - openProgress) * 100}%, 0, 0)`,
               }}
             />
 
@@ -58,11 +57,6 @@ class MenuPanelAppGroup extends React.PureComponent {
                 <span className="icon">{icon || <IconBlank />}</span>
                 <span className="name">{name}</span>
               </span>
-              {comingSoon && (
-                <span>
-                  <Soon />
-                </span>
-              )}
             </ButtonItem>
 
             {instances.length > 1 && (
@@ -165,12 +159,6 @@ const MenuItemBar = styled.div`
   width: 4px;
   height: 100%;
   background: ${theme.accent};
-`
-
-const Soon = styled(Badge).attrs({ shape: 'compact', children: 'Soon' })`
-  text-transform: uppercase;
-  font-size: 9px;
-  font-weight: 300;
 `
 
 export default MenuPanelAppGroup

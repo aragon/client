@@ -36,9 +36,8 @@ class EntityPermissions extends React.PureComponent {
                 <Table
                   header={
                     <TableRow>
-                      <TableHeader title="App" />
-                      <TableHeader title="Action" />
-                      <TableHeader title="Role identifier" />
+                      <TableHeader title="Action" style={{ width: '20%' }} />
+                      <TableHeader title="On app" />
                       <TableHeader />
                     </TableRow>
                   }
@@ -73,16 +72,15 @@ class Row extends React.Component {
     onRevoke({ entityAddress, proxyAddress, roleBytes })
   }
   render() {
-    const { action, id, roleBytes, app, proxyAddress } = this.props
+    const { action, app, proxyAddress } = this.props
     return (
       <TableRow>
         <TableCell>
-          <AppInstanceLabel app={app} proxyAddress={proxyAddress} />
-        </TableCell>
-        <TableCell>
           <Text weight="bold">{action}</Text>
         </TableCell>
-        <TableCell title={roleBytes}>{id}</TableCell>
+        <TableCell>
+          <AppInstanceLabel app={app} proxyAddress={proxyAddress} />
+        </TableCell>
         <TableCell align="right">
           <Button
             mode="outline"

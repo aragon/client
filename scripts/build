@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const version = require('../package.json').version
+const execute = require('child_process').execSync
+
+const command = `
+npm run ui-assets &&
+REACT_APP_PACKAGE_VERSION=${version} parcel build src/index.html --out-dir ./build --public-url ./ &&
+npm run copy-apm-artifacts
+`
+
+execute(command, { stdio: 'inherit' })

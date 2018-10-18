@@ -13,8 +13,8 @@ import {
 import { network, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
-import { fromWei, fromWeiRounded, toWei } from '../web3-utils'
-import { lerp } from '../math-utils'
+import { fromWei, toWei } from '../web3-utils'
+import { formatNumber, lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
 
@@ -26,6 +26,10 @@ import {
 } from './domain-states'
 
 const MINIMUM_BALANCE = new BN(toWei('0.1'))
+const BALANCE_DECIMALS = 3
+const formatBalance = (balance, decimals = BALANCE_DECIMALS) =>
+  // Don't show decimals if the user has no ETH
+  formatNumber(balance, balance ? decimals : 0)
 
 class Start extends React.Component {
   static defaultProps = {
@@ -216,8 +220,8 @@ class StartContent extends React.PureComponent {
     if (walletNetwork !== network.type) {
       return (
         <ActionInfo>
-          Please select the {sanitizeNetworkType(network.type)} network in
-          MetaMask.
+          Please select the {sanitizeNetworkType(network.type)} network in your
+          Ethereum provider.
         </ActionInfo>
       )
     }
@@ -225,8 +229,7 @@ class StartContent extends React.PureComponent {
       return (
         <ActionInfo>
           You need at least {fromWei(MINIMUM_BALANCE)} ETH (you have{' '}
-          {fromWeiRounded(balance || '0')}{' '}
-          ETH).
+          {formatBalance(parseFloat(fromWei(balance || '0')))} ETH).
           <br />
           {network.type === 'rinkeby' && (
             <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
