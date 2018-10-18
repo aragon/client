@@ -160,7 +160,7 @@ class MenuPanel extends React.PureComponent {
     )
   }
   renderLoadedAppGroup = apps => {
-    const { appsStatus } = this.props
+    const { appsStatus, onRequestAppsReload } = this.props
 
     // Wrap the DAO apps in the loader
     return (
@@ -168,7 +168,7 @@ class MenuPanel extends React.PureComponent {
         key="menu-apps"
         appsStatus={appsStatus}
         itemsCount={apps.length}
-        onRetry={this.props.onRequestAppsReload}
+        onRetry={onRequestAppsReload}
       >
         {done => apps.map(app => this.renderAppGroup(app, done))}
       </MenuPanelAppsLoader>

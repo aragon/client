@@ -26,6 +26,7 @@ class MenuPanelAppsLoader extends React.Component {
 
   componentWillReceiveProps({ appsStatus }) {
     if (appsStatus !== this.props.appsStatus) {
+      // Always set this to false to reinitialize the animation
       this.setState({ showApps: false })
     }
   }
@@ -85,8 +86,9 @@ class MenuPanelAppsLoader extends React.Component {
                   if (appsStatus === APPS_STATUS_ERROR) {
                     return (
                       <div>
-                        <div>Apps loading error</div>
-                        <div style={{ height: '5px' }} />
+                        <div style={{ marginBottom: '5px' }}>
+                          Apps loading error
+                        </div>
                         <Button size="mini" onClick={onRetry}>
                           Retry
                         </Button>
