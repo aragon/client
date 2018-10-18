@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { IconAttention, Text } from '@aragon/ui'
+import { IconError, Button, theme, springs } from '@aragon/ui'
+import color from 'onecolor'
 import { lerp } from '../../math-utils'
 import { noop } from '../../utils'
 import LoadingRing from '../LoadingRing'
@@ -38,11 +39,11 @@ class MenuPanelAppsLoader extends React.Component {
   }
 
   render() {
-    const { children, itemsCount, appsStatus } = this.props
+    const { children, itemsCount, appsStatus, onRetry } = this.props
     const { showApps } = this.state
     return (
       <Spring
-        config={{ tension: 800, friction: 60 }}
+        config={springs.swift}
         from={{ afterLoadingMessageProgress: 0, showAppsProgress: 0 }}
         to={{
           afterLoadingMessageProgress: Number(
@@ -55,15 +56,7 @@ class MenuPanelAppsLoader extends React.Component {
       >
         {({ afterLoadingMessageProgress, showAppsProgress }) => (
           <Main>
-            <Status
-              style={{
-                cursor:
-                  appsStatus === APPS_STATUS_ERROR ? 'pointer' : 'inherit',
-              }}
-              onClick={
-                appsStatus === APPS_STATUS_ERROR ? this.props.onRetry : noop
-              }
-            >
+            <Status>
               <StatusBackground
                 style={{ opacity: afterLoadingMessageProgress }}
               />
@@ -72,7 +65,11 @@ class MenuPanelAppsLoader extends React.Component {
                   vAlign={appsStatus !== APPS_STATUS_ERROR}
                 >
                   {appsStatus === APPS_STATUS_ERROR ? (
-                    <IconAttention />
+                    <IconErrorWrapper
+                      style={{ opacity: afterLoadingMessageProgress }}
+                    >
+                      <IconError />
+                    </IconErrorWrapper>
                   ) : (
                     <LoadingRing spin={appsStatus === APPS_STATUS_LOADING} />
                   )}
@@ -88,7 +85,10 @@ class MenuPanelAppsLoader extends React.Component {
                     return (
                       <div>
                         <div>Apps loading error</div>
-                        <Text size="xxsmall">Click to try again.</Text>
+                        <div style={{ height: '5px' }} />
+                        <Button size="mini" onClick={onRetry}>
+                          Retry
+                        </Button>
                       </div>
                     )
                   }
@@ -98,14 +98,14 @@ class MenuPanelAppsLoader extends React.Component {
             </Status>
             <Apps
               style={{
-                height: afterLoadingMessageProgress.interpolate(v => {
-                  const height = lerp(
-                    Math.min(1, v),
-                    40,
-                    (appsStatus === APPS_STATUS_READY ? itemsCount : 2) * 40
-                  )
-                  return `${height}px`
-                }),
+                height: afterLoadingMessageProgress.interpolate(
+                  v =>
+                    `${lerp(
+                      v,
+                      40,
+                      (appsStatus === APPS_STATUS_READY ? itemsCount : 2) * 40
+                    )}px`
+                ),
                 transform: showAppsProgress.interpolate(
                   v => `
                     translate3d(-${(1 - Math.min(1, v)) * 100}%, 0, 0)
@@ -126,7 +126,7 @@ const StatusIndicatorWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: ${({ vAlign }) => (vAlign ? 'center' : 'flex-start')}
+  align-self: ${({ vAlign }) => (vAlign ? 'center' : 'flex-start')};
   width: 22px;
   height: 22px;
   margin-right: 15px;
@@ -163,7 +163,15 @@ const StatusBackground = styled(animated.div)`
   left: 0;
   right: 0;
   bottom: 0;
-  background: #f5f9fa;
+  background: ${color(theme.negative)
+    .lightness(0.98)
+    .css()};
+`
+
+const IconErrorWrapper = styled(animated.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const StatusContent = styled.div`
