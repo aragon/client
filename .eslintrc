@@ -12,6 +12,7 @@
   "parser": "babel-eslint",
   "plugins": ["prettier", "react"],
   "rules": {
+    "valid-jsdoc": "error",
     "react/prop-types": 0,
     "linebreak-style": ["error", "unix"]
   }

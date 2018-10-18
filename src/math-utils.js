@@ -25,12 +25,12 @@ export function formatNumber(num, decimals = 2) {
  *
  * From Processing.js
  *
- * @param {Number} value        The incoming value to be converted
- * @param {Number} istart       Lower bound of the value's current range
- * @param {Number} istop        Upper bound of the value's current range
- * @param {Number} ostart       Lower bound of the value's target range
- * @param {Number} ostop        Upper bound of the value's target range
- * @returns {Number}
+ * @param {Number} value The incoming value to be converted
+ * @param {Number} istart Lower bound of the value's current range
+ * @param {Number} istop Upper bound of the value's current range
+ * @param {Number} ostart Lower bound of the value's target range
+ * @param {Number} ostop Upper bound of the value's target range
+ * @returns {Number} Mapped value
  */
 export function map(value, istart, istop, ostart, ostop) {
   return ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
@@ -45,10 +45,10 @@ export function map(value, istart, istop, ostart, ostop) {
  *
  * From Processing.js
  *
- * @param {Number} aNumber    The incoming value to be converted
- * @param {Number} low        Lower bound of the value's current range
- * @param {Number} high       Upper bound of the value's current range
- * @returns {Number}
+ * @param {Number} aNumber The incoming value to be converted
+ * @param {Number} low Lower bound of the value's current range
+ * @param {Number} high Upper bound of the value's current range
+ * @returns {Number} Normalized number
  */
 export function norm(aNumber, low, high) {
   return (aNumber - low) / (high - low)
@@ -63,10 +63,10 @@ export function norm(aNumber, low, high) {
  *
  * From Processing.js
  *
- * @param {Number} progress     between 0.0 and 1.0
- * @param {Number} value1       first value
- * @param {Number} value2       second value
- * @returns {Number}
+ * @param {Number} progress Between 0.0 and 1.0
+ * @param {Number} value1 First value
+ * @param {Number} value2 Second value
+ * @returns {Number} Increment value
  */
 export function lerp(progress, value1, value2) {
   return (value2 - value1) * progress + value1
@@ -77,10 +77,10 @@ export function lerp(progress, value1, value2) {
  *
  * From Processing.js
  *
- * @param {Number} value   the value to constrain
- * @param {Number} value   minimum limit
- * @param {Number} value   maximum limit
- * @returns {Number}
+ * @param {Number} aNumber The value to constrain
+ * @param {Number} aMin Minimum limit
+ * @param {Number} aMax Maximum limit
+ * @returns {Number} Contrained value
  */
 export function clamp(aNumber, aMin, aMax) {
   return aNumber > aMax ? aMax : aNumber < aMin ? aMin : aNumber
@@ -92,9 +92,9 @@ export function clamp(aNumber, aMin, aMax) {
  *
  * From Mozilla MDN
  *
- * @param {Number} min    The minimum number (included)
- * @param {Number} max    The maximum number (excluded)
- * @returns {Number}
+ * @param {Number} min The minimum number (included)
+ * @param {Number} max The maximum number (excluded)
+ * @returns {Number} Random integer
  */
 export function randomInt(min, max) {
   min = Math.ceil(min)
@@ -109,7 +109,7 @@ export function randomInt(min, max) {
  *
  * @param {Number} min The minimum number (included)
  * @param {Number} max The maximum number (excluded)
- * @returns {Number}
+ * @returns {Number} Random number
  */
 export function random(min = 0, max = 1) {
   return Math.floor(Math.random() * (max - min)) + min
