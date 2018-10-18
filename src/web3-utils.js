@@ -48,10 +48,11 @@ export function shortenAddress(address, charsLength = 4) {
   )
 }
 
+// Cache web3 instances used in the app
 const web3Cache = new WeakMap()
 
 /**
- * Cache web3 instances used in the app
+ * Get cached web3 instance
  * @param {Web3.Provider} provider Web3 provider
  * @returns {Web3} The web3 instance
  */
