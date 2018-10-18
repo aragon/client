@@ -10,7 +10,7 @@ export const networkConfigs = {
         localEnsRegistryAddress || '0x314159265dd8dbb310642f98f50c066173c1259b',
     },
     nodes: {
-      defaultEth: 'wss://mainnet.aragon.network/ws',
+      defaultEth: 'wss://mainnet.eth.aragon.network/ws',
     },
     settings: {
       chainId: 1,
@@ -25,7 +25,7 @@ export const networkConfigs = {
         localEnsRegistryAddress || '0xfbae32d1cde62858bc45f51efc8cc4fa1415447e',
     },
     nodes: {
-      defaultEth: 'ws://rinkeby.aragon.network:8546',
+      defaultEth: 'wss://rinkeby.eth.aragon.network/ws',
     },
     settings: {
       chainId: 4,
