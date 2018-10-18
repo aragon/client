@@ -1,5 +1,5 @@
 import memoize from 'lodash.memoize'
-import { isAnyAddress } from './web3-utils'
+import { addressesEqual, isAnyAddress } from './web3-utils'
 
 const KERNEL_ROLES = [
   {
@@ -25,19 +25,28 @@ export const getKnownRole = roleBytes => {
 // Output: entities => app instances => roles
 export function permissionsByEntity(permissions) {
   const results = {}
+
+  const addRole = (entity, app, role) => {
+    entity = entity.toLowerCase()
+    if (!results[entity]) {
+      results[entity] = {}
+    }
+    results[entity][app] = [...(results[entity][app] || []), role]
+  }
+
   // apps
   for (const [app, appPermissions] of Object.entries(permissions)) {
     // roles
-    for (const [role, { allowedEntities }] of Object.entries(appPermissions)) {
+    for (const [role, { allowedEntities = [] }] of Object.entries(
+      appPermissions
+    )) {
       // entities
       for (const entity of allowedEntities) {
-        if (!results[entity]) {
-          results[entity] = {}
-        }
-        results[entity][app] = [...(results[entity][app] || []), role]
+        addRole(entity, app, role)
       }
     }
   }
+
   return results
 }
 
@@ -92,7 +101,7 @@ function resolveRole(apps, proxyAddress, roleBytes) {
   if (knownRole) {
     return knownRole.role
   }
-  const app = apps.find(app => app.proxyAddress === proxyAddress)
+  const app = apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
   if (!app || !app.roles) {
     return null
   }
@@ -105,8 +114,8 @@ function resolveEntity(apps, address) {
   if (isAnyAddress(address)) {
     return { ...entity, type: 'any' }
   }
-  const app = apps.find(app => app.proxyAddress === address)
-  return app ? { ...entity, type: 'app', app } : entity
+  const app = apps.find(app => addressesEqual(app.proxyAddress, address))
+  return app ? { ...entity, app, type: 'app' } : entity
 }
 
 // Returns a function that resolves an entity, caching the results

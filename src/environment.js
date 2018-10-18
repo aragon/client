@@ -85,33 +85,11 @@ if (assetBridge === 'local') {
     },
   })
 } else if (assetBridge === 'ipfs') {
-  // We don't need to provide any thing here as by default, the apps will be loaded from IPFS
-} else {
-  if (assetBridge && assetBridge !== 'apm-serve') {
-    console.error(
-      `The specified asset bridge (${assetBridge}) in the configuration is not one of 'apm-serve', 'ipfs', or 'local'. Defaulting to using apm-serve.`
-    )
-  }
-
-  if (networkType === 'mainnet') {
-    /******************************
-     * Mainnet apm-serve settings *
-     ******************************/
-    Object.assign(appLocator, {
-      // Cloudflare doesn't let us use our certificate down to mainnet.survey.aragonpm, so we'll
-      // downgrade to HTTP for now
-      [appIds['Survey']]: 'http://mainnet.survey.aragonpm.com/',
-    })
-  } else if (networkType === 'rinkeby') {
-    /******************************
-     * Rinkeby apm-serve settings *
-     ******************************/
-    Object.assign(appLocator, {
-      [appIds['Finance']]: 'https://finance.aragonpm.com/',
-      [appIds['TokenManager']]: 'https://token-manager.aragonpm.com/',
-      [appIds['Voting']]: 'https://voting.aragonpm.com/',
-    })
-  }
+  // We don't need to provide anything here as by default, the apps will be loaded from IPFS
+} else if (assetBridge) {
+  console.error(
+    `The specified asset bridge (${assetBridge}) in the configuration is not one of 'ipfs', or 'local'. Defaulting to using 'ipfs'.`
+  )
 }
 export { appLocator, appOverrides }
 

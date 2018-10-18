@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
-import { Permissions, Settings } from './apps'
+import { Apps, Permissions, Settings } from './apps'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
-import ComingSoon from './components/ComingSoon/ComingSoon'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
 import { getAppPath } from './routing'
@@ -29,6 +28,7 @@ class Wrapper extends React.Component {
     wrapper: null,
     walletWeb3: null,
     web3: null,
+    banner: null,
   }
   state = {
     appInstance: {},
@@ -169,12 +169,14 @@ class Wrapper extends React.Component {
       wrapper,
       appsStatus,
       locator: { instanceId, params },
+      banner,
       onRequestAppsReload,
     } = this.props
 
     return (
-      <React.Fragment>
-        <Main>
+      <Main>
+        <BannerWrapper>{banner}</BannerWrapper>
+        <Container>
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
             appsStatus={appsStatus}
@@ -186,12 +188,12 @@ class Wrapper extends React.Component {
             onRequestAppsReload={onRequestAppsReload}
           />
           <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
-        </Main>
+        </Container>
         <SidePanel
           onClose={this.handleSignerClose}
           onTransitionEnd={this.handleSignerTransitionEnd}
           opened={signerOpened}
-          title="Sign Transaction"
+          title="Create transaction"
         >
           <SignerPanelContent
             account={account}
@@ -201,7 +203,7 @@ class Wrapper extends React.Component {
             {...web3Action}
           />
         </SidePanel>
-      </React.Fragment>
+      </Main>
     )
   }
   renderApp(instanceId, params) {
@@ -248,15 +250,7 @@ class Wrapper extends React.Component {
     }
 
     if (instanceId === 'apps') {
-      return (
-        <ComingSoon
-          title="Apps"
-          subtitle={`
-            The apps manager is not quite ready for prime time but will be
-            available soon.
-          `}
-        />
-      )
+      return <Apps />
     }
 
     if (instanceId === 'settings') {
@@ -290,8 +284,19 @@ class Wrapper extends React.Component {
 
 const Main = styled.div`
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
   height: 100vh;
+`
+
+const BannerWrapper = styled.div`
+  position: relative;
+  z-index: 2;
+`
+
+const Container = styled.div`
+  display: flex;
+  align-items: stretch;
+  height: 100%;
 `
 
 const AppScreen = styled.div`

@@ -1,6 +1,5 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
-import { AragonApp } from '@aragon/ui'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -14,6 +13,8 @@ import Onboarding from './onboarding/Onboarding'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
+import { ModalProvider } from './components/ModalManager/ModalManager'
+import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -22,6 +23,7 @@ import {
 
 class App extends React.Component {
   state = {
+    fatalError: null,
     locator: {},
     prevLocator: null,
     wrapper: null,
@@ -39,6 +41,7 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
+    showDeprecatedBanner: false,
   }
 
   history = createHistory()
@@ -230,6 +233,7 @@ class App extends React.Component {
 
   render() {
     const {
+      fatalError,
       locator,
       wrapper,
       apps,
@@ -238,7 +242,6 @@ class App extends React.Component {
       balance,
       walletNetwork,
       transactionBag,
-      daoBuilder,
       daoCreationStatus,
       walletWeb3,
       web3,
@@ -246,18 +249,25 @@ class App extends React.Component {
       daoAddress,
       appsStatus,
       permissionsLoading,
+      showDeprecatedBanner,
     } = this.state
-    const { mode } = locator
+
+    const { mode, dao } = locator
     if (!mode) return null
 
+    if (fatalError !== null) {
+      throw fatalError
+    }
+
     return (
-      <AragonApp publicUrl="/aragon-ui/">
+      <ModalProvider>
         <PermissionsProvider
           wrapper={wrapper}
           apps={apps}
           permissions={permissions}
         >
           <Wrapper
+            banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
             historyBack={this.historyBack}
             historyPush={this.historyPush}
             locator={locator}
@@ -275,19 +285,22 @@ class App extends React.Component {
             onRequestAppsReload={this.handleRequestAppsReload}
           />
         </PermissionsProvider>
+
         <Onboarding
+          banner={
+            showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
+          }
           visible={mode === 'home' || mode === 'setup'}
           account={account}
           balance={balance}
           walletNetwork={walletNetwork}
           onBuildDao={this.handleBuildDao}
-          daoBuilder={daoBuilder}
           daoCreationStatus={daoCreationStatus}
           onComplete={this.handleCompleteOnboarding}
           onOpenOrganization={this.handleOpenOrganization}
           onResetDaoBuilder={this.handleResetDaoBuilder}
         />
-      </AragonApp>
+      </ModalProvider>
     )
   }
 }

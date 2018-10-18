@@ -8,6 +8,7 @@ import {
   permissionsByEntity,
 } from '../permissions'
 import { log, noop } from '../utils'
+import { getEmptyAddress } from '../web3-utils'
 
 const { Provider, Consumer } = React.createContext()
 
@@ -41,7 +42,7 @@ class PermissionsProvider extends React.Component {
       proxyAddress,
       roleBytes,
     ])
-    log('revoke tx:', transaction)
+    log('revokePermission tx:', transaction)
   }
 
   // create a permission (= set a manager + grant a permission)
@@ -55,7 +56,7 @@ class PermissionsProvider extends React.Component {
     if (wrapper === null) {
       return
     }
-    console.log('CREATE', [entityAddress, proxyAddress, roleBytes, manager])
+    log('createPermission', [entityAddress, proxyAddress, roleBytes, manager])
     const transaction = await wrapper.performACLIntent('createPermission', [
       entityAddress,
       proxyAddress,
@@ -149,10 +150,11 @@ class PermissionsProvider extends React.Component {
 
   // Get the manager of a role
   getRoleManager = (app, roleBytes) => {
+    const { resolveEntity } = this.state
     const role = this.getAppRoles(app).find(
       role => role.roleBytes === roleBytes
     )
-    return (role && role.manager) || null
+    return resolveEntity((role && role.manager) || getEmptyAddress())
   }
 
   // Get a list of entities with the roles assigned to them
