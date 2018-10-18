@@ -2,16 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { theme } from '@aragon/ui'
 
-class LoadingRing extends React.Component {
-  render() {
-    const { spin } = this.props
-    return (
-      <Main spin={spin}>
-        <Ring spin={spin} />
-      </Main>
-    )
-  }
-}
+const LoadingRing = ({ spin, ...props }) => (
+  <Main spin={spin} {...props}>
+    <Ring spin={spin} />
+  </Main>
+)
 
 const Main = styled.span`
   position: relative;

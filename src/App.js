@@ -15,6 +15,11 @@ import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
+import {
+  APPS_STATUS_ERROR,
+  APPS_STATUS_READY,
+  APPS_STATUS_LOADING,
+} from './symbols'
 
 class App extends React.Component {
   state = {
@@ -26,7 +31,7 @@ class App extends React.Component {
     balance: null,
     connected: false,
     apps: [],
-    appsLoading: true,
+    appsStatus: APPS_STATUS_LOADING,
     permissions: [],
     permissionsLoading: true,
     walletWeb3: null,
@@ -160,7 +165,7 @@ class App extends React.Component {
       return
     }
 
-    this.setState({ appsLoading: true })
+    this.setState({ appsStatus: APPS_STATUS_LOADING, apps: [] })
 
     log('Wrapper init', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
@@ -168,7 +173,7 @@ class App extends React.Component {
       walletProvider: web3Providers.wallet,
       onError: err => {
         log(`Wrapper init error: ${err.name}. ${err.message}.`)
-        this.setState({ appsLoading: false })
+        this.setState({ appsStatus: APPS_STATUS_ERROR })
       },
       onDaoAddress: daoAddress => {
         log('daoAddress', daoAddress)
@@ -182,7 +187,7 @@ class App extends React.Component {
         log('apps updated', apps)
         this.setState({
           apps,
-          appsLoading: false,
+          appsStatus: APPS_STATUS_READY,
         })
       },
       onPermissions: permissions => {
@@ -205,9 +210,17 @@ class App extends React.Component {
         this.setState({ wrapper })
       })
       .catch(err => {
-        console.error('Error:', err)
-        this.setState({ appsLoading: false })
+        log(`Wrapper init error: ${err.name}. ${err.message}.`)
+        this.setState({ appsStatus: APPS_STATUS_ERROR })
       })
+  }
+
+  handleRequestAppsReload = () => {
+    this.setState({ appsStatus: APPS_STATUS_LOADING, apps: [] })
+    clearTimeout(this._requestAppsTimer)
+    this._requestAppsTimer = setTimeout(() => {
+      this.updateDao(this.state.locator.dao)
+    }, 1000)
   }
 
   handleCompleteOnboarding = () => {
@@ -234,7 +247,7 @@ class App extends React.Component {
       web3,
       connected,
       daoAddress,
-      appsLoading,
+      appsStatus,
       permissionsLoading,
       showDeprecatedBanner,
     } = this.state
@@ -260,7 +273,7 @@ class App extends React.Component {
             locator={locator}
             wrapper={wrapper}
             apps={apps}
-            appsLoading={appsLoading}
+            appsStatus={appsStatus}
             permissionsLoading={permissionsLoading}
             account={account}
             walletNetwork={walletNetwork}
@@ -269,6 +282,7 @@ class App extends React.Component {
             daoAddress={daoAddress}
             transactionBag={transactionBag}
             connected={connected}
+            onRequestAppsReload={this.handleRequestAppsReload}
           />
         </PermissionsProvider>
 

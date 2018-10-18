@@ -12,6 +12,7 @@ import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
 import { noop } from './utils'
+import { APPS_STATUS_LOADING } from './symbols'
 
 class Wrapper extends React.Component {
   static defaultProps = {
@@ -166,9 +167,10 @@ class Wrapper extends React.Component {
       apps,
       walletWeb3,
       wrapper,
-      appsLoading,
+      appsStatus,
       locator: { instanceId, params },
       banner,
+      onRequestAppsReload,
     } = this.props
 
     return (
@@ -177,12 +179,13 @@ class Wrapper extends React.Component {
         <Container>
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
-            appsLoading={appsLoading}
+            appsStatus={appsStatus}
             activeInstanceId={instanceId}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
             onClearAllNotifications={this.handleNotificationsClearAll}
             onOpenNotification={this.handleNotificationNavigation}
+            onRequestAppsReload={onRequestAppsReload}
           />
           <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
         </Container>
@@ -207,7 +210,7 @@ class Wrapper extends React.Component {
     const {
       locator,
       apps,
-      appsLoading,
+      appsStatus,
       permissionsLoading,
       account,
       walletNetwork,
@@ -216,6 +219,8 @@ class Wrapper extends React.Component {
       connected,
       daoAddress,
     } = this.props
+
+    const appsLoading = appsStatus === APPS_STATUS_LOADING
 
     if (instanceId === 'home') {
       return (

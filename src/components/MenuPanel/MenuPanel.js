@@ -118,7 +118,9 @@ class MenuPanel extends React.PureComponent {
             {({ openProgress }) => (
               <NotificationsWrapper
                 style={{
-                  transform: `translateX(${lerp(openProgress, -100, 0)}%)`,
+                  transform: `
+                    translate3d(${lerp(openProgress, -100, 0)}%, 0, 0)
+                  `,
                   boxShadow: `1px 0 15px rgba(0, 0, 0, ${openProgress * 0.1})`,
                 }}
               >
@@ -158,14 +160,15 @@ class MenuPanel extends React.PureComponent {
     )
   }
   renderLoadedAppGroup = apps => {
-    const { appsLoading } = this.props
+    const { appsStatus, onRequestAppsReload } = this.props
 
     // Wrap the DAO apps in the loader
     return (
       <MenuPanelAppsLoader
         key="menu-apps"
-        loading={appsLoading}
+        appsStatus={appsStatus}
         itemsCount={apps.length}
+        onRetry={onRequestAppsReload}
       >
         {done => apps.map(app => this.renderAppGroup(app, done))}
       </MenuPanelAppsLoader>
