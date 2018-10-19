@@ -307,7 +307,7 @@ const initWrapper = async (
     : dao
 
   if (!daoAddress) {
-    onError(new InvalidAddress('The provided DAO address is invalid'))
+    onError(new InvalidAddress('Could not resolve ENS address of DAO'))
     return
   }
 
@@ -338,6 +338,11 @@ const initWrapper = async (
       )
       return
     }
+    if (err.message === 'Provided daoAddress is not a DAO') {
+      onError(new InvalidAddress(err.message))
+      return
+    }
+
     throw err
   }
 
