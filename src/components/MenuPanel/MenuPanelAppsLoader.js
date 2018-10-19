@@ -59,8 +59,15 @@ class MenuPanelAppsLoader extends React.Component {
           <Main>
             <Status>
               <StatusBackground
-                error={appsStatus === APPS_STATUS_ERROR}
-                style={{ opacity: afterLoadingMessageProgress }}
+                style={{
+                  opacity: afterLoadingMessageProgress,
+                  background:
+                    appsStatus === APPS_STATUS_ERROR
+                      ? color(theme.negative)
+                          .lightness(0.98)
+                          .css()
+                      : '#f5f9fa',
+                }}
               />
               <StatusContent>
                 <StatusIndicatorWrapper
@@ -166,12 +173,6 @@ const StatusBackground = styled(animated.div)`
   left: 0;
   right: 0;
   bottom: 0;
-  background: ${p =>
-    p.error
-      ? color(theme.negative)
-          .lightness(0.98)
-          .css()
-      : '#f5f9fa'};
 `
 
 const IconErrorWrapper = styled(animated.div)`
