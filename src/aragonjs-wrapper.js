@@ -346,7 +346,11 @@ const initWrapper = async (
 
   const account = await getMainAccount(web3)
   try {
-    await wrapper.init(account && [account])
+    await wrapper.init({
+      accounts: {
+        providedAccounts: account ? [account] : [],
+      },
+    })
   } catch (err) {
     if (err.message === 'connection not open') {
       onError(
