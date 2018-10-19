@@ -370,10 +370,11 @@ const initWrapper = async (
 
 const templateParamFilters = {
   democracy: (
+    // name: String of organization name
     // supportNeeded: Number between 0 (0%) and 1 (100%).
     // minAcceptanceQuorum: Number between 0 (0%) and 1 (100%).
     // voteDuration: Duration in seconds.
-    { supportNeeded, minAcceptanceQuorum, voteDuration },
+    { name, supportNeeded, minAcceptanceQuorum, voteDuration },
     account
   ) => {
     const tokenBase = Math.pow(10, 18)
@@ -389,6 +390,7 @@ const templateParamFilters = {
     )
 
     return [
+      name,
       accounts,
       stakes,
       supportNeeded * percentageBase,
@@ -398,9 +400,10 @@ const templateParamFilters = {
   },
 
   multisig: (
+    // name: String of organization name
     // signers: Accounts corresponding to the signers.
     // neededSignatures: Minimum number of signatures needed.
-    { signers, neededSignatures },
+    { name, signers, neededSignatures },
     account
   ) => {
     if (!signers || signers.length === 0) {
@@ -409,12 +412,14 @@ const templateParamFilters = {
 
     if (neededSignatures < 1 || neededSignatures > signers.length) {
       throw new Error(
-        'neededSignatures must be between 1 the total number of signers',
+        `neededSignatures must be between 1 and the total number of signers (${
+          signers.length
+        })`,
         neededSignatures
       )
     }
 
-    return [signers, neededSignatures]
+    return [name, signers, neededSignatures]
   },
 }
 
@@ -452,9 +457,17 @@ export const initDaoBuilder = (
 
       const templates = setupTemplates(provider, registryAddress, account)
       const templateFilter = templateParamFilters[templateName]
-      const templateData = templateFilter(settings, account)
+      const templateInstanceParams = templateFilter(
+        { name: organizationName, ...settings },
+        account
+      )
+      const tokenParams = [settings.tokenName, settings.tokenSymbol]
 
-      return templates.newDAO(templateName, organizationName, templateData)
+      return templates.newDAO(
+        templateName,
+        { params: tokenParams },
+        { params: templateInstanceParams }
+      )
     },
   }
 }
