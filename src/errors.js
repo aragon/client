@@ -12,3 +12,10 @@ export const InvalidAddress = extendError('InvalidAddress', {
 export const NoConnection = extendError('NoConnection', {
   defaultMessage: 'There is no connection',
 })
+export class DAONotFound extends Error {
+  name = 'DAONotFound'
+  constructor(dao) {
+    super('The ENS address of this dao could not be resolved')
+    this.dao = dao
+  }
+}

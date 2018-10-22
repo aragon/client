@@ -18,7 +18,7 @@ import {
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
-import { InvalidAddress, NoConnection } from './errors'
+import { NoConnection, DAONotFound, InvalidAddress } from './errors'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -307,8 +307,7 @@ const initWrapper = async (
     : dao
 
   if (!daoAddress) {
-    onError(new InvalidAddress('Could not resolve ENS address of DAO'))
-    return
+    throw new DAONotFound(dao)
   }
 
   onDaoAddress(daoAddress)
