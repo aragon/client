@@ -1,8 +1,8 @@
 import React from 'react'
-import { spring, Motion } from 'react-motion'
+import { Spring, animated } from 'react-spring'
 import styled from 'styled-components'
 import throttle from 'lodash.throttle'
-import { theme, spring as springConf, unselectable, Text } from '@aragon/ui'
+import { theme, springs, unselectable, Text } from '@aragon/ui'
 
 import arrow from './assets/arrow.svg'
 
@@ -41,10 +41,10 @@ class ExpandableBox extends React.Component {
     const { selfExpanded, drawerHeight } = this.state
     const expandedFinal = expanded === undefined ? selfExpanded : expanded
     return (
-      <Motion
-        style={{
-          openProgress: spring(Number(expandedFinal), springConf('fast')),
-        }}
+      <Spring
+        config={springs.fast}
+        to={{ openProgress: Number(expandedFinal) }}
+        native
       >
         {({ openProgress }) => (
           <Main expanded={expandedFinal}>
@@ -52,15 +52,17 @@ class ExpandableBox extends React.Component {
               alt=""
               src={arrow}
               style={{
-                transform: `rotate(${180 * (1 - openProgress)}deg)`,
+                transform: openProgress.interpolate(
+                  v => `rotate(${180 * (1 - v)}deg)`
+                ),
               }}
             />
             <Summary
-              opened={openProgress > 0.1}
+              opened={openProgress.interpolate(v => v > 0.1)}
               style={{
-                boxShadow: `
-                  0 7px 10px 0 rgba(101, 148, 170, ${0.08 * openProgress})
-                `,
+                boxShadow: openProgress.interpolate(
+                  v => `0 7px 10px 0 rgba(101, 148, 170, ${0.08 * v})`
+                ),
               }}
             >
               <SummaryTopArea onClick={this.toggle}>
@@ -77,7 +79,9 @@ class ExpandableBox extends React.Component {
               <Drawer
                 innerRef={elt => (this.drawerElt = elt)}
                 style={{
-                  marginTop: `${-drawerHeight * (1 - openProgress)}px`,
+                  marginTop: openProgress.interpolate(
+                    v => `${-drawerHeight * (1 - v)}px`
+                  ),
                 }}
               >
                 <DrawerContent>{children}</DrawerContent>
@@ -85,7 +89,7 @@ class ExpandableBox extends React.Component {
             </DrawerWrapper>
           </Main>
         )}
-      </Motion>
+      </Spring>
     )
   }
 }
@@ -98,13 +102,13 @@ const Main = styled.section`
   ${unselectable};
 `
 
-const Arrow = styled.img`
+const Arrow = styled(animated.img)`
   position: absolute;
   top: 30px;
   right: 20px;
 `
 
-const Summary = styled.div`
+const Summary = styled(animated.div)`
   position: relative;
   z-index: 1;
   border-bottom: 1px solid
@@ -133,7 +137,7 @@ const DrawerWrapper = styled.div`
   position: relative;
 `
 
-const Drawer = styled.div`
+const Drawer = styled(animated.div)`
   overflow: hidden;
   position: relative;
   padding: 30px 20px;

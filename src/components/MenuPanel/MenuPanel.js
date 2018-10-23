@@ -1,10 +1,10 @@
 import React from 'react'
-// import { spring, Motion } from 'react-motion'
+// import { Spring } from 'react-spring'
 import styled from 'styled-components'
 import {
   theme,
   unselectable,
-  // spring as springConf,
+  // springs,
   // IconWallet,
   // IconNotifications,
 } from '@aragon/ui'
@@ -107,13 +107,9 @@ class MenuPanel extends React.PureComponent {
         </In>
 
         {/* <ClickOutHandler onClickOut={this.handleCloseNotifications}>
-          <Motion
-            style={{
-              openProgress: spring(
-                Number(notificationsOpened),
-                springConf('fast')
-              ),
-            }}
+          <Spring
+            config={springs.fast}
+            to={{ openProgress: Number(notificationsOpened) }}
           >
             {({ openProgress }) => (
               <NotificationsWrapper
@@ -131,7 +127,7 @@ class MenuPanel extends React.PureComponent {
                 />
               </NotificationsWrapper>
             )}
-          </Motion>
+          </Spring>
         </ClickOutHandler> */}
       </Main>
     )

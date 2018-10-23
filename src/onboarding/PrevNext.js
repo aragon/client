@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { spring as springConf, Button } from '@aragon/ui'
+import { Spring, animated } from 'react-spring'
+import { springs, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
 
 class PrevNext extends React.Component {
@@ -16,10 +16,10 @@ class PrevNext extends React.Component {
       isSigningNext,
     } = this.props
     return (
-      <Motion
-        style={{
-          showProgress: spring(Number(visible), springConf('fast')),
-        }}
+      <Spring
+        config={springs.fast}
+        to={{ showProgress: Number(visible) }}
+        native
       >
         {({ showProgress }) => (
           <Main
@@ -27,7 +27,9 @@ class PrevNext extends React.Component {
               pointerEvents: visible ? 'auto' : 'none',
               transform:
                 direction === 1
-                  ? `translateY(${lerp(showProgress, 40, 0)}px)`
+                  ? showProgress.interpolate(
+                      v => `translateY(${lerp(v, 40, 0)}px)`
+                    )
                   : 'none',
               opacity: showProgress,
             }}
@@ -41,7 +43,7 @@ class PrevNext extends React.Component {
             />
           </Main>
         )}
-      </Motion>
+      </Spring>
     )
   }
 }
@@ -69,7 +71,7 @@ class PrevNextContent extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   position: absolute;
   left: 0;
   right: 0;

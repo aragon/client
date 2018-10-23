@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { spring as springConf } from '@aragon/ui'
+import { Spring, animated } from 'react-spring'
+import { springs } from '@aragon/ui'
 import { noop } from '../utils'
 import { isNameAvailable } from '../aragonjs-wrapper'
 
@@ -25,16 +25,14 @@ import {
 } from './domain-states'
 
 const SPRING_SHOW = {
-  stiffness: 120,
-  damping: 17,
-  precision: 0.001,
+  tension: 120,
+  friction: 17,
 }
 const SPRING_HIDE = {
-  stiffness: 70,
-  damping: 15,
-  precision: 0.001,
+  tension: 70,
+  friction: 15,
 }
-const SPRING_SCREEN = springConf('slow')
+const SPRING_SCREEN = springs.slow
 
 const initialState = {
   template: null,
@@ -367,29 +365,29 @@ class Onboarding extends React.PureComponent {
     const step = this.currentStep()
     const steps = this.getSteps()
     return (
-      <Motion
-        style={{
-          showProgress: spring(
-            Number(visible),
-            visible ? SPRING_SHOW : SPRING_HIDE
-          ),
-        }}
+      <Spring
+        config={visible ? SPRING_SHOW : SPRING_HIDE}
+        to={{ showProgress: Number(visible) }}
         onRest={this.handleTransitionRest}
+        native
       >
         {({ showProgress }) => (
           <Main
             style={{
               transform: visible
                 ? 'none'
-                : `translate3d(0, ${110 * (1 - showProgress)}%, 0)`,
-              opacity: visible ? showProgress : 1,
+                : showProgress.interpolate(
+                    v => `translate3d(0, ${110 * (1 - v)}%, 0)`
+                  ),
+              opacity: showProgress,
             }}
           >
             <BannerWrapper>{banner}</BannerWrapper>
             <View>
               <Window>
-                <Motion
-                  style={{ screenProgress: spring(stepIndex, SPRING_SCREEN) }}
+                <Spring
+                  config={SPRING_SCREEN}
+                  to={{ screenProgress: stepIndex }}
                 >
                   {({ screenProgress }) => (
                     <React.Fragment>
@@ -416,12 +414,12 @@ class Onboarding extends React.PureComponent {
                       />
                     </React.Fragment>
                   )}
-                </Motion>
+                </Spring>
               </Window>
             </View>
           </Main>
         )}
-      </Motion>
+      </Spring>
     )
   }
   renderScreen(screen, position, positionProgress) {
@@ -518,7 +516,7 @@ class Onboarding extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   position: fixed;
   z-index: 2;
   top: 0;

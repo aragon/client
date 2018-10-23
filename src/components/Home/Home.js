@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { spring, Motion } from 'react-motion'
-import { theme, AppBar, Text } from '@aragon/ui'
+import { Spring } from 'react-spring'
+import { theme, AppBar, Text, springs } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { lerp } from '../../math-utils'
 
@@ -15,8 +15,6 @@ import imgVote from './assets/vote.svg'
 const CARD_WIDTH = 220
 const CARD_HEIGHT = 200
 const CARD_MARGIN = 30
-
-const SPRING = { stiffness: 120, damping: 17, precision: 0.005 }
 
 const actions = [
   {
@@ -91,8 +89,9 @@ class Home extends React.Component {
         </AppBarWrapper>
         <ScrollWrapper>
           <AppWrapper>
-            <Motion
-              style={{ showAppsProgress: spring(Number(showApps), SPRING) }}
+            <Spring
+              config={springs.lazy}
+              to={{ showAppsProgress: Number(showApps) }}
             >
               {({ showAppsProgress }) => (
                 <Content>
@@ -154,7 +153,7 @@ class Home extends React.Component {
                   </div>
                 </Content>
               )}
-            </Motion>
+            </Spring>
           </AppWrapper>
         </ScrollWrapper>
         <AppFooter>
