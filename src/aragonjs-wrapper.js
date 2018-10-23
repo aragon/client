@@ -470,7 +470,10 @@ export const initDaoBuilder = (
 
       const templates = setupTemplates(provider, registryAddress, account)
       const templateFilter = templateParamFilters[templateName]
-      const templateData = templateFilter(settings, account)
+      const templateData = [
+        organizationName,
+        ...templateFilter(settings, account),
+      ]
 
       return templates.newDAO(templateName, organizationName, templateData)
     },
