@@ -193,6 +193,7 @@ const TransactionTitle = styled.h2`
 
 const Note = styled.p`
   max-width: 55%;
+  min-width: 325px;
   margin-top: 40px;
   text-align: center;
 `
