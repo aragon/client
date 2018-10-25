@@ -83,6 +83,7 @@
     "build:mainnet": "REACT_APP_ETH_NETWORK_TYPE=mainnet npm run build",
     "build:mainnet-infura": "REACT_APP_DEFAULT_ETH_NODE=wss://mainnet.infura.io/_ws npm run build:mainnet",
     "build:rinkeby": "npm run build",
+    "build:staging": "REACT_APP_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm run build",
     "lint": "eslint ./src",
     "test": "npm run lint",
     "copy-apm-artifacts": "cp arapp.json build/arapp.json && cp manifest.json build/manifest.json",
