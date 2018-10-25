@@ -20,21 +20,6 @@ import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { InvalidAddress, NoConnection } from './errors'
 
-const KERNEL_BASE = {
-  name: 'Kernel',
-  appId: 'kernel',
-  isAragonOsInternalApp: true,
-  roles: [
-    {
-      name: 'Manage apps',
-      id: 'APP_MANAGER_ROLE',
-      params: [],
-      bytes:
-        '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
-    },
-  ],
-}
-
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
@@ -75,29 +60,22 @@ const applyAppOverrides = apps =>
 
 // Sort apps, apply URL overrides, and attach data useful to the frontend
 const prepareFrontendApps = (apps, daoAddress, gateway) => {
-  return [
-    {
-      ...KERNEL_BASE,
-      proxyAddress: daoAddress,
-      hasWebApp: false,
-    },
-    ...applyAppOverrides(apps)
-      .map(app => {
-        const baseUrl = appBaseUrl(app, gateway)
-        // Remove the starting slash from the start_url field
-        // so the absolute path can be resolved from baseUrl.
-        const startUrl = removeStartingSlash(app['start_url'] || '')
-        const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
+  return applyAppOverrides(apps)
+    .map(app => {
+      const baseUrl = appBaseUrl(app, gateway)
+      // Remove the starting slash from the start_url field
+      // so the absolute path can be resolved from baseUrl.
+      const startUrl = removeStartingSlash(app['start_url'] || '')
+      const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
 
-        return {
-          ...app,
-          src,
-          baseUrl,
-          hasWebApp: Boolean(app['start_url']),
-        }
-      })
-      .sort(sortAppsPair),
-  ]
+      return {
+        ...app,
+        src,
+        baseUrl,
+        hasWebApp: Boolean(app['start_url']),
+      }
+    })
+    .sort(sortAppsPair)
 }
 
 const getMainAccount = async web3 => {
@@ -329,7 +307,7 @@ const initWrapper = async (
     : dao
 
   if (!daoAddress) {
-    onError(new InvalidAddress('The provided DAO address is invalid'))
+    onError(new InvalidAddress('Could not resolve ENS address of DAO'))
     return
   }
 
@@ -346,7 +324,11 @@ const initWrapper = async (
 
   const account = await getMainAccount(web3)
   try {
-    await wrapper.init(account && [account])
+    await wrapper.init({
+      accounts: {
+        providedAccounts: account ? [account] : [],
+      },
+    })
   } catch (err) {
     if (err.message === 'connection not open') {
       onError(
@@ -356,6 +338,11 @@ const initWrapper = async (
       )
       return
     }
+    if (err.message === 'Provided daoAddress is not a DAO') {
+      onError(new InvalidAddress(err.message))
+      return
+    }
+
     throw err
   }
 
@@ -388,10 +375,11 @@ const initWrapper = async (
 
 const templateParamFilters = {
   democracy: (
+    // name: String of organization name
     // supportNeeded: Number between 0 (0%) and 1 (100%).
     // minAcceptanceQuorum: Number between 0 (0%) and 1 (100%).
     // voteDuration: Duration in seconds.
-    { supportNeeded, minAcceptanceQuorum, voteDuration },
+    { name, supportNeeded, minAcceptanceQuorum, voteDuration },
     account
   ) => {
     const tokenBase = Math.pow(10, 18)
@@ -407,6 +395,7 @@ const templateParamFilters = {
     )
 
     return [
+      name,
       accounts,
       stakes,
       supportNeeded * percentageBase,
@@ -416,9 +405,10 @@ const templateParamFilters = {
   },
 
   multisig: (
+    // name: String of organization name
     // signers: Accounts corresponding to the signers.
     // neededSignatures: Minimum number of signatures needed.
-    { signers, neededSignatures },
+    { name, signers, neededSignatures },
     account
   ) => {
     if (!signers || signers.length === 0) {
@@ -427,12 +417,14 @@ const templateParamFilters = {
 
     if (neededSignatures < 1 || neededSignatures > signers.length) {
       throw new Error(
-        'neededSignatures must be between 1 the total number of signers',
+        `neededSignatures must be between 1 and the total number of signers (${
+          signers.length
+        })`,
         neededSignatures
       )
     }
 
-    return [signers, neededSignatures]
+    return [name, signers, neededSignatures]
   },
 }
 
@@ -470,9 +462,17 @@ export const initDaoBuilder = (
 
       const templates = setupTemplates(provider, registryAddress, account)
       const templateFilter = templateParamFilters[templateName]
-      const templateData = templateFilter(settings, account)
+      const templateInstanceParams = templateFilter(
+        { name: organizationName, ...settings },
+        account
+      )
+      const tokenParams = [settings.tokenName, settings.tokenSymbol]
 
-      return templates.newDAO(templateName, organizationName, templateData)
+      return templates.newDAO(
+        templateName,
+        { params: tokenParams },
+        { params: templateInstanceParams }
+      )
     },
   }
 }
