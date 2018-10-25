@@ -1,6 +1,7 @@
 import React from 'react'
 import { DropDown, Field, TextInput } from '@aragon/ui'
-import { getAnyAddress, getEmptyAddress } from '../../web3-utils'
+import { getAnyAddress } from '../../permissions'
+import { getEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 
 class EntitySelector extends React.Component {

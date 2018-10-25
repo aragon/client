@@ -77,6 +77,9 @@ class RoleRow extends React.Component {
         <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
       )
     }
+    if (manager.type === 'burned') {
+      return <IdentityBadge entity={'Discarded'} />
+    }
     return <IdentityBadge entity={manager.address} />
   }
   render() {
