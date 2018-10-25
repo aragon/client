@@ -71,7 +71,7 @@ export const appPermissions = (
   transform = (entity, role) => [entity, role]
 ) => {
   const roles = permissions[app.proxyAddress]
-  const rolesReducer = (roles, [role, { allowedEntities }]) =>
+  const rolesReducer = (roles, [role, { allowedEntities = [] }]) =>
     roles.concat(allowedEntities.map(entity => transform(entity, role)))
 
   return roles
