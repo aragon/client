@@ -22,7 +22,7 @@ export const networkConfigs = {
   rinkeby: {
     addresses: {
       ensRegistry:
-        localEnsRegistryAddress || '0xfbae32d1cde62858bc45f51efc8cc4fa1415447e',
+        localEnsRegistryAddress || '0x98df287b6c145399aaa709692c8d308357bc085d',
     },
     nodes: {
       defaultEth: 'wss://rinkeby.eth.aragon.network/ws',

@@ -6,7 +6,7 @@
       "network": "rpc"
     },
     "rinkeby": {
-      "registry": "",
+      "registry": "0x98df287b6c145399aaa709692c8d308357bc085d",
       "appName": "aragon.aragonpm.eth",
       "network": "rinkeby"
     },
