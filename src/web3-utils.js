@@ -5,7 +5,6 @@
  */
 import Web3 from 'web3'
 
-const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 /**
@@ -65,18 +64,9 @@ export function getWeb3(provider) {
   return web3
 }
 
-// Check if the address represents “Any address”
-export function isAnyAddress(address) {
-  return addressesEqual(address, ANY_ADDRESS)
-}
-
 // Check if the address represents an empty address
 export function isEmptyAddress(address) {
   return addressesEqual(address, EMPTY_ADDRESS)
-}
-
-export function getAnyAddress() {
-  return ANY_ADDRESS
 }
 
 export function getEmptyAddress() {

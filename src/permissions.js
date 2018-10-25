@@ -1,6 +1,8 @@
 import memoize from 'lodash.memoize'
-import { addressesEqual, isAnyAddress } from './web3-utils'
+import { addressesEqual } from './web3-utils'
 
+const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+const BURNED_ADDRESS = '0x0000000000000000000000000000000000000001'
 const KERNEL_ROLES = [
   {
     name: 'Manage apps',
@@ -9,6 +11,24 @@ const KERNEL_ROLES = [
     bytes: '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
   },
 ]
+
+export function getAnyAddress() {
+  return ANY_ADDRESS
+}
+
+export function getBurnedAddress() {
+  return BURNED_ADDRESS
+}
+
+// Check if the address represents “Any address”
+export function isAnyAddress(address) {
+  return addressesEqual(address, ANY_ADDRESS)
+}
+
+// Check if the address represents the “Burned address”
+export function isBurnedAddress(address) {
+  return addressesEqual(address, BURNED_ADDRESS)
+}
 
 // Get a role from the known roles (kernel)
 export const getKnownRole = roleBytes => {
@@ -113,6 +133,9 @@ function resolveEntity(apps, address) {
   const entity = { address, type: 'address' }
   if (isAnyAddress(address)) {
     return { ...entity, type: 'any' }
+  }
+  if (isBurnedAddress(address)) {
+    return { ...entity, type: 'burned' }
   }
   const app = apps.find(app => addressesEqual(app.proxyAddress, address))
   return app ? { ...entity, app, type: 'app' } : entity
