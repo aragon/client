@@ -1,8 +1,13 @@
 import memoize from 'lodash.memoize'
 import { addressesEqual } from './web3-utils'
 
-const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
-const BURNED_ADDRESS = '0x0000000000000000000000000000000000000001'
+// Note that these two terms are slightly confusing artifacts of the ACL:
+//   Any entity: If a permission is granted to "any entity", then any address can be seen as holding
+//               that permission
+//   Burn entity: If a permission manager is set as "burn entity", then it is assumed to be a
+//               discarded and frozen permission
+const ANY_ENTITY = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+const BURN_ENTITY = '0x0000000000000000000000000000000000000001'
 const KERNEL_ROLES = [
   {
     name: 'Manage apps',
@@ -12,22 +17,22 @@ const KERNEL_ROLES = [
   },
 ]
 
-export function getAnyAddress() {
-  return ANY_ADDRESS
+export function getAnyEntity() {
+  return ANY_ENTITY
 }
 
-export function getBurnedAddress() {
-  return BURNED_ADDRESS
+export function getBurnEntity() {
+  return BURN_ENTITY
 }
 
 // Check if the address represents “Any address”
-export function isAnyAddress(address) {
-  return addressesEqual(address, ANY_ADDRESS)
+export function isAnyEntity(address) {
+  return addressesEqual(address, ANY_ENTITY)
 }
 
 // Check if the address represents the “Burned address”
-export function isBurnedAddress(address) {
-  return addressesEqual(address, BURNED_ADDRESS)
+export function isBurnEntity(address) {
+  return addressesEqual(address, BURN_ENTITY)
 }
 
 // Get a role from the known roles (kernel)
@@ -131,11 +136,11 @@ function resolveRole(apps, proxyAddress, roleBytes) {
 // Resolves an entity using the provided apps
 function resolveEntity(apps, address) {
   const entity = { address, type: 'address' }
-  if (isAnyAddress(address)) {
+  if (isAnyEntity(address)) {
     return { ...entity, type: 'any' }
   }
-  if (isBurnedAddress(address)) {
-    return { ...entity, type: 'burned' }
+  if (isBurnEntity(address)) {
+    return { ...entity, type: 'burn' }
   }
   const app = apps.find(app => addressesEqual(app.proxyAddress, address))
   return app ? { ...entity, app, type: 'app' } : entity
