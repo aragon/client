@@ -25,9 +25,7 @@ const DAONotFoundError = ({ dao }) => (
     >
       {OLD_DAO_DOMAIN}
     </StyledSafeLink>{' '}
-    until <time dateTime="2019-03">March, 2019</time>
-    .
-    <br />
+    until <time dateTime="2019-03">March, 2019</time>. <br />
     <br />
     However, we recommend creating a new DAO at{' '}
     <StyledSafeLink href={`https://${CURRENT_DOMAIN}`} target="_blank">
