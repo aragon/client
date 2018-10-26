@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@aragon/cli": "^5.2.0-beta.2",
-    "@aragon/os": "^4.0.0-rc.1",
+    "@aragon/os": "^4.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
