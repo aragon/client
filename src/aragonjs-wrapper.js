@@ -314,9 +314,11 @@ const initWrapper = async (
   onDaoAddress(daoAddress)
 
   const wrapper = new Aragon(daoAddress, {
-    ensRegistryAddress,
     provider,
-    apm: { ipfs: ipfsConf },
+    apm: {
+      ensRegistryAddress,
+      ipfs: ipfsConf,
+    },
   })
 
   const web3 = getWeb3(walletProvider || provider)
@@ -436,7 +438,7 @@ export const isNameAvailable = async name =>
 
 export const initDaoBuilder = (
   provider,
-  registryAddress,
+  ensRegistryAddress,
   ipfsConf = ipfsDefaultConf
 ) => {
   // DEV only
@@ -460,7 +462,13 @@ export const initDaoBuilder = (
         )
       }
 
-      const templates = setupTemplates(provider, registryAddress, account)
+      const templates = setupTemplates(account, {
+        provider,
+        apm: {
+          ensRegistryAddress,
+          ipfs: ipfsConf,
+        },
+      })
       const templateFilter = templateParamFilters[templateName]
       const templateInstanceParams = templateFilter(
         { name: organizationName, ...settings },
