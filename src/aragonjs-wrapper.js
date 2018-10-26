@@ -460,7 +460,12 @@ export const initDaoBuilder = (
         )
       }
 
-      const templates = setupTemplates(provider, registryAddress, account)
+      const apmOptions = {
+        ensRegistryAddress: registryAddress,
+        ipfs: ipfsConf,
+      }
+
+      const templates = setupTemplates(provider, account, apmOptions)
       const templateFilter = templateParamFilters[templateName]
       const templateInstanceParams = templateFilter(
         { name: organizationName, ...settings },
