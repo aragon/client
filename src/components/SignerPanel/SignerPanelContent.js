@@ -67,8 +67,10 @@ class ActionPathsContent extends React.Component {
     return (
       <React.Fragment>
         <p>This transaction will {showPaths && 'eventually'} perform:</p>
-        <p>{description ? `"${description}"` : 'an action'}</p>
         <p style={{ margin: '10px 0' }}>
+          {description ? `"${description}"` : 'an action'}
+        </p>
+        <p>
           {' on '}
           <AddressLink to={to}>{name}</AddressLink>.
         </p>
@@ -113,7 +115,7 @@ class ActionPathsContent extends React.Component {
     }
   }
   render() {
-    const { intent, direct, paths } = this.props
+    const { intent, direct, paths, pretransaction } = this.props
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
@@ -144,9 +146,18 @@ class ActionPathsContent extends React.Component {
             You can directly perform this action:
           </DirectActionHeader>
         )}
-        <Info.Action icon={null} title="Action to be triggered:">
+        <Info.Action icon={null} title="Action to be triggered">
           {this.renderDescription(showPaths, intent)}
         </Info.Action>
+        {pretransaction && (
+          <Info.Action
+            title="Two transactions required"
+            style={{ marginTop: '20px' }}
+          >
+            This action requires two transactions to be signed in your Ethereum
+            provider, please confirm them one after another.
+          </Info.Action>
+        )}
         <SignerButton onClick={this.handleSign}>
           Create transaction
         </SignerButton>
