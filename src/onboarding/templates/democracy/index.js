@@ -70,10 +70,11 @@ const template = {
     {
       screen: 'voting-defaults',
       validate: ({ support, minQuorum, voteDuration }) => {
-        if (support < 1 || support > 100) {
+        // Mimic contract validation
+        if (minQuorum < 0 || minQuorum > support) {
           return false
         }
-        if (minQuorum < 0 || minQuorum > 100) {
+        if (support < 1 || support >= 100) {
           return false
         }
         if (voteDuration < 1) {
