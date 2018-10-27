@@ -309,17 +309,14 @@ const BannerWrapper = styled.div`
 const Container = styled.div`
   position: relative;
   display: flex;
-  align-items: stretch;
-  height: 100%;
-  flex-shrink: 1;
+  flex-grow: 1;
+  min-height: 0;
 `
 
 const AppScreen = styled.div`
   position: relative;
   z-index: 1;
   flex-grow: 1;
-  width: 100%;
-  height: 100%;
   overflow: auto;
 `
 

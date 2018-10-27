@@ -46,8 +46,8 @@ class Apps extends React.Component {
 
           <h1>Apps in development</h1>
           <AppsGrid>
-            {knownApps.map(app => (
-              <Main>
+            {knownApps.map((app, i) => (
+              <Main key={i}>
                 <Icon>
                   <Img width="64" height="64" src={app.icon} alt="" />
                 </Icon>

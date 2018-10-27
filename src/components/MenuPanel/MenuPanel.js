@@ -182,7 +182,6 @@ const Main = styled.div`
   display: flex;
   flex-direction: column;
   width: 220px;
-  height: 100%;
   flex-shrink: 1;
   ${unselectable};
 `
@@ -238,7 +237,6 @@ const Header = styled.div`
 
 const Content = styled.nav`
   overflow-y: auto;
-  height: 100%;
   flex: 1 1 0;
   .in {
     padding: 10px 0 10px;
