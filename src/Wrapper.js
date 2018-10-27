@@ -302,13 +302,16 @@ const Main = styled.div`
 
 const BannerWrapper = styled.div`
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  flex-shrink: 0;
 `
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   align-items: stretch;
   height: 100%;
+  flex-shrink: 1;
 `
 
 const AppScreen = styled.div`
