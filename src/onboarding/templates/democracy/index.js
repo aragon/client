@@ -1,3 +1,4 @@
+import BN from 'bn.js'
 import ConfigureVotingDefaults from './ConfigureVotingDefaults'
 import ConfigureTokenName from './ConfigureTokenName'
 import icon from './assets/icon.svg'
@@ -99,11 +100,12 @@ const template = {
     minQuorum,
     voteDuration,
   }) => {
+    const percentageBase = new BN(10).pow(new BN(16))
     return {
       tokenName: tokenName.trim(),
       tokenSymbol: tokenSymbol.trim(),
-      supportNeeded: support / 100,
-      minAcceptanceQuorum: minQuorum / 100,
+      supportNeeded: percentageBase.muln(support),
+      minAcceptanceQuorum: percentageBase.muln(minQuorum),
       voteDuration: voteDuration * 60 * 60,
     }
   },
