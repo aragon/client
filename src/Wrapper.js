@@ -81,28 +81,41 @@ class Wrapper extends React.Component {
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
   }
-  makeTransactionIntent(transaction = {}) {
-    const { apps } = this.props
-    const { description, to } = transaction
-    const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
-    const toName = (toApp && toApp.name) || ''
+  makeTransactionIntent({ path, transaction = {} }) {
+    if (path.length > 1) {
+      // If the path includes forwarders, the intent is always the last node
+      const { description, name, to } = path[path.length - 1]
+      return {
+        description,
+        name,
+        to,
+        transaction: transaction,
+      }
+    } else {
+      // Direct path
+      const { apps } = this.props
+      const { description, to } = transaction
+      const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
+      const name = (toApp && toApp.name) || ''
 
-    return {
-      description,
-      to,
-      toName,
-      transaction,
+      return {
+        description,
+        name,
+        to,
+        transaction,
+      }
     }
   }
-  reshapeTransactionBag({ path, transaction }) {
+  reshapeTransactionBag(bag) {
     // This is a temporary method to reshape the transaction bag
     // to the future format we expect from Aragon.js
     // When Aragon.js starts returning the new format, we can simply
     // replace search and replace this function with `bag`, although
     // it is probably only used in `handleTransaction`
+    const { path, transaction } = bag
     return {
       direct: path.length === 1,
-      intent: transaction && this.makeTransactionIntent(transaction),
+      intent: transaction && this.makeTransactionIntent(bag),
       paths: path.length ? [path] : [],
     }
   }
@@ -110,7 +123,7 @@ class Wrapper extends React.Component {
     const { intent, direct, paths } = this.reshapeTransactionBag(bag)
     this.showWeb3ActionSigner(intent, { direct, error: null, paths })
   }
-  handleSigningWeb3Tx = transaction => {
+  handleSigningWeb3Tx = (transaction, intent) => {
     const {
       walletWeb3,
       transactionBag: { accept, reject },
@@ -120,10 +133,9 @@ class Wrapper extends React.Component {
       this.handleSignerClose()
 
       if (err) {
-        const errorIntent = this.makeTransactionIntent(transaction)
-        this.showWeb3ActionSigner(errorIntent, { error: err })
-        reject(err)
+        this.showWeb3ActionSigner(intent, { error: err })
         console.error(err)
+        reject(err)
         return
       }
 

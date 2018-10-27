@@ -26,7 +26,7 @@
   "dependencies": {
     "@aragon/templates-tokens": "^1.1.1",
     "@aragon/ui": "^0.22.0",
-    "@aragon/wrapper": "^3.0.0-beta.1",
+    "@aragon/wrapper": "^3.0.0-beta.2",
     "@babel/polyfill": "^7.0.0",
     "bn.js": "4.11.6",
     "date-fns": "2.0.0-alpha.22",
@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@aragon/cli": "^5.2.0-beta.2",
-    "@aragon/os": "^4.0.0-rc.1",
+    "@aragon/os": "^4.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
