@@ -76,12 +76,12 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
         <Title>Democracy Project</Title>
         <StepContainer>
           <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
-            <p style={{ textAlign: 'center' }}>
+            <TextContainer>
               <Text size="large" color={theme.textSecondary} align="center">
-                Choose your voting settings below. You can’t change these later,
-                so pick carefully.
+                Choose your voting settings below. You can’t change the support
+                required later, so pick carefully.
               </Text>
-            </p>
+            </TextContainer>
             <Fields>
               <Fields.PercentageField label="Support">
                 <SymbolInput
@@ -105,6 +105,13 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
                 />
               </Fields.HoursField>
             </Fields>
+            <TextContainer>
+              <Text size="xsmall" color={theme.textSecondary} align="left">
+                The support and minimum quorum thresholds are <em>strict</em>{' '}
+                requirements, such that votes will only pass if they achieve
+                approval percentages <em>greater than</em> these thresholds.
+              </Text>
+            </TextContainer>
           </SubmitForm>
         </StepContainer>
       </Content>
@@ -140,6 +147,11 @@ const Title = styled.h1`
   text-align: center;
   font-size: 37px;
   margin-bottom: 100px;
+`
+
+const TextContainer = styled.p`
+  text-align: center;
+  max-width: 700px;
 `
 
 const StepContainer = styled.div`
