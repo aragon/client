@@ -182,7 +182,8 @@ const Main = styled.div`
   display: flex;
   flex-direction: column;
   width: 220px;
-  flex-shrink: 1;
+  flex-grow: 0;
+  flex-shrink: 0;
   ${unselectable};
 `
 
