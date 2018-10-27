@@ -18,7 +18,7 @@ import {
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
-import { NoConnection, DAONotFound, InvalidAddress } from './errors'
+import { NoConnection, DAONotFound } from './errors'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -331,16 +331,15 @@ const initWrapper = async (
       },
     })
   } catch (err) {
+    if (err.message === 'Provided daoAddress is not a DAO') {
+      throw new DAONotFound(dao)
+    }
     if (err.message === 'connection not open') {
       onError(
         new NoConnection(
           'The wrapper can not be initialized without a connection'
         )
       )
-      return
-    }
-    if (err.message === 'Provided daoAddress is not a DAO') {
-      onError(new InvalidAddress(err.message))
       return
     }
 
