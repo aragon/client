@@ -117,30 +117,57 @@ class Wrapper extends React.Component {
       direct: path.length === 1,
       intent: transaction && this.makeTransactionIntent(bag),
       paths: path.length ? [path] : [],
+      pretransaction: (transaction && transaction.pretransaction) || null,
     }
   }
   handleTransaction = bag => {
-    const { intent, direct, paths } = this.reshapeTransactionBag(bag)
-    this.showWeb3ActionSigner(intent, { direct, error: null, paths })
-  }
-  handleSigningWeb3Tx = (transaction, intent) => {
     const {
-      walletWeb3,
-      transactionBag: { accept, reject },
-    } = this.props
+      intent,
+      direct,
+      paths,
+      pretransaction,
+    } = this.reshapeTransactionBag(bag)
+    this.showWeb3ActionSigner(intent, {
+      direct,
+      error: null,
+      paths,
+      pretransaction,
+    })
+  }
 
-    walletWeb3.eth.sendTransaction(transaction, (err, res) => {
-      this.handleSignerClose()
+  async signWeb3Tx(transaction, intent) {
+    const { walletWeb3 } = this.props
+    return new Promise((resolve, reject) => {
+      walletWeb3.eth.sendTransaction(transaction, (err, res) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(res)
+        }
+      })
+    })
+  }
 
-      if (err) {
-        this.showWeb3ActionSigner(intent, { error: err })
-        console.error(err)
-        reject(err)
-        return
+  handleSigningWeb3Tx = async (transaction, intent, pretransaction) => {
+    const { transactionBag } = this.props
+
+    try {
+      if (pretransaction) {
+        await this.signWeb3Tx(pretransaction, intent)
       }
 
-      accept(res)
-    })
+      const transactionRes = await this.signWeb3Tx(transaction, intent)
+
+      transactionBag.accept(transactionRes)
+      this.handleSignerClose()
+
+      // Display an error in the panel if a transaction fail
+    } catch (err) {
+      console.error(err)
+      transactionBag.reject(err)
+      this.handleSignerClose()
+      this.showWeb3ActionSigner(intent, { error: err })
+    }
   }
 
   handleSignerClose = () => {
@@ -161,7 +188,7 @@ class Wrapper extends React.Component {
       !!apps.find(app => addressesEqual(app.proxyAddress, instanceId))
     )
   }
-  showWeb3ActionSigner = (intent, { direct, error, paths }) => {
+  showWeb3ActionSigner = (intent, { direct, error, paths, pretransaction }) => {
     this.setState({
       signerOpened: true,
       web3Action: {
@@ -169,6 +196,7 @@ class Wrapper extends React.Component {
         intent,
         paths,
         direct,
+        pretransaction,
       },
     })
   }
