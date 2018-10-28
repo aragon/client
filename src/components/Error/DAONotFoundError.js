@@ -13,7 +13,7 @@ const DEPRECATION_URL =
   'https://blog.aragon.org/deprecation-notice-on-v0-5-rinkeby-daos'
 
 const DAONotFoundError = ({ dao }) => (
-  <ErrorCard title="DAO not found">
+  <ErrorCard title="Organization not found">
     {network.type === 'rinkeby' ? (
       <RinkebyDAONotFoundContent dao={dao} />
     ) : (
