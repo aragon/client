@@ -1,6 +1,6 @@
 import React from 'react'
 import { DropDown, Field, TextInput } from '@aragon/ui'
-import { getAnyAddress } from '../../permissions'
+import { getAnyEntity } from '../../permissions'
 import { getEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 
@@ -50,7 +50,7 @@ class EntitySelector extends React.Component {
     }
 
     if (index === items.length - 2) {
-      return getAnyAddress()
+      return getAnyEntity()
     }
 
     const app = this.getApps()[index - 1]
