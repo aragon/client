@@ -378,20 +378,30 @@ const initWrapper = async (
 const templateParamFilters = {
   democracy: (
     // name: String of organization name
-    // supportNeeded: Number between 0 (0%) and 1 (100%).
-    // minAcceptanceQuorum: Number between 0 (0%) and 1 (100%).
+    // supportNeeded: BN between 0 (0%) and 1e18 - 1 (99.99...%).
+    // minAcceptanceQuorum: BN between 0 (0%) and 1e18 - 1(99.99...%).
     // voteDuration: Duration in seconds.
     { name, supportNeeded, minAcceptanceQuorum, voteDuration },
     account
   ) => {
-    const tokenBase = Math.pow(10, 18)
-    const percentageBase = Math.pow(10, 18)
+    const percentageMax = new BN(10).pow(new BN(18))
+    if (
+      supportNeeded.gte(percentageMax) ||
+      minAcceptanceQuorum.gte(percentageMax)
+    ) {
+      throw new Error(
+        `supported needed ${supportNeeded.toString()} and minimum acceptance` +
+          `quorum (${minAcceptanceQuorum.toString()}) must be below 100%`
+      )
+    }
+
+    const tokenBase = new BN(10).pow(new BN(18))
     const holders = [{ address: account, balance: 1 }]
 
     const [accounts, stakes] = holders.reduce(
       ([accounts, stakes], holder) => [
         [...accounts, holder.address],
-        [...stakes, holder.balance * tokenBase],
+        [...stakes, tokenBase.muln(holder.balance)],
       ],
       [[], []]
     )
@@ -400,8 +410,8 @@ const templateParamFilters = {
       name,
       accounts,
       stakes,
-      supportNeeded * percentageBase,
-      minAcceptanceQuorum * percentageBase,
+      supportNeeded,
+      minAcceptanceQuorum,
       voteDuration,
     ]
   },
