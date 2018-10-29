@@ -12,6 +12,7 @@ const SignerPanelContent = ({
   intent,
   direct,
   paths,
+  pretransaction,
   onClose,
   onSign,
   web3,
@@ -29,6 +30,7 @@ const SignerPanelContent = ({
       intent={intent}
       direct={direct}
       paths={paths}
+      pretransaction={pretransaction}
       onSign={onSign}
     />
   ) : (
@@ -38,6 +40,7 @@ const SignerPanelContent = ({
 SignerPanelContent.defaultProps = {
   intent: {},
   paths: [],
+  pretransaction: null,
   onClose: noop,
   onSign: noop,
 }
@@ -50,18 +53,24 @@ class ActionPathsContent extends React.Component {
     this.setState({ selected })
   }
   handleSign = () => {
-    const { intent, direct, paths, onSign } = this.props
+    const { intent, direct, paths, pretransaction, onSign } = this.props
     const { selected } = this.state
     // In non-direct paths, the first transaction (0) is the one we need to sign
     // to kick off the forwarding path
-    onSign(direct ? intent.transaction : paths[selected][0], intent)
+    onSign(
+      direct ? intent.transaction : paths[selected][0],
+      intent,
+      pretransaction
+    )
   }
   renderDescription(showPaths, { description, name, to }) {
     return (
       <React.Fragment>
         <p>This transaction will {showPaths && 'eventually'} perform:</p>
-        <p>{description ? `"${description}"` : 'an action'}</p>
         <p style={{ margin: '10px 0' }}>
+          {description ? `"${description}"` : 'an action'}
+        </p>
+        <p>
           {' on '}
           <AddressLink to={to}>{name}</AddressLink>.
         </p>
@@ -106,7 +115,7 @@ class ActionPathsContent extends React.Component {
     }
   }
   render() {
-    const { intent, direct, paths } = this.props
+    const { intent, direct, paths, pretransaction } = this.props
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
@@ -137,9 +146,18 @@ class ActionPathsContent extends React.Component {
             You can directly perform this action:
           </DirectActionHeader>
         )}
-        <Info.Action icon={null} title="Action to be triggered:">
+        <Info.Action icon={null} title="Action to be triggered">
           {this.renderDescription(showPaths, intent)}
         </Info.Action>
+        {pretransaction && (
+          <Info.Action
+            title="Two transactions required"
+            style={{ marginTop: '20px' }}
+          >
+            This action requires two transactions to be signed in your Ethereum
+            provider, please confirm them one after another.
+          </Info.Action>
+        )}
         <SignerButton onClick={this.handleSign}>
           Create transaction
         </SignerButton>
