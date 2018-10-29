@@ -30,13 +30,10 @@ class SigningStatus extends React.Component {
     const { status, signError } = this.props
     if (status === STATUS_SIGNING) {
       return (
-        <React.Fragment>
-          <p>
-            Open your Ethereum provider (Metamask or similar) to sign your
-            transaction.
-          </p>
-          <p>Nothing happening? Try again</p>
-        </React.Fragment>
+        <p>
+          Open your Ethereum provider (Metamask or similar) to sign your
+          transaction.
+        </p>
       )
     }
     if (status === STATUS_SIGNED) {
