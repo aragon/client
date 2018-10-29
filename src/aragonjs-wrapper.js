@@ -14,6 +14,7 @@ import {
   ipfsDefaultConf,
   web3Providers,
   contractAddresses,
+  defaultGasPriceFn,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
 import { getWeb3 } from './web3-utils'
@@ -315,6 +316,7 @@ const initWrapper = async (
 
   const wrapper = new Aragon(daoAddress, {
     provider,
+    defaultGasPriceFn,
     apm: {
       ensRegistryAddress,
       ipfs: ipfsConf,
@@ -464,6 +466,7 @@ export const initDaoBuilder = (
 
       const templates = setupTemplates(account, {
         provider,
+        defaultGasPriceFn,
         apm: {
           ensRegistryAddress,
           ipfs: ipfsConf,
