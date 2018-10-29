@@ -172,7 +172,7 @@ class App extends React.Component {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
       onError: err => {
-        log(`Wrapper init error: ${err.name}. ${err.message}.`)
+        log(`Wrapper init, recoverable error: ${err.name}. ${err.message}.`)
         this.setState({ appsStatus: APPS_STATUS_ERROR })
       },
       onDaoAddress: daoAddress => {
@@ -210,8 +210,8 @@ class App extends React.Component {
         this.setState({ wrapper })
       })
       .catch(err => {
-        log(`Wrapper init error: ${err.name}. ${err.message}.`)
-        this.setState({ appsStatus: APPS_STATUS_ERROR })
+        log(`Wrapper init, fatal error: ${err.name}. ${err.message}.`)
+        this.setState({ fatalError: err })
       })
   }
 
