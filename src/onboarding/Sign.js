@@ -4,9 +4,9 @@ import { theme, Text, Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
 import { noop } from '../utils'
 
-import imgPending from './assets/transaction-pending.svg'
-import imgSuccess from './assets/transaction-success.svg'
-import imgError from './assets/transaction-error.svg'
+import imgPending from '../assets/transaction-pending.svg'
+import imgSuccess from '../assets/transaction-success.svg'
+import imgError from '../assets/transaction-error.svg'
 
 class Sign extends React.Component {
   static defaultProps = {
