@@ -25,6 +25,7 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 
 The app can be configured in a number of ways via environment variables:
 
+- `ARAGON_DEMO_DAO`: Address of the demo organization suggested to users during onboarding
 - `REACT_APP_DEFAULT_ETH_NODE`: Url of the default Ethereum node to read blockchain data from (must be WebSocket protocol). If you intend to connect to a local ganache instance, by default you should set this to `ws://localhost:8545`.
 - `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that [APM](https://hack.aragon.org/docs/apm.html) repos were registered on. If you've deployed [aragonOS](https://github.com/aragon/aragonOS) to a local network, you can find the ENS registry's address in the migration's console output.
 - `REACT_APP_ETH_NETWORK_TYPE`: Expected network to connect to. Either one of `mainnet`, `rinkeby` or `local`.
