@@ -14,12 +14,6 @@ const cleanErrorMessage = msg =>
   msg.replace(/^Returned error: /, '').replace(/^Error: /, '')
 
 class SigningStatus extends React.Component {
-  getSrc() {
-    const { status } = this.props
-    if (status === STATUS_SIGNING) return imgPending
-    if (status === STATUS_SIGNED) return imgSuccess
-    if (status === STATUS_ERROR) return imgError
-  }
   getLabel() {
     const { status } = this.props
     if (status === STATUS_SIGNING) return 'Waiting for signature…'
@@ -63,10 +57,11 @@ class SigningStatus extends React.Component {
     return null
   }
   render() {
+    const { status } = this.props
     return (
       <React.Fragment>
         <Status>
-          <img src={this.getSrc()} alt="" />
+          <StatusImage status={status} />
           <p>{this.getLabel()}</p>
         </Status>
         <AdditionalInfo>{this.getInfo()}</AdditionalInfo>
@@ -93,6 +88,29 @@ const AdditionalInfo = styled(Info)`
   p + p {
     margin-top: 10px;
   }
+`
+
+// To skip the SVG rendering delay
+const StatusImage = ({ status }) => (
+  <StatusImageMain>
+    <StatusImageImg visible={status === STATUS_SIGNING} src={imgPending} />
+    <StatusImageImg visible={status === STATUS_ERROR} src={imgError} />
+    <StatusImageImg visible={status === STATUS_SIGNED} src={imgSuccess} />
+  </StatusImageMain>
+)
+const StatusImageMain = styled.div`
+  position: relative;
+  width: 150px;
+  height: 150px;
+`
+const StatusImageImg = styled.img.attrs({ alt: '' })`
+  opacity: ${p => Number(p.visible)};
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
 `
 
 export default SigningStatus
