@@ -1,49 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, Info, RadioList, SafeLink } from '@aragon/ui'
-import EtherscanLink from '../Etherscan/EtherscanLink'
-import { noop } from '../../utils'
+import { Info, RadioList } from '@aragon/ui'
+import SignerButton from './SignerButton'
+import AddressLink from './AddressLink'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
-
-const SignerPanelContent = ({
-  account,
-  error,
-  intent,
-  direct,
-  paths,
-  pretransaction,
-  onClose,
-  onSign,
-  web3,
-}) => {
-  if (!web3) {
-    return <NeedWeb3Content intent={intent} onClose={onClose} />
-  }
-  if (!account) {
-    return <NeedUnlockAccountContent intent={intent} onClose={onClose} />
-  }
-
-  const possible = (direct || (Array.isArray(paths) && paths.length)) && !error
-  return possible ? (
-    <ActionPathsContent
-      intent={intent}
-      direct={direct}
-      paths={paths}
-      pretransaction={pretransaction}
-      onSign={onSign}
-    />
-  ) : (
-    <ImpossibleContent error={error} intent={intent} onClose={onClose} />
-  )
-}
-SignerPanelContent.defaultProps = {
-  intent: {},
-  paths: [],
-  pretransaction: null,
-  onClose: noop,
-  onSign: noop,
-}
 
 class ActionPathsContent extends React.Component {
   state = {
@@ -115,7 +76,7 @@ class ActionPathsContent extends React.Component {
     }
   }
   render() {
-    const { intent, direct, paths, pretransaction } = this.props
+    const { signingEnabled, intent, direct, paths, pretransaction } = this.props
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
@@ -158,80 +119,13 @@ class ActionPathsContent extends React.Component {
             provider, please confirm them one after another.
           </Info.Action>
         )}
-        <SignerButton onClick={this.handleSign}>
+        <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>
           Create transaction
         </SignerButton>
       </React.Fragment>
     )
   }
 }
-
-const ImpossibleContent = ({
-  error,
-  intent: { description, name, to },
-  onClose,
-}) => (
-  <React.Fragment>
-    <Info.Permissions title="Action impossible">
-      The action {description && `"${description}"`} failed to execute on{' '}
-      <AddressLink to={to}>{name}</AddressLink>.{' '}
-      {error
-        ? 'An error occurred when we tried to find a path or send a transaction for this action.'
-        : 'You do not have the necessary permissions.'}
-    </Info.Permissions>
-    <SignerButton onClick={onClose}>Close</SignerButton>
-  </React.Fragment>
-)
-
-const NeedUnlockAccountContent = ({
-  intent: { description, name, to },
-  onClose,
-}) => (
-  <React.Fragment>
-    <Info.Action title="You can't perform any actions">
-      You need to unlock your account in order to perform{' '}
-      {description ? `"${description}"` : 'this action'}
-      {' on '}
-      <AddressLink to={to}>{name}</AddressLink>.
-      <InstallMessage>
-        Please unlock or enable your Ethereum provider.
-      </InstallMessage>
-    </Info.Action>
-    <SignerButton onClick={onClose}>Close</SignerButton>
-  </React.Fragment>
-)
-
-const NeedWeb3Content = ({ intent: { description, name, to }, onClose }) => (
-  <React.Fragment>
-    <Info.Action title="You can't perform any actions">
-      You need to be connected to a Web3 instance in order to perform{' '}
-      {description ? `"${description}"` : 'this action'}
-      {' on '}
-      <AddressLink to={to}>{name}</AddressLink>.
-      <InstallMessage>
-        Please unlock or enable your Ethereum provider.
-      </InstallMessage>
-    </Info.Action>
-    <SignerButton onClick={onClose}>Close</SignerButton>
-  </React.Fragment>
-)
-
-const AddressLink = ({ children, to }) =>
-  to ? (
-    <EtherscanLink address={to}>
-      {url =>
-        url ? (
-          <SafeLink href={url} target="_blank">
-            {children || to}
-          </SafeLink>
-        ) : (
-          to
-        )
-      }
-    </EtherscanLink>
-  ) : (
-    'an address or app'
-  )
 
 const ActionContainer = styled.div`
   margin-bottom: 40px;
@@ -245,15 +139,4 @@ const DirectActionHeader = styled.h2`
   margin-bottom: 10px;
 `
 
-const InstallMessage = styled.p`
-  margin-top: 15px;
-`
-
-const SignerButton = styled(Button).attrs({
-  mode: 'strong',
-  wide: true,
-})`
-  margin-top: 20px;
-`
-
-export default SignerPanelContent
+export default ActionPathsContent
