@@ -186,7 +186,7 @@ class SignerPanel extends React.Component {
                     <Screen>
                       <ConfirmTransaction
                         direct={directPath}
-                        hasAccount={Number(account)}
+                        hasAccount={Boolean(account)}
                         hasWeb3={Boolean(walletWeb3)}
                         intent={intent}
                         onClose={this.handleSignerClose}
