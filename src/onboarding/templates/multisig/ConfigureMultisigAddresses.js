@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Field, Button, TextInput, Text, DropDown, theme } from '@aragon/ui'
 import { lerp } from '../../../math-utils'
 import { noop } from '../../../utils'
@@ -23,19 +23,24 @@ class ConfigureMultisigAddresses extends React.Component {
     this.props.onFieldUpdate(this.props.screen, name, value)
   }
   handleAddSigner = () => {
-    const { fields } = this.props
-    this.updateField('signers', fields.signers.concat(['']))
+    const { addresses } = this.props.fields.signers
+    this.updateField('signers', {
+      addresses: addresses.concat(['']),
+    })
   }
   handleRemoveSigner = () => {
-    const { fields } = this.props
-    this.updateField('signers', fields.signers.slice(0, -1))
+    const { addresses } = this.props.fields.signers
+    this.updateField('signers', {
+      addresses: addresses.slice(0, -1),
+    })
   }
   handleSignerChange = (index, newValue) => {
-    const { fields } = this.props
-    this.updateField(
-      'signers',
-      fields.signers.map((signer, i) => (i === index ? newValue : signer))
-    )
+    const { addresses } = this.props.fields.signers
+    this.updateField('signers', {
+      addresses: addresses.map(
+        (signer, i) => (i === index ? newValue : signer)
+      ),
+    })
   }
   handleNeededSignaturesChange = index => {
     this.updateField('neededSignatures', index + 1)
@@ -82,7 +87,7 @@ class ConfigureMultisigAddressesContent extends React.PureComponent {
       onSignerChange,
       onNeededSignaturesChange,
     } = this.props
-    const neededSignaturesItems = fields.signers.map((signer, i) =>
+    const neededSignaturesItems = fields.signers.addresses.map((signer, i) =>
       String(i + 1)
     )
     return (
@@ -106,12 +111,15 @@ class ConfigureMultisigAddressesContent extends React.PureComponent {
 
                 <InputsView>
                   <div>
-                    {fields.signers.map((signer, i) => (
+                    {fields.signers.addresses.map((signer, i) => (
                       <InputRow key={i}>
                         <SignerInput
                           index={i}
                           value={signer}
                           onChange={onSignerChange}
+                          error={fields.signers.errors.find(
+                            error => error.index === i
+                          )}
                         />
                       </InputRow>
                     ))}
@@ -121,7 +129,7 @@ class ConfigureMultisigAddressesContent extends React.PureComponent {
                 <Button mode="secondary" compact onClick={onAddSigner}>
                   + Add signer
                 </Button>
-                {fields.signers.length > 1 && (
+                {fields.signers.addresses.length > 1 && (
                   <Button
                     mode="text"
                     emphasis="negative"
@@ -159,8 +167,18 @@ class SignerInput extends React.PureComponent {
     this.props.onChange(this.props.index, event.target.value)
   }
   render() {
-    const { value } = this.props
-    return <TextInput onChange={this.handleChange} value={value} wide />
+    const { value, error } = this.props
+    return (
+      <React.Fragment>
+        <StyledTextInput
+          error={Boolean(error)}
+          onChange={this.handleChange}
+          value={value}
+          wide
+        />
+        {error && <InputError>{error.message}</InputError>}
+      </React.Fragment>
+    )
   }
 }
 
@@ -220,10 +238,7 @@ const GroupTitle = styled.h2`
 `
 
 const InputRow = styled.div`
-  margin-top: 25px;
-  &:first-child {
-    margin-top: 0;
-  }
+  height: 55px;
 `
 
 const InputsView = styled.div`
@@ -262,6 +277,25 @@ Fields.HoursField = styled(Fields.Field)`
   &:after {
     content: 'H';
   }
+`
+
+const StyledTextInput = styled(TextInput)`
+  ${p =>
+    p.error
+      ? css`
+          border-color: ${theme.negative};
+          &:focus {
+            border-color: ${theme.negative};
+          }
+        `
+      : ''};
+`
+
+const InputError = styled(Text.Paragraph).attrs({
+  size: 'xsmall',
+  color: theme.negative,
+})`
+  margin-top: 2px;
 `
 
 export default ConfigureMultisigAddresses

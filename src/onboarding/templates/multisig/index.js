@@ -3,28 +3,54 @@ import ConfigureMultisigToken from './ConfigureMultisigToken'
 import ConfigureMultisigAddresses from './ConfigureMultisigAddresses'
 import icon from './assets/icon.svg'
 
+const defaultSignersValue = {
+  addresses: [''],
+  errors: [],
+}
+
 const template = {
   name: 'multisig',
   label: 'Token project with Multisig',
   icon,
   fields: {
     signers: {
-      defaultValue: () => [''],
-      filter: value => {
-        if (!Array.isArray(value) || value.length < 1) {
-          return { signers: [''] }
+      defaultValue: () => defaultSignersValue,
+      filter: ({ addresses } = {}) => {
+        if (!Array.isArray(addresses) || addresses.length < 1) {
+          return defaultSignersValue
         }
-        return { signers: value }
+
+        // Look for duplicates
+        const duplicatesSet = new Set()
+        const errors = addresses.reduce((errors, address, index) => {
+          if (duplicatesSet.has(address)) {
+            errors.push({
+              index,
+              message:
+                'Each multisig signer needs to have a different address.',
+            })
+          } else if (address) {
+            duplicatesSet.add(address)
+          }
+          return errors
+        }, [])
+
+        return {
+          signers: {
+            addresses,
+            errors,
+          },
+        }
       },
     },
     neededSignatures: {
       defaultValue: () => 1,
-      filter: (value, { signers }) => {
+      filter: (value, { signers: { addresses = [] } = {} }) => {
         const intValue = parseInt(value, 10)
         return {
           neededSignatures: isNaN(intValue)
             ? 1
-            : Math.min(signers.length, Math.max(1, value)),
+            : Math.min(addresses.length, Math.max(1, value)),
         }
       },
     },
@@ -40,8 +66,12 @@ const template = {
   screens: [
     {
       screen: 'multisig-addresses',
-      validate: ({ signers }) => {
-        return signers.every(signer => isAddress(signer.trim()))
+      validate: ({ signers: { addresses } }) => {
+        const addressesSet = new Set(addresses)
+        return (
+          addressesSet.size === addresses.length &&
+          addresses.every(signer => isAddress(signer.trim()))
+        )
       },
       Component: ConfigureMultisigAddresses,
     },
@@ -57,8 +87,11 @@ const template = {
     return {
       tokenName: tokenName.trim(),
       tokenSymbol: tokenSymbol.trim(),
-      signers: signers.map(signer => signer.trim()),
-      neededSignatures: Math.min(signers.length, Math.max(1, neededSignatures)),
+      signers: signers.addresses.map(signer => signer.trim()),
+      neededSignatures: Math.min(
+        signers.addresses.length,
+        Math.max(1, neededSignatures)
+      ),
     }
   },
 }
