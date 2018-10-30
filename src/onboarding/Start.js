@@ -166,7 +166,7 @@ class StartContent extends React.PureComponent {
               />
             </div>
 
-            {network.type !== 'mainnet' && (
+            {network.type !== 'main' && (
               <Disclosure>
                 <span>
                   <IconAttention />
