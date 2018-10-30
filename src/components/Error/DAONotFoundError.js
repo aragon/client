@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SafeLink, theme } from '@aragon/ui'
+import { SafeLink, theme, Button } from '@aragon/ui'
 import ErrorCard from './ErrorCard'
 import { network } from '../../environment'
 import { isAddress } from '../../web3-utils'
@@ -41,6 +41,21 @@ const GenericDAONotFoundContent = ({ dao }) => (
       </StyledSafeLink>
       .
     </Paragraph>
+    <ButtonBox>
+      <IssueLink mode="text" href="/" style={{ color: theme.textSecondary }}>
+        Back
+      </IssueLink>
+      <ButtonsSpacer />
+      <Button
+        mode="strong"
+        onClick={() => {
+          window.location.reload(true)
+        }}
+        compact
+      >
+        Try again
+      </Button>
+    </ButtonBox>
   </React.Fragment>
 )
 
@@ -85,4 +100,25 @@ const StyledSafeLink = styled(SafeLink)`
   text-decoration-color: ${accent};
   color: ${accent};
 `
+
+const ButtonsSpacer = styled.span`
+  width: 10px;
+`
+
+const ButtonBox = styled.div`
+  margin: 20px 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
+const IssueLink = styled(Button.Anchor)`
+  margin-left: -10px;
+  color: ${theme.textSecondary};
+  text-decoration: none;
+  &:hover {
+    color: ${theme.textPrimary};
+  }
+`
+
 export default DAONotFoundError
