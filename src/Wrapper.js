@@ -172,10 +172,11 @@ class Wrapper extends React.Component {
     if (instanceId === 'settings') {
       return (
         <Settings
-          daoAddr={daoAddress}
           account={account}
-          walletNetwork={walletNetwork}
           apps={apps}
+          daoAddr={daoAddress}
+          onOpenApp={this.openApp}
+          walletNetwork={walletNetwork}
         />
       )
     }
