@@ -451,7 +451,6 @@ const CheckContainer = styled.span`
 const ButtonLink = styled.button.attrs({ type: 'button' })`
   padding: 0;
   font-size: inherit;
-  color: inherit;
   text-decoration: underline;
   color: ${theme.accent};
   cursor: pointer;
