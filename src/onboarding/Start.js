@@ -130,8 +130,6 @@ class StartContent extends React.PureComponent {
       domainCheckStatus,
       onDomainChange,
       onOpenOrganization,
-      onOpenOrganizationAddress,
-      selectorNetworks,
     } = this.props
 
     const canCreate =
