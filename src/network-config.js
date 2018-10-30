@@ -61,5 +61,10 @@ export function getNetworkConfig(type) {
 }
 
 export function sanitizeNetworkType(networkType) {
-  return networkType === 'private' ? 'localhost' : networkType
+  if (networkType === 'private') {
+    return 'localhost'
+  } else if (networkType === 'main') {
+    return 'mainnet'
+  }
+  return networkType
 }
