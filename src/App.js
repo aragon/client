@@ -42,6 +42,10 @@ class App extends React.Component {
     transactionBag: null,
     walletNetwork: '',
     showDeprecatedBanner: false,
+    selectorNetworks: [
+      ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
+      ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
+    ],
   }
 
   history = createHistory()
@@ -250,6 +254,7 @@ class App extends React.Component {
       appsStatus,
       permissionsLoading,
       showDeprecatedBanner,
+      selectorNetworks,
     } = this.state
 
     const { mode, dao } = locator
@@ -299,6 +304,7 @@ class App extends React.Component {
           onComplete={this.handleCompleteOnboarding}
           onOpenOrganization={this.handleOpenOrganization}
           onResetDaoBuilder={this.handleResetDaoBuilder}
+          selectorNetworks={selectorNetworks}
         />
       </ModalProvider>
     )

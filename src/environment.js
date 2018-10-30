@@ -130,3 +130,6 @@ export const defaultGasPriceFn =
   networkType === 'mainnet'
     ? noop // On mainnet rely on the provider's gas estimation
     : () => toWei('10', 'gwei') // on all other networks just hardcode it
+
+// Get the address of the demo DAO
+export const getDemoDao = () => process.env.ARAGON_DEMO_DAO || ''

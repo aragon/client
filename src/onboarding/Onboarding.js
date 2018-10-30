@@ -277,11 +277,17 @@ class Onboarding extends React.PureComponent {
     )
   }
 
+  // Open the organization stored in `domainToOpen`
   handleOpenOrganization = () => {
     const { domainToOpenCheckStatus, domainToOpen } = this.state
     if (domainToOpenCheckStatus === DomainCheckAccepted) {
       this.props.onOpenOrganization(`${domainToOpen}.aragonid.eth`)
     }
+  }
+
+  // Open the specified address as an organization
+  handleOpenOrganizationAddress = address => {
+    this.props.onOpenOrganization(address)
   }
 
   buildDao = () => {
@@ -439,6 +445,7 @@ class Onboarding extends React.PureComponent {
       balance,
       daoCreationStatus,
       onComplete,
+      selectorNetworks,
     } = this.props
 
     // No need to move the screens farther than one step
@@ -458,6 +465,8 @@ class Onboarding extends React.PureComponent {
           domainCheckStatus={domainToOpenCheckStatus}
           onDomainChange={this.handleDomainToOpenChange}
           onOpenOrganization={this.handleOpenOrganization}
+          onOpenOrganizationAddress={this.handleOpenOrganizationAddress}
+          selectorNetworks={selectorNetworks}
           {...sharedProps}
         />
       )
