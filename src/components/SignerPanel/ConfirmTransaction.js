@@ -86,12 +86,12 @@ const ImpossibleContent = ({
 const Web3ProviderError = ({
   intent: { description, name, to },
   onClose,
-  needed = '',
+  neededText = '',
 }) => {
   return (
     <React.Fragment>
       <Info.Action title="You can't perform any action">
-        {needed} in order to perform{' '}
+        {neededText} in order to perform{' '}
         {description ? `"${description}"` : 'this action'}
         {' on '}
         <AddressLink to={to}>{name}</AddressLink>.
