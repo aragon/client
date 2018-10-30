@@ -226,9 +226,10 @@ class SignerPanel extends React.Component {
 
 const Main = styled.div`
   position: relative;
-  min-height: 100vh;
   margin: 0 -30px;
-  overflow: hidden;
+  overflow-x: hidden;
+  min-height: 0;
+  flex-grow: 1;
 `
 
 const ScreenWrapper = styled(animated.div)`
