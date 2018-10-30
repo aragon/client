@@ -113,7 +113,7 @@ class Home extends React.Component {
                     >
                       {locator.dao.endsWith('.eth')
                         ? `You are interacting with ${locator.dao}`
-                        : 'You are using Aragon 0.5 — The Architect'}
+                        : 'You are using Aragon 0.6 — Alba'}
                     </Text>
                   </Title>
                   {appsLoading ||
