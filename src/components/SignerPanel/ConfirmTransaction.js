@@ -36,11 +36,10 @@ class ConfirmTransaction extends React.Component {
           intent={intent}
           onClose={onClose}
           neededText={`
-            You need to be connected to the ${networkType} network, but you are
-            connected on the ${walletNetworkType} network.
+            You need to be connected to the ${networkType} network
           `}
-          pleaseText={`
-            Please switch your Ethereum provider to the ${networkType} network.
+          actionText={`
+            Please connect your Ethereum provider to the ${networkType} network.
           `}
         />
       )
@@ -51,8 +50,8 @@ class ConfirmTransaction extends React.Component {
         <Web3ProviderError
           intent={intent}
           onClose={onClose}
-          neededText="You need to be connected to a Web3 instance"
-          pleaseText="Please enable your Ethereum provider."
+          neededText="You need to have a Web3 instance installed and enabled"
+          actionText="Please enable your Ethereum provider."
         />
       )
     }
@@ -63,7 +62,7 @@ class ConfirmTransaction extends React.Component {
           intent={intent}
           onClose={onClose}
           neededText="You need to unlock your account"
-          pleaseText="Please unlock your Ethereum provider"
+          actionText="Please unlock your Ethereum provider."
         />
       )
     }
@@ -107,7 +106,7 @@ const Web3ProviderError = ({
   intent: { description, name, to },
   onClose,
   neededText = '',
-  pleaseText = '',
+  actionText = '',
 }) => {
   return (
     <React.Fragment>
@@ -116,7 +115,7 @@ const Web3ProviderError = ({
         {description ? `"${description}"` : 'this action'}
         {' on '}
         <AddressLink to={to}>{name}</AddressLink>.
-        <ActionMessage>{pleaseText}</ActionMessage>
+        <ActionMessage>{actionText}</ActionMessage>
       </Info.Action>
       <SignerButton onClick={onClose}>Close</SignerButton>
     </React.Fragment>
