@@ -16,34 +16,54 @@ class ConfirmTransaction extends React.Component {
   }
   render() {
     const {
-      account,
-      signingEnabled,
-      signError,
-      intent,
       direct,
-      paths,
-      pretransaction,
+      hasAccount,
+      hasWeb3,
+      intent,
+      networkType,
       onClose,
       onSign,
-      web3,
+      paths,
+      pretransaction,
+      signError,
+      signingEnabled,
+      walletNetworkType,
     } = this.props
 
-    if (!web3) {
+    if (walletNetworkType !== networkType) {
+      return (
+        <Web3ProviderError
+          intent={intent}
+          onClose={onClose}
+          neededText={`
+            You need to be connected to the ${networkType} network, but you are
+            connected on the ${walletNetworkType} network.
+          `}
+          pleaseText={`
+            Please switch your Ethereum provider to the ${networkType} network.
+          `}
+        />
+      )
+    }
+
+    if (!hasWeb3) {
       return (
         <Web3ProviderError
           intent={intent}
           onClose={onClose}
           neededText="You need to be connected to a Web3 instance"
+          pleaseText="Please enable your Ethereum provider."
         />
       )
     }
 
-    if (!account) {
+    if (!hasAccount) {
       return (
         <Web3ProviderError
           intent={intent}
           onClose={onClose}
           neededText="You need to unlock your account"
+          pleaseText="Please unlock your Ethereum provider"
         />
       )
     }
@@ -87,6 +107,7 @@ const Web3ProviderError = ({
   intent: { description, name, to },
   onClose,
   neededText = '',
+  pleaseText = '',
 }) => {
   return (
     <React.Fragment>
@@ -95,16 +116,14 @@ const Web3ProviderError = ({
         {description ? `"${description}"` : 'this action'}
         {' on '}
         <AddressLink to={to}>{name}</AddressLink>.
-        <InstallMessage>
-          Please unlock or enable your Ethereum provider.
-        </InstallMessage>
+        <ActionMessage>{pleaseText}</ActionMessage>
       </Info.Action>
       <SignerButton onClick={onClose}>Close</SignerButton>
     </React.Fragment>
   )
 }
 
-const InstallMessage = styled.p`
+const ActionMessage = styled.p`
   margin-top: 15px;
 `
 

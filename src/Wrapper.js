@@ -87,6 +87,7 @@ class Wrapper extends React.Component {
       account,
       apps,
       walletWeb3,
+      walletNetwork,
       wrapper,
       appsStatus,
       locator: { instanceId, params },
@@ -112,7 +113,8 @@ class Wrapper extends React.Component {
           <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
         </Container>
         <SignerPanel
-          web3={walletWeb3}
+          walletWeb3={walletWeb3}
+          walletNetwork={walletNetwork}
           transactionBag={transactionBag}
           apps={apps}
           account={account}

@@ -6,6 +6,7 @@ import { Transition, animated } from 'react-spring'
 import { addressesEqual } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import SigningStatus from './SigningStatus'
+import { network } from '../../environment'
 import {
   STATUS_CONFIRMING,
   STATUS_SIGNING,
@@ -27,7 +28,7 @@ class SignerPanel extends React.Component {
   static propTypes = {
     apps: PropTypes.array,
     account: PropTypes.string,
-    web3: PropTypes.object,
+    walletWeb3: PropTypes.object,
     transactionBag: PropTypes.object,
   }
 
@@ -90,9 +91,9 @@ class SignerPanel extends React.Component {
   }
 
   async signTransaction(transaction, intent) {
-    const { web3 } = this.props
+    const { walletWeb3 } = this.props
     return new Promise((resolve, reject) => {
-      web3.eth.sendTransaction(transaction, (err, res) => {
+      walletWeb3.eth.sendTransaction(transaction, (err, res) => {
         if (err) {
           reject(err)
         } else {
@@ -144,7 +145,7 @@ class SignerPanel extends React.Component {
   }
 
   render() {
-    const { web3, account } = this.props
+    const { walletWeb3, walletNetwork, account } = this.props
 
     const {
       panelOpened,
@@ -184,15 +185,17 @@ class SignerPanel extends React.Component {
                   >
                     <Screen>
                       <ConfirmTransaction
-                        account={account}
                         direct={directPath}
+                        hasAccount={Number(account)}
+                        hasWeb3={Boolean(walletWeb3)}
                         intent={intent}
                         onClose={this.handleSignerClose}
                         onSign={this.handleSign}
                         paths={actionPaths}
                         pretransaction={pretransaction}
                         signingEnabled={signingEnabled}
-                        web3={web3}
+                        networkType={network.type}
+                        walletNetworkType={walletNetwork}
                       />
                     </Screen>
                   </ScreenWrapper>
