@@ -27,6 +27,9 @@ import {
   DomainCheckRejected,
 } from './domain-states'
 
+const MAINNET_RISKS_BLOG_POST =
+  'https://blog.aragon.org/aragon-06-is-live-on-mainnet'
+
 const MINIMUM_BALANCE = new BN(toWei('0.1'))
 const BALANCE_DECIMALS = 3
 const formatBalance = (balance, decimals = BALANCE_DECIMALS) =>
@@ -163,15 +166,23 @@ class StartContent extends React.PureComponent {
               />
             </div>
 
-            <Disclosure>
-              <span>
-                <IconAttention />
-              </span>
-              <p>
-                Mainnet uses real funds. Find out more about the risks and
-                what’s been done to mitigate them.
-              </p>
-            </Disclosure>
+            {network.type !== 'mainnet' && (
+              <Disclosure>
+                <span>
+                  <IconAttention />
+                </span>
+                <p>
+                  Mainnet uses real funds.{' '}
+                  <StrongSafeLink
+                    href={MAINNET_RISKS_BLOG_POST}
+                    target="_blank"
+                  >
+                    Find out more
+                  </StrongSafeLink>{' '}
+                  about the risks and what’s been done to mitigate them.
+                </p>
+              </Disclosure>
+            )}
           </NetworkChooserContainer>
         </NetworkChooser>
 
@@ -357,6 +368,11 @@ const NetworkChooser = styled.div`
 
 const NetworkChooserContainer = styled.div`
   display: flex;
+`
+
+const StrongSafeLink = styled(SafeLink)`
+  text-decoration-color: ${theme.accent};
+  color: ${theme.accent};
 `
 
 const Disclosure = styled.div`
