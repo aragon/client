@@ -14,7 +14,7 @@ export const networkConfigs = {
     },
     settings: {
       chainId: 1,
-      etherscanBaseUrl: makeEtherscanBaseUrl('mainnet'),
+      etherscanBaseUrl: makeEtherscanBaseUrl('main'),
       name: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
     },
