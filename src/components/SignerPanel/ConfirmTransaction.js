@@ -30,21 +30,6 @@ class ConfirmTransaction extends React.Component {
       walletNetworkType,
     } = this.props
 
-    if (walletNetworkType !== networkType) {
-      return (
-        <Web3ProviderError
-          intent={intent}
-          onClose={onClose}
-          neededText={`
-            You need to be connected to the ${networkType} network
-          `}
-          actionText={`
-            Please connect your Ethereum provider to the ${networkType} network.
-          `}
-        />
-      )
-    }
-
     if (!hasWeb3) {
       return (
         <Web3ProviderError
@@ -63,6 +48,21 @@ class ConfirmTransaction extends React.Component {
           onClose={onClose}
           neededText="You need to unlock your account"
           actionText="Please unlock your Ethereum provider."
+        />
+      )
+    }
+
+    if (walletNetworkType !== networkType) {
+      return (
+        <Web3ProviderError
+          intent={intent}
+          onClose={onClose}
+          neededText={`
+            You need to be connected to the ${networkType} network
+          `}
+          actionText={`
+            Please connect your Ethereum provider to the ${networkType} network.
+          `}
         />
       )
     }
