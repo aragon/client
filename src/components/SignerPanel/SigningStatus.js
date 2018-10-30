@@ -41,8 +41,8 @@ class SigningStatus extends React.Component {
       return (
         <React.Fragment>
           <p>
-            Woops, something went wrong. The transaction hasn’t been signed, no
-            tokens have been sent.
+            Woops, something went wrong. The transaction hasn’t been signed and
+            no tokens have been sent.
           </p>
           {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
         </React.Fragment>
