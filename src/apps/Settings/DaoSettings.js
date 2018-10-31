@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
@@ -32,6 +33,14 @@ const FieldTwoParts = styled.div`
 `
 
 class DaoSettings extends React.Component {
+  static propTypes = {
+    account: PropTypes.string.isRequired,
+    apps: PropTypes.array.isRequired,
+    daoAddress: PropTypes.string.isRequired,
+    onOpenApp: PropTypes.func.isRequired,
+    walletNetwork: PropTypes.string.isRequired,
+  }
+
   static defaultProps = {
     account: '',
     apps: [],
