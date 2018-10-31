@@ -556,7 +556,7 @@ const View = styled.div`
   align-items: center;
   justify-content: center;
   min-width: 800px;
-  height: 100%;
+  flex-grow: 1;
   padding: 50px;
 `
 
