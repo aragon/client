@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
 import { spring as springConf } from '@aragon/ui'
@@ -17,6 +18,7 @@ import Template from './Template'
 import Domain from './Domain'
 import Launch from './Launch'
 import Sign from './Sign'
+import DeprecatedBanner from '../components/DeprecatedBanner/DeprecatedBanner'
 
 import {
   DomainCheckNone,
@@ -50,6 +52,25 @@ const initialState = {
 }
 
 class Onboarding extends React.PureComponent {
+  static propTypes = {
+    account: PropTypes.string.isRequired,
+    balance: PropTypes.object,
+    banner: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.shape({
+        type: PropTypes.oneOf([DeprecatedBanner]),
+      }),
+    ]).isRequired,
+    daoCreationStatus: PropTypes.oneOf(['none', 'success', 'error']).isRequired,
+    onBuildDao: PropTypes.func.isRequired,
+    onComplete: PropTypes.func.isRequired,
+    onOpenOrganization: PropTypes.func.isRequired,
+    onResetDaoBuilder: PropTypes.func.isRequired,
+    selectorNetworks: PropTypes.array.isRequired,
+    visible: PropTypes.bool.isRequired,
+    walletNetwork: PropTypes.string.isRequired,
+  }
+
   static defaultProps = {
     account: '',
     balance: getUnknownBalance(),
