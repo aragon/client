@@ -162,7 +162,6 @@ class Wrapper extends React.Component {
       permissionsLoading,
       account,
       walletNetwork,
-      walletWeb3,
       wrapper,
       connected,
       daoAddress,
@@ -190,9 +189,6 @@ class Wrapper extends React.Component {
           permissionsLoading={permissionsLoading}
           params={params}
           onParamsRequest={this.handleParamsRequest}
-          walletWeb3={walletWeb3}
-          account={account}
-          wrapper={wrapper}
         />
       )
     }
