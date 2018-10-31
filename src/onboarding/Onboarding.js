@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Motion, spring } from 'react-motion'
 import { spring as springConf } from '@aragon/ui'
 import { noop } from '../utils'
+import { getUnknownBalance } from '../web3-utils'
 import { isNameAvailable } from '../aragonjs-wrapper'
 
 import * as Steps from './steps'
@@ -51,7 +52,7 @@ const initialState = {
 class Onboarding extends React.PureComponent {
   static defaultProps = {
     account: '',
-    balance: null,
+    balance: getUnknownBalance(),
     walletNetwork: '',
     visible: true,
     daoCreationStatus: 'none',
