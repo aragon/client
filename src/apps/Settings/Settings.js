@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { DropDown, Button, Field, TextInput } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
@@ -31,6 +32,14 @@ const filterCurrency = currency => {
 }
 
 class Settings extends React.Component {
+  static propTypes = {
+    account: PropTypes.string.isRequired,
+    apps: PropTypes.array.isRequired,
+    daoAddr: PropTypes.string.isRequired,
+    onOpenApp: PropTypes.func.isRequired,
+    walletNetwork: PropTypes.string.isRequired,
+  }
+
   static defaultProps = {
     account: '',
     apps: [],
