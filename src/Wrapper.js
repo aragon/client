@@ -59,7 +59,6 @@ class Wrapper extends React.Component {
     transactionBag: null,
     wrapper: null,
     walletWeb3: null,
-    web3: null,
     banner: null,
   }
   state = {
