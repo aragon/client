@@ -35,7 +35,6 @@ class App extends React.Component {
     permissions: [],
     permissionsLoading: true,
     walletWeb3: null,
-    web3: null,
     daoAddress: '',
     daoCreationStatus: 'none', // none / success / error
     buildData: null, // data returned by aragon.js when a DAO is created
@@ -185,7 +184,6 @@ class App extends React.Component {
       },
       onWeb3: web3 => {
         log('web3', web3)
-        this.setState({ web3 })
       },
       onApps: apps => {
         log('apps updated', apps)
@@ -248,7 +246,6 @@ class App extends React.Component {
       transactionBag,
       daoCreationStatus,
       walletWeb3,
-      web3,
       connected,
       daoAddress,
       appsStatus,
@@ -283,7 +280,6 @@ class App extends React.Component {
             account={account}
             walletNetwork={walletNetwork}
             walletWeb3={walletWeb3}
-            web3={web3}
             daoAddress={daoAddress}
             transactionBag={transactionBag}
             connected={connected}
