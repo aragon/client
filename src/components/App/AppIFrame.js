@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { clamp, lerp } from '../../math-utils'
 import { noop } from '../../utils'
@@ -45,6 +46,12 @@ const SANDBOX = [
 ].join(' ')
 
 class AppIFrame extends React.Component {
+  static = {
+    app: PropTypes.object.isRequired,
+    ref: PropTypes.func.isRequired,
+    onLoad: PropTypes.func.isRequired,
+  }
+
   static defaultProps = {
     onNavigate: noop,
     iframeRef: noop,
