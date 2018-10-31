@@ -15,5 +15,11 @@
     "valid-jsdoc": "error",
     "react/prop-types": 'warn',
     "linebreak-style": ["error", "unix"]
+  },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "16.6"
+    },
   }
 }
