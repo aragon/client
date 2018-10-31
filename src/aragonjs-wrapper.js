@@ -117,11 +117,11 @@ const filterBalanceValue = value => {
   if (value === null) {
     return '-1'
   }
+  if (typeof value === 'object') {
+    value = String(value)
+  }
   if (typeof value === 'string') {
     return /^[0-9]+$/.test(value) ? value : '-1'
-  }
-  if (typeof value === 'object') {
-    return String(value)
   }
   return '-1'
 }
