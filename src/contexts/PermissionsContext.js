@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   appPermissions,
   appRoles,
@@ -13,9 +14,16 @@ import { getEmptyAddress } from '../web3-utils'
 const { Provider, Consumer } = React.createContext()
 
 class PermissionsProvider extends React.Component {
+  static propTypes = {
+    apps: PropTypes.array.isRequired,
+    children: PropTypes.node.isRequired,
+    permissions: PropTypes.array.isRequired,
+    wrapper: PropTypes.object,
+  }
+
   state = {
     roles: [],
-    apps: {},
+    apps: [],
     resolveEntity: noop,
     resolveRole: noop,
   }
