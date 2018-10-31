@@ -202,7 +202,7 @@ class Wrapper extends React.Component {
         <Settings
           account={account}
           apps={apps}
-          daoAddr={daoAddress}
+          daoAddress={daoAddress}
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
         />

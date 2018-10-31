@@ -35,7 +35,7 @@ class Settings extends React.Component {
   static propTypes = {
     account: PropTypes.string.isRequired,
     apps: PropTypes.array.isRequired,
-    daoAddr: PropTypes.string.isRequired,
+    daoAddress: PropTypes.string.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
   }
@@ -43,7 +43,7 @@ class Settings extends React.Component {
   static defaultProps = {
     account: '',
     apps: [],
-    daoAddr: '',
+    daoAddress: '',
     onOpenApp: noop,
   }
   state = {
@@ -74,7 +74,7 @@ class Settings extends React.Component {
     window.location.reload()
   }
   render() {
-    const { account, apps, daoAddr, onOpenApp, walletNetwork } = this.props
+    const { account, apps, daoAddress, onOpenApp, walletNetwork } = this.props
     const {
       defaultEthNode,
       ipfsGateway,
@@ -87,7 +87,7 @@ class Settings extends React.Component {
           <DaoSettings
             apps={apps}
             account={account}
-            daoAddr={daoAddr}
+            daoAddress={daoAddress}
             onOpenApp={onOpenApp}
             walletNetwork={walletNetwork}
           />

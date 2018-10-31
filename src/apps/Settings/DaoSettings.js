@@ -35,7 +35,7 @@ class DaoSettings extends React.Component {
   static defaultProps = {
     account: '',
     apps: [],
-    daoAddr: '',
+    daoAddress: '',
     onOpenApp: noop,
   }
   handleDepositTestTokens = () => {
@@ -53,10 +53,10 @@ class DaoSettings extends React.Component {
     }
   }
   render() {
-    const { account, apps, daoAddr, walletNetwork } = this.props
+    const { account, apps, daoAddress, walletNetwork } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
-    const checksummedDaoAddr = daoAddr && toChecksumAddress(daoAddr)
+    const checksummedDaoAddr = daoAddress && toChecksumAddress(daoAddress)
     const webApps = apps.filter(app => app.hasWebApp)
     return (
       <div>
