@@ -1,10 +1,17 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import uniqBy from 'lodash.uniqby'
 import { TableRow, TableCell, Button, Text, theme } from '@aragon/ui'
 import IdentityBadge from '../../../components/IdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
 
 class EntityRow extends React.PureComponent {
+  static propTypes = {
+    entity: PropTypes.object.isRequired,
+    onOpen: PropTypes.func.isRequired,
+    roles: PropTypes.array.isRequired,
+  }
+
   handleClick = () => {
     this.props.onOpen(this.props.entity.address)
   }
