@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Table, TableHeader, TableRow } from '@aragon/ui'
 import Section from '../Section'
 import EmptyBlock from '../EmptyBlock'
@@ -6,6 +7,11 @@ import EntityRow from './EntityRow'
 import { PermissionsConsumer } from '../../../contexts/PermissionsContext'
 
 class BrowseByEntity extends React.Component {
+  static propTypes = {
+    loading: PropTypes.bool.isRequired,
+    onOpenEntity: PropTypes.func.isRequired,
+  }
+
   render() {
     const { loading, onOpenEntity } = this.props
     return (
