@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   Table,
@@ -16,6 +17,13 @@ import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
 
 class AppPermissions extends React.PureComponent {
+  static propTypes = {
+    address: PropTypes.string.isRequired,
+    app: PropTypes.object,
+    loading: PropTypes.bool.isRequired,
+    onManageRole: PropTypes.func.isRequired,
+  }
+
   render() {
     const { app, loading, address, onManageRole } = this.props
     return (
@@ -74,6 +82,13 @@ class AppPermissions extends React.PureComponent {
 }
 
 class Row extends React.Component {
+  static propTypes = {
+    entity: PropTypes.object.isRequired,
+    onRevoke: PropTypes.func.isRequired,
+    proxyAddress: PropTypes.string.isRequired,
+    role: PropTypes.object.isRequired,
+  }
+
   handleRevoke = () => {
     const { onRevoke, role, entity, proxyAddress } = this.props
     onRevoke({
