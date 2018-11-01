@@ -10,7 +10,7 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
-import { getWeb3 } from './web3-utils'
+import { getWeb3, getUnknownBalance } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
@@ -28,7 +28,7 @@ class App extends React.Component {
     prevLocator: null,
     wrapper: null,
     account: '',
-    balance: null,
+    balance: getUnknownBalance(),
     connected: false,
     apps: [],
     appsStatus: APPS_STATUS_LOADING,

@@ -15,8 +15,8 @@ import {
 import { network, web3Providers, getDemoDao } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
-import { fromWei, toWei } from '../web3-utils'
-import { formatNumber, lerp } from '../math-utils'
+import { fromWei, toWei, getUnknownBalance, formatBalance } from '../web3-utils'
+import { lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
 
@@ -32,9 +32,6 @@ const MAINNET_RISKS_BLOG_POST =
 
 const MINIMUM_BALANCE = new BN(toWei('0.1'))
 const BALANCE_DECIMALS = 3
-const formatBalance = (balance, decimals = BALANCE_DECIMALS) =>
-  // Don't show decimals if the user has no ETH
-  formatNumber(balance, balance ? decimals : 0)
 
 const demoDao = getDemoDao()
 
@@ -43,7 +40,7 @@ class Start extends React.Component {
     positionProgress: 0,
     hasAccount: false,
     walletNetwork: '',
-    balance: null,
+    balance: getUnknownBalance(),
     onCreate: noop,
     onDomainChange: noop,
     domain: '',
@@ -107,10 +104,20 @@ class StartContent extends React.PureComponent {
       this.props.onOpenOrganizationAddress(demoDao)
     }
   }
+  // Also returns false if the balance is unknown
   enoughBalance() {
+    return this.props.balance.gte(MINIMUM_BALANCE)
+  }
+  unknownBalance() {
+    return this.props.balance.eqn(-1)
+  }
+  formattedBalance() {
     const { balance } = this.props
-    const enough = balance && balance.lt && !balance.lt(MINIMUM_BALANCE)
-    return !!enough
+    return this.unknownBalance()
+      ? '0'
+      : formatBalance(balance, {
+          precision: BALANCE_DECIMALS,
+        })
   }
 
   getNetworkChooserItems() {
@@ -280,7 +287,7 @@ class StartContent extends React.PureComponent {
     )
   }
   renderWarning() {
-    const { hasWallet, hasAccount, walletNetwork, balance } = this.props
+    const { hasWallet, hasAccount, walletNetwork } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
@@ -314,9 +321,11 @@ class StartContent extends React.PureComponent {
     if (!this.enoughBalance()) {
       return (
         <ActionInfo>
-          You need at least {fromWei(MINIMUM_BALANCE)} ETH (you have{' '}
-          {formatBalance(parseFloat(fromWei(balance || '0')))} ETH).
-          <br />
+          You need at least {fromWei(String(MINIMUM_BALANCE))} ETH
+          {this.unknownBalance()
+            ? ' (your account balance is unknown)'
+            : ` (you have ${this.formattedBalance()} ETH)`}
+          .<br />
           {network.type === 'rinkeby' && (
             <SafeLink target="_blank" href="https://faucet.rinkeby.io/">
               Request Ether on the Rinkeby Network
@@ -406,7 +415,6 @@ const ActionInfo = styled.span`
   margin-top: 8px;
   font-size: 12px;
   white-space: nowrap;
-  text-align: center;
 `
 
 const Title = styled.h1`
