@@ -1,7 +1,15 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 class MenuPanelInstance extends React.Component {
+  static propTypes = {
+    active: PropTypes.bool.isRequired,
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+  }
+
   handleClick = () => {
     this.props.onClick(this.props.id)
   }
