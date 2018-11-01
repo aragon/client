@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
 import { theme, spring as springConf, IconBlank } from '@aragon/ui'
@@ -6,6 +7,16 @@ import MenuPanelInstance from './MenuPanelInstance'
 import color from 'onecolor'
 
 class MenuPanelAppGroup extends React.PureComponent {
+  static propTypes = {
+    active: PropTypes.bool.isRequired,
+    activeInstanceId: PropTypes.string.isRequired,
+    expand: PropTypes.bool.isRequired,
+    icon: PropTypes.object.isRequired,
+    instances: PropTypes.array.isRequired,
+    name: PropTypes.string.isRequired,
+    onActivate: PropTypes.func.isRequired,
+  }
+
   static defaultProps = {
     instances: [],
   }
