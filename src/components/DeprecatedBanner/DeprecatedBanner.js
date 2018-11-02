@@ -1,9 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, Text, SafeLink, Button } from '@aragon/ui'
+import { theme, Text, SafeLink, Button, Modal, ModalConsumer } from '@aragon/ui'
 import Banner from '../Banner/Banner'
-import Modal from '../ModalManager/Modal'
-import { ModalConsumer } from '../ModalManager/ModalManager'
 
 const { negative, negativeText, accent, textDimmed } = theme
 
