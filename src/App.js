@@ -1,5 +1,6 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
+import { ModalProvider } from '@aragon/ui'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -13,7 +14,6 @@ import Onboarding from './onboarding/Onboarding'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
-import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import {
   APPS_STATUS_ERROR,
