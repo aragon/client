@@ -127,7 +127,7 @@ export const web3Providers = {
   wallet: window.web3 && window.web3.currentProvider,
 }
 export const defaultGasPriceFn =
-  networkType === 'main'
+  networkType === 'mainnet'
     ? noop // On mainnet rely on the provider's gas estimation
     : () => toWei('10', 'gwei') // on all other networks just hardcode it
 
