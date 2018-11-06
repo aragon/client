@@ -4,8 +4,9 @@ const version = require('../package.json').version
 const execute = require('child_process').execSync
 
 const command = `
+rimraf build/ &&
 npm run ui-assets &&
-REACT_APP_PACKAGE_VERSION=${version} parcel build src/index.html --out-dir ./build --public-url ./
+REACT_APP_PACKAGE_VERSION=${version} parcel build src/index.html --out-dir ./build --public-url ./ --no-cache
 `
 
 execute(command, { stdio: 'inherit' })
