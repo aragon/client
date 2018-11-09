@@ -26,6 +26,11 @@ import {
   DomainCheckAccepted,
   DomainCheckRejected,
 } from './domain-states'
+import {
+  DAO_CREATION_STATUS_NONE,
+  DAO_CREATION_STATUS_SUCCESS,
+  DAO_CREATION_STATUS_ERROR,
+} from '../symbols'
 
 const SPRING_SHOW = {
   stiffness: 120,
@@ -61,7 +66,11 @@ class Onboarding extends React.PureComponent {
         type: PropTypes.oneOf([DeprecatedBanner]),
       }),
     ]).isRequired,
-    daoCreationStatus: PropTypes.oneOf(['none', 'success', 'error']).isRequired,
+    daoCreationStatus: PropTypes.oneOf([
+      DAO_CREATION_STATUS_NONE,
+      DAO_CREATION_STATUS_SUCCESS,
+      DAO_CREATION_STATUS_ERROR,
+    ]).isRequired,
     onBuildDao: PropTypes.func.isRequired,
     onComplete: PropTypes.func.isRequired,
     onOpenOrganization: PropTypes.func.isRequired,
@@ -76,7 +85,7 @@ class Onboarding extends React.PureComponent {
     balance: getUnknownBalance(),
     walletNetwork: '',
     visible: true,
-    daoCreationStatus: 'none',
+    daoCreationStatus: DAO_CREATION_STATUS_NONE,
     onComplete: noop,
     onBuildDao: noop,
     onOpenOrganization: noop,
@@ -101,7 +110,7 @@ class Onboarding extends React.PureComponent {
 
     if (
       nextProps.daoCreationStatus !== props.daoCreationStatus &&
-      nextProps.daoCreationStatus === 'success'
+      nextProps.daoCreationStatus === DAO_CREATION_STATUS_SUCCESS
     ) {
       setTimeout(() => {
         this.nextStep()
@@ -364,7 +373,7 @@ class Onboarding extends React.PureComponent {
       return this.validateConfigurationScreen(template, step.screen)
     }
     if (step.screen === 'sign') {
-      return daoCreationStatus === 'success'
+      return daoCreationStatus === DAO_CREATION_STATUS_SUCCESS
     }
     return true
   }
