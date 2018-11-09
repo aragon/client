@@ -19,6 +19,9 @@ import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
+  DAO_CREATION_STATUS_NONE,
+  DAO_CREATION_STATUS_SUCCESS,
+  DAO_CREATION_STATUS_ERROR,
 } from './symbols'
 
 class App extends React.Component {
@@ -36,7 +39,7 @@ class App extends React.Component {
     permissionsLoading: true,
     walletWeb3: null,
     daoAddress: '',
-    daoCreationStatus: 'none', // none / success / error
+    daoCreationStatus: DAO_CREATION_STATUS_NONE, // DAO_CREATION_STATUS_NONE, DAO_CREATION_STATUS_SUCCESS, DAO_CREATION_STATUS_ERROR
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
@@ -135,7 +138,7 @@ class App extends React.Component {
 
   handleResetDaoBuilder = () => {
     this.setState({
-      daoCreationStatus: 'none',
+      daoCreationStatus: DAO_CREATION_STATUS_NONE,
       buildData: null,
     })
   }
@@ -150,13 +153,13 @@ class App extends React.Component {
       )
       const domain = `${organizationName}.aragonid.eth`
       this.setState({
-        daoCreationStatus: 'success',
+        daoCreationStatus: DAO_CREATION_STATUS_SUCCESS,
         buildData: { token, dao, domain },
       })
       log('DAO created', dao, token, domain)
     } catch (err) {
       log(err)
-      this.setState({ daoCreationStatus: 'error' })
+      this.setState({ daoCreationStatus: DAO_CREATION_STATUS_ERROR })
     }
   }
 
