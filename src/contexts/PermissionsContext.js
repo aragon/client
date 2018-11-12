@@ -17,7 +17,7 @@ class PermissionsProvider extends React.Component {
   static propTypes = {
     apps: PropTypes.array.isRequired,
     children: PropTypes.node.isRequired,
-    permissions: PropTypes.array.isRequired,
+    permissions: PropTypes.object.isRequired,
     wrapper: PropTypes.object,
   }
 

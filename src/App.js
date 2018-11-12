@@ -35,7 +35,7 @@ class App extends React.Component {
     connected: false,
     apps: [],
     appsStatus: APPS_STATUS_LOADING,
-    permissions: [],
+    permissions: {},
     permissionsLoading: true,
     walletWeb3: null,
     daoAddress: '',
