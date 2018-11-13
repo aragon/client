@@ -1,6 +1,13 @@
 import memoize from 'lodash.memoize'
-import { isAnyAddress } from './web3-utils'
+import { addressesEqual } from './web3-utils'
 
+// Note that these two terms are slightly confusing artifacts of the ACL:
+//   Any entity: If a permission is granted to "any entity", then any address can be seen as holding
+//               that permission
+//   Burn entity: If a permission manager is set as "burn entity", then it is assumed to be a
+//               discarded and frozen permission
+const ANY_ENTITY = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+const BURN_ENTITY = '0x0000000000000000000000000000000000000001'
 const KERNEL_ROLES = [
   {
     name: 'Manage apps',
@@ -9,6 +16,24 @@ const KERNEL_ROLES = [
     bytes: '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
   },
 ]
+
+export function getAnyEntity() {
+  return ANY_ENTITY
+}
+
+export function getBurnEntity() {
+  return BURN_ENTITY
+}
+
+// Check if the address represents “Any address”
+export function isAnyEntity(address) {
+  return addressesEqual(address, ANY_ENTITY)
+}
+
+// Check if the address represents the “Burned address”
+export function isBurnEntity(address) {
+  return addressesEqual(address, BURN_ENTITY)
+}
 
 // Get a role from the known roles (kernel)
 export const getKnownRole = roleBytes => {
@@ -25,19 +50,28 @@ export const getKnownRole = roleBytes => {
 // Output: entities => app instances => roles
 export function permissionsByEntity(permissions) {
   const results = {}
+
+  const addRole = (entity, app, role) => {
+    entity = entity.toLowerCase()
+    if (!results[entity]) {
+      results[entity] = {}
+    }
+    results[entity][app] = [...(results[entity][app] || []), role]
+  }
+
   // apps
   for (const [app, appPermissions] of Object.entries(permissions)) {
     // roles
-    for (const [role, { allowedEntities }] of Object.entries(appPermissions)) {
+    for (const [role, { allowedEntities = [] }] of Object.entries(
+      appPermissions
+    )) {
       // entities
       for (const entity of allowedEntities) {
-        if (!results[entity]) {
-          results[entity] = {}
-        }
-        results[entity][app] = [...(results[entity][app] || []), role]
+        addRole(entity, app, role)
       }
     }
   }
+
   return results
 }
 
@@ -62,7 +96,7 @@ export const appPermissions = (
   transform = (entity, role) => [entity, role]
 ) => {
   const roles = permissions[app.proxyAddress]
-  const rolesReducer = (roles, [role, { allowedEntities }]) =>
+  const rolesReducer = (roles, [role, { allowedEntities = [] }]) =>
     roles.concat(allowedEntities.map(entity => transform(entity, role)))
 
   return roles
@@ -92,7 +126,7 @@ function resolveRole(apps, proxyAddress, roleBytes) {
   if (knownRole) {
     return knownRole.role
   }
-  const app = apps.find(app => app.proxyAddress === proxyAddress)
+  const app = apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
   if (!app || !app.roles) {
     return null
   }
@@ -102,11 +136,14 @@ function resolveRole(apps, proxyAddress, roleBytes) {
 // Resolves an entity using the provided apps
 function resolveEntity(apps, address) {
   const entity = { address, type: 'address' }
-  if (isAnyAddress(address)) {
+  if (isAnyEntity(address)) {
     return { ...entity, type: 'any' }
   }
-  const app = apps.find(app => app.proxyAddress === address)
-  return app ? { ...entity, type: 'app', app } : entity
+  if (isBurnEntity(address)) {
+    return { ...entity, type: 'burn' }
+  }
+  const app = apps.find(app => addressesEqual(app.proxyAddress, address))
+  return app ? { ...entity, app, type: 'app' } : entity
 }
 
 // Returns a function that resolves an entity, caching the results

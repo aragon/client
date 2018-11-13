@@ -10,7 +10,9 @@ import {
 import IdentityBadge from '../../components/IdentityBadge'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
+import AppInstanceLabel from './AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { isBurnEntity } from '../../permissions'
 import { isEmptyAddress } from '../../web3-utils'
 
 class AppRoles extends React.PureComponent {
@@ -21,26 +23,28 @@ class AppRoles extends React.PureComponent {
     const {
       app,
       loading,
-      loadingLabel = 'Loading roles…',
-      emptyLabel = 'No roles found.',
+      loadingLabel = 'Loading actions…',
+      emptyLabel = 'No actions found.',
     } = this.props
 
     return (
       <PermissionsConsumer>
-        {({ getAppRoles }) => {
-          const roles = getAppRoles(app)
+        {({ getRoleManager }) => {
+          const roles = ((app && app.roles) || []).map(role => ({
+            role,
+            manager: getRoleManager(app, role.bytes),
+          }))
 
           return (
-            <Section title="Roles available on this app">
+            <Section title="Actions available on this app">
               {loading || roles.length === 0 ? (
                 <EmptyBlock>{loading ? loadingLabel : emptyLabel}</EmptyBlock>
               ) : (
                 <Table
                   header={
                     <TableRow>
-                      <TableHeader title="Action" />
-                      <TableHeader title="Role identifier" />
-                      <TableHeader title="Manager" />
+                      <TableHeader title="Action" style={{ width: '20%' }} />
+                      <TableHeader title="Managed by" />
                       <TableHeader />
                     </TableRow>
                   }
@@ -67,27 +71,40 @@ class RoleRow extends React.Component {
   handleManageClick = () => {
     this.props.onManage(this.props.role.bytes)
   }
+  renderManager() {
+    const { manager } = this.props
+    if (manager.type === 'app') {
+      return (
+        <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
+      )
+    }
+    if (manager.type === 'burn') {
+      return <IdentityBadge entity={'Discarded'} />
+    }
+    return <IdentityBadge entity={manager.address} />
+  }
   render() {
     const { role, manager } = this.props
-
-    const id = (role && role.id) || '?'
-    const name = (role && role.name) || 'Unknown role'
-    const bytes = role && role.bytes
-
-    const emptyManager = isEmptyAddress(manager)
+    const name = (role && role.name) || 'Unknown action'
+    const emptyManager = isEmptyAddress(manager.address)
+    const discardedManager = isBurnEntity(manager.address)
 
     return (
       <TableRow>
         <TableCell>
           <Text weight="bold">{name}</Text>
         </TableCell>
-        <TableCell title={bytes}>{id}</TableCell>
         <TableCell>
-          {emptyManager ? 'No manager set' : <IdentityBadge entity={manager} />}
+          {emptyManager ? 'No manager set' : this.renderManager()}
         </TableCell>
         <TableCell align="right">
-          <Button mode="outline" compact onClick={this.handleManageClick}>
-            {emptyManager ? 'Initialize' : 'Manage'}
+          <Button
+            compact
+            mode="outline"
+            style={{ minWidth: '80px' }}
+            onClick={this.handleManageClick}
+          >
+            {emptyManager ? 'Initialize' : discardedManager ? 'View' : 'Manage'}
           </Button>
         </TableCell>
       </TableRow>

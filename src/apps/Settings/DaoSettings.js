@@ -2,9 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
 import EtherscanLink from '../../components/Etherscan/EtherscanLink'
-import { sanitizeNetworkType } from '../../network-config'
-import { getWeb3, toChecksumAddress } from '../../web3-utils'
 import { appIds, network, web3Providers } from '../../environment'
+import { sanitizeNetworkType } from '../../network-config'
+import { noop } from '../../utils'
+import { getWeb3, toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
 import Note from './Note'
@@ -35,12 +36,20 @@ class DaoSettings extends React.Component {
     account: '',
     apps: [],
     daoAddr: '',
+    onOpenApp: noop,
   }
   handleDepositTestTokens = () => {
     const { account, apps } = this.props
     const finance = apps.find(app => app.appId === appIds.Finance)
     if (finance && finance.proxyAddress) {
       airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
+    }
+  }
+  handleOpenFinance = () => {
+    const { apps, onOpenApp } = this.props
+    const finance = apps.find(app => app.appId === appIds.Finance)
+    if (finance && finance.proxyAddress) {
+      onOpenApp(finance.proxyAddress)
     }
   }
   render() {
@@ -59,7 +68,7 @@ class DaoSettings extends React.Component {
           name="Organization address"
           text={`This organization is deployed on the ${network.name}.`}
         >
-          <Field label="Address">
+          <Field label="Address" style={{ marginBottom: 0 }}>
             <FieldTwoParts>
               <TextInput readOnly wide value={checksummedDaoAddr} />
               <EtherscanLink address={checksummedDaoAddr}>
@@ -73,9 +82,17 @@ class DaoSettings extends React.Component {
               </EtherscanLink>
             </FieldTwoParts>
             <Note>
-              <strong>Do not send ether or tokens to this address!</strong>{' '}
-              Follow the instructions in the “Send ether to this organization”
-              section below.
+              <strong>Do not send ether or tokens to this address!</strong>
+              <br />
+              Go to the{' '}
+              {financeApp ? (
+                <ButtonLink onClick={this.handleOpenFinance}>
+                  Finance app
+                </ButtonLink>
+              ) : (
+                'Finance app'
+              )}{' '}
+              to deposit funds into your organization instead.
             </Note>
           </Field>
         </Option>
@@ -116,42 +133,6 @@ class DaoSettings extends React.Component {
             </Note>
           </Option>
         )}
-        {financeApp && (
-          <Option
-            name="Send ether to this organization"
-            text={
-              <span>
-                To send <strong>test ether</strong> to this organization, use
-                the address of the Finance app indicated below.
-              </span>
-            }
-          >
-            <Field label="Funding Address (Finance App)">
-              <FieldTwoParts>
-                <TextInput
-                  readOnly
-                  wide
-                  value={checksummedAppProxies[financeApp.appId]}
-                />
-                <EtherscanLink
-                  address={checksummedAppProxies[financeApp.appId]}
-                >
-                  {url =>
-                    url ? (
-                      <LinkButton href={url} target="_blank">
-                        See on Etherscan
-                      </LinkButton>
-                    ) : null
-                  }
-                </EtherscanLink>
-              </FieldTwoParts>
-              <Note>
-                Remember to use the {network.name} network.{' '}
-                <strong>DO NOT send real ether from the main network!</strong>
-              </Note>
-            </Field>
-          </Option>
-        )}
         {webApps.length > 0 && (
           <Option
             name="Aragon apps"
@@ -190,5 +171,12 @@ class DaoSettings extends React.Component {
     )
   }
 }
+
+const ButtonLink = styled(Button).attrs({ mode: 'text' })`
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+`
 
 export default DaoSettings

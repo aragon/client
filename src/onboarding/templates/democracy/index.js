@@ -1,8 +1,10 @@
+import BN from 'bn.js'
 import ConfigureVotingDefaults from './ConfigureVotingDefaults'
 import ConfigureTokenName from './ConfigureTokenName'
 import icon from './assets/icon.svg'
 
-const isIntegerString = value => /^[0-9]*$/.test(value)
+const isIntegerString = value => /^\d*$/.test(value)
+const isFloatString = value => /^\d*\.?\d*$/.test(value)
 
 const template = {
   name: 'democracy',
@@ -10,50 +12,56 @@ const template = {
   icon,
   fields: {
     support: {
-      defaultValue: () => -1,
+      defaultValue: () => '',
       filter: (value, { minQuorum }) => {
-        if (!isIntegerString(value)) {
-          return { support: -1 }
+        if (!isFloatString(value)) {
+          return { support: '' }
         }
-        const intValue = parseInt(value, 10)
-        const support = isNaN(intValue) ? -1 : Math.min(100, Math.max(1, value))
+        const numValue = parseFloat(value)
+        if (isNaN(numValue)) {
+          return { support: '' }
+        }
+
+        const support = Math.min(99.99, Math.max(1, numValue))
         return {
-          support,
-          minQuorum: support < minQuorum ? support : minQuorum,
+          support: support !== numValue ? support.toString() : value,
+          minQuorum: (support < minQuorum ? support : minQuorum).toString(),
         }
       },
     },
     minQuorum: {
-      defaultValue: () => -1,
+      defaultValue: () => '',
       filter: (value, { support }) => {
-        if (!isIntegerString(value)) {
-          return { minQuorum: -1 }
+        if (!isFloatString(value)) {
+          return { minQuorum: '' }
         }
-        const intValue = parseInt(value, 10)
-        const minQuorum = isNaN(intValue)
-          ? -1
-          : Math.min(100, Math.max(0, value))
+        const numValue = parseFloat(value)
+        if (isNaN(numValue)) {
+          return { minQuorum: '' }
+        }
+
+        const minQuorum = Math.min(99.99, Math.max(0, numValue))
         return {
-          minQuorum,
-          support: support < minQuorum ? minQuorum : support,
+          minQuorum: minQuorum !== numValue ? minQuorum.toString() : value,
+          support: (support < minQuorum ? minQuorum : support).toString(),
         }
       },
     },
     voteDuration: {
-      defaultValue: () => -1,
+      defaultValue: () => '',
       filter: value => {
         if (!isIntegerString(value) || value === '') {
-          return { voteDuration: -1 }
+          return { voteDuration: '' }
         }
         const voteDuration = parseInt(value, 10)
         if (isNaN(voteDuration)) {
-          return null
+          return ''
         }
         if (voteDuration > Number.MAX_SAFE_INTEGER) {
-          return null
+          return ''
         }
         return {
-          voteDuration: Math.max(1, value),
+          voteDuration: Math.max(1, value).toString(),
         }
       },
     },
@@ -70,10 +78,11 @@ const template = {
     {
       screen: 'voting-defaults',
       validate: ({ support, minQuorum, voteDuration }) => {
-        if (support < 1 || support > 100) {
+        // Mimic contract validation
+        if (minQuorum < 0 || minQuorum > support) {
           return false
         }
-        if (minQuorum < 0 || minQuorum > 100) {
+        if (support < 1 || support >= 100) {
           return false
         }
         if (voteDuration < 1) {
@@ -98,11 +107,12 @@ const template = {
     minQuorum,
     voteDuration,
   }) => {
+    const percentageBase = new BN(10).pow(new BN(16))
     return {
       tokenName: tokenName.trim(),
       tokenSymbol: tokenSymbol.trim(),
-      supportNeeded: support / 100,
-      minAcceptanceQuorum: minQuorum / 100,
+      supportNeeded: percentageBase.muln(parseFloat(support)),
+      minAcceptanceQuorum: percentageBase.muln(parseFloat(minQuorum)),
       voteDuration: voteDuration * 60 * 60,
     }
   },

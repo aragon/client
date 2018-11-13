@@ -1,16 +1,16 @@
 import React from 'react'
-import { spring, Motion } from 'react-motion'
+// import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
 import {
   theme,
   unselectable,
-  spring as springConf,
+  // spring as springConf,
   // IconWallet,
   // IconNotifications,
 } from '@aragon/ui'
-import ClickOutHandler from 'react-onclickout'
-import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
-import { lerp } from '../../math-utils'
+// import ClickOutHandler from 'react-onclickout'
+// import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
+// import { lerp } from '../../math-utils'
 import { appIconUrl } from '../../utils'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
@@ -62,11 +62,11 @@ class MenuPanel extends React.PureComponent {
   render() {
     const {
       apps,
-      notificationsObservable,
-      onClearAllNotifications,
-      onOpenNotification,
+      // notificationsObservable,
+      // onClearAllNotifications,
+      // onOpenNotification,
     } = this.props
-    const { notificationsOpened } = this.state
+    // const { notificationsOpened } = this.state
 
     const appGroups = prepareAppGroups(apps)
     const menuApps = [
@@ -106,7 +106,7 @@ class MenuPanel extends React.PureComponent {
           </Content>
         </In>
 
-        <ClickOutHandler onClickOut={this.handleCloseNotifications}>
+        {/* <ClickOutHandler onClickOut={this.handleCloseNotifications}>
           <Motion
             style={{
               openProgress: spring(
@@ -118,7 +118,9 @@ class MenuPanel extends React.PureComponent {
             {({ openProgress }) => (
               <NotificationsWrapper
                 style={{
-                  transform: `translateX(${lerp(openProgress, -100, 0)}%)`,
+                  transform: `
+                    translate3d(${lerp(openProgress, -100, 0)}%, 0, 0)
+                  `,
                   boxShadow: `1px 0 15px rgba(0, 0, 0, ${openProgress * 0.1})`,
                 }}
               >
@@ -130,7 +132,7 @@ class MenuPanel extends React.PureComponent {
               </NotificationsWrapper>
             )}
           </Motion>
-        </ClickOutHandler>
+        </ClickOutHandler> */}
       </Main>
     )
   }
@@ -158,14 +160,15 @@ class MenuPanel extends React.PureComponent {
     )
   }
   renderLoadedAppGroup = apps => {
-    const { appsLoading } = this.props
+    const { appsStatus, onRequestAppsReload } = this.props
 
     // Wrap the DAO apps in the loader
     return (
       <MenuPanelAppsLoader
         key="menu-apps"
-        loading={appsLoading}
+        appsStatus={appsStatus}
         itemsCount={apps.length}
+        onRetry={onRequestAppsReload}
       >
         {done => apps.map(app => this.renderAppGroup(app, done))}
       </MenuPanelAppsLoader>
@@ -176,10 +179,11 @@ class MenuPanel extends React.PureComponent {
 const Main = styled.div`
   position: relative;
   z-index: 2;
-  flex-shrink: 0;
-  top: 0;
-  bottom: 0;
+  display: flex;
+  flex-direction: column;
   width: 220px;
+  flex-grow: 0;
+  flex-shrink: 0;
   ${unselectable};
 `
 
@@ -189,6 +193,7 @@ const In = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  flex-shrink: 1;
   background: #fff;
   border-right: 1px solid #e8e8e8;
   box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
@@ -198,13 +203,13 @@ const In = styled.div`
 //   cursor: pointer;
 // `
 
-const NotificationsWrapper = styled.div`
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  bottom: 0;
-  left: 220px;
-`
+// const NotificationsWrapper = styled.div`
+//   position: fixed;
+//   z-index: 1;
+//   top: 0;
+//   bottom: 0;
+//   left: 220px;
+// `
 
 const Header = styled.div`
   flex-shrink: 0;
@@ -233,7 +238,7 @@ const Header = styled.div`
 
 const Content = styled.nav`
   overflow-y: auto;
-  height: 100%;
+  flex: 1 1 0;
   .in {
     padding: 10px 0 10px;
   }

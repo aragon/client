@@ -44,7 +44,7 @@ class MenuPanelAppGroup extends React.PureComponent {
             <MenuItemBar
               style={{
                 opacity: openProgress,
-                transform: `translateX(-${(1 - openProgress) * 100}%)`,
+                transform: `translate3d(-${(1 - openProgress) * 100}%, 0, 0)`,
               }}
             />
 

@@ -4,25 +4,63 @@
  * from this file.
  */
 import Web3 from 'web3'
+import BN from 'bn.js'
 
-const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-// Check address equality without checksums
+/**
+ * Check address equality without checksums
+ * @param {string} first First address
+ * @param {string} second Second address
+ * @returns {boolean} Address equality
+ */
 export function addressesEqual(first, second) {
   first = first && first.toLowerCase()
   second = second && second.toLowerCase()
   return first === second
 }
 
-// Shorten an Ethereum address. `charsLength` allows to change the number of
-// characters on both sides of the ellipsis.
-//
-// Examples:
-//   shortenAddress('0x19731977931271')    // 0x1973…1271
-//   shortenAddress('0x19731977931271', 2) // 0x19…71
-//   shortenAddress('0x197319')            // 0x197319 (already short enough)
-//
+/**
+ * Format the balance to a fixed number of decimals
+ *
+ * @param {BN} amount The total amount.
+ * @param {object} options The options object.
+ * @param {BN} options.base The decimals base.
+ * @param {number} options.precision Number of decimals to format.
+ *
+ * @returns {string} The formatted balance.
+ */
+export function formatBalance(
+  amount,
+  { base = new BN(10).pow(new BN(18)), precision = 2 } = {}
+) {
+  const baseLength = base.toString().length
+
+  const whole = amount.div(base).toString()
+  let fraction = amount.mod(base).toString()
+  const zeros = '0'.repeat(Math.max(0, baseLength - fraction.length - 1))
+  fraction = `${zeros}${fraction}`.replace(/0+$/, '').slice(0, precision)
+
+  if (fraction === '' || parseInt(fraction, 10) === 0) {
+    return whole
+  }
+
+  return `${whole}.${fraction}`
+}
+
+/**
+ * Shorten an Ethereum address. `charsLength` allows to change the number of
+ * characters on both sides of the ellipsis.
+ *
+ * Examples:
+ *   shortenAddress('0x19731977931271')    // 0x1973…1271
+ *   shortenAddress('0x19731977931271', 2) // 0x19…71
+ *   shortenAddress('0x197319')            // 0x197319 (already short enough)
+ *
+ * @param {string} address The address to shorten
+ * @param {number} [charsLength=4] The number of characters to change on both sides of the ellipsis
+ * @returns {string} The shortened address
+ */
 export function shortenAddress(address, charsLength = 4) {
   const prefixLength = 2 // "0x"
   if (!address) {
@@ -39,32 +77,33 @@ export function shortenAddress(address, charsLength = 4) {
 }
 
 // Cache web3 instances used in the app
-const cache = new WeakMap()
+const web3Cache = new WeakMap()
+
+/**
+ * Get cached web3 instance
+ * @param {Web3.Provider} provider Web3 provider
+ * @returns {Web3} The web3 instance
+ */
 export function getWeb3(provider) {
-  if (cache.has(provider)) {
-    return cache.get(provider)
+  if (web3Cache.has(provider)) {
+    return web3Cache.get(provider)
   }
   const web3 = new Web3(provider)
-  cache.set(provider, web3)
+  web3Cache.set(provider, web3)
   return web3
-}
-
-// Check if the address represents “Any address”
-export function isAnyAddress(address) {
-  return address === ANY_ADDRESS
 }
 
 // Check if the address represents an empty address
 export function isEmptyAddress(address) {
-  return address === EMPTY_ADDRESS
-}
-
-export function getAnyAddress() {
-  return ANY_ADDRESS
+  return addressesEqual(address, EMPTY_ADDRESS)
 }
 
 export function getEmptyAddress() {
   return EMPTY_ADDRESS
+}
+
+export function getUnknownBalance() {
+  return new BN('-1')
 }
 
 // Re-export some utilities from web3-utils

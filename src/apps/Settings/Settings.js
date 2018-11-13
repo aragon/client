@@ -9,6 +9,7 @@ import {
   setIpfsGateway,
   setSelectedCurrency,
 } from '../../local-settings'
+import { noop } from '../../utils'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
@@ -31,9 +32,10 @@ const filterCurrency = currency => {
 
 class Settings extends React.Component {
   static defaultProps = {
-    daoAddr: '',
     account: '',
     apps: [],
+    daoAddr: '',
+    onOpenApp: noop,
   }
   state = {
     defaultEthNode,
@@ -63,7 +65,7 @@ class Settings extends React.Component {
     window.location.reload()
   }
   render() {
-    const { account, apps, daoAddr, walletNetwork } = this.props
+    const { account, apps, daoAddr, onOpenApp, walletNetwork } = this.props
     const {
       defaultEthNode,
       ipfsGateway,
@@ -77,6 +79,7 @@ class Settings extends React.Component {
             apps={apps}
             account={account}
             daoAddr={daoAddr}
+            onOpenApp={onOpenApp}
             walletNetwork={walletNetwork}
           />
           {currencies.length > 1 &&

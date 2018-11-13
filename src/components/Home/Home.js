@@ -60,7 +60,7 @@ class Home extends React.Component {
 
     clearTimeout(this.showAppsTimer)
     this.showAppsTimer = setTimeout(() => {
-      this.setState({ showApps: !appsLoading })
+      this.setState({ showApps: !appsLoading && this.props.apps.length > 0 })
     }, appsLoading ? 0 : 1000)
   }
   componentWillUnmount() {
@@ -78,7 +78,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { connected, apps, locator } = this.props
+    const { connected, apps, locator, appsLoading } = this.props
     const { showApps } = this.state
 
     const appActions = actions.filter(({ appName }) =>
@@ -113,14 +113,19 @@ class Home extends React.Component {
                     >
                       {locator.dao.endsWith('.eth')
                         ? `You are interacting with ${locator.dao}`
-                        : 'You are using Aragon 0.5 — The Architect'}
+                        : 'You are using Aragon 0.6 — Alba'}
                     </Text>
                   </Title>
-                  <p style={{ marginBottom: '20px' }}>
-                    <Text color={theme.textSecondary}>
-                      {showApps ? 'What do you want to do?' : 'Loading apps…'}
-                    </Text>
-                  </p>
+                  {appsLoading ||
+                    (appActions.length > 0 && (
+                      <p style={{ marginBottom: '20px' }}>
+                        <Text color={theme.textSecondary}>
+                          {showApps
+                            ? 'What do you want to do?'
+                            : 'Loading apps…'}
+                        </Text>
+                      </p>
+                    ))}
                   <div
                     style={{
                       display: showApps ? 'block' : 'none',

@@ -40,8 +40,7 @@ class AppPermissions extends React.PureComponent {
                   <Table
                     header={
                       <TableRow>
-                        <TableHeader title="Action" />
-                        <TableHeader title="Role identifier" />
+                        <TableHeader title="Action" style={{ width: '20%' }} />
                         <TableHeader title="Allowed for" />
                         <TableHeader />
                       </TableRow>
@@ -104,7 +103,6 @@ class Row extends React.Component {
         <TableCell>
           <Text weight="bold">{role ? role.name : 'Unknown'}</Text>
         </TableCell>
-        <TableCell>{role ? role.id : 'Unknown'}</TableCell>
         <TableCell>{this.renderEntity()}</TableCell>
         <TableCell align="right">
           <Button

@@ -1,6 +1,5 @@
 import React from 'react'
 import createHistory from 'history/createHashHistory'
-import { AragonApp } from '@aragon/ui'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -11,20 +10,28 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
-import { getWeb3 } from './web3-utils'
+import { getWeb3, getUnknownBalance } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
+import { ModalProvider } from './components/ModalManager/ModalManager'
+import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
+import {
+  APPS_STATUS_ERROR,
+  APPS_STATUS_READY,
+  APPS_STATUS_LOADING,
+} from './symbols'
 
 class App extends React.Component {
   state = {
+    fatalError: null,
     locator: {},
     prevLocator: null,
     wrapper: null,
     account: '',
-    balance: null,
+    balance: getUnknownBalance(),
     connected: false,
     apps: [],
-    appsLoading: true,
+    appsStatus: APPS_STATUS_LOADING,
     permissions: [],
     permissionsLoading: true,
     walletWeb3: null,
@@ -34,6 +41,11 @@ class App extends React.Component {
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
+    showDeprecatedBanner: false,
+    selectorNetworks: [
+      ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
+      ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
+    ],
   }
 
   history = createHistory()
@@ -157,15 +169,15 @@ class App extends React.Component {
       return
     }
 
-    this.setState({ appsLoading: true })
+    this.setState({ appsStatus: APPS_STATUS_LOADING, apps: [] })
 
     log('Wrapper init', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
       onError: err => {
-        log(`Wrapper init error: ${err.name}. ${err.message}.`)
-        this.setState({ appsLoading: false })
+        log(`Wrapper init, recoverable error: ${err.name}. ${err.message}.`)
+        this.setState({ appsStatus: APPS_STATUS_ERROR })
       },
       onDaoAddress: daoAddress => {
         log('daoAddress', daoAddress)
@@ -179,7 +191,7 @@ class App extends React.Component {
         log('apps updated', apps)
         this.setState({
           apps,
-          appsLoading: false,
+          appsStatus: APPS_STATUS_READY,
         })
       },
       onPermissions: permissions => {
@@ -202,8 +214,17 @@ class App extends React.Component {
         this.setState({ wrapper })
       })
       .catch(err => {
-        console.error('Wrapper init error:', err)
+        log(`Wrapper init, fatal error: ${err.name}. ${err.message}.`)
+        this.setState({ fatalError: err })
       })
+  }
+
+  handleRequestAppsReload = () => {
+    this.setState({ appsStatus: APPS_STATUS_LOADING, apps: [] })
+    clearTimeout(this._requestAppsTimer)
+    this._requestAppsTimer = setTimeout(() => {
+      this.updateDao(this.state.locator.dao)
+    }, 1000)
   }
 
   handleCompleteOnboarding = () => {
@@ -216,6 +237,7 @@ class App extends React.Component {
 
   render() {
     const {
+      fatalError,
       locator,
       wrapper,
       apps,
@@ -224,32 +246,39 @@ class App extends React.Component {
       balance,
       walletNetwork,
       transactionBag,
-      daoBuilder,
       daoCreationStatus,
       walletWeb3,
       web3,
       connected,
       daoAddress,
-      appsLoading,
+      appsStatus,
       permissionsLoading,
+      showDeprecatedBanner,
+      selectorNetworks,
     } = this.state
-    const { mode } = locator
+
+    const { mode, dao } = locator
     if (!mode) return null
 
+    if (fatalError !== null) {
+      throw fatalError
+    }
+
     return (
-      <AragonApp publicUrl="./aragon-ui/">
+      <ModalProvider>
         <PermissionsProvider
           wrapper={wrapper}
           apps={apps}
           permissions={permissions}
         >
           <Wrapper
+            banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
             historyBack={this.historyBack}
             historyPush={this.historyPush}
             locator={locator}
             wrapper={wrapper}
             apps={apps}
-            appsLoading={appsLoading}
+            appsStatus={appsStatus}
             permissionsLoading={permissionsLoading}
             account={account}
             walletNetwork={walletNetwork}
@@ -258,21 +287,26 @@ class App extends React.Component {
             daoAddress={daoAddress}
             transactionBag={transactionBag}
             connected={connected}
+            onRequestAppsReload={this.handleRequestAppsReload}
           />
         </PermissionsProvider>
+
         <Onboarding
+          banner={
+            showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
+          }
           visible={mode === 'home' || mode === 'setup'}
           account={account}
           balance={balance}
           walletNetwork={walletNetwork}
           onBuildDao={this.handleBuildDao}
-          daoBuilder={daoBuilder}
           daoCreationStatus={daoCreationStatus}
           onComplete={this.handleCompleteOnboarding}
           onOpenOrganization={this.handleOpenOrganization}
           onResetDaoBuilder={this.handleResetDaoBuilder}
+          selectorNetworks={selectorNetworks}
         />
-      </AragonApp>
+      </ModalProvider>
     )
   }
 }
