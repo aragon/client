@@ -19,7 +19,7 @@ import AppRoles from './AppRoles'
 class AppPermissions extends React.PureComponent {
   static propTypes = {
     address: PropTypes.string.isRequired,
-    app: PropTypes.object,
+    app: PropTypes.object, // may not be available if still loading
     loading: PropTypes.bool.isRequired,
     onManageRole: PropTypes.func.isRequired,
   }
