@@ -72,6 +72,7 @@
     "parcel-bundler": "^1.10.1",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
     "prettier": "^1.11.1",
+    "pretty-quick": "^1.8.0",
     "rimraf": "^2.6.2"
   },
   "scripts": {
@@ -107,7 +108,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm test"
+      "pre-push": "npm test",
+      "pre-commit": "pretty-quick --staged"
     }
   }
 }
