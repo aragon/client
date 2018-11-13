@@ -46,15 +46,17 @@ const SANDBOX = [
 ].join(' ')
 
 class AppIFrame extends React.Component {
-  static = {
+  static propTypes = {
     app: PropTypes.object.isRequired,
-    ref: PropTypes.func.isRequired,
-    onLoad: PropTypes.func.isRequired,
+    iframeRef: PropTypes.func,
+    onNavigate: PropTypes.func,
+    onMessage: PropTypes.func,
+    onLoad: PropTypes.func,
   }
 
   static defaultProps = {
-    onNavigate: noop,
     iframeRef: noop,
+    onNavigate: noop,
     onMessage: noop,
     onLoad: noop,
   }
