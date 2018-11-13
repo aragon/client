@@ -175,10 +175,11 @@ class MenuPanel extends React.PureComponent {
 const Main = styled.div`
   position: relative;
   z-index: 2;
-  flex-shrink: 0;
-  top: 0;
-  bottom: 0;
+  display: flex;
+  flex-direction: column;
   width: 220px;
+  flex-grow: 0;
+  flex-shrink: 0;
   ${unselectable};
 `
 
@@ -188,6 +189,7 @@ const In = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  flex-shrink: 1;
   background: #fff;
   border-right: 1px solid #e8e8e8;
   box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
@@ -232,7 +234,7 @@ const Header = styled.div`
 
 const Content = styled.nav`
   overflow-y: auto;
-  height: 100%;
+  flex: 1 1 0;
   .in {
     padding: 10px 0 10px;
   }

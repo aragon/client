@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { springs } from '@aragon/ui'
 import { noop } from '../utils'
+import { getUnknownBalance } from '../web3-utils'
 import { isNameAvailable } from '../aragonjs-wrapper'
 
 import * as Steps from './steps'
@@ -49,7 +50,7 @@ const initialState = {
 class Onboarding extends React.PureComponent {
   static defaultProps = {
     account: '',
-    balance: null,
+    balance: getUnknownBalance(),
     walletNetwork: '',
     visible: true,
     daoCreationStatus: 'none',
@@ -275,11 +276,17 @@ class Onboarding extends React.PureComponent {
     )
   }
 
+  // Open the organization stored in `domainToOpen`
   handleOpenOrganization = () => {
     const { domainToOpenCheckStatus, domainToOpen } = this.state
     if (domainToOpenCheckStatus === DomainCheckAccepted) {
       this.props.onOpenOrganization(`${domainToOpen}.aragonid.eth`)
     }
+  }
+
+  // Open the specified address as an organization
+  handleOpenOrganizationAddress = address => {
+    this.props.onOpenOrganization(address)
   }
 
   buildDao = () => {
@@ -437,6 +444,7 @@ class Onboarding extends React.PureComponent {
       balance,
       daoCreationStatus,
       onComplete,
+      selectorNetworks,
     } = this.props
 
     // No need to move the screens farther than one step
@@ -456,6 +464,8 @@ class Onboarding extends React.PureComponent {
           domainCheckStatus={domainToOpenCheckStatus}
           onDomainChange={this.handleDomainToOpenChange}
           onOpenOrganization={this.handleOpenOrganization}
+          onOpenOrganizationAddress={this.handleOpenOrganizationAddress}
+          selectorNetworks={selectorNetworks}
           {...sharedProps}
         />
       )
@@ -545,7 +555,7 @@ const View = styled.div`
   align-items: center;
   justify-content: center;
   min-width: 800px;
-  height: 100%;
+  flex-grow: 1;
   padding: 50px;
 `
 

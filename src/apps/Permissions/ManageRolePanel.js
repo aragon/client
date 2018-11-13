@@ -1,13 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
+import IdentityBadge from '../../components/IdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { isBurnEntity } from '../../permissions'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
-import IdentityBadge from '../../components/IdentityBadge'
 import EntitySelector from './EntitySelector'
 
 const CREATE_PERMISSION = Symbol('CREATE_PERMISSION')
+const VIEW_PERMISSION = Symbol('VIEW_PERMISSION')
 const NO_UPDATE_ACTION = Symbol('NO_UPDATE_ACTION')
 const SET_PERMISSION_MANAGER = Symbol('SET_PERMISSION_MANAGER')
 const REMOVE_PERMISSION_MANAGER = Symbol('REMOVE_PERMISSION_MANAGER')
@@ -52,6 +54,17 @@ const ACTIONS = new Map([
       `,
     },
   ],
+  [
+    VIEW_PERMISSION,
+    {
+      label: null,
+      message: `
+        This permission's manager has been discarded to an unrecoverable address.
+        No further management actions can be taken on the permission, making it
+        effectively frozen.
+      `,
+    },
+  ],
 ])
 
 const DEFAULT_STATE = {
@@ -76,7 +89,11 @@ class ManageRolePanel extends React.PureComponent {
   getCurrentAction() {
     const { updateAction } = this.state
     const manager = this.getManager()
-    return isEmptyAddress(manager.address) ? CREATE_PERMISSION : updateAction
+    return isEmptyAddress(manager.address)
+      ? CREATE_PERMISSION
+      : isBurnEntity(manager.address)
+        ? VIEW_PERMISSION
+        : updateAction
   }
 
   getUpdateAction(index) {
@@ -209,6 +226,9 @@ class ManageRolePanel extends React.PureComponent {
         <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
       )
     }
+    if (manager.type === 'burn') {
+      return <IdentityBadge entity="Discarded" />
+    }
     return <IdentityBadge entity={manager.address} />
   }
 
@@ -220,6 +240,7 @@ class ManageRolePanel extends React.PureComponent {
     const updateActionIndex = this.getUpdateActionIndex()
 
     const action = this.getCurrentAction()
+    const isUpdateAction = UPDATE_ACTIONS.has(action)
     const message = this.getMessage(action)
 
     return (
@@ -227,7 +248,9 @@ class ManageRolePanel extends React.PureComponent {
         title={
           action === CREATE_PERMISSION
             ? 'Initialize permission'
-            : 'Manage permission'
+            : action === VIEW_PERMISSION
+              ? 'View permission'
+              : 'Manage permission'
         }
         opened={opened}
         onClose={onClose}
@@ -246,30 +269,32 @@ class ManageRolePanel extends React.PureComponent {
 
           <Field label="Action description">{role && role.name}</Field>
 
-          {UPDATE_ACTIONS.has(action) && (
-            <React.Fragment>
-              <Field label="Permission manager">
-                <FlexRow>{this.renderManager()}</FlexRow>
-              </Field>
-              <Field label="Action">
-                <DropDown
-                  items={updateActionsItems}
-                  active={updateActionIndex}
-                  onChange={this.handleUpdateActionChange}
-                  wide
-                />
-              </Field>
-              {action === SET_PERMISSION_MANAGER && (
-                <Field label="New permission manager">
-                  <TextInput
-                    wide
-                    placeholder="0xcafe…"
-                    onChange={this.handleNewRoleManagerChange}
-                    value={newRoleManagerValue}
-                  />
-                </Field>
-              )}
-            </React.Fragment>
+          {(action === VIEW_PERMISSION || isUpdateAction) && (
+            <Field label="Permission manager">
+              <FlexRow>{this.renderManager()}</FlexRow>
+            </Field>
+          )}
+
+          {isUpdateAction && (
+            <Field label="Action">
+              <DropDown
+                items={updateActionsItems}
+                active={updateActionIndex}
+                onChange={this.handleUpdateActionChange}
+                wide
+              />
+            </Field>
+          )}
+
+          {action === SET_PERMISSION_MANAGER && (
+            <Field label="New permission manager">
+              <TextInput
+                wide
+                placeholder="0xcafe…"
+                onChange={this.handleNewRoleManagerChange}
+                value={newRoleManagerValue}
+              />
+            </Field>
           )}
 
           {action === CREATE_PERMISSION && (
@@ -292,18 +317,18 @@ class ManageRolePanel extends React.PureComponent {
             </React.Fragment>
           )}
 
-          <Field style={{ paddingTop: '20px' }}>
-            <Button
-              mode="strong"
-              onClick={this.handleSubmit}
-              disabled={!this.canSubmit()}
-              wide
-            >
-              {UPDATE_ACTIONS.has(action)
-                ? 'Update permission'
-                : 'Initialize permission'}
-            </Button>
-          </Field>
+          {(isUpdateAction || action === CREATE_PERMISSION) && (
+            <Field style={{ paddingTop: '20px' }}>
+              <Button
+                mode="strong"
+                onClick={this.handleSubmit}
+                disabled={!this.canSubmit()}
+                wide
+              >
+                {isUpdateAction ? 'Update permission' : 'Initialize permission'}
+              </Button>
+            </Field>
+          )}
 
           {message && <Info.Action title="Info">{message}</Info.Action>}
         </React.Fragment>

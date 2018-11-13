@@ -4,8 +4,8 @@
  * from this file.
  */
 import Web3 from 'web3'
+import BN from 'bn.js'
 
-const ANY_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 /**
@@ -18,6 +18,34 @@ export function addressesEqual(first, second) {
   first = first && first.toLowerCase()
   second = second && second.toLowerCase()
   return first === second
+}
+
+/**
+ * Format the balance to a fixed number of decimals
+ *
+ * @param {BN} amount The total amount.
+ * @param {object} options The options object.
+ * @param {BN} options.base The decimals base.
+ * @param {number} options.precision Number of decimals to format.
+ *
+ * @returns {string} The formatted balance.
+ */
+export function formatBalance(
+  amount,
+  { base = new BN(10).pow(new BN(18)), precision = 2 } = {}
+) {
+  const baseLength = base.toString().length
+
+  const whole = amount.div(base).toString()
+  let fraction = amount.mod(base).toString()
+  const zeros = '0'.repeat(Math.max(0, baseLength - fraction.length - 1))
+  fraction = `${zeros}${fraction}`.replace(/0+$/, '').slice(0, precision)
+
+  if (fraction === '' || parseInt(fraction, 10) === 0) {
+    return whole
+  }
+
+  return `${whole}.${fraction}`
 }
 
 /**
@@ -65,22 +93,17 @@ export function getWeb3(provider) {
   return web3
 }
 
-// Check if the address represents “Any address”
-export function isAnyAddress(address) {
-  return addressesEqual(address, ANY_ADDRESS)
-}
-
 // Check if the address represents an empty address
 export function isEmptyAddress(address) {
   return addressesEqual(address, EMPTY_ADDRESS)
 }
 
-export function getAnyAddress() {
-  return ANY_ADDRESS
-}
-
 export function getEmptyAddress() {
   return EMPTY_ADDRESS
+}
+
+export function getUnknownBalance() {
+  return new BN('-1')
 }
 
 // Re-export some utilities from web3-utils

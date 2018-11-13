@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SafeLink } from '@aragon/ui'
-import ErrorCard from './components/ErrorCard/ErrorCard'
+import GenericError from './components/Error/GenericError'
+import DAONotFoundError from './components/Error/DAONotFoundError'
+import { DAONotFound } from './errors'
 
 class GlobalErrorHandler extends React.Component {
   state = { error: null, errorStack: null }
@@ -21,20 +22,14 @@ class GlobalErrorHandler extends React.Component {
     return (
       <Main>
         <In>
-          <ErrorCard
-            title="Oops."
-            detailsTitle={error.message}
-            detailsContent={errorStack}
-            supportUrl="https://github.com/aragon/aragon/issues/new"
-            showReloadButton
-          >
-            Something went wrong and the application crashed. Reloading might
-            solve the problem, or you can{' '}
-            <SafeLink href="https://github.com/aragon/aragon/issues/new">
-              create an issue
-            </SafeLink>{' '}
-            on GitHub so we can help.
-          </ErrorCard>
+          {error instanceof DAONotFound ? (
+            <DAONotFoundError dao={error.dao} />
+          ) : (
+            <GenericError
+              detailsTitle={error.message}
+              detailsContent={errorStack}
+            />
+          )}
         </In>
       </Main>
     )

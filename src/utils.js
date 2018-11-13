@@ -23,7 +23,7 @@ export function appIconUrl(app) {
 export function makeEtherscanBaseUrl(network) {
   // Don't make etherscan urls if the network isn't one that etherscan supports
   if (
-    network === 'mainnet' ||
+    network === 'main' ||
     network === 'kovan' ||
     network === 'rinkeby' ||
     network === 'ropsten'

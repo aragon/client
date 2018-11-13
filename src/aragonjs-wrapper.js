@@ -14,26 +14,12 @@ import {
   ipfsDefaultConf,
   web3Providers,
   contractAddresses,
+  defaultGasPriceFn,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
-import { getWeb3 } from './web3-utils'
+import { getWeb3, getUnknownBalance } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
-import { InvalidAddress, NoConnection } from './errors'
-
-const KERNEL_BASE = {
-  name: 'Kernel',
-  appId: 'kernel',
-  isAragonOsInternalApp: true,
-  roles: [
-    {
-      name: 'Manage apps',
-      id: 'APP_MANAGER_ROLE',
-      params: [],
-      bytes:
-        '0xb6d92708f3d4817afc106147d969e229ced5c46e65e0a5002a0d391287762bd0',
-    },
-  ],
-}
+import { NoConnection, DAONotFound } from './errors'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -75,29 +61,22 @@ const applyAppOverrides = apps =>
 
 // Sort apps, apply URL overrides, and attach data useful to the frontend
 const prepareFrontendApps = (apps, daoAddress, gateway) => {
-  return [
-    {
-      ...KERNEL_BASE,
-      proxyAddress: daoAddress,
-      hasWebApp: false,
-    },
-    ...applyAppOverrides(apps)
-      .map(app => {
-        const baseUrl = appBaseUrl(app, gateway)
-        // Remove the starting slash from the start_url field
-        // so the absolute path can be resolved from baseUrl.
-        const startUrl = removeStartingSlash(app['start_url'] || '')
-        const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
+  return applyAppOverrides(apps)
+    .map(app => {
+      const baseUrl = appBaseUrl(app, gateway)
+      // Remove the starting slash from the start_url field
+      // so the absolute path can be resolved from baseUrl.
+      const startUrl = removeStartingSlash(app['start_url'] || '')
+      const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
 
-        return {
-          ...app,
-          src,
-          baseUrl,
-          hasWebApp: Boolean(app['start_url']),
-        }
-      })
-      .sort(sortAppsPair),
-  ]
+      return {
+        ...app,
+        src,
+        baseUrl,
+        hasWebApp: Boolean(app['start_url']),
+      }
+    })
+    .sort(sortAppsPair)
 }
 
 const getMainAccount = async web3 => {
@@ -129,13 +108,31 @@ const pollEvery = (fn, delay) => {
   }
 }
 
+// Filter the value we get from getBalance() before passing it to BN.js.
+// This is because passing some values to BN.js can lead to an infinite loop
+// when .toString() is called. Returns "-1" when the value is invalid.
+//
+// See https://github.com/indutny/bn.js/issues/186
+const filterBalanceValue = value => {
+  if (value === null) {
+    return '-1'
+  }
+  if (typeof value === 'object') {
+    value = String(value)
+  }
+  if (typeof value === 'string') {
+    return /^[0-9]+$/.test(value) ? value : '-1'
+  }
+  return '-1'
+}
+
 // Keep polling the main account.
 // See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
 export const pollMainAccount = pollEvery(
   (provider, { onAccount = () => {}, onBalance = () => {} } = {}) => {
     const web3 = getWeb3(provider)
     let lastAccount = null
-    let lastBalance = new BN(-1)
+    let lastBalance = getUnknownBalance()
     return {
       request: () =>
         getMainAccount(web3)
@@ -143,14 +140,13 @@ export const pollMainAccount = pollEvery(
             if (!account) {
               throw new Error('no account')
             }
-            return web3.eth.getBalance(account).then(balance => ({
-              account,
-              balance: new BN(balance),
-            }))
+            return web3.eth
+              .getBalance(account)
+              .then(filterBalanceValue)
+              .then(balance => ({ account, balance: new BN(balance) }))
           })
-          .catch(() => {
-            return { account: null, balance: new BN(-1) }
-          }),
+          .catch(() => ({ account: null, balance: getUnknownBalance() })),
+
       onResult: ({ account, balance }) => {
         if (account !== lastAccount) {
           lastAccount = account
@@ -329,16 +325,18 @@ const initWrapper = async (
     : dao
 
   if (!daoAddress) {
-    onError(new InvalidAddress('The provided DAO address is invalid'))
-    return
+    throw new DAONotFound(dao)
   }
 
   onDaoAddress(daoAddress)
 
   const wrapper = new Aragon(daoAddress, {
-    ensRegistryAddress,
     provider,
-    apm: { ipfs: ipfsConf },
+    defaultGasPriceFn,
+    apm: {
+      ensRegistryAddress,
+      ipfs: ipfsConf,
+    },
   })
 
   const web3 = getWeb3(walletProvider || provider)
@@ -346,8 +344,15 @@ const initWrapper = async (
 
   const account = await getMainAccount(web3)
   try {
-    await wrapper.init(account && [account])
+    await wrapper.init({
+      accounts: {
+        providedAccounts: account ? [account] : [],
+      },
+    })
   } catch (err) {
+    if (err.message === 'Provided daoAddress is not a DAO') {
+      throw new DAONotFound(dao)
+    }
     if (err.message === 'connection not open') {
       onError(
         new NoConnection(
@@ -356,6 +361,7 @@ const initWrapper = async (
       )
       return
     }
+
     throw err
   }
 
@@ -388,37 +394,50 @@ const initWrapper = async (
 
 const templateParamFilters = {
   democracy: (
-    // supportNeeded: Number between 0 (0%) and 1 (100%).
-    // minAcceptanceQuorum: Number between 0 (0%) and 1 (100%).
+    // name: String of organization name
+    // supportNeeded: BN between 0 (0%) and 1e18 - 1 (99.99...%).
+    // minAcceptanceQuorum: BN between 0 (0%) and 1e18 - 1(99.99...%).
     // voteDuration: Duration in seconds.
-    { supportNeeded, minAcceptanceQuorum, voteDuration },
+    { name, supportNeeded, minAcceptanceQuorum, voteDuration },
     account
   ) => {
-    const tokenBase = Math.pow(10, 18)
-    const percentageBase = Math.pow(10, 18)
+    const percentageMax = new BN(10).pow(new BN(18))
+    if (
+      supportNeeded.gte(percentageMax) ||
+      minAcceptanceQuorum.gte(percentageMax)
+    ) {
+      throw new Error(
+        `supported needed ${supportNeeded.toString()} and minimum acceptance` +
+          `quorum (${minAcceptanceQuorum.toString()}) must be below 100%`
+      )
+    }
+
+    const tokenBase = new BN(10).pow(new BN(18))
     const holders = [{ address: account, balance: 1 }]
 
     const [accounts, stakes] = holders.reduce(
       ([accounts, stakes], holder) => [
         [...accounts, holder.address],
-        [...stakes, holder.balance * tokenBase],
+        [...stakes, tokenBase.muln(holder.balance)],
       ],
       [[], []]
     )
 
     return [
+      name,
       accounts,
       stakes,
-      supportNeeded * percentageBase,
-      minAcceptanceQuorum * percentageBase,
+      supportNeeded,
+      minAcceptanceQuorum,
       voteDuration,
     ]
   },
 
   multisig: (
+    // name: String of organization name
     // signers: Accounts corresponding to the signers.
     // neededSignatures: Minimum number of signatures needed.
-    { signers, neededSignatures },
+    { name, signers, neededSignatures },
     account
   ) => {
     if (!signers || signers.length === 0) {
@@ -427,12 +446,14 @@ const templateParamFilters = {
 
     if (neededSignatures < 1 || neededSignatures > signers.length) {
       throw new Error(
-        'neededSignatures must be between 1 the total number of signers',
+        `neededSignatures must be between 1 and the total number of signers (${
+          signers.length
+        })`,
         neededSignatures
       )
     }
 
-    return [signers, neededSignatures]
+    return [name, signers, neededSignatures]
   },
 }
 
@@ -444,7 +465,7 @@ export const isNameAvailable = async name =>
 
 export const initDaoBuilder = (
   provider,
-  registryAddress,
+  ensRegistryAddress,
   ipfsConf = ipfsDefaultConf
 ) => {
   // DEV only
@@ -468,11 +489,26 @@ export const initDaoBuilder = (
         )
       }
 
-      const templates = setupTemplates(provider, registryAddress, account)
+      const templates = setupTemplates(account, {
+        provider,
+        defaultGasPriceFn,
+        apm: {
+          ensRegistryAddress,
+          ipfs: ipfsConf,
+        },
+      })
       const templateFilter = templateParamFilters[templateName]
-      const templateData = templateFilter(settings, account)
+      const templateInstanceParams = templateFilter(
+        { name: organizationName, ...settings },
+        account
+      )
+      const tokenParams = [settings.tokenName, settings.tokenSymbol]
 
-      return templates.newDAO(templateName, organizationName, templateData)
+      return templates.newDAO(
+        templateName,
+        { params: tokenParams },
+        { params: templateInstanceParams }
+      )
     },
   }
 }

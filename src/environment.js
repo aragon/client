@@ -6,6 +6,8 @@ import {
   getIpfsGateway,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
+import { noop } from './utils'
+import { toWei } from './web3-utils'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault']
 const networkType = getEthNetworkType()
@@ -124,3 +126,10 @@ export const web3Providers = {
   default: new Web3.providers.WebsocketProvider(defaultEthNode),
   wallet: window.web3 && window.web3.currentProvider,
 }
+export const defaultGasPriceFn =
+  networkType === 'main'
+    ? noop // On mainnet rely on the provider's gas estimation
+    : () => toWei('10', 'gwei') // on all other networks just hardcode it
+
+// Get the address of the demo DAO
+export const getDemoDao = () => process.env.ARAGON_DEMO_DAO || ''

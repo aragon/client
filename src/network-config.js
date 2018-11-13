@@ -4,17 +4,17 @@ import { makeEtherscanBaseUrl } from './utils'
 const localEnsRegistryAddress = getEnsRegistryAddress()
 
 export const networkConfigs = {
-  mainnet: {
+  main: {
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x314159265dd8dbb310642f98f50c066173c1259b',
     },
     nodes: {
-      defaultEth: 'wss://mainnet.aragon.network/ws',
+      defaultEth: 'wss://mainnet.eth.aragon.network/ws',
     },
     settings: {
       chainId: 1,
-      etherscanBaseUrl: makeEtherscanBaseUrl('mainnet'),
+      etherscanBaseUrl: makeEtherscanBaseUrl('main'),
       name: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
     },
@@ -22,10 +22,10 @@ export const networkConfigs = {
   rinkeby: {
     addresses: {
       ensRegistry:
-        localEnsRegistryAddress || '0xfbae32d1cde62858bc45f51efc8cc4fa1415447e',
+        localEnsRegistryAddress || '0x98df287b6c145399aaa709692c8d308357bc085d',
     },
     nodes: {
-      defaultEth: 'ws://rinkeby.aragon.network:8546',
+      defaultEth: 'wss://rinkeby.eth.aragon.network/ws',
     },
     settings: {
       chainId: 4,
@@ -61,5 +61,10 @@ export function getNetworkConfig(type) {
 }
 
 export function sanitizeNetworkType(networkType) {
-  return networkType === 'private' ? 'localhost' : networkType
+  if (networkType === 'private') {
+    return 'localhost'
+  } else if (networkType === 'main') {
+    return 'mainnet'
+  }
+  return networkType
 }

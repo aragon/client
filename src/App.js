@@ -10,7 +10,7 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
-import { getWeb3 } from './web3-utils'
+import { getWeb3, getUnknownBalance } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
@@ -28,7 +28,7 @@ class App extends React.Component {
     prevLocator: null,
     wrapper: null,
     account: '',
-    balance: null,
+    balance: getUnknownBalance(),
     connected: false,
     apps: [],
     appsStatus: APPS_STATUS_LOADING,
@@ -42,6 +42,10 @@ class App extends React.Component {
     transactionBag: null,
     walletNetwork: '',
     showDeprecatedBanner: false,
+    selectorNetworks: [
+      ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
+      ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
+    ],
   }
 
   history = createHistory()
@@ -172,7 +176,7 @@ class App extends React.Component {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
       onError: err => {
-        log(`Wrapper init error: ${err.name}. ${err.message}.`)
+        log(`Wrapper init, recoverable error: ${err.name}. ${err.message}.`)
         this.setState({ appsStatus: APPS_STATUS_ERROR })
       },
       onDaoAddress: daoAddress => {
@@ -210,8 +214,8 @@ class App extends React.Component {
         this.setState({ wrapper })
       })
       .catch(err => {
-        log(`Wrapper init error: ${err.name}. ${err.message}.`)
-        this.setState({ appsStatus: APPS_STATUS_ERROR })
+        log(`Wrapper init, fatal error: ${err.name}. ${err.message}.`)
+        this.setState({ fatalError: err })
       })
   }
 
@@ -250,6 +254,7 @@ class App extends React.Component {
       appsStatus,
       permissionsLoading,
       showDeprecatedBanner,
+      selectorNetworks,
     } = this.state
 
     const { mode, dao } = locator
@@ -299,6 +304,7 @@ class App extends React.Component {
           onComplete={this.handleCompleteOnboarding}
           onOpenOrganization={this.handleOpenOrganization}
           onResetDaoBuilder={this.handleResetDaoBuilder}
+          selectorNetworks={selectorNetworks}
         />
       </ModalProvider>
     )

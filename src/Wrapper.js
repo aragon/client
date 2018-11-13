@@ -1,13 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SidePanel } from '@aragon/ui'
 import { Apps, Permissions, Settings } from './apps'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
-import SignerPanelContent from './components/SignerPanel/SignerPanelContent'
+import SignerPanel from './components/SignerPanel/SignerPanel'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
@@ -32,13 +31,6 @@ class Wrapper extends React.Component {
   }
   state = {
     appInstance: {},
-    signerOpened: false,
-    web3Action: {},
-  }
-  componentWillReceiveProps({ transactionBag }) {
-    if (transactionBag && transactionBag !== this.props.transactionBag) {
-      this.handleTransaction(transactionBag)
-    }
   }
   openApp = (instanceId, params) => {
     const { historyPush, locator } = this.props
@@ -81,67 +73,7 @@ class Wrapper extends React.Component {
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
   }
-  makeTransactionIntent(transaction = {}) {
-    const { apps } = this.props
-    const { description, to } = transaction
-    const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
-    const toName = (toApp && toApp.name) || ''
 
-    return {
-      description,
-      to,
-      toName,
-      transaction,
-    }
-  }
-  reshapeTransactionBag({ path, transaction }) {
-    // This is a temporary method to reshape the transaction bag
-    // to the future format we expect from Aragon.js
-    // When Aragon.js starts returning the new format, we can simply
-    // replace search and replace this function with `bag`, although
-    // it is probably only used in `handleTransaction`
-    return {
-      direct: path.length === 1,
-      intent: transaction && this.makeTransactionIntent(transaction),
-      paths: path.length ? [path] : [],
-    }
-  }
-  handleTransaction = bag => {
-    const { intent, direct, paths } = this.reshapeTransactionBag(bag)
-    this.showWeb3ActionSigner(intent, { direct, error: null, paths })
-  }
-  handleSigningWeb3Tx = transaction => {
-    const {
-      walletWeb3,
-      transactionBag: { accept, reject },
-    } = this.props
-
-    walletWeb3.eth.sendTransaction(transaction, (err, res) => {
-      this.handleSignerClose()
-
-      if (err) {
-        const errorIntent = this.makeTransactionIntent(transaction)
-        this.showWeb3ActionSigner(errorIntent, { error: err })
-        reject(err)
-        console.error(err)
-        return
-      }
-
-      accept(res)
-    })
-  }
-
-  handleSignerClose = () => {
-    this.setState({ signerOpened: false })
-  }
-  handleSignerTransitionEnd = opened => {
-    // Reset signer state only after it has finished transitioning out
-    if (!opened) {
-      this.setState({
-        web3Action: {},
-      })
-    }
-  }
   isAppInstalled(instanceId) {
     const { apps } = this.props
     return (
@@ -149,28 +81,19 @@ class Wrapper extends React.Component {
       !!apps.find(app => addressesEqual(app.proxyAddress, instanceId))
     )
   }
-  showWeb3ActionSigner = (intent, { direct, error, paths }) => {
-    this.setState({
-      signerOpened: true,
-      web3Action: {
-        error,
-        intent,
-        paths,
-        direct,
-      },
-    })
-  }
+
   render() {
-    const { signerOpened, web3Action } = this.state
     const {
       account,
       apps,
       walletWeb3,
+      walletNetwork,
       wrapper,
       appsStatus,
       locator: { instanceId, params },
       banner,
       onRequestAppsReload,
+      transactionBag,
     } = this.props
 
     return (
@@ -189,20 +112,13 @@ class Wrapper extends React.Component {
           />
           <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
         </Container>
-        <SidePanel
-          onClose={this.handleSignerClose}
-          onTransitionEnd={this.handleSignerTransitionEnd}
-          opened={signerOpened}
-          title="Create transaction"
-        >
-          <SignerPanelContent
-            account={account}
-            onClose={this.handleSignerClose}
-            onSign={this.handleSigningWeb3Tx}
-            web3={walletWeb3}
-            {...web3Action}
-          />
-        </SidePanel>
+        <SignerPanel
+          walletWeb3={walletWeb3}
+          walletNetwork={walletNetwork}
+          transactionBag={transactionBag}
+          apps={apps}
+          account={account}
+        />
       </Main>
     )
   }
@@ -256,10 +172,11 @@ class Wrapper extends React.Component {
     if (instanceId === 'settings') {
       return (
         <Settings
-          daoAddr={daoAddress}
           account={account}
-          walletNetwork={walletNetwork}
           apps={apps}
+          daoAddr={daoAddress}
+          onOpenApp={this.openApp}
+          walletNetwork={walletNetwork}
         />
       )
     }
@@ -290,21 +207,21 @@ const Main = styled.div`
 
 const BannerWrapper = styled.div`
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  flex-shrink: 0;
 `
 
 const Container = styled.div`
+  position: relative;
   display: flex;
-  align-items: stretch;
-  height: 100%;
+  flex-grow: 1;
+  min-height: 0;
 `
 
 const AppScreen = styled.div`
   position: relative;
   z-index: 1;
   flex-grow: 1;
-  width: 100%;
-  height: 100%;
   overflow: auto;
 `
 

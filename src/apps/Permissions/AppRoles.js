@@ -12,6 +12,7 @@ import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { isBurnEntity } from '../../permissions'
 import { isEmptyAddress } from '../../web3-utils'
 
 class AppRoles extends React.PureComponent {
@@ -77,12 +78,16 @@ class RoleRow extends React.Component {
         <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
       )
     }
+    if (manager.type === 'burn') {
+      return <IdentityBadge entity={'Discarded'} />
+    }
     return <IdentityBadge entity={manager.address} />
   }
   render() {
     const { role, manager } = this.props
     const name = (role && role.name) || 'Unknown action'
     const emptyManager = isEmptyAddress(manager.address)
+    const discardedManager = isBurnEntity(manager.address)
 
     return (
       <TableRow>
@@ -93,8 +98,13 @@ class RoleRow extends React.Component {
           {emptyManager ? 'No manager set' : this.renderManager()}
         </TableCell>
         <TableCell align="right">
-          <Button mode="outline" compact onClick={this.handleManageClick}>
-            {emptyManager ? 'Initialize' : 'Manage'}
+          <Button
+            compact
+            mode="outline"
+            style={{ minWidth: '80px' }}
+            onClick={this.handleManageClick}
+          >
+            {emptyManager ? 'Initialize' : discardedManager ? 'View' : 'Manage'}
           </Button>
         </TableCell>
       </TableRow>
