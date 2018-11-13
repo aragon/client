@@ -57,10 +57,6 @@ class DaoSettings extends React.Component {
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     const checksummedDaoAddr = daoAddr && toChecksumAddress(daoAddr)
-    const checksummedAppProxies = apps.reduce((addrMap, app) => {
-      addrMap[app.appId] = toChecksumAddress(app.proxyAddress)
-      return addrMap
-    }, {})
     const webApps = apps.filter(app => app.hasWebApp)
     return (
       <div>
@@ -140,7 +136,7 @@ class DaoSettings extends React.Component {
           >
             <AppsList>
               {webApps.map(({ appId, description, name, proxyAddress }) => {
-                const checksummedProxyAddress = checksummedAppProxies[appId]
+                const checksummedProxyAddress = toChecksumAddress(proxyAddress)
                 return (
                   <li title={description} key={checksummedProxyAddress}>
                     <Field label={name}>
