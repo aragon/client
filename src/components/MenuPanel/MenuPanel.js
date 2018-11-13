@@ -1,16 +1,6 @@
 import React from 'react'
-// import { Spring } from 'react-spring'
 import styled from 'styled-components'
-import {
-  theme,
-  unselectable,
-  // springs,
-  // IconWallet,
-  // IconNotifications,
-} from '@aragon/ui'
-// import ClickOutHandler from 'react-onclickout'
-// import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
-// import { lerp } from '../../math-utils'
+import { theme, unselectable } from '@aragon/ui'
 import { appIconUrl } from '../../utils'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
@@ -60,13 +50,7 @@ class MenuPanel extends React.PureComponent {
     this.setState({ notificationsOpened: false })
   }
   render() {
-    const {
-      apps,
-      // notificationsObservable,
-      // onClearAllNotifications,
-      // onOpenNotification,
-    } = this.props
-    // const { notificationsOpened } = this.state
+    const { apps } = this.props
 
     const appGroups = prepareAppGroups(apps)
     const menuApps = [
@@ -82,13 +66,6 @@ class MenuPanel extends React.PureComponent {
         <In>
           <Header>
             <img src={logo} alt="Aragon" height="36" />
-            {/*
-            <div className="actions">
-              <IconButton role="button" onClick={this.handleNotificationsClick}>
-                <IconNotifications />
-              </IconButton>
-            </div>
-            */}
           </Header>
           <Content>
             <div className="in">
@@ -105,30 +82,6 @@ class MenuPanel extends React.PureComponent {
             </div>
           </Content>
         </In>
-
-        {/* <ClickOutHandler onClickOut={this.handleCloseNotifications}>
-          <Spring
-            config={springs.fast}
-            to={{ openProgress: Number(notificationsOpened) }}
-          >
-            {({ openProgress }) => (
-              <NotificationsWrapper
-                style={{
-                  transform: `
-                    translate3d(${lerp(openProgress, -100, 0)}%, 0, 0)
-                  `,
-                  boxShadow: `1px 0 15px rgba(0, 0, 0, ${openProgress * 0.1})`,
-                }}
-              >
-                <NotificationsPanel
-                  observable={notificationsObservable}
-                  onClearAllNotifications={onClearAllNotifications}
-                  onOpenNotification={onOpenNotification}
-                />
-              </NotificationsWrapper>
-            )}
-          </Spring>
-        </ClickOutHandler> */}
       </Main>
     )
   }
@@ -194,18 +147,6 @@ const In = styled.div`
   border-right: 1px solid #e8e8e8;
   box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
 `
-
-// const IconButton = styled.span`
-//   cursor: pointer;
-// `
-
-// const NotificationsWrapper = styled.div`
-//   position: fixed;
-//   z-index: 1;
-//   top: 0;
-//   bottom: 0;
-//   left: 220px;
-// `
 
 const Header = styled.div`
   flex-shrink: 0;
