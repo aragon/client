@@ -1,5 +1,5 @@
 import { staticApps } from './static-apps'
-import { isAddress } from './web3-utils'
+import { isAddress, isValidEnsName } from './web3-utils'
 
 /*
  * Parse a path and a search query and return a “locator” object.
@@ -47,7 +47,7 @@ export const parsePath = (pathname, search = '') => {
   }
 
   const validAddress = isAddress(parts[0])
-  const validDomain = /[a-z0-9]+\.aragonid\.eth/.test(parts[0])
+  const validDomain = isValidEnsName(parts[0])
 
   // Exclude invalid DAO addresses
   if (!validAddress && !validDomain) {
