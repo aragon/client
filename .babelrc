@@ -6,7 +6,8 @@
         "modules": false,
         "useBuiltIns": false
       }
-    ]
+    ],
+    "@babel/preset-react"
   ],
   "plugins": [
     ["styled-components", { "displayName": true }],
