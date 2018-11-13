@@ -29,7 +29,7 @@ import { isAddress, isValidEnsName } from './web3-utils'
  *   - home: the screen you see when opening /.
  *   - setup: the onboarding screens.
  *   - app: when the path starts with a DAO address.
- *   - unknown: the mode can’t be determined.
+ *   - invalid: the DAO given is not valid
  */
 export const parsePath = (pathname, search = '') => {
   const locator = { path: pathname + search }
@@ -51,7 +51,7 @@ export const parsePath = (pathname, search = '') => {
 
   // Exclude invalid DAO addresses
   if (!validAddress && !validDomain) {
-    return { ...locator, mode: 'unknown' }
+    return { ...locator, dao: parts[0], mode: 'invalid' }
   }
 
   // App
