@@ -107,7 +107,7 @@ export function getUnknownBalance() {
 }
 
 export function isValidEnsName(name) {
-  return /^([a-z0-9]+\.)+eth$/.test(name)
+  return /^([\w-]+\.)+eth$/.test(name)
 }
 
 // Re-export some utilities from web3-utils
