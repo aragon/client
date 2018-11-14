@@ -23,7 +23,7 @@ class ProgressBar extends React.Component {
 
     return (
       <Spring
-        config={springs.lazy}
+        config={springs.smooth}
         to={{
           showProgress: Number(visible),
           stepProgress: stepIndex > 0 ? stepIndex : 0,

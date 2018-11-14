@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Field, TextInput, Text, theme } from '@aragon/ui'
-import { lerp } from '../../../math-utils'
+import { animated } from 'react-spring'
 import { noop } from '../../../utils'
 
 class ConfigureTokenName extends React.Component {
   static defaultProps = {
-    positionProgress: 0,
     onFieldUpdate: noop,
     onSubmit: noop,
     fields: {},
@@ -16,11 +15,8 @@ class ConfigureTokenName extends React.Component {
     this.handleTokenNameChange = this.createChangeHandler('tokenName')
     this.handleTokenSymbolChange = this.createChangeHandler('tokenSymbol')
   }
-  componentWillReceiveProps({ positionProgress }) {
-    if (
-      positionProgress === 0 &&
-      positionProgress !== this.props.positionProgress
-    ) {
+  componentWillReceiveProps({ forceFocus }) {
+    if (forceFocus && forceFocus !== this.props.forceFocus) {
       this.formEl.elements[0].focus()
     }
   }
@@ -32,21 +28,15 @@ class ConfigureTokenName extends React.Component {
   }
   handleSubmit = event => {
     event.preventDefault()
-    this.formEl.elements[0].blur()
     this.props.onSubmit()
   }
   handleFormRef = el => {
     this.formEl = el
   }
   render() {
-    const { positionProgress, fields } = this.props
+    const { fields, screenTransitionStyles } = this.props
     return (
-      <Main
-        style={{
-          opacity: 1 - Math.abs(positionProgress),
-          transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-        }}
-      >
+      <Main style={screenTransitionStyles}>
         <ConfigureTokenNameContent
           fields={fields}
           handleTokenNameChange={this.handleTokenNameChange}
@@ -115,7 +105,7 @@ const SubmitForm = ({ children, innerRef = noop, ...props }) => (
   </form>
 )
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   display: flex;
   align-items: flex-start;
   justify-content: center;

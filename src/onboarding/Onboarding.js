@@ -33,7 +33,6 @@ const SPRING_HIDE = {
   tension: 70,
   friction: 15,
 }
-const SPRING_SCREEN = springs.lazy
 
 const initialState = {
   template: null,
@@ -393,7 +392,8 @@ class Onboarding extends React.PureComponent {
             <View>
               <Window>
                 <Spring
-                  config={SPRING_SCREEN}
+                  native
+                  config={springs.smooth}
                   to={{ screenProgress: stepIndex }}
                 >
                   {({ screenProgress }) => (
@@ -404,8 +404,9 @@ class Onboarding extends React.PureComponent {
                           <Screen active={screen === step.screen} key={screen}>
                             {this.renderScreen(
                               screen,
-                              i - stepIndex,
-                              i - screenProgress
+                              i,
+                              screenProgress,
+                              screen === step.screen
                             )}
                           </Screen>
                         ))}
@@ -429,7 +430,7 @@ class Onboarding extends React.PureComponent {
       </Spring>
     )
   }
-  renderScreen(screen, position, positionProgress) {
+  renderScreen(screen, screenIndex, positionProgress, isActive) {
     const {
       template,
       domain,
@@ -448,9 +449,23 @@ class Onboarding extends React.PureComponent {
     } = this.props
 
     // No need to move the screens farther than one step
-    positionProgress = Math.min(1, Math.max(-1, positionProgress))
+    const getPositionProgress = progress =>
+      Math.min(1, Math.max(-1, screenIndex - progress))
 
-    const sharedProps = { positionProgress }
+    // used by every screen
+    const screenTransitionStyles = {
+      opacity: positionProgress.interpolate(
+        v => 1 - Math.abs(getPositionProgress(v))
+      ),
+      transform: positionProgress.interpolate(
+        v => `translateX(${getPositionProgress(v) * 50}%)`
+      ),
+    }
+
+    const sharedProps = {
+      screenTransitionStyles,
+      forceFocus: isActive,
+    }
 
     if (screen === 'start') {
       return (
