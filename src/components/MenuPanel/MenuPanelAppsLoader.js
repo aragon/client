@@ -32,14 +32,17 @@ class MenuPanelAppsLoader extends React.Component {
   }
 
   handleRest = () => {
-    const isReady = this.props.appsStatus === APPS_STATUS_READY
-    if (isReady) {
-      setTimeout(() => {
-        this.setState({ showApps: true })
-      }, 0)
-    }
-    if (isReady && this.state.showApps) {
-      this.setState({ transitionDone: true })
+    const { showApps } = this.state
+
+    if (this.props.appsStatus === APPS_STATUS_READY) {
+      this.setState({
+        // `showApps: true` triggers the transition showing the apps.
+        showApps: true,
+
+        // The second time handleRest() is called, showApps is `true`, which
+        // means that we reached the end of the transition.
+        transitionDone: showApps,
+      })
     }
   }
 
