@@ -2,13 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import ContainerDimensions from 'react-container-dimensions'
 import { Spring, animated } from 'react-spring'
-import { theme, springs } from '@aragon/ui'
+import { theme } from '@aragon/ui'
+import springs from '../../springs'
 
 const { accent } = theme
 
 const AppLoadingProgressBar = ({ hide, percent, ...props }) => (
   <Spring
-    config={springs.fast}
+    config={springs.smooth}
     from={{ opacity: 0, percentProgress: 0 }}
     to={{
       opacity: Number(!hide),

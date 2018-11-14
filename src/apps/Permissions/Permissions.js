@@ -19,7 +19,9 @@ class Permissions extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ animateScreens: true })
+    setTimeout(() => {
+      this.setState({ animateScreens: true })
+    }, 0)
   }
 
   componentDidUpdate(prevProps) {

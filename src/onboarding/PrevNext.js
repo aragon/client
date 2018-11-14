@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { springs, Button } from '@aragon/ui'
+import { Button } from '@aragon/ui'
 import { lerp } from '../math-utils'
+import springs from '../springs'
 
 class PrevNext extends React.Component {
   render() {
@@ -17,7 +18,7 @@ class PrevNext extends React.Component {
     } = this.props
     return (
       <Spring
-        config={springs.fast}
+        config={springs.smooth}
         to={{ showProgress: Number(visible) }}
         native
       >

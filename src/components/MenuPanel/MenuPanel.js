@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { theme, unselectable } from '@aragon/ui'
+import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
@@ -39,6 +40,7 @@ class MenuPanel extends React.PureComponent {
   state = {
     notificationsOpened: false,
   }
+
   handleNotificationsClick = event => {
     // Prevent clickout events  to trigger
     event.nativeEvent.stopImmediatePropagation()
@@ -49,10 +51,13 @@ class MenuPanel extends React.PureComponent {
   handleCloseNotifications = () => {
     this.setState({ notificationsOpened: false })
   }
+
+  getAppGroups = memoize(apps => prepareAppGroups(apps))
+
   render() {
     const { apps } = this.props
+    const appGroups = this.getAppGroups(apps)
 
-    const appGroups = prepareAppGroups(apps)
     const menuApps = [
       APP_HOME,
       appGroups,
@@ -85,7 +90,8 @@ class MenuPanel extends React.PureComponent {
       </Main>
     )
   }
-  renderAppGroup = (app, readyToExpand) => {
+
+  renderAppGroup(app) {
     const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances = [] } = app
@@ -101,25 +107,39 @@ class MenuPanel extends React.PureComponent {
           icon={icon}
           instances={instances}
           active={isActive}
-          expand={isActive && readyToExpand}
+          expand={isActive}
           activeInstanceId={activeInstanceId}
           onActivate={onOpenApp}
         />
       </div>
     )
   }
-  renderLoadedAppGroup = apps => {
-    const { appsStatus, onRequestAppsReload } = this.props
+
+  renderLoadedAppGroup(appGroups) {
+    const { appsStatus, activeInstanceId, onRequestAppsReload } = this.props
+
+    // Used by the menu transition
+    const expandedInstancesCount = appGroups.reduce(
+      (height, { instances }) =>
+        instances.length > 1 &&
+        instances.findIndex(
+          ({ instanceId }) => instanceId === activeInstanceId
+        ) > -1
+          ? height + instances.length
+          : height,
+      0
+    )
 
     // Wrap the DAO apps in the loader
     return (
       <MenuPanelAppsLoader
         key="menu-apps"
         appsStatus={appsStatus}
-        itemsCount={apps.length}
         onRetry={onRequestAppsReload}
+        appsCount={appGroups.length}
+        expandedInstancesCount={expandedInstancesCount}
       >
-        {done => apps.map(app => this.renderAppGroup(app, done))}
+        {() => appGroups.map(app => this.renderAppGroup(app))}
       </MenuPanelAppsLoader>
     )
   }

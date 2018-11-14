@@ -1,9 +1,10 @@
 import React from 'react'
 import { Spring, animated } from 'react-spring'
 import styled from 'styled-components'
-import { theme, springs, IconBlank } from '@aragon/ui'
-import MenuPanelInstance from './MenuPanelInstance'
+import { theme, IconBlank } from '@aragon/ui'
 import color from 'onecolor'
+import MenuPanelInstance from './MenuPanelInstance'
+import springs from '../../springs'
 
 class MenuPanelAppGroup extends React.PureComponent {
   static defaultProps = {
@@ -30,7 +31,7 @@ class MenuPanelAppGroup extends React.PureComponent {
     const singleInstance = instances.length === 1
     return (
       <Spring
-        config={springs.swift}
+        config={springs.smooth}
         to={{ openProgress: Number(active && (singleInstance || expand)) }}
         native
       >

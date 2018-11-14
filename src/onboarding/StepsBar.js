@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spring } from 'react-spring'
-import { springs, Text } from '@aragon/ui'
+import { Text } from '@aragon/ui'
 import * as Steps from './steps'
 import { lerp } from '../math-utils'
+import springs from '../springs'
 
 const STEPS_COUNT = Steps.ProgressBarGroups.length
 
@@ -22,7 +23,7 @@ class ProgressBar extends React.Component {
 
     return (
       <Spring
-        config={springs.fast}
+        config={springs.lazy}
         to={{
           showProgress: Number(visible),
           stepProgress: stepIndex > 0 ? stepIndex : 0,

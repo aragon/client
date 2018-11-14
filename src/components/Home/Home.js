@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Spring } from 'react-spring'
-import { theme, AppBar, Text, springs } from '@aragon/ui'
+import { Spring, animated } from 'react-spring'
+import { theme, AppView, Text } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { lerp } from '../../math-utils'
+import springs from '../../springs'
 
 import logo from './assets/logo-background.svg'
 
@@ -12,8 +13,8 @@ import imgFinance from './assets/finance.svg'
 import imgPayment from './assets/payment.svg'
 import imgVote from './assets/vote.svg'
 
-const CARD_WIDTH = 220
-const CARD_HEIGHT = 200
+const CARD_WIDTH = 200
+const CARD_HEIGHT = 180
 const CARD_MARGIN = 30
 
 const actions = [
@@ -76,7 +77,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { connected, apps, locator, appsLoading } = this.props
+    const { connected, apps, locator } = this.props
     const { showApps } = this.state
 
     const appActions = actions.filter(({ appName }) =>
@@ -84,11 +85,8 @@ class Home extends React.Component {
     )
     return (
       <Main>
-        <AppBarWrapper>
-          <AppBar title="Home" />
-        </AppBarWrapper>
-        <ScrollWrapper>
-          <AppWrapper>
+        <AppContent>
+          <AppView title="Home">
             <Spring
               config={springs.lazy}
               to={{ showAppsProgress: Number(showApps) }}
@@ -115,27 +113,18 @@ class Home extends React.Component {
                         : 'You are using Aragon 0.6 — Alba'}
                     </Text>
                   </Title>
-                  {appsLoading ||
-                    (appActions.length > 0 && (
-                      <p style={{ marginBottom: '20px' }}>
-                        <Text color={theme.textSecondary}>
-                          {showApps
-                            ? 'What do you want to do?'
-                            : 'Loading apps…'}
-                        </Text>
-                      </p>
-                    ))}
-                  <div
+                  {
+                    <p>
+                      <Text color={theme.textSecondary}>
+                        {showApps ? 'What do you want to do?' : 'Loading apps…'}
+                      </Text>
+                    </p>
+                  }
+                  <animated.div
                     style={{
                       display: showApps ? 'block' : 'none',
                       opacity: showAppsProgress,
-                      height:
-                        lerp(
-                          showAppsProgress,
-                          0,
-                          CARD_HEIGHT * Math.floor(appActions.length / 2) +
-                            CARD_MARGIN * Math.floor(appActions.length / 2 - 1)
-                        ) + 'px',
+                      height: showAppsProgress * 100 + '%',
                     }}
                   >
                     <Cards>
@@ -150,12 +139,12 @@ class Home extends React.Component {
                         </CardWrap>
                       ))}
                     </Cards>
-                  </div>
+                  </animated.div>
                 </Content>
               )}
             </Spring>
-          </AppWrapper>
-        </ScrollWrapper>
+          </AppView>
+        </AppContent>
         <AppFooter>
           <ConnectionBullet connected={connected} />
           <Text size="xsmall">
@@ -171,8 +160,6 @@ const Main = styled.div`
   display: flex;
   height: 100%;
   flex-direction: column;
-  align-items: stretch;
-  justify-content: stretch;
 
   background-color: ${theme.mainBackground};
   background-image: url(${logo});
@@ -180,24 +167,10 @@ const Main = styled.div`
   background-repeat: no-repeat;
 `
 
-const AppBarWrapper = styled.div`
-  flex-shrink: 0;
-`
-
-const ScrollWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  overflow-y: scroll;
+const AppContent = styled.div`
   flex-grow: 1;
-`
-
-const AppWrapper = styled.div`
-  flex-grow: 1;
-  min-height: min-content;
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
+  flex-shrink: 1;
+  min-height: 0;
 `
 
 const AppFooter = styled.div`
@@ -210,24 +183,15 @@ const AppFooter = styled.div`
   border-top: 1px solid ${theme.contentBorder};
 `
 
-const ConnectionBullet = styled.span`
-  width: 8px;
-  height: 8px;
-  margin-top: -2px;
-  margin-right: 8px;
-  border-radius: 50%;
-  background: ${({ connected }) =>
-    connected ? theme.positive : theme.negative};
-`
-
 const Content = styled.div`
   display: flex;
+  width: 100%;
+  flex-grow: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  padding-top: 40px;
   text-align: center;
-  padding: 40px;
 `
 
 const Title = styled.h1`
@@ -247,8 +211,18 @@ const CardWrap = styled.div`
   flex-grow: 0;
   width: ${CARD_WIDTH}px;
   height: ${CARD_HEIGHT}px;
-  margin-bottom: ${CARD_MARGIN}px;
+  margin-top: ${CARD_MARGIN}px;
   margin-left: ${CARD_MARGIN}px;
+`
+
+const ConnectionBullet = styled.span`
+  width: 8px;
+  height: 8px;
+  margin-top: -2px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: ${({ connected }) =>
+    connected ? theme.positive : theme.negative};
 `
 
 export default Home

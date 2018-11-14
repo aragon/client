@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { springs } from '@aragon/ui'
 import { noop } from '../utils'
 import { getUnknownBalance } from '../web3-utils'
 import { isNameAvailable } from '../aragonjs-wrapper'
+import springs from '../springs'
 
 import * as Steps from './steps'
 import Templates from './templates'
@@ -33,7 +33,7 @@ const SPRING_HIDE = {
   tension: 70,
   friction: 15,
 }
-const SPRING_SCREEN = springs.slow
+const SPRING_SCREEN = springs.lazy
 
 const initialState = {
   template: null,
