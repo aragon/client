@@ -259,6 +259,11 @@ class App extends React.Component {
 
     const { mode, dao } = locator
     if (!mode) return null
+    if (mode === 'invalid') {
+      throw new Error(
+        `URL contained invalid organization name or address (${dao}).\nPlease modify it to be a valid ENS name or address.`
+      )
+    }
 
     if (fatalError !== null) {
       throw fatalError

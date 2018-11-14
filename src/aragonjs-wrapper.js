@@ -17,7 +17,7 @@ import {
   defaultGasPriceFn,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
-import { getWeb3, getUnknownBalance } from './web3-utils'
+import { getWeb3, getUnknownBalance, isValidEnsName } from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { NoConnection, DAONotFound } from './errors'
 
@@ -316,7 +316,7 @@ const initWrapper = async (
     onWeb3 = noop,
   } = {}
 ) => {
-  const isDomain = /[a-z0-9]+\.aragonid\.eth/.test(dao)
+  const isDomain = isValidEnsName(dao)
   const daoAddress = isDomain
     ? await resolveEnsDomain(dao, {
         provider,

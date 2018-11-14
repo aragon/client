@@ -106,5 +106,9 @@ export function getUnknownBalance() {
   return new BN('-1')
 }
 
+export function isValidEnsName(name) {
+  return /^([\w-]+\.)+eth$/.test(name)
+}
+
 // Re-export some utilities from web3-utils
 export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
