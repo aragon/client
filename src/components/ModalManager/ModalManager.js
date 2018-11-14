@@ -44,15 +44,14 @@ const ModalView = () => (
     {({ modalComponent: ModalComponent, modalComponentProps, hideModal }) => (
       <Transition
         native
-        items={Boolean(ModalComponent)}
-        blocking={Boolean(ModalComponent)}
-        from={{ opacity: 0, enterProgress: 0 }}
-        enter={{ opacity: 1, enterProgress: 1 }}
-        leave={{ opacity: 0, enterProgress: 1 }}
-        config={springs.lazy}
+        items={ModalComponent}
+        from={{ opacity: 0, enterProgress: 0, blocking: false }}
+        enter={{ opacity: 1, enterProgress: 1, blocking: true }}
+        leave={{ opacity: 0, enterProgress: 1, blocking: false }}
+        config={springs.smooth}
       >
-        {ready =>
-          ready &&
+        {ModalComponent =>
+          ModalComponent &&
           (({ opacity, enterProgress, blocking }) => (
             <Wrap style={{ pointerEvents: blocking ? 'auto' : 'none' }}>
               <Overlay style={{ opacity: opacity.interpolate(v => v * 0.5) }} />
