@@ -10,7 +10,7 @@ import springs from '../../springs'
 class MenuPanelAppGroup extends React.PureComponent {
   static propTypes = {
     active: PropTypes.bool.isRequired,
-    activeInstanceId: PropTypes.string.isRequired,
+    activeInstanceId: PropTypes.string,
     expand: PropTypes.bool.isRequired,
     icon: PropTypes.object.isRequired,
     instances: PropTypes.array.isRequired,
