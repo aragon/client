@@ -103,11 +103,7 @@ class MenuPanelAppsLoader extends React.Component {
           showAppsProgress,
           instancesHeight,
         }) => (
-          <Main
-            style={{
-              height: instancesHeight,
-            }}
-          >
+          <Main style={{ height: instancesHeight }}>
             <Status>
               <StatusBackground
                 style={{

@@ -32,14 +32,8 @@ import {
   DAO_CREATION_STATUS_ERROR,
 } from '../symbols'
 
-const SPRING_SHOW = {
-  tension: 120,
-  friction: 17,
-}
-const SPRING_HIDE = {
-  tension: 70,
-  friction: 15,
-}
+const SPRING_SHOW = springs.lazy
+const SPRING_HIDE = springs.smooth
 
 const initialState = {
   template: null,
