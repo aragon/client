@@ -169,6 +169,7 @@ const AppContent = styled.div`
   flex-grow: 1;
   flex-shrink: 1;
   min-height: 0;
+  height: calc(100vh - 54px);
 `
 
 const AppFooter = styled.div`
@@ -189,6 +190,7 @@ const Content = styled.div`
   justify-content: center;
   align-items: center;
   padding-top: 40px;
+  padding-bottom: 40px;
   text-align: center;
 `
 
