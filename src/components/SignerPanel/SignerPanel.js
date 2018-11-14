@@ -28,6 +28,7 @@ class SignerPanel extends React.Component {
   static propTypes = {
     apps: PropTypes.array,
     account: PropTypes.string,
+    walletNetwork: PropTypes.string,
     walletWeb3: PropTypes.object,
     transactionBag: PropTypes.object,
   }

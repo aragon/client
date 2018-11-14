@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
@@ -12,6 +13,14 @@ import ManageRolePanel from './ManageRolePanel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class Permissions extends React.Component {
+  static propTypes = {
+    apps: PropTypes.array.isRequired,
+    appsLoading: PropTypes.bool.isRequired,
+    onParamsRequest: PropTypes.func.isRequired,
+    params: PropTypes.string,
+    permissionsLoading: PropTypes.bool.isRequired,
+  }
+
   state = {
     // Only animate screens after the component is rendered once
     animateScreens: false,

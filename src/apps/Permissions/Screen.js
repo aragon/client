@@ -1,9 +1,29 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 
 const SCREEN_SHIFT = 0.05
+
+const Main = ({ children, opacity, left, active }) => (
+  <animated.div
+    style={{
+      zIndex: active ? '2' : '1',
+      opacity,
+      transform: left.interpolate(t => `translate3d(${t * 100}%, 0, 0)`),
+    }}
+  >
+    {children}
+  </animated.div>
+)
+
+Main.propTypes = {
+  active: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+  left: PropTypes.object.isRequired,
+  opacity: PropTypes.object.isRequired,
+}
 
 const Screen = ({ position, children, animate }) => (
   <Transition
@@ -15,26 +35,17 @@ const Screen = ({ position, children, animate }) => (
     active={Boolean(children)}
     native
   >
-    {children &&
-      (({ opacity, left, active }) => (
-        <Main>
-          <animated.div
-            style={{
-              zIndex: active ? '2' : '1',
-              opacity,
-              transform: left.interpolate(
-                t => `translate3d(${t * 100}%, 0, 0)`
-              ),
-            }}
-          >
-            {children}
-          </animated.div>
-        </Main>
-      ))}
+    {children && (props => <StyledMain {...props} children={children} />)}
   </Transition>
 )
 
-const Main = styled.div`
+Screen.propTypes = {
+  animate: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+  position: PropTypes.number.isRequired,
+}
+
+const StyledMain = styled(Main)`
   overflow: hidden;
   position: absolute;
   top: 0;

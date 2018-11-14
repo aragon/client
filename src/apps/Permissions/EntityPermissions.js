@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   Table,
@@ -13,6 +14,14 @@ import AppInstanceLabel from './AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class EntityPermissions extends React.PureComponent {
+  static propTypes = {
+    address: PropTypes.string.isRequired,
+    loadPermissionsLabel: PropTypes.string,
+    loading: PropTypes.bool.isRequired,
+    noPermissionsLabel: PropTypes.string,
+    title: PropTypes.string.isRequired,
+  }
+
   render() {
     const {
       address,
@@ -94,6 +103,15 @@ class Row extends React.Component {
       </TableRow>
     )
   }
+}
+
+Row.propTypes = {
+  action: PropTypes.string.isRequired,
+  app: PropTypes.object.isRequired,
+  entityAddress: PropTypes.string.isRequired,
+  onRevoke: PropTypes.func.isRequired,
+  proxyAddress: PropTypes.string.isRequired,
+  roleBytes: PropTypes.string.isRequired,
 }
 
 export default EntityPermissions

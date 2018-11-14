@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Blockies from 'react-blockies'
 import { isAddress, shortenAddress } from '../web3-utils'
@@ -9,6 +10,10 @@ const IDENTICON_SIZE = IDENTICON_SQUARES * IDENTICON_SCALE
 const PX_RATIO = typeof devicePixelRatio === 'undefined' ? 2 : devicePixelRatio
 
 class IdentityBadge extends React.PureComponent {
+  static propTypes = {
+    entity: PropTypes.string.isRequired,
+  }
+
   render() {
     const { entity, shorten = true } = this.props
     const address = isAddress(entity) ? entity : null
