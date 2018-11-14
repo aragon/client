@@ -113,13 +113,11 @@ class Home extends React.Component {
                         : 'You are using Aragon 0.6 — Alba'}
                     </Text>
                   </Title>
-                  {
-                    <p>
-                      <Text color={theme.textSecondary}>
-                        {showApps ? 'What do you want to do?' : 'Loading apps…'}
-                      </Text>
-                    </p>
-                  }
+                  <p>
+                    <Text color={theme.textSecondary}>
+                      {showApps ? 'What do you want to do?' : 'Loading apps…'}
+                    </Text>
+                  </p>
                   <animated.div
                     style={{
                       display: showApps ? 'block' : 'none',
