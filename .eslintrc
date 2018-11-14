@@ -13,7 +13,13 @@
   "plugins": ["prettier", "react"],
   "rules": {
     "valid-jsdoc": "error",
-    "react/prop-types": 0,
+    "react/prop-types": 'warn',
     "linebreak-style": ["error", "unix"]
+  },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "16.6"
+    },
   }
 }

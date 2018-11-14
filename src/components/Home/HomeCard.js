@@ -1,9 +1,17 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Card, unselectable, colors } from '@aragon/ui'
 import { noop } from '../../utils'
 
 class HomeCard extends React.Component {
+  static propTypes = {
+    icon: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    onActivate: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+  }
+
   static defaultProps = {
     onActivate: noop,
   }

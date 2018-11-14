@@ -7,10 +7,15 @@ import { noop } from '../utils'
 import imgPending from '../assets/transaction-pending.svg'
 import imgSuccess from '../assets/transaction-success.svg'
 import imgError from '../assets/transaction-error.svg'
+import {
+  DAO_CREATION_STATUS_NONE,
+  DAO_CREATION_STATUS_SUCCESS,
+  DAO_CREATION_STATUS_ERROR,
+} from '../symbols'
 
 class Sign extends React.Component {
   static defaultProps = {
-    daoCreationStatus: 'none',
+    daoCreationStatus: DAO_CREATION_STATUS_NONE,
     onTryAgain: noop,
   }
   render() {
@@ -65,7 +70,7 @@ class SignContent extends React.PureComponent {
           </Transaction>
         </Transactions>
 
-        {daoCreationStatus === 'error' && (
+        {daoCreationStatus === DAO_CREATION_STATUS_ERROR && (
           <TryAgain>
             <Button mode="outline" compact onClick={onTryAgain}>
               Try Again
@@ -73,7 +78,7 @@ class SignContent extends React.PureComponent {
           </TryAgain>
         )}
 
-        {daoCreationStatus !== 'error' && (
+        {daoCreationStatus !== DAO_CREATION_STATUS_ERROR && (
           <Note>
             <Text size="xsmall" color={theme.textSecondary}>
               It might take some time before these transactions get processed,
@@ -86,8 +91,8 @@ class SignContent extends React.PureComponent {
     )
   }
   renderTxStatus(daoCreationStatus) {
-    if (daoCreationStatus === 'error') return <TxFailure />
-    if (daoCreationStatus === 'success') return <TxSuccess />
+    if (daoCreationStatus === DAO_CREATION_STATUS_ERROR) return <TxFailure />
+    if (daoCreationStatus === DAO_CREATION_STATUS_SUCCESS) return <TxSuccess />
     return <TxPending />
   }
 }

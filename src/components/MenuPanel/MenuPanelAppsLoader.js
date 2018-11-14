@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { IconError, Button, theme } from '@aragon/ui'
@@ -13,6 +14,18 @@ import {
 } from '../../symbols'
 
 class MenuPanelAppsLoader extends React.Component {
+  static propTypes = {
+    appsStatus: PropTypes.oneOf([
+      APPS_STATUS_ERROR,
+      APPS_STATUS_READY,
+      APPS_STATUS_LOADING,
+    ]).isRequired,
+    children: PropTypes.func.isRequired,
+    expandedInstancesCount: PropTypes.number.isRequired,
+    appsCount: PropTypes.number.isRequired,
+    onRetry: PropTypes.func.isRequired,
+  }
+
   static defaultProps = {
     children: noop,
     appStatus: APPS_STATUS_LOADING,

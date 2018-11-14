@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { AppBar, AppView, NavigationBar, Button } from '@aragon/ui'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
@@ -12,6 +13,14 @@ import ManageRolePanel from './ManageRolePanel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class Permissions extends React.Component {
+  static propTypes = {
+    apps: PropTypes.array.isRequired,
+    appsLoading: PropTypes.bool.isRequired,
+    onParamsRequest: PropTypes.func.isRequired,
+    params: PropTypes.string,
+    permissionsLoading: PropTypes.bool.isRequired,
+  }
+
   state = {
     // Only animate screens after the component is rendered once
     animateScreens: false,
@@ -208,39 +217,50 @@ class Permissions extends React.Component {
                   }}
                 />
 
-                <Screen position={0} animate={animateScreens}>
-                  {location.screen === 'home' && (
-                    <Home
-                      apps={apps}
-                      appsLoading={appsLoading}
-                      permissionsLoading={permissionsLoading}
-                      onOpenApp={this.handleOpenApp}
-                      onOpenEntity={this.handleOpenEntity}
-                    />
-                  )}
-                </Screen>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    right: '0',
+                    bottom: '0',
+                    overflowX: 'hidden',
+                  }}
+                >
+                  <Screen position={0} animate={animateScreens}>
+                    {location.screen === 'home' && (
+                      <Home
+                        apps={apps}
+                        appsLoading={appsLoading}
+                        permissionsLoading={permissionsLoading}
+                        onOpenApp={this.handleOpenApp}
+                        onOpenEntity={this.handleOpenEntity}
+                      />
+                    )}
+                  </Screen>
 
-                <Screen position={1} animate={animateScreens}>
-                  {['app', 'entity'].includes(location.screen) && (
-                    <React.Fragment>
-                      {location.screen === 'app' && (
-                        <AppPermissions
-                          app={location.app}
-                          loading={appsLoading}
-                          address={location.address}
-                          onManageRole={this.handleManageRole}
-                        />
-                      )}
-                      {location.screen === 'entity' && (
-                        <EntityPermissions
-                          title="Permissions granted"
-                          loading={appsLoading || permissionsLoading}
-                          address={location.address}
-                        />
-                      )}
-                    </React.Fragment>
-                  )}
-                </Screen>
+                  <Screen position={1} animate={animateScreens}>
+                    {['app', 'entity'].includes(location.screen) && (
+                      <React.Fragment>
+                        {location.screen === 'app' && (
+                          <AppPermissions
+                            app={location.app}
+                            loading={appsLoading}
+                            address={location.address}
+                            onManageRole={this.handleManageRole}
+                          />
+                        )}
+                        {location.screen === 'entity' && (
+                          <EntityPermissions
+                            title="Permissions granted"
+                            loading={appsLoading || permissionsLoading}
+                            address={location.address}
+                          />
+                        )}
+                      </React.Fragment>
+                    )}
+                  </Screen>
+                </div>
               </AppView>
 
               <AssignPermissionPanel

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { theme, AppView, Text } from '@aragon/ui'
@@ -45,6 +46,14 @@ const actions = [
 ]
 
 class Home extends React.Component {
+  static propTypes = {
+    apps: PropTypes.array.isRequired,
+    appsLoading: PropTypes.bool.isRequired,
+    connected: PropTypes.bool.isRequired,
+    locator: PropTypes.object.isRequired,
+    onOpenApp: PropTypes.func.isRequired,
+  }
+
   state = {
     showApps: false,
   }

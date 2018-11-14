@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import springs from '../../springs'
@@ -21,25 +22,34 @@ const Screen = ({ position, children, animate }) => (
     immediate={!animate}
     native
   >
-    {children =>
-      children &&
-      (({ opacity, left }) => (
-        <Main>
-          <animated.div
-            style={{
-              opacity,
-              transform: left.interpolate(t => `translate3d(${t}%, 0, 0)`),
-            }}
-          >
-            {children}
-          </animated.div>
-        </Main>
-      ))
-    }
+    {children => children && (props => <Main {...props} children={children} />)}
   </Transition>
 )
 
-const Main = styled.div`
+Screen.propTypes = {
+  animate: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+  position: PropTypes.number.isRequired,
+}
+
+const Main = ({ children, opacity, left }) => (
+  <StyledMain
+    style={{
+      opacity,
+      transform: left.interpolate(t => `translate3d(${t}%, 0, 0)`),
+    }}
+  >
+    {children}
+  </StyledMain>
+)
+
+Main.propTypes = {
+  children: PropTypes.node.isRequired,
+  left: PropTypes.object.isRequired,
+  opacity: PropTypes.object.isRequired,
+}
+
+const StyledMain = styled(animated.div)`
   overflow: hidden;
   position: absolute;
   top: 0;

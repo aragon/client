@@ -1,10 +1,17 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
 import AppIcon from './AppIcon'
 
 class AppInstanceLabel extends React.PureComponent {
+  static propTypes = {
+    app: PropTypes.object.isRequired,
+    proxyAddress: PropTypes.string.isRequired,
+    showIcon: PropTypes.bool,
+  }
+
   render() {
     const { app, proxyAddress, showIcon = true } = this.props
     return (

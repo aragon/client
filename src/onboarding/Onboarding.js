@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { noop } from '../utils'
@@ -17,6 +18,7 @@ import Template from './Template'
 import Domain from './Domain'
 import Launch from './Launch'
 import Sign from './Sign'
+import DeprecatedBanner from '../components/DeprecatedBanner/DeprecatedBanner'
 
 import {
   DomainCheckNone,
@@ -24,6 +26,11 @@ import {
   DomainCheckAccepted,
   DomainCheckRejected,
 } from './domain-states'
+import {
+  DAO_CREATION_STATUS_NONE,
+  DAO_CREATION_STATUS_SUCCESS,
+  DAO_CREATION_STATUS_ERROR,
+} from '../symbols'
 
 const SPRING_SHOW = {
   tension: 120,
@@ -47,12 +54,35 @@ const initialState = {
 }
 
 class Onboarding extends React.PureComponent {
+  static propTypes = {
+    account: PropTypes.string.isRequired,
+    balance: PropTypes.object,
+    banner: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.shape({
+        type: PropTypes.oneOf([DeprecatedBanner]),
+      }),
+    ]).isRequired,
+    daoCreationStatus: PropTypes.oneOf([
+      DAO_CREATION_STATUS_NONE,
+      DAO_CREATION_STATUS_SUCCESS,
+      DAO_CREATION_STATUS_ERROR,
+    ]).isRequired,
+    onBuildDao: PropTypes.func.isRequired,
+    onComplete: PropTypes.func.isRequired,
+    onOpenOrganization: PropTypes.func.isRequired,
+    onResetDaoBuilder: PropTypes.func.isRequired,
+    selectorNetworks: PropTypes.array.isRequired,
+    visible: PropTypes.bool.isRequired,
+    walletNetwork: PropTypes.string.isRequired,
+  }
+
   static defaultProps = {
     account: '',
     balance: getUnknownBalance(),
     walletNetwork: '',
     visible: true,
-    daoCreationStatus: 'none',
+    daoCreationStatus: DAO_CREATION_STATUS_NONE,
     onComplete: noop,
     onBuildDao: noop,
     onOpenOrganization: noop,
@@ -77,7 +107,7 @@ class Onboarding extends React.PureComponent {
 
     if (
       nextProps.daoCreationStatus !== props.daoCreationStatus &&
-      nextProps.daoCreationStatus === 'success'
+      nextProps.daoCreationStatus === DAO_CREATION_STATUS_SUCCESS
     ) {
       setTimeout(() => {
         this.nextStep()
@@ -340,7 +370,7 @@ class Onboarding extends React.PureComponent {
       return this.validateConfigurationScreen(template, step.screen)
     }
     if (step.screen === 'sign') {
-      return daoCreationStatus === 'success'
+      return daoCreationStatus === DAO_CREATION_STATUS_SUCCESS
     }
     return true
   }

@@ -1,12 +1,23 @@
 import React from 'react'
-import { Spring, animated } from 'react-spring'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Spring, animated } from 'react-spring'
 import { theme, IconBlank } from '@aragon/ui'
 import color from 'onecolor'
 import MenuPanelInstance from './MenuPanelInstance'
 import springs from '../../springs'
 
 class MenuPanelAppGroup extends React.PureComponent {
+  static propTypes = {
+    active: PropTypes.bool.isRequired,
+    activeInstanceId: PropTypes.string.isRequired,
+    expand: PropTypes.bool.isRequired,
+    icon: PropTypes.object.isRequired,
+    instances: PropTypes.array.isRequired,
+    name: PropTypes.string.isRequired,
+    onActivate: PropTypes.func.isRequired,
+  }
+
   static defaultProps = {
     instances: [],
   }

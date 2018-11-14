@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const Section = ({ title, children }) => (
@@ -7,6 +8,11 @@ const Section = ({ title, children }) => (
     {children}
   </Main>
 )
+
+Section.propTypes = {
+  children: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
+}
 
 const Main = styled.section`
   > h1 {

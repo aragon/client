@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
@@ -7,6 +8,11 @@ import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import RemoteIcon from '../RemoteIcon'
+import {
+  APPS_STATUS_ERROR,
+  APPS_STATUS_READY,
+  APPS_STATUS_LOADING,
+} from '../../symbols'
 
 import logo from './assets/logo.svg'
 
@@ -37,6 +43,21 @@ const prepareAppGroups = apps =>
   }, [])
 
 class MenuPanel extends React.PureComponent {
+  static propTypes = {
+    apps: PropTypes.array.isRequired,
+    appsStatus: PropTypes.oneOf([
+      APPS_STATUS_ERROR,
+      APPS_STATUS_READY,
+      APPS_STATUS_LOADING,
+    ]).isRequired,
+    activeInstanceId: PropTypes.string,
+    // notificationsObservable: PropTypes.object,
+    onOpenApp: PropTypes.func.isRequired,
+    // onClearAllNotifications: PropTypes.func.isRequired,
+    // onOpenNotification: PropTypes.func.isRequired,
+    onRequestAppsReload: PropTypes.func.isRequired,
+  }
+
   state = {
     notificationsOpened: false,
   }
