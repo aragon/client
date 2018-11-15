@@ -1,21 +1,17 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { Field, Button, TextInput, Text, DropDown, theme } from '@aragon/ui'
-import { lerp } from '../../../math-utils'
+import { animated } from 'react-spring'
 import { noop } from '../../../utils'
 
 class ConfigureMultisigAddresses extends React.Component {
   static defaultProps = {
-    positionProgress: 0,
     onFieldUpdate: noop,
     onSubmit: noop,
     fields: {},
   }
-  componentWillReceiveProps({ positionProgress }) {
-    if (
-      positionProgress === 0 &&
-      positionProgress !== this.props.positionProgress
-    ) {
+  componentWillReceiveProps({ forceFocus }) {
+    if (forceFocus && forceFocus !== this.props.forceFocus) {
       this.formEl.elements[0].focus()
     }
   }
@@ -47,21 +43,15 @@ class ConfigureMultisigAddresses extends React.Component {
   }
   handleSubmit = event => {
     event.preventDefault()
-    this.formEl.elements[0].blur()
     this.props.onSubmit()
   }
   handleFormRef = el => {
     this.formEl = el
   }
   render() {
-    const { positionProgress, fields } = this.props
+    const { fields, screenTransitionStyles } = this.props
     return (
-      <Main
-        style={{
-          opacity: 1 - Math.abs(positionProgress),
-          transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-        }}
-      >
+      <Main style={screenTransitionStyles}>
         <ConfigureMultisigAddressesContent
           fields={fields}
           onSubmit={this.handleSubmit}
@@ -189,7 +179,7 @@ const SubmitForm = ({ children, innerRef = noop, ...props }) => (
   </form>
 )
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   display: flex;
   align-items: flex-start;
   justify-content: center;

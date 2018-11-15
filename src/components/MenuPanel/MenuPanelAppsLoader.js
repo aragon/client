@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { IconError, Button, theme, springs } from '@aragon/ui'
+import { IconError, Button, theme } from '@aragon/ui'
 import color from 'onecolor'
-import { lerp } from '../../math-utils'
 import { noop } from '../../utils'
+import springs from '../../springs'
 import LoadingRing from '../LoadingRing'
 import {
   APPS_STATUS_ERROR,
@@ -21,54 +21,94 @@ class MenuPanelAppsLoader extends React.Component {
       APPS_STATUS_LOADING,
     ]).isRequired,
     children: PropTypes.func.isRequired,
-    itemsCount: PropTypes.number.isRequired,
+    expandedInstancesCount: PropTypes.number.isRequired,
+    appsCount: PropTypes.number.isRequired,
     onRetry: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     children: noop,
-    itemsCount: 0,
     appStatus: APPS_STATUS_LOADING,
     onRetry: noop,
   }
 
   state = {
     showApps: false,
+    transitionDone: false,
   }
 
   componentWillReceiveProps({ appsStatus }) {
     if (appsStatus !== this.props.appsStatus) {
       // Always set this to false to reinitialize the animation
-      this.setState({ showApps: false })
+      this.setState({ showApps: false, transitionDone: false })
     }
   }
 
   handleRest = () => {
+    const { showApps } = this.state
+
     if (this.props.appsStatus === APPS_STATUS_READY) {
-      setTimeout(() => {
-        this.setState({ showApps: true })
-      }, 0)
+      this.setState({
+        // `showApps: true` triggers the transition showing the apps.
+        showApps: true,
+
+        // The second time handleRest() is called, showApps is `true`, which
+        // means that we reached the end of the transition.
+        transitionDone: showApps,
+      })
     }
   }
 
+  getInstancesHeight() {
+    const { appsStatus, appsCount, expandedInstancesCount } = this.props
+    const { showApps, transitionDone } = this.state
+    if (transitionDone) {
+      return -1
+    }
+    if (appsStatus === APPS_STATUS_READY || showApps) {
+      return (
+        appsCount * 40 +
+        expandedInstancesCount * 30 +
+        (expandedInstancesCount > 0 ? 5 : 0)
+      )
+    }
+    return appsStatus === APPS_STATUS_ERROR ? 80 : 40
+  }
+
   render() {
-    const { children, itemsCount, appsStatus, onRetry } = this.props
-    const { showApps } = this.state
+    const { children, appsStatus, onRetry } = this.props
+    const { showApps, transitionDone } = this.state
     return (
       <Spring
-        config={springs.swift}
-        from={{ afterLoadingMessageProgress: 0, showAppsProgress: 0 }}
+        config={springs.smooth}
+        immediate={transitionDone}
+        from={{
+          afterLoadingMessageProgress: 0,
+          showAppsProgress: 0,
+          instancesHeight: 40,
+        }}
         to={{
           afterLoadingMessageProgress: Number(
             appsStatus !== APPS_STATUS_LOADING
           ),
           showAppsProgress: Number(showApps),
+          instancesHeight: this.getInstancesHeight(),
         }}
         onRest={this.handleRest}
         native
       >
-        {({ afterLoadingMessageProgress, showAppsProgress }) => (
-          <Main>
+        {({
+          afterLoadingMessageProgress,
+          showAppsProgress,
+          instancesHeight,
+        }) => (
+          <Main
+            style={{
+              height: instancesHeight.interpolate(
+                v => (v === -1 ? 'auto' : `${v}px`)
+              ),
+            }}
+          >
             <Status>
               <StatusBackground
                 style={{
@@ -78,10 +118,19 @@ class MenuPanelAppsLoader extends React.Component {
                       ? color(theme.negative)
                           .lightness(0.98)
                           .css()
-                      : '#f5f9fa',
+                      : 'transparent',
                 }}
               />
-              <StatusContent>
+              <StatusContent
+                style={{
+                  opacity: showAppsProgress.interpolate(v => 1 - v),
+                  transform: showAppsProgress.interpolate(
+                    v => `
+                      translate3d(${v * 40}px, 0, 0)
+                    `
+                  ),
+                }}
+              >
                 <StatusIndicatorWrapper
                   vAlign={appsStatus !== APPS_STATUS_ERROR}
                 >
@@ -120,22 +169,15 @@ class MenuPanelAppsLoader extends React.Component {
             </Status>
             <Apps
               style={{
-                height: afterLoadingMessageProgress.interpolate(
-                  v =>
-                    `${lerp(
-                      v,
-                      40,
-                      (appsStatus === APPS_STATUS_READY ? itemsCount : 2) * 40
-                    )}px`
-                ),
+                opacity: showAppsProgress,
                 transform: showAppsProgress.interpolate(
                   v => `
-                    translate3d(-${(1 - Math.min(1, v)) * 100}%, 0, 0)
+                    translate3d(-${(1 - v) * 60}px, 0, 0)
                   `
                 ),
               }}
             >
-              {children(showApps)}
+              {children()}
             </Apps>
           </Main>
         )}
@@ -154,7 +196,7 @@ const StatusIndicatorWrapper = styled.div`
   margin-right: 15px;
 `
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   position: relative;
   overflow: hidden;
 `
@@ -193,7 +235,7 @@ const IconErrorWrapper = styled(animated.div)`
   justify-content: center;
 `
 
-const StatusContent = styled.div`
+const StatusContent = styled(animated.div)`
   display: flex;
   align-items: center;
   position: relative;

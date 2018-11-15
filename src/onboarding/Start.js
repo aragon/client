@@ -12,11 +12,11 @@ import {
   DropDown,
   IconAttention,
 } from '@aragon/ui'
+import { animated } from 'react-spring'
 import { network, web3Providers, getDemoDao } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
 import { fromWei, toWei, getUnknownBalance, formatBalance } from '../web3-utils'
-import { lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
 
@@ -37,7 +37,6 @@ const demoDao = getDemoDao()
 
 class Start extends React.Component {
   static defaultProps = {
-    positionProgress: 0,
     hasAccount: false,
     walletNetwork: '',
     balance: getUnknownBalance(),
@@ -57,7 +56,6 @@ class Start extends React.Component {
   }
   render() {
     const {
-      positionProgress,
       hasAccount,
       walletNetwork,
       balance,
@@ -66,19 +64,12 @@ class Start extends React.Component {
       domainCheckStatus,
       onOpenOrganizationAddress,
       selectorNetworks,
+      screenTransitionStyles,
     } = this.props
 
     return (
-      <Main
-        style={{
-          opacity: 1 - Math.abs(positionProgress),
-        }}
-      >
-        <Content
-          style={{
-            transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-          }}
-        >
+      <Main style={{ opacity: screenTransitionStyles.opacity }}>
+        <Content style={screenTransitionStyles}>
           <StartContent
             onCreate={onCreate}
             hasWallet={!!web3Providers.wallet}
@@ -340,7 +331,7 @@ class StartContent extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -353,7 +344,7 @@ const Main = styled.div`
   }
 `
 
-const Content = styled.div`
+const Content = styled(animated.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;

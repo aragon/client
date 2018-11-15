@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { spring as springConf, Text } from '@aragon/ui'
+import { Spring } from 'react-spring'
+import { Text } from '@aragon/ui'
 import * as Steps from './steps'
 import { lerp } from '../math-utils'
+import springs from '../springs'
 
 const STEPS_COUNT = Steps.ProgressBarGroups.length
 
@@ -21,11 +22,11 @@ class ProgressBar extends React.Component {
     const visible = stepIndex > -1
 
     return (
-      <Motion
-        style={{
-          showProgress: spring(Number(visible), springConf('fast')),
-          stepProgress:
-            stepIndex > 0 ? spring(stepIndex, springConf('fast')) : 0,
+      <Spring
+        config={springs.smooth}
+        to={{
+          showProgress: Number(visible),
+          stepProgress: stepIndex > 0 ? stepIndex : 0,
         }}
       >
         {({ showProgress, stepProgress }) => (
@@ -61,7 +62,7 @@ class ProgressBar extends React.Component {
             </Progress>
           </Main>
         )}
-      </Motion>
+      </Spring>
     )
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { theme, Text, Button } from '@aragon/ui'
-import { lerp } from '../math-utils'
+import { animated } from 'react-spring'
 import { noop } from '../utils'
 
 import imgPending from '../assets/transaction-pending.svg'
@@ -15,20 +15,14 @@ import {
 
 class Sign extends React.Component {
   static defaultProps = {
-    positionProgress: 0,
     daoCreationStatus: DAO_CREATION_STATUS_NONE,
     onTryAgain: noop,
   }
   render() {
-    const { positionProgress, daoCreationStatus, onTryAgain } = this.props
+    const { daoCreationStatus, onTryAgain, screenTransitionStyles } = this.props
     return (
       <Main>
-        <Content
-          style={{
-            transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-            opacity: 1 - Math.abs(positionProgress),
-          }}
-        >
+        <Content style={screenTransitionStyles}>
           <SignContent
             daoCreationStatus={daoCreationStatus}
             onTryAgain={onTryAgain}
@@ -167,7 +161,7 @@ const Main = styled.div`
   padding-top: 140px;
 `
 
-const Content = styled.div`
+const Content = styled(animated.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -1,15 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
-import { theme, spring as springConf, IconBlank } from '@aragon/ui'
-import MenuPanelInstance from './MenuPanelInstance'
+import { Spring, animated } from 'react-spring'
+import { theme, IconBlank } from '@aragon/ui'
 import color from 'onecolor'
+import MenuPanelInstance from './MenuPanelInstance'
+import springs from '../../springs'
 
 class MenuPanelAppGroup extends React.PureComponent {
   static propTypes = {
     active: PropTypes.bool.isRequired,
-    activeInstanceId: PropTypes.string.isRequired,
+    activeInstanceId: PropTypes.string,
     expand: PropTypes.bool.isRequired,
     icon: PropTypes.object.isRequired,
     instances: PropTypes.array.isRequired,
@@ -40,13 +41,10 @@ class MenuPanelAppGroup extends React.PureComponent {
     } = this.props
     const singleInstance = instances.length === 1
     return (
-      <Motion
-        style={{
-          openProgress: spring(
-            Number(active && (singleInstance || expand)),
-            springConf('fast')
-          ),
-        }}
+      <Spring
+        config={springs.smooth}
+        to={{ openProgress: Number(active && (singleInstance || expand)) }}
+        native
       >
         {({ openProgress }) => (
           <Main active={active}>
@@ -55,7 +53,9 @@ class MenuPanelAppGroup extends React.PureComponent {
             <MenuItemBar
               style={{
                 opacity: openProgress,
-                transform: `translate3d(-${(1 - openProgress) * 100}%, 0, 0)`,
+                transform: openProgress.interpolate(
+                  v => `translate3d(-${(1 - v) * 100}%, 0, 0)`
+                ),
               }}
             />
 
@@ -71,11 +71,13 @@ class MenuPanelAppGroup extends React.PureComponent {
             </ButtonItem>
 
             {instances.length > 1 && (
-              <ul
+              <animated.ul
                 className="instances"
                 style={{
-                  height: `${(instances.length * 30 + 5) * openProgress}px`,
-                  paddingBottom: `${5 * openProgress}px`,
+                  height: openProgress.interpolate(
+                    v => `${(instances.length * 30 + 5) * v}px`
+                  ),
+                  paddingBottom: openProgress.interpolate(v => `${5 * v}px`),
                 }}
               >
                 {instances.map(({ name, instanceId, identifier }) => {
@@ -91,11 +93,11 @@ class MenuPanelAppGroup extends React.PureComponent {
                     </li>
                   ) : null
                 })}
-              </ul>
+              </animated.ul>
             )}
           </Main>
         )}
-      </Motion>
+      </Spring>
     )
   }
 }
@@ -165,7 +167,7 @@ const ActiveBackground = styled.div`
     .cssa()};
 `
 
-const MenuItemBar = styled.div`
+const MenuItemBar = styled(animated.div)`
   position: absolute;
   width: 4px;
   height: 100%;

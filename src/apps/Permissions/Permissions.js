@@ -28,7 +28,9 @@ class Permissions extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ animateScreens: true })
+    setTimeout(() => {
+      this.setState({ animateScreens: true })
+    }, 0)
   }
 
   componentDidUpdate(prevProps) {
@@ -215,39 +217,50 @@ class Permissions extends React.Component {
                   }}
                 />
 
-                <Screen position={0} animate={animateScreens}>
-                  {location.screen === 'home' && (
-                    <Home
-                      apps={apps}
-                      appsLoading={appsLoading}
-                      permissionsLoading={permissionsLoading}
-                      onOpenApp={this.handleOpenApp}
-                      onOpenEntity={this.handleOpenEntity}
-                    />
-                  )}
-                </Screen>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    right: '0',
+                    bottom: '0',
+                    overflowX: 'hidden',
+                  }}
+                >
+                  <Screen position={0} animate={animateScreens}>
+                    {location.screen === 'home' && (
+                      <Home
+                        apps={apps}
+                        appsLoading={appsLoading}
+                        permissionsLoading={permissionsLoading}
+                        onOpenApp={this.handleOpenApp}
+                        onOpenEntity={this.handleOpenEntity}
+                      />
+                    )}
+                  </Screen>
 
-                <Screen position={1} animate={animateScreens}>
-                  {['app', 'entity'].includes(location.screen) && (
-                    <React.Fragment>
-                      {location.screen === 'app' && (
-                        <AppPermissions
-                          app={location.app}
-                          loading={appsLoading}
-                          address={location.address}
-                          onManageRole={this.handleManageRole}
-                        />
-                      )}
-                      {location.screen === 'entity' && (
-                        <EntityPermissions
-                          title="Permissions granted"
-                          loading={appsLoading || permissionsLoading}
-                          address={location.address}
-                        />
-                      )}
-                    </React.Fragment>
-                  )}
-                </Screen>
+                  <Screen position={1} animate={animateScreens}>
+                    {['app', 'entity'].includes(location.screen) && (
+                      <React.Fragment>
+                        {location.screen === 'app' && (
+                          <AppPermissions
+                            app={location.app}
+                            loading={appsLoading}
+                            address={location.address}
+                            onManageRole={this.handleManageRole}
+                          />
+                        )}
+                        {location.screen === 'entity' && (
+                          <EntityPermissions
+                            title="Permissions granted"
+                            loading={appsLoading || permissionsLoading}
+                            address={location.address}
+                          />
+                        )}
+                      </React.Fragment>
+                    )}
+                  </Screen>
+                </div>
               </AppView>
 
               <AssignPermissionPanel

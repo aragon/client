@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel, springs } from '@aragon/ui'
+import { SidePanel } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { addressesEqual } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
@@ -13,6 +13,8 @@ import {
   STATUS_SIGNED,
   STATUS_ERROR,
 } from './signer-statuses'
+
+import springs from '../../springs'
 
 const INITIAL_STATE = {
   panelOpened: false,
@@ -167,57 +169,57 @@ class SignerPanel extends React.Component {
       >
         <Main>
           <Transition
-            native
+            items={status === STATUS_CONFIRMING}
             from={{ enterProgress: 0 }}
             enter={{ enterProgress: 1 }}
             leave={{ enterProgress: 0 }}
             config={springs.lazy}
-            signError={signError}
-            signingEnabled={status === STATUS_CONFIRMING}
           >
-            {status === STATUS_CONFIRMING
-              ? ({ enterProgress, signingEnabled }) => (
-                  <ScreenWrapper
-                    style={{
-                      transform: enterProgress.interpolate(
-                        v => `translate3d(${-100 * (1 - v)}%, 0, 0)`
-                      ),
-                    }}
-                  >
-                    <Screen>
-                      <ConfirmTransaction
-                        direct={directPath}
-                        hasAccount={Boolean(account)}
-                        hasWeb3={Boolean(walletWeb3)}
-                        intent={intent}
-                        onClose={this.handleSignerClose}
-                        onSign={this.handleSign}
-                        paths={actionPaths}
-                        pretransaction={pretransaction}
-                        signingEnabled={signingEnabled}
-                        networkType={network.type}
-                        walletNetworkType={walletNetwork}
-                      />
-                    </Screen>
-                  </ScreenWrapper>
-                )
-              : ({ enterProgress, signError }) => (
-                  <ScreenWrapper
-                    style={{
-                      transform: enterProgress.interpolate(
-                        v => `translate3d(${100 * (1 - v)}%, 0, 0)`
-                      ),
-                    }}
-                  >
-                    <Screen>
-                      <SigningStatus
-                        status={status}
-                        signError={signError}
-                        onClose={this.handleSignerClose}
-                      />
-                    </Screen>
-                  </ScreenWrapper>
-                )}
+            {confirming =>
+              confirming
+                ? ({ enterProgress }) => (
+                    <ScreenWrapper
+                      style={{
+                        transform: `
+                            translate3d(${-100 * (1 - enterProgress)}%, 0, 0)
+                          `,
+                      }}
+                    >
+                      <Screen>
+                        <ConfirmTransaction
+                          direct={directPath}
+                          hasAccount={Boolean(account)}
+                          hasWeb3={Boolean(walletWeb3)}
+                          intent={intent}
+                          onClose={this.handleSignerClose}
+                          onSign={this.handleSign}
+                          paths={actionPaths}
+                          pretransaction={pretransaction}
+                          signingEnabled={status === STATUS_CONFIRMING}
+                          networkType={network.type}
+                          walletNetworkType={walletNetwork}
+                        />
+                      </Screen>
+                    </ScreenWrapper>
+                  )
+                : ({ enterProgress }) => (
+                    <ScreenWrapper
+                      style={{
+                        transform: `
+                          translate3d(${100 * (1 - enterProgress)}%, 0, 0)
+                        `,
+                      }}
+                    >
+                      <Screen>
+                        <SigningStatus
+                          status={status}
+                          signError={signError}
+                          onClose={this.handleSignerClose}
+                        />
+                      </Screen>
+                    </ScreenWrapper>
+                  )
+            }
           </Transition>
         </Main>
       </SidePanel>

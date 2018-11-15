@@ -1,17 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// import { spring, Motion } from 'react-motion'
 import styled from 'styled-components'
-import {
-  theme,
-  unselectable,
-  // spring as springConf,
-  // IconWallet,
-  // IconNotifications,
-} from '@aragon/ui'
-// import ClickOutHandler from 'react-onclickout'
-// import NotificationsPanel from '../NotificationsPanel/NotificationsPanel'
-// import { lerp } from '../../math-utils'
+import { theme, unselectable } from '@aragon/ui'
+import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
@@ -70,6 +61,7 @@ class MenuPanel extends React.PureComponent {
   state = {
     notificationsOpened: false,
   }
+
   handleNotificationsClick = event => {
     // Prevent clickout events  to trigger
     event.nativeEvent.stopImmediatePropagation()
@@ -80,16 +72,13 @@ class MenuPanel extends React.PureComponent {
   handleCloseNotifications = () => {
     this.setState({ notificationsOpened: false })
   }
-  render() {
-    const {
-      apps,
-      // notificationsObservable,
-      // onClearAllNotifications,
-      // onOpenNotification,
-    } = this.props
-    // const { notificationsOpened } = this.state
 
-    const appGroups = prepareAppGroups(apps)
+  getAppGroups = memoize(apps => prepareAppGroups(apps))
+
+  render() {
+    const { apps } = this.props
+    const appGroups = this.getAppGroups(apps)
+
     const menuApps = [
       APP_HOME,
       appGroups,
@@ -103,13 +92,6 @@ class MenuPanel extends React.PureComponent {
         <In>
           <Header>
             <img src={logo} alt="Aragon" height="36" />
-            {/*
-            <div className="actions">
-              <IconButton role="button" onClick={this.handleNotificationsClick}>
-                <IconNotifications />
-              </IconButton>
-            </div>
-            */}
           </Header>
           <Content>
             <div className="in">
@@ -126,38 +108,11 @@ class MenuPanel extends React.PureComponent {
             </div>
           </Content>
         </In>
-
-        {/* <ClickOutHandler onClickOut={this.handleCloseNotifications}>
-          <Motion
-            style={{
-              openProgress: spring(
-                Number(notificationsOpened),
-                springConf('fast')
-              ),
-            }}
-          >
-            {({ openProgress }) => (
-              <NotificationsWrapper
-                style={{
-                  transform: `
-                    translate3d(${lerp(openProgress, -100, 0)}%, 0, 0)
-                  `,
-                  boxShadow: `1px 0 15px rgba(0, 0, 0, ${openProgress * 0.1})`,
-                }}
-              >
-                <NotificationsPanel
-                  observable={notificationsObservable}
-                  onClearAllNotifications={onClearAllNotifications}
-                  onOpenNotification={onOpenNotification}
-                />
-              </NotificationsWrapper>
-            )}
-          </Motion>
-        </ClickOutHandler> */}
       </Main>
     )
   }
-  renderAppGroup = (app, readyToExpand) => {
+
+  renderAppGroup(app) {
     const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances = [] } = app
@@ -173,25 +128,39 @@ class MenuPanel extends React.PureComponent {
           icon={icon}
           instances={instances}
           active={isActive}
-          expand={isActive && readyToExpand}
+          expand={isActive}
           activeInstanceId={activeInstanceId}
           onActivate={onOpenApp}
         />
       </div>
     )
   }
-  renderLoadedAppGroup = apps => {
-    const { appsStatus, onRequestAppsReload } = this.props
+
+  renderLoadedAppGroup(appGroups) {
+    const { appsStatus, activeInstanceId, onRequestAppsReload } = this.props
+
+    // Used by the menu transition
+    const expandedInstancesCount = appGroups.reduce(
+      (height, { instances }) =>
+        instances.length > 1 &&
+        instances.findIndex(
+          ({ instanceId }) => instanceId === activeInstanceId
+        ) > -1
+          ? height + instances.length
+          : height,
+      0
+    )
 
     // Wrap the DAO apps in the loader
     return (
       <MenuPanelAppsLoader
         key="menu-apps"
         appsStatus={appsStatus}
-        itemsCount={apps.length}
         onRetry={onRequestAppsReload}
+        appsCount={appGroups.length}
+        expandedInstancesCount={expandedInstancesCount}
       >
-        {done => apps.map(app => this.renderAppGroup(app, done))}
+        {() => appGroups.map(app => this.renderAppGroup(app))}
       </MenuPanelAppsLoader>
     )
   }
@@ -219,18 +188,6 @@ const In = styled.div`
   border-right: 1px solid #e8e8e8;
   box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
 `
-
-// const IconButton = styled.span`
-//   cursor: pointer;
-// `
-
-// const NotificationsWrapper = styled.div`
-//   position: fixed;
-//   z-index: 1;
-//   top: 0;
-//   bottom: 0;
-//   left: 220px;
-// `
 
 const Header = styled.div`
   flex-shrink: 0;
