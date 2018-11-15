@@ -63,17 +63,16 @@ class MenuPanelAppsLoader extends React.Component {
     const { appsStatus, appsCount, expandedInstancesCount } = this.props
     const { showApps, transitionDone } = this.state
     if (transitionDone) {
-      return 'auto'
+      return -1
     }
     if (appsStatus === APPS_STATUS_READY || showApps) {
       return (
         appsCount * 40 +
         expandedInstancesCount * 30 +
-        (expandedInstancesCount > 0 ? 5 : 0) +
-        'px'
+        (expandedInstancesCount > 0 ? 5 : 0)
       )
     }
-    return appsStatus === APPS_STATUS_ERROR ? '80px' : '40px'
+    return appsStatus === APPS_STATUS_ERROR ? 80 : 40
   }
 
   render() {
@@ -86,7 +85,7 @@ class MenuPanelAppsLoader extends React.Component {
         from={{
           afterLoadingMessageProgress: 0,
           showAppsProgress: 0,
-          instancesHeight: '40px',
+          instancesHeight: 40,
         }}
         to={{
           afterLoadingMessageProgress: Number(
@@ -103,7 +102,13 @@ class MenuPanelAppsLoader extends React.Component {
           showAppsProgress,
           instancesHeight,
         }) => (
-          <Main style={{ height: instancesHeight }}>
+          <Main
+            style={{
+              height: instancesHeight.interpolate(
+                v => (v === -1 ? 'auto' : `${v}px`)
+              ),
+            }}
+          >
             <Status>
               <StatusBackground
                 style={{
