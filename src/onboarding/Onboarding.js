@@ -32,9 +32,6 @@ import {
   DAO_CREATION_STATUS_ERROR,
 } from '../symbols'
 
-const SPRING_SHOW = springs.lazy
-const SPRING_HIDE = springs.smooth
-
 const initialState = {
   template: null,
   templateData: {},
@@ -396,7 +393,7 @@ class Onboarding extends React.PureComponent {
     const steps = this.getSteps()
     return (
       <Spring
-        config={visible ? SPRING_SHOW : SPRING_HIDE}
+        config={springs.lazy}
         to={{ showProgress: Number(visible) }}
         onRest={this.handleTransitionRest}
         native
