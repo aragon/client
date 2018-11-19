@@ -24,6 +24,7 @@ class Wrapper extends React.Component {
     locator: {},
     walletNetwork: '',
     transactionBag: null,
+    signatureBag: null,
     wrapper: null,
     walletWeb3: null,
     web3: null,
@@ -94,6 +95,7 @@ class Wrapper extends React.Component {
       banner,
       onRequestAppsReload,
       transactionBag,
+      signatureBag,
     } = this.props
 
     return (
@@ -116,6 +118,7 @@ class Wrapper extends React.Component {
           walletWeb3={walletWeb3}
           walletNetwork={walletNetwork}
           transactionBag={transactionBag}
+          signatureBag={signatureBag}
           apps={apps}
           account={account}
         />

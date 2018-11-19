@@ -40,6 +40,7 @@ class App extends React.Component {
     daoCreationStatus: 'none', // none / success / error
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
+    signatureBag: null,
     walletNetwork: '',
     showDeprecatedBanner: false,
     selectorNetworks: [
@@ -208,6 +209,10 @@ class App extends React.Component {
         log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
+      onSignatures: signatureBag => {
+        log('signature bag', signatureBag)
+        this.setState({ signatureBag })
+      },
     })
       .then(wrapper => {
         log('wrapper', wrapper)
@@ -246,6 +251,7 @@ class App extends React.Component {
       balance,
       walletNetwork,
       transactionBag,
+      signatureBag,
       daoCreationStatus,
       walletWeb3,
       web3,
@@ -286,6 +292,7 @@ class App extends React.Component {
             web3={web3}
             daoAddress={daoAddress}
             transactionBag={transactionBag}
+            signatureBag={signatureBag}
             connected={connected}
             onRequestAppsReload={this.handleRequestAppsReload}
           />

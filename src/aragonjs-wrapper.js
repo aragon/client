@@ -203,10 +203,10 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  { onApps, onPermissions, onForwarders, onTransaction },
+  { onApps, onPermissions, onForwarders, onTransaction, onSignatures },
   { ipfsConf }
 ) => {
-  const { apps, permissions, forwarders, transactions } = wrapper
+  const { apps, permissions, forwarders, transactions, signatures } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
@@ -221,6 +221,7 @@ const subscribe = (
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
     transactions: transactions.subscribe(onTransaction),
+    signatures: signatures.subscribe(onSignatures),
     workers: apps.subscribe(apps => {
       // Asynchronously launch webworkers for each new app that has a background
       // script defined
@@ -312,6 +313,7 @@ const initWrapper = async (
     onPermissions = noop,
     onForwarders = noop,
     onTransaction = noop,
+    onSignatures = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
   } = {}
@@ -367,7 +369,7 @@ const initWrapper = async (
 
   const subscriptions = subscribe(
     wrapper,
-    { onApps, onPermissions, onForwarders, onTransaction },
+    { onApps, onPermissions, onForwarders, onTransaction, onSignatures },
     { ipfsConf }
   )
 
