@@ -60,6 +60,7 @@ class Onboarding extends React.PureComponent {
     onBuildDao: noop,
     onOpenOrganization: noop,
     onResetDaoBuilder: noop,
+    onRequestEnable: noop,
     banner: null,
   }
   state = {
@@ -447,6 +448,7 @@ class Onboarding extends React.PureComponent {
       daoCreationStatus,
       onComplete,
       selectorNetworks,
+      onRequestEnable,
     } = this.props
 
     // No need to move the screens farther than one step
@@ -457,7 +459,7 @@ class Onboarding extends React.PureComponent {
     if (screen === 'start') {
       return (
         <Start
-          hasAccount={!!account}
+          hasAccount={Boolean(account)}
           balance={balance}
           walletNetwork={walletNetwork}
           onCreate={this.handleStartCreate}
@@ -468,6 +470,7 @@ class Onboarding extends React.PureComponent {
           onOpenOrganization={this.handleOpenOrganization}
           onOpenOrganizationAddress={this.handleOpenOrganizationAddress}
           selectorNetworks={selectorNetworks}
+          onRequestEnable={onRequestEnable}
           {...sharedProps}
         />
       )

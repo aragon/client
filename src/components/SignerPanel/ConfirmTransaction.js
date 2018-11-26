@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Info } from '@aragon/ui'
+import { Info, theme } from '@aragon/ui'
 import { noop } from '../../utils'
 import ActionPathsContent from './ActionPathsContent'
 import SignerButton from './SignerButton'
@@ -28,6 +28,7 @@ class ConfirmTransaction extends React.Component {
       signError,
       signingEnabled,
       walletNetworkType,
+      onRequestEnable,
     } = this.props
 
     if (!hasWeb3) {
@@ -46,8 +47,14 @@ class ConfirmTransaction extends React.Component {
         <Web3ProviderError
           intent={intent}
           onClose={onClose}
-          neededText="You need to unlock your account"
-          actionText="Please unlock your Ethereum provider."
+          neededText="You need to unlock and enable your account"
+          actionText={
+            <span>
+              Please unlock and{' '}
+              <ButtonLink onClick={onRequestEnable}>enable</ButtonLink> your
+              Ethereum provider.
+            </span>
+          }
         />
       )
     }
@@ -124,6 +131,16 @@ const Web3ProviderError = ({
 
 const ActionMessage = styled.p`
   margin-top: 15px;
+`
+
+const ButtonLink = styled.button.attrs({ type: 'button' })`
+  padding: 0;
+  font-size: inherit;
+  text-decoration: underline;
+  color: ${theme.textPrimary};
+  cursor: pointer;
+  background: none;
+  border: 0;
 `
 
 export default ConfirmTransaction

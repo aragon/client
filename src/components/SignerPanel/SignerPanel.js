@@ -145,7 +145,7 @@ class SignerPanel extends React.Component {
   }
 
   render() {
-    const { walletWeb3, walletNetwork, account } = this.props
+    const { walletWeb3, walletNetwork, account, onRequestEnable } = this.props
 
     const {
       panelOpened,
@@ -196,6 +196,7 @@ class SignerPanel extends React.Component {
                         signingEnabled={signingEnabled}
                         networkType={network.type}
                         walletNetworkType={walletNetwork}
+                        onRequestEnable={onRequestEnable}
                       />
                     </Screen>
                   </ScreenWrapper>

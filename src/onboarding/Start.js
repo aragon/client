@@ -47,6 +47,7 @@ class Start extends React.Component {
     domainCheckStatus: DomainCheckNone,
     onOpenOrganization: noop,
     onOpenOrganizationAddress: noop,
+    onRequestEnable: noop,
   }
   handleDomainChange = event => {
     this.props.onDomainChange(event.target.value)
@@ -66,6 +67,7 @@ class Start extends React.Component {
       domainCheckStatus,
       onOpenOrganizationAddress,
       selectorNetworks,
+      onRequestEnable,
     } = this.props
 
     return (
@@ -91,6 +93,7 @@ class Start extends React.Component {
             onOpenOrganization={this.handleOpenOrganization}
             onOpenOrganizationAddress={onOpenOrganizationAddress}
             selectorNetworks={selectorNetworks}
+            onRequestEnable={onRequestEnable}
           />
         </Content>
       </Main>
@@ -287,11 +290,11 @@ class StartContent extends React.PureComponent {
     )
   }
   renderWarning() {
-    const { hasWallet, hasAccount, walletNetwork } = this.props
+    const { hasWallet, hasAccount, walletNetwork, onRequestEnable } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
-          Please install and unlock{' '}
+          Please install
           <SafeLink href="https://metamask.io/" target="_blank">
             MetaMask
           </SafeLink>
@@ -300,7 +303,15 @@ class StartContent extends React.PureComponent {
       )
     }
     if (!hasAccount) {
-      return <ActionInfo>Please unlock MetaMask.</ActionInfo>
+      return (
+        <ActionInfo>
+          Please unlock and{' '}
+          <ButtonLink onClick={onRequestEnable} style={{ color: '#000' }}>
+            enable
+          </ButtonLink>{' '}
+          your provider.
+        </ActionInfo>
+      )
     }
     if (network.type === 'unknown') {
       return (

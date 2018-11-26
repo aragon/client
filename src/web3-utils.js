@@ -93,6 +93,16 @@ export function getWeb3(provider) {
   return web3
 }
 
+// Get the first account of a web3 instance
+export async function getMainAccount(web3) {
+  try {
+    const accounts = await web3.eth.getAccounts()
+    return (accounts && accounts[0]) || null
+  } catch (err) {
+    return null
+  }
+}
+
 // Check if the address represents an empty address
 export function isEmptyAddress(address) {
   return addressesEqual(address, EMPTY_ADDRESS)

@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 import provider from 'eth-provider'
 import {
   getAssetBridge,
@@ -123,11 +122,10 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const defaultEthNode =
   getDefaultEthNode() || networkConfig.nodes.defaultEth
-const defaultEthProvider = new Web3.providers.WebsocketProvider(defaultEthNode)
 
 export const web3Providers = {
-  default: defaultEthProvider,
-  wallet: provider(['injected', 'frame', defaultEthNode]),
+  default: provider(defaultEthNode),
+  wallet: provider(['injected', 'frame']),
 }
 export const defaultGasPriceFn =
   networkType === 'main'

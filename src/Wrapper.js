@@ -94,6 +94,7 @@ class Wrapper extends React.Component {
       banner,
       onRequestAppsReload,
       transactionBag,
+      onRequestEnable,
     } = this.props
 
     return (
@@ -118,6 +119,7 @@ class Wrapper extends React.Component {
           transactionBag={transactionBag}
           apps={apps}
           account={account}
+          onRequestEnable={onRequestEnable}
         />
       </Main>
     )

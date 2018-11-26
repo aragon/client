@@ -55,9 +55,6 @@ class App extends React.Component {
     this.handleHistoryChange({ pathname, search })
     this.history.listen(this.handleHistoryChange)
 
-    if (!web3Providers.wallet) {
-      return
-    }
     this.setState({
       walletWeb3: getWeb3(web3Providers.wallet),
     })
@@ -82,6 +79,27 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
+  }
+
+  // Enable the web3 provider. There is no way to reliably know the enabled
+  // state of a provider, so we assume that if there is a provider but no
+  // account, the provider is locked and / or not enabled.
+  handleRequestEnable = () => {
+    const provider = web3Providers.wallet
+    if (!provider) {
+      return
+    }
+    // For providers supporting .enable() (EIP 1102 draft).
+    if ('enable' in provider) {
+      provider.enable()
+      return
+    }
+    // For providers supporting EIP 1102 (final).
+    if ('send' in provider) {
+      // Some providers (Metamask) don’t return a promise as defined in EIP
+      // 1102, so we can’t rely on it to know the connected accounts.
+      provider.send('eth_requestAccounts')
+    }
   }
 
   // Handle URL changes
@@ -288,6 +306,7 @@ class App extends React.Component {
             transactionBag={transactionBag}
             connected={connected}
             onRequestAppsReload={this.handleRequestAppsReload}
+            onRequestEnable={this.handleRequestEnable}
           />
         </PermissionsProvider>
 
@@ -304,6 +323,7 @@ class App extends React.Component {
           onComplete={this.handleCompleteOnboarding}
           onOpenOrganization={this.handleOpenOrganization}
           onResetDaoBuilder={this.handleResetDaoBuilder}
+          onRequestEnable={this.handleRequestEnable}
           selectorNetworks={selectorNetworks}
         />
       </ModalProvider>
