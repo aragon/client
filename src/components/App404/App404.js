@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import EmptyAppCard from './EmptyAppCard'
 
@@ -7,6 +8,10 @@ const App404 = ({ onNavigateBack }) => (
     <EmptyAppCard onActivate={onNavigateBack} />
   </Main>
 )
+
+App404.propTypes = {
+  onNavigateBack: PropTypes.func.isRequired,
+}
 
 const Main = styled.div`
   display: flex;

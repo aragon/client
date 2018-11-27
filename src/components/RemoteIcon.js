@@ -1,10 +1,19 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { IconBlank } from '@aragon/ui'
 import RemoteImage from './RemoteImage'
 
 // Tries to load an image for an icon, while displaying a blank icon.
 // Use `children` or `render` to change the icon component to use.
 class RemoteIcon extends React.Component {
+  static propTypes = {
+    alt: PropTypes.string.isRequired,
+    children: PropTypes.func.isRequired,
+    render: PropTypes.func,
+    size: PropTypes.number.isRequired,
+    src: PropTypes.string.isRequired,
+  }
+
   static defaultProps = {
     src: '',
     alt: '',

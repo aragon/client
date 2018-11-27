@@ -1,28 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
 import { theme, Text } from '@aragon/ui'
+import { animated } from 'react-spring'
 import { noop } from '../utils'
-import { lerp } from '../math-utils'
 import TemplateCard from './TemplateCard'
 
 class Template extends React.Component {
   static defaultProps = {
-    positionProgress: 0,
     onSelect: noop,
   }
   handleTemplateSelect = template => {
     this.props.onSelect(template)
   }
   render() {
-    const { positionProgress, templates, activeTemplate } = this.props
+    const { templates, activeTemplate, screenTransitionStyles } = this.props
     return (
       <Main>
-        <Content
-          style={{
-            transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-            opacity: 1 - Math.abs(positionProgress),
-          }}
-        >
+        <Content style={screenTransitionStyles}>
           <TemplateContent
             templates={templates}
             activeTemplate={activeTemplate}
@@ -80,7 +74,7 @@ const Main = styled.div`
   padding-top: 140px;
 `
 
-const Content = styled.div`
+const Content = styled(animated.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;

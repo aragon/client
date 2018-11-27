@@ -1,9 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { noop } from '../utils'
 
 // Tries to load an image, while displaying an alternative.
 // Use `children` or `render` to render its children.
 class RemoteImage extends React.Component {
+  static propTypes = {
+    children: PropTypes.func.isRequired,
+    render: PropTypes.func,
+    src: PropTypes.string.isRequired,
+  }
+
   static defaultProps = {
     src: '',
     render: null, // render is an alias of children and takes priority

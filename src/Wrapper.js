@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Apps, Permissions, Settings } from './apps'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
@@ -7,13 +8,47 @@ import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
+import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
 import { noop } from './utils'
-import { APPS_STATUS_LOADING } from './symbols'
+import {
+  APPS_STATUS_ERROR,
+  APPS_STATUS_READY,
+  APPS_STATUS_LOADING,
+} from './symbols'
 
 class Wrapper extends React.Component {
+  static propTypes = {
+    account: PropTypes.string.isRequired,
+    apps: PropTypes.array.isRequired,
+    appsStatus: PropTypes.oneOf([
+      APPS_STATUS_ERROR,
+      APPS_STATUS_READY,
+      APPS_STATUS_LOADING,
+    ]).isRequired,
+    banner: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.shape({
+        type: PropTypes.oneOf([DeprecatedBanner]),
+      }),
+    ]).isRequired,
+    connected: PropTypes.bool.isRequired,
+    daoAddress: PropTypes.string.isRequired,
+    historyBack: PropTypes.func.isRequired,
+    historyPush: PropTypes.func.isRequired,
+    locator: PropTypes.object.isRequired,
+    onRequestAppsReload: PropTypes.func.isRequired,
+    permissionsLoading: PropTypes.bool.isRequired,
+    transactionBag: PropTypes.object,
+    walletNetwork: PropTypes.string.isRequired,
+    walletWeb3: PropTypes.object,
+    walletProviderId: PropTypes.string,
+    wrapper: PropTypes.object,
+    onRequestEnable: PropTypes.func,
+  }
+
   static defaultProps = {
     apps: [],
     account: '',
@@ -27,8 +62,8 @@ class Wrapper extends React.Component {
     transactionBag: null,
     wrapper: null,
     walletWeb3: null,
-    web3: null,
     banner: null,
+    onRequestEnable: noop,
   }
   state = {
     appInstance: {},
@@ -135,7 +170,6 @@ class Wrapper extends React.Component {
       permissionsLoading,
       account,
       walletNetwork,
-      walletWeb3,
       wrapper,
       connected,
       daoAddress,
@@ -163,9 +197,6 @@ class Wrapper extends React.Component {
           permissionsLoading={permissionsLoading}
           params={params}
           onParamsRequest={this.handleParamsRequest}
-          walletWeb3={walletWeb3}
-          account={account}
-          wrapper={wrapper}
         />
       )
     }
@@ -179,7 +210,7 @@ class Wrapper extends React.Component {
         <Settings
           account={account}
           apps={apps}
-          daoAddr={daoAddress}
+          daoAddress={daoAddress}
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
         />

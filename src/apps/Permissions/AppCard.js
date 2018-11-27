@@ -1,10 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Text, Card, Badge, theme, unselectable } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
 import AppIcon from './AppIcon'
 
 class AppCard extends React.PureComponent {
+  static propTypes = {
+    app: PropTypes.object.isRequired,
+    onOpen: PropTypes.func.isRequired,
+  }
+
   handleClick = () => {
     this.props.onOpen(this.props.app.proxyAddress)
   }

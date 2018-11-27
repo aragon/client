@@ -1,21 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { theme, Text, Button } from '@aragon/ui'
-import { lerp } from '../math-utils'
+import { animated } from 'react-spring'
 
 class Launch extends React.Component {
-  static defaultProps = {
-    positionProgress: 0,
-  }
   render() {
-    const { positionProgress, onConfirm } = this.props
+    const { onConfirm, screenTransitionStyles } = this.props
     return (
-      <Main
-        style={{
-          opacity: 1 - Math.abs(positionProgress),
-          transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-        }}
-      >
+      <Main style={screenTransitionStyles}>
         <LaunchContent onConfirm={onConfirm} />
       </Main>
     )
@@ -39,7 +31,7 @@ class LaunchContent extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   display: flex;
   align-items: center;
   justify-content: center;

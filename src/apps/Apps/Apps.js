@@ -159,11 +159,11 @@ const statuses = {
 const knownApps = [
   {
     icon: defaultIcon,
-    name: 'That Planning Tab',
+    name: 'That Planning Suite',
     status: 'alpha',
     description: `Suite for open and fluid organizations.
                   Bounties, range voting, and more.`,
-    link: 'https://github.com/Giveth/planning-app',
+    link: 'https://github.com/spacedecentral/planning-suite',
   },
   {
     icon: payrollIcon,

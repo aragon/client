@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
@@ -76,6 +77,18 @@ const DEFAULT_STATE = {
 
 // The role manager panel, wrapped in a PermissionsContext (see end of file)
 class ManageRolePanel extends React.PureComponent {
+  static propTypes = {
+    app: PropTypes.object,
+    apps: PropTypes.array.isRequired,
+    createPermission: PropTypes.func.isRequired,
+    getRoleManager: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    opened: PropTypes.bool.isRequired,
+    removePermissionManager: PropTypes.func.isRequired,
+    role: PropTypes.object,
+    setPermissionManager: PropTypes.func.isRequired,
+  }
+
   state = {
     ...DEFAULT_STATE,
   }

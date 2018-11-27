@@ -1,10 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { spring as springConf } from '@aragon/ui'
+import { Spring, animated } from 'react-spring'
 import { noop } from '../utils'
 import { getUnknownBalance } from '../web3-utils'
 import { isNameAvailable } from '../aragonjs-wrapper'
+import springs from '../springs'
 
 import * as Steps from './steps'
 import Templates from './templates'
@@ -17,6 +18,7 @@ import Template from './Template'
 import Domain from './Domain'
 import Launch from './Launch'
 import Sign from './Sign'
+import DeprecatedBanner from '../components/DeprecatedBanner/DeprecatedBanner'
 
 import {
   DomainCheckNone,
@@ -24,18 +26,11 @@ import {
   DomainCheckAccepted,
   DomainCheckRejected,
 } from './domain-states'
-
-const SPRING_SHOW = {
-  stiffness: 120,
-  damping: 17,
-  precision: 0.001,
-}
-const SPRING_HIDE = {
-  stiffness: 70,
-  damping: 15,
-  precision: 0.001,
-}
-const SPRING_SCREEN = springConf('slow')
+import {
+  DAO_CREATION_STATUS_NONE,
+  DAO_CREATION_STATUS_SUCCESS,
+  DAO_CREATION_STATUS_ERROR,
+} from '../symbols'
 
 const initialState = {
   template: null,
@@ -50,12 +45,35 @@ const initialState = {
 }
 
 class Onboarding extends React.PureComponent {
+  static propTypes = {
+    account: PropTypes.string.isRequired,
+    balance: PropTypes.object,
+    banner: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.shape({
+        type: PropTypes.oneOf([DeprecatedBanner]),
+      }),
+    ]).isRequired,
+    daoCreationStatus: PropTypes.oneOf([
+      DAO_CREATION_STATUS_NONE,
+      DAO_CREATION_STATUS_SUCCESS,
+      DAO_CREATION_STATUS_ERROR,
+    ]).isRequired,
+    onBuildDao: PropTypes.func.isRequired,
+    onComplete: PropTypes.func.isRequired,
+    onOpenOrganization: PropTypes.func.isRequired,
+    onResetDaoBuilder: PropTypes.func.isRequired,
+    selectorNetworks: PropTypes.array.isRequired,
+    visible: PropTypes.bool.isRequired,
+    walletNetwork: PropTypes.string.isRequired,
+  }
+
   static defaultProps = {
     account: '',
     balance: getUnknownBalance(),
     walletNetwork: '',
     visible: true,
-    daoCreationStatus: 'none',
+    daoCreationStatus: DAO_CREATION_STATUS_NONE,
     onComplete: noop,
     onBuildDao: noop,
     onOpenOrganization: noop,
@@ -82,7 +100,7 @@ class Onboarding extends React.PureComponent {
 
     if (
       nextProps.daoCreationStatus !== props.daoCreationStatus &&
-      nextProps.daoCreationStatus === 'success'
+      nextProps.daoCreationStatus === DAO_CREATION_STATUS_SUCCESS
     ) {
       setTimeout(() => {
         this.nextStep()
@@ -345,7 +363,7 @@ class Onboarding extends React.PureComponent {
       return this.validateConfigurationScreen(template, step.screen)
     }
     if (step.screen === 'sign') {
-      return daoCreationStatus === 'success'
+      return daoCreationStatus === DAO_CREATION_STATUS_SUCCESS
     }
     return true
   }
@@ -376,29 +394,30 @@ class Onboarding extends React.PureComponent {
     const step = this.currentStep()
     const steps = this.getSteps()
     return (
-      <Motion
-        style={{
-          showProgress: spring(
-            Number(visible),
-            visible ? SPRING_SHOW : SPRING_HIDE
-          ),
-        }}
+      <Spring
+        config={springs.lazy}
+        to={{ showProgress: Number(visible) }}
         onRest={this.handleTransitionRest}
+        native
       >
         {({ showProgress }) => (
           <Main
             style={{
               transform: visible
                 ? 'none'
-                : `translate3d(0, ${110 * (1 - showProgress)}%, 0)`,
-              opacity: visible ? showProgress : 1,
+                : showProgress.interpolate(
+                    v => `translate3d(0, ${110 * (1 - v)}%, 0)`
+                  ),
+              opacity: showProgress,
             }}
           >
             <BannerWrapper>{banner}</BannerWrapper>
             <View>
               <Window>
-                <Motion
-                  style={{ screenProgress: spring(stepIndex, SPRING_SCREEN) }}
+                <Spring
+                  native
+                  config={springs.smooth}
+                  to={{ screenProgress: stepIndex }}
                 >
                   {({ screenProgress }) => (
                     <React.Fragment>
@@ -408,8 +427,9 @@ class Onboarding extends React.PureComponent {
                           <Screen active={screen === step.screen} key={screen}>
                             {this.renderScreen(
                               screen,
-                              i - stepIndex,
-                              i - screenProgress
+                              i,
+                              screenProgress,
+                              screen === step.screen
                             )}
                           </Screen>
                         ))}
@@ -425,15 +445,15 @@ class Onboarding extends React.PureComponent {
                       />
                     </React.Fragment>
                   )}
-                </Motion>
+                </Spring>
               </Window>
             </View>
           </Main>
         )}
-      </Motion>
+      </Spring>
     )
   }
-  renderScreen(screen, position, positionProgress) {
+  renderScreen(screen, screenIndex, positionProgress, isActive) {
     const {
       template,
       domain,
@@ -454,9 +474,23 @@ class Onboarding extends React.PureComponent {
     } = this.props
 
     // No need to move the screens farther than one step
-    positionProgress = Math.min(1, Math.max(-1, positionProgress))
+    const getPositionProgress = progress =>
+      Math.min(1, Math.max(-1, screenIndex - progress))
 
-    const sharedProps = { positionProgress }
+    // used by every screen
+    const screenTransitionStyles = {
+      opacity: positionProgress.interpolate(
+        v => 1 - Math.abs(getPositionProgress(v))
+      ),
+      transform: positionProgress.interpolate(
+        v => `translateX(${getPositionProgress(v) * 50}%)`
+      ),
+    }
+
+    const sharedProps = {
+      screenTransitionStyles,
+      forceFocus: isActive,
+    }
 
     if (screen === 'start') {
       return (
@@ -534,7 +568,7 @@ class Onboarding extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   position: fixed;
   z-index: 2;
   top: 0;

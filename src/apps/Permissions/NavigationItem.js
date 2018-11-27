@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
@@ -16,6 +17,13 @@ const NavigationItem = ({ title, badge, address, entity }) => {
       {badge && <Badge.App title={badge.title}>{badge.label}</Badge.App>}
     </Main>
   )
+}
+
+NavigationItem.propTypes = {
+  address: PropTypes.string,
+  badge: PropTypes.object,
+  entity: PropTypes.object,
+  title: PropTypes.string.isRequired,
 }
 
 const Main = styled.span`

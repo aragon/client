@@ -19,6 +19,9 @@ import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
+  DAO_CREATION_STATUS_NONE,
+  DAO_CREATION_STATUS_SUCCESS,
+  DAO_CREATION_STATUS_ERROR,
 } from './symbols'
 
 class App extends React.Component {
@@ -32,12 +35,11 @@ class App extends React.Component {
     connected: false,
     apps: [],
     appsStatus: APPS_STATUS_LOADING,
-    permissions: [],
+    permissions: {},
     permissionsLoading: true,
     walletWeb3: null,
-    web3: null,
     daoAddress: '',
-    daoCreationStatus: 'none', // none / success / error
+    daoCreationStatus: DAO_CREATION_STATUS_NONE, // DAO_CREATION_STATUS_NONE, DAO_CREATION_STATUS_SUCCESS, DAO_CREATION_STATUS_ERROR
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
@@ -155,7 +157,7 @@ class App extends React.Component {
 
   handleResetDaoBuilder = () => {
     this.setState({
-      daoCreationStatus: 'none',
+      daoCreationStatus: DAO_CREATION_STATUS_NONE,
       buildData: null,
     })
   }
@@ -170,13 +172,13 @@ class App extends React.Component {
       )
       const domain = `${organizationName}.aragonid.eth`
       this.setState({
-        daoCreationStatus: 'success',
+        daoCreationStatus: DAO_CREATION_STATUS_SUCCESS,
         buildData: { token, dao, domain },
       })
       log('DAO created', dao, token, domain)
     } catch (err) {
       log(err)
-      this.setState({ daoCreationStatus: 'error' })
+      this.setState({ daoCreationStatus: DAO_CREATION_STATUS_ERROR })
     }
   }
 
@@ -204,7 +206,6 @@ class App extends React.Component {
       },
       onWeb3: web3 => {
         log('web3', web3)
-        this.setState({ web3 })
       },
       onApps: apps => {
         log('apps updated', apps)
@@ -267,7 +268,6 @@ class App extends React.Component {
       transactionBag,
       daoCreationStatus,
       walletWeb3,
-      web3,
       connected,
       daoAddress,
       appsStatus,
@@ -279,6 +279,11 @@ class App extends React.Component {
 
     const { mode, dao } = locator
     if (!mode) return null
+    if (mode === 'invalid') {
+      throw new Error(
+        `URL contained invalid organization name or address (${dao}).\nPlease modify it to be a valid ENS name or address.`
+      )
+    }
 
     if (fatalError !== null) {
       throw fatalError
@@ -304,7 +309,6 @@ class App extends React.Component {
             walletNetwork={walletNetwork}
             walletWeb3={walletWeb3}
             walletProviderId={walletProviderId}
-            web3={web3}
             daoAddress={daoAddress}
             transactionBag={transactionBag}
             connected={connected}

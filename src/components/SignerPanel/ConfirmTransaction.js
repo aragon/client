@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Info, theme } from '@aragon/ui'
 import { noop } from '../../utils'
@@ -8,12 +9,29 @@ import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
 
 class ConfirmTransaction extends React.Component {
+  static propTypes = {
+    direct: PropTypes.bool.isRequired,
+    hasAccount: PropTypes.bool.isRequired,
+    hasWeb3: PropTypes.bool.isRequired,
+    intent: PropTypes.object.isRequired,
+    networkType: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSign: PropTypes.func.isRequired,
+    paths: PropTypes.array.isRequired,
+    pretransaction: PropTypes.string,
+    signError: PropTypes.string,
+    signingEnabled: PropTypes.bool.isRequired,
+    walletNetworkType: PropTypes.string.isRequired,
+    onRequestEnable: PropTypes.func,
+  }
+
   static defaultProps = {
     intent: {},
     paths: [],
     pretransaction: null,
     onClose: noop,
     onSign: noop,
+    onRequestEnable: noop,
   }
   render() {
     const {
@@ -121,6 +139,12 @@ const ImpossibleContent = ({
   </React.Fragment>
 )
 
+ImpossibleContent.propTypes = {
+  error: PropTypes.bool,
+  intent: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+}
+
 const Web3ProviderError = ({
   intent: { description, name, to },
   onClose,
@@ -139,6 +163,13 @@ const Web3ProviderError = ({
       <SignerButton onClick={onClose}>Close</SignerButton>
     </React.Fragment>
   )
+}
+
+Web3ProviderError.propTypes = {
+  actionText: PropTypes.string.isRequired,
+  intent: PropTypes.object.isRequired,
+  neededText: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
 }
 
 const ActionMessage = styled.p`

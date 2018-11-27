@@ -28,7 +28,7 @@ export function makeEtherscanBaseUrl(network) {
     network === 'rinkeby' ||
     network === 'ropsten'
   ) {
-    return `https://${network === 'mainnet' ? '' : `${network}.`}etherscan.io`
+    return `https://${network === 'main' ? '' : `${network}.`}etherscan.io`
   }
 }
 
