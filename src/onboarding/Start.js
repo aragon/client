@@ -15,6 +15,7 @@ import {
 import { network, web3Providers, getDemoDao } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
+import providerString from '../provider-strings'
 import { fromWei, toWei, getUnknownBalance, formatBalance } from '../web3-utils'
 import { lerp } from '../math-utils'
 import LoadingRing from '../components/LoadingRing'
@@ -40,6 +41,7 @@ class Start extends React.Component {
     positionProgress: 0,
     hasAccount: false,
     walletNetwork: '',
+    walletProviderId: '',
     balance: getUnknownBalance(),
     onCreate: noop,
     onDomainChange: noop,
@@ -61,6 +63,7 @@ class Start extends React.Component {
       positionProgress,
       hasAccount,
       walletNetwork,
+      walletProviderId,
       balance,
       onCreate,
       domain,
@@ -86,6 +89,7 @@ class Start extends React.Component {
             hasWallet={!!web3Providers.wallet}
             hasAccount={hasAccount}
             walletNetwork={walletNetwork}
+            walletProviderId={walletProviderId}
             balance={balance}
             onDomainChange={this.handleDomainChange}
             domain={domain}
@@ -290,7 +294,13 @@ class StartContent extends React.PureComponent {
     )
   }
   renderWarning() {
-    const { hasWallet, hasAccount, walletNetwork, onRequestEnable } = this.props
+    const {
+      hasWallet,
+      hasAccount,
+      walletNetwork,
+      walletProviderId,
+      onRequestEnable,
+    } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
@@ -309,7 +319,7 @@ class StartContent extends React.PureComponent {
           <ButtonLink onClick={onRequestEnable} style={{ color: '#000' }}>
             enable
           </ButtonLink>{' '}
-          your provider.
+          {providerString('your Ethereum provider', walletProviderId)}.
         </ActionInfo>
       )
     }
@@ -324,8 +334,8 @@ class StartContent extends React.PureComponent {
     if (walletNetwork !== network.type) {
       return (
         <ActionInfo>
-          Please select the {sanitizeNetworkType(network.type)} network in your
-          Ethereum provider.
+          Please select the {sanitizeNetworkType(network.type)} network in
+          {providerString('your Ethereum provider', walletProviderId)}.
         </ActionInfo>
       )
     }

@@ -116,5 +116,13 @@ export function getUnknownBalance() {
   return new BN('-1')
 }
 
+// Returns an identifier for the provider, if it can be detected
+export function identifyProvider(provider) {
+  if (provider && '_metamask' in provider) {
+    return 'metamask'
+  }
+  return 'unknown'
+}
+
 // Re-export some utilities from web3-utils
 export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'

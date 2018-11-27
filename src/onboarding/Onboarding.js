@@ -62,6 +62,7 @@ class Onboarding extends React.PureComponent {
     onResetDaoBuilder: noop,
     onRequestEnable: noop,
     banner: null,
+    walletProviderId: '',
   }
   state = {
     ...initialState,
@@ -444,6 +445,7 @@ class Onboarding extends React.PureComponent {
     const {
       account,
       walletNetwork,
+      walletProviderId,
       balance,
       daoCreationStatus,
       onComplete,
@@ -471,6 +473,7 @@ class Onboarding extends React.PureComponent {
           onOpenOrganizationAddress={this.handleOpenOrganizationAddress}
           selectorNetworks={selectorNetworks}
           onRequestEnable={onRequestEnable}
+          walletProviderId={walletProviderId}
           {...sharedProps}
         />
       )

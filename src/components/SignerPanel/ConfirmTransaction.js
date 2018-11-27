@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Info, theme } from '@aragon/ui'
 import { noop } from '../../utils'
+import providerString from '../../provider-strings'
 import ActionPathsContent from './ActionPathsContent'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
@@ -28,6 +29,7 @@ class ConfirmTransaction extends React.Component {
       signError,
       signingEnabled,
       walletNetworkType,
+      walletProviderId,
       onRequestEnable,
     } = this.props
 
@@ -37,7 +39,10 @@ class ConfirmTransaction extends React.Component {
           intent={intent}
           onClose={onClose}
           neededText="You need to have a Web3 instance installed and enabled"
-          actionText="Please enable your Ethereum provider."
+          actionText={`Please enable ${providerString(
+            'your Ethereum provider',
+            walletProviderId
+          )}.`}
         />
       )
     }
@@ -47,12 +52,15 @@ class ConfirmTransaction extends React.Component {
         <Web3ProviderError
           intent={intent}
           onClose={onClose}
-          neededText="You need to unlock and enable your account"
+          neededText={`You need to unlock and enable ${providerString(
+            'your Ethereum provider',
+            walletProviderId
+          )}`}
           actionText={
             <span>
               Please unlock and{' '}
-              <ButtonLink onClick={onRequestEnable}>enable</ButtonLink> your
-              Ethereum provider.
+              <ButtonLink onClick={onRequestEnable}>enable</ButtonLink>{' '}
+              {providerString('your Ethereum provider', walletProviderId)}.
             </span>
           }
         />
@@ -68,7 +76,10 @@ class ConfirmTransaction extends React.Component {
             You need to be connected to the ${networkType} network
           `}
           actionText={`
-            Please connect your Ethereum provider to the ${networkType} network.
+            Please connect ${providerString(
+              'your Ethereum provider',
+              walletProviderId
+            )} to the ${networkType} network.
           `}
         />
       )
@@ -85,6 +96,7 @@ class ConfirmTransaction extends React.Component {
         pretransaction={pretransaction}
         signingEnabled={signingEnabled}
         onSign={onSign}
+        walletProviderId={walletProviderId}
       />
     ) : (
       <ImpossibleContent error={signError} intent={intent} onClose={onClose} />

@@ -29,12 +29,14 @@ class SignerPanel extends React.Component {
     apps: PropTypes.array,
     account: PropTypes.string,
     walletWeb3: PropTypes.object,
+    walletProviderId: PropTypes.string,
     transactionBag: PropTypes.object,
   }
 
   static defaultProps = {
     apps: [],
     account: '',
+    walletProviderId: '',
   }
 
   state = { ...INITIAL_STATE }
@@ -145,7 +147,13 @@ class SignerPanel extends React.Component {
   }
 
   render() {
-    const { walletWeb3, walletNetwork, account, onRequestEnable } = this.props
+    const {
+      walletWeb3,
+      walletNetwork,
+      walletProviderId,
+      account,
+      onRequestEnable,
+    } = this.props
 
     const {
       panelOpened,
@@ -196,6 +204,7 @@ class SignerPanel extends React.Component {
                         signingEnabled={signingEnabled}
                         networkType={network.type}
                         walletNetworkType={walletNetwork}
+                        walletProviderId={walletProviderId}
                         onRequestEnable={onRequestEnable}
                       />
                     </Screen>
@@ -213,6 +222,7 @@ class SignerPanel extends React.Component {
                       <SigningStatus
                         status={status}
                         signError={signError}
+                        walletProviderId={walletProviderId}
                         onClose={this.handleSignerClose}
                       />
                     </Screen>

@@ -10,7 +10,7 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
-import { getWeb3, getUnknownBalance } from './web3-utils'
+import { getWeb3, getUnknownBalance, identifyProvider } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
@@ -57,6 +57,7 @@ class App extends React.Component {
 
     this.setState({
       walletWeb3: getWeb3(web3Providers.wallet),
+      walletProviderId: identifyProvider(web3Providers.wallet),
     })
 
     pollMainAccount(web3Providers.wallet, {
@@ -273,6 +274,7 @@ class App extends React.Component {
       permissionsLoading,
       showDeprecatedBanner,
       selectorNetworks,
+      walletProviderId,
     } = this.state
 
     const { mode, dao } = locator
@@ -301,6 +303,7 @@ class App extends React.Component {
             account={account}
             walletNetwork={walletNetwork}
             walletWeb3={walletWeb3}
+            walletProviderId={walletProviderId}
             web3={web3}
             daoAddress={daoAddress}
             transactionBag={transactionBag}
@@ -318,6 +321,7 @@ class App extends React.Component {
           account={account}
           balance={balance}
           walletNetwork={walletNetwork}
+          walletProviderId={walletProviderId}
           onBuildDao={this.handleBuildDao}
           daoCreationStatus={daoCreationStatus}
           onComplete={this.handleCompleteOnboarding}

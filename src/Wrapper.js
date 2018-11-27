@@ -23,6 +23,7 @@ class Wrapper extends React.Component {
     historyPush: noop,
     locator: {},
     walletNetwork: '',
+    walletProviderId: '',
     transactionBag: null,
     wrapper: null,
     walletWeb3: null,
@@ -88,6 +89,7 @@ class Wrapper extends React.Component {
       apps,
       walletWeb3,
       walletNetwork,
+      walletProviderId,
       wrapper,
       appsStatus,
       locator: { instanceId, params },
@@ -116,6 +118,7 @@ class Wrapper extends React.Component {
         <SignerPanel
           walletWeb3={walletWeb3}
           walletNetwork={walletNetwork}
+          walletProviderId={walletProviderId}
           transactionBag={transactionBag}
           apps={apps}
           account={account}
