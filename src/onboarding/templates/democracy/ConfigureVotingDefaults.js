@@ -68,40 +68,41 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
           <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
             <TextContainer>
               <Text size="large" color={theme.textSecondary} align="center">
-                Choose your voting settings below. You can’t change the support
-                required later, so pick carefully.
+                Choose your voting settings below. You can’t change these later
+                so pick carefully.
               </Text>
             </TextContainer>
-            <Fields>
-              <Fields.PercentageField label="Support">
-                <SymbolInput
-                  placeholder="e.g. 50"
-                  value={fields.support === -1 ? '' : fields.support}
-                  onChange={handleSupportChange}
-                />
-              </Fields.PercentageField>
-              <Fields.PercentageField label="Min. Quorum">
-                <SymbolInput
-                  placeholder="e.g. 15"
-                  value={fields.minQuorum === -1 ? '' : fields.minQuorum}
-                  onChange={handleMinQuorumChange}
-                />
-              </Fields.PercentageField>
-              <Fields.HoursField label="Vote Duration">
-                <SymbolInput
-                  placeholder="e.g. 24"
-                  onChange={handleVoteDurationChange}
-                  value={fields.voteDuration === -1 ? '' : fields.voteDuration}
-                />
-              </Fields.HoursField>
-            </Fields>
-            <TextContainer>
-              <Text size="xsmall" color={theme.textSecondary} align="left">
-                The support and minimum quorum thresholds are <em>strict</em>{' '}
-                requirements, such that votes will only pass if they achieve
-                approval percentages <em>greater than</em> these thresholds.
-              </Text>
-            </TextContainer>
+            <PercentageField label="Support">
+              <SymbolInput
+                placeholder="e.g. 50"
+                value={fields.support === -1 ? '' : fields.support}
+                onChange={handleSupportChange}
+              />
+            </PercentageField>
+            <Text size="small" color={theme.textSecondary} align="left">
+              Percentage of "Yes" votes required to approve a vote
+            </Text>
+            <PercentageField label="Min. Quorum">
+              <SymbolInput
+                placeholder="e.g. 15"
+                value={fields.minQuorum === -1 ? '' : fields.minQuorum}
+                onChange={handleMinQuorumChange}
+              />
+            </PercentageField>
+            <Text size="small" color={theme.textSecondary} align="left">
+              Percentage of all tokens that must vote "yes" for the vote to be
+              valid.
+            </Text>
+            <HoursField label="Vote Duration">
+              <SymbolInput
+                placeholder="e.g. 24"
+                onChange={handleVoteDurationChange}
+                value={fields.voteDuration === -1 ? '' : fields.voteDuration}
+              />
+            </HoursField>
+            <Text size="small" color={theme.textSecondary} align="left">
+              Duration each vote is active for
+            </Text>
           </SubmitForm>
         </StepContainer>
       </Content>
@@ -136,7 +137,7 @@ const Content = styled.div`
 const Title = styled.h1`
   text-align: center;
   font-size: 37px;
-  margin-bottom: 100px;
+  margin-bottom: 40px;
 `
 
 const TextContainer = styled.p`
@@ -158,16 +159,10 @@ const SymbolInput = styled(TextInput)`
   padding-right: 25px;
 `
 
-const Fields = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-`
-Fields.Field = styled(Field)`
+const BaseField = styled(Field)`
   position: relative;
-  & + & {
-    margin-left: 55px;
-  }
+  margin: 1em 0 0.25em 0;
+
   &:after {
     position: absolute;
     bottom: 6px;
@@ -175,12 +170,12 @@ Fields.Field = styled(Field)`
     font-size: 14px;
   }
 `
-Fields.PercentageField = styled(Fields.Field)`
+const PercentageField = styled(BaseField)`
   &:after {
     content: '%';
   }
 `
-Fields.HoursField = styled(Fields.Field)`
+const HoursField = styled(BaseField)`
   &:after {
     content: 'H';
   }
