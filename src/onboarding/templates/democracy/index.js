@@ -79,7 +79,7 @@ const template = {
       screen: 'voting-defaults',
       validate: ({ support, minQuorum, voteDuration }) => {
         // Mimic contract validation
-        if (minQuorum < 0 || minQuorum > support) {
+        if (!minQuorum || minQuorum < 0 || minQuorum > support) {
           return false
         }
         if (support < 1 || support >= 100) {
