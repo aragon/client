@@ -20,9 +20,9 @@ const UPDATE_ACTIONS = new Map([
   [
     SET_PERMISSION_MANAGER,
     {
-      label: 'Change the permission manager',
+      label: 'Change the manager',
       message: `
-        The new permission manager will be the only entity allowed to grant or
+        The new manager will be the only entity allowed to grant or
         revoke the permission, and make further changes to the permission
         manager.
       `,
@@ -31,9 +31,9 @@ const UPDATE_ACTIONS = new Map([
   [
     REMOVE_PERMISSION_MANAGER,
     {
-      label: 'Remove the permission manager',
+      label: 'Remove the manager',
       message: `
-        After having removed the permission manager, the permission can only
+        After having removed its manager, the permission can only
         be granted or revoked if it is initialized again (requiring the
         “Create permission” action on the ACL app).
       `,
@@ -283,7 +283,7 @@ class ManageRolePanel extends React.PureComponent {
           <Field label="Action description">{role && role.name}</Field>
 
           {(action === VIEW_PERMISSION || isUpdateAction) && (
-            <Field label="Permission manager">
+            <Field label="Manager">
               <FlexRow>{this.renderManager()}</FlexRow>
             </Field>
           )}
@@ -300,7 +300,7 @@ class ManageRolePanel extends React.PureComponent {
           )}
 
           {action === SET_PERMISSION_MANAGER && (
-            <Field label="New permission manager">
+            <Field label="New manager">
               <TextInput
                 wide
                 placeholder="0xcafe…"
@@ -312,7 +312,7 @@ class ManageRolePanel extends React.PureComponent {
 
           {action === CREATE_PERMISSION && (
             <React.Fragment>
-              <Field label="Permission manager">
+              <Field label="Manager">
                 <TextInput
                   wide
                   placeholder="0xcafe…"
