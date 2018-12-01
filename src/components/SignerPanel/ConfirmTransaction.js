@@ -44,6 +44,7 @@ class ConfirmTransaction extends React.Component {
       signError,
       signingEnabled,
       walletNetworkType,
+      locator,
     } = this.props
 
     if (!hasWeb3) {
@@ -94,6 +95,7 @@ class ConfirmTransaction extends React.Component {
         pretransaction={pretransaction}
         signingEnabled={signingEnabled}
         onSign={onSign}
+        locator={locator}
       />
     ) : (
       <ImpossibleContent error={signError} intent={intent} onClose={onClose} />

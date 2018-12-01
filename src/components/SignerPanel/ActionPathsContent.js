@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Info, RadioList, IdentityBadge } from '@aragon/ui'
+import { Info, RadioList, IdentityBadge, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
 
@@ -14,7 +14,13 @@ class ActionPathsContent extends React.Component {
     this.setState({ selected })
   }
   handleSign = () => {
-    const { intent, direct, paths, pretransaction, onSign } = this.props
+    const {
+      intent,
+      direct,
+      paths,
+      pretransaction,
+      onSign,
+    } = this.props
     const { selected } = this.state
     // In non-direct paths, the first transaction (0) is the one we need to sign
     // to kick off the forwarding path
@@ -40,24 +46,33 @@ class ActionPathsContent extends React.Component {
                       key={index}
                       entity={value}
                       fontSize="small"
-                      style={{ verticalAlign: 'middle', margin: '0 2px' }}
+                      style={{ verticalAlign: 'middle', marginRight: '4px' }}
                     />
                   )
                 } else if (type === 'app') {
                   return (
-                    <span key={index} style={{ margin: '0 2px' }}>
+                    <SafeLink
+                      href={`/#/${
+                        this.props.locator.dao
+                      }/permissions/?params=app.${value.proxyAddress}`}
+                      target="_blank"
+                      style={{ marginRight: '2px' }}
+                    >
                       {value.name}
-                    </span>
+                    </SafeLink>
                   )
                 } else if (type === 'role') {
                   return (
-                    <span key={index} style={{ margin: '0 2px' }}>
+                    <span
+                      key={index}
+                      style={{ marginRight: '4px', fontStyle: 'italic' }}
+                    >
                       {value.name}
                     </span>
                   )
                 } else if (type === 'text') {
                   return (
-                    <span key={index} style={{ margin: '0 2px' }}>
+                    <span key={index} style={{ marginRight: '4px' }}>
                       {value}
                     </span>
                   )
