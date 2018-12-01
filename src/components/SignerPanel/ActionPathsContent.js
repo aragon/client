@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Info, RadioList } from '@aragon/ui'
+import { Info, RadioList, IdentityBadge } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
 
@@ -24,13 +24,47 @@ class ActionPathsContent extends React.Component {
       pretransaction
     )
   }
-  renderDescription(showPaths, { description, name, to }) {
+  renderDescription(
+    showPaths,
+    { description, name, to, annotatedDescription }
+  ) {
     return (
       <React.Fragment>
-        <p>This transaction will {showPaths && 'eventually'} perform:</p>
-        <p style={{ margin: '10px 0' }}>
-          {description ? `"${description}"` : 'an action'}
-        </p>
+        <p>This transaction will {showPaths && 'eventually'} perform</p>
+        <div style={{ margin: '10px 0 10px 15px' }}>
+          {annotatedDescription
+            ? annotatedDescription.map(({ type, value }, index) => {
+                if (type === 'address') {
+                  return (
+                    <IdentityBadge
+                      key={index}
+                      entity={value}
+                      fontSize="small"
+                      style={{ verticalAlign: 'middle', margin: '0 2px' }}
+                    />
+                  )
+                } else if (type === 'app') {
+                  return (
+                    <span key={index} style={{ margin: '0 2px' }}>
+                      {value.name}
+                    </span>
+                  )
+                } else if (type === 'role') {
+                  return (
+                    <span key={index} style={{ margin: '0 2px' }}>
+                      {value.name}
+                    </span>
+                  )
+                } else if (type === 'text') {
+                  return (
+                    <span key={index} style={{ margin: '0 2px' }}>
+                      {value}
+                    </span>
+                  )
+                }
+              })
+            : description || 'an action'}
+        </div>
         <p>
           {' on '}
           <AddressLink to={to}>{name}</AddressLink>.

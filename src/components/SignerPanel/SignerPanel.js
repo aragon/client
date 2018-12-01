@@ -80,8 +80,8 @@ class SignerPanel extends React.Component {
   transactionIntent({ path, transaction = {} }) {
     // If the path includes forwarders, the intent is always the last node
     if (path.length > 1) {
-      const { description, name, to } = path[path.length - 1]
-      return { description, name, to, transaction }
+      const { description, name, to, annotatedDescription } = path[path.length - 1]
+      return { description, name, to, transaction, annotatedDescription }
     }
 
     // Direct path
