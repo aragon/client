@@ -22,9 +22,8 @@ const UPDATE_ACTIONS = new Map([
     {
       label: 'Change the manager',
       message: `
-        The new manager will be the only entity allowed to grant or
-        revoke the permission, and make further changes to the permission
-        manager.
+        The new manager will be the only entity allowed to grant or revoke
+        the permission, and make further changes to the manager.
       `,
     },
   ],
@@ -33,9 +32,9 @@ const UPDATE_ACTIONS = new Map([
     {
       label: 'Remove the manager',
       message: `
-        After having removed its manager, the permission can only
-        be granted or revoked if it is initialized again (requiring the
-        “Create permission” action on the ACL app).
+        After having removed its manager, the permission can only be granted or
+        revoked if it is initialized again (requiring the “Create permission”
+        action on the ACL app).
       `,
     },
   ],
@@ -48,10 +47,9 @@ const ACTIONS = new Map([
     {
       label: null,
       message: `
-        As part of the initialization process for a permission, a permission
-        manager must also be set. Be careful with this setting: the permission
-        manager is the only entity afterwards who can grant or revoke this
-        permisison!
+        As part of the initialization process for a permission, a manager must
+        also be set. Be careful with this setting: the manager is the only
+        entity afterwards who can grant or revoke this permisison!
       `,
     },
   ],
