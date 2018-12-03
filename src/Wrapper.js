@@ -113,6 +113,7 @@ class Wrapper extends React.Component {
       wrapper,
       appsStatus,
       locator: { instanceId, params },
+      connected,
       banner,
       onRequestAppsReload,
       transactionBag,
@@ -126,6 +127,7 @@ class Wrapper extends React.Component {
             apps={apps.filter(app => app.hasWebApp)}
             appsStatus={appsStatus}
             activeInstanceId={instanceId}
+            connected={connected}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
             onClearAllNotifications={this.handleNotificationsClearAll}
