@@ -50,7 +50,6 @@ class MenuPanel extends React.PureComponent {
       APPS_STATUS_LOADING,
     ]).isRequired,
     activeInstanceId: PropTypes.string,
-    connected: PropTypes.bool,
     // notificationsObservable: PropTypes.object,
     onOpenApp: PropTypes.func.isRequired,
     // onClearAllNotifications: PropTypes.func.isRequired,
