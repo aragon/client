@@ -49,7 +49,6 @@ class Home extends React.Component {
   static propTypes = {
     apps: PropTypes.array.isRequired,
     appsLoading: PropTypes.bool.isRequired,
-    connected: PropTypes.bool.isRequired,
     locator: PropTypes.object.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }
@@ -86,7 +85,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { connected, apps, locator } = this.props
+    const { apps, locator } = this.props
     const { showApps } = this.state
 
     const appActions = actions.filter(({ appName }) =>
@@ -152,12 +151,6 @@ class Home extends React.Component {
             </Spring>
           </AppView>
         </AppContent>
-        <AppFooter>
-          <ConnectionBullet connected={connected} />
-          <Text size="xsmall">
-            {connected ? 'Connected to the network' : 'Not connected'}
-          </Text>
-        </AppFooter>
       </Main>
     )
   }
@@ -179,16 +172,6 @@ const AppContent = styled.div`
   flex-shrink: 1;
   min-height: 0;
   height: calc(100% - 54px);
-`
-
-const AppFooter = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  height: 54px;
-  padding-left: 30px;
-  background: ${theme.contentBackground};
-  border-top: 1px solid ${theme.contentBorder};
 `
 
 const Content = styled.div`
@@ -222,16 +205,6 @@ const CardWrap = styled.div`
   height: ${CARD_HEIGHT}px;
   margin-top: ${CARD_MARGIN}px;
   margin-left: ${CARD_MARGIN}px;
-`
-
-const ConnectionBullet = styled.span`
-  width: 8px;
-  height: 8px;
-  margin-top: -2px;
-  margin-right: 8px;
-  border-radius: 50%;
-  background: ${({ connected }) =>
-    connected ? theme.positive : theme.negative};
 `
 
 export default Home

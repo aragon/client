@@ -12,7 +12,6 @@ import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
-import { noop } from './utils'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -49,19 +48,11 @@ class Wrapper extends React.Component {
   }
 
   static defaultProps = {
-    apps: [],
-    account: '',
-    connected: false,
-    daoAddress: '',
-    historyBack: noop,
-    historyPush: noop,
-    locator: {},
-    walletNetwork: '',
     transactionBag: null,
-    wrapper: null,
     walletWeb3: null,
     banner: null,
     daoDomain: '',
+    wrapper: null,
   }
   state = {
     appInstance: {},
@@ -125,6 +116,7 @@ class Wrapper extends React.Component {
       wrapper,
       appsStatus,
       locator: { instanceId, params },
+      connected,
       banner,
       onRequestAppsReload,
       transactionBag,
@@ -140,6 +132,7 @@ class Wrapper extends React.Component {
             apps={apps.filter(app => app.hasWebApp)}
             appsStatus={appsStatus}
             activeInstanceId={instanceId}
+            connected={connected}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
             onClearAllNotifications={this.handleNotificationsClearAll}
