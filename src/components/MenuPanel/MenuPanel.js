@@ -8,13 +8,12 @@ import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import RemoteIcon from '../RemoteIcon'
+import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
 } from '../../symbols'
-
-import logo from './assets/logo.svg'
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -56,6 +55,8 @@ class MenuPanel extends React.PureComponent {
     // onClearAllNotifications: PropTypes.func.isRequired,
     // onOpenNotification: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    daoAddress: PropTypes.string.isRequired,
+    daoDomain: PropTypes.string,
   }
 
   state = {
@@ -76,7 +77,7 @@ class MenuPanel extends React.PureComponent {
   getAppGroups = memoize(apps => prepareAppGroups(apps))
 
   render() {
-    const { apps } = this.props
+    const { apps, daoAddress, daoDomain } = this.props
     const appGroups = this.getAppGroups(apps)
 
     const menuApps = [
@@ -91,7 +92,9 @@ class MenuPanel extends React.PureComponent {
       <Main>
         <In>
           <Header>
-            <img src={logo} alt="Aragon" height="36" />
+            <OrganizationSwitcher
+              currentDao={{ name: daoDomain, address: daoAddress }}
+            />
           </Header>
           <Content>
             <div className="in">

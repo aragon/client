@@ -36,6 +36,7 @@ class Wrapper extends React.Component {
     ]).isRequired,
     connected: PropTypes.bool.isRequired,
     daoAddress: PropTypes.string.isRequired,
+    daoDomain: PropTypes.string,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
@@ -60,6 +61,7 @@ class Wrapper extends React.Component {
     wrapper: null,
     walletWeb3: null,
     banner: null,
+    daoDomain: '',
   }
   state = {
     appInstance: {},
@@ -126,6 +128,8 @@ class Wrapper extends React.Component {
       banner,
       onRequestAppsReload,
       transactionBag,
+      daoAddress,
+      daoDomain,
     } = this.props
 
     return (
@@ -141,6 +145,8 @@ class Wrapper extends React.Component {
             onClearAllNotifications={this.handleNotificationsClearAll}
             onOpenNotification={this.handleNotificationNavigation}
             onRequestAppsReload={onRequestAppsReload}
+            daoAddress={daoAddress}
+            daoDomain={daoDomain}
           />
           <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
         </Container>
