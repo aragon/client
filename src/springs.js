@@ -9,5 +9,5 @@ export default {
   smooth: { mass: 0.7, tension: 300, friction: 25, precision: 0.01 },
 
   // Fast speed spring, for actions that need to feel almost instant.
-  swift: { mass: 0.5, tension: 400, friction: 30, precision: 0.01 },
+  swift: { mass: 0.5, tension: 800, friction: 30, precision: 0.01 },
 }
