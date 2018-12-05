@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { theme } from '@aragon/ui'
 import { FavoriteDaoType } from '../../../prop-types'
-import { noop } from '../../../utils'
 import { FavoriteDaosConsumer } from '../../../contexts/FavoriteDaosContext'
-import EscapeOutside from '../../EscapeOutside/EscapeOutside'
 import LoadingRing from '../../LoadingRing'
 import Popup from '../../Popup'
 import OrganizationItem from './OrganizationItem'
@@ -34,7 +32,7 @@ class OrganizationSwitcher extends React.PureComponent {
   }
   render() {
     const { menuOpened } = this.state
-    const { currentDao, favoriteDaos, updateFavoriteDaos } = this.props
+    const { currentDao, favoriteDaos } = this.props
     if (!currentDao.address) {
       return ''
     }
@@ -108,7 +106,7 @@ export default props =>
     </FavoriteDaosConsumer>
   ) : (
     <Loader>
-      <LoadingRing spin={true} />
+      <LoadingRing spin />
       <LoaderLabel>Loading…</LoaderLabel>
     </Loader>
   )

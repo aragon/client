@@ -3,8 +3,14 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { theme } from '@aragon/ui'
 import OrganizationItem from './OrganizationItem'
+import { FavoriteDaoType } from '../../../prop-types'
 
 class FavoriteRow extends React.Component {
+  static propTypes = {
+    dao: FavoriteDaoType.isRequired,
+    onOpen: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
+  }
   handleOpenClick = () => {
     const { dao } = this.props
     this.props.onOpen(dao)

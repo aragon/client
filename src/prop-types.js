@@ -5,3 +5,8 @@ export const FavoriteDaoType = PropTypes.shape({
   address: PropTypes.string,
   favorited: PropTypes.bool,
 })
+
+export const DaoItemType = PropTypes.shape({
+  name: PropTypes.string,
+  address: PropTypes.string,
+})

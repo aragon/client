@@ -3,16 +3,13 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { FavoriteDaoType } from '../../../prop-types'
 import FavoriteRow from './FavoriteRow'
-import { noop } from '../../../utils'
 
 class Favorites extends React.Component {
   static propTypes = {
-    onDone: PropTypes.func,
     favoriteDaos: PropTypes.arrayOf(FavoriteDaoType),
     currentDao: FavoriteDaoType,
-  }
-  static defaultProps = {
-    onDone: noop,
+    onRequestClose: PropTypes.func.isRequired,
+    onDone: PropTypes.func.isRequired,
   }
 
   state = { localDaos: [] }

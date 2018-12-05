@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { log, noop } from '../utils'
 import StoredList from '../StoredList'
 import { network } from '../environment'
 import uniqby from 'lodash.uniqby'

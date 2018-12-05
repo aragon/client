@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
-import { Button, Card, theme } from '@aragon/ui'
+import { Card } from '@aragon/ui'
 import { noop } from '../utils'
 import springs from '../springs'
 
@@ -12,11 +12,10 @@ export const TRANSITION_SPRING = { ...springs.swift, precision: 0.1 }
 class Popup extends React.Component {
   static propTypes = {
     onRequestClose: PropTypes.func,
-    visible: PropTypes.bool,
+    children: PropTypes.node,
   }
   static defaultProps = {
     onRequestClose: noop,
-    visible: true,
   }
 
   state = { previouslyFocusedElement: null }
@@ -90,6 +89,47 @@ class Popup extends React.Component {
   }
 }
 
+class AnimatedPopup extends React.Component {
+  static propTypes = {
+    visible: PropTypes.func,
+  }
+  static defaultProps = {
+    visible: true,
+  }
+  render() {
+    const { visible, ...props } = this.props
+    return (
+      <Transition
+        items={visible}
+        from={{ visibleProgress: 0 }}
+        enter={{ visibleProgress: 1 }}
+        leave={{ visibleProgress: 0 }}
+        config={TRANSITION_SPRING}
+        native
+      >
+        {(visible = true) =>
+          visible &&
+          (({ visibleProgress }) => (
+            <PopupWrapper
+              style={{
+                opacity: visibleProgress,
+                transform: visibleProgress.interpolate(
+                  v =>
+                    `scale(
+                  ${1 - TRANSITION_SCALE_DIFF + TRANSITION_SCALE_DIFF * v}
+                )`
+                ),
+              }}
+            >
+              <Popup {...props} />
+            </PopupWrapper>
+          ))
+        }
+      </Transition>
+    )
+  }
+}
+
 const Main = styled(Card)`
   display: flex;
   width: auto;
@@ -108,32 +148,4 @@ const PopupWrapper = styled(animated.div)`
   left: 10px;
 `
 
-export default props => (
-  <Transition
-    items={props.visible}
-    from={{ visibleProgress: 0 }}
-    enter={{ visibleProgress: 1 }}
-    leave={{ visibleProgress: 0 }}
-    config={TRANSITION_SPRING}
-    native
-  >
-    {visible =>
-      visible &&
-      (({ visibleProgress }) => (
-        <PopupWrapper
-          style={{
-            opacity: visibleProgress,
-            transform: visibleProgress.interpolate(
-              v =>
-                `scale(
-                  ${1 - TRANSITION_SCALE_DIFF + TRANSITION_SCALE_DIFF * v}
-                )`
-            ),
-          }}
-        >
-          <Popup {...props} />
-        </PopupWrapper>
-      ))
-    }
-  </Transition>
-)
+export default AnimatedPopup

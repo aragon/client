@@ -15,7 +15,7 @@ class Identicon extends React.Component {
     scale: 3,
   }
   render() {
-    const { address, scale, className, style } = this.props
+    const { address, scale } = this.props
     return (
       <Main size={BLOCKIES_SQUARES * scale}>
         <Blockies
