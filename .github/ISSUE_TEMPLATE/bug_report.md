@@ -10,6 +10,9 @@ A clear and concise description of what the bug is.
 **Mainnet or testnet?**
 Which network you are using the app with.
 
+**Organization**
+Enter the URL or ENS name of your organization here.
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
