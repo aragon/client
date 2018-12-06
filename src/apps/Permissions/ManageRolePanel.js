@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel, DropDown, Info, Field, Button, TextInput } from '@aragon/ui'
+import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
@@ -70,6 +70,7 @@ const DEFAULT_STATE = {
   assignEntityIndex: 0,
   assignEntityAddress: '',
   updateAction: NO_UPDATE_ACTION,
+  assignManagerIndex: 0,
   newRoleManagerValue: '',
 }
 
@@ -218,8 +219,8 @@ class ManageRolePanel extends React.PureComponent {
     }
   }
 
-  handleNewRoleManagerChange = event => {
-    this.setState({ newRoleManagerValue: event.target.value })
+  handleRoleManagerChange = ({ index, address }) => {
+    this.setState({ assignManagerIndex: index, newRoleManagerValue: address })
   }
 
   handleEntityChange = ({ index, address }) => {
@@ -245,7 +246,7 @@ class ManageRolePanel extends React.PureComponent {
 
   render() {
     const { opened, onClose, app, role } = this.props
-    const { newRoleManagerValue, assignEntityIndex } = this.state
+    const { assignManagerIndex, assignEntityIndex } = this.state
 
     const updateActionsItems = this.getUpdateActionsItems()
     const updateActionIndex = this.getUpdateActionIndex()
@@ -298,32 +299,30 @@ class ManageRolePanel extends React.PureComponent {
           )}
 
           {action === SET_PERMISSION_MANAGER && (
-            <Field label="New manager">
-              <TextInput
-                wide
-                placeholder="0xcafe…"
-                onChange={this.handleNewRoleManagerChange}
-                value={newRoleManagerValue}
-              />
-            </Field>
+            <EntitySelector
+              label="New manager"
+              labelCustomAddress="Address for new manager"
+              apps={this.getNamedApps()}
+              onChange={this.handleRoleManagerChange}
+              activeIndex={assignManagerIndex}
+            />
           )}
 
           {action === CREATE_PERMISSION && (
             <React.Fragment>
-              <Field label="Manager">
-                <TextInput
-                  wide
-                  placeholder="0xcafe…"
-                  onChange={this.handleNewRoleManagerChange}
-                  value={newRoleManagerValue}
-                />
-              </Field>
               <EntitySelector
                 label="Grant permission to"
                 labelCustomAddress="Grant permission to"
                 apps={this.getNamedApps()}
                 onChange={this.handleEntityChange}
                 activeIndex={assignEntityIndex}
+              />
+              <EntitySelector
+                label="Manager"
+                labelCustomAddress="Address for manager"
+                apps={this.getNamedApps()}
+                onChange={this.handleRoleManagerChange}
+                activeIndex={assignManagerIndex}
               />
             </React.Fragment>
           )}
