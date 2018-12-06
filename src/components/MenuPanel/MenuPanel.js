@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { theme, unselectable } from '@aragon/ui'
+import { Text, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
 import { staticApps } from '../../static-apps'
@@ -56,6 +56,7 @@ class MenuPanel extends React.PureComponent {
     // onClearAllNotifications: PropTypes.func.isRequired,
     // onOpenNotification: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    connected: PropTypes.bool.isRequired,
   }
 
   state = {
@@ -76,7 +77,7 @@ class MenuPanel extends React.PureComponent {
   getAppGroups = memoize(apps => prepareAppGroups(apps))
 
   render() {
-    const { apps } = this.props
+    const { apps, connected } = this.props
     const appGroups = this.getAppGroups(apps)
 
     const menuApps = [
@@ -107,6 +108,12 @@ class MenuPanel extends React.PureComponent {
               </div>
             </div>
           </Content>
+          <ConnectionWrapper>
+            <ConnectionBullet connected={connected} />
+            <Text size="xsmall">
+              {connected ? 'Connected to the network' : 'Not connected'}
+            </Text>
+          </ConnectionWrapper>
         </In>
       </Main>
     )
@@ -234,6 +241,21 @@ const Content = styled.nav`
     display: flex;
     align-items: center;
   }
+`
+
+const ConnectionWrapper = styled.div`
+  margin: 15px 20px;
+`
+
+const ConnectionBullet = styled.span`
+  width: 8px;
+  height: 8px;
+  margin-top: -2px;
+  margin-right: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background: ${({ connected }) =>
+    connected ? theme.positive : theme.negative};
 `
 
 export default MenuPanel

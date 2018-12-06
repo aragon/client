@@ -20,22 +20,21 @@ const UPDATE_ACTIONS = new Map([
   [
     SET_PERMISSION_MANAGER,
     {
-      label: 'Change the permission manager',
+      label: 'Change the manager',
       message: `
-        The new permission manager will be the only entity allowed to grant or
-        revoke the permission, and make further changes to the permission
-        manager.
+        The new manager will be the only entity allowed to grant or revoke
+        the permission, and make further changes to the manager.
       `,
     },
   ],
   [
     REMOVE_PERMISSION_MANAGER,
     {
-      label: 'Remove the permission manager',
+      label: 'Remove the manager',
       message: `
-        After having removed the permission manager, the permission can only
-        be granted or revoked if it is initialized again (requiring the
-        “Create permission” action on the ACL app).
+        After having removed its manager, the permission can only be granted or
+        revoked if it is initialized again (requiring the “Create permission”
+        action on the ACL app).
       `,
     },
   ],
@@ -48,10 +47,9 @@ const ACTIONS = new Map([
     {
       label: null,
       message: `
-        As part of the initialization process for a permission, a permission
-        manager must also be set. Be careful with this setting: the permission
-        manager is the only entity afterwards who can grant or revoke this
-        permisison!
+        As part of the initialization process for a permission, a manager must
+        also be set. Be careful with this setting: the manager is the only
+        entity afterwards who can grant or revoke this permisison!
       `,
     },
   ],
@@ -284,7 +282,7 @@ class ManageRolePanel extends React.PureComponent {
           <Field label="Action description">{role && role.name}</Field>
 
           {(action === VIEW_PERMISSION || isUpdateAction) && (
-            <Field label="Permission manager">
+            <Field label="Manager">
               <FlexRow>{this.renderManager()}</FlexRow>
             </Field>
           )}
