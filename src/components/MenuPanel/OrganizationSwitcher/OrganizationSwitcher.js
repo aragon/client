@@ -34,7 +34,7 @@ class OrganizationSwitcher extends React.PureComponent {
     const { menuOpened } = this.state
     const { currentDao, favoriteDaos } = this.props
     if (!currentDao.address) {
-      return ''
+      return null
     }
     return (
       <Main>
