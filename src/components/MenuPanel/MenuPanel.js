@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Text, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
+import { DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
@@ -55,8 +56,7 @@ class MenuPanel extends React.PureComponent {
     // onClearAllNotifications: PropTypes.func.isRequired,
     // onOpenNotification: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
-    daoAddress: PropTypes.string.isRequired,
-    daoDomain: PropTypes.string,
+    daoAddress: DaoAddressType.isRequired,
     connected: PropTypes.bool.isRequired,
   }
 
@@ -78,7 +78,7 @@ class MenuPanel extends React.PureComponent {
   getAppGroups = memoize(apps => prepareAppGroups(apps))
 
   render() {
-    const { apps, connected, daoAddress, daoDomain } = this.props
+    const { apps, connected, daoAddress } = this.props
     const appGroups = this.getAppGroups(apps)
 
     const menuApps = [
@@ -94,7 +94,10 @@ class MenuPanel extends React.PureComponent {
         <In>
           <Header>
             <OrganizationSwitcher
-              currentDao={{ name: daoDomain, address: daoAddress }}
+              currentDao={{
+                name: daoAddress.domain,
+                address: daoAddress.address,
+              }}
             />
           </Header>
           <Content>

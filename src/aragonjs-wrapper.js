@@ -313,7 +313,6 @@ const initWrapper = async (
     onForwarders = noop,
     onTransaction = noop,
     onDaoAddress = noop,
-    onDaoDomain = noop,
     onWeb3 = noop,
   } = {}
 ) => {
@@ -329,8 +328,7 @@ const initWrapper = async (
     throw new DAONotFound(dao)
   }
 
-  onDaoAddress(daoAddress)
-  onDaoDomain(dao)
+  onDaoAddress({ address: daoAddress, domain: dao })
 
   const wrapper = new Aragon(daoAddress, {
     provider,

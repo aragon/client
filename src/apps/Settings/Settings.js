@@ -11,6 +11,7 @@ import {
   setSelectedCurrency,
 } from '../../local-settings'
 import { noop } from '../../utils'
+import { DaoAddressType } from '../../prop-types'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
@@ -35,7 +36,7 @@ class Settings extends React.Component {
   static propTypes = {
     account: PropTypes.string.isRequired,
     apps: PropTypes.array.isRequired,
-    daoAddress: PropTypes.string.isRequired,
+    daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
   }
@@ -43,7 +44,6 @@ class Settings extends React.Component {
   static defaultProps = {
     account: '',
     apps: [],
-    daoAddress: '',
     onOpenApp: noop,
   }
   state = {

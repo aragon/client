@@ -39,9 +39,12 @@ class App extends React.Component {
     permissions: {},
     permissionsLoading: true,
     walletWeb3: null,
-    daoAddress: '',
-    daoDomain: '',
-    daoCreationStatus: DAO_CREATION_STATUS_NONE, // DAO_CREATION_STATUS_NONE, DAO_CREATION_STATUS_SUCCESS, DAO_CREATION_STATUS_ERROR
+    daoAddress: { address: '', domain: '' },
+    // daoCreationStatus is one of:
+    //  - DAO_CREATION_STATUS_NONE
+    //  - DAO_CREATION_STATUS_SUCCESS
+    //  - DAO_CREATION_STATUS_ERROR
+    daoCreationStatus: DAO_CREATION_STATUS_NONE,
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
@@ -177,8 +180,7 @@ class App extends React.Component {
     this.setState({
       appsStatus: APPS_STATUS_LOADING,
       apps: [],
-      daoAddress: '',
-      daoDomain: '',
+      daoAddress: { address: '', domain: '' },
     })
 
     log('Init DAO', dao)
@@ -189,13 +191,9 @@ class App extends React.Component {
         log(`Wrapper init, recoverable error: ${err.name}. ${err.message}.`)
         this.setState({ appsStatus: APPS_STATUS_ERROR })
       },
-      onDaoAddress: daoAddress => {
-        log('daoAddress', daoAddress)
-        this.setState({ daoAddress })
-      },
-      onDaoDomain: daoDomain => {
-        log('daoDomain', daoDomain)
-        this.setState({ daoDomain })
+      onDaoAddress: ({ address, domain }) => {
+        log('dao address', address, domain)
+        this.setState({ daoAddress: { address, domain } })
       },
       onWeb3: web3 => {
         log('web3', web3)
@@ -262,7 +260,6 @@ class App extends React.Component {
       daoCreationStatus,
       walletWeb3,
       connected,
-      daoDomain,
       daoAddress,
       appsStatus,
       permissionsLoading,
@@ -303,7 +300,6 @@ class App extends React.Component {
               walletNetwork={walletNetwork}
               walletWeb3={walletWeb3}
               daoAddress={daoAddress}
-              daoDomain={daoDomain}
               transactionBag={transactionBag}
               connected={connected}
               onRequestAppsReload={this.handleRequestAppsReload}

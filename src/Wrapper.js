@@ -9,6 +9,7 @@ import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
+import { DaoAddressType } from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
@@ -34,8 +35,7 @@ class Wrapper extends React.Component {
       }),
     ]).isRequired,
     connected: PropTypes.bool.isRequired,
-    daoAddress: PropTypes.string.isRequired,
-    daoDomain: PropTypes.string,
+    daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
@@ -51,7 +51,6 @@ class Wrapper extends React.Component {
     transactionBag: null,
     walletWeb3: null,
     banner: null,
-    daoDomain: '',
     wrapper: null,
   }
   state = {
@@ -121,7 +120,6 @@ class Wrapper extends React.Component {
       onRequestAppsReload,
       transactionBag,
       daoAddress,
-      daoDomain,
     } = this.props
 
     return (
@@ -139,7 +137,6 @@ class Wrapper extends React.Component {
             onOpenNotification={this.handleNotificationNavigation}
             onRequestAppsReload={onRequestAppsReload}
             daoAddress={daoAddress}
-            daoDomain={daoDomain}
           />
           <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
         </Container>
