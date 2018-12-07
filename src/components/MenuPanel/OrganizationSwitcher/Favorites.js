@@ -54,8 +54,7 @@ class Favorites extends React.Component {
   }
 
   isDaoFavorited({ address }) {
-    const { favoriteDaos } = this.props
-    return favoriteDaos.findIndex(dao => dao.address === address) > -1
+    return this.props.favoriteDaos.some(dao => dao.address === address)
   }
 
   currentDaoWithFavoriteState() {
