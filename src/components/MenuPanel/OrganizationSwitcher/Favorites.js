@@ -98,8 +98,7 @@ class Favorites extends React.Component {
       dao => dao.address !== currentDao.address
     )
     return (
-      <section>
-        <Title>Organizations</Title>
+      <section aria-label="Organizations">
         <SectionTitle>Current</SectionTitle>
         <FavoriteRow
           dao={currentDao}
@@ -127,11 +126,7 @@ class Favorites extends React.Component {
   }
 }
 
-const Title = styled.h1`
-  padding: 10px 20px;
-`
-
-const SectionTitle = styled.h2`
+const SectionTitle = styled.h1`
   margin: 10px 20px;
   color: #707070;
   text-transform: lowercase;
