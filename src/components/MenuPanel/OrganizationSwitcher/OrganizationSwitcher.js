@@ -39,7 +39,7 @@ class OrganizationSwitcher extends React.PureComponent {
     return (
       <Main>
         <OpenButton onClick={this.handleToggleMenu}>
-          <OrganizationItem dao={currentDao} />
+          <OrganizationItem dao={currentDao} style={{ paddingRight: '5px' }} />
         </OpenButton>
         <Popup onRequestClose={this.closeMenu} visible={menuOpened}>
           <Favorites
@@ -66,6 +66,7 @@ const OpenButton = styled.button.attrs({ type: 'button' })`
   cursor: pointer;
   padding: 0;
   margin-left: -20px;
+  width: 180px;
   &:active {
     background: rgba(220, 234, 239, 0.3);
   }
@@ -110,5 +111,3 @@ export default props =>
       <LoaderLabel>Loading…</LoaderLabel>
     </Loader>
   )
-
-// export default OrganizationSwitcher
