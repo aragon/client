@@ -104,8 +104,8 @@ class ManageRolePanel extends React.PureComponent {
     return isEmptyAddress(manager.address)
       ? CREATE_PERMISSION
       : isBurnEntity(manager.address)
-        ? VIEW_PERMISSION
-        : updateAction
+      ? VIEW_PERMISSION
+      : updateAction
   }
 
   getUpdateAction(index) {
@@ -261,8 +261,8 @@ class ManageRolePanel extends React.PureComponent {
           action === CREATE_PERMISSION
             ? 'Initialize permission'
             : action === VIEW_PERMISSION
-              ? 'View permission'
-              : 'Manage permission'
+            ? 'View permission'
+            : 'Manage permission'
         }
         opened={opened}
         onClose={onClose}
