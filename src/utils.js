@@ -48,3 +48,7 @@ export function log(...params) {
     console.log(...params)
   }
 }
+
+export function isMobile() {
+  return window.orientation > -1
+}
