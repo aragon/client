@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme, AppView, Text } from '@aragon/ui'
+import { theme, AppView, Text, BreakPoint } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { lerp } from '../../math-utils'
 import springs from '../../springs'
@@ -50,6 +50,7 @@ class Home extends React.Component {
     apps: PropTypes.array.isRequired,
     appsLoading: PropTypes.bool.isRequired,
     locator: PropTypes.object.isRequired,
+    onMessage: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }
 
@@ -87,6 +88,11 @@ class Home extends React.Component {
       onOpenApp(app.proxyAddress)
     }
   }
+  handleMenuPanelOpen = () => {
+    this.props.onMessage({
+      data: { from: 'app', name: 'menuPanel', value: true },
+    })
+  }
   render() {
     const { apps, locator } = this.props
     const { showApps } = this.state
@@ -97,7 +103,16 @@ class Home extends React.Component {
     return (
       <Main>
         <AppContent>
-          <AppView title="Home">
+          <AppView
+            title={
+              <React.Fragment>
+                <BreakPoint to="medium">
+                  <button onClick={this.handleMenuPanelOpen}>M</button>
+                </BreakPoint>
+                Home
+              </React.Fragment>
+            }
+          >
             <Spring
               config={springs.lazy}
               to={{ showAppsProgress: Number(showApps) }}
