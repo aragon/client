@@ -573,7 +573,7 @@ class Onboarding extends React.PureComponent {
 
 const Main = styled(animated.div)`
   position: fixed;
-  z-index: 2;
+  z-index: 3;
   top: 0;
   left: 0;
   right: 0;
