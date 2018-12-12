@@ -66,9 +66,12 @@ class Home extends React.Component {
     }
 
     clearTimeout(this.showAppsTimer)
-    this.showAppsTimer = setTimeout(() => {
-      this.setState({ showApps: !appsLoading && this.props.apps.length > 0 })
-    }, appsLoading ? 0 : 1000)
+    this.showAppsTimer = setTimeout(
+      () => {
+        this.setState({ showApps: !appsLoading && this.props.apps.length > 0 })
+      },
+      appsLoading ? 0 : 1000
+    )
   }
   componentWillUnmount() {
     clearTimeout(this.showAppsTimer)

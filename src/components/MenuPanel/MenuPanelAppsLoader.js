@@ -104,8 +104,8 @@ class MenuPanelAppsLoader extends React.Component {
         }) => (
           <Main
             style={{
-              height: instancesHeight.interpolate(
-                v => (v === -1 ? 'auto' : `${v}px`)
+              height: instancesHeight.interpolate(v =>
+                v === -1 ? 'auto' : `${v}px`
               ),
             }}
           >
