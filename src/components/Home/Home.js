@@ -2,10 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme, AppView, Text, BreakPoint } from '@aragon/ui'
+import {
+  theme,
+  AppView,
+  AppBar,
+  Text,
+  font,
+  breakpoint,
+  BreakPoint,
+} from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { lerp } from '../../math-utils'
 import springs from '../../springs'
+import MenuButton from '../MenuPanel/MenuButton'
 
 import logo from './assets/logo-background.svg'
 
@@ -104,13 +113,15 @@ class Home extends React.Component {
       <Main>
         <AppContent>
           <AppView
-            title={
-              <React.Fragment>
-                <BreakPoint to="medium">
-                  <button onClick={this.handleMenuPanelOpen}>M</button>
-                </BreakPoint>
-                Home
-              </React.Fragment>
+            appBar={
+              <AppBar>
+                <AppBarTitle>
+                  <BreakPoint to="medium">
+                    <MenuButton onClick={this.handleMenuPanelOpen} />
+                  </BreakPoint>
+                  <AppBarLabel>Home</AppBarLabel>
+                </AppBarTitle>
+              </AppBar>
             }
           >
             <Spring
@@ -173,6 +184,23 @@ class Home extends React.Component {
     )
   }
 }
+
+const AppBarTitle = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+const AppBarLabel = styled.span`
+  margin-left: 8px;
+  ${font({ size: 'xxlarge' })};
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: 24px;
+    `
+  )};
+`
 
 const Main = styled.div`
   display: flex;
