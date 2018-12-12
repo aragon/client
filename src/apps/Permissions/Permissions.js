@@ -1,7 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { AppBar, AppView, NavigationBar, Button, BreakPoint } from '@aragon/ui'
+import {
+  AppBar,
+  AppView,
+  NavigationBar,
+  Button,
+  font,
+  breakpoint,
+  BreakPoint,
+} from '@aragon/ui'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
@@ -10,6 +18,7 @@ import EntityPermissions from './EntityPermissions'
 import NavigationItem from './NavigationItem'
 import AssignPermissionPanel from './AssignPermissionPanel'
 import ManageRolePanel from './ManageRolePanel'
+import MenuButton from '../../components/MenuPanel/MenuButton'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 
 class Permissions extends React.Component {
@@ -200,18 +209,6 @@ class Permissions extends React.Component {
               <AppView
                 appBar={
                   <AppBar
-                    title={
-                      <BreakPoint to="medium">
-                        {navigationItems.length === 1 && (
-                          <React.Fragment>
-                            <button onClick={this.handleMenuPanelOpen}>
-                              M
-                            </button>
-                            Permissions
-                          </React.Fragment>
-                        )}
-                      </BreakPoint>
-                    }
                     endContent={
                       <Button
                         mode="strong"
@@ -222,6 +219,19 @@ class Permissions extends React.Component {
                       </Button>
                     }
                   >
+                    <BreakPoint to="medium">
+                      {navigationItems.length === 1 ? (
+                        <AppBarTitle>
+                          <MenuButton onClick={this.handleMenuPanelOpen} />
+                          <AppBarLabel>Permissions</AppBarLabel>
+                        </AppBarTitle>
+                      ) : (
+                        <NavigationBar
+                          items={navigationItems}
+                          onBack={this.goToHome}
+                        />
+                      )}
+                    </BreakPoint>
                     <BreakPoint from="medium">
                       <NavigationBar
                         items={navigationItems}
@@ -303,6 +313,23 @@ class Permissions extends React.Component {
     )
   }
 }
+
+const AppBarTitle = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+const AppBarLabel = styled.span`
+  margin: 0 10px 0 8px;
+  ${font({ size: 'xxlarge' })};
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: 24px;
+    `
+  )};
+`
 
 // This element is only used to reset the view scroll using scrollIntoView()
 const ScrollTopElement = styled.div`
