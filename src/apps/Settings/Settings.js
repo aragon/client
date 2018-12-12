@@ -1,8 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { DropDown, Button, Field, TextInput } from '@aragon/ui'
+import {
+  DropDown,
+  Button,
+  Field,
+  TextInput,
+  font,
+  breakpoint,
+  BreakPoint,
+} from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
+import MenuButton from '../../components/MenuPanel/MenuButton'
 import { defaultEthNode, ipfsDefaultConf } from '../../environment'
 import {
   getSelectedCurrency,
@@ -74,6 +83,13 @@ class Settings extends React.Component {
     window.localStorage.clear()
     window.location.reload()
   }
+
+  handleMenuPanelOpen = () => {
+    this.props.onMessage({
+      data: { from: 'app', name: 'menuPanel', value: true },
+    })
+  }
+
   render() {
     const {
       account,
@@ -90,7 +106,16 @@ class Settings extends React.Component {
       selectedCurrency,
     } = this.state
     return (
-      <AppLayout title="Settings">
+      <AppLayout
+        title={
+          <AppBarTitle>
+            <BreakPoint to="medium">
+              <MenuButton onClick={this.handleMenuPanelOpen} />
+            </BreakPoint>
+            <AppBarLabel>Settings</AppBarLabel>
+          </AppBarTitle>
+        }
+      >
         <Content>
           <DaoSettings
             apps={apps}
@@ -164,5 +189,23 @@ class Settings extends React.Component {
     )
   }
 }
+
+const AppBarTitle = styled.span`
+  display: flex;
+  align-items: center;
+  margin-left: -30px;
+`
+
+const AppBarLabel = styled.span`
+  margin-left: 8px;
+  ${font({ size: 'xxlarge' })};
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: 24px;
+    `
+  )};
+`
 
 export default Settings
