@@ -191,7 +191,7 @@ class AppIFrame extends React.Component {
         {progressBar}
         <StyledIFrame
           name="AppIFrame"
-          allow="camera; microphone"
+          allow="camera *; microphone *"
           frameBorder="0"
           onLoad={this.handleOnLoad}
           innerRef={this.handleIFrameRef}
