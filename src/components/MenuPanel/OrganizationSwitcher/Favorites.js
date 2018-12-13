@@ -21,10 +21,12 @@ class Favorites extends React.Component {
     const { onDone } = this.props
     const { localDaos } = this.state
     onDone(
-      localDaos.filter(dao => dao.favorited).map(dao => ({
-        name: dao.name,
-        address: dao.address,
-      }))
+      localDaos
+        .filter(dao => dao.favorited)
+        .map(dao => ({
+          name: dao.name,
+          address: dao.address,
+        }))
     )
   }
 
@@ -70,8 +72,8 @@ class Favorites extends React.Component {
     const { localDaos } = this.state
 
     this.setState({
-      localDaos: localDaos.map(
-        dao => (dao.address === address ? { ...dao, favorited } : dao)
+      localDaos: localDaos.map(dao =>
+        dao.address === address ? { ...dao, favorited } : dao
       ),
     })
   }

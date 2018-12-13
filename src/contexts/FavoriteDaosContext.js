@@ -10,10 +10,12 @@ const storedList = new StoredList(`favorite-daos:${network.type}`)
 
 const filterFavoritesDaos = daos =>
   uniqby(
-    daos.filter(dao => dao && dao.address).map(dao => ({
-      name: dao.name || '',
-      address: dao.address,
-    })),
+    daos
+      .filter(dao => dao && dao.address)
+      .map(dao => ({
+        name: dao.name || '',
+        address: dao.address,
+      })),
     dao => dao.address
   )
 
