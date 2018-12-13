@@ -57,7 +57,11 @@ class DaoSettings extends React.Component {
           text={`This organization is deployed on the ${network.name}.`}
         >
           <Field label="Address" style={{ marginBottom: 0 }}>
-            <IdentityBadge entity={checksummedDaoAddr} shorten={false} />
+            <IdentityBadge
+              entity={checksummedDaoAddr}
+              networkType={network.type}
+              shorten={false}
+            />
             <Note>
               <strong>Do not send ether or tokens to this address!</strong>
               <br />
@@ -123,6 +127,7 @@ class DaoSettings extends React.Component {
                     <Field label={name}>
                       <IdentityBadge
                         entity={checksummedProxyAddress}
+                        networkType={network.type}
                         shorten={false}
                       />
                     </Field>

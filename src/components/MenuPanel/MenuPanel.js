@@ -104,12 +104,11 @@ class MenuPanel extends React.PureComponent {
             <div className="in">
               <h1>Apps</h1>
               <div>
-                {menuApps.map(
-                  app =>
-                    // If it's an array, it's the group being loaded from the ACL
-                    Array.isArray(app)
-                      ? this.renderLoadedAppGroup(app)
-                      : this.renderAppGroup(app, false)
+                {menuApps.map(app =>
+                  // If it's an array, it's the group being loaded from the ACL
+                  Array.isArray(app)
+                    ? this.renderLoadedAppGroup(app)
+                    : this.renderAppGroup(app, false)
                 )}
               </div>
             </div>
