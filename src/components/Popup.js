@@ -57,9 +57,9 @@ class Popup extends React.Component {
     }
 
     // We can’t reliably know if the element previously focused can actually
-    // receive focus or if it was implicitly focused. That’s why
-    // onRequestClose() is called even if `previouslyFocusedElement.focus()`
-    // should call it already, via `this.handleFocusout`.
+    // receive focus or if it was implicitly focused. That’s why we explicitly
+    // call onRequestClose() even if `previouslyFocusedElement.focus()` should
+    // trigger `this.handleFocusout()` and call this method again.
     // The `_closeRequested` flag prevents `onRequestClose` to be called twice.
     onRequestClose()
     this._closeRequested = true
@@ -116,8 +116,8 @@ class AnimatedPopup extends React.Component {
                 transform: visibleProgress.interpolate(
                   v =>
                     `scale(
-                  ${1 - TRANSITION_SCALE_DIFF + TRANSITION_SCALE_DIFF * v}
-                )`
+                      ${1 - TRANSITION_SCALE_DIFF + TRANSITION_SCALE_DIFF * v}
+                    )`
                 ),
               }}
             >

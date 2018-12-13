@@ -48,7 +48,7 @@ class DaoSettings extends React.Component {
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     const checksummedDaoAddr =
-      daoAddress && daoAddress.address && toChecksumAddress(daoAddress.address)
+      daoAddress.address && toChecksumAddress(daoAddress.address)
     const webApps = apps.filter(app => app.hasWebApp)
     return (
       <div>
