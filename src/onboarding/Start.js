@@ -325,7 +325,7 @@ class StartContent extends React.PureComponent {
     if (walletNetwork !== network.type) {
       return (
         <ActionInfo>
-          Please select the {sanitizeNetworkType(network.type)} network in
+          Please select the {sanitizeNetworkType(network.type)} network in{' '}
           {providerString('your Ethereum provider', walletProviderId)}.
         </ActionInfo>
       )
