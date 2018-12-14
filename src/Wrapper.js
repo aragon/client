@@ -52,8 +52,8 @@ class Wrapper extends React.Component {
   static defaultProps = {
     onRequestEnable: noop,
     transactionBag: null,
-    walletWeb3: null,
     walletProviderId: '',
+    walletWeb3: null,
     wrapper: null,
   }
   state = {
@@ -113,17 +113,17 @@ class Wrapper extends React.Component {
     const {
       account,
       apps,
-      walletWeb3,
+      appsStatus,
+      banner,
+      connected,
+      locator: { instanceId, params },
+      onRequestAppsReload,
+      onRequestEnable,
+      transactionBag,
       walletNetwork,
       walletProviderId,
+      walletWeb3,
       wrapper,
-      appsStatus,
-      locator: { instanceId, params },
-      connected,
-      banner,
-      onRequestAppsReload,
-      transactionBag,
-      onRequestEnable,
     } = this.props
 
     return (
@@ -157,15 +157,16 @@ class Wrapper extends React.Component {
   }
   renderApp(instanceId, params) {
     const {
-      locator,
+      account,
       apps,
       appsStatus,
-      permissionsLoading,
-      account,
-      walletNetwork,
-      wrapper,
       connected,
       daoAddress,
+      locator,
+      permissionsLoading,
+      walletNetwork,
+      walletWeb3,
+      wrapper,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -206,6 +207,7 @@ class Wrapper extends React.Component {
           daoAddress={daoAddress}
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
+          walletWeb3={walletWeb3}
         />
       )
     }
