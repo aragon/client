@@ -10,7 +10,6 @@ import {
   setIpfsGateway,
   setSelectedCurrency,
 } from '../../local-settings'
-import { noop } from '../../utils'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
@@ -38,13 +37,7 @@ class Settings extends React.Component {
     daoAddress: PropTypes.string.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
-  }
-
-  static defaultProps = {
-    account: '',
-    apps: [],
-    daoAddress: '',
-    onOpenApp: noop,
+    walletWeb3: PropTypes.object,
   }
   state = {
     defaultEthNode,
@@ -74,7 +67,14 @@ class Settings extends React.Component {
     window.location.reload()
   }
   render() {
-    const { account, apps, daoAddress, onOpenApp, walletNetwork } = this.props
+    const {
+      account,
+      apps,
+      daoAddress,
+      onOpenApp,
+      walletNetwork,
+      walletWeb3,
+    } = this.props
     const {
       defaultEthNode,
       ipfsGateway,
@@ -90,6 +90,7 @@ class Settings extends React.Component {
             daoAddress={daoAddress}
             onOpenApp={onOpenApp}
             walletNetwork={walletNetwork}
+            walletWeb3={walletWeb3}
           />
           {currencies.length > 1 && selectedCurrency && (
             <Option
