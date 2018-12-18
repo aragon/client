@@ -166,7 +166,7 @@ const Web3ProviderError = ({
 }
 
 Web3ProviderError.propTypes = {
-  actionText: PropTypes.string.isRequired,
+  actionText: PropTypes.node.isRequired,
   intent: PropTypes.object.isRequired,
   neededText: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
