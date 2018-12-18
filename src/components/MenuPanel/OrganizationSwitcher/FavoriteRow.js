@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { theme } from '@aragon/ui'
 import OrganizationItem from './OrganizationItem'
 import { FavoriteDaoType } from '../../../prop-types'
+import FocusVisible from '../../FocusVisible'
 
 class FavoriteRow extends React.Component {
   static propTypes = {
@@ -23,12 +24,24 @@ class FavoriteRow extends React.Component {
     const { dao } = this.props
     return (
       <Main>
-        <OrganizationButton onClick={this.handleOpenClick}>
-          <OrganizationItem dao={dao} />
-        </OrganizationButton>
-        <FavoriteButton onClick={this.handleFavoriteClick}>
-          {dao.favorited ? '★' : '☆'}
-        </FavoriteButton>
+        <FocusVisible>
+          {({ focusVisible }) => (
+            <React.Fragment>
+              <OrganizationButton
+                onClick={this.handleOpenClick}
+                focusVisible={focusVisible}
+              >
+                <OrganizationItem dao={dao} />
+              </OrganizationButton>
+              <FavoriteButton
+                onClick={this.handleFavoriteClick}
+                focusVisible={focusVisible}
+              >
+                {dao.favorited ? '★' : '☆'}
+              </FavoriteButton>
+            </React.Fragment>
+          )}
+        </FocusVisible>
       </Main>
     )
   }
@@ -49,13 +62,7 @@ const OrganizationButton = styled.button.attrs({ type: 'button' })`
     background: rgba(220, 234, 239, 0.3);
   }
   &:focus {
-    outline: 2px solid ${theme.accent};
-  }
-  &:focus:not(:focus-visible) {
-    outline: 0;
-  }
-  &:focus-visible {
-    outline: 2px solid ${theme.accent};
+    outline: ${p => (p.focusVisible ? `2px solid ${theme.accent}` : '0')};
   }
   &:active {
     outline: 0;
@@ -82,13 +89,7 @@ const FavoriteButton = styled.button.attrs({ type: 'button' })`
     background: rgba(220, 234, 239, 0.3);
   }
   &:focus {
-    outline: 2px solid ${theme.accent};
-  }
-  &:focus:not(:focus-visible) {
-    outline: 0;
-  }
-  &:focus-visible {
-    outline: 2px solid ${theme.accent};
+    outline: ${p => (p.focusVisible ? `2px solid ${theme.accent}` : '0')};
   }
   &::-moz-focus-inner {
     border: 0;

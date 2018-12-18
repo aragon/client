@@ -8,6 +8,7 @@ import LoadingRing from '../../LoadingRing'
 import Popup from '../../Popup'
 import OrganizationItem from './OrganizationItem'
 import Favorites from './Favorites'
+import FocusVisible from '../../FocusVisible'
 
 class OrganizationSwitcher extends React.PureComponent {
   static propTypes = {
@@ -33,22 +34,29 @@ class OrganizationSwitcher extends React.PureComponent {
   render() {
     const { menuOpened } = this.state
     const { currentDao, favoriteDaos } = this.props
-    if (!currentDao.address) {
-      return null
-    }
     return (
-      <Main>
-        <OpenButton onClick={this.handleToggleMenu}>
-          <OrganizationItem dao={currentDao} style={{ paddingRight: '5px' }} />
-        </OpenButton>
-        <Popup onRequestClose={this.closeMenu} visible={menuOpened}>
-          <Favorites
-            favoriteDaos={favoriteDaos}
-            currentDao={currentDao}
-            onDone={this.handleFavoritesUpdate}
-          />
-        </Popup>
-      </Main>
+      <FocusVisible>
+        {({ focusVisible }) => (
+          <Main>
+            <OpenButton
+              onClick={this.handleToggleMenu}
+              focusVisible={focusVisible}
+            >
+              <OrganizationItem
+                dao={currentDao}
+                style={{ paddingRight: '5px' }}
+              />
+            </OpenButton>
+            <Popup onRequestClose={this.closeMenu} visible={menuOpened}>
+              <Favorites
+                favoriteDaos={favoriteDaos}
+                currentDao={currentDao}
+                onDone={this.handleFavoritesUpdate}
+              />
+            </Popup>
+          </Main>
+        )}
+      </FocusVisible>
     )
   }
 }
@@ -71,13 +79,7 @@ const OpenButton = styled.button.attrs({ type: 'button' })`
     background: rgba(220, 234, 239, 0.3);
   }
   &:focus {
-    outline: 2px solid ${theme.accent};
-  }
-  &:focus:not(:focus-visible) {
-    outline: 0;
-  }
-  &:focus-visible {
-    outline: 2px solid ${theme.accent};
+    outline: ${p => (p.focusVisible ? `2px solid ${theme.accent}` : '0')};
   }
   &::-moz-focus-inner {
     border: 0;
