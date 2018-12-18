@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Info, RadioList } from '@aragon/ui'
-import providerString from '../../provider-strings'
+import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
+import IdentityBadge from '../IdentityBadge'
+import providerString from '../../provider-strings'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
 
@@ -25,13 +26,57 @@ class ActionPathsContent extends React.Component {
       pretransaction
     )
   }
-  renderDescription(showPaths, { description, name, to }) {
+  renderDescription(
+    showPaths,
+    { description, name, to, annotatedDescription }
+  ) {
     return (
       <React.Fragment>
-        <p>This transaction will {showPaths && 'eventually'} perform:</p>
-        <p style={{ margin: '10px 0' }}>
-          {description ? `"${description}"` : 'an action'}
-        </p>
+        <p>This transaction will {showPaths && 'eventually'} perform</p>
+        <div style={{ margin: '10px 0 10px 15px' }}>
+          {annotatedDescription
+            ? annotatedDescription.map(({ type, value }, index) => {
+                if (type === 'address') {
+                  return (
+                    <IdentityBadge
+                      key={index}
+                      entity={value}
+                      fontSize="small"
+                      style={{ marginRight: '4px' }}
+                    />
+                  )
+                } else if (type === 'app') {
+                  return (
+                    <SafeLink
+                      key={index}
+                      href={`/#/${
+                        this.props.locator.dao
+                      }/permissions/?params=app.${value.proxyAddress}`}
+                      target="_blank"
+                      style={{ marginRight: '2px' }}
+                    >
+                      {value.name}
+                    </SafeLink>
+                  )
+                } else if (type === 'role') {
+                  return (
+                    <span
+                      key={index}
+                      style={{ marginRight: '4px', fontStyle: 'italic' }}
+                    >
+                      {value.name}
+                    </span>
+                  )
+                } else if (type === 'text') {
+                  return (
+                    <span key={index} style={{ marginRight: '4px' }}>
+                      {value}
+                    </span>
+                  )
+                }
+              })
+            : description || 'an action'}
+        </div>
         <p>
           {' on '}
           <AddressLink to={to}>{name}</AddressLink>.

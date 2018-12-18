@@ -126,10 +126,10 @@ class Wrapper extends React.Component {
       appsStatus,
       banner,
       connected,
-      locator: { instanceId, params },
+      daoAddress,
+      locator,
       onRequestAppsReload,
       onRequestEnable,
-      daoAddress,
       transactionBag,
       walletNetwork,
       walletProviderId,
@@ -144,25 +144,28 @@ class Wrapper extends React.Component {
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
             appsStatus={appsStatus}
-            activeInstanceId={instanceId}
+            activeInstanceId={locator.instanceId}
             connected={connected}
+            daoAddress={daoAddress}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
             onClearAllNotifications={this.handleNotificationsClearAll}
             onOpenNotification={this.handleNotificationNavigation}
             onRequestAppsReload={onRequestAppsReload}
-            daoAddress={daoAddress}
           />
-          <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
+          <AppScreen>
+            {this.renderApp(locator.instanceId, locator.params)}
+          </AppScreen>
         </Container>
         <SignerPanel
-          walletWeb3={walletWeb3}
+          account={account}
+          apps={apps}
+          locator={locator}
+          onRequestEnable={onRequestEnable}
+          transactionBag={transactionBag}
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
-          transactionBag={transactionBag}
-          apps={apps}
-          account={account}
-          onRequestEnable={onRequestEnable}
+          walletWeb3={walletWeb3}
         />
       </Main>
     )

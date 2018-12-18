@@ -83,19 +83,20 @@ class SignerPanel extends React.Component {
   }
 
   transactionIntent({ path, transaction = {} }) {
-    // If the path includes forwarders, the intent is always the last node
     if (path.length > 1) {
-      const { description, name, to } = path[path.length - 1]
-      return { description, name, to, transaction }
+      // If the path includes forwarders, the intent is always the last node
+      const lastNode = path[path.length - 1]
+      const { description, name, to, annotatedDescription } = lastNode
+      return { annotatedDescription, description, name, to, transaction }
     }
 
     // Direct path
     const { apps } = this.props
-    const { description, to } = transaction
+    const { annotatedDescription, description, to } = transaction
     const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
     const name = (toApp && toApp.name) || ''
 
-    return { description, name, to, transaction }
+    return { annotatedDescription, description, name, to, transaction }
   }
 
   async signTransaction(transaction, intent) {
@@ -154,11 +155,12 @@ class SignerPanel extends React.Component {
 
   render() {
     const {
-      walletWeb3,
+      account,
+      locator,
+      onRequestEnable,
       walletNetwork,
       walletProviderId,
-      account,
-      onRequestEnable,
+      walletWeb3,
     } = this.props
 
     const {
@@ -202,15 +204,16 @@ class SignerPanel extends React.Component {
                           hasAccount={Boolean(account)}
                           hasWeb3={Boolean(walletWeb3)}
                           intent={intent}
+                          locator={locator}
+                          networkType={network.type}
                           onClose={this.handleSignerClose}
+                          onRequestEnable={onRequestEnable}
                           onSign={this.handleSign}
                           paths={actionPaths}
                           pretransaction={pretransaction}
                           signingEnabled={status === STATUS_CONFIRMING}
-                          networkType={network.type}
                           walletNetworkType={walletNetwork}
                           walletProviderId={walletProviderId}
-                          onRequestEnable={onRequestEnable}
                         />
                       </Screen>
                     </ScreenWrapper>

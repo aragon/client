@@ -39,8 +39,10 @@ class ConfirmTransaction extends React.Component {
       hasAccount,
       hasWeb3,
       intent,
+      locator,
       networkType,
       onClose,
+      onRequestEnable,
       onSign,
       paths,
       pretransaction,
@@ -48,7 +50,6 @@ class ConfirmTransaction extends React.Component {
       signingEnabled,
       walletNetworkType,
       walletProviderId,
-      onRequestEnable,
     } = this.props
 
     if (!hasWeb3) {
@@ -110,10 +111,11 @@ class ConfirmTransaction extends React.Component {
       <ActionPathsContent
         intent={intent}
         direct={direct}
+        locator={locator}
+        onSign={onSign}
         paths={paths}
         pretransaction={pretransaction}
         signingEnabled={signingEnabled}
-        onSign={onSign}
         walletProviderId={walletProviderId}
       />
     ) : (
