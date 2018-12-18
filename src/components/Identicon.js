@@ -19,7 +19,7 @@ class Identicon extends React.Component {
     return (
       <Main size={BLOCKIES_SQUARES * scale}>
         <Blockies
-          seed={address}
+          seed={address.toLowerCase()}
           size={BLOCKIES_SQUARES}
           scale={scale * PX_RATIO}
         />
