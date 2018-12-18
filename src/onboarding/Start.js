@@ -295,11 +295,11 @@ class StartContent extends React.PureComponent {
     if (!hasWallet) {
       return (
         <ActionInfo>
-          Please install
+          Please install an Ethereum provider (e.g.{' '}
           <SafeLink href="https://metamask.io/" target="_blank">
             MetaMask
           </SafeLink>
-          .
+          ) .
         </ActionInfo>
       )
     }
