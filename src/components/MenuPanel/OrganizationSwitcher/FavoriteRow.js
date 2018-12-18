@@ -25,17 +25,19 @@ class FavoriteRow extends React.Component {
     return (
       <Main>
         <FocusVisible>
-          {({ focusVisible }) => (
+          {({ focusVisible, onFocus }) => (
             <React.Fragment>
               <OrganizationButton
                 onClick={this.handleOpenClick}
                 focusVisible={focusVisible}
+                onFocus={onFocus}
               >
                 <OrganizationItem dao={dao} />
               </OrganizationButton>
               <FavoriteButton
                 onClick={this.handleFavoriteClick}
                 focusVisible={focusVisible}
+                onFocus={onFocus}
               >
                 {dao.favorited ? '★' : '☆'}
               </FavoriteButton>

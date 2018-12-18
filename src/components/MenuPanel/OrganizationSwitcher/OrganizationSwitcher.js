@@ -36,10 +36,11 @@ class OrganizationSwitcher extends React.PureComponent {
     const { currentDao, favoriteDaos } = this.props
     return (
       <FocusVisible>
-        {({ focusVisible }) => (
+        {({ focusVisible, onFocus }) => (
           <Main>
             <OpenButton
               onClick={this.handleToggleMenu}
+              onFocus={onFocus}
               focusVisible={focusVisible}
             >
               <OrganizationItem
