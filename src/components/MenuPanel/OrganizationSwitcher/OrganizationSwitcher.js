@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { theme } from '@aragon/ui'
-import { FavoriteDaoType } from '../../../prop-types'
+import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { FavoriteDaosConsumer } from '../../../contexts/FavoriteDaosContext'
 import LoadingRing from '../../LoadingRing'
 import Popup from '../../Popup'
@@ -11,7 +11,7 @@ import Favorites from './Favorites'
 
 class OrganizationSwitcher extends React.PureComponent {
   static propTypes = {
-    currentDao: FavoriteDaoType.isRequired,
+    currentDao: DaoItemType.isRequired,
 
     // These are coming from <FavoriteDaosConsumer /> (end of this file).
     favoriteDaos: PropTypes.arrayOf(FavoriteDaoType).isRequired,
