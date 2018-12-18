@@ -9,6 +9,7 @@ import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
+import { DaoAddressType } from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
@@ -35,7 +36,7 @@ class Wrapper extends React.Component {
       }),
     ]).isRequired,
     connected: PropTypes.bool.isRequired,
-    daoAddress: PropTypes.string.isRequired,
+    daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
@@ -60,10 +61,10 @@ class Wrapper extends React.Component {
     walletNetwork: '',
     walletProviderId: '',
     transactionBag: null,
-    wrapper: null,
     walletWeb3: null,
     banner: null,
     onRequestEnable: noop,
+    wrapper: null,
   }
   state = {
     appInstance: {},
@@ -128,10 +129,12 @@ class Wrapper extends React.Component {
       wrapper,
       appsStatus,
       locator: { instanceId, params },
+      connected,
       banner,
       onRequestAppsReload,
       transactionBag,
       onRequestEnable,
+      daoAddress,
     } = this.props
 
     return (
@@ -142,11 +145,13 @@ class Wrapper extends React.Component {
             apps={apps.filter(app => app.hasWebApp)}
             appsStatus={appsStatus}
             activeInstanceId={instanceId}
+            connected={connected}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
             onClearAllNotifications={this.handleNotificationsClearAll}
             onOpenNotification={this.handleNotificationNavigation}
             onRequestAppsReload={onRequestAppsReload}
+            daoAddress={daoAddress}
           />
           <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
         </Container>

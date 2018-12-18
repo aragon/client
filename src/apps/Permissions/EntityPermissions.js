@@ -21,14 +21,18 @@ class EntityPermissions extends React.PureComponent {
     noPermissionsLabel: PropTypes.string,
     title: PropTypes.string.isRequired,
   }
-
+  static defaultProps = {
+    loadPermissionsLabel: 'Loading entity permissions…',
+    noPermissionsLabel: 'No permissions set.',
+    title: 'Permissions',
+  }
   render() {
     const {
       address,
       loading,
-      title = 'Permissions',
-      noPermissionsLabel = 'No permissions set.',
-      loadPermissionsLabel = 'Loading entity permissions…',
+      loadPermissionsLabel,
+      noPermissionsLabel,
+      title,
     } = this.props
 
     return (

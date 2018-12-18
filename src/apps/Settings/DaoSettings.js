@@ -1,42 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
-import EtherscanLink from '../../components/Etherscan/EtherscanLink'
+import { Button, Field, Text, IdentityBadge } from '@aragon/ui'
 import { appIds, network, web3Providers } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { noop } from '../../utils'
+import { DaoAddressType } from '../../prop-types'
 import { getWeb3, toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
 import Note from './Note'
 
-const LinkButton = styled(Button.Anchor).attrs({
-  compact: true,
-  mode: 'outline',
-})`
-  background: ${theme.contentBackground};
-`
-
 const AppsList = styled.ul`
   list-style: none;
-`
-
-const FieldTwoParts = styled.div`
-  display: flex;
-  align-items: center;
-  input {
-    margin-right: 10px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
 `
 
 class DaoSettings extends React.Component {
   static propTypes = {
     account: PropTypes.string.isRequired,
     apps: PropTypes.array.isRequired,
-    daoAddress: PropTypes.string.isRequired,
+    daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
   }
@@ -44,7 +27,6 @@ class DaoSettings extends React.Component {
   static defaultProps = {
     account: '',
     apps: [],
-    daoAddress: '',
     onOpenApp: noop,
   }
   handleDepositTestTokens = () => {
@@ -65,7 +47,8 @@ class DaoSettings extends React.Component {
     const { account, apps, daoAddress, walletNetwork } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
-    const checksummedDaoAddr = daoAddress && toChecksumAddress(daoAddress)
+    const checksummedDaoAddr =
+      daoAddress.address && toChecksumAddress(daoAddress.address)
     const webApps = apps.filter(app => app.hasWebApp)
     return (
       <div>
@@ -74,18 +57,11 @@ class DaoSettings extends React.Component {
           text={`This organization is deployed on the ${network.name}.`}
         >
           <Field label="Address" style={{ marginBottom: 0 }}>
-            <FieldTwoParts>
-              <TextInput readOnly wide value={checksummedDaoAddr} />
-              <EtherscanLink address={checksummedDaoAddr}>
-                {url =>
-                  url ? (
-                    <LinkButton href={url} target="_blank">
-                      See on Etherscan
-                    </LinkButton>
-                  ) : null
-                }
-              </EtherscanLink>
-            </FieldTwoParts>
+            <IdentityBadge
+              entity={checksummedDaoAddr}
+              networkType={network.type}
+              shorten={false}
+            />
             <Note>
               <strong>Do not send ether or tokens to this address!</strong>
               <br />
@@ -149,22 +125,11 @@ class DaoSettings extends React.Component {
                 return (
                   <li title={description} key={checksummedProxyAddress}>
                     <Field label={name}>
-                      <FieldTwoParts>
-                        <TextInput
-                          readOnly
-                          wide
-                          value={checksummedProxyAddress}
-                        />
-                        <EtherscanLink address={checksummedProxyAddress}>
-                          {url =>
-                            url ? (
-                              <LinkButton href={url} target="_blank">
-                                See on Etherscan
-                              </LinkButton>
-                            ) : null
-                          }
-                        </EtherscanLink>
-                      </FieldTwoParts>
+                      <IdentityBadge
+                        entity={checksummedProxyAddress}
+                        networkType={network.type}
+                        shorten={false}
+                      />
                     </Field>
                   </li>
                 )

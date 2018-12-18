@@ -105,7 +105,7 @@ class ActionPathsContent extends React.Component {
                     : 'You can perform this action through:'
                 }
                 items={radioItems}
-                onChange={this.handleOnSelect}
+                onSelect={this.handleOnSelect}
                 selected={selected}
               />
             </Actions>
