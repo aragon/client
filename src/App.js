@@ -343,6 +343,7 @@ class App extends React.Component {
             onResetDaoBuilder={this.handleResetDaoBuilder}
             onRequestEnable={this.handleRequestEnable}
             selectorNetworks={selectorNetworks}
+            walletWeb3={walletWeb3}
           />
         </FavoriteDaosProvider>
       </ModalProvider>

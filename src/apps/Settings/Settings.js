@@ -39,13 +39,14 @@ class Settings extends React.Component {
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
+    walletWeb3: PropTypes.object,
   }
-
   static defaultProps = {
     account: '',
     apps: [],
     onOpenApp: noop,
   }
+
   state = {
     defaultEthNode,
     ipfsGateway: ipfsDefaultConf.gateway,
@@ -74,7 +75,14 @@ class Settings extends React.Component {
     window.location.reload()
   }
   render() {
-    const { account, apps, daoAddress, onOpenApp, walletNetwork } = this.props
+    const {
+      account,
+      apps,
+      daoAddress,
+      onOpenApp,
+      walletNetwork,
+      walletWeb3,
+    } = this.props
     const {
       defaultEthNode,
       ipfsGateway,
@@ -90,6 +98,7 @@ class Settings extends React.Component {
             daoAddress={daoAddress}
             onOpenApp={onOpenApp}
             walletNetwork={walletNetwork}
+            walletWeb3={walletWeb3}
           />
           {currencies.length > 1 && selectedCurrency && (
             <Option

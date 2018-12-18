@@ -13,7 +13,7 @@ import {
   IconAttention,
 } from '@aragon/ui'
 import { animated } from 'react-spring'
-import { network, web3Providers, getDemoDao } from '../environment'
+import { network, getDemoDao, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
 import providerString from '../provider-strings'
@@ -38,7 +38,6 @@ const demoDao = getDemoDao()
 
 class Start extends React.Component {
   static defaultProps = {
-    hasAccount: false,
     walletNetwork: '',
     walletProviderId: '',
     balance: getUnknownBalance(),
@@ -70,6 +69,7 @@ class Start extends React.Component {
       selectorNetworks,
       onRequestEnable,
       screenTransitionStyles,
+      walletWeb3,
     } = this.props
 
     return (
@@ -325,7 +325,7 @@ class StartContent extends React.PureComponent {
     if (walletNetwork !== network.type) {
       return (
         <ActionInfo>
-          Please select the {sanitizeNetworkType(network.type)} network in
+          Please select the {sanitizeNetworkType(network.type)} network in{' '}
           {providerString('your Ethereum provider', walletProviderId)}.
         </ActionInfo>
       )
