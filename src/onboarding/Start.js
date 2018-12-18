@@ -69,7 +69,6 @@ class Start extends React.Component {
       selectorNetworks,
       onRequestEnable,
       screenTransitionStyles,
-      walletWeb3,
     } = this.props
 
     return (
