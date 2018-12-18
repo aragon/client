@@ -28,13 +28,13 @@ class IdentityBadge extends React.PureComponent {
 
 const Main = styled.div`
   overflow: hidden;
+  height: auto;
   display: inline-flex;
+  vertical-align: middle;
   align-items: center;
-  height: 100%;
   background: #daeaef;
   border-radius: 3px;
   cursor: default;
-  vertical-align: middle;
 `
 
 const Label = styled.span`
