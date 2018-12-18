@@ -77,7 +77,7 @@ class Start extends React.Component {
         <Content style={screenTransitionStyles}>
           <StartContent
             onCreate={onCreate}
-            hasWallet={!!web3Providers.wallet}
+            hasWallet={web3Providers.wallet.status === 'connected'}
             hasAccount={hasAccount}
             walletNetwork={walletNetwork}
             walletProviderId={walletProviderId}
