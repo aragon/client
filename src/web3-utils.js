@@ -118,7 +118,7 @@ export function getUnknownBalance() {
 
 // Returns an identifier for the provider, if it can be detected
 export function identifyProvider(provider) {
-  if (provider && '_metamask' in provider) {
+  if (provider && provider.isMetaMask) {
     return 'metamask'
   }
   return 'unknown'
