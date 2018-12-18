@@ -86,16 +86,16 @@ class SignerPanel extends React.Component {
     // If the path includes forwarders, the intent is always the last node
     if (path.length > 1) {
       const { description, name, to, annotatedDescription } = path[path.length - 1]
-      return { description, name, to, transaction, annotatedDescription }
+      return { annotatedDescription, description, name, to, transaction }
     }
 
     // Direct path
     const { apps } = this.props
-    const { description, to } = transaction
+    const { annotatedDescription, description, to } = transaction
     const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
     const name = (toApp && toApp.name) || ''
 
-    return { description, name, to, transaction }
+    return { annotatedDescription, description, name, to, transaction }
   }
 
   async signTransaction(transaction, intent) {
