@@ -91,24 +91,23 @@ class Settings extends React.Component {
             onOpenApp={onOpenApp}
             walletNetwork={walletNetwork}
           />
-          {currencies.length > 1 &&
-            selectedCurrency && (
-              <Option
-                name="Currency"
-                text={`
-                  This will be the default currency for displaying purposes.
-                  It will be converted to ETH under the hood.
-                `}
-              >
-                <Field label="Select currency">
-                  <DropDown
-                    active={currencies.indexOf(selectedCurrency)}
-                    items={currencies}
-                    onChange={this.handleSelectedCurrencyChange}
-                  />
-                </Field>
-              </Option>
-            )}
+          {currencies.length > 1 && selectedCurrency && (
+            <Option
+              name="Currency"
+              text={`
+                This will be the default currency for displaying purposes.
+                It will be converted to ETH under the hood.
+              `}
+            >
+              <Field label="Select currency">
+                <DropDown
+                  active={currencies.indexOf(selectedCurrency)}
+                  items={currencies}
+                  onChange={this.handleSelectedCurrencyChange}
+                />
+              </Field>
+            </Option>
+          )}
           <Option
             name="Node settings (advanced)"
             text={`

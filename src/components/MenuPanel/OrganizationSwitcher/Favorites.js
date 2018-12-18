@@ -8,7 +8,6 @@ class Favorites extends React.Component {
   static propTypes = {
     favoriteDaos: PropTypes.arrayOf(FavoriteDaoType),
     currentDao: DaoItemType,
-    onRequestClose: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,
   }
 
@@ -22,16 +21,18 @@ class Favorites extends React.Component {
     const { onDone } = this.props
     const { localDaos } = this.state
     onDone(
-      localDaos.filter(dao => dao.favorited).map(dao => ({
-        name: dao.name,
-        address: dao.address,
-      }))
+      localDaos
+        .filter(dao => dao.favorited)
+        .map(dao => ({
+          name: dao.name,
+          address: dao.address,
+        }))
     )
   }
 
   // Build the local DAO list based on the favorites. The favorite state is not
   // directly reflected in the popup, to let users favorite / unfavorite items
-  // without seeing them being immediatly removed. For this reason, we need to
+  // without seeing them being immediately removed. For this reason, we need to
   // maintain a separate state.
   getLocalDaos() {
     const { currentDao, favoriteDaos } = this.props
@@ -42,15 +43,10 @@ class Favorites extends React.Component {
         .sort(dao => (dao.address === currentDao.address ? -1 : 1)),
     ]
 
-    // Do not add the current DAO if it is already in the favorites list
-    if (this.isDaoFavorited(currentDao)) {
-      return localDaos
-    }
-
-    return [
-      { ...currentDao, favorited: this.isDaoFavorited(currentDao) },
-      ...localDaos,
-    ]
+    // If the current DAO is favorited, it is already in the local list
+    return this.isDaoFavorited(currentDao)
+      ? localDaos
+      : [{ ...currentDao, favorited: false }, ...localDaos]
   }
 
   isDaoFavorited({ address }) {
@@ -76,18 +72,10 @@ class Favorites extends React.Component {
     const { localDaos } = this.state
 
     this.setState({
-      localDaos: localDaos.map(
-        dao => (dao.address === address ? { ...dao, favorited } : dao)
+      localDaos: localDaos.map(dao =>
+        dao.address === address ? { ...dao, favorited } : dao
       ),
     })
-  }
-
-  handleFocusout = e => {
-    const popupElement = this._popupRef.current
-    const focusedElement = e.relatedTarget
-    if (!popupElement.contains(focusedElement)) {
-      this.props.onRequestClose()
-    }
   }
 
   render() {

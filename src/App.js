@@ -192,7 +192,8 @@ class App extends React.Component {
         this.setState({ appsStatus: APPS_STATUS_ERROR })
       },
       onDaoAddress: ({ address, domain }) => {
-        log('dao address', address, domain)
+        log('dao address', address)
+        log('dao domain', domain)
         this.setState({ daoAddress: { address, domain } })
       },
       onWeb3: web3 => {
