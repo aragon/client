@@ -47,6 +47,7 @@ class ActionPathsContent extends React.Component {
                 } else if (type === 'app') {
                   return (
                     <SafeLink
+                      key={index}
                       href={`/#/${
                         this.props.locator.dao
                       }/permissions/?params=app.${value.proxyAddress}`}
