@@ -34,6 +34,7 @@ const Main = styled.div`
   background: #daeaef;
   border-radius: 3px;
   cursor: default;
+  vertical-align: middle;
 `
 
 const Label = styled.span`

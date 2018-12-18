@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Info, RadioList, IdentityBadge, SafeLink } from '@aragon/ui'
+import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
+import IdentityBadge from '../IdentityBadge'
 import providerString from '../../provider-strings'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
@@ -41,7 +42,7 @@ class ActionPathsContent extends React.Component {
                       key={index}
                       entity={value}
                       fontSize="small"
-                      style={{ verticalAlign: 'middle', marginRight: '4px' }}
+                      style={{ marginRight: '4px' }}
                     />
                   )
                 } else if (type === 'app') {
