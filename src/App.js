@@ -10,7 +10,7 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
-import { getWeb3, getUnknownBalance } from './web3-utils'
+import { getWeb3, getUnknownBalance, identifyProvider } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
@@ -62,11 +62,9 @@ class App extends React.Component {
     this.handleHistoryChange({ pathname, search })
     this.history.listen(this.handleHistoryChange)
 
-    if (!web3Providers.wallet) {
-      return
-    }
     this.setState({
       walletWeb3: getWeb3(web3Providers.wallet),
+      walletProviderId: identifyProvider(web3Providers.wallet),
     })
 
     pollMainAccount(web3Providers.wallet, {
@@ -89,6 +87,27 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
+  }
+
+  // Enable the web3 provider. There is no way to reliably know the enabled
+  // state of a provider, so we assume that if there is a provider but no
+  // account, the provider is locked and / or not enabled.
+  handleRequestEnable = () => {
+    const provider = web3Providers.wallet
+    if (!provider) {
+      return
+    }
+    // For providers supporting .enable() (EIP 1102 draft).
+    if ('enable' in provider) {
+      provider.enable()
+      return
+    }
+    // For providers supporting EIP 1102 (final).
+    if ('send' in provider) {
+      // Some providers (Metamask) don’t return a promise as defined in EIP
+      // 1102, so we can’t rely on it to know the connected accounts.
+      provider.send('eth_requestAccounts')
+    }
   }
 
   // Handle URL changes
@@ -266,6 +285,7 @@ class App extends React.Component {
       permissionsLoading,
       showDeprecatedBanner,
       selectorNetworks,
+      walletProviderId,
     } = this.state
 
     const { mode, dao } = locator
@@ -315,12 +335,15 @@ class App extends React.Component {
             account={account}
             balance={balance}
             walletNetwork={walletNetwork}
+            walletProviderId={walletProviderId}
             onBuildDao={this.handleBuildDao}
             daoCreationStatus={daoCreationStatus}
             onComplete={this.handleCompleteOnboarding}
             onOpenOrganization={this.handleOpenOrganization}
             onResetDaoBuilder={this.handleResetDaoBuilder}
+            onRequestEnable={this.handleRequestEnable}
             selectorNetworks={selectorNetworks}
+            walletWeb3={walletWeb3}
           />
         </FavoriteDaosProvider>
       </ModalProvider>

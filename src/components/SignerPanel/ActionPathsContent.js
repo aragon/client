@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Info, RadioList } from '@aragon/ui'
+import providerString from '../../provider-strings'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
 
@@ -76,7 +77,14 @@ class ActionPathsContent extends React.Component {
     }
   }
   render() {
-    const { signingEnabled, intent, direct, paths, pretransaction } = this.props
+    const {
+      signingEnabled,
+      intent,
+      direct,
+      paths,
+      pretransaction,
+      walletProviderId,
+    } = this.props
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
@@ -115,8 +123,9 @@ class ActionPathsContent extends React.Component {
             title="Two transactions required"
             style={{ marginTop: '20px' }}
           >
-            This action requires two transactions to be signed in your Ethereum
-            provider, please confirm them one after another.
+            This action requires two transactions to be signed in{' '}
+            {providerString('your Ethereum provider', walletProviderId)}, please
+            confirm them one after another.
           </Info.Action>
         )}
         <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>

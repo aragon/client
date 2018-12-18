@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, Field, Text, IdentityBadge } from '@aragon/ui'
-import { appIds, network, web3Providers } from '../../environment'
+import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { noop } from '../../utils'
 import { DaoAddressType } from '../../prop-types'
-import { getWeb3, toChecksumAddress } from '../../web3-utils'
+import { toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
 import Note from './Note'
@@ -22,18 +22,18 @@ class DaoSettings extends React.Component {
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
+    walletWeb3: PropTypes.object,
   }
-
   static defaultProps = {
     account: '',
     apps: [],
     onOpenApp: noop,
   }
   handleDepositTestTokens = () => {
-    const { account, apps } = this.props
+    const { account, apps, walletWeb3 } = this.props
     const finance = apps.find(app => app.appId === appIds.Finance)
     if (finance && finance.proxyAddress) {
-      airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
+      airdrop(walletWeb3, finance.proxyAddress, account)
     }
   }
   handleOpenFinance = () => {

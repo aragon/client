@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { addressesEqual } from '../../web3-utils'
+import { noop } from '../../utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
@@ -32,12 +33,16 @@ class SignerPanel extends React.Component {
     account: PropTypes.string,
     walletNetwork: PropTypes.string,
     walletWeb3: PropTypes.object,
+    walletProviderId: PropTypes.string,
     transactionBag: PropTypes.object,
+    onRequestEnable: PropTypes.func,
   }
 
   static defaultProps = {
     apps: [],
     account: '',
+    walletProviderId: '',
+    onRequestEnable: noop,
   }
 
   state = { ...INITIAL_STATE }
@@ -148,7 +153,13 @@ class SignerPanel extends React.Component {
   }
 
   render() {
-    const { walletWeb3, walletNetwork, account } = this.props
+    const {
+      walletWeb3,
+      walletNetwork,
+      walletProviderId,
+      account,
+      onRequestEnable,
+    } = this.props
 
     const {
       panelOpened,
@@ -198,6 +209,8 @@ class SignerPanel extends React.Component {
                           signingEnabled={status === STATUS_CONFIRMING}
                           networkType={network.type}
                           walletNetworkType={walletNetwork}
+                          walletProviderId={walletProviderId}
+                          onRequestEnable={onRequestEnable}
                         />
                       </Screen>
                     </ScreenWrapper>
@@ -215,6 +228,7 @@ class SignerPanel extends React.Component {
                           status={status}
                           signError={signError}
                           onClose={this.handleSignerClose}
+                          walletProviderId={walletProviderId}
                         />
                       </Screen>
                     </ScreenWrapper>

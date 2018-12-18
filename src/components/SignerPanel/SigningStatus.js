@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Info, theme } from '@aragon/ui'
+import providerString from '../../provider-strings'
 import SignerButton from './SignerButton'
 
 import { STATUS_SIGNING, STATUS_SIGNED, STATUS_ERROR } from './signer-statuses'
@@ -21,12 +22,12 @@ class SigningStatus extends React.Component {
     if (status === STATUS_ERROR) return 'Error signing the transaction'
   }
   getInfo() {
-    const { status, signError } = this.props
+    const { status, signError, walletProviderId } = this.props
     if (status === STATUS_SIGNING) {
       return (
         <p>
-          Open your Ethereum provider (Metamask or similar) to sign your
-          transaction.
+          Open {providerString('your Ethereum provider', walletProviderId)} to
+          sign your transaction.
         </p>
       )
     }

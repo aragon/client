@@ -17,7 +17,12 @@ import {
   defaultGasPriceFn,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
-import { getWeb3, getUnknownBalance, isValidEnsName } from './web3-utils'
+import {
+  getWeb3,
+  getUnknownBalance,
+  getMainAccount,
+  isValidEnsName,
+} from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { NoConnection, DAONotFound } from './errors'
 
@@ -79,15 +84,6 @@ const prepareFrontendApps = (apps, daoAddress, gateway) => {
     .sort(sortAppsPair)
 }
 
-const getMainAccount = async web3 => {
-  try {
-    const accounts = await web3.eth.getAccounts()
-    return (accounts && accounts[0]) || null
-  } catch (err) {
-    return null
-  }
-}
-
 const pollEvery = (fn, delay) => {
   let timer = -1
   let stop = false
@@ -133,6 +129,7 @@ export const pollMainAccount = pollEvery(
     const web3 = getWeb3(provider)
     let lastAccount = null
     let lastBalance = getUnknownBalance()
+
     return {
       request: () =>
         getMainAccount(web3)
@@ -146,7 +143,6 @@ export const pollMainAccount = pollEvery(
               .then(balance => ({ account, balance: new BN(balance) }))
           })
           .catch(() => ({ account: null, balance: getUnknownBalance() })),
-
       onResult: ({ account, balance }) => {
         if (account !== lastAccount) {
           lastAccount = account

@@ -13,9 +13,10 @@ import {
   IconAttention,
 } from '@aragon/ui'
 import { animated } from 'react-spring'
-import { network, web3Providers, getDemoDao } from '../environment'
+import { network, getDemoDao, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
 import { noop } from '../utils'
+import providerString from '../provider-strings'
 import { fromWei, toWei, getUnknownBalance, formatBalance } from '../web3-utils'
 import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
@@ -37,8 +38,8 @@ const demoDao = getDemoDao()
 
 class Start extends React.Component {
   static defaultProps = {
-    hasAccount: false,
     walletNetwork: '',
+    walletProviderId: '',
     balance: getUnknownBalance(),
     onCreate: noop,
     onDomainChange: noop,
@@ -46,6 +47,7 @@ class Start extends React.Component {
     domainCheckStatus: DomainCheckNone,
     onOpenOrganization: noop,
     onOpenOrganizationAddress: noop,
+    onRequestEnable: noop,
   }
   handleDomainChange = event => {
     this.props.onDomainChange(event.target.value)
@@ -58,12 +60,14 @@ class Start extends React.Component {
     const {
       hasAccount,
       walletNetwork,
+      walletProviderId,
       balance,
       onCreate,
       domain,
       domainCheckStatus,
       onOpenOrganizationAddress,
       selectorNetworks,
+      onRequestEnable,
       screenTransitionStyles,
     } = this.props
 
@@ -72,9 +76,10 @@ class Start extends React.Component {
         <Content style={screenTransitionStyles}>
           <StartContent
             onCreate={onCreate}
-            hasWallet={!!web3Providers.wallet}
+            hasWallet={web3Providers.wallet.status === 'connected'}
             hasAccount={hasAccount}
             walletNetwork={walletNetwork}
+            walletProviderId={walletProviderId}
             balance={balance}
             onDomainChange={this.handleDomainChange}
             domain={domain}
@@ -82,6 +87,7 @@ class Start extends React.Component {
             onOpenOrganization={this.handleOpenOrganization}
             onOpenOrganizationAddress={onOpenOrganizationAddress}
             selectorNetworks={selectorNetworks}
+            onRequestEnable={onRequestEnable}
           />
         </Content>
       </Main>
@@ -278,20 +284,34 @@ class StartContent extends React.PureComponent {
     )
   }
   renderWarning() {
-    const { hasWallet, hasAccount, walletNetwork } = this.props
+    const {
+      hasWallet,
+      hasAccount,
+      walletNetwork,
+      walletProviderId,
+      onRequestEnable,
+    } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
-          Please install and unlock{' '}
+          Please install an Ethereum provider (e.g.{' '}
           <SafeLink href="https://metamask.io/" target="_blank">
             MetaMask
           </SafeLink>
-          .
+          ) .
         </ActionInfo>
       )
     }
     if (!hasAccount) {
-      return <ActionInfo>Please unlock MetaMask.</ActionInfo>
+      return (
+        <ActionInfo>
+          Please unlock and{' '}
+          <ButtonLink onClick={onRequestEnable} style={{ color: '#000' }}>
+            enable
+          </ButtonLink>{' '}
+          {providerString('your Ethereum provider', walletProviderId)}.
+        </ActionInfo>
+      )
     }
     if (network.type === 'unknown') {
       return (
@@ -304,8 +324,8 @@ class StartContent extends React.PureComponent {
     if (walletNetwork !== network.type) {
       return (
         <ActionInfo>
-          Please select the {sanitizeNetworkType(network.type)} network in your
-          Ethereum provider.
+          Please select the {sanitizeNetworkType(network.type)} network in{' '}
+          {providerString('your Ethereum provider', walletProviderId)}.
         </ActionInfo>
       )
     }

@@ -13,6 +13,7 @@ import { DaoAddressType } from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
+import { noop } from './utils'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -44,13 +45,25 @@ class Wrapper extends React.Component {
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object,
+    walletProviderId: PropTypes.string,
     wrapper: PropTypes.object,
+    onRequestEnable: PropTypes.func,
   }
 
   static defaultProps = {
-    transactionBag: null,
-    walletWeb3: null,
+    account: '',
+    apps: [],
     banner: null,
+    connected: false,
+    daoAddress: '',
+    historyBack: noop,
+    historyPush: noop,
+    locator: {},
+    onRequestEnable: noop,
+    transactionBag: null,
+    walletNetwork: '',
+    walletProviderId: '',
+    walletWeb3: null,
     wrapper: null,
   }
   state = {
@@ -110,16 +123,18 @@ class Wrapper extends React.Component {
     const {
       account,
       apps,
-      walletWeb3,
-      walletNetwork,
-      wrapper,
       appsStatus,
-      locator: { instanceId, params },
-      connected,
       banner,
+      connected,
+      locator: { instanceId, params },
       onRequestAppsReload,
-      transactionBag,
+      onRequestEnable,
       daoAddress,
+      transactionBag,
+      walletNetwork,
+      walletProviderId,
+      walletWeb3,
+      wrapper,
     } = this.props
 
     return (
@@ -143,24 +158,27 @@ class Wrapper extends React.Component {
         <SignerPanel
           walletWeb3={walletWeb3}
           walletNetwork={walletNetwork}
+          walletProviderId={walletProviderId}
           transactionBag={transactionBag}
           apps={apps}
           account={account}
+          onRequestEnable={onRequestEnable}
         />
       </Main>
     )
   }
   renderApp(instanceId, params) {
     const {
-      locator,
+      account,
       apps,
       appsStatus,
-      permissionsLoading,
-      account,
-      walletNetwork,
-      wrapper,
       connected,
       daoAddress,
+      locator,
+      permissionsLoading,
+      walletNetwork,
+      walletWeb3,
+      wrapper,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -201,6 +219,7 @@ class Wrapper extends React.Component {
           daoAddress={daoAddress}
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
+          walletWeb3={walletWeb3}
         />
       )
     }
