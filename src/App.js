@@ -10,9 +10,10 @@ import initWrapper, {
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
-import { getWeb3, getUnknownBalance } from './web3-utils'
+import { getWeb3, getUnknownBalance, identifyProvider } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
+import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import {
@@ -38,8 +39,12 @@ class App extends React.Component {
     permissions: {},
     permissionsLoading: true,
     walletWeb3: null,
-    daoAddress: '',
-    daoCreationStatus: DAO_CREATION_STATUS_NONE, // DAO_CREATION_STATUS_NONE, DAO_CREATION_STATUS_SUCCESS, DAO_CREATION_STATUS_ERROR
+    daoAddress: { address: '', domain: '' },
+    // daoCreationStatus is one of:
+    //  - DAO_CREATION_STATUS_NONE
+    //  - DAO_CREATION_STATUS_SUCCESS
+    //  - DAO_CREATION_STATUS_ERROR
+    daoCreationStatus: DAO_CREATION_STATUS_NONE,
     buildData: null, // data returned by aragon.js when a DAO is created
     transactionBag: null,
     walletNetwork: '',
@@ -57,11 +62,9 @@ class App extends React.Component {
     this.handleHistoryChange({ pathname, search })
     this.history.listen(this.handleHistoryChange)
 
-    if (!web3Providers.wallet) {
-      return
-    }
     this.setState({
       walletWeb3: getWeb3(web3Providers.wallet),
+      walletProviderId: identifyProvider(web3Providers.wallet),
     })
 
     pollMainAccount(web3Providers.wallet, {
@@ -84,6 +87,27 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
+  }
+
+  // Enable the web3 provider. There is no way to reliably know the enabled
+  // state of a provider, so we assume that if there is a provider but no
+  // account, the provider is locked and / or not enabled.
+  handleRequestEnable = () => {
+    const provider = web3Providers.wallet
+    if (!provider) {
+      return
+    }
+    // For providers supporting .enable() (EIP 1102 draft).
+    if ('enable' in provider) {
+      provider.enable()
+      return
+    }
+    // For providers supporting EIP 1102 (final).
+    if ('send' in provider) {
+      // Some providers (Metamask) don’t return a promise as defined in EIP
+      // 1102, so we can’t rely on it to know the connected accounts.
+      provider.send('eth_requestAccounts')
+    }
   }
 
   // Handle URL changes
@@ -171,9 +195,14 @@ class App extends React.Component {
       return
     }
 
-    this.setState({ appsStatus: APPS_STATUS_LOADING, apps: [] })
+    // Reset the DAO state
+    this.setState({
+      appsStatus: APPS_STATUS_LOADING,
+      apps: [],
+      daoAddress: { address: '', domain: '' },
+    })
 
-    log('Wrapper init', dao)
+    log('Init DAO', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
@@ -181,9 +210,10 @@ class App extends React.Component {
         log(`Wrapper init, recoverable error: ${err.name}. ${err.message}.`)
         this.setState({ appsStatus: APPS_STATUS_ERROR })
       },
-      onDaoAddress: daoAddress => {
-        log('daoAddress', daoAddress)
-        this.setState({ daoAddress })
+      onDaoAddress: ({ address, domain }) => {
+        log('dao address', address)
+        log('dao domain', domain)
+        this.setState({ daoAddress: { address, domain } })
       },
       onWeb3: web3 => {
         log('web3', web3)
@@ -255,6 +285,7 @@ class App extends React.Component {
       permissionsLoading,
       showDeprecatedBanner,
       selectorNetworks,
+      walletProviderId,
     } = this.state
 
     const { mode, dao } = locator
@@ -271,45 +302,50 @@ class App extends React.Component {
 
     return (
       <ModalProvider>
-        <PermissionsProvider
-          wrapper={wrapper}
-          apps={apps}
-          permissions={permissions}
-        >
-          <Wrapper
-            banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
-            historyBack={this.historyBack}
-            historyPush={this.historyPush}
-            locator={locator}
+        <FavoriteDaosProvider>
+          <PermissionsProvider
             wrapper={wrapper}
             apps={apps}
-            appsStatus={appsStatus}
-            permissionsLoading={permissionsLoading}
-            account={account}
-            walletNetwork={walletNetwork}
-            walletWeb3={walletWeb3}
-            daoAddress={daoAddress}
-            transactionBag={transactionBag}
-            connected={connected}
-            onRequestAppsReload={this.handleRequestAppsReload}
-          />
-        </PermissionsProvider>
+            permissions={permissions}
+          >
+            <Wrapper
+              banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
+              historyBack={this.historyBack}
+              historyPush={this.historyPush}
+              locator={locator}
+              wrapper={wrapper}
+              apps={apps}
+              appsStatus={appsStatus}
+              permissionsLoading={permissionsLoading}
+              account={account}
+              walletNetwork={walletNetwork}
+              walletWeb3={walletWeb3}
+              daoAddress={daoAddress}
+              transactionBag={transactionBag}
+              connected={connected}
+              onRequestAppsReload={this.handleRequestAppsReload}
+            />
+          </PermissionsProvider>
 
-        <Onboarding
-          banner={
-            showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
-          }
-          visible={mode === 'home' || mode === 'setup'}
-          account={account}
-          balance={balance}
-          walletNetwork={walletNetwork}
-          onBuildDao={this.handleBuildDao}
-          daoCreationStatus={daoCreationStatus}
-          onComplete={this.handleCompleteOnboarding}
-          onOpenOrganization={this.handleOpenOrganization}
-          onResetDaoBuilder={this.handleResetDaoBuilder}
-          selectorNetworks={selectorNetworks}
-        />
+          <Onboarding
+            banner={
+              showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
+            }
+            visible={mode === 'home' || mode === 'setup'}
+            account={account}
+            balance={balance}
+            walletNetwork={walletNetwork}
+            walletProviderId={walletProviderId}
+            onBuildDao={this.handleBuildDao}
+            daoCreationStatus={daoCreationStatus}
+            onComplete={this.handleCompleteOnboarding}
+            onOpenOrganization={this.handleOpenOrganization}
+            onResetDaoBuilder={this.handleResetDaoBuilder}
+            onRequestEnable={this.handleRequestEnable}
+            selectorNetworks={selectorNetworks}
+            walletWeb3={walletWeb3}
+          />
+        </FavoriteDaosProvider>
       </ModalProvider>
     )
   }

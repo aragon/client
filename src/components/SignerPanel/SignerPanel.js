@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { addressesEqual } from '../../web3-utils'
+import { noop } from '../../utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
@@ -32,12 +33,16 @@ class SignerPanel extends React.Component {
     account: PropTypes.string,
     walletNetwork: PropTypes.string,
     walletWeb3: PropTypes.object,
+    walletProviderId: PropTypes.string,
     transactionBag: PropTypes.object,
+    onRequestEnable: PropTypes.func,
   }
 
   static defaultProps = {
     apps: [],
     account: '',
+    walletProviderId: '',
+    onRequestEnable: noop,
   }
 
   state = { ...INITIAL_STATE }
@@ -148,7 +153,14 @@ class SignerPanel extends React.Component {
   }
 
   render() {
-    const { walletWeb3, walletNetwork, account, locator } = this.props
+    const {
+      account,
+      locator,
+      onRequestEnable,
+      walletNetwork,
+      walletProviderId,
+      walletWeb3,
+    } = this.props
 
     const {
       panelOpened,
@@ -191,14 +203,16 @@ class SignerPanel extends React.Component {
                           hasAccount={Boolean(account)}
                           hasWeb3={Boolean(walletWeb3)}
                           intent={intent}
+                          locator={locator}
+                          networkType={network.type}
                           onClose={this.handleSignerClose}
+                          onRequestEnable={onRequestEnable}
                           onSign={this.handleSign}
                           paths={actionPaths}
                           pretransaction={pretransaction}
                           signingEnabled={status === STATUS_CONFIRMING}
-                          networkType={network.type}
                           walletNetworkType={walletNetwork}
-                          locator={locator}
+                          walletProviderId={walletProviderId}
                         />
                       </Screen>
                     </ScreenWrapper>
@@ -216,6 +230,7 @@ class SignerPanel extends React.Component {
                           status={status}
                           signError={signError}
                           onClose={this.handleSignerClose}
+                          walletProviderId={walletProviderId}
                         />
                       </Screen>
                     </ScreenWrapper>

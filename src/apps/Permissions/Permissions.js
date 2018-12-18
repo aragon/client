@@ -252,7 +252,7 @@ class Permissions extends React.Component {
                         )}
                         {location.screen === 'entity' && (
                           <EntityPermissions
-                            title="Permissions granted"
+                            title="Permissions granted to this entity"
                             loading={appsLoading || permissionsLoading}
                             address={location.address}
                           />

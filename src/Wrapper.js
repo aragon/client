@@ -9,6 +9,7 @@ import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
+import { DaoAddressType } from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
@@ -35,7 +36,7 @@ class Wrapper extends React.Component {
       }),
     ]).isRequired,
     connected: PropTypes.bool.isRequired,
-    daoAddress: PropTypes.string.isRequired,
+    daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
@@ -44,22 +45,26 @@ class Wrapper extends React.Component {
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object,
+    walletProviderId: PropTypes.string,
     wrapper: PropTypes.object,
+    onRequestEnable: PropTypes.func,
   }
 
   static defaultProps = {
-    apps: [],
     account: '',
+    apps: [],
+    banner: null,
     connected: false,
     daoAddress: '',
     historyBack: noop,
     historyPush: noop,
     locator: {},
-    walletNetwork: '',
+    onRequestEnable: noop,
     transactionBag: null,
-    wrapper: null,
+    walletNetwork: '',
+    walletProviderId: '',
     walletWeb3: null,
-    banner: null,
+    wrapper: null,
   }
   state = {
     appInstance: {},
@@ -118,14 +123,18 @@ class Wrapper extends React.Component {
     const {
       account,
       apps,
-      walletWeb3,
-      walletNetwork,
-      wrapper,
       appsStatus,
-      locator,
       banner,
+      connected,
+      daoAddress,
+      locator,
       onRequestAppsReload,
+      onRequestEnable,
       transactionBag,
+      walletNetwork,
+      walletProviderId,
+      walletWeb3,
+      wrapper,
     } = this.props
 
     return (
@@ -136,6 +145,8 @@ class Wrapper extends React.Component {
             apps={apps.filter(app => app.hasWebApp)}
             appsStatus={appsStatus}
             activeInstanceId={locator.instanceId}
+            connected={connected}
+            daoAddress={daoAddress}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
             onClearAllNotifications={this.handleNotificationsClearAll}
@@ -147,27 +158,30 @@ class Wrapper extends React.Component {
           </AppScreen>
         </Container>
         <SignerPanel
-          walletWeb3={walletWeb3}
-          walletNetwork={walletNetwork}
-          transactionBag={transactionBag}
-          apps={apps}
           account={account}
+          apps={apps}
           locator={locator}
+          onRequestEnable={onRequestEnable}
+          transactionBag={transactionBag}
+          walletNetwork={walletNetwork}
+          walletProviderId={walletProviderId}
+          walletWeb3={walletWeb3}
         />
       </Main>
     )
   }
   renderApp(instanceId, params) {
     const {
-      locator,
+      account,
       apps,
       appsStatus,
-      permissionsLoading,
-      account,
-      walletNetwork,
-      wrapper,
       connected,
       daoAddress,
+      locator,
+      permissionsLoading,
+      walletNetwork,
+      walletWeb3,
+      wrapper,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -208,6 +222,7 @@ class Wrapper extends React.Component {
           daoAddress={daoAddress}
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
+          walletWeb3={walletWeb3}
         />
       )
     }

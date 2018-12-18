@@ -13,6 +13,19 @@ class GlobalErrorHandler extends React.Component {
         .replace(/^\n+|\n+$/g, '')
         .replace(/^ {4}/gm, ''),
     })
+
+    // Once this point is reached, the app can not recover because the routing
+    // system, being below this component in the tree, is not functional
+    // anymore. To make hash changes work despite this (e.g. by pressing the
+    // back button in the browser), the page need to be reloaded.
+    window.removeEventListener('hashchange', this.handleHashchange)
+    window.addEventListener('hashchange', this.handleHashchange)
+  }
+  componentWillUnmount() {
+    window.removeEventListener('hashchange', this.handleHashchange)
+  }
+  handleHashchange = () => {
+    window.location.reload()
   }
   render() {
     const { error, errorStack } = this.state

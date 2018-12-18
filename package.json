@@ -30,6 +30,7 @@
     "@babel/polyfill": "^7.0.0",
     "bn.js": "4.11.6",
     "date-fns": "2.0.0-alpha.22",
+    "eth-provider": "^0.1.4",
     "history": "^4.7.2",
     "lodash.memoize": "^4.1.2",
     "lodash.throttle": "^4.1.1",
@@ -44,7 +45,7 @@
     "react-onclickout": "^2.0.8",
     "react-spring": "^6.1.8",
     "resolve-pathname": "^2.2.0",
-    "styled-components": "^3.3.3",
+    "styled-components": "^3.4.10",
     "underscore": "1.8.3",
     "web3": "1.0.0-beta.33",
     "web3-utils": "1.0.0-beta.33"
@@ -69,9 +70,10 @@
     "eslint-plugin-react": "^7.5.1",
     "eslint-plugin-standard": "^4.0.0",
     "husky": "^1.0.1",
+    "lint-staged": "^8.1.0",
     "parcel-bundler": "^1.10.1",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
-    "prettier": "^1.11.1",
+    "prettier": "^1.15.0",
     "rimraf": "^2.6.2"
   },
   "scripts": {
@@ -107,7 +109,14 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm test"
+      "pre-push": "npm test",
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "src/*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

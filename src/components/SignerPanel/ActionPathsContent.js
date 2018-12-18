@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Info, RadioList, IdentityBadge, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
+import providerString from '../../provider-strings'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
 
@@ -14,13 +15,7 @@ class ActionPathsContent extends React.Component {
     this.setState({ selected })
   }
   handleSign = () => {
-    const {
-      intent,
-      direct,
-      paths,
-      pretransaction,
-      onSign,
-    } = this.props
+    const { intent, direct, paths, pretransaction, onSign } = this.props
     const { selected } = this.state
     // In non-direct paths, the first transaction (0) is the one we need to sign
     // to kick off the forwarding path
@@ -125,7 +120,14 @@ class ActionPathsContent extends React.Component {
     }
   }
   render() {
-    const { signingEnabled, intent, direct, paths, pretransaction } = this.props
+    const {
+      signingEnabled,
+      intent,
+      direct,
+      paths,
+      pretransaction,
+      walletProviderId,
+    } = this.props
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
@@ -146,7 +148,7 @@ class ActionPathsContent extends React.Component {
                     : 'You can perform this action through:'
                 }
                 items={radioItems}
-                onChange={this.handleOnSelect}
+                onSelect={this.handleOnSelect}
                 selected={selected}
               />
             </Actions>
@@ -164,8 +166,9 @@ class ActionPathsContent extends React.Component {
             title="Two transactions required"
             style={{ marginTop: '20px' }}
           >
-            This action requires two transactions to be signed in your Ethereum
-            provider, please confirm them one after another.
+            This action requires two transactions to be signed in{' '}
+            {providerString('your Ethereum provider', walletProviderId)}, please
+            confirm them one after another.
           </Info.Action>
         )}
         <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>

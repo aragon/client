@@ -33,8 +33,8 @@ class ConfigureMultisigAddresses extends React.Component {
   handleSignerChange = (index, newValue) => {
     const { addresses } = this.props.fields.signers
     this.updateField('signers', {
-      addresses: addresses.map(
-        (signer, i) => (i === index ? newValue : signer)
+      addresses: addresses.map((signer, i) =>
+        i === index ? newValue : signer
       ),
     })
   }
