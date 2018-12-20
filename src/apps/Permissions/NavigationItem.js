@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
+import { EthereumAddress } from '../../prop-types'
 
 const NavigationItem = ({ title, badge, address, entity }) => {
   const isEntity = !badge && address
@@ -20,7 +21,7 @@ const NavigationItem = ({ title, badge, address, entity }) => {
 }
 
 NavigationItem.propTypes = {
-  address: PropTypes.string,
+  address: EthereumAddress,
   badge: PropTypes.object,
   entity: PropTypes.object,
   title: PropTypes.string.isRequired,

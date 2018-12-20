@@ -2,13 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Blockies from 'react-blockies'
+import { EthereumAddress } from '../prop-types'
 
 const PX_RATIO = typeof devicePixelRatio === 'undefined' ? 2 : devicePixelRatio
 const BLOCKIES_SQUARES = 8
 
 class Identicon extends React.Component {
   static propTypes = {
-    address: PropTypes.string.isRequired,
+    address: EthereumAddress.isRequired,
     scale: PropTypes.number,
   }
   static defaultProps = {
