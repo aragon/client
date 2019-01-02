@@ -13,7 +13,7 @@ import { DaoAddressType } from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
-import { noop, isMobile } from './utils'
+import { noop, isSmallScreen } from './utils'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -68,10 +68,10 @@ class Wrapper extends React.Component {
   }
   state = {
     appInstance: {},
-    menuPanelOpened: !isMobile(),
+    menuPanelOpened: !isSmallScreen(),
   }
   openApp = (instanceId, params) => {
-    if (isMobile()) {
+    if (isSmallScreen()) {
       this.handleMenuPanelClose()
     }
 
