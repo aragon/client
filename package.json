@@ -74,7 +74,8 @@
     "parcel-bundler": "^1.10.1",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
     "prettier": "^1.15.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "serve": "^10.1.1"
   },
   "scripts": {
     "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./build",
