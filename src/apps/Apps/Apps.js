@@ -125,7 +125,14 @@ const AppsGrid = styled.div`
   grid-auto-flow: row;
   grid-gap: 25px;
   justify-items: start;
-  grid-template-columns: repeat(auto-fill, 224px);
+  grid-template-columns: 1fr;
+
+  ${breakpoint(
+    'medium',
+    `
+      grid-template-columns: repeat(auto-fill, 224px);
+    `
+  )};
 `
 
 const Main = styled(Card).attrs({ width: '100%', height: '288px' })`
