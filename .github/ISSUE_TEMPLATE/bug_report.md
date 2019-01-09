@@ -32,13 +32,11 @@ If applicable, add screenshots to help explain your problem.
 **Desktop (please complete the following information):**
  - OS and OS version: [e.g. Linux Mint 18.0]
  - Browser and browser version: [e.g. Firefox 64.0]
- - Aragon client version: [e.g. 0.5]
 
 **Smartphone (please complete the following information):**
  - Device: [e.g. Fairphone 2]
  - OS and OS version: [e.g. Android 8.0.0]
  - Browser and browser version: [e.g. Firefox 64.0.1]
- - Aragon client version: [e.g. 0.5]
 
 **Additional context**
 Add any other context about the problem here.
