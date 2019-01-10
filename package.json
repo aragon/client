@@ -81,7 +81,7 @@
   "scripts": {
     "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./build",
     "start": "node scripts/start",
-    "start:local": "node scripts/launch-local-node.js",
+    "start:local": "node scripts/launch-local",
     "start:mainnet": "cross-env REACT_APP_ETH_NETWORK_TYPE=main npm start",
     "start:rinkeby": "npm start",
     "start:staging": "cross-env REACT_APP_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm start",
