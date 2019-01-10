@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Apps, Permissions, Settings } from './apps'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
+import { ScreenSizeConsumer, SMALL } from './contexts/ScreenSize'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -13,7 +14,7 @@ import { DaoAddressType } from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
-import { noop, isMobile } from './utils'
+import { noop } from './utils'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -42,6 +43,7 @@ class Wrapper extends React.Component {
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
+    screenSize: PropTypes.string.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object,
@@ -68,10 +70,10 @@ class Wrapper extends React.Component {
   }
   state = {
     appInstance: {},
-    menuPanelOpened: !isMobile(),
+    menuPanelOpened: this.props.screenSize !== SMALL,
   }
   openApp = (instanceId, params) => {
-    if (isMobile()) {
+    if (this.props.screenSize === SMALL) {
       this.handleMenuPanelClose()
     }
 
@@ -311,4 +313,8 @@ const LoadingApps = () => (
   </div>
 )
 
-export default Wrapper
+export default props => (
+  <ScreenSizeConsumer>
+    {({ screenSize }) => <Wrapper {...props} screenSize={screenSize} />}
+  </ScreenSizeConsumer>
+)
