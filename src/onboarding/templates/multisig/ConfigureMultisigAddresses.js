@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { Field, Button, TextInput, Text, DropDown, theme } from '@aragon/ui'
+import { Button, TextInput, Text, DropDown, theme } from '@aragon/ui'
 import { animated } from 'react-spring'
 import { noop } from '../../../utils'
 
@@ -238,35 +238,6 @@ const InputsView = styled.div`
   margin-top: -10px;
   margin-bottom: 10px;
   padding: 10px 30px 10px 0;
-`
-
-const Fields = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-`
-
-Fields.Field = styled(Field)`
-  position: relative;
-  & + & {
-    margin-left: 55px;
-  }
-  &:after {
-    position: absolute;
-    bottom: 6px;
-    left: 100px;
-    font-size: 14px;
-  }
-`
-Fields.PercentageField = styled(Fields.Field)`
-  &:after {
-    content: '%';
-  }
-`
-Fields.HoursField = styled(Fields.Field)`
-  &:after {
-    content: 'H';
-  }
 `
 
 const StyledTextInput = styled(TextInput)`
