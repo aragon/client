@@ -30,6 +30,7 @@
     "@babel/polyfill": "^7.0.0",
     "bn.js": "4.11.6",
     "date-fns": "2.0.0-alpha.22",
+    "eth-provider": "^0.1.4",
     "history": "^4.7.2",
     "lodash.memoize": "^4.1.2",
     "lodash.throttle": "^4.1.1",
@@ -110,6 +111,7 @@
   },
   "husky": {
     "hooks": {
+      "pre-push": "npm test",
       "pre-commit": "lint-staged"
     }
   },
