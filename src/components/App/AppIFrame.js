@@ -194,7 +194,7 @@ class AppIFrame extends React.Component {
           allow="camera *; microphone *"
           frameBorder="0"
           onLoad={this.handleOnLoad}
-          innerRef={this.handleIFrameRef}
+          ref={this.handleIFrameRef}
           sandbox={SANDBOX}
           style={{ display: show ? 'block' : 'none' }}
           {...props}

@@ -64,7 +64,7 @@ export default class EagleAnimation extends React.Component {
       <Spring to={{ leftEyeAngle, rightEyeAngle }}>
         {({ leftEyeAngle, rightEyeAngle }) => (
           <SvgWrapper>
-            <Svg innerRef={this.handleSvgRef} viewBox="0 0 300 300">
+            <Svg ref={this.handleSvgRef} viewBox="0 0 300 300">
               <defs>
                 <linearGradient x1="100%" y1="0%" x2="24%" y2="100%" id="a">
                   <stop stopColor="#00EAE5" offset="0%" />
@@ -91,7 +91,7 @@ export default class EagleAnimation extends React.Component {
               </g>
 
               <Eye
-                innerRef={this.handleLeftEyeRef}
+                ref={this.handleLeftEyeRef}
                 transform={`rotate(${leftEyeAngle}, 20, 45)`}
               >
                 <OuterCircle cx="30" cy="55" r="20" />
@@ -99,7 +99,7 @@ export default class EagleAnimation extends React.Component {
               </Eye>
 
               <Eye
-                innerRef={this.handleRightEyeRef}
+                ref={this.handleRightEyeRef}
                 transform={`rotate(${rightEyeAngle}, 66, 45)`}
               >
                 <OuterCircle cx="76" cy="55" r="20" />

@@ -84,7 +84,7 @@ class ConfigureMultisigAddressesContent extends React.PureComponent {
       <Content>
         <Title>Token project with multisig</Title>
         <StepContainer>
-          <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
+          <SubmitForm onSubmit={onSubmit} ref={formRef}>
             <Intro>
               <Text size="large" color={theme.textSecondary} align="center">
                 Add the wallet addresses of the multisig signers, and choose the
@@ -172,12 +172,12 @@ class SignerInput extends React.PureComponent {
   }
 }
 
-const SubmitForm = ({ children, innerRef = noop, ...props }) => (
-  <form {...props} ref={innerRef}>
+const SubmitForm = React.forwardRef(({ children, ...props }, ref) => (
+  <form {...props} ref={ref}>
     {children}
     <input type="submit" style={{ display: 'none' }} />
   </form>
-)
+))
 
 const Main = styled(animated.div)`
   display: flex;

@@ -212,7 +212,7 @@ class Permissions extends React.Component {
                 }
               >
                 <ScrollTopElement
-                  innerRef={el => {
+                  ref={el => {
                     this._scrollTopElement = el
                   }}
                 />

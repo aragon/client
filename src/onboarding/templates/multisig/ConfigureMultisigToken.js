@@ -62,7 +62,7 @@ class ConfigureTokenNameContent extends React.PureComponent {
       <Content>
         <Title>Token project with multisig</Title>
         <StepContainer>
-          <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
+          <SubmitForm onSubmit={onSubmit} ref={formRef}>
             <p style={{ textAlign: 'center' }}>
               <Text size="large" color={theme.textSecondary}>
                 Choose the token name and symbol. You can’t change these later,
@@ -98,12 +98,12 @@ class ConfigureTokenNameContent extends React.PureComponent {
   }
 }
 
-const SubmitForm = ({ children, innerRef = noop, ...props }) => (
-  <form {...props} ref={innerRef}>
+const SubmitForm = React.forwardRef(({ children, ...props }, ref) => (
+  <form {...props} ref={ref}>
     {children}
     <input type="submit" style={{ display: 'none' }} />
   </form>
-)
+))
 
 const Main = styled(animated.div)`
   display: flex;
