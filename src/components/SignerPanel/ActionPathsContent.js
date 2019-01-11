@@ -12,7 +12,7 @@ class ActionPathsContent extends React.Component {
   state = {
     selected: 0,
   }
-  handleOnSelect = selected => {
+  handleChange = selected => {
     this.setState({ selected })
   }
   handleSign = () => {
@@ -150,7 +150,7 @@ class ActionPathsContent extends React.Component {
                     : 'You can perform this action through:'
                 }
                 items={radioItems}
-                onChange={this.handleOnSelect}
+                onChange={this.handleChange}
                 selected={selected}
               />
             </Actions>
