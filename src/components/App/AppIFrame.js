@@ -178,11 +178,14 @@ class AppIFrame extends React.Component {
       <AppLoadingProgressBar hide={hideProgressBar} percent={loadProgress} />
     )
 
-    // Remove onLoad prop as we wrap it with our own
-    delete props.onLoad
+    // Remove the props managed by AppIframe, so we can pass everything else to
+    // the <iframe> element.
+    Object.keys(AppIFrame.propTypes).forEach(name => {
+      delete props[name]
+    })
 
-    // Remove src prop as we use manage the src ourselves to avoid adding
-    // duplicate history entries every time the src changes (see
+    // Also remove the `src` prop as we use manage the src ourselves to avoid
+    // adding duplicate history entries every time the src changes (see
     // `navigateIFrame()`)
     delete props.src
 
