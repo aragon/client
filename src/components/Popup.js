@@ -91,7 +91,7 @@ class Popup extends React.Component {
 
 class AnimatedPopup extends React.Component {
   static propTypes = {
-    visible: PropTypes.func,
+    visible: PropTypes.bool,
   }
   static defaultProps = {
     visible: true,
