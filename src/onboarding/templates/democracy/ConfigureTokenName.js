@@ -62,7 +62,7 @@ class ConfigureTokenNameContent extends React.PureComponent {
       <Content>
         <Title>Democracy Project</Title>
         <StepContainer>
-          <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
+          <SubmitForm onSubmit={onSubmit} ref={formRef}>
             <p style={{ textAlign: 'center' }}>
               <Text size="large" color={theme.textSecondary}>
                 Choose the token name and symbol. You can’t change these later,
@@ -72,22 +72,22 @@ class ConfigureTokenNameContent extends React.PureComponent {
             <Fields>
               <Rows>
                 <Row>
-                  <Fields.Field label="Token Name">
+                  <SuffixField label="Token Name">
                     <InputSized
                       width={200}
                       value={fields.tokenName}
                       onChange={handleTokenNameChange}
                       placeholder="My Organization Token"
                     />
-                  </Fields.Field>
-                  <Fields.Field label="Token Symbol">
+                  </SuffixField>
+                  <SuffixField label="Token Symbol">
                     <InputSized
                       width={80}
                       value={fields.tokenSymbol}
                       onChange={handleTokenSymbolChange}
                       placeholder="MOT"
                     />
-                  </Fields.Field>
+                  </SuffixField>
                 </Row>
               </Rows>
             </Fields>
@@ -98,12 +98,12 @@ class ConfigureTokenNameContent extends React.PureComponent {
   }
 }
 
-const SubmitForm = ({ children, innerRef = noop, ...props }) => (
-  <form {...props} ref={innerRef}>
+const SubmitForm = React.forwardRef(({ children, ...props }, ref) => (
+  <form {...props} ref={ref}>
     {children}
     <input type="submit" style={{ display: 'none' }} />
   </form>
-)
+))
 
 const Main = styled(animated.div)`
   display: flex;
@@ -154,26 +154,18 @@ const Fields = styled.div`
   justify-content: center;
   margin-top: 40px;
 `
-Fields.Field = styled(Field)`
+const SuffixField = styled(Field)`
   position: relative;
   & + & {
     margin-left: 55px;
   }
-  &:after {
+  :after {
     position: absolute;
     bottom: 6px;
     left: 100px;
     font-size: 14px;
-  }
-`
-Fields.PercentageField = styled(Fields.Field)`
-  &:after {
-    content: '%';
-  }
-`
-Fields.HoursField = styled(Fields.Field)`
-  &:after {
-    content: 'H';
+    content: "${p => p.suffix || ''}";
+    display: ${p => (p.suffix ? 'block' : 'none')};
   }
 `
 

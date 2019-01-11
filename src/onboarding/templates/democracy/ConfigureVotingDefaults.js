@@ -65,7 +65,7 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
       <Content>
         <Title>Democracy Project</Title>
         <StepContainer>
-          <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
+          <SubmitForm onSubmit={onSubmit} ref={formRef}>
             <TextContainer>
               <Text size="large" color={theme.textSecondary} align="center">
                 Choose your voting settings below. You can’t change the support
@@ -73,27 +73,27 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
               </Text>
             </TextContainer>
             <Fields>
-              <Fields.PercentageField label="Support">
+              <SuffixField label="Support" suffix="%">
                 <SymbolInput
                   placeholder="e.g. 50"
                   value={fields.support === -1 ? '' : fields.support}
                   onChange={handleSupportChange}
                 />
-              </Fields.PercentageField>
-              <Fields.PercentageField label="Min. Quorum">
+              </SuffixField>
+              <SuffixField label="Min. Quorum" suffix="%">
                 <SymbolInput
                   placeholder="e.g. 15"
                   value={fields.minQuorum === -1 ? '' : fields.minQuorum}
                   onChange={handleMinQuorumChange}
                 />
-              </Fields.PercentageField>
-              <Fields.HoursField label="Vote Duration">
+              </SuffixField>
+              <SuffixField label="Vote Duration" suffix="H">
                 <SymbolInput
                   placeholder="e.g. 24"
                   onChange={handleVoteDurationChange}
                   value={fields.voteDuration === -1 ? '' : fields.voteDuration}
                 />
-              </Fields.HoursField>
+              </SuffixField>
             </Fields>
             <TextContainer>
               <Text size="xsmall" color={theme.textSecondary} align="left">
@@ -109,12 +109,12 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
   }
 }
 
-const SubmitForm = ({ children, innerRef = noop, ...props }) => (
-  <form {...props} ref={innerRef}>
+const SubmitForm = React.forwardRef(({ children, ...props }, ref) => (
+  <form {...props} ref={ref}>
     {children}
     <input type="submit" style={{ display: 'none' }} />
   </form>
-)
+))
 
 const Main = styled(animated.div)`
   display: flex;
@@ -163,26 +163,18 @@ const Fields = styled.div`
   justify-content: center;
   margin-top: 40px;
 `
-Fields.Field = styled(Field)`
+const SuffixField = styled(Field)`
   position: relative;
   & + & {
     margin-left: 55px;
   }
-  &:after {
+  :after {
     position: absolute;
     bottom: 6px;
     left: 100px;
     font-size: 14px;
-  }
-`
-Fields.PercentageField = styled(Fields.Field)`
-  &:after {
-    content: '%';
-  }
-`
-Fields.HoursField = styled(Fields.Field)`
-  &:after {
-    content: 'H';
+    content: "${p => p.suffix || ''}";
+    display: ${p => (p.suffix ? 'block' : 'none')};
   }
 `
 

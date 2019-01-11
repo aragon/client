@@ -9,7 +9,7 @@ const { accent } = theme
 
 const AppLoadingProgressBar = ({ hide, percent, ...props }) => (
   <Spring
-    config={springs.smooth}
+    config={{ ...springs.smooth, clamp: true }}
     from={{ opacity: 0, percentProgress: 0 }}
     to={{
       opacity: Number(!hide),

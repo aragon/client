@@ -82,7 +82,7 @@ class Popup extends React.Component {
   render() {
     const { children } = this.props
     return (
-      <Main tabIndex="0" innerRef={this._element}>
+      <Main tabIndex="0" ref={this._element}>
         {children}
       </Main>
     )
@@ -91,7 +91,7 @@ class Popup extends React.Component {
 
 class AnimatedPopup extends React.Component {
   static propTypes = {
-    visible: PropTypes.func,
+    visible: PropTypes.bool,
   }
   static defaultProps = {
     visible: true,

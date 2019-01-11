@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { Field, Button, TextInput, Text, DropDown, theme } from '@aragon/ui'
+import { Button, TextInput, Text, DropDown, theme } from '@aragon/ui'
 import { animated } from 'react-spring'
 import { noop } from '../../../utils'
 
@@ -84,7 +84,7 @@ class ConfigureMultisigAddressesContent extends React.PureComponent {
       <Content>
         <Title>Token project with multisig</Title>
         <StepContainer>
-          <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
+          <SubmitForm onSubmit={onSubmit} ref={formRef}>
             <Intro>
               <Text size="large" color={theme.textSecondary} align="center">
                 Add the wallet addresses of the multisig signers, and choose the
@@ -172,12 +172,12 @@ class SignerInput extends React.PureComponent {
   }
 }
 
-const SubmitForm = ({ children, innerRef = noop, ...props }) => (
-  <form {...props} ref={innerRef}>
+const SubmitForm = React.forwardRef(({ children, ...props }, ref) => (
+  <form {...props} ref={ref}>
     {children}
     <input type="submit" style={{ display: 'none' }} />
   </form>
-)
+))
 
 const Main = styled(animated.div)`
   display: flex;
@@ -238,35 +238,6 @@ const InputsView = styled.div`
   margin-top: -10px;
   margin-bottom: 10px;
   padding: 10px 30px 10px 0;
-`
-
-const Fields = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-`
-
-Fields.Field = styled(Field)`
-  position: relative;
-  & + & {
-    margin-left: 55px;
-  }
-  &:after {
-    position: absolute;
-    bottom: 6px;
-    left: 100px;
-    font-size: 14px;
-  }
-`
-Fields.PercentageField = styled(Fields.Field)`
-  &:after {
-    content: '%';
-  }
-`
-Fields.HoursField = styled(Fields.Field)`
-  &:after {
-    content: 'H';
-  }
 `
 
 const StyledTextInput = styled(TextInput)`
