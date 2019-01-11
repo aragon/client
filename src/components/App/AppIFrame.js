@@ -184,7 +184,7 @@ class AppIFrame extends React.Component {
       delete props[name]
     })
 
-    // Also remove the `src` prop as we use manage the src ourselves to avoid
+    // Also remove the `src` prop as we manage the src ourselves to avoid
     // adding duplicate history entries every time the src changes (see
     // `navigateIFrame()`)
     delete props.src
