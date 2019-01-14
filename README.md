@@ -21,6 +21,8 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 - Mainnet: `npm run start:mainnet` will launch the app, configured to connect to our mainnet deployment
 - Local development: `npm run start:local` will launch the app, configured to connect to our [aragen](https://github.com/aragon/aragen) local development environment. It will also use the local IPFS daemon, if it detects one exists.
 
+**Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
+
 ## Environment options
 
 The app can be configured in a number of ways via environment variables:
