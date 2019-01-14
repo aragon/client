@@ -5,7 +5,9 @@ const execute = require('child_process').execSync
 
 execute('rimraf build/', { stdio: 'inherit' })
 execute('npm run ui-assets', { stdio: 'inherit' })
+
+process.env.REACT_APP_PACKAGE_VERSION = version
 execute(
-  `cross-env REACT_APP_PACKAGE_VERSION=${version} parcel build src/index.html --out-dir ./build --public-url ./ --no-cache`,
+  `parcel build src/index.html --out-dir ./build --public-url ./ --no-cache`,
   { stdio: 'inherit' }
 )
