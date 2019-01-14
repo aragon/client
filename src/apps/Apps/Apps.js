@@ -12,9 +12,9 @@ import {
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 
-import defaultIcon from './icons/default.png'
-import payrollIcon from './icons/payroll.png'
-import espressoIcon from './icons/espresso.png'
+import defaultIcon from './icons/default.svg'
+import payrollIcon from './icons/payroll.svg'
+import espressoIcon from './icons/espresso.svg'
 
 class Apps extends React.Component {
   render() {
