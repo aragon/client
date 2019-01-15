@@ -2,10 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme, AppView, Text } from '@aragon/ui'
+import {
+  theme,
+  AppView,
+  AppBar,
+  Text,
+  font,
+  breakpoint,
+  BreakPoint,
+} from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { lerp } from '../../math-utils'
 import springs from '../../springs'
+import MenuButton from '../MenuPanel/MenuButton'
 
 import logo from './assets/logo-background.svg'
 
@@ -50,6 +59,7 @@ class Home extends React.Component {
     apps: PropTypes.array.isRequired,
     appsLoading: PropTypes.bool.isRequired,
     locator: PropTypes.object.isRequired,
+    onMessage: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }
 
@@ -87,6 +97,11 @@ class Home extends React.Component {
       onOpenApp(app.proxyAddress)
     }
   }
+  handleMenuPanelOpen = () => {
+    this.props.onMessage({
+      data: { from: 'app', name: 'menuPanel', value: true },
+    })
+  }
   render() {
     const { apps, locator } = this.props
     const { showApps } = this.state
@@ -97,7 +112,18 @@ class Home extends React.Component {
     return (
       <Main>
         <AppContent>
-          <AppView title="Home">
+          <AppView
+            appBar={
+              <AppBar>
+                <AppBarTitle>
+                  <BreakPoint to="medium">
+                    <MenuButton onClick={this.handleMenuPanelOpen} />
+                  </BreakPoint>
+                  <AppBarLabel>Home</AppBarLabel>
+                </AppBarTitle>
+              </AppBar>
+            }
+          >
             <Spring
               config={springs.lazy}
               to={{ showAppsProgress: Number(showApps) }}
@@ -158,6 +184,23 @@ class Home extends React.Component {
     )
   }
 }
+
+const AppBarTitle = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+const AppBarLabel = styled.span`
+  margin-left: 8px;
+  ${font({ size: 'xxlarge' })};
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: 24px;
+    `
+  )};
+`
 
 const Main = styled.div`
   display: flex;

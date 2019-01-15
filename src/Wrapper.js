@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Apps, Permissions, Settings } from './apps'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
+import { ScreenSizeConsumer, SMALL } from './contexts/ScreenSize'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -42,6 +43,7 @@ class Wrapper extends React.Component {
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
+    screenSize: PropTypes.symbol.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object,
@@ -68,8 +70,13 @@ class Wrapper extends React.Component {
   }
   state = {
     appInstance: {},
+    menuPanelOpened: this.props.screenSize !== SMALL,
   }
   openApp = (instanceId, params) => {
+    if (this.props.screenSize === SMALL) {
+      this.handleMenuPanelClose()
+    }
+
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, instanceId, params }))
   }
@@ -96,6 +103,14 @@ class Wrapper extends React.Component {
       name: 'ready',
       value: true,
     })
+  }
+  handleAppMessage = ({ data: { name, value } }) => {
+    if (name === 'menuPanel') {
+      this.setState({ menuPanelOpened: Boolean(value) })
+    }
+  }
+  handleMenuPanelClose = () => {
+    this.setState({ menuPanelOpened: false })
   }
   handleNotificationsClearAll = () => {
     const { wrapper } = this.props
@@ -136,6 +151,7 @@ class Wrapper extends React.Component {
       walletWeb3,
       wrapper,
     } = this.props
+    const { menuPanelOpened } = this.state
 
     return (
       <Main>
@@ -147,9 +163,11 @@ class Wrapper extends React.Component {
             activeInstanceId={locator.instanceId}
             connected={connected}
             daoAddress={daoAddress}
+            menuPanelOpened={menuPanelOpened}
             notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
             onClearAllNotifications={this.handleNotificationsClearAll}
+            onCloseMenuPanel={this.handleMenuPanelClose}
             onOpenNotification={this.handleNotificationNavigation}
             onRequestAppsReload={onRequestAppsReload}
           />
@@ -191,6 +209,7 @@ class Wrapper extends React.Component {
         <Home
           connected={connected}
           appsLoading={appsLoading}
+          onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
           locator={locator}
           apps={apps}
@@ -205,13 +224,14 @@ class Wrapper extends React.Component {
           appsLoading={appsLoading}
           permissionsLoading={permissionsLoading}
           params={params}
+          onMessage={this.handleAppMessage}
           onParamsRequest={this.handleParamsRequest}
         />
       )
     }
 
     if (instanceId === 'apps') {
-      return <Apps />
+      return <Apps onMessage={this.handleAppMessage} />
     }
 
     if (instanceId === 'settings') {
@@ -220,6 +240,7 @@ class Wrapper extends React.Component {
           account={account}
           apps={apps}
           daoAddress={daoAddress}
+          onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
@@ -238,6 +259,7 @@ class Wrapper extends React.Component {
         app={app}
         ref={this.handleAppIFrameRef}
         onLoad={this.handleAppIFrameLoad}
+        onMessage={this.handleAppMessage}
       />
     ) : (
       <App404 onNavigateBack={this.props.historyBack} />
@@ -291,4 +313,8 @@ const LoadingApps = () => (
   </div>
 )
 
-export default Wrapper
+export default props => (
+  <ScreenSizeConsumer>
+    {({ screenSize }) => <Wrapper {...props} screenSize={screenSize} />}
+  </ScreenSizeConsumer>
+)
