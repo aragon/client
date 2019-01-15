@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Spring, animated } from 'react-spring'
+import { Badge } from '@aragon/ui'
 import { Apps, Permissions, Settings } from './apps'
+import springs from './springs'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 import { ScreenSizeConsumer, SMALL } from './contexts/ScreenSize'
 import AppIFrame from './components/App/AppIFrame'
@@ -20,6 +23,10 @@ import {
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
 } from './symbols'
+import {
+  NotificationHub,
+  Notification,
+} from './components/Notifications/NotificationsHub'
 
 class Wrapper extends React.Component {
   static propTypes = {
@@ -71,6 +78,9 @@ class Wrapper extends React.Component {
   state = {
     appInstance: {},
     menuPanelOpened: this.props.screenSize !== SMALL,
+    notificationOpen: false,
+    notifications: [],
+    queuedNotifications: [],
   }
   openApp = (instanceId, params) => {
     if (this.props.screenSize === SMALL) {
@@ -112,18 +122,27 @@ class Wrapper extends React.Component {
   handleMenuPanelClose = () => {
     this.setState({ menuPanelOpened: false })
   }
+  handleNotificationPanelClose = () => {
+    this.setState({ notificationOpen: false })
+  }
   handleNotificationsClearAll = () => {
     const { wrapper } = this.props
     wrapper && wrapper.clearNotifications()
   }
-  handleNotificationNavigation = ({ context, app: instanceId }) => {
-    if (this.isAppInstalled(instanceId)) {
-      this.openApp(instanceId)
-    }
+  handleNotificationClicked = () => {
+    if (this.notificationPanelTimeout)
+      clearTimeout(this.notificationPanelTimeout)
+    this.setState(state => ({ notificationOpen: !state.notificationOpen }))
   }
+
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
+  }
+
+  handleNotificationsCleared = e => {
+    e.preventDefault()
+    this.setState({ notifications: [], queuedNotifications: [] })
   }
 
   isAppInstalled(instanceId) {
@@ -149,9 +168,10 @@ class Wrapper extends React.Component {
       walletNetwork,
       walletProviderId,
       walletWeb3,
-      wrapper,
     } = this.props
     const { menuPanelOpened } = this.state
+
+    const notificationCount = this.state.notifications.length
 
     return (
       <Main>
@@ -162,16 +182,55 @@ class Wrapper extends React.Component {
             appsStatus={appsStatus}
             activeInstanceId={locator.instanceId}
             connected={connected}
+            notifications={notificationCount}
             daoAddress={daoAddress}
             menuPanelOpened={menuPanelOpened}
-            notificationsObservable={wrapper && wrapper.notifications}
             onOpenApp={this.openApp}
-            onClearAllNotifications={this.handleNotificationsClearAll}
             onCloseMenuPanel={this.handleMenuPanelClose}
-            onOpenNotification={this.handleNotificationNavigation}
             onRequestAppsReload={onRequestAppsReload}
+            onNotificationClicked={this.handleNotificationClicked}
           />
           <AppScreen>
+            <Spring
+              native
+              from={{ x: -300 }}
+              to={{ x: this.state.notificationOpen ? 0 : -300 }}
+              config={springs.lazy}
+            >
+              {props => (
+                <NotificationBar
+                  tabindex={1}
+                  ref={r => r && this.state.notificationOpen && r.focus()}
+                  onFocus={() => console.log('fo')}
+                  onBlur={this.handleNotificationPanelClose}
+                  style={{
+                    transform: props.x.interpolate(
+                      x => `translate3d(${x}px,0,0)`
+                    ),
+                  }}
+                >
+                  <NotificationHeader>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <h1 style={{ marginRight: 10 }}>Activity</h1>
+                      {notificationCount ? (
+                        <Badge.Notification>
+                          {notificationCount}
+                        </Badge.Notification>
+                      ) : null}
+                    </div>
+                    <a href="#" onClick={this.handleNotificationsCleared}>
+                      Clear All
+                    </a>
+                  </NotificationHeader>
+                  <NotificationHub
+                    items={this.state.notifications}
+                    keys={item => item.id}
+                  >
+                    {NotificationImpl}
+                  </NotificationHub>
+                </NotificationBar>
+              )}
+            </Spring>
             {this.renderApp(locator.instanceId, locator.params)}
           </AppScreen>
         </Container>
@@ -184,6 +243,46 @@ class Wrapper extends React.Component {
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
+          onTransactionSuccess={({ data, name, description, identifier }) =>
+            this.setState(state => ({
+              queuedNotifications: [
+                {
+                  id: data,
+                  type: 'transaction',
+                  title: `${name} ${identifier}`,
+                  content: description,
+                },
+                ...state.queuedNotifications,
+              ],
+            }))
+          }
+          onClose={() => {
+            if (this.state.queuedNotifications.length) {
+              // Pop open notification panel
+              if (!this.state.notificationOpen) {
+                if (this.notificationPanelTimeout)
+                  clearTimeout(this.notificationPanelTimeout)
+                this.notificationPanelTimeout = setTimeout(
+                  this.handleNotificationPanelClose,
+                  4000
+                )
+              }
+              this.setState({ notificationOpen: true })
+
+              // Wait a little, then update notifications
+              setTimeout(
+                () =>
+                  this.setState(state => ({
+                    queuedNotifications: [],
+                    notifications: [
+                      ...state.queuedNotifications,
+                      ...state.notifications,
+                    ],
+                  })),
+                250
+              )
+            }
+          }}
         />
       </Main>
     )
@@ -297,6 +396,71 @@ const LoadingAnimation = styled.img`
   display: block;
   margin-bottom: 32px;
 `
+
+/** TODO
+ * 1. Click outside should close the panel
+ */
+const NotificationBar = styled(animated.div)`
+  position: absolute;
+  width: 254px;
+  height: 100%;
+  overflow: auto;
+  background: #f1f6f8;
+  background: #f1f6f8;
+  box-shadow: 1px 0 15px 0 #e8e8e8;
+  border-right: 1px solid #e8e8e8;
+  z-index: 1000;
+  outline: 0;
+`
+
+const NotificationHeader = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 64px;
+  border-bottom: 1px solid #e8e8e8;
+  & > div > h1 {
+    opacity: 0.7;
+    font-family: MaisonNeue-Demi;
+    font-size: 12px;
+    color: #6d777b;
+    letter-spacing: 0;
+    line-height: 16px;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  & > a {
+    opacity: 0.9;
+    font-family: MaisonNeue-Book;
+    font-size: 14px;
+    color: #b3b3b3;
+    text-align: right;
+  }
+`
+
+function NotificationImpl(item, ready) {
+  let payload =
+    typeof item.content === 'string' ? <p>{item.content}</p> : item.content
+  switch (item.type) {
+    case 'transaction':
+      return (
+        <Notification.Transaction
+          ready={ready}
+          title={item.title}
+          time="10 min ago"
+        >
+          {payload}
+        </Notification.Transaction>
+      )
+    default:
+      return (
+        <Notification ready={ready} title={item.title} time="10 min ago">
+          {payload}
+        </Notification>
+      )
+  }
+}
 
 const LoadingApps = () => (
   <div

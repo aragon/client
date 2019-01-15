@@ -113,7 +113,7 @@ class SignerPanel extends React.Component {
   }
 
   handleSign = async (transaction, intent, pretransaction) => {
-    const { transactionBag } = this.props
+    const { transactionBag, onTransactionSuccess } = this.props
 
     this.setState({ status: STATUS_SIGNING })
 
@@ -123,6 +123,9 @@ class SignerPanel extends React.Component {
       }
 
       const transactionRes = await this.signTransaction(transaction, intent)
+      // Create new notification
+      onTransactionSuccess && onTransactionSuccess(transaction)
+
       transactionBag.accept(transactionRes)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
@@ -131,6 +134,8 @@ class SignerPanel extends React.Component {
     } catch (err) {
       transactionBag.reject(err)
       this.setState({ signError: err, status: STATUS_ERROR })
+
+      // TODO: the ongoing notification should be flagged faulty at this point ...
     }
   }
 
@@ -144,6 +149,7 @@ class SignerPanel extends React.Component {
 
   handleSignerClose = () => {
     this.setState({ panelOpened: false })
+    this.props.onClose && this.props.onClose()
   }
 
   handleSignerTransitionEnd = opened => {

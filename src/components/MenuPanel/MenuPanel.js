@@ -9,6 +9,7 @@ import {
   breakpoint,
   BreakPoint,
   springs,
+  IconNotifications,
 } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
@@ -50,6 +51,69 @@ const prepareAppGroups = apps =>
     ])
   }, [])
 
+const Badge = styled(animated.div)`
+  display: inline-flex;
+  font-weight: 600;
+  white-space: nowrap;
+  color: ${theme.badgeNotificationForeground};
+  background: ${theme.badgeNotificationBackground};
+  overflow: hidden;
+  padding-top: 2px;
+  letter-spacing: -0.5px;
+  justify-content: center;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  line-height: 1.5;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+`
+
+class Alert extends React.PureComponent {
+  render() {
+    const { notifications, onNotificationClicked } = this.props
+    return (
+      <div className="actions">
+        <IconButton
+          style={{ height: 22 }}
+          role="button"
+          onClick={() => onNotificationClicked && onNotificationClicked()}
+        >
+          <IconNotifications />
+          <Spring
+            native
+            reset
+            from={{ opacity: 0, size: 0 }}
+            to={{ opacity: notifications ? 1 : 0, size: 1 }}
+            config={springs.lazy}
+          >
+            {props => (
+              <Badge
+                style={{
+                  ...props,
+                  position: 'absolute',
+                  marginLeft: -12,
+                  marginTop: -8,
+                  transform: props.size
+                    .interpolate(
+                      [0, 0.2, 0.4, 0.6, 0.8, 1],
+                      [1.5, 1, 1.5, 1, 1.5, 1]
+                    )
+                    .interpolate(s => `scale(${s})`),
+                }}
+              >
+                {notifications && notifications}
+              </Badge>
+            )}
+          </Spring>
+        </IconButton>
+      </div>
+    )
+  }
+}
+
 class MenuPanel extends React.PureComponent {
   static propTypes = {
     apps: PropTypes.array.isRequired,
@@ -59,26 +123,19 @@ class MenuPanel extends React.PureComponent {
       APPS_STATUS_LOADING,
     ]).isRequired,
     activeInstanceId: PropTypes.string,
-    // notificationsObservable: PropTypes.object,
     onOpenApp: PropTypes.func.isRequired,
-    // onClearAllNotifications: PropTypes.func.isRequired,
-    // onOpenNotification: PropTypes.func.isRequired,
+    onNotificationClicked: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     daoAddress: DaoAddressType.isRequired,
     connected: PropTypes.bool.isRequired,
+    notifications: PropTypes.number,
   }
 
   state = {
     notificationsOpened: false,
+    notifications: [],
   }
 
-  handleNotificationsClick = event => {
-    // Prevent clickout events  to trigger
-    event.nativeEvent.stopImmediatePropagation()
-    this.setState(({ notificationsOpened }) => ({
-      notificationsOpened: !notificationsOpened,
-    }))
-  }
   handleCloseNotifications = () => {
     this.setState({ notificationsOpened: false })
   }
@@ -86,7 +143,13 @@ class MenuPanel extends React.PureComponent {
   getAppGroups = memoize(apps => prepareAppGroups(apps))
 
   render() {
-    const { apps, connected, daoAddress } = this.props
+    const {
+      apps,
+      connected,
+      daoAddress,
+      onNotificationClicked,
+      notifications,
+    } = this.props
     const appGroups = this.getAppGroups(apps)
 
     const menuApps = [
@@ -106,6 +169,10 @@ class MenuPanel extends React.PureComponent {
                 name: daoAddress.domain,
                 address: daoAddress.address,
               }}
+            />
+            <Alert
+              notifications={notifications}
+              onNotificationClicked={onNotificationClicked}
             />
           </Header>
           <Content>
@@ -343,3 +410,6 @@ export default props => (
     </BreakPoint>
   </React.Fragment>
 )
+const IconButton = styled.span`
+  cursor: pointer;
+`
