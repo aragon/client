@@ -79,7 +79,7 @@ class Alert extends React.PureComponent {
         <IconButton
           style={{ height: 22 }}
           role="button"
-          onClick={() => onNotificationClicked && onNotificationClicked()}
+          onClick={() => console.log("click") || onNotificationClicked() }
         >
           <IconNotifications />
           <Spring

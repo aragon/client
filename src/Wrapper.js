@@ -201,8 +201,10 @@ class Wrapper extends React.Component {
                 <NotificationBar
                   tabindex={1}
                   ref={r => r && this.state.notificationOpen && r.focus()}
-                  onFocus={() => console.log('fo')}
-                  onBlur={this.handleNotificationPanelClose}
+                  onBlur={() =>
+                    this.state.notificationOpen &&
+                    this.handleNotificationPanelClose()
+                  }
                   style={{
                     transform: props.x.interpolate(
                       x => `translate3d(${x}px,0,0)`
