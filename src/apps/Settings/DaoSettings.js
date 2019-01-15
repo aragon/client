@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, Text, IdentityBadge } from '@aragon/ui'
+import { Button, Field, Text, IdentityBadge, BreakPoint } from '@aragon/ui'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { noop } from '../../utils'
@@ -21,6 +21,7 @@ class DaoSettings extends React.Component {
     apps: PropTypes.array.isRequired,
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
+    shorten: PropTypes.bool.isRequired,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object,
   }
@@ -28,6 +29,7 @@ class DaoSettings extends React.Component {
     account: '',
     apps: [],
     onOpenApp: noop,
+    shorten: false,
   }
   handleDepositTestTokens = () => {
     const { account, apps, walletWeb3 } = this.props
@@ -44,7 +46,7 @@ class DaoSettings extends React.Component {
     }
   }
   render() {
-    const { account, apps, daoAddress, walletNetwork } = this.props
+    const { account, apps, daoAddress, shorten, walletNetwork } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     const checksummedDaoAddr =
@@ -60,7 +62,7 @@ class DaoSettings extends React.Component {
             <IdentityBadge
               entity={checksummedDaoAddr}
               networkType={network.type}
-              shorten={false}
+              shorten={shorten}
             />
             <Note>
               <strong>Do not send ether or tokens to this address!</strong>
@@ -128,7 +130,7 @@ class DaoSettings extends React.Component {
                       <IdentityBadge
                         entity={checksummedProxyAddress}
                         networkType={network.type}
-                        shorten={false}
+                        shorten={shorten}
                       />
                     </Field>
                   </li>
@@ -149,4 +151,13 @@ const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   text-decoration: underline;
 `
 
-export default DaoSettings
+export default props => (
+  <React.Fragment>
+    <BreakPoint to="medium">
+      <DaoSettings {...props} shorten />
+    </BreakPoint>
+    <BreakPoint from="medium">
+      <DaoSettings {...props} />
+    </BreakPoint>
+  </React.Fragment>
+)
