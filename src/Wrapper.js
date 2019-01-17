@@ -132,6 +132,7 @@ class Wrapper extends React.Component {
   handleNotificationClicked = () => {
     if (this.notificationPanelTimeout)
       clearTimeout(this.notificationPanelTimeout)
+
     this.setState(state => ({ notificationOpen: !state.notificationOpen }))
   }
 
@@ -189,6 +190,7 @@ class Wrapper extends React.Component {
             onCloseMenuPanel={this.handleMenuPanelClose}
             onRequestAppsReload={onRequestAppsReload}
             onNotificationClicked={this.handleNotificationClicked}
+            notificationOpen={this.state.notificationOpen}
           />
           <AppScreen>
             <Spring
@@ -199,12 +201,16 @@ class Wrapper extends React.Component {
             >
               {props => (
                 <NotificationBar
-                  tabindex={1}
+                  tabIndex={0}
                   ref={r => r && this.state.notificationOpen && r.focus()}
-                  onBlur={() =>
-                    this.state.notificationOpen &&
-                    this.handleNotificationPanelClose()
-                  }
+                  onBlur={e => {
+                    console.log(
+                      'NotificationBar.blur, open=',
+                      this.state.notificationOpen
+                    )
+                    if (this.state.notificationOpen)
+                      this.handleNotificationPanelClose()
+                  }}
                   style={{
                     transform: props.x.interpolate(
                       x => `translate3d(${x}px,0,0)`
@@ -260,17 +266,6 @@ class Wrapper extends React.Component {
           }
           onClose={() => {
             if (this.state.queuedNotifications.length) {
-              // Pop open notification panel
-              if (!this.state.notificationOpen) {
-                if (this.notificationPanelTimeout)
-                  clearTimeout(this.notificationPanelTimeout)
-                this.notificationPanelTimeout = setTimeout(
-                  this.handleNotificationPanelClose,
-                  4000
-                )
-              }
-              this.setState({ notificationOpen: true })
-
               // Wait a little, then update notifications
               setTimeout(
                 () =>

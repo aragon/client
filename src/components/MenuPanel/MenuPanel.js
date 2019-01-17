@@ -73,13 +73,16 @@ const Badge = styled(animated.div)`
 
 class Alert extends React.PureComponent {
   render() {
-    const { notifications, onNotificationClicked } = this.props
+    let { notifications, onNotificationClicked, notificationOpen } = this.props
     return (
       <div className="actions">
         <IconButton
           style={{ height: 22 }}
           role="button"
-          onClick={() => console.log("click") || onNotificationClicked() }
+          tabindex={0}
+          onClick={() => {
+            onNotificationClicked()
+          }}
         >
           <IconNotifications />
           <Spring
@@ -149,6 +152,7 @@ class MenuPanel extends React.PureComponent {
       daoAddress,
       onNotificationClicked,
       notifications,
+      notificationOpen,
     } = this.props
     const appGroups = this.getAppGroups(apps)
 
@@ -171,6 +175,7 @@ class MenuPanel extends React.PureComponent {
               }}
             />
             <Alert
+              notificationOpen={notificationOpen}
               notifications={notifications}
               onNotificationClicked={onNotificationClicked}
             />
