@@ -22,8 +22,7 @@ export default class NotificationAlert extends React.PureComponent {
   }
 
   render() {
-    const { notifications, onClick } = this.props
-    const show = !this.state.opened && notifications > 0
+    const show = !this.state.opened && this.props.notifications > 0
     return (
       <div className="actions">
         <IconButton
@@ -55,7 +54,7 @@ export default class NotificationAlert extends React.PureComponent {
                     .interpolate(s => `scale(${s})`),
                 }}
               >
-                {show && notifications}
+                {show && this.props.notifications}
               </Badge>
             )}
           </Spring>
