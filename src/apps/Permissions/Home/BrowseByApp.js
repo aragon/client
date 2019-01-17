@@ -4,10 +4,11 @@ import styled from 'styled-components'
 import Section from '../Section'
 import AppCard from '../AppCard'
 import EmptyBlock from '../EmptyBlock'
+import App from '../../../types/App'
 
 class BrowseByApp extends React.Component {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
+    apps: PropTypes.arrayOf(App).isRequired,
     loading: PropTypes.bool.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }
