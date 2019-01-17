@@ -1,10 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Spring, animated } from 'react-spring'
-import { Badge } from '@aragon/ui'
 import { Apps, Permissions, Settings } from './apps'
-import springs from './springs'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 import { ScreenSizeConsumer, SMALL } from './contexts/ScreenSize'
 import AppIFrame from './components/App/AppIFrame'
@@ -23,10 +20,7 @@ import {
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
 } from './symbols'
-import {
-  NotificationHub,
-  Notification,
-} from './components/Notifications/NotificationsHub'
+import NotificationBar from './components/Notifications/NotificationBar'
 
 class Wrapper extends React.Component {
   static propTypes = {
@@ -122,17 +116,7 @@ class Wrapper extends React.Component {
   handleMenuPanelClose = () => {
     this.setState({ menuPanelOpened: false })
   }
-  handleNotificationPanelClose = () => {
-    this.setState({ notificationOpen: false })
-  }
-  handleNotificationsClearAll = () => {
-    const { wrapper } = this.props
-    wrapper && wrapper.clearNotifications()
-  }
   handleNotificationClicked = () => {
-    if (this.notificationPanelTimeout)
-      clearTimeout(this.notificationPanelTimeout)
-
     this.setState(state => ({ notificationOpen: !state.notificationOpen }))
   }
 
@@ -143,7 +127,14 @@ class Wrapper extends React.Component {
 
   handleNotificationsCleared = e => {
     e.preventDefault()
+    const { notificationOpen, notifications } = this.state
     this.setState({ notifications: [], queuedNotifications: [] })
+    if (notificationOpen) {
+      setTimeout(
+        () => this.setState({ notificationOpen: false }),
+        notifications.length ? 500 : 0
+      )
+    }
   }
 
   isAppInstalled(instanceId) {
@@ -170,9 +161,7 @@ class Wrapper extends React.Component {
       walletProviderId,
       walletWeb3,
     } = this.props
-    const { menuPanelOpened } = this.state
-
-    const notificationCount = this.state.notifications.length
+    const { menuPanelOpened, notifications, notificationOpen } = this.state
 
     return (
       <Main>
@@ -183,62 +172,21 @@ class Wrapper extends React.Component {
             appsStatus={appsStatus}
             activeInstanceId={locator.instanceId}
             connected={connected}
-            notifications={notificationCount}
+            notifications={notifications.length}
             daoAddress={daoAddress}
             menuPanelOpened={menuPanelOpened}
             onOpenApp={this.openApp}
             onCloseMenuPanel={this.handleMenuPanelClose}
             onRequestAppsReload={onRequestAppsReload}
             onNotificationClicked={this.handleNotificationClicked}
-            notificationOpen={this.state.notificationOpen}
+            notificationOpen={notificationOpen}
           />
           <AppScreen>
-            <Spring
-              native
-              from={{ x: -300 }}
-              to={{ x: this.state.notificationOpen ? 0 : -300 }}
-              config={springs.lazy}
-            >
-              {props => (
-                <NotificationBar
-                  tabIndex={0}
-                  ref={r => r && this.state.notificationOpen && r.focus()}
-                  onBlur={e => {
-                    console.log(
-                      'NotificationBar.blur, open=',
-                      this.state.notificationOpen
-                    )
-                    if (this.state.notificationOpen)
-                      this.handleNotificationPanelClose()
-                  }}
-                  style={{
-                    transform: props.x.interpolate(
-                      x => `translate3d(${x}px,0,0)`
-                    ),
-                  }}
-                >
-                  <NotificationHeader>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <h1 style={{ marginRight: 10 }}>Activity</h1>
-                      {notificationCount ? (
-                        <Badge.Notification>
-                          {notificationCount}
-                        </Badge.Notification>
-                      ) : null}
-                    </div>
-                    <a href="#" onClick={this.handleNotificationsCleared}>
-                      Clear All
-                    </a>
-                  </NotificationHeader>
-                  <NotificationHub
-                    items={this.state.notifications}
-                    keys={item => item.id}
-                  >
-                    {NotificationImpl}
-                  </NotificationHub>
-                </NotificationBar>
-              )}
-            </Spring>
+            <NotificationBar
+              open={notificationOpen}
+              notifications={notifications}
+              onClearAll={this.handleNotificationsCleared}
+            />
             {this.renderApp(locator.instanceId, locator.params)}
           </AppScreen>
         </Container>
@@ -393,71 +341,6 @@ const LoadingAnimation = styled.img`
   display: block;
   margin-bottom: 32px;
 `
-
-/** TODO
- * 1. Click outside should close the panel
- */
-const NotificationBar = styled(animated.div)`
-  position: absolute;
-  width: 254px;
-  height: 100%;
-  overflow: auto;
-  background: #f1f6f8;
-  background: #f1f6f8;
-  box-shadow: 1px 0 15px 0 #e8e8e8;
-  border-right: 1px solid #e8e8e8;
-  z-index: 1000;
-  outline: 0;
-`
-
-const NotificationHeader = styled('div')`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  height: 64px;
-  border-bottom: 1px solid #e8e8e8;
-  & > div > h1 {
-    opacity: 0.7;
-    font-family: MaisonNeue-Demi;
-    font-size: 12px;
-    color: #6d777b;
-    letter-spacing: 0;
-    line-height: 16px;
-    text-align: left;
-    text-transform: uppercase;
-  }
-  & > a {
-    opacity: 0.9;
-    font-family: MaisonNeue-Book;
-    font-size: 14px;
-    color: #b3b3b3;
-    text-align: right;
-  }
-`
-
-function NotificationImpl(item, ready) {
-  let payload =
-    typeof item.content === 'string' ? <p>{item.content}</p> : item.content
-  switch (item.type) {
-    case 'transaction':
-      return (
-        <Notification.Transaction
-          ready={ready}
-          title={item.title}
-          time="10 min ago"
-        >
-          {payload}
-        </Notification.Transaction>
-      )
-    default:
-      return (
-        <Notification ready={ready} title={item.title} time="10 min ago">
-          {payload}
-        </Notification>
-      )
-  }
-}
 
 const LoadingApps = () => (
   <div
