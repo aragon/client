@@ -77,11 +77,11 @@ Notification.Transaction = class extends React.Component {
         <Spring
           native
           delay={400}
-          from={{ opacity: 1 /*, height: 'auto'*/ }}
+          from={{ opacity: 1 /*, height: 'auto' */ }}
           to={{
             opacity: this.state.showPayload
               ? 1
-              : 0.5 /*, height: this.state.showPayload ? 'auto' : 0*/,
+              : 0.5 /*, height: this.state.showPayload ? 'auto' : 0 */,
           }}
         >
           {props => (
