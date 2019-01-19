@@ -7,7 +7,7 @@ const EtherscanLink = ({ address, children }) => {
   const etherscanUrl = blockExplorerUrl('address', address, {
     networkType: network.type,
   })
-  return children(typeof etherscanUrl === 'string' ? etherscanUrl : null)
+  return children(etherscanUrl)
 }
 EtherscanLink.propTypes = {
   children: PropTypes.func.isRequired,
