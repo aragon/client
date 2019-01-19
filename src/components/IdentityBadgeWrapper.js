@@ -13,9 +13,8 @@ class IdentityBadgeWrapper extends React.PureComponent {
   }
 
   render() {
-    return (
-      <IdentityBadge {...props} networkType={network.type}/>
-    )
+    const { ...props } = this.props
+    return <IdentityBadge {...props} networkType={network.type} />
   }
 }
 

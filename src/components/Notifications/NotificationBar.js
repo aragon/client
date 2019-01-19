@@ -17,8 +17,8 @@ export default function NotificationBar({ open, notifications, onClearAll }) {
       {props => (
         <NotificationFrame
           tabIndex={0}
-          /*ref={r => r && open && r.focus()}
-          onBlur={e => notificationOpen && this.handleNotificationPanelClose()}*/
+          /* ref={r => r && open && r.focus()}
+          onBlur={e => notificationOpen && this.handleNotificationPanelClose()} */
           style={{
             transform: props.x.interpolate(x => `translate3d(${x}px,0,0)`),
           }}
@@ -26,9 +26,7 @@ export default function NotificationBar({ open, notifications, onClearAll }) {
           <NotificationHeader>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <h1 style={{ marginRight: 10 }}>Activity</h1>
-              {count ? (
-                <Badge.Notification>{count}</Badge.Notification>
-              ) : null}
+              {count ? <Badge.Notification>{count}</Badge.Notification> : null}
             </div>
             <a href="#" onClick={onClearAll}>
               Clear All
