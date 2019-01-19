@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
-import IdentityBadge from '../../components/IdentityBadge'
+import IdentityBadgeWrapper from '../../components/IdentityBadgeWrapper'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
@@ -239,9 +239,9 @@ class ManageRolePanel extends React.PureComponent {
       )
     }
     if (manager.type === 'burn') {
-      return <IdentityBadge entity="Discarded" />
+      return <IdentityBadgeWrapper entity="Discarded" />
     }
-    return <IdentityBadge entity={manager.address} />
+    return <IdentityBadgeWrapper entity={manager.address} />
   }
 
   render() {

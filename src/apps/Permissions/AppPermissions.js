@@ -12,7 +12,7 @@ import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
-import IdentityBadge from '../../components/IdentityBadge'
+import IdentityBadgeWrapper from '../../components/IdentityBadgeWrapper'
 import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
 
@@ -106,7 +106,7 @@ class Row extends React.Component {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
     return (
-      <IdentityBadge
+      <IdentityBadgeWrapper
         entity={entity.type === 'any' ? 'Any account' : entity.address}
       />
     )

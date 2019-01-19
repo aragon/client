@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import uniqBy from 'lodash.uniqby'
 import { TableRow, TableCell, Button, Text, theme } from '@aragon/ui'
-import IdentityBadge from '../../../components/IdentityBadge'
+import IdentityBadgeWrapper from '../../../components/IdentityBadgeWrapper'
 import AppInstanceLabel from '../AppInstanceLabel'
 
 class EntityRow extends React.PureComponent {
@@ -27,12 +27,12 @@ class EntityRow extends React.PureComponent {
   }
   renderEntity(entity) {
     if (entity.type === 'any') {
-      return <IdentityBadge entity="Any account" />
+      return <IdentityBadgeWrapper entity="Any account" />
     }
     if (entity.type === 'app' && entity.app.name) {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
-    return <IdentityBadge entity={entity.address} />
+    return <IdentityBadgeWrapper entity={entity.address} />
   }
   roleTitle({ role, roleBytes, appEntity, proxyAddress }) {
     if (!appEntity || !appEntity.app) {

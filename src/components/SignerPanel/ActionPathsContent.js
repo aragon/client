@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
-import IdentityBadge from '../IdentityBadge'
+import IdentityBadgeWrapper from '../IdentityBadgeWrapper'
 import providerString from '../../provider-strings'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
@@ -38,7 +38,7 @@ class ActionPathsContent extends React.Component {
             ? annotatedDescription.map(({ type, value }, index) => {
                 if (type === 'address') {
                   return (
-                    <IdentityBadge
+                    <IdentityBadgeWrapper
                       key={index}
                       entity={value}
                       fontSize="small"

@@ -7,7 +7,7 @@ import {
   TableRow,
   Text,
 } from '@aragon/ui'
-import IdentityBadge from '../../components/IdentityBadge'
+import IdentityBadgeWrapper from '../../components/IdentityBadgeWrapper'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
@@ -79,9 +79,9 @@ class RoleRow extends React.Component {
       )
     }
     if (manager.type === 'burn') {
-      return <IdentityBadge entity={'Discarded'} />
+      return <IdentityBadgeWrapper entity={'Discarded'} />
     }
-    return <IdentityBadge entity={manager.address} />
+    return <IdentityBadgeWrapper entity={manager.address} />
   }
   render() {
     const { role, manager } = this.props
