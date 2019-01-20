@@ -1,8 +1,6 @@
 import React from 'react'
-import { Spring, Transition, animated, config } from 'react-spring'
+import { Spring, Transition, animated } from 'react-spring'
 import styled from 'styled-components'
-import springs from '../../springs'
-import { IconCross } from '@aragon/ui'
 
 const spring = { tension: 1900, friction: 200, precision: 0.0001, clamp: true }
 
@@ -39,7 +37,7 @@ class NotificationHub extends React.Component {
   }
 }
 
-/** TODO
+/* TODO
  * 1. Timetags are still a mock up
  * 2. Notifications still need an X button to close on interaction
  */
@@ -60,7 +58,7 @@ class Notification extends React.Component {
   }
 }
 
-/** TODO
+/* TODO
  * 1. Progress bar needs to work with callbacks
  * 2. Successfull notifications should collapse progress (for this react-spring "auto" in arrays needs to be fixed)
  * 3. Error status needs to be shown
@@ -77,11 +75,11 @@ Notification.Transaction = class extends React.Component {
         <Spring
           native
           delay={400}
-          from={{ opacity: 1 /*, height: 'auto'*/ }}
+          from={{ opacity: 1 }}
           to={{
             opacity: this.state.showPayload
               ? 1
-              : 0.5 /*, height: this.state.showPayload ? 'auto' : 0*/,
+              : 0.5 /* , height: this.state.showPayload ? 'auto' : 0 */,
           }}
         >
           {props => (
