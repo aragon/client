@@ -25,7 +25,7 @@ export default class NotificationAlert extends React.PureComponent {
     const { notifications } = this.props
     const show = !this.state.opened && notifications > 0
     return (
-      <div className="actions">
+      <div className="actions" style={{ display: 'none' }}>
         <IconButton
           style={{ height: 22 }}
           role="button"
