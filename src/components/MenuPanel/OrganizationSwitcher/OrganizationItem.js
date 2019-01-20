@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { DaoItemType } from '../../../prop-types'
-import Identicon from '../../Identicon'
+import { EthIdenticon } from '@aragon/ui'
 
 class OrganizationItem extends React.Component {
   static propTypes = {
@@ -18,7 +18,7 @@ class OrganizationItem extends React.Component {
     return (
       <Organization {...styleProps}>
         <OrgIdenticon>
-          <Identicon address={dao.address} />
+          <EthIdenticon address={dao.address} />
         </OrgIdenticon>
         <OrgName>{dao.name || dao.address}</OrgName>
       </Organization>
