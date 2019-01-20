@@ -1,4 +1,5 @@
 import resolvePathname from 'resolve-pathname'
+import Web3 from 'web3'
 
 // Stealing this from recompose / etc for now
 export function compose(...funcs) {
@@ -46,5 +47,17 @@ export function appendTrailingSlash(str) {
 export function log(...params) {
   if (process.env.NODE_ENV !== 'production') {
     console.log(...params)
+  }
+}
+
+export async function isValidNode(uri) {
+  try {
+    const web3 = new Web3(uri)
+    const connected = await web3.eth.net.isListening()
+    web3.currentProvider.connection.close()
+
+    return connected
+  } catch (err) {
+    return false
   }
 }

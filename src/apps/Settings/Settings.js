@@ -5,6 +5,7 @@ import {
   DropDown,
   Button,
   Field,
+  Text,
   TextInput,
   font,
   breakpoint,
@@ -19,7 +20,7 @@ import {
   setIpfsGateway,
   setSelectedCurrency,
 } from '../../local-settings'
-import { noop } from '../../utils'
+import { noop, isValidNode } from '../../utils'
 import { DaoAddressType } from '../../prop-types'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
@@ -54,6 +55,7 @@ class Settings extends React.Component {
     account: '',
     apps: [],
     onOpenApp: noop,
+    isValidNode: true,
   }
 
   state = {
@@ -61,6 +63,7 @@ class Settings extends React.Component {
     ipfsGateway: ipfsDefaultConf.gateway,
     currencies: AVAILABLE_CURRENCIES,
     selectedCurrency: filterCurrency(getSelectedCurrency()),
+    invalidNode: false,
   }
   handleSelectedCurrencyChange = (index, currencies) => {
     setSelectedCurrency(currencies[index])
@@ -72,8 +75,13 @@ class Settings extends React.Component {
   handleIpfsGatewayChange = event => {
     this.setState({ ipfsGateway: event.target.value })
   }
-  handleNodeSettingsSave = () => {
+  handleNodeSettingsSave = async () => {
     const { defaultEthNode, ipfsGateway } = this.state
+    if (!(await isValidNode(defaultEthNode))) {
+      this.setState({ invalidNode: true })
+      return
+    }
+
     setDefaultEthNode(defaultEthNode)
     setIpfsGateway(ipfsGateway)
     // For now, we have to reload the page to propagate the changes
@@ -104,6 +112,7 @@ class Settings extends React.Component {
       ipfsGateway,
       currencies,
       selectedCurrency,
+      invalidNode,
     } = this.state
     return (
       <AppLayout
@@ -154,6 +163,11 @@ class Settings extends React.Component {
                 wide
                 value={defaultEthNode}
               />
+              {invalidNode && (
+                <Text color="red" size="xsmall">
+                  Bad gateway
+                </Text>
+              )}
             </Field>
             <Field label="IPFS gateway">
               <TextInput
