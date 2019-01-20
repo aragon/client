@@ -37,7 +37,7 @@ class NotificationHub extends React.Component {
   }
 }
 
-/** TODO
+/* TODO
  * 1. Timetags are still a mock up
  * 2. Notifications still need an X button to close on interaction
  */
@@ -79,7 +79,7 @@ Notification.Transaction = class extends React.Component {
           to={{
             opacity: this.state.showPayload
               ? 1
-              : 0.5 /*, height: this.state.showPayload ? 'auto' : 0 */,
+              : 0.5 /* , height: this.state.showPayload ? 'auto' : 0 */,
           }}
         >
           {props => (
