@@ -17,8 +17,6 @@ export default function NotificationBar({ open, notifications, onClearAll }) {
       {props => (
         <NotificationFrame
           tabIndex={0}
-          /* ref={r => r && open && r.focus()}
-          onBlur={e => notificationOpen && this.handleNotificationPanelClose()} */
           style={{
             transform: props.x.interpolate(x => `translate3d(${x}px,0,0)`),
           }}
