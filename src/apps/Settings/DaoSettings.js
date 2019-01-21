@@ -21,7 +21,7 @@ class DaoSettings extends React.Component {
     apps: PropTypes.array.isRequired,
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    shorten: PropTypes.bool.isRequired,
+    shortAddresses: PropTypes.bool.isRequired,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object,
   }
@@ -29,7 +29,7 @@ class DaoSettings extends React.Component {
     account: '',
     apps: [],
     onOpenApp: noop,
-    shorten: false,
+    shortAddresses: false,
   }
   handleDepositTestTokens = () => {
     const { account, apps, walletWeb3 } = this.props
@@ -46,7 +46,13 @@ class DaoSettings extends React.Component {
     }
   }
   render() {
-    const { account, apps, daoAddress, shorten, walletNetwork } = this.props
+    const {
+      account,
+      apps,
+      daoAddress,
+      shortAddresses,
+      walletNetwork,
+    } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     const checksummedDaoAddr =
@@ -62,7 +68,7 @@ class DaoSettings extends React.Component {
             <IdentityBadge
               entity={checksummedDaoAddr}
               networkType={network.type}
-              shorten={shorten}
+              shorten={shortAddresses}
             />
             <Note>
               <strong>Do not send ether or tokens to this address!</strong>
@@ -130,7 +136,7 @@ class DaoSettings extends React.Component {
                       <IdentityBadge
                         entity={checksummedProxyAddress}
                         networkType={network.type}
-                        shorten={shorten}
+                        shorten={shortAddresses}
                       />
                     </Field>
                   </li>
@@ -154,7 +160,7 @@ const ButtonLink = styled(Button).attrs({ mode: 'text' })`
 export default props => (
   <React.Fragment>
     <BreakPoint to="medium">
-      <DaoSettings {...props} shorten />
+      <DaoSettings {...props} shortAddresses />
     </BreakPoint>
     <BreakPoint from="medium">
       <DaoSettings {...props} />
