@@ -1,12 +1,6 @@
 import React from 'react'
-import {
-  Button,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Text,
-} from '@aragon/ui'
+import { Button, Table, TableRow, Text } from '@aragon/ui'
+import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import IdentityBadge from '../../components/IdentityBadge'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
@@ -91,13 +85,13 @@ class RoleRow extends React.Component {
 
     return (
       <TableRow>
-        <TableCell>
+        <FirstTableCell>
           <Text weight="bold">{name}</Text>
-        </TableCell>
+        </FirstTableCell>
         <TableCell>
           {emptyManager ? 'No manager set' : this.renderManager()}
         </TableCell>
-        <TableCell align="right">
+        <LastTableCell align="right">
           <Button
             compact
             mode="outline"
@@ -106,7 +100,7 @@ class RoleRow extends React.Component {
           >
             {emptyManager ? 'Initialize' : discardedManager ? 'View' : 'Manage'}
           </Button>
-        </TableCell>
+        </LastTableCell>
       </TableRow>
     )
   }
