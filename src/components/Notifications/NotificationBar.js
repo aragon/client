@@ -15,20 +15,16 @@ export default class NotificationBar extends React.Component {
     setTimeout(() => {
       if (!currentTarget.contains(document.activeElement)) {
         if (this.handler) clearTimeout(this.handler)
-        this.handler = setTimeout(() => this.props.open && this.props.onBlur(), 200)
+        this.handler = setTimeout(
+          () => this.props.open && this.props.onBlur(),
+          200
+        )
       }
     }, 0)
   }
 
   render() {
-    const {
-      open,
-      notifications,
-      onClearAll,
-      onFocus,
-      focusVisible,
-      onBlur,
-    } = this.props
+    const { open, notifications, onClearAll } = this.props
     const count = notifications.length
     return (
       <Spring
