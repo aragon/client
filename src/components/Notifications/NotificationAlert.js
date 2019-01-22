@@ -4,32 +4,15 @@ import { Spring, animated } from 'react-spring'
 import { theme, springs, IconNotifications } from '@aragon/ui'
 
 export default class NotificationAlert extends React.PureComponent {
-  state = { opened: false, previousNotifications: 0 }
-
-  static getDerivedStateFromProps(
-    { notifications },
-    { opened, previousNotifications }
-  ) {
-    return {
-      opened: notifications !== previousNotifications ? false : opened,
-      previousNotifications: notifications,
-    }
-  }
-
-  handleClick = () => {
-    this.setState({ opened: true })
-    this.props.onClick()
-  }
-
   render() {
-    const show = !this.state.opened && this.props.notifications > 0
+    const show = this.props.notifications > 0
     return (
-      <div className="actions" style={{ display: 'none' }}>
+      <div className="actions">
         <IconButton
           style={{ height: 22 }}
           role="button"
-          tabindex={0}
-          onClick={this.handleClick}
+          tabIndex="0"
+          onClick={this.props.onClick}
         >
           <IconNotifications />
           <Spring
@@ -66,6 +49,7 @@ export default class NotificationAlert extends React.PureComponent {
 
 const IconButton = styled.span`
   cursor: pointer;
+  outline: 0;
 `
 
 const Badge = styled(animated.div)`

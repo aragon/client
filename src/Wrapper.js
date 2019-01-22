@@ -186,7 +186,9 @@ class Wrapper extends React.Component {
               open={notificationOpen}
               notifications={notifications}
               onClearAll={this.handleNotificationsCleared}
+              onBlur={this.handleNotificationClicked}
             />
+
             {this.renderApp(locator.instanceId, locator.params)}
           </AppScreen>
         </Container>
