@@ -130,3 +130,20 @@ export function isValidEnsName(name) {
 
 // Re-export some utilities from web3-utils
 export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
+
+/*
+ * Return the injected provider, if any.
+ */
+export function getInjectedProvider() {
+  // Status implements EIP 1102 using `ethereumBeta`
+  if (window.ethereumBeta) {
+    return window.ethereumBeta
+  }
+  if (window.ethereum) {
+    return window.ethereum
+  }
+  if (window.web3 && window.web3.currentProvider) {
+    return window.web3.currentProvider
+  }
+  return null
+}
