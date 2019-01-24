@@ -44,13 +44,13 @@ export default class NotificationBar extends React.Component {
           >
             <NotificationHeader>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <h1 style={{ marginRight: 10 }}>Activity</h1>
+                <h1 style={{ marginRight: 10 }}><Text>Activity</Text></h1>
                 {count ? (
                   <Badge.Notification>{count}</Badge.Notification>
                 ) : null}
               </div>
               <a href="#" onClick={onClearAll}>
-                Clear All
+                <Text>Clear All</Text>
               </a>
             </NotificationHeader>
             <NotificationHub items={notifications} keys={item => item.id}>
@@ -72,7 +72,6 @@ function NotificationImpl(item, ready) {
         <Notification.Transaction
           ready={ready}
           title={item.title}
-          time="10 min ago"
         >
           {payload}
         </Notification.Transaction>
@@ -123,4 +122,8 @@ const NotificationHeader = styled('div')`
     color: #b3b3b3;
     text-align: right;
   }
+`
+
+const Text = styled('span')`
+  vertical-align: sub;
 `

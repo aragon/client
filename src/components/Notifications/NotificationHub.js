@@ -1,6 +1,7 @@
 import React from 'react'
 import { Spring, Transition, animated } from 'react-spring'
 import styled from 'styled-components'
+import TimeTag from './TimeTag'
 
 const spring = { tension: 1900, friction: 200, precision: 0.0001, clamp: true }
 
@@ -39,14 +40,14 @@ class NotificationHub extends React.Component {
 
 class Notification extends React.Component {
   render() {
-    const { children, title, time } = this.props
+    const { children, title } = this.props
     return (
       <Frame>
         <h1>
           <span>{title}</span>
         </h1>
         <h2>
-          <span>{time}</span>
+          <TimeTag />
         </h2>
         <div>{children}</div>
       </Frame>
