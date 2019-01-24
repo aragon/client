@@ -1,6 +1,7 @@
 import React from 'react'
 import { Spring, Transition, animated } from 'react-spring'
 import styled from 'styled-components'
+import { theme, IconClose } from '@aragon/ui'
 import TimeTag from './TimeTag'
 
 const spring = { tension: 1900, friction: 200, precision: 0.0001, clamp: true }
@@ -8,7 +9,7 @@ const spring = { tension: 1900, friction: 200, precision: 0.0001, clamp: true }
 class NotificationHub extends React.Component {
   state = { ready: {} }
   render() {
-    const { items, keys, children } = this.props
+    const { items, keys, children, onNotificationClosed } = this.props
     return (
       <div>
         <Transition
@@ -29,6 +30,12 @@ class NotificationHub extends React.Component {
         >
           {(item, state) => props => (
             <InnerContainer style={props}>
+              <CloseButton
+                role="button"
+                onClick={() => onNotificationClosed(item)}
+              >
+                <IconClose />
+              </CloseButton>
               {children(item, this.state.ready[keys(item)])}
             </InnerContainer>
           )}
@@ -47,7 +54,7 @@ class Notification extends React.Component {
           <span>{title}</span>
         </h1>
         <h2>
-          <TimeTag />
+          <TimeTag style={{ marginRight: 10 }} />
         </h2>
         <div>{children}</div>
       </Frame>
@@ -81,13 +88,16 @@ Notification.Transaction = class extends React.Component {
                 >
                   {props => (
                     <ProgressBar
-                      style={{ width: props.p.interpolate(p => `${p * 100}%`) }}
+                      style={{
+                        background: theme.accent,
+                        width: props.p.interpolate(p => `${p * 100}%`),
+                      }}
                     />
                   )}
                 </Spring>
               </ProgressTrack>
               <span>Estimated:</span>
-              <span>1 min 40 sec</span>
+              <span>- min -- sec</span>
             </Progress>
           )}
         </Spring>
@@ -191,6 +201,15 @@ const Progress = styled(animated.div)`
     grid-area: time;
     text-align: right;
   }
+`
+
+const CloseButton = styled('div')`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  transform: scale(0.9);
+  cursor: pointer;
+  z-index: 1;
 `
 
 const ProgressTrack = styled('div')`

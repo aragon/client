@@ -81,6 +81,7 @@ class MenuPanel extends React.PureComponent {
       daoAddress,
       onNotificationClicked,
       notifications,
+      notificationOpen,
     } = this.props
     const appGroups = this.getAppGroups(apps)
 
@@ -105,6 +106,7 @@ class MenuPanel extends React.PureComponent {
             <NotificationAlert
               notifications={notifications}
               onClick={onNotificationClicked}
+              notificationOpen={notificationOpen}
             />
           </Header>
           <Content>

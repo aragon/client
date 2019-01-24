@@ -73,7 +73,20 @@ class Wrapper extends React.Component {
     appInstance: {},
     menuPanelOpened: this.props.screenSize !== SMALL,
     notificationOpen: false,
-    notifications: [],
+    notifications: [
+      {
+        id: '1',
+        type: '',
+        title: 'Vote #9 passed',
+        content: 'A 100 ANT payment to 0xabcd... was executed',
+      },
+      {
+        id: '2',
+        type: 'transaction',
+        title: 'Vote #11 created',
+        content: 'Mint 100 ORG to 0x1234...',
+      },
+    ],
     queuedNotifications: [],
   }
   openApp = (instanceId, params) => {
@@ -137,6 +150,15 @@ class Wrapper extends React.Component {
     }
   }
 
+  handleNotificationClosed = item =>
+    console.log(item) ||
+    this.setState(state => ({
+      ...state,
+      notifications: state.notifications.filter(
+        notification => notification.id !== item.id
+      ),
+    }))
+
   isAppInstalled(instanceId) {
     const { apps } = this.props
     return (
@@ -187,6 +209,7 @@ class Wrapper extends React.Component {
               notifications={notifications}
               onClearAll={this.handleNotificationsCleared}
               onBlur={this.handleNotificationClicked}
+              onNotificationClosed={this.handleNotificationClosed}
             />
 
             {this.renderApp(locator.instanceId, locator.params)}
@@ -201,7 +224,14 @@ class Wrapper extends React.Component {
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
-          onTransactionSuccess={({ data, name, description, identifier }) =>
+          onTransactionSuccess={({
+            data,
+            name,
+            description,
+            identifier,
+            ...rest
+          }) =>
+            console.log(rest) ||
             this.setState(state => ({
               queuedNotifications: [
                 {

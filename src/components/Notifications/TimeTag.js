@@ -11,6 +11,6 @@ export default class TimeTag extends React.Component {
   }
   render() {
     const time = differenceInMinutes(new Date(), this.state.time)
-    return <span ref={this.viewRef}>{time}m ago</span>
+    return <span style={this.props.style} ref={this.viewRef}>{time}m ago</span>
   }
 }

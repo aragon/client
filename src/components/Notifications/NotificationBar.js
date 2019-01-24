@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { Badge } from '@aragon/ui'
+import { theme, Badge } from '@aragon/ui'
 import { NotificationHub, Notification } from './NotificationHub'
 import springs from '../../springs'
 
@@ -24,7 +24,7 @@ export default class NotificationBar extends React.Component {
   }
 
   render() {
-    const { open, notifications, onClearAll } = this.props
+    const { open, notifications, onClearAll, onNotificationClosed } = this.props
     const count = notifications.length
     return (
       <Spring
@@ -44,16 +44,22 @@ export default class NotificationBar extends React.Component {
           >
             <NotificationHeader>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <h1 style={{ marginRight: 10 }}><Text>Activity</Text></h1>
+                <h1 style={{ marginRight: 10 }}>
+                  <Text>Activity</Text>
+                </h1>
                 {count ? (
-                  <Badge.Notification>{count}</Badge.Notification>
+                  <Badge.Notification style={{ background: theme.accent }}>{count}</Badge.Notification>
                 ) : null}
               </div>
               <a href="#" onClick={onClearAll}>
                 <Text>Clear All</Text>
               </a>
             </NotificationHeader>
-            <NotificationHub items={notifications} keys={item => item.id}>
+            <NotificationHub
+              items={notifications}
+              keys={item => item.id}
+              onNotificationClosed={onNotificationClosed}
+            >
               {NotificationImpl}
             </NotificationHub>
           </NotificationFrame>
@@ -69,10 +75,7 @@ function NotificationImpl(item, ready) {
   switch (item.type) {
     case 'transaction':
       return (
-        <Notification.Transaction
-          ready={ready}
-          title={item.title}
-        >
+        <Notification.Transaction ready={ready} title={item.title}>
           {payload}
         </Notification.Transaction>
       )
