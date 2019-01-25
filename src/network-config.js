@@ -1,5 +1,4 @@
 import { getEnsRegistryAddress } from './local-settings'
-import { makeEtherscanBaseUrl } from './utils'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 
@@ -14,7 +13,6 @@ export const networkConfigs = {
     },
     settings: {
       chainId: 1,
-      etherscanBaseUrl: makeEtherscanBaseUrl('main'),
       name: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
     },
@@ -29,7 +27,6 @@ export const networkConfigs = {
     },
     settings: {
       chainId: 4,
-      etherscanBaseUrl: makeEtherscanBaseUrl('rinkeby'),
       name: 'Rinkeby testnet',
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
     },

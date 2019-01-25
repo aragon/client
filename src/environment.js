@@ -8,7 +8,7 @@ import {
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 import { noop } from './utils'
-import { toWei } from './web3-utils'
+import { toWei, getInjectedProvider } from './web3-utils'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault']
 const networkType = getEthNetworkType()
@@ -126,7 +126,7 @@ export const defaultEthNode =
 
 export const web3Providers = {
   default: new Web3.providers.WebsocketProvider(defaultEthNode),
-  wallet: provider(),
+  wallet: getInjectedProvider() || provider(),
 }
 
 export const defaultGasPriceFn =
