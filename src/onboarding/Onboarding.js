@@ -65,6 +65,7 @@ class Onboarding extends React.PureComponent {
     onResetDaoBuilder: PropTypes.func.isRequired,
     selectorNetworks: PropTypes.array.isRequired,
     visible: PropTypes.bool.isRequired,
+    walletProviderId: PropTypes.string.isRequired,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object,
   }
