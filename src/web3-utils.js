@@ -147,3 +147,9 @@ export function getInjectedProvider() {
   }
   return null
 }
+
+export function isConnected(provider) {
+  return provider.isConnected
+    ? provider.isConnected()
+    : provider.status === 'connected'
+}
