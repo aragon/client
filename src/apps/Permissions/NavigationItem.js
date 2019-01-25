@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge } from '@aragon/ui'
-import IdentityBadgeWrapper from '../../components/IdentityBadgeWrapper'
+import IdentityBadge from '../../components/IdentityBadge'
 
 const NavigationItem = ({ title, badge, address, entity }) => {
   const isEntity = !badge && address
@@ -10,7 +10,7 @@ const NavigationItem = ({ title, badge, address, entity }) => {
     <Main>
       <Title>{title}</Title>
       {isEntity && (
-        <IdentityBadgeWrapper
+        <IdentityBadge
           entity={entity && entity.type === 'any' ? 'Any account' : address}
         />
       )}

@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, Text, IdentityBadge, BreakPoint } from '@aragon/ui'
+import { Button, Field, Text, BreakPoint } from '@aragon/ui'
+import IdentityBadge from '../../components/IdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { noop } from '../../utils'
@@ -61,7 +62,6 @@ class DaoSettings extends React.Component {
           <Field label="Address" style={{ marginBottom: 0 }}>
             <IdentityBadge
               entity={checksummedDaoAddr}
-              networkType={network.type}
               shorten={shorten}
             />
             <Note>
@@ -129,7 +129,6 @@ class DaoSettings extends React.Component {
                     <Field label={name}>
                       <IdentityBadge
                         entity={checksummedProxyAddress}
-                        networkType={network.type}
                         shorten={shorten}
                       />
                     </Field>
