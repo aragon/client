@@ -59,10 +59,10 @@ class Notification extends React.Component {
 }
 
 /* TODO
- 1. Progress bar needs to work with callbacks
- 2. Successfull notifications should collapse progress (for this react-spring "auto" in arrays needs to be fixed)
- 3. Error status needs to be shown
- 4. Estimated time needs to be functional
+ * 1. Progress bar needs to work with callbacks
+ * 2. Successfull notifications should collapse progress (for this react-spring "auto" in arrays needs to be fixed)
+ * 3. Error status needs to be shown
+ * 4. Estimated time needs to be functional
  */
 Notification.Transaction = class extends React.Component {
   state = { showPayload: true }
