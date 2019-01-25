@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { isAddress } from './web3-utils'
 
 const validatorCreator = nonRequiredFunction => {
   const validator = nonRequiredFunction
@@ -25,7 +26,7 @@ const ethereumAddressValidator = (props, propName, componentName) => {
     return null
   }
 
-  if (!/^0x[a-fA-F0-9]{4}$/.test(value)) {
+  if (!isAddress(value)) {
     const valueType = typeof value
     let nonAddress = null
 
