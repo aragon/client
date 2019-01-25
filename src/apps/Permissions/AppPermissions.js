@@ -15,10 +15,11 @@ import AppInstanceLabel from './AppInstanceLabel'
 import IdentityBadge from '../../components/IdentityBadge'
 import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
+import { EthereumAddress } from '../../prop-types'
 
 class AppPermissions extends React.PureComponent {
   static propTypes = {
-    address: PropTypes.string.isRequired,
+    address: EthereumAddress.isRequired,
     app: PropTypes.object, // may not be available if still loading
     loading: PropTypes.bool.isRequired,
     onManageRole: PropTypes.func.isRequired,
@@ -85,7 +86,7 @@ class Row extends React.Component {
   static propTypes = {
     entity: PropTypes.object.isRequired,
     onRevoke: PropTypes.func.isRequired,
-    proxyAddress: PropTypes.string.isRequired,
+    proxyAddress: EthereumAddress.isRequired,
     role: PropTypes.object.isRequired,
   }
 
