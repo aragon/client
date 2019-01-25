@@ -11,7 +11,10 @@ export default class NotificationAlert extends React.PureComponent {
     { opened, previousNotifications }
   ) {
     return {
-      opened: !notificationOpen && notifications !== previousNotifications ? false : opened,
+      opened:
+        !notificationOpen && notifications !== previousNotifications
+          ? false
+          : opened,
       previousNotifications: notifications,
     }
   }
@@ -20,7 +23,7 @@ export default class NotificationAlert extends React.PureComponent {
     this.setState({ opened: true })
     this.props.onClick()
   }
-  
+
   render() {
     const show = !this.state.opened && this.props.notifications > 0
     return (

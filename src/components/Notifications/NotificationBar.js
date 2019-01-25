@@ -48,7 +48,9 @@ export default class NotificationBar extends React.Component {
                   <Text>Activity</Text>
                 </h1>
                 {count ? (
-                  <Badge.Notification style={{ background: theme.accent }}>{count}</Badge.Notification>
+                  <Badge.Notification style={{ background: theme.accent }}>
+                    {count}
+                  </Badge.Notification>
                 ) : null}
               </div>
               <a href="#" onClick={onClearAll}>
