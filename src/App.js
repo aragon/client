@@ -99,12 +99,12 @@ class App extends React.Component {
       return
     }
     // For providers supporting .enable() (EIP 1102 draft).
-    if ('enable' in provider) {
+    if (typeof provider.enable === 'function') {
       provider.enable()
       return
     }
     // For providers supporting EIP 1102 (final).
-    if ('send' in provider) {
+    if (typeof provider.send === 'function') {
       // Some providers (Metamask) don’t return a promise as defined in EIP
       // 1102, so we can’t rely on it to know the connected accounts.
       provider.send('eth_requestAccounts')
