@@ -24,6 +24,12 @@ class EntityRow extends React.PureComponent {
   handleClick = () => {
     this.props.onOpen(this.props.entity.address)
   }
+  handleItemClick = () => {
+    const { itemClickable } = this.props
+    if (itemClickable) {
+      this.handleClick()
+    }
+  }
   renderType(type) {
     switch (type) {
       case 'app':
@@ -82,7 +88,7 @@ class EntityRow extends React.PureComponent {
     }
 
     return (
-      <TableRow>
+      <StyledTableRow onClick={this.handleItemClick}>
         <FirstTableCell>{this.renderEntity(entity)}</FirstTableCell>
         <BreakPoint from="medium">
           <TableCell>{this.renderType(entity.type)}</TableCell>
@@ -93,10 +99,32 @@ class EntityRow extends React.PureComponent {
         <LastTableCell align="right">
           <ViewDetailsButton title="View details" onClick={this.handleClick} />
         </LastTableCell>
-      </TableRow>
+      </StyledTableRow>
     )
   }
 }
+
+const ResponsiveEntityRow = props => (
+  <React.Fragment>
+    <BreakPoint to="medium">
+      <EntityRow {...props} itemClickable />
+    </BreakPoint>
+    <BreakPoint from="medium">
+      <EntityRow {...props} />
+    </BreakPoint>
+  </React.Fragment>
+)
+
+const StyledTableRow = styled(TableRow)`
+  cursor: pointer;
+
+  ${breakpoint(
+    'medium',
+    `
+      cursor: initial;
+    `
+  )}
+`
 
 const FirstTableCell = styled(TableCell)`
   &&& {
@@ -153,4 +181,4 @@ const LastTableCell = styled(TableCell)`
   )};
 `
 
-export default EntityRow
+export default ResponsiveEntityRow
