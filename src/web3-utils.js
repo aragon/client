@@ -149,7 +149,11 @@ export function getInjectedProvider() {
 }
 
 export function isConnected(provider) {
-  return provider.isConnected
+  // EIP-1193 compliant providers may not include `isConnected()`, but most should support it for
+  // the foreseeable future to be backwards compatible with older Web3.js implementations.
+  // The `status` property is also not required by EIP-1193, but is often set on providers for
+  // backwards compatibility as well.
+  return typeof provider.isConnected === 'function'
     ? provider.isConnected()
     : provider.status === 'connected'
 }

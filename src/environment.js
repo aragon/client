@@ -126,7 +126,8 @@ export const defaultEthNode =
 
 export const web3Providers = {
   default: new Web3.providers.WebsocketProvider(defaultEthNode),
-  wallet: getInjectedProvider() || provider(),
+  // Only use eth-provider to connect to frame if no injected provider is detected
+  wallet: getInjectedProvider() || provider(['frame']),
 }
 
 export const defaultGasPriceFn =
