@@ -1,7 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
+import {
+  SidePanel,
+  DropDown,
+  Info,
+  Field,
+  Button,
+  breakpoint,
+} from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
@@ -348,8 +355,15 @@ class ManageRolePanel extends React.PureComponent {
 }
 
 const FlexRow = styled.div`
-  display: flex;
+  display: inline-flex;
   align-items: center;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+    `
+  )}
 `
 
 export default props => (

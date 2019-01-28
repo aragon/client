@@ -5,7 +5,6 @@ import {
   AppBar,
   AppView,
   NavigationBar,
-  Button,
   font,
   breakpoint,
   BreakPoint,
@@ -20,6 +19,7 @@ import AssignPermissionPanel from './AssignPermissionPanel'
 import ManageRolePanel from './ManageRolePanel'
 import MenuButton from '../../components/MenuPanel/MenuButton'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import AddPermissionButton from './AddPermissionButton'
 
 class Permissions extends React.Component {
   static propTypes = {
@@ -210,13 +210,11 @@ class Permissions extends React.Component {
                 appBar={
                   <AppBar
                     endContent={
-                      <Button
-                        mode="strong"
+                      <AddPermissionButton
+                        title="Add permission"
                         onClick={this.createPermission}
                         disabled={appsLoading || permissionsLoading}
-                      >
-                        Add permission
-                      </Button>
+                      />
                     }
                   >
                     <BreakPoint to="medium">
@@ -247,16 +245,7 @@ class Permissions extends React.Component {
                   }}
                 />
 
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    left: '0',
-                    right: '0',
-                    bottom: '0',
-                    overflowX: 'hidden',
-                  }}
-                >
+                <Wrap>
                   <Screen position={0} animate={animateScreens}>
                     {location.screen === 'home' && (
                       <Home
@@ -290,7 +279,7 @@ class Permissions extends React.Component {
                       </React.Fragment>
                     )}
                   </Screen>
-                </div>
+                </Wrap>
               </AppView>
 
               <AssignPermissionPanel
@@ -313,6 +302,16 @@ class Permissions extends React.Component {
     )
   }
 }
+
+const Wrap = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflowx: hidden;
+  min-width: 320px;
+`
 
 const AppBarTitle = styled.span`
   display: flex;

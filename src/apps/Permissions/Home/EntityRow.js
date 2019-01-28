@@ -1,9 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import uniqBy from 'lodash.uniqby'
-import { TableRow, TableCell, Button, Text, theme } from '@aragon/ui'
+import {
+  TableRow,
+  TableCell,
+  Text,
+  theme,
+  BreakPoint,
+  breakpoint,
+} from '@aragon/ui'
 import IdentityBadge from '../../../components/IdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
+import ViewDetailsButton from './ViewDetailsButton'
 
 class EntityRow extends React.PureComponent {
   static propTypes = {
@@ -14,6 +23,12 @@ class EntityRow extends React.PureComponent {
 
   handleClick = () => {
     this.props.onOpen(this.props.entity.address)
+  }
+  handleItemClick = () => {
+    const { itemClickable } = this.props
+    if (itemClickable) {
+      this.handleClick()
+    }
   }
   renderType(type) {
     switch (type) {
@@ -73,20 +88,97 @@ class EntityRow extends React.PureComponent {
     }
 
     return (
-      <TableRow>
-        <TableCell>{this.renderEntity(entity)}</TableCell>
-        <TableCell>{this.renderType(entity.type)}</TableCell>
-        <TableCell>
-          <div>{this.renderRoles(roles)}</div>
-        </TableCell>
-        <TableCell align="right">
-          <Button mode="outline" onClick={this.handleClick} compact>
-            View details
-          </Button>
-        </TableCell>
-      </TableRow>
+      <StyledTableRow onClick={this.handleItemClick}>
+        <FirstTableCell>{this.renderEntity(entity)}</FirstTableCell>
+        <BreakPoint from="medium">
+          <TableCell>{this.renderType(entity.type)}</TableCell>
+          <TableCell>
+            <div>{this.renderRoles(roles)}</div>
+          </TableCell>
+        </BreakPoint>
+        <LastTableCell align="right">
+          <ViewDetailsButton title="View details" onClick={this.handleClick} />
+        </LastTableCell>
+      </StyledTableRow>
     )
   }
 }
 
-export default EntityRow
+const ResponsiveEntityRow = props => (
+  <React.Fragment>
+    <BreakPoint to="medium">
+      <EntityRow {...props} itemClickable />
+    </BreakPoint>
+    <BreakPoint from="medium">
+      <EntityRow {...props} />
+    </BreakPoint>
+  </React.Fragment>
+)
+
+const StyledTableRow = styled(TableRow)`
+  cursor: pointer;
+
+  ${breakpoint(
+    'medium',
+    `
+      cursor: initial;
+    `
+  )}
+`
+
+const FirstTableCell = styled(TableCell)`
+  &&& {
+    border-left-width: 0;
+    border-right-width: 0;
+    :first-child {
+      border-radius: 0;
+    }
+  }
+
+  > div {
+    display: inline-block;
+    text-align: left;
+  }
+
+  ${breakpoint(
+    'medium',
+    `
+      &&& {
+        border-left-width: 1px;
+        border-right-width: 1px;
+         :first-child {
+          border-radius: 3px;
+        }
+      }
+    `
+  )};
+`
+
+const LastTableCell = styled(TableCell)`
+  &&& {
+    border-left-width: 0;
+    border-right-width: 0;
+    :last-child {
+      border-radius: 0;
+    }
+  }
+
+  > div {
+    text-align: right;
+  }
+
+  ${breakpoint(
+    'medium',
+    `
+      &&& {
+        border-left-width: 1px;
+        border-right-width: 1px;
+         :last-child {
+          border-radius: 3px;
+        }
+      }
+    `
+  )};
+`
+
+export default ResponsiveEntityRow

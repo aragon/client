@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { breakpoint } from '@aragon/ui'
 import Section from '../Section'
 import AppCard from '../AppCard'
 import EmptyBlock from '../EmptyBlock'
@@ -39,10 +40,19 @@ class BrowseByApp extends React.Component {
 
 const Apps = styled.div`
   display: grid;
-  grid-auto-flow: row;
-  grid-gap: 25px;
-  justify-items: start;
-  grid-template-columns: repeat(auto-fill, 160px);
+  grid-gap: 10px;
+  grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr);
+  margin: 0 30px;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin: unset;
+      grid-gap: 25px;
+      justify-items: start;
+      grid-template-columns: repeat(auto-fill, 160px);
+    `
+  )}
 `
 
 export default BrowseByApp

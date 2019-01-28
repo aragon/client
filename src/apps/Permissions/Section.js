@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { breakpoint } from '@aragon/ui'
 
 const Section = ({ title, children }) => (
   <Main>
@@ -15,12 +16,27 @@ Section.propTypes = {
 }
 
 const Main = styled.section`
+  margin-bottom: 30px;
+
   > h1 {
-    margin-bottom: 30px;
-    font-weight: 600;
+    margin: 30px;
   }
-  & + & {
-    margin-top: 50px;
-  }
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-bottom: 0;
+
+      > h1 {
+        margin: 0;
+        margin-bottom: 30px;
+        font-weight: 600;
+      }
+
+      & + & {
+        margin-top: 50px;
+      }
+    `
+  )}
 `
 export default Section

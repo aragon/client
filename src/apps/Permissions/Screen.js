@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
+import { breakpoint } from '@aragon/ui'
 import springs from '../../springs'
 
 const SCREEN_SHIFT = 0.05
@@ -55,7 +56,13 @@ const StyledMain = styled(animated.div)`
   top: 0;
   left: 0;
   right: 0;
-  padding: 30px;
+
+  ${breakpoint(
+    'medium',
+    `
+      padding: 30px;
+    `
+  )}
 `
 
 export default Screen

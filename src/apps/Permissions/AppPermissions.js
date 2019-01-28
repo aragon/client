@@ -1,13 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Text,
-} from '@aragon/ui'
+import { Button, Table, TableRow, Text } from '@aragon/ui'
+import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
@@ -116,11 +110,11 @@ class Row extends React.Component {
     const { role } = this.props
     return (
       <TableRow>
-        <TableCell>
+        <FirstTableCell>
           <Text weight="bold">{role ? role.name : 'Unknown'}</Text>
-        </TableCell>
+        </FirstTableCell>
         <TableCell>{this.renderEntity()}</TableCell>
-        <TableCell align="right">
+        <LastTableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -129,7 +123,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell>
+        </LastTableCell>
       </TableRow>
     )
   }
