@@ -311,21 +311,22 @@ class App extends React.Component {
               permissions={permissions}
             >
               <Wrapper
+                account={account}
+                apps={apps}
+                appsStatus={appsStatus}
                 banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
+                connected={connected}
+                daoAddress={daoAddress}
                 historyBack={this.historyBack}
                 historyPush={this.historyPush}
                 locator={locator}
-                wrapper={wrapper}
-                apps={apps}
-                appsStatus={appsStatus}
+                onRequestAppsReload={this.handleRequestAppsReload}
+                onRequestEnable={this.handleRequestEnable}
                 permissionsLoading={permissionsLoading}
-                account={account}
+                transactionBag={transactionBag}
                 walletNetwork={walletNetwork}
                 walletWeb3={walletWeb3}
-                daoAddress={daoAddress}
-                transactionBag={transactionBag}
-                connected={connected}
-                onRequestAppsReload={this.handleRequestAppsReload}
+                wrapper={wrapper}
               />
             </PermissionsProvider>
 
@@ -342,10 +343,9 @@ class App extends React.Component {
               daoCreationStatus={daoCreationStatus}
               onComplete={this.handleCompleteOnboarding}
               onOpenOrganization={this.handleOpenOrganization}
-              onResetDaoBuilder={this.handleResetDaoBuilder}
               onRequestEnable={this.handleRequestEnable}
+              onResetDaoBuilder={this.handleResetDaoBuilder}
               selectorNetworks={selectorNetworks}
-              walletWeb3={walletWeb3}
             />
           </ScreenSizeProvider>
         </FavoriteDaosProvider>
