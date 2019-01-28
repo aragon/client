@@ -22,13 +22,11 @@ export function appIconUrl(app) {
 
 export function isElectron() {
   // See https://github.com/electron/electron/issues/2288
-  if (
+  return (
     typeof navigator === 'object' &&
     typeof navigator.userAgent === 'string' &&
     navigator.userAgent.indexOf('Electron') >= 0
-  ) {
-    return true
-  }
+  )
 }
 
 export function noop() {}
