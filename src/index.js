@@ -2,7 +2,7 @@ import '@babel/polyfill'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { PublicUrl, BaseStyles, Root } from '@aragon/ui'
+import { BaseStyles, PublicUrl, Root, ToastHub } from '@aragon/ui'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import App from './App'
 
@@ -27,7 +27,9 @@ ReactDOM.render(
       <BaseStyles />
 
       <GlobalErrorHandler>
-        <App />
+        <ToastHub>
+          <App />
+        </ToastHub>
       </GlobalErrorHandler>
     </PublicUrl.Provider>
   </Root.Provider>,
