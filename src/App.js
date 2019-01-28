@@ -321,6 +321,7 @@ class App extends React.Component {
                 historyPush={this.historyPush}
                 locator={locator}
                 onRequestAppsReload={this.handleRequestAppsReload}
+                onRequestEnable={this.handleRequestEnable}
                 permissionsLoading={permissionsLoading}
                 transactionBag={transactionBag}
                 walletNetwork={walletNetwork}
