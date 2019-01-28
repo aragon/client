@@ -342,10 +342,9 @@ class App extends React.Component {
               daoCreationStatus={daoCreationStatus}
               onComplete={this.handleCompleteOnboarding}
               onOpenOrganization={this.handleOpenOrganization}
-              onResetDaoBuilder={this.handleResetDaoBuilder}
               onRequestEnable={this.handleRequestEnable}
+              onResetDaoBuilder={this.handleResetDaoBuilder}
               selectorNetworks={selectorNetworks}
-              walletWeb3={walletWeb3}
             />
           </ScreenSizeProvider>
         </FavoriteDaosProvider>

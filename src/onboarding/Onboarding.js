@@ -47,14 +47,14 @@ const initialState = {
 
 class Onboarding extends React.PureComponent {
   static propTypes = {
-    account: PropTypes.string.isRequired,
+    account: PropTypes.string,
     balance: PropTypes.object,
     banner: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.shape({
         type: PropTypes.oneOf([DeprecatedBanner]),
       }),
-    ]).isRequired,
+    ]),
     daoCreationStatus: PropTypes.oneOf([
       DAO_CREATION_STATUS_NONE,
       DAO_CREATION_STATUS_SUCCESS,
@@ -64,24 +64,18 @@ class Onboarding extends React.PureComponent {
     onComplete: PropTypes.func.isRequired,
     onOpenOrganization: PropTypes.func.isRequired,
     onResetDaoBuilder: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
     selectorNetworks: PropTypes.array.isRequired,
     visible: PropTypes.bool.isRequired,
-    walletProviderId: PropTypes.string.isRequired,
-    walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletNetwork: PropTypes.string,
+    walletProviderId: PropTypes.string,
   }
 
   static defaultProps = {
     account: '',
     balance: getUnknownBalance(),
-    banner: null,
-    daoCreationStatus: DAO_CREATION_STATUS_NONE,
+    banner: false,
     onComplete: noop,
-    onBuildDao: noop,
-    onOpenOrganization: noop,
-    onResetDaoBuilder: noop,
-    onRequestEnable: noop,
-    visible: true,
     walletNetwork: '',
     walletProviderId: '',
   }
@@ -474,7 +468,6 @@ class Onboarding extends React.PureComponent {
       onRequestEnable,
       walletNetwork,
       walletProviderId,
-      walletWeb3,
     } = this.props
 
     // No need to move the screens farther than one step
@@ -512,7 +505,6 @@ class Onboarding extends React.PureComponent {
           onRequestEnable={onRequestEnable}
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
-          walletWeb3={walletWeb3}
           {...sharedProps}
         />
       )

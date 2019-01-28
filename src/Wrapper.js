@@ -14,7 +14,6 @@ import { DaoAddressType } from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
-import { noop } from './utils'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -24,7 +23,7 @@ import NotificationBar from './components/Notifications/NotificationBar'
 
 class Wrapper extends React.Component {
   static propTypes = {
-    account: PropTypes.string.isRequired,
+    account: PropTypes.string,
     apps: PropTypes.array.isRequired,
     appsStatus: PropTypes.oneOf([
       APPS_STATUS_ERROR,
@@ -36,38 +35,31 @@ class Wrapper extends React.Component {
       PropTypes.shape({
         type: PropTypes.oneOf([DeprecatedBanner]),
       }),
-    ]).isRequired,
-    connected: PropTypes.bool.isRequired,
+    ]),
+    connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     screenSize: PropTypes.symbol.isRequired,
     transactionBag: PropTypes.object,
-    walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
+    walletWeb3: PropTypes.object,
     wrapper: PropTypes.object,
-    onRequestEnable: PropTypes.func,
   }
 
   static defaultProps = {
     account: '',
-    apps: [],
-    banner: null,
+    banner: false,
     connected: false,
-    daoAddress: '',
-    historyBack: noop,
-    historyPush: noop,
-    locator: {},
-    onRequestEnable: noop,
     transactionBag: null,
     walletNetwork: '',
     walletProviderId: '',
     walletWeb3: null,
-    wrapper: null,
   }
   state = {
     appInstance: {},
