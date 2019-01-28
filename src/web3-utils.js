@@ -135,10 +135,6 @@ export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
  * Return the injected provider, if any.
  */
 export function getInjectedProvider() {
-  // Status implements EIP 1102 using `ethereumBeta`
-  if (window.ethereumBeta) {
-    return window.ethereumBeta
-  }
   if (window.ethereum) {
     return window.ethereum
   }
