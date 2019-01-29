@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Table, TableRow, Text } from '@aragon/ui'
+import IdentityBadge from '../../components/IdentityBadge'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
-import IdentityBadge from '../../components/IdentityBadge'
 import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
 import { EthereumAddress } from '../../prop-types'
@@ -18,7 +18,6 @@ class AppPermissions extends React.PureComponent {
     loading: PropTypes.bool.isRequired,
     onManageRole: PropTypes.func.isRequired,
   }
-
   render() {
     const { app, loading, address, onManageRole } = this.props
     return (
