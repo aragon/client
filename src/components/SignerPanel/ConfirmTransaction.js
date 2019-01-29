@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Info, theme } from '@aragon/ui'
-import { noop } from '../../utils'
+import { Info, SafeLink, theme } from '@aragon/ui'
+import { isElectron, noop } from '../../utils'
 import providerString from '../../provider-strings'
 import ActionPathsContent from './ActionPathsContent'
 import SignerButton from './SignerButton'
@@ -53,6 +53,24 @@ class ConfirmTransaction extends React.Component {
     } = this.props
 
     if (!hasWeb3) {
+      if (isElectron()) {
+        return (
+          <Web3ProviderError
+            intent={intent}
+            onClose={onClose}
+            neededText="You need to have Frame installed and enabled"
+            actionText={
+              <span>
+                Please install and enable Frame (
+                <SafeLink href={'https://frame.sh/'} target="_blank">
+                  frame.sh
+                </SafeLink>
+                ).
+              </span>
+            }
+          />
+        )
+      }
       return (
         <Web3ProviderError
           intent={intent}
