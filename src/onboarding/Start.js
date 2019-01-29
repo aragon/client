@@ -298,17 +298,15 @@ class StartContent extends React.PureComponent {
           </form>
         </TwoActions>
         {demoDao && (
-          <Action>
-            <p>
-              <Text size="normal" color={theme.textSecondary}>
-                Not ready to create an organization? Try browsing this{' '}
-                <ButtonLink onClick={this.handleOpenDemoOrganization}>
-                  demo organization
-                </ButtonLink>{' '}
-                instead.
-              </Text>
-            </p>
-          </Action>
+          <p>
+            <Text size="normal" color={theme.textSecondary}>
+              Not ready to create an organization? Try browsing this{' '}
+              <ButtonLink onClick={this.handleOpenDemoOrganization}>
+                demo organization
+              </ButtonLink>{' '}
+              instead.
+            </Text>
+          </p>
         )}
       </React.Fragment>
     )
