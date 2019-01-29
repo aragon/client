@@ -38,12 +38,19 @@ class ActionPathsContent extends React.Component {
             ? annotatedDescription.map(({ type, value }, index) => {
                 if (type === 'address') {
                   return (
-                    <IdentityBadge
-                      key={index}
-                      entity={value}
-                      fontSize="small"
-                      style={{ marginRight: '4px' }}
-                    />
+                    <span
+                      css={`
+                        display: inline-flex;
+                        vertical-align: middle;
+                        margin-right: 4px;
+                      `}
+                    >
+                      <IdentityBadge
+                        key={index}
+                        entity={value}
+                        fontSize="small"
+                      />
+                    </span>
                   )
                 } else if (type === 'app') {
                   return (
