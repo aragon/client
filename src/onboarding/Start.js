@@ -2,16 +2,17 @@ import React from 'react'
 import styled from 'styled-components'
 import BN from 'bn.js'
 import {
-  theme,
-  Text,
-  SafeLink,
   Button,
-  TextInput,
-  IconCheck,
-  IconCross,
   DropDown,
   IconAttention,
+  IconCheck,
+  IconCross,
+  SafeLink,
+  Text,
+  TextInput,
+  Viewport,
   breakpoint,
+  theme,
 } from '@aragon/ui'
 import { animated } from 'react-spring'
 import { network, getDemoDao, web3Providers } from '../environment'
