@@ -223,6 +223,7 @@ const Overlay = styled.div`
   z-index: 2;
   width: 100vw;
   height: 100vh;
+  min-width: 320px;
   display: ${({ opened }) => (opened ? 'block' : 'none')};
 
   ${breakpoint(
@@ -238,6 +239,7 @@ const Wrap = styled(animated.div)`
   z-index: 3;
   width: 90vw;
   height: 100vh;
+  min-width: 300px;
 
   ${breakpoint(
     'medium',

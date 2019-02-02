@@ -61,6 +61,7 @@ class Wrapper extends React.PureComponent {
     walletProviderId: '',
     walletWeb3: null,
   }
+
   state = {
     appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
@@ -68,6 +69,7 @@ class Wrapper extends React.PureComponent {
     notifications: [],
     queuedNotifications: [],
   }
+
   openApp = (instanceId, params) => {
     if (this.props.autoClosingPanel) {
       this.handleMenuPanelClose()
@@ -307,6 +309,7 @@ const Main = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  min-width: 320px;
 `
 
 const BannerWrapper = styled.div`
