@@ -136,6 +136,9 @@ const Main = styled.div`
     margin-right: 15px;
     color: ${({ active }) =>
       active ? theme.textPrimary : theme.textSecondary};
+    & > img {
+      filter: brightness(${({ active }) => (active ? 0 : 100)}%);
+    }
   }
   .instances {
     overflow: hidden;
