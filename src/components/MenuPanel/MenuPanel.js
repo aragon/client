@@ -4,11 +4,11 @@ import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import {
   Text,
+  Viewport,
+  breakpoint,
+  springs,
   theme,
   unselectable,
-  breakpoint,
-  BreakPoint,
-  springs,
 } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
@@ -333,12 +333,7 @@ const ConnectionBullet = styled.span`
 `
 
 export default props => (
-  <React.Fragment>
-    <BreakPoint from="medium">
-      <AnimatedMenuPanel {...props} />
-    </BreakPoint>
-    <BreakPoint to="medium">
-      <AnimatedMenuPanel {...props} autohide />
-    </BreakPoint>
-  </React.Fragment>
+  <Viewport>
+    {({ below }) => <AnimatedMenuPanel {...props} autohide={below('medium')} />}
+  </Viewport>
 )

@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  DropDown,
   Button,
+  DropDown,
   Field,
   TextInput,
-  font,
+  Viewport,
   breakpoint,
-  BreakPoint,
+  font,
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 import MenuButton from '../../components/MenuPanel/MenuButton'
@@ -109,9 +109,13 @@ class Settings extends React.Component {
       <AppLayout
         title={
           <AppBarTitle>
-            <BreakPoint to="medium">
-              <MenuButton onClick={this.handleMenuPanelOpen} />
-            </BreakPoint>
+            <Viewport>
+              {({ below }) =>
+                below('medium') && (
+                  <MenuButton onClick={this.handleMenuPanelOpen} />
+                )
+              }
+            </Viewport>
             <AppBarLabel>Settings</AppBarLabel>
           </AppBarTitle>
         }

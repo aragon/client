@@ -5,9 +5,9 @@ import {
   AppBar,
   AppView,
   NavigationBar,
-  font,
+  Viewport,
   breakpoint,
-  BreakPoint,
+  font,
 } from '@aragon/ui'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
@@ -217,25 +217,21 @@ class Permissions extends React.Component {
                       />
                     }
                   >
-                    <BreakPoint to="medium">
-                      {navigationItems.length === 1 ? (
-                        <AppBarTitle>
-                          <MenuButton onClick={this.handleMenuPanelOpen} />
-                          <AppBarLabel>Permissions</AppBarLabel>
-                        </AppBarTitle>
-                      ) : (
-                        <NavigationBar
-                          items={navigationItems}
-                          onBack={this.goToHome}
-                        />
-                      )}
-                    </BreakPoint>
-                    <BreakPoint from="medium">
-                      <NavigationBar
-                        items={navigationItems}
-                        onBack={this.goToHome}
-                      />
-                    </BreakPoint>
+                    <Viewport>
+                      {({ below }) =>
+                        below('medium') && navigationItems.length === 1 ? (
+                          <AppBarTitle>
+                            <MenuButton onClick={this.handleMenuPanelOpen} />
+                            <AppBarLabel>Permissions</AppBarLabel>
+                          </AppBarTitle>
+                        ) : (
+                          <NavigationBar
+                            items={navigationItems}
+                            onBack={this.goToHome}
+                          />
+                        )
+                      }
+                    </Viewport>
                   </AppBar>
                 }
               >
