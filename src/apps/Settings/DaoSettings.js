@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, Text, ViewPort } from '@aragon/ui'
+import { Button, Field, Text, Viewport } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
