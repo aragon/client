@@ -2,14 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import {
-  Text,
-  Viewport,
-  breakpoint,
-  springs,
-  theme,
-  unselectable,
-} from '@aragon/ui'
+import { Text, breakpoint, springs, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
 import { DaoAddressType } from '../../prop-types'
@@ -334,4 +327,4 @@ const ConnectionBullet = styled.span`
     connected ? theme.positive : theme.negative};
 `
 
-export default props => <AnimatedMenuPanel {...props} />
+export default AnimatedMenuPanel
