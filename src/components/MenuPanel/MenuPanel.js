@@ -186,19 +186,19 @@ class MenuPanel extends React.PureComponent {
 }
 
 const AnimatedMenuPanel = ({
-  menuPanelOpened,
+  opened,
+  autoClosing,
   onCloseMenuPanel,
-  autohide,
   ...props
 }) => {
   return (
     <React.Fragment>
       <Spring
         from={{ progress: 0 }}
-        to={{ progress: !!menuPanelOpened }}
+        to={{ progress: Number(opened) }}
         config={springs.lazy}
+        immediate={!autoClosing}
         native
-        immediate={!autohide}
       >
         {({ progress }) => (
           <Wrap
@@ -213,7 +213,7 @@ const AnimatedMenuPanel = ({
           </Wrap>
         )}
       </Spring>
-      <Overlay opened={menuPanelOpened} onClick={onCloseMenuPanel} />
+      <Overlay opened={opened} onClick={onCloseMenuPanel} />
     </React.Fragment>
   )
 }
@@ -334,8 +334,4 @@ const ConnectionBullet = styled.span`
     connected ? theme.positive : theme.negative};
 `
 
-export default props => (
-  <Viewport>
-    {({ below }) => <AnimatedMenuPanel {...props} autohide={below('medium')} />}
-  </Viewport>
-)
+export default props => <AnimatedMenuPanel {...props} />

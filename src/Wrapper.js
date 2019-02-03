@@ -62,6 +62,10 @@ class Wrapper extends React.PureComponent {
     walletWeb3: null,
   }
 
+  static getDerivedStateFromProps = ({ autoClosingPanel }) => {
+    return autoClosingPanel ? {} : { menuPanelOpened: true }
+  }
+
   state = {
     appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
@@ -144,6 +148,7 @@ class Wrapper extends React.PureComponent {
       account,
       apps,
       appsStatus,
+      autoClosingPanel,
       banner,
       connected,
       daoAddress,
@@ -168,7 +173,8 @@ class Wrapper extends React.PureComponent {
             connected={connected}
             notifications={notifications.length}
             daoAddress={daoAddress}
-            menuPanelOpened={menuPanelOpened}
+            opened={menuPanelOpened}
+            autoClosing={autoClosingPanel}
             onOpenApp={this.openApp}
             onCloseMenuPanel={this.handleMenuPanelClose}
             onRequestAppsReload={onRequestAppsReload}
