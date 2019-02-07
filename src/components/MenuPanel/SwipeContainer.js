@@ -54,7 +54,13 @@ class SwipeContainer extends React.Component {
               this._previousProgress > THRESHOLD_PROGRESS
             )
             setTimeout(
-              this._previousProgress ? onMenuPanelOpen : onMenuPanelClose,
+              this._previousProgress
+                ? () => {
+                    // reset for menu buttons to work
+                    this._previousProgress = 0
+                    onMenuPanelOpen()
+                  }
+                : onMenuPanelClose,
               0
             )
             return <Container>{children(this._previousProgress)}</Container>
@@ -65,10 +71,10 @@ class SwipeContainer extends React.Component {
           if (
             (progress > 0 && progress < 1) ||
             (down &&
-              xDelta &&
+              xDelta !== 0 &&
               yDelta > -THRESHOLD_VERTICAL_TOLERANCE &&
               yDelta < THRESHOLD_VERTICAL_TOLERANCE &&
-              xDir &&
+              xDir !== 0 &&
               yDir > -THRESHOLD_DIRECTION &&
               yDir < THRESHOLD_DIRECTION)
           ) {
@@ -79,19 +85,16 @@ class SwipeContainer extends React.Component {
               xInitial < oneThirdWindowWidth
             ) {
               // opening
-              progress = this._previousProgress = Math.max(
-                0,
-                Math.min(1, x / width)
-              )
+              progress = this._previousProgress = x / (width * 0.9)
             } else if (menuPanelOpened) {
               // closing
-              progress = this._previousProgress = Math.max(
-                0,
-                Math.min(1, 1 + xDelta / width)
-              )
+              progress = this._previousProgress = 1 + xDelta / width
             }
+            progress = this._previousProgress = Math.max(
+              0.000001,
+              Math.min(0.999999, progress)
+            )
           }
-
           return <Container>{children(progress)}</Container>
         }}
       </Gesture>
