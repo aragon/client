@@ -29,6 +29,7 @@ const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
 const APP_SETTINGS = staticApps.get('settings').app
+const SHADOW_WIDTH = 15
 
 const prepareAppGroups = apps =>
   apps.reduce((groups, app) => {
@@ -204,7 +205,10 @@ const AnimatedMenuPanel = ({
           <Wrap
             style={{
               transform: progress.interpolate(
-                v => `translate3d(${-100 * (1 - v)}%, 0, 0)`
+                v =>
+                  `translate3d(
+                    calc((${-100 * (1 - v)}%) - (${SHADOW_WIDTH *
+                    (1 - v)}px)), 0, 0)`
               ),
               opacity: progress.interpolate(v => (v > 0 ? 1 : 0)),
             }}
@@ -267,7 +271,7 @@ const In = styled.div`
   flex-shrink: 1;
   background: #fff;
   border-right: 1px solid #e8e8e8;
-  box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 0 ${SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
 `
 
 const Header = styled.div`
