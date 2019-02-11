@@ -130,19 +130,24 @@ class DaoSettings extends React.Component {
             installed.`}
           >
             <AppsList>
-              {apmApps.map(({ appId, description, name, proxyAddress }) => {
-                const checksummedProxyAddress = toChecksumAddress(proxyAddress)
-                return (
-                  <li title={description} key={checksummedProxyAddress}>
-                    <Field label={name}>
-                      <IdentityBadge
-                        entity={checksummedProxyAddress}
-                        shorten={shortAddresses}
-                      />
-                    </Field>
-                  </li>
-                )
-              })}
+              {apmApps.map(
+                ({ appId, description, name, proxyAddress, status }) => {
+                  const checksummedProxyAddress = toChecksumAddress(
+                    proxyAddress
+                  )
+                  const statusLabel = status && ` (${status})`
+                  return (
+                    <li title={description} key={checksummedProxyAddress}>
+                      <Field label={`${name}${statusLabel}`}>
+                        <IdentityBadge
+                          entity={checksummedProxyAddress}
+                          shorten={shortAddresses}
+                        />
+                      </Field>
+                    </li>
+                  )
+                }
+              )}
             </AppsList>
           </Option>
         )}
