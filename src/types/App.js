@@ -16,6 +16,7 @@ const App = shape({
   roles: array.isRequired,
   src: string.isRequired,
   status: string,
+  apmRegistry: string,
 })
 
 export default App
