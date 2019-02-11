@@ -45,6 +45,7 @@ class Settings extends React.Component {
   static propTypes = {
     account: PropTypes.string.isRequired,
     apps: PropTypes.array.isRequired,
+    appsLoading: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
@@ -94,6 +95,7 @@ class Settings extends React.Component {
     const {
       account,
       apps,
+      appsLoading,
       daoAddress,
       onOpenApp,
       walletNetwork,
@@ -119,6 +121,7 @@ class Settings extends React.Component {
         <Content>
           <DaoSettings
             apps={apps}
+            appsLoading={appsLoading}
             account={account}
             daoAddress={daoAddress}
             onOpenApp={onOpenApp}

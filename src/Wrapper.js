@@ -275,6 +275,7 @@ class Wrapper extends React.Component {
         <Settings
           account={account}
           apps={apps}
+          appsLoading={appsLoading}
           daoAddress={daoAddress}
           onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
