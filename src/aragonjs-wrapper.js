@@ -73,11 +73,19 @@ const prepareFrontendApps = (apps, daoAddress, gateway) => {
       // so the absolute path can be resolved from baseUrl.
       const startUrl = removeStartingSlash(app['start_url'] || '')
       const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
+      const appName = app['appName']
+      const apmRegistry =
+        appName &&
+        appName
+          .split('.')
+          .slice(1)
+          .join('.')
 
       return {
         ...app,
         src,
         baseUrl,
+        apmRegistry,
         hasWebApp: Boolean(app['start_url']),
       }
     })
