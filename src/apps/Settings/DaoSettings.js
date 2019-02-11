@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, Text, BreakPoint } from '@aragon/ui'
+import { Button, Text, BreakPoint, theme } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
@@ -67,25 +67,30 @@ class DaoSettings extends React.Component {
           name="Organization address"
           text={`This organization is deployed on the ${network.name}.`}
         >
-          <Field label="Address" style={{ marginBottom: 0 }}>
-            <IdentityBadge
-              entity={checksummedDaoAddr}
-              shorten={shortAddresses}
-            />
-            <Note>
-              <strong>Do not send ether or tokens to this address!</strong>
-              <br />
-              Go to the{' '}
-              {financeApp ? (
-                <ButtonLink onClick={this.handleOpenFinance}>
-                  Finance app
-                </ButtonLink>
-              ) : (
-                'Finance app'
-              )}{' '}
-              to deposit funds into your organization instead.
-            </Note>
-          </Field>
+          {checksummedDaoAddr ? (
+            <div css={'display:flex; flex-direction: column'}>
+              <Label> Address</Label>
+              <IdentityBadge
+                entity={checksummedDaoAddr}
+                shorten={shortAddresses}
+              />
+            </div>
+          ) : (
+            <p>Resolving DAO address…</p>
+          )}
+          <Note>
+            <strong>Do not send ether or tokens to this address!</strong>
+            <br />
+            Go to the{' '}
+            {financeApp ? (
+              <ButtonLink onClick={this.handleOpenFinance}>
+                Finance app
+              </ButtonLink>
+            ) : (
+              'Finance app'
+            )}{' '}
+            to deposit funds into your organization instead.
+          </Note>
         </Option>
         {testTokensEnabled(network.type) && (
           <Option
@@ -142,15 +147,17 @@ class DaoSettings extends React.Component {
                   const checksummedProxyAddress = toChecksumAddress(
                     proxyAddress
                   )
-                  const statusLabel = status ? ` (${status})` : ''
+
                   return (
                     <li title={description} key={checksummedProxyAddress}>
-                      <Field label={`${name}${statusLabel}`}>
-                        <IdentityBadge
-                          entity={checksummedProxyAddress}
-                          shorten={shortAddresses}
-                        />
-                      </Field>
+                      <Label>
+                        {name}
+                        {status ? ` (${status})` : ''}
+                      </Label>
+                      <IdentityBadge
+                        entity={checksummedProxyAddress}
+                        shorten={shortAddresses}
+                      />
                     </li>
                   )
                 }
@@ -168,6 +175,13 @@ const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   color: inherit;
   font-size: inherit;
   text-decoration: underline;
+`
+
+const Label = styled.label`
+  display: block;
+  color: ${theme.textSecondary};
+  font-size: 11px;
+  text-transform: uppercase;
 `
 
 export default props => (
