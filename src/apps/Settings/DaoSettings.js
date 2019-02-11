@@ -125,7 +125,9 @@ class DaoSettings extends React.Component {
         {apmApps.length > 0 && (
           <Option
             name="Aragon apps"
-            text={`This organization has ${apmApps.length} apps installed.`}
+            text={`This organization has ${apmApps.length}
+            ${apmApps.length > 1 ? 'apps' : 'app'}
+            installed.`}
           >
             <AppsList>
               {apmApps.map(({ appId, description, name, proxyAddress }) => {
