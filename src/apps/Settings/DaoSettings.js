@@ -20,6 +20,7 @@ class DaoSettings extends React.Component {
   static propTypes = {
     account: PropTypes.string.isRequired,
     apps: PropTypes.array.isRequired,
+    appsLoading: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     shortAddresses: PropTypes.bool.isRequired,
@@ -50,6 +51,7 @@ class DaoSettings extends React.Component {
     const {
       account,
       apps,
+      appsLoading,
       daoAddress,
       shortAddresses,
       walletNetwork,
@@ -122,7 +124,12 @@ class DaoSettings extends React.Component {
             </Note>
           </Option>
         )}
-        {apmApps.length > 0 && (
+        {appsLoading && (
+          <Option name="Aragon apps" text={'Loading apps…'}>
+            <div css={'height:20px'} />
+          </Option>
+        )}
+        {!appsLoading && apmApps.length > 0 && (
           <Option
             name="Aragon apps"
             text={`This organization has ${apmApps.length}
