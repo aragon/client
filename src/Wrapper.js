@@ -62,8 +62,11 @@ class Wrapper extends React.PureComponent {
     walletWeb3: null,
   }
 
-  static getDerivedStateFromProps = ({ autoClosingPanel }) => {
-    return autoClosingPanel ? {} : { menuPanelOpened: true }
+  componentDidUpdate(prevProps) {
+    const { autoClosingPanel } = this.props
+    if (autoClosingPanel !== prevProps.autoClosingPanel) {
+      this.setState({ menuPanelOpened: !autoClosingPanel })
+    }
   }
 
   state = {
