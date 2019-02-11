@@ -14,6 +14,7 @@ const App = shape({
   proxyAddress: string.isRequired,
   roles: array.isRequired,
   src: string.isRequired,
+  status: string,
 })
 
 export default App
