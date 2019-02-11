@@ -58,7 +58,7 @@ class DaoSettings extends React.Component {
     const financeApp = apps.find(({ name }) => name === 'Finance')
     const checksummedDaoAddr =
       daoAddress.address && toChecksumAddress(daoAddress.address)
-    const webApps = apps.filter(app => app.hasWebApp)
+    const apmApps = apps.filter(app => app.isOnAPM)
     return (
       <div>
         <Option
@@ -122,13 +122,13 @@ class DaoSettings extends React.Component {
             </Note>
           </Option>
         )}
-        {webApps.length > 0 && (
+        {apmApps.length > 0 && (
           <Option
             name="Aragon apps"
-            text={`This organization has ${webApps.length} apps installed.`}
+            text={`This organization has ${apmApps.length} apps installed.`}
           >
             <AppsList>
-              {webApps.map(({ appId, description, name, proxyAddress }) => {
+              {apmApps.map(({ appId, description, name, proxyAddress }) => {
                 const checksummedProxyAddress = toChecksumAddress(proxyAddress)
                 return (
                   <li title={description} key={checksummedProxyAddress}>

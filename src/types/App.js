@@ -7,6 +7,7 @@ const App = shape({
   codeAddress: string.isRequired,
   functions: array.isRequired,
   hasWebApp: bool.isRequired,
+  isOnAPM: bool.isRequired,
   isAragonOsInternalApp: bool,
   isForwarder: bool,
   kernelAddress: string,
