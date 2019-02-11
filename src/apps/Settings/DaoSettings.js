@@ -135,7 +135,7 @@ class DaoSettings extends React.Component {
                   const checksummedProxyAddress = toChecksumAddress(
                     proxyAddress
                   )
-                  const statusLabel = status && ` (${status})`
+                  const statusLabel = status ? ` (${status})` : ''
                   return (
                     <li title={description} key={checksummedProxyAddress}>
                       <Field label={`${name}${statusLabel}`}>
