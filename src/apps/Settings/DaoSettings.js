@@ -68,13 +68,13 @@ class DaoSettings extends React.Component {
           text={`This organization is deployed on the ${network.name}.`}
         >
           {checksummedDaoAddr ? (
-            <div css={'display:flex; flex-direction: column'}>
+            <Wrap>
               <Label> Address</Label>
               <IdentityBadge
                 entity={checksummedDaoAddr}
                 shorten={shortAddresses}
               />
-            </div>
+            </Wrap>
           ) : (
             <p>Resolving DAO address…</p>
           )}
@@ -169,6 +169,11 @@ class DaoSettings extends React.Component {
     )
   }
 }
+
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 
 const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   padding: 0;
