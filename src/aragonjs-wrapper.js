@@ -67,10 +67,7 @@ const applyAppOverrides = apps =>
 const hasWebApp = app => Boolean(app['start_url'])
 
 const getAPMRegistry = ({ appName = '' }) =>
-  appName
-    .split('.')
-    .slice(1)
-    .join('.')
+  appName.substr(appName.indexOf('.') + 1) // everything after the first '.'
 
 const getAppTags = app => {
   const apmRegistry = getAPMRegistry(app)
