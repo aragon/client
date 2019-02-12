@@ -168,7 +168,7 @@ class DaoSettings extends React.Component {
                     <li title={description} key={checksummedProxyAddress}>
                       <Label>
                         {name}
-                        {status ? ` (${status})` : ''}
+                        {statusLabel}
                       </Label>
                       <IdentityBadge
                         entity={checksummedProxyAddress}
