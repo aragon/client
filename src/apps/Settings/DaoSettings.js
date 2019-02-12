@@ -58,7 +58,7 @@ class DaoSettings extends React.Component {
     const financeApp = apps.find(({ name }) => name === 'Finance')
     const checksummedDaoAddr =
       daoAddress.address && toChecksumAddress(daoAddress.address)
-    const apmApps = apps.filter(app => app.isOnAPM)
+    const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
     return (
       <div>
         <Option

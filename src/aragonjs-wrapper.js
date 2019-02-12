@@ -79,7 +79,6 @@ const prepareFrontendApps = (apps, daoAddress, gateway) => {
         src,
         baseUrl,
         hasWebApp: Boolean(app['start_url']),
-        isOnAPM: Boolean(app['environments']),
       }
     })
     .sort(sortAppsPair)
