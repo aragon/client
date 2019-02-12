@@ -64,6 +64,29 @@ const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
+const hasWebApp = app => Boolean(app['start_url'])
+
+const getAPMRegistry = app =>
+  app['appName'] &&
+  app['appName']
+    .split('.')
+    .slice(1)
+    .join('.')
+
+const getAppTags = app => {
+  const apmRegistry = getAPMRegistry(app)
+  const status = app['status']
+
+  let tags = status ? [status] : []
+
+  tags =
+    apmRegistry !== 'aragonpm.eth' ? [...tags, `${apmRegistry} registry`] : tags
+
+  tags = !hasWebApp(app) ? [...tags, 'contract-only'] : tags
+
+  return tags
+}
+
 // Sort apps, apply URL overrides, and attach data useful to the frontend
 const prepareFrontendApps = (apps, daoAddress, gateway) => {
   return applyAppOverrides(apps)
@@ -73,20 +96,15 @@ const prepareFrontendApps = (apps, daoAddress, gateway) => {
       // so the absolute path can be resolved from baseUrl.
       const startUrl = removeStartingSlash(app['start_url'] || '')
       const src = baseUrl ? resolvePathname(startUrl, baseUrl) : ''
-      const appName = app['appName']
-      const apmRegistry =
-        appName &&
-        appName
-          .split('.')
-          .slice(1)
-          .join('.')
 
       return {
         ...app,
         src,
         baseUrl,
-        apmRegistry,
-        hasWebApp: Boolean(app['start_url']),
+        apmRegistry: getAPMRegistry(app),
+        hasWebApp: hasWebApp(app),
+        tags: getAppTags(app),
+        status: app['status'],
       }
     })
     .sort(sortAppsPair)

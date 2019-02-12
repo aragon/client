@@ -143,32 +143,16 @@ class DaoSettings extends React.Component {
           >
             <AppsList>
               {apmApps.map(
-                ({
-                  appId,
-                  description,
-                  name,
-                  proxyAddress,
-                  status,
-                  apmRegistry,
-                }) => {
+                ({ appId, description, name, proxyAddress, tags }) => {
                   const checksummedProxyAddress = toChecksumAddress(
                     proxyAddress
                   )
-
-                  let statusTags = status ? [status] : []
-
-                  if (apmRegistry !== 'aragonpm.eth') {
-                    statusTags.push(`${apmRegistry} registry`)
-                  }
-
-                  const statusLabel =
-                    statusTags.length > 0 ? ` (${statusTags.join(', ')})` : ''
 
                   return (
                     <li title={description} key={checksummedProxyAddress}>
                       <Label>
                         {name}
-                        {statusLabel}
+                        {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
                       </Label>
                       <IdentityBadge
                         entity={checksummedProxyAddress}

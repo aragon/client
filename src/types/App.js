@@ -15,6 +15,7 @@ const App = shape({
   roles: array.isRequired,
   src: string.isRequired,
   status: string,
+  tags: array,
   apmRegistry: string,
 })
 
