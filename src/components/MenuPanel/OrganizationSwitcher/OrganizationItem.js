@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { EthIdenticon } from '@aragon/ui'
 import { DaoItemType } from '../../../prop-types'
-import { KnownOrganizations } from '../../../known-organizations'
+import { getKnownOrganization } from '../../../known-organizations'
+import { network } from '../../../environment'
 
 class OrganizationItem extends React.Component {
   static propTypes = {
@@ -16,7 +17,7 @@ class OrganizationItem extends React.Component {
     const styleProps = {}
     if (style) styleProps.style = style
     if (className) styleProps.className = className
-    const knownOrg = KnownOrganizations.get(dao.address)
+    const knownOrg = getKnownOrganization(network.type, dao.address)
     return (
       <Organization {...styleProps}>
         <OrgIcon rounded={!knownOrg}>
