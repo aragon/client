@@ -100,7 +100,6 @@ const prepareFrontendApps = (apps, daoAddress, gateway) => {
         apmRegistry: getAPMRegistry(app),
         hasWebApp: hasWebApp(app),
         tags: getAppTags(app),
-        status: app['status'],
       }
     })
     .sort(sortAppsPair)
