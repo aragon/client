@@ -66,9 +66,8 @@ const applyAppOverrides = apps =>
 
 const hasWebApp = app => Boolean(app['start_url'])
 
-const getAPMRegistry = app =>
-  app['appName'] &&
-  app['appName']
+const getAPMRegistry = ({ appName = '' }) =>
+  appName
     .split('.')
     .slice(1)
     .join('.')
