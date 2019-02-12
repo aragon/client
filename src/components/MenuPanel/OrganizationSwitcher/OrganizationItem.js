@@ -16,13 +16,13 @@ class OrganizationItem extends React.Component {
     const styleProps = {}
     if (style) styleProps.style = style
     if (className) styleProps.className = className
-    const knownOrg = KnownOrganizations.get(dao.name)
+    const knownOrg = KnownOrganizations.get(dao.address)
     return (
       <Organization {...styleProps}>
         <OrgIcon rounded={!knownOrg}>
           {knownOrg ? (
             <img
-              src={knownOrg.picture}
+              src={knownOrg.image}
               width="48"
               alt=""
               css={`
@@ -35,7 +35,7 @@ class OrganizationItem extends React.Component {
             <EthIdenticon address={dao.address} />
           )}
         </OrgIcon>
-        <OrgName>{dao.name || dao.address}</OrgName>
+        <OrgName>{knownOrg ? knownOrg.name : dao.name || dao.address}</OrgName>
       </Organization>
     )
   }
