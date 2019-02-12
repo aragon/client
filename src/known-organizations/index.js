@@ -1,8 +1,14 @@
 import aragonGovernanceImage from './images/aragon-governance.svg'
 import aragonOneImage from './images/aragon-one.svg'
+import melonCouncilImage from './images/melon-council.svg'
 
 export const KnownOrganizations = {
   main: new Map([
+    // meloncouncil.eth
+    [
+      '0x8A83D4bCE45b4C4F751f76cf565953D1E4A3BF0a',
+      { name: 'Melon Council', image: melonCouncilImage },
+    ],
 
     // governance.aragonproject.eth
     [
