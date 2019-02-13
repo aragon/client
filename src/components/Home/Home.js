@@ -2,20 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import {
-  AppBar,
-  AppView,
-  Text,
-  Viewport,
-  breakpoint,
-  font,
-  theme,
-} from '@aragon/ui'
+import { Text, theme } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { lerp } from '../../math-utils'
 import { AppType } from '../../prop-types'
 import springs from '../../springs'
-import MenuButton from '../MenuPanel/MenuButton'
+import AppLayout from '../../components/AppLayout/AppLayout'
 
 import logo from './assets/logo-background.svg'
 
@@ -112,100 +104,70 @@ class Home extends React.Component {
     )
     return (
       <Main>
-        <AppContent>
-          <AppView
-            appBar={
-              <AppBar>
-                <AppBarTitle>
-                  <Viewport>
-                    {({ below }) =>
-                      below('medium') && (
-                        <MenuButton onClick={this.handleMenuPanelOpen} />
-                      )
-                    }
-                  </Viewport>
-                  <AppBarLabel>Home</AppBarLabel>
-                </AppBarTitle>
-              </AppBar>
-            }
+        <AppLayout
+          title="Home"
+          onMenuOpen={this.handleMenuPanelOpen}
+          smallViewPadding={30}
+        >
+          <Spring
+            config={springs.lazy}
+            to={{ showAppsProgress: Number(showApps) }}
           >
-            <Spring
-              config={springs.lazy}
-              to={{ showAppsProgress: Number(showApps) }}
-            >
-              {({ showAppsProgress }) => (
-                <Content>
-                  <Title>
-                    <Text
-                      weight="bold"
-                      style={{
-                        fontSize: lerp(showAppsProgress, 37, 22) + 'px',
-                      }}
-                    >
-                      Welcome to Aragon!
-                    </Text>
-                    <Text
-                      style={{
-                        display: 'block',
-                        fontSize: lerp(showAppsProgress, 18, 14) + 'px',
-                      }}
-                    >
-                      {locator.dao.endsWith('.eth')
-                        ? `You are interacting with ${locator.dao}`
-                        : 'You are using Aragon 0.6 — Alba'}
-                    </Text>
-                  </Title>
-                  <p>
-                    <Text color={theme.textSecondary}>
-                      {showApps ? 'What do you want to do?' : 'Loading apps…'}
-                    </Text>
-                  </p>
-                  <animated.div
+            {({ showAppsProgress }) => (
+              <Content>
+                <AppTitle>
+                  <Text
+                    weight="bold"
                     style={{
-                      display: showApps ? 'block' : 'none',
-                      opacity: showAppsProgress,
-                      height: showAppsProgress * 100 + '%',
+                      fontSize: lerp(showAppsProgress, 37, 22) + 'px',
                     }}
                   >
-                    <Cards>
-                      {appActions.map(({ id, label, img }) => (
-                        <CardWrap key={id}>
-                          <HomeCard
-                            id={id}
-                            title={label}
-                            icon={img}
-                            onActivate={this.handleCardAction}
-                          />
-                        </CardWrap>
-                      ))}
-                    </Cards>
-                  </animated.div>
-                </Content>
-              )}
-            </Spring>
-          </AppView>
-        </AppContent>
+                    Welcome to Aragon!
+                  </Text>
+                  <Text
+                    style={{
+                      display: 'block',
+                      fontSize: lerp(showAppsProgress, 18, 14) + 'px',
+                    }}
+                  >
+                    {locator.dao.endsWith('.eth')
+                      ? `You are interacting with ${locator.dao}`
+                      : 'You are using Aragon 0.6 — Alba'}
+                  </Text>
+                </AppTitle>
+                <p>
+                  <Text color={theme.textSecondary}>
+                    {showApps ? 'What do you want to do?' : 'Loading apps…'}
+                  </Text>
+                </p>
+                <animated.div
+                  style={{
+                    display: showApps ? 'block' : 'none',
+                    opacity: showAppsProgress,
+                    height: showAppsProgress * 100 + '%',
+                  }}
+                >
+                  <Cards>
+                    {appActions.map(({ id, label, img }) => (
+                      <CardWrap key={id}>
+                        <HomeCard
+                          id={id}
+                          title={label}
+                          icon={img}
+                          onActivate={this.handleCardAction}
+                        />
+                      </CardWrap>
+                    ))}
+                  </Cards>
+                </animated.div>
+              </Content>
+            )}
+          </Spring>
+        </AppLayout>
       </Main>
     )
   }
 }
-
-const AppBarTitle = styled.span`
-  display: flex;
-  align-items: center;
-`
-
-const AppBarLabel = styled.span`
-  margin-left: 8px;
-  ${font({ size: 'xxlarge' })};
-
-  ${breakpoint(
-    'medium',
-    `
-      margin-left: 24px;
-    `
-  )};
-`
 
 const Main = styled.div`
   display: flex;
@@ -216,13 +178,6 @@ const Main = styled.div`
   background-image: url(${logo});
   background-position: 50% 50%;
   background-repeat: no-repeat;
-`
-
-const AppContent = styled.div`
-  flex-grow: 1;
-  flex-shrink: 1;
-  min-height: 0;
-  height: calc(100% - 54px);
 `
 
 const Content = styled.div`
@@ -237,7 +192,7 @@ const Content = styled.div`
   text-align: center;
 `
 
-const Title = styled.h1`
+const AppTitle = styled.h1`
   margin-bottom: 30px;
 `
 
