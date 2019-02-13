@@ -42,7 +42,7 @@ const Apps = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr);
-  margin: 0 30px;
+  margin: 0 20px;
 
   ${breakpoint(
     'medium',
