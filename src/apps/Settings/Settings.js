@@ -1,19 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import {
-  Button,
-  DropDown,
-  Field,
-  Text,
-  TextInput,
-  Viewport,
-  breakpoint,
-  font,
-  theme,
-} from '@aragon/ui'
+import { Button, DropDown, Field, Text, TextInput, theme } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
-import MenuButton from '../../components/MenuPanel/MenuButton'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../errors'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../environment'
 import {
@@ -28,11 +17,6 @@ import { checkValidEthNode } from '../../web3-utils'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
-
-const Content = styled.div`
-  max-width: 600px;
-  padding: 30px;
-`
 
 // Only USD for now
 const AVAILABLE_CURRENCIES = ['USD']
@@ -123,18 +107,9 @@ class Settings extends React.Component {
     } = this.state
     return (
       <AppLayout
-        title={
-          <AppBarTitle>
-            <Viewport>
-              {({ below }) =>
-                below('medium') && (
-                  <MenuButton onClick={this.handleMenuPanelOpen} />
-                )
-              }
-            </Viewport>
-            <AppBarLabel>Settings</AppBarLabel>
-          </AppBarTitle>
-        }
+        title="Settings"
+        onMenuOpen={this.handleMenuPanelOpen}
+        smallViewPadding={20}
       >
         <Content>
           <DaoSettings
@@ -229,22 +204,8 @@ class Settings extends React.Component {
   }
 }
 
-const AppBarTitle = styled.span`
-  display: flex;
-  align-items: center;
-  margin-left: -30px;
-`
-
-const AppBarLabel = styled.span`
-  margin-left: 8px;
-  ${font({ size: 'xxlarge' })};
-
-  ${breakpoint(
-    'medium',
-    `
-      margin-left: 24px;
-    `
-  )};
+const Content = styled.div`
+  max-width: 600px;
 `
 
 export default Settings
