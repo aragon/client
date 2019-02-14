@@ -28,32 +28,32 @@ import {
 
 class App extends React.Component {
   state = {
-    fatalError: null,
-    locator: {},
-    prevLocator: null,
-    wrapper: null,
     account: '',
-    balance: getUnknownBalance(),
-    connected: false,
     apps: [],
     appsStatus: APPS_STATUS_LOADING,
-    permissions: {},
-    permissionsLoading: true,
-    walletWeb3: null,
+    balance: getUnknownBalance(),
+    buildData: null, // data returned by aragon.js when a DAO is created
+    connected: false,
     daoAddress: { address: '', domain: '' },
     // daoCreationStatus is one of:
     //  - DAO_CREATION_STATUS_NONE
     //  - DAO_CREATION_STATUS_SUCCESS
     //  - DAO_CREATION_STATUS_ERROR
     daoCreationStatus: DAO_CREATION_STATUS_NONE,
-    buildData: null, // data returned by aragon.js when a DAO is created
-    transactionBag: null,
-    walletNetwork: '',
-    showDeprecatedBanner: false,
+    fatalError: null,
+    locator: {},
+    permissions: {},
+    permissionsLoading: true,
+    prevLocator: null,
     selectorNetworks: [
       ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
       ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
     ],
+    showDeprecatedBanner: false,
+    transactionBag: null,
+    walletNetwork: '',
+    walletWeb3: null,
+    wrapper: null,
   }
 
   history = createHistory()
@@ -244,6 +244,7 @@ class App extends React.Component {
       .then(wrapper => {
         log('wrapper', wrapper)
         this.setState({ wrapper })
+        return wrapper
       })
       .catch(err => {
         log(`Wrapper init, fatal error: ${err.name}. ${err.message}.`)
@@ -269,24 +270,24 @@ class App extends React.Component {
 
   render() {
     const {
-      fatalError,
-      locator,
-      wrapper,
-      apps,
-      permissions,
       account,
+      apps,
+      appsStatus,
       balance,
-      walletNetwork,
-      transactionBag,
-      daoCreationStatus,
-      walletWeb3,
       connected,
       daoAddress,
-      appsStatus,
+      daoCreationStatus,
+      fatalError,
+      locator,
+      permissions,
       permissionsLoading,
-      showDeprecatedBanner,
       selectorNetworks,
+      showDeprecatedBanner,
+      transactionBag,
+      walletNetwork,
       walletProviderId,
+      walletWeb3,
+      wrapper,
     } = this.state
 
     const { mode, dao } = locator

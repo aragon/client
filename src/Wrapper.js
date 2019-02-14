@@ -240,12 +240,12 @@ class Wrapper extends React.Component {
     if (instanceId === 'home') {
       return (
         <Home
-          connected={connected}
+          apps={apps}
           appsLoading={appsLoading}
+          connected={connected}
+          locator={locator}
           onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
-          locator={locator}
-          apps={apps}
         />
       )
     }
