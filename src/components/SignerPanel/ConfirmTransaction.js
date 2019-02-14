@@ -13,7 +13,7 @@ class ConfirmTransaction extends React.Component {
     direct: PropTypes.bool.isRequired,
     hasAccount: PropTypes.bool.isRequired,
     hasWeb3: PropTypes.bool.isRequired,
-    intent: PropTypes.object.isRequired,
+    intent: PropTypes.object,
     networkType: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     onSign: PropTypes.func.isRequired,
@@ -149,11 +149,16 @@ const ImpossibleContent = ({
 }) => (
   <React.Fragment>
     <Info.Permissions title="Action impossible">
-      The action {description && `“${description}”`} failed to execute on{' '}
-      <AddressLink to={to}>{name}</AddressLink>.{' '}
+      The action {description && `“${description}”`} failed to execute
+      {name && (
+        <React.Fragment>
+          on <AddressLink to={to}>{name}</AddressLink>}
+        </React.Fragment>
+      )}
+      .{' '}
       {error
         ? 'An error occurred when we tried to find a path or send a transaction for this action.'
-        : 'You might not have the necessary permissions.'}
+        : 'You may not have the required permissions.'}
     </Info.Permissions>
     <SignerButton onClick={onClose}>Close</SignerButton>
   </React.Fragment>
@@ -176,9 +181,12 @@ const Web3ProviderError = ({
       <Info.Action title="You can't perform any action">
         {neededText} in order to perform{' '}
         {description ? `"${description}"` : 'this action'}
-        {' on '}
-        <AddressLink to={to}>{name}</AddressLink>.
-        <ActionMessage>{actionText}</ActionMessage>
+        {name && (
+          <React.Fragment>
+            on <AddressLink to={to}>{name}</AddressLink>
+          </React.Fragment>
+        )}
+        .<ActionMessage>{actionText}</ActionMessage>
       </Info.Action>
       <SignerButton onClick={onClose}>Close</SignerButton>
     </React.Fragment>
