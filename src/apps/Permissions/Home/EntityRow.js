@@ -16,13 +16,13 @@ import ViewDetailsButton from './ViewDetailsButton'
 
 class EntityRow extends React.PureComponent {
   static propTypes = {
-    compactView: PropTypes.bool,
+    smallView: PropTypes.bool,
     entity: PropTypes.object.isRequired,
     onOpen: PropTypes.func.isRequired,
     roles: PropTypes.array.isRequired,
   }
   static defaultProps = {
-    compactView: false,
+    smallView: false,
   }
 
   open() {
@@ -84,12 +84,12 @@ class EntityRow extends React.PureComponent {
     this.open()
   }
   handleRowClick = () => {
-    if (this.props.compactView) {
+    if (this.props.smallView) {
       this.open()
     }
   }
   render() {
-    const { entity, roles, compactView } = this.props
+    const { entity, roles, smallView } = this.props
     if (!entity) {
       return null
     }
@@ -97,7 +97,7 @@ class EntityRow extends React.PureComponent {
     return (
       <StyledTableRow onClick={this.handleRowClick}>
         <FirstTableCell>{this.renderEntity(entity)}</FirstTableCell>
-        {!compactView && (
+        {!smallView && (
           <React.Fragment>
             <TableCell>{this.renderType(entity.type)}</TableCell>
             <TableCell>
@@ -184,6 +184,6 @@ const LastTableCell = styled(TableCell)`
 
 export default props => (
   <Viewport>
-    {({ below }) => <EntityRow {...props} compactView={below('medium')} />}
+    {({ below }) => <EntityRow {...props} smallView={below('medium')} />}
   </Viewport>
 )
