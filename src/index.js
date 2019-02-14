@@ -22,10 +22,10 @@ if (
 }
 
 ReactDOM.render(
-  <Main>
-    <GlobalErrorHandler>
+  <GlobalErrorHandler>
+    <Main>
       <App />
-    </GlobalErrorHandler>
-  </Main>,
+    </Main>
+  </GlobalErrorHandler>,
   document.getElementById('root')
 )
