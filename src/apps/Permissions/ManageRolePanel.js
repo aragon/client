@@ -85,7 +85,7 @@ const DEFAULT_STATE = {
 // The role manager panel, wrapped in a PermissionsContext (see end of file)
 class ManageRolePanel extends React.PureComponent {
   static propTypes = {
-    app: AppType.isRequired,
+    app: AppType,
     apps: PropTypes.arrayOf(AppType).isRequired,
     createPermission: PropTypes.func.isRequired,
     getRoleManager: PropTypes.func.isRequired,
@@ -180,11 +180,11 @@ class ManageRolePanel extends React.PureComponent {
   handleSubmit = () => {
     const { newRoleManagerValue, assignEntityAddress } = this.state
     const {
+      app,
       onClose,
+      createPermission,
       removePermissionManager,
       setPermissionManager,
-      createPermission,
-      app,
       role,
     } = this.props
 

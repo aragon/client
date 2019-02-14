@@ -17,8 +17,13 @@ import ViewDetailsButton from './ViewDetailsButton'
 class EntityRow extends React.PureComponent {
   static propTypes = {
     entity: PropTypes.object.isRequired,
+    itemClickable: PropTypes.bool,
     onOpen: PropTypes.func.isRequired,
     roles: PropTypes.array.isRequired,
+  }
+
+  static defaultProps = {
+    itemClickable: false,
   }
 
   handleClick = () => {

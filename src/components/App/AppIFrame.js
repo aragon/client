@@ -50,16 +50,15 @@ class AppIFrame extends React.Component {
   static propTypes = {
     app: AppType.isRequired,
     iframeRef: PropTypes.func,
-    onNavigate: PropTypes.func,
-    onMessage: PropTypes.func,
     onLoad: PropTypes.func,
+    onMessage: PropTypes.func,
+    onNavigate: PropTypes.func,
   }
-
   static defaultProps = {
     iframeRef: noop,
-    onNavigate: noop,
-    onMessage: noop,
     onLoad: noop,
+    onMessage: noop,
+    onNavigate: noop,
   }
   state = {
     hideProgressBar: true,
@@ -86,8 +85,8 @@ class AppIFrame extends React.Component {
     this.clearProgressTimeout()
   }
   isHidden = () => {
-    const { hidden, app } = this.props
-    return !app || !app.src || hidden
+    const { app } = this.props
+    return !app || !app.src
   }
   navigateIFrame = src => {
     // Rather than load src=undefined, this component hides itself. That way,

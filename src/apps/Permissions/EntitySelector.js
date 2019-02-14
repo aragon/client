@@ -14,13 +14,6 @@ class EntitySelector extends React.Component {
     labelCustomAddress: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
   }
-
-  static defaultProps = {
-    apps: [],
-    activeIndex: 0,
-    label: 'Entity',
-    labelCustomAddress: 'Entity address',
-  }
   state = {
     customAddress: '',
   }

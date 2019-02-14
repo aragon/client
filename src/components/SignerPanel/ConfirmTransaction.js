@@ -13,24 +13,22 @@ class ConfirmTransaction extends React.Component {
     direct: PropTypes.bool.isRequired,
     hasAccount: PropTypes.bool.isRequired,
     hasWeb3: PropTypes.bool.isRequired,
-    intent: PropTypes.object.isRequired,
+    intent: PropTypes.object,
+    locator: PropTypes.object.isRequired,
     networkType: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func,
     onSign: PropTypes.func.isRequired,
     paths: PropTypes.array.isRequired,
-    pretransaction: PropTypes.string,
+    pretransaction: PropTypes.object,
     signError: PropTypes.string,
     signingEnabled: PropTypes.bool.isRequired,
     walletNetworkType: PropTypes.string.isRequired,
-    onRequestEnable: PropTypes.func,
+    walletProviderId: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
     intent: {},
-    paths: [],
-    pretransaction: null,
-    onClose: noop,
-    onSign: noop,
     onRequestEnable: noop,
   }
   render() {

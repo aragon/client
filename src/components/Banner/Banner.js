@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Text, breakpoint } from '@aragon/ui'
 
@@ -12,6 +13,12 @@ class Banner extends React.Component {
       </BannerWrapper>
     )
   }
+}
+Banner.propTypes = {
+  button: PropTypes.node,
+  color: PropTypes.string,
+  text: PropTypes.node,
+  textColor: PropTypes.string,
 }
 
 const BannerWrapper = styled.div`

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { theme, Button } from '@aragon/ui'
 import ErrorCard from './ErrorCard'
@@ -38,6 +39,9 @@ const DAONotFoundError = ({ dao }) => (
     </ButtonBox>
   </ErrorCard>
 )
+DAONotFoundError.propTypes = {
+  dao: PropTypes.string,
+}
 
 const Paragraph = styled.p`
   & + & {
