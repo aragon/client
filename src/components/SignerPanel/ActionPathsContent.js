@@ -50,17 +50,14 @@ class ActionPathsContent extends React.Component {
                 if (type === 'address') {
                   return (
                     <span
+                      key={index}
                       css={`
                         display: inline-flex;
                         vertical-align: middle;
                         margin-right: 4px;
                       `}
                     >
-                      <IdentityBadge
-                        key={index}
-                        entity={value}
-                        fontSize="small"
-                      />
+                      <IdentityBadge entity={value} fontSize="small" />
                     </span>
                   )
                 } else if (type === 'app') {
