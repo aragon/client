@@ -40,7 +40,6 @@
     "react": "^16.7.0",
     "react-blockies": "^1.3.0",
     "react-container-dimensions": "^1.3.3",
-    "react-display-name": "^0.2.3",
     "react-dom": "^16.7.0",
     "react-onclickout": "^2.0.8",
     "react-spring": "^7.2.10",
