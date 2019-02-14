@@ -63,10 +63,7 @@ class Wrapper extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { autoClosingPanel } = this.props
-    if (autoClosingPanel !== prevProps.autoClosingPanel) {
-      this.setState({ menuPanelOpened: !autoClosingPanel })
-    }
+    this.updateAutoClosingPanel(prevProps)
   }
 
   state = {
@@ -75,6 +72,13 @@ class Wrapper extends React.PureComponent {
     notificationOpen: false,
     notifications: [],
     queuedNotifications: [],
+  }
+
+  updateAutoClosingPanel(prevProps) {
+    const { autoClosingPanel } = this.props
+    if (autoClosingPanel !== prevProps.autoClosingPanel) {
+      this.setState({ menuPanelOpened: !autoClosingPanel })
+    }
   }
 
   openApp = (instanceId, params) => {
