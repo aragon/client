@@ -10,26 +10,23 @@ import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
-import { DaoAddressType } from './prop-types'
+import {
+  AppType,
+  AppsStatusType,
+  DaoAddressType,
+  EthereumAddressType,
+} from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
 import { addressesEqual } from './web3-utils'
-import {
-  APPS_STATUS_ERROR,
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-} from './symbols'
+import { APPS_STATUS_LOADING } from './symbols'
 import NotificationBar from './components/Notifications/NotificationBar'
 
 class Wrapper extends React.Component {
   static propTypes = {
-    account: PropTypes.string,
-    apps: PropTypes.array.isRequired,
-    appsStatus: PropTypes.oneOf([
-      APPS_STATUS_ERROR,
-      APPS_STATUS_READY,
-      APPS_STATUS_LOADING,
-    ]).isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsStatus: AppsStatusType.isRequired,
     banner: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.shape({

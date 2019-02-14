@@ -6,11 +6,11 @@ import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { EthereumAddress } from '../../prop-types'
+import { EthereumAddressType } from '../../prop-types'
 
 class EntityPermissions extends React.PureComponent {
   static propTypes = {
-    address: EthereumAddress.isRequired,
+    address: EthereumAddressType.isRequired,
     loadPermissionsLabel: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     noPermissionsLabel: PropTypes.string,
@@ -107,9 +107,9 @@ class Row extends React.Component {
 Row.propTypes = {
   action: PropTypes.string.isRequired,
   app: PropTypes.object.isRequired,
-  entityAddress: EthereumAddress.isRequired,
+  entityAddress: EthereumAddressType.isRequired,
   onRevoke: PropTypes.func.isRequired,
-  proxyAddress: EthereumAddress.isRequired,
+  proxyAddress: EthereumAddressType.isRequired,
   roleBytes: PropTypes.string.isRequired,
 }
 

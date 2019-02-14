@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { clamp, lerp } from '../../math-utils'
+import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
 
@@ -47,7 +48,7 @@ const SANDBOX = [
 
 class AppIFrame extends React.Component {
   static propTypes = {
-    app: PropTypes.object.isRequired,
+    app: AppType.isRequired,
     iframeRef: PropTypes.func,
     onNavigate: PropTypes.func,
     onMessage: PropTypes.func,

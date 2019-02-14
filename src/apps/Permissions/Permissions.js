@@ -9,6 +9,7 @@ import {
   breakpoint,
   BreakPoint,
 } from '@aragon/ui'
+import { AppType } from '../../prop-types'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
@@ -23,7 +24,7 @@ import AddPermissionButton from './AddPermissionButton'
 
 class Permissions extends React.Component {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     appsLoading: PropTypes.bool.isRequired,
     onParamsRequest: PropTypes.func.isRequired,
     params: PropTypes.string,

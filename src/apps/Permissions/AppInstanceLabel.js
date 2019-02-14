@@ -2,14 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, BreakPoint, breakpoint } from '@aragon/ui'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 import AppIcon from './AppIcon'
-import { EthereumAddress } from '../../prop-types'
 
 class AppInstanceLabel extends React.PureComponent {
   static propTypes = {
-    app: PropTypes.object.isRequired,
-    proxyAddress: EthereumAddress.isRequired,
+    app: AppType.isRequired,
+    proxyAddress: EthereumAddressType.isRequired,
     showIcon: PropTypes.bool,
   }
 

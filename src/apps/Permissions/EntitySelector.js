@@ -2,13 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DropDown, Field, TextInput } from '@aragon/ui'
 import { getAnyEntity } from '../../permissions'
+import { AppType } from '../../prop-types'
 import { getEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 
 class EntitySelector extends React.Component {
   static propTypes = {
     activeIndex: PropTypes.number.isRequired,
-    apps: PropTypes.array.isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     label: PropTypes.string.isRequired,
     labelCustomAddress: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
