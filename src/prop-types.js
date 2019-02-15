@@ -58,8 +58,10 @@ export const AppType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   proxyAddress: EthereumAddressType,
   src: PropTypes.string.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 
   appName: PropTypes.string,
+  apmRegistry: PropTypes.string,
   content: PropTypes.shape({
     location: PropTypes.string.isRequired,
     provider: PropTypes.string.isRequired,
@@ -74,6 +76,7 @@ export const AppType = PropTypes.shape({
   kernelAddress: EthereumAddressType,
   isAragonOsInternalApp: PropTypes.bool,
   roles: PropTypes.array,
+  status: PropTypes.string,
   version: PropTypes.string,
 })
 

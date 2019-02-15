@@ -287,6 +287,7 @@ class Wrapper extends React.PureComponent {
         <Settings
           account={account}
           apps={apps}
+          appsLoading={appsLoading}
           daoAddress={daoAddress}
           onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}

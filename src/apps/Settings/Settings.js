@@ -44,6 +44,7 @@ class Settings extends React.Component {
   static propTypes = {
     account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
+    appsLoading: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     onMessage: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
@@ -91,6 +92,7 @@ class Settings extends React.Component {
     const {
       account,
       apps,
+      appsLoading,
       daoAddress,
       onOpenApp,
       walletNetwork,
@@ -120,6 +122,7 @@ class Settings extends React.Component {
         <Content>
           <DaoSettings
             apps={apps}
+            appsLoading={appsLoading}
             account={account}
             daoAddress={daoAddress}
             onOpenApp={onOpenApp}
