@@ -64,27 +64,30 @@ const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
-const hasWebApp = app => Boolean(app['start_url'])
-
-const getAPMRegistry = ({ appName = '' }) =>
-  appName.substr(appName.indexOf('.') + 1) // everything after the first '.'
-
-const getAppTags = app => {
-  const apmRegistry = getAPMRegistry(app)
-  const status = app['status']
-
-  let tags = status ? [status] : []
-
-  tags =
-    apmRegistry !== 'aragonpm.eth' ? [...tags, `${apmRegistry} registry`] : tags
-
-  tags = !hasWebApp(app) ? [...tags, 'contract-only'] : tags
-
-  return tags
-}
-
 // Sort apps, apply URL overrides, and attach data useful to the frontend
-const prepareFrontendApps = (apps, daoAddress, gateway) => {
+const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
+  const hasWebApp = app => Boolean(app['start_url'])
+
+  const getAPMRegistry = ({ appName = '' }) =>
+    appName.substr(appName.indexOf('.') + 1) // everything after the first '.'
+
+  const getAppTags = app => {
+    const apmRegistry = getAPMRegistry(app)
+
+    const tags = []
+    if (app.status) {
+      tags.push(app.status)
+    }
+    if (apmRegistry !== 'aragonpm.eth') {
+      tags.push(`${apmRegistry} registry`)
+    }
+    if (!hasWebApp(app)) {
+      tags.push('contract-only')
+    }
+
+    return tags
+  }
+
   return applyAppOverrides(apps)
     .map(app => {
       const baseUrl = appBaseUrl(app, gateway)
@@ -230,7 +233,11 @@ const subscribe = (
   const subscriptions = {
     apps: apps.subscribe(apps => {
       onApps(
-        prepareFrontendApps(apps, wrapper.kernelProxy.address, ipfsConf.gateway)
+        prepareAppsForFrontend(
+          apps,
+          wrapper.kernelProxy.address,
+          ipfsConf.gateway
+        )
       )
     }),
     permissions: permissions.subscribe(throttle(onPermissions, 100)),
