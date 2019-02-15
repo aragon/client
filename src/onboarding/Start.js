@@ -2,17 +2,17 @@ import React from 'react'
 import styled from 'styled-components'
 import BN from 'bn.js'
 import {
-  theme,
-  Text,
-  SafeLink,
   Button,
-  TextInput,
-  IconCheck,
-  IconCross,
   DropDown,
   IconAttention,
+  IconCheck,
+  IconCross,
+  SafeLink,
+  Text,
+  TextInput,
+  Viewport,
   breakpoint,
-  BreakPoint,
+  theme,
 } from '@aragon/ui'
 import { animated } from 'react-spring'
 import { network, getDemoDao, web3Providers } from '../environment'
@@ -81,29 +81,34 @@ class Start extends React.Component {
 
     return (
       <Main style={{ opacity: screenTransitionStyles.opacity }}>
-        <Content style={screenTransitionStyles}>
-          <BreakPoint to="medium">
-            <Warning>
-              If you want to <span>create</span> an organization, please use
-              your desktop browser.
-            </Warning>
-          </BreakPoint>
-          <ResponsiveStartContent
-            onCreate={onCreate}
-            hasWallet={isConnected(web3Providers.wallet)}
-            hasAccount={hasAccount}
-            walletNetwork={walletNetwork}
-            walletProviderId={walletProviderId}
-            balance={balance}
-            onDomainChange={this.handleDomainChange}
-            domain={domain}
-            domainCheckStatus={domainCheckStatus}
-            onOpenOrganization={this.handleOpenOrganization}
-            onOpenOrganizationAddress={onOpenOrganizationAddress}
-            selectorNetworks={selectorNetworks}
-            onRequestEnable={onRequestEnable}
-          />
-        </Content>
+        <Viewport>
+          {({ below }) => (
+            <Content style={screenTransitionStyles}>
+              {below('medium') && (
+                <Warning>
+                  If you want to <span>create</span> an organization, please use
+                  your desktop browser.
+                </Warning>
+              )}
+              <StartContent
+                onCreate={onCreate}
+                hasWallet={isConnected(web3Providers.wallet)}
+                hasAccount={hasAccount}
+                walletNetwork={walletNetwork}
+                walletProviderId={walletProviderId}
+                balance={balance}
+                onDomainChange={this.handleDomainChange}
+                domain={domain}
+                domainCheckStatus={domainCheckStatus}
+                onOpenOrganization={this.handleOpenOrganization}
+                onOpenOrganizationAddress={onOpenOrganizationAddress}
+                selectorNetworks={selectorNetworks}
+                onRequestEnable={onRequestEnable}
+                smallMode={below('medium')}
+              />
+            </Content>
+          )}
+        </Viewport>
       </Main>
     )
   }
@@ -378,17 +383,6 @@ class StartContent extends React.PureComponent {
     return null
   }
 }
-
-const ResponsiveStartContent = props => (
-  <React.Fragment>
-    <BreakPoint to="medium">
-      <StartContent {...props} smallMode />
-    </BreakPoint>
-    <BreakPoint from="medium">
-      <StartContent {...props} />
-    </BreakPoint>
-  </React.Fragment>
-)
 
 const DomainStatus = styled(Text)`
   display: block;

@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { DaoItemType } from '../../../prop-types'
 import { EthIdenticon } from '@aragon/ui'
+import { DaoItemType } from '../../../prop-types'
+import { getKnownOrganization } from '../../../known-organizations'
+import { network } from '../../../environment'
 
 class OrganizationItem extends React.Component {
   static propTypes = {
@@ -15,12 +17,26 @@ class OrganizationItem extends React.Component {
     const styleProps = {}
     if (style) styleProps.style = style
     if (className) styleProps.className = className
+    const knownOrg = getKnownOrganization(network.type, dao.address)
     return (
       <Organization {...styleProps}>
-        <OrgIdenticon>
-          <EthIdenticon address={dao.address} />
-        </OrgIdenticon>
-        <OrgName>{dao.name || dao.address}</OrgName>
+        <OrgIcon rounded={!knownOrg}>
+          {knownOrg ? (
+            <img
+              src={knownOrg.image}
+              width="48"
+              alt=""
+              css={`
+                object-fit: contain;
+                width: 100%;
+                height: 100%;
+              `}
+            />
+          ) : (
+            <EthIdenticon address={dao.address} />
+          )}
+        </OrgIcon>
+        <OrgName>{knownOrg ? knownOrg.name : dao.name || dao.address}</OrgName>
       </Organization>
     )
   }
@@ -32,13 +48,17 @@ const Organization = styled.div`
   padding: 10px 20px;
 `
 
-const OrgIdenticon = styled.span`
+const OrgIcon = styled.div`
+  overflow: hidden;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   flex-grow: 0;
   display: inline-flex;
-  border-radius: 50%;
-  overflow: hidden;
+  justify-content: center;
+  align-items: center;
   margin-right: 15px;
+  border-radius: ${p => (p.rounded ? '50%' : '0')};
 `
 
 const OrgName = styled.span`

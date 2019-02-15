@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Badge, BreakPoint, breakpoint } from '@aragon/ui'
+import { Badge, Viewport, breakpoint } from '@aragon/ui'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 import AppIcon from './AppIcon'
-import { EthereumAddress } from '../../prop-types'
 
 class AppInstanceLabel extends React.PureComponent {
   static propTypes = {
-    app: PropTypes.object.isRequired,
-    proxyAddress: EthereumAddress.isRequired,
+    app: AppType.isRequired,
+    proxyAddress: EthereumAddressType.isRequired,
     showIcon: PropTypes.bool,
   }
 
@@ -17,9 +17,11 @@ class AppInstanceLabel extends React.PureComponent {
     const { app, proxyAddress, showIcon = true } = this.props
     return (
       <Main>
-        <BreakPoint from="medium">
-          {showIcon && <AppIconInRow app={app} />}
-        </BreakPoint>
+        <Viewport>
+          {({ above }) =>
+            above('medium') && showIcon && <AppIconInRow app={app} />
+          }
+        </Viewport>
         <AppName>{app ? app.name : 'Unknown'}</AppName>
         <StyledBadge title={proxyAddress}>
           {(app && app.identifier) || shortenAddress(proxyAddress)}

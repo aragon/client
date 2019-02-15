@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  DropDown,
   Button,
+  DropDown,
   Field,
   TextInput,
-  font,
+  Viewport,
   breakpoint,
-  BreakPoint,
+  font,
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 import MenuButton from '../../components/MenuPanel/MenuButton'
@@ -19,8 +19,7 @@ import {
   setIpfsGateway,
   setSelectedCurrency,
 } from '../../local-settings'
-import { noop } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
@@ -43,20 +42,18 @@ const filterCurrency = currency => {
 
 class Settings extends React.Component {
   static propTypes = {
-    account: PropTypes.string.isRequired,
-    apps: PropTypes.array.isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     appsLoading: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
+    onMessage: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletWeb3: PropTypes.object.isRequired,
   }
   static defaultProps = {
     account: '',
-    apps: [],
-    onOpenApp: noop,
   }
-
   state = {
     defaultEthNode,
     ipfsGateway: ipfsDefaultConf.gateway,
@@ -111,9 +108,13 @@ class Settings extends React.Component {
       <AppLayout
         title={
           <AppBarTitle>
-            <BreakPoint to="medium">
-              <MenuButton onClick={this.handleMenuPanelOpen} />
-            </BreakPoint>
+            <Viewport>
+              {({ below }) =>
+                below('medium') && (
+                  <MenuButton onClick={this.handleMenuPanelOpen} />
+                )
+              }
+            </Viewport>
             <AppBarLabel>Settings</AppBarLabel>
           </AppBarTitle>
         }

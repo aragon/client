@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Text, BreakPoint, theme } from '@aragon/ui'
+import { Button, Text, Viewport, theme } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
-import { noop } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
 import { toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
@@ -16,21 +15,19 @@ const AppsList = styled.ul`
   list-style: none;
 `
 
-class DaoSettings extends React.Component {
+class DaoSettings extends React.PureComponent {
   static propTypes = {
-    account: PropTypes.string.isRequired,
-    apps: PropTypes.array.isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     appsLoading: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    shortAddresses: PropTypes.bool.isRequired,
+    shortAddresses: PropTypes.bool,
     walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletWeb3: PropTypes.object.isRequired,
   }
   static defaultProps = {
     account: '',
-    apps: [],
-    onOpenApp: noop,
     shortAddresses: false,
   }
   handleDepositTestTokens = () => {
@@ -190,12 +187,7 @@ const Label = styled.label`
 `
 
 export default props => (
-  <React.Fragment>
-    <BreakPoint to="medium">
-      <DaoSettings {...props} shortAddresses />
-    </BreakPoint>
-    <BreakPoint from="medium">
-      <DaoSettings {...props} />
-    </BreakPoint>
-  </React.Fragment>
+  <Viewport>
+    {({ below }) => <DaoSettings {...props} shortAddresses={below('medium')} />}
+  </Viewport>
 )

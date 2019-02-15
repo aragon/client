@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { theme } from '@aragon/ui'
 
@@ -7,6 +8,9 @@ const LoadingRing = ({ spin, ...props }) => (
     <Ring spin={spin} />
   </Main>
 )
+LoadingRing.propTypes = {
+  spin: PropTypes.bool,
+}
 
 const Main = styled.span`
   position: relative;

@@ -2,14 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { breakpoint } from '@aragon/ui'
+import { AppType } from '../../../prop-types'
 import Section from '../Section'
 import AppCard from '../AppCard'
 import EmptyBlock from '../EmptyBlock'
-import App from '../../../types/App'
 
 class BrowseByApp extends React.Component {
   static propTypes = {
-    apps: PropTypes.arrayOf(App).isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     loading: PropTypes.bool.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }

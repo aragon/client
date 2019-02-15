@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import ContainerDimensions from 'react-container-dimensions'
 import { Spring, animated } from 'react-spring'
@@ -34,6 +35,10 @@ const AppLoadingProgressBar = ({ hide, percent, ...props }) => (
     )}
   </Spring>
 )
+AppLoadingProgressBar.propTypes = {
+  hide: PropTypes.bool,
+  percent: PropTypes.number,
+}
 
 // Mimic nprogress with our own accent colour
 const StyledProgressBar = styled(animated.div)`

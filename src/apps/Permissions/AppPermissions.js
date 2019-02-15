@@ -4,17 +4,17 @@ import { Button, Table, TableRow, Text } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
-import { EthereumAddress } from '../../prop-types'
 
 class AppPermissions extends React.PureComponent {
   static propTypes = {
-    address: EthereumAddress.isRequired,
-    app: PropTypes.object, // may not be available if still loading
+    address: EthereumAddressType.isRequired,
+    app: AppType, // may not be available if still loading
     loading: PropTypes.bool.isRequired,
     onManageRole: PropTypes.func.isRequired,
   }
@@ -79,7 +79,7 @@ class Row extends React.Component {
   static propTypes = {
     entity: PropTypes.object.isRequired,
     onRevoke: PropTypes.func.isRequired,
-    proxyAddress: EthereumAddress.isRequired,
+    proxyAddress: EthereumAddressType.isRequired,
     role: PropTypes.object.isRequired,
   }
 
