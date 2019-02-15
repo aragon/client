@@ -5,6 +5,7 @@
  */
 import Web3 from 'web3'
 import BN from 'bn.js'
+import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -18,6 +19,46 @@ export function addressesEqual(first, second) {
   first = first && first.toLowerCase()
   second = second && second.toLowerCase()
   return first === second
+}
+
+const websocketRegex = /^wss?:\/\/.+/
+
+/**
+ * Check if the ETH node at the given URI is compatible for the current environment
+ * @param {string} uri URI of the ETH node.
+ * @param {string} expectedNetworkType The expected network type of the ETH node.
+ * @returns {Promise} Resolves if the ETH node is compatible, otherwise throws:
+ *    - InvalidURI: URI given is not compatible (e.g. must be WebSockets)
+ *    - InvalidNetworkType: ETH node connected to wrong network
+ *    - NoConnection: Couldn't connect to URI
+ */
+export async function checkValidEthNode(uri, expectedNetworkType) {
+  // Must be websocket connection
+  if (!websocketRegex.test(uri)) {
+    throw new InvalidURI('The URI must use the WebSocket protocol')
+  }
+
+  try {
+    const web3 = new Web3(uri)
+    const connectedNetworkType = await web3.eth.net.getNetworkType()
+    if (web3.currentProvider.disconnect) {
+      web3.currentProvider.disconnect()
+    } else {
+      // Older versions of web3's providers didn't expose a generic interface for disconnecting
+      web3.currentProvider.connection.close()
+    }
+
+    if (connectedNetworkType !== expectedNetworkType) {
+      throw new InvalidNetworkType()
+    }
+  } catch (err) {
+    if (err instanceof InvalidNetworkType) {
+      throw err
+    }
+    throw new NoConnection()
+  }
+
+  return true
 }
 
 /**

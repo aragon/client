@@ -14,6 +14,7 @@ import {
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 import MenuButton from '../../components/MenuPanel/MenuButton'
+import { InvalidNetworkType, InvalidURI, NoConnection } from '../../errors'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../environment'
 import {
   getSelectedCurrency,
@@ -21,8 +22,9 @@ import {
   setIpfsGateway,
   setSelectedCurrency,
 } from '../../local-settings'
+import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
-import { isValidEthNode } from '../../web3-utils'
+import { checkValidEthNode } from '../../web3-utils'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
@@ -58,7 +60,7 @@ class Settings extends React.Component {
     ethNode: defaultEthNode,
     ipfsGateway: ipfsDefaultConf.gateway,
     selectedCurrency: filterCurrency(getSelectedCurrency()),
-    selectedNodeInvalid: false,
+    selectedNodeError: null,
   }
   handleSelectedCurrencyChange = (index, currencies) => {
     setSelectedCurrency(currencies[index])
@@ -67,7 +69,7 @@ class Settings extends React.Component {
   handleDefaultEthNodeChange = event => {
     this.setState({
       ethNode: event.target.value && event.target.value.trim(),
-      selectedNodeInvalid: false,
+      selectedNodeError: null,
     })
   }
   handleIpfsGatewayChange = event => {
@@ -78,8 +80,10 @@ class Settings extends React.Component {
   handleNodeSettingsSave = async () => {
     const { ethNode, ipfsGateway } = this.state
 
-    if (!(await isValidEthNode(ethNode, network.type))) {
-      this.setState({ selectedNodeInvalid: true })
+    try {
+      await checkValidEthNode(ethNode, network.type)
+    } catch (err) {
+      this.setState({ selectedNodeError: err })
       return
     }
 
@@ -113,7 +117,7 @@ class Settings extends React.Component {
       ethNode,
       ipfsGateway,
       selectedCurrency,
-      selectedNodeInvalid,
+      selectedNodeError,
     } = this.state
     return (
       <AppLayout
@@ -159,7 +163,7 @@ class Settings extends React.Component {
           <Option
             name="Node settings (advanced)"
             text={`
-              Change which Ethereum and IPFS clients this app is connected to
+              Change the Ethereum and IPFS nodes this app is connected to.
             `}
           >
             <Field label="Ethereum node">
@@ -168,9 +172,22 @@ class Settings extends React.Component {
                 wide
                 value={ethNode}
               />
-              {selectedNodeInvalid && (
+              {selectedNodeError && (
                 <Text color={theme.negative} size="xsmall">
-                  Bad gateway
+                  {(() => {
+                    if (selectedNodeError instanceof InvalidNetworkType) {
+                      return `Node must be connected to ${sanitizeNetworkType(
+                        network.type
+                      )}`
+                    }
+                    if (selectedNodeError instanceof InvalidURI) {
+                      return 'Must provide WebSocket endpoint to node'
+                    }
+                    if (selectedNodeError instanceof NoConnection) {
+                      return 'Could not connect to node'
+                    }
+                    return 'URI does not seem to be a ETH node'
+                  })()}
                 </Text>
               )}
             </Field>
