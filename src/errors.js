@@ -9,6 +9,12 @@ const extendError = (name, { defaultMessage }) =>
 export const InvalidAddress = extendError('InvalidAddress', {
   defaultMessage: 'The address is invalid',
 })
+export const InvalidNetworkType = extendError('InvalidNetworkType', {
+  defaultMessage: 'The network type is invalid',
+})
+export const InvalidURI = extendError('InvalidURI', {
+  defaultMessage: 'The URI is invalid',
+})
 export const NoConnection = extendError('NoConnection', {
   defaultMessage: 'There is no connection',
 })

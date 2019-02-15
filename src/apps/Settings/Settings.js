@@ -5,21 +5,26 @@ import {
   Button,
   DropDown,
   Field,
+  Text,
   TextInput,
   Viewport,
   breakpoint,
   font,
+  theme,
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 import MenuButton from '../../components/MenuPanel/MenuButton'
-import { defaultEthNode, ipfsDefaultConf } from '../../environment'
+import { InvalidNetworkType, InvalidURI, NoConnection } from '../../errors'
+import { defaultEthNode, ipfsDefaultConf, network } from '../../environment'
 import {
   getSelectedCurrency,
   setDefaultEthNode,
   setIpfsGateway,
   setSelectedCurrency,
 } from '../../local-settings'
+import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
+import { checkValidEthNode } from '../../web3-utils'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
@@ -51,28 +56,39 @@ class Settings extends React.Component {
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
   }
-  static defaultProps = {
-    account: '',
-  }
   state = {
-    defaultEthNode,
-    ipfsGateway: ipfsDefaultConf.gateway,
     currencies: AVAILABLE_CURRENCIES,
+    ethNode: defaultEthNode,
+    ipfsGateway: ipfsDefaultConf.gateway,
     selectedCurrency: filterCurrency(getSelectedCurrency()),
+    selectedNodeError: null,
   }
   handleSelectedCurrencyChange = (index, currencies) => {
     setSelectedCurrency(currencies[index])
     this.setState({ selectedCurrency: currencies[index] })
   }
   handleDefaultEthNodeChange = event => {
-    this.setState({ defaultEthNode: event.target.value })
+    this.setState({
+      ethNode: event.target.value && event.target.value.trim(),
+      selectedNodeError: null,
+    })
   }
   handleIpfsGatewayChange = event => {
-    this.setState({ ipfsGateway: event.target.value })
+    this.setState({
+      ipfsGateway: event.target.value && event.target.value.trim(),
+    })
   }
-  handleNodeSettingsSave = () => {
-    const { defaultEthNode, ipfsGateway } = this.state
-    setDefaultEthNode(defaultEthNode)
+  handleNodeSettingsSave = async () => {
+    const { ethNode, ipfsGateway } = this.state
+
+    try {
+      await checkValidEthNode(ethNode, network.type)
+    } catch (err) {
+      this.setState({ selectedNodeError: err })
+      return
+    }
+
+    setDefaultEthNode(ethNode)
     setIpfsGateway(ipfsGateway)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
@@ -99,10 +115,11 @@ class Settings extends React.Component {
       walletWeb3,
     } = this.props
     const {
-      defaultEthNode,
-      ipfsGateway,
       currencies,
+      ethNode,
+      ipfsGateway,
       selectedCurrency,
+      selectedNodeError,
     } = this.state
     return (
       <AppLayout
@@ -149,15 +166,33 @@ class Settings extends React.Component {
           <Option
             name="Node settings (advanced)"
             text={`
-              Change which Ethereum and IPFS clients this app is connected to
+              Change the Ethereum and IPFS nodes this app is connected to.
             `}
           >
             <Field label="Ethereum node">
               <TextInput
                 onChange={this.handleDefaultEthNodeChange}
                 wide
-                value={defaultEthNode}
+                value={ethNode}
               />
+              {selectedNodeError && (
+                <Text color={theme.negative} size="xsmall">
+                  {(() => {
+                    if (selectedNodeError instanceof InvalidNetworkType) {
+                      return `Node must be connected to ${sanitizeNetworkType(
+                        network.type
+                      )}`
+                    }
+                    if (selectedNodeError instanceof InvalidURI) {
+                      return 'Must provide WebSocket endpoint to node'
+                    }
+                    if (selectedNodeError instanceof NoConnection) {
+                      return 'Could not connect to node'
+                    }
+                    return 'URI does not seem to be a ETH node'
+                  })()}
+                </Text>
+              )}
             </Field>
             <Field label="IPFS gateway">
               <TextInput
