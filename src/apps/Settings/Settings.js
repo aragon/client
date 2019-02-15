@@ -10,6 +10,7 @@ import {
   Viewport,
   breakpoint,
   font,
+  theme,
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 import MenuButton from '../../components/MenuPanel/MenuButton'
@@ -165,7 +166,7 @@ class Settings extends React.Component {
                 value={defaultEthNode}
               />
               {invalidNode && (
-                <Text color="red" size="xsmall">
+                <Text color={theme.negative} size="xsmall">
                   Bad gateway
                 </Text>
               )}
