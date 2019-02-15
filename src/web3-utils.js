@@ -48,6 +48,81 @@ export function formatBalance(
   return `${whole}.${fraction}`
 }
 
+export function getEmptyAddress() {
+  return EMPTY_ADDRESS
+}
+
+/*
+ * Return the injected provider, if any.
+ */
+export function getInjectedProvider() {
+  if (window.ethereum) {
+    return window.ethereum
+  }
+  if (window.web3 && window.web3.currentProvider) {
+    return window.web3.currentProvider
+  }
+  return null
+}
+
+// Get the first account of a web3 instance
+export async function getMainAccount(web3) {
+  try {
+    const accounts = await web3.eth.getAccounts()
+    return (accounts && accounts[0]) || null
+  } catch (err) {
+    return null
+  }
+}
+
+export function getUnknownBalance() {
+  return new BN('-1')
+}
+
+// Cache web3 instances used in the app
+const web3Cache = new WeakMap()
+
+/**
+ * Get cached web3 instance
+ * @param {Web3.Provider} provider Web3 provider
+ * @returns {Web3} The web3 instance
+ */
+export function getWeb3(provider) {
+  if (web3Cache.has(provider)) {
+    return web3Cache.get(provider)
+  }
+  const web3 = new Web3(provider)
+  web3Cache.set(provider, web3)
+  return web3
+}
+
+// Returns an identifier for the provider, if it can be detected
+export function identifyProvider(provider) {
+  if (provider && provider.isMetaMask) {
+    return 'metamask'
+  }
+  return 'unknown'
+}
+
+export function isConnected(provider) {
+  // EIP-1193 compliant providers may not include `isConnected()`, but most should support it for
+  // the foreseeable future to be backwards compatible with older Web3.js implementations.
+  // The `status` property is also not required by EIP-1193, but is often set on providers for
+  // backwards compatibility as well.
+  return typeof provider.isConnected === 'function'
+    ? provider.isConnected()
+    : provider.status === 'connected'
+}
+
+// Check if the address represents an empty address
+export function isEmptyAddress(address) {
+  return addressesEqual(address, EMPTY_ADDRESS)
+}
+
+export function isValidEnsName(name) {
+  return /^([\w-]+\.)+eth$/.test(name)
+}
+
 /**
  * Shorten an Ethereum address. `charsLength` allows to change the number of
  * characters on both sides of the ellipsis.
@@ -74,104 +149,6 @@ export function shortenAddress(address, charsLength = 4) {
     '…' +
     address.slice(-charsLength)
   )
-}
-
-// Cache web3 instances used in the app
-const web3Cache = new WeakMap()
-
-/**
- * Get cached web3 instance
- * @param {Web3.Provider} provider Web3 provider
- * @returns {Web3} The web3 instance
- */
-export function getWeb3(provider) {
-  if (web3Cache.has(provider)) {
-    return web3Cache.get(provider)
-  }
-  const web3 = new Web3(provider)
-  web3Cache.set(provider, web3)
-  return web3
-}
-
-// Get the first account of a web3 instance
-export async function getMainAccount(web3) {
-  try {
-    const accounts = await web3.eth.getAccounts()
-    return (accounts && accounts[0]) || null
-  } catch (err) {
-    return null
-  }
-}
-
-// Check if the address represents an empty address
-export function isEmptyAddress(address) {
-  return addressesEqual(address, EMPTY_ADDRESS)
-}
-
-export function getEmptyAddress() {
-  return EMPTY_ADDRESS
-}
-
-/*
- * Return the injected provider, if any.
- */
-export function getInjectedProvider() {
-  if (window.ethereum) {
-    return window.ethereum
-  }
-  if (window.web3 && window.web3.currentProvider) {
-    return window.web3.currentProvider
-  }
-  return null
-}
-
-export function getUnknownBalance() {
-  return new BN('-1')
-}
-
-// Returns an identifier for the provider, if it can be detected
-export function identifyProvider(provider) {
-  if (provider && provider.isMetaMask) {
-    return 'metamask'
-  }
-  return 'unknown'
-}
-
-export function isConnected(provider) {
-  // EIP-1193 compliant providers may not include `isConnected()`, but most should support it for
-  // the foreseeable future to be backwards compatible with older Web3.js implementations.
-  // The `status` property is also not required by EIP-1193, but is often set on providers for
-  // backwards compatibility as well.
-  return typeof provider.isConnected === 'function'
-    ? provider.isConnected()
-    : provider.status === 'connected'
-}
-
-export function isValidEnsName(name) {
-  return /^([\w-]+\.)+eth$/.test(name)
-}
-
-const websocketRegex = /^wss?:\/\/.+/
-export async function isValidEthNode(uri, expectedNetworkType) {
-  // Must be websocket connection
-  if (!websocketRegex.test(uri)) {
-    return false
-  }
-
-  try {
-    const web3 = new Web3(uri)
-    const connectedNetworkType = await web3.eth.net.getNetworkType()
-    if (web3.currentProvider.disconnect) {
-      web3.currentProvider.disconnect()
-    } else {
-      // Older versions of web3's providers didn't expose a generic interface for disconnecting
-      web3.currentProvider.connection.close()
-    }
-
-    return connectedNetworkType === expectedNetworkType
-  } catch (err) {
-    return false
-  }
 }
 
 // Re-export some utilities from web3-utils
