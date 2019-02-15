@@ -112,25 +112,6 @@ export function getEmptyAddress() {
   return EMPTY_ADDRESS
 }
 
-export function getUnknownBalance() {
-  return new BN('-1')
-}
-
-// Returns an identifier for the provider, if it can be detected
-export function identifyProvider(provider) {
-  if (provider && provider.isMetaMask) {
-    return 'metamask'
-  }
-  return 'unknown'
-}
-
-export function isValidEnsName(name) {
-  return /^([\w-]+\.)+eth$/.test(name)
-}
-
-// Re-export some utilities from web3-utils
-export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
-
 /*
  * Return the injected provider, if any.
  */
@@ -144,6 +125,18 @@ export function getInjectedProvider() {
   return null
 }
 
+export function getUnknownBalance() {
+  return new BN('-1')
+}
+
+// Returns an identifier for the provider, if it can be detected
+export function identifyProvider(provider) {
+  if (provider && provider.isMetaMask) {
+    return 'metamask'
+  }
+  return 'unknown'
+}
+
 export function isConnected(provider) {
   // EIP-1193 compliant providers may not include `isConnected()`, but most should support it for
   // the foreseeable future to be backwards compatible with older Web3.js implementations.
@@ -153,3 +146,10 @@ export function isConnected(provider) {
     ? provider.isConnected()
     : provider.status === 'connected'
 }
+
+export function isValidEnsName(name) {
+  return /^([\w-]+\.)+eth$/.test(name)
+}
+
+// Re-export some utilities from web3-utils
+export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
