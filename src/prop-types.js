@@ -50,7 +50,6 @@ export const EthereumAddressType = validatorCreator(ethereumAddressValidator)
 
 export const AppType = PropTypes.shape({
   abi: PropTypes.array.isRequired,
-  apmRegistry: PropTypes.string.isRequired,
   appId: PropTypes.string.isRequired,
   baseUrl: PropTypes.string.isRequired,
   codeAddress: EthereumAddressType,
@@ -62,6 +61,7 @@ export const AppType = PropTypes.shape({
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 
   appName: PropTypes.string,
+  apmRegistry: PropTypes.string,
   content: PropTypes.shape({
     location: PropTypes.string.isRequired,
     provider: PropTypes.string.isRequired,
