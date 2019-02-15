@@ -14,7 +14,7 @@ import {
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 import MenuButton from '../../components/MenuPanel/MenuButton'
-import { defaultEthNode, ipfsDefaultConf } from '../../environment'
+import { defaultEthNode, ipfsDefaultConf, network } from '../../environment'
 import {
   getSelectedCurrency,
   setDefaultEthNode,
@@ -22,7 +22,7 @@ import {
   setSelectedCurrency,
 } from '../../local-settings'
 import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
-import { isValidNode } from '../../utils'
+import { isValidEthNode } from '../../web3-utils'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
@@ -53,34 +53,37 @@ class Settings extends React.Component {
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
   }
-  static defaultProps = {
-    account: '',
-  }
   state = {
-    defaultEthNode,
-    ipfsGateway: ipfsDefaultConf.gateway,
     currencies: AVAILABLE_CURRENCIES,
+    ethNode: defaultEthNode,
+    ipfsGateway: ipfsDefaultConf.gateway,
     selectedCurrency: filterCurrency(getSelectedCurrency()),
-    invalidNode: false,
+    selectedNodeInvalid: false,
   }
   handleSelectedCurrencyChange = (index, currencies) => {
     setSelectedCurrency(currencies[index])
     this.setState({ selectedCurrency: currencies[index] })
   }
   handleDefaultEthNodeChange = event => {
-    this.setState({ defaultEthNode: event.target.value })
+    this.setState({
+      ethNode: event.target.value && event.target.value.trim(),
+      selectedNodeInvalid: false,
+    })
   }
   handleIpfsGatewayChange = event => {
-    this.setState({ ipfsGateway: event.target.value })
+    this.setState({
+      ipfsGateway: event.target.value && event.target.value.trim(),
+    })
   }
   handleNodeSettingsSave = async () => {
-    const { defaultEthNode, ipfsGateway } = this.state
-    if (!(await isValidNode(defaultEthNode))) {
-      this.setState({ invalidNode: true })
+    const { ethNode, ipfsGateway } = this.state
+
+    if (!(await isValidEthNode(ethNode, network.type))) {
+      this.setState({ selectedNodeInvalid: true })
       return
     }
 
-    setDefaultEthNode(defaultEthNode)
+    setDefaultEthNode(ethNode)
     setIpfsGateway(ipfsGateway)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
@@ -106,11 +109,11 @@ class Settings extends React.Component {
       walletWeb3,
     } = this.props
     const {
-      defaultEthNode,
-      ipfsGateway,
       currencies,
+      ethNode,
+      ipfsGateway,
       selectedCurrency,
-      invalidNode,
+      selectedNodeInvalid,
     } = this.state
     return (
       <AppLayout
@@ -163,9 +166,9 @@ class Settings extends React.Component {
               <TextInput
                 onChange={this.handleDefaultEthNodeChange}
                 wide
-                value={defaultEthNode}
+                value={ethNode}
               />
-              {invalidNode && (
+              {selectedNodeInvalid && (
                 <Text color={theme.negative} size="xsmall">
                   Bad gateway
                 </Text>

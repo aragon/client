@@ -151,5 +151,28 @@ export function isValidEnsName(name) {
   return /^([\w-]+\.)+eth$/.test(name)
 }
 
+const websocketRegex = /^wss?:\/\/.+/
+export async function isValidEthNode(uri, expectedNetworkType) {
+  // Must be websocket connection
+  if (!websocketRegex.test(uri)) {
+    return false
+  }
+
+  try {
+    const web3 = new Web3(uri)
+    const connectedNetworkType = await web3.eth.net.getNetworkType()
+    if (web3.currentProvider.disconnect) {
+      web3.currentProvider.disconnect()
+    } else {
+      // Older versions of web3's providers didn't expose a generic interface for disconnecting
+      web3.currentProvider.connection.close()
+    }
+
+    return connectedNetworkType === expectedNetworkType
+  } catch (err) {
+    return false
+  }
+}
+
 // Re-export some utilities from web3-utils
 export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
