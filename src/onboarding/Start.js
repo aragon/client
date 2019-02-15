@@ -17,8 +17,8 @@ import {
 import { animated } from 'react-spring'
 import { network, getDemoDao, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
-import { noop } from '../utils'
 import providerString from '../provider-strings'
+import { isElectron, noop } from '../utils'
 import {
   fromWei,
   toWei,
@@ -327,11 +327,24 @@ class StartContent extends React.PureComponent {
     if (!hasWallet) {
       return (
         <ActionInfo>
-          Please install an Ethereum provider (e.g.{' '}
-          <SafeLink href="https://metamask.io/" target="_blank">
-            MetaMask
-          </SafeLink>
-          ) .
+          {isElectron() ? (
+            <React.Fragment>
+              Please install{' '}
+              <SafeLink href="https://frame.sh/" target="_blank">
+                Frame
+              </SafeLink>{' '}
+              as your Ethereum provider
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              Please install an Ethereum provider (e.g.{' '}
+              <SafeLink href="https://metamask.io/" target="_blank">
+                MetaMask
+              </SafeLink>
+              )
+            </React.Fragment>
+          )}
+          .
         </ActionInfo>
       )
     }
