@@ -1,7 +1,13 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { noop } from '../../utils'
 
 class EscapeOutside extends React.Component {
+  static propTypes = {
+    children: PropTypes.node,
+    onEscapeOutside: PropTypes.func,
+  }
+
   static defaultProps = {
     onEscapeOutside: noop,
   }

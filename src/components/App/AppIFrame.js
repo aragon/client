@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { clamp, lerp } from '../../math-utils'
+import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
 
@@ -47,18 +48,17 @@ const SANDBOX = [
 
 class AppIFrame extends React.Component {
   static propTypes = {
-    app: PropTypes.object.isRequired,
+    app: AppType.isRequired,
     iframeRef: PropTypes.func,
-    onNavigate: PropTypes.func,
-    onMessage: PropTypes.func,
     onLoad: PropTypes.func,
+    onMessage: PropTypes.func,
+    onNavigate: PropTypes.func,
   }
-
   static defaultProps = {
     iframeRef: noop,
-    onNavigate: noop,
-    onMessage: noop,
     onLoad: noop,
+    onMessage: noop,
+    onNavigate: noop,
   }
   state = {
     hideProgressBar: true,
@@ -85,8 +85,8 @@ class AppIFrame extends React.Component {
     this.clearProgressTimeout()
   }
   isHidden = () => {
-    const { hidden, app } = this.props
-    return !app || !app.src || hidden
+    const { app } = this.props
+    return !app || !app.src
   }
   navigateIFrame = src => {
     // Rather than load src=undefined, this component hides itself. That way,

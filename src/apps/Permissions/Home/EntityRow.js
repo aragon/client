@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import uniqBy from 'lodash.uniqby'
 import {
-  TableRow,
   TableCell,
+  TableRow,
   Text,
-  theme,
-  BreakPoint,
+  Viewport,
   breakpoint,
+  theme,
 } from '@aragon/ui'
 import IdentityBadge from '../../../components/IdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
@@ -16,19 +16,18 @@ import ViewDetailsButton from './ViewDetailsButton'
 
 class EntityRow extends React.PureComponent {
   static propTypes = {
+    smallView: PropTypes.bool,
     entity: PropTypes.object.isRequired,
     onOpen: PropTypes.func.isRequired,
     roles: PropTypes.array.isRequired,
   }
-
-  handleClick = () => {
-    this.props.onOpen(this.props.entity.address)
+  static defaultProps = {
+    smallView: false,
   }
-  handleItemClick = () => {
-    const { itemClickable } = this.props
-    if (itemClickable) {
-      this.handleClick()
-    }
+
+  open() {
+    const { onOpen, entity } = this.props
+    onOpen(entity.address)
   }
   renderType(type) {
     switch (type) {
@@ -81,39 +80,41 @@ class EntityRow extends React.PureComponent {
         </span>
       ))
   }
+  handleDetailsClick = () => {
+    this.open()
+  }
+  handleRowClick = () => {
+    if (this.props.smallView) {
+      this.open()
+    }
+  }
   render() {
-    const { entity, roles } = this.props
+    const { entity, roles, smallView } = this.props
     if (!entity) {
       return null
     }
 
     return (
-      <StyledTableRow onClick={this.handleItemClick}>
+      <StyledTableRow onClick={this.handleRowClick}>
         <FirstTableCell>{this.renderEntity(entity)}</FirstTableCell>
-        <BreakPoint from="medium">
-          <TableCell>{this.renderType(entity.type)}</TableCell>
-          <TableCell>
-            <div>{this.renderRoles(roles)}</div>
-          </TableCell>
-        </BreakPoint>
+        {!smallView && (
+          <React.Fragment>
+            <TableCell>{this.renderType(entity.type)}</TableCell>
+            <TableCell>
+              <div>{this.renderRoles(roles)}</div>
+            </TableCell>
+          </React.Fragment>
+        )}
         <LastTableCell align="right">
-          <ViewDetailsButton title="View details" onClick={this.handleClick} />
+          <ViewDetailsButton
+            title="View details"
+            onClick={this.handleDetailsClick}
+          />
         </LastTableCell>
       </StyledTableRow>
     )
   }
 }
-
-const ResponsiveEntityRow = props => (
-  <React.Fragment>
-    <BreakPoint to="medium">
-      <EntityRow {...props} itemClickable />
-    </BreakPoint>
-    <BreakPoint from="medium">
-      <EntityRow {...props} />
-    </BreakPoint>
-  </React.Fragment>
-)
 
 const StyledTableRow = styled(TableRow)`
   cursor: pointer;
@@ -181,4 +182,8 @@ const LastTableCell = styled(TableCell)`
   )};
 `
 
-export default ResponsiveEntityRow
+export default props => (
+  <Viewport>
+    {({ below }) => <EntityRow {...props} smallView={below('medium')} />}
+  </Viewport>
+)

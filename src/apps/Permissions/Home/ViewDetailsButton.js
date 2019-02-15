@@ -1,6 +1,42 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, Button, BreakPoint } from '@aragon/ui'
+import { theme, Button, Viewport } from '@aragon/ui'
+
+const ViewDetailsButton = props => (
+  <Viewport>
+    {({ below }) =>
+      below('medium') ? (
+        <StyledButton {...props}>
+          <svg
+            width="12"
+            height="19"
+            viewBox="0 0 12 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+          >
+            <path
+              d="M1.61309 1L10.5 8.98756"
+              stroke="#EAEAEA"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+            <path
+              d="M1.45117 17.7673L10.4512 8.97168"
+              stroke="#EAEAEA"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </StyledButton>
+      ) : (
+        <Button mode="outline" compact {...props}>
+          View details
+        </Button>
+      )
+    }
+  </Viewport>
+)
 
 const StyledButton = styled.button`
   border: none;
@@ -21,37 +57,4 @@ const StyledButton = styled.button`
   }
 `
 
-export default props => (
-  <React.Fragment>
-    <BreakPoint to="medium">
-      <StyledButton {...props}>
-        <svg
-          width="12"
-          height="19"
-          viewBox="0 0 12 19"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          {...props}
-        >
-          <path
-            d="M1.61309 1L10.5 8.98756"
-            stroke="#EAEAEA"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M1.45117 17.7673L10.4512 8.97168"
-            stroke="#EAEAEA"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
-      </StyledButton>
-    </BreakPoint>
-    <BreakPoint from="medium">
-      <Button mode="outline" compact {...props}>
-        View details
-      </Button>
-    </BreakPoint>
-  </React.Fragment>
-)
+export default ViewDetailsButton

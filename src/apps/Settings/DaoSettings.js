@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, Text, BreakPoint } from '@aragon/ui'
+import { Button, Text, Viewport, theme } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
-import { noop } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
 import { toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
@@ -16,20 +15,19 @@ const AppsList = styled.ul`
   list-style: none;
 `
 
-class DaoSettings extends React.Component {
+class DaoSettings extends React.PureComponent {
   static propTypes = {
-    account: PropTypes.string.isRequired,
-    apps: PropTypes.array.isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsLoading: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    shortAddresses: PropTypes.bool.isRequired,
+    shortAddresses: PropTypes.bool,
     walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletWeb3: PropTypes.object.isRequired,
   }
   static defaultProps = {
     account: '',
-    apps: [],
-    onOpenApp: noop,
     shortAddresses: false,
   }
   handleDepositTestTokens = () => {
@@ -50,6 +48,7 @@ class DaoSettings extends React.Component {
     const {
       account,
       apps,
+      appsLoading,
       daoAddress,
       shortAddresses,
       walletNetwork,
@@ -65,25 +64,30 @@ class DaoSettings extends React.Component {
           name="Organization address"
           text={`This organization is deployed on the ${network.name}.`}
         >
-          <Field label="Address" style={{ marginBottom: 0 }}>
-            <IdentityBadge
-              entity={checksummedDaoAddr}
-              shorten={shortAddresses}
-            />
-            <Note>
-              <strong>Do not send ether or tokens to this address!</strong>
-              <br />
-              Go to the{' '}
-              {financeApp ? (
-                <ButtonLink onClick={this.handleOpenFinance}>
-                  Finance app
-                </ButtonLink>
-              ) : (
-                'Finance app'
-              )}{' '}
-              to deposit funds into your organization instead.
-            </Note>
-          </Field>
+          {checksummedDaoAddr ? (
+            <Wrap>
+              <Label> Address</Label>
+              <IdentityBadge
+                entity={checksummedDaoAddr}
+                shorten={shortAddresses}
+              />
+            </Wrap>
+          ) : (
+            <p>Resolving DAO address…</p>
+          )}
+          <Note>
+            <strong>Do not send ether or tokens to this address!</strong>
+            <br />
+            Go to the{' '}
+            {financeApp ? (
+              <ButtonLink onClick={this.handleOpenFinance}>
+                Finance app
+              </ButtonLink>
+            ) : (
+              'Finance app'
+            )}{' '}
+            to deposit funds into your organization instead.
+          </Note>
         </Option>
         {testTokensEnabled(network.type) && (
           <Option
@@ -122,7 +126,12 @@ class DaoSettings extends React.Component {
             </Note>
           </Option>
         )}
-        {apmApps.length > 0 && (
+        {appsLoading && (
+          <Option name="Aragon apps" text={'Loading apps…'}>
+            <div css={'height:20px'} />
+          </Option>
+        )}
+        {!appsLoading && apmApps.length > 0 && (
           <Option
             name="Aragon apps"
             text={`This organization has ${apmApps.length}
@@ -130,19 +139,26 @@ class DaoSettings extends React.Component {
             installed.`}
           >
             <AppsList>
-              {apmApps.map(({ appId, description, name, proxyAddress }) => {
-                const checksummedProxyAddress = toChecksumAddress(proxyAddress)
-                return (
-                  <li title={description} key={checksummedProxyAddress}>
-                    <Field label={name}>
+              {apmApps.map(
+                ({ appId, description, name, proxyAddress, tags }) => {
+                  const checksummedProxyAddress = toChecksumAddress(
+                    proxyAddress
+                  )
+
+                  return (
+                    <li title={description} key={checksummedProxyAddress}>
+                      <Label>
+                        {name}
+                        {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
+                      </Label>
                       <IdentityBadge
                         entity={checksummedProxyAddress}
                         shorten={shortAddresses}
                       />
-                    </Field>
-                  </li>
-                )
-              })}
+                    </li>
+                  )
+                }
+              )}
             </AppsList>
           </Option>
         )}
@@ -151,6 +167,11 @@ class DaoSettings extends React.Component {
   }
 }
 
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   padding: 0;
   color: inherit;
@@ -158,13 +179,15 @@ const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   text-decoration: underline;
 `
 
+const Label = styled.label`
+  display: block;
+  color: ${theme.textSecondary};
+  font-size: 11px;
+  text-transform: uppercase;
+`
+
 export default props => (
-  <React.Fragment>
-    <BreakPoint to="medium">
-      <DaoSettings {...props} shortAddresses />
-    </BreakPoint>
-    <BreakPoint from="medium">
-      <DaoSettings {...props} />
-    </BreakPoint>
-  </React.Fragment>
+  <Viewport>
+    {({ below }) => <DaoSettings {...props} shortAddresses={below('medium')} />}
+  </Viewport>
 )
