@@ -59,11 +59,11 @@ class ConfirmTransaction extends React.Component {
             neededText="You need to have Frame installed and enabled"
             actionText={
               <span>
-                Please install and enable Frame (
-                <SafeLink href={'https://frame.sh/'} target="_blank">
-                  frame.sh
+                Please install and enable{' '}
+                <SafeLink href="https://frame.sh/" target="_blank">
+                  Frame
                 </SafeLink>
-                ).
+                .
               </span>
             }
           />
@@ -73,11 +73,16 @@ class ConfirmTransaction extends React.Component {
         <Web3ProviderError
           intent={intent}
           onClose={onClose}
-          neededText="You need to have a Web3 instance installed and enabled"
-          actionText={`Please enable ${providerString(
-            'your Ethereum provider',
-            walletProviderId
-          )}.`}
+          neededText="You need to have an Ethereum provider installed and enabled"
+          actionText={
+            <span>
+              Please install and enable{' '}
+              <SafeLink href="https://metamask.io/" target="_blank">
+                Metamask
+              </SafeLink>
+              .
+            </span>
+          }
         />
       )
     }
