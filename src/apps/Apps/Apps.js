@@ -11,7 +11,7 @@ import {
   unselectable,
   font,
   breakpoint,
-  BreakPoint,
+  Viewport,
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 import MenuButton from '../../components/MenuPanel/MenuButton'
@@ -32,9 +32,13 @@ class Apps extends React.Component {
       <AppLayout
         title={
           <AppBarTitle>
-            <BreakPoint to="medium">
-              <MenuButton onClick={this.handleMenuPanelOpen} />
-            </BreakPoint>
+            <Viewport>
+              {({ below }) =>
+                below('medium') && (
+                  <MenuButton onClick={this.handleMenuPanelOpen} />
+                )
+              }
+            </Viewport>
             <AppBarLabel>Apps</AppBarLabel>
           </AppBarTitle>
         }

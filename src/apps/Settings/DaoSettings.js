@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, Text, BreakPoint } from '@aragon/ui'
+import { Button, Field, Text, Viewport } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
@@ -15,7 +15,7 @@ const AppsList = styled.ul`
   list-style: none;
 `
 
-class DaoSettings extends React.Component {
+class DaoSettings extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
@@ -154,12 +154,7 @@ const ButtonLink = styled(Button).attrs({ mode: 'text' })`
 `
 
 export default props => (
-  <React.Fragment>
-    <BreakPoint to="medium">
-      <DaoSettings {...props} shortAddresses />
-    </BreakPoint>
-    <BreakPoint from="medium">
-      <DaoSettings {...props} />
-    </BreakPoint>
-  </React.Fragment>
+  <Viewport>
+    {({ below }) => <DaoSettings {...props} shortAddresses={below('medium')} />}
+  </Viewport>
 )

@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Viewport } from '@aragon/ui'
 import { Apps, Permissions, Settings } from './apps'
-import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
-import { ScreenSizeConsumer, SMALL } from './contexts/ScreenSize'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
+import NotificationBar from './components/Notifications/NotificationBar'
 import {
   AppType,
   AppsStatusType,
@@ -18,11 +18,11 @@ import {
 } from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
-import { addressesEqual } from './web3-utils'
 import { APPS_STATUS_LOADING } from './symbols'
-import NotificationBar from './components/Notifications/NotificationBar'
+import { addressesEqual } from './web3-utils'
+import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 
-class Wrapper extends React.Component {
+class Wrapper extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
@@ -41,7 +41,7 @@ class Wrapper extends React.Component {
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
-    screenSize: PropTypes.symbol.isRequired,
+    autoClosingPanel: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -58,15 +58,28 @@ class Wrapper extends React.Component {
     walletProviderId: '',
     walletWeb3: null,
   }
+
+  componentDidUpdate(prevProps) {
+    this.updateAutoClosingPanel(prevProps)
+  }
+
   state = {
     appInstance: {},
-    menuPanelOpened: this.props.screenSize !== SMALL,
+    menuPanelOpened: !this.props.autoClosingPanel,
     notificationOpen: false,
     notifications: [],
     queuedNotifications: [],
   }
+
+  updateAutoClosingPanel(prevProps) {
+    const { autoClosingPanel } = this.props
+    if (autoClosingPanel !== prevProps.autoClosingPanel) {
+      this.setState({ menuPanelOpened: !autoClosingPanel })
+    }
+  }
+
   openApp = (instanceId, params) => {
-    if (this.props.screenSize === SMALL) {
+    if (this.props.autoClosingPanel) {
       this.handleMenuPanelClose()
     }
 
@@ -139,6 +152,7 @@ class Wrapper extends React.Component {
       account,
       apps,
       appsStatus,
+      autoClosingPanel,
       banner,
       connected,
       daoAddress,
@@ -163,7 +177,8 @@ class Wrapper extends React.Component {
             connected={connected}
             notifications={notifications.length}
             daoAddress={daoAddress}
-            menuPanelOpened={menuPanelOpened}
+            opened={menuPanelOpened}
+            autoClosing={autoClosingPanel}
             onOpenApp={this.openApp}
             onCloseMenuPanel={this.handleMenuPanelClose}
             onRequestAppsReload={onRequestAppsReload}
@@ -304,6 +319,7 @@ const Main = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  min-width: 320px;
 `
 
 const BannerWrapper = styled.div`
@@ -347,7 +363,7 @@ const LoadingApps = () => (
 )
 
 export default props => (
-  <ScreenSizeConsumer>
-    {({ screenSize }) => <Wrapper {...props} screenSize={screenSize} />}
-  </ScreenSizeConsumer>
+  <Viewport>
+    {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
+  </Viewport>
 )
