@@ -10,26 +10,23 @@ import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import NotificationBar from './components/Notifications/NotificationBar'
-import { DaoAddressType } from './prop-types'
+import {
+  AppType,
+  AppsStatusType,
+  DaoAddressType,
+  EthereumAddressType,
+} from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
+import { APPS_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-import {
-  APPS_STATUS_ERROR,
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-} from './symbols'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
-    account: PropTypes.string,
-    apps: PropTypes.array.isRequired,
-    appsStatus: PropTypes.oneOf([
-      APPS_STATUS_ERROR,
-      APPS_STATUS_READY,
-      APPS_STATUS_LOADING,
-    ]).isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsStatus: AppsStatusType.isRequired,
     banner: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.shape({
@@ -258,12 +255,12 @@ class Wrapper extends React.PureComponent {
     if (instanceId === 'home') {
       return (
         <Home
-          connected={connected}
+          apps={apps}
           appsLoading={appsLoading}
+          connected={connected}
+          locator={locator}
           onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
-          locator={locator}
-          apps={apps}
         />
       )
     }

@@ -1,10 +1,14 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { BaseStyles, PublicUrl } from '@aragon/ui'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
 import { DAONotFound } from './errors'
 
 class GlobalErrorHandler extends React.Component {
+  static propTypes = {
+    children: PropTypes.node,
+  }
   state = { error: null, errorStack: null }
   componentDidCatch(error, errorInfo) {
     this.setState({

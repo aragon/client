@@ -19,8 +19,7 @@ import {
   setIpfsGateway,
   setSelectedCurrency,
 } from '../../local-settings'
-import { noop } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
 import Note from './Note'
@@ -43,19 +42,17 @@ const filterCurrency = currency => {
 
 class Settings extends React.Component {
   static propTypes = {
-    account: PropTypes.string.isRequired,
-    apps: PropTypes.array.isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     daoAddress: DaoAddressType.isRequired,
+    onMessage: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletWeb3: PropTypes.object.isRequired,
   }
   static defaultProps = {
     account: '',
-    apps: [],
-    onOpenApp: noop,
   }
-
   state = {
     defaultEthNode,
     ipfsGateway: ipfsDefaultConf.gateway,

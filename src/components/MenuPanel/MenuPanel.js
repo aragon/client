@@ -5,18 +5,13 @@ import { Spring, animated } from 'react-spring'
 import { Text, breakpoint, springs, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import RemoteIcon from '../RemoteIcon'
 import NotificationAlert from '../Notifications/NotificationAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
-import {
-  APPS_STATUS_ERROR,
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-} from '../../symbols'
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -47,19 +42,15 @@ const prepareAppGroups = apps =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
-    appsStatus: PropTypes.oneOf([
-      APPS_STATUS_ERROR,
-      APPS_STATUS_READY,
-      APPS_STATUS_LOADING,
-    ]).isRequired,
     activeInstanceId: PropTypes.string,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsStatus: AppsStatusType.isRequired,
+    connected: PropTypes.bool.isRequired,
+    daoAddress: DaoAddressType.isRequired,
+    notifications: PropTypes.number,
     onOpenApp: PropTypes.func.isRequired,
     onNotificationClicked: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
-    daoAddress: DaoAddressType.isRequired,
-    connected: PropTypes.bool.isRequired,
-    notifications: PropTypes.number,
   }
 
   state = {

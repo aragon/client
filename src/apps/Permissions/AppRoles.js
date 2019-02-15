@@ -1,8 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Button, Table, TableRow, Text } from '@aragon/ui'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import IdentityBadge from '../../components/IdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { AppType } from '../../prop-types'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
@@ -10,6 +12,14 @@ import { isBurnEntity } from '../../permissions'
 import { isEmptyAddress } from '../../web3-utils'
 
 class AppRoles extends React.PureComponent {
+  static propTypes = {
+    app: AppType,
+    emptyLabel: PropTypes.string,
+    loading: PropTypes.bool.isRequired,
+    loadingLabel: PropTypes.string,
+    onManageRole: PropTypes.func.isRequired,
+  }
+
   handleManageRole = roleBytes => {
     this.props.onManageRole(this.props.app.proxyAddress, roleBytes)
   }

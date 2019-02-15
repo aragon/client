@@ -7,11 +7,12 @@ const medium = css => breakpoint('medium', css)
 
 class ErrorCard extends React.Component {
   static propTypes = {
-    title: PropTypes.string,
-    supportUrl: PropTypes.string,
-    showReloadButton: PropTypes.bool,
+    children: PropTypes.node,
     detailsTitle: PropTypes.string,
     detailsContent: PropTypes.node,
+    showReloadButton: PropTypes.bool,
+    supportUrl: PropTypes.string,
+    title: PropTypes.string,
   }
   static defaultProps = {
     title: 'Error :(',
@@ -31,12 +32,12 @@ class ErrorCard extends React.Component {
 
   render() {
     const {
-      title,
-      supportUrl,
-      showReloadButton,
+      children,
       detailsTitle,
       detailsContent,
-      children,
+      showReloadButton,
+      supportUrl,
+      title,
     } = this.props
     const { showDetails } = this.state
     return (

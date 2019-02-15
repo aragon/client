@@ -13,6 +13,7 @@ import {
 } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { lerp } from '../../math-utils'
+import { AppType } from '../../prop-types'
 import springs from '../../springs'
 import MenuButton from '../MenuPanel/MenuButton'
 
@@ -56,7 +57,7 @@ const actions = [
 
 class Home extends React.Component {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     appsLoading: PropTypes.bool.isRequired,
     locator: PropTypes.object.isRequired,
     onMessage: PropTypes.func.isRequired,

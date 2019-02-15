@@ -5,8 +5,7 @@ import { Button, Field, Text, Viewport } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
-import { noop } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
 import { toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
@@ -18,18 +17,16 @@ const AppsList = styled.ul`
 
 class DaoSettings extends React.PureComponent {
   static propTypes = {
-    account: PropTypes.string.isRequired,
-    apps: PropTypes.array.isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    shortAddresses: PropTypes.bool.isRequired,
+    shortAddresses: PropTypes.bool,
     walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletWeb3: PropTypes.object.isRequired,
   }
   static defaultProps = {
     account: '',
-    apps: [],
-    onOpenApp: noop,
     shortAddresses: false,
   }
   handleDepositTestTokens = () => {
