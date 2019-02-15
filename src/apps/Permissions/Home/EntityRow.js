@@ -13,6 +13,7 @@ import {
 import IdentityBadge from '../../../components/IdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
 import ViewDetailsButton from './ViewDetailsButton'
+import { FirstTableCell, LastTableCell } from '../Table'
 
 class EntityRow extends React.PureComponent {
   static propTypes = {
@@ -96,7 +97,15 @@ class EntityRow extends React.PureComponent {
 
     return (
       <StyledTableRow onClick={this.handleRowClick}>
-        <FirstTableCell>{this.renderEntity(entity)}</FirstTableCell>
+        <FirstTableCell
+          css={`
+            > div {
+              display: inline-block;
+            }
+          `}
+        >
+          {this.renderEntity(entity)}
+        </FirstTableCell>
         {!smallView && (
           <React.Fragment>
             <TableCell>{this.renderType(entity.type)}</TableCell>
@@ -105,7 +114,14 @@ class EntityRow extends React.PureComponent {
             </TableCell>
           </React.Fragment>
         )}
-        <LastTableCell align="right">
+        <LastTableCell
+          align="right"
+          css={`
+            > div {
+              max-width: unset;
+            }
+          `}
+        >
           <ViewDetailsButton
             title="View details"
             onClick={this.handleDetailsClick}
@@ -125,61 +141,6 @@ const StyledTableRow = styled(TableRow)`
       cursor: initial;
     `
   )}
-`
-
-const FirstTableCell = styled(TableCell)`
-  &&& {
-    border-left-width: 0;
-    border-right-width: 0;
-    :first-child {
-      border-radius: 0;
-    }
-  }
-
-  > div {
-    display: inline-block;
-    text-align: left;
-  }
-
-  ${breakpoint(
-    'medium',
-    `
-      &&& {
-        border-left-width: 1px;
-        border-right-width: 1px;
-         :first-child {
-          border-radius: 3px;
-        }
-      }
-    `
-  )};
-`
-
-const LastTableCell = styled(TableCell)`
-  &&& {
-    border-left-width: 0;
-    border-right-width: 0;
-    :last-child {
-      border-radius: 0;
-    }
-  }
-
-  > div {
-    text-align: right;
-  }
-
-  ${breakpoint(
-    'medium',
-    `
-      &&& {
-        border-left-width: 1px;
-        border-right-width: 1px;
-         :last-child {
-          border-radius: 3px;
-        }
-      }
-    `
-  )};
 `
 
 export default props => (
