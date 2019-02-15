@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, Text, IdentityBadge, BreakPoint } from '@aragon/ui'
+import { Button, Field, Text, Viewport } from '@aragon/ui'
+import IdentityBadge from '../../components/IdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
-import { noop } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
 import { toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
@@ -15,21 +15,19 @@ const AppsList = styled.ul`
   list-style: none;
 `
 
-class DaoSettings extends React.Component {
+class DaoSettings extends React.PureComponent {
   static propTypes = {
-    account: PropTypes.string.isRequired,
-    apps: PropTypes.array.isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     daoAddress: DaoAddressType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    shorten: PropTypes.bool.isRequired,
+    shortAddresses: PropTypes.bool,
     walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletWeb3: PropTypes.object.isRequired,
   }
   static defaultProps = {
     account: '',
-    apps: [],
-    onOpenApp: noop,
-    shorten: false,
+    shortAddresses: false,
   }
   handleDepositTestTokens = () => {
     const { account, apps, walletWeb3 } = this.props
@@ -46,7 +44,13 @@ class DaoSettings extends React.Component {
     }
   }
   render() {
-    const { account, apps, daoAddress, shorten, walletNetwork } = this.props
+    const {
+      account,
+      apps,
+      daoAddress,
+      shortAddresses,
+      walletNetwork,
+    } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     const checksummedDaoAddr =
@@ -61,8 +65,7 @@ class DaoSettings extends React.Component {
           <Field label="Address" style={{ marginBottom: 0 }}>
             <IdentityBadge
               entity={checksummedDaoAddr}
-              networkType={network.type}
-              shorten={shorten}
+              shorten={shortAddresses}
             />
             <Note>
               <strong>Do not send ether or tokens to this address!</strong>
@@ -129,8 +132,7 @@ class DaoSettings extends React.Component {
                     <Field label={name}>
                       <IdentityBadge
                         entity={checksummedProxyAddress}
-                        networkType={network.type}
-                        shorten={shorten}
+                        shorten={shortAddresses}
                       />
                     </Field>
                   </li>
@@ -152,12 +154,7 @@ const ButtonLink = styled(Button).attrs({ mode: 'text' })`
 `
 
 export default props => (
-  <React.Fragment>
-    <BreakPoint to="medium">
-      <DaoSettings {...props} shorten />
-    </BreakPoint>
-    <BreakPoint from="medium">
-      <DaoSettings {...props} />
-    </BreakPoint>
-  </React.Fragment>
+  <Viewport>
+    {({ below }) => <DaoSettings {...props} shortAddresses={below('medium')} />}
+  </Viewport>
 )

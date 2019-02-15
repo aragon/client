@@ -5,11 +5,11 @@ import {
   AppBar,
   AppView,
   NavigationBar,
-  Button,
-  font,
+  Viewport,
   breakpoint,
-  BreakPoint,
+  font,
 } from '@aragon/ui'
+import { AppType } from '../../prop-types'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
@@ -20,11 +20,13 @@ import AssignPermissionPanel from './AssignPermissionPanel'
 import ManageRolePanel from './ManageRolePanel'
 import MenuButton from '../../components/MenuPanel/MenuButton'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import AddPermissionButton from './AddPermissionButton'
 
 class Permissions extends React.Component {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     appsLoading: PropTypes.bool.isRequired,
+    onMessage: PropTypes.func.isRequired,
     onParamsRequest: PropTypes.func.isRequired,
     params: PropTypes.string,
     permissionsLoading: PropTypes.bool.isRequired,
@@ -210,34 +212,28 @@ class Permissions extends React.Component {
                 appBar={
                   <AppBar
                     endContent={
-                      <Button
-                        mode="strong"
+                      <AddPermissionButton
+                        title="Add permission"
                         onClick={this.createPermission}
                         disabled={appsLoading || permissionsLoading}
-                      >
-                        Add permission
-                      </Button>
+                      />
                     }
                   >
-                    <BreakPoint to="medium">
-                      {navigationItems.length === 1 ? (
-                        <AppBarTitle>
-                          <MenuButton onClick={this.handleMenuPanelOpen} />
-                          <AppBarLabel>Permissions</AppBarLabel>
-                        </AppBarTitle>
-                      ) : (
-                        <NavigationBar
-                          items={navigationItems}
-                          onBack={this.goToHome}
-                        />
-                      )}
-                    </BreakPoint>
-                    <BreakPoint from="medium">
-                      <NavigationBar
-                        items={navigationItems}
-                        onBack={this.goToHome}
-                      />
-                    </BreakPoint>
+                    <Viewport>
+                      {({ below }) =>
+                        below('medium') && navigationItems.length === 1 ? (
+                          <AppBarTitle>
+                            <MenuButton onClick={this.handleMenuPanelOpen} />
+                            <AppBarLabel>Permissions</AppBarLabel>
+                          </AppBarTitle>
+                        ) : (
+                          <NavigationBar
+                            items={navigationItems}
+                            onBack={this.goToHome}
+                          />
+                        )
+                      }
+                    </Viewport>
                   </AppBar>
                 }
               >
@@ -247,16 +243,7 @@ class Permissions extends React.Component {
                   }}
                 />
 
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    left: '0',
-                    right: '0',
-                    bottom: '0',
-                    overflowX: 'hidden',
-                  }}
-                >
+                <Wrap>
                   <Screen position={0} animate={animateScreens}>
                     {location.screen === 'home' && (
                       <Home
@@ -290,7 +277,7 @@ class Permissions extends React.Component {
                       </React.Fragment>
                     )}
                   </Screen>
-                </div>
+                </Wrap>
               </AppView>
 
               <AssignPermissionPanel
@@ -300,10 +287,10 @@ class Permissions extends React.Component {
               />
 
               <ManageRolePanel
+                app={location.app}
                 apps={apps}
                 opened={managedRole !== null}
                 onClose={this.closeManageRolePanel}
-                app={location.app}
                 role={managedRole}
               />
             </React.Fragment>
@@ -313,6 +300,16 @@ class Permissions extends React.Component {
     )
   }
 }
+
+const Wrap = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflowx: hidden;
+  min-width: 320px;
+`
 
 const AppBarTitle = styled.span`
   display: flex;

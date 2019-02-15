@@ -1,21 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Text,
-} from '@aragon/ui'
+import { Button, Table, TableRow, Text } from '@aragon/ui'
+import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { EthereumAddressType } from '../../prop-types'
 
 class EntityPermissions extends React.PureComponent {
   static propTypes = {
-    address: PropTypes.string.isRequired,
+    address: EthereumAddressType.isRequired,
     loadPermissionsLabel: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     noPermissionsLabel: PropTypes.string,
@@ -24,7 +19,6 @@ class EntityPermissions extends React.PureComponent {
   static defaultProps = {
     loadPermissionsLabel: 'Loading entity permissions…',
     noPermissionsLabel: 'No permissions set.',
-    title: 'Permissions',
   }
   render() {
     const {
@@ -88,13 +82,13 @@ class Row extends React.Component {
     const { action, app, proxyAddress } = this.props
     return (
       <TableRow>
-        <TableCell>
+        <FirstTableCell>
           <Text weight="bold">{action}</Text>
-        </TableCell>
+        </FirstTableCell>
         <TableCell>
           <AppInstanceLabel app={app} proxyAddress={proxyAddress} />
         </TableCell>
-        <TableCell align="right">
+        <LastTableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -103,7 +97,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell>
+        </LastTableCell>
       </TableRow>
     )
   }
@@ -112,9 +106,9 @@ class Row extends React.Component {
 Row.propTypes = {
   action: PropTypes.string.isRequired,
   app: PropTypes.object.isRequired,
-  entityAddress: PropTypes.string.isRequired,
+  entityAddress: EthereumAddressType.isRequired,
   onRevoke: PropTypes.func.isRequired,
-  proxyAddress: PropTypes.string.isRequired,
+  proxyAddress: EthereumAddressType.isRequired,
   roleBytes: PropTypes.string.isRequired,
 }
 

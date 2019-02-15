@@ -2,33 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import {
-  Text,
-  theme,
-  unselectable,
-  breakpoint,
-  BreakPoint,
-  springs,
-} from '@aragon/ui'
+import { Text, breakpoint, springs, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import RemoteIcon from '../RemoteIcon'
 import NotificationAlert from '../Notifications/NotificationAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
-import {
-  APPS_STATUS_ERROR,
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-} from '../../symbols'
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
 const APP_SETTINGS = staticApps.get('settings').app
+const SHADOW_WIDTH = 15
 
 const prepareAppGroups = apps =>
   apps.reduce((groups, app) => {
@@ -53,19 +42,15 @@ const prepareAppGroups = apps =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
-    appsStatus: PropTypes.oneOf([
-      APPS_STATUS_ERROR,
-      APPS_STATUS_READY,
-      APPS_STATUS_LOADING,
-    ]).isRequired,
     activeInstanceId: PropTypes.string,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsStatus: AppsStatusType.isRequired,
+    connected: PropTypes.bool.isRequired,
+    daoAddress: DaoAddressType.isRequired,
+    notifications: PropTypes.number,
     onOpenApp: PropTypes.func.isRequired,
     onNotificationClicked: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
-    daoAddress: DaoAddressType.isRequired,
-    connected: PropTypes.bool.isRequired,
-    notifications: PropTypes.number,
   }
 
   state = {
@@ -186,25 +171,28 @@ class MenuPanel extends React.PureComponent {
 }
 
 const AnimatedMenuPanel = ({
-  menuPanelOpened,
+  opened,
+  autoClosing,
   onCloseMenuPanel,
-  autohide,
   ...props
 }) => {
   return (
     <React.Fragment>
       <Spring
         from={{ progress: 0 }}
-        to={{ progress: !!menuPanelOpened }}
+        to={{ progress: Number(opened) }}
         config={springs.lazy}
+        immediate={!autoClosing}
         native
-        immediate={!autohide}
       >
         {({ progress }) => (
           <Wrap
             style={{
               transform: progress.interpolate(
-                v => `translate3d(${-100 * (1 - v)}%, 0, 0)`
+                v =>
+                  `translate3d(
+                    calc((${-100 * (1 - v)}%) - (${SHADOW_WIDTH *
+                    (1 - v)}px)), 0, 0)`
               ),
               opacity: progress.interpolate(v => (v > 0 ? 1 : 0)),
             }}
@@ -213,7 +201,7 @@ const AnimatedMenuPanel = ({
           </Wrap>
         )}
       </Spring>
-      <Overlay opened={menuPanelOpened} onClick={onCloseMenuPanel} />
+      <Overlay opened={opened} onClick={onCloseMenuPanel} />
     </React.Fragment>
   )
 }
@@ -223,6 +211,7 @@ const Overlay = styled.div`
   z-index: 2;
   width: 100vw;
   height: 100vh;
+  min-width: 320px;
   display: ${({ opened }) => (opened ? 'block' : 'none')};
 
   ${breakpoint(
@@ -238,6 +227,7 @@ const Wrap = styled(animated.div)`
   z-index: 3;
   width: 90vw;
   height: 100vh;
+  min-width: 300px;
 
   ${breakpoint(
     'medium',
@@ -267,7 +257,7 @@ const In = styled.div`
   flex-shrink: 1;
   background: #fff;
   border-right: 1px solid #e8e8e8;
-  box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 0 ${SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
 `
 
 const Header = styled.div`
@@ -332,13 +322,4 @@ const ConnectionBullet = styled.span`
     connected ? theme.positive : theme.negative};
 `
 
-export default props => (
-  <React.Fragment>
-    <BreakPoint from="medium">
-      <AnimatedMenuPanel {...props} />
-    </BreakPoint>
-    <BreakPoint to="medium">
-      <AnimatedMenuPanel {...props} autohide />
-    </BreakPoint>
-  </React.Fragment>
-)
+export default AnimatedMenuPanel

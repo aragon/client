@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, TableHeader, TableRow } from '@aragon/ui'
+import { Table, TableHeader, TableRow, Viewport } from '@aragon/ui'
 import Section from '../Section'
 import EmptyBlock from '../EmptyBlock'
 import EntityRow from './EntityRow'
@@ -30,12 +30,21 @@ class BrowseByEntity extends React.Component {
             return (
               <Table
                 header={
-                  <TableRow>
-                    <TableHeader title="Entity" style={{ width: '20%' }} />
-                    <TableHeader title="Type" />
-                    <TableHeader title="Actions" />
-                    <TableHeader title="" />
-                  </TableRow>
+                  <Viewport>
+                    {({ above }) =>
+                      above('medium') && (
+                        <TableRow>
+                          <TableHeader
+                            title="Entity"
+                            style={{ width: '20%' }}
+                          />
+                          <TableHeader title="Type" />
+                          <TableHeader title="Actions" />
+                          <TableHeader title="" />
+                        </TableRow>
+                      )
+                    }
+                  </Viewport>
                 }
               >
                 {roles.map(({ entity, entityAddress, roles }) => (

@@ -1,26 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Badge } from '@aragon/ui'
+import { Badge, Viewport } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
+import { EthereumAddressType } from '../../prop-types'
 
 const NavigationItem = ({ title, badge, address, entity }) => {
   const isEntity = !badge && address
   return (
-    <Main>
-      <Title>{title}</Title>
-      {isEntity && (
-        <IdentityBadge
-          entity={entity && entity.type === 'any' ? 'Any account' : address}
-        />
+    <Viewport>
+      {({ above }) => (
+        <Main>
+          <Title>{title}</Title>
+          {above('medium') && isEntity && (
+            <IdentityBadge
+              entity={entity && entity.type === 'any' ? 'Any account' : address}
+            />
+          )}
+          {badge && <Badge.App title={badge.title}>{badge.label}</Badge.App>}
+        </Main>
       )}
-      {badge && <Badge.App title={badge.title}>{badge.label}</Badge.App>}
-    </Main>
+    </Viewport>
   )
 }
 
 NavigationItem.propTypes = {
-  address: PropTypes.string,
+  address: EthereumAddressType,
   badge: PropTypes.object,
   entity: PropTypes.object,
   title: PropTypes.string.isRequired,

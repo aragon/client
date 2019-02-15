@@ -1,10 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
+import {
+  SidePanel,
+  DropDown,
+  Info,
+  Field,
+  Button,
+  breakpoint,
+} from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
+import { AppType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 import EntitySelector from './EntitySelector'
@@ -77,8 +85,8 @@ const DEFAULT_STATE = {
 // The role manager panel, wrapped in a PermissionsContext (see end of file)
 class ManageRolePanel extends React.PureComponent {
   static propTypes = {
-    app: PropTypes.object,
-    apps: PropTypes.array.isRequired,
+    app: AppType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     createPermission: PropTypes.func.isRequired,
     getRoleManager: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -172,11 +180,11 @@ class ManageRolePanel extends React.PureComponent {
   handleSubmit = () => {
     const { newRoleManagerValue, assignEntityAddress } = this.state
     const {
+      app,
       onClose,
+      createPermission,
       removePermissionManager,
       setPermissionManager,
-      createPermission,
-      app,
       role,
     } = this.props
 
@@ -348,8 +356,15 @@ class ManageRolePanel extends React.PureComponent {
 }
 
 const FlexRow = styled.div`
-  display: flex;
+  display: inline-flex;
   align-items: center;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+    `
+  )}
 `
 
 export default props => (

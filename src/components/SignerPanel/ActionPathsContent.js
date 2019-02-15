@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
@@ -9,6 +10,16 @@ import providerString from '../../provider-strings'
 const RADIO_ITEM_TITLE_LENGTH = 30
 
 class ActionPathsContent extends React.Component {
+  static propTypes = {
+    direct: PropTypes.bool.isRequired,
+    intent: PropTypes.object.isRequired,
+    locator: PropTypes.object.isRequired,
+    onSign: PropTypes.func.isRequired,
+    paths: PropTypes.array.isRequired,
+    pretransaction: PropTypes.object,
+    signingEnabled: PropTypes.bool.isRequired,
+    walletProviderId: PropTypes.string.isRequired,
+  }
   state = {
     selected: 0,
   }
@@ -38,12 +49,16 @@ class ActionPathsContent extends React.Component {
             ? annotatedDescription.map(({ type, value }, index) => {
                 if (type === 'address') {
                   return (
-                    <IdentityBadge
+                    <span
                       key={index}
-                      entity={value}
-                      fontSize="small"
-                      style={{ marginRight: '4px' }}
-                    />
+                      css={`
+                        display: inline-flex;
+                        vertical-align: middle;
+                        margin-right: 4px;
+                      `}
+                    >
+                      <IdentityBadge entity={value} fontSize="small" />
+                    </span>
                   )
                 } else if (type === 'app') {
                   return (
@@ -123,11 +138,11 @@ class ActionPathsContent extends React.Component {
   }
   render() {
     const {
-      signingEnabled,
       intent,
       direct,
       paths,
       pretransaction,
+      signingEnabled,
       walletProviderId,
     } = this.props
     const { selected } = this.state

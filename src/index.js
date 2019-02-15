@@ -2,7 +2,7 @@ import '@babel/polyfill'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { PublicUrl, BaseStyles } from '@aragon/ui'
+import { Main } from '@aragon/ui'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import App from './App'
 
@@ -22,12 +22,10 @@ if (
 }
 
 ReactDOM.render(
-  <PublicUrl.Provider url="./aragon-ui/">
-    <BaseStyles />
-
-    <GlobalErrorHandler>
+  <GlobalErrorHandler>
+    <Main>
       <App />
-    </GlobalErrorHandler>
-  </PublicUrl.Provider>,
+    </Main>
+  </GlobalErrorHandler>,
   document.getElementById('root')
 )

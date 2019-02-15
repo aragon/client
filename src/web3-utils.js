@@ -130,3 +130,26 @@ export function isValidEnsName(name) {
 
 // Re-export some utilities from web3-utils
 export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
+
+/*
+ * Return the injected provider, if any.
+ */
+export function getInjectedProvider() {
+  if (window.ethereum) {
+    return window.ethereum
+  }
+  if (window.web3 && window.web3.currentProvider) {
+    return window.web3.currentProvider
+  }
+  return null
+}
+
+export function isConnected(provider) {
+  // EIP-1193 compliant providers may not include `isConnected()`, but most should support it for
+  // the foreseeable future to be backwards compatible with older Web3.js implementations.
+  // The `status` property is also not required by EIP-1193, but is often set on providers for
+  // backwards compatibility as well.
+  return typeof provider.isConnected === 'function'
+    ? provider.isConnected()
+    : provider.status === 'connected'
+}

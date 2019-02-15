@@ -3,16 +3,17 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import {
-  theme,
-  AppView,
   AppBar,
+  AppView,
   Text,
-  font,
+  Viewport,
   breakpoint,
-  BreakPoint,
+  font,
+  theme,
 } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { lerp } from '../../math-utils'
+import { AppType } from '../../prop-types'
 import springs from '../../springs'
 import MenuButton from '../MenuPanel/MenuButton'
 
@@ -56,7 +57,7 @@ const actions = [
 
 class Home extends React.Component {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     appsLoading: PropTypes.bool.isRequired,
     locator: PropTypes.object.isRequired,
     onMessage: PropTypes.func.isRequired,
@@ -116,9 +117,13 @@ class Home extends React.Component {
             appBar={
               <AppBar>
                 <AppBarTitle>
-                  <BreakPoint to="medium">
-                    <MenuButton onClick={this.handleMenuPanelOpen} />
-                  </BreakPoint>
+                  <Viewport>
+                    {({ below }) =>
+                      below('medium') && (
+                        <MenuButton onClick={this.handleMenuPanelOpen} />
+                      )
+                    }
+                  </Viewport>
                   <AppBarLabel>Home</AppBarLabel>
                 </AppBarTitle>
               </AppBar>

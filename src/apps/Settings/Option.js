@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Text } from '@aragon/ui'
 
@@ -34,5 +35,10 @@ const Option = ({ children, name, text, ...props }) => (
     {children}
   </Container>
 )
+Option.propTypes = {
+  children: PropTypes.node,
+  name: PropTypes.node,
+  text: PropTypes.node,
+}
 
 export default Option
