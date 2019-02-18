@@ -27,7 +27,6 @@ class DaoSettings extends React.PureComponent {
     walletWeb3: PropTypes.object.isRequired,
   }
   static defaultProps = {
-    account: '',
     shortAddresses: false,
   }
   handleDepositTestTokens = () => {
