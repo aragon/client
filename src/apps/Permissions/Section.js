@@ -19,7 +19,7 @@ const Main = styled.section`
   margin-bottom: 30px;
 
   > h1 {
-    margin: 30px;
+    margin: 20px;
   }
 
   ${breakpoint(
