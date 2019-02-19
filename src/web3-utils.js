@@ -6,6 +6,7 @@
 import Web3 from 'web3'
 import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
+import { isElectron } from './utils'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -139,6 +140,9 @@ export function getWeb3(provider) {
 
 // Returns an identifier for the provider, if it can be detected
 export function identifyProvider(provider) {
+  if (provider && isElectron()) {
+    return 'frame'
+  }
   if (provider && provider.isMetaMask) {
     return 'metamask'
   }

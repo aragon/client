@@ -5,6 +5,9 @@
 // be detected.
 
 const PROVIDERS_STRINGS = {
+  frame: {
+    'your Ethereum provider': 'Frame',
+  },
   metamask: {
     'your Ethereum provider': 'Metamask',
   },
