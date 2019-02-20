@@ -22,15 +22,20 @@ class ZoomCardOpened extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { cardRect } = this.props
-    if (cardRect && cardRect !== prevProps.cardRect) {
-      this.setState({ cardRect, openedCardRect: this.getOpenedCardRect() })
+    this.updateCardRect(prevProps.cardRect, this.props.cardRect)
+  }
 
-      this._openedCard.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
+  updateCardRect(prevCardRect, cardRect) {
+    if (!cardRect || cardRect === prevCardRect) {
+      return
     }
+
+    this.setState({ cardRect, openedCardRect: this.getOpenedCardRect() })
+
+    this._openedCard.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
   }
 
   getOpenedCardRect() {

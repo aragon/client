@@ -5,8 +5,6 @@ import { springs } from '@aragon/ui'
 import ZoomCard from './ZoomCard'
 import ZoomCardOpened from './ZoomCardOpened'
 
-const { Provider, Consumer } = React.createContext({})
-
 class ZoomableCards extends React.Component {
   static propTypes = {
     currentId: PropTypes.string,
