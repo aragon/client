@@ -1,10 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Info, theme } from '@aragon/ui'
 import providerString from '../../provider-strings'
 import SignerButton from './SignerButton'
 
-import { STATUS_SIGNING, STATUS_SIGNED, STATUS_ERROR } from './signer-statuses'
+import {
+  STATUS_ERROR,
+  STATUS_SIGNED,
+  STATUS_SIGNING,
+  SignerStatusType,
+} from './signer-statuses'
 
 import imgPending from '../../assets/transaction-pending.svg'
 import imgSuccess from '../../assets/transaction-success.svg'
@@ -15,6 +21,12 @@ const cleanErrorMessage = msg =>
   msg.replace(/^Returned error: /, '').replace(/^Error: /, '')
 
 class SigningStatus extends React.Component {
+  static propTypes = {
+    status: SignerStatusType.isRequired,
+    signError: PropTypes.instanceOf(Error),
+    walletProviderId: PropTypes.string,
+    onClose: PropTypes.func.isRequired,
+  }
   getLabel() {
     const { status } = this.props
     if (status === STATUS_SIGNING) return 'Waiting for signature…'
@@ -99,6 +111,10 @@ const StatusImage = ({ status }) => (
     <StatusImageImg visible={status === STATUS_SIGNED} src={imgSuccess} />
   </StatusImageMain>
 )
+StatusImage.propTypes = {
+  status: SignerStatusType.isRequired,
+}
+
 const StatusImageMain = styled.div`
   position: relative;
   width: 150px;

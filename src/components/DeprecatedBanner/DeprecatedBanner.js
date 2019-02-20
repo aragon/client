@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { theme, Text, SafeLink, Button } from '@aragon/ui'
 import Banner from '../Banner/Banner'
@@ -22,6 +23,12 @@ const DeprecatedBanner = props => (
 )
 
 class DeprecatedDao extends React.Component {
+  static propTypes = {
+    dao: PropTypes.object.isRequired,
+    lightMode: PropTypes.bool,
+    showModal: PropTypes.bool,
+    children: PropTypes.node,
+  }
   static defaultProps = {
     lightMode: false,
   }
@@ -86,6 +93,10 @@ const DeprecatedBody = ({ dao }) => (
   </React.Fragment>
 )
 
+DeprecatedBody.propTypes = {
+  dao: PropTypes.object.isRequired,
+}
+
 const DeprecatedModal = ({ onHide, dao }) => (
   <Modal
     title={DEPRECATION_TITLE}
@@ -98,6 +109,11 @@ const DeprecatedModal = ({ onHide, dao }) => (
     }
   />
 )
+
+DeprecatedModal.propTypes = {
+  onHide: PropTypes.func.isRequired,
+  dao: PropTypes.object.isRequired,
+}
 
 const TopParagraph = styled(Text.Paragraph)`
   margin-bottom: 20px;

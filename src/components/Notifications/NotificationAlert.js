@@ -1,11 +1,14 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { theme, springs, IconNotifications } from '@aragon/ui'
 
 export default class NotificationAlert extends React.PureComponent {
-  state = { opened: false, previousNotifications: 0 }
-
+  static propTypes = {
+    notifications: PropTypes.number.isRequired,
+    onClick: PropTypes.func.isRequired,
+  }
   static getDerivedStateFromProps(
     { notifications },
     { opened, previousNotifications }
@@ -15,6 +18,8 @@ export default class NotificationAlert extends React.PureComponent {
       previousNotifications: notifications,
     }
   }
+
+  state = { opened: false, previousNotifications: 0 }
 
   handleClick = () => {
     this.setState({ opened: true })

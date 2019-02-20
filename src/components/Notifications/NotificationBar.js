@@ -1,11 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { Badge } from '@aragon/ui'
 import { NotificationHub, Notification } from './NotificationHub'
 import springs from '../../springs'
 
-export default function NotificationBar({ open, notifications, onClearAll }) {
+const NotificationBar = ({ open, notifications, onClearAll }) => {
   const count = notifications.length
   return (
     <Spring
@@ -14,11 +15,11 @@ export default function NotificationBar({ open, notifications, onClearAll }) {
       to={{ x: open ? 0 : -300 }}
       config={springs.lazy}
     >
-      {props => (
+      {({ x }) => (
         <NotificationFrame
           tabIndex={0}
           style={{
-            transform: props.x.interpolate(x => `translate3d(${x}px,0,0)`),
+            transform: x.interpolate(x => `translate3d(${x}px,0,0)`),
           }}
         >
           <NotificationHeader>
@@ -39,7 +40,13 @@ export default function NotificationBar({ open, notifications, onClearAll }) {
   )
 }
 
-function NotificationImpl(item, ready) {
+NotificationBar.propTypes = {
+  open: PropTypes.bool,
+  notifications: PropTypes.arrayOf(PropTypes.object),
+  onClearAll: PropTypes.func.isRequired,
+}
+
+const NotificationImpl = (item, ready) => {
   let payload =
     typeof item.content === 'string' ? <p>{item.content}</p> : item.content
   switch (item.type) {
@@ -100,3 +107,5 @@ const NotificationHeader = styled('div')`
     text-align: right;
   }
 `
+
+export default NotificationBar

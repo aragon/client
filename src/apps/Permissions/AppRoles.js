@@ -72,6 +72,11 @@ class AppRoles extends React.PureComponent {
 }
 
 class RoleRow extends React.Component {
+  static propTypes = {
+    onManage: PropTypes.func.isRequired,
+    role: PropTypes.shape({ bytes: PropTypes.string }).isRequired,
+    manager: PropTypes.shape({ type: PropTypes.string }).isRequired,
+  }
   handleManageClick = () => {
     this.props.onManage(this.props.role.bytes)
   }

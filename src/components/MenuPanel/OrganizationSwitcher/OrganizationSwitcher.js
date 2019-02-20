@@ -97,7 +97,7 @@ const LoaderLabel = styled.span`
   font-size: 15px;
 `
 
-export default props =>
+const OrganizationSwitcherWithFavorites = props =>
   props.currentDao.address ? (
     <FavoriteDaosConsumer>
       {({ favoriteDaos, updateFavoriteDaos }) => (
@@ -114,3 +114,9 @@ export default props =>
       <LoaderLabel>Loading…</LoaderLabel>
     </Loader>
   )
+
+OrganizationSwitcherWithFavorites.propTypes = {
+  currentDao: DaoItemType.isRequired,
+}
+
+export default OrganizationSwitcherWithFavorites
