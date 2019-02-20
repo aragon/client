@@ -264,6 +264,7 @@ const Wrap = styled(animated.div)`
     `
       position: relative;
       width: 220px;
+      min-width: 0;
     `
   )};
 `
