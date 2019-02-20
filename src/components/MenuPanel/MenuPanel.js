@@ -184,16 +184,17 @@ class AnimatedMenuPanel extends React.Component {
     clearTimeout(this._timer)
   }
   updateAnimate(prevProps) {
-    const { autoClosing, opened } = this.props
-
-    // If we change autoclosing, it means we are switching from a view to
-    // another one, and we should stop animating the panel for a short time.
-    if (prevProps.autoClosing !== autoClosing) {
-      this.setState({ animate: false })
-      this._timer = setTimeout(() => {
-        this.setState({ animate: true })
-      }, 0)
+    if (prevProps.autoClosing === this.props.autoClosing) {
+      return
     }
+
+    // If we autoclosing has changed, it means we are switching from
+    // autoclosing to fixed or the opposite, and we should stop animating the
+    // panel for a short period of time.
+    this.setState({ animate: false })
+    this._timer = setTimeout(() => {
+      this.setState({ animate: true })
+    }, 0)
   }
 
   render() {
