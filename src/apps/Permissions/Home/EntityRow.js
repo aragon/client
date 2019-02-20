@@ -123,7 +123,7 @@ class EntityRow extends React.PureComponent {
           `}
         >
           <ViewDetailsButton
-            title="View details"
+            label="View details"
             onClick={this.handleDetailsClick}
           />
         </LastTableCell>
