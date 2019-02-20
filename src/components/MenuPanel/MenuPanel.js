@@ -170,40 +170,70 @@ class MenuPanel extends React.PureComponent {
   }
 }
 
-const AnimatedMenuPanel = ({
-  opened,
-  autoClosing,
-  onCloseMenuPanel,
-  ...props
-}) => {
-  return (
-    <React.Fragment>
-      <Spring
-        from={{ progress: 0 }}
-        to={{ progress: Number(opened) }}
-        config={springs.lazy}
-        immediate={!autoClosing}
-        native
-      >
-        {({ progress }) => (
-          <Wrap
-            style={{
-              transform: progress.interpolate(
-                v =>
-                  `translate3d(
-                    calc((${-100 * (1 - v)}%) - (${SHADOW_WIDTH *
-                    (1 - v)}px)), 0, 0)`
-              ),
-              opacity: progress.interpolate(v => (v > 0 ? 1 : 0)),
-            }}
-          >
-            <MenuPanel {...props} />
-          </Wrap>
-        )}
-      </Spring>
-      <Overlay opened={opened} onClick={onCloseMenuPanel} />
-    </React.Fragment>
-  )
+class AnimatedMenuPanel extends React.Component {
+  state = {
+    animate: false,
+  }
+  componentDidMount() {
+    this.setState({ animate: this.props.autoClosing })
+  }
+  componentDidUpdate(prevProps) {
+    this.updateAnimate(prevProps)
+  }
+  componentWillUnmount() {
+    clearTimeout(this._timer)
+  }
+  updateAnimate(prevProps) {
+    const { autoClosing, opened } = this.props
+
+    // If we change autoclosing, it means we are switching from a view to
+    // another one, and we should stop animating the panel for a short time.
+    if (prevProps.autoClosing !== autoClosing) {
+      this.setState({ animate: false })
+      this._timer = setTimeout(() => {
+        this.setState({ animate: true })
+      }, 0)
+    }
+  }
+
+  render() {
+    const { animate } = this.state
+    const { opened, autoClosing, onCloseMenuPanel, ...props } = this.props
+    return (
+      <React.Fragment>
+        <Spring
+          from={{ progress: 0 }}
+          to={{ progress: Number(opened) }}
+          config={springs.lazy}
+          immediate={!animate}
+          native
+        >
+          {({ progress }) => (
+            <Wrap
+              style={{
+                transform: progress.interpolate(
+                  v =>
+                    `
+                      translate3d(
+                        calc(
+                          ${-100 * (1 - v)}% -
+                          ${SHADOW_WIDTH * (1 - v)}px
+                        ),
+                        0, 0
+                      )
+                    `
+                ),
+                opacity: progress.interpolate(v => (v > 0 ? 1 : 0)),
+              }}
+            >
+              <MenuPanel {...props} />
+            </Wrap>
+          )}
+        </Spring>
+        <Overlay opened={opened} onClick={onCloseMenuPanel} />
+      </React.Fragment>
+    )
+  }
 }
 
 const Overlay = styled.div`
