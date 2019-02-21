@@ -28,10 +28,11 @@ class BrowseByEntity extends React.Component {
             }
 
             return (
-              <Table
-                header={
-                  <Viewport>
-                    {({ above }) =>
+              <Viewport>
+                {({ above, below }) => (
+                  <Table
+                    noSideBorders={below('medium')}
+                    header={
                       above('medium') && (
                         <TableRow>
                           <TableHeader
@@ -44,18 +45,18 @@ class BrowseByEntity extends React.Component {
                         </TableRow>
                       )
                     }
-                  </Viewport>
-                }
-              >
-                {roles.map(({ entity, entityAddress, roles }) => (
-                  <EntityRow
-                    key={entityAddress}
-                    entity={entity}
-                    roles={roles}
-                    onOpen={onOpenEntity}
-                  />
-                ))}
-              </Table>
+                  >
+                    {roles.map(({ entity, entityAddress, roles }) => (
+                      <EntityRow
+                        key={entityAddress}
+                        entity={entity}
+                        roles={roles}
+                        onOpen={onOpenEntity}
+                      />
+                    ))}
+                  </Table>
+                )}
+              </Viewport>
             )
           }}
         </PermissionsConsumer>
