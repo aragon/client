@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Table, TableRow, Text } from '@aragon/ui'
+import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import IdentityBadge from '../../components/IdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
@@ -44,24 +44,32 @@ class AppRoles extends React.PureComponent {
               {loading || roles.length === 0 ? (
                 <EmptyBlock>{loading ? loadingLabel : emptyLabel}</EmptyBlock>
               ) : (
-                <Table
-                  header={
-                    <TableRow>
-                      <TableHeader title="Action" style={{ width: '20%' }} />
-                      <TableHeader title="Managed by" />
-                      <TableHeader />
-                    </TableRow>
-                  }
-                >
-                  {roles.map(({ role, manager }, i) => (
-                    <RoleRow
-                      key={i}
-                      role={role}
-                      manager={manager}
-                      onManage={this.handleManageRole}
-                    />
-                  ))}
-                </Table>
+                <Viewport>
+                  {({ below }) => (
+                    <Table
+                      noSideBorders={below('medium')}
+                      header={
+                        <TableRow>
+                          <TableHeader
+                            title="Action"
+                            style={{ width: '20%' }}
+                          />
+                          <TableHeader title="Managed by" />
+                          <TableHeader />
+                        </TableRow>
+                      }
+                    >
+                      {roles.map(({ role, manager }, i) => (
+                        <RoleRow
+                          key={i}
+                          role={role}
+                          manager={manager}
+                          onManage={this.handleManageRole}
+                        />
+                      ))}
+                    </Table>
+                  )}
+                </Viewport>
               )}
             </Section>
           )
