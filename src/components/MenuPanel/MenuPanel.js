@@ -174,6 +174,7 @@ class AnimatedMenuPanel extends React.Component {
   state = {
     animate: false,
   }
+  _timer = -1
   componentDidMount() {
     this.setState({ animate: this.props.autoClosing })
   }
