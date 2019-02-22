@@ -174,7 +174,7 @@ class AnimatedMenuPanel extends React.Component {
   state = {
     animate: false,
   }
-  _timer = -1
+  _animateTimer = -1
   componentDidMount() {
     this.setState({ animate: this.props.autoClosing })
   }
@@ -182,7 +182,7 @@ class AnimatedMenuPanel extends React.Component {
     this.updateAnimate(prevProps)
   }
   componentWillUnmount() {
-    clearTimeout(this._timer)
+    clearTimeout(this._animateTimer)
   }
   updateAnimate(prevProps) {
     if (prevProps.autoClosing === this.props.autoClosing) {
@@ -193,7 +193,7 @@ class AnimatedMenuPanel extends React.Component {
     // autoclosing to fixed or the opposite, and we should stop animating the
     // panel for a short period of time.
     this.setState({ animate: false })
-    this._timer = setTimeout(() => {
+    this._animateTimer = setTimeout(() => {
       this.setState({ animate: true })
     }, 0)
   }
