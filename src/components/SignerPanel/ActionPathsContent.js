@@ -47,7 +47,7 @@ class ActionPathsContent extends React.Component {
         <div style={{ margin: '10px 0 10px 15px' }}>
           {annotatedDescription
             ? annotatedDescription.map(({ type, value }, index) => {
-                if (type === 'address') {
+                if (type === 'address' || type === 'any-account') {
                   return (
                     <span
                       key={index}
@@ -57,7 +57,10 @@ class ActionPathsContent extends React.Component {
                         margin-right: 4px;
                       `}
                     >
-                      <IdentityBadge entity={value} fontSize="small" />
+                      <IdentityBadge
+                        entity={type === 'any-account' ? 'Any account' : value}
+                        fontSize="small"
+                      />
                     </span>
                   )
                 } else if (type === 'app') {
