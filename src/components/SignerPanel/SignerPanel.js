@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { AppType, EthereumAddressType } from '../../prop-types'
-import { addressesEqual } from '../../web3-utils'
+import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
@@ -162,7 +162,6 @@ class SignerPanel extends React.Component {
       onRequestEnable,
       walletNetwork,
       walletProviderId,
-      walletWeb3,
     } = this.props
 
     const {
@@ -204,7 +203,7 @@ class SignerPanel extends React.Component {
                         <ConfirmTransaction
                           direct={directPath}
                           hasAccount={Boolean(account)}
-                          hasWeb3={Boolean(walletWeb3)}
+                          hasWeb3={Boolean(getInjectedProvider())}
                           intent={intent}
                           locator={locator}
                           networkType={network.type}
