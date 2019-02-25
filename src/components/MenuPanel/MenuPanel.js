@@ -56,6 +56,7 @@ class MenuPanel extends React.PureComponent {
     daoAddress: DaoAddressType.isRequired,
     notifications: PropTypes.number,
     onOpenApp: PropTypes.func.isRequired,
+    onOpenPreferences: PropTypes.func.isRequired,
     onNotificationClicked: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
   }
@@ -72,6 +73,7 @@ class MenuPanel extends React.PureComponent {
       connected,
       daoAddress,
       onNotificationClicked,
+      onOpenPreferences,
       notifications,
     } = this.props
     const appGroups = this.getAppGroups(apps)
@@ -118,6 +120,9 @@ class MenuPanel extends React.PureComponent {
               {connected ? 'Connected to the network' : 'Not connected'}
             </Text>
           </ConnectionWrapper>
+          <div>
+            <button onClick={onOpenPreferences}>My preferences</button>
+          </div>
         </In>
       </Main>
     )
