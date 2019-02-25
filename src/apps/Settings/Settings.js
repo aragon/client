@@ -23,7 +23,12 @@ import {
   setSelectedCurrency,
 } from '../../local-settings'
 import { sanitizeNetworkType } from '../../network-config'
-import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
+import {
+  AppType,
+  AragonType,
+  DaoAddressType,
+  EthereumAddressType,
+} from '../../prop-types'
 import { checkValidEthNode } from '../../web3-utils'
 import DaoSettings from './DaoSettings'
 import Option from './Option'
@@ -55,6 +60,7 @@ class Settings extends React.Component {
     onOpenApp: PropTypes.func.isRequired,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
+    wrapper: AragonType,
   }
   state = {
     currencies: AVAILABLE_CURRENCIES,
@@ -93,7 +99,8 @@ class Settings extends React.Component {
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
   }
-  handleRefreshCache = () => {
+  handleRefreshCache = async () => {
+    await this.props.wrapper.cache.clear()
     window.localStorage.clear()
     window.location.reload()
   }
@@ -113,6 +120,7 @@ class Settings extends React.Component {
       onOpenApp,
       walletNetwork,
       walletWeb3,
+      wrapper,
     } = this.props
     const {
       currencies,
@@ -205,24 +213,26 @@ class Settings extends React.Component {
               Save settings
             </Button>
           </Option>
-          <Option
-            name="Troubleshooting"
-            text={`
-              Press this button to refresh the cache of the application in your
-              browser.
-            `}
-          >
-            <div>
-              <Button mode="secondary" onClick={this.handleRefreshCache}>
-                Clear application cache
-              </Button>
-            </div>
-            <Note>
-              This will only delete the data stored in your browser to make the
-              app load faster. No data related to the organization itself will
-              be altered.
-            </Note>
-          </Option>
+          {wrapper && (
+            <Option
+              name="Troubleshooting"
+              text={`
+                Press this button to refresh the cache of the application in your
+                browser.
+              `}
+            >
+              <div>
+                <Button mode="secondary" onClick={this.handleRefreshCache}>
+                  Clear application cache
+                </Button>
+              </div>
+              <Note>
+                This will only delete the data stored in your browser to make
+                the app load faster. No data related to the organization itself
+                will be altered.
+              </Note>
+            </Option>
+          )}
         </Content>
       </AppLayout>
     )
