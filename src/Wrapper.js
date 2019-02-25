@@ -6,6 +6,7 @@ import { Apps, Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
+import Preferences from './components/Preferences/Preferences'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SwipeContainer from './components/MenuPanel/SwipeContainer'
 import SignerPanel from './components/SignerPanel/SignerPanel'
@@ -65,6 +66,7 @@ class Wrapper extends React.PureComponent {
   state = {
     appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
+    preferencesOpened: false,
     notificationOpen: false,
     notifications: [],
     queuedNotifications: [],
@@ -149,7 +151,15 @@ class Wrapper extends React.PureComponent {
   handleNotificationClicked = () => {
     this.setState(state => ({ notificationOpen: !state.notificationOpen }))
   }
-
+  handleClosePreferences = () => {
+    this.setState({ preferencesOpened: false })
+  }
+  handleOpenPreferences = () => {
+    if (this.props.autoClosingPanel) {
+      this.handleMenuPanelClose()
+    }
+    this.setState({ preferencesOpened: true })
+  }
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
@@ -193,10 +203,19 @@ class Wrapper extends React.PureComponent {
       walletProviderId,
       walletWeb3,
     } = this.props
-    const { menuPanelOpened, notifications, notificationOpen } = this.state
+    const {
+      menuPanelOpened,
+      notifications,
+      notificationOpen,
+      preferencesOpened,
+    } = this.state
 
     return (
       <Main>
+        <Preferences
+          opened={preferencesOpened}
+          onClose={this.handleClosePreferences}
+        />
         <BannerWrapper>{banner}</BannerWrapper>
         <SwipeContainer
           enabled={menuSwipeEnabled}
@@ -217,6 +236,7 @@ class Wrapper extends React.PureComponent {
                 autoClosing={autoClosingPanel}
                 onOpenApp={this.openApp}
                 onCloseMenuPanel={this.handleMenuPanelClose}
+                onOpenPreferences={this.handleOpenPreferences}
                 onRequestAppsReload={onRequestAppsReload}
                 onNotificationClicked={this.handleNotificationClicked}
                 notificationOpen={notificationOpen}
