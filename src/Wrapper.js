@@ -148,6 +148,42 @@ class Wrapper extends React.PureComponent {
     )
   }
 
+  handleSignerPanelTransactionSuccess = ({
+    data,
+    name,
+    description,
+    identifier,
+  }) => {
+    this.setState(state => ({
+      queuedNotifications: [
+        {
+          id: data,
+          type: 'transaction',
+          title: `${name} ${identifier}`,
+          content: description,
+        },
+        ...state.queuedNotifications,
+      ],
+    }))
+  }
+
+  handleSignerPanelClose = () => {
+    if (this.state.queuedNotifications.length) {
+      // Wait a little, then update notifications
+      setTimeout(
+        () =>
+          this.setState(state => ({
+            queuedNotifications: [],
+            notifications: [
+              ...state.queuedNotifications,
+              ...state.notifications,
+            ],
+          })),
+        250
+      )
+    }
+  }
+
   getMenuApps = memoize(apps => apps.filter(app => app.hasWebApp))
 
   render() {
@@ -200,41 +236,14 @@ class Wrapper extends React.PureComponent {
         <SignerPanel
           account={account}
           apps={apps}
-          locator={locator}
+          dao={locator.dao}
           onRequestEnable={onRequestEnable}
           transactionBag={transactionBag}
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
-          onTransactionSuccess={({ data, name, description, identifier }) =>
-            this.setState(state => ({
-              queuedNotifications: [
-                {
-                  id: data,
-                  type: 'transaction',
-                  title: `${name} ${identifier}`,
-                  content: description,
-                },
-                ...state.queuedNotifications,
-              ],
-            }))
-          }
-          onClose={() => {
-            if (this.state.queuedNotifications.length) {
-              // Wait a little, then update notifications
-              setTimeout(
-                () =>
-                  this.setState(state => ({
-                    queuedNotifications: [],
-                    notifications: [
-                      ...state.queuedNotifications,
-                      ...state.notifications,
-                    ],
-                  })),
-                250
-              )
-            }
-          }}
+          onTransactionSuccess={this.handleSignerPanelTransactionSuccess}
+          onClose={this.handleSignerPanelClose}
         />
       </Main>
     )

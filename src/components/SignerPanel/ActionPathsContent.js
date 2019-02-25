@@ -13,7 +13,7 @@ class ActionPathsContent extends React.Component {
   static propTypes = {
     direct: PropTypes.bool.isRequired,
     intent: PropTypes.object.isRequired,
-    locator: PropTypes.object.isRequired,
+    dao: PropTypes.string.isRequired,
     onSign: PropTypes.func.isRequired,
     paths: PropTypes.array.isRequired,
     pretransaction: PropTypes.object,
@@ -64,9 +64,9 @@ class ActionPathsContent extends React.Component {
                   return (
                     <SafeLink
                       key={index}
-                      href={`/#/${
-                        this.props.locator.dao
-                      }/permissions/?params=app.${value.proxyAddress}`}
+                      href={`/#/${this.props.dao}/permissions/?params=app.${
+                        value.proxyAddress
+                      }`}
                       target="_blank"
                       style={{ marginRight: '2px' }}
                     >
