@@ -1,5 +1,5 @@
 import { staticApps } from './static-apps'
-import { isAddress } from './web3-utils'
+import { isAddress, isValidEnsName } from './web3-utils'
 
 /*
  * Parse a path and a search query and return a “locator” object.
@@ -29,7 +29,7 @@ import { isAddress } from './web3-utils'
  *   - home: the screen you see when opening /.
  *   - setup: the onboarding screens.
  *   - app: when the path starts with a DAO address.
- *   - unknown: the mode can’t be determined.
+ *   - invalid: the DAO given is not valid
  */
 export const parsePath = (pathname, search = '') => {
   const locator = { path: pathname + search }
@@ -47,11 +47,11 @@ export const parsePath = (pathname, search = '') => {
   }
 
   const validAddress = isAddress(parts[0])
-  const validDomain = /[a-z0-9]+\.aragonid\.eth/.test(parts[0])
+  const validDomain = isValidEnsName(parts[0])
 
   // Exclude invalid DAO addresses
   if (!validAddress && !validDomain) {
-    return { ...locator, mode: 'unknown' }
+    return { ...locator, dao: parts[0], mode: 'invalid' }
   }
 
   // App

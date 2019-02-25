@@ -1,10 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Motion, spring } from 'react-motion'
-import { spring as springConf } from '@aragon/ui'
+import { Spring, animated } from 'react-spring'
+import { breakpoint } from '@aragon/ui'
 import { noop } from '../utils'
 import { getUnknownBalance } from '../web3-utils'
 import { isNameAvailable } from '../aragonjs-wrapper'
+import springs from '../springs'
 
 import * as Steps from './steps'
 import Templates from './templates'
@@ -17,6 +19,7 @@ import Template from './Template'
 import Domain from './Domain'
 import Launch from './Launch'
 import Sign from './Sign'
+import DeprecatedBanner from '../components/DeprecatedBanner/DeprecatedBanner'
 
 import {
   DomainCheckNone,
@@ -24,18 +27,11 @@ import {
   DomainCheckAccepted,
   DomainCheckRejected,
 } from './domain-states'
-
-const SPRING_SHOW = {
-  stiffness: 120,
-  damping: 17,
-  precision: 0.001,
-}
-const SPRING_HIDE = {
-  stiffness: 70,
-  damping: 15,
-  precision: 0.001,
-}
-const SPRING_SCREEN = springConf('slow')
+import {
+  DAO_CREATION_STATUS_NONE,
+  DAO_CREATION_STATUS_SUCCESS,
+  DAO_CREATION_STATUS_ERROR,
+} from '../symbols'
 
 const initialState = {
   template: null,
@@ -50,17 +46,38 @@ const initialState = {
 }
 
 class Onboarding extends React.PureComponent {
+  static propTypes = {
+    account: PropTypes.string,
+    balance: PropTypes.object,
+    banner: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.shape({
+        type: PropTypes.oneOf([DeprecatedBanner]),
+      }),
+    ]),
+    daoCreationStatus: PropTypes.oneOf([
+      DAO_CREATION_STATUS_NONE,
+      DAO_CREATION_STATUS_SUCCESS,
+      DAO_CREATION_STATUS_ERROR,
+    ]).isRequired,
+    onBuildDao: PropTypes.func.isRequired,
+    onComplete: PropTypes.func.isRequired,
+    onOpenOrganization: PropTypes.func.isRequired,
+    onResetDaoBuilder: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
+    selectorNetworks: PropTypes.array.isRequired,
+    visible: PropTypes.bool.isRequired,
+    walletNetwork: PropTypes.string,
+    walletProviderId: PropTypes.string,
+  }
+
   static defaultProps = {
     account: '',
     balance: getUnknownBalance(),
-    walletNetwork: '',
-    visible: true,
-    daoCreationStatus: 'none',
+    banner: false,
     onComplete: noop,
-    onBuildDao: noop,
-    onOpenOrganization: noop,
-    onResetDaoBuilder: noop,
-    banner: null,
+    walletNetwork: '',
+    walletProviderId: '',
   }
   state = {
     ...initialState,
@@ -80,7 +97,7 @@ class Onboarding extends React.PureComponent {
 
     if (
       nextProps.daoCreationStatus !== props.daoCreationStatus &&
-      nextProps.daoCreationStatus === 'success'
+      nextProps.daoCreationStatus === DAO_CREATION_STATUS_SUCCESS
     ) {
       setTimeout(() => {
         this.nextStep()
@@ -343,7 +360,7 @@ class Onboarding extends React.PureComponent {
       return this.validateConfigurationScreen(template, step.screen)
     }
     if (step.screen === 'sign') {
-      return daoCreationStatus === 'success'
+      return daoCreationStatus === DAO_CREATION_STATUS_SUCCESS
     }
     return true
   }
@@ -374,29 +391,30 @@ class Onboarding extends React.PureComponent {
     const step = this.currentStep()
     const steps = this.getSteps()
     return (
-      <Motion
-        style={{
-          showProgress: spring(
-            Number(visible),
-            visible ? SPRING_SHOW : SPRING_HIDE
-          ),
-        }}
+      <Spring
+        config={springs.lazy}
+        to={{ showProgress: Number(visible) }}
         onRest={this.handleTransitionRest}
+        native
       >
         {({ showProgress }) => (
           <Main
             style={{
               transform: visible
                 ? 'none'
-                : `translate3d(0, ${110 * (1 - showProgress)}%, 0)`,
-              opacity: visible ? showProgress : 1,
+                : showProgress.interpolate(
+                    v => `translate3d(0, ${110 * (1 - v)}%, 0)`
+                  ),
+              opacity: showProgress,
             }}
           >
             <BannerWrapper>{banner}</BannerWrapper>
             <View>
               <Window>
-                <Motion
-                  style={{ screenProgress: spring(stepIndex, SPRING_SCREEN) }}
+                <Spring
+                  native
+                  config={springs.smooth}
+                  to={{ screenProgress: stepIndex }}
                 >
                   {({ screenProgress }) => (
                     <React.Fragment>
@@ -406,8 +424,9 @@ class Onboarding extends React.PureComponent {
                           <Screen active={screen === step.screen} key={screen}>
                             {this.renderScreen(
                               screen,
-                              i - stepIndex,
-                              i - screenProgress
+                              i,
+                              screenProgress,
+                              screen === step.screen
                             )}
                           </Screen>
                         ))}
@@ -423,15 +442,15 @@ class Onboarding extends React.PureComponent {
                       />
                     </React.Fragment>
                   )}
-                </Motion>
+                </Spring>
               </Window>
             </View>
           </Main>
         )}
-      </Motion>
+      </Spring>
     )
   }
-  renderScreen(screen, position, positionProgress) {
+  renderScreen(screen, screenIndex, positionProgress, isActive) {
     const {
       template,
       domain,
@@ -442,24 +461,39 @@ class Onboarding extends React.PureComponent {
 
     const {
       account,
-      walletNetwork,
       balance,
       daoCreationStatus,
       onComplete,
       selectorNetworks,
+      onRequestEnable,
+      walletNetwork,
+      walletProviderId,
     } = this.props
 
     // No need to move the screens farther than one step
-    positionProgress = Math.min(1, Math.max(-1, positionProgress))
+    const getPositionProgress = progress =>
+      Math.min(1, Math.max(-1, screenIndex - progress))
 
-    const sharedProps = { positionProgress }
+    // used by every screen
+    const screenTransitionStyles = {
+      opacity: positionProgress.interpolate(
+        v => 1 - Math.abs(getPositionProgress(v))
+      ),
+      transform: positionProgress.interpolate(
+        v => `translateX(${getPositionProgress(v) * 50}%)`
+      ),
+    }
+
+    const sharedProps = {
+      screenTransitionStyles,
+      forceFocus: isActive,
+    }
 
     if (screen === 'start') {
       return (
         <Start
-          hasAccount={!!account}
+          hasAccount={Boolean(account)}
           balance={balance}
-          walletNetwork={walletNetwork}
           onCreate={this.handleStartCreate}
           onRest={this.handleStartRest}
           domain={domainToOpen}
@@ -468,6 +502,9 @@ class Onboarding extends React.PureComponent {
           onOpenOrganization={this.handleOpenOrganization}
           onOpenOrganizationAddress={this.handleOpenOrganizationAddress}
           selectorNetworks={selectorNetworks}
+          onRequestEnable={onRequestEnable}
+          walletNetwork={walletNetwork}
+          walletProviderId={walletProviderId}
           {...sharedProps}
         />
       )
@@ -528,14 +565,13 @@ class Onboarding extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   position: fixed;
-  z-index: 2;
+  z-index: 3;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: auto;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -545,6 +581,13 @@ const Main = styled.div`
       rgba(0, 0, 0, 0.08) 100%
     ),
     linear-gradient(-226deg, #00f1e1 0%, #00b4e4 100%);
+
+  ${breakpoint(
+    'medium',
+    `
+      overflow: auto;
+    `
+  )}
 `
 
 const BannerWrapper = styled.div`
@@ -556,18 +599,32 @@ const View = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 800px;
   flex-grow: 1;
-  padding: 50px;
+
+  ${breakpoint(
+    'medium',
+    `
+      min-width: 800px;
+      padding: 50px;
+    `
+  )}
 `
 
 const Window = styled.div`
   position: relative;
-  width: 1080px;
-  height: 660px;
+  width: 100vw;
+  height: 100vh;
   background: #fff;
-  border-radius: 3px;
-  box-shadow: 0 10px 28px 0 rgba(11, 103, 157, 0.7);
+
+  ${breakpoint(
+    'medium',
+    `
+      width: 1080px;
+      height: 660px;
+      border-radius: 3px;
+      box-shadow: 0 10px 28px 0 rgba(11, 103, 157, 0.7);
+    `
+  )}
 `
 
 const Screen = styled.div`
@@ -576,8 +633,15 @@ const Screen = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: hidden;
+  overflow: auto;
   pointer-events: ${({ active }) => (active ? 'auto' : 'none')};
+
+  ${breakpoint(
+    'medium',
+    `
+      overflow: hidden;
+    `
+  )}
 `
 
 export default Onboarding

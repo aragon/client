@@ -1,38 +1,88 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Viewport } from '@aragon/ui'
 import { Apps, Permissions, Settings } from './apps'
-import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
+import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
+import NotificationBar from './components/Notifications/NotificationBar'
+import {
+  AppType,
+  AppsStatusType,
+  DaoAddressType,
+  EthereumAddressType,
+} from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
-import { addressesEqual } from './web3-utils'
-import { noop } from './utils'
 import { APPS_STATUS_LOADING } from './symbols'
+import { addressesEqual } from './web3-utils'
+import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 
-class Wrapper extends React.Component {
-  static defaultProps = {
-    apps: [],
-    account: '',
-    connected: false,
-    daoAddress: '',
-    historyBack: noop,
-    historyPush: noop,
-    locator: {},
-    walletNetwork: '',
-    transactionBag: null,
-    wrapper: null,
-    walletWeb3: null,
-    web3: null,
-    banner: null,
+class Wrapper extends React.PureComponent {
+  static propTypes = {
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsStatus: AppsStatusType.isRequired,
+    banner: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.shape({
+        type: PropTypes.oneOf([DeprecatedBanner]),
+      }),
+    ]),
+    connected: PropTypes.bool,
+    daoAddress: DaoAddressType.isRequired,
+    historyBack: PropTypes.func.isRequired,
+    historyPush: PropTypes.func.isRequired,
+    locator: PropTypes.object.isRequired,
+    onRequestAppsReload: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
+    permissionsLoading: PropTypes.bool.isRequired,
+    autoClosingPanel: PropTypes.bool.isRequired,
+    transactionBag: PropTypes.object,
+    walletNetwork: PropTypes.string,
+    walletProviderId: PropTypes.string,
+    walletWeb3: PropTypes.object,
+    wrapper: PropTypes.object,
   }
+
+  static defaultProps = {
+    account: '',
+    banner: false,
+    connected: false,
+    transactionBag: null,
+    walletNetwork: '',
+    walletProviderId: '',
+    walletWeb3: null,
+  }
+
+  componentDidUpdate(prevProps) {
+    this.updateAutoClosingPanel(prevProps)
+  }
+
   state = {
     appInstance: {},
+    menuPanelOpened: !this.props.autoClosingPanel,
+    notificationOpen: false,
+    notifications: [],
+    queuedNotifications: [],
   }
+
+  updateAutoClosingPanel(prevProps) {
+    const { autoClosingPanel } = this.props
+    if (autoClosingPanel !== prevProps.autoClosingPanel) {
+      this.setState({ menuPanelOpened: !autoClosingPanel })
+    }
+  }
+
   openApp = (instanceId, params) => {
+    if (this.props.autoClosingPanel) {
+      this.handleMenuPanelClose()
+    }
+
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, instanceId, params }))
   }
@@ -60,18 +110,33 @@ class Wrapper extends React.Component {
       value: true,
     })
   }
-  handleNotificationsClearAll = () => {
-    const { wrapper } = this.props
-    wrapper && wrapper.clearNotifications()
-  }
-  handleNotificationNavigation = ({ context, app: instanceId }) => {
-    if (this.isAppInstalled(instanceId)) {
-      this.openApp(instanceId)
+  handleAppMessage = ({ data: { name, value } }) => {
+    if (name === 'menuPanel') {
+      this.setState({ menuPanelOpened: Boolean(value) })
     }
   }
+  handleMenuPanelClose = () => {
+    this.setState({ menuPanelOpened: false })
+  }
+  handleNotificationClicked = () => {
+    this.setState(state => ({ notificationOpen: !state.notificationOpen }))
+  }
+
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
+  }
+
+  handleNotificationsCleared = e => {
+    e.preventDefault()
+    const { notificationOpen, notifications } = this.state
+    this.setState({ notifications: [], queuedNotifications: [] })
+    if (notificationOpen) {
+      setTimeout(
+        () => this.setState({ notificationOpen: false }),
+        notifications.length ? 500 : 0
+      )
+    }
   }
 
   isAppInstalled(instanceId) {
@@ -86,15 +151,20 @@ class Wrapper extends React.Component {
     const {
       account,
       apps,
-      walletWeb3,
-      walletNetwork,
-      wrapper,
       appsStatus,
-      locator: { instanceId, params },
+      autoClosingPanel,
       banner,
+      connected,
+      daoAddress,
+      locator,
       onRequestAppsReload,
+      onRequestEnable,
       transactionBag,
+      walletNetwork,
+      walletProviderId,
+      walletWeb3,
     } = this.props
+    const { menuPanelOpened, notifications, notificationOpen } = this.state
 
     return (
       <Main>
@@ -103,37 +173,81 @@ class Wrapper extends React.Component {
           <MenuPanel
             apps={apps.filter(app => app.hasWebApp)}
             appsStatus={appsStatus}
-            activeInstanceId={instanceId}
-            notificationsObservable={wrapper && wrapper.notifications}
+            activeInstanceId={locator.instanceId}
+            connected={connected}
+            notifications={notifications.length}
+            daoAddress={daoAddress}
+            opened={menuPanelOpened}
+            autoClosing={autoClosingPanel}
             onOpenApp={this.openApp}
-            onClearAllNotifications={this.handleNotificationsClearAll}
-            onOpenNotification={this.handleNotificationNavigation}
+            onCloseMenuPanel={this.handleMenuPanelClose}
             onRequestAppsReload={onRequestAppsReload}
+            onNotificationClicked={this.handleNotificationClicked}
+            notificationOpen={notificationOpen}
           />
-          <AppScreen>{this.renderApp(instanceId, params)}</AppScreen>
+          <AppScreen>
+            <NotificationBar
+              open={notificationOpen}
+              notifications={notifications}
+              onClearAll={this.handleNotificationsCleared}
+            />
+            {this.renderApp(locator.instanceId, locator.params)}
+          </AppScreen>
         </Container>
         <SignerPanel
-          walletWeb3={walletWeb3}
-          walletNetwork={walletNetwork}
-          transactionBag={transactionBag}
-          apps={apps}
           account={account}
+          apps={apps}
+          locator={locator}
+          onRequestEnable={onRequestEnable}
+          transactionBag={transactionBag}
+          walletNetwork={walletNetwork}
+          walletProviderId={walletProviderId}
+          walletWeb3={walletWeb3}
+          onTransactionSuccess={({ data, name, description, identifier }) =>
+            this.setState(state => ({
+              queuedNotifications: [
+                {
+                  id: data,
+                  type: 'transaction',
+                  title: `${name} ${identifier}`,
+                  content: description,
+                },
+                ...state.queuedNotifications,
+              ],
+            }))
+          }
+          onClose={() => {
+            if (this.state.queuedNotifications.length) {
+              // Wait a little, then update notifications
+              setTimeout(
+                () =>
+                  this.setState(state => ({
+                    queuedNotifications: [],
+                    notifications: [
+                      ...state.queuedNotifications,
+                      ...state.notifications,
+                    ],
+                  })),
+                250
+              )
+            }
+          }}
         />
       </Main>
     )
   }
   renderApp(instanceId, params) {
     const {
-      locator,
+      account,
       apps,
       appsStatus,
+      connected,
+      daoAddress,
+      locator,
       permissionsLoading,
-      account,
       walletNetwork,
       walletWeb3,
       wrapper,
-      connected,
-      daoAddress,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -141,11 +255,12 @@ class Wrapper extends React.Component {
     if (instanceId === 'home') {
       return (
         <Home
-          connected={connected}
-          appsLoading={appsLoading}
-          onOpenApp={this.openApp}
-          locator={locator}
           apps={apps}
+          appsLoading={appsLoading}
+          connected={connected}
+          locator={locator}
+          onMessage={this.handleAppMessage}
+          onOpenApp={this.openApp}
         />
       )
     }
@@ -157,16 +272,14 @@ class Wrapper extends React.Component {
           appsLoading={appsLoading}
           permissionsLoading={permissionsLoading}
           params={params}
+          onMessage={this.handleAppMessage}
           onParamsRequest={this.handleParamsRequest}
-          walletWeb3={walletWeb3}
-          account={account}
-          wrapper={wrapper}
         />
       )
     }
 
     if (instanceId === 'apps') {
-      return <Apps />
+      return <Apps onMessage={this.handleAppMessage} />
     }
 
     if (instanceId === 'settings') {
@@ -174,9 +287,12 @@ class Wrapper extends React.Component {
         <Settings
           account={account}
           apps={apps}
-          daoAddr={daoAddress}
+          appsLoading={appsLoading}
+          daoAddress={daoAddress}
+          onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
+          walletWeb3={walletWeb3}
         />
       )
     }
@@ -192,6 +308,7 @@ class Wrapper extends React.Component {
         app={app}
         ref={this.handleAppIFrameRef}
         onLoad={this.handleAppIFrameLoad}
+        onMessage={this.handleAppMessage}
       />
     ) : (
       <App404 onNavigateBack={this.props.historyBack} />
@@ -203,6 +320,7 @@ const Main = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  min-width: 320px;
 `
 
 const BannerWrapper = styled.div`
@@ -245,4 +363,8 @@ const LoadingApps = () => (
   </div>
 )
 
-export default Wrapper
+export default props => (
+  <Viewport>
+    {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
+  </Viewport>
+)

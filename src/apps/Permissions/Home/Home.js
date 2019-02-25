@@ -1,8 +1,18 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { AppType } from '../../../prop-types'
 import BrowseByApp from './BrowseByApp'
 import BrowseByEntity from './BrowseByEntity'
 
 class Home extends React.Component {
+  static propTypes = {
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsLoading: PropTypes.bool.isRequired,
+    permissionsLoading: PropTypes.bool.isRequired,
+    onOpenApp: PropTypes.func.isRequired,
+    onOpenEntity: PropTypes.func.isRequired,
+  }
+
   render() {
     const {
       apps,

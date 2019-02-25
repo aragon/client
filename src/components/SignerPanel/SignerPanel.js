@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel, springs } from '@aragon/ui'
+import { SidePanel } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-import { addressesEqual } from '../../web3-utils'
+import { AppType, EthereumAddressType } from '../../prop-types'
+import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
@@ -13,6 +14,8 @@ import {
   STATUS_SIGNED,
   STATUS_ERROR,
 } from './signer-statuses'
+
+import springs from '../../springs'
 
 const INITIAL_STATE = {
   panelOpened: false,
@@ -26,15 +29,16 @@ const INITIAL_STATE = {
 
 class SignerPanel extends React.Component {
   static propTypes = {
-    apps: PropTypes.array,
-    account: PropTypes.string,
-    walletWeb3: PropTypes.object,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    account: EthereumAddressType,
+    locator: PropTypes.object.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
+    onTransactionSuccess: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
-  }
-
-  static defaultProps = {
-    apps: [],
-    account: '',
+    walletNetwork: PropTypes.string.isRequired,
+    walletWeb3: PropTypes.object.isRequired,
+    walletProviderId: PropTypes.string.isRequired,
   }
 
   state = { ...INITIAL_STATE }
@@ -75,19 +79,20 @@ class SignerPanel extends React.Component {
   }
 
   transactionIntent({ path, transaction = {} }) {
-    // If the path includes forwarders, the intent is always the last node
     if (path.length > 1) {
-      const { description, name, to } = path[path.length - 1]
-      return { description, name, to, transaction }
+      // If the path includes forwarders, the intent is always the last node
+      const lastNode = path[path.length - 1]
+      const { description, name, to, annotatedDescription } = lastNode
+      return { annotatedDescription, description, name, to, transaction }
     }
 
     // Direct path
     const { apps } = this.props
-    const { description, to } = transaction
+    const { annotatedDescription, description, to } = transaction
     const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
     const name = (toApp && toApp.name) || ''
 
-    return { description, name, to, transaction }
+    return { annotatedDescription, description, name, to, transaction }
   }
 
   async signTransaction(transaction, intent) {
@@ -104,7 +109,7 @@ class SignerPanel extends React.Component {
   }
 
   handleSign = async (transaction, intent, pretransaction) => {
-    const { transactionBag } = this.props
+    const { transactionBag, onTransactionSuccess } = this.props
 
     this.setState({ status: STATUS_SIGNING })
 
@@ -114,6 +119,9 @@ class SignerPanel extends React.Component {
       }
 
       const transactionRes = await this.signTransaction(transaction, intent)
+      // Create new notification
+      onTransactionSuccess && onTransactionSuccess(transaction)
+
       transactionBag.accept(transactionRes)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
@@ -122,6 +130,8 @@ class SignerPanel extends React.Component {
     } catch (err) {
       transactionBag.reject(err)
       this.setState({ signError: err, status: STATUS_ERROR })
+
+      // TODO: the ongoing notification should be flagged faulty at this point ...
     }
   }
 
@@ -135,6 +145,7 @@ class SignerPanel extends React.Component {
 
   handleSignerClose = () => {
     this.setState({ panelOpened: false })
+    this.props.onClose && this.props.onClose()
   }
 
   handleSignerTransitionEnd = opened => {
@@ -145,7 +156,13 @@ class SignerPanel extends React.Component {
   }
 
   render() {
-    const { walletWeb3, walletNetwork, account } = this.props
+    const {
+      account,
+      locator,
+      onRequestEnable,
+      walletNetwork,
+      walletProviderId,
+    } = this.props
 
     const {
       panelOpened,
@@ -166,57 +183,61 @@ class SignerPanel extends React.Component {
       >
         <Main>
           <Transition
-            native
+            items={status === STATUS_CONFIRMING}
             from={{ enterProgress: 0 }}
             enter={{ enterProgress: 1 }}
             leave={{ enterProgress: 0 }}
             config={springs.lazy}
-            signError={signError}
-            signingEnabled={status === STATUS_CONFIRMING}
           >
-            {status === STATUS_CONFIRMING
-              ? ({ enterProgress, signingEnabled }) => (
-                  <ScreenWrapper
-                    style={{
-                      transform: enterProgress.interpolate(
-                        v => `translate3d(${-100 * (1 - v)}%, 0, 0)`
-                      ),
-                    }}
-                  >
-                    <Screen>
-                      <ConfirmTransaction
-                        direct={directPath}
-                        hasAccount={Boolean(account)}
-                        hasWeb3={Boolean(walletWeb3)}
-                        intent={intent}
-                        onClose={this.handleSignerClose}
-                        onSign={this.handleSign}
-                        paths={actionPaths}
-                        pretransaction={pretransaction}
-                        signingEnabled={signingEnabled}
-                        networkType={network.type}
-                        walletNetworkType={walletNetwork}
-                      />
-                    </Screen>
-                  </ScreenWrapper>
-                )
-              : ({ enterProgress, signError }) => (
-                  <ScreenWrapper
-                    style={{
-                      transform: enterProgress.interpolate(
-                        v => `translate3d(${100 * (1 - v)}%, 0, 0)`
-                      ),
-                    }}
-                  >
-                    <Screen>
-                      <SigningStatus
-                        status={status}
-                        signError={signError}
-                        onClose={this.handleSignerClose}
-                      />
-                    </Screen>
-                  </ScreenWrapper>
-                )}
+            {confirming =>
+              confirming
+                ? ({ enterProgress }) => (
+                    <ScreenWrapper
+                      style={{
+                        transform: `
+                            translate3d(${-100 * (1 - enterProgress)}%, 0, 0)
+                          `,
+                      }}
+                    >
+                      <Screen>
+                        <ConfirmTransaction
+                          direct={directPath}
+                          hasAccount={Boolean(account)}
+                          hasWeb3={Boolean(getInjectedProvider())}
+                          intent={intent}
+                          locator={locator}
+                          networkType={network.type}
+                          onClose={this.handleSignerClose}
+                          onRequestEnable={onRequestEnable}
+                          onSign={this.handleSign}
+                          paths={actionPaths}
+                          pretransaction={pretransaction}
+                          signingEnabled={status === STATUS_CONFIRMING}
+                          walletNetworkType={walletNetwork}
+                          walletProviderId={walletProviderId}
+                        />
+                      </Screen>
+                    </ScreenWrapper>
+                  )
+                : ({ enterProgress }) => (
+                    <ScreenWrapper
+                      style={{
+                        transform: `
+                          translate3d(${100 * (1 - enterProgress)}%, 0, 0)
+                        `,
+                      }}
+                    >
+                      <Screen>
+                        <SigningStatus
+                          status={status}
+                          signError={signError}
+                          onClose={this.handleSignerClose}
+                          walletProviderId={walletProviderId}
+                        />
+                      </Screen>
+                    </ScreenWrapper>
+                  )
+            }
           </Transition>
         </Main>
       </SidePanel>

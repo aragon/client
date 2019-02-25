@@ -1,15 +1,19 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { DropDown, Field, TextInput } from '@aragon/ui'
 import { getAnyEntity } from '../../permissions'
+import { AppType } from '../../prop-types'
 import { getEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 
 class EntitySelector extends React.Component {
-  static defaultProps = {
-    apps: [],
-    activeIndex: 0,
-    label: 'Entity',
-    labelCustomAddress: 'Entity address',
+  static propTypes = {
+    activeIndex: PropTypes.number.isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    includeAnyEntity: PropTypes.bool,
+    label: PropTypes.string.isRequired,
+    labelCustomAddress: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
   }
   state = {
     customAddress: '',
@@ -49,7 +53,7 @@ class EntitySelector extends React.Component {
       return this.state.customAddress
     }
 
-    if (index === items.length - 2) {
+    if (this.props.includeAnyEntity && index === items.length - 2) {
       return getAnyEntity()
     }
 
@@ -57,12 +61,19 @@ class EntitySelector extends React.Component {
     return (app && app.proxyAddress) || getEmptyAddress()
   }
   getItems() {
-    return [
+    const { includeAnyEntity } = this.props
+
+    const items = [
       'Select an entity',
       ...this.getAppsItems(),
-      'Any account',
       'Custom address…',
     ]
+    if (includeAnyEntity) {
+      // Add immediately before last item
+      items.splice(-1, 0, 'Any account')
+    }
+
+    return items
   }
   render() {
     const { customAddress } = this.state

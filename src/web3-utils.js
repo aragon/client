@@ -5,6 +5,8 @@
  */
 import Web3 from 'web3'
 import BN from 'bn.js'
+import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
+import { isElectron } from './utils'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -18,6 +20,46 @@ export function addressesEqual(first, second) {
   first = first && first.toLowerCase()
   second = second && second.toLowerCase()
   return first === second
+}
+
+const websocketRegex = /^wss?:\/\/.+/
+
+/**
+ * Check if the ETH node at the given URI is compatible for the current environment
+ * @param {string} uri URI of the ETH node.
+ * @param {string} expectedNetworkType The expected network type of the ETH node.
+ * @returns {Promise} Resolves if the ETH node is compatible, otherwise throws:
+ *    - InvalidURI: URI given is not compatible (e.g. must be WebSockets)
+ *    - InvalidNetworkType: ETH node connected to wrong network
+ *    - NoConnection: Couldn't connect to URI
+ */
+export async function checkValidEthNode(uri, expectedNetworkType) {
+  // Must be websocket connection
+  if (!websocketRegex.test(uri)) {
+    throw new InvalidURI('The URI must use the WebSocket protocol')
+  }
+
+  try {
+    const web3 = new Web3(uri)
+    const connectedNetworkType = await web3.eth.net.getNetworkType()
+    if (web3.currentProvider.disconnect) {
+      web3.currentProvider.disconnect()
+    } else {
+      // Older versions of web3's providers didn't expose a generic interface for disconnecting
+      web3.currentProvider.connection.close()
+    }
+
+    if (connectedNetworkType !== expectedNetworkType) {
+      throw new InvalidNetworkType()
+    }
+  } catch (err) {
+    if (err instanceof InvalidNetworkType) {
+      throw err
+    }
+    throw new NoConnection()
+  }
+
+  return true
 }
 
 /**
@@ -48,6 +90,84 @@ export function formatBalance(
   return `${whole}.${fraction}`
 }
 
+export function getEmptyAddress() {
+  return EMPTY_ADDRESS
+}
+
+/*
+ * Return the injected provider, if any.
+ */
+export function getInjectedProvider() {
+  if (window.ethereum) {
+    return window.ethereum
+  }
+  if (window.web3 && window.web3.currentProvider) {
+    return window.web3.currentProvider
+  }
+  return null
+}
+
+// Get the first account of a web3 instance
+export async function getMainAccount(web3) {
+  try {
+    const accounts = await web3.eth.getAccounts()
+    return (accounts && accounts[0]) || null
+  } catch (err) {
+    return null
+  }
+}
+
+export function getUnknownBalance() {
+  return new BN('-1')
+}
+
+// Cache web3 instances used in the app
+const web3Cache = new WeakMap()
+
+/**
+ * Get cached web3 instance
+ * @param {Web3.Provider} provider Web3 provider
+ * @returns {Web3} The web3 instance
+ */
+export function getWeb3(provider) {
+  if (web3Cache.has(provider)) {
+    return web3Cache.get(provider)
+  }
+  const web3 = new Web3(provider)
+  web3Cache.set(provider, web3)
+  return web3
+}
+
+// Returns an identifier for the provider, if it can be detected
+export function identifyProvider(provider) {
+  if (provider && isElectron()) {
+    return 'frame'
+  }
+  if (provider && provider.isMetaMask) {
+    return 'metamask'
+  }
+  return 'unknown'
+}
+
+export function isConnected(provider) {
+  // EIP-1193 compliant providers may not include `isConnected()`, but most should support it for
+  // the foreseeable future to be backwards compatible with older Web3.js implementations.
+  // The `status` property is also not required by EIP-1193, but is often set on providers for
+  // backwards compatibility as well.
+  return typeof provider.isConnected === 'function'
+    ? provider.isConnected()
+    : provider.status === 'connected'
+}
+
+// Check if the address represents an empty address
+export function isEmptyAddress(address) {
+  return addressesEqual(address, EMPTY_ADDRESS)
+}
+
+export function isValidEnsName(name) {
+  return /^([\w-]+\.)+eth$/.test(name)
+}
+
 /**
  * Shorten an Ethereum address. `charsLength` allows to change the number of
  * characters on both sides of the ellipsis.
@@ -74,36 +194,6 @@ export function shortenAddress(address, charsLength = 4) {
     '…' +
     address.slice(-charsLength)
   )
-}
-
-// Cache web3 instances used in the app
-const web3Cache = new WeakMap()
-
-/**
- * Get cached web3 instance
- * @param {Web3.Provider} provider Web3 provider
- * @returns {Web3} The web3 instance
- */
-export function getWeb3(provider) {
-  if (web3Cache.has(provider)) {
-    return web3Cache.get(provider)
-  }
-  const web3 = new Web3(provider)
-  web3Cache.set(provider, web3)
-  return web3
-}
-
-// Check if the address represents an empty address
-export function isEmptyAddress(address) {
-  return addressesEqual(address, EMPTY_ADDRESS)
-}
-
-export function getEmptyAddress() {
-  return EMPTY_ADDRESS
-}
-
-export function getUnknownBalance() {
-  return new BN('-1')
 }
 
 // Re-export some utilities from web3-utils

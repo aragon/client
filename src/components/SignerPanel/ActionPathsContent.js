@@ -1,16 +1,29 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Info, RadioList } from '@aragon/ui'
+import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
+import IdentityBadge from '../IdentityBadge'
+import providerString from '../../provider-strings'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
 
 class ActionPathsContent extends React.Component {
+  static propTypes = {
+    direct: PropTypes.bool.isRequired,
+    intent: PropTypes.object.isRequired,
+    locator: PropTypes.object.isRequired,
+    onSign: PropTypes.func.isRequired,
+    paths: PropTypes.array.isRequired,
+    pretransaction: PropTypes.object,
+    signingEnabled: PropTypes.bool.isRequired,
+    walletProviderId: PropTypes.string.isRequired,
+  }
   state = {
     selected: 0,
   }
-  handleOnSelect = selected => {
+  handleChange = selected => {
     this.setState({ selected })
   }
   handleSign = () => {
@@ -24,13 +37,64 @@ class ActionPathsContent extends React.Component {
       pretransaction
     )
   }
-  renderDescription(showPaths, { description, name, to }) {
+  renderDescription(
+    showPaths,
+    { description, name, to, annotatedDescription }
+  ) {
     return (
       <React.Fragment>
-        <p>This transaction will {showPaths && 'eventually'} perform:</p>
-        <p style={{ margin: '10px 0' }}>
-          {description ? `"${description}"` : 'an action'}
-        </p>
+        <p>This transaction will {showPaths && 'eventually'} perform</p>
+        <div style={{ margin: '10px 0 10px 15px' }}>
+          {annotatedDescription
+            ? annotatedDescription.map(({ type, value }, index) => {
+                if (type === 'address' || type === 'any-account') {
+                  return (
+                    <span
+                      key={index}
+                      css={`
+                        display: inline-flex;
+                        vertical-align: middle;
+                        margin-right: 4px;
+                      `}
+                    >
+                      <IdentityBadge
+                        entity={type === 'any-account' ? 'Any account' : value}
+                        fontSize="small"
+                      />
+                    </span>
+                  )
+                } else if (type === 'app') {
+                  return (
+                    <SafeLink
+                      key={index}
+                      href={`/#/${
+                        this.props.locator.dao
+                      }/permissions/?params=app.${value.proxyAddress}`}
+                      target="_blank"
+                      style={{ marginRight: '2px' }}
+                    >
+                      {value.name}
+                    </SafeLink>
+                  )
+                } else if (type === 'role') {
+                  return (
+                    <span
+                      key={index}
+                      style={{ marginRight: '4px', fontStyle: 'italic' }}
+                    >
+                      {value.name}
+                    </span>
+                  )
+                } else if (type === 'text') {
+                  return (
+                    <span key={index} style={{ marginRight: '4px' }}>
+                      {value}
+                    </span>
+                  )
+                }
+              })
+            : description || 'an action'}
+        </div>
         <p>
           {' on '}
           <AddressLink to={to}>{name}</AddressLink>.
@@ -76,7 +140,14 @@ class ActionPathsContent extends React.Component {
     }
   }
   render() {
-    const { signingEnabled, intent, direct, paths, pretransaction } = this.props
+    const {
+      intent,
+      direct,
+      paths,
+      pretransaction,
+      signingEnabled,
+      walletProviderId,
+    } = this.props
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
@@ -97,7 +168,7 @@ class ActionPathsContent extends React.Component {
                     : 'You can perform this action through:'
                 }
                 items={radioItems}
-                onChange={this.handleOnSelect}
+                onChange={this.handleChange}
                 selected={selected}
               />
             </Actions>
@@ -115,8 +186,9 @@ class ActionPathsContent extends React.Component {
             title="Two transactions required"
             style={{ marginTop: '20px' }}
           >
-            This action requires two transactions to be signed in your Ethereum
-            provider, please confirm them one after another.
+            This action requires two transactions to be signed in{' '}
+            {providerString('your Ethereum provider', walletProviderId)}, please
+            confirm them one after another.
           </Info.Action>
         )}
         <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>

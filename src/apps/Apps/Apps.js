@@ -9,18 +9,39 @@ import {
   theme,
   colors,
   unselectable,
+  font,
+  breakpoint,
+  Viewport,
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
+import MenuButton from '../../components/MenuPanel/MenuButton'
 
-import defaultIcon from './icons/default.png'
-import payrollIcon from './icons/payroll.png'
-import espressoIcon from './icons/espresso.png'
+import defaultIcon from './icons/default.svg'
+import payrollIcon from './icons/payroll.svg'
+import espressoIcon from './icons/espresso.svg'
 
 class Apps extends React.Component {
+  handleMenuPanelOpen = () => {
+    this.props.onMessage({
+      data: { from: 'app', name: 'menuPanel', value: true },
+    })
+  }
+
   render() {
     return (
       <AppLayout
-        title="Apps"
+        title={
+          <AppBarTitle>
+            <Viewport>
+              {({ below }) =>
+                below('medium') && (
+                  <MenuButton onClick={this.handleMenuPanelOpen} />
+                )
+              }
+            </Viewport>
+            <AppBarLabel>Apps</AppBarLabel>
+          </AppBarTitle>
+        }
         endContent={
           <DevPortalAnchor
             mode="strong"
@@ -72,6 +93,24 @@ class Apps extends React.Component {
   }
 }
 
+const AppBarTitle = styled.span`
+  display: flex;
+  align-items: center;
+  margin-left: -30px;
+`
+
+const AppBarLabel = styled.span`
+  margin-left: 8px;
+  ${font({ size: 'xxlarge' })};
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: 24px;
+    `
+  )};
+`
+
 const DevPortalAnchor = styled(Button.Anchor)`
   display: block;
 `
@@ -90,7 +129,14 @@ const AppsGrid = styled.div`
   grid-auto-flow: row;
   grid-gap: 25px;
   justify-items: start;
-  grid-template-columns: repeat(auto-fill, 224px);
+  grid-template-columns: 1fr;
+
+  ${breakpoint(
+    'medium',
+    `
+      grid-template-columns: repeat(auto-fill, 224px);
+    `
+  )};
 `
 
 const Main = styled(Card).attrs({ width: '100%', height: '288px' })`
@@ -159,11 +205,11 @@ const statuses = {
 const knownApps = [
   {
     icon: defaultIcon,
-    name: 'That Planning Tab',
+    name: 'That Planning Suite',
     status: 'alpha',
     description: `Suite for open and fluid organizations.
                   Bounties, range voting, and more.`,
-    link: 'https://github.com/Giveth/planning-app',
+    link: 'https://github.com/spacedecentral/planning-suite',
   },
   {
     icon: payrollIcon,

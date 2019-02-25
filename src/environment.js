@@ -1,4 +1,5 @@
 import Web3 from 'web3'
+import provider from 'eth-provider'
 import {
   getAssetBridge,
   getDefaultEthNode,
@@ -7,7 +8,7 @@ import {
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 import { noop } from './utils'
-import { toWei } from './web3-utils'
+import { toWei, getInjectedProvider } from './web3-utils'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault']
 const networkType = getEthNetworkType()
@@ -122,10 +123,13 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const defaultEthNode =
   getDefaultEthNode() || networkConfig.nodes.defaultEth
+
 export const web3Providers = {
   default: new Web3.providers.WebsocketProvider(defaultEthNode),
-  wallet: window.web3 && window.web3.currentProvider,
+  // Only use eth-provider to connect to frame if no injected provider is detected
+  wallet: getInjectedProvider() || provider(['frame']),
 }
+
 export const defaultGasPriceFn =
   networkType === 'main'
     ? noop // On mainnet rely on the provider's gas estimation

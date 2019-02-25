@@ -1,48 +1,39 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Field, TextInput, Text, theme } from '@aragon/ui'
-import EtherscanLink from '../../components/Etherscan/EtherscanLink'
-import { appIds, network, web3Providers } from '../../environment'
+import { Button, Text, Viewport, theme } from '@aragon/ui'
+import IdentityBadge from '../../components/IdentityBadge'
+import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
-import { noop } from '../../utils'
-import { getWeb3, toChecksumAddress } from '../../web3-utils'
+import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
+import { toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import Option from './Option'
 import Note from './Note'
-
-const LinkButton = styled(Button.Anchor).attrs({
-  compact: true,
-  mode: 'outline',
-})`
-  background: ${theme.contentBackground};
-`
 
 const AppsList = styled.ul`
   list-style: none;
 `
 
-const FieldTwoParts = styled.div`
-  display: flex;
-  align-items: center;
-  input {
-    margin-right: 10px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+class DaoSettings extends React.PureComponent {
+  static propTypes = {
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsLoading: PropTypes.bool.isRequired,
+    daoAddress: DaoAddressType.isRequired,
+    onOpenApp: PropTypes.func.isRequired,
+    shortAddresses: PropTypes.bool,
+    walletNetwork: PropTypes.string.isRequired,
+    walletWeb3: PropTypes.object.isRequired,
   }
-`
-
-class DaoSettings extends React.Component {
   static defaultProps = {
-    account: '',
-    apps: [],
-    daoAddr: '',
-    onOpenApp: noop,
+    shortAddresses: false,
   }
   handleDepositTestTokens = () => {
-    const { account, apps } = this.props
+    const { account, apps, walletWeb3 } = this.props
     const finance = apps.find(app => app.appId === appIds.Finance)
     if (finance && finance.proxyAddress) {
-      airdrop(getWeb3(web3Providers.wallet), finance.proxyAddress, account)
+      airdrop(walletWeb3, finance.proxyAddress, account)
     }
   }
   handleOpenFinance = () => {
@@ -53,48 +44,49 @@ class DaoSettings extends React.Component {
     }
   }
   render() {
-    const { account, apps, daoAddr, walletNetwork } = this.props
+    const {
+      account,
+      apps,
+      appsLoading,
+      daoAddress,
+      shortAddresses,
+      walletNetwork,
+    } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
-    const checksummedDaoAddr = daoAddr && toChecksumAddress(daoAddr)
-    const checksummedAppProxies = apps.reduce((addrMap, app) => {
-      addrMap[app.appId] = toChecksumAddress(app.proxyAddress)
-      return addrMap
-    }, {})
-    const webApps = apps.filter(app => app.hasWebApp)
+    const checksummedDaoAddr =
+      daoAddress.address && toChecksumAddress(daoAddress.address)
+    const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
     return (
       <div>
         <Option
           name="Organization address"
           text={`This organization is deployed on the ${network.name}.`}
         >
-          <Field label="Address" style={{ marginBottom: 0 }}>
-            <FieldTwoParts>
-              <TextInput readOnly wide value={checksummedDaoAddr} />
-              <EtherscanLink address={checksummedDaoAddr}>
-                {url =>
-                  url ? (
-                    <LinkButton href={url} target="_blank">
-                      See on Etherscan
-                    </LinkButton>
-                  ) : null
-                }
-              </EtherscanLink>
-            </FieldTwoParts>
-            <Note>
-              <strong>Do not send ether or tokens to this address!</strong>
-              <br />
-              Go to the{' '}
-              {financeApp ? (
-                <ButtonLink onClick={this.handleOpenFinance}>
-                  Finance app
-                </ButtonLink>
-              ) : (
-                'Finance app'
-              )}{' '}
-              to deposit funds into your organization instead.
-            </Note>
-          </Field>
+          {checksummedDaoAddr ? (
+            <Wrap>
+              <Label> Address</Label>
+              <IdentityBadge
+                entity={checksummedDaoAddr}
+                shorten={shortAddresses}
+              />
+            </Wrap>
+          ) : (
+            <p>Resolving DAO address…</p>
+          )}
+          <Note>
+            <strong>Do not send ether or tokens to this address!</strong>
+            <br />
+            Go to the{' '}
+            {financeApp ? (
+              <ButtonLink onClick={this.handleOpenFinance}>
+                Finance app
+              </ButtonLink>
+            ) : (
+              'Finance app'
+            )}{' '}
+            to deposit funds into your organization instead.
+          </Note>
         </Option>
         {testTokensEnabled(network.type) && (
           <Option
@@ -133,37 +125,39 @@ class DaoSettings extends React.Component {
             </Note>
           </Option>
         )}
-        {webApps.length > 0 && (
+        {appsLoading && (
+          <Option name="Aragon apps" text={'Loading apps…'}>
+            <div css={'height:20px'} />
+          </Option>
+        )}
+        {!appsLoading && apmApps.length > 0 && (
           <Option
             name="Aragon apps"
-            text={`This organization has ${webApps.length} apps installed.`}
+            text={`This organization has ${apmApps.length}
+            ${apmApps.length > 1 ? 'apps' : 'app'}
+            installed.`}
           >
             <AppsList>
-              {webApps.map(({ appId, description, name, proxyAddress }) => {
-                const checksummedProxyAddress = checksummedAppProxies[appId]
-                return (
-                  <li title={description} key={checksummedProxyAddress}>
-                    <Field label={name}>
-                      <FieldTwoParts>
-                        <TextInput
-                          readOnly
-                          wide
-                          value={checksummedProxyAddress}
-                        />
-                        <EtherscanLink address={checksummedProxyAddress}>
-                          {url =>
-                            url ? (
-                              <LinkButton href={url} target="_blank">
-                                See on Etherscan
-                              </LinkButton>
-                            ) : null
-                          }
-                        </EtherscanLink>
-                      </FieldTwoParts>
-                    </Field>
-                  </li>
-                )
-              })}
+              {apmApps.map(
+                ({ appId, description, name, proxyAddress, tags }) => {
+                  const checksummedProxyAddress = toChecksumAddress(
+                    proxyAddress
+                  )
+
+                  return (
+                    <li title={description} key={checksummedProxyAddress}>
+                      <Label>
+                        {name}
+                        {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
+                      </Label>
+                      <IdentityBadge
+                        entity={checksummedProxyAddress}
+                        shorten={shortAddresses}
+                      />
+                    </li>
+                  )
+                }
+              )}
             </AppsList>
           </Option>
         )}
@@ -172,6 +166,11 @@ class DaoSettings extends React.Component {
   }
 }
 
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   padding: 0;
   color: inherit;
@@ -179,4 +178,15 @@ const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   text-decoration: underline;
 `
 
-export default DaoSettings
+const Label = styled.label`
+  display: block;
+  color: ${theme.textSecondary};
+  font-size: 11px;
+  text-transform: uppercase;
+`
+
+export default props => (
+  <Viewport>
+    {({ below }) => <DaoSettings {...props} shortAddresses={below('medium')} />}
+  </Viewport>
+)

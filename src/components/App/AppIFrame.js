@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { clamp, lerp } from '../../math-utils'
+import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
 
@@ -45,11 +47,18 @@ const SANDBOX = [
 ].join(' ')
 
 class AppIFrame extends React.Component {
+  static propTypes = {
+    app: AppType.isRequired,
+    iframeRef: PropTypes.func,
+    onLoad: PropTypes.func,
+    onMessage: PropTypes.func,
+    onNavigate: PropTypes.func,
+  }
   static defaultProps = {
-    onNavigate: noop,
     iframeRef: noop,
-    onMessage: noop,
     onLoad: noop,
+    onMessage: noop,
+    onNavigate: noop,
   }
   state = {
     hideProgressBar: true,
@@ -76,8 +85,8 @@ class AppIFrame extends React.Component {
     this.clearProgressTimeout()
   }
   isHidden = () => {
-    const { hidden, app } = this.props
-    return !app || !app.src || hidden
+    const { app } = this.props
+    return !app || !app.src
   }
   navigateIFrame = src => {
     // Rather than load src=undefined, this component hides itself. That way,
@@ -169,11 +178,14 @@ class AppIFrame extends React.Component {
       <AppLoadingProgressBar hide={hideProgressBar} percent={loadProgress} />
     )
 
-    // Remove onLoad prop as we wrap it with our own
-    delete props.onLoad
+    // Remove the props managed by AppIframe, so we can pass everything else to
+    // the <iframe> element.
+    Object.keys(AppIFrame.propTypes).forEach(name => {
+      delete props[name]
+    })
 
-    // Remove src prop as we use manage the src ourselves to avoid adding
-    // duplicate history entries every time the src changes (see
+    // Also remove the `src` prop as we manage the src ourselves to avoid
+    // adding duplicate history entries every time the src changes (see
     // `navigateIFrame()`)
     delete props.src
 
@@ -182,9 +194,10 @@ class AppIFrame extends React.Component {
         {progressBar}
         <StyledIFrame
           name="AppIFrame"
+          allow="camera *; microphone *"
           frameBorder="0"
           onLoad={this.handleOnLoad}
-          innerRef={this.handleIFrameRef}
+          ref={this.handleIFrameRef}
           sandbox={SANDBOX}
           style={{ display: show ? 'block' : 'none' }}
           {...props}

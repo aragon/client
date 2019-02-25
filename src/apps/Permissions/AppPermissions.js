@@ -1,21 +1,23 @@
 import React from 'react'
-import {
-  Button,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Text,
-} from '@aragon/ui'
+import PropTypes from 'prop-types'
+import { Button, Table, TableRow, Text } from '@aragon/ui'
+import IdentityBadge from '../../components/IdentityBadge'
+import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
-import IdentityBadge from '../../components/IdentityBadge'
 import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
 
 class AppPermissions extends React.PureComponent {
+  static propTypes = {
+    address: EthereumAddressType.isRequired,
+    app: AppType, // may not be available if still loading
+    loading: PropTypes.bool.isRequired,
+    onManageRole: PropTypes.func.isRequired,
+  }
   render() {
     const { app, loading, address, onManageRole } = this.props
     return (
@@ -74,6 +76,13 @@ class AppPermissions extends React.PureComponent {
 }
 
 class Row extends React.Component {
+  static propTypes = {
+    entity: PropTypes.object.isRequired,
+    onRevoke: PropTypes.func.isRequired,
+    proxyAddress: EthereumAddressType.isRequired,
+    role: PropTypes.object.isRequired,
+  }
+
   handleRevoke = () => {
     const { onRevoke, role, entity, proxyAddress } = this.props
     onRevoke({
@@ -100,11 +109,11 @@ class Row extends React.Component {
     const { role } = this.props
     return (
       <TableRow>
-        <TableCell>
+        <FirstTableCell>
           <Text weight="bold">{role ? role.name : 'Unknown'}</Text>
-        </TableCell>
+        </FirstTableCell>
         <TableCell>{this.renderEntity()}</TableCell>
-        <TableCell align="right">
+        <LastTableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -113,7 +122,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell>
+        </LastTableCell>
       </TableRow>
     )
   }

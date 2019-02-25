@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { IconBlank } from '@aragon/ui'
 import { appIconUrl } from '../../utils'
@@ -6,6 +7,11 @@ import RemoteIcon from '../../components/RemoteIcon'
 import IconKernel from '../../icons/IconKernel'
 
 class AppIcon extends React.Component {
+  static propTypes = {
+    app: PropTypes.object,
+    size: PropTypes.number.isRequired,
+  }
+
   static defaultProps = {
     size: 22,
     app: null,

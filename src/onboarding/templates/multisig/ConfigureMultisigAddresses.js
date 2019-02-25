@@ -1,21 +1,17 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { Field, Button, TextInput, Text, DropDown, theme } from '@aragon/ui'
-import { lerp } from '../../../math-utils'
+import { Button, TextInput, Text, DropDown, theme } from '@aragon/ui'
+import { animated } from 'react-spring'
 import { noop } from '../../../utils'
 
 class ConfigureMultisigAddresses extends React.Component {
   static defaultProps = {
-    positionProgress: 0,
     onFieldUpdate: noop,
     onSubmit: noop,
     fields: {},
   }
-  componentWillReceiveProps({ positionProgress }) {
-    if (
-      positionProgress === 0 &&
-      positionProgress !== this.props.positionProgress
-    ) {
+  componentWillReceiveProps({ forceFocus }) {
+    if (forceFocus && forceFocus !== this.props.forceFocus) {
       this.formEl.elements[0].focus()
     }
   }
@@ -37,8 +33,8 @@ class ConfigureMultisigAddresses extends React.Component {
   handleSignerChange = (index, newValue) => {
     const { addresses } = this.props.fields.signers
     this.updateField('signers', {
-      addresses: addresses.map(
-        (signer, i) => (i === index ? newValue : signer)
+      addresses: addresses.map((signer, i) =>
+        i === index ? newValue : signer
       ),
     })
   }
@@ -47,21 +43,15 @@ class ConfigureMultisigAddresses extends React.Component {
   }
   handleSubmit = event => {
     event.preventDefault()
-    this.formEl.elements[0].blur()
     this.props.onSubmit()
   }
   handleFormRef = el => {
     this.formEl = el
   }
   render() {
-    const { positionProgress, fields } = this.props
+    const { fields, screenTransitionStyles } = this.props
     return (
-      <Main
-        style={{
-          opacity: 1 - Math.abs(positionProgress),
-          transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-        }}
-      >
+      <Main style={screenTransitionStyles}>
         <ConfigureMultisigAddressesContent
           fields={fields}
           onSubmit={this.handleSubmit}
@@ -94,7 +84,7 @@ class ConfigureMultisigAddressesContent extends React.PureComponent {
       <Content>
         <Title>Token project with multisig</Title>
         <StepContainer>
-          <SubmitForm onSubmit={onSubmit} innerRef={formRef}>
+          <SubmitForm onSubmit={onSubmit} ref={formRef}>
             <Intro>
               <Text size="large" color={theme.textSecondary} align="center">
                 Add the wallet addresses of the multisig signers, and choose the
@@ -182,14 +172,14 @@ class SignerInput extends React.PureComponent {
   }
 }
 
-const SubmitForm = ({ children, innerRef = noop, ...props }) => (
-  <form {...props} ref={innerRef}>
+const SubmitForm = React.forwardRef(({ children, ...props }, ref) => (
+  <form {...props} ref={ref}>
     {children}
     <input type="submit" style={{ display: 'none' }} />
   </form>
-)
+))
 
-const Main = styled.div`
+const Main = styled(animated.div)`
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -248,35 +238,6 @@ const InputsView = styled.div`
   margin-top: -10px;
   margin-bottom: 10px;
   padding: 10px 30px 10px 0;
-`
-
-const Fields = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-`
-
-Fields.Field = styled(Field)`
-  position: relative;
-  & + & {
-    margin-left: 55px;
-  }
-  &:after {
-    position: absolute;
-    bottom: 6px;
-    left: 100px;
-    font-size: 14px;
-  }
-`
-Fields.PercentageField = styled(Fields.Field)`
-  &:after {
-    content: '%';
-  }
-`
-Fields.HoursField = styled(Fields.Field)`
-  &:after {
-    content: 'H';
-  }
 `
 
 const StyledTextInput = styled(TextInput)`

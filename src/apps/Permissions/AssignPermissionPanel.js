@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { AppType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from './AppInstanceLabel'
 import EntitySelector from './EntitySelector'
@@ -14,6 +16,14 @@ const DEFAULT_STATE = {
 
 // The permission panel, wrapped in a PermissionsContext (see end of file)
 class AssignPermissionPanel extends React.PureComponent {
+  static propTypes = {
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    grantPermission: PropTypes.func.isRequired,
+    getAppRoles: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    opened: PropTypes.bool.isRequired,
+  }
+
   state = {
     ...DEFAULT_STATE,
   }
@@ -143,11 +153,12 @@ class AssignPermissionPanel extends React.PureComponent {
           </Field>
 
           <EntitySelector
+            includeAnyEntity
             label="Grant permission to"
             labelCustomAddress="Grant permission to"
+            activeIndex={assignEntityIndex}
             apps={this.getNamedApps()}
             onChange={this.handleEntityChange}
-            activeIndex={assignEntityIndex}
           />
 
           {selectedApp && (

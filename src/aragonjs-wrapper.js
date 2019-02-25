@@ -17,7 +17,12 @@ import {
   defaultGasPriceFn,
 } from './environment'
 import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
-import { getWeb3, getUnknownBalance } from './web3-utils'
+import {
+  getWeb3,
+  getUnknownBalance,
+  getMainAccount,
+  isValidEnsName,
+} from './web3-utils'
 import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
 import { NoConnection, DAONotFound } from './errors'
 
@@ -60,7 +65,29 @@ const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
 // Sort apps, apply URL overrides, and attach data useful to the frontend
-const prepareFrontendApps = (apps, daoAddress, gateway) => {
+const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
+  const hasWebApp = app => Boolean(app['start_url'])
+
+  const getAPMRegistry = ({ appName = '' }) =>
+    appName.substr(appName.indexOf('.') + 1) // everything after the first '.'
+
+  const getAppTags = app => {
+    const apmRegistry = getAPMRegistry(app)
+
+    const tags = []
+    if (app.status) {
+      tags.push(app.status)
+    }
+    if (apmRegistry !== 'aragonpm.eth') {
+      tags.push(`${apmRegistry} registry`)
+    }
+    if (!hasWebApp(app)) {
+      tags.push('contract-only')
+    }
+
+    return tags
+  }
+
   return applyAppOverrides(apps)
     .map(app => {
       const baseUrl = appBaseUrl(app, gateway)
@@ -73,19 +100,12 @@ const prepareFrontendApps = (apps, daoAddress, gateway) => {
         ...app,
         src,
         baseUrl,
-        hasWebApp: Boolean(app['start_url']),
+        apmRegistry: getAPMRegistry(app),
+        hasWebApp: hasWebApp(app),
+        tags: getAppTags(app),
       }
     })
     .sort(sortAppsPair)
-}
-
-const getMainAccount = async web3 => {
-  try {
-    const accounts = await web3.eth.getAccounts()
-    return (accounts && accounts[0]) || null
-  } catch (err) {
-    return null
-  }
 }
 
 const pollEvery = (fn, delay) => {
@@ -133,6 +153,7 @@ export const pollMainAccount = pollEvery(
     const web3 = getWeb3(provider)
     let lastAccount = null
     let lastBalance = getUnknownBalance()
+
     return {
       request: () =>
         getMainAccount(web3)
@@ -146,7 +167,6 @@ export const pollMainAccount = pollEvery(
               .then(balance => ({ account, balance: new BN(balance) }))
           })
           .catch(() => ({ account: null, balance: getUnknownBalance() })),
-
       onResult: ({ account, balance }) => {
         if (account !== lastAccount) {
           lastAccount = account
@@ -213,7 +233,11 @@ const subscribe = (
   const subscriptions = {
     apps: apps.subscribe(apps => {
       onApps(
-        prepareFrontendApps(apps, wrapper.kernelProxy.address, ipfsConf.gateway)
+        prepareAppsForFrontend(
+          apps,
+          wrapper.kernelProxy.address,
+          ipfsConf.gateway
+        )
       )
     }),
     permissions: permissions.subscribe(throttle(onPermissions, 100)),
@@ -318,7 +342,7 @@ const initWrapper = async (
     onWeb3 = noop,
   } = {}
 ) => {
-  const isDomain = /[a-z0-9]+\.aragonid\.eth/.test(dao)
+  const isDomain = isValidEnsName(dao)
   const daoAddress = isDomain
     ? await resolveEnsDomain(dao, {
         provider,
@@ -330,7 +354,7 @@ const initWrapper = async (
     throw new DAONotFound(dao)
   }
 
-  onDaoAddress(daoAddress)
+  onDaoAddress({ address: daoAddress, domain: dao })
 
   const wrapper = new Aragon(daoAddress, {
     provider,

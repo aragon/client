@@ -2,21 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 import BN from 'bn.js'
 import {
-  theme,
-  Text,
-  SafeLink,
   Button,
-  TextInput,
-  IconCheck,
-  IconCross,
   DropDown,
   IconAttention,
+  IconCheck,
+  IconCross,
+  SafeLink,
+  Text,
+  TextInput,
+  Viewport,
+  breakpoint,
+  theme,
 } from '@aragon/ui'
-import { network, web3Providers, getDemoDao } from '../environment'
+import { animated } from 'react-spring'
+import { network, getDemoDao, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
-import { noop } from '../utils'
-import { fromWei, toWei, getUnknownBalance, formatBalance } from '../web3-utils'
-import { lerp } from '../math-utils'
+import providerString from '../provider-strings'
+import { isElectron, noop } from '../utils'
+import {
+  fromWei,
+  toWei,
+  getUnknownBalance,
+  formatBalance,
+  isConnected,
+} from '../web3-utils'
 import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
 
@@ -37,9 +46,8 @@ const demoDao = getDemoDao()
 
 class Start extends React.Component {
   static defaultProps = {
-    positionProgress: 0,
-    hasAccount: false,
     walletNetwork: '',
+    walletProviderId: '',
     balance: getUnknownBalance(),
     onCreate: noop,
     onDomainChange: noop,
@@ -47,6 +55,7 @@ class Start extends React.Component {
     domainCheckStatus: DomainCheckNone,
     onOpenOrganization: noop,
     onOpenOrganizationAddress: noop,
+    onRequestEnable: noop,
   }
   handleDomainChange = event => {
     this.props.onDomainChange(event.target.value)
@@ -57,42 +66,49 @@ class Start extends React.Component {
   }
   render() {
     const {
-      positionProgress,
       hasAccount,
       walletNetwork,
+      walletProviderId,
       balance,
       onCreate,
       domain,
       domainCheckStatus,
       onOpenOrganizationAddress,
       selectorNetworks,
+      onRequestEnable,
+      screenTransitionStyles,
     } = this.props
 
     return (
-      <Main
-        style={{
-          opacity: 1 - Math.abs(positionProgress),
-        }}
-      >
-        <Content
-          style={{
-            transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-          }}
-        >
-          <StartContent
-            onCreate={onCreate}
-            hasWallet={!!web3Providers.wallet}
-            hasAccount={hasAccount}
-            walletNetwork={walletNetwork}
-            balance={balance}
-            onDomainChange={this.handleDomainChange}
-            domain={domain}
-            domainCheckStatus={domainCheckStatus}
-            onOpenOrganization={this.handleOpenOrganization}
-            onOpenOrganizationAddress={onOpenOrganizationAddress}
-            selectorNetworks={selectorNetworks}
-          />
-        </Content>
+      <Main style={{ opacity: screenTransitionStyles.opacity }}>
+        <Viewport>
+          {({ below }) => (
+            <Content style={screenTransitionStyles}>
+              {below('medium') && (
+                <Warning>
+                  If you want to <span>create</span> an organization, please use
+                  your desktop browser.
+                </Warning>
+              )}
+              <StartContent
+                onCreate={onCreate}
+                hasWallet={isConnected(web3Providers.wallet)}
+                hasAccount={hasAccount}
+                walletNetwork={walletNetwork}
+                walletProviderId={walletProviderId}
+                balance={balance}
+                onDomainChange={this.handleDomainChange}
+                domain={domain}
+                domainCheckStatus={domainCheckStatus}
+                onOpenOrganization={this.handleOpenOrganization}
+                onOpenOrganizationAddress={onOpenOrganizationAddress}
+                selectorNetworks={selectorNetworks}
+                onRequestEnable={onRequestEnable}
+                smallMode={below('medium')}
+              />
+            </Content>
+          )}
+        </Viewport>
       </Main>
     )
   }
@@ -140,6 +156,7 @@ class StartContent extends React.PureComponent {
       domainCheckStatus,
       onDomainChange,
       onOpenOrganization,
+      smallMode,
     } = this.props
 
     const canCreate =
@@ -153,15 +170,21 @@ class StartContent extends React.PureComponent {
     return (
       <React.Fragment>
         <Title>
-          <Text size="great" weight="bold" color={theme.textDimmed}>
-            Welcome to Aragon
+          <Text
+            size={smallMode ? 'xxlarge' : 'great'}
+            weight="bold"
+            color={theme.textDimmed}
+          >
+            {smallMode ? 'Find an existing organization' : 'Welcome to Aragon'}
           </Text>
         </Title>
 
         <NetworkChooser>
           <p>
             <Text size="large" color={theme.textSecondary}>
-              Start by choosing the network for your organization
+              {smallMode
+                ? 'Choose network'
+                : 'Start by choosing the network for your organization'}
             </Text>
           </p>
 
@@ -170,10 +193,11 @@ class StartContent extends React.PureComponent {
               <DropDown
                 items={networkChooserItems.map(([id, label]) => label)}
                 onChange={this.handleNetworkChange}
+                wide={smallMode}
               />
             </div>
 
-            {network.type === 'main' && (
+            {!smallMode && network.type === 'main' && (
               <Disclosure>
                 <span>
                   <IconAttention />
@@ -194,39 +218,46 @@ class StartContent extends React.PureComponent {
         </NetworkChooser>
 
         <TwoActions>
-          <Action>
-            <p>
-              <Text size="large" color={theme.textSecondary}>
-                Then create a new organization
-              </Text>
-            </p>
-            <Button
-              mode="strong"
-              onClick={this.props.onCreate}
-              disabled={!canCreate}
-            >
-              Create a new organization
-            </Button>
-            {this.renderWarning()}
-          </Action>
+          {!smallMode && (
+            <Action>
+              <p>
+                <Text size="large" color={theme.textSecondary}>
+                  Then create a new organization
+                </Text>
+              </p>
+              <Button
+                mode="strong"
+                onClick={this.props.onCreate}
+                disabled={!canCreate}
+              >
+                Create a new organization
+              </Button>
+              {this.renderWarning()}
+            </Action>
+          )}
           <form onSubmit={onOpenOrganization}>
             <Action>
               <p>
                 <Text size="large" color={theme.textSecondary}>
-                  Or open an existing organization
+                  {smallMode
+                    ? 'Enter an organization’s name'
+                    : 'Or open an existing organization'}
                 </Text>
               </p>
 
               <OpenOrganization>
                 <Field>
-                  <TextInput
+                  <StyledTextInput
                     id="onboard-start-domain"
-                    style={{ textAlign: 'right' }}
                     onChange={onDomainChange}
                     value={domain}
+                    placeholder="Organization name"
                   />
                   <label htmlFor="onboard-start-domain">
-                    <Text weight="bold"> .aragonid.eth</Text>
+                    <Text weight="bold" sie={smallMode ? 'large' : 'normal'}>
+                      {' '}
+                      .aragonid.eth
+                    </Text>
                   </label>
                   <Status>
                     <CheckContainer
@@ -251,56 +282,82 @@ class StartContent extends React.PureComponent {
                   </Status>
                 </Field>
 
-                <span style={{ height: '40px' }}>
+                <SubmitWrap>
                   {domainCheckStatus === DomainCheckAccepted && (
-                    <Button mode="outline" compact onClick={onOpenOrganization}>
-                      Open organization
-                    </Button>
+                    <StyledSubmitButton
+                      mode={smallMode ? 'strong' : 'outline'}
+                      compact={!smallMode}
+                      onClick={onOpenOrganization}
+                    >
+                      {smallMode ? 'Next' : 'Open organization'}
+                    </StyledSubmitButton>
                   )}
                   {domainCheckStatus === DomainCheckRejected && (
-                    <Text
-                      size="xsmall"
-                      style={{ display: 'block', marginTop: '-10px' }}
-                    >
+                    <DomainStatus size={smallMode ? 'large' : 'xsmall'}>
                       No organization with that name exists.
-                    </Text>
+                    </DomainStatus>
                   )}
-                </span>
+                </SubmitWrap>
               </OpenOrganization>
             </Action>
           </form>
         </TwoActions>
         {demoDao && (
-          <Action>
-            <p>
-              <Text size="normal" color={theme.textSecondary}>
-                Not ready to create an organization? Try browsing this{' '}
-                <ButtonLink onClick={this.handleOpenDemoOrganization}>
-                  demo organization
-                </ButtonLink>{' '}
-                instead.
-              </Text>
-            </p>
-          </Action>
+          <p>
+            <Text size="normal" color={theme.textSecondary}>
+              Not ready to create an organization? Try browsing this{' '}
+              <ButtonLink onClick={this.handleOpenDemoOrganization}>
+                demo organization
+              </ButtonLink>{' '}
+              instead.
+            </Text>
+          </p>
         )}
       </React.Fragment>
     )
   }
   renderWarning() {
-    const { hasWallet, hasAccount, walletNetwork } = this.props
+    const {
+      hasWallet,
+      hasAccount,
+      walletNetwork,
+      walletProviderId,
+      onRequestEnable,
+    } = this.props
     if (!hasWallet) {
       return (
         <ActionInfo>
-          Please install and unlock{' '}
-          <SafeLink href="https://metamask.io/" target="_blank">
-            MetaMask
-          </SafeLink>
+          {isElectron() ? (
+            <React.Fragment>
+              Please install{' '}
+              <SafeLink href="https://frame.sh/" target="_blank">
+                Frame
+              </SafeLink>{' '}
+              as your Ethereum provider
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              Please install an Ethereum provider (e.g.{' '}
+              <SafeLink href="https://metamask.io/" target="_blank">
+                MetaMask
+              </SafeLink>
+              )
+            </React.Fragment>
+          )}
           .
         </ActionInfo>
       )
     }
     if (!hasAccount) {
-      return <ActionInfo>Please unlock MetaMask.</ActionInfo>
+      return (
+        <ActionInfo>
+          Please unlock and{' '}
+          <ButtonLink onClick={onRequestEnable} style={{ color: '#000' }}>
+            enable
+          </ButtonLink>{' '}
+          {providerString('your Ethereum provider', walletProviderId)}.
+        </ActionInfo>
+      )
     }
     if (network.type === 'unknown') {
       return (
@@ -313,8 +370,8 @@ class StartContent extends React.PureComponent {
     if (walletNetwork !== network.type) {
       return (
         <ActionInfo>
-          Please select the {sanitizeNetworkType(network.type)} network in your
-          Ethereum provider.
+          Please select the {sanitizeNetworkType(network.type)} network in{' '}
+          {providerString('your Ethereum provider', walletProviderId)}.
         </ActionInfo>
       )
     }
@@ -340,43 +397,136 @@ class StartContent extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
+const DomainStatus = styled(Text)`
+  display: block;
+  margin-left: 5px;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin: -10px 0 0 5px;
+    `
+  )}
+`
+
+const SubmitWrap = styled.span`
+  height: 40px;
+  display: flex;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: inline;
+    `
+  )}
+`
+
+const StyledSubmitButton = styled(Button)`
+  margin-left: auto;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: unset;
+    `
+  )}
+`
+
+const Warning = styled.div`
+  background: rgba(255, 195, 70, 0.09);
+  border-radius: 3px;
+  padding: 13px;
+  margin: 0 auto;
+  margin-bottom: 45px;
+  font-size: 15px;
+
+  & span {
+    font-weight: bold;
+  }
+`
+
+const Main = styled(animated.div)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
   height: 100%;
-  padding: 100px;
+  padding: 24px;
+  background: url(${logo}) no-repeat top center;
+  background-size: calc(100vw - 32px);
+  background-position: 50% 16.666666vh;
+
+  ${breakpoint(
+    'medium',
+    `
+      padding: 100px;
+      background: none;
+    `
+  )}
+
   @media (min-width: 1180px) {
     justify-content: flex-start;
     background: url(${logo}) no-repeat calc(100% - 70px) 60%;
   }
 `
 
-const Content = styled.div`
+const Content = styled(animated.div)`
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: flex-start;
+
+  ${breakpoint(
+    'medium',
+    `
+      justify-content: center;
+    `
+  )}
 `
 
 const TwoActions = styled.div`
-  display: flex;
-  align-items: flex-start;
-  > *:first-child {
-    width: 400px;
-  }
+  width: 100%;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+      align-items: flex-start;
+      > *:first-child {
+        width: 400px;
+      }
+    `
+  )}
 `
 
 const NetworkChooser = styled.div`
-  margin-bottom: 60px;
+  width: 100%;
+  margin-bottom: 45px;
   > p:first-child {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-bottom: 60px;
+      > p:first-child {
+        margin-bottom: 40px;
+      }
+    `
+  )}
 `
 
 const NetworkChooserContainer = styled.div`
-  display: flex;
+  display: block;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+    `
+  )}
 `
 
 const StrongSafeLink = styled(SafeLink)`
@@ -419,21 +569,60 @@ const ActionInfo = styled.span`
 
 const Title = styled.h1`
   font-size: 37px;
-  margin-bottom: 40px;
+  margin-bottom: 45px;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin-bottom: 40px;
+    `
+  )}
 `
 
 const OpenOrganization = styled.div`
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+      flex-direction: column;
+    `
+  )}
+`
+
+const StyledTextInput = styled(TextInput)`
+  width: 100%;
+  margin-bottom: 10px;
+
+  ${breakpoint(
+    'medium',
+    `
+      text-align: right;
+      margin-bottom: 0;
+    `
+  )}
 `
 
 const Field = styled.div`
-  display: flex;
-  align-items: center;
   margin-bottom: 20px;
+
   label {
-    margin: 0 10px;
+    display: inline-block;
+    margin: 0 4px 0 8px;
   }
+
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+      align-items: center;
+
+      label {
+        margin: 0 10px;
+      }
+    `
+  )}
 `
 
 const Status = styled.span`

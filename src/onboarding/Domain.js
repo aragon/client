@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { theme, Text, TextInput, IconCheck, IconCross } from '@aragon/ui'
-import { lerp } from '../math-utils'
+import { animated } from 'react-spring'
 import { noop } from '../utils'
 import LoadingRing from '../components/LoadingRing'
 
@@ -14,17 +14,14 @@ import {
 
 class Domain extends React.Component {
   static defaultProps = {
-    positionProgress: 0,
+    screenPosition: 0,
     domain: '',
     domainCheckStatus: DomainCheckNone,
     onDomainChange: noop,
     onSubmit: noop,
   }
-  componentWillReceiveProps({ positionProgress }) {
-    if (
-      positionProgress === 0 &&
-      positionProgress !== this.props.positionProgress
-    ) {
+  componentWillReceiveProps({ forceFocus }) {
+    if (forceFocus && forceFocus !== this.props.forceFocus) {
       this.focusEl.focus()
     }
   }
@@ -33,22 +30,16 @@ class Domain extends React.Component {
   }
   handleSubmit = event => {
     event.preventDefault()
-    this.focusEl.blur()
     this.props.onSubmit()
   }
   handleFocusElRef = el => {
     this.focusEl = el
   }
   render() {
-    const { positionProgress, domain, domainCheckStatus } = this.props
+    const { domain, domainCheckStatus, screenTransitionStyles } = this.props
     return (
       <Main>
-        <Content
-          style={{
-            transform: `translateX(${lerp(positionProgress, 0, 50)}%)`,
-            opacity: 1 - Math.abs(positionProgress),
-          }}
-        >
+        <Content style={screenTransitionStyles}>
           <DomainContent
             domain={domain}
             domainCheckStatus={domainCheckStatus}
@@ -81,7 +72,7 @@ class DomainContent extends React.PureComponent {
           <Field>
             <TextInput
               id="domain-field"
-              innerRef={this.props.focusElRef}
+              ref={this.props.focusElRef}
               placeholder="myorganization"
               onChange={this.props.onDomainChange}
               style={{ textAlign: 'right' }}
@@ -129,7 +120,7 @@ const Main = styled.div`
   padding-top: 140px;
 `
 
-const Content = styled.div`
+const Content = styled(animated.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;
