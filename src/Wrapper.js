@@ -11,6 +11,7 @@ import MenuPanel from './components/MenuPanel/MenuPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import NotificationBar from './components/Notifications/NotificationBar'
+import CustomLabelModal from './components/CustomLabelModal/CustomLabelModal'
 import {
   AppType,
   AppsStatusType,
@@ -67,6 +68,7 @@ class Wrapper extends React.PureComponent {
 
   state = {
     appInstance: {},
+    customLabelAddress: null,
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
     notificationOpen: false,
@@ -133,6 +135,12 @@ class Wrapper extends React.PureComponent {
     }
     this.setState({ preferencesOpened: true })
   }
+  handleCloseCustomLabel = () => {
+    this.setState({ customLabelAddress: null })
+  }
+  handleSaveCustomLabel = data => {
+    this.setState({ customLabelAddress: null })
+  }
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
@@ -176,6 +184,7 @@ class Wrapper extends React.PureComponent {
       walletWeb3,
     } = this.props
     const {
+      customLabelAddress,
       menuPanelOpened,
       notifications,
       notificationOpen,
@@ -187,6 +196,12 @@ class Wrapper extends React.PureComponent {
         <Preferences
           opened={preferencesOpened}
           onClose={this.handleClosePreferences}
+        />
+        <CustomLabelModal
+          address={customLabelAddress}
+          opened={customLabelAddress !== null}
+          onCancel={this.handleCloseCustomLabel}
+          onSave={this.handleSaveCustomLabel}
         />
         <BannerWrapper>{banner}</BannerWrapper>
         <Container>
