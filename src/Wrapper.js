@@ -89,7 +89,7 @@ class Wrapper extends React.PureComponent {
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
   }
-  handleAppIFrameLoad = event => {
+  handleAppIFrameLoad = async event => {
     const {
       apps,
       wrapper,
@@ -103,7 +103,7 @@ class Wrapper extends React.PureComponent {
       return
     }
 
-    wrapper.connectAppIFrame(event.target, instanceId)
+    await wrapper.connectAppIFrame(event.target, instanceId)
     this.appIFrame.sendMessage({
       from: 'wrapper',
       name: 'ready',
