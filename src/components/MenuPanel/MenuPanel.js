@@ -19,6 +19,8 @@ const APP_PERMISSIONS = staticApps.get('permissions').app
 const APP_SETTINGS = staticApps.get('settings').app
 const SHADOW_WIDTH = 15
 
+export const MENU_PANEL_WIDTH = 220
+
 const prepareAppGroups = apps =>
   apps.reduce((groups, app) => {
     const group = groups.find(({ appId }) => appId === app.appId)
@@ -265,7 +267,7 @@ const Wrap = styled(animated.div)`
     'medium',
     `
       position: relative;
-      width: 220px;
+      width: ${MENU_PANEL_WIDTH}px;
       min-width: 0;
     `
   )};
