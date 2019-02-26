@@ -27,9 +27,11 @@ if (
     window.indexedDB.deleteDatabase
   ) {
     // eslint-disable-next-line promise/catch-or-return
-    window.indexedDB.databases.then(databases =>
-      databases.forEach(({ name }) => window.indexedDB.deleteDatabase(name))
-    )
+    window.indexedDB
+      .databases()
+      .then(databases =>
+        databases.forEach(({ name }) => window.indexedDB.deleteDatabase(name))
+      )
   }
 }
 
