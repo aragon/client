@@ -1,15 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, IdentityBadge, Viewport, breakpoint } from '@aragon/ui'
+import { Button, IdentityBadge, Viewport } from '@aragon/ui'
 import { TextLabel } from '../../../components/TextStyles'
 import { GU } from '../../../utils'
 import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
 import Screenshots from '../Screenshots'
 
 // Exclude the width of MenuPanel
-const appAbove = (above, value) =>
-  above(value + (above('medium') ? MENU_PANEL_WIDTH : 0))
 const appBelow = (below, value) =>
   below(value + (below('medium') ? 0 : MENU_PANEL_WIDTH))
 
