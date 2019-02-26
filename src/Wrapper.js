@@ -13,6 +13,7 @@ import NotificationBar from './components/Notifications/NotificationBar'
 import {
   AppType,
   AppsStatusType,
+  AragonType,
   DaoAddressType,
   EthereumAddressType,
 } from './prop-types'
@@ -46,7 +47,7 @@ class Wrapper extends React.PureComponent {
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
     walletWeb3: PropTypes.object,
-    wrapper: PropTypes.object,
+    wrapper: AragonType,
   }
 
   static defaultProps = {
@@ -293,6 +294,7 @@ class Wrapper extends React.PureComponent {
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
+          wrapper={wrapper}
         />
       )
     }
