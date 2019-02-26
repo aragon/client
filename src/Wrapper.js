@@ -291,7 +291,13 @@ class Wrapper extends React.PureComponent {
     }
 
     if (instanceId === 'apps') {
-      return <Apps onMessage={this.handleAppMessage} />
+      return (
+        <Apps
+          params={params}
+          onMessage={this.handleAppMessage}
+          onParamsRequest={this.handleParamsRequest}
+        />
+      )
     }
 
     if (instanceId === 'settings') {

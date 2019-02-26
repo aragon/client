@@ -1,37 +1,119 @@
 import React from 'react'
-import styled from 'styled-components'
-import {
-  Card,
-  Button,
-  Badge,
-  Text,
-  SafeLink,
-  theme,
-  colors,
-  unselectable,
-  font,
-  breakpoint,
-  Viewport,
-} from '@aragon/ui'
-import AppLayout from '../../components/AppLayout/AppLayout'
+import PropTypes from 'prop-types'
+import { NavigationBar, AppBar, AppView, TabBar, Viewport } from '@aragon/ui'
+import { getKnownApp } from '../../known-apps'
 import MenuButton from '../../components/MenuPanel/MenuButton'
+import InstalledApps from './InstalledApps/InstalledApps'
+import DiscoverApps from './DiscoverApps/DiscoverApps'
 
-import defaultIcon from './icons/default.svg'
-import payrollIcon from './icons/payroll.svg'
-import espressoIcon from './icons/espresso.svg'
+const TABS = [
+  { id: 'installed', label: 'Installed apps' },
+  { id: 'discover', label: 'Discover apps' },
+]
+
+const APPS_BASE = [
+  {
+    appName: 'voting.aragonpm.eth',
+    canUpgrade: true,
+  },
+  { appName: 'token-manager.aragonpm.eth', canUpgrade: false },
+  { appName: 'finance.aragonpm.eth', canUpgrade: true },
+  { appName: 'survey.aragonpm.eth', canUpgrade: false },
+]
+
+const DEMO_APPS = Array(5)
+  .fill(APPS_BASE)
+  .reduce((apps, group) => apps.concat(group), [])
+  .map((app, i) => {
+    const knownApp = getKnownApp(app.appName)
+    return {
+      ...(knownApp ? { ...app, ...knownApp } : app),
+      appName: app.appName.replace(
+        /\./,
+        `-${Math.floor(i / APPS_BASE.length) + 1}.`
+      ),
+      version: '0.61',
+      versions: [
+        { name: '0.62', date: new Date('2018-10-23') },
+        { name: '0.61', date: new Date('2018-9-10') },
+        { name: '0.60', date: new Date('2018-9-5') },
+      ],
+    }
+  })
 
 class Apps extends React.Component {
+  static propTypes = {
+    params: PropTypes.string.isRequired,
+    onParamsRequest: PropTypes.func.isRequired,
+  }
+  state = {
+    apps: DEMO_APPS,
+  }
   handleMenuPanelOpen = () => {
     this.props.onMessage({
       data: { from: 'app', name: 'menuPanel', value: true },
     })
   }
+  getLocation() {
+    const { apps } = this.state
+    const { params } = this.props
+
+    if (!params) {
+      return { activeTab: 0, openedAppName: null }
+    }
+
+    const parts = params.split('_')
+
+    const activeTab = TABS.findIndex(({ id }) => id === parts[0])
+    const openedApp = apps.find(({ appName }) => appName === parts[1])
+
+    return {
+      activeTab: activeTab === -1 ? 0 : activeTab,
+      openedAppName: openedApp ? openedApp.appName : null,
+    }
+  }
+  updateLocation({ activeTab, openedAppName }) {
+    const location = this.getLocation()
+    if (activeTab !== undefined) {
+      location.activeTab = activeTab
+    }
+    if (openedAppName !== undefined) {
+      location.openedAppName = openedAppName
+    }
+
+    this.props.onParamsRequest(
+      `${TABS[location.activeTab].id}${
+        location.openedAppName ? `_${location.openedAppName}` : ''
+      }`
+    )
+  }
+  handleScreenChange = tabIndex => {
+    this.updateLocation({ activeTab: tabIndex })
+  }
+  openApp = appName => {
+    this.updateLocation({ openedAppName: appName })
+  }
+  closeApp = () => {
+    this.updateLocation({ openedAppName: null })
+  }
 
   render() {
+    const { apps } = this.state
+    const { activeTab, openedAppName } = this.getLocation()
     return (
-      <AppLayout
-        title={
-          <AppBarTitle>
+      <AppView
+        appBar={
+          <AppBar
+            tabs={
+              openedAppName ? null : (
+                <TabBar
+                  items={TABS.map(screen => screen.label)}
+                  selected={activeTab}
+                  onChange={this.handleScreenChange}
+                />
+              )
+            }
+          >
             <Viewport>
               {({ below }) =>
                 below('medium') && (
@@ -39,203 +121,24 @@ class Apps extends React.Component {
                 )
               }
             </Viewport>
-            <AppBarLabel>Apps</AppBarLabel>
-          </AppBarTitle>
-        }
-        endContent={
-          <DevPortalAnchor
-            mode="strong"
-            href="https://hack.aragon.org/"
-            target="_blank"
-          >
-            Create a new app
-          </DevPortalAnchor>
+            <NavigationBar
+              items={['Apps', ...(openedAppName ? ['Voting'] : [])]}
+              onBack={this.closeApp}
+            />
+          </AppBar>
         }
       >
-        <Content>
-          <p>
-            Soon you will be able to <em>browse</em> and <em>install</em> apps
-            in your Aragon organization from here.
-          </p>
-          <p>
-            In the meantime, you can{' '}
-            <SafeLink href="https://hack.aragon.org/" target="_blank">
-              learn how to create apps
-            </SafeLink>{' '}
-            or preview some of the apps being developed.
-          </p>
-
-          <h1>Apps in development</h1>
-          <AppsGrid>
-            {knownApps.map((app, i) => (
-              <Main key={i}>
-                <Icon>
-                  <Img width="64" height="64" src={app.icon} alt="" />
-                </Icon>
-                <Name>{app.name}</Name>
-                <TagWrapper>
-                  <Tag background={statuses[app.status]}>{app.status}</Tag>
-                </TagWrapper>
-                <Description color={theme.textSecondary}>
-                  {app.description}
-                </Description>
-                <Action href={app.link} target="_blank">
-                  <Text weight="bold" color={theme.textSecondary}>
-                    Read more
-                  </Text>
-                </Action>
-              </Main>
-            ))}
-          </AppsGrid>
-        </Content>
-      </AppLayout>
+        {activeTab === 0 && (
+          <InstalledApps
+            apps={apps}
+            openedAppName={openedAppName}
+            onOpenApp={this.openApp}
+          />
+        )}
+        {activeTab === 1 && <DiscoverApps />}
+      </AppView>
     )
   }
 }
-
-const AppBarTitle = styled.span`
-  display: flex;
-  align-items: center;
-  margin-left: -30px;
-`
-
-const AppBarLabel = styled.span`
-  margin-left: 8px;
-  ${font({ size: 'xxlarge' })};
-
-  ${breakpoint(
-    'medium',
-    `
-      margin-left: 24px;
-    `
-  )};
-`
-
-const DevPortalAnchor = styled(Button.Anchor)`
-  display: block;
-`
-
-const Content = styled.div`
-  padding: 30px;
-
-  > h1 {
-    margin: 30px 0;
-    font-weight: 600;
-  }
-`
-
-const AppsGrid = styled.div`
-  display: grid;
-  grid-auto-flow: row;
-  grid-gap: 25px;
-  justify-items: start;
-  grid-template-columns: 1fr;
-
-  ${breakpoint(
-    'medium',
-    `
-      grid-template-columns: repeat(auto-fill, 224px);
-    `
-  )};
-`
-
-const Main = styled(Card).attrs({ width: '100%', height: '288px' })`
-  ${unselectable};
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 25px;
-`
-
-const Icon = styled.div`
-  height: 64px;
-  margin-bottom: 5px;
-  img {
-    display: block;
-  }
-`
-
-const Img = styled.img`
-  display: block;
-`
-
-const Name = styled.p`
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  margin-bottom: 10px;
-`
-
-const TagWrapper = styled.div`
-  max-width: 100%;
-  padding: 0 20px;
-  margin-bottom: 10px;
-`
-
-const Tag = styled(Badge)`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  color: white;
-`
-
-const Description = styled(Text)`
-  padding: 0 1rem;
-  margin-bottom: 30px;
-  text-align: center;
-`
-
-const Action = styled(SafeLink)`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding-bottom: 30px;
-  text-align: center;
-  text-decoration: none;
-`
-
-const statuses = {
-  'pre-alpha': colors.Gold.Brandy,
-  alpha: colors.Blue.Danube,
-  ready: colors.Green['Spring Green'],
-}
-
-const knownApps = [
-  {
-    icon: defaultIcon,
-    name: 'That Planning Suite',
-    status: 'alpha',
-    description: `Suite for open and fluid organizations.
-                  Bounties, range voting, and more.`,
-    link: 'https://github.com/spacedecentral/planning-suite',
-  },
-  {
-    icon: payrollIcon,
-    name: 'Payroll',
-    status: 'alpha',
-    description: `Pay and get paid, by the block.
-                  Supports tokens and price feeds.`,
-    link:
-      'https://github.com/aragon/aragon-apps/tree/master/future-apps/payroll',
-  },
-  {
-    icon: espressoIcon,
-    name: 'Espresso',
-    status: 'pre-alpha',
-    description: `Collaborative data vault.
-                  Encrypt and share data with people in your organization.`,
-    link: 'https://github.com/espresso-org',
-  },
-  {
-    icon: defaultIcon,
-    name: 'Liquid democracy',
-    status: 'pre-alpha',
-    description: `Delegate your voting power to others,
-                  and vote on important matters.`,
-    link: 'https://github.com/aragonlabs/liquid-democracy',
-  },
-]
 
 export default Apps
