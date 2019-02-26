@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Trail, animated } from 'react-spring'
-import { Badge, theme, springs } from '@aragon/ui'
+import { Badge, theme, springs, Info } from '@aragon/ui'
 import { format } from 'date-fns'
 import { TextLabel } from '../../../components/TextStyles'
 import { GU } from '../../../utils'
@@ -74,6 +74,17 @@ const AppVersions = ({ version, versions, animate }) => (
         </Trail>
       </tbody>
     </table>
+
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+      `}
+    >
+      <Info.Action>
+        Minor and patch upgrades are front-end only, and are performed
+        automatically.
+      </Info.Action>
+    </div>
   </div>
 )
 
