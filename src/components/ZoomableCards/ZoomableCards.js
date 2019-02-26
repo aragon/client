@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { springs } from '@aragon/ui'
 import ZoomCard from './ZoomCard'
 import ZoomCardOpened from './ZoomCardOpened'
 
-class ZoomableCards extends React.Component {
+class ZoomableCards extends React.PureComponent {
   static propTypes = {
     currentId: PropTypes.string,
   }
@@ -27,7 +28,6 @@ class ZoomableCards extends React.Component {
   }
   componentDidUpdate(prevProps) {
     const { currentId } = this.props
-
     if (currentId !== prevProps.currentId) {
       this.updateCardId(currentId)
     }
@@ -44,6 +44,18 @@ class ZoomableCards extends React.Component {
       })
     }
   }
+
+  renderZoomCard = (id, children) => (
+    <ZoomCard
+      id={id}
+      key={id}
+      addRef={this.addCard}
+      removeRef={this.removeCard}
+    >
+      {children}
+    </ZoomCard>
+  )
+
   render() {
     const {
       currentId,
@@ -52,30 +64,25 @@ class ZoomableCards extends React.Component {
       renderOpenedAside,
     } = this.props
     const { cardRect } = this.state
-    const { addCard, removeCard } = this
     return (
-      <React.Fragment>
+      <div>
         <Spring
           from={{ showProgress: 1 }}
           to={{ showProgress: Number(currentId === null) }}
           config={springs.smooth}
+          initial={null}
           native
         >
           {({ showProgress }) => (
-            <animated.div style={{ opacity: showProgress }}>
-              {renderCards({
-                card: (id, children) => (
-                  <ZoomCard
-                    id={id}
-                    key={id}
-                    addRef={addCard}
-                    removeRef={removeCard}
-                  >
-                    {children}
-                  </ZoomCard>
-                ),
-              })}
-            </animated.div>
+            <ScrollView style={{ opacity: showProgress }}>
+              <div
+                css={`
+                  padding: 30px;
+                `}
+              >
+                {renderCards({ card: this.renderZoomCard })}
+              </div>
+            </ScrollView>
           )}
         </Spring>
         <ZoomCardOpened
@@ -84,9 +91,19 @@ class ZoomableCards extends React.Component {
           renderAside={renderOpenedAside}
           cardRect={cardRect}
         />
-      </React.Fragment>
+      </div>
     )
   }
 }
+
+const ScrollView = styled(animated.div)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  will-change: opacity;
+`
 
 export default ZoomableCards

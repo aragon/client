@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-class ZoomCard extends React.Component {
+class ZoomCard extends React.PureComponent {
   static propTypes = {
     id: PropTypes.string.isRequired,
     addRef: PropTypes.func,
