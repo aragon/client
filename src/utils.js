@@ -45,3 +45,6 @@ export function log(...params) {
     console.log(...params)
   }
 }
+
+// GU = Grid Unit
+export const GU = 8
