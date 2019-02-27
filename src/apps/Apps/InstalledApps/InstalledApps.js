@@ -15,6 +15,7 @@ class InstalledApps extends React.Component {
       PropTypes.oneOf([null])
     ),
     onOpenApp: PropTypes.func.isRequired,
+    onRequestUpgrade: PropTypes.func.isRequired,
   }
   getAppByAppName(appName) {
     return this.props.apps.find(app => app.appName === appName)
@@ -42,6 +43,7 @@ class InstalledApps extends React.Component {
                       />
                     )
                   }
+                  onRequestUpgrade={this.props.onRequestUpgrade}
                 />
               )
             }}

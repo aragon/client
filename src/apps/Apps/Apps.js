@@ -1,10 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { NavigationBar, AppBar, AppView, TabBar, Viewport } from '@aragon/ui'
+import {
+  AppBar,
+  AppView,
+  NavigationBar,
+  SidePanel,
+  TabBar,
+  Viewport,
+} from '@aragon/ui'
 import { getKnownApp } from '../../known-apps'
 import MenuButton from '../../components/MenuPanel/MenuButton'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
+import UpgradeAppPanel from './UpgradeAppPanel'
 
 const TABS = [
   { id: 'installed', label: 'Installed apps' },
@@ -32,11 +40,38 @@ const DEMO_APPS = Array(5)
         /\./,
         `-${Math.floor(i / APPS_BASE.length) + 1}.`
       ),
-      version: '0.61',
+      version: '0.5.3',
       versions: [
-        { name: '0.62', date: new Date('2018-10-23') },
-        { name: '0.61', date: new Date('2018-9-10') },
-        { name: '0.60', date: new Date('2018-9-5') },
+        {
+          name: '0.5.4',
+          date: new Date('2018-10-18'),
+          changelogUrl:
+            'https://github.com/aragon/aragon-apps/releases/tag/0.5.4',
+        },
+        {
+          name: '0.5.3',
+          date: new Date('2018-7-17'),
+          changelogUrl:
+            'https://github.com/aragon/aragon-apps/releases/tag/0.5.3',
+        },
+        {
+          name: '0.5.2',
+          date: new Date('2018-6-19'),
+          changelogUrl:
+            'https://github.com/aragon/aragon-apps/releases/tag/0.5.2',
+        },
+        {
+          name: '0.5.1',
+          date: new Date('2018-5-31'),
+          changelogUrl:
+            'https://github.com/aragon/aragon-apps/releases/tag/0.5.1',
+        },
+        {
+          name: '0.5.0',
+          date: new Date('2018-3-29'),
+          changelogUrl:
+            'https://github.com/aragon/aragon-apps/releases/tag/0.5.0',
+        },
       ],
     }
   })
@@ -48,6 +83,7 @@ class Apps extends React.Component {
   }
   state = {
     apps: DEMO_APPS,
+    upgradePanelOpened: false,
   }
   handleMenuPanelOpen = () => {
     this.props.onMessage({
@@ -87,6 +123,15 @@ class Apps extends React.Component {
       }`
     )
   }
+  getAppByAppName(appName) {
+    return this.state.apps.find(app => app.appName === appName)
+  }
+  openUpgradePanel = () => {
+    this.setState({ upgradePanelOpened: true })
+  }
+  closeUpgradePanel = () => {
+    this.setState({ upgradePanelOpened: false })
+  }
   handleScreenChange = tabIndex => {
     this.updateLocation({ activeTab: tabIndex })
   }
@@ -98,45 +143,54 @@ class Apps extends React.Component {
   }
 
   render() {
-    const { apps } = this.state
+    const { apps, upgradePanelOpened } = this.state
     const { activeTab, openedAppName } = this.getLocation()
+
     return (
-      <AppView
-        appBar={
-          <AppBar
-            tabs={
-              openedAppName ? null : (
-                <TabBar
-                  items={TABS.map(screen => screen.label)}
-                  selected={activeTab}
-                  onChange={this.handleScreenChange}
-                />
-              )
-            }
-          >
-            <Viewport>
-              {({ below }) =>
-                below('medium') && (
-                  <MenuButton onClick={this.handleMenuPanelOpen} />
+      <React.Fragment>
+        <AppView
+          appBar={
+            <AppBar
+              tabs={
+                openedAppName ? null : (
+                  <TabBar
+                    items={TABS.map(screen => screen.label)}
+                    selected={activeTab}
+                    onChange={this.handleScreenChange}
+                  />
                 )
               }
-            </Viewport>
-            <NavigationBar
-              items={['Apps', ...(openedAppName ? ['Voting'] : [])]}
-              onBack={this.closeApp}
+            >
+              <Viewport>
+                {({ below }) =>
+                  below('medium') && (
+                    <MenuButton onClick={this.handleMenuPanelOpen} />
+                  )
+                }
+              </Viewport>
+              <NavigationBar
+                items={['Apps', ...(openedAppName ? ['Voting'] : [])]}
+                onBack={this.closeApp}
+              />
+            </AppBar>
+          }
+        >
+          {activeTab === 0 && (
+            <InstalledApps
+              apps={apps}
+              openedAppName={openedAppName}
+              onOpenApp={this.openApp}
+              onRequestUpgrade={this.openUpgradePanel}
             />
-          </AppBar>
-        }
-      >
-        {activeTab === 0 && (
-          <InstalledApps
-            apps={apps}
-            openedAppName={openedAppName}
-            onOpenApp={this.openApp}
-          />
-        )}
-        {activeTab === 1 && <DiscoverApps />}
-      </AppView>
+          )}
+          {activeTab === 1 && <DiscoverApps />}
+        </AppView>
+
+        <UpgradeAppPanel
+          app={upgradePanelOpened && this.getAppByAppName(openedAppName)}
+          onClose={this.closeUpgradePanel}
+        />
+      </React.Fragment>
     )
   }
 }

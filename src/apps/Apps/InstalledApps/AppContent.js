@@ -13,8 +13,17 @@ const appBelow = (below, value) =>
 
 const AppContent = React.memo(
   ({
-    app: { appName, name, icon, description, screenshots, canUpgrade },
+    app: {
+      appName,
+      name,
+      icon,
+      description,
+      screenshots,
+      canUpgrade,
+      sourceUrl,
+    },
     appVersions,
+    onRequestUpgrade,
   }) => (
     <Viewport>
       {({ below, breakpoints }) => (
@@ -86,7 +95,11 @@ const AppContent = React.memo(
                   : '0'};
               `}
             >
-              <Button mode="strong">Upgrade</Button>
+              {canUpgrade && (
+                <Button mode="strong" onClick={onRequestUpgrade}>
+                  Upgrade
+                </Button>
+              )}
             </div>
           </div>
           <div>
@@ -108,7 +121,7 @@ const AppContent = React.memo(
               <Heading2>Description</Heading2>
               <div>{description}</div>
               <Heading2>Source code</Heading2>
-              <div>http://github.com/xyz</div>
+              <div>{sourceUrl}</div>
               <Heading2>Permissions</Heading2>
               <div>View permissions</div>
             </DetailsGroup>
