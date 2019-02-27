@@ -26,6 +26,7 @@ import { staticApps } from './static-apps'
 import { APPS_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
+import { set, resolve } from './mockCustomLabelsManager'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -213,6 +214,7 @@ class Wrapper extends React.PureComponent {
           />
           <CustomLabelModal
             address={customLabelAddress}
+            label={resolve(customLabelAddress) || ''}
             opened={customLabelAddress !== null}
             onCancel={this.handleCloseCustomLabelModal}
             onSave={this.handleSaveCustomLabelModal}
