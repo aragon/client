@@ -7,8 +7,8 @@ export default props => (
     css={`
       width: auto;
       height: 100%;
-      padding: 0 10px 0 20px;
-      margin-right: 8px;
+      padding: 0 16px;
+      margin-left: -30px;
     `}
   >
     <IconMenu />
