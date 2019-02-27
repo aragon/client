@@ -282,6 +282,8 @@ const subscribe = (
             return
           }
 
+          const connectApp = await wrapper.runApp(proxyAddress)
+
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
@@ -300,7 +302,7 @@ const subscribe = (
             workerSubscriptionPool.addWorker({
               app,
               worker,
-              subscription: wrapper.runApp(provider, proxyAddress).shutdown,
+              subscription: connectApp(provider).shutdown,
             })
           }
 
@@ -395,14 +397,15 @@ const initWrapper = async (
     { ipfsConf }
   )
 
-  wrapper.connectAppIFrame = (iframeElt, proxyAddress) => {
+  wrapper.connectAppIFrame = async (iframeElt, proxyAddress) => {
     const provider = new providers.WindowMessage(iframeElt.contentWindow)
-    const result = wrapper.runApp(provider, proxyAddress)
+    const appContext = (await wrapper.runApp(proxyAddress))(provider)
+
     if (subscriptions.connectedApp) {
       subscriptions.connectedApp.unsubscribe()
     }
-    subscriptions.connectedApp = result.shutdown
-    return result
+    subscriptions.connectedApp = appContext.shutdown
+    return appContext
   }
 
   wrapper.cancel = () => {
