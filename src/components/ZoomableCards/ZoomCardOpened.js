@@ -1,13 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
-import { springs } from '@aragon/ui'
+import { Viewport, springs } from '@aragon/ui'
 
 function lerp(progress, value1, value2) {
   return (value2 - value1) * progress + value1
 }
 
-const MARGIN = 30
+const LARGE_MARGIN = 30
 const SIDEBAR_WIDTH = 360
 
 class ZoomCardOpened extends React.Component {
@@ -71,80 +71,92 @@ class ZoomCardOpened extends React.Component {
           pointer-events: ${currentId === null ? 'none' : 'auto'};
         `}
       >
-        <div
-          css={`
-            display: flex;
-            padding: ${MARGIN}px;
-          `}
-        >
-          <div
-            ref={this._openedCard}
-            css={`
-              position: relative;
-              display: flex;
-              width: calc(100% - ${renderAside ? SIDEBAR_WIDTH - MARGIN : 0}px);
-              flex-direction: column;
-            `}
-          >
-            <Transition
-              items={currentId}
-              from={{ openProgress: 0 }}
-              enter={{ openProgress: 1 }}
-              leave={{ openProgress: 0 }}
-              config={springs.smooth}
-              initial={null}
-              native
-            >
-              {currentId =>
-                currentId !== null &&
-                (({ openProgress }) => (
-                  <Card
-                    style={{
-                      opacity: openProgress.interpolate(v =>
-                        Math.min(1, v * 2)
-                      ),
-                      transformOrigin: '0 0',
-                      transform: openProgress.interpolate(this.getTransform),
-                      background: 'white',
-                    }}
+        <Viewport>
+          {({ below }) => {
+            const fullscreen = below('medium')
+            const margin = fullscreen ? 0 : LARGE_MARGIN
+            return (
+              <div
+                css={`
+                  display: flex;
+                  padding: ${fullscreen ? 20 : LARGE_MARGIN}px ${margin}px;
+                `}
+              >
+                <div
+                  ref={this._openedCard}
+                  css={`
+                    position: relative;
+                    display: flex;
+                    width: calc(
+                      100% - ${renderAside ? SIDEBAR_WIDTH - margin : 0}px
+                    );
+                    flex-direction: column;
+                  `}
+                >
+                  <Transition
+                    items={currentId}
+                    from={{ openProgress: 0 }}
+                    enter={{ openProgress: 1 }}
+                    leave={{ openProgress: 0 }}
+                    config={springs.smooth}
+                    initial={null}
+                    native
                   >
-                    {renderContent({ openProgress, currentId })}
-                  </Card>
-                ))
-              }
-            </Transition>
-          </div>
-          <Transition
-            items={currentId}
-            from={{ openProgress: 0 }}
-            enter={{ openProgress: 1 }}
-            leave={{ openProgress: 0 }}
-            config={springs.smooth}
-            delay={currentId !== null ? 150 : 0}
-            initial={null}
-            native
-          >
-            {currentId =>
-              renderAside &&
-              currentId !== null &&
-              (({ openProgress }) => (
-                <Aside>
-                  <animated.div
-                    style={{
-                      padding: `0 ${MARGIN}px 0 0`,
-                      opacity: openProgress,
-                      transform: openProgress.interpolate(
-                        v => `translate3d(${(1 - v) * 50}%, 0, 0)`
-                      ),
-                    }}
-                  >
-                    {renderAside({ currentId })}
-                  </animated.div>
-                </Aside>
-              ))
-            }
-          </Transition>
-        </div>
+                    {currentId =>
+                      currentId !== null &&
+                      (({ openProgress }) => (
+                        <Card
+                          fullscreen={fullscreen}
+                          style={{
+                            opacity: openProgress.interpolate(v =>
+                              Math.min(1, v * 2)
+                            ),
+                            transformOrigin: '0 0',
+                            transform: openProgress.interpolate(
+                              this.getTransform
+                            ),
+                          }}
+                        >
+                          {renderContent({ openProgress, currentId })}
+                        </Card>
+                      ))
+                    }
+                  </Transition>
+                </div>
+                <Transition
+                  items={currentId}
+                  from={{ openProgress: 0 }}
+                  enter={{ openProgress: 1 }}
+                  leave={{ openProgress: 0 }}
+                  config={springs.smooth}
+                  delay={currentId !== null ? 150 : 0}
+                  initial={null}
+                  native
+                >
+                  {currentId =>
+                    renderAside &&
+                    currentId !== null &&
+                    (({ openProgress }) => (
+                      <Aside margin={margin}>
+                        <animated.div
+                          style={{
+                            padding: `0 ${margin}px 0 0`,
+                            opacity: openProgress,
+                            transform: openProgress.interpolate(
+                              v => `translate3d(${(1 - v) * 50}%, 0, 0)`
+                            ),
+                          }}
+                        >
+                          {renderAside({ currentId })}
+                        </animated.div>
+                      </Aside>
+                    ))
+                  }
+                </Transition>
+              </div>
+            )
+          }}
+        </Viewport>
       </ScrollView>
     )
   }
@@ -160,16 +172,17 @@ const ScrollView = styled.div`
 `
 
 const Card = styled(animated.div)`
-  background: #ffffff;
   border: 1px solid rgba(209, 209, 209, 0.5);
-  border-radius: 3px;
+  border-width: ${p => (p.fullscreen ? '1px 0' : '1px')};
+  border-radius: ${p => (p.fullscreen ? '0' : '3px')};
+  background: #ffffff;
 `
 
 const Aside = styled.aside`
   flex-shrink: 0;
   overflow: hidden;
-  width: ${SIDEBAR_WIDTH - MARGIN}px;
-  margin-left: ${MARGIN}px;
+  width: ${p => SIDEBAR_WIDTH - p.margin}px;
+  margin-left: ${p => p.margin}px;
 `
 
 export default ZoomCardOpened
