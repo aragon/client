@@ -9,7 +9,7 @@ import {
   Viewport,
 } from '@aragon/ui'
 import { CustomLabelModalConsumer } from '../CustomLabelModal/CustomLabelModalManager'
-import { getAll } from '../../mockCustomLabelsManager'
+import { getAll, removeAll } from '../../mockCustomLabelsManager'
 
 const ETH_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -50,17 +50,25 @@ const Preferences = ({ onClose, opened, smallView, ...props }) => {
   )
 }
 
-const CustomLabels = () => (
-  <React.Fragment>
-    <Labels list={getAll()} />
-    <div>
-      <button>Import</button>
-      <button>Export</button>
-      <button>Remove all labels</button>
-    </div>
-    <Warning />
-  </React.Fragment>
-)
+const CustomLabels = () => {
+  const [list, setList] = React.useState(getAll)
+  const clearAll = () => {
+    removeAll()
+    setList(getAll)
+  }
+
+  return (
+    <React.Fragment>
+      <Labels list={list} />
+      <div>
+        <button>Import</button>
+        <button>Export</button>
+        <button onClick={clearAll}>Remove all labels</button>
+      </div>
+      <Warning />
+    </React.Fragment>
+  )
+}
 
 const Labels = ({ list = [] }) => {
   if (!list.length) {
