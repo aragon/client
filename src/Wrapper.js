@@ -13,6 +13,7 @@ import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import NotificationBar from './components/Notifications/NotificationBar'
 import CustomLabelModal from './components/CustomLabelModal/CustomLabelModal'
+import { CustomLabelModalProvider } from './components/CustomLabelModal/CustomLabelModalManager'
 import {
   AppType,
   AppsStatusType,
@@ -162,10 +163,14 @@ class Wrapper extends React.PureComponent {
     }
     this.setState({ preferencesOpened: true })
   }
-  handleCloseCustomLabel = () => {
+  handleOpenCustomLabelModal = customLabelAddress => {
+    this.setState({ customLabelAddress })
+  }
+  handleCloseCustomLabelModal = () => {
     this.setState({ customLabelAddress: null })
   }
-  handleSaveCustomLabel = data => {
+  handleSaveCustomLabelModal = ({ address, label }) => {
+    set({ address, label })
     this.setState({ customLabelAddress: null })
   }
   // params need to be a string
@@ -220,93 +225,97 @@ class Wrapper extends React.PureComponent {
     } = this.state
 
     return (
-      <Main>
-        <Preferences
-          opened={preferencesOpened}
-          onClose={this.handleClosePreferences}
-        />
-        <CustomLabelModal
-          address={customLabelAddress}
-          opened={customLabelAddress !== null}
-          onCancel={this.handleCloseCustomLabel}
-          onSave={this.handleSaveCustomLabel}
-        />
-        <BannerWrapper>{banner}</BannerWrapper>
-        <SwipeContainer
-          enabled={menuSwipeEnabled}
-          menuPanelOpened={menuPanelOpened}
-          onMenuPanelClose={this.handleMenuPanelClose}
-          onMenuPanelOpen={this.handleMenuPanelOpen}
-        >
-          {progress => (
-            <React.Fragment>
-              <MenuPanel
-                apps={apps.filter(app => app.hasWebApp)}
-                appsStatus={appsStatus}
-                activeInstanceId={locator.instanceId}
-                connected={connected}
-                notifications={notifications.length}
-                daoAddress={daoAddress}
-                openProgress={progress}
-                autoClosing={autoClosingPanel}
-                onOpenApp={this.openApp}
-                onCloseMenuPanel={this.handleMenuPanelClose}
-                onOpenPreferences={this.handleOpenPreferences}
-                onRequestAppsReload={onRequestAppsReload}
-                onNotificationClicked={this.handleNotificationClicked}
-                notificationOpen={notificationOpen}
-              />
-              <AppScreen>
-                <NotificationBar
-                  open={notificationOpen}
-                  notifications={notifications}
-                  onClearAll={this.handleNotificationsCleared}
+      <CustomLabelModalProvider
+        onShowCustomLabelModal={this.handleOpenCustomLabelModal}
+      >
+        <Main>
+          <Preferences
+            opened={preferencesOpened}
+            onClose={this.handleClosePreferences}
+          />
+          <CustomLabelModal
+            address={customLabelAddress}
+            opened={customLabelAddress !== null}
+            onCancel={this.handleCloseCustomLabelModal}
+            onSave={this.handleSaveCustomLabelModal}
+          />
+          <BannerWrapper>{banner}</BannerWrapper>
+          <SwipeContainer
+            enabled={menuSwipeEnabled}
+            menuPanelOpened={menuPanelOpened}
+            onMenuPanelClose={this.handleMenuPanelClose}
+            onMenuPanelOpen={this.handleMenuPanelOpen}
+          >
+            {progress => (
+              <React.Fragment>
+                <MenuPanel
+                  apps={apps.filter(app => app.hasWebApp)}
+                  appsStatus={appsStatus}
+                  activeInstanceId={locator.instanceId}
+                  connected={connected}
+                  notifications={notifications.length}
+                  daoAddress={daoAddress}
+                  openProgress={progress}
+                  autoClosing={autoClosingPanel}
+                  onOpenApp={this.openApp}
+                  onCloseMenuPanel={this.handleMenuPanelClose}
+                  onOpenPreferences={this.handleOpenPreferences}
+                  onRequestAppsReload={onRequestAppsReload}
+                  onNotificationClicked={this.handleNotificationClicked}
+                  notificationOpen={notificationOpen}
                 />
-                {this.renderApp(locator.instanceId, locator.params)}
-              </AppScreen>
-            </React.Fragment>
-          )}
-        </SwipeContainer>
-        <SignerPanel
-          account={account}
-          apps={apps}
-          locator={locator}
-          onRequestEnable={onRequestEnable}
-          transactionBag={transactionBag}
-          walletNetwork={walletNetwork}
-          walletProviderId={walletProviderId}
-          walletWeb3={walletWeb3}
-          onTransactionSuccess={({ data, name, description, identifier }) =>
-            this.setState(state => ({
-              queuedNotifications: [
-                {
-                  id: data,
-                  type: 'transaction',
-                  title: `${name} ${identifier}`,
-                  content: description,
-                },
-                ...state.queuedNotifications,
-              ],
-            }))
-          }
-          onClose={() => {
-            if (this.state.queuedNotifications.length) {
-              // Wait a little, then update notifications
-              setTimeout(
-                () =>
-                  this.setState(state => ({
-                    queuedNotifications: [],
-                    notifications: [
-                      ...state.queuedNotifications,
-                      ...state.notifications,
-                    ],
-                  })),
-                250
-              )
+                <AppScreen>
+                  <NotificationBar
+                    open={notificationOpen}
+                    notifications={notifications}
+                    onClearAll={this.handleNotificationsCleared}
+                  />
+                  {this.renderApp(locator.instanceId, locator.params)}
+                </AppScreen>
+              </React.Fragment>
+            )}
+          </SwipeContainer>
+          <SignerPanel
+            account={account}
+            apps={apps}
+            locator={locator}
+            onRequestEnable={onRequestEnable}
+            transactionBag={transactionBag}
+            walletNetwork={walletNetwork}
+            walletProviderId={walletProviderId}
+            walletWeb3={walletWeb3}
+            onTransactionSuccess={({ data, name, description, identifier }) =>
+              this.setState(state => ({
+                queuedNotifications: [
+                  {
+                    id: data,
+                    type: 'transaction',
+                    title: `${name} ${identifier}`,
+                    content: description,
+                  },
+                  ...state.queuedNotifications,
+                ],
+              }))
             }
-          }}
-        />
-      </Main>
+            onClose={() => {
+              if (this.state.queuedNotifications.length) {
+                // Wait a little, then update notifications
+                setTimeout(
+                  () =>
+                    this.setState(state => ({
+                      queuedNotifications: [],
+                      notifications: [
+                        ...state.queuedNotifications,
+                        ...state.notifications,
+                      ],
+                    })),
+                  250
+                )
+              }
+            }}
+          />
+        </Main>
+      </CustomLabelModalProvider>
     )
   }
   renderApp(instanceId, params) {
