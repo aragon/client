@@ -274,6 +274,7 @@ const Wrap = styled(animated.div)`
   width: 90vw;
   height: 100vh;
   min-width: 300px;
+  flex: none;
 
   ${breakpoint(
     'medium',
@@ -289,9 +290,8 @@ const Main = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  flex: none;
   flex-direction: column;
-  flex-grow: 0;
-  flex-shrink: 0;
   ${unselectable};
 `
 
