@@ -310,27 +310,28 @@ class ManageRolePanel extends React.PureComponent {
             <EntitySelector
               label="New manager"
               labelCustomAddress="Address for new manager"
+              activeIndex={assignManagerIndex}
               apps={this.getNamedApps()}
               onChange={this.handleRoleManagerChange}
-              activeIndex={assignManagerIndex}
             />
           )}
 
           {action === CREATE_PERMISSION && (
             <React.Fragment>
               <EntitySelector
+                includeAnyEntity
                 label="Grant permission to"
                 labelCustomAddress="Grant permission to"
+                activeIndex={assignEntityIndex}
                 apps={this.getNamedApps()}
                 onChange={this.handleEntityChange}
-                activeIndex={assignEntityIndex}
               />
               <EntitySelector
                 label="Manager"
                 labelCustomAddress="Address for manager"
+                activeIndex={assignManagerIndex}
                 apps={this.getNamedApps()}
                 onChange={this.handleRoleManagerChange}
-                activeIndex={assignManagerIndex}
               />
             </React.Fragment>
           )}

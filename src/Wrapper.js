@@ -14,6 +14,7 @@ import NotificationBar from './components/Notifications/NotificationBar'
 import {
   AppType,
   AppsStatusType,
+  AragonType,
   DaoAddressType,
   EthereumAddressType,
 } from './prop-types'
@@ -47,7 +48,7 @@ class Wrapper extends React.PureComponent {
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
     walletWeb3: PropTypes.object,
-    wrapper: PropTypes.object,
+    wrapper: AragonType,
   }
 
   static defaultProps = {
@@ -90,7 +91,7 @@ class Wrapper extends React.PureComponent {
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
   }
-  handleAppIFrameLoad = event => {
+  handleAppIFrameLoad = async event => {
     const {
       apps,
       wrapper,
@@ -104,7 +105,7 @@ class Wrapper extends React.PureComponent {
       return
     }
 
-    wrapper.connectAppIFrame(event.target, instanceId)
+    await wrapper.connectAppIFrame(event.target, instanceId)
     this.appIFrame.sendMessage({
       from: 'wrapper',
       name: 'ready',
@@ -311,6 +312,7 @@ class Wrapper extends React.PureComponent {
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
+          wrapper={wrapper}
         />
       )
     }

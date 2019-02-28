@@ -153,11 +153,12 @@ class AssignPermissionPanel extends React.PureComponent {
           </Field>
 
           <EntitySelector
+            includeAnyEntity
             label="Grant permission to"
             labelCustomAddress="Grant permission to"
+            activeIndex={assignEntityIndex}
             apps={this.getNamedApps()}
             onChange={this.handleEntityChange}
-            activeIndex={assignEntityIndex}
           />
 
           {selectedApp && (

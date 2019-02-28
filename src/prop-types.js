@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import Aragon from '@aragon/wrapper'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -85,6 +86,8 @@ export const AppsStatusType = PropTypes.oneOf([
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
 ])
+
+export const AragonType = PropTypes.instanceOf(Aragon)
 
 export const FavoriteDaoType = PropTypes.shape({
   name: PropTypes.string,
