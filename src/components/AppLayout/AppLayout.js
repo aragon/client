@@ -1,13 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { AppBar, AppView, Button, ButtonIcon, Viewport, font } from '@aragon/ui'
+import {
+  AppBar,
+  AppView,
+  Button,
+  ButtonIcon,
+  NavigationBar,
+  Viewport,
+  font,
+} from '@aragon/ui'
+import { noop } from '../../utils'
 import MenuButton from '../MenuPanel/MenuButton'
 
 const AppLayout = ({
   children,
   title,
   afterTitle,
+  navigationItems,
+  onNavigationBack,
   smallViewPadding,
   largeViewPadding,
   onMenuOpen,
@@ -15,48 +26,74 @@ const AppLayout = ({
 }) => {
   return (
     <Viewport>
-      {({ below }) => (
-        <AppView
-          padding={below('medium') ? smallViewPadding : largeViewPadding}
-          appBar={
-            <AppBar>
-              <AppBarContainer
-                style={{ padding: below('medium') ? '0' : '0 30px' }}
-              >
-                <Title>
-                  {below('medium') && (
-                    <MenuButton onClick={onMenuOpen} label="Menu" />
-                  )}
-                  <TitleLabel>{title}</TitleLabel>
-                  {afterTitle}
-                </Title>
-                {mainButton &&
-                  (mainButton.button ||
-                    (below('medium') ? (
-                      <ButtonIcon
-                        onClick={mainButton.onClick}
-                        title={mainButton.label}
+      {({ below }) => {
+        return (
+          <AppView
+            padding={below('medium') ? smallViewPadding : largeViewPadding}
+            appBar={
+              <AppBar>
+                <div
+                  css={`
+                    display: flex;
+                    width: 100%;
+                    height: 100%;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: nowrap;
+                    padding: ${below('medium') ? '0' : '0 30px 0 0'};
+                  `}
+                >
+                  <NavigationBar
+                    compact={below('medium')}
+                    onBack={onNavigationBack}
+                    items={[
+                      <span
                         css={`
-                          width: auto;
+                          display: flex;
                           height: 100%;
-                          padding: 0 20px 0 10px;
-                          margin-left: 8px;
+                          align-items: center;
                         `}
                       >
-                        {mainButton.icon}
-                      </ButtonIcon>
-                    ) : (
-                      <Button mode="strong" onClick={mainButton.onClick}>
-                        {mainButton.label}
-                      </Button>
-                    )))}
-              </AppBarContainer>
-            </AppBar>
-          }
-        >
-          {children}
-        </AppView>
-      )}
+                        {below('medium') && <MenuButton onClick={onMenuOpen} />}
+                        <span>{navigationItems[0] || title}</span>
+                        {afterTitle}
+                      </span>,
+                      ...navigationItems.slice(1),
+                    ]}
+                  />
+                  {mainButton &&
+                    (mainButton.button ||
+                      (below('medium') ? (
+                        <ButtonIcon
+                          onClick={mainButton.onClick}
+                          title={mainButton.label}
+                          disabled={mainButton.disabled}
+                          css={`
+                            width: auto;
+                            height: 100%;
+                            margin-left: 8px;
+                            padding: 0 16px 0 8px;
+                          `}
+                        >
+                          {mainButton.icon}
+                        </ButtonIcon>
+                      ) : (
+                        <Button
+                          mode="strong"
+                          onClick={mainButton.onClick}
+                          disabled={mainButton.disabled}
+                        >
+                          {mainButton.label}
+                        </Button>
+                      )))}
+                </div>
+              </AppBar>
+            }
+          >
+            {children}
+          </AppView>
+        )
+      }}
     </Viewport>
   )
 }
@@ -65,9 +102,13 @@ AppLayout.defaultProps = {
   smallViewPadding: 20,
   largeViewPadding: 30,
   title: '',
+  navigationItems: [],
+  onNavigationBack: noop,
 }
 
 AppLayout.propTypes = {
+  navigationItems: PropTypes.arrayOf(PropTypes.node),
+  onNavigationBack: PropTypes.func,
   afterTitle: PropTypes.node,
   children: PropTypes.node,
   largeViewPadding: PropTypes.number,
@@ -76,36 +117,11 @@ AppLayout.propTypes = {
     icon: PropTypes.node,
     label: PropTypes.node,
     onClick: PropTypes.func,
+    disabled: PropTypes.bool,
   }),
   onMenuOpen: PropTypes.func,
   smallViewPadding: PropTypes.number,
   title: PropTypes.node.isRequired,
 }
-
-const Title = styled.h1`
-  display: flex;
-  flex: 1 1 auto;
-  width: 0;
-  align-items: center;
-  height: 100%;
-`
-
-const TitleLabel = styled.span`
-  flex: 0 1 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  margin-right: 10px;
-  ${font({ size: 'xxlarge' })};
-`
-
-const AppBarContainer = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: nowrap;
-`
 
 export default AppLayout
