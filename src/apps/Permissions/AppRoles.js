@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Table, TableRow, Text } from '@aragon/ui'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import IdentityBadge from '../../components/IdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { AppType } from '../../prop-types'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
@@ -75,7 +75,10 @@ class RoleRow extends React.Component {
   static propTypes = {
     onManage: PropTypes.func.isRequired,
     role: PropTypes.shape({ bytes: PropTypes.string }).isRequired,
-    manager: PropTypes.shape({ type: PropTypes.string }).isRequired,
+    manager: PropTypes.shape({
+      type: PropTypes.string,
+      address: EthereumAddressType,
+    }).isRequired,
   }
   handleManageClick = () => {
     this.props.onManage(this.props.role.bytes)
