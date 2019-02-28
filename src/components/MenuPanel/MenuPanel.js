@@ -261,6 +261,9 @@ AnimatedMenuPanel.propTypes = {
 const Overlay = styled.div`
   position: absolute;
   z-index: 2;
+  /* by leaving a 1px edge Android users can swipe to open
+   * from the edge of their screen when an iframe app is being
+   * used */
   width: ${({ opened }) => (opened ? '100vw' : '1px')};
   height: 100vh;
 `
