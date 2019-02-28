@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   AppBar,
@@ -50,6 +51,12 @@ const Preferences = ({ onClose, opened, smallView, ...props }) => {
   )
 }
 
+Preferences.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  opened: PropTypes.bool.isRequired,
+  smallView: PropTypes.bool.isRequired,
+}
+
 const CustomLabels = () => {
   const [list, setList] = React.useState(getAll)
   const clearAll = () => {
@@ -70,7 +77,7 @@ const CustomLabels = () => {
   )
 }
 
-const Labels = ({ list = [] }) => {
+const Labels = ({ list }) => {
   if (!list.length) {
     return <EmptyLabels />
   }
@@ -104,6 +111,14 @@ const Labels = ({ list = [] }) => {
       ))}
     </ul>
   )
+}
+
+Labels.defaultProps = {
+  list: [],
+}
+
+Labels.propTypes = {
+  list: PropTypes.array,
 }
 
 const Addresses = () => 'Coming soon...'
