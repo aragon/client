@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Card,
@@ -21,6 +22,9 @@ import payrollIcon from './icons/payroll.svg'
 import espressoIcon from './icons/espresso.svg'
 
 class Apps extends React.Component {
+  static propTypes = {
+    onMessage: PropTypes.func,
+  }
   handleMenuPanelOpen = () => {
     this.props.onMessage({
       data: { from: 'app', name: 'menuPanel', value: true },

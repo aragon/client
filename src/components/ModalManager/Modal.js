@@ -1,10 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
 import { Button, breakpoint, font } from '@aragon/ui'
 import { noop } from '../../utils'
 
-const Modal = ({ title, body, moreText, onHide, More, blocking }) => (
+const Modal = ({ title, body, onHide, More, blocking }) => (
   <Main>
     <WrapModal role="alertdialog" onEscapeOutside={blocking ? noop : onHide}>
       <Header>{title}</Header>
@@ -18,6 +19,14 @@ const Modal = ({ title, body, moreText, onHide, More, blocking }) => (
     </WrapModal>
   </Main>
 )
+
+Modal.propTypes = {
+  title: PropTypes.node.isRequired,
+  body: PropTypes.node.isRequired,
+  onHide: PropTypes.func.isRequired,
+  More: PropTypes.node,
+  blocking: PropTypes.bool,
+}
 
 const Main = styled.div`
   display: grid;
