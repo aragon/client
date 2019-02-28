@@ -4,13 +4,30 @@ import styled from 'styled-components'
 import {
   AppBar,
   AppView,
+  Badge,
   EthIdenticon,
   IdentityBadge,
   TabBar,
   Viewport,
+  font,
 } from '@aragon/ui'
 import { CustomLabelModalConsumer } from '../CustomLabelModal/CustomLabelModalManager'
-import { getAll, removeAll } from '../../mockCustomLabelsManager'
+import { getAll, resolve, set, removeAll } from '../../mockCustomLabelsManager'
+
+const isString = str => typeof str === 'string' || str instanceof String
+
+const checkIntegrity = obj => {
+  return (
+    Array.isArray(obj) &&
+    obj.every(
+      ({ address, label }) =>
+        isString(address) &&
+        isString(label) &&
+        !!address.trim() &&
+        !!label.trim()
+    )
+  )
+}
 
 const ETH_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -63,13 +80,54 @@ const CustomLabels = () => {
     removeAll()
     setList(getAll)
   }
+  const href = window.URL.createObjectURL(
+    new Blob([JSON.stringify(getAll())], { type: 'text/json' })
+  )
+  const fileImport = file => {
+    const reader = new FileReader()
+    reader.onload = event => {
+      const list = JSON.parse(event.target.result)
+      if (checkIntegrity(list)) {
+        list.forEach(({ address, label }) => set({ address, label }))
+        setList(getAll)
+      }
+    }
+    reader.readAsText(event.target.files[0])
+  }
 
   return (
     <React.Fragment>
       <Labels list={list} />
       <div>
-        <button>Import</button>
-        <button>Export</button>
+        <label
+          css={`
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+          `}
+        >
+          <button>Import</button>
+          <input
+            type="file"
+            onChange={fileImport}
+            accept=".json"
+            css={`
+              border: 1px solid red;
+              display: block;
+              filter: alpha(opacity=0);
+              opacity: 0;
+              position: absolute;
+              z-index: 1;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              right: 0;
+            `}
+          />
+        </label>
+        <a download="customLabels.json" href={href}>
+          Export
+        </a>
         <button onClick={clearAll}>Remove all labels</button>
       </div>
       <Warning />
@@ -99,7 +157,37 @@ const Labels = ({ list }) => {
               {({ showCustomLabelModal }) => (
                 <IdentityBadge
                   entity={address}
-                  customLabelAction={{
+                  popoverAction={{
+                    title: (
+                      <div
+                        css={`
+                          display: grid;
+                          align-items: center;
+                          grid-template-columns: auto 1fr;
+                          padding-right: 24px;
+                        `}
+                      >
+                        <span
+                          css={`
+                            display: inline-block;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                          `}
+                        >
+                          {resolve(address)}
+                        </span>
+                        <Badge
+                          css={`
+                            margin-left: 16px;
+                            text-transform: uppercase;
+                            ${font({ size: 'xxsmall' })};
+                          `}
+                        >
+                          Custom label
+                        </Badge>
+                      </div>
+                    ),
                     label: 'Edit custom label',
                     onClick: updateLabel(showCustomLabelModal, address),
                   }}
