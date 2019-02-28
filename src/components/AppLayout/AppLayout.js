@@ -1,20 +1,24 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { AppBar } from '@aragon/ui'
 
 class AppLayout extends React.Component {
+  static propTypes = {
+    title: PropTypes.node,
+    endContent: PropTypes.node,
+    children: PropTypes.node,
+  }
   static defaultProps = {
     title: '',
   }
   render() {
-    const { title, endContent, children, padding, maxWidth } = this.props
+    const { title, endContent, children } = this.props
     return (
       <Main>
         <StyledAppBar title={title} endContent={endContent} />
         <ScrollWrapper>
-          <Content maxWidth={maxWidth} padding={padding}>
-            {children}
-          </Content>
+          <Content>{children}</Content>
         </ScrollWrapper>
       </Main>
     )

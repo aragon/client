@@ -1,3 +1,4 @@
+/* eslint react/prop-types: 0 */
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { Button, TextInput, Text, DropDown, theme } from '@aragon/ui'

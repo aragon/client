@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const IconKernel = ({ size = 28, ...props }) => (
   <svg width={size} height={size} viewBox="0 0 28 28" {...props}>
@@ -29,5 +30,9 @@ const IconKernel = ({ size = 28, ...props }) => (
     </g>
   </svg>
 )
+
+IconKernel.propTypes = {
+  size: PropTypes.number,
+}
 
 export default IconKernel

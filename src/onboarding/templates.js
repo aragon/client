@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 import democracy from './templates/democracy'
 import multisig from './templates/multisig'
 
@@ -8,5 +10,7 @@ const Templates = new Map()
 Templates.set(Democracy, democracy)
 Templates.set(Multisig, multisig)
 
+const TemplateType = PropTypes.oneOf([Multisig, Democracy])
+
 export default Templates
-export { Multisig, Democracy }
+export { TemplateType, Multisig, Democracy }

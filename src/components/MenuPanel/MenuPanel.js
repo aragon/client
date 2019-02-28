@@ -240,6 +240,12 @@ class AnimatedMenuPanel extends React.Component {
   }
 }
 
+AnimatedMenuPanel.propTypes = {
+  opened: PropTypes.bool,
+  autoClosing: PropTypes.bool,
+  onCloseMenuPanel: PropTypes.func.isRequired,
+}
+
 const Overlay = styled.div`
   position: absolute;
   z-index: 2;
