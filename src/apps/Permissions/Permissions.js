@@ -2,7 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { AppType } from '../../prop-types'
-import { AppBar, AppView, NavigationBar, Viewport, font } from '@aragon/ui'
+import {
+  AppBar,
+  AppView,
+  NavigationBar,
+  Viewport,
+  IconPlus,
+  font,
+} from '@aragon/ui'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
@@ -12,8 +19,8 @@ import NavigationItem from './NavigationItem'
 import AssignPermissionPanel from './AssignPermissionPanel'
 import ManageRolePanel from './ManageRolePanel'
 import AddPermissionButton from './AddPermissionButton'
-import MenuButton from '../../components/MenuPanel/MenuButton'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import AppLayout from '../../components/AppLayout/AppLayout'
 
 class Permissions extends React.Component {
   static propTypes = {
@@ -131,21 +138,7 @@ class Permissions extends React.Component {
 
   // Assemble the navigation items
   getNavigationItems(location, resolveEntity) {
-    const items = [
-      <React.Fragment>
-        <Viewport>
-          {({ below }) =>
-            below('medium') && (
-              <StyledMenuButton
-                onClick={this.handleMenuPanelOpen}
-                label="Menu"
-              />
-            )
-          }
-        </Viewport>
-        <Title>Permissions</Title>
-      </React.Fragment>,
-    ]
+    const items = ['Permissions']
     const openedApp = location.screen === 'app' ? location.app : null
     const openedEntityAddress =
       location.screen === 'entity' ? location.address : null
@@ -195,7 +188,6 @@ class Permissions extends React.Component {
   render() {
     const { apps, appsLoading, permissionsLoading, params } = this.props
     const { showAssignPermissionPanel, animateScreens } = this.state
-
     const location = this.getLocation(params)
 
     return (
@@ -214,97 +206,83 @@ class Permissions extends React.Component {
               : null
 
           return (
-            <Viewport>
-              {({ below }) => (
-                <React.Fragment>
-                  <AppView
-                    appBar={
-                      <AppBar
-                        padding={below('medium') ? 0 : 10}
-                        endContent={
-                          <AddPermissionButton
-                            label="Add permission"
-                            onClick={this.createPermission}
-                            disabled={appsLoading || permissionsLoading}
-                          />
-                        }
-                      >
-                        <NavigationBar
-                          items={navigationItems}
-                          onBack={this.goToHome}
-                        />
-                      </AppBar>
-                    }
-                  >
-                    <ScrollTopElement
-                      ref={el => {
-                        this._scrollTopElement = el
-                      }}
-                    />
+            <React.Fragment>
+              <AppLayout
+                title="Permissions"
+                navigationItems={navigationItems}
+                onNavigationBack={this.goToHome}
+                onMenuOpen={this.handleMenuPanelOpen}
+                smallViewPadding={30}
+                mainButton={{
+                  icon: <IconPlus />,
+                  label: 'Add permission',
+                  onClick: this.createPermission,
+                  disabled: appsLoading || permissionsLoading,
+                }}
+              >
+                <ScrollTopElement
+                  ref={el => {
+                    this._scrollTopElement = el
+                  }}
+                />
 
-                    <Wrap>
-                      <Screen position={0} animate={animateScreens}>
-                        {location.screen === 'home' && (
-                          <Home
-                            apps={apps}
-                            appsLoading={appsLoading}
-                            permissionsLoading={permissionsLoading}
-                            onOpenApp={this.handleOpenApp}
-                            onOpenEntity={this.handleOpenEntity}
+                <Wrap>
+                  <Screen position={0} animate={animateScreens}>
+                    {location.screen === 'home' && (
+                      <Home
+                        apps={apps}
+                        appsLoading={appsLoading}
+                        permissionsLoading={permissionsLoading}
+                        onOpenApp={this.handleOpenApp}
+                        onOpenEntity={this.handleOpenEntity}
+                      />
+                    )}
+                  </Screen>
+
+                  <Screen position={1} animate={animateScreens}>
+                    {['app', 'entity'].includes(location.screen) && (
+                      <React.Fragment>
+                        {location.screen === 'app' && (
+                          <AppPermissions
+                            app={location.app}
+                            loading={appsLoading}
+                            address={location.address}
+                            onManageRole={this.handleManageRole}
                           />
                         )}
-                      </Screen>
-
-                      <Screen position={1} animate={animateScreens}>
-                        {['app', 'entity'].includes(location.screen) && (
-                          <React.Fragment>
-                            {location.screen === 'app' && (
-                              <AppPermissions
-                                app={location.app}
-                                loading={appsLoading}
-                                address={location.address}
-                                onManageRole={this.handleManageRole}
-                              />
-                            )}
-                            {location.screen === 'entity' && (
-                              <EntityPermissions
-                                title="Permissions granted to this entity"
-                                loading={appsLoading || permissionsLoading}
-                                address={location.address}
-                              />
-                            )}
-                          </React.Fragment>
+                        {location.screen === 'entity' && (
+                          <EntityPermissions
+                            title="Permissions granted to this entity"
+                            loading={appsLoading || permissionsLoading}
+                            address={location.address}
+                          />
                         )}
-                      </Screen>
-                    </Wrap>
-                  </AppView>
+                      </React.Fragment>
+                    )}
+                  </Screen>
+                </Wrap>
+              </AppLayout>
 
-                  <AssignPermissionPanel
-                    apps={apps}
-                    opened={showAssignPermissionPanel}
-                    onClose={this.closeAssignPermissionPanel}
-                  />
+              <AssignPermissionPanel
+                apps={apps}
+                opened={showAssignPermissionPanel}
+                onClose={this.closeAssignPermissionPanel}
+              />
 
-                  <ManageRolePanel
-                    app={location.app}
-                    apps={apps}
-                    opened={managedRole !== null}
-                    onClose={this.closeManageRolePanel}
-                    role={managedRole}
-                  />
-                </React.Fragment>
-              )}
-            </Viewport>
+              <ManageRolePanel
+                app={location.app}
+                apps={apps}
+                opened={managedRole !== null}
+                onClose={this.closeManageRolePanel}
+                role={managedRole}
+              />
+            </React.Fragment>
           )
         }}
       </PermissionsConsumer>
     )
   }
 }
-
-const StyledMenuButton = styled(MenuButton)`
-  height: 64px;
-`
 
 const Wrap = styled.div`
   position: absolute;
