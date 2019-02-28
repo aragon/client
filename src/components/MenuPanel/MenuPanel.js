@@ -260,6 +260,8 @@ const Wrap = styled(animated.div)`
   width: 90vw;
   height: 100vh;
   min-width: 300px;
+  flex-shrink: 0;
+  flex-grow: 0;
 
   ${breakpoint(
     'medium',
