@@ -24,7 +24,7 @@ const DeprecatedBanner = props => (
 
 class DeprecatedDao extends React.Component {
   static propTypes = {
-    dao: PropTypes.object.isRequired,
+    dao: PropTypes.string.isRequired,
     lightMode: PropTypes.bool,
     showModal: PropTypes.bool,
     children: PropTypes.node,
@@ -94,7 +94,7 @@ const DeprecatedBody = ({ dao }) => (
 )
 
 DeprecatedBody.propTypes = {
-  dao: PropTypes.object.isRequired,
+  dao: PropTypes.string.isRequired,
 }
 
 const DeprecatedModal = ({ onHide, dao }) => (
@@ -112,7 +112,7 @@ const DeprecatedModal = ({ onHide, dao }) => (
 
 DeprecatedModal.propTypes = {
   onHide: PropTypes.func.isRequired,
-  dao: PropTypes.object.isRequired,
+  dao: PropTypes.string.isRequired,
 }
 
 const TopParagraph = styled(Text.Paragraph)`
