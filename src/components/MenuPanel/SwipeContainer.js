@@ -36,7 +36,7 @@ class SwipeContainer extends React.Component {
     }
 
     return (
-      <Gesture passive={{ passive: false }}>
+      <Gesture passive={{ passive: false }} mouse={false}>
         {({
           delta: [xDelta, yDelta],
           direction: [xDir, yDir],
