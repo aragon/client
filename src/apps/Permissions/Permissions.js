@@ -2,14 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { AppType } from '../../prop-types'
-import {
-  AppBar,
-  AppView,
-  NavigationBar,
-  Viewport,
-  IconPlus,
-  font,
-} from '@aragon/ui'
+import { IconPlus, font } from '@aragon/ui'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
@@ -292,11 +285,6 @@ const Wrap = styled.div`
   bottom: 0;
   overflowx: hidden;
   min-width: 320px;
-`
-
-const Title = styled.span`
-  display: inline-block;
-  ${font({ size: 'xxlarge' })};
 `
 
 // This element is only used to reset the view scroll using scrollIntoView()

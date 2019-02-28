@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import {
   AppBar,
   AppView,
@@ -8,7 +7,6 @@ import {
   ButtonIcon,
   NavigationBar,
   Viewport,
-  font,
 } from '@aragon/ui'
 import { noop } from '../../utils'
 import MenuButton from '../MenuPanel/MenuButton'
