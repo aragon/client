@@ -2,7 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { Text, breakpoint, springs, theme, unselectable } from '@aragon/ui'
+import {
+  Text,
+  Viewport,
+  breakpoint,
+  springs,
+  theme,
+  unselectable,
+} from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { appIconUrl } from '../../utils'
 import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
@@ -202,12 +209,12 @@ class AnimatedMenuPanel extends React.Component {
 
   render() {
     const { animate } = this.state
-    const { opened, autoClosing, onCloseMenuPanel, ...props } = this.props
+    const { openProgress, onCloseMenuPanel, ...props } = this.props
     return (
       <React.Fragment>
         <Spring
           from={{ progress: 0 }}
-          to={{ progress: Number(opened) }}
+          to={{ progress: openProgress }}
           config={springs.lazy}
           immediate={!animate}
           native
@@ -215,6 +222,7 @@ class AnimatedMenuPanel extends React.Component {
           {({ progress }) => (
             <Wrap
               style={{
+                pointerEvents: openProgress === 1 ? 'auto' : 'none',
                 transform: progress.interpolate(
                   v =>
                     `
@@ -234,32 +242,32 @@ class AnimatedMenuPanel extends React.Component {
             </Wrap>
           )}
         </Spring>
-        <Overlay opened={opened} onClick={onCloseMenuPanel} />
+        <Viewport>
+          {({ below }) =>
+            below('medium') && (
+              <Overlay opened={!!openProgress} onClick={onCloseMenuPanel} />
+            )
+          }
+        </Viewport>
       </React.Fragment>
     )
   }
 }
 
 AnimatedMenuPanel.propTypes = {
-  opened: PropTypes.bool,
   autoClosing: PropTypes.bool,
+  openProgress: PropTypes.number.isRequired,
   onCloseMenuPanel: PropTypes.func.isRequired,
 }
 
 const Overlay = styled.div`
   position: absolute;
   z-index: 2;
-  width: 100vw;
+  /* by leaving a 1px edge Android users can swipe to open
+   * from the edge of their screen when an iframe app is being
+   * used */
+  width: ${({ opened }) => (opened ? '100vw' : '1px')};
   height: 100vh;
-  min-width: 320px;
-  display: ${({ opened }) => (opened ? 'block' : 'none')};
-
-  ${breakpoint(
-    'medium',
-    `
-      display: none;
-    `
-  )};
 `
 
 const Wrap = styled(animated.div)`
@@ -268,6 +276,7 @@ const Wrap = styled(animated.div)`
   width: 90vw;
   height: 100vh;
   min-width: 300px;
+  flex: none;
 
   ${breakpoint(
     'medium',
@@ -283,9 +292,8 @@ const Main = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  flex: none;
   flex-direction: column;
-  flex-grow: 0;
-  flex-shrink: 0;
   ${unselectable};
 `
 

@@ -8,6 +8,7 @@ import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import MenuPanel from './components/MenuPanel/MenuPanel'
+import SwipeContainer from './components/MenuPanel/SwipeContainer'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import NotificationBar from './components/Notifications/NotificationBar'
@@ -44,6 +45,7 @@ class Wrapper extends React.PureComponent {
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
+    menuSwipeEnabled: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -116,6 +118,9 @@ class Wrapper extends React.PureComponent {
     if (name === 'menuPanel') {
       this.setState({ menuPanelOpened: Boolean(value) })
     }
+  }
+  handleMenuPanelOpen = () => {
+    this.setState({ menuPanelOpened: true })
   }
   handleMenuPanelClose = () => {
     this.setState({ menuPanelOpened: false })
@@ -199,6 +204,7 @@ class Wrapper extends React.PureComponent {
       locator,
       onRequestAppsReload,
       onRequestEnable,
+      menuSwipeEnabled,
       transactionBag,
       walletNetwork,
       walletProviderId,
@@ -209,31 +215,40 @@ class Wrapper extends React.PureComponent {
     return (
       <Main>
         <BannerWrapper>{banner}</BannerWrapper>
-        <Container>
-          <MenuPanel
-            apps={this.getMenuApps(apps)}
-            appsStatus={appsStatus}
-            activeInstanceId={locator.instanceId}
-            connected={connected}
-            notifications={notifications.length}
-            daoAddress={daoAddress}
-            opened={menuPanelOpened}
-            autoClosing={autoClosingPanel}
-            onOpenApp={this.openApp}
-            onCloseMenuPanel={this.handleMenuPanelClose}
-            onRequestAppsReload={onRequestAppsReload}
-            onNotificationClicked={this.handleNotificationClicked}
-            notificationOpen={notificationOpen}
-          />
-          <AppScreen>
-            <NotificationBar
-              open={notificationOpen}
-              notifications={notifications}
-              onClearAll={this.handleNotificationsCleared}
-            />
-            {this.renderApp(locator.instanceId, locator.params)}
-          </AppScreen>
-        </Container>
+        <SwipeContainer
+          enabled={menuSwipeEnabled}
+          menuPanelOpened={menuPanelOpened}
+          onMenuPanelClose={this.handleMenuPanelClose}
+          onMenuPanelOpen={this.handleMenuPanelOpen}
+        >
+          {progress => (
+            <React.Fragment>
+              <MenuPanel
+                apps={this.getMenuApps(apps)}
+                appsStatus={appsStatus}
+                activeInstanceId={locator.instanceId}
+                connected={connected}
+                notifications={notifications.length}
+                daoAddress={daoAddress}
+                openProgress={progress}
+                autoClosing={autoClosingPanel}
+                onOpenApp={this.openApp}
+                onCloseMenuPanel={this.handleMenuPanelClose}
+                onRequestAppsReload={onRequestAppsReload}
+                onNotificationClicked={this.handleNotificationClicked}
+                notificationOpen={notificationOpen}
+              />
+              <AppScreen>
+                <NotificationBar
+                  open={notificationOpen}
+                  notifications={notifications}
+                  onClearAll={this.handleNotificationsCleared}
+                />
+                {this.renderApp(locator.instanceId, locator.params)}
+              </AppScreen>
+            </React.Fragment>
+          )}
+        </SwipeContainer>
         <SignerPanel
           account={account}
           apps={apps}
@@ -349,13 +364,6 @@ const BannerWrapper = styled.div`
   flex-shrink: 0;
 `
 
-const Container = styled.div`
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-  min-height: 0;
-`
-
 const AppScreen = styled.div`
   position: relative;
   z-index: 1;
@@ -385,6 +393,12 @@ const LoadingApps = () => (
 
 export default props => (
   <Viewport>
-    {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
+    {({ below }) => (
+      <Wrapper
+        {...props}
+        autoClosingPanel={below('medium')}
+        menuSwipeEnabled={below('medium')}
+      />
+    )}
   </Viewport>
 )
