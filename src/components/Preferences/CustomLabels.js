@@ -1,161 +1,94 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Badge, IdentityBadge, font } from '@aragon/ui'
-import { CustomLabelModalConsumer } from '../CustomLabelModal/CustomLabelModalManager'
-import { getAll, resolve, set, removeAll } from '../../mockCustomLabelsManager'
+import styled from 'styled-components'
+import { format } from 'date-fns'
+import {
+  Badge,
+  Button,
+  IconCross,
+  IdentityBadge,
+  Info,
+  breakpoint,
+  font,
+  theme,
+} from '@aragon/ui'
+import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
+import { getAll, resolve, removeAll } from '../../mockCustomLabelsManager'
 import EmptyCustomLabels from './EmptyCustomLabels'
-
-const isString = str => typeof str === 'string' || str instanceof String
-
-const verifyCustomLabelObject = obj => {
-  return (
-    Array.isArray(obj) &&
-    obj.every(
-      ({ address, label }) =>
-        isString(address) &&
-        isString(label) &&
-        !!address.trim() &&
-        !!label.trim()
-    )
-  )
-}
+import Import from './Import'
 
 const CustomLabels = () => {
-  const [list, setList] = React.useState(getAll)
-  const clearAll = () => {
+  const [list, setList] = React.useState(getAll())
+  const handleClearAll = () => {
     removeAll()
-    setList(getAll)
+    setList([])
   }
-  const href = window.URL.createObjectURL(
-    new Blob([JSON.stringify(getAll())], { type: 'text/json' })
-  )
-  const fileImport = file => {
-    const reader = new FileReader()
-    reader.onload = event => {
-      const list = JSON.parse(event.target.result)
-      if (verifyCustomLabelObject(list)) {
-        list.forEach(({ address, label }) => set({ address, label }))
-        setList(getAll)
-      }
-    }
-    reader.readAsText(event.target.files[0])
+  const handleImport = () => {
+    setList(getAll())
   }
 
   return (
     <React.Fragment>
-      <Labels list={list} />
-      <div>
-        <label
-          css={`
-            position: relative;
-            display: inline-block;
-            overflow: hidden;
-          `}
-        >
-          <button>Import</button>
-          <input
-            type="file"
-            onChange={fileImport}
-            accept=".json"
-            css={`
-              border: 1px solid red;
-              display: block;
-              filter: alpha(opacity=0);
-              opacity: 0;
-              position: absolute;
-              z-index: 1;
-              top: 0;
-              bottom: 0;
-              left: 0;
-              right: 0;
-            `}
-          />
-        </label>
-        <a download="customLabels.json" href={href}>
-          Export
-        </a>
-        <button onClick={clearAll}>Remove all labels</button>
-      </div>
+      <Labels list={list} clearAll={handleClearAll} onImport={handleImport} />
       <Warning />
     </React.Fragment>
   )
 }
 
-const Labels = ({ list }) => {
+const Labels = ({ clearAll, list, onImport }) => {
   if (!list.length) {
-    return <EmptyCustomLabels />
+    return <EmptyCustomLabels onImport={onImport} />
   }
   const updateLabel = (fn, address) => () => {
     fn(address)
   }
+  const href = window.URL.createObjectURL(
+    new Blob([JSON.stringify(getAll())], { type: 'text/json' })
+  )
+  // Mar 01 2019
+  const today = format(Date.now(), 'MMM dd yyyy')
+  const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
 
   return (
-    <ul>
-      <li key="headers">
+    <React.Fragment>
+      <Headers>
         <div>Custom label</div>
         <div>Address</div>
-      </li>
-      {list.map(({ address }) => (
-        <li key={address}>
-          <div>{resolve(address)}</div>
-          <div>
-            <CustomLabelModalConsumer>
-              {({ showCustomLabelModal }) => (
-                <IdentityBadge
-                  entity={address}
-                  popoverAction={{
-                    title: (
-                      <div
-                        css={`
-                          display: grid;
-                          align-items: center;
-                          grid-template-columns: auto 1fr;
-                          padding-right: 24px;
-                        `}
-                      >
-                        <span
-                          css={`
-                            display: inline-block;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            white-space: nowrap;
-                          `}
-                        >
-                          {resolve(address)}
-                        </span>
-                        <Badge
-                          css={`
-                            margin-left: 16px;
-                            text-transform: uppercase;
-                            ${font({ size: 'xxsmall' })};
-                          `}
-                        >
-                          Custom label
-                        </Badge>
-                      </div>
-                    ),
-                    label: 'Edit custom label',
-                    onClick: updateLabel(showCustomLabelModal, address),
-                  }}
-                />
-              )}
-            </CustomLabelModalConsumer>
-          </div>
-        </li>
-      ))}
-    </ul>
+      </Headers>
+      <List>
+        {list.map(({ address }) => (
+          <Item key={address}>
+            <div>{resolve(address)}</div>
+            <div>
+              <IdentityBadge
+                entity={address}
+                popoverAction={{
+                  title: <PopoverActionTitle address={address} />,
+                  label: 'Edit custom label',
+                  onClick: updateLabel(showCustomLabelModal, address),
+                }}
+              />
+            </div>
+          </Item>
+        ))}
+      </List>
+      <Controls>
+        <Import onImport={onImport} />
+        <StyledExport
+          label="Export labels"
+          mode="secondary"
+          download={`custom labels (${today}).json`}
+          href={href}
+        >
+          Export
+        </StyledExport>
+        <Button label="Remove labels" mode="outline" onClick={clearAll}>
+          <IconCross /> Remove all labels
+        </Button>
+      </Controls>
+    </React.Fragment>
   )
 }
-
-const Warning = () => (
-  <div>
-    <div>i All labels are local to your device</div>
-    <div>
-      If you want to share the labels with others, you will need to export them
-      and share the .json file
-    </div>
-  </div>
-)
 
 Labels.defaultProps = {
   list: [],
@@ -163,6 +96,137 @@ Labels.defaultProps = {
 
 Labels.propTypes = {
   list: PropTypes.array,
+  clearAll: PropTypes.func.isRequired,
+  onImport: PropTypes.func.isRequired,
 }
+
+const PopoverActionTitle = ({ address }) => {
+  return (
+    <WrapTitle>
+      <TitleLabel>{resolve(address)}</TitleLabel>
+      <Badge
+        css={`
+          margin-left: 16px;
+          text-transform: uppercase;
+          ${font({ size: 'xxsmall' })};
+        `}
+      >
+        Custom label
+      </Badge>
+    </WrapTitle>
+  )
+}
+
+PopoverActionTitle.propTypes = {
+  address: PropTypes.string.isRequired,
+}
+
+const WrapTitle = styled.div`
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr;
+  padding-right: 24px;
+`
+
+const TitleLabel = styled.span`
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+
+const Warning = () => (
+  <StyledInfoAction title="All labels are local to your device">
+    <div>
+      Any labels you add or import will only be shown on this device, and not
+      stored anywhere else. If you want to share the labels with other devices
+      or users, you will need to export them and share the .json file
+    </div>
+  </StyledInfoAction>
+)
+
+const StyledExport = styled(Button.Anchor)`
+  margin: 0 24px 24px;
+`
+
+const Controls = styled.div`
+  display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding: 0 16px;
+
+  ${breakpoint(
+    'medium',
+    `
+      padding: 0;
+    `
+  )}
+`
+
+const StyledInfoAction = styled(Info.Action)`
+  margin: 16px 16px 0 16px;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin: 0;
+      margin-top: 16px;
+    `
+  )}
+`
+
+const Headers = styled.div`
+  margin: 10px auto;
+  text-transform: uppercase;
+  color: ${theme.textSecondary};
+  ${font({ size: 'small' })};
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+
+  & > div {
+    padding-left: 16px;
+  }
+`
+
+const Item = styled.li`
+  padding: 16px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  border-bottom: 1px solid ${theme.contentBorder};
+
+  & > div {
+    padding-left: 16px;
+  }
+`
+
+const List = styled.ul`
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+
+  li:first-child {
+    border-top: 1px solid ${theme.contentBorder};
+  }
+
+  ${breakpoint(
+    'medium',
+    `
+      max-height: 50vh;
+      overflow: auto;
+      border-radius: 4px;
+      border: 1px solid ${theme.contentBorder};
+
+      li:first-child {
+        border-top: none;
+      }
+      li:last-child {
+        border-bottom: none;
+      }
+    `
+  )}
+`
 
 export default CustomLabels
