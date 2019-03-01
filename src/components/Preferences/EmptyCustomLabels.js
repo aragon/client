@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { EthIdenticon, IdentityBadge } from '@aragon/ui'
 import Import from './Import'
@@ -34,6 +35,10 @@ const EmptyCustomLabels = ({ onImport }) => (
     </WrapImport>
   </Wrap>
 )
+
+EmptyCustomLabels.propTypes = {
+  onImport: PropTypes.func.isRequired,
+}
 
 const Wrap = styled.div`
   padding: 0 16px;
