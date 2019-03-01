@@ -1,22 +1,16 @@
 import React from 'react'
+import styled from 'styled-components'
 import { EthIdenticon, IdentityBadge } from '@aragon/ui'
+import Import from './Import'
 
 const ETH_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const EmptyCustomLabels = () => (
-  <React.Fragment>
-    <h3>Start adding labels</h3>
-    <div>
+const EmptyCustomLabels = ({ onImport }) => (
+  <Wrap>
+    <Title>Start adding labels</Title>
+    <Paragraph>
       You can add labels by clicking on the{' '}
-      <div
-        css={`
-          display: inline-block;
-          align-items: center;
-          border-radius: 3px;
-          overflow: hidden;
-          height: 22px;
-        `}
-      >
+      <WrapBadge>
         <EthIdenticon
           address={ETH_ADDRESS}
           css={`
@@ -31,12 +25,42 @@ const EmptyCustomLabels = () => (
           `}
           entity="Address badge"
         />
-      </div>
+      </WrapBadge>
       anywhere in the app, or importing a .json file with labels by clicking
       "Import" below.
-    </div>
-    <button>Import</button>
-  </React.Fragment>
+    </Paragraph>
+    <WrapImport>
+      <Import onImport={onImport} />
+    </WrapImport>
+  </Wrap>
 )
+
+const Wrap = styled.div`
+  padding: 0 16px;
+`
+
+const WrapImport = styled.div`
+  margin: 20px 0;
+`
+
+// div cannot appear as descendant of p
+const Paragraph = styled.div`
+  margin: 16px 0px;
+`
+
+const WrapBadge = styled.span`
+  display: inline-block;
+  align-items: center;
+  border-radius: 3px;
+  overflow: hidden;
+  height: 22px;
+  position: relative;
+  top: 5px;
+`
+
+const Title = styled.h2`
+  font-weight: bold;
+  margin: 8px 0;
+`
 
 export default EmptyCustomLabels
