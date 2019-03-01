@@ -108,7 +108,7 @@ const PopoverActionTitle = ({ address }) => {
         css={`
           margin-left: 16px;
           text-transform: uppercase;
-          ${font({ size: 'xxsmall' })};
+          ${font({ size: 'xsmall' })};
         `}
       >
         Custom label
@@ -180,7 +180,7 @@ const Headers = styled.div`
   margin: 10px auto;
   text-transform: uppercase;
   color: ${theme.textSecondary};
-  ${font({ size: 'small' })};
+  ${font({ size: 'xsmall' })};
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
