@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Button } from '@aragon/ui'
 import { set, removeAll } from '../../mockCustomLabelsManager'
 
@@ -38,7 +39,9 @@ const Import = ({ onImport }) => (
       overflow: hidden;
     `}
   >
-    <Button label="Import" mode="secondary">Import</Button>
+    <Button label="Import" mode="secondary">
+      Import
+    </Button>
     <input
       type="file"
       onChange={fileImport(onImport)}
@@ -57,5 +60,7 @@ const Import = ({ onImport }) => (
     />
   </label>
 )
+
+Import.propTypes = { onImport: PropTypes.func.isRequired }
 
 export default Import
