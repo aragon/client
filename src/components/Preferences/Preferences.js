@@ -4,10 +4,12 @@ import styled from 'styled-components'
 import {
   AppBar,
   AppView,
+  BREAKPOINTS,
   ButtonIcon,
+  IconClose,
   TabBar,
   Viewport,
-  IconClose,
+  breakpoint,
   font,
 } from '@aragon/ui'
 import CustomLabels from './CustomLabels'
@@ -40,7 +42,7 @@ const Preferences = ({ onClose, opened, smallView, ...props }) => {
         <TabBar
           items={smallView ? SMALL_TABS : TABS}
           selected={selectedTab}
-          onSelect={setSelectedTab}
+          onChange={setSelectedTab}
         />
         <Content>
           {selectedTab === 0 && <Network />}
@@ -65,10 +67,26 @@ const Network = () => 'Coming soon...'
 
 const Title = styled.h1`
   ${font({ size: 'xxlarge' })};
+
+  ${breakpoint(
+    'medium',
+    `
+      /* half screen width minus half max container witdh */
+      margin-left: calc(100vw / 2 - ${BREAKPOINTS.medium / 2}px);
+    `
+  )}
 `
 
 const Section = styled.section`
   padding: 16px 0;
+
+  ${breakpoint(
+    'medium',
+    `
+      width: ${BREAKPOINTS.medium}px;
+      margin: 0 auto;
+    `
+  )}
 `
 
 const Content = styled.main`
@@ -80,6 +98,13 @@ const StyledAppBar = styled(AppBar)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  ${breakpoint(
+    'medium',
+    `
+      padding-left: 0;
+    `
+  )}
 `
 
 const StyledButton = styled(ButtonIcon)`
