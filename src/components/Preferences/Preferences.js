@@ -45,8 +45,8 @@ const Preferences = ({ onClose, opened, smallView, ...props }) => {
           onChange={setSelectedTab}
         />
         <Content>
-          {selectedTab === 0 && <Network />}
-          {!smallView && selectedTab === 1 && <Addresses />}
+          {selectedTab === 0 && <ComingSoon />}
+          {!smallView && selectedTab === 1 && <ComingSoon />}
           {((!smallView && selectedTab === 2) ||
             (smallView && selectedTab === 1)) && <CustomLabels />}
         </Content>
@@ -61,9 +61,15 @@ Preferences.propTypes = {
   smallView: PropTypes.bool.isRequired,
 }
 
-const Addresses = () => 'Coming soon...'
-
-const Network = () => 'Coming soon...'
+const ComingSoon = () => (
+  <div
+    css={`
+      padding: 0 16px;
+    `}
+  >
+    Coming soon...
+  </div>
+)
 
 const Title = styled.h1`
   ${font({ size: 'xxlarge' })};
