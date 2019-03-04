@@ -2,18 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import color from 'onecolor'
 import { Badge, Button, font, theme } from '@aragon/ui'
+import { AppCenterAppType } from '../../../prop-types'
 
 const AppCardContent = ({
-  app: { appName, name, icon, description, canUpgrade },
+  app: { appName, name, icons, description, canUpgrade },
   onOpen,
 }) => (
   <section
     css={`
       display: flex;
       flex-direction: column;
+      height: 100%;
       padding-top: 24px;
       justify-content: space-between;
-      height: 100%;
     `}
   >
     <div
@@ -24,7 +25,7 @@ const AppCardContent = ({
     >
       <img
         alt=""
-        src={icon}
+        src={icons.large}
         width="56"
         height="56"
         css={`
@@ -83,13 +84,7 @@ const AppCardContent = ({
 )
 
 AppCardContent.propTypes = {
-  app: PropTypes.shape({
-    appName: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    icon: PropTypes.string,
-    description: PropTypes.string.isRequired,
-    canUpgrade: PropTypes.bool,
-  }).isRequired,
+  app: AppCenterAppType.isRequired,
   onOpen: PropTypes.func.isRequired,
 }
 

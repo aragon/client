@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Viewport } from '@aragon/ui'
+import { AppCenterAppType } from '../../../prop-types'
 import { ZoomableCards } from '../../../components/ZoomableCards'
 
 import AppsGrid from './AppsGrid'
@@ -9,7 +10,7 @@ import AppVersions from './AppVersions'
 
 class InstalledApps extends React.Component {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
+    apps: PropTypes.arrayOf(AppCenterAppType).isRequired,
     openedAppName: PropTypes.oneOfType(
       [PropTypes.string],
       PropTypes.oneOf([null])

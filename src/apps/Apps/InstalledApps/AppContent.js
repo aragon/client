@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, IdentityBadge, Viewport } from '@aragon/ui'
+import { Button, IdentityBadge, SafeLink, Viewport } from '@aragon/ui'
+import { AppCenterAppType } from '../../../prop-types'
 import { TextLabel } from '../../../components/TextStyles'
 import { GU } from '../../../utils'
 import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
@@ -15,10 +16,12 @@ const AppContent = React.memo(
   ({
     app: {
       appName,
+      author,
       name,
-      icon,
+      icons,
       description,
       screenshots,
+      instances,
       canUpgrade,
       sourceUrl,
     },
@@ -61,7 +64,7 @@ const AppContent = React.memo(
               >
                 <img
                   alt=""
-                  src={icon}
+                  src={icons.large}
                   width="80"
                   height="80"
                   css={`
@@ -84,7 +87,7 @@ const AppContent = React.memo(
 
                 <Heading2>Created by</Heading2>
                 <div>
-                  <IdentityBadge entity="0x2c9341a32cfa3f2c2554ca1803134137b9366b3c" />
+                  <IdentityBadge entity={author} />
                 </div>
               </div>
             </div>
@@ -95,16 +98,18 @@ const AppContent = React.memo(
                   : '0'};
               `}
             >
-              {canUpgrade && (
+              {canUpgrade && onRequestUpgrade && (
                 <Button mode="strong" onClick={onRequestUpgrade}>
                   Upgrade
                 </Button>
               )}
             </div>
           </div>
-          <div>
-            <Screenshots screenshots={screenshots} />
-          </div>
+          {screenshots.length > 0 && (
+            <div>
+              <Screenshots screenshots={screenshots} />
+            </div>
+          )}
           <div
             css={`
               display: flex;
@@ -121,13 +126,28 @@ const AppContent = React.memo(
               <Heading2>Description</Heading2>
               <div>{description}</div>
               <Heading2>Source code</Heading2>
-              <div>{sourceUrl}</div>
-              <Heading2>Permissions</Heading2>
-              <div>View permissions</div>
+              <div>
+                {sourceUrl ? (
+                  <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
+                ) : (
+                  'No source code link.'
+                )}
+              </div>
             </DetailsGroup>
             <DetailsGroup compact={appBelow(below, breakpoints.medium)}>
               <Heading2>Installed instances</Heading2>
-              <div>0x…</div>
+              {instances.map(proxyAddress => (
+                <div
+                  key={proxyAddress}
+                  css={`
+                    & + & {
+                      margin-top: ${2 * GU}px;
+                    }
+                  `}
+                >
+                  <IdentityBadge entity={proxyAddress} />
+                </div>
+              ))}
               <div
                 css={`
                   margin-top: ${2 * GU}px;
@@ -144,13 +164,9 @@ const AppContent = React.memo(
 )
 
 AppContent.propTypes = {
-  app: PropTypes.shape({
-    appName: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    icon: PropTypes.string,
-    description: PropTypes.string.isRequired,
-    canUpgrade: PropTypes.bool,
-  }).isRequired,
+  app: AppCenterAppType.isRequired,
+  appVersions: PropTypes.node,
+  onRequestUpgrade: PropTypes.func,
 }
 
 const Heading2 = ({ children }) => (
@@ -163,6 +179,10 @@ const Heading2 = ({ children }) => (
     <TextLabel>{children}</TextLabel>
   </h2>
 )
+
+Heading2.propTypes = {
+  children: PropTypes.node,
+}
 
 const DetailsGroup = styled.div`
   width: ${p => (p.compact ? '100%' : '50%')};

@@ -1,81 +1,37 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { AppBar, AppView, NavigationBar, TabBar, Viewport } from '@aragon/ui'
-import { getKnownApp } from '../../known-apps'
+import {
+  AppBar,
+  AppView,
+  Card,
+  NavigationBar,
+  TabBar,
+  Viewport,
+} from '@aragon/ui'
 import MenuButton from '../../components/MenuPanel/MenuButton'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
+import EmptyBlock from './EmptyBlock'
+import { getAppsFromInstances } from '../../apps-utils'
 
 const TABS = [
   { id: 'installed', label: 'Installed apps' },
   { id: 'discover', label: 'Discover apps' },
 ]
 
-const APPS_BASE = [
-  {
-    appName: 'voting.aragonpm.eth',
-    canUpgrade: true,
-  },
-  { appName: 'token-manager.aragonpm.eth', canUpgrade: false },
-  { appName: 'finance.aragonpm.eth', canUpgrade: true },
-  { appName: 'survey.aragonpm.eth', canUpgrade: false },
-]
-
-const DEMO_APPS = Array(5)
-  .fill(APPS_BASE)
-  .reduce((apps, group) => apps.concat(group), [])
-  .map((app, i) => {
-    const knownApp = getKnownApp(app.appName)
-    return {
-      ...(knownApp ? { ...app, ...knownApp } : app),
-      appName: app.appName.replace(
-        /\./,
-        `-${Math.floor(i / APPS_BASE.length) + 1}.`
-      ),
-      version: '0.5.3',
-      versions: [
-        {
-          name: '0.5.4',
-          date: new Date('2018-10-18'),
-          changelogUrl:
-            'https://github.com/aragon/aragon-apps/releases/tag/0.5.4',
-        },
-        {
-          name: '0.5.3',
-          date: new Date('2018-7-17'),
-          changelogUrl:
-            'https://github.com/aragon/aragon-apps/releases/tag/0.5.3',
-        },
-        {
-          name: '0.5.2',
-          date: new Date('2018-6-19'),
-          changelogUrl:
-            'https://github.com/aragon/aragon-apps/releases/tag/0.5.2',
-        },
-        {
-          name: '0.5.1',
-          date: new Date('2018-5-31'),
-          changelogUrl:
-            'https://github.com/aragon/aragon-apps/releases/tag/0.5.1',
-        },
-        {
-          name: '0.5.0',
-          date: new Date('2018-3-29'),
-          changelogUrl:
-            'https://github.com/aragon/aragon-apps/releases/tag/0.5.0',
-        },
-      ],
-    }
-  })
-
 class Apps extends React.Component {
   static propTypes = {
-    params: PropTypes.string.isRequired,
+    apps: PropTypes.array,
+    appsLoading: PropTypes.bool,
+    params: PropTypes.string,
     onParamsRequest: PropTypes.func.isRequired,
+    onMessage: PropTypes.func.isRequired,
+  }
+  static defaultProps = {
+    apps: [],
   }
   state = {
-    apps: DEMO_APPS,
     upgradePanelOpened: false,
   }
   handleMenuPanelOpen = () => {
@@ -84,7 +40,6 @@ class Apps extends React.Component {
     })
   }
   getLocation() {
-    const { apps } = this.state
     const { params } = this.props
 
     if (!params) {
@@ -94,7 +49,7 @@ class Apps extends React.Component {
     const parts = params.split('_')
 
     const activeTab = TABS.findIndex(({ id }) => id === parts[0])
-    const openedApp = apps.find(({ appName }) => appName === parts[1])
+    const openedApp = this.getAppFromAppName(parts[1])
 
     return {
       activeTab: activeTab === -1 ? 0 : activeTab,
@@ -116,8 +71,11 @@ class Apps extends React.Component {
       }`
     )
   }
-  getAppByAppName(appName) {
-    return this.state.apps.find(app => app.appName === appName)
+  getApps() {
+    return getAppsFromInstances(this.props.apps)
+  }
+  getAppFromAppName(appName) {
+    return this.getApps().find(app => app.appName === appName)
   }
   openUpgradePanel = () => {
     this.setState({ upgradePanelOpened: true })
@@ -136,8 +94,11 @@ class Apps extends React.Component {
   }
 
   render() {
-    const { apps, upgradePanelOpened } = this.state
+    const { appsLoading } = this.props
+    const { upgradePanelOpened } = this.state
     const { activeTab, openedAppName } = this.getLocation()
+
+    const apps = this.getApps()
 
     return (
       <React.Fragment>
@@ -168,19 +129,22 @@ class Apps extends React.Component {
             </AppBar>
           }
         >
-          {activeTab === 0 && (
-            <InstalledApps
-              apps={apps}
-              openedAppName={openedAppName}
-              onOpenApp={this.openApp}
-              onRequestUpgrade={this.openUpgradePanel}
-            />
-          )}
+          {activeTab === 0 &&
+            (appsLoading ? (
+              <EmptyBlock>Loading apps…</EmptyBlock>
+            ) : (
+              <InstalledApps
+                apps={apps}
+                openedAppName={openedAppName}
+                onOpenApp={this.openApp}
+                onRequestUpgrade={this.openUpgradePanel}
+              />
+            ))}
           {activeTab === 1 && <DiscoverApps />}
         </AppView>
 
         <UpgradeAppPanel
-          app={upgradePanelOpened && this.getAppByAppName(openedAppName)}
+          app={upgradePanelOpened && this.getAppFromAppName(openedAppName)}
           onClose={this.closeUpgradePanel}
         />
       </React.Fragment>
