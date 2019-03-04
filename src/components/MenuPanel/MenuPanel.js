@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import {
+  Button,
+  IconSettings,
   Text,
   Viewport,
   breakpoint,
@@ -120,9 +122,13 @@ class MenuPanel extends React.PureComponent {
               {connected ? 'Connected to the network' : 'Not connected'}
             </Text>
           </ConnectionWrapper>
-          <div>
-            <button onClick={onOpenPreferences}>My preferences</button>
-          </div>
+          <StyledPreferencesButton
+            mode="outline"
+            label="My preferences"
+            onClick={onOpenPreferences}
+          >
+            <IconSettings /> My preferences
+          </StyledPreferencesButton>
         </In>
       </Main>
     )
@@ -262,6 +268,12 @@ AnimatedMenuPanel.propTypes = {
   openProgress: PropTypes.number.isRequired,
   onCloseMenuPanel: PropTypes.func.isRequired,
 }
+
+const StyledPreferencesButton = styled(Button)`
+  display: inline-flex;
+  margin: 0 auto 10px;
+  align-items: center;
+`
 
 const Overlay = styled.div`
   position: absolute;
