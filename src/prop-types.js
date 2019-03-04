@@ -81,6 +81,27 @@ export const AppType = PropTypes.shape({
   version: PropTypes.string,
 })
 
+export const AppCenterAppType = PropTypes.shape({
+  appName: PropTypes.string.isRequired,
+  name: PropTypes.string,
+  description: PropTypes.string,
+  longdesc: PropTypes.string,
+  icons: PropTypes.shape({
+    small: PropTypes.string,
+    large: PropTypes.string,
+  }).isRequired,
+  screenshots: PropTypes.arrayOf(PropTypes.string),
+  sourceUrl: PropTypes.string,
+  version: PropTypes.string.isRequired,
+  versions: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      date: PropTypes.instanceOf(Date).isRequired,
+      changelogUrl: PropTypes.string,
+    })
+  ).isRequired,
+})
+
 export const AppsStatusType = PropTypes.oneOf([
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
