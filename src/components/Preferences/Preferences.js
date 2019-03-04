@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Transition, animated } from 'react-spring'
 import {
   AppBar,
   AppView,
@@ -11,22 +12,17 @@ import {
   Viewport,
   breakpoint,
   font,
+  springs,
 } from '@aragon/ui'
 import CustomLabels from './CustomLabels'
 
-const SMALL_TABS = ['Network', 'Manage labels']
+const TABS = ['Network', 'Manage labels']
 
-const TABS = ['Network', 'Addresses', 'Manage labels']
-
-const Preferences = ({ onClose, opened, smallView, ...props }) => {
-  if (!opened) {
-    return null
-  }
-
-  const [selectedTab, setSelectedTab] = React.useState(0 || smallView ? 1 : 2)
+const Preferences = ({ onClose, smallView }) => {
+  const [selectedTab, setSelectedTab] = React.useState(1)
 
   return (
-    <StyledAppView
+    <AppView
       smallView={smallView}
       padding={0}
       appBar={
@@ -39,37 +35,73 @@ const Preferences = ({ onClose, opened, smallView, ...props }) => {
       }
     >
       <Section>
-        <TabBar
-          items={smallView ? SMALL_TABS : TABS}
-          selected={selectedTab}
-          onChange={setSelectedTab}
-        />
+        <TabBar items={TABS} selected={selectedTab} onChange={setSelectedTab} />
         <Content>
           {selectedTab === 0 && <ComingSoon />}
-          {!smallView && selectedTab === 1 && <ComingSoon />}
-          {((!smallView && selectedTab === 2) ||
-            (smallView && selectedTab === 1)) && <CustomLabels />}
+          {selectedTab === 1 && <CustomLabels />}
         </Content>
       </Section>
-    </StyledAppView>
+    </AppView>
   )
 }
 
 Preferences.propTypes = {
   onClose: PropTypes.func.isRequired,
-  opened: PropTypes.bool.isRequired,
   smallView: PropTypes.bool.isRequired,
 }
 
-const ComingSoon = () => (
-  <div
-    css={`
-      padding: 0 16px;
-    `}
-  >
-    Coming soon...
-  </div>
-)
+const AnimatedPreferences = ({ opened, ...props }) => {
+  return (
+    <Transition
+      native
+      items={opened}
+      from={{ opacity: 0, enterProgress: 0, blocking: false }}
+      enter={{ opacity: 1, enterProgress: 1, blocking: true }}
+      leave={{ opacity: 0, enterProgress: 1, blocking: false }}
+      config={springs.smooth}
+    >
+      {show =>
+        show &&
+        /* eslint-disable react/prop-types */
+        (({ opacity, enterProgress, blocking }) => (
+          <AnimatedWrap
+            style={{
+              pointerEvents: blocking ? 'auto' : 'none',
+              opacity,
+              transform: enterProgress.interpolate(
+                v => `
+                  translate3d(0, ${(1 - v) * 10}px, 0)
+                  scale3d(${1 - (1 - v) * 0.03}, ${1 - (1 - v) * 0.03}, 1)
+                `
+              ),
+            }}
+          >
+            <Preferences {...props} />
+          </AnimatedWrap>
+        ))
+      /* eslint-enable react/prop-types */
+      }
+    </Transition>
+  )
+}
+
+AnimatedPreferences.propTypes = {
+  opened: PropTypes.bool,
+  smallView: PropTypes.bool.isRequired,
+}
+
+const AnimatedWrap = styled(animated.div)`
+  position: fixed;
+  background: #fff;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: ${({ smallView }) => (smallView ? 2 : 4)};
+  min-width: 320px;
+`
+
+const ComingSoon = () => <div css="padding: 0 16px">Coming soon…</div>
 
 const Title = styled.h1`
   ${font({ size: 'xxlarge' })};
@@ -119,19 +151,10 @@ const StyledButton = styled(ButtonIcon)`
   padding: 0 16px;
 `
 
-const StyledAppView = styled(AppView)`
-  position: fixed;
-  background: #fff;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: ${({ smallView }) => (smallView ? 2 : 4)};
-  min-width: 320px;
-`
-
 export default props => (
   <Viewport>
-    {({ below }) => <Preferences smallView={below('medium')} {...props} />}
+    {({ below }) => (
+      <AnimatedPreferences smallView={below('medium')} {...props} />
+    )}
   </Viewport>
 )
