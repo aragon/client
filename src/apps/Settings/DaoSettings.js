@@ -1,17 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import {
-  Badge,
-  Button,
-  IdentityBadge,
-  Text,
-  Viewport,
-  font,
-  theme,
-} from '@aragon/ui'
-import { CustomLabelModalConsumer } from '../../components/CustomLabelModal/CustomLabelModalManager'
-import { resolve } from '../../mockCustomLabelsManager'
+import { Button, Text, Viewport, theme } from '@aragon/ui'
+import CustomLabelIdentityBadge from '../../components/CustomLabelIdentityBadge/CustomLabelIdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
@@ -75,53 +66,11 @@ class DaoSettings extends React.PureComponent {
           {checksummedDaoAddr ? (
             <Wrap>
               <Label>Address</Label>
-              <CustomLabelModalConsumer>
-                {({ showCustomLabelModal }) => (
-                  <IdentityBadge
-                    customLabel={resolve(checksummedDaoAddr) || ''}
-                    entity={checksummedDaoAddr}
-                    shorten={shortAddresses}
-                    popoverAction={{
-                      label: `${
-                        resolve(checksummedDaoAddr) ? 'Edit' : 'Add'
-                      } custom label`,
-                      onClick: () => showCustomLabelModal(checksummedDaoAddr),
-                      title: resolve(checksummedDaoAddr) ? (
-                        <div
-                          css={`
-                            display: grid;
-                            align-items: center;
-                            grid-template-columns: auto 1fr;
-                            padding-right: 24px;
-                          `}
-                        >
-                          <span
-                            css={`
-                              display: inline-block;
-                              overflow: hidden;
-                              text-overflow: ellipsis;
-                              white-space: nowrap;
-                            `}
-                          >
-                            {resolve(checksummedDaoAddr)}
-                          </span>
-                          <Badge
-                            css={`
-                              margin-left: 16px;
-                              text-transform: uppercase;
-                              ${font({ size: 'xxsmall' })};
-                            `}
-                          >
-                            Custom label
-                          </Badge>
-                        </div>
-                      ) : (
-                        ''
-                      ),
-                    }}
-                  />
-                )}
-              </CustomLabelModalConsumer>
+              <CustomLabelIdentityBadge
+                address={checksummedDaoAddr}
+                entity={checksummedDaoAddr}
+                shorten={shortAddresses}
+              />
             </Wrap>
           ) : (
             <p>Resolving DAO address…</p>
@@ -202,7 +151,8 @@ class DaoSettings extends React.PureComponent {
                         {name}
                         {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
                       </Label>
-                      <IdentityBadge
+                      <CustomLabelIdentityBadge
+                        address={checksummedProxyAddress}
                         entity={checksummedProxyAddress}
                         shorten={shortAddresses}
                       />
