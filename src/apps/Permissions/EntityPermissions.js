@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Table, TableRow, Text } from '@aragon/ui'
+import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
@@ -40,30 +40,38 @@ class EntityPermissions extends React.PureComponent {
                   {loading ? loadPermissionsLabel : noPermissionsLabel}
                 </EmptyBlock>
               ) : (
-                <Table
-                  header={
-                    <TableRow>
-                      <TableHeader title="Action" style={{ width: '20%' }} />
-                      <TableHeader title="On app" />
-                      <TableHeader />
-                    </TableRow>
-                  }
-                >
-                  {roles.map(
-                    ({ role, roleBytes, roleFrom, proxyAddress }, i) => (
-                      <Row
-                        key={i}
-                        entityAddress={address}
-                        id={(role && role.id) || 'Unknown'}
-                        roleBytes={roleBytes}
-                        action={(role && role.name) || 'Unknown'}
-                        app={roleFrom.app}
-                        proxyAddress={proxyAddress}
-                        onRevoke={revokePermission}
-                      />
-                    )
+                <Viewport>
+                  {({ below }) => (
+                    <Table
+                      noSideBorders={below('medium')}
+                      header={
+                        <TableRow>
+                          <TableHeader
+                            title="Action"
+                            style={{ width: '20%' }}
+                          />
+                          <TableHeader title="On app" />
+                          <TableHeader />
+                        </TableRow>
+                      }
+                    >
+                      {roles.map(
+                        ({ role, roleBytes, roleFrom, proxyAddress }, i) => (
+                          <Row
+                            key={i}
+                            entityAddress={address}
+                            id={(role && role.id) || 'Unknown'}
+                            roleBytes={roleBytes}
+                            action={(role && role.name) || 'Unknown'}
+                            app={roleFrom.app}
+                            proxyAddress={proxyAddress}
+                            onRevoke={revokePermission}
+                          />
+                        )
+                      )}
+                    </Table>
                   )}
-                </Table>
+                </Viewport>
               )}
             </Section>
           )

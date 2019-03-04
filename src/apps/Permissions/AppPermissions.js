@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Table, TableRow, Text } from '@aragon/ui'
+import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
 import IdentityBadge from '../../components/IdentityBadge'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
@@ -39,25 +39,33 @@ class AppPermissions extends React.PureComponent {
                       : 'No permissions set.'}
                   </EmptyBlock>
                 ) : (
-                  <Table
-                    header={
-                      <TableRow>
-                        <TableHeader title="Action" style={{ width: '20%' }} />
-                        <TableHeader title="Allowed for" />
-                        <TableHeader />
-                      </TableRow>
-                    }
-                  >
-                    {appPermissions.map(({ role, entity }, i) => (
-                      <Row
-                        key={i}
-                        role={role}
-                        entity={entity}
-                        proxyAddress={address}
-                        onRevoke={revokePermission}
-                      />
-                    ))}
-                  </Table>
+                  <Viewport>
+                    {({ below }) => (
+                      <Table
+                        noSideBorders={below('medium')}
+                        header={
+                          <TableRow>
+                            <TableHeader
+                              title="Action"
+                              style={{ width: '20%' }}
+                            />
+                            <TableHeader title="Allowed for" />
+                            <TableHeader />
+                          </TableRow>
+                        }
+                      >
+                        {appPermissions.map(({ role, entity }, i) => (
+                          <Row
+                            key={i}
+                            role={role}
+                            entity={entity}
+                            proxyAddress={address}
+                            onRevoke={revokePermission}
+                          />
+                        ))}
+                      </Table>
+                    )}
+                  </Viewport>
                 )}
               </Section>
               <EntityPermissions
