@@ -145,7 +145,7 @@ class DaoSettings extends React.PureComponent {
                   )
 
                   return (
-                    <li title={description} key={checksummedProxyAddress}>
+                    <AppItem title={description} key={checksummedProxyAddress}>
                       <Label>
                         {name}
                         {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
@@ -154,7 +154,7 @@ class DaoSettings extends React.PureComponent {
                         entity={checksummedProxyAddress}
                         shorten={shortAddresses}
                       />
-                    </li>
+                    </AppItem>
                   )
                 }
               )}
@@ -183,6 +183,10 @@ const Label = styled.label`
   color: ${theme.textSecondary};
   font-size: 11px;
   text-transform: uppercase;
+`
+
+const AppItem = styled.li`
+  margin-bottom: 24px;
 `
 
 export default props => (

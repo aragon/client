@@ -27,6 +27,7 @@ class Apps extends React.Component {
   state = {
     upgradePanelOpened: false,
   }
+
   handleMenuPanelOpen = () => {
     this.props.onMessage({
       data: { from: 'app', name: 'menuPanel', value: true },
@@ -40,7 +41,6 @@ class Apps extends React.Component {
     }
 
     const parts = params.split('_')
-
     const activeTab = TABS.findIndex(({ id }) => id === parts[0])
     const openedApp = this.getAppFromAppName(parts[1])
 

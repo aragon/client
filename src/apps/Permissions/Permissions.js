@@ -1,15 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import {
-  AppBar,
-  AppView,
-  NavigationBar,
-  Viewport,
-  breakpoint,
-  font,
-} from '@aragon/ui'
 import { AppType } from '../../prop-types'
+import { IconPlus } from '@aragon/ui'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
 import Home from './Home/Home'
@@ -18,9 +11,8 @@ import EntityPermissions from './EntityPermissions'
 import NavigationItem from './NavigationItem'
 import AssignPermissionPanel from './AssignPermissionPanel'
 import ManageRolePanel from './ManageRolePanel'
-import MenuButton from '../../components/MenuPanel/MenuButton'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import AddPermissionButton from './AddPermissionButton'
+import AppLayout from '../../components/AppLayout/AppLayout'
 
 class Permissions extends React.Component {
   static propTypes = {
@@ -188,7 +180,6 @@ class Permissions extends React.Component {
   render() {
     const { apps, appsLoading, permissionsLoading, params } = this.props
     const { showAssignPermissionPanel, animateScreens } = this.state
-
     const location = this.getLocation(params)
 
     return (
@@ -208,34 +199,18 @@ class Permissions extends React.Component {
 
           return (
             <React.Fragment>
-              <AppView
-                appBar={
-                  <AppBar
-                    endContent={
-                      <AddPermissionButton
-                        title="Add permission"
-                        onClick={this.createPermission}
-                        disabled={appsLoading || permissionsLoading}
-                      />
-                    }
-                  >
-                    <Viewport>
-                      {({ below }) =>
-                        below('medium') && navigationItems.length === 1 ? (
-                          <AppBarTitle>
-                            <MenuButton onClick={this.handleMenuPanelOpen} />
-                            <AppBarLabel>Permissions</AppBarLabel>
-                          </AppBarTitle>
-                        ) : (
-                          <NavigationBar
-                            items={navigationItems}
-                            onBack={this.goToHome}
-                          />
-                        )
-                      }
-                    </Viewport>
-                  </AppBar>
-                }
+              <AppLayout
+                title="Permissions"
+                navigationItems={navigationItems}
+                onNavigationBack={this.goToHome}
+                onMenuOpen={this.handleMenuPanelOpen}
+                smallViewPadding={30}
+                mainButton={{
+                  icon: <IconPlus />,
+                  label: 'Add permission',
+                  onClick: this.createPermission,
+                  disabled: appsLoading || permissionsLoading,
+                }}
               >
                 <ScrollTopElement
                   ref={el => {
@@ -278,7 +253,7 @@ class Permissions extends React.Component {
                     )}
                   </Screen>
                 </Wrap>
-              </AppView>
+              </AppLayout>
 
               <AssignPermissionPanel
                 apps={apps}
@@ -309,23 +284,6 @@ const Wrap = styled.div`
   bottom: 0;
   overflowx: hidden;
   min-width: 320px;
-`
-
-const AppBarTitle = styled.span`
-  display: flex;
-  align-items: center;
-`
-
-const AppBarLabel = styled.span`
-  margin: 0 10px 0 8px;
-  ${font({ size: 'xxlarge' })};
-
-  ${breakpoint(
-    'medium',
-    `
-      margin-left: 24px;
-    `
-  )};
 `
 
 // This element is only used to reset the view scroll using scrollIntoView()
