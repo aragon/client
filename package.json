@@ -26,7 +26,7 @@
   "dependencies": {
     "@aragon/templates-tokens": "^1.1.1",
     "@aragon/ui": "^0.32.0",
-    "@aragon/wrapper": "^3.0.0-beta.5",
+    "@aragon/wrapper": "^4.0.0-beta.1",
     "@babel/polyfill": "^7.0.0",
     "bn.js": "4.11.6",
     "date-fns": "2.0.0-alpha.22",

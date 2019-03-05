@@ -1,5 +1,4 @@
 import BN from 'bn.js'
-import throttle from 'lodash.throttle'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
   providers,
@@ -240,7 +239,7 @@ const subscribe = (
         )
       )
     }),
-    permissions: permissions.subscribe(throttle(onPermissions, 100)),
+    permissions: permissions.subscribe(onPermissions),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
