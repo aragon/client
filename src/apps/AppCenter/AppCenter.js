@@ -92,6 +92,7 @@ class AppCenter extends React.Component {
     const { activeTab, openedAppName } = this.getLocation()
 
     const apps = this.getApps()
+    const currentApp = openedAppName && this.getAppFromAppName(openedAppName)
 
     return (
       <React.Fragment>
@@ -116,7 +117,7 @@ class AppCenter extends React.Component {
                 }
               </Viewport>
               <NavigationBar
-                items={['Apps', ...(openedAppName ? ['Voting'] : [])]}
+                items={['App Center', ...(currentApp ? [currentApp.name] : [])]}
                 onBack={this.closeApp}
               />
             </AppBar>
