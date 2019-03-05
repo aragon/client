@@ -13,7 +13,7 @@ const TABS = [
   { id: 'discover', label: 'Discover apps' },
 ]
 
-class Apps extends React.Component {
+class AppCenter extends React.Component {
   static propTypes = {
     apps: PropTypes.array,
     appsLoading: PropTypes.bool,
@@ -145,4 +145,4 @@ class Apps extends React.Component {
   }
 }
 
-export default Apps
+export default AppCenter

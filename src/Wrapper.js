@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
 import { Viewport } from '@aragon/ui'
-import { Apps, Permissions, Settings } from './apps'
+import { AppCenter, Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -308,7 +308,7 @@ class Wrapper extends React.PureComponent {
 
     if (instanceId === 'apps') {
       return (
-        <Apps
+        <AppCenter
           apps={apps}
           appsLoading={appsLoading}
           params={params}
