@@ -1,13 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  AppBar,
-  AppView,
-  Card,
-  NavigationBar,
-  TabBar,
-  Viewport,
-} from '@aragon/ui'
+import { AppBar, AppView, NavigationBar, TabBar, Viewport } from '@aragon/ui'
 import MenuButton from '../../components/MenuPanel/MenuButton'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
