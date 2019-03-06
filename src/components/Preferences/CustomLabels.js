@@ -58,7 +58,7 @@ const Labels = ({ clearAll, list, onImport }) => {
       <List>
         {list.map(({ address }) => (
           <Item key={address}>
-            <div>{resolve(address)}</div>
+            <Label>{resolve(address)}</Label>
             <div>
               <IdentityBadge
                 entity={address}
@@ -120,6 +120,12 @@ const PopoverActionTitle = ({ address }) => {
 PopoverActionTitle.propTypes = {
   address: PropTypes.string.isRequired,
 }
+
+const Label = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
 
 const WrapTitle = styled.div`
   display: grid;
