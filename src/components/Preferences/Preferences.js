@@ -18,7 +18,7 @@ import CustomLabels from './CustomLabels'
 
 const TABS = ['Network', 'Manage labels']
 
-const Preferences = ({ onClose, smallView }) => {
+const Preferences = ({ onClose, smallView, localIdentities }) => {
   const [selectedTab, setSelectedTab] = React.useState(1)
 
   return (
@@ -38,7 +38,9 @@ const Preferences = ({ onClose, smallView }) => {
         <TabBar items={TABS} selected={selectedTab} onChange={setSelectedTab} />
         <Content>
           {selectedTab === 0 && <ComingSoon />}
-          {selectedTab === 1 && <CustomLabels />}
+          {selectedTab === 1 && (
+            <CustomLabels localIdentities={localIdentities} />
+          )}
         </Content>
       </Section>
     </AppView>
@@ -46,6 +48,7 @@ const Preferences = ({ onClose, smallView }) => {
 }
 
 Preferences.propTypes = {
+  localIdentities: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   smallView: PropTypes.bool.isRequired,
 }

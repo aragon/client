@@ -40,6 +40,7 @@ class App extends React.Component {
     //  - DAO_CREATION_STATUS_ERROR
     daoCreationStatus: DAO_CREATION_STATUS_NONE,
     fatalError: null,
+    localIdentities: {},
     locator: {},
     permissions: {},
     permissionsLoading: true,
@@ -239,6 +240,17 @@ class App extends React.Component {
         log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
+      onLocalIdentities: localIdentities => {
+        log('local identities', localIdentities)
+        // { address1: { metadataObject } }
+        this.setState({ localIdentities })
+      },
+      onIdentityIntent: ({ address, provider }) => {
+        // callback for both iframe and native apps
+        if (provider === 'local') {
+          // TODO set the state for modifying a specific address identity
+        }
+      },
     })
       .then(wrapper => {
         log('wrapper', wrapper)
@@ -277,6 +289,7 @@ class App extends React.Component {
       daoAddress,
       daoCreationStatus,
       fatalError,
+      localIdentities,
       locator,
       permissions,
       permissionsLoading,
@@ -318,6 +331,7 @@ class App extends React.Component {
               daoAddress={daoAddress}
               historyBack={this.historyBack}
               historyPush={this.historyPush}
+              localIdentities={localIdentities}
               locator={locator}
               onRequestAppsReload={this.handleRequestAppsReload}
               onRequestEnable={this.handleRequestEnable}
