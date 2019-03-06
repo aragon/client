@@ -9,13 +9,14 @@ import {
   font,
   theme,
 } from '@aragon/ui'
-import { ModalConsumer } from '../ModalManager/ModalManager'
+import { ModalContext } from '../ModalManager/ModalManager'
 
-const CustomLabelModal = ({ opened, showModal, ...props }) => {
+const CustomLabelModal = ({ opened, ...props }) => {
   if (!opened) {
     return null
   }
 
+  const { showModal } = React.useContext(ModalContext)
   React.useEffect(() => {
     showModal(Modal, props)
   })
@@ -25,21 +26,26 @@ const CustomLabelModal = ({ opened, showModal, ...props }) => {
 
 CustomLabelModal.propTypes = {
   opened: PropTypes.bool.isRequired,
-  showModal: PropTypes.func.isRequired,
 }
 
-const Modal = ({ address, label, onCancel, onSave, hideModal }) => {
+const Modal = ({ address, label, onCancel, onSave }) => {
+  const { hideModal } = React.useContext(ModalContext)
   const action = label && label.trim() ? 'Edit' : 'Add'
   const labelInput = React.useRef(null)
   const handleCancel = () => {
     onCancel()
     hideModal()
   }
+  const [error, setError] = React.useState(null)
   const handleSave = () => {
-    const label = labelInput.current.value.trim()
-    if (label && label.length < 500) {
-      onSave({ address, label })
-      hideModal()
+    try {
+      const label = labelInput.current.value.trim()
+      if (label) {
+        onSave({ address, label })
+        hideModal()
+      }
+    } catch (e) {
+      setError(e)
     }
   }
 
@@ -53,7 +59,8 @@ const Modal = ({ address, label, onCancel, onSave, hideModal }) => {
       <IdentityBadge address={address} entity={address} />
       <Label>
         <div>Custom Label</div>
-        <TextInput wide defaultValue={label} ref={labelInput} />
+        <TextInput wide defaultValue={label} ref={labelInput} maxLength="42" />
+        <Error>{error}</Error>
       </Label>
       <Controls>
         <Button mode="secondary" onClick={handleCancel}>
@@ -72,8 +79,12 @@ Modal.propTypes = {
   label: PropTypes.string,
   onCancel: PropTypes.func,
   onSave: PropTypes.func,
-  hideModal: PropTypes.func,
 }
+
+const Error = styled.div`
+  color: #f56a6a;
+  text-transform: initial;
+`
 
 const Wrap = styled.div`
   background: #fff;
@@ -137,14 +148,4 @@ const StyledSaveButton = styled(Button)`
   )}
 `
 
-export default props => (
-  <ModalConsumer>
-    {({ showModal, hideModal }) => (
-      <CustomLabelModal
-        {...props}
-        showModal={showModal}
-        hideModal={hideModal}
-      />
-    )}
-  </ModalConsumer>
-)
+export default CustomLabelModal
