@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useDropzone } from 'react-dropzone'
 import { Button } from '@aragon/ui'
 import { isString } from '../../utils'
 import { isAddress } from '../../web3-utils'
@@ -18,7 +19,11 @@ const verifyCustomLabelObject = obj => {
   )
 }
 
-const fileImport = cb => file => {
+const fileImport = cb => files => {
+  if (!files || !files.length) {
+    return
+  }
+
   const reader = new FileReader()
   reader.onload = event => {
     try {
@@ -32,38 +37,30 @@ const fileImport = cb => file => {
       console.warn(e)
     }
   }
-  reader.readAsText(event.target.files[0])
+  reader.readAsText(files[0])
 }
 
-const Import = ({ onImport }) => (
-  <label
-    css={`
-      position: relative;
-      display: inline-block;
-      overflow: hidden;
-    `}
-  >
-    <Button label="Import" mode="secondary">
-      Import
-    </Button>
-    <input
-      type="file"
-      onChange={fileImport(onImport)}
-      accept=".json"
+const Import = ({ onImport }) => {
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: fileImport(onImport),
+  })
+
+  return (
+    <label
       css={`
-        display: block;
-        filter: alpha(opacity=0);
-        opacity: 0;
-        position: absolute;
-        z-index: 1;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
       `}
-    />
-  </label>
-)
+      {...getRootProps()}
+    >
+      <input {...getInputProps()} />
+      <Button label="Import" mode="secondary">
+        Import
+      </Button>
+    </label>
+  )
+}
 
 Import.propTypes = { onImport: PropTypes.func.isRequired }
 

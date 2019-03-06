@@ -41,6 +41,7 @@
     "react-blockies": "^1.3.0",
     "react-container-dimensions": "^1.3.3",
     "react-dom": "^16.7.0",
+    "react-dropzone": "^10.0.0",
     "react-onclickout": "^2.0.8",
     "react-spring": "^7.2.10",
     "react-with-gesture": "^4.0.4",
