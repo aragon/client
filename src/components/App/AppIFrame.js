@@ -5,6 +5,8 @@ import { clamp, lerp } from '../../math-utils'
 import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
+import { CustomLabelModalConsumer } from '../CustomLabelModal/CustomLabelModalManager'
+import { getAll } from '../../mockCustomLabelsManager'
 
 const LOADING_START = 25 // Start loading indicator at 25%
 const LOADING_END = 100
@@ -53,6 +55,7 @@ class AppIFrame extends React.Component {
     onLoad: PropTypes.func,
     onMessage: PropTypes.func,
     onNavigate: PropTypes.func,
+    onShowCustomLabelModal: PropTypes.func,
   }
   static defaultProps = {
     iframeRef: noop,
@@ -162,7 +165,18 @@ class AppIFrame extends React.Component {
       // We can't use event.origin as it's always null due to the origin sandboxing
       event.source === this.iframe.contentWindow
     ) {
-      onMessage(event)
+      console.log('handleReceiveMessage: ', event.data.name)
+      event.data.name === 'showCustomLabelModal'
+        ? this.props.onShowCustomLabelModal(event.data.value)
+        : event.data.name === 'getAllCustomLabels'
+        ? (() => {
+            console.log('sending getAll, ', getAll())
+            this.iframe.contentWindow.postMessage(
+              { from: 'wrapper', name: 'allCustomLabels', labels: getAll() },
+              '*'
+            )
+          })()
+        : onMessage(event)
     }
   }
   handleIFrameRef = iframe => {
@@ -213,4 +227,14 @@ const StyledIFrame = styled.iframe`
   width: 100%;
 `
 
-export default AppIFrame
+export default React.forwardRef((props, ref) => (
+  <CustomLabelModalConsumer>
+    {({ showCustomLabelModal }) => (
+      <AppIFrame
+        {...props}
+        onShowCustomLabelModal={showCustomLabelModal}
+        ref={ref}
+      />
+    )}
+  </CustomLabelModalConsumer>
+))
