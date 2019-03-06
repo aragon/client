@@ -6,6 +6,8 @@ import { isString } from '../../utils'
 import { isAddress } from '../../web3-utils'
 import { set, removeAll } from '../../mockCustomLabelsManager'
 
+const MAX_LENGTH = 42
+
 const verifyCustomLabelObject = obj => {
   return (
     Array.isArray(obj) &&
@@ -14,7 +16,8 @@ const verifyCustomLabelObject = obj => {
         !!address.trim() &&
         !!label.trim() &&
         isAddress(address) &&
-        isString(label)
+        isString(label) &&
+        label.length <= MAX_LENGTH
     )
   )
 }
@@ -31,8 +34,10 @@ const fileImport = cb => files => {
       if (verifyCustomLabelObject(list)) {
         removeAll()
         list.forEach(({ address, label }) => set({ address, label }))
+        cb()
+      } else {
+        throw new Error('There was an error reading from the file')
       }
-      cb()
     } catch (e) {
       console.warn(e)
     }
