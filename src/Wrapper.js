@@ -26,7 +26,7 @@ import { staticApps } from './static-apps'
 import { APPS_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
-import { set, resolve } from './mockCustomLabelsManager'
+import { resolve } from './mockCustomLabelsManager'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -43,6 +43,7 @@ class Wrapper extends React.PureComponent {
     daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
+    localIdentities: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
@@ -165,13 +166,16 @@ class Wrapper extends React.PureComponent {
     this.setState({ preferencesOpened: true })
   }
   handleOpenCustomLabelModal = customLabelAddress => {
+    // requestModifyAddreess
     this.setState({ customLabelAddress })
   }
   handleCloseCustomLabelModal = () => {
     this.setState({ customLabelAddress: null })
   }
   handleSaveCustomLabelModal = ({ address, label }) => {
-    set({ address, label })
+    // TODO implement actual saving logic
+    // this.props.wrapper.modifyAddressIdentity(address, { label })
+    // set({ address, label })
     this.setState({ customLabelAddress: null })
   }
   // params need to be a string
@@ -208,6 +212,7 @@ class Wrapper extends React.PureComponent {
       banner,
       connected,
       daoAddress,
+      localIdentities,
       locator,
       onRequestAppsReload,
       onRequestEnable,
@@ -231,6 +236,7 @@ class Wrapper extends React.PureComponent {
       >
         <Main>
           <Preferences
+            localIdentities={localIdentities}
             opened={preferencesOpened}
             onClose={this.handleClosePreferences}
           />

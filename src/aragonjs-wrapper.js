@@ -222,10 +222,26 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  { onApps, onPermissions, onForwarders, onTransaction },
+  {
+    onApps,
+    onPermissions,
+    onForwarders,
+    onTransaction,
+    onLocalIdentities,
+    onIdentityIntent,
+  },
   { ipfsConf }
 ) => {
-  const { apps, permissions, forwarders, transactions } = wrapper
+  const {
+    apps,
+    permissions,
+    forwarders,
+    transactions,
+    identityIntents,
+    identityProviderRegistrar,
+  } = wrapper
+
+  const localIdentities = identityProviderRegistrar.get('local').identities$
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
@@ -243,6 +259,8 @@ const subscribe = (
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
+    localIdentities: localIdentities.subscribe(onLocalIdentities),
+    identityIntents: identityIntents.subscribe(onIdentityIntent),
     transactions: transactions.subscribe(onTransaction),
     workers: apps.subscribe(apps => {
       // Asynchronously launch webworkers for each new app that has a background
@@ -339,6 +357,8 @@ const initWrapper = async (
     onTransaction = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
+    onLocalIdentities = noop,
+    onIdentityIntent = noop,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -392,7 +412,14 @@ const initWrapper = async (
 
   const subscriptions = subscribe(
     wrapper,
-    { onApps, onPermissions, onForwarders, onTransaction },
+    {
+      onApps,
+      onPermissions,
+      onForwarders,
+      onTransaction,
+      onLocalIdentities,
+      onIdentityIntent,
+    },
     { ipfsConf }
   )
 

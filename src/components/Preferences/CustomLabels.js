@@ -13,18 +13,30 @@ import {
   theme,
 } from '@aragon/ui'
 import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
-import { getAll, resolve, removeAll } from '../../mockCustomLabelsManager'
+import { getAll, resolve } from '../../mockCustomLabelsManager'
 import EmptyCustomLabels from './EmptyCustomLabels'
 import Import from './Import'
 
-const CustomLabels = () => {
-  const [list, setList] = React.useState(getAll())
+const CustomLabels = ({ localIdentities }) => {
+  // const [list, setList] = React.useState(getAll())
+
+  // TODO transform localIdentities from object into sorted array
+  const list = Object.keys(localIdentities).map(address => {
+    return Object.assign({}, localIdentities[address], { address })
+  })
+
   const handleClearAll = () => {
-    removeAll()
-    setList([])
+    console.log('handleClearAll')
+    // TODO clear local identities
+    // removeAll()
+    // setList([])
   }
   const handleImport = () => {
-    setList(getAll())
+    console.log('handleImport')
+    // setList(getAll())
+    // TODO Check with Jouni/Paty -
+    // TODO iterate and call modify for each imported
+    // modification through the wrapper ->
   }
 
   return (
@@ -33,6 +45,10 @@ const CustomLabels = () => {
       <Warning />
     </React.Fragment>
   )
+}
+
+CustomLabels.propTypes = {
+  localIdentities: PropTypes.object,
 }
 
 const Labels = ({ clearAll, list, onImport }) => {
