@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
-import IdentityBadge from '../../components/IdentityBadge'
+import CustomLabelIdentityBadge from '../../components/CustomLabelIdentityBadge/CustomLabelIdentityBadge'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { AppType, EthereumAddressType } from '../../prop-types'
@@ -107,9 +107,11 @@ class Row extends React.Component {
     if (entity.type === 'app') {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
+
     return (
-      <IdentityBadge
+      <CustomLabelIdentityBadge
         entity={entity.type === 'any' ? 'Any account' : entity.address}
+        address={entity.address}
       />
     )
   }
