@@ -40,6 +40,7 @@ class App extends React.Component {
     //  - DAO_CREATION_STATUS_ERROR
     daoCreationStatus: DAO_CREATION_STATUS_NONE,
     fatalError: null,
+    identityAddress: null,
     localIdentities: {},
     locator: {},
     permissions: {},
@@ -242,13 +243,13 @@ class App extends React.Component {
       },
       onLocalIdentities: localIdentities => {
         log('local identities', localIdentities)
-        // { address1: { metadataObject } }
         this.setState({ localIdentities })
       },
-      onIdentityIntent: ({ address, provider }) => {
+      onIdentityIntent: ({ address, providerName }) => {
         // callback for both iframe and native apps
-        if (provider === 'local') {
-          // TODO set the state for modifying a specific address identity
+        if (providerName === 'local') {
+          // set the state for modifying a specific address identity
+          this.setState({ identityAddress: address })
         }
       },
     })
@@ -271,6 +272,24 @@ class App extends React.Component {
     }, 1000)
   }
 
+  handleIdentityCancel = () => {
+    this.setState({ identityAddress: null })
+  }
+
+  handleIdentitySave = ({ address, label }) => {
+    // TODO rename label to metadata
+    this.wrapper
+      .modifyAddressIdentity(address, label)
+      .then(result => {
+        return console.log(result)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    this.setState({ identityAddress: null })
+  }
+
   handleCompleteOnboarding = () => {
     const { domain } = this.state.buildData
     this.historyPush(`/${domain}`)
@@ -289,6 +308,7 @@ class App extends React.Component {
       daoAddress,
       daoCreationStatus,
       fatalError,
+      identityAddress,
       localIdentities,
       locator,
       permissions,
@@ -329,8 +349,11 @@ class App extends React.Component {
               banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
               connected={connected}
               daoAddress={daoAddress}
+              onIdentityCancel={this.handleIdentityCancel}
+              onIdentitySave={this.handleIdentitySave}
               historyBack={this.historyBack}
               historyPush={this.historyPush}
+              identityAddress={identityAddress}
               localIdentities={localIdentities}
               locator={locator}
               onRequestAppsReload={this.handleRequestAppsReload}
