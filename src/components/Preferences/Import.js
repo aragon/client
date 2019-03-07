@@ -24,6 +24,8 @@ const fileImport = cb => file => {
     const list = JSON.parse(event.target.result)
     if (verifyCustomLabelObject(list)) {
       removeAll()
+      window.post &&
+        window.post({ from: 'wrapper', name: 'removeCustomLabels' })
       list.forEach(({ address, label }) => set({ address, label }))
     }
     cb()
