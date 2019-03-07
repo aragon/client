@@ -284,13 +284,13 @@ class App extends React.Component {
     this.state.wrapper
       .modifyAddressIdentity(address, { name: label })
       .then(result => {
-        return console.log(result)
+        return this.setState({
+          identityAddress: null,
+        })
       })
       .catch(err => {
         console.log(err)
       })
-
-    this.setState({ identityAddress: null })
   }
 
   handleCompleteOnboarding = () => {

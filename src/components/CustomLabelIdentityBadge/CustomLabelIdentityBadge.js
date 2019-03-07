@@ -5,18 +5,13 @@ import { Badge, IdentityBadge, font } from '@aragon/ui'
 import { CustomLabelModalContext } from '../../components/CustomLabelModal/CustomLabelModalManager'
 import { LocalIdentityContext } from '../../components/LocalIdentityManager/LocalIdentityManager'
 
-const resolve = localIdentities => address => localIdentities[address] || false
+const resolve = localIdentities => property => address =>
+  (localIdentities[address] && localIdentities[address][property]) || false
 
 const CustomLabelIdentityBadge = ({ address, ...props }) => {
   const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
   const { localIdentities } = React.useContext(LocalIdentityContext)
-  console.log('CustomLabelIdentityBadge', localIdentities)
-  const resolveAddress = resolve(localIdentities)
-
-  const [label, setLabel] = React.useState(resolveAddress(address))
-  React.useEffect(() => setLabel(resolveAddress(address)), [
-    resolveAddress(address),
-  ])
+  const label = resolve(localIdentities)('name')(address)
 
   return (
     <IdentityBadge
