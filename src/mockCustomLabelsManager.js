@@ -35,6 +35,7 @@ const update = ({ address, label }) => {
 
 const removeAll = () => {
   labels.update([])
+  window.post && window.post({ from: 'wrapper', name: 'removeCustomLabels' })
 }
 
 const remove = address => {
@@ -51,6 +52,8 @@ const set = ({ address, label }) => {
   const list = labels.getItems()
   const item = list.find(find(address))
   item ? update({ address, label }) : add({ address, label })
+  window.post &&
+    window.post({ from: 'wrapper', name: 'customLabelsUpdate', address, label })
 }
 
 export { set, resolve, getAll, removeAll, remove }
