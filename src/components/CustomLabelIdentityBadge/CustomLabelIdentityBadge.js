@@ -10,19 +10,25 @@ const resolve = localIdentities => address => localIdentities[address] || false
 const CustomLabelIdentityBadge = ({ address, ...props }) => {
   const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
   const { localIdentities } = React.useContext(LocalIdentityContext)
+  console.log('CustomLabelIdentityBadge', localIdentities)
   const resolveAddress = resolve(localIdentities)
+
+  const [label, setLabel] = React.useState(resolveAddress(address))
+  React.useEffect(() => setLabel(resolveAddress(address)), [
+    resolveAddress(address),
+  ])
 
   return (
     <IdentityBadge
       {...props}
-      customLabel={resolveAddress(address) || ''}
+      customLabel={label || ''}
       address={address}
       popoverAction={{
-        label: `${resolveAddress(address) ? 'Edit' : 'Add'} custom label`,
+        label: `${label ? 'Edit' : 'Add'} custom label`,
         onClick: () => showCustomLabelModal(address),
-        title: resolveAddress(address) ? (
+        title: label ? (
           <Wrap>
-            <Address>{resolveAddress(address)}</Address>
+            <Address>{label}</Address>
             <StyledBadge>Custom label</StyledBadge>
           </Wrap>
         ) : (

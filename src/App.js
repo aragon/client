@@ -278,7 +278,8 @@ class App extends React.Component {
 
   handleIdentitySave = ({ address, label }) => {
     // TODO rename label to metadata
-    this.wrapper
+    console.log(`handleIdentitySave: ${address} ${label}`)
+    this.state.wrapper
       .modifyAddressIdentity(address, label)
       .then(result => {
         return console.log(result)
