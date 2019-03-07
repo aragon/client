@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, Viewport } from '@aragon/ui'
-import IdentityBadge from '../../components/IdentityBadge'
+import CustomLabelIdentityBadge from '../../components/CustomLabelIdentityBadge/CustomLabelIdentityBadge'
 import { EthereumAddressType } from '../../prop-types'
 
 const NavigationItem = ({ title, badge, address, entity }) => {
@@ -13,7 +13,8 @@ const NavigationItem = ({ title, badge, address, entity }) => {
         <Main>
           <Title>{title}</Title>
           {above('medium') && isEntity && (
-            <IdentityBadge
+            <CustomLabelIdentityBadge
+              address={address}
               entity={entity && entity.type === 'any' ? 'Any account' : address}
             />
           )}
