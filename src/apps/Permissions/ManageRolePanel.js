@@ -9,7 +9,7 @@ import {
   Button,
   breakpoint,
 } from '@aragon/ui'
-import IdentityBadge from '../../components/IdentityBadge'
+import CustomLabelIdentityBadge from '../../components/CustomLabelIdentityBadge/CustomLabelIdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
 import { AppType } from '../../prop-types'
@@ -246,10 +246,12 @@ class ManageRolePanel extends React.PureComponent {
         <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
       )
     }
-    if (manager.type === 'burn') {
-      return <IdentityBadge entity="Discarded" />
-    }
-    return <IdentityBadge entity={manager.address} />
+    return (
+      <CustomLabelIdentityBadge
+        address={manager.address}
+        entity={manager.type === 'burn' ? 'Discarded' : manager.address}
+      />
+    )
   }
 
   render() {
