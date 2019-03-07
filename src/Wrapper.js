@@ -218,6 +218,7 @@ class Wrapper extends React.PureComponent {
       walletNetwork,
       walletProviderId,
       walletWeb3,
+      wrapper,
     } = this.props
     const {
       menuPanelOpened,
@@ -236,6 +237,7 @@ class Wrapper extends React.PureComponent {
               localIdentities={localIdentities}
               opened={preferencesOpened}
               onClose={this.handleClosePreferences}
+              wrapper={wrapper}
             />
             <CustomLabelModal
               address={identityAddress}

@@ -14,28 +14,27 @@ import {
 } from '@aragon/ui'
 import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
 import { LocalIdentityContext } from '../../components/LocalIdentityManager/LocalIdentityManager'
-
-import { getAll, resolve } from '../../mockCustomLabelsManager'
+import { log } from '../../utils'
+// import { getAll, resolve } from '../../mockCustomLabelsManager'
 import EmptyCustomLabels from './EmptyCustomLabels'
 import Import from './Import'
 
-const CustomLabels = () => {
+const CustomLabels = ({ wrapper }) => {
   const { localIdentities } = React.useContext(LocalIdentityContext)
-  // const [list, setList] = React.useState(getAll())
 
-  // TODO transform localIdentities from object into sorted array
-  const list = Object.keys(localIdentities).map(address => {
+  // transform localIdentities from object into sorted array
+  const identities = Object.keys(localIdentities).map(address => {
     return Object.assign({}, localIdentities[address], { address })
   })
 
   const handleClearAll = () => {
-    console.log('handleClearAll')
-    // TODO clear local identities
-    // removeAll()
-    // setList([])
+    wrapper
+      .clearLocalIdentities()
+      .then(() => console.log('identities cleared'))
+      .catch(err => log('handleClearAll failed', err))
   }
   const handleImport = () => {
-    console.log('handleImport')
+    log('handleImport')
     // setList(getAll())
     // TODO Check with Jouni/Paty -
     // TODO iterate and call modify for each imported
@@ -44,25 +43,29 @@ const CustomLabels = () => {
 
   return (
     <React.Fragment>
-      <Labels list={list} clearAll={handleClearAll} onImport={handleImport} />
+      <Labels
+        identities={identities}
+        clearAll={handleClearAll}
+        onImport={handleImport}
+      />
       <Warning />
     </React.Fragment>
   )
 }
 
 CustomLabels.propTypes = {
-  localIdentities: PropTypes.object,
+  wrapper: PropTypes.object.isRequired,
 }
 
-const Labels = ({ clearAll, list, onImport }) => {
-  if (!list.length) {
+const Labels = ({ clearAll, identities, onImport }) => {
+  if (!identities.length) {
     return <EmptyCustomLabels onImport={onImport} />
   }
   const updateLabel = (fn, address) => () => {
     fn(address)
   }
   const href = window.URL.createObjectURL(
-    new Blob([JSON.stringify(getAll())], { type: 'text/json' })
+    new Blob([JSON.stringify(identities)], { type: 'text/json' })
   )
   // Mar 01 2019
   const today = format(Date.now(), 'MMM dd yyyy')
@@ -75,14 +78,14 @@ const Labels = ({ clearAll, list, onImport }) => {
         <div>Address</div>
       </Headers>
       <List>
-        {list.map(({ address }) => (
+        {identities.map(({ address, name }) => (
           <Item key={address}>
-            <Label>{resolve(address)}</Label>
+            <Label>{name}</Label>
             <div>
               <IdentityBadge
                 entity={address}
                 popoverAction={{
-                  title: <PopoverActionTitle address={address} />,
+                  title: <PopoverActionTitle address={address} name={name} />,
                   label: 'Edit custom label',
                   onClick: updateLabel(showCustomLabelModal, address),
                 }}
@@ -110,19 +113,19 @@ const Labels = ({ clearAll, list, onImport }) => {
 }
 
 Labels.defaultProps = {
-  list: [],
+  identities: [],
 }
 
 Labels.propTypes = {
-  list: PropTypes.array,
+  identities: PropTypes.array,
   clearAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
 }
 
-const PopoverActionTitle = ({ address }) => {
+const PopoverActionTitle = ({ address, name }) => {
   return (
     <WrapTitle>
-      <TitleLabel>{resolve(address)}</TitleLabel>
+      <TitleLabel>{name}</TitleLabel>
       <Badge
         css={`
           margin-left: 16px;
