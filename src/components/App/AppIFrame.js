@@ -70,6 +70,9 @@ class AppIFrame extends React.Component {
   componentDidMount() {
     window.addEventListener('message', this.handleReceiveMessage, false)
     this.navigateIFrame(this.props.app.src)
+
+    // remove me
+    window.post = this.sendMessage
   }
   componentWillReceiveProps(nextProps) {
     const { app: nextApp } = nextProps
@@ -165,18 +168,11 @@ class AppIFrame extends React.Component {
       // We can't use event.origin as it's always null due to the origin sandboxing
       event.source === this.iframe.contentWindow
     ) {
-      console.log('handleReceiveMessage: ', event.data.name)
       event.data.name === 'showCustomLabelModal'
         ? this.props.onShowCustomLabelModal(event.data.value)
         : event.data.name === 'resolveCustomLabel'
         ? (() => {
-            console.log('resolveCustomLabel: ', event.data)
             if (event.data.value) {
-              console.log(
-                'resolving, ',
-                event.data.value,
-                resolve(event.data.value)
-              )
               this.iframe.contentWindow.postMessage(
                 {
                   from: 'wrapper',
