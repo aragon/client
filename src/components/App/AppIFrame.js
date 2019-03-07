@@ -6,7 +6,7 @@ import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
 import { CustomLabelModalConsumer } from '../CustomLabelModal/CustomLabelModalManager'
-import { getAll } from '../../mockCustomLabelsManager'
+import { resolve } from '../../mockCustomLabelsManager'
 
 const LOADING_START = 25 // Start loading indicator at 25%
 const LOADING_END = 100
@@ -168,13 +168,25 @@ class AppIFrame extends React.Component {
       console.log('handleReceiveMessage: ', event.data.name)
       event.data.name === 'showCustomLabelModal'
         ? this.props.onShowCustomLabelModal(event.data.value)
-        : event.data.name === 'getAllCustomLabels'
+        : event.data.name === 'resolveCustomLabel'
         ? (() => {
-            console.log('sending getAll, ', getAll())
-            this.iframe.contentWindow.postMessage(
-              { from: 'wrapper', name: 'allCustomLabels', labels: getAll() },
-              '*'
-            )
+            console.log('resolveCustomLabel: ', event.data)
+            if (event.data.value) {
+              console.log(
+                'resolving, ',
+                event.data.value,
+                resolve(event.data.value)
+              )
+              this.iframe.contentWindow.postMessage(
+                {
+                  from: 'wrapper',
+                  name: 'resolveCustomLabel',
+                  label: resolve(event.data.value),
+                  address: event.data.value,
+                },
+                '*'
+              )
+            }
           })()
         : onMessage(event)
     }
