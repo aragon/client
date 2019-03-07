@@ -2,32 +2,36 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, IdentityBadge, font } from '@aragon/ui'
-import { CustomLabelModalConsumer } from '../../components/CustomLabelModal/CustomLabelModalManager'
-import { resolve } from '../../mockCustomLabelsManager'
+import { CustomLabelModalContext } from '../../components/CustomLabelModal/CustomLabelModalManager'
+import { LocalIdentityContext } from '../../components/LocalIdentityManager/LocalIdentityManager'
 
-const CustomLabelIdentityBadge = ({ address, ...props }) => (
-  <CustomLabelModalConsumer>
-    {({ showCustomLabelModal }) => (
-      <IdentityBadge
-        {...props}
-        customLabel={resolve(address) || ''}
-        address={address}
-        popoverAction={{
-          label: `${resolve(address) ? 'Edit' : 'Add'} custom label`,
-          onClick: () => showCustomLabelModal(address),
-          title: resolve(address) ? (
-            <Wrap>
-              <Address>{resolve(address)}</Address>
-              <StyledBadge>Custom label</StyledBadge>
-            </Wrap>
-          ) : (
-            'Address'
-          ),
-        }}
-      />
-    )}
-  </CustomLabelModalConsumer>
-)
+const resolve = localIdentities => address => localIdentities[address] || false
+
+const CustomLabelIdentityBadge = ({ address, ...props }) => {
+  const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
+  const { localIdentities } = React.useContext(LocalIdentityContext)
+  const resolveAddress = resolve(localIdentities)
+
+  return (
+    <IdentityBadge
+      {...props}
+      customLabel={resolveAddress(address) || ''}
+      address={address}
+      popoverAction={{
+        label: `${resolveAddress(address) ? 'Edit' : 'Add'} custom label`,
+        onClick: () => showCustomLabelModal(address),
+        title: resolveAddress(address) ? (
+          <Wrap>
+            <Address>{resolveAddress(address)}</Address>
+            <StyledBadge>Custom label</StyledBadge>
+          </Wrap>
+        ) : (
+          'Address'
+        ),
+      }}
+    />
+  )
+}
 
 CustomLabelIdentityBadge.propTypes = {
   address: PropTypes.string,
