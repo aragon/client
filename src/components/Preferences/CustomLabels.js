@@ -13,11 +13,14 @@ import {
   theme,
 } from '@aragon/ui'
 import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
+import { LocalIdentityContext } from '../../components/LocalIdentityManager/LocalIdentityManager'
+
 import { getAll, resolve } from '../../mockCustomLabelsManager'
 import EmptyCustomLabels from './EmptyCustomLabels'
 import Import from './Import'
 
-const CustomLabels = ({ localIdentities }) => {
+const CustomLabels = () => {
+  const { localIdentities } = React.useContext(LocalIdentityContext)
   // const [list, setList] = React.useState(getAll())
 
   // TODO transform localIdentities from object into sorted array
