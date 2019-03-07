@@ -43,8 +43,11 @@ class Wrapper extends React.PureComponent {
     daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
+    identityAddress: PropTypes.string,
     localIdentities: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
+    onIdentityCancel: PropTypes.func.isRequired,
+    onIdentitySave: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
@@ -69,7 +72,6 @@ class Wrapper extends React.PureComponent {
 
   state = {
     appInstance: {},
-    customLabelAddress: null,
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
     notificationOpen: false,
@@ -165,18 +167,9 @@ class Wrapper extends React.PureComponent {
     }
     this.setState({ preferencesOpened: true })
   }
-  handleOpenCustomLabelModal = customLabelAddress => {
-    // requestModifyAddreess
-    this.setState({ customLabelAddress })
-  }
-  handleCloseCustomLabelModal = () => {
-    this.setState({ customLabelAddress: null })
-  }
-  handleSaveCustomLabelModal = ({ address, label }) => {
-    // TODO implement actual saving logic
-    // this.props.wrapper.modifyAddressIdentity(address, { label })
-    // set({ address, label })
-    this.setState({ customLabelAddress: null })
+  handleOpenCustomLabelModal = identityAddress => {
+    // step 1
+    this.props.wrapper.requestAddressIdentityModification(identityAddress)
   }
   // params need to be a string
   handleParamsRequest = params => {
@@ -212,10 +205,13 @@ class Wrapper extends React.PureComponent {
       banner,
       connected,
       daoAddress,
+      identityAddress,
       localIdentities,
       locator,
       onRequestAppsReload,
       onRequestEnable,
+      onIdentityCancel,
+      onIdentitySave,
       menuSwipeEnabled,
       transactionBag,
       walletNetwork,
@@ -223,7 +219,6 @@ class Wrapper extends React.PureComponent {
       walletWeb3,
     } = this.props
     const {
-      customLabelAddress,
       menuPanelOpened,
       notifications,
       notificationOpen,
@@ -241,11 +236,11 @@ class Wrapper extends React.PureComponent {
             onClose={this.handleClosePreferences}
           />
           <CustomLabelModal
-            address={customLabelAddress}
-            label={resolve(customLabelAddress) || ''}
-            opened={customLabelAddress !== null}
-            onCancel={this.handleCloseCustomLabelModal}
-            onSave={this.handleSaveCustomLabelModal}
+            address={identityAddress}
+            label={resolve(identityAddress) || ''}
+            opened={identityAddress !== null}
+            onCancel={onIdentityCancel}
+            onSave={onIdentitySave}
           />
           <BannerWrapper>{banner}</BannerWrapper>
           <SwipeContainer
