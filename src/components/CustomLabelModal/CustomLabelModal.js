@@ -12,14 +12,10 @@ import {
 import { ModalContext } from '../ModalManager/ModalManager'
 
 const CustomLabelModal = ({ opened, ...props }) => {
-  if (!opened) {
-    return null
-  }
-
-  const { showModal } = React.useContext(ModalContext)
+  const { showModal, hideModal } = React.useContext(ModalContext)
   React.useEffect(() => {
-    showModal(Modal, props)
-  })
+    opened ? showModal(Modal, props) : hideModal()
+  }, [opened])
 
   return null
 }
@@ -29,12 +25,10 @@ CustomLabelModal.propTypes = {
 }
 
 const Modal = ({ address, label, onCancel, onSave }) => {
-  const { hideModal } = React.useContext(ModalContext)
   const action = label && label.trim() ? 'Edit' : 'Add'
   const labelInput = React.useRef(null)
   const handleCancel = () => {
     onCancel()
-    hideModal()
   }
   const [error, setError] = React.useState(null)
   const handleSave = () => {
@@ -42,7 +36,6 @@ const Modal = ({ address, label, onCancel, onSave }) => {
       const label = labelInput.current.value.trim()
       if (label) {
         onSave({ address, label })
-        hideModal()
       }
     } catch (e) {
       setError(e)
