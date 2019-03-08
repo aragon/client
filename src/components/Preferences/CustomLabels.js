@@ -141,6 +141,7 @@ const PopoverActionTitle = ({ address, name }) => {
 
 PopoverActionTitle.propTypes = {
   address: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 }
 
 const Label = styled.div`
