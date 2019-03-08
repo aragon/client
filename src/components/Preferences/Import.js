@@ -4,7 +4,6 @@ import { useDropzone } from 'react-dropzone'
 import { Button } from '@aragon/ui'
 import { isString } from '../../utils'
 import { isAddress } from '../../web3-utils'
-import { set, removeAll } from '../../mockCustomLabelsManager'
 
 // What is the answer to the ultimate question of Life, the Universe, and Everything?
 const MAX_LENGTH = 42
@@ -13,12 +12,13 @@ const verifyCustomLabelObject = obj => {
   return (
     Array.isArray(obj) &&
     obj.every(
-      ({ address, label }) =>
+      ({ address, name, createdAt }) =>
         !!address.trim() &&
-        !!label.trim() &&
+        !!name.trim() &&
+        !!createdAt &&
         isAddress(address) &&
-        isString(label) &&
-        label.length <= MAX_LENGTH
+        isString(name) &&
+        name.length <= MAX_LENGTH
     )
   )
 }
@@ -33,9 +33,7 @@ const fileImport = cb => files => {
     try {
       const list = JSON.parse(event.target.result)
       if (verifyCustomLabelObject(list)) {
-        removeAll()
-        list.forEach(({ address, label }) => set({ address, label }))
-        cb()
+        cb(list)
       } else {
         throw new Error('There was an error reading from the file')
       }
