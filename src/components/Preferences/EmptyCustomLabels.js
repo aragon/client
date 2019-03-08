@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { EthIdenticon, IdentityBadge } from '@aragon/ui'
+import { EthIdenticon, IdentityBadge, breakpoint } from '@aragon/ui'
 import { getEmptyAddress } from '../../web3-utils'
 import Import from './Import'
 
@@ -41,6 +41,13 @@ EmptyCustomLabels.propTypes = {
 
 const Wrap = styled.div`
   padding: 0 16px;
+
+  ${breakpoint(
+    'medium',
+    `
+      padding: 0;
+    `
+  )}
 `
 
 const WrapImport = styled.div`
