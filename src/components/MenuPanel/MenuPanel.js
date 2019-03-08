@@ -124,10 +124,10 @@ class MenuPanel extends React.PureComponent {
           </ConnectionWrapper>
           <StyledPreferencesButton
             mode="outline"
-            label="My preferences"
+            label="Preferences"
             onClick={onOpenPreferences}
           >
-            <IconSettings /> My preferences
+            <IconSettings /> Preferences
           </StyledPreferencesButton>
         </In>
       </Main>
