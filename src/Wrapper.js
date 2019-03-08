@@ -27,7 +27,9 @@ import { staticApps } from './static-apps'
 import { APPS_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
-import { resolve } from './mockCustomLabelsManager'
+
+const resolve = localIdentities => property => address =>
+  (localIdentities[address] && localIdentities[address][property]) || false
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -241,7 +243,7 @@ class Wrapper extends React.PureComponent {
             />
             <CustomLabelModal
               address={identityAddress}
-              label={resolve(identityAddress) || ''}
+              label={resolve(localIdentities)('name')(identityAddress) || ''}
               opened={identityAddress !== null}
               onCancel={onIdentityCancel}
               onSave={onIdentitySave}
