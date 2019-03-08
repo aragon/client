@@ -6,6 +6,7 @@ import { isString } from '../../utils'
 import { isAddress } from '../../web3-utils'
 import { set, removeAll } from '../../mockCustomLabelsManager'
 
+// What is the answer to the ultimate question of Life, the Universe, and Everything?
 const MAX_LENGTH = 42
 
 const verifyCustomLabelObject = obj => {
