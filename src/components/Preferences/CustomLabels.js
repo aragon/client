@@ -15,7 +15,6 @@ import {
 import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
 import { LocalIdentityContext } from '../../components/LocalIdentityManager/LocalIdentityManager'
 import { log } from '../../utils'
-// import { getAll, resolve } from '../../mockCustomLabelsManager'
 import EmptyCustomLabels from './EmptyCustomLabels'
 import Import from './Import'
 
@@ -33,12 +32,15 @@ const CustomLabels = ({ wrapper }) => {
       .then(() => console.log('identities cleared'))
       .catch(err => log('handleClearAll failed', err))
   }
-  const handleImport = () => {
+  const handleImport = list => {
     log('handleImport')
     // setList(getAll())
     // TODO Check with Jouni/Paty -
     // TODO iterate and call modify for each imported
     // modification through the wrapper ->
+    list.forEach(({ name, address }) => {
+      wrapper.modifyAddressIdentity(address, { name })
+    })
   }
 
   return (
