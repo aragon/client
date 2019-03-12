@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-32-orange.svg?style=flat-square)](#contributors)
 
-#### :rocket: Used by over [300 organizations](https://daolist.io/) on the Ethereum mainnet, securing ~$1MM in funds
+#### :rocket: Trusted by over [300 organizations](https://daolist.io/) on mainnet, securing $1MM and growing
 
 <img src=".github/screenshot.png" />
 
