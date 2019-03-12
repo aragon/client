@@ -35,7 +35,6 @@ class RemoteImage extends React.Component {
 
   startLoading() {
     const { src } = this.props
-    console.log(src)
     this.stopLoading()
     this.setState(() => {
       this._img = new Image()
