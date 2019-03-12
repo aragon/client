@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-32-orange.svg?style=flat-square)](#contributors)
 
-#### 🌎🚀 Trusted by over [300 organizations](https://daolist.io/) on mainnet, securing more than $1MM
+#### 🌎🚀 Trusted by over [300 organizations](https://daolist.io/), securing more than $1MM in funds.
 
 <img src=".github/screenshot.png" />
 
