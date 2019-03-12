@@ -73,6 +73,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "john-light",
+      "name": "John Light",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9424721?v=4",
+      "profile": "https://www.lightco.in",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
