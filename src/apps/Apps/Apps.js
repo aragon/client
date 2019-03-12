@@ -14,7 +14,7 @@ import {
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
 
-import defaultIcon from './icons/default.svg'
+import defaultIcon from '../../icons/app-default.svg'
 import payrollIcon from './icons/payroll.svg'
 import espressoIcon from './icons/espresso.svg'
 

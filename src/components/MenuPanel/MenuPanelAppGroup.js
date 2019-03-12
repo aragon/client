@@ -34,6 +34,7 @@ class MenuPanelAppGroup extends React.PureComponent {
     const {
       name,
       icon,
+      system,
       instances,
       activeInstanceId,
       active,
@@ -47,7 +48,7 @@ class MenuPanelAppGroup extends React.PureComponent {
         native
       >
         {({ openProgress }) => (
-          <Main active={active}>
+          <Main active={active} system={system}>
             <ActiveBackground style={{ opacity: Number(active) }} />
 
             <MenuItemBar
@@ -136,9 +137,8 @@ const Main = styled.div`
     margin-right: 15px;
     color: ${({ active }) =>
       active ? theme.textPrimary : theme.textSecondary};
-    & > img {
-      filter: brightness(${({ active }) => (active ? 0 : 100)}%);
-    }
+    filter: ${({ system }) =>
+      system ? `brightness(${({ active }) => (active ? 0 : 100)}%)` : 'none'};
   }
   .instances {
     overflow: hidden;

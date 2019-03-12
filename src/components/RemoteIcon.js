@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { IconBlank } from '@aragon/ui'
+import IconDefault from '../icons/app-default.svg'
 import RemoteImage from './RemoteImage'
 
 // Tries to load an image for an icon, while displaying a blank icon.
@@ -35,7 +35,7 @@ class RemoteIcon extends React.Component {
           exists ? (
             renderIcon({ src, alt, size })
           ) : (
-            <IconBlank width={size} height={size} />
+            <img src={IconDefault} width={size} height={size} />
           )
         }
       </RemoteImage>
