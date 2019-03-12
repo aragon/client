@@ -37,8 +37,6 @@ const prepareAppGroups = apps =>
       return groups
     }
 
-    console.log(app)
-
     return groups.concat([
       {
         appId: app.appId,
