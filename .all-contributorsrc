@@ -8,6 +8,16 @@
   ],
   "imageSize": 75,
   "commit": true,
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "bpierre",
+      "name": "Pierre Bertet",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/36158?v=4",
+      "profile": "https://pierre.world/",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
   "contributorsPerLine": 7
 }
