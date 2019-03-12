@@ -12,7 +12,7 @@ All members of our community are expected to follow our [Code of Conduct](https:
 
 Unsure where to begin contributing to Aragon?
 
-You can start with a [Good First Issue](https://github.com/aragon/aragon/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+You can start with a [Good First Issue](https://github.com/aragon/aragon/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
 > Good first issues are usually for small features, additional tests, spelling / grammar fixes, formatting changes, or other clean up.
 
