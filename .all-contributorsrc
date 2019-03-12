@@ -83,6 +83,15 @@
         "doc",
         "bug"
       ]
+    },
+    {
+      "login": "drcmda",
+      "name": "Paul Henschel",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2223602?v=4",
+      "profile": "https://twitter.com/0xca0a",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
