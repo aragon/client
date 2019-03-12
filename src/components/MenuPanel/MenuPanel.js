@@ -76,13 +76,9 @@ class MenuPanel extends React.PureComponent {
     } = this.props
     const appGroups = this.getAppGroups(apps)
 
-    const menuApps = [
-      APP_HOME,
-      appGroups,
-      APP_PERMISSIONS,
-      APP_APPS_CENTER,
-      APP_SETTINGS,
-    ]
+    const menuApps = [APP_HOME, appGroups]
+
+    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_SETTINGS]
 
     return (
       <Main>
@@ -110,6 +106,8 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
+              <h1 style={{ marginTop: '24px' }}>System</h1>
+              <div>{systemApps.map(app => this.renderAppGroup(app, true))}</div>
             </div>
           </Content>
           <ConnectionWrapper>
@@ -123,7 +121,7 @@ class MenuPanel extends React.PureComponent {
     )
   }
 
-  renderAppGroup(app) {
+  renderAppGroup(app, isSystem) {
     const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances = [] } = app
@@ -137,6 +135,7 @@ class MenuPanel extends React.PureComponent {
         <MenuPanelAppGroup
           name={name}
           icon={icon}
+          system={isSystem}
           instances={instances}
           active={isActive}
           expand={isActive}

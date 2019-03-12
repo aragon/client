@@ -13,6 +13,7 @@ class MenuPanelAppGroup extends React.PureComponent {
     activeInstanceId: PropTypes.string,
     expand: PropTypes.bool.isRequired,
     icon: PropTypes.object.isRequired,
+    system: PropTypes.bool,
     instances: PropTypes.array.isRequired,
     name: PropTypes.string.isRequired,
     onActivate: PropTypes.func.isRequired,
@@ -34,6 +35,7 @@ class MenuPanelAppGroup extends React.PureComponent {
     const {
       name,
       icon,
+      system,
       instances,
       activeInstanceId,
       active,
@@ -47,7 +49,7 @@ class MenuPanelAppGroup extends React.PureComponent {
         native
       >
         {({ openProgress }) => (
-          <Main active={active}>
+          <Main active={active} system={system}>
             <ActiveBackground style={{ opacity: Number(active) }} />
 
             <MenuItemBar
@@ -136,8 +138,11 @@ const Main = styled.div`
     margin-right: 15px;
     color: ${({ active }) =>
       active ? theme.textPrimary : theme.textSecondary};
+    filter: ${({ system }) =>
+      system ? `brightness(${({ active }) => (active ? 0 : 100)}%)` : 'none'};
+
     & > img {
-      filter: brightness(${({ active }) => (active ? 0 : 100)}%);
+      border-radius: 5px;
     }
   }
   .instances {
