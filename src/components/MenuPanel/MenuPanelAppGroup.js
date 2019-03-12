@@ -13,6 +13,7 @@ class MenuPanelAppGroup extends React.PureComponent {
     activeInstanceId: PropTypes.string,
     expand: PropTypes.bool.isRequired,
     icon: PropTypes.object.isRequired,
+    system: PropTypes.bool,
     instances: PropTypes.array.isRequired,
     name: PropTypes.string.isRequired,
     onActivate: PropTypes.func.isRequired,
@@ -139,6 +140,10 @@ const Main = styled.div`
       active ? theme.textPrimary : theme.textSecondary};
     filter: ${({ system }) =>
       system ? `brightness(${({ active }) => (active ? 0 : 100)}%)` : 'none'};
+
+    & > img {
+      border-radius: 5px;
+    }
   }
   .instances {
     overflow: hidden;
