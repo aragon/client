@@ -210,6 +210,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "stellarmagnet",
+      "name": "Yalda Mousavinia",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2584493?v=4",
+      "profile": "http://spacedecentral.net",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
