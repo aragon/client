@@ -5,7 +5,7 @@
 
 ## :rocket: Used by over [300 organizations](https://daolist.io/) on the Ethereum mainnet
 
-<img src="./github/screenshot.png" />
+<img src=".github/screenshot.png" />
 
 ##### 📚 Read the [User Guide](https://wiki.aragon.org/tutorials/Aragon_User_Guide/) first, if you have any questions as a user.
 ##### 💻 You may be interested in [Aragon Desktop](https://github.com/aragon/aragon-desktop/), the most decentralized Aragon experience to date.
