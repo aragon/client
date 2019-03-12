@@ -7,12 +7,23 @@
 
 <img src=".github/screenshot.png" />
 
-##### 📚 Read the [User Guide](https://wiki.aragon.org/tutorials/Aragon_User_Guide/) first, if you have any questions as a user.
-##### 💻 You may be interested in [Aragon Desktop](https://github.com/aragon/aragon-desktop/), the most decentralized Aragon experience to date.
-##### 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
-##### 📝 Please report any issues and feedback in the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.
-##### 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat/channel/dev) channel.
-##### 🦋 For an overview of what changed with each release, check the [releases](https://github.com/aragon/aragon/releases) and [changelog](https://github.com/aragon/aragon/blob/master/changelog.md).
+- 📚 Read the [User Guide](https://wiki.aragon.org/tutorials/Aragon_User_Guide/) first, if you have any questions as a user.
+- 💻 You may be interested in [Aragon Desktop](https://github.com/aragon/aragon-desktop/), the most decentralized Aragon experience to date.
+- 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
+- 📝 Please report any issues and feedback in the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.
+- 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat/channel/dev) channel.
+- 🦋 For an overview of what changed with each release, check the [releases](https://github.com/aragon/aragon/releases) and [changelog](https://github.com/aragon/aragon/blob/master/changelog.md).
+
+## Quick start
+
+`npm start` will launch the app, configured to connect to our Rinkeby deployment.
+
+For connecting to other chains / deployments, a few useful npm scripts are provided:
+
+- Mainnet: `npm run start:mainnet` will launch the app, configured to connect to our mainnet deployment
+- Local development: `npm run start:local` will launch the app, configured to connect to our [aragen](https://github.com/aragon/aragen) local development environment. It will also use the local IPFS daemon, if it detects one exists. If you're using the [aragonCLI](http://github.com/aragon/aragon-cli), you'll want to run this to connect to its local chain.
+
+**Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
 
 ## Contributing
 
@@ -29,17 +40,6 @@ If you come across an issue with Aragon, do a search in the [Issues](https://git
 - If the issue you found has been reported and is still open, and the details match your issue, give a "thumbs up" to the relevant posts in the issue thread to signal that you have the same issue. No further action is required on your part.
 - If the issue you found has been reported and is still open, but the issue is missing some details, you can add a comment to the issue thread describing the additional details.
 - If the issue you found has been reported but has been closed, you can comment on the closed issue thread and ask to have the issue reopened because you are still experiencing the issue. Alternatively, you can open a new issue, reference the closed issue by number or link, and state that you are still experiencing the issue. Provide any additional details in your post so we can better understand the issue and how to fix it.
-
-## Quick start
-
-`npm start` will launch the app, configured to connect to our Rinkeby deployment.
-
-For connecting to other chains / deployments, a few useful npm scripts are provided:
-
-- Mainnet: `npm run start:mainnet` will launch the app, configured to connect to our mainnet deployment
-- Local development: `npm run start:local` will launch the app, configured to connect to our [aragen](https://github.com/aragon/aragen) local development environment. It will also use the local IPFS daemon, if it detects one exists. If you're using the [aragonCLI](http://github.com/aragon/aragon-cli), you'll want to run this to connect to its local chain.
-
-**Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
 
 ## Environment options
 
