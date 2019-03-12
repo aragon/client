@@ -183,6 +183,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "PascalPrecht",
+      "name": "Pascal Precht",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/445106?v=4",
+      "profile": "https://pascalprecht.github.io",
+      "contributions": [
+        "tool"
+      ]
     }
   ],
   "contributorsPerLine": 7
