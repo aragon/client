@@ -3,15 +3,32 @@
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-32-orange.svg?style=flat-square)](#contributors)
 
-#### 📝 Please report support and feedback related issues at the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.
-#### 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat/channel/dev) channel.
-#### 🦋 For an overview of what changed in every version check the [changelog](https://github.com/aragon/aragon/blob/master/changelog.md).
+## :rocket: Used by over [300 organizations](https://daolist.io/) on the Ethereum mainnet
+
+<img src="./github/screenshot.png" />
+
+##### 📚 Read the [User Guide](https://wiki.aragon.org/tutorials/Aragon_User_Guide/) first, if you have any questions as a user.
+##### 💻 You may be interested in [Aragon Desktop](https://github.com/aragon/aragon-desktop/), the most decentralized Aragon experience to date.
+##### 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
+##### 📝 Please report any issues and feedback in the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.
+##### 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat/channel/dev) channel.
+##### 🦋 For an overview of what changed with each release, check the [releases](https://github.com/aragon/aragon/releases) and [changelog](https://github.com/aragon/aragon/blob/master/changelog.md).
 
 ## Contributing
 
-Please note that all of the code is still undocumented, and no contribution guidelines are in place.
+#### 👋 Get started contributing with a [good first issue](https://github.com/aragon/aragon/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
-Contributions are welcome, just beware of the dragons. 🐲
+Don't be shy to contribute even the smallest tweak. 🐲 There are still some dragons to be aware of, but we'll be here to help you get started!
+
+For more details about contributing to Aragon, please check the [contributing guide](./CONTRIBUTING.md).
+
+#### Issues
+
+If you come across an issue with Aragon, do a search in the [Issues](https://github.com/aragon/aragon/issues?utf8=%E2%9C%93&q=is%3Aissue) tab of this repo and the [Aragon Apps Issues](https://github.com/aragon/aragon-apps/issues?utf8=%E2%9C%93&q=is%3Aissue) to make sure it hasn't been reported before. Follow these steps to help us prevent duplicate issues and unnecessary notifications going to the many people watching this repo:
+
+- If the issue you found has been reported and is still open, and the details match your issue, give a "thumbs up" to the relevant posts in the issue thread to signal that you have the same issue. No further action is required on your part.
+- If the issue you found has been reported and is still open, but the issue is missing some details, you can add a comment to the issue thread describing the additional details.
+- If the issue you found has been reported but has been closed, you can comment on the closed issue thread and ask to have the issue reopened because you are still experiencing the issue. Alternatively, you can open a new issue, reference the closed issue by number or link, and state that you are still experiencing the issue. Provide any additional details in your post so we can better understand the issue and how to fix it.
 
 ## Quick start
 
@@ -20,7 +37,7 @@ Contributions are welcome, just beware of the dragons. 🐲
 For connecting to other chains / deployments, a few useful npm scripts are provided:
 
 - Mainnet: `npm run start:mainnet` will launch the app, configured to connect to our mainnet deployment
-- Local development: `npm run start:local` will launch the app, configured to connect to our [aragen](https://github.com/aragon/aragen) local development environment. It will also use the local IPFS daemon, if it detects one exists.
+- Local development: `npm run start:local` will launch the app, configured to connect to our [aragen](https://github.com/aragon/aragen) local development environment. It will also use the local IPFS daemon, if it detects one exists. If you're using the [aragonCLI](http://github.com/aragon/aragon-cli), you'll want to run this to connect to its local chain.
 
 **Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
 
@@ -36,14 +53,6 @@ The app can be configured in a number of ways via environment variables:
 - `REACT_APP_ASSET_BRIDGE`: Which source to load app frontend assets from. Can be one of `ipfs` (uses the configured IPFS gateway) or `local` (local development servers, running on `localhost:300x`). If you intend to serve assets from a local IPFS daemon, you should set this to `ipfs`.
 
 Without any settings, the app is configured to connect to our Rinkeby deployment fetching assets from IPFS.
-
-## Issues
-
-If you come across an issue with Aragon, do a search in the [Issues](https://github.com/aragon/aragon/issues?utf8=%E2%9C%93&q=is%3Aissue) tab of this repo and the [Aragon Apps Issues](https://github.com/aragon/aragon-apps/issues?utf8=%E2%9C%93&q=is%3Aissue) to make sure it hasn't been reported before. Follow these steps to help us prevent duplicate issues and unnecessary notifications going to the many people watching this repo:
-
-- If the issue you found has been reported and is still open, and the details match your issue, give a "thumbs up" to the relevant posts in the issue thread to signal that you have the same issue. No further action is required on your part.
-- If the issue you found has been reported and is still open, but the issue is missing some details, you can add a comment to the issue thread describing the additional details.
-- If the issue you found has been reported but has been closed, you can comment on the closed issue thread and ask to have the issue reopened because you are still experiencing the issue. Alternatively, you can open a new issue, reference the closed issue by number or link, and state that you are still experiencing the issue. Provide any additional details in your post so we can better understand the issue and how to fix it.
 
 ## Contributors
 
