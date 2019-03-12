@@ -192,6 +192,15 @@
       "contributions": [
         "tool"
       ]
+    },
+    {
+      "login": "rudygodoy",
+      "name": "Rudy Godoy",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2400137?v=4",
+      "profile": "https://rudygodoy.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
