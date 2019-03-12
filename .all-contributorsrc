@@ -35,6 +35,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "izqui",
+      "name": "Jorge Izquierdo",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/447328?v=4",
+      "profile": "http://izqui.me",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
