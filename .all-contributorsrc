@@ -75,6 +75,15 @@
       ]
     },
     {
+      "login": "2color",
+      "name": "Daniel Norman",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1992255?v=4",
+      "profile": "http://2color.me",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "john-light",
       "name": "John Light",
       "avatar_url": "https://avatars1.githubusercontent.com/u/9424721?v=4",
@@ -82,6 +91,62 @@
       "contributions": [
         "doc",
         "bug"
+      ]
+    },
+    {
+      "login": "Smokyish",
+      "name": "Tatu",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/21331903?v=4",
+      "profile": "https://github.com/Smokyish",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "dizzypaty",
+      "name": "Patricia Davila",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7205369?v=4",
+      "profile": "https://github.com/dizzypaty",
+      "contributions": [
+        "design",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "jounih",
+      "name": "Jouni Helminen",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10109867?v=4",
+      "profile": "https://github.com/jounih",
+      "contributions": [
+        "design",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "lkngtn",
+      "name": "Luke Duncan",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4986634?v=4",
+      "profile": "https://github.com/lkngtn",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "0x6431346e",
+      "name": "Daniel Constantin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/26041347?v=4",
+      "profile": "http://danielconstantin.net/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ewingrj",
+      "name": "RJ Ewing",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/30963004?v=4",
+      "profile": "https://rjewing.com",
+      "contributions": [
+        "code"
       ]
     },
     {
@@ -148,24 +213,6 @@
       ]
     },
     {
-      "login": "0x6431346e",
-      "name": "Daniel Constantin",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/26041347?v=4",
-      "profile": "http://danielconstantin.net/",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "2color",
-      "name": "Daniel Norman",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/1992255?v=4",
-      "profile": "http://2color.me",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
       "login": "deamme",
       "name": "Deam",
       "avatar_url": "https://avatars2.githubusercontent.com/u/9392750?v=4",
@@ -207,15 +254,6 @@
       "name": "Rudy Godoy",
       "avatar_url": "https://avatars2.githubusercontent.com/u/2400137?v=4",
       "profile": "https://rudygodoy.com",
-      "contributions": [
-        "doc"
-      ]
-    },
-    {
-      "login": "Smokyish",
-      "name": "Tatu",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/21331903?v=4",
-      "profile": "https://github.com/Smokyish",
       "contributions": [
         "doc"
       ]
@@ -263,44 +301,6 @@
       "profile": "https://github.com/mul53",
       "contributions": [
         "code"
-      ]
-    },
-    {
-      "login": "ewingrj",
-      "name": "RJ Ewing",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/30963004?v=4",
-      "profile": "https://rjewing.com",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "dizzypaty",
-      "name": "Patricia Davila",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/7205369?v=4",
-      "profile": "https://github.com/dizzypaty",
-      "contributions": [
-        "design",
-        "userTesting"
-      ]
-    },
-    {
-      "login": "jounih",
-      "name": "Jouni Helminen",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/10109867?v=4",
-      "profile": "https://github.com/jounih",
-      "contributions": [
-        "design",
-        "userTesting"
-      ]
-    },
-    {
-      "login": "lkngtn",
-      "name": "Luke Duncan",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/4986634?v=4",
-      "profile": "https://github.com/lkngtn",
-      "contributions": [
-        "ideas"
       ]
     }
   ],
