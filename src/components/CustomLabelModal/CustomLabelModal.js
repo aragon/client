@@ -10,6 +10,7 @@ import {
   theme,
 } from '@aragon/ui'
 import { ModalContext } from '../ModalManager/ModalManager'
+import EscapeOutside from '../EscapeOutside/EscapeOutside'
 
 const CustomLabelModal = ({ opened, ...props }) => {
   const { showModal, hideModal } = React.useContext(ModalContext)
@@ -41,29 +42,41 @@ const Modal = ({ address, label, onCancel, onSave }) => {
       setError(e)
     }
   }
+  React.useEffect(() => {
+    const handleKeyUp = e => e.keyCode === 13 && handleSave()
+    window.addEventListener('keyup', handleKeyUp, true)
+    return () => window.removeEventListener('keyup', handleKeyUp)
+  }, [])
 
   return (
-    <Wrap>
-      <Title>{action} custom label</Title>
-      <Description>
-        This label would be displayed instead of the following address and only
-        be <span>stored on this device</span>.
-      </Description>
-      <IdentityBadge address={address} entity={address} />
-      <Label>
-        <div>Custom Label</div>
-        <TextInput wide defaultValue={label} ref={labelInput} maxLength="42" />
-        <Error>{error}</Error>
-      </Label>
-      <Controls>
-        <Button mode="secondary" onClick={handleCancel}>
-          Cancel
-        </Button>
-        <StyledSaveButton mode="strong" onClick={handleSave}>
-          Save
-        </StyledSaveButton>
-      </Controls>
-    </Wrap>
+    <EscapeOutside onEscapeOutside={onCancel}>
+      <Wrap>
+        <Title>{action} custom label</Title>
+        <Description>
+          This label would be displayed instead of the following address and
+          only be <span>stored on this device</span>.
+        </Description>
+        <IdentityBadge address={address} entity={address} />
+        <Label>
+          <div>Custom Label</div>
+          <TextInput
+            wide
+            defaultValue={label}
+            ref={labelInput}
+            maxLength="42"
+          />
+          <Error>{error}</Error>
+        </Label>
+        <Controls>
+          <Button mode="secondary" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <StyledSaveButton mode="strong" onClick={handleSave}>
+            Save
+          </StyledSaveButton>
+        </Controls>
+      </Wrap>
+    </EscapeOutside>
   )
 }
 
