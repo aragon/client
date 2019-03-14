@@ -21,15 +21,17 @@ const CustomLabelIdentityBadge = ({ address, ...props }) => {
       popoverAction={{
         label: `${label ? 'Edit' : 'Add'} custom label`,
         onClick: () => showCustomLabelModal(address),
-        title: label ? (
+      }}
+      popoverTitle={
+        label ? (
           <Wrap>
             <Address>{label}</Address>
             <StyledBadge>Custom label</StyledBadge>
           </Wrap>
         ) : (
           'Address'
-        ),
-      }}
+        )
+      }
     />
   )
 }
