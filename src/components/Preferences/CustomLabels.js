@@ -87,10 +87,12 @@ const Labels = ({ clearAll, identities, onImport }) => {
               <IdentityBadge
                 entity={address}
                 popoverAction={{
-                  title: <PopoverActionTitle address={address} name={name} />,
                   label: 'Edit custom label',
                   onClick: updateLabel(showCustomLabelModal, address),
                 }}
+                popoverTitle={
+                  <PopoverActionTitle address={address} name={name} />
+                }
               />
             </div>
           </Item>
