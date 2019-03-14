@@ -6,7 +6,7 @@ export const KnownOrganizations = {
   main: new Map([
     // meloncouncil.eth
     [
-      '0x2ae0aa6976112b3a3227aa5df4b1beee2ea4aab6',
+      '0xfe1f2de598f42ce67bb9aad5ad473f0272d09b74',
       { name: 'Melon Council', image: melonCouncilImage },
     ],
 
