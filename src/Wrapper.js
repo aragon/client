@@ -130,8 +130,14 @@ class Wrapper extends React.PureComponent {
     this.sendDisplayMenuButtonStatus()
   }
   handleAppMessage = ({ data: { name, value } }) => {
-    if (name === 'menuPanel') {
-      this.setState({ menuPanelOpened: Boolean(value) })
+    if (
+      // “menuPanel: Boolean” is deprecated but still supported for a while if
+      // value is `true`.
+      name === 'menuPanel' ||
+      // “requestMenu: true” should now be used.
+      name === 'requestMenu'
+    ) {
+      this.setState({ menuPanelOpened: value === true })
     }
   }
   handleMenuPanelOpen = () => {
