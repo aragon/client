@@ -12,8 +12,6 @@ import SwipeContainer from './components/MenuPanel/SwipeContainer'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import NotificationBar from './components/Notifications/NotificationBar'
-import CustomLabelModal from './components/CustomLabelModal/CustomLabelModal'
-import { CustomLabelModalProvider } from './components/CustomLabelModal/CustomLabelModalManager'
 import {
   AppType,
   AppsStatusType,
@@ -26,9 +24,6 @@ import { staticApps } from './static-apps'
 import { APPS_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
-
-const resolve = localIdentities => property => address =>
-  (localIdentities[address] && localIdentities[address][property]) || false
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -45,11 +40,8 @@ class Wrapper extends React.PureComponent {
     daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
-    identityAddress: PropTypes.string,
     localIdentities: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
-    onIdentityCancel: PropTypes.func.isRequired,
-    onIdentitySave: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
@@ -169,10 +161,6 @@ class Wrapper extends React.PureComponent {
     }
     this.setState({ preferencesOpened: true })
   }
-  handleOpenCustomLabelModal = identityAddress => {
-    // step 1
-    this.props.wrapper.requestAddressIdentityModification(identityAddress)
-  }
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
@@ -207,13 +195,10 @@ class Wrapper extends React.PureComponent {
       banner,
       connected,
       daoAddress,
-      identityAddress,
       localIdentities,
       locator,
       onRequestAppsReload,
       onRequestEnable,
-      onIdentityCancel,
-      onIdentitySave,
       menuSwipeEnabled,
       transactionBag,
       walletNetwork,
@@ -229,100 +214,89 @@ class Wrapper extends React.PureComponent {
     } = this.state
 
     return (
-      <CustomLabelModalProvider
-        onShowCustomLabelModal={this.handleOpenCustomLabelModal}
-      >
-        <Main>
-          <Preferences
-            localIdentities={localIdentities}
-            opened={preferencesOpened}
-            onClose={this.handleClosePreferences}
-            wrapper={wrapper}
-          />
-          <CustomLabelModal
-            address={identityAddress}
-            label={resolve(localIdentities)('name')(identityAddress) || ''}
-            opened={identityAddress !== null}
-            onCancel={onIdentityCancel}
-            onSave={onIdentitySave}
-          />
-          <BannerWrapper>{banner}</BannerWrapper>
-          <SwipeContainer
-            enabled={menuSwipeEnabled}
-            menuPanelOpened={menuPanelOpened}
-            onMenuPanelClose={this.handleMenuPanelClose}
-            onMenuPanelOpen={this.handleMenuPanelOpen}
-          >
-            {progress => (
-              <React.Fragment>
-                <MenuPanel
-                  apps={apps.filter(app => app.hasWebApp)}
-                  appsStatus={appsStatus}
-                  activeInstanceId={locator.instanceId}
-                  connected={connected}
-                  notifications={notifications.length}
-                  daoAddress={daoAddress}
-                  openProgress={progress}
-                  autoClosing={autoClosingPanel}
-                  onOpenApp={this.openApp}
-                  onCloseMenuPanel={this.handleMenuPanelClose}
-                  onOpenPreferences={this.handleOpenPreferences}
-                  onRequestAppsReload={onRequestAppsReload}
-                  onNotificationClicked={this.handleNotificationClicked}
-                  notificationOpen={notificationOpen}
+      <Main>
+        <Preferences
+          localIdentities={localIdentities}
+          opened={preferencesOpened}
+          onClose={this.handleClosePreferences}
+          wrapper={wrapper}
+        />
+        <BannerWrapper>{banner}</BannerWrapper>
+        <SwipeContainer
+          enabled={menuSwipeEnabled}
+          menuPanelOpened={menuPanelOpened}
+          onMenuPanelClose={this.handleMenuPanelClose}
+          onMenuPanelOpen={this.handleMenuPanelOpen}
+        >
+          {progress => (
+            <React.Fragment>
+              <MenuPanel
+                apps={apps.filter(app => app.hasWebApp)}
+                appsStatus={appsStatus}
+                activeInstanceId={locator.instanceId}
+                connected={connected}
+                notifications={notifications.length}
+                daoAddress={daoAddress}
+                openProgress={progress}
+                autoClosing={autoClosingPanel}
+                onOpenApp={this.openApp}
+                onCloseMenuPanel={this.handleMenuPanelClose}
+                onOpenPreferences={this.handleOpenPreferences}
+                onRequestAppsReload={onRequestAppsReload}
+                onNotificationClicked={this.handleNotificationClicked}
+                notificationOpen={notificationOpen}
+              />
+              <AppScreen>
+                <NotificationBar
+                  open={notificationOpen}
+                  notifications={notifications}
+                  onClearAll={this.handleNotificationsCleared}
                 />
-                <AppScreen>
-                  <NotificationBar
-                    open={notificationOpen}
-                    notifications={notifications}
-                    onClearAll={this.handleNotificationsCleared}
-                  />
-                  {this.renderApp(locator.instanceId, locator.params)}
-                </AppScreen>
-              </React.Fragment>
-            )}
-          </SwipeContainer>
-          <SignerPanel
-            account={account}
-            apps={apps}
-            locator={locator}
-            onRequestEnable={onRequestEnable}
-            transactionBag={transactionBag}
-            walletNetwork={walletNetwork}
-            walletProviderId={walletProviderId}
-            walletWeb3={walletWeb3}
-            onTransactionSuccess={({ data, name, description, identifier }) =>
-              this.setState(state => ({
-                queuedNotifications: [
-                  {
-                    id: data,
-                    type: 'transaction',
-                    title: `${name} ${identifier}`,
-                    content: description,
-                  },
-                  ...state.queuedNotifications,
-                ],
-              }))
+                {this.renderApp(locator.instanceId, locator.params)}
+              </AppScreen>
+            </React.Fragment>
+          )}
+        </SwipeContainer>
+        <SignerPanel
+          account={account}
+          apps={apps}
+          locator={locator}
+          onRequestEnable={onRequestEnable}
+          transactionBag={transactionBag}
+          walletNetwork={walletNetwork}
+          walletProviderId={walletProviderId}
+          walletWeb3={walletWeb3}
+          onTransactionSuccess={({ data, name, description, identifier }) =>
+            this.setState(state => ({
+              queuedNotifications: [
+                {
+                  id: data,
+                  type: 'transaction',
+                  title: `${name} ${identifier}`,
+                  content: description,
+                },
+                ...state.queuedNotifications,
+              ],
+            }))
+          }
+          onClose={() => {
+            if (this.state.queuedNotifications.length) {
+              // Wait a little, then update notifications
+              setTimeout(
+                () =>
+                  this.setState(state => ({
+                    queuedNotifications: [],
+                    notifications: [
+                      ...state.queuedNotifications,
+                      ...state.notifications,
+                    ],
+                  })),
+                250
+              )
             }
-            onClose={() => {
-              if (this.state.queuedNotifications.length) {
-                // Wait a little, then update notifications
-                setTimeout(
-                  () =>
-                    this.setState(state => ({
-                      queuedNotifications: [],
-                      notifications: [
-                        ...state.queuedNotifications,
-                        ...state.notifications,
-                      ],
-                    })),
-                  250
-                )
-              }
-            }}
-          />
-        </Main>
-      </CustomLabelModalProvider>
+          }}
+        />
+      </Main>
     )
   }
   renderApp(instanceId, params) {

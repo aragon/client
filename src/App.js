@@ -16,7 +16,9 @@ import { PermissionsProvider } from './contexts/PermissionsContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
-import { LocalIdentityProvider } from './components/LocalIdentityManager/LocalIdentityManager'
+import { IdentityProvider } from './components/IdentityManager/IdentityManager'
+import { CustomLabelModalProvider } from './components/CustomLabelModal/CustomLabelModalManager'
+import CustomLabelModal from './components/CustomLabelModal/CustomLabelModal'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -25,6 +27,9 @@ import {
   DAO_CREATION_STATUS_SUCCESS,
   DAO_CREATION_STATUS_ERROR,
 } from './symbols'
+
+const resolve = (localIdentities, property) => address =>
+  (localIdentities[address] && localIdentities[address][property]) || false
 
 class App extends React.Component {
   state = {
@@ -41,7 +46,7 @@ class App extends React.Component {
     //  - DAO_CREATION_STATUS_ERROR
     daoCreationStatus: DAO_CREATION_STATUS_NONE,
     fatalError: null,
-    identityAddress: null,
+    identityIntent: null,
     localIdentities: {},
     locator: {},
     permissions: {},
@@ -246,11 +251,21 @@ class App extends React.Component {
         log('local identities', localIdentities)
         this.setState({ localIdentities })
       },
-      onIdentityIntent: ({ address, providerName }) => {
+      onIdentityIntent: identityIntent => {
+        console.log('onIdentityIntent: ', identityIntent)
         // callback for both iframe and native apps
-        if (providerName === 'local') {
+        if (identityIntent.providerName === 'local') {
           // set the state for modifying a specific address identity
-          this.setState({ identityAddress: address })
+          this.setState({
+            identityIntent: {
+              resolve: window.rs,
+              reject: window.rj,
+              label: resolve(this.state.localIdentities, 'name')(
+                identityIntent.address
+              ),
+              ...identityIntent,
+            },
+          })
         }
       },
     })
@@ -274,24 +289,33 @@ class App extends React.Component {
   }
 
   handleIdentityCancel = () => {
-    this.setState({ identityAddress: null })
+    this.setState({ identityIntent: null })
+    window.rs = null
+    window.rh = null
   }
 
   handleIdentitySave = ({ address, label }) => {
-    // TODO rename label to name
-    // console.log(`handleIdentitySave: ${address} ${name}`)
-    // console.log(this.state.wrapper.modifyAddressIdentity)
-
+    const { resolve, reject } = this.state.identityIntent
     this.state.wrapper
       .modifyAddressIdentity(address, { name: label })
-      .then(result => {
-        return this.setState({
-          identityAddress: null,
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      .then(() => this.setState({ identityIntent: null }, resolve))
+      .catch(reject)
+    window.rs = null
+    window.rh = null
+  }
+
+  handleIdentityResolve = address => {
+    // console.log('handleIdentityResolve: ', address, this.state.localIdentities)
+    const resolveAddress = localIdentities => address =>
+      localIdentities[address] ? localIdentities[address] : false
+    return new Promise(async (resolve, reject) => {
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      const identity = resolveAddress(this.state.localIdentities)(address)
+      identity
+        ? resolve(identity)
+        : reject(Error('Custom label has not been set'))
+    })
+    // return this.state.wrapper.resolveAddressIdentity(address).toPromise()
   }
 
   handleCompleteOnboarding = () => {
@@ -300,6 +324,15 @@ class App extends React.Component {
   }
   handleOpenOrganization = address => {
     this.historyPush(`/${address}`)
+  }
+  handleOpenCustomLabelModal = address => {
+    // console.log('handleOpenCustomLabelModal: ', address)
+    return new Promise((resolve, reject) => {
+      window.rs = resolve
+      window.rj = reject
+      this.state.wrapper.requestAddressIdentityModification(address)
+    })
+    // return this.props.wrapper.requestAddressIdentityModification(identityIntent)
   }
 
   render() {
@@ -312,7 +345,7 @@ class App extends React.Component {
       daoAddress,
       daoCreationStatus,
       fatalError,
-      identityAddress,
+      identityIntent,
       localIdentities,
       locator,
       permissions,
@@ -337,60 +370,75 @@ class App extends React.Component {
     if (fatalError !== null) {
       throw fatalError
     }
+    const { address: identityAddress = null, label: identityLabel = '' } =
+      identityIntent || {}
 
     return (
-      <LocalIdentityProvider localIdentities={localIdentities}>
-        <ModalProvider>
-          <FavoriteDaosProvider>
-            <PermissionsProvider
-              wrapper={wrapper}
-              apps={apps}
-              permissions={permissions}
-            >
-              <Wrapper
-                account={account}
-                apps={apps}
-                appsStatus={appsStatus}
-                banner={showDeprecatedBanner && <DeprecatedBanner dao={dao} />}
-                connected={connected}
-                daoAddress={daoAddress}
-                onIdentityCancel={this.handleIdentityCancel}
-                onIdentitySave={this.handleIdentitySave}
-                historyBack={this.historyBack}
-                historyPush={this.historyPush}
-                identityAddress={identityAddress}
-                localIdentities={localIdentities}
-                locator={locator}
-                onRequestAppsReload={this.handleRequestAppsReload}
-                onRequestEnable={this.handleRequestEnable}
-                permissionsLoading={permissionsLoading}
-                transactionBag={transactionBag}
-                walletNetwork={walletNetwork}
-                walletWeb3={walletWeb3}
+      <ModalProvider>
+        <CustomLabelModalProvider
+          onShowCustomLabelModal={this.handleOpenCustomLabelModal}
+        >
+          <CustomLabelModal
+            address={identityAddress}
+            label={identityLabel}
+            opened={identityIntent !== null}
+            onCancel={this.handleIdentityCancel}
+            onSave={this.handleIdentitySave}
+          />
+          <IdentityProvider onResolve={this.handleIdentityResolve}>
+            <FavoriteDaosProvider>
+              <PermissionsProvider
                 wrapper={wrapper}
-              />
-            </PermissionsProvider>
+                apps={apps}
+                permissions={permissions}
+              >
+                <Wrapper
+                  account={account}
+                  apps={apps}
+                  appsStatus={appsStatus}
+                  banner={
+                    showDeprecatedBanner && <DeprecatedBanner dao={dao} />
+                  }
+                  connected={connected}
+                  daoAddress={daoAddress}
+                  historyBack={this.historyBack}
+                  historyPush={this.historyPush}
+                  identityIntent={identityIntent}
+                  localIdentities={localIdentities}
+                  locator={locator}
+                  onRequestAppsReload={this.handleRequestAppsReload}
+                  onRequestEnable={this.handleRequestEnable}
+                  permissionsLoading={permissionsLoading}
+                  transactionBag={transactionBag}
+                  walletNetwork={walletNetwork}
+                  walletWeb3={walletWeb3}
+                  wrapper={wrapper}
+                />
+              </PermissionsProvider>
 
-            <Onboarding
-              banner={
-                showDeprecatedBanner && <DeprecatedBanner dao={dao} lightMode />
-              }
-              visible={mode === 'home' || mode === 'setup'}
-              account={account}
-              balance={balance}
-              walletNetwork={walletNetwork}
-              walletProviderId={walletProviderId}
-              onBuildDao={this.handleBuildDao}
-              daoCreationStatus={daoCreationStatus}
-              onComplete={this.handleCompleteOnboarding}
-              onOpenOrganization={this.handleOpenOrganization}
-              onRequestEnable={this.handleRequestEnable}
-              onResetDaoBuilder={this.handleResetDaoBuilder}
-              selectorNetworks={selectorNetworks}
-            />
-          </FavoriteDaosProvider>
-        </ModalProvider>
-      </LocalIdentityProvider>
+              <Onboarding
+                banner={
+                  showDeprecatedBanner && (
+                    <DeprecatedBanner dao={dao} lightMode />
+                  )
+                }
+                visible={mode === 'home' || mode === 'setup'}
+                account={account}
+                balance={balance}
+                walletNetwork={walletNetwork}
+                walletProviderId={walletProviderId}
+                onBuildDao={this.handleBuildDao}
+                daoCreationStatus={daoCreationStatus}
+                onComplete={this.handleCompleteOnboarding}
+                onOpenOrganization={this.handleOpenOrganization}
+                onRequestEnable={this.handleRequestEnable}
+                onResetDaoBuilder={this.handleResetDaoBuilder}
+                selectorNetworks={selectorNetworks}
+              />
+            </FavoriteDaosProvider>
+          </IdentityProvider>
+        </CustomLabelModalProvider>
+      </ModalProvider>
     )
   }
 }
