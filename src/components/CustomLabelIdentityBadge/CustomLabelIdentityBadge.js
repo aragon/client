@@ -3,15 +3,22 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, IdentityBadge, font } from '@aragon/ui'
 import { CustomLabelModalContext } from '../../components/CustomLabelModal/CustomLabelModalManager'
-import { LocalIdentityContext } from '../../components/LocalIdentityManager/LocalIdentityManager'
-
-const resolve = localIdentities => property => address =>
-  (localIdentities[address] && localIdentities[address][property]) || false
+import { IdentityContext } from '../../components/IdentityManager/IdentityManager'
 
 const CustomLabelIdentityBadge = ({ address, ...props }) => {
+  const { resolve } = React.useContext(IdentityContext)
   const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
-  const { localIdentities } = React.useContext(LocalIdentityContext)
-  const label = resolve(localIdentities)('name')(address)
+  const [label, setLabel] = React.useState()
+  const handleResolve = async () => {
+    const { name = null } = await resolve(address)
+    setLabel(name)
+  }
+  const handleClick = () => {
+    showCustomLabelModal(address).then(handleResolve)
+  }
+  React.useEffect(() => {
+    handleResolve()
+  }, [])
 
   return (
     <IdentityBadge
@@ -20,7 +27,7 @@ const CustomLabelIdentityBadge = ({ address, ...props }) => {
       address={address}
       popoverAction={{
         label: `${label ? 'Edit' : 'Add'} custom label`,
-        onClick: () => showCustomLabelModal(address),
+        onClick: handleClick,
       }}
       popoverTitle={
         label ? (
