@@ -48,6 +48,7 @@ const Preferences = ({ onClose, localIdentities, smallView, wrapper }) => {
 }
 
 Preferences.propTypes = {
+  localIdentities: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   smallView: PropTypes.bool.isRequired,
   wrapper: PropTypes.object.isRequired,
