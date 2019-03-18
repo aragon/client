@@ -10,14 +10,11 @@ const CustomLabelIdentityBadge = ({ address, ...props }) => {
   const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
   const [label, setLabel] = React.useState()
   const handleResolve = async () => {
-    console.log('handleResolve')
     try {
       const { name = null } = await resolve(address)
-      // TODO fix when undefined
       setLabel(name)
-    } catch (err) {
-      console.log(err)
-      // no custom label has been set
+    } catch (e) {
+      // address does not ressolve to identity
     }
   }
   const handleClick = () => {
