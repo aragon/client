@@ -14,7 +14,11 @@ const CustomLabelIdentityBadge = ({ address, ...props }) => {
     setLabel(name)
   }
   const handleClick = () => {
-    showCustomLabelModal(address).then(handleResolve)
+    showCustomLabelModal(address)
+      .then(handleResolve)
+      .catch(e => {
+        /* user cancelled modify intent */
+      })
   }
   React.useEffect(() => {
     handleResolve()
