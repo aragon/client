@@ -33,12 +33,23 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
       return
     }
     wrapper.clearLocalIdentities()
+    setLocalIdentities({})
   }
   const handleModify = (address, data) => {
     if (!wrapper) {
       return
     }
     wrapper.modifyAddressIdentity(address, data)
+  }
+  const handleImport = async list => {
+    if (!wrapper) {
+      return
+    }
+    setLocalIdentities({})
+    await list.forEach(async ({ name, address }) => {
+      await wrapper.modifyAddressIdentity(address, { name })
+    })
+    setLocalIdentities(await wrapper.getLocalIdentities())
   }
   React.useEffect(() => {
     handleGetAll()
@@ -63,6 +74,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
           {selectedTab === 0 && <ComingSoon />}
           {selectedTab === 1 && (
             <CustomLabels
+              onImport={handleImport}
               onClearAll={handleClearAll}
               onModify={handleModify}
               localIdentities={localIdentities}
