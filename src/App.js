@@ -243,12 +243,23 @@ class App extends React.Component {
         log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
-      onIdentityIntent: identityIntent => {
-        console.log('onIdentityIntent: ', identityIntent)
+      onIdentityIntent: async identityIntent => {
         // callback for both iframe and native apps
         if (identityIntent.providerName === 'local') {
           // set the state for modifying a specific address identity
-          this.setState({ identityIntent })
+          let name = null
+          try {
+            const identity = await this.handleIdentityResolve(
+              identityIntent.address
+            )
+            name = identity.name
+          } catch (e) {}
+          this.setState({
+            identityIntent: {
+              label: name,
+              ...identityIntent,
+            },
+          })
         }
       },
     })
@@ -285,11 +296,17 @@ class App extends React.Component {
 
   handleIdentityResolve = address => {
     // returns promise
-    console.log('handleIdentityResolve')
     if (this.state.wrapper) {
       return this.state.wrapper.resolveAddressIdentity(address)
+    } else {
+      // wrapper has not been initialized
+      // re-request in 100 ms
+      return new Promise(resolve => {
+        setTimeout(async () => {
+          resolve(await this.handleIdentityResolve(address))
+        }, 100)
+      })
     }
-    return Promise.reject(new Error('Wrapper not initialised yet'))
   }
 
   handleCompleteOnboarding = () => {
@@ -300,7 +317,6 @@ class App extends React.Component {
     this.historyPush(`/${address}`)
   }
   handleOpenCustomLabelModal = address => {
-    console.log('handleOpenCustomLabelModal: ', address)
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
 
