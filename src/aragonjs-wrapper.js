@@ -222,14 +222,7 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  {
-    onApps,
-    onPermissions,
-    onForwarders,
-    onTransaction,
-    onLocalIdentities,
-    onIdentityIntent,
-  },
+  { onApps, onPermissions, onForwarders, onTransaction, onIdentityIntent },
   { ipfsConf }
 ) => {
   const {
@@ -238,10 +231,7 @@ const subscribe = (
     forwarders,
     transactions,
     identityIntents,
-    identityProviderRegistrar,
   } = wrapper
-
-  const localIdentities = identityProviderRegistrar.get('local').identities$
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
@@ -259,7 +249,6 @@ const subscribe = (
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
-    localIdentities: localIdentities.subscribe(onLocalIdentities),
     identityIntents: identityIntents.subscribe(onIdentityIntent),
     transactions: transactions.subscribe(onTransaction),
     workers: apps.subscribe(apps => {
@@ -357,7 +346,6 @@ const initWrapper = async (
     onTransaction = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
-    onLocalIdentities = noop,
     onIdentityIntent = noop,
   } = {}
 ) => {
@@ -417,7 +405,6 @@ const initWrapper = async (
       onPermissions,
       onForwarders,
       onTransaction,
-      onLocalIdentities,
       onIdentityIntent,
     },
     { ipfsConf }

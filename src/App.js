@@ -28,9 +28,6 @@ import {
   DAO_CREATION_STATUS_ERROR,
 } from './symbols'
 
-const resolve = (localIdentities, property) => address =>
-  (localIdentities[address] && localIdentities[address][property]) || false
-
 class App extends React.Component {
   state = {
     account: '',
@@ -47,7 +44,6 @@ class App extends React.Component {
     daoCreationStatus: DAO_CREATION_STATUS_NONE,
     fatalError: null,
     identityIntent: null,
-    localIdentities: {},
     locator: {},
     permissions: {},
     permissionsLoading: true,
@@ -247,25 +243,12 @@ class App extends React.Component {
         log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
-      onLocalIdentities: localIdentities => {
-        log('local identities', localIdentities)
-        this.setState({ localIdentities })
-      },
       onIdentityIntent: identityIntent => {
         console.log('onIdentityIntent: ', identityIntent)
         // callback for both iframe and native apps
         if (identityIntent.providerName === 'local') {
           // set the state for modifying a specific address identity
-          this.setState({
-            identityIntent: {
-              resolve: window.rs,
-              reject: window.rj,
-              label: resolve(this.state.localIdentities, 'name')(
-                identityIntent.address
-              ),
-              ...identityIntent,
-            },
-          })
+          this.setState({ identityIntent })
         }
       },
     })
@@ -290,8 +273,6 @@ class App extends React.Component {
 
   handleIdentityCancel = () => {
     this.setState({ identityIntent: null })
-    window.rs = null
-    window.rh = null
   }
 
   handleIdentitySave = ({ address, label }) => {
@@ -300,22 +281,15 @@ class App extends React.Component {
       .modifyAddressIdentity(address, { name: label })
       .then(() => this.setState({ identityIntent: null }, resolve))
       .catch(reject)
-    window.rs = null
-    window.rh = null
   }
 
   handleIdentityResolve = address => {
-    // console.log('handleIdentityResolve: ', address, this.state.localIdentities)
-    const resolveAddress = localIdentities => address =>
-      localIdentities[address] ? localIdentities[address] : false
-    return new Promise(async (resolve, reject) => {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const identity = resolveAddress(this.state.localIdentities)(address)
-      identity
-        ? resolve(identity)
-        : reject(Error('Custom label has not been set'))
-    })
-    // return this.state.wrapper.resolveAddressIdentity(address).toPromise()
+    // returns promise
+    console.log('handleIdentityResolve')
+    if (this.state.wrapper) {
+      return this.state.wrapper.resolveAddressIdentity(address)
+    }
+    return Promise.reject(new Error('Wrapper not initialised yet'))
   }
 
   handleCompleteOnboarding = () => {
@@ -326,13 +300,8 @@ class App extends React.Component {
     this.historyPush(`/${address}`)
   }
   handleOpenCustomLabelModal = address => {
-    // console.log('handleOpenCustomLabelModal: ', address)
-    return new Promise((resolve, reject) => {
-      window.rs = resolve
-      window.rj = reject
-      this.state.wrapper.requestAddressIdentityModification(address)
-    })
-    // return this.props.wrapper.requestAddressIdentityModification(identityIntent)
+    console.log('handleOpenCustomLabelModal: ', address)
+    return this.state.wrapper.requestAddressIdentityModification(address)
   }
 
   render() {
@@ -346,7 +315,6 @@ class App extends React.Component {
       daoCreationStatus,
       fatalError,
       identityIntent,
-      localIdentities,
       locator,
       permissions,
       permissionsLoading,
@@ -374,18 +342,18 @@ class App extends React.Component {
       identityIntent || {}
 
     return (
-      <ModalProvider>
-        <CustomLabelModalProvider
-          onShowCustomLabelModal={this.handleOpenCustomLabelModal}
-        >
-          <CustomLabelModal
-            address={identityAddress}
-            label={identityLabel}
-            opened={identityIntent !== null}
-            onCancel={this.handleIdentityCancel}
-            onSave={this.handleIdentitySave}
-          />
-          <IdentityProvider onResolve={this.handleIdentityResolve}>
+      <IdentityProvider onResolve={this.handleIdentityResolve}>
+        <ModalProvider>
+          <CustomLabelModalProvider
+            onShowCustomLabelModal={this.handleOpenCustomLabelModal}
+          >
+            <CustomLabelModal
+              address={identityAddress}
+              label={identityLabel}
+              opened={identityIntent !== null}
+              onCancel={this.handleIdentityCancel}
+              onSave={this.handleIdentitySave}
+            />
             <FavoriteDaosProvider>
               <PermissionsProvider
                 wrapper={wrapper}
@@ -404,7 +372,6 @@ class App extends React.Component {
                   historyBack={this.historyBack}
                   historyPush={this.historyPush}
                   identityIntent={identityIntent}
-                  localIdentities={localIdentities}
                   locator={locator}
                   onRequestAppsReload={this.handleRequestAppsReload}
                   onRequestEnable={this.handleRequestEnable}
@@ -436,9 +403,9 @@ class App extends React.Component {
                 selectorNetworks={selectorNetworks}
               />
             </FavoriteDaosProvider>
-          </IdentityProvider>
-        </CustomLabelModalProvider>
-      </ModalProvider>
+          </CustomLabelModalProvider>
+        </ModalProvider>
+      </IdentityProvider>
     )
   }
 }

@@ -40,7 +40,6 @@ class Wrapper extends React.PureComponent {
     daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
-    localIdentities: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
@@ -173,7 +172,6 @@ class Wrapper extends React.PureComponent {
       banner,
       connected,
       daoAddress,
-      localIdentities,
       locator,
       onRequestAppsReload,
       onRequestEnable,
@@ -194,7 +192,7 @@ class Wrapper extends React.PureComponent {
     return (
       <Main>
         <Preferences
-          localIdentities={localIdentities}
+          localIdentities={{}}
           opened={preferencesOpened}
           onClose={this.handleClosePreferences}
           wrapper={wrapper}
