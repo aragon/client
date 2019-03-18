@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const IdentityContext = React.createContext({
-  resolve: () => Promise.reject(null),
+  resolve: () =>
+    Promise.reject(Error('Please set resolve using IdentityProvider')),
 })
 
 const IdentityProvider = ({ onResolve, children }) => {
