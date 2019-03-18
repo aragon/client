@@ -16,19 +16,16 @@ import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalMan
 import EmptyCustomLabels from './EmptyCustomLabels'
 import Import from './Import'
 
-const CustomLabels = ({ wrapper, localIdentities }) => {
+const CustomLabels = ({ onClearAll, onModify, localIdentities }) => {
   // transform localIdentities from object into sorted array
   const identities = Object.keys(localIdentities).map(address => {
     return Object.assign({}, localIdentities[address], { address })
   })
 
-  const handleClearAll = () => {
-    wrapper.clearLocalIdentities()
-  }
   const handleImport = list => {
-    wrapper.clearLocalIdentities()
+    onClearAll()
     list.forEach(({ name, address }) => {
-      wrapper.modifyAddressIdentity(address, { name })
+      onModify(address, { name })
     })
   }
 
@@ -36,7 +33,7 @@ const CustomLabels = ({ wrapper, localIdentities }) => {
     <React.Fragment>
       <Labels
         identities={identities}
-        clearAll={handleClearAll}
+        clearAll={onClearAll}
         onImport={handleImport}
       />
       <Warning />
@@ -45,8 +42,9 @@ const CustomLabels = ({ wrapper, localIdentities }) => {
 }
 
 CustomLabels.propTypes = {
-  wrapper: PropTypes.object.isRequired,
   localIdentities: PropTypes.object,
+  onClearAll: PropTypes.func.isRequired,
+  onModify: PropTypes.func.isRequired,
 }
 
 const Labels = ({ clearAll, identities, onImport }) => {
