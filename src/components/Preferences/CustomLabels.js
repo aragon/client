@@ -13,31 +13,20 @@ import {
   theme,
 } from '@aragon/ui'
 import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
-import { LocalIdentityContext } from '../../components/LocalIdentityManager/LocalIdentityManager'
-import { log } from '../../utils'
 import EmptyCustomLabels from './EmptyCustomLabels'
 import Import from './Import'
 
-const CustomLabels = ({ wrapper }) => {
-  const { localIdentities } = React.useContext(LocalIdentityContext)
-
+const CustomLabels = ({ wrapper, localIdentities }) => {
   // transform localIdentities from object into sorted array
   const identities = Object.keys(localIdentities).map(address => {
     return Object.assign({}, localIdentities[address], { address })
   })
 
   const handleClearAll = () => {
-    wrapper
-      .clearLocalIdentities()
-      .then(() => console.log('identities cleared'))
-      .catch(err => log('handleClearAll failed', err))
+    wrapper.clearLocalIdentities()
   }
   const handleImport = list => {
-    log('handleImport')
-    // setList(getAll())
-    // TODO Check with Jouni/Paty -
-    // TODO iterate and call modify for each imported
-    // modification through the wrapper ->
+    wrapper.clearLocalIdentities()
     list.forEach(({ name, address }) => {
       wrapper.modifyAddressIdentity(address, { name })
     })
@@ -57,6 +46,7 @@ const CustomLabels = ({ wrapper }) => {
 
 CustomLabels.propTypes = {
   wrapper: PropTypes.object.isRequired,
+  localIdentities: PropTypes.object,
 }
 
 const Labels = ({ clearAll, identities, onImport }) => {
