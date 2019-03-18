@@ -15,11 +15,34 @@ import {
   springs,
 } from '@aragon/ui'
 import CustomLabels from './CustomLabels'
+import { AragonType } from '../../prop-types'
 
 const TABS = ['Network', 'Manage labels']
 
-const Preferences = ({ onClose, localIdentities, smallView, wrapper }) => {
+const Preferences = ({ onClose, smallView, wrapper }) => {
   const [selectedTab, setSelectedTab] = React.useState(1)
+  const [localIdentities, setLocalIdentities] = React.useState({})
+  const handleGetAll = async () => {
+    if (!wrapper) {
+      return
+    }
+    setLocalIdentities(await wrapper.getLocalIdentities())
+  }
+  const handleClearAll = () => {
+    if (!wrapper) {
+      return
+    }
+    wrapper.clearLocalIdentities()
+  }
+  const handleModify = (address, data) => {
+    if (!wrapper) {
+      return
+    }
+    wrapper.modifyAddressIdentity(address, data)
+  }
+  React.useEffect(() => {
+    handleGetAll()
+  }, [])
 
   return (
     <AppView
@@ -39,7 +62,11 @@ const Preferences = ({ onClose, localIdentities, smallView, wrapper }) => {
         <Content>
           {selectedTab === 0 && <ComingSoon />}
           {selectedTab === 1 && (
-            <CustomLabels wrapper={wrapper} localIdentities={localIdentities} />
+            <CustomLabels
+              onClearAll={handleClearAll}
+              onModify={handleModify}
+              localIdentities={localIdentities}
+            />
           )}
         </Content>
       </Section>
@@ -48,10 +75,9 @@ const Preferences = ({ onClose, localIdentities, smallView, wrapper }) => {
 }
 
 Preferences.propTypes = {
-  localIdentities: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   smallView: PropTypes.bool.isRequired,
-  wrapper: PropTypes.object.isRequired,
+  wrapper: AragonType,
 }
 
 const AnimatedPreferences = ({ opened, ...props }) => {
