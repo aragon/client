@@ -5,6 +5,7 @@ import { clamp, lerp } from '../../math-utils'
 import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
+import { EventEmitterConsumer } from '../EventEmitterManager/EventEmitterManager'
 
 const LOADING_START = 25 // Start loading indicator at 25%
 const LOADING_END = 100
@@ -50,6 +51,7 @@ class AppIFrame extends React.Component {
   static propTypes = {
     app: AppType.isRequired,
     iframeRef: PropTypes.func,
+    eventEmitter: PropTypes.object,
     onLoad: PropTypes.func,
     onMessage: PropTypes.func,
     onNavigate: PropTypes.func,
@@ -64,7 +66,14 @@ class AppIFrame extends React.Component {
     hideProgressBar: true,
     loadProgress: 0,
   }
+  reloadIframe = () => {
+    this.iframe.src = this.iframe.src
+  }
   componentDidMount() {
+    const { eventEmitter } = this.props
+    eventEmitter.on('clearLocalIdentities', this.reloadIframe)
+    eventEmitter.on('importLocalIdentities', this.reloadIframe)
+    eventEmitter.on('modifyLocalIdentity', this.reloadIframe)
     window.addEventListener('message', this.handleReceiveMessage, false)
     this.navigateIFrame(this.props.app.src)
   }
@@ -81,6 +90,10 @@ class AppIFrame extends React.Component {
     }
   }
   componentWillUnmount() {
+    const { eventEmitter } = this.props
+    eventEmitter.off('clearLocalIdentities', this.reloadIframe)
+    eventEmitter.off('importLocalIdentities', this.reloadIframe)
+    eventEmitter.off('modifyLocalIdentity', this.reloadIframe)
     window.removeEventListener('message', this.handleReceiveMessage, false)
     this.clearProgressTimeout()
   }
@@ -213,4 +226,10 @@ const StyledIFrame = styled.iframe`
   width: 100%;
 `
 
-export default AppIFrame
+export default React.forwardRef((props, ref) => (
+  <EventEmitterConsumer>
+    {({ eventEmitter }) => (
+      <AppIFrame {...props} eventEmitter={eventEmitter} ref={ref} />
+    )}
+  </EventEmitterConsumer>
+))
