@@ -16,7 +16,13 @@ import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalMan
 import EmptyCustomLabels from './EmptyCustomLabels'
 import Import from './Import'
 
-const CustomLabels = ({ onClearAll, onImport, onModify, localIdentities }) => {
+const CustomLabels = ({
+  onClearAll,
+  onImport,
+  onModify,
+  onModifyHook,
+  localIdentities,
+}) => {
   // transform localIdentities from object into sorted array
   const identities = Object.keys(localIdentities).map(address => {
     return Object.assign({}, localIdentities[address], { address })
@@ -28,6 +34,7 @@ const CustomLabels = ({ onClearAll, onImport, onModify, localIdentities }) => {
         identities={identities}
         clearAll={onClearAll}
         onImport={onImport}
+        onModifyHook={onModifyHook}
       />
       <Warning />
     </React.Fragment>
@@ -39,14 +46,20 @@ CustomLabels.propTypes = {
   onClearAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,
+  onModifyHook: PropTypes.func,
 }
 
-const Labels = ({ clearAll, identities, onImport }) => {
+const Labels = ({ clearAll, identities, onImport, onModifyHook }) => {
   if (!identities.length) {
     return <EmptyCustomLabels onImport={onImport} />
   }
-  const updateLabel = (fn, address) => () => {
-    fn(address)
+  const updateLabel = (fn, address) => async () => {
+    try {
+      await fn(address)
+      onModifyHook()
+    } catch (e) {
+      /* nothing was updated */
+    }
   }
   const href = window.URL.createObjectURL(
     new Blob([JSON.stringify(identities)], { type: 'text/json' })
@@ -100,12 +113,14 @@ const Labels = ({ clearAll, identities, onImport }) => {
 
 Labels.defaultProps = {
   identities: [],
+  onModifyHook: () => null,
 }
 
 Labels.propTypes = {
   identities: PropTypes.array,
   clearAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
+  onModifyHook: PropTypes.func,
 }
 
 const PopoverActionTitle = ({ address, name }) => {
