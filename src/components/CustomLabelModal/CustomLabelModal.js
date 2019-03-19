@@ -26,7 +26,7 @@ CustomLabelModal.propTypes = {
 }
 
 const Modal = ({ address, label, onCancel, onSave }) => {
-  const action = label && label.trim() ? 'Edit' : 'Add'
+  const [action, setAction] = React.useState()
   const labelInput = React.useRef(null)
   const handleCancel = () => {
     onCancel()
@@ -43,6 +43,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
     }
   }
   React.useEffect(() => {
+    setAction(label && label.trim() ? 'Edit' : 'Add')
     labelInput.current.focus()
     labelInput.current.select()
     const handleKeyUp = e => e.keyCode === 13 && handleSave()
