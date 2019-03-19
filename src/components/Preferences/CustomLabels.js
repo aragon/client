@@ -13,6 +13,7 @@ import {
   theme,
 } from '@aragon/ui'
 import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
+import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
 import EmptyCustomLabels from './EmptyCustomLabels'
 import Import from './Import'
 
@@ -53,10 +54,14 @@ const Labels = ({ clearAll, identities, onImport, onModifyHook }) => {
   if (!identities.length) {
     return <EmptyCustomLabels onImport={onImport} />
   }
+  const { eventEmitter } = React.useContext(EventEmitterContext)
   const updateLabel = (fn, address) => async () => {
     try {
       await fn(address)
+      // preferences get all
       onModifyHook()
+      // for iframe apps
+      eventEmitter.emit('modifyLocalIdentity', address)
     } catch (e) {
       /* nothing was updated */
     }
