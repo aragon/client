@@ -2,12 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, IdentityBadge, font } from '@aragon/ui'
-import { CustomLabelModalContext } from '../../components/CustomLabelModal/CustomLabelModalManager'
-import { IdentityContext } from '../../components/IdentityManager/IdentityManager'
+import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
+import { IdentityContext } from '../IdentityManager/IdentityManager'
+import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
 
 const CustomLabelIdentityBadge = ({ address, ...props }) => {
   const { resolve } = React.useContext(IdentityContext)
   const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
+  const { eventEmitter } = React.useContext(EventEmitterContext)
   const [label, setLabel] = React.useState()
   const handleResolve = async () => {
     try {
@@ -24,8 +26,15 @@ const CustomLabelIdentityBadge = ({ address, ...props }) => {
         /* user cancelled modify intent */
       })
   }
+  const handleEvent = addr => {
+    if (addr === address) {
+      handleResolve()
+    }
+  }
   React.useEffect(() => {
     handleResolve()
+    eventEmitter.on('modifyLocalIdentity', handleEvent)
+    return () => eventEmitter.off('modifyLocalIdentity', handleEvent)
   }, [])
 
   return (
