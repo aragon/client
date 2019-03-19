@@ -19,6 +19,7 @@ import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { CustomLabelModalProvider } from './components/CustomLabelModal/CustomLabelModalManager'
 import CustomLabelModal from './components/CustomLabelModal/CustomLabelModal'
+import { EventEmitterProvider } from './components/EventEmitterManager/EventEmitterManager'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -358,70 +359,72 @@ class App extends React.Component {
       identityIntent || {}
 
     return (
-      <IdentityProvider onResolve={this.handleIdentityResolve}>
-        <ModalProvider>
-          <CustomLabelModalProvider
-            onShowCustomLabelModal={this.handleOpenCustomLabelModal}
-          >
-            <CustomLabelModal
-              address={identityAddress}
-              label={identityLabel}
-              opened={identityIntent !== null}
-              onCancel={this.handleIdentityCancel}
-              onSave={this.handleIdentitySave}
-            />
-            <FavoriteDaosProvider>
-              <PermissionsProvider
-                wrapper={wrapper}
-                apps={apps}
-                permissions={permissions}
-              >
-                <Wrapper
-                  account={account}
-                  apps={apps}
-                  appsStatus={appsStatus}
-                  banner={
-                    showDeprecatedBanner && <DeprecatedBanner dao={dao} />
-                  }
-                  connected={connected}
-                  daoAddress={daoAddress}
-                  historyBack={this.historyBack}
-                  historyPush={this.historyPush}
-                  identityIntent={identityIntent}
-                  locator={locator}
-                  onRequestAppsReload={this.handleRequestAppsReload}
-                  onRequestEnable={this.handleRequestEnable}
-                  permissionsLoading={permissionsLoading}
-                  transactionBag={transactionBag}
-                  walletNetwork={walletNetwork}
-                  walletWeb3={walletWeb3}
-                  wrapper={wrapper}
-                />
-              </PermissionsProvider>
-
-              <Onboarding
-                banner={
-                  showDeprecatedBanner && (
-                    <DeprecatedBanner dao={dao} lightMode />
-                  )
-                }
-                visible={mode === 'home' || mode === 'setup'}
-                account={account}
-                balance={balance}
-                walletNetwork={walletNetwork}
-                walletProviderId={walletProviderId}
-                onBuildDao={this.handleBuildDao}
-                daoCreationStatus={daoCreationStatus}
-                onComplete={this.handleCompleteOnboarding}
-                onOpenOrganization={this.handleOpenOrganization}
-                onRequestEnable={this.handleRequestEnable}
-                onResetDaoBuilder={this.handleResetDaoBuilder}
-                selectorNetworks={selectorNetworks}
+      <EventEmitterProvider>
+        <IdentityProvider onResolve={this.handleIdentityResolve}>
+          <ModalProvider>
+            <CustomLabelModalProvider
+              onShowCustomLabelModal={this.handleOpenCustomLabelModal}
+            >
+              <CustomLabelModal
+                address={identityAddress}
+                label={identityLabel}
+                opened={identityIntent !== null}
+                onCancel={this.handleIdentityCancel}
+                onSave={this.handleIdentitySave}
               />
-            </FavoriteDaosProvider>
-          </CustomLabelModalProvider>
-        </ModalProvider>
-      </IdentityProvider>
+              <FavoriteDaosProvider>
+                <PermissionsProvider
+                  wrapper={wrapper}
+                  apps={apps}
+                  permissions={permissions}
+                >
+                  <Wrapper
+                    account={account}
+                    apps={apps}
+                    appsStatus={appsStatus}
+                    banner={
+                      showDeprecatedBanner && <DeprecatedBanner dao={dao} />
+                    }
+                    connected={connected}
+                    daoAddress={daoAddress}
+                    historyBack={this.historyBack}
+                    historyPush={this.historyPush}
+                    identityIntent={identityIntent}
+                    locator={locator}
+                    onRequestAppsReload={this.handleRequestAppsReload}
+                    onRequestEnable={this.handleRequestEnable}
+                    permissionsLoading={permissionsLoading}
+                    transactionBag={transactionBag}
+                    walletNetwork={walletNetwork}
+                    walletWeb3={walletWeb3}
+                    wrapper={wrapper}
+                  />
+                </PermissionsProvider>
+
+                <Onboarding
+                  banner={
+                    showDeprecatedBanner && (
+                      <DeprecatedBanner dao={dao} lightMode />
+                    )
+                  }
+                  visible={mode === 'home' || mode === 'setup'}
+                  account={account}
+                  balance={balance}
+                  walletNetwork={walletNetwork}
+                  walletProviderId={walletProviderId}
+                  onBuildDao={this.handleBuildDao}
+                  daoCreationStatus={daoCreationStatus}
+                  onComplete={this.handleCompleteOnboarding}
+                  onOpenOrganization={this.handleOpenOrganization}
+                  onRequestEnable={this.handleRequestEnable}
+                  onResetDaoBuilder={this.handleResetDaoBuilder}
+                  selectorNetworks={selectorNetworks}
+                />
+              </FavoriteDaosProvider>
+            </CustomLabelModalProvider>
+          </ModalProvider>
+        </IdentityProvider>
+      </EventEmitterProvider>
     )
   }
 }
