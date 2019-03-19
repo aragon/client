@@ -44,6 +44,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
   }
   React.useEffect(() => {
     labelInput.current.focus()
+    labelInput.current.select()
     const handleKeyUp = e => e.keyCode === 13 && handleSave()
     window.addEventListener('keyup', handleKeyUp, true)
     return () => window.removeEventListener('keyup', handleKeyUp)
