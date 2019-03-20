@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Badge, Viewport, breakpoint } from '@aragon/ui'
 import { AppType, EthereumAddressType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
-import AppIcon from './AppIcon'
+import AppIcon from '../../components/AppIcon/AppIcon'
 
 class AppInstanceLabel extends React.PureComponent {
   static propTypes = {
@@ -19,7 +19,20 @@ class AppInstanceLabel extends React.PureComponent {
       <Main>
         <Viewport>
           {({ above }) =>
-            above('medium') && showIcon && <AppIconInRow app={app} />
+            above('medium') &&
+            showIcon && (
+              <div
+                css={`
+                  display: flex;
+                  align-items: center;
+                  height: 0;
+                  margin-right: 10px;
+                  margin-top: -1px;
+                `}
+              >
+                <AppIcon app={app} />
+              </div>
+            )
           }
         </Viewport>
         <AppName>{app ? app.name : 'Unknown'}</AppName>
@@ -43,12 +56,6 @@ const Main = styled.div`
       margin: unset;
     `
   )}
-`
-
-const AppIconInRow = styled(AppIcon)`
-  height: 0;
-  margin-right: 10px;
-  margin-top: -1px;
 `
 
 const StyledBadge = styled(Badge.App)`

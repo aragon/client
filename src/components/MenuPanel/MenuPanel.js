@@ -11,14 +11,13 @@ import {
   unselectable,
 } from '@aragon/ui'
 import memoize from 'lodash.memoize'
-import { appIconUrl } from '../../utils'
 import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import RemoteIcon from '../RemoteIcon'
 import NotificationAlert from '../Notifications/NotificationAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
+import AppIcon from '../AppIcon/AppIcon'
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -41,7 +40,7 @@ const prepareAppGroups = apps =>
       {
         appId: app.appId,
         name: app.name,
-        icon: <RemoteIcon src={appIconUrl(app)} size={22} />,
+        icon: <AppIcon app={app} size={22} />,
         instances: [instance],
       },
     ])

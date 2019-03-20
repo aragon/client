@@ -13,8 +13,8 @@ import {
   unselectable,
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
+import AppIcon from '../../components/AppIcon/AppIcon'
 
-import defaultIcon from '../../icons/app-default.svg'
 import payrollIcon from './icons/payroll.svg'
 import espressoIcon from './icons/espresso.svg'
 
@@ -65,7 +65,7 @@ class Apps extends React.Component {
             {knownApps.map((app, i) => (
               <Main key={i}>
                 <Icon>
-                  <Img width="64" height="64" src={app.icon} alt="" />
+                  <AppIcon size={64} src={app.icon} />
                 </Icon>
                 <Name>{app.name}</Name>
                 <TagWrapper>
@@ -133,10 +133,6 @@ const Icon = styled.div`
   }
 `
 
-const Img = styled.img`
-  display: block;
-`
-
 const Name = styled.p`
   display: flex;
   width: 100%;
@@ -180,7 +176,7 @@ const statuses = {
 
 const knownApps = [
   {
-    icon: defaultIcon,
+    icon: null,
     name: 'That Planning Suite',
     status: 'alpha',
     description: `Suite for open and fluid organizations.
@@ -205,7 +201,7 @@ const knownApps = [
     link: 'https://github.com/espresso-org',
   },
   {
-    icon: defaultIcon,
+    icon: null,
     name: 'Liquid democracy',
     status: 'pre-alpha',
     description: `Delegate your voting power to others,

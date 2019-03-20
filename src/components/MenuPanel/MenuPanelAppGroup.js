@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme, IconBlank } from '@aragon/ui'
+import { theme } from '@aragon/ui'
 import color from 'onecolor'
 import MenuPanelInstance from './MenuPanelInstance'
 import springs from '../../springs'
@@ -67,7 +67,7 @@ class MenuPanelAppGroup extends React.PureComponent {
               onClick={this.handleAppClick}
             >
               <span>
-                <span className="icon">{icon || <IconBlank />}</span>
+                <span className="icon">{icon}</span>
                 <span className="name">{name}</span>
               </span>
             </ButtonItem>
