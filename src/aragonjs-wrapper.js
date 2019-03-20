@@ -1,5 +1,4 @@
 import BN from 'bn.js'
-import throttle from 'lodash.throttle'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
   providers,
@@ -78,7 +77,7 @@ const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
     if (app.status) {
       tags.push(app.status)
     }
-    if (apmRegistry !== 'aragonpm.eth') {
+    if (apmRegistry && apmRegistry !== 'aragonpm.eth') {
       tags.push(`${apmRegistry} registry`)
     }
     if (!hasWebApp(app)) {
@@ -240,7 +239,7 @@ const subscribe = (
         )
       )
     }),
-    permissions: permissions.subscribe(throttle(onPermissions, 100)),
+    permissions: permissions.subscribe(onPermissions),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),

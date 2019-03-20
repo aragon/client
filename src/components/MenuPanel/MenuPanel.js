@@ -11,14 +11,13 @@ import {
   unselectable,
 } from '@aragon/ui'
 import memoize from 'lodash.memoize'
-import { appIconUrl } from '../../utils'
 import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import RemoteIcon from '../RemoteIcon'
 import NotificationAlert from '../Notifications/NotificationAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
+import AppIcon from '../AppIcon/AppIcon'
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -43,7 +42,7 @@ const prepareAppGroups = apps =>
       {
         appId: app.appId,
         name: app.name,
-        icon: <RemoteIcon src={appIconUrl(app)} size={22} />,
+        icon: <AppIcon app={app} size={22} />,
         instances: [instance],
       },
     ])
@@ -78,13 +77,9 @@ class MenuPanel extends React.PureComponent {
     } = this.props
     const appGroups = this.getAppGroups(apps)
 
-    const menuApps = [
-      APP_HOME,
-      appGroups,
-      APP_PERMISSIONS,
-      APP_APPS_CENTER,
-      APP_SETTINGS,
-    ]
+    const menuApps = [APP_HOME, appGroups]
+
+    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_SETTINGS]
 
     return (
       <Main>
@@ -112,6 +107,8 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
+              <h1 style={{ marginTop: '24px' }}>System</h1>
+              <div>{systemApps.map(app => this.renderAppGroup(app, true))}</div>
             </div>
           </Content>
           <ConnectionWrapper>
@@ -125,7 +122,7 @@ class MenuPanel extends React.PureComponent {
     )
   }
 
-  renderAppGroup(app) {
+  renderAppGroup(app, isSystem) {
     const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances = [] } = app
@@ -139,6 +136,7 @@ class MenuPanel extends React.PureComponent {
         <MenuPanelAppGroup
           name={name}
           icon={icon}
+          system={isSystem}
           instances={instances}
           active={isActive}
           expand={isActive}

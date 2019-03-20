@@ -63,10 +63,6 @@ class Wrapper extends React.PureComponent {
     walletWeb3: null,
   }
 
-  componentDidUpdate(prevProps) {
-    this.updateAutoClosingPanel(prevProps)
-  }
-
   state = {
     appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
@@ -75,10 +71,26 @@ class Wrapper extends React.PureComponent {
     queuedNotifications: [],
   }
 
+  componentDidUpdate(prevProps) {
+    this.updateAutoClosingPanel(prevProps)
+  }
+
   updateAutoClosingPanel(prevProps) {
     const { autoClosingPanel } = this.props
     if (autoClosingPanel !== prevProps.autoClosingPanel) {
       this.setState({ menuPanelOpened: !autoClosingPanel })
+      this.sendDisplayMenuButtonStatus()
+    }
+  }
+
+  sendDisplayMenuButtonStatus() {
+    const { autoClosingPanel } = this.props
+    if (this.appIFrame) {
+      this.appIFrame.sendMessage({
+        from: 'wrapper',
+        name: 'displayMenuButton',
+        value: autoClosingPanel,
+      })
     }
   }
 
@@ -90,9 +102,11 @@ class Wrapper extends React.PureComponent {
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, instanceId, params }))
   }
+
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
   }
+
   handleAppIFrameLoad = async event => {
     const {
       apps,
@@ -108,15 +122,23 @@ class Wrapper extends React.PureComponent {
     }
 
     await wrapper.connectAppIFrame(event.target, instanceId)
+
     this.appIFrame.sendMessage({
       from: 'wrapper',
       name: 'ready',
       value: true,
     })
+    this.sendDisplayMenuButtonStatus()
   }
   handleAppMessage = ({ data: { name, value } }) => {
-    if (name === 'menuPanel') {
-      this.setState({ menuPanelOpened: Boolean(value) })
+    if (
+      // “menuPanel: Boolean” is deprecated but still supported for a while if
+      // value is `true`.
+      name === 'menuPanel' ||
+      // “requestMenu: true” should now be used.
+      name === 'requestMenu'
+    ) {
+      this.setState({ menuPanelOpened: value === true })
     }
   }
   handleMenuPanelOpen = () => {

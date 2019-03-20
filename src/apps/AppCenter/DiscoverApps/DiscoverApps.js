@@ -10,8 +10,7 @@ import {
   unselectable,
   breakpoint,
 } from '@aragon/ui'
-
-import defaultIcon from './icons/default.svg'
+import AppIcon from '../../../components/AppIcon/AppIcon'
 import payrollIcon from './icons/payroll.svg'
 import espressoIcon from './icons/espresso.svg'
 
@@ -23,7 +22,7 @@ const statuses = {
 
 const appsInDevelopment = [
   {
-    icon: defaultIcon,
+    icon: null,
     name: 'That Planning Suite',
     status: 'alpha',
     description: `Suite for open and fluid organizations.
@@ -48,7 +47,7 @@ const appsInDevelopment = [
     link: 'https://github.com/espresso-org',
   },
   {
-    icon: defaultIcon,
+    icon: null,
     name: 'Liquid democracy',
     status: 'pre-alpha',
     description: `Delegate your voting power to others,
@@ -83,7 +82,7 @@ const DiscoverApps = React.memo(() => (
       {appsInDevelopment.map((app, i) => (
         <Main key={i}>
           <Icon>
-            <Img width="64" height="64" src={app.icon} alt="" />
+            <AppIcon size={64} src={app.icon} />
           </Icon>
           <Name>{app.name}</Name>
           <TagWrapper>
@@ -133,10 +132,6 @@ const Icon = styled.div`
   img {
     display: block;
   }
-`
-
-const Img = styled.img`
-  display: block;
 `
 
 const Name = styled.p`

@@ -29,14 +29,11 @@ class SwipeContainer extends React.Component {
       onMenuPanelOpen,
       width,
     } = this.props
+
     const oneThirdWindowWidth = width / 3
 
-    if (!enabled) {
-      return <Container>{children(Number(menuPanelOpened))}</Container>
-    }
-
     return (
-      <Gesture passive={{ passive: false }} mouse={false}>
+      <Gesture passive={{ passive: false }} mouse={false} touch={enabled}>
         {({
           delta: [xDelta, yDelta],
           direction: [xDir, yDir],
@@ -45,6 +42,10 @@ class SwipeContainer extends React.Component {
           initial: [xInitial],
           xy: [x],
         }) => {
+          if (!enabled) {
+            return <Container>{children(Number(menuPanelOpened))}</Container>
+          }
+
           if (
             !down &&
             this._previousProgress > 0 &&
