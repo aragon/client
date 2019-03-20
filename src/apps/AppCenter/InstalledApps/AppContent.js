@@ -59,7 +59,7 @@ const AppContent = React.memo(
             >
               <div
                 css={`
-                  margin: ${GU}px ${3 * GU}px 0 0;
+                  margin: 0 ${3 * GU}px 0 0;
                 `}
               >
                 <img
@@ -78,7 +78,7 @@ const AppContent = React.memo(
                 <h1
                   css={`
                     white-space: nowrap;
-                    margin-bottom: -${GU}px;
+                    margin-bottom: -${2 * GU}px;
                     font-size: 22px;
                   `}
                 >
