@@ -24,13 +24,14 @@ class AppCard extends React.PureComponent {
       hasWebApp,
       proxyAddress,
     } = app
-    let instanceLabel = identifier || shortenAddress(proxyAddress)
-    if (isAragonOsInternalApp) {
-      instanceLabel = 'System App'
-    } else if (!hasWebApp) {
-      instanceLabel = 'Background App'
-    }
+
     const instanceTitle = `Address: ${proxyAddress}`
+    const instanceLabel = isAragonOsInternalApp
+      ? 'System App'
+      : !hasWebApp
+      ? 'Background App'
+      : identifier || shortenAddress(proxyAddress)
+
     return (
       <Main onClick={this.handleClick}>
         <AppIconCard app={app} size={28} />
