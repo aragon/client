@@ -17,9 +17,21 @@ class AppCard extends React.PureComponent {
   }
   render() {
     const { app } = this.props
-    const { name, identifier, proxyAddress } = app
-    const instanceLabel = identifier || shortenAddress(proxyAddress)
+    const {
+      name,
+      identifier,
+      isAragonOsInternalApp,
+      hasWebApp,
+      proxyAddress,
+    } = app
+
     const instanceTitle = `Address: ${proxyAddress}`
+    const instanceLabel = isAragonOsInternalApp
+      ? 'System App'
+      : !hasWebApp
+      ? 'Background App'
+      : identifier || shortenAddress(proxyAddress)
+
     return (
       <Main onClick={this.handleClick}>
         <div css="margin-bottom: 5px">
