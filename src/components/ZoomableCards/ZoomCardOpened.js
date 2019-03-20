@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import { Viewport, springs } from '@aragon/ui'
@@ -11,6 +12,13 @@ const LARGE_MARGIN = 30
 const SIDEBAR_WIDTH = 360
 
 class ZoomCardOpened extends React.Component {
+  static propTypes = {
+    cardRect: PropTypes.instanceOf(DOMRect),
+    renderContent: PropTypes.func,
+    renderAside: PropTypes.func,
+    currentId: PropTypes.string,
+  }
+
   state = {
     openedCardRect: null,
   }

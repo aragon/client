@@ -9,6 +9,9 @@ import ZoomCardOpened from './ZoomCardOpened'
 class ZoomableCards extends React.PureComponent {
   static propTypes = {
     currentId: PropTypes.string,
+    renderCards: PropTypes.func,
+    renderOpenedCard: PropTypes.func,
+    renderOpenedAside: PropTypes.func,
   }
   static defaultProps = {
     currentId: null,

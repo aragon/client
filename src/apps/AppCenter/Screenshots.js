@@ -1,8 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { theme } from '@aragon/ui'
 import { GU } from '../../utils'
 
 class Screenshots extends React.Component {
+  static propTypes = {
+    screenshots: PropTypes.arrayOf(PropTypes.string),
+  }
   state = {
     currentScreenshot: -1,
   }

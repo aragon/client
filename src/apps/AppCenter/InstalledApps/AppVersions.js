@@ -48,7 +48,8 @@ const AppVersions = ({ version, versions, animate }) => (
           immediate={!animate}
           native
         >
-          {({ name, date }) => ({ progress }) => (
+          {/* eslint-disable react/prop-types */
+          ({ name, date }) => ({ progress }) => (
             <BodyTr
               key={name}
               style={{
@@ -70,7 +71,9 @@ const AppVersions = ({ version, versions, animate }) => (
               </Td>
               <Td>{format(date, 'dd/MM/yy')}</Td>
             </BodyTr>
-          )}
+          )
+          /* eslint-enable react/prop-types */
+          }
         </Trail>
       </tbody>
     </table>

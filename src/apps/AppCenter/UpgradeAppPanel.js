@@ -9,11 +9,13 @@ import {
   SidePanelSeparator,
   SidePanelSplit,
 } from '@aragon/ui'
+import { AppType } from '../../prop-types'
 import { TextLabel } from '../../components/TextStyles'
 import { GU } from '../../utils'
 
 class UpgradeAppPanel extends React.PureComponent {
   static propTypes = {
+    app: AppType,
     onClose: PropTypes.func.isRequired,
   }
   state = {
