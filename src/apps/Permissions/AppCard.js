@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Text, Card, Badge, theme, unselectable } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
-import AppIcon from './AppIcon'
+import AppIcon from '../../components/AppIcon/AppIcon'
 
 class AppCard extends React.PureComponent {
   static propTypes = {
@@ -22,7 +22,9 @@ class AppCard extends React.PureComponent {
     const instanceTitle = `Address: ${proxyAddress}`
     return (
       <Main onClick={this.handleClick}>
-        <AppIconCard app={app} size={28} />
+        <div css="margin-bottom: 5px">
+          <AppIcon app={app} size={28} />
+        </div>
         <Name>{name || 'Unknown'}</Name>
         <IdentifierWrapper>
           <Identifier title={instanceTitle}>{instanceLabel}</Identifier>
@@ -46,10 +48,6 @@ const Main = styled(Card).attrs({ width: '100%', height: '180px' })`
   align-items: center;
   padding-top: 25px;
   cursor: pointer;
-`
-
-const AppIconCard = styled(AppIcon)`
-  margin-bottom: 5px;
 `
 
 const Name = styled.p`

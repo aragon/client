@@ -1,18 +1,12 @@
 import React from 'react'
 import { IconSettings, IconPermissions, IconApps } from '@aragon/ui'
-import IconHomeSvg from './icons/app-home.svg'
+import AppIcon from './components/AppIcon/AppIcon'
 
-const IconHome = () => (
-  <img
-    src={IconHomeSvg}
-    alt=""
-    css={`
-      display: block;
-      width: 22px;
-      height: 22px;
-    `}
-  />
-)
+const homeApp = {
+  appId: 'home',
+  name: 'Home',
+  instances: [{ instanceId: 'home' }],
+}
 
 export const staticApps = new Map(
   Object.entries({
@@ -27,10 +21,8 @@ export const staticApps = new Map(
     },
     home: {
       app: {
-        appId: 'home',
-        name: 'Home',
-        icon: <IconHome />,
-        instances: [{ instanceId: 'home' }],
+        ...homeApp,
+        icon: <AppIcon app={homeApp} />,
       },
       route: '/',
     },
