@@ -23,33 +23,7 @@ const AppIcon = ({ app, src, size, radius, ...props }) => {
       `}
       {...props}
     >
-      {(() => {
-        if (src) {
-          return <IconBase size={size} src={src} />
-        }
-        if (!app) {
-          return <IconDefault size={size} />
-        }
-        if (app.appId === 'home') {
-          return <IconHome size={size} />
-        }
-        if (app.baseUrl) {
-          const iconUrl = appIconUrl(app)
-          return (
-            // Tries to load the app icon while displaying the default one.
-            <RemoteImage size={size} src={iconUrl}>
-              {({ exists }) =>
-                exists ? (
-                  <IconBase size={size} src={iconUrl} />
-                ) : (
-                  <IconDefault size={size} />
-                )
-              }
-            </RemoteImage>
-          )
-        }
-        return <IconDefault size={size} />
-      })()}
+      <AppIconContent app={app} size={size} src={src} />
     </div>
   )
 }
@@ -68,16 +42,38 @@ AppIcon.defaultProps = {
   size: DEFAULT_SIZE,
 }
 
+// Disabling the ESLint prop-types check for internal components.
+/* eslint-disable react/prop-types */
+
+const AppIconContent = ({ app, size, src }) => {
+  if (src) {
+    return <IconBase size={size} src={src} />
+  }
+  if (app && app.appId === 'home') {
+    return <IconHome size={size} />
+  }
+  if (app && app.baseUrl) {
+    const iconUrl = appIconUrl(app)
+    return (
+      // Tries to load the app icon while displaying the default one.
+      <RemoteImage size={size} src={iconUrl}>
+        {({ exists }) =>
+          exists ? (
+            <IconBase size={size} src={iconUrl} />
+          ) : (
+            <IconDefault size={size} />
+          )
+        }
+      </RemoteImage>
+    )
+  }
+  return <IconDefault size={size} />
+}
+
 // Base icon
 const IconBase = ({ src, size, alt = '', ...props }) => (
   <img {...props} src={src} width={size} height={size} alt={alt} />
 )
-IconBase.propTypes = {
-  alt: PropTypes.string,
-  src: PropTypes.string,
-  radius: PropTypes.number,
-  size: PropTypes.number.isRequired,
-}
 
 // Default icon
 const IconDefault = props => <IconBase {...props} src={iconSvgDefault} />
