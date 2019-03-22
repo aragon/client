@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Spring, animated } from 'react-spring'
+import { Transition, Spring, animated } from 'react-spring'
 import {
   Text,
   Viewport,
@@ -61,9 +61,21 @@ class MenuPanel extends React.PureComponent {
 
   state = {
     notifications: [],
+    systemAppsOpened: true,
+    animate: false,
+  }
+
+  componentDidMount() {
+    setTimeout(() => this.setState({ animate: true }), 0)
   }
 
   getAppGroups = memoize(apps => prepareAppGroups(apps))
+
+  handleToggleSystemApps = () => {
+    this.setState(({ systemAppsOpened }) => ({
+      systemAppsOpened: !systemAppsOpened,
+    }))
+  }
 
   render() {
     const {
@@ -73,6 +85,7 @@ class MenuPanel extends React.PureComponent {
       onNotificationClicked,
       notifications,
     } = this.props
+    const { animate, systemAppsOpened } = this.state
     const appGroups = this.getAppGroups(apps)
 
     const menuApps = [APP_HOME, appGroups]
@@ -97,6 +110,7 @@ class MenuPanel extends React.PureComponent {
           <Content>
             <div className="in">
               <h1>Apps</h1>
+
               <div>
                 {menuApps.map(app =>
                   // If it's an array, it's the group being loaded from the ACL
@@ -105,8 +119,27 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
-              <h1 style={{ marginTop: '24px' }}>System</h1>
-              <div>{systemApps.map(app => this.renderAppGroup(app, true))}</div>
+              <StyledButton onClick={this.handleToggleSystemApps}>
+                <h1 style={{ marginTop: '24px' }}>System</h1>
+              </StyledButton>
+              <Transition
+                items={systemAppsOpened}
+                config={springs.lazy}
+                from={{ height: 0 }}
+                enter={{ height: 'auto' }}
+                leave={{ height: 0 }}
+                immediate={!animate}
+                native
+              >
+                {show =>
+                  show &&
+                  (props => (
+                    <animated.div style={{ ...props, overflow: 'hidden' }}>
+                      {systemApps.map(app => this.renderAppGroup(app, true))}
+                    </animated.div>
+                  ))
+                }
+              </Transition>
             </div>
           </Content>
           <ConnectionWrapper>
@@ -255,6 +288,14 @@ AnimatedMenuPanel.propTypes = {
   openProgress: PropTypes.number.isRequired,
   onCloseMenuPanel: PropTypes.func.isRequired,
 }
+
+const StyledButton = styled.button`
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+`
 
 const Overlay = styled.div`
   position: absolute;
