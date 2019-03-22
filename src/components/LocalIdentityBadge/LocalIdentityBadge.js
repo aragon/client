@@ -6,7 +6,7 @@ import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalMan
 import { IdentityContext } from '../IdentityManager/IdentityManager'
 import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
 
-const CustomLabelIdentityBadge = ({ address, ...props }) => {
+const LocalIdentityBadge = ({ address, ...props }) => {
   const { resolve } = React.useContext(IdentityContext)
   const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
   const { eventEmitter } = React.useContext(EventEmitterContext)
@@ -60,7 +60,7 @@ const CustomLabelIdentityBadge = ({ address, ...props }) => {
   )
 }
 
-CustomLabelIdentityBadge.propTypes = {
+LocalIdentityBadge.propTypes = {
   address: PropTypes.string,
 }
 
@@ -84,4 +84,4 @@ const StyledBadge = styled(Badge)`
   ${font({ size: 'xxsmall' })};
 `
 
-export default CustomLabelIdentityBadge
+export default LocalIdentityBadge

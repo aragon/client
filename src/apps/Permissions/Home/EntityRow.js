@@ -10,7 +10,7 @@ import {
   breakpoint,
   theme,
 } from '@aragon/ui'
-import CustomLabelIdentityBadge from '../../../components/CustomLabelIdentityBadge/CustomLabelIdentityBadge'
+import LocalIdentityBadge from '../../../components/LocalIdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
 import ViewDetailsButton from './ViewDetailsButton'
 import { FirstTableCell, LastTableCell } from '../Table'
@@ -42,16 +42,13 @@ class EntityRow extends React.PureComponent {
   }
   renderEntity(entity) {
     if (entity.type === 'any') {
-      return <CustomLabelIdentityBadge entity="Any account" />
+      return <LocalIdentityBadge entity="Any account" />
     }
     if (entity.type === 'app' && entity.app.name) {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
     return (
-      <CustomLabelIdentityBadge
-        address={entity.address}
-        entity={entity.address}
-      />
+      <LocalIdentityBadge address={entity.address} entity={entity.address} />
     )
   }
   roleTitle({ role, roleBytes, appEntity, proxyAddress }) {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
 import { AppType, EthereumAddressType } from '../../prop-types'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
-import CustomLabelIdentityBadge from '../../components/CustomLabelIdentityBadge/CustomLabelIdentityBadge'
+import LocalIdentityBadge from '../../components/LocalIdentityBadge/LocalIdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
@@ -99,7 +99,7 @@ class RoleRow extends React.Component {
       )
     }
     return (
-      <CustomLabelIdentityBadge
+      <LocalIdentityBadge
         address={manager.address}
         entity={manager.type === 'burn' ? 'Discarded' : manager.address}
       />
