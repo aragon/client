@@ -288,11 +288,13 @@ class App extends React.Component {
   }
 
   handleIdentitySave = ({ address, label }) => {
-    const { resolve, reject } = this.state.identityIntent
+    const { identityIntent } = this.state
     this.state.wrapper
       .modifyAddressIdentity(address, { name: label })
-      .then(() => this.setState({ identityIntent: null }, resolve))
-      .catch(reject)
+      .then(() =>
+        this.setState({ identityIntent: null }, identityIntent.resolve)
+      )
+      .catch(identityIntent.reject)
   }
 
   handleIdentityResolve = address => {
