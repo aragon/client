@@ -18,6 +18,7 @@ import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import NotificationAlert from '../Notifications/NotificationAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
+import FocusVisible from '../FocusVisible'
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -119,9 +120,29 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
-              <StyledButton onClick={this.handleToggleSystemApps}>
-                <h1 style={{ marginTop: '24px' }}>System</h1>
-              </StyledButton>
+              <FocusVisible>
+                {({ onFocus, focusVisible }) => (
+                  <StyledButton
+                    onFocus={onFocus}
+                    focusVisible={focusVisible}
+                    onClick={this.handleToggleSystemApps}
+                  >
+                    <h1
+                      style={{
+                        marginTop: '24px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-end',
+                      }}
+                    >
+                      <span>System</span>
+                      <span css="font-size: 10px;">
+                        {systemAppsOpened ? '▼' : '▲'}
+                      </span>
+                    </h1>
+                  </StyledButton>
+                )}
+              </FocusVisible>
               <Transition
                 items={systemAppsOpened}
                 config={springs.lazy}
@@ -295,6 +316,10 @@ const StyledButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+  width: 100%;
+  text-align: left;
+  margin-top: 5px;
+  outline: none;
 `
 
 const Overlay = styled.div`
