@@ -8,7 +8,7 @@ import { isAddress } from '../../web3-utils'
 // What is the answer to the ultimate question of Life, the Universe, and Everything?
 const MAX_LENGTH = 42
 
-const verifyCustomLabelObject = obj => {
+const verifyLocalIdentityObject = obj => {
   return (
     Array.isArray(obj) &&
     obj.every(
@@ -32,7 +32,7 @@ const fileImport = cb => files => {
   reader.onload = event => {
     try {
       const list = JSON.parse(event.target.result)
-      if (verifyCustomLabelObject(list)) {
+      if (verifyLocalIdentityObject(list)) {
         cb(list)
       } else {
         throw new Error('There was an error reading from the file')

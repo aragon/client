@@ -12,47 +12,25 @@ import {
   font,
   theme,
 } from '@aragon/ui'
-import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
+import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
 import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
-import EmptyCustomLabels from './EmptyCustomLabels'
+import EmptyLocalIdentities from './EmptyLocalIdentities'
 import Import from './Import'
 
-const CustomLabels = ({
+const LocalIdentities = ({
   onClearAll,
   onImport,
   onModify,
   onModifyHook,
   localIdentities,
 }) => {
-  // transform localIdentities from object into sorted array
+  // transform localIdentities from object into array
   const identities = Object.keys(localIdentities).map(address => {
     return Object.assign({}, localIdentities[address], { address })
   })
 
-  return (
-    <React.Fragment>
-      <Labels
-        identities={identities}
-        clearAll={onClearAll}
-        onImport={onImport}
-        onModifyHook={onModifyHook}
-      />
-      <Warning />
-    </React.Fragment>
-  )
-}
-
-CustomLabels.propTypes = {
-  localIdentities: PropTypes.object,
-  onClearAll: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
-  onModify: PropTypes.func.isRequired,
-  onModifyHook: PropTypes.func,
-}
-
-const Labels = ({ clearAll, identities, onImport, onModifyHook }) => {
   if (!identities.length) {
-    return <EmptyCustomLabels onImport={onImport} />
+    return <EmptyLocalIdentities onImport={onImport} />
   }
   const { eventEmitter } = React.useContext(EventEmitterContext)
   const updateLabel = (fn, address) => async () => {
@@ -71,7 +49,7 @@ const Labels = ({ clearAll, identities, onImport, onModifyHook }) => {
   )
   // Mar 01 2019
   const today = format(Date.now(), 'MMM dd yyyy')
-  const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
+  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
 
   return (
     <React.Fragment>
@@ -88,7 +66,7 @@ const Labels = ({ clearAll, identities, onImport, onModifyHook }) => {
                 entity={address}
                 popoverAction={{
                   label: 'Edit custom label',
-                  onClick: updateLabel(showCustomLabelModal, address),
+                  onClick: updateLabel(showLocalIdentityModal, address),
                 }}
                 popoverTitle={
                   <PopoverActionTitle address={address} name={name} />
@@ -108,24 +86,26 @@ const Labels = ({ clearAll, identities, onImport, onModifyHook }) => {
         >
           Export
         </StyledExport>
-        <Button label="Remove labels" mode="outline" onClick={clearAll}>
+        <Button label="Remove labels" mode="outline" onClick={onClearAll}>
           <IconCross /> Remove all labels
         </Button>
       </Controls>
+      <Warning />
     </React.Fragment>
   )
 }
 
-Labels.defaultProps = {
-  identities: [],
-  onModifyHook: () => null,
+LocalIdentities.propTypes = {
+  localIdentities: PropTypes.object,
+  onClearAll: PropTypes.func.isRequired,
+  onImport: PropTypes.func.isRequired,
+  onModify: PropTypes.func.isRequired,
+  onModifyHook: PropTypes.func,
 }
 
-Labels.propTypes = {
-  identities: PropTypes.array,
-  clearAll: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
-  onModifyHook: PropTypes.func,
+LocalIdentities.defaultProps = {
+  localIdentities: {},
+  onModifyHook: () => null,
 }
 
 const PopoverActionTitle = ({ address, name }) => {
@@ -264,4 +244,4 @@ const List = styled.ul`
   )}
 `
 
-export default CustomLabels
+export default LocalIdentities

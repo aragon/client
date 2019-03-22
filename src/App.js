@@ -17,8 +17,8 @@ import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
-import { CustomLabelModalProvider } from './components/CustomLabelModal/CustomLabelModalManager'
-import CustomLabelModal from './components/CustomLabelModal/CustomLabelModal'
+import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
+import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
 import { EventEmitterProvider } from './components/EventEmitterManager/EventEmitterManager'
 import {
   APPS_STATUS_ERROR,
@@ -317,7 +317,7 @@ class App extends React.Component {
   handleOpenOrganization = address => {
     this.historyPush(`/${address}`)
   }
-  handleOpenCustomLabelModal = address => {
+  handleOpenLocalIdentityModal = address => {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
 
@@ -362,10 +362,10 @@ class App extends React.Component {
       <EventEmitterProvider>
         <IdentityProvider onResolve={this.handleIdentityResolve}>
           <ModalProvider>
-            <CustomLabelModalProvider
-              onShowCustomLabelModal={this.handleOpenCustomLabelModal}
+            <LocalIdentityModalProvider
+              onShowLocalIdentityModal={this.handleOpenLocalIdentityModal}
             >
-              <CustomLabelModal
+              <LocalIdentityModal
                 address={identityAddress}
                 label={identityLabel}
                 opened={identityIntent !== null}
@@ -421,7 +421,7 @@ class App extends React.Component {
                   selectorNetworks={selectorNetworks}
                 />
               </FavoriteDaosProvider>
-            </CustomLabelModalProvider>
+            </LocalIdentityModalProvider>
           </ModalProvider>
         </IdentityProvider>
       </EventEmitterProvider>

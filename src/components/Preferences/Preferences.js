@@ -14,7 +14,7 @@ import {
   font,
   springs,
 } from '@aragon/ui'
-import CustomLabels from './CustomLabels'
+import LocalIdentitiesComponent from './LocalIdentities'
 import { AragonType } from '../../prop-types'
 import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
 
@@ -77,7 +77,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
         <Content>
           {selectedTab === 0 && <ComingSoon />}
           {selectedTab === 1 && (
-            <CustomLabels
+            <LocalIdentitiesComponent
               onImport={handleImport}
               onClearAll={handleClearAll}
               onModify={handleModify}

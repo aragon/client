@@ -5,7 +5,7 @@ import { EthIdenticon, IdentityBadge, breakpoint } from '@aragon/ui'
 import { getEmptyAddress } from '../../web3-utils'
 import Import from './Import'
 
-const EmptyCustomLabels = ({ onImport }) => (
+const EmptyLocalIdentities = ({ onImport }) => (
   <Wrap>
     <Title>Start adding labels</Title>
     <Paragraph>
@@ -35,7 +35,7 @@ const EmptyCustomLabels = ({ onImport }) => (
   </Wrap>
 )
 
-EmptyCustomLabels.propTypes = {
+EmptyLocalIdentities.propTypes = {
   onImport: PropTypes.func.isRequired,
 }
 
@@ -74,4 +74,4 @@ const Title = styled.h2`
   margin: 8px 0;
 `
 
-export default EmptyCustomLabels
+export default EmptyLocalIdentities

@@ -12,7 +12,7 @@ import {
 import { ModalContext } from '../ModalManager/ModalManager'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
 
-const CustomLabelModal = ({ opened, ...props }) => {
+const LocalIdentityModal = ({ opened, ...props }) => {
   const { showModal, hideModal } = React.useContext(ModalContext)
   React.useEffect(() => {
     opened ? showModal(Modal, props) : hideModal()
@@ -21,7 +21,7 @@ const CustomLabelModal = ({ opened, ...props }) => {
   return null
 }
 
-CustomLabelModal.propTypes = {
+LocalIdentityModal.propTypes = {
   opened: PropTypes.bool.isRequired,
 }
 
@@ -157,4 +157,4 @@ const StyledSaveButton = styled(Button)`
   )}
 `
 
-export default CustomLabelModal
+export default LocalIdentityModal

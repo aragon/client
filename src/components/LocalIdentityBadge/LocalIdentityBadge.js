@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, IdentityBadge, font } from '@aragon/ui'
-import { CustomLabelModalContext } from '../CustomLabelModal/CustomLabelModalManager'
+import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
 import { IdentityContext } from '../IdentityManager/IdentityManager'
 import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
 
 const LocalIdentityBadge = ({ address, ...props }) => {
   const { resolve } = React.useContext(IdentityContext)
-  const { showCustomLabelModal } = React.useContext(CustomLabelModalContext)
+  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
   const { eventEmitter } = React.useContext(EventEmitterContext)
   const [label, setLabel] = React.useState()
   const handleResolve = async () => {
@@ -20,14 +20,14 @@ const LocalIdentityBadge = ({ address, ...props }) => {
     }
   }
   const handleClick = () => {
-    showCustomLabelModal(address)
+    showLocalIdentityModal(address)
       .then(handleResolve)
       .catch(e => {
         /* user cancelled modify intent */
       })
   }
-  const handleEvent = addr => {
-    if (addr === address) {
+  const handleEvent = updatedAddress => {
+    if (updatedAddress === address) {
       handleResolve()
     }
   }
