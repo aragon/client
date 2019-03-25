@@ -22,6 +22,7 @@ import {
 } from '../IdentityManager/IdentityManager'
 
 const TABS = ['Network', 'Manage labels']
+const ESCAPE_KEY_CODE = 27
 
 const Preferences = ({ onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
@@ -58,8 +59,15 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
     setLocalIdentities(await wrapper.getLocalIdentities())
     identityEvents$.next({ type: identityEventTypes.IMPORT })
   }
+  const handleKeyUp = e => {
+    if (e.keyCode === ESCAPE_KEY_CODE) {
+      onClose()
+    }
+  }
   React.useEffect(() => {
     handleGetAll()
+    window.addEventListener('keyup', handleKeyUp)
+    return () => window.removeEventListener('keyup', handleKeyUp)
   }, [])
 
   return (
