@@ -354,7 +354,7 @@ class App extends React.Component {
     if (fatalError !== null) {
       throw fatalError
     }
-    const { address: identityAddress = null, label: identityLabel = '' } =
+    const { address: intentAddress = null, label: intentLabel = '' } =
       identityIntent || {}
 
     return (
@@ -365,8 +365,8 @@ class App extends React.Component {
               onShowLocalIdentityModal={this.handleOpenLocalIdentityModal}
             >
               <LocalIdentityModal
-                address={identityAddress}
-                label={identityLabel}
+                address={intentAddress}
+                label={intentLabel}
                 opened={identityIntent !== null}
                 onCancel={this.handleIdentityCancel}
                 onSave={this.handleIdentitySave}
