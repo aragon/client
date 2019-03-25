@@ -62,7 +62,7 @@ class MenuPanel extends React.PureComponent {
 
   state = {
     notifications: [],
-    systemAppsOpened: true,
+    systemAppsOpened: false,
     animate: false,
   }
 
@@ -136,7 +136,12 @@ class MenuPanel extends React.PureComponent {
                       }}
                     >
                       <span>System</span>
-                      <span css="font-size: 10px;">
+                      <span
+                        css={`
+                          font-size: 7px;
+                          opacity: 0.7;
+                        `}
+                      >
                         {systemAppsOpened ? '▼' : '▲'}
                       </span>
                     </h1>
