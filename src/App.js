@@ -245,23 +245,20 @@ class App extends React.Component {
         this.setState({ transactionBag })
       },
       onIdentityIntent: async identityIntent => {
-        // callback for both iframe and native apps
-        if (identityIntent.providerName === 'local') {
-          // set the state for modifying a specific address identity
-          let name = null
-          try {
-            const identity = await this.handleIdentityResolve(
-              identityIntent.address
-            )
-            name = identity.name
-          } catch (e) {}
-          this.setState({
-            identityIntent: {
-              label: name,
-              ...identityIntent,
-            },
-          })
-        }
+        // set the state for modifying a specific address identity
+        let name = null
+        try {
+          const identity = await this.handleIdentityResolve(
+            identityIntent.address
+          )
+          name = identity.name
+        } catch (e) {}
+        this.setState({
+          identityIntent: {
+            label: name,
+            ...identityIntent,
+          },
+        })
       },
     })
       .then(wrapper => {
