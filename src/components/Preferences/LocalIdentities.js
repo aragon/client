@@ -13,7 +13,10 @@ import {
   theme,
 } from '@aragon/ui'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
-import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
+import {
+  IdentityContext,
+  identityEventTypes,
+} from '../IdentityManager/IdentityManager'
 import EmptyLocalIdentities from './EmptyLocalIdentities'
 import Import from './Import'
 
@@ -32,14 +35,14 @@ const LocalIdentities = ({
   if (!identities.length) {
     return <EmptyLocalIdentities onImport={onImport} />
   }
-  const { eventEmitter } = React.useContext(EventEmitterContext)
+  const { identityEvents$ } = React.useContext(IdentityContext)
   const updateLabel = (fn, address) => async () => {
     try {
       await fn(address)
       // preferences get all
       onModifyHook()
       // for iframe apps
-      eventEmitter.emit('modifyLocalIdentity', address)
+      identityEvents$.next({ type: identityEventTypes.MODIFY, address })
     } catch (e) {
       /* nothing was updated */
     }

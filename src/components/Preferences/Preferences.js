@@ -16,12 +16,15 @@ import {
 } from '@aragon/ui'
 import LocalIdentitiesComponent from './LocalIdentities'
 import { AragonType } from '../../prop-types'
-import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
+import {
+  IdentityContext,
+  identityEventTypes,
+} from '../IdentityManager/IdentityManager'
 
 const TABS = ['Network', 'Manage labels']
 
 const Preferences = ({ onClose, smallView, wrapper }) => {
-  const { eventEmitter } = React.useContext(EventEmitterContext)
+  const { identityEvents$ } = React.useContext(IdentityContext)
   const [selectedTab, setSelectedTab] = React.useState(1)
   const [localIdentities, setLocalIdentities] = React.useState({})
   const handleGetAll = async () => {
@@ -36,7 +39,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
     }
     await wrapper.clearLocalIdentities()
     setLocalIdentities({})
-    eventEmitter.emit('clearLocalIdentities')
+    identityEvents$.next({ type: identityEventTypes.CLEAR })
   }
   const handleModify = (address, data) => {
     if (!wrapper) {
@@ -53,7 +56,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
       await wrapper.modifyAddressIdentity(address, { name })
     }
     setLocalIdentities(await wrapper.getLocalIdentities())
-    eventEmitter.emit('importLocalIdentities')
+    identityEvents$.next({ type: identityEventTypes.IMPORT })
   }
   React.useEffect(() => {
     handleGetAll()

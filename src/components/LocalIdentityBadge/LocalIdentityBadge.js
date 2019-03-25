@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, IdentityBadge, font } from '@aragon/ui'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
-import { IdentityContext } from '../IdentityManager/IdentityManager'
-import { EventEmitterContext } from '../EventEmitterManager/EventEmitterManager'
+import {
+  IdentityContext,
+  identityEventTypes,
+} from '../IdentityManager/IdentityManager'
 
 const LocalIdentityBadge = ({ address, ...props }) => {
-  const { resolve } = React.useContext(IdentityContext)
+  const { resolve, identityEvents$ } = React.useContext(IdentityContext)
   const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
-  const { eventEmitter } = React.useContext(EventEmitterContext)
   const [label, setLabel] = React.useState()
   const handleResolve = async () => {
     try {
@@ -36,13 +37,18 @@ const LocalIdentityBadge = ({ address, ...props }) => {
   }
   React.useEffect(() => {
     handleResolve()
-    eventEmitter.on('modifyLocalIdentity', handleEvent)
-    eventEmitter.on('clearLocalIdentities', clearLabel)
-    eventEmitter.on('importLocalIdentities', handleResolve)
+    const subscription = identityEvents$.subscribe(event => {
+      switch (event.type) {
+        case identityEventTypes.MODIFY:
+          return handleEvent(event.address)
+        case identityEventTypes.CLEAR:
+          return clearLabel()
+        case identityEventTypes.IMPORT:
+          return handleResolve()
+      }
+    })
     return () => {
-      eventEmitter.off('modifyLocalIdentity', handleEvent)
-      eventEmitter.off('clearLocalIdentities', clearLabel)
-      eventEmitter.off('importLocalIdentities', handleResolve)
+      subscription.unsubscribe()
     }
   }, [])
 

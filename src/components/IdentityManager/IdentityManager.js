@@ -1,5 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Subject } from 'rxjs'
+
+const identityEventTypes = {
+  CLEAR: 'CLEAR',
+  IMPORT: 'IMPORT',
+  MODIFY: 'MODIFY',
+}
+
+// An events subject
+// { type: '<string>', address: <string> }
+const identityEvents$ = new Subject()
 
 const IdentityContext = React.createContext({
   resolve: () =>
@@ -8,7 +19,7 @@ const IdentityContext = React.createContext({
 
 const IdentityProvider = ({ onResolve, children }) => {
   return (
-    <IdentityContext.Provider value={{ resolve: onResolve }}>
+    <IdentityContext.Provider value={{ resolve: onResolve, identityEvents$ }}>
       {children}
     </IdentityContext.Provider>
   )
@@ -21,4 +32,9 @@ IdentityProvider.propTypes = {
 
 const IdentityConsumer = IdentityContext.Consumer
 
-export { IdentityProvider, IdentityConsumer, IdentityContext }
+export {
+  IdentityProvider,
+  IdentityConsumer,
+  IdentityContext,
+  identityEventTypes,
+}

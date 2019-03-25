@@ -5,7 +5,7 @@ import { clamp, lerp } from '../../math-utils'
 import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
-import { EventEmitterConsumer } from '../EventEmitterManager/EventEmitterManager'
+import { IdentityConsumer } from '../IdentityManager/IdentityManager'
 
 const LOADING_START = 25 // Start loading indicator at 25%
 const LOADING_END = 100
@@ -51,7 +51,7 @@ class AppIFrame extends React.Component {
   static propTypes = {
     app: AppType.isRequired,
     iframeRef: PropTypes.func,
-    eventEmitter: PropTypes.object,
+    identityEvents$: PropTypes.object,
     onLoad: PropTypes.func,
     onMessage: PropTypes.func,
     onNavigate: PropTypes.func,
@@ -70,10 +70,10 @@ class AppIFrame extends React.Component {
     this.iframe.src = this.iframe.src
   }
   componentDidMount() {
-    const { eventEmitter } = this.props
-    eventEmitter.on('clearLocalIdentities', this.reloadIframe)
-    eventEmitter.on('importLocalIdentities', this.reloadIframe)
-    eventEmitter.on('modifyLocalIdentity', this.reloadIframe)
+    const { identityEvents$ } = this.props
+    this.identitySubscription = identityEvents$.subscribe(event => {
+      this.reloadIframe()
+    })
     window.addEventListener('message', this.handleReceiveMessage, false)
     this.navigateIFrame(this.props.app.src)
   }
@@ -90,10 +90,7 @@ class AppIFrame extends React.Component {
     }
   }
   componentWillUnmount() {
-    const { eventEmitter } = this.props
-    eventEmitter.off('clearLocalIdentities', this.reloadIframe)
-    eventEmitter.off('importLocalIdentities', this.reloadIframe)
-    eventEmitter.off('modifyLocalIdentity', this.reloadIframe)
+    this.identitySubscription.unsubscribe()
     window.removeEventListener('message', this.handleReceiveMessage, false)
     this.clearProgressTimeout()
   }
@@ -227,9 +224,9 @@ const StyledIFrame = styled.iframe`
 `
 
 export default React.forwardRef((props, ref) => (
-  <EventEmitterConsumer>
-    {({ eventEmitter }) => (
-      <AppIFrame {...props} eventEmitter={eventEmitter} ref={ref} />
+  <IdentityConsumer>
+    {({ identityEvents$ }) => (
+      <AppIFrame {...props} identityEvents$={identityEvents$} ref={ref} />
     )}
-  </EventEmitterConsumer>
+  </IdentityConsumer>
 ))
