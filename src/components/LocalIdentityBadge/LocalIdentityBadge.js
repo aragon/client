@@ -27,14 +27,23 @@ const LocalIdentityBadge = ({ address, ...props }) => {
       })
   }
   const handleEvent = updatedAddress => {
-    if (updatedAddress === address) {
+    if (updatedAddress.toLowerCase() === address.toLowerCase()) {
       handleResolve()
     }
+  }
+  const clearLabel = () => {
+    setLabel(null)
   }
   React.useEffect(() => {
     handleResolve()
     eventEmitter.on('modifyLocalIdentity', handleEvent)
-    return () => eventEmitter.off('modifyLocalIdentity', handleEvent)
+    eventEmitter.on('clearLocalIdentities', clearLabel)
+    eventEmitter.on('importLocalIdentities', handleResolve)
+    return () => {
+      eventEmitter.off('modifyLocalIdentity', handleEvent)
+      eventEmitter.off('clearLocalIdentities', clearLabel)
+      eventEmitter.off('importLocalIdentities', handleResolve)
+    }
   }, [])
 
   return (
