@@ -30,11 +30,11 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
     }
     setLocalIdentities(await wrapper.getLocalIdentities())
   }
-  const handleClearAll = () => {
+  const handleClearAll = async () => {
     if (!wrapper) {
       return
     }
-    wrapper.clearLocalIdentities()
+    await wrapper.clearLocalIdentities()
     setLocalIdentities({})
     eventEmitter.emit('clearLocalIdentities')
   }
@@ -49,9 +49,9 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
       return
     }
     setLocalIdentities({})
-    await list.forEach(async ({ name, address }) => {
+    for (const { name, address } of list) {
       await wrapper.modifyAddressIdentity(address, { name })
-    })
+    }
     setLocalIdentities(await wrapper.getLocalIdentities())
     eventEmitter.emit('importLocalIdentities')
   }
