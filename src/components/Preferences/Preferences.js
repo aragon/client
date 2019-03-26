@@ -76,7 +76,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
       padding={0}
       appBar={
         <StyledAppBar>
-          <Title>My Preferences</Title>
+          <Title>Preferences</Title>
           <StyledButton label="Close" onClick={onClose}>
             <IconClose />
           </StyledButton>
