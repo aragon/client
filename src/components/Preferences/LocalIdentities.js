@@ -84,7 +84,7 @@ const LocalIdentities = ({
         <StyledExport
           label="Export labels"
           mode="secondary"
-          download={`custom labels (${today}).json`}
+          download={`aragon-labels_${today}.json`}
           href={href}
         >
           Export
