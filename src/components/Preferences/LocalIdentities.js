@@ -24,7 +24,7 @@ const LocalIdentities = ({
   onClearAll,
   onImport,
   onModify,
-  onModifyHook,
+  onModifyEvent,
   localIdentities,
 }) => {
   // transform localIdentities from object into array
@@ -40,7 +40,7 @@ const LocalIdentities = ({
     try {
       await fn(address)
       // preferences get all
-      onModifyHook()
+      onModifyEvent()
       // for iframe apps
       identityEvents$.next({ type: identityEventTypes.MODIFY, address })
     } catch (e) {
@@ -103,12 +103,12 @@ LocalIdentities.propTypes = {
   onClearAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,
-  onModifyHook: PropTypes.func,
+  onModifyEvent: PropTypes.func,
 }
 
 LocalIdentities.defaultProps = {
   localIdentities: {},
-  onModifyHook: () => null,
+  onModifyEvent: () => null,
 }
 
 const PopoverActionTitle = ({ address, name }) => {

@@ -92,7 +92,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
               onImport={handleImport}
               onClearAll={handleClearAll}
               onModify={handleModify}
-              onModifyHook={handleGetAll}
+              onModifyEvent={handleGetAll}
               localIdentities={localIdentities}
             />
           )}
