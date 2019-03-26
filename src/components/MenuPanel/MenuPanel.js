@@ -127,7 +127,13 @@ class MenuPanel extends React.PureComponent {
             />
           </Header>
           <Content>
-            <div className="in">
+            <div
+              className="in"
+              css={`
+                overflow-y: auto;
+                height: 100%;
+              `}
+            >
               <h1>Apps</h1>
 
               <div>
