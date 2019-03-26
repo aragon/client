@@ -187,14 +187,16 @@ class MenuPanel extends React.PureComponent {
               {connected ? 'Connected to the network' : 'Not connected'}
             </Text>
           </ConnectionWrapper>
-          <StyledPreferencesButton
-            size="small"
-            mode="outline"
-            label="Preferences"
-            onClick={onOpenPreferences}
-          >
-            <IconSettings /> Preferences
-          </StyledPreferencesButton>
+          <PreferencesWrap>
+            <StyledPreferencesButton
+              size="small"
+              mode="outline"
+              label="Preferences"
+              onClick={onOpenPreferences}
+            >
+              <IconSettings /> Preferences
+            </StyledPreferencesButton>
+          </PreferencesWrap>
         </In>
       </Main>
     )
@@ -348,10 +350,28 @@ const StyledButton = styled(ButtonBase)`
   outline: none;
 `
 
+const PreferencesWrap = styled.div`
+  text-align: left;
+
+  ${breakpoint(
+    'medium',
+    `
+      text-align: center;
+    `
+  )}
+`
+
 const StyledPreferencesButton = styled(Button)`
   display: inline-flex;
-  margin: 0 auto 10px;
+  margin: 0 16px 16px 16px;
   align-items: center;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin: 0 0 16px 0;
+    `
+  )}
 `
 
 const Overlay = styled.div`
