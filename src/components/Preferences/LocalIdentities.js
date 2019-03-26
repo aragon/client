@@ -20,6 +20,8 @@ import {
 import EmptyLocalIdentities from './EmptyLocalIdentities'
 import Import from './Import'
 
+const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+
 const LocalIdentities = ({
   onClearAll,
   onImport,
@@ -81,14 +83,16 @@ const LocalIdentities = ({
       </List>
       <Controls>
         <Import onImport={onImport} />
-        <StyledExport
-          label="Export labels"
-          mode="secondary"
-          download={`aragon-labels_${today}.json`}
-          href={href}
-        >
-          Export
-        </StyledExport>
+        {!iOS && (
+          <StyledExport
+            label="Export labels"
+            mode="secondary"
+            download={`aragon-labels_${today}.json`}
+            href={href}
+          >
+            Export
+          </StyledExport>
+        )}
         <Button label="Remove labels" mode="outline" onClick={onClearAll}>
           <IconCross /> Remove all labels
         </Button>
