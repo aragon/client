@@ -42,7 +42,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
       setError(e)
     }
   }
-  const handleKeyUp = e => {
+  const handlekeyDown = e => {
     if (e.keyCode === 13) {
       handleSave()
     }
@@ -51,8 +51,8 @@ const Modal = ({ address, label, onCancel, onSave }) => {
     setAction(label && label.trim() ? 'Edit' : 'Add')
     labelInput.current.focus()
     labelInput.current.select()
-    window.addEventListener('keyup', handleKeyUp)
-    return () => window.removeEventListener('keyup', handleKeyUp)
+    window.addEventListener('keydown', handlekeyDown)
+    return () => window.removeEventListener('keydown', handlekeyDown)
   }, [])
 
   return (

@@ -59,15 +59,15 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
     setLocalIdentities(await wrapper.getLocalIdentities())
     identityEvents$.next({ type: identityEventTypes.IMPORT })
   }
-  const handleKeyUp = e => {
+  const handlekeyDown = e => {
     if (e.keyCode === ESCAPE_KEY_CODE) {
       onClose()
     }
   }
   React.useEffect(() => {
     handleGetAll()
-    window.addEventListener('keyup', handleKeyUp)
-    return () => window.removeEventListener('keyup', handleKeyUp)
+    window.addEventListener('keydown', handlekeyDown)
+    return () => window.removeEventListener('keydown', handlekeyDown)
   }, [])
 
   return (
