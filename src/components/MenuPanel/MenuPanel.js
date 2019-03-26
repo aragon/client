@@ -188,6 +188,7 @@ class MenuPanel extends React.PureComponent {
             </Text>
           </ConnectionWrapper>
           <StyledPreferencesButton
+            size="small"
             mode="outline"
             label="Preferences"
             onClick={onOpenPreferences}
