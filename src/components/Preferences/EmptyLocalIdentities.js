@@ -10,22 +10,27 @@ const EmptyLocalIdentities = ({ onImport }) => (
     <Title>Start adding labels</Title>
     <Paragraph>
       You can add labels by clicking on the{' '}
-      <WrapBadge>
+      <span
+        css={`
+          display: inline-flex;
+          margin-right: 2px;
+          vertical-align: text-bottom;
+        `}
+      >
         <EthIdenticon
           address={getEmptyAddress()}
           css={`
             position: relative;
             z-index: 1;
+            height: 22px;
+            overflow: hidden;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+            left: 2px;
           `}
         />
-        <IdentityBadge
-          css={`
-            position: relative;
-            left: -3px;
-          `}
-          entity="Address badge"
-        />
-      </WrapBadge>
+        <IdentityBadge entity="Address badge" />
+      </span>
       anywhere in the app, or importing a .json file with labels by clicking
       "Import" below.
     </Paragraph>
@@ -57,16 +62,6 @@ const WrapImport = styled.div`
 // div cannot appear as descendant of p
 const Paragraph = styled.div`
   margin: 16px 0px;
-`
-
-const WrapBadge = styled.span`
-  display: inline-block;
-  align-items: center;
-  border-radius: 3px;
-  overflow: hidden;
-  height: 22px;
-  position: relative;
-  top: 5px;
 `
 
 const Title = styled.h2`
