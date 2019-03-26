@@ -21,12 +21,12 @@ import {
   identityEventTypes,
 } from '../IdentityManager/IdentityManager'
 
-const TABS = ['Network', 'Manage labels']
+const TABS = ['Manage labels']
 const ESCAPE_KEY_CODE = 27
 
 const Preferences = ({ onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
-  const [selectedTab, setSelectedTab] = React.useState(1)
+  const [selectedTab, setSelectedTab] = React.useState(0)
   const [localIdentities, setLocalIdentities] = React.useState({})
   const handleGetAll = async () => {
     if (!wrapper) {
@@ -86,8 +86,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
       <Section>
         <TabBar items={TABS} selected={selectedTab} onChange={setSelectedTab} />
         <Content>
-          {selectedTab === 0 && <ComingSoon />}
-          {selectedTab === 1 && (
+          {selectedTab === 0 && (
             <LocalIdentitiesComponent
               onImport={handleImport}
               onClearAll={handleClearAll}
@@ -158,8 +157,6 @@ const AnimatedWrap = styled(animated.div)`
   z-index: ${({ smallView }) => (smallView ? 2 : 4)};
   min-width: 320px;
 `
-
-const ComingSoon = () => <div css="padding: 0 16px">Coming soon…</div>
 
 const Title = styled.h1`
   ${font({ size: 'xxlarge' })};
