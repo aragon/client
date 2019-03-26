@@ -146,7 +146,7 @@ class MenuPanel extends React.PureComponent {
               </StyledButton>
               <Transition
                 items={systemAppsOpened}
-                config={springs.lazy}
+                config={springs.swift}
                 from={{ height: 0 }}
                 enter={{ height: 'auto' }}
                 leave={{ height: 0 }}
