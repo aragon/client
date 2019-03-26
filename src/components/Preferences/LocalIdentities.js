@@ -50,8 +50,8 @@ const LocalIdentities = ({
   const href = window.URL.createObjectURL(
     new Blob([JSON.stringify(identities)], { type: 'text/json' })
   )
-  // Mar 01 2019
-  const today = format(Date.now(), 'MMM dd yyyy')
+  // standard: https://en.wikipedia.org/wiki/ISO_8601
+  const today = format(Date.now(), 'yyyy-MM-dd')
   const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
 
   return (
