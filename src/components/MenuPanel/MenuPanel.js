@@ -27,6 +27,16 @@ const APP_PERMISSIONS = staticApps.get('permissions').app
 const APP_SETTINGS = staticApps.get('settings').app
 const SHADOW_WIDTH = 15
 
+const systemAppsOpenedState = {
+  key: 'SYSTEM_APPS_OPENED_STATE',
+  get: function() {
+    return window.localStorage.getItem(this.key) || false
+  },
+  set: function(val) {
+    window.localStorage.setItem(this.key, val)
+  },
+}
+
 const prepareAppGroups = apps =>
   apps.reduce((groups, app) => {
     const group = groups.find(({ appId }) => appId === app.appId)
@@ -63,7 +73,7 @@ class MenuPanel extends React.PureComponent {
 
   state = {
     notifications: [],
-    systemAppsOpened: false,
+    systemAppsOpened: systemAppsOpenedState.get(),
     animate: false,
   }
 
@@ -74,9 +84,12 @@ class MenuPanel extends React.PureComponent {
   getAppGroups = memoize(apps => prepareAppGroups(apps))
 
   handleToggleSystemApps = () => {
-    this.setState(({ systemAppsOpened }) => ({
-      systemAppsOpened: !systemAppsOpened,
-    }))
+    this.setState(
+      ({ systemAppsOpened }) => ({
+        systemAppsOpened: !systemAppsOpened,
+      }),
+      () => systemAppsOpenedState.set(this.state.systemAppsOpened)
+    )
   }
 
   render() {
