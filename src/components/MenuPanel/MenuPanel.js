@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Spring, animated } from 'react-spring'
+import { Transition, Spring, animated } from 'react-spring'
 import {
+  ButtonBase,
   Text,
   Viewport,
   breakpoint,
@@ -18,12 +19,23 @@ import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import NotificationAlert from '../Notifications/NotificationAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
+import IconArrow from '../../icons/IconArrow'
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
 const APP_SETTINGS = staticApps.get('settings').app
 const SHADOW_WIDTH = 15
+
+const systemAppsOpenedState = {
+  key: 'SYSTEM_APPS_OPENED_STATE',
+  isOpen: function() {
+    return localStorage.getItem(this.key) === '1'
+  },
+  set: function(opened) {
+    localStorage.setItem(this.key, opened ? '1' : '0')
+  },
+}
 
 const prepareAppGroups = apps =>
   apps.reduce((groups, app) => {
@@ -61,9 +73,24 @@ class MenuPanel extends React.PureComponent {
 
   state = {
     notifications: [],
+    systemAppsOpened: systemAppsOpenedState.isOpen(),
+    animate: false,
+  }
+
+  componentDidMount() {
+    setTimeout(() => this.setState({ animate: true }), 0)
   }
 
   getAppGroups = memoize(apps => prepareAppGroups(apps))
+
+  handleToggleSystemApps = () => {
+    this.setState(
+      ({ systemAppsOpened }) => ({
+        systemAppsOpened: !systemAppsOpened,
+      }),
+      () => systemAppsOpenedState.set(this.state.systemAppsOpened)
+    )
+  }
 
   render() {
     const {
@@ -73,6 +100,7 @@ class MenuPanel extends React.PureComponent {
       onNotificationClicked,
       notifications,
     } = this.props
+    const { animate, systemAppsOpened } = this.state
     const appGroups = this.getAppGroups(apps)
 
     const menuApps = [APP_HOME, appGroups]
@@ -97,6 +125,7 @@ class MenuPanel extends React.PureComponent {
           <Content>
             <div className="in">
               <h1>Apps</h1>
+
               <div>
                 {menuApps.map(app =>
                   // If it's an array, it's the group being loaded from the ACL
@@ -105,8 +134,47 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
-              <h1 style={{ marginTop: '24px' }}>System</h1>
-              <div>{systemApps.map(app => this.renderAppGroup(app, true))}</div>
+              <StyledButton onClick={this.handleToggleSystemApps}>
+                <h1
+                  style={{
+                    marginTop: '24px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                  }}
+                >
+                  <span>System</span>
+                  <span
+                    css={`
+                      transform: rotate(${systemAppsOpened ? 180 : 0}deg);
+                      position: relative;
+                      top: ${systemAppsOpened ? -5 : 0}px;
+                      font-size: 7px;
+                      opacity: 0.7;
+                    `}
+                  >
+                    <IconArrow />
+                  </span>
+                </h1>
+              </StyledButton>
+              <Transition
+                items={systemAppsOpened}
+                config={springs.swift}
+                from={{ height: 0 }}
+                enter={{ height: 'auto' }}
+                leave={{ height: 0 }}
+                immediate={!animate}
+                native
+              >
+                {show =>
+                  show &&
+                  (props => (
+                    <animated.div style={{ ...props, overflow: 'hidden' }}>
+                      {systemApps.map(app => this.renderAppGroup(app, true))}
+                    </animated.div>
+                  ))
+                }
+              </Transition>
             </div>
           </Content>
           <ConnectionWrapper>
@@ -255,6 +323,18 @@ AnimatedMenuPanel.propTypes = {
   openProgress: PropTypes.number.isRequired,
   onCloseMenuPanel: PropTypes.func.isRequired,
 }
+
+const StyledButton = styled(ButtonBase)`
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  margin-top: 5px;
+  outline: none;
+`
 
 const Overlay = styled.div`
   position: absolute;
