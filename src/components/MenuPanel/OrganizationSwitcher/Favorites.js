@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import FavoriteRow from './FavoriteRow'
+import ItemButton from './ItemButton'
 
 class Favorites extends React.Component {
   static propTypes = {
@@ -63,6 +64,11 @@ class Favorites extends React.Component {
     }
   }
 
+  handleGoHome = () => {
+    window.location.hash = ''
+    this.props.onDone()
+  }
+
   handleDaoOpened = dao => {
     window.location.hash = `/${dao.name || dao.address}`
     this.props.onDone()
@@ -86,6 +92,16 @@ class Favorites extends React.Component {
     )
     return (
       <section aria-label="Organizations">
+        <ItemButton
+          onClick={this.handleGoHome}
+          css={`
+            width: 100%;
+            padding: 0 20px;
+          `}
+        >
+          Open organization…
+        </ItemButton>
+
         <SectionTitle>Current</SectionTitle>
         <FavoriteRow
           dao={currentDao}
