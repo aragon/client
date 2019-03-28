@@ -66,12 +66,10 @@ class Favorites extends React.Component {
 
   handleGoHome = () => {
     window.location.hash = ''
-    this.props.onDone()
   }
 
   handleDaoOpened = dao => {
     window.location.hash = `/${dao.name || dao.address}`
-    this.props.onDone()
   }
 
   handleFavoriteUpdate = ({ address }, favorited) => {
