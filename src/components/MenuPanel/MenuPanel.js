@@ -29,7 +29,7 @@ const SHADOW_WIDTH = 15
 
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',
-  get: function() {
+  isOpen: function() {
     return window.localStorage.getItem(this.key) || false
   },
   set: function(val) {
@@ -73,7 +73,7 @@ class MenuPanel extends React.PureComponent {
 
   state = {
     notifications: [],
-    systemAppsOpened: systemAppsOpenedState.get(),
+    systemAppsOpened: systemAppsOpenedState.isOpen(),
     animate: false,
   }
 
