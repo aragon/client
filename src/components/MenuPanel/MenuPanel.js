@@ -30,11 +30,10 @@ const SHADOW_WIDTH = 15
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',
   isOpen: function() {
-    const val = window.localStorage.getItem(this.key)
-    return typeof val === 'string' ? JSON.parse(val) : false
+    return localStorage.getItem(this.key) === '1'
   },
-  set: function(val) {
-    window.localStorage.setItem(this.key, val)
+  set: function(opened) {
+    localStorage.setItem(this.key, opened ? '1' : '0')
   },
 }
 
