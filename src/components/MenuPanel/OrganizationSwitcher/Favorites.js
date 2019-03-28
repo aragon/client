@@ -9,7 +9,7 @@ class Favorites extends React.Component {
   static propTypes = {
     favoriteDaos: PropTypes.arrayOf(FavoriteDaoType),
     currentDao: DaoItemType,
-    onDone: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
   }
 
   state = { localDaos: [] }
@@ -19,9 +19,9 @@ class Favorites extends React.Component {
   }
 
   componentWillUnmount() {
-    const { onDone } = this.props
+    const { onUpdate } = this.props
     const { localDaos } = this.state
-    onDone(
+    onUpdate(
       localDaos
         .filter(dao => dao.favorited)
         .map(dao => ({
