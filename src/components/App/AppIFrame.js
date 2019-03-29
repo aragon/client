@@ -5,6 +5,7 @@ import { clamp, lerp } from '../../math-utils'
 import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
+import { IdentityConsumer } from '../IdentityManager/IdentityManager'
 
 const LOADING_START = 25 // Start loading indicator at 25%
 const LOADING_END = 100
@@ -50,6 +51,7 @@ class AppIFrame extends React.Component {
   static propTypes = {
     app: AppType.isRequired,
     iframeRef: PropTypes.func,
+    identityEvents$: PropTypes.object,
     onLoad: PropTypes.func,
     onMessage: PropTypes.func,
     onNavigate: PropTypes.func,
@@ -64,7 +66,14 @@ class AppIFrame extends React.Component {
     hideProgressBar: true,
     loadProgress: 0,
   }
+  reloadIframe = () => {
+    this.iframe.src = this.iframe.src
+  }
   componentDidMount() {
+    const { identityEvents$ } = this.props
+    this.identitySubscription = identityEvents$.subscribe(event => {
+      this.reloadIframe()
+    })
     window.addEventListener('message', this.handleReceiveMessage, false)
     this.navigateIFrame(this.props.app.src)
   }
@@ -81,6 +90,7 @@ class AppIFrame extends React.Component {
     }
   }
   componentWillUnmount() {
+    this.identitySubscription.unsubscribe()
     window.removeEventListener('message', this.handleReceiveMessage, false)
     this.clearProgressTimeout()
   }
@@ -213,4 +223,10 @@ const StyledIFrame = styled.iframe`
   width: 100%;
 `
 
-export default AppIFrame
+export default React.forwardRef((props, ref) => (
+  <IdentityConsumer>
+    {({ identityEvents$ }) => (
+      <AppIFrame {...props} identityEvents$={identityEvents$} ref={ref} />
+    )}
+  </IdentityConsumer>
+))

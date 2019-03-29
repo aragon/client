@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { Transition, Spring, animated } from 'react-spring'
 import {
   ButtonBase,
+  Button,
+  IconSettings,
   Text,
   Viewport,
   breakpoint,
@@ -67,6 +69,7 @@ class MenuPanel extends React.PureComponent {
     daoAddress: DaoAddressType.isRequired,
     notifications: PropTypes.number,
     onOpenApp: PropTypes.func.isRequired,
+    onOpenPreferences: PropTypes.func.isRequired,
     onNotificationClicked: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
   }
@@ -98,6 +101,7 @@ class MenuPanel extends React.PureComponent {
       connected,
       daoAddress,
       onNotificationClicked,
+      onOpenPreferences,
       notifications,
     } = this.props
     const { animate, systemAppsOpened } = this.state
@@ -123,7 +127,13 @@ class MenuPanel extends React.PureComponent {
             />
           </Header>
           <Content>
-            <div className="in">
+            <div
+              className="in"
+              css={`
+                overflow-y: auto;
+                height: 100%;
+              `}
+            >
               <h1>Apps</h1>
 
               <div>
@@ -183,6 +193,16 @@ class MenuPanel extends React.PureComponent {
               {connected ? 'Connected to the network' : 'Not connected'}
             </Text>
           </ConnectionWrapper>
+          <PreferencesWrap>
+            <StyledPreferencesButton
+              size="small"
+              mode="outline"
+              label="Preferences"
+              onClick={onOpenPreferences}
+            >
+              <IconSettings /> Preferences
+            </StyledPreferencesButton>
+          </PreferencesWrap>
         </In>
       </Main>
     )
@@ -334,6 +354,30 @@ const StyledButton = styled(ButtonBase)`
   text-align: left;
   margin-top: 5px;
   outline: none;
+`
+
+const PreferencesWrap = styled.div`
+  text-align: left;
+
+  ${breakpoint(
+    'medium',
+    `
+      text-align: center;
+    `
+  )}
+`
+
+const StyledPreferencesButton = styled(Button)`
+  display: inline-flex;
+  margin: 0 16px 16px 16px;
+  align-items: center;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin: 0 0 16px 0;
+    `
+  )}
 `
 
 const Overlay = styled.div`
