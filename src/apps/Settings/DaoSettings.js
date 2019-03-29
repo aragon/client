@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, Text, Viewport, theme } from '@aragon/ui'
-import IdentityBadge from '../../components/IdentityBadge'
+import LocalIdentityBadge from '../../components/LocalIdentityBadge/LocalIdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
@@ -65,8 +65,9 @@ class DaoSettings extends React.PureComponent {
         >
           {checksummedDaoAddr ? (
             <Wrap>
-              <Label> Address</Label>
-              <IdentityBadge
+              <Label>Address</Label>
+              <LocalIdentityBadge
+                address={checksummedDaoAddr}
                 entity={checksummedDaoAddr}
                 shorten={shortAddresses}
               />
@@ -150,7 +151,8 @@ class DaoSettings extends React.PureComponent {
                         {name}
                         {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
                       </Label>
-                      <IdentityBadge
+                      <LocalIdentityBadge
+                        address={checksummedProxyAddress}
                         entity={checksummedProxyAddress}
                         shorten={shortAddresses}
                       />

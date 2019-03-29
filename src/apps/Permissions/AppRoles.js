@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
 import { AppType, EthereumAddressType } from '../../prop-types'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
-import IdentityBadge from '../../components/IdentityBadge'
+import LocalIdentityBadge from '../../components/LocalIdentityBadge/LocalIdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
@@ -98,10 +98,12 @@ class RoleRow extends React.Component {
         <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
       )
     }
-    if (manager.type === 'burn') {
-      return <IdentityBadge entity={'Discarded'} />
-    }
-    return <IdentityBadge entity={manager.address} />
+    return (
+      <LocalIdentityBadge
+        address={manager.address}
+        entity={manager.type === 'burn' ? 'Discarded' : manager.address}
+      />
+    )
   }
   render() {
     const { role, manager } = this.props

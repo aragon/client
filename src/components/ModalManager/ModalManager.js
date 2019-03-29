@@ -111,4 +111,4 @@ const AnimatedWrap = styled(animated.div)`
   min-height: 0;
 `
 
-export { ModalProvider, ModalConsumer, ModalView }
+export { ModalContext, ModalProvider, ModalConsumer, ModalView }

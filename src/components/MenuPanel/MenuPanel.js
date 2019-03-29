@@ -5,6 +5,8 @@ import { Transition, Spring, animated } from 'react-spring'
 import throttle from 'lodash.throttle'
 import {
   ButtonBase,
+  Button,
+  IconSettings,
   Viewport,
   breakpoint,
   springs,
@@ -67,6 +69,8 @@ class MenuPanel extends React.PureComponent {
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     notifications: PropTypes.number,
+    onOpenApp: PropTypes.func.isRequired,
+    onOpenPreferences: PropTypes.func.isRequired,
     onNotificationClicked: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
@@ -129,6 +133,7 @@ class MenuPanel extends React.PureComponent {
       connected,
       daoAddress,
       onNotificationClicked,
+      onOpenPreferences,
       notifications,
     } = this.props
     const { animate, scrollVisible, systemAppsOpened } = this.state
@@ -165,10 +170,9 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
-              <StyledButton onClick={this.handleToggleSystemApps}>
+              <SystemAppsToggle onClick={this.handleToggleSystemApps}>
                 <h1
                   style={{
-                    marginTop: '24px',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'flex-end',
@@ -187,7 +191,7 @@ class MenuPanel extends React.PureComponent {
                     <IconArrow />
                   </span>
                 </h1>
-              </StyledButton>
+              </SystemAppsToggle>
               <Transition
                 items={systemAppsOpened}
                 config={springs.swift}
@@ -219,6 +223,16 @@ class MenuPanel extends React.PureComponent {
             />
           )}
           <MenuPanelFooter connected={connected} />
+          <PreferencesWrap>
+            <StyledPreferencesButton
+              size="small"
+              mode="outline"
+              label="Preferences"
+              onClick={onOpenPreferences}
+            >
+              <IconSettings /> Preferences
+            </StyledPreferencesButton>
+          </PreferencesWrap>
         </In>
       </Main>
     )
@@ -367,16 +381,40 @@ AnimatedMenuPanel.propTypes = {
   onCloseMenuPanel: PropTypes.func.isRequired,
 }
 
-const StyledButton = styled(ButtonBase)`
+const SystemAppsToggle = styled(ButtonBase)`
   padding: 0;
   margin: 0;
+  margin-top: 20px;
   background: none;
   border: none;
   cursor: pointer;
   width: 100%;
   text-align: left;
-  margin-top: 5px;
   outline: none;
+`
+
+const PreferencesWrap = styled.div`
+  text-align: left;
+
+  ${breakpoint(
+    'medium',
+    `
+      text-align: center;
+    `
+  )}
+`
+
+const StyledPreferencesButton = styled(Button)`
+  display: inline-flex;
+  margin: 0 16px 16px 16px;
+  align-items: center;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin: 0 0 16px 0;
+    `
+  )}
 `
 
 const Overlay = styled.div`
