@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Text, theme } from '@aragon/ui'
 
@@ -10,6 +11,10 @@ const MenuPanelFooter = ({ connected }) => (
     </Text>
   </div>
 )
+
+MenuPanelFooter.propTypes = {
+  connected: PropTypes.bool,
+}
 
 const ConnectionBullet = styled.span`
   width: 8px;
