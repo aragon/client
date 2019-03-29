@@ -144,10 +144,9 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
-              <StyledButton onClick={this.handleToggleSystemApps}>
+              <SystemAppsToggle onClick={this.handleToggleSystemApps}>
                 <h1
                   style={{
-                    marginTop: '24px',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'flex-end',
@@ -166,7 +165,7 @@ class MenuPanel extends React.PureComponent {
                     <IconArrow />
                   </span>
                 </h1>
-              </StyledButton>
+              </SystemAppsToggle>
               <Transition
                 items={systemAppsOpened}
                 config={springs.swift}
@@ -344,15 +343,15 @@ AnimatedMenuPanel.propTypes = {
   onCloseMenuPanel: PropTypes.func.isRequired,
 }
 
-const StyledButton = styled(ButtonBase)`
+const SystemAppsToggle = styled(ButtonBase)`
   padding: 0;
   margin: 0;
+  margin-top: 20px;
   background: none;
   border: none;
   cursor: pointer;
   width: 100%;
   text-align: left;
-  margin-top: 5px;
   outline: none;
 `
 
