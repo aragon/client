@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, Spring, animated } from 'react-spring'
+import throttle from 'lodash.throttle'
 import {
   ButtonBase,
   Button,
   IconSettings,
-  Text,
   Viewport,
   breakpoint,
   springs,
@@ -16,6 +16,7 @@ import {
 import memoize from 'lodash.memoize'
 import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
+import MenuPanelFooter from './MenuPanelFooter'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import NotificationAlert from '../Notifications/NotificationAlert'
@@ -68,21 +69,51 @@ class MenuPanel extends React.PureComponent {
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     notifications: PropTypes.number,
+    onNotificationClicked: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
-    onNotificationClicked: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    viewportHeight: PropTypes.number,
   }
+
+  _animateTimer = -1
+  _contentRef = React.createRef()
+  _innerContentRef = React.createRef()
 
   state = {
     notifications: [],
     systemAppsOpened: systemAppsOpenedState.isOpen(),
     animate: false,
+    scrollVisible: false,
   }
 
   componentDidMount() {
-    setTimeout(() => this.setState({ animate: true }), 0)
+    this._animateTimer = setTimeout(() => this.setState({ animate: true }), 0)
   }
+  componentWillUnmount() {
+    clearTimeout(this._animateTimer)
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.viewportHeight !== this.props.viewportHeight) {
+      this.updateScrollVisible()
+    }
+  }
+
+  // ResizeObserver is still not supported everywhere, so… this method checks
+  // if the height of the content is higher than the height of the container,
+  // which means that there is a scrollbar displayed.
+  // It is called in two cases: when the viewport’s height changes, and when
+  // the system menu open / close transition is running.
+  updateScrollVisible = throttle(() => {
+    const content = this._contentRef.current
+    const innerContent = this._innerContentRef.current
+    this.setState({
+      scrollVisible:
+        content &&
+        innerContent &&
+        innerContent.clientHeight > content.clientHeight,
+    })
+  }, 100)
 
   getAppGroups = memoize(apps => prepareAppGroups(apps))
 
@@ -104,7 +135,7 @@ class MenuPanel extends React.PureComponent {
       onOpenPreferences,
       notifications,
     } = this.props
-    const { animate, systemAppsOpened } = this.state
+    const { animate, scrollVisible, systemAppsOpened } = this.state
     const appGroups = this.getAppGroups(apps)
 
     const menuApps = [APP_HOME, appGroups]
@@ -126,14 +157,8 @@ class MenuPanel extends React.PureComponent {
               onClick={onNotificationClicked}
             />
           </Header>
-          <Content>
-            <div
-              className="in"
-              css={`
-                overflow-y: auto;
-                height: 100%;
-              `}
-            >
+          <Content ref={this._contentRef}>
+            <div className="in" ref={this._innerContentRef}>
               <h1>Apps</h1>
 
               <div>
@@ -173,6 +198,7 @@ class MenuPanel extends React.PureComponent {
                 enter={{ height: 'auto' }}
                 leave={{ height: 0 }}
                 immediate={!animate}
+                onFrame={this.updateScrollVisible}
                 native
               >
                 {show =>
@@ -186,12 +212,16 @@ class MenuPanel extends React.PureComponent {
               </Transition>
             </div>
           </Content>
-          <ConnectionWrapper>
-            <ConnectionBullet connected={connected} />
-            <Text size="xsmall">
-              {connected ? 'Connected to the network' : 'Not connected'}
-            </Text>
-          </ConnectionWrapper>
+          {scrollVisible && (
+            <div
+              css={`
+                width: 100%;
+                height: 1px;
+                background: ${theme.contentBorder};
+              `}
+            />
+          )}
+          <MenuPanelFooter connected={connected} />
           <PreferencesWrap>
             <StyledPreferencesButton
               size="small"
@@ -318,17 +348,24 @@ class AnimatedMenuPanel extends React.Component {
                       )
                     `
                 ),
-                opacity: progress.interpolate(v => (v > 0 ? 1 : 0)),
+                opacity: progress.interpolate(v => Number(v > 0)),
               }}
             >
-              <MenuPanel {...props} />
+              <Viewport>
+                {({ height }) => (
+                  <MenuPanel viewportHeight={height} {...props} />
+                )}
+              </Viewport>
             </Wrap>
           )}
         </Spring>
         <Viewport>
           {({ below }) =>
             below('medium') && (
-              <Overlay opened={!!openProgress} onClick={onCloseMenuPanel} />
+              <Overlay
+                opened={Boolean(openProgress)}
+                onClick={onCloseMenuPanel}
+              />
             )
           }
         </Viewport>
@@ -473,21 +510,6 @@ const Content = styled.nav`
     display: flex;
     align-items: center;
   }
-`
-
-const ConnectionWrapper = styled.div`
-  margin: 15px 20px;
-`
-
-const ConnectionBullet = styled.span`
-  width: 8px;
-  height: 8px;
-  margin-top: -2px;
-  margin-right: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  background: ${({ connected }) =>
-    connected ? theme.positive : theme.negative};
 `
 
 export default AnimatedMenuPanel

@@ -14,9 +14,12 @@ import EscapeOutside from '../EscapeOutside/EscapeOutside'
 
 const LocalIdentityModal = ({ opened, ...props }) => {
   const { showModal, hideModal } = React.useContext(ModalContext)
-  React.useEffect(() => {
-    opened ? showModal(Modal, props) : hideModal()
-  }, [opened])
+  React.useEffect(
+    () => {
+      opened ? showModal(Modal, props) : hideModal()
+    },
+    [opened]
+  )
 
   return null
 }
