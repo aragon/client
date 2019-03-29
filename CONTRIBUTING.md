@@ -20,6 +20,8 @@ Start small, pick a subject you care about, are familiar with, or want to learn.
 
 If you're not already familiar with git or Github, here are a couple of friendly tutorials: [First Contributions](https://github.com/firstcontributions/first-contributions), [Open Source Guide](https://opensource.guide/), and [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
+An [architecture guide](./ARCHITECTURE.md) is available for the Aragon client's code bases to help guide you towards your first contribution.
+
 ## How to file an issue or report a bug
 
 If you see a problem, you can report it in our [issue tracker](https://github.com/aragon/aragon/issues).

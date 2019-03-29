@@ -29,9 +29,11 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 
 #### 👋 Get started contributing with a [good first issue](https://github.com/aragon/aragon/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
+#### 🎓 You may be interested in the [Aragon client architecture guide](./ARCHITECTURE.md) if you're not familiar with how the project is set up.
+
 Don't be shy to contribute even the smallest tweak. 🐲 There are still some dragons to be aware of, but we'll be here to help you get started!
 
-For more details about contributing to Aragon, please check the [contributing guide](./CONTRIBUTING.md).
+For other details about contributing to Aragon, more details are available in the [contributing guide](./CONTRIBUTING.md).
 
 #### Issues
 
