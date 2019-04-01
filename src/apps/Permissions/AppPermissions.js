@@ -111,7 +111,6 @@ class Row extends React.Component {
     return (
       <LocalIdentityBadge
         entity={entity.type === 'any' ? 'Any account' : entity.address}
-        address={entity.address}
       />
     )
   }

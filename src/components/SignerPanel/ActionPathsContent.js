@@ -58,7 +58,6 @@ class ActionPathsContent extends React.Component {
                       `}
                     >
                       <LocalIdentityBadge
-                        address={value}
                         entity={type === 'any-account' ? 'Any account' : value}
                         fontSize="small"
                       />

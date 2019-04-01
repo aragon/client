@@ -3,12 +3,18 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, IdentityBadge, font } from '@aragon/ui'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
+import { isAddress } from '../../web3-utils'
 import {
   IdentityContext,
   identityEventTypes,
 } from '../IdentityManager/IdentityManager'
 
-const LocalIdentityBadge = ({ address, ...props }) => {
+const LocalIdentityBadge = ({ entity, ...props }) => {
+  const address = isAddress(entity) ? entity : null
+  if (address === null) {
+    return <IdentityBadge {...props} customLabel={entity} />
+  }
+
   const { resolve, identityEvents$ } = React.useContext(IdentityContext)
   const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
   const [label, setLabel] = React.useState()
@@ -56,7 +62,7 @@ const LocalIdentityBadge = ({ address, ...props }) => {
     <IdentityBadge
       {...props}
       customLabel={label || ''}
-      address={address}
+      entity={address}
       popoverAction={{
         label: `${label ? 'Edit' : 'Add'} custom label`,
         onClick: handleClick,
@@ -76,7 +82,7 @@ const LocalIdentityBadge = ({ address, ...props }) => {
 }
 
 LocalIdentityBadge.propTypes = {
-  address: PropTypes.string,
+  entity: PropTypes.string,
 }
 
 const Wrap = styled.div`

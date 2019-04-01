@@ -14,7 +14,6 @@ const NavigationItem = ({ title, badge, address, entity }) => {
           <Title>{title}</Title>
           {above('medium') && isEntity && (
             <LocalIdentityBadge
-              address={address}
               entity={entity && entity.type === 'any' ? 'Any account' : address}
             />
           )}
