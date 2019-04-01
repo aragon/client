@@ -100,7 +100,6 @@ class RoleRow extends React.Component {
     }
     return (
       <LocalIdentityBadge
-        address={manager.address}
         entity={manager.type === 'burn' ? 'Discarded' : manager.address}
       />
     )

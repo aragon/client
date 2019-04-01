@@ -248,7 +248,6 @@ class ManageRolePanel extends React.PureComponent {
     }
     return (
       <LocalIdentityBadge
-        address={manager.address}
         entity={manager.type === 'burn' ? 'Discarded' : manager.address}
       />
     )

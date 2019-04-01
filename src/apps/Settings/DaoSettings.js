@@ -67,7 +67,6 @@ class DaoSettings extends React.PureComponent {
             <Wrap>
               <Label>Address</Label>
               <LocalIdentityBadge
-                address={checksummedDaoAddr}
                 entity={checksummedDaoAddr}
                 shorten={shortAddresses}
               />
@@ -152,7 +151,6 @@ class DaoSettings extends React.PureComponent {
                         {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
                       </Label>
                       <LocalIdentityBadge
-                        address={checksummedProxyAddress}
                         entity={checksummedProxyAddress}
                         shorten={shortAddresses}
                       />
