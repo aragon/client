@@ -9,9 +9,10 @@ const spring = { tension: 1900, friction: 200, precision: 0.0001, clamp: true }
 
 class NotificationHub extends React.Component {
   static propTypes = {
+    children: PropTypes.func.isRequired,
     items: PropTypes.arrayOf(PropTypes.object).isRequired,
     keys: PropTypes.func.isRequired,
-    children: PropTypes.func.isRequired,
+    onNotificationClosed: PropTypes.func.isRequired,
   }
 
   state = { ready: {} }
@@ -56,7 +57,6 @@ class Notification extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     children: PropTypes.node,
-    time: PropTypes.string,
   }
   render() {
     const { children, title } = this.props

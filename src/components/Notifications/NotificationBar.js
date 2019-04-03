@@ -7,7 +7,16 @@ import { NotificationHub, Notification } from './NotificationHub'
 import springs from '../../springs'
 
 export default class NotificationBar extends React.Component {
+  static propTypes = {
+    open: PropTypes.bool,
+    notifications: PropTypes.arrayOf(PropTypes.object),
+    onBlur: PropTypes.func.isRequired,
+    onClearAll: PropTypes.func.isRequired,
+    onNotificationClosed: PropTypes.func.isRequired,
+  }
+
   frameRef = React.createRef()
+
   componentDidUpdate() {
     this.frameRef.current[this.props.open ? 'focus' : 'blur']()
   }
@@ -70,12 +79,6 @@ export default class NotificationBar extends React.Component {
       </Spring>
     )
   }
-}
-
-NotificationBar.propTypes = {
-  open: PropTypes.bool,
-  notifications: PropTypes.arrayOf(PropTypes.object),
-  onClearAll: PropTypes.func.isRequired,
 }
 
 const NotificationImpl = (item, ready) => {

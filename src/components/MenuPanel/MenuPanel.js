@@ -69,6 +69,7 @@ class MenuPanel extends React.PureComponent {
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     notifications: PropTypes.number,
+    notificationOpen: PropTypes.bool.isRequired,
     onNotificationClicked: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
