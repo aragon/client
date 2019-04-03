@@ -267,4 +267,6 @@ const Screen = styled.div`
   width: 100%;
 `
 
-export default SignerPanel
+export default function(props) {
+  return <SignerPanel {...props} />
+}

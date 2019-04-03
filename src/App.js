@@ -14,6 +14,7 @@ import { getWeb3, getUnknownBalance, identifyProvider } from './web3-utils'
 import { log } from './utils'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
+import { ActivityProvider } from './contexts/ActivityContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
@@ -370,53 +371,55 @@ class App extends React.Component {
               onSave={this.handleIdentitySave}
             />
             <FavoriteDaosProvider>
-              <PermissionsProvider
-                wrapper={wrapper}
-                apps={apps}
-                permissions={permissions}
-              >
-                <Wrapper
-                  account={account}
-                  apps={apps}
-                  appsStatus={appsStatus}
-                  banner={
-                    showDeprecatedBanner && <DeprecatedBanner dao={dao} />
-                  }
-                  connected={connected}
-                  daoAddress={daoAddress}
-                  historyBack={this.historyBack}
-                  historyPush={this.historyPush}
-                  identityIntent={identityIntent}
-                  locator={locator}
-                  onRequestAppsReload={this.handleRequestAppsReload}
-                  onRequestEnable={this.handleRequestEnable}
-                  permissionsLoading={permissionsLoading}
-                  transactionBag={transactionBag}
-                  walletNetwork={walletNetwork}
-                  walletWeb3={walletWeb3}
+              <ActivityProvider>
+                <PermissionsProvider
                   wrapper={wrapper}
-                />
-              </PermissionsProvider>
+                  apps={apps}
+                  permissions={permissions}
+                >
+                  <Wrapper
+                    account={account}
+                    apps={apps}
+                    appsStatus={appsStatus}
+                    banner={
+                      showDeprecatedBanner && <DeprecatedBanner dao={dao} />
+                    }
+                    connected={connected}
+                    daoAddress={daoAddress}
+                    historyBack={this.historyBack}
+                    historyPush={this.historyPush}
+                    identityIntent={identityIntent}
+                    locator={locator}
+                    onRequestAppsReload={this.handleRequestAppsReload}
+                    onRequestEnable={this.handleRequestEnable}
+                    permissionsLoading={permissionsLoading}
+                    transactionBag={transactionBag}
+                    walletNetwork={walletNetwork}
+                    walletWeb3={walletWeb3}
+                    wrapper={wrapper}
+                  />
+                </PermissionsProvider>
 
-              <Onboarding
-                banner={
-                  showDeprecatedBanner && (
-                    <DeprecatedBanner dao={dao} lightMode />
-                  )
-                }
-                visible={mode === 'home' || mode === 'setup'}
-                account={account}
-                balance={balance}
-                walletNetwork={walletNetwork}
-                walletProviderId={walletProviderId}
-                onBuildDao={this.handleBuildDao}
-                daoCreationStatus={daoCreationStatus}
-                onComplete={this.handleCompleteOnboarding}
-                onOpenOrganization={this.handleOpenOrganization}
-                onRequestEnable={this.handleRequestEnable}
-                onResetDaoBuilder={this.handleResetDaoBuilder}
-                selectorNetworks={selectorNetworks}
-              />
+                <Onboarding
+                  banner={
+                    showDeprecatedBanner && (
+                      <DeprecatedBanner dao={dao} lightMode />
+                    )
+                  }
+                  visible={mode === 'home' || mode === 'setup'}
+                  account={account}
+                  balance={balance}
+                  walletNetwork={walletNetwork}
+                  walletProviderId={walletProviderId}
+                  onBuildDao={this.handleBuildDao}
+                  daoCreationStatus={daoCreationStatus}
+                  onComplete={this.handleCompleteOnboarding}
+                  onOpenOrganization={this.handleOpenOrganization}
+                  onRequestEnable={this.handleRequestEnable}
+                  onResetDaoBuilder={this.handleResetDaoBuilder}
+                  selectorNetworks={selectorNetworks}
+                />
+              </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>
         </ModalProvider>
