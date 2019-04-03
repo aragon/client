@@ -20,16 +20,13 @@ export function appIconUrl(app) {
     : null
 }
 
-export function makeEtherscanBaseUrl(network) {
-  // Don't make etherscan urls if the network isn't one that etherscan supports
-  if (
-    network === 'main' ||
-    network === 'kovan' ||
-    network === 'rinkeby' ||
-    network === 'ropsten'
-  ) {
-    return `https://${network === 'main' ? '' : `${network}.`}etherscan.io`
-  }
+export function isElectron() {
+  // See https://github.com/electron/electron/issues/2288
+  return (
+    typeof navigator === 'object' &&
+    typeof navigator.userAgent === 'string' &&
+    navigator.userAgent.indexOf('Electron') >= 0
+  )
 }
 
 export function noop() {}
@@ -47,4 +44,8 @@ export function log(...params) {
   if (process.env.NODE_ENV !== 'production') {
     console.log(...params)
   }
+}
+
+export function isString(str) {
+  return typeof str === 'string' || str instanceof String
 }

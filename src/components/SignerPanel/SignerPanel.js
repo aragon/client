@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-import { addressesEqual } from '../../web3-utils'
-import { noop } from '../../utils'
+import { AppType, EthereumAddressType } from '../../prop-types'
+import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
@@ -29,20 +29,16 @@ const INITIAL_STATE = {
 
 class SignerPanel extends React.Component {
   static propTypes = {
-    apps: PropTypes.array,
-    account: PropTypes.string,
-    walletNetwork: PropTypes.string,
-    walletWeb3: PropTypes.object,
-    walletProviderId: PropTypes.string,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    account: EthereumAddressType,
+    locator: PropTypes.object.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
+    onTransactionSuccess: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
-    onRequestEnable: PropTypes.func,
-  }
-
-  static defaultProps = {
-    apps: [],
-    account: '',
-    walletProviderId: '',
-    onRequestEnable: noop,
+    walletNetwork: PropTypes.string.isRequired,
+    walletWeb3: PropTypes.object.isRequired,
+    walletProviderId: PropTypes.string.isRequired,
   }
 
   state = { ...INITIAL_STATE }
@@ -166,7 +162,6 @@ class SignerPanel extends React.Component {
       onRequestEnable,
       walletNetwork,
       walletProviderId,
-      walletWeb3,
     } = this.props
 
     const {
@@ -208,7 +203,7 @@ class SignerPanel extends React.Component {
                         <ConfirmTransaction
                           direct={directPath}
                           hasAccount={Boolean(account)}
-                          hasWeb3={Boolean(walletWeb3)}
+                          hasWeb3={Boolean(getInjectedProvider())}
                           intent={intent}
                           locator={locator}
                           networkType={network.type}

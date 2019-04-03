@@ -2,8 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { clamp, lerp } from '../../math-utils'
+import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 import AppLoadingProgressBar from './AppLoadingProgressBar'
+import { IdentityConsumer } from '../IdentityManager/IdentityManager'
 
 const LOADING_START = 25 // Start loading indicator at 25%
 const LOADING_END = 100
@@ -47,24 +49,31 @@ const SANDBOX = [
 
 class AppIFrame extends React.Component {
   static propTypes = {
-    app: PropTypes.object.isRequired,
+    app: AppType.isRequired,
     iframeRef: PropTypes.func,
-    onNavigate: PropTypes.func,
-    onMessage: PropTypes.func,
+    identityEvents$: PropTypes.object,
     onLoad: PropTypes.func,
+    onMessage: PropTypes.func,
+    onNavigate: PropTypes.func,
   }
-
   static defaultProps = {
     iframeRef: noop,
-    onNavigate: noop,
-    onMessage: noop,
     onLoad: noop,
+    onMessage: noop,
+    onNavigate: noop,
   }
   state = {
     hideProgressBar: true,
     loadProgress: 0,
   }
+  reloadIframe = () => {
+    this.iframe.src = this.iframe.src
+  }
   componentDidMount() {
+    const { identityEvents$ } = this.props
+    this.identitySubscription = identityEvents$.subscribe(event => {
+      this.reloadIframe()
+    })
     window.addEventListener('message', this.handleReceiveMessage, false)
     this.navigateIFrame(this.props.app.src)
   }
@@ -81,12 +90,13 @@ class AppIFrame extends React.Component {
     }
   }
   componentWillUnmount() {
+    this.identitySubscription.unsubscribe()
     window.removeEventListener('message', this.handleReceiveMessage, false)
     this.clearProgressTimeout()
   }
   isHidden = () => {
-    const { hidden, app } = this.props
-    return !app || !app.src || hidden
+    const { app } = this.props
+    return !app || !app.src
   }
   navigateIFrame = src => {
     // Rather than load src=undefined, this component hides itself. That way,
@@ -213,4 +223,10 @@ const StyledIFrame = styled.iframe`
   width: 100%;
 `
 
-export default AppIFrame
+export default React.forwardRef((props, ref) => (
+  <IdentityConsumer>
+    {({ identityEvents$ }) => (
+      <AppIFrame {...props} identityEvents$={identityEvents$} ref={ref} />
+    )}
+  </IdentityConsumer>
+))

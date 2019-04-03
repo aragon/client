@@ -1,29 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Text,
-} from '@aragon/ui'
+import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
+import LocalIdentityBadge from '../../components/LocalIdentityBadge/LocalIdentityBadge'
+import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
 import AppInstanceLabel from './AppInstanceLabel'
-import IdentityBadge from '../../components/IdentityBadge'
 import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
 
 class AppPermissions extends React.PureComponent {
   static propTypes = {
-    address: PropTypes.string.isRequired,
-    app: PropTypes.object, // may not be available if still loading
+    address: EthereumAddressType.isRequired,
+    app: AppType, // may not be available if still loading
     loading: PropTypes.bool.isRequired,
     onManageRole: PropTypes.func.isRequired,
   }
-
   render() {
     const { app, loading, address, onManageRole } = this.props
     return (
@@ -45,25 +39,33 @@ class AppPermissions extends React.PureComponent {
                       : 'No permissions set.'}
                   </EmptyBlock>
                 ) : (
-                  <Table
-                    header={
-                      <TableRow>
-                        <TableHeader title="Action" style={{ width: '20%' }} />
-                        <TableHeader title="Allowed for" />
-                        <TableHeader />
-                      </TableRow>
-                    }
-                  >
-                    {appPermissions.map(({ role, entity }, i) => (
-                      <Row
-                        key={i}
-                        role={role}
-                        entity={entity}
-                        proxyAddress={address}
-                        onRevoke={revokePermission}
-                      />
-                    ))}
-                  </Table>
+                  <Viewport>
+                    {({ below }) => (
+                      <Table
+                        noSideBorders={below('medium')}
+                        header={
+                          <TableRow>
+                            <TableHeader
+                              title="Action"
+                              style={{ width: '20%' }}
+                            />
+                            <TableHeader title="Allowed for" />
+                            <TableHeader />
+                          </TableRow>
+                        }
+                      >
+                        {appPermissions.map(({ role, entity }, i) => (
+                          <Row
+                            key={i}
+                            role={role}
+                            entity={entity}
+                            proxyAddress={address}
+                            onRevoke={revokePermission}
+                          />
+                        ))}
+                      </Table>
+                    )}
+                  </Viewport>
                 )}
               </Section>
               <EntityPermissions
@@ -85,7 +87,7 @@ class Row extends React.Component {
   static propTypes = {
     entity: PropTypes.object.isRequired,
     onRevoke: PropTypes.func.isRequired,
-    proxyAddress: PropTypes.string.isRequired,
+    proxyAddress: EthereumAddressType.isRequired,
     role: PropTypes.object.isRequired,
   }
 
@@ -105,8 +107,9 @@ class Row extends React.Component {
     if (entity.type === 'app') {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
+
     return (
-      <IdentityBadge
+      <LocalIdentityBadge
         entity={entity.type === 'any' ? 'Any account' : entity.address}
       />
     )
@@ -115,11 +118,11 @@ class Row extends React.Component {
     const { role } = this.props
     return (
       <TableRow>
-        <TableCell>
+        <FirstTableCell>
           <Text weight="bold">{role ? role.name : 'Unknown'}</Text>
-        </TableCell>
+        </FirstTableCell>
         <TableCell>{this.renderEntity()}</TableCell>
-        <TableCell align="right">
+        <LastTableCell align="right">
           <Button
             mode="outline"
             emphasis="negative"
@@ -128,7 +131,7 @@ class Row extends React.Component {
           >
             Revoke
           </Button>
-        </TableCell>
+        </LastTableCell>
       </TableRow>
     )
   }

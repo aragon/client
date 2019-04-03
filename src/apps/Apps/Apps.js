@@ -1,26 +1,28 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  Card,
-  Button,
   Badge,
-  Text,
+  Button,
+  Card,
   SafeLink,
-  theme,
-  colors,
-  unselectable,
-  font,
+  Text,
   breakpoint,
-  BreakPoint,
+  colors,
+  theme,
+  unselectable,
 } from '@aragon/ui'
 import AppLayout from '../../components/AppLayout/AppLayout'
-import MenuButton from '../../components/MenuPanel/MenuButton'
+import AppIcon from '../../components/AppIcon/AppIcon'
 
-import defaultIcon from './icons/default.svg'
 import payrollIcon from './icons/payroll.svg'
 import espressoIcon from './icons/espresso.svg'
 
 class Apps extends React.Component {
+  static propTypes = {
+    onMessage: PropTypes.func.isRequired,
+  }
+
   handleMenuPanelOpen = () => {
     this.props.onMessage({
       data: { from: 'app', name: 'menuPanel', value: true },
@@ -30,23 +32,20 @@ class Apps extends React.Component {
   render() {
     return (
       <AppLayout
-        title={
-          <AppBarTitle>
-            <BreakPoint to="medium">
-              <MenuButton onClick={this.handleMenuPanelOpen} />
-            </BreakPoint>
-            <AppBarLabel>Apps</AppBarLabel>
-          </AppBarTitle>
-        }
-        endContent={
-          <DevPortalAnchor
-            mode="strong"
-            href="https://hack.aragon.org/"
-            target="_blank"
-          >
-            Create a new app
-          </DevPortalAnchor>
-        }
+        title="Apps"
+        onMenuOpen={this.handleMenuPanelOpen}
+        mainButton={{
+          button: (
+            <DevPortalAnchor
+              mode="strong"
+              href="https://hack.aragon.org/"
+              target="_blank"
+            >
+              Create a new app
+            </DevPortalAnchor>
+          ),
+        }}
+        smallViewPadding={20}
       >
         <Content>
           <p>
@@ -66,7 +65,7 @@ class Apps extends React.Component {
             {knownApps.map((app, i) => (
               <Main key={i}>
                 <Icon>
-                  <Img width="64" height="64" src={app.icon} alt="" />
+                  <AppIcon size={64} src={app.icon} />
                 </Icon>
                 <Name>{app.name}</Name>
                 <TagWrapper>
@@ -89,31 +88,12 @@ class Apps extends React.Component {
   }
 }
 
-const AppBarTitle = styled.span`
-  display: flex;
-  align-items: center;
-  margin-left: -30px;
-`
-
-const AppBarLabel = styled.span`
-  margin-left: 8px;
-  ${font({ size: 'xxlarge' })};
-
-  ${breakpoint(
-    'medium',
-    `
-      margin-left: 24px;
-    `
-  )};
-`
-
 const DevPortalAnchor = styled(Button.Anchor)`
+  margin-right: 20px;
   display: block;
 `
 
 const Content = styled.div`
-  padding: 30px;
-
   > h1 {
     margin: 30px 0;
     font-weight: 600;
@@ -151,10 +131,6 @@ const Icon = styled.div`
   img {
     display: block;
   }
-`
-
-const Img = styled.img`
-  display: block;
 `
 
 const Name = styled.p`
@@ -200,7 +176,7 @@ const statuses = {
 
 const knownApps = [
   {
-    icon: defaultIcon,
+    icon: null,
     name: 'That Planning Suite',
     status: 'alpha',
     description: `Suite for open and fluid organizations.
@@ -225,7 +201,7 @@ const knownApps = [
     link: 'https://github.com/espresso-org',
   },
   {
-    icon: defaultIcon,
+    icon: null,
     name: 'Liquid democracy',
     status: 'pre-alpha',
     description: `Delegate your voting power to others,

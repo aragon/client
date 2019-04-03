@@ -8,7 +8,7 @@ import {
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 import { noop } from './utils'
-import { toWei } from './web3-utils'
+import { toWei, getInjectedProvider } from './web3-utils'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault']
 const networkType = getEthNetworkType()
@@ -29,6 +29,14 @@ export const sortAppsPair = (app1, app2) => {
   const [name2] = pairs.find(([_, id]) => id === app2.appId) || []
   const index1 = name1 ? appsOrder.indexOf(name1) : -1
   const index2 = name2 ? appsOrder.indexOf(name2) : -1
+
+  // Keep kernel first
+  if (app1.name === 'Kernel') {
+    return -1
+  }
+  if (app2.name === 'Kernel') {
+    return 1
+  }
 
   // Internal apps first
   if (app1.isAragonOsInternalApp !== app2.isAragonOsInternalApp) {
@@ -126,7 +134,8 @@ export const defaultEthNode =
 
 export const web3Providers = {
   default: new Web3.providers.WebsocketProvider(defaultEthNode),
-  wallet: provider(),
+  // Only use eth-provider to connect to frame if no injected provider is detected
+  wallet: getInjectedProvider() || provider(['frame']),
 }
 
 export const defaultGasPriceFn =

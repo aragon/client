@@ -1,14 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Badge } from '@aragon/ui'
+import { Badge, Viewport, breakpoint } from '@aragon/ui'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
-import AppIcon from './AppIcon'
+import AppIcon from '../../components/AppIcon/AppIcon'
 
 class AppInstanceLabel extends React.PureComponent {
   static propTypes = {
-    app: PropTypes.object.isRequired,
-    proxyAddress: PropTypes.string.isRequired,
+    app: AppType.isRequired,
+    proxyAddress: EthereumAddressType.isRequired,
     showIcon: PropTypes.bool,
   }
 
@@ -16,29 +17,68 @@ class AppInstanceLabel extends React.PureComponent {
     const { app, proxyAddress, showIcon = true } = this.props
     return (
       <Main>
-        {showIcon && <AppIconInRow app={app} />}
+        <Viewport>
+          {({ above }) =>
+            above('medium') &&
+            showIcon && (
+              <div
+                css={`
+                  display: flex;
+                  align-items: center;
+                  height: 0;
+                  margin-right: 10px;
+                  margin-top: -1px;
+                `}
+              >
+                <AppIcon app={app} />
+              </div>
+            )
+          }
+        </Viewport>
         <AppName>{app ? app.name : 'Unknown'}</AppName>
-        <Badge.App title={proxyAddress}>
+        <StyledBadge title={proxyAddress}>
           {(app && app.identifier) || shortenAddress(proxyAddress)}
-        </Badge.App>
+        </StyledBadge>
       </Main>
     )
   }
 }
 
 const Main = styled.div`
-  display: flex;
-  align-items: center;
+  margin: auto;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+      align-items: center;
+      text-align: left;
+      margin: unset;
+    `
+  )}
 `
 
-const AppIconInRow = styled(AppIcon)`
-  height: 0;
-  margin-right: 10px;
-  margin-top: -1px;
+const StyledBadge = styled(Badge.App)`
+  display: inline-block;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: inline;
+    `
+  )}
 `
 
 const AppName = styled.span`
-  margin-right: 10px;
+  display: block;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: inline;
+      margin-right: 10px;
+    `
+  )}
 `
 
 export default AppInstanceLabel

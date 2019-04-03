@@ -1,34 +1,44 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Spring, animated } from 'react-spring'
+import { Transition, Spring, animated } from 'react-spring'
+import throttle from 'lodash.throttle'
 import {
-  Text,
+  ButtonBase,
+  Button,
+  IconSettings,
+  Viewport,
+  breakpoint,
+  springs,
   theme,
   unselectable,
-  breakpoint,
-  BreakPoint,
-  springs,
 } from '@aragon/ui'
 import memoize from 'lodash.memoize'
-import { appIconUrl } from '../../utils'
-import { DaoAddressType } from '../../prop-types'
+import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
+import MenuPanelFooter from './MenuPanelFooter'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import RemoteIcon from '../RemoteIcon'
 import NotificationAlert from '../Notifications/NotificationAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
-import {
-  APPS_STATUS_ERROR,
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-} from '../../symbols'
+import AppIcon from '../AppIcon/AppIcon'
+import IconArrow from '../../icons/IconArrow'
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
 const APP_SETTINGS = staticApps.get('settings').app
+const SHADOW_WIDTH = 15
+
+const systemAppsOpenedState = {
+  key: 'SYSTEM_APPS_OPENED_STATE',
+  isOpen: function() {
+    return localStorage.getItem(this.key) === '1'
+  },
+  set: function(opened) {
+    localStorage.setItem(this.key, opened ? '1' : '0')
+  },
+}
 
 const prepareAppGroups = apps =>
   apps.reduce((groups, app) => {
@@ -45,7 +55,7 @@ const prepareAppGroups = apps =>
       {
         appId: app.appId,
         name: app.name,
-        icon: <RemoteIcon src={appIconUrl(app)} size={22} />,
+        icon: <AppIcon app={app} size={22} />,
         instances: [instance],
       },
     ])
@@ -53,26 +63,68 @@ const prepareAppGroups = apps =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
-    apps: PropTypes.array.isRequired,
-    appsStatus: PropTypes.oneOf([
-      APPS_STATUS_ERROR,
-      APPS_STATUS_READY,
-      APPS_STATUS_LOADING,
-    ]).isRequired,
     activeInstanceId: PropTypes.string,
-    onOpenApp: PropTypes.func.isRequired,
-    onNotificationClicked: PropTypes.func.isRequired,
-    onRequestAppsReload: PropTypes.func.isRequired,
-    daoAddress: DaoAddressType.isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsStatus: AppsStatusType.isRequired,
     connected: PropTypes.bool.isRequired,
+    daoAddress: DaoAddressType.isRequired,
     notifications: PropTypes.number,
+    onNotificationClicked: PropTypes.func.isRequired,
+    onOpenApp: PropTypes.func.isRequired,
+    onOpenPreferences: PropTypes.func.isRequired,
+    onRequestAppsReload: PropTypes.func.isRequired,
+    viewportHeight: PropTypes.number,
   }
+
+  _animateTimer = -1
+  _contentRef = React.createRef()
+  _innerContentRef = React.createRef()
 
   state = {
     notifications: [],
+    systemAppsOpened: systemAppsOpenedState.isOpen(),
+    animate: false,
+    scrollVisible: false,
   }
 
+  componentDidMount() {
+    this._animateTimer = setTimeout(() => this.setState({ animate: true }), 0)
+  }
+  componentWillUnmount() {
+    clearTimeout(this._animateTimer)
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.viewportHeight !== this.props.viewportHeight) {
+      this.updateScrollVisible()
+    }
+  }
+
+  // ResizeObserver is still not supported everywhere, so… this method checks
+  // if the height of the content is higher than the height of the container,
+  // which means that there is a scrollbar displayed.
+  // It is called in two cases: when the viewport’s height changes, and when
+  // the system menu open / close transition is running.
+  updateScrollVisible = throttle(() => {
+    const content = this._contentRef.current
+    const innerContent = this._innerContentRef.current
+    this.setState({
+      scrollVisible:
+        content &&
+        innerContent &&
+        innerContent.clientHeight > content.clientHeight,
+    })
+  }, 100)
+
   getAppGroups = memoize(apps => prepareAppGroups(apps))
+
+  handleToggleSystemApps = () => {
+    this.setState(
+      ({ systemAppsOpened }) => ({
+        systemAppsOpened: !systemAppsOpened,
+      }),
+      () => systemAppsOpenedState.set(this.state.systemAppsOpened)
+    )
+  }
 
   render() {
     const {
@@ -80,18 +132,16 @@ class MenuPanel extends React.PureComponent {
       connected,
       daoAddress,
       onNotificationClicked,
+      onOpenPreferences,
       notifications,
       notificationOpen,
     } = this.props
+    const { animate, scrollVisible, systemAppsOpened } = this.state
     const appGroups = this.getAppGroups(apps)
 
-    const menuApps = [
-      APP_HOME,
-      appGroups,
-      APP_PERMISSIONS,
-      APP_APPS_CENTER,
-      APP_SETTINGS,
-    ]
+    const menuApps = [APP_HOME, appGroups]
+
+    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_SETTINGS]
 
     return (
       <Main>
@@ -109,9 +159,10 @@ class MenuPanel extends React.PureComponent {
               notificationOpen={notificationOpen}
             />
           </Header>
-          <Content>
-            <div className="in">
+          <Content ref={this._contentRef}>
+            <div className="in" ref={this._innerContentRef}>
               <h1>Apps</h1>
+
               <div>
                 {menuApps.map(app =>
                   // If it's an array, it's the group being loaded from the ACL
@@ -120,20 +171,75 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
+              <SystemAppsToggle onClick={this.handleToggleSystemApps}>
+                <h1
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                  }}
+                >
+                  <span>System</span>
+                  <span
+                    css={`
+                      transform: rotate(${systemAppsOpened ? 180 : 0}deg);
+                      position: relative;
+                      top: ${systemAppsOpened ? -5 : 0}px;
+                      font-size: 7px;
+                      opacity: 0.7;
+                    `}
+                  >
+                    <IconArrow />
+                  </span>
+                </h1>
+              </SystemAppsToggle>
+              <Transition
+                items={systemAppsOpened}
+                config={springs.swift}
+                from={{ height: 0 }}
+                enter={{ height: 'auto' }}
+                leave={{ height: 0 }}
+                immediate={!animate}
+                onFrame={this.updateScrollVisible}
+                native
+              >
+                {show =>
+                  show &&
+                  (props => (
+                    <animated.div style={{ ...props, overflow: 'hidden' }}>
+                      {systemApps.map(app => this.renderAppGroup(app, true))}
+                    </animated.div>
+                  ))
+                }
+              </Transition>
             </div>
           </Content>
-          <ConnectionWrapper>
-            <ConnectionBullet connected={connected} />
-            <Text size="xsmall">
-              {connected ? 'Connected to the network' : 'Not connected'}
-            </Text>
-          </ConnectionWrapper>
+          {scrollVisible && (
+            <div
+              css={`
+                width: 100%;
+                height: 1px;
+                background: ${theme.contentBorder};
+              `}
+            />
+          )}
+          <MenuPanelFooter connected={connected} />
+          <PreferencesWrap>
+            <StyledPreferencesButton
+              size="small"
+              mode="outline"
+              label="Preferences"
+              onClick={onOpenPreferences}
+            >
+              <IconSettings /> Preferences
+            </StyledPreferencesButton>
+          </PreferencesWrap>
         </In>
       </Main>
     )
   }
 
-  renderAppGroup(app) {
+  renderAppGroup(app, isSystem) {
     const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances = [] } = app
@@ -147,6 +253,7 @@ class MenuPanel extends React.PureComponent {
         <MenuPanelAppGroup
           name={name}
           icon={icon}
+          system={isSystem}
           instances={instances}
           active={isActive}
           expand={isActive}
@@ -187,52 +294,138 @@ class MenuPanel extends React.PureComponent {
   }
 }
 
-const AnimatedMenuPanel = ({
-  menuPanelOpened,
-  onCloseMenuPanel,
-  autohide,
-  ...props
-}) => {
-  return (
-    <React.Fragment>
-      <Spring
-        from={{ progress: 0 }}
-        to={{ progress: !!menuPanelOpened }}
-        config={springs.lazy}
-        native
-        immediate={!autohide}
-      >
-        {({ progress }) => (
-          <Wrap
-            style={{
-              transform: progress.interpolate(
-                v => `translate3d(${-100 * (1 - v)}%, 0, 0)`
-              ),
-              opacity: progress.interpolate(v => (v > 0 ? 1 : 0)),
-            }}
-          >
-            <MenuPanel {...props} />
-          </Wrap>
-        )}
-      </Spring>
-      <Overlay opened={menuPanelOpened} onClick={onCloseMenuPanel} />
-    </React.Fragment>
-  )
+class AnimatedMenuPanel extends React.Component {
+  state = {
+    animate: false,
+  }
+  _animateTimer = -1
+  componentDidMount() {
+    this.setState({ animate: this.props.autoClosing })
+  }
+  componentDidUpdate(prevProps) {
+    this.updateAnimate(prevProps)
+  }
+  componentWillUnmount() {
+    clearTimeout(this._animateTimer)
+  }
+  updateAnimate(prevProps) {
+    if (prevProps.autoClosing === this.props.autoClosing) {
+      return
+    }
+
+    // If we autoclosing has changed, it means we are switching from
+    // autoclosing to fixed or the opposite, and we should stop animating the
+    // panel for a short period of time.
+    this.setState({ animate: false })
+    this._animateTimer = setTimeout(() => {
+      this.setState({ animate: true })
+    }, 0)
+  }
+
+  render() {
+    const { animate } = this.state
+    const { openProgress, onCloseMenuPanel, ...props } = this.props
+    return (
+      <React.Fragment>
+        <Spring
+          from={{ progress: 0 }}
+          to={{ progress: openProgress }}
+          config={springs.lazy}
+          immediate={!animate}
+          native
+        >
+          {({ progress }) => (
+            <Wrap
+              style={{
+                pointerEvents: openProgress === 1 ? 'auto' : 'none',
+                transform: progress.interpolate(
+                  v =>
+                    `
+                      translate3d(
+                        calc(
+                          ${-100 * (1 - v)}% -
+                          ${SHADOW_WIDTH * (1 - v)}px
+                        ),
+                        0, 0
+                      )
+                    `
+                ),
+                opacity: progress.interpolate(v => Number(v > 0)),
+              }}
+            >
+              <Viewport>
+                {({ height }) => (
+                  <MenuPanel viewportHeight={height} {...props} />
+                )}
+              </Viewport>
+            </Wrap>
+          )}
+        </Spring>
+        <Viewport>
+          {({ below }) =>
+            below('medium') && (
+              <Overlay
+                opened={Boolean(openProgress)}
+                onClick={onCloseMenuPanel}
+              />
+            )
+          }
+        </Viewport>
+      </React.Fragment>
+    )
+  }
 }
 
-const Overlay = styled.div`
-  position: absolute;
-  z-index: 2;
-  width: 100vw;
-  height: 100vh;
-  display: ${({ opened }) => (opened ? 'block' : 'none')};
+AnimatedMenuPanel.propTypes = {
+  autoClosing: PropTypes.bool,
+  openProgress: PropTypes.number.isRequired,
+  onCloseMenuPanel: PropTypes.func.isRequired,
+}
+
+const SystemAppsToggle = styled(ButtonBase)`
+  padding: 0;
+  margin: 0;
+  margin-top: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  outline: none;
+`
+
+const PreferencesWrap = styled.div`
+  text-align: left;
 
   ${breakpoint(
     'medium',
     `
-      display: none;
+      text-align: center;
     `
-  )};
+  )}
+`
+
+const StyledPreferencesButton = styled(Button)`
+  display: inline-flex;
+  margin: 0 16px 16px 16px;
+  align-items: center;
+
+  ${breakpoint(
+    'medium',
+    `
+      margin: 0 0 16px 0;
+    `
+  )}
+`
+
+const Overlay = styled.div`
+  position: absolute;
+  z-index: 2;
+  /* by leaving a 1px edge Android users can swipe to open
+   * from the edge of their screen when an iframe app is being
+   * used */
+  width: ${({ opened }) => (opened ? '100vw' : '1px')};
+  height: 100vh;
 `
 
 const Wrap = styled(animated.div)`
@@ -240,12 +433,15 @@ const Wrap = styled(animated.div)`
   z-index: 3;
   width: 90vw;
   height: 100vh;
+  min-width: 300px;
+  flex: none;
 
   ${breakpoint(
     'medium',
     `
       position: relative;
       width: 220px;
+      min-width: 0;
     `
   )};
 `
@@ -254,9 +450,8 @@ const Main = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  flex: none;
   flex-direction: column;
-  flex-grow: 0;
-  flex-shrink: 0;
   ${unselectable};
 `
 
@@ -269,7 +464,7 @@ const In = styled.div`
   flex-shrink: 1;
   background: #fff;
   border-right: 1px solid #e8e8e8;
-  box-shadow: 1px 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 0 ${SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
 `
 
 const Header = styled.div`
@@ -319,28 +514,4 @@ const Content = styled.nav`
   }
 `
 
-const ConnectionWrapper = styled.div`
-  margin: 15px 20px;
-`
-
-const ConnectionBullet = styled.span`
-  width: 8px;
-  height: 8px;
-  margin-top: -2px;
-  margin-right: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  background: ${({ connected }) =>
-    connected ? theme.positive : theme.negative};
-`
-
-export default props => (
-  <React.Fragment>
-    <BreakPoint from="medium">
-      <AnimatedMenuPanel {...props} />
-    </BreakPoint>
-    <BreakPoint to="medium">
-      <AnimatedMenuPanel {...props} autohide />
-    </BreakPoint>
-  </React.Fragment>
-)
+export default AnimatedMenuPanel

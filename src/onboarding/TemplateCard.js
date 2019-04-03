@@ -1,9 +1,18 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { theme, font, IconCheck } from '@aragon/ui'
 import { noop } from '../utils'
+import { TemplateType } from './templates'
 
 class TemplateCard extends React.Component {
+  static propTypes = {
+    template: TemplateType,
+    active: PropTypes.bool,
+    onSelect: PropTypes.func,
+    label: PropTypes.string,
+    icon: PropTypes.string.isRequired,
+  }
   static defaultProps = {
     template: null,
     active: false,

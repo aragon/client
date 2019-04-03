@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Spring, Transition, animated } from 'react-spring'
 import styled from 'styled-components'
 import { theme, IconClose } from '@aragon/ui'
@@ -7,6 +8,12 @@ import TimeTag from './TimeTag'
 const spring = { tension: 1900, friction: 200, precision: 0.0001, clamp: true }
 
 class NotificationHub extends React.Component {
+  static propTypes = {
+    items: PropTypes.arrayOf(PropTypes.object).isRequired,
+    keys: PropTypes.func.isRequired,
+    children: PropTypes.func.isRequired,
+  }
+
   state = { ready: {} }
   render() {
     const { items, keys, children, onNotificationClosed } = this.props
@@ -46,6 +53,11 @@ class NotificationHub extends React.Component {
 }
 
 class Notification extends React.Component {
+  static propTypes = {
+    title: PropTypes.string,
+    children: PropTypes.node,
+    time: PropTypes.string,
+  }
   render() {
     const { children, title } = this.props
     return (
@@ -63,6 +75,10 @@ class Notification extends React.Component {
 }
 
 Notification.Transaction = class extends React.Component {
+  static propTypes = {
+    children: PropTypes.node,
+    ready: PropTypes.bool,
+  }
   state = { showPayload: true }
   isDone = props => props.p === 1 && this.setState({ showPayload: false })
   render() {

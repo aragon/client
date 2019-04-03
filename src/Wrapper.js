@@ -1,77 +1,72 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Viewport } from '@aragon/ui'
 import { Apps, Permissions, Settings } from './apps'
-import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
-import { ScreenSizeConsumer, SMALL } from './contexts/ScreenSize'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
+import Preferences from './components/Preferences/Preferences'
 import MenuPanel from './components/MenuPanel/MenuPanel'
+import SwipeContainer from './components/MenuPanel/SwipeContainer'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
-import { DaoAddressType } from './prop-types'
+import NotificationBar from './components/Notifications/NotificationBar'
+import {
+  AppType,
+  AppsStatusType,
+  AragonType,
+  DaoAddressType,
+  EthereumAddressType,
+} from './prop-types'
 import { getAppPath } from './routing'
 import { staticApps } from './static-apps'
+import { APPS_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-import { noop } from './utils'
-import {
-  APPS_STATUS_ERROR,
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-} from './symbols'
-import NotificationBar from './components/Notifications/NotificationBar'
+import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 
-class Wrapper extends React.Component {
+class Wrapper extends React.PureComponent {
   static propTypes = {
-    account: PropTypes.string.isRequired,
-    apps: PropTypes.array.isRequired,
-    appsStatus: PropTypes.oneOf([
-      APPS_STATUS_ERROR,
-      APPS_STATUS_READY,
-      APPS_STATUS_LOADING,
-    ]).isRequired,
+    account: EthereumAddressType,
+    apps: PropTypes.arrayOf(AppType).isRequired,
+    appsStatus: AppsStatusType.isRequired,
     banner: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.shape({
         type: PropTypes.oneOf([DeprecatedBanner]),
       }),
-    ]).isRequired,
-    connected: PropTypes.bool.isRequired,
+    ]),
+    connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
-    screenSize: PropTypes.symbol.isRequired,
+    autoClosingPanel: PropTypes.bool.isRequired,
+    menuSwipeEnabled: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
-    walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object,
+    walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
-    wrapper: PropTypes.object,
-    onRequestEnable: PropTypes.func,
+    walletWeb3: PropTypes.object,
+    wrapper: AragonType,
   }
 
   static defaultProps = {
     account: '',
-    apps: [],
-    banner: null,
+    banner: false,
     connected: false,
-    daoAddress: '',
-    historyBack: noop,
-    historyPush: noop,
-    locator: {},
-    onRequestEnable: noop,
     transactionBag: null,
     walletNetwork: '',
     walletProviderId: '',
     walletWeb3: null,
-    wrapper: null,
   }
+
   state = {
     appInstance: {},
-    menuPanelOpened: this.props.screenSize !== SMALL,
+    menuPanelOpened: !this.props.autoClosingPanel,
+    preferencesOpened: false,
     notificationOpen: false,
     notifications: [
       {
@@ -89,18 +84,44 @@ class Wrapper extends React.Component {
     ],
     queuedNotifications: [],
   }
+
+  componentDidUpdate(prevProps) {
+    this.updateAutoClosingPanel(prevProps)
+  }
+
+  updateAutoClosingPanel(prevProps) {
+    const { autoClosingPanel } = this.props
+    if (autoClosingPanel !== prevProps.autoClosingPanel) {
+      this.setState({ menuPanelOpened: !autoClosingPanel })
+      this.sendDisplayMenuButtonStatus()
+    }
+  }
+
+  sendDisplayMenuButtonStatus() {
+    const { autoClosingPanel } = this.props
+    if (this.appIFrame) {
+      this.appIFrame.sendMessage({
+        from: 'wrapper',
+        name: 'displayMenuButton',
+        value: autoClosingPanel,
+      })
+    }
+  }
+
   openApp = (instanceId, params) => {
-    if (this.props.screenSize === SMALL) {
+    if (this.props.autoClosingPanel) {
       this.handleMenuPanelClose()
     }
 
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, instanceId, params }))
   }
+
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
   }
-  handleAppIFrameLoad = event => {
+
+  handleAppIFrameLoad = async event => {
     const {
       apps,
       wrapper,
@@ -114,17 +135,28 @@ class Wrapper extends React.Component {
       return
     }
 
-    wrapper.connectAppIFrame(event.target, instanceId)
+    await wrapper.connectAppIFrame(event.target, instanceId)
+
     this.appIFrame.sendMessage({
       from: 'wrapper',
       name: 'ready',
       value: true,
     })
+    this.sendDisplayMenuButtonStatus()
   }
   handleAppMessage = ({ data: { name, value } }) => {
-    if (name === 'menuPanel') {
-      this.setState({ menuPanelOpened: Boolean(value) })
+    if (
+      // “menuPanel: Boolean” is deprecated but still supported for a while if
+      // value is `true`.
+      name === 'menuPanel' ||
+      // “requestMenu: true” should now be used.
+      name === 'requestMenu'
+    ) {
+      this.setState({ menuPanelOpened: value === true })
     }
+  }
+  handleMenuPanelOpen = () => {
+    this.setState({ menuPanelOpened: true })
   }
   handleMenuPanelClose = () => {
     this.setState({ menuPanelOpened: false })
@@ -132,7 +164,15 @@ class Wrapper extends React.Component {
   handleNotificationClicked = () => {
     this.setState(state => ({ notificationOpen: !state.notificationOpen }))
   }
-
+  handleClosePreferences = () => {
+    this.setState({ preferencesOpened: false })
+  }
+  handleOpenPreferences = () => {
+    if (this.props.autoClosingPanel) {
+      this.handleMenuPanelClose()
+    }
+    this.setState({ preferencesOpened: true })
+  }
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
@@ -172,49 +212,72 @@ class Wrapper extends React.Component {
       account,
       apps,
       appsStatus,
+      autoClosingPanel,
       banner,
       connected,
       daoAddress,
       locator,
       onRequestAppsReload,
       onRequestEnable,
+      menuSwipeEnabled,
       transactionBag,
       walletNetwork,
       walletProviderId,
       walletWeb3,
+      wrapper,
     } = this.props
-    const { menuPanelOpened, notifications, notificationOpen } = this.state
+    const {
+      menuPanelOpened,
+      notifications,
+      notificationOpen,
+      preferencesOpened,
+    } = this.state
 
     return (
       <Main>
+        <Preferences
+          opened={preferencesOpened}
+          onClose={this.handleClosePreferences}
+          wrapper={wrapper}
+        />
         <BannerWrapper>{banner}</BannerWrapper>
-        <Container>
-          <MenuPanel
-            apps={apps.filter(app => app.hasWebApp)}
-            appsStatus={appsStatus}
-            activeInstanceId={locator.instanceId}
-            connected={connected}
-            notifications={notifications.length}
-            daoAddress={daoAddress}
-            menuPanelOpened={menuPanelOpened}
-            onOpenApp={this.openApp}
-            onCloseMenuPanel={this.handleMenuPanelClose}
-            onRequestAppsReload={onRequestAppsReload}
-            onNotificationClicked={this.handleNotificationClicked}
-            notificationOpen={notificationOpen}
-          />
-          <AppScreen>
-            <NotificationBar
-              open={notificationOpen}
-              notifications={notifications}
-              onClearAll={this.handleNotificationsCleared}
-              onBlur={this.handleNotificationClicked}
-              onNotificationClosed={this.handleNotificationClosed}
-            />
-
-            {this.renderApp(locator.instanceId, locator.params)}
-          </AppScreen>
-        </Container>
+        <SwipeContainer
+          enabled={menuSwipeEnabled}
+          menuPanelOpened={menuPanelOpened}
+          onMenuPanelClose={this.handleMenuPanelClose}
+          onMenuPanelOpen={this.handleMenuPanelOpen}
+        >
+          {progress => (
+            <React.Fragment>
+              <MenuPanel
+                apps={apps.filter(app => app.hasWebApp)}
+                appsStatus={appsStatus}
+                activeInstanceId={locator.instanceId}
+                connected={connected}
+                notifications={notifications.length}
+                daoAddress={daoAddress}
+                openProgress={progress}
+                autoClosing={autoClosingPanel}
+                onOpenApp={this.openApp}
+                onCloseMenuPanel={this.handleMenuPanelClose}
+                onOpenPreferences={this.handleOpenPreferences}
+                onRequestAppsReload={onRequestAppsReload}
+                onNotificationClicked={this.handleNotificationClicked}
+                notificationOpen={notificationOpen}
+              />
+              <AppScreen>
+                <NotificationBar
+                  open={notificationOpen}
+                  notifications={notifications}
+                  onClearAll={this.handleNotificationsCleared}
+                  onBlur={this.handleNotificationClicked}
+                  onNotificationClosed={this.handleNotificationClosed}
+                />
+                {this.renderApp(locator.instanceId, locator.params)}
+              </AppScreen>
+            </React.Fragment>
+          )}
+        </SwipeContainer>
         <SignerPanel
           account={account}
           apps={apps}
@@ -283,12 +346,12 @@ class Wrapper extends React.Component {
     if (instanceId === 'home') {
       return (
         <Home
-          connected={connected}
+          apps={apps}
           appsLoading={appsLoading}
+          connected={connected}
+          locator={locator}
           onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
-          locator={locator}
-          apps={apps}
         />
       )
     }
@@ -315,11 +378,13 @@ class Wrapper extends React.Component {
         <Settings
           account={account}
           apps={apps}
+          appsLoading={appsLoading}
           daoAddress={daoAddress}
           onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
+          wrapper={wrapper}
         />
       )
     }
@@ -347,19 +412,13 @@ const Main = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  min-width: 320px;
 `
 
 const BannerWrapper = styled.div`
   position: relative;
   z-index: 1;
   flex-shrink: 0;
-`
-
-const Container = styled.div`
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-  min-height: 0;
 `
 
 const AppScreen = styled.div`
@@ -390,7 +449,13 @@ const LoadingApps = () => (
 )
 
 export default props => (
-  <ScreenSizeConsumer>
-    {({ screenSize }) => <Wrapper {...props} screenSize={screenSize} />}
-  </ScreenSizeConsumer>
+  <Viewport>
+    {({ below }) => (
+      <Wrapper
+        {...props}
+        autoClosingPanel={below('medium')}
+        menuSwipeEnabled={below('medium')}
+      />
+    )}
+  </Viewport>
 )

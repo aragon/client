@@ -1,19 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import uniqBy from 'lodash.uniqby'
-import { TableRow, TableCell, Button, Text, theme } from '@aragon/ui'
-import IdentityBadge from '../../../components/IdentityBadge'
+import {
+  TableCell,
+  TableRow,
+  Text,
+  Viewport,
+  breakpoint,
+  theme,
+} from '@aragon/ui'
+import LocalIdentityBadge from '../../../components/LocalIdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
+import ViewDetailsButton from './ViewDetailsButton'
+import { FirstTableCell, LastTableCell } from '../Table'
 
 class EntityRow extends React.PureComponent {
   static propTypes = {
+    smallView: PropTypes.bool,
     entity: PropTypes.object.isRequired,
     onOpen: PropTypes.func.isRequired,
     roles: PropTypes.array.isRequired,
   }
+  static defaultProps = {
+    smallView: false,
+  }
 
-  handleClick = () => {
-    this.props.onOpen(this.props.entity.address)
+  open() {
+    const { onOpen, entity } = this.props
+    onOpen(entity.address)
   }
   renderType(type) {
     switch (type) {
@@ -27,12 +42,12 @@ class EntityRow extends React.PureComponent {
   }
   renderEntity(entity) {
     if (entity.type === 'any') {
-      return <IdentityBadge entity="Any account" />
+      return <LocalIdentityBadge entity="Any account" />
     }
     if (entity.type === 'app' && entity.app.name) {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
-    return <IdentityBadge entity={entity.address} />
+    return <LocalIdentityBadge entity={entity.address} />
   }
   roleTitle({ role, roleBytes, appEntity, proxyAddress }) {
     if (!appEntity || !appEntity.app) {
@@ -66,27 +81,70 @@ class EntityRow extends React.PureComponent {
         </span>
       ))
   }
+  handleDetailsClick = () => {
+    this.open()
+  }
+  handleRowClick = () => {
+    if (this.props.smallView) {
+      this.open()
+    }
+  }
   render() {
-    const { entity, roles } = this.props
+    const { entity, roles, smallView } = this.props
     if (!entity) {
       return null
     }
 
     return (
-      <TableRow>
-        <TableCell>{this.renderEntity(entity)}</TableCell>
-        <TableCell>{this.renderType(entity.type)}</TableCell>
-        <TableCell>
-          <div>{this.renderRoles(roles)}</div>
-        </TableCell>
-        <TableCell align="right">
-          <Button mode="outline" onClick={this.handleClick} compact>
-            View details
-          </Button>
-        </TableCell>
-      </TableRow>
+      <StyledTableRow onClick={this.handleRowClick}>
+        <FirstTableCell
+          css={`
+            > div {
+              display: inline-block;
+            }
+          `}
+        >
+          {this.renderEntity(entity)}
+        </FirstTableCell>
+        {!smallView && (
+          <React.Fragment>
+            <TableCell>{this.renderType(entity.type)}</TableCell>
+            <TableCell>
+              <div>{this.renderRoles(roles)}</div>
+            </TableCell>
+          </React.Fragment>
+        )}
+        <LastTableCell
+          align="right"
+          css={`
+            > div {
+              max-width: unset;
+            }
+          `}
+        >
+          <ViewDetailsButton
+            label="View details"
+            onClick={this.handleDetailsClick}
+          />
+        </LastTableCell>
+      </StyledTableRow>
     )
   }
 }
 
-export default EntityRow
+const StyledTableRow = styled(TableRow)`
+  cursor: pointer;
+
+  ${breakpoint(
+    'medium',
+    `
+      cursor: initial;
+    `
+  )}
+`
+
+export default props => (
+  <Viewport>
+    {({ below }) => <EntityRow {...props} smallView={below('medium')} />}
+  </Viewport>
+)

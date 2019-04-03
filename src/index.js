@@ -2,7 +2,7 @@ import '@babel/polyfill'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { PublicUrl, BaseStyles } from '@aragon/ui'
+import { Main } from '@aragon/ui'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import App from './App'
 
@@ -19,15 +19,27 @@ if (
 ) {
   window.localStorage.clear()
   window.localStorage.setItem(PACKAGE_VERSION_KEY, PACKAGE_VERSION)
+
+  // Attempt to clean up indexedDB storage as well
+  if (
+    window.indexedDB &&
+    window.indexedDB.databases &&
+    window.indexedDB.deleteDatabase
+  ) {
+    // eslint-disable-next-line promise/catch-or-return
+    window.indexedDB
+      .databases()
+      .then(databases =>
+        databases.forEach(({ name }) => window.indexedDB.deleteDatabase(name))
+      )
+  }
 }
 
 ReactDOM.render(
-  <PublicUrl.Provider url="./aragon-ui/">
-    <BaseStyles />
-
-    <GlobalErrorHandler>
+  <GlobalErrorHandler>
+    <Main>
       <App />
-    </GlobalErrorHandler>
-  </PublicUrl.Provider>,
+    </Main>
+  </GlobalErrorHandler>,
   document.getElementById('root')
 )

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import springs from '../../springs'
@@ -37,6 +38,10 @@ class ModalProvider extends React.Component {
   }
 }
 
+ModalProvider.propTypes = {
+  children: PropTypes.node,
+}
+
 const ModalConsumer = ModalContext.Consumer
 
 const ModalView = () => (
@@ -52,6 +57,7 @@ const ModalView = () => (
       >
         {ModalComponent =>
           ModalComponent &&
+          /* eslint-disable react/prop-types */
           (({ opacity, enterProgress, blocking }) => (
             <Wrap style={{ pointerEvents: blocking ? 'auto' : 'none' }}>
               <Overlay style={{ opacity: opacity.interpolate(v => v * 0.5) }} />
@@ -70,6 +76,7 @@ const ModalView = () => (
               </AnimatedWrap>
             </Wrap>
           ))
+        /* eslint-enable react/prop-types */
         }
       </Transition>
     )}
@@ -104,4 +111,4 @@ const AnimatedWrap = styled(animated.div)`
   min-height: 0;
 `
 
-export { ModalProvider, ModalConsumer, ModalView }
+export { ModalContext, ModalProvider, ModalConsumer, ModalView }

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme, IconBlank } from '@aragon/ui'
+import { theme } from '@aragon/ui'
 import color from 'onecolor'
 import MenuPanelInstance from './MenuPanelInstance'
 import springs from '../../springs'
@@ -13,6 +13,7 @@ class MenuPanelAppGroup extends React.PureComponent {
     activeInstanceId: PropTypes.string,
     expand: PropTypes.bool.isRequired,
     icon: PropTypes.object.isRequired,
+    system: PropTypes.bool,
     instances: PropTypes.array.isRequired,
     name: PropTypes.string.isRequired,
     onActivate: PropTypes.func.isRequired,
@@ -34,6 +35,7 @@ class MenuPanelAppGroup extends React.PureComponent {
     const {
       name,
       icon,
+      system,
       instances,
       activeInstanceId,
       active,
@@ -47,7 +49,7 @@ class MenuPanelAppGroup extends React.PureComponent {
         native
       >
         {({ openProgress }) => (
-          <Main active={active}>
+          <Main active={active} system={system}>
             <ActiveBackground style={{ opacity: Number(active) }} />
 
             <MenuItemBar
@@ -65,7 +67,7 @@ class MenuPanelAppGroup extends React.PureComponent {
               onClick={this.handleAppClick}
             >
               <span>
-                <span className="icon">{icon || <IconBlank />}</span>
+                <span className="icon">{icon}</span>
                 <span className="name">{name}</span>
               </span>
             </ButtonItem>
@@ -136,6 +138,12 @@ const Main = styled.div`
     margin-right: 15px;
     color: ${({ active }) =>
       active ? theme.textPrimary : theme.textSecondary};
+    filter: ${({ system }) =>
+      system ? `brightness(${({ active }) => (active ? 0 : 100)}%)` : 'none'};
+
+    & > img {
+      border-radius: 5px;
+    }
   }
   .instances {
     overflow: hidden;

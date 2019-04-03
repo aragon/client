@@ -1,5 +1,4 @@
 import BN from 'bn.js'
-import throttle from 'lodash.throttle'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
   providers,
@@ -65,7 +64,29 @@ const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
 // Sort apps, apply URL overrides, and attach data useful to the frontend
-const prepareFrontendApps = (apps, daoAddress, gateway) => {
+const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
+  const hasWebApp = app => Boolean(app['start_url'])
+
+  const getAPMRegistry = ({ appName = '' }) =>
+    appName.substr(appName.indexOf('.') + 1) // everything after the first '.'
+
+  const getAppTags = app => {
+    const apmRegistry = getAPMRegistry(app)
+
+    const tags = []
+    if (app.status) {
+      tags.push(app.status)
+    }
+    if (apmRegistry && apmRegistry !== 'aragonpm.eth') {
+      tags.push(`${apmRegistry} registry`)
+    }
+    if (!hasWebApp(app)) {
+      tags.push('contract-only')
+    }
+
+    return tags
+  }
+
   return applyAppOverrides(apps)
     .map(app => {
       const baseUrl = appBaseUrl(app, gateway)
@@ -78,7 +99,9 @@ const prepareFrontendApps = (apps, daoAddress, gateway) => {
         ...app,
         src,
         baseUrl,
-        hasWebApp: Boolean(app['start_url']),
+        apmRegistry: getAPMRegistry(app),
+        hasWebApp: hasWebApp(app),
+        tags: getAppTags(app),
       }
     })
     .sort(sortAppsPair)
@@ -199,23 +222,34 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  { onApps, onPermissions, onForwarders, onTransaction },
+  { onApps, onPermissions, onForwarders, onTransaction, onIdentityIntent },
   { ipfsConf }
 ) => {
-  const { apps, permissions, forwarders, transactions } = wrapper
+  const {
+    apps,
+    permissions,
+    forwarders,
+    transactions,
+    identityIntents,
+  } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
     apps: apps.subscribe(apps => {
       onApps(
-        prepareFrontendApps(apps, wrapper.kernelProxy.address, ipfsConf.gateway)
+        prepareAppsForFrontend(
+          apps,
+          wrapper.kernelProxy.address,
+          ipfsConf.gateway
+        )
       )
     }),
-    permissions: permissions.subscribe(throttle(onPermissions, 100)),
+    permissions: permissions.subscribe(onPermissions),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
+    identityIntents: identityIntents.subscribe(onIdentityIntent),
     transactions: transactions.subscribe(onTransaction),
     workers: apps.subscribe(apps => {
       // Asynchronously launch webworkers for each new app that has a background
@@ -254,6 +288,8 @@ const subscribe = (
             return
           }
 
+          const connectApp = await wrapper.runApp(proxyAddress)
+
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
@@ -272,7 +308,7 @@ const subscribe = (
             workerSubscriptionPool.addWorker({
               app,
               worker,
-              subscription: wrapper.runApp(provider, proxyAddress).shutdown,
+              subscription: connectApp(provider).shutdown,
             })
           }
 
@@ -310,6 +346,7 @@ const initWrapper = async (
     onTransaction = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
+    onIdentityIntent = noop,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -363,18 +400,25 @@ const initWrapper = async (
 
   const subscriptions = subscribe(
     wrapper,
-    { onApps, onPermissions, onForwarders, onTransaction },
+    {
+      onApps,
+      onPermissions,
+      onForwarders,
+      onTransaction,
+      onIdentityIntent,
+    },
     { ipfsConf }
   )
 
-  wrapper.connectAppIFrame = (iframeElt, proxyAddress) => {
+  wrapper.connectAppIFrame = async (iframeElt, proxyAddress) => {
     const provider = new providers.WindowMessage(iframeElt.contentWindow)
-    const result = wrapper.runApp(provider, proxyAddress)
+    const appContext = (await wrapper.runApp(proxyAddress))(provider)
+
     if (subscriptions.connectedApp) {
       subscriptions.connectedApp.unsubscribe()
     }
-    subscriptions.connectedApp = result.shutdown
-    return result
+    subscriptions.connectedApp = appContext.shutdown
+    return appContext
   }
 
   wrapper.cancel = () => {

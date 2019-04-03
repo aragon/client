@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { theme, Badge } from '@aragon/ui'
@@ -71,7 +72,13 @@ export default class NotificationBar extends React.Component {
   }
 }
 
-function NotificationImpl(item, ready) {
+NotificationBar.propTypes = {
+  open: PropTypes.bool,
+  notifications: PropTypes.arrayOf(PropTypes.object),
+  onClearAll: PropTypes.func.isRequired,
+}
+
+const NotificationImpl = (item, ready) => {
   let payload =
     typeof item.content === 'string' ? <p>{item.content}</p> : item.content
   switch (item.type) {

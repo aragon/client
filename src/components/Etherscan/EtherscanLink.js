@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types'
 import { network } from '../../environment'
-
-const { etherscanBaseUrl } = network
+import { EthereumAddressType } from '../../prop-types'
+import { blockExplorerUrl } from '@aragon/ui'
 
 // Render props component that injects an appropriate Etherscan url if possible
-const EtherscanLink = ({ address, children }) =>
-  children(
-    typeof etherscanBaseUrl === 'string'
-      ? `${etherscanBaseUrl}/address/${address}`
-      : null
-  )
+const EtherscanLink = ({ address, children }) => {
+  const etherscanUrl = blockExplorerUrl('address', address, {
+    networkType: network.type,
+  })
+  return children(etherscanUrl)
+}
 EtherscanLink.propTypes = {
+  address: EthereumAddressType,
   children: PropTypes.func.isRequired,
 }
 

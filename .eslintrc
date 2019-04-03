@@ -4,17 +4,28 @@
     "es6": true
   },
   "extends": [
+    "plugin:import/recommended",
+    "plugin:promise/recommended",
     "standard",
     "standard-react",
-    "plugin:prettier/recommended",
-    "prettier/react"
+    "prettier/react",
+    "plugin:prettier/recommended"
   ],
   "parser": "babel-eslint",
-  "plugins": ["prettier", "react"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "plugins": ["prettier", "react", "import", "promise"],
   "rules": {
+    "import/no-unresolved": ["error", { ignore: ["^react(-dom)?$", "^styled-components$"] }],
+    "promise/no-nesting": ["off"],
     "valid-jsdoc": "error",
     "react/prop-types": 'warn',
-    "linebreak-style": ["error", "unix"]
+    "linebreak-style": ["error", "unix"],
   },
   "settings": {
     "react": {
