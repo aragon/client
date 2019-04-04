@@ -10,28 +10,17 @@ export default class NotificationAlert extends React.PureComponent {
     notificationOpen: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
   }
-  static getDerivedStateFromProps(
-    { notificationOpen, activityCount },
-    { opened, previousActivityCount }
-  ) {
-    return {
-      opened:
-        !notificationOpen && activityCount !== previousActivityCount
-          ? false
-          : opened,
-      previousActivityCount: activityCount,
+  handleClick = () => {
+    // Omly use for opening. Blur event closes the activity panel
+    if (!this.props.notificationOpen) {
+      this.props.onClick()
     }
   }
 
-  state = { opened: false, previousActivityCount: 0 }
-
-  handleClick = () => {
-    this.setState({ opened: true })
-    this.props.onClick()
-  }
-
   render() {
-    const show = !this.state.opened && this.props.activityCount > 0
+    const { notificationOpen, activityCount } = this.props
+    const showActivityCount = !notificationOpen && activityCount > 0
+
     return (
       <div className="actions">
         <IconButton
@@ -45,7 +34,7 @@ export default class NotificationAlert extends React.PureComponent {
             native
             reset
             from={{ opacity: 0, size: 0 }}
-            to={{ opacity: show ? 1 : 0, size: 1 }}
+            to={{ opacity: showActivityCount ? 1 : 0, size: 1 }}
             config={springs.lazy}
           >
             {props => (
@@ -63,7 +52,7 @@ export default class NotificationAlert extends React.PureComponent {
                     .interpolate(s => `scale(${s})`),
                 }}
               >
-                {show && this.props.activityCount}
+                {showActivityCount && this.props.activityCount}
               </Badge>
             )}
           </Spring>

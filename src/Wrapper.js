@@ -237,8 +237,8 @@ class Wrapper extends React.PureComponent {
                 apps={apps.filter(app => app.hasWebApp)}
                 appsStatus={appsStatus}
                 activeInstanceId={locator.instanceId}
-                connected={connected}
                 activityCount={activityCount}
+                connected={connected}
                 daoAddress={daoAddress}
                 openProgress={progress}
                 autoClosing={autoClosingPanel}
