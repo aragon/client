@@ -3,82 +3,79 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { theme, Badge } from '@aragon/ui'
+import { ActivityContext } from '../../contexts/ActivityContext'
 import { NotificationHub, Notification } from './NotificationHub'
 import springs from '../../springs'
 
-export default class NotificationBar extends React.Component {
-  static propTypes = {
-    open: PropTypes.bool,
-    notifications: PropTypes.arrayOf(PropTypes.object),
-    onBlur: PropTypes.func.isRequired,
-    onClearAll: PropTypes.func.isRequired,
-    onNotificationClosed: PropTypes.func.isRequired,
-  }
+const NotificationBar = ({ open, onBlur, onNotificationClosed }) => {
+  const frameRef = React.createRef()
+  const { activities, clearAll } = React.useContext(ActivityContext)
 
-  frameRef = React.createRef()
+  React.useEffect(() => {
+    frameRef.current[open ? 'focus' : 'blur']()
+  })
 
-  componentDidUpdate() {
-    this.frameRef.current[this.props.open ? 'focus' : 'blur']()
-  }
-  onBlur = e => {
+  const _onBlur = e => {
+    let _handler
     const currentTarget = e.currentTarget
     setTimeout(() => {
       if (!currentTarget.contains(document.activeElement)) {
-        if (this.handler) clearTimeout(this.handler)
-        this.handler = setTimeout(
-          () => this.props.open && this.props.onBlur(),
-          200
-        )
+        if (_handler) clearTimeout(_handler)
+        _handler = setTimeout(() => open && onBlur(), 200)
       }
     }, 0)
   }
 
-  render() {
-    const { open, notifications, onClearAll, onNotificationClosed } = this.props
-    const count = notifications.length
-    return (
-      <Spring
-        native
-        from={{ x: -300 }}
-        to={{ x: open ? 0 : -300 }}
-        config={springs.lazy}
-      >
-        {props => (
-          <NotificationFrame
-            ref={this.frameRef}
-            onBlur={this.onBlur}
-            tabIndex="0"
-            style={{
-              transform: props.x.interpolate(x => `translate3d(${x}px,0,0)`),
-            }}
+  const count = activities.length
+
+  return (
+    <Spring
+      native
+      from={{ x: -300 }}
+      to={{ x: open ? 0 : -300 }}
+      config={springs.lazy}
+    >
+      {({ x }) => (
+        <NotificationFrame
+          ref={frameRef}
+          onBlur={_onBlur}
+          tabIndex="0"
+          style={{
+            transform: x.interpolate(x => `translate3d(${x}px,0,0)`),
+          }}
+        >
+          <NotificationHeader>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <h1 style={{ marginRight: 10 }}>
+                <Text>Activity</Text>
+              </h1>
+              {count ? (
+                <Badge.Notification style={{ background: theme.accent }}>
+                  {count}
+                </Badge.Notification>
+              ) : null}
+            </div>
+            <a href="#" onClick={clearAll}>
+              <Text>Clear All</Text>
+            </a>
+          </NotificationHeader>
+          <NotificationHub
+            items={activities}
+            keys={item => item.id}
+            onNotificationClosed={onNotificationClosed}
           >
-            <NotificationHeader>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <h1 style={{ marginRight: 10 }}>
-                  <Text>Activity</Text>
-                </h1>
-                {count ? (
-                  <Badge.Notification style={{ background: theme.accent }}>
-                    {count}
-                  </Badge.Notification>
-                ) : null}
-              </div>
-              <a href="#" onClick={onClearAll}>
-                <Text>Clear All</Text>
-              </a>
-            </NotificationHeader>
-            <NotificationHub
-              items={notifications}
-              keys={item => item.id}
-              onNotificationClosed={onNotificationClosed}
-            >
-              {NotificationImpl}
-            </NotificationHub>
-          </NotificationFrame>
-        )}
-      </Spring>
-    )
-  }
+            {NotificationImpl}
+          </NotificationHub>
+        </NotificationFrame>
+      )}
+    </Spring>
+  )
+}
+
+NotificationBar.propTypes = {
+  open: PropTypes.bool,
+  onBlur: PropTypes.func.isRequired,
+  onNotificationClosed: PropTypes.func.isRequired,
 }
 
 const NotificationImpl = (item, ready) => {
@@ -142,3 +139,4 @@ const NotificationHeader = styled('div')`
 const Text = styled('span')`
   vertical-align: sub;
 `
+export default NotificationBar

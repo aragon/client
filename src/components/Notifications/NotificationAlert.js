@@ -6,23 +6,24 @@ import { theme, springs, IconNotifications } from '@aragon/ui'
 
 export default class NotificationAlert extends React.PureComponent {
   static propTypes = {
-    notifications: PropTypes.number.isRequired,
+    activityCount: PropTypes.number.isRequired,
+    notificationOpen: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
   }
   static getDerivedStateFromProps(
-    { notificationOpen, notifications },
-    { opened, previousNotifications }
+    { notificationOpen, activityCount },
+    { opened, previousActivityCount }
   ) {
     return {
       opened:
-        !notificationOpen && notifications !== previousNotifications
+        !notificationOpen && activityCount !== previousActivityCount
           ? false
           : opened,
-      previousNotifications: notifications,
+      previousActivityCount: activityCount,
     }
   }
 
-  state = { opened: false, previousNotifications: 0 }
+  state = { opened: false, previousActivityCount: 0 }
 
   handleClick = () => {
     this.setState({ opened: true })
@@ -30,7 +31,7 @@ export default class NotificationAlert extends React.PureComponent {
   }
 
   render() {
-    const show = !this.state.opened && this.props.notifications > 0
+    const show = !this.state.opened && this.props.activityCount > 0
     return (
       <div className="actions">
         <IconButton
@@ -62,7 +63,7 @@ export default class NotificationAlert extends React.PureComponent {
                     .interpolate(s => `scale(${s})`),
                 }}
               >
-                {show && this.props.notifications}
+                {show && this.props.activityCount}
               </Badge>
             )}
           </Spring>

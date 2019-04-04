@@ -10,6 +10,7 @@ import Preferences from './components/Preferences/Preferences'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SwipeContainer from './components/MenuPanel/SwipeContainer'
 import SignerPanel from './components/SignerPanel/SignerPanel'
+import { ActivityContext } from './contexts/ActivityContext'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import NotificationBar from './components/Notifications/NotificationBar'
 import {
@@ -28,6 +29,7 @@ import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 class Wrapper extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
+    activityCount: PropTypes.number.isRequired,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     banner: PropTypes.oneOfType([
@@ -68,21 +70,6 @@ class Wrapper extends React.PureComponent {
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
     notificationOpen: false,
-    notifications: [
-      {
-        id: '1',
-        type: '',
-        title: 'Vote #9 passed',
-        content: 'A 100 ANT payment to 0xabcd... was executed',
-      },
-      {
-        id: '2',
-        type: 'transaction',
-        title: 'Vote #11 created',
-        content: 'Mint 100 ORG to 0x1234...',
-      },
-    ],
-    queuedNotifications: [],
   }
 
   componentDidUpdate(prevProps) {
@@ -181,7 +168,7 @@ class Wrapper extends React.PureComponent {
   handleNotificationsCleared = e => {
     e.preventDefault()
     const { notificationOpen, notifications } = this.state
-    this.setState({ notifications: [], queuedNotifications: [] })
+    this.setState({ notifications: [] })
     if (notificationOpen) {
       setTimeout(
         () => this.setState({ notificationOpen: false }),
@@ -210,6 +197,7 @@ class Wrapper extends React.PureComponent {
   render() {
     const {
       account,
+      activityCount,
       apps,
       appsStatus,
       autoClosingPanel,
@@ -226,12 +214,8 @@ class Wrapper extends React.PureComponent {
       walletWeb3,
       wrapper,
     } = this.props
-    const {
-      menuPanelOpened,
-      notifications,
-      notificationOpen,
-      preferencesOpened,
-    } = this.state
+
+    const { menuPanelOpened, notificationOpen, preferencesOpened } = this.state
 
     return (
       <Main>
@@ -254,7 +238,7 @@ class Wrapper extends React.PureComponent {
                 appsStatus={appsStatus}
                 activeInstanceId={locator.instanceId}
                 connected={connected}
-                notifications={notifications.length}
+                activityCount={activityCount}
                 daoAddress={daoAddress}
                 openProgress={progress}
                 autoClosing={autoClosingPanel}
@@ -268,7 +252,6 @@ class Wrapper extends React.PureComponent {
               <AppScreen>
                 <NotificationBar
                   open={notificationOpen}
-                  notifications={notifications}
                   onClearAll={this.handleNotificationsCleared}
                   onBlur={this.handleNotificationClicked}
                   onNotificationClosed={this.handleNotificationClosed}
@@ -287,42 +270,6 @@ class Wrapper extends React.PureComponent {
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
-          onTransactionSuccess={({
-            data,
-            name,
-            description,
-            identifier,
-            ...rest
-          }) =>
-            console.log(rest) ||
-            this.setState(state => ({
-              queuedNotifications: [
-                {
-                  id: data,
-                  type: 'transaction',
-                  title: `${name} ${identifier}`,
-                  content: description,
-                },
-                ...state.queuedNotifications,
-              ],
-            }))
-          }
-          onClose={() => {
-            if (this.state.queuedNotifications.length) {
-              // Wait a little, then update notifications
-              setTimeout(
-                () =>
-                  this.setState(state => ({
-                    queuedNotifications: [],
-                    notifications: [
-                      ...state.queuedNotifications,
-                      ...state.notifications,
-                    ],
-                  })),
-                250
-              )
-            }
-          }}
         />
       </Main>
     )
@@ -448,14 +395,19 @@ const LoadingApps = () => (
   </div>
 )
 
-export default props => (
-  <Viewport>
-    {({ below }) => (
-      <Wrapper
-        {...props}
-        autoClosingPanel={below('medium')}
-        menuSwipeEnabled={below('medium')}
-      />
-    )}
-  </Viewport>
-)
+export default props => {
+  const { activities } = React.useContext(ActivityContext)
+
+  return (
+    <Viewport>
+      {({ below }) => (
+        <Wrapper
+          {...props}
+          autoClosingPanel={below('medium')}
+          menuSwipeEnabled={below('medium')}
+          activityCount={activities.length}
+        />
+      )}
+    </Viewport>
+  )
+}

@@ -8,6 +8,8 @@ import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
+import { ActivityContext } from '../../contexts/ActivityContext'
+
 import {
   STATUS_CONFIRMING,
   STATUS_SIGNING,
@@ -268,5 +270,6 @@ const Screen = styled.div`
 `
 
 export default function(props) {
-  return <SignerPanel {...props} />
+  const { add } = React.useContext(ActivityContext)
+  return <SignerPanel {...props} addActivity={add} />
 }
