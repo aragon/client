@@ -166,7 +166,7 @@ const Title = styled.h1`
   ${breakpoint(
     'medium',
     `
-      /* half screen width minus half max container witdh */
+      /* half screen width minus half max container width */
       margin-left: calc(100vw / 2 - ${BREAKPOINTS.medium / 2}px);
     `
   )}

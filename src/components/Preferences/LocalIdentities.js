@@ -30,19 +30,23 @@ const LocalIdentities = ({
   onModify,
   onModifyEvent,
 }) => {
-  // transform localIdentities from object into array
-  const identities = Object.keys(localIdentities).map(address => {
-    return Object.assign({}, localIdentities[address], { address })
-  })
+  // transform localIdentities from object into array and attach address to each entry
+  const identities = Object.entries(localIdentities).map(
+    ([address, identity]) => ({
+      ...identity,
+      address,
+    })
+  )
 
   if (!identities.length) {
     return <EmptyLocalIdentities onImport={onImport} />
   }
 
   const { identityEvents$ } = React.useContext(IdentityContext)
-  const updateLabel = (fn, address) => async () => {
+  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
+  const updateLabel = address => async () => {
     try {
-      await fn(address)
+      await showLocalIdentityModal(address)
       // preferences get all
       onModifyEvent()
       // for iframe apps
@@ -56,7 +60,6 @@ const LocalIdentities = ({
   )
   // standard: https://en.wikipedia.org/wiki/ISO_8601
   const today = format(Date.now(), 'yyyy-MM-dd')
-  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
 
   return (
     <React.Fragment>
@@ -73,7 +76,7 @@ const LocalIdentities = ({
                 entity={address}
                 popoverAction={{
                   label: 'Edit custom label',
-                  onClick: updateLabel(showLocalIdentityModal, address),
+                  onClick: updateLabel(address),
                 }}
                 popoverTitle={<LocalIdentityPopoverTitle label={name} />}
               />
