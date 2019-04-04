@@ -39,6 +39,8 @@ const Modal = ({ address, label, onCancel, onSave }) => {
   const handlekeyDown = e => {
     if (e.keyCode === 13) {
       handleSave()
+    } else if (e.keyCode === 27) {
+      handleCancel()
     }
   }
   React.useEffect(() => {
