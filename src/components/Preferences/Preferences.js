@@ -24,7 +24,7 @@ import {
 const TABS = ['Manage labels']
 const ESCAPE_KEY_CODE = 27
 
-const Preferences = ({ onClose, smallView, wrapper }) => {
+const Preferences = ({ locator, onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
   const [localIdentities, setLocalIdentities] = React.useState({})
@@ -88,11 +88,12 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
         <Content>
           {selectedTab === 0 && (
             <LocalIdentitiesComponent
+              localIdentities={localIdentities}
+              locator={locator}
               onImport={handleImport}
               onClearAll={handleClearAll}
               onModify={handleModify}
               onModifyEvent={handleGetAll}
-              localIdentities={localIdentities}
             />
           )}
         </Content>
@@ -102,6 +103,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
 }
 
 Preferences.propTypes = {
+  locator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   smallView: PropTypes.bool.isRequired,
   wrapper: AragonType,

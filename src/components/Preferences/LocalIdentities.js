@@ -23,11 +23,12 @@ import Import from './Import'
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
 const LocalIdentities = ({
+  localIdentities,
+  locator,
   onClearAll,
   onImport,
   onModify,
   onModifyEvent,
-  localIdentities,
 }) => {
   // transform localIdentities from object into array
   const identities = Object.keys(localIdentities).map(address => {
@@ -37,6 +38,7 @@ const LocalIdentities = ({
   if (!identities.length) {
     return <EmptyLocalIdentities onImport={onImport} />
   }
+
   const { identityEvents$ } = React.useContext(IdentityContext)
   const updateLabel = (fn, address) => async () => {
     try {
@@ -49,7 +51,7 @@ const LocalIdentities = ({
       /* nothing was updated */
     }
   }
-  const href = window.URL.createObjectURL(
+  const downloadHref = window.URL.createObjectURL(
     new Blob([JSON.stringify(identities)], { type: 'text/json' })
   )
   // standard: https://en.wikipedia.org/wiki/ISO_8601
@@ -85,8 +87,8 @@ const LocalIdentities = ({
           <StyledExport
             label="Export labels"
             mode="secondary"
-            download={`aragon-labels_${today}.json`}
-            href={href}
+            download={`aragon-${locator.dao}_labels_${today}.json`}
+            href={downloadHref}
           >
             Export
           </StyledExport>
@@ -102,6 +104,7 @@ const LocalIdentities = ({
 
 LocalIdentities.propTypes = {
   localIdentities: PropTypes.object,
+  locator: PropTypes.object.isRequired,
   onClearAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,
