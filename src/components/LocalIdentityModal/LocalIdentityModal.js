@@ -1,13 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import {
-  Button,
-  TextInput,
-  breakpoint,
-  font,
-  theme,
-} from '@aragon/ui'
+import { Button, TextInput, breakpoint, font, theme } from '@aragon/ui'
 import { ModalContext } from '../ModalManager/ModalManager'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
@@ -27,11 +21,11 @@ LocalIdentityModal.propTypes = {
 
 const Modal = ({ address, label, onCancel, onSave }) => {
   const [action, setAction] = React.useState()
+  const [error, setError] = React.useState(null)
   const labelInput = React.useRef(null)
   const handleCancel = () => {
     onCancel()
   }
-  const [error, setError] = React.useState(null)
   const handleSave = () => {
     try {
       const label = labelInput.current.value.trim()
