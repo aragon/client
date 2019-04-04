@@ -1,18 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { Badge, IdentityBadge, font } from '@aragon/ui'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
 import { isAddress } from '../../web3-utils'
 import {
   IdentityContext,
   identityEventTypes,
 } from '../IdentityManager/IdentityManager'
+import IdentityBadgeWithNetwork from './IdentityBadgeWithNetwork'
+import LocalIdentityPopoverTitle from './LocalIdentityPopoverTitle'
 
 const LocalIdentityBadge = ({ entity, ...props }) => {
   const address = isAddress(entity) ? entity : null
   if (address === null) {
-    return <IdentityBadge {...props} customLabel={entity} />
+    return <IdentityBadgeWithNetwork {...props} customLabel={entity} />
   }
 
   const { resolve, identityEvents$ } = React.useContext(IdentityContext)
@@ -23,7 +23,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
       const { name = null } = await resolve(address)
       setLabel(name)
     } catch (e) {
-      // address does not ressolve to identity
+      // address does not resolve to identity
     }
   }
   const handleClick = () => {
@@ -59,7 +59,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
   }, [])
 
   return (
-    <IdentityBadge
+    <IdentityBadgeWithNetwork
       {...props}
       customLabel={label || ''}
       entity={address}
@@ -68,14 +68,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
         onClick: handleClick,
       }}
       popoverTitle={
-        label ? (
-          <Wrap>
-            <Address>{label}</Address>
-            <StyledBadge>Custom label</StyledBadge>
-          </Wrap>
-        ) : (
-          'Address'
-        )
+        label ? <LocalIdentityPopoverTitle label={label} /> : 'Address'
       }
     />
   )
@@ -84,25 +77,5 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
 LocalIdentityBadge.propTypes = {
   entity: PropTypes.string,
 }
-
-const Wrap = styled.div`
-  display: grid;
-  align-items: center;
-  grid-template-columns: auto 1fr;
-  padding-right: 24px;
-`
-
-const Address = styled.span`
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`
-
-const StyledBadge = styled(Badge)`
-  margin-left: 16px;
-  text-transform: uppercase;
-  ${font({ size: 'xxsmall' })};
-`
 
 export default LocalIdentityBadge

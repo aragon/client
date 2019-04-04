@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Button,
-  IdentityBadge,
   TextInput,
   breakpoint,
   font,
@@ -11,6 +10,7 @@ import {
 } from '@aragon/ui'
 import { ModalContext } from '../ModalManager/ModalManager'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
+import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 
 const LocalIdentityModal = ({ opened, ...props }) => {
   const { showModal, hideModal } = React.useContext(ModalContext)
@@ -63,7 +63,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
           This label would be displayed instead of the following address and
           only be <span>stored on this device</span>.
         </Description>
-        <IdentityBadge address={address} entity={address} />
+        <IdentityBadgeWithNetwork entity={address} />
         <Label>
           <div>Custom Label</div>
           <TextInput

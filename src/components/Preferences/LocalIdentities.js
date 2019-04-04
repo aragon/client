@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import {
-  Badge,
   Button,
   IconCross,
   IdentityBadge,
@@ -12,6 +11,7 @@ import {
   font,
   theme,
 } from '@aragon/ui'
+import LocalIdentityPopoverTitle from '../IdentityBadge/LocalIdentityPopoverTitle'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
 import {
   IdentityContext,
@@ -73,9 +73,7 @@ const LocalIdentities = ({
                   label: 'Edit custom label',
                   onClick: updateLabel(showLocalIdentityModal, address),
                 }}
-                popoverTitle={
-                  <PopoverActionTitle address={address} name={name} />
-                }
+                popoverTitle={<LocalIdentityPopoverTitle label={name} />}
               />
             </div>
           </Item>
@@ -115,46 +113,10 @@ LocalIdentities.defaultProps = {
   onModifyEvent: () => null,
 }
 
-const PopoverActionTitle = ({ address, name }) => {
-  return (
-    <WrapTitle>
-      <TitleLabel>{name}</TitleLabel>
-      <Badge
-        css={`
-          margin-left: 16px;
-          text-transform: uppercase;
-          ${font({ size: 'xsmall' })};
-        `}
-      >
-        Custom label
-      </Badge>
-    </WrapTitle>
-  )
-}
-
-PopoverActionTitle.propTypes = {
-  address: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-}
-
 const Label = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`
-
-const WrapTitle = styled.div`
-  display: grid;
-  align-items: center;
-  grid-template-columns: auto 1fr;
-  padding-right: 24px;
-`
-
-const TitleLabel = styled.span`
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `
 
 const Warning = () => (
