@@ -34,7 +34,6 @@ class SignerPanel extends React.Component {
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
     locator: PropTypes.object.isRequired,
-    onClose: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     onTransactionSuccess: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
@@ -147,7 +146,6 @@ class SignerPanel extends React.Component {
 
   handleSignerClose = () => {
     this.setState({ panelOpened: false })
-    this.props.onClose && this.props.onClose()
   }
 
   handleSignerTransitionEnd = opened => {
