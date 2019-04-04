@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Gesture } from 'react-with-gesture'
-import { Viewport } from '@aragon/ui'
 
 const THRESHOLD_VERTICAL_TOLERANCE = 10
 const THRESHOLD_DIRECTION = 0.2
