@@ -234,7 +234,7 @@ class Wrapper extends React.PureComponent {
                 connected={connected}
                 notifications={notifications.length}
                 daoAddress={daoAddress}
-                openProgress={progress}
+                swipeProgress={progress}
                 autoClosing={autoClosingPanel}
                 onOpenApp={this.openApp}
                 onCloseMenuPanel={this.handleMenuPanelClose}

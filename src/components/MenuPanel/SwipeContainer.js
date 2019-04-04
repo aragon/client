@@ -7,6 +7,7 @@ import { Viewport } from '@aragon/ui'
 const THRESHOLD_VERTICAL_TOLERANCE = 10
 const THRESHOLD_DIRECTION = 0.2
 const THRESHOLD_PROGRESS = 0.5
+const MENU_WIDTH = 220
 
 class SwipeContainer extends React.Component {
   static propTypes = {
@@ -15,7 +16,6 @@ class SwipeContainer extends React.Component {
     menuPanelOpened: PropTypes.bool.isRequired,
     onMenuPanelClose: PropTypes.func.isRequired,
     onMenuPanelOpen: PropTypes.func.isRequired,
-    width: PropTypes.number.isRequired,
   }
 
   _previousProgress = 0
@@ -27,10 +27,9 @@ class SwipeContainer extends React.Component {
       menuPanelOpened,
       onMenuPanelClose,
       onMenuPanelOpen,
-      width,
     } = this.props
 
-    const oneThirdWindowWidth = width / 3
+    const xThreshold = MENU_WIDTH / 3
 
     return (
       <Gesture passive={{ passive: false }} mouse={false} touch={enabled}>
@@ -80,16 +79,12 @@ class SwipeContainer extends React.Component {
               yDir < THRESHOLD_DIRECTION)
           ) {
             event.preventDefault()
-            if (
-              xDelta > 0 &&
-              !menuPanelOpened &&
-              xInitial < oneThirdWindowWidth
-            ) {
+            if (xDelta > 0 && !menuPanelOpened && xInitial < xThreshold) {
               // opening
-              progress = this._previousProgress = x / (width * 0.9)
+              progress = this._previousProgress = x / MENU_WIDTH
             } else if (menuPanelOpened) {
               // closing
-              progress = this._previousProgress = 1 + xDelta / width
+              progress = this._previousProgress = 1 + xDelta / MENU_WIDTH
             }
             progress = this._previousProgress = Math.max(
               0.000001,
@@ -110,8 +105,4 @@ const Container = styled.div`
   min-height: 0;
 `
 
-export default props => (
-  <Viewport>
-    {({ width }) => <SwipeContainer width={width} {...props} />}
-  </Viewport>
-)
+export default SwipeContainer
