@@ -35,7 +35,7 @@ class SignerPanel extends React.Component {
     account: EthereumAddressType,
     locator: PropTypes.object.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
-    onTransactionSuccess: PropTypes.func.isRequired,
+    addTransactionActivity: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
@@ -99,18 +99,18 @@ class SignerPanel extends React.Component {
   async signTransaction(transaction, intent) {
     const { walletWeb3 } = this.props
     return new Promise((resolve, reject) => {
-      walletWeb3.eth.sendTransaction(transaction, (err, res) => {
+      walletWeb3.eth.sendTransaction(transaction, (err, transactionHash) => {
         if (err) {
           reject(err)
         } else {
-          resolve(res)
+          resolve(transactionHash)
         }
       })
     })
   }
 
   handleSign = async (transaction, intent, pretransaction) => {
-    const { transactionBag, onTransactionSuccess } = this.props
+    const { transactionBag, addTransactionActivity } = this.props
 
     this.setState({ status: STATUS_SIGNING })
 
@@ -119,11 +119,19 @@ class SignerPanel extends React.Component {
         await this.signTransaction(pretransaction, intent)
       }
 
-      const transactionRes = await this.signTransaction(transaction, intent)
-      // Create new notification
-      onTransactionSuccess && onTransactionSuccess(transaction)
+      const transactionHash = await this.signTransaction(transaction, intent)
 
-      transactionBag.accept(transactionRes)
+      // Create new activiy
+      addTransactionActivity &&
+        addTransactionActivity({
+          transactionHash,
+          from: intent.transaction.from,
+          initiatingApp: intent.name,
+          forwarder: intent.transaction.name,
+          description: intent.description,
+        })
+
+      transactionBag.accept(transactionHash)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
 

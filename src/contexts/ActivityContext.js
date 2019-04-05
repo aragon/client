@@ -14,29 +14,32 @@ const activityStatusTypes = {
   TIMED_OUT: 'TIMED_OUT',
 }
 
+const activityTypes = {
+  TRANSACTION: 'TRANSACTION',
+}
+
 storedList.update([
   {
-    id: '1',
+    createdAt: 1554471557853,
+    read: false,
+    from: '0x3bDBLLATEST',
     status: activityStatusTypes.CONFIRMED,
-    type: '',
-    title: 'Vote #9 passed',
-    content: 'A 100 ANT payment to 0xabcd... was executed',
-  },
-  {
-    id: '2',
-    status: activityStatusTypes.FAILED,
-    type: '',
-    title: '',
-    content: 'Assign 1 tokens to 0x1234...',
-  },
-  {
-    id: '3',
-    status: '',
-    type: 'transaction',
-    title: 'Vote #11 created',
-    content: 'Mint 100 ORG to 0x1234...',
+    type: activityTypes.TRANSACTION,
+    initiatingApp: 'Token Manager',
+    forwarder: 'Voting',
+    description: 'Mint 1 tokens for 0x3bDBLLA',
+    transactionHash:
+      '0x873c90026744e293f12c40a5fc6cf3b7bb368636f0dea632da50348719f96cce',
   },
 ])
+
+// {
+//   id: '2',
+//   status: activityStatusTypes.FAILED,
+//   type: '',
+//   title: '',
+//   content: 'Assign 1 tokens to 0x1234...',
+// },
 
 // Provides easy access to the user activities list
 class ActivityProvider extends React.Component {
@@ -54,6 +57,29 @@ class ActivityProvider extends React.Component {
     })
   }
 
+  addTransactionActivity = ({
+    transactionHash = '',
+    from = '',
+    initiatingApp = '',
+    forwarder = '',
+    description = '',
+  } = {}) => {
+    const newActivity = {
+      createdAt: Date.now(),
+      type: activityTypes.TRANSACTION,
+      read: false,
+      transactionHash,
+      from,
+      initiatingApp,
+      forwarder,
+      description,
+    }
+
+    const updatedActivities = storedList.add(newActivity)
+
+    this.setState({ activities: updatedActivities })
+  }
+
   remove = index => {
     this.setState({
       activities: storedList.remove(index),
@@ -69,7 +95,7 @@ class ActivityProvider extends React.Component {
   clearAll = () => {
     // Clear all non pending activities (we don't clear because we're awaiting state change)
     const nonPendingActivities = this.state.activities.filter(
-      ({ status }) => status !== activityStatusTypes.PENDING
+      ({ status }) => status === activityStatusTypes.PENDING
     )
 
     this.setState({
@@ -84,7 +110,7 @@ class ActivityProvider extends React.Component {
       <ActivityContext.Provider
         value={{
           activities,
-          add: this.add,
+          addTransactionActivity: this.addTransactionActivity,
           clearAll: this.clearAll,
           updateActivities: this.updateActivities,
         }}

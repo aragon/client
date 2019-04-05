@@ -45,6 +45,7 @@ class Wrapper extends React.PureComponent {
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
+    addTransactionActivity: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
     menuSwipeEnabled: PropTypes.bool.isRequired,
@@ -266,6 +267,7 @@ class Wrapper extends React.PureComponent {
           apps={apps}
           locator={locator}
           onRequestEnable={onRequestEnable}
+          addTransactionActivity={this.props.addTransactionActivity}
           transactionBag={transactionBag}
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
@@ -396,7 +398,9 @@ const LoadingApps = () => (
 )
 
 export default props => {
-  const { activities } = React.useContext(ActivityContext)
+  const { activities, addTransactionActivity } = React.useContext(
+    ActivityContext
+  )
 
   return (
     <Viewport>
@@ -406,6 +410,7 @@ export default props => {
           autoClosingPanel={below('medium')}
           menuSwipeEnabled={below('medium')}
           activityCount={activities.length}
+          addTransactionActivity={addTransactionActivity}
         />
       )}
     </Viewport>
