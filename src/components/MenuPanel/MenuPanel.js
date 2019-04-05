@@ -68,12 +68,12 @@ class MenuPanel extends React.PureComponent {
     appsStatus: AppsStatusType.isRequired,
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
-    activityCount: PropTypes.number,
-    notificationOpen: PropTypes.bool.isRequired,
+    activitiesOpen: PropTypes.bool.isRequired,
     onNotificationClicked: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    unreadActivityCount: PropTypes.number,
     viewportHeight: PropTypes.number,
   }
 
@@ -134,8 +134,8 @@ class MenuPanel extends React.PureComponent {
       daoAddress,
       onNotificationClicked,
       onOpenPreferences,
-      activityCount,
-      notificationOpen,
+      unreadActivityCount,
+      activitiesOpen,
     } = this.props
     const { animate, scrollVisible, systemAppsOpened } = this.state
     const appGroups = this.getAppGroups(apps)
@@ -155,9 +155,9 @@ class MenuPanel extends React.PureComponent {
               }}
             />
             <NotificationAlert
-              activityCount={activityCount}
+              unreadActivityCount={unreadActivityCount}
               onClick={onNotificationClicked}
-              notificationOpen={notificationOpen}
+              activitiesOpen={activitiesOpen}
             />
           </Header>
           <Content ref={this._contentRef}>

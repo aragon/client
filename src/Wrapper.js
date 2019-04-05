@@ -29,15 +29,18 @@ import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 class Wrapper extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
-    activityCount: PropTypes.number.isRequired,
+    unreadActivityCount: PropTypes.number.isRequired,
+    addTransactionActivity: PropTypes.func.isRequired,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
+    autoClosingPanel: PropTypes.bool.isRequired,
     banner: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.shape({
         type: PropTypes.oneOf([DeprecatedBanner]),
       }),
     ]),
+    clearActivities: PropTypes.func.isRequired,
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
@@ -45,9 +48,8 @@ class Wrapper extends React.PureComponent {
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
-    addTransactionActivity: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
-    autoClosingPanel: PropTypes.bool.isRequired,
+    markActivitiesRead: PropTypes.func.isRequired,
     menuSwipeEnabled: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
@@ -70,7 +72,7 @@ class Wrapper extends React.PureComponent {
     appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
-    notificationOpen: false,
+    activitiesOpen: false,
   }
 
   componentDidUpdate(prevProps) {
@@ -149,9 +151,6 @@ class Wrapper extends React.PureComponent {
   handleMenuPanelClose = () => {
     this.setState({ menuPanelOpened: false })
   }
-  handleNotificationClicked = () => {
-    this.setState(state => ({ notificationOpen: !state.notificationOpen }))
-  }
   handleClosePreferences = () => {
     this.setState({ preferencesOpened: false })
   }
@@ -166,27 +165,25 @@ class Wrapper extends React.PureComponent {
     this.openApp(this.props.locator.instanceId, params)
   }
 
-  handleNotificationsCleared = e => {
+  handleClearActivities = e => {
     e.preventDefault()
-    const { notificationOpen, notifications } = this.state
-    this.setState({ notifications: [] })
-    if (notificationOpen) {
-      setTimeout(
-        () => this.setState({ notificationOpen: false }),
-        notifications.length ? 500 : 0
-      )
+    const { activitiesOpen } = this.state
+    this.props.clearActivities()
+    if (activitiesOpen) {
+      setTimeout(() => this.setState({ activitiesOpen: false }), 500)
     }
   }
 
-  handleNotificationClosed = item =>
-    console.log(item) ||
-    this.setState(state => ({
-      ...state,
-      notifications: state.notifications.filter(
-        notification => notification.id !== item.id
-      ),
-    }))
+  toggleActivity = () => {
+    const openBeforeToggle = this.state.activitiesOpen
 
+    this.setState({ activitiesOpen: !openBeforeToggle }, () => {
+      if (openBeforeToggle) {
+        // mark as read after closing
+        this.props.markActivitiesRead()
+      }
+    })
+  }
   isAppInstalled(instanceId) {
     const { apps } = this.props
     return (
@@ -198,7 +195,7 @@ class Wrapper extends React.PureComponent {
   render() {
     const {
       account,
-      activityCount,
+      unreadActivityCount,
       apps,
       appsStatus,
       autoClosingPanel,
@@ -216,7 +213,7 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
 
-    const { menuPanelOpened, notificationOpen, preferencesOpened } = this.state
+    const { menuPanelOpened, activitiesOpen, preferencesOpened } = this.state
 
     return (
       <Main>
@@ -238,7 +235,7 @@ class Wrapper extends React.PureComponent {
                 apps={apps.filter(app => app.hasWebApp)}
                 appsStatus={appsStatus}
                 activeInstanceId={locator.instanceId}
-                activityCount={activityCount}
+                unreadActivityCount={unreadActivityCount}
                 connected={connected}
                 daoAddress={daoAddress}
                 openProgress={progress}
@@ -247,15 +244,14 @@ class Wrapper extends React.PureComponent {
                 onCloseMenuPanel={this.handleMenuPanelClose}
                 onOpenPreferences={this.handleOpenPreferences}
                 onRequestAppsReload={onRequestAppsReload}
-                onNotificationClicked={this.handleNotificationClicked}
-                notificationOpen={notificationOpen}
+                onNotificationClicked={this.toggleActivity}
+                activitiesOpen={activitiesOpen}
               />
               <AppScreen>
                 <NotificationBar
-                  open={notificationOpen}
-                  onClearAll={this.handleNotificationsCleared}
-                  onBlur={this.handleNotificationClicked}
-                  onNotificationClosed={this.handleNotificationClosed}
+                  open={activitiesOpen}
+                  onClearAll={this.handleClearActivities}
+                  onBlur={this.toggleActivity}
                 />
                 {this.renderApp(locator.instanceId, locator.params)}
               </AppScreen>
@@ -398,9 +394,12 @@ const LoadingApps = () => (
 )
 
 export default props => {
-  const { activities, addTransactionActivity } = React.useContext(
-    ActivityContext
-  )
+  const {
+    unreadActivityCount,
+    clearActivities,
+    addTransactionActivity,
+    markActivitiesRead,
+  } = React.useContext(ActivityContext)
 
   return (
     <Viewport>
@@ -409,8 +408,10 @@ export default props => {
           {...props}
           autoClosingPanel={below('medium')}
           menuSwipeEnabled={below('medium')}
-          activityCount={activities.length}
+          unreadActivityCount={unreadActivityCount}
           addTransactionActivity={addTransactionActivity}
+          clearActivities={clearActivities}
+          markActivitiesRead={markActivitiesRead}
         />
       )}
     </Viewport>

@@ -92,7 +92,7 @@ class ActivityProvider extends React.Component {
     })
   }
 
-  clearAll = () => {
+  clearActivities = () => {
     // Clear all non pending activities (we don't clear because we're awaiting state change)
     const nonPendingActivities = this.state.activities.filter(
       ({ status }) => status === activityStatusTypes.PENDING
@@ -103,16 +103,37 @@ class ActivityProvider extends React.Component {
     })
   }
 
+  markActivitiesRead = () => {
+    const readActivities = this.state.activities.map(activity => ({
+      ...activity,
+      read: true,
+    }))
+
+    this.setState({
+      activities: storedList.update(readActivities),
+    })
+  }
+
+  getUnreadActivityCount = () =>
+    this.state.activities.reduce(
+      (count, { read }) => (read ? count : count + 1),
+      0
+    )
+
   render() {
     const { children } = this.props
     const { activities } = this.state
+    const unreadActivityCount = this.getUnreadActivityCount()
+
     return (
       <ActivityContext.Provider
         value={{
           activities,
+          unreadActivityCount,
           addTransactionActivity: this.addTransactionActivity,
-          clearAll: this.clearAll,
+          clearActivities: this.clearActivities,
           updateActivities: this.updateActivities,
+          markActivitiesRead: this.markActivitiesRead,
         }}
       >
         {children}

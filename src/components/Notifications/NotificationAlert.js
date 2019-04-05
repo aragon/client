@@ -6,20 +6,20 @@ import { theme, springs, IconNotifications } from '@aragon/ui'
 
 export default class NotificationAlert extends React.PureComponent {
   static propTypes = {
-    activityCount: PropTypes.number.isRequired,
-    notificationOpen: PropTypes.bool.isRequired,
+    unreadActivityCount: PropTypes.number.isRequired,
+    activitiesOpen: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
   }
   handleClick = () => {
     // Only use for opening. Blur event closes the activity panel
-    if (!this.props.notificationOpen) {
+    if (!this.props.activitiesOpen) {
       this.props.onClick()
     }
   }
 
   render() {
-    const { activityCount } = this.props
-    const showActivityCount = activityCount > 0
+    const { unreadActivityCount } = this.props
+    const showCount = unreadActivityCount > 0
 
     return (
       <div className="actions">
@@ -34,7 +34,7 @@ export default class NotificationAlert extends React.PureComponent {
             native
             reset
             from={{ opacity: 0, size: 0 }}
-            to={{ opacity: showActivityCount ? 1 : 0, size: 1 }}
+            to={{ opacity: showCount ? 1 : 0, size: 1 }}
             config={springs.lazy}
           >
             {props => (
@@ -52,7 +52,7 @@ export default class NotificationAlert extends React.PureComponent {
                     .interpolate(s => `scale(${s})`),
                 }}
               >
-                {showActivityCount && this.props.activityCount}
+                {showCount && this.props.unreadActivityCount}
               </Badge>
             )}
           </Spring>

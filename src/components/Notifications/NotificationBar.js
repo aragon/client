@@ -7,9 +7,13 @@ import { ActivityContext } from '../../contexts/ActivityContext'
 import { NotificationHub, Notification } from './NotificationHub'
 import springs from '../../springs'
 
-const NotificationBar = ({ open, onBlur, onNotificationClosed }) => {
+const NotificationBar = ({
+  open,
+  onBlur,
+  onClearAll,
+}) => {
   const frameRef = React.createRef()
-  const { activities, clearAll } = React.useContext(ActivityContext)
+  const { activities } = React.useContext(ActivityContext)
 
   React.useEffect(() => {
     frameRef.current[open ? 'focus' : 'blur']()
@@ -25,8 +29,6 @@ const NotificationBar = ({ open, onBlur, onNotificationClosed }) => {
       }
     }, 0)
   }
-
-  const count = activities.length
 
   return (
     <Spring
@@ -49,20 +51,14 @@ const NotificationBar = ({ open, onBlur, onNotificationClosed }) => {
               <h1 style={{ marginRight: 10 }}>
                 <Text>Activity</Text>
               </h1>
-              {count ? (
-                <Badge.Notification style={{ background: theme.accent }}>
-                  {count}
-                </Badge.Notification>
-              ) : null}
             </div>
-            <a href="#" onClick={clearAll}>
+            <a onClick={onClearAll}>
               <Text>Clear All</Text>
             </a>
           </NotificationHeader>
           <NotificationHub
             activities={activities}
             keys={activity => activity.id}
-            onNotificationClosed={onNotificationClosed}
           >
             {NotificationImpl}
           </NotificationHub>
@@ -75,7 +71,7 @@ const NotificationBar = ({ open, onBlur, onNotificationClosed }) => {
 NotificationBar.propTypes = {
   open: PropTypes.bool,
   onBlur: PropTypes.func.isRequired,
-  onNotificationClosed: PropTypes.func.isRequired,
+  onClearAll: PropTypes.func.isRequired,
 }
 
 const NotificationImpl = (item, ready) => {
