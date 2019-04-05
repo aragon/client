@@ -11,15 +11,15 @@ export default class NotificationAlert extends React.PureComponent {
     onClick: PropTypes.func.isRequired,
   }
   handleClick = () => {
-    // Omly use for opening. Blur event closes the activity panel
+    // Only use for opening. Blur event closes the activity panel
     if (!this.props.notificationOpen) {
       this.props.onClick()
     }
   }
 
   render() {
-    const { notificationOpen, activityCount } = this.props
-    const showActivityCount = !notificationOpen && activityCount > 0
+    const { activityCount } = this.props
+    const showActivityCount = activityCount > 0
 
     return (
       <div className="actions">
