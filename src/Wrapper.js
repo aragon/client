@@ -47,6 +47,7 @@ class Wrapper extends React.PureComponent {
     autoClosingPanel: PropTypes.bool.isRequired,
     menuSwipeEnabled: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
+    signatureBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
     walletWeb3: PropTypes.object,
@@ -58,6 +59,7 @@ class Wrapper extends React.PureComponent {
     banner: false,
     connected: false,
     transactionBag: null,
+    signatureBag: null,
     walletNetwork: '',
     walletProviderId: '',
     walletWeb3: null,
@@ -199,6 +201,7 @@ class Wrapper extends React.PureComponent {
       onRequestEnable,
       menuSwipeEnabled,
       transactionBag,
+      signatureBag,
       walletNetwork,
       walletProviderId,
       walletWeb3,
@@ -260,6 +263,7 @@ class Wrapper extends React.PureComponent {
           locator={locator}
           onRequestEnable={onRequestEnable}
           transactionBag={transactionBag}
+          signatureBag={signatureBag}
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
@@ -271,6 +275,19 @@ class Wrapper extends React.PureComponent {
                   type: 'transaction',
                   title: `${name} ${identifier}`,
                   content: description,
+                },
+                ...state.queuedNotifications,
+              ],
+            }))
+          }
+          onMsgSignSuccess={({ message }) =>
+            this.setState(state => ({
+              queuedNotifications: [
+                {
+                  id: message,
+                  type: 'signature',
+                  title: 'web3-eth-personal-sign',
+                  content: message,
                 },
                 ...state.queuedNotifications,
               ],

@@ -26,27 +26,39 @@ class SigningStatus extends React.Component {
     signError: PropTypes.instanceOf(Error),
     walletProviderId: PropTypes.string,
     onClose: PropTypes.func.isRequired,
+    isTxSignature: PropTypes.bool.isRequired,
   }
   getLabel() {
-    const { status } = this.props
+    const { status, isTxSignature } = this.props
     if (status === STATUS_SIGNING) return 'Waiting for signature…'
-    if (status === STATUS_SIGNED) return 'Transaction signed!'
-    if (status === STATUS_ERROR) return 'Error signing the transaction'
+    if (status === STATUS_SIGNED) {
+      return isTxSignature ? 'Transaction signed!' : 'Message signed!'
+    }
+    if (status === STATUS_ERROR) {
+      return isTxSignature
+        ? 'Error signing the transaction'
+        : 'Error signing the message'
+    }
   }
   getInfo() {
-    const { status, signError, walletProviderId } = this.props
+    const { status, signError, walletProviderId, isTxSignature } = this.props
     if (status === STATUS_SIGNING) {
       return (
         <p>
-          Open {providerString('your Ethereum provider', walletProviderId)} to
-          sign your transaction.
+          {`Open ${providerString(
+            'your Ethereum provider',
+            walletProviderId
+          )} to
+          sign your ${isTxSignature ? 'transaction' : 'message'}.`}
         </p>
       )
     }
     if (status === STATUS_SIGNED) {
       return (
         <p>
-          Success! Your transaction has been sent to the network for processing.
+          {isTxSignature
+            ? 'Success! Your transaction has been sent to the network for processing.'
+            : 'Success! Your message has been signed'}
         </p>
       )
     }
@@ -54,8 +66,12 @@ class SigningStatus extends React.Component {
       return (
         <React.Fragment>
           <p>
-            Woops, something went wrong. The transaction hasn’t been signed and
-            no tokens have been sent.
+            {`Woops, something went wrong. The ${
+              isTxSignature
+                ? 'transaction hasn’t been signed and no tokens have been sent'
+                : 'message hasn’t been signed'
+            }`}
+            .
           </p>
           {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
         </React.Fragment>
