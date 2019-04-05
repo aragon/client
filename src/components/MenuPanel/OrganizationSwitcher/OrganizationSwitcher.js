@@ -52,7 +52,7 @@ class OrganizationSwitcher extends React.PureComponent {
               <Favorites
                 favoriteDaos={favoriteDaos}
                 currentDao={currentDao}
-                onDone={this.handleFavoritesUpdate}
+                onUpdate={this.handleFavoritesUpdate}
               />
             </Popup>
           </Main>
