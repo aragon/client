@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { IconPlus, theme } from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import FavoriteRow from './FavoriteRow'
 import ItemButton from './ItemButton'
@@ -97,7 +98,18 @@ class Favorites extends React.Component {
             padding: 0 20px;
           `}
         >
-          Open organization…
+          <span
+            css={`
+              display: flex;
+              align-items: center;
+              width: 24px;
+              margin-right: 13px;
+              color: ${theme.accent};
+            `}
+          >
+            <IconPlus />
+          </span>
+          <span>Open organization…</span>
         </ItemButton>
 
         <SectionTitle>Current</SectionTitle>
