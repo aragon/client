@@ -96,6 +96,8 @@ class Favorites extends React.Component {
           css={`
             width: 100%;
             padding: 0 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid ${theme.contentBorder};
           `}
         >
           <span
