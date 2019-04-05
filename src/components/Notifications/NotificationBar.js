@@ -60,8 +60,8 @@ const NotificationBar = ({ open, onBlur, onNotificationClosed }) => {
             </a>
           </NotificationHeader>
           <NotificationHub
-            items={activities}
-            keys={item => item.id}
+            activities={activities}
+            keys={activity => activity.id}
             onNotificationClosed={onNotificationClosed}
           >
             {NotificationImpl}

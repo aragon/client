@@ -10,19 +10,19 @@ const spring = { tension: 1900, friction: 200, precision: 0.0001, clamp: true }
 class NotificationHub extends React.Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
-    items: PropTypes.arrayOf(PropTypes.object).isRequired,
+    activities: PropTypes.arrayOf(PropTypes.object).isRequired,
     keys: PropTypes.func.isRequired,
     onNotificationClosed: PropTypes.func.isRequired,
   }
 
   state = { ready: {} }
   render() {
-    const { items, keys, children, onNotificationClosed } = this.props
+    const { activities, keys, children, onNotificationClosed } = this.props
     return (
       <div>
         <Transition
           native
-          items={items}
+          items={activities}
           keys={keys}
           trail={100}
           from={{ opacity: 0, height: 0, transform: 'translate3d(-100%,0,0)' }}
@@ -36,15 +36,15 @@ class NotificationHub extends React.Component {
           leave={[{ opacity: 1 }, { height: 0 }]}
           config={[{ ...spring, precision: 1 }, spring]}
         >
-          {(item, state) => props => (
+          {(activity, state) => props => (
             <InnerContainer style={props}>
               <CloseButton
                 role="button"
-                onClick={() => onNotificationClosed(item)}
+                onClick={() => onNotificationClosed(activity)}
               >
                 <IconClose />
               </CloseButton>
-              {children(item, this.state.ready[keys(item)])}
+              {children(activity, this.state.ready[keys(activity)])}
             </InnerContainer>
           )}
         </Transition>
