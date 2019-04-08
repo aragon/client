@@ -135,7 +135,7 @@ const Main = styled(Card)`
   width: auto;
   height: auto;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.03);
-  padding: 10px 0;
+  padding: 0 0 10px;
   &:focus {
     outline: 0;
   }
