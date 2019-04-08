@@ -58,7 +58,7 @@ const NotificationBar = ({
           </NotificationHeader>
           <NotificationHub
             activities={activities}
-            keys={activity => activity.id}
+            keys={activity => activity.transactionHash}
           >
             {NotificationImpl}
           </NotificationHub>
