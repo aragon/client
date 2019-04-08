@@ -129,6 +129,27 @@ class ActivityProvider extends React.Component {
     })
   }
 
+  // update activity status and set the activity to unread
+  setActivityStatus = status => transactionHash => {
+    const activities = this.state.activities.map(activity =>
+      activity.transactionHash === transactionHash
+        ? {
+            ...activity,
+            read: false,
+            status,
+          }
+        : activity
+    )
+
+    this.setState({
+      activities: storedList.update(activities),
+    })
+  }
+
+  setActivityConfirmed = this.setActivityStatus(activityStatusTypes.CONFIRMED)
+  setActivityFailed = this.setActivityStatus(activityStatusTypes.FAILED)
+  setActivityTimedOut = this.setActivityStatus(activityStatusTypes.FAILED)
+
   getUnreadActivityCount = () =>
     this.state.activities.reduce(
       (count, { read }) => (read ? count : count + 1),
@@ -147,6 +168,8 @@ class ActivityProvider extends React.Component {
           unreadActivityCount,
           addTransactionActivity: this.addTransactionActivity,
           clearActivities: this.clearActivities,
+          setActivityConfirmed: this.setActivityConfirmed,
+          setActivityFailed: this.setActivityFailed,
           clearActivity: this.clearActivity,
           updateActivities: this.updateActivities,
           markActivitiesRead: this.markActivitiesRead,

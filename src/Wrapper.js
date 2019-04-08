@@ -30,7 +30,6 @@ class Wrapper extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
     unreadActivityCount: PropTypes.number.isRequired,
-    addTransactionActivity: PropTypes.func.isRequired,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
@@ -263,7 +262,6 @@ class Wrapper extends React.PureComponent {
           apps={apps}
           locator={locator}
           onRequestEnable={onRequestEnable}
-          addTransactionActivity={this.props.addTransactionActivity}
           transactionBag={transactionBag}
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
@@ -397,7 +395,6 @@ export default props => {
   const {
     unreadActivityCount,
     clearActivities,
-    addTransactionActivity,
     markActivitiesRead,
   } = React.useContext(ActivityContext)
 
@@ -409,7 +406,6 @@ export default props => {
           autoClosingPanel={below('medium')}
           menuSwipeEnabled={below('medium')}
           unreadActivityCount={unreadActivityCount}
-          addTransactionActivity={addTransactionActivity}
           clearActivities={clearActivities}
           markActivitiesRead={markActivitiesRead}
         />

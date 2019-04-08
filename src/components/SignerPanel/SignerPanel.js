@@ -31,11 +31,13 @@ const INITIAL_STATE = {
 
 class SignerPanel extends React.Component {
   static propTypes = {
+    addTransactionActivity: PropTypes.func.isRequired,
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
     locator: PropTypes.object.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
-    addTransactionActivity: PropTypes.func.isRequired,
+    setActivityConfirmed: PropTypes.func.isRequired,
+    setActivityFailed: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
@@ -96,21 +98,42 @@ class SignerPanel extends React.Component {
     return { annotatedDescription, description, name, to, transaction }
   }
 
-  async signTransaction(transaction, intent) {
-    const { walletWeb3 } = this.props
+  signTransaction(transaction, intent) {
+    const {
+      walletWeb3,
+      addTransactionActivity,
+      setActivityConfirmed,
+      setActivityFailed,
+    } = this.props
+
     return new Promise((resolve, reject) => {
-      walletWeb3.eth.sendTransaction(transaction, (err, transactionHash) => {
-        if (err) {
-          reject(err)
-        } else {
+      walletWeb3.eth
+        .sendTransaction(transaction)
+        .on('transactionHash', transactionHash => {
           resolve(transactionHash)
-        }
-      })
+
+          // Create new activiy
+          addTransactionActivity({
+            transactionHash,
+            from: intent.transaction.from,
+            initiatingApp: intent.name,
+            forwarder: intent.transaction.name,
+            description: intent.description,
+          })
+        })
+        .on('receipt', receipt => {
+          setActivityConfirmed(receipt.transactionHash)
+        })
+        .on('error', err => {
+          // console.log('err:', err)
+          err && err.transactionHash && setActivityFailed(err.transactionHash)
+          reject(err)
+        })
     })
   }
 
   handleSign = async (transaction, intent, pretransaction) => {
-    const { transactionBag, addTransactionActivity } = this.props
+    const { transactionBag } = this.props
 
     this.setState({ status: STATUS_SIGNING })
 
@@ -121,17 +144,7 @@ class SignerPanel extends React.Component {
 
       const transactionHash = await this.signTransaction(transaction, intent)
 
-      // Create new activiy
-      addTransactionActivity &&
-        addTransactionActivity({
-          transactionHash,
-          from: intent.transaction.from,
-          initiatingApp: intent.name,
-          forwarder: intent.transaction.name,
-          description: intent.description,
-        })
-
-      transactionBag.accept(transactionHash)
+      transactionBag.accept(transactionHash, intent)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
 
@@ -276,6 +289,17 @@ const Screen = styled.div`
 `
 
 export default function(props) {
-  const { add } = React.useContext(ActivityContext)
-  return <SignerPanel {...props} addActivity={add} />
+  const {
+    addTransactionActivity,
+    setActivityConfirmed,
+    setActivityFailed,
+  } = React.useContext(ActivityContext)
+  return (
+    <SignerPanel
+      {...props}
+      addTransactionActivity={addTransactionActivity}
+      setActivityConfirmed={setActivityConfirmed}
+      setActivityFailed={setActivityFailed}
+    />
+  )
 }
