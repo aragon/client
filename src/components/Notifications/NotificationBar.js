@@ -2,12 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme, Badge } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
-import { NotificationHub, Notification } from './NotificationHub'
+import NotificationHub from './NotificationHub'
 import springs from '../../springs'
 
-const NotificationBar = ({ open, onBlur, onClearAll }) => {
+const ActivityPanel = ({ open, onBlur, onClearAll }) => {
   const frameRef = React.createRef()
   const { activities, clearActivity } = React.useContext(ActivityContext)
 
@@ -56,38 +55,17 @@ const NotificationBar = ({ open, onBlur, onClearAll }) => {
             activities={activities}
             keys={activity => activity.transactionHash}
             clearActivity={clearActivity}
-          >
-            {NotificationImpl}
-          </NotificationHub>
+          />
         </NotificationFrame>
       )}
     </Spring>
   )
 }
 
-NotificationBar.propTypes = {
+ActivityPanel.propTypes = {
   open: PropTypes.bool,
   onBlur: PropTypes.func.isRequired,
   onClearAll: PropTypes.func.isRequired,
-}
-
-const NotificationImpl = (item, ready) => {
-  let payload =
-    typeof item.content === 'string' ? <p>{item.content}</p> : item.content
-  switch (item.type) {
-    case 'transaction':
-      return (
-        <Notification.Transaction ready={ready} title={item.title}>
-          {payload}
-        </Notification.Transaction>
-      )
-    default:
-      return (
-        <Notification ready={ready} title={item.title} time="10 min ago">
-          {payload}
-        </Notification>
-      )
-  }
 }
 
 const NotificationFrame = styled(animated.div)`
@@ -132,4 +110,4 @@ const NotificationHeader = styled('div')`
 const Text = styled('span')`
   vertical-align: sub;
 `
-export default NotificationBar
+export default ActivityPanel

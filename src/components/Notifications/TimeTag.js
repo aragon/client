@@ -1,24 +1,21 @@
 import React from 'react'
-import { differenceInMinutes } from 'date-fns'
+import { formatDistance } from 'date-fns'
 import PropTypes from 'prop-types'
 
-export default class TimeTag extends React.Component {
-  static propTypes = {
-    style: PropTypes.object,
-  }
-  state = { time: new Date() }
-  componentDidMount() {
-    this.interval = setInterval(() => this.forceUpdate(), 1000)
-  }
-  componentWillUnmount() {
-    clearInterval(this.interval)
-  }
-  render() {
-    const time = differenceInMinutes(new Date(), this.state.time)
-    return (
-      <span style={this.props.style} ref={this.viewRef}>
-        {time}m ago
-      </span>
-    )
-  }
+export default function TimeTag({ style, date }) {
+  const [relativeTime, setRelativeTime] = React.useState('')
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setRelativeTime(formatDistance(new Date(), new Date(date)))
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [date])
+
+  return <span style={style}>{relativeTime} ago</span>
+}
+
+TimeTag.propTypes = {
+  style: PropTypes.object,
+  date: PropTypes.number.isRequired, // unix timestamp
 }

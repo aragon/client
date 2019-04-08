@@ -29,17 +29,21 @@ storedList.update([
     forwarder: 'Voting',
     description: 'Mint 1 tokens for 0x3bDBLLA',
     transactionHash:
-      '0x873c90026744e293f12c40a5fc6cf3b7bb368636f0dea632da50348719f96cce',
+      '0x873c90026744e293f12c40a5fc6cf3b7bb368636f0dea632da50348719f96bbe',
+  },
+  {
+    createdAt: 1554716398070,
+    read: true,
+    status: activityStatusTypes.PENDING,
+    type: 'TRANSACTION',
+    transactionHash:
+      '0x90c53c7533c08a5ab3cae73df760adeb68d83b220628a2722eec7f576f679a71',
+    from: '0x3bd60bafea8a7768c6f4352af4cfe01701884ff2',
+    initiatingApp: 'Voting',
+    forwarder: 'Voting',
+    description: 'Create a new vote about "hello"',
   },
 ])
-
-// {
-//   id: '2',
-//   status: activityStatusTypes.FAILED,
-//   type: '',
-//   title: '',
-//   content: 'Assign 1 tokens to 0x1234...',
-// },
 
 // Provides easy access to the user activities list
 class ActivityProvider extends React.Component {
@@ -67,6 +71,7 @@ class ActivityProvider extends React.Component {
     const newActivity = {
       createdAt: Date.now(),
       type: activityTypes.TRANSACTION,
+      status: activityStatusTypes.PENDING,
       read: false,
       transactionHash,
       from,
