@@ -107,7 +107,7 @@ const Wrap = styled.div`
       padding: 16px 32px;
       max-width: 50vw;
       /* wide identity badge + paddings */
-      min-width: calc(400px + 32px * 2);
+      min-width: ${400 + 32 * 2}px;
     `
   )}
 `
