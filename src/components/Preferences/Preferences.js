@@ -14,15 +14,15 @@ import {
   font,
   springs,
 } from '@aragon/ui'
-import LocalIdentitiesComponent from './LocalIdentities'
+import keycodes from '../../keycodes'
 import { AragonType } from '../../prop-types'
 import {
   IdentityContext,
   identityEventTypes,
 } from '../IdentityManager/IdentityManager'
+import LocalIdentitiesComponent from './LocalIdentities'
 
 const TABS = ['Manage labels']
-const ESCAPE_KEY_CODE = 27
 
 const Preferences = ({ locator, onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
@@ -60,7 +60,7 @@ const Preferences = ({ locator, onClose, smallView, wrapper }) => {
     identityEvents$.next({ type: identityEventTypes.IMPORT })
   }
   const handlekeyDown = e => {
-    if (e.keyCode === ESCAPE_KEY_CODE) {
+    if (e.keyCode === keycodes.esc) {
       onClose()
     }
   }

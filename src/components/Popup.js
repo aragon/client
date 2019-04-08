@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import { Card } from '@aragon/ui'
-import { noop } from '../utils'
+import keycodes from '../keycodes'
 import springs from '../springs'
+import { noop } from '../utils'
 
 export const TRANSITION_SCALE_DIFF = 0.04
 export const TRANSITION_SPRING = { ...springs.swift, precision: 0.1 }
@@ -66,7 +67,7 @@ class Popup extends React.Component {
   }
 
   handleKeydown = event => {
-    if (event.keyCode === 27) {
+    if (event.keyCode === keycodes.esc) {
       this.close()
     }
   }

@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import keycodes from '../../keycodes'
 import { noop } from '../../utils'
 
 class EscapeOutside extends React.Component {
@@ -33,7 +34,7 @@ class EscapeOutside extends React.Component {
 
   handleEscape = e => {
     const { onEscapeOutside } = this.props
-    if (e.keyCode === 27) {
+    if (e.keyCode === keycodes.esc) {
       onEscapeOutside()
     }
   }

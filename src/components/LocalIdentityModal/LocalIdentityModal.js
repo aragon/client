@@ -5,6 +5,7 @@ import { Button, TextInput, breakpoint, font, theme } from '@aragon/ui'
 import { ModalContext } from '../ModalManager/ModalManager'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
+import keycodes from '../../keycodes'
 
 const LocalIdentityModal = ({ opened, ...props }) => {
   const { showModal, hideModal } = React.useContext(ModalContext)
@@ -37,9 +38,9 @@ const Modal = ({ address, label, onCancel, onSave }) => {
     }
   }
   const handlekeyDown = e => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === keycodes.enter) {
       handleSave()
-    } else if (e.keyCode === 27) {
+    } else if (e.keyCode === keycodes.esc) {
       handleCancel()
     }
   }
