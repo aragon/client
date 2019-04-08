@@ -12,12 +12,12 @@ class NotificationHub extends React.Component {
     children: PropTypes.func.isRequired,
     activities: PropTypes.arrayOf(PropTypes.object).isRequired,
     keys: PropTypes.func.isRequired,
-    dismissActivity: PropTypes.func.isRequired,
+    clearActivity: PropTypes.func.isRequired,
   }
 
   state = { ready: {} }
   render() {
-    const { activities, keys, children, dismissActivity } = this.props
+    const { activities, keys, children, clearActivity } = this.props
     return (
       <div>
         <Transition
@@ -40,7 +40,7 @@ class NotificationHub extends React.Component {
             <InnerContainer style={props}>
               <CloseButton
                 role="button"
-                onClick={() => dismissActivity(activity)}
+                onClick={() => clearActivity(activity.transactionHash)}
               >
                 <IconClose />
               </CloseButton>

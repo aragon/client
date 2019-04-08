@@ -92,15 +92,25 @@ class ActivityProvider extends React.Component {
     })
   }
 
-  clearActivities = () => {
-    // Clear all non pending activities (we don't clear because we're awaiting state change)
-    const nonPendingActivities = this.state.activities.filter(
-      ({ status }) => status === activityStatusTypes.PENDING
-    )
+  filterActivities = (predicate = activity => true) => {
+    const filtered = this.state.activities.filter(predicate)
 
     this.setState({
-      activities: storedList.update(nonPendingActivities),
+      activities: storedList.update(filtered),
     })
+  }
+
+  clearActivities = () => {
+    // Clear all non pending activities (we don't clear because we're awaiting state change)
+    this.filterActivities(
+      ({ status }) => status === activityStatusTypes.PENDING
+    )
+  }
+
+  clearActivity = transactionHash => {
+    this.filterActivities(
+      activity => activity.transactionHash !== transactionHash
+    )
   }
 
   markActivitiesRead = () => {
@@ -132,6 +142,7 @@ class ActivityProvider extends React.Component {
           unreadActivityCount,
           addTransactionActivity: this.addTransactionActivity,
           clearActivities: this.clearActivities,
+          clearActivity: this.clearActivity,
           updateActivities: this.updateActivities,
           markActivitiesRead: this.markActivitiesRead,
         }}

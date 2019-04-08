@@ -7,13 +7,9 @@ import { ActivityContext } from '../../contexts/ActivityContext'
 import { NotificationHub, Notification } from './NotificationHub'
 import springs from '../../springs'
 
-const NotificationBar = ({
-  open,
-  onBlur,
-  onClearAll,
-}) => {
+const NotificationBar = ({ open, onBlur, onClearAll }) => {
   const frameRef = React.createRef()
-  const { activities } = React.useContext(ActivityContext)
+  const { activities, clearActivity } = React.useContext(ActivityContext)
 
   React.useEffect(() => {
     frameRef.current[open ? 'focus' : 'blur']()
@@ -59,6 +55,7 @@ const NotificationBar = ({
           <NotificationHub
             activities={activities}
             keys={activity => activity.transactionHash}
+            clearActivity={clearActivity}
           >
             {NotificationImpl}
           </NotificationHub>
