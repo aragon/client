@@ -21,7 +21,7 @@ LocalIdentityModal.propTypes = {
 }
 
 const Modal = ({ address, label, onCancel, onSave }) => {
-  const [action, setAction] = React.useState()
+  const [action, setAction] = React.useState(null)
   const [error, setError] = React.useState(null)
   const labelInput = React.useRef(null)
   const handleCancel = () => {

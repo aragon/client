@@ -17,7 +17,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
 
   const { resolve, identityEvents$ } = React.useContext(IdentityContext)
   const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
-  const [label, setLabel] = React.useState()
+  const [label, setLabel] = React.useState(null)
   const handleResolve = async () => {
     try {
       const { name = null } = await resolve(address)
