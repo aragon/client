@@ -90,7 +90,7 @@ const LocalIdentities = ({
           <StyledExport
             label="Export labels"
             mode="secondary"
-            download={`aragon-${locator.dao}_labels_${today}.json`}
+            download={`aragon-labels_${locator.dao}_${today}.json`}
             href={downloadHref}
           >
             Export
