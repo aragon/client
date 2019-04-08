@@ -62,6 +62,7 @@ function ActivityItem({ ready, activity }) {
       <h2>
         <TimeTag date={activity.createdAt} style={{ marginRight: 10 }} />
       </h2>
+      <p>Status {activity.status}</p>
       <Spring
         native
         delay={400}
