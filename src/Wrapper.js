@@ -12,7 +12,7 @@ import SwipeContainer from './components/MenuPanel/SwipeContainer'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import { ActivityContext } from './contexts/ActivityContext'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
-import NotificationBar from './components/Notifications/NotificationBar'
+import ActivityPanel from './components/Activity/ActivityPanel'
 import {
   AppType,
   AppsStatusType,
@@ -244,11 +244,11 @@ class Wrapper extends React.PureComponent {
                 onCloseMenuPanel={this.handleMenuPanelClose}
                 onOpenPreferences={this.handleOpenPreferences}
                 onRequestAppsReload={onRequestAppsReload}
-                onNotificationClicked={this.toggleActivity}
+                onActivityClicked={this.toggleActivity}
                 activitiesOpen={activitiesOpen}
               />
               <AppScreen>
-                <NotificationBar
+                <ActivityPanel
                   open={activitiesOpen}
                   onClearAll={this.handleClearActivities}
                   onBlur={this.toggleActivity}

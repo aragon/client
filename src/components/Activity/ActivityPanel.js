@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { ActivityContext } from '../../contexts/ActivityContext'
-import NotificationHub from './NotificationHub'
+import ActivityHub from './ActivityHub'
 import springs from '../../springs'
 
 const ActivityPanel = ({ open, onBlur, onClearAll }) => {
@@ -33,7 +33,7 @@ const ActivityPanel = ({ open, onBlur, onClearAll }) => {
       config={springs.lazy}
     >
       {({ x }) => (
-        <NotificationFrame
+        <ActivityFrame
           ref={frameRef}
           onBlur={_onBlur}
           tabIndex="0"
@@ -41,7 +41,7 @@ const ActivityPanel = ({ open, onBlur, onClearAll }) => {
             transform: x.interpolate(x => `translate3d(${x}px,0,0)`),
           }}
         >
-          <NotificationHeader>
+          <ActivityHeader>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <h1 style={{ marginRight: 10 }}>
                 <Text>Activity</Text>
@@ -50,13 +50,13 @@ const ActivityPanel = ({ open, onBlur, onClearAll }) => {
             <a onClick={onClearAll}>
               <Text>Clear All</Text>
             </a>
-          </NotificationHeader>
-          <NotificationHub
+          </ActivityHeader>
+          <ActivityHub
             activities={activities}
             keys={activity => activity.transactionHash}
             clearActivity={clearActivity}
           />
-        </NotificationFrame>
+        </ActivityFrame>
       )}
     </Spring>
   )
@@ -68,7 +68,7 @@ ActivityPanel.propTypes = {
   onClearAll: PropTypes.func.isRequired,
 }
 
-const NotificationFrame = styled(animated.div)`
+const ActivityFrame = styled(animated.div)`
   position: absolute;
   width: 254px;
   height: 100%;
@@ -81,7 +81,7 @@ const NotificationFrame = styled(animated.div)`
   outline: 0;
 `
 
-const NotificationHeader = styled('div')`
+const ActivityHeader = styled('div')`
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -19,7 +19,7 @@ import { staticApps } from '../../static-apps'
 import MenuPanelFooter from './MenuPanelFooter'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import NotificationAlert from '../Notifications/NotificationAlert'
+import ActivityAlert from '../Activity/ActivityAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
 import IconArrow from '../../icons/IconArrow'
@@ -69,7 +69,7 @@ class MenuPanel extends React.PureComponent {
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     activitiesOpen: PropTypes.bool.isRequired,
-    onNotificationClicked: PropTypes.func.isRequired,
+    onActivityClicked: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
@@ -132,7 +132,7 @@ class MenuPanel extends React.PureComponent {
       apps,
       connected,
       daoAddress,
-      onNotificationClicked,
+      onActivityClicked,
       onOpenPreferences,
       unreadActivityCount,
       activitiesOpen,
@@ -154,9 +154,9 @@ class MenuPanel extends React.PureComponent {
                 address: daoAddress.address,
               }}
             />
-            <NotificationAlert
+            <ActivityAlert
               unreadActivityCount={unreadActivityCount}
-              onClick={onNotificationClicked}
+              onClick={onActivityClicked}
               activitiesOpen={activitiesOpen}
             />
           </Header>

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { theme, springs, IconNotifications } from '@aragon/ui'
 
-export default class NotificationAlert extends React.PureComponent {
+export default class ActivityAlert extends React.PureComponent {
   static propTypes = {
     unreadActivityCount: PropTypes.number.isRequired,
     activitiesOpen: PropTypes.bool.isRequired,
