@@ -1,16 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import {
-  Button,
-  IdentityBadge,
-  TextInput,
-  breakpoint,
-  font,
-  theme,
-} from '@aragon/ui'
+import { Button, TextInput, breakpoint, font, theme } from '@aragon/ui'
 import { ModalContext } from '../ModalManager/ModalManager'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
+import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
+import keycodes from '../../keycodes'
 
 const LocalIdentityModal = ({ opened, ...props }) => {
   const { showModal, hideModal } = React.useContext(ModalContext)
@@ -26,12 +21,12 @@ LocalIdentityModal.propTypes = {
 }
 
 const Modal = ({ address, label, onCancel, onSave }) => {
-  const [action, setAction] = React.useState()
+  const [action, setAction] = React.useState(null)
+  const [error, setError] = React.useState(null)
   const labelInput = React.useRef(null)
   const handleCancel = () => {
     onCancel()
   }
-  const [error, setError] = React.useState(null)
   const handleSave = () => {
     try {
       const label = labelInput.current.value.trim()
@@ -43,8 +38,10 @@ const Modal = ({ address, label, onCancel, onSave }) => {
     }
   }
   const handlekeyDown = e => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === keycodes.enter) {
       handleSave()
+    } else if (e.keyCode === keycodes.esc) {
+      handleCancel()
     }
   }
   React.useEffect(() => {
@@ -63,7 +60,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
           This label would be displayed instead of the following address and
           only be <span>stored on this device</span>.
         </Description>
-        <IdentityBadge address={address} entity={address} />
+        <IdentityBadgeWithNetwork entity={address} />
         <Label>
           <div>Custom Label</div>
           <TextInput
@@ -110,7 +107,7 @@ const Wrap = styled.div`
       padding: 16px 32px;
       max-width: 50vw;
       /* wide identity badge + paddings */
-      min-width: calc(400px + 32px * 2);
+      min-width: ${400 + 32 * 2}px;
     `
   )}
 `

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
-import LocalIdentityBadge from '../LocalIdentityBadge/LocalIdentityBadge'
+import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import providerString from '../../provider-strings'
 
 const RADIO_ITEM_TITLE_LENGTH = 30

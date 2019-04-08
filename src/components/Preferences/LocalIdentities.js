@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import {
-  Badge,
   Button,
   IconCross,
   IdentityBadge,
@@ -12,6 +11,7 @@ import {
   font,
   theme,
 } from '@aragon/ui'
+import LocalIdentityPopoverTitle from '../IdentityBadge/LocalIdentityPopoverTitle'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
 import {
   IdentityContext,
@@ -23,24 +23,30 @@ import Import from './Import'
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
 const LocalIdentities = ({
+  localIdentities,
+  locator,
   onClearAll,
   onImport,
   onModify,
   onModifyEvent,
-  localIdentities,
 }) => {
-  // transform localIdentities from object into array
-  const identities = Object.keys(localIdentities).map(address => {
-    return Object.assign({}, localIdentities[address], { address })
-  })
+  // transform localIdentities from object into array and attach address to each entry
+  const identities = Object.entries(localIdentities).map(
+    ([address, identity]) => ({
+      ...identity,
+      address,
+    })
+  )
 
   if (!identities.length) {
     return <EmptyLocalIdentities onImport={onImport} />
   }
+
   const { identityEvents$ } = React.useContext(IdentityContext)
-  const updateLabel = (fn, address) => async () => {
+  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
+  const updateLabel = address => async () => {
     try {
-      await fn(address)
+      await showLocalIdentityModal(address)
       // preferences get all
       onModifyEvent()
       // for iframe apps
@@ -49,12 +55,11 @@ const LocalIdentities = ({
       /* nothing was updated */
     }
   }
-  const href = window.URL.createObjectURL(
+  const downloadHref = window.URL.createObjectURL(
     new Blob([JSON.stringify(identities)], { type: 'text/json' })
   )
   // standard: https://en.wikipedia.org/wiki/ISO_8601
   const today = format(Date.now(), 'yyyy-MM-dd')
-  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
 
   return (
     <React.Fragment>
@@ -71,11 +76,9 @@ const LocalIdentities = ({
                 entity={address}
                 popoverAction={{
                   label: 'Edit custom label',
-                  onClick: updateLabel(showLocalIdentityModal, address),
+                  onClick: updateLabel(address),
                 }}
-                popoverTitle={
-                  <PopoverActionTitle address={address} name={name} />
-                }
+                popoverTitle={<LocalIdentityPopoverTitle label={name} />}
               />
             </div>
           </Item>
@@ -87,8 +90,8 @@ const LocalIdentities = ({
           <StyledExport
             label="Export labels"
             mode="secondary"
-            download={`aragon-labels_${today}.json`}
-            href={href}
+            download={`aragon-labels_${locator.dao}_${today}.json`}
+            href={downloadHref}
           >
             Export
           </StyledExport>
@@ -104,6 +107,7 @@ const LocalIdentities = ({
 
 LocalIdentities.propTypes = {
   localIdentities: PropTypes.object,
+  locator: PropTypes.object.isRequired,
   onClearAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,
@@ -115,46 +119,10 @@ LocalIdentities.defaultProps = {
   onModifyEvent: () => null,
 }
 
-const PopoverActionTitle = ({ address, name }) => {
-  return (
-    <WrapTitle>
-      <TitleLabel>{name}</TitleLabel>
-      <Badge
-        css={`
-          margin-left: 16px;
-          text-transform: uppercase;
-          ${font({ size: 'xsmall' })};
-        `}
-      >
-        Custom label
-      </Badge>
-    </WrapTitle>
-  )
-}
-
-PopoverActionTitle.propTypes = {
-  address: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-}
-
 const Label = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`
-
-const WrapTitle = styled.div`
-  display: grid;
-  align-items: center;
-  grid-template-columns: auto 1fr;
-  padding-right: 24px;
-`
-
-const TitleLabel = styled.span`
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `
 
 const Warning = () => (

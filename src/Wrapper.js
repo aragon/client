@@ -214,6 +214,7 @@ class Wrapper extends React.PureComponent {
     return (
       <Main>
         <Preferences
+          locator={locator}
           opened={preferencesOpened}
           onClose={this.handleClosePreferences}
           wrapper={wrapper}

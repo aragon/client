@@ -10,7 +10,7 @@ import {
   breakpoint,
   theme,
 } from '@aragon/ui'
-import LocalIdentityBadge from '../../../components/LocalIdentityBadge/LocalIdentityBadge'
+import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
 import ViewDetailsButton from './ViewDetailsButton'
 import { FirstTableCell, LastTableCell } from '../Table'
