@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
-import IdentityBadge from '../IdentityBadge'
+import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import providerString from '../../provider-strings'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
@@ -57,7 +57,7 @@ class ActionPathsContent extends React.Component {
                         margin-right: 4px;
                       `}
                     >
-                      <IdentityBadge
+                      <LocalIdentityBadge
                         entity={type === 'any-account' ? 'Any account' : value}
                         fontSize="small"
                       />

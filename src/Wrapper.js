@@ -7,6 +7,7 @@ import { AppCenter, Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
+import Preferences from './components/Preferences/Preferences'
 import MenuPanel from './components/MenuPanel/MenuPanel'
 import SwipeContainer from './components/MenuPanel/SwipeContainer'
 import SignerPanel from './components/SignerPanel/SignerPanel'
@@ -45,7 +46,6 @@ class Wrapper extends React.PureComponent {
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
-    menuSwipeEnabled: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -66,6 +66,7 @@ class Wrapper extends React.PureComponent {
   state = {
     appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
+    preferencesOpened: false,
     notificationOpen: false,
     notifications: [],
     queuedNotifications: [],
@@ -150,7 +151,15 @@ class Wrapper extends React.PureComponent {
   handleNotificationClicked = () => {
     this.setState(state => ({ notificationOpen: !state.notificationOpen }))
   }
-
+  handleClosePreferences = () => {
+    this.setState({ preferencesOpened: false })
+  }
+  handleOpenPreferences = () => {
+    if (this.props.autoClosingPanel) {
+      this.handleMenuPanelClose()
+    }
+    this.setState({ preferencesOpened: true })
+  }
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
@@ -226,19 +235,30 @@ class Wrapper extends React.PureComponent {
       locator,
       onRequestAppsReload,
       onRequestEnable,
-      menuSwipeEnabled,
       transactionBag,
       walletNetwork,
       walletProviderId,
       walletWeb3,
+      wrapper,
     } = this.props
-    const { menuPanelOpened, notifications, notificationOpen } = this.state
+    const {
+      menuPanelOpened,
+      notifications,
+      notificationOpen,
+      preferencesOpened,
+    } = this.state
 
     return (
       <Main>
+        <Preferences
+          locator={locator}
+          opened={preferencesOpened}
+          onClose={this.handleClosePreferences}
+          wrapper={wrapper}
+        />
         <BannerWrapper>{banner}</BannerWrapper>
         <SwipeContainer
-          enabled={menuSwipeEnabled}
+          autoClosing={autoClosingPanel}
           menuPanelOpened={menuPanelOpened}
           onMenuPanelClose={this.handleMenuPanelClose}
           onMenuPanelOpen={this.handleMenuPanelOpen}
@@ -252,10 +272,11 @@ class Wrapper extends React.PureComponent {
                 connected={connected}
                 notifications={notifications.length}
                 daoAddress={daoAddress}
-                openProgress={progress}
+                swipeProgress={progress}
                 autoClosing={autoClosingPanel}
                 onOpenApp={this.openApp}
                 onCloseMenuPanel={this.handleMenuPanelClose}
+                onOpenPreferences={this.handleOpenPreferences}
                 onRequestAppsReload={onRequestAppsReload}
                 onNotificationClicked={this.handleNotificationClicked}
                 notificationOpen={notificationOpen}
@@ -417,12 +438,6 @@ const LoadingApps = () => (
 
 export default props => (
   <Viewport>
-    {({ below }) => (
-      <Wrapper
-        {...props}
-        autoClosingPanel={below('medium')}
-        menuSwipeEnabled={below('medium')}
-      />
-    )}
+    {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
   </Viewport>
 )

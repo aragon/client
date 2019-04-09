@@ -5,12 +5,12 @@ import { Button, IdentityBadge, SafeLink, Viewport } from '@aragon/ui'
 import { AppCenterAppType } from '../../../prop-types'
 import { TextLabel } from '../../../components/TextStyles'
 import { GU } from '../../../utils'
-import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
+import { MENU_WIDTH } from '../../../components/MenuPanel/MenuPanel'
 import Screenshots from '../Screenshots'
 
 // Exclude the width of MenuPanel
 const appBelow = (below, value) =>
-  below(value + (below('medium') ? 0 : MENU_PANEL_WIDTH))
+  below(value + (below('medium') ? 0 : MENU_WIDTH))
 
 const AppContent = React.memo(
   ({
