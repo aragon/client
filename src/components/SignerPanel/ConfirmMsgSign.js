@@ -60,7 +60,11 @@ class ConfirmMsgSign extends React.Component {
         apps={apps}
       />
     ) : (
-      <ImpossibleContent error={signError} intent={intent} onClose={onClose} />
+      <ImpossibleContent
+        error={!!signError}
+        intent={intent}
+        onClose={onClose}
+      />
     )
   }
 }
