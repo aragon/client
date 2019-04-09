@@ -9,7 +9,7 @@ import {
   Button,
   breakpoint,
 } from '@aragon/ui'
-import LocalIdentityBadge from '../../components/LocalIdentityBadge/LocalIdentityBadge'
+import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
 import { AppType } from '../../prop-types'

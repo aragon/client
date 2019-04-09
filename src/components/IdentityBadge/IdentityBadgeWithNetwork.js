@@ -1,6 +1,6 @@
 import React from 'react'
 import { IdentityBadge } from '@aragon/ui'
-import { network } from '../environment'
+import { network } from '../../environment'
 
 class IdentityBadgeWithNetwork extends React.PureComponent {
   render() {
