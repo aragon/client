@@ -374,7 +374,7 @@ class AnimatedMenuPanel extends React.Component {
                      * from the edge of their screen when an iframe app is being
                      * used */
                     width: progress.interpolate(p =>
-                      p === 0 ? '10px' : '100vw'
+                      p === 0 ? '1px' : '100vw'
                     ),
                     opacity: progress,
                   }}
