@@ -113,13 +113,19 @@ class SignerPanel extends React.Component {
         .sendTransaction(transaction)
         .on('transactionHash', transactionHash => {
           resolve(transactionHash)
+          // TODO: get transaction count/nonce and update the activity item
+          //  Maybe useful in case we multiple transaction activities earlier pending
+          // and later with higher nonces confirmed to assume all activities pending
+          // with lower nonce are confirmed (most likely with a different hash if
+          // resent with higher gas through wallet)
 
           // Create new activiy
           addTransactionActivity({
             transactionHash,
             from: intent.transaction.from,
-            initiatingApp: intent.name,
-            forwarder: intent.transaction.name,
+            targetApp: intent.name,
+            targetAppProxyAddress: intent.to,
+            forwarderProxyAddress: intent.transaction.to,
             description: intent.description,
           })
         })

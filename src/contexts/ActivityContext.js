@@ -78,8 +78,9 @@ class ActivityProvider extends React.Component {
   addTransactionActivity = ({
     transactionHash = '',
     from = '',
-    initiatingApp = '',
+    targetAppProxyAddress = '',
     forwarder = '',
+    forwarderProxyAddress = '',
     description = '',
   } = {}) => {
     const newActivity = {
@@ -90,7 +91,8 @@ class ActivityProvider extends React.Component {
       transactionHash,
       // account address from which the transaction was created
       from,
-      initiatingApp,
+      targetAppProxyAddress,
+      forwarderProxyAddress,
       forwarder,
       description,
     }
