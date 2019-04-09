@@ -29,6 +29,8 @@ const INITIAL_STATE = {
   signError: null,
 }
 
+const RECIEPT_ERROR_STATUS = '0x0'
+
 class SignerPanel extends React.Component {
   static propTypes = {
     addTransactionActivity: PropTypes.func.isRequired,
@@ -122,10 +124,15 @@ class SignerPanel extends React.Component {
           })
         })
         .on('receipt', receipt => {
-          setActivityConfirmed(receipt.transactionHash)
+          if (receipt.status === RECIEPT_ERROR_STATUS) {
+            // Faliure based on EIP 658
+            setActivityFailed(receipt.transactionHash)
+          } else {
+            setActivityConfirmed(receipt.transactionHash)
+          }
         })
         .on('error', err => {
-          // console.log('err:', err)
+          // Called when signing failed
           err && err.transactionHash && setActivityFailed(err.transactionHash)
           reject(err)
         })
