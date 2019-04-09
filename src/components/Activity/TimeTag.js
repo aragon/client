@@ -6,7 +6,10 @@ export default function TimeTag({ style, date }) {
   const [relativeTime, setRelativeTime] = React.useState('')
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setRelativeTime(formatDistance(new Date(), new Date(date)))
+      const relativeTime = formatDistance(new Date(), new Date(date))
+        .replace('about', '')
+        .trim()
+      setRelativeTime(relativeTime)
     }, 1000)
 
     return () => clearInterval(interval)
