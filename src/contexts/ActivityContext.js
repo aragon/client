@@ -17,6 +17,8 @@ const activityTypes = {
   TRANSACTION: 'TRANSACTION',
 }
 
+const TEN_MINUTES = 1000 * 60 * 10
+
 let storedList
 
 // Provides easy access to the user activities list
@@ -44,6 +46,27 @@ class ActivityProvider extends React.Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ activities: storedList.getItems() })
     }
+  }
+
+  componentWillMount() {
+    this._checkInterval = setInterval(this.checkForTimedOut, 1000 * 30)
+  }
+  componentWillUnmount() {
+    clearInterval(this._checkInterval)
+  }
+
+  checkForTimedOut = () => {
+    const now = Date.now()
+    this.state.activities.forEach(activity => {
+      const timeDelta = now - activity.createdAt
+      if (
+        timeDelta > TEN_MINUTES &&
+        activity.status === activityStatusTypes.PENDING
+      ) {
+        // Set pending items to timed out after 10 minutes
+        this.setActivityTimedOut(activity.transactionHash)
+      }
+    })
   }
 
   add = activity => {
@@ -151,7 +174,7 @@ class ActivityProvider extends React.Component {
 
   setActivityConfirmed = this.setActivityStatus(activityStatusTypes.CONFIRMED)
   setActivityFailed = this.setActivityStatus(activityStatusTypes.FAILED)
-  setActivityTimedOut = this.setActivityStatus(activityStatusTypes.FAILED)
+  setActivityTimedOut = this.setActivityStatus(activityStatusTypes.TIMED_OUT)
 
   getUnreadActivityCount = () =>
     this.currentAccountActivities().reduce(
