@@ -2,10 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import StoredList from '../StoredList'
 import { network } from '../environment'
+import { EthereumAddressType } from '../prop-types'
 
 const ActivityContext = React.createContext()
-
-const storedList = new StoredList(`activity:${network.type}`)
 
 const activityStatusTypes = {
   CONFIRMED: 'CONFIRMED',
@@ -18,41 +17,33 @@ const activityTypes = {
   TRANSACTION: 'TRANSACTION',
 }
 
-storedList.update([
-  {
-    createdAt: 1554471557853,
-    read: false,
-    from: '0x3bDBLLATEST',
-    status: activityStatusTypes.CONFIRMED,
-    type: activityTypes.TRANSACTION,
-    initiatingApp: 'Token Manager',
-    forwarder: 'Voting',
-    description: 'Mint 1 tokens for 0x3bDBLLA',
-    transactionHash:
-      '0x873c90026744e293f12c40a5fc6cf3b7bb368636f0dea632da50348719f96bbe',
-  },
-  {
-    createdAt: 1554716398070,
-    read: true,
-    status: activityStatusTypes.PENDING,
-    type: 'TRANSACTION',
-    transactionHash:
-      '0x90c53c7533c08a5ab3cae73df760adeb68d83b220628a2722eec7f576f679a71',
-    from: '0x3bd60bafea8a7768c6f4352af4cfe01701884ff2',
-    initiatingApp: 'Voting',
-    forwarder: 'Voting',
-    description: 'Create a new vote about "hello"',
-  },
-])
+let storedList
 
 // Provides easy access to the user activities list
 class ActivityProvider extends React.Component {
   static propTypes = {
+    account: EthereumAddressType, // Current wallet
     children: PropTypes.node,
+    daoDomain: PropTypes.string, // domain of current DAO
+  }
+  state = {
+    // activities of all accounts
+    activities: [],
+  }
+  static defaultProps = {
+    account: '',
   }
 
-  state = {
-    activities: storedList.loadItems(),
+  componentDidUpdate(prevProps) {
+    const { daoDomain, account } = this.props
+
+    if (daoDomain !== prevProps.daoDomain) {
+      const storageKey = `activity:${network.type}:${daoDomain}`
+      storedList = new StoredList(storageKey)
+
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ activities: storedList.getItems() })
+    }
   }
 
   add = activity => {
@@ -74,6 +65,7 @@ class ActivityProvider extends React.Component {
       status: activityStatusTypes.PENDING,
       read: false,
       transactionHash,
+      // account address from which the transaction was created
       from,
       initiatingApp,
       forwarder,
@@ -84,6 +76,9 @@ class ActivityProvider extends React.Component {
 
     this.setState({ activities: updatedActivities })
   }
+
+  currentAccountPredicate = ({ from }) =>
+    from.toLowerCase() === this.props.account.toLowerCase()
 
   remove = index => {
     this.setState({
@@ -106,9 +101,12 @@ class ActivityProvider extends React.Component {
   }
 
   clearActivities = () => {
-    // Clear all non pending activities (we don't clear because we're awaiting state change)
+    // Clear all non pending activities of the current account
+    // (we don't clear pending because we're awaiting state change)
     this.filterActivities(
-      ({ status }) => status === activityStatusTypes.PENDING
+      ({ status, from }) =>
+        status === activityStatusTypes.PENDING ||
+        !this.currentAccountPredicate({ from })
     )
   }
 
@@ -119,10 +117,15 @@ class ActivityProvider extends React.Component {
   }
 
   markActivitiesRead = () => {
-    const readActivities = this.state.activities.map(activity => ({
-      ...activity,
-      read: true,
-    }))
+    // Mark only the current user's activities as read
+    const readActivities = this.state.activities.map(activity =>
+      this.currentAccountPredicate({ from: activity.from })
+        ? {
+            ...activity,
+            read: true,
+          }
+        : activity
+    )
 
     this.setState({
       activities: storedList.update(readActivities),
@@ -151,15 +154,18 @@ class ActivityProvider extends React.Component {
   setActivityTimedOut = this.setActivityStatus(activityStatusTypes.FAILED)
 
   getUnreadActivityCount = () =>
-    this.state.activities.reduce(
+    this.currentAccountActivities().reduce(
       (count, { read }) => (read ? count : count + 1),
       0
     )
 
+  currentAccountActivities = () =>
+    this.state.activities.filter(this.currentAccountPredicate)
+
   render() {
     const { children } = this.props
-    const { activities } = this.state
     const unreadActivityCount = this.getUnreadActivityCount()
+    const activities = this.currentAccountActivities()
 
     return (
       <ActivityContext.Provider
@@ -182,4 +188,5 @@ class ActivityProvider extends React.Component {
 }
 
 const ActivityConsumer = ActivityContext.Consumer
+
 export { ActivityContext, ActivityProvider, ActivityConsumer }

@@ -371,7 +371,7 @@ class App extends React.Component {
               onSave={this.handleIdentitySave}
             />
             <FavoriteDaosProvider>
-              <ActivityProvider>
+              <ActivityProvider daoDomain={daoAddress.domain} account={account}>
                 <PermissionsProvider
                   wrapper={wrapper}
                   apps={apps}
