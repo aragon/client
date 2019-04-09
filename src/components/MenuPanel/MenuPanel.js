@@ -24,11 +24,13 @@ import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
 import IconArrow from '../../icons/IconArrow'
 
+export const SHADOW_WIDTH = 15
+export const MENU_WIDTH = 220
+
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
 const APP_SETTINGS = staticApps.get('settings').app
-const SHADOW_WIDTH = 15
 
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',

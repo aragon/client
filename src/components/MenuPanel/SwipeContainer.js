@@ -2,11 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Gesture } from 'react-with-gesture'
+import { MENU_WIDTH } from './MenuPanel'
 
 const THRESHOLD_VERTICAL_TOLERANCE = 10
 const THRESHOLD_DIRECTION = 0.2
 const THRESHOLD_PROGRESS = 0.5
-const MENU_WIDTH = 220
+const GRAB_THRESHOLD = MENU_WIDTH / 3
 
 class SwipeContainer extends React.Component {
   static propTypes = {
@@ -27,8 +28,6 @@ class SwipeContainer extends React.Component {
       onMenuPanelClose,
       onMenuPanelOpen,
     } = this.props
-
-    const xThreshold = MENU_WIDTH / 3
 
     return (
       <Gesture passive={{ passive: false }} mouse={false} touch={enabled}>
@@ -78,13 +77,15 @@ class SwipeContainer extends React.Component {
               yDir < THRESHOLD_DIRECTION)
           ) {
             event.preventDefault()
-            if (xDelta > 0 && !menuPanelOpened && xInitial < xThreshold) {
+
+            if (xDelta > 0 && !menuPanelOpened && xInitial < GRAB_THRESHOLD) {
               // opening
               progress = this._previousProgress = x / MENU_WIDTH
             } else if (menuPanelOpened) {
               // closing
               progress = this._previousProgress = 1 + xDelta / MENU_WIDTH
             }
+
             progress = this._previousProgress = Math.max(
               0.000001,
               Math.min(0.999999, progress)
