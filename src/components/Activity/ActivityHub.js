@@ -4,6 +4,7 @@ import { Spring, Transition, animated } from 'react-spring'
 import styled from 'styled-components'
 import { theme, IconClose } from '@aragon/ui'
 import TimeTag from './TimeTag'
+import { activityStatusTypes } from '../../contexts/ActivityContext'
 
 const spring = { tension: 1900, friction: 200, precision: 0.0001, clamp: true }
 
@@ -59,41 +60,45 @@ function ActivityItem({ ready, activity }) {
       <h1>
         <span>{activity.description}</span>
       </h1>
-      <h2>
+      <h2 />
+      <div>
+        {' '}
         <TimeTag date={activity.createdAt} style={{ marginRight: 10 }} />
-      </h2>
-      <p>Status {activity.status}</p>
-      <Spring
-        native
-        delay={400}
-        from={{ opacity: 1 }}
-        to={{ opacity: showPayload ? 1 : 0.5 }}
-      >
-        {props => (
-          <Progress style={props}>
-            <ProgressTrack>
-              <Spring
-                native
-                delay={ready ? 500 : 0}
-                from={{ p: 0 }}
-                to={{ p: ready ? 1 : 0 }}
-                onRest={isDone}
-              >
-                {p => (
-                  <ProgressBar
-                    style={{
-                      background: theme.accent,
-                      width: p.p.interpolate(p => `${p * 100}%`),
-                    }}
-                  />
-                )}
-              </Spring>
-            </ProgressTrack>
-            <span>Estimated:</span>
-            <span>- min -- sec</span>
-          </Progress>
-        )}
-      </Spring>
+        Status {activity.status}
+      </div>
+      {activity.status === activityStatusTypes.PENDING && (
+        <Spring
+          native
+          delay={400}
+          from={{ opacity: 1 }}
+          to={{ opacity: showPayload ? 1 : 0.5 }}
+        >
+          {props => (
+            <Progress style={props}>
+              <ProgressTrack>
+                <Spring
+                  native
+                  delay={ready ? 500 : 0}
+                  from={{ p: 0 }}
+                  to={{ p: ready ? 1 : 0 }}
+                  onRest={isDone}
+                >
+                  {p => (
+                    <ProgressBar
+                      style={{
+                        background: theme.accent,
+                        width: p.p.interpolate(p => `${p * 100}%`),
+                      }}
+                    />
+                  )}
+                </Spring>
+              </ProgressTrack>
+              <span>Estimated:</span>
+              <span>- min -- sec</span>
+            </Progress>
+          )}
+        </Spring>
+      )}
     </Frame>
   )
 }

@@ -189,4 +189,9 @@ class ActivityProvider extends React.Component {
 
 const ActivityConsumer = ActivityContext.Consumer
 
-export { ActivityContext, ActivityProvider, ActivityConsumer }
+export {
+  activityStatusTypes,
+  ActivityContext,
+  ActivityProvider,
+  ActivityConsumer,
+}
