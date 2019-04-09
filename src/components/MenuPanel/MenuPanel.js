@@ -169,6 +169,7 @@ class MenuPanel extends React.PureComponent {
                 )}
               </div>
               <Spring
+                config={springs.smooth}
                 from={{ openProgress: 0 }}
                 to={{ openProgress: Number(systemAppsOpened) }}
                 immediate={!animate}
