@@ -8,7 +8,7 @@ import AppInstanceLabel from '../../apps/Permissions/AppInstanceLabel'
 import { AppType } from '../../prop-types'
 
 const SignMsgContent = ({ intent, account, onSign, signingEnabled, apps }) => {
-  const findAppInfo = (apps, appAddress) => {
+  const locateAppInfo = (apps, appAddress) => {
     const [app] = apps.filter(({ proxyAddress }) => proxyAddress === appAddress)
     return app
   }
@@ -22,7 +22,7 @@ const SignMsgContent = ({ intent, account, onSign, signingEnabled, apps }) => {
       <Text smallcaps>Signature requested by:</Text>
       <br />
       <AppInstanceLabel
-        app={findAppInfo(apps, intent.appAddress)}
+        app={locateAppInfo(apps, intent.appAddress)}
         proxyAddress={intent.appAddress}
         showIcon
       />
