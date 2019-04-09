@@ -439,7 +439,7 @@ const Overlay = styled(animated.div)`
 
 const Wrap = styled(animated.div)`
   z-index: 3;
-  width: 220px;
+  width: ${MENU_WIDTH}px;
   height: 100vh;
   flex: none;
 `
