@@ -46,7 +46,7 @@ class ConfirmMsgSign extends React.Component {
     }
 
     if (!hasAccount) {
-      return accountLocked(intent, onClose, onRequestEnable, walletProviderId)
+      return accountLocked(intent, onClose, walletProviderId, onRequestEnable)
     }
 
     const possible = !signError
