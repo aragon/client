@@ -24,11 +24,13 @@ import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
 import IconArrow from '../../icons/IconArrow'
 
+export const SHADOW_WIDTH = 15
+export const MENU_WIDTH = 220
+
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
 const APP_SETTINGS = staticApps.get('settings').app
-const SHADOW_WIDTH = 15
 
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',
@@ -322,23 +324,30 @@ class AnimatedMenuPanel extends React.Component {
 
   render() {
     const { animate } = this.state
-    const { openProgress, onCloseMenuPanel, ...props } = this.props
+    const {
+      swipeProgress,
+      onCloseMenuPanel,
+      autoClosing,
+      ...props
+    } = this.props
     return (
-      <React.Fragment>
-        <Spring
-          from={{ progress: 0 }}
-          to={{ progress: openProgress }}
-          config={springs.lazy}
-          immediate={!animate}
-          native
-        >
-          {({ progress }) => (
-            <Wrap
-              style={{
-                pointerEvents: openProgress === 1 ? 'auto' : 'none',
-                transform: progress.interpolate(
-                  v =>
-                    `
+      <Spring
+        from={{ progress: 0 }}
+        to={{ progress: swipeProgress }}
+        config={springs.lazy}
+        immediate={!animate}
+        native
+      >
+        {({ progress }) => {
+          return (
+            <React.Fragment>
+              <Wrap
+                style={{
+                  position: autoClosing ? 'absolute' : 'relative',
+                  pointerEvents: swipeProgress === 1 ? 'auto' : 'none',
+                  transform: progress.interpolate(
+                    v =>
+                      `
                       translate3d(
                         calc(
                           ${-100 * (1 - v)}% -
@@ -347,36 +356,41 @@ class AnimatedMenuPanel extends React.Component {
                         0, 0
                       )
                     `
-                ),
-                opacity: progress.interpolate(v => Number(v > 0)),
-              }}
-            >
-              <Viewport>
-                {({ height }) => (
-                  <MenuPanel viewportHeight={height} {...props} />
-                )}
-              </Viewport>
-            </Wrap>
-          )}
-        </Spring>
-        <Viewport>
-          {({ below }) =>
-            below('medium') && (
-              <Overlay
-                opened={Boolean(openProgress)}
-                onClick={onCloseMenuPanel}
-              />
-            )
-          }
-        </Viewport>
-      </React.Fragment>
+                  ),
+                  opacity: progress.interpolate(v => Number(v > 0)),
+                }}
+              >
+                <Viewport>
+                  {({ height }) => (
+                    <MenuPanel viewportHeight={height} {...props} />
+                  )}
+                </Viewport>
+              </Wrap>
+              {autoClosing && (
+                <Overlay
+                  onClick={onCloseMenuPanel}
+                  style={{
+                    /* by leaving a 1px edge Android users can swipe to open
+                     * from the edge of their screen when an iframe app is being
+                     * used */
+                    width: progress.interpolate(p =>
+                      p === 0 ? '1px' : '100vw'
+                    ),
+                    opacity: progress,
+                  }}
+                />
+              )}
+            </React.Fragment>
+          )
+        }}
+      </Spring>
     )
   }
 }
 
 AnimatedMenuPanel.propTypes = {
   autoClosing: PropTypes.bool,
-  openProgress: PropTypes.number.isRequired,
+  swipeProgress: PropTypes.number.isRequired,
   onCloseMenuPanel: PropTypes.func.isRequired,
 }
 
@@ -416,32 +430,18 @@ const StyledPreferencesButton = styled(Button)`
   )}
 `
 
-const Overlay = styled.div`
+const Overlay = styled(animated.div)`
   position: absolute;
   z-index: 2;
-  /* by leaving a 1px edge Android users can swipe to open
-   * from the edge of their screen when an iframe app is being
-   * used */
-  width: ${({ opened }) => (opened ? '100vw' : '1px')};
   height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
 `
 
 const Wrap = styled(animated.div)`
-  position: absolute;
   z-index: 3;
-  width: 90vw;
+  width: ${MENU_WIDTH}px;
   height: 100vh;
-  min-width: 300px;
   flex: none;
-
-  ${breakpoint(
-    'medium',
-    `
-      position: relative;
-      width: 220px;
-      min-width: 0;
-    `
-  )};
 `
 
 const Main = styled.div`
