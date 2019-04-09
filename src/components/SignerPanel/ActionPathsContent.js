@@ -67,7 +67,7 @@ class ActionPathsContent extends React.Component {
                   return (
                     <SafeLink
                       key={index}
-                      href={`/#/${this.props.dao}/permissions/?params=app.${
+                      href={`/#/${this.props.dao}/permissions/?p=app.${
                         value.proxyAddress
                       }`}
                       target="_blank"
