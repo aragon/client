@@ -14,7 +14,7 @@ const SignMsgContent = ({ intent, account, onSign, signingEnabled }) => (
     <Seperator />
     <Text smallcaps>Signature requested by:</Text>
     <br />
-    <LocalIdentityBadge entity={intent.from} fontSize="xsmall" />
+    <LocalIdentityBadge entity={intent.appAddress} fontSize="xsmall" />
     <Seperator />
     <Text smallcaps>Message:</Text>
     <br />

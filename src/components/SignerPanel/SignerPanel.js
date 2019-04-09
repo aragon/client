@@ -101,13 +101,13 @@ class SignerPanel extends React.Component {
     }
   }
 
-  stateFromMsgSigBag({ from, message }) {
+  stateFromMsgSigBag({ appAddress, message }) {
     return {
       intent: {
         description:
           'You are about to sign this message with the connected account',
         message,
-        from,
+        appAddress,
       },
     }
   }
