@@ -12,7 +12,7 @@ const GRAB_THRESHOLD = MENU_WIDTH / 3
 class SwipeContainer extends React.Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
-    enabled: PropTypes.bool.isRequired,
+    autoClosing: PropTypes.bool.isRequired,
     menuPanelOpened: PropTypes.bool.isRequired,
     onMenuPanelClose: PropTypes.func.isRequired,
     onMenuPanelOpen: PropTypes.func.isRequired,
@@ -23,14 +23,14 @@ class SwipeContainer extends React.Component {
   render() {
     const {
       children,
-      enabled,
+      autoClosing,
       menuPanelOpened,
       onMenuPanelClose,
       onMenuPanelOpen,
     } = this.props
 
     return (
-      <Gesture passive={{ passive: false }} mouse={false} touch={enabled}>
+      <Gesture passive={{ passive: false }} mouse={false} touch={autoClosing}>
         {({
           delta: [xDelta, yDelta],
           direction: [xDir, yDir],
@@ -39,7 +39,7 @@ class SwipeContainer extends React.Component {
           initial: [xInitial],
           xy: [x],
         }) => {
-          if (!enabled) {
+          if (!autoClosing) {
             return <Container>{children(Number(menuPanelOpened))}</Container>
           }
 

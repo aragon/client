@@ -45,7 +45,6 @@ class Wrapper extends React.PureComponent {
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
-    menuSwipeEnabled: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -197,7 +196,6 @@ class Wrapper extends React.PureComponent {
       locator,
       onRequestAppsReload,
       onRequestEnable,
-      menuSwipeEnabled,
       transactionBag,
       walletNetwork,
       walletProviderId,
@@ -220,7 +218,7 @@ class Wrapper extends React.PureComponent {
         />
         <BannerWrapper>{banner}</BannerWrapper>
         <SwipeContainer
-          enabled={menuSwipeEnabled}
+          autoClosing={autoClosingPanel}
           menuPanelOpened={menuPanelOpened}
           onMenuPanelClose={this.handleMenuPanelClose}
           onMenuPanelOpen={this.handleMenuPanelOpen}
@@ -419,12 +417,6 @@ const LoadingApps = () => (
 
 export default props => (
   <Viewport>
-    {({ below }) => (
-      <Wrapper
-        {...props}
-        autoClosingPanel={below('medium')}
-        menuSwipeEnabled={below('medium')}
-      />
-    )}
+    {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
   </Viewport>
 )
