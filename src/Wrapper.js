@@ -251,7 +251,7 @@ class Wrapper extends React.PureComponent {
     return (
       <Main>
         <Preferences
-          locator={locator}
+          dao={locator.dao}
           opened={preferencesOpened}
           onClose={this.handleClosePreferences}
           wrapper={wrapper}
@@ -329,7 +329,7 @@ class Wrapper extends React.PureComponent {
           apps={apps}
           appsLoading={appsLoading}
           connected={connected}
-          locator={locator}
+          dao={locator.dao}
           onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
         />
