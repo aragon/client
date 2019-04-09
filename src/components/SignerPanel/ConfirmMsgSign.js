@@ -7,6 +7,7 @@ import providerString from '../../provider-strings'
 import SignMsgContent from './SignMsgContent'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
+import { AppType } from '../../prop-types'
 
 class ConfirmMsgSign extends React.Component {
   static propTypes = {
@@ -20,6 +21,7 @@ class ConfirmMsgSign extends React.Component {
     signError: PropTypes.string,
     signingEnabled: PropTypes.bool.isRequired,
     walletProviderId: PropTypes.string.isRequired,
+    apps: PropTypes.arrayOf(AppType).isRequired,
   }
 
   static defaultProps = {
@@ -38,6 +40,7 @@ class ConfirmMsgSign extends React.Component {
       signingEnabled,
       walletProviderId,
       account,
+      apps,
     } = this.props
 
     if (!hasWeb3) {
@@ -105,6 +108,7 @@ class ConfirmMsgSign extends React.Component {
         account={account}
         onSign={onSign}
         signingEnabled={signingEnabled}
+        apps={apps}
       />
     ) : (
       <div>impossible</div>

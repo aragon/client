@@ -229,6 +229,7 @@ class SignerPanel extends React.Component {
       onRequestEnable,
       walletNetwork,
       walletProviderId,
+      apps,
     } = this.props
 
     const {
@@ -301,6 +302,7 @@ class SignerPanel extends React.Component {
                               status === STATUS_CONFIRMING_MSG_SIGN
                             }
                             walletProviderId={walletProviderId}
+                            apps={apps}
                           />
                         )}
                       </Screen>
