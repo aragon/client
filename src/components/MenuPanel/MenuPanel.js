@@ -56,18 +56,9 @@ const prepareAppGroups = apps =>
     ])
   }, [])
 
-const SystemAppsTransition = Keyframes.Spring({
-  show: [
-    { from: { showBorder: 0, openProgress: 1 } },
-    { showBorder: 1, openProgress: 1 },
-    { showBorder: 0, openProgress: 1 },
-  ],
-  hide: [
-    { from: { showBorder: 0, openProgress: 0 } },
-    { showBorder: 1, openProgress: 0 },
-    { showBorder: 0, openProgress: 0 },
-  ],
-})
+// Interpolate the elevation of a toggle from which a drawer slides down.
+const interpolateToggleElevation = (value, fn = v => v) =>
+  value.interpolate(v => fn(1 - Math.abs(v * 2 - 1)))
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
@@ -177,25 +168,23 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
-              <SystemAppsTransition
-                config={springs.smooth}
-                state={systemAppsOpened ? 'show' : 'hide'}
+              <Spring
+                from={{ openProgress: 0 }}
+                to={{ openProgress: Number(systemAppsOpened) }}
                 immediate={!animate}
                 onFrame={this.updateScrollVisible}
                 native
               >
-                {({ openProgress, showBorder }) => (
+                {({ openProgress }) => (
                   <div>
                     <SystemAppsToggle onClick={this.handleToggleSystemApps}>
-                      <animated.div
+                      <SystemAppsToggleShadow
                         style={{
-                          position: 'absolute',
-                          height: '1px',
-                          left: '0',
-                          right: '0',
-                          bottom: '0',
-                          boxShadow: '0 1px 1px rgba(0, 0, 0, 0.1)',
-                          opacity: showBorder,
+                          transform: interpolateToggleElevation(
+                            openProgress,
+                            v => `scale3d(${v}, 1, 1)`
+                          ),
+                          opacity: interpolateToggleElevation(openProgress),
                         }}
                       />
                       <h1
@@ -228,9 +217,6 @@ class MenuPanel extends React.PureComponent {
                           height: openProgress.interpolate(
                             v => v * systemApps.length * MENU_ITEM_HEIGHT + 'px'
                           ),
-                          transform: openProgress.interpolate(
-                            v => `translate3d(0, ${(1 - v) * -100}%, 0)`
-                          ),
                         }}
                       >
                         {systemApps.map(app => this.renderAppGroup(app, true))}
@@ -238,7 +224,7 @@ class MenuPanel extends React.PureComponent {
                     </div>
                   </div>
                 )}
-              </SystemAppsTransition>
+              </Spring>
             </div>
           </Content>
           {scrollVisible && (
@@ -418,8 +404,7 @@ const SystemAppsToggle = styled(ButtonBase)`
   position: relative;
   width: 100%;
   padding: 0;
-  margin: 0;
-  margin-top: 20px;
+  margin: 20px 0 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -434,8 +419,8 @@ const SystemAppsToggle = styled(ButtonBase)`
 `
 
 const SystemAppsToggleArrow = props => (
-  <animated.span {...props}>
-    <span
+  <animated.div {...props}>
+    <div
       css={`
         display: flex;
         align-items: center;
@@ -445,8 +430,28 @@ const SystemAppsToggleArrow = props => (
       `}
     >
       <IconArrow />
-    </span>
-  </animated.span>
+    </div>
+  </animated.div>
+)
+
+const SystemAppsToggleShadow = props => (
+  <div
+    css={`
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 0;
+    `}
+  >
+    <animated.div {...props}>
+      <div
+        css={`
+          height: 1px;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        `}
+      />
+    </animated.div>
+  </div>
 )
 
 const Overlay = styled(animated.div)`
