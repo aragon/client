@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Transition, Spring, animated } from 'react-spring'
+import { Keyframes, Spring, animated } from 'react-spring'
 import throttle from 'lodash.throttle'
+import color from 'onecolor'
 import {
   ButtonBase,
   Button,
@@ -26,6 +27,7 @@ import IconArrow from '../../icons/IconArrow'
 
 export const SHADOW_WIDTH = 15
 export const MENU_WIDTH = 220
+export const MENU_ITEM_HEIGHT = 40
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -62,6 +64,19 @@ const prepareAppGroups = apps =>
       },
     ])
   }, [])
+
+const SystemAppsTransition = Keyframes.Spring({
+  show: [
+    { from: { showBorder: 0, openProgress: 1 } },
+    { showBorder: 1, openProgress: 1 },
+    { showBorder: 0, openProgress: 1 },
+  ],
+  hide: [
+    { from: { showBorder: 0, openProgress: 0 } },
+    { showBorder: 1, openProgress: 0 },
+    { showBorder: 0, openProgress: 0 },
+  ],
+})
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
@@ -171,55 +186,84 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
-              <SystemAppsToggle onClick={this.handleToggleSystemApps}>
-                <h1
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                  }}
-                >
-                  <span>System</span>
-                  <span
-                    css={`
-                      transform: rotate(${systemAppsOpened ? 180 : 0}deg);
-                      position: relative;
-                      top: ${systemAppsOpened ? -5 : 0}px;
-                      font-size: 7px;
-                      opacity: 0.7;
-                    `}
-                  >
-                    <IconArrow />
-                  </span>
-                </h1>
-              </SystemAppsToggle>
-              <Transition
-                items={systemAppsOpened}
-                config={springs.swift}
-                from={{ height: 0 }}
-                enter={{ height: 'auto' }}
-                leave={{ height: 0 }}
+              <SystemAppsTransition
+                config={springs.smooth}
+                state={systemAppsOpened ? 'show' : 'hide'}
                 immediate={!animate}
                 onFrame={this.updateScrollVisible}
                 native
               >
-                {show =>
-                  show &&
-                  (props => (
-                    <animated.div style={{ ...props, overflow: 'hidden' }}>
-                      {systemApps.map(app => this.renderAppGroup(app, true))}
+                {({ openProgress, showBorder }) => (
+                  <div>
+                    <animated.div
+                      style={{
+                        transform: showBorder.interpolate(
+                          v => `translate3d(0, ${-v * 0}px, 0)`
+                        ),
+                      }}
+                    >
+                      <SystemAppsToggle onClick={this.handleToggleSystemApps}>
+                        <animated.div
+                          style={{
+                            position: 'absolute',
+                            height: '1px',
+                            left: '0',
+                            right: '0',
+                            bottom: '0',
+                            boxShadow: '0 1px 1px rgba(0, 0, 0, 0.1)',
+                            opacity: showBorder.interpolate(v => v),
+                          }}
+                        />
+                        <h1
+                          css={`
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: flex-end;
+                          `}
+                        >
+                          <span>System</span>
+                          <SystemAppsToggleArrow
+                            style={{
+                              marginLeft: '5px',
+                              transform: openProgress.interpolate(
+                                v => `rotate(${(1 - v) * 180}deg)`
+                              ),
+                              transformOrigin: '50% calc(50% - 0.5px)',
+                            }}
+                          />
+                        </h1>
+                      </SystemAppsToggle>
                     </animated.div>
-                  ))
-                }
-              </Transition>
+                    <div css="overflow: hidden">
+                      <animated.div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'flex-end',
+                          width: '100%',
+                          opacity: openProgress,
+                          height: openProgress.interpolate(
+                            v => v * systemApps.length * MENU_ITEM_HEIGHT + 'px'
+                          ),
+                          transform: openProgress.interpolate(
+                            v => `translate3d(0, ${(1 - v) * -100}%, 0)`
+                          ),
+                        }}
+                      >
+                        {systemApps.map(app => this.renderAppGroup(app, true))}
+                      </animated.div>
+                    </div>
+                  </div>
+                )}
+              </SystemAppsTransition>
             </div>
           </Content>
           {scrollVisible && (
             <div
               css={`
                 width: 100%;
-                height: 1px;
-                background: ${theme.contentBorder};
+                height: 0;
+                border-bottom: 1px solid ${theme.contentBorder};
               `}
             />
           )}
@@ -395,6 +439,8 @@ AnimatedMenuPanel.propTypes = {
 }
 
 const SystemAppsToggle = styled(ButtonBase)`
+  position: relative;
+  width: 100%;
   padding: 0;
   margin: 0;
   margin-top: 20px;
@@ -404,7 +450,28 @@ const SystemAppsToggle = styled(ButtonBase)`
   width: 100%;
   text-align: left;
   outline: none;
+  &:active {
+    background: ${color(theme.secondaryBackground)
+      .alpha(0.3)
+      .cssa()};
+  }
 `
+
+const SystemAppsToggleArrow = props => (
+  <animated.span {...props}>
+    <span
+      css={`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+      `}
+    >
+      <IconArrow />
+    </span>
+  </animated.span>
+)
 
 const PreferencesWrap = styled.div`
   text-align: left;
@@ -461,7 +528,7 @@ const In = styled.div`
   height: 100%;
   flex-shrink: 1;
   background: #fff;
-  border-right: 1px solid #e8e8e8;
+  border-right: 1px solid ${theme.contentBorder};
   box-shadow: 1px 0 ${SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
 `
 
@@ -472,7 +539,7 @@ const Header = styled.div`
   align-items: center;
   padding: 0 20px;
   height: 64px;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid ${theme.contentBorder};
 
   .actions {
     display: flex;
