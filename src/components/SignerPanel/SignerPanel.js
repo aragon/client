@@ -14,6 +14,13 @@ import {
   STATUS_SIGNING,
   STATUS_SIGNED,
   STATUS_ERROR,
+  STATUS_CONFIRMING_MSG_SIGN,
+  STATUS_SIGNING_MESSAGE,
+  STATUS_MESSAGE_SIGNED,
+  STATUS_ERROR_SIGNING_MSG,
+  isTxSignRequest,
+  confirmingSignature,
+  signatureSuccess,
 } from './signer-statuses'
 
 import springs from '../../springs'
@@ -69,7 +76,7 @@ class SignerPanel extends React.Component {
       this.setState({
         ...INITIAL_STATE,
         panelOpened: true,
-        status: STATUS_CONFIRMING,
+        status: STATUS_CONFIRMING_MSG_SIGN,
         ...this.stateFromMsgSigBag(signatureBag),
       })
     }
@@ -77,7 +84,7 @@ class SignerPanel extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { status } = this.state
-    if (prevState.status !== status && status !== STATUS_SIGNED) {
+    if (prevState.status !== status && signatureSuccess(status)) {
       clearTimeout(this._closeTimer)
     }
   }
@@ -178,7 +185,7 @@ class SignerPanel extends React.Component {
   handleMsgSign = async () => {
     const { signatureBag, account, onMsgSignSuccess } = this.props
 
-    this.setState({ status: STATUS_SIGNING })
+    this.setState({ status: STATUS_SIGNING_MESSAGE })
     try {
       const signatureHash = await this.signMessage(
         signatureBag.message,
@@ -186,19 +193,20 @@ class SignerPanel extends React.Component {
       )
       onMsgSignSuccess(signatureBag)
       signatureBag.accept(signatureHash)
-      this.setState({ signError: null, status: STATUS_SIGNED })
+      this.setState({ signError: null, status: STATUS_MESSAGE_SIGNED })
       this.startClosing()
     } catch (err) {
       signatureBag.reject(err)
-      this.setState({ signError: err, status: STATUS_ERROR })
+      this.setState({
+        signError: err,
+        status: STATUS_ERROR_SIGNING_MSG,
+      })
     }
   }
 
   startClosing = () => {
     this._closeTimer = setTimeout(() => {
-      if (this.state.status === STATUS_SIGNED) {
-        this.handleSignerClose()
-      }
+      if (signatureSuccess(this.state.status)) this.handleSignerClose()
     }, 3000)
   }
 
@@ -233,7 +241,7 @@ class SignerPanel extends React.Component {
       status,
     } = this.state
 
-    const isTxSignReq = !!(intent && intent.transaction)
+    const isTxSignReq = isTxSignRequest(status)
 
     return (
       <SidePanel
@@ -244,7 +252,7 @@ class SignerPanel extends React.Component {
       >
         <Main>
           <Transition
-            items={status === STATUS_CONFIRMING}
+            items={confirmingSignature(status)}
             from={{ enterProgress: 0 }}
             enter={{ enterProgress: 1 }}
             leave={{ enterProgress: 0 }}
@@ -289,7 +297,9 @@ class SignerPanel extends React.Component {
                             onRequestEnable={onRequestEnable}
                             onSign={this.handleMsgSign}
                             signError={signError}
-                            signingEnabled={status === STATUS_CONFIRMING}
+                            signingEnabled={
+                              status === STATUS_CONFIRMING_MSG_SIGN
+                            }
                             walletProviderId={walletProviderId}
                           />
                         )}
@@ -307,7 +317,6 @@ class SignerPanel extends React.Component {
                       <Screen>
                         <SigningStatus
                           status={status}
-                          isTxSignature={isTxSignReq}
                           signError={signError}
                           onClose={this.handleSignerClose}
                           walletProviderId={walletProviderId}

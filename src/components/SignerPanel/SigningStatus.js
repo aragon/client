@@ -10,6 +10,13 @@ import {
   STATUS_SIGNED,
   STATUS_SIGNING,
   SignerStatusType,
+  STATUS_SIGNING_MESSAGE,
+  STATUS_MESSAGE_SIGNED,
+  STATUS_ERROR_SIGNING_MSG,
+  signatureSuccess,
+  signatureError,
+  isSigning,
+  signatureCompleted,
 } from './signer-statuses'
 
 import imgPending from '../../assets/transaction-pending.svg'
@@ -26,53 +33,60 @@ class SigningStatus extends React.Component {
     signError: PropTypes.instanceOf(Error),
     walletProviderId: PropTypes.string,
     onClose: PropTypes.func.isRequired,
-    isTxSignature: PropTypes.bool.isRequired,
   }
   getLabel() {
-    const { status, isTxSignature } = this.props
-    if (status === STATUS_SIGNING) return 'Waiting for signature…'
-    if (status === STATUS_SIGNED) {
-      return isTxSignature ? 'Transaction signed!' : 'Message signed!'
-    }
-    if (status === STATUS_ERROR) {
-      return isTxSignature
-        ? 'Error signing the transaction'
-        : 'Error signing the message'
-    }
+    const { status } = this.props
+    if (isSigning(status)) return 'Waiting for signature…'
+    if (status === STATUS_SIGNED) return 'Transaction signed!'
+    if (status === STATUS_MESSAGE_SIGNED) return 'Message signed!'
+    if (status === STATUS_ERROR) return 'Error signing the transaction'
+    if (status === STATUS_ERROR_SIGNING_MSG) return 'Error signing the message'
   }
   getInfo() {
-    const { status, signError, walletProviderId, isTxSignature } = this.props
+    const { status, signError, walletProviderId } = this.props
     if (status === STATUS_SIGNING) {
       return (
         <p>
           {`Open ${providerString(
             'your Ethereum provider',
             walletProviderId
-          )} to
-          sign your ${isTxSignature ? 'transaction' : 'message'}.`}
+          )} to sign your transaction`}
         </p>
+      )
+    }
+    if (status === STATUS_SIGNING_MESSAGE) {
+      return (
+        <p>{`Open ${providerString(
+          'your Ethereum provider',
+          walletProviderId
+        )} to sign your message`}</p>
       )
     }
     if (status === STATUS_SIGNED) {
       return (
         <p>
-          {isTxSignature
-            ? 'Success! Your transaction has been sent to the network for processing.'
-            : 'Success! Your message has been signed'}
+          Success! Your transaction has been sent to the network for processing.
         </p>
       )
+    }
+    if (status === STATUS_MESSAGE_SIGNED) {
+      return <p>Success! Your message has been signed.</p>
     }
     if (status === STATUS_ERROR) {
       return (
         <React.Fragment>
           <p>
-            {`Woops, something went wrong. The ${
-              isTxSignature
-                ? 'transaction hasn’t been signed and no tokens have been sent'
-                : 'message hasn’t been signed'
-            }`}
-            .
+            Woops, something went wrong. The transaction hasn’t been signed and
+            no tokens have been sent.
           </p>
+          {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
+        </React.Fragment>
+      )
+    }
+    if (status === STATUS_ERROR_SIGNING_MSG) {
+      return (
+        <React.Fragment>
+          <p>Woops, something went wrong. The message hasn’t been signed.</p>
           {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
         </React.Fragment>
       )
@@ -80,7 +94,7 @@ class SigningStatus extends React.Component {
   }
   getCloseButton() {
     const { status, onClose } = this.props
-    if (status === STATUS_ERROR || status === STATUS_SIGNED) {
+    if (signatureCompleted(status)) {
       return <SignerButton onClick={onClose}>Close</SignerButton>
     }
     return null
@@ -122,9 +136,9 @@ const AdditionalInfo = styled(Info)`
 // To skip the SVG rendering delay
 const StatusImage = ({ status }) => (
   <StatusImageMain>
-    <StatusImageImg visible={status === STATUS_SIGNING} src={imgPending} />
-    <StatusImageImg visible={status === STATUS_ERROR} src={imgError} />
-    <StatusImageImg visible={status === STATUS_SIGNED} src={imgSuccess} />
+    <StatusImageImg visible={isSigning(status)} src={imgPending} />
+    <StatusImageImg visible={signatureError(status)} src={imgError} />
+    <StatusImageImg visible={signatureSuccess(status)} src={imgSuccess} />
   </StatusImageMain>
 )
 StatusImage.propTypes = {
