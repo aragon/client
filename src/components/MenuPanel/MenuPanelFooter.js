@@ -12,7 +12,6 @@ const MenuPanelFooter = ({ connected, onOpenPreferences }) => (
     <PreferencesButton onClick={onOpenPreferences} />
   </div>
 )
-
 MenuPanelFooter.propTypes = {
   connected: PropTypes.bool,
   onOpenPreferences: PropTypes.func.isRequired,
@@ -33,6 +32,9 @@ const PreferencesButton = ({ onClick }) => (
     </Button>
   </div>
 )
+PreferencesButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+}
 
 const ConnectionBullet = styled.span`
   width: 8px;

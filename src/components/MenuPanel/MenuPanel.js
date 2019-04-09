@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Keyframes, Spring, animated } from 'react-spring'
+import { Spring, animated } from 'react-spring'
 import throttle from 'lodash.throttle'
 import color from 'onecolor'
 import { ButtonBase, Viewport, springs, theme, unselectable } from '@aragon/ui'
