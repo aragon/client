@@ -4,16 +4,7 @@ import styled from 'styled-components'
 import { Keyframes, Spring, animated } from 'react-spring'
 import throttle from 'lodash.throttle'
 import color from 'onecolor'
-import {
-  ButtonBase,
-  Button,
-  IconSettings,
-  Viewport,
-  breakpoint,
-  springs,
-  theme,
-  unselectable,
-} from '@aragon/ui'
+import { ButtonBase, Viewport, springs, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
@@ -259,17 +250,10 @@ class MenuPanel extends React.PureComponent {
               `}
             />
           )}
-          <MenuPanelFooter connected={connected} />
-          <PreferencesWrap>
-            <StyledPreferencesButton
-              size="small"
-              mode="outline"
-              label="Preferences"
-              onClick={onOpenPreferences}
-            >
-              <IconSettings /> Preferences
-            </StyledPreferencesButton>
-          </PreferencesWrap>
+          <MenuPanelFooter
+            connected={connected}
+            onOpenPreferences={onOpenPreferences}
+          />
         </In>
       </Main>
     )
@@ -464,30 +448,6 @@ const SystemAppsToggleArrow = props => (
     </span>
   </animated.span>
 )
-
-const PreferencesWrap = styled.div`
-  text-align: left;
-
-  ${breakpoint(
-    'medium',
-    `
-      text-align: center;
-    `
-  )}
-`
-
-const StyledPreferencesButton = styled(Button)`
-  display: inline-flex;
-  margin: 0 16px 16px 16px;
-  align-items: center;
-
-  ${breakpoint(
-    'medium',
-    `
-      margin: 0 0 16px 0;
-    `
-  )}
-`
 
 const Overlay = styled(animated.div)`
   position: absolute;
