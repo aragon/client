@@ -35,7 +35,7 @@ class ActivityProvider extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { daoDomain, account } = this.props
+    const { daoDomain } = this.props
 
     if (daoDomain !== prevProps.daoDomain) {
       const storageKey = `activity:${network.type}:${daoDomain}`
