@@ -195,45 +195,37 @@ class MenuPanel extends React.PureComponent {
               >
                 {({ openProgress, showBorder }) => (
                   <div>
-                    <animated.div
-                      style={{
-                        transform: showBorder.interpolate(
-                          v => `translate3d(0, ${-v * 0}px, 0)`
-                        ),
-                      }}
-                    >
-                      <SystemAppsToggle onClick={this.handleToggleSystemApps}>
-                        <animated.div
+                    <SystemAppsToggle onClick={this.handleToggleSystemApps}>
+                      <animated.div
+                        style={{
+                          position: 'absolute',
+                          height: '1px',
+                          left: '0',
+                          right: '0',
+                          bottom: '0',
+                          boxShadow: '0 1px 1px rgba(0, 0, 0, 0.1)',
+                          opacity: showBorder,
+                        }}
+                      />
+                      <h1
+                        css={`
+                          display: flex;
+                          justify-content: flex-start;
+                          align-items: flex-end;
+                        `}
+                      >
+                        <span>System</span>
+                        <SystemAppsToggleArrow
                           style={{
-                            position: 'absolute',
-                            height: '1px',
-                            left: '0',
-                            right: '0',
-                            bottom: '0',
-                            boxShadow: '0 1px 1px rgba(0, 0, 0, 0.1)',
-                            opacity: showBorder.interpolate(v => v),
+                            marginLeft: '5px',
+                            transform: openProgress.interpolate(
+                              v => `rotate(${(1 - v) * 180}deg)`
+                            ),
+                            transformOrigin: '50% calc(50% - 0.5px)',
                           }}
                         />
-                        <h1
-                          css={`
-                            display: flex;
-                            justify-content: flex-start;
-                            align-items: flex-end;
-                          `}
-                        >
-                          <span>System</span>
-                          <SystemAppsToggleArrow
-                            style={{
-                              marginLeft: '5px',
-                              transform: openProgress.interpolate(
-                                v => `rotate(${(1 - v) * 180}deg)`
-                              ),
-                              transformOrigin: '50% calc(50% - 0.5px)',
-                            }}
-                          />
-                        </h1>
-                      </SystemAppsToggle>
-                    </animated.div>
+                      </h1>
+                    </SystemAppsToggle>
                     <div css="overflow: hidden">
                       <animated.div
                         style={{
