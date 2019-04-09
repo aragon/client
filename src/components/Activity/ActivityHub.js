@@ -141,7 +141,7 @@ const Frame = styled('div')`
   & > h1 {
     margin-top: 0;
     grid-area: title;
-    font-size: 16px;
+    font-size: 14px;
     color: #000000;
     line-height: 22px;
   }
