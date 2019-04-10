@@ -261,15 +261,16 @@ const subscribe = (
     identityIntents: identityIntents.subscribe(onIdentityIntent),
     transactions: transactions.subscribe(onTransaction),
     workers: apps.subscribe(apps => {
-      // Asynchronously launch webworkers for each new app that has a background
-      // script defined
+      // Asynchronously launch webworkers for each new or updated app that has
+      // a background script defined
       applyAppOverrides(apps)
         .filter(app => app.script)
         .filter(
-          ({ proxyAddress }) => !workerSubscriptionPool.hasWorker(proxyAddress)
+          ({ proxyAddress, updated }) =>
+            updated || !workerSubscriptionPool.hasWorker(proxyAddress)
         )
         .forEach(async app => {
-          const { name, proxyAddress, script } = app
+          const { name, proxyAddress, script, updated } = app
           const baseUrl = appBaseUrl(app, ipfsConf.gateway)
 
           // If the app URL is empty, the script can’t be retrieved
@@ -298,6 +299,11 @@ const subscribe = (
           }
 
           const connectApp = await wrapper.runApp(proxyAddress)
+
+          // If the app has been updated, reset its cache and restart its worker
+          if (updated && workerSubscriptionPool.hasWorker(proxyAddress)) {
+            await workerSubscriptionPool.removeWorker(proxyAddress, true)
+          }
 
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
