@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, Viewport } from '@aragon/ui'
-import LocalIdentityBadge from '../../components/LocalIdentityBadge/LocalIdentityBadge'
+import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { EthereumAddressType } from '../../prop-types'
 
 const NavigationItem = ({ title, badge, address, entity }) => {

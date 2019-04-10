@@ -281,6 +281,9 @@ class App extends React.Component {
   }
 
   handleIdentityCancel = () => {
+    const { identityIntent } = this.state
+
+    identityIntent.reject(new Error('Identity modification cancelled'))
     this.setState({ identityIntent: null })
   }
 
@@ -288,9 +291,8 @@ class App extends React.Component {
     const { identityIntent } = this.state
     this.state.wrapper
       .modifyAddressIdentity(address, { name: label })
-      .then(() =>
-        this.setState({ identityIntent: null }, identityIntent.resolve)
-      )
+      .then(identityIntent.resolve)
+      .then(() => this.setState({ identityIntent: null }))
       .catch(identityIntent.reject)
   }
 

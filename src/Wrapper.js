@@ -49,7 +49,6 @@ class Wrapper extends React.PureComponent {
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     markActivitiesRead: PropTypes.func.isRequired,
-    menuSwipeEnabled: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -204,7 +203,6 @@ class Wrapper extends React.PureComponent {
       locator,
       onRequestAppsReload,
       onRequestEnable,
-      menuSwipeEnabled,
       transactionBag,
       walletNetwork,
       walletProviderId,
@@ -217,13 +215,14 @@ class Wrapper extends React.PureComponent {
     return (
       <Main>
         <Preferences
+          locator={locator}
           opened={preferencesOpened}
           onClose={this.handleClosePreferences}
           wrapper={wrapper}
         />
         <BannerWrapper>{banner}</BannerWrapper>
         <SwipeContainer
-          enabled={menuSwipeEnabled}
+          autoClosing={autoClosingPanel}
           menuPanelOpened={menuPanelOpened}
           onMenuPanelClose={this.handleMenuPanelClose}
           onMenuPanelOpen={this.handleMenuPanelOpen}
@@ -237,7 +236,7 @@ class Wrapper extends React.PureComponent {
                 unreadActivityCount={unreadActivityCount}
                 connected={connected}
                 daoAddress={daoAddress}
-                openProgress={progress}
+                swipeProgress={progress}
                 autoClosing={autoClosingPanel}
                 onOpenApp={this.openApp}
                 onCloseMenuPanel={this.handleMenuPanelClose}
@@ -404,7 +403,6 @@ export default props => {
         <Wrapper
           {...props}
           autoClosingPanel={below('medium')}
-          menuSwipeEnabled={below('medium')}
           unreadActivityCount={unreadActivityCount}
           clearActivities={clearActivities}
           markActivitiesRead={markActivitiesRead}
