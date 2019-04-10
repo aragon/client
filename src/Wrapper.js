@@ -165,11 +165,7 @@ class Wrapper extends React.PureComponent {
 
   handleClearActivities = e => {
     e.preventDefault()
-    const { activitiesOpen } = this.state
     this.props.clearActivities()
-    if (activitiesOpen) {
-      setTimeout(() => this.setState({ activitiesOpen: false }), 500)
-    }
   }
 
   toggleActivity = () => {
