@@ -3,11 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import { Viewport, springs } from '@aragon/ui'
+import { lerp } from '../../math-utils'
 import { RenderFnType } from '../../prop-types'
-
-function lerp(progress, value1, value2) {
-  return (value2 - value1) * progress + value1
-}
 
 const LARGE_MARGIN = 30
 const SIDEBAR_WIDTH = 360
