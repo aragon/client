@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Info, Text, SidePanelSeparator } from '@aragon/ui'
 import SignerButton from './SignerButton'
-import LocalIdentityBadge from '../LocalIdentityBadge/LocalIdentityBadge'
+import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../../apps/Permissions/AppInstanceLabel'
 import { AppType } from '../../prop-types'
 
