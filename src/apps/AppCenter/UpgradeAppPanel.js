@@ -81,7 +81,7 @@ class UpgradeAppPanel extends React.PureComponent {
         <SidePanelSeparator />
         <Part>
           <Heading2>Permissions</Heading2>
-          <p>This upgrade doesn’t add any new permission.</p>
+          <p>This upgrade doesn’t introduce any new permissions.</p>
         </Part>
 
         <SidePanelSeparator />
