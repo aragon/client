@@ -14,17 +14,17 @@ import {
   font,
   springs,
 } from '@aragon/ui'
-import LocalIdentitiesComponent from './LocalIdentities'
+import keycodes from '../../keycodes'
 import { AragonType } from '../../prop-types'
 import {
   IdentityContext,
   identityEventTypes,
 } from '../IdentityManager/IdentityManager'
+import LocalIdentitiesComponent from './LocalIdentities'
 
 const TABS = ['Manage labels']
-const ESCAPE_KEY_CODE = 27
 
-const Preferences = ({ onClose, smallView, wrapper }) => {
+const Preferences = ({ locator, onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
   const [localIdentities, setLocalIdentities] = React.useState({})
@@ -60,7 +60,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
     identityEvents$.next({ type: identityEventTypes.IMPORT })
   }
   const handlekeyDown = e => {
-    if (e.keyCode === ESCAPE_KEY_CODE) {
+    if (e.keyCode === keycodes.esc) {
       onClose()
     }
   }
@@ -88,11 +88,12 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
         <Content>
           {selectedTab === 0 && (
             <LocalIdentitiesComponent
+              localIdentities={localIdentities}
+              locator={locator}
               onImport={handleImport}
               onClearAll={handleClearAll}
               onModify={handleModify}
               onModifyEvent={handleGetAll}
-              localIdentities={localIdentities}
             />
           )}
         </Content>
@@ -102,6 +103,7 @@ const Preferences = ({ onClose, smallView, wrapper }) => {
 }
 
 Preferences.propTypes = {
+  locator: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   smallView: PropTypes.bool.isRequired,
   wrapper: AragonType,
@@ -164,7 +166,7 @@ const Title = styled.h1`
   ${breakpoint(
     'medium',
     `
-      /* half screen width minus half max container witdh */
+      /* half screen width minus half max container width */
       margin-left: calc(100vw / 2 - ${BREAKPOINTS.medium / 2}px);
     `
   )}

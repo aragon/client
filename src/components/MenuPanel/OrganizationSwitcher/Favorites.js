@@ -1,14 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { IconPlus, theme } from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import FavoriteRow from './FavoriteRow'
+import ItemButton from './ItemButton'
 
 class Favorites extends React.Component {
   static propTypes = {
     favoriteDaos: PropTypes.arrayOf(FavoriteDaoType),
     currentDao: DaoItemType,
-    onDone: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
   }
 
   state = { localDaos: [] }
@@ -18,9 +20,9 @@ class Favorites extends React.Component {
   }
 
   componentWillUnmount() {
-    const { onDone } = this.props
+    const { onUpdate } = this.props
     const { localDaos } = this.state
-    onDone(
+    onUpdate(
       localDaos
         .filter(dao => dao.favorited)
         .map(dao => ({
@@ -63,9 +65,12 @@ class Favorites extends React.Component {
     }
   }
 
+  handleGoHome = () => {
+    window.location.hash = ''
+  }
+
   handleDaoOpened = dao => {
     window.location.hash = `/${dao.name || dao.address}`
-    this.props.onDone()
   }
 
   handleFavoriteUpdate = ({ address }, favorited) => {
@@ -86,6 +91,29 @@ class Favorites extends React.Component {
     )
     return (
       <section aria-label="Organizations">
+        <ItemButton
+          onClick={this.handleGoHome}
+          css={`
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid ${theme.contentBorder};
+          `}
+        >
+          <span
+            css={`
+              display: flex;
+              align-items: center;
+              width: 24px;
+              margin-right: 13px;
+              color: ${theme.accent};
+            `}
+          >
+            <IconPlus />
+          </span>
+          <span>Open organization…</span>
+        </ItemButton>
+
         <SectionTitle>Current</SectionTitle>
         <FavoriteRow
           dao={currentDao}
