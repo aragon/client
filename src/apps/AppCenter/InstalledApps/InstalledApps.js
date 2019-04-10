@@ -11,10 +11,10 @@ import AppVersions from './AppVersions'
 class InstalledApps extends React.Component {
   static propTypes = {
     apps: PropTypes.arrayOf(AppCenterAppType).isRequired,
-    openedAppName: PropTypes.oneOfType(
-      [PropTypes.string],
-      PropTypes.oneOf([null])
-    ),
+    openedAppName: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.oneOf([null]),
+    ]),
     onOpenApp: PropTypes.func.isRequired,
     onRequestUpgrade: PropTypes.func.isRequired,
   }

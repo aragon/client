@@ -29,136 +29,134 @@ const AppContent = React.memo(
     onRequestUpgrade,
   }) => (
     <Viewport>
-      {({ below, breakpoints }) => (
-        <div
-          css={`
-            padding: ${6 * GU}px ${4 * GU}px ${8 * GU}px;
-          `}
-        >
+      {({ below, breakpoints }) => {
+        const compact = appBelow(below, breakpoints.medium)
+        return (
           <div
             css={`
-              display: flex;
-              justify-content: space-between;
-              margin-bottom: ${6 * GU}px;
-              overflow: hidden;
-
-              flex-direction: ${appBelow(below, breakpoints.medium)
-                ? 'column'
-                : 'row'};
-
-              align-items: ${appBelow(below, breakpoints.medium)
-                ? 'flex-start'
-                : 'flex-end'};
+              padding: ${6 * GU}px ${4 * GU}px ${8 * GU}px;
             `}
           >
             <div
               css={`
                 display: flex;
-                align-items: flex-end;
+                justify-content: space-between;
+                margin-bottom: ${6 * GU}px;
+                overflow: hidden;
+
+                flex-direction: ${compact ? 'column' : 'row'};
+                align-items: ${compact ? 'flex-start' : 'flex-end'};
               `}
             >
               <div
                 css={`
-                  margin: 0 ${3 * GU}px 0 0;
+                  display: flex;
+                  align-items: flex-end;
                 `}
               >
-                <img
-                  alt=""
-                  src={icons.large}
-                  width="80"
-                  height="80"
+                <div
                   css={`
-                    display: block;
-                    width: 80px;
-                    height: 80px;
-                  `}
-                />
-              </div>
-              <div>
-                <h1
-                  css={`
-                    white-space: nowrap;
-                    margin-bottom: -${2 * GU}px;
-                    font-size: 22px;
+                    margin: 0 ${3 * GU}px 0 0;
                   `}
                 >
-                  {name}
-                </h1>
-
-                <Heading2>Created by</Heading2>
+                  <img
+                    alt=""
+                    src={icons.large}
+                    width="80"
+                    height="80"
+                    css={`
+                      display: block;
+                      width: 80px;
+                      height: 80px;
+                    `}
+                  />
+                </div>
                 <div>
-                  <IdentityBadge entity={author} />
+                  <h1
+                    css={`
+                      white-space: nowrap;
+                      margin-bottom: -${2 * GU}px;
+                      font-size: 22px;
+                    `}
+                  >
+                    {name}
+                  </h1>
+
+                  <Heading2>Created by</Heading2>
+                  <div>
+                    <IdentityBadge entity={author} />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
-              css={`
-                padding: ${appBelow(below, breakpoints.medium)
-                  ? `${3 * GU}px 0 0 ${80 + 3 * GU}px`
-                  : '0'};
-              `}
-            >
-              {canUpgrade && onRequestUpgrade && (
-                <Button mode="strong" onClick={onRequestUpgrade}>
-                  Upgrade
-                </Button>
-              )}
-            </div>
-          </div>
-          {screenshots.length > 0 && (
-            <div>
-              <Screenshots screenshots={screenshots} />
-            </div>
-          )}
-          <div
-            css={`
-              display: flex;
-              flex-direction: column;
-              justify-content: space-between;
-              width: 100%;
-
-              flex-direction: ${appBelow(below, breakpoints.medium)
-                ? 'column'
-                : 'row'};
-            `}
-          >
-            <DetailsGroup compact={appBelow(below, breakpoints.medium)}>
-              <Heading2>Description</Heading2>
-              <div>{description}</div>
-              <Heading2>Source code</Heading2>
-              <div>
-                {sourceUrl ? (
-                  <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
-                ) : (
-                  'No source code link.'
+              <div
+                css={`
+                  padding: ${compact
+                    ? `${3 * GU}px 0 0 ${80 + 3 * GU}px`
+                    : '0'};
+                `}
+              >
+                {canUpgrade && onRequestUpgrade && (
+                  <Button mode="strong" onClick={onRequestUpgrade}>
+                    Upgrade
+                  </Button>
                 )}
               </div>
-            </DetailsGroup>
-            <DetailsGroup compact={appBelow(below, breakpoints.medium)}>
-              <Heading2>Installed instances</Heading2>
-              {instances.map(proxyAddress => (
-                <div
-                  key={proxyAddress}
-                  css={`
-                    & + & {
-                      margin-top: ${2 * GU}px;
-                    }
-                  `}
-                >
-                  <IdentityBadge entity={proxyAddress} />
-                </div>
-              ))}
-              <div
-                css={`
-                  margin-top: ${2 * GU}px;
-                `}
-              >
-                {appVersions}
+            </div>
+            {screenshots.length > 0 && (
+              <div>
+                <Screenshots screenshots={screenshots} />
               </div>
-            </DetailsGroup>
+            )}
+            <div
+              css={`
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 100%;
+
+                flex-direction: ${compact ? 'column' : 'row'};
+              `}
+            >
+              <DetailsGroup compact={compact}>
+                <Heading2>Description</Heading2>
+                <div>{description}</div>
+                <Heading2>Source code</Heading2>
+                <div>
+                  {sourceUrl ? (
+                    <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
+                  ) : (
+                    'No source code link.'
+                  )}
+                </div>
+              </DetailsGroup>
+              <DetailsGroup compact={compact}>
+                <Heading2>Installed instances</Heading2>
+                {instances.map(proxyAddress => (
+                  <div
+                    key={proxyAddress}
+                    css={`
+                      & + & {
+                        margin-top: ${2 * GU}px;
+                      }
+                    `}
+                  >
+                    <IdentityBadge entity={proxyAddress} />
+                  </div>
+                ))}
+                {appVersions && (
+                  <div
+                    css={`
+                      margin-top: ${2 * GU}px;
+                    `}
+                  >
+                    {appVersions}
+                  </div>
+                )}
+              </DetailsGroup>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }}
     </Viewport>
   )
 )
