@@ -114,11 +114,16 @@ class Wrapper extends React.PureComponent {
       wrapper,
       locator: { instanceId },
     } = this.props
-    if (
-      !wrapper ||
-      !apps.find(app => addressesEqual(app.proxyAddress, instanceId))
-    ) {
-      console.error('The app cannot be connected to aragon.js')
+    if (!wrapper) {
+      console.error(
+        `Attempted to connect app (${instanceId}) before aragonAPI was ready`
+      )
+      return
+    }
+    if (!apps.find(app => addressesEqual(app.proxyAddress, instanceId))) {
+      console.error(
+        `The requested app (${instanceId}) could not be found in the installed apps`
+      )
       return
     }
 
