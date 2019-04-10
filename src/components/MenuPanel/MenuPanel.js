@@ -57,6 +57,7 @@ const prepareAppGroups = apps =>
   }, [])
 
 // Interpolate the elevation of a toggle from which a drawer slides down.
+// In / out example: [0, 0.25, 0.5, 0.75, 1] => [0, 0.5, 1, 0.5, 0]
 const interpolateToggleElevation = (value, fn = v => v) =>
   value.interpolate(v => fn(1 - Math.abs(v * 2 - 1)))
 
