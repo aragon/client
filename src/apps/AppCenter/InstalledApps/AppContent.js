@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, IdentityBadge, SafeLink, Viewport } from '@aragon/ui'
+import { Button, SafeLink, Viewport } from '@aragon/ui'
 import { AppCenterAppType } from '../../../prop-types'
+import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { TextLabel } from '../../../components/TextStyles'
 import { GU } from '../../../utils'
 import { MENU_WIDTH } from '../../../components/MenuPanel/MenuPanel'
@@ -84,7 +85,7 @@ const AppContent = React.memo(
 
                   <Heading2>Created by</Heading2>
                   <div>
-                    <IdentityBadge entity={author} />
+                    <LocalIdentityBadge entity={author} />
                   </div>
                 </div>
               </div>
@@ -140,7 +141,7 @@ const AppContent = React.memo(
                       }
                     `}
                   >
-                    <IdentityBadge entity={proxyAddress} />
+                    <LocalIdentityBadge entity={proxyAddress} />
                   </div>
                 ))}
                 {appVersions && (
