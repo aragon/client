@@ -138,7 +138,7 @@ class AppCenter extends React.Component {
         </AppView>
 
         <UpgradeAppPanel
-          app={upgradePanelOpened && currentApp}
+          app={upgradePanelOpened ? currentApp : null}
           onClose={this.closeUpgradePanel}
         />
       </React.Fragment>

@@ -15,7 +15,7 @@ const SIDEBAR_WIDTH = 360
 class ZoomCardOpened extends React.Component {
   static propTypes = {
     cardRect: PropTypes.instanceOf(DOMRect),
-    renderContent: RenderFnType,
+    renderContent: PropTypes.func.isRequired,
     renderAside: RenderFnType,
     currentId: PropTypes.string,
   }
@@ -115,7 +115,7 @@ class ZoomCardOpened extends React.Component {
                       currentId !== null &&
                       (({ openProgress }) => (
                         <Card
-                          fullscreen={fullscreen}
+                          fullscreen={fullscreen || undefined}
                           style={{
                             opacity: openProgress.interpolate(v =>
                               Math.min(1, v * 2)
