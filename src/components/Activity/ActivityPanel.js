@@ -12,7 +12,7 @@ const ActivityPanel = ({ open, onBlur, onClearAll }) => {
 
   React.useEffect(() => {
     frameRef.current[open ? 'focus' : 'blur']()
-  })
+  }, [frameRef, open])
 
   const _onBlur = e => {
     let _handler
@@ -81,7 +81,7 @@ const ActivityFrame = styled(animated.div)`
   outline: 0;
 `
 
-const ActivityHeader = styled('div')`
+const ActivityHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -90,7 +90,6 @@ const ActivityHeader = styled('div')`
   border-bottom: 1px solid #e8e8e8;
   & > div > h1 {
     opacity: 0.7;
-    font-family: MaisonNeue-Demi;
     font-size: 12px;
     color: #6d777b;
     letter-spacing: 0;
@@ -100,14 +99,14 @@ const ActivityHeader = styled('div')`
   }
   & > a {
     opacity: 0.9;
-    font-family: MaisonNeue-Book;
     font-size: 14px;
     color: #b3b3b3;
     text-align: right;
   }
 `
 
-const Text = styled('span')`
+const Text = styled.span`
   vertical-align: sub;
 `
+
 export default ActivityPanel

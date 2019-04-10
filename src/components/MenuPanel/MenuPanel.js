@@ -148,17 +148,21 @@ class MenuPanel extends React.PureComponent {
       <Main>
         <In>
           <Header>
-            <OrganizationSwitcher
-              currentDao={{
-                name: daoAddress.domain,
-                address: daoAddress.address,
-              }}
-            />
-            <ActivityAlert
-              unreadActivityCount={unreadActivityCount}
-              onClick={onActivityClicked}
-              activitiesOpen={activitiesOpen}
-            />
+            <HeaderSlot css="width: 170px">
+              <OrganizationSwitcher
+                currentDao={{
+                  name: daoAddress.domain,
+                  address: daoAddress.address,
+                }}
+              />
+            </HeaderSlot>
+            <HeaderSlot css="width: 50px">
+              <ActivityAlert
+                unreadActivityCount={unreadActivityCount}
+                onClick={onActivityClicked}
+                activitiesOpen={activitiesOpen}
+              />
+            </HeaderSlot>
           </Header>
           <Content ref={this._contentRef}>
             <div className="in" ref={this._innerContentRef}>
@@ -498,25 +502,14 @@ const Header = styled.div`
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
   height: 64px;
   border-bottom: 1px solid ${theme.contentBorder};
+`
 
-  .actions {
-    display: flex;
-  }
-  .actions a {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    color: ${theme.textSecondary};
-    cursor: pointer;
-    outline: 0;
-  }
-  .actions a:hover {
-    color: ${theme.textPrimary};
-  }
+const HeaderSlot = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
 `
 
 const Content = styled.nav`
