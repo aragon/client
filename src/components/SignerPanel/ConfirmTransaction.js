@@ -14,7 +14,7 @@ class ConfirmTransaction extends React.Component {
     hasAccount: PropTypes.bool.isRequired,
     hasWeb3: PropTypes.bool.isRequired,
     intent: PropTypes.object,
-    dao: PropTypes.string.isRequired,
+    dao: PropTypes.string,
     networkType: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func,

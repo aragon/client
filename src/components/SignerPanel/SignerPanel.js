@@ -31,7 +31,7 @@ class SignerPanel extends React.PureComponent {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
-    dao: PropTypes.string.isRequired,
+    dao: PropTypes.string,
     onClose: PropTypes.func,
     onRequestEnable: PropTypes.func.isRequired,
     onTransactionSuccess: PropTypes.func,
