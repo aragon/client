@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import { Viewport, springs } from '@aragon/ui'
+import { RenderFnType } from '../../prop-types'
 
 function lerp(progress, value1, value2) {
   return (value2 - value1) * progress + value1
@@ -14,8 +15,8 @@ const SIDEBAR_WIDTH = 360
 class ZoomCardOpened extends React.Component {
   static propTypes = {
     cardRect: PropTypes.instanceOf(DOMRect),
-    renderContent: PropTypes.func,
-    renderAside: PropTypes.func,
+    renderContent: RenderFnType,
+    renderAside: RenderFnType,
     currentId: PropTypes.string,
   }
 

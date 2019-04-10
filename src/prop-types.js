@@ -125,3 +125,8 @@ export const DaoAddressType = PropTypes.shape({
   address: EthereumAddressType,
   domain: PropTypes.string,
 })
+
+export const RenderFnType = PropTypes.oneOfType([
+  PropTypes.func,
+  PropTypes.oneOf([false]),
+])

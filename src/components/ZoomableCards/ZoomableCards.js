@@ -3,15 +3,16 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { springs } from '@aragon/ui'
+import { RenderFnType } from '../../prop-types'
 import ZoomCard from './ZoomCard'
 import ZoomCardOpened from './ZoomCardOpened'
 
 class ZoomableCards extends React.PureComponent {
   static propTypes = {
     currentId: PropTypes.string,
-    renderCards: PropTypes.func,
-    renderOpenedCard: PropTypes.func,
-    renderOpenedAside: PropTypes.func,
+    renderCards: RenderFnType,
+    renderOpenedCard: RenderFnType,
+    renderOpenedAside: RenderFnType,
   }
   static defaultProps = {
     currentId: null,
