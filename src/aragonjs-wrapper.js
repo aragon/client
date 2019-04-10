@@ -222,15 +222,23 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  { onApps, onPermissions, onForwarders, onTransaction, onIdentityIntent },
+  {
+    onApps,
+    onPermissions,
+    onForwarders,
+    onAppIdentifiers,
+    onIdentityIntent,
+    onTransaction,
+  },
   { ipfsConf }
 ) => {
   const {
     apps,
     permissions,
     forwarders,
-    transactions,
+    identifiers,
     identityIntents,
+    transactions,
   } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
@@ -249,6 +257,7 @@ const subscribe = (
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
+    identifiers: identifiers.subscribe(onAppIdentifiers),
     identityIntents: identityIntents.subscribe(onIdentityIntent),
     transactions: transactions.subscribe(onTransaction),
     workers: apps.subscribe(apps => {
@@ -308,7 +317,7 @@ const subscribe = (
             workerSubscriptionPool.addWorker({
               app,
               worker,
-              subscription: connectApp(provider).shutdown,
+              connection: connectApp(provider),
             })
           }
 
@@ -343,10 +352,11 @@ const initWrapper = async (
     onApps = noop,
     onPermissions = noop,
     onForwarders = noop,
+    onAppIdentifiers = noop,
+    onIdentityIntent = noop,
     onTransaction = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
-    onIdentityIntent = noop,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -404,8 +414,9 @@ const initWrapper = async (
       onApps,
       onPermissions,
       onForwarders,
-      onTransaction,
+      onAppIdentifiers,
       onIdentityIntent,
+      onTransaction,
     },
     { ipfsConf }
   )
@@ -417,7 +428,9 @@ const initWrapper = async (
     if (subscriptions.connectedApp) {
       subscriptions.connectedApp.unsubscribe()
     }
-    subscriptions.connectedApp = appContext.shutdown
+    subscriptions.connectedApp = {
+      unsubscribe: appContext.shutdown,
+    }
     return appContext
   }
 
