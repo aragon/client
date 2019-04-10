@@ -28,15 +28,22 @@ import {
   DAO_CREATION_STATUS_ERROR,
 } from './symbols'
 
+const INITIAL_DAO_STATE = {
+  apps: [],
+  appIdentifiers: {},
+  appsStatus: APPS_STATUS_LOADING,
+  daoAddress: { address: '', domain: '' },
+  permissions: {},
+  permissionsLoading: true,
+}
+
 class App extends React.Component {
   state = {
+    ...INITIAL_DAO_STATE,
     account: '',
-    apps: [],
-    appsStatus: APPS_STATUS_LOADING,
     balance: getUnknownBalance(),
     buildData: null, // data returned by aragon.js when a DAO is created
     connected: false,
-    daoAddress: { address: '', domain: '' },
     // daoCreationStatus is one of:
     //  - DAO_CREATION_STATUS_NONE
     //  - DAO_CREATION_STATUS_SUCCESS
@@ -45,8 +52,6 @@ class App extends React.Component {
     fatalError: null,
     identityIntent: null,
     locator: {},
-    permissions: {},
-    permissionsLoading: true,
     prevLocator: null,
     selectorNetworks: [
       ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
@@ -193,18 +198,19 @@ class App extends React.Component {
 
   updateDao(dao = null) {
     // Cancel the subscriptions / unload the wrapper
-    if (dao === null && this.state.wrapper) {
+    if (this.state.wrapper) {
       this.state.wrapper.cancel()
       this.setState({ wrapper: null })
-      return
     }
 
     // Reset the DAO state
     this.setState({
-      appsStatus: APPS_STATUS_LOADING,
-      apps: [],
-      daoAddress: { address: '', domain: '' },
+      ...INITIAL_DAO_STATE,
     })
+
+    if (dao === null) {
+      return
+    }
 
     log('Init DAO', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
