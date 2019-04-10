@@ -27,6 +27,7 @@ class ActivityProvider extends React.Component {
     account: EthereumAddressType, // Current wallet
     children: PropTypes.node,
     daoDomain: PropTypes.string, // domain of current DAO
+    walletWeb3: PropTypes.object,
   }
   state = {
     // activities of all accounts
@@ -44,7 +45,10 @@ class ActivityProvider extends React.Component {
       storedList = new StoredList(storageKey)
 
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ activities: storedList.getItems() })
+      this.setState(
+        { activities: storedList.getItems() },
+        this.refreshPendingActivities
+      )
     }
   }
 
@@ -53,6 +57,23 @@ class ActivityProvider extends React.Component {
   }
   componentWillUnmount() {
     clearInterval(this._checkInterval)
+  }
+
+  // Refresh the status of pending activities
+  refreshPendingActivities() {
+    const { walletWeb3 } = this.props
+
+    this.state.activities
+      .filter(this.currentAccountPredicate)
+      .filter(({ status }) => status === activityStatusTypes.PENDING)
+      .forEach(({ transactionHash }) => {
+        walletWeb3.eth
+          .getTransaction(transactionHash)
+          .then(({ blockNumber }) =>
+            blockNumber ? this.setActivityConfirmed(transactionHash) : null
+          )
+          .catch(console.error)
+      })
   }
 
   checkForTimedOut = () => {
