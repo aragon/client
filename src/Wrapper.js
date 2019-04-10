@@ -185,42 +185,6 @@ class Wrapper extends React.PureComponent {
     )
   }
 
-  handleSignerPanelTransactionSuccess = ({
-    data,
-    name,
-    description,
-    identifier,
-  }) => {
-    this.setState(state => ({
-      queuedNotifications: [
-        {
-          id: data,
-          type: 'transaction',
-          title: `${name} ${identifier}`,
-          content: description,
-        },
-        ...state.queuedNotifications,
-      ],
-    }))
-  }
-
-  handleSignerPanelClose = () => {
-    if (this.state.queuedNotifications.length) {
-      // Wait a little, then update notifications
-      setTimeout(
-        () =>
-          this.setState(state => ({
-            queuedNotifications: [],
-            notifications: [
-              ...state.queuedNotifications,
-              ...state.notifications,
-            ],
-          })),
-        250
-      )
-    }
-  }
-
   getMenuApps = memoize(apps => apps.filter(app => app.hasWebApp))
 
   render() {
@@ -301,8 +265,6 @@ class Wrapper extends React.PureComponent {
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
-          onTransactionSuccess={this.handleSignerPanelTransactionSuccess}
-          onClose={this.handleSignerPanelClose}
         />
       </Main>
     )
