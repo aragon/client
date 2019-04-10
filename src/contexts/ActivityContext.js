@@ -178,6 +178,21 @@ class ActivityProvider extends React.Component {
   setActivityFailed = this.setActivityStatus(activityStatusTypes.FAILED)
   setActivityTimedOut = this.setActivityStatus(activityStatusTypes.TIMED_OUT)
 
+  setActivityNonce = ({ transactionHash, nonce }) => {
+    const activities = this.state.activities.map(activity =>
+      activity.transactionHash === transactionHash
+        ? {
+            ...activity,
+            nonce,
+          }
+        : activity
+    )
+
+    this.setState({
+      activities: storedList.update(activities),
+    })
+  }
+
   getUnreadActivityCount = () =>
     this.currentAccountActivities().reduce(
       (count, { read }) => (read ? count : count + 1),
@@ -204,6 +219,7 @@ class ActivityProvider extends React.Component {
           clearActivity: this.clearActivity,
           updateActivities: this.updateActivities,
           markActivitiesRead: this.markActivitiesRead,
+          setActivityNonce: this.setActivityNonce,
         }}
       >
         {children}

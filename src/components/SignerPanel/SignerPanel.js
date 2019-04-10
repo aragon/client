@@ -40,6 +40,7 @@ class SignerPanel extends React.Component {
     onRequestEnable: PropTypes.func.isRequired,
     setActivityConfirmed: PropTypes.func.isRequired,
     setActivityFailed: PropTypes.func.isRequired,
+    setActivityNonce: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
@@ -106,6 +107,7 @@ class SignerPanel extends React.Component {
       addTransactionActivity,
       setActivityConfirmed,
       setActivityFailed,
+      setActivityNonce,
     } = this.props
 
     return new Promise((resolve, reject) => {
@@ -113,11 +115,20 @@ class SignerPanel extends React.Component {
         .sendTransaction(transaction)
         .on('transactionHash', transactionHash => {
           resolve(transactionHash)
-          // TODO: get transaction count/nonce and update the activity item
+          // get transaction count/nonce and update the activity item
           //  Maybe useful in case we multiple transaction activities earlier pending
           // and later with higher nonces confirmed to assume all activities pending
           // with lower nonce are confirmed (most likely with a different hash if
           // resent with higher gas through wallet)
+
+          walletWeb3.eth
+            .getTransaction(transactionHash)
+            .then(t => {
+              const { nonce } = t
+              setActivityNonce({ transactionHash, nonce })
+              return t
+            })
+            .catch(console.error)
 
           // Create new activiy
           addTransactionActivity({
@@ -306,6 +317,7 @@ export default function(props) {
     addTransactionActivity,
     setActivityConfirmed,
     setActivityFailed,
+    setActivityNonce,
   } = React.useContext(ActivityContext)
   return (
     <SignerPanel
@@ -313,6 +325,7 @@ export default function(props) {
       addTransactionActivity={addTransactionActivity}
       setActivityConfirmed={setActivityConfirmed}
       setActivityFailed={setActivityFailed}
+      setActivityNonce={setActivityNonce}
     />
   )
 }
