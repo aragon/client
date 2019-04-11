@@ -49,3 +49,7 @@ export function log(...params) {
 export function isString(str) {
   return typeof str === 'string' || str instanceof String
 }
+
+export function isHumanReadable(str) {
+  return !str.split(' ').some(word => word.length > 26)
+}

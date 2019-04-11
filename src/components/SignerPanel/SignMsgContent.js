@@ -6,12 +6,17 @@ import SignerButton from './SignerButton'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../../apps/Permissions/AppInstanceLabel'
 import { AppType } from '../../prop-types'
+import { isHumanReadable } from '../../utils'
 
 const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
   const locateAppInfo = (apps, requestingApp) => {
     const app = apps.find(({ proxyAddress }) => proxyAddress === requestingApp)
     return app
   }
+
+  const [showMessage, setShowMessage] = React.useState(false)
+
+  const humanReadableMessage = isHumanReadable(intent.message)
   return (
     <React.Fragment>
       <SmMarginRight>
@@ -27,9 +32,26 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         showIcon
       />
       <Seperator />
-      <Text smallcaps>Message:</Text>
-      <br />
-      <Info>{intent.message}</Info>
+      {humanReadableMessage ? (
+        <React.Fragment>
+          <Text smallcaps>Message:</Text>
+          <br />
+          <Info>{intent.message}</Info>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <ClickableText onClick={() => setShowMessage(!showMessage)} smallcaps>
+            {showMessage ? `Hide` : `Show`} Message
+          </ClickableText>
+
+          {showMessage && (
+            <React.Fragment>
+              <br />
+              <Info>{intent.message}</Info>
+            </React.Fragment>
+          )}
+        </React.Fragment>
+      )}
       <SignerButton onClick={onSign} disabled={!signingEnabled}>
         Create signature request
       </SignerButton>
@@ -52,6 +74,11 @@ const Seperator = styled(SidePanelSeparator)`
 
 const SmMarginRight = styled.span`
   margin-right: 4px;
+`
+
+const ClickableText = styled(Text)`
+  cursor: pointer;
+  text-decoration: underline;
 `
 
 export default SignMsgContent
