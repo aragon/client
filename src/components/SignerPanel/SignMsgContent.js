@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Info, Text, SidePanelSeparator } from '@aragon/ui'
+
 import SignerButton from './SignerButton'
+import ToggleContent from '../ToggleContent'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../../apps/Permissions/AppInstanceLabel'
 import { AppType } from '../../prop-types'
@@ -13,8 +15,6 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
     const app = apps.find(({ proxyAddress }) => proxyAddress === requestingApp)
     return app
   }
-
-  const [showMessage, setShowMessage] = React.useState(false)
 
   const humanReadableMessage = isHumanReadable(intent.message)
   return (
@@ -40,16 +40,12 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <ClickableText onClick={() => setShowMessage(!showMessage)} smallcaps>
-            {showMessage ? `Hide` : `Show`} Message
-          </ClickableText>
-
-          {showMessage && (
+          <ToggleContent label="Show Message">
             <React.Fragment>
               <br />
               <Info>{intent.message}</Info>
             </React.Fragment>
-          )}
+          </ToggleContent>
         </React.Fragment>
       )}
       <SignerButton onClick={onSign} disabled={!signingEnabled}>
@@ -74,11 +70,6 @@ const Seperator = styled(SidePanelSeparator)`
 
 const SmMarginRight = styled.span`
   margin-right: 4px;
-`
-
-const ClickableText = styled(Text)`
-  cursor: pointer;
-  text-decoration: underline;
 `
 
 export default SignMsgContent
