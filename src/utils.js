@@ -15,9 +15,12 @@ export function compose(...funcs) {
 
 // Get the icon URL of an app
 export function appIconUrl(app) {
-  return app && app.baseUrl
-    ? resolvePathname('images/icon.svg', app.baseUrl)
-    : null
+  if (app && app.baseUrl && Array.isArray(app.icons)) {
+    const iconSize =
+      app.icons.find(({ sizes }) => sizes === '22x22') || app.icons[0]
+    return resolvePathname(removeStartingSlash(iconSize.src), app.baseUrl)
+  }
+  return null
 }
 
 export function isElectron() {
