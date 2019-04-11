@@ -192,7 +192,7 @@ class SignerPanel extends React.Component {
         account
       )
       onMsgSignSuccess(signatureBag)
-      signatureBag.accept(signatureHash)
+      signatureBag.resolve(signatureHash)
       this.setState({ signError: null, status: STATUS_MESSAGE_SIGNED })
       this.startClosing()
     } catch (err) {
