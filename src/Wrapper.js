@@ -279,19 +279,6 @@ class Wrapper extends React.PureComponent {
               ],
             }))
           }
-          onMsgSignSuccess={({ message }) =>
-            this.setState(state => ({
-              queuedNotifications: [
-                {
-                  id: message,
-                  type: 'signature',
-                  title: 'web3-eth-personal-sign',
-                  content: message,
-                },
-                ...state.queuedNotifications,
-              ],
-            }))
-          }
           onClose={() => {
             if (this.state.queuedNotifications.length) {
               // Wait a little, then update notifications

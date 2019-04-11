@@ -2,12 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { isElectron, noop } from '../../utils'
 import ActionPathsContent from './ActionPathsContent'
-import {
-  needFrame,
-  noWeb3Provider,
-  accountLocked,
-  wrongNetwork,
-} from './Web3States'
+import { NoWeb3Provider, AccountLocked, WrongNetwork } from './Web3Errors'
 import { ImpossibleContent } from './ImpossibleContent'
 
 class ConfirmTransaction extends React.Component {
@@ -53,16 +48,35 @@ class ConfirmTransaction extends React.Component {
     } = this.props
 
     if (!hasWeb3) {
-      if (isElectron()) return needFrame(intent, onClose)
-      return noWeb3Provider(intent, onClose)
+      return (
+        <NoWeb3Provider
+          intent={intent}
+          isElectron={isElectron()}
+          onClose={onClose}
+        />
+      )
     }
 
     if (!hasAccount) {
-      return accountLocked(intent, onClose, walletProviderId, onRequestEnable)
+      return (
+        <AccountLocked
+          intent={intent}
+          onClose={onClose}
+          onRequestEnable={onRequestEnable}
+          walletProviderId={walletProviderId}
+        />
+      )
     }
 
     if (walletNetworkType !== networkType) {
-      return wrongNetwork(intent, onClose, networkType, walletProviderId)
+      return (
+        <WrongNetwork
+          intent={intent}
+          onClose={onClose}
+          networkType={networkType}
+          walletProviderId={walletProviderId}
+        />
+      )
     }
 
     const possible =

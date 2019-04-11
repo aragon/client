@@ -6,17 +6,17 @@ import providerString from '../../provider-strings'
 import SignerButton from './SignerButton'
 
 import {
-  STATUS_ERROR,
-  STATUS_SIGNED,
-  STATUS_SIGNING,
+  STATUS_ERROR_TX,
+  STATUS_SIGNED_TX,
+  STATUS_SIGNING_TX,
   SignerStatusType,
   STATUS_SIGNING_MESSAGE,
   STATUS_MESSAGE_SIGNED,
   STATUS_ERROR_SIGNING_MSG,
-  signatureSuccess,
-  signatureError,
+  isSignatureSuccess,
+  isSignatureError,
   isSigning,
-  signatureCompleted,
+  isSignatureCompleted,
 } from './signer-statuses'
 
 import imgPending from '../../assets/transaction-pending.svg'
@@ -29,22 +29,22 @@ const cleanErrorMessage = msg =>
 
 class SigningStatus extends React.Component {
   static propTypes = {
+    onClose: PropTypes.func.isRequired,
     status: SignerStatusType.isRequired,
     signError: PropTypes.instanceOf(Error),
     walletProviderId: PropTypes.string,
-    onClose: PropTypes.func.isRequired,
   }
   getLabel() {
     const { status } = this.props
     if (isSigning(status)) return 'Waiting for signature…'
-    if (status === STATUS_SIGNED) return 'Transaction signed!'
+    if (status === STATUS_SIGNED_TX) return 'Transaction signed!'
     if (status === STATUS_MESSAGE_SIGNED) return 'Message signed!'
-    if (status === STATUS_ERROR) return 'Error signing the transaction'
+    if (status === STATUS_ERROR_TX) return 'Error signing the transaction'
     if (status === STATUS_ERROR_SIGNING_MSG) return 'Error signing the message'
   }
   getInfo() {
     const { status, signError, walletProviderId } = this.props
-    if (status === STATUS_SIGNING) {
+    if (status === STATUS_SIGNING_TX) {
       return (
         <p>
           {`Open ${providerString(
@@ -62,7 +62,7 @@ class SigningStatus extends React.Component {
         )} to sign your message`}</p>
       )
     }
-    if (status === STATUS_SIGNED) {
+    if (status === STATUS_SIGNED_TX) {
       return (
         <p>
           Success! Your transaction has been sent to the network for processing.
@@ -72,13 +72,10 @@ class SigningStatus extends React.Component {
     if (status === STATUS_MESSAGE_SIGNED) {
       return <p>Success! Your message has been signed.</p>
     }
-    if (status === STATUS_ERROR) {
+    if (status === STATUS_ERROR_TX) {
       return (
         <React.Fragment>
-          <p>
-            Woops, something went wrong. The transaction hasn’t been signed and
-            no tokens have been sent.
-          </p>
+          <p>Your transaction wasn't signed and no tokens were sent.</p>
           {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
         </React.Fragment>
       )
@@ -86,7 +83,7 @@ class SigningStatus extends React.Component {
     if (status === STATUS_ERROR_SIGNING_MSG) {
       return (
         <React.Fragment>
-          <p>Woops, something went wrong. The message hasn’t been signed.</p>
+          <p>Your message wasn't signed.</p>
           {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
         </React.Fragment>
       )
@@ -94,7 +91,7 @@ class SigningStatus extends React.Component {
   }
   getCloseButton() {
     const { status, onClose } = this.props
-    if (signatureCompleted(status)) {
+    if (isSignatureCompleted(status)) {
       return <SignerButton onClick={onClose}>Close</SignerButton>
     }
     return null
@@ -137,8 +134,8 @@ const AdditionalInfo = styled(Info)`
 const StatusImage = ({ status }) => (
   <StatusImageMain>
     <StatusImageImg visible={isSigning(status)} src={imgPending} />
-    <StatusImageImg visible={signatureError(status)} src={imgError} />
-    <StatusImageImg visible={signatureSuccess(status)} src={imgSuccess} />
+    <StatusImageImg visible={isSignatureError(status)} src={imgError} />
+    <StatusImageImg visible={isSignatureSuccess(status)} src={imgSuccess} />
   </StatusImageMain>
 )
 StatusImage.propTypes = {

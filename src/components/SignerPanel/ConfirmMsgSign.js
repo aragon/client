@@ -1,32 +1,36 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { isElectron, noop } from '../../utils'
-import SignMsgContent from './SignMsgContent'
+
 import { AppType } from '../../prop-types'
-import { needFrame, noWeb3Provider, accountLocked } from './Web3States'
+import { NoWeb3Provider, AccountLocked } from './Web3Errors'
 import { ImpossibleContent } from './ImpossibleContent'
+import SignMsgContent from './SignMsgContent'
 
 class ConfirmMsgSign extends React.Component {
   static propTypes = {
+    account: PropTypes.string,
+    apps: PropTypes.arrayOf(AppType).isRequired,
     hasAccount: PropTypes.bool.isRequired,
     hasWeb3: PropTypes.bool.isRequired,
-    account: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired,
     intent: PropTypes.object,
+    onClose: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func,
     onSign: PropTypes.func.isRequired,
     signError: PropTypes.string,
     signingEnabled: PropTypes.bool.isRequired,
     walletProviderId: PropTypes.string.isRequired,
-    apps: PropTypes.arrayOf(AppType).isRequired,
   }
 
   static defaultProps = {
+    account: '',
     intent: {},
     onRequestEnable: noop,
   }
   render() {
     const {
+      account,
+      apps,
       intent,
       hasAccount,
       hasWeb3,
@@ -36,28 +40,36 @@ class ConfirmMsgSign extends React.Component {
       signError,
       signingEnabled,
       walletProviderId,
-      account,
-      apps,
     } = this.props
 
     if (!hasWeb3) {
-      if (isElectron()) return needFrame(intent, onClose)
-      return noWeb3Provider(intent, onClose)
+      return (
+        <NoWeb3Provider
+          intent={intent}
+          isElectron={isElectron()}
+          onClose={onClose}
+        />
+      )
     }
 
     if (!hasAccount) {
-      return accountLocked(intent, onClose, walletProviderId, onRequestEnable)
+      return (
+        <AccountLocked
+          intent={intent}
+          onClose={onClose}
+          onRequestEnable={onRequestEnable}
+          walletProviderId={walletProviderId}
+        />
+      )
     }
 
-    const possible = !signError
-
-    return possible ? (
+    return !signError ? (
       <SignMsgContent
-        intent={intent}
         account={account}
+        apps={apps}
+        intent={intent}
         onSign={onSign}
         signingEnabled={signingEnabled}
-        apps={apps}
       />
     ) : (
       <ImpossibleContent

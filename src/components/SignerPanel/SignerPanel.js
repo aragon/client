@@ -10,17 +10,17 @@ import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
 import {
-  STATUS_CONFIRMING,
-  STATUS_SIGNING,
-  STATUS_SIGNED,
-  STATUS_ERROR,
+  STATUS_CONFIRMING_TX,
+  STATUS_SIGNING_TX,
+  STATUS_SIGNED_TX,
+  STATUS_ERROR_TX,
   STATUS_CONFIRMING_MSG_SIGN,
   STATUS_SIGNING_MESSAGE,
   STATUS_MESSAGE_SIGNED,
   STATUS_ERROR_SIGNING_MSG,
-  isTxSignRequest,
-  confirmingSignature,
-  signatureSuccess,
+  isTxSignerStatus,
+  isConfirmingSignature,
+  isSignatureSuccess,
 } from './signer-statuses'
 
 import springs from '../../springs'
@@ -31,7 +31,7 @@ const INITIAL_STATE = {
   directPath: false,
   actionPaths: [],
   pretransaction: null,
-  status: STATUS_CONFIRMING,
+  status: STATUS_CONFIRMING_TX,
   signError: null,
 }
 
@@ -43,7 +43,6 @@ class SignerPanel extends React.Component {
     onClose: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     onTransactionSuccess: PropTypes.func.isRequired,
-    onMsgSignSuccess: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
     signatureBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
@@ -63,7 +62,7 @@ class SignerPanel extends React.Component {
       this.setState({
         ...INITIAL_STATE,
         panelOpened: true,
-        status: STATUS_CONFIRMING,
+        status: STATUS_CONFIRMING_TX,
 
         // When Aragon.js starts returning the new format (see
         // stateFromTransactionBag), we can simply search and replace this
@@ -84,7 +83,7 @@ class SignerPanel extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { status } = this.state
-    if (prevState.status !== status && signatureSuccess(status)) {
+    if (prevState.status !== status && isSignatureSuccess(status)) {
       clearTimeout(this._closeTimer)
     }
   }
@@ -158,7 +157,7 @@ class SignerPanel extends React.Component {
   handleSign = async (transaction, intent, pretransaction) => {
     const { transactionBag, onTransactionSuccess } = this.props
 
-    this.setState({ status: STATUS_SIGNING })
+    this.setState({ status: STATUS_SIGNING_TX })
 
     try {
       if (pretransaction) {
@@ -170,20 +169,20 @@ class SignerPanel extends React.Component {
       onTransactionSuccess && onTransactionSuccess(transaction)
 
       transactionBag.accept(transactionRes)
-      this.setState({ signError: null, status: STATUS_SIGNED })
+      this.setState({ signError: null, status: STATUS_SIGNED_TX })
       this.startClosing()
 
       // Display an error in the panel if a transaction fail
     } catch (err) {
       transactionBag.reject(err)
-      this.setState({ signError: err, status: STATUS_ERROR })
+      this.setState({ signError: err, status: STATUS_ERROR_TX })
 
       // TODO: the ongoing notification should be flagged faulty at this point ...
     }
   }
 
   handleMsgSign = async () => {
-    const { signatureBag, account, onMsgSignSuccess } = this.props
+    const { signatureBag, account } = this.props
 
     this.setState({ status: STATUS_SIGNING_MESSAGE })
     try {
@@ -191,7 +190,6 @@ class SignerPanel extends React.Component {
         signatureBag.message,
         account
       )
-      onMsgSignSuccess(signatureBag)
       signatureBag.resolve(signatureHash)
       this.setState({ signError: null, status: STATUS_MESSAGE_SIGNED })
       this.startClosing()
@@ -206,7 +204,9 @@ class SignerPanel extends React.Component {
 
   startClosing = () => {
     this._closeTimer = setTimeout(() => {
-      if (signatureSuccess(this.state.status)) this.handleSignerClose()
+      if (isSignatureSuccess(this.state.status)) {
+        this.handleSignerClose()
+      }
     }, 3000)
   }
 
@@ -242,7 +242,7 @@ class SignerPanel extends React.Component {
       status,
     } = this.state
 
-    const isTxSignReq = isTxSignRequest(status)
+    const isTxSignReq = isTxSignerStatus(status)
 
     return (
       <SidePanel
@@ -253,7 +253,7 @@ class SignerPanel extends React.Component {
       >
         <Main>
           <Transition
-            items={confirmingSignature(status)}
+            items={isConfirmingSignature(status)}
             from={{ enterProgress: 0 }}
             enter={{ enterProgress: 1 }}
             leave={{ enterProgress: 0 }}
@@ -283,7 +283,7 @@ class SignerPanel extends React.Component {
                             onSign={this.handleSign}
                             paths={actionPaths}
                             pretransaction={pretransaction}
-                            signingEnabled={status === STATUS_CONFIRMING}
+                            signingEnabled={status === STATUS_CONFIRMING_TX}
                             walletNetworkType={walletNetwork}
                             walletProviderId={walletProviderId}
                           />

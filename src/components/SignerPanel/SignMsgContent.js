@@ -7,19 +7,17 @@ import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../../apps/Permissions/AppInstanceLabel'
 import { AppType } from '../../prop-types'
 
-const SignMsgContent = ({ intent, account, onSign, signingEnabled, apps }) => {
+const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
   const locateAppInfo = (apps, requestingApp) => {
-    const [app] = apps.filter(
-      ({ proxyAddress }) => proxyAddress === requestingApp
-    )
+    const app = apps.find(({ proxyAddress }) => proxyAddress === requestingApp)
     return app
   }
   return (
     <React.Fragment>
-      <span style={{ marginRight: '4px' }}>
-        {`${intent.description} `}
+      <SmMarginRight>
+        {'You are about to sign this message with the connected account '}
         <LocalIdentityBadge entity={account} fontSize="xsmall" />
-      </span>
+      </SmMarginRight>
       <Seperator />
       <Text smallcaps>Signature requested by:</Text>
       <br />
@@ -31,9 +29,7 @@ const SignMsgContent = ({ intent, account, onSign, signingEnabled, apps }) => {
       <Seperator />
       <Text smallcaps>Message:</Text>
       <br />
-      <Info.Action icon={null} title={null}>
-        {intent.message}
-      </Info.Action>
+      <Info>{intent.message}</Info>
       <SignerButton onClick={onSign} disabled={!signingEnabled}>
         Create signature request
       </SignerButton>
@@ -52,6 +48,10 @@ SignMsgContent.propTypes = {
 const Seperator = styled(SidePanelSeparator)`
   margin-top: 12px;
   margin-bottom: 12px;
+`
+
+const SmMarginRight = styled.span`
+  margin-right: 4px;
 `
 
 export default SignMsgContent

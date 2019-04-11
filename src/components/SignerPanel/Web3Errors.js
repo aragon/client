@@ -49,46 +49,46 @@ const ButtonLink = styled.button.attrs({ type: 'button' })`
   border: 0;
 `
 
-export const needFrame = (intent, onClose) => (
-  <Web3ProviderError
-    intent={intent}
-    onClose={onClose}
-    neededText="You need to have Frame installed and enabled"
-    actionText={
-      <span>
-        Please install and enable{' '}
-        <SafeLink href="https://frame.sh/" target="_blank">
-          Frame
-        </SafeLink>
-        .
-      </span>
-    }
-  />
-)
+export const NoWeb3Provider = ({ intent, onClose, isElectron }) => {
+  const neededText = isElectron
+    ? 'You need to have Frame installed and enabled'
+    : 'You need to have an Ethereum provider installed and enabled'
 
-export const noWeb3Provider = (intent, onClose) => (
-  <Web3ProviderError
-    intent={intent}
-    onClose={onClose}
-    neededText="You need to have an Ethereum provider installed and enabled"
-    actionText={
-      <span>
-        Please install and enable{' '}
-        <SafeLink href="https://metamask.io/" target="_blank">
-          Metamask
-        </SafeLink>
-        .
-      </span>
-    }
-  />
-)
+  const actionText = (
+    <span>
+      Please install and enable{' '}
+      <SafeLink
+        href={isElectron ? 'https://frame.sh/' : 'https://metamask.io/'}
+        target="_blank"
+      >
+        {isElectron ? 'Frame' : 'Metamask'}
+      </SafeLink>
+      .
+    </span>
+  )
 
-export const accountLocked = (
+  return (
+    <Web3ProviderError
+      intent={intent}
+      onClose={onClose}
+      neededText={neededText}
+      actionText={actionText}
+    />
+  )
+}
+
+NoWeb3Provider.propTypes = {
+  intent: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+  isElectron: PropTypes.bool.isRequired,
+}
+
+export const AccountLocked = ({
   intent,
   onClose,
+  onRequestEnable,
   walletProviderId,
-  onRequestEnable
-) => (
+}) => (
   <Web3ProviderError
     intent={intent}
     onClose={onClose}
@@ -106,12 +106,19 @@ export const accountLocked = (
   />
 )
 
-export const wrongNetwork = (
+AccountLocked.propTypes = {
+  intent: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onRequestEnable: PropTypes.func.isRequired,
+  walletProviderId: PropTypes.string.isRequired,
+}
+
+export const WrongNetwork = ({
   intent,
-  onClose,
   networkType,
-  walletProviderId
-) => (
+  onClose,
+  walletProviderId,
+}) => (
   <Web3ProviderError
     intent={intent}
     onClose={onClose}
@@ -126,3 +133,10 @@ export const wrongNetwork = (
     `}
   />
 )
+
+WrongNetwork.propTypes = {
+  intent: PropTypes.object.isRequired,
+  networkType: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  walletProviderId: PropTypes.string.isRequired,
+}
