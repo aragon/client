@@ -83,18 +83,6 @@ if (assetBridge === 'local') {
     [appIds['Survey']]: 'http://localhost:3004/',
     [appIds['Voting']]: 'http://localhost:3001/',
   })
-  Object.assign(appOverrides, {
-    [appIds['Survey']]: {
-      icons: [
-        {
-          src: '/images/icon.png',
-          sizes: '192x192',
-        },
-      ],
-      script: '/script.js',
-      start_url: '/index.html',
-    },
-  })
 } else if (assetBridge === 'ipfs') {
   // We don't need to provide anything here as by default, the apps will be loaded from IPFS
 } else if (assetBridge) {
