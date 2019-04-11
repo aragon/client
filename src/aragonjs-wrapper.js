@@ -236,7 +236,7 @@ const subscribe = (
     apps,
     permissions,
     forwarders,
-    identifiers,
+    appIdentifiers,
     identityIntents,
     transactions,
   } = wrapper
@@ -257,7 +257,7 @@ const subscribe = (
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
-    identifiers: identifiers.subscribe(onAppIdentifiers),
+    appIdentifiers: appIdentifiers.subscribe(onAppIdentifiers),
     identityIntents: identityIntents.subscribe(onIdentityIntent),
     transactions: transactions.subscribe(onTransaction),
     workers: apps.subscribe(apps => {
