@@ -178,11 +178,19 @@ class Wrapper extends React.PureComponent {
       }
     })
   }
+
   isAppInstalled(instanceId) {
-    const { apps } = this.props
     return (
       staticApps.has(instanceId) &&
-      !!apps.find(app => addressesEqual(app.proxyAddress, instanceId))
+      Boolean(this.getAppByProxyAddress(instanceId))
+    )
+  }
+
+  getAppByProxyAddress = proxyAddress => {
+    return (
+      this.props.apps.find(app =>
+        addressesEqual(app.proxyAddress, proxyAddress)
+      ) || null
     )
   }
 
@@ -246,6 +254,7 @@ class Wrapper extends React.PureComponent {
                   open={activitiesOpen}
                   onClearAll={this.handleClearActivities}
                   onBlur={this.toggleActivity}
+                  getAppByProxyAddress={this.getAppByProxyAddress}
                 />
                 {this.renderApp(locator.instanceId, locator.params)}
               </AppScreen>

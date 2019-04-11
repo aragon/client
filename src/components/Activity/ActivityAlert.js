@@ -32,7 +32,9 @@ class ActivityAlert extends React.PureComponent {
           display: flex;
           width: 100%;
           height: 100%;
+          position: relative;
         `}
+        label="Open activities"
         onClick={this.handleClick}
       >
         <IconNotifications />
@@ -48,8 +50,8 @@ class ActivityAlert extends React.PureComponent {
               style={{
                 ...props,
                 position: 'absolute',
-                marginRight: '-14px',
-                marginTop: '-14px',
+                top: '14px',
+                right: '12px',
                 transform: props.size
                   .interpolate(
                     [0, 0.2, 0.4, 0.6, 0.8, 1],

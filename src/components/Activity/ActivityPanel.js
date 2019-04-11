@@ -1,20 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
+import { Button } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import ActivityHub from './ActivityHub'
 import springs from '../../springs'
 
-const ActivityPanel = ({ open, onBlur, onClearAll }) => {
+const ActivityPanel = ({ getAppByProxyAddress, open, onBlur, onClearAll }) => {
   const frameRef = React.createRef()
   const { activities, clearActivity } = React.useContext(ActivityContext)
 
-  React.useEffect(() => {
+  useEffect(() => {
     frameRef.current[open ? 'focus' : 'blur']()
-  }, [frameRef, open])
+  }, [frameRef.current, open])
 
-  const _onBlur = e => {
+  const handleBlur = e => {
     let _handler
     const currentTarget = e.currentTarget
     setTimeout(() => {
@@ -35,27 +36,33 @@ const ActivityPanel = ({ open, onBlur, onClearAll }) => {
       {({ x }) => (
         <ActivityFrame
           ref={frameRef}
-          onBlur={_onBlur}
+          onBlur={handleBlur}
           tabIndex="0"
           style={{
             transform: x.interpolate(x => `translate3d(${x}px,0,0)`),
           }}
         >
           <ActivityHeader>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <h1 style={{ marginRight: 10 }}>
-                <Text>Activity</Text>
-              </h1>
+            <div
+              css={`
+                display: flex;
+                align-items: center;
+              `}
+            >
+              <ActivityHeaderTitle>Activity</ActivityHeaderTitle>
             </div>
-            <a onClick={onClearAll}>
-              <Text>Clear All</Text>
-            </a>
+            <Button mode="text" onClick={onClearAll} css="margin-right: -15px">
+              Clear all
+            </Button>
           </ActivityHeader>
-          <ActivityHub
-            activities={activities}
-            keys={activity => activity.transactionHash}
-            clearActivity={clearActivity}
-          />
+          <ActivityContent>
+            <ActivityHub
+              activities={activities}
+              keys={activity => activity.transactionHash}
+              clearActivity={clearActivity}
+              getAppByProxyAddress={getAppByProxyAddress}
+            />
+          </ActivityContent>
         </ActivityFrame>
       )}
     </Spring>
@@ -66,14 +73,15 @@ ActivityPanel.propTypes = {
   open: PropTypes.bool,
   onBlur: PropTypes.func.isRequired,
   onClearAll: PropTypes.func.isRequired,
+  getAppByProxyAddress: PropTypes.func.isRequired,
 }
 
 const ActivityFrame = styled(animated.div)`
+  display: flex;
+  flex-direction: column;
   position: absolute;
-  width: 254px;
+  width: 300px;
   height: 100%;
-  overflow: auto;
-  background: #f1f6f8;
   background: #f1f6f8;
   box-shadow: 1px 0 15px 0 #e8e8e8;
   border-right: 1px solid #e8e8e8;
@@ -82,31 +90,29 @@ const ActivityFrame = styled(animated.div)`
 `
 
 const ActivityHeader = styled.div`
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
   height: 64px;
   border-bottom: 1px solid #e8e8e8;
-  & > div > h1 {
-    opacity: 0.7;
-    font-size: 12px;
-    color: #6d777b;
-    letter-spacing: 0;
-    line-height: 16px;
-    text-align: left;
-    text-transform: uppercase;
-  }
-  & > a {
-    opacity: 0.9;
-    font-size: 14px;
-    color: #b3b3b3;
-    text-align: right;
-  }
 `
 
-const Text = styled.span`
-  vertical-align: sub;
+const ActivityContent = styled.div`
+  width: 100%;
+  flex-grow: 1;
+  overflow: auto;
+`
+
+const ActivityHeaderTitle = styled.h1`
+  opacity: 0.7;
+  font-size: 12px;
+  color: #6d777b;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-align: left;
+  text-transform: uppercase;
 `
 
 export default ActivityPanel
