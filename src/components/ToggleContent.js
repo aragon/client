@@ -8,7 +8,8 @@ import arrow from '../assets/arrow.svg'
 
 export default class ToggleContent extends React.Component {
   static propTypes = {
-    label: PropTypes.string.isRequired,
+    labelOpen: PropTypes.string.isRequired,
+    labelClosed: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
   }
 
@@ -20,11 +21,11 @@ export default class ToggleContent extends React.Component {
   }
   render() {
     const { opened } = this.state
-    const { label, children } = this.props
+    const { labelOpen, labelClosed, children } = this.props
     return (
       <div>
         <Label onClick={this.handleClick}>
-          {label} <Arrow opened={opened} />
+          {opened ? labelOpen : labelClosed} <Arrow opened={opened} />
         </Label>
 
         <Transition

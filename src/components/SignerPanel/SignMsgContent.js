@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Info, Text, SidePanelSeparator } from '@aragon/ui'
+import { Info, Text, SidePanelSeparator, theme } from '@aragon/ui'
 
 import SignerButton from './SignerButton'
 import ToggleContent from '../ToggleContent'
@@ -24,8 +24,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         <LocalIdentityBadge entity={account} fontSize="xsmall" />
       </SmMarginRight>
       <Seperator />
-      <Text smallcaps>Signature requested by:</Text>
-      <br />
+      <Label smallcaps>Signature requested by:</Label>
       <AppInstanceLabel
         app={locateAppInfo(apps, intent.requestingApp)}
         proxyAddress={intent.requestingApp}
@@ -34,13 +33,13 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
       <Seperator />
       {humanReadableMessage ? (
         <React.Fragment>
-          <Text smallcaps>Message:</Text>
+          <Label smallcaps>Message:</Label>
           <br />
           <Info>{intent.message}</Info>
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <ToggleContent label="Show Message">
+          <ToggleContent labelOpen="Hide Message" labelClosed="Show Message">
             <React.Fragment>
               <br />
               <Info>{intent.message}</Info>
@@ -64,8 +63,16 @@ SignMsgContent.propTypes = {
 }
 
 const Seperator = styled(SidePanelSeparator)`
-  margin-top: 12px;
-  margin-bottom: 12px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+`
+
+const Label = styled(Text).attrs({
+  smallcaps: true,
+  color: theme.textSecondary,
+})`
+  display: block;
+  margin-bottom: 10px;
 `
 
 const SmMarginRight = styled.span`
