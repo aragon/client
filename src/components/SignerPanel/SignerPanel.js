@@ -83,7 +83,7 @@ class SignerPanel extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { status } = this.state
-    if (prevState.status !== status && isSignatureSuccess(status)) {
+    if (prevState.status !== status && !isSignatureSuccess(status)) {
       clearTimeout(this._closeTimer)
     }
   }
