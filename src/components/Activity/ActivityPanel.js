@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { Button } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
-import ActivityHub from './ActivityHub'
+import ActivityList from './ActivityList'
 import springs from '../../springs'
 
 const ActivityPanel = ({ getAppByProxyAddress, open, onBlur, onClearAll }) => {
@@ -56,7 +56,7 @@ const ActivityPanel = ({ getAppByProxyAddress, open, onBlur, onClearAll }) => {
             </Button>
           </ActivityHeader>
           <ActivityContent>
-            <ActivityHub
+            <ActivityList
               activities={activities}
               keys={activity => activity.transactionHash}
               clearActivity={clearActivity}

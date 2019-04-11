@@ -34,7 +34,7 @@ class ActivityAlert extends React.PureComponent {
           height: 100%;
           position: relative;
         `}
-        label="Open activities"
+        label="Activity"
         onClick={this.handleClick}
       >
         <IconNotifications />
