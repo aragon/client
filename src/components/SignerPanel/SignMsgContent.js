@@ -39,7 +39,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <ToggleContent labelOpen="Hide Message" labelClosed="Show Message">
+          <ToggleContent labelOpen="Hide message" labelClosed="Show message">
             <React.Fragment>
               <br />
               <Info>{intent.message}</Info>
@@ -48,7 +48,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         </React.Fragment>
       )}
       <SignerButton onClick={onSign} disabled={!signingEnabled}>
-        Create signature request
+        Sign message
       </SignerButton>
     </React.Fragment>
   )
