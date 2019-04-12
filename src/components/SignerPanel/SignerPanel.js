@@ -186,7 +186,7 @@ class SignerPanel extends React.Component {
 
     this.setState({ status: STATUS_SIGNING_MESSAGE })
     try {
-      const signatureHash = await this.signMessage(
+      const signature = await this.signMessage(
         signatureBag.message,
         account
       )
