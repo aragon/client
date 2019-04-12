@@ -35,6 +35,7 @@ const INITIAL_DAO_STATE = {
   daoAddress: { address: '', domain: '' },
   permissions: {},
   permissionsLoading: true,
+  repos: [],
 }
 
 class App extends React.Component {
@@ -235,10 +236,6 @@ class App extends React.Component {
           appsStatus: APPS_STATUS_READY,
         })
       },
-      onAppIdentifiers: appIdentifiers => {
-        log('app identifiers', appIdentifiers)
-        this.setState({ appIdentifiers })
-      },
       onPermissions: permissions => {
         log('permissions updated', permissions)
         this.setState({
@@ -248,6 +245,14 @@ class App extends React.Component {
       },
       onForwarders: forwarders => {
         log('forwarders', forwarders)
+      },
+      onAppIdentifiers: appIdentifiers => {
+        log('app identifiers', appIdentifiers)
+        this.setState({ appIdentifiers })
+      },
+      onInstalledRepos: repos => {
+        log('installed repos', repos)
+        this.setState({ repos })
       },
       onTransaction: transactionBag => {
         log('transaction bag', transactionBag)
