@@ -6,7 +6,12 @@ import throttle from 'lodash.throttle'
 import color from 'onecolor'
 import { ButtonBase, Viewport, springs, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
-import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
+import {
+  AppType,
+  AppsStatusType,
+  DaoAddressType,
+  EthereumAddressType,
+} from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelFooter from './MenuPanelFooter'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
@@ -63,6 +68,7 @@ const interpolateToggleElevation = (value, fn = v => v) =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
+    account: EthereumAddressType,
     activeInstanceId: PropTypes.string,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
@@ -73,6 +79,7 @@ class MenuPanel extends React.PureComponent {
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
     viewportHeight: PropTypes.number,
   }
 
@@ -128,11 +135,13 @@ class MenuPanel extends React.PureComponent {
 
   render() {
     const {
+      account,
       apps,
       connected,
       daoAddress,
       onNotificationClicked,
       onOpenPreferences,
+      onRequestEnable,
       notifications,
     } = this.props
     const { animate, scrollVisible, systemAppsOpened } = this.state
@@ -239,6 +248,8 @@ class MenuPanel extends React.PureComponent {
             />
           )}
           <MenuPanelFooter
+            account={account}
+            onRequestEnable={onRequestEnable}
             connected={connected}
             onOpenPreferences={onOpenPreferences}
           />

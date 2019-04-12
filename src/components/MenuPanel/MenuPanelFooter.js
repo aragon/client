@@ -2,19 +2,61 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, IconSettings, Text, theme } from '@aragon/ui'
+import { EthereumAddressType } from '../../prop-types'
+import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 
-const MenuPanelFooter = ({ connected, onOpenPreferences }) => (
-  <div css="margin: 15px 20px">
-    <ConnectionBullet connected={connected} />
-    <Text size="xsmall">
-      {connected ? 'Connected to the network' : 'Not connected'}
-    </Text>
-    <PreferencesButton onClick={onOpenPreferences} />
-  </div>
-)
+const MenuPanelFooter = ({
+  account,
+  connected,
+  onOpenPreferences,
+  onRequestEnable,
+}) => {
+  return (
+    <div css="margin: 15px 20px">
+      <ConnectionBullet connected={connected} />
+      <Text size="xsmall">
+        {connected ? 'Connected to the network' : 'Not connected'}
+      </Text>
+      <ConnectedAccount account={account} onRequestEnable={onRequestEnable} />
+      <PreferencesButton onClick={onOpenPreferences} />
+    </div>
+  )
+}
+
 MenuPanelFooter.propTypes = {
+  account: EthereumAddressType,
   connected: PropTypes.bool,
   onOpenPreferences: PropTypes.func.isRequired,
+  onRequestEnable: PropTypes.func.isRequired,
+}
+
+const ConnectedAccount = ({ account, onRequestEnable }) => (
+  <div css="margin-top: 12px">
+    {account ? (
+      <LocalIdentityBadge entity={account} />
+    ) : (
+      <Button
+        size="small"
+        mode="secondary"
+        label="Preferences"
+        onClick={onRequestEnable}
+      >
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+          `}
+        >
+          <span>Enable Account</span>
+        </div>
+      </Button>
+    )}
+  </div>
+)
+
+ConnectedAccount.propTypes = {
+  account: EthereumAddressType,
+  onRequestEnable: PropTypes.func.isRequired,
 }
 
 const PreferencesButton = ({ onClick }) => (
