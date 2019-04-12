@@ -168,7 +168,8 @@ class SignerPanel extends React.Component {
 
       const transactionHash = await this.signTransaction(transaction, intent)
 
-      transactionBag.accept(transactionHash, intent)
+      // TODO: rename accept to resolve once https://github.com/aragon/aragon.js/pull/279 is merged
+      transactionBag.accept(transactionHash)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
 
