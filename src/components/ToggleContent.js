@@ -62,6 +62,6 @@ const Content = styled(animated.div)`
 
 const Arrow = styled.img.attrs({ src: arrow, alt: '' })`
   transform-origin: 50% 50%;
-  transform: rotate(${p => (p.opened ? 180 : 0)}deg);
+  transform: rotate(${p => (p.opened ? 0 : 180)}deg);
   transition: transform 200ms ease-in-out;
 `
