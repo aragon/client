@@ -53,11 +53,11 @@ export const AppType = PropTypes.shape({
   abi: PropTypes.array.isRequired,
   appId: PropTypes.string.isRequired,
   baseUrl: PropTypes.string.isRequired,
-  codeAddress: EthereumAddressType,
+  codeAddress: EthereumAddressType.isRequired,
   functions: PropTypes.array.isRequired,
   hasWebApp: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
-  proxyAddress: EthereumAddressType,
+  proxyAddress: EthereumAddressType.isRequired,
   src: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 
@@ -81,25 +81,21 @@ export const AppType = PropTypes.shape({
   version: PropTypes.string,
 })
 
-export const AppCenterAppType = PropTypes.shape({
-  appName: PropTypes.string.isRequired,
-  name: PropTypes.string,
-  description: PropTypes.string,
-  longdesc: PropTypes.string,
-  icons: PropTypes.shape({
-    small: PropTypes.string,
-    large: PropTypes.string,
-  }).isRequired,
-  screenshots: PropTypes.arrayOf(PropTypes.string),
-  sourceUrl: PropTypes.string,
-  version: PropTypes.string.isRequired,
-  versions: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      date: PropTypes.instanceOf(Date).isRequired,
-      changelogUrl: PropTypes.string,
-    })
-  ).isRequired,
+export const AppInstanceType = PropTypes.shape({
+  codeAddress: EthereumAddressType,
+  identifier: PropTypes.string,
+  instanceId: PropTypes.oneOfType([EthereumAddressType, PropTypes.string])
+    .isRequired,
+  proxyAddress: EthereumAddressType,
+})
+
+export const AppInstanceGroupType = PropTypes.shape({
+  app: PropTypes.object.isRequired,
+  appId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  instances: PropTypes.arrayOf(AppInstanceType).isRequired,
+  hasWebApp: PropTypes.bool.isRequired,
+  repoName: PropTypes.string,
 })
 
 export const AppsStatusType = PropTypes.oneOf([

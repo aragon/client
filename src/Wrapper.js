@@ -21,7 +21,6 @@ import {
   EthereumAddressType,
 } from './prop-types'
 import { getAppPath } from './routing'
-import { staticApps } from './static-apps'
 import { APPS_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
@@ -31,6 +30,7 @@ class Wrapper extends React.PureComponent {
     account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
+    autoClosingPanel: PropTypes.bool.isRequired,
     banner: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.shape({
@@ -45,7 +45,6 @@ class Wrapper extends React.PureComponent {
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
-    autoClosingPanel: PropTypes.bool.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -64,7 +63,6 @@ class Wrapper extends React.PureComponent {
   }
 
   state = {
-    appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
     notificationOpen: false,
@@ -182,15 +180,44 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  isAppInstalled(instanceId) {
-    const { apps } = this.props
-    return (
-      staticApps.has(instanceId) &&
-      !!apps.find(app => addressesEqual(app.proxyAddress, instanceId))
-    )
-  }
+  getAppInstancesGroups = memoize(apps =>
+    apps.reduce((groups, app) => {
+      const group = groups.find(({ appId }) => appId === app.appId)
 
-  getMenuApps = memoize(apps => apps.filter(app => app.hasWebApp))
+      const {
+        // This is not technically fully true, but let's assume that only these
+        // aspects be different between multiple instances of the same app
+        codeAddress: instanceCodeAddress,
+        identifier: instanceIdentifier,
+        proxyAddress: instanceProxyAddress,
+        ...sharedAppInfo
+      } = app
+
+      const instance = {
+        codeAddress: instanceCodeAddress,
+        identifier: instanceIdentifier,
+        instanceId: instanceProxyAddress,
+        proxyAddress: instanceProxyAddress,
+      }
+
+      // Append the instance to the existing app group
+      if (group) {
+        group.instances.push(instance)
+        return groups
+      }
+
+      return groups.concat([
+        {
+          app: sharedAppInfo,
+          appId: app.appId,
+          name: app.name,
+          instances: [instance],
+          hasWebApp: app.hasWebApp,
+          repoName: app.appName,
+        },
+      ])
+    }, [])
+  )
 
   render() {
     const {
@@ -235,7 +262,7 @@ class Wrapper extends React.PureComponent {
           {progress => (
             <React.Fragment>
               <MenuPanel
-                apps={this.getMenuApps(apps)}
+                appInstanceGroups={this.getAppInstancesGroups(apps)}
                 appsStatus={appsStatus}
                 activeInstanceId={locator.instanceId}
                 connected={connected}
