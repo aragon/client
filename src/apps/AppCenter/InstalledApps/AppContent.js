@@ -2,9 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, SafeLink, Viewport } from '@aragon/ui'
-import { TextLabel } from '../../../components/TextStyles'
-import { MENU_WIDTH } from '../../../components/MenuPanel/MenuPanel'
+import defaultAppIcon from '../../../assets/default-app-icon.svg'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
+import { MENU_WIDTH } from '../../../components/MenuPanel/MenuPanel'
+import RemoteImage from '../../../components/RemoteImage'
+import { TextLabel } from '../../../components/TextStyles'
 import { RepoType } from '../../../prop-types'
 import { appIconUrl, GU } from '../../../utils'
 import Screenshots from '../Screenshots'
@@ -31,6 +33,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
     },
   } = repo
   const canUpgrade = currentVersion.version !== latestVersion
+  const iconUrl = appIconUrl({ baseUrl, icons })
 
   return (
     <Viewport>
@@ -64,17 +67,21 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                     margin: 0 ${3 * GU}px 0 0;
                   `}
                 >
-                  <img
-                    alt=""
-                    src={appIconUrl({ baseUrl, icons })}
-                    width="80"
-                    height="80"
-                    css={`
-                      display: block;
-                      width: 80px;
-                      height: 80px;
-                    `}
-                  />
+                  <RemoteImage src={iconUrl}>
+                    {({ exists }) => (
+                      <img
+                        alt=""
+                        src={exists ? iconUrl : defaultAppIcon}
+                        width="80"
+                        height="80"
+                        css={`
+                          display: block;
+                          width: 80px;
+                          height: 80px;
+                        `}
+                      />
+                    )}
+                  </RemoteImage>
                 </div>
                 <div>
                   <h1

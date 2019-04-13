@@ -1,4 +1,5 @@
 import resolvePathname from 'resolve-pathname'
+import defaultAppIcon from './assets/default-app-icon.svg'
 
 // Stealing this from recompose / etc for now
 export function compose(...funcs) {
@@ -20,7 +21,7 @@ export function appIconUrl(app) {
       app.icons.find(({ sizes }) => sizes === '22x22') || app.icons[0]
     return resolvePathname(removeStartingSlash(iconSize.src), app.baseUrl)
   }
-  return null
+  return defaultAppIcon
 }
 
 export function isElectron() {
