@@ -351,6 +351,7 @@ class App extends React.Component {
       locator,
       permissions,
       permissionsLoading,
+      repos,
       selectorNetworks,
       showDeprecatedBanner,
       transactionBag,
@@ -421,6 +422,7 @@ class App extends React.Component {
                   onRequestAppsReload={this.handleRequestAppsReload}
                   onRequestEnable={this.handleRequestEnable}
                   permissionsLoading={permissionsLoading}
+                  repos={repos}
                   transactionBag={transactionBag}
                   walletNetwork={walletNetwork}
                   walletWeb3={walletWeb3}

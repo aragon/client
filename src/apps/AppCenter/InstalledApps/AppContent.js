@@ -2,33 +2,37 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, SafeLink, Viewport } from '@aragon/ui'
-import { AppCenterAppType } from '../../../prop-types'
-import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { TextLabel } from '../../../components/TextStyles'
-import { GU } from '../../../utils'
 import { MENU_WIDTH } from '../../../components/MenuPanel/MenuPanel'
+import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
+import { RepoType } from '../../../prop-types'
+import { appIconUrl, GU } from '../../../utils'
 import Screenshots from '../Screenshots'
 
 // Exclude the width of MenuPanel
 const appBelow = (below, value) =>
   below(value + (below('medium') ? 0 : MENU_WIDTH))
 
-const AppContent = React.memo(
-  ({
-    app: {
-      appName,
-      author,
-      name,
-      icons,
-      description,
-      screenshots,
-      instances,
-      canUpgrade,
-      sourceUrl,
+const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
+  const {
+    name,
+    instances,
+    baseUrl,
+    currentVersion,
+    latestVersion: {
+      content: {
+        author,
+        icons,
+        description = '',
+        screenshots = [],
+        source_url: sourceUrl,
+      },
+      version: latestVersion,
     },
-    appVersions,
-    onRequestUpgrade,
-  }) => (
+  } = repo
+  const canUpgrade = currentVersion.version !== latestVersion
+
+  return (
     <Viewport>
       {({ below, breakpoints }) => {
         const compact = appBelow(below, breakpoints.medium)
@@ -62,7 +66,7 @@ const AppContent = React.memo(
                 >
                   <img
                     alt=""
-                    src={icons.large}
+                    src={appIconUrl({ baseUrl, icons })}
                     width="80"
                     height="80"
                     css={`
@@ -76,17 +80,21 @@ const AppContent = React.memo(
                   <h1
                     css={`
                       white-space: nowrap;
-                      margin-bottom: -${2 * GU}px;
+                      margin-bottom: ${3 * GU}px;
                       font-size: 22px;
                     `}
                   >
                     {name}
                   </h1>
 
-                  <Heading2>Created by</Heading2>
-                  <div>
-                    <LocalIdentityBadge entity={author} />
-                  </div>
+                  {author && (
+                    <React.Fragment>
+                      <Heading2>Created by</Heading2>
+                      <div>
+                        <LocalIdentityBadge entity={author} />
+                      </div>
+                    </React.Fragment>
+                  )}
                 </div>
               </div>
               <div
@@ -104,9 +112,7 @@ const AppContent = React.memo(
               </div>
             </div>
             {screenshots.length > 0 && (
-              <div>
-                <Screenshots screenshots={screenshots} />
-              </div>
+              <Screenshots screenshots={screenshots} />
             )}
             <div
               css={`
@@ -132,7 +138,7 @@ const AppContent = React.memo(
               </DetailsGroup>
               <DetailsGroup compact={compact}>
                 <Heading2>Installed instances</Heading2>
-                {instances.map(proxyAddress => (
+                {instances.map(({ proxyAddress }) => (
                   <div
                     key={proxyAddress}
                     css={`
@@ -144,13 +150,13 @@ const AppContent = React.memo(
                     <LocalIdentityBadge entity={proxyAddress} />
                   </div>
                 ))}
-                {appVersions && (
+                {repoVersions && (
                   <div
                     css={`
                       margin-top: ${2 * GU}px;
                     `}
                   >
-                    {appVersions}
+                    {repoVersions}
                   </div>
                 )}
               </DetailsGroup>
@@ -160,11 +166,11 @@ const AppContent = React.memo(
       }}
     </Viewport>
   )
-)
+})
 
 AppContent.propTypes = {
-  app: AppCenterAppType.isRequired,
-  appVersions: PropTypes.node,
+  repo: RepoType.isRequired,
+  repoVersions: PropTypes.node,
   onRequestUpgrade: PropTypes.func,
 }
 

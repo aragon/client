@@ -1,73 +1,61 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Viewport } from '@aragon/ui'
-import { AppCenterAppType } from '../../../prop-types'
+import { RepoType } from '../../../prop-types'
 import { ZoomableCards } from '../../../components/ZoomableCards'
 
 import AppsGrid from './AppsGrid'
 import AppContent from './AppContent'
-import AppVersions from './AppVersions'
 import AppCardContent from './AppCardContent'
+import RepoVersions from './RepoVersions'
 
 class InstalledApps extends React.Component {
   static propTypes = {
-    apps: PropTypes.arrayOf(AppCenterAppType).isRequired,
-    openedAppName: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.oneOf([null]),
-    ]),
+    repos: PropTypes.arrayOf(RepoType).isRequired,
+    openedRepoId: PropTypes.string,
     onOpenApp: PropTypes.func.isRequired,
     onRequestUpgrade: PropTypes.func.isRequired,
   }
-  getAppByAppName(appName) {
-    return this.props.apps.find(app => app.appName === appName)
+  static defaultProps = {
+    openedRepoId: null,
+  }
+  getOpenedRepoByAppId(appId) {
+    return this.props.repos.find(repo => repo.appId === appId)
   }
   render() {
-    const { apps, openedAppName, onOpenApp } = this.props
+    const { repos, openedRepoId, onOpenApp, onRequestUpgrade } = this.props
     return (
       <Viewport>
         {({ above, below }) => (
           <ZoomableCards
-            currentId={openedAppName}
+            currentId={openedRepoId}
             renderCards={({ card }) => (
-              <AppsGrid apps={apps}>
-                {apps.map(app =>
+              <AppsGrid>
+                {repos.map(repo =>
                   card(
-                    app.appName,
-                    <AppCardContent app={app} onOpen={onOpenApp} />
+                    repo.appId,
+                    <AppCardContent repo={repo} onOpen={onOpenApp} />
                   )
                 )}
               </AppsGrid>
             )}
             renderOpenedCard={({ currentId }) => {
-              const app = this.getAppByAppName(currentId)
+              const openedRepo = this.getOpenedRepoByAppId(currentId)
               return (
                 <AppContent
-                  app={app}
-                  appVersions={
-                    below('large') && (
-                      <AppVersions
-                        version={app.version}
-                        versions={app.versions}
-                      />
-                    )
+                  repo={openedRepo}
+                  repoVersions={
+                    below('large') && <RepoVersions repo={openedRepo} />
                   }
-                  onRequestUpgrade={this.props.onRequestUpgrade}
+                  onRequestUpgrade={onRequestUpgrade}
                 />
               )
             }}
             renderOpenedAside={
               above('large') &&
-              (({ currentId }) => {
-                const app = this.getAppByAppName(currentId)
-                return (
-                  <AppVersions
-                    version={app.version}
-                    versions={app.versions}
-                    animate
-                  />
-                )
-              })
+              (({ currentId }) => (
+                <RepoVersions repo={this.getOpenedRepoByAppId(currentId)} />
+              ))
             }
           />
         )}

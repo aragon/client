@@ -126,3 +126,43 @@ export const RenderFnType = PropTypes.oneOfType([
   PropTypes.func,
   PropTypes.oneOf([false]),
 ])
+
+export const RepoContentType = PropTypes.shape({
+  name: PropTypes.string,
+  changelog_url: PropTypes.string,
+  description: PropTypes.string,
+  details_url: PropTypes.string,
+  icons: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string.isRequired,
+      sizes: PropTypes.string.isRequired,
+    })
+  ),
+  screenshots: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string.isRequired,
+    })
+  ),
+})
+
+export const RepoType = PropTypes.shape({
+  appId: PropTypes.string.isRequired,
+  currentVersion: PropTypes.shape({
+    content: RepoContentType.isRequired,
+    version: PropTypes.string.isRequired,
+  }),
+  latestVersion: PropTypes.shape({
+    content: RepoContentType.isRequired,
+    version: PropTypes.string.isRequired,
+  }),
+  repoAddress: EthereumAddressType.isRequired,
+  versions: PropTypes.arrayOf(
+    PropTypes.shape({
+      contentURI: PropTypes.string.isRequired,
+      contractAddress: PropTypes.string.isRequired,
+      timestamp: PropTypes.number,
+      version: PropTypes.string.isRequired,
+      versionId: PropTypes.string.isRequired,
+    })
+  ),
+})

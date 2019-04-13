@@ -5,9 +5,10 @@ import { Trail, animated } from 'react-spring'
 import { Badge, theme, springs, Info } from '@aragon/ui'
 import { format } from 'date-fns'
 import { TextLabel } from '../../../components/TextStyles'
+import { RepoType } from '../../../prop-types'
 import { GU } from '../../../utils'
 
-const AppVersions = ({ version, versions, animate }) => (
+const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => (
   <div
     css={`
       display: flex;
@@ -40,7 +41,7 @@ const AppVersions = ({ version, versions, animate }) => (
       <tbody>
         <Trail
           items={versions}
-          keys={v => v.name}
+          keys={v => v.version}
           from={{ progress: 0 }}
           to={{ progress: 1 }}
           config={springs.smooth}
@@ -49,7 +50,7 @@ const AppVersions = ({ version, versions, animate }) => (
           native
         >
           {/* eslint-disable react/prop-types */
-          ({ name, date }) => ({ progress }) => (
+          ({ timestamp, version }) => ({ progress }) => (
             <BodyTr
               key={name}
               style={{
@@ -60,8 +61,8 @@ const AppVersions = ({ version, versions, animate }) => (
               }}
             >
               <Td>
-                {name}{' '}
-                {name === version && (
+                {version}{' '}
+                {version === currentVersion.version && (
                   <Badge.Identity
                     style={{ marginLeft: `${GU}px`, fontVariant: 'small-caps' }}
                   >
@@ -69,7 +70,7 @@ const AppVersions = ({ version, versions, animate }) => (
                   </Badge.Identity>
                 )}
               </Td>
-              <Td>{format(date, 'dd/MM/yy')}</Td>
+              <Td>{timestamp ? format(timestamp, 'dd/MM/yy') : ''}</Td>
             </BodyTr>
           )
           /* eslint-enable react/prop-types */
@@ -91,14 +92,8 @@ const AppVersions = ({ version, versions, animate }) => (
   </div>
 )
 
-AppVersions.propTypes = {
-  version: PropTypes.string.isRequired,
-  versions: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      date: PropTypes.instanceOf(Date).isRequired,
-    })
-  ).isRequired,
+RepoVersions.propTypes = {
+  repo: RepoType.isRequired,
   animate: PropTypes.bool,
 }
 
@@ -116,4 +111,4 @@ const Td = styled.td`
   }
 `
 
-export default AppVersions
+export default RepoVersions

@@ -2,89 +2,92 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import color from 'onecolor'
 import { Badge, Button, font, theme } from '@aragon/ui'
-import { AppCenterAppType } from '../../../prop-types'
+import { RepoType } from '../../../prop-types'
+import { appIconUrl } from '../../../utils'
 
-const AppCardContent = ({
-  app: { appName, name, icons, description, canUpgrade },
-  onOpen,
-}) => (
-  <section
-    css={`
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding-top: 24px;
-      justify-content: space-between;
-    `}
-  >
-    <div
+const AppCardContent = ({ repo, onOpen }) => {
+  const { name, repoName, baseUrl, currentVersion, latestVersion } = repo
+  const { description, icons } = latestVersion.content
+  const canUpgrade = currentVersion.version !== latestVersion.version
+  return (
+    <section
       css={`
-        flex-grow: 2;
-        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding-top: 24px;
+        justify-content: space-between;
       `}
     >
-      <img
-        alt=""
-        src={icons.large}
-        width="56"
-        height="56"
+      <div
         css={`
-          display: block;
-          margin: 0 auto 20px;
-          width: 56px;
-          height: 56px;
-        `}
-      />
-      <h1
-        css={`
-          text-align: center;
-          margin-bottom: 8px;
-          ${font({ size: 'large', weight: 'bold' })};
+          flex-grow: 2;
+          margin-bottom: 20px;
         `}
       >
-        {name}
-      </h1>
-      {canUpgrade && (
-        <div
+        <img
+          alt=""
+          src={appIconUrl({ baseUrl, icons })}
+          width="56"
+          height="56"
           css={`
-            display: flex;
-            justify-content: center;
-            margin-bottom: 12px;
+            display: block;
+            margin: 0 auto 20px;
+            width: 56px;
+            height: 56px;
+          `}
+        />
+        <h1
+          css={`
+            text-align: center;
+            margin-bottom: 8px;
+            ${font({ size: 'large', weight: 'bold' })};
           `}
         >
-          <Badge
-            background={color(theme.positive)
-              .alpha(0.15)
-              .cssa()}
-            foreground={theme.positive}
+          {name}
+        </h1>
+        {canUpgrade && (
+          <div
+            css={`
+              display: flex;
+              justify-content: center;
+              margin-bottom: 12px;
+            `}
           >
-            New version available
-          </Badge>
-        </div>
-      )}
-      <p
-        css={`
-          margin-bottom: 8px;
-          text-align: center;
-        `}
-      >
-        {description}
-      </p>
-    </div>
-    <div>
-      <Button
-        mode={canUpgrade ? 'strong' : 'outline'}
-        onClick={() => onOpen(appName)}
-        wide
-      >
-        {canUpgrade ? 'Upgrade' : 'View details'}
-      </Button>
-    </div>
-  </section>
-)
+            <Badge
+              background={color(theme.positive)
+                .alpha(0.15)
+                .cssa()}
+              foreground={theme.positive}
+            >
+              New version available
+            </Badge>
+          </div>
+        )}
+        <p
+          css={`
+            margin-bottom: 8px;
+            text-align: center;
+          `}
+        >
+          {description}
+        </p>
+      </div>
+      <div>
+        <Button
+          mode={canUpgrade ? 'strong' : 'outline'}
+          onClick={() => onOpen(repoName)}
+          wide
+        >
+          {canUpgrade ? 'Upgrade' : 'View details'}
+        </Button>
+      </div>
+    </section>
+  )
+}
 
 AppCardContent.propTypes = {
-  app: AppCenterAppType.isRequired,
+  repo: RepoType.isRequired,
   onOpen: PropTypes.func.isRequired,
 }
 

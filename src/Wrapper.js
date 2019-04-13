@@ -19,6 +19,7 @@ import {
   AragonType,
   DaoAddressType,
   EthereumAddressType,
+  RepoType,
 } from './prop-types'
 import { getAppPath } from './routing'
 import { APPS_STATUS_LOADING } from './symbols'
@@ -45,6 +46,7 @@ class Wrapper extends React.PureComponent {
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
+    repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -310,12 +312,14 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       locator,
       permissionsLoading,
+      repos,
       walletNetwork,
       walletWeb3,
       wrapper,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
+    const reposLoading = appsLoading || (apps.length && !repos.length)
 
     if (instanceId === 'home') {
       return (
@@ -346,9 +350,10 @@ class Wrapper extends React.PureComponent {
     if (instanceId === 'apps') {
       return (
         <AppCenter
-          apps={apps}
-          appsLoading={appsLoading}
+          appInstanceGroups={this.getAppInstancesGroups(apps)}
           params={params}
+          repos={repos}
+          reposLoading={reposLoading}
           onMessage={this.handleAppMessage}
           onParamsRequest={this.handleParamsRequest}
         />
