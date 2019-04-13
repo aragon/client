@@ -38,10 +38,10 @@ class ActivityProvider extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { daoDomain } = this.props
+    const { daoDomain, account } = this.props
 
-    if (daoDomain !== prevProps.daoDomain) {
-      const storageKey = `activity:${network.type}:${daoDomain}`
+    if (daoDomain !== prevProps.daoDomain || account !== prevProps.account) {
+      const storageKey = `activity:${network.type}:${daoDomain}:${account}`
       storedList = new StoredList(storageKey)
 
       // eslint-disable-next-line react/no-did-update-set-state
@@ -64,7 +64,6 @@ class ActivityProvider extends React.Component {
     const { walletWeb3 } = this.props
 
     this.state.activities
-      .filter(this.currentAccountPredicate)
       .filter(({ status }) => status === activityStatusTypes.PENDING)
       .forEach(({ transactionHash }) => {
         walletWeb3.eth
@@ -147,12 +146,10 @@ class ActivityProvider extends React.Component {
   }
 
   clearActivities = () => {
-    // Clear all non pending activities of the current account
+    // Clear all non pending activities
     // (we don't clear pending because we're awaiting state change)
     this.filterActivities(
-      ({ status, from }) =>
-        status === activityStatusTypes.PENDING ||
-        !this.currentAccountPredicate({ from })
+      ({ status, from }) => status === activityStatusTypes.PENDING
     )
   }
 
@@ -163,15 +160,11 @@ class ActivityProvider extends React.Component {
   }
 
   markActivitiesRead = () => {
-    // Mark only the current user's activities as read
-    const readActivities = this.state.activities.map(activity =>
-      this.currentAccountPredicate({ from: activity.from })
-        ? {
-            ...activity,
-            read: true,
-          }
-        : activity
-    )
+    // Mark the current user's activities as read
+    const readActivities = this.state.activities.map(activity => ({
+      ...activity,
+      read: true,
+    }))
 
     this.setState({
       activities: storedList.update(readActivities),
@@ -215,24 +208,20 @@ class ActivityProvider extends React.Component {
   }
 
   getUnreadActivityCount = () =>
-    this.currentAccountActivities().reduce(
+    this.state.activities.reduce(
       (count, { read }) => (read ? count : count + 1),
       0
     )
 
-  currentAccountActivities = () =>
-    this.state.activities.filter(this.currentAccountPredicate)
-
   render() {
     const { children } = this.props
     const unreadActivityCount = this.getUnreadActivityCount()
-    const activities = this.currentAccountActivities()
 
     return (
       <ActivityContext.Provider
         value={{
-          activities,
           unreadActivityCount,
+          activities: this.state.activities,
           addTransactionActivity: this.addTransactionActivity,
           clearActivities: this.clearActivities,
           setActivityConfirmed: this.setActivityConfirmed,
