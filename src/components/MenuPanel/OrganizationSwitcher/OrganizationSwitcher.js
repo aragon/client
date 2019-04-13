@@ -64,7 +64,9 @@ class OrganizationSwitcher extends React.PureComponent {
 
 const Main = styled.div`
   display: flex;
-  height: 100%;
+  width: 100%;
+  height: 64px;
+  align-items: center;
   position: relative;
 `
 
@@ -74,8 +76,8 @@ const OpenButton = styled.button.attrs({ type: 'button' })`
   background: none;
   cursor: pointer;
   padding: 0;
-  margin-left: -20px;
-  width: 180px;
+  width: 100%;
+  height: 100%;
   &:active {
     background: rgba(220, 234, 239, 0.3);
   }
@@ -90,6 +92,7 @@ const OpenButton = styled.button.attrs({ type: 'button' })`
 const Loader = styled.div`
   display: flex;
   align-items: center;
+  margin-left: 20px;
 `
 
 const LoaderLabel = styled.span`

@@ -1,31 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Transition, Spring, animated } from 'react-spring'
+import { Spring, animated } from 'react-spring'
 import throttle from 'lodash.throttle'
-import {
-  ButtonBase,
-  Button,
-  IconSettings,
-  Viewport,
-  breakpoint,
-  springs,
-  theme,
-  unselectable,
-} from '@aragon/ui'
+import color from 'onecolor'
+import { ButtonBase, Viewport, springs, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { AppType, AppsStatusType, DaoAddressType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelFooter from './MenuPanelFooter'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import NotificationAlert from '../Notifications/NotificationAlert'
+import ActivityAlert from '../Activity/ActivityAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
 import IconArrow from '../../icons/IconArrow'
 
 export const SHADOW_WIDTH = 15
 export const MENU_WIDTH = 220
+export const MENU_ITEM_HEIGHT = 40
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -63,6 +56,11 @@ const prepareAppGroups = apps =>
     ])
   }, [])
 
+// Interpolate the elevation of a toggle from which a drawer slides down.
+// In / out example: [0, 0.25, 0.5, 0.75, 1] => [0, 0.5, 1, 0.5, 0]
+const interpolateToggleElevation = (value, fn = v => v) =>
+  value.interpolate(v => fn(1 - Math.abs(v * 2 - 1)))
+
 class MenuPanel extends React.PureComponent {
   static propTypes = {
     activeInstanceId: PropTypes.string,
@@ -70,11 +68,12 @@ class MenuPanel extends React.PureComponent {
     appsStatus: AppsStatusType.isRequired,
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
-    notifications: PropTypes.number,
-    onNotificationClicked: PropTypes.func.isRequired,
+    activitiesOpen: PropTypes.bool.isRequired,
+    onActivityClicked: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    unreadActivityCount: PropTypes.number,
     viewportHeight: PropTypes.number,
   }
 
@@ -133,9 +132,10 @@ class MenuPanel extends React.PureComponent {
       apps,
       connected,
       daoAddress,
-      onNotificationClicked,
+      onActivityClicked,
       onOpenPreferences,
-      notifications,
+      unreadActivityCount,
+      activitiesOpen,
     } = this.props
     const { animate, scrollVisible, systemAppsOpened } = this.state
     const appGroups = this.getAppGroups(apps)
@@ -148,16 +148,21 @@ class MenuPanel extends React.PureComponent {
       <Main>
         <In>
           <Header>
-            <OrganizationSwitcher
-              currentDao={{
-                name: daoAddress.domain,
-                address: daoAddress.address,
-              }}
-            />
-            <NotificationAlert
-              notifications={notifications}
-              onClick={onNotificationClicked}
-            />
+            <HeaderSlot css="width: 170px">
+              <OrganizationSwitcher
+                currentDao={{
+                  name: daoAddress.domain,
+                  address: daoAddress.address,
+                }}
+              />
+            </HeaderSlot>
+            <HeaderSlot css="width: 50px">
+              <ActivityAlert
+                unreadActivityCount={unreadActivityCount}
+                onClick={onActivityClicked}
+                activitiesOpen={activitiesOpen}
+              />
+            </HeaderSlot>
           </Header>
           <Content ref={this._contentRef}>
             <div className="in" ref={this._innerContentRef}>
@@ -171,69 +176,79 @@ class MenuPanel extends React.PureComponent {
                     : this.renderAppGroup(app, false)
                 )}
               </div>
-              <SystemAppsToggle onClick={this.handleToggleSystemApps}>
-                <h1
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                  }}
-                >
-                  <span>System</span>
-                  <span
-                    css={`
-                      transform: rotate(${systemAppsOpened ? 180 : 0}deg);
-                      position: relative;
-                      top: ${systemAppsOpened ? -5 : 0}px;
-                      font-size: 7px;
-                      opacity: 0.7;
-                    `}
-                  >
-                    <IconArrow />
-                  </span>
-                </h1>
-              </SystemAppsToggle>
-              <Transition
-                items={systemAppsOpened}
-                config={springs.swift}
-                from={{ height: 0 }}
-                enter={{ height: 'auto' }}
-                leave={{ height: 0 }}
+              <Spring
+                config={springs.smooth}
+                from={{ openProgress: 0 }}
+                to={{ openProgress: Number(systemAppsOpened) }}
                 immediate={!animate}
                 onFrame={this.updateScrollVisible}
                 native
               >
-                {show =>
-                  show &&
-                  (props => (
-                    <animated.div style={{ ...props, overflow: 'hidden' }}>
-                      {systemApps.map(app => this.renderAppGroup(app, true))}
-                    </animated.div>
-                  ))
-                }
-              </Transition>
+                {({ openProgress }) => (
+                  <div>
+                    <SystemAppsToggle onClick={this.handleToggleSystemApps}>
+                      <SystemAppsToggleShadow
+                        style={{
+                          transform: interpolateToggleElevation(
+                            openProgress,
+                            v => `scale3d(${v}, 1, 1)`
+                          ),
+                          opacity: interpolateToggleElevation(openProgress),
+                        }}
+                      />
+                      <h1
+                        css={`
+                          display: flex;
+                          justify-content: flex-start;
+                          align-items: flex-end;
+                        `}
+                      >
+                        <span>System</span>
+                        <SystemAppsToggleArrow
+                          style={{
+                            marginLeft: '5px',
+                            transform: openProgress.interpolate(
+                              v => `rotate(${(1 - v) * 180}deg)`
+                            ),
+                            transformOrigin: '50% calc(50% - 0.5px)',
+                          }}
+                        />
+                      </h1>
+                    </SystemAppsToggle>
+                    <div css="overflow: hidden">
+                      <animated.div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'flex-end',
+                          width: '100%',
+                          opacity: openProgress,
+                          height: openProgress.interpolate(
+                            v => v * systemApps.length * MENU_ITEM_HEIGHT + 'px'
+                          ),
+                        }}
+                      >
+                        {systemApps.map(app => this.renderAppGroup(app, true))}
+                      </animated.div>
+                    </div>
+                  </div>
+                )}
+              </Spring>
             </div>
           </Content>
           {scrollVisible && (
             <div
               css={`
                 width: 100%;
-                height: 1px;
-                background: ${theme.contentBorder};
+                height: 0;
+                border-bottom: 1px solid ${theme.contentBorder};
               `}
             />
           )}
-          <MenuPanelFooter connected={connected} />
-          <PreferencesWrap>
-            <StyledPreferencesButton
-              size="small"
-              mode="outline"
-              label="Preferences"
-              onClick={onOpenPreferences}
-            >
-              <IconSettings /> Preferences
-            </StyledPreferencesButton>
-          </PreferencesWrap>
+          <MenuPanelFooter
+            connected={connected}
+            onOpenPreferences={onOpenPreferences}
+          />
         </In>
       </Main>
     )
@@ -395,40 +410,58 @@ AnimatedMenuPanel.propTypes = {
 }
 
 const SystemAppsToggle = styled(ButtonBase)`
+  position: relative;
+  width: 100%;
   padding: 0;
-  margin: 0;
-  margin-top: 20px;
+  margin: 20px 0 0;
   background: none;
   border: none;
   cursor: pointer;
   width: 100%;
   text-align: left;
   outline: none;
+  &:active {
+    background: ${color(theme.secondaryBackground)
+      .alpha(0.3)
+      .cssa()};
+  }
 `
 
-const PreferencesWrap = styled.div`
-  text-align: left;
+const SystemAppsToggleArrow = props => (
+  <animated.div {...props}>
+    <div
+      css={`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+      `}
+    >
+      <IconArrow />
+    </div>
+  </animated.div>
+)
 
-  ${breakpoint(
-    'medium',
-    `
-      text-align: center;
-    `
-  )}
-`
-
-const StyledPreferencesButton = styled(Button)`
-  display: inline-flex;
-  margin: 0 16px 16px 16px;
-  align-items: center;
-
-  ${breakpoint(
-    'medium',
-    `
-      margin: 0 0 16px 0;
-    `
-  )}
-`
+const SystemAppsToggleShadow = props => (
+  <div
+    css={`
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 0;
+    `}
+  >
+    <animated.div {...props}>
+      <div
+        css={`
+          height: 1px;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        `}
+      />
+    </animated.div>
+  </div>
+)
 
 const Overlay = styled(animated.div)`
   position: absolute;
@@ -461,7 +494,7 @@ const In = styled.div`
   height: 100%;
   flex-shrink: 1;
   background: #fff;
-  border-right: 1px solid #e8e8e8;
+  border-right: 1px solid ${theme.contentBorder};
   box-shadow: 1px 0 ${SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
 `
 
@@ -469,25 +502,14 @@ const Header = styled.div`
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
   height: 64px;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid ${theme.contentBorder};
+`
 
-  .actions {
-    display: flex;
-  }
-  .actions a {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    color: ${theme.textSecondary};
-    cursor: pointer;
-    outline: 0;
-  }
-  .actions a:hover {
-    color: ${theme.textPrimary};
-  }
+const HeaderSlot = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
 `
 
 const Content = styled.nav`

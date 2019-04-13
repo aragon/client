@@ -9,6 +9,8 @@ import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
+import { ActivityContext } from '../../contexts/ActivityContext'
+
 import {
   STATUS_CONFIRMING_TX,
   STATUS_SIGNING_TX,
@@ -35,14 +37,18 @@ const INITIAL_STATE = {
   signError: null,
 }
 
+const RECIEPT_ERROR_STATUS = '0x0'
+
 class SignerPanel extends React.Component {
   static propTypes = {
+    addTransactionActivity: PropTypes.func.isRequired,
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
     locator: PropTypes.object.isRequired,
-    onClose: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
-    onTransactionSuccess: PropTypes.func.isRequired,
+    setActivityConfirmed: PropTypes.func.isRequired,
+    setActivityFailed: PropTypes.func.isRequired,
+    setActivityNonce: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
     signatureBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
@@ -128,16 +134,58 @@ class SignerPanel extends React.Component {
     return { annotatedDescription, description, name, to, transaction }
   }
 
-  async signTransaction(transaction, intent) {
-    const { walletWeb3 } = this.props
+  signTransaction(transaction, intent) {
+    const {
+      walletWeb3,
+      addTransactionActivity,
+      setActivityConfirmed,
+      setActivityFailed,
+      setActivityNonce,
+    } = this.props
+
     return new Promise((resolve, reject) => {
-      walletWeb3.eth.sendTransaction(transaction, (err, res) => {
-        if (err) {
+      walletWeb3.eth
+        .sendTransaction(transaction)
+        .on('transactionHash', transactionHash => {
+          resolve(transactionHash)
+          // get transaction count/nonce and update the activity item
+          //  Maybe useful in case we multiple transaction activities earlier pending
+          // and later with higher nonces confirmed to assume all activities pending
+          // with lower nonce are confirmed (most likely with a different hash if
+          // resent with higher gas through wallet)
+
+          walletWeb3.eth
+            .getTransaction(transactionHash)
+            .then(t => {
+              const { nonce } = t
+              setActivityNonce({ transactionHash, nonce })
+              return t
+            })
+            .catch(console.error)
+
+          // Create new activiy
+          addTransactionActivity({
+            transactionHash,
+            from: intent.transaction.from,
+            targetApp: intent.name,
+            targetAppProxyAddress: intent.to,
+            forwarderProxyAddress: intent.transaction.to,
+            description: intent.description,
+          })
+        })
+        .on('receipt', receipt => {
+          if (receipt.status === RECIEPT_ERROR_STATUS) {
+            // Faliure based on EIP 658
+            setActivityFailed(receipt.transactionHash)
+          } else {
+            setActivityConfirmed(receipt.transactionHash)
+          }
+        })
+        .on('error', err => {
+          // Called when signing failed
+          err && err.transactionHash && setActivityFailed(err.transactionHash)
           reject(err)
-        } else {
-          resolve(res)
-        }
-      })
+        })
     })
   }
 
@@ -155,7 +203,7 @@ class SignerPanel extends React.Component {
   }
 
   handleSign = async (transaction, intent, pretransaction) => {
-    const { transactionBag, onTransactionSuccess } = this.props
+    const { transactionBag } = this.props
 
     this.setState({ status: STATUS_SIGNING_TX })
 
@@ -164,11 +212,10 @@ class SignerPanel extends React.Component {
         await this.signTransaction(pretransaction, intent)
       }
 
-      const transactionRes = await this.signTransaction(transaction, intent)
-      // Create new notification
-      onTransactionSuccess && onTransactionSuccess(transaction)
+      const transactionHash = await this.signTransaction(transaction, intent)
 
-      transactionBag.accept(transactionRes)
+      // TODO: rename accept to resolve once https://github.com/aragon/aragon.js/pull/279 is merged
+      transactionBag.accept(transactionHash)
       this.setState({ signError: null, status: STATUS_SIGNED_TX })
       this.startClosing()
 
@@ -186,11 +233,8 @@ class SignerPanel extends React.Component {
 
     this.setState({ status: STATUS_SIGNING_MESSAGE })
     try {
-      const signature = await this.signMessage(
-        signatureBag.message,
-        account
-      )
-      signatureBag.resolve(signatureHash)
+      const signature = await this.signMessage(signatureBag.message, account)
+      signatureBag.resolve(signature)
       this.setState({ signError: null, status: STATUS_MESSAGE_SIGNED })
       this.startClosing()
     } catch (err) {
@@ -212,7 +256,6 @@ class SignerPanel extends React.Component {
 
   handleSignerClose = () => {
     this.setState({ panelOpened: false })
-    this.props.onClose && this.props.onClose()
   }
 
   handleSignerTransitionEnd = opened => {
@@ -356,4 +399,20 @@ const Screen = styled.div`
   width: 100%;
 `
 
-export default SignerPanel
+export default function(props) {
+  const {
+    addTransactionActivity,
+    setActivityConfirmed,
+    setActivityFailed,
+    setActivityNonce,
+  } = React.useContext(ActivityContext)
+  return (
+    <SignerPanel
+      {...props}
+      addTransactionActivity={addTransactionActivity}
+      setActivityConfirmed={setActivityConfirmed}
+      setActivityFailed={setActivityFailed}
+      setActivityNonce={setActivityNonce}
+    />
+  )
+}
