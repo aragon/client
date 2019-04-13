@@ -19,9 +19,13 @@ export function appIconUrl(app) {
   if (app && app.baseUrl && Array.isArray(app.icons)) {
     const iconSize =
       app.icons.find(({ sizes }) => sizes === '22x22') || app.icons[0]
-    return resolvePathname(removeStartingSlash(iconSize.src), app.baseUrl)
+    return imgSrcFromBase(app.baseUrl, iconSize.src)
   }
   return defaultAppIcon
+}
+
+export function imgSrcFromBase(baseUrl, imgSrc) {
+  return resolvePathname(removeStartingSlash(imgSrc), baseUrl)
 }
 
 export function isElectron() {

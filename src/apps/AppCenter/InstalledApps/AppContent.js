@@ -119,7 +119,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
               </div>
             </div>
             {screenshots.length > 0 && (
-              <Screenshots screenshots={screenshots} />
+              <Screenshots repo={repo} screenshots={screenshots} />
             )}
             <div
               css={`
