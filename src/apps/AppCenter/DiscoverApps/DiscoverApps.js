@@ -10,17 +10,35 @@ import {
   unselectable,
   breakpoint,
 } from '@aragon/ui'
+import { shuffleArray } from '../../../utils'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import payrollIcon from './icons/payroll.svg'
 import espressoIcon from './icons/espresso.svg'
+import agentIcon from './icons/agent.svg'
+import surveyIcon from './icons/survey.svg'
 
 const statuses = {
   'pre-alpha': colors.Gold.Brandy,
   alpha: colors.Blue.Danube,
+  experimental: colors.Blue.Danube,
   ready: colors.Green['Spring Green'],
 }
 
-const appsInDevelopment = [
+const appsInDevelopment = shuffleArray([
+  {
+    icon: agentIcon,
+    name: 'Agent',
+    status: 'experimental',
+    description: `Hold assets and perform actions from DAOs`,
+    link: 'https://github.com/aragon/aragon-apps/tree/master/apps/agent',
+  },
+  {
+    icon: surveyIcon,
+    name: 'Survey',
+    status: 'alpha',
+    description: `Create signaling votes.`,
+    link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
+  },
   {
     icon: null,
     name: 'That Planning Suite',
@@ -32,7 +50,7 @@ const appsInDevelopment = [
   {
     icon: payrollIcon,
     name: 'Payroll',
-    status: 'alpha',
+    status: 'experimental',
     description: `Pay and get paid, by the block.
                   Supports tokens and price feeds.`,
     link:
@@ -54,7 +72,7 @@ const appsInDevelopment = [
                   and vote on important matters.`,
     link: 'https://github.com/aragonlabs/liquid-democracy',
   },
-]
+])
 
 const DiscoverApps = React.memo(() => (
   <div>
@@ -93,7 +111,7 @@ const DiscoverApps = React.memo(() => (
           </Description>
           <Action href={app.link} target="_blank">
             <Text weight="bold" color={theme.textSecondary}>
-              Read more
+              Learn more
             </Text>
           </Action>
         </Main>

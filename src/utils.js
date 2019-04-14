@@ -50,5 +50,15 @@ export function isString(str) {
   return typeof str === 'string' || str instanceof String
 }
 
+// Thanks to https://stackoverflow.com/a/12646864
+export function shuffleArray(original) {
+  const array = [...original]
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
+
 // GU = Grid Unit
 export const GU = 8
