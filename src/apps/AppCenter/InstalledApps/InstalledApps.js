@@ -7,6 +7,7 @@ import { ZoomableCards } from '../../../components/ZoomableCards'
 import AppsGrid from './AppsGrid'
 import AppContent from './AppContent'
 import AppVersions from './AppVersions'
+import AppCardContent from './AppCardContent'
 
 class InstalledApps extends React.Component {
   static propTypes = {
@@ -29,7 +30,14 @@ class InstalledApps extends React.Component {
           <ZoomableCards
             currentId={openedAppName}
             renderCards={({ card }) => (
-              <AppsGrid apps={apps} card={card} onOpenApp={onOpenApp} />
+              <AppsGrid apps={apps}>
+                {apps.map(app =>
+                  card(
+                    app.appName,
+                    <AppCardContent app={app} onOpen={onOpenApp} />
+                  )
+                )}
+              </AppsGrid>
             )}
             renderOpenedCard={({ currentId }) => {
               const app = this.getAppByAppName(currentId)

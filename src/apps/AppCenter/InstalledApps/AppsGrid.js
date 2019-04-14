@@ -2,9 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { breakpoint, font } from '@aragon/ui'
 import { AppCenterAppType } from '../../../prop-types'
-import AppCardContent from './AppCardContent'
 
-const AppsGrid = React.memo(({ apps, card, onOpenApp }) => (
+const AppsGrid = React.memo(({ children }) => (
   <div>
     <h1
       css={`
@@ -31,17 +30,13 @@ const AppsGrid = React.memo(({ apps, card, onOpenApp }) => (
         )};
       `}
     >
-      {apps.map(app =>
-        card(app.appName, <AppCardContent app={app} onOpen={onOpenApp} />)
-      )}
+      {children}
     </div>
   </div>
 ))
 
 AppsGrid.propTypes = {
-  apps: PropTypes.arrayOf(AppCenterAppType).isRequired,
-  card: PropTypes.func.isRequired,
-  onOpenApp: PropTypes.func.isRequired,
+  children: PropTypes.node,
 }
 
 export default AppsGrid
