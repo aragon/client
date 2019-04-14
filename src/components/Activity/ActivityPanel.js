@@ -1,92 +1,105 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Spring, animated } from 'react-spring'
-import { Button } from '@aragon/ui'
+import { Button, ButtonIcon, theme, unselectable } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import ActivityList from './ActivityList'
-import springs from '../../springs'
+import IconArrowLeft from './IconArrowLeft'
 
-const ActivityPanel = ({ getAppByProxyAddress, open, onBlur, onClearAll }) => {
+export const ACTIVITY_PANEL_SHADOW_WIDTH = 15
+export const ACTIVITY_PANEL_WIDTH = 300
+
+const ActivityPanel = ({
+  apps,
+  displayBackButton,
+  onClearAll,
+  onClose,
+  open,
+  shouldClose,
+}) => {
   const frameRef = React.createRef()
   const { activities, clearActivity } = React.useContext(ActivityContext)
 
   useEffect(() => {
-    frameRef.current[open ? 'focus' : 'blur']()
+    if (open) {
+      frameRef.current.focus()
+    }
   }, [frameRef.current, open])
 
-  const handleBlur = e => {
-    let _handler
-    const currentTarget = e.currentTarget
-    setTimeout(() => {
-      if (!currentTarget.contains(document.activeElement)) {
-        if (_handler) clearTimeout(_handler)
-        _handler = setTimeout(() => open && onBlur(), 200)
+  const handleBlur = useCallback(
+    event => {
+      const target = event.relatedTarget
+      if (
+        !frameRef.current.contains(target) &&
+        shouldClose({ focusedElement: target })
+      ) {
+        onClose()
       }
-    }, 0)
-  }
+    },
+    [frameRef, onClose, shouldClose]
+  )
 
   return (
-    <Spring
-      native
-      from={{ x: -300 }}
-      to={{ x: open ? 0 : -300 }}
-      config={springs.lazy}
-    >
-      {({ x }) => (
-        <ActivityFrame
-          ref={frameRef}
-          onBlur={handleBlur}
-          tabIndex="0"
-          style={{
-            transform: x.interpolate(x => `translate3d(${x}px,0,0)`),
-          }}
+    <ActivityFrame ref={frameRef} onBlur={handleBlur} tabIndex="0">
+      <ActivityHeader>
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+          `}
         >
-          <ActivityHeader>
-            <div
+          {displayBackButton && (
+            <ButtonIcon
+              onClick={onClose}
+              label="Close"
               css={`
-                display: flex;
-                align-items: center;
+                margin-left: -5px;
+                margin-right: 5px;
+                color: ${theme.accent};
               `}
             >
-              <ActivityHeaderTitle>Activity</ActivityHeaderTitle>
-            </div>
-            <Button mode="text" onClick={onClearAll} css="margin-right: -15px">
-              Clear all
-            </Button>
-          </ActivityHeader>
-          <ActivityContent>
-            <ActivityList
-              activities={activities}
-              keys={activity => activity.transactionHash}
-              clearActivity={clearActivity}
-              getAppByProxyAddress={getAppByProxyAddress}
-            />
-          </ActivityContent>
-        </ActivityFrame>
-      )}
-    </Spring>
+              <IconArrowLeft />
+            </ButtonIcon>
+          )}
+          <ActivityHeaderTitle>Activity</ActivityHeaderTitle>
+        </div>
+        <Button mode="text" onClick={onClearAll} css="margin-right: -15px">
+          Clear all
+        </Button>
+      </ActivityHeader>
+      <ActivityContent>
+        <ActivityList
+          activities={activities}
+          apps={apps}
+          keys={activity => activity.transactionHash}
+          clearActivity={clearActivity}
+        />
+      </ActivityContent>
+    </ActivityFrame>
   )
 }
 
 ActivityPanel.propTypes = {
-  open: PropTypes.bool,
-  onBlur: PropTypes.func.isRequired,
+  apps: PropTypes.arrayOf(PropTypes.object),
+  displayBackButton: PropTypes.bool,
   onClearAll: PropTypes.func.isRequired,
-  getAppByProxyAddress: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool,
+  shouldClose: PropTypes.func.isRequired,
 }
 
-const ActivityFrame = styled(animated.div)`
+const ActivityFrame = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
-  width: 300px;
+  width: 100%;
   height: 100%;
-  background: #f1f6f8;
-  box-shadow: 1px 0 15px 0 #e8e8e8;
-  border-right: 1px solid #e8e8e8;
+  background: ${theme.mainBackground};
+  box-shadow: 1px 0 ${ACTIVITY_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid ${theme.contentBorder};
   z-index: 1000;
   outline: 0;
+  ${unselectable};
 `
 
 const ActivityHeader = styled.div`
@@ -96,7 +109,7 @@ const ActivityHeader = styled.div`
   align-items: center;
   padding: 0 20px;
   height: 64px;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid ${theme.contentBorder};
 `
 
 const ActivityContent = styled.div`
@@ -106,12 +119,9 @@ const ActivityContent = styled.div`
 `
 
 const ActivityHeaderTitle = styled.h1`
-  opacity: 0.7;
+  margin-top: 5px;
+  color: ${theme.textSecondary};
   font-size: 12px;
-  color: #6d777b;
-  letter-spacing: 0;
-  line-height: 16px;
-  text-align: left;
   text-transform: uppercase;
 `
 

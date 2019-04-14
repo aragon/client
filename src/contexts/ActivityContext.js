@@ -19,7 +19,8 @@ const activityTypes = {
 
 const TEN_MINUTES = 1000 * 60 * 10
 
-let storedList
+const getStoredList = (daoDomain, account) =>
+  new StoredList(`activity:${network.type}:${daoDomain}:${account}`)
 
 // Provides easy access to the user activities list
 class ActivityProvider extends React.Component {
@@ -29,32 +30,41 @@ class ActivityProvider extends React.Component {
     daoDomain: PropTypes.string, // domain of current DAO
     walletWeb3: PropTypes.object,
   }
-  state = {
-    // activities of all accounts
-    activities: [],
-  }
   static defaultProps = {
     account: '',
   }
 
+  state = {
+    // activities of all accounts
+    activities: [],
+  }
+
+  _storedList = null
+
+  componentDidMount() {
+    this.updateStoredList()
+  }
+
   componentDidUpdate(prevProps) {
     const { daoDomain, account } = this.props
-
     if (daoDomain !== prevProps.daoDomain || account !== prevProps.account) {
-      const storageKey = `activity:${network.type}:${daoDomain}:${account}`
-      storedList = new StoredList(storageKey)
-
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState(
-        { activities: storedList.getItems() },
-        this.refreshPendingActivities
-      )
+      this.updateStoredList()
     }
+  }
+
+  updateStoredList() {
+    const { daoDomain, account } = this.props
+    this._storedList = getStoredList(daoDomain, account)
+    this.setState(
+      { activities: this._storedList.getItems() },
+      this.refreshPendingActivities
+    )
   }
 
   componentWillMount() {
     this._checkInterval = setInterval(this.checkForTimedOut, 1000 * 30)
   }
+
   componentWillUnmount() {
     clearInterval(this._checkInterval)
   }
@@ -91,7 +101,7 @@ class ActivityProvider extends React.Component {
 
   add = activity => {
     this.setState({
-      activities: storedList.add(activity),
+      activities: this._storedList.add(activity),
     })
   }
 
@@ -117,7 +127,7 @@ class ActivityProvider extends React.Component {
       description,
     }
 
-    const updatedActivities = storedList.add(newActivity)
+    const updatedActivities = this._storedList.add(newActivity)
 
     this.setState({ activities: updatedActivities })
   }
@@ -127,13 +137,13 @@ class ActivityProvider extends React.Component {
 
   remove = index => {
     this.setState({
-      activities: storedList.remove(index),
+      activities: this._storedList.remove(index),
     })
   }
 
   updateActivities = activities => {
     this.setState({
-      activities: storedList.update(activities),
+      activities: this._storedList.update(activities),
     })
   }
 
@@ -141,7 +151,7 @@ class ActivityProvider extends React.Component {
     const filtered = this.state.activities.filter(predicate)
 
     this.setState({
-      activities: storedList.update(filtered),
+      activities: this._storedList.update(filtered),
     })
   }
 
@@ -167,7 +177,7 @@ class ActivityProvider extends React.Component {
     }))
 
     this.setState({
-      activities: storedList.update(readActivities),
+      activities: this._storedList.update(readActivities),
     })
   }
 
@@ -184,7 +194,7 @@ class ActivityProvider extends React.Component {
     )
 
     this.setState({
-      activities: storedList.update(activities),
+      activities: this._storedList.update(activities),
     })
   }
 
@@ -203,7 +213,7 @@ class ActivityProvider extends React.Component {
     )
 
     this.setState({
-      activities: storedList.update(activities),
+      activities: this._storedList.update(activities),
     })
   }
 

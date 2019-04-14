@@ -15,9 +15,8 @@ import AppIcon from '../AppIcon/AppIcon'
 import IconSuccess from '../../icons/IconSuccess'
 import IconPending from '../../icons/IconPending'
 
-const ActivityItem = ({ activity, getAppByProxyAddress, onClose }) => {
-  const app = getAppByProxyAddress(activity.targetAppProxyAddress)
-
+const ActivityItem = ({ activity, onClose }) => {
+  const { app } = activity
   return (
     <section
       css={`
@@ -41,9 +40,6 @@ const ActivityItem = ({ activity, getAppByProxyAddress, onClose }) => {
           grid-area: title;
           display: flex;
           align-items: center;
-          font-size: 16px;
-          color: #000000;
-          line-height: 22px;
         `}
       >
         <div css="flex-shrink: 0">
@@ -51,8 +47,11 @@ const ActivityItem = ({ activity, getAppByProxyAddress, onClose }) => {
         </div>
         <div
           css={`
-            margin-left: 5px;
+            margin-left: 8px;
             white-space: nowrap;
+            color: ${theme.textPrimary};
+            font-weight: 600;
+            font-size: 16px;
           `}
         >
           {app ? app.name : 'Unknown'}
@@ -98,7 +97,6 @@ const ActivityItem = ({ activity, getAppByProxyAddress, onClose }) => {
 
 ActivityItem.propTypes = {
   activity: PropTypes.object.isRequired,
-  getAppByProxyAddress: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 }
 

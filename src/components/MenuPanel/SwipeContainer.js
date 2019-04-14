@@ -2,32 +2,26 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Gesture } from 'react-with-gesture'
-import { MENU_WIDTH } from './MenuPanel'
+import { MENU_PANEL_WIDTH } from './MenuPanel'
 
 const THRESHOLD_VERTICAL_TOLERANCE = 10
 const THRESHOLD_DIRECTION = 0.2
 const THRESHOLD_PROGRESS = 0.5
-const GRAB_THRESHOLD = MENU_WIDTH / 3
+const GRAB_THRESHOLD = MENU_PANEL_WIDTH / 3
 
 class SwipeContainer extends React.Component {
   static propTypes = {
-    children: PropTypes.func.isRequired,
     autoClosing: PropTypes.bool.isRequired,
-    menuPanelOpened: PropTypes.bool.isRequired,
-    onMenuPanelClose: PropTypes.func.isRequired,
-    onMenuPanelOpen: PropTypes.func.isRequired,
+    children: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onOpen: PropTypes.func.isRequired,
+    opened: PropTypes.bool.isRequired,
   }
 
   _previousProgress = 0
 
   render() {
-    const {
-      children,
-      autoClosing,
-      menuPanelOpened,
-      onMenuPanelClose,
-      onMenuPanelOpen,
-    } = this.props
+    const { autoClosing, children, onClose, onOpen, opened } = this.props
 
     return (
       <Gesture passive={{ passive: false }} mouse={false} touch={autoClosing}>
@@ -40,7 +34,7 @@ class SwipeContainer extends React.Component {
           xy: [x],
         }) => {
           if (!autoClosing) {
-            return <Container>{children(Number(menuPanelOpened))}</Container>
+            return <Container>{children(Number(opened))}</Container>
           }
 
           if (
@@ -56,15 +50,15 @@ class SwipeContainer extends React.Component {
                 ? () => {
                     // reset for menu buttons to work
                     this._previousProgress = 0
-                    onMenuPanelOpen()
+                    onOpen()
                   }
-                : onMenuPanelClose,
+                : onClose,
               0
             )
             return <Container>{children(this._previousProgress)}</Container>
           }
 
-          let progress = this._previousProgress || Number(menuPanelOpened)
+          let progress = this._previousProgress || Number(opened)
 
           if (
             (progress > 0 && progress < 1) ||
@@ -78,12 +72,12 @@ class SwipeContainer extends React.Component {
           ) {
             event.preventDefault()
 
-            if (xDelta > 0 && !menuPanelOpened && xInitial < GRAB_THRESHOLD) {
+            if (xDelta > 0 && !opened && xInitial < GRAB_THRESHOLD) {
               // opening
-              progress = this._previousProgress = x / MENU_WIDTH
-            } else if (menuPanelOpened) {
+              progress = this._previousProgress = x / MENU_PANEL_WIDTH
+            } else if (opened) {
               // closing
-              progress = this._previousProgress = 1 + xDelta / MENU_WIDTH
+              progress = this._previousProgress = 1 + xDelta / MENU_PANEL_WIDTH
             }
 
             progress = this._previousProgress = Math.max(

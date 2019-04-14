@@ -7,7 +7,6 @@ import { ButtonIcon, IconNotifications, springs, theme } from '@aragon/ui'
 class ActivityAlert extends React.PureComponent {
   static propTypes = {
     unreadActivityCount: PropTypes.number.isRequired,
-    activitiesOpen: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
   }
 
@@ -15,14 +14,8 @@ class ActivityAlert extends React.PureComponent {
     return Math.min(99, this.props.unreadActivityCount)
   }
 
-  handleClick = () => {
-    // Only use for opening. Blur event closes the activity panel.
-    if (!this.props.activitiesOpen) {
-      this.props.onClick()
-    }
-  }
-
   render() {
+    const { onClick } = this.props
     const unreadCount = this.getUnreadCount()
     const showCount = unreadCount > 0
 
@@ -35,7 +28,7 @@ class ActivityAlert extends React.PureComponent {
           position: relative;
         `}
         label="Activity"
-        onClick={this.handleClick}
+        onClick={onClick}
       >
         <IconNotifications />
         <Spring
@@ -78,10 +71,8 @@ const Badge = styled(animated.div)`
   padding-top: 2px;
   overflow: hidden;
   border-radius: 9px;
-
   color: ${theme.badgeNotificationForeground};
   background: ${theme.accent};
-
   font-size: 10px;
   font-weight: 600;
   white-space: nowrap;

@@ -2,20 +2,25 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { springs, theme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
+import { addressesEqual } from '../../web3-utils'
 import ActivityItem from './ActivityItem'
 import IconEmptyState from './IconEmptyState'
 
-const ActivityList = ({
-  activities,
-  keys,
-  clearActivity,
-  getAppByProxyAddress,
-}) => {
+const getAppByProxyAddress = (proxyAddress, apps) =>
+  apps.find(app => addressesEqual(app.proxyAddress, proxyAddress)) || null
+
+const ActivityList = ({ apps, activities, keys, clearActivity }) => {
   const [activitiesReady, setActivitiesReady] = React.useState({})
 
   const activityItems = useMemo(
-    () => activities.sort((a, b) => b.createdAt - a.createdAt),
-    [activities, getAppByProxyAddress]
+    () =>
+      activities
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .map(activity => ({
+          ...activity,
+          app: getAppByProxyAddress(activity.targetAppProxyAddress, apps),
+        })),
+    [activities, apps]
   )
 
   return (
@@ -39,10 +44,9 @@ const ActivityList = ({
         >
           {(activity, state) => props => {
             return (
-              <animated.div style={props}>
+              <animated.div style={{ ...props, overflow: 'hidden' }}>
                 <ActivityItem
                   activity={activity}
-                  getAppByProxyAddress={getAppByProxyAddress}
                   onClose={() => {
                     clearActivity(activity.transactionHash)
                   }}
@@ -78,10 +82,10 @@ const ActivityList = ({
 }
 
 ActivityList.propTypes = {
+  apps: PropTypes.arrayOf(PropTypes.object),
   activities: PropTypes.arrayOf(PropTypes.object).isRequired,
   keys: PropTypes.func.isRequired,
   clearActivity: PropTypes.func.isRequired,
-  getAppByProxyAddress: PropTypes.func.isRequired,
 }
 
 export default ActivityList
