@@ -7,15 +7,6 @@ class Screenshots extends React.Component {
   static propTypes = {
     screenshots: PropTypes.arrayOf(PropTypes.string),
   }
-  state = {
-    currentScreenshot: -1,
-  }
-  open(index) {
-    this.setState({ currentScreenshot: index })
-  }
-  close() {
-    this.setState({ currentScreenshot: -1 })
-  }
   render() {
     const { screenshots } = this.props
     return (
@@ -33,7 +24,6 @@ class Screenshots extends React.Component {
         >
           {screenshots.map((url, index) => (
             <img
-              onClick={() => this.open(index)}
               key={url}
               src={url}
               alt=""
