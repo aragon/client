@@ -28,15 +28,23 @@ import {
   DAO_CREATION_STATUS_ERROR,
 } from './symbols'
 
+const INITIAL_DAO_STATE = {
+  apps: [],
+  appIdentifiers: {},
+  appsStatus: APPS_STATUS_LOADING,
+  daoAddress: { address: '', domain: '' },
+  permissions: {},
+  permissionsLoading: true,
+  repos: [],
+}
+
 class App extends React.Component {
   state = {
+    ...INITIAL_DAO_STATE,
     account: '',
-    apps: [],
-    appsStatus: APPS_STATUS_LOADING,
     balance: getUnknownBalance(),
     buildData: null, // data returned by aragon.js when a DAO is created
     connected: false,
-    daoAddress: { address: '', domain: '' },
     // daoCreationStatus is one of:
     //  - DAO_CREATION_STATUS_NONE
     //  - DAO_CREATION_STATUS_SUCCESS
@@ -45,8 +53,6 @@ class App extends React.Component {
     fatalError: null,
     identityIntent: null,
     locator: {},
-    permissions: {},
-    permissionsLoading: true,
     prevLocator: null,
     selectorNetworks: [
       ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
@@ -193,18 +199,19 @@ class App extends React.Component {
 
   updateDao(dao = null) {
     // Cancel the subscriptions / unload the wrapper
-    if (dao === null && this.state.wrapper) {
+    if (this.state.wrapper) {
       this.state.wrapper.cancel()
       this.setState({ wrapper: null })
-      return
     }
 
     // Reset the DAO state
     this.setState({
-      appsStatus: APPS_STATUS_LOADING,
-      apps: [],
-      daoAddress: { address: '', domain: '' },
+      ...INITIAL_DAO_STATE,
     })
+
+    if (dao === null) {
+      return
+    }
 
     log('Init DAO', dao)
     initWrapper(dao, contractAddresses.ensRegistry, {
@@ -238,6 +245,14 @@ class App extends React.Component {
       },
       onForwarders: forwarders => {
         log('forwarders', forwarders)
+      },
+      onAppIdentifiers: appIdentifiers => {
+        log('app identifiers', appIdentifiers)
+        this.setState({ appIdentifiers })
+      },
+      onInstalledRepos: repos => {
+        log('installed repos', repos)
+        this.setState({ repos })
       },
       onTransaction: transactionBag => {
         log('transaction bag', transactionBag)
@@ -325,6 +340,7 @@ class App extends React.Component {
     const {
       account,
       apps,
+      appIdentifiers,
       appsStatus,
       balance,
       connected,
@@ -335,6 +351,7 @@ class App extends React.Component {
       locator,
       permissions,
       permissionsLoading,
+      repos,
       selectorNetworks,
       showDeprecatedBanner,
       transactionBag,
@@ -345,18 +362,30 @@ class App extends React.Component {
     } = this.state
 
     const { mode, dao } = locator
-    if (!mode) return null
+    const { address: intentAddress = null, label: intentLabel = '' } =
+      identityIntent || {}
+
+    if (!mode) {
+      return null
+    }
     if (mode === 'invalid') {
       throw new Error(
         `URL contained invalid organization name or address (${dao}).\nPlease modify it to be a valid ENS name or address.`
       )
     }
-
     if (fatalError !== null) {
       throw fatalError
     }
-    const { address: intentAddress = null, label: intentLabel = '' } =
-      identityIntent || {}
+
+    const appsWithIdentifiers = apps.map(app => {
+      const identifier = appIdentifiers[app.proxyAddress]
+      return identifier
+        ? {
+            identifier,
+            ...app,
+          }
+        : app
+    })
 
     return (
       <IdentityProvider onResolve={this.handleIdentityResolve}>
@@ -374,12 +403,12 @@ class App extends React.Component {
             <FavoriteDaosProvider>
               <PermissionsProvider
                 wrapper={wrapper}
-                apps={apps}
+                apps={appsWithIdentifiers}
                 permissions={permissions}
               >
                 <Wrapper
                   account={account}
-                  apps={apps}
+                  apps={appsWithIdentifiers}
                   appsStatus={appsStatus}
                   banner={
                     showDeprecatedBanner && <DeprecatedBanner dao={dao} />
@@ -393,6 +422,7 @@ class App extends React.Component {
                   onRequestAppsReload={this.handleRequestAppsReload}
                   onRequestEnable={this.handleRequestEnable}
                   permissionsLoading={permissionsLoading}
+                  repos={repos}
                   transactionBag={transactionBag}
                   walletNetwork={walletNetwork}
                   walletWeb3={walletWeb3}

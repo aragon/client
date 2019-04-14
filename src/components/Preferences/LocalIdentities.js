@@ -23,8 +23,8 @@ import Import from './Import'
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
 const LocalIdentities = ({
+  dao,
   localIdentities,
-  locator,
   onClearAll,
   onImport,
   onModify,
@@ -90,7 +90,7 @@ const LocalIdentities = ({
           <StyledExport
             label="Export labels"
             mode="secondary"
-            download={`aragon-labels_${locator.dao}_${today}.json`}
+            download={`aragon-labels_${dao}_${today}.json`}
             href={downloadHref}
           >
             Export
@@ -106,8 +106,8 @@ const LocalIdentities = ({
 }
 
 LocalIdentities.propTypes = {
+  dao: PropTypes.string.isRequired,
   localIdentities: PropTypes.object,
-  locator: PropTypes.object.isRequired,
   onClearAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,

@@ -5,6 +5,7 @@ import { Spring, animated } from 'react-spring'
 import { theme } from '@aragon/ui'
 import color from 'onecolor'
 import MenuPanelInstance from './MenuPanelInstance'
+import { AppInstanceType } from '../../prop-types'
 import springs from '../../springs'
 
 class MenuPanelAppGroup extends React.PureComponent {
@@ -13,15 +14,12 @@ class MenuPanelAppGroup extends React.PureComponent {
     activeInstanceId: PropTypes.string,
     expand: PropTypes.bool.isRequired,
     icon: PropTypes.object.isRequired,
-    system: PropTypes.bool,
-    instances: PropTypes.array.isRequired,
+    instances: PropTypes.arrayOf(AppInstanceType).isRequired,
     name: PropTypes.string.isRequired,
     onActivate: PropTypes.func.isRequired,
+    system: PropTypes.bool,
   }
 
-  static defaultProps = {
-    instances: [],
-  }
   handleAppClick = () => {
     const instance = this.props.instances[0]
     if (instance) {
@@ -82,7 +80,7 @@ class MenuPanelAppGroup extends React.PureComponent {
                   paddingBottom: openProgress.interpolate(v => `${5 * v}px`),
                 }}
               >
-                {instances.map(({ name, instanceId, identifier }) => {
+                {instances.map(({ instanceId, identifier }) => {
                   const label = identifier || instanceId
                   return label ? (
                     <li key={instanceId}>
