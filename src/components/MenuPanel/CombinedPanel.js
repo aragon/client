@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { Viewport, springs } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
+import { AppType } from '../../prop-types'
 import { lerp } from '../../math-utils'
 import SwipeContainer from './SwipeContainer'
 import MenuPanel, {
@@ -18,7 +19,7 @@ import ActivityPanel, {
 // This component combines MenuPanel and ActivityPanel together.
 class CombinedPanel extends React.Component {
   static propTypes = {
-    apps: PropTypes.arrayOf(PropTypes.object),
+    apps: PropTypes.arrayOf(AppType).isRequired,
     autoClosing: PropTypes.bool,
     children: PropTypes.node,
     opened: PropTypes.bool,
