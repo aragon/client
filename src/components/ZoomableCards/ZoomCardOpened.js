@@ -18,13 +18,14 @@ class ZoomCardOpened extends React.Component {
   }
 
   state = {
+    cardRect: null,
     openedCardRect: null,
   }
 
   _openedCard = React.createRef()
 
   componentDidMount() {
-    this.setState({ openedCardRect: this.getOpenedCardRect() })
+    this.updateCardRect(null, this.props.cardRect)
   }
 
   componentDidUpdate(prevProps) {
