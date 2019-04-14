@@ -234,7 +234,7 @@ class Wrapper extends React.PureComponent {
         <CombinedPanel
           activeInstanceId={locator.instanceId}
           appInstanceGroups={this.getAppInstancesGroups(apps)}
-          apps={apps.filter(app => app.hasWebApp)}
+          apps={apps}
           appsStatus={appsStatus}
           autoClosing={autoClosingPanel}
           connected={connected}
