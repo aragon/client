@@ -110,8 +110,9 @@ class ZoomCardOpened extends React.Component {
                       currentId !== null &&
                       (({ openProgress }) => (
                         <Card
-                          fullscreen={fullscreen || undefined}
                           style={{
+                            borderWidth: fullscreen ? '1px 0' : '1px',
+                            borderRadius: fullscreen ? '0' : '3px',
                             opacity: openProgress.interpolate(v =>
                               Math.min(1, v * 2)
                             ),
@@ -177,8 +178,6 @@ const ScrollView = styled.div`
 
 const Card = styled(animated.div)`
   border: 1px solid rgba(209, 209, 209, 0.5);
-  border-width: ${p => (p.fullscreen ? '1px 0' : '1px')};
-  border-radius: ${p => (p.fullscreen ? '0' : '3px')};
   background: #ffffff;
 `
 

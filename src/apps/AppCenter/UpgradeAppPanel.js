@@ -22,6 +22,8 @@ class UpgradeAppPanel extends React.PureComponent {
     app: null,
   }
   static getDerivedStateFromProps(props, state) {
+    // `app` is saved in the state, so that the selected app
+    // can still be visible while the panel is being closed.
     if (props.app !== state.app && props.app) {
       return { app: props.app }
     }
