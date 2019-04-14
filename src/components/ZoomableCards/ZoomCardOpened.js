@@ -48,12 +48,9 @@ class ZoomCardOpened extends React.Component {
     const { cardRect, openedCardRect } = this.state
 
     const to = openedCardRect
-    if (!to) {
-      return 'none'
-    }
-
     const from = cardRect
-    if (!from) {
+
+    if (!to || !from) {
       return 'none'
     }
 
