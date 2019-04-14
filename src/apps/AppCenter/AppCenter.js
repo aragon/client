@@ -8,7 +8,7 @@ import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
 import { getAppsFromInstances } from '../../apps-utils'
 
-const TABS = [
+const SCREENS = [
   { id: 'installed', label: 'Installed apps' },
   { id: 'discover', label: 'Discover apps' },
 ]
@@ -41,7 +41,7 @@ class AppCenter extends React.Component {
     }
 
     const parts = params.split('_')
-    const activeTab = TABS.findIndex(({ id }) => id === parts[0])
+    const activeTab = SCREENS.findIndex(({ id }) => id === parts[0])
     const openedApp = this.getAppFromAppName(parts[1])
 
     return {
@@ -59,7 +59,7 @@ class AppCenter extends React.Component {
     }
 
     this.props.onParamsRequest(
-      `${TABS[location.activeTab].id}${
+      `${SCREENS[location.activeTab].id}${
         location.openedAppName ? `_${location.openedAppName}` : ''
       }`
     )
@@ -102,7 +102,7 @@ class AppCenter extends React.Component {
               tabs={
                 openedAppName ? null : (
                   <TabBar
-                    items={TABS.map(screen => screen.label)}
+                    items={SCREENS.map(screen => screen.label)}
                     selected={activeTab}
                     onChange={this.handleScreenChange}
                   />
