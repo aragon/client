@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { breakpoint, font } from '@aragon/ui'
-import { AppCenterAppType } from '../../../prop-types'
 
 const AppsGrid = React.memo(({ children }) => (
   <div>

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
