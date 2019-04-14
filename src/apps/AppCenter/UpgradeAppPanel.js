@@ -95,7 +95,7 @@ class UpgradeAppPanel extends React.PureComponent {
               margin: ${4 * GU}px 0 ${2 * GU}px;
             `}
           >
-            <Button mode="strong" wide>
+            <Button mode="strong" disabled wide>
               Upgrade
             </Button>
           </div>
