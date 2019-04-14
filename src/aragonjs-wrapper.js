@@ -227,6 +227,7 @@ const subscribe = (
     onPermissions,
     onForwarders,
     onAppIdentifiers,
+    onInstalledRepos,
     onIdentityIntent,
     onTransaction,
   },
@@ -237,6 +238,7 @@ const subscribe = (
     permissions,
     forwarders,
     appIdentifiers,
+    installedRepos,
     identityIntents,
     transactions,
   } = wrapper
@@ -244,6 +246,16 @@ const subscribe = (
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
+    permissions: permissions.subscribe(onPermissions),
+    forwarders: forwarders.subscribe(onForwarders),
+    appIdentifiers: appIdentifiers.subscribe(onAppIdentifiers),
+    installedRepos: installedRepos.subscribe(onInstalledRepos),
+    identityIntents: identityIntents.subscribe(onIdentityIntent),
+    transactions: transactions.subscribe(onTransaction),
+
+    connectedApp: null,
+    connectedWorkers: workerSubscriptionPool,
+
     apps: apps.subscribe(apps => {
       onApps(
         prepareAppsForFrontend(
@@ -253,13 +265,7 @@ const subscribe = (
         )
       )
     }),
-    permissions: permissions.subscribe(onPermissions),
-    connectedApp: null,
-    connectedWorkers: workerSubscriptionPool,
-    forwarders: forwarders.subscribe(onForwarders),
-    appIdentifiers: appIdentifiers.subscribe(onAppIdentifiers),
-    identityIntents: identityIntents.subscribe(onIdentityIntent),
-    transactions: transactions.subscribe(onTransaction),
+
     workers: apps.subscribe(apps => {
       // Asynchronously launch webworkers for each new or updated app that has
       // a background script defined
@@ -359,6 +365,7 @@ const initWrapper = async (
     onPermissions = noop,
     onForwarders = noop,
     onAppIdentifiers = noop,
+    onInstalledRepos = noop,
     onIdentityIntent = noop,
     onTransaction = noop,
     onDaoAddress = noop,
@@ -421,6 +428,7 @@ const initWrapper = async (
       onPermissions,
       onForwarders,
       onAppIdentifiers,
+      onInstalledRepos,
       onIdentityIntent,
       onTransaction,
     },

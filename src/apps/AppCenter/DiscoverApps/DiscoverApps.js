@@ -99,8 +99,8 @@ const appsInDevelopment = [
 const DiscoverApps = React.memo(() => (
   <div>
     <p>
-      You will soon be able to <em>browse</em> and <em>install</em> apps in your
-      Aragon organization from here.
+      You will soon be able to <em>browse</em> and <em>install</em> new apps
+      into your Aragon organization from here.
     </p>
     <p>
       In the meantime, you can{' '}

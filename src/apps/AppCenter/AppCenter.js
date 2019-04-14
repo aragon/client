@@ -6,7 +6,7 @@ import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
-import { getAppsFromInstances } from '../../apps-utils'
+import { AppInstanceGroupType, RepoType } from '../../prop-types'
 
 const SCREENS = [
   { id: 'installed', label: 'Installed apps' },
@@ -15,14 +15,12 @@ const SCREENS = [
 
 class AppCenter extends React.Component {
   static propTypes = {
-    apps: PropTypes.array,
-    appsLoading: PropTypes.bool,
-    params: PropTypes.string,
-    onParamsRequest: PropTypes.func.isRequired,
+    appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     onMessage: PropTypes.func.isRequired,
-  }
-  static defaultProps = {
-    apps: [],
+    onParamsRequest: PropTypes.func.isRequired,
+    params: PropTypes.string,
+    repos: PropTypes.arrayOf(RepoType).isRequired,
+    reposLoading: PropTypes.bool.isRequired,
   }
   state = {
     upgradePanelOpened: false,
@@ -30,69 +28,82 @@ class AppCenter extends React.Component {
 
   handleMenuPanelOpen = () => {
     this.props.onMessage({
-      data: { from: 'app', name: 'menuPanel', value: true },
+      data: { from: 'app-center', name: 'menuPanel', value: true },
     })
   }
   getLocation() {
     const { params } = this.props
 
     if (!params) {
-      return { activeTab: 0, openedAppName: null }
+      return { activeTab: 0, openedRepoName: null }
     }
 
-    const parts = params.split('_')
-    const activeTab = SCREENS.findIndex(({ id }) => id === parts[0])
-    const openedApp = this.getAppFromAppName(parts[1])
+    const [tabId, ...repoNameParts] = params.split('.')
+    const repoName = repoNameParts.join('.') // repair the ENS name
+    const activeTab = SCREENS.findIndex(({ id }) => id === tabId)
+    const hasRepo = Boolean(this.getRepoFromName(repoName))
 
     return {
       activeTab: activeTab === -1 ? 0 : activeTab,
-      openedAppName: openedApp ? openedApp.appName : null,
+      openedRepoName: hasRepo ? repoName : null,
     }
   }
-  updateLocation({ activeTab, openedAppName }) {
+  updateLocation({ activeTab, openedRepoName }) {
     const location = this.getLocation()
     if (activeTab !== undefined) {
       location.activeTab = activeTab
     }
-    if (openedAppName !== undefined) {
-      location.openedAppName = openedAppName
+    if (openedRepoName !== undefined) {
+      location.openedRepoName = openedRepoName
     }
 
     this.props.onParamsRequest(
       `${SCREENS[location.activeTab].id}${
-        location.openedAppName ? `_${location.openedAppName}` : ''
+        location.openedRepoName ? `.${location.openedRepoName}` : ''
       }`
     )
   }
-  getApps() {
-    return getAppsFromInstances(this.props.apps)
+  getRepos() {
+    const { appInstanceGroups, repos } = this.props
+    return repos.map(repo => {
+      const appGroup = appInstanceGroups.find(
+        appGroup => appGroup.appId === repo.appId
+      )
+      return {
+        ...repo,
+        baseUrl: appGroup.app.baseUrl,
+        name: appGroup.name,
+        instances: appGroup.instances,
+        repoName: appGroup.repoName,
+      }
+    })
   }
-  getAppFromAppName(appName) {
-    return this.getApps().find(app => app.appName === appName)
-  }
-  openUpgradePanel = () => {
-    this.setState({ upgradePanelOpened: true })
-  }
-  closeUpgradePanel = () => {
-    this.setState({ upgradePanelOpened: false })
+  getRepoFromName(repoName) {
+    return this.getRepos().find(repo => repo.repoName === repoName)
   }
   handleScreenChange = tabIndex => {
     this.updateLocation({ activeTab: tabIndex })
   }
-  openApp = appName => {
-    this.updateLocation({ openedAppName: appName })
+  handleOpenRepo = repoName => {
+    this.updateLocation({ openedRepoName: repoName })
   }
-  closeApp = () => {
-    this.updateLocation({ openedAppName: null })
+  handleCloseRepo = () => {
+    this.updateLocation({ openedRepoName: null })
+  }
+  handleOpenUpgradePanel = () => {
+    this.setState({ upgradePanelOpened: true })
+  }
+  handleCloseUpgradePanel = () => {
+    this.setState({ upgradePanelOpened: false })
   }
 
   render() {
-    const { appsLoading } = this.props
+    const { reposLoading } = this.props
     const { upgradePanelOpened } = this.state
-    const { activeTab, openedAppName } = this.getLocation()
+    const { activeTab, openedRepoName } = this.getLocation()
 
-    const apps = this.getApps()
-    const currentApp = openedAppName && this.getAppFromAppName(openedAppName)
+    const repos = this.getRepos()
+    const currentRepo = openedRepoName && this.getRepoFromName(openedRepoName)
 
     return (
       <React.Fragment>
@@ -100,7 +111,7 @@ class AppCenter extends React.Component {
           appBar={
             <AppBar
               tabs={
-                openedAppName ? null : (
+                openedRepoName ? null : (
                   <TabBar
                     items={SCREENS.map(screen => screen.label)}
                     selected={activeTab}
@@ -117,29 +128,32 @@ class AppCenter extends React.Component {
                 }
               </Viewport>
               <NavigationBar
-                items={['App Center', ...(currentApp ? [currentApp.name] : [])]}
-                onBack={this.closeApp}
+                items={[
+                  'App Center',
+                  ...(currentRepo ? [currentRepo.name] : []),
+                ]}
+                onBack={this.handleCloseRepo}
               />
             </AppBar>
           }
         >
           {activeTab === 0 &&
-            (appsLoading ? (
+            (reposLoading ? (
               <EmptyBlock>Loading apps…</EmptyBlock>
             ) : (
               <InstalledApps
-                apps={apps}
-                openedAppName={openedAppName}
-                onOpenApp={this.openApp}
-                onRequestUpgrade={this.openUpgradePanel}
+                onOpenApp={this.handleOpenRepo}
+                onRequestUpgrade={this.handleOpenUpgradePanel}
+                openedRepoId={currentRepo && currentRepo.appId}
+                repos={repos}
               />
             ))}
           {activeTab === 1 && <DiscoverApps />}
         </AppView>
 
         <UpgradeAppPanel
-          app={upgradePanelOpened ? currentApp : null}
-          onClose={this.closeUpgradePanel}
+          repo={upgradePanelOpened ? currentRepo : null}
+          onClose={this.handleCloseUpgradePanel}
         />
       </React.Fragment>
     )
