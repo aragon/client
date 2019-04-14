@@ -168,7 +168,7 @@ class SignerPanel extends React.PureComponent {
 
       const transactionHash = await this.signTransaction(transaction, intent)
 
-      transactionBag.resolve(transactionRes)
+      transactionBag.resolve(transactionHash)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
 

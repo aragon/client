@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Button, SafeLink, Viewport } from '@aragon/ui'
 import defaultAppIcon from '../../../assets/default-app-icon.svg'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
-import { MENU_WIDTH } from '../../../components/MenuPanel/MenuPanel'
+import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
 import RemoteImage from '../../../components/RemoteImage'
 import { TextLabel } from '../../../components/TextStyles'
 import { RepoType } from '../../../prop-types'
@@ -13,7 +13,7 @@ import Screenshots from '../Screenshots'
 
 // Exclude the width of MenuPanel
 const appBelow = (below, value) =>
-  below(value + (below('medium') ? 0 : MENU_WIDTH))
+  below(value + (below('medium') ? 0 : MENU_PANEL_WIDTH))
 
 const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
   const {
