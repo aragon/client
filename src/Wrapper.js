@@ -7,12 +7,9 @@ import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import Preferences from './components/Preferences/Preferences'
-import MenuPanel from './components/MenuPanel/MenuPanel'
-import SwipeContainer from './components/MenuPanel/SwipeContainer'
+import CombinedPanel from './components/MenuPanel/CombinedPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
-import { ActivityContext } from './contexts/ActivityContext'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
-import ActivityPanel from './components/Activity/ActivityPanel'
 import {
   AppType,
   AppsStatusType,
@@ -29,7 +26,6 @@ import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 class Wrapper extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
-    unreadActivityCount: PropTypes.number.isRequired,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
@@ -39,7 +35,6 @@ class Wrapper extends React.PureComponent {
         type: PropTypes.oneOf([DeprecatedBanner]),
       }),
     ]),
-    clearActivities: PropTypes.func.isRequired,
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     historyBack: PropTypes.func.isRequired,
@@ -48,7 +43,6 @@ class Wrapper extends React.PureComponent {
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
-    markActivitiesRead: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -70,7 +64,6 @@ class Wrapper extends React.PureComponent {
     appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
-    activitiesOpen: false,
   }
 
   componentDidUpdate(prevProps) {
@@ -163,33 +156,16 @@ class Wrapper extends React.PureComponent {
     this.openApp(this.props.locator.instanceId, params)
   }
 
-  handleClearActivities = e => {
-    e.preventDefault()
-    this.props.clearActivities()
-  }
-
-  toggleActivity = () => {
-    const openBeforeToggle = this.state.activitiesOpen
-
-    this.setState({ activitiesOpen: !openBeforeToggle }, () => {
-      if (openBeforeToggle) {
-        // mark as read after closing
-        this.props.markActivitiesRead()
-      }
-    })
-  }
   isAppInstalled(instanceId) {
-    const { apps } = this.props
     return (
       staticApps.has(instanceId) &&
-      !!apps.find(app => addressesEqual(app.proxyAddress, instanceId))
+      Boolean(this.getAppByProxyAddress(instanceId))
     )
   }
 
   render() {
     const {
       account,
-      unreadActivityCount,
       apps,
       appsStatus,
       autoClosingPanel,
@@ -206,7 +182,7 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
 
-    const { menuPanelOpened, activitiesOpen, preferencesOpened } = this.state
+    const { menuPanelOpened, preferencesOpened } = this.state
 
     return (
       <Main>
@@ -217,41 +193,24 @@ class Wrapper extends React.PureComponent {
           wrapper={wrapper}
         />
         <BannerWrapper>{banner}</BannerWrapper>
-        <SwipeContainer
+        <CombinedPanel
+          activeInstanceId={locator.instanceId}
+          apps={apps.filter(app => app.hasWebApp)}
+          appsStatus={appsStatus}
           autoClosing={autoClosingPanel}
-          menuPanelOpened={menuPanelOpened}
+          connected={connected}
+          daoAddress={daoAddress}
           onMenuPanelClose={this.handleMenuPanelClose}
           onMenuPanelOpen={this.handleMenuPanelOpen}
+          onOpenApp={this.openApp}
+          onOpenPreferences={this.handleOpenPreferences}
+          onRequestAppsReload={onRequestAppsReload}
+          opened={menuPanelOpened}
         >
-          {progress => (
-            <React.Fragment>
-              <MenuPanel
-                apps={apps.filter(app => app.hasWebApp)}
-                appsStatus={appsStatus}
-                activeInstanceId={locator.instanceId}
-                unreadActivityCount={unreadActivityCount}
-                connected={connected}
-                daoAddress={daoAddress}
-                swipeProgress={progress}
-                autoClosing={autoClosingPanel}
-                onOpenApp={this.openApp}
-                onCloseMenuPanel={this.handleMenuPanelClose}
-                onOpenPreferences={this.handleOpenPreferences}
-                onRequestAppsReload={onRequestAppsReload}
-                onActivityClicked={this.toggleActivity}
-                activitiesOpen={activitiesOpen}
-              />
-              <AppScreen>
-                <ActivityPanel
-                  open={activitiesOpen}
-                  onClearAll={this.handleClearActivities}
-                  onBlur={this.toggleActivity}
-                />
-                {this.renderApp(locator.instanceId, locator.params)}
-              </AppScreen>
-            </React.Fragment>
-          )}
-        </SwipeContainer>
+          <AppScreen>
+            {this.renderApp(locator.instanceId, locator.params)}
+          </AppScreen>
+        </CombinedPanel>
         <SignerPanel
           account={account}
           apps={apps}
@@ -387,23 +346,9 @@ const LoadingApps = () => (
 )
 
 export default props => {
-  const {
-    unreadActivityCount,
-    clearActivities,
-    markActivitiesRead,
-  } = React.useContext(ActivityContext)
-
   return (
     <Viewport>
-      {({ below }) => (
-        <Wrapper
-          {...props}
-          autoClosingPanel={below('medium')}
-          unreadActivityCount={unreadActivityCount}
-          clearActivities={clearActivities}
-          markActivitiesRead={markActivitiesRead}
-        />
-      )}
+      {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
     </Viewport>
   )
 }

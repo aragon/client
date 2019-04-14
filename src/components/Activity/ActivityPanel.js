@@ -1,113 +1,128 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Spring, animated } from 'react-spring'
+import { Button, ButtonIcon, theme, unselectable } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
-import ActivityHub from './ActivityHub'
-import springs from '../../springs'
+import ActivityList from './ActivityList'
+import IconArrowLeft from './IconArrowLeft'
 
-const ActivityPanel = ({ open, onBlur, onClearAll }) => {
+export const ACTIVITY_PANEL_SHADOW_WIDTH = 15
+export const ACTIVITY_PANEL_WIDTH = 300
+
+const ActivityPanel = ({
+  apps,
+  displayBackButton,
+  onClearAll,
+  onClose,
+  open,
+  shouldClose,
+}) => {
   const frameRef = React.createRef()
   const { activities, clearActivity } = React.useContext(ActivityContext)
 
-  React.useEffect(() => {
-    frameRef.current[open ? 'focus' : 'blur']()
-  })
+  useEffect(() => {
+    if (open) {
+      frameRef.current.focus()
+    }
+  }, [frameRef.current, open])
 
-  const _onBlur = e => {
-    let _handler
-    const currentTarget = e.currentTarget
-    setTimeout(() => {
-      if (!currentTarget.contains(document.activeElement)) {
-        if (_handler) clearTimeout(_handler)
-        _handler = setTimeout(() => open && onBlur(), 200)
+  const handleBlur = useCallback(
+    event => {
+      const target = event.relatedTarget
+      if (
+        !frameRef.current.contains(target) &&
+        shouldClose({ focusedElement: target })
+      ) {
+        onClose()
       }
-    }, 0)
-  }
+    },
+    [frameRef, onClose, shouldClose]
+  )
 
   return (
-    <Spring
-      native
-      from={{ x: -300 }}
-      to={{ x: open ? 0 : -300 }}
-      config={springs.lazy}
-    >
-      {({ x }) => (
-        <ActivityFrame
-          ref={frameRef}
-          onBlur={_onBlur}
-          tabIndex="0"
-          style={{
-            transform: x.interpolate(x => `translate3d(${x}px,0,0)`),
-          }}
+    <ActivityFrame ref={frameRef} onBlur={handleBlur} tabIndex="0">
+      <ActivityHeader>
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+          `}
         >
-          <ActivityHeader>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <h1 style={{ marginRight: 10 }}>
-                <Text>Activity</Text>
-              </h1>
-            </div>
-            <a onClick={onClearAll}>
-              <Text>Clear All</Text>
-            </a>
-          </ActivityHeader>
-          <ActivityHub
-            activities={activities}
-            keys={activity => activity.transactionHash}
-            clearActivity={clearActivity}
-          />
-        </ActivityFrame>
-      )}
-    </Spring>
+          {displayBackButton && (
+            <ButtonIcon
+              onClick={onClose}
+              label="Close"
+              css={`
+                margin-left: -5px;
+                margin-right: 5px;
+                color: ${theme.accent};
+              `}
+            >
+              <IconArrowLeft />
+            </ButtonIcon>
+          )}
+          <ActivityHeaderTitle>Activity</ActivityHeaderTitle>
+        </div>
+        <Button mode="text" onClick={onClearAll} css="margin-right: -15px">
+          Clear all
+        </Button>
+      </ActivityHeader>
+      <ActivityContent>
+        <ActivityList
+          activities={activities}
+          apps={apps}
+          keys={activity => activity.transactionHash}
+          clearActivity={clearActivity}
+        />
+      </ActivityContent>
+    </ActivityFrame>
   )
 }
 
 ActivityPanel.propTypes = {
-  open: PropTypes.bool,
-  onBlur: PropTypes.func.isRequired,
+  apps: PropTypes.arrayOf(PropTypes.object),
+  displayBackButton: PropTypes.bool,
   onClearAll: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool,
+  shouldClose: PropTypes.func.isRequired,
 }
 
-const ActivityFrame = styled(animated.div)`
+const ActivityFrame = styled.div`
+  display: flex;
+  flex-direction: column;
   position: absolute;
-  width: 254px;
+  width: 100%;
   height: 100%;
-  overflow: auto;
-  background: #f1f6f8;
-  background: #f1f6f8;
-  box-shadow: 1px 0 15px 0 #e8e8e8;
-  border-right: 1px solid #e8e8e8;
+  background: ${theme.mainBackground};
+  box-shadow: 1px 0 ${ACTIVITY_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid ${theme.contentBorder};
   z-index: 1000;
   outline: 0;
+  ${unselectable};
 `
 
-const ActivityHeader = styled('div')`
+const ActivityHeader = styled.div`
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
   height: 64px;
-  border-bottom: 1px solid #e8e8e8;
-  & > div > h1 {
-    opacity: 0.7;
-    font-family: MaisonNeue-Demi;
-    font-size: 12px;
-    color: #6d777b;
-    letter-spacing: 0;
-    line-height: 16px;
-    text-align: left;
-    text-transform: uppercase;
-  }
-  & > a {
-    opacity: 0.9;
-    font-family: MaisonNeue-Book;
-    font-size: 14px;
-    color: #b3b3b3;
-    text-align: right;
-  }
+  border-bottom: 1px solid ${theme.contentBorder};
 `
 
-const Text = styled('span')`
-  vertical-align: sub;
+const ActivityContent = styled.div`
+  width: 100%;
+  flex-grow: 1;
+  overflow: auto;
 `
+
+const ActivityHeaderTitle = styled.h1`
+  margin-top: 5px;
+  color: ${theme.textSecondary};
+  font-size: 12px;
+  text-transform: uppercase;
+`
+
 export default ActivityPanel
