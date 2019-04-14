@@ -115,11 +115,11 @@ class SignerPanel extends React.Component {
         .sendTransaction(transaction)
         .on('transactionHash', transactionHash => {
           resolve(transactionHash)
-          // get transaction count/nonce and update the activity item
-          //  Maybe useful in case we multiple transaction activities earlier pending
-          // and later with higher nonces confirmed to assume all activities pending
-          // with lower nonce are confirmed (most likely with a different hash if
-          // resent with higher gas through wallet)
+          // Get account count/nonce for the transaction and update the activity item.
+          // May be useful in case there are multiple pending transactions to detect when
+          // a pending transaction with a lower nonce was manually re-sent by the user
+          // (most likely done through their Ethereum provider directly with a different
+          // gas price or transaction data that results in a different transaction hash).
 
           walletWeb3.eth
             .getTransaction(transactionHash)
