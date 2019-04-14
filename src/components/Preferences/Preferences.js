@@ -24,7 +24,7 @@ import LocalIdentitiesComponent from './LocalIdentities'
 
 const TABS = ['Manage labels']
 
-const Preferences = ({ locator, onClose, smallView, wrapper }) => {
+const Preferences = ({ dao, onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
   const [localIdentities, setLocalIdentities] = React.useState({})
@@ -88,8 +88,8 @@ const Preferences = ({ locator, onClose, smallView, wrapper }) => {
         <Content>
           {selectedTab === 0 && (
             <LocalIdentitiesComponent
+              dao={dao}
               localIdentities={localIdentities}
-              locator={locator}
               onImport={handleImport}
               onClearAll={handleClearAll}
               onModify={handleModify}
@@ -103,7 +103,7 @@ const Preferences = ({ locator, onClose, smallView, wrapper }) => {
 }
 
 Preferences.propTypes = {
-  locator: PropTypes.object.isRequired,
+  dao: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   smallView: PropTypes.bool.isRequired,
   wrapper: AragonType,

@@ -94,6 +94,7 @@ class CombinedPanel extends React.Component {
   render() {
     const { animate, activityOpened } = this.state
     const {
+      apps,
       autoClosing,
       children,
       onClearActivities,
@@ -202,7 +203,7 @@ class CombinedPanel extends React.Component {
                     }}
                   >
                     <ActivityPanel
-                      apps={this.props.apps}
+                      apps={apps}
                       displayBackButton={autoClosing}
                       onClearAll={onClearActivities}
                       onClose={this.handleActivityClose}

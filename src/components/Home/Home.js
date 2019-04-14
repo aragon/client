@@ -51,7 +51,7 @@ class Home extends React.Component {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsLoading: PropTypes.bool.isRequired,
-    locator: PropTypes.object.isRequired,
+    dao: PropTypes.string.isRequired,
     onMessage: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }
@@ -96,7 +96,7 @@ class Home extends React.Component {
     })
   }
   render() {
-    const { apps, locator } = this.props
+    const { apps, dao } = this.props
     const { showApps } = this.state
 
     const appActions = actions.filter(({ appName }) =>
@@ -130,8 +130,8 @@ class Home extends React.Component {
                       fontSize: lerp(showAppsProgress, 18, 14) + 'px',
                     }}
                   >
-                    {locator.dao.endsWith('.eth')
-                      ? `You are interacting with ${locator.dao}`
+                    {dao.endsWith('.eth')
+                      ? `You are interacting with ${dao}`
                       : 'You are using Aragon 0.6 — Alba'}
                   </Text>
                 </AppTitle>

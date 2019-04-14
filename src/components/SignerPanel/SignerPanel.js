@@ -31,13 +31,13 @@ const INITIAL_STATE = {
 
 const RECIEPT_ERROR_STATUS = '0x0'
 
-class SignerPanel extends React.Component {
+class SignerPanel extends React.PureComponent {
   static propTypes = {
-    addTransactionActivity: PropTypes.func.isRequired,
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
-    locator: PropTypes.object.isRequired,
+    dao: PropTypes.string,
     onRequestEnable: PropTypes.func.isRequired,
+    addTransactionActivity: PropTypes.func.isRequired,
     setActivityConfirmed: PropTypes.func.isRequired,
     setActivityFailed: PropTypes.func.isRequired,
     setActivityNonce: PropTypes.func.isRequired,
@@ -168,8 +168,7 @@ class SignerPanel extends React.Component {
 
       const transactionHash = await this.signTransaction(transaction, intent)
 
-      // TODO: rename accept to resolve once https://github.com/aragon/aragon.js/pull/279 is merged
-      transactionBag.accept(transactionHash)
+      transactionBag.resolve(transactionRes)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
 
@@ -204,7 +203,7 @@ class SignerPanel extends React.Component {
   render() {
     const {
       account,
-      locator,
+      dao,
       onRequestEnable,
       walletNetwork,
       walletProviderId,
@@ -251,7 +250,7 @@ class SignerPanel extends React.Component {
                           hasAccount={Boolean(account)}
                           hasWeb3={Boolean(getInjectedProvider())}
                           intent={intent}
-                          locator={locator}
+                          dao={dao}
                           networkType={network.type}
                           onClose={this.handleSignerClose}
                           onRequestEnable={onRequestEnable}
