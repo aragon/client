@@ -122,7 +122,7 @@ class SignerPanel extends React.PureComponent {
       // Create new notification
       onTransactionSuccess && onTransactionSuccess(transaction)
 
-      transactionBag.accept(transactionRes)
+      transactionBag.resolve(transactionRes)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
 
