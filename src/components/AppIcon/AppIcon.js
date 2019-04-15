@@ -56,7 +56,7 @@ const AppIconContent = ({ app, size, src }) => {
     const iconUrl = appIconUrl(app, size)
     return (
       // Tries to load the app icon while displaying the default one.
-      <RemoteImage size={size} src={iconUrl}>
+      <RemoteImage src={iconUrl}>
         {({ exists }) => {
           if (exists) {
             return <IconBase size={size} src={iconUrl} />
@@ -66,7 +66,7 @@ const AppIconContent = ({ app, size, src }) => {
           return (
             // TODO: support lists of images in RemoteImage,
             // so we don’t have to nest them.
-            <RemoteImage size={size} src={legacyIconUrl}>
+            <RemoteImage src={legacyIconUrl}>
               {({ exists }) =>
                 exists ? (
                   <IconBase size={size} src={legacyIconUrl} />

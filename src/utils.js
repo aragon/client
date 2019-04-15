@@ -49,6 +49,10 @@ function getAppIconBySize(icons, size = -1) {
   return icons[greaterOrEqualSize ? greaterOrEqualSize[0] : icons.length - 1]
 }
 
+export function imgSrcFromBase(baseUrl, imgSrc) {
+  return resolvePathname(removeStartingSlash(imgSrc), baseUrl)
+}
+
 // Get the icon URL of an app.
 // `size` is the size at which the icon will be rendered.
 export function appIconUrl(app, size = -1) {
@@ -57,9 +61,7 @@ export function appIconUrl(app, size = -1) {
   }
 
   const icon = getAppIconBySize(app.icons, size)
-  return icon
-    ? resolvePathname(removeStartingSlash(icon.src), app.baseUrl)
-    : null
+  return icon ? imgSrcFromBase(app.baseUrl, icon.src) : null
 }
 
 export function isElectron() {
@@ -91,3 +93,16 @@ export function log(...params) {
 export function isString(str) {
   return typeof str === 'string' || str instanceof String
 }
+
+// Thanks to https://stackoverflow.com/a/12646864
+export function shuffleArray(original) {
+  const array = [...original]
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
+
+// GU = Grid Unit
+export const GU = 8
