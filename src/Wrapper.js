@@ -265,7 +265,6 @@ class Wrapper extends React.PureComponent {
             <React.Fragment>
               <MenuPanel
                 account={account}
-                apps={apps.filter(app => app.hasWebApp)}
                 appInstanceGroups={this.getAppInstancesGroups(apps)}
                 appsStatus={appsStatus}
                 activeInstanceId={locator.instanceId}
