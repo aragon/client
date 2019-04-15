@@ -10,6 +10,7 @@ import {
   AppInstanceGroupType,
   AppsStatusType,
   DaoAddressType,
+  EthereumAddressType,
 } from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelFooter from './MenuPanelFooter'
@@ -46,6 +47,7 @@ const interpolateToggleElevation = (value, fn = v => v) =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
+    account: EthereumAddressType,
     activeInstanceId: PropTypes.string,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
@@ -56,6 +58,7 @@ class MenuPanel extends React.PureComponent {
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
     viewportHeight: PropTypes.number,
   }
 
@@ -118,11 +121,13 @@ class MenuPanel extends React.PureComponent {
 
   render() {
     const {
+      account,
       appInstanceGroups,
       connected,
       daoAddress,
       onNotificationClicked,
       onOpenPreferences,
+      onRequestEnable,
       notifications,
     } = this.props
     const { animate, scrollVisible, systemAppsOpened } = this.state
@@ -229,6 +234,8 @@ class MenuPanel extends React.PureComponent {
             />
           )}
           <MenuPanelFooter
+            account={account}
+            onRequestEnable={onRequestEnable}
             connected={connected}
             onOpenPreferences={onOpenPreferences}
           />

@@ -264,6 +264,7 @@ class Wrapper extends React.PureComponent {
           {progress => (
             <React.Fragment>
               <MenuPanel
+                account={account}
                 appInstanceGroups={this.getAppInstancesGroups(apps)}
                 appsStatus={appsStatus}
                 activeInstanceId={locator.instanceId}
@@ -276,6 +277,7 @@ class Wrapper extends React.PureComponent {
                 onCloseMenuPanel={this.handleMenuPanelClose}
                 onOpenPreferences={this.handleOpenPreferences}
                 onRequestAppsReload={onRequestAppsReload}
+                onRequestEnable={onRequestEnable}
                 onNotificationClicked={this.handleNotificationClicked}
                 notificationOpen={notificationOpen}
               />
