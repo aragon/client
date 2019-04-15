@@ -13,6 +13,13 @@ export function compose(...funcs) {
   return funcs.reduce((a, b) => (...args) => a(b(...args)))
 }
 
+// Get the icon URL of an app (legacy)
+export function legacyAppIconUrl(app) {
+  return app && app.baseUrl
+    ? resolvePathname('images/icon.svg', app.baseUrl)
+    : null
+}
+
 // Get the best icon for the given size.
 // Set size to -1 to get the largest one, or to 0 to get the smallest one.
 function getAppIconBySize(icons, size = -1) {

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { appIconUrl } from '../../utils'
+import { appIconUrl, legacyAppIconUrl } from '../../utils'
 import RemoteImage from '../RemoteImage'
 
 import iconSvgHome from './assets/app-home.svg'
@@ -57,13 +57,26 @@ const AppIconContent = ({ app, size, src }) => {
     return (
       // Tries to load the app icon while displaying the default one.
       <RemoteImage size={size} src={iconUrl}>
-        {({ exists }) =>
-          exists ? (
-            <IconBase size={size} src={iconUrl} />
-          ) : (
-            <IconDefault size={size} />
+        {({ exists }) => {
+          if (exists) {
+            return <IconBase size={size} src={iconUrl} />
+          }
+
+          const legacyIconUrl = legacyAppIconUrl(app)
+          return (
+            // TODO: support lists of images in RemoteImage,
+            // so we don’t have to nest them.
+            <RemoteImage size={size} src={legacyIconUrl}>
+              {({ exists }) =>
+                exists ? (
+                  <IconBase size={size} src={legacyIconUrl} />
+                ) : (
+                  <IconDefault size={size} />
+                )
+              }
+            </RemoteImage>
           )
-        }
+        }}
       </RemoteImage>
     )
   }
