@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import StoredList from '../StoredList'
 import { network } from '../environment'
 import { EthereumAddressType } from '../prop-types'
+import { addressesEqual } from '../web3-utils'
 
 const ActivityContext = React.createContext()
 
@@ -102,12 +103,6 @@ class ActivityProvider extends React.Component {
     })
   }
 
-  add = activity => {
-    this.setState({
-      activities: this._storedList.add(activity),
-    })
-  }
-
   addTransactionActivity = ({
     transactionHash = '',
     from = '',
@@ -136,7 +131,7 @@ class ActivityProvider extends React.Component {
   }
 
   currentAccountPredicate = ({ from }) =>
-    from.toLowerCase() === this.props.account.toLowerCase()
+    addressesEqual(this.props.account, from)
 
   remove = index => {
     this.setState({
@@ -233,16 +228,16 @@ class ActivityProvider extends React.Component {
     return (
       <ActivityContext.Provider
         value={{
-          unreadActivityCount,
           activities: this.state.activities,
           addTransactionActivity: this.addTransactionActivity,
           clearActivities: this.clearActivities,
+          clearActivity: this.clearActivity,
+          markActivitiesRead: this.markActivitiesRead,
           setActivityConfirmed: this.setActivityConfirmed,
           setActivityFailed: this.setActivityFailed,
-          clearActivity: this.clearActivity,
-          updateActivities: this.updateActivities,
-          markActivitiesRead: this.markActivitiesRead,
           setActivityNonce: this.setActivityNonce,
+          updateActivities: this.updateActivities,
+          unreadActivityCount,
         }}
       >
         {children}
