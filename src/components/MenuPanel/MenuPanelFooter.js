@@ -13,12 +13,22 @@ const MenuPanelFooter = ({
 }) => {
   return (
     <div css="margin: 15px 20px">
-      <ConnectionBullet connected={connected} />
-      <Text size="xsmall">
-        {connected ? 'Connected to the network' : 'Not connected'}
-      </Text>
-      <ConnectedAccount account={account} onRequestEnable={onRequestEnable} />
-      <PreferencesButton onClick={onOpenPreferences} />
+      <div>
+        <ConnectionBullet connected={connected} />
+        <Text size="xsmall">
+          {connected ? 'Connected to the network' : 'Not connected'}
+        </Text>
+      </div>
+
+      <div css="display: inline-grid; grid-template-rows: 2">
+        <div>
+          <ConnectedAccount
+            account={account}
+            onRequestEnable={onRequestEnable}
+          />
+        </div>
+        <PreferencesButton onClick={onOpenPreferences} />
+      </div>
     </div>
   )
 }
@@ -40,8 +50,9 @@ const ConnectedAccount = ({ account, onRequestEnable }) => (
         mode="secondary"
         label="Preferences"
         onClick={onRequestEnable}
+        style={{ minWidth: '100%' }}
       >
-        <span css="padding: 0 2px">Enable account</span>
+        Enable account
       </Button>
     )}
   </div>
@@ -54,14 +65,26 @@ ConnectedAccount.propTypes = {
 
 const PreferencesButton = ({ onClick }) => (
   <div css="margin-top: 12px">
-    <Button size="small" mode="outline" label="Preferences" onClick={onClick}>
+    <Button
+      size="small"
+      mode="outline"
+      label="Preferences"
+      onClick={onClick}
+      css="min-width: 100%"
+    >
       <span
         css={`
           display: flex;
           align-items: center;
+          justify-content: center;
         `}
       >
-        <IconSettings css="margin: 0 6px 0 -3px" />
+        <IconSettings
+          css={`
+            flex-shrink: 0;
+            margin: 0 6px 0 -3px;
+          `}
+        />
         <span>Preferences</span>
       </span>
     </Button>
