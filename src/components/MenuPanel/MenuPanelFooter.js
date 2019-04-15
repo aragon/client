@@ -41,12 +41,7 @@ const ConnectedAccount = ({ account, onRequestEnable }) => (
         label="Preferences"
         onClick={onRequestEnable}
       >
-        <div
-          css={`
-            display: flex;
-            align-items: center;
-          `}
-        >
+        <div>
           <span>Enable Account</span>
         </div>
       </Button>
