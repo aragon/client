@@ -243,16 +243,6 @@ const subscribe = (
     transactions,
   } = wrapper
 
-  console.log('WARP', {
-    apps,
-    permissions,
-    forwarders,
-    appIdentifiers,
-    installedRepos,
-    identityIntents,
-    transactions,
-  })
-
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
