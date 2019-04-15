@@ -20,7 +20,7 @@ const MenuPanelFooter = ({
         </Text>
       </div>
 
-      <div css="display: inline-grid; grid-template-rows: 2">
+      <div css="display: inline-grid">
         <ConnectedAccount account={account} onRequestEnable={onRequestEnable} />
         <PreferencesButton onClick={onOpenPreferences} />
       </div>
