@@ -77,9 +77,7 @@ const Preferences = ({ dao, onClose, smallView, wrapper }) => {
       appBar={
         <StyledAppBar>
           <Title>Preferences</Title>
-          <StyledButton label="Close" onClick={onClose}>
-            <IconClose />
-          </StyledButton>
+          <CloseButton onClick={onClose} />
         </StyledAppBar>
       }
     >
@@ -202,10 +200,21 @@ const StyledAppBar = styled(AppBar)`
   )}
 `
 
-const StyledButton = styled(ButtonIcon)`
+const CloseButton = styled(ButtonIcon).attrs({
+  children: <IconClose />,
+  label: 'Close',
+})`
   width: auto;
   height: 100%;
   padding: 0 16px;
+
+  ${breakpoint(
+    'medium',
+    `
+      /* half screen width minus half max container width */
+      margin-right: calc(100vw / 2 - ${BREAKPOINTS.medium / 2}px);
+    `
+  )}
 `
 
 export default props => (
