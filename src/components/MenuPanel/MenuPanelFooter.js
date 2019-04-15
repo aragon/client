@@ -41,9 +41,7 @@ const ConnectedAccount = ({ account, onRequestEnable }) => (
         label="Preferences"
         onClick={onRequestEnable}
       >
-        <div>
-          <span>Enable account</span>
-        </div>
+        <span css="padding: 0 2px">Enable account</span>
       </Button>
     )}
   </div>
