@@ -42,7 +42,7 @@ const ConnectedAccount = ({ account, onRequestEnable }) => (
         onClick={onRequestEnable}
       >
         <div>
-          <span>Enable Account</span>
+          <span>Enable account</span>
         </div>
       </Button>
     )}
