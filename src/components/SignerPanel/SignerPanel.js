@@ -27,14 +27,14 @@ const INITIAL_STATE = {
   signError: null,
 }
 
-class SignerPanel extends React.Component {
+class SignerPanel extends React.PureComponent {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
-    locator: PropTypes.object.isRequired,
-    onClose: PropTypes.func.isRequired,
+    dao: PropTypes.string,
+    onClose: PropTypes.func,
     onRequestEnable: PropTypes.func.isRequired,
-    onTransactionSuccess: PropTypes.func.isRequired,
+    onTransactionSuccess: PropTypes.func,
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
@@ -122,7 +122,7 @@ class SignerPanel extends React.Component {
       // Create new notification
       onTransactionSuccess && onTransactionSuccess(transaction)
 
-      transactionBag.accept(transactionRes)
+      transactionBag.resolve(transactionRes)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
 
@@ -158,7 +158,7 @@ class SignerPanel extends React.Component {
   render() {
     const {
       account,
-      locator,
+      dao,
       onRequestEnable,
       walletNetwork,
       walletProviderId,
@@ -205,7 +205,7 @@ class SignerPanel extends React.Component {
                           hasAccount={Boolean(account)}
                           hasWeb3={Boolean(getInjectedProvider())}
                           intent={intent}
-                          locator={locator}
+                          dao={dao}
                           networkType={network.type}
                           onClose={this.handleSignerClose}
                           onRequestEnable={onRequestEnable}

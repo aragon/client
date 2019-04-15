@@ -22,7 +22,7 @@ import { isAddress, isValidEnsName } from './web3-utils'
  * /{dao_address}
  * /{dao_address}/settings
  * /{dao_address}/permissions
- * /{dao_address}/0x{app_instance_address}?params={app_params}
+ * /{dao_address}/0x{app_instance_address}?p={app_params}
  *
  *
  * Available modes:
@@ -55,13 +55,13 @@ export const parsePath = (pathname, search = '') => {
   }
 
   // App
-  const rawParams = search && search.split('?params=')[1]
+  const rawParams = search && search.split('?p=')[1]
   let params = null
   if (rawParams) {
     try {
       params = decodeURIComponent(rawParams)
     } catch (err) {
-      console.log('The “params” URL parameter is not valid.')
+      console.log('The params (“p”) URL parameter is not valid.')
     }
   }
 
@@ -81,7 +81,7 @@ export const parsePath = (pathname, search = '') => {
 
 // Return a path string for an app instance
 export const getAppPath = ({ dao, instanceId = 'home', params } = {}) => {
-  const paramsPart = params ? `?params=${encodeURIComponent(params)}` : ``
+  const paramsPart = params ? `?p=${encodeURIComponent(params)}` : ``
   if (staticApps.has(instanceId)) {
     return `/${dao}${staticApps.get(instanceId).route}${paramsPart}`
   }

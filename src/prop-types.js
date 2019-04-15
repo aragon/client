@@ -53,11 +53,11 @@ export const AppType = PropTypes.shape({
   abi: PropTypes.array.isRequired,
   appId: PropTypes.string.isRequired,
   baseUrl: PropTypes.string.isRequired,
-  codeAddress: EthereumAddressType,
+  codeAddress: EthereumAddressType.isRequired,
   functions: PropTypes.array.isRequired,
   hasWebApp: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
-  proxyAddress: EthereumAddressType,
+  proxyAddress: EthereumAddressType.isRequired,
   src: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 
@@ -79,6 +79,23 @@ export const AppType = PropTypes.shape({
   roles: PropTypes.array,
   status: PropTypes.string,
   version: PropTypes.string,
+})
+
+export const AppInstanceType = PropTypes.shape({
+  codeAddress: EthereumAddressType,
+  identifier: PropTypes.string,
+  instanceId: PropTypes.oneOfType([EthereumAddressType, PropTypes.string])
+    .isRequired,
+  proxyAddress: EthereumAddressType,
+})
+
+export const AppInstanceGroupType = PropTypes.shape({
+  app: PropTypes.object.isRequired,
+  appId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  instances: PropTypes.arrayOf(AppInstanceType).isRequired,
+  hasWebApp: PropTypes.bool.isRequired,
+  repoName: PropTypes.string,
 })
 
 export const AppsStatusType = PropTypes.oneOf([
@@ -103,4 +120,49 @@ export const DaoItemType = PropTypes.shape({
 export const DaoAddressType = PropTypes.shape({
   address: EthereumAddressType,
   domain: PropTypes.string,
+})
+
+export const RenderFnType = PropTypes.oneOfType([
+  PropTypes.func,
+  PropTypes.oneOf([false]),
+])
+
+export const RepoContentType = PropTypes.shape({
+  name: PropTypes.string,
+  changelog_url: PropTypes.string,
+  description: PropTypes.string,
+  details_url: PropTypes.string,
+  icons: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string.isRequired,
+      sizes: PropTypes.string.isRequired,
+    })
+  ),
+  screenshots: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string.isRequired,
+    })
+  ),
+})
+
+export const RepoType = PropTypes.shape({
+  appId: PropTypes.string.isRequired,
+  currentVersion: PropTypes.shape({
+    content: RepoContentType.isRequired,
+    version: PropTypes.string.isRequired,
+  }),
+  latestVersion: PropTypes.shape({
+    content: RepoContentType.isRequired,
+    version: PropTypes.string.isRequired,
+  }),
+  repoAddress: EthereumAddressType.isRequired,
+  versions: PropTypes.arrayOf(
+    PropTypes.shape({
+      contentURI: PropTypes.string.isRequired,
+      contractAddress: PropTypes.string.isRequired,
+      timestamp: PropTypes.number,
+      version: PropTypes.string.isRequired,
+      versionId: PropTypes.string.isRequired,
+    })
+  ),
 })

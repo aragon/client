@@ -7,7 +7,7 @@ import color from 'onecolor'
 import { ButtonBase, Viewport, springs, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import {
-  AppType,
+  AppInstanceGroupType,
   AppsStatusType,
   DaoAddressType,
   EthereumAddressType,
@@ -40,27 +40,6 @@ const systemAppsOpenedState = {
   },
 }
 
-const prepareAppGroups = apps =>
-  apps.reduce((groups, app) => {
-    const group = groups.find(({ appId }) => appId === app.appId)
-    const instance = { ...app, instanceId: app.proxyAddress }
-
-    // Append the instance to the existing app group
-    if (group) {
-      group.instances.push(instance)
-      return groups
-    }
-
-    return groups.concat([
-      {
-        appId: app.appId,
-        name: app.name,
-        icon: <AppIcon app={app} size={22} />,
-        instances: [instance],
-      },
-    ])
-  }, [])
-
 // Interpolate the elevation of a toggle from which a drawer slides down.
 // In / out example: [0, 0.25, 0.5, 0.75, 1] => [0, 0.5, 1, 0.5, 0]
 const interpolateToggleElevation = (value, fn = v => v) =>
@@ -70,7 +49,7 @@ class MenuPanel extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
     activeInstanceId: PropTypes.string,
-    apps: PropTypes.arrayOf(AppType).isRequired,
+    appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
@@ -122,7 +101,14 @@ class MenuPanel extends React.PureComponent {
     })
   }, 100)
 
-  getAppGroups = memoize(apps => prepareAppGroups(apps))
+  getRenderableAppGroups = memoize(appGroups =>
+    appGroups
+      .filter(appGroup => appGroup.hasWebApp)
+      .map(appGroup => ({
+        ...appGroup,
+        icon: <AppIcon app={appGroup.app} size={22} />,
+      }))
+  )
 
   handleToggleSystemApps = () => {
     this.setState(
@@ -136,7 +122,7 @@ class MenuPanel extends React.PureComponent {
   render() {
     const {
       account,
-      apps,
+      appInstanceGroups,
       connected,
       daoAddress,
       onNotificationClicked,
@@ -145,7 +131,7 @@ class MenuPanel extends React.PureComponent {
       notifications,
     } = this.props
     const { animate, scrollVisible, systemAppsOpened } = this.state
-    const appGroups = this.getAppGroups(apps)
+    const appGroups = this.getRenderableAppGroups(appInstanceGroups)
 
     const menuApps = [APP_HOME, appGroups]
 
@@ -261,7 +247,7 @@ class MenuPanel extends React.PureComponent {
   renderAppGroup(app, isSystem) {
     const { activeInstanceId, onOpenApp } = this.props
 
-    const { appId, name, icon, instances = [] } = app
+    const { appId, name, icon, instances } = app
     const isActive =
       instances.findIndex(
         ({ instanceId }) => instanceId === activeInstanceId
