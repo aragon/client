@@ -42,11 +42,11 @@ export function getAppIconBySize(icons, size = -1) {
     return icons[sizes[sizes.length - 1][0]]
   }
 
-  // Find the first icon that is equal or larger than the provided size.
-  const greaterOrEqualSize = sizes.find(iconSize => iconSize[1] >= size)
-
-  // Return the found icon, or the largest one otherwise.
-  return icons[greaterOrEqualSize ? greaterOrEqualSize[0] : icons.length - 1]
+  // Find the first icon that is equal or larger than the provided size,
+  // or the largest one otherwise.
+  const iconIndex = (sizes.find(iconSize => iconSize[1] >= size) ||
+    sizes[sizes.length - 1])[0]
+  return icons[iconIndex]
 }
 
 export function imgSrcFromBase(baseUrl, imgSrc) {
