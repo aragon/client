@@ -22,7 +22,7 @@ export function legacyAppIconUrl(app) {
 
 // Get the best icon for the given size.
 // Set size to -1 to get the largest one, or to 0 to get the smallest one.
-function getAppIconBySize(icons, size = -1) {
+export function getAppIconBySize(icons, size = -1) {
   // Collect the sizes and sort them
   const sizes = icons
     .map((icon, i) => {
