@@ -75,6 +75,7 @@ class App extends React.Component {
 
     this.setState({
       walletWeb3: getWeb3(web3Providers.wallet),
+      web3: getWeb3(web3Providers.default),
       walletProviderId: identifyProvider(web3Providers.wallet),
     })
 
@@ -359,6 +360,7 @@ class App extends React.Component {
       walletNetwork,
       walletProviderId,
       walletWeb3,
+      web3,
       wrapper,
     } = this.state
 
@@ -403,9 +405,9 @@ class App extends React.Component {
             />
             <FavoriteDaosProvider>
               <ActivityProvider
-                walletWeb3={walletWeb3}
-                daoDomain={daoAddress.domain}
                 account={account}
+                daoDomain={daoAddress.domain}
+                web3={web3}
               >
                 <PermissionsProvider
                   wrapper={wrapper}
@@ -428,6 +430,7 @@ class App extends React.Component {
                     onRequestAppsReload={this.handleRequestAppsReload}
                     onRequestEnable={this.handleRequestEnable}
                     permissionsLoading={permissionsLoading}
+                    web3={web3}
                     repos={repos}
                     transactionBag={transactionBag}
                     walletNetwork={walletNetwork}

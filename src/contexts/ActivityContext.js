@@ -28,7 +28,7 @@ class ActivityProvider extends React.Component {
     account: EthereumAddressType, // Current wallet
     children: PropTypes.node,
     daoDomain: PropTypes.string, // domain of current DAO
-    walletWeb3: PropTypes.object,
+    web3: PropTypes.object,
   }
   static defaultProps = {
     account: '',
@@ -71,17 +71,20 @@ class ActivityProvider extends React.Component {
 
   // Refresh the status of pending activities
   refreshPendingActivities() {
-    const { walletWeb3 } = this.props
+    const { web3 } = this.props
 
     this.state.activities
       .filter(({ status }) => status === activityStatusTypes.PENDING)
-      .forEach(({ transactionHash }) => {
-        walletWeb3.eth
-          .getTransaction(transactionHash)
-          .then(({ blockNumber }) =>
-            blockNumber ? this.setActivityConfirmed(transactionHash) : null
-          )
-          .catch(console.error)
+      .forEach(async ({ transactionHash }) => {
+        try {
+          const tx = await web3.eth.getTransaction(`${transactionHash}`)
+          // tx is null if no tx was found
+          if (tx && tx.blockNumber) {
+            this.setActivityConfirmed(transactionHash)
+          }
+        } catch (e) {
+          console.error(`Failed to refresh transaction ${transactionHash}`)
+        }
       })
   }
 

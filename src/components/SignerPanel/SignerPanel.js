@@ -44,6 +44,7 @@ class SignerPanel extends React.PureComponent {
     transactionBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
+    web3: PropTypes.object.isRequired,
     walletProviderId: PropTypes.string.isRequired,
   }
 
@@ -103,8 +104,9 @@ class SignerPanel extends React.PureComponent {
 
   signTransaction(transaction, intent) {
     const {
-      walletWeb3,
       addTransactionActivity,
+      walletWeb3,
+      web3,
       setActivityConfirmed,
       setActivityFailed,
       setActivityNonce,
@@ -121,13 +123,9 @@ class SignerPanel extends React.PureComponent {
           // (most likely done through their Ethereum provider directly with a different
           // gas price or transaction data that results in a different transaction hash).
 
-          walletWeb3.eth
+          web3.eth
             .getTransaction(transactionHash)
-            .then(t => {
-              const { nonce } = t
-              setActivityNonce({ transactionHash, nonce })
-              return t
-            })
+            .then(({ nonce }) => setActivityNonce({ transactionHash, nonce }))
             .catch(console.error)
 
           // Create new activiy
@@ -136,6 +134,8 @@ class SignerPanel extends React.PureComponent {
             from: intent.transaction.from,
             targetApp: intent.name,
             targetAppProxyAddress: intent.to,
+            // TODO: double check if there was actually a forwarder
+            // for the transaction and not set this if there wasn't.
             forwarderProxyAddress: intent.transaction.to,
             description: intent.description,
           })
@@ -171,13 +171,10 @@ class SignerPanel extends React.PureComponent {
       transactionBag.resolve(transactionHash)
       this.setState({ signError: null, status: STATUS_SIGNED })
       this.startClosing()
-
-      // Display an error in the panel if a transaction fail
     } catch (err) {
       transactionBag.reject(err)
+      // Display an error in the panel if the transaction failed
       this.setState({ signError: err, status: STATUS_ERROR })
-
-      // TODO: the ongoing notification should be flagged faulty at this point ...
     }
   }
 
