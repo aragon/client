@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { Viewport, springs } from '@aragon/ui'
-import { AppsStatusType, DaoStatusType } from '../../prop-types'
+import { AppType, AppsStatusType, DaoStatusType } from '../../prop-types'
 import { lerp } from '../../math-utils'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import MenuPanel, {
@@ -19,7 +19,7 @@ import SwipeContainer from './SwipeContainer'
 // This component combines MenuPanel and ActivityPanel together.
 class CombinedPanel extends React.Component {
   static propTypes = {
-    apps: PropTypes.arrayOf(PropTypes.object),
+    apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     autoClosing: PropTypes.bool,
     children: PropTypes.node,
@@ -97,6 +97,7 @@ class CombinedPanel extends React.Component {
   render() {
     const { animate, activityOpened } = this.state
     const {
+      apps,
       autoClosing,
       children,
       onClearActivities,
@@ -229,7 +230,7 @@ class CombinedPanel extends React.Component {
                     }}
                   >
                     <ActivityPanel
-                      apps={this.props.apps}
+                      apps={apps}
                       displayBackButton={autoClosing}
                       onClearAll={onClearActivities}
                       onClose={this.handleActivityClose}

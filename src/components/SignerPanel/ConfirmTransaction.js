@@ -14,7 +14,7 @@ class ConfirmTransaction extends React.Component {
     hasAccount: PropTypes.bool.isRequired,
     hasWeb3: PropTypes.bool.isRequired,
     intent: PropTypes.object,
-    locator: PropTypes.object.isRequired,
+    dao: PropTypes.string,
     networkType: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func,
@@ -37,7 +37,7 @@ class ConfirmTransaction extends React.Component {
       hasAccount,
       hasWeb3,
       intent,
-      locator,
+      dao,
       networkType,
       onClose,
       onRequestEnable,
@@ -132,7 +132,7 @@ class ConfirmTransaction extends React.Component {
       <ActionPathsContent
         intent={intent}
         direct={direct}
-        locator={locator}
+        dao={dao}
         onSign={onSign}
         paths={paths}
         pretransaction={pretransaction}

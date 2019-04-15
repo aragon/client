@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { springs, theme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
+import { AppType } from '../../prop-types'
 import { addressesEqual } from '../../web3-utils'
 import ActivityItem from './ActivityItem'
 import IconEmptyState from './IconEmptyState'
@@ -82,7 +83,7 @@ const ActivityList = ({ apps, activities, keys, clearActivity }) => {
 }
 
 ActivityList.propTypes = {
-  apps: PropTypes.arrayOf(PropTypes.object),
+  apps: PropTypes.arrayOf(AppType).isRequired,
   activities: PropTypes.arrayOf(PropTypes.object).isRequired,
   keys: PropTypes.func.isRequired,
   clearActivity: PropTypes.func.isRequired,

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, ButtonIcon, theme, unselectable } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
+import { AppType } from '../../prop-types'
 import ActivityList from './ActivityList'
 import IconArrowLeft from './IconArrowLeft'
 
@@ -80,7 +81,7 @@ const ActivityPanel = ({
 }
 
 ActivityPanel.propTypes = {
-  apps: PropTypes.arrayOf(PropTypes.object),
+  apps: PropTypes.arrayOf(AppType).isRequired,
   displayBackButton: PropTypes.bool,
   onClearAll: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,

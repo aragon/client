@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import memoize from 'lodash.memoize'
 import { Viewport } from '@aragon/ui'
-import { Apps, Permissions, Settings } from './apps'
+import { AppCenter, Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -17,9 +18,9 @@ import {
   DaoAddressType,
   DaoStatusType,
   EthereumAddressType,
+  RepoType,
 } from './prop-types'
 import { getAppPath } from './routing'
-import { staticApps } from './static-apps'
 import { APPS_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
@@ -45,6 +46,7 @@ class Wrapper extends React.PureComponent {
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
+    repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
     visible: PropTypes.bool.isRequired,
     walletNetwork: PropTypes.string,
@@ -64,7 +66,6 @@ class Wrapper extends React.PureComponent {
   }
 
   state = {
-    appInstance: {},
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
   }
@@ -111,11 +112,16 @@ class Wrapper extends React.PureComponent {
       wrapper,
       locator: { instanceId },
     } = this.props
-    if (
-      !wrapper ||
-      !apps.find(app => addressesEqual(app.proxyAddress, instanceId))
-    ) {
-      console.error('The app cannot be connected to aragon.js')
+    if (!wrapper) {
+      console.error(
+        `Attempted to connect app (${instanceId}) before aragonAPI was ready`
+      )
+      return
+    }
+    if (!apps.find(app => addressesEqual(app.proxyAddress, instanceId))) {
+      console.error(
+        `The requested app (${instanceId}) could not be found in the installed apps`
+      )
       return
     }
 
@@ -159,12 +165,44 @@ class Wrapper extends React.PureComponent {
     this.openApp(this.props.locator.instanceId, params)
   }
 
-  isAppInstalled(instanceId) {
-    return (
-      staticApps.has(instanceId) &&
-      Boolean(this.getAppByProxyAddress(instanceId))
-    )
-  }
+  getAppInstancesGroups = memoize(apps =>
+    apps.reduce((groups, app) => {
+      const group = groups.find(({ appId }) => appId === app.appId)
+
+      const {
+        // This is not technically fully true, but let's assume that only these
+        // aspects be different between multiple instances of the same app
+        codeAddress: instanceCodeAddress,
+        identifier: instanceIdentifier,
+        proxyAddress: instanceProxyAddress,
+        ...sharedAppInfo
+      } = app
+
+      const instance = {
+        codeAddress: instanceCodeAddress,
+        identifier: instanceIdentifier,
+        instanceId: instanceProxyAddress,
+        proxyAddress: instanceProxyAddress,
+      }
+
+      // Append the instance to the existing app group
+      if (group) {
+        group.instances.push(instance)
+        return groups
+      }
+
+      return groups.concat([
+        {
+          app: sharedAppInfo,
+          appId: app.appId,
+          name: app.name,
+          instances: [instance],
+          hasWebApp: app.hasWebApp,
+          repoName: app.appName,
+        },
+      ])
+    }, [])
+  )
 
   render() {
     const {
@@ -192,7 +230,7 @@ class Wrapper extends React.PureComponent {
     return (
       <Main visible={visible}>
         <Preferences
-          locator={locator}
+          dao={locator.dao}
           opened={preferencesOpened}
           onClose={this.handleClosePreferences}
           wrapper={wrapper}
@@ -200,7 +238,8 @@ class Wrapper extends React.PureComponent {
         <BannerWrapper>{banner}</BannerWrapper>
         <CombinedPanel
           activeInstanceId={locator.instanceId}
-          apps={apps.filter(app => app.hasWebApp)}
+          appInstanceGroups={this.getAppInstancesGroups(apps)}
+          apps={apps}
           appsStatus={appsStatus}
           autoClosing={autoClosingPanel}
           connected={connected}
@@ -220,7 +259,7 @@ class Wrapper extends React.PureComponent {
         <SignerPanel
           account={account}
           apps={apps}
-          locator={locator}
+          dao={locator.dao}
           onRequestEnable={onRequestEnable}
           transactionBag={transactionBag}
           walletNetwork={walletNetwork}
@@ -239,12 +278,14 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       locator,
       permissionsLoading,
+      repos,
       walletNetwork,
       walletWeb3,
       wrapper,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
+    const reposLoading = appsLoading || (apps.length && !repos.length)
 
     if (instanceId === 'home') {
       return (
@@ -252,7 +293,7 @@ class Wrapper extends React.PureComponent {
           apps={apps}
           appsLoading={appsLoading}
           connected={connected}
-          locator={locator}
+          dao={locator.dao}
           onMessage={this.handleAppMessage}
           onOpenApp={this.openApp}
         />
@@ -273,7 +314,16 @@ class Wrapper extends React.PureComponent {
     }
 
     if (instanceId === 'apps') {
-      return <Apps onMessage={this.handleAppMessage} />
+      return (
+        <AppCenter
+          appInstanceGroups={this.getAppInstancesGroups(apps)}
+          params={params}
+          repos={repos}
+          reposLoading={reposLoading}
+          onMessage={this.handleAppMessage}
+          onParamsRequest={this.handleParamsRequest}
+        />
+      )
     }
 
     if (instanceId === 'settings') {
