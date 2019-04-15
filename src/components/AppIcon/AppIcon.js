@@ -53,7 +53,7 @@ const AppIconContent = ({ app, size, src }) => {
     return <IconHome size={size} />
   }
   if (app && app.baseUrl) {
-    const iconUrl = appIconUrl(app)
+    const iconUrl = appIconUrl(app, size)
     return (
       // Tries to load the app icon while displaying the default one.
       <RemoteImage size={size} src={iconUrl}>
