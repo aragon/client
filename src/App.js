@@ -71,7 +71,9 @@ class App extends React.Component {
     showDeprecatedBanner: false,
     transactionBag: null,
     walletNetwork: '',
-    walletWeb3: null,
+    walletProviderId: identifyProvider(web3Providers.wallet),
+    walletWeb3: getWeb3(web3Providers.wallet),
+    web3: getWeb3(web3Providers.default),
     wrapper: null,
   }
 
@@ -81,12 +83,6 @@ class App extends React.Component {
     const { pathname, search } = this.history.location
     this.handleHistoryChange({ pathname, search })
     this.history.listen(this.handleHistoryChange)
-
-    this.setState({
-      walletWeb3: getWeb3(web3Providers.wallet),
-      web3: getWeb3(web3Providers.default),
-      walletProviderId: identifyProvider(web3Providers.wallet),
-    })
 
     pollMainAccount(web3Providers.wallet, {
       onAccount: (account = null) => {
