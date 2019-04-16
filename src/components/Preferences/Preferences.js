@@ -156,7 +156,7 @@ const AnimatedWrap = styled(animated.div)`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: ${({ smallView }) => (smallView ? 2 : 4)};
+  z-index: ${({ smallView }) => (smallView ? 2 : 5)};
   min-width: 320px;
 `
 

@@ -4,25 +4,27 @@ import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import throttle from 'lodash.throttle'
 import color from 'onecolor'
-import { ButtonBase, Viewport, springs, theme, unselectable } from '@aragon/ui'
+import { ButtonBase, springs, theme, unselectable } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import {
   AppInstanceGroupType,
   AppsStatusType,
   DaoAddressType,
+  DaoStatusType,
   EthereumAddressType,
 } from '../../prop-types'
+import { DAO_STATUS_LOADING } from '../../symbols'
 import { staticApps } from '../../static-apps'
 import MenuPanelFooter from './MenuPanelFooter'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import NotificationAlert from '../Notifications/NotificationAlert'
+import ActivityAlert from '../Activity/ActivityAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
 import IconArrow from '../../icons/IconArrow'
 
-export const SHADOW_WIDTH = 15
-export const MENU_WIDTH = 220
+export const MENU_PANEL_SHADOW_WIDTH = 15
+export const MENU_PANEL_WIDTH = 220
 export const MENU_ITEM_HEIGHT = 40
 
 const APP_APPS_CENTER = staticApps.get('apps').app
@@ -49,28 +51,31 @@ class MenuPanel extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
     activeInstanceId: PropTypes.string,
+    activityToggleRef: PropTypes.any,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
-    notifications: PropTypes.number,
-    onNotificationClicked: PropTypes.func.isRequired,
+    daoStatus: DaoStatusType.isRequired,
+    onActivityButtonClick: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
+    unreadActivityCount: PropTypes.number,
     viewportHeight: PropTypes.number,
   }
 
   _animateTimer = -1
   _contentRef = React.createRef()
   _innerContentRef = React.createRef()
+  _activityToggle = React.createRef()
 
   state = {
-    notifications: [],
-    systemAppsOpened: systemAppsOpenedState.isOpen(),
     animate: false,
+    notifications: [],
     scrollVisible: false,
+    systemAppsOpened: systemAppsOpenedState.isOpen(),
   }
 
   componentDidMount() {
@@ -121,36 +126,43 @@ class MenuPanel extends React.PureComponent {
 
   render() {
     const {
+      activityToggleRef,
       account,
       appInstanceGroups,
       connected,
       daoAddress,
-      onNotificationClicked,
+      daoStatus,
+      onActivityButtonClick,
       onOpenPreferences,
+      unreadActivityCount,
       onRequestEnable,
-      notifications,
     } = this.props
+
     const { animate, scrollVisible, systemAppsOpened } = this.state
+
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
-
     const menuApps = [APP_HOME, appGroups]
-
     const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_SETTINGS]
 
     return (
       <Main>
         <In>
           <Header>
-            <OrganizationSwitcher
-              currentDao={{
-                name: daoAddress.domain,
-                address: daoAddress.address,
-              }}
-            />
-            <NotificationAlert
-              notifications={notifications}
-              onClick={onNotificationClicked}
-            />
+            <HeaderSlot css="width: 170px">
+              <OrganizationSwitcher
+                loading={daoStatus === DAO_STATUS_LOADING}
+                currentDao={{
+                  name: daoAddress.domain,
+                  address: daoAddress.address,
+                }}
+              />
+            </HeaderSlot>
+            <HeaderSlot css="width: 50px" ref={activityToggleRef}>
+              <ActivityAlert
+                onClick={onActivityButtonClick}
+                unreadActivityCount={unreadActivityCount}
+              />
+            </HeaderSlot>
           </Header>
           <Content ref={this._contentRef}>
             <div className="in" ref={this._innerContentRef}>
@@ -299,106 +311,6 @@ class MenuPanel extends React.PureComponent {
   }
 }
 
-class AnimatedMenuPanel extends React.Component {
-  state = {
-    animate: false,
-  }
-  _animateTimer = -1
-  componentDidMount() {
-    this.setState({ animate: this.props.autoClosing })
-  }
-  componentDidUpdate(prevProps) {
-    this.updateAnimate(prevProps)
-  }
-  componentWillUnmount() {
-    clearTimeout(this._animateTimer)
-  }
-  updateAnimate(prevProps) {
-    if (prevProps.autoClosing === this.props.autoClosing) {
-      return
-    }
-
-    // If we autoclosing has changed, it means we are switching from
-    // autoclosing to fixed or the opposite, and we should stop animating the
-    // panel for a short period of time.
-    this.setState({ animate: false })
-    this._animateTimer = setTimeout(() => {
-      this.setState({ animate: true })
-    }, 0)
-  }
-
-  render() {
-    const { animate } = this.state
-    const {
-      swipeProgress,
-      onCloseMenuPanel,
-      autoClosing,
-      ...props
-    } = this.props
-    return (
-      <Spring
-        from={{ progress: 0 }}
-        to={{ progress: swipeProgress }}
-        config={springs.lazy}
-        immediate={!animate}
-        native
-      >
-        {({ progress }) => {
-          return (
-            <React.Fragment>
-              <Wrap
-                style={{
-                  position: autoClosing ? 'absolute' : 'relative',
-                  pointerEvents: swipeProgress === 1 ? 'auto' : 'none',
-                  transform: progress.interpolate(
-                    v =>
-                      `
-                      translate3d(
-                        calc(
-                          ${-100 * (1 - v)}% -
-                          ${SHADOW_WIDTH * (1 - v)}px
-                        ),
-                        0, 0
-                      )
-                    `
-                  ),
-                  opacity: progress.interpolate(v => Number(v > 0)),
-                }}
-              >
-                <Viewport>
-                  {({ height }) => (
-                    <MenuPanel viewportHeight={height} {...props} />
-                  )}
-                </Viewport>
-              </Wrap>
-              {autoClosing && (
-                <Overlay
-                  onClick={onCloseMenuPanel}
-                  style={{
-                    /* by leaving a 1px edge Android users can swipe to open
-                     * from the edge of their screen when an iframe app is being
-                     * used */
-                    width: progress.interpolate(p =>
-                      p === 0 ? '1px' : '100vw'
-                    ),
-                    opacity: progress,
-                  }}
-                />
-              )}
-            </React.Fragment>
-          )
-        }}
-      </Spring>
-    )
-  }
-}
-
-AnimatedMenuPanel.propTypes = {
-  autoClosing: PropTypes.bool,
-  swipeProgress: PropTypes.number.isRequired,
-  onCloseMenuPanel: PropTypes.func.isRequired,
-}
-
 const SystemAppsToggle = styled(ButtonBase)`
   position: relative;
   width: 100%;
@@ -453,20 +365,6 @@ const SystemAppsToggleShadow = props => (
   </div>
 )
 
-const Overlay = styled(animated.div)`
-  position: absolute;
-  z-index: 2;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
-`
-
-const Wrap = styled(animated.div)`
-  z-index: 3;
-  width: ${MENU_WIDTH}px;
-  height: 100vh;
-  flex: none;
-`
-
 const Main = styled.div`
   width: 100%;
   height: 100%;
@@ -485,32 +383,21 @@ const In = styled.div`
   flex-shrink: 1;
   background: #fff;
   border-right: 1px solid ${theme.contentBorder};
-  box-shadow: 1px 0 ${SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
 `
 
 const Header = styled.div`
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
   height: 64px;
   border-bottom: 1px solid ${theme.contentBorder};
+`
 
-  .actions {
-    display: flex;
-  }
-  .actions a {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    color: ${theme.textSecondary};
-    cursor: pointer;
-    outline: 0;
-  }
-  .actions a:hover {
-    color: ${theme.textPrimary};
-  }
+const HeaderSlot = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
 `
 
 const Content = styled.nav`
@@ -534,5 +421,4 @@ const Content = styled.nav`
     align-items: center;
   }
 `
-
-export default AnimatedMenuPanel
+export default MenuPanel

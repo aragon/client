@@ -8,16 +8,15 @@ import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import Preferences from './components/Preferences/Preferences'
-import MenuPanel from './components/MenuPanel/MenuPanel'
-import SwipeContainer from './components/MenuPanel/SwipeContainer'
+import CombinedPanel from './components/MenuPanel/CombinedPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
-import NotificationBar from './components/Notifications/NotificationBar'
 import {
   AppType,
   AppsStatusType,
   AragonType,
   DaoAddressType,
+  DaoStatusType,
   EthereumAddressType,
   RepoType,
 } from './prop-types'
@@ -40,6 +39,7 @@ class Wrapper extends React.PureComponent {
     ]),
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
+    daoStatus: DaoStatusType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
@@ -48,9 +48,11 @@ class Wrapper extends React.PureComponent {
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
+    visible: PropTypes.bool.isRequired,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
     walletWeb3: PropTypes.object,
+    web3: PropTypes.object,
     wrapper: AragonType,
   }
 
@@ -67,9 +69,6 @@ class Wrapper extends React.PureComponent {
   state = {
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
-    notificationOpen: false,
-    notifications: [],
-    queuedNotifications: [],
   }
 
   componentDidUpdate(prevProps) {
@@ -153,9 +152,6 @@ class Wrapper extends React.PureComponent {
   handleMenuPanelClose = () => {
     this.setState({ menuPanelOpened: false })
   }
-  handleNotificationClicked = () => {
-    this.setState(state => ({ notificationOpen: !state.notificationOpen }))
-  }
   handleClosePreferences = () => {
     this.setState({ preferencesOpened: false })
   }
@@ -168,18 +164,6 @@ class Wrapper extends React.PureComponent {
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, params)
-  }
-
-  handleNotificationsCleared = e => {
-    e.preventDefault()
-    const { notificationOpen, notifications } = this.state
-    this.setState({ notifications: [], queuedNotifications: [] })
-    if (notificationOpen) {
-      setTimeout(
-        () => this.setState({ notificationOpen: false }),
-        notifications.length ? 500 : 0
-      )
-    }
   }
 
   getAppInstancesGroups = memoize(apps =>
@@ -230,24 +214,23 @@ class Wrapper extends React.PureComponent {
       banner,
       connected,
       daoAddress,
+      daoStatus,
       locator,
       onRequestAppsReload,
       onRequestEnable,
       transactionBag,
+      visible,
       walletNetwork,
       walletProviderId,
       walletWeb3,
+      web3,
       wrapper,
     } = this.props
-    const {
-      menuPanelOpened,
-      notifications,
-      notificationOpen,
-      preferencesOpened,
-    } = this.state
+
+    const { menuPanelOpened, preferencesOpened } = this.state
 
     return (
-      <Main>
+      <Main visible={visible}>
         <Preferences
           dao={locator.dao}
           opened={preferencesOpened}
@@ -255,43 +238,28 @@ class Wrapper extends React.PureComponent {
           wrapper={wrapper}
         />
         <BannerWrapper>{banner}</BannerWrapper>
-        <SwipeContainer
+        <CombinedPanel
+          account={account}
+          activeInstanceId={locator.instanceId}
+          appInstanceGroups={this.getAppInstancesGroups(apps)}
+          apps={apps}
+          appsStatus={appsStatus}
           autoClosing={autoClosingPanel}
-          menuPanelOpened={menuPanelOpened}
+          connected={connected}
+          daoAddress={daoAddress}
+          daoStatus={daoStatus}
           onMenuPanelClose={this.handleMenuPanelClose}
           onMenuPanelOpen={this.handleMenuPanelOpen}
+          onOpenApp={this.openApp}
+          onOpenPreferences={this.handleOpenPreferences}
+          onRequestAppsReload={onRequestAppsReload}
+          onRequestEnable={onRequestEnable}
+          opened={menuPanelOpened}
         >
-          {progress => (
-            <React.Fragment>
-              <MenuPanel
-                account={account}
-                appInstanceGroups={this.getAppInstancesGroups(apps)}
-                appsStatus={appsStatus}
-                activeInstanceId={locator.instanceId}
-                connected={connected}
-                notifications={notifications.length}
-                daoAddress={daoAddress}
-                swipeProgress={progress}
-                autoClosing={autoClosingPanel}
-                onOpenApp={this.openApp}
-                onCloseMenuPanel={this.handleMenuPanelClose}
-                onOpenPreferences={this.handleOpenPreferences}
-                onRequestAppsReload={onRequestAppsReload}
-                onRequestEnable={onRequestEnable}
-                onNotificationClicked={this.handleNotificationClicked}
-                notificationOpen={notificationOpen}
-              />
-              <AppScreen>
-                <NotificationBar
-                  open={notificationOpen}
-                  notifications={notifications}
-                  onClearAll={this.handleNotificationsCleared}
-                />
-                {this.renderApp(locator.instanceId, locator.params)}
-              </AppScreen>
-            </React.Fragment>
-          )}
-        </SwipeContainer>
+          <AppScreen>
+            {this.renderApp(locator.instanceId, locator.params)}
+          </AppScreen>
+        </CombinedPanel>
         <SignerPanel
           account={account}
           apps={apps}
@@ -301,6 +269,7 @@ class Wrapper extends React.PureComponent {
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
+          web3={web3}
         />
       </Main>
     )
@@ -398,6 +367,7 @@ class Wrapper extends React.PureComponent {
 }
 
 const Main = styled.div`
+  display: ${p => (p.visible ? 'flex' : 'none')};
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -437,8 +407,10 @@ const LoadingApps = () => (
   </div>
 )
 
-export default props => (
-  <Viewport>
-    {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
-  </Viewport>
-)
+export default props => {
+  return (
+    <Viewport>
+      {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
+    </Viewport>
+  )
+}
