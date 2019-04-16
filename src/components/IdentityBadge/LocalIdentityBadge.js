@@ -56,7 +56,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [])
+  }, [entity])
 
   return (
     <IdentityBadgeWithNetwork
