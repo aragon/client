@@ -2,13 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, SafeLink, Viewport } from '@aragon/ui'
-import defaultAppIcon from '../../../assets/default-app-icon.svg'
+import AppIcon from '../../../components/AppIcon/AppIcon'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
-import RemoteImage from '../../../components/RemoteImage'
 import { TextLabel } from '../../../components/TextStyles'
 import { RepoType } from '../../../prop-types'
-import { appIconUrl, GU } from '../../../utils'
+import { GU } from '../../../utils'
 import Screenshots from '../Screenshots'
 
 // Exclude the width of MenuPanel
@@ -33,7 +32,6 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
     },
   } = repo
   const canUpgrade = currentVersion.version !== latestVersion
-  const iconUrl = appIconUrl({ baseUrl, icons })
 
   return (
     <Viewport>
@@ -67,21 +65,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                     margin: 0 ${3 * GU}px 0 0;
                   `}
                 >
-                  <RemoteImage src={iconUrl}>
-                    {({ exists }) => (
-                      <img
-                        alt=""
-                        src={exists ? iconUrl : defaultAppIcon}
-                        width="80"
-                        height="80"
-                        css={`
-                          display: block;
-                          width: 80px;
-                          height: 80px;
-                        `}
-                      />
-                    )}
-                  </RemoteImage>
+                  <AppIcon app={{ baseUrl, icons }} size={80} />
                 </div>
                 <div>
                   <h1
