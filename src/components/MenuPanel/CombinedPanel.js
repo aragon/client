@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { Viewport, springs } from '@aragon/ui'
-import { AppType, AppsStatusType, DaoStatusType } from '../../prop-types'
+import { AppType, AppsStatusType, DaoStatusType, EthereumAddressType } from '../../prop-types'
 import { lerp } from '../../math-utils'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import MenuPanel, {
@@ -19,6 +19,7 @@ import SwipeContainer from './SwipeContainer'
 // This component combines MenuPanel and ActivityPanel together.
 class CombinedPanel extends React.Component {
   static propTypes = {
+    account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     autoClosing: PropTypes.bool,
@@ -29,6 +30,7 @@ class CombinedPanel extends React.Component {
     onMarkActivitiesRead: PropTypes.func.isRequired,
     onMenuPanelClose: PropTypes.func.isRequired,
     onMenuPanelOpen: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
     unreadActivityCount: PropTypes.number,
   }
 
@@ -97,12 +99,14 @@ class CombinedPanel extends React.Component {
   render() {
     const { animate, activityOpened } = this.state
     const {
+      account,
       apps,
       autoClosing,
       children,
       onClearActivities,
       onMenuPanelClose,
       onMenuPanelOpen,
+      onRequestEnable,
       opened,
       ...props
     } = this.props
@@ -167,11 +171,13 @@ class CombinedPanel extends React.Component {
                           <Viewport>
                             {({ height }) => (
                               <MenuPanel
+                                account={account}
+                                activityOpened={activityOpened}
+                                activityToggleRef={this._activityToggle}
                                 onActivityButtonClick={
                                   this.handleActivityButtonClick
                                 }
-                                activityOpened={activityOpened}
-                                activityToggleRef={this._activityToggle}
+                                onRequestEnable={onRequestEnable}
                                 viewportHeight={height}
                                 {...props}
                               />

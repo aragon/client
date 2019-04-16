@@ -11,6 +11,7 @@ import {
   AppsStatusType,
   DaoAddressType,
   DaoStatusType,
+  EthereumAddressType,
 } from '../../prop-types'
 import { DAO_STATUS_LOADING } from '../../symbols'
 import { staticApps } from '../../static-apps'
@@ -48,6 +49,7 @@ const interpolateToggleElevation = (value, fn = v => v) =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
+    account: EthereumAddressType,
     activeInstanceId: PropTypes.string,
     activityToggleRef: PropTypes.any,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
@@ -59,6 +61,7 @@ class MenuPanel extends React.PureComponent {
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
+    onRequestEnable: PropTypes.func.isRequired,
     unreadActivityCount: PropTypes.number,
     viewportHeight: PropTypes.number,
   }
@@ -124,6 +127,7 @@ class MenuPanel extends React.PureComponent {
   render() {
     const {
       activityToggleRef,
+      account,
       appInstanceGroups,
       connected,
       daoAddress,
@@ -131,6 +135,7 @@ class MenuPanel extends React.PureComponent {
       onActivityButtonClick,
       onOpenPreferences,
       unreadActivityCount,
+      onRequestEnable,
     } = this.props
 
     const { animate, scrollVisible, systemAppsOpened } = this.state
@@ -241,6 +246,8 @@ class MenuPanel extends React.PureComponent {
             />
           )}
           <MenuPanelFooter
+            account={account}
+            onRequestEnable={onRequestEnable}
             connected={connected}
             onOpenPreferences={onOpenPreferences}
           />

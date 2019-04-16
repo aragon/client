@@ -239,6 +239,7 @@ class Wrapper extends React.PureComponent {
         />
         <BannerWrapper>{banner}</BannerWrapper>
         <CombinedPanel
+          account={account}
           activeInstanceId={locator.instanceId}
           appInstanceGroups={this.getAppInstancesGroups(apps)}
           apps={apps}
@@ -252,6 +253,7 @@ class Wrapper extends React.PureComponent {
           onOpenApp={this.openApp}
           onOpenPreferences={this.handleOpenPreferences}
           onRequestAppsReload={onRequestAppsReload}
+          onRequestEnable={onRequestEnable}
           opened={menuPanelOpened}
         >
           <AppScreen>

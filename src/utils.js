@@ -1,5 +1,4 @@
 import resolvePathname from 'resolve-pathname'
-import defaultAppIcon from './assets/default-app-icon.svg'
 
 // Stealing this from recompose / etc for now
 export function compose(...funcs) {
@@ -14,18 +13,55 @@ export function compose(...funcs) {
   return funcs.reduce((a, b) => (...args) => a(b(...args)))
 }
 
-// Get the icon URL of an app
-export function appIconUrl(app) {
-  if (app && app.baseUrl && Array.isArray(app.icons)) {
-    const iconSize =
-      app.icons.find(({ sizes }) => sizes === '22x22') || app.icons[0]
-    return imgSrcFromBase(app.baseUrl, iconSize.src)
+// Get the icon URL of an app (legacy)
+export function legacyAppIconUrl(app) {
+  return app && app.baseUrl
+    ? resolvePathname('images/icon.svg', app.baseUrl)
+    : null
+}
+
+// Get the best icon for the given size.
+// Set size to -1 to get the largest one, or to 0 to get the smallest one.
+export function getAppIconBySize(icons, size = -1) {
+  // Collect the sizes and sort them
+  const sizes = icons
+    .map((icon, i) => {
+      const width = parseInt(icon.sizes.split('x')[1], 10)
+      return [i, isNaN(width) ? -1 : width]
+    })
+    .filter(size => size[1] !== -1)
+    .sort((a, b) => a[1] - b[1])
+
+  // No valid size found
+  if (sizes.length === 0) {
+    return null
   }
-  return defaultAppIcon
+
+  // No rendering size provided: return the largest icon.
+  if (size === -1) {
+    return icons[sizes[sizes.length - 1][0]]
+  }
+
+  // Find the first icon that is equal or larger than the provided size,
+  // or the largest one otherwise.
+  const iconIndex = (sizes.find(iconSize => iconSize[1] >= size) ||
+    sizes[sizes.length - 1])[0]
+  return icons[iconIndex]
 }
 
 export function imgSrcFromBase(baseUrl, imgSrc) {
   return resolvePathname(removeStartingSlash(imgSrc), baseUrl)
+}
+
+// Get the icon URL of an app.
+// `size` is the size at which the icon will be rendered.
+export function appIconUrl(app, size = -1) {
+  if (!app || !app.baseUrl || !Array.isArray(app.icons)) {
+    return null
+  }
+
+  const icon = getAppIconBySize(app.icons, size)
+  return icon ? imgSrcFromBase(app.baseUrl, icon.src) : null
 }
 
 export function isElectron() {
