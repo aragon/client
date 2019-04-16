@@ -22,7 +22,7 @@ import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
 import {
-  APP_MODE_HOME,
+  APP_MODE_START,
   APP_MODE_ORG,
   APP_MODE_SETUP,
   APPS_STATUS_ERROR,
@@ -448,7 +448,7 @@ class App extends React.Component {
 
                 <div css="position: relative; z-index: 2">
                   <Onboarding
-                    visible={mode === APP_MODE_HOME || mode === APP_MODE_SETUP}
+                    visible={mode === APP_MODE_START || mode === APP_MODE_SETUP}
                     account={account}
                     balance={balance}
                     banner={

@@ -1,4 +1,4 @@
-export const APP_MODE_HOME = Symbol('APP_MODE_HOME')
+export const APP_MODE_START = Symbol('APP_MODE_START')
 export const APP_MODE_ORG = Symbol('APP_MODE_ORG')
 export const APP_MODE_SETUP = Symbol('APP_MODE_SETUP')
 export const APP_MODE_INVALID = Symbol('APP_MODE_INVALID')

@@ -1,6 +1,6 @@
 import { staticApps } from './static-apps'
 import {
-  APP_MODE_HOME,
+  APP_MODE_START,
   APP_MODE_ORG,
   APP_MODE_SETUP,
   APP_MODE_INVALID,
@@ -33,7 +33,7 @@ import { isAddress, isValidEnsName } from './web3-utils'
  *
  *
  * Available modes:
- *   - home: the screen you see when opening /.
+ *   - start: the screen you see when opening /.
  *   - setup: the onboarding screens.
  *   - org: when the path starts with a DAO address.
  *   - invalid: the DAO given is not valid
@@ -42,9 +42,9 @@ export const parsePath = (pathname, search = '') => {
   const locator = { path: pathname + search }
   const [, ...parts] = pathname.split('/')
 
-  // Home
+  // Start
   if (!parts[0]) {
-    return { ...locator, mode: APP_MODE_HOME }
+    return { ...locator, mode: APP_MODE_START }
   }
 
   // Setup
@@ -62,7 +62,7 @@ export const parsePath = (pathname, search = '') => {
     return { ...locator, dao: parts[0], mode: APP_MODE_INVALID }
   }
 
-  // App
+  // Organization
   const rawParams = search && search.split('?p=')[1]
   let params = null
   if (rawParams) {

@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { Viewport, springs } from '@aragon/ui'
-import { AppType, AppsStatusType, DaoStatusType, EthereumAddressType } from '../../prop-types'
+import {
+  AppType,
+  AppsStatusType,
+  DaoStatusType,
+  EthereumAddressType,
+} from '../../prop-types'
 import { lerp } from '../../math-utils'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import MenuPanel, {
