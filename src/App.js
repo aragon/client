@@ -475,16 +475,16 @@ class App extends React.Component {
                         <DeprecatedBanner dao={dao} lightMode />
                       )
                     }
-                    walletNetwork={walletNetwork}
-                    walletProviderId={walletProviderId}
-                    onBuildDao={this.handleBuildDao}
                     daoCreationStatus={daoCreationStatus}
+                    onBuildDao={this.handleBuildDao}
                     onComplete={this.handleCompleteOnboarding}
                     onOpenOrganization={this.handleOpenOrganization}
                     onRequestEnable={this.handleRequestEnable}
                     onResetDaoBuilder={this.handleResetDaoBuilder}
                     selectorNetworks={selectorNetworks}
                     visible={mode === 'home' || mode === 'setup'}
+                    walletNetwork={walletNetwork}
+                    walletProviderId={walletProviderId}
                   />
                 </div>
               </ActivityProvider>
