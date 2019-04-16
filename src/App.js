@@ -455,7 +455,6 @@ class App extends React.Component {
                       daoStatus={daoStatus}
                       historyBack={this.historyBack}
                       historyPush={this.historyPush}
-                      identityIntent={identityIntent}
                       locator={locator}
                       onRequestAppsReload={this.handleRequestAppsReload}
                       onRequestEnable={this.handleRequestEnable}
@@ -463,7 +462,9 @@ class App extends React.Component {
                       repos={repos}
                       transactionBag={transactionBag}
                       walletNetwork={walletNetwork}
+                      walletProviderId={walletProviderId}
                       walletWeb3={walletWeb3}
+                      web3={web3}
                       wrapper={wrapper}
                     />
                   </div>

@@ -31,7 +31,6 @@ class Wrapper extends React.PureComponent {
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
-    daoStatus: DaoStatusType.isRequired,
     banner: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.shape({
@@ -40,6 +39,7 @@ class Wrapper extends React.PureComponent {
     ]),
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
+    daoStatus: DaoStatusType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
