@@ -121,7 +121,9 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                 <Heading2>Source code</Heading2>
                 <div>
                   {sourceUrl ? (
-                    <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
+                    <SafeLink href={sourceUrl} target="_blank">
+                      {sourceUrl}
+                    </SafeLink>
                   ) : (
                     'No source code link.'
                   )}
