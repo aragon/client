@@ -21,6 +21,9 @@ import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
 import {
+  APP_MODE_HOME,
+  APP_MODE_ORG,
+  APP_MODE_SETUP,
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
@@ -440,7 +443,7 @@ class App extends React.Component {
                 >
                   <div css="position: relative; z-index: 1">
                     <Wrapper
-                      visible={mode === 'app'}
+                      visible={mode === APP_MODE_ORG}
                       account={account}
                       apps={appsWithIdentifiers}
                       appsStatus={appsStatus}
@@ -468,6 +471,7 @@ class App extends React.Component {
 
                 <div css="position: relative; z-index: 2">
                   <Onboarding
+                    visible={mode === APP_MODE_HOME || mode === APP_MODE_SETUP}
                     account={account}
                     balance={balance}
                     banner={
@@ -482,7 +486,6 @@ class App extends React.Component {
                     onRequestEnable={this.handleRequestEnable}
                     onResetDaoBuilder={this.handleResetDaoBuilder}
                     selectorNetworks={selectorNetworks}
-                    visible={mode === 'home' || mode === 'setup'}
                     walletNetwork={walletNetwork}
                     walletProviderId={walletProviderId}
                   />

@@ -1,4 +1,11 @@
 import { staticApps } from './static-apps'
+import {
+  APP_MODE_HOME,
+  APP_MODE_ORG,
+  APP_MODE_SETUP,
+  APP_MODE_INVALID,
+} from './symbols'
+
 import { isAddress, isValidEnsName } from './web3-utils'
 
 /*
@@ -28,7 +35,7 @@ import { isAddress, isValidEnsName } from './web3-utils'
  * Available modes:
  *   - home: the screen you see when opening /.
  *   - setup: the onboarding screens.
- *   - app: when the path starts with a DAO address.
+ *   - org: when the path starts with a DAO address.
  *   - invalid: the DAO given is not valid
  */
 export const parsePath = (pathname, search = '') => {
@@ -37,13 +44,14 @@ export const parsePath = (pathname, search = '') => {
 
   // Home
   if (!parts[0]) {
-    return { ...locator, mode: 'home' }
+    return { ...locator, mode: APP_MODE_HOME }
   }
 
   // Setup
   if (parts[0] === 'setup') {
-    const [mode, step = null, ...setupParts] = parts
-    return { ...locator, mode, step, parts: setupParts }
+    const step = parts[1] || null
+    const setupParts = parts.slice(2)
+    return { ...locator, mode: APP_MODE_SETUP, step, parts: setupParts }
   }
 
   const validAddress = isAddress(parts[0])
@@ -51,7 +59,7 @@ export const parsePath = (pathname, search = '') => {
 
   // Exclude invalid DAO addresses
   if (!validAddress && !validDomain) {
-    return { ...locator, dao: parts[0], mode: 'invalid' }
+    return { ...locator, dao: parts[0], mode: APP_MODE_INVALID }
   }
 
   // App
@@ -69,7 +77,7 @@ export const parsePath = (pathname, search = '') => {
 
   const completeLocator = {
     ...locator,
-    mode: 'app',
+    mode: APP_MODE_ORG,
     dao,
     instanceId: instanceId || 'home',
     params,
