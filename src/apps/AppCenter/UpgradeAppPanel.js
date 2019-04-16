@@ -65,7 +65,9 @@ class UpgradeAppPanel extends React.PureComponent {
           <Heading2>Changelog</Heading2>
           <p>
             {changelogUrl ? (
-              <SafeLink href={changelogUrl}>{changelogUrl}</SafeLink>
+              <SafeLink href={changelogUrl} target="_blank">
+                {changelogUrl}
+              </SafeLink>
             ) : (
               'There is no changelog for this version.'
             )}
@@ -74,7 +76,9 @@ class UpgradeAppPanel extends React.PureComponent {
           <Heading2>Source code</Heading2>
           <p>
             {sourceUrl ? (
-              <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
+              <SafeLink href={sourceUrl} target="_blank">
+                {sourceUrl}
+              </SafeLink>
             ) : (
               'There is no available source for this app.'
             )}
