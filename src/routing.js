@@ -39,19 +39,18 @@ import { isAddress, isValidEnsName } from './web3-utils'
  *   - invalid: the DAO given is not valid
  */
 export const parsePath = (pathname, search = '') => {
-  const locator = { path: pathname + search }
+  const path = pathname + search
   const [, ...parts] = pathname.split('/')
 
   // Start
   if (!parts[0]) {
-    return { ...locator, mode: APP_MODE_START }
+    return { path, mode: APP_MODE_START }
   }
 
   // Setup
   if (parts[0] === 'setup') {
-    const step = parts[1] || null
-    const setupParts = parts.slice(2)
-    return { ...locator, mode: APP_MODE_SETUP, step, parts: setupParts }
+    const [, step = null, ...setupParts] = parts
+    return { path, mode: APP_MODE_SETUP, step, parts: setupParts }
   }
 
   const validAddress = isAddress(parts[0])
@@ -59,7 +58,7 @@ export const parsePath = (pathname, search = '') => {
 
   // Exclude invalid DAO addresses
   if (!validAddress && !validDomain) {
-    return { ...locator, dao: parts[0], mode: APP_MODE_INVALID }
+    return { path, dao: parts[0], mode: APP_MODE_INVALID }
   }
 
   // Organization
@@ -76,7 +75,7 @@ export const parsePath = (pathname, search = '') => {
   const [dao, instanceId, ...appParts] = parts
 
   const completeLocator = {
-    ...locator,
+    path,
     mode: APP_MODE_ORG,
     dao,
     instanceId: instanceId || 'home',
