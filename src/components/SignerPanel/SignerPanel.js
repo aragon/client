@@ -138,7 +138,7 @@ class SignerPanel extends React.PureComponent {
             ? getPretransactionDescription(intent)
             : intent.description
 
-          // : `Allow ${intent.name} to pull up to X tokens from your account`
+          const hasForwarder = intent.to !== intent.transaction.to
 
           // Create new activiy
           addTransactionActivity({
@@ -146,9 +146,7 @@ class SignerPanel extends React.PureComponent {
             from: intent.transaction.from,
             targetApp: intent.name,
             targetAppProxyAddress: intent.to,
-            // TODO: double check if there was actually a forwarder
-            // for the transaction and not set this if there wasn't.
-            forwarderProxyAddress: intent.transaction.to,
+            forwarderProxyAddress: hasForwarder ? intent.transaction.to : '',
             description,
           })
         })
