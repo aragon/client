@@ -460,7 +460,7 @@ class App extends React.Component {
                     onBuildDao={this.handleBuildDao}
                     onComplete={this.handleCompleteOnboarding}
                     onOpenOrganization={this.handleOpenOrganization}
-                    onRequestEnable={this.handleRequestEnable}
+                    onRequestEnable={enableWallet}
                     onResetDaoBuilder={this.handleResetDaoBuilder}
                     selectorNetworks={selectorNetworks}
                     walletNetwork={walletNetwork}
