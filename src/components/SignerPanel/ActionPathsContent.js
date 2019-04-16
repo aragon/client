@@ -81,7 +81,7 @@ class ActionPathsContent extends React.Component {
                     </SafeLink>
                   )
                 }
-                if (type === 'role') {
+                if (type === 'role' || type === 'kernelNamespace') {
                   return (
                     <span
                       key={index}
@@ -91,6 +91,23 @@ class ActionPathsContent extends React.Component {
                       `}
                     >
                       {value.name}
+                    </span>
+                  )
+                }
+                if (type === 'apmPackage') {
+                  return (
+                    <span
+                      key={index}
+                      css={`
+                        display: inline-flex;
+                        vertical-align: middle;
+                        margin-right: 4px;
+                      `}
+                    >
+                      <LocalIdentityBadge
+                        entity={value.name}
+                        fontSize="small"
+                      />
                     </span>
                   )
                 }

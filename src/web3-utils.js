@@ -197,4 +197,10 @@ export function shortenAddress(address, charsLength = 4) {
 }
 
 // Re-export some utilities from web3-utils
-export { fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils'
+export {
+  fromWei,
+  isAddress,
+  soliditySha3,
+  toChecksumAddress,
+  toWei,
+} from 'web3-utils'

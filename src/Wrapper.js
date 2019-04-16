@@ -322,11 +322,13 @@ class Wrapper extends React.PureComponent {
       return (
         <AppCenter
           appInstanceGroups={this.getAppInstancesGroups(apps)}
+          daoAddress={daoAddress}
           params={params}
           repos={repos}
           reposLoading={reposLoading}
           onMessage={this.handleAppMessage}
           onParamsRequest={this.handleParamsRequest}
+          wrapper={wrapper}
         />
       )
     }
