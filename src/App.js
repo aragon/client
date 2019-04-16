@@ -11,6 +11,7 @@ import initWrapper, {
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 import { getWeb3, getUnknownBalance, identifyProvider } from './web3-utils'
+import { enableWallet } from './wallet-utils'
 import { log } from './utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
@@ -99,27 +100,6 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
-  }
-
-  // Enable the web3 provider. There is no way to reliably know the enabled
-  // state of a provider, so we assume that if there is a provider but no
-  // account, the provider is locked and / or not enabled.
-  handleRequestEnable = () => {
-    const provider = web3Providers.wallet
-    if (!provider) {
-      return
-    }
-    // For providers supporting .enable() (EIP 1102 draft).
-    if (typeof provider.enable === 'function') {
-      provider.enable()
-      return
-    }
-    // For providers supporting EIP 1102 (final).
-    if (typeof provider.send === 'function') {
-      // Some providers (Metamask) don’t return a promise as defined in EIP
-      // 1102, so we can’t rely on it to know the connected accounts.
-      provider.send('eth_requestAccounts')
-    }
   }
 
   // Handle URL changes
@@ -428,36 +408,35 @@ class App extends React.Component {
                     identityIntent={identityIntent}
                     locator={locator}
                     onRequestAppsReload={this.handleRequestAppsReload}
-                    onRequestEnable={this.handleRequestEnable}
+                    onRequestEnable={enableWallet}
                     permissionsLoading={permissionsLoading}
-                    web3={web3}
                     repos={repos}
                     transactionBag={transactionBag}
                     walletNetwork={walletNetwork}
                     walletWeb3={walletWeb3}
+                    web3={web3}
                     wrapper={wrapper}
                   />
+                  <Onboarding
+                    banner={
+                      showDeprecatedBanner && (
+                        <DeprecatedBanner dao={dao} lightMode />
+                      )
+                    }
+                    visible={mode === 'home' || mode === 'setup'}
+                    account={account}
+                    balance={balance}
+                    walletNetwork={walletNetwork}
+                    walletProviderId={walletProviderId}
+                    onBuildDao={this.handleBuildDao}
+                    daoCreationStatus={daoCreationStatus}
+                    onComplete={this.handleCompleteOnboarding}
+                    onOpenOrganization={this.handleOpenOrganization}
+                    onRequestEnable={enableWallet}
+                    onResetDaoBuilder={this.handleResetDaoBuilder}
+                    selectorNetworks={selectorNetworks}
+                  />
                 </PermissionsProvider>
-
-                <Onboarding
-                  banner={
-                    showDeprecatedBanner && (
-                      <DeprecatedBanner dao={dao} lightMode />
-                    )
-                  }
-                  visible={mode === 'home' || mode === 'setup'}
-                  account={account}
-                  balance={balance}
-                  walletNetwork={walletNetwork}
-                  walletProviderId={walletProviderId}
-                  onBuildDao={this.handleBuildDao}
-                  daoCreationStatus={daoCreationStatus}
-                  onComplete={this.handleCompleteOnboarding}
-                  onOpenOrganization={this.handleOpenOrganization}
-                  onRequestEnable={this.handleRequestEnable}
-                  onResetDaoBuilder={this.handleResetDaoBuilder}
-                  selectorNetworks={selectorNetworks}
-                />
               </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>
