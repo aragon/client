@@ -101,11 +101,12 @@ class SignerPanel extends React.Component {
   }
 
   stateFromMsgSigBag({ requestingApp, message }) {
+    const messageToSign = message || ''
     return {
       intent: {
         description:
           'You are about to sign this message with the connected account',
-        message,
+        message: messageToSign,
         requestingApp,
       },
     }
@@ -143,15 +144,7 @@ class SignerPanel extends React.Component {
 
   async signMessage(message, account) {
     const { walletWeb3 } = this.props
-    return new Promise((resolve, reject) => {
-      walletWeb3.eth.personal.sign(message, account, (err, res) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(res)
-        }
-      })
-    })
+    return walletWeb3.eth.personal.sign(message, account)
   }
 
   handleSign = async (transaction, intent, pretransaction) => {
@@ -186,11 +179,8 @@ class SignerPanel extends React.Component {
 
     this.setState({ status: STATUS_SIGNING_MESSAGE })
     try {
-      const signatureHash = await this.signMessage(
-        signatureBag.message,
-        account
-      )
-      signatureBag.resolve(signatureHash)
+      const signature = await this.signMessage(signatureBag.message, account)
+      signatureBag.resolve(signature)
       this.setState({ signError: null, status: STATUS_MESSAGE_SIGNED })
       this.startClosing()
     } catch (err) {
@@ -242,14 +232,14 @@ class SignerPanel extends React.Component {
       status,
     } = this.state
 
-    const isTxSignReq = isTxSignerStatus(status)
+    const isTransaction = isTxSignerStatus(status)
 
     return (
       <SidePanel
         onClose={this.handleSignerClose}
         onTransitionEnd={this.handleSignerTransitionEnd}
         opened={panelOpened}
-        title={isTxSignReq ? 'Create transaction' : 'Sign Message'}
+        title={isTransaction ? 'Create transaction' : 'Sign Message'}
       >
         <Main>
           <Transition
@@ -270,7 +260,7 @@ class SignerPanel extends React.Component {
                       }}
                     >
                       <Screen>
-                        {isTxSignReq ? (
+                        {isTransaction ? (
                           <ConfirmTransaction
                             direct={directPath}
                             hasAccount={Boolean(account)}
