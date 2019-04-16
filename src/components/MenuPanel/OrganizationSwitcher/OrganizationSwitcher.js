@@ -100,25 +100,33 @@ const LoaderLabel = styled.span`
   font-size: 15px;
 `
 
-const OrganizationSwitcherWithFavorites = props =>
-  props.currentDao.address ? (
-    <FavoriteDaosConsumer>
-      {({ favoriteDaos, updateFavoriteDaos }) => (
-        <OrganizationSwitcher
-          {...props}
-          favoriteDaos={favoriteDaos}
-          updateFavoriteDaos={updateFavoriteDaos}
-        />
-      )}
-    </FavoriteDaosConsumer>
-  ) : (
-    <Loader>
-      <LoadingRing spin />
-      <LoaderLabel>Loading…</LoaderLabel>
-    </Loader>
-  )
+const OrganizationSwitcherWithFavorites = ({ loading, ...props }) => {
+  if (loading) {
+    return (
+      <Loader>
+        <LoadingRing spin />
+        <LoaderLabel>Loading…</LoaderLabel>
+      </Loader>
+    )
+  }
+  if (props.currentDao.address) {
+    return (
+      <FavoriteDaosConsumer>
+        {({ favoriteDaos, updateFavoriteDaos }) => (
+          <OrganizationSwitcher
+            {...props}
+            favoriteDaos={favoriteDaos}
+            updateFavoriteDaos={updateFavoriteDaos}
+          />
+        )}
+      </FavoriteDaosConsumer>
+    )
+  }
+  return null
+}
 
 OrganizationSwitcherWithFavorites.propTypes = {
+  loading: PropTypes.bool.isRequired,
   currentDao: DaoItemType.isRequired,
 }
 

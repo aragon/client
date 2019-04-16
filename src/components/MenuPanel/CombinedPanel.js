@@ -3,10 +3,14 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { Viewport, springs } from '@aragon/ui'
-import { ActivityContext } from '../../contexts/ActivityContext'
-import { AppType, EthereumAddressType } from '../../prop-types'
+import {
+  AppType,
+  AppsStatusType,
+  DaoStatusType,
+  EthereumAddressType,
+} from '../../prop-types'
 import { lerp } from '../../math-utils'
-import SwipeContainer from './SwipeContainer'
+import { ActivityContext } from '../../contexts/ActivityContext'
 import MenuPanel, {
   MENU_PANEL_WIDTH,
   MENU_PANEL_SHADOW_WIDTH,
@@ -15,14 +19,17 @@ import ActivityPanel, {
   ACTIVITY_PANEL_WIDTH,
   ACTIVITY_PANEL_SHADOW_WIDTH,
 } from '../Activity/ActivityPanel'
+import SwipeContainer from './SwipeContainer'
 
 // This component combines MenuPanel and ActivityPanel together.
 class CombinedPanel extends React.Component {
   static propTypes = {
     account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
+    appsStatus: AppsStatusType.isRequired,
     autoClosing: PropTypes.bool,
     children: PropTypes.node,
+    daoStatus: DaoStatusType.isRequired,
     opened: PropTypes.bool,
     onClearActivities: PropTypes.func.isRequired,
     onMarkActivitiesRead: PropTypes.func.isRequired,
@@ -135,45 +142,69 @@ class CombinedPanel extends React.Component {
               return (
                 <React.Fragment>
                   <Spring
-                    from={{ menuPanelProgress: menuPanelValue }}
-                    to={{ menuPanelProgress: menuPanelValue }}
+                    from={{
+                      menuPanelProgress: menuPanelValue,
+                      overlayProgress: swipeProgress,
+                    }}
+                    to={{
+                      menuPanelProgress: menuPanelValue,
+                      overlayProgress: swipeProgress,
+                    }}
                     config={springs.lazy}
                     immediate={!animate}
                     native
                   >
-                    {({ menuPanelProgress }) => (
-                      <Wrap
-                        style={{
-                          position: autoClosing ? 'absolute' : 'relative',
-                          zIndex: '4',
-                          pointerEvents: swipeProgress === 1 ? 'auto' : 'none',
-                          transform: menuPanelProgress.interpolate(
-                            v =>
-                              `translate3d(
+                    {({ menuPanelProgress, overlayProgress }) => (
+                      <React.Fragment>
+                        <Wrap
+                          style={{
+                            position: autoClosing ? 'absolute' : 'relative',
+                            zIndex: '4',
+                            pointerEvents:
+                              swipeProgress === 1 ? 'auto' : 'none',
+                            transform: menuPanelProgress.interpolate(
+                              v =>
+                                `translate3d(
                                 ${lerp(
                                   v,
                                   -(MENU_PANEL_WIDTH + MENU_PANEL_SHADOW_WIDTH),
                                   0
                                 )}px, 0, 0)`
-                          ),
-                        }}
-                      >
-                        <Viewport>
-                          {({ height }) => (
-                            <MenuPanel
-                              account={account}
-                              activityOpened={activityOpened}
-                              activityToggleRef={this._activityToggle}
-                              onActivityButtonClick={
-                                this.handleActivityButtonClick
-                              }
-                              onRequestEnable={onRequestEnable}
-                              viewportHeight={height}
-                              {...props}
-                            />
-                          )}
-                        </Viewport>
-                      </Wrap>
+                            ),
+                          }}
+                        >
+                          <Viewport>
+                            {({ height }) => (
+                              <MenuPanel
+                                account={account}
+                                activityOpened={activityOpened}
+                                activityToggleRef={this._activityToggle}
+                                onActivityButtonClick={
+                                  this.handleActivityButtonClick
+                                }
+                                onRequestEnable={onRequestEnable}
+                                viewportHeight={height}
+                                {...props}
+                              />
+                            )}
+                          </Viewport>
+                        </Wrap>
+                        {autoClosing && (
+                          <Overlay
+                            onClick={onMenuPanelClose}
+                            style={{
+                              zIndex: '2',
+                              /* by leaving a 1px edge Android users can swipe to open
+                               * from the edge of their screen when an iframe app is being
+                               * used */
+                              width: overlayProgress.interpolate(p =>
+                                p === 0 ? '1px' : '100vw'
+                              ),
+                              opacity: overlayProgress,
+                            }}
+                          />
+                        )}
+                      </React.Fragment>
                     )}
                   </Spring>
                   <animated.div
@@ -218,21 +249,6 @@ class CombinedPanel extends React.Component {
                       shouldClose={this.shouldCloseActivityPanel}
                     />
                   </animated.div>
-                  {autoClosing && (
-                    <Overlay
-                      onClick={onMenuPanelClose}
-                      style={{
-                        zIndex: '2',
-                        /* by leaving a 1px edge Android users can swipe to open
-                         * from the edge of their screen when an iframe app is being
-                         * used */
-                        width: combinedPanelProgress.interpolate(p =>
-                          p === 0 ? '1px' : '100vw'
-                        ),
-                        opacity: combinedPanelProgress,
-                      }}
-                    />
-                  )}
                   {children}
                 </React.Fragment>
               )

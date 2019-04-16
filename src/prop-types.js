@@ -4,6 +4,11 @@ import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
+  APPS_STATUS_UNLOADED,
+  DAO_STATUS_ERROR,
+  DAO_STATUS_READY,
+  DAO_STATUS_LOADING,
+  DAO_STATUS_UNLOADED,
 } from './symbols'
 import { isAddress } from './web3-utils'
 
@@ -102,6 +107,14 @@ export const AppsStatusType = PropTypes.oneOf([
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
+  APPS_STATUS_UNLOADED,
+])
+
+export const DaoStatusType = PropTypes.oneOf([
+  DAO_STATUS_ERROR,
+  DAO_STATUS_READY,
+  DAO_STATUS_LOADING,
+  DAO_STATUS_UNLOADED,
 ])
 
 export const AragonType = PropTypes.instanceOf(Aragon)

@@ -10,8 +10,10 @@ import {
   AppInstanceGroupType,
   AppsStatusType,
   DaoAddressType,
+  DaoStatusType,
   EthereumAddressType,
 } from '../../prop-types'
+import { DAO_STATUS_LOADING } from '../../symbols'
 import { staticApps } from '../../static-apps'
 import MenuPanelFooter from './MenuPanelFooter'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
@@ -54,6 +56,7 @@ class MenuPanel extends React.PureComponent {
     appsStatus: AppsStatusType.isRequired,
     connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
+    daoStatus: DaoStatusType.isRequired,
     onActivityButtonClick: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
     onOpenPreferences: PropTypes.func.isRequired,
@@ -128,6 +131,7 @@ class MenuPanel extends React.PureComponent {
       appInstanceGroups,
       connected,
       daoAddress,
+      daoStatus,
       onActivityButtonClick,
       onOpenPreferences,
       unreadActivityCount,
@@ -146,6 +150,7 @@ class MenuPanel extends React.PureComponent {
           <Header>
             <HeaderSlot css="width: 170px">
               <OrganizationSwitcher
+                loading={daoStatus === DAO_STATUS_LOADING}
                 currentDao={{
                   name: daoAddress.domain,
                   address: daoAddress.address,

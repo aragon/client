@@ -16,6 +16,7 @@ import {
   AppsStatusType,
   AragonType,
   DaoAddressType,
+  DaoStatusType,
   EthereumAddressType,
   RepoType,
 } from './prop-types'
@@ -38,6 +39,7 @@ class Wrapper extends React.PureComponent {
     ]),
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
+    daoStatus: DaoStatusType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     locator: PropTypes.object.isRequired,
@@ -46,6 +48,7 @@ class Wrapper extends React.PureComponent {
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
+    visible: PropTypes.bool.isRequired,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
     walletWeb3: PropTypes.object,
@@ -211,10 +214,12 @@ class Wrapper extends React.PureComponent {
       banner,
       connected,
       daoAddress,
+      daoStatus,
       locator,
       onRequestAppsReload,
       onRequestEnable,
       transactionBag,
+      visible,
       walletNetwork,
       walletProviderId,
       walletWeb3,
@@ -225,7 +230,7 @@ class Wrapper extends React.PureComponent {
     const { menuPanelOpened, preferencesOpened } = this.state
 
     return (
-      <Main>
+      <Main visible={visible}>
         <Preferences
           dao={locator.dao}
           opened={preferencesOpened}
@@ -242,6 +247,7 @@ class Wrapper extends React.PureComponent {
           autoClosing={autoClosingPanel}
           connected={connected}
           daoAddress={daoAddress}
+          daoStatus={daoStatus}
           onMenuPanelClose={this.handleMenuPanelClose}
           onMenuPanelOpen={this.handleMenuPanelOpen}
           onOpenApp={this.openApp}
@@ -361,6 +367,7 @@ class Wrapper extends React.PureComponent {
 }
 
 const Main = styled.div`
+  display: ${p => (p.visible ? 'flex' : 'none')};
   display: flex;
   flex-direction: column;
   height: 100vh;
