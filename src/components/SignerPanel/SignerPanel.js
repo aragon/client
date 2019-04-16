@@ -135,8 +135,8 @@ class SignerPanel extends React.PureComponent {
 
           // Pretransactions are for so the app can get approval
           const description = isPretransaction
-            ? intent.description
-            : getPretransactionDescription(intent)
+            ? getPretransactionDescription(intent)
+            : intent.description
 
           // : `Allow ${intent.name} to pull up to X tokens from your account`
 
