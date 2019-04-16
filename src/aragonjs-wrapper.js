@@ -226,9 +226,11 @@ const subscribe = (
     onApps,
     onPermissions,
     onForwarders,
-    onTransaction,
-    onSignatures,
+    onAppIdentifiers,
+    onInstalledRepos,
     onIdentityIntent,
+    onSignatures,
+    onTransaction,
   },
   { ipfsConf }
 ) => {
@@ -236,14 +238,26 @@ const subscribe = (
     apps,
     permissions,
     forwarders,
-    transactions,
-    signatures,
+    appIdentifiers,
+    installedRepos,
     identityIntents,
+    signatures,
+    transactions,
   } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
+    permissions: permissions.subscribe(onPermissions),
+    forwarders: forwarders.subscribe(onForwarders),
+    appIdentifiers: appIdentifiers.subscribe(onAppIdentifiers),
+    installedRepos: installedRepos.subscribe(onInstalledRepos),
+    identityIntents: identityIntents.subscribe(onIdentityIntent),
+    transactions: transactions.subscribe(onTransaction),
+    signatures: signatures.subscribe(onSignatures),
+    connectedApp: null,
+    connectedWorkers: workerSubscriptionPool,
+
     apps: apps.subscribe(apps => {
       onApps(
         prepareAppsForFrontend(
@@ -253,23 +267,17 @@ const subscribe = (
         )
       )
     }),
-    permissions: permissions.subscribe(onPermissions),
-    connectedApp: null,
-    connectedWorkers: workerSubscriptionPool,
-    forwarders: forwarders.subscribe(onForwarders),
-    identityIntents: identityIntents.subscribe(onIdentityIntent),
-    transactions: transactions.subscribe(onTransaction),
-    signatures: signatures.subscribe(onSignatures),
     workers: apps.subscribe(apps => {
-      // Asynchronously launch webworkers for each new app that has a background
-      // script defined
+      // Asynchronously launch webworkers for each new or updated app that has
+      // a background script defined
       applyAppOverrides(apps)
         .filter(app => app.script)
         .filter(
-          ({ proxyAddress }) => !workerSubscriptionPool.hasWorker(proxyAddress)
+          ({ proxyAddress, updated }) =>
+            updated || !workerSubscriptionPool.hasWorker(proxyAddress)
         )
         .forEach(async app => {
-          const { name, proxyAddress, script } = app
+          const { name, proxyAddress, script, updated } = app
           const baseUrl = appBaseUrl(app, ipfsConf.gateway)
 
           // If the app URL is empty, the script can’t be retrieved
@@ -299,6 +307,11 @@ const subscribe = (
 
           const connectApp = await wrapper.runApp(proxyAddress)
 
+          // If the app has been updated, reset its cache and restart its worker
+          if (updated && workerSubscriptionPool.hasWorker(proxyAddress)) {
+            await workerSubscriptionPool.removeWorker(proxyAddress, true)
+          }
+
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
@@ -317,7 +330,7 @@ const subscribe = (
             workerSubscriptionPool.addWorker({
               app,
               worker,
-              subscription: connectApp(provider).shutdown,
+              connection: connectApp(provider),
             })
           }
 
@@ -352,11 +365,13 @@ const initWrapper = async (
     onApps = noop,
     onPermissions = noop,
     onForwarders = noop,
+    onAppIdentifiers = noop,
+    onInstalledRepos = noop,
+    onIdentityIntent = noop,
     onTransaction = noop,
     onSignatures = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
-    onIdentityIntent = noop,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -414,9 +429,11 @@ const initWrapper = async (
       onApps,
       onPermissions,
       onForwarders,
-      onTransaction,
-      onSignatures,
+      onAppIdentifiers,
+      onInstalledRepos,
       onIdentityIntent,
+      onSignatures,
+      onTransaction,
     },
     { ipfsConf }
   )
@@ -428,7 +445,9 @@ const initWrapper = async (
     if (subscriptions.connectedApp) {
       subscriptions.connectedApp.unsubscribe()
     }
-    subscriptions.connectedApp = appContext.shutdown
+    subscriptions.connectedApp = {
+      unsubscribe: appContext.shutdown,
+    }
     return appContext
   }
 

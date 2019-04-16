@@ -9,6 +9,8 @@ import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
+import { ActivityContext } from '../../contexts/ActivityContext'
+
 import {
   STATUS_CONFIRMING_TX,
   STATUS_SIGNING_TX,
@@ -35,18 +37,27 @@ const INITIAL_STATE = {
   signError: null,
 }
 
-class SignerPanel extends React.Component {
+const RECIEPT_ERROR_STATUS = '0x0'
+
+const getPretransactionDescription = intent =>
+  `Allow ${intent.name} to ${intent.description.slice(0, 1).toLowerCase() +
+    intent.description.slice(1)}`
+
+class SignerPanel extends React.PureComponent {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
-    locator: PropTypes.object.isRequired,
-    onClose: PropTypes.func.isRequired,
+    dao: PropTypes.string,
     onRequestEnable: PropTypes.func.isRequired,
-    onTransactionSuccess: PropTypes.func.isRequired,
+    addTransactionActivity: PropTypes.func.isRequired,
+    setActivityConfirmed: PropTypes.func.isRequired,
+    setActivityFailed: PropTypes.func.isRequired,
+    setActivityNonce: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
     signatureBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
+    web3: PropTypes.object.isRequired,
     walletProviderId: PropTypes.string.isRequired,
   }
 
@@ -129,16 +140,62 @@ class SignerPanel extends React.Component {
     return { annotatedDescription, description, name, to, transaction }
   }
 
-  async signTransaction(transaction, intent) {
-    const { walletWeb3 } = this.props
+  signTransaction(transaction, intent, isPretransaction = false) {
+    const {
+      addTransactionActivity,
+      walletWeb3,
+      web3,
+      setActivityConfirmed,
+      setActivityFailed,
+      setActivityNonce,
+    } = this.props
+
     return new Promise((resolve, reject) => {
-      walletWeb3.eth.sendTransaction(transaction, (err, res) => {
-        if (err) {
+      walletWeb3.eth
+        .sendTransaction(transaction)
+        .on('transactionHash', transactionHash => {
+          resolve(transactionHash)
+          // Get account count/nonce for the transaction and update the activity item.
+          // May be useful in case there are multiple pending transactions to detect when
+          // a pending transaction with a lower nonce was manually re-sent by the user
+          // (most likely done through their Ethereum provider directly with a different
+          // gas price or transaction data that results in a different transaction hash).
+
+          web3.eth
+            .getTransaction(transactionHash)
+            .then(({ nonce }) => setActivityNonce({ transactionHash, nonce }))
+            .catch(console.error)
+
+          // Pretransactions are for so the app can get approval
+          const description = isPretransaction
+            ? getPretransactionDescription(intent)
+            : intent.description
+
+          const hasForwarder = intent.to !== intent.transaction.to
+
+          // Create new activiy
+          addTransactionActivity({
+            transactionHash,
+            from: intent.transaction.from,
+            targetApp: intent.name,
+            targetAppProxyAddress: intent.to,
+            forwarderProxyAddress: hasForwarder ? intent.transaction.to : '',
+            description,
+          })
+        })
+        .on('receipt', receipt => {
+          if (receipt.status === RECIEPT_ERROR_STATUS) {
+            // Faliure based on EIP 658
+            setActivityFailed(receipt.transactionHash)
+          } else {
+            setActivityConfirmed(receipt.transactionHash)
+          }
+        })
+        .on('error', err => {
+          // Called when signing failed
+          err && err.transactionHash && setActivityFailed(err.transactionHash)
           reject(err)
-        } else {
-          resolve(res)
-        }
-      })
+        })
     })
   }
 
@@ -148,29 +205,28 @@ class SignerPanel extends React.Component {
   }
 
   handleSign = async (transaction, intent, pretransaction) => {
-    const { transactionBag, onTransactionSuccess } = this.props
+    const { transactionBag } = this.props
 
     this.setState({ status: STATUS_SIGNING_TX })
 
     try {
       if (pretransaction) {
-        await this.signTransaction(pretransaction, intent)
+        await this.signTransaction(pretransaction, intent, true)
       }
 
-      const transactionRes = await this.signTransaction(transaction, intent)
-      // Create new notification
-      onTransactionSuccess && onTransactionSuccess(transaction)
+      const transactionHash = await this.signTransaction(
+        transaction,
+        intent,
+        false
+      )
 
-      transactionBag.accept(transactionRes)
+      transactionBag.resolve(transactionHash)
       this.setState({ signError: null, status: STATUS_SIGNED_TX })
       this.startClosing()
-
-      // Display an error in the panel if a transaction fail
     } catch (err) {
       transactionBag.reject(err)
+      // Display an error in the panel if the transaction failed
       this.setState({ signError: err, status: STATUS_ERROR_TX })
-
-      // TODO: the ongoing notification should be flagged faulty at this point ...
     }
   }
 
@@ -202,7 +258,6 @@ class SignerPanel extends React.Component {
 
   handleSignerClose = () => {
     this.setState({ panelOpened: false })
-    this.props.onClose && this.props.onClose()
   }
 
   handleSignerTransitionEnd = opened => {
@@ -215,7 +270,7 @@ class SignerPanel extends React.Component {
   render() {
     const {
       account,
-      locator,
+      dao,
       onRequestEnable,
       walletNetwork,
       walletProviderId,
@@ -266,7 +321,7 @@ class SignerPanel extends React.Component {
                             hasAccount={Boolean(account)}
                             hasWeb3={Boolean(getInjectedProvider())}
                             intent={intent}
-                            locator={locator}
+                            dao={dao}
                             networkType={network.type}
                             onClose={this.handleSignerClose}
                             onRequestEnable={onRequestEnable}
@@ -282,7 +337,6 @@ class SignerPanel extends React.Component {
                             hasAccount={Boolean(account)}
                             account={account}
                             hasWeb3={Boolean(getInjectedProvider())}
-                            locator={locator}
                             onClose={this.handleSignerClose}
                             intent={intent}
                             onRequestEnable={onRequestEnable}
@@ -346,4 +400,20 @@ const Screen = styled.div`
   width: 100%;
 `
 
-export default SignerPanel
+export default function(props) {
+  const {
+    addTransactionActivity,
+    setActivityConfirmed,
+    setActivityFailed,
+    setActivityNonce,
+  } = React.useContext(ActivityContext)
+  return (
+    <SignerPanel
+      {...props}
+      addTransactionActivity={addTransactionActivity}
+      setActivityConfirmed={setActivityConfirmed}
+      setActivityFailed={setActivityFailed}
+      setActivityNonce={setActivityNonce}
+    />
+  )
+}

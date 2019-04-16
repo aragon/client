@@ -20,13 +20,10 @@
     "startups"
   ],
   "author": "Aragon Institution MTU <contact@aragon.one>",
-  "contributors": [
-    "Pierre Bertet <pierre@aragon.one>"
-  ],
   "dependencies": {
     "@aragon/templates-tokens": "^1.1.1",
-    "@aragon/ui": "^0.33.0",
-    "@aragon/wrapper": "^4.0.0",
+    "@aragon/ui": "^0.34.0",
+    "@aragon/wrapper": "^5.0.0-beta.1",
     "@babel/polyfill": "^7.0.0",
     "bn.js": "4.11.6",
     "date-fns": "2.0.0-alpha.22",
@@ -41,7 +38,7 @@
     "react-blockies": "^1.3.0",
     "react-container-dimensions": "^1.3.3",
     "react-dom": "^16.8.4",
-    "react-dropzone": "^10.0.0",
+    "react-dropzone": "^10.1.3",
     "react-onclickout": "^2.0.8",
     "react-spring": "^7.2.10",
     "react-with-gesture": "^4.0.4",

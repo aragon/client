@@ -11,32 +11,51 @@ import initWrapper, {
 import Wrapper from './Wrapper'
 import Onboarding from './onboarding/Onboarding'
 import { getWeb3, getUnknownBalance, identifyProvider } from './web3-utils'
+import { enableWallet } from './wallet-utils'
 import { log } from './utils'
-import { PermissionsProvider } from './contexts/PermissionsContext'
+import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
+import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
 import {
+  APP_MODE_START,
+  APP_MODE_ORG,
+  APP_MODE_SETUP,
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
+  APPS_STATUS_UNLOADED,
+  DAO_STATUS_ERROR,
+  DAO_STATUS_READY,
+  DAO_STATUS_LOADING,
+  DAO_STATUS_UNLOADED,
   DAO_CREATION_STATUS_NONE,
   DAO_CREATION_STATUS_SUCCESS,
   DAO_CREATION_STATUS_ERROR,
 } from './symbols'
 
+const INITIAL_DAO_STATE = {
+  apps: [],
+  appIdentifiers: {},
+  appsStatus: APPS_STATUS_UNLOADED,
+  daoAddress: { address: '', domain: '' },
+  daoStatus: DAO_STATUS_UNLOADED,
+  permissions: {},
+  permissionsLoading: true,
+  repos: [],
+}
+
 class App extends React.Component {
   state = {
+    ...INITIAL_DAO_STATE,
     account: '',
-    apps: [],
-    appsStatus: APPS_STATUS_LOADING,
     balance: getUnknownBalance(),
     buildData: null, // data returned by aragon.js when a DAO is created
     connected: false,
-    daoAddress: { address: '', domain: '' },
     // daoCreationStatus is one of:
     //  - DAO_CREATION_STATUS_NONE
     //  - DAO_CREATION_STATUS_SUCCESS
@@ -45,8 +64,6 @@ class App extends React.Component {
     fatalError: null,
     identityIntent: null,
     locator: {},
-    permissions: {},
-    permissionsLoading: true,
     prevLocator: null,
     selectorNetworks: [
       ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
@@ -56,7 +73,9 @@ class App extends React.Component {
     transactionBag: null,
     signatureBag: null,
     walletNetwork: '',
-    walletWeb3: null,
+    walletProviderId: identifyProvider(web3Providers.wallet),
+    walletWeb3: getWeb3(web3Providers.wallet),
+    web3: getWeb3(web3Providers.default),
     wrapper: null,
   }
 
@@ -66,11 +85,6 @@ class App extends React.Component {
     const { pathname, search } = this.history.location
     this.handleHistoryChange({ pathname, search })
     this.history.listen(this.handleHistoryChange)
-
-    this.setState({
-      walletWeb3: getWeb3(web3Providers.wallet),
-      walletProviderId: identifyProvider(web3Providers.wallet),
-    })
 
     pollMainAccount(web3Providers.wallet, {
       onAccount: (account = null) => {
@@ -92,27 +106,6 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
-  }
-
-  // Enable the web3 provider. There is no way to reliably know the enabled
-  // state of a provider, so we assume that if there is a provider but no
-  // account, the provider is locked and / or not enabled.
-  handleRequestEnable = () => {
-    const provider = web3Providers.wallet
-    if (!provider) {
-      return
-    }
-    // For providers supporting .enable() (EIP 1102 draft).
-    if (typeof provider.enable === 'function') {
-      provider.enable()
-      return
-    }
-    // For providers supporting EIP 1102 (final).
-    if (typeof provider.send === 'function') {
-      // Some providers (Metamask) don’t return a promise as defined in EIP
-      // 1102, so we can’t rely on it to know the connected accounts.
-      provider.send('eth_requestAccounts')
-    }
   }
 
   // Handle URL changes
@@ -139,7 +132,7 @@ class App extends React.Component {
   updateLocator = locator => {
     const { locator: prevLocator } = this.state
 
-    if (locator.mode === 'home' || locator.mode === 'setup') {
+    if (locator.mode === APP_MODE_START || locator.mode === APP_MODE_SETUP) {
       this.updateDaoBuilder()
     }
 
@@ -162,13 +155,19 @@ class App extends React.Component {
       web3Providers.wallet,
       contractAddresses.ensRegistry
     )
-    this.setState({ daoBuilder })
+    this.setState({
+      daoBuilder,
+      appsStatus: APPS_STATUS_UNLOADED,
+      daoStatus: DAO_STATUS_UNLOADED,
+    })
   }
 
   handleResetDaoBuilder = () => {
     this.setState({
-      daoCreationStatus: DAO_CREATION_STATUS_NONE,
+      appsStatus: APPS_STATUS_UNLOADED,
       buildData: null,
+      daoCreationStatus: DAO_CREATION_STATUS_NONE,
+      daoStatus: DAO_STATUS_UNLOADED,
     })
   }
 
@@ -194,17 +193,24 @@ class App extends React.Component {
 
   updateDao(dao = null) {
     // Cancel the subscriptions / unload the wrapper
-    if (dao === null && this.state.wrapper) {
+    if (this.state.wrapper) {
       this.state.wrapper.cancel()
       this.setState({ wrapper: null })
-      return
     }
 
     // Reset the DAO state
     this.setState({
+      ...INITIAL_DAO_STATE,
+    })
+
+    if (dao === null) {
+      return
+    }
+
+    // Loading state
+    this.setState({
       appsStatus: APPS_STATUS_LOADING,
-      apps: [],
-      daoAddress: { address: '', domain: '' },
+      daoStatus: DAO_STATUS_LOADING,
     })
 
     log('Init DAO', dao)
@@ -213,12 +219,18 @@ class App extends React.Component {
       walletProvider: web3Providers.wallet,
       onError: err => {
         log(`Wrapper init, recoverable error: ${err.name}. ${err.message}.`)
-        this.setState({ appsStatus: APPS_STATUS_ERROR })
+        this.setState({
+          appsStatus: APPS_STATUS_ERROR,
+          daoStatus: DAO_STATUS_ERROR,
+        })
       },
       onDaoAddress: ({ address, domain }) => {
         log('dao address', address)
         log('dao domain', domain)
-        this.setState({ daoAddress: { address, domain } })
+        this.setState({
+          daoStatus: DAO_STATUS_READY,
+          daoAddress: { address, domain },
+        })
       },
       onWeb3: web3 => {
         log('web3', web3)
@@ -239,6 +251,14 @@ class App extends React.Component {
       },
       onForwarders: forwarders => {
         log('forwarders', forwarders)
+      },
+      onAppIdentifiers: appIdentifiers => {
+        log('app identifiers', appIdentifiers)
+        this.setState({ appIdentifiers })
+      },
+      onInstalledRepos: repos => {
+        log('installed repos', repos)
+        this.setState({ repos })
       },
       onTransaction: transactionBag => {
         log('transaction bag', transactionBag)
@@ -285,6 +305,8 @@ class App extends React.Component {
   }
 
   handleIdentityCancel = () => {
+    const { identityIntent } = this.state
+    identityIntent.reject(new Error('Identity modification cancelled'))
     this.setState({ identityIntent: null })
   }
 
@@ -292,9 +314,8 @@ class App extends React.Component {
     const { identityIntent } = this.state
     this.state.wrapper
       .modifyAddressIdentity(address, { name: label })
-      .then(() =>
-        this.setState({ identityIntent: null }, identityIntent.resolve)
-      )
+      .then(identityIntent.resolve)
+      .then(() => this.setState({ identityIntent: null }))
       .catch(identityIntent.reject)
   }
 
@@ -328,16 +349,19 @@ class App extends React.Component {
     const {
       account,
       apps,
+      appIdentifiers,
       appsStatus,
       balance,
       connected,
       daoAddress,
+      daoStatus,
       daoCreationStatus,
       fatalError,
       identityIntent,
       locator,
       permissions,
       permissionsLoading,
+      repos,
       selectorNetworks,
       showDeprecatedBanner,
       transactionBag,
@@ -345,22 +369,35 @@ class App extends React.Component {
       walletNetwork,
       walletProviderId,
       walletWeb3,
+      web3,
       wrapper,
     } = this.state
 
     const { mode, dao } = locator
-    if (!mode) return null
+    const { address: intentAddress = null, label: intentLabel = '' } =
+      identityIntent || {}
+
+    if (!mode) {
+      return null
+    }
     if (mode === 'invalid') {
       throw new Error(
         `URL contained invalid organization name or address (${dao}).\nPlease modify it to be a valid ENS name or address.`
       )
     }
-
     if (fatalError !== null) {
       throw fatalError
     }
-    const { address: intentAddress = null, label: intentLabel = '' } =
-      identityIntent || {}
+
+    const appsWithIdentifiers = apps.map(app => {
+      const identifier = appIdentifiers[app.proxyAddress]
+      return identifier
+        ? {
+            identifier,
+            ...app,
+          }
+        : app
+    })
 
     return (
       <IdentityProvider onResolve={this.handleIdentityResolve}>
@@ -376,54 +413,68 @@ class App extends React.Component {
               onSave={this.handleIdentitySave}
             />
             <FavoriteDaosProvider>
-              <PermissionsProvider
-                wrapper={wrapper}
-                apps={apps}
-                permissions={permissions}
-              >
-                <Wrapper
-                  account={account}
-                  apps={apps}
-                  appsStatus={appsStatus}
-                  banner={
-                    showDeprecatedBanner && <DeprecatedBanner dao={dao} />
-                  }
-                  connected={connected}
-                  daoAddress={daoAddress}
-                  historyBack={this.historyBack}
-                  historyPush={this.historyPush}
-                  identityIntent={identityIntent}
-                  locator={locator}
-                  onRequestAppsReload={this.handleRequestAppsReload}
-                  onRequestEnable={this.handleRequestEnable}
-                  permissionsLoading={permissionsLoading}
-                  transactionBag={transactionBag}
-                  signatureBag={signatureBag}
-                  walletNetwork={walletNetwork}
-                  walletWeb3={walletWeb3}
-                  wrapper={wrapper}
-                />
-              </PermissionsProvider>
-
-              <Onboarding
-                banner={
-                  showDeprecatedBanner && (
-                    <DeprecatedBanner dao={dao} lightMode />
-                  )
-                }
-                visible={mode === 'home' || mode === 'setup'}
+              <ActivityProvider
                 account={account}
-                balance={balance}
-                walletNetwork={walletNetwork}
-                walletProviderId={walletProviderId}
-                onBuildDao={this.handleBuildDao}
-                daoCreationStatus={daoCreationStatus}
-                onComplete={this.handleCompleteOnboarding}
-                onOpenOrganization={this.handleOpenOrganization}
-                onRequestEnable={this.handleRequestEnable}
-                onResetDaoBuilder={this.handleResetDaoBuilder}
-                selectorNetworks={selectorNetworks}
-              />
+                daoDomain={daoAddress.domain}
+                web3={web3}
+              >
+                <PermissionsProvider
+                  wrapper={wrapper}
+                  apps={appsWithIdentifiers}
+                  permissions={permissions}
+                >
+                  <div css="position: relative; z-index: 1">
+                    <Wrapper
+                      visible={mode === APP_MODE_ORG}
+                      account={account}
+                      apps={appsWithIdentifiers}
+                      appsStatus={appsStatus}
+                      banner={
+                        showDeprecatedBanner && <DeprecatedBanner dao={dao} />
+                      }
+                      connected={connected}
+                      daoAddress={daoAddress}
+                      daoStatus={daoStatus}
+                      historyBack={this.historyBack}
+                      historyPush={this.historyPush}
+                      locator={locator}
+                      onRequestAppsReload={this.handleRequestAppsReload}
+                      onRequestEnable={enableWallet}
+                      permissionsLoading={permissionsLoading}
+                      repos={repos}
+                      signatureBag={signatureBag}
+                      transactionBag={transactionBag}
+                      walletNetwork={walletNetwork}
+                      walletProviderId={walletProviderId}
+                      walletWeb3={walletWeb3}
+                      web3={web3}
+                      wrapper={wrapper}
+                    />
+                  </div>
+                </PermissionsProvider>
+
+                <div css="position: relative; z-index: 2">
+                  <Onboarding
+                    visible={mode === APP_MODE_START || mode === APP_MODE_SETUP}
+                    account={account}
+                    balance={balance}
+                    banner={
+                      showDeprecatedBanner && (
+                        <DeprecatedBanner dao={dao} lightMode />
+                      )
+                    }
+                    daoCreationStatus={daoCreationStatus}
+                    onBuildDao={this.handleBuildDao}
+                    onComplete={this.handleCompleteOnboarding}
+                    onOpenOrganization={this.handleOpenOrganization}
+                    onRequestEnable={enableWallet}
+                    onResetDaoBuilder={this.handleResetDaoBuilder}
+                    selectorNetworks={selectorNetworks}
+                    walletNetwork={walletNetwork}
+                    walletProviderId={walletProviderId}
+                  />
+                </div>
+              </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>
         </ModalProvider>
