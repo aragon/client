@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import StoredList from '../StoredList'
 import { network } from '../environment'
 import { EthereumAddressType } from '../prop-types'
-import { addressesEqual } from '../web3-utils'
 
 const ActivityContext = React.createContext()
 
@@ -129,9 +128,6 @@ class ActivityProvider extends React.Component {
 
     this.setState({ activities: updatedActivities })
   }
-
-  currentAccountPredicate = ({ from }) =>
-    addressesEqual(this.props.account, from)
 
   remove = index => {
     this.setState({
