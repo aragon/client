@@ -31,6 +31,11 @@ const INITIAL_STATE = {
 
 const RECIEPT_ERROR_STATUS = '0x0'
 
+const getPretransactionDescription = intent =>
+  `Allow ${intent.name.toLowerCase()} to ${intent.description
+    .slice(0, 1)
+    .toLowerCase() + intent.description.slice(1)}`
+
 class SignerPanel extends React.PureComponent {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
@@ -102,7 +107,7 @@ class SignerPanel extends React.PureComponent {
     return { annotatedDescription, description, name, to, transaction }
   }
 
-  signTransaction(transaction, intent) {
+  signTransaction(transaction, intent, isPretransaction = false) {
     const {
       addTransactionActivity,
       walletWeb3,
@@ -128,6 +133,13 @@ class SignerPanel extends React.PureComponent {
             .then(({ nonce }) => setActivityNonce({ transactionHash, nonce }))
             .catch(console.error)
 
+          // Pretransactions are for so the app can get approval
+          const description = isPretransaction
+            ? intent.description
+            : getPretransactionDescription(intent)
+
+          // : `Allow ${intent.name} to pull up to X tokens from your account`
+
           // Create new activiy
           addTransactionActivity({
             transactionHash,
@@ -137,7 +149,7 @@ class SignerPanel extends React.PureComponent {
             // TODO: double check if there was actually a forwarder
             // for the transaction and not set this if there wasn't.
             forwarderProxyAddress: intent.transaction.to,
-            description: intent.description,
+            description,
           })
         })
         .on('receipt', receipt => {
@@ -163,10 +175,14 @@ class SignerPanel extends React.PureComponent {
 
     try {
       if (pretransaction) {
-        await this.signTransaction(pretransaction, intent)
+        await this.signTransaction(pretransaction, intent, true)
       }
 
-      const transactionHash = await this.signTransaction(transaction, intent)
+      const transactionHash = await this.signTransaction(
+        transaction,
+        intent,
+        false
+      )
 
       transactionBag.resolve(transactionHash)
       this.setState({ signError: null, status: STATUS_SIGNED })
