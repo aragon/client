@@ -131,7 +131,7 @@ class App extends React.Component {
   updateLocator = locator => {
     const { locator: prevLocator } = this.state
 
-    if (locator.mode === 'home' || locator.mode === 'setup') {
+    if (locator.mode === APP_MODE_START || locator.mode === APP_MODE_SETUP) {
       this.updateDaoBuilder()
     }
 
