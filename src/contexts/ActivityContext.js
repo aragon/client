@@ -28,7 +28,7 @@ class ActivityProvider extends React.Component {
     account: EthereumAddressType, // Current wallet
     children: PropTypes.node,
     daoDomain: PropTypes.string, // domain of current DAO
-    walletWeb3: PropTypes.object,
+    web3: PropTypes.object,
   }
   static defaultProps = {
     account: '',
@@ -71,17 +71,20 @@ class ActivityProvider extends React.Component {
 
   // Refresh the status of pending activities
   refreshPendingActivities() {
-    const { walletWeb3 } = this.props
+    const { web3 } = this.props
 
     this.state.activities
       .filter(({ status }) => status === activityStatusTypes.PENDING)
-      .forEach(({ transactionHash }) => {
-        walletWeb3.eth
-          .getTransaction(transactionHash)
-          .then(({ blockNumber }) =>
-            blockNumber ? this.setActivityConfirmed(transactionHash) : null
-          )
-          .catch(console.error)
+      .forEach(async ({ transactionHash }) => {
+        try {
+          const tx = await web3.eth.getTransaction(`${transactionHash}`)
+          // tx is null if no tx was found
+          if (tx && tx.blockNumber) {
+            this.setActivityConfirmed(transactionHash)
+          }
+        } catch (e) {
+          console.error(`Failed to refresh transaction ${transactionHash}`)
+        }
       })
   }
 
@@ -96,12 +99,6 @@ class ActivityProvider extends React.Component {
         // Set pending items to timed out after 10 minutes
         this.setActivityTimedOut(activity.transactionHash)
       }
-    })
-  }
-
-  add = activity => {
-    this.setState({
-      activities: this._storedList.add(activity),
     })
   }
 
@@ -131,9 +128,6 @@ class ActivityProvider extends React.Component {
 
     this.setState({ activities: updatedActivities })
   }
-
-  currentAccountPredicate = ({ from }) =>
-    from.toLowerCase() === this.props.account.toLowerCase()
 
   remove = index => {
     this.setState({
@@ -230,16 +224,16 @@ class ActivityProvider extends React.Component {
     return (
       <ActivityContext.Provider
         value={{
-          unreadActivityCount,
           activities: this.state.activities,
           addTransactionActivity: this.addTransactionActivity,
           clearActivities: this.clearActivities,
+          clearActivity: this.clearActivity,
+          markActivitiesRead: this.markActivitiesRead,
           setActivityConfirmed: this.setActivityConfirmed,
           setActivityFailed: this.setActivityFailed,
-          clearActivity: this.clearActivity,
-          updateActivities: this.updateActivities,
-          markActivitiesRead: this.markActivitiesRead,
           setActivityNonce: this.setActivityNonce,
+          updateActivities: this.updateActivities,
+          unreadActivityCount,
         }}
       >
         {children}

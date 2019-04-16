@@ -52,6 +52,7 @@ class Wrapper extends React.PureComponent {
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
     walletWeb3: PropTypes.object,
+    web3: PropTypes.object,
     wrapper: AragonType,
   }
 
@@ -222,6 +223,7 @@ class Wrapper extends React.PureComponent {
       walletNetwork,
       walletProviderId,
       walletWeb3,
+      web3,
       wrapper,
     } = this.props
 
@@ -265,6 +267,7 @@ class Wrapper extends React.PureComponent {
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
+          web3={web3}
         />
       </Main>
     )
