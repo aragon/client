@@ -27,6 +27,7 @@ const AppLayout = ({
       {({ below }) => {
         return (
           <AppView
+            style={{ height: '100%' }}
             padding={below('medium') ? smallViewPadding : largeViewPadding}
             appBar={
               <AppBar>

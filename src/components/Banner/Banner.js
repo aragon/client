@@ -1,14 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Text, breakpoint } from '@aragon/ui'
+import { Text } from '@aragon/ui'
 
 class Banner extends React.Component {
   render() {
     const { text, textColor, button, color } = this.props
     return (
       <BannerWrapper color={color}>
-        <Text color={textColor}>{text}</Text>
+        <div css="white-space: nowrap">
+          <Text color={textColor}>{text}</Text>
+        </div>
         <ButtonWrapper>{button}</ButtonWrapper>
       </BannerWrapper>
     )
@@ -22,29 +24,19 @@ Banner.propTypes = {
 }
 
 const BannerWrapper = styled.div`
-  display: grid;
-  grid-template-rows: auto auto;
-  grid-gap: 5px;
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  height: 38px;
   padding: 6px 10px;
   background-color: ${({ color }) => color};
-
-  ${breakpoint(
-    'medium',
-    `
-      grid-template-rows: none;
-      grid-template-columns: auto auto;
-      grid-gap: 10px;
-      text-align: left;
-    `
-  )};
 `
 
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  margin-left: 10px;
 `
 
 export default Banner

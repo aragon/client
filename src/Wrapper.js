@@ -10,7 +10,6 @@ import Home from './components/Home/Home'
 import Preferences from './components/Preferences/Preferences'
 import CombinedPanel from './components/MenuPanel/CombinedPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
-import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import {
   AppType,
   AppsStatusType,
@@ -31,12 +30,7 @@ class Wrapper extends React.PureComponent {
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
-    banner: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.shape({
-        type: PropTypes.oneOf([DeprecatedBanner]),
-      }),
-    ]),
+    banner: PropTypes.oneOfType([PropTypes.bool, PropTypes.node]),
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     daoStatus: DaoStatusType.isRequired,
@@ -368,8 +362,9 @@ class Wrapper extends React.PureComponent {
 
 const Main = styled.div`
   display: ${p => (p.visible ? 'flex' : 'none')};
-  display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 0;
   height: 100vh;
   min-width: 320px;
 `

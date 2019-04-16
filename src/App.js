@@ -18,6 +18,7 @@ import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
+import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
@@ -70,6 +71,7 @@ class App extends React.Component {
       ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
     ],
     showDeprecatedBanner: false,
+    showUpgradeBanner: true,
     transactionBag: null,
     walletNetwork: '',
     walletProviderId: identifyProvider(web3Providers.wallet),
@@ -340,6 +342,19 @@ class App extends React.Component {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
 
+  renderBanner(mode = 'wrapper') {
+    const { showDeprecatedBanner, showUpgradeBanner, locator } = this.state
+    if (showDeprecatedBanner) {
+      return (
+        <DeprecatedBanner dao={locator.dao} lightMode={mode === 'onboarding'} />
+      )
+    }
+    if (mode === 'wrapper' && showUpgradeBanner) {
+      return <UpgradeBanner />
+    }
+    return null
+  }
+
   render() {
     const {
       account,
@@ -358,7 +373,6 @@ class App extends React.Component {
       permissionsLoading,
       repos,
       selectorNetworks,
-      showDeprecatedBanner,
       transactionBag,
       walletNetwork,
       walletProviderId,
@@ -423,9 +437,7 @@ class App extends React.Component {
                       account={account}
                       apps={appsWithIdentifiers}
                       appsStatus={appsStatus}
-                      banner={
-                        showDeprecatedBanner && <DeprecatedBanner dao={dao} />
-                      }
+                      banner={this.renderBanner('wrapper')}
                       connected={connected}
                       daoAddress={daoAddress}
                       daoStatus={daoStatus}
@@ -451,11 +463,7 @@ class App extends React.Component {
                     visible={mode === APP_MODE_START || mode === APP_MODE_SETUP}
                     account={account}
                     balance={balance}
-                    banner={
-                      showDeprecatedBanner && (
-                        <DeprecatedBanner dao={dao} lightMode />
-                      )
-                    }
+                    banner={this.renderBanner('onboarding')}
                     daoCreationStatus={daoCreationStatus}
                     onBuildDao={this.handleBuildDao}
                     onComplete={this.handleCompleteOnboarding}
