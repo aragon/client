@@ -32,9 +32,8 @@ const INITIAL_STATE = {
 const RECIEPT_ERROR_STATUS = '0x0'
 
 const getPretransactionDescription = intent =>
-  `Allow ${intent.name.toLowerCase()} to ${intent.description
-    .slice(0, 1)
-    .toLowerCase() + intent.description.slice(1)}`
+  `Allow ${intent.name} to ${intent.description.slice(0, 1).toLowerCase() +
+    intent.description.slice(1)}`
 
 class SignerPanel extends React.PureComponent {
   static propTypes = {
