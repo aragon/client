@@ -97,6 +97,7 @@ const Container = styled.div`
   display: flex;
   flex-grow: 1;
   min-height: 0;
+  height: 100%;
 `
 
 export default SwipeContainer
