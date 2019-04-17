@@ -13,6 +13,7 @@ import {
   DaoAddressType,
   RepoType,
 } from '../../prop-types'
+import { repoBaseUrl } from '../../url-utils'
 import { log } from '../../utils'
 
 const SCREENS = [
@@ -95,7 +96,7 @@ class AppCenter extends React.Component {
       )
       return {
         ...repo,
-        baseUrl: appGroup.app.baseUrl,
+        baseUrl: repoBaseUrl(repo),
         name: appGroup.name,
         instances: appGroup.instances,
         repoName: appGroup.repoName,

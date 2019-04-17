@@ -10,25 +10,22 @@ import {
   SidePanelSplit,
   blockExplorerUrl,
 } from '@aragon/ui'
-import { AppsListType, ReposListType } from '../../prop-types'
+import { ReposListType } from '../../prop-types'
 import { TextLabel } from '../../components/TextStyles'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { network } from '../../environment'
 import { KNOWN_ICONS } from '../../repo-utils'
 import { getAppPath } from '../../routing'
+import { repoBaseUrl } from '../../url-utils'
 import { GU } from '../../utils'
 
 const VERSION = '0.7 Bella'
 
-function getBaseUrlFromAppId(appId, apps) {
-  const app = apps.find(app => app.appId === appId)
-  return (app && app.baseUrl) || null
-}
-
-function getAppVersionData({ content, version }, apps) {
+function getAppVersionData(repo) {
+  const { content, version } = repo
   return {
     appId: content.appId,
-    baseUrl: getBaseUrlFromAppId(content.appId, apps),
+    baseUrl: repoBaseUrl(repo),
     contractAddress: content.contractAddress,
     icons: content.icons,
     knownIcon: KNOWN_ICONS.has(content.appId)
@@ -40,19 +37,19 @@ function getAppVersionData({ content, version }, apps) {
 }
 
 const UpgradeOrganizationPanel = React.memo(
-  ({ apps = [], repos = [], opened, onClose, dao }) => {
+  ({ repos = [], opened, onClose, dao }) => {
     const sourceUrl = 'https://github.com/aragon/aragon-apps'
 
     const [currentVersions, newVersions] = useMemo(
       () =>
         repos.reduce(
           (results, repo) => [
-            [...results[0], getAppVersionData(repo.currentVersion, apps)],
-            [...results[1], getAppVersionData(repo.latestVersion, apps)],
+            [...results[0], getAppVersionData(repo.currentVersion)],
+            [...results[1], getAppVersionData(repo.latestVersion)],
           ],
           [[], []]
         ),
-      [repos, apps]
+      [repos]
     )
 
     return (
@@ -136,7 +133,6 @@ const UpgradeOrganizationPanel = React.memo(
 UpgradeOrganizationPanel.propTypes = {
   opened: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  apps: AppsListType,
   repos: ReposListType,
   dao: PropTypes.string.isRequired,
 }
