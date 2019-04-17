@@ -1,6 +1,16 @@
 import { appLocator, ipfsDefaultConf } from './environment'
 import { appendTrailingSlash } from './utils'
 
+/*
+ * Supported locations:
+ *   ipfs:{IPFS_HASH}
+ *   http:{HOST}
+ *   http:{HOST}:{PORT}
+ *   http:{HOST}:{PORT}/{PATH}
+ *   http:http(s)://{HOST}
+ *   http:http(s)://{HOST}:{PORT}
+ *   http:http(s)://{HOST}:{PORT}/{PATH}
+ */
 function contentBaseUrl(content, gateway) {
   if (!content) {
     return ''
@@ -18,16 +28,6 @@ function contentBaseUrl(content, gateway) {
   return ''
 }
 
-/*
- * Supported locations:
- *   ipfs:{IPFS_HASH}
- *   http:{HOST}
- *   http:{HOST}:{PORT}
- *   http:{HOST}:{PORT}/{PATH}
- *   http:http(s)://{HOST}
- *   http:http(s)://{HOST}:{PORT}
- *   http:http(s)://{HOST}:{PORT}/{PATH}
- */
 export function appBaseUrl(app, gateway = ipfsDefaultConf.gateway) {
   // Support overriding app URLs, see network-config.js
   if (appLocator[app.appId]) {
