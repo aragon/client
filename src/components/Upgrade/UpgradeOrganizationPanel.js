@@ -13,34 +13,12 @@ import {
 import { AppsListType, ReposListType } from '../../prop-types'
 import { TextLabel } from '../../components/TextStyles'
 import AppIcon from '../../components/AppIcon/AppIcon'
-import { GU } from '../../utils'
 import { network } from '../../environment'
-
-import iconFinance from './assets/icons/finance.svg'
-import iconTokenManager from './assets/icons/token-manager.svg'
-import iconVault from './assets/icons/vault.svg'
-import iconVoting from './assets/icons/voting.svg'
+import { KNOWN_ICONS } from '../../repo-utils'
+import { getAppPath } from '../../routing'
+import { GU } from '../../utils'
 
 const VERSION = '0.7 Bella'
-
-const KNOWN_ICONS = new Map([
-  [
-    '0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae',
-    iconFinance,
-  ],
-  [
-    '0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f',
-    iconTokenManager,
-  ],
-  [
-    '0x7e852e0fcfce6551c13800f1e7476f982525c2b5277ba14b24339c68416336d1',
-    iconVault,
-  ],
-  [
-    '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
-    iconVoting,
-  ],
-])
 
 function getBaseUrlFromAppId(appId, apps) {
   const app = apps.find(app => app.appId === appId)
@@ -62,7 +40,7 @@ function getAppVersionData({ content, version }, apps) {
 }
 
 const UpgradeOrganizationPanel = React.memo(
-  ({ apps = [], repos = [], opened, onClose }) => {
+  ({ apps = [], repos = [], opened, onClose, dao }) => {
     const sourceUrl = 'https://github.com/aragon/aragon-apps'
 
     const [currentVersions, newVersions] = useMemo(
@@ -136,9 +114,18 @@ const UpgradeOrganizationPanel = React.memo(
               margin: ${2 * GU}px 0;
             `}
           >
-            <Button mode="strong" wide>
+            <Button.Anchor
+              mode="strong"
+              wide
+              href={`#${getAppPath({
+                dao,
+                instanceId: 'apps',
+                params: `installed`,
+              })}`}
+              onClick={onClose}
+            >
               Upgrade your organization
-            </Button>
+            </Button.Anchor>
           </div>
         </Part>
       </SidePanel>
@@ -151,6 +138,7 @@ UpgradeOrganizationPanel.propTypes = {
   onClose: PropTypes.func.isRequired,
   apps: AppsListType,
   repos: ReposListType,
+  dao: PropTypes.string.isRequired,
 }
 
 const AppVersion = ({
@@ -176,7 +164,7 @@ const AppVersion = ({
           margin-right: 5px;
         `}
       >
-        {major || version}
+        v{major || version}
       </div>
       <ExternalLink
         href={blockExplorerUrl('address', contractAddress, {
