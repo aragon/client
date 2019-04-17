@@ -16,23 +16,6 @@ import TimeTag from './TimeTag'
 import IconSuccess from '../../icons/IconSuccess'
 import IconPending from '../../icons/IconPending'
 
-const ItemContent = React.memo(
-  ({ text = '' }) => (
-    <p>
-      {transformAddresses(text, (part, isAddress, index) =>
-        isAddress ? (
-          <span title={part} key={index}>
-            {shortenAddress(part)}
-          </span>
-        ) : (
-          <span key={index}>{part}</span>
-        )
-      )}
-    </p>
-  ),
-  (prevProps, nextProps) => prevProps.text === nextProps.text
-)
-
 const ActivityItem = ({ activity, onClose }) => {
   const { app } = activity
   return (
@@ -116,6 +99,27 @@ const ActivityItem = ({ activity, onClose }) => {
 ActivityItem.propTypes = {
   activity: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+}
+
+const ItemContent = React.memo(
+  ({ text = '' }) => (
+    <p>
+      {transformAddresses(text, (part, isAddress, index) =>
+        isAddress ? (
+          <span title={part} key={index}>
+            {shortenAddress(part)}
+          </span>
+        ) : (
+          <span key={index}>{part}</span>
+        )
+      )}
+    </p>
+  ),
+  (prevProps, nextProps) => prevProps.text === nextProps.text
+)
+
+ItemContent.propTypes = {
+  text: PropTypes.string.isRequired,
 }
 
 function getStatusData(activity) {
