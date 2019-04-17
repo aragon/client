@@ -291,7 +291,6 @@ class Wrapper extends React.PureComponent {
         />
 
         <UpgradeOrganizationPanel
-          apps={apps}
           dao={locator.dao}
           opened={orgUpgradePanelOpened}
           onClose={this.hideOrgUpgradePanel}
