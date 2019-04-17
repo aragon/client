@@ -21,6 +21,7 @@ import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
+import { isKnownRepo } from './repo-utils'
 import {
   APP_MODE_START,
   APP_MODE_ORG,
@@ -257,7 +258,13 @@ class App extends React.Component {
       },
       onInstalledRepos: repos => {
         log('installed repos', repos)
-        this.setState({ repos })
+        const canUpgradeOrg = repos.some(
+          ({ appId, currentVersion, latestVersion }) =>
+            isKnownRepo(appId) &&
+            currentVersion.version.split('.')[0] !==
+              latestVersion.version.split('.')[0]
+        )
+        this.setState({ canUpgradeOrg, repos })
       },
       onTransaction: transactionBag => {
         log('transaction bag', transactionBag)
@@ -357,6 +364,7 @@ class App extends React.Component {
       appIdentifiers,
       appsStatus,
       balance,
+      canUpgradeOrg,
       connected,
       daoAddress,
       daoStatus,
@@ -433,7 +441,7 @@ class App extends React.Component {
                       apps={appsWithIdentifiers}
                       appsStatus={appsStatus}
                       banner={this.renderBanner('wrapper')}
-                      canUpgradeOrg
+                      canUpgradeOrg={canUpgradeOrg}
                       connected={connected}
                       daoAddress={daoAddress}
                       daoStatus={daoStatus}
