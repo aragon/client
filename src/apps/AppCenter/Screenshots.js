@@ -40,11 +40,14 @@ class Screenshots extends React.Component {
                   flex-grow: 0;
                   flex-shrink: 0;
                   margin-left: 24px;
+                  border: 1px solid ${theme.contentBorder};
+                  outline: 0;
+                  &:focus {
+                    outline: 2px solid ${theme.accent};
+                  }
                   &:first-child {
                     margin-left: 0;
                   }
-                  border: 1px solid ${theme.contentBorder};
-                  outline: 0;
                 `}
               >
                 <img
