@@ -28,6 +28,7 @@ class Screenshots extends React.Component {
           css={`
             display: flex;
             width: 100%;
+            padding-top: 2px;
             padding-bottom: ${3 * GU}px;
           `}
         >
@@ -43,6 +44,7 @@ class Screenshots extends React.Component {
                   border: 1px solid ${theme.contentBorder};
                   outline: 0;
                   &:focus {
+                    border-color: transparent;
                     outline: 2px solid ${theme.accent};
                   }
                   &:first-child {
