@@ -45,7 +45,12 @@ class ActionPathsContent extends React.Component {
     return (
       <React.Fragment>
         <p>This transaction will {showPaths ? 'eventually' : ''} perform</p>
-        <div css="margin: 10px 0 10px 15px">
+        <div
+          css={`
+            margin: 10px 0 10px 15px;
+            line-height: 1.6;
+          `}
+        >
           {annotatedDescription
             ? annotatedDescription.map(({ type, value }, index) => {
                 if (type === 'address' || type === 'any-account') {
