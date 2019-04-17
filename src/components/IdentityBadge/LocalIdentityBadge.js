@@ -29,6 +29,9 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
   const handleClick = () => {
     showLocalIdentityModal(address)
       .then(handleResolve)
+      .then(() =>
+        identityEvents$.next({ type: identityEventTypes.MODIFY, address })
+      )
       .catch(e => {
         /* user cancelled modify intent */
       })
