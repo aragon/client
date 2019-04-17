@@ -10,6 +10,8 @@ import Home from './components/Home/Home'
 import Preferences from './components/Preferences/Preferences'
 import CombinedPanel from './components/MenuPanel/CombinedPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
+import UpgradeBanner from './components/Upgrade/UpgradeBanner'
+import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
 import {
   AppType,
   AppsStatusType,
@@ -31,6 +33,7 @@ class Wrapper extends React.PureComponent {
     appsStatus: AppsStatusType.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
     banner: PropTypes.oneOfType([PropTypes.bool, PropTypes.node]),
+    canUpgradeOrg: PropTypes.bool,
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     daoStatus: DaoStatusType.isRequired,
@@ -63,6 +66,7 @@ class Wrapper extends React.PureComponent {
   state = {
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
+    orgUpgradePanelOpened: true,
   }
 
   componentDidUpdate(prevProps) {
@@ -199,6 +203,13 @@ class Wrapper extends React.PureComponent {
     }, [])
   )
 
+  showOrgUpgradePanel = () => {
+    this.setState({ orgUpgradePanelOpened: true })
+  }
+  hideOrgUpgradePanel = () => {
+    this.setState({ orgUpgradePanelOpened: false })
+  }
+
   render() {
     const {
       account,
@@ -206,12 +217,14 @@ class Wrapper extends React.PureComponent {
       appsStatus,
       autoClosingPanel,
       banner,
+      canUpgradeOrg,
       connected,
       daoAddress,
       daoStatus,
       locator,
       onRequestAppsReload,
       onRequestEnable,
+      repos,
       transactionBag,
       visible,
       walletNetwork,
@@ -221,7 +234,11 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
 
-    const { menuPanelOpened, preferencesOpened } = this.state
+    const {
+      menuPanelOpened,
+      preferencesOpened,
+      orgUpgradePanelOpened,
+    } = this.state
 
     return (
       <Main visible={visible}>
@@ -231,7 +248,14 @@ class Wrapper extends React.PureComponent {
           onClose={this.handleClosePreferences}
           wrapper={wrapper}
         />
-        <BannerWrapper>{banner}</BannerWrapper>
+
+        <BannerWrapper>
+          {banner ||
+            (canUpgradeOrg && (
+              <UpgradeBanner onUpgrade={this.showOrgUpgradePanel} />
+            ))}
+        </BannerWrapper>
+
         <CombinedPanel
           account={account}
           activeInstanceId={locator.instanceId}
@@ -264,6 +288,13 @@ class Wrapper extends React.PureComponent {
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}
           web3={web3}
+        />
+
+        <UpgradeOrganizationPanel
+          apps={apps}
+          opened={orgUpgradePanelOpened}
+          onClose={this.hideOrgUpgradePanel}
+          repos={repos}
         />
       </Main>
     )

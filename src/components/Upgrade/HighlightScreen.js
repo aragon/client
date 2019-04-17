@@ -114,7 +114,7 @@ HighlightScreen.propTypes = {
   upgrade: PropTypes.shape({
     small: PropTypes.string,
     large: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
   verticalMode: PropTypes.bool,
   visual: PropTypes.shape({
     small: PropTypes.string,

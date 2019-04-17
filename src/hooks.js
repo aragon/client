@@ -42,5 +42,5 @@ export function useSteps(steps) {
     }
   }, [step, steps])
 
-  return { step, next, prev }
+  return { step, next, prev, setStep }
 }

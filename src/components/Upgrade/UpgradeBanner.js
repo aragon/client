@@ -1,14 +1,26 @@
 import React, { useCallback, useState } from 'react'
+import PropTypes from 'prop-types'
 import { Button, Viewport } from '@aragon/ui'
 import Banner from '../Banner/Banner'
 import UpgradeModal from './UpgradeModal'
 import { banner } from './content'
 
-const UpgradeBanner = () => {
+const UpgradeBanner = React.memo(({ onUpgrade }) => {
   const [showModal, setShowModal] = useState(false)
-  const handleClick = useCallback(() => {
+
+  const handleMoreInfo = useCallback(() => {
     setShowModal(true)
   }, [setShowModal])
+
+  const handleModalClose = useCallback(() => {
+    setShowModal(false)
+  }, [setShowModal])
+
+  const handleUpgrade = useCallback(() => {
+    setShowModal(false)
+    onUpgrade()
+  }, [setShowModal, onUpgrade])
+
   return (
     <React.Fragment>
       <Viewport>
@@ -16,7 +28,7 @@ const UpgradeBanner = () => {
           <Banner
             text={width > 500 ? banner.text.large : banner.text.small}
             button={
-              <Button onClick={handleClick} mode="normal" size="mini">
+              <Button onClick={handleMoreInfo} mode="normal" size="mini">
                 More info
               </Button>
             }
@@ -27,15 +39,15 @@ const UpgradeBanner = () => {
       </Viewport>
       <UpgradeModal
         visible={showModal}
-        onClose={() => {
-          setShowModal(false)
-        }}
-        onUpgrade={() => {
-          setShowModal(false)
-        }}
+        onClose={handleModalClose}
+        onUpgrade={handleUpgrade}
       />
     </React.Fragment>
   )
+})
+
+UpgradeBanner.propTypes = {
+  onUpgrade: PropTypes.func.isRequired,
 }
 
 export default UpgradeBanner

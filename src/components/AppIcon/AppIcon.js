@@ -64,17 +64,16 @@ const AppIconContent = ({ app, size, src }) => {
 // Display a remote icon if found,
 // otherwise a provided fallback if provided,
 // otherwise the default icon.
-const RemoteIcon = ({ src, size, children: fallback }) => (
-  <RemoteImage src={src}>
-    {({ exists }) =>
-      exists ? (
-        <IconBase size={size} src={src} />
-      ) : (
-        fallback || <IconDefault size={size} />
-      )
-    }
-  </RemoteImage>
-)
+const RemoteIcon = ({ src, size, children }) => {
+  const fallback = children || <IconDefault size={size} />
+  return src === null ? (
+    fallback
+  ) : (
+    <RemoteImage src={src}>
+      {({ exists }) => (exists ? <IconBase size={size} src={src} /> : fallback)}
+    </RemoteImage>
+  )
+}
 
 // Base icon
 const IconBase = ({ src, size, alt = '', ...props }) => (

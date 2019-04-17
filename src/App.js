@@ -18,7 +18,6 @@ import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
-import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
@@ -71,7 +70,6 @@ class App extends React.Component {
       ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
     ],
     showDeprecatedBanner: false,
-    showUpgradeBanner: true,
     transactionBag: null,
     walletNetwork: '',
     walletProviderId: identifyProvider(web3Providers.wallet),
@@ -343,14 +341,11 @@ class App extends React.Component {
   }
 
   renderBanner(mode = 'wrapper') {
-    const { showDeprecatedBanner, showUpgradeBanner, locator } = this.state
+    const { showDeprecatedBanner, locator } = this.state
     if (showDeprecatedBanner) {
       return (
         <DeprecatedBanner dao={locator.dao} lightMode={mode === 'onboarding'} />
       )
-    }
-    if (mode === 'wrapper' && showUpgradeBanner) {
-      return <UpgradeBanner />
     }
     return null
   }
@@ -438,6 +433,7 @@ class App extends React.Component {
                       apps={appsWithIdentifiers}
                       appsStatus={appsStatus}
                       banner={this.renderBanner('wrapper')}
+                      canUpgradeOrg
                       connected={connected}
                       daoAddress={daoAddress}
                       daoStatus={daoStatus}

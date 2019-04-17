@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { ButtonIcon, Modal, Viewport } from '@aragon/ui'
 import { useArrows, useSteps } from '../../hooks'
@@ -9,12 +9,18 @@ import ProgressBar from './ProgressBar'
 
 import closeSvg from './assets/close.svg'
 
-const UpgradeModal = ({ visible, onUpgrade, onClose }) => {
+const UpgradeModal = React.memo(({ visible, onUpgrade, onClose }) => {
   const steps = highlights.length
-  const { step, next, prev } = useSteps(steps)
+  const { step, next, prev, setStep } = useSteps(steps)
 
   // Keyboard navigation
   useArrows(visible ? { onLeft: prev, onRight: next } : {})
+
+  useEffect(() => {
+    if (visible) {
+      setStep(0)
+    }
+  }, [visible])
 
   return (
     <Viewport>
@@ -88,7 +94,7 @@ const UpgradeModal = ({ visible, onUpgrade, onClose }) => {
       }}
     </Viewport>
   )
-}
+})
 
 UpgradeModal.propTypes = {
   onClose: PropTypes.func.isRequired,
