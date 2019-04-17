@@ -290,7 +290,7 @@ class Wrapper extends React.PureComponent {
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
-    const reposLoading = appsLoading || (apps.length && !repos.length)
+    const reposLoading = appsLoading || Boolean(apps.length && !repos.length)
 
     if (instanceId === 'home') {
       return (
@@ -322,11 +322,13 @@ class Wrapper extends React.PureComponent {
       return (
         <AppCenter
           appInstanceGroups={this.getAppInstancesGroups(apps)}
+          daoAddress={daoAddress}
           params={params}
           repos={repos}
           reposLoading={reposLoading}
           onMessage={this.handleAppMessage}
           onParamsRequest={this.handleParamsRequest}
+          wrapper={wrapper}
         />
       )
     }

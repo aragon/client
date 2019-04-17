@@ -45,7 +45,12 @@ class ActionPathsContent extends React.Component {
     return (
       <React.Fragment>
         <p>This transaction will {showPaths ? 'eventually' : ''} perform</p>
-        <div css="margin: 10px 0 10px 15px">
+        <div
+          css={`
+            margin: 10px 0 10px 15px;
+            line-height: 1.6;
+          `}
+        >
           {annotatedDescription
             ? annotatedDescription.map(({ type, value }, index) => {
                 if (type === 'address' || type === 'any-account') {
@@ -81,7 +86,7 @@ class ActionPathsContent extends React.Component {
                     </SafeLink>
                   )
                 }
-                if (type === 'role') {
+                if (type === 'role' || type === 'kernelNamespace') {
                   return (
                     <span
                       key={index}
@@ -91,6 +96,23 @@ class ActionPathsContent extends React.Component {
                       `}
                     >
                       {value.name}
+                    </span>
+                  )
+                }
+                if (type === 'apmPackage') {
+                  return (
+                    <span
+                      key={index}
+                      css={`
+                        display: inline-flex;
+                        vertical-align: middle;
+                        margin-right: 4px;
+                      `}
+                    >
+                      <LocalIdentityBadge
+                        entity={value.name}
+                        fontSize="small"
+                      />
                     </span>
                   )
                 }

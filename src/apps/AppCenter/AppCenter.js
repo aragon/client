@@ -6,7 +6,14 @@ import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
-import { AppInstanceGroupType, RepoType } from '../../prop-types'
+import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
+import {
+  AppInstanceGroupType,
+  AragonType,
+  DaoAddressType,
+  RepoType,
+} from '../../prop-types'
+import { log } from '../../utils'
 
 const SCREENS = [
   { id: 'installed', label: 'Installed apps' },
@@ -16,11 +23,13 @@ const SCREENS = [
 class AppCenter extends React.Component {
   static propTypes = {
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
+    daoAddress: DaoAddressType.isRequired,
     onMessage: PropTypes.func.isRequired,
     onParamsRequest: PropTypes.func.isRequired,
     params: PropTypes.string,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     reposLoading: PropTypes.bool.isRequired,
+    wrapper: AragonType,
   }
   state = {
     upgradePanelOpened: false,
@@ -30,6 +39,19 @@ class AppCenter extends React.Component {
     this.props.onMessage({
       data: { from: 'app-center', name: 'menuPanel', value: true },
     })
+  }
+  handleUpgradeApp = async (appId, appAddress) => {
+    const { daoAddress, wrapper } = this.props
+
+    log('setApp', appId, appAddress)
+    // Calculate the path, if it exists
+    const updatePath = await wrapper.getTransactionPath(
+      daoAddress.address, // destination (Kernel)
+      'setApp', // method
+      [KERNEL_APP_BASE_NAMESPACE, appId, appAddress] // params
+    )
+    // Try to perform the path
+    wrapper.performTransactionPath(updatePath)
   }
   getLocation() {
     const { params } = this.props
@@ -154,6 +176,7 @@ class AppCenter extends React.Component {
         <UpgradeAppPanel
           repo={upgradePanelOpened ? currentRepo : null}
           onClose={this.handleCloseUpgradePanel}
+          onUpgrade={this.handleUpgradeApp}
         />
       </React.Fragment>
     )

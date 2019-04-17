@@ -17,6 +17,7 @@ class UpgradeAppPanel extends React.PureComponent {
   static propTypes = {
     repo: RepoType,
     onClose: PropTypes.func.isRequired,
+    onUpgrade: PropTypes.func.isRequired,
   }
   state = {
     repo: null,
@@ -28,6 +29,14 @@ class UpgradeAppPanel extends React.PureComponent {
       return { repo: props.repo }
     }
     return {}
+  }
+  handleUpgradeClick = () => {
+    const {
+      repo: { appId, versions },
+      onUpgrade,
+    } = this.props
+    const { contractAddress } = versions[versions.length - 1]
+    onUpgrade(appId, contractAddress)
   }
   render() {
     const { repo } = this.state
@@ -99,7 +108,7 @@ class UpgradeAppPanel extends React.PureComponent {
               margin: ${4 * GU}px 0 ${2 * GU}px;
             `}
           >
-            <Button mode="strong" disabled wide>
+            <Button mode="strong" wide onClick={this.handleUpgradeClick}>
               Upgrade
             </Button>
           </div>
