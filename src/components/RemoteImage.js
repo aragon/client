@@ -17,7 +17,7 @@ class RemoteImage extends React.Component {
     children: noop,
   }
 
-  state = { exists: false }
+  state = { exists: false, loading: false }
 
   componentDidMount() {
     this.startLoading()
@@ -40,11 +40,12 @@ class RemoteImage extends React.Component {
       this._img = new Image()
       this._img.addEventListener('load', this.handleLoad)
       this._img.src = src
-      return { exists: false }
+      return { exists: false, loading: true }
     })
   }
 
   stopLoading() {
+    this.setState({ loading: false })
     if (this._img) {
       this._img.removeEventListener('load', this.handleLoad)
       this._img = null

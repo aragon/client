@@ -127,36 +127,53 @@ class AppCenter extends React.Component {
     const repos = this.getRepos()
     const currentRepo = openedRepoName && this.getRepoFromName(openedRepoName)
 
+    const navigationItems = [
+      'App Center',
+      ...(currentRepo ? [currentRepo.name] : []),
+    ]
+
     return (
       <React.Fragment>
         <AppView
+          style={{ height: '100%' }}
           appBar={
-            <AppBar
-              tabs={
-                openedRepoName ? null : (
-                  <TabBar
-                    items={SCREENS.map(screen => screen.label)}
-                    selected={activeTab}
-                    onChange={this.handleScreenChange}
+            <Viewport>
+              {({ below }) => (
+                <AppBar
+                  tabs={
+                    openedRepoName ? null : (
+                      <div
+                        css={`
+                          margin-left: ${below('medium') ? '-14px' : '0'};
+                        `}
+                      >
+                        <TabBar
+                          items={SCREENS.map(screen => screen.label)}
+                          selected={activeTab}
+                          onChange={this.handleScreenChange}
+                        />
+                      </div>
+                    )
+                  }
+                >
+                  {below('medium') && navigationItems.length < 2 && (
+                    <MenuButton
+                      onClick={this.handleMenuPanelOpen}
+                      css={`
+                        position: relative;
+                        z-index: 2;
+                        margin-left: 0;
+                        margin-right: -24px;
+                      `}
+                    />
+                  )}
+                  <NavigationBar
+                    items={navigationItems}
+                    onBack={this.handleCloseRepo}
                   />
-                )
-              }
-            >
-              <Viewport>
-                {({ below }) =>
-                  below('medium') && (
-                    <MenuButton onClick={this.handleMenuPanelOpen} />
-                  )
-                }
-              </Viewport>
-              <NavigationBar
-                items={[
-                  'App Center',
-                  ...(currentRepo ? [currentRepo.name] : []),
-                ]}
-                onBack={this.handleCloseRepo}
-              />
-            </AppBar>
+                </AppBar>
+              )}
+            </Viewport>
           }
         >
           {activeTab === 0 &&

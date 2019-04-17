@@ -66,41 +66,32 @@ AppIcon.defaultProps = {
 
 const AppIconContent = ({ app, size, src }) => {
   if (src) {
-    return <IconBase size={size} src={src} />
+    return <RemoteIcon src={src} size={size} />
   }
 
   if (app && KNOWN_ICONS.has(app.appId)) {
     return <IconBase size={size} src={KNOWN_ICONS.get(app.appId)} />
   }
 
-  if (app && app.baseUrl) {
-    const iconUrl = appIconUrl(app, size)
-    return (
-      // Tries to load the app icon while displaying the default one.
-      <RemoteImage src={iconUrl}>
-        {({ exists }) => {
-          if (exists) {
-            return <IconBase size={size} src={iconUrl} />
-          }
+  return (
+    <RemoteIcon src={appIconUrl(app, size)} size={size}>
+      <RemoteIcon src={legacyAppIconUrl(app)} size={size} />
+    </RemoteIcon>
+  )
+}
 
-          const legacyIconUrl = legacyAppIconUrl(app)
-          return (
-            // TODO: support lists of images in RemoteImage,
-            // so we don’t have to nest them.
-            <RemoteImage src={legacyIconUrl}>
-              {({ exists }) => (
-                <IconBase
-                  size={size}
-                  src={exists ? legacyIconUrl : iconSvgDefault}
-                />
-              )}
-            </RemoteImage>
-          )
-        }}
-      </RemoteImage>
-    )
-  }
-  return <IconBase size={size} src={iconSvgDefault} />
+// Display a remote icon if found,
+// otherwise a provided fallback if provided,
+// otherwise the default icon.
+const RemoteIcon = ({ src, size, children }) => {
+  const fallback = children || <IconBase size={size} src={iconSvgDefault} />
+  return src === null ? (
+    fallback
+  ) : (
+    <RemoteImage src={src}>
+      {({ exists }) => (exists ? <IconBase size={size} src={src} /> : fallback)}
+    </RemoteImage>
+  )
 }
 
 // Base icon
