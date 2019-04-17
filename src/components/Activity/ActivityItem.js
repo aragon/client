@@ -9,11 +9,29 @@ import {
   theme,
 } from '@aragon/ui'
 import { network } from '../../environment'
+import { shortenAddress, transformAddresses } from '../../web3-utils'
 import { activityStatusTypes } from '../../contexts/ActivityContext'
-import TimeTag from './TimeTag'
 import AppIcon from '../AppIcon/AppIcon'
+import TimeTag from './TimeTag'
 import IconSuccess from '../../icons/IconSuccess'
 import IconPending from '../../icons/IconPending'
+
+const ItemContent = React.memo(
+  ({ text = '' }) => (
+    <p>
+      {transformAddresses(text, (part, isAddress, index) =>
+        isAddress ? (
+          <span title={part} key={index}>
+            {shortenAddress(part)}
+          </span>
+        ) : (
+          <span key={index}>{part}</span>
+        )
+      )}
+    </p>
+  ),
+  (prevProps, nextProps) => prevProps.text === nextProps.text
+)
 
 const ActivityItem = ({ activity, onClose }) => {
   const { app } = activity
@@ -21,7 +39,6 @@ const ActivityItem = ({ activity, onClose }) => {
     <section
       css={`
         display: grid;
-        grid-template-rows: 1fr;
         grid-template-areas:
           'title time'
           'content content';
@@ -78,6 +95,7 @@ const ActivityItem = ({ activity, onClose }) => {
       <div
         css={`
           grid-area: content;
+          overflow: hidden;
           position: relative;
           margin-top: 10px;
           margin-bottom: 0;
@@ -88,7 +106,7 @@ const ActivityItem = ({ activity, onClose }) => {
           line-height: 22px;
         `}
       >
-        <p>{activity.description}</p>
+        <ItemContent text={activity.description} />
         <StatusMessage activity={activity} />
       </div>
     </section>
