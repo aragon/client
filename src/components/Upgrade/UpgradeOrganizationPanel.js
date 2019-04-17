@@ -10,7 +10,7 @@ import {
   SidePanelSplit,
   blockExplorerUrl,
 } from '@aragon/ui'
-// import { RepoType } from '../../prop-types'
+import { AppsListType, ReposListType } from '../../prop-types'
 import { TextLabel } from '../../components/TextStyles'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { GU } from '../../utils'
@@ -147,7 +147,10 @@ const UpgradeOrganizationPanel = React.memo(
 )
 
 UpgradeOrganizationPanel.propTypes = {
+  opened: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
+  apps: AppsListType,
+  repos: ReposListType,
 }
 
 const AppVersion = ({
@@ -204,6 +207,15 @@ const AppVersion = ({
       </SafeLink>
     </div>
   )
+}
+
+AppVersion.propTypes = {
+  baseUrl: PropTypes.string.isRequired,
+  contractAddress: PropTypes.string.isRequired,
+  icons: PropTypes.array.isRequired,
+  knownIcon: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  version: PropTypes.string.isRequired,
 }
 
 const Heading2 = styled(TextLabel).attrs({ as: 'h2' })`

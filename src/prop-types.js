@@ -86,6 +86,8 @@ export const AppType = PropTypes.shape({
   version: PropTypes.string,
 })
 
+export const AppsListType = PropTypes.arrayOf(AppType)
+
 export const AppInstanceType = PropTypes.shape({
   codeAddress: EthereumAddressType,
   identifier: PropTypes.string,
@@ -179,3 +181,5 @@ export const RepoType = PropTypes.shape({
     })
   ),
 })
+
+export const ReposListType = PropTypes.arrayOf(RepoType)
