@@ -52,6 +52,8 @@ class AppCenter extends React.Component {
     )
     // Try to perform the path
     wrapper.performTransactionPath(updatePath)
+
+    this.setState({ upgradePanelOpened: false })
   }
   getLocation() {
     const { params } = this.props
