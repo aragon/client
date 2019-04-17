@@ -124,7 +124,7 @@ const UpgradeOrganizationPanel = React.memo(
               })}`}
               onClick={onClose}
             >
-              Upgrade your organization
+              Check updates
             </Button.Anchor>
           </div>
         </Part>
