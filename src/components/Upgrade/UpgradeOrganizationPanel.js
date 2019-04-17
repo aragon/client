@@ -14,7 +14,7 @@ import {
 import { TextLabel } from '../../components/TextStyles'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { GU } from '../../utils'
-import { networkType } from '../../environment'
+import { network } from '../../environment'
 
 import iconFinance from './assets/icons/finance.svg'
 import iconTokenManager from './assets/icons/token-manager.svg'
@@ -63,8 +63,6 @@ function getAppVersionData({ content, version }, apps) {
 
 const UpgradeOrganizationPanel = React.memo(
   ({ apps = [], repos = [], opened, onClose }) => {
-    const name = undefined
-    const changelogUrl = 'http://changelog.url'
     const sourceUrl = 'http://source.url'
 
     const [currentVersions, newVersions] = useMemo(
@@ -192,7 +190,9 @@ const AppVersion = ({
         {major || version}
       </div>
       <SafeLink
-        href={blockExplorerUrl('address', contractAddress, { networkType })}
+        href={blockExplorerUrl('address', contractAddress, {
+          networkType: network.type,
+        })}
         css={`
           display: flex;
           background: #daeaef;
