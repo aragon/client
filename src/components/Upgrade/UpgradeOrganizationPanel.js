@@ -153,7 +153,7 @@ const AppVersion = ({
           margin-right: 5px;
         `}
       >
-        {major || version}
+        v{major || version}
       </div>
       <ExternalLink
         href={blockExplorerUrl('address', contractAddress, {
