@@ -54,7 +54,7 @@ const HighlightScreen = ({
           margin: 10px 0 10px;
         `}
       >
-        {compactMode && title.small ? title.small : title.large}
+        {compactMode && (title.small || title.large)}
       </h1>
       <p
         css={`
