@@ -145,7 +145,7 @@ const UpgradeOrganizationPanel = React.memo(
           >
             <Button mode="strong" wide onClick={handleUpgradeAll}>
               Upgrade your organization
-            </Button>
+            </Button>=
           </div>
         </Part>
       </SidePanel>
