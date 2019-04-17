@@ -57,7 +57,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
               <div
                 css={`
                   display: flex;
-                  align-items: flex-end;
+                  align-items: center;
                 `}
               >
                 <div
@@ -71,7 +71,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                   <h1
                     css={`
                       white-space: nowrap;
-                      margin-bottom: ${3 * GU}px;
+                      margin-bottom: ${1 * GU}px;
                       font-size: 22px;
                     `}
                   >
@@ -170,7 +170,7 @@ AppContent.propTypes = {
 const Heading2 = ({ children }) => (
   <h2
     css={`
-      margin-top: ${2 * GU}px;
+      margin-top: ${1 * GU}px;
       margin-bottom: ${GU}px;
     `}
   >
