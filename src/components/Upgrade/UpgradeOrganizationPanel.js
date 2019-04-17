@@ -114,6 +114,7 @@ const UpgradeOrganizationPanel = React.memo(
             <Button.Anchor
               mode="strong"
               wide
+              style={{ textAlign: 'center' }}
               href={`#${getAppPath({
                 dao,
                 instanceId: 'apps',
