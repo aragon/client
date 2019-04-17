@@ -66,7 +66,7 @@ class Wrapper extends React.PureComponent {
   state = {
     menuPanelOpened: !this.props.autoClosingPanel,
     preferencesOpened: false,
-    orgUpgradePanelOpened: true,
+    orgUpgradePanelOpened: false,
   }
 
   componentDidUpdate(prevProps) {

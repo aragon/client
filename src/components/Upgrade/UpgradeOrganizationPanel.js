@@ -63,7 +63,7 @@ function getAppVersionData({ content, version }, apps) {
 
 const UpgradeOrganizationPanel = React.memo(
   ({ apps = [], repos = [], opened, onClose }) => {
-    const sourceUrl = 'http://source.url'
+    const sourceUrl = 'https://github.com/aragon/aragon-apps'
 
     const [currentVersions, newVersions] = useMemo(
       () =>
@@ -103,27 +103,13 @@ const UpgradeOrganizationPanel = React.memo(
         <Part>
           <Heading2>Source code</Heading2>
           <p>
-            {sourceUrl ? (
-              <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
-            ) : (
-              'There is no available source for this app.'
-            )}
+            <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
           </p>
 
           <Heading2>Aragon official registry</Heading2>
           <p>
-            {sourceUrl ? (
-              <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
-            ) : (
-              'There is no available source for this app.'
-            )}
+            <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
           </p>
-        </Part>
-
-        <SidePanelSeparator />
-        <Part>
-          <Heading2>Permissions</Heading2>
-          <p>This upgrade doesn’t introduce any new permissions.</p>
         </Part>
 
         <SidePanelSeparator />
@@ -150,7 +136,7 @@ const UpgradeOrganizationPanel = React.memo(
               margin: ${2 * GU}px 0;
             `}
           >
-            <Button mode="strong" disabled wide>
+            <Button mode="strong" wide>
               Upgrade your organization
             </Button>
           </div>

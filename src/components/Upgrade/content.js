@@ -45,9 +45,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      The activity panel keeps you informed about the status of
-      pending transactions and activity in your organization.
-    `,
+        The activity panel keeps you informed about the status of
+        pending transactions and activity in your organization.
+      `,
     },
     visual: {
       small: small2,
@@ -63,9 +63,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      Export your finances using a standard data format. Just choose the time
-      period, and click download.
-    `,
+        Export your finances using a standard data format. Just choose the time
+        period, and click download.
+      `,
     },
     visual: {
       small: small3,
@@ -81,9 +81,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      Apply security patches and add new features to the apps in your
-      organization by updating to the latest version of apps in the App Center.
-    `,
+        Apply security patches and add new features to the apps in your
+        organization by updating to the latest version of apps in the App Center.
+      `,
     },
     visual: {
       small: small4,
@@ -99,9 +99,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      Manage your organization on the go from any web3 browser with the
-      mobile-friendly Aragon web app.
-    `,
+        Manage your organization on the go from any web3 browser with the
+        mobile-friendly Aragon web app.
+      `,
     },
     visual: {
       small: small5,
