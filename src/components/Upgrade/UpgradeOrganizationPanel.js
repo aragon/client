@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
@@ -10,12 +10,12 @@ import {
   SidePanelSplit,
   blockExplorerUrl,
 } from '@aragon/ui'
-import { ReposListType } from '../../prop-types'
+import { AragonType, DaoAddressType, ReposListType } from '../../prop-types'
 import { TextLabel } from '../../components/TextStyles'
 import AppIcon from '../../components/AppIcon/AppIcon'
+import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import { network } from '../../environment'
 import { KNOWN_ICONS } from '../../repo-utils'
-import { getAppPath } from '../../routing'
 import { repoBaseUrl } from '../../url-utils'
 import { GU } from '../../utils'
 
@@ -37,7 +37,7 @@ function getAppVersionData(repo) {
 }
 
 const UpgradeOrganizationPanel = React.memo(
-  ({ repos = [], opened, onClose, dao }) => {
+  ({ repos = [], opened, onClose, daoAddress, wrapper }) => {
     const sourceUrl = 'https://github.com/aragon/aragon-apps'
 
     const [currentVersions, newVersions] = useMemo(
@@ -51,6 +51,38 @@ const UpgradeOrganizationPanel = React.memo(
         ),
       [repos]
     )
+
+    const handleUpgradeAll = useCallback(async () => {
+      const upgradeIntents = repos.map(({ appId, versions }) => {
+        const newContractAddress = versions[versions.length - 1].contractAddress
+        return [
+          daoAddress.address,
+          'setApp',
+          [KERNEL_APP_BASE_NAMESPACE, appId, newContractAddress],
+        ]
+      })
+
+      // Close the panel early, to allow the SignerPanel to open
+      // The animation helps us a little bit with the lag on calculating the path
+      onClose()
+
+      const upgradePath = await wrapper.getTransactionPathForIntentBasket(
+        upgradeIntents,
+        { checkMode: 'single' }
+      )
+
+      if (upgradePath.direct) {
+        // User has direct access, so we need to send these intents one by one
+        await Promise.all(
+          upgradePath.transactions.map(transaction =>
+            wrapper.performTransactionPath([transaction])
+          )
+        )
+      } else {
+        // We can use the power of calls scripts to do a single transaction!
+        await wrapper.performTransactionPath(upgradePath.path)
+      }
+    }, [repos, wrapper])
 
     return (
       <SidePanel
@@ -111,18 +143,9 @@ const UpgradeOrganizationPanel = React.memo(
               margin: ${2 * GU}px 0;
             `}
           >
-            <Button.Anchor
-              mode="strong"
-              wide
-              href={`#${getAppPath({
-                dao,
-                instanceId: 'apps',
-                params: `installed`,
-              })}`}
-              onClick={onClose}
-            >
+            <Button mode="strong" wide onClick={handleUpgradeAll}>
               Upgrade your organization
-            </Button.Anchor>
+            </Button>
           </div>
         </Part>
       </SidePanel>
@@ -134,7 +157,8 @@ UpgradeOrganizationPanel.propTypes = {
   opened: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   repos: ReposListType,
-  dao: PropTypes.string.isRequired,
+  daoAddress: DaoAddressType.isRequired,
+  wrapper: AragonType,
 }
 
 const AppVersion = ({
