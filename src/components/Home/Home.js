@@ -132,7 +132,7 @@ class Home extends React.Component {
                   >
                     {dao.endsWith('.eth')
                       ? `You are interacting with ${dao}`
-                      : 'You are using Aragon 0.6 — Alba'}
+                      : 'You are using Aragon 0.7 — Bella'}
                   </Text>
                 </AppTitle>
                 <p>
