@@ -15,6 +15,7 @@ import { TextLabel } from '../../components/TextStyles'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { network } from '../../environment'
 import { KNOWN_ICONS } from '../../repo-utils'
+import { getAppPath } from '../../routing'
 import { GU } from '../../utils'
 
 const VERSION = '0.7 Bella'
@@ -39,7 +40,7 @@ function getAppVersionData({ content, version }, apps) {
 }
 
 const UpgradeOrganizationPanel = React.memo(
-  ({ apps = [], repos = [], opened, onClose }) => {
+  ({ apps = [], repos = [], opened, onClose, dao }) => {
     const sourceUrl = 'https://github.com/aragon/aragon-apps'
 
     const [currentVersions, newVersions] = useMemo(
@@ -113,9 +114,18 @@ const UpgradeOrganizationPanel = React.memo(
               margin: ${2 * GU}px 0;
             `}
           >
-            <Button mode="strong" wide>
+            <Button.Anchor
+              mode="strong"
+              wide
+              href={`#${getAppPath({
+                dao,
+                instanceId: 'apps',
+                params: `installed`,
+              })}`}
+              onClick={onClose}
+            >
               Upgrade your organization
-            </Button>
+            </Button.Anchor>
           </div>
         </Part>
       </SidePanel>
@@ -128,6 +138,7 @@ UpgradeOrganizationPanel.propTypes = {
   onClose: PropTypes.func.isRequired,
   apps: AppsListType,
   repos: ReposListType,
+  dao: PropTypes.string.isRequired,
 }
 
 const AppVersion = ({
