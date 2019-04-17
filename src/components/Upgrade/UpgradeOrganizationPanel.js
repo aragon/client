@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Button,
+  ExternalLink,
   Info,
-  SafeLink,
   SidePanel,
   SidePanelSeparator,
   SidePanelSplit,
@@ -103,12 +103,12 @@ const UpgradeOrganizationPanel = React.memo(
         <Part>
           <Heading2>Source code</Heading2>
           <p>
-            <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
+            <ExternalLink href={sourceUrl}>{sourceUrl}</ExternalLink>
           </p>
 
           <Heading2>Aragon official registry</Heading2>
           <p>
-            <SafeLink href={sourceUrl}>{sourceUrl}</SafeLink>
+            <ExternalLink href={sourceUrl}>{sourceUrl}</ExternalLink>
           </p>
         </Part>
 
@@ -178,7 +178,7 @@ const AppVersion = ({
       >
         {major || version}
       </div>
-      <SafeLink
+      <ExternalLink
         href={blockExplorerUrl('address', contractAddress, {
           networkType: network.type,
         })}
@@ -204,7 +204,7 @@ const AppVersion = ({
         >
           {name}
         </div>
-      </SafeLink>
+      </ExternalLink>
     </div>
   )
 }
