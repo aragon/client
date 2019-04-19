@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Text } from '@aragon/ui'
 
+export const BANNER_HEIGHT = 38
+
 class Banner extends React.Component {
   render() {
     const { text, textColor, button, color } = this.props
@@ -28,7 +30,7 @@ const BannerWrapper = styled.div`
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  height: 38px;
+  height: ${BANNER_HEIGHT}px;
   padding: 6px 10px;
   background-color: ${({ color }) => color};
 `
