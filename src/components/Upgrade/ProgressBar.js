@@ -19,7 +19,7 @@ ProgressBar.propTypes = {
 const Bar = styled(animated.div)`
   position: absolute;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   // prevents engines rounding issues
   left: -1px;
   right: -1px;
