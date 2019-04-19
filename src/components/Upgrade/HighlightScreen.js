@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Button, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
@@ -8,9 +8,9 @@ import RemoteImage from '../RemoteImage'
 export const RATIO_LEFT = 500 / 1055
 export const RATIO_TOP = 560 / 950
 
-const TRANSLATE_TITLE = 20
-const TRANSLATE_HEADING = 40
-const TRANSLATE_CONTENT = 60
+const TRANSLATE_VALUE_TITLE = 20
+const TRANSLATE_VALUE_HEADING = 40
+const TRANSLATE_VALUE_CONTENT = 60
 
 // Helping the styled-components `css` preprocessor
 // by using non-nested components.
@@ -22,13 +22,19 @@ const HighlightScreen = ({
   onUpgrade,
   enterProgress,
   showProgress,
-  status,
+  state,
   title,
   upgrade,
   verticalMode,
   visual,
 }) => {
   const visualSrc = compactMode && visual.small ? visual.small : visual.large
+  const [leaving, setLeaving] = useState(false)
+  useEffect(() => {
+    if (state === 'leave') {
+      setLeaving(true)
+    }
+  }, [state])
   return (
     <div
       css={`
@@ -48,7 +54,7 @@ const HighlightScreen = ({
         text-align: ${verticalMode ? 'center' : 'left'};
       `}
     >
-      <div
+      <AnimDiv
         css={`
           overflow: ${verticalMode ? 'visible' : 'hidden'};
           flex-shrink: 0;
@@ -61,6 +67,12 @@ const HighlightScreen = ({
           position: relative;
           z-index: 1;
         `}
+        style={{
+          opacity: showProgress.interpolate(v =>
+            // Make content disappear faster than appearing
+            leaving ? v * v : v
+          ),
+        }}
       >
         <AnimP
           css={`
@@ -69,9 +81,8 @@ const HighlightScreen = ({
             font-size: ${compactMode ? 12 : 16}px;
           `}
           style={{
-            opacity: showProgress,
             transform: enterProgress.interpolate(
-              v => `translate3d(${v * TRANSLATE_TITLE}%, 0, 0)`
+              v => `translate3d(${v * TRANSLATE_VALUE_TITLE}%, 0, 0)`
             ),
           }}
         >
@@ -84,9 +95,8 @@ const HighlightScreen = ({
             margin: 10px 0 10px;
           `}
           style={{
-            opacity: showProgress,
             transform: enterProgress.interpolate(
-              v => `translate3d(${v * TRANSLATE_HEADING}%, 0, 0)`
+              v => `translate3d(${v * TRANSLATE_VALUE_HEADING}%, 0, 0)`
             ),
           }}
         >
@@ -94,9 +104,8 @@ const HighlightScreen = ({
         </AnimH1>
         <AnimDiv
           style={{
-            opacity: showProgress,
             transform: enterProgress.interpolate(
-              v => `translate3d(${v * TRANSLATE_CONTENT}%, 0, 0)`
+              v => `translate3d(${v * TRANSLATE_VALUE_CONTENT}%, 0, 0)`
             ),
           }}
         >
@@ -128,7 +137,7 @@ const HighlightScreen = ({
             </div>
           )}
         </AnimDiv>
-      </div>
+      </AnimDiv>
       <RemoteImage src={visualSrc}>
         {({ exists }) => (
           <AnimDiv
@@ -141,9 +150,7 @@ const HighlightScreen = ({
               height: ${verticalMode ? `${RATIO_TOP * 100}%` : '100%'};
               background: ${visual.color};
             `}
-            style={{
-              opacity: status.interpolate(v => (v === 'leaving' ? 0 : 1)),
-            }}
+            style={{ opacity: leaving ? 0 : 1 }}
           >
             <Transition
               native
@@ -193,7 +200,7 @@ HighlightScreen.propTypes = {
   enterProgress: PropTypes.object,
   onUpgrade: PropTypes.func.isRequired,
   showProgress: PropTypes.object,
-  status: PropTypes.oneOf(['entering', 'leaving']),
+  state: PropTypes.string,
   title: PropTypes.shape({
     small: PropTypes.string,
     large: PropTypes.string.isRequired,

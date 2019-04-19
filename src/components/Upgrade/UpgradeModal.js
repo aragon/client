@@ -76,19 +76,21 @@ const UpgradeModal = React.memo(({ visible, onUpgrade, onClose }) => {
                     enterProgress: 1 * direction,
                     showProgress: 0,
                   }}
+                  initial={{
+                    enterProgress: 0,
+                    showProgress: 1,
+                  }}
                   enter={{
                     enterProgress: 0,
                     showProgress: 1,
-                    status: 'entering',
                   }}
                   leave={{
                     enterProgress: -1 * direction,
                     showProgress: 0,
-                    status: 'leaving',
                   }}
-                  config={springs.lazy}
+                  config={springs.smooth}
                 >
-                  {index =>
+                  {(index, state) =>
                     /* eslint-disable react/prop-types */
                     ({ enterProgress, showProgress, status }) => (
                       <HighlightScreen
@@ -97,7 +99,7 @@ const UpgradeModal = React.memo(({ visible, onUpgrade, onClose }) => {
                         verticalMode={verticalMode}
                         enterProgress={enterProgress}
                         showProgress={showProgress}
-                        status={status}
+                        state={state}
                         {...highlights[index]}
                       />
                     )
