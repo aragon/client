@@ -23,7 +23,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         {'You are about to sign this message with the connected account '}
         <LocalIdentityBadge entity={account} fontSize="xsmall" />
       </SmMarginRight>
-      <Seperator />
+      <Separator />
       <Label smallcaps>Signature requested by:</Label>
       <AppInstanceLabel
         app={locateAppInfo(apps, intent.requestingApp)}
