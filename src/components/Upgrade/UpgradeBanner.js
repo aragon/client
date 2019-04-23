@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Viewport } from '@aragon/ui'
-import Banner from '../Banner/Banner'
+import { Transition, animated } from 'react-spring'
+import { Button, Viewport, springs } from '@aragon/ui'
+import Banner, { BANNER_HEIGHT } from '../Banner/Banner'
 import UpgradeModal from './UpgradeModal'
 import { banner } from './content'
 
-const UpgradeBanner = React.memo(({ onUpgrade }) => {
+const UpgradeBanner = React.memo(({ visible, onUpgrade }) => {
   const [showModal, setShowModal] = useState(false)
 
   const handleMoreInfo = useCallback(() => {
@@ -25,16 +26,38 @@ const UpgradeBanner = React.memo(({ onUpgrade }) => {
     <React.Fragment>
       <Viewport>
         {({ width }) => (
-          <Banner
-            text={width > 500 ? banner.text.large : banner.text.small}
-            button={
-              <Button onClick={handleMoreInfo} mode="normal" size="mini">
-                More info
-              </Button>
+          <Transition
+            items={visible}
+            from={{ height: 0 }}
+            enter={{ height: BANNER_HEIGHT }}
+            leave={{ height: 0 }}
+            config={springs.smooth}
+            native
+          >
+            {visible =>
+              visible &&
+              /* eslint-disable react/prop-types */
+              (({ height }) => (
+                <animated.div style={{ overflow: 'hidden', height }}>
+                  <Banner
+                    text={width > 500 ? banner.text.large : banner.text.small}
+                    button={
+                      <Button
+                        onClick={handleMoreInfo}
+                        mode="normal"
+                        size="mini"
+                      >
+                        More info
+                      </Button>
+                    }
+                    color="rgba(37, 49, 77, .75)"
+                    textColor="#FFFFFF"
+                  />
+                </animated.div>
+              ))
+            /* eslint-enable react/prop-types */
             }
-            color="rgba(37, 49, 77, .75)"
-            textColor="#FFFFFF"
-          />
+          </Transition>
         )}
       </Viewport>
       <UpgradeModal
@@ -48,6 +71,7 @@ const UpgradeBanner = React.memo(({ onUpgrade }) => {
 
 UpgradeBanner.propTypes = {
   onUpgrade: PropTypes.func.isRequired,
+  visible: PropTypes.bool,
 }
 
 export default UpgradeBanner

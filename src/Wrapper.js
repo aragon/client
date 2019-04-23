@@ -250,10 +250,12 @@ class Wrapper extends React.PureComponent {
         />
 
         <BannerWrapper>
-          {banner ||
-            (canUpgradeOrg && (
-              <UpgradeBanner onUpgrade={this.showOrgUpgradePanel} />
-            ))}
+          {banner || (
+            <UpgradeBanner
+              visible={canUpgradeOrg}
+              onUpgrade={this.showOrgUpgradePanel}
+            />
+          )}
         </BannerWrapper>
 
         <CombinedPanel

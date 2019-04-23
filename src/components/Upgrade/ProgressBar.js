@@ -6,10 +6,8 @@ import { springs } from '@aragon/ui'
 
 const ProgressBar = ({ value }) => {
   const transitionStyles = useSpring({
-    config: springs.smooth,
-    to: {
-      transform: `scale3d(${value}, 1, 1)`,
-    },
+    config: springs.lazy,
+    to: { transform: `scale3d(${value}, 1, 1)` },
   })
   return <Bar style={transitionStyles} />
 }
@@ -21,7 +19,7 @@ ProgressBar.propTypes = {
 const Bar = styled(animated.div)`
   position: absolute;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   // prevents engines rounding issues
   left: -1px;
   right: -1px;
