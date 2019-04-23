@@ -19,7 +19,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
     <React.Fragment>
       <SmMarginRight>
         {'You are about to sign this message with the connected account '}
-        <LocalIdentityBadge fontSize="xsmall" entity={account} />
+        <LocalIdentityBadge entity={account} />
       </SmMarginRight>
       <Separator />
       <Label smallcaps>Signature requested by:</Label>
