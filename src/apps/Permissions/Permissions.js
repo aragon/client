@@ -144,6 +144,7 @@ class Permissions extends React.Component {
             label:
               (openedApp && openedApp.identifier) ||
               shortenAddress(location.address),
+            title: `Address: ${location.address}`,
           }}
         />,
       ]
@@ -158,6 +159,7 @@ class Permissions extends React.Component {
           title="Entity permissions"
           badge={{
             label: entity.app.identifier || shortenAddress(location.address),
+            title: `Address: ${location.address}`,
           }}
         />,
       ]
