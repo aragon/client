@@ -6,13 +6,13 @@ import providerString from '../../provider-strings'
 import SignerButton from './SignerButton'
 
 import {
-  STATUS_ERROR_TX,
-  STATUS_SIGNED_TX,
-  STATUS_SIGNING_TX,
+  STATUS_TX_ERROR,
+  STATUS_TX_SIGNED,
+  STATUS_TX_SIGNING,
   SignerStatusType,
-  STATUS_SIGNING_MESSAGE,
-  STATUS_MESSAGE_SIGNED,
-  STATUS_ERROR_SIGNING_MSG,
+  STATUS_MSG_SIGNING,
+  STATUS_MSG_SIGNED,
+  STATUS_MSG_ERROR,
   isSignatureSuccess,
   isSignatureError,
   isSigning,
@@ -37,14 +37,14 @@ class SigningStatus extends React.Component {
   getLabel() {
     const { status } = this.props
     if (isSigning(status)) return 'Waiting for signature…'
-    if (status === STATUS_SIGNED_TX) return 'Transaction signed!'
-    if (status === STATUS_MESSAGE_SIGNED) return 'Message signed!'
-    if (status === STATUS_ERROR_TX) return 'Error signing the transaction'
-    if (status === STATUS_ERROR_SIGNING_MSG) return 'Error signing the message'
+    if (status === STATUS_TX_SIGNED) return 'Transaction signed!'
+    if (status === STATUS_MSG_SIGNED) return 'Message signed!'
+    if (status === STATUS_TX_ERROR) return 'Error signing the transaction'
+    if (status === STATUS_MSG_ERROR) return 'Error signing the message'
   }
   getInfo() {
     const { status, signError, walletProviderId } = this.props
-    if (status === STATUS_SIGNING_TX) {
+    if (status === STATUS_TX_SIGNING) {
       return (
         <p>
           {`Open ${providerString(
@@ -54,7 +54,7 @@ class SigningStatus extends React.Component {
         </p>
       )
     }
-    if (status === STATUS_SIGNING_MESSAGE) {
+    if (status === STATUS_MSG_SIGNING) {
       return (
         <p>{`Open ${providerString(
           'your Ethereum provider',
@@ -62,17 +62,17 @@ class SigningStatus extends React.Component {
         )} to sign your message`}</p>
       )
     }
-    if (status === STATUS_SIGNED_TX) {
+    if (status === STATUS_TX_SIGNED) {
       return (
         <p>
           Success! Your transaction has been sent to the network for processing.
         </p>
       )
     }
-    if (status === STATUS_MESSAGE_SIGNED) {
+    if (status === STATUS_MSG_SIGNED) {
       return <p>Success! Your message has been signed.</p>
     }
-    if (status === STATUS_ERROR_TX) {
+    if (status === STATUS_TX_ERROR) {
       return (
         <React.Fragment>
           <p>Your transaction wasn't signed and no tokens were sent.</p>
@@ -80,7 +80,7 @@ class SigningStatus extends React.Component {
         </React.Fragment>
       )
     }
-    if (status === STATUS_ERROR_SIGNING_MSG) {
+    if (status === STATUS_MSG_ERROR) {
       return (
         <React.Fragment>
           <p>Your message wasn't signed.</p>

@@ -6,22 +6,20 @@ import { Info, Text, SidePanelSeparator, theme } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import ToggleContent from '../ToggleContent'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
-import AppInstanceLabel from '../../apps/Permissions/AppInstanceLabel'
+import AppInstanceLabel from '../AppInstanceLabel'
 import { AppType } from '../../prop-types'
 import { isHumanReadable } from '../../utils'
 
 const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
-  const locateAppInfo = (apps, requestingApp) => {
-    const app = apps.find(({ proxyAddress }) => proxyAddress === requestingApp)
-    return app
-  }
+  const locateAppInfo = (apps, requestingApp) =>
+    apps.find(({ proxyAddress }) => proxyAddress === requestingApp)
 
   const humanReadableMessage = isHumanReadable(intent.message)
   return (
     <React.Fragment>
       <SmMarginRight>
         {'You are about to sign this message with the connected account '}
-        <LocalIdentityBadge entity={account} fontSize="xsmall" />
+        <LocalIdentityBadge fontSize="xsmall" entity={account} />
       </SmMarginRight>
       <Separator />
       <Label smallcaps>Signature requested by:</Label>
@@ -30,7 +28,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         proxyAddress={intent.requestingApp}
         showIcon
       />
-      <Seperator />
+      <Separator />
       {humanReadableMessage ? (
         <React.Fragment>
           <Label smallcaps>Message:</Label>
@@ -62,7 +60,7 @@ SignMsgContent.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
 }
 
-const Seperator = styled(SidePanelSeparator)`
+const Separator = styled(SidePanelSeparator)`
   margin-top: 18px;
   margin-bottom: 18px;
 `

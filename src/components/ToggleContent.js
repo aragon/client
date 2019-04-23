@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { font, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 
-import arrow from '../assets/arrow.svg'
+import IconArrow from '../icons/IconArrow'
 
 export default class ToggleContent extends React.Component {
   static propTypes = {
@@ -25,7 +25,10 @@ export default class ToggleContent extends React.Component {
     return (
       <div>
         <Label onClick={this.handleClick}>
-          {opened ? labelOpen : labelClosed} <Arrow opened={opened} />
+          {opened ? labelOpen : labelClosed}{' '}
+          <Rotate opened={opened}>
+            <IconArrow />
+          </Rotate>
         </Label>
 
         <Transition
@@ -55,13 +58,16 @@ const Label = styled.button.attrs({ type: 'button' })`
   img {
     margin-left: 10px;
   }
+  display: flex;
+  flex-direction: row;
 `
 const Content = styled(animated.div)`
   overflow: hidden;
 `
 
-const Arrow = styled.img.attrs({ src: arrow, alt: '' })`
+const Rotate = styled.div`
   transform-origin: 50% 50%;
   transform: rotate(${p => (p.opened ? 0 : 180)}deg);
   transition: transform 200ms ease-in-out;
+  margin-left: 4px;
 `
