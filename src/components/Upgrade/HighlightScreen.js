@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Button, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
+import { ReactSpringStateType } from '../../prop-types'
 import RemoteImage from '../RemoteImage'
 
 // Ratios based on the the design files
@@ -200,7 +201,7 @@ HighlightScreen.propTypes = {
   enterProgress: PropTypes.object,
   onUpgrade: PropTypes.func.isRequired,
   showProgress: PropTypes.object,
-  state: PropTypes.string,
+  state: ReactSpringStateType.isRequired,
   title: PropTypes.shape({
     small: PropTypes.string,
     large: PropTypes.string.isRequired,
