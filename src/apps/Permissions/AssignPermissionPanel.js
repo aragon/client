@@ -4,7 +4,7 @@ import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { AppType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
-import AppInstanceLabel from './AppInstanceLabel'
+import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntitySelector from './EntitySelector'
 
 const DEFAULT_STATE = {

@@ -7,7 +7,7 @@ import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadg
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
-import AppInstanceLabel from './AppInstanceLabel'
+import AppInstanceLabel from '../../components/AppInstanceLabel'
 import { isBurnEntity } from '../../permissions'
 import { isEmptyAddress } from '../../web3-utils'
 

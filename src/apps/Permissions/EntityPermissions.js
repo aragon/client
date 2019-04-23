@@ -4,7 +4,7 @@ import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
-import AppInstanceLabel from './AppInstanceLabel'
+import AppInstanceLabel from '../../components/AppInstanceLabel'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { EthereumAddressType } from '../../prop-types'
 
