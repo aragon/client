@@ -21,6 +21,7 @@ import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
+import { isKnownRepo } from './repo-utils'
 import {
   APP_MODE_START,
   APP_MODE_ORG,
@@ -258,7 +259,13 @@ class App extends React.Component {
       },
       onInstalledRepos: repos => {
         log('installed repos', repos)
-        this.setState({ repos })
+        const canUpgradeOrg = repos.some(
+          ({ appId, currentVersion, latestVersion }) =>
+            isKnownRepo(appId) &&
+            currentVersion.version.split('.')[0] !==
+              latestVersion.version.split('.')[0]
+        )
+        this.setState({ canUpgradeOrg, repos })
       },
       onTransaction: transactionBag => {
         log('transaction bag', transactionBag)
@@ -345,6 +352,16 @@ class App extends React.Component {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
 
+  renderBanner(mode = 'wrapper') {
+    const { showDeprecatedBanner, locator } = this.state
+    if (showDeprecatedBanner) {
+      return (
+        <DeprecatedBanner dao={locator.dao} lightMode={mode === 'onboarding'} />
+      )
+    }
+    return null
+  }
+
   render() {
     const {
       account,
@@ -352,6 +369,7 @@ class App extends React.Component {
       appIdentifiers,
       appsStatus,
       balance,
+      canUpgradeOrg,
       connected,
       daoAddress,
       daoStatus,
@@ -363,7 +381,6 @@ class App extends React.Component {
       permissionsLoading,
       repos,
       selectorNetworks,
-      showDeprecatedBanner,
       transactionBag,
       signatureBag,
       walletNetwork,
@@ -429,9 +446,8 @@ class App extends React.Component {
                       account={account}
                       apps={appsWithIdentifiers}
                       appsStatus={appsStatus}
-                      banner={
-                        showDeprecatedBanner && <DeprecatedBanner dao={dao} />
-                      }
+                      banner={this.renderBanner('wrapper')}
+                      canUpgradeOrg={canUpgradeOrg}
                       connected={connected}
                       daoAddress={daoAddress}
                       daoStatus={daoStatus}
@@ -458,11 +474,7 @@ class App extends React.Component {
                     visible={mode === APP_MODE_START || mode === APP_MODE_SETUP}
                     account={account}
                     balance={balance}
-                    banner={
-                      showDeprecatedBanner && (
-                        <DeprecatedBanner dao={dao} lightMode />
-                      )
-                    }
+                    banner={this.renderBanner('onboarding')}
                     daoCreationStatus={daoCreationStatus}
                     onBuildDao={this.handleBuildDao}
                     onComplete={this.handleCompleteOnboarding}

@@ -6,7 +6,15 @@ import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
-import { AppInstanceGroupType, RepoType } from '../../prop-types'
+import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
+import {
+  AppInstanceGroupType,
+  AragonType,
+  DaoAddressType,
+  RepoType,
+} from '../../prop-types'
+import { repoBaseUrl } from '../../url-utils'
+import { log } from '../../utils'
 
 const SCREENS = [
   { id: 'installed', label: 'Installed apps' },
@@ -16,11 +24,13 @@ const SCREENS = [
 class AppCenter extends React.Component {
   static propTypes = {
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
+    daoAddress: DaoAddressType.isRequired,
     onMessage: PropTypes.func.isRequired,
     onParamsRequest: PropTypes.func.isRequired,
     params: PropTypes.string,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     reposLoading: PropTypes.bool.isRequired,
+    wrapper: AragonType,
   }
   state = {
     upgradePanelOpened: false,
@@ -30,6 +40,21 @@ class AppCenter extends React.Component {
     this.props.onMessage({
       data: { from: 'app-center', name: 'menuPanel', value: true },
     })
+  }
+  handleUpgradeApp = async (appId, appAddress) => {
+    const { daoAddress, wrapper } = this.props
+
+    log('setApp', appId, appAddress)
+    // Calculate the path, if it exists
+    const updatePath = await wrapper.getTransactionPath(
+      daoAddress.address, // destination (Kernel)
+      'setApp', // method
+      [KERNEL_APP_BASE_NAMESPACE, appId, appAddress] // params
+    )
+    // Try to perform the path
+    wrapper.performTransactionPath(updatePath)
+
+    this.setState({ upgradePanelOpened: false })
   }
   getLocation() {
     const { params } = this.props
@@ -71,7 +96,7 @@ class AppCenter extends React.Component {
       )
       return {
         ...repo,
-        baseUrl: appGroup.app.baseUrl,
+        baseUrl: repoBaseUrl(repo),
         name: appGroup.name,
         instances: appGroup.instances,
         repoName: appGroup.repoName,
@@ -105,36 +130,53 @@ class AppCenter extends React.Component {
     const repos = this.getRepos()
     const currentRepo = openedRepoName && this.getRepoFromName(openedRepoName)
 
+    const navigationItems = [
+      'App Center',
+      ...(currentRepo ? [currentRepo.name] : []),
+    ]
+
     return (
       <React.Fragment>
         <AppView
+          style={{ height: '100%' }}
           appBar={
-            <AppBar
-              tabs={
-                openedRepoName ? null : (
-                  <TabBar
-                    items={SCREENS.map(screen => screen.label)}
-                    selected={activeTab}
-                    onChange={this.handleScreenChange}
+            <Viewport>
+              {({ below }) => (
+                <AppBar
+                  tabs={
+                    openedRepoName ? null : (
+                      <div
+                        css={`
+                          margin-left: ${below('medium') ? '-14px' : '0'};
+                        `}
+                      >
+                        <TabBar
+                          items={SCREENS.map(screen => screen.label)}
+                          selected={activeTab}
+                          onChange={this.handleScreenChange}
+                        />
+                      </div>
+                    )
+                  }
+                >
+                  {below('medium') && navigationItems.length < 2 && (
+                    <MenuButton
+                      onClick={this.handleMenuPanelOpen}
+                      css={`
+                        position: relative;
+                        z-index: 2;
+                        margin-left: 0;
+                        margin-right: -24px;
+                      `}
+                    />
+                  )}
+                  <NavigationBar
+                    items={navigationItems}
+                    onBack={this.handleCloseRepo}
                   />
-                )
-              }
-            >
-              <Viewport>
-                {({ below }) =>
-                  below('medium') && (
-                    <MenuButton onClick={this.handleMenuPanelOpen} />
-                  )
-                }
-              </Viewport>
-              <NavigationBar
-                items={[
-                  'App Center',
-                  ...(currentRepo ? [currentRepo.name] : []),
-                ]}
-                onBack={this.handleCloseRepo}
-              />
-            </AppBar>
+                </AppBar>
+              )}
+            </Viewport>
           }
         >
           {activeTab === 0 &&
@@ -154,6 +196,7 @@ class AppCenter extends React.Component {
         <UpgradeAppPanel
           repo={upgradePanelOpened ? currentRepo : null}
           onClose={this.handleCloseUpgradePanel}
+          onUpgrade={this.handleUpgradeApp}
         />
       </React.Fragment>
     )

@@ -9,13 +9,13 @@ import Aragon, {
 import {
   appOverrides,
   sortAppsPair,
-  appLocator,
   ipfsDefaultConf,
   web3Providers,
   contractAddresses,
   defaultGasPriceFn,
 } from './environment'
-import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
+import { appBaseUrl } from './url-utils'
+import { noop, removeStartingSlash } from './utils'
 import {
   getWeb3,
   getUnknownBalance,
@@ -28,37 +28,6 @@ import { NoConnection, DAONotFound } from './errors'
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
-
-/*
- * Supported locations:
- *   ipfs:{IPFS_HASH}
- *   http:{HOST}
- *   http:{HOST}:{PORT}
- *   http:{HOST}:{PORT}/{PATH}
- *   http:http(s)://{HOST}
- *   http:http(s)://{HOST}:{PORT}
- *   http:http(s)://{HOST}:{PORT}/{PATH}
- */
-const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
-  // Support overriding app URLs, see network-config.js
-  if (appLocator[app.appId]) {
-    return appLocator[app.appId]
-  }
-  if (!app.content) {
-    return ''
-  }
-
-  const { provider, location } = app.content
-  if (provider === 'ipfs') {
-    return `${gateway}/${location}/`
-  }
-  if (provider === 'http') {
-    return /^https?:\/\//.test(location)
-      ? appendTrailingSlash(location)
-      : `http://${location}/`
-  }
-  return ''
-}
 
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))

@@ -262,13 +262,13 @@ class CombinedPanel extends React.Component {
 
 const Overlay = styled(animated.div)`
   position: absolute;
-  height: 100vh;
+  height: 100%;
   background: rgba(0, 0, 0, 0.3);
 `
 
 const Wrap = styled(animated.div)`
   width: ${MENU_PANEL_WIDTH}px;
-  height: 100vh;
+  height: 100%;
   flex: none;
 `
 

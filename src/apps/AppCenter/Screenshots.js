@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { theme } from '@aragon/ui'
+import { ExternalLink, theme } from '@aragon/ui'
 import { RepoType } from '../../prop-types'
 import { GU, imgSrcFromBase } from '../../utils'
 
@@ -28,28 +28,43 @@ class Screenshots extends React.Component {
           css={`
             display: flex;
             width: 100%;
+            padding-top: 2px;
             padding-bottom: ${3 * GU}px;
           `}
         >
-          {screenshots.map(({ src }, index) => (
-            <img
-              key={src}
-              src={imgSrcFromBase(baseUrl, src)}
-              alt=""
-              width="198"
-              height="120"
-              css={`
-                flex-grow: 0;
-                flex-shrink: 0;
-                display: block;
-                margin-left: 24px;
-                border: 1px solid ${theme.contentBorder};
-                &:first-child {
-                  margin-left: 0;
-                }
-              `}
-            />
-          ))}
+          {screenshots.map(({ src }, index) => {
+            const url = imgSrcFromBase(baseUrl, src)
+            return (
+              <ExternalLink
+                href={url}
+                css={`
+                  flex-grow: 0;
+                  flex-shrink: 0;
+                  margin-left: 24px;
+                  border: 1px solid ${theme.contentBorder};
+                  outline: 0;
+                  &:focus {
+                    border-color: transparent;
+                    outline: 2px solid ${theme.accent};
+                  }
+                  &:first-child {
+                    margin-left: 0;
+                  }
+                `}
+              >
+                <img
+                  key={src}
+                  src={url}
+                  alt=""
+                  width="198"
+                  height="120"
+                  css={`
+                    display: block;
+                  `}
+                />
+              </ExternalLink>
+            )
+          })}
         </div>
       </div>
     )
