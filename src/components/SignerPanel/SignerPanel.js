@@ -239,19 +239,21 @@ class SignerPanel extends React.PureComponent {
         <Main>
           <Transition
             items={status === STATUS_CONFIRMING}
-            from={{ enterProgress: 0 }}
-            enter={{ enterProgress: 1 }}
-            leave={{ enterProgress: 0 }}
+            from={{ enterProgress: 1 }}
+            enter={{ enterProgress: 0 }}
+            initial={{ enterProgress: 0 }}
+            leave={{ enterProgress: -1 }}
             config={springs.lazy}
+            native
           >
             {confirming =>
               confirming
                 ? ({ enterProgress }) => (
                     <ScreenWrapper
                       style={{
-                        transform: `
-                            translate3d(${-100 * (1 - enterProgress)}%, 0, 0)
-                          `,
+                        transform: enterProgress.interpolate(
+                          v => `translate3d(${100 * v}%, 0, 0)`
+                        ),
                       }}
                     >
                       <Screen>
@@ -277,9 +279,9 @@ class SignerPanel extends React.PureComponent {
                 : ({ enterProgress }) => (
                     <ScreenWrapper
                       style={{
-                        transform: `
-                          translate3d(${100 * (1 - enterProgress)}%, 0, 0)
-                        `,
+                        transform: enterProgress.interpolate(
+                          v => `translate3d(${100 * v}%, 0, 0)`
+                        ),
                       }}
                     >
                       <Screen>
