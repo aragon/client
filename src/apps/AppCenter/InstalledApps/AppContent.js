@@ -22,7 +22,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
     instances,
     baseUrl,
     currentVersion: {
-      content: { details_url },
+      content: { details_url: detailsUrl },
       version,
     },
     latestVersion: {
@@ -40,7 +40,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
   React.useEffect(() => {
     const fetchDescription = async () => {
       try {
-        const raw = await fetch(`${baseUrl}${removeStartingSlash(details_url)}`)
+        const raw = await fetch(`${baseUrl}${removeStartingSlash(detailsUrl)}`)
         const res = await raw.text()
         setRepoDetails(res)
       } catch (e) {
@@ -48,7 +48,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
       }
     }
     fetchDescription()
-  }, [details_url])
+  }, [detailsUrl])
 
   const canUpgrade = version !== latestVersion
 
