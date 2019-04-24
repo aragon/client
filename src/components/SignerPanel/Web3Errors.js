@@ -11,19 +11,19 @@ import { isElectron } from '../../utils'
 const Web3ProviderError = ({
   intent: { description, name, to },
   onClose,
-  neededText = '',
-  actionText = '',
+  neededText,
+  actionText,
 }) => (
   <React.Fragment>
     <Info.Action title="You can't perform any action">
       {neededText} in order to perform{' '}
-      {description ? `"${description}"` : 'this action'}
+      {description ? `“${description}”` : 'this action'}
       {name && (
         <React.Fragment>
           on <AddressLink to={to}>{name}</AddressLink>
         </React.Fragment>
       )}
-      .<ActionMessage>{actionText}</ActionMessage>
+      .<p css="margin-top: 15px">{actionText}</p>
     </Info.Action>
     <SignerButton onClick={onClose}>Close</SignerButton>
   </React.Fragment>
@@ -35,20 +35,6 @@ Web3ProviderError.propTypes = {
   neededText: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 }
-
-const ActionMessage = styled.p`
-  margin-top: 15px;
-`
-
-const ButtonLink = styled.button.attrs({ type: 'button' })`
-  padding: 0;
-  font-size: inherit;
-  text-decoration: underline;
-  color: ${theme.textPrimary};
-  cursor: pointer;
-  background: none;
-  border: 0;
-`
 
 export const NoWeb3Provider = ({ intent, onClose }) => {
   const onElectron = isElectron()
@@ -89,23 +75,26 @@ export const AccountLocked = ({
   onClose,
   onRequestEnable,
   walletProviderId,
-}) => (
-  <Web3ProviderError
-    intent={intent}
-    onClose={onClose}
-    neededText={`You need to unlock and enable ${providerString(
-      'your Ethereum provider',
-      walletProviderId
-    )}`}
-    actionText={
-      <span>
-        Please unlock and{' '}
-        <ButtonLink onClick={onRequestEnable}>enable</ButtonLink>{' '}
-        {providerString('your Ethereum provider', walletProviderId)}.
-      </span>
-    }
-  />
-)
+}) => {
+  const providerMessage = providerString(
+    'your Ethereum provider',
+    walletProviderId
+  )
+  return (
+    <Web3ProviderError
+      intent={intent}
+      onClose={onClose}
+      neededText={`You need to unlock and enable ${providerMessage}`}
+      actionText={
+        <span>
+          Please unlock and{' '}
+          <ButtonLink onClick={onRequestEnable}>enable</ButtonLink>{' '}
+          {providerMessage}.
+        </span>
+      }
+    />
+  )
+}
 
 AccountLocked.propTypes = {
   intent: PropTypes.object.isRequired,
@@ -113,6 +102,16 @@ AccountLocked.propTypes = {
   onRequestEnable: PropTypes.func.isRequired,
   walletProviderId: PropTypes.string.isRequired,
 }
+
+const ButtonLink = styled.button.attrs({ type: 'button' })`
+  padding: 0;
+  font-size: inherit;
+  text-decoration: underline;
+  color: ${theme.textPrimary};
+  cursor: pointer;
+  background: none;
+  border: 0;
+`
 
 export const WrongNetwork = ({
   intent,

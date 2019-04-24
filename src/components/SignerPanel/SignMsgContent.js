@@ -7,7 +7,7 @@ import SignerButton from './SignerButton'
 import ToggleContent from './ToggleContent'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
-import { AppType } from '../../prop-types'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import { isHumanReadable } from '../../utils'
 
 const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
@@ -17,10 +17,10 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
   const humanReadableMessage = isHumanReadable(intent.message)
   return (
     <React.Fragment>
-      <SmMarginRight>
-        {'You are about to sign this message with the connected account '}
+      <span css="margin-right: 4px">
+        You are about to sign this message with the connected account{' '}
         <LocalIdentityBadge entity={account} />
-      </SmMarginRight>
+      </span>
       <Separator />
       <Label smallcaps>Signature requested by</Label>
       <AppInstanceLabel
@@ -53,11 +53,11 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
 }
 
 SignMsgContent.propTypes = {
-  intent: PropTypes.object.isRequired,
-  account: PropTypes.string.isRequired,
-  onSign: PropTypes.func.isRequired,
-  signingEnabled: PropTypes.bool.isRequired,
+  account: EthereumAddressType.isRequired,
   apps: PropTypes.arrayOf(AppType).isRequired,
+  intent: PropTypes.object.isRequired,
+  onSign: PropTypes.func.isRequired,
+  signingEnabled: PropTypes.bool,
 }
 
 const Separator = styled(SidePanelSeparator)`
@@ -71,10 +71,6 @@ const Label = styled(Text).attrs({
 })`
   display: block;
   margin-bottom: 10px;
-`
-
-const SmMarginRight = styled.span`
-  margin-right: 4px;
 `
 
 export default SignMsgContent

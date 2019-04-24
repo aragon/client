@@ -4,7 +4,7 @@ import { Info } from '@aragon/ui'
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
 
-export const ImpossibleContent = ({
+const ImpossibleContent = ({
   error,
   intent: { description, name, to },
   onClose,
@@ -31,3 +31,5 @@ ImpossibleContent.propTypes = {
   intent: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
 }
+
+export default ImpossibleContent

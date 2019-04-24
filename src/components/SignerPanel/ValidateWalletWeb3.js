@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import { NoWeb3Provider, AccountLocked, WrongNetwork } from './Web3Errors'
@@ -40,7 +40,8 @@ const ValidateWalletWeb3 = ({
       />
     )
   }
-  return <Fragment>{children}</Fragment>
+
+  return children
 }
 
 ValidateWalletWeb3.propTypes = {
