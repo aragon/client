@@ -54,7 +54,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
 
   return (
     <Viewport>
-      {({ below, breakpoints }) => {
+      {({ above, below, breakpoints }) => {
         const compact = appBelow(below, breakpoints.medium)
         return (
           <div
@@ -134,9 +134,12 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                 flex-direction: ${compact ? 'column' : 'row'};
               `}
             >
-              <DetailsGroup compact={compact}>
+              <DetailsGroup
+                css={above('large') && 'width: 100%;'}
+                compact={compact}
+              >
                 <Heading2>Description</Heading2>
-                <div>{description}</div>
+                <div css={above('large') && 'width: 50%;'}>{description}</div>
                 <Heading2>Source code</Heading2>
                 <div>
                   {sourceUrl ? (
@@ -160,7 +163,16 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                   </React.Fragment>
                 )}
               </DetailsGroup>
-              <DetailsGroup compact={compact}>
+              <DetailsGroup
+                css={`
+                  ${above('large') &&
+                    `
+                      position: absolute;
+                      left: calc(50% + 40px);
+                    `}
+                `}
+                compact={compact}
+              >
                 <Heading2>Installed instances</Heading2>
                 {instances.map(({ proxyAddress }) => (
                   <div
