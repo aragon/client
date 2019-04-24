@@ -24,8 +24,13 @@ import imgSuccess from '../../assets/transaction-success.svg'
 import imgError from '../../assets/transaction-error.svg'
 
 // Temporarily clean the error messages coming from Aragon.js and Metamask
-const cleanErrorMessage = msg =>
-  msg.replace(/^Returned error: /, '').replace(/^Error: /, '')
+const cleanErrorMessage = errorMsg =>
+  errorMsg
+    // Only use the first line if multiple lines are available.
+    // This makes sure we don't show the stack trace if it becomes part of the message.
+    .split('\n')[0]
+    .replace(/^Returned error: /, '')
+    .replace(/^Error: /, '')
 
 class SigningStatus extends React.Component {
   static propTypes = {
@@ -39,8 +44,8 @@ class SigningStatus extends React.Component {
     if (isSigning(status)) return 'Waiting for signature…'
     if (status === STATUS_TX_SIGNED) return 'Transaction signed!'
     if (status === STATUS_MSG_SIGNED) return 'Message signed!'
-    if (status === STATUS_TX_ERROR) return 'Error signing the transaction'
-    if (status === STATUS_MSG_ERROR) return 'Error signing the message'
+    if (status === STATUS_TX_ERROR) return 'Error signing the transaction.'
+    if (status === STATUS_MSG_ERROR) return 'Error signing the message.'
   }
   getInfo() {
     const { status, signError, walletProviderId } = this.props
@@ -50,7 +55,7 @@ class SigningStatus extends React.Component {
           {`Open ${providerString(
             'your Ethereum provider',
             walletProviderId
-          )} to sign your transaction`}
+          )} to sign your transaction.`}
         </p>
       )
     }
@@ -59,7 +64,7 @@ class SigningStatus extends React.Component {
         <p>{`Open ${providerString(
           'your Ethereum provider',
           walletProviderId
-        )} to sign your message`}</p>
+        )} to sign your message.`}</p>
       )
     }
     if (status === STATUS_TX_SIGNED) {

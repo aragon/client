@@ -22,7 +22,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         <LocalIdentityBadge entity={account} />
       </span>
       <Separator />
-      <Label smallcaps>Signature requested by</Label>
+      <Label>Signature requested by</Label>
       <AppInstanceLabel
         app={locateAppInfo(apps, intent.requestingApp)}
         proxyAddress={intent.requestingApp}
@@ -31,16 +31,14 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
       <Separator />
       {humanReadableMessage ? (
         <React.Fragment>
-          <Label smallcaps>Message</Label>
-          <br />
+          <Label>Message</Label>
           <Info>{intent.message}</Info>
         </React.Fragment>
       ) : (
         <React.Fragment>
           <ToggleContent labelOpen="Hide message" labelClosed="Show message">
             <React.Fragment>
-              <br />
-              <Info>{intent.message}</Info>
+              <LongMessage>{intent.message}</LongMessage>
             </React.Fragment>
           </ToggleContent>
         </React.Fragment>
@@ -71,6 +69,13 @@ const Label = styled(Text).attrs({
 })`
   display: block;
   margin-bottom: 10px;
+`
+
+const LongMessage = styled(Info)`
+  margin-top: 10px;
+  max-height: 350px;
+  overflow-y: scroll;
+  word-break: break-word;
 `
 
 export default SignMsgContent
