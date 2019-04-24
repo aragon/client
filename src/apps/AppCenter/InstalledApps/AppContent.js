@@ -212,7 +212,9 @@ AppContent.propTypes = {
 
 const Markdown = styled.section`
   margin-top: ${1 * GU}px;
-  h2, h3 {
+  padding-right: ${1 * GU}px;
+  h2,
+  h3 {
     font-weight: bold;
     margin: ${1 * GU}px 0;
   }
