@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { font, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 
-import IconArrow from '../icons/IconArrow'
+import IconArrow from '../../icons/IconArrow'
 
 export default class ToggleContent extends React.Component {
   static propTypes = {

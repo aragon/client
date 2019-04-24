@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
 import providerString from '../../provider-strings'
+import { isElectron } from '../../utils'
 
 const Web3ProviderError = ({
   intent: { description, name, to },
@@ -49,8 +50,9 @@ const ButtonLink = styled.button.attrs({ type: 'button' })`
   border: 0;
 `
 
-export const NoWeb3Provider = ({ intent, onClose, isElectron }) => {
-  const neededText = isElectron
+export const NoWeb3Provider = ({ intent, onClose }) => {
+  const onElectron = isElectron()
+  const neededText = onElectron
     ? 'You need to have Frame installed and enabled'
     : 'You need to have an Ethereum provider installed and enabled'
 
@@ -58,10 +60,10 @@ export const NoWeb3Provider = ({ intent, onClose, isElectron }) => {
     <span>
       Please install and enable{' '}
       <SafeLink
-        href={isElectron ? 'https://frame.sh/' : 'https://metamask.io/'}
+        href={onElectron ? 'https://frame.sh/' : 'https://metamask.io/'}
         target="_blank"
       >
-        {isElectron ? 'Frame' : 'Metamask'}
+        {onElectron ? 'Frame' : 'Metamask'}
       </SafeLink>
       .
     </span>
@@ -80,7 +82,6 @@ export const NoWeb3Provider = ({ intent, onClose, isElectron }) => {
 NoWeb3Provider.propTypes = {
   intent: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  isElectron: PropTypes.bool.isRequired,
 }
 
 export const AccountLocked = ({

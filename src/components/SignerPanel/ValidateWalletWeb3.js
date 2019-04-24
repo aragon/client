@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 
-import { isElectron } from '../../utils'
 import { NoWeb3Provider, AccountLocked, WrongNetwork } from './Web3Errors'
 
-const ValidateWeb3Creds = ({
+const ValidateWalletWeb3 = ({
   children,
   hasAccount,
   hasWeb3,
@@ -17,13 +16,7 @@ const ValidateWeb3Creds = ({
   walletProviderId,
 }) => {
   if (!hasWeb3) {
-    return (
-      <NoWeb3Provider
-        intent={intent}
-        isElectron={isElectron()}
-        onClose={onClose}
-      />
-    )
+    return <NoWeb3Provider intent={intent} onClose={onClose} />
   }
 
   if (!hasAccount) {
@@ -50,17 +43,17 @@ const ValidateWeb3Creds = ({
   return <Fragment>{children}</Fragment>
 }
 
-ValidateWeb3Creds.propTypes = {
+ValidateWalletWeb3.propTypes = {
   children: PropTypes.node.isRequired,
   hasAccount: PropTypes.bool.isRequired,
   hasWeb3: PropTypes.bool.isRequired,
-  intent: PropTypes.object,
+  intent: PropTypes.object.isRequired,
   isTransaction: PropTypes.bool.isRequired,
   networkType: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  onRequestEnable: PropTypes.func,
+  onRequestEnable: PropTypes.func.isRequired,
   walletNetworkType: PropTypes.string.isRequired,
   walletProviderId: PropTypes.string.isRequired,
 }
 
-export default ValidateWeb3Creds
+export default ValidateWalletWeb3

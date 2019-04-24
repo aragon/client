@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Info, Text, SidePanelSeparator, theme } from '@aragon/ui'
 
 import SignerButton from './SignerButton'
-import ToggleContent from '../ToggleContent'
+import ToggleContent from './ToggleContent'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
 import { AppType } from '../../prop-types'

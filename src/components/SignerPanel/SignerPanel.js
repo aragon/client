@@ -10,7 +10,7 @@ import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
 import { network } from '../../environment'
 import { ActivityContext } from '../../contexts/ActivityContext'
-import ValidateWeb3Creds from './ValidateWeb3Creds'
+import ValidateWalletWeb3 from './ValidateWalletWeb3'
 
 import {
   STATUS_TX_CONFIRMING,
@@ -318,7 +318,7 @@ class SignerPanel extends React.PureComponent {
                       }}
                     >
                       <Screen>
-                        <ValidateWeb3Creds
+                        <ValidateWalletWeb3
                           intent={intent}
                           isTransaction={isTransaction}
                           hasAccount={Boolean(account)}
@@ -352,7 +352,7 @@ class SignerPanel extends React.PureComponent {
                               apps={apps}
                             />
                           )}
-                        </ValidateWeb3Creds>
+                        </ValidateWalletWeb3>
                       </Screen>
                     </ScreenWrapper>
                   )
