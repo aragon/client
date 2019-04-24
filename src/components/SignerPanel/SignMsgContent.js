@@ -22,7 +22,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
         <LocalIdentityBadge entity={account} />
       </SmMarginRight>
       <Separator />
-      <Label smallcaps>Signature requested by:</Label>
+      <Label smallcaps>Signature requested by</Label>
       <AppInstanceLabel
         app={locateAppInfo(apps, intent.requestingApp)}
         proxyAddress={intent.requestingApp}
@@ -31,7 +31,7 @@ const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
       <Separator />
       {humanReadableMessage ? (
         <React.Fragment>
-          <Label smallcaps>Message:</Label>
+          <Label smallcaps>Message</Label>
           <br />
           <Info>{intent.message}</Info>
         </React.Fragment>
