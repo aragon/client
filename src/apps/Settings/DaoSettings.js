@@ -15,135 +15,142 @@ const AppsList = styled.ul`
   list-style: none;
 `
 
-const DaoSettings = ({
-  account,
-  apps,
-  appsLoading,
-  daoAddress,
-  onOpenApp,
-  walletNetwork,
-  walletWeb3,
-}) => {
-  const handleDepositTestTokens = () => {
-    const finance = apps.find(app => app.appId === appIds.Finance)
-    if (finance && finance.proxyAddress) {
-      airdrop(walletWeb3, finance.proxyAddress, account)
+const DaoSettings = React.memo(
+  ({
+    account,
+    apps,
+    appsLoading,
+    daoAddress,
+    onOpenApp,
+    walletNetwork,
+    walletWeb3,
+  }) => {
+    const handleDepositTestTokens = () => {
+      const finance = apps.find(app => app.appId === appIds.Finance)
+      if (finance && finance.proxyAddress) {
+        airdrop(walletWeb3, finance.proxyAddress, account)
+      }
     }
-  }
-  const handleOpenFinance = () => {
-    const finance = apps.find(app => app.appId === appIds.Finance)
-    if (finance && finance.proxyAddress) {
-      onOpenApp(finance.proxyAddress)
+    const handleOpenFinance = () => {
+      const finance = apps.find(app => app.appId === appIds.Finance)
+      if (finance && finance.proxyAddress) {
+        onOpenApp(finance.proxyAddress)
+      }
     }
-  }
-  const enableTransactions = !!account && walletNetwork === network.type
-  const financeApp = apps.find(({ name }) => name === 'Finance')
-  const checksummedDaoAddr =
-    daoAddress.address && toChecksumAddress(daoAddress.address)
-  const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
-  const { below } = useViewport()
-  const shortAddresses = below('medium')
+    const enableTransactions = !!account && walletNetwork === network.type
+    const financeApp = apps.find(({ name }) => name === 'Finance')
+    const checksummedDaoAddr =
+      daoAddress.address && toChecksumAddress(daoAddress.address)
+    const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
+    const { below } = useViewport()
+    const shortAddresses = below('medium')
 
-  return (
-    <div>
-      <Option
-        name="Organization address"
-        text={`This organization is deployed on the ${network.name}.`}
-      >
-        {checksummedDaoAddr ? (
-          <Wrap>
-            <Label>Address</Label>
-            <LocalIdentityBadge
-              entity={checksummedDaoAddr}
-              shorten={shortAddresses}
-            />
-          </Wrap>
-        ) : (
-          <p>Resolving DAO address…</p>
-        )}
-        <Note>
-          <strong>Do not send ether or tokens to this address!</strong>
-          <br />
-          Go to the{' '}
-          {financeApp ? (
-            <ButtonLink onClick={handleOpenFinance}>Finance app</ButtonLink>
-          ) : (
-            'Finance app'
-          )}{' '}
-          to deposit funds into your organization instead.
-        </Note>
-      </Option>
-      {testTokensEnabled(network.type) && (
+    return (
+      <div>
         <Option
-          name="Request test tokens"
-          text={`
+          name="Organization address"
+          text={`This organization is deployed on the ${network.name}.`}
+        >
+          {checksummedDaoAddr ? (
+            <Wrap>
+              <Label>Address</Label>
+              <LocalIdentityBadge
+                entity={checksummedDaoAddr}
+                shorten={shortAddresses}
+              />
+            </Wrap>
+          ) : (
+            <p>Resolving DAO address…</p>
+          )}
+          <Note>
+            <strong>Do not send ether or tokens to this address!</strong>
+            <br />
+            Go to the{' '}
+            {financeApp ? (
+              <ButtonLink onClick={handleOpenFinance}>Finance app</ButtonLink>
+            ) : (
+              'Finance app'
+            )}{' '}
+            to deposit funds into your organization instead.
+          </Note>
+        </Option>
+        {testTokensEnabled(network.type) && (
+          <Option
+            name="Request test tokens"
+            text={`
                 Deposit some tokens into your organization for testing
                 purposes.
               `}
-        >
-          <div>
-            <Button
-              mode="secondary"
-              onClick={handleDepositTestTokens}
-              disabled={!enableTransactions}
-              style={{ opacity: enableTransactions ? 1 : 0.6 }}
-            >
-              Request test tokens
-            </Button>
-            {!enableTransactions && (
-              <Text size="small" style={{ marginLeft: '10px' }}>
-                {(() =>
-                  walletNetwork !== network.type
-                    ? `Please select the ${sanitizeNetworkType(
-                        network.type
-                      )} network in your Ethereum provider.`
-                    : `Please unlock your account in your Ethereum provider.`)()}
-              </Text>
-            )}
-          </div>
-          <Note>
-            Requesting tokens will assign random <strong>TEST</strong> tokens to
-            your organization. The tokens are named after existing projects, but
-            keep in mind <strong>THEY ARE NOT</strong> the real ones. You can
-            view the received tokens in the Token Balances on the Finance app.
-          </Note>
-        </Option>
-      )}
-      {appsLoading && (
-        <Option name="Aragon apps" text={'Loading apps…'}>
-          <div css={'height:20px'} />
-        </Option>
-      )}
-      {!appsLoading && apmApps.length > 0 && (
-        <Option
-          name="Aragon apps"
-          text={`This organization has ${apmApps.length}
+          >
+            <div>
+              <Button
+                mode="secondary"
+                onClick={handleDepositTestTokens}
+                disabled={!enableTransactions}
+                style={{ opacity: enableTransactions ? 1 : 0.6 }}
+              >
+                Request test tokens
+              </Button>
+              {!enableTransactions && (
+                <Text size="small" style={{ marginLeft: '10px' }}>
+                  {(() =>
+                    walletNetwork !== network.type
+                      ? `Please select the ${sanitizeNetworkType(
+                          network.type
+                        )} network in your Ethereum provider.`
+                      : `Please unlock your account in your Ethereum provider.`)()}
+                </Text>
+              )}
+            </div>
+            <Note>
+              Requesting tokens will assign random <strong>TEST</strong> tokens
+              to your organization. The tokens are named after existing
+              projects, but keep in mind <strong>THEY ARE NOT</strong> the real
+              ones. You can view the received tokens in the Token Balances on
+              the Finance app.
+            </Note>
+          </Option>
+        )}
+        {appsLoading && (
+          <Option name="Aragon apps" text={'Loading apps…'}>
+            <div css={'height:20px'} />
+          </Option>
+        )}
+        {!appsLoading && apmApps.length > 0 && (
+          <Option
+            name="Aragon apps"
+            text={`This organization has ${apmApps.length}
             ${apmApps.length > 1 ? 'apps' : 'app'}
             installed.`}
-        >
-          <AppsList>
-            {apmApps.map(({ appId, description, name, proxyAddress, tags }) => {
-              const checksummedProxyAddress = toChecksumAddress(proxyAddress)
+          >
+            <AppsList>
+              {apmApps.map(
+                ({ appId, description, name, proxyAddress, tags }) => {
+                  const checksummedProxyAddress = toChecksumAddress(
+                    proxyAddress
+                  )
 
-              return (
-                <AppItem title={description} key={checksummedProxyAddress}>
-                  <Label>
-                    {name}
-                    {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
-                  </Label>
-                  <LocalIdentityBadge
-                    entity={checksummedProxyAddress}
-                    shorten={shortAddresses}
-                  />
-                </AppItem>
-              )
-            })}
-          </AppsList>
-        </Option>
-      )}
-    </div>
-  )
-}
+                  return (
+                    <AppItem title={description} key={checksummedProxyAddress}>
+                      <Label>
+                        {name}
+                        {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
+                      </Label>
+                      <LocalIdentityBadge
+                        entity={checksummedProxyAddress}
+                        shorten={shortAddresses}
+                      />
+                    </AppItem>
+                  )
+                }
+              )}
+            </AppsList>
+          </Option>
+        )}
+      </div>
+    )
+  }
+)
 
 DaoSettings.propTypes = {
   account: EthereumAddressType,
