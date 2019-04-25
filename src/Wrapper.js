@@ -32,7 +32,6 @@ class Wrapper extends React.PureComponent {
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
-    banner: PropTypes.oneOfType([PropTypes.bool, PropTypes.node]),
     canUpgradeOrg: PropTypes.bool,
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
@@ -56,7 +55,6 @@ class Wrapper extends React.PureComponent {
 
   static defaultProps = {
     account: '',
-    banner: false,
     connected: false,
     transactionBag: null,
     signatureBag: null,
@@ -218,7 +216,6 @@ class Wrapper extends React.PureComponent {
       apps,
       appsStatus,
       autoClosingPanel,
-      banner,
       canUpgradeOrg,
       connected,
       daoAddress,
@@ -253,12 +250,10 @@ class Wrapper extends React.PureComponent {
         />
 
         <BannerWrapper>
-          {banner || (
-            <UpgradeBanner
-              visible={canUpgradeOrg}
-              onUpgrade={this.showOrgUpgradePanel}
-            />
-          )}
+          <UpgradeBanner
+            visible={canUpgradeOrg}
+            onUpgrade={this.showOrgUpgradePanel}
+          />
         </BannerWrapper>
 
         <CombinedPanel

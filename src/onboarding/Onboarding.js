@@ -48,7 +48,6 @@ class Onboarding extends React.PureComponent {
   static propTypes = {
     account: PropTypes.string,
     balance: PropTypes.object,
-    banner: PropTypes.oneOfType([PropTypes.bool, PropTypes.node]),
     daoCreationStatus: PropTypes.oneOf([
       DAO_CREATION_STATUS_NONE,
       DAO_CREATION_STATUS_SUCCESS,
@@ -68,7 +67,6 @@ class Onboarding extends React.PureComponent {
   static defaultProps = {
     account: '',
     balance: getUnknownBalance(),
-    banner: false,
     onComplete: noop,
     walletNetwork: '',
     walletProviderId: '',
@@ -376,7 +374,7 @@ class Onboarding extends React.PureComponent {
   }
   render() {
     const { direction, stepIndex, render } = this.state
-    const { visible, banner } = this.props
+    const { visible } = this.props
 
     if (!render && !visible) {
       return null
@@ -402,7 +400,6 @@ class Onboarding extends React.PureComponent {
               opacity: showProgress,
             }}
           >
-            <BannerWrapper>{banner}</BannerWrapper>
             <View>
               <Window>
                 <Spring
@@ -582,11 +579,6 @@ const Main = styled(animated.div)`
       overflow: auto;
     `
   )}
-`
-
-const BannerWrapper = styled.div`
-  position: relative;
-  z-index: 2;
 `
 
 const View = styled.div`
