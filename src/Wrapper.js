@@ -45,6 +45,7 @@ class Wrapper extends React.PureComponent {
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
+    signatureBag: PropTypes.object,
     visible: PropTypes.bool.isRequired,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -58,6 +59,7 @@ class Wrapper extends React.PureComponent {
     banner: false,
     connected: false,
     transactionBag: null,
+    signatureBag: null,
     walletNetwork: '',
     walletProviderId: '',
     walletWeb3: null,
@@ -226,6 +228,7 @@ class Wrapper extends React.PureComponent {
       onRequestEnable,
       repos,
       transactionBag,
+      signatureBag,
       visible,
       walletNetwork,
       walletProviderId,
@@ -286,6 +289,7 @@ class Wrapper extends React.PureComponent {
           dao={locator.dao}
           onRequestEnable={onRequestEnable}
           transactionBag={transactionBag}
+          signatureBag={signatureBag}
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}

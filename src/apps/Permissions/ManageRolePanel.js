@@ -14,7 +14,7 @@ import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
 import { AppType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
-import AppInstanceLabel from './AppInstanceLabel'
+import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntitySelector from './EntitySelector'
 
 const CREATE_PERMISSION = Symbol('CREATE_PERMISSION')

@@ -3,21 +3,28 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { SidePanel } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-import { AppType, EthereumAddressType } from '../../prop-types'
-import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
+import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
-import { network } from '../../environment'
-import { ActivityContext } from '../../contexts/ActivityContext'
-
+import ValidateWalletWeb3 from './ValidateWalletWeb3'
 import {
-  STATUS_CONFIRMING,
-  STATUS_SIGNING,
-  STATUS_SIGNED,
-  STATUS_ERROR,
+  STATUS_TX_CONFIRMING,
+  STATUS_TX_SIGNING,
+  STATUS_TX_SIGNED,
+  STATUS_TX_ERROR,
+  STATUS_MSG_CONFIRMING,
+  STATUS_MSG_SIGNING,
+  STATUS_MSG_SIGNED,
+  STATUS_MSG_ERROR,
+  isTxSignerStatus,
+  isConfirmingSignature,
+  isSignatureSuccess,
 } from './signer-statuses'
-
+import { ActivityContext } from '../../contexts/ActivityContext'
+import { network } from '../../environment'
+import { AppType, EthereumAddressType } from '../../prop-types'
 import springs from '../../springs'
+import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 
 const INITIAL_STATE = {
   panelOpened: false,
@@ -25,7 +32,7 @@ const INITIAL_STATE = {
   directPath: false,
   actionPaths: [],
   pretransaction: null,
-  status: STATUS_CONFIRMING,
+  status: STATUS_TX_CONFIRMING, // initially default to rendering the tx signing panel
   signError: null,
 }
 
@@ -46,6 +53,7 @@ class SignerPanel extends React.PureComponent {
     setActivityFailed: PropTypes.func.isRequired,
     setActivityNonce: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
+    signatureBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object.isRequired,
     web3: PropTypes.object.isRequired,
@@ -54,13 +62,15 @@ class SignerPanel extends React.PureComponent {
 
   state = { ...INITIAL_STATE }
 
-  componentWillReceiveProps({ transactionBag }) {
+  componentWillReceiveProps({ transactionBag, signatureBag }) {
     // Received a new transaction to sign
-    if (transactionBag && transactionBag !== this.props.transactionBag) {
+    const receivedTransactionBag =
+      transactionBag && transactionBag !== this.props.transactionBag
+    if (receivedTransactionBag) {
       this.setState({
         ...INITIAL_STATE,
         panelOpened: true,
-        status: STATUS_CONFIRMING,
+        status: STATUS_TX_CONFIRMING,
 
         // When Aragon.js starts returning the new format (see
         // stateFromTransactionBag), we can simply search and replace this
@@ -68,11 +78,23 @@ class SignerPanel extends React.PureComponent {
         ...this.stateFromTransactionBag(transactionBag),
       })
     }
+
+    // Received a new message to sign
+    const receivedSignatureBag =
+      signatureBag && signatureBag !== this.props.signatureBag
+    if (receivedSignatureBag) {
+      this.setState({
+        ...INITIAL_STATE,
+        panelOpened: true,
+        status: STATUS_MSG_CONFIRMING,
+        ...this.stateFromMsgSigBag(signatureBag),
+      })
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { status } = this.state
-    if (prevState.status !== status && status !== STATUS_SIGNED) {
+    if (prevState.status !== status && !isSignatureSuccess(status)) {
       clearTimeout(this._closeTimer)
     }
   }
@@ -82,10 +104,22 @@ class SignerPanel extends React.PureComponent {
   stateFromTransactionBag(bag) {
     const { path, transaction } = bag
     return {
-      intent: transaction && this.transactionIntent(bag),
+      intent: (transaction && this.transactionIntent(bag)) || {},
       directPath: path.length === 1,
       actionPaths: path.length ? [path] : [],
       pretransaction: (transaction && transaction.pretransaction) || null,
+    }
+  }
+
+  stateFromMsgSigBag({ requestingApp, message }) {
+    const messageToSign = message || ''
+    return {
+      intent: {
+        description:
+          'You are about to sign this message with the connected account',
+        message: messageToSign,
+        requestingApp,
+      },
     }
   }
 
@@ -168,7 +202,7 @@ class SignerPanel extends React.PureComponent {
   handleSign = async (transaction, intent, pretransaction) => {
     const { transactionBag } = this.props
 
-    this.setState({ status: STATUS_SIGNING })
+    this.setState({ status: STATUS_TX_SIGNING })
 
     try {
       if (pretransaction) {
@@ -182,24 +216,57 @@ class SignerPanel extends React.PureComponent {
       )
 
       transactionBag.resolve(transactionHash)
-      this.setState({ signError: null, status: STATUS_SIGNED })
+      this.setState({ signError: null, status: STATUS_TX_SIGNED })
       this.startClosing()
     } catch (err) {
       transactionBag.reject(err)
       // Display an error in the panel if the transaction failed
-      this.setState({ signError: err, status: STATUS_ERROR })
+      this.setState({ signError: err, status: STATUS_TX_ERROR })
+    }
+  }
+
+  handleMsgSign = async () => {
+    const { account, signatureBag, walletWeb3 } = this.props
+
+    this.setState({ status: STATUS_MSG_SIGNING })
+    try {
+      const signature = await walletWeb3.eth.personal.sign(
+        signatureBag.message,
+        account
+      )
+
+      signatureBag.resolve(signature)
+      this.setState({ signError: null, status: STATUS_MSG_SIGNED })
+      this.startClosing()
+    } catch (err) {
+      signatureBag.reject(err)
+      this.setState({
+        signError: err,
+        status: STATUS_MSG_ERROR,
+      })
     }
   }
 
   startClosing = () => {
     this._closeTimer = setTimeout(() => {
-      if (this.state.status === STATUS_SIGNED) {
+      if (isSignatureSuccess(this.state.status)) {
         this.handleSignerClose()
       }
     }, 3000)
   }
 
   handleSignerClose = () => {
+    const { transactionBag, signatureBag } = this.props
+    const { status } = this.state
+
+    // Panel was closed manually by user to cancel the signing, so we need to
+    // send feedback back to the apps
+    if (status === STATUS_TX_CONFIRMING) {
+      transactionBag.reject(new Error('User cancelled signing'))
+    } else if (status === STATUS_MSG_CONFIRMING) {
+      signatureBag.reject(new Error('User cancelled signing'))
+    }
+
     this.setState({ panelOpened: false })
   }
 
@@ -217,6 +284,7 @@ class SignerPanel extends React.PureComponent {
       onRequestEnable,
       walletNetwork,
       walletProviderId,
+      apps,
     } = this.props
 
     const {
@@ -229,16 +297,18 @@ class SignerPanel extends React.PureComponent {
       status,
     } = this.state
 
+    const isTransaction = isTxSignerStatus(status)
+
     return (
       <SidePanel
         onClose={this.handleSignerClose}
         onTransitionEnd={this.handleSignerTransitionEnd}
         opened={panelOpened}
-        title="Create transaction"
+        title={isTransaction ? 'Create transaction' : 'Sign Message'}
       >
         <Main>
           <Transition
-            items={status === STATUS_CONFIRMING}
+            items={isConfirmingSignature(status)}
             from={{ enterProgress: 1 }}
             enter={{ enterProgress: 0 }}
             initial={{ enterProgress: 0 }}
@@ -257,22 +327,42 @@ class SignerPanel extends React.PureComponent {
                       }}
                     >
                       <Screen>
-                        <ConfirmTransaction
-                          direct={directPath}
+                        <ValidateWalletWeb3
+                          intent={intent}
+                          isTransaction={isTransaction}
                           hasAccount={Boolean(account)}
                           hasWeb3={Boolean(getInjectedProvider())}
-                          intent={intent}
-                          dao={dao}
                           networkType={network.type}
                           onClose={this.handleSignerClose}
                           onRequestEnable={onRequestEnable}
-                          onSign={this.handleSign}
-                          paths={actionPaths}
-                          pretransaction={pretransaction}
-                          signingEnabled={status === STATUS_CONFIRMING}
                           walletNetworkType={walletNetwork}
                           walletProviderId={walletProviderId}
-                        />
+                        >
+                          {isTransaction ? (
+                            <ConfirmTransaction
+                              dao={dao}
+                              direct={directPath}
+                              intent={intent}
+                              onClose={this.handleSignerClose}
+                              onSign={this.handleSign}
+                              paths={actionPaths}
+                              pretransaction={pretransaction}
+                              signError={Boolean(signError)}
+                              signingEnabled={status === STATUS_TX_CONFIRMING}
+                              walletProviderId={walletProviderId}
+                            />
+                          ) : (
+                            <ConfirmMsgSign
+                              account={account}
+                              apps={apps}
+                              onClose={this.handleSignerClose}
+                              intent={intent}
+                              onSign={this.handleMsgSign}
+                              signError={Boolean(signError)}
+                              signingEnabled={status === STATUS_MSG_CONFIRMING}
+                            />
+                          )}
+                        </ValidateWalletWeb3>
                       </Screen>
                     </ScreenWrapper>
                   )

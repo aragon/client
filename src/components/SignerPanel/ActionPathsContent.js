@@ -17,7 +17,7 @@ class ActionPathsContent extends React.Component {
     onSign: PropTypes.func.isRequired,
     paths: PropTypes.array.isRequired,
     pretransaction: PropTypes.object,
-    signingEnabled: PropTypes.bool.isRequired,
+    signingEnabled: PropTypes.bool,
     walletProviderId: PropTypes.string.isRequired,
   }
   state = {

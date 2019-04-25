@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Badge, Viewport, breakpoint } from '@aragon/ui'
-import { AppType, EthereumAddressType } from '../../prop-types'
-import { shortenAddress } from '../../web3-utils'
-import AppIcon from '../../components/AppIcon/AppIcon'
+import { AppType, EthereumAddressType } from '../prop-types'
+import { shortenAddress } from '../web3-utils'
+import AppIcon from './AppIcon/AppIcon'
 
 class AppInstanceLabel extends React.PureComponent {
   static propTypes = {

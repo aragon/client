@@ -7,7 +7,7 @@ import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { AppType, EthereumAddressType } from '../../prop-types'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
-import AppInstanceLabel from './AppInstanceLabel'
+import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
 

@@ -72,6 +72,7 @@ class App extends React.Component {
     ],
     showDeprecatedBanner: false,
     transactionBag: null,
+    signatureBag: null,
     walletNetwork: '',
     walletProviderId: identifyProvider(web3Providers.wallet),
     walletWeb3: getWeb3(web3Providers.wallet),
@@ -270,6 +271,10 @@ class App extends React.Component {
         log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
+      onSignatures: signatureBag => {
+        log('signature bag', signatureBag)
+        this.setState({ signatureBag })
+      },
       onIdentityIntent: async identityIntent => {
         // set the state for modifying a specific address identity
         let name = null
@@ -377,6 +382,7 @@ class App extends React.Component {
       repos,
       selectorNetworks,
       transactionBag,
+      signatureBag,
       walletNetwork,
       walletProviderId,
       walletWeb3,
@@ -452,6 +458,7 @@ class App extends React.Component {
                       onRequestEnable={enableWallet}
                       permissionsLoading={permissionsLoading}
                       repos={repos}
+                      signatureBag={signatureBag}
                       transactionBag={transactionBag}
                       walletNetwork={walletNetwork}
                       walletProviderId={walletProviderId}

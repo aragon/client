@@ -11,7 +11,7 @@ import {
   theme,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
-import AppInstanceLabel from '../AppInstanceLabel'
+import AppInstanceLabel from '../../../components/AppInstanceLabel'
 import ViewDetailsButton from './ViewDetailsButton'
 import { FirstTableCell, LastTableCell } from '../Table'
 
