@@ -256,6 +256,17 @@ class SignerPanel extends React.PureComponent {
   }
 
   handleSignerClose = () => {
+    const { transactionBag, signatureBag } = this.props
+    const { status } = this.state
+
+    // Panel was closed manually by user to cancel the signing, so we need to
+    // send feedback back to the apps
+    if (status === STATUS_TX_CONFIRMING) {
+      transactionBag.reject(new Error('User cancelled signing'))
+    } else if (status === STATUS_MSG_CONFIRMING) {
+      signatureBag.reject(new Error('User cancelled signing'))
+    }
+
     this.setState({ panelOpened: false })
   }
 
