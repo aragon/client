@@ -19,7 +19,6 @@ import Template from './Template'
 import Domain from './Domain'
 import Launch from './Launch'
 import Sign from './Sign'
-import DeprecatedBanner from '../components/DeprecatedBanner/DeprecatedBanner'
 
 import {
   DomainCheckNone,
@@ -49,12 +48,7 @@ class Onboarding extends React.PureComponent {
   static propTypes = {
     account: PropTypes.string,
     balance: PropTypes.object,
-    banner: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.shape({
-        type: PropTypes.oneOf([DeprecatedBanner]),
-      }),
-    ]),
+    banner: PropTypes.oneOfType([PropTypes.bool, PropTypes.node]),
     daoCreationStatus: PropTypes.oneOf([
       DAO_CREATION_STATUS_NONE,
       DAO_CREATION_STATUS_SUCCESS,
