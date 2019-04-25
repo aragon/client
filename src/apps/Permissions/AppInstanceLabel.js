@@ -1,47 +1,41 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Badge, Viewport, breakpoint } from '@aragon/ui'
+import { Badge, useViewport, breakpoint } from '@aragon/ui'
 import { AppType, EthereumAddressType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 import AppIcon from '../../components/AppIcon/AppIcon'
 
-class AppInstanceLabel extends React.PureComponent {
-  static propTypes = {
-    app: AppType.isRequired,
-    proxyAddress: EthereumAddressType.isRequired,
-    showIcon: PropTypes.bool,
-  }
+const AppInstanceLabel = ({ app, proxyAddress, showIcon = true }) => {
+  const { above } = useViewport()
 
-  render() {
-    const { app, proxyAddress, showIcon = true } = this.props
-    return (
-      <Main>
-        <Viewport>
-          {({ above }) =>
-            above('medium') &&
-            showIcon && (
-              <div
-                css={`
-                  display: flex;
-                  align-items: center;
-                  height: 0;
-                  margin-right: 10px;
-                  margin-top: -1px;
-                `}
-              >
-                <AppIcon app={app} />
-              </div>
-            )
-          }
-        </Viewport>
-        <AppName>{app ? app.name : 'Unknown'}</AppName>
-        <StyledBadge title={proxyAddress}>
-          {(app && app.identifier) || shortenAddress(proxyAddress)}
-        </StyledBadge>
-      </Main>
-    )
-  }
+  return (
+    <Main>
+      {above('medium') && showIcon && (
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+            height: 0;
+            margin-right: 10px;
+            margin-top: -1px;
+          `}
+        >
+          <AppIcon app={app} />
+        </div>
+      )}
+      <AppName>{app ? app.name : 'Unknown'}</AppName>
+      <StyledBadge title={proxyAddress}>
+        {(app && app.identifier) || shortenAddress(proxyAddress)}
+      </StyledBadge>
+    </Main>
+  )
+}
+
+AppInstanceLabel.propTypes = {
+  app: AppType.isRequired,
+  proxyAddress: EthereumAddressType.isRequired,
+  showIcon: PropTypes.bool,
 }
 
 const Main = styled.div`
