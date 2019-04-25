@@ -117,7 +117,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
             >
               <DetailsGroup compact={compact}>
                 <Heading2>Description</Heading2>
-                <div>{description}</div>
+                <div>{description || 'No description.'}</div>
                 <Heading2>Source code</Heading2>
                 <div>
                   {sourceUrl ? (
