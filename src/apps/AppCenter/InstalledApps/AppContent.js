@@ -154,7 +154,15 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                     <Markdown>
                       {
                         remark()
-                          .use(remark2react)
+                          .use(remark2react, {
+                            remarkReactComponents: {
+                              a: ({ children, ...props }) => (
+                                <SafeLink target="_blank" {...props}>
+                                  {children}
+                                </SafeLink>
+                              ),
+                            },
+                          })
                           .processSync(repoDetails).contents
                       }
                     </Markdown>
