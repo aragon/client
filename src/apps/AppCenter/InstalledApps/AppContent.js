@@ -21,10 +21,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
     name,
     instances,
     baseUrl,
-    currentVersion: {
-      content: { details_url: detailsUrl },
-      version,
-    },
+    currentVersion,
     latestVersion: {
       content: {
         author,
@@ -32,6 +29,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
         description = '',
         screenshots = [],
         source_url: sourceUrl,
+        details_url: detailsUrl,
       },
       version: latestVersion,
     },
@@ -50,7 +48,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
     fetchDescription()
   }, [detailsUrl])
 
-  const canUpgrade = version !== latestVersion
+  const canUpgrade = currentVersion.version !== latestVersion
 
   return (
     <Viewport>
