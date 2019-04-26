@@ -151,8 +151,9 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                 {!!repoDetails && (
                   <React.Fragment>
                     <Heading2>Details</Heading2>
-                    <Markdown>
+                    <Markdown css={above('large') && 'columns: 2;'}>
                       {
+                        /* eslint-disable react/prop-types */
                         remark()
                           .use(remark2react, {
                             remarkReactComponents: {
@@ -164,6 +165,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
                             },
                           })
                           .processSync(repoDetails).contents
+                        /* eslint-enable react/prop-types */
                       }
                     </Markdown>
                   </React.Fragment>
@@ -220,9 +222,11 @@ const Markdown = styled.section`
   margin-top: ${1 * GU}px;
   padding-right: ${1 * GU}px;
   h2,
-  h3 {
+  h3,
+  h4 {
     font-weight: bold;
     margin: ${1 * GU}px 0;
+    break-after: avoid;
   }
   p {
     margin: ${1 * GU}px 0;
