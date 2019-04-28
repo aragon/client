@@ -165,11 +165,11 @@ class CombinedPanel extends React.Component {
                             transform: menuPanelProgress.interpolate(
                               v =>
                                 `translate3d(
-                                ${lerp(
-                                  v,
-                                  -(MENU_PANEL_WIDTH + MENU_PANEL_SHADOW_WIDTH),
-                                  0
-                                )}px, 0, 0)`
+                                  ${lerp(
+                                    v,
+                                    -(MENU_PANEL_WIDTH + MENU_PANEL_SHADOW_WIDTH),
+                                    0
+                                  )}px, 0, 0)`
                             ),
                           }}
                         >
@@ -177,7 +177,6 @@ class CombinedPanel extends React.Component {
                             {({ height }) => (
                               <MenuPanel
                                 account={account}
-                                activityOpened={activityOpened}
                                 activityToggleRef={this._activityToggle}
                                 onActivityButtonClick={
                                   this.handleActivityButtonClick
