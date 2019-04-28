@@ -167,7 +167,9 @@ class CombinedPanel extends React.Component {
                                 `translate3d(
                                   ${lerp(
                                     v,
-                                    -(MENU_PANEL_WIDTH + MENU_PANEL_SHADOW_WIDTH),
+                                    -(
+                                      MENU_PANEL_WIDTH + MENU_PANEL_SHADOW_WIDTH
+                                    ),
                                     0
                                   )}px, 0, 0)`
                             ),
