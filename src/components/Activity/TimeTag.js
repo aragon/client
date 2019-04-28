@@ -1,30 +1,45 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { formatDistance } from 'date-fns'
+import { font, theme } from '@aragon/ui'
+import { formatDistance, formatDistanceStrict } from 'date-fns'
+import { useNow } from '../../hooks'
 
-function TimeTag({ style, date }) {
-  const [relativeTime, setRelativeTime] = useState('')
+function getRelativeTime(now, targetDate) {
+  const past = targetDate < now
+  const fn = past ? formatDistance : formatDistanceStrict
+  const options = { addSuffix: true }
+  if (past) {
+    options.unit = 'minute'
+  }
+  return fn(targetDate, now, options)
+    .replace('about', '')
+    .replace(/minutes?/, 'min')
+    .replace(/seconds?/, 'sec')
+    .trim()
+}
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const relativeTime = formatDistance(new Date(), new Date(date))
-        .replace('about', '')
-        .replace('minutes', 'min')
-        .trim()
-      setRelativeTime(relativeTime)
-    }, 1000)
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [date])
-
-  return <span style={style}>{relativeTime} ago</span>
+function TimeTag({ date, label, ...props }) {
+  const now = useNow()
+  const targetDate = new Date(date)
+  return (
+    <span
+      css={`
+        opacity: 0.7;
+        color: ${theme.textSecondary};
+        letter-spacing: 0;
+        white-space: nowrap;
+        ${font({ size: 'xsmall', weight: 'bold' })}
+      `}
+      {...props}
+    >
+      {label || getRelativeTime(now, targetDate)}
+    </span>
+  )
 }
 
 TimeTag.propTypes = {
-  style: PropTypes.object,
   date: PropTypes.number.isRequired, // unix timestamp
+  label: PropTypes.string,
 }
 
 export default TimeTag

@@ -1,6 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
 import keycodes from './keycodes'
 
+// Update `now` at a given interval.
+export function useNow(updateEvery = 1000) {
+  const [now, setNow] = useState(new Date())
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date())
+    }, updateEvery)
+    return () => {
+      clearInterval(timer)
+    }
+  }, [updateEvery])
+  return now
+}
+
 // Handle arrow keys.
 export function useArrows({ onUp, onLeft, onDown, onRight } = {}) {
   useEffect(() => {
