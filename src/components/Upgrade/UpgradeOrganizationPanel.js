@@ -73,11 +73,9 @@ const UpgradeOrganizationPanel = React.memo(
 
       if (upgradePath.direct) {
         // User has direct access, so we need to send these intents one by one
-        await Promise.all(
-          upgradePath.transactions.map(transaction =>
-            wrapper.performTransactionPath([transaction])
-          )
-        )
+        for (const transaction of upgradePath.transactions) {
+          await wrapper.performTransactionPath([transaction])
+        }
       } else {
         // We can use the power of calls scripts to do a single transaction!
         await wrapper.performTransactionPath(upgradePath.path)
