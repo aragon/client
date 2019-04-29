@@ -38,6 +38,11 @@ const INITIAL_STATE = {
 
 const RECIEPT_ERROR_STATUS = '0x0'
 
+const getAppName = (apps, proxyAddress) => {
+  const app = apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
+  return (app && app.name) || ''
+}
+
 const getPretransactionDescription = intent =>
   `Allow ${intent.name} to ${intent.description.slice(0, 1).toLowerCase() +
     intent.description.slice(1)}`
@@ -103,10 +108,15 @@ class SignerPanel extends React.PureComponent {
   // to the future format we expect from Aragon.js
   stateFromTransactionBag(bag) {
     const { path, transaction } = bag
+    const decoratedPaths = path.map(path => ({
+      ...path,
+      name: getAppName(this.props.apps, path.to),
+    }))
+
     return {
       intent: (transaction && this.transactionIntent(bag)) || {},
-      directPath: path.length === 1,
-      actionPaths: path.length ? [path] : [],
+      directPath: decoratedPaths.length === 1,
+      actionPaths: decoratedPaths.length ? [decoratedPaths] : [],
       pretransaction: (transaction && transaction.pretransaction) || null,
     }
   }
@@ -124,18 +134,11 @@ class SignerPanel extends React.PureComponent {
   }
 
   transactionIntent({ path, transaction = {} }) {
-    if (path.length > 1) {
-      // If the path includes forwarders, the intent is always the last node
-      const lastNode = path[path.length - 1]
-      const { description, name, to, annotatedDescription } = lastNode
-      return { annotatedDescription, description, name, to, transaction }
-    }
-
-    // Direct path
-    const { apps } = this.props
-    const { annotatedDescription, description, to } = transaction
-    const toApp = apps.find(app => addressesEqual(app.proxyAddress, to))
-    const name = (toApp && toApp.name) || ''
+    // If the path includes forwarders, the intent is always the last node
+    // Otherwise, it's the direct transaction
+    const targetIntent = path.length > 1 ? path[path.length - 1] : transaction
+    const { annotatedDescription, description, to } = targetIntent
+    const name = getAppName(this.props.apps, to)
 
     return { annotatedDescription, description, name, to, transaction }
   }
