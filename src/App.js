@@ -17,7 +17,6 @@ import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
-import DeprecatedBanner from './components/DeprecatedBanner/DeprecatedBanner'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
@@ -70,8 +69,8 @@ class App extends React.Component {
       ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
       ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
     ],
-    showDeprecatedBanner: false,
     transactionBag: null,
+    signatureBag: null,
     walletNetwork: '',
     walletProviderId: identifyProvider(web3Providers.wallet),
     walletWeb3: getWeb3(web3Providers.wallet),
@@ -270,6 +269,10 @@ class App extends React.Component {
         log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
+      onSignatures: signatureBag => {
+        log('signature bag', signatureBag)
+        this.setState({ signatureBag })
+      },
       onIdentityIntent: async identityIntent => {
         // set the state for modifying a specific address identity
         let name = null
@@ -347,16 +350,6 @@ class App extends React.Component {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
 
-  renderBanner(mode = 'wrapper') {
-    const { showDeprecatedBanner, locator } = this.state
-    if (showDeprecatedBanner) {
-      return (
-        <DeprecatedBanner dao={locator.dao} lightMode={mode === 'onboarding'} />
-      )
-    }
-    return null
-  }
-
   render() {
     const {
       account,
@@ -377,6 +370,7 @@ class App extends React.Component {
       repos,
       selectorNetworks,
       transactionBag,
+      signatureBag,
       walletNetwork,
       walletProviderId,
       walletWeb3,
@@ -440,7 +434,6 @@ class App extends React.Component {
                       account={account}
                       apps={appsWithIdentifiers}
                       appsStatus={appsStatus}
-                      banner={this.renderBanner('wrapper')}
                       canUpgradeOrg={canUpgradeOrg}
                       connected={connected}
                       daoAddress={daoAddress}
@@ -452,6 +445,7 @@ class App extends React.Component {
                       onRequestEnable={enableWallet}
                       permissionsLoading={permissionsLoading}
                       repos={repos}
+                      signatureBag={signatureBag}
                       transactionBag={transactionBag}
                       walletNetwork={walletNetwork}
                       walletProviderId={walletProviderId}
@@ -467,7 +461,6 @@ class App extends React.Component {
                     visible={mode === APP_MODE_START || mode === APP_MODE_SETUP}
                     account={account}
                     balance={balance}
-                    banner={this.renderBanner('onboarding')}
                     daoCreationStatus={daoCreationStatus}
                     onBuildDao={this.handleBuildDao}
                     onComplete={this.handleCompleteOnboarding}

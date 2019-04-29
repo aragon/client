@@ -28,7 +28,18 @@ export function useArrows({ onUp, onLeft, onDown, onRight } = {}) {
 
 // Simple hook to manage a given number of steps.
 export function useSteps(steps) {
-  const [step, setStep] = useState(0)
+  const [step, _setStep] = useState(0)
+  const [direction, setDirection] = useState(0)
+
+  const setStep = useCallback(
+    newStep => {
+      if (step !== newStep) {
+        setDirection(newStep > step ? 1 : -1)
+        _setStep(newStep)
+      }
+    },
+    [setDirection, _setStep, step]
+  )
 
   const next = useCallback(() => {
     if (step < steps - 1) {
@@ -42,5 +53,11 @@ export function useSteps(steps) {
     }
   }, [step, steps])
 
-  return { step, next, prev, setStep }
+  return {
+    direction,
+    next,
+    prev,
+    setStep,
+    step,
+  }
 }

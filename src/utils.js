@@ -94,6 +94,9 @@ export function isString(str) {
   return typeof str === 'string' || str instanceof String
 }
 
+export function isHumanReadable(str = '') {
+  return !str.split(' ').some(word => word.length > 26)
+}
 // Thanks to https://stackoverflow.com/a/12646864
 export function shuffleArray(original) {
   const array = [...original]

@@ -32,7 +32,6 @@ class Wrapper extends React.PureComponent {
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     autoClosingPanel: PropTypes.bool.isRequired,
-    banner: PropTypes.oneOfType([PropTypes.bool, PropTypes.node]),
     canUpgradeOrg: PropTypes.bool,
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
@@ -45,6 +44,7 @@ class Wrapper extends React.PureComponent {
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
+    signatureBag: PropTypes.object,
     visible: PropTypes.bool.isRequired,
     walletNetwork: PropTypes.string,
     walletProviderId: PropTypes.string,
@@ -55,9 +55,9 @@ class Wrapper extends React.PureComponent {
 
   static defaultProps = {
     account: '',
-    banner: false,
     connected: false,
     transactionBag: null,
+    signatureBag: null,
     walletNetwork: '',
     walletProviderId: '',
     walletWeb3: null,
@@ -216,7 +216,6 @@ class Wrapper extends React.PureComponent {
       apps,
       appsStatus,
       autoClosingPanel,
-      banner,
       canUpgradeOrg,
       connected,
       daoAddress,
@@ -226,6 +225,7 @@ class Wrapper extends React.PureComponent {
       onRequestEnable,
       repos,
       transactionBag,
+      signatureBag,
       visible,
       walletNetwork,
       walletProviderId,
@@ -250,10 +250,10 @@ class Wrapper extends React.PureComponent {
         />
 
         <BannerWrapper>
-          {banner ||
-            (canUpgradeOrg && (
-              <UpgradeBanner onUpgrade={this.showOrgUpgradePanel} />
-            ))}
+          <UpgradeBanner
+            visible={canUpgradeOrg}
+            onUpgrade={this.showOrgUpgradePanel}
+          />
         </BannerWrapper>
 
         <CombinedPanel
@@ -284,6 +284,7 @@ class Wrapper extends React.PureComponent {
           dao={locator.dao}
           onRequestEnable={onRequestEnable}
           transactionBag={transactionBag}
+          signatureBag={signatureBag}
           walletNetwork={walletNetwork}
           walletProviderId={walletProviderId}
           walletWeb3={walletWeb3}

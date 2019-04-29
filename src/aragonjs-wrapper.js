@@ -198,6 +198,7 @@ const subscribe = (
     onAppIdentifiers,
     onInstalledRepos,
     onIdentityIntent,
+    onSignatures,
     onTransaction,
   },
   { ipfsConf }
@@ -209,6 +210,7 @@ const subscribe = (
     appIdentifiers,
     installedRepos,
     identityIntents,
+    signatures,
     transactions,
   } = wrapper
 
@@ -221,7 +223,7 @@ const subscribe = (
     installedRepos: installedRepos.subscribe(onInstalledRepos),
     identityIntents: identityIntents.subscribe(onIdentityIntent),
     transactions: transactions.subscribe(onTransaction),
-
+    signatures: signatures.subscribe(onSignatures),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
 
@@ -234,7 +236,6 @@ const subscribe = (
         )
       )
     }),
-
     workers: apps.subscribe(apps => {
       // Asynchronously launch webworkers for each new or updated app that has
       // a background script defined
@@ -337,6 +338,7 @@ const initWrapper = async (
     onInstalledRepos = noop,
     onIdentityIntent = noop,
     onTransaction = noop,
+    onSignatures = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
   } = {}
@@ -399,6 +401,7 @@ const initWrapper = async (
       onAppIdentifiers,
       onInstalledRepos,
       onIdentityIntent,
+      onSignatures,
       onTransaction,
     },
     { ipfsConf }

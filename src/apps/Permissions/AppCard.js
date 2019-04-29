@@ -37,7 +37,9 @@ class AppCard extends React.PureComponent {
         <div css="margin-bottom: 5px">
           <AppIcon app={app} size={28} />
         </div>
-        <Name>{name || 'Unknown'}</Name>
+        <Name>
+          <span>{name || 'Unknown'}</span>
+        </Name>
         <IdentifierWrapper>
           <Identifier title={instanceTitle}>{instanceLabel}</Identifier>
         </IdentifierWrapper>
@@ -64,9 +66,15 @@ const Main = styled(Card).attrs({ width: '100%', height: '180px' })`
 
 const Name = styled.p`
   display: flex;
-  width: 100%;
   justify-content: center;
-  margin-bottom: 10px;
+  max-width: calc(100% - 20px);
+  margin: 0 10px 10px;
+  span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `
 
 const IdentifierWrapper = styled.div`

@@ -4,7 +4,7 @@ import { DropDown, Field, TextInput } from '@aragon/ui'
 import { getAnyEntity } from '../../permissions'
 import { AppType } from '../../prop-types'
 import { getEmptyAddress } from '../../web3-utils'
-import AppInstanceLabel from './AppInstanceLabel'
+import AppInstanceLabel from '../../components/AppInstanceLabel'
 
 class EntitySelector extends React.Component {
   static propTypes = {

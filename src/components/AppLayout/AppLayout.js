@@ -65,7 +65,7 @@ const AppLayout = ({
                       (below('medium') ? (
                         <ButtonIcon
                           onClick={mainButton.onClick}
-                          title={mainButton.label}
+                          label={mainButton.label}
                           disabled={mainButton.disabled}
                           css={`
                             width: auto;

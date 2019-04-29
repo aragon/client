@@ -20,6 +20,11 @@ import { repoBaseUrl } from '../../url-utils'
 import { GU } from '../../utils'
 
 const VERSION = '0.7 Bella'
+const SOURCE = [
+  'github.com/aragon/aragon-apps',
+  'https://github.com/aragon/aragon-apps',
+]
+const REGISTRY = ['aragonpm.eth', 'https://etherscan.io/address/aragonpm.eth']
 
 function getAppVersionData(repo) {
   const { content, version } = repo
@@ -38,8 +43,6 @@ function getAppVersionData(repo) {
 
 const UpgradeOrganizationPanel = React.memo(
   ({ repos = [], opened, onClose, daoAddress, wrapper }) => {
-    const sourceUrl = 'https://github.com/aragon/aragon-apps'
-
     const [currentVersions, newVersions] = useMemo(
       () =>
         repos.reduce(
@@ -108,12 +111,12 @@ const UpgradeOrganizationPanel = React.memo(
         <Part>
           <Heading2>Source code</Heading2>
           <p>
-            <ExternalLink href={sourceUrl}>{sourceUrl}</ExternalLink>
+            <ExternalLink href={SOURCE[1]}>{SOURCE[0]}</ExternalLink>
           </p>
 
           <Heading2>Aragon official registry</Heading2>
           <p>
-            <ExternalLink href={sourceUrl}>{sourceUrl}</ExternalLink>
+            <ExternalLink href={REGISTRY[1]}>{REGISTRY[0]}</ExternalLink>
           </p>
         </Part>
 
