@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import remark from 'remark'
 import remark2react from 'remark-react'
-import { Button, SafeLink, useViewport } from '@aragon/ui'
+import { Button, SafeLink, Text, useViewport, theme } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
@@ -34,6 +34,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
       },
       version: latestVersion,
     },
+    repoName,
   } = repo
   const fetchDescription = async () => {
     try {
@@ -45,7 +46,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
   }
   const repoDetails = usePromise(fetchDescription, [detailsUrl], null)
   const canUpgrade = currentVersion.version !== latestVersion
-  const { above, below, breakpoints } = useViewport()
+  const { below, breakpoints } = useViewport()
   const compact = appBelow(below, breakpoints.medium)
 
   return (
@@ -60,7 +61,6 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
           justify-content: space-between;
           margin-bottom: ${6 * GU}px;
           overflow: hidden;
-
           flex-direction: ${compact ? 'column' : 'row'};
           align-items: ${compact ? 'flex-start' : 'flex-end'};
         `}
@@ -120,27 +120,17 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
           flex-direction: column;
           justify-content: space-between;
           width: 100%;
-
           flex-direction: ${compact ? 'column' : 'row'};
         `}
       >
-        <DetailsGroup css={above('large') && 'width: 100%;'} compact={compact}>
+        <DetailsGroup compact={compact}>
           <Heading2>Description</Heading2>
-          <div css={above('large') && 'width: 50%;'}>{description}</div>
-          <Heading2>Source code</Heading2>
-          <div>
-            {sourceUrl ? (
-              <SafeLink href={sourceUrl} target="_blank">
-                {sourceUrl}
-              </SafeLink>
-            ) : (
-              'No source code link.'
-            )}
-          </div>
+          <div>{description}</div>
+
           {!!repoDetails && (
             <React.Fragment>
               <Heading2>Details</Heading2>
-              <Markdown css={above('large') && 'columns: 2;'}>
+              <Markdown>
                 {
                   /* eslint-disable react/prop-types */
                   remark()
@@ -160,16 +150,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
             </React.Fragment>
           )}
         </DetailsGroup>
-        <DetailsGroup
-          css={`
-            ${above('large') &&
-              `
-                position: absolute;
-                left: calc(50% + 40px);
-              `}
-          `}
-          compact={compact}
-        >
+        <DetailsGroup compact={compact}>
           <Heading2>Installed instances</Heading2>
           {instances.map(({ proxyAddress }) => (
             <div
@@ -183,6 +164,37 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
               <LocalIdentityBadge entity={proxyAddress} />
             </div>
           ))}
+
+          <Heading2>Source code</Heading2>
+          <div>
+            {sourceUrl ? (
+              <SafeLink
+                href={sourceUrl}
+                target="_blank"
+                css={`
+                  text-decoration: none;
+                `}
+              >
+                <Text color={theme.accent}>{sourceUrl}</Text>
+              </SafeLink>
+            ) : (
+              'No source code link.'
+            )}
+          </div>
+
+          {!!repoName && (
+            <React.Fragment>
+              <Heading2>Package Name</Heading2>
+              <div
+                css={`
+                  color: ${theme.accent};
+                `}
+              >
+                {repoName}
+              </div>
+            </React.Fragment>
+          )}
+
           {repoVersions && (
             <div
               css={`
@@ -212,7 +224,6 @@ const Markdown = styled.section`
   h4 {
     font-weight: bold;
     margin: ${1 * GU}px 0;
-    break-after: avoid;
   }
   p {
     margin: ${1 * GU}px 0;
