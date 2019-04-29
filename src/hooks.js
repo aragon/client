@@ -61,3 +61,24 @@ export function useSteps(steps) {
     step,
   }
 }
+
+export function usePromise(fn, memoParams, defaultValue) {
+  const [result, setResult] = useState(defaultValue)
+  useEffect(() => {
+    let cancelled = false
+    fn()
+      .then(value => {
+        if (!cancelled) {
+          setResult(value)
+        }
+        return null
+      })
+      .catch(e => console.error('An error occured: ', e))
+    return () => {
+      cancelled = true
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [...memoParams, fn])
+  return result
+}
