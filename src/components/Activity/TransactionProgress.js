@@ -25,7 +25,7 @@ function getProgress(status, createdAt, estimate, threshold, now) {
 }
 
 const TransactionProgress = React.memo(
-  ({ createdAt, minedAtEstimate = -1, status }) => {
+  ({ createdAt, minedAtEstimate, status }) => {
     const now = useNow().getTime()
 
     // Only animate things if the panel is ready (opened).

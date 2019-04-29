@@ -81,7 +81,6 @@ const ActivityItem = ({ activity, onClose }) => {
         <TransactionProgress
           status={activity.status}
           createdAt={activity.createdAt}
-          minedAtEstimate={-1}
           mined={false}
         />
       </div>
