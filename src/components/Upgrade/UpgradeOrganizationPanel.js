@@ -81,6 +81,7 @@ const UpgradeOrganizationPanel = React.memo(
         }
       } else {
         // We can use the power of calls scripts to do a single transaction!
+        // Or, the user just can't perform this action.
         await wrapper.performTransactionPath(upgradePath.path)
       }
     }, [repos, wrapper])
