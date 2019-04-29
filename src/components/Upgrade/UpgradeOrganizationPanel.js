@@ -14,7 +14,7 @@ import { ReposListType } from '../../prop-types'
 import { TextLabel } from '../../components/TextStyles'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { network } from '../../environment'
-import { KNOWN_ICONS } from '../../repo-utils'
+import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
 import { getAppPath } from '../../routing'
 import { repoBaseUrl } from '../../url-utils'
 import { GU } from '../../utils'
@@ -45,13 +45,15 @@ const UpgradeOrganizationPanel = React.memo(
   ({ repos = [], opened, onClose, dao }) => {
     const [currentVersions, newVersions] = useMemo(
       () =>
-        repos.reduce(
-          (results, repo) => [
-            [...results[0], getAppVersionData(repo.currentVersion)],
-            [...results[1], getAppVersionData(repo.latestVersion)],
-          ],
-          [[], []]
-        ),
+        repos
+          .filter(repo => isKnownRepo(repo.appId))
+          .reduce(
+            (results, repo) => [
+              [...results[0], getAppVersionData(repo.currentVersion)],
+              [...results[1], getAppVersionData(repo.latestVersion)],
+            ],
+            [[], []]
+          ),
       [repos]
     )
 

@@ -24,7 +24,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
       content: {
         author,
         icons,
-        description = '',
+        description = 'No description.',
         screenshots = [],
         source_url: sourceUrl,
       },
