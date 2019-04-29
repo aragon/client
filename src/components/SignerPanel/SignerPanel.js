@@ -177,7 +177,6 @@ class SignerPanel extends React.PureComponent {
           addTransactionActivity({
             transactionHash,
             from: intent.transaction.from,
-            targetApp: intent.name,
             targetAppProxyAddress: intent.to,
             forwarderProxyAddress: hasForwarder ? intent.transaction.to : '',
             description,
