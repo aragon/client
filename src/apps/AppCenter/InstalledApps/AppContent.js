@@ -10,6 +10,7 @@ import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
 import { TextLabel } from '../../../components/TextStyles'
 import { RepoType } from '../../../prop-types'
 import { GU, removeStartingSlash } from '../../../utils'
+import { usePromise } from '../../../hooks'
 import Screenshots from '../Screenshots'
 
 // Exclude the width of MenuPanel
@@ -34,20 +35,15 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
       version: latestVersion,
     },
   } = repo
-  const [repoDetails, setRepoDetails] = React.useState(null)
-  React.useEffect(() => {
-    const fetchDescription = async () => {
-      try {
-        const raw = await fetch(`${baseUrl}${removeStartingSlash(detailsUrl)}`)
-        const res = await raw.text()
-        setRepoDetails(res)
-      } catch (e) {
-        console.log('Error fetching decription: ', e)
-      }
+  const fetchDescription = async () => {
+    try {
+      const raw = await fetch(`${baseUrl}${removeStartingSlash(detailsUrl)}`)
+      return raw.text()
+    } catch (e) {
+      console.log('Error fetching decription: ', e)
     }
-    fetchDescription()
-  }, [detailsUrl])
-
+  }
+  const repoDetails = usePromise(fetchDescription, [detailsUrl], null)
   const canUpgrade = currentVersion.version !== latestVersion
 
   return (
