@@ -1,26 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Badge, Viewport } from '@aragon/ui'
+import { Badge, useViewport } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { EthereumAddressType } from '../../prop-types'
 
 const NavigationItem = ({ title, badge, address, entity }) => {
   const isEntity = !badge && address
+  const { above } = useViewport()
+
   return (
-    <Viewport>
-      {({ above }) => (
-        <Main>
-          <Title>{title}</Title>
-          {above('medium') && isEntity && (
-            <LocalIdentityBadge
-              entity={entity && entity.type === 'any' ? 'Any account' : address}
-            />
-          )}
-          {badge && <Badge.App title={badge.title}>{badge.label}</Badge.App>}
-        </Main>
+    <Main>
+      <Title>{title}</Title>
+      {above('medium') && isEntity && (
+        <LocalIdentityBadge
+          entity={entity && entity.type === 'any' ? 'Any account' : address}
+        />
       )}
-    </Viewport>
+      {badge && <Badge.App title={badge.title}>{badge.label}</Badge.App>}
+    </Main>
   )
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Text, Viewport, theme } from '@aragon/ui'
+import { Button, Text, useViewport, theme } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
@@ -15,48 +15,36 @@ const AppsList = styled.ul`
   list-style: none;
 `
 
-class DaoSettings extends React.PureComponent {
-  static propTypes = {
-    account: EthereumAddressType,
-    apps: PropTypes.arrayOf(AppType).isRequired,
-    appsLoading: PropTypes.bool.isRequired,
-    daoAddress: DaoAddressType.isRequired,
-    onOpenApp: PropTypes.func.isRequired,
-    shortAddresses: PropTypes.bool,
-    walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object.isRequired,
-  }
-  static defaultProps = {
-    shortAddresses: false,
-  }
-  handleDepositTestTokens = () => {
-    const { account, apps, walletWeb3 } = this.props
-    const finance = apps.find(app => app.appId === appIds.Finance)
-    if (finance && finance.proxyAddress) {
-      airdrop(walletWeb3, finance.proxyAddress, account)
+const DaoSettings = React.memo(
+  ({
+    account,
+    apps,
+    appsLoading,
+    daoAddress,
+    onOpenApp,
+    walletNetwork,
+    walletWeb3,
+  }) => {
+    const handleDepositTestTokens = () => {
+      const finance = apps.find(app => app.appId === appIds.Finance)
+      if (finance && finance.proxyAddress) {
+        airdrop(walletWeb3, finance.proxyAddress, account)
+      }
     }
-  }
-  handleOpenFinance = () => {
-    const { apps, onOpenApp } = this.props
-    const finance = apps.find(app => app.appId === appIds.Finance)
-    if (finance && finance.proxyAddress) {
-      onOpenApp(finance.proxyAddress)
+    const handleOpenFinance = () => {
+      const finance = apps.find(app => app.appId === appIds.Finance)
+      if (finance && finance.proxyAddress) {
+        onOpenApp(finance.proxyAddress)
+      }
     }
-  }
-  render() {
-    const {
-      account,
-      apps,
-      appsLoading,
-      daoAddress,
-      shortAddresses,
-      walletNetwork,
-    } = this.props
     const enableTransactions = !!account && walletNetwork === network.type
     const financeApp = apps.find(({ name }) => name === 'Finance')
     const checksummedDaoAddr =
       daoAddress.address && toChecksumAddress(daoAddress.address)
     const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
+    const { below } = useViewport()
+    const shortAddresses = below('medium')
+
     return (
       <div>
         <Option
@@ -79,9 +67,7 @@ class DaoSettings extends React.PureComponent {
             <br />
             Go to the{' '}
             {financeApp ? (
-              <ButtonLink onClick={this.handleOpenFinance}>
-                Finance app
-              </ButtonLink>
+              <ButtonLink onClick={handleOpenFinance}>Finance app</ButtonLink>
             ) : (
               'Finance app'
             )}{' '}
@@ -99,7 +85,7 @@ class DaoSettings extends React.PureComponent {
             <div>
               <Button
                 mode="secondary"
-                onClick={this.handleDepositTestTokens}
+                onClick={handleDepositTestTokens}
                 disabled={!enableTransactions}
                 style={{ opacity: enableTransactions ? 1 : 0.6 }}
               >
@@ -164,6 +150,20 @@ class DaoSettings extends React.PureComponent {
       </div>
     )
   }
+)
+
+DaoSettings.propTypes = {
+  account: EthereumAddressType,
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  appsLoading: PropTypes.bool.isRequired,
+  daoAddress: DaoAddressType.isRequired,
+  onOpenApp: PropTypes.func.isRequired,
+  walletNetwork: PropTypes.string.isRequired,
+  walletWeb3: PropTypes.object.isRequired,
+}
+
+DaoSettings.defaultProps = {
+  shortAddresses: false,
 }
 
 const Wrap = styled.div`
@@ -189,8 +189,4 @@ const AppItem = styled.li`
   margin-bottom: 24px;
 `
 
-export default props => (
-  <Viewport>
-    {({ below }) => <DaoSettings {...props} shortAddresses={below('medium')} />}
-  </Viewport>
-)
+export default DaoSettings

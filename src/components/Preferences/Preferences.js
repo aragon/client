@@ -9,7 +9,7 @@ import {
   ButtonIcon,
   IconClose,
   TabBar,
-  Viewport,
+  useViewport,
   breakpoint,
   font,
   springs,
@@ -108,6 +108,9 @@ Preferences.propTypes = {
 }
 
 const AnimatedPreferences = ({ opened, ...props }) => {
+  const { below } = useViewport()
+  const smallView = below('medium')
+
   return (
     <Transition
       native
@@ -122,6 +125,7 @@ const AnimatedPreferences = ({ opened, ...props }) => {
         /* eslint-disable react/prop-types */
         (({ opacity, enterProgress, blocking }) => (
           <AnimatedWrap
+            smallView={smallView}
             style={{
               pointerEvents: blocking ? 'auto' : 'none',
               opacity,
@@ -144,7 +148,6 @@ const AnimatedPreferences = ({ opened, ...props }) => {
 
 AnimatedPreferences.propTypes = {
   opened: PropTypes.bool,
-  smallView: PropTypes.bool.isRequired,
 }
 
 const AnimatedWrap = styled(animated.div)`
@@ -217,10 +220,4 @@ const CloseButton = styled(ButtonIcon).attrs({
   )}
 `
 
-export default props => (
-  <Viewport>
-    {({ below }) => (
-      <AnimatedPreferences smallView={below('medium')} {...props} />
-    )}
-  </Viewport>
-)
+export default AnimatedPreferences
