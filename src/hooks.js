@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import keycodes from './keycodes'
+import { removeStartingSlash } from './utils'
 
 // Handle arrow keys.
 export function useArrows({ onUp, onLeft, onDown, onRight } = {}) {
@@ -81,4 +82,16 @@ export function usePromise(fn, memoParams, defaultValue) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...memoParams, fn])
   return result
+}
+
+export function useRepoDetails(baseUrl, detailsUrl) {
+  const fetchDescription = async () => {
+    try {
+      const raw = await fetch(`${baseUrl}${removeStartingSlash(detailsUrl)}`)
+      return raw.text()
+    } catch (e) {
+      console.log('Error fetching decription: ', e)
+    }
+  }
+  return usePromise(fetchDescription, [detailsUrl], null)
 }
