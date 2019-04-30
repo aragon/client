@@ -40,6 +40,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
       },
       version: latestVersion,
     },
+    repoAddress,
     repoName,
   } = repo
   const repoDetails = useRepoDetails(baseUrl, detailsUrl)
@@ -156,11 +157,11 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
             )}
           </div>
 
-          {!!repoName && (
+          {!!repoAddress && !!repoAddress && (
             <React.Fragment>
               <Heading2>Package Name</Heading2>
               <StyledLink
-                href={blockExplorerUrl('address', repoName, {
+                href={blockExplorerUrl('address', repoAddress, {
                   networkType: network.type,
                 })}
               >
