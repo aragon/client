@@ -4,6 +4,7 @@ import { springs, theme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { AppType } from '../../prop-types'
 import { addressesEqual } from '../../web3-utils'
+import { cssgu } from '../../utils'
 import ActivityItem from './ActivityItem'
 import IconEmptyState from './IconEmptyState'
 
@@ -47,14 +48,14 @@ const ActivityList = React.memo(({ apps, activities, clearActivity }) => {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                padding: 64px 32px 24px;
+                padding: ${cssgu`8gu 4gu 8gu`};
               `}
               style={transitionStyles}
             >
               <IconEmptyState />
               <p
                 css={`
-                  margin-top: 10px;
+                  margin-top: ${cssgu`1gu`};
                   font-size: 14px;
                   color: ${theme.textSecondary};
                 `}

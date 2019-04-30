@@ -9,6 +9,7 @@ import {
   theme,
 } from '@aragon/ui'
 import { network } from '../../environment'
+import { cssgu } from '../../utils'
 import { shortenAddress, transformAddresses } from '../../web3-utils'
 import { activityStatusTypes } from '../../contexts/ActivityContext'
 import AppIcon from '../AppIcon/AppIcon'
@@ -30,7 +31,7 @@ const ActivityItem = ({ activity, onClose }) => {
         overflow: hidden;
         position: relative;
         width: 100%;
-        padding: 24px;
+        padding: ${cssgu`3gu`};
         transition: background 0.5s;
         background: rgba(255, 255, 255, ${activity.read ? '0' : '0.6'});
         border-bottom: 1px solid ${theme.contentBorder};
@@ -49,7 +50,7 @@ const ActivityItem = ({ activity, onClose }) => {
         </div>
         <div
           css={`
-            margin-left: 8px;
+            margin-left: ${cssgu`1gu`};
             font-weight: 600;
             font-size: 16px;
             white-space: nowrap;
