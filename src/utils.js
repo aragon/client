@@ -109,3 +109,14 @@ export function shuffleArray(original) {
 
 // GU = Grid Unit
 export const GU = 8
+// Makes “gu” a CSS unit in a string, e.g.
+// cssgu`10px 2gu 4gu`
+export function cssgu(strings, ...substitutions) {
+  return strings
+    .map((str, i) => str + (substitutions[i] || ''))
+    .join('')
+    .replace(/([0-9]+(?:\.[0-9]+)?)gu/g, (match, value) => {
+      value = parseFloat(value)
+      return isNaN(value) ? match : `${value * GU}px`
+    })
+}
