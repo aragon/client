@@ -42,7 +42,7 @@ const ActivityList = React.memo(({ apps, activities, clearActivity }) => {
         from={{ opacity: 0 }}
         enter={{ opacity: 1 }}
         leave={{ opacity: 0 }}
-        config={springs.smooth}
+        config={springs.lazy}
       >
         {show =>
           show &&
