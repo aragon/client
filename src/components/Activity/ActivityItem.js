@@ -11,12 +11,16 @@ import {
 import { network } from '../../environment'
 import { cssgu } from '../../utils'
 import { shortenAddress, transformAddresses } from '../../web3-utils'
-import { activityStatusTypes } from '../../contexts/ActivityContext'
 import AppIcon from '../AppIcon/AppIcon'
 import IconSuccess from '../../icons/IconSuccess'
 import IconPending from '../../icons/IconPending'
 import TimeTag from './TimeTag'
 import TransactionProgress from './TransactionProgress'
+import {
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_FAILED,
+  ACTIVITY_STATUS_TIMED_OUT,
+} from '../../symbols'
 
 const ActivityItem = ({ activity, onDiscard }) => {
   const { app } = activity
@@ -130,13 +134,13 @@ function getStatusData(activity) {
       Transaction
     </SafeLink>
   )
-  if (activity.status === activityStatusTypes.CONFIRMED) {
+  if (activity.status === ACTIVITY_STATUS_CONFIRMED) {
     return [<IconSuccess />, <span>{txLink} confirmed.</span>]
   }
-  if (activity.status === activityStatusTypes.FAILED) {
+  if (activity.status === ACTIVITY_STATUS_FAILED) {
     return [<IconError />, <span>{txLink} failed.</span>]
   }
-  if (activity.status === activityStatusTypes.TIMED_OUT) {
+  if (activity.status === ACTIVITY_STATUS_TIMED_OUT) {
     return [<IconError />, <span>{txLink} timed out.</span>]
   }
   return [<IconPending />, <span>{txLink} pending.</span>]

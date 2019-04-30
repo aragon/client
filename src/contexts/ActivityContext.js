@@ -3,24 +3,42 @@ import PropTypes from 'prop-types'
 import StoredList from '../StoredList'
 import { network } from '../environment'
 import { EthereumAddressType } from '../prop-types'
+import {
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_FAILED,
+  ACTIVITY_STATUS_PENDING,
+  ACTIVITY_STATUS_TIMED_OUT,
+  ACTIVITY_TYPE_TRANSACTION,
+} from '../symbols'
 
 const ActivityContext = React.createContext()
 
-const activityStatusTypes = {
-  CONFIRMED: 'CONFIRMED',
-  PENDING: 'PENDING',
-  FAILED: 'FAILED',
-  TIMED_OUT: 'TIMED_OUT',
-}
-
-const activityTypes = {
-  TRANSACTION: 'TRANSACTION',
-}
-
 const TEN_MINUTES = 1000 * 60 * 10
 
+// Only used to serialize / deserialize the symbols
+const SymbolsByName = new Map(
+  Object.entries({
+    ACTIVITY_STATUS_CONFIRMED,
+    ACTIVITY_STATUS_PENDING,
+    ACTIVITY_STATUS_FAILED,
+    ACTIVITY_STATUS_TIMED_OUT,
+    ACTIVITY_TYPE_TRANSACTION,
+  })
+)
+
 const getStoredList = (daoDomain, account) =>
-  new StoredList(`activity:${network.type}:${daoDomain}:${account}`)
+  new StoredList(`activity:${network.type}:${daoDomain}:${account}`, {
+    willStringify: activity => ({
+      ...activity,
+      status: activity.status.description.replace('ACTIVITY_STATUS_', ''),
+      type: activity.type.description.replace('ACTIVITY_TYPE_', ''),
+    }),
+    didParse: activity => ({
+      ...activity,
+      status: SymbolsByName.get(`ACTIVITY_STATUS_${activity.status}`),
+      type: SymbolsByName.get(`ACTIVITY_TYPE_${activity.type}`),
+    }),
+  })
 
 // Provides easy access to the user activities list
 class ActivityProvider extends React.Component {
@@ -74,7 +92,7 @@ class ActivityProvider extends React.Component {
     const { web3 } = this.props
 
     this.state.activities
-      .filter(({ status }) => status === activityStatusTypes.PENDING)
+      .filter(({ status }) => status === ACTIVITY_STATUS_PENDING)
       .forEach(async ({ transactionHash }) => {
         try {
           const tx = await web3.eth.getTransaction(`${transactionHash}`)
@@ -94,7 +112,7 @@ class ActivityProvider extends React.Component {
       const timeDelta = now - activity.createdAt
       if (
         timeDelta > TEN_MINUTES &&
-        activity.status === activityStatusTypes.PENDING
+        activity.status === ACTIVITY_STATUS_PENDING
       ) {
         // Set pending items to timed out after 10 minutes
         this.setActivityTimedOut(activity.transactionHash)
@@ -111,8 +129,8 @@ class ActivityProvider extends React.Component {
   } = {}) => {
     const newActivity = {
       createdAt: Date.now(),
-      type: activityTypes.TRANSACTION,
-      status: activityStatusTypes.PENDING,
+      type: ACTIVITY_TYPE_TRANSACTION,
+      status: ACTIVITY_STATUS_PENDING,
       read: false,
       transactionHash,
       // account address from which the transaction was created
@@ -151,7 +169,7 @@ class ActivityProvider extends React.Component {
     // Clear all non pending activities
     // (we don't clear pending because we're awaiting state change)
     this.filterActivities(
-      ({ status, from }) => status === activityStatusTypes.PENDING
+      ({ status, from }) => status === ACTIVITY_STATUS_PENDING
     )
   }
 
@@ -190,9 +208,9 @@ class ActivityProvider extends React.Component {
     })
   }
 
-  setActivityConfirmed = this.setActivityStatus(activityStatusTypes.CONFIRMED)
-  setActivityFailed = this.setActivityStatus(activityStatusTypes.FAILED)
-  setActivityTimedOut = this.setActivityStatus(activityStatusTypes.TIMED_OUT)
+  setActivityConfirmed = this.setActivityStatus(ACTIVITY_STATUS_CONFIRMED)
+  setActivityFailed = this.setActivityStatus(ACTIVITY_STATUS_FAILED)
+  setActivityTimedOut = this.setActivityStatus(ACTIVITY_STATUS_TIMED_OUT)
 
   setActivityNonce = ({ transactionHash, nonce }) => {
     const activities = this.state.activities.map(activity =>
@@ -242,9 +260,4 @@ class ActivityProvider extends React.Component {
 
 const ActivityConsumer = ActivityContext.Consumer
 
-export {
-  activityStatusTypes,
-  ActivityContext,
-  ActivityProvider,
-  ActivityConsumer,
-}
+export { ActivityContext, ActivityProvider, ActivityConsumer }
