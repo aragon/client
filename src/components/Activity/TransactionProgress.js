@@ -4,10 +4,13 @@ import { ProgressBar } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { ActivityStatusType } from '../../prop-types'
 import { norm } from '../../math-utils'
-import { activityStatusTypes } from '../../contexts/ActivityContext'
 import { useNow } from '../../hooks'
 import { ActivityPanelReadyContext } from './ActivityPanel'
 import TimeTag from './TimeTag'
+import {
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_PENDING,
+} from '../../symbols'
 
 const MINUTE = 60 * 1000
 const DELAY_BEFORE_HIDE = 1000
@@ -18,66 +21,67 @@ const TX_DURATION_AVERAGE = 3 * MINUTE
 const TX_DURATION_THRESHOLD = TX_DURATION_AVERAGE - MINUTE / 2
 
 function getProgress(status, createdAt, estimate, threshold, now) {
-  if (status === activityStatusTypes.CONFIRMED) {
+  if (status === ACTIVITY_STATUS_CONFIRMED) {
     return 1
   }
   return now > threshold ? -1 : norm(now, createdAt, estimate)
 }
 
-const TransactionProgress = React.memo(
-  ({ createdAt, minedAtEstimate, status }) => {
-    const now = useNow().getTime()
+const TransactionProgress = React.memo(function TransactionProgress({
+  createdAt,
+  minedAtEstimate,
+  status,
+}) {
+  const now = useNow().getTime()
 
-    // Only animate things if the panel is ready (opened).
-    const animate = useContext(ActivityPanelReadyContext)
-    const estimate = createdAt + TX_DURATION_AVERAGE
-    const threshold = createdAt + TX_DURATION_THRESHOLD
+  // Only animate things if the panel is ready (opened).
+  const animate = useContext(ActivityPanelReadyContext)
+  const estimate = createdAt + TX_DURATION_AVERAGE
+  const threshold = createdAt + TX_DURATION_THRESHOLD
 
-    const progress = getProgress(status, createdAt, estimate, threshold, now)
-    const showConfirmed = status === activityStatusTypes.CONFIRMED
-    const showTimer =
-      !showConfirmed &&
-      (now < threshold && status === activityStatusTypes.PENDING)
+  const progress = getProgress(status, createdAt, estimate, threshold, now)
+  const showConfirmed = status === ACTIVITY_STATUS_CONFIRMED
+  const showTimer =
+    !showConfirmed && (now < threshold && status === ACTIVITY_STATUS_PENDING)
 
-    return (
-      <Transition
-        native
-        delay={DELAY_BEFORE_HIDE}
-        items={status === activityStatusTypes.PENDING}
-        enter={{ height: 28, opacity: 1 }}
-        leave={{ height: 0, opacity: 0 }}
-      >
-        {show =>
-          show &&
-          (transition => (
-            <animated.div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                paddingTop: '10px',
-                ...transition,
-              }}
-            >
-              <div css="flex-grow: 1">
-                <ProgressBar
-                  value={showConfirmed ? 1 : progress}
-                  animate={animate}
-                />
-              </div>
-              {(showTimer || showConfirmed) && (
-                <TimeTag
-                  date={estimate}
-                  label={showConfirmed && 'confirmed'}
-                  css="margin-left: 8px"
-                />
-              )}
-            </animated.div>
-          ))
-        }
-      </Transition>
-    )
-  }
-)
+  return (
+    <Transition
+      native
+      delay={DELAY_BEFORE_HIDE}
+      items={status === ACTIVITY_STATUS_PENDING}
+      enter={{ height: 28, opacity: 1 }}
+      leave={{ height: 0, opacity: 0 }}
+    >
+      {show =>
+        show &&
+        (transition => (
+          <animated.div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              paddingTop: '10px',
+              ...transition,
+            }}
+          >
+            <div css="flex-grow: 1">
+              <ProgressBar
+                value={showConfirmed ? 1 : progress}
+                animate={animate}
+              />
+            </div>
+            {(showTimer || showConfirmed) && (
+              <TimeTag
+                date={estimate}
+                label={showConfirmed && 'confirmed'}
+                css="margin-left: 8px"
+              />
+            )}
+          </animated.div>
+        ))
+      }
+    </Transition>
+  )
+})
 
 TransactionProgress.propTypes = {
   // unix timestamps

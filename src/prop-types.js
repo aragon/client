@@ -9,9 +9,12 @@ import {
   DAO_STATUS_READY,
   DAO_STATUS_LOADING,
   DAO_STATUS_UNLOADED,
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_FAILED,
+  ACTIVITY_STATUS_PENDING,
+  ACTIVITY_STATUS_TIMED_OUT,
 } from './symbols'
 import { isAddress } from './web3-utils'
-import { activityStatusTypes } from './contexts/ActivityContext'
 
 const validatorCreator = nonRequiredFunction => {
   const validator = nonRequiredFunction
@@ -192,6 +195,9 @@ export const ReactSpringStateType = PropTypes.oneOf([
   'leave',
 ])
 
-export const ActivityStatusType = PropTypes.oneOf(
-  Object.values(activityStatusTypes)
-)
+export const ActivityStatusType = PropTypes.oneOf([
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_FAILED,
+  ACTIVITY_STATUS_PENDING,
+  ACTIVITY_STATUS_TIMED_OUT,
+])

@@ -73,7 +73,11 @@ export function isElectron() {
   )
 }
 
+// do nothing
 export function noop() {}
+
+// return the first argument (named after lodash)
+export const identity = arg => arg
 
 export function removeStartingSlash(str) {
   return str.replace(/^\/+/, '')
@@ -109,6 +113,7 @@ export function shuffleArray(original) {
 
 // GU = Grid Unit
 export const GU = 8
+
 // Makes “gu” a CSS unit in a string, e.g.
 // cssgu`10px 2gu 4gu`
 export function cssgu(strings, ...substitutions) {
