@@ -106,7 +106,6 @@ class ActivityProvider extends React.Component {
     transactionHash = '',
     from = '',
     targetAppProxyAddress = '',
-    forwarder = '',
     forwarderProxyAddress = '',
     description = '',
   } = {}) => {
@@ -120,7 +119,6 @@ class ActivityProvider extends React.Component {
       from,
       targetAppProxyAddress,
       forwarderProxyAddress,
-      forwarder,
       description,
     }
 

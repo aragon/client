@@ -10,75 +10,73 @@ import IconArrowLeft from './IconArrowLeft'
 export const ACTIVITY_PANEL_SHADOW_WIDTH = 15
 export const ACTIVITY_PANEL_WIDTH = 300
 
-const ActivityPanel = ({
-  apps,
-  displayBackButton,
-  onClearAll,
-  onClose,
-  open,
-  shouldClose,
-}) => {
-  const frameRef = React.createRef()
-  const { activities, clearActivity } = React.useContext(ActivityContext)
+export const ActivityPanelReadyContext = React.createContext(false)
 
-  useEffect(() => {
-    if (open) {
-      frameRef.current.focus()
-    }
-  }, [frameRef.current, open])
+const ActivityPanel = React.memo(
+  ({ apps, displayBackButton, onClearAll, onClose, open, shouldClose }) => {
+    const frameRef = React.createRef()
+    const { activities, clearActivity } = React.useContext(ActivityContext)
 
-  const handleBlur = useCallback(
-    event => {
-      const target = event.relatedTarget
-      if (
-        !frameRef.current.contains(target) &&
-        shouldClose({ focusedElement: target })
-      ) {
-        onClose()
+    useEffect(() => {
+      if (open) {
+        frameRef.current.focus()
       }
-    },
-    [frameRef, onClose, shouldClose]
-  )
+    }, [frameRef.current, open])
 
-  return (
-    <ActivityFrame ref={frameRef} onBlur={handleBlur} tabIndex="0">
-      <ActivityHeader>
-        <div
-          css={`
-            display: flex;
-            align-items: center;
-          `}
-        >
-          {displayBackButton && (
-            <ButtonIcon
-              onClick={onClose}
-              label="Close"
+    const handleBlur = useCallback(
+      event => {
+        const target = event.relatedTarget
+        if (
+          !frameRef.current.contains(target) &&
+          shouldClose({ focusedElement: target })
+        ) {
+          onClose()
+        }
+      },
+      [frameRef, onClose, shouldClose]
+    )
+
+    return (
+      <ActivityPanelReadyContext.Provider value={open}>
+        <ActivityFrame ref={frameRef} onBlur={handleBlur} tabIndex="0">
+          <ActivityHeader>
+            <div
               css={`
-                margin-left: -5px;
-                margin-right: 5px;
-                color: ${theme.accent};
+                display: flex;
+                align-items: center;
               `}
             >
-              <IconArrowLeft />
-            </ButtonIcon>
-          )}
-          <ActivityHeaderTitle>Activity</ActivityHeaderTitle>
-        </div>
-        <Button mode="text" onClick={onClearAll} css="margin-right: -15px">
-          Clear all
-        </Button>
-      </ActivityHeader>
-      <ActivityContent>
-        <ActivityList
-          activities={activities}
-          apps={apps}
-          keys={activity => activity.transactionHash}
-          clearActivity={clearActivity}
-        />
-      </ActivityContent>
-    </ActivityFrame>
-  )
-}
+              {displayBackButton && (
+                <ButtonIcon
+                  onClick={onClose}
+                  label="Close"
+                  css={`
+                    margin-left: -5px;
+                    margin-right: 5px;
+                    color: ${theme.accent};
+                  `}
+                >
+                  <IconArrowLeft />
+                </ButtonIcon>
+              )}
+              <ActivityHeaderTitle>Activity</ActivityHeaderTitle>
+            </div>
+            <Button mode="text" onClick={onClearAll} css="margin-right: -15px">
+              Clear all
+            </Button>
+          </ActivityHeader>
+          <ActivityContent>
+            <ActivityList
+              activities={activities}
+              apps={apps}
+              clearActivity={clearActivity}
+            />
+          </ActivityContent>
+        </ActivityFrame>
+      </ActivityPanelReadyContext.Provider>
+    )
+  }
+)
 
 ActivityPanel.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,

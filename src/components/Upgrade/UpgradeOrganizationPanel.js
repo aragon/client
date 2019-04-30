@@ -15,7 +15,7 @@ import { TextLabel } from '../../components/TextStyles'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import { network } from '../../environment'
-import { KNOWN_ICONS } from '../../repo-utils'
+import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
 import { repoBaseUrl } from '../../url-utils'
 import { GU } from '../../utils'
 
@@ -45,13 +45,15 @@ const UpgradeOrganizationPanel = React.memo(
   ({ repos = [], opened, onClose, daoAddress, wrapper }) => {
     const [currentVersions, newVersions] = useMemo(
       () =>
-        repos.reduce(
-          (results, repo) => [
-            [...results[0], getAppVersionData(repo.currentVersion)],
-            [...results[1], getAppVersionData(repo.latestVersion)],
-          ],
-          [[], []]
-        ),
+        repos
+          .filter(repo => isKnownRepo(repo.appId))
+          .reduce(
+            (results, repo) => [
+              [...results[0], getAppVersionData(repo.currentVersion)],
+              [...results[1], getAppVersionData(repo.latestVersion)],
+            ],
+            [[], []]
+          ),
       [repos]
     )
 
