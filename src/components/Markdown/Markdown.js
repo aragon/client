@@ -38,7 +38,8 @@ const StyledLink = styled(SafeLink).attrs({ target: '_blank' })`
   text-decoration: none;
   color: ${theme.accent};
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     text-decoration: underline;
   }
 `
@@ -52,7 +53,8 @@ const Wrapper = styled.section`
     font-weight: bold;
     margin: ${1 * GU}px 0;
   }
-  p, li {
+  p,
+  li {
     margin: ${1 * GU}px 0;
   }
   ul {
