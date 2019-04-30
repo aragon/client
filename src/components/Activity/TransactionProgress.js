@@ -60,9 +60,7 @@ const TransactionProgress = React.memo(
             >
               <div css="flex-grow: 1">
                 <ProgressBar
-                  value={
-                    showConfirmed ? 1 : progress
-                  }
+                  value={showConfirmed ? 1 : progress}
                   animate={animate}
                 />
               </div>
