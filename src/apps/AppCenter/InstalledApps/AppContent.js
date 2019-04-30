@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import remark from 'remark'
-import remark2react from 'remark-react'
 import { Button, SafeLink, Text, useViewport, theme } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
 import { TextLabel } from '../../../components/TextStyles'
+import Markdown from '../../../components/Markdown/Markdown'
 import { RepoType } from '../../../prop-types'
 import { GU, removeStartingSlash } from '../../../utils'
 import { usePromise } from '../../../hooks'
@@ -130,23 +129,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
           {!!repoDetails && (
             <React.Fragment>
               <Heading2>Details</Heading2>
-              <Markdown>
-                {
-                  /* eslint-disable react/prop-types */
-                  remark()
-                    .use(remark2react, {
-                      remarkReactComponents: {
-                        a: ({ children, ...props }) => (
-                          <SafeLink target="_blank" {...props}>
-                            {children}
-                          </SafeLink>
-                        ),
-                      },
-                    })
-                    .processSync(repoDetails).contents
-                  /* eslint-enable react/prop-types */
-                }
-              </Markdown>
+              <Markdown text={repoDetails} />
             </React.Fragment>
           )}
         </DetailsGroup>
@@ -215,23 +198,6 @@ AppContent.propTypes = {
   repoVersions: PropTypes.node,
   onRequestUpgrade: PropTypes.func,
 }
-
-const Markdown = styled.section`
-  margin-top: ${1 * GU}px;
-  padding-right: ${1 * GU}px;
-  h2,
-  h3,
-  h4 {
-    font-weight: bold;
-    margin: ${1 * GU}px 0;
-  }
-  p {
-    margin: ${1 * GU}px 0;
-  }
-  ul {
-    margin: ${1 * GU}px ${2 * GU}px;
-  }
-`
 
 const Heading2 = ({ children }) => (
   <h2
