@@ -7,10 +7,7 @@ import { useNow } from '../../hooks'
 function getRelativeTime(now, targetDate) {
   const past = targetDate < now
   const fn = past ? formatDistance : formatDistanceStrict
-  const options = { addSuffix: true }
-  if (past) {
-    options.unit = 'minute'
-  }
+  const options = { addSuffix: true, ...(past && { unit: 'minute' }) }
   return fn(targetDate, now, options)
     .replace('about', '')
     .replace(/minutes?/, 'min')
