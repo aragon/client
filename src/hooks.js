@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import keycodes from './keycodes'
+import { log, removeStartingSlash } from './utils'
 
 // Update `now` at a given interval.
 export function useNow(updateEvery = 1000) {
@@ -74,4 +75,38 @@ export function useSteps(steps) {
     setStep,
     step,
   }
+}
+
+export function usePromise(fn, memoParams, defaultValue) {
+  const [result, setResult] = useState(defaultValue)
+  useEffect(() => {
+    let cancelled = false
+    fn()
+      .then(value => {
+        if (!cancelled) {
+          setResult(value)
+        }
+        return null
+      })
+      .catch(e => console.error('An error occured: ', e))
+    return () => {
+      cancelled = true
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [...memoParams, fn])
+  return result
+}
+
+export function useRepoDetails(baseUrl, detailsUrl) {
+  const fetchDescription = async () => {
+    try {
+      const raw = await fetch(`${baseUrl}${removeStartingSlash(detailsUrl)}`)
+      return raw.text()
+    } catch (e) {
+      log('Error fetching decription: ', e)
+    }
+    return ''
+  }
+  return usePromise(fetchDescription, [detailsUrl], null)
 }

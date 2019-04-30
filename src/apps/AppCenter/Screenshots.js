@@ -36,6 +36,7 @@ class Screenshots extends React.Component {
             const url = imgSrcFromBase(baseUrl, src)
             return (
               <ExternalLink
+                key={url}
                 href={url}
                 css={`
                   flex-grow: 0;
