@@ -6,7 +6,7 @@ import remark2react from 'remark-react'
 import { SafeLink, theme } from '@aragon/ui'
 import { GU } from '../../utils'
 
-const Markdown = ({ text }) => {
+const Markdown = React.memo(({ text }) => {
   return (
     <Wrapper>
       {
@@ -24,7 +24,7 @@ const Markdown = ({ text }) => {
       }
     </Wrapper>
   )
-}
+})
 
 Markdown.propTypes = {
   text: PropTypes.string,
