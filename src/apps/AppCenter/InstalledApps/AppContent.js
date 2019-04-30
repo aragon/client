@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, SafeLink, Text, useViewport, theme } from '@aragon/ui'
+import { Button, SafeLink, useViewport, theme } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
 import { TextLabel } from '../../../components/TextStyles'
 import Markdown from '../../../components/Markdown/Markdown'
 import { RepoType } from '../../../prop-types'
-import { GU, removeStartingSlash } from '../../../utils'
-import { usePromise } from '../../../hooks'
+import { GU } from '../../../utils'
+import { useRepoDetails } from '../../../hooks'
 import Screenshots from '../Screenshots'
 
 // Exclude the width of MenuPanel
@@ -35,15 +35,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
     },
     repoName,
   } = repo
-  const fetchDescription = async () => {
-    try {
-      const raw = await fetch(`${baseUrl}${removeStartingSlash(detailsUrl)}`)
-      return raw.text()
-    } catch (e) {
-      console.log('Error fetching decription: ', e)
-    }
-  }
-  const repoDetails = usePromise(fetchDescription, [detailsUrl], null)
+  const repoDetails = useRepoDetails(baseUrl, detailsUrl)
   const canUpgrade = currentVersion.version !== latestVersion
   const { below, breakpoints } = useViewport()
   const compact = appBelow(below, breakpoints.medium)
@@ -151,15 +143,7 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
           <Heading2>Source code</Heading2>
           <div>
             {sourceUrl ? (
-              <SafeLink
-                href={sourceUrl}
-                target="_blank"
-                css={`
-                  text-decoration: none;
-                `}
-              >
-                <Text color={theme.accent}>{sourceUrl}</Text>
-              </SafeLink>
+              <StyledLink href={sourceUrl}>{sourceUrl}</StyledLink>
             ) : (
               'No source code link.'
             )}
@@ -168,13 +152,11 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
           {!!repoName && (
             <React.Fragment>
               <Heading2>Package Name</Heading2>
-              <div
-                css={`
-                  color: ${theme.accent};
-                `}
+              <StyledLink
+                href={`https://etherscan.io/address/${repoName}#code`}
               >
                 {repoName}
-              </div>
+              </StyledLink>
             </React.Fragment>
           )}
 
@@ -198,6 +180,15 @@ AppContent.propTypes = {
   repoVersions: PropTypes.node,
   onRequestUpgrade: PropTypes.func,
 }
+
+const StyledLink = styled(SafeLink).attrs({ target: '_blank' })`
+  text-decoration: none;
+  color: ${theme.accent};
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
 
 const Heading2 = ({ children }) => (
   <h2
