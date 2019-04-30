@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import keycodes from './keycodes'
-import { removeStartingSlash } from './utils'
+import { log, removeStartingSlash } from './utils'
 
 // Handle arrow keys.
 export function useArrows({ onUp, onLeft, onDown, onRight } = {}) {
@@ -90,8 +90,9 @@ export function useRepoDetails(baseUrl, detailsUrl) {
       const raw = await fetch(`${baseUrl}${removeStartingSlash(detailsUrl)}`)
       return raw.text()
     } catch (e) {
-      console.log('Error fetching decription: ', e)
+      log('Error fetching decription: ', e)
     }
+    return ''
   }
   return usePromise(fetchDescription, [detailsUrl], null)
 }
