@@ -11,6 +11,7 @@ import {
   DAO_STATUS_UNLOADED,
 } from './symbols'
 import { isAddress } from './web3-utils'
+import { activityStatusTypes } from './contexts/ActivityContext'
 
 const validatorCreator = nonRequiredFunction => {
   const validator = nonRequiredFunction
@@ -190,3 +191,7 @@ export const ReactSpringStateType = PropTypes.oneOf([
   'update',
   'leave',
 ])
+
+export const ActivityStatusType = PropTypes.oneOf(
+  Object.values(activityStatusTypes)
+)

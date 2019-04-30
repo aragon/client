@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   ButtonIcon,
@@ -9,32 +9,40 @@ import {
   theme,
 } from '@aragon/ui'
 import { network } from '../../environment'
+import { cssgu } from '../../utils'
 import { shortenAddress, transformAddresses } from '../../web3-utils'
 import { activityStatusTypes } from '../../contexts/ActivityContext'
 import AppIcon from '../AppIcon/AppIcon'
-import TimeTag from './TimeTag'
 import IconSuccess from '../../icons/IconSuccess'
 import IconPending from '../../icons/IconPending'
+import TimeTag from './TimeTag'
+import TransactionProgress from './TransactionProgress'
 
-const ActivityItem = ({ activity, onClose }) => {
+const ActivityItem = ({ activity, onDiscard }) => {
   const { app } = activity
+
+  const handleClose = useCallback(() => {
+    onDiscard(activity)
+  }, [onDiscard, activity])
+
   return (
     <section
       css={`
         display: grid;
+        align-items: center;
         grid-template-areas:
           'title time'
           'content content';
         overflow: hidden;
         position: relative;
         width: 100%;
-        padding: 20px;
+        padding: ${cssgu`3gu`};
         transition: background 0.5s;
         background: rgba(255, 255, 255, ${activity.read ? '0' : '0.6'});
         border-bottom: 1px solid ${theme.contentBorder};
       `}
     >
-      <CloseButton onClick={onClose} />
+      <CloseButton onClick={handleClose} />
       <h1
         css={`
           grid-area: title;
@@ -47,11 +55,11 @@ const ActivityItem = ({ activity, onClose }) => {
         </div>
         <div
           css={`
-            margin-left: 8px;
-            white-space: nowrap;
-            color: ${theme.textPrimary};
+            margin-left: ${cssgu`1gu`};
             font-weight: 600;
             font-size: 16px;
+            white-space: nowrap;
+            color: ${theme.textPrimary};
           `}
         >
           {app ? app.name : 'Unknown'}
@@ -60,37 +68,26 @@ const ActivityItem = ({ activity, onClose }) => {
       <div
         css={`
           grid-area: time;
-          opacity: 0.7;
-          font-size: 12px;
-          font-weight: 600;
-          color: #6d777b;
-          letter-spacing: 0;
-          text-align: right;
-          line-height: 16px;
-          white-space: nowrap;
-          & > span {
-            vertical-align: sub;
-          }
+          justify-self: end;
         `}
       >
-        <TimeTag date={activity.createdAt} style={{ marginRight: 10 }} />
+        <TimeTag date={activity.createdAt} />
       </div>
       <div
         css={`
           grid-area: content;
           overflow: hidden;
           position: relative;
-          margin-top: 10px;
-          margin-bottom: 0;
-          line-height: 22px;
+          margin: 10px 0 0;
           font-size: 15px;
-          color: #000000;
-          letter-spacing: 0;
-          line-height: 22px;
         `}
       >
         <ItemContent text={activity.description} />
         <StatusMessage activity={activity} />
+        <TransactionProgress
+          status={activity.status}
+          createdAt={activity.createdAt}
+        />
       </div>
     </section>
   )
@@ -98,7 +95,7 @@ const ActivityItem = ({ activity, onClose }) => {
 
 ActivityItem.propTypes = {
   activity: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onDiscard: PropTypes.func.isRequired,
 }
 
 const ItemContent = React.memo(
@@ -140,7 +137,7 @@ function getStatusData(activity) {
     return [<IconError />, <span>{txLink} failed.</span>]
   }
   if (activity.status === activityStatusTypes.TIMED_OUT) {
-    return [<IconError />, <span>The {txLink} timed out.</span>]
+    return [<IconError />, <span>{txLink} timed out.</span>]
   }
   return [<IconPending />, <span>{txLink} pending.</span>]
 }
