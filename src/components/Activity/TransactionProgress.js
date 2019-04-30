@@ -12,10 +12,10 @@ import TimeTag from './TimeTag'
 const MINUTE = 60 * 1000
 const DELAY_BEFORE_HIDE = 1000
 
-const TX_DURATION_AVERAGE = 5 * MINUTE
+const TX_DURATION_AVERAGE = 3 * MINUTE
 // threshold at which point we switch to displaying the indeterminate progress
 // bar, so that the user doesn’t get confused by a completed progress bar.
-const TX_DURATION_THRESHOLD = TX_DURATION_AVERAGE - 1 * MINUTE
+const TX_DURATION_THRESHOLD = TX_DURATION_AVERAGE - MINUTE / 2
 
 function getProgress(status, createdAt, estimate, threshold, now) {
   if (status === activityStatusTypes.CONFIRMED) {
