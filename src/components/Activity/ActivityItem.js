@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   ButtonIcon,
@@ -18,8 +18,13 @@ import IconPending from '../../icons/IconPending'
 import TimeTag from './TimeTag'
 import TransactionProgress from './TransactionProgress'
 
-const ActivityItem = ({ activity, onClose }) => {
+const ActivityItem = ({ activity, onDiscard }) => {
   const { app } = activity
+
+  const handleClose = useCallback(() => {
+    onDiscard(activity)
+  }, [onDiscard, activity])
+
   return (
     <section
       css={`
@@ -37,7 +42,7 @@ const ActivityItem = ({ activity, onClose }) => {
         border-bottom: 1px solid ${theme.contentBorder};
       `}
     >
-      <CloseButton onClick={onClose} />
+      <CloseButton onClick={handleClose} />
       <h1
         css={`
           grid-area: title;
@@ -90,7 +95,7 @@ const ActivityItem = ({ activity, onClose }) => {
 
 ActivityItem.propTypes = {
   activity: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onDiscard: PropTypes.func.isRequired,
 }
 
 const ItemContent = React.memo(

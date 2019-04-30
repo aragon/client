@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { springs, theme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
@@ -23,6 +23,13 @@ const ActivityList = React.memo(({ apps, activities, clearActivity }) => {
           app: getAppByProxyAddress(activity.targetAppProxyAddress, apps),
         })),
     [activities, apps]
+  )
+
+  const handleDiscard = useCallback(
+    ({ transactionHash }) => {
+      clearActivity(transactionHash)
+    },
+    [clearActivity]
   )
 
   const transitionKeys = activity => activity.transactionHash
@@ -99,12 +106,7 @@ const ActivityList = React.memo(({ apps, activities, clearActivity }) => {
       >
         {activity => transitionStyles => (
           <animated.div style={{ ...transitionStyles, overflow: 'hidden' }}>
-            <ActivityItem
-              activity={activity}
-              onClose={() => {
-                clearActivity(activity.transactionHash)
-              }}
-            />
+            <ActivityItem activity={activity} onDiscard={handleDiscard} />
           </animated.div>
         )}
       </Transition>
