@@ -61,7 +61,7 @@ const TransactionProgress = React.memo(
               <div css="flex-grow: 1">
                 <ProgressBar
                   value={
-                    status === activityStatusTypes.CONFIRMED ? 1 : progress
+                    showConfirmed ? 1 : progress
                   }
                   animate={animate}
                 />
