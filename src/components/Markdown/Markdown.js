@@ -38,7 +38,7 @@ const StyledLink = styled(SafeLink).attrs({ target: '_blank' })`
   text-decoration: none;
   color: ${theme.accent};
 
-  &:hover {
+  &:hover, &:focus {
     text-decoration: underline;
   }
 `
