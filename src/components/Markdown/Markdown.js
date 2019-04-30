@@ -52,7 +52,7 @@ const Wrapper = styled.section`
     font-weight: bold;
     margin: ${1 * GU}px 0;
   }
-  p {
+  p, li {
     margin: ${1 * GU}px 0;
   }
   ul {
