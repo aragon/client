@@ -293,10 +293,11 @@ class Wrapper extends React.PureComponent {
 
         {canUpgradeOrg && (
           <UpgradeOrganizationPanel
-            dao={locator.dao}
+            daoAddress={daoAddress}
             opened={orgUpgradePanelOpened}
             onClose={this.hideOrgUpgradePanel}
             repos={repos}
+            wrapper={wrapper}
           />
         )}
       </Main>
