@@ -2,10 +2,10 @@ import { identity, log } from './utils'
 
 class StoredList {
   // name: the key used by StoredList to save the list in localStorage.
-  // willStringify: use this to transform an item of the list before being saved.
-  // didParse: use this to transform an item of the list after it got loaded.
-  constructor(name, { willStringify = identity, didParse = identity } = {}) {
-    this.options = { willStringify, didParse }
+  // preStringify: use this to transform an item of the list before being saved.
+  // postParse: use this to transform an item of the list after it got loaded.
+  constructor(name, { preStringify = identity, postParse = identity } = {}) {
+    this.options = { preStringify, postParse }
     this.name = name
     this.items = this.loadItems()
   }
@@ -28,12 +28,12 @@ class StoredList {
       log(`The data loaded by StoredList (${this.name}) is not an array`, items)
     }
 
-    return items === null ? [] : items.map(this.options.didParse)
+    return items === null ? [] : items.map(this.options.postParse)
   }
   saveItems() {
     localStorage.setItem(
       this.name,
-      JSON.stringify(this.items.map(this.options.willStringify))
+      JSON.stringify(this.items.map(this.options.preStringify))
     )
   }
   getItems() {

@@ -28,12 +28,12 @@ const SymbolsByName = new Map(
 
 const getStoredList = (daoDomain, account) =>
   new StoredList(`activity:${network.type}:${daoDomain}:${account}`, {
-    willStringify: activity => ({
+    preStringify: activity => ({
       ...activity,
       status: activity.status.description.replace('ACTIVITY_STATUS_', ''),
       type: activity.type.description.replace('ACTIVITY_TYPE_', ''),
     }),
-    didParse: activity => ({
+    postParse: activity => ({
       ...activity,
       status: SymbolsByName.get(`ACTIVITY_STATUS_${activity.status}`),
       type: SymbolsByName.get(`ACTIVITY_TYPE_${activity.type}`),
