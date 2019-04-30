@@ -1,7 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, SafeLink, useViewport, theme } from '@aragon/ui'
+import {
+  Button,
+  SafeLink,
+  blockExplorerUrl,
+  useViewport,
+  theme,
+} from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
@@ -10,6 +16,7 @@ import Markdown from '../../../components/Markdown/Markdown'
 import { RepoType } from '../../../prop-types'
 import { GU } from '../../../utils'
 import { useRepoDetails } from '../../../hooks'
+import { network } from '../../../environment'
 import Screenshots from '../Screenshots'
 
 // Exclude the width of MenuPanel
@@ -153,7 +160,9 @@ const AppContent = React.memo(({ repo, repoVersions, onRequestUpgrade }) => {
             <React.Fragment>
               <Heading2>Package Name</Heading2>
               <StyledLink
-                href={`https://etherscan.io/address/${repoName}#code`}
+                href={blockExplorerUrl('address', repoName, {
+                  networkType: network.type,
+                })}
               >
                 {repoName}
               </StyledLink>
