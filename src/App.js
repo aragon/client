@@ -20,6 +20,7 @@ import { ModalProvider } from './components/ModalManager/ModalManager'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
+import Beacon, { HELPSCOUT_BEACON } from './components/Beacon/Beacon'
 import { isKnownRepo } from './repo-utils'
 import {
   APP_MODE_START,
@@ -54,6 +55,7 @@ class App extends React.Component {
     ...INITIAL_DAO_STATE,
     account: '',
     balance: getUnknownBalance(),
+    beaconOptedIn: false,
     buildData: null, // data returned by aragon.js when a DAO is created
     connected: false,
     // daoCreationStatus is one of:
@@ -105,6 +107,10 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
+
+    // support & feedback
+    const optedIn = localStorage.getItem(HELPSCOUT_BEACON)
+    this.setState({ beaconOptedIn: optedIn === '1' })
   }
 
   // Handle URL changes
@@ -349,6 +355,10 @@ class App extends React.Component {
   handleOpenLocalIdentityModal = address => {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
+  handleBeaconOptIn = () => {
+    localStorage.setItem(HELPSCOUT_BEACON, '1')
+    this.setState({ beaconOptedIn: true })
+  }
 
   render() {
     const {
@@ -357,6 +367,7 @@ class App extends React.Component {
       appIdentifiers,
       appsStatus,
       balance,
+      beaconOptedIn,
       canUpgradeOrg,
       connected,
       daoAddress,
@@ -472,6 +483,8 @@ class App extends React.Component {
                     walletProviderId={walletProviderId}
                   />
                 </div>
+
+                <Beacon load={beaconOptedIn} onOptIn={this.handleBeaconOptIn} />
               </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>
