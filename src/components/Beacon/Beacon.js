@@ -111,23 +111,70 @@ const ToggleDialogueButton = ({ open, onToggle }) => {
         margin-top: ${2 * GU}px;
       `}
     >
-      {open ? (
-        <IconClose
-          color={theme.gradientText}
-          css={`
-            width: auto;
-            height: 22px;
+      <Transition
+        native
+        items={open}
+        from={{ opacity: 0, enterProgress: 0 }}
+        enter={{ opacity: 1, enterProgress: 1 }}
+        leave={{ opacity: 0, enterProgress: 1 }}
+        config={springs.smooth}
+      >
+        {show =>
+          show &&
+          /* eslint-disable react/prop-types */
+          (({ opacity, enterProgress }) => (
+            <AnimatedDiv
+              style={{
+                opacity,
+                transform: enterProgress.interpolate(
+                  v => `rotate(${45 * (1 - v)}deg)`
+                ),
+              }}
+            >
+              <IconClose
+                color={theme.gradientText}
+                css={`
+                  width: auto;
+                  height: 22px;
 
-            & path {
-              fill: ${theme.gradientText};
-              transform: scale(2.2);
-              opacity: 1;
-            }
-          `}
-        />
-      ) : (
-        <IconQuestion />
-      )}
+                  & path {
+                    fill: ${theme.gradientText};
+                    transform: scale(2.2);
+                    opacity: 1;
+                  }
+                `}
+              />
+            </AnimatedDiv>
+          ))
+        }
+      </Transition>
+      <Transition
+        native
+        items={!open}
+        from={{ opacity: 0, enterProgress: 0 }}
+        enter={{ opacity: 1, enterProgress: 1 }}
+        leave={{ opacity: 0, enterProgress: 1 }}
+        config={springs.smooth}
+      >
+        {show =>
+          show &&
+          /* eslint-disable react/prop-types */
+          (({ opacity, enterProgress }) => (
+            <AnimatedDiv
+              style={{
+                opacity,
+                transform: enterProgress.interpolate(
+                  v => `
+                    scale3d(${1 - (1 - v) * 0.03}, ${1 - (1 - v) * 0.03}, 1)
+                  `
+                ),
+              }}
+            >
+              <IconQuestion />
+            </AnimatedDiv>
+          ))
+        }
+      </Transition>
     </RoundButton>
   )
 }
@@ -252,6 +299,11 @@ const RoundButton = styled(Button).attrs({ mode: 'strong' })`
   display: flex;
   align-items: center;
   justify-content: center;
+`
+
+const AnimatedDiv = styled(animated.div)`
+  display: flex;
+  position: absolute;
 `
 
 export { HELPSCOUT_BEACON }
