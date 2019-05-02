@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Transition, animated } from 'react-spring'
 import { Helmet } from 'react-helmet'
-import { Button, IconClose, breakpoint, theme } from '@aragon/ui'
+import { Button, IconClose, breakpoint, springs, theme } from '@aragon/ui'
 import { GU } from '../../utils'
 import IconQuestion from './IconQuestion'
 import logo from './logo.png'
@@ -57,10 +58,43 @@ Beacon.defaultProps = {
 const HelpOptIn = React.memo(({ onOptIn }) => {
   const [mode, setMode] = React.useState(CLOSED)
 
-  return mode === CLOSED ? (
-    <OpenDialogueButton onClick={() => setMode(OPENED)} />
-  ) : (
-    <OptInDialogue onClose={() => setMode(CLOSED)} onOptIn={onOptIn} />
+  return (
+    <React.Fragment>
+      <Transition
+        native
+        items={mode === OPENED}
+        from={{ opacity: 0, enterProgress: 0, blocking: false }}
+        enter={{ opacity: 1, enterProgress: 1, blocking: true }}
+        leave={{ opacity: 0, enterProgress: 1, blocking: false }}
+        config={springs.smooth}
+      >
+        {show =>
+          show &&
+          /* eslint-disable react/prop-types */
+          (({ opacity, enterProgress, blocking }) => (
+            <OptInDialogue
+              style={{
+                pointerEvents: blocking ? 'auto' : 'none',
+                opacity,
+                transform: enterProgress.interpolate(
+                  v => `
+                  translate3d(0, ${(1 - v) * 10}px, 0)
+                  scale3d(${1 - (1 - v) * 0.03}, ${1 - (1 - v) * 0.03}, 1)
+                `
+                ),
+              }}
+              onClose={() => setMode(CLOSED)}
+              onOptIn={onOptIn}
+            />
+          ))
+        /* eslint-enable react/prop-types */
+        }
+      </Transition>
+      <ToggleDialogueButton
+        open={mode === OPENED}
+        onToggle={() => setMode(mode === OPENED ? CLOSED : OPENED)}
+      />
+    </React.Fragment>
   )
 })
 
@@ -68,21 +102,44 @@ HelpOptIn.propTypes = {
   onOptIn: PropTypes.func.isRequired,
 }
 
-const OpenDialogueButton = React.memo(({ onClick }) => {
+const ToggleDialogueButton = ({ open, onToggle }) => {
   return (
-    <RoundButton onClick={onClick}>
-      <IconQuestion />
+    <RoundButton
+      onClick={onToggle}
+      css={`
+        margin-left: calc(100% - 60px);
+        margin-top: ${2 * GU}px;
+      `}
+    >
+      {open ? (
+        <IconClose
+          color={theme.gradientText}
+          css={`
+            width: auto;
+            height: 22px;
+
+            & path {
+              fill: ${theme.gradientText};
+              transform: scale(2.2);
+              opacity: 1;
+            }
+          `}
+        />
+      ) : (
+        <IconQuestion />
+      )}
     </RoundButton>
   )
-})
-
-OpenDialogueButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
 }
 
-const OptInDialogue = React.memo(({ onClose, onOptIn }) => {
+ToggleDialogueButton.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onToggle: PropTypes.func.isRequired,
+}
+
+const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
   return (
-    <React.Fragment>
+    <animated.div {...styles}>
       <aside
         css={`
           background: #fff;
@@ -91,7 +148,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn }) => {
           border-radius: 3px;
           width: 100vw;
           position: absolute;
-          top: calc(-100vh + 82px);
+          top: calc(-100vh + 86px);
           left: calc(-100vw + 80px);
           height: 100vh;
           z-index: 1;
@@ -176,29 +233,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn }) => {
           </Button>
         </main>
       </aside>
-      <RoundButton
-        css={`
-          z-index: 2;
-          margin-left: calc(100% - 60px);
-          margin-top: ${1.5 * GU}px;
-        `}
-        onClick={onClose}
-      >
-        <IconClose
-          color={theme.gradientText}
-          css={`
-            width: auto;
-            height: 22px;
-
-            & path {
-              fill: ${theme.gradientText};
-              transform: scale(2.2);
-              opacity: 1;
-            }
-          `}
-        />
-      </RoundButton>
-    </React.Fragment>
+    </animated.div>
   )
 })
 
