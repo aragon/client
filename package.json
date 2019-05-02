@@ -21,7 +21,7 @@
   ],
   "author": "Aragon Institution MTU <contact@aragon.one>",
   "dependencies": {
-    "@aragon/templates-tokens": "^1.2.0",
+    "@aragon/templates-tokens": "^1.2.1",
     "@aragon/ui": "^0.37.0",
     "@aragon/wrapper": "^5.0.0-rc.5",
     "@babel/polyfill": "^7.0.0",
