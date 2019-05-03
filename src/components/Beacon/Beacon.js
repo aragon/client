@@ -3,7 +3,14 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import { Helmet } from 'react-helmet'
-import { Button, IconClose, breakpoint, springs, theme } from '@aragon/ui'
+import {
+  Button,
+  IconClose,
+  SafeLink,
+  breakpoint,
+  springs,
+  theme,
+} from '@aragon/ui'
 import { GU } from '../../utils'
 import IconQuestion from './IconQuestion'
 import logo from './logo.png'
@@ -21,15 +28,16 @@ const Beacon = React.memo(({ optedIn = false, onOptIn }) => {
     <div
       css={`
         position: absolute;
-        z-index: 10000;
-        bottom: 10px;
-        right: 20px;
+        bottom: ${2 * GU}px;
+        right: ${2 * GU}px;
+        z-index: 1001;
 
         ${breakpoint(
           'medium',
           `
-            bottom: 40px;
-            right: 40px;
+            z-index: 10000;
+            bottom: ${3 * GU}px;
+            right: ${3 * GU}px;
           `
         )}
       `}
@@ -38,7 +46,32 @@ const Beacon = React.memo(({ optedIn = false, onOptIn }) => {
         <Helmet>
           <script type="text/javascript">{BEACON_EMBED}</script>
           <script type="text/javascript">{BEACON_INIT}</script>
-          <style>{`.BeaconFabButtonFrame{display: none;}`}</style>
+          <style>
+            {`
+              .BeaconFabButtonFrame,
+              .c-BeaconCloseButton,
+              #beacon-container .Beacon div:first-of-type {
+                display: none !important;
+              }
+              #beacon-container .BeaconContainer {
+                height: calc(100vh - 90px - 48px) !important;
+                max-height: calc(100vh - 90px - 48px) !important;
+                width: calc(100vw - 32px) !important;
+                top: ${6 * GU}px !important;
+                left: ${2 * GU}px !important;
+              }
+              @media (min-width: 768px) {
+                #beacon-container .BeaconContainer {
+                  height: 600px !important;
+                  width: 350px !important;
+                  top: unset !important;
+                  left: unset !important;
+                  bottom: 100px !important;
+                  right: ${3 * GU}px !important;
+                }
+              }
+            `}
+          </style>
         </Helmet>
       )}
       <HelpOptIn onOptIn={onOptIn} optedIn={optedIn} />
@@ -67,8 +100,14 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
   })
   const handleOptIn = React.useCallback(() => {
     onOptIn()
-    setTimeout(() => window.Beacon('open'), 0)
+    setTimeout(() => window.Beacon('open'), 100)
   })
+  React.useEffect(() => {
+    if (optedIn && window.Beacon) {
+      window.Beacon('on', 'open', () => setMode(OPENED))
+      window.Beacon('on', 'close', () => setMode(CLOSED))
+    }
+  }, [optedIn, window.Beacon])
 
   return (
     <React.Fragment>
@@ -78,7 +117,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
           items={mode === OPENED}
           from={{ opacity: 0, enterProgress: 0, blocking: false }}
           enter={{ opacity: 1, enterProgress: 1, blocking: true }}
-          leave={{ opacity: 0, enterProgress: 1, blocking: false }}
+          leave={{ opacity: 0, enterProgress: 0, blocking: false }}
           config={springs.smooth}
         >
           {show =>
@@ -91,9 +130,8 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
                   opacity,
                   transform: enterProgress.interpolate(
                     v => `
-                  translate3d(0, ${(1 - v) * 10}px, 0)
-                  scale3d(${1 - (1 - v) * 0.03}, ${1 - (1 - v) * 0.03}, 1)
-                `
+                      translate3d(0, ${(1 - v) * 20}px, 0)
+                    `
                   ),
                 }}
                 onClose={handleClose}
@@ -205,18 +243,28 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
           border: 1px solid rgba(209, 209, 209, 0.5);
           box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
           border-radius: 3px;
-          width: 100vw;
+          width: calc(100vw - ${4 * GU}px);
           position: absolute;
-          top: calc(-100vh + 86px);
-          left: calc(-100vw + 80px);
-          height: 100vh;
+          bottom: 100%;
+          /* zeroY is relative to beacon container full viewport height
+           * minus 4 GUs (64px) top plus the relative position of zeroY to the
+           * edge of the viewport (60px) plus one GU for margin (16px) */
+          top: calc(-100vh + 140px);
+          /* zeroX is relative to beacon container full viewport width
+           * minus 2 GUs on each side (32px) plus the position of zeroX
+           * relative to the edge of the viewport (60px) */
+          left: calc(-100vw + 92px);
           z-index: 1;
+          display: flex;
+          flex-direction: column;
+          height: calc(100vh - 60px - ${2 * GU}px - ${4 * GU}px - ${4 * GU}px);
+          overflow: hidden;
 
           ${breakpoint(
             'medium',
             `
-              width: 278px;
-              height: unset;
+              width: 350px;
+              height: 600px;
               position: unset;
             `
           )}
@@ -224,7 +272,10 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
       >
         <header
           css={`
-            height: 157px;
+            border-top-right-radius: 2px;
+            border-top-left-radius: 2px;
+            height: 150px;
+            min-height: 150px;
             background-color: transparent;
             background-image: linear-gradient(
               180deg,
@@ -256,40 +307,60 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
         </header>
         <main
           css={`
+            display: flex;
+            flex: 1;
             padding: ${2 * GU}px;
-            display: grid;
-            grid-gap: ${2 * GU}px;
-            line-height: 22px;
-            font-size: 13px;
+            overflow: auto;
           `}
         >
-          <h3
+          <div
             css={`
-              font-weight: bold;
-              font-size: 16px;
-            `}
-          >
-            We do not track our users’ data
-          </h3>
-          <p>
-            We want to provide you with the best experience and assist you in
-            using our product.
-          </p>
-          <p>
-            You can use this Help button to find information from our Wiki or
-            ask questions directly to a member of our team.
-          </p>
-          <Button
-            mode="strong"
-            wide
-            onClick={onOptIn}
-            css={`
-              margin-top: ${1 * GU}px;
+              min-height: 350px;
+              line-height: 22px;
               font-size: 15px;
+              display: flex;
+              flex-direction: column;
+              flex: 1;
+              justify-content: space-around;
             `}
           >
-            Yes, Id like help
-          </Button>
+            <h3
+              css={`
+                font-weight: bold;
+                font-size: 18px;
+              `}
+            >
+              We need your consent.
+            </h3>
+            <p>
+              We want to assist you in using the product, providing help and
+              answers to common questions.
+            </p>
+            <p>
+              For that, we use a third-party system called{' '}
+              <StyledSafeLink href="https://www.helpscout.com/">
+                Help Scout
+              </StyledSafeLink>
+              . If you opt-in, we will load a third-party program into Aragon.
+              <br />
+              Help Scout is a{' '}
+              <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
+                Public Benefit Corp
+              </StyledSafeLink>
+              .
+            </p>
+            <Button
+              mode="strong"
+              wide
+              onClick={onOptIn}
+              css={`
+                margin-top: ${1 * GU}px;
+                font-size: 15px;
+              `}
+            >
+              Yes, Id like help
+            </Button>
+          </div>
         </main>
       </aside>
     </animated.div>
@@ -300,6 +371,16 @@ OptInDialogue.propTypes = {
   onClose: PropTypes.func.isRequired,
   onOptIn: PropTypes.func.isRequired,
 }
+
+const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
+  text-decoration: none;
+  color: ${theme.accent};
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+`
 
 const RoundButton = styled(Button).attrs({ mode: 'strong' })`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
