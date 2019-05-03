@@ -16,12 +16,12 @@ const BEACON_INIT =
 const CLOSED = 'closed, user can open opt-in dialogue'
 const OPENED = 'opened, user can opt-in or close'
 
-const Beacon = React.memo(({ load = false, onOptIn }) => {
+const Beacon = React.memo(({ optedIn = false, onOptIn }) => {
   return (
     <div
       css={`
         position: absolute;
-        z-index: 1001;
+        z-index: 10000;
         bottom: 10px;
         right: 20px;
 
@@ -34,20 +34,20 @@ const Beacon = React.memo(({ load = false, onOptIn }) => {
         )}
       `}
     >
-      {load ? (
+      {optedIn && (
         <Helmet>
           <script type="text/javascript">{BEACON_EMBED}</script>
           <script type="text/javascript">{BEACON_INIT}</script>
+          <style>{`.BeaconFabButtonFrame{display: none;}`}</style>
         </Helmet>
-      ) : (
-        <HelpOptIn onOptIn={onOptIn} />
       )}
+      <HelpOptIn onOptIn={onOptIn} optedIn={optedIn} />
     </div>
   )
 })
 
 Beacon.propTypes = {
-  load: PropTypes.bool,
+  optedIn: PropTypes.bool,
   onOptIn: PropTypes.func.isRequired,
 }
 
@@ -55,51 +55,63 @@ Beacon.defaultProps = {
   load: false,
 }
 
-const HelpOptIn = React.memo(({ onOptIn }) => {
+const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
   const [mode, setMode] = React.useState(CLOSED)
+
+  const handleClose = React.useCallback(() => setMode(CLOSED))
+  const handleToggle = React.useCallback(() => {
+    setMode(mode === CLOSED ? OPENED : CLOSED)
+    if (optedIn) {
+      window.Beacon('toggle')
+    }
+  })
+  const handleOptIn = React.useCallback(() => {
+    onOptIn()
+    setTimeout(() => window.Beacon('open'), 0)
+  })
 
   return (
     <React.Fragment>
-      <Transition
-        native
-        items={mode === OPENED}
-        from={{ opacity: 0, enterProgress: 0, blocking: false }}
-        enter={{ opacity: 1, enterProgress: 1, blocking: true }}
-        leave={{ opacity: 0, enterProgress: 1, blocking: false }}
-        config={springs.smooth}
-      >
-        {show =>
-          show &&
-          /* eslint-disable react/prop-types */
-          (({ opacity, enterProgress, blocking }) => (
-            <OptInDialogue
-              style={{
-                pointerEvents: blocking ? 'auto' : 'none',
-                opacity,
-                transform: enterProgress.interpolate(
-                  v => `
+      {!optedIn && (
+        <Transition
+          native
+          items={mode === OPENED}
+          from={{ opacity: 0, enterProgress: 0, blocking: false }}
+          enter={{ opacity: 1, enterProgress: 1, blocking: true }}
+          leave={{ opacity: 0, enterProgress: 1, blocking: false }}
+          config={springs.smooth}
+        >
+          {show =>
+            show &&
+            /* eslint-disable react/prop-types */
+            (({ opacity, enterProgress, blocking }) => (
+              <OptInDialogue
+                style={{
+                  pointerEvents: blocking ? 'auto' : 'none',
+                  opacity,
+                  transform: enterProgress.interpolate(
+                    v => `
                   translate3d(0, ${(1 - v) * 10}px, 0)
                   scale3d(${1 - (1 - v) * 0.03}, ${1 - (1 - v) * 0.03}, 1)
                 `
-                ),
-              }}
-              onClose={() => setMode(CLOSED)}
-              onOptIn={onOptIn}
-            />
-          ))
-        /* eslint-enable react/prop-types */
-        }
-      </Transition>
-      <ToggleDialogueButton
-        open={mode === OPENED}
-        onToggle={() => setMode(mode === OPENED ? CLOSED : OPENED)}
-      />
+                  ),
+                }}
+                onClose={handleClose}
+                onOptIn={handleOptIn}
+              />
+            ))
+          /* eslint-enable react/prop-types */
+          }
+        </Transition>
+      )}
+      <ToggleDialogueButton open={mode === OPENED} onToggle={handleToggle} />
     </React.Fragment>
   )
 })
 
 HelpOptIn.propTypes = {
   onOptIn: PropTypes.func.isRequired,
+  optedIn: PropTypes.bool.isRequired,
 }
 
 const ToggleDialogueButton = ({ open, onToggle }) => {
