@@ -484,7 +484,10 @@ class App extends React.Component {
                   />
                 </div>
 
-                <Beacon load={beaconOptedIn} onOptIn={this.handleBeaconOptIn} />
+                <Beacon
+                  optedIn={beaconOptedIn}
+                  onOptIn={this.handleBeaconOptIn}
+                />
               </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>
