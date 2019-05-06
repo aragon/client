@@ -84,11 +84,13 @@ const LocalIdentities = React.memo(
       <React.Fragment>
         <Headers>
           <div>
-            <Checkbox
-              checked={allSelected}
-              onChange={handleToggleAllSelectedChange}
-              indeterminate={!allSelected && someSelected}
-            />
+            {!iOS && (
+              <Checkbox
+                checked={allSelected}
+                onChange={handleToggleAllSelectedChange}
+                indeterminate={!allSelected && someSelected}
+              />
+            )}
             Custom label
           </div>
           <div>Address</div>
@@ -97,10 +99,12 @@ const LocalIdentities = React.memo(
           {identities.map(({ address, name }) => (
             <Item key={address}>
               <Label>
-                <Checkbox
-                  checked={addressSelected.get(address)}
-                  onChange={handleToggleAddressSelected(address)}
-                />
+                {!iOS && (
+                  <Checkbox
+                    checked={addressSelected.get(address)}
+                    onChange={handleToggleAddressSelected(address)}
+                  />
+                )}
                 {name}
               </Label>
               <div>
