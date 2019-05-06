@@ -60,9 +60,13 @@ const LocalIdentities = React.memo(
     const allSelected = Array.from(addressSelected.values()).every(v => v)
     const someSelected = Array.from(addressSelected.values()).some(v => v)
     const handleToggleAllSelectedChange = () => {
-      const selected = allSelected || someSelected ? false : true
       setAddressSelected(
-        new Map(identities.map(({ address }) => [address, selected]))
+        new Map(
+          identities.map(({ address }) => [
+            address,
+            !(allSelected || someSelected),
+          ])
+        )
       )
     }
     const handleToggleAddressSelected = address => () =>
