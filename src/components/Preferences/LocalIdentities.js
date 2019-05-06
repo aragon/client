@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { format } from 'date-fns'
 import {
   Button,
+  Checkbox,
   IconCross,
   IdentityBadge,
   Info,
@@ -55,22 +56,57 @@ const LocalIdentities = ({
       /* nothing was updated */
     }
   }
-  const downloadHref = window.URL.createObjectURL(
-    new Blob([JSON.stringify(identities)], { type: 'text/json' })
-  )
   // standard: https://en.wikipedia.org/wiki/ISO_8601
   const today = format(Date.now(), 'yyyy-MM-dd')
+  const [addressSelected, setAddressSelected] = React.useState(
+    new Map(identities.map(({ address }) => [address, true]))
+  )
+  const allSelected = Array.from(addressSelected.values()).every(v => v)
+  const someSelected = Array.from(addressSelected.values()).some(v => v)
+  const handleToggleAllSelectedChange = () => {
+    const selected = allSelected || someSelected ? false : true
+    setAddressSelected(
+      new Map(identities.map(({ address }) => [address, selected]))
+    )
+  }
+  const handleToggleAddressSelected = address => () =>
+    setAddressSelected(
+      new Map([...addressSelected, [address, !addressSelected.get(address)]])
+    )
+  const downloadHref = window.URL.createObjectURL(
+    new Blob(
+      [
+        JSON.stringify(
+          identities.filter(({ address }) => addressSelected.get(address))
+        ),
+      ],
+      { type: 'text/json' }
+    )
+  )
 
   return (
     <React.Fragment>
       <Headers>
-        <div>Custom label</div>
+        <div>
+          <Checkbox
+            checked={allSelected}
+            onChange={handleToggleAllSelectedChange}
+            indeterminate={!allSelected && someSelected}
+          />
+          Custom label
+        </div>
         <div>Address</div>
       </Headers>
       <List>
         {identities.map(({ address, name }) => (
           <Item key={address}>
-            <Label>{name}</Label>
+            <Label>
+              <Checkbox
+                checked={addressSelected.get(address)}
+                onChange={handleToggleAddressSelected(address)}
+              />
+              {name}
+            </Label>
             <div>
               <IdentityBadge
                 entity={address}
@@ -91,7 +127,8 @@ const LocalIdentities = ({
             label="Export labels"
             mode="secondary"
             download={`aragon-labels_${dao}_${today}.json`}
-            href={downloadHref}
+            href={someSelected ? downloadHref : undefined}
+            disabled={!someSelected}
           >
             Export
           </StyledExport>
