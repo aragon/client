@@ -167,7 +167,7 @@ const Label = styled.div`
   text-overflow: ellipsis;
 `
 
-const Warning = () => (
+const Warning = React.memo(() => (
   <StyledInfoAction title="All labels are local to your device">
     <div>
       Any labels you add or import will only be shown on this device, and not
@@ -175,7 +175,7 @@ const Warning = () => (
       or users, you will need to export them and share the .json file
     </div>
   </StyledInfoAction>
-)
+))
 
 const StyledExport = styled(Button.Anchor)`
   margin: 0 24px 24px;

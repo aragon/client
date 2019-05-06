@@ -24,7 +24,7 @@ import LocalIdentitiesComponent from './LocalIdentities'
 
 const TABS = ['Manage labels']
 
-const Preferences = ({ dao, onClose, smallView, wrapper }) => {
+const Preferences = React.memo(({ dao, onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
   const [localIdentities, setLocalIdentities] = React.useState({})
@@ -98,7 +98,7 @@ const Preferences = ({ dao, onClose, smallView, wrapper }) => {
       </Section>
     </AppView>
   )
-}
+})
 
 Preferences.propTypes = {
   dao: PropTypes.string.isRequired,
@@ -107,7 +107,7 @@ Preferences.propTypes = {
   wrapper: AragonType,
 }
 
-const AnimatedPreferences = ({ opened, ...props }) => {
+const AnimatedPreferences = React.memo(({ opened, ...props }) => {
   const { below } = useViewport()
   const smallView = below('medium')
 
@@ -144,7 +144,7 @@ const AnimatedPreferences = ({ opened, ...props }) => {
       }
     </Transition>
   )
-}
+})
 
 AnimatedPreferences.propTypes = {
   opened: PropTypes.bool,
