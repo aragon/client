@@ -125,8 +125,8 @@ const AnimatedPreferences = ({ opened, ...props }) => {
         /* eslint-disable react/prop-types */
         (({ opacity, enterProgress, blocking }) => (
           <AnimatedWrap
-            smallView={smallView}
             style={{
+              zIndex: smallView ? 2 : 5,
               pointerEvents: blocking ? 'auto' : 'none',
               opacity,
               transform: enterProgress.interpolate(
@@ -137,7 +137,7 @@ const AnimatedPreferences = ({ opened, ...props }) => {
               ),
             }}
           >
-            <Preferences {...props} />
+            <Preferences {...props} smallView={smallView} />
           </AnimatedWrap>
         ))
       /* eslint-enable react/prop-types */
@@ -157,7 +157,6 @@ const AnimatedWrap = styled(animated.div)`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: ${({ smallView }) => (smallView ? 2 : 5)};
   min-width: 320px;
 `
 
