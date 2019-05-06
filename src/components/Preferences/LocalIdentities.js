@@ -41,7 +41,10 @@ const LocalIdentities = React.memo(
     const { showLocalIdentityModal } = React.useContext(
       LocalIdentityModalContext
     )
-    const updateLabel = address => async () => {
+    const [addressesSelected, setAddressesSelected] = React.useState(
+      new Map(identities.map(({ address }) => [address, true]))
+    )
+    const updateLabel = React.useCallback(address => async () => {
       try {
         await showLocalIdentityModal(address)
         // preferences get all
@@ -51,16 +54,11 @@ const LocalIdentities = React.memo(
       } catch (e) {
         /* nothing was updated */
       }
-    }
-    // standard: https://en.wikipedia.org/wiki/ISO_8601
-    const today = format(Date.now(), 'yyyy-MM-dd')
-    const [addressSelected, setAddressSelected] = React.useState(
-      new Map(identities.map(({ address }) => [address, true]))
-    )
-    const allSelected = Array.from(addressSelected.values()).every(v => v)
-    const someSelected = Array.from(addressSelected.values()).some(v => v)
-    const handleToggleAllSelectedChange = () => {
-      setAddressSelected(
+    })
+    const allSelected = Array.from(addressesSelected.values()).every(v => v)
+    const someSelected = Array.from(addressesSelected.values()).some(v => v)
+    const handleToggleAllSelectedChange = React.useCallback(() => {
+      setAddressesSelected(
         new Map(
           identities.map(({ address }) => [
             address,
@@ -68,16 +66,22 @@ const LocalIdentities = React.memo(
           ])
         )
       )
-    }
-    const handleToggleAddressSelected = address => () =>
-      setAddressSelected(
-        new Map([...addressSelected, [address, !addressSelected.get(address)]])
+    })
+    const handleToggleAddressesSelected = React.useCallback(address => () =>
+      setAddressesSelected(
+        new Map([
+          ...addressesSelected,
+          [address, !addressesSelected.get(address)],
+        ])
       )
+    )
+    // standard: https://en.wikipedia.org/wiki/ISO_8601
+    const today = format(Date.now(), 'yyyy-MM-dd')
     const downloadHref = window.URL.createObjectURL(
       new Blob(
         [
           JSON.stringify(
-            identities.filter(({ address }) => addressSelected.get(address))
+            identities.filter(({ address }) => addressesSelected.get(address))
           ),
         ],
         { type: 'text/json' }
@@ -105,8 +109,8 @@ const LocalIdentities = React.memo(
               <Label>
                 {!iOS && (
                   <Checkbox
-                    checked={addressSelected.get(address)}
-                    onChange={handleToggleAddressSelected(address)}
+                    checked={addressesSelected.get(address)}
+                    onChange={handleToggleAddressesSelected(address)}
                   />
                 )}
                 {name}
