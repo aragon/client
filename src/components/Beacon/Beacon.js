@@ -18,10 +18,12 @@ import logo from './logo.png'
 const HELPSCOUT_BEACON = 'helpscout-beacon'
 const BEACON_EMBED =
   '!function(e,t,n){function a(){var e=t.getElementsByTagName("script")[0],n=t.createElement("script");n.type="text/javascript",n.async=!0,n.src="https://beacon-v2.helpscout.net",e.parentNode.insertBefore(n,e)}if(e.Beacon=n=function(t,n,a){e.Beacon.readyQueue.push({method:t,options:n,data:a})},n.readyQueue=[],"complete"===t.readyState)return a();e.attachEvent?e.attachEvent("onload",a):e.addEventListener("load",a,!1)}(window,document,window.Beacon||function(){});'
-const BEACON_INIT =
-  "window.Beacon('init', '163e0284-762b-4e2d-b3b3-70a73a7e6c9f')"
+const HELPSCOUT_ID = "'163e0284-762b-4e2d-b3b3-70a73a7e6c9f'"
+const BEACON_INIT = "window.Beacon('init'," + HELPSCOUT_ID + ')'
 const CLOSED = 'closed, user can open opt-in dialogue'
 const OPENED = 'opened, user can opt-in or close'
+const OPENING = 'opening'
+const CLOSING = 'closing'
 
 const Beacon = React.memo(({ optedIn = false, onOptIn }) => {
   return (
@@ -85,18 +87,22 @@ Beacon.propTypes = {
 }
 
 Beacon.defaultProps = {
-  load: false,
+  optedIn: false,
 }
 
 const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
   const [mode, setMode] = React.useState(CLOSED)
-
   const handleClose = React.useCallback(() => setMode(CLOSED))
   const handleToggle = React.useCallback(() => {
-    setMode(mode === CLOSED ? OPENED : CLOSED)
+    if (mode !== OPENING && mode !== CLOSING) {
+      setMode(mode === CLOSED ? OPENING : CLOSING)
+    }
     if (optedIn) {
       window.Beacon('toggle')
     }
+  })
+  const handleToggleEnd = React.useCallback(() => {
+    setMode(mode === OPENING ? OPENED : CLOSED)
   })
   const handleOptIn = React.useCallback(() => {
     onOptIn()
@@ -114,10 +120,11 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
       {!optedIn && (
         <Transition
           native
-          items={mode === OPENED}
+          items={mode === OPENING || mode === OPENED}
           from={{ opacity: 0, enterProgress: 0, blocking: false }}
           enter={{ opacity: 1, enterProgress: 1, blocking: true }}
           leave={{ opacity: 0, enterProgress: 0, blocking: false }}
+          onDestroyed={handleToggleEnd}
           config={springs.smooth}
         >
           {show =>
@@ -142,7 +149,10 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
           }
         </Transition>
       )}
-      <ToggleDialogueButton open={mode === OPENED} onToggle={handleToggle} />
+      <ToggleDialogueButton
+        open={mode === OPENED || mode === OPENING}
+        onToggle={handleToggle}
+      />
     </React.Fragment>
   )
 })
