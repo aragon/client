@@ -23,6 +23,7 @@ const EmptyLocalIdentities = ({ onImport }) => (
           entity={getEmptyAddress()}
           customLabel="Address badge"
           compact
+          badgeOnly
         />
       </span>
       anywhere in the app, or importing a .json file with labels by clicking
