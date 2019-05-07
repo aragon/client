@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { EthIdenticon, IdentityBadge, breakpoint } from '@aragon/ui'
+import { IdentityBadge, breakpoint } from '@aragon/ui'
 import { getEmptyAddress } from '../../web3-utils'
 import Import from './Import'
 
@@ -15,21 +15,15 @@ const EmptyLocalIdentities = ({ onImport }) => (
           display: inline-flex;
           margin-right: 2px;
           vertical-align: text-bottom;
+          position: relative;
+          top: 3px;
         `}
       >
-        <EthIdenticon
-          address={getEmptyAddress()}
-          css={`
-            position: relative;
-            z-index: 1;
-            height: 22px;
-            overflow: hidden;
-            border-top-left-radius: 3px;
-            border-bottom-left-radius: 3px;
-            left: 2px;
-          `}
+        <IdentityBadge
+          entity={getEmptyAddress()}
+          customLabel="Address badge"
+          compact
         />
-        <IdentityBadge entity="Address badge" />
       </span>
       anywhere in the app, or importing a .json file with labels by clicking
       "Import" below.
