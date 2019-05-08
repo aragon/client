@@ -212,58 +212,8 @@ ToggleDialogueButton.propTypes = {
 const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
   return (
     <animated.div {...styles}>
-      <aside
-        css={`
-          background: #fff;
-          border: 1px solid rgba(209, 209, 209, 0.5);
-          box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-          border-radius: 3px;
-          width: calc(100vw - ${4 * GU}px);
-          position: absolute;
-          bottom: 100%;
-          /* zeroY is relative to beacon container full viewport height
-           * minus 4 GUs (64px) top plus the relative position of zeroY to the
-           * edge of the viewport (60px) plus one GU for margin (16px) */
-          top: calc(-100vh + 140px);
-          /* zeroX is relative to beacon container full viewport width
-           * minus 2 GUs on each side (32px) plus the position of zeroX
-           * relative to the edge of the viewport (60px) */
-          left: calc(-100vw + 92px);
-          z-index: 1;
-          display: flex;
-          flex-direction: column;
-          height: calc(100vh - 60px - ${2 * GU}px - ${4 * GU}px - ${4 * GU}px);
-          overflow: hidden;
-
-          ${breakpoint(
-            'medium',
-            `
-              width: 350px;
-              height: 600px;
-              position: unset;
-            `
-          )}
-        `}
-      >
-        <header
-          css={`
-            border-top-right-radius: 2px;
-            border-top-left-radius: 2px;
-            height: 150px;
-            min-height: 150px;
-            background-color: transparent;
-            background-image: linear-gradient(
-              180deg,
-              ${theme.gradientStart},
-              ${theme.gradientEnd}
-            )};
-            color: ${theme.gradientText}
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-          `}
-        >
+      <Wrapper>
+        <Header>
           <h2
             css={`
               font-size: 18px;
@@ -279,7 +229,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
             src={logo}
             alt="Aragon logo"
           />
-        </header>
+        </Header>
         <main
           css={`
             display: flex;
@@ -288,17 +238,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
             overflow: auto;
           `}
         >
-          <div
-            css={`
-              min-height: 350px;
-              line-height: 22px;
-              font-size: 15px;
-              display: flex;
-              flex-direction: column;
-              flex: 1;
-              justify-content: space-around;
-            `}
-          >
+          <Body>
             <h3
               css={`
                 font-weight: bold;
@@ -335,9 +275,9 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
             >
               Yes, I'd like help
             </Button>
-          </div>
+          </Body>
         </main>
-      </aside>
+      </Wrapper>
     </animated.div>
   )
 })
@@ -346,6 +286,66 @@ OptInDialogue.propTypes = {
   onClose: PropTypes.func.isRequired,
   onOptIn: PropTypes.func.isRequired,
 }
+
+const Wrapper = styled.aside`
+  background: #fff;
+  border: 1px solid rgba(209, 209, 209, 0.5);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  width: calc(100vw - ${4 * GU}px);
+  position: absolute;
+  bottom: 100%;
+  /* zeroY is relative to beacon container full viewport height
+  * minus 4 GUs (64px) top plus the relative position of zeroY to the
+  * edge of the viewport (60px) plus one GU for margin (16px) */
+  top: calc(-100vh + 140px);
+  /* zeroX is relative to beacon container full viewport width
+  * minus 2 GUs on each side (32px) plus the position of zeroX
+  * relative to the edge of the viewport (60px) */
+  left: calc(-100vw + 92px);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px - ${2 * GU}px - ${4 * GU}px - ${4 * GU}px);
+  overflow: hidden;
+
+  ${breakpoint(
+    'medium',
+    `
+      width: 350px;
+      height: 600px;
+      position: unset;
+    `
+  )}
+`
+
+const Header = styled.header`
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+  height: 150px;
+  min-height: 150px;
+  background-color: transparent;
+  background-image: linear-gradient(
+    180deg,
+    ${theme.gradientStart},
+    ${theme.gradientEnd}
+  );
+  color: ${theme.gradientText};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`
+
+const Body = styled.div`
+  min-height: 350px;
+  line-height: 22px;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-around;
+`
 
 const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
   text-decoration: none;
