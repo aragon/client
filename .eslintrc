@@ -19,12 +19,14 @@
     },
     "sourceType": "module"
   },
-  "plugins": ["prettier", "react", "import", "promise"],
+  "plugins": ["prettier", "react", "react-hooks", "import", "promise"],
   "rules": {
+    "react/prop-types": 'warn',
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "import/no-unresolved": ["error", { ignore: ["^react(-dom)?$", "^styled-components$"] }],
     "promise/no-nesting": ["off"],
     "valid-jsdoc": "error",
-    "react/prop-types": 'warn',
     "linebreak-style": ["error", "unix"],
   },
   "settings": {
