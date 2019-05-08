@@ -20,7 +20,7 @@ import { ModalProvider } from './components/ModalManager/ModalManager'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
-import Beacon from './components/Beacon/Beacon'
+import HelpScoutBeacon from './components/HelpScoutBeacon/HelpScoutBeacon'
 import { isKnownRepo } from './repo-utils'
 import {
   APP_MODE_START,
@@ -474,7 +474,7 @@ class App extends React.Component {
                   />
                 </div>
 
-                <Beacon />
+                <HelpScoutBeacon />
               </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>
