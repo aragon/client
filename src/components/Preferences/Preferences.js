@@ -52,7 +52,7 @@ const Preferences = React.memo(({ dao, onClose, smallView, wrapper }) => {
     if (!wrapper) {
       return
     }
-    setLocalIdentities({})
+    await wrapper.clearLocalIdentities()
     for (const { name, address } of list) {
       await wrapper.modifyAddressIdentity(address, { name })
     }
