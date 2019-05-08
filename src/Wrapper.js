@@ -12,6 +12,7 @@ import CombinedPanel from './components/MenuPanel/CombinedPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
+import AppLoader from './components/App/AppLoader'
 import { IdentityConsumer } from './components/IdentityManager/IdentityManager'
 import {
   AppType,
@@ -23,9 +24,8 @@ import {
   RepoType,
 } from './prop-types'
 import { getAppPath } from './routing'
-import { APPS_STATUS_LOADING } from './symbols'
+import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-import ethereumLoadingAnimation from './assets/ethereum-loading.svg'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -283,10 +283,15 @@ class Wrapper extends React.PureComponent {
     } = this.props
 
     const {
+      appLoading,
       menuPanelOpened,
-      preferencesOpened,
       orgUpgradePanelOpened,
+      preferencesOpened,
     } = this.state
+
+    const currentApp = apps.find(app =>
+      addressesEqual(app.proxyAddress, locator.instanceId)
+    )
 
     return (
       <Main visible={visible}>
@@ -323,7 +328,15 @@ class Wrapper extends React.PureComponent {
           opened={menuPanelOpened}
         >
           <AppScreen>
-            {this.renderApp(locator.instanceId, locator.params)}
+            <AppLoader
+              appLoading={appLoading}
+              appsLoading={!wrapper || appsStatus === APPS_STATUS_LOADING}
+              currentAppName={currentApp ? currentApp.name : ''}
+              daoLoading={daoStatus === DAO_STATUS_LOADING}
+              instanceId={locator.instanceId}
+            >
+              {this.renderApp(locator.instanceId, locator.params)}
+            </AppLoader>
           </AppScreen>
         </CombinedPanel>
         <SignerPanel
@@ -373,7 +386,6 @@ class Wrapper extends React.PureComponent {
       return (
         <Home
           apps={apps}
-          appsLoading={appsLoading}
           connected={connected}
           dao={locator.dao}
           onMessage={this.handleAppMessage}
@@ -426,8 +438,9 @@ class Wrapper extends React.PureComponent {
       )
     }
 
+    // AppLoader will display a loading screen in that case
     if (!wrapper || appsLoading) {
-      return <LoadingApps />
+      return null
     }
 
     const app = apps.find(app => addressesEqual(app.proxyAddress, instanceId))
@@ -469,26 +482,6 @@ const AppScreen = styled.div`
   flex-grow: 1;
   overflow: auto;
 `
-
-const LoadingAnimation = styled.img`
-  display: block;
-  margin-bottom: 32px;
-`
-
-const LoadingApps = () => (
-  <div
-    style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100%',
-      flexDirection: 'column',
-    }}
-  >
-    <LoadingAnimation src={ethereumLoadingAnimation} />
-    Loading apps…
-  </div>
-)
 
 export default props => {
   return (
