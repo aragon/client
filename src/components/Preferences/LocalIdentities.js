@@ -26,25 +26,23 @@ const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
 const LocalIdentities = React.memo(
   ({ dao, localIdentities, onClearAll, onImport, onModify, onModifyEvent }) => {
-    if (!Object.keys(localIdentities).length) {
-      return <EmptyLocalIdentities onImport={onImport} />
-    }
-
+    const identities = React.useMemo(
+      () =>
+        Object.entries(localIdentities).map(([address, identity]) => ({
+          ...identity,
+          address,
+        })),
+      [localIdentities]
+    )
+    const initialAddressesSelected = React.useMemo(
+      () => new Map(identities.map(({ address }) => [address, true])),
+      [identities]
+    )
     const { identityEvents$ } = React.useContext(IdentityContext)
     const { showLocalIdentityModal } = React.useContext(
       LocalIdentityModalContext
     )
-    const [addressesSelected, setAddressesSelected] = React.useState(
-      new WeakMap()
-    )
-    React.useEffect(() => {
-      const newAddressesSelected = new WeakMap()
-      Object.keys(localIdentities).forEach(key => {
-        newAddressesSelected.set(localIdentities[key], true)
-      })
-      setAddressesSelected(newAddressesSelected)
-    }, [localIdentities])
-    const updateLabel = React.useCallback(address => async () => {
+    const updateLabel = address => async () => {
       try {
         await showLocalIdentityModal(address)
         // preferences get all
@@ -54,55 +52,48 @@ const LocalIdentities = React.memo(
       } catch (e) {
         /* nothing was updated */
       }
-    })
-    const allSelected = Object.keys(localIdentities).every(key =>
-      addressesSelected.get(localIdentities[key])
-    )
-    const someSelected = Object.keys(localIdentities).some(key =>
-      addressesSelected.get(localIdentities[key])
-    )
+    }
 
-    const handleToggleAllSelectedChange = React.useCallback(() => {
-      const newAddressesSelected = new WeakMap()
-      Object.keys(localIdentities).forEach(key =>
-        newAddressesSelected.set(
-          localIdentities[key],
-          !(allSelected || someSelected)
+    const [addressesSelected, setAddressesSelected] = React.useState(
+      initialAddressesSelected
+    )
+    React.useEffect(() => {
+      setAddressesSelected(initialAddressesSelected)
+    }, [initialAddressesSelected])
+    const allSelected = Array.from(addressesSelected.values()).every(v => v)
+    const someSelected = Array.from(addressesSelected.values()).some(v => v)
+    const handleToggleAllSelectedChange = () =>
+      setAddressesSelected(
+        new Map(
+          identities.map(({ address }) => [
+            address,
+            !(allSelected || someSelected),
+          ])
         )
       )
-      setAddressesSelected(newAddressesSelected)
-    }, [localIdentities, addressesSelected])
-    const handleToggleAddressesSelected = React.useCallback(
-      address => () => {
-        const newAddressesSelected = new WeakMap()
-        Object.keys(localIdentities).forEach(key => {
-          newAddressesSelected.set(
-            localIdentities[key],
-            address === key
-              ? !addressesSelected.get(localIdentities[key])
-              : addressesSelected.get(localIdentities[key])
-          )
-        })
-        setAddressesSelected(newAddressesSelected)
-      },
-      [localIdentities, addressesSelected]
-    )
+    const handleToggleAddressesSelected = address => () =>
+      setAddressesSelected(
+        new Map([
+          ...addressesSelected,
+          [address, !addressesSelected.get(address)],
+        ])
+      )
     // standard: https://en.wikipedia.org/wiki/ISO_8601
     const today = format(Date.now(), 'yyyy-MM-dd')
     const downloadHref = window.URL.createObjectURL(
       new Blob(
         [
           JSON.stringify(
-            Object.entries(localIdentities)
-              .map(([address, identity]) => ({ address, ...identity }))
-              .filter(({ address }) =>
-                addressesSelected.get(localIdentities[address])
-              )
+            identities.filter(({ address }) => addressesSelected.get(address))
           ),
         ],
         { type: 'text/json' }
       )
     )
+
+    if (!identities.length) {
+      return <EmptyLocalIdentities onImport={onImport} />
+    }
 
     return (
       <React.Fragment>
@@ -125,7 +116,7 @@ const LocalIdentities = React.memo(
               <Label>
                 {!iOS && (
                   <StyledCheckbox
-                    checked={addressesSelected.get(localIdentities[address])}
+                    checked={addressesSelected.get(address)}
                     onChange={handleToggleAddressesSelected(address)}
                   />
                 )}
