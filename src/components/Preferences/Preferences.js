@@ -24,7 +24,7 @@ import LocalIdentitiesComponent from './LocalIdentities'
 
 const TABS = ['Manage labels']
 
-const Preferences = ({ dao, onClose, smallView, wrapper }) => {
+const Preferences = ({ dao, onClose, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
   const [localIdentities, setLocalIdentities] = React.useState({})
@@ -72,7 +72,6 @@ const Preferences = ({ dao, onClose, smallView, wrapper }) => {
 
   return (
     <AppView
-      smallView={smallView}
       padding={0}
       appBar={
         <StyledAppBar>
@@ -103,7 +102,6 @@ const Preferences = ({ dao, onClose, smallView, wrapper }) => {
 Preferences.propTypes = {
   dao: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  smallView: PropTypes.bool.isRequired,
   wrapper: AragonType,
 }
 
