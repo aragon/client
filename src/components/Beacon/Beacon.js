@@ -15,7 +15,7 @@ import IconQuestion from './IconQuestion'
 import logo from './logo.png'
 import { GU } from '../../utils'
 
-const HELPSCOUT_BEACON = 'helpscout-beacon'
+const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
 const CLOSED = 'closed, user can open opt-in dialogue'
 const OPENED = 'opened, user can opt-in or close'
 const OPENING = 'opening'
@@ -24,10 +24,10 @@ const CLOSING = 'closing'
 const Beacon = React.memo(() => {
   const [optedIn, setOptedIn] = React.useState(false)
   React.useEffect(() => {
-    setOptedIn(localStorage.getItem(HELPSCOUT_BEACON) === '1')
+    setOptedIn(localStorage.getItem(HELPSCOUT_BEACON_KEY) === '1')
   }, [])
   const handleOptIn = React.useCallback(() => {
-    localStorage.setItem(HELPSCOUT_BEACON, '1')
+    localStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
     setOptedIn(true)
   })
 
