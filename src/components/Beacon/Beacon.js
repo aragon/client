@@ -25,7 +25,16 @@ const OPENED = 'opened, user can opt-in or close'
 const OPENING = 'opening'
 const CLOSING = 'closing'
 
-const Beacon = React.memo(({ optedIn = false, onOptIn }) => {
+const Beacon = React.memo(() => {
+  const [optedIn, setOptedIn] = React.useState(false)
+  React.useEffect(() => {
+    setOptedIn(localStorage.getItem(HELPSCOUT_BEACON) === '1')
+  }, [])
+  const handleOptIn = React.useCallback(() => {
+    localStorage.setItem(HELPSCOUT_BEACON, '1')
+    setOptedIn(true)
+  })
+
   return (
     <div
       css={`
@@ -76,19 +85,10 @@ const Beacon = React.memo(({ optedIn = false, onOptIn }) => {
           </style>
         </Helmet>
       )}
-      <HelpOptIn onOptIn={onOptIn} optedIn={optedIn} />
+      <HelpOptIn onOptIn={handleOptIn} optedIn={optedIn} />
     </div>
   )
 })
-
-Beacon.propTypes = {
-  optedIn: PropTypes.bool,
-  onOptIn: PropTypes.func.isRequired,
-}
-
-Beacon.defaultProps = {
-  optedIn: false,
-}
 
 const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
   const [mode, setMode] = React.useState(CLOSED)
@@ -409,5 +409,4 @@ const AnimatedDiv = styled(animated.div)`
   position: absolute;
 `
 
-export { HELPSCOUT_BEACON }
 export default Beacon
