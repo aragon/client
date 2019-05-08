@@ -103,6 +103,7 @@ const AppLoader = React.memo(function AppLoader({
           height: 100%;
           z-index: 1;
         `}
+        style={{ opacity: Number(loadingStatus.progress === 1) }}
       >
         {children}
       </div>
