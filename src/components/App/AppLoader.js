@@ -1,10 +1,6 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
-
-const APP_TYPE_INTERNAL = Symbol('APP_TYPE_INTERNAL')
-const APP_TYPE_EXTERNAL = Symbol('APP_TYPE_EXTERNAL')
-const APP_TYPE_NOTFOUND = Symbol('APP_TYPE_NOTFOUND')
 
 const INTERNAL_APPS = ['home', 'permissions', 'apps', 'settings']
 
@@ -118,5 +114,14 @@ const AppLoader = React.memo(function AppLoader({
     </div>
   )
 })
+
+AppLoader.propTypes = {
+  appLoading: PropTypes.bool.isRequired,
+  appsLoading: PropTypes.bool.isRequired,
+  children: PropTypes.node,
+  currentAppName: PropTypes.string.isRequired,
+  daoLoading: PropTypes.bool.isRequired,
+  instanceId: PropTypes.string.isRequired,
+}
 
 export default AppLoader

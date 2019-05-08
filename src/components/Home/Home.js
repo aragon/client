@@ -1,12 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Spring, animated } from 'react-spring'
 import { Text, theme } from '@aragon/ui'
 import HomeCard from './HomeCard'
-import { lerp } from '../../math-utils'
 import { AppType } from '../../prop-types'
-import springs from '../../springs'
 import AppLayout from '../../components/AppLayout/AppLayout'
 
 import logo from './assets/logo-background.svg'

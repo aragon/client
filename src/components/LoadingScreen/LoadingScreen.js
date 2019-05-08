@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { springs, theme } from '@aragon/ui'
+import { springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import AnimatedLogo from './AnimatedLogo'
 
@@ -36,6 +36,7 @@ const LoadingScreen = React.memo(function LoadingScreen({
     >
       {visible =>
         visible &&
+        /* eslint-disable react/prop-types */
         (({ opacity }) => (
           <animated.div
             style={{
@@ -70,6 +71,7 @@ const LoadingScreen = React.memo(function LoadingScreen({
             </div>
           </animated.div>
         ))
+      /* eslint-enable react/prop-types */
       }
     </Transition>
   )

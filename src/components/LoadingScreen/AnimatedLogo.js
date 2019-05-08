@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { keyframes } from 'styled-components'
 import { theme } from '@aragon/ui'
 
@@ -36,16 +37,7 @@ const animMask = keyframes`
   90%, 100% { stroke-dashoffset: 0 }
 `
 
-const Outline = ({ gradient = false, ...props }) => (
-  <path
-    d={PATH}
-    stroke={gradient ? `url(#${GRADIENT_ID})` : theme.contentBorder}
-    strokeWidth={STROKE_WIDTH}
-    {...props}
-  />
-)
-
-function AnimatedLogo({ done = false }) {
+const AnimatedLogo = React.memo(function AnimatedLogo({ done }) {
   return (
     <svg width={150} height={150} fill="none">
       <Outline stroke={theme.contentBorder} />
@@ -93,6 +85,27 @@ function AnimatedLogo({ done = false }) {
       </defs>
     </svg>
   )
+})
+
+AnimatedLogo.propTypes = {
+  done: PropTypes.bool,
+}
+
+AnimatedLogo.defaultProps = {
+  done: false,
+}
+
+const Outline = ({ gradient = false, ...props }) => (
+  <path
+    d={PATH}
+    stroke={gradient ? `url(#${GRADIENT_ID})` : theme.contentBorder}
+    strokeWidth={STROKE_WIDTH}
+    {...props}
+  />
+)
+
+Outline.propTypes = {
+  gradient: PropTypes.bool,
 }
 
 export default AnimatedLogo

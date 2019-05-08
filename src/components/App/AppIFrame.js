@@ -1,7 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { clamp, lerp } from '../../math-utils'
 import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
 
