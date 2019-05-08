@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
-import { Helmet } from 'react-helmet'
 import {
   Button,
   IconClose,
@@ -11,15 +10,12 @@ import {
   springs,
   theme,
 } from '@aragon/ui'
-import { GU } from '../../utils'
+import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import logo from './logo.png'
+import { GU } from '../../utils'
 
 const HELPSCOUT_BEACON = 'helpscout-beacon'
-const BEACON_EMBED =
-  '!function(e,t,n){function a(){var e=t.getElementsByTagName("script")[0],n=t.createElement("script");n.type="text/javascript",n.async=!0,n.src="https://beacon-v2.helpscout.net",e.parentNode.insertBefore(n,e)}if(e.Beacon=n=function(t,n,a){e.Beacon.readyQueue.push({method:t,options:n,data:a})},n.readyQueue=[],"complete"===t.readyState)return a();e.attachEvent?e.attachEvent("onload",a):e.addEventListener("load",a,!1)}(window,document,window.Beacon||function(){});'
-const HELPSCOUT_ID = "'163e0284-762b-4e2d-b3b3-70a73a7e6c9f'"
-const BEACON_INIT = "window.Beacon('init'," + HELPSCOUT_ID + ')'
 const CLOSED = 'closed, user can open opt-in dialogue'
 const OPENED = 'opened, user can opt-in or close'
 const OPENING = 'opening'
@@ -53,38 +49,7 @@ const Beacon = React.memo(() => {
         )}
       `}
     >
-      {optedIn && (
-        <Helmet>
-          <script type="text/javascript">{BEACON_EMBED}</script>
-          <script type="text/javascript">{BEACON_INIT}</script>
-          <style>
-            {`
-              .BeaconFabButtonFrame,
-              .c-BeaconCloseButton,
-              #beacon-container .Beacon div:first-of-type {
-                display: none !important;
-              }
-              #beacon-container .BeaconContainer {
-                height: calc(100vh - 90px - 48px) !important;
-                max-height: calc(100vh - 90px - 48px) !important;
-                width: calc(100vw - 32px) !important;
-                top: ${6 * GU}px !important;
-                left: ${2 * GU}px !important;
-              }
-              @media (min-width: 768px) {
-                #beacon-container .BeaconContainer {
-                  height: 600px !important;
-                  width: 350px !important;
-                  top: unset !important;
-                  left: unset !important;
-                  bottom: 100px !important;
-                  right: ${3 * GU}px !important;
-                }
-              }
-            `}
-          </style>
-        </Helmet>
-      )}
+      <BeaconHeadScripts optedIn={optedIn} />
       <HelpOptIn onOptIn={handleOptIn} optedIn={optedIn} />
     </div>
   )
