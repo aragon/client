@@ -66,9 +66,10 @@ class Wrapper extends React.PureComponent {
   }
 
   state = {
+    appLoading: false,
     menuPanelOpened: !this.props.autoClosingPanel,
-    preferencesOpened: false,
     orgUpgradePanelOpened: false,
+    preferencesOpened: false,
   }
 
   identitySubscription = null
@@ -141,7 +142,7 @@ class Wrapper extends React.PureComponent {
     this.appIFrame = appIFrame
   }
 
-  handleAppIFrameLoad = async event => {
+  handleAppIFrameLoadingSuccess = async ({ iframeElement }) => {
     const {
       apps,
       wrapper,
@@ -160,7 +161,7 @@ class Wrapper extends React.PureComponent {
       return
     }
 
-    await wrapper.connectAppIFrame(event.target, instanceId)
+    await wrapper.connectAppIFrame(iframeElement, instanceId)
 
     this.appIFrame.sendMessage({
       from: 'wrapper',
@@ -168,7 +169,18 @@ class Wrapper extends React.PureComponent {
       value: true,
     })
     this.sendDisplayMenuButtonStatus()
+    this.setState({ appLoading: false })
   }
+  handleAppIFrameLoadingStart = event => {
+    this.setState({ appLoading: true })
+  }
+  handleAppIFrameLoadingCancel = event => {
+    this.setState({ appLoading: false })
+  }
+  handleAppIFrameLoadingError = event => {
+    this.setState({ appLoading: false })
+  }
+
   handleAppMessage = ({ data: { name, value } }) => {
     if (
       // “menuPanel: Boolean” is deprecated but still supported for a while if
@@ -422,9 +434,12 @@ class Wrapper extends React.PureComponent {
 
     return app ? (
       <AppIFrame
-        app={app}
         ref={this.handleAppIFrameRef}
-        onLoad={this.handleAppIFrameLoad}
+        app={app}
+        onLoadingCancel={this.handleAppIFrameLoadingCancel}
+        onLoadingError={this.handleAppIFrameLoadingError}
+        onLoadingStart={this.handleAppIFrameLoadingStart}
+        onLoadingSuccess={this.handleAppIFrameLoadingSuccess}
         onMessage={this.handleAppMessage}
       />
     ) : (
