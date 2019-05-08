@@ -60,13 +60,13 @@ export function useSteps(steps) {
     if (step < steps - 1) {
       setStep(step + 1)
     }
-  }, [step, steps])
+  }, [setStep, step, steps])
 
   const prev = useCallback(() => {
     if (step > 0) {
       setStep(step - 1)
     }
-  }, [step, steps])
+  }, [setStep, step])
 
   return {
     direction,

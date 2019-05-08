@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
@@ -28,47 +28,62 @@ const Preferences = ({ dao, onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
   const [localIdentities, setLocalIdentities] = React.useState({})
-  const handleGetAll = async () => {
+
+  const handleGetAll = useCallback(async () => {
     if (!wrapper) {
       return
     }
     setLocalIdentities(await wrapper.getLocalIdentities())
-  }
-  const handleClearAll = async () => {
+  }, [setLocalIdentities, wrapper])
+
+  const handleClearAll = useCallback(async () => {
     if (!wrapper) {
       return
     }
     await wrapper.clearLocalIdentities()
     setLocalIdentities({})
     identityEvents$.next({ type: identityEventTypes.CLEAR })
-  }
-  const handleModify = (address, data) => {
-    if (!wrapper) {
-      return
-    }
-    wrapper.modifyAddressIdentity(address, data)
-  }
-  const handleImport = async list => {
-    if (!wrapper) {
-      return
-    }
-    setLocalIdentities({})
-    for (const { name, address } of list) {
-      await wrapper.modifyAddressIdentity(address, { name })
-    }
-    setLocalIdentities(await wrapper.getLocalIdentities())
-    identityEvents$.next({ type: identityEventTypes.IMPORT })
-  }
-  const handlekeyDown = e => {
-    if (e.keyCode === keycodes.esc) {
-      onClose()
-    }
-  }
-  React.useEffect(() => {
+  }, [identityEvents$, wrapper])
+
+  const handleModify = useCallback(
+    (address, data) => {
+      if (!wrapper) {
+        return
+      }
+      wrapper.modifyAddressIdentity(address, data)
+    },
+    [wrapper]
+  )
+
+  const handleImport = useCallback(
+    async list => {
+      if (!wrapper) {
+        return
+      }
+      setLocalIdentities({})
+      for (const { name, address } of list) {
+        await wrapper.modifyAddressIdentity(address, { name })
+      }
+      setLocalIdentities(await wrapper.getLocalIdentities())
+      identityEvents$.next({ type: identityEventTypes.IMPORT })
+    },
+    [identityEvents$, setLocalIdentities, wrapper]
+  )
+
+  const handlekeyDown = useCallback(
+    e => {
+      if (e.keyCode === keycodes.esc) {
+        onClose()
+      }
+    },
+    [onClose]
+  )
+
+  useEffect(() => {
     handleGetAll()
     window.addEventListener('keydown', handlekeyDown)
     return () => window.removeEventListener('keydown', handlekeyDown)
-  }, [])
+  }, [handleGetAll, handlekeyDown])
 
   return (
     <AppView
