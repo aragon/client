@@ -12,6 +12,7 @@ import CombinedPanel from './components/MenuPanel/CombinedPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
+import { IdentityConsumer } from './components/IdentityManager/IdentityManager'
 import {
   AppType,
   AppsStatusType,
@@ -38,6 +39,7 @@ class Wrapper extends React.PureComponent {
     daoStatus: DaoStatusType.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
+    identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
@@ -69,8 +71,19 @@ class Wrapper extends React.PureComponent {
     orgUpgradePanelOpened: false,
   }
 
+  identitySubscription = null
+
+  componentDidMount() {
+    this.startIdentitySubscription()
+  }
+
+  componentWillUnmount() {
+    this.identitySubscription.unsubscribe()
+  }
+
   componentDidUpdate(prevProps) {
     this.updateAutoClosingPanel(prevProps)
+    this.updateIdentityEvents(prevProps)
   }
 
   updateAutoClosingPanel(prevProps) {
@@ -78,6 +91,29 @@ class Wrapper extends React.PureComponent {
     if (autoClosingPanel !== prevProps.autoClosingPanel) {
       this.setState({ menuPanelOpened: !autoClosingPanel })
       this.sendDisplayMenuButtonStatus()
+    }
+  }
+
+  updateIdentityEvents(prevProps) {
+    const { identityEvents$ } = this.props
+    if (identityEvents$ !== prevProps.identityEvents$) {
+      this.stopIdentitySubscription()
+      this.startIdentitySubscription()
+    }
+  }
+
+  startIdentitySubscription() {
+    const { identityEvents$ } = this.props
+    this.identitySubscription = identityEvents$.subscribe(event => {
+      if (this.appIFrame) {
+        this.appIFrame.reloadIframe()
+      }
+    })
+  }
+
+  stopIdentitySubscription() {
+    if (this.identitySubscription) {
+      this.identitySubscription.unsubscribe()
     }
   }
 
@@ -441,8 +477,18 @@ const LoadingApps = () => (
 
 export default props => {
   return (
-    <Viewport>
-      {({ below }) => <Wrapper {...props} autoClosingPanel={below('medium')} />}
-    </Viewport>
+    <IdentityConsumer>
+      {({ identityEvents$ }) => (
+        <Viewport>
+          {({ below }) => (
+            <Wrapper
+              {...props}
+              autoClosingPanel={below('medium')}
+              identityEvents$={identityEvents$}
+            />
+          )}
+        </Viewport>
+      )}
+    </IdentityConsumer>
   )
 }
