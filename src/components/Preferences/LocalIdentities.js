@@ -24,8 +24,8 @@ import { GU } from '../../utils'
 
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
-const LocalIdentities = React.memo(
-  ({ dao, localIdentities, onClearAll, onImport, onModify, onModifyEvent }) => {
+const SelectableLocalIdentities = React.memo(
+  ({ localIdentities, ...props }) => {
     const identities = React.useMemo(
       () =>
         Object.entries(localIdentities).map(([address, identity]) => ({
@@ -38,11 +38,82 @@ const LocalIdentities = React.memo(
       () => new Map(identities.map(({ address }) => [address, true])),
       [identities]
     )
+    const [addressesSelected, setAddressesSelected] = React.useState(
+      initialAddressesSelected
+    )
+
+    const handleToggleAll = React.useCallback(
+      () =>
+        setAddressesSelected(
+          new Map(
+            identities.map(({ address }) => [
+              address,
+              !(
+                Array.from(addressesSelected.values()).every(v => v) ||
+                Array.from(addressesSelected.values()).some(v => v)
+              ),
+            ])
+          )
+        ),
+      [addressesSelected, identities]
+    )
+    const handleToggleAddress = React.useCallback(
+      address => () =>
+        setAddressesSelected(
+          new Map([
+            ...addressesSelected,
+            [address, !addressesSelected.get(address)],
+          ])
+        ),
+      [addressesSelected]
+    )
+
+    React.useEffect(() => {
+      setAddressesSelected(initialAddressesSelected)
+    }, [initialAddressesSelected])
+
+    return (
+      <LocalIdentities
+        {...props}
+        identities={identities}
+        onToggleAll={handleToggleAll}
+        onToggleAddress={handleToggleAddress}
+        addressesSelected={addressesSelected}
+      />
+    )
+  }
+)
+
+SelectableLocalIdentities.propTypes = {
+  dao: PropTypes.string.isRequired,
+  localIdentities: PropTypes.object,
+  onClearAll: PropTypes.func.isRequired,
+  onImport: PropTypes.func.isRequired,
+  onModify: PropTypes.func.isRequired,
+  onModifyEvent: PropTypes.func,
+}
+
+SelectableLocalIdentities.defaultProps = {
+  localIdentities: {},
+}
+
+const LocalIdentities = React.memo(
+  ({
+    addressesSelected,
+    dao,
+    identities,
+    onClearAll,
+    onImport,
+    onModify,
+    onModifyEvent,
+    onToggleAddress,
+    onToggleAll,
+  }) => {
     const { identityEvents$ } = React.useContext(IdentityContext)
     const { showLocalIdentityModal } = React.useContext(
       LocalIdentityModalContext
     )
-    const updateLabel = address => async () => {
+    const updateLabel = React.useCallback(address => async () => {
       try {
         await showLocalIdentityModal(address)
         // preferences get all
@@ -52,32 +123,15 @@ const LocalIdentities = React.memo(
       } catch (e) {
         /* nothing was updated */
       }
-    }
+    })
 
-    const [addressesSelected, setAddressesSelected] = React.useState(
-      initialAddressesSelected
+    const [allSelected, someSelected] = React.useMemo(
+      () => [
+        Array.from(addressesSelected.values()).every(v => v),
+        Array.from(addressesSelected.values()).some(v => v),
+      ],
+      [addressesSelected]
     )
-    React.useEffect(() => {
-      setAddressesSelected(initialAddressesSelected)
-    }, [initialAddressesSelected])
-    const allSelected = Array.from(addressesSelected.values()).every(v => v)
-    const someSelected = Array.from(addressesSelected.values()).some(v => v)
-    const handleToggleAllSelectedChange = () =>
-      setAddressesSelected(
-        new Map(
-          identities.map(({ address }) => [
-            address,
-            !(allSelected || someSelected),
-          ])
-        )
-      )
-    const handleToggleAddressesSelected = address => () =>
-      setAddressesSelected(
-        new Map([
-          ...addressesSelected,
-          [address, !addressesSelected.get(address)],
-        ])
-      )
     // standard: https://en.wikipedia.org/wiki/ISO_8601
     const today = format(Date.now(), 'yyyy-MM-dd')
     const downloadHref = window.URL.createObjectURL(
@@ -102,7 +156,7 @@ const LocalIdentities = React.memo(
             {!iOS && (
               <StyledCheckbox
                 checked={allSelected}
-                onChange={handleToggleAllSelectedChange}
+                onChange={onToggleAll}
                 indeterminate={!allSelected && someSelected}
               />
             )}
@@ -111,13 +165,13 @@ const LocalIdentities = React.memo(
           <div>Address</div>
         </Headers>
         <List>
-          {Object.entries(localIdentities).map(([address, { name }]) => (
+          {identities.map(({ address, name }) => (
             <Item key={address}>
               <Label>
                 {!iOS && (
                   <StyledCheckbox
                     checked={addressesSelected.get(address)}
-                    onChange={handleToggleAddressesSelected(address)}
+                    onChange={onToggleAddress(address)}
                   />
                 )}
                 {name}
@@ -159,16 +213,18 @@ const LocalIdentities = React.memo(
 )
 
 LocalIdentities.propTypes = {
+  addressesSelected: PropTypes.instanceOf(Map).isRequired,
   dao: PropTypes.string.isRequired,
-  localIdentities: PropTypes.object,
+  identities: PropTypes.array.isRequired,
   onClearAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,
   onModifyEvent: PropTypes.func,
+  onToggleAddress: PropTypes.func.isRequired,
+  onToggleAll: PropTypes.func.isRequired,
 }
 
 LocalIdentities.defaultProps = {
-  localIdentities: {},
   onModifyEvent: () => null,
 }
 
@@ -276,4 +332,4 @@ const List = styled.ul`
   )}
 `
 
-export default LocalIdentities
+export default SelectableLocalIdentities
