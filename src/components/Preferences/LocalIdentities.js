@@ -93,7 +93,7 @@ const LocalIdentities = React.memo(
         <Headers>
           <div>
             {!iOS && (
-              <Checkbox
+              <StyledCheckbox
                 checked={allSelected}
                 onChange={handleToggleAllSelectedChange}
                 indeterminate={!allSelected && someSelected}
@@ -108,8 +108,8 @@ const LocalIdentities = React.memo(
             <Item key={address}>
               <Label>
                 {!iOS && (
-                  <Checkbox
-                    checked={addressesSelected.get(address)}
+                  <StyledCheckbox
+                    checked={addressesSelected.get(localIdentities[address])}
                     onChange={handleToggleAddressesSelected(address)}
                   />
                 )}
@@ -165,6 +165,10 @@ LocalIdentities.defaultProps = {
   onModifyEvent: () => null,
 }
 
+const StyledCheckbox = styled(Checkbox)`
+  margin-right: ${3 * GU}px;
+`
+
 const Label = styled.div`
   white-space: nowrap;
   overflow: hidden;
@@ -182,15 +186,15 @@ const Warning = React.memo(() => (
 ))
 
 const StyledExport = styled(Button.Anchor)`
-  margin: 0 24px 24px;
+  margin: 0 ${3 * GU}px ${3 * GU}px;
 `
 
 const Controls = styled.div`
   display: flex;
   align-items: start;
   flex-wrap: wrap;
-  margin-top: 20px;
-  padding: 0 16px;
+  margin-top: ${2.5 * GU}px;
+  padding: 0 ${2 * GU}px;
 
   ${breakpoint(
     'medium',
@@ -201,19 +205,19 @@ const Controls = styled.div`
 `
 
 const StyledInfoAction = styled(Info.Action)`
-  margin: 16px 16px 0 16px;
+  margin: ${2 * GU}px ${2 * GU}px 0 ${2 * GU}px;
 
   ${breakpoint(
     'medium',
     `
       margin: 0;
-      margin-top: 16px;
+      margin-top: ${2 * GU}px;
     `
   )}
 `
 
 const Headers = styled.div`
-  margin: 10px auto;
+  margin: ${1.5 * GU}px auto;
   text-transform: uppercase;
   color: ${theme.textSecondary};
   ${font({ size: 'xsmall' })};
@@ -222,19 +226,19 @@ const Headers = styled.div`
   align-items: center;
 
   & > div {
-    padding-left: 16px;
+    padding-left: ${2 * GU}px;
   }
 `
 
 const Item = styled.li`
-  padding: 16px 0;
+  padding: ${2 * GU}px 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   border-bottom: 1px solid ${theme.contentBorder};
 
   & > div {
-    padding-left: 16px;
+    padding-left: ${2 * GU}px;
   }
 `
 
