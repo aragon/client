@@ -7,6 +7,7 @@ import {
   Checkbox,
   IconCross,
   IdentityBadge,
+  Modal,
   Info,
   breakpoint,
   font,
@@ -72,6 +73,8 @@ const SelectableLocalIdentities = React.memo(
       setAddressesSelected(initialAddressesSelected)
     }, [initialAddressesSelected])
 
+    const [opened, setOpened] = React.useState(false)
+
     return (
       <LocalIdentities
         {...props}
@@ -79,6 +82,8 @@ const SelectableLocalIdentities = React.memo(
         onToggleAll={handleToggleAll}
         onToggleAddress={handleToggleAddress}
         addressesSelected={addressesSelected}
+        opened={opened}
+        setOpened={setOpened}
       />
     )
   }
@@ -107,6 +112,8 @@ const LocalIdentities = React.memo(
     onModify,
     onModifyEvent,
     onToggleAddress,
+    opened,
+    setOpened,
     onToggleAll,
   }) => {
     const { identityEvents$ } = React.useContext(IdentityContext)
@@ -208,9 +215,36 @@ const LocalIdentities = React.memo(
               Export
             </StyledExport>
           )}
-          <Button label="Remove labels" mode="outline" onClick={onClearAll}>
+          <Button
+            label="Remove labels"
+            mode="outline"
+            onClick={() => setOpened(true)}
+          >
             <IconCross /> Remove all labels
           </Button>
+          <Modal visible={opened} onClose={() => setOpened(true)}>
+            <ModalTitle>Remove labels</ModalTitle>
+            <ModalText>
+              This action will irreversibly delete the selected labels you have
+              added to your organization on this device
+            </ModalText>
+            <ModalControls>
+              <Button
+                label="Cancel"
+                mode="secondary"
+                onClick={() => setOpened(false)}
+              >
+                Cancel
+              </Button>
+              <RemoveButton
+                label="Remove labels"
+                mode="strong"
+                onClick={onClearAll}
+              >
+                Remove
+              </RemoveButton>
+            </ModalControls>
+          </Modal>
         </Controls>
         <Warning />
       </React.Fragment>
@@ -228,16 +262,48 @@ LocalIdentities.propTypes = {
   onModifyEvent: PropTypes.func,
   onToggleAddress: PropTypes.func.isRequired,
   onToggleAll: PropTypes.func.isRequired,
+  opened: PropTypes.bool.isRequired,
+  setOpened: PropTypes.bool.isRequired,
 }
 
 LocalIdentities.defaultProps = {
   onModifyEvent: () => null,
 }
 
+const ModalTitle = styled.h1`
+  font-size: 22px;
+`
+
+const ModalText = styled.p`
+  margin: 20px 0 20px 0;
+`
+
+const ModalControls = styled.div`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr 1fr;
+
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+      justify-content: flex-end;
+    `
+  )}
+`
+
 const StyledCheckbox = styled(Checkbox)`
   margin-right: ${3 * GU}px;
 `
 
+const RemoveButton = styled(Button)`
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: 20px;
+    `
+  )}
+`
 const Label = styled.div`
   white-space: nowrap;
   overflow: hidden;
