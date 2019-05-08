@@ -351,7 +351,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
               <StyledSafeLink href="https://www.helpscout.com/">
                 Help Scout
               </StyledSafeLink>
-              . If you opt-in, we will load a third-party program into Aragon.
+              . If you opt-in, we will load their program onto Aragon.
               <br />
               Help Scout is a{' '}
               <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
