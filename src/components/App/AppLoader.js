@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
-import { useApps } from '../../contexts/AppsContext'
 
 const APP_TYPE_INTERNAL = Symbol('APP_TYPE_INTERNAL')
 const APP_TYPE_EXTERNAL = Symbol('APP_TYPE_EXTERNAL')
