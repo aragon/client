@@ -20,20 +20,13 @@ import {
 } from '../IdentityManager/IdentityManager'
 import EmptyLocalIdentities from './EmptyLocalIdentities'
 import Import from './Import'
+import { GU } from '../../utils'
 
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
 const LocalIdentities = React.memo(
   ({ dao, localIdentities, onClearAll, onImport, onModify, onModifyEvent }) => {
-    // transform localIdentities from object into array and attach address to each entry
-    const identities = Object.entries(localIdentities).map(
-      ([address, identity]) => ({
-        ...identity,
-        address,
-      })
-    )
-
-    if (!identities.length) {
+    if (!Object.keys(localIdentities).length) {
       return <EmptyLocalIdentities onImport={onImport} />
     }
 
@@ -42,8 +35,15 @@ const LocalIdentities = React.memo(
       LocalIdentityModalContext
     )
     const [addressesSelected, setAddressesSelected] = React.useState(
-      new Map(identities.map(({ address }) => [address, true]))
+      new WeakMap()
     )
+    React.useEffect(() => {
+      const newAddressesSelected = new WeakMap()
+      Object.keys(localIdentities).forEach(key => {
+        newAddressesSelected.set(localIdentities[key], true)
+      })
+      setAddressesSelected(newAddressesSelected)
+    }, [localIdentities])
     const updateLabel = React.useCallback(address => async () => {
       try {
         await showLocalIdentityModal(address)
@@ -55,25 +55,37 @@ const LocalIdentities = React.memo(
         /* nothing was updated */
       }
     })
-    const allSelected = Array.from(addressesSelected.values()).every(v => v)
-    const someSelected = Array.from(addressesSelected.values()).some(v => v)
+    const allSelected = Object.keys(localIdentities).every(key =>
+      addressesSelected.get(localIdentities[key])
+    )
+    const someSelected = Object.keys(localIdentities).some(key =>
+      addressesSelected.get(localIdentities[key])
+    )
+
     const handleToggleAllSelectedChange = React.useCallback(() => {
-      setAddressesSelected(
-        new Map(
-          identities.map(({ address }) => [
-            address,
-            !(allSelected || someSelected),
-          ])
+      const newAddressesSelected = new WeakMap()
+      Object.keys(localIdentities).forEach(key =>
+        newAddressesSelected.set(
+          localIdentities[key],
+          !(allSelected || someSelected)
         )
       )
-    })
-    const handleToggleAddressesSelected = React.useCallback(address => () =>
-      setAddressesSelected(
-        new Map([
-          ...addressesSelected,
-          [address, !addressesSelected.get(address)],
-        ])
-      )
+      setAddressesSelected(newAddressesSelected)
+    }, [localIdentities, addressesSelected])
+    const handleToggleAddressesSelected = React.useCallback(
+      address => () => {
+        const newAddressesSelected = new WeakMap()
+        Object.keys(localIdentities).forEach(key => {
+          newAddressesSelected.set(
+            localIdentities[key],
+            address === key
+              ? !addressesSelected.get(localIdentities[key])
+              : addressesSelected.get(localIdentities[key])
+          )
+        })
+        setAddressesSelected(newAddressesSelected)
+      },
+      [localIdentities, addressesSelected]
     )
     // standard: https://en.wikipedia.org/wiki/ISO_8601
     const today = format(Date.now(), 'yyyy-MM-dd')
@@ -81,7 +93,11 @@ const LocalIdentities = React.memo(
       new Blob(
         [
           JSON.stringify(
-            identities.filter(({ address }) => addressesSelected.get(address))
+            Object.entries(localIdentities)
+              .map(([address, identity]) => ({ address, ...identity }))
+              .filter(({ address }) =>
+                addressesSelected.get(localIdentities[address])
+              )
           ),
         ],
         { type: 'text/json' }
@@ -104,7 +120,7 @@ const LocalIdentities = React.memo(
           <div>Address</div>
         </Headers>
         <List>
-          {identities.map(({ address, name }) => (
+          {Object.entries(localIdentities).map(([address, { name }]) => (
             <Item key={address}>
               <Label>
                 {!iOS && (
