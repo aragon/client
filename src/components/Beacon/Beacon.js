@@ -343,7 +343,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
               We need your consent.
             </h3>
             <p>
-              We want to assist you in using the product, providing help and
+              We want to assist you in using the product, providing help, and
               answers to common questions.
             </p>
             <p>
