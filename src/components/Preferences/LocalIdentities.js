@@ -30,9 +30,6 @@ const LocalIdentities = ({
   onModify,
   onModifyEvent,
 }) => {
-  const { identityEvents$ } = React.useContext(IdentityContext)
-  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
-
   // transform localIdentities from object into array and attach address to each entry
   const identities = Object.entries(localIdentities).map(
     ([address, identity]) => ({
@@ -45,6 +42,8 @@ const LocalIdentities = ({
     return <EmptyLocalIdentities onImport={onImport} />
   }
 
+  const { identityEvents$ } = React.useContext(IdentityContext)
+  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
   const updateLabel = address => async () => {
     try {
       await showLocalIdentityModal(address)
