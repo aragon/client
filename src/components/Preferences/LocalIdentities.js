@@ -90,12 +90,7 @@ const SelectableLocalIdentities = React.memo(
 )
 
 SelectableLocalIdentities.propTypes = {
-  dao: PropTypes.string.isRequired,
   localIdentities: PropTypes.object,
-  onClearAll: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
-  onModify: PropTypes.func.isRequired,
-  onModifyEvent: PropTypes.func,
 }
 
 SelectableLocalIdentities.defaultProps = {
@@ -227,14 +222,7 @@ const ShareableLocalIdentities = React.memo(
 
 ShareableLocalIdentities.propTypes = {
   addressesSelected: PropTypes.instanceOf(Map).isRequired,
-  dao: PropTypes.string.isRequired,
   identities: PropTypes.array.isRequired,
-  onClearAll: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
-  onModify: PropTypes.func.isRequired,
-  onModifyEvent: PropTypes.func,
-  onToggleAddress: PropTypes.func.isRequired,
-  onToggleAll: PropTypes.func.isRequired,
 }
 
 const LocalIdentities = React.memo(
