@@ -25,13 +25,73 @@ import { GU } from '../../utils'
 
 const QUERY_VAR = '?labels='
 
-const SaveLocalIdentities = ({ dao, wrapper, onSave, toast }) => {
+const SaveLocalIdentities = React.memo(({ dao, wrapper, onSave, toast }) => {
+  const [labels, setLabels] = React.useState([])
+  const { identityEvents$ } = React.useContext(IdentityContext)
+
+  const handleExit = React.useCallback(
+    () => (window.location.hash = `#/${dao}`),
+    [dao]
+  )
+  const handleClose = React.useCallback(() => {
+    setLabels([])
+    handleExit()
+  })
+  const handleSave = React.useCallback(
+    async list => {
+      await wrapper.clearLocalIdentities()
+      for (const { name, address } of list) {
+        await wrapper.modifyAddressIdentity(address, { name })
+      }
+      identityEvents$.next({ type: identityEventTypes.IMPORT })
+
+      // a lot to do here
+      // toast
+      toast('Custom labels added')
+      // close & url
+      handleClose()
+      // opens up preferences
+      onSave()
+    },
+    [labels]
+  )
+
+  const labelsIndex = React.useMemo(
+    () => window.location.hash.indexOf(QUERY_VAR),
+    [window.location.hash]
+  )
+  React.useEffect(() => {
+    if (labelsIndex < 0 || !wrapper) {
+      return
+    }
+    const raw = window.decodeURI(
+      atob(window.location.hash.substr(labelsIndex + QUERY_VAR.length))
+    )
+    try {
+      setLabels(JSON.parse(raw))
+    } catch (e) {
+      console.warn('There was an error parsing the label data: ', e)
+    }
+  }, [wrapper])
+
+  if (!labels.length) {
+    return null
+  }
+
+  return <Labels labels={labels} onSave={handleSave} onClose={handleClose} />
+})
+
+SaveLocalIdentities.propTypes = {
+  dao: PropTypes.string.isRequired,
+  onSave: PropTypes.func.isRequired,
+  toast: PropTypes.func.isRequired,
+  wrapper: AragonType,
+}
+
+const Labels = React.memo(({ onSave, onClose, labels }) => {
   const { below } = useViewport()
   const smallView = below('medium')
-  const { identityEvents$ } = React.useContext(IdentityContext)
-  const [opened, setOpened] = React.useState(false)
   const [selected, setSelected] = React.useState(new Map())
-  const [labels, setLabels] = React.useState([])
   const [allSelected, someSelected] = React.useMemo(
     () => [
       Array.from(selected.values()).every(Boolean),
@@ -53,64 +113,14 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave, toast }) => {
       setSelected(new Map([...selected, [address, !selected.get(address)]])),
     [selected]
   )
-  const handleExit = React.useCallback(
-    () => (window.location.hash = `#/${dao}`)
-  )
-  const handleClose = React.useCallback(() => {
-    setOpened(false)
-    handleExit()
-  })
-  const labelsIndex = React.useMemo(
-    () => window.location.hash.indexOf(QUERY_VAR),
-    [window.location.hash]
-  )
-  const handleSave = React.useCallback(async () => {
-    if (!wrapper) {
-      return
-    }
-    await wrapper.clearLocalIdentities()
+  const handleSave = React.useCallback(() => {
     const list = labels.filter(({ address }) => selected.get(address))
-    for (const { name, address } of list) {
-      await wrapper.modifyAddressIdentity(address, { name })
-    }
-    identityEvents$.next({ type: identityEventTypes.IMPORT })
+    onSave(list)
+  }, [selected])
 
-    // a lot to do here
-    // toast
-    toast('Custom labels added')
-    // close modal
-    setOpened(false)
-    // url
-    handleExit()
-    // opens up preferences
-    onSave()
-  }, [wrapper, labels, selected])
-
-  React.useEffect(() => {
-    if (labelsIndex < 0) {
-      return
-    }
-    const raw = window.decodeURI(
-      atob(window.location.hash.substr(labelsIndex + QUERY_VAR.length))
-    )
-    try {
-      setLabels(JSON.parse(raw))
-    } catch (e) {
-      console.warn('There was an error parsing the label data: ', e)
-    }
-  }, [labelsIndex])
-  React.useEffect(() => {
-    if (wrapper && labels.length) {
-      setOpened(true)
-    }
-  }, [wrapper, labels])
   React.useEffect(() => {
     setSelected(new Map(labels.map(({ address }) => [address, true])))
   }, [labels])
-
-  if (!opened || !labels.length) {
-    return null
-  }
 
   return (
     <Wrap style={{ zIndex: smallView ? 2 : 5 }}>
@@ -120,7 +130,7 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave, toast }) => {
         appBar={
           <StyledAppBar>
             <Title>Save Labels</Title>
-            <CloseButton onClick={handleClose} />
+            <CloseButton onClick={onClose} />
           </StyledAppBar>
         }
       >
@@ -213,7 +223,7 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave, toast }) => {
               <Button
                 label="Cancel"
                 mode="secondary"
-                onClick={handleClose}
+                onClick={onClose}
                 css={'width: 117px;'}
               >
                 Cancel
@@ -242,13 +252,12 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave, toast }) => {
       </AppView>
     </Wrap>
   )
-}
+})
 
-SaveLocalIdentities.propTypes = {
-  dao: PropTypes.string.isRequired,
+Labels.propTypes = {
+  onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  toast: PropTypes.func.isRequired,
-  wrapper: AragonType,
+  labels: PropTypes.array.isRequired,
 }
 
 const Wrap = styled.div`
@@ -399,6 +408,6 @@ const List = styled.ul`
   )}
 `
 
-export default props => (
+export default React.memo(props => (
   <Toast>{toast => <SaveLocalIdentities {...props} toast={toast} />}</Toast>
-)
+))
