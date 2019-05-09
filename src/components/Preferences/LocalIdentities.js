@@ -134,15 +134,21 @@ const LocalIdentities = React.memo(
     )
     // standard: https://en.wikipedia.org/wiki/ISO_8601
     const today = format(Date.now(), 'yyyy-MM-dd')
-    const downloadHref = window.URL.createObjectURL(
-      new Blob(
-        [
-          JSON.stringify(
-            identities.filter(({ address }) => addressesSelected.get(address))
-          ),
-        ],
-        { type: 'text/json' }
-      )
+    const downloadHref = React.useMemo(
+      () =>
+        window.URL.createObjectURL(
+          new Blob(
+            [
+              JSON.stringify(
+                identities.filter(({ address }) =>
+                  addressesSelected.get(address)
+                )
+              ),
+            ],
+            { type: 'text/json' }
+          )
+        ),
+      [identities]
     )
 
     if (!identities.length) {
