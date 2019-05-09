@@ -275,12 +275,12 @@ const ModalTitle = styled.h1`
 `
 
 const ModalText = styled.p`
-  margin: 20px 0 20px 0;
+  margin: ${2.5 * GU}px 0 ${2.5 * GU}px 0;
 `
 
 const ModalControls = styled.div`
   display: grid;
-  grid-gap: 10px;
+  grid-gap: ${1.5 * GU}px;
   grid-template-columns: 1fr 1fr;
 
   ${breakpoint(
@@ -300,10 +300,11 @@ const RemoveButton = styled(Button)`
   ${breakpoint(
     'medium',
     `
-      margin-left: 20px;
+      margin-left: ${2.5 * GU}px;
     `
   )}
 `
+
 const Label = styled.div`
   white-space: nowrap;
   overflow: hidden;
