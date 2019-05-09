@@ -10,6 +10,7 @@ import {
   Checkbox,
   IconClose,
   IdentityBadge,
+  Toast,
   breakpoint,
   font,
   theme,
@@ -24,7 +25,7 @@ import { GU } from '../../utils'
 
 const QUERY_VAR = '?labels='
 
-const SaveLocalIdentities = ({ dao, wrapper, onSave }) => {
+const SaveLocalIdentities = ({ dao, wrapper, onSave, toast }) => {
   const { below } = useViewport()
   const smallView = below('medium')
   const { identityEvents$ } = React.useContext(IdentityContext)
@@ -73,6 +74,7 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave }) => {
       await wrapper.modifyAddressIdentity(address, { name })
     }
     identityEvents$.next({ type: identityEventTypes.IMPORT })
+    toast('Custom labels added')
     handleExit()
     onSave()
   }, [wrapper, labels, selected])
@@ -237,8 +239,9 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave }) => {
 
 SaveLocalIdentities.propTypes = {
   dao: PropTypes.string.isRequired,
-  wrapper: AragonType,
   onSave: PropTypes.func.isRequired,
+  toast: PropTypes.func.isRequired,
+  wrapper: AragonType,
 }
 
 const Wrap = styled.div`
@@ -389,4 +392,6 @@ const List = styled.ul`
   )}
 `
 
-export default SaveLocalIdentities
+export default props => (
+  <Toast>{toast => <SaveLocalIdentities {...props} toast={toast} />}</Toast>
+)
