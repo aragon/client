@@ -117,9 +117,29 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave }) => {
       >
         <Section>
           <Content>
-            <div>Save custom labels</div>
-            <div>These labels have been shared with you. By clicking on the 'Save' button, you’ll make them available in this device (labels will be stored locally).</div>
-            <Headers>
+            <h2
+              css={`
+                font-weight: bold;
+                font-size: 16px;
+                line-height: 25px;
+                padding: 0 ${2 * GU}px;
+              `}
+            >
+              Save custom labels
+            </h2>
+            <div
+              css={`
+                margin-top: ${2 * GU}px;
+                padding: 0 ${2 * GU}px;
+                font-size: 15px;
+                line-height: 22px;
+              `}
+            >
+              These labels have been shared with you. By clicking on the 'Save'
+              button, you’ll make them available in this device (labels will be
+              stored locally).
+            </div>
+            <Headers style={{ marginTop: `${5 * GU}px` }}>
               <div>
                 <StyledCheckbox
                   checked={allSelected}
@@ -128,7 +148,29 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave }) => {
                 />
                 Custom label
               </div>
-              <div>Address</div>
+              <div
+                css={`
+                  padding-right: ${2 * GU}px;
+                  text-align: right;
+
+                  ${breakpoint(
+                    'medium',
+                    `
+                      text-align: left;
+                    `
+                  )}
+                `}
+              >
+                <span
+                  css={`
+                    display: inline-block;
+                    width: 138.65px;
+                    text-align: left;
+                  `}
+                >
+                  Address
+                </span>
+              </div>
             </Headers>
             <List>
               {labels.map(({ address, name }) => (
@@ -140,14 +182,31 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave }) => {
                     />
                     {name}
                   </Label>
-                  <div>
+                  <div
+                    css={`
+                      padding-right: ${2 * GU}px;
+                      text-align: right;
+
+                      ${breakpoint(
+                        'medium',
+                        `
+                          text-align: left;
+                        `
+                      )}
+                    `}
+                  >
                     <IdentityBadge entity={address} />
                   </div>
                 </Item>
               ))}
             </List>
             <Controls>
-              <Button label="Cancel" mode="secondary" onClick={handleClose}>
+              <Button
+                label="Cancel"
+                mode="secondary"
+                onClick={handleClose}
+                css={'width: 117px;'}
+              >
                 Cancel
               </Button>
               <Button
@@ -155,6 +214,16 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave }) => {
                 mode="strong"
                 disabled={!someSelected}
                 onClick={handleSave}
+                css={`
+                  width: 117px;
+
+                  ${breakpoint(
+                    'medium',
+                    `
+                      margin-left: ${2 * GU}px;
+                    `
+                  )}
+                `}
               >
                 Save
               </Button>
@@ -183,7 +252,7 @@ const Wrap = styled.div`
 `
 
 const StyledAppBar = styled(AppBar)`
-  padding-left: 16px;
+  padding-left: ${2 * GU}px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -209,7 +278,7 @@ const Title = styled.h1`
 `
 
 const Section = styled.section`
-  padding: 16px 0;
+  padding: ${2 * GU}px 0;
 
   ${breakpoint(
     'medium',
@@ -221,7 +290,7 @@ const Section = styled.section`
 `
 
 const Content = styled.main`
-  padding-top: 16px;
+  padding-top: ${2 * GU}px;
 `
 
 const CloseButton = styled(ButtonIcon).attrs({
@@ -230,7 +299,7 @@ const CloseButton = styled(ButtonIcon).attrs({
 })`
   width: auto;
   height: 100%;
-  padding: 0 16px;
+  padding: 0 ${2 * GU}px;
 
   ${breakpoint(
     'medium',
@@ -253,15 +322,16 @@ const Label = styled.div`
 
 const Controls = styled.div`
   display: flex;
-  align-items: start;
-  flex-wrap: wrap;
+  justify-content: space-between;
   margin-top: ${2.5 * GU}px;
   padding: 0 ${2 * GU}px;
 
   ${breakpoint(
     'medium',
     `
+      display: block;
       padding: 0;
+      text-align: right;
     `
   )}
 `
