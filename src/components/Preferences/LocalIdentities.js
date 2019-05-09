@@ -103,10 +103,10 @@ const ShareableLocalIdentities = React.memo(
     const inputRef = React.useRef()
     const buttonRef = React.useRef()
 
-    const handleShare = () => setShareModalOpen(true)
-    const handleClose = () => setShareModalOpen(false)
-    const handleFocus = () => inputRef.current.select()
-    const handleCopy = () => {
+    const handleShare = React.useCallback(() => setShareModalOpen(true))
+    const handleClose = React.useCallback(() => setShareModalOpen(false))
+    const handleFocus = React.useCallback(() => inputRef.current.select())
+    const handleCopy = React.useCallback(() => {
       inputRef.current.focus()
       inputRef.current.select()
       try {
@@ -114,7 +114,7 @@ const ShareableLocalIdentities = React.memo(
       } catch (err) {
         console.warn(err)
       }
-    }
+    })
     const shareLink = React.useMemo(() => {
       const { origin, hash } = window.location
       const base = `${origin}/${hash.substr(0, hash.indexOf('/', 2))}`
