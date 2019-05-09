@@ -74,8 +74,15 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave, toast }) => {
       await wrapper.modifyAddressIdentity(address, { name })
     }
     identityEvents$.next({ type: identityEventTypes.IMPORT })
+
+    // a lot to do here
+    // toast
     toast('Custom labels added')
+    // close modal
+    setOpened(false)
+    // url
     handleExit()
+    // opens up preferences
     onSave()
   }, [wrapper, labels, selected])
 
