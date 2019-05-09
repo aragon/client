@@ -117,6 +117,8 @@ const SaveLocalIdentities = ({ dao, wrapper, onSave }) => {
       >
         <Section>
           <Content>
+            <div>Save custom labels</div>
+            <div>These labels have been shared with you. By clicking on the 'Save' button, you’ll make them available in this device (labels will be stored locally).</div>
             <Headers>
               <div>
                 <StyledCheckbox
