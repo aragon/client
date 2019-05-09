@@ -8,6 +8,7 @@ import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
 import Preferences from './components/Preferences/Preferences'
+import SaveLocalIdentities from './components/SaveLocalIdentities/SaveLocalIdentities'
 import CombinedPanel from './components/MenuPanel/CombinedPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
@@ -242,6 +243,12 @@ class Wrapper extends React.PureComponent {
 
     return (
       <Main visible={visible}>
+        <SaveLocalIdentities
+          dao={locator.dao}
+          onSave={this.handleOpenPreferences}
+          wrapper={wrapper}
+        />
+
         <Preferences
           dao={locator.dao}
           opened={preferencesOpened}
