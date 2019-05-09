@@ -53,7 +53,7 @@ const SaveLocalIdentities = React.memo(({ dao, wrapper, onSave, toast }) => {
       // opens up preferences
       onSave()
     },
-    [labels]
+    [wrapper, toast, onSave, handleClose]
   )
 
   const labelsIndex = React.useMemo(
@@ -72,7 +72,7 @@ const SaveLocalIdentities = React.memo(({ dao, wrapper, onSave, toast }) => {
     } catch (e) {
       console.warn('There was an error parsing the label data: ', e)
     }
-  }, [wrapper])
+  }, [wrapper, labelsIndex])
 
   if (!labels.length) {
     return null
