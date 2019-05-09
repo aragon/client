@@ -148,7 +148,7 @@ const LocalIdentities = React.memo(
             { type: 'text/json' }
           )
         ),
-      [identities]
+      [addressesSelected, identities]
     )
 
     if (!identities.length) {
