@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 
@@ -109,4 +109,63 @@ export function useRepoDetails(baseUrl, detailsUrl) {
     return ''
   }
   return usePromise(fetchDescription, [detailsUrl], null)
+}
+
+export function useEsc(cb, deps) {
+  const handlekeyDown = useCallback(
+    e => {
+      if (e.keyCode === keycodes.esc) {
+        cb()
+      }
+    },
+    [cb]
+  )
+  useEffect(() => {
+    window.addEventListener('keydown', handlekeyDown)
+    return () => window.removeEventListener('keydown', handlekeyDown)
+  }, [...deps])
+}
+
+const QUERY_VAR = '?labels='
+// checks if query string var exists
+// parses data and validates data consistency (will throw if prop don't exist)
+export function useSharedLabels(dao) {
+  const [isSharedLink, setIsSharedLink] = useState(false)
+  const [sharedLabels, setSharedLabels] = useState([])
+
+  const removeSharedLink = useCallback(
+    () => (window.location.hash = `#/${dao}`),
+    [window.location.hash]
+  )
+
+  useEffect(() => {
+    const index = window.location.hash.indexOf(QUERY_VAR)
+    if (index > -1) {
+      const raw = window.location.hash.substr(index + QUERY_VAR.length)
+      try {
+        const data = JSON.parse(window.decodeURI(atob(raw)))
+        setSharedLabels(data.map(({ address, name }) => ({ address, name })))
+        setIsSharedLink(true)
+      } catch (e) {
+        console.warn(
+          'There was an error parsing/validating the shared data: ',
+          e
+        )
+      }
+    }
+  }, [window.location.hash])
+
+  return { isSharedLink, setIsSharedLink, sharedLabels, removeSharedLink }
+}
+
+export function useSelected(initial) {
+  const [selected, setSelected] = useState(initial)
+  const [allSelected, someSelected] = useMemo(
+    () => [
+      Array.from(selected.values()).every(Boolean),
+      Array.from(selected.values()).some(Boolean),
+    ],
+    [selected]
+  )
+  return { selected, setSelected, allSelected, someSelected }
 }
