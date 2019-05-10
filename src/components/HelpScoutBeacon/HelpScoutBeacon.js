@@ -273,7 +273,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
                 font-size: 15px;
               `}
             >
-              Yes, I'd like help
+              Yes, I’d like help
             </Button>
           </Body>
         </main>
