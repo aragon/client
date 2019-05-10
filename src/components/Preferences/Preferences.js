@@ -123,6 +123,7 @@ const AnimatedPreferences = React.memo(({ opened, ...props }) => {
       {show =>
         show &&
         /* eslint-disable react/prop-types */
+        // z-index 2 on mobile keeps the menu above this preferences modal
         (({ opacity, enterProgress, blocking }) => (
           <AnimatedWrap
             style={{
