@@ -28,7 +28,7 @@ const Beacon = React.memo(() => {
   const handleOptIn = React.useCallback(() => {
     localStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
     setOptedIn(true)
-  })
+  }, [HELPSCOUT_BEACON_KEY])
 
   return (
     <div
@@ -56,7 +56,7 @@ const Beacon = React.memo(() => {
 
 const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
   const [mode, setMode] = React.useState(CLOSED)
-  const handleClose = React.useCallback(() => setMode(CLOSED))
+  const handleClose = React.useCallback(() => setMode(CLOSED), [CLOSED])
   const handleToggle = React.useCallback(() => {
     if (mode !== OPENING && mode !== CLOSING) {
       setMode(mode === CLOSED ? OPENING : CLOSING)
@@ -64,20 +64,20 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
     if (optedIn) {
       window.Beacon('toggle')
     }
-  })
+  }, [OPENING, CLOSING, CLOSED, optedIn, mode])
   const handleToggleEnd = React.useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
-  })
+  }, [OPENING, OPENED, CLOSED, mode])
   const handleOptIn = React.useCallback(() => {
     onOptIn()
     setTimeout(() => window.Beacon('open'), 100)
-  })
+  }, [onOptIn])
   React.useEffect(() => {
     if (optedIn && window.Beacon) {
       window.Beacon('on', 'open', () => setMode(OPENED))
       window.Beacon('on', 'close', () => setMode(CLOSED))
     }
-  }, [optedIn, window.Beacon])
+  }, [optedIn])
 
   return (
     <React.Fragment>
