@@ -13,6 +13,7 @@ import {
   Info,
   Modal,
   TextInput,
+  Toast,
   breakpoint,
   font,
   theme,
@@ -28,6 +29,7 @@ import Import from './Import'
 import { GU } from '../../utils'
 
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+const TIMEOUT_TOAST = 4000
 
 const SelectableLocalIdentities = React.memo(
   ({ localIdentities, ...props }) => {
@@ -78,13 +80,18 @@ const SelectableLocalIdentities = React.memo(
     }, [initialAddressesSelected])
 
     return (
-      <ShareableLocalIdentities
-        {...props}
-        addressesSelected={addressesSelected}
-        identities={identities}
-        onToggleAddress={handleToggleAddress}
-        onToggleAll={handleToggleAll}
-      />
+      <Toast timeout={TIMEOUT_TOAST}>
+        {toast => (
+          <ShareableLocalIdentities
+            {...props}
+            addressesSelected={addressesSelected}
+            identities={identities}
+            onToggleAddress={handleToggleAddress}
+            onToggleAll={handleToggleAll}
+            toast={toast}
+          />
+        )}
+      </Toast>
     )
   }
 )
@@ -98,7 +105,7 @@ SelectableLocalIdentities.defaultProps = {
 }
 
 const ShareableLocalIdentities = React.memo(
-  ({ addressesSelected, identities, dao, ...props }) => {
+  ({ addressesSelected, identities, dao, toast, ...props }) => {
     const [shareModalOpen, setShareModalOpen] = React.useState(false)
     const inputRef = React.useRef()
 
@@ -110,6 +117,8 @@ const ShareableLocalIdentities = React.memo(
       inputRef.current.select()
       try {
         document.execCommand('copy')
+        toast('Link copied')
+        setTimeout(handleClose, (TIMEOUT_TOAST * 7) / 8)
       } catch (err) {
         console.warn(err)
       }
@@ -239,7 +248,7 @@ const ShareableLocalIdentities = React.memo(
               onClick={handleClose}
               css={'width: 117px;'}
             >
-              Cancel
+              Close
             </Button>
             <Button
               mode="strong"
@@ -270,6 +279,7 @@ ShareableLocalIdentities.propTypes = {
   addressesSelected: PropTypes.instanceOf(Map).isRequired,
   dao: PropTypes.string.isRequired,
   identities: PropTypes.array.isRequired,
+  toast: PropTypes.func.isRequired,
 }
 
 const LocalIdentities = React.memo(
