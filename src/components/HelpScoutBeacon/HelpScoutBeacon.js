@@ -22,10 +22,9 @@ const OPENING = 'opening'
 const CLOSING = 'closing'
 
 const Beacon = React.memo(() => {
-  const [optedIn, setOptedIn] = React.useState(false)
-  React.useEffect(() => {
-    setOptedIn(localStorage.getItem(HELPSCOUT_BEACON_KEY) === '1')
-  }, [])
+  const [optedIn, setOptedIn] = React.useState(
+    localStorage.getItem(HELPSCOUT_BEACON_KEY) === '1'
+  )
   const handleOptIn = React.useCallback(() => {
     localStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
     setOptedIn(true)
