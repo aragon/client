@@ -322,7 +322,6 @@ const Header = styled.header`
   border-top-right-radius: 2px;
   border-top-left-radius: 2px;
   height: 150px;
-  min-height: 150px;
   background-color: transparent;
   background-image: linear-gradient(
     180deg,
