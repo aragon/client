@@ -238,7 +238,8 @@ const StyledCheckbox = styled(Checkbox)`
   margin-right: ${3 * GU}px;
 `
 
-const Label = styled.div`
+const Label = styled.label`
+  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -306,7 +307,7 @@ const Item = styled.li`
   align-items: center;
   border-bottom: 1px solid ${theme.contentBorder};
 
-  & > div {
+  & > label {
     padding-left: ${2 * GU}px;
   }
 `
