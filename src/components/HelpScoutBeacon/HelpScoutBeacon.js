@@ -77,7 +77,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
       window.Beacon('on', 'open', () => setMode(OPENED))
       window.Beacon('on', 'close', () => setMode(CLOSED))
     }
-  }, [optedIn])
+  }, [optedIn, window.Beacon])
 
   return (
     <React.Fragment>
