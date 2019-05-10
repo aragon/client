@@ -208,7 +208,7 @@ const LocalIdentities = React.memo(
               Export
             </StyledExport>
           )}
-          <Button label="Remove labels" mode="outline" onClick={onClearAll}>
+          <Button mode="outline" onClick={onClearAll}>
             <IconCross /> Remove all labels
           </Button>
         </Controls>
