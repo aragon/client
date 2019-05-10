@@ -36,7 +36,7 @@ const Beacon = React.memo(() => {
         position: absolute;
         bottom: ${2 * GU}px;
         right: ${2 * GU}px;
-        z-index: 1001;
+        z-index: 3;
 
         ${breakpoint(
           'medium',
