@@ -227,7 +227,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
               margin-top: ${2.5 * GU}px;
             `}
             src={logo}
-            alt="Aragon logo"
+            alt=""
           />
         </Header>
         <main
