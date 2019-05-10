@@ -126,7 +126,7 @@ HelpOptIn.propTypes = {
   optedIn: PropTypes.bool.isRequired,
 }
 
-const ToggleDialogueButton = ({ open, onToggle }) => {
+const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
   return (
     <RoundButton
       onClick={onToggle}
@@ -201,7 +201,7 @@ const ToggleDialogueButton = ({ open, onToggle }) => {
       </Transition>
     </RoundButton>
   )
-}
+})
 
 ToggleDialogueButton.propTypes = {
   open: PropTypes.bool.isRequired,
