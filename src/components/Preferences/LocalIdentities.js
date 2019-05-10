@@ -12,12 +12,14 @@ import {
   IdentityBadge,
   Info,
   Modal,
+  TabBar,
   TextInput,
   Toast,
   breakpoint,
   font,
   theme,
 } from '@aragon/ui'
+import { AragonType } from '../../prop-types'
 import LocalIdentityPopoverTitle from '../IdentityBadge/LocalIdentityPopoverTitle'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
 import {
@@ -30,6 +32,76 @@ import { GU } from '../../utils'
 
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 const TIMEOUT_TOAST = 4000
+const TABS = ['Manage labels']
+
+const EnhancedLocalIdentities = React.memo(({ dao, wrapper }) => {
+  const { identityEvents$ } = React.useContext(IdentityContext)
+  const [selectedTab, setSelectedTab] = React.useState(0)
+  const [localIdentities, setLocalIdentities] = React.useState({})
+
+  const handleGetAll = React.useCallback(async () => {
+    if (!wrapper) {
+      return
+    }
+    setLocalIdentities(await wrapper.getLocalIdentities())
+  }, [wrapper])
+  const handleClearAll = React.useCallback(async () => {
+    if (!wrapper) {
+      return
+    }
+    await wrapper.clearLocalIdentities()
+    setLocalIdentities({})
+    identityEvents$.next({ type: identityEventTypes.CLEAR })
+  }, [wrapper, identityEvents$])
+  const handleModify = React.useCallback(
+    (address, data) => {
+      if (!wrapper) {
+        return
+      }
+      wrapper.modifyAddressIdentity(address, data)
+    },
+    [wrapper]
+  )
+  const handleImport = React.useCallback(
+    async list => {
+      if (!wrapper) {
+        return
+      }
+      await wrapper.clearLocalIdentities()
+      for (const { name, address } of list) {
+        await wrapper.modifyAddressIdentity(address, { name })
+      }
+      setLocalIdentities(await wrapper.getLocalIdentities())
+      identityEvents$.next({ type: identityEventTypes.IMPORT })
+    },
+    [wrapper, identityEvents$]
+  )
+
+  React.useEffect(() => {
+    handleGetAll()
+  }, [wrapper])
+
+  return (
+    <React.Fragment>
+      <TabBar items={TABS} selected={selectedTab} onChange={setSelectedTab} />
+      <Content>
+        <SelectableLocalIdentities
+          dao={dao}
+          localIdentities={localIdentities}
+          onImport={handleImport}
+          onClearAll={handleClearAll}
+          onModify={handleModify}
+          onModifyEvent={handleGetAll}
+        />
+      </Content>
+    </React.Fragment>
+  )
+})
+
+EnhancedLocalIdentities.propTypes = {
+  dao: PropTypes.string.isRequired,
+  wrapper: AragonType,
+}
 
 const SelectableLocalIdentities = React.memo(
   ({ localIdentities, ...props }) => {
@@ -529,4 +601,8 @@ const List = styled.ul`
   )}
 `
 
-export default SelectableLocalIdentities
+const Content = styled.main`
+  padding-top: 16px;
+`
+
+export default EnhancedLocalIdentities
