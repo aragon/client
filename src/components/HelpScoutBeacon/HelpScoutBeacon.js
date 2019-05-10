@@ -147,7 +147,7 @@ const ToggleDialogueButton = ({ open, onToggle }) => {
           show &&
           /* eslint-disable react/prop-types */
           (({ opacity, enterProgress }) => (
-            <AnimatedDiv
+            <RoundButtonIcon
               style={{
                 opacity,
                 transform: enterProgress.interpolate(
@@ -168,7 +168,7 @@ const ToggleDialogueButton = ({ open, onToggle }) => {
                   }
                 `}
               />
-            </AnimatedDiv>
+            </RoundButtonIcon>
           ))
         }
       </Transition>
@@ -184,7 +184,7 @@ const ToggleDialogueButton = ({ open, onToggle }) => {
           show &&
           /* eslint-disable react/prop-types */
           (({ opacity, enterProgress }) => (
-            <AnimatedDiv
+            <RoundButtonIcon
               style={{
                 opacity,
                 transform: enterProgress.interpolate(
@@ -195,7 +195,7 @@ const ToggleDialogueButton = ({ open, onToggle }) => {
               }}
             >
               <IconQuestion />
-            </AnimatedDiv>
+            </RoundButtonIcon>
           ))
         }
       </Transition>
@@ -368,7 +368,7 @@ const RoundButton = styled(Button).attrs({ mode: 'strong' })`
   justify-content: center;
 `
 
-const AnimatedDiv = styled(animated.div)`
+const RoundButtonIcon = styled(animated.div)`
   display: flex;
   position: absolute;
 `
