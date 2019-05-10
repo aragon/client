@@ -298,10 +298,7 @@ const Wrapper = styled.aside`
   * minus 4 GUs (64px) top plus the relative position of zeroY to the
   * edge of the viewport (60px) plus one GU for margin (16px) */
   top: calc(-100vh + 140px);
-  /* zeroX is relative to beacon container full viewport width
-  * minus 2 GUs on each side (32px) plus the position of zeroX
-  * relative to the edge of the viewport (60px) */
-  left: calc(-100vw + 92px);
+  right: 0;
   z-index: 1;
   display: flex;
   flex-direction: column;
