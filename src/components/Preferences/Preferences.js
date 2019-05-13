@@ -24,7 +24,7 @@ import LocalIdentitiesComponent from './LocalIdentities'
 
 const TABS = ['Manage labels']
 
-const Preferences = ({ dao, onClose, smallView, wrapper }) => {
+const Preferences = React.memo(({ dao, onClose, smallView, wrapper }) => {
   const { identityEvents$ } = React.useContext(IdentityContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
   const [localIdentities, setLocalIdentities] = React.useState({})
@@ -52,7 +52,7 @@ const Preferences = ({ dao, onClose, smallView, wrapper }) => {
     if (!wrapper) {
       return
     }
-    setLocalIdentities({})
+    await wrapper.clearLocalIdentities()
     for (const { name, address } of list) {
       await wrapper.modifyAddressIdentity(address, { name })
     }
@@ -98,7 +98,7 @@ const Preferences = ({ dao, onClose, smallView, wrapper }) => {
       </Section>
     </AppView>
   )
-}
+})
 
 Preferences.propTypes = {
   dao: PropTypes.string.isRequired,
@@ -107,7 +107,7 @@ Preferences.propTypes = {
   wrapper: AragonType,
 }
 
-const AnimatedPreferences = ({ opened, ...props }) => {
+const AnimatedPreferences = React.memo(({ opened, ...props }) => {
   const { below } = useViewport()
   const smallView = below('medium')
 
@@ -123,10 +123,11 @@ const AnimatedPreferences = ({ opened, ...props }) => {
       {show =>
         show &&
         /* eslint-disable react/prop-types */
+        // z-index 2 on mobile keeps the menu above this preferences modal
         (({ opacity, enterProgress, blocking }) => (
           <AnimatedWrap
-            smallView={smallView}
             style={{
+              zIndex: smallView ? 2 : 5,
               pointerEvents: blocking ? 'auto' : 'none',
               opacity,
               transform: enterProgress.interpolate(
@@ -137,14 +138,14 @@ const AnimatedPreferences = ({ opened, ...props }) => {
               ),
             }}
           >
-            <Preferences {...props} />
+            <Preferences {...props} smallView={smallView} />
           </AnimatedWrap>
         ))
       /* eslint-enable react/prop-types */
       }
     </Transition>
   )
-}
+})
 
 AnimatedPreferences.propTypes = {
   opened: PropTypes.bool,
@@ -157,7 +158,6 @@ const AnimatedWrap = styled(animated.div)`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: ${({ smallView }) => (smallView ? 2 : 5)};
   min-width: 320px;
 `
 
