@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Subject } from 'rxjs'
 
@@ -32,9 +32,12 @@ IdentityProvider.propTypes = {
 
 const IdentityConsumer = IdentityContext.Consumer
 
+const useIdentity = () => useContext(IdentityContext)
+
 export {
   IdentityProvider,
   IdentityConsumer,
   IdentityContext,
   identityEventTypes,
+  useIdentity,
 }
