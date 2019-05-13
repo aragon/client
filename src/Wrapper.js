@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
-import { Viewport } from '@aragon/ui'
+import { useViewport } from '@aragon/ui'
 import { AppCenter, Permissions, Settings } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
@@ -13,7 +13,7 @@ import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
 import AppLoader from './components/App/AppLoader'
-import { IdentityConsumer } from './components/IdentityManager/IdentityManager'
+import { useIdentity } from './components/IdentityManager/IdentityManager'
 import {
   AppType,
   AppsStatusType,
@@ -484,19 +484,13 @@ const AppScreen = styled.div`
 `
 
 export default props => {
+  const { below } = useViewport()
+  const { identityEvents$ } = useIdentity()
   return (
-    <IdentityConsumer>
-      {({ identityEvents$ }) => (
-        <Viewport>
-          {({ below }) => (
-            <Wrapper
-              {...props}
-              autoClosingPanel={below('medium')}
-              identityEvents$={identityEvents$}
-            />
-          )}
-        </Viewport>
-      )}
-    </IdentityConsumer>
+    <Wrapper
+      {...props}
+      autoClosingPanel={below('medium')}
+      identityEvents$={identityEvents$}
+    />
   )
 }
