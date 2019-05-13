@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { isStaticApp } from '../../static-apps'
 import LoadingScreen from '../LoadingScreen/LoadingScreen'
-
-const INTERNAL_APPS = ['home', 'permissions', 'apps', 'settings']
 
 const LOADING_ORG = 'Loading organization…'
 const LOADING_APPS = 'Loading apps…'
@@ -25,11 +24,8 @@ const LOADING_STEPS_EXTERNAL = {
     [daoLoading, appsLoading, appLoading, true].findIndex(v => v),
 }
 
-function getLoadingSteps(instanceId) {
-  return INTERNAL_APPS.includes(instanceId)
-    ? LOADING_STEPS_INTERNAL
-    : LOADING_STEPS_EXTERNAL
-}
+const getLoadingSteps = instanceId =>
+  isStaticApp(instanceId) ? LOADING_STEPS_INTERNAL : LOADING_STEPS_EXTERNAL
 
 function useLoadingStatus({
   appLoading,
