@@ -22,7 +22,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
     } catch (e) {
       // address does not resolve to identity
     }
-  }, [address, resolve, setLabel])
+  }, [address, resolve])
 
   const handleClick = useCallback(() => {
     showLocalIdentityModal(address)
@@ -46,7 +46,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
 
   const clearLabel = useCallback(() => {
     setLabel(null)
-  }, [setLabel])
+  }, [])
 
   useEffect(() => {
     handleResolve()

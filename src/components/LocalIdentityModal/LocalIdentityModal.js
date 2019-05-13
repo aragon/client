@@ -38,7 +38,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
     } catch (e) {
       setError(e)
     }
-  }, [address, labelInput, onSave, setError])
+  }, [address, labelInput, onSave])
 
   const handleKeyDown = useCallback(
     e => {
@@ -57,7 +57,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
     labelInput.current.select()
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [label, labelInput, handleKeyDown, setAction])
+  }, [label, labelInput, handleKeyDown])
 
   return (
     <EscapeOutside onEscapeOutside={onCancel}>
