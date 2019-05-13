@@ -165,9 +165,8 @@ class AppIFrame extends React.Component {
         onLoad={this.handleOnLoad}
         ref={this.handleIFrameRef}
         sandbox={SANDBOX}
-        style={{ display: show ? 'block' : 'none' }}
         css={`
-          display: block;
+          display: ${show ? 'block' : 'none'};
           height: 100%;
           width: 100%;
         `}
