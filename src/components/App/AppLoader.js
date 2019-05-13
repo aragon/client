@@ -53,7 +53,7 @@ function useLoadingStatus({
         loadingSteps.stepIndex({ daoLoading, appsLoading, appLoading })
       )
     }
-  }, [daoLoading, appsLoading, appLoading])
+  }, [appLoading, appsLoading, daoLoading, loadingSteps])
 
   const label = (loadingSteps
     ? loadingSteps.steps[loadingStepIndex]
