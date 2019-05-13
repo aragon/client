@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { format } from 'date-fns'
+import { saveAs } from 'file-saver'
 import {
   Button,
   Checkbox,
@@ -132,24 +133,19 @@ const LocalIdentities = React.memo(
       ],
       [addressesSelected]
     )
-    // standard: https://en.wikipedia.org/wiki/ISO_8601
-    const today = format(Date.now(), 'yyyy-MM-dd')
-    const downloadHref = React.useMemo(
-      () =>
-        window.URL.createObjectURL(
-          new Blob(
-            [
-              JSON.stringify(
-                identities.filter(({ address }) =>
-                  addressesSelected.get(address)
-                )
-              ),
-            ],
-            { type: 'text/json' }
-          )
-        ),
-      [addressesSelected, identities]
-    )
+    const handleDownload = React.useCallback(() => {
+      // standard: https://en.wikipedia.org/wiki/ISO_8601
+      const today = format(Date.now(), 'yyyy-MM-dd')
+      const blob = new Blob(
+        [
+          JSON.stringify(
+            identities.filter(({ address }) => addressesSelected.get(address))
+          ),
+        ],
+        { type: 'text/json' }
+      )
+      saveAs(blob, `aragon-labels_${dao}_${today}.json`)
+    }, [identities, addressesSelected])
 
     if (!identities.length) {
       return <EmptyLocalIdentities onImport={onImport} />
@@ -201,8 +197,7 @@ const LocalIdentities = React.memo(
             <StyledExport
               label="Export labels"
               mode="secondary"
-              download={`aragon-labels_${dao}_${today}.json`}
-              href={someSelected ? downloadHref : undefined}
+              onClick={handleDownload}
               disabled={!someSelected}
             >
               Export
