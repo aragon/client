@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, TextInput, breakpoint, font, theme } from '@aragon/ui'
@@ -11,7 +11,7 @@ const LocalIdentityModal = ({ opened, ...props }) => {
   const { showModal, hideModal } = React.useContext(ModalContext)
   React.useEffect(() => {
     opened ? showModal(Modal, props) : hideModal()
-  }, [opened])
+  }, [opened, showModal, hideModal, props])
 
   return null
 }
@@ -24,10 +24,12 @@ const Modal = ({ address, label, onCancel, onSave }) => {
   const [action, setAction] = React.useState(null)
   const [error, setError] = React.useState(null)
   const labelInput = React.useRef(null)
-  const handleCancel = () => {
+
+  const handleCancel = useCallback(() => {
     onCancel()
-  }
-  const handleSave = () => {
+  }, [onCancel])
+
+  const handleSave = useCallback(() => {
     try {
       const label = labelInput.current.value.trim()
       if (label) {
@@ -36,21 +38,26 @@ const Modal = ({ address, label, onCancel, onSave }) => {
     } catch (e) {
       setError(e)
     }
-  }
-  const handlekeyDown = e => {
-    if (e.keyCode === keycodes.enter) {
-      handleSave()
-    } else if (e.keyCode === keycodes.esc) {
-      handleCancel()
-    }
-  }
-  React.useEffect(() => {
+  }, [address, labelInput, onSave])
+
+  const handleKeyDown = useCallback(
+    e => {
+      if (e.keyCode === keycodes.enter) {
+        handleSave()
+      } else if (e.keyCode === keycodes.esc) {
+        handleCancel()
+      }
+    },
+    [handleCancel, handleSave]
+  )
+
+  useEffect(() => {
     setAction(label && label.trim() ? 'Edit' : 'Add')
     labelInput.current.focus()
     labelInput.current.select()
-    window.addEventListener('keydown', handlekeyDown)
-    return () => window.removeEventListener('keydown', handlekeyDown)
-  }, [])
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [label, labelInput, handleKeyDown])
 
   return (
     <EscapeOutside onEscapeOutside={onCancel}>

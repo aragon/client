@@ -114,17 +114,20 @@ const LocalIdentities = React.memo(
     const { showLocalIdentityModal } = React.useContext(
       LocalIdentityModalContext
     )
-    const updateLabel = React.useCallback(address => async () => {
-      try {
-        await showLocalIdentityModal(address)
-        // preferences get all
-        onModifyEvent()
-        // for iframe apps
-        identityEvents$.next({ type: identityEventTypes.MODIFY, address })
-      } catch (e) {
-        /* nothing was updated */
-      }
-    })
+    const updateLabel = React.useCallback(
+      address => async () => {
+        try {
+          await showLocalIdentityModal(address)
+          // preferences get all
+          onModifyEvent()
+          // for iframe apps
+          identityEvents$.next({ type: identityEventTypes.MODIFY, address })
+        } catch (e) {
+          /* nothing was updated */
+        }
+      },
+      [identityEvents$, onModifyEvent, showLocalIdentityModal]
+    )
 
     const [allSelected, someSelected] = React.useMemo(
       () => [
@@ -145,7 +148,7 @@ const LocalIdentities = React.memo(
         { type: 'text/json' }
       )
       saveAs(blob, `aragon-labels_${dao}_${today}.json`)
-    }, [identities, addressesSelected])
+    }, [identities, dao, addressesSelected])
 
     if (!identities.length) {
       return <EmptyLocalIdentities onImport={onImport} />
