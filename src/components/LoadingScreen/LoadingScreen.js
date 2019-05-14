@@ -18,7 +18,7 @@ const LoadingScreen = React.memo(function LoadingScreen({
     let timer = null
     if (progress === 1 && visible) {
       timer = setTimeout(() => setVisible(false), HIDE_DELAY)
-    } else if (!visible) {
+    } else if (progress !== 1 && !visible) {
       setVisible(true)
     }
     return () => clearTimeout(timer)

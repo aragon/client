@@ -41,9 +41,6 @@ function useLoadingStatus({
   useEffect(() => {
     const loadingSteps = getLoadingSteps(instanceId)
     setLoadingSteps(loadingSteps)
-    setLoadingStepIndex(
-      loadingSteps.stepIndex({ daoLoading, appsLoading, appLoading })
-    )
   }, [instanceId])
 
   // Update the step index
