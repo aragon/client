@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
@@ -25,9 +25,9 @@ import LocalIdentitiesComponent from './LocalIdentities'
 const TABS = ['Manage labels']
 
 const Preferences = React.memo(({ dao, onClose, smallView, wrapper }) => {
-  const { identityEvents$ } = React.useContext(IdentityContext)
-  const [selectedTab, setSelectedTab] = React.useState(0)
-  const [localIdentities, setLocalIdentities] = React.useState({})
+  const { identityEvents$ } = useContext(IdentityContext)
+  const [selectedTab, setSelectedTab] = useState(0)
+  const [localIdentities, setLocalIdentities] = useState({})
 
   const handleGetAll = useCallback(async () => {
     if (!wrapper) {

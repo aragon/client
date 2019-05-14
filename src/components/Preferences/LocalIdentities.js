@@ -1,4 +1,10 @@
-import React from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { format } from 'date-fns'
@@ -8,6 +14,7 @@ import {
   Checkbox,
   IconCross,
   IdentityBadge,
+  Modal,
   Info,
   breakpoint,
   font,
@@ -27,7 +34,7 @@ const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
 const SelectableLocalIdentities = React.memo(
   ({ localIdentities, ...props }) => {
-    const identities = React.useMemo(
+    const identities = useMemo(
       () =>
         Object.entries(localIdentities).map(([address, identity]) => ({
           ...identity,
@@ -35,15 +42,15 @@ const SelectableLocalIdentities = React.memo(
         })),
       [localIdentities]
     )
-    const initialAddressesSelected = React.useMemo(
+    const initialAddressesSelected = useMemo(
       () => new Map(identities.map(({ address }) => [address, true])),
       [identities]
     )
-    const [addressesSelected, setAddressesSelected] = React.useState(
+    const [addressesSelected, setAddressesSelected] = useState(
       initialAddressesSelected
     )
 
-    const handleToggleAll = React.useCallback(
+    const handleToggleAll = useCallback(
       () =>
         setAddressesSelected(
           new Map(
@@ -58,7 +65,7 @@ const SelectableLocalIdentities = React.memo(
         ),
       [addressesSelected, identities]
     )
-    const handleToggleAddress = React.useCallback(
+    const handleToggleAddress = useCallback(
       address => () =>
         setAddressesSelected(
           new Map([
@@ -69,7 +76,7 @@ const SelectableLocalIdentities = React.memo(
       [addressesSelected]
     )
 
-    React.useEffect(() => {
+    useEffect(() => {
       setAddressesSelected(initialAddressesSelected)
     }, [initialAddressesSelected])
 
@@ -110,11 +117,9 @@ const LocalIdentities = React.memo(
     onToggleAddress,
     onToggleAll,
   }) => {
-    const { identityEvents$ } = React.useContext(IdentityContext)
-    const { showLocalIdentityModal } = React.useContext(
-      LocalIdentityModalContext
-    )
-    const updateLabel = React.useCallback(
+    const { identityEvents$ } = useContext(IdentityContext)
+    const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
+    const updateLabel = useCallback(
       address => async () => {
         try {
           await showLocalIdentityModal(address)
@@ -129,14 +134,14 @@ const LocalIdentities = React.memo(
       [identityEvents$, onModifyEvent, showLocalIdentityModal]
     )
 
-    const [allSelected, someSelected] = React.useMemo(
+    const [allSelected, someSelected] = useMemo(
       () => [
         Array.from(addressesSelected.values()).every(v => v),
         Array.from(addressesSelected.values()).some(v => v),
       ],
       [addressesSelected]
     )
-    const handleDownload = React.useCallback(() => {
+    const handleDownload = useCallback(() => {
       // standard: https://en.wikipedia.org/wiki/ISO_8601
       const today = format(Date.now(), 'yyyy-MM-dd')
       const blob = new Blob(
@@ -149,6 +154,16 @@ const LocalIdentities = React.memo(
       )
       saveAs(blob, `aragon-labels_${dao}_${today}.json`)
     }, [identities, dao, addressesSelected])
+
+    const [confirmationModalOpened, setConfirmationModalOpened] = useState(
+      false
+    )
+    const handleOpenConfirmationModal = useCallback(() => {
+      setConfirmationModalOpened(true)
+    }, [])
+    const handleCloseConfirmationModal = useCallback(() => {
+      setConfirmationModalOpened(false)
+    }, [])
 
     if (!identities.length) {
       return <EmptyLocalIdentities onImport={onImport} />
@@ -206,9 +221,35 @@ const LocalIdentities = React.memo(
               Export
             </StyledExport>
           )}
-          <Button mode="outline" onClick={onClearAll}>
+          <Button mode="outline" onClick={handleOpenConfirmationModal}>
             <IconCross /> Remove all labels
           </Button>
+          <Modal
+            visible={confirmationModalOpened}
+            onClose={handleOpenConfirmationModal}
+          >
+            <ModalTitle>Remove labels</ModalTitle>
+            <ModalText>
+              This action will irreversibly delete the selected labels you have
+              added to your organization on this device
+            </ModalText>
+            <ModalControls>
+              <Button
+                label="Cancel"
+                mode="secondary"
+                onClick={handleCloseConfirmationModal}
+              >
+                Cancel
+              </Button>
+              <RemoveButton
+                label="Remove labels"
+                mode="strong"
+                onClick={onClearAll}
+              >
+                Remove
+              </RemoveButton>
+            </ModalControls>
+          </Modal>
         </Controls>
         <Warning />
       </React.Fragment>
@@ -232,8 +273,38 @@ LocalIdentities.defaultProps = {
   onModifyEvent: () => null,
 }
 
+const ModalTitle = styled.h1`
+  font-size: 22px;
+`
+
+const ModalText = styled.p`
+  margin: ${2.5 * GU}px 0 ${2.5 * GU}px 0;
+`
+
+const ModalControls = styled.div`
+  display: grid;
+  grid-gap: ${1.5 * GU}px;
+  grid-template-columns: 1fr 1fr;
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+      justify-content: flex-end;
+    `
+  )}
+`
+
 const StyledCheckbox = styled(Checkbox)`
   margin-right: ${3 * GU}px;
+`
+
+const RemoveButton = styled(Button)`
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: ${2.5 * GU}px;
+    `
+  )}
 `
 
 const Label = styled.label`
