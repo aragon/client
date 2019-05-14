@@ -25,11 +25,12 @@ const BeaconHeadScripts = ({ optedIn }) => {
             display: none !important;
           }
           #beacon-container .BeaconContainer {
-            height: calc(100vh - 90px - 48px) !important;
-            max-height: calc(100vh - 90px - 48px) !important;
-            width: calc(100vw - 32px) !important;
-            top: ${6 * GU}px !important;
-            left: ${2 * GU}px !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            width: 100vw !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 3 !important;
           }
           @media (min-width: 768px) {
             #beacon-container .BeaconContainer {
