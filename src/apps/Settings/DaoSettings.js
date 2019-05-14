@@ -52,13 +52,13 @@ const DaoSettings = React.memo(
           text={`This organization is deployed on the ${network.name}.`}
         >
           {checksummedDaoAddr ? (
-            <Wrap>
+            <div>
               <Label>Address</Label>
               <LocalIdentityBadge
                 entity={checksummedDaoAddr}
                 shorten={shortAddresses}
               />
-            </Wrap>
+            </div>
           ) : (
             <p>Resolving DAO address…</p>
           )}
@@ -165,11 +165,6 @@ DaoSettings.propTypes = {
 DaoSettings.defaultProps = {
   shortAddresses: false,
 }
-
-const Wrap = styled.div`
-  display: flex;
-  flex-direction: column;
-`
 
 const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   padding: 0;
