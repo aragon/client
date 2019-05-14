@@ -1,4 +1,10 @@
-import React from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { format } from 'date-fns'
@@ -28,7 +34,7 @@ const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
 const SelectableLocalIdentities = React.memo(
   ({ localIdentities, ...props }) => {
-    const identities = React.useMemo(
+    const identities = useMemo(
       () =>
         Object.entries(localIdentities).map(([address, identity]) => ({
           ...identity,
@@ -36,15 +42,15 @@ const SelectableLocalIdentities = React.memo(
         })),
       [localIdentities]
     )
-    const initialAddressesSelected = React.useMemo(
+    const initialAddressesSelected = useMemo(
       () => new Map(identities.map(({ address }) => [address, true])),
       [identities]
     )
-    const [addressesSelected, setAddressesSelected] = React.useState(
+    const [addressesSelected, setAddressesSelected] = useState(
       initialAddressesSelected
     )
 
-    const handleToggleAll = React.useCallback(
+    const handleToggleAll = useCallback(
       () =>
         setAddressesSelected(
           new Map(
@@ -59,7 +65,7 @@ const SelectableLocalIdentities = React.memo(
         ),
       [addressesSelected, identities]
     )
-    const handleToggleAddress = React.useCallback(
+    const handleToggleAddress = useCallback(
       address => () =>
         setAddressesSelected(
           new Map([
@@ -70,7 +76,7 @@ const SelectableLocalIdentities = React.memo(
       [addressesSelected]
     )
 
-    React.useEffect(() => {
+    useEffect(() => {
       setAddressesSelected(initialAddressesSelected)
     }, [initialAddressesSelected])
 
@@ -111,11 +117,9 @@ const LocalIdentities = React.memo(
     onToggleAddress,
     onToggleAll,
   }) => {
-    const { identityEvents$ } = React.useContext(IdentityContext)
-    const { showLocalIdentityModal } = React.useContext(
-      LocalIdentityModalContext
-    )
-    const updateLabel = React.useCallback(
+    const { identityEvents$ } = useContext(IdentityContext)
+    const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
+    const updateLabel = useCallback(
       address => async () => {
         try {
           await showLocalIdentityModal(address)
@@ -130,14 +134,14 @@ const LocalIdentities = React.memo(
       [identityEvents$, onModifyEvent, showLocalIdentityModal]
     )
 
-    const [allSelected, someSelected] = React.useMemo(
+    const [allSelected, someSelected] = useMemo(
       () => [
         Array.from(addressesSelected.values()).every(v => v),
         Array.from(addressesSelected.values()).some(v => v),
       ],
       [addressesSelected]
     )
-    const handleDownload = React.useCallback(() => {
+    const handleDownload = useCallback(() => {
       // standard: https://en.wikipedia.org/wiki/ISO_8601
       const today = format(Date.now(), 'yyyy-MM-dd')
       const blob = new Blob(
@@ -151,12 +155,12 @@ const LocalIdentities = React.memo(
       saveAs(blob, `aragon-labels_${dao}_${today}.json`)
     }, [identities, dao, addressesSelected])
 
-    const [opened, setOpened] = React.useState(false)
+    const [opened, setOpened] = useState(false)
 
-    const handleOpenConfirmationModal = React.useCallback(() => {
+    const handleOpenConfirmationModal = useCallback(() => {
       setOpened(true)
     }, [])
-    const handleCloseConfirmationModal = React.useCallback(() => {
+    const handleCloseConfirmationModal = useCallback(() => {
       setOpened(false)
     }, [])
 
