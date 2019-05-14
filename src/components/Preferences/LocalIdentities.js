@@ -73,8 +73,6 @@ const SelectableLocalIdentities = React.memo(
       setAddressesSelected(initialAddressesSelected)
     }, [initialAddressesSelected])
 
-    const [opened, setOpened] = React.useState(false)
-
     return (
       <LocalIdentities
         {...props}
@@ -82,8 +80,6 @@ const SelectableLocalIdentities = React.memo(
         onToggleAll={handleToggleAll}
         onToggleAddress={handleToggleAddress}
         addressesSelected={addressesSelected}
-        opened={opened}
-        setOpened={setOpened}
       />
     )
   }
@@ -112,8 +108,6 @@ const LocalIdentities = React.memo(
     onModify,
     onModifyEvent,
     onToggleAddress,
-    opened,
-    setOpened,
     onToggleAll,
   }) => {
     const { identityEvents$ } = React.useContext(IdentityContext)
@@ -157,6 +151,15 @@ const LocalIdentities = React.memo(
         ),
       [identities]
     )
+
+    const [opened, setOpened] = React.useState(false)
+
+    const handleOpenConfirmationModal = React.useCallback(() => {
+      setOpened(true)
+    }, [])
+    const handleCloseConfirmationModal = React.useCallback(() => {
+      setOpened(false)
+    }, [])
 
     if (!identities.length) {
       return <EmptyLocalIdentities onImport={onImport} />
@@ -218,11 +221,11 @@ const LocalIdentities = React.memo(
           <Button
             label="Remove labels"
             mode="outline"
-            onClick={() => setOpened(true)}
+            onClick={handleOpenConfirmationModal}
           >
             <IconCross /> Remove all labels
           </Button>
-          <Modal visible={opened} onClose={() => setOpened(true)}>
+          <Modal visible={opened} onClose={handleOpenConfirmationModal}>
             <ModalTitle>Remove labels</ModalTitle>
             <ModalText>
               This action will irreversibly delete the selected labels you have
@@ -232,7 +235,7 @@ const LocalIdentities = React.memo(
               <Button
                 label="Cancel"
                 mode="secondary"
-                onClick={() => setOpened(false)}
+                onClick={handleCloseConfirmationModal}
               >
                 Cancel
               </Button>
@@ -262,8 +265,6 @@ LocalIdentities.propTypes = {
   onModifyEvent: PropTypes.func,
   onToggleAddress: PropTypes.func.isRequired,
   onToggleAll: PropTypes.func.isRequired,
-  opened: PropTypes.bool.isRequired,
-  setOpened: PropTypes.bool.isRequired,
 }
 
 LocalIdentities.defaultProps = {
