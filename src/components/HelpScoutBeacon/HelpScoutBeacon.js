@@ -20,6 +20,7 @@ const CLOSED = 'closed, user can open opt-in dialogue'
 const OPENED = 'opened, user can opt-in or close'
 const OPENING = 'opening'
 const CLOSING = 'closing'
+const ROUND_BUTTON_HEIGHT = 40
 
 const Beacon = React.memo(() => {
   const [optedIn, setOptedIn] = React.useState(
@@ -131,7 +132,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
     <RoundButton
       onClick={onToggle}
       css={`
-        margin-left: calc(100% - 60px);
+        margin-left: calc(100% - ${ROUND_BUTTON_HEIGHT}px);
         margin-top: ${2 * GU}px;
       `}
     >
@@ -159,11 +160,12 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
                 color={theme.gradientText}
                 css={`
                   width: auto;
-                  height: 22px;
+                  height: 17px;
 
                   & path {
                     fill: ${theme.gradientText};
-                    transform: scale(2.2);
+                    /* original size 10px * 1.7 = 17px*/
+                    transform: scale(1.7);
                     opacity: 1;
                   }
                 `}
@@ -194,7 +196,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
                 ),
               }}
             >
-              <IconQuestion />
+              <IconQuestion width="auto" height={18} />
             </RoundButtonIcon>
           ))
         }
@@ -355,8 +357,8 @@ const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
 const RoundButton = styled(Button).attrs({ mode: 'strong' })`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: ${ROUND_BUTTON_HEIGHT}px;
+  height: ${ROUND_BUTTON_HEIGHT}px;
   padding: 0;
   margin: 0;
   display: flex;
