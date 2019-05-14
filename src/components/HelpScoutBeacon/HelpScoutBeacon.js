@@ -4,11 +4,13 @@ import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import {
   Button,
+  ButtonIcon,
   IconClose,
   SafeLink,
   breakpoint,
   springs,
   theme,
+  useViewport,
 } from '@aragon/ui'
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
@@ -110,6 +112,8 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
             (({ opacity, enterProgress, blocking }) => (
               <OptInDialogue
                 style={{
+                  position: 'relative',
+                  zIndex: 2,
                   pointerEvents: blocking ? 'auto' : 'none',
                   opacity,
                   transform: enterProgress.interpolate(
@@ -224,59 +228,67 @@ ToggleDialogueButton.propTypes = {
 }
 
 const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
+  const { below } = useViewport()
+
   return (
     <animated.div {...styles}>
       <Wrapper>
         <Header>
-          <img
-            css={`
-              margin-top: 22.5px;
-            `}
-            src={headerImg}
-            alt=""
-          />
+          {below('medium') && (
+            <ButtonIcon
+              label="Close"
+              onClick={onClose}
+              css={`
+                position: absolute;
+                top: ${1 * GU}px;
+                right: ${1 * GU}px;
+              `}
+            >
+              <IconClose
+                color={theme.gradientText}
+                css={`
+                  width: auto;
+                  height: 24px;
+
+                  & path {
+                    fill: ${theme.gradientText};
+                    /* original size 10px * 2.4 = 24px*/
+                    transform: scale(2.4);
+                    opacity: 1;
+                  }
+                `}
+              />
+            </ButtonIcon>
+          )}
+          <HeaderImage src={headerImg} alt="" />
         </Header>
-        <main
-          css={`
-            padding: ${5 * GU}px ${3 * GU}px ${3 * GU}px;
-          `}
-        >
+        <Main>
           {!optedIn ? (
             <React.Fragment>
-              <h3
-                css={`
-                  font-weight: bold;
-                  font-size: 20px;
-                  line-height: 31px;
-                  color: #352c47;
-                `}
-              >
-                We need your consent.
-              </h3>
-              <Paragraph>
-                We want to assist you in using the product, providing help, and
-                answers to common questions.
-              </Paragraph>
-              <Paragraph>
-                For that, we use a third-party system called{' '}
-                <StyledSafeLink href="https://www.helpscout.com/">
-                  HelpScout
-                </StyledSafeLink>
-                . If you opt-in, we will load their program onto Aragon.
-                HelpScout is a{' '}
-                <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
-                  Public Benefit Corp
-                </StyledSafeLink>
-                .
-              </Paragraph>
+              <div css={'flex: 1'}>
+                <Heading>We need your consent.</Heading>
+                <Paragraph>
+                  We want to assist you in using the product, providing help,
+                  and answers to common questions.
+                </Paragraph>
+                <Paragraph>
+                  For that, we use a third-party system called{' '}
+                  <StyledSafeLink href="https://www.helpscout.com/">
+                    HelpScout
+                  </StyledSafeLink>
+                  . If you opt-in, we will load their program onto Aragon.
+                  HelpScout is a{' '}
+                  <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
+                    Public Benefit Corp
+                  </StyledSafeLink>
+                  .
+                </Paragraph>
+              </div>
               <Button
                 mode="strong"
                 wide
                 onClick={onOptIn}
-                css={`
-                  margin-top: ${5 * GU}px;
-                  font-size: 15px;
-                `}
+                css={'font-size: 15px;'}
               >
                 Yes, I’d like help
               </Button>
@@ -294,7 +306,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
               <div>Loading…</div>
             </div>
           )}
-        </main>
+        </Main>
       </Wrapper>
     </animated.div>
   )
@@ -308,48 +320,93 @@ OptInDialogue.propTypes = {
 
 const Paragraph = styled.p`
   color: #5d6e7f;
-  font-size: 13px;
-  line-height: 21px;
   margin-top: ${1 * GU}px;
-`
-
-const Wrapper = styled.aside`
-  background: #fff;
-  border: 1px solid rgba(209, 209, 209, 0.5);
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  border-radius: 3px;
-  width: calc(100vw - ${4 * GU}px);
-  position: absolute;
-  bottom: 100%;
-  /* zeroY is relative to beacon container full viewport height
-  * minus 4 GUs (64px) top plus the relative position of zeroY to the
-  * edge of the viewport (60px) plus one GU for margin (16px) */
-  top: calc(-100vh + 140px);
-  right: 0;
-  z-index: 1;
-  height: calc(100vh - 60px - ${2 * GU}px - ${4 * GU}px - ${4 * GU}px);
-  overflow: hidden;
+  font-size: 15px;
+  line-height: 26px;
 
   ${breakpoint(
     'medium',
     `
+      font-size: 13px;
+      line-height: 21px;
+    `
+  )}
+`
+
+const Wrapper = styled.aside`
+  background: #fff;
+  position: absolute;
+  bottom: ${-2 * GU}px;
+  right: ${-2 * GU}px;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  ${breakpoint(
+    'medium',
+    `
+      bottom: calc(-40px - ${4 * GU}px);
       width: 336px;
       height: 482px;
       position: unset;
+      border: 1px solid rgba(209, 209, 209, 0.5);
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
     `
   )}
 `
 
 const Header = styled.header`
-  border-top-right-radius: 4px;
-  border-top-left-radius: 4px;
-  height: 148px;
+  position: relative;
+  height: 240px;
   background-color: #08bee5;
   color: ${theme.gradientText};
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  ${breakpoint(
+    'medium',
+    `
+      height: 148px;
+      /* needs both height and min-height as button uses flex: 1
+       * and would push this upwards */
+      min-height: 148px;
+      border-top-right-radius: 4px;
+      border-top-left-radius: 4px;
+    `
+  )}
+`
+
+const HeaderImage = styled.img`
+  position: absolute;
+  bottom: -12px;
+`
+
+const Main = styled.main`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: ${5 * GU}px ${3 * GU}px ${3 * GU}px;
+`
+
+const Heading = styled.h3`
+  font-weight: bold;
+  color: #352c47;
+  font-size: 26px;
+  line-height: 40px;
+
+  ${breakpoint(
+    'medium',
+    `
+      font-size: 20px;
+      line-height: 31px;
+    `
+  )}
 `
 
 const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
