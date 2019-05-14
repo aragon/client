@@ -1,6 +1,6 @@
 import React from 'react'
 
-const IconQuestion = () => {
+const IconQuestion = props => {
   return (
     <svg
       width="15"
@@ -8,6 +8,7 @@ const IconQuestion = () => {
       viewBox="0 0 15 26"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         fillRule="evenodd"
