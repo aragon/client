@@ -13,6 +13,7 @@ import {
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
+import LoadingRing from '../LoadingRing'
 import { GU } from '../../utils'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
@@ -57,6 +58,8 @@ const Beacon = React.memo(() => {
 
 const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
   const [mode, setMode] = React.useState(CLOSED)
+  const [beaconReady, setBeaconReady] = React.useState(optedIn)
+
   const handleClose = React.useCallback(() => setMode(CLOSED), [CLOSED])
   const handleToggle = React.useCallback(() => {
     if (mode !== OPENING && mode !== CLOSING) {
@@ -70,9 +73,18 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [OPENING, OPENED, CLOSED, mode])
   const handleOptIn = React.useCallback(() => {
+    const isBeaconReady = () => {
+      if (window.Beacon) {
+        window.Beacon('on', 'open', () => setBeaconReady(true))
+        window.Beacon('open')
+        return
+      }
+      setTimeout(isBeaconReady, 100)
+    }
     onOptIn()
-    setTimeout(() => window.Beacon('open'), 100)
-  }, [onOptIn])
+    isBeaconReady()
+  }, [onOptIn, window.Beacon])
+
   React.useEffect(() => {
     if (optedIn && window.Beacon) {
       window.Beacon('on', 'open', () => setMode(OPENED))
@@ -82,7 +94,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
 
   return (
     <React.Fragment>
-      {!optedIn && (
+      {(!optedIn || !beaconReady) && (
         <Transition
           native
           items={mode === OPENING || mode === OPENED}
@@ -108,6 +120,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
                 }}
                 onClose={handleClose}
                 onOptIn={handleOptIn}
+                optedIn={optedIn}
               />
             ))
           /* eslint-enable react/prop-types */
@@ -210,7 +223,7 @@ ToggleDialogueButton.propTypes = {
   onToggle: PropTypes.func.isRequired,
 }
 
-const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
+const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
   return (
     <animated.div {...styles}>
       <Wrapper>
@@ -228,43 +241,59 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
             padding: ${5 * GU}px ${3 * GU}px ${3 * GU}px;
           `}
         >
-          <h3
-            css={`
-              font-weight: bold;
-              font-size: 20px;
-              line-height: 31px;
-              color: #352c47;
-            `}
-          >
-            We need your consent.
-          </h3>
-          <Paragraph>
-            We want to assist you in using the product, providing help, and
-            answers to common questions.
-          </Paragraph>
-          <Paragraph>
-            For that, we use a third-party system called{' '}
-            <StyledSafeLink href="https://www.helpscout.com/">
-              HelpScout
-            </StyledSafeLink>
-            . If you opt-in, we will load their program onto Aragon. HelpScout
-            is a{' '}
-            <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
-              Public Benefit Corp
-            </StyledSafeLink>
-            .
-          </Paragraph>
-          <Button
-            mode="strong"
-            wide
-            onClick={onOptIn}
-            css={`
-              margin-top: ${5 * GU}px;
-              font-size: 15px;
-            `}
-          >
-            Yes, I’d like help
-          </Button>
+          {!optedIn ? (
+            <React.Fragment>
+              <h3
+                css={`
+                  font-weight: bold;
+                  font-size: 20px;
+                  line-height: 31px;
+                  color: #352c47;
+                `}
+              >
+                We need your consent.
+              </h3>
+              <Paragraph>
+                We want to assist you in using the product, providing help, and
+                answers to common questions.
+              </Paragraph>
+              <Paragraph>
+                For that, we use a third-party system called{' '}
+                <StyledSafeLink href="https://www.helpscout.com/">
+                  HelpScout
+                </StyledSafeLink>
+                . If you opt-in, we will load their program onto Aragon.
+                HelpScout is a{' '}
+                <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
+                  Public Benefit Corp
+                </StyledSafeLink>
+                .
+              </Paragraph>
+              <Button
+                mode="strong"
+                wide
+                onClick={onOptIn}
+                css={`
+                  margin-top: ${5 * GU}px;
+                  font-size: 15px;
+                `}
+              >
+                Yes, I’d like help
+              </Button>
+            </React.Fragment>
+          ) : (
+            <div
+              css={`
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 200px;
+              `}
+            >
+              <LoadingRing spin />
+              <div>Loading…</div>
+            </div>
+          )}
         </main>
       </Wrapper>
     </animated.div>
@@ -274,6 +303,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
 OptInDialogue.propTypes = {
   onClose: PropTypes.func.isRequired,
   onOptIn: PropTypes.func.isRequired,
+  optedIn: PropTypes.bool.isRequired,
 }
 
 const Paragraph = styled.p`
