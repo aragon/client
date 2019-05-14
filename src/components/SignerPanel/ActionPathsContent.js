@@ -61,11 +61,14 @@ class ActionPathsContent extends React.Component {
                         display: inline-flex;
                         vertical-align: middle;
                         margin-right: 4px;
+                        position: relative;
+                        top: -1px;
                       `}
                     >
                       <LocalIdentityBadge
                         entity={type === 'any-account' ? 'Any account' : value}
                         fontSize="small"
+                        compact
                       />
                     </span>
                   )
