@@ -155,13 +155,14 @@ const LocalIdentities = React.memo(
       saveAs(blob, `aragon-labels_${dao}_${today}.json`)
     }, [identities, dao, addressesSelected])
 
-    const [opened, setOpened] = useState(false)
-
+    const [confirmationModalOpened, setConfirmationModalOpened] = useState(
+      false
+    )
     const handleOpenConfirmationModal = useCallback(() => {
-      setOpened(true)
+      setConfirmationModalOpened(true)
     }, [])
     const handleCloseConfirmationModal = useCallback(() => {
-      setOpened(false)
+      setConfirmationModalOpened(false)
     }, [])
 
     if (!identities.length) {
@@ -223,7 +224,10 @@ const LocalIdentities = React.memo(
           <Button mode="outline" onClick={handleOpenConfirmationModal}>
             <IconCross /> Remove all labels
           </Button>
-          <Modal visible={opened} onClose={handleOpenConfirmationModal}>
+          <Modal
+            visible={confirmationModalOpened}
+            onClose={handleOpenConfirmationModal}
+          >
             <ModalTitle>Remove labels</ModalTitle>
             <ModalText>
               This action will irreversibly delete the selected labels you have
