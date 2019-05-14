@@ -12,7 +12,7 @@ import {
 } from '@aragon/ui'
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
-import logo from './logo.png'
+import headerImg from './header.png'
 import { GU } from '../../utils'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
@@ -215,68 +215,56 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, ...styles }) => {
     <animated.div {...styles}>
       <Wrapper>
         <Header>
-          <h2
-            css={`
-              font-size: 18px;
-              line-height: 22px;
-            `}
-          >
-            How can we help?
-          </h2>
           <img
             css={`
-              margin-top: ${2.5 * GU}px;
+              margin-top: 22.5px;
             `}
-            src={logo}
+            src={headerImg}
             alt=""
           />
         </Header>
         <main
           css={`
-            display: flex;
-            flex: 1;
-            padding: ${2 * GU}px;
-            overflow: auto;
+            padding: ${5 * GU}px ${3 * GU}px ${3 * GU}px;
           `}
         >
-          <Body>
-            <h3
-              css={`
-                font-weight: bold;
-                font-size: 18px;
-              `}
-            >
-              We need your consent.
-            </h3>
-            <p>
-              We want to assist you in using the product, providing help, and
-              answers to common questions.
-            </p>
-            <p>
-              For that, we use a third-party system called{' '}
-              <StyledSafeLink href="https://www.helpscout.com/">
-                Help Scout
-              </StyledSafeLink>
-              . If you opt-in, we will load their program onto Aragon.
-              <br />
-              Help Scout is a{' '}
-              <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
-                Public Benefit Corp
-              </StyledSafeLink>
-              .
-            </p>
-            <Button
-              mode="strong"
-              wide
-              onClick={onOptIn}
-              css={`
-                margin-top: ${1 * GU}px;
-                font-size: 15px;
-              `}
-            >
-              Yes, I’d like help
-            </Button>
-          </Body>
+          <h3
+            css={`
+              font-weight: bold;
+              font-size: 20px;
+              line-height: 31px;
+              color: #352c47;
+            `}
+          >
+            We need your consent.
+          </h3>
+          <Paragraph>
+            We want to assist you in using the product, providing help, and
+            answers to common questions.
+          </Paragraph>
+          <Paragraph>
+            For that, we use a third-party system called{' '}
+            <StyledSafeLink href="https://www.helpscout.com/">
+              HelpScout
+            </StyledSafeLink>
+            . If you opt-in, we will load their program onto Aragon. HelpScout
+            is a{' '}
+            <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
+              Public Benefit Corp
+            </StyledSafeLink>
+            .
+          </Paragraph>
+          <Button
+            mode="strong"
+            wide
+            onClick={onOptIn}
+            css={`
+              margin-top: ${5 * GU}px;
+              font-size: 15px;
+            `}
+          >
+            Yes, I’d like help
+          </Button>
         </main>
       </Wrapper>
     </animated.div>
@@ -287,6 +275,13 @@ OptInDialogue.propTypes = {
   onClose: PropTypes.func.isRequired,
   onOptIn: PropTypes.func.isRequired,
 }
+
+const Paragraph = styled.p`
+  color: #5d6e7f;
+  font-size: 13px;
+  line-height: 21px;
+  margin-top: ${1 * GU}px;
+`
 
 const Wrapper = styled.aside`
   background: #fff;
@@ -302,46 +297,29 @@ const Wrapper = styled.aside`
   top: calc(-100vh + 140px);
   right: 0;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
   height: calc(100vh - 60px - ${2 * GU}px - ${4 * GU}px - ${4 * GU}px);
   overflow: hidden;
 
   ${breakpoint(
     'medium',
     `
-      width: 350px;
-      height: 600px;
+      width: 336px;
+      height: 482px;
       position: unset;
     `
   )}
 `
 
 const Header = styled.header`
-  border-top-right-radius: 2px;
-  border-top-left-radius: 2px;
-  height: 150px;
-  background-color: transparent;
-  background-image: linear-gradient(
-    180deg,
-    ${theme.gradientStart},
-    ${theme.gradientEnd}
-  );
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  height: 148px;
+  background-color: #08bee5;
   color: ${theme.gradientText};
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-`
-
-const Body = styled.div`
-  min-height: 350px;
-  line-height: 22px;
-  font-size: 15px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: space-around;
 `
 
 const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
