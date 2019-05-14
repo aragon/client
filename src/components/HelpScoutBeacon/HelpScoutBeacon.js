@@ -40,7 +40,7 @@ const Beacon = React.memo(() => {
         position: absolute;
         bottom: ${2 * GU}px;
         right: ${2 * GU}px;
-        z-index: 3;
+        z-index: 4;
 
         ${breakpoint(
           'medium',
@@ -59,6 +59,7 @@ const Beacon = React.memo(() => {
 })
 
 const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
+  const { below } = useViewport()
   const [mode, setMode] = React.useState(CLOSED)
   const [beaconReady, setBeaconReady] = React.useState(optedIn)
 
@@ -131,10 +132,22 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
           }
         </Transition>
       )}
-      <ToggleDialogueButton
-        open={mode === OPENED || mode === OPENING}
-        onToggle={handleToggle}
-      />
+      {optedIn && (mode === OPENED || mode === OPENING) && below('medium') && (
+        <CloseButton
+          onClick={handleToggle}
+          style={{
+            bottom: 'calc(100vh - 58px)',
+            top: 'unset',
+            right: -8,
+          }}
+        />
+      )}
+      {(!below('medium') || (mode === CLOSED || mode === CLOSING)) && (
+        <ToggleDialogueButton
+          open={mode === OPENED || mode === OPENING}
+          onToggle={handleToggle}
+        />
+      )}
     </React.Fragment>
   )
 })
@@ -234,32 +247,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
     <animated.div {...styles}>
       <Wrapper>
         <Header>
-          {below('medium') && (
-            <ButtonIcon
-              label="Close"
-              onClick={onClose}
-              css={`
-                position: absolute;
-                top: ${1 * GU}px;
-                right: ${1 * GU}px;
-              `}
-            >
-              <IconClose
-                color={theme.gradientText}
-                css={`
-                  width: auto;
-                  height: 24px;
-
-                  & path {
-                    fill: ${theme.gradientText};
-                    /* original size 10px * 2.4 = 24px*/
-                    transform: scale(2.4);
-                    opacity: 1;
-                  }
-                `}
-              />
-            </ButtonIcon>
-          )}
+          {below('medium') && <CloseButton onClick={onClose} />}
           <HeaderImage src={headerImg} alt="" />
         </Header>
         <Main>
@@ -317,6 +305,37 @@ OptInDialogue.propTypes = {
   onOptIn: PropTypes.func.isRequired,
   optedIn: PropTypes.bool.isRequired,
 }
+
+const CloseButton = React.memo(({ onClick, ...props }) => {
+  return (
+    <ButtonIcon
+      label="Close"
+      onClick={onClick}
+      css={`
+        position: absolute;
+        top: ${1 * GU}px;
+        right: ${1 * GU}px;
+        z-index: 1;
+      `}
+      {...props}
+    >
+      <IconClose
+        color={theme.gradientText}
+        css={`
+          width: auto;
+          height: 24px;
+
+          & path {
+            fill: ${theme.gradientText};
+            /* original size 10px * 2.4 = 24px*/
+            transform: scale(2.4);
+            opacity: 1;
+          }
+        `}
+      />
+    </ButtonIcon>
+  )
+})
 
 const Paragraph = styled.p`
   color: #5d6e7f;
