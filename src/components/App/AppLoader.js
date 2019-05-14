@@ -8,24 +8,39 @@ const LOADING_APPS = 'Loading apps…'
 const LOADING_APP = 'Loading {APP}…'
 const LOADING_READY = 'Ready.'
 
-// Pick the loading steps depending on what
-// is being loaded (internal vs.  external app)
+// Pick the loading steps depending on what is being loaded (settings, internal
+// app, external app, …). `steps` must contain the strings used to represent
+// the different steps, while `stepIndex` must return the index of the current
+// step, based on the passed values.
 const LOADING_STEPS_INTERNAL = {
   steps: [LOADING_ORG, LOADING_APPS, LOADING_READY],
   stepIndex: ({ daoLoading, appsLoading }) =>
-    // pick the first truthy item as the current step
     [daoLoading, appsLoading, true].findIndex(v => v),
+}
+
+const LOADING_STEPS_SETTINGS = {
+  steps: [LOADING_ORG, LOADING_READY],
+  stepIndex: ({ daoLoading }) => [daoLoading, true].findIndex(v => v),
 }
 
 const LOADING_STEPS_EXTERNAL = {
   steps: [LOADING_ORG, LOADING_APPS, LOADING_APP, LOADING_READY],
   stepIndex: ({ daoLoading, appsLoading, appLoading }) =>
-    // pick the first truthy item as the current step
     [daoLoading, appsLoading, appLoading, true].findIndex(v => v),
 }
 
-const getLoadingSteps = instanceId =>
-  isStaticApp(instanceId) ? LOADING_STEPS_INTERNAL : LOADING_STEPS_EXTERNAL
+function getLoadingSteps(instanceId) {
+  // Settings app
+  if (instanceId === 'settings') {
+    return LOADING_STEPS_SETTINGS
+  }
+  // Internal app
+  if (isStaticApp(instanceId)) {
+    return LOADING_STEPS_INTERNAL
+  }
+  // External app
+  return LOADING_STEPS_EXTERNAL
+}
 
 function useLoadingStatus({
   appLoading,
@@ -34,35 +49,28 @@ function useLoadingStatus({
   daoLoading,
   instanceId,
 }) {
-  const [loadingSteps, setLoadingSteps] = useState(null)
-  const [loadingStepIndex, setLoadingStepIndex] = useState(0)
+  const [{ label, progress }, setStatus] = useState({ label: '', progress: 0 })
 
-  // Update the loading steps if `instanceId` changes
-  useEffect(() => {
-    const loadingSteps = getLoadingSteps(instanceId)
-    setLoadingSteps(loadingSteps)
-  }, [instanceId])
+  const loadingSteps = getLoadingSteps(instanceId)
 
   // Update the step index
   useEffect(() => {
-    if (loadingSteps) {
-      setLoadingStepIndex(
-        loadingSteps.stepIndex({ daoLoading, appsLoading, appLoading })
-      )
-    }
-  }, [appLoading, appsLoading, daoLoading, loadingSteps])
+    const stepIndex = loadingSteps.stepIndex({
+      daoLoading,
+      appsLoading,
+      appLoading,
+    })
 
-  const label = (loadingSteps
-    ? loadingSteps.steps[loadingStepIndex]
-    : ''
-  ).replace(/\{APP\}/, currentAppName || instanceId)
+    const label = loadingSteps.steps[stepIndex].replace(
+      /\{APP\}/,
+      currentAppName || instanceId
+    )
+    const progress = stepIndex / (loadingSteps.steps.length - 1)
 
-  return {
-    label,
-    progress: loadingSteps
-      ? loadingStepIndex / (loadingSteps.steps.length - 1)
-      : 0,
-  }
+    setStatus({ label, progress })
+  }, [appLoading, appsLoading, daoLoading, loadingSteps, currentAppName])
+
+  return { label, progress }
 }
 
 const AppLoader = React.memo(function AppLoader({
