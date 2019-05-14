@@ -21,7 +21,7 @@ const ActivityPanel = React.memo(
       if (open) {
         frameRef.current.focus()
       }
-    }, [frameRef.current, open])
+    }, [frameRef, open])
 
     const handleBlur = useCallback(
       event => {

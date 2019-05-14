@@ -21,7 +21,7 @@ const UpgradeModal = React.memo(({ visible, onUpgrade, onClose }) => {
     if (visible) {
       setStep(0)
     }
-  }, [visible])
+  }, [setStep, visible])
 
   return (
     <Viewport>

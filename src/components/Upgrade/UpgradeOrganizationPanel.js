@@ -86,7 +86,7 @@ const UpgradeOrganizationPanel = React.memo(
         // Or, the user just can't perform this action.
         await wrapper.performTransactionPath(upgradePath.path)
       }
-    }, [repos, wrapper])
+    }, [daoAddress, onClose, repos, wrapper])
 
     return (
       <SidePanel

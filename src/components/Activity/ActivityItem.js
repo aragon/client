@@ -5,12 +5,13 @@ import {
   IconClose,
   IconError,
   SafeLink,
+  IdentityBadge,
   blockExplorerUrl,
   theme,
 } from '@aragon/ui'
 import { network } from '../../environment'
 import { cssgu } from '../../utils'
-import { shortenAddress, transformAddresses } from '../../web3-utils'
+import { transformAddresses } from '../../web3-utils'
 import AppIcon from '../AppIcon/AppIcon'
 import IconSuccess from '../../icons/IconSuccess'
 import IconPending from '../../icons/IconPending'
@@ -108,7 +109,7 @@ const ItemContent = React.memo(
       {transformAddresses(text, (part, isAddress, index) =>
         isAddress ? (
           <span title={part} key={index}>
-            {shortenAddress(part)}
+            <IdentityBadge entity={part} compact />
           </span>
         ) : (
           <span key={index}>{part}</span>

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { format } from 'date-fns'
+import { saveAs } from 'file-saver'
 import {
   Button,
   Checkbox,
@@ -114,17 +115,20 @@ const LocalIdentities = React.memo(
     const { showLocalIdentityModal } = React.useContext(
       LocalIdentityModalContext
     )
-    const updateLabel = React.useCallback(address => async () => {
-      try {
-        await showLocalIdentityModal(address)
-        // preferences get all
-        onModifyEvent()
-        // for iframe apps
-        identityEvents$.next({ type: identityEventTypes.MODIFY, address })
-      } catch (e) {
-        /* nothing was updated */
-      }
-    })
+    const updateLabel = React.useCallback(
+      address => async () => {
+        try {
+          await showLocalIdentityModal(address)
+          // preferences get all
+          onModifyEvent()
+          // for iframe apps
+          identityEvents$.next({ type: identityEventTypes.MODIFY, address })
+        } catch (e) {
+          /* nothing was updated */
+        }
+      },
+      [identityEvents$, onModifyEvent, showLocalIdentityModal]
+    )
 
     const [allSelected, someSelected] = React.useMemo(
       () => [
@@ -133,24 +137,19 @@ const LocalIdentities = React.memo(
       ],
       [addressesSelected]
     )
-    // standard: https://en.wikipedia.org/wiki/ISO_8601
-    const today = format(Date.now(), 'yyyy-MM-dd')
-    const downloadHref = React.useMemo(
-      () =>
-        window.URL.createObjectURL(
-          new Blob(
-            [
-              JSON.stringify(
-                identities.filter(({ address }) =>
-                  addressesSelected.get(address)
-                )
-              ),
-            ],
-            { type: 'text/json' }
-          )
-        ),
-      [identities]
-    )
+    const handleDownload = React.useCallback(() => {
+      // standard: https://en.wikipedia.org/wiki/ISO_8601
+      const today = format(Date.now(), 'yyyy-MM-dd')
+      const blob = new Blob(
+        [
+          JSON.stringify(
+            identities.filter(({ address }) => addressesSelected.get(address))
+          ),
+        ],
+        { type: 'text/json' }
+      )
+      saveAs(blob, `aragon-labels_${dao}_${today}.json`)
+    }, [identities, dao, addressesSelected])
 
     const [opened, setOpened] = React.useState(false)
 
@@ -211,18 +210,13 @@ const LocalIdentities = React.memo(
             <StyledExport
               label="Export labels"
               mode="secondary"
-              download={`aragon-labels_${dao}_${today}.json`}
-              href={someSelected ? downloadHref : undefined}
+              onClick={handleDownload}
               disabled={!someSelected}
             >
               Export
             </StyledExport>
           )}
-          <Button
-            label="Remove labels"
-            mode="outline"
-            onClick={handleOpenConfirmationModal}
-          >
+          <Button mode="outline" onClick={handleOpenConfirmationModal}>
             <IconCross /> Remove all labels
           </Button>
           <Modal visible={opened} onClose={handleOpenConfirmationModal}>
@@ -283,7 +277,6 @@ const ModalControls = styled.div`
   display: grid;
   grid-gap: ${1.5 * GU}px;
   grid-template-columns: 1fr 1fr;
-
   ${breakpoint(
     'medium',
     `
@@ -306,7 +299,8 @@ const RemoveButton = styled(Button)`
   )}
 `
 
-const Label = styled.div`
+const Label = styled.label`
+  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -374,7 +368,7 @@ const Item = styled.li`
   align-items: center;
   border-bottom: 1px solid ${theme.contentBorder};
 
-  & > div {
+  & > label {
     padding-left: ${2 * GU}px;
   }
 `
