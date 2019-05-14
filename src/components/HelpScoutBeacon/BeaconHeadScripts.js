@@ -37,7 +37,7 @@ const BeaconHeadScripts = ({ optedIn }) => {
               width: 350px !important;
               top: unset !important;
               left: unset !important;
-              bottom: 100px !important;
+              bottom: 80px !important;
               right: ${3 * GU}px !important;
             }
           }
