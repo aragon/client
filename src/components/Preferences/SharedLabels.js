@@ -14,167 +14,176 @@ import {
   IdentityContext,
   identityEventTypes,
 } from '../IdentityManager/IdentityManager'
+import LoadingRing from '../LoadingRing'
 import { AragonType } from '../../prop-types'
 import { GU } from '../../utils'
 import { useSelected } from '../../hooks'
 
-const SharedLabels = React.memo(
-  ({ onSave, onClose, labels, toast, wrapper }) => {
-    const { identityEvents$ } = React.useContext(IdentityContext)
-    const { selected, setSelected, allSelected, someSelected } = useSelected(
-      new Map()
-    )
-    const [saving, setSaving] = React.useState(false)
+const SharedLabels = React.memo(function SharedLabels({
+  onSave,
+  onClose,
+  labels,
+  toast,
+  wrapper,
+}) {
+  const { identityEvents$ } = React.useContext(IdentityContext)
+  const { selected, setSelected, allSelected, someSelected } = useSelected(
+    new Map()
+  )
+  const [saving, setSaving] = React.useState(false)
 
-    const onToggleAll = React.useCallback(
-      () =>
-        setSelected(
-          new Map(
-            labels.map(({ address }) => [
-              address,
-              !(allSelected || someSelected),
-            ])
-          )
-        ),
-      [labels, allSelected, someSelected, setSelected]
-    )
-    const onToggleAddress = React.useCallback(
-      address => () =>
-        setSelected(new Map([...selected, [address, !selected.get(address)]])),
-      [selected, setSelected]
-    )
-    const handleSave = React.useCallback(async () => {
-      if (!wrapper) {
-        return
-      }
-      setSaving(true)
-      const list = labels.filter(({ address }) => selected.get(address))
-      for (const { name, address } of list) {
-        await wrapper.modifyAddressIdentity(address, { name })
-      }
-      identityEvents$.next({ type: identityEventTypes.IMPORT })
-
-      // toast
-      toast('Custom labels added')
-
-      onSave()
-    }, [selected, labels, wrapper, identityEvents$, toast, onSave])
-
-    React.useEffect(() => {
-      setSelected(new Map(labels.map(({ address }) => [address, true])))
-    }, [labels, setSelected])
-
-    if (saving) {
-      return null
+  const onToggleAll = React.useCallback(
+    () =>
+      setSelected(
+        new Map(
+          labels.map(({ address }) => [address, !(allSelected || someSelected)])
+        )
+      ),
+    [labels, allSelected, someSelected, setSelected]
+  )
+  const onToggleAddress = React.useCallback(
+    address => () =>
+      setSelected(new Map([...selected, [address, !selected.get(address)]])),
+    [selected, setSelected]
+  )
+  const handleSave = React.useCallback(async () => {
+    if (!wrapper) {
+      return
     }
+    setSaving(true)
+    const list = labels.filter(({ address }) => selected.get(address))
+    for (const { name, address } of list) {
+      await wrapper.modifyAddressIdentity(address, { name })
+    }
+    identityEvents$.next({ type: identityEventTypes.IMPORT })
 
-    return (
-      <Content>
+    // toast
+    toast('Custom labels added')
+
+    onSave()
+  }, [selected, labels, wrapper, identityEvents$, toast, onSave])
+
+  React.useEffect(() => {
+    setSelected(new Map(labels.map(({ address }) => [address, true])))
+  }, [labels, setSelected])
+
+  return (
+    <Content>
+      <div
+        css={`
+          margin-top: ${2 * GU}px;
+          padding: 0 ${2 * GU}px;
+          font-size: 15px;
+          line-height: 22px;
+        `}
+      >
+        These labels have been shared with you. By clicking on the 'Save'
+        button, you’ll make them available in this device (labels will be stored
+        locally).
+      </div>
+      <Headers style={{ marginTop: `${5 * GU}px` }}>
+        <div>
+          <StyledCheckbox
+            checked={allSelected}
+            onChange={onToggleAll}
+            indeterminate={!allSelected && someSelected}
+          />
+          Custom label
+        </div>
         <div
           css={`
-            margin-top: ${2 * GU}px;
-            padding: 0 ${2 * GU}px;
-            font-size: 15px;
-            line-height: 22px;
+            padding-right: ${2 * GU}px;
+            text-align: right;
+
+            ${breakpoint(
+              'medium',
+              `
+                text-align: left;
+              `
+            )}
           `}
         >
-          These labels have been shared with you. By clicking on the 'Save'
-          button, you’ll make them available in this device (labels will be
-          stored locally).
-        </div>
-        <Headers style={{ marginTop: `${5 * GU}px` }}>
-          <div>
-            <StyledCheckbox
-              checked={allSelected}
-              onChange={onToggleAll}
-              indeterminate={!allSelected && someSelected}
-            />
-            Custom label
-          </div>
-          <div
+          <span
             css={`
-              padding-right: ${2 * GU}px;
-              text-align: right;
-
-              ${breakpoint(
-                'medium',
-                `
-                      text-align: left;
-                    `
-              )}
+              display: inline-block;
+              width: 138.65px;
+              text-align: left;
             `}
           >
-            <span
+            Address
+          </span>
+        </div>
+      </Headers>
+      <List>
+        {saving && (
+          <Saving>
+            <LoadingRing spin />
+            <div>Loading…</div>
+          </Saving>
+        )}
+        {labels.map(({ address, name }) => (
+          <Item
+            key={address}
+            style={{ visibility: saving ? 'hidden' : 'visible' }}
+          >
+            <Label>
+              <StyledCheckbox
+                checked={selected.get(address)}
+                onChange={onToggleAddress(address)}
+              />
+              {name}
+            </Label>
+            <div
               css={`
-                display: inline-block;
-                width: 138.65px;
-                text-align: left;
+                padding-right: ${2 * GU}px;
+                text-align: right;
+
+                ${breakpoint(
+                  'medium',
+                  `
+                    text-align: left;
+                  `
+                )}
               `}
             >
-              Address
-            </span>
-          </div>
-        </Headers>
-        <List>
-          {labels.map(({ address, name }) => (
-            <Item key={address}>
-              <Label>
-                <StyledCheckbox
-                  checked={selected.get(address)}
-                  onChange={onToggleAddress(address)}
-                />
-                {name}
-              </Label>
-              <div
-                css={`
-                  padding-right: ${2 * GU}px;
-                  text-align: right;
+              <IdentityBadge entity={address} />
+            </div>
+          </Item>
+        ))}
+      </List>
 
-                  ${breakpoint(
-                    'medium',
-                    `
-                          text-align: left;
-                        `
-                  )}
-                `}
-              >
-                <IdentityBadge entity={address} />
-              </div>
-            </Item>
-          ))}
-        </List>
-        <Controls>
-          <Button
-            label="Cancel"
-            mode="secondary"
-            onClick={onClose}
-            css={'width: 117px;'}
-          >
-            Cancel
-          </Button>
-          <Button
-            label="Save"
-            mode="strong"
-            disabled={!someSelected}
-            onClick={handleSave}
-            css={`
-              width: 117px;
+      <Controls>
+        <Button
+          label="Cancel"
+          mode="secondary"
+          onClick={onClose}
+          css={'width: 117px;'}
+          disabled={saving}
+        >
+          Cancel
+        </Button>
+        <Button
+          label="Save"
+          mode="strong"
+          disabled={!someSelected || saving}
+          onClick={handleSave}
+          css={`
+            width: 117px;
 
-              ${breakpoint(
-                'medium',
-                `
-                      margin-left: ${2 * GU}px;
-                    `
-              )}
-            `}
-          >
-            Save
-          </Button>
-        </Controls>
-      </Content>
-    )
-  }
-)
+            ${breakpoint(
+              'medium',
+              `
+                margin-left: ${2 * GU}px;
+              `
+            )}
+          `}
+        >
+          Save
+        </Button>
+      </Controls>
+    </Content>
+  )
+})
 
 SharedLabels.propTypes = {
   labels: PropTypes.array.isRequired,
@@ -183,6 +192,16 @@ SharedLabels.propTypes = {
   toast: PropTypes.func.isRequired,
   wrapper: AragonType,
 }
+
+const Saving = styled.li`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`
 
 const Content = styled.main`
   padding-top: ${2 * GU}px;
@@ -242,6 +261,7 @@ const Item = styled.li`
 `
 
 const List = styled.ul`
+  position: relative;
   padding: 0;
   list-style: none;
   overflow: hidden;
