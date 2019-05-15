@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useState } from 'react'
+import { useCallback, useEffect, useReducer, useState, useRef } from 'react'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 
@@ -134,4 +134,25 @@ export function useRepoDetails(baseUrl, detailsUrl) {
     return ''
   }
   return usePromise(fetchDescription, [detailsUrl], null)
+}
+
+export function useClickOutside(cb, deps) {
+  const ref = useRef()
+  const handleClick = useCallback(
+    e => {
+      if (!ref.current.contains(e.target)) {
+        cb()
+      }
+    },
+    [cb, ref]
+  )
+
+  useEffect(() => {
+    document.addEventListener('click', handleClick, true)
+    return () => {
+      document.removeEventListener('click', handleClick, true)
+    }
+  }, [...deps, handleClick])
+
+  return { ref }
 }
