@@ -33,7 +33,7 @@ const Beacon = React.memo(() => {
   const handleOptIn = React.useCallback(() => {
     localStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
     setOptedIn(true)
-  }, [HELPSCOUT_BEACON_KEY])
+  }, [])
 
   return (
     <div
@@ -64,7 +64,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
   const [mode, setMode] = React.useState(CLOSED)
   const [beaconReady, setBeaconReady] = React.useState(optedIn)
 
-  const handleClose = React.useCallback(() => setMode(CLOSED), [CLOSED])
+  const handleClose = React.useCallback(() => setMode(CLOSED), [])
   const handleToggle = React.useCallback(() => {
     if (mode !== OPENING && mode !== CLOSING) {
       setMode(mode === CLOSED ? OPENING : CLOSING)
@@ -72,10 +72,10 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
     if (optedIn) {
       window.Beacon('toggle')
     }
-  }, [OPENING, CLOSING, CLOSED, optedIn, mode])
+  }, [optedIn, mode])
   const handleToggleEnd = React.useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
-  }, [OPENING, OPENED, CLOSED, mode])
+  }, [mode])
   const handleOptIn = React.useCallback(() => {
     const isBeaconReady = () => {
       if (window.Beacon) {
@@ -87,7 +87,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
     }
     onOptIn()
     isBeaconReady()
-  }, [onOptIn, window.Beacon])
+  }, [onOptIn])
 
   const { ref } = useClickOutside(() => {
     if (mode === OPENED || mode === OPENING) {
@@ -99,7 +99,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
       window.Beacon('on', 'open', () => setMode(OPENED))
       window.Beacon('on', 'close', () => setMode(CLOSED))
     }
-  }, [optedIn, window.Beacon])
+  }, [optedIn])
 
   return (
     <div ref={ref}>
