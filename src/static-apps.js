@@ -46,3 +46,12 @@ export const staticApps = new Map(
     },
   })
 )
+
+export const isStaticApp = instanceId => {
+  for (const { app } in staticApps) {
+    if (app.appId === instanceId) {
+      return true
+    }
+  }
+  return false
+}

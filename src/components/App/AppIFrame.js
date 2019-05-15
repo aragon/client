@@ -1,15 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { clamp, lerp } from '../../math-utils'
 import { AppType } from '../../prop-types'
 import { noop } from '../../utils'
-import AppLoadingProgressBar from './AppLoadingProgressBar'
-import { IdentityConsumer } from '../IdentityManager/IdentityManager'
-
-const LOADING_START = 25 // Start loading indicator at 25%
-const LOADING_END = 100
-const LOADING_FUDGE_LIMIT = 75 // Limit arbitrary incremental movement of loading incator to 75%
 
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe for details about sandbox
 // `sandbox` works like a whitelist: by default, almost every functionality is restricted.
@@ -51,29 +43,26 @@ class AppIFrame extends React.Component {
   static propTypes = {
     app: AppType.isRequired,
     iframeRef: PropTypes.func,
-    identityEvents$: PropTypes.object,
-    onLoad: PropTypes.func,
+    onLoadingCancel: PropTypes.func,
+    onLoadingError: PropTypes.func,
+    onLoadingSuccess: PropTypes.func,
+    onLoadingStart: PropTypes.func,
     onMessage: PropTypes.func,
     onNavigate: PropTypes.func,
   }
   static defaultProps = {
     iframeRef: noop,
-    onLoad: noop,
+    onLoadingCancel: noop,
+    onLoadingError: noop,
+    onLoadingSuccess: noop,
+    onLoadingStart: noop,
     onMessage: noop,
     onNavigate: noop,
   }
   state = {
-    hideProgressBar: true,
-    loadProgress: 0,
-  }
-  reloadIframe = () => {
-    this.iframe.src = this.iframe.src
+    isLoading: false,
   }
   componentDidMount() {
-    const { identityEvents$ } = this.props
-    this.identitySubscription = identityEvents$.subscribe(event => {
-      this.reloadIframe()
-    })
     window.addEventListener('message', this.handleReceiveMessage, false)
     this.navigateIFrame(this.props.app.src)
   }
@@ -84,19 +73,30 @@ class AppIFrame extends React.Component {
       // Also navigate when it's the same app, but a different instance
       nextApp.proxyAddress !== this.props.app.proxyAddress
     ) {
-      this.resetProgress(() => {
-        this.navigateIFrame(nextApp.src)
-      })
+      this.navigateIFrame(nextApp.src)
     }
   }
   componentWillUnmount() {
-    this.identitySubscription.unsubscribe()
     window.removeEventListener('message', this.handleReceiveMessage, false)
-    this.clearProgressTimeout()
+    if (this.state.isLoading) {
+      this.props.onLoadingCancel()
+    }
+  }
+  loadingStart() {
+    if (this.state.isLoading) {
+      this.props.onLoadingCancel()
+    }
+    this.props.onLoadingStart()
+    this.setState({ isLoading: true })
   }
   isHidden = () => {
     const { app } = this.props
     return !app || !app.src
+  }
+  // To be called from outside
+  reloadIframe = () => {
+    this.iframe.src = this.iframe.src
+    this.loadingStart()
   }
   navigateIFrame = src => {
     // Rather than load src=undefined, this component hides itself. That way,
@@ -107,7 +107,6 @@ class AppIFrame extends React.Component {
     // Cache src to avoid cases where the iframe would load the same page as
     // before
     this.src = src
-    this.setProgressTimeout(this.startProgress(), 100)
 
     // Detach the iframe from the DOM before setting the src to avoid adding
     // history state
@@ -116,54 +115,17 @@ class AppIFrame extends React.Component {
     this.iframe.src = src
     containerNode.append(this.iframe)
 
+    this.loadingStart()
+
     this.props.onNavigate(this.props.app)
-  }
-  setProgressTimeout = (...args) => {
-    this.progressTimer = setTimeout(...args)
-  }
-  clearProgressTimeout = () => {
-    clearTimeout(this.progressTimer)
-  }
-  startProgress = () => {
-    this.setState(
-      {
-        hideProgressBar: false,
-        loadProgress: LOADING_START,
-      },
-      () => {
-        this.setProgressTimeout(this.fudgeProgress, 500)
-      }
-    )
-  }
-  fudgeProgress = () => {
-    const { loadProgress } = this.state
-    if (loadProgress < LOADING_FUDGE_LIMIT) {
-      const delay = clamp(Math.random() * 1000, 350, 650)
-      // Move progress ahead by 1.5% to 7.5%
-      const moveProgress = clamp(Math.random() / 10, 0.02, 0.1)
-      const nextProgress = lerp(moveProgress, loadProgress, LOADING_END)
-      this.setState({ loadProgress: nextProgress }, () => {
-        this.setProgressTimeout(this.fudgeProgress, delay)
-      })
-    }
-  }
-  endProgress = () => {
-    this.clearProgressTimeout()
-    this.setState({ hideProgressBar: true, loadProgress: LOADING_END }, () => {
-      this.setProgressTimeout(this.resetProgress, 500)
-    })
-  }
-  resetProgress = (cb = noop) => {
-    this.clearProgressTimeout()
-    this.setState({ hideProgressBar: true, loadProgress: 0 }, cb)
   }
   sendMessage = data => {
     // Must use '*' for origin as we've sandboxed the iframe's origin
     this.iframe.contentWindow.postMessage(data, '*')
   }
-  handleOnLoad = (...args) => {
-    this.endProgress()
-    this.props.onLoad(...args)
+  handleOnLoad = event => {
+    this.setState({ isLoading: false })
+    this.props.onLoadingSuccess({ iframeElement: event.target })
   }
   handleReceiveMessage = event => {
     const { onMessage } = this.props
@@ -182,11 +144,7 @@ class AppIFrame extends React.Component {
   }
   render() {
     const { ...props } = this.props
-    const { hideProgressBar, loadProgress } = this.state
     const show = !this.isHidden()
-    const progressBar = show && (
-      <AppLoadingProgressBar hide={hideProgressBar} percent={loadProgress} />
-    )
 
     // Remove the props managed by AppIframe, so we can pass everything else to
     // the <iframe> element.
@@ -200,33 +158,22 @@ class AppIFrame extends React.Component {
     delete props.src
 
     return (
-      <React.Fragment>
-        {progressBar}
-        <StyledIFrame
-          name="AppIFrame"
-          allow="camera *; microphone *"
-          frameBorder="0"
-          onLoad={this.handleOnLoad}
-          ref={this.handleIFrameRef}
-          sandbox={SANDBOX}
-          style={{ display: show ? 'block' : 'none' }}
-          {...props}
-        />
-      </React.Fragment>
+      <iframe
+        name="AppIFrame"
+        allow="camera *; microphone *"
+        frameBorder="0"
+        onLoad={this.handleOnLoad}
+        ref={this.handleIFrameRef}
+        sandbox={SANDBOX}
+        css={`
+          display: ${show ? 'block' : 'none'};
+          height: 100%;
+          width: 100%;
+        `}
+        {...props}
+      />
     )
   }
 }
 
-const StyledIFrame = styled.iframe`
-  display: block;
-  height: 100%;
-  width: 100%;
-`
-
-export default React.forwardRef((props, ref) => (
-  <IdentityConsumer>
-    {({ identityEvents$ }) => (
-      <AppIFrame {...props} identityEvents$={identityEvents$} ref={ref} />
-    )}
-  </IdentityConsumer>
-))
+export default AppIFrame
