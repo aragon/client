@@ -36,12 +36,12 @@ const SharedLabels = React.memo(
             ])
           )
         ),
-      [labels, allSelected, someSelected]
+      [labels, allSelected, someSelected, setSelected]
     )
     const onToggleAddress = React.useCallback(
       address => () =>
         setSelected(new Map([...selected, [address, !selected.get(address)]])),
-      [selected]
+      [selected, setSelected]
     )
     const handleSave = React.useCallback(async () => {
       if (!wrapper) {
@@ -58,11 +58,11 @@ const SharedLabels = React.memo(
       toast('Custom labels added')
 
       onSave()
-    }, [selected, labels, wrapper, identityEvents$])
+    }, [selected, labels, wrapper, identityEvents$, toast, onSave])
 
     React.useEffect(() => {
       setSelected(new Map(labels.map(({ address }) => [address, true])))
-    }, [labels])
+    }, [labels, setSelected])
 
     if (saving) {
       return null

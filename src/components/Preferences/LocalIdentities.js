@@ -1,4 +1,11 @@
-import React from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { format } from 'date-fns'
@@ -10,8 +17,8 @@ import {
   IconCopy,
   IconCross,
   IdentityBadge,
-  Info,
   Modal,
+  Info,
   TabBar,
   TextInput,
   Toast,
@@ -35,17 +42,17 @@ const TIMEOUT_TOAST = 4000
 const TABS = ['Manage labels']
 
 const EnhancedLocalIdentities = React.memo(({ dao, wrapper }) => {
-  const { identityEvents$ } = React.useContext(IdentityContext)
-  const [selectedTab, setSelectedTab] = React.useState(0)
-  const [localIdentities, setLocalIdentities] = React.useState({})
+  const { identityEvents$ } = useContext(IdentityContext)
+  const [selectedTab, setSelectedTab] = useState(0)
+  const [localIdentities, setLocalIdentities] = useState({})
 
-  const handleGetAll = React.useCallback(async () => {
+  const handleGetAll = useCallback(async () => {
     if (!wrapper) {
       return
     }
     setLocalIdentities(await wrapper.getLocalIdentities())
   }, [wrapper])
-  const handleClearAll = React.useCallback(async () => {
+  const handleClearAll = useCallback(async () => {
     if (!wrapper) {
       return
     }
@@ -53,7 +60,7 @@ const EnhancedLocalIdentities = React.memo(({ dao, wrapper }) => {
     setLocalIdentities({})
     identityEvents$.next({ type: identityEventTypes.CLEAR })
   }, [wrapper, identityEvents$])
-  const handleModify = React.useCallback(
+  const handleModify = useCallback(
     (address, data) => {
       if (!wrapper) {
         return
@@ -62,7 +69,7 @@ const EnhancedLocalIdentities = React.memo(({ dao, wrapper }) => {
     },
     [wrapper]
   )
-  const handleImport = React.useCallback(
+  const handleImport = useCallback(
     async list => {
       if (!wrapper) {
         return
@@ -77,9 +84,9 @@ const EnhancedLocalIdentities = React.memo(({ dao, wrapper }) => {
     [wrapper, identityEvents$]
   )
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleGetAll()
-  }, [wrapper])
+  }, [handleGetAll])
 
   return (
     <React.Fragment>
@@ -105,7 +112,7 @@ EnhancedLocalIdentities.propTypes = {
 
 const SelectableLocalIdentities = React.memo(
   ({ localIdentities, ...props }) => {
-    const identities = React.useMemo(
+    const identities = useMemo(
       () =>
         Object.entries(localIdentities).map(([address, identity]) => ({
           ...identity,
@@ -113,15 +120,15 @@ const SelectableLocalIdentities = React.memo(
         })),
       [localIdentities]
     )
-    const initialAddressesSelected = React.useMemo(
+    const initialAddressesSelected = useMemo(
       () => new Map(identities.map(({ address }) => [address, true])),
       [identities]
     )
-    const [addressesSelected, setAddressesSelected] = React.useState(
+    const [addressesSelected, setAddressesSelected] = useState(
       initialAddressesSelected
     )
 
-    const handleToggleAll = React.useCallback(
+    const handleToggleAll = useCallback(
       () =>
         setAddressesSelected(
           new Map(
@@ -136,7 +143,7 @@ const SelectableLocalIdentities = React.memo(
         ),
       [addressesSelected, identities]
     )
-    const handleToggleAddress = React.useCallback(
+    const handleToggleAddress = useCallback(
       address => () =>
         setAddressesSelected(
           new Map([
@@ -147,7 +154,7 @@ const SelectableLocalIdentities = React.memo(
       [addressesSelected]
     )
 
-    React.useEffect(() => {
+    useEffect(() => {
       setAddressesSelected(initialAddressesSelected)
     }, [initialAddressesSelected])
 
@@ -178,13 +185,13 @@ SelectableLocalIdentities.defaultProps = {
 
 const ShareableLocalIdentities = React.memo(
   ({ addressesSelected, identities, dao, toast, ...props }) => {
-    const [shareModalOpen, setShareModalOpen] = React.useState(false)
-    const inputRef = React.useRef()
+    const [shareModalOpen, setShareModalOpen] = useState(false)
+    const inputRef = useRef()
 
-    const handleShare = React.useCallback(() => setShareModalOpen(true))
-    const handleClose = React.useCallback(() => setShareModalOpen(false))
-    const handleFocus = React.useCallback(() => inputRef.current.select())
-    const handleCopy = React.useCallback(() => {
+    const handleShare = () => setShareModalOpen(true)
+    const handleClose = () => setShareModalOpen(false)
+    const handleFocus = useCallback(() => inputRef.current.select(), [inputRef])
+    const handleCopy = useCallback(() => {
       inputRef.current.focus()
       inputRef.current.select()
       try {
@@ -194,8 +201,8 @@ const ShareableLocalIdentities = React.memo(
       } catch (err) {
         console.warn(err)
       }
-    })
-    const shareLink = React.useMemo(() => {
+    }, [inputRef, toast])
+    const shareLink = useMemo(() => {
       const base = `${window.location.origin}/#/${dao}`
       const labels = btoa(
         JSON.stringify(
@@ -203,9 +210,9 @@ const ShareableLocalIdentities = React.memo(
         )
       )
       return `${base}?labels=${labels}`
-    }, [identities, addressesSelected])
+    }, [dao, identities, addressesSelected])
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (shareModalOpen) {
         setTimeout(() => inputRef.current.focus(), 0)
       }
@@ -367,30 +374,31 @@ const LocalIdentities = React.memo(
     onToggleAddress,
     onToggleAll,
   }) => {
-    const { identityEvents$ } = React.useContext(IdentityContext)
-    const { showLocalIdentityModal } = React.useContext(
-      LocalIdentityModalContext
+    const { identityEvents$ } = useContext(IdentityContext)
+    const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
+    const updateLabel = useCallback(
+      address => async () => {
+        try {
+          await showLocalIdentityModal(address)
+          // preferences get all
+          onModifyEvent()
+          // for iframe apps
+          identityEvents$.next({ type: identityEventTypes.MODIFY, address })
+        } catch (e) {
+          /* nothing was updated */
+        }
+      },
+      [identityEvents$, onModifyEvent, showLocalIdentityModal]
     )
-    const updateLabel = React.useCallback(address => async () => {
-      try {
-        await showLocalIdentityModal(address)
-        // preferences get all
-        onModifyEvent()
-        // for iframe apps
-        identityEvents$.next({ type: identityEventTypes.MODIFY, address })
-      } catch (e) {
-        /* nothing was updated */
-      }
-    })
 
-    const [allSelected, someSelected] = React.useMemo(
+    const [allSelected, someSelected] = useMemo(
       () => [
         Array.from(addressesSelected.values()).every(v => v),
         Array.from(addressesSelected.values()).some(v => v),
       ],
       [addressesSelected]
     )
-    const handleDownload = React.useCallback(() => {
+    const handleDownload = useCallback(() => {
       // standard: https://en.wikipedia.org/wiki/ISO_8601
       const today = format(Date.now(), 'yyyy-MM-dd')
       const blob = new Blob(
@@ -402,7 +410,17 @@ const LocalIdentities = React.memo(
         { type: 'text/json' }
       )
       saveAs(blob, `aragon-labels_${dao}_${today}.json`)
-    }, [identities, addressesSelected])
+    }, [identities, dao, addressesSelected])
+
+    const [confirmationModalOpened, setConfirmationModalOpened] = useState(
+      false
+    )
+    const handleOpenConfirmationModal = useCallback(() => {
+      setConfirmationModalOpened(true)
+    }, [])
+    const handleCloseConfirmationModal = useCallback(() => {
+      setConfirmationModalOpened(false)
+    }, [])
 
     if (!identities.length) {
       return <EmptyLocalIdentities onImport={onImport} />
@@ -469,9 +487,35 @@ const LocalIdentities = React.memo(
           >
             Share
           </StyledShare>
-          <Button mode="outline" onClick={onClearAll}>
+          <Button mode="outline" onClick={handleOpenConfirmationModal}>
             <IconCross /> Remove all labels
           </Button>
+          <Modal
+            visible={confirmationModalOpened}
+            onClose={handleOpenConfirmationModal}
+          >
+            <ModalTitle>Remove labels</ModalTitle>
+            <ModalText>
+              This action will irreversibly delete the selected labels you have
+              added to your organization on this device
+            </ModalText>
+            <ModalControls>
+              <Button
+                label="Cancel"
+                mode="secondary"
+                onClick={handleCloseConfirmationModal}
+              >
+                Cancel
+              </Button>
+              <RemoveButton
+                label="Remove labels"
+                mode="strong"
+                onClick={onClearAll}
+              >
+                Remove
+              </RemoveButton>
+            </ModalControls>
+          </Modal>
         </Controls>
         <Warning />
       </React.Fragment>
@@ -496,8 +540,38 @@ LocalIdentities.defaultProps = {
   onModifyEvent: () => null,
 }
 
+const ModalTitle = styled.h1`
+  font-size: 22px;
+`
+
+const ModalText = styled.p`
+  margin: ${2.5 * GU}px 0 ${2.5 * GU}px 0;
+`
+
+const ModalControls = styled.div`
+  display: grid;
+  grid-gap: ${1.5 * GU}px;
+  grid-template-columns: 1fr 1fr;
+  ${breakpoint(
+    'medium',
+    `
+      display: flex;
+      justify-content: flex-end;
+    `
+  )}
+`
+
 const StyledCheckbox = styled(Checkbox)`
   margin-right: ${3 * GU}px;
+`
+
+const RemoveButton = styled(Button)`
+  ${breakpoint(
+    'medium',
+    `
+      margin-left: ${2.5 * GU}px;
+    `
+  )}
 `
 
 const Label = styled.label`

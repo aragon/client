@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 
@@ -41,32 +41,57 @@ export function useArrows({ onUp, onLeft, onDown, onRight } = {}) {
   }, [onUp, onLeft, onDown, onRight])
 }
 
+function stepsReducer(state, { type, value, steps }) {
+  const { step } = state
+
+  let newStep = null
+
+  if (type === 'set') {
+    newStep = value
+  }
+  if (type === 'next' && step < steps - 1) {
+    newStep = step + 1
+  }
+  if (type === 'prev' && step > 0) {
+    newStep = step - 1
+  }
+
+  if (newStep !== null && step !== newStep) {
+    return {
+      step: newStep,
+      direction: newStep > step ? 1 : -1,
+    }
+  }
+
+  return state
+}
+
 // Simple hook to manage a given number of steps.
 export function useSteps(steps) {
-  const [step, _setStep] = useState(0)
-  const [direction, setDirection] = useState(0)
+  const [{ step, direction }, updateStep] = useReducer(stepsReducer, {
+    step: 0,
+    direction: 0,
+  })
+
+  // If the number of steps change, we reset the current step
+  useEffect(() => {
+    updateStep({ type: 'set', value: 0, steps })
+  }, [steps])
 
   const setStep = useCallback(
-    newStep => {
-      if (step !== newStep) {
-        setDirection(newStep > step ? 1 : -1)
-        _setStep(newStep)
-      }
+    value => {
+      updateStep({ type: 'set', value, steps })
     },
-    [setDirection, _setStep, step]
+    [steps]
   )
 
   const next = useCallback(() => {
-    if (step < steps - 1) {
-      setStep(step + 1)
-    }
-  }, [step, steps])
+    updateStep({ type: 'next', steps })
+  }, [steps])
 
   const prev = useCallback(() => {
-    if (step > 0) {
-      setStep(step - 1)
-    }
-  }, [step, steps])
+    updateStep({ type: 'prev', steps })
+  }, [steps])
 
   return {
     direction,
@@ -123,7 +148,7 @@ export function useEsc(cb, deps) {
   useEffect(() => {
     window.addEventListener('keydown', handlekeyDown)
     return () => window.removeEventListener('keydown', handlekeyDown)
-  }, [...deps])
+  }, [handlekeyDown])
 }
 
 const QUERY_VAR = '?labels='
@@ -135,7 +160,7 @@ export function useSharedLabels(dao) {
 
   const removeSharedLink = useCallback(
     () => (window.location.hash = `#/${dao}`),
-    [window.location.hash]
+    [dao]
   )
 
   useEffect(() => {
@@ -153,7 +178,7 @@ export function useSharedLabels(dao) {
         )
       }
     }
-  }, [window.location.hash])
+  }, [])
 
   return { isSharedLink, setIsSharedLink, sharedLabels, removeSharedLink }
 }

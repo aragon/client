@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
@@ -30,24 +30,24 @@ const Preferences = React.memo(({ dao, onClose, opened, wrapper }) => {
     sharedLabels,
     removeSharedLink,
   } = useSharedLabels(dao)
-  const [preferencesOpened, setPreferencesOpened] = React.useState(opened)
+  const [preferencesOpened, setPreferencesOpened] = useState(opened)
 
-  const handleClose = React.useCallback(() => {
+  const handleClose = useCallback(() => {
     if (isSharedLink) {
       removeSharedLink()
     }
     setIsSharedLink(false)
     setPreferencesOpened(false)
     onClose()
-  }, [isSharedLink, onClose, removeSharedLink])
-  const handleSave = React.useCallback(() => {
+  }, [isSharedLink, onClose, setIsSharedLink, removeSharedLink])
+  const handleSave = useCallback(() => {
     removeSharedLink()
     setPreferencesOpened(true)
     setIsSharedLink(false)
-  }, [removeSharedLink])
+  }, [removeSharedLink, setIsSharedLink])
 
   useEsc(handleClose, [isSharedLink, onClose, removeSharedLink])
-  React.useEffect(() => setPreferencesOpened(opened), [opened])
+  useEffect(() => setPreferencesOpened(opened), [opened])
 
   return (
     <Transition
