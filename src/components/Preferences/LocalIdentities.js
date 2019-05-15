@@ -35,7 +35,8 @@ import {
 } from '../IdentityManager/IdentityManager'
 import EmptyLocalIdentities from './EmptyLocalIdentities'
 import Import from './Import'
-import { GU } from '../../utils'
+import { GU, log } from '../../utils'
+import { utoa } from '../../string-utils'
 
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 const TIMEOUT_TOAST = 4000
@@ -233,12 +234,17 @@ const ShareableLocalIdentities = React.memo(function ShareableLocalIdentities({
   }, [inputRef, toast])
   const shareLink = useMemo(() => {
     const base = `${window.location.origin}/#/${dao}`
-    const labels = btoa(
-      JSON.stringify(
-        identities.filter(({ address }) => addressesSelected.get(address))
+    try {
+      const labels = utoa(
+        JSON.stringify(
+          identities.filter(({ address }) => addressesSelected.get(address))
+        )
       )
-    )
-    return `${base}?labels=${labels}`
+      return `${base}?labels=${labels}`
+    } catch (err) {
+      log('Error while creating the identities sharing link:', err)
+      return ''
+    }
   }, [dao, identities, addressesSelected])
 
   useEffect(() => {

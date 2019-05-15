@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
+import { atou } from './string-utils'
 
 // Update `now` at a given interval.
 export function useNow(updateEvery = 1000) {
@@ -168,7 +169,7 @@ export function useSharedLabels(dao) {
     if (index > -1) {
       const raw = window.location.hash.substr(index + QUERY_VAR.length)
       try {
-        const data = JSON.parse(window.decodeURI(atob(raw)))
+        const data = JSON.parse(window.decodeURI(atou(raw)))
         setSharedLabels(data.map(({ address, name }) => ({ address, name })))
         setIsSharedLink(true)
       } catch (e) {
