@@ -529,7 +529,13 @@ const LocalIdentities = React.memo(function LocalIdentities({
         >
           Share
         </StyledShare>
-        <Button mode="outline" onClick={handleOpenConfirmationModal}>
+        <Button
+          mode="outline"
+          onClick={handleOpenConfirmationModal}
+          css={`
+            ${breakpoint('medium', `margin-left: auto;`)}
+          `}
+        >
           <IconCross /> Remove all labels
         </Button>
       </Controls>
