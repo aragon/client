@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
@@ -26,14 +26,29 @@ const OPENING = 'opening'
 const CLOSING = 'closing'
 const ROUND_BUTTON_HEIGHT = 40
 
-const Beacon = React.memo(() => {
-  const [optedIn, setOptedIn] = React.useState(
+const Beacon = React.memo(function Beacon() {
+  const [beaconReady, setBeaconReady] = useState(false)
+  const [openOnReady, setOpenOnReady] = useState(false)
+  const [optedIn, setOptedIn] = useState(
     localStorage.getItem(HELPSCOUT_BEACON_KEY) === '1'
   )
-  const handleOptIn = React.useCallback(() => {
+
+  const handleOptIn = () => {
     localStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
     setOptedIn(true)
-  }, [])
+    setOpenOnReady(true)
+  }
+  const handleBeaconReady = useCallback(() => {
+    if (openOnReady && window.Beacon) {
+      window.Beacon('open')
+      window.Beacon('once', 'open', () => {
+        setBeaconReady(true)
+        setOpenOnReady(false)
+      })
+    } else {
+      setBeaconReady(true)
+    }
+  }, [openOnReady])
 
   return (
     <div
@@ -53,53 +68,51 @@ const Beacon = React.memo(() => {
         )}
       `}
     >
-      <BeaconHeadScripts optedIn={optedIn} />
-      <HelpOptIn onOptIn={handleOptIn} optedIn={optedIn} />
+      <BeaconHeadScripts optedIn={optedIn} onReady={handleBeaconReady} />
+      <HelpOptIn
+        beaconReady={beaconReady}
+        onOptIn={handleOptIn}
+        optedIn={optedIn}
+      />
     </div>
   )
 })
 
-const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
+const HelpOptIn = React.memo(function HelpOptIn({
+  beaconReady,
+  onOptIn,
+  optedIn,
+}) {
   const { below } = useViewport()
-  const [mode, setMode] = React.useState(CLOSED)
-  const [beaconReady, setBeaconReady] = React.useState(optedIn)
+  const [mode, setMode] = useState(CLOSED)
 
-  const handleClose = React.useCallback(() => setMode(CLOSED), [])
-  const handleToggle = React.useCallback(() => {
+  const handleClose = () => setMode(CLOSED)
+
+  const handleToggle = useCallback(() => {
     if (mode !== OPENING && mode !== CLOSING) {
       setMode(mode === CLOSED ? OPENING : CLOSING)
     }
-    if (optedIn) {
+    if (beaconReady && window.Beacon) {
       window.Beacon('toggle')
     }
-  }, [optedIn, mode])
-  const handleToggleEnd = React.useCallback(() => {
+  }, [beaconReady, mode])
+
+  const handleToggleEnd = useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [mode])
-  const handleOptIn = React.useCallback(() => {
-    const isBeaconReady = () => {
-      if (window.Beacon) {
-        window.Beacon('on', 'open', () => setBeaconReady(true))
-        window.Beacon('open')
-        return
-      }
-      setTimeout(isBeaconReady, 100)
-    }
-    onOptIn()
-    isBeaconReady()
-  }, [onOptIn])
 
   const { ref } = useClickOutside(() => {
     if (mode === OPENED || mode === OPENING) {
       handleToggle()
     }
-  }, [mode, OPENED, OPENING, handleToggle])
-  React.useEffect(() => {
-    if (optedIn && window.Beacon) {
+  }, [mode, handleToggle])
+
+  useEffect(() => {
+    if (beaconReady && window.Beacon) {
       window.Beacon('on', 'open', () => setMode(OPENED))
       window.Beacon('on', 'close', () => setMode(CLOSED))
     }
-  }, [optedIn])
+  }, [beaconReady])
 
   return (
     <div ref={ref}>
@@ -130,7 +143,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
                   ),
                 }}
                 onClose={handleClose}
-                onOptIn={handleOptIn}
+                onOptIn={onOptIn}
                 optedIn={optedIn}
               />
             ))
@@ -159,6 +172,7 @@ const HelpOptIn = React.memo(({ onOptIn, optedIn }) => {
 })
 
 HelpOptIn.propTypes = {
+  beaconReady: PropTypes.bool.isRequired,
   onOptIn: PropTypes.func.isRequired,
   optedIn: PropTypes.bool.isRequired,
 }
