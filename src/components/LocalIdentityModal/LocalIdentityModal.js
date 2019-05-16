@@ -7,14 +7,26 @@ import EscapeOutside from '../EscapeOutside/EscapeOutside'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
 
-const LocalIdentityModal = ({ opened, ...props }) => {
-  const { showModal, hideModal } = React.useContext(ModalContext)
-  React.useEffect(() => {
-    opened ? showModal(Modal, props) : hideModal()
-  }, [opened, showModal, hideModal, props])
+const LocalIdentityModal = React.memo(
+  ({ opened, address, label, onCancel, onSave }) => {
+    const { showModal, hideModal } = React.useContext(ModalContext)
 
-  return null
-}
+    const modalProps = React.useMemo(
+      () => ({ address, label, onCancel, onSave }),
+      [address, label, onCancel, onSave]
+    )
+
+    React.useEffect(() => {
+      if (opened) {
+        showModal(Modal, modalProps)
+      } else {
+        hideModal()
+      }
+    }, [opened, modalProps, showModal, hideModal])
+
+    return null
+  }
+)
 
 LocalIdentityModal.propTypes = {
   opened: PropTypes.bool.isRequired,
