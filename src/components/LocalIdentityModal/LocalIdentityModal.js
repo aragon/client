@@ -33,8 +33,8 @@ LocalIdentityModal.propTypes = {
   opened: PropTypes.bool.isRequired,
   address: EthereumAddressType,
   label: PropTypes.string,
-  onCancel: PropTypes.func,
-  onSave: PropTypes.func,
+  onCancel: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 }
 
 const Modal = ({ address, label, onCancel, onSave }) => {
@@ -111,8 +111,8 @@ const Modal = ({ address, label, onCancel, onSave }) => {
 Modal.propTypes = {
   address: EthereumAddressType,
   label: PropTypes.string,
-  onCancel: PropTypes.func,
-  onSave: PropTypes.func,
+  onCancel: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 }
 
 const Error = styled.div`
