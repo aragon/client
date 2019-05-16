@@ -98,11 +98,12 @@ const HelpOptIn = React.memo(function HelpOptIn({
   const handleToggleEnd = useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [mode])
-  const { ref } = useClickOutside(() => {
+  const handleClickOutside = useCallback(() => {
     if ((mode === OPENED || mode === OPENING) && above('medium')) {
       handleToggle()
     }
   }, [mode, handleToggle, above('medium')])
+  const { ref } = useClickOutside(handleClickOutside)
 
   useEffect(() => {
     if (beaconReady && window.Beacon) {
