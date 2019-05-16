@@ -77,7 +77,7 @@ const SharedLabels = React.memo(function SharedLabels({
           line-height: 22px;
         `}
       >
-        These labels have been shared with you. By clicking on the 'Save'
+        These labels have been shared with you. By clicking on the “Save”
         button, you will make them appear on this device (labels will be stored
         locally).
       </div>
