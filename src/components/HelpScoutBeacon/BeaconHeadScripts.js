@@ -35,17 +35,8 @@ const BeaconHeadScripts = React.memo(({ optedIn, onReady }) => {
       <style>
         {`
           .BeaconFabButtonFrame,
-          .c-BeaconCloseButton,
           #beacon-container .Beacon div:first-of-type {
             display: none !important;
-          }
-          #beacon-container .BeaconContainer {
-            height: 100vh !important;
-            max-height: 100vh !important;
-            width: 100vw !important;
-            top: 0 !important;
-            left: 0 !important;
-            z-index: 3 !important;
           }
           @media (min-width: 768px) {
             #beacon-container .BeaconContainer {
