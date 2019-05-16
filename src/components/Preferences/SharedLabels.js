@@ -157,7 +157,7 @@ const SharedLabels = React.memo(function SharedLabels({
           label="Cancel"
           mode="secondary"
           onClick={onClose}
-          css={'width: 117px;'}
+          css="width: 117px"
           disabled={saving}
         >
           Cancel
