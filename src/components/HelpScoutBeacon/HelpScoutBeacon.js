@@ -83,11 +83,10 @@ const HelpOptIn = React.memo(function HelpOptIn({
   onOptIn,
   optedIn,
 }) {
-  const { below } = useViewport()
+  const { above } = useViewport()
   const [mode, setMode] = useState(CLOSED)
 
-  const handleClose = () => setMode(CLOSED)
-
+  const handleClose = React.useCallback(() => setMode(CLOSED), [])
   const handleToggle = useCallback(() => {
     if (mode !== OPENING && mode !== CLOSING) {
       setMode(mode === CLOSED ? OPENING : CLOSING)
@@ -96,16 +95,14 @@ const HelpOptIn = React.memo(function HelpOptIn({
       window.Beacon('toggle')
     }
   }, [beaconReady, mode])
-
   const handleToggleEnd = useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [mode])
-
   const { ref } = useClickOutside(() => {
-    if (mode === OPENED || mode === OPENING) {
+    if ((mode === OPENED || mode === OPENING) && above('medium')) {
       handleToggle()
     }
-  }, [mode, handleToggle])
+  }, [mode, handleToggle, above('medium')])
 
   useEffect(() => {
     if (beaconReady && window.Beacon) {
@@ -151,17 +148,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
           }
         </Transition>
       )}
-      {optedIn && (mode === OPENED || mode === OPENING) && below('medium') && (
-        <CloseButton
-          onClick={handleToggle}
-          style={{
-            bottom: 'calc(100vh - 58px)',
-            top: 'unset',
-            right: -8,
-          }}
-        />
-      )}
-      {(!below('medium') || (mode === CLOSED || mode === CLOSING)) && (
+      {(above('medium') || (mode === CLOSED || mode === CLOSING)) && (
         <ToggleDialogueButton
           open={mode === OPENED || mode === OPENING}
           onToggle={handleToggle}
