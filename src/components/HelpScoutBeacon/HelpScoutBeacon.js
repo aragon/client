@@ -150,12 +150,10 @@ const HelpOptIn = React.memo(function HelpOptIn({
           }
         </Transition>
       )}
-      {(above('medium') || (mode === CLOSED || mode === CLOSING)) && (
-        <ToggleDialogueButton
-          open={mode === OPENED || mode === OPENING}
-          onToggle={handleToggle}
-        />
-      )}
+      <ToggleDialogueButton
+        open={mode === OPENED || mode === OPENING}
+        onToggle={handleToggle}
+      />
     </div>
   )
 })
@@ -167,10 +165,16 @@ HelpOptIn.propTypes = {
 }
 
 const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
+  const { below } = useViewport()
   return (
     <RoundButton
       onClick={onToggle}
       css={`
+        ${below('medium') &&
+          `
+            position: absolute;
+            top: calc(-${ROUND_BUTTON_HEIGHT}px - ${3 * GU}px);
+          `}
         margin-left: calc(100% - ${ROUND_BUTTON_HEIGHT}px);
         margin-top: ${2 * GU}px;
       `}
