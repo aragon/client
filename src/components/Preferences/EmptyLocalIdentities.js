@@ -5,35 +5,39 @@ import { IdentityBadge, breakpoint } from '@aragon/ui'
 import { getEmptyAddress } from '../../web3-utils'
 import Import from './Import'
 
-const EmptyLocalIdentities = ({ onImport }) => (
-  <Wrap>
-    <Title>Start adding labels</Title>
-    <Paragraph>
-      You can add labels by clicking on the{' '}
-      <span
-        css={`
-          display: inline-flex;
-          margin-right: 2px;
-          vertical-align: text-bottom;
-          position: relative;
-          top: 3px;
-        `}
-      >
-        <IdentityBadge
-          entity={getEmptyAddress()}
-          customLabel="Address badge"
-          compact
-          badgeOnly
-        />
-      </span>
-      anywhere in the app, or importing a .json file with labels by clicking
-      "Import" below.
-    </Paragraph>
-    <WrapImport>
-      <Import onImport={onImport} />
-    </WrapImport>
-  </Wrap>
-)
+const EmptyLocalIdentities = React.memo(function EmptyLocalIdentities({
+  onImport,
+}) {
+  return (
+    <Wrap>
+      <Title>Start adding labels</Title>
+      <Paragraph>
+        You can add labels by clicking on the{' '}
+        <span
+          css={`
+            display: inline-flex;
+            margin-right: 2px;
+            vertical-align: text-bottom;
+            position: relative;
+            top: 3px;
+          `}
+        >
+          <IdentityBadge
+            entity={getEmptyAddress()}
+            customLabel="Address badge"
+            compact
+            badgeOnly
+          />
+        </span>
+        anywhere in the app, or importing a .json file with labels by clicking
+        "Import" below.
+      </Paragraph>
+      <WrapImport>
+        <Import onImport={onImport} />
+      </WrapImport>
+    </Wrap>
+  )
+})
 
 EmptyLocalIdentities.propTypes = {
   onImport: PropTypes.func.isRequired,
