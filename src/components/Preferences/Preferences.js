@@ -46,7 +46,7 @@ const Preferences = React.memo(({ dao, onClose, opened, wrapper }) => {
     setIsSharedLink(false)
   }, [removeSharedLink, setIsSharedLink])
 
-  useEsc(handleClose, [isSharedLink, onClose, removeSharedLink])
+  useEsc(handleClose)
   useEffect(() => setPreferencesOpened(opened), [opened])
 
   return (
