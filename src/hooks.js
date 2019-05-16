@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useState, useRef } from 'react'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 import { atou } from './string-utils'
@@ -194,4 +194,25 @@ export function useSelected(initial) {
     [selected]
   )
   return { selected, setSelected, allSelected, someSelected }
+}
+
+export function useClickOutside(cb) {
+  const ref = useRef()
+  const handleClick = useCallback(
+    e => {
+      if (!ref.current.contains(e.target)) {
+        cb()
+      }
+    },
+    [cb, ref]
+  )
+
+  useEffect(() => {
+    document.addEventListener('click', handleClick, true)
+    return () => {
+      document.removeEventListener('click', handleClick, true)
+    }
+  }, [handleClick])
+
+  return { ref }
 }

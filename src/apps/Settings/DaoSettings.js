@@ -52,13 +52,13 @@ const DaoSettings = React.memo(
           text={`This organization is deployed on the ${network.name}.`}
         >
           {checksummedDaoAddr ? (
-            <Wrap>
+            <div>
               <Label>Address</Label>
               <LocalIdentityBadge
                 entity={checksummedDaoAddr}
                 shorten={shortAddresses}
               />
-            </Wrap>
+            </div>
           ) : (
             <p>Resolving DAO address…</p>
           )}
@@ -116,35 +116,44 @@ const DaoSettings = React.memo(
             <div css={'height:20px'} />
           </Option>
         )}
-        {!appsLoading && apmApps.length > 0 && (
+        {apmApps.length > 0 && (
           <Option
             name="Aragon apps"
-            text={`This organization has ${apmApps.length}
-            ${apmApps.length > 1 ? 'apps' : 'app'}
-            installed.`}
+            text={
+              appsLoading
+                ? 'Loading apps…'
+                : `This organization has ${apmApps.length} ${
+                    apmApps.length === 1 ? 'app' : 'apps'
+                  } installed.`
+            }
           >
-            <AppsList>
-              {apmApps.map(
-                ({ appId, description, name, proxyAddress, tags }) => {
-                  const checksummedProxyAddress = toChecksumAddress(
-                    proxyAddress
-                  )
+            {!appsLoading && (
+              <AppsList>
+                {apmApps.map(
+                  ({ appId, description, name, proxyAddress, tags }) => {
+                    const checksummedProxyAddress = toChecksumAddress(
+                      proxyAddress
+                    )
 
-                  return (
-                    <AppItem title={description} key={checksummedProxyAddress}>
-                      <Label>
-                        {name}
-                        {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
-                      </Label>
-                      <LocalIdentityBadge
-                        entity={checksummedProxyAddress}
-                        shorten={shortAddresses}
-                      />
-                    </AppItem>
-                  )
-                }
-              )}
-            </AppsList>
+                    return (
+                      <AppItem
+                        title={description}
+                        key={checksummedProxyAddress}
+                      >
+                        <Label>
+                          {name}
+                          {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
+                        </Label>
+                        <LocalIdentityBadge
+                          entity={checksummedProxyAddress}
+                          shorten={shortAddresses}
+                        />
+                      </AppItem>
+                    )
+                  }
+                )}
+              </AppsList>
+            )}
           </Option>
         )}
       </div>
@@ -166,16 +175,18 @@ DaoSettings.defaultProps = {
   shortAddresses: false,
 }
 
-const Wrap = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
 const ButtonLink = styled(Button).attrs({ mode: 'text' })`
   padding: 0;
   color: inherit;
   font-size: inherit;
   text-decoration: underline;
+  transition: none;
+  &:focus {
+    outline: 2px solid ${theme.accent};
+  }
+  &:active {
+    outline: 0;
+  }
 `
 
 const Label = styled.label`
