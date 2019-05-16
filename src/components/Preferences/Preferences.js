@@ -8,6 +8,7 @@ import {
   BREAKPOINTS,
   ButtonIcon,
   IconClose,
+  TabBar,
   breakpoint,
   font,
   springs,
@@ -17,6 +18,8 @@ import { AragonType } from '../../prop-types'
 import { useEsc, useSharedLabels } from '../../hooks'
 import SharedLabels from './SharedLabels'
 import LocalIdentities from './LocalIdentities'
+
+const TABS = ['Manage labels']
 
 // checks if data is present via shared link
 // if so, displays shared labels which can be selected and saved
@@ -31,6 +34,7 @@ const Preferences = React.memo(({ dao, onClose, opened, wrapper }) => {
     removeSharedLink,
   } = useSharedLabels(dao)
   const [preferencesOpened, setPreferencesOpened] = useState(opened)
+  const [selectedTab, setSelectedTab] = useState(0)
 
   const handleClose = useCallback(() => {
     if (isSharedLink) {
@@ -93,6 +97,13 @@ const Preferences = React.memo(({ dao, onClose, opened, wrapper }) => {
               }
             >
               <Section>
+                {!isSharedLink && (
+                  <TabBar
+                    items={TABS}
+                    selected={selectedTab}
+                    onChange={setSelectedTab}
+                  />
+                )}
                 {isSharedLink ? (
                   <SharedLabels
                     labels={sharedLabels}
