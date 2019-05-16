@@ -152,7 +152,7 @@ export function useClickOutside(cb, deps) {
     return () => {
       document.removeEventListener('click', handleClick, true)
     }
-  }, [...deps, handleClick])
+  }, [deps, handleClick])
 
   return { ref }
 }
