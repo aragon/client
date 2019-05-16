@@ -78,7 +78,7 @@ const SharedLabels = React.memo(function SharedLabels({
         `}
       >
         These labels have been shared with you. By clicking on the 'Save'
-        button, you’ll make them available in this device (labels will be stored
+        button, you will make them appear on this device (labels will be stored
         locally).
       </div>
       <Headers style={{ marginTop: `${5 * GU}px` }}>
