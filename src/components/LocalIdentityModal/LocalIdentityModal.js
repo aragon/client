@@ -111,8 +111,8 @@ const Modal = ({ address, label, onCancel, onSave }) => {
 Modal.propTypes = {
   address: EthereumAddressType,
   label: PropTypes.string,
-  onCancel: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
+  onCancel: PropTypes.func,
+  onSave: PropTypes.func,
 }
 
 const Error = styled.div`
