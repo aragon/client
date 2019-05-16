@@ -6,6 +6,7 @@ import { ModalContext } from '../ModalManager/ModalManager'
 import EscapeOutside from '../EscapeOutside/EscapeOutside'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
+import { EthereumAddressType } from '../../prop-types'
 
 const LocalIdentityModal = React.memo(
   ({ opened, address, label, onCancel, onSave }) => {
@@ -30,6 +31,10 @@ const LocalIdentityModal = React.memo(
 
 LocalIdentityModal.propTypes = {
   opened: PropTypes.bool.isRequired,
+  address: EthereumAddressType,
+  label: PropTypes.string,
+  onCancel: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 }
 
 const Modal = ({ address, label, onCancel, onSave }) => {
@@ -104,10 +109,10 @@ const Modal = ({ address, label, onCancel, onSave }) => {
 }
 
 Modal.propTypes = {
-  address: PropTypes.string,
+  address: EthereumAddressType,
   label: PropTypes.string,
-  onCancel: PropTypes.func,
-  onSave: PropTypes.func,
+  onCancel: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 }
 
 const Error = styled.div`
