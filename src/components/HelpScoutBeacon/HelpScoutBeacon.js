@@ -84,6 +84,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
   optedIn,
 }) {
   const { above } = useViewport()
+  const expandedMode = above('medium')
   const [mode, setMode] = useState(CLOSED)
 
   const handleClose = React.useCallback(() => setMode(CLOSED), [])
@@ -99,10 +100,10 @@ const HelpOptIn = React.memo(function HelpOptIn({
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [mode])
   const handleClickOutside = useCallback(() => {
-    if ((mode === OPENED || mode === OPENING) && above('medium')) {
+    if ((mode === OPENED || mode === OPENING) && expandedMode) {
       handleToggle()
     }
-  }, [mode, handleToggle, above('medium')])
+  }, [mode, handleToggle, expandedMode])
   const { ref } = useClickOutside(handleClickOutside)
 
   useEffect(() => {
