@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useImageExists } from '@aragon/ui'
 import { appIconUrl, legacyAppIconUrl } from '../../utils'
-import RemoteImage from '../RemoteImage'
 
 import iconSvgAcl from './assets/app-acl.svg'
 import iconSvgDefault from './assets/app-default.svg'
@@ -11,6 +11,9 @@ import iconSvgRegistry from './assets/app-registry.svg'
 
 const DEFAULT_SIZE = 22
 const DEFAULT_RADIUS = 5
+
+// Delay before we start displaying the fallback
+const DISPLAY_FALLBACK_DELAY = 50
 
 const KNOWN_ICONS = new Map([
   ['home', iconSvgHome],
@@ -28,7 +31,13 @@ const KNOWN_ICONS = new Map([
   ],
 ])
 
-const AppIcon = ({ app, src, size, radius, ...props }) => {
+const AppIcon = React.memo(function AppIcon({
+  app,
+  src,
+  size,
+  radius,
+  ...props
+}) {
   if (radius === -1) {
     radius = size * (DEFAULT_RADIUS / DEFAULT_SIZE)
   }
@@ -45,7 +54,7 @@ const AppIcon = ({ app, src, size, radius, ...props }) => {
       <AppIconContent app={app} size={size} src={src} />
     </div>
   )
-}
+})
 
 AppIcon.propTypes = {
   app: PropTypes.object,
@@ -64,7 +73,7 @@ AppIcon.defaultProps = {
 // Disabling the ESLint prop-types check for internal components.
 /* eslint-disable react/prop-types */
 
-const AppIconContent = ({ app, size, src }) => {
+const AppIconContent = React.memo(({ app, size, src }) => {
   if (src) {
     return <RemoteIcon src={src} size={size} />
   }
@@ -78,25 +87,33 @@ const AppIconContent = ({ app, size, src }) => {
       <RemoteIcon src={legacyAppIconUrl(app)} size={size} />
     </RemoteIcon>
   )
-}
+})
 
 // Display a remote icon if found,
-// otherwise a provided fallback if provided,
-// otherwise the default icon.
-const RemoteIcon = ({ src, size, children }) => {
-  const fallback = children || <IconBase size={size} src={iconSvgDefault} />
-  return src === null ? (
-    fallback
-  ) : (
-    <RemoteImage src={src}>
-      {({ exists }) => (exists ? <IconBase size={size} src={src} /> : fallback)}
-    </RemoteImage>
-  )
-}
+// or the provided fallback, or the default icon.
+const RemoteIcon = React.memo(({ src, size, children }) => {
+  const { exists, loading } = useImageExists(src)
+  const [displayFallback, setDisplayFallback] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setDisplayFallback(true),
+      DISPLAY_FALLBACK_DELAY
+    )
+    return () => clearTimeout(timer)
+  }, [])
+
+  // display fallback
+  if ((!exists && !loading) || (loading && displayFallback)) {
+    return children || <IconBase size={size} src={iconSvgDefault} />
+  }
+
+  return <IconBase size={size} src={src} />
+})
 
 // Base icon
-const IconBase = ({ src, size, alt = '', ...props }) => (
+const IconBase = React.memo(({ src, size, alt = '', ...props }) => (
   <img {...props} src={src} width={size} height={size} alt={alt} />
-)
+))
 
 export default AppIcon
