@@ -35,6 +35,7 @@ import {
 } from '../IdentityManager/IdentityManager'
 import EmptyLocalIdentities from './EmptyLocalIdentities'
 import Import from './Import'
+import { useSelected } from '../../hooks'
 import { GU, log } from '../../utils'
 import { utoa } from '../../string-utils'
 
@@ -135,9 +136,12 @@ const SelectableLocalIdentities = React.memo(
       () => new Map(identities.map(({ address }) => [address, true])),
       [identities]
     )
-    const [addressesSelected, setAddressesSelected] = useState(
-      initialAddressesSelected
-    )
+    const {
+      selected: addressesSelected,
+      setSelected: setAddressesSelected,
+      allSelected,
+      someSelected,
+    } = useSelected(initialAddressesSelected)
 
     const handleToggleAll = useCallback(
       () =>
@@ -145,14 +149,11 @@ const SelectableLocalIdentities = React.memo(
           new Map(
             identities.map(({ address }) => [
               address,
-              !(
-                Array.from(addressesSelected.values()).every(v => v) ||
-                Array.from(addressesSelected.values()).some(v => v)
-              ),
+              !(allSelected || someSelected),
             ])
           )
         ),
-      [addressesSelected, identities]
+      [identities, allSelected, someSelected, setAddressesSelected]
     )
     const handleToggleAddress = useCallback(
       address => () =>
@@ -162,18 +163,20 @@ const SelectableLocalIdentities = React.memo(
             [address, !addressesSelected.get(address)],
           ])
         ),
-      [addressesSelected]
+      [addressesSelected, setAddressesSelected]
     )
 
     useEffect(() => {
       setAddressesSelected(initialAddressesSelected)
-    }, [initialAddressesSelected])
+    }, [initialAddressesSelected, setAddressesSelected])
 
     return (
       <Toast timeout={TIMEOUT_TOAST}>
         {toast => (
           <ShareableLocalIdentities
             addressesSelected={addressesSelected}
+            allSelected={allSelected}
+            someSelected={someSelected}
             dao={dao}
             identities={identities}
             onClearAll={onClearAll}
@@ -205,15 +208,17 @@ SelectableLocalIdentities.defaultProps = {
 
 const ShareableLocalIdentities = React.memo(function ShareableLocalIdentities({
   addressesSelected,
-  identities,
+  allSelected,
   dao,
-  toast,
+  identities,
   onClearAll,
   onImport,
   onModify,
   onModifyEvent,
   onToggleAddress,
   onToggleAll,
+  someSelected,
+  toast,
 }) {
   const [shareModalOpen, setShareModalOpen] = useState(false)
   const inputRef = useRef()
@@ -379,6 +384,8 @@ const ShareableLocalIdentities = React.memo(function ShareableLocalIdentities({
       </Modal>
       <LocalIdentities
         addressesSelected={addressesSelected}
+        allSelected={allSelected}
+        someSelected={someSelected}
         dao={dao}
         identities={identities}
         onClearAll={onClearAll}
@@ -395,6 +402,7 @@ const ShareableLocalIdentities = React.memo(function ShareableLocalIdentities({
 
 ShareableLocalIdentities.propTypes = {
   addressesSelected: PropTypes.instanceOf(Map).isRequired,
+  allSelected: PropTypes.bool.isRequired,
   dao: PropTypes.string.isRequired,
   identities: PropTypes.array.isRequired,
   onClearAll: PropTypes.func.isRequired,
@@ -403,11 +411,13 @@ ShareableLocalIdentities.propTypes = {
   onModifyEvent: PropTypes.func,
   onToggleAddress: PropTypes.func.isRequired,
   onToggleAll: PropTypes.func.isRequired,
+  someSelected: PropTypes.bool.isRequired,
   toast: PropTypes.func.isRequired,
 }
 
 const LocalIdentities = React.memo(function LocalIdentities({
   addressesSelected,
+  allSelected,
   dao,
   identities,
   onClearAll,
@@ -417,18 +427,11 @@ const LocalIdentities = React.memo(function LocalIdentities({
   onShare,
   onToggleAddress,
   onToggleAll,
+  someSelected,
 }) {
   const { identityEvents$ } = useContext(IdentityContext)
   const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
   const [confirmationModalOpened, setConfirmationModalOpened] = useState(false)
-  const [allSelected, someSelected] = useMemo(
-    () => [
-      Array.from(addressesSelected.values()).every(v => v),
-      Array.from(addressesSelected.values()).some(v => v),
-    ],
-    [addressesSelected]
-  )
-
   const updateLabel = useCallback(
     address => async () => {
       try {
@@ -578,6 +581,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
 
 LocalIdentities.propTypes = {
   addressesSelected: PropTypes.instanceOf(Map).isRequired,
+  allSelected: PropTypes.bool.isRequired,
   dao: PropTypes.string.isRequired,
   identities: PropTypes.array.isRequired,
   onClearAll: PropTypes.func.isRequired,
@@ -587,6 +591,7 @@ LocalIdentities.propTypes = {
   onShare: PropTypes.func.isRequired,
   onToggleAddress: PropTypes.func.isRequired,
   onToggleAll: PropTypes.func.isRequired,
+  someSelected: PropTypes.bool.isRequired,
 }
 
 LocalIdentities.defaultProps = {
