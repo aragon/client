@@ -19,7 +19,6 @@ import {
   IdentityBadge,
   Modal,
   Info,
-  TabBar,
   TextInput,
   Toast,
   breakpoint,
@@ -41,14 +40,12 @@ import { utoa } from '../../string-utils'
 
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 const TIMEOUT_TOAST = 4000
-const TABS = ['Manage labels']
 
 const EnhancedLocalIdentities = React.memo(function EnhancedLocalIdentities({
   dao,
   wrapper,
 }) {
   const { identityEvents$ } = useContext(IdentityContext)
-  const [selectedTab, setSelectedTab] = useState(0)
   const [localIdentities, setLocalIdentities] = useState({})
 
   const handleGetAll = useCallback(async () => {
@@ -94,19 +91,16 @@ const EnhancedLocalIdentities = React.memo(function EnhancedLocalIdentities({
   }, [handleGetAll])
 
   return (
-    <React.Fragment>
-      <TabBar items={TABS} selected={selectedTab} onChange={setSelectedTab} />
-      <Content>
-        <SelectableLocalIdentities
-          dao={dao}
-          localIdentities={localIdentities}
-          onImport={handleImport}
-          onClearAll={handleClearAll}
-          onModify={handleModify}
-          onModifyEvent={handleGetAll}
-        />
-      </Content>
-    </React.Fragment>
+    <Content>
+      <SelectableLocalIdentities
+        dao={dao}
+        localIdentities={localIdentities}
+        onImport={handleImport}
+        onClearAll={handleClearAll}
+        onModify={handleModify}
+        onModifyEvent={handleGetAll}
+      />
+    </Content>
   )
 })
 
