@@ -20,10 +20,10 @@ import LoadingRing from '../LoadingRing'
 import { GU } from '../../utils'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
-const CLOSED = 'closed, user can open opt-in dialogue'
-const OPENED = 'opened, user can opt-in or close'
-const OPENING = 'opening'
-const CLOSING = 'closing'
+const CLOSED = Symbol('closed, user can open opt-in dialogue')
+const OPENED = Symbol('opened, user can opt-in or close')
+const OPENING = Symbol('opening')
+const CLOSING = Symbol('closing')
 const ROUND_BUTTON_HEIGHT = 40
 
 const Beacon = React.memo(function Beacon() {
