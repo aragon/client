@@ -1,10 +1,5 @@
 import { staticApps } from './static-apps'
-import {
-  APP_MODE_START,
-  APP_MODE_ORG,
-  APP_MODE_SETUP,
-  APP_MODE_INVALID,
-} from './symbols'
+import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
 
 import { isAddress, isValidEnsName } from './web3-utils'
 
@@ -53,12 +48,13 @@ export const parsePath = (pathname, search = '') => {
     return { path, mode: APP_MODE_SETUP, step, parts: setupParts }
   }
 
-  const validAddress = isAddress(parts[0])
-  const validDomain = isValidEnsName(parts[0])
+  let dao = parts[0]
+  const validAddress = isAddress(dao)
+  const validDomain = isValidEnsName(dao)
 
-  // Exclude invalid DAO addresses
+  // Assume .aragonid.eth if not given a valid address or a valid ENS domain
   if (!validAddress && !validDomain) {
-    return { path, dao: parts[0], mode: APP_MODE_INVALID }
+    dao += '.aragonid.eth'
   }
 
   // Organization
@@ -72,7 +68,7 @@ export const parsePath = (pathname, search = '') => {
     }
   }
 
-  const [dao, instanceId, ...appParts] = parts
+  const [, instanceId, ...appParts] = parts
 
   const completeLocator = {
     path,
