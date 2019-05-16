@@ -22,7 +22,7 @@ const LoadingScreen = React.memo(function LoadingScreen({
       setVisible(true)
     }
     return () => clearTimeout(timer)
-  }, [progress])
+  }, [progress, visible])
 
   return (
     <Transition

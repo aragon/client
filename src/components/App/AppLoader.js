@@ -68,7 +68,14 @@ function useLoadingStatus({
     const progress = stepIndex / (loadingSteps.steps.length - 1)
 
     setStatus({ label, progress })
-  }, [appLoading, appsLoading, daoLoading, loadingSteps, currentAppName])
+  }, [
+    appLoading,
+    appsLoading,
+    daoLoading,
+    loadingSteps,
+    currentAppName,
+    instanceId,
+  ])
 
   return { label, progress }
 }
