@@ -530,14 +530,15 @@ const LocalIdentities = React.memo(function LocalIdentities({
             Export
           </Button.Anchor>
         )}
-        <StyledShare
+        <Button
+          style={{ margin: `0 ${3 * GU}px ${3 * GU}px` }}
           label="Share labels"
           mode="secondary"
           onClick={onShare}
           disabled={!someSelected}
         >
           Share
-        </StyledShare>
+        </Button>
         <Button
           mode="outline"
           onClick={handleOpenConfirmationModal}
@@ -650,10 +651,6 @@ const Warning = React.memo(function Warning() {
     </StyledInfoAction>
   )
 })
-
-const StyledShare = styled(Button)`
-  margin: 0 ${3 * GU}px ${3 * GU}px;
-`
 
 const Controls = styled.div`
   display: flex;
