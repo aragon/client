@@ -136,7 +136,7 @@ export function useRepoDetails(baseUrl, detailsUrl) {
   return usePromise(fetchDescription, [detailsUrl], null)
 }
 
-export function useClickOutside(cb, deps) {
+export function useClickOutside(cb) {
   const ref = useRef()
   const handleClick = useCallback(
     e => {
@@ -152,7 +152,7 @@ export function useClickOutside(cb, deps) {
     return () => {
       document.removeEventListener('click', handleClick, true)
     }
-  }, [deps, handleClick])
+  }, [handleClick])
 
   return { ref }
 }
