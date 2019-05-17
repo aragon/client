@@ -275,7 +275,7 @@ class Wrapper extends React.PureComponent {
           opened={menuPanelOpened}
         >
           <AppScreen>
-            {this.renderApp(locator.instanceId, locator.params)}
+            {this.renderApp(locator.instanceId, locator.params, canUpgradeOrg)}
           </AppScreen>
         </CombinedPanel>
         <SignerPanel
@@ -303,7 +303,7 @@ class Wrapper extends React.PureComponent {
       </Main>
     )
   }
-  renderApp(instanceId, params) {
+  renderApp(instanceId, params, canUpgradeOrg) {
     const {
       account,
       apps,
@@ -354,8 +354,10 @@ class Wrapper extends React.PureComponent {
           daoAddress={daoAddress}
           params={params}
           repos={repos}
+          canUpgradeOrg={this.props.canUpgradeOrg}
           reposLoading={reposLoading}
           onMessage={this.handleAppMessage}
+          onUpgradeAll={this.showOrgUpgradePanel}
           onParamsRequest={this.handleParamsRequest}
           wrapper={wrapper}
         />
