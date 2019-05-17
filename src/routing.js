@@ -48,7 +48,7 @@ export const parsePath = (pathname, search = '') => {
     return { path, mode: APP_MODE_SETUP, step, parts: setupParts }
   }
 
-  let dao = parts[0]
+  let [dao] = parts
   const validAddress = isAddress(dao)
   const validDomain = isValidEnsName(dao)
 
