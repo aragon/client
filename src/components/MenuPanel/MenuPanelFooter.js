@@ -36,7 +36,13 @@ MenuPanelFooter.propTypes = {
 }
 
 const ConnectedAccount = ({ account, onRequestEnable }) => (
-  <div css="margin-top: 12px">
+  <div
+    css={`
+      overflow: hidden;
+      margin-top: 12px;
+      display: flex;
+    `}
+  >
     {account ? (
       <LocalIdentityBadge entity={account} />
     ) : (
