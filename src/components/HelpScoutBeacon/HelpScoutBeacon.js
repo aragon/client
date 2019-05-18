@@ -6,6 +6,7 @@ import {
   Button,
   ButtonIcon,
   IconClose,
+  LoadingRing,
   SafeLink,
   breakpoint,
   springs,
@@ -16,7 +17,6 @@ import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
 import { useClickOutside } from '../../hooks'
-import LoadingRing from '../LoadingRing'
 import { GU } from '../../utils'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
@@ -303,7 +303,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
                 height: 200px;
               `}
             >
-              <LoadingRing spin />
+              <LoadingRing />
               <div>Loading…</div>
             </div>
           )}

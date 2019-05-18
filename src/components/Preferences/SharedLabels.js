@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   IdentityBadge,
+  LoadingRing,
   Toast,
   breakpoint,
   font,
@@ -14,7 +15,6 @@ import {
   IdentityContext,
   identityEventTypes,
 } from '../IdentityManager/IdentityManager'
-import LoadingRing from '../LoadingRing'
 import { AragonType } from '../../prop-types'
 import { GU } from '../../utils'
 import { useSelected } from '../../hooks'
@@ -117,7 +117,7 @@ const SharedLabels = React.memo(function SharedLabels({
       <List>
         {saving && (
           <Saving>
-            <LoadingRing spin />
+            <LoadingRing />
             <div>Loading…</div>
           </Saving>
         )}
