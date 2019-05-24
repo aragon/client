@@ -21,7 +21,7 @@ const actions = [
   {
     id: 'assign-tokens',
     label: 'Assign Tokens',
-    appName: 'Token Manager',
+    appName: 'Tokens',
     img: imgAssignTokens,
   },
   {

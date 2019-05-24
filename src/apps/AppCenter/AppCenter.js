@@ -130,10 +130,7 @@ class AppCenter extends React.Component {
     const repos = this.getRepos()
     const currentRepo = openedRepoName && this.getRepoFromName(openedRepoName)
 
-    const navigationItems = [
-      'Apps',
-      ...(currentRepo ? [currentRepo.name] : []),
-    ]
+    const navigationItems = ['Apps', ...(currentRepo ? [currentRepo.name] : [])]
 
     return (
       <React.Fragment>
