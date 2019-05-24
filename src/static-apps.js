@@ -13,7 +13,7 @@ export const staticApps = new Map(
     apps: {
       app: {
         appId: 'apps',
-        name: 'App Center',
+        name: 'Apps',
         icon: <IconApps />,
         instances: [{ instanceId: 'apps' }],
       },

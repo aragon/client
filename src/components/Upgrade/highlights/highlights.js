@@ -68,7 +68,7 @@ const highlights = [
   {
     title: {
       small: null,
-      large: 'Update apps from the App Center',
+      large: 'Update apps from Apps',
     },
     description: {
       small: null,

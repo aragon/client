@@ -131,7 +131,7 @@ class AppCenter extends React.Component {
     const currentRepo = openedRepoName && this.getRepoFromName(openedRepoName)
 
     const navigationItems = [
-      'App Center',
+      'Apps',
       ...(currentRepo ? [currentRepo.name] : []),
     ]
 

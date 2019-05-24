@@ -76,13 +76,13 @@ export const highlights = [
   {
     title: {
       small: null,
-      large: 'Update apps from the App Center',
+      large: 'Update apps from Apps',
     },
     description: {
       small: null,
       large: `
         Apply security patches and add new features to the apps in your
-        organization by updating to the latest version of apps in the App Center.
+        organization by updating to the latest version of apps in Apps.
       `,
     },
     visual: {
