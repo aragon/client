@@ -15,7 +15,6 @@ import {
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
-import { useClickOutside } from '../../hooks'
 import LoadingRing from '../LoadingRing'
 import { GU } from '../../utils'
 
@@ -83,8 +82,6 @@ const HelpOptIn = React.memo(function HelpOptIn({
   onOptIn,
   optedIn,
 }) {
-  const { above } = useViewport()
-  const expandedMode = above('medium')
   const [mode, setMode] = useState(CLOSED)
 
   const handleClose = React.useCallback(() => setMode(CLOSED), [])
@@ -99,12 +96,6 @@ const HelpOptIn = React.memo(function HelpOptIn({
   const handleToggleEnd = useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [mode])
-  const handleClickOutside = useCallback(() => {
-    if ((mode === OPENED || mode === OPENING) && expandedMode) {
-      handleToggle()
-    }
-  }, [mode, handleToggle, expandedMode])
-  const { ref } = useClickOutside(handleClickOutside)
 
   useEffect(() => {
     if (beaconReady && window.Beacon) {
@@ -114,7 +105,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
   }, [beaconReady])
 
   return (
-    <div ref={ref}>
+    <div>
       {(!optedIn || !beaconReady) && (
         <Transition
           native
