@@ -85,6 +85,7 @@ class AppCenter extends React.Component {
     }
   }
   updateLocation({ activeTab, openedRepoName }) {
+    console.log('AT', activeTab, 'ORN', openedRepoName)
     const location = this.getLocation()
     if (activeTab !== undefined) {
       location.activeTab = activeTab
@@ -185,7 +186,7 @@ class AppCenter extends React.Component {
                     onBack={this.handleCloseRepo}
                   />
 
-                  {canUpgradeOrg && (
+                  {canUpgradeOrg && !openedRepoName && (
                     <UpgradeButton mode="strong" onClick={onUpgradeAll}>
                       Upgrade all
                     </UpgradeButton>
@@ -224,7 +225,6 @@ const UpgradeButton = styled(Button)`
   right: 0px;
   margin-right: 30px;
 }
-
-
 `
+
 export default AppCenter
