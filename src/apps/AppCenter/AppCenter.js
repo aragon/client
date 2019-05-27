@@ -13,6 +13,7 @@ import MenuButton from '../../components/MenuPanel/MenuButton'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
+import IconUpgrade from './IconUpgrade'
 import EmptyBlock from './EmptyBlock'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import {
@@ -150,7 +151,7 @@ class AppCenter extends React.Component {
           style={{ height: '100%' }}
           appBar={
             <Viewport>
-              {({ below }) => (
+              {({ below, above }) => (
                 <AppBar
                   tabs={
                     openedRepoName ? null : (
@@ -184,7 +185,16 @@ class AppCenter extends React.Component {
                     onBack={this.handleCloseRepo}
                   />
 
-                  {canUpgradeOrg && !openedRepoName && (
+                  {below('medium') && canUpgradeOrg && !openedRepoName && (
+                    <UpgradeButton
+                      mode="text"
+                      onClick={onUpgradeAll}
+                      title="Upgrade all"
+                    >
+                      <IconUpgrade />
+                    </UpgradeButton>
+                  )}
+                  {above('medium') && canUpgradeOrg && !openedRepoName && (
                     <UpgradeButton mode="strong" onClick={onUpgradeAll}>
                       Upgrade all
                     </UpgradeButton>
