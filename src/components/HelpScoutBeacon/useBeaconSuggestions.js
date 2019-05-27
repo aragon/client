@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 
 const aboutAragon = '5c98a9330428633d2cf3fd23'
 
@@ -73,7 +73,7 @@ function useBeaconSuggestions({
   locator: { instanceId, path },
   optedIn,
 }) {
-  const getSection = (instanceId, path, apps) => {
+  const getSection = useCallback(() => {
     if (path === '/') {
       return 'onboarding'
     }
@@ -90,23 +90,19 @@ function useBeaconSuggestions({
       return app.name.toLowerCase()
     }
     return null
-  }
-
-  const suggest = (instanceId, path, apps) => {
-    const section = getSection(instanceId, path, apps)
-    if (sectionToSuggestions.has(section)) {
-      window.Beacon('suggest', sectionToSuggestions.get(section))
-      return
-    }
-    // reset/suggest all
-    window.Beacon('suggest', [])
-  }
+  }, [path, instanceId, apps])
 
   useEffect(() => {
     if (optedIn && beaconReady) {
-      suggest(instanceId, path, apps)
+      const section = getSection()
+      if (sectionToSuggestions.has(section)) {
+        window.Beacon('suggest', sectionToSuggestions.get(section))
+        return
+      }
+      // reset/suggest all
+      window.Beacon('suggest', [])
     }
-  }, [instanceId, path, apps, beaconReady, optedIn])
+  }, [getSection, beaconReady, optedIn])
 }
 
 export default useBeaconSuggestions
