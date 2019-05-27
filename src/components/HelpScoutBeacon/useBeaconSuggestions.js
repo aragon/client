@@ -83,9 +83,7 @@ function useBeaconSuggestions({
     if (systemApp) {
       return systemApp
     }
-    const app = Array.from(apps.values()).find(
-      ({ proxyAddress }) => proxyAddress === instanceId
-    )
+    const app = apps.find(({ proxyAddress }) => proxyAddress === instanceId)
     if (app) {
       return app.name.toLowerCase()
     }
