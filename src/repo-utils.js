@@ -25,3 +25,5 @@ export const KNOWN_ICONS = new Map([
 export function isKnownRepo(appId) {
   return KNOWN_ICONS.has(appId)
 }
+
+export const withProfiles = process.env.WITH_PROFILES || false
