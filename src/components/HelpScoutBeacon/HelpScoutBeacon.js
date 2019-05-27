@@ -81,6 +81,11 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
   )
 })
 
+Beacon.propTypes = {
+  apps: PropTypes.array,
+  locator: PropTypes.object,
+}
+
 const HelpOptIn = React.memo(function HelpOptIn({
   beaconReady,
   onOptIn,
@@ -162,9 +167,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
 })
 
 HelpOptIn.propTypes = {
-  apps: PropTypes.object,
   beaconReady: PropTypes.bool.isRequired,
-  locator: PropTypes.object,
   onOptIn: PropTypes.func.isRequired,
   optedIn: PropTypes.bool.isRequired,
 }
