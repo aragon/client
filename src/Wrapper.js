@@ -275,7 +275,7 @@ class Wrapper extends React.PureComponent {
           opened={menuPanelOpened}
         >
           <AppScreen>
-            {this.renderApp(locator.instanceId, locator.params, canUpgradeOrg)}
+            {this.renderApp(locator.instanceId, locator.params)}
           </AppScreen>
         </CombinedPanel>
         <SignerPanel
@@ -303,7 +303,7 @@ class Wrapper extends React.PureComponent {
       </Main>
     )
   }
-  renderApp(instanceId, params, canUpgradeOrg) {
+  renderApp(instanceId, params) {
     const {
       account,
       apps,
@@ -316,6 +316,7 @@ class Wrapper extends React.PureComponent {
       walletNetwork,
       walletWeb3,
       wrapper,
+      canUpgradeOrg,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -354,7 +355,7 @@ class Wrapper extends React.PureComponent {
           daoAddress={daoAddress}
           params={params}
           repos={repos}
-          canUpgradeOrg={this.props.canUpgradeOrg}
+          canUpgradeOrg={canUpgradeOrg}
           reposLoading={reposLoading}
           onMessage={this.handleAppMessage}
           onUpgradeAll={this.showOrgUpgradePanel}
