@@ -265,10 +265,16 @@ const subscribe = (
           let workerUrl = ''
           try {
             // WebWorkers can only load scripts from the local origin, so we
-            // have to fetch the script (from an IPFS gateway) and process it locally
+            // have to fetch the script (from an IPFS gateway) and process it locally.
+            //
             // Note that we **HAVE** to use a data url, to ensure the Worker is
-            // created with an opaque origin
-            // (see https://html.spec.whatwg.org/multipage/workers.html#dom-worker)
+            // created with an opaque ("orphaned") origin, see
+            // https://html.spec.whatwg.org/multipage/workers.html#dom-worker.
+            //
+            // The opaque origin is a necessary part of creating the WebWorker sandbox;
+            // even though the script never has access to the DOM or local storage, it can
+            // still access global features like IndexedDB if it is not enclosed in an
+            // opaque origin.
             workerUrl = await getDataUrlForScript(scriptUrl)
           } catch (e) {
             console.error(
