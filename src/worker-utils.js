@@ -4,15 +4,13 @@
  * @param {string} scriptUrl Real world location of the script
  * @returns {Promise<string>} Local url for the script
  */
-export async function getBlobUrl(scriptUrl) {
+export async function getDataUrlForScript(scriptUrl) {
   // In the future, we might support IPFS protocols in addition to http
-  const text = await fetchUrl(scriptUrl)
-  const blob = new Blob([text], { type: 'application/javascript' })
-
-  return URL.createObjectURL(blob)
+  const blob = await fetchScriptUrlAsBlob(scriptUrl)
+  return readAsDataUrl(blob)
 }
 
-const fetchUrl = async url => {
+const fetchScriptUrlAsBlob = async url => {
   const res = await fetch(url, {
     method: 'GET',
     mode: 'cors',
@@ -24,7 +22,16 @@ const fetchUrl = async url => {
     throw res
   }
 
-  return res.text()
+  return res.blob()
+}
+
+const readAsDataUrl = file => {
+  const reader = new FileReader()
+  return new Promise((resolve, reject) => {
+    reader.addEventListener('loadend', () => resolve(reader.result))
+    reader.addEventListener('error', reject)
+    reader.readAsDataURL(file)
+  })
 }
 
 export class WorkerSubscriptionPool {
