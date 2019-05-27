@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 
 const aboutAragon = '5c98a9330428633d2cf3fd23'
 
