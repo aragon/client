@@ -12,6 +12,7 @@ import {
   theme,
   useViewport,
 } from '@aragon/ui'
+import useBeaconSuggestions from './useBeaconSuggestions'
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
@@ -26,7 +27,7 @@ const OPENING = Symbol('opening')
 const CLOSING = Symbol('closing')
 const ROUND_BUTTON_HEIGHT = 40
 
-const Beacon = React.memo(function Beacon() {
+const Beacon = React.memo(function Beacon({ locator, apps }) {
   const [beaconReady, setBeaconReady] = useState(false)
   const [openOnReady, setOpenOnReady] = useState(false)
   const [optedIn, setOptedIn] = useState(
@@ -49,6 +50,8 @@ const Beacon = React.memo(function Beacon() {
       setBeaconReady(true)
     }
   }, [openOnReady])
+
+  useBeaconSuggestions({ apps, locator, optedIn, beaconReady })
 
   return (
     <div
@@ -159,7 +162,9 @@ const HelpOptIn = React.memo(function HelpOptIn({
 })
 
 HelpOptIn.propTypes = {
+  apps: PropTypes.object,
   beaconReady: PropTypes.bool.isRequired,
+  locator: PropTypes.object,
   onOptIn: PropTypes.func.isRequired,
   optedIn: PropTypes.bool.isRequired,
 }
