@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import {
   AppBar,
   AppView,
@@ -14,8 +15,6 @@ import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
-import styled from 'styled-components'
-
 import {
   AppInstanceGroupType,
   AragonType,
@@ -85,7 +84,6 @@ class AppCenter extends React.Component {
     }
   }
   updateLocation({ activeTab, openedRepoName }) {
-    console.log('AT', activeTab, 'ORN', openedRepoName)
     const location = this.getLocation()
     if (activeTab !== undefined) {
       location.activeTab = activeTab
