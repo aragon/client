@@ -66,36 +66,46 @@ class MenuPanel extends React.PureComponent {
     viewportHeight: PropTypes.number,
   }
 
-  _animateTimer = -1
   _contentRef = React.createRef()
   _innerContentRef = React.createRef()
   _activityToggle = React.createRef()
+  _systemAppsToggled = false
 
   state = {
     animate: false,
     notifications: [],
     scrollVisible: false,
     systemAppsOpened: systemAppsOpenedState.isOpen(),
+    systemAppsToggled: false,
   }
 
   componentDidMount() {
-    this._animateTimer = setTimeout(() => this.setState({ animate: true }), 0)
+    this.updateScrollVisible()
   }
-  componentWillUnmount() {
-    clearTimeout(this._animateTimer)
-  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.viewportHeight !== this.props.viewportHeight) {
-      this.updateScrollVisible()
+      this.tryUpdateScrollVisible()
     }
   }
+
+  // A throttled version of updateScrollVisible with additional checks
+  // to reduce performance overhead.
+  tryUpdateScrollVisible = throttle(() => {
+    if (
+      this.props.appInstanceGroups.length > 0 ||
+      this.state.systemAppsToggled
+    ) {
+      this.updateScrollVisible()
+    }
+  }, 100)
 
   // ResizeObserver is still not supported everywhere, so… this method checks
   // if the height of the content is higher than the height of the container,
   // which means that there is a scrollbar displayed.
   // It is called in two cases: when the viewport’s height changes, and when
   // the system menu open / close transition is running.
-  updateScrollVisible = throttle(() => {
+  updateScrollVisible = () => {
     const content = this._contentRef.current
     const innerContent = this._innerContentRef.current
     this.setState({
@@ -104,7 +114,7 @@ class MenuPanel extends React.PureComponent {
         innerContent &&
         innerContent.clientHeight > content.clientHeight,
     })
-  }, 100)
+  }
 
   getRenderableAppGroups = memoize(appGroups =>
     appGroups
@@ -119,6 +129,7 @@ class MenuPanel extends React.PureComponent {
     this.setState(
       ({ systemAppsOpened }) => ({
         systemAppsOpened: !systemAppsOpened,
+        systemAppsToggled: true,
       }),
       () => systemAppsOpenedState.set(this.state.systemAppsOpened)
     )
@@ -137,8 +148,7 @@ class MenuPanel extends React.PureComponent {
       unreadActivityCount,
       onRequestEnable,
     } = this.props
-
-    const { animate, scrollVisible, systemAppsOpened } = this.state
+    const { scrollVisible, systemAppsOpened, systemAppsToggled } = this.state
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
     const menuApps = [APP_HOME, appGroups]
@@ -180,8 +190,8 @@ class MenuPanel extends React.PureComponent {
                 config={springs.smooth}
                 from={{ openProgress: 0 }}
                 to={{ openProgress: Number(systemAppsOpened) }}
-                immediate={!animate}
-                onFrame={this.updateScrollVisible}
+                immediate={!systemAppsToggled}
+                onFrame={this.tryUpdateScrollVisible}
                 native
               >
                 {({ openProgress }) => (
