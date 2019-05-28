@@ -10,17 +10,26 @@ import LoadAndErrorWrapper from './wrappers/loadAndErrorWrapper'
 import Profile from './components/Profile'
 import { ModalWrapper } from './wrappers/modal'
 import { DragWrapper } from './wrappers/drag'
+import { determineAddress } from './utils'
 
-const App = ({ account, onSignatures }) => (
+const App = ({ account, onSignatures, parts }) => (
   <Main>
-    <BoxWrapper account={account} onSignatures={onSignatures}>
-      <ModalWrapper ethereumAddress={account} onSignatures={onSignatures}>
+    <BoxWrapper
+      account={determineAddress(account, parts)}
+      onSignatures={onSignatures}
+    >
+      <ModalWrapper
+        ethereumAddress={determineAddress(account, parts)}
+        onSignatures={onSignatures}
+      >
         <DragWrapper>
           <AppContainer>
             <BaseLayout>
-              <LoadAndErrorWrapper ethereumAddress={account}>
+              <LoadAndErrorWrapper
+                ethereumAddress={determineAddress(account, parts)}
+              >
                 <Profile
-                  ethereumAddress={account}
+                  ethereumAddress={determineAddress(account, parts)}
                   onSignatures={onSignatures}
                 />
               </LoadAndErrorWrapper>
@@ -35,7 +44,10 @@ const App = ({ account, onSignatures }) => (
 App.propTypes = {
   account: EthereumAddressType,
   onSignatures: PropTypes.func.isRequired,
+  parts: PropTypes.array,
 }
+
+App.defaultProps = { parts: [] }
 
 const BaseLayout = styled.div`
   display: flex;

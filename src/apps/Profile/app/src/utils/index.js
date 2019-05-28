@@ -1,5 +1,6 @@
 import moment from 'moment'
 import uuidv1 from 'uuid/v1'
+import { isAddress } from '../../../../../web3-utils'
 
 /* TIME HELPERS */
 export const toUnix = date => moment(date, 'YYYY-MM-DD').unix()
@@ -68,6 +69,13 @@ export const displayStartEndDates = data => {
   } else {
     return ''
   }
+}
+
+export const determineAddress = (connectedAccount, queryParams) => {
+  if (queryParams.length > 0 && isAddress(queryParams[0])) {
+    return queryParams[0]
+  }
+  return connectedAccount
 }
 
 export * from './login'

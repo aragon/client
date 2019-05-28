@@ -442,7 +442,13 @@ class Wrapper extends React.PureComponent {
     }
 
     if (withProfiles && instanceId === 'profile') {
-      return <Profile account={account} onSignatures={onSignatures} />
+      return (
+        <Profile
+          account={account}
+          onSignatures={onSignatures}
+          parts={locator.parts}
+        />
+      )
     }
 
     // AppLoader will display a loading screen in that case
