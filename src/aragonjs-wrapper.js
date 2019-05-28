@@ -22,8 +22,24 @@ import {
   getMainAccount,
   isValidEnsName,
 } from './web3-utils'
-import { getDataUrlForScript, WorkerSubscriptionPool } from './worker-utils'
+import { getBlobForScript, WorkerSubscriptionPool } from './worker-utils'
 import { NoConnection, DAONotFound } from './errors'
+
+const dataUriWorker = new Worker('./worker.js', { name: 'data-uri-worker' })
+dataUriWorker.onmessage = function(event) {
+  urlMappings[event.data.id](event.data.url)
+}
+const urlMappings = {}
+function getDataUriForBlob(blob, url) {
+  const ret = new Promise(resolve => {
+    urlMappings[url] = resolve
+  })
+  dataUriWorker.postMessage({
+    blob,
+    id: url,
+  })
+  return ret
+}
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -275,7 +291,8 @@ const subscribe = (
             // even though the script never has access to the DOM or local storage, it can
             // still access global features like IndexedDB if it is not enclosed in an
             // opaque origin.
-            workerUrl = await getDataUrlForScript(scriptUrl)
+            const blob = await getBlobForScript(scriptUrl)
+            workerUrl = await getDataUriForBlob(blob, scriptUrl)
           } catch (e) {
             console.error(
               `Failed to load ${workerName}'s script (${script}): `,
