@@ -27,7 +27,8 @@ import { NoConnection, DAONotFound } from './errors'
 
 const dataUriWorker = new Worker('./worker.js', { name: 'data-uri-worker' })
 dataUriWorker.onmessage = function(event) {
-  urlMappings[event.data.id](event.data.url)
+  const url = new TextDecoder('utf-8').decode(event.data.url)
+  urlMappings[event.data.id](url)
 }
 const urlMappings = {}
 function getDataUriForBlob(blob, url) {
