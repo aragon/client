@@ -19,6 +19,7 @@ import headerImg from './header.png'
 import { useClickOutside } from '../../hooks'
 import LoadingRing from '../LoadingRing'
 import { GU } from '../../utils'
+import { AppType } from '../../prop-types'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
 const CLOSED = Symbol('closed, user can open opt-in dialogue')
@@ -82,7 +83,7 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
 })
 
 Beacon.propTypes = {
-  apps: PropTypes.array,
+  apps: PropTypes.arrayOf(AppType),
   locator: PropTypes.object,
 }
 
