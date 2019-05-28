@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react'
 import PropTypes from 'prop-types'
 
-import { DragContext } from '.'
+import { DragContext } from '../drag'
 import {
   initialState,
   dragReducer,

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Main } from '@aragon/ui'
 import styled from 'styled-components'
 
-import { EthereumAddressType } from '../../../../prop-types'
+import { EthereumAddressType } from '../../../prop-types'
 import { BoxWrapper } from './wrappers/box'
 import AppContainer from './wrappers/styleWrappers/AppContainer'
 import LoadAndErrorWrapper from './wrappers/loadAndErrorWrapper'

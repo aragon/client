@@ -1,6 +1,6 @@
 import moment from 'moment'
 import uuidv1 from 'uuid/v1'
-import { isAddress } from '../../../../../web3-utils'
+import { isAddress } from '../../../../web3-utils'
 
 /* TIME HELPERS */
 export const toUnix = date => moment(date, 'YYYY-MM-DD').unix()

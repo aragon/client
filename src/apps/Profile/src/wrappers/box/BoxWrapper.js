@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { EthereumAddressType } from '../../../../../../prop-types'
-import { BoxContext } from '.'
+import { EthereumAddressType } from '../../../../../prop-types'
+import { BoxContext } from '../box'
 import { use3Box, useLinkedData } from '../../hooks'
 
 const BoxWrapper = ({ account, children, onSignatures }) => {

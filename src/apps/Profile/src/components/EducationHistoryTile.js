@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import { Text, theme } from '@aragon/ui'
-import { IconPencil, IconTrash } from '../assets/'
-import { displayStartEndDates } from '../utils/'
+import { IconPencil, IconTrash } from '../assets'
+import { displayStartEndDates } from '../utils'
 
 const EducationHistoryTile = ({
   educationHistoryData,

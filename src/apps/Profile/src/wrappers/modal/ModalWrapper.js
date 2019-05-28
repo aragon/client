@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react'
 import PropTypes from 'prop-types'
 
-import { ModalContext } from '.'
+import { ModalContext } from '../modal'
 import { initialState, modalReducer } from '../../stateManagers/modal'
 import UserInfoModal from '../../components/modals'
 

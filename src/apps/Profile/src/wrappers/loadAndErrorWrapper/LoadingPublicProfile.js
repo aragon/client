@@ -1,7 +1,7 @@
 import React from 'react'
-import { AnimationLoading } from '../../assets/'
+import { AnimationLoading } from '../../assets'
 
-const Initializing = () => (
+const LoadingPublicProfile = () => (
   <div
     style={{
       marginTop: '3rem',
@@ -14,8 +14,8 @@ const Initializing = () => (
       <AnimationLoading />
     </div>
 
-    <div style={{ marginTop: '1rem' }}>Initializing</div>
+    <div style={{ marginTop: '1rem' }}>Loading public profile</div>
   </div>
 )
 
-export default Initializing
+export default LoadingPublicProfile

@@ -14,7 +14,7 @@ import {
   IconEthereum,
   IconVerified,
   IconGlobe,
-} from '../../assets/'
+} from '../../assets'
 
 const shortenAddress = address =>
   address.slice(0, 12) + '...' + address.slice(-10)

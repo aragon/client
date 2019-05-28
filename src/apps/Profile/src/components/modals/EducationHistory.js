@@ -153,7 +153,7 @@ EducationHistory.propTypes = {
   getFormValue: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   saveProfile: PropTypes.func.isRequired,
-  savingError: PropTypes.bool,
+  savingError: PropTypes.object,
 }
 
 export default EducationHistory
