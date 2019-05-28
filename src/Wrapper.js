@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
 import { useViewport } from '@aragon/ui'
-import { AppCenter, Permissions, Settings } from './apps'
+import { AppCenter, Permissions, Settings, Profile } from './apps'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -26,6 +26,7 @@ import {
 import { getAppPath } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
+import { withProfiles } from './repo-utils'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -436,6 +437,10 @@ class Wrapper extends React.PureComponent {
           wrapper={wrapper}
         />
       )
+    }
+
+    if (instanceId === 'profile' && withProfiles) {
+      return <Profile />
     }
 
     // AppLoader will display a loading screen in that case
