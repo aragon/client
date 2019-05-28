@@ -1,5 +1,5 @@
 import React from 'react'
-import createHistory from 'history/createHashHistory'
+import { createHashHistory as createHistory } from 'history'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
