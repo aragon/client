@@ -31,14 +31,18 @@ dataUriWorker.onmessage = function(event) {
   urlMappings[event.data.id](url)
 }
 const urlMappings = {}
+let prevPromise = Promise.resolve()
 function getDataUriForBlob(blob, url) {
   const ret = new Promise(resolve => {
     urlMappings[url] = resolve
   })
-  dataUriWorker.postMessage({
-    blob,
-    id: url,
+  prevPromise.then(() => {
+    dataUriWorker.postMessage({
+      blob,
+      id: url,
+    })
   })
+  prevPromise = ret
   return ret
 }
 
