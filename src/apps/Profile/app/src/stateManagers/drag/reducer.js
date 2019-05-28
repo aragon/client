@@ -2,7 +2,7 @@ import { START_DRAG, STOP_DRAG, CANCEL_DRAG } from './actionTypes'
 
 import { startDrag, stopDrag, cancelDrag } from './states'
 
-import { log } from '../../../utils'
+import { log } from '../../../../../../utils'
 
 const logStateUpdate = (action, prevState, nextState) => {
   log('ACTION: ', action, 'PREV STATE: ', prevState, 'NEXT STATE:', nextState)
