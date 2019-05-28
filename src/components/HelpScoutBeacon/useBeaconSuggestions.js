@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState } from 'react'
-import suggestions from './suggestions.json'
+import suggestions from './suggestions'
 import { staticApps } from '../../static-apps'
 
 const sectionToSuggestions = new Map(suggestions)
