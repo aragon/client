@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import suggestions from './suggestions.json'
 import { staticApps } from '../../static-apps'
 
@@ -8,7 +8,11 @@ function useBeaconSuggestions({
   apps,
   beaconReady,
   locator: { instanceId, path },
+  optedIn,
 }) {
+  const [originalOptedIn] = useState(optedIn)
+  const [canSuggest, setCanSuggest] = useState(optedIn)
+  const [shouldSuggest, setShouldSuggest] = useState(false)
   const getSection = useCallback(() => {
     if (path === '/') {
       return 'onboarding'
@@ -24,16 +28,29 @@ function useBeaconSuggestions({
   }, [path, instanceId, apps])
 
   useEffect(() => {
-    if (beaconReady) {
-      const section = getSection()
-      if (sectionToSuggestions.has(section)) {
-        window.Beacon('suggest', sectionToSuggestions.get(section))
-        return
-      }
-      // reset/suggest all
-      window.Beacon('suggest', [])
+    if (!shouldSuggest) {
+      return
     }
-  }, [getSection, beaconReady])
+    window.Beacon('suggest', sectionToSuggestions.get(getSection()))
+  }, [getSection, shouldSuggest])
+
+  useEffect(() => {
+    if (!canSuggest || !beaconReady) {
+      return
+    }
+    // this only happens when user opts in
+    // when opting in beaconReady is set after the open event has been triggered
+    // give it a minute before suggesting or a weird reace condition happens
+    if (!originalOptedIn) {
+      setTimeout(() => setShouldSuggest(true), 1000)
+      return
+    }
+    setShouldSuggest(true)
+  }, [canSuggest, beaconReady, originalOptedIn])
+
+  useEffect(() => {
+    setCanSuggest(optedIn)
+  }, [optedIn])
 }
 
 export default useBeaconSuggestions
