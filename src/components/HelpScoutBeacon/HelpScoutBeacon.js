@@ -52,7 +52,7 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
     }
   }, [openOnReady])
 
-  useBeaconSuggestions({ apps, locator, beaconReady })
+  useBeaconSuggestions({ apps, locator, optedIn, beaconReady })
 
   return (
     <div
