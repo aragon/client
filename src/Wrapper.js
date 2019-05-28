@@ -44,6 +44,7 @@ class Wrapper extends React.PureComponent {
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
+    onSignatures: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
@@ -373,6 +374,7 @@ class Wrapper extends React.PureComponent {
       connected,
       daoAddress,
       locator,
+      onSignatures,
       permissionsLoading,
       repos,
       walletNetwork,
@@ -439,8 +441,8 @@ class Wrapper extends React.PureComponent {
       )
     }
 
-    if (instanceId === 'profile' && withProfiles) {
-      return <Profile />
+    if (withProfiles && instanceId === 'profile') {
+      return <Profile account={account} onSignatures={onSignatures} />
     }
 
     // AppLoader will display a loading screen in that case

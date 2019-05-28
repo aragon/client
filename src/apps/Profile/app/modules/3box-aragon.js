@@ -11,18 +11,22 @@ const supportedMethod = (method, jsonRPCVersion) => {
 }
 
 class BoxAragonBridge {
-  constructor(ethereumAddress, requestSignMessage) {
+  constructor(ethereumAddress, onSignatures) {
     this.ethereumAddress = ethereumAddress
-    this.requestSignMessage = requestSignMessage
+    this.onSignatures = onSignatures
   }
 
   getMethod = method => {
     const methods = {
       personal_sign: async ([message], callback) => {
-        this.requestSignMessage(message).subscribe(
-          signature => callback(null, { result: signature, error: null }),
-          error => callback(error, { error })
-        )
+        const signatureBag = {
+          message,
+          requestingApp: '3Box-Aragon Profile',
+          resolve: signature =>
+            callback(null, { result: signature, error: null }),
+          reject: error => callback(error, { error }),
+        }
+        await this.onSignatures(signatureBag)
       },
     }
 
@@ -44,12 +48,9 @@ class BoxAragonBridge {
 }
 
 export class Profile {
-  constructor(ethereumAddress, aragonApi) {
+  constructor(ethereumAddress, onSignatures) {
     this.ethereumAddress = ethereumAddress
-    this.boxAragonBridge = new BoxAragonBridge(
-      ethereumAddress,
-      aragonApi.requestSignMessage.bind(aragonApi)
-    )
+    this.boxAragonBridge = new BoxAragonBridge(ethereumAddress, onSignatures)
     this.boxState = {
       opened: false,
       errorFetchingBox: false,

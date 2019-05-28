@@ -12,10 +12,7 @@ import {
   profileUnlockFailure,
 } from '../stateManagers/box'
 
-const use3Box = () => {
-  // const { api, connectedAccount } = useAragonApi()
-  const api = {}
-  const connectedAccount = ''
+const use3Box = (account, onSignatures) => {
   const [boxes, dispatch] = useReducer(boxReducer, initialState)
 
   useEffect(() => {
@@ -23,32 +20,32 @@ const use3Box = () => {
       const isLoggedIn = await profile.isLoggedIn()
 
       if (isLoggedIn) {
-        dispatch(requestedProfileUnlock(connectedAccount))
+        dispatch(requestedProfileUnlock(account))
         try {
           await profile.unlockAndSync()
-          dispatch(profileUnlockSuccess(connectedAccount, profile))
+          dispatch(profileUnlockSuccess(account, profile))
         } catch (error) {
-          dispatch(profileUnlockFailure(connectedAccount, error))
+          dispatch(profileUnlockFailure(account, error))
         }
       }
     }
 
     const getBox = async () => {
-      if (connectedAccount && api) {
-        dispatch(fetchingProfile(connectedAccount))
+      if (account && onSignatures) {
+        dispatch(fetchingProfile(account))
         try {
-          const profile = new Profile(connectedAccount, api)
+          const profile = new Profile(account, onSignatures)
           const publicProfile = await profile.getPublic()
-          dispatch(fetchedPublicProfile(connectedAccount, publicProfile))
+          dispatch(fetchedPublicProfile(account, publicProfile))
           unlockIfLoggedIn(profile)
         } catch (error) {
-          dispatch(fetchedPublicProfileError(connectedAccount, error))
+          dispatch(fetchedPublicProfileError(account, error))
         }
       }
     }
 
     getBox()
-  }, [api, connectedAccount])
+  }, [account, onSignatures])
 
   return { boxes, dispatch }
 }

@@ -20,12 +20,12 @@ export const unlockAndCreateBoxIfRequired = async (
   dispatch,
   dispatchModal,
   ethereumAddress,
-  api
+  onSignatures
 ) => {
   const unlockProfile = async () => {
     let profile
     try {
-      profile = new Profile(ethereumAddress, api)
+      profile = new Profile(ethereumAddress, onSignatures)
       await profile.unlock()
       dispatch(profileOpenSuccess(ethereumAddress, profile))
     } catch (error) {
@@ -56,7 +56,7 @@ export const unlockAndCreateBoxIfRequired = async (
   }
 
   const hasProfile = () => {
-    const { hasProfile } = new Profile(ethereumAddress, api)
+    const { hasProfile } = new Profile(ethereumAddress, onSignatures)
     return hasProfile()
   }
 

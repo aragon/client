@@ -22,11 +22,9 @@ import EducationHistoryModal from './EducationHistory'
 import RemoveItem from './RemoveItem'
 import BoxState from './BoxState'
 
-const UserInfoModal = ({ ethereumAddress }) => {
+const UserInfoModal = ({ ethereumAddress, onSignatures }) => {
   const { boxes, dispatch } = useContext(BoxContext)
   const { modal, dispatchModal } = useContext(ModalContext)
-  // const { api } = useAragonApi()
-  const api = {}
   const [key, setKey] = useState(uuidv1())
 
   const userLoaded = !!boxes[ethereumAddress]
@@ -74,7 +72,7 @@ const UserInfoModal = ({ ethereumAddress }) => {
         dispatch,
         dispatchModal,
         ethereumAddress,
-        api
+        onSignatures
       )
       if (unlockedBox) {
         await unlockedBox.setPublicFields(changed, changedValues)
@@ -101,7 +99,7 @@ const UserInfoModal = ({ ethereumAddress }) => {
         dispatch,
         dispatchModal,
         ethereumAddress,
-        api
+        onSignatures
       )
       if (unlockedBox) {
         if (itemType === 'image' || itemType === 'coverPhoto') {
@@ -184,6 +182,7 @@ const UserInfoModal = ({ ethereumAddress }) => {
 
 UserInfoModal.propTypes = {
   ethereumAddress: PropTypes.string.isRequired,
+  onSignatures: PropTypes.func.isRequired,
 }
 
 export default UserInfoModal
