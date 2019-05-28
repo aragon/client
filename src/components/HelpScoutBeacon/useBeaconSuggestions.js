@@ -7,7 +7,6 @@ function useBeaconSuggestions({
   apps,
   beaconReady,
   locator: { instanceId, path },
-  optedIn,
 }) {
   const getSection = useCallback(() => {
     if (path === '/') {
@@ -27,7 +26,7 @@ function useBeaconSuggestions({
   }, [path, instanceId, apps])
 
   useEffect(() => {
-    if (optedIn && beaconReady) {
+    if (beaconReady) {
       const section = getSection()
       if (sectionToSuggestions.has(section)) {
         window.Beacon('suggest', sectionToSuggestions.get(section))
@@ -36,7 +35,7 @@ function useBeaconSuggestions({
       // reset/suggest all
       window.Beacon('suggest', [])
     }
-  }, [getSection, beaconReady, optedIn])
+  }, [getSection, beaconReady])
 }
 
 export default useBeaconSuggestions
