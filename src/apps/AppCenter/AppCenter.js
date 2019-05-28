@@ -184,19 +184,13 @@ class AppCenter extends React.Component {
                     items={navigationItems}
                     onBack={this.handleCloseRepo}
                   />
-
-                  {below('medium') && canUpgradeOrg && !openedRepoName && (
+                  {canUpgradeOrg && !openedRepoName && (
                     <UpgradeButton
-                      mode="text"
+                      mode={below('medium') ? 'text' : 'strong'}
                       onClick={onUpgradeAll}
                       title="Upgrade all"
                     >
-                      <IconUpgrade />
-                    </UpgradeButton>
-                  )}
-                  {above('medium') && canUpgradeOrg && !openedRepoName && (
-                    <UpgradeButton mode="strong" onClick={onUpgradeAll}>
-                      Upgrade all
+                      {below('medium') ? <IconUpgrade /> : 'Upgrade all'}
                     </UpgradeButton>
                   )}
                 </AppBar>
