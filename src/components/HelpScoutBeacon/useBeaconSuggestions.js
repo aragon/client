@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react'
 import suggestions from './suggestions.json'
+import { staticApps } from '../../static-apps'
 
 const sectionToSuggestions = new Map(suggestions)
 
@@ -12,11 +13,8 @@ function useBeaconSuggestions({
     if (path === '/') {
       return 'onboarding'
     }
-    const systemApp = Array.from(sectionToSuggestions.keys()).find(
-      k => k === instanceId
-    )
-    if (systemApp) {
-      return systemApp
+    if (staticApps.has(instanceId)) {
+      return instanceId
     }
     const app = apps.find(({ proxyAddress }) => proxyAddress === instanceId)
     if (app) {
