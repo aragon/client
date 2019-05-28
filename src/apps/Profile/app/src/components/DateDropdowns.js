@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Checkbox } from '@aragon/ui'
 import { Label, DropDownWithValidation } from './styled-components'
@@ -88,5 +89,20 @@ const DateDropDowns = styled.div`
   display: flex;
   justify-content: space-between;
 `
+
+DateDropdowns.propTypes = {
+  current: PropTypes.bool.isRequired,
+  dispatchDateChange: PropTypes.func.isRequired,
+  indexStartMonth: PropTypes.number.isRequired,
+  indexStartYear: PropTypes.number.isRequired,
+  indexEndMonth: PropTypes.number.isRequired,
+  indexEndYear: PropTypes.number.isRequired,
+  type: PropTypes.string.isRequired,
+  error: PropTypes.string,
+}
+
+DateDropdowns.defaultProps = {
+  error: '',
+}
 
 export default DateDropdowns

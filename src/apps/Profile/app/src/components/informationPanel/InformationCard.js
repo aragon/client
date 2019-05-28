@@ -54,6 +54,8 @@ const InformationCard = ({ ethereumAddress }) => {
     </VerifyCard>
   )
 
+  PopoverCard.propTypes = { social: PropTypes.string }
+
   const RenderName = ({ name }) =>
     name ? (
       <Text.Block size="xxlarge" style={{ fontWeight: '700' }}>
@@ -72,6 +74,8 @@ const InformationCard = ({ ethereumAddress }) => {
       </Center>
     )
 
+  RenderName.propTypes = { name: PropTypes.string }
+
   const RenderDescription = ({ description }) =>
     description ? (
       <Text.Block>{description}</Text.Block>
@@ -87,6 +91,8 @@ const InformationCard = ({ ethereumAddress }) => {
         </Text.Block>
       </Center>
     )
+
+  RenderDescription.propTypes = { description: PropTypes.string }
 
   const RenderLocation = ({ location }) => (
     <Social>
@@ -106,6 +112,8 @@ const InformationCard = ({ ethereumAddress }) => {
       )}
     </Social>
   )
+
+  RenderLocation.propTypes = { location: PropTypes.string }
 
   const RenderEmpty = () => (
     <Center height="10rem">
@@ -155,6 +163,8 @@ const InformationCard = ({ ethereumAddress }) => {
     </Social>
   )
 
+  RenderGitHub.propTypes = { fields: PropTypes.object }
+
   // TODO: proof_twitter does not contain username - 3box fix?
   const RenderTwitter = ({ fields }) => (
     <Social>
@@ -187,6 +197,8 @@ const InformationCard = ({ ethereumAddress }) => {
     </Social>
   )
 
+  RenderTwitter.propTypes = { fields: PropTypes.object }
+
   const RenderWebsite = ({ fields }) => (
     <Social>
       <IconGlobe width="1rem" height="1rem" color={theme.textPrimary} />
@@ -212,6 +224,9 @@ const InformationCard = ({ ethereumAddress }) => {
       )}
     </Social>
   )
+
+  RenderWebsite.propTypes = { fields: PropTypes.object }
+
   return (
     <StyledCard>
       <Information>

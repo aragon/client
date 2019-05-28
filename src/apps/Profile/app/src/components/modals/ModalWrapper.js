@@ -8,7 +8,7 @@ import { close } from '../../stateManagers/modal'
 
 const CONTENT_PADDING = 30
 
-const ModalWrapper = ({ children, ethereumAddress, title }) => {
+const ModalWrapper = ({ children, title }) => {
   const { dispatchModal } = useContext(ModalContext)
 
   return (
@@ -51,8 +51,12 @@ const DisplayErrors = ({ errors }) => {
   )
 }
 
+DisplayErrors.propTypes = {
+  errors: PropTypes.object,
+}
+
 DisplayErrors.defaultProps = {
-  validationErrors: {},
+  errors: {},
 }
 
 const PanelHeader = styled.header`

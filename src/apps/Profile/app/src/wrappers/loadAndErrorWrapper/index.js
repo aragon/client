@@ -45,6 +45,21 @@ const LoadAndErrorView = ({
   return <Fragment>{children}</Fragment>
 }
 
+LoadAndErrorView.propTypes = {
+  children: PropTypes.node.isRequired,
+  isInitializing: PropTypes.bool,
+  isLoadingPublicProfile: PropTypes.bool,
+  isUnlockingProfile: PropTypes.bool,
+  error: PropTypes.object,
+}
+
+LoadAndErrorWrapper.defaultProps = {
+  error: {},
+  isInitializing: true,
+  isLoadingPublicProfile: false,
+  isUnlockingProfile: false,
+}
+
 LoadAndErrorWrapper.propTypes = {
   children: PropTypes.node.isRequired,
   isInitializing: PropTypes.bool,

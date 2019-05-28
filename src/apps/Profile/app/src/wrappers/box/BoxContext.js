@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-import initialState from '../../stateManagers/box'
+import { initialState } from '../../stateManagers/box'
 
 const BoxContext = createContext(initialState)
 

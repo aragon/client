@@ -5,7 +5,6 @@ import {
   REQUESTED_PROFILE_UNLOCK,
   PROFILE_UNLOCK_SUCCESS,
   PROFILE_UNLOCK_FAILURE,
-  REQUEST_EDIT_PROFILE,
   EDIT_FIELD,
   UPLOADING_IMAGE,
   UPLOADED_IMAGE_SUCCESS,
@@ -34,7 +33,6 @@ import {
   requestedProfUnlock,
   profileUnlocked,
   profileUnlockFailed,
-  requestProfileEdit,
   editedField,
   uploadingImage,
   uploadedImage,
@@ -117,15 +115,6 @@ const boxReducer = (prevState, action) => {
       nextState[ethereumAddress] = profileUnlockFailed(
         prevState[ethereumAddress],
         action.error
-      )
-      logStateUpdate(action, prevState, nextState)
-      return nextState
-    }
-    case REQUEST_EDIT_PROFILE: {
-      const nextState = { ...prevState }
-      const ethereumAddress = action.meta.ethereumAddress
-      nextState[ethereumAddress] = requestProfileEdit(
-        prevState[ethereumAddress]
       )
       logStateUpdate(action, prevState, nextState)
       return nextState

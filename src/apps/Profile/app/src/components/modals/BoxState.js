@@ -32,6 +32,13 @@ const ProfileStatus = ({ loading, error, complete, title }) => {
   )
 }
 
+ProfileStatus.propTypes = {
+  loading: PropTypes.bool,
+  error: PropTypes.bool,
+  complete: PropTypes.bool,
+  title: PropTypes.string,
+}
+
 ProfileStatus.defaultProps = {
   loading: false,
   error: false,

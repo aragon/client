@@ -135,6 +135,7 @@ WorkHistory.propTypes = {
   onChange: PropTypes.func.isRequired,
   saveProfile: PropTypes.func.isRequired,
   workHistoryId: PropTypes.string.isRequired,
+  savingError: PropTypes.bool,
 }
 
 export default WorkHistory

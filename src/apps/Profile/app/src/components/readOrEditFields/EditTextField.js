@@ -23,6 +23,7 @@ const EditTextField = ({
 EditTextField.propTypes = {
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
+  className: PropTypes.string,
   value: PropTypes.string,
   disabled: PropTypes.bool,
   type: PropTypes.string,
@@ -32,6 +33,7 @@ EditTextField.defaultProps = {
   disabled: false,
   type: 'text',
   value: '',
+  className: '',
 }
 
 export default EditTextField

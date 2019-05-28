@@ -5,7 +5,6 @@ import {
   REQUESTED_PROFILE_UNLOCK,
   PROFILE_UNLOCK_SUCCESS,
   PROFILE_UNLOCK_FAILURE,
-  REQUEST_EDIT_PROFILE,
   EDIT_FIELD,
   UPLOADING_IMAGE,
   UPLOADED_IMAGE_SUCCESS,
@@ -77,13 +76,6 @@ export const profileUnlockFailure = (ethereumAddress, error) => ({
     ethereumAddress,
   },
   error,
-})
-
-export const requestProfileEdit = ethereumAddress => ({
-  type: REQUEST_EDIT_PROFILE,
-  meta: {
-    ethereumAddress,
-  },
 })
 
 // uniqueId is used only when a field is nested (like workHistory and educationHistory)

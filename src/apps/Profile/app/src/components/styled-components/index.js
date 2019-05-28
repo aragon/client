@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, TextInput, DropDown } from '@aragon/ui'
 
@@ -71,6 +72,5 @@ export const DropDownWithValidation = props => (
   </Fragment>
 )
 
-DropDownWithValidation.defaultProps = {
-  error: '',
-}
+DropDownWithValidation.propTypes = { error: PropTypes.string }
+DropDownWithValidation.defaultProps = { error: '' }
