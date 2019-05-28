@@ -1,5 +1,6 @@
 import BN from 'bn.js'
 import resolvePathname from 'resolve-pathname'
+import { delay } from 'rxjs/operators'
 import Aragon, {
   providers,
   setupTemplates,
@@ -28,21 +29,47 @@ import { NoConnection, DAONotFound } from './errors'
 const dataUriWorker = new Worker('./worker.js', { name: 'data-uri-worker' })
 dataUriWorker.onmessage = function(event) {
   const url = new TextDecoder('utf-8').decode(event.data.url)
+  console.log('finishing load for', event.data.id, Date.now())
   urlMappings[event.data.id](url)
 }
 const urlMappings = {}
 let prevPromise = Promise.resolve()
-function getDataUriForBlob(blob, url) {
+function getDataUriForBlob(url) {
+  const ret = prevPromise
+    .then(() => {
+      console.log('starting load for', url, Date.now())
+      return getBlobForScript(url)
+    })
+    .then(blob => {
+      return new Promise(resolve => {
+        urlMappings[url] = resolve
+        dataUriWorker.postMessage({
+          blob,
+          id: url,
+        })
+      })
+    })
+    .catch(() => {})
+  prevPromise = ret
+  return ret
+}
+
+let workerPromise = Promise.resolve()
+function workerDelay() {
   const ret = new Promise(resolve => {
-    urlMappings[url] = resolve
+    console.log('resolving')
+    workerPromise.then(() => resolve())
   })
-  prevPromise.then(() => {
-    dataUriWorker.postMessage({
-      blob,
-      id: url,
+
+  workerPromise = new Promise(resolve => {
+    return workerPromise.then(() => {
+      setTimeout(() => {
+        console.log('delayed resolve')
+        resolve()
+      }, 1000)
     })
   })
-  prevPromise = ret
+
   return ret
 }
 
@@ -249,6 +276,7 @@ const subscribe = (
     connectedWorkers: workerSubscriptionPool,
 
     apps: apps.subscribe(apps => {
+      console.log('on apps', Date.now())
       onApps(
         prepareAppsForFrontend(
           apps,
@@ -257,7 +285,8 @@ const subscribe = (
         )
       )
     }),
-    workers: apps.subscribe(apps => {
+    workers: apps.pipe(delay(1000)).subscribe(apps => {
+      console.log('on workers', Date.now())
       // Asynchronously launch webworkers for each new or updated app that has
       // a background script defined
       applyAppOverrides(apps)
@@ -296,8 +325,8 @@ const subscribe = (
             // even though the script never has access to the DOM or local storage, it can
             // still access global features like IndexedDB if it is not enclosed in an
             // opaque origin.
-            const blob = await getBlobForScript(scriptUrl)
-            workerUrl = await getDataUriForBlob(blob, scriptUrl)
+            workerUrl = await getDataUriForBlob(scriptUrl)
+            if (!workerUrl) { throw new Error() }
           } catch (e) {
             console.error(
               `Failed to load ${workerName}'s script (${script}): `,
@@ -316,7 +345,10 @@ const subscribe = (
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
+            await workerDelay()
+            console.log('starting worker', workerName, Date.now())
             const worker = new Worker(workerUrl, { name: workerName })
+            console.log('started worker', workerName, Date.now())
             worker.addEventListener(
               'error',
               err => console.error(`Error from worker for ${workerName}:`, err),
