@@ -377,6 +377,7 @@ class Wrapper extends React.PureComponent {
       walletNetwork,
       walletWeb3,
       wrapper,
+      canUpgradeOrg,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -414,8 +415,10 @@ class Wrapper extends React.PureComponent {
           daoAddress={daoAddress}
           params={params}
           repos={repos}
+          canUpgradeOrg={canUpgradeOrg}
           reposLoading={reposLoading}
           onMessage={this.handleAppMessage}
+          onUpgradeAll={this.showOrgUpgradePanel}
           onParamsRequest={this.handleParamsRequest}
           wrapper={wrapper}
         />

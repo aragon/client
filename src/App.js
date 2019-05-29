@@ -1,5 +1,5 @@
 import React from 'react'
-import createHistory from 'history/createHashHistory'
+import { createHashHistory as createHistory } from 'history'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -469,7 +469,7 @@ class App extends React.Component {
                   />
                 </div>
 
-                <HelpScoutBeacon />
+                <HelpScoutBeacon locator={locator} apps={apps} />
               </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>
