@@ -1,0 +1,6 @@
+# Configuration for https://probot.github.io/apps/release-drafter
+
+template: |
+  ## What’s changed in the Aragon client
+
+  $CHANGES
