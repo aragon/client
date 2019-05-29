@@ -137,19 +137,17 @@ const InformationCard = () => {
     </Center>
   )
 
-  const gitHubLogin = gitHubProof => gitHubProof.split('/')[3]
-
-  const RenderGitHub = ({ github }) => (
+  const RenderGitHub = ({ github: { username } }) => (
     <Social>
       <IconGitHub width="1rem" height="1rem" color={theme.textTertiary} />
-      {github ? (
+      {username ? (
         <Fragment>
           <SafeLink
             style={{ color: theme.accent, textDecoration: 'none' }}
-            href={`https://github.com/${gitHubLogin(github)}`}
+            href={`https://github.com/${username}`}
             target="_blank"
           >
-            {gitHubLogin(github)}
+            {username}
           </SafeLink>
           <IconVerified />
         </Fragment>
@@ -169,19 +167,19 @@ const InformationCard = () => {
     </Social>
   )
 
-  RenderGitHub.propTypes = { github: PropTypes.string }
+  RenderGitHub.propTypes = { github: PropTypes.object }
 
-  const RenderTwitter = ({ twitter }) => (
+  const RenderTwitter = ({ twitter: { username } }) => (
     <Social>
       <IconTwitter width="1rem" height="1rem" color={theme.textTertiary} />
-      {twitter ? (
+      {username ? (
         <Fragment>
           <SafeLink
-            href={'https://twitter.com/'}
+            href={`https://twitter.com/${username}`}
             style={{ color: theme.accent, textDecoration: 'none' }}
             target="_blank"
           >
-            https://twitter.com/
+            {username}
           </SafeLink>
           <IconVerified />
         </Fragment>
@@ -202,7 +200,7 @@ const InformationCard = () => {
     </Social>
   )
 
-  RenderTwitter.propTypes = { twitter: PropTypes.string }
+  RenderTwitter.propTypes = { twitter: PropTypes.object }
 
   const RenderWebsite = ({ website }) => (
     <Social>

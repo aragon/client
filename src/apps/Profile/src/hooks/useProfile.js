@@ -11,8 +11,8 @@ const defaultValues = {
   location: '',
   website: '',
   workHistory: {},
-  twitter: '',
-  github: '',
+  twitter: { username: '', proof: '' },
+  github: { username: '', proof: '' },
   userLoaded: false,
   viewMode: true,
 }
@@ -34,6 +34,8 @@ const useProfile = () => {
     location,
     website,
     workHistory,
+    twitter,
+    github,
   } = boxes[ethereumAddress].publicProfile
 
   const imageCid = userLoaded && image && image[0].contentUrl['/']
@@ -50,8 +52,8 @@ const useProfile = () => {
     location: location || defaultValues.location,
     website: website || defaultValues.website,
     workHistory: workHistory || defaultValues.workHistory,
-    twitter: '',
-    github: '',
+    twitter: twitter || defaultValues.twitter,
+    github: github || defaultValues.github,
     userLoaded,
     viewMode:
       typeof isViewMode !== 'undefined' ? isViewMode : defaultValues.viewMode,
