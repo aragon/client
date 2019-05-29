@@ -11,7 +11,6 @@ function useBeaconSuggestions({
   optedIn,
 }) {
   const [originalOptedIn] = useState(optedIn)
-  const [canSuggest, setCanSuggest] = useState(optedIn)
   const [shouldSuggest, setShouldSuggest] = useState(false)
   const getSection = useCallback(() => {
     if (path === '/') {
@@ -35,7 +34,7 @@ function useBeaconSuggestions({
   }, [getSection, shouldSuggest])
 
   useEffect(() => {
-    if (!canSuggest || !beaconReady) {
+    if (!optedIn || !beaconReady) {
       return
     }
     // this only happens when user opts in
@@ -48,11 +47,7 @@ function useBeaconSuggestions({
     }
     setShouldSuggest(true)
     return () => clearTimeout(timeout)
-  }, [canSuggest, beaconReady, originalOptedIn])
-
-  useEffect(() => {
-    setCanSuggest(optedIn)
-  }, [optedIn])
+  }, [optedIn, beaconReady, originalOptedIn])
 }
 
 export default useBeaconSuggestions
