@@ -9,14 +9,13 @@ import { isAddress } from '../../web3-utils'
 const DAONotFoundError = ({ dao }) => (
   <ErrorCard title="Organization not found">
     <Paragraph>
-      It looks like there's no organization associated with that{' '}
-      {isAddress(dao) ? 'address' : 'name'} on the current network (
-      {network.name}
-      ).
+      It looks like there's no organization associated with{' '}
+      {isAddress(dao) ? `“${dao}”` : `the “${dao}” ENS domain`} on the Ethereum{' '}
+      {network.name}.
     </Paragraph>
     <Paragraph>
-      If you got here through a link, please double check that you were given
-      the correct link.
+      If you arrived here through a link, please double check that you were
+      given the correct link.
     </Paragraph>
     <Paragraph>
       Alternatively, you may{' '}
