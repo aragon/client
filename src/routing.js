@@ -62,6 +62,9 @@ export const parsePath = (history, pathname, search = '') => {
     history.replace({
       pathname: pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
       search: search,
+      state: {
+        alreadyParsed: true,
+      },
     })
   }
 
