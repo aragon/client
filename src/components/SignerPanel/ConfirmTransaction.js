@@ -37,7 +37,7 @@ const ConfirmTransaction = ({
 ConfirmTransaction.propTypes = {
   direct: PropTypes.bool.isRequired,
   intent: PropTypes.object.isRequired,
-  dao: PropTypes.string.isRequired,
+  dao: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   onSign: PropTypes.func.isRequired,
   paths: PropTypes.array.isRequired,

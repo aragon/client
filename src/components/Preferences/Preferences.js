@@ -125,7 +125,7 @@ const Preferences = React.memo(({ dao, onClose, opened, wrapper }) => {
 })
 
 Preferences.propTypes = {
-  dao: PropTypes.string.isRequired,
+  dao: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   opened: PropTypes.bool,
   wrapper: AragonType,

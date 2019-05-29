@@ -36,7 +36,7 @@ function TimeTag({ date, label, ...props }) {
 
 TimeTag.propTypes = {
   date: PropTypes.number.isRequired, // unix timestamp
-  label: PropTypes.string,
+  label: PropTypes.node,
 }
 
 export default TimeTag

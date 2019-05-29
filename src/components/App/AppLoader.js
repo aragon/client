@@ -63,7 +63,7 @@ function useLoadingStatus({
 
     const label = loadingSteps.steps[stepIndex].replace(
       /\{APP\}/,
-      currentAppName || instanceId
+      currentAppName || instanceId || 'App'
     )
     const progress = stepIndex / (loadingSteps.steps.length - 1)
 
@@ -130,7 +130,7 @@ AppLoader.propTypes = {
   children: PropTypes.node,
   currentAppName: PropTypes.string.isRequired,
   daoLoading: PropTypes.bool.isRequired,
-  instanceId: PropTypes.string.isRequired,
+  instanceId: PropTypes.string,
 }
 
 export default AppLoader
