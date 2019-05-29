@@ -41,11 +41,13 @@ function useBeaconSuggestions({
     // this only happens when user opts in
     // when opting in beaconReady is set after the open event has been triggered
     // give it a minute before suggesting or a weird reace condition happens
+    let timeout
     if (!originalOptedIn) {
-      setTimeout(() => setShouldSuggest(true), 1000)
+      timeout = setTimeout(() => setShouldSuggest(true), 1000)
       return
     }
     setShouldSuggest(true)
+    return () => clearTimeout(timeout)
   }, [canSuggest, beaconReady, originalOptedIn])
 
   useEffect(() => {
