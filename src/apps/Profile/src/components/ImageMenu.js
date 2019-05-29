@@ -136,6 +136,7 @@ ImageMenu.propTypes = {
   imageExists: PropTypes.bool.isRequired,
   imageTag: PropTypes.oneOf(['image', 'coverPhoto']),
   imageTitle: PropTypes.string.isRequired,
+  onSignatures: PropTypes.func.isRequired,
 }
 
 const getBorder = props => {
