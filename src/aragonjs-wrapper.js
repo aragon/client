@@ -22,7 +22,7 @@ import {
   getMainAccount,
   isValidEnsName,
 } from './web3-utils'
-import { getDataUrlForScript, WorkerSubscriptionPool } from './worker-utils'
+import { getObjectUrlForScript, WorkerSubscriptionPool } from './worker-utils'
 import { NoConnection, DAONotFound } from './errors'
 
 const POLL_DELAY_ACCOUNT = 2000
@@ -267,7 +267,7 @@ const subscribe = (
             // WebWorkers can only load scripts from the local origin, so we
             // have to fetch the script (from an IPFS gateway) and process it locally.
             //
-            // Note that we **HAVE** to use a data url, to ensure the Worker is
+            // Note that we **SHOULD** use a data url, to ensure the Worker is
             // created with an opaque ("orphaned") origin, see
             // https://html.spec.whatwg.org/multipage/workers.html#dom-worker.
             //
@@ -275,7 +275,7 @@ const subscribe = (
             // even though the script never has access to the DOM or local storage, it can
             // still access global features like IndexedDB if it is not enclosed in an
             // opaque origin.
-            workerUrl = await getDataUrlForScript(scriptUrl)
+            workerUrl = await getObjectUrlForScript(scriptUrl)
           } catch (e) {
             console.error(
               `Failed to load ${workerName}'s script (${script}): `,
@@ -308,6 +308,9 @@ const subscribe = (
               connection: connectApp(provider),
             })
           }
+
+          // Clean up the url we created to spawn the worker
+          URL.revokeObjectURL(workerUrl)
         })
     }),
   }
