@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import { Card, Text, theme } from '@aragon/ui'
 import styled from 'styled-components'
 
-const CardWrapper = ({ children, title, addMore, addSeparators }) => (
+const CardWrapper = ({ children, title, addMore, addSeparators, viewMode }) => (
   <div style={{ width: '100%' }}>
     {title && (
       <Text style={{ padding: '0.5rem 0' }} size="xlarge">
         {title}
       </Text>
     )}
-    {addMore && (
+    {addMore && !viewMode && (
       <Text
         style={{ paddingLeft: '1rem', cursor: 'pointer' }}
         size="small"
@@ -29,6 +29,7 @@ const CardWrapper = ({ children, title, addMore, addSeparators }) => (
 CardWrapper.defaultProps = {
   addSeparators: false,
   addMore: null,
+  viewMode: true,
 }
 
 CardWrapper.propTypes = {
@@ -36,6 +37,7 @@ CardWrapper.propTypes = {
   title: PropTypes.string,
   addMore: PropTypes.func,
   addSeparators: PropTypes.bool,
+  viewMode: PropTypes.bool,
 }
 
 const StyledCard = styled(Card).attrs({ width: '100%', height: 'auto' })`

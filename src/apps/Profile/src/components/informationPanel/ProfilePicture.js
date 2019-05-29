@@ -1,42 +1,39 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import styled from 'styled-components'
 
 import ImageMenu from '../ImageMenu'
-import { BoxContext } from '../../wrappers/box'
+import { useProfile } from '../../hooks'
 
 import defaultImage from '../../assets/profile_avatar.svg'
 
-const ProfilePicture = ({ ethereumAddress }) => {
-  const { boxes } = useContext(BoxContext)
-  const userLoaded = !!boxes[ethereumAddress]
-  const imageTag = 'image'
-
-  const hasImage = userLoaded && boxes[ethereumAddress].publicProfile[imageTag]
-
-  const imageCid =
-    hasImage &&
-    boxes[ethereumAddress].publicProfile[imageTag][0].contentUrl['/']
+const ProfilePicture = () => {
+  const {
+    imageCid,
+    ethereumAddress,
+    userLoaded,
+    viewMode,
+    onSignatures,
+  } = useProfile()
+  const hasImage = !!imageCid
 
   // image upload menu can have either 3 or 2 rows, depending on hasImage
   const topMenuPos = hasImage ? 26 : 32
 
   return (
     <Container className="imageHover" imageCid={imageCid}>
-      <ImageMenu
-        ethereumAddress={ethereumAddress}
-        top={topMenuPos}
-        right={-6}
-        imageExists={!!hasImage}
-        imageTag={imageTag}
-        imageTitle="Profile"
-      />
+      {userLoaded && !viewMode && (
+        <ImageMenu
+          ethereumAddress={ethereumAddress}
+          top={topMenuPos}
+          right={-6}
+          imageExists={!!hasImage}
+          imageTag="image"
+          imageTitle="Profile"
+          onSignatures={onSignatures}
+        />
+      )}
     </Container>
   )
-}
-
-ProfilePicture.propTypes = {
-  ethereumAddress: PropTypes.string.isRequired,
 }
 
 const getBackground = props => {

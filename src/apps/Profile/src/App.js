@@ -10,11 +10,12 @@ import LoadAndErrorWrapper from './wrappers/loadAndErrorWrapper'
 import Profile from './components/Profile'
 import { ModalWrapper } from './wrappers/modal'
 import { DragWrapper } from './wrappers/drag'
-import { determineAddress } from './utils'
+import { determineAddress, isViewMode } from './utils'
 
 const App = ({ account, onSignatures, parts }) => (
   <Main>
     <BoxWrapper
+      isViewMode={isViewMode(account, parts)}
       account={determineAddress(account, parts)}
       onSignatures={onSignatures}
     >

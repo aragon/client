@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Text, Card, theme, Button, SafeLink, IconClose } from '@aragon/ui'
 
-import { BoxContext } from '../../wrappers/box'
 import { ModalContext } from '../../wrappers/modal'
+import { useProfile } from '../../hooks'
 import { open } from '../../stateManagers/modal'
 import {
   IconPencil,
@@ -19,18 +19,24 @@ import {
 const shortenAddress = address =>
   address.slice(0, 12) + '...' + address.slice(-10)
 
-const InformationCard = ({ ethereumAddress }) => {
+const InformationCard = () => {
   const [activePopover, setPopover] = useState('')
+  const {
+    ethereumAddress,
+    description,
+    name,
+    location,
+    website,
+    twitter,
+    github,
+    userLoaded,
+    viewMode,
+  } = useProfile()
 
-  const { boxes } = useContext(BoxContext)
   const { dispatchModal } = useContext(ModalContext)
-
-  const userLoaded = !!boxes[ethereumAddress]
 
   // return early if there is no profile to display
   if (!userLoaded) return <div />
-
-  const fields = boxes[ethereumAddress].publicProfile
 
   const PopoverCard = ({ social }) => (
     <VerifyCard>
@@ -133,17 +139,17 @@ const InformationCard = ({ ethereumAddress }) => {
 
   const gitHubLogin = gitHubProof => gitHubProof.split('/')[3]
 
-  const RenderGitHub = ({ fields }) => (
+  const RenderGitHub = ({ github }) => (
     <Social>
       <IconGitHub width="1rem" height="1rem" color={theme.textTertiary} />
-      {fields.proof_github ? (
+      {github ? (
         <Fragment>
           <SafeLink
             style={{ color: theme.accent, textDecoration: 'none' }}
-            href={`https://github.com/${gitHubLogin(fields.proof_github)}`}
+            href={`https://github.com/${gitHubLogin(github)}`}
             target="_blank"
           >
-            {gitHubLogin(fields.proof_github)}
+            {gitHubLogin(github)}
           </SafeLink>
           <IconVerified />
         </Fragment>
@@ -163,13 +169,12 @@ const InformationCard = ({ ethereumAddress }) => {
     </Social>
   )
 
-  RenderGitHub.propTypes = { fields: PropTypes.object }
+  RenderGitHub.propTypes = { github: PropTypes.string }
 
-  // TODO: proof_twitter does not contain username - 3box fix?
-  const RenderTwitter = ({ fields }) => (
+  const RenderTwitter = ({ twitter }) => (
     <Social>
       <IconTwitter width="1rem" height="1rem" color={theme.textTertiary} />
-      {fields.proof_twitter ? (
+      {twitter ? (
         <Fragment>
           <SafeLink
             href={'https://twitter.com/'}
@@ -197,21 +202,21 @@ const InformationCard = ({ ethereumAddress }) => {
     </Social>
   )
 
-  RenderTwitter.propTypes = { fields: PropTypes.object }
+  RenderTwitter.propTypes = { twitter: PropTypes.string }
 
-  const RenderWebsite = ({ fields }) => (
+  const RenderWebsite = ({ website }) => (
     <Social>
       <IconGlobe width="1rem" height="1rem" color={theme.textPrimary} />
-      {fields.website ? (
+      {website ? (
         <SafeLink
           style={{
             color: theme.accent,
           }}
-          href={fields.website}
+          href={website}
           placeholder="website"
           size="small"
         >
-          {fields.website}
+          {website}
         </SafeLink>
       ) : (
         <Text
@@ -225,25 +230,25 @@ const InformationCard = ({ ethereumAddress }) => {
     </Social>
   )
 
-  RenderWebsite.propTypes = { fields: PropTypes.object }
+  RenderWebsite.propTypes = { website: PropTypes.string }
 
   return (
     <StyledCard>
       <Information>
         <Details>
-          {!(fields.name || fields.description || fields.location) ? (
+          {!(name || description || location) ? (
             <RenderEmpty />
           ) : (
             <Fragment>
-              <RenderName name={fields.name} />
-              <RenderDescription description={fields.description} />
-              <RenderLocation location={fields.location} />
+              <RenderName name={name} />
+              <RenderDescription description={description} />
+              <RenderLocation location={location} />
             </Fragment>
           )}
-          <RenderWebsite fields={fields} />
+          <RenderWebsite website={website} />
           <Separator style={{ marginBottom: '1.1rem' }} />
-          <RenderTwitter fields={fields} />
-          <RenderGitHub fields={fields} />
+          <RenderTwitter twitter={twitter} />
+          <RenderGitHub github={github} />
           <Separator />
           <Social>
             <IconEthereum
@@ -256,20 +261,18 @@ const InformationCard = ({ ethereumAddress }) => {
             </Text>
           </Social>
         </Details>
-        <Icons>
-          <IconPencil
-            width="16px"
-            color={theme.accent}
-            onClick={() => dispatchModal(open('basicInformation'))}
-          />
-        </Icons>
+        {!viewMode && (
+          <Icons>
+            <IconPencil
+              width="16px"
+              color={theme.accent}
+              onClick={() => dispatchModal(open('basicInformation'))}
+            />
+          </Icons>
+        )}
       </Information>
     </StyledCard>
   )
-}
-
-InformationCard.propTypes = {
-  ethereumAddress: PropTypes.string.isRequired,
 }
 
 const Center = styled.div`

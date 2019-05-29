@@ -1,19 +1,17 @@
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import styled from 'styled-components'
 import ImageMenu from './ImageMenu'
-import { BoxContext } from '../wrappers/box'
+import { useProfile } from '../hooks'
 
-const CoverImage = ({ ethereumAddress }) => {
-  const { boxes } = useContext(BoxContext)
-  const userLoaded = !!boxes[ethereumAddress]
-  const imageTag = 'coverPhoto'
-
-  const hasImage = userLoaded && boxes[ethereumAddress].publicProfile[imageTag]
-
-  const imageCid =
-    hasImage &&
-    boxes[ethereumAddress].publicProfile[imageTag][0].contentUrl['/']
+const CoverImage = () => {
+  const {
+    userLoaded,
+    coverPhotoCid,
+    ethereumAddress,
+    viewMode,
+    onSignatures,
+  } = useProfile()
+  const hasImage = !!coverPhotoCid
 
   const imageMenuProps = {
     ethereumAddress,
@@ -23,18 +21,19 @@ const CoverImage = ({ ethereumAddress }) => {
     open,
     imageTag: 'coverPhoto',
     imageTitle: 'Cover',
+    onSignatures,
   }
 
   return (
     <CoverBase className="imageHover">
-      {hasImage ? <CoverPicture imageCid={imageCid} /> : <CoverPlaceholder />}
-      {userLoaded && <ImageMenu {...imageMenuProps} />}
+      {hasImage ? (
+        <CoverPicture imageCid={coverPhotoCid} />
+      ) : (
+        <CoverPlaceholder />
+      )}
+      {userLoaded && !viewMode && <ImageMenu {...imageMenuProps} />}
     </CoverBase>
   )
-}
-
-CoverImage.propTypes = {
-  ethereumAddress: PropTypes.string.isRequired,
 }
 
 const getBackground = props =>

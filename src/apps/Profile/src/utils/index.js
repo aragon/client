@@ -78,4 +78,20 @@ export const determineAddress = (connectedAccount, queryParams) => {
   return connectedAccount
 }
 
+export const isViewMode = (connectedAccount, queryParams) => {
+  if (queryParams.length === 0) return false
+
+  if (isAddress(queryParams[0])) {
+    return queryParams[0] !== connectedAccount
+  }
+
+  if (!queryParams[0]) {
+    return false
+  }
+
+  if (!isAddress(queryParams[0])) {
+    return true
+  }
+}
+
 export * from './login'

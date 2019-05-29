@@ -12,25 +12,25 @@ import CoverImage from './CoverImage'
 const Profile = ({ ethereumAddress }) => {
   return (
     <div style={{ width: '100%' }}>
-      <CoverImage ethereumAddress={ethereumAddress} />
+      <CoverImage />
       <Viewport>
         {({ below }) =>
           below(640) ? (
             <SingleColumn>
-              <InformationPanel ethereumAddress={ethereumAddress} />
+              <InformationPanel />
               <OrganizationPanel />
-              <WorkHistoryPanel ethereumAddress={ethereumAddress} />
-              <EducationPanel ethereumAddress={ethereumAddress} />
+              <WorkHistoryPanel />
+              <EducationPanel />
             </SingleColumn>
           ) : (
             <DoubleColumn>
               <LeftColumn>
-                <InformationPanel ethereumAddress={ethereumAddress} />
-                <EducationPanel ethereumAddress={ethereumAddress} />
+                <InformationPanel />
+                <EducationPanel />
               </LeftColumn>
               <RightColumn>
                 <OrganizationPanel />
-                <WorkHistoryPanel ethereumAddress={ethereumAddress} />
+                <WorkHistoryPanel />
               </RightColumn>
             </DoubleColumn>
           )

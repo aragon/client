@@ -50,7 +50,7 @@ const UserInfoModal = ({ ethereumAddress, onSignatures }) => {
     new Promise(resolve => {
       setTimeout(() => {
         resolve()
-      }, 3000)
+      }, 1000)
     })
 
   const saveProfile = async ethereumAddress => {

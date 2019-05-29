@@ -27,12 +27,11 @@ const ImageMenu = ({
   imageExists,
   imageTag,
   imageTitle,
+  onSignatures,
 }) => {
   const { boxes, dispatch } = useContext(BoxContext)
   const { dispatchModal } = useContext(ModalContext)
   const { dragState } = useContext(DragContext)
-  // const { api } = useAragonApi()
-  const api = {}
 
   const onDrop = useCallback(
     acceptedFiles => {
@@ -54,7 +53,7 @@ const ImageMenu = ({
             dispatch,
             dispatchModal,
             ethereumAddress,
-            api
+            onSignatures
           )
           if (unlockedBox) {
             const result = await infuraIpfs.add(file)
@@ -82,7 +81,7 @@ const ImageMenu = ({
 
       acceptedFiles.forEach(file => reader.readAsArrayBuffer(file))
     },
-    [api, boxes, dispatch, dispatchModal, ethereumAddress, imageTag]
+    [boxes, dispatch, dispatchModal, ethereumAddress, imageTag, onSignatures]
   )
 
   const {

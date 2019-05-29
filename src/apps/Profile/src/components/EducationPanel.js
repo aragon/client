@@ -1,21 +1,15 @@
 import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
 import CardWrapper from '../wrappers/styleWrappers/CardWrapper'
-import { BoxContext } from '../wrappers/box'
+import { useProfile } from '../hooks'
 import { ModalContext } from '../wrappers/modal'
 import EducationHistoryTile from './EducationHistoryTile'
 import { open, removeItem } from '../stateManagers/modal'
 import { Text, theme } from '@aragon/ui'
 import styled from 'styled-components'
 
-const EducationPanel = ({ ethereumAddress }) => {
-  const { boxes } = useContext(BoxContext)
+const EducationPanel = () => {
+  const { educationHistory, viewMode } = useProfile()
   const { dispatchModal } = useContext(ModalContext)
-  const userLoaded = !!boxes[ethereumAddress]
-
-  const educationHistory = userLoaded
-    ? boxes[ethereumAddress].publicProfile.educationHistory || {}
-    : {}
 
   const historyNotEmpty = Object.keys(educationHistory).length > 0
 
@@ -25,6 +19,7 @@ const EducationPanel = ({ ethereumAddress }) => {
       ? () => dispatchModal(open('educationHistory'))
       : null,
     addSeparators: true,
+    viewMode,
   }
 
   return (
@@ -41,22 +36,20 @@ const EducationPanel = ({ ethereumAddress }) => {
       ) : (
         <Center>
           <Text size="xlarge">You have no education</Text>
-          <Text
-            style={{ cursor: 'pointer' }}
-            size="small"
-            color={theme.accent}
-            onClick={() => dispatchModal(open('educationHistory'))}
-          >
-            Add educaction
-          </Text>
+          {!viewMode && (
+            <Text
+              style={{ cursor: 'pointer' }}
+              size="small"
+              color={theme.accent}
+              onClick={() => dispatchModal(open('educationHistory'))}
+            >
+              Add educaction
+            </Text>
+          )}
         </Center>
       )}
     </CardWrapper>
   )
-}
-
-EducationPanel.propTypes = {
-  ethereumAddress: PropTypes.string.isRequired,
 }
 
 const Center = styled.div`

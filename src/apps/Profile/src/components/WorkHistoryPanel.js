@@ -1,22 +1,15 @@
 import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
 import CardWrapper from '../wrappers/styleWrappers/CardWrapper'
-import { BoxContext } from '../wrappers/box'
+import { useProfile } from '../hooks'
 import { ModalContext } from '../wrappers/modal'
 import WorkHistoryTile from './WorkHistoryTile'
 import { open, removeItem } from '../stateManagers/modal'
 import { Text, theme } from '@aragon/ui'
 import styled from 'styled-components'
 
-const WorkHistoryPanel = ({ ethereumAddress }) => {
-  const { boxes } = useContext(BoxContext)
+const WorkHistoryPanel = () => {
+  const { workHistory, viewMode } = useProfile()
   const { dispatchModal } = useContext(ModalContext)
-
-  const userLoaded = !!boxes[ethereumAddress]
-
-  const workHistory = userLoaded
-    ? boxes[ethereumAddress].publicProfile.workHistory || {}
-    : {}
 
   const historyNotEmpty = Object.keys(workHistory).length > 0
 
@@ -24,6 +17,7 @@ const WorkHistoryPanel = ({ ethereumAddress }) => {
     title: 'Work history',
     addMore: historyNotEmpty ? () => dispatchModal(open('workHistory')) : null,
     addSeparators: true,
+    viewMode,
   }
 
   return (
@@ -40,22 +34,20 @@ const WorkHistoryPanel = ({ ethereumAddress }) => {
       ) : (
         <Center>
           <Text size="xlarge">You have no work history</Text>
-          <Text
-            style={{ cursor: 'pointer' }}
-            size="small"
-            color={theme.accent}
-            onClick={() => dispatchModal(open('workHistory'))}
-          >
-            Add work
-          </Text>
+          {!viewMode && (
+            <Text
+              style={{ cursor: 'pointer' }}
+              size="small"
+              color={theme.accent}
+              onClick={() => dispatchModal(open('workHistory'))}
+            >
+              Add work
+            </Text>
+          )}
         </Center>
       )}
     </CardWrapper>
   )
-}
-
-WorkHistoryPanel.propTypes = {
-  ethereumAddress: PropTypes.string.isRequired,
 }
 
 const Center = styled.div`

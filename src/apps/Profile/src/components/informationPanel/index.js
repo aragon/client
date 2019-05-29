@@ -1,21 +1,16 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import ProfilePicture from './ProfilePicture'
 import InformationCard from './InformationCard'
 
-const LeftPanel = ({ ethereumAddress }) => {
+const LeftPanel = () => {
   return (
     <AlignCenter>
-      <ProfilePicture ethereumAddress={ethereumAddress} />
-      <InformationCard ethereumAddress={ethereumAddress} />
+      <ProfilePicture />
+      <InformationCard />
     </AlignCenter>
   )
-}
-
-LeftPanel.propTypes = {
-  ethereumAddress: PropTypes.string.isRequired,
 }
 
 const AlignCenter = styled.div`
