@@ -110,7 +110,7 @@ class App extends React.Component {
 
   // Handle URL changes
   handleHistoryChange = ({ pathname, search }) => {
-    this.updateLocator(parsePath(pathname, search))
+    this.updateLocator(parsePath(this.history, pathname, search))
   }
 
   // Change the URL if needed

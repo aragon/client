@@ -3,6 +3,8 @@ import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
 
 import { isAddress, isValidEnsName } from './web3-utils'
 
+const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
+
 /*
  * Parse a path and a search query and return a “locator” object.
  *
@@ -33,7 +35,7 @@ import { isAddress, isValidEnsName } from './web3-utils'
  *   - org: when the path starts with a DAO address.
  *   - invalid: the DAO given is not valid
  */
-export const parsePath = (pathname, search = '') => {
+export const parsePath = (history, pathname, search = '') => {
   const path = pathname + search
   const [, ...parts] = pathname.split('/')
 
@@ -54,7 +56,13 @@ export const parsePath = (pathname, search = '') => {
 
   // Assume .aragonid.eth if not given a valid address or a valid ENS domain
   if (!validAddress && !validDomain) {
-    dao += '.aragonid.eth'
+    dao += `.${ARAGONID_ENS_DOMAIN}`
+  } else if (validDomain && dao.endsWith(ARAGONID_ENS_DOMAIN)) {
+    // Replace URL with non-aragonid.eth version
+    history.replace({
+      pathname: pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
+      search: search,
+    })
   }
 
   // Organization
