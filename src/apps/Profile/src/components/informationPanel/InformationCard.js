@@ -16,9 +16,6 @@ import {
   IconGlobe,
 } from '../../assets'
 
-const shortenAddress = address =>
-  address.slice(0, 12) + '...' + address.slice(-10)
-
 const InformationCard = () => {
   const [activePopover, setPopover] = useState('')
   const {
@@ -246,7 +243,7 @@ const InformationCard = () => {
               color={theme.textTertiary}
             />
             <Text size="small" color={theme.textSecondary}>
-              {shortenAddress(ethereumAddress)}
+              {ethereumAddress}
             </Text>
           </Social>
         </Details>
