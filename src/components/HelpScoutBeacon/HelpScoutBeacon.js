@@ -13,11 +13,13 @@ import {
   theme,
   useViewport,
 } from '@aragon/ui'
+import useBeaconSuggestions from './useBeaconSuggestions'
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
 import { useClickOutside } from '../../hooks'
 import { GU } from '../../utils'
+import { AppType } from '../../prop-types'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
 const CLOSED = Symbol('closed, user can open opt-in dialogue')
@@ -26,7 +28,7 @@ const OPENING = Symbol('opening')
 const CLOSING = Symbol('closing')
 const ROUND_BUTTON_HEIGHT = 40
 
-const Beacon = React.memo(function Beacon() {
+const Beacon = React.memo(function Beacon({ locator, apps }) {
   const [beaconReady, setBeaconReady] = useState(false)
   const [openOnReady, setOpenOnReady] = useState(false)
   const [optedIn, setOptedIn] = useState(
@@ -49,6 +51,8 @@ const Beacon = React.memo(function Beacon() {
       setBeaconReady(true)
     }
   }, [openOnReady])
+
+  useBeaconSuggestions({ apps, locator, optedIn, beaconReady })
 
   return (
     <div
@@ -77,6 +81,11 @@ const Beacon = React.memo(function Beacon() {
     </div>
   )
 })
+
+Beacon.propTypes = {
+  apps: PropTypes.arrayOf(AppType),
+  locator: PropTypes.object,
+}
 
 const HelpOptIn = React.memo(function HelpOptIn({
   beaconReady,

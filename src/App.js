@@ -1,5 +1,5 @@
 import React from 'react'
-import createHistory from 'history/createHashHistory'
+import { createHashHistory as createHistory } from 'history'
 import { contractAddresses, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -109,8 +109,10 @@ class App extends React.Component {
   }
 
   // Handle URL changes
-  handleHistoryChange = ({ pathname, search }) => {
-    this.updateLocator(parsePath(pathname, search))
+  handleHistoryChange = ({ pathname, search, state = {} }) => {
+    if (!state.alreadyParsed) {
+      this.updateLocator(parsePath(this.history, pathname, search))
+    }
   }
 
   // Change the URL if needed
@@ -379,17 +381,12 @@ class App extends React.Component {
       wrapper,
     } = this.state
 
-    const { mode, dao } = locator
+    const { mode } = locator
     const { address: intentAddress = null, label: intentLabel = '' } =
       identityIntent || {}
 
     if (!mode) {
       return null
-    }
-    if (mode === 'invalid') {
-      throw new Error(
-        `URL contained invalid organization name or address (${dao}).\nPlease modify it to be a valid ENS name or address.`
-      )
     }
     if (fatalError !== null) {
       throw fatalError
@@ -474,7 +471,7 @@ class App extends React.Component {
                   />
                 </div>
 
-                <HelpScoutBeacon />
+                <HelpScoutBeacon locator={locator} apps={apps} />
               </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>

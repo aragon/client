@@ -1,10 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { AppBar, AppView, NavigationBar, TabBar, Viewport } from '@aragon/ui'
+import styled from 'styled-components'
+import {
+  AppBar,
+  AppView,
+  NavigationBar,
+  TabBar,
+  Viewport,
+  Button,
+} from '@aragon/ui'
 import MenuButton from '../../components/MenuPanel/MenuButton'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
+import IconUpgrade from './IconUpgrade'
 import EmptyBlock from './EmptyBlock'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import {
@@ -30,6 +39,8 @@ class AppCenter extends React.Component {
     params: PropTypes.string,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     reposLoading: PropTypes.bool.isRequired,
+    canUpgradeOrg: PropTypes.bool.isRequired,
+    onUpgradeAll: PropTypes.func.isRequired,
     wrapper: AragonType,
   }
   state = {
@@ -123,10 +134,9 @@ class AppCenter extends React.Component {
   }
 
   render() {
-    const { reposLoading } = this.props
+    const { reposLoading, onUpgradeAll, canUpgradeOrg } = this.props
     const { upgradePanelOpened } = this.state
     const { activeTab, openedRepoName } = this.getLocation()
-
     const repos = this.getRepos()
     const currentRepo = openedRepoName && this.getRepoFromName(openedRepoName)
 
@@ -141,7 +151,7 @@ class AppCenter extends React.Component {
           style={{ height: '100%' }}
           appBar={
             <Viewport>
-              {({ below }) => (
+              {({ below, above }) => (
                 <AppBar
                   tabs={
                     openedRepoName ? null : (
@@ -174,6 +184,15 @@ class AppCenter extends React.Component {
                     items={navigationItems}
                     onBack={this.handleCloseRepo}
                   />
+                  {canUpgradeOrg && !openedRepoName && (
+                    <UpgradeButton
+                      mode={below('medium') ? 'text' : 'strong'}
+                      onClick={onUpgradeAll}
+                      title="Upgrade all"
+                    >
+                      {below('medium') ? <IconUpgrade /> : 'Upgrade all'}
+                    </UpgradeButton>
+                  )}
                 </AppBar>
               )}
             </Viewport>
@@ -202,5 +221,12 @@ class AppCenter extends React.Component {
     )
   }
 }
+
+const UpgradeButton = styled(Button)`
+  position: absolute;
+  right: 0px;
+  margin-right: 30px;
+}
+`
 
 export default AppCenter
