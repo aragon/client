@@ -54,7 +54,10 @@ const BasicInformation = ({
       <div>
         <Label>Bio</Label>
         <TextInput.Multiline
-          style={{ height: '80px' }}
+          style={{
+            height: '80px',
+            padding: '5px 10px',
+          }}
           wide
           value={getFormValue('description')}
           onChange={e => onChange(e.target.value, 'description')}
