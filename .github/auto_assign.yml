@@ -1,0 +1,16 @@
+# Configuration for https://probot.github.io/apps/auto-assign
+
+addReviewers: true
+addAssignees: false
+
+reviewers:
+  - sohkai
+  - bpierre
+  - aquigorka
+
+skipKeywords:
+  - wip
+  - draft
+
+# Set 0 to add all the reviewers (default: 0)
+numberOfReviewers: 0
