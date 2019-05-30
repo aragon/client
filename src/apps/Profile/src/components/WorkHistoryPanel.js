@@ -55,7 +55,7 @@ const Center = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 7rem;
+  height: 90px;
 `
 
 export default WorkHistoryPanel

@@ -85,7 +85,7 @@ const DateDropdowns = ({
 
 const DateDropDowns = styled.div`
   width: 60%;
-  padding-right: 1rem;
+  padding-right: 13px;
   display: flex;
   justify-content: space-between;
 `

@@ -4,7 +4,7 @@ import { AnimationLoading } from '../../assets'
 const LoadingPublicProfile = () => (
   <div
     style={{
-      marginTop: '3rem',
+      marginTop: '40px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -14,7 +14,7 @@ const LoadingPublicProfile = () => (
       <AnimationLoading />
     </div>
 
-    <div style={{ marginTop: '1rem' }}>Loading public profile</div>
+    <div style={{ marginTop: '13px' }}>Loading public profile</div>
   </div>
 )
 

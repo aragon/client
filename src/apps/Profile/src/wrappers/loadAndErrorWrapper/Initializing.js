@@ -4,7 +4,7 @@ import { AnimationLoading } from '../../assets'
 const Initializing = () => (
   <div
     style={{
-      marginTop: '3rem',
+      marginTop: '40px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -14,7 +14,7 @@ const Initializing = () => (
       <AnimationLoading />
     </div>
 
-    <div style={{ marginTop: '1rem' }}>Initializing</div>
+    <div style={{ marginTop: '13px' }}>Initializing</div>
   </div>
 )
 

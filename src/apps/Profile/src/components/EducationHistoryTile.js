@@ -43,7 +43,7 @@ const EducationHistoryTile = ({
 const SingleEducationItem = styled.div`
   display: flex;
   > :not(:last-child) {
-    margin-bottom: 0.2rem;
+    margin-bottom: 3px;
   }
 `
 const Icons = styled.div`
@@ -52,7 +52,7 @@ const Icons = styled.div`
   flex-direction: column;
   visibility: hidden;
   > * {
-    margin: 0 0 0.6rem 0.6rem;
+    margin: 0 0 8px 8px;
     cursor: pointer;
   }
   ${SingleEducationItem}:hover & {
@@ -63,7 +63,7 @@ const Icons = styled.div`
 const Details = styled.div`
   width: 100%;
   > :not(:last-child) {
-    margin-bottom: 0.5rem;
+    margin-bottom: 7px;
   }
 `
 

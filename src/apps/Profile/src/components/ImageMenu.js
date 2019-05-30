@@ -174,11 +174,11 @@ const ImageMenuStyled = styled.div`
   }
   border: ${props => getBorder(props)};
   border-radius: 3px;
-  font-size: 0.9rem;
+  font-size: 12px;
   transition: visibility 0.3s linear, opacity 0.3s linear;
   visibility: ${props => getVisibility(props)};
   opacity: ${props => getOpacity(props)};
-  width: 12rem;
+  width: 156px;
   z-index: 1;
   position: absolute;
   top: ${({ top }) => `${top}px`};
@@ -189,7 +189,7 @@ const ImageMenuStyled = styled.div`
     background: #d1d1d1;
     opacity: 0.6;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 13px;
   }
   > :not(:first-child) {
     background: white;
@@ -204,7 +204,7 @@ const ImageMenuStyled = styled.div`
     margin-bottom: 1px;
   }
   > * {
-    padding: 0.5rem 0.9rem;
+    padding: 7px 12px;
   }
 `
 

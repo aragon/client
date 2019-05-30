@@ -6,13 +6,13 @@ import styled from 'styled-components'
 const CardWrapper = ({ children, title, addMore, addSeparators, viewMode }) => (
   <div style={{ width: '100%' }}>
     {title && (
-      <Text style={{ padding: '0.5rem 0' }} size="xlarge">
+      <Text style={{ padding: '7px 0' }} size="xlarge">
         {title}
       </Text>
     )}
     {addMore && !viewMode && (
       <Text
-        style={{ paddingLeft: '1rem', cursor: 'pointer' }}
+        style={{ paddingLeft: '13px', cursor: 'pointer' }}
         size="small"
         color={theme.accent}
         onClick={() => addMore()}
@@ -41,9 +41,9 @@ CardWrapper.propTypes = {
 }
 
 const StyledCard = styled(Card).attrs({ width: '100%', height: 'auto' })`
-  padding: 1.2rem;
+  padding: 16px;
   > :not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: 13px;
     border-bottom: ${({ addSeparators }) =>
       addSeparators ? '1px solid #EEE' : '0'};
   }

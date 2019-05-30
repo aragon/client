@@ -41,7 +41,7 @@ const getBackground = props =>
 
 const CoverBase = styled.div`
   width: 100%;
-  height: 12rem;
+  height: 156px;
   position: relative;
 `
 const CoverPicture = styled(CoverBase)`
