@@ -4,7 +4,7 @@ import { AnimationLoading } from '../../assets'
 const UnlockingBox = () => (
   <div
     style={{
-      marginTop: '3rem',
+      marginTop: '40px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -14,7 +14,7 @@ const UnlockingBox = () => (
       <AnimationLoading />
     </div>
 
-    <div style={{ marginTop: '1rem' }}>Unlocking box</div>
+    <div style={{ marginTop: '13px' }}>Unlocking box</div>
   </div>
 )
 

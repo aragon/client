@@ -17,7 +17,7 @@ const RemoveItem = ({ itemType, onRemove, removingError }) => {
   return (
     <ModalWrapper title={title}>
       <DisplayErrors errors={removingError} />
-      <Text size="large" style={{ margin: '1.5rem 0 2rem 0' }}>
+      <Text size="large" style={{ margin: '20px 0 26px 0' }}>
         Are you sure you want to delete it?
       </Text>
       <ButtonsRow>
@@ -41,8 +41,8 @@ const ButtonsRow = styled.div`
   display: flex;
   justify-content: flex-end;
   > * {
-    margin-left: 1rem;
-    width: 10rem;
+    margin-left: 13px;
+    width: 130px;
   }
 `
 

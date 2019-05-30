@@ -85,10 +85,10 @@ const PanelContent = styled.div`
   padding-left: ${CONTENT_PADDING}px;
   padding-bottom: ${CONTENT_PADDING}px;
   > :not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: 13px;
   }
   > :last-child {
-    margin-top: 1rem;
+    margin-top: 13px;
   }
 `
 const PanelCloseButton = styled.button`

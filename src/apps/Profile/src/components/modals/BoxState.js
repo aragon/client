@@ -64,7 +64,7 @@ const BoxState = ({
   const needsToCreate = signaturesRequired.indexOf('create') > -1
   return (
     <ModalWrapper title="3BOX">
-      <Text size="large" style={{ margin: '1.5rem 0 2rem 0' }}>
+      <Text size="large" style={{ margin: '20px 0 26px 0' }}>
         {`Your wallet should open and you need to sign ${
           signaturesRequired.length
         } message${signaturesRequired.length > 1 ? 's after another ' : ''}

@@ -46,20 +46,20 @@ const getBackground = props => {
 
 const Container = styled.div`
   cursor: ${props => props.isEditing && 'pointer'};
-  padding: 1.2rem;
-  border: 0.15rem solid #f2f2f2;
+  padding: 16px;
+  border: 2px solid #f2f2f2;
   background-image: ${props => getBackground(props)};
-  background-size: 11.5rem 11.5rem;
+  background-size: 150px 150px;
   background-repeat: no-repeat;
   background-position: center;
   background-color: #eeeeeef5;
   transition: border 0.24s ease-in-out;
   border-radius: 50%;
-  width: 11.5rem;
-  height: 11.5rem;
+  width: 150px;
+  height: 150px;
   position: absolute;
-  top: 4rem;
-  left: 4rem;
+  top: 52px;
+  left: 52px;
   z-index: 4;
 `
 

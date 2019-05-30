@@ -17,7 +17,7 @@ const WorkHistoryTile = ({ workHistoryData, openModal, removeItem }) => (
         <Text
           size="xsmall"
           color={theme.textTertiary}
-          style={{ marginLeft: '1rem' }}
+          style={{ marginLeft: '13px' }}
         >
           {displayStartEndDates(workHistoryData)}
         </Text>
@@ -42,7 +42,7 @@ const WorkHistoryTile = ({ workHistoryData, openModal, removeItem }) => (
 const SingleWorkItem = styled.div`
   display: flex;
   > :not(:last-child) {
-    margin-bottom: 0.4rem;
+    margin-bottom: 5px;
   }
 `
 const Icons = styled.div`
@@ -51,7 +51,7 @@ const Icons = styled.div`
   flex-direction: column;
   visibility: hidden;
   > * {
-    margin: 0 0 0.6rem 0.6rem;
+    margin: 0 0 8px 8px;
     cursor: pointer;
   }
   ${SingleWorkItem}:hover & {
@@ -62,7 +62,7 @@ const Icons = styled.div`
 const Details = styled.div`
   width: 100%;
   > :not(:last-child) {
-    margin-bottom: 0.5rem;
+    margin-bottom: 6px;
   }
 `
 

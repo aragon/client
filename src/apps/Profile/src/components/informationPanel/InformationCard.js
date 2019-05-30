@@ -102,7 +102,7 @@ const InformationCard = () => {
 
   const RenderLocation = ({ location }) => (
     <Social>
-      <IconLocation width="1rem" height="1rem" color={theme.textTertiary} />
+      <IconLocation width="13px" height="13px" color={theme.textTertiary} />
       {location ? (
         <Text size="small" color={theme.textTertiary}>
           {location}
@@ -122,7 +122,7 @@ const InformationCard = () => {
   RenderLocation.propTypes = { location: PropTypes.string }
 
   const RenderEmpty = () => (
-    <Center height="10rem">
+    <Center height="130px">
       <Text.Block style={{ textAlign: 'center' }} size="xlarge">
         You have no name, bio or location
       </Text.Block>
@@ -139,7 +139,7 @@ const InformationCard = () => {
 
   const RenderGitHub = ({ github: { username } }) => (
     <Social>
-      <IconGitHub width="1rem" height="1rem" color={theme.textTertiary} />
+      <IconGitHub width="13px" height="13px" color={theme.textTertiary} />
       {username ? (
         <Fragment>
           <SafeLink
@@ -171,7 +171,7 @@ const InformationCard = () => {
 
   const RenderTwitter = ({ twitter: { username } }) => (
     <Social>
-      <IconTwitter width="1rem" height="1rem" color={theme.textTertiary} />
+      <IconTwitter width="13px" height="13px" color={theme.textTertiary} />
       {username ? (
         <Fragment>
           <SafeLink
@@ -204,7 +204,7 @@ const InformationCard = () => {
 
   const RenderWebsite = ({ website }) => (
     <Social>
-      <IconGlobe width="1rem" height="1rem" color={theme.textPrimary} />
+      <IconGlobe width="13px" height="13px" color={theme.textPrimary} />
       {website ? (
         <SafeLink
           style={{
@@ -244,14 +244,14 @@ const InformationCard = () => {
             </Fragment>
           )}
           <RenderWebsite website={website} />
-          <Separator style={{ marginBottom: '1.1rem' }} />
+          <Separator style={{ marginBottom: '14px' }} />
           <RenderTwitter twitter={twitter} />
           <RenderGitHub github={github} />
           <Separator />
           <Social>
             <IconEthereum
-              width="1rem"
-              height="1rem"
+              width="13px"
+              height="13px"
               color={theme.textTertiary}
             />
             <Text size="small" color={theme.textSecondary}>
@@ -278,27 +278,27 @@ const Center = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: ${({ height }) => height || '3rem'};
+  height: ${({ height }) => height || '40px'};
 `
 const VerifyCard = styled(Card).attrs({
-  width: '22rem',
-  height: '13rem',
+  width: '286px',
+  height: '170px',
 })`
   background: white;
-  padding: 1rem 1.5rem;
+  padding: 13px 20px;
   position: absolute;
-  left: 4rem;
+  left: 52px;
   z-index: 2;
   > :not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: 13px;
   }
 `
 const CardCloseButton = styled.button`
   ${VerifyCard} & {
     position: absolute;
     ￼padding: 20px;
-    top: 1rem;
-    right: 1rem;
+    top: 13px;
+    right: 13px;
     cursor: pointer;
     background: none;
     border: 0;
@@ -312,16 +312,16 @@ const Social = styled.div`
   display: flex;
   align-items: center;
   > :first-child {
-    width: 2rem;
+    width: 26px;
   }
   > :nth-child(3) {
-    margin-left: 0.6rem;
+    margin-left: 8px;
   }
 `
 const Information = styled.div`
   display: flex;
   > :not(:last-child) {
-    margin-bottom: 0.2rem;
+    margin-bottom: 3px;
   }
 `
 const Icons = styled.div`
@@ -330,7 +330,7 @@ const Icons = styled.div`
   flex-direction: column;
   visibility: hidden;
   > * {
-    margin: 0 0 0.6rem 0.6rem;
+    margin: 0 0 8px 8px;
     cursor: pointer;
   }
   ${Information}:hover & {
@@ -341,18 +341,18 @@ const Icons = styled.div`
 const Details = styled.div`
   width: 100%;
   > :not(:last-child) {
-    margin-bottom: 0.5rem;
+    margin-bottom: 7px;
   }
 `
 const StyledCard = styled(Card).attrs({ width: '100%', height: 'auto' })`
-  padding: 1.2rem;
-  padding-top: 4rem;
+  padding: 16px;
+  padding-top: 52px;
 `
 const Separator = styled.hr`
   height: 1px;
   border: 0;
   width: 100%;
-  margin: 1rem;
+  margin: 13px;
   background: ${theme.contentBorder};
 `
 

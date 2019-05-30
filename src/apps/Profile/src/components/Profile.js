@@ -47,27 +47,27 @@ const LeftColumn = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 25rem;
+  max-width: 325px;
 
-  margin: 1rem;
+  margin: 13px;
   > * {
-    margin-bottom: 2rem;
+    margin-bottom: 26px;
   }
 `
 const RightColumn = styled(LeftColumn)`
   width: 100%;
-  max-width: 46rem;
+  max-width: 600px;
 `
 const SingleColumn = styled(RightColumn)`
   width: auto;
-  padding: 0 1rem;
+  padding: 0 13px;
   background-color: #ffffff;
   align-content: stretch;
 `
 const DoubleColumn = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 0 2rem;
+  padding: 0 26px;
 `
 
 export default Profile
