@@ -8,6 +8,7 @@ import {
   IconAttention,
   IconCheck,
   IconCross,
+  LoadingRing,
   SafeLink,
   Text,
   TextInput,
@@ -27,7 +28,6 @@ import {
   formatBalance,
   isConnected,
 } from '../web3-utils'
-import LoadingRing from '../components/LoadingRing'
 import logo from './assets/logo-welcome.svg'
 
 import {
@@ -275,8 +275,8 @@ class StartContent extends React.PureComponent {
                       active={domainCheckStatus === DomainCheckPending}
                     >
                       <LoadingRing
-                        spin={
-                          this.props.domainCheckStatus === DomainCheckPending
+                        paused={
+                          this.props.domainCheckStatus !== DomainCheckPending
                         }
                       />
                     </CheckContainer>

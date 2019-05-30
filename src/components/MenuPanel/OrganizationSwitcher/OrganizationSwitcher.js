@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { theme } from '@aragon/ui'
+import { LoadingRing, theme } from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { FavoriteDaosConsumer } from '../../../contexts/FavoriteDaosContext'
-import LoadingRing from '../../LoadingRing'
 import Popup from '../../Popup'
 import OrganizationItem from './OrganizationItem'
 import Favorites from './Favorites'
@@ -104,7 +103,7 @@ const OrganizationSwitcherWithFavorites = ({ loading, ...props }) => {
   if (loading) {
     return (
       <Loader>
-        <LoadingRing spin />
+        <LoadingRing />
         <LoaderLabel>Loading…</LoaderLabel>
       </Loader>
     )
