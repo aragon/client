@@ -202,10 +202,10 @@ const InformationCard = () => {
 
   RenderTwitter.propTypes = { twitter: PropTypes.object }
 
-  const RenderWebsite = ({ website }) => (
-    <Social>
-      <IconGlobe width="13px" height="13px" color={theme.textPrimary} />
-      {website ? (
+  const RenderWebsite = ({ website }) =>
+    website && (
+      <Social>
+        <IconGlobe width="13px" height="13px" color={theme.textPrimary} />
         <SafeLink
           style={{
             color: theme.accent,
@@ -216,17 +216,8 @@ const InformationCard = () => {
         >
           {website}
         </SafeLink>
-      ) : (
-        <Text
-          style={{ color: theme.accent, textDecoration: 'none' }}
-          onClick={() => dispatchModal(open('basicInformation'))}
-          target="_blank"
-        >
-          Add website
-        </Text>
-      )}
-    </Social>
-  )
+      </Social>
+    )
 
   RenderWebsite.propTypes = { website: PropTypes.string }
 
