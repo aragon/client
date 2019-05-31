@@ -60,8 +60,6 @@ const RightColumn = styled(LeftColumn)`
 `
 const SingleColumn = styled(RightColumn)`
   width: auto;
-  padding: 0 13px;
-  background-color: #ffffff;
   align-content: stretch;
 `
 const DoubleColumn = styled.div`
