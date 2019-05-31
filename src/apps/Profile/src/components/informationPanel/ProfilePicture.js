@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import ImageMenu from '../ImageMenu'
 import { useProfile } from '../../hooks'
@@ -36,23 +36,12 @@ const ProfilePicture = () => {
   )
 }
 
-const getBackground = props => {
-  const imageContentHash = props.imageCid
-
-  return imageContentHash
-    ? `url(https://ipfs.infura.io/ipfs/${imageContentHash})`
-    : `url(${defaultImage})`
-}
-
 const Container = styled.div`
   cursor: ${props => props.isEditing && 'pointer'};
   padding: 16px;
   border: 2px solid #f2f2f2;
-  background-image: ${props => getBackground(props)};
-  background-size: 150px 150px;
   background-repeat: no-repeat;
   background-position: center;
-  background-color: #eeeeeef5;
   transition: border 0.24s ease-in-out;
   border-radius: 50%;
   width: 150px;
@@ -61,6 +50,18 @@ const Container = styled.div`
   top: 52px;
   left: 52px;
   z-index: 4;
+  ${props =>
+    props.imageCid
+      ? css`
+          background-image: url(https://ipfs.infura.io/ipfs/${props.imageCid});
+          background-size: 100%;
+          background-color: white;
+        `
+      : css`
+          background-image: url(${defaultImage});
+          background-size: 50%;
+          background-color: #e5e8eb;
+        `}
 `
 
 export default ProfilePicture
