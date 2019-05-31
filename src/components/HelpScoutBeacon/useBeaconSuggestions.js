@@ -1,8 +1,10 @@
 import { useEffect, useCallback, useState } from 'react'
-import suggestions from './suggestions'
 import { staticApps } from '../../static-apps'
 
-const sectionToSuggestions = new Map(suggestions)
+const rawSuggestionsURL =
+  'https://raw.githubusercontent.com/aragon/aragon/master/src/components/HelpScoutBeacon/suggestions.js'
+
+let sectionToSuggestions = new Map()
 
 function useBeaconSuggestions({
   apps,
@@ -10,6 +12,7 @@ function useBeaconSuggestions({
   locator: { instanceId, path },
   optedIn,
 }) {
+  const [canSuggest, setCanSuggest] = useState(false)
   const [originalOptedIn] = useState(optedIn)
   const [shouldSuggest, setShouldSuggest] = useState(false)
   const getSection = useCallback(() => {
@@ -34,7 +37,7 @@ function useBeaconSuggestions({
   }, [getSection, shouldSuggest])
 
   useEffect(() => {
-    if (!optedIn || !beaconReady) {
+    if (!canSuggest || !beaconReady) {
       return
     }
     // this only happens when user opts in
@@ -47,7 +50,25 @@ function useBeaconSuggestions({
     }
     setShouldSuggest(true)
     return () => clearTimeout(timeout)
-  }, [optedIn, beaconReady, originalOptedIn])
+  }, [canSuggest, beaconReady, originalOptedIn])
+
+  useEffect(() => {
+    if (optedIn) {
+      const effect = async () => {
+        try {
+          const raw = await fetch(rawSuggestionsURL)
+          const data = await raw.json()
+          sectionToSuggestions = new Map(data)
+          setCanSuggest(true)
+        } catch (e) {
+          console.warn(
+            'There was an error fetching the suggestions to sections data'
+          )
+        }
+      }
+      effect()
+    }
+  }, [optedIn])
 }
 
 export default useBeaconSuggestions
