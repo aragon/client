@@ -12,20 +12,16 @@ const EducationHistoryTile = ({
   removeItem,
 }) => (
   <SingleEducationItem>
-    <Details>
-      <Text.Block size="large" style={{ fontWeight: '700' }}>
-        {educationHistoryData.organization}
-      </Text.Block>
-      <Text.Block size="normal" style={{ fontWeight: '600' }}>
+    <div>
+      <Text.Block size="large">{educationHistoryData.organization}</Text.Block>
+      <Text.Block size="normal">
         {educationHistoryData.degree}
         {educationHistoryData.fieldOfStudy
           ? ', ' + educationHistoryData.fieldOfStudy
           : ''}
       </Text.Block>
-      <Text.Block size="xsmall" style={{ fontColor: theme.textTertiary }}>
-        {displayStartEndDates(educationHistoryData)}
-      </Text.Block>
-    </Details>
+      <Dates>{displayStartEndDates(educationHistoryData)}</Dates>
+    </div>
     <Icons>
       <IconPencil
         width="16px"
@@ -58,13 +54,11 @@ const Icons = styled.div`
   ${SingleEducationItem}:hover & {
     visibility: visible;
   }
-}
 `
-const Details = styled.div`
-  width: 100%;
-  > :not(:last-child) {
-    margin-bottom: 7px;
-  }
+
+const Dates = styled(Text.Block).attrs({ size: 'small' })`
+  color: ${theme.textTertiary};
+  margin-top: 2px;
 `
 
 EducationHistoryTile.propTypes = {
