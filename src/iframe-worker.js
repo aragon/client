@@ -34,6 +34,8 @@ class IframeWorker extends EventTarget {
           worker.addEventListener('error', error => window.parent.postMessage({ from: '${name}', error }, '*'), false)
           worker.addEventListener('message', event => window.parent.postMessage({ from: '${name}', msg: event.data }, '*'), false)
           window.addEventListener('message', ({ data }) => worker.postMessage(data))
+          // Clean up the url we created to spawn the worker
+-         URL.revokeObjectURL(workerUrl)
         }
         init()
       </script>
