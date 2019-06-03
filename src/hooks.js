@@ -203,8 +203,9 @@ export function useSelected(initial) {
   return { selected, setSelected, allSelected, someSelected }
 }
 
-export function useClickOutside(cb) {
-  const ref = useRef()
+/* eslint-disable react-hooks/rules-of-hooks */
+export function useClickOutside(cb, ref = useRef()) {
+  /* eslint-enable react-hooks/rules-of-hooks */
   const handleClick = useCallback(
     e => {
       if (!ref.current.contains(e.target)) {
@@ -222,4 +223,19 @@ export function useClickOutside(cb) {
   }, [handleClick])
 
   return { ref }
+}
+
+/* eslint-disable react-hooks/rules-of-hooks */
+export function useOnBlur(cb, ref = useRef()) {
+  /* eslint-enable react-hooks/rules-of-hooks */
+  const handleBlur = useCallback(
+    e => {
+      if (!ref.current.contains(e.relatedTarget)) {
+        cb()
+      }
+    },
+    [cb, ref]
+  )
+
+  return { ref, handleBlur }
 }
