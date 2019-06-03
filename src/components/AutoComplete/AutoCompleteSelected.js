@@ -6,69 +6,68 @@ import AutoComplete from './AutoComplete'
 const identity = x => x
 const noop = () => null
 
-const AutoCompleteSelected = React.memo(
-  React.forwardRef(function AutoCompleteSelected(
-    {
-      itemButtonStyles,
-      items,
-      onChange,
-      onSelect,
-      onSelectedClick = noop,
-      placeholder,
-      renderItem,
-      required,
-      renderSelected = identity,
-      selected,
-      selectedButtonStyles = '',
-      value,
-      wide,
-    },
-    ref
-  ) {
-    const selectedRef = useRef()
+function AutoCompleteSelected(
+  {
+    itemButtonStyles,
+    items,
+    onChange,
+    onSelect,
+    onSelectedClick = noop,
+    placeholder,
+    renderItem,
+    required,
+    renderSelected = identity,
+    selected,
+    selectedButtonStyles = '',
+    value,
+    wide,
+  },
+  ref
+) {
+  const selectedRef = useRef()
 
-    const handleSelect = useCallback(
-      selected => {
-        onSelect(selected)
-        setTimeout(() => {
-          selectedRef.current.focus()
-        }, 0)
-      },
-      [onChange]
-    )
-    const handleSelectedClick = useCallback(() => {
-      onSelectedClick()
+  const handleSelect = useCallback(
+    selected => {
+      onSelect(selected)
       setTimeout(() => {
-        if (ref && ref.current) {
-          ref.current.select()
-          ref.current.focus()
-        }
+        selectedRef.current.focus()
       }, 0)
-    }, [ref, selected, onChange])
+    },
+    [onSelect]
+  )
+  const handleSelectedClick = useCallback(() => {
+    onSelectedClick()
+    setTimeout(() => {
+      if (ref && ref.current) {
+        ref.current.select()
+        ref.current.focus()
+      }
+    }, 0)
+  }, [ref, onSelectedClick])
 
-    if (selected) {
-      return (
-        <ButtonBase
-          onClick={handleSelectedClick}
-          ref={selectedRef}
-          css={`
-            height: 40px;
-            width: 100%;
-            background: #fff;
-            cursor: pointer;
-            border: 1px solid ${theme.contentBorder};
-            border-radius: 3px;
-            ${selectedButtonStyles};
-          `}
-        >
-          {renderSelected(selected)}
-        </ButtonBase>
-      )
-    }
-
+  if (selected) {
     return (
-      <AutoComplete
-        itemButtonStyles={`
+      <ButtonBase
+        onClick={handleSelectedClick}
+        ref={selectedRef}
+        css={`
+          height: 40px;
+          width: 100%;
+          background: #fff;
+          cursor: pointer;
+          border: 1px solid ${theme.contentBorder};
+          border-radius: 3px;
+          ${selectedButtonStyles};
+        `}
+      >
+        {renderSelected(selected)}
+      </ButtonBase>
+    )
+  }
+
+  return (
+    <AutoComplete
+      itemButtonStyles={`
           border-left: 3px solid transparent;
           cursor: pointer;
           border-radius: 0;
@@ -80,19 +79,18 @@ const AutoCompleteSelected = React.memo(
             border-left: 3px solid ${theme.accent}
           }
         `}
-        items={items}
-        onChange={onChange}
-        onSelect={handleSelect}
-        placeholder={placeholder}
-        ref={ref}
-        renderItem={renderItem}
-        required={required}
-        value={value}
-        wide={wide}
-      />
-    )
-  })
-)
+      items={items}
+      onChange={onChange}
+      onSelect={handleSelect}
+      placeholder={placeholder}
+      ref={ref}
+      renderItem={renderItem}
+      required={required}
+      value={value}
+      wide={wide}
+    />
+  )
+}
 
 AutoCompleteSelected.propTypes = {
   itemButtonStyles: PropTypes.string,
@@ -100,6 +98,7 @@ AutoCompleteSelected.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   onSelectedClick: PropTypes.func,
+  placeholder: PropTypes.string,
   renderItem: PropTypes.func,
   renderSelected: PropTypes.func,
   required: PropTypes.bool,
@@ -109,4 +108,4 @@ AutoCompleteSelected.propTypes = {
   wide: PropTypes.bool,
 }
 
-export default AutoCompleteSelected
+export default React.memo(React.forwardRef(AutoCompleteSelected))
