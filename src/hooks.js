@@ -176,7 +176,7 @@ export function useSharedLabels(dao) {
     if (index > -1) {
       const raw = window.location.hash.substr(index + QUERY_VAR.length)
       try {
-        const data = JSON.parse(window.decodeURI(atou(raw)))
+        const data = JSON.parse(atou(raw))
         setSharedLabels(data.map(({ address, name }) => ({ address, name })))
         setIsSharedLink(true)
       } catch (e) {
