@@ -193,6 +193,7 @@ class ActionPathsContent extends React.Component {
           <LocalIdentityBadge
             entity={intent.transaction.token.spender}
             fontSize="small"
+            badgeOnly
             compact
           />
           {'. '}
