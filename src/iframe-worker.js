@@ -4,6 +4,7 @@ class IframeWorker extends EventTarget {
   constructor(scriptUrl, { name }) {
     super()
 
+    this.name = name
     this.iframe = document.createElement('iframe')
     this.iframe.sandbox = 'allow-scripts'
 
@@ -61,8 +62,7 @@ class IframeWorker extends EventTarget {
       source,
       data: { from, error, msg },
     } = event
-    if (source === this.iframe.contentWindow && from === name) {
-      console.log('messageFromIframe: ', event)
+    if (source === this.iframe.contentWindow && from === this.name) {
       this.dispatchEvent(
         new MessageEvent(error ? 'error' : 'message', {
           data: error || msg,
