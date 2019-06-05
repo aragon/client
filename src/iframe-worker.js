@@ -43,24 +43,32 @@ class IframeWorker extends EventTarget {
     this.iframe.srcdoc = source
     document.body.appendChild(this.iframe)
 
-    window.addEventListener(
-      'message',
-      event => {
-        const { source, data } = event
-        if (source === this.iframe.contentWindow && data.from === name) {
-          this.dispatchEvent(
-            new MessageEvent(data.error ? 'error' : 'message', {
-              data: data.msg,
-            })
-          )
-        }
-      },
-      false
-    )
+    window.addEventListener('message', this.handleIframeMessage, false)
   }
 
   postMessage(msg) {
     this.iframe.contentWindow.postMessage(msg, '*')
+  }
+
+  terminate() {
+    window.removeListener('message', this.handleIframeMessage)
+    document.removeChild(this.iframe)
+    this.iframe = null
+  }
+
+  handleIframeMessage = event => {
+    const {
+      source,
+      data: { from, error, msg },
+    } = event
+    if (source === this.iframe.contentWindow && from === name) {
+      console.log('messageFromIframe: ', event)
+      this.dispatchEvent(
+        new MessageEvent(error ? 'error' : 'message', {
+          data: error || msg,
+        })
+      )
+    }
   }
 }
 
