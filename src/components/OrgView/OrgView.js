@@ -13,8 +13,6 @@ import {
 } from '../../prop-types'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import CombinedPanel from '../MenuPanel/CombinedPanel'
-// import ActivityAlert from '../Activity/ActivityAlert'
-// import { ActivityContext } from '../../contexts/ActivityContext'
 import { useAppTheme } from '../../lib/app-theme'
 
 function OrgView({
@@ -80,14 +78,16 @@ function OrgView({
             display: flex;
           `}
         >
-          <ButtonIcon
-            css={`
-              height: 100%;
-            `}
-            onClick={toggleTheme}
-          >
-            {themeName === 'light' ? '🌚' : '🌝'}
-          </ButtonIcon>
+          {null && (
+            <ButtonIcon
+              css={`
+                height: 100%;
+              `}
+              onClick={toggleTheme}
+            >
+              {themeName === 'light' ? '🌚' : '🌝'}
+            </ButtonIcon>
+          )}
         </div>
       </div>
       <div
