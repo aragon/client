@@ -23,7 +23,6 @@ class ActivityAlert extends React.PureComponent {
       <ButtonIcon
         css={`
           display: flex;
-          width: 100%;
           height: 100%;
           position: relative;
         `}

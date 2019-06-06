@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { Text, theme } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { AppType } from '../../prop-types'
-import AppLayout from '../../components/AppLayout/AppLayout'
 
 import logo from './assets/logo-background.svg'
 
@@ -75,41 +74,33 @@ class Home extends React.Component {
     )
     return (
       <Main>
-        <AppLayout
-          title="Home"
-          onMenuOpen={this.handleMenuPanelOpen}
-          smallViewPadding={30}
-        >
-          <Content>
-            <h1 css="margin-bottom: 30px">
-              <Text weight="bold" size="xxlarge">
-                Welcome to Aragon!
-              </Text>
-              <div>
-                <Text size="small">
-                  {dao.endsWith('.eth')
-                    ? `You are interacting with ${dao}`
-                    : 'You are using Aragon 0.7 — Bella'}
-                </Text>
-              </div>
-            </h1>
-            <p>
-              <Text color={theme.textSecondary}>What do you want to do?</Text>
-            </p>
-            <Cards>
-              {appActions.map(({ id, label, img }) => (
-                <CardWrap key={id}>
-                  <HomeCard
-                    id={id}
-                    title={label}
-                    icon={img}
-                    onActivate={this.handleCardAction}
-                  />
-                </CardWrap>
-              ))}
-            </Cards>
-          </Content>
-        </AppLayout>
+        <h1 css="margin-bottom: 30px">
+          <Text weight="bold" size="xxlarge">
+            Welcome to Aragon!
+          </Text>
+          <div>
+            <Text size="small">
+              {dao.endsWith('.eth')
+                ? `You are interacting with ${dao}`
+                : 'You are using Aragon 0.7 — Bella'}
+            </Text>
+          </div>
+        </h1>
+        <p>
+          <Text color={theme.textSecondary}>What do you want to do?</Text>
+        </p>
+        <Cards>
+          {appActions.map(({ id, label, img }) => (
+            <CardWrap key={id}>
+              <HomeCard
+                id={id}
+                title={label}
+                icon={img}
+                onActivate={this.handleCardAction}
+              />
+            </CardWrap>
+          ))}
+        </Cards>
       </Main>
     )
   }
@@ -117,24 +108,17 @@ class Home extends React.Component {
 
 const Main = styled.div`
   display: flex;
-  height: 100%;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding-top: 40px;
+  padding-bottom: 40px;
   background-color: ${theme.mainBackground};
   background-image: url(${logo});
   background-position: 50% 50%;
   background-repeat: no-repeat;
-`
-
-const Content = styled.div`
-  display: flex;
-  width: 100%;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  text-align: center;
 `
 
 const Cards = styled.div`

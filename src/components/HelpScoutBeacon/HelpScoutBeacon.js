@@ -470,6 +470,7 @@ const RoundButton = styled(Button).attrs({ mode: 'strong' })`
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
 `
 
 const RoundButtonIcon = styled(animated.div)`

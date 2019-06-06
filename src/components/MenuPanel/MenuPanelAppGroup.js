@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme } from '@aragon/ui'
+import { ButtonBase, theme } from '@aragon/ui'
 import color from 'onecolor'
 import MenuPanelInstance from './MenuPanelInstance'
 import { AppInstanceType } from '../../prop-types'
@@ -60,7 +60,6 @@ class MenuPanelAppGroup extends React.PureComponent {
             />
 
             <ButtonItem
-              role="button"
               className={`item ${active ? 'active' : ''}`}
               onClick={this.handleAppClick}
             >
@@ -128,6 +127,7 @@ const Main = styled.div`
   }
   .name {
     font-weight: ${({ active }) => (active ? '800' : '400')};
+    font-size: 16px;
   }
   .icon {
     display: flex;
@@ -152,9 +152,10 @@ const Main = styled.div`
   }
 `
 
-const ButtonItem = styled.span`
+const ButtonItem = styled(ButtonBase)`
   display: flex;
   justify-content: space-between;
+  width: 100%;
   & > span {
     display: flex;
     flex-wrap: nowrap;

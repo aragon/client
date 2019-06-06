@@ -2,17 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
-import { useViewport } from '@aragon/ui'
 import { AppCenter, Permissions, Settings } from './apps'
-import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
+import AppIFrame from './components/App/AppIFrame'
+import AppLoader from './components/App/AppLoader'
 import Home from './components/Home/Home'
+import OrgView from './components/OrgView/OrgView'
 import Preferences from './components/Preferences/Preferences'
-import CombinedPanel from './components/MenuPanel/CombinedPanel'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
-import AppLoader from './components/App/AppLoader'
 import { useIdentity } from './components/IdentityManager/IdentityManager'
 import {
   AppType,
@@ -32,7 +31,6 @@ class Wrapper extends React.PureComponent {
     account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
-    autoClosingPanel: PropTypes.bool.isRequired,
     canUpgradeOrg: PropTypes.bool,
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
@@ -67,7 +65,6 @@ class Wrapper extends React.PureComponent {
 
   state = {
     appLoading: false,
-    menuPanelOpened: !this.props.autoClosingPanel,
     orgUpgradePanelOpened: false,
     preferencesOpened: false,
   }
@@ -83,16 +80,7 @@ class Wrapper extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    this.updateAutoClosingPanel(prevProps)
     this.updateIdentityEvents(prevProps)
-  }
-
-  updateAutoClosingPanel(prevProps) {
-    const { autoClosingPanel } = this.props
-    if (autoClosingPanel !== prevProps.autoClosingPanel) {
-      this.setState({ menuPanelOpened: !autoClosingPanel })
-      this.sendDisplayMenuButtonStatus()
-    }
   }
 
   updateIdentityEvents(prevProps) {
@@ -118,20 +106,9 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  sendDisplayMenuButtonStatus() {
-    const { autoClosingPanel } = this.props
-    if (this.appIFrame) {
-      this.appIFrame.sendMessage({
-        from: 'wrapper',
-        name: 'displayMenuButton',
-        value: autoClosingPanel,
-      })
-    }
-  }
-
   openApp = (instanceId, params) => {
     if (this.props.autoClosingPanel) {
-      this.handleMenuPanelClose()
+      // this.handleMenuPanelClose()
     }
 
     const { historyPush, locator } = this.props
@@ -168,7 +145,6 @@ class Wrapper extends React.PureComponent {
       name: 'ready',
       value: true,
     })
-    this.sendDisplayMenuButtonStatus()
     this.setState({ appLoading: false })
   }
   handleAppIFrameLoadingStart = event => {
@@ -181,30 +157,10 @@ class Wrapper extends React.PureComponent {
     this.setState({ appLoading: false })
   }
 
-  handleAppMessage = ({ data: { name, value } }) => {
-    if (
-      // “menuPanel: Boolean” is deprecated but still supported for a while if
-      // value is `true`.
-      name === 'menuPanel' ||
-      // “requestMenu: true” should now be used.
-      name === 'requestMenu'
-    ) {
-      this.setState({ menuPanelOpened: value === true })
-    }
-  }
-  handleMenuPanelOpen = () => {
-    this.setState({ menuPanelOpened: true })
-  }
-  handleMenuPanelClose = () => {
-    this.setState({ menuPanelOpened: false })
-  }
   handleClosePreferences = () => {
     this.setState({ preferencesOpened: false })
   }
   handleOpenPreferences = () => {
-    if (this.props.autoClosingPanel) {
-      this.handleMenuPanelClose()
-    }
     this.setState({ preferencesOpened: true })
   }
   // params need to be a string
@@ -263,7 +219,6 @@ class Wrapper extends React.PureComponent {
       account,
       apps,
       appsStatus,
-      autoClosingPanel,
       canUpgradeOrg,
       connected,
       daoAddress,
@@ -282,26 +237,23 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
 
-    const {
-      appLoading,
-      menuPanelOpened,
-      orgUpgradePanelOpened,
-      preferencesOpened,
-    } = this.state
+    const { appLoading, orgUpgradePanelOpened, preferencesOpened } = this.state
 
     const currentApp = apps.find(app =>
       addressesEqual(app.proxyAddress, locator.instanceId)
     )
 
     return (
-      <Main visible={visible}>
-        <Preferences
-          dao={locator.dao}
-          opened={preferencesOpened}
-          onClose={this.handleClosePreferences}
-          wrapper={wrapper}
-        />
-
+      <div
+        css={`
+          display: ${visible ? 'flex' : 'none'};
+          flex-direction: column;
+          position: relative;
+          z-index: 0;
+          height: 100vh;
+          min-width: 320px;
+        `}
+      >
         <BannerWrapper>
           <UpgradeBanner
             visible={canUpgradeOrg}
@@ -309,59 +261,61 @@ class Wrapper extends React.PureComponent {
           />
         </BannerWrapper>
 
-        <CombinedPanel
+        <OrgView
           account={account}
           activeInstanceId={locator.instanceId}
           appInstanceGroups={this.getAppInstancesGroups(apps)}
           apps={apps}
           appsStatus={appsStatus}
-          autoClosing={autoClosingPanel}
           connected={connected}
           daoAddress={daoAddress}
           daoStatus={daoStatus}
-          onMenuPanelClose={this.handleMenuPanelClose}
-          onMenuPanelOpen={this.handleMenuPanelOpen}
           onOpenApp={this.openApp}
           onOpenPreferences={this.handleOpenPreferences}
           onRequestAppsReload={onRequestAppsReload}
           onRequestEnable={onRequestEnable}
-          opened={menuPanelOpened}
         >
-          <AppScreen>
-            <AppLoader
-              appLoading={appLoading}
-              appsLoading={!wrapper || appsStatus === APPS_STATUS_LOADING}
-              currentAppName={currentApp ? currentApp.name : ''}
-              daoLoading={daoStatus === DAO_STATUS_LOADING}
-              instanceId={locator.instanceId}
-            >
-              {this.renderApp(locator.instanceId, locator.params)}
-            </AppLoader>
-          </AppScreen>
-        </CombinedPanel>
-        <SignerPanel
-          account={account}
-          apps={apps}
-          dao={locator.dao}
-          onRequestEnable={onRequestEnable}
-          transactionBag={transactionBag}
-          signatureBag={signatureBag}
-          walletNetwork={walletNetwork}
-          walletProviderId={walletProviderId}
-          walletWeb3={walletWeb3}
-          web3={web3}
-        />
+          <AppLoader
+            appLoading={appLoading}
+            appsLoading={!wrapper || appsStatus === APPS_STATUS_LOADING}
+            currentAppName={currentApp ? currentApp.name : ''}
+            daoLoading={daoStatus === DAO_STATUS_LOADING}
+            instanceId={locator.instanceId}
+          >
+            {this.renderApp(locator.instanceId, locator.params)}
+          </AppLoader>
 
-        {canUpgradeOrg && (
-          <UpgradeOrganizationPanel
-            daoAddress={daoAddress}
-            opened={orgUpgradePanelOpened}
-            onClose={this.hideOrgUpgradePanel}
-            repos={repos}
-            wrapper={wrapper}
+          <SignerPanel
+            account={account}
+            apps={apps}
+            dao={locator.dao}
+            onRequestEnable={onRequestEnable}
+            transactionBag={transactionBag}
+            signatureBag={signatureBag}
+            walletNetwork={walletNetwork}
+            walletProviderId={walletProviderId}
+            walletWeb3={walletWeb3}
+            web3={web3}
           />
-        )}
-      </Main>
+
+          {canUpgradeOrg && (
+            <UpgradeOrganizationPanel
+              daoAddress={daoAddress}
+              opened={orgUpgradePanelOpened}
+              onClose={this.hideOrgUpgradePanel}
+              repos={repos}
+              wrapper={wrapper}
+            />
+          )}
+        </OrgView>
+
+        <Preferences
+          dao={locator.dao}
+          opened={preferencesOpened}
+          onClose={this.handleClosePreferences}
+          wrapper={wrapper}
+        />
+      </div>
     )
   }
   renderApp(instanceId, params) {
@@ -464,36 +418,13 @@ class Wrapper extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
-  display: ${p => (p.visible ? 'flex' : 'none')};
-  flex-direction: column;
-  position: relative;
-  z-index: 0;
-  height: 100vh;
-  min-width: 320px;
-`
-
 const BannerWrapper = styled.div`
   position: relative;
   z-index: 1;
   flex-shrink: 0;
 `
 
-const AppScreen = styled.div`
-  position: relative;
-  z-index: 1;
-  flex-grow: 1;
-  overflow: auto;
-`
-
 export default props => {
-  const { below } = useViewport()
   const { identityEvents$ } = useIdentity()
-  return (
-    <Wrapper
-      {...props}
-      autoClosingPanel={below('medium')}
-      identityEvents$={identityEvents$}
-    />
-  )
+  return <Wrapper {...props} identityEvents$={identityEvents$} />
 }
