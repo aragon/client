@@ -17,7 +17,7 @@ import useBeaconSuggestions from './useBeaconSuggestions'
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
-import { useClickOutside } from '../../hooks'
+import { useClickOutside, useOnBlur } from '../../hooks'
 import { GU } from '../../utils'
 import { AppType } from '../../prop-types'
 
@@ -95,35 +95,81 @@ const HelpOptIn = React.memo(function HelpOptIn({
   const { above } = useViewport()
   const expandedMode = above('medium')
   const [mode, setMode] = useState(CLOSED)
+  const [iframe, setIframe] = useState(null)
 
-  const handleClose = React.useCallback(() => setMode(CLOSED), [])
+  // open and close atomic actions
+  const handleClose = useCallback(() => {
+    setMode(CLOSING)
+    if (beaconReady) {
+      window.Beacon('close')
+    }
+  }, [beaconReady])
+  const handleOpen = useCallback(() => {
+    setMode(OPENING)
+    if (beaconReady) {
+      window.Beacon('open')
+    }
+  }, [beaconReady])
+  // toggle between states, when optedId and not
   const handleToggle = useCallback(() => {
-    if (mode !== OPENING && mode !== CLOSING) {
-      setMode(mode === CLOSED ? OPENING : CLOSING)
+    if (beaconReady) {
+      mode === CLOSED || mode === CLOSING ? handleOpen() : handleClose()
+      return
     }
-    if (beaconReady && window.Beacon) {
-      window.Beacon('toggle')
+    if (mode !== CLOSING && mode !== OPENING) {
+      mode === CLOSED ? handleOpen() : handleClose()
     }
-  }, [beaconReady, mode])
+  }, [beaconReady, mode, handleClose, handleOpen])
+  // used to avoid weird intermediate states by clicking rapidly the toggle button
   const handleToggleEnd = useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [mode])
+  // takes care of closing modal when a click is registered outside of the container
   const handleClickOutside = useCallback(() => {
     if ((mode === OPENED || mode === OPENING) && expandedMode) {
       handleToggle()
     }
   }, [mode, handleToggle, expandedMode])
-  const { ref } = useClickOutside(handleClickOutside)
+  // takes care of closing modal when loosing focus of the optin modal
+  const handleOptInBlur = useCallback(() => {
+    if (!optedIn) {
+      handleClickOutside()
+    }
+  }, [optedIn, handleClickOutside])
+  // takes care of closing beacon modal when it looses focus
+  const handleIframeBlur = useCallback(() => {
+    if (mode === OPENED || mode === OPENING) {
+      setTimeout(() => handleClose(), 100)
+    }
+  }, [mode, handleClose])
 
+  const { ref } = useClickOutside(handleClickOutside)
+  const { handleBlur } = useOnBlur(handleOptInBlur, ref)
   useEffect(() => {
     if (beaconReady && window.Beacon) {
       window.Beacon('on', 'open', () => setMode(OPENED))
       window.Beacon('on', 'close', () => setMode(CLOSED))
     }
   }, [beaconReady])
+  useEffect(() => {
+    if (iframe) {
+      iframe.contentWindow.addEventListener('blur', handleIframeBlur)
+    }
+    return () => {
+      if (iframe) {
+        iframe.contentWindow.removeEventListener('blur', handleIframeBlur)
+      }
+    }
+  }, [iframe, handleIframeBlur])
+  useEffect(() => {
+    if (beaconReady && mode === OPENED && !iframe) {
+      const iframe = document.querySelector('#beacon-container iframe')
+      setIframe(iframe)
+    }
+  }, [beaconReady, mode, iframe])
 
   return (
-    <div ref={ref}>
+    <div ref={ref} onBlur={handleBlur}>
       {(!optedIn || !beaconReady) && (
         <Transition
           native
@@ -248,7 +294,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
                 ),
               }}
             >
-              <IconQuestion width="auto" height={18} />
+              <IconQuestion width={18} height={18} />
             </RoundButtonIcon>
           ))
         }
