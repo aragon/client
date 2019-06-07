@@ -42,6 +42,7 @@ class IframeWorker extends EventTarget {
     this.name = name
     this.iframe = document.createElement('iframe')
     this.iframe.sandbox = 'allow-scripts'
+    this.iframe.style = 'position: absolute; width: 0; height: 0; opacity:0;'
 
     const source = `
       <script>
