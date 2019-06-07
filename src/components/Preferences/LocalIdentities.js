@@ -54,14 +54,17 @@ const EnhancedLocalIdentities = React.memo(function EnhancedLocalIdentities({
     }
     setLocalIdentities(await wrapper.getLocalIdentities())
   }, [wrapper])
-  const handleClearAll = useCallback(async () => {
-    if (!wrapper) {
-      return
-    }
-    await wrapper.clearLocalIdentities()
-    setLocalIdentities({})
-    identityEvents$.next({ type: identityEventTypes.CLEAR })
-  }, [wrapper, identityEvents$])
+  const handleRemoveSelected = useCallback(
+    async addressesSelected => {
+      if (!wrapper) {
+        return
+      }
+      await wrapper.removeSelectedLocalIdentities(addressesSelected)
+
+      identityEvents$.next({ type: identityEventTypes.CLEAR })
+    },
+    [wrapper, identityEvents$]
+  )
   const handleModify = useCallback(
     (address, data) => {
       if (!wrapper) {
@@ -96,7 +99,7 @@ const EnhancedLocalIdentities = React.memo(function EnhancedLocalIdentities({
         dao={dao}
         localIdentities={localIdentities}
         onImport={handleImport}
-        onClearAll={handleClearAll}
+        onRemoveSelected={handleRemoveSelected}
         onModify={handleModify}
         onModifyEvent={handleGetAll}
       />
@@ -114,7 +117,7 @@ const SelectableLocalIdentities = React.memo(
     localIdentities,
     dao,
     onImport,
-    onClearAll,
+    onRemoveSelected,
     onModify,
     onModifyEvent,
   }) {
@@ -173,7 +176,7 @@ const SelectableLocalIdentities = React.memo(
             someSelected={someSelected}
             dao={dao}
             identities={identities}
-            onClearAll={onClearAll}
+            onRemoveSelected={onRemoveSelected}
             onImport={onImport}
             onModify={onModify}
             onModifyEvent={onModifyEvent}
@@ -190,7 +193,7 @@ const SelectableLocalIdentities = React.memo(
 SelectableLocalIdentities.propTypes = {
   dao: PropTypes.string.isRequired,
   localIdentities: PropTypes.object,
-  onClearAll: PropTypes.func.isRequired,
+  onRemoveSelected: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,
   onModifyEvent: PropTypes.func,
@@ -205,7 +208,7 @@ const ShareableLocalIdentities = React.memo(function ShareableLocalIdentities({
   allSelected,
   dao,
   identities,
-  onClearAll,
+  onRemoveSelected,
   onImport,
   onModify,
   onModifyEvent,
@@ -382,7 +385,7 @@ const ShareableLocalIdentities = React.memo(function ShareableLocalIdentities({
         someSelected={someSelected}
         dao={dao}
         identities={identities}
-        onClearAll={onClearAll}
+        onRemoveSelected={onRemoveSelected}
         onImport={onImport}
         onModify={onModify}
         onModifyEvent={onModifyEvent}
@@ -399,7 +402,7 @@ ShareableLocalIdentities.propTypes = {
   allSelected: PropTypes.bool.isRequired,
   dao: PropTypes.string.isRequired,
   identities: PropTypes.array.isRequired,
-  onClearAll: PropTypes.func.isRequired,
+  onRemoveSelected: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,
   onModifyEvent: PropTypes.func,
@@ -414,7 +417,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
   allSelected,
   dao,
   identities,
-  onClearAll,
+  onRemoveSelected,
   onImport,
   onModify,
   onModifyEvent,
@@ -456,10 +459,16 @@ const LocalIdentities = React.memo(function LocalIdentities({
     }
   }, [identities, dao, addressesSelected, someSelected])
 
-  const handleClearAll = useCallback(() => {
+  const handleRemoveSelected = useCallback(() => {
     setConfirmationModalOpened(false)
-    onClearAll()
-  }, [onClearAll])
+    let selectedAddresses = []
+    addressesSelected.forEach((value, address) => {
+      if (value) {
+        selectedAddresses.push(address)
+      }
+    })
+    onRemoveSelected(selectedAddresses)
+  }, [onRemoveSelected, addressesSelected])
   const handleOpenConfirmationModal = useCallback(() => {
     setConfirmationModalOpened(true)
   }, [])
@@ -536,11 +545,12 @@ const LocalIdentities = React.memo(function LocalIdentities({
         <Button
           mode="outline"
           onClick={handleOpenConfirmationModal}
+          disabled={!someSelected}
           css={`
             ${breakpoint('medium', `margin-left: auto;`)}
           `}
         >
-          <IconCross /> Remove all labels
+          <IconCross /> Remove labels
         </Button>
       </Controls>
       <Warning />
@@ -564,7 +574,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
           <RemoveButton
             label="Remove labels"
             mode="strong"
-            onClick={handleClearAll}
+            onClick={handleRemoveSelected}
           >
             Remove
           </RemoveButton>
@@ -579,7 +589,7 @@ LocalIdentities.propTypes = {
   allSelected: PropTypes.bool.isRequired,
   dao: PropTypes.string.isRequired,
   identities: PropTypes.array.isRequired,
-  onClearAll: PropTypes.func.isRequired,
+  onRemoveSelected: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   onModify: PropTypes.func.isRequired,
   onModifyEvent: PropTypes.func,
