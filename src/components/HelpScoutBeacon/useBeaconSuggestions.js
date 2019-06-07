@@ -6,7 +6,7 @@ const sectionToSuggestions = new Map(suggestions)
 
 function useBeaconSuggestions({
   apps,
-  beaconReady,
+  beacon,
   locator: { instanceId, path },
   optedIn,
 }) {
@@ -30,15 +30,15 @@ function useBeaconSuggestions({
     if (!shouldSuggest) {
       return
     }
-    window.Beacon('suggest', sectionToSuggestions.get(getSection()))
-  }, [getSection, shouldSuggest])
+    beacon('suggest', sectionToSuggestions.get(getSection()))
+  }, [getSection, shouldSuggest, beacon])
 
   useEffect(() => {
-    if (!optedIn || !beaconReady) {
+    if (!optedIn) {
       return
     }
     // this only happens when user opts in
-    // when opting in beaconReady is set after the open event has been triggered
+    // when opting in, beaconReady is set after the open event has been triggered
     // give it a minute before suggesting or a weird reace condition happens
     let timeout
     if (!originalOptedIn) {
@@ -47,7 +47,7 @@ function useBeaconSuggestions({
     }
     setShouldSuggest(true)
     return () => clearTimeout(timeout)
-  }, [optedIn, beaconReady, originalOptedIn])
+  }, [optedIn, originalOptedIn])
 }
 
 export default useBeaconSuggestions

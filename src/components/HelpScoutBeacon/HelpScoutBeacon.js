@@ -14,7 +14,7 @@ import {
   useViewport,
 } from '@aragon/ui'
 import useBeaconSuggestions from './useBeaconSuggestions'
-import BeaconHeadScripts from './BeaconHeadScripts'
+import BeaconHeadScripts, { useHelpScoutBeacon } from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
 import { useClickOutside } from '../../hooks'
@@ -29,30 +29,26 @@ const CLOSING = Symbol('closing')
 const ROUND_BUTTON_HEIGHT = 40
 
 const Beacon = React.memo(function Beacon({ locator, apps }) {
-  const [beaconReady, setBeaconReady] = useState(false)
   const [openOnReady, setOpenOnReady] = useState(false)
   const [optedIn, setOptedIn] = useState(
     localStorage.getItem(HELPSCOUT_BEACON_KEY) === '1'
   )
-
+  const beacon = useHelpScoutBeacon(optedIn)
   const handleOptIn = () => {
     localStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
     setOptedIn(true)
     setOpenOnReady(true)
   }
-  const handleBeaconReady = useCallback(() => {
-    if (openOnReady && window.Beacon) {
-      window.Beacon('open')
-      window.Beacon('once', 'open', () => {
-        setBeaconReady(true)
+  useEffect(() => {
+    if (openOnReady) {
+      beacon('open')
+      beacon('once', 'open', () => {
         setOpenOnReady(false)
       })
-    } else {
-      setBeaconReady(true)
     }
-  }, [openOnReady])
+  }, [openOnReady, beacon])
 
-  useBeaconSuggestions({ apps, locator, optedIn, beaconReady })
+  useBeaconSuggestions({ apps, locator, optedIn, beacon })
 
   return (
     <div
@@ -72,12 +68,8 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
         )}
       `}
     >
-      <BeaconHeadScripts optedIn={optedIn} onReady={handleBeaconReady} />
-      <HelpOptIn
-        beaconReady={beaconReady}
-        onOptIn={handleOptIn}
-        optedIn={optedIn}
-      />
+      <BeaconHeadScripts optedIn={optedIn} />
+      <HelpOptIn beacon={beacon} onOptIn={handleOptIn} optedIn={optedIn} />
     </div>
   )
 })
@@ -87,24 +79,18 @@ Beacon.propTypes = {
   locator: PropTypes.object,
 }
 
-const HelpOptIn = React.memo(function HelpOptIn({
-  beaconReady,
-  onOptIn,
-  optedIn,
-}) {
+const HelpOptIn = React.memo(function HelpOptIn({ beacon, onOptIn, optedIn }) {
   const { above } = useViewport()
   const expandedMode = above('medium')
   const [mode, setMode] = useState(CLOSED)
 
-  const handleClose = React.useCallback(() => setMode(CLOSED), [])
+  const handleClose = useCallback(() => setMode(CLOSED), [])
   const handleToggle = useCallback(() => {
     if (mode !== OPENING && mode !== CLOSING) {
       setMode(mode === CLOSED ? OPENING : CLOSING)
     }
-    if (beaconReady && window.Beacon) {
-      window.Beacon('toggle')
-    }
-  }, [beaconReady, mode])
+    beacon('toggle')
+  }, [beacon, mode])
   const handleToggleEnd = useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [mode])
@@ -116,15 +102,16 @@ const HelpOptIn = React.memo(function HelpOptIn({
   const { ref } = useClickOutside(handleClickOutside)
 
   useEffect(() => {
-    if (beaconReady && window.Beacon) {
-      window.Beacon('on', 'open', () => setMode(OPENED))
-      window.Beacon('on', 'close', () => setMode(CLOSED))
-    }
-  }, [beaconReady])
+    beacon('on', 'open', () => setMode(OPENED))
+    beacon('on', 'close', () => {
+      console.log('BEACON:close')
+      setMode(CLOSED)
+    })
+  }, [beacon])
 
   return (
     <div ref={ref}>
-      {(!optedIn || !beaconReady) && (
+      {!optedIn && (
         <Transition
           native
           items={mode === OPENING || mode === OPENED}
@@ -168,7 +155,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
 })
 
 HelpOptIn.propTypes = {
-  beaconReady: PropTypes.bool.isRequired,
+  beacon: PropTypes.func,
   onOptIn: PropTypes.func.isRequired,
   optedIn: PropTypes.bool.isRequired,
 }
