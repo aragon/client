@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
-import { noop, GU } from '../../utils'
+import { GU } from '../../utils'
 import { createGlobalStyle } from 'styled-components'
 
 const BEACON_EMBED =
@@ -9,7 +8,32 @@ const BEACON_EMBED =
 const HELPSCOUT_ID = "'163e0284-762b-4e2d-b3b3-70a73a7e6c9f'"
 const BEACON_INIT = "window.Beacon('init'," + HELPSCOUT_ID + ')'
 
-const BeaconHeadScripts = React.memo(({ optedIn, onReady }) => {
+function useHelpScoutBeacon(optedIn) {
+  const [beacon, setBeacon] = useState(null)
+
+  // Load the script if it doesn’t exist yet and optedIn
+  // is true, then set the value of Beacon.
+  useEffect(() => {
+    let scripts = []
+
+    if (optedIn && !beacon) {
+      if (!window.Beacon) {
+        scripts = [BEACON_EMBED, BEACON_INIT].map(source => {
+          const script = document.createElement('script')
+          script.innerHTML = source
+          return document.body.appendChild(script)
+        })
+      }
+      setBeacon(window.Beacon)
+    }
+
+    return () => scripts.forEach(s => s.remove())
+  }, [optedIn, beacon])
+
+  return beacon
+}
+
+const BeaconHeadScripts = ({ optedIn, onReady }) => {
   useEffect(() => {
     let timeout = null
     if (optedIn) {
@@ -25,26 +49,16 @@ const BeaconHeadScripts = React.memo(({ optedIn, onReady }) => {
     }
   }, [optedIn, onReady])
 
-  if (!optedIn) {
-    return null
-  }
-
-  return (
-    <Helmet>
-      <script type="text/javascript">{BEACON_EMBED}</script>
-      <script type="text/javascript">{BEACON_INIT}</script>
-    </Helmet>
-  )
-})
+  useHelpScoutBeacon(optedIn)
+  return optedIn ? <HelpscoutStyle /> : null
+}
 
 BeaconHeadScripts.propTypes = {
   optedIn: PropTypes.bool,
-  onReady: PropTypes.func,
 }
 
 BeaconHeadScripts.defaultProps = {
   optedIn: false,
-  onReady: noop,
 }
 
 const HelpscoutStyle = createGlobalStyle`
