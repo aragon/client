@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import { ButtonBase, TextInput, springs, theme, unselectable } from '@aragon/ui'
-import { useClickOutside, useOnBlur } from '../../hooks'
+import { useClickOutside, useOnBlur, useArrowKeysFocus } from '../../hooks'
 import IconMagnifyingGlass from './IconMagnifyingGlass'
 
 const { accent, contentBackground, contentBorder, textPrimary } = theme
@@ -39,8 +39,11 @@ function AutoComplete(
     onChange,
   ])
 
-  useClickOutside(handleClose, wrapRef)
+  const { containerRef, handleContainerBlur } = useArrowKeysFocus(
+    '.autocomplete-item'
+  )
   const { handleBlur } = useOnBlur(handleClose, wrapRef)
+  useClickOutside(handleClose, wrapRef)
 
   return (
     <div css="position: relative" ref={wrapRef} onBlur={handleBlur}>
@@ -84,6 +87,8 @@ function AutoComplete(
           /* eslint-disable react/prop-types */
           (({ scale, opacity }) => (
             <Items
+              ref={containerRef}
+              onBlur={handleContainerBlur}
               role="listbox"
               style={{
                 opacity,
@@ -93,6 +98,7 @@ function AutoComplete(
               {items.map(item => (
                 <Item role="option" key={item.key}>
                   <ButtonBase
+                    className="autocomplete-item"
                     onClick={handleSelect(item)}
                     css={`
                       width: 100%;
