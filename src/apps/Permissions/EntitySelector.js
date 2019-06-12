@@ -15,7 +15,7 @@ class EntitySelector extends React.Component {
     label: PropTypes.string.isRequired,
     labelCustomAddress: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    wrapper: AragonType.isRequired,
+    wrapper: AragonType,
   }
   state = {
     customAddress: '',

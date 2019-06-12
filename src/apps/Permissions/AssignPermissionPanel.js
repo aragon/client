@@ -22,7 +22,7 @@ class AssignPermissionPanel extends React.PureComponent {
     getAppRoles: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     opened: PropTypes.bool.isRequired,
-    wrapper: AragonType.isRequired,
+    wrapper: AragonType,
   }
 
   state = {

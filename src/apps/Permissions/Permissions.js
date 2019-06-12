@@ -22,7 +22,7 @@ class Permissions extends React.Component {
     onParamsRequest: PropTypes.func.isRequired,
     params: PropTypes.string,
     permissionsLoading: PropTypes.bool.isRequired,
-    wrapper: AragonType.isRequired,
+    wrapper: AragonType,
   }
 
   state = {
