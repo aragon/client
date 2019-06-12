@@ -9,20 +9,19 @@ import IconMagnifyingGlass from './IconMagnifyingGlass'
 const { accent, contentBackground, contentBorder, textPrimary } = theme
 const identity = x => x
 
-function AutoComplete(
-  {
-    itemButtonStyles,
-    items,
-    onSelect,
-    onChange,
-    placeholder,
-    renderItem,
-    required,
-    value,
-    wide,
-  },
-  ref
-) {
+function AutoComplete({
+  forwardedRef,
+  itemButtonStyles,
+  items,
+  onSelect,
+  onChange,
+  placeholder,
+  renderItem,
+  required,
+  value,
+  wide,
+}) {
+  const ref = forwardedRef
   const [opened, setOpened] = useState(true)
   const wrapRef = useRef()
 
@@ -119,6 +118,7 @@ function AutoComplete(
 }
 
 AutoComplete.propTypes = {
+  forwardedRef: PropTypes.object,
   itemButtonStyles: PropTypes.string,
   items: PropTypes.array.isRequired,
   onSelect: PropTypes.func.isRequired,
@@ -166,4 +166,8 @@ const Items = styled(animated.ul)`
   }
 `
 
-export default React.memo(React.forwardRef(AutoComplete))
+const AutoCompleteMemo = React.memo(AutoComplete)
+
+export default React.forwardRef((props, ref) => (
+  <AutoCompleteMemo {...props} forwardedRef={ref} />
+))
