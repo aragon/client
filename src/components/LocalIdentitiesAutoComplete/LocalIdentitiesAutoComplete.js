@@ -8,16 +8,25 @@ import { AragonType } from '../../prop-types'
 const withKey = item => ({ key: item.address, ...item })
 const sortAlphAsc = (a, b) => a.name.localeCompare(b.name)
 
-function LocalIdentitiesAutoComplete(
-  { onChange, wide, value, placeholder, required, wrapper },
-  ref
-) {
+function LocalIdentitiesAutoComplete({
+  forwardedRef,
+  onChange,
+  placeholder,
+  required,
+  value,
+  wide,
+  wrapper,
+}) {
+  const ref = forwardedRef
   const [items, setItems] = useState([])
   const [selected, setSelected] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSearch = useCallback(
     async term => {
+      if (!wrapper) {
+        return
+      }
       if (term.length < 3) {
         setItems([])
         return
@@ -60,7 +69,7 @@ function LocalIdentitiesAutoComplete(
         return
       }
       // value coming from up the tree not from typing
-      if (searchTerm === '') {
+      if (searchTerm === '' && wrapper) {
         const exists = await wrapper.searchIdentities(value)
         if (exists && exists.length === 1) {
           const item = exists[0]
@@ -120,11 +129,12 @@ function LocalIdentitiesAutoComplete(
 
 LocalIdentitiesAutoComplete.propTypes = {
   onChange: PropTypes.func.isRequired,
+  forwardedRef: PropTypes.object,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
   value: PropTypes.string,
   wide: PropTypes.bool,
-  wrapper: AragonType.isRequired,
+  wrapper: AragonType,
 }
 
 const Item = ({ address, name }, searchTerm) => {
@@ -180,4 +190,8 @@ const Name = styled.div`
   color: #000;
 `
 
-export default React.memo(React.forwardRef(LocalIdentitiesAutoComplete))
+const LocalIdentitiesAutoCompleteMemo = React.memo(LocalIdentitiesAutoComplete)
+
+export default React.forwardRef((props, ref) => (
+  <LocalIdentitiesAutoCompleteMemo {...props} forwardedRef={ref} />
+))
