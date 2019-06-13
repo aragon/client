@@ -6,6 +6,7 @@ const identityEventTypes = {
   CLEAR: 'CLEAR',
   IMPORT: 'IMPORT',
   MODIFY: 'MODIFY',
+  REMOVE: 'REMOVE',
 }
 
 // An events subject

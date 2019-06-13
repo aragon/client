@@ -60,8 +60,11 @@ const EnhancedLocalIdentities = React.memo(function EnhancedLocalIdentities({
         return
       }
       await wrapper.removeSelectedLocalIdentities(addressesSelected)
-
-      identityEvents$.next({ type: identityEventTypes.CLEAR })
+      setLocalIdentities(await wrapper.getLocalIdentities())
+      identityEvents$.next({
+        type: identityEventTypes.REMOVE,
+        addressesSelected,
+      })
     },
     [wrapper, identityEvents$]
   )
