@@ -16,9 +16,6 @@ import {
   IconGlobe,
 } from '../../assets'
 
-const shortenAddress = address =>
-  address.slice(0, 12) + '...' + address.slice(-10)
-
 const InformationCard = () => {
   const [activePopover, setPopover] = useState('')
   const {
@@ -49,14 +46,9 @@ const InformationCard = () => {
         Aragon manages profiles using 3box.io. To verify your {social}, you must
         visit your 3box profile.
       </Text.Block>
-      <SafeLink
-        style={{ color: theme.accent, fontWeight: 'bold' }}
-        size="small"
-        href="https://3box.io"
-        target="_blank"
-      >
+      <Link size="small" href="https://3box.io">
         Take me to my 3box
-      </SafeLink>
+      </Link>
     </VerifyCard>
   )
 
@@ -104,7 +96,7 @@ const InformationCard = () => {
     <Social>
       <IconLocation width="13px" height="13px" color={theme.textTertiary} />
       {location ? (
-        <Text size="small" color={theme.textTertiary}>
+        <Text size="normal" color={theme.textTertiary}>
           {location}
         </Text>
       ) : (
@@ -141,18 +133,12 @@ const InformationCard = () => {
     <Social>
       <IconGitHub width="13px" height="13px" color={theme.textTertiary} />
       {username ? (
-        <Fragment>
-          <SafeLink
-            style={{ color: theme.accent, textDecoration: 'none' }}
-            href={`https://github.com/${username}`}
-            target="_blank"
-          >
-            {username}
-          </SafeLink>
-          <IconVerified />
-        </Fragment>
+        <div>
+          <Link href={`https://github.com/${username}`}>{username}</Link>
+          <Verified />
+        </div>
       ) : (
-        <Fragment>
+        <div>
           <Button
             compact
             mode="outline"
@@ -162,7 +148,7 @@ const InformationCard = () => {
             Verify my GitHub account
           </Button>
           {activePopover === 'github' && <PopoverCard social="GitHub" />}
-        </Fragment>
+        </div>
       )}
     </Social>
   )
@@ -173,18 +159,12 @@ const InformationCard = () => {
     <Social>
       <IconTwitter width="13px" height="13px" color={theme.textTertiary} />
       {username ? (
-        <Fragment>
-          <SafeLink
-            href={`https://twitter.com/${username}`}
-            style={{ color: theme.accent, textDecoration: 'none' }}
-            target="_blank"
-          >
-            {username}
-          </SafeLink>
-          <IconVerified />
-        </Fragment>
+        <div>
+          <Link href={`https://twitter.com/${username}`}>{username}</Link>
+          <Verified />
+        </div>
       ) : (
-        <Fragment>
+        <div>
           <Button
             compact
             mode="outline"
@@ -195,44 +175,28 @@ const InformationCard = () => {
           </Button>
 
           {activePopover === 'twitter' && <PopoverCard social="Twitter" />}
-        </Fragment>
+        </div>
       )}
     </Social>
   )
 
   RenderTwitter.propTypes = { twitter: PropTypes.object }
 
-  const RenderWebsite = ({ website }) => (
-    <Social>
-      <IconGlobe width="13px" height="13px" color={theme.textPrimary} />
-      {website ? (
-        <SafeLink
-          style={{
-            color: theme.accent,
-          }}
-          href={website}
-          placeholder="website"
-          size="small"
-        >
+  const RenderWebsite = ({ website }) =>
+    website && (
+      <Social>
+        <IconGlobe width="13px" height="13px" color={theme.textPrimary} />
+        <Link href={website} placeholder="website" size="small">
           {website}
-        </SafeLink>
-      ) : (
-        <Text
-          style={{ color: theme.accent, textDecoration: 'none' }}
-          onClick={() => dispatchModal(open('basicInformation'))}
-          target="_blank"
-        >
-          Add website
-        </Text>
-      )}
-    </Social>
-  )
+        </Link>
+      </Social>
+    )
 
   RenderWebsite.propTypes = { website: PropTypes.string }
 
   return (
     <StyledCard>
-      <Information>
+      <div>
         <Details>
           {!(name || description || location) ? (
             <RenderEmpty />
@@ -244,7 +208,7 @@ const InformationCard = () => {
             </Fragment>
           )}
           <RenderWebsite website={website} />
-          <Separator style={{ marginBottom: '14px' }} />
+          <Separator />
           <RenderTwitter twitter={twitter} />
           <RenderGitHub github={github} />
           <Separator />
@@ -254,9 +218,7 @@ const InformationCard = () => {
               height="13px"
               color={theme.textTertiary}
             />
-            <Text size="small" color={theme.textSecondary}>
-              {shortenAddress(ethereumAddress)}
-            </Text>
+            <EthAddr>{ethereumAddress}</EthAddr>
           </Social>
         </Details>
         {!viewMode && (
@@ -268,11 +230,16 @@ const InformationCard = () => {
             />
           </Icons>
         )}
-      </Information>
+      </div>
     </StyledCard>
   )
 }
 
+const StyledCard = styled(Card).attrs({ width: '100%', height: 'auto' })`
+  padding: 16px;
+  padding-top: 52px;
+  position: relative;
+`
 const Center = styled.div`
   display: flex;
   flex-direction: column;
@@ -311,32 +278,42 @@ const CardCloseButton = styled.button`
 const Social = styled.div`
   display: flex;
   align-items: center;
-  > :first-child {
-    width: 26px;
-  }
-  > :nth-child(3) {
+  > :nth-child(2) {
     margin-left: 8px;
+    flex: 1;
   }
 `
-const Information = styled.div`
-  display: flex;
-  > :not(:last-child) {
-    margin-bottom: 3px;
+const Link = styled(SafeLink).attrs({
+  target: '_blank',
+})`
+  color: ${theme.accent};
+  text-decoration: none;
+  &:hover,
+  &:focus {
+    text-decoration: underline;
   }
+`
+const Verified = styled(IconVerified)`
+  margin-left: 8px;
+`
+const EthAddr = styled(Text).attrs({ size: 'small' })`
+  color: ${theme.textTertiary};
+  word-break: break-all;
 `
 const Icons = styled.div`
-  display: inline-flex;
-  width: auto;
-  flex-direction: column;
+  position: absolute;
+  top: 14px;
+  right: 14px;
   visibility: hidden;
   > * {
-    margin: 0 0 8px 8px;
+    background: white;
+    box-sizing: content-box;
+    padding: 4px;
     cursor: pointer;
   }
-  ${Information}:hover & {
+  ${StyledCard}:hover & {
     visibility: visible;
   }
-}
 `
 const Details = styled.div`
   width: 100%;
@@ -344,15 +321,11 @@ const Details = styled.div`
     margin-bottom: 7px;
   }
 `
-const StyledCard = styled(Card).attrs({ width: '100%', height: 'auto' })`
-  padding: 16px;
-  padding-top: 52px;
-`
 const Separator = styled.hr`
   height: 1px;
   border: 0;
   width: 100%;
-  margin: 13px;
+  margin: 13px 0 !important; // override Details > :not(:last-child)
   background: ${theme.contentBorder};
 `
 

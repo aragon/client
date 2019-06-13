@@ -47,7 +47,7 @@ const LeftColumn = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 325px;
+  max-width: 400px;
 
   margin: 13px;
   > * {
@@ -60,8 +60,6 @@ const RightColumn = styled(LeftColumn)`
 `
 const SingleColumn = styled(RightColumn)`
   width: auto;
-  padding: 0 13px;
-  background-color: #ffffff;
   align-content: stretch;
 `
 const DoubleColumn = styled.div`

@@ -44,6 +44,7 @@ const StyledCard = styled(Card).attrs({ width: '100%', height: 'auto' })`
   padding: 16px;
   > :not(:last-child) {
     margin-bottom: 13px;
+    padding-bottom: 13px;
     border-bottom: ${({ addSeparators }) =>
       addSeparators ? '1px solid #EEE' : '0'};
   }
