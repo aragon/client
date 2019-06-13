@@ -5,7 +5,12 @@ import {
   useReducer,
   useState,
   useRef,
+  useContext,
 } from 'react'
+import {
+  IdentityContext,
+  identityEventTypes,
+} from './components/IdentityManager/IdentityManager'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 import { atou } from './string-utils'
@@ -294,4 +299,41 @@ export function useArrowKeysFocus(query, containerRef = useRef()) {
   }, [handleKeyDown])
 
   return { containerRef, handleContainerBlur }
+}
+
+export function useLocalIdentity(entity) {
+  const { resolve, identityEvents$ } = useContext(IdentityContext)
+  const [name, setName] = useState(null)
+
+  const handleResolve = useCallback(async () => {
+    try {
+      const { name = null } = (await resolve(entity)) || {}
+      setName(name)
+    } catch (e) {
+      // address does not resolve to identity
+    }
+  }, [resolve, entity])
+
+  useEffect(() => {
+    handleResolve()
+    const subscription = identityEvents$.subscribe(({ address, type }) => {
+      switch (type) {
+        case identityEventTypes.MODIFY:
+          if (entity.toLowerCase() === address.toLowerCase()) {
+            handleResolve()
+          }
+          return
+        case identityEventTypes.CLEAR:
+          setName(null)
+          return
+        case identityEventTypes.IMPORT:
+          handleResolve()
+      }
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [identityEvents$, handleResolve, entity])
+
+  return { name }
 }
