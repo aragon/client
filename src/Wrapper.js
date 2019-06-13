@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import memoize from 'lodash.memoize'
 import { useViewport } from '@aragon/ui'
 import { AppCenter, Permissions, Settings } from './apps'
+import { Profile } from '@openworklabs/aragon-profile'
 import AppIFrame from './components/App/AppIFrame'
 import App404 from './components/App404/App404'
 import Home from './components/Home/Home'
@@ -26,6 +27,7 @@ import {
 import { getAppPath } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
+import { withProfiles } from './repo-utils'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -43,6 +45,7 @@ class Wrapper extends React.PureComponent {
     locator: PropTypes.object.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
+    onSignatures: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
@@ -372,6 +375,7 @@ class Wrapper extends React.PureComponent {
       connected,
       daoAddress,
       locator,
+      onSignatures,
       permissionsLoading,
       repos,
       walletNetwork,
@@ -438,6 +442,16 @@ class Wrapper extends React.PureComponent {
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
           wrapper={wrapper}
+        />
+      )
+    }
+
+    if (withProfiles && instanceId === 'profile') {
+      return (
+        <Profile
+          account={account}
+          onSignatures={onSignatures}
+          parts={locator.parts}
         />
       )
     }

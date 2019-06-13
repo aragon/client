@@ -272,10 +272,7 @@ class App extends React.Component {
         log('transaction bag', transactionBag)
         this.setState({ transactionBag })
       },
-      onSignatures: signatureBag => {
-        log('signature bag', signatureBag)
-        this.setState({ signatureBag })
-      },
+      onSignatures: this.onSignatures,
       onIdentityIntent: async identityIntent => {
         // set the state for modifying a specific address identity
         let name = null
@@ -351,6 +348,11 @@ class App extends React.Component {
   }
   handleOpenLocalIdentityModal = address => {
     return this.state.wrapper.requestAddressIdentityModification(address)
+  }
+
+  onSignatures = signatureBag => {
+    log('signature bag', signatureBag)
+    this.setState({ signatureBag })
   }
 
   render() {
@@ -441,6 +443,7 @@ class App extends React.Component {
                       locator={locator}
                       onRequestAppsReload={this.handleRequestAppsReload}
                       onRequestEnable={enableWallet}
+                      onSignatures={this.onSignatures}
                       permissionsLoading={permissionsLoading}
                       repos={repos}
                       signatureBag={signatureBag}
