@@ -464,12 +464,13 @@ const LocalIdentities = React.memo(function LocalIdentities({
 
   const handleRemoveSelected = useCallback(() => {
     setConfirmationModalOpened(false)
-    let selectedAddresses = []
-    addressesSelected.forEach((value, address) => {
-      if (value) {
-        selectedAddresses.push(address)
-      }
-    })
+    const selectedAddresses = Array.from(addressesSelected.entries()).reduce(
+      (array, [address, selected]) => [
+        ...array,
+        ...(selected ? [address] : []),
+      ],
+      []
+    )
     onRemoveSelected(selectedAddresses)
   }, [onRemoveSelected, addressesSelected])
   const handleOpenConfirmationModal = useCallback(() => {
