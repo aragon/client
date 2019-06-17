@@ -66,7 +66,7 @@ class IframeWorker extends EventTarget {
   }
 
   terminate() {
-    window.removeListener('message', this.handleIframeMessage)
+    window.removeEventListener('message', this.handleIframeMessage)
     document.removeChild(this.iframe)
     this.iframe = null
   }
