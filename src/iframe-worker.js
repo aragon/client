@@ -1,3 +1,5 @@
+import EventTarget from 'event-target'
+
 class IframeWorker extends EventTarget {
   constructor(scriptUrl, { name }) {
     super()
