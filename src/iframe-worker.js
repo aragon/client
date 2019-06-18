@@ -1,4 +1,4 @@
-import EventTarget from 'event-target'
+import EventTarget from '@ungap/event-target'
 
 class IframeWorker extends EventTarget {
   constructor(scriptUrl, { name }) {
@@ -64,12 +64,16 @@ class IframeWorker extends EventTarget {
   }
 
   postMessage(msg) {
-    this.iframe.contentWindow.postMessage(msg, '*')
+    if (this.iframe) {
+      this.iframe.contentWindow.postMessage(msg, '*')
+    }
   }
 
   terminate() {
     window.removeEventListener('message', this.handleIframeMessage)
-    document.removeChild(this.iframe)
+    if (this.iframe) {
+      document.removeChild(this.iframe)
+    }
     this.iframe = null
   }
 
