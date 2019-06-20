@@ -55,12 +55,14 @@ class AppIFrame extends React.Component {
     onLoad: PropTypes.func,
     onMessage: PropTypes.func,
     onNavigate: PropTypes.func,
+    appRouteQuery: PropTypes.string,
   }
   static defaultProps = {
     iframeRef: noop,
     onLoad: noop,
     onMessage: noop,
     onNavigate: noop,
+    appRouteQuery: '',
   }
   state = {
     hideProgressBar: true,
@@ -75,18 +77,23 @@ class AppIFrame extends React.Component {
       this.reloadIframe()
     })
     window.addEventListener('message', this.handleReceiveMessage, false)
-    this.navigateIFrame(this.props.app.src)
+    this.navigateIFrame(this.props.app.src + '/#' + this.props.appRouteQuery)
   }
   componentWillReceiveProps(nextProps) {
-    const { app: nextApp } = nextProps
+    const { app: nextApp, appRouteQuery } = nextProps
     if (
+      appRouteQuery !== this.props.appRouteQuery ||
       nextApp.src !== this.props.app.src ||
       // Also navigate when it's the same app, but a different instance
       nextApp.proxyAddress !== this.props.app.proxyAddress
     ) {
-      this.resetProgress(() => {
-        this.navigateIFrame(nextApp.src)
-      })
+      if (appRouteQuery !== this.props.appRouteQuery) {
+        this.navigateIFrameSilent(nextApp.src + '/#' + appRouteQuery)
+      } else {
+        this.resetProgress(() => {
+          this.navigateIFrame(nextApp.src + '/#' + appRouteQuery)
+        })
+      }
     }
   }
   componentWillUnmount() {
@@ -156,6 +163,11 @@ class AppIFrame extends React.Component {
   resetProgress = (cb = noop) => {
     this.clearProgressTimeout()
     this.setState({ hideProgressBar: true, loadProgress: 0 }, cb)
+  }
+  navigateIFrameSilent = src => {
+    if (!src) return
+    this.src = src
+    this.iframe.src = src
   }
   sendMessage = data => {
     // Must use '*' for origin as we've sandboxed the iframe's origin

@@ -51,6 +51,7 @@ class Wrapper extends React.PureComponent {
     walletWeb3: PropTypes.object,
     web3: PropTypes.object,
     wrapper: AragonType,
+    appRouteQuery: PropTypes.string,
   }
 
   static defaultProps = {
@@ -61,6 +62,7 @@ class Wrapper extends React.PureComponent {
     walletNetwork: '',
     walletProviderId: '',
     walletWeb3: null,
+    appRouteQuery: '',
   }
 
   state = {
@@ -134,6 +136,8 @@ class Wrapper extends React.PureComponent {
     this.sendDisplayMenuButtonStatus()
   }
   handleAppMessage = ({ data: { name, value } }) => {
+    const { historyPush, locator } = this.props
+
     if (
       // “menuPanel: Boolean” is deprecated but still supported for a while if
       // value is `true`.
@@ -142,6 +146,15 @@ class Wrapper extends React.PureComponent {
       name === 'requestMenu'
     ) {
       this.setState({ menuPanelOpened: value === true })
+    } else if (name === 'hashChange') {
+      // Since aragon uses hashes for routes, we need to avoid other hashes in the url
+      // TODO: Santize value better
+      const sanitizedValue =
+        value.indexOf('#') !== -1 ? value.replace('#', '') : value
+      historyPush(
+        getAppPath({ dao: locator.dao, instanceId: locator.instanceId }) +
+          sanitizedValue
+      )
     }
   }
   handleMenuPanelOpen = () => {
@@ -313,6 +326,7 @@ class Wrapper extends React.PureComponent {
       walletNetwork,
       walletWeb3,
       wrapper,
+      appRouteQuery,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -387,6 +401,7 @@ class Wrapper extends React.PureComponent {
         ref={this.handleAppIFrameRef}
         onLoad={this.handleAppIFrameLoad}
         onMessage={this.handleAppMessage}
+        appRouteQuery={appRouteQuery}
       />
     ) : (
       <App404 onNavigateBack={this.props.historyBack} />

@@ -76,6 +76,7 @@ class App extends React.Component {
     walletWeb3: getWeb3(web3Providers.wallet),
     web3: getWeb3(web3Providers.default),
     wrapper: null,
+    appRouteQuery: '',
   }
 
   history = createHistory()
@@ -128,8 +129,18 @@ class App extends React.Component {
     }
   }
 
+  composeAppRouteQuery = parts => {
+    let result = ''
+    for (let part of parts) {
+      result += '/' + part
+    }
+    // Remove first slash so we do not duplicate it over and over
+    return result.substr(1)
+  }
+
   updateLocator = locator => {
     const { locator: prevLocator } = this.state
+    this.setState({ appRouteQuery: this.composeAppRouteQuery(locator.parts) })
 
     if (locator.mode === APP_MODE_START || locator.mode === APP_MODE_SETUP) {
       this.updateDaoBuilder()
@@ -376,6 +387,7 @@ class App extends React.Component {
       walletWeb3,
       web3,
       wrapper,
+      appRouteQuery,
     } = this.state
 
     const { mode, dao } = locator
@@ -452,6 +464,7 @@ class App extends React.Component {
                       walletWeb3={walletWeb3}
                       web3={web3}
                       wrapper={wrapper}
+                      appRouteQuery={appRouteQuery}
                     />
                   </div>
                 </PermissionsProvider>
