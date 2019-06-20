@@ -140,21 +140,21 @@ function OrgView({
   )
 }
 
-OrgView.propTypes = {
-  account: EthereumAddressType,
-  activeInstanceId: PropTypes.string,
-  appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
-  apps: PropTypes.arrayOf(AppType).isRequired,
-  appsStatus: AppsStatusType.isRequired,
-  children: PropTypes.node,
-  daoAddress: DaoAddressType.isRequired,
-  daoStatus: DaoStatusType.isRequired,
-  onMenuPanelClose: PropTypes.func.isRequired,
-  onMenuPanelOpen: PropTypes.func.isRequired,
-  onOpenApp: PropTypes.func.isRequired,
-  onOpenPreferences: PropTypes.func.isRequired,
-  onRequestAppsReload: PropTypes.func.isRequired,
-  onRequestEnable: PropTypes.func.isRequired,
-}
+// OrgView.propTypes = {
+//   account: EthereumAddressType,
+//   activeInstanceId: PropTypes.string,
+//   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
+//   apps: PropTypes.arrayOf(AppType).isRequired,
+//   appsStatus: AppsStatusType.isRequired,
+//   children: PropTypes.node,
+//   daoAddress: DaoAddressType.isRequired,
+//   daoStatus: DaoStatusType.isRequired,
+//   // onMenuPanelClose: PropTypes.func.isRequired,
+//   // onMenuPanelOpen: PropTypes.func.isRequired,
+//   onOpenApp: PropTypes.func.isRequired,
+//   onOpenPreferences: PropTypes.func.isRequired,
+//   onRequestAppsReload: PropTypes.func.isRequired,
+//   onRequestEnable: PropTypes.func.isRequired,
+// }
 
 export default OrgView
