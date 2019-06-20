@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Card, unselectable, colors } from '@aragon/ui'
+import { Card, unselectable } from '@aragon/ui'
 import { noop } from '../../utils'
 
 function HomeCard({ onActivate, id, title, icon }) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Card, useTheme } from '@aragon/ui'
+import { Card } from '@aragon/ui'
 
 const ZoomCard = React.memo(function ZoomCard({
   addRef,
@@ -9,7 +9,6 @@ const ZoomCard = React.memo(function ZoomCard({
   ...props
 }) {
   const element = useRef(null)
-  const theme = useTheme()
 
   useEffect(() => {
     addRef(id, element.current)

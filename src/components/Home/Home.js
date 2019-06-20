@@ -5,8 +5,6 @@ import { Text, useTheme } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { AppType } from '../../prop-types'
 
-import logo from './assets/logo-background.svg'
-
 import imgAssignTokens from './assets/assign-tokens.svg'
 import imgFinance from './assets/finance.svg'
 import imgPayment from './assets/payment.svg'

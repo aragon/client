@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import {
   ButtonBase,
-  ButtonIcon,
+  // ButtonIcon,
   useTheme,
   useThemeMode,
   useViewport,
 } from '@aragon/ui'
 import { GU } from '../../utils'
 import { DAO_STATUS_LOADING } from '../../symbols'
-import {
-  AppType,
-  AppsStatusType,
-  DaoAddressType,
-  DaoStatusType,
-  EthereumAddressType,
-  AppInstanceGroupType,
-} from '../../prop-types'
+// import {
+//   AppType,
+//   AppsStatusType,
+//   DaoAddressType,
+//   DaoStatusType,
+//   EthereumAddressType,
+//   AppInstanceGroupType,
+// } from '../../prop-types'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import CombinedPanel from '../MenuPanel/CombinedPanel'
 

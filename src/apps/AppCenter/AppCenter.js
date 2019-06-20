@@ -8,7 +8,6 @@ import {
   TabBar,
   Viewport,
   Button,
-  useTheme,
 } from '@aragon/ui'
 import MenuButton from '../../components/MenuPanel/MenuButton'
 import InstalledApps from './InstalledApps/InstalledApps'
@@ -135,7 +134,7 @@ class AppCenter extends React.Component {
   }
 
   render() {
-    const { reposLoading, onUpgradeAll, canUpgradeOrg, theme } = this.props
+    const { reposLoading, onUpgradeAll, canUpgradeOrg } = this.props
     const { upgradePanelOpened } = this.state
     const { activeTab, openedRepoName } = this.getLocation()
     const repos = this.getRepos()
@@ -231,6 +230,5 @@ const UpgradeButton = styled(Button)`
 `
 
 export default function(props) {
-  const theme = useTheme()
-  return <AppCenter {...props} theme={theme} />
+  return <AppCenter {...props} />
 }

@@ -2,14 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import color from 'onecolor'
-import {
-  ButtonBase,
-  springs,
-  unselectable,
-  useThemeMode,
-  useTheme,
-} from '@aragon/ui'
+import { ButtonBase, springs, unselectable, useTheme } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { AppInstanceGroupType, AppsStatusType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
