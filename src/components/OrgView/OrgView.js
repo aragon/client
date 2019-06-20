@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonIcon, useTheme, useViewport } from '@aragon/ui'
+import {
+  ButtonBase,
+  ButtonIcon,
+  useTheme,
+  useThemeMode,
+  useViewport,
+} from '@aragon/ui'
 import { GU } from '../../utils'
 import { DAO_STATUS_LOADING } from '../../symbols'
 import {
@@ -13,7 +19,15 @@ import {
 } from '../../prop-types'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import CombinedPanel from '../MenuPanel/CombinedPanel'
-import { useAppTheme } from '../../lib/app-theme'
+
+function ThemeModeButton() {
+  const { mode, toggle } = useThemeMode()
+  return (
+    <ButtonBase onClick={toggle} css="padding: 10px">
+      {mode === 'dark' ? '🌝' : '🌚'}
+    </ButtonBase>
+  )
+}
 
 function OrgView({
   daoStatus,
@@ -32,7 +46,6 @@ function OrgView({
   onRequestEnable,
 }) {
   const theme = useTheme()
-  const { themeName, toggleTheme } = useAppTheme()
   const { below } = useViewport()
 
   const autoClosingPanel = below('medium')
@@ -78,16 +91,7 @@ function OrgView({
             display: flex;
           `}
         >
-          {null && (
-            <ButtonIcon
-              css={`
-                height: 100%;
-              `}
-              onClick={toggleTheme}
-            >
-              {themeName === 'light' ? '🌚' : '🌝'}
-            </ButtonIcon>
-          )}
+          <ThemeModeButton />
         </div>
       </div>
       <div

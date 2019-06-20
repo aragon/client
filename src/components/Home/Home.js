@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Text, theme } from '@aragon/ui'
+import { Text, useTheme } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { AppType } from '../../prop-types'
 
@@ -67,13 +67,25 @@ class Home extends React.Component {
     })
   }
   render() {
-    const { apps, dao } = this.props
+    const { theme, apps, dao } = this.props
 
     const appActions = actions.filter(({ appName }) =>
       apps.find(({ name }) => name === appName)
     )
     return (
-      <Main>
+      <div
+        css={`
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          width: 100%;
+          height: 100%;
+          padding-top: 40px;
+          padding-bottom: 40px;
+          background-color: ${theme.background};
+        `}
+      >
         <h1 css="margin-bottom: 30px">
           <Text weight="bold" size="xxlarge">
             Welcome to Aragon!
@@ -87,7 +99,7 @@ class Home extends React.Component {
           </div>
         </h1>
         <p>
-          <Text color={theme.textSecondary}>What do you want to do?</Text>
+          <Text color={theme.content}>What do you want to do?</Text>
         </p>
         <Cards>
           {appActions.map(({ id, label, img }) => (
@@ -101,25 +113,10 @@ class Home extends React.Component {
             </CardWrap>
           ))}
         </Cards>
-      </Main>
+      </div>
     )
   }
 }
-
-const Main = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: ${theme.mainBackground};
-  background-image: url(${logo});
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-`
 
 const Cards = styled.div`
   display: flex;
@@ -138,4 +135,7 @@ const CardWrap = styled.div`
   margin-left: ${CARD_MARGIN}px;
 `
 
-export default Home
+export default function(props) {
+  const theme = useTheme()
+  return <Home {...props} theme={theme} />
+}

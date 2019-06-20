@@ -3,7 +3,13 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import color from 'onecolor'
-import { ButtonBase, springs, theme, unselectable } from '@aragon/ui'
+import {
+  ButtonBase,
+  springs,
+  unselectable,
+  useThemeMode,
+  useTheme,
+} from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { AppInstanceGroupType, AppsStatusType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
@@ -38,6 +44,7 @@ const interpolateToggleElevation = (value, fn = v => v) =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
+    theme: PropTypes.object,
     activeInstanceId: PropTypes.string,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
@@ -73,7 +80,7 @@ class MenuPanel extends React.PureComponent {
   }
 
   render() {
-    const { appInstanceGroups } = this.props
+    const { appInstanceGroups, theme } = this.props
     const { systemAppsOpened, systemAppsToggled } = this.state
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
@@ -81,9 +88,30 @@ class MenuPanel extends React.PureComponent {
     const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_SETTINGS]
 
     return (
-      <Main>
-        <In>
-          <Content>
+      <Main
+        css={`
+          background: ${theme.surface};
+        `}
+      >
+        <div
+          css={`
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-shrink: 1;
+            border-right: 1px solid ${theme.border};
+            box-shadow: 1px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
+          `}
+        >
+          <Content
+            css={`
+              h1 {
+                color: ${theme.surfaceContentSecondary};
+              }
+            `}
+          >
             <div className="in">
               <h1>Apps</h1>
 
@@ -104,7 +132,10 @@ class MenuPanel extends React.PureComponent {
               >
                 {({ openProgress }) => (
                   <div>
-                    <SystemAppsToggle onClick={this.handleToggleSystemApps}>
+                    <SystemAppsToggle
+                      onClick={this.handleToggleSystemApps}
+                      activeBackground={theme.surfacePressed}
+                    >
                       <SystemAppsToggleShadow
                         style={{
                           transform: interpolateToggleElevation(
@@ -154,7 +185,7 @@ class MenuPanel extends React.PureComponent {
               </Spring>
             </div>
           </Content>
-        </In>
+        </div>
       </Main>
     )
   }
@@ -226,9 +257,7 @@ const SystemAppsToggle = styled(ButtonBase)`
   text-align: left;
   outline: none;
   &:active {
-    background: ${color(theme.secondaryBackground)
-      .alpha(0.3)
-      .cssa()};
+    background: ${p => p.activeBackground};
   }
 `
 
@@ -277,18 +306,6 @@ const Main = styled.div`
   ${unselectable};
 `
 
-const In = styled.div`
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  flex-shrink: 1;
-  background: #fff;
-  border-right: 1px solid ${theme.contentBorder};
-  box-shadow: 1px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
-`
-
 const Content = styled.nav`
   overflow-y: auto;
   flex: 1 1 0;
@@ -297,7 +314,6 @@ const Content = styled.nav`
   }
   h1 {
     margin: 10px 30px;
-    color: ${theme.textSecondary};
     text-transform: lowercase;
     font-variant: small-caps;
     font-weight: 600;
@@ -310,4 +326,7 @@ const Content = styled.nav`
     align-items: center;
   }
 `
-export default MenuPanel
+export default function(props) {
+  const theme = useTheme()
+  return <MenuPanel {...props} theme={theme} />
+}

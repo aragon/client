@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import App from './App'
-import { AppTheme } from './lib/app-theme'
 
 const PACKAGE_VERSION = process.env.REACT_APP_PACKAGE_VERSION || ''
 const PACKAGE_VERSION_KEY = 'PACKAGE_VERSION_KEY'
@@ -38,10 +37,8 @@ if (
 
 ReactDOM.render(
   <GlobalErrorHandler>
-    <Main>
-      <AppTheme>
-        <App />
-      </AppTheme>
+    <Main layout={false}>
+      <App />
     </Main>
   </GlobalErrorHandler>,
   document.getElementById('root')

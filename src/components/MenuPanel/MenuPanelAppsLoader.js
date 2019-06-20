@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { Button, IconError, LoadingRing, theme } from '@aragon/ui'
+import { Button, IconError, LoadingRing, useTheme } from '@aragon/ui'
 import color from 'onecolor'
 import { AppsStatusType } from '../../prop-types'
 import springs from '../../springs'
@@ -109,12 +109,6 @@ class MenuPanelAppsLoader extends React.Component {
               <StatusBackground
                 style={{
                   opacity: afterLoadingMessageProgress,
-                  background:
-                    appsStatus === APPS_STATUS_ERROR
-                      ? color(theme.negative)
-                          .lightness(0.98)
-                          .css()
-                      : 'transparent',
                 }}
               />
               <StatusContent
@@ -200,7 +194,6 @@ const Main = styled(animated.div)`
 const Apps = styled(animated.div)`
   position: relative;
   z-index: 2;
-  background: white;
 `
 
 const Status = styled.div`
@@ -213,7 +206,6 @@ const Status = styled.div`
   width: 100%;
   padding-left: 30px;
   overflow: hidden;
-  background: white;
 `
 
 const StatusBackground = styled(animated.div)`
