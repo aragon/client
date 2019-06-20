@@ -85,6 +85,18 @@ class Wrapper extends React.PureComponent {
   componentDidUpdate(prevProps) {
     this.updateAutoClosingPanel(prevProps)
     this.updateIdentityEvents(prevProps)
+    this.updateInstancePath(prevProps)
+  }
+
+  updateInstancePath(prevProps) {
+    const { locator } = this.props
+    if (locator.instancePath !== prevProps.locator.instancePath) {
+      this.appIFrame.sendMessage({
+        from: 'wrapper',
+        name: 'path',
+        value: locator.instancePath,
+      })
+    }
   }
 
   updateAutoClosingPanel(prevProps) {
@@ -129,13 +141,13 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  openApp = (instanceId, params) => {
+  openApp = (instanceId, instancePath) => {
     if (this.props.autoClosingPanel) {
       this.handleMenuPanelClose()
     }
 
     const { historyPush, locator } = this.props
-    historyPush(getAppPath({ dao: locator.dao, instanceId, params }))
+    historyPush(getAppPath({ dao: locator.dao, instanceId, instancePath }))
   }
 
   handleAppIFrameRef = appIFrame => {
@@ -180,7 +192,6 @@ class Wrapper extends React.PureComponent {
   handleAppIFrameLoadingError = event => {
     this.setState({ appLoading: false })
   }
-
   handleAppMessage = ({ data: { name, value } }) => {
     if (
       // “menuPanel: Boolean” is deprecated but still supported for a while if
@@ -190,6 +201,23 @@ class Wrapper extends React.PureComponent {
       name === 'requestMenu'
     ) {
       this.setState({ menuPanelOpened: value === true })
+    }
+
+    if (name === 'requestPath') {
+      this.openApp(value[1] || this.props.locator.instanceId, value[0])
+    }
+
+    if (name === 'ready') {
+      this.appIFrame.sendMessage({
+        from: 'wrapper',
+        name: 'apps',
+        value: this.props.apps,
+      })
+      this.appIFrame.sendMessage({
+        from: 'wrapper',
+        name: 'path',
+        value: this.props.locator.instancePath,
+      })
     }
   }
   handleMenuPanelOpen = () => {
@@ -209,7 +237,7 @@ class Wrapper extends React.PureComponent {
   }
   // params need to be a string
   handleParamsRequest = params => {
-    this.openApp(this.props.locator.instanceId, params)
+    this.openApp(this.props.locator.instanceId)
   }
 
   getAppInstancesGroups = memoize(apps =>
@@ -335,7 +363,11 @@ class Wrapper extends React.PureComponent {
               daoLoading={daoStatus === DAO_STATUS_LOADING}
               instanceId={locator.instanceId}
             >
-              {this.renderApp(locator.instanceId, locator.params)}
+              {this.renderApp(
+                locator.instanceId,
+                locator.params,
+                locator.instancePath
+              )}
             </AppLoader>
           </AppScreen>
         </CombinedPanel>
@@ -364,7 +396,7 @@ class Wrapper extends React.PureComponent {
       </Main>
     )
   }
-  renderApp(instanceId, params) {
+  renderApp(instanceId, params, instancePath) {
     const {
       account,
       apps,
@@ -453,6 +485,7 @@ class Wrapper extends React.PureComponent {
       <AppIFrame
         ref={this.handleAppIFrameRef}
         app={app}
+        instancePath={instancePath}
         onLoadingCancel={this.handleAppIFrameLoadingCancel}
         onLoadingError={this.handleAppIFrameLoadingError}
         onLoadingStart={this.handleAppIFrameLoadingStart}

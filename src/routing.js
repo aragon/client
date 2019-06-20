@@ -3,7 +3,7 @@ import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
 
 import { isAddress, isValidEnsName } from './web3-utils'
 
-const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
+export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 
 /*
  * Parse a path and a search query and return a “locator” object.
@@ -35,19 +35,20 @@ const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
  *   - org: when the path starts with a DAO address.
  *   - invalid: the DAO given is not valid
  */
-export const parsePath = (history, pathname, search = '') => {
+export const parsePath = (pathname, search = '') => {
   const path = pathname + search
   const [, ...parts] = pathname.split('/')
+  const base = { path, pathname, search }
 
   // Start
   if (!parts[0]) {
-    return { path, mode: APP_MODE_START }
+    return { ...base, mode: APP_MODE_START }
   }
 
   // Setup
   if (parts[0] === 'setup') {
     const [, step = null, ...setupParts] = parts
-    return { path, mode: APP_MODE_SETUP, step, parts: setupParts }
+    return { ...base, mode: APP_MODE_SETUP, step, parts: setupParts }
   }
 
   let [dao] = parts
@@ -57,15 +58,6 @@ export const parsePath = (history, pathname, search = '') => {
   // Assume .aragonid.eth if not given a valid address or a valid ENS domain
   if (!validAddress && !validDomain) {
     dao += `.${ARAGONID_ENS_DOMAIN}`
-  } else if (validDomain && dao.endsWith(ARAGONID_ENS_DOMAIN)) {
-    // Replace URL with non-aragonid.eth version
-    history.replace({
-      pathname: pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
-      search: search,
-      state: {
-        alreadyParsed: true,
-      },
-    })
   }
 
   // Organization
@@ -79,25 +71,52 @@ export const parsePath = (history, pathname, search = '') => {
     }
   }
 
-  const [, instanceId, ...appParts] = parts
+  const [, instanceId, ...instancePathParts] = parts
+
+  // The local path of an app (internal or external)
+  const instancePath = `/${
+    instancePathParts ? instancePathParts.join('/') : ''
+  }`
 
   const completeLocator = {
-    path,
+    ...base,
     mode: APP_MODE_ORG,
     dao,
     instanceId: instanceId || 'home',
     params,
-    parts: appParts,
+    instancePath,
   }
 
   return completeLocator
 }
 
+function encodePath(path) {
+  return path
+    .split('/')
+    .map(v => encodeURIComponent(v))
+    .join('/')
+}
+
 // Return a path string for an app instance
-export const getAppPath = ({ dao, instanceId = 'home', params } = {}) => {
-  const paramsPart = params ? `?p=${encodeURIComponent(params)}` : ``
-  if (staticApps.has(instanceId)) {
-    return `/${dao}${staticApps.get(instanceId).route}${paramsPart}`
+export const getAppPath = ({
+  dao,
+  instanceId = 'home',
+  instancePath = '/',
+} = {}) => {
+  // Always start with /
+  if (!instancePath.startsWith('/')) {
+    instancePath = `/${instancePath}`
   }
-  return `/${dao}/${instanceId}${paramsPart}`
+
+  if (dao.endsWith(ARAGONID_ENS_DOMAIN)) {
+    dao = dao.replace(/\.aragonid\.eth$/, '')
+  }
+
+  if (staticApps.has(instanceId)) {
+    return `/${dao}${staticApps.get(instanceId).route}${encodePath(
+      instancePath
+    )}`
+  }
+
+  return `/${dao}/${instanceId}${encodePath(instancePath)}`
 }

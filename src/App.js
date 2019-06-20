@@ -1,7 +1,7 @@
 import React from 'react'
 import { createHashHistory as createHistory } from 'history'
 import { contractAddresses, web3Providers } from './environment'
-import { parsePath } from './routing'
+import { ARAGONID_ENS_DOMAIN, parsePath } from './routing'
 import initWrapper, {
   initDaoBuilder,
   pollMainAccount,
@@ -111,7 +111,7 @@ class App extends React.Component {
   // Handle URL changes
   handleHistoryChange = ({ pathname, search, state = {} }) => {
     if (!state.alreadyParsed) {
-      this.updateLocator(parsePath(this.history, pathname, search))
+      this.updateLocator(parsePath(pathname, search))
     }
   }
 
@@ -147,6 +147,15 @@ class App extends React.Component {
     // need to cancel the subscribtions.
     if (!locator.dao && prevLocator && prevLocator.dao) {
       this.updateDao(null)
+    }
+
+    // Replace URL with non-aragonid.eth version
+    if (locator.dao && locator.dao.endsWith(ARAGONID_ENS_DOMAIN)) {
+      this.history.replace({
+        pathname: locator.pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
+        search: locator.search,
+        state: { alreadyParsed: true },
+      })
     }
 
     this.setState({ locator, prevLocator })
