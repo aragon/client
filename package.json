@@ -26,6 +26,7 @@
     "@aragon/wrapper": "^5.0.0-rc.11",
     "@babel/polyfill": "^7.0.0",
     "@openworklabs/aragon-profile": "latest",
+    "@ungap/event-target": "^0.1.0",
     "bn.js": "4.11.6",
     "date-fns": "2.0.0-alpha.22",
     "eth-provider": "^0.2.0",
