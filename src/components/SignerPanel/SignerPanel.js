@@ -115,6 +115,7 @@ class SignerPanel extends React.PureComponent {
 
     return {
       intent: (transaction && this.transactionIntent(bag)) || {},
+      external: transaction.external,
       directPath: decoratedPaths.length === 1,
       actionPaths: decoratedPaths.length ? [decoratedPaths] : [],
       pretransaction: (transaction && transaction.pretransaction) || null,
@@ -297,6 +298,7 @@ class SignerPanel extends React.PureComponent {
       actionPaths,
       pretransaction,
       status,
+      external,
     } = this.state
 
     const isTransaction = isTxSignerStatus(status)
@@ -344,6 +346,7 @@ class SignerPanel extends React.PureComponent {
                             <ConfirmTransaction
                               dao={dao}
                               direct={directPath}
+                              external={external}
                               intent={intent}
                               onClose={this.handleSignerClose}
                               onSign={this.handleSign}

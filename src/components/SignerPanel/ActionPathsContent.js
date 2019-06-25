@@ -12,6 +12,7 @@ const RADIO_ITEM_TITLE_LENGTH = 30
 class ActionPathsContent extends React.Component {
   static propTypes = {
     direct: PropTypes.bool.isRequired,
+    external: PropTypes.bool,
     intent: PropTypes.object.isRequired,
     dao: PropTypes.string.isRequired,
     onSign: PropTypes.func.isRequired,
@@ -175,6 +176,7 @@ class ActionPathsContent extends React.Component {
     const {
       intent,
       direct,
+      external,
       paths,
       pretransaction,
       signingEnabled,
@@ -220,6 +222,14 @@ class ActionPathsContent extends React.Component {
               {providerString('your Ethereum provider', walletProviderId)},
               please confirm them one after another.
             </Info.Action>
+          </div>
+        )}
+        {external && (
+          <div css="margin-top: 20px">
+            <Info.Alert title="Warning">
+              This is an attempt to execute a transaction on an external
+              contract. Please take necessary security precautions.
+            </Info.Alert>
           </div>
         )}
         <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>
