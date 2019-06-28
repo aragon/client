@@ -95,7 +95,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
   const { above } = useViewport()
   const expandedMode = above('medium')
   const [mode, setMode] = useState(CLOSED)
-  const [iframe, setIframe] = useState(null)
+  const [beaconIframe, setBeaconIframe] = useState(null)
 
   // open and close atomic actions
   const handleClose = useCallback(() => {
@@ -143,14 +143,15 @@ const HelpOptIn = React.memo(function HelpOptIn({
     }
   }, [optedIn, handleClickOutside])
   // takes care of closing beacon modal when it loses focus
-  const handleIframeBlur = useCallback(() => {
+  const handleBeaconIframeBlur = useCallback(() => {
     if (mode === OPENED || mode === OPENING) {
       setTimeout(() => handleClose(), 100)
     }
   }, [mode, handleClose])
 
-  const { ref } = useClickOutside(handleClickOutside)
-  const { handleBlur } = useOnBlur(handleOptInBlur, ref)
+  const { ref: clickContainerRef } = useClickOutside(handleClickOutside)
+  const { handleBlur } = useOnBlur(handleOptInBlur, clickContainerRef)
+
   useEffect(() => {
     if (beaconReady && window.Beacon) {
       window.Beacon('on', 'open', () => setMode(OPENED))
@@ -158,17 +159,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
     }
   }, [beaconReady])
   useEffect(() => {
-    if (iframe) {
-      iframe.contentWindow.addEventListener('blur', handleIframeBlur)
-    }
-    return () => {
-      if (iframe) {
-        iframe.contentWindow.removeEventListener('blur', handleIframeBlur)
-      }
-    }
-  }, [iframe, handleIframeBlur])
-  useEffect(() => {
-    if (beaconReady && mode === OPENED && !iframe) {
+    if (beaconReady && mode === OPENED && !beaconIframe) {
       // This iframe is mounted by the HelpScout Beacon API, and is expected to
       // stay mounted until Beacon('destroy') is called.
       // At the moment, we never destroy the Beacon, so we can assume it's
@@ -180,12 +171,28 @@ const HelpOptIn = React.memo(function HelpOptIn({
       // is loaded. However, we do know once the Beacon's been opened
       // (mode === OPENED) that the iframe is available.
       const iframe = document.querySelector('#beacon-container iframe')
-      setIframe(iframe)
+      setBeaconIframe(iframe)
     }
-  }, [beaconReady, mode, iframe])
+  }, [beaconReady, mode, beaconIframe])
+  useEffect(() => {
+    if (beaconIframe) {
+      beaconIframe.contentWindow.addEventListener(
+        'blur',
+        handleBeaconIframeBlur
+      )
+    }
+    return () => {
+      if (beaconIframe) {
+        beaconIframe.contentWindow.removeEventListener(
+          'blur',
+          handleBeaconIframeBlur
+        )
+      }
+    }
+  }, [beaconIframe, handleBeaconIframeBlur])
 
   return (
-    <div ref={ref} onBlur={handleBlur}>
+    <div ref={clickContainerRef} onBlur={handleBlur}>
       {(!optedIn || !beaconReady) && (
         <Transition
           native
