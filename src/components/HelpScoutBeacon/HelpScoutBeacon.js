@@ -113,11 +113,17 @@ const HelpOptIn = React.memo(function HelpOptIn({
   // toggle between states, based on whether beacon is ready or not
   const handleToggle = useCallback(() => {
     if (beaconReady) {
-      mode === CLOSED || mode === CLOSING ? handleOpen() : handleClose()
-      return
-    }
-    if (mode !== CLOSING && mode !== OPENING) {
-      mode === CLOSED ? handleOpen() : handleClose()
+      if (mode === CLOSED || mode === CLOSING) {
+        handleOpen()
+      } else {
+        handleClose()
+      }
+    } else if (mode !== CLOSING && mode !== OPENING) {
+      if (mode === CLOSED) {
+        handleOpen()
+      } else {
+        handleClose()
+      }
     }
   }, [beaconReady, mode, handleClose, handleOpen])
   // used to avoid weird intermediate states by clicking rapidly the toggle button
