@@ -22,8 +22,8 @@ import { GU } from '../../utils'
 import { AppType } from '../../prop-types'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
-const CLOSED = Symbol('closed, user can open opt-in dialogue')
-const OPENED = Symbol('opened, user can opt-in or close')
+const CLOSED = Symbol('closed, user can open opt-in or beacon')
+const OPENED = Symbol('opened, user can close opt-in or beacon')
 const OPENING = Symbol('opening')
 const CLOSING = Symbol('closing')
 const ROUND_BUTTON_HEIGHT = 40
@@ -110,7 +110,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
       window.Beacon('open')
     }
   }, [beaconReady])
-  // toggle between states, when optedId and not
+  // toggle between states, based on whether beacon is ready or not
   const handleToggle = useCallback(() => {
     if (beaconReady) {
       mode === CLOSED || mode === CLOSING ? handleOpen() : handleClose()
@@ -130,13 +130,13 @@ const HelpOptIn = React.memo(function HelpOptIn({
       handleToggle()
     }
   }, [mode, handleToggle, expandedMode])
-  // takes care of closing modal when loosing focus of the optin modal
+  // takes care of closing modal when losing focus of the opt-in modal
   const handleOptInBlur = useCallback(() => {
     if (!optedIn) {
       handleClickOutside()
     }
   }, [optedIn, handleClickOutside])
-  // takes care of closing beacon modal when it looses focus
+  // takes care of closing beacon modal when it loses focus
   const handleIframeBlur = useCallback(() => {
     if (mode === OPENED || mode === OPENING) {
       setTimeout(() => handleClose(), 100)
@@ -163,6 +163,16 @@ const HelpOptIn = React.memo(function HelpOptIn({
   }, [iframe, handleIframeBlur])
   useEffect(() => {
     if (beaconReady && mode === OPENED && !iframe) {
+      // This iframe is mounted by the HelpScout Beacon API, and is expected to
+      // stay mounted until Beacon('destroy') is called.
+      // At the moment, we never destroy the Beacon, so we can assume it's
+      // always mounted once the beacon is ready.
+      // See https://developer.helpscout.com/beacon-2/web/javascript-api/#beacondestroy
+      //
+      // Note that the HelpScout API seems to do the mounting asynchronously, as
+      // the iframe does not seem to be immediately available once window.Beacon
+      // is loaded. However, we do know once the Beacon's been opened
+      // (mode === OPENED) that the iframe is available.
       const iframe = document.querySelector('#beacon-container iframe')
       setIframe(iframe)
     }
