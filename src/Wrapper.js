@@ -153,6 +153,7 @@ class Wrapper extends React.PureComponent {
         value.indexOf('#') !== -1 ? value.replace('#', '') : value
       historyPush(
         getAppPath({ dao: locator.dao, instanceId: locator.instanceId }) +
+          '/' +
           sanitizedValue
       )
     }
