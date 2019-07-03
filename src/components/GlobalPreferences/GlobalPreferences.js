@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Bar, ButtonIcon, Layout, Header, TabBar } from '@aragon/ui'
+import { Bar, ButtonIcon, IconClose, Layout, Header, TabBar } from '@aragon/ui'
 import Network from './Network/Network'
-import Notifications from './Notifications'
+import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 
@@ -50,9 +50,9 @@ function useGlobalPreferences() {
 
   // effect for location url?
   //useEffect(() => {
-    //setCurrentSection(
-      //SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
-    //)
+  //setCurrentSection(
+  //SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
+  //)
   //}, [path])
 
   return { setCurrentSection, currentSection }
@@ -85,7 +85,9 @@ function View({ dao, wrapper, onClose, currentSection, setCurrentSection }) {
 function Close({ onClick }) {
   return (
     <div css="text-align: right;">
-      <ButtonIcon onClick={onClick}>x</ButtonIcon>
+      <ButtonIcon onClick={onClick}>
+        <IconClose />
+      </ButtonIcon>
     </div>
   )
 }
