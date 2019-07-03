@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Button, Info, Text, TextInput, theme } from '@aragon/ui'
-import { InvalidNetworkType, InvalidURI, NoConnection } from '../../errors'
-import { sanitizeNetworkType } from '../../network-config'
+import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
+import { sanitizeNetworkType } from '../../../network-config'
 
 function Network({
   error,

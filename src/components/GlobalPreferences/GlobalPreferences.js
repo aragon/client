@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { TabBar } from '@aragon/ui'
-import Network from './Network'
-import useNetwork from './useNetwork'
+import Network from './Network/Network'
+import useNetwork from './Network/useNetwork'
 import Notifications from './Notifications'
 import CustomLabels from './CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback'
@@ -16,7 +16,7 @@ const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
 
 // path = PATHS[0]
-function GlobalPreferences({ wrapper, path = 'network' }) {
+function GlobalPreferences({ wrapper, path = 'custom-labels' }) {
   const [currentSection, setCurrentSection] = useState(
     SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
   )

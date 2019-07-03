@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { defaultEthNode, ipfsDefaultConf, network } from '../../environment'
-import { checkValidEthNode } from '../../web3-utils'
+import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
+import { checkValidEthNode } from '../../../web3-utils'
 import {
   getSelectedCurrency,
   setDefaultEthNode,
   setIpfsGateway,
   setSelectedCurrency,
-} from '../../local-settings'
+} from '../../../local-settings'
 
 const useNetwork = wrapper => {
   const [networkError, setNetworkError] = useState(null)
