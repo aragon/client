@@ -1,9 +1,9 @@
 import React from 'react'
+import { Box } from '@aragon/ui'
 
 function Notifications() {
   return (
-    <section>
-      <h2>General notifications</h2>
+    <Box heading="Email notifications">
       <label>
         App notifications and reminders (upcoming votes, created incoming or
         outgoing transactions, added or removed tokens, etc.).{' '}
@@ -17,7 +17,7 @@ function Notifications() {
         <input type="checkbox" />
       </label>
       <button>Manage triggers</button>
-    </section>
+    </Box>
   )
 }
 
