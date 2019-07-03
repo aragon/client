@@ -92,7 +92,7 @@ function OrgView({
             display: flex;
           `}
         >
-          <GlobalSettingsButton />
+          <GlobalSettingsButton onOpen={onOpenPreferences} />
           <ThemeModeButton />
         </div>
       </div>

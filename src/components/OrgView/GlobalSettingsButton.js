@@ -1,14 +1,22 @@
 import React, { useRef, useState } from 'react'
-import { Box, Popover } from '@aragon/ui'
+import styled from 'styled-components'
+import {
+  Box,
+  ButtonBase,
+  ButtonIcon,
+  GU,
+  IconSettings,
+  Popover,
+} from '@aragon/ui'
 
-const networkIcon = null
-const customLabelsIcon = null
-const notificationIcon = null
-const helpFeedbackIcon = null
+const networkIcon = <IconSettings />
+const customLabelsIcon = <IconSettings />
+const notificationIcon = <IconSettings />
+const helpFeedbackIcon = <IconSettings />
 
-function GlobalSettingsButton() {
+function GlobalSettingsButton({ onOpen }) {
   const [opened, setOpened] = useState(false)
-  const buttonRef = useRef()
+  const containerRef = useRef()
 
   const handleToggle = () => {
     setOpened(!opened)
@@ -16,53 +24,62 @@ function GlobalSettingsButton() {
   const handleClose = () => {
     setOpened(false)
   }
-  const handleItemClick = where => () => {
+  const handleItemClick = path => () => {
     setOpened(false)
+    onOpen(path)
   }
 
   return (
     <React.Fragment>
-      <button onClick={handleToggle} ref={buttonRef}>
-        Global Settings
-      </button>
+      <div ref={containerRef}>
+        <ButtonIcon onClick={handleToggle} css="height:100%;">
+          <IconSettings />
+        </ButtonIcon>
+      </div>
       <Popover
         placement="bottom-end"
         onClose={handleClose}
         visible={opened}
-        opener={buttonRef.current}
+        opener={containerRef.current}
       >
-        <Box heading={'Global preferences'}>
-          <ul>
-            <li>
-              <Item
-                onClick={handleItemClick('network')}
-                icon={networkIcon}
-                label="Network"
-              />
-            </li>
-            <li>
-              <Item
-                onClick={handleItemClick('customLabels')}
-                icon={customLabelsIcon}
-                label="Custom labels"
-              />
-            </li>
-            <li>
-              <Item
-                onClick={handleItemClick('notifications')}
-                icon={notificationIcon}
-                label="Notifications"
-              />
-            </li>
-            <li>
-              <Item
-                onClick={handleItemClick('helpFeedback')}
-                icon={helpFeedbackIcon}
-                label="Help & Feedback"
-              />
-            </li>
-          </ul>
-        </Box>
+        <ul
+          css={`
+            width: 260px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+          `}
+        >
+          <ListItem>Global preferences</ListItem>
+          <ListItem>
+            <Item
+              onClick={handleItemClick('custom-labels')}
+              icon={customLabelsIcon}
+              label="Custom labels"
+            />
+          </ListItem>
+          <ListItem>
+            <Item
+              onClick={handleItemClick('network')}
+              icon={networkIcon}
+              label="Network"
+            />
+          </ListItem>
+          <ListItem>
+            <Item
+              onClick={handleItemClick('notifications')}
+              icon={notificationIcon}
+              label="Notifications"
+            />
+          </ListItem>
+          <ListItem>
+            <Item
+              onClick={handleItemClick('help-and-feedback')}
+              icon={helpFeedbackIcon}
+              label="Help & Feedback"
+            />
+          </ListItem>
+        </ul>
       </Popover>
     </React.Fragment>
   )
@@ -70,11 +87,26 @@ function GlobalSettingsButton() {
 
 function Item({ icon, label, onClick }) {
   return (
-    <button onClick={onClick}>
+    <ButtonBase
+      css={`
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+      `}
+      onClick={onClick}
+    >
       {icon}
-      {label}
-    </button>
+      <span css={icon && `margin-left: ${1 * GU}px;`}>{label}</span>
+    </ButtonBase>
   )
 }
+
+const ListItem = styled.li`
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #dfe3e8;
+  padding: ${2 * GU}px;
+  height: 56px;
+`
 
 export default GlobalSettingsButton
