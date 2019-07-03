@@ -9,6 +9,7 @@ import AppLoader from './components/App/AppLoader'
 import Home from './components/Home/Home'
 import OrgView from './components/OrgView/OrgView'
 import Preferences from './components/Preferences/Preferences'
+import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
@@ -314,6 +315,12 @@ class Wrapper extends React.PureComponent {
           opened={preferencesOpened}
           onClose={this.handleClosePreferences}
           wrapper={wrapper}
+        />
+        <GlobalPreferences
+          wrapper={wrapper}
+          dao={locator.dao}
+          opened={preferencesOpened}
+          onClose={this.handleClosePreferences}
         />
       </div>
     )
