@@ -19,6 +19,7 @@ import { DAO_STATUS_LOADING } from '../../symbols'
 // } from '../../prop-types'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import CombinedPanel from '../MenuPanel/CombinedPanel'
+import GlobalSettingsButton from './GlobalSettingsButton'
 
 function ThemeModeButton() {
   const { mode, toggle } = useThemeMode()
@@ -91,6 +92,7 @@ function OrgView({
             display: flex;
           `}
         >
+          <GlobalSettingsButton />
           <ThemeModeButton />
         </div>
       </div>
