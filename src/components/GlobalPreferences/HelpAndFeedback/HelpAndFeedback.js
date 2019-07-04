@@ -50,6 +50,8 @@ function View({ onChange, checked }) {
           display: block;
           margin: 0 auto;
           margin-bottom: ${2 * GU}px;
+          width: 300px;
+          height: 156px;
         `}
       />
       <Info>
