@@ -1,13 +1,6 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
-import {
-  Box,
-  ButtonBase,
-  ButtonIcon,
-  GU,
-  IconSettings,
-  Popover,
-} from '@aragon/ui'
+import { ButtonIcon, GU, IconSettings, Popover } from '@aragon/ui'
 import IconNetwork from './IconNetwork'
 import IconCustomLabels from './IconCustomLabels'
 import IconNotifications from './IconNotifications'
