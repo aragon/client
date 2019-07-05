@@ -10,6 +10,9 @@ import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 import { atou } from './string-utils'
 
+const KEYCODE_UP = 38
+const KEYCODE_DOWN = 40
+
 // Update `now` at a given interval.
 export function useNow(updateEvery = 1000) {
   const [now, setNow] = useState(new Date())
@@ -144,7 +147,7 @@ export function useRepoDetails(baseUrl, detailsUrl) {
   return usePromise(fetchDescription, [detailsUrl], null)
 }
 
-export function useEsc(cb, deps) {
+export function useEsc(cb) {
   const handlekeyDown = useCallback(
     e => {
       if (e.keyCode === keycodes.esc) {
@@ -203,8 +206,9 @@ export function useSelected(initial) {
   return { selected, setSelected, allSelected, someSelected }
 }
 
-export function useClickOutside(cb) {
-  const ref = useRef()
+/* eslint-disable react-hooks/rules-of-hooks */
+export function useClickOutside(cb, ref = useRef()) {
+  /* eslint-enable react-hooks/rules-of-hooks */
   const handleClick = useCallback(
     e => {
       if (!ref.current.contains(e.target)) {
@@ -222,4 +226,70 @@ export function useClickOutside(cb) {
   }, [handleClick])
 
   return { ref }
+}
+
+/* eslint-disable react-hooks/rules-of-hooks */
+export function useOnBlur(cb, ref = useRef()) {
+  /* eslint-enable react-hooks/rules-of-hooks */
+  const handleBlur = useCallback(
+    e => {
+      // when event is triggered by click relatedTarget is null
+      // when another element is gaining focus then it holds some value
+      if (e.relatedTarget && !ref.current.contains(e.relatedTarget)) {
+        cb()
+      }
+    },
+    [cb, ref]
+  )
+
+  return { ref, handleBlur }
+}
+
+/* eslint-disable react-hooks/rules-of-hooks */
+export function useArrowKeysFocus(refs) {
+  /* eslint-enable react-hooks/rules-of-hooks */
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
+
+  const cycleFocus = useCallback(
+    (e, change) => {
+      e.preventDefault()
+      let next = highlightedIndex + change
+      if (next > refs.length - 1) {
+        next = 0
+      }
+      if (next < 0) {
+        next = refs.length - 1
+      }
+      setHighlightedIndex(next)
+    },
+    [highlightedIndex, refs.length]
+  )
+  const handleKeyDown = useCallback(
+    e => {
+      const { keyCode } = e
+      if (keyCode === KEYCODE_UP || keyCode === KEYCODE_DOWN) {
+        cycleFocus(e, keyCode === KEYCODE_UP ? -1 : 1)
+      }
+    },
+    [cycleFocus]
+  )
+
+  useEffect(() => {
+    if (highlightedIndex === -1) {
+      return
+    }
+    if (!refs[highlightedIndex]) {
+      return
+    }
+    refs[highlightedIndex].focus()
+  }, [highlightedIndex, refs])
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
+  return {
+    highlightedIndex,
+    setHighlightedIndex: index => () => setHighlightedIndex(index),
+  }
 }
