@@ -8,7 +8,6 @@ import AppIFrame from './components/App/AppIFrame'
 import AppLoader from './components/App/AppLoader'
 import Home from './components/Home/Home'
 import OrgView from './components/OrgView/OrgView'
-import Preferences from './components/Preferences/Preferences'
 import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
@@ -310,12 +309,6 @@ class Wrapper extends React.PureComponent {
           )}
         </OrgView>
 
-        <Preferences
-          dao={locator.dao}
-          opened={preferencesOpened}
-          onClose={this.handleClosePreferences}
-          wrapper={wrapper}
-        />
         <GlobalPreferences
           wrapper={wrapper}
           dao={locator.dao}
