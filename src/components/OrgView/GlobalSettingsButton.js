@@ -113,6 +113,7 @@ function Item({ icon, label, onClick }) {
         justify-content: left;
       `}
       onClick={onClick}
+      label={label}
     >
       {icon}
       <span css={icon && `margin-left: ${1 * GU}px;`}>{label}</span>
