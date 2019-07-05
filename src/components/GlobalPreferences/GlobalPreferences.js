@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Bar, ButtonIcon, IconClose, Layout, Header, TabBar } from '@aragon/ui'
+import {
+  Bar,
+  ButtonIcon,
+  GU,
+  IconClose,
+  Layout,
+  Header,
+  TabBar,
+} from '@aragon/ui'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
@@ -24,6 +32,7 @@ function GlobalPreferences({ dao, wrapper, onClose, opened }) {
   return (
     <div
       css={`
+        border-top: 2px solid #08bee5;
         position: absolute;
         top: 0;
         left: 0;
@@ -49,11 +58,11 @@ function useGlobalPreferences() {
   const [currentSection, setCurrentSection] = useState(0)
 
   // effect for location url?
-  //useEffect(() => {
-  //setCurrentSection(
-  //SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
-  //)
-  //}, [path])
+  // useEffect(() => {
+  // setCurrentSection(
+  // SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
+  // )
+  // }, [path])
 
   return { setCurrentSection, currentSection }
 }
@@ -84,8 +93,14 @@ function View({ dao, wrapper, onClose, currentSection, setCurrentSection }) {
 
 function Close({ onClick }) {
   return (
-    <div css="text-align: right;">
-      <ButtonIcon onClick={onClick}>
+    <div
+      css={`
+        text-align: right;
+        padding-top: ${2.5 * GU}px;
+        padding-right: ${3 * GU}px;
+      `}
+    >
+      <ButtonIcon onClick={onClick} label="Close">
         <IconClose />
       </ButtonIcon>
     </div>
