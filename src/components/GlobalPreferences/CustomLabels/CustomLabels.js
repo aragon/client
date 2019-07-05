@@ -1,20 +1,13 @@
 import React from 'react'
 import { Toast } from '@aragon/ui'
-
+import ShareModal from './ShareModal'
+import RemoveModal from './RemoveModal'
 import EmptyLocalIdentities from './EmptyLocalIdentities'
 import LocalIdentities from './LocalIdentities'
-//import useCustomLabels from './useCustomLabels'
-//import useFilterableCustomLabels from './useFilterableCustomLabels'
-//import useSelectableCustomLabels from './useSelectableCustomLabels'
-//import useShareableCustomLabels from './useShareableCustomLabels'
-//import _useLocalIdentities from './__useLocalIdentities'
-
 import useLocalIdentities from './useLocalIdentities'
 import useFilterIdentities from './useFilterIdentities'
 import useSelectIdentities from './useSelectIdentities'
 import useIdentitiesActions from './useIdentitiesActions'
-import ShareModal from './ShareModal'
-import RemoveModal from './RemoveModal'
 
 const TIMEOUT_TOAST = 4000
 
