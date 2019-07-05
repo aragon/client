@@ -79,4 +79,5 @@ const Import = ({ onImport }) => {
 
 Import.propTypes = { onImport: PropTypes.func.isRequired }
 
+export { fileImport }
 export default Import
