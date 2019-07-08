@@ -22,8 +22,23 @@ const SECTIONS = new Map([
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
 
-function GlobalPreferences({ dao, wrapper, onClose, opened }) {
-  const { setCurrentSection, currentSection } = useGlobalPreferences()
+function GlobalPreferences({
+  dao,
+  wrapper,
+  onClose,
+  opened,
+  helpScoutOptedOut,
+  onHelpScoutOptedOutChange,
+}) {
+  const {
+    setCurrentSection,
+    currentSection,
+    handleNavigation,
+  } = useGlobalPreferences()
+  const handleSectionChange = index => {
+    setCurrentSection(index)
+    handleNavigation(index)
+  }
 
   if (!opened) {
     return null
@@ -42,41 +57,13 @@ function GlobalPreferences({ dao, wrapper, onClose, opened }) {
         background: white;
       `}
     >
-      <View
-        dao={dao}
-        wrapper={wrapper}
-        onClose={onClose}
-        currentSection={currentSection}
-        setCurrentSection={setCurrentSection}
-      />
-    </div>
-  )
-}
-
-// path = PATHS[0]
-function useGlobalPreferences() {
-  const [currentSection, setCurrentSection] = useState(0)
-
-  // effect for location url?
-  // useEffect(() => {
-  // setCurrentSection(
-  // SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
-  // )
-  // }, [path])
-
-  return { setCurrentSection, currentSection }
-}
-
-function View({ dao, wrapper, onClose, currentSection, setCurrentSection }) {
-  return (
-    <React.Fragment>
       <Close onClick={onClose} />
       <Layout>
         <Header primary="Global preferences" />
         <Bar>
           <TabBar
             items={VALUES}
-            onChange={setCurrentSection}
+            onChange={handleSectionChange}
             selected={currentSection}
           />
         </Bar>
@@ -84,11 +71,37 @@ function View({ dao, wrapper, onClose, currentSection, setCurrentSection }) {
           {currentSection === 0 && <CustomLabels dao={dao} wrapper={wrapper} />}
           {currentSection === 1 && <Network wrapper={wrapper} />}
           {currentSection === 2 && <Notifications />}
-          {currentSection === 3 && <HelpAndFeedback />}
+          {currentSection === 3 && (
+            <HelpAndFeedback
+              optedOut={helpScoutOptedOut}
+              onOptOutChange={onHelpScoutOptedOutChange}
+            />
+          )}
         </main>
       </Layout>
-    </React.Fragment>
+    </div>
   )
+}
+
+// path = PATHS[0]
+function useGlobalPreferences() {
+  const [currentSection, setCurrentSection] = useState(0)
+  const handleNavigation = index => {
+    const { hash } = window.location
+    const path = hash.substr(hash.indexOf('p=/') + 3)
+    const rest = hash.substr(0, hash.indexOf('?p=/'))
+    window.location.hash = `${rest}?p=/${PATHS[index]}`
+  }
+
+  useEffect(() => {
+    const { hash } = window.location
+    const path = hash.substr(hash.indexOf('p=/') + 3)
+    setCurrentSection(
+      SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
+    )
+  }, [window.location.hash])
+
+  return { setCurrentSection, currentSection, handleNavigation }
 }
 
 function Close({ onClick }) {
