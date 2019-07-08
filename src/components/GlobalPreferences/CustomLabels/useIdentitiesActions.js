@@ -12,7 +12,6 @@ const mapToNameAndAddress = ({ address, name }) => ({ address, name })
 
 function useIdentitiesActions({
   wrapper,
-  identities,
   filteredIdentities,
   identitiesSelected,
   dao,
@@ -36,7 +35,7 @@ function useIdentitiesActions({
       console.log('Error while creating the identities sharing link:', err)
       return ''
     }
-  }, [dao, identities])
+  }, [dao, filteredIdentities])
 
   // shared link
   const {
