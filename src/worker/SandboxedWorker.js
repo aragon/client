@@ -1,6 +1,6 @@
 import EventTarget from '@ungap/event-target'
 
-class IframeWorker extends EventTarget {
+class SandboxedWorker extends EventTarget {
   constructor(scriptUrl, { name }) {
     super()
 
@@ -92,4 +92,4 @@ class IframeWorker extends EventTarget {
   }
 }
 
-export default IframeWorker
+export default SandboxedWorker

@@ -14,6 +14,7 @@ import {
   contractAddresses,
   defaultGasPriceFn,
 } from './environment'
+import { NoConnection, DAONotFound } from './errors'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash } from './utils'
 import {
@@ -22,9 +23,8 @@ import {
   getMainAccount,
   isValidEnsName,
 } from './web3-utils'
-import { WorkerSubscriptionPool } from './worker-utils'
-import { NoConnection, DAONotFound } from './errors'
-import IframeWorker from './iframe-worker'
+import SandboxedWorker from './worker/SandboxedWorker'
+import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -273,7 +273,7 @@ const subscribe = (
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
-            const worker = new IframeWorker(scriptUrl, { name: workerName })
+            const worker = new SandboxedWorker(scriptUrl, { name: workerName })
             worker.addEventListener(
               'error',
               err => console.error(`Error from worker for ${workerName}:`, err),
