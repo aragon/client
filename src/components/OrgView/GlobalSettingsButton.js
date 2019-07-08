@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
-import { ButtonIcon, GU, IconSettings, Popover } from '@aragon/ui'
+import { ButtonIcon, GU, IconSettings, Popover, theme } from '@aragon/ui'
 import IconNetwork from './IconNetwork'
 import IconCustomLabels from './IconCustomLabels'
 import IconNotifications from './IconNotifications'
@@ -49,17 +49,20 @@ function GlobalSettingsButton({ onOpen }) {
             list-style: none;
           `}
         >
-          <ListItem
+          <li
             css={`
+              display: flex;
+              align-items: center;
               height: 32px;
               color: #637381;
               text-transform: uppercase;
               font-size: 12px;
               padding-left: ${2 * GU}px;
+              border-bottom: 1px solid #dfe3e8;
             `}
           >
             Global preferences
-          </ListItem>
+          </li>
           <ListItem>
             <Item
               onClick={handleItemClick('custom-labels')}
@@ -117,8 +120,16 @@ function Item({ icon, label, onClick }) {
 const ListItem = styled.li`
   display: flex;
   align-items: center;
+  border-left: 2px solid transparent;
   border-bottom: 1px solid #dfe3e8;
   height: 56px;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    background: #f9fafc;
+    border-left: 2px solid ${theme.accent};
+  }
 `
 
 export default GlobalSettingsButton
