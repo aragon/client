@@ -28,7 +28,7 @@ function useLocalIdentities(wrapper) {
     // events: all events trigger get all
     const subscription = identityEvents$.subscribe(handleGetAll)
     return () => subscription.unsubscribe()
-  }, [handleGetAll])
+  }, [handleGetAll, identityEvents$])
 
   return { identities }
 }
