@@ -37,6 +37,7 @@ function LocalIdentities({
   onToggleAll,
   onToggleIdentity,
   searchTerm,
+  onShowLocalIdentityModal,
   someSelected,
 }) {
   return (
@@ -101,10 +102,7 @@ function LocalIdentities({
                 entity={address}
                 popoverAction={{
                   label: 'Edit custom label',
-                  onClick: () => {
-                    alert('todo')
-                    //handleUpdateLabel(address)
-                  },
+                  onClick: onShowLocalIdentityModal(address),
                 }}
                 popoverTitle={<LocalIdentityPopoverTitle label={name} />}
               />

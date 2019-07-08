@@ -8,6 +8,7 @@ import useLocalIdentities from './useLocalIdentities'
 import useFilterIdentities from './useFilterIdentities'
 import useSelectIdentities from './useSelectIdentities'
 import useIdentitiesActions from './useIdentitiesActions'
+import useLocalIdentityModal from './useLocalIdentityModal'
 
 const TIMEOUT_TOAST = 4000
 
@@ -38,13 +39,13 @@ function CustomLabels({ wrapper, dao, toast }) {
     shareModalOpened,
   } = useIdentitiesActions({
     dao,
-    identities,
     filteredIdentities,
     identitiesSelected,
     someSelected,
     toast,
     wrapper,
   })
+  const { handleShowLocalIdentityModal } = useLocalIdentityModal()
 
   return (
     <React.Fragment>
@@ -73,6 +74,7 @@ function CustomLabels({ wrapper, dao, toast }) {
           onToggleAll={handleToggleAll}
           onToggleIdentity={handleToggleIdentity}
           searchTerm={searchTerm}
+          onShowLocalIdentityModal={handleShowLocalIdentityModal}
           someSelected={someSelected}
         />
       )}
