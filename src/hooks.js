@@ -8,7 +8,6 @@ import {
 } from 'react'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
-import { atou } from './string-utils'
 
 const KEYCODE_UP = 38
 const KEYCODE_DOWN = 40
@@ -160,38 +159,6 @@ export function useEsc(cb) {
     window.addEventListener('keydown', handlekeyDown)
     return () => window.removeEventListener('keydown', handlekeyDown)
   }, [handlekeyDown])
-}
-
-const QUERY_VAR = '?labels='
-// checks if query string var exists
-// parses data and validates data consistency (will throw if prop don't exist)
-export function useSharedLabels(dao) {
-  const [isSharedLink, setIsSharedLink] = useState(false)
-  const [sharedLabels, setSharedLabels] = useState([])
-
-  const removeSharedLink = useCallback(
-    () => (window.location.hash = `#/${dao}`),
-    [dao]
-  )
-
-  useEffect(() => {
-    const index = window.location.hash.indexOf(QUERY_VAR)
-    if (index > -1) {
-      const raw = window.location.hash.substr(index + QUERY_VAR.length)
-      try {
-        const data = JSON.parse(window.decodeURI(atou(raw)))
-        setSharedLabels(data.map(({ address, name }) => ({ address, name })))
-        setIsSharedLink(true)
-      } catch (e) {
-        console.warn(
-          'There was an error parsing/validating the shared data: ',
-          e
-        )
-      }
-    }
-  }, [])
-
-  return { isSharedLink, setIsSharedLink, sharedLabels, removeSharedLink }
 }
 
 export function useSelected(initial) {
