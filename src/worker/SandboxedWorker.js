@@ -1,7 +1,7 @@
 import EventTarget from '@ungap/event-target'
 
 class SandboxedWorker extends EventTarget {
-  constructor(scriptUrl, { name }) {
+  constructor(scriptUrl, { name } = {}) {
     super()
 
     this.name = name
@@ -29,32 +29,46 @@ class SandboxedWorker extends EventTarget {
           return URL.createObjectURL(blob)
         }
         const init = async () => {
-          let workerUrl = ''
-          try {
-            // WebWorkers can only load scripts from the local origin, so we
-            // have to fetch the script (from an IPFS gateway) and process it locally.
-            //
-            // Note that we **SHOULD** use a data url, to ensure the Worker is
-            // created with an opaque ("orphaned") origin, see
-            // https://html.spec.whatwg.org/multipage/workers.html#dom-worker.
-            //
-            // The opaque origin is a necessary part of creating the WebWorker sandbox;
-            // even though the script never has access to the DOM or local storage, it can
-            // still access global features like IndexedDB if it is not enclosed in an
-            // opaque origin.
-            workerUrl = await getObjectUrlForScript('${scriptUrl}')
-          } catch (e) {
-            console.error("Failed to load ${name}'s script (${scriptUrl}): ", e)
-            return
-          }
+          // WebWorkers can only load scripts from the local origin, so we
+          // have to fetch the script (from an IPFS gateway) and process it locally.
+          const workerUrl = await getObjectUrlForScript('${scriptUrl}')
+
           const worker = new Worker(workerUrl, { name: '${name}' })
-          worker.addEventListener('error', error => window.parent.postMessage({ from: '${name}', error }, '*'), false)
+
+          // Must use '*' for origin as we've sandboxed the iframe's origin
           worker.addEventListener('message', event => window.parent.postMessage({ from: '${name}', msg: event.data }, '*'), false)
-          window.addEventListener('message', ({ data }) => worker.postMessage(data))
+          worker.addEventListener(
+            'error',
+            error => {
+              console.error('Error from worker for ${name} (loaded from ${scriptUrl}):', error.message, error)
+              window.parent.postMessage(
+                {
+                  from: '${name}',
+                  error: {
+                    filename: error.filename,
+                    message: error.message,
+                    lineno: error.lineno,
+                  },
+                },
+                '*'
+              )
+            },
+            false
+            )
+          window.addEventListener('message', ({ data, source }) => {
+            if (source === window.parent) {
+              worker.postMessage(data)
+            }
+          })
+
           // Clean up the url we created to spawn the worker
           URL.revokeObjectURL(workerUrl)
         }
+
         init()
+          .catch(err => {
+            console.error("Failed to load ${name}'s script (${scriptUrl}): ", err)
+          })
       </script>
     `
     this.iframe.srcdoc = source
@@ -65,6 +79,7 @@ class SandboxedWorker extends EventTarget {
 
   postMessage(msg) {
     if (this.iframe) {
+      // Must use '*' for origin as we've sandboxed the iframe's origin
       this.iframe.contentWindow.postMessage(msg, '*')
     }
   }
