@@ -2,34 +2,10 @@ import React, { useState } from 'react'
 import { Box, Checkbox, Info, GU } from '@aragon/ui'
 import helAndFeedbackSvg from './help-and-feedback.svg'
 
-const HELPSCOUT_OPTOUT_KEY = 'HELPSCOUT_OPTOUT'
+function HelpAndFeedback({ optedOut, onOptOutChange }) {
+  // checked => not opted out
+  const handleOptOutChange = checked => onOptOutChange(!checked)
 
-function HelpAndFeedback() {
-  const { handleHelpAndFeedbackChange, optedOut } = useHelpAndFeedback()
-
-  return <View onChange={handleHelpAndFeedbackChange} checked={!optedOut} />
-}
-
-function useHelpAndFeedback() {
-  const [optedOut, setOptedOut] = useState(
-    localStorage.getItem(HELPSCOUT_OPTOUT_KEY) === 'true'
-  )
-
-  const handleHelpAndFeedbackChange = value => {
-    // if value === true, then the user has not optedOut
-    const optedOut = !value
-    setOptedOut(optedOut)
-    if (optedOut) {
-      localStorage.setItem(HELPSCOUT_OPTOUT_KEY, 'true')
-      return
-    }
-    localStorage.removeItem(HELPSCOUT_OPTOUT_KEY)
-  }
-
-  return { optedOut, handleHelpAndFeedbackChange }
-}
-
-function View({ onChange, checked }) {
   return (
     <Box heading="HelpScout">
       <label
@@ -40,7 +16,7 @@ function View({ onChange, checked }) {
           margin-bottom: ${2 * GU}px;
         `}
       >
-        <Checkbox onChange={onChange} checked={checked} />
+        <Checkbox onChange={handleOptOutChange} checked={!optedOut} />
         Allow HelpScout feedback module
       </label>
       <img
