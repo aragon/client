@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Button,
   ButtonIcon,
@@ -140,24 +140,43 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
   )
 }
 
-export default ({ visible, onClose, link }) => {
-  // handle copy, toast, focus, etc
+function ShareModalWithToast({ toast, visible, onClose, link }) {
   const inputRef = useRef()
-  const handleFocus = () => {}
-  const handleCopy = () => {}
+  const handleFocus = () => {
+    inputRef.current.select()
+  }
+  const handleCopy = () => {
+    inputRef.current.focus()
+    inputRef.current.select()
+    try {
+      document.execCommand('copy')
+      toast('Link copied')
+      setTimeout(onClose, (TIMEOUT_TOAST * 7) / 8)
+    } catch (err) {
+      console.warn(err)
+    }
+  }
+
+  useEffect(() => {
+    if (visible) {
+      setTimeout(() => inputRef.current.focus(), 0)
+    }
+  }, [visible])
 
   return (
-    <Toast timeout={TIMEOUT_TOAST}>
-      {toast => (
-        <ShareModal
-          inputRef={inputRef}
-          link={link}
-          onClose={onClose}
-          onCopy={handleCopy}
-          onFocus={handleFocus}
-          visible={visible}
-        />
-      )}
-    </Toast>
+    <ShareModal
+      inputRef={inputRef}
+      link={link}
+      onClose={onClose}
+      onCopy={handleCopy}
+      onFocus={handleFocus}
+      visible={visible}
+    />
   )
 }
+
+export default props => (
+  <Toast timeout={TIMEOUT_TOAST}>
+    {toast => <ShareModalWithToast {...props} toast={toast} />}
+  </Toast>
+)
