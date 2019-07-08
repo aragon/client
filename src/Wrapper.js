@@ -26,6 +26,8 @@ import { getAppPath } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 
+const GLOBAL_PREFERENCES_QUERY_PARAM = '?p=/'
+
 class Wrapper extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
@@ -68,7 +70,8 @@ class Wrapper extends React.PureComponent {
   state = {
     appLoading: false,
     orgUpgradePanelOpened: false,
-    preferencesOpened: false,
+    preferencesOpened:
+      window.location.hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) > -1,
   }
 
   identitySubscription = null
@@ -160,9 +163,15 @@ class Wrapper extends React.PureComponent {
   }
 
   handleClosePreferences = () => {
+    const { hash } = window.location
+    window.location.hash = `${hash.substr(
+      0,
+      hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM)
+    )}`
     this.setState({ preferencesOpened: false })
   }
-  handleOpenPreferences = () => {
+  handleOpenPreferences = path => {
+    window.location.hash = `${window.location.hash}${GLOBAL_PREFERENCES_QUERY_PARAM}${path}`
     this.setState({ preferencesOpened: true })
   }
   // params need to be a string
