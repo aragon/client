@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { IdentityBadge, breakpoint } from '@aragon/ui'
+import { Box, IdentityBadge, breakpoint } from '@aragon/ui'
 import { getEmptyAddress } from '../../../web3-utils'
 import Import from './Import'
 
@@ -9,8 +9,7 @@ const EmptyLocalIdentities = React.memo(function EmptyLocalIdentities({
   onImport,
 }) {
   return (
-    <Wrap>
-      <Title>Start adding labels</Title>
+    <Box heading="Start adding labels">
       <Paragraph>
         You can add labels by clicking on the{' '}
         <span
@@ -35,7 +34,7 @@ const EmptyLocalIdentities = React.memo(function EmptyLocalIdentities({
       <WrapImport>
         <Import onImport={onImport} />
       </WrapImport>
-    </Wrap>
+    </Box>
   )
 })
 
@@ -43,29 +42,13 @@ EmptyLocalIdentities.propTypes = {
   onImport: PropTypes.func.isRequired,
 }
 
-const Wrap = styled.div`
-  padding: 0 16px;
-
-  ${breakpoint(
-    'medium',
-    `
-      padding: 0;
-    `
-  )}
-`
-
 const WrapImport = styled.div`
-  margin: 20px 0;
+  margin-top: 20px;
 `
 
 // div cannot appear as descendant of p
 const Paragraph = styled.div`
   margin: 16px 0px;
-`
-
-const Title = styled.h2`
-  font-weight: bold;
-  margin: 8px 0;
 `
 
 export default EmptyLocalIdentities
