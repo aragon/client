@@ -1,11 +1,16 @@
-import React, { useState, useEffect, useMemo, useContext } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useContext,
+  useCallback,
+} from 'react'
 import { format } from 'date-fns'
 import { saveAs } from 'file-saver'
 import {
   IdentityContext,
   identityEventTypes,
 } from '../../IdentityManager/IdentityManager'
-import { useSharedLabels } from '../../../hooks'
 import { utoa } from '../../../string-utils'
 
 const mapToNameAndAddress = ({ address, name }) => ({ address, name })
@@ -23,30 +28,20 @@ function useIdentitiesActions({
   // share
   const [shareModalOpened, setShareModalOpened] = useState(false)
   const shareLink = useMemo(() => {
-    const base = `${window.location.origin}/#/${dao}`
+    //const base = `${window.location.origin}/#/${dao}`
+    const base = window.location.href
     const identitiesToShare = filteredIdentities.reduce(
       (p, c) => [...p, ...(identitiesSelected.get(c.address) ? [c] : [])],
       []
     )
     try {
       const labels = utoa(JSON.stringify(identitiesToShare))
-      return `${base}?labels=${labels}`
+      return `${base}&l=${labels}`
     } catch (err) {
       console.log('Error while creating the identities sharing link:', err)
       return ''
     }
   }, [dao, filteredIdentities])
-
-  // shared link
-  const {
-    isSharedLink,
-    setIsSharedLink,
-    sharedLabels,
-    removeSharedLink,
-  } = useSharedLabels(dao)
-  // todo, integrate saving shared links
-  console.log('isSharedLink: ', isSharedLink)
-  console.log('sharedLabels: ', sharedLabels)
 
   // import
   const handleImport = async list => {
@@ -58,6 +53,7 @@ function useIdentitiesActions({
     }
     identityEvents$.next({ type: identityEventTypes.IMPORT })
   }
+
   // export
   const handleExport = () => {
     if (!someSelected) {
@@ -96,6 +92,7 @@ function useIdentitiesActions({
   }
 
   return {
+    // share
     handleShareModalOpen: () => {
       if (someSelected) {
         setShareModalOpened(true)
@@ -104,8 +101,11 @@ function useIdentitiesActions({
     handleShareModalClose: () => setShareModalOpened(false),
     shareModalOpened,
     shareLink,
+    // import
     handleImport,
+    // export
     handleExport,
+    // remove
     handleRemove,
     handleRemoveModalClose: () => setRemoveModalOpened(false),
     handleRemoveModalOpen: () => {
