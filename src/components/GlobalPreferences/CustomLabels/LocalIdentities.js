@@ -14,6 +14,7 @@ import {
   IconTrash,
   IdentityBadge,
   Info,
+  LoadingRing,
   TextInput,
   breakpoint,
   font,
@@ -29,15 +30,19 @@ function LocalIdentities({
   allSelected,
   identities,
   identitiesSelected,
+  isSharedLink,
+  isSavingSharedLink,
   onExport,
   onImport,
   onRemove,
   onSearchChange,
   onShare,
+  onSharedIdentitiesCancel,
+  onSharedIdentitiesSave,
+  onShowLocalIdentityModal,
   onToggleAll,
   onToggleIdentity,
   searchTerm,
-  onShowLocalIdentityModal,
   someSelected,
 }) {
   return (
@@ -70,62 +75,124 @@ function LocalIdentities({
           onExport={onExport}
           onImport={onImport}
           onRemove={onRemove}
+          // shared link
+          isSharedLink={isSharedLink}
+          onSave={onSharedIdentitiesSave}
+          onCancel={onSharedIdentitiesCancel}
         />
       </Controls>
-      <Headers>
-        <div>
-          {!iOS && (
-            <StyledCheckbox
-              checked={allSelected}
-              onChange={onToggleAll}
-              indeterminate={!allSelected && someSelected}
-            />
-          )}
-          Custom label
+      {isSavingSharedLink && (
+        <div
+          css={`
+            width: 100%;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          `}
+        >
+          <LoadingRing />
+          <div>Saving…</div>
         </div>
-        <div>Address</div>
-      </Headers>
-      <List>
-        {identities.map(({ address, name }) => (
-          <Item key={address}>
-            <Label>
+      )}
+      {!isSavingSharedLink && (
+        <React.Fragment>
+          <Headers>
+            <div>
               {!iOS && (
                 <StyledCheckbox
-                  checked={identitiesSelected.get(address)}
-                  onChange={onToggleIdentity(address)}
+                  checked={allSelected}
+                  onChange={onToggleAll}
+                  indeterminate={!allSelected && someSelected}
                 />
               )}
-              {name}
-            </Label>
-            <div>
-              <IdentityBadge
-                entity={address}
-                popoverAction={{
-                  label: 'Edit custom label',
-                  onClick: onShowLocalIdentityModal(address),
-                }}
-                popoverTitle={<LocalIdentityPopoverTitle label={name} />}
-              />
+              Custom label
             </div>
-          </Item>
-        ))}
-      </List>
-      <Info
-        css={`
-          margin-top: ${3 * GU}px;
-        `}
-      >
-        Any labels you add or import will only be shown on this device, and not
-        stored anywhere else. If you want to share the labels with other devices
-        or users, you will need to export them and share the .json file.
-      </Info>
+            <div>Address</div>
+          </Headers>
+          <List>
+            {identities.map(({ address, name }) => (
+              <Item key={address}>
+                <Label>
+                  {!iOS && (
+                    <StyledCheckbox
+                      checked={identitiesSelected.get(address)}
+                      onChange={onToggleIdentity(address)}
+                    />
+                  )}
+                  {name}
+                </Label>
+                <div>
+                  <IdentityBadge
+                    entity={address}
+                    popoverAction={
+                      !isSharedLink
+                        ? {
+                            label: 'Edit custom label',
+                            onClick: onShowLocalIdentityModal(address),
+                          }
+                        : null
+                    }
+                    popoverTitle={
+                      !isSharedLink ? (
+                        <LocalIdentityPopoverTitle label={name} />
+                      ) : null
+                    }
+                  />
+                </div>
+              </Item>
+            ))}
+          </List>
+          {isSharedLink ? (
+            <div
+              css={`
+                margin-top: ${2 * GU}px;
+              `}
+            >
+              These labels have been shared with you. By clicking on the “Save”
+              button, you will make them appear on this device (labels will be
+              stored locally).
+            </div>
+          ) : (
+            <Info
+              css={`
+                margin-top: ${3 * GU}px;
+              `}
+            >
+              Any labels you add or import will only be shown on this device,
+              and not stored anywhere else. If you want to share the labels with
+              other devices or users, you will need to export them and share the
+              .json file.
+            </Info>
+          )}
+        </React.Fragment>
+      )}
     </Box>
   )
 }
 
-function Actions({ onShare, onImport, onExport, onRemove, someSelected }) {
+function Actions({
+  isSharedLink,
+  onCancel,
+  onExport,
+  onImport,
+  onRemove,
+  onSave,
+  onShare,
+  someSelected,
+}) {
   const inputRef = React.useRef()
   const handleClick = index => {
+    if (isSharedLink) {
+      if (index === 0) {
+        onSave()
+        return
+      }
+      onCancel()
+      return
+    }
+
     if (index === 0) {
       onShare()
       return
@@ -163,28 +230,32 @@ function Actions({ onShare, onImport, onExport, onRemove, someSelected }) {
       />
       <ButtonDropDown
         css="z-index: 2;"
-        items={[
-          <ActionSpan>
-            <IconShare />
-            <span>Share</span>
-          </ActionSpan>,
-          ...(!iOS
-            ? [
+        items={
+          isSharedLink
+            ? [<ActionSpan>Save</ActionSpan>, <ActionSpan>Cancel</ActionSpan>]
+            : [
                 <ActionSpan>
-                  <IconDownload />
-                  <span>Import</span>
+                  <IconShare />
+                  <span>Share</span>
+                </ActionSpan>,
+                ...(!iOS
+                  ? [
+                      <ActionSpan>
+                        <IconDownload />
+                        <span>Import</span>
+                      </ActionSpan>,
+                    ]
+                  : []),
+                <ActionSpan>
+                  <IconExternal />
+                  <span>Export</span>
+                </ActionSpan>,
+                <ActionSpan>
+                  <IconTrash css="color: red;" />
+                  <span>Remove</span>
                 </ActionSpan>,
               ]
-            : []),
-          <ActionSpan>
-            <IconExternal />
-            <span>Export</span>
-          </ActionSpan>,
-          <ActionSpan>
-            <IconTrash css="color: red;" />
-            <span>Remove</span>
-          </ActionSpan>,
-        ]}
+        }
         cover={
           <span
             css={`
