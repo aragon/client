@@ -267,7 +267,9 @@ const subscribe = (
 
           // If the app has been updated, reset its cache and restart its worker
           if (updated && workerSubscriptionPool.hasWorker(proxyAddress)) {
-            await workerSubscriptionPool.removeWorker(proxyAddress, true)
+            await workerSubscriptionPool.removeWorker(proxyAddress, {
+              clearCache: true,
+            })
           }
 
           // If another execution context already loaded this app's worker
