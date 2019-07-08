@@ -26,6 +26,9 @@ class WorkerSubscriptionPool {
       worker.terminate()
       connection.shutdown()
     })
+
+    // Reset pool
+    this.workers.clear()
   }
 }
 
