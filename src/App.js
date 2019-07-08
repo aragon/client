@@ -39,6 +39,8 @@ import {
   DAO_CREATION_STATUS_ERROR,
 } from './symbols'
 
+const HELPSCOUT_OPTOUT_KEY = 'HELPSCOUT_OPTOUT'
+
 const INITIAL_DAO_STATE = {
   apps: [],
   appIdentifiers: {},
@@ -63,6 +65,7 @@ class App extends React.Component {
     //  - DAO_CREATION_STATUS_ERROR
     daoCreationStatus: DAO_CREATION_STATUS_NONE,
     fatalError: null,
+    helpScoutOptedOut: localStorage.getItem(HELPSCOUT_OPTOUT_KEY) === 'true',
     identityIntent: null,
     locator: {},
     prevLocator: null,
@@ -352,6 +355,14 @@ class App extends React.Component {
   handleOpenLocalIdentityModal = address => {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
+  handleHelpScoutOptedOutChange = helpScoutOptedOut => {
+    console.log('change: ', helpScoutOptedOut)
+    localStorage.setItem(
+      HELPSCOUT_OPTOUT_KEY,
+      helpScoutOptedOut ? 'true' : 'false'
+    )
+    this.setState({ helpScoutOptedOut })
+  }
 
   render() {
     const {
@@ -366,6 +377,7 @@ class App extends React.Component {
       daoStatus,
       daoCreationStatus,
       fatalError,
+      helpScoutOptedOut,
       identityIntent,
       locator,
       permissions,
@@ -436,9 +448,13 @@ class App extends React.Component {
                       connected={connected}
                       daoAddress={daoAddress}
                       daoStatus={daoStatus}
+                      helpScoutOptedOut={helpScoutOptedOut}
                       historyBack={this.historyBack}
                       historyPush={this.historyPush}
                       locator={locator}
+                      onHelpScoutOptedOutChange={
+                        this.handleHelpScoutOptedOutChange
+                      }
                       onRequestAppsReload={this.handleRequestAppsReload}
                       onRequestEnable={enableWallet}
                       permissionsLoading={permissionsLoading}
@@ -471,7 +487,9 @@ class App extends React.Component {
                   />
                 </div>
 
-                <HelpScoutBeacon locator={locator} apps={apps} />
+                {!helpScoutOptedOut && (
+                  <HelpScoutBeacon locator={locator} apps={apps} />
+                )}
               </ActivityProvider>
             </FavoriteDaosProvider>
           </LocalIdentityModalProvider>
