@@ -21,6 +21,7 @@ const SECTIONS = new Map([
 ])
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
+const GLOBAL_PREFERENCES_QUERY_PARAM = '?p=/'
 
 function GlobalPreferences({
   dao,
@@ -83,19 +84,24 @@ function GlobalPreferences({
   )
 }
 
-// path = PATHS[0]
 function useGlobalPreferences() {
   const [currentSection, setCurrentSection] = useState(0)
   const handleNavigation = index => {
     const { hash } = window.location
-    const path = hash.substr(hash.indexOf('p=/') + 3)
-    const rest = hash.substr(0, hash.indexOf('?p=/'))
+    const path = hash.substr(
+      hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
+        GLOBAL_PREFERENCES_QUERY_PARAM.length
+    )
+    const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
     window.location.hash = `${rest}?p=/${PATHS[index]}`
   }
 
   useEffect(() => {
     const { hash } = window.location
-    const path = hash.substr(hash.indexOf('p=/') + 3)
+    const path = hash.substr(
+      hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
+        GLOBAL_PREFERENCES_QUERY_PARAM.length
+    )
     setCurrentSection(
       SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
     )
