@@ -4,6 +4,7 @@ import ShareModal from './ShareModal'
 import RemoveModal from './RemoveModal'
 import EmptyLocalIdentities from './EmptyLocalIdentities'
 import LocalIdentities from './LocalIdentities'
+import useSharedLink from './useSharedLink'
 import useLocalIdentities from './useLocalIdentities'
 import useFilterIdentities from './useFilterIdentities'
 import useSelectIdentities from './useSelectIdentities'
@@ -15,17 +16,27 @@ const TIMEOUT_TOAST = 4000
 function CustomLabels({ wrapper, dao, toast }) {
   const { identities } = useLocalIdentities(wrapper)
   const {
+    isSharedLink,
+    isSavingSharedLink,
+    sharedIdentities,
+    handleSharedIdentitiesSave,
+    handleSharedIdentitiesCancel,
+  } = useSharedLink(wrapper, toast)
+  // can reuse whole view with search functionality if we change the data source
+  const identitiesToUse = isSharedLink ? sharedIdentities : identities
+
+  const {
     filteredIdentities,
     handleSearchTermChange,
     searchTerm,
-  } = useFilterIdentities(identities)
+  } = useFilterIdentities(identitiesToUse)
   const {
     allSelected,
     handleToggleAll,
     handleToggleIdentity,
     identitiesSelected,
     someSelected,
-  } = useSelectIdentities(identities, filteredIdentities)
+  } = useSelectIdentities(identitiesToUse, filteredIdentities)
   const {
     handleExport,
     handleImport,
@@ -59,18 +70,25 @@ function CustomLabels({ wrapper, dao, toast }) {
         onClose={handleRemoveModalClose}
         onConfirm={handleRemove}
       />
-      {!identities.length && searchTerm === '' ? (
+      {!identitiesToUse.length && searchTerm === '' ? (
         <EmptyLocalIdentities onImport={handleImport} />
       ) : (
         <LocalIdentities
           allSelected={allSelected}
           identities={filteredIdentities}
           identitiesSelected={identitiesSelected}
+          isSharedLink={isSharedLink}
+          isSavingSharedLink={isSavingSharedLink}
           onExport={handleExport}
           onImport={handleImport}
           onRemove={handleRemoveModalOpen}
           onSearchChange={handleSearchTermChange}
           onShare={handleShareModalOpen}
+          onSharedIdentitiesSave={handleSharedIdentitiesSave(
+            filteredIdentities,
+            identitiesSelected
+          )}
+          onSharedIdentitiesCancel={handleSharedIdentitiesCancel}
           onToggleAll={handleToggleAll}
           onToggleIdentity={handleToggleIdentity}
           searchTerm={searchTerm}
