@@ -1,5 +1,41 @@
 import EventTarget from '@ungap/event-target'
 
+/**
+ * A few notes on WebWorker security, and why this "sandboxed" version is
+ * necessary:
+ *
+ * As we run untrusted code in WebWorkers, we want to make them isolated and
+ * sandboxed from the parent application (i.e. the code you're reading) and any
+ * other code it may have loaded (e.g. other untrusted applications).
+ *
+ * WebWorkers, by default, have no DOM or localStorage access. They were mostly
+ * designed to run background jobs, listening to its parent for instructions.
+ * This default allows WebWorkers to be "mostly" sandboxed, such that there is
+ * already a limited attack surface for malicious scripts to target.
+ *
+ * **Unforunately**, one of those exposed, attackable surfaces is the indexedDB
+ * storage API. WebWorkers have unconstrained access to any indexedDB databases
+ * available in the same origin (note that WebWorkers are also only able to load
+ * scripts from the same origin). For a full listing of the methods and APIs
+ * available, see https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Functions_and_classes_available_to_workers.
+ *
+ * As we store a lot of information in indexedDB (due to its feature set over
+ * localStorage), this means Bad Things could happen if we loaded a malicious
+ * script that manipulated some indexedDB databases.
+ *
+ * One way to solve this problem is to use a data URL instead of a string or
+ * object URL. WebWorkers created with data URLs are created with opaque
+ * ("orphaned") origins (see https://html.spec.whatwg.org/multipage/workers.html#dom-worker)
+ * and this negates the same-origin access.
+ *
+ * However, consuming and processing data URLs was found to be hugely
+ * inefficient and resulted in severe performance degradation upon the initial
+ * load of a script.
+ *
+ * Thus, we instead chose to "wrap" these WebWorkers with an iframe, using the
+ * iframe to create the opaque origin.
+ */
+
 class SandboxedWorker extends EventTarget {
   constructor(scriptUrl, { name } = {}) {
     super()

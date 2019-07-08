@@ -276,11 +276,6 @@ const subscribe = (
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
             const worker = new SandboxedWorker(scriptUrl, { name: workerName })
-            worker.addEventListener(
-              'error',
-              err => console.error(`Error from worker for ${workerName}:`, err),
-              false
-            )
 
             const provider = new providers.MessagePortMessage(worker)
             workerSubscriptionPool.addWorker({
