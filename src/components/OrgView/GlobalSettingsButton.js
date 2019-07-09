@@ -1,13 +1,21 @@
 import React, { useRef, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { ButtonIcon, GU, IconSettings, Popover, theme } from '@aragon/ui'
+import {
+  ButtonBase,
+  ButtonIcon,
+  GU,
+  IconSettings,
+  Popover,
+  useTheme,
+} from '@aragon/ui'
 import IconNetwork from './IconNetwork'
 import IconCustomLabels from './IconCustomLabels'
 import IconNotifications from './IconNotifications'
 import IconHelpAndFeedback from './IconHelpAndFeedback'
 
 function GlobalSettingsButton({ onOpen }) {
+  const theme = useTheme()
   const [opened, setOpened] = useState(false)
   const containerRef = useRef()
 
@@ -51,6 +59,8 @@ function GlobalSettingsButton({ onOpen }) {
             padding: 0;
             margin: 0;
             list-style: none;
+            background: ${theme.surface};
+            color: ${theme.content};
           `}
         >
           <li
@@ -58,43 +68,59 @@ function GlobalSettingsButton({ onOpen }) {
               display: flex;
               align-items: center;
               height: 32px;
-              color: #637381;
+              color: ${theme.surfaceContentSecondary};
               text-transform: uppercase;
               font-size: 12px;
               padding-left: ${2 * GU}px;
-              border-bottom: 1px solid #dfe3e8;
+              border-bottom: 1px solid ${theme.border};
             `}
           >
             Global preferences
           </li>
-          <ListItem>
+          <li
+            css={`
+              border-bottom: 1px solid ${theme.border};
+            `}
+          >
             <ItemMemo
               onClick={handleItemClick('custom-labels')}
               icon={<IconCustomLabels />}
               label="Custom labels"
             />
-          </ListItem>
-          <ListItem>
+          </li>
+          <li
+            css={`
+              border-bottom: 1px solid ${theme.border};
+            `}
+          >
             <ItemMemo
               onClick={handleItemClick('network')}
               icon={<IconNetwork />}
               label="Network"
             />
-          </ListItem>
-          <ListItem>
+          </li>
+          <li
+            css={`
+              border-bottom: 1px solid ${theme.border};
+            `}
+          >
             <ItemMemo
               onClick={handleItemClick('notifications')}
               icon={<IconNotifications />}
               label="Notifications"
             />
-          </ListItem>
-          <ListItem>
+          </li>
+          <li
+            css={`
+              border-bottom: 1px solid ${theme.border};
+            `}
+          >
             <ItemMemo
               onClick={handleItemClick('help-and-feedback')}
               icon={<IconHelpAndFeedback />}
               label="Help & Feedback"
             />
-          </ListItem>
+          </li>
         </ul>
       </Popover>
     </React.Fragment>
@@ -106,22 +132,42 @@ GlobalSettingsButton.propTypes = {
 }
 
 function Item({ icon, label, onClick }) {
+  const theme = useTheme()
+
   return (
-    <ButtonIcon
+    <ButtonBase
       css={`
         width: 100%;
         height: 100%;
-        display: flex;
-        align-items: flex-end;
-        padding: ${2 * GU}px;
-        justify-content: left;
+        height: 56px;
+        display: block;
+        padding: 0;
+        border-radius: 0;
       `}
       onClick={onClick}
       label={label}
     >
-      {icon}
-      <span css={icon && `margin-left: ${1 * GU}px;`}>{label}</span>
-    </ButtonIcon>
+      <div
+        css={`
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: flex-end;
+          padding: ${2 * GU}px;
+          justify-content: left;
+          border-left: 2px solid transparent;
+
+          &:hover,
+          &:focus {
+            background: ${theme.surfaceSelected};
+            border-left: 2px solid ${theme.accent};
+          }
+        `}
+      >
+        {icon}
+        <span css={icon && `margin-left: ${1 * GU}px;`}>{label}</span>
+      </div>
+    </ButtonBase>
   )
 }
 
@@ -132,20 +178,5 @@ Item.propTypes = {
 }
 
 const ItemMemo = React.memo(Item)
-
-const ListItem = styled.li`
-  display: flex;
-  align-items: center;
-  border-left: 2px solid transparent;
-  border-bottom: 1px solid #dfe3e8;
-  height: 56px;
-
-  &:hover,
-  &:focus {
-    outline: none;
-    background: #f9fafc;
-    border-left: 2px solid ${theme.accent};
-  }
-`
 
 export default React.memo(GlobalSettingsButton)
