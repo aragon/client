@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Box,
+  Button,
   Checkbox,
   GU,
   IconDown,
@@ -20,6 +21,7 @@ import {
   font,
   theme,
 } from '@aragon/ui'
+import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import ButtonDropDown from '../../ButtonDropDown/ButtonDropDown'
 import LocalIdentityPopoverTitle from '../../IdentityBadge/LocalIdentityPopoverTitle'
 import { fileImport } from './Import'
@@ -32,6 +34,7 @@ function LocalIdentities({
   identitiesSelected,
   isSharedLink,
   isSavingSharedLink,
+  onClear,
   onExport,
   onImport,
   onRemove,
@@ -45,9 +48,24 @@ function LocalIdentities({
   searchTerm,
   someSelected,
 }) {
+  const inputRef = React.useRef()
+  // trigger file chooser
+  const handleImportClick = () => inputRef.current.click()
+  const handleFileChange = ({ currentTarget: { files } }) =>
+    fileImport(onImport)(files)
+
   return (
     <Box>
-      <Controls>
+      <div
+        css={`
+          display: grid;
+          grid-template-columns: auto auto auto;
+          grid-gap: ${1 * GU}px;
+          align-items: center;
+          justify-content: flex-end;
+          margin-bottom: ${2 * GU}px;
+        `}
+      >
         <div
           css={`
             position: relative;
@@ -69,18 +87,47 @@ function LocalIdentities({
             `}
           />
         </div>
+        {!iOS && (
+          <React.Fragment>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              css={`
+                position: absolute;
+                z-index: 1;
+                display: inline-block;
+                opacity: 0;
+                height: 1px;
+                width: 1px;
+                top: 101vh;
+                left: 101vw;
+              `}
+              ref={inputRef}
+            />
+            <Button onClick={handleImportClick}>
+              <IconDownload />
+              <span
+                css={`
+                  display: inline-block;
+                  padding-right: ${1.5 * GU}px;
+                `}
+              >
+                Import
+              </span>
+            </Button>
+          </React.Fragment>
+        )}
         <Actions
           someSelected={someSelected}
           onShare={onShare}
           onExport={onExport}
-          onImport={onImport}
           onRemove={onRemove}
           // shared link
           isSharedLink={isSharedLink}
           onSave={onSharedIdentitiesSave}
           onCancel={onSharedIdentitiesCancel}
         />
-      </Controls>
+      </div>
       {isSavingSharedLink && (
         <div
           css={`
@@ -96,77 +143,79 @@ function LocalIdentities({
           <div>Saving…</div>
         </div>
       )}
-      {!isSavingSharedLink && (
-        <React.Fragment>
-          <Headers>
-            <div>
-              {!iOS && (
+      {!identities.length ? (
+        <EmptyFilteredIdentities onClear={onClear} />
+      ) : (
+        !isSavingSharedLink && (
+          <React.Fragment>
+            <Headers>
+              <div>
                 <StyledCheckbox
                   checked={allSelected}
                   onChange={onToggleAll}
                   indeterminate={!allSelected && someSelected}
                 />
-              )}
-              Custom label
-            </div>
-            <div>Address</div>
-          </Headers>
-          <List>
-            {identities.map(({ address, name }) => (
-              <Item key={address}>
-                <Label>
-                  {!iOS && (
-                    <StyledCheckbox
-                      checked={identitiesSelected.get(address)}
-                      onChange={onToggleIdentity(address)}
+                Custom label
+              </div>
+              <div>Address</div>
+            </Headers>
+            <List>
+              {identities.map(({ address, name }) => (
+                <Item key={address}>
+                  <Label>
+                    {!iOS && (
+                      <StyledCheckbox
+                        checked={identitiesSelected.get(address)}
+                        onChange={onToggleIdentity(address)}
+                      />
+                    )}
+                    {name}
+                  </Label>
+                  <div>
+                    <IdentityBadge
+                      entity={address}
+                      popoverAction={
+                        !isSharedLink
+                          ? {
+                              label: 'Edit custom label',
+                              onClick: onShowLocalIdentityModal(address),
+                            }
+                          : null
+                      }
+                      popoverTitle={
+                        !isSharedLink ? (
+                          <LocalIdentityPopoverTitle label={name} />
+                        ) : null
+                      }
                     />
-                  )}
-                  {name}
-                </Label>
-                <div>
-                  <IdentityBadge
-                    entity={address}
-                    popoverAction={
-                      !isSharedLink
-                        ? {
-                            label: 'Edit custom label',
-                            onClick: onShowLocalIdentityModal(address),
-                          }
-                        : null
-                    }
-                    popoverTitle={
-                      !isSharedLink ? (
-                        <LocalIdentityPopoverTitle label={name} />
-                      ) : null
-                    }
-                  />
-                </div>
-              </Item>
-            ))}
-          </List>
-          {isSharedLink ? (
-            <div
-              css={`
-                margin-top: ${2 * GU}px;
-              `}
-            >
-              These labels have been shared with you. By clicking on the “Save”
-              button, you will make them appear on this device (labels will be
-              stored locally).
-            </div>
-          ) : (
-            <Info
-              css={`
-                margin-top: ${3 * GU}px;
-              `}
-            >
-              Any labels you add or import will only be shown on this device,
-              and not stored anywhere else. If you want to share the labels with
-              other devices or users, you will need to export them and share the
-              .json file.
-            </Info>
-          )}
-        </React.Fragment>
+                  </div>
+                </Item>
+              ))}
+            </List>
+            {isSharedLink ? (
+              <div
+                css={`
+                  margin-top: ${2 * GU}px;
+                `}
+              >
+                These labels have been shared with you. By clicking on the
+                “Save” button, you will make them appear on this device (labels
+                will be stored locally).
+              </div>
+            ) : (
+              <Info
+                css={`
+                  margin-top: ${3 * GU}px;
+                `}
+              >
+                Any labels you add or import will only be shown on this device,
+                and not stored anywhere else. If you want to share the labels
+                with other devices or users, you will need to export them and
+                share the .json file.
+              </Info>
+            )}
+          </React.Fragment>
+        )
       )}
     </Box>
   )
@@ -176,13 +225,11 @@ function Actions({
   isSharedLink,
   onCancel,
   onExport,
-  onImport,
   onRemove,
   onSave,
   onShare,
   someSelected,
 }) {
-  const inputRef = React.useRef()
   const handleClick = index => {
     if (isSharedLink) {
       if (index === 0) {
@@ -198,36 +245,14 @@ function Actions({
       return
     }
     if (index === 1) {
-      // trigger file chooser
-      inputRef.current.click()
-      return
-    }
-    if (index === 2) {
       onExport()
       return
     }
     onRemove()
   }
-  const handleFileChange = ({ currentTarget: { files } }) =>
-    fileImport(onImport)(files)
 
   return (
     <React.Fragment>
-      <input
-        type="file"
-        onChange={handleFileChange}
-        css={`
-          position: absolute;
-          z-index: 1;
-          display: inline-block;
-          opacity: 0;
-          height: 1px;
-          width: 1px;
-          top: 101vh;
-          left: 101vw;
-        `}
-        ref={inputRef}
-      />
       <ButtonDropDown
         css="z-index: 2;"
         items={
@@ -238,14 +263,6 @@ function Actions({
                   <IconShare />
                   <span>Share</span>
                 </ActionSpan>,
-                ...(!iOS
-                  ? [
-                      <ActionSpan>
-                        <IconDownload />
-                        <span>Import</span>
-                      </ActionSpan>,
-                    ]
-                  : []),
                 <ActionSpan>
                   <IconExternal />
                   <span>Export</span>
@@ -260,8 +277,9 @@ function Actions({
           <span
             css={`
               display: grid;
-              grid-template-columns: auto calc(100% - ${3 * GU}px) auto;
+              grid-template-columns: auto 1fr auto;
               grid-gap: ${1 * GU}px;
+              width: 100%;
               align-items: center;
               padding-left: ${1 * GU}px;
               z-index: 2;
@@ -295,22 +313,6 @@ const Label = styled.label`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`
-
-const Controls = styled.div`
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: ${1 * GU}px;
-  align-items: center;
-  justify-content: flex-end;
-  margin-bottom: ${2 * GU}px;
-
-  ${breakpoint(
-    'medium',
-    `
-      padding: 0;
-    `
-  )}
 `
 
 const Headers = styled.div`
@@ -357,7 +359,6 @@ const List = styled.ul`
     `
       max-height: 40vh;
       overflow: auto;
-      border-radius: 4px;
       border-top: 1px solid ${theme.contentBorder};
       border-bottom: 1px solid ${theme.contentBorder};
 
