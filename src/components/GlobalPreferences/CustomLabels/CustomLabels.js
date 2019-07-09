@@ -2,7 +2,7 @@ import React from 'react'
 import { Toast } from '@aragon/ui'
 import ShareModal from './ShareModal'
 import RemoveModal from './RemoveModal'
-import EmptyLocalIdentities from './EmptyLocalIdentities'
+import EmptyIdentities from './EmptyIdentities'
 import LocalIdentities from './LocalIdentities'
 import useSharedLink from './useSharedLink'
 import useLocalIdentities from './useLocalIdentities'
@@ -57,6 +57,8 @@ function CustomLabels({ wrapper, dao, toast }) {
     wrapper,
   })
   const { handleShowLocalIdentityModal } = useLocalIdentityModal()
+  const handleClearSearchTerm = () =>
+    handleSearchTermChange({ currentTarget: { value: '' } })
 
   return (
     <React.Fragment>
@@ -71,7 +73,7 @@ function CustomLabels({ wrapper, dao, toast }) {
         onConfirm={handleRemove}
       />
       {!identitiesToUse.length && searchTerm === '' ? (
-        <EmptyLocalIdentities onImport={handleImport} />
+        <EmptyIdentities onImport={handleImport} />
       ) : (
         <LocalIdentities
           allSelected={allSelected}
@@ -79,6 +81,7 @@ function CustomLabels({ wrapper, dao, toast }) {
           identitiesSelected={identitiesSelected}
           isSharedLink={isSharedLink}
           isSavingSharedLink={isSavingSharedLink}
+          onClear={handleClearSearchTerm}
           onExport={handleExport}
           onImport={handleImport}
           onRemove={handleRemoveModalOpen}
