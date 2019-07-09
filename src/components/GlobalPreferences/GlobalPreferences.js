@@ -7,6 +7,7 @@ import {
   Layout,
   Header,
   TabBar,
+  useTheme,
 } from '@aragon/ui'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
@@ -31,6 +32,7 @@ function GlobalPreferences({
   helpScoutOptedOut,
   onHelpScoutOptedOutChange,
 }) {
+  const theme = useTheme()
   const {
     setCurrentSection,
     currentSection,
@@ -48,14 +50,15 @@ function GlobalPreferences({
   return (
     <div
       css={`
-        border-top: 2px solid #08bee5;
+        border-top: 2px solid ${theme.accent};
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
         z-index: 11;
-        background: white;
+        background: ${theme.surface};
+        overflow: auto;
       `}
     >
       <Close onClick={onClose} />
