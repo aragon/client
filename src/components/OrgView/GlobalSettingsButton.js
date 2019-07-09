@@ -61,6 +61,7 @@ function GlobalSettingsButton({ onOpen }) {
             list-style: none;
             background: ${theme.surface};
             color: ${theme.content};
+            border-radius: 4px;
           `}
         >
           <li
@@ -110,12 +111,9 @@ function GlobalSettingsButton({ onOpen }) {
               label="Notifications"
             />
           </li>
-          <li
-            css={`
-              border-bottom: 1px solid ${theme.border};
-            `}
-          >
+          <li>
             <ItemMemo
+              lastItem
               onClick={handleItemClick('help-and-feedback')}
               icon={<IconHelpAndFeedback />}
               label="Help & Feedback"
@@ -131,7 +129,7 @@ GlobalSettingsButton.propTypes = {
   onOpen: PropTypes.func.isRequired,
 }
 
-function Item({ icon, label, onClick }) {
+function Item({ icon, label, onClick, lastItem }) {
   const theme = useTheme()
 
   return (
@@ -156,6 +154,11 @@ function Item({ icon, label, onClick }) {
           padding: ${2 * GU}px;
           justify-content: left;
           border-left: 2px solid transparent;
+          ${lastItem &&
+            `
+              border-bottom-left-radius: 4px;
+              border-bottom-right-radius: 4px;
+            `}
 
           &:hover,
           &:focus {
@@ -175,6 +178,7 @@ Item.propTypes = {
   icon: PropTypes.node.isRequired,
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  lastItem: PropTypes.bool,
 }
 
 const ItemMemo = React.memo(Item)
