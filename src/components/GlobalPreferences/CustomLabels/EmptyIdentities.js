@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Box, GU, IdentityBadge, Info, breakpoint, theme } from '@aragon/ui'
+import { Box, GU, IdentityBadge, Info, breakpoint, useTheme } from '@aragon/ui'
 import { getEmptyAddress } from '../../../web3-utils'
 import Import from './Import'
 
 function EmptyIdentities({ onImport }) {
+  const theme = useTheme()
+
   return (
     <Box>
       <div>
@@ -20,6 +22,9 @@ function EmptyIdentities({ onImport }) {
           `}
         >
           <IdentityBadge
+            css={`
+              color: ${theme.content};
+            `}
             entity={getEmptyAddress()}
             customLabel="Address badge"
             compact
