@@ -168,12 +168,7 @@ function LocalIdentities({
                 />
                 Custom label
               </div>
-              <div
-                css={`
-                  text-align: right;
-                  padding-right: ${2 * GU}px;
-                `}
-              >
+              <div css="text-align: right;">
                 <span
                   css={`
                     display: inline-block;
@@ -190,10 +185,8 @@ function LocalIdentities({
                 <li
                   key={address}
                   css={`
-                    padding: ${2 * GU}px 0;
-                    /* needs margin left to compensate for list being moved to the edge */
-                    padding-left: ${2 * GU}px;
-                    padding-right: ${3.5 * GU}px;
+                    /* needs spacing left to compensate for list being moved to the edge */
+                    padding: ${2 * GU}px;
                     display: grid;
                     grid-template-columns: 1fr 1fr;
                     align-items: center;
