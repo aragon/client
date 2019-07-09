@@ -5,30 +5,26 @@ import { Button, GU, Modal, breakpoint } from '@aragon/ui'
 function RemoveModal({ visible, onClose, onConfirm }) {
   return (
     <Modal visible={visible} onClose={onClose}>
-      <ModalTitle>Remove labels</ModalTitle>
-      <ModalText>
+      <h2 css="font-size: 22px;">Remove labels</h2>
+      <p
+        css={`
+          margin: ${2.5 * GU}px 0 ${2.5 * GU}px 0;
+        `}
+      >
         This action will irreversibly delete the selected labels you have added
         to your organization on this device
-      </ModalText>
+      </p>
       <ModalControls>
-        <Button label="Cancel" mode="secondary" onClick={onClose}>
-          Cancel
-        </Button>
-        <RemoveButton label="Remove labels" mode="strong" onClick={onConfirm}>
+        <Button label="Remove labels" mode="strong" onClick={onConfirm}>
           Remove
-        </RemoveButton>
+        </Button>
+        <CancelButton label="Cancel" mode="secondary" onClick={onClose}>
+          Cancel
+        </CancelButton>
       </ModalControls>
     </Modal>
   )
 }
-
-const ModalTitle = styled.h1`
-  font-size: 22px;
-`
-
-const ModalText = styled.p`
-  margin: ${2.5 * GU}px 0 ${2.5 * GU}px 0;
-`
 
 const ModalControls = styled.div`
   display: grid;
@@ -38,12 +34,12 @@ const ModalControls = styled.div`
     'medium',
     `
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
     `
   )}
 `
 
-const RemoveButton = styled(Button)`
+const CancelButton = styled(Button)`
   ${breakpoint(
     'medium',
     `
