@@ -133,7 +133,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
             margin-left: ${2 * GU}px;
           `}
         >
-          Copy
+          Copy link
         </Button>
       </footer>
     </Modal>
