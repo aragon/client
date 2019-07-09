@@ -16,7 +16,7 @@ class ErrorCard extends React.Component {
   }
   static defaultProps = {
     title: 'Error :(',
-    reportCallback: () => {},
+    reportCallback: null,
     showReloadButton: false,
   }
 
@@ -38,6 +38,7 @@ class ErrorCard extends React.Component {
       children,
       detailsTitle,
       detailsContent,
+      reportCallback,
       showReloadButton,
       title,
     } = this.props
@@ -62,9 +63,11 @@ class ErrorCard extends React.Component {
             </div>
           )}
           <ButtonBox>
-            <ReportLink mode="text" onClick={this.handleReportClick}>
-              Report error
-            </ReportLink>
+            {reportCallback && (
+              <ReportLink mode="text" onClick={this.handleReportClick}>
+                Report error
+              </ReportLink>
+            )}
             {showReloadButton && <ButtonsSpacer />}
             {showReloadButton && (
               <Button mode="strong" onClick={this.handleReloadClick} compact>

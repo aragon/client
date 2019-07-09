@@ -5,13 +5,13 @@ import { BaseStyles, PublicUrl } from '@aragon/ui'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
 import { DAONotFound } from './errors'
-import sentryConfig from './sentry-config'
+import { getSentryDsn } from './local-settings'
 
 class GlobalErrorHandler extends React.Component {
   static propTypes = {
     children: PropTypes.node,
   }
-  state = { error: null, errorStack: null, eventId: null }
+  state = { error: null, errorStack: null }
   componentDidCatch(error, errorInfo) {
     this.setState({
       error,
@@ -31,7 +31,7 @@ class GlobalErrorHandler extends React.Component {
     window.removeEventListener('hashchange', this.handleHashchange)
   }
   handleReportClick = () => {
-    Sentry.init(sentryConfig)
+    Sentry.init({ dsn: getSentryDsn() })
     const eventId = Sentry.captureException(this.state.error)
     Sentry.showReportDialog({ eventId })
   }
@@ -68,7 +68,7 @@ class GlobalErrorHandler extends React.Component {
               <GenericError
                 detailsTitle={error.message}
                 detailsContent={errorStack}
-                reportCallback={this.handleReportClick}
+                reportCallback={getSentryDsn() ? this.handleReportClick : null}
               />
             )}
           </div>
