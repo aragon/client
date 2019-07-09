@@ -148,7 +148,17 @@ function LocalIdentities({
       ) : (
         !isSavingSharedLink && (
           <React.Fragment>
-            <Headers>
+            <div
+              css={`
+                text-transform: uppercase;
+                color: ${theme.textSecondary};
+                ${font({ size: 'xsmall' })};
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                align-items: center;
+                margin-bottom: ${1 * GU}px;
+              `}
+            >
               <div>
                 <StyledCheckbox
                   checked={allSelected}
@@ -157,21 +167,46 @@ function LocalIdentities({
                 />
                 Custom label
               </div>
-              <div>Address</div>
-            </Headers>
+              <div
+                css={`
+                  text-align: right;
+                  padding-right: ${2 * GU}px;
+                `}
+              >
+                <span
+                  css={`
+                    display: inline-block;
+                    width: 136px;
+                    text-align: left;
+                  `}
+                >
+                  Address
+                </span>
+              </div>
+            </div>
             <List>
               {identities.map(({ address, name }) => (
-                <Item key={address}>
+                <li
+                  key={address}
+                  css={`
+                    padding: ${2 * GU}px 0;
+                    /* needs margin left to compensate for list being moved to the edge */
+                    padding-left: ${2 * GU}px;
+                    padding-right: ${3.5 * GU}px;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    align-items: center;
+                    border-bottom: 1px solid ${theme.contentBorder};
+                  `}
+                >
                   <Label>
-                    {!iOS && (
-                      <StyledCheckbox
-                        checked={identitiesSelected.get(address)}
-                        onChange={onToggleIdentity(address)}
-                      />
-                    )}
+                    <StyledCheckbox
+                      checked={identitiesSelected.get(address)}
+                      onChange={onToggleIdentity(address)}
+                    />
                     {name}
                   </Label>
-                  <div>
+                  <div css="text-align: right;">
                     <IdentityBadge
                       entity={address}
                       popoverAction={
@@ -189,7 +224,7 @@ function LocalIdentities({
                       }
                     />
                   </div>
-                </Item>
+                </li>
               ))}
             </List>
             {isSharedLink ? (
@@ -313,31 +348,6 @@ const Label = styled.label`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`
-
-const Headers = styled.div`
-  text-transform: uppercase;
-  color: ${theme.textSecondary};
-  ${font({ size: 'xsmall' })};
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-
-  & > div {
-    padding-left: ${2 * GU}px;
-  }
-`
-
-const Item = styled.li`
-  padding: ${2 * GU}px 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  border-bottom: 1px solid ${theme.contentBorder};
-
-  & > label {
-    padding-left: ${2 * GU}px;
-  }
 `
 
 const List = styled.ul`
