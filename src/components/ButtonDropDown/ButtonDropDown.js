@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { ButtonBase, theme } from '@aragon/ui'
+import { Button, ButtonBase, theme } from '@aragon/ui'
 import {
   useClickOutside,
   useOnBlur,
@@ -30,20 +30,16 @@ function ButtonDropDown({
         background: ${theme.contentBackground};
       `}
     >
-      <ButtonBase
+      <Button
         css={`
           display: flex;
           align-items: center;
           height: 40px;
-          min-width: 160px;
-          border: 1px solid ${theme.contentBorder};
-          border-radius: 4px;
-          background: ${theme.contentBackground};
         `}
         onClick={onCoverClick}
       >
         {cover}
-      </ButtonBase>
+      </Button>
       {opened && (
         <ul
           css={`
