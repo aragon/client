@@ -19,7 +19,7 @@ import {
   TextInput,
   breakpoint,
   font,
-  theme,
+  useTheme,
 } from '@aragon/ui'
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import ButtonDropDown from '../../ButtonDropDown/ButtonDropDown'
@@ -48,6 +48,7 @@ function LocalIdentities({
   searchTerm,
   someSelected,
 }) {
+  const theme = useTheme()
   const inputRef = React.useRef()
   // trigger file chooser
   const handleImportClick = () => inputRef.current.click()
@@ -99,8 +100,8 @@ function LocalIdentities({
                 opacity: 0;
                 height: 1px;
                 width: 1px;
-                top: 101vh;
-                left: 101vw;
+                top: -101vh;
+                left: -101vw;
               `}
               ref={inputRef}
             />
@@ -151,7 +152,7 @@ function LocalIdentities({
             <div
               css={`
                 text-transform: uppercase;
-                color: ${theme.textSecondary};
+                color: ${theme.content};
                 ${font({ size: 'xsmall' })};
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -184,7 +185,7 @@ function LocalIdentities({
                 </span>
               </div>
             </div>
-            <List>
+            <List border={theme.border} surface={theme.surface}>
               {identities.map(({ address, name }) => (
                 <li
                   key={address}
@@ -196,7 +197,7 @@ function LocalIdentities({
                     display: grid;
                     grid-template-columns: 1fr 1fr;
                     align-items: center;
-                    border-bottom: 1px solid ${theme.contentBorder};
+                    border-bottom: 1px solid ${theme.border};
                   `}
                 >
                   <Label>
@@ -357,20 +358,16 @@ const List = styled.ul`
   width: calc(100% + ${4 * GU}px);
   position: relative;
   left: -${2 * GU}px;
-  background: ${theme.contentBackground};
+  background: ${({ surface }) => surface};
   z-index: 1;
-
-  li:first-child {
-    border-top: 1px solid ${theme.contentBorder};
-  }
+  border-top: ${({ border }) => `1px solid ${border};`};
+  border-bottom: ${({ border }) => `1px solid ${border};`};
 
   ${breakpoint(
     'medium',
     `
       max-height: 40vh;
       overflow: auto;
-      border-top: 1px solid ${theme.contentBorder};
-      border-bottom: 1px solid ${theme.contentBorder};
 
       li:first-child {
         border-top: none;
