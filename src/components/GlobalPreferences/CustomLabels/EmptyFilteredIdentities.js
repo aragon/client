@@ -1,8 +1,10 @@
 import React from 'react'
-import { Button, GU, theme } from '@aragon/ui'
+import { Button, GU, useTheme } from '@aragon/ui'
 import noResultsSvg from './no-results.svg'
 
 function EmptyFilteredIdentities({ onClear }) {
+  const theme = useTheme()
+
   return (
     <div
       css={`
