@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { ButtonIcon, GU, IconSettings, Popover, theme } from '@aragon/ui'
 import IconNetwork from './IconNetwork'
@@ -10,16 +11,19 @@ function GlobalSettingsButton({ onOpen }) {
   const [opened, setOpened] = useState(false)
   const containerRef = useRef()
 
-  const handleToggle = () => {
+  const handleToggle = useCallback(() => {
     setOpened(!opened)
-  }
-  const handleClose = () => {
+  }, [setOpened])
+  const handleClose = useCallback(() => {
     setOpened(false)
-  }
-  const handleItemClick = path => () => {
-    setOpened(false)
-    onOpen(path)
-  }
+  }, [setOpened])
+  const handleItemClick = useCallback(
+    path => () => {
+      setOpened(false)
+      onOpen(path)
+    },
+    [setOpened, onOpen]
+  )
 
   return (
     <React.Fragment>
@@ -64,28 +68,28 @@ function GlobalSettingsButton({ onOpen }) {
             Global preferences
           </li>
           <ListItem>
-            <Item
+            <ItemMemo
               onClick={handleItemClick('custom-labels')}
               icon={<IconCustomLabels />}
               label="Custom labels"
             />
           </ListItem>
           <ListItem>
-            <Item
+            <ItemMemo
               onClick={handleItemClick('network')}
               icon={<IconNetwork />}
               label="Network"
             />
           </ListItem>
           <ListItem>
-            <Item
+            <ItemMemo
               onClick={handleItemClick('notifications')}
               icon={<IconNotifications />}
               label="Notifications"
             />
           </ListItem>
           <ListItem>
-            <Item
+            <ItemMemo
               onClick={handleItemClick('help-and-feedback')}
               icon={<IconHelpAndFeedback />}
               label="Help & Feedback"
@@ -95,6 +99,10 @@ function GlobalSettingsButton({ onOpen }) {
       </Popover>
     </React.Fragment>
   )
+}
+
+GlobalSettingsButton.propTypes = {
+  onOpen: PropTypes.func.isRequired,
 }
 
 function Item({ icon, label, onClick }) {
@@ -117,6 +125,14 @@ function Item({ icon, label, onClick }) {
   )
 }
 
+Item.propTypes = {
+  icon: PropTypes.node.isRequired,
+  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+}
+
+const ItemMemo = React.memo(Item)
+
 const ListItem = styled.li`
   display: flex;
   align-items: center;
@@ -132,4 +148,4 @@ const ListItem = styled.li`
   }
 `
 
-export default GlobalSettingsButton
+export default React.memo(GlobalSettingsButton)
