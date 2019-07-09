@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Box, GU, IdentityBadge, Info, breakpoint } from '@aragon/ui'
+import { Box, GU, IdentityBadge, Info, breakpoint, theme } from '@aragon/ui'
 import { getEmptyAddress } from '../../../web3-utils'
 import Import from './Import'
 
-function EmptyLocalIdentities({ onImport }) {
+function EmptyIdentities({ onImport }) {
   return (
     <Box>
       <div>
@@ -26,8 +26,15 @@ function EmptyLocalIdentities({ onImport }) {
             badgeOnly
           />
         </span>
-        anywhere in the app, or importing a .json file with labels by clicking
-        "Import" below.
+        anywhere in the app, or importing a{' '}
+        <span
+          css={`
+            color: ${theme.help};
+          `}
+        >
+          JSON file
+        </span>{' '}
+        with labels by clicking the button below. "Import" below.
       </div>
       <div
         css={`
@@ -45,8 +52,8 @@ function EmptyLocalIdentities({ onImport }) {
   )
 }
 
-EmptyLocalIdentities.propTypes = {
+EmptyIdentities.propTypes = {
   onImport: PropTypes.func.isRequired,
 }
 
-export default React.memo(EmptyLocalIdentities)
+export default React.memo(EmptyIdentities)
