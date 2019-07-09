@@ -8,12 +8,14 @@ import {
   TextInput,
   Toast,
   breakpoint,
-  theme,
+  useTheme,
 } from '@aragon/ui'
 
 const TIMEOUT_TOAST = 4000
 
 function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
+  const theme = useTheme()
+
   return (
     <Modal visible={visible} onClose={onClose}>
       <header
@@ -51,10 +53,9 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
               display: inline-flex;
               max-width: 100%;
               width: 100%;
-              height: 40px;
               position: relative;
-              background: ${theme.contentBackground};
-              border: 1px solid ${theme.contentBorder};
+              background: ${theme.surface};
+              border: 1px solid ${theme.border};
               border-radius: 3px;
               box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
               padding-right: 30px;
@@ -72,9 +73,9 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
                 max-width: 100%;
                 border: 0;
                 box-shadow: none;
-                background: transparent;
+                background: ${theme.surface};
                 &:read-only {
-                  color: ${theme.textPrimary};
+                  color: ${theme.content};
                   text-shadow: none;
                 }
               `}
@@ -111,29 +112,23 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
           ${breakpoint(
             'medium',
             `
-                display: block;
-              `
+              display: block;
+            `
           )}
         `}
       >
+        <Button mode="strong" label="Copy link to clipboard" onClick={onCopy}>
+          Copy link
+        </Button>
         <Button
           label="Close modal"
           mode="secondary"
           onClick={onClose}
-          css={'width: 117px;'}
-        >
-          Close
-        </Button>
-        <Button
-          mode="strong"
-          label="Copy link to clipboard"
-          onClick={onCopy}
           css={`
-            width: 117px;
             margin-left: ${2 * GU}px;
           `}
         >
-          Copy link
+          Close
         </Button>
       </footer>
     </Modal>
