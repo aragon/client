@@ -25,6 +25,7 @@
     "@aragon/ui": "^0.40.1",
     "@aragon/wrapper": "^5.0.0-rc.12",
     "@babel/polyfill": "^7.0.0",
+    "@sentry/browser": "^5.5.0",
     "@ungap/event-target": "^0.1.0",
     "bn.js": "4.11.6",
     "date-fns": "2.0.0-alpha.22",

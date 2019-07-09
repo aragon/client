@@ -1,15 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import * as Sentry from '@sentry/browser'
 import { BaseStyles, PublicUrl } from '@aragon/ui'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
 import { DAONotFound } from './errors'
+import sentryConfig from './sentry-config'
 
 class GlobalErrorHandler extends React.Component {
   static propTypes = {
     children: PropTypes.node,
   }
-  state = { error: null, errorStack: null }
+  state = { error: null, errorStack: null, eventId: null }
   componentDidCatch(error, errorInfo) {
     this.setState({
       error,
@@ -27,6 +29,11 @@ class GlobalErrorHandler extends React.Component {
   }
   componentWillUnmount() {
     window.removeEventListener('hashchange', this.handleHashchange)
+  }
+  handleReportClick = () => {
+    Sentry.init(sentryConfig)
+    const eventId = Sentry.captureException(this.state.error)
+    Sentry.showReportDialog({ eventId })
   }
   handleHashchange = () => {
     window.location.reload()
@@ -61,6 +68,7 @@ class GlobalErrorHandler extends React.Component {
               <GenericError
                 detailsTitle={error.message}
                 detailsContent={errorStack}
+                reportCallback={this.handleReportClick}
               />
             )}
           </div>

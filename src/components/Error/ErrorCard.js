@@ -10,13 +10,13 @@ class ErrorCard extends React.Component {
     children: PropTypes.node,
     detailsTitle: PropTypes.string,
     detailsContent: PropTypes.node,
+    reportCallback: PropTypes.func,
     showReloadButton: PropTypes.bool,
-    supportUrl: PropTypes.string,
     title: PropTypes.string,
   }
   static defaultProps = {
     title: 'Error :(',
-    supportUrl: '',
+    reportCallback: () => {},
     showReloadButton: false,
   }
 
@@ -25,6 +25,9 @@ class ErrorCard extends React.Component {
   toggleMoreDetails = () => {
     const { showDetails } = this.state
     this.setState({ showDetails: !showDetails })
+  }
+  handleReportClick = () => {
+    this.props.reportCallback()
   }
   handleReloadClick = () => {
     location.reload()
@@ -36,7 +39,6 @@ class ErrorCard extends React.Component {
       detailsTitle,
       detailsContent,
       showReloadButton,
-      supportUrl,
       title,
     } = this.props
     const { showDetails } = this.state
@@ -59,21 +61,17 @@ class ErrorCard extends React.Component {
               )}
             </div>
           )}
-          {(supportUrl || showReloadButton) && (
-            <ButtonBox>
-              {supportUrl && (
-                <IssueLink mode="text" href={supportUrl} target="_blank">
-                  Tell us what went wrong
-                </IssueLink>
-              )}
-              {supportUrl && showReloadButton && <ButtonsSpacer />}
-              {showReloadButton && (
-                <Button mode="strong" onClick={this.handleReloadClick} compact>
-                  Reload
-                </Button>
-              )}
-            </ButtonBox>
-          )}
+          <ButtonBox>
+            <ReportLink mode="text" onClick={this.handleReportClick}>
+              Report error
+            </ReportLink>
+            {showReloadButton && <ButtonsSpacer />}
+            {showReloadButton && (
+              <Button mode="strong" onClick={this.handleReloadClick} compact>
+                Reload
+              </Button>
+            )}
+          </ButtonBox>
         </Card>
       </div>
     )
@@ -149,7 +147,7 @@ const ButtonBox = styled.div`
   justify-content: space-between;
 `
 
-const IssueLink = styled(Button.Anchor)`
+const ReportLink = styled(Button.Anchor)`
   margin-left: -10px;
   color: ${theme.textSecondary};
   text-decoration: none;
