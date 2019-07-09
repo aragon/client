@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Button, ButtonBase, theme } from '@aragon/ui'
+import { Button, ButtonBase, useTheme } from '@aragon/ui'
 import {
   useClickOutside,
   useOnBlur,
@@ -20,6 +20,8 @@ function ButtonDropDown({
   setHighlightedIndex,
   ...props
 }) {
+  const theme = useTheme()
+
   return (
     <div
       {...props}
@@ -47,9 +49,9 @@ function ButtonDropDown({
             padding: 0;
             margin: 0;
             list-style: none;
-            border: 1px solid ${theme.contentBorder};
+            border: 1px solid ${theme.border};
             border-radius: 4px;
-            background: ${theme.contentBackground};
+            background: ${theme.surface};
             width: 100%;
           `}
         >
@@ -84,7 +86,7 @@ function ButtonDropDown({
                       `}
                     ${index === highlightedIndex &&
                       `
-                        background: #f9fafc;
+                        background: ${theme.surfaceHighlight};
                         border-left: 3px solid ${theme.accent};
                       `}
                   `}
