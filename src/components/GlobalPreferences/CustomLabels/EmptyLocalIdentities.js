@@ -1,16 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Box, IdentityBadge, breakpoint } from '@aragon/ui'
+import { Box, GU, IdentityBadge, Info, breakpoint } from '@aragon/ui'
 import { getEmptyAddress } from '../../../web3-utils'
 import Import from './Import'
 
-const EmptyLocalIdentities = React.memo(function EmptyLocalIdentities({
-  onImport,
-}) {
+function EmptyLocalIdentities({ onImport }) {
   return (
-    <Box heading="Start adding labels">
-      <Paragraph>
+    <Box>
+      <div>
         You can add labels by clicking on the{' '}
         <span
           css={`
@@ -30,25 +28,25 @@ const EmptyLocalIdentities = React.memo(function EmptyLocalIdentities({
         </span>
         anywhere in the app, or importing a .json file with labels by clicking
         "Import" below.
-      </Paragraph>
-      <WrapImport>
+      </div>
+      <div
+        css={`
+          margin: ${2 * GU}px 0;
+        `}
+      >
         <Import onImport={onImport} />
-      </WrapImport>
+      </div>
+      <Info>
+        Any labels you add or import will only be shown on this device, and not
+        stored anywhere else. If you want to share the labels with other devices
+        or users, you will need to export them and share the .json file.
+      </Info>
     </Box>
   )
-})
+}
 
 EmptyLocalIdentities.propTypes = {
   onImport: PropTypes.func.isRequired,
 }
 
-const WrapImport = styled.div`
-  margin-top: 20px;
-`
-
-// div cannot appear as descendant of p
-const Paragraph = styled.div`
-  margin: 16px 0px;
-`
-
-export default EmptyLocalIdentities
+export default React.memo(EmptyLocalIdentities)
