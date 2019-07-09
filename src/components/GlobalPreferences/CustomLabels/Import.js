@@ -70,8 +70,8 @@ const Import = ({ onImport }) => {
           width: 100%;
         `}
       />
-      <Button label="Import" mode="secondary">
-        Import
+      <Button label="Import labels" mode="strong">
+        Import labels
       </Button>
     </label>
   )
