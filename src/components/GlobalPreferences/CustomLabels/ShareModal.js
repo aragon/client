@@ -108,6 +108,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
           margin-top: ${3 * GU}px;
           display: flex;
           justify-content: space-between;
+          text-align: right;
 
           ${breakpoint(
             'medium',
@@ -117,18 +118,18 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
           )}
         `}
       >
-        <Button mode="strong" label="Copy link to clipboard" onClick={onCopy}>
-          Copy link
+        <Button label="Close modal" mode="secondary" onClick={onClose}>
+          Close
         </Button>
         <Button
-          label="Close modal"
-          mode="secondary"
-          onClick={onClose}
+          mode="strong"
+          label="Copy link to clipboard"
+          onClick={onCopy}
           css={`
             margin-left: ${2 * GU}px;
           `}
         >
-          Close
+          Copy link
         </Button>
       </footer>
     </Modal>
