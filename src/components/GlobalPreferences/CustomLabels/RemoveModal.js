@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, GU, Modal, breakpoint } from '@aragon/ui'
 
@@ -26,6 +27,12 @@ function RemoveModal({ visible, onClose, onConfirm }) {
   )
 }
 
+RemoveModal.propTypes = {
+  visible: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+}
+
 const ModalControls = styled.div`
   display: grid;
   grid-gap: ${1.5 * GU}px;
@@ -48,4 +55,4 @@ const RemoveButton = styled(Button)`
   )}
 `
 
-export default RemoveModal
+export default React.memo(RemoveModal)
