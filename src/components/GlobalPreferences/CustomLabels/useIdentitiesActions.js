@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useContext,
-  useCallback,
-} from 'react'
+import { useState, useMemo, useContext, useCallback } from 'react'
 import { format } from 'date-fns'
 import { saveAs } from 'file-saver'
 import {
@@ -12,8 +6,6 @@ import {
   identityEventTypes,
 } from '../../IdentityManager/IdentityManager'
 import { utoa } from '../../../string-utils'
-
-const mapToNameAndAddress = ({ address, name }) => ({ address, name })
 
 function useIdentitiesActions({
   wrapper,
@@ -28,34 +20,35 @@ function useIdentitiesActions({
   // share
   const [shareModalOpened, setShareModalOpened] = useState(false)
   const shareLink = useMemo(() => {
-    //const base = `${window.location.origin}/#/${dao}`
-    const base = window.location.href
     const identitiesToShare = filteredIdentities.reduce(
       (p, c) => [...p, ...(identitiesSelected.get(c.address) ? [c] : [])],
       []
     )
     try {
       const labels = utoa(JSON.stringify(identitiesToShare))
-      return `${base}&l=${labels}`
+      return `${window.location.href}&l=${labels}`
     } catch (err) {
       console.log('Error while creating the identities sharing link:', err)
       return ''
     }
-  }, [dao, filteredIdentities])
+  }, [filteredIdentities, identitiesSelected])
 
   // import
-  const handleImport = async list => {
-    if (!wrapper) {
-      return
-    }
-    for (const { name, address } of list) {
-      await wrapper.modifyAddressIdentity(address, { name })
-    }
-    identityEvents$.next({ type: identityEventTypes.IMPORT })
-  }
+  const handleImport = useCallback(
+    async list => {
+      if (!wrapper) {
+        return
+      }
+      for (const { name, address } of list) {
+        await wrapper.modifyAddressIdentity(address, { name })
+      }
+      identityEvents$.next({ type: identityEventTypes.IMPORT })
+    },
+    [wrapper, identityEvents$]
+  )
 
   // export
-  const handleExport = () => {
+  const handleExport = useCallback(() => {
     if (!someSelected) {
       return
     }
@@ -72,11 +65,11 @@ function useIdentitiesActions({
       { type: 'text/json' }
     )
     saveAs(blob, `aragon-labels_${dao}_${today}.json`)
-  }
+  }, [someSelected, filteredIdentities, identitiesSelected, dao])
 
   // remove
   const [removeModalOpened, setRemoveModalOpened] = useState(false)
-  const handleRemove = async () => {
+  const handleRemove = useCallback(async () => {
     if (!wrapper) {
       return
     }
@@ -89,7 +82,13 @@ function useIdentitiesActions({
       type: identityEventTypes.REMOVE,
       addresses: toRemove,
     })
-  }
+  }, [
+    filteredIdentities,
+    identitiesSelected,
+    identityEvents$,
+    setRemoveModalOpened,
+    wrapper,
+  ])
 
   return {
     // share
