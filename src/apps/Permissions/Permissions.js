@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { AppType } from '../../prop-types'
+import { AppType, AragonType } from '../../prop-types'
 import { IconPlus } from '@aragon/ui'
 import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
 import Screen from './Screen'
@@ -22,6 +22,7 @@ class Permissions extends React.Component {
     onParamsRequest: PropTypes.func.isRequired,
     params: PropTypes.string,
     permissionsLoading: PropTypes.bool.isRequired,
+    wrapper: AragonType,
   }
 
   state = {
@@ -180,7 +181,13 @@ class Permissions extends React.Component {
   }
 
   render() {
-    const { apps, appsLoading, permissionsLoading, params } = this.props
+    const {
+      apps,
+      appsLoading,
+      permissionsLoading,
+      params,
+      wrapper,
+    } = this.props
     const { showAssignPermissionPanel, animateScreens } = this.state
     const location = this.getLocation(params)
 
@@ -261,6 +268,7 @@ class Permissions extends React.Component {
                 apps={apps}
                 opened={showAssignPermissionPanel}
                 onClose={this.closeAssignPermissionPanel}
+                wrapper={wrapper}
               />
 
               <ManageRolePanel

@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Text, useTheme } from '@aragon/ui'
 import HomeCard from './HomeCard'
 import { AppType } from '../../prop-types'
+import { appIds } from '../../environment'
 
 import imgAssignTokens from './assets/assign-tokens.svg'
 import imgFinance from './assets/finance.svg'
@@ -18,25 +19,29 @@ const actions = [
   {
     id: 'assign-tokens',
     label: 'Assign Tokens',
-    appName: 'Token Manager',
+    appName: 'Tokens',
+    appId: appIds['TokenManager'],
     img: imgAssignTokens,
   },
   {
     id: 'vote',
     label: 'Vote',
     appName: 'Voting',
+    appId: appIds['Voting'],
     img: imgVote,
   },
   {
     id: 'check-finance',
     label: 'Check Finance',
     appName: 'Finance',
+    appId: appIds['Finance'],
     img: imgFinance,
   },
   {
     id: 'new-payment',
     label: 'New Payment',
     appName: 'Finance',
+    appId: appIds['Finance'],
     img: imgPayment,
   },
 ]
@@ -45,31 +50,26 @@ class Home extends React.Component {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     dao: PropTypes.string.isRequired,
-    onMessage: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }
   handleCardAction = actionId => {
     const { onOpenApp, apps } = this.props
     const action = actions.find(action => action.id === actionId)
-    if (!action || !action.appName) {
+    if (!action || !action.appId) {
       return
     }
-    const app = apps.find(({ name }) => name === action.appName)
+    const app = apps.find(({ appId }) => appId === action.appId)
     if (app && onOpenApp) {
       onOpenApp(app.proxyAddress)
     }
   }
-  handleMenuPanelOpen = () => {
-    this.props.onMessage({
-      data: { from: 'app', name: 'menuPanel', value: true },
-    })
-  }
   render() {
     const { theme, apps, dao } = this.props
 
-    const appActions = actions.filter(({ appName }) =>
-      apps.find(({ name }) => name === appName)
+    const appActions = actions.filter(({ appId }) =>
+      apps.find(app => app.appId === appId)
     )
+
     return (
       <div
         css={`

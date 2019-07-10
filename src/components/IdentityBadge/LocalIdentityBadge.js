@@ -43,6 +43,17 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
     },
     [address, handleResolve]
   )
+  const handleRemove = useCallback(
+    async addresses => {
+      const exists = addresses.find(
+        addr => addr.toLowerCase() === address.toLowerCase()
+      )
+      if (exists) {
+        setLabel(null)
+      }
+    },
+    [address]
+  )
 
   const clearLabel = useCallback(() => {
     setLabel(null)
@@ -56,12 +67,21 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
           return handleEvent(event.address)
         case identityEventTypes.IMPORT:
           return handleResolve()
+        case identityEventTypes.REMOVE:
+          return handleRemove(event.addresses)
       }
     })
     return () => {
       subscription.unsubscribe()
     }
-  }, [clearLabel, entity, handleEvent, handleResolve, identityEvents$])
+  }, [
+    clearLabel,
+    entity,
+    handleEvent,
+    handleResolve,
+    handleRemove,
+    identityEvents$,
+  ])
 
   if (address === null) {
     return <IdentityBadgeWithNetwork {...props} customLabel={entity} />

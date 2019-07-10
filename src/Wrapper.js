@@ -373,6 +373,7 @@ class Wrapper extends React.PureComponent {
           params={params}
           onMessage={this.handleAppMessage}
           onParamsRequest={this.handleParamsRequest}
+          wrapper={wrapper}
         />
       )
     }

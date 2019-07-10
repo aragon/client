@@ -5,7 +5,12 @@ import {
   useReducer,
   useState,
   useRef,
+  useContext,
 } from 'react'
+import {
+  IdentityContext,
+  identityEventTypes,
+} from './components/IdentityManager/IdentityManager'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 
@@ -212,3 +217,141 @@ export function useOnBlur(cb, ref = useRef()) {
   return { ref, handleBlur }
 }
 
+/* eslint-disable react-hooks/rules-of-hooks */
+export function useArrowKeysFocus(query, containerRef = useRef()) {
+  /* eslint-enable react-hooks/rules-of-hooks */
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
+
+  const reset = () => setHighlightedIndex(-1)
+  const cycleFocus = useCallback(
+    (e, change) => {
+      e.preventDefault()
+      const elements = document.querySelectorAll(query)
+      let next = highlightedIndex + change
+      if (next > elements.length - 1) {
+        next = 0
+      }
+      if (next < 0) {
+        next = elements.length - 1
+      }
+      if (!elements[next]) {
+        next = -1
+      }
+      setHighlightedIndex(next)
+    },
+    [highlightedIndex, query]
+  )
+  const handleKeyDown = useCallback(
+    e => {
+      const { keyCode } = e
+      if (keyCode === KEYCODE_UP || keyCode === KEYCODE_DOWN) {
+        cycleFocus(e, keyCode === KEYCODE_UP ? -1 : 1)
+      }
+    },
+    [cycleFocus]
+  )
+
+  const { handleBlur: handleContainerBlur } = useOnBlur(reset, containerRef)
+  useEffect(() => {
+    if (highlightedIndex === -1) {
+      return
+    }
+    const elements = document.querySelectorAll(query)
+    if (!elements[highlightedIndex]) {
+      return
+    }
+    elements[highlightedIndex].focus()
+  }, [highlightedIndex, query])
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
+  return { containerRef, handleContainerBlur }
+}
+
+export function useLocalIdentity(entity) {
+  const { resolve, identityEvents$ } = useContext(IdentityContext)
+  const [name, setName] = useState(null)
+
+  const handleResolve = useCallback(async () => {
+    try {
+      const { name = null } = (await resolve(entity)) || {}
+      setName(name)
+    } catch (e) {
+      // address does not resolve to identity
+    }
+  }, [resolve, entity])
+
+  useEffect(() => {
+    handleResolve()
+    const subscription = identityEvents$.subscribe(({ address, type }) => {
+      switch (type) {
+        case identityEventTypes.MODIFY:
+          if (entity.toLowerCase() === address.toLowerCase()) {
+            handleResolve()
+          }
+          return
+        case identityEventTypes.CLEAR:
+          setName(null)
+          return
+        case identityEventTypes.IMPORT:
+          handleResolve()
+      }
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [identityEvents$, handleResolve, entity])
+
+  return { name }
+}
+
+/* eslint-disable react-hooks/rules-of-hooks */
+export function useArrowKeysFocusRefs(refs) {
+  /* eslint-enable react-hooks/rules-of-hooks */
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
+
+  const cycleFocus = useCallback(
+    (e, change) => {
+      e.preventDefault()
+      let next = highlightedIndex + change
+      if (next > refs.length - 1) {
+        next = 0
+      }
+      if (next < 0) {
+        next = refs.length - 1
+      }
+      setHighlightedIndex(next)
+    },
+    [highlightedIndex, refs.length]
+  )
+  const handleKeyDown = useCallback(
+    e => {
+      const { keyCode } = e
+      if (keyCode === KEYCODE_UP || keyCode === KEYCODE_DOWN) {
+        cycleFocus(e, keyCode === KEYCODE_UP ? -1 : 1)
+      }
+    },
+    [cycleFocus]
+  )
+
+  useEffect(() => {
+    if (highlightedIndex === -1) {
+      return
+    }
+    if (!refs[highlightedIndex]) {
+      return
+    }
+    refs[highlightedIndex].focus()
+  }, [highlightedIndex, refs])
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
+  return {
+    highlightedIndex,
+    setHighlightedIndex: index => () => setHighlightedIndex(index),
+  }
+}

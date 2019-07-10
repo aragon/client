@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { AppType } from '../../prop-types'
+import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntitySelector from './EntitySelector'
@@ -22,6 +22,7 @@ class AssignPermissionPanel extends React.PureComponent {
     getAppRoles: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     opened: PropTypes.bool.isRequired,
+    wrapper: AragonType,
   }
 
   state = {
@@ -128,7 +129,7 @@ class AssignPermissionPanel extends React.PureComponent {
   }
 
   render() {
-    const { opened, onClose } = this.props
+    const { opened, onClose, wrapper } = this.props
     const { assignEntityIndex, appIndex, roleIndex } = this.state
 
     const appsItems = this.getAppsItems()
@@ -159,6 +160,7 @@ class AssignPermissionPanel extends React.PureComponent {
             activeIndex={assignEntityIndex}
             apps={this.getNamedApps()}
             onChange={this.handleEntityChange}
+            wrapper={wrapper}
           />
 
           {selectedApp && (

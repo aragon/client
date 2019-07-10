@@ -5,6 +5,7 @@ import { Subject } from 'rxjs'
 const identityEventTypes = {
   IMPORT: 'IMPORT',
   MODIFY: 'MODIFY',
+  REMOVE: 'REMOVE',
 }
 
 // An events subject

@@ -7,7 +7,7 @@ import {
   useClickOutside,
   useOnBlur,
   useEsc,
-  useArrowKeysFocus,
+  useArrowKeysFocusRefs as useArrowKeysFocus,
 } from '../../hooks'
 
 function ButtonDropDown({ onClick, items, cover, ...props }) {

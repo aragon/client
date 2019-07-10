@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DropDown, Field, TextInput } from '@aragon/ui'
+import { DropDown, Field } from '@aragon/ui'
 import { getAnyEntity } from '../../permissions'
-import { AppType } from '../../prop-types'
+import { AppType, AragonType } from '../../prop-types'
 import { getEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from '../../components/AppInstanceLabel'
+import LocalIdentitiesAutoComplete from '../../components/LocalIdentitiesAutoComplete/LocalIdentitiesAutoComplete'
 
 class EntitySelector extends React.Component {
   static propTypes = {
@@ -14,6 +15,7 @@ class EntitySelector extends React.Component {
     label: PropTypes.string.isRequired,
     labelCustomAddress: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    wrapper: AragonType,
   }
   state = {
     customAddress: '',
@@ -26,11 +28,11 @@ class EntitySelector extends React.Component {
       })
     })
   }
-  handleCustomAddressChange = event => {
-    this.setState({ customAddress: event.target.value })
+  handleCustomAddressChange = value => {
+    this.setState({ customAddress: value })
     this.props.onChange({
       index: this.getItems().length - 1,
-      address: event.target.value,
+      address: value,
     })
   }
   getApps() {
@@ -77,7 +79,7 @@ class EntitySelector extends React.Component {
   }
   render() {
     const { customAddress } = this.state
-    const { activeIndex, label, labelCustomAddress } = this.props
+    const { activeIndex, label, labelCustomAddress, wrapper } = this.props
     const items = this.getItems()
     const showCustomAddress = activeIndex === items.length - 1
     return (
@@ -93,11 +95,12 @@ class EntitySelector extends React.Component {
 
         {showCustomAddress && (
           <Field label={labelCustomAddress}>
-            <TextInput
+            <LocalIdentitiesAutoComplete
               placeholder="0xcafe…"
               value={customAddress}
               onChange={this.handleCustomAddressChange}
               wide
+              wrapper={wrapper}
             />
           </Field>
         )}
