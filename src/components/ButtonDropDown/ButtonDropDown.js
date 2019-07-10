@@ -1,5 +1,8 @@
-import React, { useState, useRef } from 'react'
-import { Button, ButtonBase, useTheme } from '@aragon/ui'
+import React, { useMemo, useState, useRef, useCallback } from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { Button, ButtonBase, springs, useTheme } from '@aragon/ui'
+import { Transition, animated } from 'react-spring'
 import {
   useClickOutside,
   useOnBlur,
@@ -7,29 +10,28 @@ import {
   useArrowKeysFocus,
 } from '../../hooks'
 
-function ButtonDropDown({
-  items,
-  cover,
-  opened,
-  onCoverClick,
-  onItemClick,
-  onBlur,
-  containerRef,
-  refs,
-  highlightedIndex,
-  setHighlightedIndex,
-  ...props
-}) {
+function ButtonDropDown({ onClick, items, cover, ...props }) {
   const theme = useTheme()
+  const {
+    opened,
+    setOpened,
+    handleItemClick,
+    containerRef,
+    handleBlur,
+    refs,
+    highlightedIndex,
+    setHighlightedIndex,
+  } = useButtonDropDown(onClick)
+  const handleToggle = () => setOpened(!opened)
 
   return (
     <div
       {...props}
       ref={containerRef}
-      onBlur={onBlur}
+      onBlur={handleBlur}
       css={`
         position: relative;
-        background: ${theme.contentBackground};
+        background: ${theme.surface};
       `}
     >
       <Button
@@ -38,87 +40,118 @@ function ButtonDropDown({
           align-items: center;
           height: 40px;
         `}
-        onClick={onCoverClick}
+        onClick={handleToggle}
       >
         {cover}
       </Button>
-      {opened && (
-        <ul
-          css={`
-            position: absolute;
-            padding: 0;
-            margin: 0;
-            list-style: none;
-            border: 1px solid ${theme.border};
-            border-radius: 4px;
-            background: ${theme.surface};
-            width: 100%;
-          `}
-        >
-          {items.map((item, index) => {
-            return (
-              <li key={index}>
-                <ButtonBase
-                  ref={node => (refs[index] = node)}
-                  onFocus={setHighlightedIndex(index)}
-                  onMouseOver={setHighlightedIndex(index)}
-                  css={`
-                    display: flex;
-                    align-items: center;
-                    height: 40px;
-                    width: 100%;
-                    border-left: 3px solid transparent;
-                    border-radius: 0;
-                    &:hover,
-                    &:focus {
-                      outline: none;
-                    }
+      <Transition
+        config={springs.swift}
+        items={opened}
+        from={{ scale: 0.98, opacity: 0 }}
+        enter={{ scale: 1, opacity: 1 }}
+        leave={{ scale: 1, opacity: 0 }}
+        native
+      >
+        {show =>
+          show &&
+          /* eslint-disable react/prop-types */
+          (({ scale, opacity }) => (
+            <List
+              border={theme.border}
+              surface={theme.surface}
+              role="listbox"
+              style={{
+                opacity,
+                transform: scale.interpolate(t => `scale3d(${t},${t},1)`),
+              }}
+            >
+              {items.map((item, index) => {
+                return (
+                  <li key={index}>
+                    <ButtonBase
+                      ref={node => (refs[index] = node)}
+                      onFocus={setHighlightedIndex(index)}
+                      onMouseOver={setHighlightedIndex(index)}
+                      css={`
+                       display: flex;
+                       align-items: center;
+                       height: 40px;
+                       width: calc(100% - 1px);
+                       border-left: 3px solid transparent;
+                       border-radius: 0;
+                       &:hover,
+                       &:focus {
+                         outline: none;
+                       }
 
-                    ${index === 0 &&
-                      `
-                        border-top-left-radius: 3px;
-                        border-top-right-radius: 3px;
-                      `}
-                    ${index === items.length - 1 &&
-                      `
-                        border-bottom-left-radius: 3px;
-                        border-bottom-right-radius: 3px;
-                      `}
-                    ${index === highlightedIndex &&
-                      `
-                        background: ${theme.surfaceHighlight};
-                        border-left: 3px solid ${theme.accent};
-                      `}
-                  `}
-                  onClick={onItemClick(index)}
-                >
-                  {item}
-                </ButtonBase>
-              </li>
-            )
-          })}
-        </ul>
-      )}
+                       ${index === 0 &&
+                         `
+                           border-top-left-radius: 3px;
+                           border-top-right-radius: 3px;
+                         `}
+                       ${index === items.length - 1 &&
+                         `
+                           border-bottom-left-radius: 3px;
+                           border-bottom-right-radius: 3px;
+                         `}
+                       ${index === highlightedIndex &&
+                         `
+                           background: ${theme.surfaceHighlight};
+                           border-left: 3px solid ${theme.accent};
+                         `}
+                     `}
+                      onClick={handleItemClick(index)}
+                    >
+                      {item}
+                    </ButtonBase>
+                  </li>
+                )
+              })}
+            </List>
+          ))
+        /* eslint-enable react/prop-types */
+        }
+      </Transition>
     </div>
   )
 }
 
+ButtonDropDown.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  items: PropTypes.array,
+  cover: PropTypes.node,
+}
+
+const List = styled(animated.ul)`
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: ${({ border }) => `1px solid ${border}`};
+  border-radius: 4px;
+  background: ${({ surface }) => surface};
+  width: 100%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
+`
+
 function useButtonDropDown(onClick) {
   const refs = []
+  const { highlightedIndex, setHighlightedIndex } = useArrowKeysFocus(refs)
+  const reset = useMemo(() => setHighlightedIndex(-1), [setHighlightedIndex])
   const containerRef = useRef()
   const [opened, setOpened] = useState(false)
-  const handleItemClick = index => e => {
-    handleClose()
-    onClick(index)
-  }
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     reset()
     setOpened(false)
-  }
-
+  }, [reset, setOpened])
+  const handleItemClick = useCallback(
+    index => e => {
+      handleClose()
+      onClick(index)
+    },
+    [handleClose, onClick]
+  )
   const { handleBlur } = useOnBlur(handleClose, containerRef)
-  const { highlightedIndex, setHighlightedIndex } = useArrowKeysFocus(refs)
-  const reset = setHighlightedIndex(-1)
   useClickOutside(handleClose, containerRef)
   useEsc(handleClose)
 
@@ -134,30 +167,4 @@ function useButtonDropDown(onClick) {
   }
 }
 
-export default React.memo(({ onClick, ...props }) => {
-  const {
-    opened,
-    setOpened,
-    handleItemClick,
-    containerRef,
-    handleBlur,
-    refs,
-    highlightedIndex,
-    setHighlightedIndex,
-  } = useButtonDropDown(onClick)
-  const handleToggle = () => setOpened(!opened)
-
-  return (
-    <ButtonDropDown
-      {...props}
-      refs={refs}
-      highlightedIndex={highlightedIndex}
-      opened={opened}
-      onCoverClick={handleToggle}
-      onItemClick={handleItemClick}
-      containerRef={containerRef}
-      onBlur={handleBlur}
-      setHighlightedIndex={setHighlightedIndex}
-    />
-  )
-})
+export default React.memo(ButtonDropDown)
