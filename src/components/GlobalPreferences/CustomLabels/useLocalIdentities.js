@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useCallback } from 'react'
 import { IdentityContext } from '../../IdentityManager/IdentityManager'
 
 function useLocalIdentities(wrapper) {
+  let cancelled = false
   const { identityEvents$ } = useContext(IdentityContext)
   const [identities, setIdentities] = useState([])
 
@@ -16,15 +17,21 @@ function useLocalIdentities(wrapper) {
         address,
       }))
       .sort((a, b) => a.name.localeCompare(b.name))
-    setIdentities(identities)
-  }, [wrapper])
+    if (!cancelled) {
+      setIdentities(identities)
+    }
+  }, [wrapper, cancelled])
 
   useEffect(() => {
+    cancelled = false
     // first fetch
     handleGetAll()
     // events: all events trigger get all
     const subscription = identityEvents$.subscribe(handleGetAll)
-    return () => subscription.unsubscribe()
+    return () => {
+      cancelled = true
+      subscription.unsubscribe()
+    }
   }, [handleGetAll, identityEvents$])
 
   return { identities }
