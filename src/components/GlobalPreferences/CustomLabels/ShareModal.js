@@ -138,10 +138,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
 }
 
 ShareModal.propTypes = {
-  inputRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.elementType }),
-  ]),
+  inputRef: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   onCopy: PropTypes.func.isRequired,
   onFocus: PropTypes.func.isRequired,
