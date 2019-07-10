@@ -14,31 +14,22 @@ import useLocalIdentityModal from './useLocalIdentityModal'
 
 const TIMEOUT_TOAST = 4000
 
-function CustomLabels({
-  wrapper,
-  dao,
-  toast,
-  isSharedLink,
-  isSavingSharedLink,
-  sharedIdentities,
-}) {
+function CustomLabels({ wrapper, dao, toast }) {
   const { identities, sortIdentities, handleToggleSort } = useLocalIdentities(
     wrapper
   )
-  const identitiesToUse = isSharedLink ? sharedIdentities : identities
-
   const {
     filteredIdentities,
     handleSearchTermChange,
     searchTerm,
-  } = useFilterIdentities(identitiesToUse)
+  } = useFilterIdentities(identities)
   const {
     allSelected,
     handleToggleAll,
     handleToggleIdentity,
     identitiesSelected,
     someSelected,
-  } = useSelectIdentities(identitiesToUse, filteredIdentities)
+  } = useSelectIdentities(identities, filteredIdentities)
   const {
     handleExport,
     handleImport,
@@ -74,7 +65,7 @@ function CustomLabels({
         onClose={handleRemoveModalClose}
         onConfirm={handleRemove}
       />
-      {!identitiesToUse.length && searchTerm === '' ? (
+      {!identities.length && searchTerm === '' ? (
         <EmptyIdentities onImport={handleImport} />
       ) : (
         <LocalIdentities
@@ -102,9 +93,6 @@ function CustomLabels({
 
 CustomLabels.propTypes = {
   dao: PropTypes.string,
-  isSavingSharedLink: PropTypes.bool,
-  isSharedLink: PropTypes.bool,
-  sharedIdentities: PropTypes.array,
   toast: PropTypes.func.isRequired,
   wrapper: AragonType,
 }
