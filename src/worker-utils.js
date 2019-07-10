@@ -20,7 +20,7 @@ export async function getObjectUrlForScript(scriptUrl) {
   return URL.createObjectURL(blob)
 }
 
-const fetchScriptUrlAsBlob = async url => {
+export const fetchScriptUrlAsBlob = async url => {
   // In the future, we might support IPFS protocols in addition to http
   const res = await fetch(url, {
     method: 'GET',

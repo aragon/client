@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
@@ -6,123 +6,156 @@ import { ButtonBase, useTheme } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import { AppInstanceType } from '../../prop-types'
 import springs from '../../springs'
+import { useLocalIdentity } from '../../hooks'
 
 const { div: AnimDiv } = animated
 
-class MenuPanelAppGroup extends React.PureComponent {
-  static propTypes = {
-    active: PropTypes.bool.isRequired,
-    activeInstanceId: PropTypes.string,
-    expand: PropTypes.bool.isRequired,
-    icon: PropTypes.object.isRequired,
-    instances: PropTypes.arrayOf(AppInstanceType).isRequired,
-    name: PropTypes.string.isRequired,
-    onActivate: PropTypes.func.isRequired,
-    system: PropTypes.bool,
-  }
+function MenuPanelItem({
+  active,
+  onClick,
+  name,
+  icon,
+  instanceId,
+  singleInstance,
+}) {
+  const [label, setLabel] = useState(name)
+  const { name: localIdentity } = useLocalIdentity(instanceId)
+  useEffect(() => {
+    setLabel((singleInstance && localIdentity) || name)
+  }, [singleInstance, localIdentity, name])
 
-  handleAppClick = () => {
-    const instance = this.props.instances[0]
+  return (
+    <ButtonItem className={`item ${active ? 'active' : ''}`} onClick={onClick}>
+      <span>
+        <span className="icon">{icon}</span>
+        <span className="name">{label}</span>
+      </span>
+    </ButtonItem>
+  )
+}
+
+MenuPanelItem.propTypes = {
+  active: PropTypes.bool,
+  icon: PropTypes.object.isRequired,
+  instanceId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  singleInstance: PropTypes.bool.isRequired,
+}
+
+const Item = React.memo(MenuPanelItem)
+
+const MenuPanelAppGroup = React.memo(function MenuPanelAppGroup({
+  name,
+  icon,
+  system,
+  instances,
+  activeInstanceId,
+  active,
+  expand,
+  onActivate,
+}) {
+  const theme = useTheme()
+
+  const handleAppClick = () => {
+    const [instance] = instances
     if (instance) {
-      this.props.onActivate(instance.instanceId)
+      onActivate(instance.instanceId)
     }
   }
-  handleInstanceClick = instanceId => {
-    this.props.onActivate(instanceId)
-  }
-  render() {
-    const {
-      name,
-      icon,
-      system,
-      instances,
-      activeInstanceId,
-      active,
-      expand,
-      theme,
-    } = this.props
-    const singleInstance = instances.length === 1
-    return (
-      <Spring
-        config={springs.smooth}
-        to={{ openProgress: Number(active && (singleInstance || expand)) }}
-        native
-      >
-        {({ openProgress }) => (
-          <Main
+  const handleInstanceClick = instanceId => onActivate(instanceId)
+  const singleInstance = instances.length === 1
+
+  return (
+    <Spring
+      config={springs.smooth}
+      to={{ openProgress: Number(active && (singleInstance || expand)) }}
+      native
+    >
+      {({ openProgress }) => (
+        <Main
+          active={active}
+          system={system}
+          pressedItemBackground={theme.surfacePressed}
+          activeItemBackground={theme.surfaceSelected}
+        >
+          <div
+            style={{ opacity: Number(active) }}
+            css={`
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: -1;
+              background: ${theme.surfaceInteractive};
+            `}
+          />
+
+          <AnimDiv
+            css={`
+              position: absolute;
+              width: 4px;
+              height: 100%;
+              background: ${theme.accent};
+            `}
+            style={{
+              opacity: openProgress,
+              transform: openProgress.interpolate(
+                v => `translate3d(-${(1 - v) * 100}%, 0, 0)`
+              ),
+            }}
+          />
+
+          <Item
+            instanceId={instances[0].instanceId}
+            onClick={handleAppClick}
+            icon={icon}
+            name={name}
             active={active}
-            system={system}
-            pressedItemBackground={theme.surfacePressed}
-            activeItemBackground={theme.surfaceSelected}
-          >
-            <div
-              style={{ opacity: Number(active) }}
-              css={`
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: -1;
-                background: ${theme.surfaceInteractive};
-              `}
-            />
+            singleInstance={singleInstance}
+          />
 
-            <AnimDiv
-              css={`
-                position: absolute;
-                width: 4px;
-                height: 100%;
-                background: ${theme.accent};
-              `}
+          {instances.length > 1 && (
+            <animated.ul
+              className="instances"
               style={{
-                opacity: openProgress,
-                transform: openProgress.interpolate(
-                  v => `translate3d(-${(1 - v) * 100}%, 0, 0)`
+                height: openProgress.interpolate(
+                  v => `${(instances.length * 30 + 5) * v}px`
                 ),
+                paddingBottom: openProgress.interpolate(v => `${5 * v}px`),
               }}
-            />
-
-            <ButtonItem
-              className={`item ${active ? 'active' : ''}`}
-              onClick={this.handleAppClick}
             >
-              <span>
-                <span className="icon">{icon}</span>
-                <span className="name">{name}</span>
-              </span>
-            </ButtonItem>
+              {instances.map(({ instanceId, identifier }) => {
+                const label = identifier || instanceId
+                return label ? (
+                  <li key={instanceId}>
+                    <MenuPanelInstance
+                      id={instanceId}
+                      name={label}
+                      active={instanceId === activeInstanceId}
+                      onClick={handleInstanceClick}
+                    />
+                  </li>
+                ) : null
+              })}
+            </animated.ul>
+          )}
+        </Main>
+      )}
+    </Spring>
+  )
+})
 
-            {instances.length > 1 && (
-              <animated.ul
-                className="instances"
-                style={{
-                  height: openProgress.interpolate(
-                    v => `${(instances.length * 30 + 5) * v}px`
-                  ),
-                  paddingBottom: openProgress.interpolate(v => `${5 * v}px`),
-                }}
-              >
-                {instances.map(({ instanceId, identifier }) => {
-                  const label = identifier || instanceId
-                  return label ? (
-                    <li key={instanceId}>
-                      <MenuPanelInstance
-                        id={instanceId}
-                        name={label}
-                        active={instanceId === activeInstanceId}
-                        onClick={this.handleInstanceClick}
-                      />
-                    </li>
-                  ) : null
-                })}
-              </animated.ul>
-            )}
-          </Main>
-        )}
-      </Spring>
-    )
-  }
+MenuPanelAppGroup.propTypes = {
+  active: PropTypes.bool.isRequired,
+  activeInstanceId: PropTypes.string,
+  expand: PropTypes.bool.isRequired,
+  icon: PropTypes.object.isRequired,
+  instances: PropTypes.arrayOf(AppInstanceType).isRequired,
+  name: PropTypes.string.isRequired,
+  onActivate: PropTypes.func.isRequired,
+  system: PropTypes.bool,
 }
 
 const Main = styled.div`
@@ -181,7 +214,4 @@ const ButtonItem = styled(ButtonBase)`
   }
 `
 
-export default function(props) {
-  const theme = useTheme()
-  return <MenuPanelAppGroup {...props} theme={theme} />
-}
+export default MenuPanelAppGroup
