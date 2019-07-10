@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Box, Checkbox, Info, GU } from '@aragon/ui'
 import helAndFeedbackSvg from './help-and-feedback.svg'
 
@@ -39,4 +40,9 @@ function HelpAndFeedback({ optedOut, onOptOutChange }) {
   )
 }
 
-export default HelpAndFeedback
+HelpAndFeedback.propTypes = {
+  optedOut: PropTypes.bool,
+  onOptOutChange: PropTypes.func.isRequired,
+}
+
+export default React.memo(HelpAndFeedback)
