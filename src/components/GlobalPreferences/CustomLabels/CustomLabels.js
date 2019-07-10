@@ -22,7 +22,9 @@ function CustomLabels({
   isSavingSharedLink,
   sharedIdentities,
 }) {
-  const { identities } = useLocalIdentities(wrapper)
+  const { identities, sortIdentities, handleToggleSort } = useLocalIdentities(
+    wrapper
+  )
   const identitiesToUse = isSharedLink ? sharedIdentities : identities
 
   const {
@@ -87,9 +89,11 @@ function CustomLabels({
           onShare={handleShareModalOpen}
           onToggleAll={handleToggleAll}
           onToggleIdentity={handleToggleIdentity}
+          onToggleSort={handleToggleSort}
           searchTerm={searchTerm}
           onShowLocalIdentityModal={handleShowLocalIdentityModal}
           someSelected={someSelected}
+          sortIdentities={sortIdentities}
         />
       )}
     </React.Fragment>
