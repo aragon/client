@@ -134,18 +134,11 @@ GlobalPreferences.propTypes = {
 
 function useGlobalPreferences(opened) {
   const [currentSection, setCurrentSection] = useState(0)
-  const handleNavigation = useCallback(
-    index => {
-      const { hash } = window.location
-      const path = hash.substr(
-        hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
-          GLOBAL_PREFERENCES_QUERY_PARAM.length
-      )
-      const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
-      window.location.hash = `${rest}?p=/${PATHS[index]}`
-    },
-    [window.location.hash]
-  )
+  const handleNavigation = useCallback(index => {
+    const { hash } = window.location
+    const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
+    window.location.hash = `${rest}?p=/${PATHS[index]}`
+  }, [])
 
   useEffect(() => {
     if (!opened) {
@@ -159,7 +152,7 @@ function useGlobalPreferences(opened) {
     setCurrentSection(
       SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
     )
-  }, [window.location.hash, opened])
+  }, [opened])
 
   return { setCurrentSection, currentSection, handleNavigation }
 }
@@ -225,6 +218,10 @@ function AnimatedGlobalPreferences({ opened, ...props }) {
       }
     </Transition>
   )
+}
+
+AnimatedGlobalPreferences.propTypes = {
+  opened: PropTypes.bool,
 }
 
 const AnimatedWrap = styled(animated.div)`
