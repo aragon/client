@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Box,
@@ -122,6 +123,18 @@ function SharedIdentities({
   )
 }
 
+SharedIdentities.propTypes = {
+  onSave: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  identities: PropTypes.array,
+  isSaving: PropTypes.bool,
+  selected: PropTypes.instanceOf(Map),
+  allSelected: PropTypes.bool,
+  someSelected: PropTypes.bool,
+  onToggleAll: PropTypes.func.isRequired,
+  onToggleIdentity: PropTypes.func.isRequired,
+}
+
 const StyledCheckbox = styled(Checkbox)`
   margin-right: ${3 * GU}px;
 `
@@ -159,4 +172,4 @@ const List = styled.ul`
   )}
 `
 
-export default SharedIdentities
+export default React.memo(SharedIdentities)
