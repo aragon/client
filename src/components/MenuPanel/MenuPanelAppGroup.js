@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
@@ -57,13 +57,18 @@ const MenuPanelAppGroup = React.memo(function MenuPanelAppGroup({
 }) {
   const theme = useTheme()
 
-  const handleAppClick = () => {
-    const [instance] = instances
+  const handleAppClick = useCallback(() => {
+    const instance = instances[0]
     if (instance) {
       onActivate(instance.instanceId)
     }
-  }
-  const handleInstanceClick = instanceId => onActivate(instanceId)
+  }, [instances, onActivate])
+
+  const handleInstanceClick = useCallback(
+    instanceId => onActivate(instanceId),
+    [onActivate]
+  )
+
   const singleInstance = instances.length === 1
 
   return (
