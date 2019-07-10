@@ -7,12 +7,15 @@ import {
   Layout,
   Header,
   TabBar,
+  Toast,
   useTheme,
 } from '@aragon/ui'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
+import SharedIdentities from './SharedIdentities/SharedIdentities'
+import useSharedLink from './SharedIdentities/useSharedLink'
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
@@ -23,14 +26,16 @@ const SECTIONS = new Map([
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
 const GLOBAL_PREFERENCES_QUERY_PARAM = '?p=/'
+const TIMEOUT_TOAST = 4000
 
 function GlobalPreferences({
   dao,
-  wrapper,
-  onClose,
-  opened,
   helpScoutOptedOut,
+  onClose,
   onHelpScoutOptedOutChange,
+  opened,
+  toast,
+  wrapper,
 }) {
   const theme = useTheme()
   const {
@@ -41,6 +46,22 @@ function GlobalPreferences({
   const handleSectionChange = index => {
     setCurrentSection(index)
     handleNavigation(index)
+  }
+  const {
+    isSharedLink,
+    isSavingSharedLink,
+    sharedIdentities,
+    handleSharedIdentitiesSave,
+    handleSharedIdentitiesCancel,
+    handleSharedIdentitiesToggleAll,
+    handleSharedIdentitiesToggleIdentity,
+    sharedIdentitiesSelected,
+    sharedIdentitiesAllSelected,
+    sharedIdentitiesSomeSelected,
+  } = useSharedLink(wrapper, toast)
+  const handleSharedIdentitiesClose = () => {
+    handleSharedIdentitiesCancel()
+    onClose()
   }
 
   if (!opened) {
@@ -57,31 +78,52 @@ function GlobalPreferences({
         right: 0;
         bottom: 0;
         z-index: 11;
+        height: 100vh;
         background: ${theme.surface};
         overflow: auto;
       `}
     >
-      <Close onClick={onClose} />
+      <Close onClick={isSharedLink ? handleSharedIdentitiesClose : onClose} />
       <Layout>
-        <Header primary="Global preferences" />
-        <Bar>
-          <TabBar
-            items={VALUES}
-            onChange={handleSectionChange}
-            selected={currentSection}
+        <Header
+          primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
+        />
+        {isSharedLink ? (
+          <SharedIdentities
+            isSaving={isSavingSharedLink}
+            onSave={handleSharedIdentitiesSave}
+            onCancel={handleSharedIdentitiesCancel}
+            identities={sharedIdentities}
+            onToggleAll={handleSharedIdentitiesToggleAll}
+            onToggleIdentity={handleSharedIdentitiesToggleIdentity}
+            selected={sharedIdentitiesSelected}
+            allSelected={sharedIdentitiesAllSelected}
+            someSelected={sharedIdentitiesSomeSelected}
           />
-        </Bar>
-        <main>
-          {currentSection === 0 && <CustomLabels dao={dao} wrapper={wrapper} />}
-          {currentSection === 1 && <Network wrapper={wrapper} />}
-          {currentSection === 2 && <Notifications />}
-          {currentSection === 3 && (
-            <HelpAndFeedback
-              optedOut={helpScoutOptedOut}
-              onOptOutChange={onHelpScoutOptedOutChange}
-            />
-          )}
-        </main>
+        ) : (
+          <React.Fragment>
+            <Bar>
+              <TabBar
+                items={VALUES}
+                onChange={handleSectionChange}
+                selected={currentSection}
+              />
+            </Bar>
+            <main>
+              {currentSection === 0 && (
+                <CustomLabels dao={dao} wrapper={wrapper} />
+              )}
+              {currentSection === 1 && <Network wrapper={wrapper} />}
+              {currentSection === 2 && <Notifications />}
+              {currentSection === 3 && (
+                <HelpAndFeedback
+                  optedOut={helpScoutOptedOut}
+                  onOptOutChange={onHelpScoutOptedOutChange}
+                />
+              )}
+            </main>
+          </React.Fragment>
+        )}
       </Layout>
     </div>
   )
@@ -129,4 +171,8 @@ function Close({ onClick }) {
   )
 }
 
-export default GlobalPreferences
+export default props => (
+  <Toast timeout={TIMEOUT_TOAST}>
+    {toast => <GlobalPreferences {...props} toast={toast} />}
+  </Toast>
+)
