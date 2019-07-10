@@ -4,8 +4,11 @@ import styled from 'styled-components'
 import {
   Box,
   Button,
+  ButtonIcon,
   Checkbox,
   GU,
+  IconArrowDown,
+  IconArrowUp,
   IconDown,
   IconDownload,
   IconExternal,
@@ -24,6 +27,7 @@ import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import ButtonDropDown from '../../ButtonDropDown/ButtonDropDown'
 import LocalIdentityPopoverTitle from '../../IdentityBadge/LocalIdentityPopoverTitle'
 import { fileImport } from './Import'
+import { ASC, DESC } from './useLocalIdentities'
 
 const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
@@ -40,8 +44,10 @@ function LocalIdentities({
   onShowLocalIdentityModal,
   onToggleAll,
   onToggleIdentity,
+  onToggleSort,
   searchTerm,
   someSelected,
+  sortIdentities,
 }) {
   const theme = useTheme()
   const inputRef = React.useRef()
@@ -141,13 +147,29 @@ function LocalIdentities({
                 onChange={onToggleAll}
                 indeterminate={!allSelected && someSelected}
               />
-              {allSelected
-                ? 'Custom label'
-                : `${identities.reduce(
-                    (p, { address }) =>
-                      p + Number(identitiesSelected.get(address)),
-                    0
-                  )} labels selected`}
+              {allSelected ? (
+                <div
+                  css={`
+                    display: inline-flex;
+                    align-items: center;
+                  `}
+                >
+                  Custom label{' '}
+                  <ButtonIcon label="Toggle sort" onClick={onToggleSort}>
+                    {sortIdentities === ASC ? (
+                      <IconArrowDown size="small" />
+                    ) : (
+                      <IconArrowUp size="small" />
+                    )}
+                  </ButtonIcon>
+                </div>
+              ) : (
+                `${identities.reduce(
+                  (p, { address }) =>
+                    p + Number(identitiesSelected.get(address)),
+                  0
+                )} labels selected`
+              )}
             </div>
             <div css="text-align: right;">
               <span
@@ -226,8 +248,10 @@ LocalIdentities.propTypes = {
   onShowLocalIdentityModal: PropTypes.func.isRequired,
   onToggleAll: PropTypes.func.isRequired,
   onToggleIdentity: PropTypes.func.isRequired,
+  onToggleSort: PropTypes.func.isRequired,
   searchTerm: PropTypes.string.isRequired,
   someSelected: PropTypes.bool.isRequired,
+  sortIdentities: PropTypes.oneOf([ASC, DESC]).isRequired,
 }
 
 function Actions({ onExport, onRemove, onShare, someSelected }) {
