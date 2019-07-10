@@ -69,8 +69,8 @@ export const sortAppsPair = (app1, app2) => {
 }
 
 // Use appOverrides to override specific keys in an app instance, e.g. the start_url or script location
-// Needed to change app name on sidebar
 const appOverrides = {
+  // Needed to change app name on sidebar for old versions whose aragonPM repo content cannot be changed anymore
   [appIds['TokenManager']]: { name: 'Tokens' },
 }
 

@@ -22,8 +22,9 @@ import {
   getMainAccount,
   isValidEnsName,
 } from './web3-utils'
-import { getObjectUrlForScript, WorkerSubscriptionPool } from './worker-utils'
+import { WorkerSubscriptionPool } from './worker-utils'
 import { NoConnection, DAONotFound } from './errors'
+import IframeWorker from './iframe-worker'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -262,28 +263,6 @@ const subscribe = (
             baseUrl
           )
 
-          let workerUrl = ''
-          try {
-            // WebWorkers can only load scripts from the local origin, so we
-            // have to fetch the script (from an IPFS gateway) and process it locally.
-            //
-            // Note that we **SHOULD** use a data url, to ensure the Worker is
-            // created with an opaque ("orphaned") origin, see
-            // https://html.spec.whatwg.org/multipage/workers.html#dom-worker.
-            //
-            // The opaque origin is a necessary part of creating the WebWorker sandbox;
-            // even though the script never has access to the DOM or local storage, it can
-            // still access global features like IndexedDB if it is not enclosed in an
-            // opaque origin.
-            workerUrl = await getObjectUrlForScript(scriptUrl)
-          } catch (e) {
-            console.error(
-              `Failed to load ${workerName}'s script (${script}): `,
-              e
-            )
-            return
-          }
-
           const connectApp = await wrapper.runApp(proxyAddress)
 
           // If the app has been updated, reset its cache and restart its worker
@@ -294,7 +273,7 @@ const subscribe = (
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
-            const worker = new Worker(workerUrl, { name: workerName })
+            const worker = new IframeWorker(scriptUrl, { name: workerName })
             worker.addEventListener(
               'error',
               err => console.error(`Error from worker for ${workerName}:`, err),
@@ -308,9 +287,6 @@ const subscribe = (
               connection: connectApp(provider),
             })
           }
-
-          // Clean up the url we created to spawn the worker
-          URL.revokeObjectURL(workerUrl)
         })
     }),
   }
@@ -491,9 +467,7 @@ const templateParamFilters = {
 
     if (neededSignatures < 1 || neededSignatures > signers.length) {
       throw new Error(
-        `neededSignatures must be between 1 and the total number of signers (${
-          signers.length
-        })`,
+        `neededSignatures must be between 1 and the total number of signers (${signers.length})`,
         neededSignatures
       )
     }
