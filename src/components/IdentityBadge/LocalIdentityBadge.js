@@ -54,8 +54,6 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
       switch (event.type) {
         case identityEventTypes.MODIFY:
           return handleEvent(event.address)
-        case identityEventTypes.CLEAR:
-          return clearLabel()
         case identityEventTypes.IMPORT:
           return handleResolve()
       }
