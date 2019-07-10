@@ -50,7 +50,6 @@ class Home extends React.Component {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     dao: PropTypes.string.isRequired,
-    onMessage: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }
   handleCardAction = actionId => {
@@ -63,11 +62,6 @@ class Home extends React.Component {
     if (app && onOpenApp) {
       onOpenApp(app.proxyAddress)
     }
-  }
-  handleMenuPanelOpen = () => {
-    this.props.onMessage({
-      data: { from: 'app', name: 'menuPanel', value: true },
-    })
   }
   render() {
     const { theme, apps, dao } = this.props
