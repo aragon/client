@@ -32,16 +32,12 @@ function LocalIdentities({
   allSelected,
   identities,
   identitiesSelected,
-  isSharedLink,
-  isSavingSharedLink,
   onClear,
   onExport,
   onImport,
   onRemove,
   onSearchChange,
   onShare,
-  onSharedIdentitiesCancel,
-  onSharedIdentitiesSave,
   onShowLocalIdentityModal,
   onToggleAll,
   onToggleIdentity,
@@ -123,152 +119,97 @@ function LocalIdentities({
           onShare={onShare}
           onExport={onExport}
           onRemove={onRemove}
-          // shared link
-          isSharedLink={isSharedLink}
-          onSave={onSharedIdentitiesSave}
-          onCancel={onSharedIdentitiesCancel}
         />
       </div>
-      {isSavingSharedLink && (
-        <div
-          css={`
-            width: 100%;
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-          `}
-        >
-          <LoadingRing />
-          <div>Saving…</div>
-        </div>
-      )}
       {!identities.length ? (
         <EmptyFilteredIdentities onClear={onClear} />
       ) : (
-        !isSavingSharedLink && (
-          <React.Fragment>
-            <div
-              css={`
-                text-transform: uppercase;
-                color: ${theme.content};
-                ${font({ size: 'xsmall' })};
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                align-items: center;
-                margin-bottom: ${1 * GU}px;
-              `}
-            >
-              <div>
-                <StyledCheckbox
-                  checked={allSelected}
-                  onChange={onToggleAll}
-                  indeterminate={!allSelected && someSelected}
-                />
-                Custom label
-              </div>
-              <div css="text-align: right;">
-                <span
-                  css={`
-                    display: inline-block;
-                    width: 136px;
-                    text-align: left;
-                  `}
-                >
-                  Address
-                </span>
-              </div>
+        <React.Fragment>
+          <div
+            css={`
+              text-transform: uppercase;
+              color: ${theme.content};
+              ${font({ size: 'xsmall' })};
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              align-items: center;
+              margin-bottom: ${1 * GU}px;
+            `}
+          >
+            <div>
+              <StyledCheckbox
+                checked={allSelected}
+                onChange={onToggleAll}
+                indeterminate={!allSelected && someSelected}
+              />
+              Custom label
             </div>
-            <List border={theme.border} surface={theme.surface}>
-              {identities.map(({ address, name }) => (
-                <li
-                  key={address}
-                  css={`
-                    /* needs spacing left to compensate for list being moved to the edge */
-                    padding: ${2 * GU}px;
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    align-items: center;
-                    border-bottom: 1px solid ${theme.border};
-                  `}
-                >
-                  <Label>
-                    <StyledCheckbox
-                      checked={identitiesSelected.get(address)}
-                      onChange={onToggleIdentity(address)}
-                    />
-                    {name}
-                  </Label>
-                  <div css="text-align: right;">
-                    <IdentityBadge
-                      entity={address}
-                      popoverAction={
-                        !isSharedLink
-                          ? {
-                              label: 'Edit custom label',
-                              onClick: onShowLocalIdentityModal(address),
-                            }
-                          : null
-                      }
-                      popoverTitle={
-                        !isSharedLink ? (
-                          <LocalIdentityPopoverTitle label={name} />
-                        ) : null
-                      }
-                    />
-                  </div>
-                </li>
-              ))}
-            </List>
-            {isSharedLink ? (
-              <div
+            <div css="text-align: right;">
+              <span
                 css={`
-                  margin-top: ${2 * GU}px;
+                  display: inline-block;
+                  width: 136px;
+                  text-align: left;
                 `}
               >
-                These labels have been shared with you. By clicking on the
-                “Save” button, you will make them appear on this device (labels
-                will be stored locally).
-              </div>
-            ) : (
-              <Info
+                Address
+              </span>
+            </div>
+          </div>
+          <List border={theme.border} surface={theme.surface}>
+            {identities.map(({ address, name }) => (
+              <li
+                key={address}
                 css={`
-                  margin-top: ${3 * GU}px;
+                  /* needs spacing left to compensate for list being moved to the edge */
+                  padding: ${2 * GU}px;
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  align-items: center;
+                  border-bottom: 1px solid ${theme.border};
+                  background: ${identitiesSelected.get(address)
+                    ? theme.surfaceSelected
+                    : theme.surface};
                 `}
               >
-                Any labels you add or import will only be shown on this device,
-                and not stored anywhere else. If you want to share the labels
-                with other devices or users, you will need to export them and
-                share the .json file.
-              </Info>
-            )}
-          </React.Fragment>
-        )
+                <Label>
+                  <StyledCheckbox
+                    checked={identitiesSelected.get(address)}
+                    onChange={onToggleIdentity(address)}
+                  />
+                  {name}
+                </Label>
+                <div css="text-align: right;">
+                  <IdentityBadge
+                    entity={address}
+                    popoverAction={{
+                      label: 'Edit custom label',
+                      onClick: onShowLocalIdentityModal(address),
+                    }}
+                    popoverTitle={<LocalIdentityPopoverTitle label={name} />}
+                  />
+                </div>
+              </li>
+            ))}
+          </List>
+          <Info
+            css={`
+              margin-top: ${3 * GU}px;
+            `}
+          >
+            Any labels you add or import will only be shown on this device, and
+            not stored anywhere else. If you want to share the labels with other
+            devices or users, you will need to export them and share the .json
+            file.
+          </Info>
+        </React.Fragment>
       )}
     </Box>
   )
 }
 
-function Actions({
-  isSharedLink,
-  onCancel,
-  onExport,
-  onRemove,
-  onSave,
-  onShare,
-  someSelected,
-}) {
+function Actions({ onExport, onRemove, onShare, someSelected }) {
   const handleClick = index => {
-    if (isSharedLink) {
-      if (index === 0) {
-        onSave()
-        return
-      }
-      onCancel()
-      return
-    }
-
     if (index === 0) {
       onShare()
       return
@@ -284,24 +225,20 @@ function Actions({
     <React.Fragment>
       <ButtonDropDown
         css="z-index: 2;"
-        items={
-          isSharedLink
-            ? [<ActionSpan>Save</ActionSpan>, <ActionSpan>Cancel</ActionSpan>]
-            : [
-                <ActionSpan>
-                  <IconShare />
-                  <span>Share</span>
-                </ActionSpan>,
-                <ActionSpan>
-                  <IconExternal />
-                  <span>Export</span>
-                </ActionSpan>,
-                <ActionSpan>
-                  <IconTrash css="color: red;" />
-                  <span>Remove</span>
-                </ActionSpan>,
-              ]
-        }
+        items={[
+          <ActionSpan>
+            <IconShare />
+            <span>Share</span>
+          </ActionSpan>,
+          <ActionSpan>
+            <IconExternal />
+            <span>Export</span>
+          </ActionSpan>,
+          <ActionSpan>
+            <IconTrash css="color: red;" />
+            <span>Remove</span>
+          </ActionSpan>,
+        ]}
         cover={
           <span
             css={`
