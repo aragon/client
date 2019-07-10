@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import {
   Bar,
   ButtonIcon,
@@ -8,8 +10,14 @@ import {
   Header,
   TabBar,
   Toast,
+  springs,
+  breakpoint,
   useTheme,
+  useViewport,
 } from '@aragon/ui'
+import { Transition, animated } from 'react-spring'
+import { AragonType } from '../../prop-types'
+import { useEsc } from '../../hooks'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
@@ -37,12 +45,11 @@ function GlobalPreferences({
   toast,
   wrapper,
 }) {
-  const theme = useTheme()
   const {
     setCurrentSection,
     currentSection,
     handleNavigation,
-  } = useGlobalPreferences()
+  } = useGlobalPreferences(opened)
   const handleSectionChange = index => {
     setCurrentSection(index)
     handleNavigation(index)
@@ -63,26 +70,10 @@ function GlobalPreferences({
     handleSharedIdentitiesCancel()
     onClose()
   }
-
-  if (!opened) {
-    return null
-  }
+  useEsc(onClose)
 
   return (
-    <div
-      css={`
-        border-top: 2px solid ${theme.accent};
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 11;
-        height: 100vh;
-        background: ${theme.surface};
-        overflow: auto;
-      `}
-    >
+    <div>
       <Close onClick={isSharedLink ? handleSharedIdentitiesClose : onClose} />
       <Layout>
         <Header
@@ -129,9 +120,19 @@ function GlobalPreferences({
   )
 }
 
-function useGlobalPreferences() {
+GlobalPreferences.propTypes = {
+  dao: PropTypes.string,
+  helpScoutOptedOut: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  onHelpScoutOptedOutChange: PropTypes.func.isRequired,
+  opened: PropTypes.bool,
+  toast: PropTypes.func,
+  wrapper: AragonType,
+}
+
+function useGlobalPreferences(opened) {
   const [currentSection, setCurrentSection] = useState(0)
-  const handleNavigation = index => {
+  const handleNavigation = useCallback(index => {
     const { hash } = window.location
     const path = hash.substr(
       hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
@@ -139,9 +140,12 @@ function useGlobalPreferences() {
     )
     const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
     window.location.hash = `${rest}?p=/${PATHS[index]}`
-  }
+  },[window.location.hash])
 
   useEffect(() => {
+    if (!opened) {
+      return
+    }
     const { hash } = window.location
     const path = hash.substr(
       hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
@@ -150,7 +154,7 @@ function useGlobalPreferences() {
     setCurrentSection(
       SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
     )
-  }, [window.location.hash])
+  }, [window.location.hash, opened])
 
   return { setCurrentSection, currentSection, handleNavigation }
 }
@@ -171,8 +175,71 @@ function Close({ onClick }) {
   )
 }
 
+Close.propTypes = {
+  onClick: PropTypes.func.isRequired,
+}
+
+function AnimatedGlobalPreferences({ opened, ...props }) {
+  const { below } = useViewport()
+  const smallView = below('medium')
+  const theme = useTheme()
+
+  return (
+    <Transition
+      native
+      items={opened}
+      from={{ opacity: 0, enterProgress: 0, blocking: false }}
+      enter={{ opacity: 1, enterProgress: 1, blocking: true }}
+      leave={{ opacity: 0, enterProgress: 1, blocking: false }}
+      config={springs.smooth}
+    >
+      {show =>
+        show &&
+        /* eslint-disable react/prop-types */
+        // z-index 2 on mobile keeps the menu above this preferences modal
+        (({ opacity, enterProgress, blocking }) => (
+          <AnimatedWrap
+            accent={theme.accent}
+            surface={theme.surface}
+            style={{
+              zIndex: smallView ? 2 : 5,
+              pointerEvents: blocking ? 'auto' : 'none',
+              opacity,
+              transform: enterProgress.interpolate(
+                v => `
+                  translate3d(0, ${(1 - v) * 10}px, 0)
+                  scale3d(${1 - (1 - v) * 0.03}, ${1 - (1 - v) * 0.03}, 1)
+                `
+              ),
+            }}
+          >
+            <GlobalPreferences {...props} opened={opened} />
+          </AnimatedWrap>
+        ))
+      /* eslint-enable react/prop-types */
+      }
+    </Transition>
+  )
+}
+
+const AnimatedWrap = styled(animated.div)`
+  position: fixed;
+  background: #fff;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-width: 320px;
+  border-top: ${({ accent }) => `2px solid ${accent}`};
+  background: ${({ surface }) => surface};
+  overflow: auto;
+  padding-bottom: ${2 * GU}px;
+
+  ${breakpoint('medium', `padding-bottom:0;`)}
+`
+
 export default props => (
   <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <GlobalPreferences {...props} toast={toast} />}
+    {toast => <AnimatedGlobalPreferences {...props} toast={toast} />}
   </Toast>
 )
