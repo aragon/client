@@ -15,12 +15,12 @@ function RemoveModal({ visible, onClose, onConfirm }) {
         to your organization on this device
       </p>
       <ModalControls>
-        <Button label="Remove labels" mode="strong" onClick={onConfirm}>
-          Remove
-        </Button>
-        <CancelButton label="Cancel" mode="secondary" onClick={onClose}>
+        <Button label="Cancel" mode="secondary" onClick={onClose}>
           Cancel
-        </CancelButton>
+        </Button>
+        <RemoveButton label="Remove labels" mode="strong" onClick={onConfirm}>
+          Remove
+        </RemoveButton>
       </ModalControls>
     </Modal>
   )
@@ -34,12 +34,12 @@ const ModalControls = styled.div`
     'medium',
     `
       display: flex;
-      justify-content: flex-start;
+      justify-content: flex-end;
     `
   )}
 `
 
-const CancelButton = styled(Button)`
+const RemoveButton = styled(Button)`
   ${breakpoint(
     'medium',
     `
