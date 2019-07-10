@@ -37,7 +37,7 @@ function SharedIdentities({
         below, you will make them appear on this device (labels will be stored
         locally).
       </div>
-      <Box padding={0}>
+      <Box padding={false}>
         {isSaving ? (
           <div
             css={`
@@ -68,7 +68,8 @@ function SharedIdentities({
                 onChange={onToggleAll}
                 indeterminate={!allSelected && someSelected}
               />
-              {selected.size} labels selected
+              {Array.from(selected.values()).reduce((p, c) => p + Number(c), 0)}{' '}
+              labels selected
             </div>
             <List border={theme.border} surface={theme.surface}>
               {identities.map(({ address, name }) => (
