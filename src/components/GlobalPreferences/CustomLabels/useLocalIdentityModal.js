@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import {
   IdentityContext,
   identityEventTypes,
@@ -8,15 +8,18 @@ import { LocalIdentityModalContext } from '../../LocalIdentityModal/LocalIdentit
 function useLocalIdentityModal() {
   const { identityEvents$ } = useContext(IdentityContext)
   const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
-  const handleShowLocalIdentityModal = address => async () => {
-    try {
-      await showLocalIdentityModal(address)
-      // emit event
-      identityEvents$.next({ type: identityEventTypes.MODIFY, address })
-    } catch (e) {
-      /* nothing was updated */
-    }
-  }
+  const handleShowLocalIdentityModal = useCallback(
+    address => async () => {
+      try {
+        await showLocalIdentityModal(address)
+        // emit event
+        identityEvents$.next({ type: identityEventTypes.MODIFY, address })
+      } catch (e) {
+        /* nothing was updated */
+      }
+    },
+    [showLocalIdentityModal, identityEvents$]
+  )
 
   return { handleShowLocalIdentityModal }
 }
