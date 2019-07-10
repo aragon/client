@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Button, GU, useTheme } from '@aragon/ui'
 import noResultsSvg from './no-results.svg'
 
@@ -55,4 +56,8 @@ function EmptyFilteredIdentities({ onClear }) {
   )
 }
 
-export default EmptyFilteredIdentities
+EmptyFilteredIdentities.propTypes = {
+  onClear: PropTypes.func.isRequired,
+}
+
+export default React.memo(EmptyFilteredIdentities)
