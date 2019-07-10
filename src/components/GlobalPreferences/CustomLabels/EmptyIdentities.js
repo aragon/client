@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { Box, GU, IdentityBadge, Info, breakpoint, useTheme } from '@aragon/ui'
+import { Box, GU, IdentityBadge, Info, useTheme } from '@aragon/ui'
 import { getEmptyAddress } from '../../../web3-utils'
 import Import from './Import'
 
