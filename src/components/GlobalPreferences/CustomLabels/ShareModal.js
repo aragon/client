@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   ButtonIcon,
@@ -136,12 +137,24 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
   )
 }
 
+ShareModal.propTypes = {
+  inputRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.elementType }),
+  ]),
+  onClose: PropTypes.func.isRequired,
+  onCopy: PropTypes.func.isRequired,
+  onFocus: PropTypes.func.isRequired,
+  link: PropTypes.string.isRequired,
+  visible: PropTypes.bool.isRequired,
+}
+
 function ShareModalWithToast({ toast, visible, onClose, link }) {
   const inputRef = useRef()
-  const handleFocus = () => {
+  const handleFocus = useCallback(() => {
     inputRef.current.select()
-  }
-  const handleCopy = () => {
+  }, [inputRef])
+  const handleCopy = useCallback(() => {
     inputRef.current.focus()
     inputRef.current.select()
     try {
@@ -151,7 +164,7 @@ function ShareModalWithToast({ toast, visible, onClose, link }) {
     } catch (err) {
       console.warn(err)
     }
-  }
+  }, [toast, inputRef, onClose])
 
   useEffect(() => {
     if (visible) {
@@ -171,8 +184,17 @@ function ShareModalWithToast({ toast, visible, onClose, link }) {
   )
 }
 
-export default props => (
+ShareModalWithToast.propTypes = {
+  toast: PropTypes.func.isRequired,
+  visible: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  link: PropTypes.string.isRequired,
+}
+
+const ShareModalWithToastMemo = React.memo(ShareModalWithToast)
+
+export default React.memo(props => (
   <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <ShareModalWithToast {...props} toast={toast} />}
+    {toast => <ShareModalWithToastMemo {...props} toast={toast} />}
   </Toast>
-)
+))
