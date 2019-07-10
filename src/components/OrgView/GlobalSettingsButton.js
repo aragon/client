@@ -1,6 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import {
   ButtonBase,
   ButtonIcon,
@@ -21,7 +20,7 @@ function GlobalSettingsButton({ onOpen }) {
 
   const handleToggle = useCallback(() => {
     setOpened(!opened)
-  }, [setOpened])
+  }, [setOpened, opened])
   const handleClose = useCallback(() => {
     setOpened(false)
   }, [setOpened])
