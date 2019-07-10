@@ -15,7 +15,6 @@ import {
   IconTrash,
   IdentityBadge,
   Info,
-  LoadingRing,
   TextInput,
   breakpoint,
   font,
@@ -114,7 +113,7 @@ function LocalIdentities({
             </Button>
           </React.Fragment>
         )}
-        <Actions
+        <ActionsMemo
           someSelected={someSelected}
           onShare={onShare}
           onExport={onExport}
@@ -142,7 +141,13 @@ function LocalIdentities({
                 onChange={onToggleAll}
                 indeterminate={!allSelected && someSelected}
               />
-              Custom label
+              {allSelected
+                ? 'Custom label'
+                : `${identities.reduce(
+                    (p, { address }) =>
+                      p + Number(identitiesSelected.get(address)),
+                    0
+                  )} labels selected`}
             </div>
             <div css="text-align: right;">
               <span
@@ -208,6 +213,23 @@ function LocalIdentities({
   )
 }
 
+LocalIdentities.propTypes = {
+  allSelected: PropTypes.bool.isRequired,
+  identities: PropTypes.array.isRequired,
+  identitiesSelected: PropTypes.instanceOf(Map).isRequired,
+  onClear: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
+  onImport: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onSearchChange: PropTypes.func.isRequired,
+  onShare: PropTypes.func.isRequired,
+  onShowLocalIdentityModal: PropTypes.func.isRequired,
+  onToggleAll: PropTypes.func.isRequired,
+  onToggleIdentity: PropTypes.func.isRequired,
+  searchTerm: PropTypes.string.isRequired,
+  someSelected: PropTypes.bool.isRequired,
+}
+
 function Actions({ onExport, onRemove, onShare, someSelected }) {
   const handleClick = index => {
     if (index === 0) {
@@ -262,6 +284,13 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
   )
 }
 
+Actions.propTypes = {
+  onExport: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onShare: PropTypes.func.isRequired,
+  someSelected: PropTypes.bool.isRequired,
+}
+
 const ActionSpan = styled.span`
   display: grid;
   align-items: center;
@@ -309,4 +338,6 @@ const List = styled.ul`
   )}
 `
 
-export default LocalIdentities
+const ActionsMemo = React.memo(Actions)
+
+export default React.memo(LocalIdentities)
