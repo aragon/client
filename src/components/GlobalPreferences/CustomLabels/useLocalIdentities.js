@@ -1,8 +1,5 @@
 import { useContext, useState, useEffect, useCallback } from 'react'
-import {
-  IdentityContext,
-  identityEventTypes,
-} from '../../IdentityManager/IdentityManager'
+import { IdentityContext } from '../../IdentityManager/IdentityManager'
 
 function useLocalIdentities(wrapper) {
   const { identityEvents$ } = useContext(IdentityContext)
