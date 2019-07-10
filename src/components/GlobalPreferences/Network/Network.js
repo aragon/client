@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
+import { AragonType } from '../../../prop-types'
 import { Box, Button, Info, GU, Text, TextInput, theme } from '@aragon/ui'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
 import { sanitizeNetworkType } from '../../../network-config'
@@ -90,12 +91,16 @@ function Network({ wrapper }) {
   )
 }
 
+Network.propTypes = {
+  wrapper: AragonType,
+}
+
 const useNetwork = wrapper => {
   const [networkError, setNetworkError] = useState(null)
   const [ethNode, setEthNodeValue] = useState(defaultEthNode)
   const [ipfsGateway, setIpfsGatewayValue] = useState(ipfsDefaultConf.gateway)
 
-  const handleNetworkChange = async () => {
+  const handleNetworkChange = useCallback(async () => {
     try {
       await checkValidEthNode(ethNode, network.type)
     } catch (err) {
@@ -107,12 +112,12 @@ const useNetwork = wrapper => {
     setIpfsGateway(ipfsGateway)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
-  }
-  const handleClearCache = async () => {
+  }, [setNetworkError, ethNode, ipfsGateway])
+  const handleClearCache = useCallback(async () => {
     await wrapper.cache.clear()
     window.localStorage.clear()
     window.location.reload()
-  }
+  }, [wrapper])
 
   return {
     ethNode,
@@ -133,4 +138,4 @@ const Label = styled.label`
   margin-bottom: ${2 * GU}px;
 `
 
-export default Network
+export default React.memo(Network)
