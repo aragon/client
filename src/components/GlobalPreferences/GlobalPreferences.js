@@ -74,7 +74,9 @@ function GlobalPreferences({
 
   return (
     <div>
-      <Close onClick={isSharedLink ? handleSharedIdentitiesClose : onClose} />
+      <CloseMemo
+        onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
+      />
       <Layout>
         <Header
           primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
@@ -132,15 +134,18 @@ GlobalPreferences.propTypes = {
 
 function useGlobalPreferences(opened) {
   const [currentSection, setCurrentSection] = useState(0)
-  const handleNavigation = useCallback(index => {
-    const { hash } = window.location
-    const path = hash.substr(
-      hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
-        GLOBAL_PREFERENCES_QUERY_PARAM.length
-    )
-    const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
-    window.location.hash = `${rest}?p=/${PATHS[index]}`
-  },[window.location.hash])
+  const handleNavigation = useCallback(
+    index => {
+      const { hash } = window.location
+      const path = hash.substr(
+        hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
+          GLOBAL_PREFERENCES_QUERY_PARAM.length
+      )
+      const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
+      window.location.hash = `${rest}?p=/${PATHS[index]}`
+    },
+    [window.location.hash]
+  )
 
   useEffect(() => {
     if (!opened) {
@@ -238,8 +243,11 @@ const AnimatedWrap = styled(animated.div)`
   ${breakpoint('medium', `padding-bottom:0;`)}
 `
 
-export default props => (
+const CloseMemo = React.memo(Close)
+const AnimatedGlobalPreferencesMemo = React.memo(AnimatedGlobalPreferences)
+
+export default React.memo(props => (
   <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <AnimatedGlobalPreferences {...props} toast={toast} />}
+    {toast => <AnimatedGlobalPreferencesMemo {...props} toast={toast} />}
   </Toast>
-)
+))
