@@ -134,7 +134,7 @@ function useButtonDropDown(onClick) {
   }
 }
 
-export default ({ onClick, ...props }) => {
+export default React.memo(({ onClick, ...props }) => {
   const {
     opened,
     setOpened,
@@ -160,4 +160,4 @@ export default ({ onClick, ...props }) => {
       setHighlightedIndex={setHighlightedIndex}
     />
   )
-}
+})
