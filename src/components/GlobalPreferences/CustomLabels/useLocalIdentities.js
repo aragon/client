@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useCallback } from 'react'
+import { useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { IdentityContext } from '../../IdentityManager/IdentityManager'
 
 const ASC = Symbol('asc')
@@ -7,7 +7,7 @@ const sortDesc = (a, b) => b.name.localeCompare(a.name)
 const sortAsc = (a, b) => a.name.localeCompare(b.name)
 
 function useLocalIdentities(wrapper) {
-  let cancelled = false
+  const cancelled = useRef()
   const { identityEvents$ } = useContext(IdentityContext)
   const [identities, setIdentities] = useState([])
   const [sort, setSort] = useState(ASC)
@@ -23,19 +23,19 @@ function useLocalIdentities(wrapper) {
         address,
       }))
       .sort(sort === ASC ? sortAsc : sortDesc)
-    if (!cancelled) {
+    if (!cancelled.current) {
       setIdentities(identities)
     }
   }, [wrapper, cancelled, sort])
 
   useEffect(() => {
-    cancelled = false
+    cancelled.current = false
     // first fetch
     handleGetAll()
     // events: all events trigger get all
     const subscription = identityEvents$.subscribe(handleGetAll)
     return () => {
-      cancelled = true
+      cancelled.current = true
       subscription.unsubscribe()
     }
   }, [handleGetAll, identityEvents$])
@@ -47,5 +47,5 @@ function useLocalIdentities(wrapper) {
   }
 }
 
-export { ASC }
+export { ASC, DESC }
 export default useLocalIdentities
