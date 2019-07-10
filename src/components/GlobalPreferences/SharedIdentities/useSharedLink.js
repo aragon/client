@@ -21,12 +21,12 @@ function useSharedLink(wrapper, toast) {
     initialSelected
   )
 
-  const handleCleanHash = () => {
+  const handleCleanHash = useCallback(() => {
     const { hash } = window.location
     const path = hash.substr(0, hash.indexOf(QUERY_VAR))
     window.location.hash = path
-  }
-  const handleSharedIdentitiesSave = async () => {
+  }, [])
+  const handleSharedIdentitiesSave = useCallback(async () => {
     if (!wrapper) {
       return
     }
@@ -40,11 +40,20 @@ function useSharedLink(wrapper, toast) {
     handleCleanHash()
     setIsSharedLink(false)
     setIsSaving(false)
-  }
-  const handleSharedIdentitiesCancel = () => {
+  }, [
+    handleCleanHash,
+    identityEvents$,
+    selected,
+    setIsSaving,
+    setIsSharedLink,
+    sharedIdentities,
+    toast,
+    wrapper,
+  ])
+  const handleSharedIdentitiesCancel = useCallback(() => {
     handleCleanHash()
     setIsSharedLink(false)
-  }
+  }, [handleCleanHash, setIsSharedLink])
   const handleToggleAll = useCallback(() => {
     const newSelected = new Map(
       sharedIdentities.map(({ address }) => [
@@ -80,7 +89,7 @@ function useSharedLink(wrapper, toast) {
         )
       }
     }
-  }, [])
+  }, [setIsSharedLink, setSharedIdentities])
 
   return {
     handleSharedIdentitiesCancel,
