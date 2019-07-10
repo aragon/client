@@ -4,7 +4,6 @@ import ShareModal from './ShareModal'
 import RemoveModal from './RemoveModal'
 import EmptyIdentities from './EmptyIdentities'
 import LocalIdentities from './LocalIdentities'
-import useSharedLink from './useSharedLink'
 import useLocalIdentities from './useLocalIdentities'
 import useFilterIdentities from './useFilterIdentities'
 import useSelectIdentities from './useSelectIdentities'
@@ -13,16 +12,17 @@ import useLocalIdentityModal from './useLocalIdentityModal'
 
 const TIMEOUT_TOAST = 4000
 
-function CustomLabels({ wrapper, dao, toast }) {
+function CustomLabels({
+  wrapper,
+  dao,
+  toast,
+  isSharedLink,
+  isSavingSharedLink,
+  sharedIdentities,
+  handleSharedIdentitiesSave,
+  handleSharedIdentitiesCancel,
+}) {
   const { identities } = useLocalIdentities(wrapper)
-  const {
-    isSharedLink,
-    isSavingSharedLink,
-    sharedIdentities,
-    handleSharedIdentitiesSave,
-    handleSharedIdentitiesCancel,
-  } = useSharedLink(wrapper, toast)
-  // can reuse whole view with search functionality if we change the data source
   const identitiesToUse = isSharedLink ? sharedIdentities : identities
 
   const {
@@ -79,19 +79,12 @@ function CustomLabels({ wrapper, dao, toast }) {
           allSelected={allSelected}
           identities={filteredIdentities}
           identitiesSelected={identitiesSelected}
-          isSharedLink={isSharedLink}
-          isSavingSharedLink={isSavingSharedLink}
           onClear={handleClearSearchTerm}
           onExport={handleExport}
           onImport={handleImport}
           onRemove={handleRemoveModalOpen}
           onSearchChange={handleSearchTermChange}
           onShare={handleShareModalOpen}
-          onSharedIdentitiesSave={handleSharedIdentitiesSave(
-            filteredIdentities,
-            identitiesSelected
-          )}
-          onSharedIdentitiesCancel={handleSharedIdentitiesCancel}
           onToggleAll={handleToggleAll}
           onToggleIdentity={handleToggleIdentity}
           searchTerm={searchTerm}
