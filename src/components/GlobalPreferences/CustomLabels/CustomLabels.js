@@ -1,5 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Toast } from '@aragon/ui'
+import { AragonType } from '../../../prop-types'
 import ShareModal from './ShareModal'
 import RemoveModal from './RemoveModal'
 import EmptyIdentities from './EmptyIdentities'
@@ -19,8 +21,6 @@ function CustomLabels({
   isSharedLink,
   isSavingSharedLink,
   sharedIdentities,
-  handleSharedIdentitiesSave,
-  handleSharedIdentitiesCancel,
 }) {
   const { identities } = useLocalIdentities(wrapper)
   const identitiesToUse = isSharedLink ? sharedIdentities : identities
@@ -96,8 +96,19 @@ function CustomLabels({
   )
 }
 
-export default props => (
+CustomLabels.propTypes = {
+  dao: PropTypes.string,
+  isSavingSharedLink: PropTypes.bool,
+  isSharedLink: PropTypes.bool,
+  sharedIdentities: PropTypes.array,
+  toast: PropTypes.func.isRequired,
+  wrapper: AragonType,
+}
+
+const CustomLabelsMemo = React.memo(CustomLabels)
+
+export default React.memo(props => (
   <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <CustomLabels {...props} toast={toast} />}
+    {toast => <CustomLabelsMemo {...props} toast={toast} />}
   </Toast>
-)
+))
