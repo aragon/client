@@ -1,8 +1,9 @@
-import { useContext, useState, useCallback, useEffect } from 'react'
+import { useMemo, useContext, useState, useCallback, useEffect } from 'react'
 import {
   IdentityContext,
   identityEventTypes,
 } from '../../IdentityManager/IdentityManager'
+import { useSelected } from '../../../hooks'
 import { atou } from '../../../string-utils'
 
 const QUERY_VAR = '&l='
@@ -12,23 +13,25 @@ function useSharedLink(wrapper, toast) {
   const [isSharedLink, setIsSharedLink] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [sharedIdentities, setSharedIdentities] = useState([])
+  const initialSelected = useMemo(
+    () => new Map(sharedIdentities.map(({ address }) => [address, true])),
+    [sharedIdentities]
+  )
+  const { selected, setSelected, someSelected, allSelected } = useSelected(
+    initialSelected
+  )
 
   const handleCleanHash = () => {
     const { hash } = window.location
     const path = hash.substr(0, hash.indexOf(QUERY_VAR))
     window.location.hash = path
   }
-  const handleSharedIdentitiesSave = (
-    filteredIdentities,
-    identitiesSelected
-  ) => async () => {
+  const handleSharedIdentitiesSave = async () => {
     if (!wrapper) {
       return
     }
     setIsSaving(true)
-    const list = filteredIdentities.filter(({ address }) =>
-      identitiesSelected.get(address)
-    )
+    const list = sharedIdentities.filter(({ address }) => selected.get(address))
     for (const { name, address } of list) {
       await wrapper.modifyAddressIdentity(address, { name })
     }
@@ -42,7 +45,24 @@ function useSharedLink(wrapper, toast) {
     handleCleanHash()
     setIsSharedLink(false)
   }
+  const handleToggleAll = useCallback(() => {
+    const newSelected = new Map(
+      sharedIdentities.map(({ address }) => [
+        address,
+        !(allSelected || someSelected),
+      ])
+    )
+    setSelected(newSelected)
+  }, [sharedIdentities, setSelected, someSelected, allSelected])
+  const handleToggleIdentity = useCallback(
+    address => () =>
+      setSelected(new Map([...selected, [address, !selected.get(address)]])),
+    [selected, setSelected]
+  )
 
+  useEffect(() => {
+    setSelected(initialSelected)
+  }, [initialSelected, setSelected])
   useEffect(() => {
     const index = window.location.hash.indexOf(QUERY_VAR)
     if (index > -1) {
@@ -68,6 +88,11 @@ function useSharedLink(wrapper, toast) {
     isSavingSharedLink: isSaving,
     isSharedLink,
     sharedIdentities,
+    sharedIdentitiesSelected: selected,
+    sharedIdentitiesSomeSelected: someSelected,
+    sharedIdentitiesAllSelected: allSelected,
+    handleSharedIdentitiesToggleAll: handleToggleAll,
+    handleSharedIdentitiesToggleIdentity: handleToggleIdentity,
   }
 }
 
