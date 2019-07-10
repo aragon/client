@@ -189,7 +189,7 @@ class ActionPathsContent extends React.Component {
       intent.transaction.token &&
       intent.transaction.token.spender ? (
         <React.Fragment>
-          The first will grant token allowance to
+          The first will grant a token allowance to
           <LocalIdentityBadge
             entity={intent.transaction.token.spender}
             fontSize="small"
