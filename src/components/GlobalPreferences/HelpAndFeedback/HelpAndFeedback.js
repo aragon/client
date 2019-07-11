@@ -12,9 +12,10 @@ function HelpAndFeedback({ optedOut, onOptOutChange }) {
       <label
         css={`
           cursor: pointer;
-          display: block;
-          text-align: center;
+          display: flex;
           margin-bottom: ${2 * GU}px;
+          align-items: center;
+          justify-content: center;
         `}
       >
         <Checkbox onChange={handleOptOutChange} checked={!optedOut} />
