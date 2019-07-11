@@ -10,13 +10,11 @@ import {
   Text,
   theme,
 } from '@aragon/ui'
+import Subscriptions from './Subscriptions'
+import { login, verifyEmailToken } from './notification-service-api'
 
 const NOTIFICATION_SERVICE_EMAIL_KEY = 'NOTIFICATION_SERVICE_EMAIL_KEY'
 const NOTIFICATION_SERVICE_TOKEN_KEY = 'NOTIFICATION_SERVICE_TOKEN_KEY'
-// const NOTIFICATION_SERVICE_URL = 'https://notifications.eth.aragon.network'
-const NOTIFICATION_SERVICE_URL = 'http://localhost:4000'
-const NOTIFICATION_SERVICE_LOGIN = `${NOTIFICATION_SERVICE_URL}/login`
-const NOTIFICATION_SERVICE_VERIFY = `${NOTIFICATION_SERVICE_URL}/verify`
 const VERIFY_SUBSECTION = '/verify/'
 
 // A user can be in one of these three states
@@ -79,13 +77,13 @@ function Notifications({ subsection, dao, handleNavigation, navigationIndex }) {
   const {
     authState,
     email,
+    token,
     handleTokenChange,
     handleEmailChange,
   } = useAuthState(navigateToNotifications)
 
   if (authState === AUTH_AUTHENTICATED) {
-    // return <Subscriptions></Subscriptions>
-    return <div>TODO: CREATE Subscriptions component</div>
+    return <Subscriptions email={email} token={token} />
   }
 
   if (subsection.startsWith(VERIFY_SUBSECTION)) {
@@ -109,6 +107,9 @@ function Notifications({ subsection, dao, handleNavigation, navigationIndex }) {
 
 Notifications.propTypes = {
   subsection: PropTypes.string,
+  dao: PropTypes.string,
+  handleNavigation: PropTypes.func,
+  navigationIndex: PropTypes.func,
 }
 
 function NotificationsLogin({ dao, authState, email, onEmailChange }) {
@@ -158,7 +159,7 @@ function NotificationsLogin({ dao, authState, email, onEmailChange }) {
     <Box heading="Email notifications">
       {loginError && (
         <Text color={theme.negative} size="xsmall">
-          Error logging in ${loginError.toString()}
+          Error logging in {loginError.toString()}
         </Text>
       )}
       <Label>
@@ -179,7 +180,7 @@ function NotificationsVerify({ subsection, onTokenChange }) {
   const token = subsection.substring(VERIFY_SUBSECTION.length)
 
   useEffect(() => {
-    verify(token)
+    verifyEmailToken(token)
       .then(longLivedToken => {
         onTokenChange(longLivedToken)
         return longLivedToken
@@ -207,45 +208,5 @@ const Label = styled.label`
   display: block;
   margin-bottom: ${2 * GU}px;
 `
-
-const login = async (email, dao) => {
-  try {
-    const rawResponse = await fetch(NOTIFICATION_SERVICE_LOGIN, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, dao }),
-    })
-    if (!rawResponse.ok) {
-      throw new Error('Login failed')
-    }
-  } catch (e) {
-    console.error(e)
-    throw e
-  }
-}
-
-// Verify the short lived email token and fetch a long lived token
-const verify = async token => {
-  try {
-    const rawResponse = await fetch(NOTIFICATION_SERVICE_VERIFY, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: token,
-      },
-    })
-    if (!rawResponse.ok) {
-      throw new Error('login failed')
-    }
-    // Get the long lived token from header
-    return rawResponse.headers.get('authorization')
-  } catch (e) {
-    console.error(e)
-    throw e
-  }
-}
 
 export default Notifications
