@@ -13,16 +13,16 @@ import {
 function ButtonDropDown({ onClick, items, cover, ...props }) {
   const theme = useTheme()
   const {
-    opened,
-    setOpened,
-    handleItemClick,
     containerRef,
     handleBlur,
-    refs,
+    handleItemClick,
+    handleToggle,
     highlightedIndex,
+    opened,
+    refs,
     setHighlightedIndex,
+    setOpened,
   } = useButtonDropDown(onClick)
-  const handleToggle = () => setOpened(!opened)
 
   return (
     <div
@@ -140,6 +140,7 @@ function useButtonDropDown(onClick) {
   const reset = useMemo(() => setHighlightedIndex(-1), [setHighlightedIndex])
   const containerRef = useRef()
   const [opened, setOpened] = useState(false)
+  const handleToggle = useCallback(() => setOpened(!opened), [setOpened, opened])
   const handleClose = useCallback(() => {
     reset()
     setOpened(false)
@@ -156,14 +157,15 @@ function useButtonDropDown(onClick) {
   useEsc(handleClose)
 
   return {
-    opened,
-    setOpened,
-    handleItemClick,
-    handleBlur,
     containerRef,
-    refs,
+    handleBlur,
+    handleItemClick,
+    handleToggle,
     highlightedIndex,
+    opened,
+    refs,
     setHighlightedIndex,
+    setOpened,
   }
 }
 
