@@ -24,9 +24,9 @@ import {
   useTheme,
 } from '@aragon/ui'
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
+import Import from './Import'
 import ButtonDropDown from '../../ButtonDropDown/ButtonDropDown'
 import LocalIdentityPopoverTitle from '../../IdentityBadge/LocalIdentityPopoverTitle'
-import { fileImport } from './Import'
 import { ASC, DESC } from './useLocalIdentities'
 import { iOS } from '../../../utils'
 
@@ -52,8 +52,6 @@ function LocalIdentities({
   const inputRef = React.useRef()
   // trigger file chooser
   const handleImportClick = () => inputRef.current.click()
-  const handleFileChange = ({ currentTarget: { files } }) =>
-    fileImport(onImport)(files)
 
   return (
     <Box>
@@ -89,34 +87,22 @@ function LocalIdentities({
           />
         </div>
         {!iOS && (
-          <React.Fragment>
-            <input
-              type="file"
-              onChange={handleFileChange}
-              css={`
-                position: absolute;
-                z-index: 1;
-                display: inline-block;
-                opacity: 0;
-                height: 1px;
-                width: 1px;
-                top: -101vh;
-                left: -101vw;
-              `}
-              ref={inputRef}
-            />
-            <Button onClick={handleImportClick}>
-              <IconDownload />
-              <span
-                css={`
-                  display: inline-block;
-                  padding-right: ${1.5 * GU}px;
-                `}
-              >
-                Import
-              </span>
-            </Button>
-          </React.Fragment>
+          <Import
+            onImport={onImport}
+            button={
+              <Button>
+                <IconDownload />
+                <span
+                  css={`
+                    display: inline-block;
+                    padding-right: ${1.5 * GU}px;
+                  `}
+                >
+                  Import
+                </span>
+              </Button>
+            }
+          />
         )}
         <ActionsMemo
           someSelected={someSelected}
