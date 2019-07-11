@@ -119,8 +119,8 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
 
 ButtonDropDown.propTypes = {
   onClick: PropTypes.func.isRequired,
-  items: PropTypes.array,
-  cover: PropTypes.node,
+  items: PropTypes.array.isRequired,
+  cover: PropTypes.node.isRequired,
 }
 
 const List = styled(animated.ul)`
