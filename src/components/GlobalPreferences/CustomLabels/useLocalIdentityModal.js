@@ -6,7 +6,7 @@ import {
 import { LocalIdentityModalContext } from '../../LocalIdentityModal/LocalIdentityModalManager'
 
 function useLocalIdentityModal() {
-  const { identityEvents$ } = useContext(IdentityContext)
+  const { identityEvents$ } = useIdentity()
   const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
   const handleShowLocalIdentityModal = useCallback(
     address => async () => {
