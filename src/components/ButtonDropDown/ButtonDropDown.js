@@ -77,7 +77,7 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
                        align-items: center;
                        height: 40px;
                        width: calc(100% - 1px);
-                       border-left: 3px solid transparent;
+                       border-left: 2px solid transparent;
                        border-radius: 0;
                        &:hover,
                        &:focus {
@@ -97,7 +97,7 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
                        ${index === highlightedIndex &&
                          `
                            background: ${theme.surfaceHighlight};
-                           border-left: 3px solid ${theme.accent};
+                           border-left: 2px solid ${theme.accent};
                          `}
                      `}
                       onClick={handleItemClick(index)}
