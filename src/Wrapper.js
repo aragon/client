@@ -315,6 +315,7 @@ class Wrapper extends React.PureComponent {
         <GlobalPreferences
           locator={locator}
           wrapper={wrapper}
+          apps={apps}
           onClose={this.handleClosePreferences}
           onHelpScoutOptedOutChange={onHelpScoutOptedOutChange}
           helpScoutOptedOut={helpScoutOptedOut}

@@ -16,7 +16,7 @@ import {
   useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-import { AragonType } from '../../prop-types'
+import { AragonType, AppType } from '../../prop-types'
 import { useEsc } from '../../hooks'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
@@ -37,6 +37,7 @@ const VALUES = Array.from(SECTIONS.values())
 const TIMEOUT_TOAST = 4000
 
 function GlobalPreferences({
+  apps,
   helpScoutOptedOut,
   onClose,
   onHelpScoutOptedOutChange,
@@ -108,6 +109,7 @@ function GlobalPreferences({
               {sectionIndex === 1 && <Network wrapper={wrapper} />}
               {sectionIndex === 2 && (
                 <Notifications
+                  apps={apps}
                   dao={dao}
                   // subsection={subsection}
                   handleNavigation={onNavigation}
@@ -129,6 +131,7 @@ function GlobalPreferences({
 }
 
 GlobalPreferences.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
   helpScoutOptedOut: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onHelpScoutOptedOutChange: PropTypes.func.isRequired,
