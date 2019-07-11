@@ -255,6 +255,7 @@ LocalIdentities.propTypes = {
 }
 
 function Actions({ onExport, onRemove, onShare, someSelected }) {
+  const theme = useTheme()
   const handleClick = index => {
     if (index === 0) {
       onShare()
@@ -281,7 +282,7 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
             <span>Export</span>
           </ActionSpan>,
           <ActionSpan>
-            <IconTrash css="color: red;" />
+            <IconTrash css={`color: ${theme.red};`} />
             <span>Remove</span>
           </ActionSpan>,
         ]}
