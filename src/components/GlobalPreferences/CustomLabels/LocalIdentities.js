@@ -132,11 +132,12 @@ function LocalIdentities({
                 onChange={onToggleAll}
                 indeterminate={!allSelected && someSelected}
               />
-              {allSelected ? (
+              {allSelected && !searchTerm ? (
                 <div
                   css={`
                     display: inline-flex;
                     align-items: center;
+                    height: 16px;
                   `}
                 >
                   Custom label{' '}
