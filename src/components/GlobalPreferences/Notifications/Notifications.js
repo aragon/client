@@ -1,27 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import {
-  Box,
-  Button,
-  GU,
-  LoadingRing,
-  TextInput,
-  Text,
-  theme,
-} from '@aragon/ui'
+import { Box, LoadingRing } from '@aragon/ui'
 import Subscriptions from './Subscriptions'
-import { login, verifyEmailToken } from './notification-service-api'
+import NotificationsLogin from './NotificationsLogin'
+import { verifyEmailToken } from './notification-service-api'
 
-const NOTIFICATION_SERVICE_EMAIL_KEY = 'NOTIFICATION_SERVICE_EMAIL_KEY'
-const NOTIFICATION_SERVICE_TOKEN_KEY = 'NOTIFICATION_SERVICE_TOKEN_KEY'
-const VERIFY_SUBSECTION = '/verify/'
-
-// A user can be in one of these three states
-// Only once the user is verified (authenticated) can he create subscriptions
-const AUTH_UNAUTHENTICATED = 'AUTH_UNAUTHENTICATED'
-const AUTH_PREVERIFY = 'AUTH_PREVERIFY' // submitted email but didn't verify
-const AUTH_AUTHENTICATED = 'AUTH_AUTHENTICATED'
+import {
+  AUTH_UNAUTHENTICATED,
+  AUTH_PREVERIFY,
+  AUTH_AUTHENTICATED,
+  NOTIFICATION_SERVICE_EMAIL_KEY,
+  NOTIFICATION_SERVICE_TOKEN_KEY,
+  VERIFY_SUBSECTION,
+} from './constants'
 
 // Hook responsible for deriving the authState from localStorage values and
 // provide setters which update the localStorage
@@ -109,71 +100,8 @@ Notifications.propTypes = {
   subsection: PropTypes.string,
   dao: PropTypes.string,
   handleNavigation: PropTypes.func,
-  navigationIndex: PropTypes.func,
+  navigationIndex: PropTypes.number,
 }
-
-function NotificationsLogin({ dao, authState, email, onEmailChange }) {
-  const [inputEmail, setInputEmail] = useState('')
-  const [loginError, setloginError] = useState(null)
-  const [loginSubmitted, setloginSubmitted] = useState(false)
-
-  const handleEmailChange = e => {
-    setInputEmail(e.target.value)
-  }
-
-  const handleLogin = async e => {
-    try {
-      await login(inputEmail, dao)
-      onEmailChange(inputEmail)
-      setloginSubmitted(true)
-    } catch (e) {
-      setloginError(e)
-      console.error('Failed to login', e)
-    }
-  }
-
-  const handleRelogin = async e => {
-    try {
-      await login(email, dao)
-      setloginSubmitted(true)
-    } catch (e) {
-      setloginError(e)
-      console.error('Failed to login', e)
-    }
-  }
-
-  if (authState === AUTH_PREVERIFY) {
-    return (
-      <Box heading="Email notifications">
-        <div>
-          <Text size="xsmall">Awaiting verification of {email}</Text>
-        </div>
-        <Button mode="strong" disabled={loginSubmitted} onClick={handleRelogin}>
-          Re-login
-        </Button>
-      </Box>
-    )
-  }
-
-  return (
-    <Box heading="Email notifications">
-      {loginError && (
-        <Text color={theme.negative} size="xsmall">
-          Error logging in {loginError.toString()}
-        </Text>
-      )}
-      <Label>
-        Email address:{' '}
-        <TextInput value={inputEmail} wide onChange={handleEmailChange} />
-      </Label>
-      <Button mode="strong" onClick={handleLogin}>
-        Login
-      </Button>
-    </Box>
-  )
-}
-
-NotificationsLogin.propTypes = {}
 
 function NotificationsVerify({ subsection, onTokenChange }) {
   const [verifyError, setVerifyError] = useState(null)
@@ -203,10 +131,5 @@ NotificationsVerify.propTypes = {
   subsection: PropTypes.string,
   onTokenChange: PropTypes.func,
 }
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: ${2 * GU}px;
-`
 
 export default Notifications
