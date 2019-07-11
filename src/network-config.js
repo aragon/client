@@ -33,7 +33,8 @@ export const networkConfigs = {
   },
   ropsten: {
     addresses: {
-      ensRegistry: localEnsRegistryAddress || '', // TODO: fill out
+      ensRegistry:
+        localEnsRegistryAddress || '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
     },
     nodes: {
       defaultEth: 'wss://ropsten.eth.aragon.network/ws',
