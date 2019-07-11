@@ -2,7 +2,7 @@ import { useState, useMemo, useContext, useCallback } from 'react'
 import { format } from 'date-fns'
 import { saveAs } from 'file-saver'
 import {
-  IdentityContext,
+  useIdentity,
   identityEventTypes,
 } from '../../IdentityManager/IdentityManager'
 import { utoa } from '../../../string-utils'
