@@ -44,7 +44,7 @@ const fileImport = cb => files => {
   reader.readAsText(files[0])
 }
 
-const Import = ({ onImport }) => {
+const Import = ({ onImport, button }) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: fileImport(onImport),
     multiple: false,
@@ -55,7 +55,6 @@ const Import = ({ onImport }) => {
       css={`
         position: relative;
         display: inline-block;
-        overflow: hidden;
       `}
       {...getRootProps()}
     >
@@ -70,14 +69,21 @@ const Import = ({ onImport }) => {
           width: 100%;
         `}
       />
-      <Button label="Import labels" mode="strong">
-        Import labels
-      </Button>
+      {button ? (
+        button
+      ) : (
+        <Button label="Import labels" mode="strong">
+          Import labels
+        </Button>
+      )}
     </label>
   )
 }
 
-Import.propTypes = { onImport: PropTypes.func.isRequired }
+Import.propTypes = {
+  button: PropTypes.node,
+  onImport: PropTypes.func.isRequired,
+}
 
 export { fileImport }
 export default Import
