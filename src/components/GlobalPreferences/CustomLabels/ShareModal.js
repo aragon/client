@@ -44,7 +44,6 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
               font-size: 12px;
               line-height: 16px;
               text-transform: uppercase;
-              color: ##6d777b;
             `}
           >
             Link
@@ -88,8 +87,8 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
                 position: absolute;
                 top: 0;
                 right: 0;
-                width: 39px;
-                height: 38px;
+                width: 40px;
+                height: 40px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
