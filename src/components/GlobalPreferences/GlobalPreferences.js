@@ -48,6 +48,7 @@ function GlobalPreferences({
   const {
     setCurrentSection,
     currentSection,
+    subsection,
     handleNavigation,
   } = useGlobalPreferences(opened)
   const handleSectionChange = index => {
@@ -107,7 +108,9 @@ function GlobalPreferences({
                 <CustomLabels dao={dao} wrapper={wrapper} />
               )}
               {currentSection === 1 && <Network wrapper={wrapper} />}
-              {currentSection === 2 && <Notifications />}
+              {currentSection === 2 && (
+                <Notifications dao={dao} subsection={subsection} handleNavigation={handleNavigation} navigationIndex={2} />
+              )}
               {currentSection === 3 && (
                 <HelpAndFeedback
                   optedOut={helpScoutOptedOut}
@@ -134,6 +137,7 @@ GlobalPreferences.propTypes = {
 
 function useGlobalPreferences(opened) {
   const [currentSection, setCurrentSection] = useState(0)
+  const [subsection, setSubsection] = useState('')
   const handleNavigation = useCallback(index => {
     const { hash } = window.location
     const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
@@ -145,16 +149,26 @@ function useGlobalPreferences(opened) {
       return
     }
     const { hash } = window.location
-    const path = hash.substr(
+    const currentPath = hash.substring(
       hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
         GLOBAL_PREFERENCES_QUERY_PARAM.length
     )
+    // Does the current path contain any of the defined paths?
+    const sectionIndex = PATHS.findIndex(declaredPath =>
+      currentPath.startsWith(declaredPath)
+    )
+    // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
+    const subsection =
+      sectionIndex > -1 ? currentPath.substring(PATHS[sectionIndex].length) : ''
+
+    setSubsection(subsection)
     setCurrentSection(
-      SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
+      // If section not found, default to 0
+      sectionIndex === -1 ? 0 : sectionIndex
     )
   }, [opened])
 
-  return { setCurrentSection, currentSection, handleNavigation }
+  return { setCurrentSection, currentSection, subsection, handleNavigation }
 }
 
 function Close({ onClick }) {
