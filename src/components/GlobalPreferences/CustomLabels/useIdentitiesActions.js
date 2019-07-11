@@ -15,7 +15,7 @@ function useIdentitiesActions({
   toast,
   someSelected,
 }) {
-  const { identityEvents$ } = useContext(IdentityContext)
+  const { identityEvents$ } = useIdentity()
 
   // share
   const [shareModalOpened, setShareModalOpened] = useState(false)
