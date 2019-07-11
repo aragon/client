@@ -156,19 +156,22 @@ function useGlobalPreferences(opened) {
 }
 
 function Close({ onClick }) {
-  const { below } = useViewport()
+  const { above, below } = useViewport()
   const compact = below('medium')
   return (
     <div
       css={`
-        ${compact &&
+        position: absolute;
+        right: 0;
+        padding-top: ${3 * GU}px;
+
+        ${above('medium') &&
           `
-            position: absolute;
-            right:0;
+            position: initial;
+            right: initial;
+            padding-top: ${2.5 * GU}px;
+            padding-right: ${3 * GU}px;
           `}
-        text-align: right;
-        padding-top: ${compact ? 3 * GU : 2.5 * GU}px;
-        padding-right: ${3 * GU}px;
       `}
     >
       <ButtonIcon
