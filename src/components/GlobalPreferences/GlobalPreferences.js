@@ -47,6 +47,16 @@ function GlobalPreferences({
   onNavigation,
 }) {
   const { dao } = locator
+  // const {
+  //   setCurrentSection,
+  //   currentSection,
+  //   subsection,
+  //   handleNavigation,
+  // } = useGlobalPreferences(opened)
+  // const handleSectionChange = index => {
+  //   setCurrentSection(index)
+  //   handleNavigation(index)
+  // }
   const {
     isSharedLink,
     isSavingSharedLink,
@@ -96,7 +106,14 @@ function GlobalPreferences({
                 <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
               )}
               {sectionIndex === 1 && <Network wrapper={wrapper} />}
-              {sectionIndex === 2 && <Notifications />}
+              {sectionIndex === 2 && (
+                <Notifications
+                  dao={dao}
+                  // subsection={subsection}
+                  handleNavigation={onNavigation}
+                  navigationIndex={2}
+                />
+              )}
               {sectionIndex === 3 && (
                 <HelpAndFeedback
                   optedOut={helpScoutOptedOut}
@@ -132,6 +149,14 @@ function useGlobalPreferences(locator = {}) {
     },
     [locator]
   )
+  // function useGlobalPreferences(opened) {
+  //   const [currentSection, setCurrentSection] = useState(0)
+  //   const [subsection, setSubsection] = useState('')
+  //   const handleNavigation = useCallback(index => {
+  //     const { hash } = window.location
+  //     const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
+  //     window.location.hash = `${rest}?p=/${PATHS[index]}`
+  //   }, [])
 
   useEffect(() => {
     const { preferences: { path } = { path: '' } } = locator
@@ -147,6 +172,27 @@ function useGlobalPreferences(locator = {}) {
   }, [locator])
 
   return { sectionIndex, handleNavigation }
+  //   const { hash } = window.location
+  //   const currentPath = hash.substring(
+  //     hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
+  //       GLOBAL_PREFERENCES_QUERY_PARAM.length
+  //   )
+  //   // Does the current path contain any of the defined paths?
+  //   const sectionIndex = PATHS.findIndex(declaredPath =>
+  //     currentPath.startsWith(declaredPath)
+  //   )
+  //   // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
+  //   const subsection =
+  //     sectionIndex > -1 ? currentPath.substring(PATHS[sectionIndex].length) : ''
+
+  //   setSubsection(subsection)
+  //   setCurrentSection(
+  //     // If section not found, default to 0
+  //     sectionIndex === -1 ? 0 : sectionIndex
+  //   )
+  // }, [opened])
+
+  // return { setCurrentSection, currentSection, subsection, handleNavigation }
 }
 
 function Close({ onClick }) {
