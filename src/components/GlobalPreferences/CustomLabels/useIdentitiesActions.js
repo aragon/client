@@ -6,6 +6,7 @@ import {
   identityEventTypes,
 } from '../../IdentityManager/IdentityManager'
 import { utoa } from '../../../string-utils'
+import { log } from '../../../utils'
 
 function useIdentitiesActions({
   wrapper,
@@ -28,7 +29,7 @@ function useIdentitiesActions({
       const labels = utoa(JSON.stringify(identitiesToShare))
       return `${window.location.href}&l=${labels}`
     } catch (err) {
-      console.log('Error while creating the identities sharing link:', err)
+      log('Error while creating the identities sharing link:', err)
       return ''
     }
   }, [filteredIdentities, identitiesSelected])
