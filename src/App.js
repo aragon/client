@@ -58,7 +58,7 @@ if (network.type === 'ropsten') {
   SELECTOR_NETWORKS.push([
     'ropsten',
     'Ethereum Testnet (Ropsten)',
-    'https://ropsten.aragon.org/',
+    'https://aragon.ropsten.aragonpm.com/',
   ])
 }
 
