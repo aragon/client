@@ -1,6 +1,6 @@
 import { useMemo, useContext, useState, useCallback, useEffect } from 'react'
 import {
-  IdentityContext,
+  useIdentity,
   identityEventTypes,
 } from '../../IdentityManager/IdentityManager'
 import { useSelected } from '../../../hooks'
