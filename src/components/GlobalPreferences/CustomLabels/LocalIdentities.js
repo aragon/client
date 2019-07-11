@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
@@ -22,6 +22,7 @@ import {
   breakpoint,
   font,
   useTheme,
+  useViewport,
 } from '@aragon/ui'
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import Import from './Import'
@@ -48,6 +49,8 @@ function LocalIdentities({
   someSelected,
   sortIdentities,
 }) {
+  const { below, above } = useViewport()
+  const compact = below('medium')
   const theme = useTheme()
   const inputRef = React.useRef()
   // trigger file chooser
@@ -90,21 +93,32 @@ function LocalIdentities({
           <Import
             onImport={onImport}
             button={
-              <Button>
+              <Button
+                css={`
+                  ${compact &&
+                    `
+                      width: 50px;
+                      min-width: unset;
+                      padding: 0;
+                    `}
+                `}
+              >
                 <IconDownload />
-                <span
-                  css={`
-                    display: inline-block;
-                    padding-right: ${1.5 * GU}px;
-                  `}
-                >
-                  Import
-                </span>
+                {!compact && (
+                  <span
+                    css={`
+                      display: inline-block;
+                      padding-right: ${1.5 * GU}px;
+                    `}
+                  >
+                    Import
+                  </span>
+                )}
               </Button>
             }
           />
         )}
-        <ActionsMemo
+        <Actions
           someSelected={someSelected}
           onShare={onShare}
           onExport={onExport}
@@ -242,21 +256,27 @@ LocalIdentities.propTypes = {
 
 function Actions({ onExport, onRemove, onShare, someSelected }) {
   const theme = useTheme()
-  const handleClick = index => {
-    if (index === 0) {
-      onShare()
-      return
-    }
-    if (!iOS && index === 1) {
-      onExport()
-      return
-    }
-    onRemove()
-  }
+  const { below, above } = useViewport()
+  const compact = below('medium')
+  const handleClick = useCallback(
+    index => {
+      if (index === 0) {
+        onShare()
+        return
+      }
+      if (!iOS && index === 1) {
+        onExport()
+        return
+      }
+      onRemove()
+    },
+    [onShare, onExport, onRemove]
+  )
 
   return (
     <React.Fragment>
       <ButtonDropDown
+        compact={compact}
         css="z-index: 2;"
         items={[
           <ActionSpan>
@@ -283,18 +303,26 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
         cover={
           <span
             css={`
-              display: grid;
-              grid-template-columns: auto 1fr auto;
-              grid-gap: ${1 * GU}px;
-              width: 100%;
-              align-items: center;
-              padding-left: ${1 * GU}px;
-              z-index: 2;
+              height: 24px;
+              ${above('medium') &&
+                `
+                  display: grid;
+                  grid-template-columns: auto 1fr auto;
+                  grid-gap: ${1 * GU}px;
+                  width: 100%;
+                  align-items: center;
+                  padding-left: ${1 * GU}px;
+                  z-index: 2;
+                `}
             `}
           >
             <IconGrid />
-            <span css="text-align: left;">Actions</span>
-            <IconDown size="small" />
+            {!compact && (
+              <React.Fragment>
+                <span css="text-align: left;">Actions</span>
+                <IconDown size="small" />
+              </React.Fragment>
+            )}
           </span>
         }
         onClick={handleClick}
@@ -356,7 +384,5 @@ const List = styled.ul`
     `
   )}
 `
-
-const ActionsMemo = React.memo(Actions)
 
 export default React.memo(LocalIdentities)
