@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect, useCallback, useRef } from 'react'
-import { IdentityContext } from '../../IdentityManager/IdentityManager'
+import { useIdentity } from '../../IdentityManager/IdentityManager'
 
 const ASC = Symbol('asc')
 const DESC = Symbol('desc')
