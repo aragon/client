@@ -6,6 +6,7 @@ import {
   GU,
   IconCopy,
   Modal,
+  RADIUS,
   TextInput,
   Toast,
   breakpoint,
@@ -56,7 +57,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
               position: relative;
               background: ${theme.surface};
               border: 1px solid ${theme.border};
-              border-radius: 3px;
+              border-radius: ${RADIUS}px;
               box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
               padding-right: 30px;
               margin-top: ${1 * GU}px;
@@ -92,7 +93,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                border-radius: 0 3px 3px 0;
+                border-radius: 0 ${RADIUS}px ${RADIUS}px 0;
                 &:active {
                   background: rgba(220, 234, 239, 0.3);
                 }
