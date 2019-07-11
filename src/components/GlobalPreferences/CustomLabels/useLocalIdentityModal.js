@@ -1,6 +1,6 @@
 import { useCallback, useContext } from 'react'
 import {
-  IdentityContext,
+  useIdentity,
   identityEventTypes,
 } from '../../IdentityManager/IdentityManager'
 import { LocalIdentityModalContext } from '../../LocalIdentityModal/LocalIdentityModalManager'
