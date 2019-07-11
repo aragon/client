@@ -9,7 +9,7 @@ import { atou } from '../../../string-utils'
 const QUERY_VAR = '&l='
 
 function useSharedLink(wrapper, toast) {
-  const { identityEvents$ } = useContext(IdentityContext)
+  const { identityEvents$ } = useIdentity()
   const [isSharedLink, setIsSharedLink] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [sharedIdentities, setSharedIdentities] = useState([])
