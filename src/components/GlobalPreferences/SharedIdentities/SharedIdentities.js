@@ -56,6 +56,7 @@ function SharedIdentities({
           <React.Fragment>
             <div
               css={`
+                display: flex;
                 text-transform: uppercase;
                 color: ${theme.content};
                 ${font({ size: 'xsmall' })};
@@ -68,8 +69,13 @@ function SharedIdentities({
                 onChange={onToggleAll}
                 indeterminate={!allSelected && someSelected}
               />
-              {Array.from(selected.values()).reduce((p, c) => p + Number(c), 0)}{' '}
-              labels selected
+              <span>
+                {Array.from(selected.values()).reduce(
+                  (p, c) => p + Number(c),
+                  0
+                )}{' '}
+                labels selected
+              </span>
             </div>
             <List border={theme.border} surface={theme.surface}>
               {identities.map(({ address, name }) => (
