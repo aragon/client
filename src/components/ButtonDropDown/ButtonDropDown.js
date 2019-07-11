@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Button, ButtonBase, springs, useTheme } from '@aragon/ui'
+import { Button, ButtonBase, RADIUS, springs, useTheme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import {
   useClickOutside,
@@ -86,13 +86,13 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
 
                        ${index === 0 &&
                          `
-                           border-top-left-radius: 3px;
-                           border-top-right-radius: 3px;
+                           border-top-left-radius: ${RADIUS}px;
+                           border-top-right-radius: ${RADIUS}px;
                          `}
                        ${index === items.length - 1 &&
                          `
-                           border-bottom-left-radius: 3px;
-                           border-bottom-right-radius: 3px;
+                           border-bottom-left-radius: ${RADIUS}px;
+                           border-bottom-right-radius: ${RADIUS}px;
                          `}
                        ${index === highlightedIndex &&
                          `
@@ -128,7 +128,7 @@ const List = styled(animated.ul)`
   margin: 0;
   list-style: none;
   border: ${({ border }) => `1px solid ${border}`};
-  border-radius: 4px;
+  border-radius: ${RADIUS}px;
   background: ${({ surface }) => surface};
   width: 100%;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
@@ -140,7 +140,10 @@ function useButtonDropDown(onClick) {
   const reset = useMemo(() => setHighlightedIndex(-1), [setHighlightedIndex])
   const containerRef = useRef()
   const [opened, setOpened] = useState(false)
-  const handleToggle = useCallback(() => setOpened(!opened), [setOpened, opened])
+  const handleToggle = useCallback(() => setOpened(!opened), [
+    setOpened,
+    opened,
+  ])
   const handleClose = useCallback(() => {
     reset()
     setOpened(false)
