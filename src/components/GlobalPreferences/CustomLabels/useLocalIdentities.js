@@ -8,7 +8,7 @@ const sortAsc = (a, b) => a.name.localeCompare(b.name)
 
 function useLocalIdentities(wrapper) {
   const cancelled = useRef()
-  const { identityEvents$ } = useContext(IdentityContext)
+  const { identityEvents$ } = useIdentity()
   const [identities, setIdentities] = useState([])
   const [sort, setSort] = useState(ASC)
 
