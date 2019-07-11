@@ -6,6 +6,7 @@ import {
   GU,
   IconSettings,
   Popover,
+  RADIUS,
   useTheme,
 } from '@aragon/ui'
 import IconNetwork from './IconNetwork'
@@ -66,7 +67,7 @@ function GlobalSettingsButton({ onOpen }) {
             list-style: none;
             background: ${theme.surface};
             color: ${theme.content};
-            border-radius: 4px;
+            border-radius: ${RADIUS}px;
           `}
         >
           <li
@@ -161,8 +162,8 @@ function Item({ icon, label, onClick, lastItem }) {
           border-left: 2px solid transparent;
           ${lastItem &&
             `
-              border-bottom-left-radius: 4px;
-              border-bottom-right-radius: 4px;
+              border-bottom-left-radius: ${RADIUS}px;
+              border-bottom-right-radius: ${RADIUS}px;
             `}
 
           &:hover,
