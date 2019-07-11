@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Box, Checkbox, Info, GU } from '@aragon/ui'
-import helAndFeedbackSvg from './help-and-feedback.svg'
+import helpAndFeedbackSvg from './help-and-feedback.svg'
 
 function HelpAndFeedback({ optedOut, onOptOutChange }) {
   // checked => not opted out
