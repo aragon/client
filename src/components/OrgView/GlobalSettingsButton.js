@@ -22,7 +22,13 @@ function GlobalSettingsButton({ onOpen }) {
     setOpened(!opened)
   }, [setOpened, opened])
   const handleClose = useCallback(() => {
-    setOpened(false)
+    // when the popover was open and the user clicked on the button
+    // this handler was being called before the click handler, so the
+    // click handler was re-opening the popover, by having this on the
+    // next tick things happen in order.
+    // Other potential fix: send the event with the onClose handler
+    // and stop propagation, but no event is being sent.
+    setTimeout(() => setOpened(false), 0)
   }, [setOpened])
   const handleItemClick = useCallback(
     path => () => {
