@@ -74,9 +74,7 @@ function GlobalPreferences({
 
   return (
     <div>
-      <CloseMemo
-        onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
-      />
+      <Close onClick={isSharedLink ? handleSharedIdentitiesClose : onClose} />
       <Layout>
         <Header
           primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
@@ -158,15 +156,28 @@ function useGlobalPreferences(opened) {
 }
 
 function Close({ onClick }) {
+  const { below } = useViewport()
+  const compact = below('medium')
   return (
     <div
       css={`
+        ${compact &&
+          `
+            position: absolute;
+            right:0;
+          `}
         text-align: right;
-        padding-top: ${2.5 * GU}px;
+        padding-top: ${compact ? 3 * GU : 2.5 * GU}px;
         padding-right: ${3 * GU}px;
       `}
     >
-      <ButtonIcon onClick={onClick} label="Close">
+      <ButtonIcon
+        onClick={onClick}
+        label="Close"
+        css={`
+          ${compact && `height:40px;`}
+        `}
+      >
         <IconClose />
       </ButtonIcon>
     </div>
@@ -240,11 +251,8 @@ const AnimatedWrap = styled(animated.div)`
   ${breakpoint('medium', `padding-bottom:0;`)}
 `
 
-const CloseMemo = React.memo(Close)
-const AnimatedGlobalPreferencesMemo = React.memo(AnimatedGlobalPreferences)
-
 export default React.memo(props => (
   <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <AnimatedGlobalPreferencesMemo {...props} toast={toast} />}
+    {toast => <AnimatedGlobalPreferences {...props} toast={toast} />}
   </Toast>
 ))
