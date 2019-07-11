@@ -10,7 +10,7 @@ import {
   useArrowKeysFocusRefs as useArrowKeysFocus,
 } from '../../hooks'
 
-function ButtonDropDown({ onClick, items, cover, ...props }) {
+function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
   const theme = useTheme()
   const {
     containerRef,
@@ -39,6 +39,11 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
           display: flex;
           align-items: center;
           height: 40px;
+          ${compact &&
+            `
+              width: 50px;
+              min-width: unset;
+            `}
         `}
         onClick={handleToggle}
       >
@@ -57,6 +62,7 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
           /* eslint-disable react/prop-types */
           (({ scale, opacity }) => (
             <List
+              compact={compact}
               border={theme.border}
               surface={theme.surface}
               role="listbox"
@@ -74,32 +80,32 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
                       onFocus={setHighlightedIndex(index)}
                       onMouseOver={setHighlightedIndex(index)}
                       css={`
-                       display: flex;
-                       align-items: center;
-                       height: 40px;
-                       width: calc(100% - 1px);
-                       border-left: 2px solid transparent;
-                       border-radius: 0;
-                       &:hover,
-                       &:focus {
-                         outline: none;
-                       }
+                        display: flex;
+                        align-items: center;
+                        height: 40px;
+                        width: calc(100% - 1px);
+                        border-left: 2px solid transparent;
+                        border-radius: 0;
+                        &:hover,
+                        &:focus {
+                          outline: none;
+                        }
 
-                       ${index === 0 &&
-                         `
+                        ${index === 0 &&
+                          `
                            border-top-left-radius: ${RADIUS}px;
                            border-top-right-radius: ${RADIUS}px;
-                         `}
-                       ${index === items.length - 1 &&
-                         `
+                          `}
+                        ${index === items.length - 1 &&
+                          `
                            border-bottom-left-radius: ${RADIUS}px;
                            border-bottom-right-radius: ${RADIUS}px;
-                         `}
-                       ${index === highlightedIndex &&
-                         `
+                          `}
+                        ${index === highlightedIndex &&
+                          `
                            background: ${theme.surfaceHighlight};
                            border-left: 2px solid ${theme.accent};
-                         `}
+                          `}
                      `}
                       onClick={handleItemClickWithIndex}
                     >
@@ -121,6 +127,7 @@ ButtonDropDown.propTypes = {
   onClick: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
   cover: PropTypes.node.isRequired,
+  compact: PropTypes.bool,
 }
 
 const List = styled(animated.ul)`
@@ -133,6 +140,13 @@ const List = styled(animated.ul)`
   background: ${({ surface }) => surface};
   width: 100%;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
+
+  ${({ compact }) =>
+    compact &&
+    `
+      width: 165px;
+      right: 0;
+    `}
 `
 
 function useButtonDropDown(onClick) {
