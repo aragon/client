@@ -95,7 +95,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
                 justify-content: center;
                 border-radius: 0 ${RADIUS}px ${RADIUS}px 0;
                 &:active {
-                  background: rgba(220, 234, 239, 0.3);
+                  background: ${theme.surfacePressed};
                 }
               `}
             >
