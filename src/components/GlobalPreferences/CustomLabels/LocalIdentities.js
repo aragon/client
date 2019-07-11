@@ -140,7 +140,12 @@ function LocalIdentities({
               margin-bottom: ${1 * GU}px;
             `}
           >
-            <div>
+            <div
+              css={`
+                display: flex;
+                align-items: center;
+              `}
+            >
               <StyledCheckbox
                 checked={allSelected}
                 onChange={onToggleAll}
