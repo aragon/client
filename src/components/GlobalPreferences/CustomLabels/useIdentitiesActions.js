@@ -92,12 +92,14 @@ function useIdentitiesActions({
 
   return {
     // share
-    handleShareModalOpen: () => {
+    handleShareModalOpen: useCallback(() => {
       if (someSelected) {
         setShareModalOpened(true)
       }
-    },
-    handleShareModalClose: () => setShareModalOpened(false),
+    }, [someSelected, setShareModalOpened]),
+    handleShareModalClose: useCallback(() => setShareModalOpened(false), [
+      setShareModalOpened,
+    ]),
     shareModalOpened,
     shareLink,
     // import
@@ -107,11 +109,11 @@ function useIdentitiesActions({
     // remove
     handleRemove,
     handleRemoveModalClose: () => setRemoveModalOpened(false),
-    handleRemoveModalOpen: () => {
+    handleRemoveModalOpen: useCallback(() => {
       if (someSelected) {
         setRemoveModalOpened(true)
       }
-    },
+    }, [someSelected, setRemoveModalOpened]),
     removeModalOpened,
   }
 }
