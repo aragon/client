@@ -9,8 +9,8 @@ function useFilterIdentities(identities) {
       identities.filter(
         ({ address, name }) =>
           searchTerm === '' ||
-          name.toLowerCase().indexOf(searchTerm) > -1 ||
-          address.toLowerCase().indexOf(searchTerm) > -1
+          name.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
+          address.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
       )
     )
   }, [searchTerm, identities])
