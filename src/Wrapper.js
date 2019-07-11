@@ -324,6 +324,7 @@ class Wrapper extends React.PureComponent {
 
         <GlobalPreferences
           wrapper={wrapper}
+          apps={apps}
           dao={locator.dao}
           opened={preferencesOpened}
           onClose={this.handleClosePreferences}
