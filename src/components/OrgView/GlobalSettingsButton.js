@@ -88,7 +88,7 @@ function GlobalSettingsButton({ onOpen }) {
               border-bottom: 1px solid ${theme.border};
             `}
           >
-            <ItemMemo
+            <Item
               onClick={handleItemClick('custom-labels')}
               icon={<IconCustomLabels />}
               label="Custom labels"
@@ -99,7 +99,7 @@ function GlobalSettingsButton({ onOpen }) {
               border-bottom: 1px solid ${theme.border};
             `}
           >
-            <ItemMemo
+            <Item
               onClick={handleItemClick('network')}
               icon={<IconNetwork />}
               label="Network"
@@ -110,14 +110,14 @@ function GlobalSettingsButton({ onOpen }) {
               border-bottom: 1px solid ${theme.border};
             `}
           >
-            <ItemMemo
+            <Item
               onClick={handleItemClick('notifications')}
               icon={<IconNotifications />}
               label="Notifications"
             />
           </li>
           <li>
-            <ItemMemo
+            <Item
               lastItem
               onClick={handleItemClick('help-and-feedback')}
               icon={<IconHelpAndFeedback />}
@@ -185,7 +185,5 @@ Item.propTypes = {
   onClick: PropTypes.func.isRequired,
   lastItem: PropTypes.bool,
 }
-
-const ItemMemo = React.memo(Item)
 
 export default React.memo(GlobalSettingsButton)
