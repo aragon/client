@@ -31,6 +31,19 @@ export const networkConfigs = {
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
     },
   },
+  ropsten: {
+    addresses: {
+      ensRegistry: localEnsRegistryAddress || '', // TODO: fill out
+    },
+    nodes: {
+      defaultEth: 'wss://ropsten.eth.aragon.network/ws',
+    },
+    settings: {
+      chainId: 3,
+      name: 'Ropsten testnet',
+      type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
+    },
+  },
   local: {
     addresses: {
       ensRegistry: localEnsRegistryAddress,
