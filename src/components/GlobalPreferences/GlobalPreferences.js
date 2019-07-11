@@ -24,6 +24,7 @@ import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
+import { GLOBAL_PREFERENCES_QUERY_PARAM } from '../../utils'
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
@@ -33,7 +34,6 @@ const SECTIONS = new Map([
 ])
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
-const GLOBAL_PREFERENCES_QUERY_PARAM = '?p=/'
 const TIMEOUT_TOAST = 4000
 
 function GlobalPreferences({
@@ -137,7 +137,7 @@ function useGlobalPreferences(opened) {
   const handleNavigation = useCallback(index => {
     const { hash } = window.location
     const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
-    window.location.hash = `${rest}?p=/${PATHS[index]}`
+    window.location.hash = `${rest}${GLOBAL_PREFERENCES_QUERY_PARAM}${PATHS[index]}`
   }, [])
 
   useEffect(() => {
