@@ -28,8 +28,7 @@ import ButtonDropDown from '../../ButtonDropDown/ButtonDropDown'
 import LocalIdentityPopoverTitle from '../../IdentityBadge/LocalIdentityPopoverTitle'
 import { fileImport } from './Import'
 import { ASC, DESC } from './useLocalIdentities'
-
-const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+import { iOS } from '../../../utils'
 
 function LocalIdentities({
   allSelected,
@@ -261,7 +260,7 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
       onShare()
       return
     }
-    if (index === 1) {
+    if (!iOS && index === 1) {
       onExport()
       return
     }
@@ -277,12 +276,20 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
             <IconShare />
             <span>Share</span>
           </ActionSpan>,
+          ...(!iOS
+            ? [
+                <ActionSpan>
+                  <IconExternal />
+                  <span>Export</span>
+                </ActionSpan>,
+              ]
+            : []),
           <ActionSpan>
-            <IconExternal />
-            <span>Export</span>
-          </ActionSpan>,
-          <ActionSpan>
-            <IconTrash css={`color: ${theme.red};`} />
+            <IconTrash
+              css={`
+                color: ${theme.red};
+              `}
+            />
             <span>Remove</span>
           </ActionSpan>,
         ]}
