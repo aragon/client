@@ -171,6 +171,7 @@ function Close({ onClick }) {
             right: initial;
             padding-top: ${2.5 * GU}px;
             padding-right: ${3 * GU}px;
+            text-align: right;
           `}
       `}
     >
