@@ -32,9 +32,11 @@ function useSharedLink(wrapper, toast) {
     }
     setIsSaving(true)
     const list = sharedIdentities.filter(({ address }) => selected.get(address))
-    for (const { name, address } of list) {
-      await wrapper.modifyAddressIdentity(address, { name })
-    }
+    await Promise.all(
+      list.map(({ name, address }) =>
+        wrapper.modifyAddressIdentity(address, { name })
+      )
+    )
     identityEvents$.next({ type: identityEventTypes.IMPORT })
     toast('Custom labels added')
     handleCleanHash()
