@@ -54,7 +54,6 @@
     "web3-utils": "1.0.0-beta.33"
   },
   "devDependencies": {
-    "@aragon/cli": "~5.6.0",
     "@aragon/os": "^4.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
@@ -97,9 +96,9 @@
     "lint": "eslint ./src",
     "test": "npm run lint",
     "now-build": "npm run build",
-    "publish:major": "aragon apm publish major --only-content --files build/",
-    "publish:minor": "aragon apm publish minor --only-content --files build/",
-    "publish:patch": "aragon apm publish patch --only-content --files build/",
+    "publish:major": "node scripts/publish major --only-content --files build/",
+    "publish:minor": "node scripts/publish minor --only-content --files build/",
+    "publish:patch": "node scripts/publish patch --only-content --files build/",
     "publish:rinkeby:major": "npm run publish:major -- --environment rinkeby --build-script build:rinkeby",
     "publish:rinkeby:minor": "npm run publish:minor -- --environment rinkeby --build-script build:rinkeby",
     "publish:rinkeby:patch": "npm run publish:patch -- --environment rinkeby --build-script build:rinkeby",
