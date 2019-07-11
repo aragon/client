@@ -21,7 +21,7 @@ function HelpAndFeedback({ optedOut, onOptOutChange }) {
         Allow HelpScout feedback module
       </label>
       <img
-        src={helAndFeedbackSvg}
+        src={helpAndFeedbackSvg}
         alt="HelpScout"
         css={`
           display: block;
