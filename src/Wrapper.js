@@ -25,8 +25,7 @@ import {
 import { getAppPath } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-
-const GLOBAL_PREFERENCES_QUERY_PARAM = '?p=/'
+import { GLOBAL_PREFERENCES_QUERY_PARAM } from './utils'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
