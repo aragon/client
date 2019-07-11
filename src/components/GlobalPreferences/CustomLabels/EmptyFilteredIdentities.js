@@ -32,6 +32,7 @@ function EmptyFilteredIdentities({ onClear }) {
       </h3>
       <div
         css={`
+          text-align: center;
           margin-bottom: ${4 * GU}px;
           color: ${theme.surfaceContentSecondary};
         `}
