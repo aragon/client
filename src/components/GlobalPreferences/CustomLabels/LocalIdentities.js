@@ -209,7 +209,7 @@ function LocalIdentities({
                     checked={identitiesSelected.get(address)}
                     onChange={onToggleIdentity(address)}
                   />
-                  {name}
+                  <span>{name}</span>
                 </Label>
                 <div css="text-align: right;">
                   <IdentityBadge
@@ -353,13 +353,19 @@ const ActionSpan = styled.span`
 
 const StyledCheckbox = styled(Checkbox)`
   margin-right: ${3 * GU}px;
+  min-width: 14px;
 `
 
 const Label = styled.label`
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+
+  & > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `
 
 const List = styled.ul`
