@@ -66,6 +66,7 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
               }}
             >
               {items.map((item, index) => {
+                const handleItemClickWithIndex = handleItemClick(index)
                 return (
                   <li key={index}>
                     <ButtonBase
@@ -100,7 +101,7 @@ function ButtonDropDown({ onClick, items, cover, ...props }) {
                            border-left: 2px solid ${theme.accent};
                          `}
                      `}
-                      onClick={handleItemClick(index)}
+                      onClick={handleItemClickWithIndex}
                     >
                       {item}
                     </ButtonBase>
