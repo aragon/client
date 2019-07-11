@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Toast } from '@aragon/ui'
 import { AragonType } from '../../../prop-types'
@@ -50,8 +50,10 @@ function CustomLabels({ wrapper, dao, toast }) {
     wrapper,
   })
   const { handleShowLocalIdentityModal } = useLocalIdentityModal()
-  const handleClearSearchTerm = () =>
-    handleSearchTermChange({ currentTarget: { value: '' } })
+  const handleClearSearchTerm = useCallback(
+    () => handleSearchTermChange({ currentTarget: { value: '' } }),
+    [handleSearchTermChange]
+  )
 
   return (
     <React.Fragment>
