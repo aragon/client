@@ -25,7 +25,7 @@ import {
 import { getAppPath } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-import { GLOBAL_PREFERENCES_QUERY_PARAM } from './utils'
+import { GLOBAL_PREFERENCES_QUERY_PARAM } from './routing'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -69,8 +69,6 @@ class Wrapper extends React.PureComponent {
   state = {
     appLoading: false,
     orgUpgradePanelOpened: false,
-    preferencesOpened:
-      window.location.hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) > -1,
   }
 
   identitySubscription = null
@@ -162,16 +160,11 @@ class Wrapper extends React.PureComponent {
   }
 
   handleClosePreferences = () => {
-    const { hash } = window.location
-    window.location.hash = `${hash.substr(
-      0,
-      hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM)
-    )}`
-    this.setState({ preferencesOpened: false })
+    window.location.hash = getAppPath(this.props.locator)
   }
   handleOpenPreferences = path => {
-    window.location.hash = `${window.location.hash}${GLOBAL_PREFERENCES_QUERY_PARAM}${path}`
-    this.setState({ preferencesOpened: true })
+    const appPath = getAppPath(this.props.locator)
+    window.location.hash = `${appPath}${GLOBAL_PREFERENCES_QUERY_PARAM}${path}`
   }
   // params need to be a string
   handleParamsRequest = params => {
@@ -249,7 +242,7 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
 
-    const { appLoading, orgUpgradePanelOpened, preferencesOpened } = this.state
+    const { appLoading, orgUpgradePanelOpened } = this.state
 
     const currentApp = apps.find(app =>
       addressesEqual(app.proxyAddress, locator.instanceId)
@@ -322,9 +315,8 @@ class Wrapper extends React.PureComponent {
         </OrgView>
 
         <GlobalPreferences
+          locator={locator}
           wrapper={wrapper}
-          dao={locator.dao}
-          opened={preferencesOpened}
           onClose={this.handleClosePreferences}
           onHelpScoutOptedOutChange={onHelpScoutOptedOutChange}
           helpScoutOptedOut={helpScoutOptedOut}
