@@ -7,15 +7,23 @@ import {
 } from '../../IdentityManager/IdentityManager'
 import { utoa } from '../../../string-utils'
 import { log } from '../../../utils'
+import {
+  getAppPath,
+  GLOBAL_PREFERENCES_QUERY_PARAM,
+  GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR,
+} from '../../../routing'
+
+const CUSTOM_LABELS_PATH = 'custom-labels'
 
 function useIdentitiesActions({
   wrapper,
   filteredIdentities,
   identitiesSelected,
-  dao,
+  locator,
   toast,
   someSelected,
 }) {
+  const { dao } = locator
   const { identityEvents$ } = useIdentity()
 
   // share
@@ -27,7 +35,10 @@ function useIdentitiesActions({
     )
     try {
       const labels = utoa(JSON.stringify(identitiesToShare))
-      return `${window.location.href}&l=${labels}`
+      const path = `${window.location.origin}/#${getAppPath(
+        locator
+      )}${GLOBAL_PREFERENCES_QUERY_PARAM}${CUSTOM_LABELS_PATH}${GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR}${labels}`
+      return path
     } catch (err) {
       log('Error while creating the identities sharing link:', err)
       return ''
