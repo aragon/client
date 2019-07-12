@@ -49,12 +49,9 @@ function LocalIdentities({
   someSelected,
   sortIdentities,
 }) {
-  const { below, above } = useViewport()
+  const { below } = useViewport()
   const compact = below('medium')
   const theme = useTheme()
-  const inputRef = React.useRef()
-  // trigger file chooser
-  const handleImportClick = () => inputRef.current.click()
 
   return (
     <Box>
