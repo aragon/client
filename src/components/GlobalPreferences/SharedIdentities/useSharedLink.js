@@ -5,10 +5,15 @@ import {
 } from '../../IdentityManager/IdentityManager'
 import { useSelected } from '../../../hooks'
 import { atou } from '../../../string-utils'
+import {
+  getAppPath,
+  GLOBAL_PREFERENCES_QUERY_PARAM,
+  GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR,
+} from '../../../routing'
 
-const QUERY_VAR = '&l='
+const CUSTOM_LABELS_PATH = 'custom-labels'
 
-function useSharedLink(wrapper, toast) {
+function useSharedLink({ wrapper, toast, locator }) {
   const { identityEvents$ } = useIdentity()
   const [isSharedLink, setIsSharedLink] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -22,9 +27,9 @@ function useSharedLink(wrapper, toast) {
   )
 
   const handleCleanHash = useCallback(() => {
-    const { hash } = window.location
-    const path = hash.substr(0, hash.indexOf(QUERY_VAR))
-    window.location.hash = path
+    window.location.hash = `${getAppPath(
+      locator
+    )}${GLOBAL_PREFERENCES_QUERY_PARAM}${CUSTOM_LABELS_PATH}`
   }, [])
   const handleSharedIdentitiesSave = useCallback(async () => {
     if (!wrapper) {
@@ -75,23 +80,24 @@ function useSharedLink(wrapper, toast) {
     setSelected(initialSelected)
   }, [initialSelected, setSelected])
   useEffect(() => {
-    const index = window.location.hash.indexOf(QUERY_VAR)
-    if (index > -1) {
-      const raw = window.location.hash.substr(index + QUERY_VAR.length)
-      try {
-        const data = JSON.parse(window.decodeURI(atou(raw)))
-        setSharedIdentities(
-          data.map(({ address, name }) => ({ address, name }))
-        )
-        setIsSharedLink(true)
-      } catch (e) {
-        console.warn(
-          'There was an error parsing/validating the shared data: ',
-          e
-        )
-      }
+    const {
+      preferences: { params },
+    } = locator
+    if (!params.has(GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR)) {
+      return
     }
-  }, [setIsSharedLink, setSharedIdentities])
+    try {
+      const data = JSON.parse(
+        window.decodeURI(
+          atou(params.get(GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR))
+        )
+      )
+      setSharedIdentities(data.map(({ address, name }) => ({ address, name })))
+      setIsSharedLink(true)
+    } catch (e) {
+      console.warn('There was an error parsing/validating the shared data: ', e)
+    }
+  }, [setIsSharedLink, setSharedIdentities, locator])
 
   return {
     handleSharedIdentitiesCancel,
