@@ -102,7 +102,7 @@ export const getAppPath = ({
   const dao =
     fullDao.indexOf(ARAGONID_ENS_DOMAIN) > -1
       ? fullDao.substr(0, fullDao.indexOf(ARAGONID_ENS_DOMAIN) - 1)
-      : dao
+      : fullDao
   const paramsPart = params ? `?p=${encodeURIComponent(params)}` : ``
   if (staticApps.has(instanceId)) {
     return `/${dao}${staticApps.get(instanceId).route}${paramsPart}`
