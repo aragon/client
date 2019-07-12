@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useIdentity } from '../../IdentityManager/IdentityManager'
 
 const ASC = Symbol('asc')
