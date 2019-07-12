@@ -1,4 +1,4 @@
-import { useMemo, useContext, useState, useCallback, useEffect } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
 import {
   useIdentity,
   identityEventTypes,
@@ -30,7 +30,7 @@ function useSharedLink({ wrapper, toast, locator }) {
     window.location.hash = `${getAppPath(
       locator
     )}${GLOBAL_PREFERENCES_QUERY_PARAM}${CUSTOM_LABELS_PATH}`
-  }, [])
+  }, [locator])
   const handleSharedIdentitiesSave = useCallback(async () => {
     if (!wrapper) {
       return
