@@ -97,6 +97,7 @@ CustomLabels.propTypes = {
   dao: PropTypes.string,
   toast: PropTypes.func.isRequired,
   wrapper: AragonType,
+  locator: PropTypes.object,
 }
 
 const CustomLabelsMemo = React.memo(CustomLabels)
