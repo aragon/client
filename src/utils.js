@@ -128,5 +128,3 @@ export function cssgu(strings, ...substitutions) {
 
 export const iOS =
   /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
-
-export const GLOBAL_PREFERENCES_QUERY_PARAM = '?preferences=/'
