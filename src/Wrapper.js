@@ -22,10 +22,9 @@ import {
   EthereumAddressType,
   RepoType,
 } from './prop-types'
-import { getAppPath } from './routing'
+import { getAppPath, GLOBAL_PREFERENCES_QUERY_PARAM } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-import { GLOBAL_PREFERENCES_QUERY_PARAM } from './routing'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
