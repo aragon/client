@@ -21,7 +21,6 @@ function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
     opened,
     refs,
     setHighlightedIndex,
-    setOpened,
   } = useButtonDropDown(onClick)
 
   return (
@@ -178,7 +177,6 @@ function useButtonDropDown(onClick) {
     opened,
     refs,
     setHighlightedIndex,
-    setOpened,
   }
 }
 
