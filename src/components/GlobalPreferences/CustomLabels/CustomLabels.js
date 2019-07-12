@@ -14,7 +14,7 @@ import useLocalIdentityModal from './useLocalIdentityModal'
 
 const TIMEOUT_TOAST = 4000
 
-function CustomLabels({ wrapper, dao, toast }) {
+function CustomLabels({ wrapper, dao, toast, locator }) {
   const { identities, sortIdentities, handleToggleSort } = useLocalIdentities(
     wrapper
   )
@@ -42,7 +42,7 @@ function CustomLabels({ wrapper, dao, toast }) {
     shareLink,
     shareModalOpened,
   } = useIdentitiesActions({
-    dao,
+    locator,
     filteredIdentities,
     identitiesSelected,
     someSelected,
