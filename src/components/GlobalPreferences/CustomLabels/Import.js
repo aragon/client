@@ -69,9 +69,7 @@ const Import = ({ onImport, button }) => {
           width: 100%;
         `}
       />
-      {button ? (
-        button
-      ) : (
+      {button || (
         <Button label="Import labels" mode="strong">
           Import labels
         </Button>
