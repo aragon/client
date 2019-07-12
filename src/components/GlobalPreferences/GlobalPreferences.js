@@ -44,13 +44,9 @@ function GlobalPreferences({
   wrapper,
   locator,
   sectionIndex,
-  params,
   onNavigation,
 }) {
   const { dao } = locator
-  const handleSectionChange = index => {
-    handleNavigation(index)
-  }
   const {
     isSharedLink,
     isSavingSharedLink,
@@ -118,22 +114,26 @@ function GlobalPreferences({
 }
 
 GlobalPreferences.propTypes = {
-  dao: PropTypes.string,
   helpScoutOptedOut: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onHelpScoutOptedOutChange: PropTypes.func.isRequired,
   toast: PropTypes.func,
   wrapper: AragonType,
+  locator: PropTypes.object,
+  sectionIndex: PropTypes.number,
+  onNavigation: PropTypes.func.isRequired,
 }
 
 function useGlobalPreferences(locator = {}) {
   const [sectionIndex, setSectionIndex] = useState(null)
-  const [params, setParams] = useState(null)
-  const handleNavigation = useCallback(index => {
-    window.location.hash = `${getAppPath(
-      locator
-    )}${GLOBAL_PREFERENCES_QUERY_PARAM}${PATHS[index]}`
-  }, [])
+  const handleNavigation = useCallback(
+    index => {
+      window.location.hash = `${getAppPath(
+        locator
+      )}${GLOBAL_PREFERENCES_QUERY_PARAM}${PATHS[index]}`
+    },
+    [locator]
+  )
 
   useEffect(() => {
     const {
@@ -150,7 +150,7 @@ function useGlobalPreferences(locator = {}) {
     setSectionIndex(PATHS.findIndex(item => item === path))
   }, [locator])
 
-  return { sectionIndex, params, handleNavigation }
+  return { sectionIndex, handleNavigation }
 }
 
 function Close({ onClick }) {
@@ -191,9 +191,7 @@ Close.propTypes = {
 }
 
 function AnimatedGlobalPreferences(props) {
-  const { sectionIndex, params, handleNavigation } = useGlobalPreferences(
-    props.locator
-  )
+  const { sectionIndex, handleNavigation } = useGlobalPreferences(props.locator)
   const { below } = useViewport()
   const smallView = below('medium')
   const theme = useTheme()
@@ -230,7 +228,6 @@ function AnimatedGlobalPreferences(props) {
             <GlobalPreferences
               {...props}
               sectionIndex={sectionIndex}
-              params={params}
               onNavigation={handleNavigation}
             />
           </AnimatedWrap>
@@ -242,7 +239,7 @@ function AnimatedGlobalPreferences(props) {
 }
 
 AnimatedGlobalPreferences.propTypes = {
-  opened: PropTypes.bool,
+  locator: PropTypes.object,
 }
 
 const AnimatedWrap = styled(animated.div)`
