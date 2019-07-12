@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext, useCallback } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { format } from 'date-fns'
 import { saveAs } from 'file-saver'
 import {
@@ -43,7 +43,7 @@ function useIdentitiesActions({
       log('Error while creating the identities sharing link:', err)
       return ''
     }
-  }, [filteredIdentities, identitiesSelected])
+  }, [filteredIdentities, identitiesSelected, locator])
 
   // import
   const handleImport = useCallback(
