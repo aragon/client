@@ -147,6 +147,25 @@ ShareModal.propTypes = {
 }
 
 function ShareModalWithToast({ toast, visible, onClose, link }) {
+  const { inputRef, handleCopy, handleFocus } = useShareModal({
+    visible,
+    toast,
+    onClose,
+  })
+
+  return (
+    <ShareModal
+      inputRef={inputRef}
+      link={link}
+      onClose={onClose}
+      onCopy={handleCopy}
+      onFocus={handleFocus}
+      visible={visible}
+    />
+  )
+}
+
+function useShareModal({ visible, toast, onClose }) {
   const inputRef = useRef()
   const handleFocus = useCallback(() => {
     inputRef.current.select()
@@ -169,16 +188,7 @@ function ShareModalWithToast({ toast, visible, onClose, link }) {
     }
   }, [visible])
 
-  return (
-    <ShareModal
-      inputRef={inputRef}
-      link={link}
-      onClose={onClose}
-      onCopy={handleCopy}
-      onFocus={handleFocus}
-      visible={visible}
-    />
-  )
+  return { inputRef, handleCopy, handleFocus }
 }
 
 ShareModalWithToast.propTypes = {
