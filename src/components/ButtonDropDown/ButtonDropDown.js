@@ -62,7 +62,6 @@ function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
           /* eslint-disable react/prop-types */
           (({ scale, opacity }) => (
             <List
-              compact={compact}
               border={theme.border}
               surface={theme.surface}
               role="listbox"
@@ -70,6 +69,10 @@ function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
                 opacity,
                 transform: scale.interpolate(t => `scale3d(${t},${t},1)`),
               }}
+              css={`
+                width: ${compact ? '165px' : '100%'};
+                right: ${compact ? 0 : 'initial'};
+              `}
             >
               {items.map((item, index) => {
                 const handleItemClickWithIndex = handleItemClick(index)
@@ -138,15 +141,7 @@ const List = styled(animated.ul)`
   border: ${({ border }) => `1px solid ${border}`};
   border-radius: ${RADIUS}px;
   background: ${({ surface }) => surface};
-  width: 100%;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
-
-  ${({ compact }) =>
-    compact &&
-    `
-      width: 165px;
-      right: 0;
-    `}
 `
 
 function useButtonDropDown(onClick) {
