@@ -24,7 +24,7 @@ import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
-import { GLOBAL_PREFERENCES_QUERY_PARAM } from '../../utils'
+import { GLOBAL_PREFERENCES_QUERY_PARAM, getAppPath } from '../../routing'
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
@@ -37,21 +37,18 @@ const VALUES = Array.from(SECTIONS.values())
 const TIMEOUT_TOAST = 4000
 
 function GlobalPreferences({
-  dao,
   helpScoutOptedOut,
   onClose,
   onHelpScoutOptedOutChange,
-  opened,
   toast,
   wrapper,
+  locator,
+  sectionIndex,
+  params,
+  onNavigation,
 }) {
-  const {
-    setCurrentSection,
-    currentSection,
-    handleNavigation,
-  } = useGlobalPreferences(opened)
+  const { dao } = locator
   const handleSectionChange = index => {
-    setCurrentSection(index)
     handleNavigation(index)
   }
   const {
@@ -65,7 +62,7 @@ function GlobalPreferences({
     sharedIdentitiesSelected,
     sharedIdentitiesAllSelected,
     sharedIdentitiesSomeSelected,
-  } = useSharedLink(wrapper, toast)
+  } = useSharedLink({ wrapper, toast, locator })
   const handleSharedIdentitiesClose = () => {
     handleSharedIdentitiesCancel()
     onClose()
@@ -96,17 +93,17 @@ function GlobalPreferences({
             <Bar>
               <TabBar
                 items={VALUES}
-                onChange={handleSectionChange}
-                selected={currentSection}
+                onChange={onNavigation}
+                selected={sectionIndex}
               />
             </Bar>
             <main>
-              {currentSection === 0 && (
-                <CustomLabels dao={dao} wrapper={wrapper} />
+              {sectionIndex === 0 && (
+                <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
               )}
-              {currentSection === 1 && <Network wrapper={wrapper} />}
-              {currentSection === 2 && <Notifications />}
-              {currentSection === 3 && (
+              {sectionIndex === 1 && <Network wrapper={wrapper} />}
+              {sectionIndex === 2 && <Notifications />}
+              {sectionIndex === 3 && (
                 <HelpAndFeedback
                   optedOut={helpScoutOptedOut}
                   onOptOutChange={onHelpScoutOptedOutChange}
@@ -125,34 +122,35 @@ GlobalPreferences.propTypes = {
   helpScoutOptedOut: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onHelpScoutOptedOutChange: PropTypes.func.isRequired,
-  opened: PropTypes.bool,
   toast: PropTypes.func,
   wrapper: AragonType,
 }
 
-function useGlobalPreferences(opened) {
-  const [currentSection, setCurrentSection] = useState(0)
+function useGlobalPreferences(locator = {}) {
+  const [sectionIndex, setSectionIndex] = useState(null)
+  const [params, setParams] = useState(null)
   const handleNavigation = useCallback(index => {
-    const { hash } = window.location
-    const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
-    window.location.hash = `${rest}${GLOBAL_PREFERENCES_QUERY_PARAM}${PATHS[index]}`
+    window.location.hash = `${getAppPath(
+      locator
+    )}${GLOBAL_PREFERENCES_QUERY_PARAM}${PATHS[index]}`
   }, [])
 
   useEffect(() => {
-    if (!opened) {
+    const {
+      preferences: { path },
+    } = locator
+    if (!path) {
+      setSectionIndex(null)
       return
     }
-    const { hash } = window.location
-    const path = hash.substr(
-      hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
-        GLOBAL_PREFERENCES_QUERY_PARAM.length
-    )
-    setCurrentSection(
-      SECTIONS.has(path) ? PATHS.findIndex(item => item === path) : 0
-    )
-  }, [opened])
+    if (!SECTIONS.has(path)) {
+      setSectionIndex(null)
+      return
+    }
+    setSectionIndex(PATHS.findIndex(item => item === path))
+  }, [locator])
 
-  return { setCurrentSection, currentSection, handleNavigation }
+  return { sectionIndex, params, handleNavigation }
 }
 
 function Close({ onClick }) {
@@ -192,7 +190,10 @@ Close.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-function AnimatedGlobalPreferences({ opened, ...props }) {
+function AnimatedGlobalPreferences(props) {
+  const { sectionIndex, params, handleNavigation } = useGlobalPreferences(
+    props.locator
+  )
   const { below } = useViewport()
   const smallView = below('medium')
   const theme = useTheme()
@@ -200,7 +201,7 @@ function AnimatedGlobalPreferences({ opened, ...props }) {
   return (
     <Transition
       native
-      items={opened}
+      items={sectionIndex !== null}
       from={{ opacity: 0, enterProgress: 0, blocking: false }}
       enter={{ opacity: 1, enterProgress: 1, blocking: true }}
       leave={{ opacity: 0, enterProgress: 1, blocking: false }}
@@ -226,7 +227,12 @@ function AnimatedGlobalPreferences({ opened, ...props }) {
               ),
             }}
           >
-            <GlobalPreferences {...props} opened={opened} />
+            <GlobalPreferences
+              {...props}
+              sectionIndex={sectionIndex}
+              params={params}
+              onNavigation={handleNavigation}
+            />
           </AnimatedWrap>
         ))
       /* eslint-enable react/prop-types */
