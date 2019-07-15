@@ -73,6 +73,7 @@ function LocalIdentities({
           <TextInput
             css={`
               padding-right: ${4 * GU}px;
+              font-size: 16px;
             `}
             placeholder="Search"
             onChange={onSearchChange}
@@ -83,6 +84,7 @@ function LocalIdentities({
               position: absolute;
               right: ${1 * GU}px;
               top: ${1 * GU}px;
+              color: #8fa4b5;
             `}
           />
         </div>
@@ -100,7 +102,7 @@ function LocalIdentities({
                     `}
                 `}
               >
-                <IconDownload />
+                <IconDownload css="color: #8fa4b5;" />
                 {!compact && (
                   <span
                     css={`
@@ -274,13 +276,13 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
         css="z-index: 2;"
         items={[
           <ActionSpan>
-            <IconShare />
+            <IconShare css="color: #8fa4b5;" />
             <span>Share</span>
           </ActionSpan>,
           ...(!iOS
             ? [
                 <ActionSpan>
-                  <IconExternal />
+                  <IconExternal css="color: #8fa4b5;" />
                   <span>Export</span>
                 </ActionSpan>,
               ]
@@ -310,11 +312,11 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
                 `}
             `}
           >
-            <IconGrid />
+            <IconGrid css="color: #8fa4b5;" />
             {!compact && (
               <React.Fragment>
                 <span css="text-align: left;">Actions</span>
-                <IconDown size="small" />
+                <IconDown size="small" css="color: #8fa4b5;" />
               </React.Fragment>
             )}
           </span>

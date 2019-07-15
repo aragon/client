@@ -180,7 +180,15 @@ function Close({ onClick }) {
           ${compact && `height:40px;`}
         `}
       >
-        <IconClose />
+        <IconClose
+          css={`
+            color: #8fa4b5;
+            & path {
+              stroke: #8fa4b5;
+              stroke-width: 0.3px;
+            }
+          `}
+        />
       </ButtonIcon>
     </div>
   )
