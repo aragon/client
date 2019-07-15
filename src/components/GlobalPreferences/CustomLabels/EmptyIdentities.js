@@ -38,7 +38,7 @@ function EmptyIdentities({ onImport }) {
         >
           JSON file
         </span>{' '}
-        with labels by clicking the button below. "Import" below.
+        with labels by clicking the button below.
       </div>
       <div
         css={`
