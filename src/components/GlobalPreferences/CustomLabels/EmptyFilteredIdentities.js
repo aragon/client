@@ -32,9 +32,11 @@ function EmptyFilteredIdentities({ onClear }) {
       </h3>
       <div
         css={`
+          max-width: 270px;
           text-align: center;
           margin-bottom: ${4 * GU}px;
           color: ${theme.surfaceContentSecondary};
+          font-size: 16px;
         `}
       >
         We can’t find any item matching your search query.{' '}
@@ -47,6 +49,11 @@ function EmptyFilteredIdentities({ onClear }) {
             box-shadow: none;
             padding: 0;
             min-width: unset;
+
+            &:hover {
+              border: none;
+              box-shadow: none;
+            }
           `}
           onClick={onClear}
         >
