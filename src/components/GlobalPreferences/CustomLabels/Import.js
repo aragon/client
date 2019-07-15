@@ -52,11 +52,15 @@ const Import = ({ onImport, button }) => {
 
   return (
     <label
+      {...getRootProps()}
       css={`
         position: relative;
         display: inline-block;
+        &:focus,
+        &:active {
+          outline: none;
+        }
       `}
-      {...getRootProps()}
     >
       <input
         {...getInputProps()}
