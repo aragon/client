@@ -303,7 +303,7 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
           <ActionSpan>
             <IconShare
               css={`
-                color: ${theme.surfaceOpened};
+                color: ${theme.surfaceIcon};
               `}
             />
             <span>Share</span>
@@ -313,7 +313,7 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
                 <ActionSpan>
                   <IconExternal
                     css={`
-                      color: ${theme.surfaceOpened};
+                      color: ${theme.surfaceIcon};
                     `}
                   />
                   <span>Export</span>
@@ -348,7 +348,7 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
           >
             <IconGrid
               css={`
-                color: ${theme.surfaceOpened};
+                color: ${theme.surfaceIcon};
               `}
             />
             {!compact && (
@@ -357,7 +357,7 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
                 <IconDown
                   size="small"
                   css={`
-                    color: ${theme.surfaceOpened};
+                    color: ${theme.surfaceIcon};
                   `}
                 />
               </React.Fragment>
