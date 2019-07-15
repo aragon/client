@@ -1,33 +1,41 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Box, Checkbox, Info, GU } from '@aragon/ui'
+import { Box, Checkbox, Info, GU, useTheme } from '@aragon/ui'
 import helpAndFeedbackSvg from './help-and-feedback.svg'
 
 function HelpAndFeedback({ optedOut, onOptOutChange }) {
+  const theme = useTheme()
   // checked => not opted out
   const handleOptOutChange = checked => onOptOutChange(!checked)
 
   return (
-    <Box heading="HelpScout">
+    <Box heading="Help Scout">
       <label
         css={`
           cursor: pointer;
           display: flex;
-          margin-bottom: ${2 * GU}px;
+          margin-bottom: ${4 * GU}px;
           align-items: center;
           justify-content: center;
         `}
       >
         <Checkbox onChange={handleOptOutChange} checked={!optedOut} />
-        Allow HelpScout feedback module
+        <span
+          css={`
+            color: ${theme.surfaceContentSecondary};
+            font-size: 20px;
+          `}
+        >
+          Allow Help Scout feedback module
+        </span>
       </label>
       <img
         src={helpAndFeedbackSvg}
-        alt="HelpScout"
+        alt="Help Scout"
         css={`
           display: block;
           margin: 0 auto;
-          margin-bottom: ${2 * GU}px;
+          margin-bottom: ${4 * GU}px;
           width: 300px;
           height: 156px;
         `}
