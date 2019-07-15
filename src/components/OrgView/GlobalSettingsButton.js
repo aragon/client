@@ -47,11 +47,14 @@ function GlobalSettingsButton({ onOpen }) {
           css={`
             height: 100%;
             width: 40px;
-            color: ${theme.surfaceOpened};
           `}
           label="Global preferences"
         >
-          <IconSettings />
+          <IconSettings
+            css={`
+              color: ${theme.surfaceIcon};
+            `}
+          />
         </ButtonIcon>
       </div>
       <Popover
