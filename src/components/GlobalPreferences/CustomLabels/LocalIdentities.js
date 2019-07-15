@@ -300,6 +300,7 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
           <span
             css={`
               height: 24px;
+              font-size: 16px;
               ${above('medium') &&
                 `
                   display: grid;
@@ -340,6 +341,7 @@ const ActionSpan = styled.span`
   grid-template-columns: auto auto;
   grid-gap: ${1 * GU}px;
   padding-left: ${1 * GU}px;
+  font-size: 16px;
 `
 
 const StyledCheckbox = styled(Checkbox)`
