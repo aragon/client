@@ -174,15 +174,7 @@ function LocalIdentities({
               )}
             </div>
             <div css="text-align: right;">
-              <span
-                css={`
-                  display: inline-block;
-                  width: 136px;
-                  text-align: left;
-                `}
-              >
-                Address
-              </span>
+              <span>Address</span>
             </div>
           </div>
           <List border={theme.border} surface={theme.surface}>
