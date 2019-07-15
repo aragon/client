@@ -79,13 +79,13 @@ function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
                         width: calc(100% - 1px);
                         border-radius: 0;
 
-                        ${index === items.length -1 && `
+                        ${index === items.length - 1 &&
+                          `
                             border-bottom-left-radius: ${RADIUS}px;
                             border-bottom-right-radius: ${RADIUS}px;
                           `}
 
-                        &:active,
-                        &:focus {
+                        &:active, {
                           background: ${theme.surfaceHighlight};
                         }
                       `}
