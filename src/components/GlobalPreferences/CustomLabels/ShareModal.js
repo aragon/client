@@ -175,7 +175,7 @@ function useShareModal({ visible, toast, onClose }) {
     inputRef.current.select()
     try {
       document.execCommand('copy')
-      toast('Link copied')
+      toast('Custom labels link copied.')
       setTimeout(onClose, (TIMEOUT_TOAST * 7) / 8)
     } catch (err) {
       console.warn(err)
