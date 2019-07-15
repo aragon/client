@@ -85,7 +85,7 @@ function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
                             border-bottom-right-radius: ${RADIUS}px;
                           `}
 
-                        &:active, {
+                        &:active {
                           background: ${theme.surfaceHighlight};
                         }
                       `}
