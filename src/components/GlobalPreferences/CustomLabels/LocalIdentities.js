@@ -84,7 +84,7 @@ function LocalIdentities({
               position: absolute;
               right: ${1 * GU}px;
               top: ${1 * GU}px;
-              color: #8fa4b5;
+              color: ${theme.surfaceOpened};
             `}
           />
         </div>
@@ -102,7 +102,11 @@ function LocalIdentities({
                     `}
                 `}
               >
-                <IconDownload css="color: #8fa4b5;" />
+                <IconDownload
+                  css={`
+                    color: ${theme.surfaceOpened};
+                  `}
+                />
                 {!compact && (
                   <span
                     css={`
@@ -297,13 +301,21 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
         css="z-index: 2;"
         items={[
           <ActionSpan>
-            <IconShare css="color: #8fa4b5;" />
+            <IconShare
+              css={`
+                color: ${theme.surfaceOpened};
+              `}
+            />
             <span>Share</span>
           </ActionSpan>,
           ...(!iOS
             ? [
                 <ActionSpan>
-                  <IconExternal css="color: #8fa4b5;" />
+                  <IconExternal
+                    css={`
+                      color: ${theme.surfaceOpened};
+                    `}
+                  />
                   <span>Export</span>
                 </ActionSpan>,
               ]
@@ -334,11 +346,20 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
                 `}
             `}
           >
-            <IconGrid css="color: #8fa4b5;" />
+            <IconGrid
+              css={`
+                color: ${theme.surfaceOpened};
+              `}
+            />
             {!compact && (
               <React.Fragment>
                 <span css="text-align: left;">Actions</span>
-                <IconDown size="small" css="color: #8fa4b5;" />
+                <IconDown
+                  size="small"
+                  css={`
+                    color: ${theme.surfaceOpened};
+                  `}
+                />
               </React.Fragment>
             )}
           </span>

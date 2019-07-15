@@ -47,7 +47,7 @@ function GlobalSettingsButton({ onOpen }) {
           css={`
             height: 100%;
             width: 40px;
-            color: #8fa4b5;
+            color: ${theme.surfaceOpened};
           `}
           label="Global preferences"
         >
