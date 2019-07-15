@@ -152,6 +152,7 @@ function useGlobalPreferences(locator = {}) {
 }
 
 function Close({ onClick }) {
+  const theme = useTheme()
   const { above, below } = useViewport()
   const compact = below('medium')
   return (
@@ -180,9 +181,9 @@ function Close({ onClick }) {
       >
         <IconClose
           css={`
-            color: #8fa4b5;
+            color: ${theme.surfaceIcon};
             & path {
-              stroke: #8fa4b5;
+              stroke: ${theme.surfaceIcon};
               stroke-width: 0.3px;
             }
           `}
