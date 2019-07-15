@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Button, ButtonBase, RADIUS, springs, useTheme } from '@aragon/ui'
