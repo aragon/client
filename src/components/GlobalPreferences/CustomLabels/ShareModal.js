@@ -19,7 +19,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
   const theme = useTheme()
 
   return (
-    <Modal visible={visible} onClose={onClose}>
+    <Modal visible={visible} onClose={onClose} zIndex={10001}>
       <header
         css={`
           font-size: 22px;
