@@ -20,7 +20,6 @@ function useIdentitiesActions({
   filteredIdentities,
   identitiesSelected,
   locator,
-  toast,
   someSelected,
 }) {
   const { dao } = locator
