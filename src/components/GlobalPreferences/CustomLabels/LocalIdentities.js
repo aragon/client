@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import {
   Box,
   Button,
-  ButtonIcon,
+  ButtonBase,
   Checkbox,
   GU,
   IconArrowDown,
@@ -150,7 +150,13 @@ function LocalIdentities({
                 onChange={onToggleAll}
                 indeterminate={!allSelected && someSelected}
               />
-              {allSelected && !searchTerm ? (
+              {someSelected ? (
+                `${identities.reduce(
+                  (p, { address }) =>
+                    p + Number(identitiesSelected.get(address)),
+                  0
+                )} labels selected`
+              ) : (
                 <div
                   css={`
                     display: inline-flex;
@@ -158,21 +164,36 @@ function LocalIdentities({
                     height: 16px;
                   `}
                 >
-                  Custom label{' '}
-                  <ButtonIcon label="Toggle sort" onClick={onToggleSort}>
+                  <ButtonBase
+                    label="Toggle sort"
+                    onClick={onToggleSort}
+                    css={`
+                      padding: ${0.5 * GU}px ${1 * GU}px;
+                      position: relative;
+                      left: ${-1 * GU}px;
+                      border-radius: 0;
+                      display: flex;
+                      align-items: center;
+
+                      &:active {
+                        background: ${theme.surfaceSelected};
+                      }
+                    `}
+                  >
+                    <span
+                      css={`
+                        margin-right: ${1 * GU}px;
+                      `}
+                    >
+                      Custom label{' '}
+                    </span>
                     {sortIdentities === ASC ? (
                       <IconArrowDown size="small" />
                     ) : (
                       <IconArrowUp size="small" />
                     )}
-                  </ButtonIcon>
+                  </ButtonBase>
                 </div>
-              ) : (
-                `${identities.reduce(
-                  (p, { address }) =>
-                    p + Number(identitiesSelected.get(address)),
-                  0
-                )} labels selected`
               )}
             </div>
             <div css="text-align: right;">
