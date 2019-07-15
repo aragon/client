@@ -47,6 +47,7 @@ function GlobalSettingsButton({ onOpen }) {
           css={`
             height: 100%;
             width: 40px;
+            color: #8fa4b5;
           `}
           label="Global preferences"
         >
@@ -159,17 +160,15 @@ function Item({ icon, label, onClick, lastItem }) {
           align-items: flex-end;
           padding: ${2 * GU}px;
           justify-content: left;
-          border-left: 2px solid transparent;
           ${lastItem &&
             `
               border-bottom-left-radius: ${RADIUS}px;
               border-bottom-right-radius: ${RADIUS}px;
             `}
 
-          &:hover,
+          &:active,
           &:focus {
             background: ${theme.surfaceSelected};
-            border-left: 2px solid ${theme.accent};
           }
         `}
       >
