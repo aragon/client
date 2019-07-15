@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Toast } from '@aragon/ui'
 import { AragonType } from '../../../prop-types'
 import ShareModal from './ShareModal'
 import RemoveModal from './RemoveModal'
@@ -12,9 +11,7 @@ import useSelectIdentities from './useSelectIdentities'
 import useIdentitiesActions from './useIdentitiesActions'
 import useLocalIdentityModal from './useLocalIdentityModal'
 
-const TIMEOUT_TOAST = 4000
-
-function CustomLabels({ wrapper, dao, toast, locator }) {
+function CustomLabels({ wrapper, dao, locator }) {
   const { identities, sortIdentities, handleToggleSort } = useLocalIdentities(
     wrapper
   )
@@ -46,7 +43,6 @@ function CustomLabels({ wrapper, dao, toast, locator }) {
     filteredIdentities,
     identitiesSelected,
     someSelected,
-    toast,
     wrapper,
   })
   const { handleShowLocalIdentityModal } = useLocalIdentityModal()
@@ -95,15 +91,8 @@ function CustomLabels({ wrapper, dao, toast, locator }) {
 
 CustomLabels.propTypes = {
   dao: PropTypes.string,
-  toast: PropTypes.func.isRequired,
   wrapper: AragonType,
   locator: PropTypes.object,
 }
 
-const CustomLabelsMemo = React.memo(CustomLabels)
-
-export default React.memo(props => (
-  <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <CustomLabelsMemo {...props} toast={toast} />}
-  </Toast>
-))
+export default React.memo(CustomLabels)
