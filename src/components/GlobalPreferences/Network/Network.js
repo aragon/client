@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { AragonType } from '../../../prop-types'
 import { Box, Button, Info, GU, Text, TextInput, theme } from '@aragon/ui'
@@ -7,6 +7,8 @@ import { sanitizeNetworkType } from '../../../network-config'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
 import { checkValidEthNode } from '../../../web3-utils'
 import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
+
+const ENTER = 13
 
 function Network({ wrapper }) {
   const {
@@ -118,6 +120,22 @@ const useNetwork = wrapper => {
     window.localStorage.clear()
     window.location.reload()
   }, [wrapper])
+  const handleKeyPress = useCallback(
+    ({ keyCode }) => {
+      if (
+        keyCode === ENTER &&
+        (ipfsGateway !== ipfsDefaultConf.gateway || ethNode !== defaultEthNode)
+      ) {
+        handleNetworkChange()
+      }
+    },
+    [handleNetworkChange]
+  )
+
+  useEffect(() => {
+    window.addEventListener('keypress', handleKeyPress)
+    return () => window.removeEventListener('keypress', handleKeyPress)
+  })
 
   return {
     ethNode,
