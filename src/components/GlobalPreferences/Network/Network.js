@@ -129,13 +129,13 @@ const useNetwork = wrapper => {
         handleNetworkChange()
       }
     },
-    [handleNetworkChange]
+    [handleNetworkChange, ethNode, ipfsGateway]
   )
 
   useEffect(() => {
     window.addEventListener('keypress', handleKeyPress)
     return () => window.removeEventListener('keypress', handleKeyPress)
-  })
+  }, [handleKeyPress])
 
   return {
     ethNode,
