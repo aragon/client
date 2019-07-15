@@ -3,12 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Button, ButtonBase, RADIUS, springs, useTheme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-import {
-  useClickOutside,
-  useOnBlur,
-  useEsc,
-  useArrowKeysFocusRefs as useArrowKeysFocus,
-} from '../../hooks'
+import { useClickOutside, useOnBlur, useEsc } from '../../hooks'
 
 function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
   const theme = useTheme()
@@ -17,10 +12,8 @@ function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
     handleBlur,
     handleItemClick,
     handleToggle,
-    highlightedIndex,
     opened,
     refs,
-    setHighlightedIndex,
   } = useButtonDropDown(onClick)
 
   return (
@@ -79,36 +72,23 @@ function ButtonDropDown({ compact, onClick, items, cover, ...props }) {
                   <li key={index}>
                     <ButtonBase
                       ref={node => (refs[index] = node)}
-                      onFocus={setHighlightedIndex(index)}
-                      onMouseOver={setHighlightedIndex(index)}
                       css={`
                         display: flex;
                         align-items: center;
                         height: 40px;
                         width: calc(100% - 1px);
-                        border-left: 2px solid transparent;
                         border-radius: 0;
-                        &:hover,
-                        &:focus {
-                          outline: none;
-                        }
 
-                        ${index === 0 &&
-                          `
-                           border-top-left-radius: ${RADIUS}px;
-                           border-top-right-radius: ${RADIUS}px;
+                        ${index === items.length -1 && `
+                            border-bottom-left-radius: ${RADIUS}px;
+                            border-bottom-right-radius: ${RADIUS}px;
                           `}
-                        ${index === items.length - 1 &&
-                          `
-                           border-bottom-left-radius: ${RADIUS}px;
-                           border-bottom-right-radius: ${RADIUS}px;
-                          `}
-                        ${index === highlightedIndex &&
-                          `
-                           background: ${theme.surfaceHighlight};
-                           border-left: 2px solid ${theme.accent};
-                          `}
-                     `}
+
+                        &:active,
+                        &:focus {
+                          background: ${theme.surfaceHighlight};
+                        }
+                      `}
                       onClick={handleItemClickWithIndex}
                     >
                       {item}
@@ -145,8 +125,6 @@ const List = styled(animated.ul)`
 
 function useButtonDropDown(onClick) {
   const refs = []
-  const { highlightedIndex, setHighlightedIndex } = useArrowKeysFocus(refs)
-  const reset = useMemo(() => setHighlightedIndex(-1), [setHighlightedIndex])
   const containerRef = useRef()
   const [opened, setOpened] = useState(false)
   const handleToggle = useCallback(() => setOpened(!opened), [
@@ -154,9 +132,8 @@ function useButtonDropDown(onClick) {
     opened,
   ])
   const handleClose = useCallback(() => {
-    reset()
     setOpened(false)
-  }, [reset, setOpened])
+  }, [setOpened])
   const handleItemClick = useCallback(
     index => e => {
       handleClose()
@@ -173,10 +150,8 @@ function useButtonDropDown(onClick) {
     handleBlur,
     handleItemClick,
     handleToggle,
-    highlightedIndex,
     opened,
     refs,
-    setHighlightedIndex,
   }
 }
 
