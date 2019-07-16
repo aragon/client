@@ -1,4 +1,5 @@
 import EventTarget from '@ungap/event-target'
+import { iOS, isSafari } from '../utils'
 
 /**
  * A few notes on WebWorker security, and why this "sandboxed" version is
@@ -42,7 +43,9 @@ class SandboxedWorker extends EventTarget {
 
     this.name = name
     this.iframe = document.createElement('iframe')
-    this.iframe.sandbox = 'allow-scripts'
+    if (!(iOS || isSafari)) {
+      this.iframe.sandbox = 'allow-scripts'
+    }
     this.iframe.style = 'position: absolute; width: 0; height: 0; opacity:0;'
 
     const source = `
