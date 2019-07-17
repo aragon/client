@@ -1,6 +1,7 @@
 {
   "version": 2,
   "public": true,
+  "scope": "aragon",
   "builds": [
     { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
   ]
