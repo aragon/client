@@ -1,3 +1,4 @@
+dist: trusty
 language: node_js
 
 cache:
@@ -18,9 +19,8 @@ script:
 # Note that the Now Github integration can only deploy onto one environment at a time,
 # so we use it to deploy to rinkeby and Travis to deploy to mainnet
 before_deploy:
-  - export PATH=$HOME/.local/bin:$PATH
   - npm install now --no-save
-  - pip install travis-wait-improved --user `whoami`
+  - pip install travis-wait-improved
 deploy:
   - provider: script
     script: travis-wait-improved --timeout 30m now -A now-mainnet.json --token $NOW_TOKEN
