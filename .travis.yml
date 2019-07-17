@@ -17,17 +17,19 @@ script:
 # Deploy with now onto mainnet
 # Note that the Now Github integration can only deploy onto one environment at a time,
 # so we use it to deploy to rinkeby and Travis to deploy to mainnet
-before_deploy: npm install now --no-save
+before_deploy:
+  - npm install now --no-save
+  - pip install travis-wait-improved
 deploy:
   - provider: script
-    script: travis_wait 20 now -A now-mainnet.json --token $NOW_TOKEN
+    script: travis-wait-improved --timeout 30m now -A now-mainnet.json --token $NOW_TOKEN
     skip_cleanup: true
     on:
       all_branches: true
       master: false
       condition: $TASK = build
   - provider: script
-    script: travis_wait 20 now -A now-mainnet.json --target production --token $NOW_TOKEN
+    script: travis-wait-improved --timeout 30m now -A now-mainnet.json --target production --token $NOW_TOKEN
     skip_cleanup: true
     on:
       branch: master
