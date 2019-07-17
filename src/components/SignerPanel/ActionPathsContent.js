@@ -185,6 +185,22 @@ class ActionPathsContent extends React.Component {
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
+
+    const approveTransactionMessage =
+      intent.transaction &&
+      intent.transaction.token &&
+      intent.transaction.token.spender ? (
+        <React.Fragment>
+          The first will grant a token allowance to
+          <LocalIdentityBadge
+            entity={intent.transaction.token.spender}
+            fontSize="small"
+            compact
+          />
+          {'. '}
+        </React.Fragment>
+      ) : null
+
     return (
       <React.Fragment>
         {showPaths ? (
@@ -219,8 +235,9 @@ class ActionPathsContent extends React.Component {
           <div css="margin-top: 20px">
             <Info.Action title="Two transactions required">
               This action requires two transactions to be signed in{' '}
-              {providerString('your Ethereum provider', walletProviderId)},
-              please confirm them one after another.
+              {providerString('your Ethereum provider', walletProviderId)}.{' '}
+              {approveTransactionMessage}
+              Please confirm them one after another.
             </Info.Action>
           </div>
         )}

@@ -17,13 +17,13 @@ import useBeaconSuggestions from './useBeaconSuggestions'
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
-import { useClickOutside } from '../../hooks'
+import { useClickOutside, useOnBlur } from '../../hooks'
 import { GU } from '../../utils'
 import { AppType } from '../../prop-types'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
-const CLOSED = Symbol('closed, user can open opt-in dialogue')
-const OPENED = Symbol('opened, user can opt-in or close')
+const CLOSED = Symbol('closed, user can open opt-in or beacon')
+const OPENED = Symbol('opened, user can close opt-in or beacon')
 const OPENING = Symbol('opening')
 const CLOSING = Symbol('closing')
 const ROUND_BUTTON_HEIGHT = 40
@@ -95,25 +95,62 @@ const HelpOptIn = React.memo(function HelpOptIn({
   const { above } = useViewport()
   const expandedMode = above('medium')
   const [mode, setMode] = useState(CLOSED)
+  const [beaconIframe, setBeaconIframe] = useState(null)
 
-  const handleClose = React.useCallback(() => setMode(CLOSED), [])
+  // open and close atomic actions
+  const handleClose = useCallback(() => {
+    setMode(CLOSING)
+    if (beaconReady) {
+      window.Beacon('close')
+    }
+  }, [beaconReady])
+  const handleOpen = useCallback(() => {
+    setMode(OPENING)
+    if (beaconReady) {
+      window.Beacon('open')
+    }
+  }, [beaconReady])
+  // toggle between states, based on whether beacon is ready or not
   const handleToggle = useCallback(() => {
-    if (mode !== OPENING && mode !== CLOSING) {
-      setMode(mode === CLOSED ? OPENING : CLOSING)
+    if (beaconReady) {
+      if (mode === CLOSED || mode === CLOSING) {
+        handleOpen()
+      } else {
+        handleClose()
+      }
+    } else if (mode !== CLOSING && mode !== OPENING) {
+      if (mode === CLOSED) {
+        handleOpen()
+      } else {
+        handleClose()
+      }
     }
-    if (beaconReady && window.Beacon) {
-      window.Beacon('toggle')
-    }
-  }, [beaconReady, mode])
+  }, [beaconReady, mode, handleClose, handleOpen])
+  // used to avoid weird intermediate states by clicking rapidly the toggle button
   const handleToggleEnd = useCallback(() => {
     setMode(mode === OPENING ? OPENED : CLOSED)
   }, [mode])
+  // takes care of closing modal when a click is registered outside of the container
   const handleClickOutside = useCallback(() => {
     if ((mode === OPENED || mode === OPENING) && expandedMode) {
       handleToggle()
     }
   }, [mode, handleToggle, expandedMode])
-  const { ref } = useClickOutside(handleClickOutside)
+  // takes care of closing modal when losing focus of the opt-in modal
+  const handleOptInBlur = useCallback(() => {
+    if (!optedIn) {
+      handleClickOutside()
+    }
+  }, [optedIn, handleClickOutside])
+  // takes care of closing beacon modal when it loses focus
+  const handleBeaconIframeBlur = useCallback(() => {
+    if (mode === OPENED || mode === OPENING) {
+      setTimeout(() => handleClose(), 100)
+    }
+  }, [mode, handleClose])
+
+  const { ref: clickContainerRef } = useClickOutside(handleClickOutside)
+  const { handleBlur } = useOnBlur(handleOptInBlur, clickContainerRef)
 
   useEffect(() => {
     if (beaconReady && window.Beacon) {
@@ -121,9 +158,41 @@ const HelpOptIn = React.memo(function HelpOptIn({
       window.Beacon('on', 'close', () => setMode(CLOSED))
     }
   }, [beaconReady])
+  useEffect(() => {
+    if (beaconReady && mode === OPENED && !beaconIframe) {
+      // This iframe is mounted by the HelpScout Beacon API, and is expected to
+      // stay mounted until Beacon('destroy') is called.
+      // At the moment, we never destroy the Beacon, so we can assume it's
+      // always mounted once the beacon is ready.
+      // See https://developer.helpscout.com/beacon-2/web/javascript-api/#beacondestroy
+      //
+      // Note that the HelpScout API seems to do the mounting asynchronously, as
+      // the iframe does not seem to be immediately available once window.Beacon
+      // is loaded. However, we do know once the Beacon's been opened
+      // (mode === OPENED) that the iframe is available.
+      const iframe = document.querySelector('#beacon-container iframe')
+      setBeaconIframe(iframe)
+    }
+  }, [beaconReady, mode, beaconIframe])
+  useEffect(() => {
+    if (beaconIframe) {
+      beaconIframe.contentWindow.addEventListener(
+        'blur',
+        handleBeaconIframeBlur
+      )
+    }
+    return () => {
+      if (beaconIframe) {
+        beaconIframe.contentWindow.removeEventListener(
+          'blur',
+          handleBeaconIframeBlur
+        )
+      }
+    }
+  }, [beaconIframe, handleBeaconIframeBlur])
 
   return (
-    <div ref={ref}>
+    <div ref={clickContainerRef} onBlur={handleBlur}>
       {(!optedIn || !beaconReady) && (
         <Transition
           native
@@ -248,7 +317,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
                 ),
               }}
             >
-              <IconQuestion width="auto" height={18} />
+              <IconQuestion width={18} height={18} />
             </RoundButtonIcon>
           ))
         }

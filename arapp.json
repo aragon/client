@@ -20,6 +20,11 @@
       "appName": "aragon.aragonpm.eth",
       "network": "mainnet"
     },
+    "ropsten": {
+      "registry": "0x6afe2cacee211ea9179992f89dc61ff25c61e923",
+      "appName": "aragon.aragonpm.eth",
+      "network": "ropsten"
+    },
     "rinkeby-old": {
       "registry": "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e",
       "appName": "aragon.aragonpm.eth",
