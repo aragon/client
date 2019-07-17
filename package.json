@@ -20,8 +20,8 @@
     "startups"
   ],
   "author": "Aragon Institution MTU <contact@aragon.one>",
-  "engines" : {
-    "node" : "10.x"
+  "engines": {
+    "node": "10.x"
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
