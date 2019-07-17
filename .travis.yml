@@ -25,6 +25,7 @@ script:
 # so we use it to deploy to rinkeby and Travis to deploy to mainnet
 before_deploy:
   - npm install now --no-save
+  - pip3 install wheel
   - pip3 install travis-wait-improved
 deploy:
   - provider: script
