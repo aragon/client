@@ -20,14 +20,14 @@ script:
 before_deploy: npm install now --no-save
 deploy:
   - provider: script
-    script: now -A now-mainnet.json --token $NOW_TOKEN
+    script: travis_wait 20 now -A now-mainnet.json --token $NOW_TOKEN
     skip_cleanup: true
     on:
       all_branches: true
       master: false
       condition: $TASK = build
   - provider: script
-    script: now -A now-mainnet.json --target production --token $NOW_TOKEN
+    script: travis_wait 20 now -A now-mainnet.json --target production --token $NOW_TOKEN
     skip_cleanup: true
     on:
       branch: master
