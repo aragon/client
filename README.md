@@ -25,6 +25,22 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 
 **Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
 
+## Deployments
+
+The Aragon client undergoes a number of different deployments, based on build environments, major release timelines, and quality assurance checks.
+
+### aragonPM
+
+Regular updates, with incrementing minor or patch versions, are published onto the `aragon.aragonpm.eth` repo on all supported Ethereum environments.
+
+These should be seen as "official" builds, whose distributions are secured by IPFS. Most users will likely see this version of the app, due to [mainnet.aragon.org](https://mainnet.aragon.org) and [rinkeby.aragon.org](https://rinkeby.aragon.org) pointing to these builds.
+
+### Nightly / Per-PR builds
+
+Automatic [now](https://zeit.co/now) deployments will occur for each PR and merge to master. These are useful for quickly testing a new feature, change, or hotfix.
+
+The official [now app for Github](https://zeit.co/github) is set up to publish nightlies against Rinkeby see [default now configuration](./now.json). Travis is set up to publish nightlies against mainnet (see [mainnet now configuration](./now-mainnet.json)).
+
 ## Contributing
 
 #### 👋 Get started contributing with a [good first issue](https://github.com/aragon/aragon/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
