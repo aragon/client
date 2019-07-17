@@ -5,7 +5,7 @@ cache:
     - "node_modules"
 
 node_js:
-  - "8"
+  - "10"
 
 env:
   - TASK=lint
@@ -21,14 +21,14 @@ before_deploy:
   - npm install now --no-save
 deploy:
   - provider: script
-    script: ./scripts/travis_wait -l 2400 "now -A now-mainnet.json --token $NOW_TOKEN"
+    script: ./scripts/travis_wait -i 60 -l 2400 "now -A now-mainnet.json --token $NOW_TOKEN"
     skip_cleanup: true
     on:
       all_branches: true
       master: false
       condition: $TASK = build
   - provider: script
-    script: ./scripts/travis_wait -l 2400 "now -A now-mainnet.json --target production --token $NOW_TOKEN"
+    script: ./scripts/travis_wait -i 60 -l 2400 "now -A now-mainnet.json --target production --token $NOW_TOKEN"
     skip_cleanup: true
     on:
       branch: master
