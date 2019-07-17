@@ -43,6 +43,8 @@ class SandboxedWorker extends EventTarget {
 
     this.name = name
     this.iframe = document.createElement('iframe')
+    // The sandbox is disabled because macos Safari and iOS browsers do not allow
+    // to read blobs in sandboxed iframes: https://bugs.webkit.org/show_bug.cgi?id=170075
     if (!(iOS || isSafari)) {
       this.iframe.sandbox = 'allow-scripts'
     }
