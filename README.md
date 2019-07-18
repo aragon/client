@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors)
 
-**🌎🚀 Trusted by over 600 organizations, securing more than $1MM in funds.**
+**🌎🚀 Trusted by over 600 organizations, securing more than $1MM in funds.** [Try the client](https://mainnet.aragon.org)
 
 <img src=".github/screenshot.png" />
 
@@ -40,7 +40,7 @@ These should be seen as "official" builds, whose distributions are secured by IP
 
 ### Nightly / Per-PR builds
 
-Automatic [now](https://zeit.co/now) deployments will occur for each PR and merge to master. These are useful for quickly testing a new feature, change, or hotfix.
+Automatic [nightly.aragon.org](https://nightly.aragon.org) and [nightly-rinkeby.aragon.org](https://nightly-rinkeby.aragon.org) deployments will occur for each PR and merge to master through [now](https://zeit.co/now). These are useful for quickly testing a new feature, change, or hotfix.
 
 The official [now app for Github](https://zeit.co/github) is set up to publish nightlies against Rinkeby see [default now configuration](./now.json). Travis is set up to publish nightlies against mainnet (see [mainnet now configuration](./now-mainnet.json)).
 
