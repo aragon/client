@@ -111,7 +111,7 @@ function LocalIdentities({
                   <span
                     css={`
                       display: inline-block;
-                      padding-right: ${1.5 * GU}px;
+                      padding-left: ${1.5 * GU}px;
                     `}
                   >
                     Import
@@ -338,10 +338,9 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
                 `
                   display: grid;
                   grid-template-columns: auto 1fr auto;
-                  grid-gap: ${1 * GU}px;
+                  grid-gap: ${1.5 * GU}px;
                   width: 100%;
                   align-items: center;
-                  padding-left: ${1 * GU}px;
                   z-index: 2;
                 `}
             `}
