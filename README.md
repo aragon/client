@@ -12,6 +12,7 @@
 - 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
 - 📝 Please report any issues and feedback in the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.
 - 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat/channel/dev) channel.
+- 📖 To learn more about contributing to the Aragon client itself, please check the [contributing guide](./CONTRIBUTING.md)
 - 🚢 For an overview of what changed with each release, check the [releases](https://github.com/aragon/aragon/releases) and [changelog](https://github.com/aragon/aragon/blob/master/changelog.md).
 
 ## Quick start
@@ -24,6 +25,8 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 - Local development: `npm run start:local` will launch the app, configured to connect to our [aragen](https://github.com/aragon/aragen) local development environment. It will also use the local IPFS daemon, if it detects one exists. If you're using the [aragonCLI](http://github.com/aragon/aragon-cli), you'll want to run this to connect to its local chain.
 
 **Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
+
+More [configuration options](./CONFIGURATION.md) are available, depending on your needs.
 
 ## Deployments
 
@@ -45,7 +48,7 @@ The official [now app for Github](https://zeit.co/github) is set up to publish n
 
 #### 👋 Get started contributing with a [good first issue](https://github.com/aragon/aragon/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
-#### 🎓 You may be interested in the [Aragon client architecture guide](./ARCHITECTURE.md) if you're not familiar with how the project is set up.
+**🎓 You may be interested in the [Aragon client architecture guide](./ARCHITECTURE.md) if you're not familiar with how the project is set up.**
 
 Don't be shy to contribute even the smallest tweak. 🐲 There are still some dragons to be aware of, but we'll be here to help you get started!
 
@@ -59,20 +62,7 @@ If you come across an issue with Aragon, do a search in the [Issues](https://git
 - If the issue you found has been reported and is still open, but the issue is missing some details, you can add a comment to the issue thread describing the additional details.
 - If the issue you found has been reported but has been closed, you can comment on the closed issue thread and ask to have the issue reopened because you are still experiencing the issue. Alternatively, you can open a new issue, reference the closed issue by number or link, and state that you are still experiencing the issue. Provide any additional details in your post so we can better understand the issue and how to fix it.
 
-## Environment options
-
-The app can be configured in a number of ways via environment variables:
-
-- `ARAGON_DEMO_DAO`: Address of the demo organization suggested to users during onboarding
-- `REACT_APP_DEFAULT_ETH_NODE`: Url of the default Ethereum node to read blockchain data from (must be WebSocket protocol). If you intend to connect to a local ganache instance, by default you should set this to `ws://localhost:8545`.
-- `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that [APM](https://hack.aragon.org/docs/apm.html) repos were registered on. If you've deployed [aragonOS](https://github.com/aragon/aragonOS) to a local network, you can find the ENS registry's address in the migration's console output.
-- `REACT_APP_ETH_NETWORK_TYPE`: Expected network type to connect to. Either one of `main`, `rinkeby` or `local`.
-- `REACT_APP_IPFS_GATEWAY`: Url of the [IPFS](https://ipfs.io) gateway to load APM repos from. If you intend to connect to a local IPFS daemon, by default you should set this to `http://localhost:8080/ipfs`
-- `REACT_APP_ASSET_BRIDGE`: Which source to load app frontend assets from. Can be one of `ipfs` (uses the configured IPFS gateway) or `local` (local development servers, running on `localhost:300x`). If you intend to serve assets from a local IPFS daemon, you should set this to `ipfs`.
-
-Without any settings, the app is configured to connect to our Rinkeby deployment fetching assets from IPFS.
-
-## Contributors
+#### Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
