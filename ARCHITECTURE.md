@@ -35,16 +35,16 @@ If you find an issue, or would like to add a feature, ask yourself these followi
 	- Is it related to the sandboxed applications? **If yes**, make the changes in [`aragon/aragon-apps`](https://github.com/aragon/aragon-apps) or your own app's repo.
 	- Is it related to one of the onboarding templates? **If yes**, you'll want to see if it's a template from [`aragon/dao-templates`](https://github.com/aragon/dao-templates).
 	- **Else**, [aragonOS](https://github.com/aragon/aragonOS) is most likely the repo to look at.
+- Is it in one of the sandboxed applications (e.g. Voting, Tokens, or Finance from [`aragon/aragon-apps`](https://github.com/aragon/aragon-apps))?
+	- Make the changes there!
 - Is it a generic UI component?
 	- Would it mostly benefit Aragon-related developers? **If yes**, [aragonUI](https://github.com/aragon/aragon-ui) is the best place.
 	- **Else**, add it into `aragon/aragon` 👍.
-- Is it in one of the sandboxed applications (e.g. Voting, Token Manager, or Finance from [`aragon/aragon-apps`](https://github.com/aragon/aragon-apps))?
-	- Make the changes there!
 - Is there something wrong with how the client or one of the apps is talking to Ethereum?
 	- [`@aragon/wrapper`](https://github.com/aragon/aragon.js/tree/master/packages/aragon-wrapper) is likely the culprit.
 - Is there something you'd like an app to do, but can't?
 	- More APIs likely need to be added to [`@aragon/api`](https://github.com/aragon/aragon.js/blob/master/packages/aragon-api) and [`@aragon/wrapper`](https://github.com/aragon/aragon.js/tree/master/packages/aragon-wrapper).
-- Is a transaction description no being parsed correctly, or looking weird (e.g. from the Voting app)?
+- Is a transaction description not being parsed correctly, or looking weird (e.g. from the Voting app)?
   - It's likely either a problem with the app's radspec strings itself, or the [radspec parser](https://github.com/aragon/radspec).
 - **Else**
 	- ✅ **This repo is probably the right one to work on!** If you're still not sure, please file an issue and ask us!
