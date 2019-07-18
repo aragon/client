@@ -10,8 +10,8 @@ import {
   breakpoint,
   theme,
 } from '@aragon/ui'
-import LocalIdentityBadge from '../../../components/LocalIdentityBadge/LocalIdentityBadge'
-import AppInstanceLabel from '../AppInstanceLabel'
+import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
+import AppInstanceLabel from '../../../components/AppInstanceLabel'
 import ViewDetailsButton from './ViewDetailsButton'
 import { FirstTableCell, LastTableCell } from '../Table'
 
@@ -47,9 +47,7 @@ class EntityRow extends React.PureComponent {
     if (entity.type === 'app' && entity.app.name) {
       return <AppInstanceLabel app={entity.app} proxyAddress={entity.address} />
     }
-    return (
-      <LocalIdentityBadge address={entity.address} entity={entity.address} />
-    )
+    return <LocalIdentityBadge entity={entity.address} />
   }
   roleTitle({ role, roleBytes, appEntity, proxyAddress }) {
     if (!appEntity || !appEntity.app) {

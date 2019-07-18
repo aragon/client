@@ -43,6 +43,7 @@ class OrganizationItem extends React.Component {
 }
 
 const Organization = styled.div`
+  flex-grow: 1;
   display: flex;
   align-items: center;
   padding: 10px 20px;

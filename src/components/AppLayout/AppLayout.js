@@ -27,6 +27,7 @@ const AppLayout = ({
       {({ below }) => {
         return (
           <AppView
+            style={{ height: '100%' }}
             padding={below('medium') ? smallViewPadding : largeViewPadding}
             appBar={
               <AppBar>
@@ -64,7 +65,7 @@ const AppLayout = ({
                       (below('medium') ? (
                         <ButtonIcon
                           onClick={mainButton.onClick}
-                          title={mainButton.label}
+                          label={mainButton.label}
                           disabled={mainButton.disabled}
                           css={`
                             width: auto;

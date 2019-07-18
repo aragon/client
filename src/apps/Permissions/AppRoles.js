@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
 import { AppType, EthereumAddressType } from '../../prop-types'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
-import LocalIdentityBadge from '../../components/LocalIdentityBadge/LocalIdentityBadge'
+import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
-import AppInstanceLabel from './AppInstanceLabel'
+import AppInstanceLabel from '../../components/AppInstanceLabel'
 import { isBurnEntity } from '../../permissions'
 import { isEmptyAddress } from '../../web3-utils'
 
@@ -82,10 +82,14 @@ class AppRoles extends React.PureComponent {
 class RoleRow extends React.Component {
   static propTypes = {
     onManage: PropTypes.func.isRequired,
-    role: PropTypes.shape({ bytes: PropTypes.string }).isRequired,
+    role: PropTypes.shape({
+      bytes: PropTypes.string,
+      name: PropTypes.name,
+    }).isRequired,
     manager: PropTypes.shape({
       type: PropTypes.string,
       address: EthereumAddressType,
+      app: AppType,
     }).isRequired,
   }
   handleManageClick = () => {
@@ -100,7 +104,6 @@ class RoleRow extends React.Component {
     }
     return (
       <LocalIdentityBadge
-        address={manager.address}
         entity={manager.type === 'burn' ? 'Discarded' : manager.address}
       />
     )

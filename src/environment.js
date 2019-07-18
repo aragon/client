@@ -69,7 +69,10 @@ export const sortAppsPair = (app1, app2) => {
 }
 
 // Use appOverrides to override specific keys in an app instance, e.g. the start_url or script location
-const appOverrides = {}
+const appOverrides = {
+  // Needed to change app name on sidebar for old versions whose aragonPM repo content cannot be changed anymore
+  [appIds['TokenManager']]: { name: 'Tokens' },
+}
 
 const appLocator = {}
 const assetBridge = getAssetBridge()
@@ -82,18 +85,6 @@ if (assetBridge === 'local') {
     [appIds['TokenManager']]: 'http://localhost:3003/',
     [appIds['Survey']]: 'http://localhost:3004/',
     [appIds['Voting']]: 'http://localhost:3001/',
-  })
-  Object.assign(appOverrides, {
-    [appIds['Survey']]: {
-      icons: [
-        {
-          src: '/images/icon.png',
-          sizes: '192x192',
-        },
-      ],
-      script: '/script.js',
-      start_url: '/index.html',
-    },
   })
 } else if (assetBridge === 'ipfs') {
   // We don't need to provide anything here as by default, the apps will be loaded from IPFS

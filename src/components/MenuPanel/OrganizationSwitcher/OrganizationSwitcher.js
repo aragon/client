@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { theme } from '@aragon/ui'
+import { LoadingRing, theme } from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { FavoriteDaosConsumer } from '../../../contexts/FavoriteDaosContext'
-import LoadingRing from '../../LoadingRing'
 import Popup from '../../Popup'
 import OrganizationItem from './OrganizationItem'
 import Favorites from './Favorites'
@@ -52,7 +51,7 @@ class OrganizationSwitcher extends React.PureComponent {
               <Favorites
                 favoriteDaos={favoriteDaos}
                 currentDao={currentDao}
-                onDone={this.handleFavoritesUpdate}
+                onUpdate={this.handleFavoritesUpdate}
               />
             </Popup>
           </Main>
@@ -64,7 +63,9 @@ class OrganizationSwitcher extends React.PureComponent {
 
 const Main = styled.div`
   display: flex;
-  height: 100%;
+  width: 100%;
+  height: 64px;
+  align-items: center;
   position: relative;
 `
 
@@ -74,8 +75,8 @@ const OpenButton = styled.button.attrs({ type: 'button' })`
   background: none;
   cursor: pointer;
   padding: 0;
-  margin-left: -20px;
-  width: 180px;
+  width: 100%;
+  height: 100%;
   &:active {
     background: rgba(220, 234, 239, 0.3);
   }
@@ -90,6 +91,7 @@ const OpenButton = styled.button.attrs({ type: 'button' })`
 const Loader = styled.div`
   display: flex;
   align-items: center;
+  margin-left: 20px;
 `
 
 const LoaderLabel = styled.span`
@@ -97,25 +99,33 @@ const LoaderLabel = styled.span`
   font-size: 15px;
 `
 
-const OrganizationSwitcherWithFavorites = props =>
-  props.currentDao.address ? (
-    <FavoriteDaosConsumer>
-      {({ favoriteDaos, updateFavoriteDaos }) => (
-        <OrganizationSwitcher
-          {...props}
-          favoriteDaos={favoriteDaos}
-          updateFavoriteDaos={updateFavoriteDaos}
-        />
-      )}
-    </FavoriteDaosConsumer>
-  ) : (
-    <Loader>
-      <LoadingRing spin />
-      <LoaderLabel>Loading…</LoaderLabel>
-    </Loader>
-  )
+const OrganizationSwitcherWithFavorites = ({ loading, ...props }) => {
+  if (loading) {
+    return (
+      <Loader>
+        <LoadingRing />
+        <LoaderLabel>Loading…</LoaderLabel>
+      </Loader>
+    )
+  }
+  if (props.currentDao.address) {
+    return (
+      <FavoriteDaosConsumer>
+        {({ favoriteDaos, updateFavoriteDaos }) => (
+          <OrganizationSwitcher
+            {...props}
+            favoriteDaos={favoriteDaos}
+            updateFavoriteDaos={updateFavoriteDaos}
+          />
+        )}
+      </FavoriteDaosConsumer>
+    )
+  }
+  return null
+}
 
 OrganizationSwitcherWithFavorites.propTypes = {
+  loading: PropTypes.bool.isRequired,
   currentDao: DaoItemType.isRequired,
 }
 

@@ -6,10 +6,17 @@ import providerString from '../../provider-strings'
 import SignerButton from './SignerButton'
 
 import {
-  STATUS_ERROR,
-  STATUS_SIGNED,
-  STATUS_SIGNING,
+  STATUS_TX_ERROR,
+  STATUS_TX_SIGNED,
+  STATUS_TX_SIGNING,
   SignerStatusType,
+  STATUS_MSG_SIGNING,
+  STATUS_MSG_SIGNED,
+  STATUS_MSG_ERROR,
+  isSignatureSuccess,
+  isSignatureError,
+  isSigning,
+  isSignatureCompleted,
 } from './signer-statuses'
 
 import imgPending from '../../assets/transaction-pending.svg'
@@ -17,46 +24,71 @@ import imgSuccess from '../../assets/transaction-success.svg'
 import imgError from '../../assets/transaction-error.svg'
 
 // Temporarily clean the error messages coming from Aragon.js and Metamask
-const cleanErrorMessage = msg =>
-  msg.replace(/^Returned error: /, '').replace(/^Error: /, '')
+const cleanErrorMessage = errorMsg =>
+  errorMsg
+    // Only use the first line if multiple lines are available.
+    // This makes sure we don't show the stack trace if it becomes part of the message.
+    .split('\n')[0]
+    .replace(/^Returned error: /, '')
+    .replace(/^Error: /, '')
 
 class SigningStatus extends React.Component {
   static propTypes = {
+    onClose: PropTypes.func.isRequired,
     status: SignerStatusType.isRequired,
     signError: PropTypes.instanceOf(Error),
     walletProviderId: PropTypes.string,
-    onClose: PropTypes.func.isRequired,
   }
   getLabel() {
     const { status } = this.props
-    if (status === STATUS_SIGNING) return 'Waiting for signature…'
-    if (status === STATUS_SIGNED) return 'Transaction signed!'
-    if (status === STATUS_ERROR) return 'Error signing the transaction'
+    if (isSigning(status)) return 'Waiting for signature…'
+    if (status === STATUS_TX_SIGNED) return 'Transaction signed!'
+    if (status === STATUS_MSG_SIGNED) return 'Message signed!'
+    if (status === STATUS_TX_ERROR) return 'Error signing the transaction.'
+    if (status === STATUS_MSG_ERROR) return 'Error signing the message.'
   }
   getInfo() {
     const { status, signError, walletProviderId } = this.props
-    if (status === STATUS_SIGNING) {
+    if (status === STATUS_TX_SIGNING) {
       return (
         <p>
-          Open {providerString('your Ethereum provider', walletProviderId)} to
-          sign your transaction.
+          {`Open ${providerString(
+            'your Ethereum provider',
+            walletProviderId
+          )} to sign your transaction.`}
         </p>
       )
     }
-    if (status === STATUS_SIGNED) {
+    if (status === STATUS_MSG_SIGNING) {
+      return (
+        <p>{`Open ${providerString(
+          'your Ethereum provider',
+          walletProviderId
+        )} to sign your message.`}</p>
+      )
+    }
+    if (status === STATUS_TX_SIGNED) {
       return (
         <p>
           Success! Your transaction has been sent to the network for processing.
         </p>
       )
     }
-    if (status === STATUS_ERROR) {
+    if (status === STATUS_MSG_SIGNED) {
+      return <p>Success! Your message has been signed.</p>
+    }
+    if (status === STATUS_TX_ERROR) {
       return (
         <React.Fragment>
-          <p>
-            Woops, something went wrong. The transaction hasn’t been signed and
-            no tokens have been sent.
-          </p>
+          <p>Your transaction wasn't signed and no tokens were sent.</p>
+          {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
+        </React.Fragment>
+      )
+    }
+    if (status === STATUS_MSG_ERROR) {
+      return (
+        <React.Fragment>
+          <p>Your message wasn't signed.</p>
           {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
         </React.Fragment>
       )
@@ -64,7 +96,7 @@ class SigningStatus extends React.Component {
   }
   getCloseButton() {
     const { status, onClose } = this.props
-    if (status === STATUS_ERROR || status === STATUS_SIGNED) {
+    if (isSignatureCompleted(status)) {
       return <SignerButton onClick={onClose}>Close</SignerButton>
     }
     return null
@@ -106,9 +138,9 @@ const AdditionalInfo = styled(Info)`
 // To skip the SVG rendering delay
 const StatusImage = ({ status }) => (
   <StatusImageMain>
-    <StatusImageImg visible={status === STATUS_SIGNING} src={imgPending} />
-    <StatusImageImg visible={status === STATUS_ERROR} src={imgError} />
-    <StatusImageImg visible={status === STATUS_SIGNED} src={imgSuccess} />
+    <StatusImageImg visible={isSigning(status)} src={imgPending} />
+    <StatusImageImg visible={isSignatureError(status)} src={imgError} />
+    <StatusImageImg visible={isSignatureSuccess(status)} src={imgSuccess} />
   </StatusImageMain>
 )
 StatusImage.propTypes = {

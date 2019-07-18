@@ -13,7 +13,7 @@ export const staticApps = new Map(
     apps: {
       app: {
         appId: 'apps',
-        name: 'Apps',
+        name: 'App Center',
         icon: <IconApps />,
         instances: [{ instanceId: 'apps' }],
       },
@@ -46,3 +46,12 @@ export const staticApps = new Map(
     },
   })
 )
+
+export const isStaticApp = instanceId => {
+  for (const { app } in staticApps) {
+    if (app.appId === instanceId) {
+      return true
+    }
+  }
+  return false
+}

@@ -9,56 +9,26 @@ import Aragon, {
 import {
   appOverrides,
   sortAppsPair,
-  appLocator,
   ipfsDefaultConf,
   web3Providers,
   contractAddresses,
   defaultGasPriceFn,
 } from './environment'
-import { noop, removeStartingSlash, appendTrailingSlash } from './utils'
+import { NoConnection, DAONotFound } from './errors'
+import { appBaseUrl } from './url-utils'
+import { noop, removeStartingSlash } from './utils'
 import {
   getWeb3,
   getUnknownBalance,
   getMainAccount,
   isValidEnsName,
 } from './web3-utils'
-import { getBlobUrl, WorkerSubscriptionPool } from './worker-utils'
-import { NoConnection, DAONotFound } from './errors'
+import SandboxedWorker from './worker/SandboxedWorker'
+import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
-
-/*
- * Supported locations:
- *   ipfs:{IPFS_HASH}
- *   http:{HOST}
- *   http:{HOST}:{PORT}
- *   http:{HOST}:{PORT}/{PATH}
- *   http:http(s)://{HOST}
- *   http:http(s)://{HOST}:{PORT}
- *   http:http(s)://{HOST}:{PORT}/{PATH}
- */
-const appBaseUrl = (app, gateway = ipfsDefaultConf.gateway) => {
-  // Support overriding app URLs, see network-config.js
-  if (appLocator[app.appId]) {
-    return appLocator[app.appId]
-  }
-  if (!app.content) {
-    return ''
-  }
-
-  const { provider, location } = app.content
-  if (provider === 'ipfs') {
-    return `${gateway}/${location}/`
-  }
-  if (provider === 'http') {
-    return /^https?:\/\//.test(location)
-      ? appendTrailingSlash(location)
-      : `http://${location}/`
-  }
-  return ''
-}
 
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
@@ -222,20 +192,42 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
-  { onApps, onPermissions, onForwarders, onTransaction, onIdentityIntent },
+  {
+    onApps,
+    onPermissions,
+    onForwarders,
+    onAppIdentifiers,
+    onInstalledRepos,
+    onIdentityIntent,
+    onSignatures,
+    onTransaction,
+  },
   { ipfsConf }
 ) => {
   const {
     apps,
     permissions,
     forwarders,
-    transactions,
+    appIdentifiers,
+    installedRepos,
     identityIntents,
+    signatures,
+    transactions,
   } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
+    permissions: permissions.subscribe(onPermissions),
+    forwarders: forwarders.subscribe(onForwarders),
+    appIdentifiers: appIdentifiers.subscribe(onAppIdentifiers),
+    installedRepos: installedRepos.subscribe(onInstalledRepos),
+    identityIntents: identityIntents.subscribe(onIdentityIntent),
+    transactions: transactions.subscribe(onTransaction),
+    signatures: signatures.subscribe(onSignatures),
+    connectedApp: null,
+    connectedWorkers: workerSubscriptionPool,
+
     apps: apps.subscribe(apps => {
       onApps(
         prepareAppsForFrontend(
@@ -245,22 +237,18 @@ const subscribe = (
         )
       )
     }),
-    permissions: permissions.subscribe(onPermissions),
-    connectedApp: null,
-    connectedWorkers: workerSubscriptionPool,
-    forwarders: forwarders.subscribe(onForwarders),
-    identityIntents: identityIntents.subscribe(onIdentityIntent),
-    transactions: transactions.subscribe(onTransaction),
     workers: apps.subscribe(apps => {
-      // Asynchronously launch webworkers for each new app that has a background
-      // script defined
+      // Asynchronously launch webworkers for each new or updated app that has
+      // a background script defined
       applyAppOverrides(apps)
         .filter(app => app.script)
         .filter(
-          ({ proxyAddress }) => !workerSubscriptionPool.hasWorker(proxyAddress)
+          ({ proxyAddress, updated }) =>
+            updated || !workerSubscriptionPool.hasWorker(proxyAddress)
         )
         .forEach(async app => {
-          const { name, proxyAddress, script } = app
+          const { name, proxyAddress, script, updated } = app
+          const workerName = `${name}(${proxyAddress})`
           const baseUrl = appBaseUrl(app, ipfsConf.gateway)
 
           // If the app URL is empty, the script can’t be retrieved
@@ -275,45 +263,27 @@ const subscribe = (
             baseUrl
           )
 
-          let workerUrl = ''
-          try {
-            // WebWorkers can only load scripts from the local origin, so we
-            // have to fetch the script as text and make a blob out of it
-            workerUrl = await getBlobUrl(scriptUrl)
-          } catch (e) {
-            console.error(
-              `Failed to load ${name}(${proxyAddress})'s script (${script}): `,
-              e
-            )
-            return
-          }
-
           const connectApp = await wrapper.runApp(proxyAddress)
+
+          // If the app has been updated, reset its cache and restart its worker
+          if (updated && workerSubscriptionPool.hasWorker(proxyAddress)) {
+            await workerSubscriptionPool.removeWorker(proxyAddress, {
+              clearCache: true,
+            })
+          }
 
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
-            const worker = new Worker(workerUrl)
-            worker.addEventListener(
-              'error',
-              err =>
-                console.error(
-                  `Error from worker for ${name}(${proxyAddress}):`,
-                  err
-                ),
-              false
-            )
+            const worker = new SandboxedWorker(scriptUrl, { name: workerName })
 
             const provider = new providers.MessagePortMessage(worker)
             workerSubscriptionPool.addWorker({
               app,
               worker,
-              subscription: connectApp(provider).shutdown,
+              connection: connectApp(provider),
             })
           }
-
-          // Clean up the url we created to spawn the worker
-          URL.revokeObjectURL(workerUrl)
         })
     }),
   }
@@ -343,10 +313,13 @@ const initWrapper = async (
     onApps = noop,
     onPermissions = noop,
     onForwarders = noop,
+    onAppIdentifiers = noop,
+    onInstalledRepos = noop,
+    onIdentityIntent = noop,
     onTransaction = noop,
+    onSignatures = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
-    onIdentityIntent = noop,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -404,8 +377,11 @@ const initWrapper = async (
       onApps,
       onPermissions,
       onForwarders,
-      onTransaction,
+      onAppIdentifiers,
+      onInstalledRepos,
       onIdentityIntent,
+      onSignatures,
+      onTransaction,
     },
     { ipfsConf }
   )
@@ -417,7 +393,9 @@ const initWrapper = async (
     if (subscriptions.connectedApp) {
       subscriptions.connectedApp.unsubscribe()
     }
-    subscriptions.connectedApp = appContext.shutdown
+    subscriptions.connectedApp = {
+      unsubscribe: appContext.shutdown,
+    }
     return appContext
   }
 
@@ -486,9 +464,7 @@ const templateParamFilters = {
 
     if (neededSignatures < 1 || neededSignatures > signers.length) {
       throw new Error(
-        `neededSignatures must be between 1 and the total number of signers (${
-          signers.length
-        })`,
+        `neededSignatures must be between 1 and the total number of signers (${signers.length})`,
         neededSignatures
       )
     }

@@ -62,6 +62,7 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
       onSubmit,
       formRef,
     } = this.props
+    const adornmentSettings = { padding: 7 }
     return (
       <Content>
         <Title>Democracy Project</Title>
@@ -74,27 +75,36 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
               </Text>
             </TextContainer>
             <Fields>
-              <SuffixField label="Support" suffix="%">
+              <InlineField label="Support">
                 <SymbolInput
+                  adornment="%"
+                  adornmentPosition="end"
+                  adornmentSettings={adornmentSettings}
                   placeholder="e.g. 50"
                   value={fields.support === -1 ? '' : fields.support}
                   onChange={handleSupportChange}
                 />
-              </SuffixField>
-              <SuffixField label="Min. Quorum" suffix="%">
+              </InlineField>
+              <InlineField label="Min. Quorum">
                 <SymbolInput
+                  adornment="%"
+                  adornmentPosition="end"
+                  adornmentSettings={adornmentSettings}
                   placeholder="e.g. 15"
                   value={fields.minQuorum === -1 ? '' : fields.minQuorum}
                   onChange={handleMinQuorumChange}
                 />
-              </SuffixField>
-              <SuffixField label="Vote Duration" suffix="H">
+              </InlineField>
+              <InlineField label="Vote Duration">
                 <SymbolInput
+                  adornment="H"
+                  adornmentPosition="end"
+                  adornmentSettings={adornmentSettings}
                   placeholder="e.g. 24"
                   onChange={handleVoteDurationChange}
                   value={fields.voteDuration === -1 ? '' : fields.voteDuration}
                 />
-              </SuffixField>
+              </InlineField>
             </Fields>
             <TextContainer>
               <Text size="xsmall" color={theme.textSecondary} align="left">
@@ -164,18 +174,9 @@ const Fields = styled.div`
   justify-content: center;
   margin-top: 40px;
 `
-const SuffixField = styled(Field)`
-  position: relative;
+const InlineField = styled(Field)`
   & + & {
     margin-left: 55px;
-  }
-  :after {
-    position: absolute;
-    bottom: 6px;
-    left: 100px;
-    font-size: 14px;
-    content: "${p => p.suffix || ''}";
-    display: ${p => (p.suffix ? 'block' : 'none')};
   }
 `
 

@@ -1,5 +1,9 @@
 import { staticApps } from './static-apps'
+import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
+
 import { isAddress, isValidEnsName } from './web3-utils'
+
+const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 
 /*
  * Parse a path and a search query and return a “locator” object.
@@ -22,54 +26,64 @@ import { isAddress, isValidEnsName } from './web3-utils'
  * /{dao_address}
  * /{dao_address}/settings
  * /{dao_address}/permissions
- * /{dao_address}/0x{app_instance_address}?params={app_params}
+ * /{dao_address}/0x{app_instance_address}?p={app_params}
  *
  *
  * Available modes:
- *   - home: the screen you see when opening /.
+ *   - start: the screen you see when opening /.
  *   - setup: the onboarding screens.
- *   - app: when the path starts with a DAO address.
+ *   - org: when the path starts with a DAO address.
  *   - invalid: the DAO given is not valid
  */
-export const parsePath = (pathname, search = '') => {
-  const locator = { path: pathname + search }
+export const parsePath = (history, pathname, search = '') => {
+  const path = pathname + search
   const [, ...parts] = pathname.split('/')
 
-  // Home
+  // Start
   if (!parts[0]) {
-    return { ...locator, mode: 'home' }
+    return { path, mode: APP_MODE_START }
   }
 
   // Setup
   if (parts[0] === 'setup') {
-    const [mode, step = null, ...setupParts] = parts
-    return { ...locator, mode, step, parts: setupParts }
+    const [, step = null, ...setupParts] = parts
+    return { path, mode: APP_MODE_SETUP, step, parts: setupParts }
   }
 
-  const validAddress = isAddress(parts[0])
-  const validDomain = isValidEnsName(parts[0])
+  let [dao] = parts
+  const validAddress = isAddress(dao)
+  const validDomain = isValidEnsName(dao)
 
-  // Exclude invalid DAO addresses
+  // Assume .aragonid.eth if not given a valid address or a valid ENS domain
   if (!validAddress && !validDomain) {
-    return { ...locator, dao: parts[0], mode: 'invalid' }
+    dao += `.${ARAGONID_ENS_DOMAIN}`
+  } else if (validDomain && dao.endsWith(ARAGONID_ENS_DOMAIN)) {
+    // Replace URL with non-aragonid.eth version
+    history.replace({
+      pathname: pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
+      search: search,
+      state: {
+        alreadyParsed: true,
+      },
+    })
   }
 
-  // App
-  const rawParams = search && search.split('?params=')[1]
+  // Organization
+  const rawParams = search && search.split('?p=')[1]
   let params = null
   if (rawParams) {
     try {
       params = decodeURIComponent(rawParams)
     } catch (err) {
-      console.log('The “params” URL parameter is not valid.')
+      console.log('The params (“p”) URL parameter is not valid.')
     }
   }
 
-  const [dao, instanceId, ...appParts] = parts
+  const [, instanceId, ...appParts] = parts
 
   const completeLocator = {
-    ...locator,
-    mode: 'app',
+    path,
+    mode: APP_MODE_ORG,
     dao,
     instanceId: instanceId || 'home',
     params,
@@ -81,7 +95,7 @@ export const parsePath = (pathname, search = '') => {
 
 // Return a path string for an app instance
 export const getAppPath = ({ dao, instanceId = 'home', params } = {}) => {
-  const paramsPart = params ? `?params=${encodeURIComponent(params)}` : ``
+  const paramsPart = params ? `?p=${encodeURIComponent(params)}` : ``
   if (staticApps.has(instanceId)) {
     return `/${dao}${staticApps.get(instanceId).route}${paramsPart}`
   }

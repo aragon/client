@@ -1,44 +1,43 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { EthIdenticon, IdentityBadge, breakpoint } from '@aragon/ui'
+import { IdentityBadge, breakpoint } from '@aragon/ui'
 import { getEmptyAddress } from '../../web3-utils'
 import Import from './Import'
 
-const EmptyLocalIdentities = ({ onImport }) => (
-  <Wrap>
-    <Title>Start adding labels</Title>
-    <Paragraph>
-      You can add labels by clicking on the{' '}
-      <span
-        css={`
-          display: inline-flex;
-          margin-right: 2px;
-          vertical-align: text-bottom;
-        `}
-      >
-        <EthIdenticon
-          address={getEmptyAddress()}
+const EmptyLocalIdentities = React.memo(function EmptyLocalIdentities({
+  onImport,
+}) {
+  return (
+    <Wrap>
+      <Title>Start adding labels</Title>
+      <Paragraph>
+        You can add labels by clicking on the{' '}
+        <span
           css={`
+            display: inline-flex;
+            margin-right: 2px;
+            vertical-align: text-bottom;
             position: relative;
-            z-index: 1;
-            height: 22px;
-            overflow: hidden;
-            border-top-left-radius: 3px;
-            border-bottom-left-radius: 3px;
-            left: 2px;
+            top: 3px;
           `}
-        />
-        <IdentityBadge entity="Address badge" />
-      </span>
-      anywhere in the app, or importing a .json file with labels by clicking
-      "Import" below.
-    </Paragraph>
-    <WrapImport>
-      <Import onImport={onImport} />
-    </WrapImport>
-  </Wrap>
-)
+        >
+          <IdentityBadge
+            entity={getEmptyAddress()}
+            customLabel="Address badge"
+            compact
+            badgeOnly
+          />
+        </span>
+        anywhere in the app, or importing a .json file with labels by clicking
+        "Import" below.
+      </Paragraph>
+      <WrapImport>
+        <Import onImport={onImport} />
+      </WrapImport>
+    </Wrap>
+  )
+})
 
 EmptyLocalIdentities.propTypes = {
   onImport: PropTypes.func.isRequired,

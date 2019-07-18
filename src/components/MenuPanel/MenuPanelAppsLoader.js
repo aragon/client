@@ -2,12 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { IconError, Button, theme } from '@aragon/ui'
+import { Button, IconError, LoadingRing, theme } from '@aragon/ui'
 import color from 'onecolor'
 import { AppsStatusType } from '../../prop-types'
 import springs from '../../springs'
 import { noop } from '../../utils'
-import LoadingRing from '../LoadingRing'
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -138,7 +137,7 @@ class MenuPanelAppsLoader extends React.Component {
                       <IconError />
                     </IconErrorWrapper>
                   ) : (
-                    <LoadingRing spin={appsStatus === APPS_STATUS_LOADING} />
+                    <LoadingRing paused={appsStatus !== APPS_STATUS_LOADING} />
                   )}
                 </StatusIndicatorWrapper>
                 {(() => {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Subject } from 'rxjs'
 
@@ -6,6 +6,7 @@ const identityEventTypes = {
   CLEAR: 'CLEAR',
   IMPORT: 'IMPORT',
   MODIFY: 'MODIFY',
+  REMOVE: 'REMOVE',
 }
 
 // An events subject
@@ -32,9 +33,12 @@ IdentityProvider.propTypes = {
 
 const IdentityConsumer = IdentityContext.Consumer
 
+const useIdentity = () => useContext(IdentityContext)
+
 export {
   IdentityProvider,
   IdentityConsumer,
   IdentityContext,
   identityEventTypes,
+  useIdentity,
 }

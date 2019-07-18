@@ -1,0 +1,20 @@
+# Configuration for https://probot.github.io/apps/stale
+
+daysUntilStale: 60
+daysUntilClose: 7
+
+staleLabel: abandoned
+
+issues:
+  daysUntilStale: 180
+  markComment: >
+    This issue has been automatically marked as stale because it has not had
+    recent activity. It will be closed if no further activity occurs. Thank you
+    for contributing to Aragon! 🦅
+
+pulls:
+  daysUntilStale: 30
+  markComment: >
+    This pull request has been automatically marked as stale because it has not had
+    recent activity. It will be closed if no further activity occurs. Thank you
+    for contributing to Aragon! 🦅

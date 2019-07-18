@@ -4,6 +4,15 @@ import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
+  APPS_STATUS_UNLOADED,
+  DAO_STATUS_ERROR,
+  DAO_STATUS_READY,
+  DAO_STATUS_LOADING,
+  DAO_STATUS_UNLOADED,
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_FAILED,
+  ACTIVITY_STATUS_PENDING,
+  ACTIVITY_STATUS_TIMED_OUT,
 } from './symbols'
 import { isAddress } from './web3-utils'
 
@@ -53,11 +62,11 @@ export const AppType = PropTypes.shape({
   abi: PropTypes.array.isRequired,
   appId: PropTypes.string.isRequired,
   baseUrl: PropTypes.string.isRequired,
-  codeAddress: EthereumAddressType,
+  codeAddress: EthereumAddressType.isRequired,
   functions: PropTypes.array.isRequired,
   hasWebApp: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
-  proxyAddress: EthereumAddressType,
+  proxyAddress: EthereumAddressType.isRequired,
   src: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 
@@ -81,10 +90,37 @@ export const AppType = PropTypes.shape({
   version: PropTypes.string,
 })
 
+export const AppsListType = PropTypes.arrayOf(AppType)
+
+export const AppInstanceType = PropTypes.shape({
+  codeAddress: EthereumAddressType,
+  identifier: PropTypes.string,
+  instanceId: PropTypes.oneOfType([EthereumAddressType, PropTypes.string])
+    .isRequired,
+  proxyAddress: EthereumAddressType,
+})
+
+export const AppInstanceGroupType = PropTypes.shape({
+  app: PropTypes.object.isRequired,
+  appId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  instances: PropTypes.arrayOf(AppInstanceType).isRequired,
+  hasWebApp: PropTypes.bool.isRequired,
+  repoName: PropTypes.string,
+})
+
 export const AppsStatusType = PropTypes.oneOf([
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
+  APPS_STATUS_UNLOADED,
+])
+
+export const DaoStatusType = PropTypes.oneOf([
+  DAO_STATUS_ERROR,
+  DAO_STATUS_READY,
+  DAO_STATUS_LOADING,
+  DAO_STATUS_UNLOADED,
 ])
 
 export const AragonType = PropTypes.instanceOf(Aragon)
@@ -104,3 +140,64 @@ export const DaoAddressType = PropTypes.shape({
   address: EthereumAddressType,
   domain: PropTypes.string,
 })
+
+export const RenderFnType = PropTypes.oneOfType([
+  PropTypes.func,
+  PropTypes.oneOf([false]),
+])
+
+export const RepoContentType = PropTypes.shape({
+  name: PropTypes.string,
+  changelog_url: PropTypes.string,
+  description: PropTypes.string,
+  details_url: PropTypes.string,
+  icons: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string.isRequired,
+      sizes: PropTypes.string.isRequired,
+    })
+  ),
+  screenshots: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string.isRequired,
+    })
+  ),
+})
+
+export const RepoType = PropTypes.shape({
+  appId: PropTypes.string.isRequired,
+  currentVersion: PropTypes.shape({
+    content: RepoContentType.isRequired,
+    version: PropTypes.string.isRequired,
+  }),
+  latestVersion: PropTypes.shape({
+    content: RepoContentType.isRequired,
+    version: PropTypes.string.isRequired,
+  }),
+  repoAddress: EthereumAddressType.isRequired,
+  versions: PropTypes.arrayOf(
+    PropTypes.shape({
+      contentURI: PropTypes.string.isRequired,
+      contractAddress: PropTypes.string.isRequired,
+      timestamp: PropTypes.number,
+      version: PropTypes.string.isRequired,
+      versionId: PropTypes.string.isRequired,
+    })
+  ),
+})
+
+export const ReposListType = PropTypes.arrayOf(RepoType)
+
+// https://github.com/react-spring/react-spring/blob/31200a79843ce85200b2a7692e8f14788e60f9e9/types/renderprops-universal.d.ts#L133
+export const ReactSpringStateType = PropTypes.oneOf([
+  'enter',
+  'update',
+  'leave',
+])
+
+export const ActivityStatusType = PropTypes.oneOf([
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_FAILED,
+  ACTIVITY_STATUS_PENDING,
+  ACTIVITY_STATUS_TIMED_OUT,
+])

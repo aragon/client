@@ -1,10 +1,16 @@
 /* eslint react/prop-types: 0 */
 import React from 'react'
 import styled from 'styled-components'
-import { theme, Text, TextInput, IconCheck, IconCross } from '@aragon/ui'
+import {
+  IconCheck,
+  IconCross,
+  LoadingRing,
+  Text,
+  TextInput,
+  theme,
+} from '@aragon/ui'
 import { animated } from 'react-spring'
 import { noop } from '../utils'
-import LoadingRing from '../components/LoadingRing'
 
 import {
   DomainCheckNone,
@@ -94,7 +100,9 @@ class DomainContent extends React.PureComponent {
                 <IconCross />
               </CheckContainer>
               <CheckContainer active={domainCheckStatus === DomainCheckPending}>
-                <LoadingRing spin={domainCheckStatus === DomainCheckPending} />
+                <LoadingRing
+                  paused={domainCheckStatus !== DomainCheckPending}
+                />
               </CheckContainer>
             </Status>
           </Field>

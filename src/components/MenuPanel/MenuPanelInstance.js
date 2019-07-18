@@ -1,31 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { useLocalIdentity } from '../../hooks'
 
-class MenuPanelInstance extends React.Component {
-  static propTypes = {
-    active: PropTypes.bool.isRequired,
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
+function MenuPanelInstance({ active, id, name, onClick }) {
+  const [label, setLabel] = useState(name)
+  const handleClick = () => {
+    onClick(id)
   }
+  const { name: localIdentity } = useLocalIdentity(id)
+  useEffect(() => {
+    setLabel(localIdentity || name)
+  }, [localIdentity, name])
 
-  handleClick = () => {
-    this.props.onClick(this.props.id)
-  }
-  render() {
-    const { name, active } = this.props
-    return (
-      <Main
-        role="button"
-        tabIndex="0"
-        active={active}
-        onClick={this.handleClick}
-      >
-        <Label>{name}</Label>
-      </Main>
-    )
-  }
+  return (
+    <Main role="button" tabIndex="0" active={active} onClick={handleClick}>
+      <Label>{label}</Label>
+    </Main>
+  )
+}
+
+MenuPanelInstance.propTypes = {
+  active: PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 }
 
 const Main = styled.a`
@@ -46,4 +45,4 @@ const Label = styled.span`
   text-overflow: ellipsis;
 `
 
-export default MenuPanelInstance
+export default React.memo(MenuPanelInstance)

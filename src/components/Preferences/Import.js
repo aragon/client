@@ -45,9 +45,9 @@ const fileImport = cb => files => {
 }
 
 const Import = ({ onImport }) => {
-  const handleImport = e => fileImport(onImport)(e.currentTarget.files)
-  const { getRootProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop: fileImport(onImport),
+    multiple: false,
   })
 
   return (
@@ -60,8 +60,7 @@ const Import = ({ onImport }) => {
       {...getRootProps()}
     >
       <input
-        type="file"
-        onChange={handleImport}
+        {...getInputProps()}
         css={`
           position: absolute;
           z-index: 1;

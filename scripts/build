@@ -3,11 +3,16 @@
 const version = require('../package.json').version
 const execute = require('child_process').execSync
 
-execute('rimraf build/', { stdio: 'inherit' })
-execute('npm run ui-assets', { stdio: 'inherit' })
+// First two arguments are node and script name
+const buildDir = process.argv[2] || 'build'
+
+execute(`rimraf ${buildDir}`, { stdio: 'inherit' })
+execute(`copy-aragon-ui-assets -n aragon-ui ./${buildDir}`, {
+  stdio: 'inherit',
+})
 
 process.env.REACT_APP_PACKAGE_VERSION = version
 execute(
-  `parcel build src/index.html --out-dir ./build --public-url ./ --no-cache`,
+  `parcel build src/index.html --out-dir ./${buildDir} --public-url ./ --no-cache`,
   { stdio: 'inherit' }
 )

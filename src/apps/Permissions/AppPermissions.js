@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Table, TableRow, Text, Viewport } from '@aragon/ui'
-import LocalIdentityBadge from '../../components/LocalIdentityBadge/LocalIdentityBadge'
+import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { TableHeader, TableCell, FirstTableCell, LastTableCell } from './Table'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { AppType, EthereumAddressType } from '../../prop-types'
 import Section from './Section'
 import EmptyBlock from './EmptyBlock'
-import AppInstanceLabel from './AppInstanceLabel'
+import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntityPermissions from './EntityPermissions'
 import AppRoles from './AppRoles'
 
@@ -111,7 +111,6 @@ class Row extends React.Component {
     return (
       <LocalIdentityBadge
         entity={entity.type === 'any' ? 'Any account' : entity.address}
-        address={entity.address}
       />
     )
   }
