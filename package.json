@@ -20,6 +20,9 @@
     "startups"
   ],
   "author": "Aragon Institution MTU <contact@aragon.one>",
+  "engines": {
+    "node": "10.x"
+  },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
     "@aragon/ui": "^0.40.1",
@@ -54,7 +57,6 @@
     "web3-utils": "1.0.0-beta.33"
   },
   "devDependencies": {
-    "@aragon/cli": "^5.4.0-beta.1",
     "@aragon/os": "^4.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
@@ -83,7 +85,6 @@
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./build",
     "start": "node scripts/start",
     "start:local": "node scripts/launch-local",
     "start:mainnet": "cross-env REACT_APP_ETH_NETWORK_TYPE=main npm start",
@@ -98,9 +99,10 @@
     "build:ropsten": "cross-env REACT_APP_ETH_NETWORK_TYPE=ropsten npm run build",
     "lint": "eslint ./src",
     "test": "npm run lint",
-    "publish:major": "aragon apm publish major --only-content --files build/",
-    "publish:minor": "aragon apm publish minor --only-content --files build/",
-    "publish:patch": "aragon apm publish patch --only-content --files build/",
+    "now-build": "npm run build:mainnet -- build && npm run build -- build/rinkeby",
+    "publish:major": "node scripts/publish major --only-content --files build/",
+    "publish:minor": "node scripts/publish minor --only-content --files build/",
+    "publish:patch": "node scripts/publish patch --only-content --files build/",
     "publish:mainnet:major": "npm run publish:major -- --environment mainnet --build-script build:mainnet",
     "publish:mainnet:minor": "npm run publish:minor -- --environment mainnet --build-script build:mainnet",
     "publish:mainnet:patch": "npm run publish:patch -- --environment mainnet --build-script build:mainnet",
