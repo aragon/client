@@ -36,7 +36,6 @@ If you find an issue, or would like to add a feature, ask yourself these followi
 	- Is it related to one of the onboarding templates? **If yes**, you'll want to see if it's a template from [`aragon/dao-templates`](https://github.com/aragon/dao-templates).
 	- **Else**, [aragonOS](https://github.com/aragon/aragonOS) is most likely the repo to look at.
 - Is it a generic UI component?
-	- Would it benefit most frontend developers? **If yes**, [Lorikeet](https://github.com/lorikeetui/lorikeet) is the best place.
 	- Would it mostly benefit Aragon-related developers? **If yes**, [aragonUI](https://github.com/aragon/aragon-ui) is the best place.
 	- **Else**, add it into `aragon/aragon` 👍.
 - Is it in one of the sandboxed applications (e.g. Voting, Token Manager, or Finance from [`aragon/aragon-apps`](https://github.com/aragon/aragon-apps))?
