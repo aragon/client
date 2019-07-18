@@ -1,11 +1,11 @@
-# Aragon <img align="right" src="https://github.com/aragon/design/blob/master/readme-logo.png" height="80px" />
+# Aragon <a href="https://aragon.org/"><img align="right" src="https://github.com/aragon/design/blob/master/readme-logo.png" height="80px" /></a>
 
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors)
 
 **🌎🚀 Trusted by over 600 organizations, securing more than $1MM in funds. [Try it out.](https://mainnet.aragon.org)**
 
-<img src=".github/screenshot.png" />
+<a href="https://mainnet.aragon.org/#/a1/"><img src=".github/screenshot.png" /></a>
 
 - 📚 Read the [User Guide](https://wiki.aragon.org/tutorials/Aragon_User_Guide/) first, if you have any questions as a user.
 - 💻 You may be interested in [Aragon Desktop](https://github.com/aragon/aragon-desktop/), the most decentralized Aragon experience to date.
