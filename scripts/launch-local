@@ -2,9 +2,10 @@
 
 const ps = require('ps-node')
 const execute = require('child_process').execSync
-
-const DEFAULT_LOCAL_ENS_ADDRESS = '0x5f6F7E8cc7346a11ca2dEf8f827b7a0b612c56a1'
-const DEFAULT_LOCAL_IPFS_GATEWAY = 'http://localhost:8080/ipfs'
+const {
+  DEFAULT_LOCAL_ENS_ADDRESS,
+  DEFAULT_LOCAL_IPFS_GATEWAY,
+} = require('./config/local')
 
 // Determine if quiet mode enabled
 const quietMode = process.argv.includes('-q') || process.argv.includes('-Q')
