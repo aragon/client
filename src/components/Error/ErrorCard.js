@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import EagleAnimation from './EagleAnimation'
 import { theme, breakpoint, Button } from '@aragon/ui'
+
 const medium = css => breakpoint('medium', css)
 
 class ErrorCard extends React.Component {
@@ -12,12 +13,14 @@ class ErrorCard extends React.Component {
     detailsContent: PropTypes.node,
     reportCallback: PropTypes.func,
     showReloadButton: PropTypes.bool,
+    supportUrl: PropTypes.string,
     title: PropTypes.string,
   }
   static defaultProps = {
     title: 'Error :(',
     reportCallback: null,
     showReloadButton: false,
+    supportUrl: '',
   }
 
   state = { showDetails: false }
@@ -40,6 +43,7 @@ class ErrorCard extends React.Component {
       detailsContent,
       reportCallback,
       showReloadButton,
+      supportUrl,
       title,
     } = this.props
     const { showDetails } = this.state
@@ -63,11 +67,20 @@ class ErrorCard extends React.Component {
             </div>
           )}
           <ButtonBox>
-            {reportCallback && (
-              <ReportLink mode="text" onClick={this.handleReportClick}>
+            {reportCallback ? (
+              <ReportButton mode="text" onClick={this.handleReportClick}>
                 Report error
-              </ReportLink>
-            )}
+              </ReportButton>
+            ) : supportUrl ? (
+              <ReportButton
+                as={Button.Anchor}
+                mode="text"
+                href={supportUrl}
+                target="_blank"
+              >
+                Tell us what went wrong
+              </ReportButton>
+            ) : null}
             {showReloadButton && <ButtonsSpacer />}
             {showReloadButton && (
               <Button mode="strong" onClick={this.handleReloadClick} compact>
@@ -150,7 +163,7 @@ const ButtonBox = styled.div`
   justify-content: space-between;
 `
 
-const ReportLink = styled(Button.Anchor)`
+const ReportButton = styled(Button)`
   margin-left: -10px;
   color: ${theme.textSecondary};
   text-decoration: none;
