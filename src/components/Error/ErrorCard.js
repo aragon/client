@@ -29,9 +29,6 @@ class ErrorCard extends React.Component {
     const { showDetails } = this.state
     this.setState({ showDetails: !showDetails })
   }
-  handleReportClick = () => {
-    this.props.reportCallback()
-  }
   handleReloadClick = () => {
     location.reload()
   }
@@ -68,7 +65,7 @@ class ErrorCard extends React.Component {
           )}
           <ButtonBox>
             {reportCallback ? (
-              <ReportButton mode="text" onClick={this.handleReportClick}>
+              <ReportButton mode="text" onClick={reportCallback}>
                 Report error
               </ReportButton>
             ) : supportUrl ? (
