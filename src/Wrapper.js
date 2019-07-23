@@ -8,7 +8,7 @@ import AppIFrame from './components/App/AppIFrame'
 import AppLoader from './components/App/AppLoader'
 import Home from './components/Home/Home'
 import OrgView from './components/OrgView/OrgView'
-import Preferences from './components/Preferences/Preferences'
+import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
@@ -22,7 +22,7 @@ import {
   EthereumAddressType,
   RepoType,
 } from './prop-types'
-import { getAppPath } from './routing'
+import { getAppPath, GLOBAL_PREFERENCES_QUERY_PARAM } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 
@@ -35,10 +35,12 @@ class Wrapper extends React.PureComponent {
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     daoStatus: DaoStatusType.isRequired,
+    helpScoutOptedOut: PropTypes.bool.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
+    onHelpScoutOptedOutChange: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
@@ -66,7 +68,6 @@ class Wrapper extends React.PureComponent {
   state = {
     appLoading: false,
     orgUpgradePanelOpened: false,
-    preferencesOpened: false,
   }
 
   identitySubscription = null
@@ -158,10 +159,11 @@ class Wrapper extends React.PureComponent {
   }
 
   handleClosePreferences = () => {
-    this.setState({ preferencesOpened: false })
+    window.location.hash = getAppPath(this.props.locator)
   }
-  handleOpenPreferences = () => {
-    this.setState({ preferencesOpened: true })
+  handleOpenPreferences = path => {
+    const appPath = getAppPath(this.props.locator)
+    window.location.hash = `${appPath}${GLOBAL_PREFERENCES_QUERY_PARAM}${path}`
   }
   // params need to be a string
   handleParamsRequest = params => {
@@ -223,7 +225,9 @@ class Wrapper extends React.PureComponent {
       connected,
       daoAddress,
       daoStatus,
+      helpScoutOptedOut,
       locator,
+      onHelpScoutOptedOutChange,
       onRequestAppsReload,
       onRequestEnable,
       repos,
@@ -237,7 +241,7 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
 
-    const { appLoading, orgUpgradePanelOpened, preferencesOpened } = this.state
+    const { appLoading, orgUpgradePanelOpened } = this.state
 
     const currentApp = apps.find(app =>
       addressesEqual(app.proxyAddress, locator.instanceId)
@@ -309,11 +313,12 @@ class Wrapper extends React.PureComponent {
           )}
         </OrgView>
 
-        <Preferences
-          dao={locator.dao}
-          opened={preferencesOpened}
-          onClose={this.handleClosePreferences}
+        <GlobalPreferences
+          locator={locator}
           wrapper={wrapper}
+          onClose={this.handleClosePreferences}
+          onHelpScoutOptedOutChange={onHelpScoutOptedOutChange}
+          helpScoutOptedOut={helpScoutOptedOut}
         />
       </div>
     )

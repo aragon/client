@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Subject } from 'rxjs'
 
 const identityEventTypes = {
-  CLEAR: 'CLEAR',
   IMPORT: 'IMPORT',
   MODIFY: 'MODIFY',
   REMOVE: 'REMOVE',

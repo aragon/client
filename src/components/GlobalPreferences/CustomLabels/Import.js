@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useDropzone } from 'react-dropzone'
 import { Button } from '@aragon/ui'
-import { isString } from '../../utils'
-import { isAddress } from '../../web3-utils'
+import { isString } from '../../../utils'
+import { isAddress } from '../../../web3-utils'
 
 // What is the answer to the ultimate question of Life, the Universe, and Everything?
 const MAX_LENGTH = 42
@@ -44,7 +44,7 @@ const fileImport = cb => files => {
   reader.readAsText(files[0])
 }
 
-const Import = ({ onImport }) => {
+const Import = ({ onImport, button }) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: fileImport(onImport),
     multiple: false,
@@ -52,12 +52,15 @@ const Import = ({ onImport }) => {
 
   return (
     <label
+      {...getRootProps()}
       css={`
         position: relative;
         display: inline-block;
-        overflow: hidden;
+        &:focus,
+        &:active {
+          outline: none;
+        }
       `}
-      {...getRootProps()}
     >
       <input
         {...getInputProps()}
@@ -70,13 +73,19 @@ const Import = ({ onImport }) => {
           width: 100%;
         `}
       />
-      <Button label="Import" mode="secondary">
-        Import
-      </Button>
+      {button || (
+        <Button label="Import labels" mode="strong">
+          Import labels
+        </Button>
+      )}
     </label>
   )
 }
 
-Import.propTypes = { onImport: PropTypes.func.isRequired }
+Import.propTypes = {
+  button: PropTypes.node,
+  onImport: PropTypes.func.isRequired,
+}
 
+export { fileImport }
 export default Import

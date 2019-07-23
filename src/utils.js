@@ -125,3 +125,6 @@ export function cssgu(strings, ...substitutions) {
       return isNaN(value) ? match : `${value * GU}px`
     })
 }
+
+export const iOS =
+  /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream

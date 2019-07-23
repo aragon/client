@@ -1,6 +1,5 @@
 import { staticApps } from './static-apps'
 import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
-
 import { isAddress, isValidEnsName } from './web3-utils'
 
 const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
@@ -88,16 +87,41 @@ export const parsePath = (history, pathname, search = '') => {
     instanceId: instanceId || 'home',
     params,
     parts: appParts,
+    preferences: parsePreferences(search),
   }
 
   return completeLocator
 }
 
 // Return a path string for an app instance
-export const getAppPath = ({ dao, instanceId = 'home', params } = {}) => {
+export const getAppPath = ({
+  dao: fullDao,
+  instanceId = 'home',
+  params,
+} = {}) => {
+  const dao =
+    fullDao.indexOf(ARAGONID_ENS_DOMAIN) > -1
+      ? fullDao.substr(0, fullDao.indexOf(ARAGONID_ENS_DOMAIN) - 1)
+      : fullDao
   const paramsPart = params ? `?p=${encodeURIComponent(params)}` : ``
   if (staticApps.has(instanceId)) {
     return `/${dao}${staticApps.get(instanceId).route}${paramsPart}`
   }
   return `/${dao}/${instanceId}${paramsPart}`
+}
+
+// Preferences
+export const GLOBAL_PREFERENCES_QUERY_PARAM = '?preferences=/'
+export const GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR = '&labels='
+
+const parsePreferences = search => {
+  const [, raw = ''] = search && search.split(GLOBAL_PREFERENCES_QUERY_PARAM)
+  const params = new Map()
+  const [path = null, labels = null] = raw.split(
+    GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR
+  )
+  if (labels) {
+    params.set(GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR, labels)
+  }
+  return { path, params }
 }
