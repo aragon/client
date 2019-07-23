@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors)
 
-**🌎🚀 Trusted by over 550 organizations, securing more than $1MM in funds.**
+**🌎🚀 Trusted by over 600 organizations, securing more than $1MM in funds.**
 
 <img src=".github/screenshot.png" />
 
@@ -24,6 +24,22 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 - Local development: `npm run start:local` will launch the app, configured to connect to our [aragen](https://github.com/aragon/aragen) local development environment. It will also use the local IPFS daemon, if it detects one exists. If you're using the [aragonCLI](http://github.com/aragon/aragon-cli), you'll want to run this to connect to its local chain.
 
 **Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
+
+## Deployments
+
+The Aragon client undergoes a number of different deployments, based on build environments, major release timelines, and quality assurance checks.
+
+### aragonPM
+
+Regular updates, with incrementing minor or patch versions, are published onto the `aragon.aragonpm.eth` repo on all supported Ethereum environments.
+
+These should be seen as "official" builds, whose distributions are secured by IPFS. Most users will likely see this version of the app, due to [mainnet.aragon.org](https://mainnet.aragon.org) and [rinkeby.aragon.org](https://rinkeby.aragon.org) pointing to these builds.
+
+### Nightly / Per-PR builds
+
+Automatic [now](https://zeit.co/now) deployments will occur for each PR and merge to master. These are useful for quickly testing a new feature, change, or hotfix.
+
+The official [now app for Github](https://zeit.co/github) is set up to publish nightlies against Rinkeby see [default now configuration](./now.json). Travis is set up to publish nightlies against mainnet (see [mainnet now configuration](./now-mainnet.json)).
 
 ## Contributing
 
