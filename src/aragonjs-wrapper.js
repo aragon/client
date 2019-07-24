@@ -349,6 +349,10 @@ const initWrapper = async (
       // We force a downgrade to localStorage to avoid using IndexedDB.
       forceLocalStorage: workerFrameSandboxDisabled,
     },
+    events: {
+      // Infura hack: delay event processing for 1s
+      subscriptionEventDelay: 1000,
+    },
   })
 
   const web3 = getWeb3(walletProvider || provider)
