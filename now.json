@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "public": true,
+  "scope": "aragon",
+  "alias": "nightly-rinkeby.aragon.org",
+  "builds": [
+    { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build/rinkeby" } }
+  ],
+  "github": {
+    "silent": true
+  }
+}

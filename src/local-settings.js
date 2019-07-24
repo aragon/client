@@ -5,6 +5,7 @@ const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
 const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
 const IPFS_GATEWAY = 'IPFS_GATEWAY'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
+const SENTRY_DSN = 'SENTRY_DSN'
 
 // process.env vars have to be declared statically (to be replaced by parcel).
 const CONFIGURATION_VARS = [
@@ -14,6 +15,7 @@ const CONFIGURATION_VARS = [
   [ETH_NETWORK_TYPE, process.env.REACT_APP_ETH_NETWORK_TYPE],
   [IPFS_GATEWAY, process.env.REACT_APP_IPFS_GATEWAY],
   [SELECTED_CURRENCY, process.env.REACT_APP_SELECTED_CURRENCY],
+  [SENTRY_DSN, process.env.REACT_APP_SENTRY_DSN],
 ].reduce(
   (acc, [option, envValue]) => ({
     ...acc,
@@ -77,4 +79,8 @@ export function getSelectedCurrency() {
 
 export function setSelectedCurrency(currency) {
   return setLocalSetting(SELECTED_CURRENCY, currency.toUpperCase())
+}
+
+export function getSentryDsn() {
+  return getLocalSetting(SENTRY_DSN, '')
 }
