@@ -13,7 +13,6 @@ import {
 } from './components/IdentityManager/IdentityManager'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
-import { atou } from './string-utils'
 
 const KEYCODE_UP = 38
 const KEYCODE_DOWN = 40
@@ -152,7 +151,7 @@ export function useRepoDetails(baseUrl, detailsUrl) {
   return usePromise(fetchDescription, [detailsUrl], null)
 }
 
-export function useEsc(cb, deps) {
+export function useEsc(cb) {
   const handlekeyDown = useCallback(
     e => {
       if (e.keyCode === keycodes.esc) {
@@ -165,38 +164,6 @@ export function useEsc(cb, deps) {
     window.addEventListener('keydown', handlekeyDown)
     return () => window.removeEventListener('keydown', handlekeyDown)
   }, [handlekeyDown])
-}
-
-const QUERY_VAR = '?labels='
-// checks if query string var exists
-// parses data and validates data consistency (will throw if prop don't exist)
-export function useSharedLabels(dao) {
-  const [isSharedLink, setIsSharedLink] = useState(false)
-  const [sharedLabels, setSharedLabels] = useState([])
-
-  const removeSharedLink = useCallback(
-    () => (window.location.hash = `#/${dao}`),
-    [dao]
-  )
-
-  useEffect(() => {
-    const index = window.location.hash.indexOf(QUERY_VAR)
-    if (index > -1) {
-      const raw = window.location.hash.substr(index + QUERY_VAR.length)
-      try {
-        const data = JSON.parse(atou(raw))
-        setSharedLabels(data.map(({ address, name }) => ({ address, name })))
-        setIsSharedLink(true)
-      } catch (e) {
-        console.warn(
-          'There was an error parsing/validating the shared data: ',
-          e
-        )
-      }
-    }
-  }, [])
-
-  return { isSharedLink, setIsSharedLink, sharedLabels, removeSharedLink }
 }
 
 export function useSelected(initial) {
@@ -238,7 +205,9 @@ export function useOnBlur(cb, ref = useRef()) {
   /* eslint-enable react-hooks/rules-of-hooks */
   const handleBlur = useCallback(
     e => {
-      if (!ref.current.contains(e.relatedTarget)) {
+      // when event is triggered by click relatedTarget is null
+      // when another element is gaining focus then it holds some value
+      if (e.relatedTarget && !ref.current.contains(e.relatedTarget)) {
         cb()
       }
     },
@@ -336,4 +305,53 @@ export function useLocalIdentity(entity) {
   }, [identityEvents$, handleResolve, entity])
 
   return { name }
+}
+
+/* eslint-disable react-hooks/rules-of-hooks */
+export function useArrowKeysFocusRefs(refs) {
+  /* eslint-enable react-hooks/rules-of-hooks */
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
+
+  const cycleFocus = useCallback(
+    (e, change) => {
+      e.preventDefault()
+      let next = highlightedIndex + change
+      if (next > refs.length - 1) {
+        next = 0
+      }
+      if (next < 0) {
+        next = refs.length - 1
+      }
+      setHighlightedIndex(next)
+    },
+    [highlightedIndex, refs.length]
+  )
+  const handleKeyDown = useCallback(
+    e => {
+      const { keyCode } = e
+      if (keyCode === KEYCODE_UP || keyCode === KEYCODE_DOWN) {
+        cycleFocus(e, keyCode === KEYCODE_UP ? -1 : 1)
+      }
+    },
+    [cycleFocus]
+  )
+
+  useEffect(() => {
+    if (highlightedIndex === -1) {
+      return
+    }
+    if (!refs[highlightedIndex]) {
+      return
+    }
+    refs[highlightedIndex].focus()
+  }, [highlightedIndex, refs])
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
+  return {
+    highlightedIndex,
+    setHighlightedIndex: index => () => setHighlightedIndex(index),
+  }
 }
