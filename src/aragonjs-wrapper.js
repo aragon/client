@@ -15,6 +15,7 @@ import {
   defaultGasPriceFn,
 } from './environment'
 import { NoConnection, DAONotFound } from './errors'
+import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash } from './utils'
 import {
@@ -342,6 +343,11 @@ const initWrapper = async (
     apm: {
       ensRegistryAddress,
       ipfs: ipfsConf,
+    },
+    cache: {
+      // If the worker's origin sandbox is disabed, it has full access to IndexedDB.
+      // We force a downgrade to localStorage to avoid using IndexedDB.
+      forceLocalStorage: workerFrameSandboxDisabled,
     },
   })
 
