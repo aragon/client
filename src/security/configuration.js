@@ -36,14 +36,14 @@ export const appIframeSandbox = [
   //       Dapp's context (e.g. to a malicious page)
 ].join(' ')
 
-export const workerSandbox = [
-  // Needed to run the script that starts the WebWorker
+export const workerFrameSandbox = [
+  // Needed to run the script that starts the WebWorker in the iframe
   'allow-scripts',
 
-  // Note that we haven't enabled 'allow-same-origin' as this is what allows us
-  // to create the opaque origin with these iframes
+  // Note that we haven't enabled 'allow-same-origin' as this is what creates
+  // the opaque origin for the WebWorkers
 ].join(' ')
 
 // The sandbox is disabled because macOS Safari and iOS browsers do not allow
 // blobs to be read in sandboxed iframes: https://bugs.webkit.org/show_bug.cgi?id=170075
-export const workerSandboxEnabled = !(iOS || isSafari)
+export const workerFrameSandboxDisabled = iOS || isSafari

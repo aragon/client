@@ -1,5 +1,8 @@
 import EventTarget from '@ungap/event-target'
-import { workerSandbox, workerSandboxEnabled } from '../security/configuration'
+import {
+  workerFrameSandbox,
+  workerFrameSandboxDisabled,
+} from '../security/configuration'
 
 /**
  * A few notes on WebWorker security, and why this "sandboxed" version is
@@ -34,7 +37,7 @@ import { workerSandbox, workerSandboxEnabled } from '../security/configuration'
  * load of a script.
  *
  * Thus, we instead chose to "wrap" these WebWorkers with an iframe, using the
- * iframe to create the opaque origin.
+ * iframe to create the opaque origin (unless disabled; see Safari bug).
  */
 
 class SandboxedWorker extends EventTarget {
@@ -43,8 +46,8 @@ class SandboxedWorker extends EventTarget {
 
     this.name = name
     this.iframe = document.createElement('iframe')
-    if (workerSandboxEnabled) {
-      this.iframe.sandbox = workerSandbox
+    if (!workerFrameSandboxDisabled) {
+      this.iframe.sandbox = workerFrameSandbox
     }
     this.iframe.style = 'position: absolute; width: 0; height: 0; opacity:0;'
 

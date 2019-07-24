@@ -15,7 +15,7 @@ import {
   defaultGasPriceFn,
 } from './environment'
 import { NoConnection, DAONotFound } from './errors'
-import { workerSandboxEnabled } from './security/configuration'
+import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash } from './utils'
 import {
@@ -345,9 +345,9 @@ const initWrapper = async (
       ipfs: ipfsConf,
     },
     cache: {
-      // If the worker isn't being sandboxed, it has full access to IndexedDB.
-      // We force Aragon to downgrade to localStorage in these cases.
-      forceLocalStorage: !workerSandboxEnabled,
+      // If the worker's origin sandbox is disabed, it has full access to IndexedDB.
+      // We force a downgrade to localStorage to avoid using IndexedDB.
+      forceLocalStorage: workerFrameSandboxDisabled,
     },
   })
 
