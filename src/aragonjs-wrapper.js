@@ -15,6 +15,7 @@ import {
   defaultGasPriceFn,
 } from './environment'
 import { NoConnection, DAONotFound } from './errors'
+import { getEthSubscriptionEventDelay } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash } from './utils'
@@ -350,8 +351,8 @@ const initWrapper = async (
       forceLocalStorage: workerFrameSandboxDisabled,
     },
     events: {
-      // Infura hack: delay event processing for 5s
-      subscriptionEventDelay: 5000,
+      // Infura hack: delay event processing for specified number of ms
+      subscriptionEventDelay: getEthSubscriptionEventDelay(),
     },
   })
 
