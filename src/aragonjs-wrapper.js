@@ -350,8 +350,8 @@ const initWrapper = async (
       forceLocalStorage: workerFrameSandboxDisabled,
     },
     events: {
-      // Infura hack: delay event processing for 1s
-      subscriptionEventDelay: 1000,
+      // Infura hack: delay event processing for 5s
+      subscriptionEventDelay: 5000,
     },
   })
 
