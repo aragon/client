@@ -89,13 +89,9 @@ class Wrapper extends React.PureComponent {
   }
 
   updateInstancePath(prevProps) {
-    const { locator } = this.props
+    const { locator, wrapper } = this.props
     if (locator.instancePath !== prevProps.locator.instancePath) {
-      this.appIFrame.sendMessage({
-        from: 'wrapper',
-        name: 'path',
-        value: locator.instancePath,
-      })
+      wrapper.setPath(locator.instancePath)
     }
   }
 
@@ -205,6 +201,7 @@ class Wrapper extends React.PureComponent {
 
     if (name === 'requestPath') {
       this.openApp(value[1] || this.props.locator.instanceId, value[0])
+      this.props.wrapper.setPath(this.props.locator.instancePath)
     }
 
     if (name === 'ready') {
@@ -213,11 +210,7 @@ class Wrapper extends React.PureComponent {
         name: 'apps',
         value: this.props.apps,
       })
-      this.appIFrame.sendMessage({
-        from: 'wrapper',
-        name: 'path',
-        value: this.props.locator.instancePath,
-      })
+      this.props.wrapper.setPath(this.props.locator.instancePath)
     }
   }
   handleMenuPanelOpen = () => {
