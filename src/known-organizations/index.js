@@ -26,7 +26,7 @@ export const KnownOrganizations = {
     // brightid.aragonid.eth
     [
       '0x5aad137d8f7d2dc6e1b2548c059b1483360bcc6a',
-      { name: 'BrightId', image: brightIdImage },
+      { name: 'BrightID', image: brightIdImage },
     ],
   ]),
 }
