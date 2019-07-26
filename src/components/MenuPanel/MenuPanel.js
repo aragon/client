@@ -17,8 +17,8 @@ export const MENU_ITEM_HEIGHT = 40
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
+const APP_ORGANIZATION = staticApps.get('organization').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
-const APP_SETTINGS = staticApps.get('settings').app
 
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',
@@ -78,7 +78,7 @@ class MenuPanel extends React.PureComponent {
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
     const menuApps = [APP_HOME, appGroups]
-    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_SETTINGS]
+    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_ORGANIZATION]
 
     return (
       <Main

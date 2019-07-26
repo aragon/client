@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
-import { AppCenter, Home, Permissions, Settings } from './apps'
+import { AppCenter, Home, Organization, Permissions } from './apps'
 import App404 from './components/App404/App404'
 import AppIFrame from './components/App/AppIFrame'
 import AppLoader from './components/App/AppLoader'
@@ -384,9 +384,9 @@ class Wrapper extends React.PureComponent {
       )
     }
 
-    if (instanceId === 'settings') {
+    if (instanceId === 'organization') {
       return (
-        <Settings
+        <Organization
           account={account}
           apps={apps}
           appsLoading={appsLoading}
@@ -395,7 +395,6 @@ class Wrapper extends React.PureComponent {
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
-          wrapper={wrapper}
         />
       )
     }

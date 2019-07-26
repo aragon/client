@@ -21,8 +21,8 @@ const DISPLAY_FALLBACK_DELAY = 50
 const KNOWN_ICONS = new Map([
   ['apps', iconSvgApps],
   ['home', iconSvgHome],
+  ['organization', iconSvgSettings],
   ['permissions', iconSvgPermissions],
-  ['settings', iconSvgSettings],
   [
     '0x3b4bf6bf3ad5000ecf0f989d5befde585c6860fea3e574a4fab4c49d1c177d9c',
     iconSvgKernel,
