@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { breakpoint } from '@aragon/ui'
+import { isEnsDomainAvailable } from '../ens-utils'
 import { noop } from '../utils'
 import { getUnknownBalance } from '../web3-utils'
-import { isNameAvailable } from '../aragonjs-wrapper'
 import springs from '../springs'
 
 import * as Steps from './steps'
@@ -249,7 +249,9 @@ class Onboarding extends React.PureComponent {
 
     const checkName = async () => {
       try {
-        const available = await isNameAvailable(filteredDomain)
+        const available = await isEnsDomainAvailable(
+          `${filteredDomain}.aragonid.eth`
+        )
 
         // The domain could have changed in the meantime
         if (filteredDomain === this.state[domainKey]) {

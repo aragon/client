@@ -1,19 +1,13 @@
 import BN from 'bn.js'
 import resolvePathname from 'resolve-pathname'
-import Aragon, {
-  providers,
-  setupTemplates,
-  isNameUsed,
-  ensResolve,
-} from '@aragon/wrapper'
+import Aragon, { providers, setupTemplates } from '@aragon/wrapper'
 import {
   appOverrides,
-  sortAppsPair,
-  ipfsDefaultConf,
-  web3Providers,
-  contractAddresses,
   defaultGasPriceFn,
+  ipfsDefaultConf,
+  sortAppsPair,
 } from './environment'
+import { resolveEnsDomain } from './ens-utils'
 import { NoConnection, DAONotFound } from './errors'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash } from './utils'
@@ -291,17 +285,6 @@ const subscribe = (
   return subscriptions
 }
 
-const resolveEnsDomain = async (domain, opts) => {
-  try {
-    return await ensResolve(domain, opts)
-  } catch (err) {
-    if (err.message === 'ENS name not defined.') {
-      return ''
-    }
-    throw err
-  }
-}
-
 const initWrapper = async (
   dao,
   ensRegistryAddress,
@@ -464,9 +447,7 @@ const templateParamFilters = {
 
     if (neededSignatures < 1 || neededSignatures > signers.length) {
       throw new Error(
-        `neededSignatures must be between 1 and the total number of signers (${
-          signers.length
-        })`,
+        `neededSignatures must be between 1 and the total number of signers (${signers.length})`,
         neededSignatures
       )
     }
@@ -475,20 +456,11 @@ const templateParamFilters = {
   },
 }
 
-export const isNameAvailable = async name =>
-  !(await isNameUsed(name, {
-    provider: web3Providers.default,
-    registryAddress: contractAddresses.ensRegistry,
-  }))
-
 export const initDaoBuilder = (
   provider,
   ensRegistryAddress,
   ipfsConf = ipfsDefaultConf
 ) => {
-  // DEV only
-  // provider = new Web3.providers.WebsocketProvider('ws://localhost:8546')
-
   return {
     build: async (templateName, organizationName, settings = {}) => {
       if (!organizationName) {
