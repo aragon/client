@@ -2,8 +2,8 @@
   "version": 2,
   "public": true,
   "scope": "aragon",
-  "alias": "preview.aragon.org",
+  "alias": "nightly.aragon.org",
   "builds": [
-    { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build/rinkeby" } }
+    { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
   ]
 }
