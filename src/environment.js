@@ -86,6 +86,13 @@ if (assetBridge === 'local') {
     [appIds['Survey']]: 'http://localhost:3004/',
     [appIds['Voting']]: 'http://localhost:3001/',
   })
+} else if (assetBridge === 'preview') {
+  Object.assign(appLocator, {
+    [appIds['Finance']]: 'http://nightly-finance.aragon.org/',
+    [appIds['TokenManager']]: 'http://nightly-token-manager.aragon.org/',
+    [appIds['Survey']]: 'http://nightly-survey.aragon.org/',
+    [appIds['Voting']]: 'http://nightly-voting.aragon.org/',
+  })
 } else if (assetBridge === 'ipfs') {
   // We don't need to provide anything here as by default, the apps will be loaded from IPFS
 } else if (assetBridge) {
