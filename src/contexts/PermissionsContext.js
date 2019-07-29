@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { AppType } from '../prop-types'
 import {
   appPermissions,
   appRoles,
@@ -7,12 +8,12 @@ import {
   roleResolver,
   entityRoles,
   permissionsByEntity,
+  permissionsByRole,
 } from '../permissions'
-import { AppType } from '../prop-types'
 import { log, noop } from '../utils'
-import { getEmptyAddress } from '../web3-utils'
+import { addressesEqual, getEmptyAddress } from '../web3-utils'
 
-const { Provider, Consumer } = React.createContext()
+const PermissionsContext = React.createContext()
 
 class PermissionsProvider extends React.Component {
   static propTypes = {
@@ -195,27 +196,59 @@ class PermissionsProvider extends React.Component {
   render() {
     const { children, permissions, wrapper } = this.props
     return (
-      <Provider
+      <PermissionsContext.Provider
         value={{
           ...this.state,
           permissions,
           wrapper,
-          revokePermission: this.revokePermission,
           createPermission: this.createPermission,
-          grantPermission: this.grantPermission,
-          removePermissionManager: this.removePermissionManager,
-          setPermissionManager: this.setPermissionManager,
-          getEntityRoles: this.getEntityRoles,
           getAppPermissions: this.getAppPermissions,
           getAppRoles: this.getAppRoles,
+          getCompletePermissions: this.getCompletePermissions,
+          getEntityRoles: this.getEntityRoles,
           getRoleManager: this.getRoleManager,
           getRolesByEntity: this.getRolesByEntity,
+          grantPermission: this.grantPermission,
+          removePermissionManager: this.removePermissionManager,
+          revokePermission: this.revokePermission,
+          setPermissionManager: this.setPermissionManager,
         }}
       >
         {children}
-      </Provider>
+      </PermissionsContext.Provider>
     )
   }
 }
 
-export { PermissionsProvider, Consumer as PermissionsConsumer }
+const PermissionsConsumer = PermissionsContext.Consumer
+
+function usePermissions() {
+  return useContext(PermissionsContext)
+}
+
+function usePermissionsByRole() {
+  const { apps, permissions, resolveRole, resolveEntity } = usePermissions()
+
+  return useMemo(
+    () =>
+      permissionsByRole(permissions).map(permission => {
+        const app = apps.find(app =>
+          addressesEqual(app.proxyAddress, permission.app)
+        )
+        return {
+          ...permission,
+          app: app || null,
+          role: resolveRole(permission.app, permission.roleBytes),
+          entities: permission.entities.map(resolveEntity),
+        }
+      }),
+    [permissions, resolveRole]
+  )
+}
+
+export {
+  PermissionsProvider,
+  PermissionsConsumer,
+  usePermissions,
+  usePermissionsByRole,
+}
