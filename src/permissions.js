@@ -75,6 +75,23 @@ export function permissionsByEntity(permissions) {
   return results
 }
 
+// Get a list of roles per instance, with their assigned entities
+export function permissionsByRole(permissions) {
+  return Object.entries(permissions).reduce(
+    (entries, [app, roles]) => [
+      ...entries,
+      ...Object.entries(roles).reduce(
+        (entries, [roleBytes, { allowedEntities: entities = [], manager }]) => [
+          ...entries,
+          { app, roleBytes, manager, entities },
+        ],
+        []
+      ),
+    ],
+    []
+  )
+}
+
 // Get the roles attached to an entity.
 export const entityRoles = (
   entityAddress,
