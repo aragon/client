@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import {
   Card,
-  Badge,
+  Tag,
   Text,
   SafeLink,
   theme,
@@ -50,7 +50,9 @@ const DiscoverApps = React.memo(() => (
           </Icon>
           <Name>{app.name}</Name>
           <TagWrapper>
-            <Tag background={statuses[app.status]}>{app.status}</Tag>
+            <TagComponent background={statuses[app.status]}>
+              {app.status}
+            </TagComponent>
           </TagWrapper>
           <Description color={theme.textSecondary}>
             {app.description}
@@ -111,7 +113,7 @@ const TagWrapper = styled.div`
   margin-bottom: 10px;
 `
 
-const Tag = styled(Badge)`
+const TagComponent = styled(Tag)`
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;

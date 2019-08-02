@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Badge, font } from '@aragon/ui'
+import { Tag, font } from '@aragon/ui'
 
 const LocalIdentityPopoverTitle = ({ label }) => {
   return (
     <WrapTitle>
       <Label>{label}</Label>
-      <Badge
+      <Tag mode="identity"
         css={`
           margin-left: 16px;
           text-transform: uppercase;
@@ -15,7 +15,7 @@ const LocalIdentityPopoverTitle = ({ label }) => {
         `}
       >
         Custom label
-      </Badge>
+      </Tag>
     </WrapTitle>
   )
 }

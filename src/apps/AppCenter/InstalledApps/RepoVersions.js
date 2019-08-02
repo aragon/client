@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Trail, animated } from 'react-spring'
-import { Badge, theme, springs, Info } from '@aragon/ui'
+import { Tag, theme, springs, Info } from '@aragon/ui'
 import { format } from 'date-fns'
 import { TextLabel } from '../../../components/TextStyles'
 import { RepoType } from '../../../prop-types'
@@ -63,11 +63,11 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => (
               <Td>
                 {version}{' '}
                 {version === currentVersion.version && (
-                  <Badge.Identity
+                  <Tag mode="identity"
                     style={{ marginLeft: `${GU}px`, fontVariant: 'small-caps' }}
                   >
                     current
-                  </Badge.Identity>
+                  </Tag>
                 )}
               </Td>
               <Td>{timestamp ? format(timestamp, 'dd/MM/yy') : ''}</Td>
