@@ -12,6 +12,7 @@ const RADIO_ITEM_TITLE_LENGTH = 30
 class ActionPathsContent extends React.Component {
   static propTypes = {
     direct: PropTypes.bool.isRequired,
+    installed: PropTypes.bool.isRequired,
     external: PropTypes.bool,
     intent: PropTypes.object.isRequired,
     dao: PropTypes.string.isRequired,
@@ -174,6 +175,7 @@ class ActionPathsContent extends React.Component {
   }
   render() {
     const {
+      installed,
       intent,
       direct,
       external,
@@ -244,8 +246,9 @@ class ActionPathsContent extends React.Component {
         {external && (
           <div css="margin-top: 20px">
             <Info.Alert title="Warning">
-              This is an attempt to execute a transaction on an external
-              contract. Please take necessary security precautions.
+              {`Be aware that this is an attempt to execute a transaction on another app that is ${
+                installed ? '' : 'not'
+              } installed in this organization. You may want to double check that app's functionality before proceeding.`}
             </Info.Alert>
           </div>
         )}

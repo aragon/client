@@ -107,7 +107,7 @@ class SignerPanel extends React.PureComponent {
   // This is a temporary method to reshape the transaction bag
   // to the future format we expect from Aragon.js
   stateFromTransactionBag(bag) {
-    const { path, transaction } = bag
+    const { external, path, transaction } = bag
     const decoratedPaths = path.map(path => ({
       ...path,
       name: getAppName(this.props.apps, path.to),
@@ -115,7 +115,8 @@ class SignerPanel extends React.PureComponent {
 
     return {
       intent: (transaction && this.transactionIntent(bag)) || {},
-      external: transaction.external,
+      external,
+      installed: !!getAppName(this.props.apps, transaction.to),
       directPath: decoratedPaths.length === 1,
       actionPaths: decoratedPaths.length ? [decoratedPaths] : [],
       pretransaction: (transaction && transaction.pretransaction) || null,
@@ -299,6 +300,7 @@ class SignerPanel extends React.PureComponent {
       pretransaction,
       status,
       external,
+      installed,
     } = this.state
 
     const isTransaction = isTxSignerStatus(status)
@@ -347,6 +349,7 @@ class SignerPanel extends React.PureComponent {
                               dao={dao}
                               direct={directPath}
                               external={external}
+                              installed={installed}
                               intent={intent}
                               onClose={this.handleSignerClose}
                               onSign={this.handleSign}

@@ -6,6 +6,7 @@ import ImpossibleContent from './ImpossibleContent'
 const ConfirmTransaction = ({
   direct,
   intent,
+  installed,
   external,
   dao,
   onClose,
@@ -24,6 +25,7 @@ const ConfirmTransaction = ({
       direct={direct}
       dao={dao}
       external={external}
+      installed={installed}
       intent={intent}
       onSign={onSign}
       paths={paths}
@@ -38,6 +40,7 @@ const ConfirmTransaction = ({
 
 ConfirmTransaction.propTypes = {
   direct: PropTypes.bool.isRequired,
+  installed: PropTypes.bool.isRequired,
   intent: PropTypes.object.isRequired,
   external: PropTypes.bool,
   dao: PropTypes.string,
