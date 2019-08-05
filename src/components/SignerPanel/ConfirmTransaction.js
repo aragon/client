@@ -40,7 +40,7 @@ const ConfirmTransaction = ({
 
 ConfirmTransaction.propTypes = {
   direct: PropTypes.bool.isRequired,
-  installed: PropTypes.bool.isRequired,
+  installed: PropTypes.bool,
   intent: PropTypes.object.isRequired,
   external: PropTypes.bool,
   dao: PropTypes.string,
