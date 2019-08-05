@@ -141,12 +141,14 @@ function Permissions({
         primary={
           location.screen === 'app' && location.app ? (
             <Header.Title>
-              <span
+              {`${location.app.name} permissions`}
+              <LocalIdentityBadge
+                entity={location.app.proxyAddress}
+                shorten
                 css={`
-                  margin-right: ${2 * GU}px;
+                  margin-left: ${2 * GU}px;
                 `}
-              >{`${location.app.name} permissions`}</span>
-              <LocalIdentityBadge entity={location.app.proxyAddress} shorten />
+              />
             </Header.Title>
           ) : (
             'Permissions'
@@ -170,6 +172,7 @@ function Permissions({
           permissionsLoading={permissionsLoading}
           onOpenApp={openApp}
           onOpenEntity={openEntity}
+          onManageRole={manageRole}
         />
       )}
 

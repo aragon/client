@@ -12,7 +12,13 @@ import {
 import { usePermissions } from '../../contexts/PermissionsContext'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 
-function PermissionsView({ permissions, onOpenEntity, heading, showApps }) {
+function PermissionsView({
+  permissions,
+  onOpenEntity,
+  onManageRole,
+  heading,
+  showApps,
+}) {
   const { layoutName } = useLayout()
 
   const fields = [
@@ -38,10 +44,8 @@ function PermissionsView({ permissions, onOpenEntity, heading, showApps }) {
       entries={permissions}
       renderEntry={entry => renderEntry(entry, showApps)}
       renderEntryChild={renderEntryChild}
-      renderEntryActions={() => (
-        <ContextMenu>
-          <ContextMenuItem>Manage</ContextMenuItem>
-        </ContextMenu>
+      renderEntryActions={entry => (
+        <EntryActions entry={entry} onManageRole={onManageRole} />
       )}
     />
   )
@@ -80,6 +84,24 @@ function renderEntryChild({ entities, app, role }) {
           roleBytes={role.bytes}
         />
       ))
+}
+
+// eslint-disable-next-line react/prop-types
+function EntryActions({ entry, onManageRole }) {
+  const { roleBytes, app } = entry
+  const { proxyAddress } = app
+
+  const handleManageRoleClick = useCallback(() => {
+    onManageRole(proxyAddress, roleBytes)
+  }, [roleBytes, proxyAddress, onManageRole])
+
+  return (
+    <ContextMenu>
+      <ContextMenuItem onClick={handleManageRoleClick}>
+        Manage role
+      </ContextMenuItem>
+    </ContextMenu>
+  )
 }
 
 // eslint-disable-next-line react/prop-types

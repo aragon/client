@@ -13,24 +13,44 @@ import PermissionsView from '../PermissionsView'
 
 const ENTITY_TYPES = ['All entities', 'Accounts', 'Apps']
 
-function AllPermissions({ loading, permissions, onOpenEntity }) {
-  const [selectedEntityType, setSelectedEntityType] = useState(0)
+function AllPermissions({ loading, permissions, onOpenEntity, onManageRole }) {
+  const [selectedEntityType, setSelectedEntityType] = useState(-1)
   const [searchTerms, setSearchTerms] = useState('')
 
   const filteredPermissions = useMemo(() => {
-    return permissions.filter(permission => {
-      const preparedSearchTerms = searchTerms.trim().toLowerCase()
-      if (preparedSearchTerms === '') {
-        return true
-      }
-      const roleName = permission.role.name.toLowerCase()
-      const roleId = permission.role.id.toLowerCase()
-      return (
-        roleName.includes(preparedSearchTerms) ||
-        roleId.includes(preparedSearchTerms)
-      )
-    })
-  }, [searchTerms, permissions])
+    return (
+      permissions
+
+        // Filter by search terms
+        .filter(permission => {
+          const preparedSearchTerms = searchTerms.trim().toLowerCase()
+          if (preparedSearchTerms === '') {
+            return true
+          }
+          const roleName = permission.role.name.toLowerCase()
+          const roleId = permission.role.id.toLowerCase()
+          return (
+            roleName.includes(preparedSearchTerms) ||
+            roleId.includes(preparedSearchTerms)
+          )
+        })
+
+        // Filter by account types
+        .filter(permission => {
+          // accounts
+          if (selectedEntityType === 1) {
+            return permission.entities.some(entity => entity.type !== 'app')
+          }
+
+          // apps
+          if (selectedEntityType === 2) {
+            return permission.entities.some(entity => entity.type === 'app')
+          }
+
+          return true
+        })
+    )
+  }, [searchTerms, permissions, selectedEntityType])
 
   if (loading) {
     return <EmptyBlock>Loading permissions…</EmptyBlock>
@@ -44,6 +64,7 @@ function AllPermissions({ loading, permissions, onOpenEntity }) {
     <PermissionsView
       permissions={filteredPermissions}
       onOpenEntity={onOpenEntity}
+      onManageRole={onManageRole}
       heading={
         <Heading
           selectedEntityType={selectedEntityType}
@@ -77,6 +98,13 @@ function Heading({
       onSearchTermsChange(event.target.value)
     },
     [onSearchTermsChange]
+  )
+
+  const handleEntityDropDownChange = useCallback(
+    index => {
+      onEntityTypeChange(index === 0 ? -1 : index)
+    },
+    [onEntityTypeChange]
   )
 
   if (layoutName !== 'large') {
@@ -116,7 +144,7 @@ function Heading({
           <DropDown
             items={ENTITY_TYPES}
             selected={selectedEntityType}
-            onChange={onEntityTypeChange}
+            onChange={handleEntityDropDownChange}
           />
         </label>
         <TextInput

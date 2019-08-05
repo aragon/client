@@ -29,8 +29,9 @@ function AppPermissions({ onBack, app, loading, address, onManageRole }) {
       </Bar>
       <PermissionsView
         heading="Available permissions"
-        permissions={appPermissions}
+        onManageRole={onManageRole}
         onOpenEntity={() => null}
+        permissions={appPermissions}
         showApps={false}
       />
     </React.Fragment>

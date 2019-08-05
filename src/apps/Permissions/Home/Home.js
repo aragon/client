@@ -11,9 +11,10 @@ const TABS = ['App permissions', 'System permissions']
 function Home({
   apps,
   appsLoading,
-  permissionsLoading,
+  onManageRole,
   onOpenApp,
   onOpenEntity,
+  permissionsLoading,
 }) {
   const [tab, setTab] = useState(0)
   const permissions = usePermissionsByRole()
@@ -38,6 +39,7 @@ function Home({
         permissions={permissionsFiltered}
         loading={appsLoading || permissionsLoading}
         onOpenEntity={onOpenEntity}
+        onManageRole={onManageRole}
       />
     </React.Fragment>
   )
