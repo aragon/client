@@ -14,6 +14,7 @@ function ThemeModeButton() {
       {mode === 'dark' ? '🌝' : '🌚'}
     </ButtonBase>
   )
+}
 
 // Remaining width after the menu panel is removed
 const AppWidthContext = React.createContext(0)
@@ -131,6 +132,5 @@ function OrgView({
     </AppWidthContext.Provider>
   )
 }
-
 
 export default OrgView
