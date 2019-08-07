@@ -45,19 +45,10 @@ function GlobalPreferences({
   wrapper,
   locator,
   sectionIndex,
+  subsection,
   onNavigation,
 }) {
   const { dao } = locator
-  // const {
-  //   setCurrentSection,
-  //   currentSection,
-  //   subsection,
-  //   handleNavigation,
-  // } = useGlobalPreferences(opened)
-  // const handleSectionChange = index => {
-  //   setCurrentSection(index)
-  //   handleNavigation(index)
-  // }
   const {
     isSharedLink,
     isSavingSharedLink,
@@ -111,7 +102,7 @@ function GlobalPreferences({
                 <Notifications
                   apps={apps}
                   dao={dao}
-                  // subsection={subsection}
+                  subsection={subsection}
                   handleNavigation={onNavigation}
                   navigationIndex={2}
                 />
@@ -139,11 +130,13 @@ GlobalPreferences.propTypes = {
   wrapper: AragonType,
   locator: PropTypes.object,
   sectionIndex: PropTypes.number,
+  subsection: PropTypes.string,
   onNavigation: PropTypes.func.isRequired,
 }
 
 function useGlobalPreferences(locator = {}) {
   const [sectionIndex, setSectionIndex] = useState(null)
+  const [subsection, setSubsection] = useState(null)
   const handleNavigation = useCallback(
     index => {
       window.location.hash = `${getAppPath(
@@ -152,14 +145,6 @@ function useGlobalPreferences(locator = {}) {
     },
     [locator]
   )
-  // function useGlobalPreferences(opened) {
-  //   const [currentSection, setCurrentSection] = useState(0)
-  //   const [subsection, setSubsection] = useState('')
-  //   const handleNavigation = useCallback(index => {
-  //     const { hash } = window.location
-  //     const rest = hash.substr(0, hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM))
-  //     window.location.hash = `${rest}?p=/${PATHS[index]}`
-  //   }, [])
 
   useEffect(() => {
     const { preferences: { path } = { path: '' } } = locator
@@ -167,35 +152,18 @@ function useGlobalPreferences(locator = {}) {
       setSectionIndex(null)
       return
     }
-    if (!SECTIONS.has(path)) {
-      setSectionIndex(null)
-      return
-    }
-    setSectionIndex(PATHS.findIndex(item => item === path))
-  }, [locator])
+    const index = PATHS.findIndex(item => path.startsWith(item))
+    setSectionIndex(index === -1 ? null : index)
 
-  return { sectionIndex, handleNavigation }
-  //   const { hash } = window.location
-  //   const currentPath = hash.substring(
-  //     hash.indexOf(GLOBAL_PREFERENCES_QUERY_PARAM) +
-  //       GLOBAL_PREFERENCES_QUERY_PARAM.length
-  //   )
-  //   // Does the current path contain any of the defined paths?
-  //   const sectionIndex = PATHS.findIndex(declaredPath =>
-  //     currentPath.startsWith(declaredPath)
-  //   )
-  //   // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
-  //   const subsection =
-  //     sectionIndex > -1 ? currentPath.substring(PATHS[sectionIndex].length) : ''
+    // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
+    const subsection =
+      sectionIndex !== null ? path.substring(PATHS[sectionIndex].length) : null
 
-  //   setSubsection(subsection)
-  //   setCurrentSection(
-  //     // If section not found, default to 0
-  //     sectionIndex === -1 ? 0 : sectionIndex
-  //   )
-  // }, [opened])
+    setSubsection(subsection)
+    // Does the current path start with any of the declared route paths
+  }, [locator, sectionIndex])
 
-  // return { setCurrentSection, currentSection, subsection, handleNavigation }
+  return { sectionIndex, subsection, handleNavigation }
 }
 
 function Close({ onClick }) {
@@ -245,7 +213,9 @@ Close.propTypes = {
 }
 
 function AnimatedGlobalPreferences(props) {
-  const { sectionIndex, handleNavigation } = useGlobalPreferences(props.locator)
+  const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences(
+    props.locator
+  )
   const { below } = useViewport()
   const smallView = below('medium')
   const theme = useTheme()
@@ -282,6 +252,7 @@ function AnimatedGlobalPreferences(props) {
             <GlobalPreferences
               {...props}
               sectionIndex={sectionIndex}
+              subsection={subsection}
               onNavigation={handleNavigation}
             />
           </AnimatedWrap>
