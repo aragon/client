@@ -1,16 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import {
-  Box,
-  Button,
-  GU,
-  TextInput,
-  Text,
-  theme,
-  Info,
-  IconMail,
-} from '@aragon/ui'
+import { Box, Button, GU, TextInput, Text, Info, IconMail } from '@aragon/ui'
 import { login } from './notification-service-api'
 import { AUTH_PREVERIFY } from './constants'
 import { getEthNetworkType } from '../../../local-settings'
