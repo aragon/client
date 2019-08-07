@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Box, LoadingRing } from '@aragon/ui'
+// import { Box } from '@aragon/ui'
 import Subscriptions from './Subscriptions'
 import NotificationsLogin from './NotificationsLogin'
-import { verifyEmailToken } from './notification-service-api'
+import NotificationsVerify from './NotificationsVerify'
 
 import {
   AUTH_UNAUTHENTICATED,
@@ -16,7 +16,7 @@ import {
 
 // Hook responsible for deriving the authState from localStorage values and
 // provide setters which update the localStorage
-function useAuthState(navigateToNotifications) {
+function useAuthState() {
   const [authState, setAuthState] = useState(AUTH_UNAUTHENTICATED)
   const [email, setEmail] = useState(
     localStorage.getItem(NOTIFICATION_SERVICE_EMAIL_KEY)
@@ -43,9 +43,7 @@ function useAuthState(navigateToNotifications) {
 
   useEffect(() => {
     token && localStorage.setItem(NOTIFICATION_SERVICE_TOKEN_KEY, token)
-    navigateToNotifications()
-    // TODO: handle routing to subscriptions
-  }, [navigateToNotifications, token])
+  }, [token])
 
   useEffect(() => {
     email && localStorage.setItem(NOTIFICATION_SERVICE_EMAIL_KEY, email)
@@ -74,6 +72,7 @@ function Notifications({ subsection, dao, handleNavigation, navigationIndex }) {
   } = useAuthState(navigateToNotifications)
 
   if (authState === AUTH_AUTHENTICATED) {
+    // TODO: make sure token is valid
     return <Subscriptions email={email} token={token} />
   }
 
@@ -82,6 +81,8 @@ function Notifications({ subsection, dao, handleNavigation, navigationIndex }) {
       <NotificationsVerify
         subsection={subsection}
         onTokenChange={handleTokenChange}
+        onEmailChange={handleEmailChange}
+        navigateToNotifications={navigateToNotifications}
       />
     )
   }
@@ -101,35 +102,6 @@ Notifications.propTypes = {
   dao: PropTypes.string,
   handleNavigation: PropTypes.func,
   navigationIndex: PropTypes.number,
-}
-
-function NotificationsVerify({ subsection, onTokenChange }) {
-  const [verifyError, setVerifyError] = useState(null)
-  const token = subsection.substring(VERIFY_SUBSECTION.length)
-
-  useEffect(() => {
-    verifyEmailToken(token)
-      .then(longLivedToken => {
-        onTokenChange(longLivedToken)
-        return longLivedToken
-      })
-      .catch(e => {
-        setVerifyError(e)
-        console.error(e)
-      })
-  }, [token, onTokenChange])
-
-  return (
-    <Box heading="Email notifications">
-      <LoadingRing />
-      {verifyError && verifyError.toString()}
-    </Box>
-  )
-}
-
-NotificationsVerify.propTypes = {
-  subsection: PropTypes.string,
-  onTokenChange: PropTypes.func,
 }
 
 export default Notifications

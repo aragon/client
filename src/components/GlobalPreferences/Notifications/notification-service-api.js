@@ -1,17 +1,23 @@
-// const NOTIFICATION_SERVICE_URL = 'https://notifications.eth.aragon.network'
-const NOTIFICATION_SERVICE_URL = 'http://localhost:4000'
-const NOTIFICATION_SERVICE_LOGIN = `${NOTIFICATION_SERVICE_URL}/login`
-const NOTIFICATION_SERVICE_VERIFY = `${NOTIFICATION_SERVICE_URL}/verify`
-const NOTIFICATION_SERVICE_SUBSCRIPTIONS = `${NOTIFICATION_SERVICE_URL}/subscriptions`
+import {
+  NOTIFICATION_SERVICE_LOGIN,
+  NOTIFICATION_SERVICE_VERIFY,
+  NOTIFICATION_SERVICE_SUBSCRIPTIONS,
+  EXPIRED_TOKEN_MESSAGE,
+  ExpiredTokenError,
+  InvalidTokenError,
+} from './constants'
 
-export const login = async (email, dao) => {
+const isTokenExpired = response =>
+  response.statusCode === 401 && response.message === EXPIRED_TOKEN_MESSAGE
+
+export const login = async ({ email, dao, network }) => {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_LOGIN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, dao }),
+      body: JSON.stringify({ email, dao, network }),
     })
     if (!rawResponse.ok) {
       throw new Error('Login failed')
@@ -23,7 +29,7 @@ export const login = async (email, dao) => {
 }
 
 // Verify the short lived email token and fetch a long lived token
-export const verifyEmailToken = async shortLivedToken => {
+export async function verifyEmailToken(shortLivedToken) {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_VERIFY, {
       method: 'POST',
@@ -33,18 +39,21 @@ export const verifyEmailToken = async shortLivedToken => {
         authorization: shortLivedToken,
       },
     })
+
+    if (rawResponse.status === 401) {
+      throw new InvalidTokenError()
+    }
     if (!rawResponse.ok) {
       throw new Error(rawResponse.statusText)
     }
     // Get the long lived token from header
     return rawResponse.headers.get('authorization')
   } catch (e) {
-    console.error(e)
+    console.error(e.message)
     throw e
   }
 }
 
-// Verify the short lived email token and fetch a long lived token
 export const getSubscriptions = async token => {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_SUBSCRIPTIONS, {
@@ -54,12 +63,16 @@ export const getSubscriptions = async token => {
         authorization: token,
       },
     })
+
+    const response = await rawResponse.json()
+
+    if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
+
     if (!rawResponse.ok) {
-      throw new Error(rawResponse.statusText)
+      throw new Error(response)
     }
-    // Get the long lived token from header
-    const subscriptions = await rawResponse.json()
-    return subscriptions
+
+    return response
   } catch (e) {
     console.error(e)
     throw e

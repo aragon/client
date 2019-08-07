@@ -25,17 +25,25 @@ export default function Subscriptions({ email, token }) {
         setIsFetching(false)
         return subscriptions
       })
-      .catch(error => setApiError(error))
+      .catch(error => {
+        setIsFetching(false)
+        console.log(error)
+        setApiError(error.message)
+      })
   }, [email, token])
 
-  return (
-    <Box heading="Email notifications">
-      {isFetching && <LoadingRing />}
-      {apiError && (
+  if (apiError) {
+    return (
+      <Box heading="Email notifications">
         <Text color={theme.negative} size="xsmall">
           Error {apiError.toString()}
         </Text>
-      )}
+      </Box>
+    )
+  }
+  return (
+    <Box heading="Email notifications">
+      {isFetching && <LoadingRing />}
       {!isFetching && !subscriptions.length ? (
         'No subscriptions'
       ) : (
