@@ -1,4 +1,4 @@
-const extendError = (name, { defaultMessage }) =>
+export const extendError = (name, { defaultMessage }) =>
   class extends Error {
     name = name
     constructor(message = defaultMessage) {
