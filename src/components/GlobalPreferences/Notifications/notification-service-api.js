@@ -74,7 +74,66 @@ export const getSubscriptions = async token => {
     }
 
     if (!rawResponse.ok) {
-      throw new Error(response)
+      throw new Error(response.statusText)
+    }
+
+    return response
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
+}
+
+/**
+ * Create subscription
+ *
+ * @param {Object} options options object
+ * @param {string} options.token api token
+ * @param {string} options.appName appName aka the ens name of the APM repo
+ * @param {string} options.eventName event name as defined in the ABI
+ * @param {string} options.contractAddress address of the proxy contract
+ * @param {string} options.ensName ens name of the DAO with the app installed
+ * @param {string} options.network network, e.g. mainnet, rinkeby
+ * @param {object} options.abi abi of the appName
+ *
+ * @returns {Promise} Promise that resolves with response body if successful
+ */
+export const createSubscription = async ({
+  token,
+  appName,
+  eventName,
+  contractAddress,
+  ensName,
+  network,
+  abi,
+} = {}) => {
+  try {
+    const rawResponse = await fetch(NOTIFICATION_SERVICE_SUBSCRIPTIONS, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: token,
+      },
+      body: JSON.stringify({
+        appName,
+        eventName,
+        contractAddress,
+        ensName,
+        network,
+        abi,
+      }),
+    })
+
+    const response = await rawResponse.json()
+
+    if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
+
+    if (isUnauthorized(rawResponse)) {
+      throw new UnauthroizedError(rawResponse.statusText)
+    }
+
+    if (!rawResponse.ok) {
+      throw new Error(rawResponse.statusText)
     }
 
     return response
