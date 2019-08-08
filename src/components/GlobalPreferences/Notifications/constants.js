@@ -22,6 +22,6 @@ export const ExpiredTokenError = extendError('ExpiredToken', {
   defaultMessage: 'Notification Service API token has expired',
 })
 
-export const InvalidTokenError = extendError('InvalidToken', {
-  defaultMessage: 'Notification Service API token is invalid',
+export const UnauthroizedError = extendError('UnauthroizedError', {
+  defaultMessage: 'Notification Service API unauthorized',
 })

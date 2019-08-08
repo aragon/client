@@ -4,11 +4,13 @@ import {
   NOTIFICATION_SERVICE_SUBSCRIPTIONS,
   EXPIRED_TOKEN_MESSAGE,
   ExpiredTokenError,
-  InvalidTokenError,
+  UnauthroizedError,
 } from './constants'
 
 const isTokenExpired = response =>
   response.statusCode === 401 && response.message === EXPIRED_TOKEN_MESSAGE
+
+const isUnauthorized = rawResponse => rawResponse.status === 401
 
 export const login = async ({ email, dao, network }) => {
   try {
@@ -20,7 +22,7 @@ export const login = async ({ email, dao, network }) => {
       body: JSON.stringify({ email, dao, network }),
     })
     if (!rawResponse.ok) {
-      throw new Error('Login failed')
+      throw new Error(rawResponse.statusText)
     }
   } catch (e) {
     console.error(e)
@@ -39,8 +41,8 @@ export async function verifyEmailToken(shortLivedToken) {
       },
     })
 
-    if (rawResponse.status === 401) {
-      throw new InvalidTokenError()
+    if (isUnauthorized(rawResponse)) {
+      throw new UnauthroizedError(rawResponse.statusText)
     }
     if (!rawResponse.ok) {
       throw new Error(rawResponse.statusText)
@@ -66,6 +68,10 @@ export const getSubscriptions = async token => {
     const response = await rawResponse.json()
 
     if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
+
+    if (isUnauthorized(rawResponse)) {
+      throw new UnauthroizedError(rawResponse.statusText)
+    }
 
     if (!rawResponse.ok) {
       throw new Error(response)
