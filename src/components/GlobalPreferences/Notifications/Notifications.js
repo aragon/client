@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
+import { AppType } from '../../../prop-types'
 // import { Box } from '@aragon/ui'
 import Subscriptions from './Subscriptions'
 import NotificationsLogin from './NotificationsLogin'
@@ -58,7 +59,13 @@ function useAuthState() {
   }
 }
 
-function Notifications({ subsection, dao, handleNavigation, navigationIndex }) {
+function Notifications({
+  apps,
+  subsection,
+  dao,
+  handleNavigation,
+  navigationIndex,
+}) {
   const navigateToNotifications = useCallback(
     () => handleNavigation(navigationIndex),
     [handleNavigation, navigationIndex]
@@ -69,12 +76,7 @@ function Notifications({ subsection, dao, handleNavigation, navigationIndex }) {
     token,
     handleTokenChange,
     handleEmailChange,
-  } = useAuthState(navigateToNotifications)
-
-  if (authState === AUTH_AUTHENTICATED) {
-    // TODO: make sure token is valid
-    return <Subscriptions email={email} token={token} />
-  }
+  } = useAuthState()
 
   if (subsection && subsection.startsWith(VERIFY_SUBSECTION)) {
     return (
@@ -85,6 +87,11 @@ function Notifications({ subsection, dao, handleNavigation, navigationIndex }) {
         navigateToNotifications={navigateToNotifications}
       />
     )
+  }
+
+  if (authState === AUTH_AUTHENTICATED) {
+    // TODO: make sure token is valid
+    return <Subscriptions apps={apps} email={email} token={token} />
   }
 
   return (
@@ -98,6 +105,7 @@ function Notifications({ subsection, dao, handleNavigation, navigationIndex }) {
 }
 
 Notifications.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
   subsection: PropTypes.string,
   dao: PropTypes.string,
   handleNavigation: PropTypes.func,
