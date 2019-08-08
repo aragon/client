@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import EagleAnimation from './EagleAnimation'
 import { theme, breakpoint, Button } from '@aragon/ui'
+
 const medium = css => breakpoint('medium', css)
 
 class ErrorCard extends React.Component {
@@ -10,14 +11,16 @@ class ErrorCard extends React.Component {
     children: PropTypes.node,
     detailsTitle: PropTypes.string,
     detailsContent: PropTypes.node,
+    reportCallback: PropTypes.func,
     showReloadButton: PropTypes.bool,
     supportUrl: PropTypes.string,
     title: PropTypes.string,
   }
   static defaultProps = {
     title: 'Error :(',
-    supportUrl: '',
+    reportCallback: null,
     showReloadButton: false,
+    supportUrl: '',
   }
 
   state = { showDetails: false }
@@ -35,6 +38,7 @@ class ErrorCard extends React.Component {
       children,
       detailsTitle,
       detailsContent,
+      reportCallback,
       showReloadButton,
       supportUrl,
       title,
@@ -59,21 +63,28 @@ class ErrorCard extends React.Component {
               )}
             </div>
           )}
-          {(supportUrl || showReloadButton) && (
-            <ButtonBox>
-              {supportUrl && (
-                <IssueLink mode="text" href={supportUrl} target="_blank">
-                  Tell us what went wrong
-                </IssueLink>
-              )}
-              {supportUrl && showReloadButton && <ButtonsSpacer />}
-              {showReloadButton && (
-                <Button mode="strong" onClick={this.handleReloadClick} compact>
-                  Reload
-                </Button>
-              )}
-            </ButtonBox>
-          )}
+          <ButtonBox>
+            {reportCallback ? (
+              <ReportButton mode="text" onClick={reportCallback}>
+                Report error
+              </ReportButton>
+            ) : supportUrl ? (
+              <ReportButton
+                as={Button.Anchor}
+                mode="text"
+                href={supportUrl}
+                target="_blank"
+              >
+                Tell us what went wrong
+              </ReportButton>
+            ) : null}
+            {showReloadButton && <ButtonsSpacer />}
+            {showReloadButton && (
+              <Button mode="strong" onClick={this.handleReloadClick} compact>
+                Reload
+              </Button>
+            )}
+          </ButtonBox>
         </Card>
       </div>
     )
@@ -149,7 +160,7 @@ const ButtonBox = styled.div`
   justify-content: space-between;
 `
 
-const IssueLink = styled(Button.Anchor)`
+const ReportButton = styled(Button)`
   margin-left: -10px;
   color: ${theme.textSecondary};
   text-decoration: none;

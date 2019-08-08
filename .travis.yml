@@ -1,4 +1,3 @@
-sudo: required
 language: node_js
 
 cache:
@@ -14,3 +13,23 @@ env:
 
 script:
   - npm run $TASK
+
+# Deploy with now onto mainnet
+# Note that the Now Github integration can only deploy onto one environment at a time,
+# so we use it to deploy to rinkeby and Travis to deploy to mainnet
+before_deploy:
+  - npm install now --no-save
+deploy:
+  - provider: script
+    script: ./scripts/travis_wait -i 60 -l 2400 "now -A now-mainnet.json --token $NOW_TOKEN"
+    skip_cleanup: true
+    on:
+      all_branches: true
+      master: false
+      condition: $TASK = build
+  - provider: script
+    script: ./scripts/travis_wait -i 60 -l 2400 "now -A now-mainnet.json --target production --token $NOW_TOKEN"
+    skip_cleanup: true
+    on:
+      branch: master
+      condition: $TASK = build

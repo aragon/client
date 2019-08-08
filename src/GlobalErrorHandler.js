@@ -1,9 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BaseStyles, PublicUrl } from '@aragon/ui'
+import * as Sentry from '@sentry/browser'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
+import { network } from './environment'
 import { DAONotFound } from './errors'
+import { getSentryDsn } from './local-settings'
+
+const SENTRY_DSN = getSentryDsn()
+const PACKAGE_VERSION = process.env.REACT_APP_PACKAGE_VERSION || ''
 
 class GlobalErrorHandler extends React.Component {
   static propTypes = {
@@ -27,6 +33,15 @@ class GlobalErrorHandler extends React.Component {
   }
   componentWillUnmount() {
     window.removeEventListener('hashchange', this.handleHashchange)
+  }
+  handleReportClick = () => {
+    Sentry.init({
+      dsn: SENTRY_DSN,
+      release: PACKAGE_VERSION,
+      environment: network.type,
+    })
+    const eventId = Sentry.captureException(this.state.error)
+    Sentry.showReportDialog({ eventId })
   }
   handleHashchange = () => {
     window.location.reload()
@@ -61,6 +76,7 @@ class GlobalErrorHandler extends React.Component {
               <GenericError
                 detailsTitle={error.message}
                 detailsContent={errorStack}
+                reportCallback={SENTRY_DSN ? this.handleReportClick : null}
               />
             )}
           </div>

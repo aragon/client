@@ -1,6 +1,6 @@
 import React from 'react'
 import { createHashHistory as createHistory } from 'history'
-import { contractAddresses, web3Providers } from './environment'
+import { contractAddresses, network, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
   initDaoBuilder,
@@ -50,6 +50,18 @@ const INITIAL_DAO_STATE = {
   repos: [],
 }
 
+const SELECTOR_NETWORKS = [
+  ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
+  ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
+]
+if (network.type === 'ropsten') {
+  SELECTOR_NETWORKS.push([
+    'ropsten',
+    'Ethereum Testnet (Ropsten)',
+    'https://aragon.ropsten.aragonpm.com/',
+  ])
+}
+
 class App extends React.Component {
   state = {
     ...INITIAL_DAO_STATE,
@@ -66,10 +78,7 @@ class App extends React.Component {
     identityIntent: null,
     locator: {},
     prevLocator: null,
-    selectorNetworks: [
-      ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
-      ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
-    ],
+    selectorNetworks: SELECTOR_NETWORKS,
     transactionBag: null,
     signatureBag: null,
     walletNetwork: '',

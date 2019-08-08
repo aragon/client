@@ -14,6 +14,9 @@ import {
   contractAddresses,
   defaultGasPriceFn,
 } from './environment'
+import { NoConnection, DAONotFound } from './errors'
+import { getEthSubscriptionEventDelay } from './local-settings'
+import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash } from './utils'
 import {
@@ -22,9 +25,8 @@ import {
   getMainAccount,
   isValidEnsName,
 } from './web3-utils'
-import { WorkerSubscriptionPool } from './worker-utils'
-import { NoConnection, DAONotFound } from './errors'
-import IframeWorker from './iframe-worker'
+import SandboxedWorker from './worker/SandboxedWorker'
+import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -267,18 +269,15 @@ const subscribe = (
 
           // If the app has been updated, reset its cache and restart its worker
           if (updated && workerSubscriptionPool.hasWorker(proxyAddress)) {
-            await workerSubscriptionPool.removeWorker(proxyAddress, true)
+            await workerSubscriptionPool.removeWorker(proxyAddress, {
+              clearCache: true,
+            })
           }
 
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
-            const worker = new IframeWorker(scriptUrl, { name: workerName })
-            worker.addEventListener(
-              'error',
-              err => console.error(`Error from worker for ${workerName}:`, err),
-              false
-            )
+            const worker = new SandboxedWorker(scriptUrl, { name: workerName })
 
             const provider = new providers.MessagePortMessage(worker)
             workerSubscriptionPool.addWorker({
@@ -345,6 +344,15 @@ const initWrapper = async (
     apm: {
       ensRegistryAddress,
       ipfs: ipfsConf,
+    },
+    cache: {
+      // If the worker's origin sandbox is disabed, it has full access to IndexedDB.
+      // We force a downgrade to localStorage to avoid using IndexedDB.
+      forceLocalStorage: workerFrameSandboxDisabled,
+    },
+    events: {
+      // Infura hack: delay event processing for specified number of ms
+      subscriptionEventDelay: getEthSubscriptionEventDelay(),
     },
   })
 
