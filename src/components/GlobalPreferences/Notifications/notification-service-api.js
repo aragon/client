@@ -33,7 +33,6 @@ export async function verifyEmailToken(shortLivedToken) {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_VERIFY, {
       method: 'POST',
-      // credentials: 'include', // Not needed. Only relevant for cookies
       headers: {
         'Content-Type': 'application/json',
         authorization: shortLivedToken,
