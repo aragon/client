@@ -13,7 +13,7 @@ class ActionPathsContent extends React.Component {
   static propTypes = {
     direct: PropTypes.bool.isRequired,
     installed: PropTypes.bool.isRequired,
-    external: PropTypes.bool,
+    external: PropTypes.bool.isRequired,
     intent: PropTypes.object.isRequired,
     dao: PropTypes.string.isRequired,
     onSign: PropTypes.func.isRequired,
@@ -246,9 +246,9 @@ class ActionPathsContent extends React.Component {
         {external && (
           <div css="margin-top: 20px">
             <Info.Alert title="Warning">
-              {`Be aware that this is an attempt to execute a transaction on another app that is ${
-                installed ? '' : 'not'
-              } installed in this organization. You may want to double check that app's functionality before proceeding.`}
+              {installed
+                ? `Be aware that this is an attempt to execute a transaction on another app that is installed in this organization. You may want to double check that app's functionality before proceeding.`
+                : `Be aware that this is an attempt to execute a transaction on an *external contract* that has not been reviewed or audited. This means that it might behave unexpectedly. Please *be sure your trust this contract* before proceeding.`}
             </Info.Alert>
           </div>
         )}

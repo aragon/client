@@ -115,8 +115,10 @@ class SignerPanel extends React.PureComponent {
 
     return {
       intent: (transaction && this.transactionIntent(bag)) || {},
-      external,
-      installed: !!getAppName(this.props.apps, transaction.to),
+      external: !!external,
+      installed: this.props.apps.some(
+        ({ proxyAddress }) => proxyAddress === transaction.to
+      ),
       directPath: decoratedPaths.length === 1,
       actionPaths: decoratedPaths.length ? [decoratedPaths] : [],
       pretransaction: (transaction && transaction.pretransaction) || null,
