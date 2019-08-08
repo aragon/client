@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import { AppType } from '../../../prop-types'
 import {
   Box,
+  DropDown,
   GU,
   IdentityBadge,
-  Text,
+  Info,
   LoadingRing,
   breakpoint,
   font,
@@ -13,7 +15,7 @@ import {
 } from '@aragon/ui'
 import { getSubscriptions } from './notification-service-api'
 
-export default function Subscriptions({ email, token }) {
+export default function Subscriptions({ apps, email, token }) {
   const [apiError, setApiError] = useState(null)
   const [isFetching, setIsFetching] = useState(true)
   const [subscriptions, setSubscriptions] = useState([])
@@ -27,38 +29,68 @@ export default function Subscriptions({ email, token }) {
       })
       .catch(error => {
         setIsFetching(false)
-        console.log(error)
         setApiError(error.message)
       })
   }, [email, token])
 
-  if (apiError) {
-    return (
-      <Box heading="Email notifications">
-        <Text color={theme.negative} size="xsmall">
-          Error {apiError.toString()}
-        </Text>
-      </Box>
-    )
-  }
   return (
     <Box heading="Email notifications">
+      {apiError && <Info mode="error">Error verifying: {apiError}</Info>}
       {isFetching && <LoadingRing />}
-      {!isFetching && !subscriptions.length ? (
-        'No subscriptions'
-      ) : (
-        <SubscriptionsTable subscriptions={subscriptions} />
-      )}
+      <SubscriptionsForm apps={apps} />
+      {!isFetching && <SubscriptionsTable subscriptions={subscriptions} />}
     </Box>
   )
 }
 
 Subscriptions.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
   email: PropTypes.string,
   token: PropTypes.string,
 }
 
+function SubscriptionsForm({ apps }) {
+  console.log(apps)
+  const subscriptionApps = apps.filter(
+    ({ isAragonOsInternalApp }) => !isAragonOsInternalApp
+  )
+
+  const appNames = ['', ...subscriptionApps.map(app => app.appName)]
+
+  const [selectedApp, setSelectedApp] = useState(0)
+  const [selectedEvent, setSelectedEvent] = useState(0)
+
+  const handleAppChange = (index, items) => {
+    setSelectedApp(index)
+    // TODO: update the events
+  }
+
+  const handleEventChange = (index, items) => {
+    setSelectedEvent(index)
+    // TODO: update the events
+  }
+
+  return (
+    <React.Fragment>
+      <Label>App</Label>
+      <DropDown
+        items={appNames}
+        active={selectedApp}
+        onChange={handleAppChange}
+      />
+      <Label>Events</Label>
+      <DropDown
+        items={['', 'Event1', 'Event2']}
+        active={selectedEvent}
+        onChange={handleEventChange}
+      />
+    </React.Fragment>
+  )
+}
+
 function SubscriptionsTable({ subscriptions }) {
+  if (!subscriptions || subscriptions.length === 0) return 'No subscriptions'
+
   return (
     <React.Fragment>
       <div
