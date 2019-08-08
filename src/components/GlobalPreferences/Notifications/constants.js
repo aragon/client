@@ -1,7 +1,6 @@
 import { extendError } from '../../../errors'
 
-// const NOTIFICATION_SERVICE_URL = 'https://notifications.eth.aragon.network'
-const NOTIFICATION_SERVICE_URL = 'http://localhost:4000'
+const NOTIFICATION_SERVICE_URL = 'https://notifications.eth.aragon.network'
 export const NOTIFICATION_SERVICE_LOGIN = `${NOTIFICATION_SERVICE_URL}/login`
 export const NOTIFICATION_SERVICE_VERIFY = `${NOTIFICATION_SERVICE_URL}/verify`
 export const NOTIFICATION_SERVICE_SUBSCRIPTIONS = `${NOTIFICATION_SERVICE_URL}/subscriptions`
@@ -25,3 +24,12 @@ export const ExpiredTokenError = extendError('ExpiredToken', {
 export const UnauthroizedError = extendError('UnauthroizedError', {
   defaultMessage: 'Notification Service API unauthorized',
 })
+
+export const CREATE_SUBSCRIPTION_REQUIRED_KEYS = [
+  'appName',
+  'eventName',
+  'contractAddress',
+  'ensName',
+  'network',
+  'abi',
+]
