@@ -182,7 +182,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
       )
     }
     return () => {
-      if (beaconIframe) {
+      if (beaconIframe && beaconIframe.contentWindow) {
         beaconIframe.contentWindow.removeEventListener(
           'blur',
           handleBeaconIframeBlur
