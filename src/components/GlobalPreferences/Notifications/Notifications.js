@@ -4,7 +4,10 @@ import { AppType } from '../../../prop-types'
 // import { Box } from '@aragon/ui'
 import Subscriptions from './Subscriptions'
 import NotificationsLogin from './NotificationsLogin'
-import NotificationsVerify from './NotificationsVerify'
+import {
+  NotificationsVerify,
+  NotificationsPreVerify,
+} from './NotificationsVerify'
 
 import {
   AUTH_UNAUTHENTICATED,
@@ -98,6 +101,9 @@ function Notifications({
         navigateToNotifications={navigateToNotifications}
       />
     )
+  }
+  if (authState === AUTH_PREVERIFY) {
+    return <NotificationsPreVerify email={email} />
   }
 
   if (authState === AUTH_AUTHENTICATED) {

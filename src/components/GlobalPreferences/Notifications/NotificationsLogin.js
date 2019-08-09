@@ -1,7 +1,18 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Box, Button, GU, TextInput, Text, Info, IconMail } from '@aragon/ui'
+import {
+  Box,
+  Button,
+  GU,
+  TextInput,
+  Text,
+  Info,
+  IconMail,
+  RADIUS,
+  useTheme,
+  textStyle,
+} from '@aragon/ui'
 import { login } from './notification-service-api'
 import { AUTH_PREVERIFY } from './constants'
 import { getEthNetworkType } from '../../../local-settings'
@@ -32,22 +43,6 @@ export default function NotificationsLogin({
     }
   }
 
-  if (authState === AUTH_PREVERIFY) {
-    return (
-      <Box heading="Email notifications">
-        <NotificationImage />
-        <div>
-          <Checkmark />
-          <Text>Awaiting verification. Please check your email!</Text>
-          <br />
-          <Text size="xsmall">
-            We’ve sent an email to {email}. Verify your email address so you can
-            manage your notifications subscriptions.
-          </Text>
-        </div>
-      </Box>
-    )
-  }
   return (
     <Box heading="Email notifications">
       <NotificationImage />
@@ -55,23 +50,26 @@ export default function NotificationsLogin({
       <Label>Email address</Label>
       <div
         css={`
-          display: flex;
+          display: grid;
           align-items: center;
+          grid-template-columns: 1fr auto;
+          grid-gap: ${2 * GU}px;
           margin-bottom: ${2 * GU}px;
         `}
       >
         <TextInput
-          css={`
-            width: 80%;
-            margin-right: 9px;
-          `}
           type="email"
           placeholder="you@example.com"
           wide
           value={inputEmail}
           onChange={handleEmailChange}
         />
-        <Button onClick={handleLogin}>
+        <Button
+          css={`
+            width: ${16 * GU}px;
+          `}
+          onClick={handleLogin}
+        >
           <IconMail /> Sign in
         </Button>
       </div>
@@ -96,17 +94,6 @@ const NotificationImage = () => (
       display: block;
       margin: ${4 * GU}px auto;
       height: 193px;
-    `}
-  />
-)
-
-const Checkmark = () => (
-  <img
-    src={checkmarkSvg}
-    alt="check mark"
-    css={`
-      display: inline block;
-      margin: ${1 * GU}px auto;
     `}
   />
 )
