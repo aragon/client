@@ -43,12 +43,21 @@ function useAuthState() {
   }, [email, token])
 
   useEffect(() => {
-    token && localStorage.setItem(NOTIFICATION_SERVICE_TOKEN_KEY, token)
+    token
+      ? localStorage.setItem(NOTIFICATION_SERVICE_TOKEN_KEY, token)
+      : localStorage.removeItem(NOTIFICATION_SERVICE_TOKEN_KEY)
   }, [token])
 
   useEffect(() => {
-    email && localStorage.setItem(NOTIFICATION_SERVICE_EMAIL_KEY, email)
+    email
+      ? localStorage.setItem(NOTIFICATION_SERVICE_EMAIL_KEY, email)
+      : localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
   }, [email])
+
+  const logout = useCallback(() => {
+    setEmail(null)
+    setToken(null)
+  }, [setToken, setEmail])
 
   return {
     authState,
@@ -56,6 +65,7 @@ function useAuthState() {
     token,
     handleTokenChange: setToken,
     handleEmailChange: setEmail,
+    logout,
   }
 }
 
@@ -76,6 +86,7 @@ function Notifications({
     token,
     handleTokenChange,
     handleEmailChange,
+    logout,
   } = useAuthState()
 
   if (subsection && subsection.startsWith(VERIFY_SUBSECTION)) {
@@ -91,7 +102,9 @@ function Notifications({
 
   if (authState === AUTH_AUTHENTICATED) {
     // TODO: make sure token is valid
-    return <Subscriptions apps={apps} email={email} token={token} />
+    return (
+      <Subscriptions logout={logout} apps={apps} email={email} token={token} />
+    )
   }
 
   return (

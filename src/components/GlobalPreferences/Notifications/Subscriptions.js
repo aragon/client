@@ -14,8 +14,9 @@ import {
   theme,
 } from '@aragon/ui'
 import { getSubscriptions } from './notification-service-api'
+import { getEthNetworkType } from '../../../local-settings'
 
-export default function Subscriptions({ apps, email, token }) {
+export default function Subscriptions({ logout, apps, email, token }) {
   const [apiError, setApiError] = useState(null)
   const [isFetching, setIsFetching] = useState(true)
   const [subscriptions, setSubscriptions] = useState([])
