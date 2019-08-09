@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  Bar,
   ButtonIcon,
   GU,
   IconClose,
