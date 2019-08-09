@@ -53,21 +53,28 @@ export default function NotificationsLogin({
       <NotificationImage />
       {apiError && <Info mode="error">Error logging in:{apiError}</Info>}
       <Label>Email address</Label>
-      <TextInput
+      <div
         css={`
-          width: 80%;
-          margin-right: 9px;
-          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          margin-bottom: ${2 * GU}px;
         `}
-        type="email"
-        placeholder="you@example.com"
-        wide
-        value={inputEmail}
-        onChange={handleEmailChange}
-      />
-      <Button onClick={handleLogin}>
-        <IconMail /> Sign in
-      </Button>
+      >
+        <TextInput
+          css={`
+            width: 80%;
+            margin-right: 9px;
+          `}
+          type="email"
+          placeholder="you@example.com"
+          wide
+          value={inputEmail}
+          onChange={handleEmailChange}
+        />
+        <Button onClick={handleLogin}>
+          <IconMail /> Sign in
+        </Button>
+      </div>
       <Info>
         Receive email notifications for the new app events. For example,
         whenever a new vote is created or when tokens added, you’ll get an email
