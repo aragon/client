@@ -1,7 +1,10 @@
 import {
+  NOTIFICATION_SERVICE_ACCOUNT,
   NOTIFICATION_SERVICE_LOGIN,
   NOTIFICATION_SERVICE_VERIFY,
   NOTIFICATION_SERVICE_SUBSCRIPTIONS,
+  NOTIFICATION_SERVICE_TOKEN_KEY,
+  NOTIFICATION_SERVICE_EMAIL_KEY,
   EXPIRED_TOKEN_MESSAGE,
   ExpiredTokenError,
   UnauthroizedError,
@@ -57,6 +60,46 @@ export async function verifyEmailToken(shortLivedToken) {
 
     // Get the long lived token from header
     return rawResponse.headers.get('authorization')
+  } catch (e) {
+    console.error(e.message)
+    throw e
+  }
+}
+
+/**
+ * Delete a user account
+ *
+ * @param {string} token long lived api token
+ * @returns {Number} 1 if the account was deleted successfully
+ */
+export async function deleteAccount(token) {
+  try {
+    const rawResponse = await fetch(NOTIFICATION_SERVICE_ACCOUNT, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: token,
+      },
+    })
+
+    const response = await rawResponse.json()
+
+    if (!rawResponse.ok) {
+      // In case of errors the api will return json payload
+      if (isTokenExpired(response))
+        throw new ExpiredTokenError(response.message)
+
+      if (isUnauthorized(rawResponse)) {
+        throw new UnauthroizedError(rawResponse.statusText)
+      }
+
+      throw new Error(rawResponse.statusText)
+    }
+
+    localStorage.removeItem(NOTIFICATION_SERVICE_TOKEN_KEY)
+    localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
+
+    return response
   } catch (e) {
     console.error(e.message)
     throw e
