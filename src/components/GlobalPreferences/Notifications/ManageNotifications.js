@@ -5,9 +5,7 @@ import { AppType } from '../../../prop-types'
 import {
   Box,
   Button,
-  DropDown,
   GU,
-  IconMail,
   IconTrash,
   IconCheck,
   IdentityBadge,
@@ -15,21 +13,26 @@ import {
   LoadingRing,
   breakpoint,
   font,
-  theme,
+  useTheme,
   Split,
 } from '@aragon/ui'
+import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { getSubscriptions, deleteAccount } from './notification-service-api'
-import { getEthNetworkType } from '../../../local-settings'
+import { SubscriptionsForm } from './SubscriptionsForm'
 
-export default function ManageNotifications({ onLogout, apps, email, token }) {
+export default function ManageNotifications({
+  apps,
+  dao,
+  email,
+  onLogout,
+  token,
+}) {
   const [apiError, setApiError] = useState(null)
   const [isFetching, setIsFetching] = useState(true)
   const [subscriptions, setSubscriptions] = useState([])
 
-  useEffect(() => {
-    if (!token) return
-
-    getSubscriptions(token)
+  const fetchSubscriptions = useCallback(() => {
+    getSubscriptions({ token })
       .then(subscriptions => {
         setSubscriptions(subscriptions)
         setIsFetching(false)
@@ -39,7 +42,12 @@ export default function ManageNotifications({ onLogout, apps, email, token }) {
         setIsFetching(false)
         setApiError(error.message)
       })
-  }, [email, token])
+  }, [token])
+
+  useEffect(() => {
+    if (!token) return
+    fetchSubscriptions()
+  }, [email, fetchSubscriptions, token])
 
   return (
     <React.Fragment>
@@ -55,9 +63,13 @@ export default function ManageNotifications({ onLogout, apps, email, token }) {
       )}
       <Split
         primary={
-          <Box heading="Create Subscriptions">
-            <SubscriptionsForm apps={apps} token={token} />
-          </Box>
+          <SubscriptionsForm
+            onApiError={setApiError}
+            onCreate={fetchSubscriptions}
+            dao={dao}
+            apps={apps}
+            token={token}
+          />
         }
         secondary={
           <React.Fragment>
@@ -90,6 +102,7 @@ export default function ManageNotifications({ onLogout, apps, email, token }) {
 
 ManageNotifications.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
+  dao: PropTypes.string,
   email: PropTypes.string,
   onLogout: PropTypes.func,
   token: PropTypes.string,
@@ -98,6 +111,7 @@ ManageNotifications.propTypes = {
 function DeleteAccount({ token, onLogout, onApiError }) {
   const [isFetching, setIsFetching] = useState(false)
   const [isAccountDeleted, setIsAccountDeleted] = useState(false)
+  const theme = useTheme()
 
   const handleDeleteAccount = useCallback(async () => {
     try {
@@ -122,6 +136,7 @@ function DeleteAccount({ token, onLogout, onApiError }) {
           <IconTrash
             css={`
               color: ${theme.negative};
+              margin-right: ${GU}px;
             `}
           />
         )}
@@ -144,89 +159,11 @@ DeleteAccount.propTypes = {
 // network 'rinkeby'
 // abi @voting-abi.json
 
-const getEventNamesFromAbi = abi =>
-  abi.filter(item => item.type === 'event').map(item => item.name)
-
-function SubscriptionsForm({ apps, token }) {
-  const [selectedAppIdx, setSelectedAppIdx] = useState(0)
-  const [selectedEvent, setSelectedEvent] = useState(0)
-
-  const subscriptionApps = apps.filter(
-    ({ isAragonOsInternalApp }) => !isAragonOsInternalApp
-  )
-  const appNames = [
-    '',
-    ...subscriptionApps.map(
-      app => `${app.name} ${app.identifier ? `(${app.identifier})` : ''}`
-    ),
-  ]
-  // Subtract 1 from index because we add an empty item in rendered list
-  const selectedApp =
-    selectedAppIdx === 0 ? null : subscriptionApps[selectedAppIdx - 1]
-
-  const eventNames =
-    selectedAppIdx === 0 ? [''] : getEventNamesFromAbi(selectedApp.abi)
-
-  const handleAppChange = (index, items) => {
-    setSelectedAppIdx(index)
-    // TODO: update the events
-  }
-
-  const handleEventChange = (index, items) => {
-    setSelectedEvent(index)
-  }
-  const handeSubscribe = e => {
-    console.log(`subscribe to: `, subscriptionApps[selectedAppIdx - 1])
-    console.log('selectedApp', selectedApp)
-    console.log(selectedApp.appName)
-    console.log(selectedApp.abi)
-    console.log(getEthNetworkType())
-  }
-
-  // const isSubscribeDisabled = selectedAppIdx !== 0 && selectedEvent !== 0
-  const isSubscribeDisabled = false
-
-  return (
-    <div
-    // css={`
-    //   display: grid;
-    //   align-items: center;
-    //   grid-template-columns: 2fr 2fr 1fr;
-    //   grid-gap: ${2 * GU}px;
-    //   margin-bottom: ${2 * GU}px;
-    // `}
-    >
-      <Label>App</Label>
-      <DropDown
-        wide
-        items={appNames}
-        active={selectedAppIdx}
-        onChange={handleAppChange}
-      />
-      <Label>Event</Label>
-      <DropDown
-        wide
-        items={eventNames}
-        active={selectedEvent}
-        onChange={handleEventChange}
-      />
-      <Button disabled={isSubscribeDisabled} onClick={handeSubscribe}>
-        <IconMail /> Subscribe
-      </Button>
-    </div>
-  )
-}
-
-SubscriptionsForm.propTypes = {
-  apps: PropTypes.arrayOf(AppType).isRequired,
-  token: PropTypes.string,
-}
-
 function SubscriptionsTable({ subscriptions }) {
-  if (!subscriptions || subscriptions.length === 0) return 'No subscriptions'
+  const theme = useTheme()
 
   return (
-    <React.Fragment>
+    <Box>
       <div
         css={`
           text-transform: uppercase;
@@ -243,6 +180,13 @@ function SubscriptionsTable({ subscriptions }) {
             display: inline-flex;
           `}
         >
+          Organization
+        </div>
+        <div
+          css={`
+            display: inline-flex;
+          `}
+        >
           App
         </div>
 
@@ -253,24 +197,10 @@ function SubscriptionsTable({ subscriptions }) {
         >
           Event
         </span>
-
-        <span
-          css={`
-            display: inline-block;
-          `}
-        >
-          Network
-        </span>
       </div>
       <List border={theme.border} surface={theme.surface}>
         {subscriptions.map(
-          ({
-            contractAddress,
-            createdAt,
-            eventName,
-            network,
-            subscriptionId,
-          }) => (
+          ({ contractAddress, ensName, eventName, subscriptionId }) => (
             <li
               key={subscriptionId}
               css={`
@@ -283,16 +213,16 @@ function SubscriptionsTable({ subscriptions }) {
                 background: ${theme.surface};
               `}
             >
+              <Label>{ensName}</Label>
               <div>
-                <IdentityBadge entity={contractAddress} />
+                <LocalIdentityBadge entity={contractAddress} />
               </div>
               <Label>{eventName}</Label>
-              <Label>{network}</Label>
             </li>
           )
         )}
       </List>
-    </React.Fragment>
+    </Box>
   )
 }
 
@@ -300,7 +230,7 @@ SubscriptionsTable.propTypes = {
   subscriptions: PropTypes.array,
 }
 
-const Label = styled.label`
+export const Label = styled.label`
   display: block;
   margin-bottom: ${2 * GU}px;
 `

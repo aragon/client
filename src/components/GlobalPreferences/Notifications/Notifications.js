@@ -72,7 +72,7 @@ function useAuthState() {
   }
 }
 
-function Notifications({
+export default function Notifications({
   apps,
   subsection,
   dao,
@@ -110,6 +110,7 @@ function Notifications({
     // TODO: make sure token is valid
     return (
       <ManageNotifications
+        dao={dao}
         onLogout={handleLogout}
         apps={apps}
         email={email}
@@ -135,5 +136,3 @@ Notifications.propTypes = {
   handleNavigation: PropTypes.func,
   navigationIndex: PropTypes.number,
 }
-
-export default Notifications
