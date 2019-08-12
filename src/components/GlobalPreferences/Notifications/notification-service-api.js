@@ -9,6 +9,8 @@ import {
   ExpiredTokenError,
   UnauthroizedError,
 } from './constants'
+import { getEthNetworkType } from '../../../local-settings'
+
 
 const isTokenExpired = response =>
   response.statusCode === 401 && response.message === EXPIRED_TOKEN_MESSAGE
@@ -106,9 +108,12 @@ export async function deleteAccount(token) {
   }
 }
 
-export const getSubscriptions = async token => {
+export const getSubscriptions = async ({ token }) => {
+  const url = new URL(NOTIFICATION_SERVICE_SUBSCRIPTIONS)
+  url.searchParams.append('network', getEthNetworkType())
+
   try {
-    const rawResponse = await fetch(NOTIFICATION_SERVICE_SUBSCRIPTIONS, {
+    const rawResponse = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -150,13 +155,13 @@ export const getSubscriptions = async token => {
  * @returns {Promise} Promise that resolves with response body if successful
  */
 export const createSubscription = async ({
-  token,
-  appName,
-  eventName,
-  contractAddress,
-  ensName,
-  network,
   abi,
+  appName,
+  contractAddress, // TODO: rename to proxyAddress. Contract address can be confused as the app repo's contract address
+  ensName,
+  eventName,
+  network,
+  token,
 } = {}) => {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_SUBSCRIPTIONS, {
