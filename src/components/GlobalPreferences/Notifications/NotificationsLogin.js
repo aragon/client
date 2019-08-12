@@ -33,7 +33,7 @@ export default function NotificationsLogin({
   return (
     <Box heading="Email notifications">
       <NotificationImage />
-      {apiError && <Info mode="error">Error logging in:{apiError}</Info>}
+      {apiError && <Info mode="error">Error logging in.</Info>}
       <Label>Email address</Label>
       <div
         css={`

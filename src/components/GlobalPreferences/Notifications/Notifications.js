@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
 // import { Box } from '@aragon/ui'
-import Subscriptions from './Subscriptions'
+import ManageNotifications from './ManageNotifications'
 import NotificationsLogin from './NotificationsLogin'
 import {
   NotificationsVerify,
@@ -57,7 +57,7 @@ function useAuthState() {
       : localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
   }, [email])
 
-  const logout = useCallback(() => {
+  const handleLogout = useCallback(() => {
     setEmail(null)
     setToken(null)
   }, [setToken, setEmail])
@@ -68,7 +68,7 @@ function useAuthState() {
     token,
     handleTokenChange: setToken,
     handleEmailChange: setEmail,
-    logout,
+    handleLogout,
   }
 }
 
@@ -89,7 +89,7 @@ function Notifications({
     token,
     handleTokenChange,
     handleEmailChange,
-    logout,
+    handleLogout,
   } = useAuthState()
 
   if (subsection && subsection.startsWith(VERIFY_SUBSECTION)) {
@@ -109,7 +109,12 @@ function Notifications({
   if (authState === AUTH_AUTHENTICATED) {
     // TODO: make sure token is valid
     return (
-      <Subscriptions logout={logout} apps={apps} email={email} token={token} />
+      <ManageNotifications
+        onLogout={handleLogout}
+        apps={apps}
+        email={email}
+        token={token}
+      />
     )
   }
 
