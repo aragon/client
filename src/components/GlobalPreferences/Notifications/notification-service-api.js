@@ -41,12 +41,20 @@ export async function verifyEmailToken(shortLivedToken) {
       },
     })
 
-    if (isUnauthorized(rawResponse)) {
-      throw new UnauthroizedError(rawResponse.statusText)
-    }
     if (!rawResponse.ok) {
+      // In case of errors the api will return json payload
+      const response = await rawResponse.json()
+
+      if (isTokenExpired(response))
+        throw new ExpiredTokenError(response.message)
+
+      if (isUnauthorized(rawResponse)) {
+        throw new UnauthroizedError(rawResponse.statusText)
+      }
+
       throw new Error(rawResponse.statusText)
     }
+
     // Get the long lived token from header
     return rawResponse.headers.get('authorization')
   } catch (e) {

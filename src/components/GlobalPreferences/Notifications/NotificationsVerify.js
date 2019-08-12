@@ -13,7 +13,11 @@ import {
   textStyle,
 } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
-import { VERIFY_SUBSECTION } from './constants'
+import {
+  VERIFY_SUBSECTION,
+  UnauthroizedError,
+  ExpiredTokenError,
+} from './constants'
 import checkmarkSvg from './check-mark.svg'
 import notificationSvg from './notifications.svg'
 
@@ -23,46 +27,55 @@ export function NotificationsVerify({
   onEmailChange,
   navigateToNotifications,
 }) {
+  const [isFetching, setIsFetching] = useState(true)
   const [verified, setVerified] = useState(false)
   const [error, setError] = useState(null)
   const theme = useTheme()
 
   useEffect(() => {
-    // Parse token from subsection /verify/TOKEN -> TOKEN
+    // Parse token from subsection /verify/[TOKEN] -> [TOKEN]
     const token = subsection.substring(VERIFY_SUBSECTION.length)
     verifyEmailToken(token)
       .then(longLivedToken => {
-        onTokenChange(longLivedToken)
+        setIsFetching(false)
         setVerified(true)
+        onTokenChange(longLivedToken)
         return longLivedToken
       })
       .catch(e => {
-        // if an invalid token is passed. Clear email and token to reset state
+        // if an invalid token is passed. we can clear email and token to reset the stae 
+        // or present the user with the error and give some options
+        // onEmailChange(null)
+        // onTokenChange(null)
+
+        if (e instanceof ExpiredTokenError) {
+          setError('Your email link has expired.')
+        } else if (e instanceof UnauthroizedError) {
+          setError('Unauthroized')
+        }
+        setIsFetching(false)
         setVerified(false)
-        setError(e.message)
-        onEmailChange(null)
-        onTokenChange(null)
       })
   }, [subsection, onTokenChange, onEmailChange])
 
-  if (!verified && !error) {
+  if (isFetching) {
     return (
-      <Box heading="Email notifications">
+      <NotificationsVerifyBox header="Verifying">
         <div
           css={`
             display: flex;
             justify-content: center;
+            align-items: center;
           `}
         >
           <LoadingRing />
         </div>
-      </Box>
+      </NotificationsVerifyBox>
     )
   }
-
   if (verified) {
     return (
-      <NotificationsVerifyBox header="Verification successful">
+      <NotificationsVerifyBox header="Verification Successful" success>
         <div>
           Your email was verified and now you can subscribe to app events to
           receive email notifications.{' '}
@@ -82,20 +95,23 @@ export function NotificationsVerify({
   }
   if (error) {
     return (
-      <Box heading="Email notifications">
+      <NotificationsVerifyBox header="Verification Failed">
         <div>
-          <Text>Verification failed</Text>
-          <br />
-          <Info mode="error">Error verifying: {error}</Info>
+          <Info mode="error">{error}</Info>
         </div>
-      </Box>
+      </NotificationsVerifyBox>
     )
   }
+
+  return <NotificationsVerifyBox header="Verification" />
 }
 
 export function NotificationsPreVerify({ email }) {
   return (
-    <NotificationsVerifyBox header="Awaiting verification. Please check your email!">
+    <NotificationsVerifyBox
+      success
+      header="Awaiting verification. Please check your email!"
+    >
       <div>
         We’ve sent an email to <span css="font-weight: bold;">{email}</span>.
         Verify your email address so you can manage your notifications
@@ -105,7 +121,7 @@ export function NotificationsPreVerify({ email }) {
   )
 }
 
-export function NotificationsVerifyBox({ header, children }) {
+export function NotificationsVerifyBox({ header, children, success }) {
   const theme = useTheme()
 
   return (
@@ -113,6 +129,7 @@ export function NotificationsVerifyBox({ header, children }) {
       <NotificationImage />
       <div
         css={`
+          height: ${GU * 20}px;
           background: ${theme.feedbackSurface};
           display: grid;
           border-radius: ${RADIUS}px;
@@ -122,7 +139,7 @@ export function NotificationsVerifyBox({ header, children }) {
           align-items: center;
         `}
       >
-        <Checkmark />
+        {success && <Checkmark />}
         <div>
           <div
             css={`
