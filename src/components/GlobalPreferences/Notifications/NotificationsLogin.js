@@ -1,23 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import {
-  Box,
-  Button,
-  GU,
-  TextInput,
-  Text,
-  Info,
-  IconMail,
-  RADIUS,
-  useTheme,
-  textStyle,
-} from '@aragon/ui'
+import { Box, Button, GU, TextInput, Info, IconMail } from '@aragon/ui'
 import { login } from './notification-service-api'
-import { AUTH_PREVERIFY } from './constants'
 import { getEthNetworkType } from '../../../local-settings'
 import notificationSvg from './notifications.svg'
-import checkmarkSvg from './check-mark.svg'
 
 export default function NotificationsLogin({
   dao,

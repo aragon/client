@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
-  Button,
   ButtonBase,
   GU,
+  IconCheck,
   Info,
   LoadingRing,
-  Text,
   RADIUS,
   useTheme,
   textStyle,
@@ -18,7 +17,6 @@ import {
   UnauthroizedError,
   ExpiredTokenError,
 } from './constants'
-import checkmarkSvg from './check-mark.svg'
 import notificationSvg from './notifications.svg'
 
 export function NotificationsVerify({
@@ -43,7 +41,7 @@ export function NotificationsVerify({
         return longLivedToken
       })
       .catch(e => {
-        // if an invalid token is passed. we can clear email and token to reset the stae 
+        // if an invalid token is passed. we can clear email and token to reset the stae
         // or present the user with the error and give some options
         // onEmailChange(null)
         // onTokenChange(null)
@@ -106,6 +104,13 @@ export function NotificationsVerify({
   return <NotificationsVerifyBox header="Verification" />
 }
 
+NotificationsVerify.propTypes = {
+  subsection: PropTypes.string,
+  onTokenChange: PropTypes.func,
+  onEmailChange: PropTypes.func,
+  navigateToNotifications: PropTypes.func,
+}
+
 export function NotificationsPreVerify({ email }) {
   return (
     <NotificationsVerifyBox
@@ -119,6 +124,10 @@ export function NotificationsPreVerify({ email }) {
       </div>
     </NotificationsVerifyBox>
   )
+}
+
+NotificationsPreVerify.propTypes = {
+  email: PropTypes.string,
 }
 
 export function NotificationsVerifyBox({ header, children, success }) {
@@ -163,6 +172,12 @@ export function NotificationsVerifyBox({ header, children, success }) {
   )
 }
 
+NotificationsVerifyBox.propTypes = {
+  header: PropTypes.string,
+  success: PropTypes.bool,
+  children: PropTypes.node,
+}
+
 const NotificationImage = () => (
   <img
     src={notificationSvg}
@@ -175,11 +190,22 @@ const NotificationImage = () => (
   />
 )
 
-const Checkmark = () => <img src={checkmarkSvg} alt="check mark" />
-
-NotificationsVerify.propTypes = {
-  subsection: PropTypes.string,
-  onTokenChange: PropTypes.func,
-  onEmailChange: PropTypes.func,
-  navigateToNotifications: PropTypes.func,
+const Checkmark = () => {
+  const theme = useTheme()
+  return (
+    <div
+      css={`
+        border: 2px solid ${theme.accent};
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: ${theme.accent};
+      `}
+    >
+      <IconCheck />
+    </div>
+  )
 }
