@@ -19,10 +19,6 @@ import {
   isSignatureCompleted,
 } from './signer-statuses'
 
-import imgPending from '../../assets/transaction-pending.svg'
-import imgSuccess from '../../assets/transaction-success.svg'
-import imgError from '../../assets/transaction-error.svg'
-
 // Temporarily clean the error messages coming from Aragon.js and Metamask
 const cleanErrorMessage = errorMsg =>
   errorMsg
@@ -38,6 +34,7 @@ class SigningStatus extends React.Component {
     status: SignerStatusType.isRequired,
     signError: PropTypes.instanceOf(Error),
     walletProviderId: PropTypes.string,
+    theme: PropTypes.object,
   }
   getLabel() {
     const { status } = this.props
