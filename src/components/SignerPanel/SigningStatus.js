@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Info, theme } from '@aragon/ui'
+import { GU, IconCheck, IconCross, Info, textStyle, useTheme } from '@aragon/ui'
 import providerString from '../../provider-strings'
 import SignerButton from './SignerButton'
 
@@ -44,8 +44,8 @@ class SigningStatus extends React.Component {
     if (isSigning(status)) return 'Waiting for signature…'
     if (status === STATUS_TX_SIGNED) return 'Transaction signed!'
     if (status === STATUS_MSG_SIGNED) return 'Message signed!'
-    if (status === STATUS_TX_ERROR) return 'Error signing the transaction.'
-    if (status === STATUS_MSG_ERROR) return 'Error signing the message.'
+    if (status === STATUS_TX_ERROR) return 'Transaction failed!'
+    if (status === STATUS_MSG_ERROR) return 'Message failed!'
   }
   getInfo() {
     const { status, walletProviderId } = this.props
@@ -110,64 +110,85 @@ class SigningStatus extends React.Component {
     )
   }
   render() {
-    const { status } = this.props
+    const { theme, status } = this.props
     return (
-      <React.Fragment>
-        <Status>
+      <div>
+        <Status
+          color={theme.feedbackContent}
+          background={theme.feedbackSurface}
+        >
           <StatusImage status={status} />
-          <p>{this.getLabel()}</p>
+          <p
+            css={`
+              margin-top: ${3.5 * GU}px;
+              ${textStyle('body2')};
+            `}
+          >
+            {this.getLabel()}
+          </p>
         </Status>
-        <AdditionalInfo>{this.getInfo()}</AdditionalInfo>
+        <Info>{this.getInfo()}</Info>
         {this.getCloseButton()}
-      </React.Fragment>
+      </div>
     )
   }
 }
 
 const Status = styled.div`
-  margin-top: 80px;
-  margin-bottom: 40px;
+  background: ${({ background }) => background};
+  height: 360px;
+  margin-bottom: ${3 * GU}px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: ${theme.textSecondary};
-  img {
-    margin-bottom: 20px;
-  }
+  color: ${({ color }) => color};
 `
 
-const AdditionalInfo = styled(Info)`
-  p + p {
-    margin-top: 10px;
-  }
-`
+const StatusImage = ({ status }) => {
+  const theme = useTheme()
+  const color = isSignatureError(status)
+    ? theme.negative
+    : isSignatureSuccess(status)
+    ? theme.positive
+    : theme.feedbackSurfaceContentSecondary
 
-// To skip the SVG rendering delay
-const StatusImage = ({ status }) => (
-  <StatusImageMain>
-    <StatusImageImg visible={isSigning(status)} src={imgPending} />
-    <StatusImageImg visible={isSignatureError(status)} src={imgError} />
-    <StatusImageImg visible={isSignatureSuccess(status)} src={imgSuccess} />
-  </StatusImageMain>
-)
+  return (
+    <div
+      css={`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border: 2px solid ${color};
+        border-radius: 50%;
+      `}
+    >
+      {isSignatureError(status) ? (
+        <IconCross
+          size="medium"
+          css={`
+            color: ${color};
+          `}
+        />
+      ) : (
+        <IconCheck
+          size="medium"
+          css={`
+            color: ${color};
+          `}
+        />
+      )}
+    </div>
+  )
+}
+
 StatusImage.propTypes = {
   status: SignerStatusType.isRequired,
 }
 
-const StatusImageMain = styled.div`
-  position: relative;
-  width: 150px;
-  height: 150px;
-`
-const StatusImageImg = styled.img.attrs({ alt: '' })`
-  opacity: ${p => Number(p.visible)};
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 100%;
-  max-height: 100%;
-`
-
-export default SigningStatus
+export default props => {
+  const theme = useTheme()
+  return <SigningStatus {...props} theme={theme} />
+}
