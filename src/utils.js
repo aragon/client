@@ -1,18 +1,5 @@
 import resolvePathname from 'resolve-pathname'
 
-// Stealing this from recompose / etc for now
-export function compose(...funcs) {
-  if (funcs.length === 0) {
-    return arg => arg
-  }
-
-  if (funcs.length === 1) {
-    return funcs[0]
-  }
-
-  return funcs.reduce((a, b) => (...args) => a(b(...args)))
-}
-
 // Get the icon URL of an app (legacy)
 export function legacyAppIconUrl(app) {
   return app && app.baseUrl
