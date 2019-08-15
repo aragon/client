@@ -8,6 +8,7 @@ import {
   SidePanel,
   SidePanelSeparator,
   SidePanelSplit,
+  GU,
   blockExplorerUrl,
 } from '@aragon/ui'
 import { AragonType, DaoAddressType, ReposListType } from '../../prop-types'
@@ -17,7 +18,6 @@ import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import { network } from '../../environment'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
 import { repoBaseUrl } from '../../url-utils'
-import { GU } from '../../utils'
 
 const VERSION = '0.7 Bella'
 const SOURCE = [

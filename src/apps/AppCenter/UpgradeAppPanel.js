@@ -8,10 +8,10 @@ import {
   SidePanel,
   SidePanelSeparator,
   SidePanelSplit,
+  GU,
 } from '@aragon/ui'
 import { RepoType } from '../../prop-types'
 import { TextLabel } from '../../components/TextStyles'
-import { GU } from '../../utils'
 
 class UpgradeAppPanel extends React.PureComponent {
   static propTypes = {
