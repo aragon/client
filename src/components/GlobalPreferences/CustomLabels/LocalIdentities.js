@@ -71,20 +71,19 @@ function LocalIdentities({
           `}
         >
           <TextInput
-            css={`
-              padding-right: ${4 * GU}px;
-              font-size: 16px;
-            `}
+            adornment={
+              <IconSearch
+                css={`
+                  color: ${theme.surfaceOpened};
+                `}
+              />
+            }
+            adornmentPosition="end"
             placeholder="Search"
             onChange={onSearchChange}
             value={searchTerm}
-          />
-          <IconSearch
             css={`
-              position: absolute;
-              right: ${1 * GU}px;
-              top: ${1 * GU}px;
-              color: ${theme.surfaceOpened};
+              width: ${compact ? 200 : 240}px;
             `}
           />
         </div>

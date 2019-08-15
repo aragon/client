@@ -52,59 +52,40 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
           >
             Link
           </div>
-          <div
+          <TextInput
+            ref={inputRef}
+            value={link}
+            onFocus={onFocus}
+            adornment={
+              <ButtonIcon
+                onClick={onCopy}
+                label="Copy to clipboard"
+                css={`
+                  width: 38px;
+                  height: 38px;
+                  &:active {
+                    background: ${theme.surfacePressed};
+                  }
+                `}
+              >
+                <IconCopy
+                  css={`
+                    color: ${theme.surfaceIcon};
+                  `}
+                />
+              </ButtonIcon>
+            }
+            adornmentPosition="end"
+            adornmentSettings={{
+              width: 64,
+              padding: 1,
+            }}
+            readOnly
+            wide
             css={`
-              display: inline-flex;
-              max-width: 100%;
-              width: 100%;
-              position: relative;
-              background: ${theme.surface};
-              border: 1px solid ${theme.border};
-              border-radius: ${RADIUS}px;
-              box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
-              padding-right: 30px;
-              margin-top: ${1 * GU}px;
+              text-overflow: ellipsis;
             `}
-          >
-            <TextInput
-              ref={inputRef}
-              value={link}
-              onFocus={onFocus}
-              readOnly
-              css={`
-                text-overflow: ellipsis;
-                width: 100%;
-                max-width: 100%;
-                border: 0;
-                box-shadow: none;
-                background: ${theme.surface};
-                &:read-only {
-                  color: ${theme.content};
-                  text-shadow: none;
-                }
-              `}
-            />
-            <ButtonIcon
-              onClick={onCopy}
-              label="Copy to clipboard"
-              css={`
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 0 ${RADIUS}px ${RADIUS}px 0;
-                &:active {
-                  background: ${theme.surfacePressed};
-                }
-              `}
-            >
-              <IconCopy />
-            </ButtonIcon>
-          </div>
+          />
         </div>
       </main>
       <footer
