@@ -16,7 +16,7 @@ function RemoveModal({ visible, onClose, onConfirm }) {
         to your organization on this device.
       </p>
       <ModalControls>
-        <Button label="Cancel" mode="secondary" onClick={onClose}>
+        <Button label="Cancel" onClick={onClose}>
           Cancel
         </Button>
         <RemoveButton label="Remove labels" mode="strong" onClick={onConfirm}>
