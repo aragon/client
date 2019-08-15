@@ -113,7 +113,7 @@ const useNetwork = wrapper => {
     setIpfsGateway(ipfsGateway)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
-  }, [setNetworkError, ethNode, ipfsGateway])
+  }, [ethNode, ipfsGateway])
   const handleClearCache = useCallback(async () => {
     await wrapper.cache.clear()
     window.localStorage.clear()
