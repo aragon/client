@@ -133,12 +133,8 @@ function useGlobalPreferences(locator = {}) {
   )
 
   useEffect(() => {
-    const { preferences: { path } = { path: '' } } = locator
-    if (!path) {
-      setSectionIndex(null)
-      return
-    }
-    if (!SECTIONS.has(path)) {
+    const { preferences: { path = '' } = {} } = locator
+    if (!path || !SECTIONS.has(path)) {
       setSectionIndex(null)
       return
     }

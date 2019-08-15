@@ -28,10 +28,10 @@ function useIdentitiesActions({
   // share
   const [shareModalOpened, setShareModalOpened] = useState(false)
   const shareLink = useMemo(() => {
-    const identitiesToShare = filteredIdentities.reduce(
-      (p, c) => [...p, ...(identitiesSelected.get(c.address) ? [c] : [])],
-      []
+    const identitiesToShare = filteredIdentities.filter(({ address }) =>
+      identitiesSelected.get(address)
     )
+
     try {
       const labels = utoa(JSON.stringify(identitiesToShare))
       const path = `${window.location.origin}/#${getAppPath(
