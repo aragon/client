@@ -6,10 +6,10 @@ import {
   GU,
   IconCopy,
   Modal,
-  RADIUS,
   TextInput,
   Toast,
   breakpoint,
+  textStyle,
   useTheme,
 } from '@aragon/ui'
 
@@ -20,31 +20,34 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
 
   return (
     <Modal visible={visible} onClose={onClose} zIndex={10001}>
-      <header
+      <h1
         css={`
-          font-size: 22px;
-          line-height: 38px;
-          font-weight: bold;
+          ${textStyle('title2')}
         `}
       >
         Share custom labels
-      </header>
-      <main style={{ marginTop: `${2 * GU}px` }}>
+      </h1>
+      <main
+        css={`
+          margin-top: ${2 * GU}px;
+        `}
+      >
         <div
           css={`
-            font-size: 15px;
-            line-height: 22px;
+            ${textStyle('body2')}
+            margin-bottom: ${2.5 * GU}px;
           `}
         >
           These labels will be shared with everyone that has access to this
           link.
         </div>
-        <div style={{ marginTop: `${2.5 * GU}px` }}>
+        <div>
           <div
             css={`
               font-size: 12px;
               line-height: 16px;
               text-transform: uppercase;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             Link
