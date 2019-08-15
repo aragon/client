@@ -26,7 +26,7 @@ function Network({ wrapper }) {
     <React.Fragment>
       <Box heading={'Node settings'}>
         <Label>
-          Ethereum node{' '}
+          Ethereum node
           <TextInput
             value={ethNode}
             wide
@@ -53,7 +53,7 @@ function Network({ wrapper }) {
           )}
         </Label>
         <Label>
-          IPFS Gateway{' '}
+          IPFS Gateway
           <TextInput
             value={ipfsGateway}
             wide
