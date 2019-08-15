@@ -2,13 +2,12 @@ import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { AragonType } from '../../../prop-types'
 import { Box, Button, Info, GU, Text, TextInput, theme } from '@aragon/ui'
-import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
-import { sanitizeNetworkType } from '../../../network-config'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
-import { checkValidEthNode } from '../../../web3-utils'
+import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
 import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
-
-const ENTER = 13
+import keycodes from '../../../keycodes'
+import { sanitizeNetworkType } from '../../../network-config'
+import { checkValidEthNode } from '../../../web3-utils'
 
 function Network({ wrapper }) {
   const {
@@ -123,7 +122,7 @@ const useNetwork = wrapper => {
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
       if (
-        keyCode === ENTER &&
+        keyCode === keycodes.enter &&
         (ipfsGateway !== ipfsDefaultConf.gateway || ethNode !== defaultEthNode)
       ) {
         handleNetworkChange()
