@@ -12,6 +12,8 @@ execute(`copy-aragon-ui-assets -n aragon-ui ./${buildDir}`, {
 })
 
 process.env.REACT_APP_PACKAGE_VERSION = version
+process.env.REACT_APP_SENTRY_DSN =
+  'https://eb128ce663d24c3caacc0331f61e9950@sentry.io/1500311'
 execute(
   `parcel build src/index.html --out-dir ./${buildDir} --public-url ./ --no-cache`,
   { stdio: 'inherit' }
