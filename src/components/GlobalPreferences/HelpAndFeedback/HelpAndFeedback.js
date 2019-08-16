@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Box, Checkbox, Info, GU, useTheme } from '@aragon/ui'
+import { Box, Checkbox, Info, GU, textStyle, useTheme } from '@aragon/ui'
 import helpAndFeedbackSvg from './help-and-feedback.svg'
 
 function HelpAndFeedback({ optedOut, onOptOutChange }) {
@@ -21,7 +21,7 @@ function HelpAndFeedback({ optedOut, onOptOutChange }) {
           <span
             css={`
               color: ${theme.surfaceContentSecondary};
-              font-size: 20px;
+              ${textStyle('title4')}
             `}
           >
             Allow Help Scout feedback module
