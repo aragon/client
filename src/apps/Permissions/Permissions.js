@@ -170,9 +170,9 @@ function Permissions({
           apps={apps}
           appsLoading={appsLoading}
           permissionsLoading={permissionsLoading}
+          onManageRole={manageRole}
           onOpenApp={openApp}
           onOpenEntity={openEntity}
-          onManageRole={manageRole}
         />
       )}
 

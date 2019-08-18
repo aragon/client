@@ -80,6 +80,7 @@ function AllPermissions({ loading, permissions, onOpenEntity, onManageRole }) {
 
 AllPermissions.propTypes = {
   loading: PropTypes.bool.isRequired,
+  onManageRole: PropTypes.func.isRequired,
   onOpenEntity: PropTypes.func.isRequired,
   permissions: PropTypes.array,
 }

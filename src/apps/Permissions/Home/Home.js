@@ -49,6 +49,7 @@ Home.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
   permissionsLoading: PropTypes.bool.isRequired,
+  onManageRole: PropTypes.func.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onOpenEntity: PropTypes.func.isRequired,
 }

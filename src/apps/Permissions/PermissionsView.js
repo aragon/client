@@ -53,6 +53,7 @@ function PermissionsView({
 
 PermissionsView.propTypes = {
   heading: PropTypes.node,
+  onManageRole: PropTypes.func.isRequired,
   onOpenEntity: PropTypes.func.isRequired,
   permissions: PropTypes.array,
   showApps: PropTypes.bool.isRequired,
@@ -86,7 +87,7 @@ function renderEntryChild({ entities, app, role }) {
       ))
 }
 
-// eslint-disable-next-line react/prop-types
+/* eslint-disable react/prop-types */
 function EntryActions({ entry, onManageRole }) {
   const { role, app } = entry
   const { proxyAddress } = app
@@ -104,8 +105,9 @@ function EntryActions({ entry, onManageRole }) {
     </ContextMenu>
   )
 }
+/* eslint-enable react/prop-types */
 
-// eslint-disable-next-line react/prop-types
+/* eslint-disable react/prop-types */
 function ChildEntity({ entity, proxyAddress, roleBytes }) {
   const theme = useTheme()
 
@@ -141,6 +143,7 @@ function ChildEntity({ entity, proxyAddress, roleBytes }) {
     </div>
   )
 }
+/* eslint-enable react/prop-types */
 
 // eslint-disable-next-line react/prop-types
 function EntryEntities({ entities }) {
