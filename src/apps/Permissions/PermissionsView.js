@@ -88,8 +88,9 @@ function renderEntryChild({ entities, app, role }) {
 
 // eslint-disable-next-line react/prop-types
 function EntryActions({ entry, onManageRole }) {
-  const { roleBytes, app } = entry
+  const { role, app } = entry
   const { proxyAddress } = app
+  const roleBytes = role.bytes
 
   const handleManageRoleClick = useCallback(() => {
     onManageRole(proxyAddress, roleBytes)

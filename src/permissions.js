@@ -48,12 +48,12 @@ export function getKnownRole(roleBytes) {
 // Get a flattened list of all permissions grouped by their roles, with their assigned entities
 export function permissionsByRole(permissions) {
   return Object.entries(permissions).reduce(
-    (entries, [app, roles]) => [
+    (entries, [appAddress, roles]) => [
       ...entries,
       ...Object.entries(roles).reduce(
         (entries, [roleBytes, { allowedEntities: entities = [], manager }]) => [
           ...entries,
-          { app, roleBytes, manager, entities },
+          { appAddress, roleBytes, manager, entities },
         ],
         []
       ),
@@ -93,13 +93,13 @@ export function appRoles(app, permissions) {
     : []
 }
 
-// Resolves a role using the provided apps
-function resolveRole(apps, proxyAddress, roleBytes) {
+// Resolves a role from its bytes to its description using the provided apps
+function resolveRole(apps, appAddress, roleBytes) {
   const knownRole = getKnownRole(roleBytes)
   if (knownRole) {
     return knownRole.role
   }
-  const app = apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
+  const app = apps.find(app => addressesEqual(app.proxyAddress, appAddress))
   if (!app || !app.roles) {
     return null
   }
@@ -127,7 +127,7 @@ export function entityResolver(apps = []) {
 // Returns a function that resolves an role, caching the results
 export function roleResolver(apps = []) {
   return memoize(
-    (proxyAddress, roleBytes) => resolveRole(apps, proxyAddress, roleBytes),
-    (proxyAddress, roleBytes) => proxyAddress + roleBytes
+    (appAddress, roleBytes) => resolveRole(apps, appAddress, roleBytes),
+    (appAddress, roleBytes) => appAddress + roleBytes
   )
 }
