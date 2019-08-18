@@ -4,19 +4,19 @@ import styled from 'styled-components'
 import {
   Button,
   DropDown,
-  Info,
   Field,
+  Info,
   SidePanel,
   GU,
   breakpoint,
 } from '@aragon/ui'
-import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntitySelector from './EntitySelector'
+import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
 const CREATE_PERMISSION = Symbol('CREATE_PERMISSION')
 const VIEW_PERMISSION = Symbol('VIEW_PERMISSION')
@@ -254,11 +254,7 @@ class ManageRolePanel extends React.PureComponent {
         <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
       )
     }
-    return (
-      <LocalIdentityBadge
-        entity={manager.type === 'burn' ? 'Discarded' : manager.address}
-      />
-    )
+    return <PermissionsIdentityBadge entity={manager.address} />
   }
 
   render() {

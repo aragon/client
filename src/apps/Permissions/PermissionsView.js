@@ -12,6 +12,7 @@ import {
 } from '@aragon/ui'
 import { usePermissions } from '../../contexts/PermissionsContext'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
+import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
 function PermissionsView({ permissions, onManageRole, heading, showApps }) {
   const { layoutName } = useLayout()
@@ -68,7 +69,7 @@ function renderEntry({ entities, app, role, manager }, showApps) {
     </span>,
     <LocalIdentityBadge entity={app.proxyAddress} shorten />,
     <EntryEntities entities={entities} />,
-    <LocalIdentityBadge entity={manager} />,
+    <PermissionsIdentityBadge entity={manager} />,
   ]
 
   if (!showApps) {
@@ -132,7 +133,7 @@ function ChildEntity({ appAddress, entity, roleBytes }) {
         align-items: center;
       `}
     >
-      <LocalIdentityBadge entity={entityAddress} />
+      <PermissionsIdentityBadge entity={entityAddress} />
       <ButtonIcon
         label="Revoke permission"
         mode="button"
@@ -151,13 +152,7 @@ function ChildEntity({ appAddress, entity, roleBytes }) {
 /* eslint-disable react/prop-types */
 function EntryEntities({ entities }) {
   if (entities.length === 1) {
-    return (
-      <LocalIdentityBadge
-        entity={
-          entities[0].type === 'any' ? 'Any account' : entities[0].address
-        }
-      />
-    )
+    return <PermissionsIdentityBadge entity={entities[0].address} />
   }
 
   return (
