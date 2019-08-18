@@ -21,6 +21,7 @@ export default function NotificationsLogin({
   }
 
   const handleLogin = async e => {
+    e && e.preventDefault()
     try {
       await login({ email: inputEmail, dao, network: ethNetwork })
       onEmailChange(inputEmail)
@@ -34,32 +35,38 @@ export default function NotificationsLogin({
     <Box heading="Email notifications">
       <NotificationImage />
       {apiError && <Info mode="error">Error logging in.</Info>}
-      <Label>Email address</Label>
-      <div
-        css={`
-          display: grid;
-          align-items: center;
-          grid-template-columns: 1fr auto;
-          grid-gap: ${2 * GU}px;
-          margin-bottom: ${2 * GU}px;
-        `}
-      >
-        <TextInput
-          type="email"
-          placeholder="you@example.com"
-          wide
-          value={inputEmail}
-          onChange={handleEmailChange}
-        />
-        <Button
+      <form onSubmit={handleLogin}>
+        <div
           css={`
-            width: ${16 * GU}px;
+            display: grid;
+            align-items: end;
+            grid-template-columns: 1fr auto;
+            grid-gap: ${2 * GU}px;
+            margin-bottom: ${2 * GU}px;
           `}
-          onClick={handleLogin}
         >
-          <IconMail /> Sign in
-        </Button>
-      </div>
+          <Label>
+            Email address
+            <TextInput
+              type="email"
+              placeholder="you@example.com"
+              wide
+              value={inputEmail}
+              onChange={handleEmailChange}
+            />
+          </Label>
+
+          <Button
+            css={`
+              width: ${16 * GU}px;
+            `}
+            onClick={handleLogin}
+          >
+            <IconMail /> Sign in
+          </Button>
+        </div>
+      </form>
+
       <Info>
         Receive email notifications for the new app events. For example,
         whenever a new vote is created or when tokens added, you’ll get an email
