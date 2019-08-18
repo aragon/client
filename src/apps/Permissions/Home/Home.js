@@ -13,7 +13,6 @@ function Home({
   appsLoading,
   onManageRole,
   onOpenApp,
-  onOpenEntity,
   permissionsLoading,
 }) {
   const [tab, setTab] = useState(0)
@@ -38,7 +37,6 @@ function Home({
       <AllPermissions
         permissions={permissionsFiltered}
         loading={appsLoading || permissionsLoading}
-        onOpenEntity={onOpenEntity}
         onManageRole={onManageRole}
       />
     </React.Fragment>
@@ -51,7 +49,6 @@ Home.propTypes = {
   permissionsLoading: PropTypes.bool.isRequired,
   onManageRole: PropTypes.func.isRequired,
   onOpenApp: PropTypes.func.isRequired,
-  onOpenEntity: PropTypes.func.isRequired,
 }
 
 export default Home

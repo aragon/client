@@ -21,31 +21,25 @@ function getAppByProxyAddress(proxyAddress, apps) {
 function getLocation(params, apps) {
   const home = { screen: 'home' }
 
-  if (!params) {
-    return home
-  }
-
-  // Not using "/" as a separator because
-  // it would get encoded by encodeURIComponent().
-  const [
-    screen,
-    data = null,
-    secondaryScreen = null,
-    secondaryData = null,
-  ] = params.split('.')
-
-  if (screen === 'app' && isAddress(data)) {
-    return {
+  if (params) {
+    // Not using "/" as a separator because
+    // it would get encoded by encodeURIComponent().
+    const [
       screen,
-      address: data,
-      app: getAppByProxyAddress(data, apps),
-      secondaryScreen,
-      secondaryData,
-    }
-  }
+      data = null,
+      secondaryScreen = null,
+      secondaryData = null,
+    ] = params.split('.')
 
-  if (screen === 'entity' && isAddress(data)) {
-    return { screen, address: data }
+    if (screen === 'app' && isAddress(data)) {
+      return {
+        screen,
+        address: data,
+        app: getAppByProxyAddress(data, apps),
+        secondaryScreen,
+        secondaryData,
+      }
+    }
   }
 
   return home
@@ -78,16 +72,6 @@ function Permissions({
       onParamsRequest(`app.${proxyAddress}`)
     },
     [onParamsRequest]
-  )
-
-  const openEntity = useCallback(
-    address => {
-      if (getAppByProxyAddress(address, apps)) {
-        return openApp(address)
-      }
-      onParamsRequest(`entity.${address}`)
-    },
-    [apps, onParamsRequest, openApp]
   )
 
   const manageRole = useCallback(
@@ -172,17 +156,16 @@ function Permissions({
           permissionsLoading={permissionsLoading}
           onManageRole={manageRole}
           onOpenApp={openApp}
-          onOpenEntity={openEntity}
         />
       )}
 
       {location.screen === 'app' && (
         <AppPermissions
+          address={location.address}
           app={location.app}
           loading={appsLoading}
-          address={location.address}
-          onManageRole={manageRole}
           onBack={openHome}
+          onManageRole={manageRole}
         />
       )}
 

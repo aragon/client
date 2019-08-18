@@ -14,7 +14,6 @@ import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadg
 
 function PermissionsView({
   permissions,
-  onOpenEntity,
   onManageRole,
   heading,
   showApps,
@@ -54,7 +53,6 @@ function PermissionsView({
 PermissionsView.propTypes = {
   heading: PropTypes.node,
   onManageRole: PropTypes.func.isRequired,
-  onOpenEntity: PropTypes.func.isRequired,
   permissions: PropTypes.array,
   showApps: PropTypes.bool.isRequired,
 }

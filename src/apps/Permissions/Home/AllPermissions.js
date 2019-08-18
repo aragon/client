@@ -13,7 +13,7 @@ import PermissionsView from '../PermissionsView'
 
 const ENTITY_TYPES = ['All entities', 'Accounts', 'Apps']
 
-function AllPermissions({ loading, permissions, onOpenEntity, onManageRole }) {
+function AllPermissions({ loading, permissions, onManageRole }) {
   const [selectedEntityType, setSelectedEntityType] = useState(-1)
   const [searchTerms, setSearchTerms] = useState('')
 
@@ -63,7 +63,6 @@ function AllPermissions({ loading, permissions, onOpenEntity, onManageRole }) {
   return (
     <PermissionsView
       permissions={filteredPermissions}
-      onOpenEntity={onOpenEntity}
       onManageRole={onManageRole}
       heading={
         <Heading
@@ -81,7 +80,6 @@ function AllPermissions({ loading, permissions, onOpenEntity, onManageRole }) {
 AllPermissions.propTypes = {
   loading: PropTypes.bool.isRequired,
   onManageRole: PropTypes.func.isRequired,
-  onOpenEntity: PropTypes.func.isRequired,
   permissions: PropTypes.array,
 }
 

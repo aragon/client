@@ -30,7 +30,6 @@ function AppPermissions({ onBack, app, loading, address, onManageRole }) {
       <PermissionsView
         heading="Available permissions"
         onManageRole={onManageRole}
-        onOpenEntity={() => null}
         permissions={appPermissions}
         showApps={false}
       />
