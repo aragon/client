@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { AppType, AragonType } from '../../prop-types'
-import { Button, GU, Header, Layout } from '@aragon/ui'
+import { Button, GU, Header, IconPlus, Layout, useLayout } from '@aragon/ui'
 import { addressesEqual, isAddress } from '../../web3-utils'
 import { usePermissions } from '../../contexts/PermissionsContext'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
@@ -53,6 +53,7 @@ function Permissions({
   permissionsLoading,
   wrapper,
 }) {
+  const { layoutName } = useLayout()
   const [showAssignPermissionPanel, setShowAssignPermissionPanel] = useState(
     false
   )
@@ -145,10 +146,11 @@ function Permissions({
           <Button
             mode="strong"
             onClick={createPermission}
+            label="New permission"
+            icon={<IconPlus />}
+            display={layoutName === 'small' ? 'icon' : 'label'}
             disabled={appsLoading || permissionsLoading}
-          >
-            New permission
-          </Button>
+          />
         }
       />
 
