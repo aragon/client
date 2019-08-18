@@ -18,7 +18,7 @@ export const AUTH_AUTHENTICATING = 'AUTH_AUTHENTICATING'
 export const AUTH_AUTHENTICATED = 'AUTH_AUTHENTICATED'
 export const AUTH_AUTHENTICATION_FAILED = 'AUTH_AUTHENTICATION_FAILED'
 
-export const EXPIRED_TOKEN_MESSAGE = 'Expired token'
+export const API_MESSAGE_EXPIRED_TOKEN = 'Expired token'
 
 export const ExpiredTokenError = extendError('ExpiredToken', {
   defaultMessage: 'Notification Service API token has expired',

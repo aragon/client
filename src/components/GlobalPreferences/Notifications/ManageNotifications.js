@@ -18,6 +18,10 @@ import {
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { getSubscriptions, deleteAccount } from './notification-service-api'
+import {
+  NOTIFICATION_SERVICE_TOKEN_KEY,
+  NOTIFICATION_SERVICE_EMAIL_KEY,
+} from './constants'
 import { SubscriptionsForm } from './SubscriptionsForm'
 
 export default function ManageNotifications({
@@ -32,7 +36,7 @@ export default function ManageNotifications({
   const [subscriptions, setSubscriptions] = useState([])
 
   const fetchSubscriptions = useCallback(() => {
-    getSubscriptions({ token })
+    getSubscriptions(token)
       .then(subscriptions => {
         setSubscriptions(subscriptions)
         setIsFetching(false)
@@ -117,6 +121,8 @@ function DeleteAccount({ token, onLogout, onApiError }) {
     try {
       setIsFetching(true)
       await deleteAccount(token)
+      localStorage.removeItem(NOTIFICATION_SERVICE_TOKEN_KEY)
+      localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
       setIsAccountDeleted(true)
       onLogout()
     } catch (e) {

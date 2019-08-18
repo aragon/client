@@ -3,17 +3,14 @@ import {
   NOTIFICATION_SERVICE_LOGIN,
   NOTIFICATION_SERVICE_VERIFY,
   NOTIFICATION_SERVICE_SUBSCRIPTIONS,
-  NOTIFICATION_SERVICE_TOKEN_KEY,
-  NOTIFICATION_SERVICE_EMAIL_KEY,
-  EXPIRED_TOKEN_MESSAGE,
+  API_MESSAGE_EXPIRED_TOKEN,
   ExpiredTokenError,
   UnauthroizedError,
 } from './constants'
 import { getEthNetworkType } from '../../../local-settings'
 
-
 const isTokenExpired = response =>
-  response.statusCode === 401 && response.message === EXPIRED_TOKEN_MESSAGE
+  response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
 
 const isUnauthorized = rawResponse => rawResponse.status === 401
 
@@ -131,9 +128,6 @@ export async function deleteAccount(token) {
       throw new Error(rawResponse.statusText)
     }
 
-    localStorage.removeItem(NOTIFICATION_SERVICE_TOKEN_KEY)
-    localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
-
     return response
   } catch (e) {
     console.error(e.message)
@@ -141,7 +135,7 @@ export async function deleteAccount(token) {
   }
 }
 
-export const getSubscriptions = async ({ token }) => {
+export async function getSubscriptions(token) {
   const url = new URL(NOTIFICATION_SERVICE_SUBSCRIPTIONS)
   url.searchParams.append('network', getEthNetworkType())
 
