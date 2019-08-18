@@ -62,23 +62,6 @@ export function permissionsByRole(permissions) {
   )
 }
 
-// Get an app's assigned permissions.
-export function appPermissions(
-  app,
-  permissions,
-  transform = (entity, role) => [entity, role]
-) {
-  const roles = permissions[app.proxyAddress]
-  const rolesReducer = (roles, [role, { allowedEntities = [] }]) =>
-    roles.concat(allowedEntities.map(entity => transform(entity, role)))
-
-  return roles
-    ? Object.entries(roles)
-        .reduce(rolesReducer, [])
-        .filter(Boolean)
-    : []
-}
-
 // Get the roles of an app.
 export function appRoles(app, permissions) {
   const roles = permissions[app.proxyAddress]
