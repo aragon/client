@@ -16,6 +16,7 @@ const ENTITY_TYPES = ['All entities', 'Accounts', 'Apps']
 function AllPermissions({ loading, permissions, onManageRole }) {
   const [selectedEntityType, setSelectedEntityType] = useState(-1)
   const [searchTerms, setSearchTerms] = useState('')
+  const { layoutName } = useLayout()
 
   const filteredPermissions = useMemo(() => {
     return (
@@ -67,12 +68,14 @@ function AllPermissions({ loading, permissions, onManageRole }) {
       permissions={filteredPermissions}
       onManageRole={onManageRole}
       heading={
-        <Heading
-          selectedEntityType={selectedEntityType}
-          onEntityTypeChange={setSelectedEntityType}
-          searchTerms={searchTerms}
-          onSearchTermsChange={setSearchTerms}
-        />
+        layoutName === 'large' && (
+          <Heading
+            selectedEntityType={selectedEntityType}
+            onEntityTypeChange={setSelectedEntityType}
+            searchTerms={searchTerms}
+            onSearchTermsChange={setSearchTerms}
+          />
+        )
       }
       showApps
     />
@@ -91,7 +94,6 @@ function Heading({
   searchTerms,
   onSearchTermsChange,
 }) {
-  const { layoutName } = useLayout()
   const theme = useTheme()
 
   const handleSearchInputChange = useCallback(
@@ -107,10 +109,6 @@ function Heading({
     },
     [onEntityTypeChange]
   )
-
-  if (layoutName !== 'large') {
-    return null
-  }
 
   return (
     <div
