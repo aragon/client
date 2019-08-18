@@ -86,7 +86,6 @@
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "ui-assets": "copy-aragon-ui-assets -n aragon-ui ./build",
     "start": "node scripts/start",
     "start:local": "node scripts/launch-local",
     "start:mainnet": "cross-env REACT_APP_ETH_NETWORK_TYPE=main npm start",
