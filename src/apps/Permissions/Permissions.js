@@ -59,6 +59,9 @@ function Permissions({
   const { resolveRole } = usePermissions()
   const scrollTopElement = useRef(null)
 
+  // `params` should change every time we navigate into and out of a detailed
+  // permissions view, so this ensures the user starts at the top of the screen
+  // on every navigation change
   useEffect(() => {
     scrollTopElement.current.scrollIntoView()
   }, [params])
