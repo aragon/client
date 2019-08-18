@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ButtonBase, useTheme, useThemeMode, useViewport } from '@aragon/ui'
 import { GU } from '../../utils'
@@ -24,12 +24,8 @@ function ThemeModeButton() {
   )
 }
 
-// Remaining width after the menu panel is removed
+// Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
-
-export function useAppWidth() {
-  return useContext(AppWidthContext)
-}
 
 function OrgView({
   activeInstanceId,
@@ -55,6 +51,7 @@ function OrgView({
     }
   }, [autoClosingPanel])
 
+  // TODO: update AppWidthContext's value when menu panel is closed
   return (
     <AppWidthContext.Provider value={width - MENU_PANEL_WIDTH}>
       <div
@@ -151,4 +148,5 @@ OrgView.propTypes = {
   onRequestAppsReload: PropTypes.func.isRequired,
 }
 
+export { AppWidthContext }
 export default OrgView
