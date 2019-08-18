@@ -27,9 +27,11 @@ function AllPermissions({ loading, permissions, onManageRole }) {
           if (preparedSearchTerms === '') {
             return true
           }
+          const appName = permission.app.name.toLowerCase()
           const roleName = permission.role.name.toLowerCase()
           const roleId = permission.role.id.toLowerCase()
           return (
+            appName.includes(preparedSearchTerms) ||
             roleName.includes(preparedSearchTerms) ||
             roleId.includes(preparedSearchTerms)
           )
@@ -80,7 +82,7 @@ function AllPermissions({ loading, permissions, onManageRole }) {
 AllPermissions.propTypes = {
   loading: PropTypes.bool.isRequired,
   onManageRole: PropTypes.func.isRequired,
-  permissions: PropTypes.array,
+  permissions: PropTypes.array.isRequired,
 }
 
 function Heading({
@@ -159,7 +161,7 @@ function Heading({
           }
           adornmentPosition="end"
           onChange={handleSearchInputChange}
-          placeholder="Search by action or entity"
+          placeholder="Search by app or role"
           value={searchTerms}
         />
       </div>
