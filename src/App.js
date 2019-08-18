@@ -365,6 +365,10 @@ class App extends React.Component {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
   handleHelpScoutOptedOutChange = helpScoutOptedOut => {
+    if (helpScoutOptedOut && window.Beacon) {
+      window.Beacon('destroy')
+    }
+
     localStorage.setItem(
       HELPSCOUT_OPTOUT_KEY,
       helpScoutOptedOut ? 'true' : 'false'

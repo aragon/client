@@ -4,13 +4,14 @@ import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import {
   Button,
+  ButtonBase,
   ButtonIcon,
   IconClose,
   LoadingRing,
   SafeLink,
   breakpoint,
   springs,
-  theme,
+  useTheme,
   useViewport,
 } from '@aragon/ui'
 import useBeaconSuggestions from './useBeaconSuggestions'
@@ -182,7 +183,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
       )
     }
     return () => {
-      if (beaconIframe) {
+      if (beaconIframe && beaconIframe.contentWindow) {
         beaconIframe.contentWindow.removeEventListener(
           'blur',
           handleBeaconIframeBlur
@@ -243,9 +244,13 @@ HelpOptIn.propTypes = {
 }
 
 const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
+  const theme = useTheme()
   const { below } = useViewport()
+
   return (
     <RoundButton
+      background={theme.help}
+      color={theme.helpContent}
       onClick={onToggle}
       css={`
         ${below('medium') &&
@@ -278,15 +283,10 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
               }}
             >
               <IconClose
-                color={theme.gradientText}
+                color={theme.helpContent}
                 css={`
-                  width: auto;
-                  height: 17px;
-
                   & path {
-                    fill: ${theme.gradientText};
-                    /* original size 10px * 1.7 = 17px*/
-                    transform: scale(1.7);
+                    fill: ${theme.helpContent};
                     opacity: 1;
                   }
                 `}
@@ -332,12 +332,13 @@ ToggleDialogueButton.propTypes = {
 }
 
 const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
+  const theme = useTheme()
   const { below } = useViewport()
 
   return (
     <animated.div {...styles}>
       <Wrapper>
-        <Header>
+        <Header color={theme.gradientText}>
           {below('medium') && <CloseButton onClick={onClose} />}
           <HeaderImage src={headerImg} alt="" />
         </Header>
@@ -352,12 +353,18 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
                 </Paragraph>
                 <Paragraph>
                   For that, we use a third-party system called{' '}
-                  <StyledSafeLink href="https://www.helpscout.com/">
+                  <StyledSafeLink
+                    color={theme.accent}
+                    href="https://www.helpscout.com/"
+                  >
                     HelpScout
                   </StyledSafeLink>
                   . If you opt-in, we will load their program onto Aragon.
                   HelpScout is a{' '}
-                  <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
+                  <StyledSafeLink
+                    color={theme.accent}
+                    href="https://bcorporation.net/directory/help-scout"
+                  >
                     Public Benefit Corp
                   </StyledSafeLink>
                   .
@@ -398,6 +405,8 @@ OptInDialogue.propTypes = {
 }
 
 const CloseButton = React.memo(({ onClick, ...props }) => {
+  const theme = useTheme()
+
   return (
     <ButtonIcon
       label="Close"
@@ -411,15 +420,17 @@ const CloseButton = React.memo(({ onClick, ...props }) => {
       {...props}
     >
       <IconClose
-        color={theme.gradientText}
+        color={theme.accentContent}
         css={`
           width: auto;
           height: 24px;
 
           & path {
-            fill: ${theme.gradientText};
-            /* original size 10px * 2.4 = 24px*/
-            transform: scale(2.4);
+            stroke: ${theme.accentContent};
+            stroke-width: 0.3px;
+          }
+          & path {
+            fill: ${theme.accentContent};
             opacity: 1;
           }
         `}
@@ -473,7 +484,7 @@ const Header = styled.header`
   position: relative;
   height: 240px;
   background-color: #08bee5;
-  color: ${theme.gradientText};
+  color: ${({ color }) => color};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -521,7 +532,7 @@ const Heading = styled.h3`
 
 const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
   text-decoration: none;
-  color: ${theme.accent};
+  color: ${({ color }) => color};
 
   &:hover,
   &:focus {
@@ -529,7 +540,8 @@ const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
   }
 `
 
-const RoundButton = styled(Button).attrs({ mode: 'strong' })`
+const RoundButton = styled(ButtonBase)`
+  background: ${({ background }) => background};
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
   border-radius: 50%;
   width: ${ROUND_BUTTON_HEIGHT}px;

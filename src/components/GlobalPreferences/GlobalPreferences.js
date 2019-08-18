@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  Bar,
   ButtonIcon,
   GU,
   IconClose,
@@ -86,13 +85,11 @@ function GlobalPreferences({
           />
         ) : (
           <React.Fragment>
-            <Bar>
-              <TabBar
-                items={VALUES}
-                onChange={onNavigation}
-                selected={sectionIndex}
-              />
-            </Bar>
+            <TabBar
+              items={VALUES}
+              onChange={onNavigation}
+              selected={sectionIndex}
+            />
             <main>
               {sectionIndex === 0 && (
                 <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
