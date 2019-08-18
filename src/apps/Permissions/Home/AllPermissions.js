@@ -103,7 +103,7 @@ function Heading({
 
   const handleEntityDropDownChange = useCallback(
     index => {
-      onEntityTypeChange(index === 0 ? -1 : index)
+      onEntityTypeChange(index || -1)
     },
     [onEntityTypeChange]
   )
@@ -135,17 +135,14 @@ function Heading({
             color: ${theme.surfaceContentSecondary};
           `}
         >
-          <span
-            css={`
-              margin-right: ${2 * GU}px;
-            `}
-          >
-            Entity type
-          </span>
           <DropDown
+            placeholder="Entity type"
             items={ENTITY_TYPES}
             selected={selectedEntityType}
             onChange={handleEntityDropDownChange}
+            css={`
+              min-width: ${16 * GU}px;
+            `}
           />
         </label>
         <TextInput
