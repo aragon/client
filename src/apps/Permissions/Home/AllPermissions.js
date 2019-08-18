@@ -9,6 +9,7 @@ import {
   useTheme,
 } from '@aragon/ui'
 import EmptyBlock from '../EmptyBlock'
+import EmptyFilteredPermission from '../EmptyFilteredPermissions'
 import PermissionsView from '../PermissionsView'
 
 const ENTITY_TYPES = ['All entities', 'Accounts', 'Apps']
@@ -60,7 +61,7 @@ function AllPermissions({ loading, permissions, onManageRole }) {
   }
 
   if (permissions.length === 0) {
-    return <EmptyBlock>No permissions found.</EmptyBlock>
+    return <EmptyBlock>No permissions have been assigned yet.</EmptyBlock>
   }
 
   return (
@@ -70,6 +71,9 @@ function AllPermissions({ loading, permissions, onManageRole }) {
       heading={
         layoutName === 'large' && (
           <Heading
+            emptyFilter={Boolean(
+              !filteredPermissions.length && permissions.length
+            )}
             selectedEntityType={selectedEntityType}
             onEntityTypeChange={setSelectedEntityType}
             searchTerms={searchTerms}
@@ -89,6 +93,7 @@ AllPermissions.propTypes = {
 }
 
 function Heading({
+  emptyFilter,
   selectedEntityType,
   onEntityTypeChange,
   searchTerms,
@@ -96,75 +101,82 @@ function Heading({
 }) {
   const theme = useTheme()
 
-  const handleSearchInputChange = useCallback(
-    event => {
-      onSearchTermsChange(event.target.value)
-    },
-    [onSearchTermsChange]
-  )
-
   const handleEntityDropDownChange = useCallback(
     index => {
       onEntityTypeChange(index || -1)
     },
     [onEntityTypeChange]
   )
+  const handleSearchInputChange = useCallback(
+    event => {
+      onSearchTermsChange(event.target.value)
+    },
+    [onSearchTermsChange]
+  )
+  const handleOnClear = useCallback(() => {
+    onEntityTypeChange(-1)
+    onSearchTermsChange('')
+  }, [onEntityTypeChange, onSearchTermsChange])
 
   return (
-    <div
-      css={`
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        align-items: center;
-      `}
-    >
+    <React.Fragment>
       <div
         css={`
-          white-space: nowrap;
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+          align-items: center;
         `}
       >
-        All assigned permissions
-      </div>
-      <div>
-        <label
+        <div
           css={`
-            margin-right: ${2 * GU}px;
-            color: ${theme.surfaceContentSecondary};
+            white-space: nowrap;
           `}
         >
-          <DropDown
-            placeholder="Entity type"
-            items={ENTITY_TYPES}
-            selected={selectedEntityType}
-            onChange={handleEntityDropDownChange}
+          All assigned permissions
+        </div>
+        <div>
+          <label
             css={`
-              min-width: ${16 * GU}px;
+              margin-right: ${2 * GU}px;
+              color: ${theme.surfaceContentSecondary};
             `}
-          />
-        </label>
-        <TextInput
-          css={`
-            width: ${38 * GU}px;
-          `}
-          adornment={
-            <IconSearch
+          >
+            <DropDown
+              placeholder="Entity type"
+              items={ENTITY_TYPES}
+              selected={selectedEntityType}
+              onChange={handleEntityDropDownChange}
               css={`
-                color: ${theme.surfaceIcon};
+                min-width: ${16 * GU}px;
               `}
             />
-          }
-          adornmentPosition="end"
-          onChange={handleSearchInputChange}
-          placeholder="Search by app or role"
-          value={searchTerms}
-        />
+          </label>
+          <TextInput
+            css={`
+              width: ${38 * GU}px;
+            `}
+            adornment={
+              <IconSearch
+                css={`
+                  color: ${theme.surfaceIcon};
+                `}
+              />
+            }
+            adornmentPosition="end"
+            onChange={handleSearchInputChange}
+            placeholder="Search by app or role"
+            value={searchTerms}
+          />
+        </div>
       </div>
-    </div>
+      {emptyFilter && <EmptyFilteredPermission onClear={handleOnClear} />}
+    </React.Fragment>
   )
 }
 
 Heading.propTypes = {
+  emptyFilter: PropTypes.bool,
   selectedEntityType: PropTypes.number.isRequired,
   onEntityTypeChange: PropTypes.func.isRequired,
   searchTerms: PropTypes.string.isRequired,

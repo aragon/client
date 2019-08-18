@@ -38,7 +38,7 @@ function PermissionsView({ permissions, onManageRole, heading, showApps }) {
           ? 'table'
           : 'list'
       }
-      fields={fields}
+      fields={permissions.length ? fields : []}
       entries={permissions}
       renderEntry={entry => renderEntry(entry, showApps)}
       renderEntryChild={willRenderEntryChild ? renderEntryChild : undefined}
