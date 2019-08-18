@@ -1,24 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BackButton, Bar } from '@aragon/ui'
-import { AppType, EthereumAddressType } from '../../prop-types'
+import { AppType } from '../../prop-types'
 import { usePermissionsByRole } from '../../contexts/PermissionsContext'
 import EmptyBlock from './EmptyBlock'
 import PermissionsView from './PermissionsView'
 
-function AppPermissions({ onBack, app, loading, address, onManageRole }) {
+function AppPermissions({ app, loading, onBack, onManageRole }) {
   const permissions = usePermissionsByRole()
+
+  if (loading) {
+    return <EmptyBlock>Loading permissions…</EmptyBlock>
+  }
 
   const appPermissions = permissions.filter(
     permission =>
       permission.app && permission.app.proxyAddress === app.proxyAddress
   )
 
-  if (loading) {
-    return <EmptyBlock>Loading permissions…</EmptyBlock>
-  }
-
-  if (permissions.length === 0) {
+  if (appPermissions.length === 0) {
     return <EmptyBlock>No permissions found.</EmptyBlock>
   }
 
@@ -38,7 +38,6 @@ function AppPermissions({ onBack, app, loading, address, onManageRole }) {
 }
 
 AppPermissions.propTypes = {
-  address: EthereumAddressType.isRequired,
   app: AppType, // may not be available if still loading
   loading: PropTypes.bool.isRequired,
   onManageRole: PropTypes.func.isRequired,

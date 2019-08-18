@@ -5,7 +5,7 @@ import { AppType } from '../../../prop-types'
 import AppCard from '../AppCard'
 import EmptyBlock from '../EmptyBlock'
 
-function Apps({ loading, apps, onOpenApp }) {
+function Apps({ apps, loading, onOpenApp }) {
   if (loading) {
     return <EmptyBlock>Loading apps…</EmptyBlock>
   }

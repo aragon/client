@@ -166,7 +166,6 @@ function Permissions({
 
       {location.screen === 'app' && (
         <AppPermissions
-          address={location.address}
           app={location.app}
           loading={appsLoading}
           onBack={openHome}
