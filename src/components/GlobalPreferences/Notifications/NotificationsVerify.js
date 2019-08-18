@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Box,
-  ButtonBase,
-  GU,
-  IconCheck,
-  Info,
-  LoadingRing,
-  RADIUS,
-  useTheme,
-  textStyle,
-} from '@aragon/ui'
+import { ButtonBase, Info, LoadingRing, useTheme } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
 import {
   VERIFY_SUBSECTION,
   UnauthroizedError,
   ExpiredTokenError,
 } from './constants'
-import notificationSvg from './notifications.svg'
+import NotificationsVerifyBox from './NotificationsVerifyBox'
 
 export function NotificationsVerify({
   subsection,
@@ -128,84 +118,4 @@ export function NotificationsPreVerify({ email }) {
 
 NotificationsPreVerify.propTypes = {
   email: PropTypes.string,
-}
-
-export function NotificationsVerifyBox({ header, children, success }) {
-  const theme = useTheme()
-
-  return (
-    <Box heading="Email notifications">
-      <NotificationImage />
-      <div
-        css={`
-          height: ${GU * 20}px;
-          background: ${theme.feedbackSurface};
-          display: grid;
-          border-radius: ${RADIUS}px;
-          padding: ${3.5 * GU}px ${10 * GU}px;
-          grid-gap: ${2 * GU}px;
-          grid-template-columns: auto 1fr;
-          align-items: center;
-        `}
-      >
-        {success && <Checkmark />}
-        <div>
-          <div
-            css={`
-              margin-bottom: ${2 * GU}px;
-              ${textStyle('body1')};
-            `}
-          >
-            <div>{header}</div>
-          </div>
-          <div
-            css={`
-              ${textStyle('body2')};
-              color: ${theme.feedbackSurfaceContentSecondary};
-            `}
-          >
-            {children}
-          </div>
-        </div>
-      </div>
-    </Box>
-  )
-}
-
-NotificationsVerifyBox.propTypes = {
-  header: PropTypes.string,
-  success: PropTypes.bool,
-  children: PropTypes.node,
-}
-
-const NotificationImage = () => (
-  <img
-    src={notificationSvg}
-    alt="Notifications"
-    css={`
-      display: block;
-      margin: ${4 * GU}px auto;
-      height: 193px;
-    `}
-  />
-)
-
-const Checkmark = () => {
-  const theme = useTheme()
-  return (
-    <div
-      css={`
-        border: 2px solid ${theme.accent};
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: ${theme.accent};
-      `}
-    >
-      <IconCheck />
-    </div>
-  )
 }

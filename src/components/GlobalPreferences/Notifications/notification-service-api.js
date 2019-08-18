@@ -46,22 +46,55 @@ export async function verifyEmailToken(shortLivedToken) {
       },
     })
 
-    if (!rawResponse.ok) {
-      // In case of errors the api will return json payload
-      const response = await rawResponse.json()
-
-      if (isTokenExpired(response))
-        throw new ExpiredTokenError(response.message)
-
-      if (isUnauthorized(rawResponse)) {
-        throw new UnauthroizedError(rawResponse.statusText)
-      }
-
-      throw new Error(rawResponse.statusText)
+    if (rawResponse.ok) {
+      return rawResponse.headers.get('authorization')
     }
 
+    // In case of errors the api will return json payload
+    const response = await rawResponse.json()
+
+    if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
+
+    if (isUnauthorized(rawResponse)) {
+      throw new UnauthroizedError(rawResponse.statusText)
+    }
+
+    throw new Error(rawResponse.statusText)
+
     // Get the long lived token from header
-    return rawResponse.headers.get('authorization')
+  } catch (e) {
+    console.error(e.message)
+    throw e
+  }
+}
+
+// Verify that the long lived token is valid and has not expired
+export async function isTokenValid(longLivedToken) {
+  try {
+    const rawResponse = await fetch(NOTIFICATION_SERVICE_ACCOUNT, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: longLivedToken,
+      },
+    })
+
+    if (rawResponse.ok) {
+      return rawResponse
+    }
+
+    // In case of errors the api will return json payload
+    const response = await rawResponse.json()
+
+    if (isTokenExpired(response)) {
+      throw new ExpiredTokenError(response.message)
+    }
+
+    if (isUnauthorized(rawResponse)) {
+      throw new UnauthroizedError(rawResponse.statusText)
+    }
+
+    throw new Error(rawResponse.statusText)
   } catch (e) {
     console.error(e.message)
     throw e

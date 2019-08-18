@@ -1,21 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
-// import { Box } from '@aragon/ui'
+import { ButtonBase, LoadingRing, useTheme } from '@aragon/ui'
 import ManageNotifications from './ManageNotifications'
 import NotificationsLogin from './NotificationsLogin'
 import {
   NotificationsVerify,
   NotificationsPreVerify,
 } from './NotificationsVerify'
+import NotificationsVerifyBox from './NotificationsVerifyBox'
+import { isTokenValid } from './notification-service-api'
 
 import {
   AUTH_UNAUTHENTICATED,
   AUTH_PREVERIFY,
   AUTH_AUTHENTICATED,
+  AUTH_AUTHENTICATION_FAILED,
   NOTIFICATION_SERVICE_EMAIL_KEY,
   NOTIFICATION_SERVICE_TOKEN_KEY,
   VERIFY_SUBSECTION,
+  AUTH_AUTHENTICATING,
 } from './constants'
 
 // Hook responsible for deriving the authState from localStorage values and
@@ -41,7 +45,15 @@ function useAuthState() {
     }
 
     if (email && token) {
-      setAuthState(AUTH_AUTHENTICATED)
+      setAuthState(AUTH_AUTHENTICATING)
+      isTokenValid(token)
+        .then(v => {
+          setAuthState(AUTH_AUTHENTICATED)
+          return v
+        })
+        .catch(e => {
+          setAuthState(AUTH_AUTHENTICATION_FAILED)
+        })
     }
   }, [email, token])
 
@@ -91,6 +103,7 @@ export default function Notifications({
     handleEmailChange,
     handleLogout,
   } = useAuthState()
+  const theme = useTheme()
 
   if (subsection && subsection.startsWith(VERIFY_SUBSECTION)) {
     return (
@@ -102,31 +115,61 @@ export default function Notifications({
       />
     )
   }
-  if (authState === AUTH_PREVERIFY) {
-    return <NotificationsPreVerify email={email} />
+  switch (authState) {
+    case AUTH_PREVERIFY:
+      return <NotificationsPreVerify email={email} />
+    case AUTH_AUTHENTICATED:
+      return (
+        <ManageNotifications
+          dao={dao}
+          onLogout={handleLogout}
+          apps={apps}
+          email={email}
+          token={token}
+        />
+      )
+    case AUTH_UNAUTHENTICATED:
+      return (
+        <NotificationsLogin
+          dao={dao}
+          email={email}
+          authState={authState}
+          onEmailChange={handleEmailChange}
+        />
+      )
+    case AUTH_AUTHENTICATING:
+      return (
+        <NotificationsVerifyBox header="Authenticating">
+          <div
+            css={`
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            `}
+          >
+            <LoadingRing />
+          </div>
+        </NotificationsVerifyBox>
+      )
+    case AUTH_AUTHENTICATION_FAILED:
+      return (
+        <NotificationsVerifyBox header="Authentication Failed">
+          <div>
+            Authentication was unsuccessful.{' '}
+            <ButtonBase
+              css={`
+                font-weight: bold;
+                color: ${theme.link};
+                cursor: pointer;
+              `}
+              onClick={handleLogout}
+            >
+              Try logging in again.
+            </ButtonBase>
+          </div>
+        </NotificationsVerifyBox>
+      )
   }
-
-  if (authState === AUTH_AUTHENTICATED) {
-    // TODO: make sure token is valid
-    return (
-      <ManageNotifications
-        dao={dao}
-        onLogout={handleLogout}
-        apps={apps}
-        email={email}
-        token={token}
-      />
-    )
-  }
-
-  return (
-    <NotificationsLogin
-      dao={dao}
-      email={email}
-      authState={authState}
-      onEmailChange={handleEmailChange}
-    />
-  )
 }
 
 Notifications.propTypes = {
