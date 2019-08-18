@@ -47,7 +47,7 @@ export default function ManageNotifications({
   useEffect(() => {
     if (!token) return
     fetchSubscriptions()
-  }, [email, fetchSubscriptions, token])
+  }, [fetchSubscriptions, token])
 
   return (
     <React.Fragment>
