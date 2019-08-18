@@ -4,8 +4,8 @@ import { addressesEqual } from './web3-utils'
 // Note that these two terms are slightly confusing artifacts of the ACL:
 //   Any entity: If a permission is granted to "any entity", then any address can be seen as holding
 //               that permission
-//   Burn entity: If a permission manager is set as "burn entity", then it is assumed to be a
-//               discarded and frozen permission
+//   Burn entity: If a role's permission manager is set as "burn entity", then it is assumed to be a
+//               discarded and frozen role
 const ANY_ENTITY = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 const BURN_ENTITY = '0x0000000000000000000000000000000000000001'
 const KERNEL_ROLES = [
@@ -36,7 +36,7 @@ export function isBurnEntity(address) {
 }
 
 // Get a role from the known roles (kernel)
-export const getKnownRole = roleBytes => {
+export function getKnownRole(roleBytes) {
   for (const role of KERNEL_ROLES) {
     if (roleBytes === role.bytes) {
       return { appName: 'Kernel', role }
@@ -45,37 +45,7 @@ export const getKnownRole = roleBytes => {
   return null
 }
 
-// Get a list of roles assigned to entities.
-// Input:  app instances => roles => entities
-// Output: entities => app instances => roles
-export function permissionsByEntity(permissions) {
-  const results = {}
-
-  const addRole = (entity, app, role) => {
-    entity = entity.toLowerCase()
-    if (!results[entity]) {
-      results[entity] = {}
-    }
-    results[entity][app] = [...(results[entity][app] || []), role]
-  }
-
-  // apps
-  for (const [app, appPermissions] of Object.entries(permissions)) {
-    // roles
-    for (const [role, { allowedEntities = [] }] of Object.entries(
-      appPermissions
-    )) {
-      // entities
-      for (const entity of allowedEntities) {
-        addRole(entity, app, role)
-      }
-    }
-  }
-
-  return results
-}
-
-// Get a list of roles per instance, with their assigned entities
+// Get a flattened list of all permissions grouped by their roles, with their assigned entities
 export function permissionsByRole(permissions) {
   return Object.entries(permissions).reduce(
     (entries, [app, roles]) => [
@@ -92,26 +62,12 @@ export function permissionsByRole(permissions) {
   )
 }
 
-// Get the roles attached to an entity.
-export const entityRoles = (
-  entityAddress,
-  permissionsByEntity,
-  transform = (role, proxyAddress) => role
-) =>
-  permissionsByEntity[entityAddress]
-    ? Object.entries(permissionsByEntity[entityAddress]).reduce(
-        (roles, [proxyAddress, appRoles]) =>
-          roles.concat(appRoles.map(role => transform(role, proxyAddress))),
-        []
-      )
-    : null
-
-// Get the permissions declared on an app.
-export const appPermissions = (
+// Get an app's assigned permissions.
+export function appPermissions(
   app,
   permissions,
   transform = (entity, role) => [entity, role]
-) => {
+) {
   const roles = permissions[app.proxyAddress]
   const rolesReducer = (roles, [role, { allowedEntities = [] }]) =>
     roles.concat(allowedEntities.map(entity => transform(entity, role)))
@@ -124,7 +80,7 @@ export const appPermissions = (
 }
 
 // Get the roles of an app.
-export const appRoles = (app, permissions) => {
+export function appRoles(app, permissions) {
   const roles = permissions[app.proxyAddress]
   return roles
     ? Object.entries(roles).map(

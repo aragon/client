@@ -2,12 +2,9 @@ import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { AppType } from '../prop-types'
 import {
-  appPermissions,
   appRoles,
   entityResolver,
   roleResolver,
-  entityRoles,
-  permissionsByEntity,
   permissionsByRole,
 } from '../permissions'
 import { log, noop } from '../utils'
@@ -114,38 +111,6 @@ class PermissionsProvider extends React.Component {
     log('setPermissionManager tx:', transaction)
   }
 
-  // Get the roles assigned to an address
-  getEntityRoles = address => {
-    const { resolveEntity, resolveRole } = this.state
-    const { permissions } = this.props
-    if (!(permissions && resolveEntity && resolveRole)) {
-      return []
-    }
-    return entityRoles(
-      address,
-      permissionsByEntity(permissions),
-      (roleBytes, proxyAddress) => ({
-        role: resolveRole(proxyAddress, roleBytes),
-        roleFrom: resolveEntity(proxyAddress),
-        proxyAddress,
-        roleBytes,
-      })
-    )
-  }
-
-  // Get the permissions declared on an app
-  getAppPermissions = app => {
-    const { resolveEntity, resolveRole } = this.state
-    const { permissions } = this.props
-    if (!(app && permissions && resolveEntity && resolveRole)) {
-      return []
-    }
-    return appPermissions(app, permissions, (entityAddress, roleBytes) => ({
-      role: resolveRole(app.proxyAddress, roleBytes),
-      entity: resolveEntity(entityAddress),
-    }))
-  }
-
   // Get the roles of an app
   getAppRoles = app => {
     const { resolveRole } = this.state
@@ -167,47 +132,16 @@ class PermissionsProvider extends React.Component {
     return resolveEntity((role && role.manager) || getEmptyAddress())
   }
 
-  // Get a list of entities with the roles assigned to them
-  getRolesByEntity = () => {
-    const { resolveEntity } = this.state
-    const { permissions } = this.props
-
-    if (!(permissions && resolveEntity)) {
-      return []
-    }
-
-    return Object.entries(permissionsByEntity(permissions))
-      .map(([entityAddress, apps]) => {
-        const entity = resolveEntity(entityAddress)
-        const roles = this.getEntityRoles(entityAddress)
-        return { entity, entityAddress, roles }
-      })
-      .sort((a, b) => {
-        if (a.entity && a.entity.type === 'any') {
-          return -1
-        }
-        if (b.entity && b.entity.type === 'any') {
-          return 1
-        }
-        return 0
-      })
-  }
-
   render() {
-    const { children, permissions, wrapper } = this.props
+    const { children, permissions } = this.props
     return (
       <PermissionsContext.Provider
         value={{
           ...this.state,
           permissions,
-          wrapper,
-          createPermission: this.createPermission,
-          getAppPermissions: this.getAppPermissions,
           getAppRoles: this.getAppRoles,
-          getCompletePermissions: this.getCompletePermissions,
-          getEntityRoles: this.getEntityRoles,
+          createPermission: this.createPermission,
           getRoleManager: this.getRoleManager,
-          getRolesByEntity: this.getRolesByEntity,
           grantPermission: this.grantPermission,
           removePermissionManager: this.removePermissionManager,
           revokePermission: this.revokePermission,
