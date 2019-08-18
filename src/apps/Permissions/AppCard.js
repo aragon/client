@@ -1,11 +1,9 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Card, Badge, unselectable, GU } from '@aragon/ui'
+import { Card, Tag, unselectable, GU } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 import AppIcon from '../../components/AppIcon/AppIcon'
-
-const AppBadge = Badge.App
 
 const AppCard = React.memo(function AppCard({ onOpen, app }) {
   const {
@@ -17,7 +15,6 @@ const AppCard = React.memo(function AppCard({ onOpen, app }) {
   } = app
 
   const onClick = useCallback(() => {
-    console.log('open', proxyAddress)
     onOpen(proxyAddress)
   }, [onOpen, proxyAddress])
 
@@ -53,8 +50,8 @@ const AppCard = React.memo(function AppCard({ onOpen, app }) {
         css={`
           display: flex;
           justify-content: center;
-          max-width: calc(100% - 20px);
-          margin: 0 ${1 * GU}px ${1 * GU}px;
+          max-width: 100%;
+          padding: 0 ${1 * GU}px ${1 * GU}px;
           span {
             display: block;
             white-space: nowrap;
@@ -68,11 +65,11 @@ const AppCard = React.memo(function AppCard({ onOpen, app }) {
       <div
         css={`
           max-width: 100%;
-          padding: 0 20px;
-          margin-bottom: 10px;
+          padding: 0 ${2 * GU}px;
         `}
       >
-        <AppBadge
+        <Tag
+          mode="identifier"
           title={instanceTitle}
           css={`
             overflow: hidden;
@@ -81,7 +78,7 @@ const AppCard = React.memo(function AppCard({ onOpen, app }) {
           `}
         >
           {instanceLabel}
-        </AppBadge>
+        </Tag>
       </div>
     </Card>
   )
