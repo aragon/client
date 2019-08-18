@@ -39,14 +39,14 @@ class PermissionsProvider extends React.Component {
     }
   }
 
-  revokePermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
+  revokePermission = async ({ appAddress, entityAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
     const transaction = await wrapper.performACLIntent('revokePermission', [
       entityAddress,
-      proxyAddress,
+      appAddress,
       roleBytes,
     ])
     log('revokePermission tx:', transaction)
@@ -54,8 +54,8 @@ class PermissionsProvider extends React.Component {
 
   // create a permission (= set a manager + grant a permission)
   createPermission = async ({
+    appAddress,
     entityAddress,
-    proxyAddress,
     roleBytes = null,
     manager,
   }) => {
@@ -63,49 +63,49 @@ class PermissionsProvider extends React.Component {
     if (wrapper === null) {
       return
     }
-    log('createPermission', [entityAddress, proxyAddress, roleBytes, manager])
+    log('createPermission', [entityAddress, appAddress, roleBytes, manager])
     const transaction = await wrapper.performACLIntent('createPermission', [
       entityAddress,
-      proxyAddress,
+      appAddress,
       roleBytes,
       manager,
     ])
     log('createPermission tx:', transaction)
   }
 
-  grantPermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
+  grantPermission = async ({ appAddress, entityAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
     const transaction = await wrapper.performACLIntent('grantPermission', [
       entityAddress,
-      proxyAddress,
+      appAddress,
       roleBytes,
     ])
     log('grantPermission tx:', transaction)
   }
 
-  removePermissionManager = async ({ proxyAddress, roleBytes }) => {
+  removePermissionManager = async ({ appAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
     const transaction = await wrapper.performACLIntent(
       'removePermissionManager',
-      [proxyAddress, roleBytes]
+      [appAddress, roleBytes]
     )
     log('removePermissionManager tx:', transaction)
   }
 
-  setPermissionManager = async ({ entityAddress, proxyAddress, roleBytes }) => {
+  setPermissionManager = async ({ entityAddress, appAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
     const transaction = await wrapper.performACLIntent('setPermissionManager', [
       entityAddress,
-      proxyAddress,
+      appAddress,
       roleBytes,
     ])
     log('setPermissionManager tx:', transaction)

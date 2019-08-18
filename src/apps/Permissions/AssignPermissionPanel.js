@@ -110,8 +110,8 @@ class AssignPermissionPanel extends React.PureComponent {
     }
 
     grantPermission({
+      appAddress: selectedApp.proxyAddress,
       entityAddress: assignEntityAddress,
-      proxyAddress: selectedApp.proxyAddress,
       roleBytes: role.bytes,
     })
 
@@ -210,10 +210,11 @@ class AssignPermissionPanel extends React.PureComponent {
 
 export default props => (
   <PermissionsConsumer>
-    {({ getAppRoles, createPermission, grantPermission }) => (
+    {({ getAppRoles, grantPermission }) => (
       <AssignPermissionPanel
+        getAppRoles={getAppRoles}
+        grantPermission={grantPermission}
         {...props}
-        {...{ getAppRoles, createPermission, grantPermission }}
       />
     )}
   </PermissionsConsumer>

@@ -198,23 +198,23 @@ class ManageRolePanel extends React.PureComponent {
 
     if (action === REMOVE_PERMISSION_MANAGER) {
       removePermissionManager({
-        proxyAddress: app.proxyAddress,
+        appAddress: app.proxyAddress,
         roleBytes: role.bytes,
       })
     }
 
     if (action === SET_PERMISSION_MANAGER) {
       setPermissionManager({
+        appAddress: app.proxyAddress,
         entityAddress: this.filterNewRoleManager(newRoleManagerValue),
-        proxyAddress: app.proxyAddress,
         roleBytes: role.bytes,
       })
     }
 
     if (action === CREATE_PERMISSION) {
       createPermission({
+        appAddress: app.proxyAddress,
         entityAddress: assignEntityAddress,
-        proxyAddress: app.proxyAddress,
         roleBytes: role.bytes,
         manager: this.filterNewRoleManager(newRoleManagerValue),
       })

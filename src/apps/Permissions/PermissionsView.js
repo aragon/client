@@ -77,8 +77,8 @@ function renderEntryChild({ entities, app, role }) {
     : entities.map(entity => (
         <ChildEntity
           key={entity.address}
+          appAddress={app.proxyAddress}
           entity={entity}
-          proxyAddress={app.proxyAddress}
           roleBytes={role.bytes}
         />
       ))
@@ -105,15 +105,15 @@ function EntryActions({ entry, onManageRole }) {
 /* eslint-enable react/prop-types */
 
 /* eslint-disable react/prop-types */
-function ChildEntity({ entity, proxyAddress, roleBytes }) {
+function ChildEntity({ appAddress, entity, roleBytes }) {
   const theme = useTheme()
   const { revokePermission } = usePermissions()
 
   const entityAddress = entity.address
 
   const handleRevokeButtonClick = useCallback(() => {
-    revokePermission({ entityAddress, proxyAddress, roleBytes })
-  }, [revokePermission, entityAddress, proxyAddress, roleBytes])
+    revokePermission({ appAddress, entityAddress, roleBytes })
+  }, [revokePermission, entityAddress, appAddress, roleBytes])
 
   return (
     <div
