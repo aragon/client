@@ -6,6 +6,7 @@ import {
   ContextMenuItem,
   DataView,
   IconTrash,
+  textStyle,
   useLayout,
   useTheme,
 } from '@aragon/ui'
@@ -58,7 +59,13 @@ PermissionsView.propTypes = {
 
 function renderEntry({ entities, app, role, manager }, showApps) {
   const cells = [
-    role.name,
+    <span
+      css={`
+        ${textStyle('body2')}
+      `}
+    >
+      {role.name}
+    </span>,
     <LocalIdentityBadge entity={app.proxyAddress} shorten />,
     <EntryEntities entities={entities} />,
     <LocalIdentityBadge entity={manager} />,
@@ -141,12 +148,8 @@ function ChildEntity({ appAddress, entity, roleBytes }) {
 }
 /* eslint-enable react/prop-types */
 
-// eslint-disable-next-line react/prop-types
+/* eslint-disable react/prop-types */
 function EntryEntities({ entities }) {
-  if (entities.length === 0) {
-    return 'Not assigned'
-  }
-
   if (entities.length === 1) {
     return (
       <LocalIdentityBadge
@@ -157,7 +160,16 @@ function EntryEntities({ entities }) {
     )
   }
 
-  return `${entities.length} entities`
+  return (
+    <span
+      css={`
+        ${textStyle('body2')}
+      `}
+    >
+      {entities.length === 0 ? 'Not assigned' : `${entities.length} entities`}
+    </span>
+  )
 }
+/* eslint-enable react/prop-types */
 
 export default PermissionsView

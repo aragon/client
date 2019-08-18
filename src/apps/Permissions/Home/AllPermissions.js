@@ -5,6 +5,7 @@ import {
   GU,
   IconSearch,
   TextInput,
+  textStyle,
   useLayout,
   useTheme,
 } from '@aragon/ui'
@@ -131,6 +132,8 @@ function Heading({
         <div
           css={`
             white-space: nowrap;
+            ${textStyle('body2')}
+            font-weight: 600;
           `}
         >
           All assigned permissions

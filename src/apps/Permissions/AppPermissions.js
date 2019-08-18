@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { BackButton, Bar } from '@aragon/ui'
+import { BackButton, Bar, textStyle } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { usePermissionsByRole } from '../../contexts/PermissionsContext'
 import EmptyBlock from './EmptyBlock'
@@ -28,7 +28,16 @@ function AppPermissions({ app, loading, onBack, onManageRole }) {
         <BackButton onClick={onBack} />
       </Bar>
       <PermissionsView
-        heading="Available permissions"
+        heading={
+          <span
+            css={`
+              ${textStyle('body2')}
+              font-weight: 600;
+            `}
+          >
+            Available permissions
+          </span>
+        }
         onManageRole={onManageRole}
         permissions={appPermissions}
         showApps={false}

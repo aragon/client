@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Card, Tag, unselectable, GU } from '@aragon/ui'
+import { Card, Tag, textStyle, unselectable, GU } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 import AppIcon from '../../components/AppIcon/AppIcon'
@@ -58,6 +58,7 @@ const AppCard = React.memo(function AppCard({ onOpen, app }) {
             overflow: hidden;
             text-overflow: ellipsis;
           }
+          ${textStyle('body2')}
         `}
       >
         <span>{name || 'Unknown'}</span>
