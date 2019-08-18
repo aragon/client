@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Box, Button, GU, TextInput, Info, IconMail } from '@aragon/ui'
 import { login } from './notification-service-api'
-import { getEthNetworkType } from '../../../local-settings'
+import { network } from '../../../environment'
 import notificationSvg from './notifications.svg'
 
 export default function NotificationsLogin({
@@ -14,7 +14,7 @@ export default function NotificationsLogin({
 }) {
   const [inputEmail, setInputEmail] = useState('')
   const [apiError, setApiError] = useState(null)
-  const network = getEthNetworkType()
+  const ethNetwork = network.type === 'main' ? 'mainnet' : 'rinkeby'
 
   const handleEmailChange = e => {
     setInputEmail(e.target.value)
@@ -22,7 +22,7 @@ export default function NotificationsLogin({
 
   const handleLogin = async e => {
     try {
-      await login({ email: inputEmail, dao, network })
+      await login({ email: inputEmail, dao, network: ethNetwork })
       onEmailChange(inputEmail)
     } catch (e) {
       setApiError(e.message)
