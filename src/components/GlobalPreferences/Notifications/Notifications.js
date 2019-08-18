@@ -19,7 +19,7 @@ import {
 } from './constants'
 
 // Hook responsible for deriving the authState from localStorage values and
-// provide setters which update the localStorage
+// providing setters which update the localStorage
 function useAuthState() {
   const [authState, setAuthState] = useState(AUTH_UNAUTHENTICATED)
   const [email, setEmail] = useState(
