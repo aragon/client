@@ -2,17 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  SidePanel,
+  Button,
   DropDown,
   Info,
   Field,
-  Button,
+  SidePanel,
+  GU,
   breakpoint,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
-import { AppType } from '../../prop-types'
+import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntitySelector from './EntitySelector'
@@ -75,10 +76,10 @@ const ACTIONS = new Map([
 ])
 
 const DEFAULT_STATE = {
-  assignEntityIndex: 0,
+  assignEntityIndex: -1,
   assignEntityAddress: '',
   updateAction: NO_UPDATE_ACTION,
-  assignManagerIndex: 0,
+  assignManagerIndex: -1,
   newRoleManagerValue: '',
 }
 
@@ -94,6 +95,7 @@ class ManageRolePanel extends React.PureComponent {
     removePermissionManager: PropTypes.func.isRequired,
     role: PropTypes.object,
     setPermissionManager: PropTypes.func.isRequired,
+    wrapper: AragonType,
   }
 
   state = {
@@ -228,11 +230,17 @@ class ManageRolePanel extends React.PureComponent {
   }
 
   handleRoleManagerChange = ({ index, address }) => {
-    this.setState({ assignManagerIndex: index, newRoleManagerValue: address })
+    this.setState({
+      assignManagerIndex: index || -1,
+      newRoleManagerValue: address,
+    })
   }
 
   handleEntityChange = ({ index, address }) => {
-    this.setState({ assignEntityIndex: index, assignEntityAddress: address })
+    this.setState({
+      assignEntityIndex: index || -1,
+      assignEntityAddress: address,
+    })
   }
 
   renderManager = () => {
@@ -254,7 +262,7 @@ class ManageRolePanel extends React.PureComponent {
   }
 
   render() {
-    const { opened, onClose, app, role } = this.props
+    const { opened, onClose, app, role, wrapper } = this.props
     const { assignManagerIndex, assignEntityIndex } = this.state
 
     const updateActionsItems = this.getUpdateActionsItems()
@@ -277,14 +285,14 @@ class ManageRolePanel extends React.PureComponent {
         onClose={onClose}
         onTransitionEnd={this.handlePanelTransitionEnd}
       >
-        <React.Fragment>
+        <form
+          css={`
+            margin-top: ${3 * GU}px;
+          `}
+        >
           <Field label="App">
             {app && (
-              <AppInstanceLabel
-                app={app}
-                proxyAddress={app.proxyAddress}
-                showIcon={false}
-              />
+              <AppInstanceLabel app={app} proxyAddress={app.proxyAddress} />
             )}
           </Field>
 
@@ -300,7 +308,7 @@ class ManageRolePanel extends React.PureComponent {
             <Field label="Action">
               <DropDown
                 items={updateActionsItems}
-                active={updateActionIndex}
+                selected={updateActionIndex}
                 onChange={this.handleUpdateActionChange}
                 wide
               />
@@ -311,9 +319,10 @@ class ManageRolePanel extends React.PureComponent {
             <EntitySelector
               label="New manager"
               labelCustomAddress="Address for new manager"
-              activeIndex={assignManagerIndex}
+              selectedIndex={assignManagerIndex}
               apps={this.getNamedApps()}
               onChange={this.handleRoleManagerChange}
+              wrapper={wrapper}
             />
           )}
 
@@ -323,35 +332,44 @@ class ManageRolePanel extends React.PureComponent {
                 includeAnyEntity
                 label="Grant permission to"
                 labelCustomAddress="Grant permission to"
-                activeIndex={assignEntityIndex}
+                selectedIndex={assignEntityIndex}
                 apps={this.getNamedApps()}
                 onChange={this.handleEntityChange}
+                wrapper={wrapper}
               />
               <EntitySelector
                 label="Manager"
                 labelCustomAddress="Address for manager"
-                activeIndex={assignManagerIndex}
+                selectedIndex={assignManagerIndex}
                 apps={this.getNamedApps()}
                 onChange={this.handleRoleManagerChange}
+                wrapper={wrapper}
               />
             </React.Fragment>
           )}
 
           {(isUpdateAction || action === CREATE_PERMISSION) && (
-            <Field style={{ paddingTop: '20px' }}>
-              <Button
-                mode="strong"
-                onClick={this.handleSubmit}
-                disabled={!this.canSubmit()}
-                wide
-              >
-                {isUpdateAction ? 'Update permission' : 'Initialize permission'}
-              </Button>
-            </Field>
+            <Button
+              mode="strong"
+              onClick={this.handleSubmit}
+              disabled={!this.canSubmit()}
+              wide
+            >
+              {isUpdateAction ? 'Update permission' : 'Initialize permission'}
+            </Button>
           )}
 
-          {message && <Info.Action title="Info">{message}</Info.Action>}
-        </React.Fragment>
+          {message && (
+            <Info
+              title="Info"
+              css={`
+                margin-top: ${3 * GU}px;
+              `}
+            >
+              {message}
+            </Info>
+          )}
+        </form>
       </SidePanel>
     )
   }

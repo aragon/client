@@ -186,6 +186,7 @@ function Permissions({
         opened={managedRole !== null}
         onClose={closeManageRolePanel}
         role={managedRole}
+        wrapper={wrapper}
       />
     </React.Fragment>
   )
