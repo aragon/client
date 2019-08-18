@@ -155,8 +155,7 @@ function useGlobalPreferences(locator = {}) {
     setSectionIndex(index === -1 ? null : index)
 
     // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
-    const subsection =
-      sectionIndex !== null ? path.substring(PATHS[sectionIndex].length) : null
+    const subsection = index !== -1 ? path.substring(PATHS[index].length) : null
 
     setSubsection(subsection)
     // Does the current path start with any of the declared route paths
