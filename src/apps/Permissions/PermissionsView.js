@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   ButtonIcon,
@@ -12,13 +12,12 @@ import {
 import { usePermissions } from '../../contexts/PermissionsContext'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 
-function PermissionsView({
-  permissions,
-  onManageRole,
-  heading,
-  showApps,
-}) {
+function PermissionsView({ permissions, onManageRole, heading, showApps }) {
   const { layoutName } = useLayout()
+  const willRenderEntryChild = useMemo(
+    () => permissions.some(permission => permission.entities.length > 1),
+    [permissions]
+  )
 
   const fields = [
     'Action',
@@ -42,7 +41,7 @@ function PermissionsView({
       fields={fields}
       entries={permissions}
       renderEntry={entry => renderEntry(entry, showApps)}
-      renderEntryChild={renderEntryChild}
+      renderEntryChild={willRenderEntryChild ? renderEntryChild : undefined}
       renderEntryActions={entry => (
         <EntryActions entry={entry} onManageRole={onManageRole} />
       )}
@@ -53,7 +52,7 @@ function PermissionsView({
 PermissionsView.propTypes = {
   heading: PropTypes.node,
   onManageRole: PropTypes.func.isRequired,
-  permissions: PropTypes.array,
+  permissions: PropTypes.array.isRequired,
   showApps: PropTypes.bool.isRequired,
 }
 
@@ -108,7 +107,6 @@ function EntryActions({ entry, onManageRole }) {
 /* eslint-disable react/prop-types */
 function ChildEntity({ entity, proxyAddress, roleBytes }) {
   const theme = useTheme()
-
   const { revokePermission } = usePermissions()
 
   const entityAddress = entity.address
