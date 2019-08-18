@@ -63,8 +63,10 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => (
               <Td>
                 {version}{' '}
                 {version === currentVersion.version && (
-                  <Tag mode="identity"
-                    style={{ marginLeft: `${GU}px`, fontVariant: 'small-caps' }}
+                  <Tag
+                    css={`
+                      margin-left: ${1 * GU}px;
+                    `}
                   >
                     current
                   </Tag>

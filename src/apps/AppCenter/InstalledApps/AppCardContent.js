@@ -43,17 +43,10 @@ const AppCardContent = ({ repo, onOpen }) => {
             css={`
               display: flex;
               justify-content: center;
-              margin-bottom: 12px;
+              margin-bottom: 8px;
             `}
           >
-            <Tag
-              background={color(theme.positive)
-                .alpha(0.15)
-                .cssa()}
-              foreground={theme.positive}
-            >
-              New version available
-            </Tag>
+            <Tag mode="new">New version available</Tag>
           </div>
         )}
         <p
