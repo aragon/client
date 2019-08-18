@@ -70,15 +70,14 @@ const AppCard = React.memo(function AppCard({ onOpen, app }) {
       >
         <Tag
           mode="identifier"
+          label={instanceLabel}
           title={instanceTitle}
           css={`
             overflow: hidden;
             text-overflow: ellipsis;
             display: block;
           `}
-        >
-          {instanceLabel}
-        </Tag>
+        />
       </div>
     </Card>
   )
