@@ -184,7 +184,7 @@ export async function getSubscriptions(token) {
 export const createSubscription = async ({
   abi,
   appName,
-  contractAddress, // TODO: rename to proxyAddress. Contract address can be confused as the app repo's contract address
+  appContractAddress,
   ensName,
   eventName,
   network,
@@ -200,7 +200,7 @@ export const createSubscription = async ({
       body: JSON.stringify({
         appName,
         eventName,
-        contractAddress,
+        contractAddress: appContractAddress,
         ensName,
         network,
         abi,

@@ -51,7 +51,7 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
       const payload = {
         abi,
         appName,
-        contractAddress: proxyAddress,
+        appContractAddress: proxyAddress,
         ensName: dao,
         eventName: eventNames[selectedEventIdx],
         network: getEthNetworkType(),
