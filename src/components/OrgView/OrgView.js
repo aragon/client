@@ -1,6 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { ButtonBase, useTheme, useThemeMode, useViewport } from '@aragon/ui'
 import { GU } from '../../utils'
+import {
+  AppInstanceGroupType,
+  AppsStatusType,
+  AppType,
+  DaoAddressType,
+  DaoStatusType,
+} from '../../prop-types'
 import { DAO_STATUS_LOADING } from '../../symbols'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import CombinedPanel from '../MenuPanel/CombinedPanel'
@@ -24,18 +32,16 @@ export function useAppWidth() {
 }
 
 function OrgView({
-  daoStatus,
-  daoAddress,
-  children,
-  account,
   activeInstanceId,
   appInstanceGroups,
   apps,
   appsStatus,
+  children,
+  daoAddress,
+  daoStatus,
   onOpenApp,
   onOpenPreferences,
   onRequestAppsReload,
-  onRequestEnable,
 }) {
   const theme = useTheme()
   const { width, below } = useViewport()
@@ -131,6 +137,18 @@ function OrgView({
       </div>
     </AppWidthContext.Provider>
   )
+}
+OrgView.propTypes = {
+  activeInstanceId: PropTypes.string,
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
+  appsStatus: AppsStatusType.isRequired,
+  children: PropTypes.node,
+  daoAddress: DaoAddressType.isRequired,
+  daoStatus: DaoStatusType.isRequired,
+  onOpenApp: PropTypes.func.isRequired,
+  onOpenPreferences: PropTypes.func.isRequired,
+  onRequestAppsReload: PropTypes.func.isRequired,
 }
 
 export default OrgView
