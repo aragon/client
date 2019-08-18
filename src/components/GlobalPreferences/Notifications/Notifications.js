@@ -132,7 +132,6 @@ export default function Notifications({
       return (
         <NotificationsLogin
           dao={dao}
-          email={email}
           authState={authState}
           onEmailChange={handleEmailChange}
         />
