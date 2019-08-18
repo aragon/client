@@ -4,7 +4,7 @@ import { ButtonBase, Info, LoadingRing, useTheme } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
 import {
   VERIFY_SUBSECTION,
-  UnauthroizedError,
+  UnauthorizedError,
   ExpiredTokenError,
 } from './constants'
 import NotificationsVerifyBox from './NotificationsVerifyBox'
@@ -38,8 +38,10 @@ export function NotificationsVerify({
 
         if (e instanceof ExpiredTokenError) {
           setError('Your email link has expired.')
-        } else if (e instanceof UnauthroizedError) {
-          setError('Unauthroized')
+        } else if (e instanceof UnauthorizedError) {
+          setError(
+            "Oops, it looks something went wrong and you weren't authorized. Please try again."
+          )
         }
         setIsFetching(false)
         setVerified(false)
@@ -90,8 +92,6 @@ export function NotificationsVerify({
       </NotificationsVerifyBox>
     )
   }
-
-  return <NotificationsVerifyBox header="Verification" />
 }
 
 NotificationsVerify.propTypes = {

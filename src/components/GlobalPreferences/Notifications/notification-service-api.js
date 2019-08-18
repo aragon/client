@@ -5,7 +5,7 @@ import {
   NOTIFICATION_SERVICE_SUBSCRIPTIONS,
   API_MESSAGE_EXPIRED_TOKEN,
   ExpiredTokenError,
-  UnauthroizedError,
+  UnauthorizedError,
 } from './constants'
 import { getEthNetworkType } from '../../../local-settings'
 
@@ -53,7 +53,7 @@ export async function verifyEmailToken(shortLivedToken) {
     if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
 
     if (isUnauthorized(rawResponse)) {
-      throw new UnauthroizedError(rawResponse.statusText)
+      throw new UnauthorizedError(rawResponse.statusText)
     }
 
     throw new Error(rawResponse.statusText)
@@ -88,7 +88,7 @@ export async function isTokenValid(longLivedToken) {
     }
 
     if (isUnauthorized(rawResponse)) {
-      throw new UnauthroizedError(rawResponse.statusText)
+      throw new UnauthorizedError(rawResponse.statusText)
     }
 
     throw new Error(rawResponse.statusText)
@@ -122,7 +122,7 @@ export async function deleteAccount(token) {
         throw new ExpiredTokenError(response.message)
 
       if (isUnauthorized(rawResponse)) {
-        throw new UnauthroizedError(rawResponse.statusText)
+        throw new UnauthorizedError(rawResponse.statusText)
       }
 
       throw new Error(rawResponse.statusText)
@@ -153,7 +153,7 @@ export async function getSubscriptions(token) {
     if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
 
     if (isUnauthorized(rawResponse)) {
-      throw new UnauthroizedError(rawResponse.statusText)
+      throw new UnauthorizedError(rawResponse.statusText)
     }
 
     if (!rawResponse.ok) {
@@ -212,7 +212,7 @@ export const createSubscription = async ({
     if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
 
     if (isUnauthorized(rawResponse)) {
-      throw new UnauthroizedError(rawResponse.statusText)
+      throw new UnauthorizedError(rawResponse.statusText)
     }
 
     if (!rawResponse.ok) {
