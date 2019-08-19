@@ -21,6 +21,7 @@ import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
 import { AppType } from '../../prop-types'
+import { useHelpScout } from '../../hooks/useHelpScout'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
 const CLOSED = Symbol('closed, user can open opt-in or beacon')
@@ -546,4 +547,10 @@ const RoundButtonIcon = styled(animated.div)`
   position: absolute;
 `
 
-export default Beacon
+export default props => {
+  const { optedOut } = useHelpScout()
+  if (optedOut) {
+    return null
+  }
+  return <Beacon {...props} />
+}
