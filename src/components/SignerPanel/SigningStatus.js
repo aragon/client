@@ -41,8 +41,8 @@ class SigningStatus extends React.Component {
     if (isSigning(status)) return 'Waiting for signature…'
     if (status === STATUS_TX_SIGNED) return 'Transaction signed!'
     if (status === STATUS_MSG_SIGNED) return 'Message signed!'
-    if (status === STATUS_TX_ERROR) return 'Transaction failed!'
-    if (status === STATUS_MSG_ERROR) return 'Message failed!'
+    if (status === STATUS_TX_ERROR) return 'Signing transaction failed!'
+    if (status === STATUS_MSG_ERROR) return 'Signing message failed!'
   }
   getInfo() {
     const { status, walletProviderId } = this.props
