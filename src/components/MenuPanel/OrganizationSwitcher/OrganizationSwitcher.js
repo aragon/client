@@ -64,7 +64,6 @@ const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
       </ButtonBase>
       <Popover
         closeOnOpenerFocus
-        placement="bottom-end"
         onClose={closeMenu}
         visible={menuOpened}
         opener={buttonRef.current}
