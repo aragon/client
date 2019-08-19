@@ -25,8 +25,8 @@ export function NotificationsVerify({
     const token = subsection.substring(VERIFY_SUBSECTION.length)
     verifyEmailToken(token)
       .then(longLivedToken => {
-        setIsFetching(false)
         setVerified(true)
+        setIsFetching(false)
         onTokenChange(longLivedToken)
         return longLivedToken
       })
