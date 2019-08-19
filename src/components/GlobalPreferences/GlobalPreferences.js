@@ -7,7 +7,7 @@ import {
   IconClose,
   Layout,
   Header,
-  TabBar,
+  Tabs,
   Toast,
   springs,
   breakpoint,
@@ -91,7 +91,7 @@ function GlobalPreferences({
         />
       ) : (
         <React.Fragment>
-          <TabBar
+          <Tabs
             items={VALUES}
             onChange={onNavigation}
             selected={sectionIndex}
