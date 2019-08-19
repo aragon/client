@@ -110,9 +110,7 @@ function GlobalPreferences({
 
 GlobalPreferences.propTypes = {
   compact: PropTypes.bool,
-  helpScoutOptedOut: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  onHelpScoutOptedOutChange: PropTypes.func.isRequired,
   toast: PropTypes.func,
   wrapper: AragonType,
   locator: PropTypes.object,

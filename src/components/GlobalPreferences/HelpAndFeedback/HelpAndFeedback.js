@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import PropTypes from 'prop-types'
 import { Box, Checkbox, Info, GU, textStyle, useTheme } from '@aragon/ui'
 import helpAndFeedbackSvg from './help-and-feedback.svg'
 import { useHelpScout } from '../../../hooks/useHelpScout'
@@ -51,11 +50,6 @@ function HelpAndFeedback() {
       </Info>
     </Box>
   )
-}
-
-HelpAndFeedback.propTypes = {
-  optedOut: PropTypes.bool,
-  onOptOutChange: PropTypes.func.isRequired,
 }
 
 export default React.memo(HelpAndFeedback)

@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import PropTypes from 'prop-types'
 
 const HELPSCOUT_OPTOUT_KEY = 'HELPSCOUT_OPTOUT'
 
@@ -21,6 +22,10 @@ function HelpScoutProvider({ children }) {
       {children}
     </HelpScoutContext.Provider>
   )
+}
+
+HelpScoutProvider.propTypes = {
+  children: PropTypes.node,
 }
 
 function useHelpScout() {
