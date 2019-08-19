@@ -115,7 +115,7 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
           margin-top: ${4 * GU}px;
         `}
       >
-        <Button disabled={isSubscribeDisabled} onClick={handeSubscribe}>
+        <Button disabled={isSubscribeDisabled || isSubmitting} onClick={handeSubscribe}>
           {isSubmitting ? (
             <LoadingRing
               css={`
