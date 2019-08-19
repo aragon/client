@@ -119,7 +119,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
           )}
         `}
       >
-        <Button label="Close modal" mode="secondary" onClick={onClose}>
+        <Button label="Close modal" onClick={onClose}>
           Close
         </Button>
         <Button

@@ -96,9 +96,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
           <Error>{error}</Error>
         </Label>
         <Controls>
-          <Button mode="secondary" onClick={handleCancel}>
-            Cancel
-          </Button>
+          <Button onClick={handleCancel}>Cancel</Button>
           <StyledSaveButton mode="strong" onClick={handleSave}>
             Save
           </StyledSaveButton>

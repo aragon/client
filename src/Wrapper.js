@@ -254,7 +254,7 @@ class Wrapper extends React.PureComponent {
           position: relative;
           z-index: 0;
           height: 100vh;
-          min-width: 320px;
+          min-width: 360px;
         `}
       >
         <BannerWrapper>

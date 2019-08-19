@@ -9,6 +9,7 @@ import {
   IconClose,
   LoadingRing,
   SafeLink,
+  GU,
   breakpoint,
   springs,
   useTheme,
@@ -19,7 +20,6 @@ import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
-import { GU } from '../../utils'
 import { AppType } from '../../prop-types'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'

@@ -253,7 +253,7 @@ const AnimatedWrap = styled(animated.div)`
   bottom: 0;
   left: 0;
   right: 0;
-  min-width: 320px;
+  min-width: 360px;
   border-top: ${({ accent }) => `2px solid ${accent}`};
   background: ${({ surface }) => surface};
   overflow: auto;

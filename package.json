@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
-    "@aragon/ui": "^1.0.0-alpha.11",
+    "@aragon/ui": "^1.0.0-alpha.14",
     "@aragon/wrapper": "^5.0.0-rc.14",
     "@babel/polyfill": "^7.0.0",
     "@sentry/browser": "^5.5.0",
