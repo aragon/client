@@ -108,9 +108,8 @@ export function NotificationsPreVerify({ email }) {
       header="Awaiting verification. Please check your email!"
     >
       <div>
-        We’ve sent an email to <span css="font-weight: bold;">{email}</span>.
-        Verify your email address so you can manage your notifications
-        subscriptions.
+        We’ve sent an email to <strong>{email}</strong>. Verify your email
+        address so you can manage your notifications subscriptions.
       </div>
     </NotificationsVerifyBox>
   )
