@@ -249,6 +249,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
 
   return (
     <DiscButton
+      description="Help"
       onClick={onToggle}
       css={`
         display: flex;
