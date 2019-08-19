@@ -475,7 +475,6 @@ const Wrapper = styled.aside`
       width: 336px;
       height: 482px;
       position: unset;
-      border: 1px solid rgba(209, 209, 209, 0.5);
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
       border-radius: 3px;
     `
