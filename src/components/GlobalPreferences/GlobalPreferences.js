@@ -37,9 +37,7 @@ const TIMEOUT_TOAST = 4000
 
 function GlobalPreferences({
   compact,
-  helpScoutOptedOut,
   onClose,
-  onHelpScoutOptedOutChange,
   toast,
   wrapper,
   locator,
@@ -102,12 +100,7 @@ function GlobalPreferences({
             )}
             {sectionIndex === 1 && <Network wrapper={wrapper} />}
             {sectionIndex === 2 && <Notifications />}
-            {sectionIndex === 3 && (
-              <HelpAndFeedback
-                optedOut={helpScoutOptedOut}
-                onOptOutChange={onHelpScoutOptedOutChange}
-              />
-            )}
+            {sectionIndex === 3 && <HelpAndFeedback />}
           </main>
         </React.Fragment>
       )}
