@@ -1,16 +1,26 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { Button, Text, useViewport, theme } from '@aragon/ui'
-import AppLayout from '../../components/AppLayout/AppLayout'
+import {
+  Box,
+  Button,
+  ButtonText,
+  Header,
+  IconCoin,
+  Info,
+  Layout,
+  GU,
+  textStyle,
+  unselectable,
+  useLayout,
+  useTheme,
+} from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
 import { toChecksumAddress } from '../../web3-utils'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
-import Option from './Option'
-import Note from './Note'
+import useAppWidth from '../useAppWidth'
 
 const Organization = React.memo(
   ({
@@ -18,158 +28,212 @@ const Organization = React.memo(
     apps,
     appsLoading,
     daoAddress,
-    onMessage,
     onOpenApp,
     walletNetwork,
     walletWeb3,
   }) => {
-    const handleMenuPanelOpen = () => {
-      onMessage({
-        data: { from: 'app', name: 'menuPanel', value: true },
-      })
-    }
-    const handleDepositTestTokens = () => {
+    const theme = useTheme()
+    const { layoutName } = useLayout()
+
+    const handleDepositTestTokens = useCallback(() => {
       const finance = apps.find(app => app.appId === appIds.Finance)
       if (finance && finance.proxyAddress) {
         airdrop(walletWeb3, finance.proxyAddress, account)
       }
-    }
-    const handleOpenFinance = () => {
+    }, [account, apps, walletWeb3])
+    const handleOpenAgentApp = useCallback(() => {
+      const agent = apps.find(app => app.appId === appIds.Agent)
+      if (agent && agent.proxyAddress) {
+        onOpenApp(agent.proxyAddress)
+      }
+    }, [apps, onOpenApp])
+    const handleOpenFinanceApp = useCallback(() => {
       const finance = apps.find(app => app.appId === appIds.Finance)
       if (finance && finance.proxyAddress) {
         onOpenApp(finance.proxyAddress)
       }
-    }
-    const enableTransactions = !!account && walletNetwork === network.type
-    const financeApp = apps.find(({ name }) => name === 'Finance')
+    }, [apps, onOpenApp])
+
+    const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
+    const hasAgentApp = apps.some(app => app.appId === appIds.Agent)
+    const hasFinanceApp = apps.some(app => app.appId === appIds.Finance)
     const checksummedDaoAddr =
       daoAddress.address && toChecksumAddress(daoAddress.address)
-    const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
-    const { below } = useViewport()
-    const shortAddresses = below('medium')
+    const enableTransactions = !!account && walletNetwork === network.type
+    const shortAddresses = layoutName !== 'large'
+
+    const depositFundsHelpText = appsLoading ? (
+      ''
+    ) : hasFinanceApp || hasAgentApp ? (
+      <span>
+        If you'd like to deposit funds into this organization, you can do so
+        from{' '}
+        {hasFinanceApp ? (
+          <OpenAppButton onClick={handleOpenFinanceApp}>Finance</OpenAppButton>
+        ) : (
+          <OpenAppButton onClick={handleOpenAgentApp}>Agent</OpenAppButton>
+        )}
+        .
+      </span>
+    ) : (
+      `This organization does not have a Finance or Agent app installed and may
+       not be able to receive funds. Please check with the organization's
+       administrators if any other installed apps are able to receive funds.`
+    )
 
     return (
-      <AppLayout
-        title="Organization Details"
-        onMenuOpen={handleMenuPanelOpen}
-        smallViewPadding={20}
-      >
-        <Content>
-          <div>
-            <Option
-              name="Organization address"
-              text={`This organization is deployed on the ${network.name}.`}
+      <React.Fragment>
+        <Header primary="Organization Settings" />
+        <Section heading="Organization address">
+          <p
+            css={`
+              ${textStyle('body2')}
+            `}
+          >
+            {checksummedDaoAddr
+              ? `This organization is deployed on the Ethereum ${network.name}.`
+              : 'Resolving DAO address…'}
+          </p>
+          {checksummedDaoAddr && (
+            <React.Fragment>
+              <div
+                css={`
+                  margin-top: ${2 * GU}px;
+                  margin-bottom: ${3 * GU}px;
+                `}
+              >
+                <LocalIdentityBadge
+                  entity={checksummedDaoAddr}
+                  shorten={shortAddresses}
+                />
+              </div>
+              <Info>
+                <strong css="font-weight: 800">
+                  Do not send ETH or ERC20 tokens to this address.
+                </strong>{' '}
+                {depositFundsHelpText}
+              </Info>
+            </React.Fragment>
+          )}
+        </Section>
+        {hasFinanceApp && testTokensEnabled(network.type) && (
+          <Section heading="Request test tokens">
+            <p
+              css={`
+                margin-bottom: ${2 * GU}px;
+                ${textStyle('body2')}
+              `}
             >
-              {checksummedDaoAddr ? (
-                <div>
-                  <Label>Address</Label>
-                  <LocalIdentityBadge
-                    entity={checksummedDaoAddr}
-                    shorten={shortAddresses}
-                  />
-                </div>
-              ) : (
-                <p>Resolving DAO address…</p>
-              )}
-              <Note>
-                <strong>Do not send ether or tokens to this address!</strong>
-                <br />
-                Go to the{' '}
-                {financeApp ? (
-                  <ButtonLink onClick={handleOpenFinance}>
-                    Finance app
-                  </ButtonLink>
-                ) : (
-                  'Finance app'
-                )}{' '}
-                to deposit funds into your organization instead.
-              </Note>
-            </Option>
-            {testTokensEnabled(network.type) && (
-              <Option
-                name="Request test tokens"
-                text={`
-                    Deposit some tokens into your organization for testing
-                    purposes.
+              Deposit some tokens into your organization for testing purposes.
+            </p>
+            <Button
+              label="Request test tokens"
+              icon={<IconCoin />}
+              display="all"
+              onClick={handleDepositTestTokens}
+              disabled={!enableTransactions}
+              css={`
+                margin-bottom: ${2 * GU}px;
+              `}
+            />
+            {enableTransactions ? (
+              <Info>
+                <p>
+                  Requesting tokens will assign random{' '}
+                  <strong css="font-weight: 800">test tokens</strong> to your
+                  organization. These tokens are named after existing projects,
+                  but keep in mind{' '}
+                  <strong css="font-weight: 800">
+                    they are not real tokens
+                  </strong>
+                  .
+                </p>
+                <p
+                  css={`
+                    margin-top: ${1 * GU}px;
                   `}
-              >
-                <div>
-                  <Button
-                    mode="secondary"
-                    onClick={handleDepositTestTokens}
-                    disabled={!enableTransactions}
-                    style={{ opacity: enableTransactions ? 1 : 0.6 }}
+                >
+                  You can view the received tokens in{' '}
+                  <OpenAppButton onClick={handleOpenFinanceApp}>
+                    Finance
+                  </OpenAppButton>
+                  .
+                </p>
+              </Info>
+            ) : (
+              <Info mode="warning">
+                {walletNetwork !== network.type
+                  ? `Please select the ${sanitizeNetworkType(
+                      network.type
+                    )} network in your Ethereum provider.`
+                  : `Please unlock your account in your Ethereum provider.`}
+              </Info>
+            )}
+          </Section>
+        )}
+        {appsLoading ? (
+          <Section heading="Installed Aragon apps">
+            <div
+              css={`
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 180px;
+                ${textStyle('body2')}
+              `}
+            >
+              Loading apps…
+            </div>
+          </Section>
+        ) : (
+          <Section heading="Installed Aragon apps">
+            <ul
+              css={`
+                list-style: none;
+                display: grid;
+                grid-template-columns: minmax(50%, 1fr) minmax(50%, 1fr);
+                grid-column-gap: ${2 * GU}px;
+                margin-bottom: -${3 * GU}px;
+              `}
+            >
+              {apmApps.map(
+                ({ appId, description, name, proxyAddress, tags }) => (
+                  <li
+                    key={proxyAddress}
+                    css={`
+                      margin-bottom: ${3 * GU}px;
+                    `}
                   >
-                    Request test tokens
-                  </Button>
-                  {!enableTransactions && (
-                    <Text size="small" style={{ marginLeft: '10px' }}>
-                      {(() =>
-                        walletNetwork !== network.type
-                          ? `Please select the ${sanitizeNetworkType(
-                              network.type
-                            )} network in your Ethereum provider.`
-                          : `Please unlock your account in your Ethereum provider.`)()}
-                    </Text>
-                  )}
-                </div>
-                <Note>
-                  Requesting tokens will assign random <strong>TEST</strong>{' '}
-                  tokens to your organization. The tokens are named after
-                  existing projects, but keep in mind{' '}
-                  <strong>THEY ARE NOT</strong> the real ones. You can view the
-                  received tokens in the Token Balances on the Finance app.
-                </Note>
-              </Option>
-            )}
-            {appsLoading && (
-              <Option name="Aragon apps" text={'Loading apps…'}>
-                <div css={'height:20px'} />
-              </Option>
-            )}
-            {apmApps.length > 0 && (
-              <Option
-                name="Aragon apps"
-                text={
-                  appsLoading
-                    ? 'Loading apps…'
-                    : `This organization has ${apmApps.length} ${
-                        apmApps.length === 1 ? 'app' : 'apps'
-                      } installed.`
-                }
-              >
-                {!appsLoading && (
-                  <AppsList>
-                    {apmApps.map(
-                      ({ appId, description, name, proxyAddress, tags }) => {
-                        const checksummedProxyAddress = toChecksumAddress(
-                          proxyAddress
-                        )
-
-                        return (
-                          <AppItem
-                            title={description}
-                            key={checksummedProxyAddress}
-                          >
-                            <Label>
-                              {name}
-                              {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
-                            </Label>
-                            <LocalIdentityBadge
-                              entity={checksummedProxyAddress}
-                              shorten={shortAddresses}
-                            />
-                          </AppItem>
-                        )
-                      }
-                    )}
-                  </AppsList>
-                )}
-              </Option>
-            )}
-          </div>
-        </Content>
-      </AppLayout>
+                    <label
+                      css={`
+                        color: ${theme.surfaceContentSecondary};
+                        ${unselectable()};
+                        ${textStyle('label2')};
+                      `}
+                    >
+                      {name}
+                      {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
+                    </label>
+                    <div
+                      css={`
+                        margin-top: ${1 * GU}px;
+                        button {
+                          max-width: 100%;
+                        }
+                      `}
+                    >
+                      <LocalIdentityBadge
+                        entity={proxyAddress}
+                        shorten={shortAddresses}
+                      />
+                    </div>
+                  </li>
+                )
+              )}
+            </ul>
+          </Section>
+        )}
+      </React.Fragment>
     )
   }
 )
@@ -179,43 +243,30 @@ Organization.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
   daoAddress: DaoAddressType.isRequired,
-  onMessage: PropTypes.func.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   walletNetwork: PropTypes.string.isRequired,
   walletWeb3: PropTypes.object.isRequired,
 }
 
-const Content = styled.div`
-  max-width: 600px;
-`
+const Section = ({ ...props }) => {
+  return <Box padding={3 * GU} {...props} />
+}
 
-const ButtonLink = styled(Button).attrs({ mode: 'text' })`
-  padding: 0;
-  color: inherit;
-  font-size: inherit;
-  text-decoration: underline;
-  transition: none;
-  &:focus {
-    outline: 2px solid ${theme.accent};
-  }
-  &:active {
-    outline: 0;
-  }
-`
+const OpenAppButton = props => (
+  <ButtonText
+    css={`
+      padding: 0;
+      font-weight: 600;
+    `}
+    {...props}
+  />
+)
 
-const Label = styled.label`
-  display: block;
-  color: ${theme.textSecondary};
-  font-size: 11px;
-  text-transform: uppercase;
-`
-
-const AppsList = styled.ul`
-  list-style: none;
-`
-
-const AppItem = styled.li`
-  margin-bottom: 24px;
-`
-
-export default Organization
+export default props => {
+  const appWidth = useAppWidth()
+  return (
+    <Layout parentWidth={appWidth}>
+      <Organization {...props} />
+    </Layout>
+  )
+}
