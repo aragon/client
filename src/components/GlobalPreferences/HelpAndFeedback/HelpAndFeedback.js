@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Box, Checkbox, Info, GU, textStyle, useTheme } from '@aragon/ui'
 import helpAndFeedbackSvg from './help-and-feedback.svg'
+import { useHelpScout } from '../../../hooks/useHelpScout'
 
-function HelpAndFeedback({ optedOut, onOptOutChange }) {
+function HelpAndFeedback() {
   const theme = useTheme()
-  const handleOptOutChange = () => onOptOutChange(!optedOut)
+  const { optedOut, setOptedOut } = useHelpScout()
+  const handleOptOutChange = useCallback(() => setOptedOut(!optedOut), [
+    setOptedOut,
+    optedOut,
+  ])
 
   return (
     <Box heading="Help Scout">
