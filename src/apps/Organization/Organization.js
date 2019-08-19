@@ -217,9 +217,6 @@ const Organization = React.memo(
                     <div
                       css={`
                         margin-top: ${1 * GU}px;
-                        button {
-                          max-width: 100%;
-                        }
                       `}
                     >
                       <LocalIdentityBadge
