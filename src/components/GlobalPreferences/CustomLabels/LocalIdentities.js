@@ -82,7 +82,7 @@ function LocalIdentities({
             onChange={onSearchChange}
             value={searchTerm}
             css={`
-              width: ${compact ? 200 : 240}px;
+              width: ${compact ? 25 * GU : 30 * GU}px;
             `}
           />
         </div>
