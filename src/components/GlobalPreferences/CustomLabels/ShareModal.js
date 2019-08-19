@@ -6,10 +6,10 @@ import {
   GU,
   IconCopy,
   Modal,
-  RADIUS,
   TextInput,
   Toast,
   breakpoint,
+  textStyle,
   useTheme,
 } from '@aragon/ui'
 
@@ -20,91 +20,75 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
 
   return (
     <Modal visible={visible} onClose={onClose} zIndex={10001}>
-      <header
+      <h1
         css={`
-          font-size: 22px;
-          line-height: 38px;
-          font-weight: bold;
+          ${textStyle('title2')}
         `}
       >
         Share custom labels
-      </header>
-      <main style={{ marginTop: `${2 * GU}px` }}>
+      </h1>
+      <main
+        css={`
+          margin-top: ${2 * GU}px;
+        `}
+      >
         <div
           css={`
-            font-size: 15px;
-            line-height: 22px;
+            ${textStyle('body2')}
+            margin-bottom: ${2.5 * GU}px;
           `}
         >
           These labels will be shared with everyone that has access to this
           link.
         </div>
-        <div style={{ marginTop: `${2.5 * GU}px` }}>
+        <div>
           <div
             css={`
               font-size: 12px;
               line-height: 16px;
               text-transform: uppercase;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             Link
           </div>
-          <div
+          <TextInput
+            ref={inputRef}
+            value={link}
+            onFocus={onFocus}
+            adornment={
+              <ButtonIcon
+                onClick={onCopy}
+                label="Copy to clipboard"
+                css={`
+                  width: 38px;
+                  height: 38px;
+                  &:active {
+                    background: ${theme.surfacePressed};
+                  }
+                `}
+              >
+                <IconCopy
+                  css={`
+                    color: ${theme.surfaceIcon};
+                  `}
+                />
+              </ButtonIcon>
+            }
+            adornmentPosition="end"
+            adornmentSettings={{
+              width: 64,
+              padding: 1,
+            }}
+            readOnly
+            wide
             css={`
-              display: inline-flex;
-              max-width: 100%;
-              width: 100%;
-              position: relative;
-              background: ${theme.surface};
-              border: 1px solid ${theme.border};
-              border-radius: ${RADIUS}px;
-              box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
-              padding-right: 30px;
-              margin-top: ${1 * GU}px;
+              text-overflow: ellipsis;
             `}
-          >
-            <TextInput
-              ref={inputRef}
-              value={link}
-              onFocus={onFocus}
-              readOnly
-              css={`
-                text-overflow: ellipsis;
-                width: 100%;
-                max-width: 100%;
-                border: 0;
-                box-shadow: none;
-                background: ${theme.surface};
-                &:read-only {
-                  color: ${theme.content};
-                  text-shadow: none;
-                }
-              `}
-            />
-            <ButtonIcon
-              onClick={onCopy}
-              label="Copy to clipboard"
-              css={`
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 0 ${RADIUS}px ${RADIUS}px 0;
-                &:active {
-                  background: ${theme.surfacePressed};
-                }
-              `}
-            >
-              <IconCopy />
-            </ButtonIcon>
-          </div>
+          />
         </div>
       </main>
-      <footer
+      <div
         css={`
           margin-top: ${3 * GU}px;
           display: flex;
@@ -132,7 +116,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
         >
           Copy link
         </Button>
-      </footer>
+      </div>
     </Modal>
   )
 }
@@ -146,22 +130,26 @@ ShareModal.propTypes = {
   visible: PropTypes.bool.isRequired,
 }
 
-function ShareModalWithToast({ toast, visible, onClose, link }) {
+function ShareModalWithToast({ visible, onClose, link }) {
   const { inputRef, handleCopy, handleFocus } = useShareModal({
     visible,
-    toast,
     onClose,
   })
 
   return (
-    <ShareModal
-      inputRef={inputRef}
-      link={link}
-      onClose={onClose}
-      onCopy={handleCopy}
-      onFocus={handleFocus}
-      visible={visible}
-    />
+    <Toast timeout={TIMEOUT_TOAST}>
+      {toast => (
+        <ShareModal
+          inputRef={inputRef}
+          link={link}
+          onClose={onClose}
+          onCopy={handleCopy}
+          onFocus={handleFocus}
+          toast={toast}
+          visible={visible}
+        />
+      )}
+    </Toast>
   )
 }
 
@@ -192,16 +180,9 @@ function useShareModal({ visible, toast, onClose }) {
 }
 
 ShareModalWithToast.propTypes = {
-  toast: PropTypes.func.isRequired,
   visible: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   link: PropTypes.string.isRequired,
 }
 
-const ShareModalWithToastMemo = React.memo(ShareModalWithToast)
-
-export default React.memo(props => (
-  <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <ShareModalWithToastMemo {...props} toast={toast} />}
-  </Toast>
-))
+export default React.memo(ShareModalWithToast)
