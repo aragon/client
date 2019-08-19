@@ -42,7 +42,7 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
   const handleEventChange = index => {
     setSelectedEventIdx(index)
   }
-  const handeSubscribe = async e => {
+  const handleSubscribe = async e => {
     console.log(eventNames[selectedAppIdx])
     setIsSubmitting(true)
     const { abi, appName, proxyAddress } = selectedApp
@@ -115,7 +115,10 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
           margin-top: ${4 * GU}px;
         `}
       >
-        <Button disabled={isSubscribeDisabled || isSubmitting} onClick={handeSubscribe}>
+        <Button
+          disabled={isSubscribeDisabled || isSubmitting}
+          onClick={handleSubscribe}
+        >
           {isSubmitting ? (
             <LoadingRing
               css={`
