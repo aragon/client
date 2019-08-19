@@ -148,7 +148,7 @@ const StatusImage = ({ status }) => {
     ? theme.negative
     : isSignatureSuccess(status)
     ? theme.positive
-    : theme.feedbackSurfaceContentSecondary
+    : theme.hint
 
   return (
     <div
