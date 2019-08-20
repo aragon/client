@@ -8,10 +8,12 @@ import {
   DiscButton,
   IconClose,
   LoadingRing,
-  SafeLink,
+  Link,
   GU,
+  RADIUS,
   breakpoint,
   springs,
+  textStyle,
   useTheme,
   useViewport,
 } from '@aragon/ui'
@@ -340,12 +342,12 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
 
   return (
     <animated.div {...styles}>
-      <Wrapper>
-        <Header color={theme.gradientText}>
+      <Wrapper theme={theme}>
+        <Header theme={theme}>
           {below('medium') && <CloseButton onClick={onClose} />}
           <HeaderImage src={headerImg} alt="" />
         </Header>
-        <Main>
+        <Main theme={theme}>
           {!optedIn ? (
             <React.Fragment>
               <div css={'flex: 1'}>
@@ -356,20 +358,17 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
                 </Paragraph>
                 <Paragraph>
                   For that, we use a third-party system called{' '}
-                  <StyledSafeLink
-                    color={theme.accent}
-                    href="https://www.helpscout.com/"
-                  >
+                  <StyledLink theme={theme} href="https://www.helpscout.com/">
                     HelpScout
-                  </StyledSafeLink>
+                  </StyledLink>
                   . If you opt-in, we will load their program onto Aragon.
                   HelpScout is a{' '}
-                  <StyledSafeLink
-                    color={theme.accent}
+                  <StyledLink
+                    theme={theme}
                     href="https://bcorporation.net/directory/help-scout"
                   >
                     Public Benefit Corp
-                  </StyledSafeLink>
+                  </StyledLink>
                   .
                 </Paragraph>
               </div>
@@ -377,7 +376,10 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
                 mode="strong"
                 wide
                 onClick={onOptIn}
-                css={'font-size: 15px;'}
+                css={`
+                  ${textStyle('label1')};
+                  text-transform: unset;
+                `}
               >
                 Yes, I’d like help
               </Button>
@@ -458,7 +460,7 @@ const Paragraph = styled.p`
 `
 
 const Wrapper = styled.aside`
-  background: #fff;
+  background: ${({ theme }) => theme.helpSurface};
   position: absolute;
   bottom: ${-2 * GU}px;
   right: ${-2 * GU}px;
@@ -477,7 +479,7 @@ const Wrapper = styled.aside`
       height: 482px;
       position: unset;
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-      border-radius: 3px;
+      border-radius: ${RADIUS}px;
     `
   )}
 `
@@ -485,8 +487,7 @@ const Wrapper = styled.aside`
 const Header = styled.header`
   position: relative;
   height: 240px;
-  background-color: #08bee5;
-  color: ${({ color }) => color};
+  background-color: ${({ theme }) => theme.help};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -499,13 +500,15 @@ const Header = styled.header`
       /* needs both height and min-height as button uses flex: 1
        * and would push this upwards */
       min-height: 148px;
-      border-top-right-radius: 4px;
-      border-top-left-radius: 4px;
+      border-top-right-radius: ${RADIUS}px;
+      border-top-left-radius: ${RADIUS}px;
     `
   )}
 `
 
 const HeaderImage = styled.img`
+  width: 269px;
+  height: 139px;
   position: absolute;
   bottom: -12px;
 `
@@ -515,26 +518,16 @@ const Main = styled.main`
   display: flex;
   flex-direction: column;
   padding: ${5 * GU}px ${3 * GU}px ${3 * GU}px;
+  color: ${({ theme }) => theme.helpSurfaceContent};
 `
 
 const Heading = styled.h3`
-  font-weight: bold;
-  color: #352c47;
-  font-size: 26px;
-  line-height: 40px;
-
-  ${breakpoint(
-    'medium',
-    `
-      font-size: 20px;
-      line-height: 31px;
-    `
-  )}
+  ${textStyle('title4')};
 `
-
-const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
+console.log('Link: ', Link)
+const StyledLink = styled(Link).attrs({ target: '_blank' })`
   text-decoration: none;
-  color: ${({ color }) => color};
+  color: ${({ theme }) => theme.link};
 
   &:hover,
   &:focus {
