@@ -28,7 +28,7 @@
     "@aragon/ui": "^0.40.1",
     "@aragon/wrapper": "^5.0.0-rc.14",
     "@babel/polyfill": "^7.0.0",
-    "@openworklabs/aragon-profile": "^0.1.7",
+    "@openworklabs/aragon-profile": "^0.1.16",
     "@sentry/browser": "^5.5.0",
     "@ungap/event-target": "^0.1.0",
     "bn.js": "4.11.6",
@@ -89,7 +89,6 @@
   "scripts": {
     "start": "node scripts/start",
     "start:local": "node scripts/launch-local",
-    "start:with:profiles": "cross-env WITH_PROFILES=true node scripts/start",
     "start:mainnet": "cross-env REACT_APP_ETH_NETWORK_TYPE=main npm start",
     "start:rinkeby": "npm start",
     "start:staging": "cross-env REACT_APP_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm start",

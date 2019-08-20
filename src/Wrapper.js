@@ -27,7 +27,7 @@ import {
 import { getAppPath } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-import { withProfiles } from './repo-utils'
+import { enableWallet } from './wallet-utils'
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -446,10 +446,11 @@ class Wrapper extends React.PureComponent {
       )
     }
 
-    if (withProfiles && instanceId === 'profile') {
+    if (instanceId === 'profile') {
       return (
         <Profile
           account={account}
+          enableWallet={enableWallet}
           onSignatures={onSignatures}
           parts={locator.parts}
         />
