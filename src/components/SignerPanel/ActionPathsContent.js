@@ -4,7 +4,7 @@ import { Info, RadioList, SafeLink } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import AddressLink from './AddressLink'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
-import providerString from '../../provider-strings'
+import { getProviderString } from '../../ethereum-providers'
 import { getAppPath } from '../../routing'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
@@ -233,7 +233,7 @@ class ActionPathsContent extends React.Component {
           <div css="margin-top: 20px">
             <Info.Action title="Two transactions required">
               This action requires two transactions to be signed in{' '}
-              {providerString('your Ethereum provider', walletProviderId)}.{' '}
+              {getProviderString('your Ethereum provider', walletProviderId)}.{' '}
               {approveTransactionMessage}
               Please confirm them one after another.
             </Info.Action>

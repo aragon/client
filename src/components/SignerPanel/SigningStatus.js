@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Info, theme } from '@aragon/ui'
-import providerString from '../../provider-strings'
+import { getProviderString } from '../../ethereum-providers'
 import SignerButton from './SignerButton'
 
 import {
@@ -52,7 +52,7 @@ class SigningStatus extends React.Component {
     if (status === STATUS_TX_SIGNING) {
       return (
         <p>
-          {`Open ${providerString(
+          {`Open ${getProviderString(
             'your Ethereum provider',
             walletProviderId
           )} to sign your transaction.`}
@@ -61,7 +61,7 @@ class SigningStatus extends React.Component {
     }
     if (status === STATUS_MSG_SIGNING) {
       return (
-        <p>{`Open ${providerString(
+        <p>{`Open ${getProviderString(
           'your Ethereum provider',
           walletProviderId
         )} to sign your message.`}</p>

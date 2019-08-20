@@ -19,7 +19,7 @@ import {
 import { animated } from 'react-spring'
 import { network, getDemoDao, web3Providers } from '../environment'
 import { sanitizeNetworkType } from '../network-config'
-import providerString from '../provider-strings'
+import { getProviderString } from '../ethereum-providers'
 import { isElectron, noop } from '../utils'
 import {
   fromWei,
@@ -356,7 +356,7 @@ class StartContent extends React.PureComponent {
           <ButtonLink onClick={onRequestEnable} style={{ color: '#000' }}>
             enable
           </ButtonLink>{' '}
-          {providerString('your Ethereum provider', walletProviderId)}.
+          {getProviderString('your Ethereum provider', walletProviderId)}.
         </ActionInfo>
       )
     }
@@ -372,7 +372,7 @@ class StartContent extends React.PureComponent {
       return (
         <ActionInfo>
           Please select the {sanitizeNetworkType(network.type)} network in{' '}
-          {providerString('your Ethereum provider', walletProviderId)}.
+          {getProviderString('your Ethereum provider', walletProviderId)}.
         </ActionInfo>
       )
     }
