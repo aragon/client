@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { IconPlus, theme } from '@aragon/ui'
+import { useTheme, textStyle, GU, EthIdenticon, IconPlus } from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
-import FavoriteRow from './FavoriteRow'
+import { getKnownOrganization } from '../../../known-organizations'
+import { network } from '../../../environment'
+import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
 import ItemButton from './ItemButton'
 
 class Favorites extends React.Component {
@@ -11,6 +13,7 @@ class Favorites extends React.Component {
     favoriteDaos: PropTypes.arrayOf(FavoriteDaoType),
     currentDao: DaoItemType,
     onUpdate: PropTypes.func.isRequired,
+    theme: PropTypes.object,
   }
 
   state = { localDaos: [] }
@@ -42,7 +45,7 @@ class Favorites extends React.Component {
     const localDaos = [
       ...favoriteDaos
         .map(dao => ({ ...dao, favorited: true }))
-        .sort(dao => (dao.address === currentDao.address ? -1 : 1)),
+        .sort(dao => (dao.address === currentDao.address ? -1 : 0)),
     ]
 
     // If the current DAO is favorited, it is already in the local list
@@ -69,11 +72,15 @@ class Favorites extends React.Component {
     window.location.hash = ''
   }
 
-  handleDaoOpened = dao => {
-    window.location.hash = `/${dao.name || dao.address}`
+  handleDaoOpened = address => {
+    const { currentDao, favoriteDaos } = this.props
+    const dao = [currentDao, ...favoriteDaos].find(
+      dao => dao.address === address
+    )
+    window.location.hash = `/${(dao && dao.name) || address}`
   }
 
-  handleFavoriteUpdate = ({ address }, favorited) => {
+  handleFavoriteUpdate = (address, favorited) => {
     const { localDaos } = this.state
 
     this.setState({
@@ -84,28 +91,56 @@ class Favorites extends React.Component {
   }
 
   render() {
+    const { theme } = this.props
     const { localDaos } = this.state
     const currentDao = this.currentDaoWithFavoriteState()
-    const daosListWithoutCurrent = localDaos.filter(
-      dao => dao.address !== currentDao.address
+
+    const allItems = localDaos.map(org => {
+      const knownOrg = getKnownOrganization(network.type, org.address)
+      return {
+        ...org,
+        id: org.address,
+        roundedImage: true,
+        name: knownOrg ? knownOrg.name : org.name || org.address,
+        image: knownOrg ? (
+          <img
+            src={knownOrg.image}
+            width="48"
+            alt=""
+            css={`
+              object-fit: contain;
+              width: 100%;
+              height: 100%;
+            `}
+          />
+        ) : (
+          <EthIdenticon address={org.address} />
+        ),
+      }
+    })
+
+    const currentItem = allItems.find(org => org.address === currentDao.address)
+    const otherItems = allItems.filter(
+      org => org.address !== currentDao.address
     )
+
     return (
       <section aria-label="Organizations">
         <ItemButton
           onClick={this.handleGoHome}
           css={`
             width: 100%;
-            padding: 0 20px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid ${theme.contentBorder};
+            padding: 0 ${2 * GU}px;
+            margin-bottom: ${2 * GU}px;
+            border-bottom: 1px solid ${theme.border};
           `}
         >
           <span
             css={`
               display: flex;
               align-items: center;
-              width: 24px;
-              margin-right: 13px;
+              width: ${3 * GU}px;
+              margin-right: ${2 * GU}px;
               color: ${theme.accent};
             `}
           >
@@ -115,25 +150,19 @@ class Favorites extends React.Component {
         </ItemButton>
 
         <SectionTitle>Current</SectionTitle>
-        <FavoriteRow
-          dao={currentDao}
-          onOpen={this.handleDaoOpened}
-          onUpdate={this.handleFavoriteUpdate}
+        <FavoritesMenu
+          items={currentItem ? [currentItem] : []}
+          onActivate={this.handleDaoOpened}
+          onFavoriteUpdate={this.handleFavoriteUpdate}
         />
-        {daosListWithoutCurrent.length > 0 && (
+        {otherItems.length > 0 && (
           <React.Fragment>
             <SectionTitle>Favorites</SectionTitle>
-            <List>
-              {daosListWithoutCurrent.map(dao => (
-                <li key={dao.address}>
-                  <FavoriteRow
-                    dao={dao}
-                    onOpen={this.handleDaoOpened}
-                    onUpdate={this.handleFavoriteUpdate}
-                  />
-                </li>
-              ))}
-            </List>
+            <FavoritesMenu
+              items={otherItems}
+              onActivate={this.handleDaoOpened}
+              onFavoriteUpdate={this.handleFavoriteUpdate}
+            />
           </React.Fragment>
         )}
       </section>
@@ -141,18 +170,22 @@ class Favorites extends React.Component {
   }
 }
 
-const SectionTitle = styled.h1`
-  margin: 10px 20px;
-  color: #707070;
-  text-transform: lowercase;
-  font-variant: small-caps;
-  font-weight: 600;
-`
+function SectionTitle({ children }) {
+  const theme = useTheme()
+  return (
+    <h1
+      css={`
+        margin: ${1 * GU}px ${2 * GU}px;
+        color: ${theme.surfaceContentSecondary};
+        ${textStyle('label2')};
+      `}
+    >
+      {children}
+    </h1>
+  )
+}
 
-const List = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
-`
-
-export default Favorites
+export default props => {
+  const theme = useTheme()
+  return <Favorites theme={theme} {...props} />
+}

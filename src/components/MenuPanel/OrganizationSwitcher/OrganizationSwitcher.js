@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, LoadingRing, Popover } from '@aragon/ui'
+import { textStyle, ButtonBase, LoadingRing, Popover } from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { FavoriteDaosConsumer } from '../../../contexts/FavoriteDaosContext'
 // import Popup from '../../Popup'
@@ -96,14 +96,14 @@ function OrganizationSwitcherWithFavorites({ loading, ...props }) {
         css={`
           display: flex;
           align-items: center;
-          margin-left: 20px;
+          margin-left: ${2 * GU}px;
         `}
       >
         <LoadingRing />
         <span
           css={`
-            margin-left: 10px;
-            font-size: 15px;
+            margin-left: ${1 * GU}px;
+            ${textStyle('body2')};
           `}
         >
           Loading…
