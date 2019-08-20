@@ -478,7 +478,7 @@ const Wrapper = styled.aside`
       width: 336px;
       height: 482px;
       position: unset;
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
       border-radius: ${RADIUS}px;
     `
   )}
