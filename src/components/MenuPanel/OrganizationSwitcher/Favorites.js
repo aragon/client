@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { useTheme, textStyle, GU, EthIdenticon, IconPlus } from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { getKnownOrganization } from '../../../known-organizations'
@@ -183,6 +182,10 @@ function SectionTitle({ children }) {
       {children}
     </h1>
   )
+}
+
+SectionTitle.propTypes = {
+  children: PropTypes.node,
 }
 
 export default props => {

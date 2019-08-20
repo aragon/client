@@ -51,6 +51,7 @@ class Home extends React.Component {
     apps: PropTypes.arrayOf(AppType).isRequired,
     dao: PropTypes.string.isRequired,
     onOpenApp: PropTypes.func.isRequired,
+    theme: PropTypes.object.isRequired,
   }
   handleCardAction = actionId => {
     const { onOpenApp, apps } = this.props

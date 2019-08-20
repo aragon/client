@@ -90,7 +90,7 @@ export const getRecommendedOrganizations = (networkType, max = -1) => {
   const recommended = []
   for (const [address, org] of KnownOrganizations[networkType]) {
     if (org.recommended) {
-      recommended.push({ address: org.address, name: org.domain })
+      recommended.push({ address, name: org.domain })
       if (recommended.length === max) {
         break
       }

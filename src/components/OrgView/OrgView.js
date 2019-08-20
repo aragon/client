@@ -39,8 +39,6 @@ function OrgView({
   appInstanceGroups,
   apps,
   appsStatus,
-  onMenuPanelClose,
-  onMenuPanelOpen,
   onOpenApp,
   onOpenPreferences,
   onRequestAppsReload,
@@ -118,8 +116,6 @@ function OrgView({
             appsStatus={appsStatus}
             daoAddress={daoAddress}
             daoStatus={daoStatus}
-            onMenuPanelClose={onMenuPanelClose}
-            onMenuPanelOpen={onMenuPanelOpen}
             onOpenApp={onOpenApp}
             onOpenPreferences={onOpenPreferences}
             onRequestAppsReload={onRequestAppsReload}
@@ -151,8 +147,6 @@ function OrgView({
 //   children: PropTypes.node,
 //   daoAddress: DaoAddressType.isRequired,
 //   daoStatus: DaoStatusType.isRequired,
-//   // onMenuPanelClose: PropTypes.func.isRequired,
-//   // onMenuPanelOpen: PropTypes.func.isRequired,
 //   onOpenApp: PropTypes.func.isRequired,
 //   onOpenPreferences: PropTypes.func.isRequired,
 //   onRequestAppsReload: PropTypes.func.isRequired,

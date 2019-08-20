@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { useTheme, useInside, ButtonBase, IconPlus, theme } from '@aragon/ui'
+import { useTheme, useInside } from '@aragon/ui'
 import FavoritesMenuItem from './FavoritesMenuItem'
 
 function FavoritesMenu({ items, onActivate, onFavoriteUpdate }) {

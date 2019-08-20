@@ -15,7 +15,7 @@ const ZoomCard = React.memo(function ZoomCard({
     return () => {
       removeRef(id)
     }
-  }, [id])
+  }, [addRef, id, removeRef])
 
   return (
     <Card

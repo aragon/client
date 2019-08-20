@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
@@ -67,6 +68,10 @@ if (network.type === 'ropsten') {
 }
 
 class App extends React.Component {
+  static propTypes = {
+    theme: PropTypes.object.isRequired,
+  }
+
   state = {
     ...INITIAL_DAO_STATE,
     account: '',
@@ -381,12 +386,10 @@ class App extends React.Component {
       apps,
       appIdentifiers,
       appsStatus,
-      balance,
       canUpgradeOrg,
       connected,
       daoAddress,
       daoStatus,
-      daoCreationStatus,
       fatalError,
       helpScoutOptedOut,
       identityIntent,
@@ -505,17 +508,7 @@ class App extends React.Component {
                                 ? locator.action || 'welcome'
                                 : 'none'
                             }
-                            account={account}
-                            balance={balance}
-                            daoCreationStatus={daoCreationStatus}
-                            onBuildDao={this.handleBuildDao}
-                            onComplete={this.handleCompleteOnboarding}
-                            onOpenOrganization={this.handleOpenOrganization}
-                            onRequestEnable={enableWallet}
-                            onResetDaoBuilder={this.handleResetDaoBuilder}
                             selectorNetworks={selectorNetworks}
-                            walletNetwork={walletNetwork}
-                            walletProviderId={walletProviderId}
                           />
                         </div>
 

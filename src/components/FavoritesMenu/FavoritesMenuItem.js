@@ -1,13 +1,6 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  ButtonBase,
-  GU,
-  IconStar,
-  IconStarFilled,
-  textStyle,
-  useTheme,
-} from '@aragon/ui'
+import { GU, IconStar, IconStarFilled, textStyle, useTheme } from '@aragon/ui'
 import FavoritesMenuItemButton from './FavoritesMenuItemButton'
 
 function FavoritesMenuItem({
@@ -24,11 +17,11 @@ function FavoritesMenuItem({
 
   const handleActivationClick = useCallback(() => {
     onActivate(id)
-  }, [id])
+  }, [id, onActivate])
 
   const handleFavoriteClick = useCallback(() => {
     onFavoriteUpdate(id, !favorited)
-  }, [id, favorited])
+  }, [id, favorited, onFavoriteUpdate])
 
   return (
     <div
@@ -125,6 +118,7 @@ FavoritesMenuItem.propTypes = {
   favorited: PropTypes.bool,
   id: PropTypes.string.isRequired,
   image: PropTypes.node,
+  roundedImage: PropTypes.bool,
   name: PropTypes.string.isRequired,
   secondary: PropTypes.string,
   onActivate: PropTypes.func.isRequired,

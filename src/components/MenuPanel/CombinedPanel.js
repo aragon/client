@@ -18,8 +18,6 @@ class CombinedPanel extends React.Component {
     children: PropTypes.node,
     daoStatus: DaoStatusType.isRequired,
     opened: PropTypes.bool,
-    onMenuPanelClose: PropTypes.func.isRequired,
-    onMenuPanelOpen: PropTypes.func.isRequired,
   }
 
   state = {
@@ -55,15 +53,7 @@ class CombinedPanel extends React.Component {
   render() {
     const { animate } = this.state
 
-    const {
-      apps,
-      autoClosing,
-      children,
-      onMenuPanelClose,
-      onMenuPanelOpen,
-      opened,
-      ...props
-    } = this.props
+    const { apps, autoClosing, children, opened, ...props } = this.props
 
     const menuPanelValue = 1 - Number(autoClosing)
 
@@ -103,7 +93,6 @@ class CombinedPanel extends React.Component {
               </Wrap>
               {autoClosing && (
                 <Overlay
-                  onClick={onMenuPanelClose}
                   style={{
                     zIndex: '2',
                     width: '100%',

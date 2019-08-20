@@ -5,7 +5,6 @@ import { network } from '../environment'
 import uniqby from 'lodash.uniqby'
 
 const FavoriteDaosContext = React.createContext()
-const { Consumer } = FavoriteDaosContext
 
 const storedList = new StoredList(`favorite-daos:${network.type}`)
 

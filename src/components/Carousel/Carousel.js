@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react'
-import { ButtonIcon, IconLeft, IconRight, GU, useViewport } from '@aragon/ui'
+import PropTypes from 'prop-types'
+import { GU, useViewport } from '@aragon/ui'
 import { Spring, animated } from 'react-spring'
+import PrevNext from './PrevNext'
 
 // TODO:
 //  - Center the items when the total is smaller than the viewport.
+//  - Touch drag
 
 const AnimatedDiv = animated.div
-
-function cssSize(value) {
-  return typeof value === value ? `${value}px` : value
-}
 
 function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
   const [selected, setSelected] = useState(0)
@@ -40,12 +39,15 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
     if (container.current) {
       updateContainerWidth(container.current)
     }
-  }, [vw])
+  }, [vw, updateContainerWidth])
 
-  const handleContainerRef = useCallback(element => {
-    container.current = element
-    updateContainerWidth(element)
-  }, [])
+  const handleContainerRef = useCallback(
+    element => {
+      container.current = element
+      updateContainerWidth(element)
+    },
+    [updateContainerWidth]
+  )
 
   const prev = useCallback(() => {
     setSelected(selected => Math.max(0, selected - 1))
@@ -53,7 +55,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
 
   const next = useCallback(() => {
     setSelected(selected => Math.min(items.length - visibleItems, selected + 1))
-  }, [visibleItems])
+  }, [items.length, visibleItems])
 
   const sliderX = useMemo(() => {
     const visibleItemsWidth =
@@ -62,7 +64,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
       (containerWidth - visibleItemsWidth) / 2 -
       (itemWidth + itemSpacing) * selected
     )
-  }, [containerWidth, selected, visibleItems])
+  }, [containerWidth, itemSpacing, itemWidth, selected, visibleItems])
 
   return (
     <Spring to={{ sliderX }} native>
@@ -73,7 +75,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
             position: relative;
             overflow: hidden;
             width: 100%;
-            height: ${cssSize(itemHeight)}px;
+            height: ${itemHeight}px;
           `}
         >
           {selected > 0 && <PrevNext type="prev" onClick={prev} />}
@@ -100,8 +102,8 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
                 css={`
                   flex-grow: 0;
                   flex-shrink: 0;
-                  width: ${cssSize(itemWidth)}px;
-                  height: ${cssSize(itemHeight)}px;
+                  width: ${itemWidth}px;
+                  height: ${itemHeight}px;
                   transition: opacity 150ms ease-in-out;
                   & + & {
                     margin-left: ${3 * GU}px;
@@ -118,23 +120,11 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
   )
 }
 
-function PrevNext({ onClick, type }) {
-  const next = type === 'next'
-  const Icon = next ? IconRight : IconLeft
-  return (
-    <ButtonIcon
-      onClick={onClick}
-      label={next ? 'Next' : 'Previous'}
-      css={`
-        position: absolute;
-        z-index: 1;
-        top: 50%;
-        ${next ? 'right' : 'left'}: ${5 * GU}px;
-      `}
-    >
-      <Icon size="large" />
-    </ButtonIcon>
-  )
+Carousel.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.node).isRequired,
+  itemWidth: PropTypes.number.isRequired,
+  itemHeight: PropTypes.number.isRequired,
+  itemSpacing: PropTypes.number.isRequired,
 }
 
 export default Carousel
