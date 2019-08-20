@@ -69,16 +69,7 @@ const AppCard = React.memo(function AppCard({ onOpen, app }) {
           padding: 0 ${2 * GU}px;
         `}
       >
-        <Tag
-          mode="identifier"
-          label={instanceLabel}
-          title={instanceTitle}
-          css={`
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-          `}
-        />
+        <Tag mode="identifier" label={instanceLabel} title={instanceTitle} />
       </div>
     </Card>
   )
