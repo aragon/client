@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Card, Tag, textStyle, unselectable, GU } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
-import AppIcon from '../../components/AppIcon/AppIcon'
+import AppIcon from '../AppIcon/AppIcon'
 
 const AppCard = React.memo(function AppCard({ onOpen, app }) {
   const {
