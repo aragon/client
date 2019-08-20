@@ -12,11 +12,8 @@ const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
  * Onboarding:
  *
  * /
- * /setup/template
- * /setup/domain
- * /setup/configure/1
- * /setup/configure/2
- * /setup/registering
+ * /open
+ * /create
  *
  * App:
  *
@@ -39,8 +36,8 @@ export const parsePath = (history, pathname, search = '') => {
   const [, ...parts] = pathname.split('/')
 
   // Start
-  if (!parts[0]) {
-    return { path, mode: APP_MODE_START }
+  if (!parts[0] || parts[0] === 'open' || parts[0] === 'create') {
+    return { path, mode: APP_MODE_START, action: parts[0] }
   }
 
   // Setup
