@@ -19,7 +19,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
   const theme = useTheme()
 
   return (
-    <Modal visible={visible} onClose={onClose} zIndex={2}>
+    <Modal visible={visible} onClose={onClose} css="z-index: 2;">
       <h1
         css={`
           ${textStyle('title2')}
