@@ -129,14 +129,26 @@ function Permissions({
         primary={
           location.screen === 'app' && location.app ? (
             <Header.Title>
-              {`${location.app.name} permissions`}
-              <LocalIdentityBadge
-                entity={location.app.proxyAddress}
-                shorten
+              <div
                 css={`
-                  margin-left: ${2 * GU}px;
+                  display: flex;
+                  align-items: center;
                 `}
-              />
+              >
+                <div
+                  css={`
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    margin-right: ${2 * GU}px;
+                  `}
+                >
+                  {`${location.app.name} permissions`}
+                </div>
+                <LocalIdentityBadge
+                  entity={location.app.proxyAddress}
+                  shorten
+                />
+              </div>
             </Header.Title>
           ) : (
             'Permissions'
