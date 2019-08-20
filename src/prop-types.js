@@ -201,3 +201,13 @@ export const ActivityStatusType = PropTypes.oneOf([
   ACTIVITY_STATUS_PENDING,
   ACTIVITY_STATUS_TIMED_OUT,
 ])
+
+// see ethereum-proviers/
+export const EthereumProviderType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  connect: PropTypes.func.isRequired,
+  strings: PropTypes.object.isRequired,
+})
