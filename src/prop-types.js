@@ -202,7 +202,7 @@ export const ActivityStatusType = PropTypes.oneOf([
   ACTIVITY_STATUS_TIMED_OUT,
 ])
 
-// see ethereum-proviers/
+// see ethereum-providers/
 export const EthereumProviderType = PropTypes.shape({
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
@@ -210,4 +210,13 @@ export const EthereumProviderType = PropTypes.shape({
   image: PropTypes.string.isRequired,
   connect: PropTypes.func.isRequired,
   strings: PropTypes.object.isRequired,
+})
+
+// see templates/
+export const OrgTemplateType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  header: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  detailsUrl: PropTypes.string.isRequired,
 })

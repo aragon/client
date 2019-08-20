@@ -4,6 +4,7 @@ import membershipHeader from './assets/header-membership.svg'
 import fundraisingHeader from './assets/header-fundraising.svg'
 import multisignHeader from './assets/header-multisign.svg'
 
+// see the corresponding prop type, OrgTemplateType, in prop-types.js.
 export default [
   {
     id: 'startup',

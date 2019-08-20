@@ -3,7 +3,7 @@ import cipher from './icons/Cipher.png'
 import metamask from './icons/Metamask.png'
 import status from './icons/Status.png'
 
-// see the corresponding prop type in prop-types.js
+// see the corresponding prop type, EthereumProviderType, in prop-types.js.
 const PROVIDERS = new Map(
   [
     {

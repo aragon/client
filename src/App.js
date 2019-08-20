@@ -1,6 +1,7 @@
 import React from 'react'
 import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
+import { useTheme } from '@aragon/ui'
 import { contractAddresses, network, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
@@ -10,7 +11,7 @@ import initWrapper, {
   pollConnectivity,
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
-import Onboarding from './onboarding/Onboarding'
+import { Onboarding } from './onboarding2'
 import { getWeb3, getUnknownBalance, identifyProvider } from './web3-utils'
 import { enableWallet } from './wallet-utils'
 import { log } from './utils'
@@ -64,8 +65,6 @@ if (network.type === 'ropsten') {
     'https://aragon.ropsten.aragonpm.com/',
   ])
 }
-
-const AnimatedDiv = animated.div
 
 class App extends React.Component {
   state = {
@@ -376,6 +375,7 @@ class App extends React.Component {
   }
 
   render() {
+    const { theme } = this.props
     const {
       account,
       apps,
@@ -432,9 +432,13 @@ class App extends React.Component {
         native
       >
         {({ opacity, scale }) => (
-          <AnimatedDiv style={{ opacity }}>
-            <AnimatedDiv
-              css="min-height: 100vh"
+          <animated.div
+            style={{
+              opacity,
+              background: theme.background,
+            }}
+          >
+            <animated.div
               style={{
                 transform: scale.interpolate(v => `scale3d(${v}, ${v}, 1)`),
               }}
@@ -496,8 +500,10 @@ class App extends React.Component {
 
                         <div css="position: relative; z-index: 2">
                           <Onboarding
-                            visible={
+                            status={
                               mode === APP_MODE_START || mode === APP_MODE_SETUP
+                                ? locator.action || 'welcome'
+                                : 'none'
                             }
                             account={account}
                             balance={balance}
@@ -521,12 +527,15 @@ class App extends React.Component {
                   </LocalIdentityModalProvider>
                 </ModalProvider>
               </IdentityProvider>
-            </AnimatedDiv>
-          </AnimatedDiv>
+            </animated.div>
+          </animated.div>
         )}
       </Spring>
     )
   }
 }
 
-export default App
+export default function(props) {
+  const theme = useTheme()
+  return <App theme={theme} {...props} />
+}

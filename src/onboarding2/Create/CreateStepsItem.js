@@ -1,0 +1,81 @@
+import React, { useMemo } from 'react'
+import PropTypes from 'prop-types'
+import { GU, IconCheck, useTheme } from '@aragon/ui'
+
+function CreateStepsItem({ step, label, currentStep }) {
+  const theme = useTheme()
+
+  const stepStyles = useMemo(() => {
+    if (step === currentStep) {
+      return `
+        padding-top: 2px;
+        background: ${theme.selected};
+        color: ${theme.selectedContent};
+      `
+    }
+    if (step < currentStep) {
+      return `
+        background: ${theme.positive};
+        color: ${theme.positiveContent};
+      `
+    }
+    return `
+      padding-top: 2px;
+      background: #ECEFF4;
+      color: #9CA7B8;
+    `
+  }, [
+    step,
+    currentStep,
+    theme.selected,
+    theme.selectedContent,
+    theme.positive,
+    theme.positiveContent,
+  ])
+
+  return (
+    <div
+      css={`
+        display: flex;
+        align-items: center;
+        height: ${5 * GU}px;
+        & + & {
+          margin-top: ${3 * GU}px;
+        }
+      `}
+    >
+      <div
+        css={`
+          width: ${5 * GU}px;
+          height: ${5 * GU}px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          font-size: 18px;
+          font-weight: 600;
+          ${stepStyles};
+        `}
+      >
+        {step < currentStep ? <IconCheck /> : step + 1}
+      </div>
+      <div
+        css={`
+          margin-left: ${3 * GU}px;
+          font-size: 18px;
+          font-weight: ${step === currentStep ? '600' : '400'};
+        `}
+      >
+        {label}
+      </div>
+    </div>
+  )
+}
+
+CreateStepsItem.propTypes = {
+  step: PropTypes.number.isRequired,
+  label: PropTypes.string.isRequired,
+  currentStep: PropTypes.number.isRequired,
+}
+
+export default CreateStepsItem
