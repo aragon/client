@@ -19,9 +19,9 @@ import { PermissionsProvider } from './contexts/PermissionsContext'
 import { ModalProvider } from './components/ModalManager/ModalManager'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
-import { HelpScoutProvider } from './hooks/useHelpScout'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
 import HelpScoutBeacon from './components/HelpScoutBeacon/HelpScoutBeacon'
+import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import { isKnownRepo } from './repo-utils'
 import {
   APP_MODE_START,
