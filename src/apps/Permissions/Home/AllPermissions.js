@@ -9,6 +9,7 @@ import {
   useLayout,
   useTheme,
 } from '@aragon/ui'
+import debounce from 'lodash.debounce'
 import EmptyBlock from '../EmptyBlock'
 import EmptyFilteredPermission from '../EmptyFilteredPermissions'
 import PermissionsView from '../PermissionsView'
@@ -101,6 +102,14 @@ function Heading({
   onSearchTermsChange,
 }) {
   const theme = useTheme()
+  const [searchTermsInputValue, setSearchTermsInputValue] = useState(
+    searchTerms
+  )
+
+  const debouncedSearchTermsUpdate = useCallback(
+    debounce(value => onSearchTermsChange(value), 300),
+    [onSearchTermsChange]
+  )
 
   const handleEntityDropDownChange = useCallback(
     index => {
@@ -108,12 +117,17 @@ function Heading({
     },
     [onEntityTypeChange]
   )
+
   const handleSearchInputChange = useCallback(
     event => {
-      onSearchTermsChange(event.target.value)
+      // immediately update the text field
+      setSearchTermsInputValue(event.target.value)
+      // but debounce the external update
+      debouncedSearchTermsUpdate(event.target.value)
     },
-    [onSearchTermsChange]
+    [debouncedSearchTermsUpdate]
   )
+
   const handleOnClear = useCallback(() => {
     onEntityTypeChange(-1)
     onSearchTermsChange('')
@@ -169,7 +183,7 @@ function Heading({
             adornmentPosition="end"
             onChange={handleSearchInputChange}
             placeholder="Search by app or role"
-            value={searchTerms}
+            value={searchTermsInputValue}
           />
         </div>
       </div>
