@@ -11,8 +11,8 @@ import {
 import { DAO_STATUS_LOADING } from '../../symbols'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import CombinedPanel from '../MenuPanel/CombinedPanel'
-import GlobalSettingsButton from './GlobalSettingsButton'
 import { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
+import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
 
 function ThemeModeButton() {
   const { mode, toggle } = useThemeMode()
@@ -85,7 +85,7 @@ function OrgView({
               display: flex;
             `}
           >
-            <GlobalSettingsButton onOpen={onOpenPreferences} />
+            <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ThemeModeButton />
           </div>
         </div>
