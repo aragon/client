@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { BaseStyles, PublicUrl } from '@aragon/ui'
+import { BaseStyles, PublicUrl, useTheme } from '@aragon/ui'
 import * as Sentry from '@sentry/browser'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
@@ -14,6 +14,7 @@ const PACKAGE_VERSION = process.env.REACT_APP_PACKAGE_VERSION || ''
 class GlobalErrorHandler extends React.Component {
   static propTypes = {
     children: PropTypes.node,
+    theme: PropTypes.object,
   }
   state = { error: null, errorStack: null }
   componentDidCatch(error, errorInfo) {
@@ -47,10 +48,12 @@ class GlobalErrorHandler extends React.Component {
     window.location.reload()
   }
   render() {
+    const { theme, children } = this.props
     const { error, errorStack } = this.state
     if (!error) {
-      return this.props.children
+      return children
     }
+
     return (
       <PublicUrl.Provider url="/aragon-ui/">
         <BaseStyles />
@@ -58,6 +61,7 @@ class GlobalErrorHandler extends React.Component {
           css={`
             height: 100vh;
             overflow: auto;
+            background: ${theme.background};
           `}
         >
           <div
@@ -86,4 +90,7 @@ class GlobalErrorHandler extends React.Component {
   }
 }
 
-export default GlobalErrorHandler
+export default props => {
+  const theme = useTheme()
+  return <GlobalErrorHandler theme={theme} {...props} />
+}
