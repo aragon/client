@@ -2,14 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { Button, LoadingRing, GU } from '@aragon/ui'
+import { LoadingRing, GU, textStyle } from '@aragon/ui'
 import { AppsStatusType } from '../../prop-types'
 import springs from '../../springs'
+import { APPS_STATUS_READY, APPS_STATUS_LOADING } from '../../symbols'
 import { noop } from '../../utils'
-import {
-  APPS_STATUS_READY,
-  APPS_STATUS_LOADING,
-} from '../../symbols'
+import { MENU_PANEL_APP_INSTANCE_HEIGHT } from './MenuPanelAppInstance'
+import { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
+
+const BASE_LOADER_HEIGHT = 40
 
 class MenuPanelAppsLoader extends React.Component {
   static propTypes = {
@@ -59,12 +60,11 @@ class MenuPanelAppsLoader extends React.Component {
     }
     if (appsStatus === APPS_STATUS_READY || showApps) {
       return (
-        appsCount * 40 +
-        expandedInstancesCount * 30 +
-        (expandedInstancesCount > 0 ? 5 : 0)
+        appsCount * MENU_ITEM_BASE_HEIGHT +
+        expandedInstancesCount * MENU_PANEL_APP_INSTANCE_HEIGHT
       )
     }
-    return 40
+    return BASE_LOADER_HEIGHT
   }
 
   render() {
@@ -77,7 +77,7 @@ class MenuPanelAppsLoader extends React.Component {
         from={{
           afterLoadingMessageProgress: 0,
           showAppsProgress: 0,
-          instancesHeight: 40,
+          instancesHeight: BASE_LOADER_HEIGHT,
         }}
         to={{
           afterLoadingMessageProgress: Number(
@@ -102,24 +102,22 @@ class MenuPanelAppsLoader extends React.Component {
             }}
           >
             <Status>
-              <StatusBackground
-                style={{
-                  opacity: afterLoadingMessageProgress,
-                }}
-              />
               <StatusContent
                 style={{
                   opacity: showAppsProgress.interpolate(v => 1 - v),
                   transform: showAppsProgress.interpolate(
                     v => `
-                      translate3d(${v * 40}px, 0, 0)
+                      translate3d(${v * BASE_LOADER_HEIGHT}px, 0, 0)
                     `
                   ),
                 }}
               >
-                <StatusIndicatorWrapper>
-                  <LoadingRing paused={appsStatus !== APPS_STATUS_LOADING} />
-                </StatusIndicatorWrapper>
+                <LoadingRing
+                  paused={appsStatus !== APPS_STATUS_LOADING}
+                  css={`
+                    margin-right: ${1 * GU}px;
+                  `}
+                />
                 {(() => {
                   if (appsStatus === APPS_STATUS_LOADING) {
                     return 'Loading apps…'
@@ -150,14 +148,6 @@ class MenuPanelAppsLoader extends React.Component {
   }
 }
 
-const StatusIndicatorWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
-  margin-right: ${1 * GU}px;
-`
-
 const Main = styled(animated.div)`
   position: relative;
   overflow: hidden;
@@ -176,24 +166,14 @@ const Status = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  padding-left: 30px;
+  padding-left: ${3 * GU}px;
   overflow: hidden;
-`
-
-const StatusBackground = styled(animated.div)`
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 `
 
 const StatusContent = styled(animated.div)`
   display: flex;
   align-items: center;
-  position: relative;
-  z-index: 2;
+  ${textStyle('body2')}
 `
 
 export default MenuPanelAppsLoader

@@ -70,7 +70,7 @@ function OrgView({
             display: flex;
             justify-content: space-between;
             background: ${theme.surface};
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
           `}
         >
           <OrganizationSwitcher
@@ -93,13 +93,12 @@ function OrgView({
           css={`
             flex-grow: 1;
             overflow-y: hidden;
-            margin-top: 1px;
+            margin-top: 2px;
           `}
         >
           <div
             css={`
               position: relative;
-              z-index: 2;
               height: 100%;
               display: flex;
             `}

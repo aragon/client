@@ -1,21 +1,25 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { ButtonBase, useTheme } from '@aragon/ui'
-import MenuPanelInstance from './MenuPanelInstance'
+import { ButtonBase, GU, textStyle, useTheme } from '@aragon/ui'
+import MenuPanelAppInstance, {
+  MENU_PANEL_APP_INSTANCE_HEIGHT,
+} from './MenuPanelAppInstance'
 import { AppInstanceType } from '../../prop-types'
 import springs from '../../springs'
 import { useLocalIdentity } from '../../hooks'
 
+export const MENU_ITEM_BASE_HEIGHT = 5 * GU
+
 const { div: AnimDiv } = animated
 
-function MenuPanelItem({
+const MenuPanelItem = React.memo(function MenuPanelItem({
   active,
   onClick,
   name,
   icon,
   instanceId,
+  openProgress,
   singleInstance,
 }) {
   const [label, setLabel] = useState(name)
@@ -25,30 +29,48 @@ function MenuPanelItem({
   }, [singleInstance, localIdentity, name])
 
   return (
-    <ButtonItem className={`item ${active ? 'active' : ''}`} onClick={onClick}>
-      <span>
-        <span className="icon">{icon}</span>
-        <span className="name">{label}</span>
+    <ButtonBase
+      onClick={onClick}
+      css={`
+        display: flex;
+        align-items: center;
+        height: ${MENU_ITEM_BASE_HEIGHT}px;
+        width: 100%;
+        padding: 0 ${2 * GU}px 0 ${3 * GU}px;
+        border-radius: 0;
+        cursor: pointer;
+      `}
+    >
+      <span>{icon}</span>
+      <span
+        css={`
+          margin-left: ${1 * GU}px;
+          width: 100%;
+          text-align: left;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          ${textStyle('body2')}
+          ${active ? 'font-weight: 600' : ''}
+        `}
+      >
+        {label}
       </span>
-    </ButtonItem>
+    </ButtonBase>
   )
-}
-
+})
 MenuPanelItem.propTypes = {
   active: PropTypes.bool,
   icon: PropTypes.object.isRequired,
   instanceId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  openProgress: PropTypes.object.isRequired,
   singleInstance: PropTypes.bool.isRequired,
 }
-
-const Item = React.memo(MenuPanelItem)
 
 const MenuPanelAppGroup = React.memo(function MenuPanelAppGroup({
   name,
   icon,
-  system,
   instances,
   activeInstanceId,
   active,
@@ -78,29 +100,12 @@ const MenuPanelAppGroup = React.memo(function MenuPanelAppGroup({
       native
     >
       {({ openProgress }) => (
-        <Main
-          active={active}
-          system={system}
-          pressedItemBackground={theme.surfacePressed}
-          activeItemBackground={theme.surfaceSelected}
-        >
-          <div
-            style={{ opacity: Number(active) }}
-            css={`
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              z-index: -1;
-              background: ${theme.surfaceInteractive};
-            `}
-          />
-
+        <Main active={active}>
           <AnimDiv
             css={`
               position: absolute;
-              width: 4px;
+              left: 0;
+              width: 3px;
               height: 100%;
               background: ${theme.accent};
             `}
@@ -112,12 +117,13 @@ const MenuPanelAppGroup = React.memo(function MenuPanelAppGroup({
             }}
           />
 
-          <Item
-            instanceId={instances[0].instanceId}
-            onClick={handleAppClick}
-            icon={icon}
-            name={name}
+          <MenuPanelItem
             active={active}
+            icon={icon}
+            instanceId={instances[0].instanceId}
+            name={name}
+            onClick={handleAppClick}
+            openProgress={openProgress}
             singleInstance={singleInstance}
           />
 
@@ -126,16 +132,17 @@ const MenuPanelAppGroup = React.memo(function MenuPanelAppGroup({
               className="instances"
               style={{
                 height: openProgress.interpolate(
-                  v => `${(instances.length * 30 + 5) * v}px`
+                  v =>
+                    `${(instances.length * MENU_PANEL_APP_INSTANCE_HEIGHT + 0) *
+                      v}px`
                 ),
-                paddingBottom: openProgress.interpolate(v => `${5 * v}px`),
               }}
             >
               {instances.map(({ instanceId, identifier }) => {
                 const label = identifier || instanceId
                 return label ? (
                   <li key={instanceId}>
-                    <MenuPanelInstance
+                    <MenuPanelAppInstance
                       id={instanceId}
                       name={label}
                       active={instanceId === activeInstanceId}
@@ -160,63 +167,42 @@ MenuPanelAppGroup.propTypes = {
   instances: PropTypes.arrayOf(AppInstanceType).isRequired,
   name: PropTypes.string.isRequired,
   onActivate: PropTypes.func.isRequired,
-  system: PropTypes.bool,
 }
 
-const Main = styled.div`
-  position: relative;
-  width: 100%;
+function Main({ active, ...props }) {
+  const theme = useTheme()
+  return (
+    <div
+      css={`
+        position: relative;
+        width: 100%;
 
-  a[role='button'] {
-    outline: 0;
-  }
-  .item {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    cursor: pointer;
-    padding: 0 10px 0 30px;
-    transition: background 150ms ease-in-out;
-    &.active {
-      transition: none;
-      background: ${p => p.activeItemBackground};
-    }
-    &:active {
-      background: ${p => p.pressedItemBackground};
-    }
-  }
-  .name {
-    font-weight: ${({ active }) => (active ? '800' : '400')};
-    font-size: 16px;
-  }
-  .icon {
-    display: flex;
-    width: 22px;
-    height: 22px;
-    margin-right: 15px;
+        transition: background 150ms ease-in-out;
 
-    & > img {
-      border-radius: 5px;
-    }
-  }
-  .instances {
-    overflow: hidden;
-    padding: 0 10px 0 30px;
-  }
-  .instances li {
-    display: flex;
-  }
-`
+        ${active
+          ? `
+            transition: none;
+            background: ${theme.surfacePressed};
+          `
+          : ''}
+        &:active {
+          background: ${theme.surfacePressed};
+        }
 
-const ButtonItem = styled(ButtonBase)`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  border-radius: 0;
-  & > span {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-`
+        .instances {
+          /* 3GU left padding + 3GU icon + 1GU padding to align instance with menu item */
+          padding-left: ${7 * GU}px;
+          padding-right: ${2 * GU}px;
+          overflow: hidden;
+          list-style: none;
+        }
+      `}
+      {...props}
+    />
+  )
+}
+Main.propTypes = {
+  active: PropTypes.bool,
+}
 
 export default MenuPanelAppGroup

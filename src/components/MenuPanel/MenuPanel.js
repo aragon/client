@@ -1,19 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { ButtonBase, springs, unselectable, useTheme } from '@aragon/ui'
+import {
+  ButtonBase,
+  IconDown,
+  GU,
+  springs,
+  textStyle,
+  unselectable,
+  useTheme,
+} from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { AppInstanceGroupType, AppsStatusType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
-import MenuPanelAppGroup from './MenuPanelAppGroup'
+import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import AppIcon from '../AppIcon/AppIcon'
-import IconArrow from '../../icons/IconArrow'
 
-export const MENU_PANEL_SHADOW_WIDTH = 15
-export const MENU_PANEL_WIDTH = 220
-export const MENU_ITEM_HEIGHT = 40
+export const MENU_PANEL_SHADOW_WIDTH = 3
+export const MENU_PANEL_WIDTH = 28 * GU
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -37,7 +42,6 @@ const interpolateToggleElevation = (value, fn = v => v) =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
-    theme: PropTypes.object,
     activeInstanceId: PropTypes.string,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
@@ -57,7 +61,7 @@ class MenuPanel extends React.PureComponent {
       .filter(appGroup => appGroup.hasWebApp)
       .map(appGroup => ({
         ...appGroup,
-        icon: <AppIcon app={appGroup.app} size={22} />,
+        icon: <AppIcon app={appGroup.app} />,
       }))
   )
 
@@ -72,7 +76,7 @@ class MenuPanel extends React.PureComponent {
   }
 
   render() {
-    const { appInstanceGroups, theme } = this.props
+    const { appInstanceGroups } = this.props
     const { systemAppsOpened, systemAppsToggled } = this.state
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
@@ -80,11 +84,7 @@ class MenuPanel extends React.PureComponent {
     const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_ORGANIZATION]
 
     return (
-      <Main
-        css={`
-          background: ${theme.surface};
-        `}
-      >
+      <Main>
         <div
           css={`
             position: relative;
@@ -93,96 +93,98 @@ class MenuPanel extends React.PureComponent {
             flex-direction: column;
             height: 100%;
             flex-shrink: 1;
-            border-right: 1px solid ${theme.border};
-            box-shadow: 1px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.05);
           `}
         >
-          <Content
+          <nav
             css={`
-              h1 {
-                color: ${theme.surfaceContentSecondary};
-              }
+              overflow-y: auto;
+              flex: 1 1 0;
+              padding-top: ${4 * GU}px;
             `}
           >
-            <div className="in">
-              <h1>Apps</h1>
-
-              <div>
-                {menuApps.map(app =>
-                  // If it's an array, it's the group being loaded from the ACL
-                  Array.isArray(app)
-                    ? this.renderLoadedAppGroup(app)
-                    : this.renderAppGroup(app, false)
-                )}
-              </div>
-              <Spring
-                config={springs.smooth}
-                from={{ openProgress: 0 }}
-                to={{ openProgress: Number(systemAppsOpened) }}
-                immediate={!systemAppsToggled}
-                native
-              >
-                {({ openProgress }) => (
-                  <div>
-                    <SystemAppsToggle
-                      onClick={this.handleToggleSystemApps}
-                      activeBackground={theme.surfacePressed}
+            <Heading>Apps</Heading>
+            <div
+              css={`
+                margin-top: ${1 * GU}px;
+              `}
+            >
+              {menuApps.map(app =>
+                // If it's an array, it's the group being loaded from the ACL
+                Array.isArray(app)
+                  ? this.renderLoadedAppGroup(app)
+                  : this.renderAppGroup(app)
+              )}
+            </div>
+            <Spring
+              config={springs.smooth}
+              from={{ openProgress: 0 }}
+              to={{ openProgress: Number(systemAppsOpened) }}
+              immediate={!systemAppsToggled}
+              native
+            >
+              {({ openProgress }) => (
+                <div
+                  css={`
+                    margin-top: ${1 * GU}px;
+                  `}
+                >
+                  <SystemAppsToggle onClick={this.handleToggleSystemApps}>
+                    <SystemAppsToggleShadow
+                      style={{
+                        transform: interpolateToggleElevation(
+                          openProgress,
+                          v => `scale3d(${v}, 1, 1)`
+                        ),
+                        opacity: interpolateToggleElevation(openProgress),
+                      }}
+                    />
+                    <Heading
+                      css={`
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+                      `}
                     >
-                      <SystemAppsToggleShadow
+                      System
+                      <SystemAppsToggleArrow
                         style={{
-                          transform: interpolateToggleElevation(
-                            openProgress,
-                            v => `scale3d(${v}, 1, 1)`
+                          marginLeft: `${1 * GU}px`,
+                          transform: openProgress.interpolate(
+                            v => `rotate(${(1 - v) * 180}deg)`
                           ),
-                          opacity: interpolateToggleElevation(openProgress),
+                          transformOrigin: '50% calc(50% - 0.5px)',
                         }}
                       />
-                      <h1
-                        css={`
-                          display: flex;
-                          justify-content: flex-start;
-                          align-items: flex-end;
-                        `}
-                      >
-                        <span>System</span>
-                        <SystemAppsToggleArrow
-                          style={{
-                            marginLeft: '5px',
-                            transform: openProgress.interpolate(
-                              v => `rotate(${(1 - v) * 180}deg)`
-                            ),
-                            transformOrigin: '50% calc(50% - 0.5px)',
-                          }}
-                        />
-                      </h1>
-                    </SystemAppsToggle>
-                    <div css="overflow: hidden">
-                      <animated.div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'flex-end',
-                          width: '100%',
-                          opacity: openProgress,
-                          height: openProgress.interpolate(
-                            v => v * systemApps.length * MENU_ITEM_HEIGHT + 'px'
-                          ),
-                        }}
-                      >
-                        {systemApps.map(app => this.renderAppGroup(app, true))}
-                      </animated.div>
-                    </div>
+                    </Heading>
+                  </SystemAppsToggle>
+                  <div css="overflow: hidden">
+                    <animated.div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end',
+                        width: '100%',
+                        opacity: openProgress,
+                        height: openProgress.interpolate(
+                          v =>
+                            v * systemApps.length * MENU_ITEM_BASE_HEIGHT + 'px'
+                        ),
+                      }}
+                    >
+                      {systemApps.map(app => this.renderAppGroup(app))}
+                    </animated.div>
                   </div>
-                )}
-              </Spring>
-            </div>
-          </Content>
+                </div>
+              )}
+            </Spring>
+          </nav>
         </div>
       </Main>
     )
   }
 
-  renderAppGroup(app, isSystem) {
+  renderAppGroup(app) {
     const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances } = app
@@ -196,7 +198,6 @@ class MenuPanel extends React.PureComponent {
         <MenuPanelAppGroup
           name={name}
           icon={icon}
-          system={isSystem}
           instances={instances}
           active={isActive}
           expand={isActive}
@@ -236,21 +237,55 @@ class MenuPanel extends React.PureComponent {
   }
 }
 
-const SystemAppsToggle = styled(ButtonBase)`
-  position: relative;
-  width: 100%;
-  padding: 0;
-  margin: 20px 0 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  outline: none;
-  &:active {
-    background: ${p => p.activeBackground};
-  }
-`
+function Main(props) {
+  const theme = useTheme()
+  return (
+    <div
+      css={`
+        background: ${theme.surface};
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex: none;
+        flex-direction: column;
+        ${unselectable};
+      `}
+      {...props}
+    />
+  )
+}
+
+function Heading(props) {
+  const theme = useTheme()
+  return (
+    <h1
+      css={`
+        margin-left: ${3 * GU}px;
+        ${textStyle('label2')}
+        font-weight: 400;
+        color: ${theme.surfaceContentSecondary};
+      `}
+      {...props}
+    />
+  )
+}
+
+function SystemAppsToggle(props) {
+  const theme = useTheme()
+  return (
+    <ButtonBase
+      css={`
+        position: relative;
+        width: 100%;
+        padding: ${1 * GU}px 0;
+        &:active {
+          background: ${theme.surfacePressed};
+        }
+      `}
+      {...props}
+    />
+  )
+}
 
 const SystemAppsToggleArrow = props => (
   <animated.div {...props}>
@@ -259,11 +294,9 @@ const SystemAppsToggleArrow = props => (
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 22px;
-        height: 22px;
       `}
     >
-      <IconArrow />
+      <IconDown size="tiny" />
     </div>
   </animated.div>
 )
@@ -272,8 +305,8 @@ const SystemAppsToggleShadow = props => (
   <div
     css={`
       position: absolute;
-      left: 20px;
-      right: 20px;
+      left: ${3 * GU}px;
+      right: ${3 * GU}px;
       bottom: 0;
     `}
   >
@@ -288,36 +321,4 @@ const SystemAppsToggleShadow = props => (
   </div>
 )
 
-const Main = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  ${unselectable};
-`
-
-const Content = styled.nav`
-  overflow-y: auto;
-  flex: 1 1 0;
-  .in {
-    padding: 10px 0 10px;
-  }
-  h1 {
-    margin: 10px 30px;
-    text-transform: lowercase;
-    font-variant: small-caps;
-    font-weight: 600;
-  }
-  ul {
-    list-style: none;
-  }
-  li {
-    display: flex;
-    align-items: center;
-  }
-`
-export default function(props) {
-  const theme = useTheme()
-  return <MenuPanel {...props} theme={theme} />
-}
+export default MenuPanel
