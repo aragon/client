@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 
 const HELPSCOUT_OPTOUT_KEY = 'HELPSCOUT_OPTOUT'
@@ -9,16 +9,16 @@ function HelpScoutProvider({ children }) {
   const [optedOut, setOptedOut] = useState(
     localStorage.getItem(HELPSCOUT_OPTOUT_KEY) === 'true'
   )
-  const handleOptOut = out => {
-    if (out && window.Beacon) {
+
+  useEffect(() => {
+    if (optedOut && window.Beacon) {
       window.Beacon('destroy')
     }
-    localStorage.setItem(HELPSCOUT_OPTOUT_KEY, out ? 'true' : 'false')
-    setOptedOut(out)
-  }
+    localStorage.setItem(HELPSCOUT_OPTOUT_KEY, optedOut ? 'true' : 'false')
+  }, [optedOut])
 
   return (
-    <HelpScoutContext.Provider value={{ optedOut, setOptedOut: handleOptOut }}>
+    <HelpScoutContext.Provider value={{ optedOut, setOptedOut }}>
       {children}
     </HelpScoutContext.Provider>
   )
