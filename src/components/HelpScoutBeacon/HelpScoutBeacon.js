@@ -18,12 +18,12 @@ import {
   useViewport,
 } from '@aragon/ui'
 import useBeaconSuggestions from './useBeaconSuggestions'
+import { useHelpScout } from './useHelpScout'
 import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
 import { AppType } from '../../prop-types'
-import { useHelpScout } from '../../hooks/useHelpScout'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
 const CLOSED = Symbol('closed, user can open opt-in or beacon')

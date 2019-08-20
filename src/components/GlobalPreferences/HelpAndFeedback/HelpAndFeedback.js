@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { Box, Checkbox, Info, GU, textStyle, useTheme } from '@aragon/ui'
 import helpAndFeedbackSvg from './help-and-feedback.svg'
-import { useHelpScout } from '../../../hooks/useHelpScout'
+import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
 
 function HelpAndFeedback() {
   const theme = useTheme()
