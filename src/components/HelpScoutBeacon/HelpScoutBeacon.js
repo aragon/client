@@ -358,17 +358,17 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
                 </Paragraph>
                 <Paragraph>
                   For that, we use a third-party system called{' '}
-                  <StyledLink theme={theme} href="https://www.helpscout.com/">
+                  <Link href="https://www.helpscout.com/" target="_blank">
                     HelpScout
-                  </StyledLink>
+                  </Link>
                   . If you opt-in, we will load their program onto Aragon.
                   HelpScout is a{' '}
-                  <StyledLink
-                    theme={theme}
+                  <Link
+                    target="_blank"
                     href="https://bcorporation.net/directory/help-scout"
                   >
                     Public Benefit Corp
-                  </StyledLink>
+                  </Link>
                   .
                 </Paragraph>
               </div>
@@ -523,16 +523,6 @@ const Main = styled.main`
 
 const Heading = styled.h3`
   ${textStyle('title4')};
-`
-console.log('Link: ', Link)
-const StyledLink = styled(Link).attrs({ target: '_blank' })`
-  text-decoration: none;
-  color: ${({ theme }) => theme.link};
-
-  &:hover,
-  &:focus {
-    text-decoration: underline;
-  }
 `
 
 const RoundButtonIcon = styled(animated.div)`
