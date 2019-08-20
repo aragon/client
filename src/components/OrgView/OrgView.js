@@ -36,7 +36,6 @@ function OrgView({
   daoStatus,
   onOpenApp,
   onOpenPreferences,
-  onRequestAppsReload,
 }) {
   const theme = useTheme()
   const { width, below } = useViewport()
@@ -114,7 +113,6 @@ function OrgView({
               daoStatus={daoStatus}
               onOpenApp={onOpenApp}
               onOpenPreferences={onOpenPreferences}
-              onRequestAppsReload={onRequestAppsReload}
               opened={menuPanelOpened}
             >
               <div
@@ -144,7 +142,6 @@ OrgView.propTypes = {
   daoStatus: DaoStatusType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onOpenPreferences: PropTypes.func.isRequired,
-  onRequestAppsReload: PropTypes.func.isRequired,
 }
 
 export { AppWidthContext }

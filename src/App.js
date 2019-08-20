@@ -229,13 +229,6 @@ class App extends React.Component {
     initWrapper(dao, contractAddresses.ensRegistry, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
-      onError: err => {
-        log(`Wrapper init, recoverable error: ${err.name}. ${err.message}.`)
-        this.setState({
-          appsStatus: APPS_STATUS_ERROR,
-          daoStatus: DAO_STATUS_ERROR,
-        })
-      },
       onDaoAddress: ({ address, domain }) => {
         log('dao address', address)
         log('dao domain', domain)
@@ -294,7 +287,7 @@ class App extends React.Component {
             identityIntent.address
           )
           name = identity.name
-        } catch (e) {}
+        } catch (_) {}
         this.setState({
           identityIntent: {
             label: name,
@@ -310,16 +303,12 @@ class App extends React.Component {
       })
       .catch(err => {
         log(`Wrapper init, fatal error: ${err.name}. ${err.message}.`)
-        this.setState({ fatalError: err })
+        this.setState({
+          appsStatus: APPS_STATUS_ERROR,
+          daoStatus: DAO_STATUS_ERROR,
+          fatalError: err,
+        })
       })
-  }
-
-  handleRequestAppsReload = () => {
-    this.setState({ appsStatus: APPS_STATUS_LOADING, apps: [] })
-    clearTimeout(this._requestAppsTimer)
-    this._requestAppsTimer = setTimeout(() => {
-      this.updateDao(this.state.locator.dao)
-    }, 1000)
   }
 
   handleIdentityCancel = () => {

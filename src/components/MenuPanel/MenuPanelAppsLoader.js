@@ -2,12 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { Button, IconError, LoadingRing } from '@aragon/ui'
+import { Button, LoadingRing, GU } from '@aragon/ui'
 import { AppsStatusType } from '../../prop-types'
 import springs from '../../springs'
 import { noop } from '../../utils'
 import {
-  APPS_STATUS_ERROR,
   APPS_STATUS_READY,
   APPS_STATUS_LOADING,
 } from '../../symbols'
@@ -18,13 +17,11 @@ class MenuPanelAppsLoader extends React.Component {
     children: PropTypes.func.isRequired,
     expandedInstancesCount: PropTypes.number.isRequired,
     appsCount: PropTypes.number.isRequired,
-    onRetry: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     children: noop,
     appStatus: APPS_STATUS_LOADING,
-    onRetry: noop,
   }
 
   state = {
@@ -67,11 +64,11 @@ class MenuPanelAppsLoader extends React.Component {
         (expandedInstancesCount > 0 ? 5 : 0)
       )
     }
-    return appsStatus === APPS_STATUS_ERROR ? 80 : 40
+    return 40
   }
 
   render() {
-    const { children, appsStatus, onRetry } = this.props
+    const { appsStatus, children } = this.props
     const { showApps, transitionDone } = this.state
     return (
       <Spring
@@ -120,18 +117,8 @@ class MenuPanelAppsLoader extends React.Component {
                   ),
                 }}
               >
-                <StatusIndicatorWrapper
-                  vAlign={appsStatus !== APPS_STATUS_ERROR}
-                >
-                  {appsStatus === APPS_STATUS_ERROR ? (
-                    <IconErrorWrapper
-                      style={{ opacity: afterLoadingMessageProgress }}
-                    >
-                      <IconError />
-                    </IconErrorWrapper>
-                  ) : (
-                    <LoadingRing paused={appsStatus !== APPS_STATUS_LOADING} />
-                  )}
+                <StatusIndicatorWrapper>
+                  <LoadingRing paused={appsStatus !== APPS_STATUS_LOADING} />
                 </StatusIndicatorWrapper>
                 {(() => {
                   if (appsStatus === APPS_STATUS_LOADING) {
@@ -139,18 +126,6 @@ class MenuPanelAppsLoader extends React.Component {
                   }
                   if (appsStatus === APPS_STATUS_READY) {
                     return 'Apps loaded.'
-                  }
-                  if (appsStatus === APPS_STATUS_ERROR) {
-                    return (
-                      <div>
-                        <div style={{ marginBottom: '5px' }}>
-                          Apps loading error
-                        </div>
-                        <Button size="mini" onClick={onRetry}>
-                          Retry
-                        </Button>
-                      </div>
-                    )
                   }
                   return null
                 })()}
@@ -179,10 +154,8 @@ const StatusIndicatorWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: ${({ vAlign }) => (vAlign ? 'center' : 'flex-start')};
-  width: 22px;
-  height: 22px;
-  margin-right: 15px;
+  align-self: center;
+  margin-right: ${1 * GU}px;
 `
 
 const Main = styled(animated.div)`
@@ -214,12 +187,6 @@ const StatusBackground = styled(animated.div)`
   left: 0;
   right: 0;
   bottom: 0;
-`
-
-const IconErrorWrapper = styled(animated.div)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `
 
 const StatusContent = styled(animated.div)`

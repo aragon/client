@@ -42,7 +42,6 @@ class MenuPanel extends React.PureComponent {
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    onRequestAppsReload: PropTypes.func.isRequired,
   }
 
   _systemAppsToggled = false
@@ -209,7 +208,7 @@ class MenuPanel extends React.PureComponent {
   }
 
   renderLoadedAppGroup(appGroups) {
-    const { appsStatus, activeInstanceId, onRequestAppsReload } = this.props
+    const { appsStatus, activeInstanceId } = this.props
 
     // Used by the menu transition
     const expandedInstancesCount = appGroups.reduce(
@@ -228,7 +227,6 @@ class MenuPanel extends React.PureComponent {
       <MenuPanelAppsLoader
         key="menu-apps"
         appsStatus={appsStatus}
-        onRetry={onRequestAppsReload}
         appsCount={appGroups.length}
         expandedInstancesCount={expandedInstancesCount}
       >
