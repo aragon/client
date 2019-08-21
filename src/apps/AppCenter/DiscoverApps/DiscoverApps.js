@@ -48,14 +48,14 @@ const DiscoverApps = React.memo(() => {
         {appsInDevelopment.map((app, i) => (
           <Main key={i} columnWidthMin={30 * GU} rowHeight={rowHeight}>
             {app.link && (
-              <External href={app.link} target="_blank">
-                <ExternalButton icon={<IconExternal />}>
-                  <IconExternal size="tiny" />
-                </ExternalButton>
-              </External>
+              <ExternalButton
+                href={app.link}
+                target="_blank"
+                icon={<IconExternal size="tiny" />}
+              />
             )}
             <Icon>
-              <AppIcon size={64} src={app.icon} />
+              <AppIcon size={9 * GU} src={app.icon} />
             </Icon>
             <Name>{app.name}</Name>
             <TagWrapper>
@@ -97,11 +97,11 @@ const Name = styled.p`
 
 const TagWrapper = styled.div`
   max-width: 100%;
-  padding: 0 20px;
-  margin-bottom: 10px;
+  padding: 0 ${2.5 * GU}px;
+  margin-bottom: ${1 * GU}px;
 `
 
-const Description = styled.div`
+const Description = styled.p`
   color: ${({ theme }) => theme.contentSecondary};
   padding: 0 1rem;
   text-align: center;
@@ -109,13 +109,10 @@ const Description = styled.div`
   flex: 1;
 `
 
-const External = styled(Link)`
+const ExternalButton = styled(Button)`
   position: absolute;
   top: ${2 * GU}px;
   right: ${2 * GU}px;
-`
-
-const ExternalButton = styled(Button)`
   width: ${3.5 * GU}px;
   height: ${3.5 * GU}px;
 `
