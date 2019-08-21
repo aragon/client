@@ -160,14 +160,14 @@ const Organization = React.memo(function Organization({
             </Info>
           ) : (
             <Info mode="warning">
-              {walletNetwork !== network.type
-                ? `Please select the ${sanitizeNetworkType(
-                    network.type
-                  )} network in your Ethereum provider.`
-                : `Please unlock your account in ${getProviderString(
-                    'your Ethereum provider',
-                    walletProviderId
-                  )}.`}
+              {`Please ${
+                walletNetwork !== network.type
+                  ? `select the ${sanitizeNetworkType(network.type)} network`
+                  : 'unlock your account'
+              } in ${getProviderString(
+                'your Ethereum provider',
+                walletProviderId
+              )}.`}
             </Info>
           )}
         </Section>
