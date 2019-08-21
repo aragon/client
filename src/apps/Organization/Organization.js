@@ -178,7 +178,7 @@ const Organization = React.memo(function Organization({
             css={`
               display: flex;
               align-items: center;
-              justify-content: center;
+                height: ${22 * GU}px;
               height: 180px;
               ${textStyle('body2')}
             `}
