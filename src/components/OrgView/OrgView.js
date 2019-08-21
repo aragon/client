@@ -19,12 +19,13 @@ import {
 import { DAO_STATUS_LOADING } from '../../symbols'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
+import ActivityButton from './ActivityButton/ActivityButton'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
 
 function ThemeModeButton() {
   const { mode, toggle } = useThemeMode()
   return (
-    <ButtonBase onClick={toggle} css="padding: 10px">
+    <ButtonBase onClick={toggle} css="padding: 8px">
       {mode === 'dark' ? '🌝' : '🌚'}
     </ButtonBase>
   )
@@ -119,10 +120,12 @@ function OrgView({
           <div
             css={`
               display: flex;
+              padding-right: ${2 * GU}px;
             `}
           >
-            <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ThemeModeButton />
+            <GlobalPreferencesButton onOpen={onOpenPreferences} />
+            <ActivityButton apps={apps} />
           </div>
         </div>
         <div

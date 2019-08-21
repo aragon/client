@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { font, theme } from '@aragon/ui'
+import { textStyle, useTheme } from '@aragon/ui'
 import { formatDistance, formatDistanceStrict } from 'date-fns'
 import { useNow } from '../../hooks'
 
@@ -16,16 +16,15 @@ function getRelativeTime(now, targetDate) {
 }
 
 function TimeTag({ date, label, ...props }) {
+  const theme = useTheme()
   const now = useNow()
   const targetDate = new Date(date)
   return (
     <span
       css={`
-        opacity: 0.7;
-        color: ${theme.textSecondary};
-        letter-spacing: 0;
+        ${textStyle('label2')}
+        color: ${theme.surfaceContentSecondary};
         white-space: nowrap;
-        ${font({ size: 'xsmall', weight: 'bold' })}
       `}
       {...props}
     >

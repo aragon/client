@@ -1,19 +1,29 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { springs, theme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
+import {
+  ButtonText,
+  GU,
+  textStyle,
+  springs,
+  useTheme,
+  useViewport,
+} from '@aragon/ui'
+import { ActivityContext } from '../../contexts/ActivityContext'
 import { AppType } from '../../prop-types'
 import { addressesEqual } from '../../web3-utils'
-import { cssgu } from '../../utils'
 import ActivityItem from './ActivityItem'
-import IconEmptyState from './IconEmptyState'
+
+const MAX_HEIGHT_CLAMP = 80 * GU
+const MAX_HEIGHT_WINDOW_SCALE = 0.75
 
 const getAppByProxyAddress = (proxyAddress, apps) =>
   apps.find(app => addressesEqual(app.proxyAddress, proxyAddress)) || null
 
-const ActivityList = React.memo(({ apps, activities, clearActivity }) => {
-  const [activitiesReady, setActivitiesReady] = React.useState({})
-
+function ActivityList({ apps }) {
+  const theme = useTheme()
+  const { height } = useViewport()
+  const { activities, clearActivities } = useContext(ActivityContext)
   const activityItems = useMemo(
     () =>
       activities
@@ -25,99 +35,98 @@ const ActivityList = React.memo(({ apps, activities, clearActivity }) => {
     [activities, apps]
   )
 
-  const handleDiscard = useCallback(
-    ({ transactionHash }) => {
-      clearActivity(transactionHash)
-    },
-    [clearActivity]
+  const maxHeight = Math.min(
+    MAX_HEIGHT_CLAMP,
+    Math.ceil(MAX_HEIGHT_WINDOW_SCALE * height)
   )
-
-  const transitionKeys = activity => activity.transactionHash
 
   return (
-    <div css="position: relative">
-      <Transition
-        native
-        items={activityItems.length === 0}
-        from={{ opacity: 0 }}
-        enter={{ opacity: 1 }}
-        leave={{ opacity: 0 }}
-        config={springs.lazy}
-      >
-        {show =>
-          show &&
-          (transitionStyles => (
-            <div
+    <div
+      css={`
+        width: ${42 * GU}px;
+      `}
+    >
+      {activityItems.length > 0 && (
+        <React.Fragment>
+          <div
+            css={`
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              height: ${4 * GU}px;
+              padding: 0 ${2 * GU}px;
+              border-bottom: 1px solid ${theme.border};
+            `}
+          >
+            <label
               css={`
-                position: absolute;
-                top: 0;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: ${cssgu`8gu 4gu 8gu`};
+                text-transform: uppercase;
+                font-size: 12px;
+                color: ${theme.surfaceContentSecondary};
               `}
-              style={transitionStyles}
             >
-              <IconEmptyState />
-              <p
-                css={`
-                  margin-top: ${cssgu`1gu`};
-                  font-size: 14px;
-                  color: ${theme.textSecondary};
-                `}
-              >
-                No activity.
-              </p>
-            </div>
-          ))
-        }
-      </Transition>
-      <Transition
-        native
-        items={activityItems}
-        keys={transitionKeys}
-        trail={100}
-        initial={{
-          opacity: 1,
-          height: 'auto',
-          transform: 'translate3d(0px, 0, 0)',
-        }}
-        from={{
-          opacity: 0,
-          height: 0,
-          transform: 'translate3d(-20px, 0, 0)',
-        }}
-        enter={item => async next => {
-          await next({
-            opacity: 1,
-            height: 'auto',
-            transform: 'translate3d(0px, 0, 0)',
-          })
-          const activityKey = transitionKeys(item)
-          setActivitiesReady({ ...activitiesReady, [activityKey]: true })
-        }}
-        leave={{
-          opacity: 0,
-          height: 0,
-          transform: 'translate3d(-20px, 0, 0)',
-        }}
-        config={springs.smooth}
-      >
-        {activity => transitionStyles => (
-          <animated.div style={{ ...transitionStyles, overflow: 'hidden' }}>
-            <ActivityItem activity={activity} onDiscard={handleDiscard} />
-          </animated.div>
-        )}
-      </Transition>
+              Activity
+            </label>
+            <ButtonText
+              onClick={clearActivities}
+              css={`
+                padding: 0;
+                ${textStyle('label2')}
+              `}
+            >
+              Clear all
+            </ButtonText>
+          </div>
+          <div
+            css={`
+              max-height: ${maxHeight}px;
+              overflow-x: hidden;
+              overflow-y: scroll;
+            `}
+          >
+            <Transition
+              native
+              items={activityItems}
+              keys={activity => activity.transactionHash}
+              trail={50}
+              from={{
+                opacity: 0.3,
+                transform: 'translate3d(-20px, 0, 0)',
+              }}
+              enter={{
+                opacity: 1,
+                transform: 'translate3d(0px, 0, 0)',
+              }}
+              leave={{
+                opacity: 0,
+                transform: 'translate3d(-20px, 0, 0)',
+              }}
+              config={springs.smooth}
+            >
+              {activity => transitionStyles => (
+                <div
+                  css={`
+                    & + & {
+                      border-top: 1px solid ${theme.border};
+                    }
+                  `}
+                >
+                  <animated.div
+                    style={{ ...transitionStyles, overflow: 'hidden' }}
+                  >
+                    <ActivityItem activity={activity} />
+                  </animated.div>
+                </div>
+              )}
+            </Transition>
+          </div>
+        </React.Fragment>
+      )}
     </div>
   )
-})
-
+}
 ActivityList.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
-  activities: PropTypes.arrayOf(PropTypes.object).isRequired,
-  clearActivity: PropTypes.func.isRequired,
 }
 
 export default ActivityList

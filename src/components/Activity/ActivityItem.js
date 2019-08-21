@@ -1,20 +1,10 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  ButtonIcon,
-  IconClose,
-  IconError,
-  SafeLink,
-  blockExplorerUrl,
-  theme,
-} from '@aragon/ui'
-import { network } from '../../environment'
+import { IconCross, IconCheck, GU, textStyle, useTheme } from '@aragon/ui'
 import { cssgu } from '../../utils'
 import { transformAddresses } from '../../web3-utils'
 import AppIcon from '../AppIcon/AppIcon'
-import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import IconSuccess from '../../icons/IconSuccess'
-import IconPending from '../../icons/IconPending'
+import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import TimeTag from './TimeTag'
 import TransactionProgress from './TransactionProgress'
 import {
@@ -23,12 +13,9 @@ import {
   ACTIVITY_STATUS_TIMED_OUT,
 } from '../../symbols'
 
-const ActivityItem = ({ activity, onDiscard }) => {
+const ActivityItem = ({ activity }) => {
+  const theme = useTheme()
   const { app } = activity
-
-  const handleClose = useCallback(() => {
-    onDiscard(activity)
-  }, [onDiscard, activity])
 
   return (
     <section
@@ -41,13 +28,10 @@ const ActivityItem = ({ activity, onDiscard }) => {
         overflow: hidden;
         position: relative;
         width: 100%;
-        padding: ${cssgu`3gu`};
-        transition: background 0.5s;
-        background: rgba(255, 255, 255, ${activity.read ? '0' : '0.6'});
-        border-bottom: 1px solid ${theme.contentBorder};
+        padding: ${cssgu`2gu`};
+        background: ${theme.surface};
       `}
     >
-      <CloseButton onClick={handleClose} />
       <h1
         css={`
           grid-area: title;
@@ -61,10 +45,9 @@ const ActivityItem = ({ activity, onDiscard }) => {
         <div
           css={`
             margin-left: ${cssgu`1gu`};
-            font-weight: 600;
-            font-size: 16px;
             white-space: nowrap;
-            color: ${theme.textPrimary};
+            ${textStyle('body2')}
+            color: ${theme.surfaceContent};
           `}
         >
           {app ? app.name : 'Unknown'}
@@ -81,10 +64,8 @@ const ActivityItem = ({ activity, onDiscard }) => {
       <div
         css={`
           grid-area: content;
-          overflow: hidden;
           position: relative;
-          margin: 10px 0 0;
-          font-size: 15px;
+          margin-top: ${2 * GU}px;
         `}
       >
         <ItemContent text={activity.description} />
@@ -100,12 +81,15 @@ const ActivityItem = ({ activity, onDiscard }) => {
 
 ActivityItem.propTypes = {
   activity: PropTypes.object.isRequired,
-  onDiscard: PropTypes.func.isRequired,
 }
 
 const ItemContent = React.memo(
   ({ text = '' }) => (
-    <p>
+    <p
+      css={`
+        ${textStyle('body2')}
+      `}
+    >
       {transformAddresses(text, (part, isAddress, index) =>
         isAddress ? (
           <span title={part} key={index}>
@@ -124,44 +108,46 @@ ItemContent.propTypes = {
   text: PropTypes.string.isRequired,
 }
 
-function getStatusData(activity) {
-  const txLink = (
-    <SafeLink
-      target="_blank"
-      href={blockExplorerUrl('transaction', activity.transactionHash, {
-        networkType: network.type,
-      })}
-    >
-      Transaction
-    </SafeLink>
-  )
+function getStatusData(activity, theme) {
   if (activity.status === ACTIVITY_STATUS_CONFIRMED) {
-    return [<IconSuccess />, <span>{txLink} confirmed.</span>]
+    return [
+      <IconCheck size="small" />,
+      <span>Transaction confirmed</span>,
+      theme.positive,
+    ]
   }
   if (activity.status === ACTIVITY_STATUS_FAILED) {
-    return [<IconError />, <span>{txLink} failed.</span>]
+    return [
+      <IconCross size="small" />,
+      <span>Transaction failed</span>,
+      theme.negative,
+    ]
   }
   if (activity.status === ACTIVITY_STATUS_TIMED_OUT) {
-    return [<IconError />, <span>{txLink} timed out.</span>]
+    return [
+      <IconCross size="small" />,
+      <span>Transaction timed out</span>,
+      theme.negative,
+    ]
   }
-  return [<IconPending />, <span>{txLink} pending.</span>]
+  return [null, <span>Transaction pending</span>, theme.surfaceContentSecondary]
 }
 
 const StatusMessage = ({ activity }) => {
-  const [icon, content] = getStatusData(activity)
+  const theme = useTheme()
+  const [icon, content, color] = getStatusData(activity, theme)
   return (
     <div
       css={`
         display: flex;
         align-items: center;
-        margin-top: 10px;
-        font-size: 14px;
-        a {
-          color: ${theme.accent};
-        }
+        margin-top: ${2 * GU}px;
+        ${textStyle('label2')}
+        color: ${color}
       `}
     >
-      {icon} <div css="margin-left: 5px">{content}</div>
+      {icon}
+      {content}
     </div>
   )
 }
@@ -169,19 +155,5 @@ const StatusMessage = ({ activity }) => {
 StatusMessage.propTypes = {
   activity: PropTypes.object.isRequired,
 }
-
-const CloseButton = props => (
-  <ButtonIcon
-    {...props}
-    label="Close"
-    css={`
-      position: absolute;
-      top: 0;
-      right: 0;
-    `}
-  >
-    <IconClose />
-  </ButtonIcon>
-)
 
 export default ActivityItem

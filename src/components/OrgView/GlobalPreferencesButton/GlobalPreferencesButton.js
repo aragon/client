@@ -36,13 +36,13 @@ function GlobalPreferencesButton({ onOpen }) {
           onClick={handleToggle}
           css={`
             height: 100%;
-            width: 40px;
+            border-radius: 0;
           `}
           label="Global preferences"
         >
           <IconSettings
             css={`
-              color: ${theme.surfaceIcon};
+              color: ${theme.hint};
             `}
           />
         </ButtonIcon>
@@ -56,7 +56,7 @@ function GlobalPreferencesButton({ onOpen }) {
       >
         <ul
           css={`
-            width: 260px;
+            width: ${42 * GU}px;
             padding: 0;
             margin: 0;
             list-style: none;
@@ -69,7 +69,7 @@ function GlobalPreferencesButton({ onOpen }) {
             css={`
               display: flex;
               align-items: center;
-              height: 32px;
+              height: ${4 * GU}px;
               color: ${theme.surfaceContentSecondary};
               text-transform: uppercase;
               font-size: 12px;
