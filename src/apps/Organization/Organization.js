@@ -77,7 +77,7 @@ const Organization = React.memo(function Organization({
     </span>
   ) : (
     `This organization does not have a Finance or Agent app installed and may
-       not be able to receive funds. Please check with the organization's
+       not be able to receive funds. Please check with the organization’s
        administrators if any other installed apps are able to receive funds.`
   )
 
