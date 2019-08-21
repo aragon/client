@@ -50,7 +50,7 @@ function FavoritesMenuItem({
             css={`
               display: flex;
               align-items: center;
-              margin-right: ${2 * GU}px;
+              margin-right: ${1 * GU}px;
             `}
           >
             <div
