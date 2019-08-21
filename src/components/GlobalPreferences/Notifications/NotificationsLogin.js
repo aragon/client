@@ -168,6 +168,6 @@ const NotificationImage = () => (
 
 NotificationsLogin.propTypes = {
   dao: PropTypes.string,
-  authState: PropTypes.string,
+  authState: PropTypes.symbol,
   onEmailChange: PropTypes.func,
 }
