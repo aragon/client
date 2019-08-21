@@ -1,20 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import {
-  AppBar,
-  AppView,
-  NavigationBar,
-  TabBar,
-  Viewport,
   Button,
+  Header,
+  IconRefresh,
+  Layout,
+  Tabs,
+  useLayout,
+  useTheme,
 } from '@aragon/ui'
-import MenuButton from '../../components/MenuPanel/MenuButton'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
-import IconUpgrade from './IconUpgrade'
 import EmptyBlock from './EmptyBlock'
+import useAppWidth from '../useAppWidth'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import {
   AppInstanceGroupType,
@@ -31,10 +30,12 @@ const SCREENS = [
 ]
 
 class AppCenter extends React.Component {
+  static defaultProps = {
+    canUpgradeOrg: false,
+  }
   static propTypes = {
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     daoAddress: DaoAddressType.isRequired,
-    onMessage: PropTypes.func.isRequired,
     onParamsRequest: PropTypes.func.isRequired,
     params: PropTypes.string,
     repos: PropTypes.arrayOf(RepoType).isRequired,
@@ -47,11 +48,6 @@ class AppCenter extends React.Component {
     upgradePanelOpened: false,
   }
 
-  handleMenuPanelOpen = () => {
-    this.props.onMessage({
-      data: { from: 'app-center', name: 'menuPanel', value: true },
-    })
-  }
   handleUpgradeApp = async (appId, appAddress) => {
     const { daoAddress, wrapper } = this.props
 
@@ -145,72 +141,47 @@ class AppCenter extends React.Component {
       ...(currentRepo ? [currentRepo.name] : []),
     ]
 
+    const { theme, layoutName } = this.props
+    const compactMode = layoutName === 'small'
+
     return (
       <React.Fragment>
-        <AppView
-          style={{ height: '100%' }}
-          appBar={
-            <Viewport>
-              {({ below, above }) => (
-                <AppBar
-                  tabs={
-                    openedRepoName ? null : (
-                      <div
-                        css={`
-                          margin-left: ${below('medium') ? '-14px' : '0'};
-                        `}
-                      >
-                        <TabBar
-                          items={SCREENS.map(screen => screen.label)}
-                          selected={activeTab}
-                          onChange={this.handleScreenChange}
-                        />
-                      </div>
-                    )
-                  }
-                >
-                  {below('medium') && navigationItems.length < 2 && (
-                    <MenuButton
-                      onClick={this.handleMenuPanelOpen}
-                      css={`
-                        position: relative;
-                        z-index: 2;
-                        margin-left: 0;
-                        margin-right: -24px;
-                      `}
-                    />
-                  )}
-                  <NavigationBar
-                    items={navigationItems}
-                    onBack={this.handleCloseRepo}
-                  />
-                  {canUpgradeOrg && !openedRepoName && (
-                    <UpgradeButton
-                      mode={below('medium') ? 'text' : 'strong'}
-                      onClick={onUpgradeAll}
-                      title="Upgrade all"
-                    >
-                      {below('medium') ? <IconUpgrade /> : 'Upgrade all'}
-                    </UpgradeButton>
-                  )}
-                </AppBar>
-              )}
-            </Viewport>
-          }
-        >
-          {activeTab === 0 &&
-            (reposLoading ? (
-              <EmptyBlock>Loading apps…</EmptyBlock>
-            ) : (
-              <InstalledApps
-                onOpenApp={this.handleOpenRepo}
-                onRequestUpgrade={this.handleOpenUpgradePanel}
-                openedRepoId={currentRepo && currentRepo.appId}
-                repos={repos}
+        <Header
+          primary="App center"
+          secondary={
+            canUpgradeOrg &&
+            activeTab !== 1 &&
+            !openedRepoName && (
+              <Button
+                mode="strong"
+                onClick={onUpgradeAll}
+                label="Upgrade all"
+                icon={<IconRefresh />}
+                display={compactMode ? 'icon' : 'label'}
               />
-            ))}
-          {activeTab === 1 && <DiscoverApps />}
-        </AppView>
+            )
+          }
+        />
+        {!openedRepoName && (
+          <Tabs
+            items={SCREENS.map(screen => screen.label)}
+            selected={activeTab}
+            onChange={this.handleScreenChange}
+          />
+        )}
+        {activeTab === 0 &&
+          (reposLoading ? (
+            <EmptyBlock>Loading apps…</EmptyBlock>
+          ) : (
+            <InstalledApps
+              onOpenApp={this.handleOpenRepo}
+              onRequestUpgrade={this.handleOpenUpgradePanel}
+              openedRepoId={currentRepo && currentRepo.appId}
+              repos={repos}
+              onCloseRepo={this.handleCloseRepo}
+            />
+          ))}
+        {activeTab === 1 && <DiscoverApps />}
 
         <UpgradeAppPanel
           repo={upgradePanelOpened ? currentRepo : null}
@@ -222,13 +193,14 @@ class AppCenter extends React.Component {
   }
 }
 
-const UpgradeButton = styled(Button)`
-  position: absolute;
-  right: 0px;
-  margin-right: 30px;
-}
-`
+export default props => {
+  const theme = useTheme()
+  const { layoutName } = useLayout()
+  const appWidth = useAppWidth()
 
-export default function(props) {
-  return <AppCenter {...props} />
+  return (
+    <Layout parentWidth={appWidth}>
+      <AppCenter {...props} theme={theme} layoutName={layoutName} />
+    </Layout>
+  )
 }
