@@ -6,19 +6,11 @@ import {
   Text,
   SafeLink,
   theme,
-  colors,
   unselectable,
   breakpoint,
 } from '@aragon/ui'
 import { appsInDevelopment } from './discover-apps-data'
 import AppIcon from '../../../components/AppIcon/AppIcon'
-
-const statuses = {
-  'pre-alpha': colors.Gold.Brandy,
-  alpha: colors.Blue.Danube,
-  experimental: colors.Blue.Danube,
-  ready: colors.Green['Spring Green'],
-}
 
 const DiscoverApps = React.memo(() => (
   <div>

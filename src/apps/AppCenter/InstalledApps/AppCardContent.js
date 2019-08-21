@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import color from 'onecolor'
-import { Button, Tag, font, theme } from '@aragon/ui'
+import { Button, Tag, GU, font } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import { RepoType } from '../../../prop-types'
 
