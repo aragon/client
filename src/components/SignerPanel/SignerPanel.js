@@ -107,16 +107,17 @@ class SignerPanel extends React.PureComponent {
   // This is a temporary method to reshape the transaction bag
   // to the future format we expect from Aragon.js
   stateFromTransactionBag(bag) {
+    const { apps } = this.props
     const { external, path, transaction } = bag
     const decoratedPaths = path.map(path => ({
       ...path,
-      name: getAppName(this.props.apps, path.to),
+      name: getAppName(apps, path.to),
     }))
 
     return {
       intent: (transaction && this.transactionIntent(bag)) || {},
-      external: !!external,
-      installed: this.props.apps.some(
+      external: Boolean(external),
+      installed: apps.some(
         ({ proxyAddress }) => proxyAddress === transaction.to
       ),
       directPath: decoratedPaths.length === 1,

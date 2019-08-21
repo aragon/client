@@ -260,11 +260,25 @@ class ActionPathsContent extends React.Component {
         )}
         {external && (
           <div css="margin-top: 20px">
-            <Info.Alert title="Warning">
-              {installed
-                ? `Be aware that this is an attempt to execute a transaction on another app that is installed in this organization. You may want to double check that app's functionality before proceeding.`
-                : `Be aware that this is an attempt to execute a transaction on an *external contract* that has not been reviewed or audited. This means that it might behave unexpectedly. Please *be sure your trust this contract* before proceeding.`}
-            </Info.Alert>
+            <Info mode="warning" title="Warning">
+              {installed ? (
+                `Be aware that this is an attempt to execute a transaction on
+                 another app that is installed in this organization. You may
+                 want to double check that app’s functionality before
+                 proceeding.`
+              ) : (
+                <span>
+                  Be aware that this is an attempt to execute a transaction on
+                  an <strong css="font-weight: 800">external contract</strong>{' '}
+                  that has not been reviewed or audited. This means that it
+                  might behave unexpectedly. Please{' '}
+                  <strong css="font-weight: 800">
+                    be sure you trust this contract
+                  </strong>{' '}
+                  before proceeding.
+                </span>
+              )}
+            </Info>
           </div>
         )}
         <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>
