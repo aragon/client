@@ -245,21 +245,12 @@ class ActionPathsContent extends React.Component {
         <Info mode="description" title="Action to be triggered">
           {this.renderDescription(showPaths, intent)}
         </Info>
-        {pretransaction && (
-          <Info
-            title="Two transactions required"
+        {external && (
+          <div
             css={`
               margin-top: ${3 * GU}px;
             `}
           >
-            This action requires two transactions to be signed in{' '}
-            {providerString('your Ethereum provider', walletProviderId)}.{' '}
-            {approveTransactionMessage}
-            Please confirm them one after another.
-          </Info>
-        )}
-        {external && (
-          <div css="margin-top: 20px">
             <Info mode="warning" title="Warning">
               {installed ? (
                 `Be aware that this is an attempt to execute a transaction on
@@ -280,6 +271,19 @@ class ActionPathsContent extends React.Component {
               )}
             </Info>
           </div>
+        )}
+        {pretransaction && (
+          <Info
+            title="Two transactions required"
+            css={`
+              margin-top: ${3 * GU}px;
+            `}
+          >
+            This action requires two transactions to be signed in{' '}
+            {providerString('your Ethereum provider', walletProviderId)}.{' '}
+            {approveTransactionMessage}
+            Please confirm them one after another.
+          </Info>
         )}
         <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>
           Create transaction
