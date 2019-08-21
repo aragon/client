@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
-import { ButtonBase, LoadingRing, useTheme } from '@aragon/ui'
+import { ButtonText, LoadingRing, useTheme } from '@aragon/ui'
 import ManageNotifications from './ManageNotifications'
 import NotificationsLogin from './NotificationsLogin'
 import {
@@ -115,6 +115,7 @@ export default function Notifications({
       />
     )
   }
+
   switch (authState) {
     case AUTH_PREVERIFY:
       return <NotificationsPreVerify email={email} />
@@ -155,16 +156,14 @@ export default function Notifications({
         <NotificationsVerifyBox header="Authentication Failed">
           <div>
             Authentication was unsuccessful.{' '}
-            <ButtonBase
+            <ButtonText
               css={`
                 font-weight: bold;
-                color: ${theme.link};
-                cursor: pointer;
               `}
               onClick={handleLogout}
             >
               Try logging in again.
-            </ButtonBase>
+            </ButtonText>
           </div>
         </NotificationsVerifyBox>
       )
