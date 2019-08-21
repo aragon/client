@@ -87,7 +87,7 @@ export function parsePath(history, pathname, search = '') {
     instanceId: instanceId || 'home',
     params,
     parts: appParts,
-    localPath: `/${appParts.join('/')}`,
+    localPath: appParts.length ? `/${appParts.join('/')}` : '',
     preferences: parsePreferences(search),
   }
 
