@@ -28,6 +28,7 @@
     "promise/no-nesting": ["off"],
     "valid-jsdoc": "error",
     "linebreak-style": ["error", "unix"],
+    "curly": "error",
   },
   "settings": {
     "react": {

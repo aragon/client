@@ -35,14 +35,12 @@ const VALUES = Array.from(SECTIONS.values())
 
 function GlobalPreferences({
   compact,
-  helpScoutOptedOut,
-  onClose,
-  onScreenChange,
-  onHelpScoutOptedOutChange,
-  wrapper,
   locator,
-  sectionIndex,
+  onClose,
   onNavigation,
+  onScreenChange,
+  sectionIndex,
+  wrapper,
 }) {
   const toast = useToast()
   const { dao } = locator
@@ -104,12 +102,7 @@ function GlobalPreferences({
             )}
             {sectionIndex === 1 && <Network wrapper={wrapper} />}
             {sectionIndex === 2 && <Notifications />}
-            {sectionIndex === 3 && (
-              <HelpAndFeedback
-                optedOut={helpScoutOptedOut}
-                onOptOutChange={onHelpScoutOptedOutChange}
-              />
-            )}
+            {sectionIndex === 3 && <HelpAndFeedback />}
           </main>
         </React.Fragment>
       )}
@@ -119,10 +112,8 @@ function GlobalPreferences({
 
 GlobalPreferences.propTypes = {
   compact: PropTypes.bool,
-  helpScoutOptedOut: PropTypes.bool,
   locator: PropTypes.object,
   onClose: PropTypes.func.isRequired,
-  onHelpScoutOptedOutChange: PropTypes.func.isRequired,
   onNavigation: PropTypes.func.isRequired,
   onScreenChange: PropTypes.func.isRequired,
   sectionIndex: PropTypes.number,

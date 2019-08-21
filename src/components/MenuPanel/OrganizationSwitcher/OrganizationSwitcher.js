@@ -1,6 +1,13 @@
 import React, { useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, LoadingRing, Popover, GU } from '@aragon/ui'
+import {
+  ButtonBase,
+  LoadingRing,
+  Popover,
+  GU,
+  textStyle,
+  useTheme,
+} from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { FavoriteDaosConsumer } from '../../../contexts/FavoriteDaosContext'
 import OrganizationItem from './OrganizationItem'
@@ -11,14 +18,18 @@ const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
   favoriteDaos,
   updateFavoriteDaos,
 }) {
+  const theme = useTheme()
+
   const buttonRef = useRef(null)
   const [menuOpened, setMenuOpened] = useState(false)
 
-  const handleToggleMenu = useCallback(
-    () => setMenuOpened(opened => !opened),
-    []
-  )
-  const closeMenu = useCallback(() => setMenuOpened(false), [])
+  const handleToggleMenu = useCallback(() => {
+    setMenuOpened(opened => !opened)
+  }, [])
+
+  const closeMenu = useCallback(() => {
+    setMenuOpened(false)
+  }, [])
 
   const handleFavoritesUpdate = useCallback(
     favorites => {
@@ -32,7 +43,6 @@ const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
     <div
       css={`
         display: flex;
-        height: ${8 * GU}px;
         align-items: center;
         position: relative;
       `}
@@ -42,28 +52,24 @@ const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
         onClick={handleToggleMenu}
         css={`
           flex-grow: 1;
-          border: 0;
-          background: none;
-          cursor: pointer;
-          padding: 0;
+          padding: ${2 * GU}px ${2 * GU}px ${2 * GU}px ${3 * GU}px;
           width: 100%;
           height: 100%;
+          min-width: ${28 * GU}px;
+          border-radius: 0;
           &:active {
-            background: rgba(220, 234, 239, 0.3);
+            background: ${theme.surfacePressed};
           }
         `}
       >
         <OrganizationItem
           dao={currentDao}
           css={`
-            padding-left: ${3 * GU}px;
-            padding-right: ${3 * GU}px;
-            font-size: 18px;
+            ${textStyle('body1')}
           `}
         />
       </ButtonBase>
       <Popover
-        closeOnOpenerFocus
         onClose={closeMenu}
         visible={menuOpened}
         opener={buttonRef.current}
@@ -93,14 +99,14 @@ function OrganizationSwitcherWithFavorites({ loading, ...props }) {
         css={`
           display: flex;
           align-items: center;
-          margin-left: 20px;
+          margin: ${2 * GU}px ${3 * GU}px;
         `}
       >
         <LoadingRing />
         <span
           css={`
-            margin-left: 10px;
-            font-size: 15px;
+            margin-left: ${1 * GU}px;
+            ${textStyle('body1')}
           `}
         >
           Loading…

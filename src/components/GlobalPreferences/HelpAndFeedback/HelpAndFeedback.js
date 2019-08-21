@@ -1,11 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useCallback } from 'react'
 import { Box, Checkbox, Info, GU, textStyle, useTheme } from '@aragon/ui'
 import helpAndFeedbackSvg from './help-and-feedback.svg'
+import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
 
-function HelpAndFeedback({ optedOut, onOptOutChange }) {
+function HelpAndFeedback() {
   const theme = useTheme()
-  const handleOptOutChange = () => onOptOutChange(!optedOut)
+  const { optedOut, setOptedOut } = useHelpScout()
+  const handleOptOutChange = useCallback(() => setOptedOut(!optedOut), [
+    setOptedOut,
+    optedOut,
+  ])
 
   return (
     <Box heading="Help Scout">
@@ -46,11 +50,6 @@ function HelpAndFeedback({ optedOut, onOptOutChange }) {
       </Info>
     </Box>
   )
-}
-
-HelpAndFeedback.propTypes = {
-  optedOut: PropTypes.bool,
-  onOptOutChange: PropTypes.func.isRequired,
 }
 
 export default React.memo(HelpAndFeedback)

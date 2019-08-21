@@ -34,12 +34,10 @@ class Wrapper extends React.PureComponent {
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     daoStatus: DaoStatusType.isRequired,
-    helpScoutOptedOut: PropTypes.bool.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
-    onHelpScoutOptedOutChange: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
@@ -234,9 +232,7 @@ class Wrapper extends React.PureComponent {
       connected,
       daoAddress,
       daoStatus,
-      helpScoutOptedOut,
       locator,
-      onHelpScoutOptedOutChange,
       onRequestAppsReload,
       onRequestEnable,
       repos,
@@ -330,8 +326,6 @@ class Wrapper extends React.PureComponent {
           wrapper={wrapper}
           onScreenChange={this.openPreferences}
           onClose={this.closePreferences}
-          onHelpScoutOptedOutChange={onHelpScoutOptedOutChange}
-          helpScoutOptedOut={helpScoutOptedOut}
         />
       </div>
     )

@@ -5,7 +5,7 @@ import { Button, GU, Modal, breakpoint, textStyle } from '@aragon/ui'
 
 function RemoveModal({ visible, onClose, onConfirm }) {
   return (
-    <Modal visible={visible} onClose={onClose} zIndex={10001}>
+    <Modal visible={visible} onClose={onClose} css="z-index: 2;">
       <h1
         css={`
           ${textStyle('title2')}
