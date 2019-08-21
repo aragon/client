@@ -49,7 +49,7 @@ FavoritesMenu.propTypes = {
       name: PropTypes.node,
       roundedImage: PropTypes.bool,
       secondary: PropTypes.node,
-    })
+    }).isRequired
   ),
 
   // when the favorited status of an item changes
