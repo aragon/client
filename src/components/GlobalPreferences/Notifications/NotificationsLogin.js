@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -8,26 +7,48 @@ import {
   TextInput,
   Info,
   IconMail,
-  Text,
+  textStyle,
   useTheme,
 } from '@aragon/ui'
 import { login } from './notification-service-api'
 import { network } from '../../../environment'
 import { validateEmail } from '../../../utils'
 import notificationSvg from './notifications.svg'
+import throttle from 'lodash.throttle'
 
 export default function NotificationsLogin({ dao, authState, onEmailChange }) {
   const [inputEmail, setInputEmail] = useState('')
   const [emailInvalid, setEmailInvalid] = useState(false)
+  const [emailBlured, setEmailBlured] = useState(false)
   const [apiError, setApiError] = useState(null)
   // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
   const ethNetwork = network.type === 'main' ? 'mainnet' : 'rinkeby'
 
-  const handleEmailChange = e => {
-    setEmailInvalid(!validateEmail(e.target.value))
+  const handleEmailValidation = useCallback(
+    throttle(email => {
+      if (email.length > 3 && email.includes('@')) {
+        setEmailInvalid(!validateEmail(email))
+      }
+    }, 1000),
+    [setEmailInvalid]
+  )
+  const handleEmailBlur = useCallback(
+    e => {
+      setEmailBlured(true)
+      const email = e.target.value
+      setEmailInvalid(!validateEmail(email))
+    },
+    [setEmailBlured, setEmailInvalid]
+  )
 
-    setInputEmail(e.target.value)
-  }
+  const handleEmailChange = useCallback(
+    e => {
+      const email = e.target.value
+      setInputEmail(email)
+      handleEmailValidation(email)
+    },
+    [handleEmailValidation, setInputEmail]
+  )
 
   const handleLogin = async e => {
     e && e.preventDefault()
@@ -41,6 +62,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
   }
 
   const theme = useTheme()
+
   return (
     <Box heading="Email notifications">
       <NotificationImage />
@@ -67,23 +89,38 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
               wide
               value={inputEmail}
               onChange={handleEmailChange}
+              onBlur={handleEmailBlur}
             />
           </label>
 
           <Button
-            disabled={emailInvalid || inputEmail.length === 0}
+            disabled={!emailBlured || emailInvalid}
             css={`
               width: ${16 * GU}px;
             `}
             onClick={handleLogin}
-          >
-            <IconMail /> Sign in
-          </Button>
-          {apiError && <Text color={theme.negative}>Error logging in</Text>}
+            icon={<IconMail />}
+            label="Sign in"
+          />
+          {apiError && (
+            <p
+              css={`
+                color: ${theme.negative};
+                ${textStyle('body2')};
+              `}
+            >
+              Error logging in
+            </p>
+          )}
           {emailInvalid && (
-            <Text color={theme.negative}>
+            <p
+              css={`
+                color: ${theme.negative};
+                ${textStyle('body2')};
+              `}
+            >
               Please enter a valid email address
-            </Text>
+            </p>
           )}
         </div>
       </form>
