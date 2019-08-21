@@ -6,6 +6,8 @@ import ImpossibleAction from './ImpossibleAction'
 const ConfirmTransaction = ({
   direct,
   intent,
+  installed,
+  external,
   dao,
   onClose,
   onSign,
@@ -20,9 +22,11 @@ const ConfirmTransaction = ({
 
   return possible ? (
     <ActionPathsContent
-      intent={intent}
       direct={direct}
       dao={dao}
+      external={external}
+      installed={installed}
+      intent={intent}
       onSign={onSign}
       paths={paths}
       pretransaction={pretransaction}
@@ -36,7 +40,9 @@ const ConfirmTransaction = ({
 
 ConfirmTransaction.propTypes = {
   direct: PropTypes.bool.isRequired,
+  installed: PropTypes.bool.isRequired,
   intent: PropTypes.object.isRequired,
+  external: PropTypes.bool.isRequired,
   dao: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   onSign: PropTypes.func.isRequired,
