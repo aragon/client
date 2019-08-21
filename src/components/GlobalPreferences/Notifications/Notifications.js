@@ -103,7 +103,6 @@ export default function Notifications({
     handleEmailChange,
     handleLogout,
   } = useAuthState()
-  const theme = useTheme()
 
   if (subsection && subsection.startsWith(VERIFY_SUBSECTION)) {
     return (
