@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, useLayout, Card, CardLayout, GU } from '@aragon/ui'
+import { useLayout, Card, CardLayout, GU } from '@aragon/ui'
 import { RepoType } from '../../../prop-types'
 import AppContent from './AppContent'
 import AppCardContent from './AppCardContent'
@@ -13,7 +13,6 @@ const InstalledApps = React.memo(function InstalledApps({
   onRequestUpgrade,
   onCloseRepo,
 }) {
-  const theme = useTheme()
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
   const rowHeight = compactMode ? null : 294
@@ -42,6 +41,7 @@ const InstalledApps = React.memo(function InstalledApps({
 InstalledApps.propTypes = {
   repos: PropTypes.arrayOf(RepoType).isRequired,
   openedRepoId: PropTypes.string,
+  onCloseRepo: PropTypes.func.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onRequestUpgrade: PropTypes.func.isRequired,
 }
@@ -51,7 +51,7 @@ InstalledApps.defaultProps = {
 }
 
 const AppCard = React.memo(function AppCard({ repo, onOpenApp }) {
-  const { repoName, appId } = repo
+  const { repoName } = repo
   const handleOpenApp = useCallback(() => {
     onOpenApp(repoName)
   }, [onOpenApp, repoName])
