@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { CardLayout } from '@aragon/ui'
 import { AppType } from '../../../prop-types'
-import AppCard from '../AppCard'
+import AppCard from '../../../components/AppCard/AppCard'
 import EmptyBlock from '../EmptyBlock'
 
 function Apps({ apps, loading, onOpenApp }) {

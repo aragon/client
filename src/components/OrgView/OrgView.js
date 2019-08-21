@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, useTheme, useThemeMode, useViewport } from '@aragon/ui'
-import { GU } from '../../utils'
+import { ButtonBase, GU, useTheme, useThemeMode, useViewport } from '@aragon/ui'
 import {
   AppInstanceGroupType,
   AppsStatusType,

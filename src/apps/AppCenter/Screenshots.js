@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ExternalLink, theme } from '@aragon/ui'
+import { ExternalLink, GU, theme } from '@aragon/ui'
 import { RepoType } from '../../prop-types'
-import { GU, imgSrcFromBase } from '../../utils'
+import { imgSrcFromBase } from '../../utils'
 
 class Screenshots extends React.Component {
   static propTypes = {

@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useSelected } from '../../../hooks'
 
 function useSelectIdentities(identities, filteredIdentities) {
-  const [firstRender, setFirstRender] = useState(false)
+  const [firstRender, setFirstRender] = useState(true)
   const initialSelected = useMemo(
     () => new Map(identities.map(({ address }) => [address, true])),
     [identities]
@@ -41,11 +41,11 @@ function useSelectIdentities(identities, filteredIdentities) {
   )
 
   useEffect(() => {
-    if (initialSelected.size && !firstRender) {
-      setFirstRender(true)
+    if (initialSelected.size && firstRender) {
+      setFirstRender(false)
       setSelected(initialSelected)
     }
-  }, [initialSelected, setSelected, firstRender, setFirstRender])
+  }, [initialSelected, setSelected, firstRender])
 
   return {
     allSelected,

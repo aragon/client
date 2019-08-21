@@ -11,6 +11,8 @@ import AppPermissions from './AppPermissions'
 import AssignPermissionPanel from './AssignPermissionPanel'
 import ManageRolePanel from './ManageRolePanel'
 
+const HOME_TABS = ['App permissions', 'System permissions']
+
 function getAppByProxyAddress(proxyAddress, apps) {
   if (!proxyAddress) {
     return null
@@ -18,26 +20,38 @@ function getAppByProxyAddress(proxyAddress, apps) {
   return apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
 }
 
-function getLocation(params, apps) {
+function getLocation(localPath, apps) {
   const home = { screen: 'home' }
 
-  if (params) {
-    // Not using "/" as a separator because
-    // it would get encoded by encodeURIComponent().
-    const [
-      screen,
-      data = null,
-      secondaryScreen = null,
-      secondaryData = null,
-    ] = params.split('.')
+  if (!localPath) {
+    return home
+  }
 
-    if (screen === 'app' && isAddress(data)) {
+  const [
+    screen,
+    data = null,
+    secondaryScreen = null,
+    secondaryData = null,
+  ] = localPath.replace(/^\//, '').split('/')
+
+  if (screen === 'app' && isAddress(data)) {
+    return {
+      screen,
+      app: getAppByProxyAddress(data, apps),
+      secondaryScreen,
+      secondaryData,
+    }
+  }
+
+  if (screen === 'role') {
+    const appAddress = (data || '').slice(0, 42)
+    const roleBytes = (data || '').slice(42)
+    if (isAddress(appAddress)) {
       return {
-        screen,
-        address: data,
-        app: getAppByProxyAddress(data, apps),
-        secondaryScreen,
-        secondaryData,
+        screen: 'home',
+        app: getAppByProxyAddress(appAddress, apps),
+        secondaryScreen: 'role',
+        secondaryData: roleBytes,
       }
     }
   }
@@ -48,8 +62,8 @@ function getLocation(params, apps) {
 function Permissions({
   apps,
   appsLoading,
-  onParamsRequest,
-  params,
+  onPathRequest,
+  localPath,
   permissionsLoading,
   wrapper,
 }) {
@@ -60,29 +74,37 @@ function Permissions({
   const { resolveRole } = usePermissions()
   const scrollTopElement = useRef(null)
 
-  // `params` should change every time we navigate into and out of a detailed
+  const [homeTab, setHomeTab] = useState(0)
+
+  // `localPath` should change every time we navigate into and out of a detailed
   // permissions view, so this ensures the user starts at the top of the screen
   // on every navigation change
   useEffect(() => {
     scrollTopElement.current.scrollIntoView()
-  }, [params])
+  }, [localPath])
+
+  const location = getLocation(localPath, apps)
 
   const openHome = useCallback(() => {
-    onParamsRequest(null)
-  }, [onParamsRequest])
+    onPathRequest('/')
+  }, [onPathRequest])
 
   const openApp = useCallback(
     proxyAddress => {
-      onParamsRequest(`app.${proxyAddress}`)
+      onPathRequest(`/app/${proxyAddress}`)
     },
-    [onParamsRequest]
+    [onPathRequest]
   )
 
   const manageRole = useCallback(
     (proxyAddress, roleBytes) => {
-      onParamsRequest(`app.${proxyAddress}.role.${roleBytes}`)
+      onPathRequest(
+        location.screen === 'app'
+          ? `/app/${proxyAddress}/role/${roleBytes}`
+          : `/role/${proxyAddress}${roleBytes}`
+      )
     },
-    [onParamsRequest]
+    [onPathRequest, location]
   )
 
   const createPermission = useCallback(() => {
@@ -94,19 +116,17 @@ function Permissions({
   }, [])
 
   const closeManageRolePanel = useCallback(() => {
-    const location = getLocation(params, apps)
+    const location = getLocation(localPath, apps)
     const openedApp = location.screen === 'app' ? location.app : null
     if (openedApp) {
-      onParamsRequest(`app.${openedApp.proxyAddress}`)
+      openApp(openedApp.proxyAddress)
+    } else {
+      openHome()
     }
-  }, [apps, params, onParamsRequest])
-
-  const location = getLocation(params, apps)
+  }, [apps, localPath, openApp, openHome])
 
   const managedRole =
-    location.screen === 'app' &&
-    location.app &&
-    location.secondaryScreen === 'role'
+    location.app && location.secondaryScreen === 'role'
       ? resolveRole(location.app.proxyAddress, location.secondaryData)
       : null
 
@@ -129,14 +149,26 @@ function Permissions({
         primary={
           location.screen === 'app' && location.app ? (
             <Header.Title>
-              {`${location.app.name} permissions`}
-              <LocalIdentityBadge
-                entity={location.app.proxyAddress}
-                shorten
+              <div
                 css={`
-                  margin-left: ${2 * GU}px;
+                  display: flex;
+                  align-items: center;
                 `}
-              />
+              >
+                <div
+                  css={`
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    margin-right: ${2 * GU}px;
+                  `}
+                >
+                  {`${location.app.name} permissions`}
+                </div>
+                <LocalIdentityBadge
+                  entity={location.app.proxyAddress}
+                  shorten
+                />
+              </div>
             </Header.Title>
           ) : (
             'Permissions'
@@ -158,9 +190,12 @@ function Permissions({
         <Home
           apps={apps}
           appsLoading={appsLoading}
-          permissionsLoading={permissionsLoading}
+          onChangeTab={setHomeTab}
           onManageRole={manageRole}
           onOpenApp={openApp}
+          permissionsLoading={permissionsLoading}
+          selectedTab={homeTab}
+          tabs={HOME_TABS}
         />
       )}
 
@@ -195,8 +230,8 @@ function Permissions({
 Permissions.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
-  onParamsRequest: PropTypes.func.isRequired,
-  params: PropTypes.string,
+  onPathRequest: PropTypes.func.isRequired,
+  localPath: PropTypes.string,
   permissionsLoading: PropTypes.bool.isRequired,
   wrapper: AragonType,
 }

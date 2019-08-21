@@ -4,14 +4,14 @@ import styled from 'styled-components'
 import {
   ButtonIcon,
   GU,
+  Header,
   IconClose,
   Layout,
-  Header,
-  TabBar,
-  Toast,
-  springs,
+  Tabs,
   breakpoint,
+  springs,
   useTheme,
+  useToast,
   useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
@@ -23,7 +23,6 @@ import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
-import { GLOBAL_PREFERENCES_QUERY_PARAM, getAppPath } from '../../routing'
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
@@ -33,19 +32,19 @@ const SECTIONS = new Map([
 ])
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
-const TIMEOUT_TOAST = 4000
 
 function GlobalPreferences({
-  helpScoutOptedOut,
-  onClose,
-  onHelpScoutOptedOutChange,
-  toast,
-  wrapper,
+  compact,
   locator,
-  sectionIndex,
+  onClose,
   onNavigation,
+  onScreenChange,
+  sectionIndex,
+  wrapper,
 }) {
+  const toast = useToast()
   const { dao } = locator
+
   const {
     isSharedLink,
     isSavingSharedLink,
@@ -57,88 +56,83 @@ function GlobalPreferences({
     sharedIdentitiesSelected,
     sharedIdentitiesAllSelected,
     sharedIdentitiesSomeSelected,
-  } = useSharedLink({ wrapper, toast, locator })
+  } = useSharedLink({ wrapper, toast, locator, onScreenChange })
+
   const handleSharedIdentitiesClose = () => {
     handleSharedIdentitiesCancel()
     onClose()
   }
+
   useEsc(onClose)
 
   return (
-    <div>
-      <Close onClick={isSharedLink ? handleSharedIdentitiesClose : onClose} />
-      <Layout>
-        <Header
-          primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
+    <Layout>
+      <Close
+        compact={compact}
+        onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
+      />
+      <Header
+        primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
+        css={`
+          padding-top: ${!compact ? 10 * GU : 0}px;
+        `}
+      />
+      {isSharedLink ? (
+        <SharedIdentities
+          isSaving={isSavingSharedLink}
+          onSave={handleSharedIdentitiesSave}
+          onCancel={handleSharedIdentitiesCancel}
+          identities={sharedIdentities}
+          onToggleAll={handleSharedIdentitiesToggleAll}
+          onToggleIdentity={handleSharedIdentitiesToggleIdentity}
+          selected={sharedIdentitiesSelected}
+          allSelected={sharedIdentitiesAllSelected}
+          someSelected={sharedIdentitiesSomeSelected}
         />
-        {isSharedLink ? (
-          <SharedIdentities
-            isSaving={isSavingSharedLink}
-            onSave={handleSharedIdentitiesSave}
-            onCancel={handleSharedIdentitiesCancel}
-            identities={sharedIdentities}
-            onToggleAll={handleSharedIdentitiesToggleAll}
-            onToggleIdentity={handleSharedIdentitiesToggleIdentity}
-            selected={sharedIdentitiesSelected}
-            allSelected={sharedIdentitiesAllSelected}
-            someSelected={sharedIdentitiesSomeSelected}
+      ) : (
+        <React.Fragment>
+          <Tabs
+            items={VALUES}
+            onChange={onNavigation}
+            selected={sectionIndex}
           />
-        ) : (
-          <React.Fragment>
-            <TabBar
-              items={VALUES}
-              onChange={onNavigation}
-              selected={sectionIndex}
-            />
-            <main>
-              {sectionIndex === 0 && (
-                <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
-              )}
-              {sectionIndex === 1 && <Network wrapper={wrapper} />}
-              {sectionIndex === 2 && <Notifications />}
-              {sectionIndex === 3 && (
-                <HelpAndFeedback
-                  optedOut={helpScoutOptedOut}
-                  onOptOutChange={onHelpScoutOptedOutChange}
-                />
-              )}
-            </main>
-          </React.Fragment>
-        )}
-      </Layout>
-    </div>
+          <main>
+            {sectionIndex === 0 && (
+              <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
+            )}
+            {sectionIndex === 1 && <Network wrapper={wrapper} />}
+            {sectionIndex === 2 && <Notifications />}
+            {sectionIndex === 3 && <HelpAndFeedback />}
+          </main>
+        </React.Fragment>
+      )}
+    </Layout>
   )
 }
 
 GlobalPreferences.propTypes = {
-  helpScoutOptedOut: PropTypes.bool,
-  onClose: PropTypes.func.isRequired,
-  onHelpScoutOptedOutChange: PropTypes.func.isRequired,
-  toast: PropTypes.func,
-  wrapper: AragonType,
+  compact: PropTypes.bool,
   locator: PropTypes.object,
-  sectionIndex: PropTypes.number,
+  onClose: PropTypes.func.isRequired,
   onNavigation: PropTypes.func.isRequired,
+  onScreenChange: PropTypes.func.isRequired,
+  sectionIndex: PropTypes.number,
+  wrapper: AragonType,
 }
 
-function useGlobalPreferences(locator = {}) {
+function useGlobalPreferences({ locator = {}, onScreenChange }) {
   const [sectionIndex, setSectionIndex] = useState(null)
+
   const handleNavigation = useCallback(
     index => {
-      window.location.hash = `${getAppPath(
-        locator
-      )}${GLOBAL_PREFERENCES_QUERY_PARAM}${PATHS[index]}`
+      onScreenChange(PATHS[index])
     },
-    [locator]
+    [onScreenChange]
   )
 
   useEffect(() => {
-    const { preferences: { path } = { path: '' } } = locator
-    if (!path) {
-      setSectionIndex(null)
-      return
-    }
-    if (!SECTIONS.has(path)) {
+    const { preferences: { path = '' } = {} } = locator
+    if (!path || !SECTIONS.has(path)) {
       setSectionIndex(null)
       return
     }
@@ -148,34 +142,24 @@ function useGlobalPreferences(locator = {}) {
   return { sectionIndex, handleNavigation }
 }
 
-function Close({ onClick }) {
+function Close({ compact, onClick }) {
   const theme = useTheme()
-  const { above, below } = useViewport()
-  const compact = below('medium')
   return (
     <div
       css={`
         position: absolute;
         right: 0;
-        padding-top: ${3 * GU}px;
+        padding-top: ${2.5 * GU}px;
+        padding-right: ${3 * GU}px;
 
-        ${above('medium') &&
+        ${compact &&
           `
-            position: initial;
-            right: initial;
-            padding-top: ${2.5 * GU}px;
-            padding-right: ${3 * GU}px;
-            text-align: right;
+            padding-top: ${2 * GU}px;
+            padding-right: ${1.5 * GU}px;
           `}
       `}
     >
-      <ButtonIcon
-        onClick={onClick}
-        label="Close"
-        css={`
-          ${compact && `height:40px;`}
-        `}
-      >
+      <ButtonIcon onClick={onClick} label="Close">
         <IconClose
           css={`
             color: ${theme.surfaceIcon};
@@ -191,13 +175,18 @@ function Close({ onClick }) {
 }
 
 Close.propTypes = {
+  compact: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
 }
 
 function AnimatedGlobalPreferences(props) {
-  const { sectionIndex, handleNavigation } = useGlobalPreferences(props.locator)
+  const { sectionIndex, handleNavigation } = useGlobalPreferences({
+    locator: props.locator,
+    onScreenChange: props.onScreenChange,
+  })
+
   const { below } = useViewport()
-  const smallView = below('medium')
+  const compact = below('medium')
   const theme = useTheme()
 
   return (
@@ -218,7 +207,7 @@ function AnimatedGlobalPreferences(props) {
             accent={theme.accent}
             surface={theme.surface}
             style={{
-              zIndex: smallView ? 2 : 5,
+              zIndex: compact ? 2 : 5,
               pointerEvents: blocking ? 'auto' : 'none',
               opacity,
               transform: enterProgress.interpolate(
@@ -231,6 +220,7 @@ function AnimatedGlobalPreferences(props) {
           >
             <GlobalPreferences
               {...props}
+              compact={compact}
               sectionIndex={sectionIndex}
               onNavigation={handleNavigation}
             />
@@ -244,6 +234,7 @@ function AnimatedGlobalPreferences(props) {
 
 AnimatedGlobalPreferences.propTypes = {
   locator: PropTypes.object,
+  onScreenChange: PropTypes.func.isRequired,
 }
 
 const AnimatedWrap = styled(animated.div)`
@@ -253,7 +244,7 @@ const AnimatedWrap = styled(animated.div)`
   bottom: 0;
   left: 0;
   right: 0;
-  min-width: 320px;
+  min-width: 360px;
   border-top: ${({ accent }) => `2px solid ${accent}`};
   background: ${({ surface }) => surface};
   overflow: auto;
@@ -262,8 +253,4 @@ const AnimatedWrap = styled(animated.div)`
   ${breakpoint('medium', `padding-bottom:0;`)}
 `
 
-export default React.memo(props => (
-  <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <AnimatedGlobalPreferences {...props} toast={toast} />}
-  </Toast>
-))
+export default React.memo(AnimatedGlobalPreferences)

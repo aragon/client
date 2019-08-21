@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, GU, useTheme } from '@aragon/ui'
+import { Button, GU, textStyle, useTheme } from '@aragon/ui'
 import noResultsSvg from './no-results.svg'
 
 function EmptyFilteredIdentities({ onClear }) {
@@ -26,6 +26,7 @@ function EmptyFilteredIdentities({ onClear }) {
         css={`
           font-size: 28px;
           color: ${theme.content};
+          margin-bottom: ${1 * GU}px;
         `}
       >
         No results found.
@@ -36,7 +37,7 @@ function EmptyFilteredIdentities({ onClear }) {
           text-align: center;
           margin-bottom: ${4 * GU}px;
           color: ${theme.surfaceContentSecondary};
-          font-size: 16px;
+          ${textStyle('body2')}
         `}
       >
         We can’t find any item matching your search query.{' '}
