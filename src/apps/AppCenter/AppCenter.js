@@ -7,7 +7,6 @@ import {
   Layout,
   Tabs,
   useLayout,
-  useTheme,
 } from '@aragon/ui'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
@@ -36,6 +35,7 @@ class AppCenter extends React.Component {
   static propTypes = {
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     daoAddress: DaoAddressType.isRequired,
+    compactMode: PropTypes.bool,
     onParamsRequest: PropTypes.func.isRequired,
     params: PropTypes.string,
     repos: PropTypes.arrayOf(RepoType).isRequired,
@@ -130,19 +130,16 @@ class AppCenter extends React.Component {
   }
 
   render() {
-    const { reposLoading, onUpgradeAll, canUpgradeOrg } = this.props
+    const {
+      compactMode,
+      reposLoading,
+      onUpgradeAll,
+      canUpgradeOrg,
+    } = this.props
     const { upgradePanelOpened } = this.state
     const { activeTab, openedRepoName } = this.getLocation()
     const repos = this.getRepos()
     const currentRepo = openedRepoName && this.getRepoFromName(openedRepoName)
-
-    const navigationItems = [
-      'App Center',
-      ...(currentRepo ? [currentRepo.name] : []),
-    ]
-
-    const { theme, layoutName } = this.props
-    const compactMode = layoutName === 'small'
 
     return (
       <React.Fragment>
@@ -194,13 +191,13 @@ class AppCenter extends React.Component {
 }
 
 export default props => {
-  const theme = useTheme()
   const { layoutName } = useLayout()
+  const compactMode = layoutName === 'small'
   const appWidth = useAppWidth()
 
   return (
     <Layout parentWidth={appWidth}>
-      <AppCenter {...props} theme={theme} layoutName={layoutName} />
+      <AppCenter {...props} compactMode={compactMode} />
     </Layout>
   )
 }
