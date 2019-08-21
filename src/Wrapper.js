@@ -327,15 +327,16 @@ class Wrapper extends React.PureComponent {
       account,
       apps,
       appsStatus,
+      canUpgradeOrg,
       connected,
       daoAddress,
       locator,
       permissionsLoading,
       repos,
       walletNetwork,
+      walletProviderId,
       walletWeb3,
       wrapper,
-      canUpgradeOrg,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -395,6 +396,7 @@ class Wrapper extends React.PureComponent {
           onOpenApp={this.openApp}
           walletNetwork={walletNetwork}
           walletWeb3={walletWeb3}
+          walletProviderId={walletProviderId}
         />
       )
     }
