@@ -28,7 +28,6 @@ function FavoritesMenuItem({
       css={`
         display: flex;
         align-items: center;
-        height: ${7 * GU}px;
       `}
     >
       <FavoritesMenuItemButton
