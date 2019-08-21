@@ -2,24 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import throttle from 'lodash.throttle'
-import color from 'onecolor'
-import { ButtonBase, springs, theme, unselectable } from '@aragon/ui'
+import { ButtonBase, springs, unselectable, useTheme } from '@aragon/ui'
 import memoize from 'lodash.memoize'
-import {
-  AppInstanceGroupType,
-  AppsStatusType,
-  DaoAddressType,
-  DaoStatusType,
-  EthereumAddressType,
-} from '../../prop-types'
-import { DAO_STATUS_LOADING } from '../../symbols'
+import { AppInstanceGroupType, AppsStatusType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
-import MenuPanelFooter from './MenuPanelFooter'
 import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import ActivityAlert from '../Activity/ActivityAlert'
-import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
 import IconArrow from '../../icons/IconArrow'
 
@@ -29,8 +17,8 @@ export const MENU_ITEM_HEIGHT = 40
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
+const APP_ORGANIZATION = staticApps.get('organization').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
-const APP_SETTINGS = staticApps.get('settings').app
 
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',
@@ -49,71 +37,20 @@ const interpolateToggleElevation = (value, fn = v => v) =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
-    account: EthereumAddressType,
+    theme: PropTypes.object,
     activeInstanceId: PropTypes.string,
-    activityToggleRef: PropTypes.any,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
-    connected: PropTypes.bool.isRequired,
-    daoAddress: DaoAddressType.isRequired,
-    daoStatus: DaoStatusType.isRequired,
-    onActivityButtonClick: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    onOpenPreferences: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
-    onRequestEnable: PropTypes.func.isRequired,
-    unreadActivityCount: PropTypes.number,
-    viewportHeight: PropTypes.number,
   }
 
-  _contentRef = React.createRef()
-  _innerContentRef = React.createRef()
-  _activityToggle = React.createRef()
   _systemAppsToggled = false
 
   state = {
-    animate: false,
     notifications: [],
-    scrollVisible: false,
     systemAppsOpened: systemAppsOpenedState.isOpen(),
     systemAppsToggled: false,
-  }
-
-  componentDidMount() {
-    this.updateScrollVisible()
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.viewportHeight !== this.props.viewportHeight) {
-      this.tryUpdateScrollVisible()
-    }
-  }
-
-  // A throttled version of updateScrollVisible with additional checks
-  // to reduce performance overhead.
-  tryUpdateScrollVisible = throttle(() => {
-    if (
-      this.props.appInstanceGroups.length > 0 ||
-      this.state.systemAppsToggled
-    ) {
-      this.updateScrollVisible()
-    }
-  }, 100)
-
-  // ResizeObserver is still not supported everywhere, so… this method checks
-  // if the height of the content is higher than the height of the container,
-  // which means that there is a scrollbar displayed.
-  // It is called in two cases: when the viewport’s height changes, and when
-  // the system menu open / close transition is running.
-  updateScrollVisible = () => {
-    const content = this._contentRef.current
-    const innerContent = this._innerContentRef.current
-    this.setState({
-      scrollVisible:
-        content &&
-        innerContent &&
-        innerContent.clientHeight > content.clientHeight,
-    })
   }
 
   getRenderableAppGroups = memoize(appGroups =>
@@ -136,46 +73,39 @@ class MenuPanel extends React.PureComponent {
   }
 
   render() {
-    const {
-      activityToggleRef,
-      account,
-      appInstanceGroups,
-      connected,
-      daoAddress,
-      daoStatus,
-      onActivityButtonClick,
-      onOpenPreferences,
-      unreadActivityCount,
-      onRequestEnable,
-    } = this.props
-    const { scrollVisible, systemAppsOpened, systemAppsToggled } = this.state
+    const { appInstanceGroups, theme } = this.props
+    const { systemAppsOpened, systemAppsToggled } = this.state
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
     const menuApps = [APP_HOME, appGroups]
-    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_SETTINGS]
+    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_ORGANIZATION]
 
     return (
-      <Main>
-        <In>
-          <Header>
-            <HeaderSlot css="width: 170px">
-              <OrganizationSwitcher
-                loading={daoStatus === DAO_STATUS_LOADING}
-                currentDao={{
-                  name: daoAddress.domain,
-                  address: daoAddress.address,
-                }}
-              />
-            </HeaderSlot>
-            <HeaderSlot css="width: 50px" ref={activityToggleRef}>
-              <ActivityAlert
-                onClick={onActivityButtonClick}
-                unreadActivityCount={unreadActivityCount}
-              />
-            </HeaderSlot>
-          </Header>
-          <Content ref={this._contentRef}>
-            <div className="in" ref={this._innerContentRef}>
+      <Main
+        css={`
+          background: ${theme.surface};
+        `}
+      >
+        <div
+          css={`
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-shrink: 1;
+            border-right: 1px solid ${theme.border};
+            box-shadow: 1px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
+          `}
+        >
+          <Content
+            css={`
+              h1 {
+                color: ${theme.surfaceContentSecondary};
+              }
+            `}
+          >
+            <div className="in">
               <h1>Apps</h1>
 
               <div>
@@ -191,12 +121,14 @@ class MenuPanel extends React.PureComponent {
                 from={{ openProgress: 0 }}
                 to={{ openProgress: Number(systemAppsOpened) }}
                 immediate={!systemAppsToggled}
-                onFrame={this.tryUpdateScrollVisible}
                 native
               >
                 {({ openProgress }) => (
                   <div>
-                    <SystemAppsToggle onClick={this.handleToggleSystemApps}>
+                    <SystemAppsToggle
+                      onClick={this.handleToggleSystemApps}
+                      activeBackground={theme.surfacePressed}
+                    >
                       <SystemAppsToggleShadow
                         style={{
                           transform: interpolateToggleElevation(
@@ -246,22 +178,7 @@ class MenuPanel extends React.PureComponent {
               </Spring>
             </div>
           </Content>
-          {scrollVisible && (
-            <div
-              css={`
-                width: 100%;
-                height: 0;
-                border-bottom: 1px solid ${theme.contentBorder};
-              `}
-            />
-          )}
-          <MenuPanelFooter
-            account={account}
-            onRequestEnable={onRequestEnable}
-            connected={connected}
-            onOpenPreferences={onOpenPreferences}
-          />
-        </In>
+        </div>
       </Main>
     )
   }
@@ -333,9 +250,7 @@ const SystemAppsToggle = styled(ButtonBase)`
   text-align: left;
   outline: none;
   &:active {
-    background: ${color(theme.secondaryBackground)
-      .alpha(0.3)
-      .cssa()};
+    background: ${p => p.activeBackground};
   }
 `
 
@@ -384,32 +299,6 @@ const Main = styled.div`
   ${unselectable};
 `
 
-const In = styled.div`
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  flex-shrink: 1;
-  background: #fff;
-  border-right: 1px solid ${theme.contentBorder};
-  box-shadow: 1px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
-`
-
-const Header = styled.div`
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  height: 64px;
-  border-bottom: 1px solid ${theme.contentBorder};
-`
-
-const HeaderSlot = styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-`
-
 const Content = styled.nav`
   overflow-y: auto;
   flex: 1 1 0;
@@ -418,7 +307,6 @@ const Content = styled.nav`
   }
   h1 {
     margin: 10px 30px;
-    color: ${theme.textSecondary};
     text-transform: lowercase;
     font-variant: small-caps;
     font-weight: 600;
@@ -431,4 +319,7 @@ const Content = styled.nav`
     align-items: center;
   }
 `
-export default MenuPanel
+export default function(props) {
+  const theme = useTheme()
+  return <MenuPanel {...props} theme={theme} />
+}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
 import { isAddress } from '../../web3-utils'
@@ -9,12 +9,13 @@ import {
 import IdentityBadgeWithNetwork from './IdentityBadgeWithNetwork'
 import LocalIdentityPopoverTitle from './LocalIdentityPopoverTitle'
 
-const LocalIdentityBadge = ({ entity, ...props }) => {
+function LocalIdentityBadge({ entity, forceAddress, ...props }) {
   const address = isAddress(entity) ? entity : null
 
-  const { resolve, identityEvents$ } = React.useContext(IdentityContext)
-  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
-  const [label, setLabel] = React.useState(null)
+  const { resolve, identityEvents$ } = useContext(IdentityContext)
+  const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
+  const [label, setLabel] = useState(null)
+
   const handleResolve = useCallback(async () => {
     try {
       const { name = null } = await resolve(address)
@@ -43,6 +44,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
     },
     [address, handleResolve]
   )
+
   const handleRemove = useCallback(
     async addresses => {
       const exists = addresses.find(
@@ -65,8 +67,6 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
       switch (event.type) {
         case identityEventTypes.MODIFY:
           return handleEvent(event.address)
-        case identityEventTypes.CLEAR:
-          return clearLabel()
         case identityEventTypes.IMPORT:
           return handleResolve()
         case identityEventTypes.REMOVE:
@@ -92,7 +92,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
   return (
     <IdentityBadgeWithNetwork
       {...props}
-      customLabel={label || ''}
+      customLabel={(!forceAddress && label) || ''}
       entity={address}
       popoverAction={{
         label: `${label ? 'Edit' : 'Add'} custom label`,
@@ -107,6 +107,7 @@ const LocalIdentityBadge = ({ entity, ...props }) => {
 
 LocalIdentityBadge.propTypes = {
   entity: PropTypes.string,
+  forceAddress: PropTypes.bool,
 }
 
 export default LocalIdentityBadge

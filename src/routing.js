@@ -1,6 +1,5 @@
 import { staticApps } from './static-apps'
 import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
-
 import { isAddress, isValidEnsName } from './web3-utils'
 
 const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
@@ -24,7 +23,6 @@ const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
  * Note: a dao_address can be either of the form /0xcafe… or abc.aragonid.eth
  *
  * /{dao_address}
- * /{dao_address}/settings
  * /{dao_address}/permissions
  * /{dao_address}/0x{app_instance_address}?p={app_params}
  *
@@ -35,7 +33,7 @@ const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
  *   - org: when the path starts with a DAO address.
  *   - invalid: the DAO given is not valid
  */
-export const parsePath = (history, pathname, search = '') => {
+export function parsePath(history, pathname, search = '') {
   const path = pathname + search
   const [, ...parts] = pathname.split('/')
 
@@ -61,7 +59,7 @@ export const parsePath = (history, pathname, search = '') => {
     // Replace URL with non-aragonid.eth version
     history.replace({
       pathname: pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
-      search: search,
+      search,
       state: {
         alreadyParsed: true,
       },
@@ -88,16 +86,65 @@ export const parsePath = (history, pathname, search = '') => {
     instanceId: instanceId || 'home',
     params,
     parts: appParts,
+    localPath: appParts.length ? `/${appParts.join('/')}` : '',
+    preferences: parsePreferences(search),
   }
 
   return completeLocator
 }
 
 // Return a path string for an app instance
-export const getAppPath = ({ dao, instanceId = 'home', params } = {}) => {
-  const paramsPart = params ? `?p=${encodeURIComponent(params)}` : ``
-  if (staticApps.has(instanceId)) {
-    return `/${dao}${staticApps.get(instanceId).route}${paramsPart}`
+export function getAppPath({
+  dao: fullDao,
+  instanceId = 'home',
+  localPath = '',
+  params,
+  search = '',
+} = {}) {
+  const dao =
+    fullDao.indexOf(ARAGONID_ENS_DOMAIN) > -1
+      ? fullDao.substr(0, fullDao.indexOf(ARAGONID_ENS_DOMAIN) - 1)
+      : fullDao
+
+  // The search takes priority over app params for now. App params are going to
+  // be replaced soon so it shouldn’t be an issue.
+  if (!search && params) {
+    search = `?p=${encodeURIComponent(params)}`
   }
-  return `/${dao}/${instanceId}${paramsPart}`
+
+  if (staticApps.has(instanceId)) {
+    return '/' + dao + staticApps.get(instanceId).route + localPath + search
+  }
+
+  return `/${dao}/${instanceId}${search}`
+}
+
+// Preferences
+const GLOBAL_PREFERENCES_QUERY_PARAM = '?preferences=/'
+const GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR = '&labels='
+
+function parsePreferences(search) {
+  const [, raw = ''] = search && search.split(GLOBAL_PREFERENCES_QUERY_PARAM)
+  const params = new Map()
+  const [path = null, labels = null] = raw.split(
+    GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR
+  )
+  if (labels) {
+    params.set('labels', labels)
+  }
+  return { path, params }
+}
+
+// For preferences, get the “search” part of the path (?=something)
+// This function will probably be unified with parsePath() later.
+export function getPreferencesSearch(screen, { labels } = {}) {
+  let search = `${GLOBAL_PREFERENCES_QUERY_PARAM}${screen}`
+
+  // For now `labels` is expected to be a string, but we might move the
+  // conversion here at some point in the future.
+  if (labels) {
+    search += GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR + labels
+  }
+
+  return search
 }

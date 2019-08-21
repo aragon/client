@@ -229,4 +229,6 @@ const UpgradeButton = styled(Button)`
 }
 `
 
-export default AppCenter
+export default function(props) {
+  return <AppCenter {...props} />
+}

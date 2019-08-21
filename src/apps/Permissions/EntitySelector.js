@@ -9,12 +9,12 @@ import LocalIdentitiesAutoComplete from '../../components/LocalIdentitiesAutoCom
 
 class EntitySelector extends React.Component {
   static propTypes = {
-    activeIndex: PropTypes.number.isRequired,
     apps: PropTypes.arrayOf(AppType).isRequired,
     includeAnyEntity: PropTypes.bool,
     label: PropTypes.string.isRequired,
     labelCustomAddress: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    selectedIndex: PropTypes.number.isRequired,
     wrapper: AragonType,
   }
   state = {
@@ -45,7 +45,7 @@ class EntitySelector extends React.Component {
     ))
   }
   getAddress(index) {
-    if (index === 0) {
+    if (index === -1 || index === 0) {
       return getEmptyAddress()
     }
 
@@ -79,28 +79,34 @@ class EntitySelector extends React.Component {
   }
   render() {
     const { customAddress } = this.state
-    const { activeIndex, label, labelCustomAddress, wrapper } = this.props
+    const { label, labelCustomAddress, selectedIndex, wrapper } = this.props
     const items = this.getItems()
-    const showCustomAddress = activeIndex === items.length - 1
+    const showCustomAddress = selectedIndex === items.length - 1
     return (
       <React.Fragment>
         <Field label={label}>
           <DropDown
+            placeholder="Select an entity"
             items={items}
-            active={activeIndex}
+            selected={selectedIndex}
             onChange={this.handleChange}
             wide
           />
         </Field>
 
         {showCustomAddress && (
-          <Field label={labelCustomAddress}>
+          <Field
+            label={labelCustomAddress}
+            css={`
+              height: 60px;
+            `}
+          >
             <LocalIdentitiesAutoComplete
               placeholder="0xcafe…"
               value={customAddress}
               onChange={this.handleCustomAddressChange}
-              wide
               wrapper={wrapper}
+              wide
             />
           </Field>
         )}

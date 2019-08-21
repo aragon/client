@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ActionPathsContent from './ActionPathsContent'
-import ImpossibleContent from './ImpossibleContent'
+import ImpossibleAction from './ImpossibleAction'
 
 const ConfirmTransaction = ({
   direct,
@@ -34,7 +34,7 @@ const ConfirmTransaction = ({
       walletProviderId={walletProviderId}
     />
   ) : (
-    <ImpossibleContent error={signError} intent={intent} onClose={onClose} />
+    <ImpossibleAction error={signError} intent={intent} onClose={onClose} />
   )
 }
 

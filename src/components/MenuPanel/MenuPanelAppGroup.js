@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme } from '@aragon/ui'
-import color from 'onecolor'
+import { ButtonBase, useTheme } from '@aragon/ui'
 import MenuPanelInstance from './MenuPanelInstance'
 import { AppInstanceType } from '../../prop-types'
 import springs from '../../springs'
 import { useLocalIdentity } from '../../hooks'
+
+const { div: AnimDiv } = animated
 
 function MenuPanelItem({
   active,
@@ -24,11 +25,7 @@ function MenuPanelItem({
   }, [singleInstance, localIdentity, name])
 
   return (
-    <ButtonItem
-      role="button"
-      className={`item ${active ? 'active' : ''}`}
-      onClick={onClick}
-    >
+    <ButtonItem className={`item ${active ? 'active' : ''}`} onClick={onClick}>
       <span>
         <span className="icon">{icon}</span>
         <span className="name">{label}</span>
@@ -48,7 +45,7 @@ MenuPanelItem.propTypes = {
 
 const Item = React.memo(MenuPanelItem)
 
-function MenuPanelAppGroup({
+const MenuPanelAppGroup = React.memo(function MenuPanelAppGroup({
   name,
   icon,
   system,
@@ -58,13 +55,20 @@ function MenuPanelAppGroup({
   expand,
   onActivate,
 }) {
-  const handleAppClick = () => {
-    const [instance] = instances
+  const theme = useTheme()
+
+  const handleAppClick = useCallback(() => {
+    const instance = instances[0]
     if (instance) {
       onActivate(instance.instanceId)
     }
-  }
-  const handleInstanceClick = instanceId => onActivate(instanceId)
+  }, [instances, onActivate])
+
+  const handleInstanceClick = useCallback(
+    instanceId => onActivate(instanceId),
+    [onActivate]
+  )
+
   const singleInstance = instances.length === 1
 
   return (
@@ -74,10 +78,32 @@ function MenuPanelAppGroup({
       native
     >
       {({ openProgress }) => (
-        <Main active={active} system={system}>
-          <ActiveBackground style={{ opacity: Number(active) }} />
+        <Main
+          active={active}
+          system={system}
+          pressedItemBackground={theme.surfacePressed}
+          activeItemBackground={theme.surfaceSelected}
+        >
+          <div
+            style={{ opacity: Number(active) }}
+            css={`
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: -1;
+              background: ${theme.surfaceInteractive};
+            `}
+          />
 
-          <MenuItemBar
+          <AnimDiv
+            css={`
+              position: absolute;
+              width: 4px;
+              height: 100%;
+              background: ${theme.accent};
+            `}
             style={{
               opacity: openProgress,
               transform: openProgress.interpolate(
@@ -124,7 +150,7 @@ function MenuPanelAppGroup({
       )}
     </Spring>
   )
-}
+})
 
 MenuPanelAppGroup.propTypes = {
   active: PropTypes.bool.isRequired,
@@ -151,28 +177,23 @@ const Main = styled.div`
     cursor: pointer;
     padding: 0 10px 0 30px;
     transition: background 150ms ease-in-out;
-    &:active {
-      background: ${color(theme.secondaryBackground)
-        .alpha(0.3)
-        .cssa()};
-    }
     &.active {
       transition: none;
-      background: none;
+      background: ${p => p.activeItemBackground};
+    }
+    &:active {
+      background: ${p => p.pressedItemBackground};
     }
   }
   .name {
     font-weight: ${({ active }) => (active ? '800' : '400')};
+    font-size: 16px;
   }
   .icon {
     display: flex;
     width: 22px;
     height: 22px;
     margin-right: 15px;
-    color: ${({ active }) =>
-      active ? theme.textPrimary : theme.textSecondary};
-    filter: ${({ system }) =>
-      system ? `brightness(${({ active }) => (active ? 0 : 100)}%)` : 'none'};
 
     & > img {
       border-radius: 5px;
@@ -187,32 +208,15 @@ const Main = styled.div`
   }
 `
 
-const ButtonItem = styled.span`
+const ButtonItem = styled(ButtonBase)`
   display: flex;
   justify-content: space-between;
+  width: 100%;
+  border-radius: 0;
   & > span {
     display: flex;
     flex-wrap: nowrap;
   }
 `
 
-const ActiveBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  background: ${color(theme.secondaryBackground)
-    .alpha(0.3)
-    .cssa()};
-`
-
-const MenuItemBar = styled(animated.div)`
-  position: absolute;
-  width: 4px;
-  height: 100%;
-  background: ${theme.accent};
-`
-
-export default React.memo(MenuPanelAppGroup)
+export default MenuPanelAppGroup
