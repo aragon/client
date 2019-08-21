@@ -20,6 +20,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
   const [inputEmail, setInputEmail] = useState('')
   const [emailInvalid, setEmailInvalid] = useState(false)
   const [apiError, setApiError] = useState(null)
+  // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
   const ethNetwork = network.type === 'main' ? 'mainnet' : 'rinkeby'
 
   const handleEmailChange = e => {
