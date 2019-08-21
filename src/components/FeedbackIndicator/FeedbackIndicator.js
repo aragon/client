@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { IconCheck, IconCross, useTheme } from '@aragon/ui'
 
-const FeedbackIndicator = ({ status }) => {
+const FeedbackIndicator = ({ status, ...props }) => {
   const theme = useTheme()
   const color =
     status === 'success'
@@ -23,6 +23,7 @@ const FeedbackIndicator = ({ status }) => {
         border-radius: 50%;
         transition: border-color 150ms ease-in-out;
       `}
+      {...props}
     >
       {status === 'error' ? (
         <IconCross
