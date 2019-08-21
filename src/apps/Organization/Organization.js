@@ -18,7 +18,7 @@ import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadg
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
-import getProviderString from '../../provider-strings'
+import providerString from '../../provider-strings'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
 import useAppWidth from '../useAppWidth'
@@ -164,7 +164,7 @@ const Organization = React.memo(function Organization({
                 walletNetwork !== network.type
                   ? `select the ${sanitizeNetworkType(network.type)} network`
                   : 'unlock your account'
-              } in ${getProviderString(
+              } in ${providerString(
                 'your Ethereum provider',
                 walletProviderId
               )}.`}
