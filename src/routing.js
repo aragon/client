@@ -60,7 +60,7 @@ export const parsePath = (history, pathname, search = '') => {
     // Replace URL with non-aragonid.eth version
     history.replace({
       pathname: pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
-      search: search,
+      search,
       state: {
         alreadyParsed: true,
       },
@@ -87,6 +87,7 @@ export const parsePath = (history, pathname, search = '') => {
     instanceId: instanceId || 'home',
     params,
     parts: appParts,
+    localPath: appParts.join('/'),
     preferences: parsePreferences(search),
   }
 
@@ -94,19 +95,23 @@ export const parsePath = (history, pathname, search = '') => {
 }
 
 // Return a path string for an app instance
-export const getAppPath = ({
+export function getAppPath({
   dao: fullDao,
   instanceId = 'home',
+  localPath = '',
   params,
-} = {}) => {
+} = {}) {
   const dao =
     fullDao.indexOf(ARAGONID_ENS_DOMAIN) > -1
       ? fullDao.substr(0, fullDao.indexOf(ARAGONID_ENS_DOMAIN) - 1)
       : fullDao
+
   const paramsPart = params ? `?p=${encodeURIComponent(params)}` : ``
+
   if (staticApps.has(instanceId)) {
-    return `/${dao}${staticApps.get(instanceId).route}${paramsPart}`
+    return '/' + dao + staticApps.get(instanceId).route + localPath + paramsPart
   }
+
   return `/${dao}/${instanceId}${paramsPart}`
 }
 

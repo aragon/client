@@ -106,13 +106,13 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  openApp = (instanceId, params) => {
+  openApp = (instanceId, { params, localPath } = {}) => {
     if (this.props.autoClosingPanel) {
       // this.handleMenuPanelClose()
     }
 
     const { historyPush, locator } = this.props
-    historyPush(getAppPath({ dao: locator.dao, instanceId, params }))
+    historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
   }
 
   handleAppIFrameRef = appIFrame => {
@@ -166,7 +166,12 @@ class Wrapper extends React.PureComponent {
   }
   // params need to be a string
   handleParamsRequest = params => {
-    this.openApp(this.props.locator.instanceId, params)
+    this.openApp(this.props.locator.instanceId, { params })
+  }
+
+  // Update the local path of the current instance
+  handlePathRequest = localPath => {
+    this.openApp(this.props.locator.instanceId, { localPath })
   }
 
   getAppInstancesGroups = memoize(apps =>
@@ -285,7 +290,10 @@ class Wrapper extends React.PureComponent {
             daoLoading={daoStatus === DAO_STATUS_LOADING}
             instanceId={locator.instanceId}
           >
-            {this.renderApp(locator.instanceId, locator.params)}
+            {this.renderApp(locator.instanceId, {
+              params: locator.params,
+              localPath: locator.localPath,
+            })}
           </AppLoader>
 
           <SignerPanel
@@ -322,7 +330,7 @@ class Wrapper extends React.PureComponent {
       </div>
     )
   }
-  renderApp(instanceId, params) {
+  renderApp(instanceId, { params, localPath }) {
     const {
       account,
       apps,
