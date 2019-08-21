@@ -7,6 +7,8 @@ import {
   TextInput,
   Info,
   IconMail,
+  IconCross,
+  IconCheck,
   textStyle,
   useTheme,
 } from '@aragon/ui'
@@ -18,7 +20,7 @@ import throttle from 'lodash.throttle'
 
 export default function NotificationsLogin({ dao, authState, onEmailChange }) {
   const [inputEmail, setInputEmail] = useState('')
-  const [emailInvalid, setEmailInvalid] = useState(false)
+  const [emailInvalid, setEmailInvalid] = useState(null)
   const [emailBlured, setEmailBlured] = useState(false)
   const [apiError, setApiError] = useState(null)
   // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
@@ -29,7 +31,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
       if (email.length > 3 && email.includes('@')) {
         setEmailInvalid(!validateEmail(email))
       }
-    }, 1000),
+    }, 600),
     [setEmailInvalid]
   )
   const handleEmailBlur = useCallback(
@@ -84,6 +86,19 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
           >
             Email address
             <TextInput
+              css={`
+                border-color: ${emailInvalid === true
+                  ? theme.error
+                  : theme.border};
+              `}
+              adornment={
+                emailInvalid === false ? (
+                  <IconCheck color={theme.success} />
+                ) : (
+                  <IconCross color={theme.error} />
+                )
+              }
+              adornmentPosition="end"
               type="email"
               placeholder="you@example.com"
               wide
