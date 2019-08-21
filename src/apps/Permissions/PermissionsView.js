@@ -14,7 +14,12 @@ import { usePermissions } from '../../contexts/PermissionsContext'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
-function PermissionsView({ permissions, onManageRole, heading, showApps }) {
+const PermissionsView = React.memo(function PermissionsView({
+  permissions,
+  onManageRole,
+  heading,
+  showApps,
+}) {
   const { layoutName } = useLayout()
   const willRenderEntryChild = useMemo(
     () => permissions.some(permission => permission.entities.length > 1),
@@ -44,12 +49,10 @@ function PermissionsView({ permissions, onManageRole, heading, showApps }) {
       entries={permissions}
       renderEntry={entry => renderEntry(entry, showApps)}
       renderEntryChild={willRenderEntryChild ? renderEntryChild : undefined}
-      renderEntryActions={entry => (
-        <EntryActions entry={entry} onManageRole={onManageRole} />
-      )}
+      renderEntryActions={entry => renderEntryActions(entry, onManageRole)}
     />
   )
-}
+})
 
 PermissionsView.propTypes = {
   heading: PropTypes.node,
@@ -90,6 +93,10 @@ function renderEntryChild({ entities, app, role }) {
           roleBytes={role.bytes}
         />
       ))
+}
+
+function renderEntryActions(entry, onManageRole) {
+  return <EntryActions entry={entry} onManageRole={onManageRole} />
 }
 
 /* eslint-disable react/prop-types */
