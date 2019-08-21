@@ -7,6 +7,7 @@ import {
   ButtonIcon,
   DiscButton,
   IconClose,
+  IconQuestion,
   LoadingRing,
   Link,
   GU,
@@ -20,7 +21,6 @@ import {
 import useBeaconSuggestions from './useBeaconSuggestions'
 import { useHelpScout } from './useHelpScout'
 import BeaconHeadScripts from './BeaconHeadScripts'
-import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
 import { AppType } from '../../prop-types'
