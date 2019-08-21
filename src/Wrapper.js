@@ -367,9 +367,9 @@ class Wrapper extends React.PureComponent {
           apps={apps}
           appsLoading={appsLoading}
           permissionsLoading={permissionsLoading}
-          params={params}
+          localPath={localPath}
           onMessage={this.handleAppMessage}
-          onParamsRequest={this.handleParamsRequest}
+          onPathRequest={this.handlePathRequest}
           wrapper={wrapper}
         />
       )

@@ -20,28 +20,39 @@ function getAppByProxyAddress(proxyAddress, apps) {
   return apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
 }
 
-function getLocation(params, apps) {
+function getLocation(localPath, apps) {
   const home = { screen: 'home' }
 
-  if (params) {
-    // Not using "/" as a separator because
-    // it would get encoded by encodeURIComponent().
-    const [
-      screen,
-      data = null,
-      secondaryScreen = null,
-      secondaryData = null,
-    ] = params.split('.')
+  if (!localPath) {
+    return home
+  }
 
-    if (screen === 'app' && isAddress(data)) {
-      return {
-        screen,
-        address: data,
-        app: getAppByProxyAddress(data, apps),
-        secondaryScreen,
-        secondaryData,
-      }
+  const [
+    screen,
+    data = null,
+    secondaryScreen = null,
+    secondaryData = null,
+  ] = localPath.split('/')
+
+  if (screen === 'app' && isAddress(data)) {
+    return {
+      screen,
+      app: getAppByProxyAddress(data, apps),
+      secondaryScreen,
+      secondaryData,
     }
+  }
+
+  if (screen === 'role') {
+    const appAddress = (data || '').slice(0, 42)
+    const roleBytes = (data || '').slice(42)
+    if (isAddress(appAddress))
+      return {
+        screen: 'home',
+        app: getAppByProxyAddress(appAddress, apps),
+        secondaryScreen: 'role',
+        secondaryData: roleBytes,
+      }
   }
 
   return home
@@ -50,8 +61,8 @@ function getLocation(params, apps) {
 function Permissions({
   apps,
   appsLoading,
-  onParamsRequest,
-  params,
+  onPathRequest,
+  localPath,
   permissionsLoading,
   wrapper,
 }) {
@@ -64,29 +75,35 @@ function Permissions({
 
   const [homeTab, setHomeTab] = useState(0)
 
-  // `params` should change every time we navigate into and out of a detailed
+  // `localPath` should change every time we navigate into and out of a detailed
   // permissions view, so this ensures the user starts at the top of the screen
   // on every navigation change
   useEffect(() => {
     scrollTopElement.current.scrollIntoView()
-  }, [params])
+  }, [localPath])
+
+  const location = getLocation(localPath, apps)
 
   const openHome = useCallback(() => {
-    onParamsRequest(null)
-  }, [onParamsRequest])
+    onPathRequest('/')
+  }, [onPathRequest])
 
   const openApp = useCallback(
     proxyAddress => {
-      onParamsRequest(`app.${proxyAddress}`)
+      onPathRequest(`/app/${proxyAddress}`)
     },
-    [onParamsRequest]
+    [onPathRequest]
   )
 
   const manageRole = useCallback(
     (proxyAddress, roleBytes) => {
-      onParamsRequest(`app.${proxyAddress}.role.${roleBytes}`)
+      onPathRequest(
+        location.screen === 'app'
+          ? `/app/${proxyAddress}/role/${roleBytes}`
+          : `/role/${proxyAddress}${roleBytes}`
+      )
     },
-    [onParamsRequest]
+    [onPathRequest, location]
   )
 
   const createPermission = useCallback(() => {
@@ -98,19 +115,17 @@ function Permissions({
   }, [])
 
   const closeManageRolePanel = useCallback(() => {
-    const location = getLocation(params, apps)
+    const location = getLocation(localPath, apps)
     const openedApp = location.screen === 'app' ? location.app : null
     if (openedApp) {
-      onParamsRequest(`app.${openedApp.proxyAddress}`)
+      openApp(openedApp.proxyAddress)
+    } else {
+      openHome()
     }
-  }, [apps, params, onParamsRequest])
-
-  const location = getLocation(params, apps)
+  }, [apps, localPath, onPathRequest, openApp])
 
   const managedRole =
-    location.screen === 'app' &&
-    location.app &&
-    location.secondaryScreen === 'role'
+    location.app && location.secondaryScreen === 'role'
       ? resolveRole(location.app.proxyAddress, location.secondaryData)
       : null
 
@@ -214,8 +229,8 @@ function Permissions({
 Permissions.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
-  onParamsRequest: PropTypes.func.isRequired,
-  params: PropTypes.string,
+  onPathRequest: PropTypes.func.isRequired,
+  localPath: PropTypes.string,
   permissionsLoading: PropTypes.bool.isRequired,
   wrapper: AragonType,
 }
