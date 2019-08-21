@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Badge, useViewport, breakpoint } from '@aragon/ui'
+import { Tag, GU, useViewport, breakpoint } from '@aragon/ui'
 import { AppType, EthereumAddressType } from '../prop-types'
 import { shortenAddress } from '../web3-utils'
 import AppIcon from './AppIcon/AppIcon'
@@ -26,9 +26,14 @@ const AppInstanceLabel = React.memo(
           </div>
         )}
         <AppName>{app ? app.name : 'Unknown'}</AppName>
-        <StyledBadge title={proxyAddress}>
-          {(app && app.identifier) || shortenAddress(proxyAddress)}
-        </StyledBadge>
+        <Tag
+          mode="identifier"
+          label={(app && app.identifier) || shortenAddress(proxyAddress)}
+          title={proxyAddress}
+          css={`
+            margin-left: ${1 * GU}px;
+          `}
+        />
       </Main>
     )
   }
@@ -41,7 +46,7 @@ AppInstanceLabel.propTypes = {
 }
 
 const Main = styled.div`
-  margin: auto;
+  display: inline-flex;
 
   ${breakpoint(
     'medium',
@@ -50,17 +55,6 @@ const Main = styled.div`
       align-items: center;
       text-align: left;
       margin: unset;
-    `
-  )}
-`
-
-const StyledBadge = styled(Badge.App)`
-  display: inline-block;
-
-  ${breakpoint(
-    'medium',
-    `
-      display: inline;
     `
   )}
 `

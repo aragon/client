@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import color from 'onecolor'
-import { Badge, Button, font, theme } from '@aragon/ui'
+import { Button, Tag, GU, font } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import { RepoType } from '../../../prop-types'
 
@@ -43,17 +42,10 @@ const AppCardContent = ({ repo, onOpen }) => {
             css={`
               display: flex;
               justify-content: center;
-              margin-bottom: 12px;
+              margin-bottom: ${1 * GU}px;
             `}
           >
-            <Badge
-              background={color(theme.positive)
-                .alpha(0.15)
-                .cssa()}
-              foreground={theme.positive}
-            >
-              New version available
-            </Badge>
+            <Tag mode="new">New version available</Tag>
           </div>
         )}
         <p

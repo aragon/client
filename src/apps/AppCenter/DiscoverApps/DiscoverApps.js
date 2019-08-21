@@ -2,23 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 import {
   Card,
-  Badge,
+  Tag,
   Text,
   SafeLink,
   theme,
-  colors,
   unselectable,
   breakpoint,
 } from '@aragon/ui'
 import { appsInDevelopment } from './discover-apps-data'
 import AppIcon from '../../../components/AppIcon/AppIcon'
-
-const statuses = {
-  'pre-alpha': colors.Gold.Brandy,
-  alpha: colors.Blue.Danube,
-  experimental: colors.Blue.Danube,
-  ready: colors.Green['Spring Green'],
-}
 
 const DiscoverApps = React.memo(() => (
   <div>
@@ -50,7 +42,7 @@ const DiscoverApps = React.memo(() => (
           </Icon>
           <Name>{app.name}</Name>
           <TagWrapper>
-            <Tag background={statuses[app.status]}>{app.status}</Tag>
+            <Tag mode="new">{app.status}</Tag>
           </TagWrapper>
           <Description color={theme.textSecondary}>
             {app.description}
@@ -109,13 +101,6 @@ const TagWrapper = styled.div`
   max-width: 100%;
   padding: 0 20px;
   margin-bottom: 10px;
-`
-
-const Tag = styled(Badge)`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  color: white;
 `
 
 const Description = styled(Text)`
