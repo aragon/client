@@ -46,13 +46,14 @@ function getLocation(localPath, apps) {
   if (screen === 'role') {
     const appAddress = (data || '').slice(0, 42)
     const roleBytes = (data || '').slice(42)
-    if (isAddress(appAddress))
+    if (isAddress(appAddress)) {
       return {
         screen: 'home',
         app: getAppByProxyAddress(appAddress, apps),
         secondaryScreen: 'role',
         secondaryData: roleBytes,
       }
+    }
   }
 
   return home
