@@ -9,7 +9,7 @@ import {
 import IdentityBadgeWithNetwork from './IdentityBadgeWithNetwork'
 import LocalIdentityPopoverTitle from './LocalIdentityPopoverTitle'
 
-function LocalIdentityBadge({ entity, ...props }) {
+function LocalIdentityBadge({ entity, forceAddress, ...props }) {
   const address = isAddress(entity) ? entity : null
 
   const { resolve, identityEvents$ } = useContext(IdentityContext)
@@ -92,7 +92,7 @@ function LocalIdentityBadge({ entity, ...props }) {
   return (
     <IdentityBadgeWithNetwork
       {...props}
-      customLabel={label || ''}
+      customLabel={(!forceAddress && label) || ''}
       entity={address}
       popoverAction={{
         label: `${label ? 'Edit' : 'Add'} custom label`,
@@ -107,6 +107,7 @@ function LocalIdentityBadge({ entity, ...props }) {
 
 LocalIdentityBadge.propTypes = {
   entity: PropTypes.string,
+  forceAddress: PropTypes.bool,
 }
 
 export default LocalIdentityBadge

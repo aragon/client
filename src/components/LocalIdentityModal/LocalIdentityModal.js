@@ -1,9 +1,15 @@
 import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, TextInput, breakpoint, font, theme } from '@aragon/ui'
+import {
+  Button,
+  TextInput,
+  EscapeOutside,
+  breakpoint,
+  font,
+  theme,
+} from '@aragon/ui'
 import { ModalContext } from '../ModalManager/ModalManager'
-import EscapeOutside from '../EscapeOutside/EscapeOutside'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
 import { EthereumAddressType } from '../../prop-types'
@@ -96,9 +102,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
           <Error>{error}</Error>
         </Label>
         <Controls>
-          <Button mode="secondary" onClick={handleCancel}>
-            Cancel
-          </Button>
+          <Button onClick={handleCancel}>Cancel</Button>
           <StyledSaveButton mode="strong" onClick={handleSave}>
             Save
           </StyledSaveButton>

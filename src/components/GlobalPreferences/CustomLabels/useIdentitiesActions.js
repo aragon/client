@@ -28,10 +28,10 @@ function useIdentitiesActions({
   // share
   const [shareModalOpened, setShareModalOpened] = useState(false)
   const shareLink = useMemo(() => {
-    const identitiesToShare = filteredIdentities.reduce(
-      (p, c) => [...p, ...(identitiesSelected.get(c.address) ? [c] : [])],
-      []
+    const identitiesToShare = filteredIdentities.filter(({ address }) =>
+      identitiesSelected.get(address)
     )
+
     try {
       const labels = utoa(JSON.stringify(identitiesToShare))
       const path = `${window.location.origin}/#${getAppPath(
@@ -95,13 +95,7 @@ function useIdentitiesActions({
       type: identityEventTypes.REMOVE,
       addresses: toRemove,
     })
-  }, [
-    filteredIdentities,
-    identitiesSelected,
-    identityEvents$,
-    setRemoveModalOpened,
-    wrapper,
-  ])
+  }, [filteredIdentities, identitiesSelected, identityEvents$, wrapper])
 
   return {
     // share
@@ -109,10 +103,8 @@ function useIdentitiesActions({
       if (someSelected) {
         setShareModalOpened(true)
       }
-    }, [someSelected, setShareModalOpened]),
-    handleShareModalClose: useCallback(() => setShareModalOpened(false), [
-      setShareModalOpened,
-    ]),
+    }, [someSelected]),
+    handleShareModalClose: useCallback(() => setShareModalOpened(false), []),
     shareModalOpened,
     shareLink,
     // import
@@ -126,7 +118,7 @@ function useIdentitiesActions({
       if (someSelected) {
         setRemoveModalOpened(true)
       }
-    }, [someSelected, setRemoveModalOpened]),
+    }, [someSelected]),
     removeModalOpened,
   }
 }

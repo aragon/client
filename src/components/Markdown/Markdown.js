@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import remark from 'remark'
 import remark2react from 'remark-react'
-import { SafeLink, theme } from '@aragon/ui'
-import { GU } from '../../utils'
+import { SafeLink, GU, theme } from '@aragon/ui'
 
 const Markdown = React.memo(({ text }) => {
   return (

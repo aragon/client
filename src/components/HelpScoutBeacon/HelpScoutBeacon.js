@@ -4,11 +4,12 @@ import styled from 'styled-components'
 import { Transition, animated } from 'react-spring'
 import {
   Button,
-  ButtonBase,
   ButtonIcon,
+  DiscButton,
   IconClose,
   LoadingRing,
   SafeLink,
+  GU,
   breakpoint,
   springs,
   useTheme,
@@ -19,7 +20,6 @@ import BeaconHeadScripts from './BeaconHeadScripts'
 import IconQuestion from './IconQuestion'
 import headerImg from './header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
-import { GU } from '../../utils'
 import { AppType } from '../../prop-types'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
@@ -27,7 +27,7 @@ const CLOSED = Symbol('closed, user can open opt-in or beacon')
 const OPENED = Symbol('opened, user can close opt-in or beacon')
 const OPENING = Symbol('opening')
 const CLOSING = Symbol('closing')
-const ROUND_BUTTON_HEIGHT = 40
+const DISC_BUTTON_HEIGHT = 40
 
 const Beacon = React.memo(function Beacon({ locator, apps }) {
   const [beaconReady, setBeaconReady] = useState(false)
@@ -248,18 +248,20 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
   const { below } = useViewport()
 
   return (
-    <RoundButton
-      background={theme.help}
-      color={theme.helpContent}
+    <DiscButton
+      description="Help"
       onClick={onToggle}
       css={`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: calc(100% - ${DISC_BUTTON_HEIGHT}px);
+        margin-top: ${2 * GU}px;
         ${below('medium') &&
           `
             position: absolute;
-            top: calc(-${ROUND_BUTTON_HEIGHT}px - ${3 * GU}px);
+            top: calc(-${DISC_BUTTON_HEIGHT}px - ${3 * GU}px);
           `}
-        margin-left: calc(100% - ${ROUND_BUTTON_HEIGHT}px);
-        margin-top: ${2 * GU}px;
       `}
     >
       <Transition
@@ -322,7 +324,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
           ))
         }
       </Transition>
-    </RoundButton>
+    </DiscButton>
   )
 })
 
@@ -538,20 +540,6 @@ const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
   &:focus {
     text-decoration: underline;
   }
-`
-
-const RoundButton = styled(ButtonBase)`
-  background: ${({ background }) => background};
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  border-radius: 50%;
-  width: ${ROUND_BUTTON_HEIGHT}px;
-  height: ${ROUND_BUTTON_HEIGHT}px;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
 `
 
 const RoundButtonIcon = styled(animated.div)`
