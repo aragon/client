@@ -11,6 +11,8 @@ import AppPermissions from './AppPermissions'
 import AssignPermissionPanel from './AssignPermissionPanel'
 import ManageRolePanel from './ManageRolePanel'
 
+const HOME_TABS = ['App permissions', 'System permissions']
+
 function getAppByProxyAddress(proxyAddress, apps) {
   if (!proxyAddress) {
     return null
@@ -59,6 +61,8 @@ function Permissions({
   )
   const { resolveRole } = usePermissions()
   const scrollTopElement = useRef(null)
+
+  const [homeTab, setHomeTab] = useState(0)
 
   // `params` should change every time we navigate into and out of a detailed
   // permissions view, so this ensures the user starts at the top of the screen
@@ -170,9 +174,12 @@ function Permissions({
         <Home
           apps={apps}
           appsLoading={appsLoading}
-          permissionsLoading={permissionsLoading}
+          onChangeTab={setHomeTab}
           onManageRole={manageRole}
           onOpenApp={openApp}
+          permissionsLoading={permissionsLoading}
+          selectedTab={homeTab}
+          tabs={HOME_TABS}
         />
       )}
 
