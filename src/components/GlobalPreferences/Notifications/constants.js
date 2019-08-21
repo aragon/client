@@ -12,11 +12,11 @@ export const VERIFY_SUBSECTION = '/verify/'
 
 // A user can be in one of these three states
 // Only once the user is verified (authenticated) can he create subscriptions
-export const AUTH_UNAUTHENTICATED = 'AUTH_UNAUTHENTICATED'
-export const AUTH_PREVERIFY = 'AUTH_PREVERIFY' // submitted email but didn't verify
-export const AUTH_AUTHENTICATING = 'AUTH_AUTHENTICATING'
-export const AUTH_AUTHENTICATED = 'AUTH_AUTHENTICATED'
-export const AUTH_AUTHENTICATION_FAILED = 'AUTH_AUTHENTICATION_FAILED'
+export const AUTH_UNAUTHENTICATED = Symbol('AUTH_UNAUTHENTICATED')
+export const AUTH_PREVERIFY = Symbol('AUTH_PREVERIFY') // submitted email but didn't verify
+export const AUTH_AUTHENTICATING = Symbol('AUTH_AUTHENTICATING')
+export const AUTH_AUTHENTICATED = Symbol('AUTH_AUTHENTICATED')
+export const AUTH_AUTHENTICATION_FAILED = Symbol('AUTH_AUTHENTICATION_FAILED')
 
 export const API_MESSAGE_EXPIRED_TOKEN = 'Expired token'
 
