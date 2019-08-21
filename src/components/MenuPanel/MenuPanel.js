@@ -12,10 +12,17 @@ import {
 } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { lerp } from '../../math-utils'
-import { AppInstanceGroupType, AppsStatusType } from '../../prop-types'
+import {
+  AppInstanceGroupType,
+  AppsStatusType,
+  DaoAddressType,
+  DaoStatusType,
+} from '../../prop-types'
 import { staticApps } from '../../static-apps'
+import { DAO_STATUS_LOADING } from '../../symbols'
 import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
+import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
 
 export const MENU_PANEL_SHADOW_WIDTH = 3
@@ -48,7 +55,10 @@ class MenuPanel extends React.PureComponent {
     activeInstanceId: PropTypes.string,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
+    daoAddress: DaoAddressType.isRequired,
+    daoStatus: DaoStatusType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
+    showOrgSwitcher: PropTypes.bool,
   }
 
   state = {
@@ -76,7 +86,12 @@ class MenuPanel extends React.PureComponent {
   }
 
   render() {
-    const { appInstanceGroups } = this.props
+    const {
+      appInstanceGroups,
+      daoAddress,
+      daoStatus,
+      showOrgSwitcher,
+    } = this.props
     const { systemAppsOpened, systemAppsToggled } = this.state
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
@@ -95,11 +110,20 @@ class MenuPanel extends React.PureComponent {
             box-shadow: 2px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.05);
           `}
         >
+          {showOrgSwitcher && (
+            <OrganizationSwitcher
+              loading={daoStatus === DAO_STATUS_LOADING}
+              currentDao={{
+                name: daoAddress.domain,
+                address: daoAddress.address,
+              }}
+            />
+          )}
           <nav
             css={`
               overflow-y: auto;
               flex: 1 1 0;
-              padding-top: ${4 * GU}px;
+              padding-top: ${(showOrgSwitcher ? 2 : 4) * GU}px;
             `}
           >
             <Heading>Apps</Heading>
@@ -266,7 +290,20 @@ function AnimatedMenuPanel({
       native
     >
       {({ menuPanelProgress }) => (
-        <div className={className}>
+        <div
+          className={className}
+          css={`
+            /* When the panel is autoclosing, we want it over the top bar as well */
+            ${autoClosing && opened
+              ? `
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                top: 0;
+              `
+              : ''}
+          `}
+        >
           {autoClosing && opened && (
             <AnimDiv
               onClick={onMenuPanelClose}
@@ -301,7 +338,7 @@ function AnimatedMenuPanel({
               ),
             }}
           >
-            <MenuPanel {...props} />
+            <MenuPanel showOrgSwitcher={autoClosing} {...props} />
           </AnimDiv>
         </div>
       )}

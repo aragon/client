@@ -77,6 +77,7 @@ function OrgView({
         css={`
           display: flex;
           flex-direction: column;
+          position: relative;
           height: 100%;
           width: 100%;
           background: ${theme.background};
@@ -133,7 +134,6 @@ function OrgView({
         >
           <div
             css={`
-              position: relative;
               height: 100%;
               display: flex;
             `}
@@ -143,6 +143,8 @@ function OrgView({
               appInstanceGroups={appInstanceGroups}
               appsStatus={appsStatus}
               autoClosing={autoClosingPanel}
+              daoAddress={daoAddress}
+              daoStatus={daoStatus}
               onMenuPanelClose={handleCloseMenuPanel}
               onOpenApp={handleOpenApp}
               opened={menuPanelOpen}
