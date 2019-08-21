@@ -475,9 +475,7 @@ const templateParamFilters = {
 
     if (neededSignatures < 1 || neededSignatures > signers.length) {
       throw new Error(
-        `neededSignatures must be between 1 and the total number of signers (${
-          signers.length
-        })`,
+        `neededSignatures must be between 1 and the total number of signers (${signers.length})`,
         neededSignatures
       )
     }
