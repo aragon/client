@@ -1,78 +1,78 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Button, Tag, GU, font } from '@aragon/ui'
+import { GU, Tag, unselectable, useTheme, textStyle } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import { RepoType } from '../../../prop-types'
 
-const AppCardContent = ({ repo, onOpen }) => {
-  const { name, repoName, baseUrl, currentVersion, latestVersion } = repo
+const AppCardContent = ({ repo }) => {
+  const theme = useTheme()
+  const { name, baseUrl, currentVersion, latestVersion } = repo
   const { description, icons } = latestVersion.content
   const canUpgrade = currentVersion.version !== latestVersion.version
+
   return (
     <section
       css={`
+        ${unselectable};
+        position: relative;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        padding-top: ${5 * GU}px;
         height: 100%;
-        padding-top: 24px;
-        justify-content: space-between;
+        width: 100%;
       `}
     >
       <div
         css={`
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          flex-grow: 2;
-          margin-bottom: 20px;
+          height: ${9 * GU}px;
+          margin-bottom: ${2 * GU}px;
+          img {
+            display: block;
+          }
         `}
       >
-        <AppIcon app={{ baseUrl, icons }} size={56} css="margin: 0 0 20px" />
-        <h1
-          css={`
-            text-align: center;
-            margin-bottom: 8px;
-            ${font({ size: 'large', weight: 'bold' })};
-          `}
-        >
-          {name}
-        </h1>
-        {canUpgrade && (
-          <div
-            css={`
-              display: flex;
-              justify-content: center;
-              margin-bottom: ${1 * GU}px;
-            `}
-          >
-            <Tag mode="new">New version available</Tag>
-          </div>
-        )}
-        <p
-          css={`
-            margin-bottom: 8px;
-            text-align: center;
-          `}
-        >
-          {description}
-        </p>
+        <AppIcon app={{ baseUrl, icons }} size={9 * GU} />
       </div>
-      <div>
-        <Button
-          mode={canUpgrade ? 'strong' : 'outline'}
-          onClick={() => onOpen(repoName)}
-          wide
-        >
-          {canUpgrade ? 'Upgrade' : 'View details'}
-        </Button>
+      <p
+        css={`
+          display: flex;
+          width: 100%;
+          justify-content: center;
+          margin-bottom: ${1 * GU}px;
+          ${textStyle('title4')}
+        `}
+      >
+        {name}
+      </p>
+      <div
+        css={`
+          max-width: 100%;
+          padding: 0 ${2.5 * GU}px;
+          margin-bottom: ${1 * GU}px;
+        `}
+      >
+        <Tag mode={canUpgrade ? 'new' : 'indicator'}>
+          {canUpgrade ? 'New version' : 'Up to date'}
+        </Tag>
       </div>
+      <p
+        css={`
+          color: ${theme.contentSecondary};
+          padding: 0 1rem;
+          text-align: center;
+          ${textStyle('body2')};
+          flex: 1;
+        `}
+      >
+        {description}
+      </p>
     </section>
   )
 }
 
 AppCardContent.propTypes = {
   repo: RepoType.isRequired,
-  onOpen: PropTypes.func.isRequired,
 }
 
 export default AppCardContent
