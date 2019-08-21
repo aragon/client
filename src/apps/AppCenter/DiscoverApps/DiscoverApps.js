@@ -61,9 +61,7 @@ const DiscoverApps = React.memo(() => {
             <TagWrapper>
               <Tag mode="indicator">{app.status}</Tag>
             </TagWrapper>
-            <Description color={theme.contentSecondary}>
-              {app.description}
-            </Description>
+            <Description theme={theme}>{app.description}</Description>
           </Main>
         ))}
       </CardLayout>
@@ -82,7 +80,7 @@ const Main = styled(Card)`
 `
 
 const Icon = styled.div`
-  height: 64px;
+  height: ${9 * GU}px;
   margin-bottom: ${2 * GU}px;
   img {
     display: block;
@@ -104,9 +102,11 @@ const TagWrapper = styled.div`
 `
 
 const Description = styled.div`
+  color: ${({ theme }) => theme.contentSecondary};
   padding: 0 1rem;
   text-align: center;
   ${textStyle('body2')};
+  flex: 1;
 `
 
 const External = styled(Link)`
