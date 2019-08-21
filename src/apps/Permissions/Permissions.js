@@ -122,7 +122,7 @@ function Permissions({
     } else {
       openHome()
     }
-  }, [apps, localPath, onPathRequest, openApp])
+  }, [apps, localPath, onPathRequest, openApp, openHome])
 
   const managedRole =
     location.app && location.secondaryScreen === 'role'
