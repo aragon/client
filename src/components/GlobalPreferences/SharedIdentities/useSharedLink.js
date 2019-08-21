@@ -5,11 +5,7 @@ import {
 } from '../../IdentityManager/IdentityManager'
 import { useSelected } from '../../../hooks'
 import { atou } from '../../../string-utils'
-import {
-  getAppPath,
-  GLOBAL_PREFERENCES_QUERY_PARAM,
-  GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR,
-} from '../../../routing'
+import { getAppPath, getPreferencesSearch } from '../../../routing'
 
 const CUSTOM_LABELS_PATH = 'custom-labels'
 
@@ -27,9 +23,10 @@ function useSharedLink({ wrapper, toast, locator }) {
   )
 
   const handleCleanHash = useCallback(() => {
-    window.location.hash = `${getAppPath(
-      locator
-    )}${GLOBAL_PREFERENCES_QUERY_PARAM}${CUSTOM_LABELS_PATH}`
+    window.location.hash = getAppPath({
+      ...locator,
+      search: getPreferencesSearch(CUSTOM_LABELS_PATH),
+    })
   }, [locator])
   const handleSharedIdentitiesSave = useCallback(async () => {
     if (!wrapper) {
@@ -81,15 +78,11 @@ function useSharedLink({ wrapper, toast, locator }) {
     const {
       preferences: { params },
     } = locator
-    if (!params.has(GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR)) {
+    if (!params.has('labels')) {
       return
     }
     try {
-      const data = JSON.parse(
-        window.decodeURI(
-          atou(params.get(GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR))
-        )
-      )
+      const data = JSON.parse(window.decodeURI(atou(params.get('labels'))))
       setSharedIdentities(data.map(({ address, name }) => ({ address, name })))
       setIsSharedLink(true)
     } catch (e) {

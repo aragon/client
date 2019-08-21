@@ -4,14 +4,14 @@ import styled from 'styled-components'
 import {
   ButtonIcon,
   GU,
+  Header,
   IconClose,
   Layout,
-  Header,
   Tabs,
-  Toast,
-  springs,
   breakpoint,
+  springs,
   useTheme,
+  useToast,
   useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
@@ -23,7 +23,6 @@ import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
-import { GLOBAL_PREFERENCES_QUERY_PARAM, getAppPath } from '../../routing'
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
@@ -33,20 +32,20 @@ const SECTIONS = new Map([
 ])
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
-const TIMEOUT_TOAST = 4000
 
 function GlobalPreferences({
   compact,
   helpScoutOptedOut,
   onClose,
   onHelpScoutOptedOutChange,
-  toast,
   wrapper,
   locator,
   sectionIndex,
   onNavigation,
 }) {
+  const toast = useToast()
   const { dao } = locator
+
   const {
     isSharedLink,
     isSavingSharedLink,
@@ -59,10 +58,12 @@ function GlobalPreferences({
     sharedIdentitiesAllSelected,
     sharedIdentitiesSomeSelected,
   } = useSharedLink({ wrapper, toast, locator })
+
   const handleSharedIdentitiesClose = () => {
     handleSharedIdentitiesCancel()
     onClose()
   }
+
   useEsc(onClose)
 
   return (
@@ -118,24 +119,22 @@ function GlobalPreferences({
 GlobalPreferences.propTypes = {
   compact: PropTypes.bool,
   helpScoutOptedOut: PropTypes.bool,
+  locator: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   onHelpScoutOptedOutChange: PropTypes.func.isRequired,
-  toast: PropTypes.func,
-  wrapper: AragonType,
-  locator: PropTypes.object,
-  sectionIndex: PropTypes.number,
   onNavigation: PropTypes.func.isRequired,
+  sectionIndex: PropTypes.number,
+  wrapper: AragonType,
 }
 
-function useGlobalPreferences(locator = {}) {
+function useGlobalPreferences({ locator = {}, onScreenChange }) {
   const [sectionIndex, setSectionIndex] = useState(null)
+
   const handleNavigation = useCallback(
     index => {
-      window.location.hash = `${getAppPath(
-        locator
-      )}${GLOBAL_PREFERENCES_QUERY_PARAM}${PATHS[index]}`
+      onScreenChange(PATHS[index])
     },
-    [locator]
+    [onScreenChange]
   )
 
   useEffect(() => {
@@ -187,8 +186,11 @@ Close.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-function AnimatedGlobalPreferences(props) {
-  const { sectionIndex, handleNavigation } = useGlobalPreferences(props.locator)
+function AnimatedGlobalPreferences({ onScreenChange, ...props }) {
+  const { sectionIndex, handleNavigation } = useGlobalPreferences({
+    locator: props.locator,
+    onScreenChange,
+  })
   const { below } = useViewport()
   const compact = below('medium')
   const theme = useTheme()
@@ -238,6 +240,7 @@ function AnimatedGlobalPreferences(props) {
 
 AnimatedGlobalPreferences.propTypes = {
   locator: PropTypes.object,
+  onScreenChange: PropTypes.func.isRequired,
 }
 
 const AnimatedWrap = styled(animated.div)`
@@ -256,8 +259,4 @@ const AnimatedWrap = styled(animated.div)`
   ${breakpoint('medium', `padding-bottom:0;`)}
 `
 
-export default React.memo(props => (
-  <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <AnimatedGlobalPreferences {...props} toast={toast} />}
-  </Toast>
-))
+export default React.memo(AnimatedGlobalPreferences)

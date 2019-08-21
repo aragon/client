@@ -32,7 +32,7 @@ function getLocation(localPath, apps) {
     data = null,
     secondaryScreen = null,
     secondaryData = null,
-  ] = localPath.split('/')
+  ] = localPath.replace(/^\//, '').split('/')
 
   if (screen === 'app' && isAddress(data)) {
     return {

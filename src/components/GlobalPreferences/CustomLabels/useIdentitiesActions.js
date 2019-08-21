@@ -7,11 +7,7 @@ import {
 } from '../../IdentityManager/IdentityManager'
 import { utoa } from '../../../string-utils'
 import { log } from '../../../utils'
-import {
-  getAppPath,
-  GLOBAL_PREFERENCES_QUERY_PARAM,
-  GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR,
-} from '../../../routing'
+import { getAppPath, getPreferencesSearch } from '../../../routing'
 
 const CUSTOM_LABELS_PATH = 'custom-labels'
 
@@ -27,6 +23,7 @@ function useIdentitiesActions({
 
   // share
   const [shareModalOpened, setShareModalOpened] = useState(false)
+
   const shareLink = useMemo(() => {
     const identitiesToShare = filteredIdentities.filter(({ address }) =>
       identitiesSelected.get(address)
@@ -34,9 +31,10 @@ function useIdentitiesActions({
 
     try {
       const labels = utoa(JSON.stringify(identitiesToShare))
-      const path = `${window.location.origin}/#${getAppPath(
-        locator
-      )}${GLOBAL_PREFERENCES_QUERY_PARAM}${CUSTOM_LABELS_PATH}${GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR}${labels}`
+      const path = `${window.location.origin}/#${getAppPath({
+        ...locator,
+        search: getPreferencesSearch(CUSTOM_LABELS_PATH, { labels }),
+      })}`
       return path
     } catch (err) {
       log('Error while creating the identities sharing link:', err)

@@ -21,7 +21,7 @@ import {
   EthereumAddressType,
   RepoType,
 } from './prop-types'
-import { getAppPath, GLOBAL_PREFERENCES_QUERY_PARAM } from './routing'
+import { getAppPath, getPreferencesSearch } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 
@@ -115,6 +115,18 @@ class Wrapper extends React.PureComponent {
     historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
   }
 
+  closePreferences = () => {
+    const { historyPush, locator } = this.props
+    historyPush(getAppPath(locator))
+  }
+
+  openPreferences = (screen, data) => {
+    const { historyPush, locator } = this.props
+    historyPush(
+      getAppPath({ ...locator, search: getPreferencesSearch(screen, data) })
+    )
+  }
+
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
   }
@@ -157,13 +169,6 @@ class Wrapper extends React.PureComponent {
     this.setState({ appLoading: false })
   }
 
-  handleClosePreferences = () => {
-    window.location.hash = getAppPath(this.props.locator)
-  }
-  handleOpenPreferences = path => {
-    const appPath = getAppPath(this.props.locator)
-    window.location.hash = `${appPath}${GLOBAL_PREFERENCES_QUERY_PARAM}${path}`
-  }
   // params need to be a string
   handleParamsRequest = params => {
     this.openApp(this.props.locator.instanceId, { params })
@@ -279,7 +284,7 @@ class Wrapper extends React.PureComponent {
           daoAddress={daoAddress}
           daoStatus={daoStatus}
           onOpenApp={this.openApp}
-          onOpenPreferences={this.handleOpenPreferences}
+          onOpenPreferences={this.openPreferences}
           onRequestAppsReload={onRequestAppsReload}
           onRequestEnable={onRequestEnable}
         >
@@ -323,7 +328,8 @@ class Wrapper extends React.PureComponent {
         <GlobalPreferences
           locator={locator}
           wrapper={wrapper}
-          onClose={this.handleClosePreferences}
+          onScreenChange={this.openPreferences}
+          onClose={this.closePreferences}
           onHelpScoutOptedOutChange={onHelpScoutOptedOutChange}
           helpScoutOptedOut={helpScoutOptedOut}
         />
