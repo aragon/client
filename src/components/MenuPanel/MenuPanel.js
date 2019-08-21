@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import {
@@ -11,6 +11,7 @@ import {
   useTheme,
 } from '@aragon/ui'
 import memoize from 'lodash.memoize'
+import { lerp } from '../../math-utils'
 import { AppInstanceGroupType, AppsStatusType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
 import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
@@ -19,6 +20,8 @@ import AppIcon from '../AppIcon/AppIcon'
 
 export const MENU_PANEL_SHADOW_WIDTH = 3
 export const MENU_PANEL_WIDTH = 28 * GU
+
+const { div: AnimDiv } = animated
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
@@ -48,10 +51,7 @@ class MenuPanel extends React.PureComponent {
     onOpenApp: PropTypes.func.isRequired,
   }
 
-  _systemAppsToggled = false
-
   state = {
-    notifications: [],
     systemAppsOpened: systemAppsOpenedState.isOpen(),
     systemAppsToggled: false,
   }
@@ -88,7 +88,6 @@ class MenuPanel extends React.PureComponent {
         <div
           css={`
             position: relative;
-            z-index: 2;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -159,12 +158,14 @@ class MenuPanel extends React.PureComponent {
                     </Heading>
                   </SystemAppsToggle>
                   <div css="overflow: hidden">
-                    <animated.div
-                      style={{
+                    <AnimDiv
+                      css={`
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'flex-end',
                         width: '100%',
+                      `}
+                      style={{
                         opacity: openProgress,
                         height: openProgress.interpolate(
                           v =>
@@ -173,7 +174,7 @@ class MenuPanel extends React.PureComponent {
                       }}
                     >
                       {systemApps.map(app => this.renderAppGroup(app))}
-                    </animated.div>
+                    </AnimDiv>
                   </div>
                 </div>
               )}
@@ -235,6 +236,84 @@ class MenuPanel extends React.PureComponent {
       </MenuPanelAppsLoader>
     )
   }
+}
+
+function AnimatedMenuPanel({
+  autoClosing,
+  className,
+  onMenuPanelClose,
+  opened,
+  ...props
+}) {
+  const theme = useTheme()
+  const [animate, setAnimate] = useState(autoClosing)
+
+  useEffect(() => {
+    // If autoClosing has changed, it means we are switching from autoClosing
+    // to fixed or the opposite, and we should stop animating the panel for a
+    // short period of time.
+    setAnimate(false)
+    const animateTimer = setTimeout(() => setAnimate(true), 0)
+    return () => clearTimeout(animateTimer)
+  }, [autoClosing])
+
+  return (
+    <Spring
+      from={{ menuPanelProgress: 0 }}
+      to={{ menuPanelProgress: Number(opened) }}
+      config={springs.lazy}
+      immediate={!animate}
+      native
+    >
+      {({ menuPanelProgress }) => (
+        <div className={className}>
+          {autoClosing && opened && (
+            <AnimDiv
+              onClick={onMenuPanelClose}
+              css={`
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                background: ${theme.overlay.alpha(0.9)};
+                ${!opened ? 'pointer-events: none' : ''}
+              `}
+              style={{
+                opacity: menuPanelProgress,
+              }}
+            />
+          )}
+          <AnimDiv
+            css={`
+              width: ${MENU_PANEL_WIDTH}px;
+              height: 100%;
+              flex: none;
+            `}
+            style={{
+              position: autoClosing ? 'absolute' : 'relative',
+              transform: menuPanelProgress.interpolate(
+                v =>
+                  `translate3d(
+                    ${lerp(
+                      v,
+                      -(MENU_PANEL_WIDTH + MENU_PANEL_SHADOW_WIDTH),
+                      0
+                    )}px, 0, 0)`
+              ),
+            }}
+          >
+            <MenuPanel {...props} />
+          </AnimDiv>
+        </div>
+      )}
+    </Spring>
+  )
+}
+AnimatedMenuPanel.propTypes = {
+  autoClosing: PropTypes.bool,
+  className: PropTypes.string,
+  onMenuPanelClose: PropTypes.func.isRequired,
+  opened: PropTypes.bool,
+  ...MenuPanel.propTypes,
 }
 
 function Main(props) {
@@ -321,4 +400,4 @@ const SystemAppsToggleShadow = props => (
   </div>
 )
 
-export default MenuPanel
+export default AnimatedMenuPanel
