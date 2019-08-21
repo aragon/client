@@ -5,11 +5,10 @@ import {
 } from '../../IdentityManager/IdentityManager'
 import { useSelected } from '../../../hooks'
 import { atou } from '../../../string-utils'
-import { getAppPath, getPreferencesSearch } from '../../../routing'
 
 const CUSTOM_LABELS_PATH = 'custom-labels'
 
-function useSharedLink({ wrapper, toast, locator }) {
+function useSharedLink({ wrapper, toast, locator, onScreenChange }) {
   const { identityEvents$ } = useIdentity()
   const [isSharedLink, setIsSharedLink] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -22,12 +21,10 @@ function useSharedLink({ wrapper, toast, locator }) {
     initialSelected
   )
 
-  const handleCleanHash = useCallback(() => {
-    window.location.hash = getAppPath({
-      ...locator,
-      search: getPreferencesSearch(CUSTOM_LABELS_PATH),
-    })
-  }, [locator])
+  const openScreenHome = useCallback(() => {
+    onScreenChange(CUSTOM_LABELS_PATH)
+  }, [onScreenChange])
+
   const handleSharedIdentitiesSave = useCallback(async () => {
     if (!wrapper) {
       return
@@ -41,21 +38,23 @@ function useSharedLink({ wrapper, toast, locator }) {
     )
     identityEvents$.next({ type: identityEventTypes.IMPORT })
     toast('Custom labels added')
-    handleCleanHash()
+    openScreenHome()
     setIsSharedLink(false)
     setIsSaving(false)
   }, [
-    handleCleanHash,
+    openScreenHome,
     identityEvents$,
     selected,
     sharedIdentities,
     toast,
     wrapper,
   ])
+
   const handleSharedIdentitiesCancel = useCallback(() => {
-    handleCleanHash()
+    openScreenHome()
     setIsSharedLink(false)
-  }, [handleCleanHash])
+  }, [openScreenHome])
+
   const handleToggleAll = useCallback(() => {
     const newSelected = new Map(
       sharedIdentities.map(({ address }) => [

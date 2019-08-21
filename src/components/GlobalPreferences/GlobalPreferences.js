@@ -37,6 +37,7 @@ function GlobalPreferences({
   compact,
   helpScoutOptedOut,
   onClose,
+  onScreenChange,
   onHelpScoutOptedOutChange,
   wrapper,
   locator,
@@ -57,7 +58,7 @@ function GlobalPreferences({
     sharedIdentitiesSelected,
     sharedIdentitiesAllSelected,
     sharedIdentitiesSomeSelected,
-  } = useSharedLink({ wrapper, toast, locator })
+  } = useSharedLink({ wrapper, toast, locator, onScreenChange })
 
   const handleSharedIdentitiesClose = () => {
     handleSharedIdentitiesCancel()
@@ -123,6 +124,7 @@ GlobalPreferences.propTypes = {
   onClose: PropTypes.func.isRequired,
   onHelpScoutOptedOutChange: PropTypes.func.isRequired,
   onNavigation: PropTypes.func.isRequired,
+  onScreenChange: PropTypes.func.isRequired,
   sectionIndex: PropTypes.number,
   wrapper: AragonType,
 }
@@ -186,11 +188,12 @@ Close.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-function AnimatedGlobalPreferences({ onScreenChange, ...props }) {
+function AnimatedGlobalPreferences(props) {
   const { sectionIndex, handleNavigation } = useGlobalPreferences({
     locator: props.locator,
-    onScreenChange,
+    onScreenChange: props.onScreenChange,
   })
+
   const { below } = useViewport()
   const compact = below('medium')
   const theme = useTheme()
