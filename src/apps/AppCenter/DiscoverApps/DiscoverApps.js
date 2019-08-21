@@ -50,15 +50,7 @@ const DiscoverApps = React.memo(() => (
           </Icon>
           <Name>{app.name}</Name>
           <TagWrapper>
-            <Tag
-              mode="new"
-              css={`
-                overflow: hidden;
-                text-overflow: ellipsis;
-              `}
-            >
-              {app.status}
-            </Tag>
+            <Tag mode="new">{app.status}</Tag>
           </TagWrapper>
           <Description color={theme.textSecondary}>
             {app.description}
