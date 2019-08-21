@@ -66,8 +66,8 @@ const Organization = React.memo(function Organization({
   const depositFundsHelpText = appsLoading ? (
     ''
   ) : hasFinanceApp || hasAgentApp ? (
-        If you’d like to deposit funds into this organization, you can do so
-      If you'd like to deposit funds into this organization, you can do so from{' '}
+    <span>
+      If you’d like to deposit funds into this organization, you can do so from{' '}
       {hasFinanceApp ? (
         <OpenAppButton onClick={handleOpenFinanceApp}>Finance</OpenAppButton>
       ) : (
@@ -178,8 +178,8 @@ const Organization = React.memo(function Organization({
             css={`
               display: flex;
               align-items: center;
-                height: ${22 * GU}px;
-              height: 180px;
+              justify-content: center;
+              height: ${22 * GU}px;
               ${textStyle('body2')}
             `}
           >
