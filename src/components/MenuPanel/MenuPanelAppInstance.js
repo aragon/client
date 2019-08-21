@@ -28,6 +28,8 @@ const MenuPanelAppInstance = React.memo(function MenuPanelAppInstance({
         align-items: center;
         height: ${MENU_PANEL_APP_INSTANCE_HEIGHT}px;
         width: 100%;
+        border-radius: 0;
+        text-align: left;
         cursor: pointer;
         ${active ? 'font-weight: 600' : ''}
       `}

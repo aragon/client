@@ -38,19 +38,18 @@ const MenuPanelItem = React.memo(function MenuPanelItem({
         width: 100%;
         padding: 0 ${2 * GU}px 0 ${3 * GU}px;
         border-radius: 0;
+        text-align: left;
         cursor: pointer;
+        ${active ? 'font-weight: 600' : ''}
       `}
     >
       <span>{icon}</span>
       <span
         css={`
           margin-left: ${1 * GU}px;
-          width: 100%;
-          text-align: left;
           overflow: hidden;
           text-overflow: ellipsis;
           ${textStyle('body2')}
-          ${active ? 'font-weight: 600' : ''}
         `}
       >
         {label}
