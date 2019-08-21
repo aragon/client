@@ -6,18 +6,24 @@ import {
   Box,
   Button,
   GU,
+  DataView,
   IconTrash,
   IconCheck,
-  IdentityBadge,
+  IconMail,
   Info,
   LoadingRing,
   breakpoint,
   font,
   useTheme,
+  textStyle,
   Split,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
-import { getSubscriptions, deleteAccount } from './notification-service-api'
+import {
+  getSubscriptions,
+  deleteAccount,
+  deleteSubscriptions,
+} from './notification-service-api'
 import {
   NOTIFICATION_SERVICE_TOKEN_KEY,
   NOTIFICATION_SERVICE_EMAIL_KEY,
@@ -98,7 +104,11 @@ export default function ManageNotifications({
         }
       />
       {!isFetching && subscriptions.length > 0 && (
-        <SubscriptionsTable subscriptions={subscriptions} />
+        <SubscriptionsTable
+          authToken={token}
+          subscriptions={subscriptions}
+          onUnsubscribe={fetchSubscriptions}
+        />
       )}
     </React.Fragment>
   )
@@ -158,113 +168,129 @@ DeleteAccount.propTypes = {
   token: PropTypes.string,
 }
 
-// appName 'voting.aragonpm.eth'
-// eventName "CastVote"
-// contractAddress "0x7d77398078079b0d57ed872319f26d29b5405eb8"
-// ensName '3color.aragonid.eth'
-// network 'rinkeby'
-// abi @voting-abi.json
+const SubscriptionsTable = ({ subscriptions, onUnsubscribe, authToken }) => {
+  const [selectedSubscriptionsIds, setSelectedSubscriptionsIds] = useState([])
+  const [apiError, setApiError] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const handleSelectEntries = useCallback(
+    (entries, indexes) => {
+      console.log('handleSelectEntries', subscriptions, entries, indexes)
+      setSelectedSubscriptionsIds(
+        indexes.map(i => subscriptions[i].subscriptionId)
+      )
+    },
+    [subscriptions, setSelectedSubscriptionsIds]
+  )
 
-function SubscriptionsTable({ subscriptions }) {
+  const handleUnsubscribe = useCallback(
+    async e => {
+      setIsSubmitting(true)
+      try {
+        await deleteSubscriptions({
+          subscriptionIds: selectedSubscriptionsIds,
+          authToken,
+        })
+        // reset selection
+        setSelectedSubscriptionsIds([])
+        setIsSubmitting(false)
+        // Refetch subscriptions
+        onUnsubscribe()
+      } catch (e) {
+        setApiError(e.message)
+        setIsSubmitting(false)
+      }
+    },
+    [
+      authToken,
+      onUnsubscribe,
+      selectedSubscriptionsIds,
+      setApiError,
+      setIsSubmitting,
+      setSelectedSubscriptionsIds,
+    ]
+  )
   const theme = useTheme()
 
   return (
-    <Box>
-      <div
-        css={`
-          text-transform: uppercase;
-          color: ${theme.content};
-          ${font({ size: 'xsmall' })};
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          align-items: center;
-          margin-bottom: ${1 * GU}px;
-        `}
-      >
-        <div
-          css={`
-            display: inline-flex;
-          `}
-        >
-          Organization
-        </div>
-        <div
-          css={`
-            display: inline-flex;
-          `}
-        >
-          App
-        </div>
-
-        <span
-          css={`
-            display: inline-block;
-          `}
-        >
-          Event
-        </span>
-      </div>
-      <List border={theme.border} surface={theme.surface}>
-        {subscriptions.map(
-          ({ contractAddress, ensName, eventName, subscriptionId }) => (
-            <li
-              key={subscriptionId}
+    <DataView
+      fields={[
+        {
+          label: 'Organization',
+          priority: 3,
+        },
+        {
+          label: 'App',
+          priority: 2,
+        },
+        {
+          label: 'Event',
+          priority: 1,
+        },
+      ]}
+      heading={
+        <React.Fragment>
+          <div
+            css={`
+              height: ${9 * GU}px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            `}
+          >
+            <div
               css={`
-                /* needs spacing left to compensate for list being moved to the edge */
-                padding: ${2 * GU}px;
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                align-items: center;
-                border-bottom: 1px solid ${theme.border};
-                background: ${theme.surface};
+                color: ${theme.content};
+                ${textStyle('body1')}
               `}
             >
-              <Label>{ensName}</Label>
-              <div>
-                <LocalIdentityBadge entity={contractAddress} />
+              Subscriptions
+            </div>
+            {selectedSubscriptionsIds.length > 0 && (
+              <div css="text-align: right;">
+                <Button disabled={false} onClick={handleUnsubscribe}>
+                  {isSubmitting ? (
+                    <LoadingRing
+                      css={`
+                        margin-right: ${GU}px;
+                      `}
+                    />
+                  ) : (
+                    <IconMail
+                      css={`
+                        color: ${theme.negative};
+                        margin-right: ${GU}px;
+                      `}
+                    />
+                  )}{' '}
+                  Unsubscribe
+                </Button>
               </div>
-              <Label>{eventName}</Label>
-            </li>
-          )
-        )}
-      </List>
-    </Box>
+            )}
+          </div>
+        </React.Fragment>
+      }
+      entries={subscriptions}
+      onSelectEntries={handleSelectEntries}
+      renderEntry={(
+        { contractAddress, ensName, eventName },
+        index,
+        { selected, mode }
+      ) => [
+        <Label>{ensName}</Label>,
+        <LocalIdentityBadge entity={contractAddress} />,
+        <Label>{eventName}</Label>,
+      ]}
+    />
   )
 }
 
 SubscriptionsTable.propTypes = {
+  authToken: PropTypes.string,
+  onUnsubscribe: PropTypes.func,
   subscriptions: PropTypes.array,
 }
 
 export const Label = styled.label`
   display: block;
   margin-bottom: ${2 * GU}px;
-`
-
-const List = styled.ul`
-  padding: 0;
-  list-style: none;
-  overflow: hidden;
-  width: calc(100% + ${4 * GU}px);
-  position: relative;
-  left: -${2 * GU}px;
-  background: ${({ surface }) => surface};
-  z-index: 1;
-  border-top: ${({ border }) => `1px solid ${border};`};
-  border-bottom: ${({ border }) => `1px solid ${border};`};
-
-  ${breakpoint(
-    'medium',
-    `
-      max-height: 40vh;
-      overflow: auto;
-
-      li:first-child {
-        border-top: none;
-      }
-      li:last-child {
-        border-bottom: none;
-      }
-    `
-  )}
 `
