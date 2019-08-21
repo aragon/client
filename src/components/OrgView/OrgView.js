@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
+import { ButtonBase, GU, useTheme, useThemeMode, useViewport } from '@aragon/ui'
 import {
-  ButtonBase,
-  // ButtonIcon,
-  GU,
-  useTheme,
-  useThemeMode,
-  useViewport,
-} from '@aragon/ui'
+  AppInstanceGroupType,
+  AppsStatusType,
+  AppType,
+  DaoAddressType,
+  DaoStatusType,
+} from '../../prop-types'
 import { DAO_STATUS_LOADING } from '../../symbols'
-// import {
-//   AppType,
-//   AppsStatusType,
-//   DaoAddressType,
-//   DaoStatusType,
-//   EthereumAddressType,
-//   AppInstanceGroupType,
-// } from '../../prop-types'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import CombinedPanel from '../MenuPanel/CombinedPanel'
 import GlobalSettingsButton from './GlobalSettingsButton'
+import { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
 
 function ThemeModeButton() {
   const { mode, toggle } = useThemeMode()
@@ -30,24 +23,23 @@ function ThemeModeButton() {
   )
 }
 
+// Remaining viewport width after the menu panel is factored in
+const AppWidthContext = React.createContext(0)
+
 function OrgView({
-  daoStatus,
-  daoAddress,
-  children,
-  account,
   activeInstanceId,
   appInstanceGroups,
   apps,
   appsStatus,
-  onMenuPanelClose,
-  onMenuPanelOpen,
+  children,
+  daoAddress,
+  daoStatus,
   onOpenApp,
   onOpenPreferences,
   onRequestAppsReload,
-  onRequestEnable,
 }) {
   const theme = useTheme()
-  const { below } = useViewport()
+  const { width, below } = useViewport()
 
   const autoClosingPanel = below('medium')
   const [menuPanelOpened, setMenuPanelOpened] = useState(!autoClosingPanel)
@@ -58,105 +50,102 @@ function OrgView({
     }
   }, [autoClosingPanel])
 
+  // TODO: update AppWidthContext's value when menu panel is closed
   return (
-    <div
-      css={`
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 100%;
-        background: ${theme.background};
-      `}
-    >
+    <AppWidthContext.Provider value={width - MENU_PANEL_WIDTH}>
       <div
         css={`
-          flex-shrink: 0;
-          position: relative;
-          z-index: 1;
-          height: ${8 * GU}px;
           display: flex;
-          justify-content: space-between;
-          background: ${theme.surface};
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        `}
-      >
-        <OrganizationSwitcher
-          loading={daoStatus === DAO_STATUS_LOADING}
-          currentDao={{
-            name: daoAddress.domain,
-            address: daoAddress.address,
-          }}
-        />
-        <div
-          css={`
-            display: flex;
-          `}
-        >
-          <GlobalSettingsButton onOpen={onOpenPreferences} />
-          <ThemeModeButton />
-        </div>
-      </div>
-      <div
-        css={`
-          flex-grow: 1;
-          overflow-y: hidden;
-          margin-top: 1px;
+          flex-direction: column;
+          height: 100%;
+          width: 100%;
+          background: ${theme.background};
         `}
       >
         <div
           css={`
+            flex-shrink: 0;
             position: relative;
-            z-index: 2;
-            height: 100%;
+            z-index: 1;
+            height: ${8 * GU}px;
             display: flex;
+            justify-content: space-between;
+            background: ${theme.surface};
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
           `}
         >
-          <CombinedPanel
-            activeInstanceId={activeInstanceId}
-            appInstanceGroups={appInstanceGroups}
-            apps={apps}
-            appsStatus={appsStatus}
-            daoAddress={daoAddress}
-            daoStatus={daoStatus}
-            onMenuPanelClose={onMenuPanelClose}
-            onMenuPanelOpen={onMenuPanelOpen}
-            onOpenApp={onOpenApp}
-            onOpenPreferences={onOpenPreferences}
-            onRequestAppsReload={onRequestAppsReload}
-            opened={menuPanelOpened}
+          <OrganizationSwitcher
+            loading={daoStatus === DAO_STATUS_LOADING}
+            currentDao={{
+              name: daoAddress.domain,
+              address: daoAddress.address,
+            }}
+          />
+          <div
+            css={`
+              display: flex;
+            `}
           >
-            <div
-              css={`
-                position: relative;
-                z-index: 1;
-                flex-grow: 1;
-                overflow: auto;
-              `}
+            <GlobalSettingsButton onOpen={onOpenPreferences} />
+            <ThemeModeButton />
+          </div>
+        </div>
+        <div
+          css={`
+            flex-grow: 1;
+            overflow-y: hidden;
+            margin-top: 1px;
+          `}
+        >
+          <div
+            css={`
+              position: relative;
+              z-index: 2;
+              height: 100%;
+              display: flex;
+            `}
+          >
+            <CombinedPanel
+              activeInstanceId={activeInstanceId}
+              appInstanceGroups={appInstanceGroups}
+              apps={apps}
+              appsStatus={appsStatus}
+              daoAddress={daoAddress}
+              daoStatus={daoStatus}
+              onOpenApp={onOpenApp}
+              onOpenPreferences={onOpenPreferences}
+              onRequestAppsReload={onRequestAppsReload}
+              opened={menuPanelOpened}
             >
-              {children}
-            </div>
-          </CombinedPanel>
+              <div
+                css={`
+                  position: relative;
+                  z-index: 1;
+                  flex-grow: 1;
+                  overflow: auto;
+                `}
+              >
+                {children}
+              </div>
+            </CombinedPanel>
+          </div>
         </div>
       </div>
-    </div>
+    </AppWidthContext.Provider>
   )
 }
+OrgView.propTypes = {
+  activeInstanceId: PropTypes.string,
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
+  appsStatus: AppsStatusType.isRequired,
+  children: PropTypes.node,
+  daoAddress: DaoAddressType.isRequired,
+  daoStatus: DaoStatusType.isRequired,
+  onOpenApp: PropTypes.func.isRequired,
+  onOpenPreferences: PropTypes.func.isRequired,
+  onRequestAppsReload: PropTypes.func.isRequired,
+}
 
-// OrgView.propTypes = {
-//   account: EthereumAddressType,
-//   activeInstanceId: PropTypes.string,
-//   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
-//   apps: PropTypes.arrayOf(AppType).isRequired,
-//   appsStatus: AppsStatusType.isRequired,
-//   children: PropTypes.node,
-//   daoAddress: DaoAddressType.isRequired,
-//   daoStatus: DaoStatusType.isRequired,
-//   // onMenuPanelClose: PropTypes.func.isRequired,
-//   // onMenuPanelOpen: PropTypes.func.isRequired,
-//   onOpenApp: PropTypes.func.isRequired,
-//   onOpenPreferences: PropTypes.func.isRequired,
-//   onRequestAppsReload: PropTypes.func.isRequired,
-//   onRequestEnable: PropTypes.func.isRequired,
-// }
-
+export { AppWidthContext }
 export default OrgView
