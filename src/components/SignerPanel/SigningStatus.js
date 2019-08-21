@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { GU, IconCheck, IconCross, Info, textStyle, useTheme } from '@aragon/ui'
+import { GU, Info, textStyle, useTheme } from '@aragon/ui'
 import providerString from '../../provider-strings'
+import FeedbackIndicator from '../FeedbackIndicator/FeedbackIndicator'
 import SignerButton from './SignerButton'
 
 import {
@@ -114,7 +115,15 @@ class SigningStatus extends React.Component {
           color={theme.feedbackContent}
           background={theme.feedbackSurface}
         >
-          <StatusImage status={status} />
+          <FeedbackIndicator
+            status={
+              isSignatureSuccess(status)
+                ? 'success'
+                : isSignatureError(status)
+                ? 'error'
+                : 'pending'
+            }
+          />
           <p
             css={`
               margin-top: ${3.5 * GU}px;
@@ -141,49 +150,6 @@ const Status = styled.div`
   align-items: center;
   color: ${({ color }) => color};
 `
-
-const StatusImage = ({ status }) => {
-  const theme = useTheme()
-  const color = isSignatureError(status)
-    ? theme.negative
-    : isSignatureSuccess(status)
-    ? theme.positive
-    : theme.hint
-
-  return (
-    <div
-      css={`
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 60px;
-        height: 60px;
-        border: 2px solid ${color};
-        border-radius: 50%;
-      `}
-    >
-      {isSignatureError(status) ? (
-        <IconCross
-          size="medium"
-          css={`
-            color: ${color};
-          `}
-        />
-      ) : (
-        <IconCheck
-          size="medium"
-          css={`
-            color: ${color};
-          `}
-        />
-      )}
-    </div>
-  )
-}
-
-StatusImage.propTypes = {
-  status: SignerStatusType.isRequired,
-}
 
 export default props => {
   const theme = useTheme()
