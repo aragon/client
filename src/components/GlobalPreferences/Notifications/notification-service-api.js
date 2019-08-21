@@ -9,7 +9,7 @@ import {
 } from './constants'
 import { getEthNetworkType } from '../../../local-settings'
 
-const isTokenExpired = response =>
+const isAuthTokenExpired = response =>
   response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
 
 const isUnauthorized = rawResponse => rawResponse.status === 401
@@ -50,7 +50,7 @@ export async function verifyEmailToken(shortLivedToken) {
     // In case of errors the api will return json payload
     const response = await rawResponse.json()
 
-    if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
+    if (isAuthTokenExpired(response)) throw new ExpiredTokenError(response.message)
 
     if (isUnauthorized(rawResponse)) {
       throw new UnauthorizedError(rawResponse.statusText)
@@ -66,7 +66,7 @@ export async function verifyEmailToken(shortLivedToken) {
 }
 
 // Verify that the long lived token is valid and has not expired
-export async function isTokenValid(longLivedToken) {
+export async function isAuthTokenValid(longLivedToken) {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_ACCOUNT, {
       method: 'GET',
@@ -83,7 +83,7 @@ export async function isTokenValid(longLivedToken) {
     // In case of errors the api will return json payload
     const response = await rawResponse.json()
 
-    if (isTokenExpired(response)) {
+    if (isAuthTokenExpired(response)) {
       throw new ExpiredTokenError(response.message)
     }
 
@@ -118,7 +118,7 @@ export async function deleteAccount(token) {
 
     if (!rawResponse.ok) {
       // In case of errors the api will return json payload
-      if (isTokenExpired(response))
+      if (isAuthTokenExpired(response))
         throw new ExpiredTokenError(response.message)
 
       if (isUnauthorized(rawResponse)) {
@@ -150,7 +150,7 @@ export async function getSubscriptions(token) {
 
     const response = await rawResponse.json()
 
-    if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
+    if (isAuthTokenExpired(response)) throw new ExpiredTokenError(response.message)
 
     if (isUnauthorized(rawResponse)) {
       throw new UnauthorizedError(rawResponse.statusText)
@@ -209,7 +209,7 @@ export const createSubscription = async ({
 
     const response = await rawResponse.json()
 
-    if (isTokenExpired(response)) throw new ExpiredTokenError(response.message)
+    if (isAuthTokenExpired(response)) throw new ExpiredTokenError(response.message)
 
     if (isUnauthorized(rawResponse)) {
       throw new UnauthorizedError(rawResponse.statusText)

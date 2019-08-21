@@ -9,7 +9,7 @@ import {
   NotificationsPreVerify,
 } from './NotificationsVerify'
 import NotificationsVerifyBox from './NotificationsVerifyBox'
-import { isTokenValid } from './notification-service-api'
+import { isAuthTokenValid } from './notification-service-api'
 
 import {
   AUTH_UNAUTHENTICATED,
@@ -46,7 +46,7 @@ function useAuthState() {
 
     if (email && token) {
       setAuthState(AUTH_AUTHENTICATING)
-      isTokenValid(token)
+      isAuthTokenValid(token)
         .then(v => {
           setAuthState(AUTH_AUTHENTICATED)
           return v
