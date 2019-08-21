@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, useInside } from '@aragon/ui'
+import { useTheme } from '@aragon/ui'
 import FavoritesMenuItem from './FavoritesMenuItem'
 
 function FavoritesMenu({ items, onActivate, onFavoriteUpdate }) {
   const theme = useTheme()
-  const [insideBox] = useInside('Box')
 
   return (
     <ul
@@ -20,7 +19,7 @@ function FavoritesMenu({ items, onActivate, onFavoriteUpdate }) {
           key={item.id}
           css={`
             & + & {
-              border-top: ${insideBox ? `1px solid ${theme.border}` : 0};
+              border-top: 1px solid ${theme.border};
             }
           `}
         >
