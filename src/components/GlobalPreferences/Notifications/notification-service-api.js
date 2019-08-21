@@ -50,7 +50,9 @@ export async function verifyEmailToken(shortLivedToken) {
     // In case of errors the api will return json payload
     const response = await rawResponse.json()
 
-    if (isAuthTokenExpired(response)) throw new ExpiredTokenError(response.message)
+    if (isAuthTokenExpired(response)) {
+      throw new ExpiredTokenError(response.message)
+    }
 
     if (isUnauthorized(rawResponse)) {
       throw new UnauthorizedError(rawResponse.statusText)
@@ -118,8 +120,51 @@ export async function deleteAccount(token) {
 
     if (!rawResponse.ok) {
       // In case of errors the api will return json payload
-      if (isAuthTokenExpired(response))
+      if (isAuthTokenExpired(response)) {
         throw new ExpiredTokenError(response.message)
+      }
+
+      if (isUnauthorized(rawResponse)) {
+        throw new UnauthorizedError(rawResponse.statusText)
+      }
+
+      throw new Error(rawResponse.statusText)
+    }
+
+    return response
+  } catch (e) {
+    console.error(e.message)
+    throw e
+  }
+}
+
+/**
+ * Delete multiple subscriptionds
+ *
+ * @param {Object}    options to delete
+ * @param {String[]}  options.subscriptionIds to delete
+ * @param {String}    options.token long lived api token
+ *
+ * @returns {Number} Count of deleted subscriptions
+ */
+export async function deleteSubscriptions({ subscriptionIds, authToken } = {}) {
+  try {
+    const rawResponse = await fetch(NOTIFICATION_SERVICE_SUBSCRIPTIONS, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: authToken,
+      },
+      body: JSON.stringify({ subscriptions: subscriptionIds }),
+    })
+
+    const response = await rawResponse.json()
+
+    if (!rawResponse.ok) {
+      // In case of errors the api will return json payload
+      if (isAuthTokenExpired(response)) {
+        throw new ExpiredTokenError(response.message)
+      }
 
       if (isUnauthorized(rawResponse)) {
         throw new UnauthorizedError(rawResponse.statusText)
@@ -150,7 +195,9 @@ export async function getSubscriptions(token) {
 
     const response = await rawResponse.json()
 
-    if (isAuthTokenExpired(response)) throw new ExpiredTokenError(response.message)
+    if (isAuthTokenExpired(response)) {
+      throw new ExpiredTokenError(response.message)
+    }
 
     if (isUnauthorized(rawResponse)) {
       throw new UnauthorizedError(rawResponse.statusText)
@@ -209,7 +256,9 @@ export const createSubscription = async ({
 
     const response = await rawResponse.json()
 
-    if (isAuthTokenExpired(response)) throw new ExpiredTokenError(response.message)
+    if (isAuthTokenExpired(response)) {
+      throw new ExpiredTokenError(response.message)
+    }
 
     if (isUnauthorized(rawResponse)) {
       throw new UnauthorizedError(rawResponse.statusText)
