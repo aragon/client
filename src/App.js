@@ -21,6 +21,7 @@ import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
 import HelpScoutBeacon from './components/HelpScoutBeacon/HelpScoutBeacon'
+import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import { isKnownRepo } from './repo-utils'
 import {
   APP_MODE_START,
@@ -38,8 +39,6 @@ import {
   DAO_CREATION_STATUS_SUCCESS,
   DAO_CREATION_STATUS_ERROR,
 } from './symbols'
-
-const HELPSCOUT_OPTOUT_KEY = 'HELPSCOUT_OPTOUT'
 
 const INITIAL_DAO_STATE = {
   apps: [],
@@ -77,7 +76,6 @@ class App extends React.Component {
     //  - DAO_CREATION_STATUS_ERROR
     daoCreationStatus: DAO_CREATION_STATUS_NONE,
     fatalError: null,
-    helpScoutOptedOut: localStorage.getItem(HELPSCOUT_OPTOUT_KEY) === 'true',
     identityIntent: null,
     locator: {},
     prevLocator: null,
@@ -364,17 +362,6 @@ class App extends React.Component {
   handleOpenLocalIdentityModal = address => {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
-  handleHelpScoutOptedOutChange = helpScoutOptedOut => {
-    if (helpScoutOptedOut && window.Beacon) {
-      window.Beacon('destroy')
-    }
-
-    localStorage.setItem(
-      HELPSCOUT_OPTOUT_KEY,
-      helpScoutOptedOut ? 'true' : 'false'
-    )
-    this.setState({ helpScoutOptedOut })
-  }
 
   render() {
     const {
@@ -389,7 +376,6 @@ class App extends React.Component {
       daoStatus,
       daoCreationStatus,
       fatalError,
-      helpScoutOptedOut,
       identityIntent,
       locator,
       permissions,
@@ -427,86 +413,84 @@ class App extends React.Component {
     })
 
     return (
-      <IdentityProvider onResolve={this.handleIdentityResolve}>
-        <ModalProvider>
-          <LocalIdentityModalProvider
-            onShowLocalIdentityModal={this.handleOpenLocalIdentityModal}
-          >
-            <LocalIdentityModal
-              address={intentAddress}
-              label={intentLabel}
-              opened={identityIntent !== null}
-              onCancel={this.handleIdentityCancel}
-              onSave={this.handleIdentitySave}
-            />
-            <FavoriteDaosProvider>
-              <ActivityProvider
-                account={account}
-                daoDomain={daoAddress.domain}
-                web3={web3}
-              >
-                <PermissionsProvider
-                  wrapper={wrapper}
-                  apps={appsWithIdentifiers}
-                  permissions={permissions}
+      <HelpScoutProvider>
+        <IdentityProvider onResolve={this.handleIdentityResolve}>
+          <ModalProvider>
+            <LocalIdentityModalProvider
+              onShowLocalIdentityModal={this.handleOpenLocalIdentityModal}
+            >
+              <LocalIdentityModal
+                address={intentAddress}
+                label={intentLabel}
+                opened={identityIntent !== null}
+                onCancel={this.handleIdentityCancel}
+                onSave={this.handleIdentitySave}
+              />
+              <FavoriteDaosProvider>
+                <ActivityProvider
+                  account={account}
+                  daoDomain={daoAddress.domain}
+                  web3={web3}
                 >
-                  <div css="position: relative; z-index: 1">
-                    <Wrapper
-                      visible={mode === APP_MODE_ORG}
-                      account={account}
-                      apps={appsWithIdentifiers}
-                      appsStatus={appsStatus}
-                      canUpgradeOrg={canUpgradeOrg}
-                      connected={connected}
-                      daoAddress={daoAddress}
-                      daoStatus={daoStatus}
-                      helpScoutOptedOut={helpScoutOptedOut}
-                      historyBack={this.historyBack}
-                      historyPush={this.historyPush}
-                      locator={locator}
-                      onHelpScoutOptedOutChange={
-                        this.handleHelpScoutOptedOutChange
+                  <PermissionsProvider
+                    wrapper={wrapper}
+                    apps={appsWithIdentifiers}
+                    permissions={permissions}
+                  >
+                    <div css="position: relative; z-index: 1">
+                      <Wrapper
+                        visible={mode === APP_MODE_ORG}
+                        account={account}
+                        apps={appsWithIdentifiers}
+                        appsStatus={appsStatus}
+                        canUpgradeOrg={canUpgradeOrg}
+                        connected={connected}
+                        daoAddress={daoAddress}
+                        daoStatus={daoStatus}
+                        historyBack={this.historyBack}
+                        historyPush={this.historyPush}
+                        locator={locator}
+                        onRequestAppsReload={this.handleRequestAppsReload}
+                        onRequestEnable={enableWallet}
+                        permissionsLoading={permissionsLoading}
+                        repos={repos}
+                        signatureBag={signatureBag}
+                        transactionBag={transactionBag}
+                        walletNetwork={walletNetwork}
+                        walletProviderId={walletProviderId}
+                        walletWeb3={walletWeb3}
+                        web3={web3}
+                        wrapper={wrapper}
+                      />
+                    </div>
+                  </PermissionsProvider>
+
+                  <div css="position: relative; z-index: 2">
+                    <Onboarding
+                      visible={
+                        mode === APP_MODE_START || mode === APP_MODE_SETUP
                       }
-                      onRequestAppsReload={this.handleRequestAppsReload}
+                      account={account}
+                      balance={balance}
+                      daoCreationStatus={daoCreationStatus}
+                      onBuildDao={this.handleBuildDao}
+                      onComplete={this.handleCompleteOnboarding}
+                      onOpenOrganization={this.handleOpenOrganization}
                       onRequestEnable={enableWallet}
-                      permissionsLoading={permissionsLoading}
-                      repos={repos}
-                      signatureBag={signatureBag}
-                      transactionBag={transactionBag}
+                      onResetDaoBuilder={this.handleResetDaoBuilder}
+                      selectorNetworks={selectorNetworks}
                       walletNetwork={walletNetwork}
                       walletProviderId={walletProviderId}
-                      walletWeb3={walletWeb3}
-                      web3={web3}
-                      wrapper={wrapper}
                     />
                   </div>
-                </PermissionsProvider>
 
-                <div css="position: relative; z-index: 2">
-                  <Onboarding
-                    visible={mode === APP_MODE_START || mode === APP_MODE_SETUP}
-                    account={account}
-                    balance={balance}
-                    daoCreationStatus={daoCreationStatus}
-                    onBuildDao={this.handleBuildDao}
-                    onComplete={this.handleCompleteOnboarding}
-                    onOpenOrganization={this.handleOpenOrganization}
-                    onRequestEnable={enableWallet}
-                    onResetDaoBuilder={this.handleResetDaoBuilder}
-                    selectorNetworks={selectorNetworks}
-                    walletNetwork={walletNetwork}
-                    walletProviderId={walletProviderId}
-                  />
-                </div>
-
-                {!helpScoutOptedOut && (
                   <HelpScoutBeacon locator={locator} apps={apps} />
-                )}
-              </ActivityProvider>
-            </FavoriteDaosProvider>
-          </LocalIdentityModalProvider>
-        </ModalProvider>
-      </IdentityProvider>
+                </ActivityProvider>
+              </FavoriteDaosProvider>
+            </LocalIdentityModalProvider>
+          </ModalProvider>
+        </IdentityProvider>
+      </HelpScoutProvider>
     )
   }
 }

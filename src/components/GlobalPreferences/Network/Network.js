@@ -2,13 +2,12 @@ import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { AragonType } from '../../../prop-types'
 import { Box, Button, Info, GU, Text, TextInput, theme } from '@aragon/ui'
-import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
-import { sanitizeNetworkType } from '../../../network-config'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
-import { checkValidEthNode } from '../../../web3-utils'
+import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
 import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
-
-const ENTER = 13
+import keycodes from '../../../keycodes'
+import { sanitizeNetworkType } from '../../../network-config'
+import { checkValidEthNode } from '../../../web3-utils'
 
 function Network({ wrapper }) {
   const {
@@ -26,7 +25,7 @@ function Network({ wrapper }) {
     <React.Fragment>
       <Box heading={'Node settings'}>
         <Label>
-          Ethereum node{' '}
+          Ethereum node
           <TextInput
             value={ethNode}
             wide
@@ -53,7 +52,7 @@ function Network({ wrapper }) {
           )}
         </Label>
         <Label>
-          IPFS Gateway{' '}
+          IPFS Gateway
           <TextInput
             value={ipfsGateway}
             wide
@@ -114,7 +113,7 @@ const useNetwork = wrapper => {
     setIpfsGateway(ipfsGateway)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
-  }, [setNetworkError, ethNode, ipfsGateway])
+  }, [ethNode, ipfsGateway])
   const handleClearCache = useCallback(async () => {
     await wrapper.cache.clear()
     window.localStorage.clear()
@@ -123,7 +122,7 @@ const useNetwork = wrapper => {
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
       if (
-        keyCode === ENTER &&
+        keyCode === keycodes.enter &&
         (ipfsGateway !== ipfsDefaultConf.gateway || ethNode !== defaultEthNode)
       ) {
         handleNetworkChange()

@@ -2,11 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Trail, animated } from 'react-spring'
-import { Tag, theme, springs, Info } from '@aragon/ui'
+import { Info, Tag, GU, theme, springs } from '@aragon/ui'
 import { format } from 'date-fns'
 import { TextLabel } from '../../../components/TextStyles'
 import { RepoType } from '../../../prop-types'
-import { GU } from '../../../utils'
 
 const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => (
   <div

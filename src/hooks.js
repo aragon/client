@@ -14,9 +14,6 @@ import {
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 
-const KEYCODE_UP = 38
-const KEYCODE_DOWN = 40
-
 // Update `now` at a given interval.
 export function useNow(updateEvery = 1000) {
   const [now, setNow] = useState(new Date())
@@ -244,8 +241,8 @@ export function useArrowKeysFocus(query, containerRef = useRef()) {
   const handleKeyDown = useCallback(
     e => {
       const { keyCode } = e
-      if (keyCode === KEYCODE_UP || keyCode === KEYCODE_DOWN) {
-        cycleFocus(e, keyCode === KEYCODE_UP ? -1 : 1)
+      if (keyCode === keycodes.up || keyCode === keycodes.down) {
+        cycleFocus(e, keyCode === keycodes.up ? -1 : 1)
       }
     },
     [cycleFocus]
@@ -305,53 +302,4 @@ export function useLocalIdentity(entity) {
   }, [identityEvents$, handleResolve, entity])
 
   return { name }
-}
-
-/* eslint-disable react-hooks/rules-of-hooks */
-export function useArrowKeysFocusRefs(refs) {
-  /* eslint-enable react-hooks/rules-of-hooks */
-  const [highlightedIndex, setHighlightedIndex] = useState(-1)
-
-  const cycleFocus = useCallback(
-    (e, change) => {
-      e.preventDefault()
-      let next = highlightedIndex + change
-      if (next > refs.length - 1) {
-        next = 0
-      }
-      if (next < 0) {
-        next = refs.length - 1
-      }
-      setHighlightedIndex(next)
-    },
-    [highlightedIndex, refs.length]
-  )
-  const handleKeyDown = useCallback(
-    e => {
-      const { keyCode } = e
-      if (keyCode === KEYCODE_UP || keyCode === KEYCODE_DOWN) {
-        cycleFocus(e, keyCode === KEYCODE_UP ? -1 : 1)
-      }
-    },
-    [cycleFocus]
-  )
-
-  useEffect(() => {
-    if (highlightedIndex === -1) {
-      return
-    }
-    if (!refs[highlightedIndex]) {
-      return
-    }
-    refs[highlightedIndex].focus()
-  }, [highlightedIndex, refs])
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [handleKeyDown])
-
-  return {
-    highlightedIndex,
-    setHighlightedIndex: index => () => setHighlightedIndex(index),
-  }
 }

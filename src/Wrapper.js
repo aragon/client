@@ -21,7 +21,7 @@ import {
   EthereumAddressType,
   RepoType,
 } from './prop-types'
-import { getAppPath, GLOBAL_PREFERENCES_QUERY_PARAM } from './routing'
+import { getAppPath, getPreferencesSearch } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 
@@ -34,12 +34,10 @@ class Wrapper extends React.PureComponent {
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
     daoStatus: DaoStatusType.isRequired,
-    helpScoutOptedOut: PropTypes.bool.isRequired,
     historyBack: PropTypes.func.isRequired,
     historyPush: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
-    onHelpScoutOptedOutChange: PropTypes.func.isRequired,
     onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
@@ -106,13 +104,25 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  openApp = (instanceId, params) => {
+  openApp = (instanceId, { params, localPath } = {}) => {
     if (this.props.autoClosingPanel) {
       // this.handleMenuPanelClose()
     }
 
     const { historyPush, locator } = this.props
-    historyPush(getAppPath({ dao: locator.dao, instanceId, params }))
+    historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
+  }
+
+  closePreferences = () => {
+    const { historyPush, locator } = this.props
+    historyPush(getAppPath(locator))
+  }
+
+  openPreferences = (screen, data) => {
+    const { historyPush, locator } = this.props
+    historyPush(
+      getAppPath({ ...locator, search: getPreferencesSearch(screen, data) })
+    )
   }
 
   handleAppIFrameRef = appIFrame => {
@@ -157,16 +167,14 @@ class Wrapper extends React.PureComponent {
     this.setState({ appLoading: false })
   }
 
-  handleClosePreferences = () => {
-    window.location.hash = getAppPath(this.props.locator)
-  }
-  handleOpenPreferences = path => {
-    const appPath = getAppPath(this.props.locator)
-    window.location.hash = `${appPath}${GLOBAL_PREFERENCES_QUERY_PARAM}${path}`
-  }
   // params need to be a string
   handleParamsRequest = params => {
-    this.openApp(this.props.locator.instanceId, params)
+    this.openApp(this.props.locator.instanceId, { params })
+  }
+
+  // Update the local path of the current instance
+  handlePathRequest = localPath => {
+    this.openApp(this.props.locator.instanceId, { localPath })
   }
 
   getAppInstancesGroups = memoize(apps =>
@@ -224,9 +232,7 @@ class Wrapper extends React.PureComponent {
       connected,
       daoAddress,
       daoStatus,
-      helpScoutOptedOut,
       locator,
-      onHelpScoutOptedOutChange,
       onRequestAppsReload,
       onRequestEnable,
       repos,
@@ -254,7 +260,7 @@ class Wrapper extends React.PureComponent {
           position: relative;
           z-index: 0;
           height: 100vh;
-          min-width: 320px;
+          min-width: 360px;
         `}
       >
         <BannerWrapper>
@@ -274,7 +280,7 @@ class Wrapper extends React.PureComponent {
           daoAddress={daoAddress}
           daoStatus={daoStatus}
           onOpenApp={this.openApp}
-          onOpenPreferences={this.handleOpenPreferences}
+          onOpenPreferences={this.openPreferences}
           onRequestAppsReload={onRequestAppsReload}
           onRequestEnable={onRequestEnable}
         >
@@ -285,7 +291,10 @@ class Wrapper extends React.PureComponent {
             daoLoading={daoStatus === DAO_STATUS_LOADING}
             instanceId={locator.instanceId}
           >
-            {this.renderApp(locator.instanceId, locator.params)}
+            {this.renderApp(locator.instanceId, {
+              params: locator.params,
+              localPath: locator.localPath,
+            })}
           </AppLoader>
 
           <SignerPanel
@@ -315,14 +324,13 @@ class Wrapper extends React.PureComponent {
         <GlobalPreferences
           locator={locator}
           wrapper={wrapper}
-          onClose={this.handleClosePreferences}
-          onHelpScoutOptedOutChange={onHelpScoutOptedOutChange}
-          helpScoutOptedOut={helpScoutOptedOut}
+          onScreenChange={this.openPreferences}
+          onClose={this.closePreferences}
         />
       </div>
     )
   }
-  renderApp(instanceId, params) {
+  renderApp(instanceId, { params, localPath }) {
     const {
       account,
       apps,
@@ -359,9 +367,9 @@ class Wrapper extends React.PureComponent {
           apps={apps}
           appsLoading={appsLoading}
           permissionsLoading={permissionsLoading}
-          params={params}
+          localPath={localPath}
           onMessage={this.handleAppMessage}
-          onParamsRequest={this.handleParamsRequest}
+          onPathRequest={this.handlePathRequest}
           wrapper={wrapper}
         />
       )
