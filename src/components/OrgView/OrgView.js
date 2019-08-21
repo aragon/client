@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react'
 import {
   ButtonBase,
   // ButtonIcon,
+  GU,
   useTheme,
   useThemeMode,
   useViewport,
 } from '@aragon/ui'
-import { GU } from '../../utils'
 import { DAO_STATUS_LOADING } from '../../symbols'
 // import {
 //   AppType,

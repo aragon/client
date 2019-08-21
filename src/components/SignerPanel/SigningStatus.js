@@ -48,7 +48,7 @@ class SigningStatus extends React.Component {
     if (status === STATUS_MSG_ERROR) return 'Error signing the message.'
   }
   getInfo() {
-    const { status, signError, walletProviderId } = this.props
+    const { status, walletProviderId } = this.props
     if (status === STATUS_TX_SIGNING) {
       return (
         <p>
@@ -78,20 +78,12 @@ class SigningStatus extends React.Component {
       return <p>Success! Your message has been signed.</p>
     }
     if (status === STATUS_TX_ERROR) {
-      return (
-        <React.Fragment>
-          <p>Your transaction wasn't signed and no tokens were sent.</p>
-          {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
-        </React.Fragment>
+      return this.getErrorMessage(
+        "Your transaction wasn't signed and no tokens were sent."
       )
     }
     if (status === STATUS_MSG_ERROR) {
-      return (
-        <React.Fragment>
-          <p>Your message wasn't signed.</p>
-          {signError && <p>Error: “{cleanErrorMessage(signError.message)}”</p>}
-        </React.Fragment>
-      )
+      return this.getErrorMessage("Your message wasn't signed.")
     }
   }
   getCloseButton() {
@@ -100,6 +92,22 @@ class SigningStatus extends React.Component {
       return <SignerButton onClick={onClose}>Close</SignerButton>
     }
     return null
+  }
+  getErrorMessage(warning) {
+    const { signError } = this.props
+    const cleanedErrorMessage = cleanErrorMessage(
+      (signError && signError.message) || ''
+    )
+    return (
+      <React.Fragment>
+        <p>{warning}</p>
+        {cleanedErrorMessage ? (
+          <p>Error: “{cleanedErrorMessage}”</p>
+        ) : (
+          <p>There may have been a problem with your Ethereum provider.</p>
+        )}
+      </React.Fragment>
+    )
   }
   render() {
     const { status } = this.props

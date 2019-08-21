@@ -1,34 +1,37 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Box, Checkbox, Info, GU, useTheme } from '@aragon/ui'
+import React, { useCallback } from 'react'
+import { Box, Checkbox, Info, GU, textStyle, useTheme } from '@aragon/ui'
 import helpAndFeedbackSvg from './help-and-feedback.svg'
+import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
 
-function HelpAndFeedback({ optedOut, onOptOutChange }) {
+function HelpAndFeedback() {
   const theme = useTheme()
-  // checked => not opted out
-  const handleOptOutChange = checked => onOptOutChange(!checked)
+  const { optedOut, setOptedOut } = useHelpScout()
+  const handleOptOutChange = useCallback(() => setOptedOut(!optedOut), [
+    setOptedOut,
+    optedOut,
+  ])
 
   return (
     <Box heading="Help Scout">
-      <label
+      <div
         css={`
-          cursor: pointer;
           display: flex;
-          margin-bottom: ${4 * GU}px;
-          align-items: center;
           justify-content: center;
+          margin-bottom: ${4 * GU}px;
         `}
       >
-        <Checkbox onChange={handleOptOutChange} checked={!optedOut} />
-        <span
-          css={`
-            color: ${theme.surfaceContentSecondary};
-            font-size: 20px;
-          `}
-        >
-          Allow Help Scout feedback module
-        </span>
-      </label>
+        <label css="cursor: pointer">
+          <Checkbox onChange={handleOptOutChange} checked={!optedOut} />
+          <span
+            css={`
+              color: ${theme.surfaceContentSecondary};
+              ${textStyle('title4')}
+            `}
+          >
+            Allow Help Scout feedback module
+          </span>
+        </label>
+      </div>
       <img
         src={helpAndFeedbackSvg}
         alt="Help Scout"
@@ -47,11 +50,6 @@ function HelpAndFeedback({ optedOut, onOptOutChange }) {
       </Info>
     </Box>
   )
-}
-
-HelpAndFeedback.propTypes = {
-  optedOut: PropTypes.bool,
-  onOptOutChange: PropTypes.func.isRequired,
 }
 
 export default React.memo(HelpAndFeedback)

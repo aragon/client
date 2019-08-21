@@ -51,8 +51,6 @@ function useSharedLink({ wrapper, toast, locator }) {
     handleCleanHash,
     identityEvents$,
     selected,
-    setIsSaving,
-    setIsSharedLink,
     sharedIdentities,
     toast,
     wrapper,
@@ -60,7 +58,7 @@ function useSharedLink({ wrapper, toast, locator }) {
   const handleSharedIdentitiesCancel = useCallback(() => {
     handleCleanHash()
     setIsSharedLink(false)
-  }, [handleCleanHash, setIsSharedLink])
+  }, [handleCleanHash])
   const handleToggleAll = useCallback(() => {
     const newSelected = new Map(
       sharedIdentities.map(({ address }) => [
@@ -97,7 +95,7 @@ function useSharedLink({ wrapper, toast, locator }) {
     } catch (e) {
       console.warn('There was an error parsing/validating the shared data: ', e)
     }
-  }, [setIsSharedLink, setSharedIdentities, locator])
+  }, [locator])
 
   return {
     handleSharedIdentitiesCancel,

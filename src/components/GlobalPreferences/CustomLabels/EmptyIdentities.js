@@ -10,7 +10,7 @@ function EmptyIdentities({ onImport }) {
   return (
     <Box>
       <div>
-        You can add labels by clicking on the{' '}
+        You can add labels by clicking on an{' '}
         <span
           css={`
             display: inline-flex;

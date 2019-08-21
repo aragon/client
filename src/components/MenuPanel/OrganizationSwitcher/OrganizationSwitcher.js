@@ -1,12 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, LoadingRing, Popover } from '@aragon/ui'
+import { ButtonBase, LoadingRing, Popover, GU } from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { FavoriteDaosConsumer } from '../../../contexts/FavoriteDaosContext'
-// import Popup from '../../Popup'
 import OrganizationItem from './OrganizationItem'
 import Favorites from './Favorites'
-import { GU } from '../../../utils'
 
 const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
   currentDao,
@@ -16,13 +14,11 @@ const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
   const buttonRef = useRef(null)
   const [menuOpened, setMenuOpened] = useState(false)
 
-  const handleToggleMenu = useCallback(() => {
-    setMenuOpened(opened => !opened)
-  }, [])
-
-  const closeMenu = useCallback(() => {
-    setMenuOpened(false)
-  }, [])
+  const handleToggleMenu = useCallback(
+    () => setMenuOpened(opened => !opened),
+    []
+  )
+  const closeMenu = useCallback(() => setMenuOpened(false), [])
 
   const handleFavoritesUpdate = useCallback(
     favorites => {
@@ -67,6 +63,7 @@ const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
         />
       </ButtonBase>
       <Popover
+        closeOnOpenerFocus
         onClose={closeMenu}
         visible={menuOpened}
         opener={buttonRef.current}
