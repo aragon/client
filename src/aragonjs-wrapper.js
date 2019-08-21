@@ -15,6 +15,8 @@ import {
   defaultGasPriceFn,
 } from './environment'
 import { NoConnection, DAONotFound } from './errors'
+import { getEthSubscriptionEventDelay } from './local-settings'
+import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash } from './utils'
 import {
@@ -342,6 +344,15 @@ const initWrapper = async (
     apm: {
       ensRegistryAddress,
       ipfs: ipfsConf,
+    },
+    cache: {
+      // If the worker's origin sandbox is disabed, it has full access to IndexedDB.
+      // We force a downgrade to localStorage to avoid using IndexedDB.
+      forceLocalStorage: workerFrameSandboxDisabled,
+    },
+    events: {
+      // Infura hack: delay event processing for specified number of ms
+      subscriptionEventDelay: getEthSubscriptionEventDelay(),
     },
   })
 
