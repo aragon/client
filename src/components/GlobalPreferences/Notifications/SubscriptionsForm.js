@@ -43,13 +43,17 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
     setSelectedEventIdx(index)
   }
   const handleSubscribe = async e => {
-    console.log(eventNames[selectedAppIdx])
     setIsSubmitting(true)
     const { abi, appName, proxyAddress } = selectedApp
+    const eventName = eventNames[selectedEventIdx]
+
+    const abiSubset = [
+      abi.find(({ name, type }) => type === 'event' && name === eventName),
+    ]
 
     try {
       const payload = {
-        abi,
+        abi: abiSubset,
         appName,
         appContractAddress: proxyAddress,
         ensName: dao,
@@ -57,9 +61,7 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
         network: getEthNetworkType(),
         token,
       }
-      console.log(selectedApp)
-      console.log(payload)
-      const response = await createSubscription(payload)
+      await createSubscription(payload)
       setSelectedAppIdx(-1)
       setSelectedEventIdx(-1)
       onCreate()
@@ -79,20 +81,21 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
   // const isSubscribeDisabled = selectedAppIdx !== 0 && selectedEvent !== 0
   const isSubscribeDisabled = false
   return (
-    <Box
-      css={`
-        color: ${theme.surfaceContentSecondary};
-      `}
-      heading="Create Subscriptions"
-    >
+    <Box heading="Create Subscriptions">
       <div
         css={`
           margin-bottom: ${2 * GU}px;
         `}
       >
-        <Label>App</Label>
+        <Label
+          css={`
+            color: ${theme.surfaceContentSecondary};
+          `}
+        >
+          App
+        </Label>
         <DropDown
-          width="100%"
+          wide
           placeholder="Select an App"
           items={appNames}
           selected={selectedAppIdx}
@@ -100,7 +103,13 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
         />
       </div>
       <div>
-        <Label>Event</Label>
+        <Label
+          css={`
+            color: ${theme.surfaceContentSecondary};
+          `}
+        >
+          Event
+        </Label>
         <DropDown
           disabled={selectedAppIdx === -1}
           placeholder="Select an App"
