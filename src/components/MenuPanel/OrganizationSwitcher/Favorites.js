@@ -1,11 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, textStyle, GU, EthIdenticon, IconPlus } from '@aragon/ui'
+import {
+  EthIdenticon,
+  IconPlus,
+  GU,
+  RADIUS,
+  textStyle,
+  useTheme,
+} from '@aragon/ui'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { getKnownOrganization } from '../../../known-organizations'
 import { network } from '../../../environment'
 import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
-import ItemButton from './ItemButton'
+import FavoritesMenuItemButton from '../../FavoritesMenu/FavoritesMenuItemButton'
 
 class Favorites extends React.Component {
   static propTypes = {
@@ -124,39 +131,31 @@ class Favorites extends React.Component {
     )
 
     return (
-      <section aria-label="Organizations">
-        <ItemButton
-          onClick={this.handleGoHome}
-          css={`
-            width: 100%;
-            padding: 0 ${2 * GU}px;
-            margin-bottom: ${2 * GU}px;
-            border-bottom: 1px solid ${theme.border};
-          `}
-        >
-          <span
-            css={`
-              display: flex;
-              align-items: center;
-              width: ${3 * GU}px;
-              margin-right: ${2 * GU}px;
-              color: ${theme.accent};
-            `}
-          >
-            <IconPlus />
-          </span>
-          <span>Open organization…</span>
-        </ItemButton>
-
-        <SectionTitle>Current</SectionTitle>
+      <section
+        aria-label="Organizations"
+        css={`
+          width: ${42 * GU}px;
+        `}
+      >
         <FavoritesMenu
           items={currentItem ? [currentItem] : []}
           onActivate={this.handleDaoOpened}
           onFavoriteUpdate={this.handleFavoriteUpdate}
         />
+        <label
+          css={`
+            display: block;
+            padding: ${1 * GU}px ${2 * GU}px;
+            border-top: 1px solid ${theme.border};
+            border-bottom: 1px solid ${theme.border};
+            color: ${theme.surfaceContentSecondary};
+            ${textStyle('label2')}
+          `}
+        >
+          Favorites
+        </label>
         {otherItems.length > 0 && (
           <React.Fragment>
-            <SectionTitle>Favorites</SectionTitle>
             <FavoritesMenu
               items={otherItems}
               onActivate={this.handleDaoOpened}
@@ -164,28 +163,31 @@ class Favorites extends React.Component {
             />
           </React.Fragment>
         )}
+        <FavoritesMenuItemButton
+          onClick={this.handleGoHome}
+          css={`
+            width: 100%;
+            padding: 0 ${2 * GU}px;
+            border-top: 1px solid ${theme.border};
+          `}
+        >
+          <span
+            css={`
+              display: flex;
+              align-items: center;
+              margin-right: ${1 * GU}px;
+              color: ${theme.accentContent};
+              background: ${theme.accent};
+              border-radius: ${RADIUS}px;
+            `}
+          >
+            <IconPlus />
+          </span>
+          <span>Open a new organization</span>
+        </FavoritesMenuItemButton>
       </section>
     )
   }
-}
-
-function SectionTitle({ children }) {
-  const theme = useTheme()
-  return (
-    <h1
-      css={`
-        margin: ${1 * GU}px ${2 * GU}px;
-        color: ${theme.surfaceContentSecondary};
-        ${textStyle('label2')};
-      `}
-    >
-      {children}
-    </h1>
-  )
-}
-
-SectionTitle.propTypes = {
-  children: PropTypes.node,
 }
 
 export default props => {

@@ -1,7 +1,6 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { EthIdenticon } from '@aragon/ui'
+import { EthIdenticon, GU, textStyle } from '@aragon/ui'
 import { DaoItemType } from '../../../prop-types'
 import { getKnownOrganization } from '../../../known-organizations'
 import { network } from '../../../environment'
@@ -9,17 +8,20 @@ import { network } from '../../../environment'
 class OrganizationItem extends React.Component {
   static propTypes = {
     dao: DaoItemType.isRequired,
-    style: PropTypes.object,
-    className: PropTypes.string,
   }
   render() {
-    const { dao, style, className } = this.props
-    const styleProps = {}
-    if (style) styleProps.style = style
-    if (className) styleProps.className = className
+    const { dao, ...props } = this.props
     const knownOrg = getKnownOrganization(network.type, dao.address)
     return (
-      <Organization {...styleProps}>
+      <div
+        css={`
+          flex-grow: 1;
+          display: flex;
+          align-items: center;
+          ${textStyle('body2')}
+        `}
+        {...props}
+      >
         <OrgIcon rounded={!knownOrg}>
           {knownOrg ? (
             <img
@@ -36,36 +38,32 @@ class OrganizationItem extends React.Component {
             <EthIdenticon address={dao.address} />
           )}
         </OrgIcon>
-        <OrgName>{knownOrg ? knownOrg.name : dao.name || dao.address}</OrgName>
-      </Organization>
+        <span
+          css={`
+            padding-left: ${1 * GU}px;
+            overflow: hidden;
+            text-align: left;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          `}
+        >
+          {knownOrg ? knownOrg.name : dao.name || dao.address}
+        </span>
+      </div>
     )
   }
 }
 
-const Organization = styled.div`
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-`
-
 const OrgIcon = styled.div`
-  overflow: hidden;
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  flex-grow: 0;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  margin-right: 15px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  width: ${3 * GU}px;
+  height: ${3 * GU}px;
   border-radius: ${p => (p.rounded ? '50%' : '0')};
-`
-
-const OrgName = styled.span`
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `
 
 export default OrganizationItem
