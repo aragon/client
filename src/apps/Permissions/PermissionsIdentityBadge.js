@@ -12,6 +12,7 @@ function PermissionsIdentityBadge({ entity, ...props }) {
   return <LocalIdentityBadge entity={entityLabel} {...props} />
 }
 PermissionsIdentityBadge.propTypes = {
+  ...LocalIdentityBadge.propTypes,
   entity: EthereumAddressType.isRequired,
 }
 
