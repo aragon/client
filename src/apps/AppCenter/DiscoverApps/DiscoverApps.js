@@ -1,90 +1,89 @@
 import React from 'react'
 import styled from 'styled-components'
 import {
+  Button,
   Card,
+  CardLayout,
+  GU,
+  Info,
+  IconExternal,
+  Link,
   Tag,
-  Text,
-  SafeLink,
-  theme,
+  textStyle,
   unselectable,
-  breakpoint,
+  useLayout,
+  useTheme,
 } from '@aragon/ui'
 import { appsInDevelopment } from './discover-apps-data'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 
-const DiscoverApps = React.memo(() => (
-  <div>
-    <p>
-      You will soon be able to <em>browse</em> and <em>install</em> new apps
-      into your Aragon organization from here.
-    </p>
-    <p>
-      In the meantime, you can{' '}
-      <SafeLink href="https://hack.aragon.org/" target="_blank">
-        learn how to create apps
-      </SafeLink>{' '}
-      or preview some of the apps being developed.
-    </p>
+const DiscoverApps = React.memo(() => {
+  const theme = useTheme()
+  const { layoutName } = useLayout()
+  const compactMode = layoutName === 'small'
+  const rowHeight = compactMode ? null : 294
 
-    <h1
-      css={`
-        margin: 30px 0;
-        font-weight: 600;
-      `}
-    >
-      Apps in development
-    </h1>
-    <AppsGrid>
-      {appsInDevelopment.map((app, i) => (
-        <Main key={i}>
-          <Icon>
-            <AppIcon size={64} src={app.icon} />
-          </Icon>
-          <Name>{app.name}</Name>
-          <TagWrapper>
-            <Tag mode="new">{app.status}</Tag>
-          </TagWrapper>
-          <Description color={theme.textSecondary}>
-            {app.description}
-          </Description>
-          <Action href={app.link} target="_blank">
-            <Text weight="bold" color={theme.textSecondary}>
-              Learn more
-            </Text>
-          </Action>
-        </Main>
-      ))}
-    </AppsGrid>
-  </div>
-))
+  return (
+    <React.Fragment>
+      <Info
+        css={`
+          margin-bottom: ${2 * GU}px;
+        `}
+      >
+        You will soon be able to install new apps into your Aragon organization
+        from here. In the meantime, you can use our{' '}
+        <Link
+          href="https://hack.aragon.org/docs/cli-dao-commands#dao-install"
+          target="_blank"
+        >
+          CLI guide
+        </Link>{' '}
+        and learn{' '}
+        <Link href="" target="_blank">
+          how to create apps yourself.
+        </Link>
+        You can also preview some of the apps being developed.
+      </Info>
+      <CardLayout columnWidthMin={30 * GU} rowHeight={rowHeight}>
+        {appsInDevelopment.map((app, i) => (
+          <Main key={i} columnWidthMin={30 * GU} rowHeight={rowHeight}>
+            {app.link && (
+              <External href={app.link} target="_blank">
+                <ExternalButton icon={<IconExternal />}>
+                  <IconExternal size="tiny" />
+                </ExternalButton>
+              </External>
+            )}
+            <Icon>
+              <AppIcon size={64} src={app.icon} />
+            </Icon>
+            <Name>{app.name}</Name>
+            <TagWrapper>
+              <Tag mode="indicator">{app.status}</Tag>
+            </TagWrapper>
+            <Description color={theme.contentSecondary}>
+              {app.description}
+            </Description>
+          </Main>
+        ))}
+      </CardLayout>
+    </React.Fragment>
+  )
+})
 
-const AppsGrid = styled.div`
-  display: grid;
-  grid-auto-flow: row;
-  grid-gap: 25px;
-  justify-items: start;
-  grid-template-columns: 1fr;
-  ${breakpoint(
-    'medium',
-    `
-      grid-template-columns: repeat(auto-fill, 224px);
-    `
-  )};
-`
-
-const Main = styled(Card).attrs({ width: '100%', height: '288px' })`
+const Main = styled(Card)`
   ${unselectable};
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 25px;
+  padding-top: ${5 * GU}px;
 `
 
 const Icon = styled.div`
   height: 64px;
-  margin-bottom: 5px;
+  margin-bottom: ${2 * GU}px;
   img {
     display: block;
   }
@@ -94,7 +93,8 @@ const Name = styled.p`
   display: flex;
   width: 100%;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: ${1 * GU}px;
+  ${textStyle('title4')}
 `
 
 const TagWrapper = styled.div`
@@ -103,19 +103,21 @@ const TagWrapper = styled.div`
   margin-bottom: 10px;
 `
 
-const Description = styled(Text)`
+const Description = styled.div`
   padding: 0 1rem;
-  margin-bottom: 30px;
   text-align: center;
+  ${textStyle('body2')};
 `
 
-const Action = styled(SafeLink)`
+const External = styled(Link)`
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding-bottom: 30px;
-  text-align: center;
-  text-decoration: none;
+  top: ${2 * GU}px;
+  right: ${2 * GU}px;
+`
+
+const ExternalButton = styled(Button)`
+  width: ${3.5 * GU}px;
+  height: ${3.5 * GU}px;
 `
 
 export default DiscoverApps
