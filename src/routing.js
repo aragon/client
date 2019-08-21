@@ -23,7 +23,6 @@ const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
  * Note: a dao_address can be either of the form /0xcafe… or abc.aragonid.eth
  *
  * /{dao_address}
- * /{dao_address}/settings
  * /{dao_address}/permissions
  * /{dao_address}/0x{app_instance_address}?p={app_params}
  *

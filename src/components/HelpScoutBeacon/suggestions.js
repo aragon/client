@@ -12,9 +12,9 @@ const suggestions = [
     ],
   ],
   [
-    'settings',
+    'organization',
     [
-      '5cce3bd204286306738eb793', // settings
+      '5cce3bd204286306738eb793', // organization
       aboutAragon,
     ],
   ],
