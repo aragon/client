@@ -170,16 +170,40 @@ DeleteAccount.propTypes = {
   token: PropTypes.string,
 }
 
+/**
+ * Filters the subscriptions based on the search criteria
+ *
+ * @param {Object} options options
+ * @param {[Object]} options.subscriptions array of subscriptions as per the API schema
+ * @param {String} options.organization organization to filter by or -1 to not search
+ * @param {String} options.app app proxy address to filter by or -1 to not search
+ * @param {String} options.event event name to filter by or -1 to not search
+ *
+ * @returns {[Object]} Array of filtered subscriptions
+ */
+const filterSubscriptions = ({
+  subscriptions,
+  organization,
+  app,
+  event,
+} = {}) => {
+  return subscriptions.filter(subscription => {
+    const matchingOrg = organization
+      ? subscription.ensName === organization
+      : true
+    const matchingApp = app ? subscription.contractAddress === app : true
+    const matchingEvent = event ? subscription.eventName === event : true
+    return matchingOrg && matchingApp && matchingEvent
+  })
+}
+
 const SubscriptionsTable = React.memo(
   ({ apps, authToken, subscriptions, onUnsubscribe }) => {
-    console.log(subscriptions, apps)
     const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
     const [apiError, setApiError] = useState(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const handleSelectEntries = useCallback(
       (entries, indexes) => {
-        // debugger
-        console.log('handleSelectEntries', indexes)
         setSelectedSubscriptions(indexes)
       },
       [setSelectedSubscriptions]
@@ -222,16 +246,7 @@ const SubscriptionsTable = React.memo(
 
     // Get unique app names by matching subscriptions with
     const subscriptionApps = Array.from(
-      new Set(
-        subscriptions.map(subscription => {
-          const matchingApp = apps.find(
-            app => app.proxyAddress === subscription.contractAddress
-          )
-          return !matchingApp || matchingApp === -1
-            ? subscription.contractAddress
-            : `${matchingApp.name} (${subscription.contractAddress})`
-        })
-      )
+      new Set(subscriptions.map(subscription => subscription.contractAddress))
     )
     const [selectedApp, setSelectedApp] = useState(-1)
     const onAppChange = useCallback(
@@ -240,7 +255,9 @@ const SubscriptionsTable = React.memo(
       },
       [setSelectedApp]
     )
-    const events = subscriptions.map(subscription => subscription.eventName)
+    const events = Array.from(
+      new Set(subscriptions.map(subscription => subscription.eventName))
+    )
     const [selectedEvent, setSelectedEvent] = useState(-1)
     const onEventChange = useCallback(
       idx => {
@@ -248,8 +265,19 @@ const SubscriptionsTable = React.memo(
       },
       [setSelectedEvent]
     )
-    const theme = useTheme()
+    const onClearFilters = useCallback(() => {
+      setSelectedEvent(-1)
+      setSelectedApp(-1)
+      setSelectedOrganization(-1)
+    }, [setSelectedEvent, setSelectedApp, setSelectedOrganization])
 
+    const filteredSubscriptions = filterSubscriptions({
+      subscriptions,
+      event: events[selectedEvent],
+      app: subscriptionApps[selectedApp],
+      organization: organizations[selectedOrganization],
+    })
+    const theme = useTheme()
     return (
       <DataView
         fields={[
@@ -316,10 +344,11 @@ const SubscriptionsTable = React.memo(
               events={events}
               selectedEvent={selectedEvent}
               onEventChange={onEventChange}
+              onClearFilters={onClearFilters}
             />
           </React.Fragment>
         }
-        entries={subscriptions}
+        entries={filteredSubscriptions}
         onSelectEntries={handleSelectEntries}
         selection={selectedSubscriptions}
         renderEntry={(
