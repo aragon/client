@@ -17,12 +17,24 @@ import {
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
-import { TextLabel } from '../../../components/TextStyles'
 import Markdown from '../../../components/Markdown/Markdown'
 import { RepoType } from '../../../prop-types'
 import { useRepoDetails } from '../../../hooks'
 import { network } from '../../../environment'
 import Screenshots from '../Screenshots'
+
+const GITHUB = 'https://github.com'
+const GITLAB = 'https://gitlab.com'
+const BITBUCKET = 'https://bitbucket.com'
+
+const parseHub = url =>
+  url.toLowerCase().indexOf(GITHUB) === 0
+    ? 'GitHub'
+    : url.toLowerCase().indexOf(GITLAB)
+    ? 'GitLab'
+    : url.toLowerCae().indexOf(BITBUCKET)
+    ? 'Bitbucket'
+    : url
 
 // Exclude the width of MenuPanel
 const appBelow = (below, value) =>
@@ -63,46 +75,67 @@ const AppContent = React.memo(
         <Split
           primary={
             <Box>
-              <div>
+              <div
+                css={`
+                  display: grid;
+                  grid-template-columns: auto;
+                  grid-gap: ${4 * GU}px;
+                `}
+              >
                 <div
                   css={`
                     display: grid;
                     grid-template-columns: auto auto 1fr;
                     grid-gap: ${2 * GU}px;
+
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    justify-content: space-between;
                   `}
                 >
-                  <AppIcon app={{ baseUrl, icons }} size={80} />
                   <div
                     css={`
-                      display: flex;
-                      flex-direction: column;
-                      align-items: flex-start;
-                      justify-content: center;
+                      display: grid;
+                      grid-template-columns: auto auto;
+                      grid-gap: ${2 * GU}px;
                     `}
                   >
-                    <h1
+                    <AppIcon app={{ baseUrl, icons }} size={80} />
+                    <div
                       css={`
-                        color: ${theme.content};
-                        textStyle('title3');
-                        white-space: nowrap;
-                        margin-bottom: ${1 * GU}px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        justify-content: center;
+                        margin-right: ${2.5 * GU}px;
                       `}
                     >
-                      {name}
-                    </h1>
-                    {author && (
-                      <h2
+                      <h1
                         css={`
+                          color: ${theme.content};
+                          ${textStyle('title3')};
+                          white-space: nowrap;
+                          margin-bottom: ${1 * GU}px;
+                        `}
+                      >
+                        {name}
+                      </h1>
+                      {author && (
+                        <h2
+                          css={`
                           color: ${theme.contentSecondary};
                           textStyle('body2');
                           display: grid;
                           grid-gap: ${1.5 * GU}px;
                           grid-template-columns: auto auto;
                         `}
-                      >
-                        By <LocalIdentityBadge entity={author} />
-                      </h2>
-                    )}
+                        >
+                          By <LocalIdentityBadge entity={author} />
+                        </h2>
+                      )}
+                    </div>
                   </div>
                   {canUpgrade && onRequestUpgrade && (
                     <Button
@@ -110,7 +143,7 @@ const AppContent = React.memo(
                       onClick={onRequestUpgrade}
                       css={`
                         width: 128px;
-                        margin-left: auto;
+                        margin: ${5*Gu}px 0;
                         align-self: center;
                       `}
                     >
@@ -118,70 +151,75 @@ const AppContent = React.memo(
                     </Button>
                   )}
                 </div>
-              </div>
-              {screenshots.length > 0 && (
-                <Screenshots repo={repo} screenshots={screenshots} />
-              )}
-              <div
-                css={`
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: space-between;
-                  width: 100%;
-                  flex-direction: ${compact ? 'column' : 'row'};
-                `}
-              >
-                <DetailsGroup compact={compact}>
-                  <Heading2>Description</Heading2>
-                  <div>{description}</div>
+                {screenshots.length > 0 && (
+                  <Screenshots repo={repo} screenshots={screenshots} />
+                )}
+                <div
+                  css={`
+                    display: grid;
+                    grid-template-columns: ${compact ? 'auto' : '60% 40%'};
+                    grid-column-gap: ${compact ? 0 : 5 * GU}px;
+                  `}
+                >
+                  <DetailsGroup>
+                    <Heading2 theme={theme}>Description</Heading2>
+                    <div>{description}</div>
 
-                  {!!repoDetails && (
-                    <React.Fragment>
-                      <Heading2>Details</Heading2>
-                      <Markdown text={repoDetails} />
-                    </React.Fragment>
-                  )}
-                </DetailsGroup>
-                <DetailsGroup compact={compact}>
-                  <Heading2>Installed instances</Heading2>
-                  {instances.map(({ proxyAddress }) => (
-                    <div
-                      key={proxyAddress}
-                      css={`
-                        & + & {
-                          margin-top: ${2 * GU}px;
-                        }
-                      `}
-                    >
-                      <LocalIdentityBadge entity={proxyAddress} />
-                    </div>
-                  ))}
-
-                  <Heading2>Source code</Heading2>
+                    {!!repoDetails && (
+                      <React.Fragment>
+                        <Heading2 theme={theme}>Details</Heading2>
+                        <Markdown text={repoDetails} />
+                      </React.Fragment>
+                    )}
+                  </DetailsGroup>
                   <div>
-                    {sourceUrl ? (
-                      <Link target="_blank" href={sourceUrl}>
-                        {sourceUrl}
-                      </Link>
-                    ) : (
-                      'No source code link.'
+                    <DetailsGroup>
+                      <Heading2 theme={theme}>Installed instances</Heading2>
+                      <div
+                        css={`
+                          display: inline-grid;
+                          grid-template-columns: auto;
+                          grid-gap: ${1 * GU}px;
+                          width: calc(100% - ${!compact ? 5 * GU : 0}px);
+                        `}
+                      >
+                        {instances.map(({ proxyAddress }) => (
+                          <LocalIdentityBadge
+                            entity={proxyAddress}
+                            key={proxyAddress}
+                          />
+                        ))}
+                      </div>
+                    </DetailsGroup>
+                    <DetailsGroup>
+                      <Heading2 theme={theme}>Source code</Heading2>
+                      <BreakLink compact={compact}>
+                        {sourceUrl ? (
+                          <Link target="_blank" href={sourceUrl}>
+                            {parseHub(sourceUrl)}
+                          </Link>
+                        ) : (
+                          'No source code link.'
+                        )}
+                      </BreakLink>
+                    </DetailsGroup>
+                    {!!repoAddress && !!repoAddress && (
+                      <DetailsGroup>
+                        <Heading2 theme={theme}>Package Name</Heading2>
+                        <BreakLink compact={compact}>
+                          <Link
+                            target="_blank"
+                            href={blockExplorerUrl('address', repoAddress, {
+                              networkType: network.type,
+                            })}
+                          >
+                            {repoName}
+                          </Link>
+                        </BreakLink>
+                      </DetailsGroup>
                     )}
                   </div>
-
-                  {!!repoAddress && !!repoAddress && (
-                    <React.Fragment>
-                      <Heading2>Package Name</Heading2>
-                      <Link
-                        target="_blank"
-                        href={blockExplorerUrl('address', repoAddress, {
-                          networkType: network.type,
-                        })}
-                      >
-                        {repoName}
-                      </Link>
-                    </React.Fragment>
-                  )}
-                </DetailsGroup>
+                </div>
               </div>
             </Box>
           }
@@ -207,150 +245,6 @@ const AppContent = React.memo(
         />
       </React.Fragment>
     )
-
-    return (
-      <React.Fragment>
-        <Bar>
-          <BackButton onClick={onClose} />
-        </Bar>
-        <div
-          css={`
-            padding: ${6 * GU}px ${4 * GU}px ${8 * GU}px;
-          `}
-        >
-          <div
-            css={`
-              display: flex;
-              justify-content: space-between;
-              margin-bottom: ${6 * GU}px;
-              overflow: hidden;
-              flex-direction: ${compact ? 'column' : 'row'};
-              align-items: ${compact ? 'flex-start' : 'flex-end'};
-            `}
-          >
-            <div
-              css={`
-                display: flex;
-                align-items: center;
-              `}
-            >
-              <div
-                css={`
-                  margin: 0 ${3 * GU}px 0 0;
-                `}
-              >
-                <AppIcon app={{ baseUrl, icons }} size={80} />
-              </div>
-              <div>
-                <h1
-                  css={`
-                    white-space: nowrap;
-                    margin-bottom: ${1 * GU}px;
-                    font-size: 22px;
-                  `}
-                >
-                  {name}
-                </h1>
-
-                {author && (
-                  <React.Fragment>
-                    <Heading2>Created by</Heading2>
-                    <div>
-                      <LocalIdentityBadge entity={author} />
-                    </div>
-                  </React.Fragment>
-                )}
-              </div>
-            </div>
-            <div
-              css={`
-                padding: ${compact ? `${3 * GU}px 0 0 ${80 + 3 * GU}px` : '0'};
-              `}
-            >
-              {canUpgrade && onRequestUpgrade && (
-                <Button mode="strong" onClick={onRequestUpgrade}>
-                  Upgrade
-                </Button>
-              )}
-            </div>
-          </div>
-          {screenshots.length > 0 && (
-            <Screenshots repo={repo} screenshots={screenshots} />
-          )}
-          <div
-            css={`
-              display: flex;
-              flex-direction: column;
-              justify-content: space-between;
-              width: 100%;
-              flex-direction: ${compact ? 'column' : 'row'};
-            `}
-          >
-            <DetailsGroup compact={compact}>
-              <Heading2>Description</Heading2>
-              <div>{description}</div>
-
-              {!!repoDetails && (
-                <React.Fragment>
-                  <Heading2>Details</Heading2>
-                  <Markdown text={repoDetails} />
-                </React.Fragment>
-              )}
-            </DetailsGroup>
-            <DetailsGroup compact={compact}>
-              <Heading2>Installed instances</Heading2>
-              {instances.map(({ proxyAddress }) => (
-                <div
-                  key={proxyAddress}
-                  css={`
-                    & + & {
-                      margin-top: ${2 * GU}px;
-                    }
-                  `}
-                >
-                  <LocalIdentityBadge entity={proxyAddress} />
-                </div>
-              ))}
-
-              <Heading2>Source code</Heading2>
-              <div>
-                {sourceUrl ? (
-                  <Link target="_blank" href={sourceUrl}>
-                    {sourceUrl}
-                  </Link>
-                ) : (
-                  'No source code link.'
-                )}
-              </div>
-
-              {!!repoAddress && !!repoAddress && (
-                <React.Fragment>
-                  <Heading2>Package Name</Heading2>
-                  <Link
-                    target="_blank"
-                    href={blockExplorerUrl('address', repoAddress, {
-                      networkType: network.type,
-                    })}
-                  >
-                    {repoName}
-                  </Link>
-                </React.Fragment>
-              )}
-
-              {repoVersions && (
-                <div
-                  css={`
-                    margin-top: ${2 * GU}px;
-                  `}
-                >
-                  {repoVersions}
-                </div>
-              )}
-            </DetailsGroup>
-          </div>
-        </div>
-      </React.Fragment>
-    )
   }
 )
 
@@ -365,26 +259,19 @@ const ReposHeader = styled.span`
   ${textStyle('label2')};
 `
 
-const Heading2 = ({ children }) => (
-  <h2
-    css={`
-      margin-top: ${1 * GU}px;
-      margin-bottom: ${GU}px;
-    `}
-  >
-    <TextLabel>{children}</TextLabel>
-  </h2>
-)
-
-Heading2.propTypes = {
-  children: PropTypes.node,
-}
+const Heading2 = styled.h2`
+  margin-bottom: ${1 * GU}px;
+  color: ${({ theme }) => theme.contentSecondary};
+  ${textStyle('label2')};
+`
 
 const DetailsGroup = styled.div`
-  width: ${p => (p.compact ? '100%' : '50%')};
-  & + & {
-    margin-left: ${p => (p.compact ? '0' : `${5 * GU}px`)};
-  }
+  margin-bottom: ${3.5 * GU}px;
+`
+
+const BreakLink = styled.div`
+  width: ${({ compact }) => `calc(100% - ${!compact ? 5 * GU : 0}px)`};
+  word-break: break-all;
 `
 
 export default AppContent
