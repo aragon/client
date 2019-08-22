@@ -62,24 +62,15 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
         token,
       }
       await createSubscription(payload)
-      setSelectedAppIdx(-1)
       setSelectedEventIdx(-1)
       onCreate()
     } catch (e) {
       onApiError(e.message)
     }
     setIsSubmitting(false)
-
-    // console.log('', selectedApp)
-    // console.log()
-    // console.log(`eventName: `, eventNames[selectedAppIdx])
-    // console.log(`contractAddress: ${selectedApp.contractAddress}`)
-    // console.log(`ensName: ${dao}`)
-    // console.log()
-    // console.log(selectedApp.abi)
   }
-  // const isSubscribeDisabled = selectedAppIdx !== 0 && selectedEvent !== 0
-  const isSubscribeDisabled = false
+  const isSubscribeDisabled =
+    selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
   return (
     <Box heading="Create Subscriptions">
       <div
@@ -112,7 +103,7 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
         </Label>
         <DropDown
           disabled={selectedAppIdx === -1}
-          placeholder="Select an App"
+          placeholder="Select an Event"
           width="100%"
           items={eventNames}
           selected={selectedEventIdx}
@@ -124,10 +115,7 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
           margin-top: ${4 * GU}px;
         `}
       >
-        <Button
-          disabled={isSubscribeDisabled || isSubmitting}
-          onClick={handleSubscribe}
-        >
+        <Button disabled={isSubscribeDisabled} onClick={handleSubscribe}>
           {isSubmitting ? (
             <LoadingRing
               css={`
