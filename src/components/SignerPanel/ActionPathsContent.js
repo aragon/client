@@ -260,8 +260,13 @@ class ActionPathsContent extends React.Component {
                   that has not been reviewed or audited. This means that it
                   might behave unexpectedly. Please{' '}
                   <strong css="font-weight: 800">
-                    be sure you trust this contract
+                    make sure you trust the contract at
                   </strong>{' '}
+                  <LocalIdentityBadge
+                    entity={intent.to}
+                    fontSize="small"
+                    compact
+                  />{' '}
                   before proceeding.
                 </span>
               )}
