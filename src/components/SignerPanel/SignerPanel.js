@@ -27,13 +27,13 @@ import springs from '../../springs'
 import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 
 const INITIAL_STATE = {
-  panelOpened: false,
-  intent: {},
-  directPath: false,
   actionPaths: [],
+  directPath: false,
+  intent: {},
+  panelOpened: false,
   pretransaction: null,
-  status: STATUS_TX_CONFIRMING, // initially default to rendering the tx signing panel
   signError: null,
+  status: STATUS_TX_CONFIRMING, // initially default to rendering the tx signing panel
 }
 
 const RECIEPT_ERROR_STATUS = '0x0'
@@ -107,19 +107,14 @@ class SignerPanel extends React.PureComponent {
   // This is a temporary method to reshape the transaction bag
   // to the future format we expect from Aragon.js
   stateFromTransactionBag(bag) {
-    const { apps } = this.props
-    const { external, path, transaction } = bag
+    const { path, transaction } = bag
     const decoratedPaths = path.map(path => ({
       ...path,
-      name: getAppName(apps, path.to),
+      name: getAppName(this.props.apps, path.to),
     }))
 
     return {
       intent: (transaction && this.transactionIntent(bag)) || {},
-      external: Boolean(external),
-      installed: apps.some(
-        ({ proxyAddress }) => proxyAddress === transaction.to
-      ),
       directPath: decoratedPaths.length === 1,
       actionPaths: decoratedPaths.length ? [decoratedPaths] : [],
       pretransaction: (transaction && transaction.pretransaction) || null,
@@ -138,14 +133,27 @@ class SignerPanel extends React.PureComponent {
     }
   }
 
-  transactionIntent({ path, transaction = {} }) {
+  transactionIntent({ external, path, transaction = {} }) {
+    const { apps } = this.props
+
     // If the path includes forwarders, the intent is always the last node
     // Otherwise, it's the direct transaction
     const targetIntent = path.length > 1 ? path[path.length - 1] : transaction
     const { annotatedDescription, description, to } = targetIntent
-    const name = getAppName(this.props.apps, to)
+    const name = getAppName(apps, to)
+    const installed = apps.some(
+      ({ proxyAddress }) => proxyAddress === transaction.to
+    )
 
-    return { annotatedDescription, description, name, to, transaction }
+    return {
+      annotatedDescription,
+      description,
+      external,
+      installed,
+      name,
+      to,
+      transaction,
+    }
   }
 
   signTransaction(transaction, intent, isPretransaction = false) {
@@ -295,15 +303,13 @@ class SignerPanel extends React.PureComponent {
     } = this.props
 
     const {
-      panelOpened,
-      signError,
-      intent,
-      directPath,
       actionPaths,
+      directPath,
+      intent,
+      panelOpened,
       pretransaction,
+      signError,
       status,
-      external,
-      installed,
     } = this.state
 
     const isTransaction = isTxSignerStatus(status)
@@ -351,8 +357,6 @@ class SignerPanel extends React.PureComponent {
                             <ConfirmTransaction
                               dao={dao}
                               direct={directPath}
-                              external={external}
-                              installed={installed}
                               intent={intent}
                               onClose={this.handleSignerClose}
                               onSign={this.handleSign}

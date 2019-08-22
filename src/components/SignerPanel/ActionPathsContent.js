@@ -13,8 +13,6 @@ class ActionPathsContent extends React.Component {
   static propTypes = {
     dao: PropTypes.string.isRequired,
     direct: PropTypes.bool.isRequired,
-    installed: PropTypes.bool.isRequired,
-    external: PropTypes.bool.isRequired,
     intent: PropTypes.object.isRequired,
     paths: PropTypes.array.isRequired,
     pretransaction: PropTypes.object,
@@ -175,10 +173,8 @@ class ActionPathsContent extends React.Component {
   }
   render() {
     const {
-      installed,
-      intent,
       direct,
-      external,
+      intent,
       paths,
       pretransaction,
       signingEnabled,
@@ -245,14 +241,14 @@ class ActionPathsContent extends React.Component {
         <Info mode="description" title="Action to be triggered">
           {this.renderDescription(showPaths, intent)}
         </Info>
-        {external && (
+        {intent.external && (
           <div
             css={`
               margin-top: ${3 * GU}px;
             `}
           >
             <Info mode="warning" title="Warning">
-              {installed ? (
+              {intent.installed ? (
                 `Be aware that this is an attempt to execute a transaction on
                  another app that is installed in this organization. You may
                  want to double check that app’s functionality before
