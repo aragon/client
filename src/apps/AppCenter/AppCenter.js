@@ -190,14 +190,17 @@ class AppCenter extends React.Component {
   }
 }
 
-export default props => {
+const WithLayout = React.memo(function WithLayout(props) {
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
-  const appWidth = useAppWidth()
+  return <AppCenter {...props} compactMode={compactMode} />
+})
 
+export default React.memo(props => {
+  const appWidth = useAppWidth()
   return (
     <Layout parentWidth={appWidth}>
-      <AppCenter {...props} compactMode={compactMode} />
+      <WithLayout {...props} />
     </Layout>
   )
-}
+})
