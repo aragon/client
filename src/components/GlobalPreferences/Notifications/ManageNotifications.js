@@ -29,6 +29,7 @@ import {
   NOTIFICATION_SERVICE_EMAIL_KEY,
 } from './constants'
 import { SubscriptionsForm } from './SubscriptionsForm'
+import SubscriptionFilters from './SubscriptionFilters'
 
 export default function ManageNotifications({
   apps,
@@ -105,6 +106,7 @@ export default function ManageNotifications({
       />
       {!isFetching && subscriptions.length > 0 && (
         <SubscriptionsTable
+          apps={apps}
           authToken={token}
           subscriptions={subscriptions}
           onUnsubscribe={fetchSubscriptions}
@@ -168,123 +170,174 @@ DeleteAccount.propTypes = {
   token: PropTypes.string,
 }
 
-const SubscriptionsTable = ({ subscriptions, onUnsubscribe, authToken }) => {
-  const [selectedSubscriptionsIds, setSelectedSubscriptionsIds] = useState([])
-  const [apiError, setApiError] = useState(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const handleSelectEntries = useCallback(
-    (entries, indexes) => {
-      console.log('handleSelectEntries', subscriptions, entries, indexes)
-      setSelectedSubscriptionsIds(
-        indexes.map(i => subscriptions[i].subscriptionId)
-      )
-    },
-    [subscriptions, setSelectedSubscriptionsIds]
-  )
+const SubscriptionsTable = React.memo(
+  ({ apps, authToken, subscriptions, onUnsubscribe }) => {
+    console.log(subscriptions, apps)
+    const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
+    const [apiError, setApiError] = useState(null)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const handleSelectEntries = useCallback(
+      (entries, indexes) => {
+        // debugger
+        console.log('handleSelectEntries', indexes)
+        setSelectedSubscriptions(indexes)
+      },
+      [setSelectedSubscriptions]
+    )
 
-  const handleUnsubscribe = useCallback(
-    async e => {
-      setIsSubmitting(true)
-      try {
-        await deleteSubscriptions({
-          subscriptionIds: selectedSubscriptionsIds,
-          authToken,
+    const handleUnsubscribe = useCallback(
+      async e => {
+        setIsSubmitting(true)
+        try {
+          const subscriptionIds = selectedSubscriptions.map(
+            i => subscriptions[i].subscriptionId
+          )
+          await deleteSubscriptions({
+            subscriptionIds,
+            authToken,
+          })
+          // reset selection
+          setIsSubmitting(false)
+          // Refetch subscriptions
+          onUnsubscribe()
+          setSelectedSubscriptions([])
+        } catch (e) {
+          setApiError(e.message)
+          setIsSubmitting(false)
+        }
+      },
+      [authToken, onUnsubscribe, selectedSubscriptions, subscriptions]
+    )
+
+    const organizations = Array.from(
+      new Set(subscriptions.map(subscription => subscription.ensName))
+    )
+    const [selectedOrganization, setSelectedOrganization] = useState(-1)
+    const onOrganizationChange = useCallback(
+      idx => {
+        setSelectedOrganization(idx)
+      },
+      [setSelectedOrganization]
+    )
+
+    // Get unique app names by matching subscriptions with
+    const subscriptionApps = Array.from(
+      new Set(
+        subscriptions.map(subscription => {
+          const matchingApp = apps.find(
+            app => app.proxyAddress === subscription.contractAddress
+          )
+          return !matchingApp || matchingApp === -1
+            ? subscription.contractAddress
+            : `${matchingApp.name} (${subscription.contractAddress})`
         })
-        // reset selection
-        setSelectedSubscriptionsIds([])
-        setIsSubmitting(false)
-        // Refetch subscriptions
-        onUnsubscribe()
-      } catch (e) {
-        setApiError(e.message)
-        setIsSubmitting(false)
-      }
-    },
-    [
-      authToken,
-      onUnsubscribe,
-      selectedSubscriptionsIds,
-      setApiError,
-      setIsSubmitting,
-      setSelectedSubscriptionsIds,
-    ]
-  )
-  const theme = useTheme()
+      )
+    )
+    const [selectedApp, setSelectedApp] = useState(-1)
+    const onAppChange = useCallback(
+      idx => {
+        setSelectedApp(idx)
+      },
+      [setSelectedApp]
+    )
+    const events = subscriptions.map(subscription => subscription.eventName)
+    const [selectedEvent, setSelectedEvent] = useState(-1)
+    const onEventChange = useCallback(
+      idx => {
+        setSelectedEvent(idx)
+      },
+      [setSelectedEvent]
+    )
+    const theme = useTheme()
 
-  return (
-    <DataView
-      fields={[
-        {
-          label: 'Organization',
-          priority: 3,
-        },
-        {
-          label: 'App',
-          priority: 2,
-        },
-        {
-          label: 'Event',
-          priority: 1,
-        },
-      ]}
-      heading={
-        <React.Fragment>
-          <div
-            css={`
-              height: ${9 * GU}px;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            `}
-          >
+    return (
+      <DataView
+        fields={[
+          {
+            label: 'Organization',
+            priority: 3,
+          },
+          {
+            label: 'App',
+            priority: 2,
+          },
+          {
+            label: 'Event',
+            priority: 1,
+          },
+        ]}
+        heading={
+          <React.Fragment>
             <div
               css={`
-                color: ${theme.content};
-                ${textStyle('body1')}
+                height: ${9 * GU}px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
               `}
             >
-              Subscriptions
-            </div>
-            {selectedSubscriptionsIds.length > 0 && (
-              <div css="text-align: right;">
-                <Button disabled={false} onClick={handleUnsubscribe}>
-                  {isSubmitting ? (
-                    <LoadingRing
-                      css={`
-                        margin-right: ${GU}px;
-                      `}
-                    />
-                  ) : (
-                    <IconMail
-                      css={`
-                        color: ${theme.negative};
-                        margin-right: ${GU}px;
-                      `}
-                    />
-                  )}{' '}
-                  Unsubscribe
-                </Button>
+              <div
+                css={`
+                  color: ${theme.content};
+                  ${textStyle('body1')}
+                `}
+              >
+                Subscriptions
               </div>
-            )}
-          </div>
-        </React.Fragment>
-      }
-      entries={subscriptions}
-      onSelectEntries={handleSelectEntries}
-      renderEntry={(
-        { contractAddress, ensName, eventName },
-        index,
-        { selected, mode }
-      ) => [
-        <Label>{ensName}</Label>,
-        <LocalIdentityBadge entity={contractAddress} />,
-        <Label>{eventName}</Label>,
-      ]}
-    />
-  )
-}
+              {selectedSubscriptions.length > 0 && (
+                <div css="text-align: right;">
+                  <Button disabled={false} onClick={handleUnsubscribe}>
+                    {isSubmitting ? (
+                      <LoadingRing
+                        css={`
+                          margin-right: ${GU}px;
+                        `}
+                      />
+                    ) : (
+                      <IconMail
+                        css={`
+                          color: ${theme.negative};
+                          margin-right: ${GU}px;
+                        `}
+                      />
+                    )}{' '}
+                    Unsubscribe
+                  </Button>
+                </div>
+              )}
+            </div>
+            <SubscriptionFilters
+              organizations={organizations}
+              selectedOrganization={selectedOrganization}
+              onOrganizationChange={onOrganizationChange}
+              apps={subscriptionApps}
+              selectedApp={selectedApp}
+              onAppChange={onAppChange}
+              events={events}
+              selectedEvent={selectedEvent}
+              onEventChange={onEventChange}
+            />
+          </React.Fragment>
+        }
+        entries={subscriptions}
+        onSelectEntries={handleSelectEntries}
+        selection={selectedSubscriptions}
+        renderEntry={(
+          { contractAddress, ensName, eventName },
+          index,
+          { selected, mode }
+        ) => [
+          <Label>{ensName}</Label>,
+          <LocalIdentityBadge entity={contractAddress} />,
+          <Label>{eventName}</Label>,
+        ]}
+      />
+    )
+  }
+)
 
 SubscriptionsTable.propTypes = {
+  apps: PropTypes.array,
   authToken: PropTypes.string,
   onUnsubscribe: PropTypes.func,
   subscriptions: PropTypes.array,
