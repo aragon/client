@@ -288,17 +288,18 @@ function AnimatedMenuPanel({
           className={className}
           css={`
             /* When the panel is autoclosing, we want it over the top bar as well */
-            ${autoClosing && opened
+            ${autoClosing
               ? `
                 position: absolute;
                 height: 100%;
                 width: 100%;
                 top: 0;
+                ${!opened ? 'pointer-events: none' : ''}
               `
               : ''}
           `}
         >
-          {autoClosing && opened && (
+          {autoClosing && (
             <AnimDiv
               onClick={onMenuPanelClose}
               css={`
