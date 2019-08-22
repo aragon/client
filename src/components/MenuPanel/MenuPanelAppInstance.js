@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { ButtonBase, GU } from '@aragon/ui'
 import { useLocalIdentity } from '../../hooks'
@@ -11,14 +11,12 @@ const MenuPanelAppInstance = React.memo(function MenuPanelAppInstance({
   name,
   onClick,
 }) {
-  const [label, setLabel] = useState(name)
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     onClick(id)
-  }
+  }, [id, onClick])
   const { name: localIdentity } = useLocalIdentity(id)
-  useEffect(() => {
-    setLabel(localIdentity || name)
-  }, [localIdentity, name])
+
+  const label = localIdentity || name
 
   return (
     <ButtonBase

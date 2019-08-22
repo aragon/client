@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import { ButtonBase, GU, textStyle, useTheme } from '@aragon/ui'
@@ -22,11 +22,8 @@ const MenuPanelItem = React.memo(function MenuPanelItem({
   openProgress,
   singleInstance,
 }) {
-  const [label, setLabel] = useState(name)
   const { name: localIdentity } = useLocalIdentity(instanceId)
-  useEffect(() => {
-    setLabel((singleInstance && localIdentity) || name)
-  }, [singleInstance, localIdentity, name])
+  const label = (singleInstance && localIdentity) || name
 
   return (
     <ButtonBase
