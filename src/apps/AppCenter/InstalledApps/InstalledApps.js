@@ -15,7 +15,8 @@ const InstalledApps = React.memo(function InstalledApps({
 }) {
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
-  const rowHeight = compactMode ? null : 294
+  const rowHeight = compactMode ? 148 : 294
+  const columnWidthMin = compactMode ? 328 : 30 * GU
 
   if (openedRepoId) {
     const openedRepo = repos.find(repo => repo.appId === openedRepoId)
@@ -30,9 +31,14 @@ const InstalledApps = React.memo(function InstalledApps({
   }
 
   return (
-    <CardLayout columnWidthMin={30 * GU} rowHeight={rowHeight}>
+    <CardLayout columnWidthMin={columnWidthMin} rowHeight={rowHeight}>
       {repos.map(repo => (
-        <AppCard repo={repo} onOpenApp={onOpenApp} key={repo.appId} />
+        <AppCard
+          repo={repo}
+          onOpenApp={onOpenApp}
+          key={repo.appId}
+          compactMode={compactMode}
+        />
       ))}
     </CardLayout>
   )
@@ -50,7 +56,7 @@ InstalledApps.defaultProps = {
   openedRepoId: null,
 }
 
-const AppCard = React.memo(function AppCard({ repo, onOpenApp }) {
+const AppCard = React.memo(function AppCard({ repo, onOpenApp, compactMode }) {
   const { repoName } = repo
   const handleOpenApp = useCallback(() => {
     onOpenApp(repoName)
@@ -58,7 +64,7 @@ const AppCard = React.memo(function AppCard({ repo, onOpenApp }) {
 
   return (
     <Card onClick={handleOpenApp}>
-      <AppCardContent repo={repo} />
+      <AppCardContent repo={repo} compactMode={compactMode} />
     </Card>
   )
 })
