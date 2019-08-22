@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link, GU, RADIUS, useTheme } from '@aragon/ui'
+import { Link, GU, RADIUS } from '@aragon/ui'
 import { RepoType } from '../../prop-types'
 import { imgSrcFromBase } from '../../utils'
 

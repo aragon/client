@@ -143,7 +143,7 @@ const AppContent = React.memo(
                       onClick={onRequestUpgrade}
                       css={`
                         width: 128px;
-                        margin: ${5*Gu}px 0;
+                        margin: ${2.5 * GU}px 0;
                         align-self: center;
                       `}
                     >
@@ -252,6 +252,7 @@ AppContent.propTypes = {
   repo: RepoType.isRequired,
   repoVersions: PropTypes.node,
   onRequestUpgrade: PropTypes.func,
+  onClose: PropTypes.func,
 }
 
 const ReposHeader = styled.span`
