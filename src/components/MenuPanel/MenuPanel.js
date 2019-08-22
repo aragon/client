@@ -183,12 +183,6 @@ class MenuPanel extends React.PureComponent {
                   </SystemAppsToggle>
                   <div css="overflow: hidden">
                     <AnimDiv
-                      css={`
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'flex-end',
-                        width: '100%',
-                      `}
                       style={{
                         opacity: openProgress,
                         height: openProgress.interpolate(
