@@ -104,10 +104,6 @@ class Wrapper extends React.PureComponent {
   }
 
   openApp = (instanceId, { params, localPath } = {}) => {
-    if (this.props.autoClosingPanel) {
-      // this.handleMenuPanelClose()
-    }
-
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
   }
