@@ -21,14 +21,13 @@ function FavoritesMenuItem({
 
   const handleFavoriteClick = useCallback(() => {
     onFavoriteUpdate(id, !favorited)
-  }, [id, favorited, onFavoriteUpdate])
+  }, [onFavoriteUpdate, id, favorited])
 
   return (
     <div
       css={`
         display: flex;
         align-items: center;
-        height: ${7 * GU}px;
       `}
     >
       <FavoritesMenuItemButton
@@ -51,7 +50,7 @@ function FavoritesMenuItem({
             css={`
               display: flex;
               align-items: center;
-              margin-right: ${2 * GU}px;
+              margin-right: ${1 * GU}px;
             `}
           >
             <div
@@ -118,11 +117,11 @@ FavoritesMenuItem.propTypes = {
   favorited: PropTypes.bool,
   id: PropTypes.string.isRequired,
   image: PropTypes.node,
-  roundedImage: PropTypes.bool,
   name: PropTypes.string.isRequired,
-  secondary: PropTypes.string,
   onActivate: PropTypes.func.isRequired,
   onFavoriteUpdate: PropTypes.func.isRequired,
+  roundedImage: PropTypes.bool,
+  secondary: PropTypes.string,
 }
 
 export default FavoritesMenuItem

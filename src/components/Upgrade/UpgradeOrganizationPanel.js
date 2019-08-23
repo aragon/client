@@ -8,6 +8,7 @@ import {
   SidePanel,
   SidePanelSeparator,
   SidePanelSplit,
+  GU,
   blockExplorerUrl,
 } from '@aragon/ui'
 import { AragonType, DaoAddressType, ReposListType } from '../../prop-types'
@@ -17,7 +18,6 @@ import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import { network } from '../../environment'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
 import { repoBaseUrl } from '../../url-utils'
-import { GU } from '../../utils'
 
 const VERSION = '0.7 Bella'
 const SOURCE = [
@@ -71,20 +71,24 @@ const UpgradeOrganizationPanel = React.memo(
       // The animation helps us a little bit with the lag on calculating the path
       onClose()
 
-      const upgradePath = await wrapper.getTransactionPathForIntentBasket(
-        upgradeIntents,
-        { checkMode: 'single' }
-      )
+      const {
+        path,
+        transactions,
+      } = await wrapper.getTransactionPathForIntentBasket(upgradeIntents, {
+        checkMode: 'single',
+      })
 
-      if (upgradePath.direct) {
+      if (Array.isArray(path) && path.length) {
+        // We can use the power of calls scripts to do a single transaction!
+        await wrapper.performTransactionPath(path)
+      } else if (Array.isArray(transactions) && transactions.length) {
         // User has direct access, so we need to send these intents one by one
-        for (const transaction of upgradePath.transactions) {
+        for (const transaction of transactions) {
           await wrapper.performTransactionPath([transaction])
         }
       } else {
-        // We can use the power of calls scripts to do a single transaction!
-        // Or, the user just can't perform this action.
-        await wrapper.performTransactionPath(upgradePath.path)
+        // The user just can't perform this action, show the signing panel's error screen
+        await wrapper.performTransactionPath([])
       }
     }, [daoAddress, onClose, repos, wrapper])
 

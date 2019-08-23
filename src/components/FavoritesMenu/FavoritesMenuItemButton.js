@@ -1,5 +1,5 @@
 import React from 'react'
-import { ButtonBase, useTheme } from '@aragon/ui'
+import { ButtonBase, GU, useTheme, textStyle } from '@aragon/ui'
 
 function FavoritesMenuItemButton(props) {
   const theme = useTheme()
@@ -8,9 +8,10 @@ function FavoritesMenuItemButton(props) {
       css={`
         display: flex;
         align-items: center;
-        height: 100%;
+        height: ${7 * GU}px;
         color: ${theme.surfaceContent};
         background: ${theme.surface};
+        ${textStyle('body2')}
         border-radius: 0;
         &:active {
           background: ${theme.surfacePressed};

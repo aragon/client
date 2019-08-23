@@ -13,10 +13,9 @@ const verifyLocalIdentityObject = obj => {
     Array.isArray(obj) &&
     obj.every(
       ({ address, name, createdAt }) =>
-        !!address.trim() &&
-        !!name.trim() &&
+        isAddress(address.trim()) &&
         !!createdAt &&
-        isAddress(address) &&
+        !!name.trim() &&
         isString(name) &&
         name.length <= MAX_LENGTH
     )

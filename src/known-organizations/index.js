@@ -1,5 +1,6 @@
 import aragonGovernanceImage from './images/aragon-governance.svg'
 import aragonOneImage from './images/aragon-one.svg'
+import brightIdImage from './images/brightid.svg'
 import melonCouncilImage from './images/melon-council.svg'
 import blankDaoImage from './images/blankdao.svg'
 import livepeerImage from './images/livepeer.svg'
@@ -56,6 +57,14 @@ export const KnownOrganizations = {
         recommended: true,
         template: TEMPLATE_DEMOCRACY,
       },
+      {
+        address: '0x5aad137d8f7d2dc6e1b2548c059b1483360bcc6a',
+        domain: 'brightid.aragonid.eth',
+        name: 'BrightID',
+        image: brightIdImage,
+        recommended: true,
+        template: TEMPLATE_DEMOCRACY,
+      },
     ].map(org => [org.address, org])
   ),
   rinkeby: new Map(
@@ -102,5 +111,5 @@ export const getRecommendedOrganizations = (networkType, max = -1) => {
 
 export const getKnownOrganization = (networkType, address) => {
   if (!KnownOrganizations[networkType]) return null
-  return KnownOrganizations[networkType].get(address) || null
+  return KnownOrganizations[networkType].get(address.toLowerCase()) || null
 }

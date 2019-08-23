@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel } from '@aragon/ui'
+import { SidePanel, GU } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
@@ -107,14 +107,19 @@ class SignerPanel extends React.PureComponent {
   // This is a temporary method to reshape the transaction bag
   // to the future format we expect from Aragon.js
   stateFromTransactionBag(bag) {
-    const { path, transaction } = bag
+    const { apps } = this.props
+    const { external, path, transaction } = bag
     const decoratedPaths = path.map(path => ({
       ...path,
-      name: getAppName(this.props.apps, path.to),
+      name: getAppName(apps, path.to),
     }))
 
     return {
       intent: (transaction && this.transactionIntent(bag)) || {},
+      external: Boolean(external),
+      installed: apps.some(
+        ({ proxyAddress }) => proxyAddress === transaction.to
+      ),
       directPath: decoratedPaths.length === 1,
       actionPaths: decoratedPaths.length ? [decoratedPaths] : [],
       pretransaction: (transaction && transaction.pretransaction) || null,
@@ -297,6 +302,8 @@ class SignerPanel extends React.PureComponent {
       actionPaths,
       pretransaction,
       status,
+      external,
+      installed,
     } = this.state
 
     const isTransaction = isTxSignerStatus(status)
@@ -344,6 +351,8 @@ class SignerPanel extends React.PureComponent {
                             <ConfirmTransaction
                               dao={dao}
                               direct={directPath}
+                              external={external}
+                              installed={installed}
                               intent={intent}
                               onClose={this.handleSignerClose}
                               onSign={this.handleSign}
@@ -360,7 +369,6 @@ class SignerPanel extends React.PureComponent {
                               onClose={this.handleSignerClose}
                               intent={intent}
                               onSign={this.handleMsgSign}
-                              signError={Boolean(signError)}
                               signingEnabled={status === STATUS_MSG_CONFIRMING}
                             />
                           )}
@@ -396,7 +404,7 @@ class SignerPanel extends React.PureComponent {
 
 const Main = styled.div`
   position: relative;
-  margin: 0 -30px;
+  margin: 0 -${SidePanel.HORIZONTAL_PADDING}px;
   overflow-x: hidden;
   min-height: 0;
   flex-grow: 1;
@@ -407,13 +415,14 @@ const ScreenWrapper = styled(animated.div)`
   top: 0;
   left: 0;
   right: 0;
-  padding: 0 30px;
+  padding: 0 ${SidePanel.HORIZONTAL_PADDING}px;
   display: flex;
   min-height: 100%;
 `
 
 const Screen = styled.div`
   width: 100%;
+  margin-top: ${3 * GU}px;
 `
 
 export default function(props) {

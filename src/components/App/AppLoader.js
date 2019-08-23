@@ -8,7 +8,7 @@ const LOADING_APPS = 'Loading apps…'
 const LOADING_APP = 'Loading {APP}…'
 const LOADING_READY = 'Ready.'
 
-// Pick the loading steps depending on what is being loaded (settings, internal
+// Pick the loading steps depending on what is being loaded (permissions, internal
 // app, external app, …). `steps` must contain the strings used to represent
 // the different steps, while `stepIndex` must return the index of the current
 // step, based on the passed values.
@@ -18,7 +18,7 @@ const LOADING_STEPS_INTERNAL = {
     [daoLoading, appsLoading, true].findIndex(v => v),
 }
 
-const LOADING_STEPS_SETTINGS = {
+const LOADING_STEPS_ORGANIZATION = {
   steps: [LOADING_ORG, LOADING_READY],
   stepIndex: ({ daoLoading }) => [daoLoading, true].findIndex(v => v),
 }
@@ -30,9 +30,9 @@ const LOADING_STEPS_EXTERNAL = {
 }
 
 function getLoadingSteps(instanceId) {
-  // Settings app
-  if (instanceId === 'settings') {
-    return LOADING_STEPS_SETTINGS
+  // Organization app
+  if (instanceId === 'organization') {
+    return LOADING_STEPS_ORGANIZATION
   }
   // Internal app
   if (isStaticApp(instanceId)) {

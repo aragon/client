@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import {
   Button,
   SafeLink,
+  GU,
   blockExplorerUrl,
   useViewport,
   theme,
@@ -14,7 +15,6 @@ import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
 import { TextLabel } from '../../../components/TextStyles'
 import Markdown from '../../../components/Markdown/Markdown'
 import { RepoType } from '../../../prop-types'
-import { GU } from '../../../utils'
 import { useRepoDetails } from '../../../hooks'
 import { network } from '../../../environment'
 import Screenshots from '../Screenshots'
