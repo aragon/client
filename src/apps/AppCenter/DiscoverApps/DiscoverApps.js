@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import {
   Button,
@@ -21,7 +21,7 @@ const DiscoverApps = React.memo(() => {
   const theme = useTheme()
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
-  const rowHeight = compactMode ? 168 : 294
+  const rowHeight = compactMode ? 148 : 294
   const columnWidthMin = compactMode ? 328 : 30 * GU
 
   return (
@@ -48,31 +48,38 @@ const DiscoverApps = React.memo(() => {
       </Info>
       <CardLayout columnWidthMin={columnWidthMin} rowHeight={rowHeight}>
         {appsInDevelopment.map((app, i) => (
-          <Main key={i} compactMode={compactMode}>
-            {app.link && (
-              <ExternalButton
-                compactMode={compactMode}
-                href={app.link}
-                target="_blank"
-                icon={<IconExternal size="tiny" />}
-              />
-            )}
-            <Icon compactMode={compactMode}>
-              <AppIcon size={9 * GU} src={app.icon} radius={12} />
-            </Icon>
-            <Name compactMode={compactMode}>{app.name}</Name>
-            <TagWrapper compactMode={compactMode}>
-              <Tag mode="indicator">{app.status}</Tag>
-            </TagWrapper>
-            <Description theme={theme} compactMode={compactMode}>
-              {app.description}
-            </Description>
-          </Main>
+          <AppCard key={i} app={app} compactMode={compactMode} />
         ))}
       </CardLayout>
     </React.Fragment>
   )
 })
+
+function AppCard({ app, compactMode, onOpen, ...props }) {
+  const theme = useTheme()
+  const { link, icon, name, status, description } = app
+  const handleClick = useCallback(() => {
+    if (link) {
+      window.open(link, '_blank', 'noopener')
+    }
+  }, [link])
+
+  return (
+    <Main compactMode={compactMode} onClick={handleClick}>
+      <StyledIconExternal compactMode={compactMode} theme={theme} link={link} />
+      <Icon compactMode={compactMode}>
+        <AppIcon size={9 * GU} src={icon} radius={12} />
+      </Icon>
+      <Name compactMode={compactMode}>{name}</Name>
+      <TagWrapper compactMode={compactMode} link={link}>
+        <Tag mode="indicator">{status}</Tag>
+      </TagWrapper>
+      <Description theme={theme} compactMode={compactMode}>
+        {description}
+      </Description>
+    </Main>
+  )
+}
 
 const Main = styled(Card)`
   ${unselectable};
@@ -85,10 +92,10 @@ const Main = styled(Card)`
     compactMode
       ? `
           display: grid;
-          grid-template-columns: auto 1fr;
+          grid-template-columns: auto 1fr auto;
           grid-template-rows: auto 1fr 1fr;
           grid-template-areas:
-            "external tag"
+            "empty topright"
             "icon title"
             "icon description";
           padding: ${1.5 * GU}px ${1.5 * GU}px ${4 * GU}px ${3 * GU}px;
@@ -132,11 +139,13 @@ const Name = styled.p`
 `
 
 const TagWrapper = styled.div`
-  ${({ compactMode }) =>
+  ${({ compactMode, link }) =>
     compactMode
       ? `
-        grid-area: tag;
+        grid-area: topright;
         text-align: right;
+        position: absolute;
+        right: ${link ? 3.5 * GU : 0}px;
       `
       : `
         max-width: 100%;
@@ -165,20 +174,20 @@ const Description = styled.p`
       `}
 `
 
-const ExternalButton = styled(Button)`
-  width: ${3.5 * GU}px;
-  height: ${3.5 * GU}px;
-
+const StyledIconExternal = styled(IconExternal)`
+  visibility: ${({ link }) => (link ? 'visible' : 'hidden')};
+  color: ${({ theme }) => theme.surfaceIcon};
   ${({ compactMode }) =>
     compactMode
       ? `
-          grid-area: external;
+          grid-area: topright;
+          margin-left: auto;
         `
       : `
           position: absolute;
           top: ${2 * GU}px;
           right: ${2 * GU}px;
-        `}
+        `};
 `
 
 export default DiscoverApps
