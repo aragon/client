@@ -30,6 +30,7 @@ const RepoBadge = ({ repo }) => {
       css={`
         display: inline-flex;
         align-items: center;
+        min-width: 0;
       `}
     >
       <Link
@@ -45,16 +46,21 @@ const RepoBadge = ({ repo }) => {
           height: 22px;
           align-items: center;
           text-decoration: none;
+          width: 100%;
         `}
       >
         <AppIcon
           app={{ baseUrl, icons }}
           src={knownIcon || undefined}
           radius={3}
+          css="min-width: 22px;"
         />
         <div
           css={`
             padding: 0 5px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
           `}
         >
           {name}
