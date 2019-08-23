@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useImageExists } from '@aragon/ui'
+import { useImageExists, RADIUS } from '@aragon/ui'
 import { appIconUrl, legacyAppIconUrl } from '../../utils'
 
 import iconSvgAcl from './assets/app-acl.svg'
@@ -12,8 +12,8 @@ import iconSvgPermissions from './assets/app-permissions.svg'
 import iconSvgRegistry from './assets/app-registry.svg'
 import iconSvgSettings from './assets/app-settings.svg'
 
-const DEFAULT_SIZE = 22
-const DEFAULT_RADIUS = 5
+const DEFAULT_SIZE = 24
+const DEFAULT_RADIUS = RADIUS
 
 // Delay before we start displaying the fallback
 const DISPLAY_FALLBACK_DELAY = 50

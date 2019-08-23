@@ -38,7 +38,6 @@ class Wrapper extends React.PureComponent {
     historyPush: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
-    onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
@@ -105,10 +104,6 @@ class Wrapper extends React.PureComponent {
   }
 
   openApp = (instanceId, { params, localPath } = {}) => {
-    if (this.props.autoClosingPanel) {
-      // this.handleMenuPanelClose()
-    }
-
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
   }
@@ -233,7 +228,6 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       daoStatus,
       locator,
-      onRequestAppsReload,
       onRequestEnable,
       repos,
       transactionBag,
@@ -281,7 +275,6 @@ class Wrapper extends React.PureComponent {
           daoStatus={daoStatus}
           onOpenApp={this.openApp}
           onOpenPreferences={this.openPreferences}
-          onRequestAppsReload={onRequestAppsReload}
           onRequestEnable={onRequestEnable}
         >
           <AppLoader
