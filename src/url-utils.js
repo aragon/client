@@ -52,3 +52,16 @@ export function repoBaseUrl(repo, gateway = ipfsDefaultConf.gateway) {
     gateway
   )
 }
+
+const GITHUB = 'https://github.com'
+const GITLAB = 'https://gitlab.com'
+const BITBUCKET = 'https://bitbucket.com'
+
+export const parseHub = url =>
+  url.toLowerCase().indexOf(GITHUB) === 0
+    ? 'GitHub'
+    : url.toLowerCase().indexOf(GITLAB)
+    ? 'GitLab'
+    : url.toLowerCae().indexOf(BITBUCKET)
+    ? 'Bitbucket'
+    : url
