@@ -484,7 +484,6 @@ class App extends React.Component {
                     />
                   </div>
 
-                  <HelpScoutBeacon locator={locator} apps={apps} />
                 </ActivityProvider>
               </FavoriteDaosProvider>
             </LocalIdentityModalProvider>
