@@ -12,8 +12,8 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
+import RepoBadge from '../../components/RepoBadge/RepoBadge'
 import { RepoType } from '../../prop-types'
-import RepoBadge from './RepoBadge'
 import { parseHub } from '../../url-utils'
 
 class UpgradeAppPanel extends React.PureComponent {
