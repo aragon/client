@@ -33,6 +33,7 @@ const RepoBadge = ({ repo }) => {
       `}
     >
       <Link
+        target="_blank"
         href={blockExplorerUrl('address', contractAddress, {
           networkType: network.type,
         })}
