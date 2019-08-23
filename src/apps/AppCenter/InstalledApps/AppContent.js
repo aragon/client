@@ -22,19 +22,7 @@ import { RepoType } from '../../../prop-types'
 import { useRepoDetails } from '../../../hooks'
 import { network } from '../../../environment'
 import Screenshots from '../Screenshots'
-
-const GITHUB = 'https://github.com'
-const GITLAB = 'https://gitlab.com'
-const BITBUCKET = 'https://bitbucket.com'
-
-const parseHub = url =>
-  url.toLowerCase().indexOf(GITHUB) === 0
-    ? 'GitHub'
-    : url.toLowerCase().indexOf(GITLAB)
-    ? 'GitLab'
-    : url.toLowerCae().indexOf(BITBUCKET)
-    ? 'Bitbucket'
-    : url
+import { parseHub } from '../../../url-utils'
 
 // Exclude the width of MenuPanel
 const appBelow = (below, value) =>
