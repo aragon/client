@@ -3,54 +3,47 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Button,
-  ExternalLink,
+  Link,
   Info,
   SidePanel,
   SidePanelSeparator,
   SidePanelSplit,
   GU,
-  blockExplorerUrl,
+  textStyle,
+  useTheme,
 } from '@aragon/ui'
-import { AragonType, DaoAddressType, ReposListType } from '../../prop-types'
-import { TextLabel } from '../../components/TextStyles'
+import {
+  AragonType,
+  DaoAddressType,
+  ReposListType,
+  RepoContentType,
+} from '../../prop-types'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import { network } from '../../environment'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
 import { repoBaseUrl } from '../../url-utils'
+import RepoBadge from '../../components/RepoBadge/RepoBadge'
+import { parseHub } from '../../url-utils'
 
-const VERSION = '0.7 Bella'
+const VERSION = '0.8 Camino'
 const SOURCE = [
   'github.com/aragon/aragon-apps',
   'https://github.com/aragon/aragon-apps',
 ]
 const REGISTRY = ['aragonpm.eth', 'https://etherscan.io/address/aragonpm.eth']
 
-function getAppVersionData(repo) {
-  const { content, version } = repo
-  return {
-    appId: content.appId,
-    baseUrl: repoBaseUrl(repo),
-    contractAddress: content.contractAddress,
-    icons: content.icons,
-    knownIcon: KNOWN_ICONS.has(content.appId)
-      ? KNOWN_ICONS.get(content.appId)
-      : null,
-    name: content.name,
-    version,
-  }
-}
-
 const UpgradeOrganizationPanel = React.memo(
   ({ repos = [], opened, onClose, daoAddress, wrapper }) => {
+    const theme = useTheme()
     const [currentVersions, newVersions] = useMemo(
       () =>
         repos
           .filter(repo => isKnownRepo(repo.appId))
           .reduce(
             (results, repo) => [
-              [...results[0], getAppVersionData(repo.currentVersion)],
-              [...results[1], getAppVersionData(repo.latestVersion)],
+              [...results[0], repo.currentVersion],
+              [...results[1], repo.latestVersion],
             ],
             [[], []]
           ),
@@ -98,32 +91,41 @@ const UpgradeOrganizationPanel = React.memo(
         opened={opened}
         onClose={onClose}
       >
-        <SidePanelSplit>
+        <SidePanelSplit
+          css={`
+            border-bottom: 1px solid ${theme.border};
+            ${textStyle('body2')};
+          `}
+        >
           <div>
-            <Heading2>Current version</Heading2>
+            <Heading2 theme={theme}>Current version</Heading2>
             <div>
               {currentVersions.map(appVersion => (
-                <AppVersion key={appVersion.appId} {...appVersion} />
+                <AppVersion key={appVersion.content.appId} repo={appVersion} />
               ))}
             </div>
           </div>
           <div>
-            <Heading2>New version</Heading2>
+            <Heading2 theme={theme}>New version</Heading2>
             {newVersions.map(appVersion => (
-              <AppVersion key={appVersion.appId} {...appVersion} />
+              <AppVersion key={appVersion.content.appId} repo={appVersion} />
             ))}
           </div>
         </SidePanelSplit>
 
         <Part>
-          <Heading2>Source code</Heading2>
+          <Heading2 theme={theme}>Source code</Heading2>
           <p>
-            <ExternalLink href={SOURCE[1]}>{SOURCE[0]}</ExternalLink>
+            <Link target="_blank" href={SOURCE[1]}>
+              {parseHub(SOURCE[0])}
+            </Link>
           </p>
 
-          <Heading2>Aragon official registry</Heading2>
+          <Heading2 theme={theme}>Aragon official registry</Heading2>
           <p>
-            <ExternalLink href={REGISTRY[1]}>{REGISTRY[0]}</ExternalLink>
+            <Link target="_blank" href={REGISTRY[1]}>
+              {parseHub(REGISTRY[0])}
+            </Link>
           </p>
         </Part>
 
@@ -135,7 +137,16 @@ const UpgradeOrganizationPanel = React.memo(
               margin: ${2 * GU}px 0;
             `}
           >
-            <Info.Action title="Action to be triggered">
+            <Button mode="strong" wide onClick={handleUpgradeAll}>
+              Upgrade your organization
+            </Button>
+          </div>
+          <div
+            css={`
+              margin: ${2 * GU}px 0;
+            `}
+          >
+            <Info>
               <p
                 css={`
                   margin-top: ${GU}px;
@@ -144,16 +155,7 @@ const UpgradeOrganizationPanel = React.memo(
               >
                 All your app instances will be upgraded to Aragon {VERSION}.
               </p>
-            </Info.Action>
-          </div>
-          <div
-            css={`
-              margin: ${2 * GU}px 0;
-            `}
-          >
-            <Button mode="strong" wide onClick={handleUpgradeAll}>
-              Upgrade your organization
-            </Button>
+            </Info>
           </div>
         </Part>
       </SidePanel>
@@ -166,17 +168,12 @@ UpgradeOrganizationPanel.propTypes = {
   onClose: PropTypes.func.isRequired,
   repos: ReposListType,
   daoAddress: DaoAddressType.isRequired,
+  theme: PropTypes.object,
   wrapper: AragonType,
 }
 
-const AppVersion = ({
-  baseUrl,
-  contractAddress,
-  icons,
-  knownIcon,
-  name,
-  version,
-}) => {
+const AppVersion = ({ repo }) => {
+  const { version } = repo
   const major = version.split('.')[0]
   return (
     <div
@@ -194,53 +191,29 @@ const AppVersion = ({
       >
         v{major || version}
       </div>
-      <ExternalLink
-        href={blockExplorerUrl('address', contractAddress, {
-          networkType: network.type,
-        })}
-        css={`
-          display: flex;
-          background: #daeaef;
-          border-radius: 3px;
-          align-items: center;
-          height: 22px;
-          align-items: center;
-          text-decoration: none;
-        `}
-      >
-        <AppIcon
-          app={{ baseUrl, icons }}
-          src={knownIcon || undefined}
-          radius={3}
-        />
-        <div
-          css={`
-            padding: 0 5px;
-          `}
-        >
-          {name}
-        </div>
-      </ExternalLink>
+      <RepoBadge repo={repo} />
     </div>
   )
 }
 
 AppVersion.propTypes = {
-  baseUrl: PropTypes.string.isRequired,
-  contractAddress: PropTypes.string.isRequired,
-  icons: PropTypes.array.isRequired,
-  knownIcon: PropTypes.string,
-  name: PropTypes.string.isRequired,
-  version: PropTypes.string.isRequired,
+  repo: PropTypes.shape({
+    content: RepoContentType.isRequired,
+    version: PropTypes.string.isRequired,
+  }),
 }
 
-const Heading2 = styled(TextLabel).attrs({ as: 'h2' })`
+const Heading2 = styled.h2`
+  color: ${({ theme }) => theme.contentSecondary};
+  ${textStyle('label2')};
   white-space: nowrap;
+  margin-bottom: ${2 * GU}px;
 `
 
 const Part = styled.div`
+  ${textStyle('body2')};
   padding: ${GU}px 0 ${3 * GU}px;
-  ${Heading2} {
+  h2 {
     margin: ${2 * GU}px 0 ${GU}px;
   }
 `
