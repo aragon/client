@@ -51,7 +51,7 @@ const AppCardContent = ({ repo, compactMode }) => {
               `}
         `}
       >
-        <AppIcon app={{ baseUrl, icons }} size={9 * GU} />
+        <AppIcon app={{ baseUrl, icons }} size={9 * GU} radius={12} />
       </div>
       <p
         css={`

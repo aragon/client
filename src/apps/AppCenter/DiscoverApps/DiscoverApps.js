@@ -58,7 +58,7 @@ const DiscoverApps = React.memo(() => {
               />
             )}
             <Icon compactMode={compactMode}>
-              <AppIcon size={9 * GU} src={app.icon} />
+              <AppIcon size={9 * GU} src={app.icon} radius={12} />
             </Icon>
             <Name compactMode={compactMode}>{app.name}</Name>
             <TagWrapper compactMode={compactMode}>

@@ -102,7 +102,7 @@ const AppContent = React.memo(
                       grid-gap: ${2 * GU}px;
                     `}
                   >
-                    <AppIcon app={{ baseUrl, icons }} size={80} />
+                    <AppIcon app={{ baseUrl, icons }} size={80} radius={12} />
                     <div
                       css={`
                         display: flex;
