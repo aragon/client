@@ -174,23 +174,17 @@ UpgradeOrganizationPanel.propTypes = {
 
 const AppVersion = ({ repo }) => {
   const { version } = repo
-  const major = version.split('.')[0]
   return (
     <div
       css={`
-        display: flex;
+        display: inline-grid;
+        grid-template-columns: auto auto;
+        grid-gap: ${2 * GU}px;
         align-items: center;
-        margin: 10px 0;
+        margin: ${0.5 * GU}px 0;
       `}
     >
-      <div
-        css={`
-          width: 20px;
-          margin-right: 5px;
-        `}
-      >
-        v{major || version}
-      </div>
+      <div css="width: 26px;">{version}</div>
       <RepoBadge repo={repo} />
     </div>
   )
