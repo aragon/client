@@ -1,11 +1,10 @@
 import React, { useEffect, useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { AppType, AragonType } from '../../prop-types'
-import { Button, GU, Header, IconPlus, Layout, useLayout } from '@aragon/ui'
+import { Button, GU, Header, IconPlus, useLayout } from '@aragon/ui'
 import { addressesEqual, isAddress } from '../../web3-utils'
 import { usePermissions } from '../../contexts/PermissionsContext'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import useAppWidth from '../useAppWidth'
 import Home from './Home/Home'
 import AppPermissions from './AppPermissions'
 import AssignPermissionPanel from './AssignPermissionPanel'
@@ -236,11 +235,4 @@ Permissions.propTypes = {
   wrapper: AragonType,
 }
 
-export default props => {
-  const appWidth = useAppWidth()
-  return (
-    <Layout parentWidth={appWidth}>
-      <Permissions {...props} />
-    </Layout>
-  )
-}
+export default Permissions
