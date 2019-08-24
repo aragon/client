@@ -111,10 +111,10 @@ class MenuPanel extends React.PureComponent {
               padding-top: ${3 * GU}px;
             `}
           >
-            <Heading>Apps</Heading>
+            <Heading label="Apps" />
             <div
               css={`
-                margin-top: ${1 * GU}px;
+                margin-top: ${0.5 * GU}px;
               `}
             >
               {menuApps.map(app =>
@@ -135,6 +135,7 @@ class MenuPanel extends React.PureComponent {
                 <div
                   css={`
                     margin-top: ${1 * GU}px;
+                    padding-bottom: ${3 * GU}px;
                   `}
                 >
                   <SystemAppsToggle onClick={this.handleToggleSystemApps}>
@@ -148,13 +149,11 @@ class MenuPanel extends React.PureComponent {
                       }}
                     />
                     <Heading
+                      label="System"
                       css={`
-                        display: flex;
-                        justify-content: flex-start;
-                        align-items: center;
+                        height: ${5 * GU}px;
                       `}
                     >
-                      System
                       <SystemAppsToggleArrow
                         style={{
                           marginLeft: `${1 * GU}px`,
@@ -168,6 +167,11 @@ class MenuPanel extends React.PureComponent {
                   </SystemAppsToggle>
                   <div css="overflow: hidden">
                     <AnimDiv
+                      css={`
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-end;
+                      `}
                       style={{
                         opacity: openProgress,
                         height: openProgress.interpolate(
@@ -351,18 +355,31 @@ function Main(props) {
   )
 }
 
-function Heading(props) {
+function Heading({ label, children, ...props }) {
   const theme = useTheme()
   return (
     <h1
       css={`
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: ${3 * GU}px;
         margin-left: ${3 * GU}px;
+        color: ${theme.surfaceContentSecondary};
         ${textStyle('label2')}
         font-weight: 400;
-        color: ${theme.surfaceContentSecondary};
       `}
       {...props}
-    />
+    >
+      <div
+        css={`
+          margin-top: 2px;
+        `}
+      >
+        {label}
+      </div>
+      <div>{children}</div>
+    </h1>
   )
 }
 
@@ -373,7 +390,6 @@ function SystemAppsToggle(props) {
       css={`
         position: relative;
         width: 100%;
-        padding: ${1 * GU}px 0;
         &:active {
           background: ${theme.surfacePressed};
         }
