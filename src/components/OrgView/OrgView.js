@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, GU, useTheme, useThemeMode, useViewport } from '@aragon/ui'
+import {
+  ButtonBase,
+  ButtonIcon,
+  IconMenu,
+  GU,
+  useTheme,
+  useThemeMode,
+  useViewport,
+} from '@aragon/ui'
 import {
   AppInstanceGroupType,
   AppsStatusType,
@@ -10,9 +18,8 @@ import {
 } from '../../prop-types'
 import { DAO_STATUS_LOADING } from '../../symbols'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
-import CombinedPanel from '../MenuPanel/CombinedPanel'
-import GlobalSettingsButton from './GlobalSettingsButton'
-import { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
+import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
+import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
 
 function ThemeModeButton() {
   const { mode, toggle } = useThemeMode()
@@ -36,27 +43,41 @@ function OrgView({
   daoStatus,
   onOpenApp,
   onOpenPreferences,
-  onRequestAppsReload,
 }) {
   const theme = useTheme()
   const { width, below } = useViewport()
 
   const autoClosingPanel = below('medium')
-  const [menuPanelOpened, setMenuPanelOpened] = useState(!autoClosingPanel)
+  const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
+
+  const toggleMenuPanel = useCallback(
+    () => setMenuPanelOpen(opened => !opened),
+    []
+  )
+  const handleCloseMenuPanel = useCallback(() => setMenuPanelOpen(false), [])
+  const handleOpenApp = useCallback(
+    (...args) => {
+      if (autoClosingPanel) {
+        handleCloseMenuPanel()
+      }
+      onOpenApp(args)
+    },
+    [autoClosingPanel, handleCloseMenuPanel, onOpenApp]
+  )
 
   useEffect(() => {
-    if (!autoClosingPanel) {
-      setMenuPanelOpened(false)
-    }
+    setMenuPanelOpen(!autoClosingPanel)
   }, [autoClosingPanel])
 
-  // TODO: update AppWidthContext's value when menu panel is closed
   return (
-    <AppWidthContext.Provider value={width - MENU_PANEL_WIDTH}>
+    <AppWidthContext.Provider
+      value={autoClosingPanel ? width : width - MENU_PANEL_WIDTH}
+    >
       <div
         css={`
           display: flex;
           flex-direction: column;
+          position: relative;
           height: 100%;
           width: 100%;
           background: ${theme.background};
@@ -66,27 +87,41 @@ function OrgView({
           css={`
             flex-shrink: 0;
             position: relative;
-            z-index: 1;
+            z-index: 2;
             height: ${8 * GU}px;
             display: flex;
             justify-content: space-between;
             background: ${theme.surface};
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
           `}
         >
-          <OrganizationSwitcher
-            loading={daoStatus === DAO_STATUS_LOADING}
-            currentDao={{
-              name: daoAddress.domain,
-              address: daoAddress.address,
-            }}
-          />
+          {autoClosingPanel ? (
+            <ButtonIcon
+              label="Open menu"
+              onClick={toggleMenuPanel}
+              css={`
+                position: relative;
+                top: ${2 * GU}px;
+                left: ${2 * GU}px;
+              `}
+            >
+              <IconMenu />
+            </ButtonIcon>
+          ) : (
+            <OrganizationSwitcher
+              loading={daoStatus === DAO_STATUS_LOADING}
+              currentDao={{
+                name: daoAddress.domain,
+                address: daoAddress.address,
+              }}
+            />
+          )}
           <div
             css={`
               display: flex;
             `}
           >
-            <GlobalSettingsButton onOpen={onOpenPreferences} />
+            <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ThemeModeButton />
           </div>
         </div>
@@ -94,40 +129,39 @@ function OrgView({
           css={`
             flex-grow: 1;
             overflow-y: hidden;
-            margin-top: 1px;
+            margin-top: 2px;
           `}
         >
           <div
             css={`
-              position: relative;
-              z-index: 2;
               height: 100%;
               display: flex;
             `}
           >
-            <CombinedPanel
+            <MenuPanel
               activeInstanceId={activeInstanceId}
               appInstanceGroups={appInstanceGroups}
-              apps={apps}
               appsStatus={appsStatus}
+              autoClosing={autoClosingPanel}
               daoAddress={daoAddress}
               daoStatus={daoStatus}
-              onOpenApp={onOpenApp}
-              onOpenPreferences={onOpenPreferences}
-              onRequestAppsReload={onRequestAppsReload}
-              opened={menuPanelOpened}
+              onMenuPanelClose={handleCloseMenuPanel}
+              onOpenApp={handleOpenApp}
+              opened={menuPanelOpen}
+              css={`
+                z-index: 3;
+              `}
+            />
+            <div
+              css={`
+                position: relative;
+                z-index: 1;
+                flex-grow: 1;
+                overflow: hidden;
+              `}
             >
-              <div
-                css={`
-                  position: relative;
-                  z-index: 1;
-                  flex-grow: 1;
-                  overflow: auto;
-                `}
-              >
-                {children}
-              </div>
-            </CombinedPanel>
+              {children}
+            </div>
           </div>
         </div>
       </div>
@@ -144,7 +178,6 @@ OrgView.propTypes = {
   daoStatus: DaoStatusType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onOpenPreferences: PropTypes.func.isRequired,
-  onRequestAppsReload: PropTypes.func.isRequired,
 }
 
 export { AppWidthContext }

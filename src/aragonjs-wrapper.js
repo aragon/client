@@ -311,7 +311,6 @@ const initWrapper = async (
     provider,
     walletProvider = null,
     ipfsConf = ipfsDefaultConf,
-    onError = noop,
     onApps = noop,
     onPermissions = noop,
     onForwarders = noop,
@@ -371,12 +370,7 @@ const initWrapper = async (
       throw new DAONotFound(dao)
     }
     if (err.message === 'connection not open') {
-      onError(
-        new NoConnection(
-          'The wrapper can not be initialized without a connection'
-        )
-      )
-      return
+      throw new NoConnection('No Ethereum connection detected')
     }
 
     throw err

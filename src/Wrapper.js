@@ -5,6 +5,7 @@ import memoize from 'lodash.memoize'
 import { AppCenter, Home, Organization, Permissions } from './apps'
 import App404 from './components/App404/App404'
 import AppIFrame from './components/App/AppIFrame'
+import AppInternal from './components/App/AppInternal'
 import AppLoader from './components/App/AppLoader'
 import OrgView from './components/OrgView/OrgView'
 import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
@@ -38,7 +39,6 @@ class Wrapper extends React.PureComponent {
     historyPush: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
-    onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
@@ -105,10 +105,6 @@ class Wrapper extends React.PureComponent {
   }
 
   openApp = (instanceId, { params, localPath } = {}) => {
-    if (this.props.autoClosingPanel) {
-      // this.handleMenuPanelClose()
-    }
-
     const { historyPush, locator } = this.props
     historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
   }
@@ -233,7 +229,6 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       daoStatus,
       locator,
-      onRequestAppsReload,
       onRequestEnable,
       repos,
       transactionBag,
@@ -281,7 +276,6 @@ class Wrapper extends React.PureComponent {
           daoStatus={daoStatus}
           onOpenApp={this.openApp}
           onOpenPreferences={this.openPreferences}
-          onRequestAppsReload={onRequestAppsReload}
           onRequestEnable={onRequestEnable}
         >
           <AppLoader
@@ -364,15 +358,17 @@ class Wrapper extends React.PureComponent {
 
     if (instanceId === 'permissions') {
       return (
-        <Permissions
-          apps={apps}
-          appsLoading={appsLoading}
-          permissionsLoading={permissionsLoading}
-          localPath={localPath}
-          onMessage={this.handleAppMessage}
-          onPathRequest={this.handlePathRequest}
-          wrapper={wrapper}
-        />
+        <AppInternal>
+          <Permissions
+            apps={apps}
+            appsLoading={appsLoading}
+            permissionsLoading={permissionsLoading}
+            localPath={localPath}
+            onMessage={this.handleAppMessage}
+            onPathRequest={this.handlePathRequest}
+            wrapper={wrapper}
+          />
+        </AppInternal>
       )
     }
 
@@ -395,17 +391,19 @@ class Wrapper extends React.PureComponent {
 
     if (instanceId === 'organization') {
       return (
-        <Organization
-          account={account}
-          apps={apps}
-          appsLoading={appsLoading}
-          daoAddress={daoAddress}
-          onMessage={this.handleAppMessage}
-          onOpenApp={this.openApp}
-          walletNetwork={walletNetwork}
-          walletWeb3={walletWeb3}
-          walletProviderId={walletProviderId}
-        />
+        <AppInternal>
+          <Organization
+            account={account}
+            apps={apps}
+            appsLoading={appsLoading}
+            daoAddress={daoAddress}
+            onMessage={this.handleAppMessage}
+            onOpenApp={this.openApp}
+            walletNetwork={walletNetwork}
+            walletWeb3={walletWeb3}
+            walletProviderId={walletProviderId}
+          />
+        </AppInternal>
       )
     }
 
