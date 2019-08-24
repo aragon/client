@@ -1,18 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  Header,
-  IconRefresh,
-  Layout,
-  Tabs,
-  useLayout,
-} from '@aragon/ui'
+import { Button, Header, IconRefresh, Tabs, useLayout } from '@aragon/ui'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
-import useAppWidth from '../useAppWidth'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import {
   AppInstanceGroupType,
@@ -190,17 +182,8 @@ class AppCenter extends React.Component {
   }
 }
 
-const WithLayout = React.memo(function WithLayout(props) {
+export default React.memo(props => {
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
   return <AppCenter {...props} compactMode={compactMode} />
-})
-
-export default React.memo(props => {
-  const appWidth = useAppWidth()
-  return (
-    <Layout parentWidth={appWidth}>
-      <WithLayout {...props} />
-    </Layout>
-  )
 })
