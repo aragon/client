@@ -330,9 +330,7 @@ class Wrapper extends React.PureComponent {
       apps,
       appsStatus,
       canUpgradeOrg,
-      connected,
       daoAddress,
-      locator,
       permissionsLoading,
       repos,
       walletNetwork,
@@ -346,13 +344,9 @@ class Wrapper extends React.PureComponent {
 
     if (instanceId === 'home') {
       return (
-        <Home
-          apps={apps}
-          connected={connected}
-          dao={locator.dao}
-          onMessage={this.handleAppMessage}
-          onOpenApp={this.openApp}
-        />
+        <AppInternal>
+          <Home apps={apps} onOpenApp={this.openApp} />
+        </AppInternal>
       )
     }
 
