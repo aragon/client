@@ -58,7 +58,6 @@ class MenuPanel extends React.PureComponent {
     daoAddress: DaoAddressType.isRequired,
     daoStatus: DaoStatusType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    showOrgSwitcher: PropTypes.bool,
   }
 
   state = {
@@ -86,12 +85,7 @@ class MenuPanel extends React.PureComponent {
   }
 
   render() {
-    const {
-      appInstanceGroups,
-      daoAddress,
-      daoStatus,
-      showOrgSwitcher,
-    } = this.props
+    const { appInstanceGroups, daoAddress, daoStatus } = this.props
     const { systemAppsOpened, systemAppsToggled } = this.state
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
@@ -110,20 +104,11 @@ class MenuPanel extends React.PureComponent {
             box-shadow: 2px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.05);
           `}
         >
-          {showOrgSwitcher && (
-            <OrganizationSwitcher
-              loading={daoStatus === DAO_STATUS_LOADING}
-              currentDao={{
-                name: daoAddress.domain,
-                address: daoAddress.address,
-              }}
-            />
-          )}
           <nav
             css={`
               overflow-y: auto;
               flex: 1 1 0;
-              padding-top: ${(showOrgSwitcher ? 2 : 4) * GU}px;
+              padding-top: ${3 * GU}px;
             `}
           >
             <Heading>Apps</Heading>
@@ -333,7 +318,7 @@ function AnimatedMenuPanel({
               ),
             }}
           >
-            <MenuPanel showOrgSwitcher={autoClosing} {...props} />
+            <MenuPanel {...props} />
           </AnimDiv>
         </div>
       )}
