@@ -143,14 +143,10 @@ function OrgView({
               appInstanceGroups={appInstanceGroups}
               appsStatus={appsStatus}
               autoClosing={autoClosingPanel}
-              daoAddress={daoAddress}
-              daoStatus={daoStatus}
               onMenuPanelClose={handleCloseMenuPanel}
               onOpenApp={handleOpenApp}
               opened={menuPanelOpen}
-              css={`
-                z-index: 3;
-              `}
+              css="z-index: 3"
             />
             <div
               css={`

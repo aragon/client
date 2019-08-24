@@ -12,17 +12,10 @@ import {
 } from '@aragon/ui'
 import memoize from 'lodash.memoize'
 import { lerp } from '../../math-utils'
-import {
-  AppInstanceGroupType,
-  AppsStatusType,
-  DaoAddressType,
-  DaoStatusType,
-} from '../../prop-types'
+import { AppInstanceGroupType, AppsStatusType } from '../../prop-types'
 import { staticApps } from '../../static-apps'
-import { DAO_STATUS_LOADING } from '../../symbols'
 import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
 
 export const MENU_PANEL_SHADOW_WIDTH = 3
@@ -55,8 +48,6 @@ class MenuPanel extends React.PureComponent {
     activeInstanceId: PropTypes.string,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
-    daoAddress: DaoAddressType.isRequired,
-    daoStatus: DaoStatusType.isRequired,
     onOpenApp: PropTypes.func.isRequired,
   }
 
@@ -85,7 +76,7 @@ class MenuPanel extends React.PureComponent {
   }
 
   render() {
-    const { appInstanceGroups, daoAddress, daoStatus } = this.props
+    const { appInstanceGroups } = this.props
     const { systemAppsOpened, systemAppsToggled } = this.state
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
@@ -381,6 +372,11 @@ function Heading({ label, children, ...props }) {
       <div>{children}</div>
     </h1>
   )
+}
+
+Heading.propTypes = {
+  children: PropTypes.node,
+  label: PropTypes.string.isRequired,
 }
 
 function SystemAppsToggle(props) {
