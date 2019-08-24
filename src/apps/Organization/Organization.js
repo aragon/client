@@ -7,7 +7,6 @@ import {
   Header,
   IconCoin,
   Info,
-  Layout,
   GU,
   textStyle,
   unselectable,
@@ -21,7 +20,6 @@ import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
 import providerString from '../../provider-strings'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
-import useAppWidth from '../useAppWidth'
 
 const Organization = React.memo(function Organization({
   account,
@@ -258,11 +256,4 @@ const OpenAppButton = props => (
   />
 )
 
-export default props => {
-  const appWidth = useAppWidth()
-  return (
-    <Layout parentWidth={appWidth}>
-      <Organization {...props} />
-    </Layout>
-  )
-}
+export default Organization

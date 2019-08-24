@@ -157,7 +157,7 @@ function OrgView({
                 position: relative;
                 z-index: 1;
                 flex-grow: 1;
-                overflow: auto;
+                overflow: hidden;
               `}
             >
               {children}
