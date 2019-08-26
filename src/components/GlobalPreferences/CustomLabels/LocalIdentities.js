@@ -19,9 +19,9 @@ import {
   Info,
   TextInput,
   breakpoint,
-  font,
   useTheme,
   useViewport,
+  textStyle,
 } from '@aragon/ui'
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import Import from './Import'
@@ -83,6 +83,8 @@ function LocalIdentities({
             value={searchTerm}
             css={`
               width: ${compact ? 25 * GU : 30 * GU}px;
+              ${textStyle('body2')};
+              color: ${searchTerm.trim() ? theme.surfaceContent : theme.hint};
             `}
           />
         </div>
@@ -120,7 +122,7 @@ function LocalIdentities({
           />
         )}
         <Actions
-          someSelected={someSelected}
+          disabled={!someSelected}
           onShare={onShare}
           onExport={onExport}
           onRemove={onRemove}
@@ -134,11 +136,12 @@ function LocalIdentities({
             css={`
               text-transform: uppercase;
               color: ${theme.content};
-              ${font({ size: 'xsmall' })};
               display: grid;
               grid-template-columns: 1fr 1fr;
               align-items: center;
               margin-bottom: ${1 * GU}px;
+              ${textStyle('label2')};
+              color: ${theme.contentSecondary};
             `}
           >
             <div
@@ -266,7 +269,7 @@ LocalIdentities.propTypes = {
   sortIdentities: PropTypes.oneOf([ASC, DESC]).isRequired,
 }
 
-function Actions({ onExport, onRemove, onShare, someSelected }) {
+function Actions({ onExport, onRemove, onShare, disabled }) {
   const theme = useTheme()
   const { below, above } = useViewport()
   const compact = below('medium')
@@ -288,10 +291,15 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
   return (
     <React.Fragment>
       <ButtonDropDown
+        disabled={disabled}
         compact={compact}
         css="z-index: 2;"
         items={[
-          <ActionSpan>
+          <ActionSpan
+            css={`
+              color: ${theme.surfaceContent};
+            `}
+          >
             <IconShare
               css={`
                 color: ${theme.surfaceIcon};
@@ -324,7 +332,9 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
           <span
             css={`
               height: 24px;
-              font-size: 16px;
+              $textStyle('body2');
+              color: ${theme.surfaceContent};
+
               ${above('medium') &&
                 `
                   display: grid;
@@ -364,7 +374,7 @@ Actions.propTypes = {
   onExport: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onShare: PropTypes.func.isRequired,
-  someSelected: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool.isRequired,
 }
 
 const ActionSpan = styled.span`
@@ -373,7 +383,7 @@ const ActionSpan = styled.span`
   grid-template-columns: auto auto;
   grid-gap: ${1 * GU}px;
   padding-left: ${1 * GU}px;
-  font-size: 16px;
+  ${textStyle('body2')};
 `
 
 const StyledCheckbox = styled(Checkbox)`
