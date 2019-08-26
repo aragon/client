@@ -18,22 +18,65 @@ import { createSubscription } from './notification-service-api'
 const getEventNamesFromAbi = memoize(abi =>
   abi.filter(item => item.type === 'event').map(item => item.name)
 )
-export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
+
+const filterSubscribedEvents = (abiEvents, subscribedEvents) =>
+  abiEvents.filter(event => !subscribedEvents.includes(event))
+
+function getSubscribableEvents(subscriptions, abi) {
+  const subscribedEvents = subscriptions.map(({ eventName }) => eventName)
+  const abiEvents = getEventNamesFromAbi(abi)
+  return filterSubscribedEvents(abiEvents, subscribedEvents)
+}
+
+function getSubscribableApps(apps, subscriptions) {
+  let subscribableApps = apps.filter(
+    app =>
+      !app.isAragonOsInternalApp &&
+      getSubscribableEvents(subscriptions, app.abi).length > 0 // When subscribed to all events of an app, filter out apps with no subscribable events
+  )
+
+  let subscribableEvents = subscribableApps.map(app =>
+    getSubscribableEvents(subscriptions, app.abi)
+  )
+
+  return [subscribableApps, subscribableEvents]
+}
+
+export function SubscriptionsForm({
+  apps,
+  dao,
+  isFetchingSubscriptions,
+  onApiError,
+  onCreate,
+  subscriptions,
+  token,
+}) {
   // TODO: get subscriptions and filter out existing options
   const [selectedAppIdx, setSelectedAppIdx] = useState(-1)
   const [selectedEventIdx, setSelectedEventIdx] = useState(-1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const theme = useTheme()
-  const subscriptionApps = apps.filter(
-    ({ isAragonOsInternalApp }) => !isAragonOsInternalApp
+  const [subscribableApps, subscribableEvents] = getSubscribableApps(
+    apps,
+    subscriptions
   )
-  const appNames = subscriptionApps.map(
+
+  const appNames = subscribableApps.map(
     app => `${app.name} ${app.identifier ? `(${app.identifier})` : ''}`
   )
   const selectedApp =
-    selectedAppIdx === -1 ? null : subscriptionApps[selectedAppIdx]
-  const eventNames =
-    selectedAppIdx === -1 ? [''] : getEventNamesFromAbi(selectedApp.abi)
+    selectedAppIdx === -1 ? null : subscribableApps[selectedAppIdx]
+
+  let eventNames = ['']
+
+  if (selectedApp) {
+    // Once an app is selected, get corresponding events
+    eventNames = subscribableEvents[selectedAppIdx]
+    if (eventNames.length === 0) {
+      // if subscribed to all events reset the app
+      setSelectedAppIdx(-1)
+    }
+  }
 
   const handleAppChange = index => {
     setSelectedAppIdx(index)
@@ -63,6 +106,7 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
       }
       await createSubscription(payload)
       setSelectedEventIdx(-1)
+      setSelectedAppIdx(-1) // Reset app as it may be unavailable if subscribed to all that app's events
       onCreate()
     } catch (e) {
       onApiError(e.message)
@@ -71,6 +115,21 @@ export function SubscriptionsForm({ apps, dao, onApiError, onCreate, token }) {
   }
   const isSubscribeDisabled =
     selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
+
+  if (isFetchingSubscriptions) {
+    return (
+      <Box heading="Create Subscriptions">
+        <LoadingRing />
+      </Box>
+    )
+  }
+
+  if (subscribableApps.length === 0 && !isFetchingSubscriptions) {
+    return (
+      <Box heading="Create Subscriptions">You are subscribed to all events</Box>
+    )
+  }
+
   return (
     <Box heading="Create Subscriptions">
       <div
@@ -145,7 +204,9 @@ export const Label = styled.label`
 SubscriptionsForm.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   dao: PropTypes.string,
+  isFetchingSubscriptions: PropTypes.bool,
   onApiError: PropTypes.func,
   onCreate: PropTypes.func,
+  subscriptions: PropTypes.array,
   token: PropTypes.string,
 }

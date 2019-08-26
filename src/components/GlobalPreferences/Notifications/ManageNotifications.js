@@ -80,6 +80,8 @@ export default function ManageNotifications({
             dao={dao}
             apps={apps}
             token={token}
+            isFetchingSubscriptions={isFetching}
+            subscriptions={subscriptions}
           />
         }
         secondary={
