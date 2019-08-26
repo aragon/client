@@ -1,7 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { AragonType } from '../../../prop-types'
-import { Box, Button, Info, GU, Text, TextInput, theme } from '@aragon/ui'
+import {
+  Box,
+  Button,
+  Info,
+  GU,
+  Text,
+  TextInput,
+  textStyle,
+  useTheme,
+} from '@aragon/ui'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
 import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
@@ -20,6 +29,7 @@ function Network({ wrapper }) {
     handleIpfsGatewayChange,
     network,
   } = useNetwork(wrapper)
+  const theme = useTheme()
 
   return (
     <React.Fragment>
@@ -30,7 +40,11 @@ function Network({ wrapper }) {
             value={ethNode}
             wide
             onChange={handleEthNodeChange}
-            css={networkError && `border-color: ${theme.negative};`}
+            css={`
+              ${textStyle('body2')};
+              color: ${theme.contentSecondary};
+              ${networkError ? `border-color: ${theme.negative};` : ''}
+            `}
           />
           {networkError && (
             <Text color={theme.negative} size="xsmall">
@@ -57,6 +71,10 @@ function Network({ wrapper }) {
             value={ipfsGateway}
             wide
             onChange={handleIpfsGatewayChange}
+            css={`
+              ${textStyle('body2')};
+              color: ${theme.contentSecondary};
+            `}
           />
         </Label>
         <Button mode="strong" onClick={handleNetworkChange}>
