@@ -321,7 +321,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
                 ),
               }}
             >
-              <IconQuestion width={18} height={18} />
+              <IconQuestion width={22} height={22} />
             </RoundButtonIcon>
           ))
         }
