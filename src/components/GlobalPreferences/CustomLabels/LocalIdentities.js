@@ -6,6 +6,7 @@ import {
   Button,
   ButtonBase,
   Checkbox,
+  DropDown,
   GU,
   IconArrowDown,
   IconArrowUp,
@@ -25,7 +26,6 @@ import {
 } from '@aragon/ui'
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import Import from './Import'
-import ButtonDropDown from '../../ButtonDropDown/ButtonDropDown'
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { ASC, DESC } from './useLocalIdentities'
 import { iOS } from '../../../utils'
@@ -273,7 +273,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
   const theme = useTheme()
   const { below, above } = useViewport()
   const compact = below('medium')
-  const handleClick = useCallback(
+  const handleChange = useCallback(
     index => {
       if (index === 0) {
         onShare()
@@ -290,9 +290,10 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
 
   return (
     <React.Fragment>
-      <ButtonDropDown
+      <DropDown
         disabled={disabled}
         compact={compact}
+        selected={-1}
         css="z-index: 2;"
         items={[
           <ActionSpan
@@ -328,7 +329,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
             <span>Remove</span>
           </ActionSpan>,
         ]}
-        cover={
+        placeholder={
           <span
             css={`
               height: 24px;
@@ -351,20 +352,10 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
                 color: ${theme.surfaceIcon};
               `}
             />
-            {!compact && (
-              <React.Fragment>
-                <span css="text-align: left;">Actions</span>
-                <IconDown
-                  size="small"
-                  css={`
-                    color: ${theme.surfaceIcon};
-                  `}
-                />
-              </React.Fragment>
-            )}
+            {!compact && <span css="text-align: left;">Actions</span>}
           </span>
         }
-        onClick={handleClick}
+        onChange={handleChange}
       />
     </React.Fragment>
   )
@@ -380,10 +371,13 @@ Actions.propTypes = {
 const ActionSpan = styled.span`
   display: grid;
   align-items: center;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto 1fr;
   grid-gap: ${1 * GU}px;
-  padding-left: ${1 * GU}px;
   ${textStyle('body2')};
+
+  & span {
+    text-align: left;
+  }
 `
 
 const StyledCheckbox = styled(Checkbox)`
