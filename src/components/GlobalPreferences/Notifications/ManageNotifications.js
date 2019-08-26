@@ -381,5 +381,4 @@ SubscriptionsTable.propTypes = {
 
 export const Label = styled.label`
   display: block;
-  margin-bottom: ${2 * GU}px;
 `
