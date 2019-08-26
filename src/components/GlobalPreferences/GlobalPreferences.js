@@ -34,6 +34,10 @@ const SECTIONS = new Map([
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
 const TIMEOUT_TOAST = 4000
+const CUSTOM_LABELS_INDEX = 0
+const NETWORK_INDEX = 1
+const NOTIFICATIONS_INDEX = 2
+const HELP_AND_FEEDBACK_INDEX = 3
 
 function GlobalPreferences({
   apps,
@@ -97,11 +101,11 @@ function GlobalPreferences({
             selected={sectionIndex}
           />
           <main>
-            {sectionIndex === 0 && (
+            {sectionIndex === CUSTOM_LABELS_INDEX && (
               <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
             )}
-            {sectionIndex === 1 && <Network wrapper={wrapper} />}
-            {sectionIndex === 2 && (
+            {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
+            {sectionIndex === NOTIFICATIONS_INDEX && (
               <Notifications
                 apps={apps}
                 dao={dao}
@@ -110,7 +114,7 @@ function GlobalPreferences({
                 navigationIndex={2}
               />
             )}
-            {sectionIndex === 3 && <HelpAndFeedback />}
+            {sectionIndex === HELP_AND_FEEDBACK_INDEX && <HelpAndFeedback />}
           </main>
         </React.Fragment>
       )}
