@@ -128,14 +128,6 @@ export default function Notifications({
           token={token}
         />
       )
-    case AUTH_UNAUTHENTICATED:
-      return (
-        <NotificationsLogin
-          dao={dao}
-          authState={authState}
-          onEmailChange={handleEmailChange}
-        />
-      )
     case AUTH_AUTHENTICATING:
       return (
         <NotificationsVerifyBox header="Authenticating">
@@ -165,6 +157,15 @@ export default function Notifications({
             </ButtonText>
           </div>
         </NotificationsVerifyBox>
+      )
+    case AUTH_UNAUTHENTICATED:
+    default:
+      return (
+        <NotificationsLogin
+          dao={dao}
+          authState={authState}
+          onEmailChange={handleEmailChange}
+        />
       )
   }
 }
