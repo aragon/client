@@ -53,7 +53,7 @@ function LocalIdentities({
   const theme = useTheme()
 
   return (
-    <Box>
+    <Box padding={3 * GU}>
       <div
         css={`
           display: grid;
@@ -175,7 +175,7 @@ function LocalIdentities({
                     css={`
                       padding: ${0.5 * GU}px ${1 * GU}px;
                       position: relative;
-                      left: ${-1 * GU}px;
+                      left: ${-3 * GU}px;
                       border-radius: 0;
                       display: flex;
                       align-items: center;
@@ -211,7 +211,7 @@ function LocalIdentities({
                 key={address}
                 css={`
                   /* needs spacing left to compensate for list being moved to the edge */
-                  padding: ${2 * GU}px;
+                  padding: ${2 * GU}px ${3 * GU}px;
                   display: grid;
                   grid-template-columns: 1fr 1fr;
                   align-items: center;
@@ -401,9 +401,9 @@ const List = styled.ul`
   padding: 0;
   list-style: none;
   overflow: hidden;
-  width: calc(100% + ${4 * GU}px);
+  width: calc(100% + ${6 * GU}px);
   position: relative;
-  left: -${2 * GU}px;
+  left: -${3 * GU}px;
   background: ${({ surface }) => surface};
   z-index: 1;
   border-top: ${({ border }) => `1px solid ${border};`};
