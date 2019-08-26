@@ -123,7 +123,7 @@ class MenuPanel extends React.PureComponent {
             css={`
               overflow-y: auto;
               flex: 1 1 0;
-              padding-top: ${(showOrgSwitcher ? 2 : 4) * GU}px;
+              padding-top: ${(showOrgSwitcher ? 1 : 3) * GU}px;
             `}
           >
             <Heading label="Apps" />
