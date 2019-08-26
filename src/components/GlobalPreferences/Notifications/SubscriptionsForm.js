@@ -29,13 +29,13 @@ function getSubscribableEvents(subscriptions, abi) {
 }
 
 function getSubscribableApps(apps, subscriptions) {
-  let subscribableApps = apps.filter(
+  const subscribableApps = apps.filter(
     app =>
       !app.isAragonOsInternalApp &&
       getSubscribableEvents(subscriptions, app.abi).length > 0 // When subscribed to all events of an app, filter out apps with no subscribable events
   )
 
-  let subscribableEvents = subscribableApps.map(app =>
+  const subscribableEvents = subscribableApps.map(app =>
     getSubscribableEvents(subscriptions, app.abi)
   )
 
