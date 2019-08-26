@@ -65,35 +65,42 @@ function AppCard({ app, compactMode, onOpen, ...props }) {
   }, [link])
 
   return (
-    <Main compactMode={compactMode} onClick={handleClick}>
-      <StyledIconExternal compactMode={compactMode} theme={theme} link={link} />
-      <Icon compactMode={compactMode}>
-        <AppIcon size={9 * GU} src={icon} radius={12} />
-      </Icon>
-      <Name compactMode={compactMode}>{name}</Name>
-      <TagWrapper compactMode={compactMode} link={link}>
-        <Tag mode="indicator">{status}</Tag>
-      </TagWrapper>
-      <Description theme={theme} compactMode={compactMode}>
-        {description}
-      </Description>
-    </Main>
+    <Card onClick={handleClick}>
+      <Main compactMode={compactMode}>
+        <StyledIconExternal
+          compactMode={compactMode}
+          theme={theme}
+          link={link}
+        />
+        <Icon compactMode={compactMode}>
+          <AppIcon size={9 * GU} src={icon} radius={12} />
+        </Icon>
+        <Name compactMode={compactMode}>{name}</Name>
+        <TagWrapper compactMode={compactMode} link={link}>
+          <Tag mode="indicator">{status}</Tag>
+        </TagWrapper>
+        <Description theme={theme} compactMode={compactMode}>
+          {description}
+        </Description>
+      </Main>
+    </Card>
   )
 }
 
-const Main = styled(Card)`
+const Main = styled.section`
   ${unselectable};
   position: relative;
   overflow: hidden;
   height: 100%;
   width: 100%;
+  white-space: initial;
 
   ${({ compactMode }) =>
     compactMode
       ? `
           display: grid;
           grid-template-columns: auto 1fr auto;
-          grid-template-rows: auto 1fr 1fr;
+          grid-template-rows: auto auto auto;
           grid-template-areas:
             "empty topright"
             "icon title"
@@ -157,6 +164,8 @@ const TagWrapper = styled.div`
 const Description = styled.p`
   color: ${({ theme }) => theme.contentSecondary};
   ${textStyle('body2')};
+  text-align: left;
+
   ${({ compactMode }) =>
     compactMode
       ? `
