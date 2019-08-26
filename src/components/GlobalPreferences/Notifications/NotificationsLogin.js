@@ -21,7 +21,6 @@ import throttle from 'lodash.throttle'
 export default function NotificationsLogin({ dao, authState, onEmailChange }) {
   const [inputEmail, setInputEmail] = useState('')
   const [emailInvalid, setEmailInvalid] = useState(null)
-  const [emailBlured, setEmailBlured] = useState(false)
   const [apiError, setApiError] = useState(null)
   // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
   const ethNetwork = network.type === 'main' ? 'mainnet' : 'rinkeby'
@@ -36,11 +35,10 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
   )
   const handleEmailBlur = useCallback(
     e => {
-      setEmailBlured(true)
       const email = e.target.value
       setEmailInvalid(!validateEmail(email))
     },
-    [setEmailBlured, setEmailInvalid]
+    [setEmailInvalid]
   )
 
   const handleEmailChange = useCallback(
@@ -93,10 +91,18 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
               `}
               adornment={
                 emailInvalid === false ? (
-                  <IconCheck color={theme.success} />
-                ) : (
-                  <IconCross color={theme.error} />
-                )
+                  <IconCheck
+                    css={`
+                      color: ${theme.success};
+                    `}
+                  />
+                ) : inputEmail.trim() ? (
+                  <IconCross
+                    css={`
+                      color: ${theme.error};
+                    `}
+                  />
+                ) : null
               }
               adornmentPosition="end"
               type="email"
@@ -109,7 +115,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
           </label>
 
           <Button
-            disabled={!emailBlured || emailInvalid}
+            disabled={emailInvalid === true}
             css={`
               width: ${16 * GU}px;
             `}
