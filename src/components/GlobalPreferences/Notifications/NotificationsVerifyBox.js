@@ -10,7 +10,7 @@ export default function NotificationsVerifyBox({ header, children, success }) {
       <NotificationImage />
       <div
         css={`
-          height: ${GU * 20}px;
+          height: ${GU * 24}px;
           background: ${theme.feedbackSurface};
           display: grid;
           border-radius: ${RADIUS}px;

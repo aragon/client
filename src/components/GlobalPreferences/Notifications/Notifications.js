@@ -91,10 +91,6 @@ export default function Notifications({
   handleNavigation,
   navigationIndex,
 }) {
-  const navigateToNotifications = useCallback(
-    () => handleNavigation(navigationIndex),
-    [handleNavigation, navigationIndex]
-  )
   const {
     authState,
     email,
@@ -103,6 +99,11 @@ export default function Notifications({
     handleEmailChange,
     handleLogout,
   } = useAuthState()
+
+  const navigateToNotifications = useCallback(
+    () => handleNavigation(navigationIndex),
+    [handleNavigation, navigationIndex]
+  )
 
   if (subsection && subsection.startsWith(VERIFY_SUBSECTION)) {
     return (
@@ -117,7 +118,12 @@ export default function Notifications({
 
   switch (authState) {
     case AUTH_PREVERIFY:
-      return <NotificationsPreVerify email={email} />
+      return (
+        <NotificationsPreVerify
+          email={email}
+          onEmailChange={handleEmailChange}
+        />
+      )
     case AUTH_AUTHENTICATED:
       return (
         <ManageNotifications

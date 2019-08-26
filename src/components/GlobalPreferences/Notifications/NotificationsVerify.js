@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, Info, LoadingRing, useTheme } from '@aragon/ui'
+import { ButtonBase, Button, GU, Info, LoadingRing, useTheme } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
-import {
-  VERIFY_SUBSECTION,
-  UnauthorizedError,
-  ExpiredTokenError,
-} from './constants'
+import { VERIFY_SUBSECTION, ExpiredTokenError } from './constants'
 import NotificationsVerifyBox from './NotificationsVerifyBox'
 
 export function NotificationsVerify({
@@ -20,6 +16,12 @@ export function NotificationsVerify({
   const [error, setError] = useState(null)
   const theme = useTheme()
 
+  const handleResetAccount = useCallback(() => {
+    // In error states we can clear email and token to reset the state
+    onEmailChange(null)
+    onTokenChange(null)
+  }, [onEmailChange, onTokenChange])
+
   useEffect(() => {
     // Parse token from subsection /verify/[TOKEN] -> [TOKEN]
     const token = subsection.substring(VERIFY_SUBSECTION.length)
@@ -31,22 +33,7 @@ export function NotificationsVerify({
         return longLivedToken
       })
       .catch(e => {
-        // if an invalid token is passed. we can clear email and token to reset the stae
-        // or present the user with the error and give some options
-        // onEmailChange(null)
-        // onTokenChange(null)
-
-        if (e instanceof ExpiredTokenError) {
-          setError('Your email link has expired.')
-        } else if (e instanceof TypeError) {
-          setError(
-            'Oops, it looks like there was a problem accessing the service. Please try again.'
-          )
-        } else {
-          setError(
-            "Oops, it looks like something is wrong with the and you weren't authorized. Please try again."
-          )
-        }
+        setError(e)
         setIsFetching(false)
         setVerified(false)
       })
@@ -87,15 +74,57 @@ export function NotificationsVerify({
       </NotificationsVerifyBox>
     )
   }
-  if (error) {
+
+  if (error && error instanceof ExpiredTokenError) {
     return (
       <NotificationsVerifyBox header="Verification Failed">
         <div>
-          <Info mode="error">{error}</Info>
+          <Info mode="error">Your email link has expired.</Info>
         </div>
+        <ResetButton onClick={handleResetAccount} />
       </NotificationsVerifyBox>
     )
   }
+
+  if (error && error instanceof TypeError) {
+    return (
+      <NotificationsVerifyBox header="Verification Failed">
+        <div>
+          <Info mode="error">
+            Oops, it looks like there was a problem accessing the service.
+            Please try again.
+          </Info>
+        </div>
+        <ResetButton onClick={handleResetAccount} />
+      </NotificationsVerifyBox>
+    )
+  }
+
+  return (
+    <NotificationsVerifyBox header="Verification Failed">
+      <div>
+        <Info mode="error">
+          Oops, it looks like something is wrong with the and you weren't
+          authorized. Please try again.
+        </Info>
+      </div>
+      <ResetButton onClick={handleResetAccount} />
+    </NotificationsVerifyBox>
+  )
+}
+
+const ResetButton = ({ onClick }) => (
+  <Button
+    css={`
+      margin-top: ${GU}px;
+    `}
+    onClick={onClick}
+    label="Reset email"
+  />
+)
+
+ResetButton.propTypes = {
+  onClick: PropTypes.func,
 }
 
 NotificationsVerify.propTypes = {
@@ -105,7 +134,10 @@ NotificationsVerify.propTypes = {
   navigateToNotifications: PropTypes.func,
 }
 
-export function NotificationsPreVerify({ email }) {
+export function NotificationsPreVerify({ email, onEmailChange }) {
+  const handleResetEmail = useCallback(() => onEmailChange(null), [
+    onEmailChange,
+  ])
   return (
     <NotificationsVerifyBox
       success
@@ -115,10 +147,17 @@ export function NotificationsPreVerify({ email }) {
         We’ve sent an email to <strong>{email}</strong>. Verify your email
         address so you can manage your notifications subscriptions.
       </div>
+      <Button
+        css={`
+          margin-top: ${GU}px;
+        `}
+        onClick={handleResetEmail}
+        label="Logout"
+      />
     </NotificationsVerifyBox>
   )
 }
-
 NotificationsPreVerify.propTypes = {
   email: PropTypes.string,
+  onEmailChange: PropTypes.func,
 }
