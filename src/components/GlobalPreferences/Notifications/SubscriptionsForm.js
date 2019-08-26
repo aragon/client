@@ -77,41 +77,59 @@ export function SubscriptionsForm({
     }
   }
 
-  const handleAppChange = index => {
-    setSelectedAppIdx(index)
-    setSelectedEventIdx(-1)
-  }
-  const handleEventChange = index => {
-    setSelectedEventIdx(index)
-  }
-  const handleSubscribe = async e => {
-    setIsSubmitting(true)
-    const { abi, appName, proxyAddress } = selectedApp
-    const eventName = eventNames[selectedEventIdx]
-
-    const abiSubset = [
-      abi.find(({ name, type }) => type === 'event' && name === eventName),
-    ]
-
-    try {
-      const payload = {
-        abi: abiSubset,
-        appName,
-        appContractAddress: proxyAddress,
-        ensName: dao,
-        eventName: eventNames[selectedEventIdx],
-        network: getEthNetworkType(),
-        token,
-      }
-      await createSubscription(payload)
+  const handleAppChange = useCallback(
+    index => {
+      setSelectedAppIdx(index)
       setSelectedEventIdx(-1)
-      setSelectedAppIdx(-1) // Reset app as it may be unavailable if subscribed to all that app's events
-      onCreate()
-    } catch (e) {
-      onApiError(e.message)
-    }
-    setIsSubmitting(false)
-  }
+    },
+    [setSelectedAppIdx, setSelectedEventIdx]
+  )
+  const handleEventChange = useCallback(
+    index => {
+      setSelectedEventIdx(index)
+    },
+    [setSelectedEventIdx]
+  )
+
+  const handleSubscribe = useCallback(
+    async e => {
+      setIsSubmitting(true)
+      const { abi, appName, proxyAddress } = selectedApp
+      const eventName = eventNames[selectedEventIdx]
+
+      const abiSubset = [
+        abi.find(({ name, type }) => type === 'event' && name === eventName),
+      ]
+
+      try {
+        const payload = {
+          abi: abiSubset,
+          appName,
+          appContractAddress: proxyAddress,
+          ensName: dao,
+          eventName: eventNames[selectedEventIdx],
+          network: getEthNetworkType(),
+          token,
+        }
+        await createSubscription(payload)
+        setSelectedEventIdx(-1)
+        setSelectedAppIdx(-1) // Reset app as it may be unavailable if subscribed to all that app's events
+        onCreate()
+      } catch (e) {
+        onApiError(e.message)
+      }
+      setIsSubmitting(false)
+    },
+    [
+      dao,
+      eventNames,
+      onApiError,
+      onCreate,
+      selectedApp,
+      selectedEventIdx,
+      token,
+    ]
+  )
   const isSubscribeDisabled =
     selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
 
