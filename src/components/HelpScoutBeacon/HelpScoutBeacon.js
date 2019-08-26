@@ -64,12 +64,11 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
         position: absolute;
         bottom: ${2 * GU}px;
         right: ${2 * GU}px;
-        z-index: 4;
+        z-index: 2;
 
         ${breakpoint(
           'medium',
           `
-            z-index: 2;
             bottom: ${3 * GU}px;
             right: ${3 * GU}px;
           `
