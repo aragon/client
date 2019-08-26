@@ -51,7 +51,6 @@ export function SubscriptionsForm({
   subscriptions,
   token,
 }) {
-  // TODO: get subscriptions and filter out existing options
   const [selectedAppIdx, setSelectedAppIdx] = useState(-1)
   const [selectedEventIdx, setSelectedEventIdx] = useState(-1)
   const [isSubmitting, setIsSubmitting] = useState(false)
