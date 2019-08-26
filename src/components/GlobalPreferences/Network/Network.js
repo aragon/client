@@ -83,7 +83,7 @@ function Network({ wrapper }) {
           Clear application cache
         </Button>
         <Info>
-          This will only delete the data stored in youur browser to make the app
+          This will only delete the data stored in your browser to make the app
           load faster. No data related to the organization itself will be
           altered.
         </Info>
