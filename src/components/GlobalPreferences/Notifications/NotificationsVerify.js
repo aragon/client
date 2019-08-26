@@ -38,13 +38,13 @@ export function NotificationsVerify({
 
         if (e instanceof ExpiredTokenError) {
           setError('Your email link has expired.')
-        } else if (e instanceof UnauthorizedError) {
-          setError(
-            "Oops, it looks like something is wrong with the and you weren't authorized. Please try again."
-          )
         } else if (e instanceof TypeError) {
           setError(
-            'Oops, it looks like there was a problem accessing the backend. Please try again.'
+            'Oops, it looks like there was a problem accessing the service. Please try again.'
+          )
+        } else {
+          setError(
+            "Oops, it looks like something is wrong with the and you weren't authorized. Please try again."
           )
         }
         setIsFetching(false)
