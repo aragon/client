@@ -93,13 +93,13 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
                 emailInvalid === false ? (
                   <IconCheck
                     css={`
-                      color: ${theme.success};
+                      color: ${theme.positive};
                     `}
                   />
                 ) : inputEmail.trim() ? (
                   <IconCross
                     css={`
-                      color: ${theme.error};
+                      color: ${theme.negative};
                     `}
                   />
                 ) : null
@@ -115,7 +115,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
           </label>
 
           <Button
-            disabled={emailInvalid === true}
+            disabled={emailInvalid !== false}
             css={`
               width: ${16 * GU}px;
             `}
