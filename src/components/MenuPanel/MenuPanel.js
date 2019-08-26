@@ -393,7 +393,7 @@ function Heading({ label, children, ...props }) {
       >
         {label}
       </div>
-      <div>{children}</div>
+      {children && <div>{children}</div>}
     </h1>
   )
 }
