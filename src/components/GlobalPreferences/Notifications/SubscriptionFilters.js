@@ -17,6 +17,7 @@ const SubscriptionFilters = ({
   return (
     <div
       css={`
+        width: 100%;
         margin-bottom: ${1 * GU}px;
         display: inline-grid;
         grid-gap: ${1.5 * GU}px;
@@ -44,7 +45,18 @@ const SubscriptionFilters = ({
         selected={selectedEvent}
         onChange={onEventChange}
       />
-      <Button onClick={onClearFilters}>Clear Filters</Button>
+      {(selectedOrganization !== -1 ||
+        selectedApp !== -1 ||
+        selectedEvent !== -1) && (
+        <Button
+          css={`
+            justify-self: end;
+          `}
+          onClick={onClearFilters}
+        >
+          Clear Filters
+        </Button>
+      )}
     </div>
   )
 }
