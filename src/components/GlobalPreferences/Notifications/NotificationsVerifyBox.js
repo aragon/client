@@ -16,7 +16,7 @@ export default function NotificationsVerifyBox({ header, children, success }) {
           border-radius: ${RADIUS}px;
           padding: ${3.5 * GU}px ${10 * GU}px;
           grid-gap: ${2 * GU}px;
-          grid-template-columns: auto 1fr;
+          grid-template-columns: ${success ? 'auto 1fr' : '1fr'};
           align-items: center;
         `}
       >

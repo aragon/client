@@ -130,7 +130,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
                 ${textStyle('body2')};
               `}
             >
-              Error logging in
+              Error logging in. Please try again
             </p>
           )}
           {emailInvalid && (
