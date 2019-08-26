@@ -56,7 +56,9 @@ export default function ManageNotifications({
   }, [token])
 
   useEffect(() => {
-    if (!token) return
+    if (!token) {
+      return
+    }
     fetchSubscriptions()
   }, [fetchSubscriptions, token])
 
