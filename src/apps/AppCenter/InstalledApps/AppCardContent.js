@@ -17,12 +17,13 @@ const AppCardContent = ({ repo, compactMode }) => {
         overflow: hidden;
         height: 100%;
         width: 100%;
+        white-space: initial;
 
         ${compactMode
           ? `
               display: grid;
               grid-template-columns: auto 1fr;
-              grid-template-rows: auto 1fr 1fr;
+              grid-template-rows: auto auto auto;
               grid-template-areas:
                 "tag tag"
                 "icon title"
@@ -91,6 +92,7 @@ const AppCardContent = ({ repo, compactMode }) => {
       </div>
       <p
         css={`
+          text-align: left;
           color: ${theme.contentSecondary};
           ${textStyle('body2')};
           ${compactMode
