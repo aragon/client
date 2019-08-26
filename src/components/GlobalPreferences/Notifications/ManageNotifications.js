@@ -176,7 +176,7 @@ DeleteAccount.propTypes = {
  * @param {Object} options options
  * @param {[Object]} options.subscriptions array of subscriptions as per the API schema
  * @param {String} options.organization organization to filter by or -1 to not search
- * @param {String} options.app app proxy address to filter by or -1 to not search
+ * @param {String} options.appName appName to filter by or -1 to not search
  * @param {String} options.event event name to filter by or -1 to not search
  *
  * @returns {[Object]} Array of filtered subscriptions
@@ -184,15 +184,15 @@ DeleteAccount.propTypes = {
 const filterSubscriptions = ({
   subscriptions,
   organization,
-  app,
+  appName,
   event,
 } = {}) => {
   return subscriptions.filter(subscription => {
     const matchingOrg = organization
-      ? subscription.ensName === organization
+      ? organization === subscription.ensName
       : true
-    const matchingApp = app ? subscription.contractAddress === app : true
-    const matchingEvent = event ? subscription.eventName === event : true
+    const matchingApp = appName ? appName === subscription.appName : true
+    const matchingEvent = event ? event === subscription.eventName : true
     return matchingOrg && matchingApp && matchingEvent
   })
 }
@@ -246,7 +246,7 @@ const SubscriptionsTable = React.memo(
 
     // Get unique app names by matching subscriptions with
     const subscriptionApps = Array.from(
-      new Set(subscriptions.map(subscription => subscription.contractAddress))
+      new Set(subscriptions.map(subscription => subscription.appName))
     )
     const [selectedApp, setSelectedApp] = useState(-1)
     const onAppChange = useCallback(
@@ -274,7 +274,7 @@ const SubscriptionsTable = React.memo(
     const filteredSubscriptions = filterSubscriptions({
       subscriptions,
       event: events[selectedEvent],
-      app: subscriptionApps[selectedApp],
+      appName: subscriptionApps[selectedApp],
       organization: organizations[selectedOrganization],
     })
     const theme = useTheme()
@@ -287,6 +287,10 @@ const SubscriptionsTable = React.memo(
           },
           {
             label: 'App',
+            priority: 2,
+          },
+          {
+            label: 'Contract',
             priority: 2,
           },
           {
@@ -352,11 +356,12 @@ const SubscriptionsTable = React.memo(
         onSelectEntries={handleSelectEntries}
         selection={selectedSubscriptions}
         renderEntry={(
-          { contractAddress, ensName, eventName },
+          { appName, contractAddress, ensName, eventName },
           index,
           { selected, mode }
         ) => [
           <Label>{ensName}</Label>,
+          <Label>{appName}</Label>,
           <LocalIdentityBadge entity={contractAddress} />,
           <Label>{eventName}</Label>,
         ]}
