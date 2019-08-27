@@ -57,11 +57,14 @@ const GITHUB = 'https://github.com'
 const GITLAB = 'https://gitlab.com'
 const BITBUCKET = 'https://bitbucket.com'
 
-export const parseHub = url =>
-  url.toLowerCase().indexOf(GITHUB) === 0
+export const sanitizeCodeRepositoryUrl = url => {
+  const lowerCasedURL = url.toLowerCase()
+
+  return lowerCasedURL.indexOf(GITHUB) === 0
     ? 'GitHub'
-    : url.toLowerCase().indexOf(GITLAB)
+    : lowerCasedURL.indexOf(GITLAB) === 0
     ? 'GitLab'
-    : url.toLowerCae().indexOf(BITBUCKET)
+    : lowerCasedURL.indexOf(BITBUCKET) === 0
     ? 'Bitbucket'
     : url
+}
