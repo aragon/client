@@ -22,7 +22,7 @@ import { RepoType } from '../../../prop-types'
 import { useRepoDetails } from '../../../hooks'
 import { network } from '../../../environment'
 import Screenshots from '../Screenshots'
-import { parseHub } from '../../../url-utils'
+import { sanitizeCodeRepositoryUrl } from '../../../url-utils'
 
 // Exclude the width of MenuPanel
 const appBelow = (below, value) =>
@@ -184,7 +184,7 @@ const AppContent = React.memo(
                       <BreakLink compact={compact}>
                         {sourceUrl ? (
                           <Link external href={sourceUrl}>
-                            {parseHub(sourceUrl)}
+                            {sanitizeCodeRepositoryUrl(sourceUrl)}
                           </Link>
                         ) : (
                           'No source code link.'

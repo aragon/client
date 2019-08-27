@@ -14,7 +14,7 @@ import {
 } from '@aragon/ui'
 import RepoBadge from '../../components/RepoBadge/RepoBadge'
 import { RepoType } from '../../prop-types'
-import { parseHub } from '../../url-utils'
+import { sanitizeCodeRepositoryUrl } from '../../url-utils'
 
 class UpgradeAppPanel extends React.PureComponent {
   static propTypes = {
@@ -89,7 +89,7 @@ class UpgradeAppPanel extends React.PureComponent {
           <p>
             {changelogUrl ? (
               <Link href={changelogUrl} external>
-                {parseHub(changelogUrl)}
+                {sanitizeCodeRepositoryUrl(changelogUrl)}
               </Link>
             ) : (
               'There is no changelog for this version.'
@@ -100,7 +100,7 @@ class UpgradeAppPanel extends React.PureComponent {
           <p>
             {sourceUrl ? (
               <Link href={sourceUrl} external>
-                {parseHub(sourceUrl)}
+                {sanitizeCodeRepositoryUrl(sourceUrl)}
               </Link>
             ) : (
               'There is no available source for this app.'

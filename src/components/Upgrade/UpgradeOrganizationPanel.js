@@ -24,7 +24,7 @@ import { network } from '../../environment'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
 import { repoBaseUrl } from '../../url-utils'
 import RepoBadge from '../../components/RepoBadge/RepoBadge'
-import { parseHub } from '../../url-utils'
+import { sanitizeCodeRepositoryUrl } from '../../url-utils'
 
 const VERSION = '0.8 Camino'
 const SOURCE = [
@@ -117,14 +117,14 @@ const UpgradeOrganizationPanel = React.memo(
           <Heading2 theme={theme}>Source code</Heading2>
           <p>
             <Link target="_blank" href={SOURCE[1]}>
-              {parseHub(SOURCE[0])}
+              {sanitizeCodeRepositoryUrl(SOURCE[0])}
             </Link>
           </p>
 
           <Heading2 theme={theme}>Aragon official registry</Heading2>
           <p>
             <Link target="_blank" href={REGISTRY[1]}>
-              {parseHub(REGISTRY[0])}
+              {sanitizeCodeRepositoryUrl(REGISTRY[0])}
             </Link>
           </p>
         </Part>

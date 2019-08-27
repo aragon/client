@@ -3,7 +3,7 @@ import { blockExplorerUrl, Link } from '@aragon/ui'
 import { network } from '../../environment'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
-import { repoBaseUrl, parseHub } from '../../url-utils'
+import { repoBaseUrl, sanitizeCodeRepositoryUrl } from '../../url-utils'
 
 function useRepoBadge(repo) {
   const {
