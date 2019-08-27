@@ -141,7 +141,11 @@ export function SubscriptionsForm({
     )
   }
 
-  if (subscribableApps.length === 0 && !isFetchingSubscriptions) {
+  if (
+    subscribableApps.length === 0 &&
+    !isFetchingSubscriptions &&
+    apps.length > 0
+  ) {
     return (
       <Box heading="Create Subscriptions">You are subscribed to all events</Box>
     )
