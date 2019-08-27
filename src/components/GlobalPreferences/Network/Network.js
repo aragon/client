@@ -6,7 +6,6 @@ import {
   Button,
   Info,
   GU,
-  Text,
   TextInput,
   textStyle,
   useTheme,
@@ -47,7 +46,12 @@ function Network({ wrapper }) {
             `}
           />
           {networkError && (
-            <Text color={theme.negative} size="xsmall">
+            <span
+              css={`
+                ${textStyle('body4')};
+                color: ${theme.negative};
+              `}
+            >
               {(() => {
                 if (networkError instanceof InvalidNetworkType) {
                   return `Node must be connected to ${sanitizeNetworkType(
@@ -62,7 +66,7 @@ function Network({ wrapper }) {
                 }
                 return 'URI does not seem to be a ETH node'
               })()}
-            </Text>
+            </span>
           )}
         </Label>
         <Label>
@@ -87,10 +91,10 @@ function Network({ wrapper }) {
             margin-bottom: ${2 * GU}px;
           `}
         >
-          <Text>
+          <span>
             Press this button to refresh the cache of the application in your
             browser.
-          </Text>
+          </span>
         </div>
         <Button
           css={`
