@@ -45,18 +45,21 @@ const SubscriptionFilters = ({
         selected={selectedEvent}
         onChange={onEventChange}
       />
-      {(selectedOrganization !== -1 ||
-        selectedApp !== -1 ||
-        selectedEvent !== -1) && (
+      {
         <Button
           css={`
             justify-self: end;
+            opacity: ${selectedOrganization !== -1 ||
+            selectedApp !== -1 ||
+            selectedEvent !== -1
+              ? 1
+              : 0};
           `}
           onClick={onClearFilters}
         >
           Clear Filters
         </Button>
-      )}
+      }
     </div>
   )
 }
