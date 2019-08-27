@@ -43,7 +43,7 @@ const DiscoverApps = React.memo(() => {
         and learn{' '}
         <Link href="https://hack.aragon.org/docs/tutorial" external>
           how to create apps yourself.
-        </Link>
+        </Link>{' '}
         You can also preview some of the apps being developed.
       </Info>
       <CardLayout columnWidthMin={columnWidthMin} rowHeight={rowHeight}>
