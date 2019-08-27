@@ -66,7 +66,7 @@ function AppCard({ app, compactMode, onOpen, ...props }) {
 
   return (
     <Card onClick={handleClick}>
-      <Main compactMode={compactMode}>
+      <CardMain compactMode={compactMode}>
         <StyledIconExternal
           compactMode={compactMode}
           theme={theme}
@@ -82,12 +82,12 @@ function AppCard({ app, compactMode, onOpen, ...props }) {
         <Description theme={theme} compactMode={compactMode}>
           {description}
         </Description>
-      </Main>
+      </CardMain>
     </Card>
   )
 }
 
-const Main = styled.section`
+const CardMain = styled.section`
   ${unselectable};
   position: relative;
   overflow: hidden;
