@@ -4,26 +4,27 @@ import { network } from '../../environment'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
 import { repoBaseUrl, sanitizeCodeRepositoryUrl } from '../../url-utils'
+import { RepoVersionType } from '../../prop-types'
 
-function useRepoBadge(repo) {
+function useRepoBadge(repoVersion) {
   const {
-    content: { appId, contractAddresses, name, icons },
+    content: { appId, contractAddress, name, icons },
     version,
-  } = repo
+  } = repoVersion
 
   return {
-    baseUrl: repoBaseUrl(repo),
+    baseUrl: repoBaseUrl(repoVersion),
     icons: icons,
-    contractAddress: contractAddresses,
+    contractAddress,
     knownIcon: KNOWN_ICONS.has(appId) ? KNOWN_ICONS.get(appId) : null,
     name: name,
   }
 }
 
-const RepoBadge = ({ repo }) => {
+const RepoBadge = ({ repoVersion }) => {
   const theme = useTheme()
-  const { baseUrl, icons, contractAddress, knownIcon, name } = useRepoBadge(
-    repo
+  const { icons, baseUrl, contractAddress, knownIcon, name } = useRepoBadge(
+    repoVersion
   )
 
   return (
@@ -75,6 +76,10 @@ const RepoBadge = ({ repo }) => {
       </LinkBase>
     </div>
   )
+}
+
+RepoBadge.propTypes = {
+  repoVersion: RepoVersionType.isRequired,
 }
 
 export default RepoBadge
