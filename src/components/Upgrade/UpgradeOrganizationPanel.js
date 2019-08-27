@@ -17,12 +17,12 @@ import {
   DaoAddressType,
   ReposListType,
   RepoContentType,
+  RepoVersionType,
 } from '../../prop-types'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
 import { network } from '../../environment'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
-import { repoBaseUrl } from '../../url-utils'
 import RepoBadge from '../../components/RepoBadge/RepoBadge'
 import { sanitizeCodeRepositoryUrl } from '../../url-utils'
 
@@ -101,14 +101,20 @@ const UpgradeOrganizationPanel = React.memo(
             <Heading2 theme={theme}>Current version</Heading2>
             <div>
               {currentVersions.map(appVersion => (
-                <AppVersion key={appVersion.content.appId} repo={appVersion} />
+                <AppVersion
+                  key={appVersion.content.appId}
+                  repoVersion={appVersion}
+                />
               ))}
             </div>
           </div>
           <div>
             <Heading2 theme={theme}>New version</Heading2>
             {newVersions.map(appVersion => (
-              <AppVersion key={appVersion.content.appId} repo={appVersion} />
+              <AppVersion
+                key={appVersion.content.appId}
+                repoVersion={appVersion}
+              />
             ))}
           </div>
         </SidePanelSplit>
@@ -172,29 +178,26 @@ UpgradeOrganizationPanel.propTypes = {
   wrapper: AragonType,
 }
 
-const AppVersion = ({ repo }) => {
-  const { version } = repo
+const AppVersion = ({ repoVersion }) => {
+  const { version } = repoVersion
   return (
     <div
       css={`
         display: inline-grid;
-        grid-template-columns: auto auto;
+        grid-template-columns: 4ch auto;
         grid-gap: ${2 * GU}px;
         align-items: center;
         margin: ${0.5 * GU}px 0;
       `}
     >
-      <div css="width: 26px;">{version}</div>
-      <RepoBadge repo={repo} />
+      <div>{version}</div>
+      <RepoBadge repoVersion={repoVersion} />
     </div>
   )
 }
 
 AppVersion.propTypes = {
-  repo: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
+  repoVersion: RepoVersionType.isRequired,
 }
 
 const Heading2 = styled.h2`
