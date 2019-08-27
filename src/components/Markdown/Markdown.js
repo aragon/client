@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import remark from 'remark'
 import remark2react from 'remark-react'
-import { Link, GU, useTheme } from '@aragon/ui'
+import { Link, GU, textStyle, useTheme } from '@aragon/ui'
 
 const Markdown = React.memo(({ text }) => {
   const theme = useTheme()
@@ -43,6 +43,8 @@ const Wrapper = styled.section`
   h4 {
     font-weight: bold;
     margin: ${1 * GU}px 0;
+    ${textStyle('label2')};
+    color: ${({ theme }) => theme.contentSecondary};
   }
 
   p,
