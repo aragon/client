@@ -215,6 +215,7 @@ const AppContent = React.memo(
           }
           secondary={
             <Box
+              padding={0}
               heading={
                 <div
                   css={`
