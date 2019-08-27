@@ -108,6 +108,7 @@ export default function ManageNotifications({
           </React.Fragment>
         }
       />
+      {isFetching && <LoadingRing />}
       {!isFetching && subscriptions.length > 0 && (
         <SubscriptionsTable
           apps={apps}
