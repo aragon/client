@@ -108,6 +108,7 @@ const AppCardContent = ({ repo, compactMode }) => {
                 -webkit-line-clamp: 2;
                 overflow: hidden;
                 height: fit-content;
+                margin-top: ${1 * GU}px;
               `
             : `
                 flex: 1;
