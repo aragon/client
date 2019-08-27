@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { blockExplorerUrl, useTheme, GU, Link, RADIUS } from '@aragon/ui'
+import { blockExplorerUrl, useTheme, GU, LinkBase, RADIUS } from '@aragon/ui'
 import { network } from '../../environment'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
@@ -34,8 +34,9 @@ const RepoBadge = ({ repo }) => {
         min-width: 0;
       `}
     >
-      <Link
-        target="_blank"
+      <LinkBase
+        focusRingSpacing={0}
+        external
         href={blockExplorerUrl('address', contractAddress, {
           networkType: network.type,
         })}
@@ -71,7 +72,7 @@ const RepoBadge = ({ repo }) => {
         >
           {name}
         </div>
-      </Link>
+      </LinkBase>
     </div>
   )
 }
