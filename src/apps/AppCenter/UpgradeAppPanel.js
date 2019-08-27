@@ -55,7 +55,6 @@ class UpgradeAppPanel extends React.PureComponent {
       changelog_url: changelogUrl,
       source_url: sourceUrl,
     } = latestVersion.content
-    const [{ proxyAddress }] = repo.instances
 
     return (
       <SidePanel
