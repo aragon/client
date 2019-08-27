@@ -135,7 +135,7 @@ const AppContent = React.memo(
                         align-self: center;
                       `}
                     >
-                      Install App
+                      Upgrade App
                     </Button>
                   )}
                 </div>
