@@ -16,7 +16,7 @@ const Markdown = React.memo(({ text }) => {
           .use(remark2react, {
             remarkReactComponents: {
               a: ({ children, ...props }) => (
-                <Link target="_blank">{children}</Link>
+                <Link external>{children}</Link>
               ),
             },
           })
