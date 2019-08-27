@@ -34,14 +34,22 @@ const InstalledApps = React.memo(function InstalledApps({
   return (
     <CardLayout columnWidthMin={columnWidthMin} rowHeight={rowHeight}>
       {repos.map(repo => {
-        const { name, baseUrl, currentVersion, latestVersion } = repo
+        const {
+          repoName,
+          appId,
+          name,
+          baseUrl,
+          currentVersion,
+          latestVersion,
+        } = repo
         const { description, icons } = latestVersion.content
         const canUpgrade = currentVersion.version !== latestVersion.version
+        const handleClick = () => onOpenApp(repoName)
 
         return (
           <AppCard
-            key={repo.appId}
-            onClick={onOpenApp}
+            key={appId}
+            onClick={handleClick}
             icon={
               <AppIcon app={{ baseUrl, icons }} size={9 * GU} radius={12} />
             }
