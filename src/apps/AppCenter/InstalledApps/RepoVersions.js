@@ -2,11 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Trail, animated } from 'react-spring'
-import { Info, Tag, GU, springs } from '@aragon/ui'
+import { Info, Tag, GU, springs, textStyle, useTheme } from '@aragon/ui'
 import { format } from 'date-fns'
 import { RepoType } from '../../../prop-types'
 
 const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
+  const theme = useTheme()
+
   return (
     <div
       css={`
@@ -33,31 +35,45 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
             native
           >
             {/* eslint-disable react/prop-types */
-            ({ timestamp, version }) => ({ progress }) => (
-              <BodyTr
-                key={name}
-                style={{
-                  opacity: progress,
-                  transform: progress.interpolate(
-                    v => `translate3d(${10 * (1 - v)}%, 0, 0)`
-                  ),
-                }}
-              >
-                <Td>
-                  {version}{' '}
-                  {version === currentVersion.version && (
-                    <Tag
-                      css={`
-                        margin-left: ${1 * GU}px;
-                      `}
-                    >
-                      current
-                    </Tag>
-                  )}
-                </Td>
-                <Td>{timestamp ? format(timestamp, 'dd/MM/yy') : ''}</Td>
-              </BodyTr>
-            )
+            ({ timestamp, version }) => ({ progress }) => {
+              const currentItem = version === currentVersion.version
+
+              return (
+                <BodyTr
+                  key={name}
+                  css={
+                    currentItem ? `background: ${theme.surfaceSelected}` : ''
+                  }
+                  style={{
+                    opacity: progress,
+                    transform: progress.interpolate(
+                      v => `translate3d(${10 * (1 - v)}%, 0, 0)`
+                    ),
+                  }}
+                >
+                  <Td>
+                    {version}{' '}
+                    {currentItem && (
+                      <Tag
+                        css={`
+                          margin-left: ${1 * GU}px;
+                        `}
+                      >
+                        current
+                      </Tag>
+                    )}
+                  </Td>
+                  <Td
+                    css={`
+                      color: ${theme.surfaceContentSecondary};
+                      ${textStyle('body2')}
+                    `}
+                  >
+                    {timestamp ? format(timestamp, 'dd/MM/yy') : ''}
+                  </Td>
+                </BodyTr>
+              )
+            }
             /* eslint-enable react/prop-types */
             }
           </Trail>
@@ -66,7 +82,7 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
 
       <div
         css={`
-          margin-top: ${2 * GU}px;
+          margin: ${2 * GU}px;
         `}
       >
         <Info.Action>
@@ -85,15 +101,19 @@ RepoVersions.propTypes = {
 
 const BodyTr = styled(animated.tr)`
   &:first-child td {
-    padding-top: 8px;
+    padding-top: ${2 * GU}px;
   }
 `
 
 const Td = styled.td`
-  padding: 3px 0;
+  padding: ${1.5 * GU}px 0;
   text-align: right;
   &:first-child {
     text-align: left;
+    padding-left: ${2 * GU}px;
+  }
+  &:last-child {
+    padding-right: ${2 * GU}px;
   }
 `
 
