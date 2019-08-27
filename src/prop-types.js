@@ -171,16 +171,15 @@ export const RepoContentType = PropTypes.shape({
   ),
 })
 
+export const RepoVersionType = PropTypes.shape({
+  content: RepoContentType.isRequired,
+  version: PropTypes.string.isRequired,
+})
+
 export const RepoType = PropTypes.shape({
   appId: PropTypes.string.isRequired,
-  currentVersion: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
-  latestVersion: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
+  currentVersion: RepoVersionType,
+  latestVersion: RepoVersionType,
   repoAddress: EthereumAddressType.isRequired,
   versions: PropTypes.arrayOf(
     PropTypes.shape({
