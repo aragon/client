@@ -63,7 +63,7 @@ const AppCard = React.memo(function AppCard({ repo, onOpenApp, compactMode }) {
   }, [onOpenApp, repoName])
 
   return (
-    <Card onClick={handleOpenApp}>
+    <Card onClick={handleOpenApp} css='flex-direction: column;'>
       <AppCardContent repo={repo} compactMode={compactMode} />
     </Card>
   )

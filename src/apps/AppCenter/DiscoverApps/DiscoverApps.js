@@ -65,7 +65,7 @@ function AppCard({ app, compactMode, onOpen, ...props }) {
   }, [link])
 
   return (
-    <Card onClick={handleClick}>
+    <Card onClick={handleClick} css='flex-direction: column;'>
       <CardMain compactMode={compactMode}>
         <StyledIconExternal
           compactMode={compactMode}
