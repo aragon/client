@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {
   Box,
   Button,
@@ -22,21 +22,31 @@ const getEventNamesFromAbi = memoize(abi =>
 const filterSubscribedEvents = (abiEvents, subscribedEvents) =>
   abiEvents.filter(event => !subscribedEvents.includes(event))
 
-function getSubscribableEvents(subscriptions, abi) {
-  const subscribedEvents = subscriptions.map(({ eventName }) => eventName)
+// Get subscribable events for the contractAddress from the ABI and filter out existing subscriptions
+function getSubscribableEvents({ subscriptions, abi, contractAddress } = {}) {
+  const subscribedEvents = subscriptions
+    .filter(subscription => subscription.contractAddress === contractAddress)
+    .map(({ eventName }) => eventName)
   const abiEvents = getEventNamesFromAbi(abi)
   return filterSubscribedEvents(abiEvents, subscribedEvents)
 }
 
-function getSubscribableApps(apps, subscriptions) {
+function getSubscribables(apps, subscriptions) {
   const subscribableApps = apps.filter(
     app =>
       !app.isAragonOsInternalApp &&
-      getSubscribableEvents(subscriptions, app.abi).length > 0 // When subscribed to all events of an app, filter out apps with no subscribable events
+      getSubscribableEvents({
+        subscriptions,
+        abi: app.abi,
+        contractAddress: app.proxyAddress,
+      }).length > 0 // When subscribed to all events of an app, filter out apps with no subscribable events
   )
-
   const subscribableEvents = subscribableApps.map(app =>
-    getSubscribableEvents(subscriptions, app.abi)
+    getSubscribableEvents({
+      subscriptions,
+      abi: app.abi,
+      contractAddress: app.proxyAddress,
+    })
   )
 
   return [subscribableApps, subscribableEvents]
@@ -47,18 +57,35 @@ export function SubscriptionsForm({
   dao,
   isFetchingSubscriptions,
   onApiError,
-  onCreate,
+  fetchSubscriptions,
   subscriptions,
   token,
 }) {
   const [selectedAppIdx, setSelectedAppIdx] = useState(-1)
   const [selectedEventIdx, setSelectedEventIdx] = useState(-1)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const theme = useTheme()
-  const [subscribableApps, subscribableEvents] = getSubscribableApps(
-    apps,
-    subscriptions
-  )
+  const [subscribableApps, setSubscribableApps] = useState([])
+  const [subscribableEvents, setSubscribableEvents] = useState([])
+  useEffect(() => {
+    const [newSubscribableApps, newSubscribableEvents] = getSubscribables(
+      apps,
+      subscriptions
+    )
+    if (
+      !newSubscribableApps[selectedAppIdx] || // case 1: selection is no longer valid
+      (subscribableApps[selectedAppIdx] && // case 2: The selection has changed due to a new array of subscribable apps
+        newSubscribableApps[selectedAppIdx].proxyAddress !==
+          subscribableApps[selectedAppIdx].proxyAddress)
+    ) {
+      // Reset the app if the selected app is no longer unavailable
+      setSelectedAppIdx(-1)
+    }
+
+    setSubscribableApps(newSubscribableApps)
+    setSubscribableEvents(newSubscribableEvents)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apps, subscriptions])
 
   const appNames = subscribableApps.map(
     app => `${app.name} ${app.identifier ? `(${app.identifier})` : ''}`
@@ -66,16 +93,7 @@ export function SubscriptionsForm({
   const selectedApp =
     selectedAppIdx === -1 ? null : subscribableApps[selectedAppIdx]
 
-  let eventNames = ['']
-
-  if (selectedApp) {
-    // Once an app is selected, get corresponding events
-    eventNames = subscribableEvents[selectedAppIdx]
-    if (eventNames.length === 0) {
-      // if subscribed to all events reset the app
-      setSelectedAppIdx(-1)
-    }
-  }
+  let eventNames = selectedApp ? subscribableEvents[selectedAppIdx] : ['']
 
   const handleAppChange = useCallback(
     index => {
@@ -113,27 +131,28 @@ export function SubscriptionsForm({
         }
         await createSubscription(payload)
         setSelectedEventIdx(-1)
-        setSelectedAppIdx(-1) // Reset app as it may be unavailable if subscribed to all that app's events
-        onCreate()
+
+        await fetchSubscriptions()
       } catch (e) {
         onApiError(e.message)
       }
       setIsSubmitting(false)
     },
     [
-      dao,
-      eventNames,
-      onApiError,
-      onCreate,
       selectedApp,
+      eventNames,
       selectedEventIdx,
+      dao,
       token,
+      fetchSubscriptions,
+      onApiError,
     ]
   )
-  const isSubscribeDisabled =
-    selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
 
-  if (isFetchingSubscriptions) {
+  const theme = useTheme()
+
+  if (isFetchingSubscriptions || apps.length === 0) {
+    // Every DAO must have apps, if apps.length is 0, the DAO is still loading
     return (
       <Box heading="Create Subscriptions">
         <LoadingRing />
@@ -142,14 +161,17 @@ export function SubscriptionsForm({
   }
 
   if (
-    subscribableApps.length === 0 &&
     !isFetchingSubscriptions &&
+    subscribableApps.length === 0 &&
     apps.length > 0
   ) {
     return (
       <Box heading="Create Subscriptions">You are subscribed to all events</Box>
     )
   }
+
+  const isSubscribeDisabled =
+    selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
 
   return (
     <Box heading="Create Subscriptions">
@@ -227,7 +249,7 @@ SubscriptionsForm.propTypes = {
   dao: PropTypes.string,
   isFetchingSubscriptions: PropTypes.bool,
   onApiError: PropTypes.func,
-  onCreate: PropTypes.func,
+  fetchSubscriptions: PropTypes.func,
   subscriptions: PropTypes.array,
   token: PropTypes.string,
 }

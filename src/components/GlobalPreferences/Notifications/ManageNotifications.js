@@ -43,7 +43,7 @@ export default function ManageNotifications({
   const [subscriptions, setSubscriptions] = useState([])
 
   const fetchSubscriptions = useCallback(() => {
-    getSubscriptions(token)
+    return getSubscriptions(token)
       .then(subscriptions => {
         setSubscriptions(subscriptions)
         setIsFetching(false)
@@ -78,7 +78,7 @@ export default function ManageNotifications({
         primary={
           <SubscriptionsForm
             onApiError={setApiError}
-            onCreate={fetchSubscriptions}
+            fetchSubscriptions={fetchSubscriptions}
             dao={dao}
             apps={apps}
             token={token}
