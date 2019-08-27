@@ -113,12 +113,12 @@ const AppContent = React.memo(
                       {author && (
                         <h2
                           css={`
-                          color: ${theme.contentSecondary};
-                          ${textStyle('body2')};
-                          display: grid;
-                          grid-gap: ${1.5 * GU}px;
-                          grid-template-columns: auto auto;
-                        `}
+                            color: ${theme.contentSecondary};
+                            ${textStyle('body2')};
+                            display: grid;
+                            grid-gap: ${1.5 * GU}px;
+                            grid-template-columns: auto auto;
+                          `}
                         >
                           By <LocalIdentityBadge entity={author} />
                         </h2>
@@ -149,17 +149,20 @@ const AppContent = React.memo(
                     grid-column-gap: ${compact ? 0 : 5 * GU}px;
                   `}
                 >
-                  <DetailsGroup>
-                    <Heading2 theme={theme}>Description</Heading2>
-                    <div>{description}</div>
-
-                    {!!repoDetails && (
-                      <React.Fragment>
-                        <Heading2 theme={theme}>Details</Heading2>
-                        <Markdown text={repoDetails} />
-                      </React.Fragment>
-                    )}
-                  </DetailsGroup>
+                  <div>
+                    <DetailsGroup>
+                      <Heading2 theme={theme}>Description</Heading2>
+                      <div>{description}</div>
+                    </DetailsGroup>
+                    <DetailsGroup>
+                      {!!repoDetails && (
+                        <React.Fragment>
+                          <Heading2 theme={theme}>Details</Heading2>
+                          <Markdown text={repoDetails} />
+                        </React.Fragment>
+                      )}
+                    </DetailsGroup>
+                  </div>
                   <div>
                     <DetailsGroup>
                       <Heading2 theme={theme}>Installed instances</Heading2>
