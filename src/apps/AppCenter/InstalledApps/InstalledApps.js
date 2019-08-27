@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { useLayout, Card, CardLayout, GU } from '@aragon/ui'
 import { RepoType } from '../../../prop-types'
 import AppContent from './AppContent'
-import AppCardContent from './AppCardContent'
+import AppCard from '../AppCard'
 import RepoVersions from './RepoVersions'
+import AppIcon from '../../../components/AppIcon/AppIcon'
 
 const InstalledApps = React.memo(function InstalledApps({
   repos,
@@ -32,14 +33,24 @@ const InstalledApps = React.memo(function InstalledApps({
 
   return (
     <CardLayout columnWidthMin={columnWidthMin} rowHeight={rowHeight}>
-      {repos.map(repo => (
-        <AppCard
-          repo={repo}
-          onOpenApp={onOpenApp}
-          key={repo.appId}
-          compactMode={compactMode}
-        />
-      ))}
+      {repos.map(repo => {
+        const { name, baseUrl, currentVersion, latestVersion } = repo
+        const { description, icons } = latestVersion.content
+        const canUpgrade = currentVersion.version !== latestVersion.version
+
+        return (
+          <AppCard
+            key={repo.appId}
+            onClick={onOpenApp}
+            icon={
+              <AppIcon app={{ baseUrl, icons }} size={9 * GU} radius={12} />
+            }
+            name={name}
+            tag={canUpgrade ? 'New version' : 'Up to date'}
+            description={description}
+          />
+        )
+      })}
     </CardLayout>
   )
 })
@@ -54,24 +65,6 @@ InstalledApps.propTypes = {
 
 InstalledApps.defaultProps = {
   openedRepoId: null,
-}
-
-const AppCard = React.memo(function AppCard({ repo, onOpenApp, compactMode }) {
-  const { repoName } = repo
-  const handleOpenApp = useCallback(() => {
-    onOpenApp(repoName)
-  }, [onOpenApp, repoName])
-
-  return (
-    <Card onClick={handleOpenApp} css="display: block;">
-      <AppCardContent repo={repo} compactMode={compactMode} />
-    </Card>
-  )
-})
-
-AppCard.propTypes = {
-  repo: RepoType.isRequired,
-  onOpenApp: PropTypes.func.isRequired,
 }
 
 export default InstalledApps
