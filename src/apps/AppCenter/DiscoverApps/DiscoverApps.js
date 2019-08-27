@@ -123,6 +123,11 @@ const Icon = styled.div`
       ? `
         grid-area: icon;
         margin-right: ${1.5 * GU}px;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
       `
       : `
         margin-bottom: ${2 * GU}px;
