@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { blockExplorerUrl, Link } from '@aragon/ui'
+import { blockExplorerUrl, useTheme, GU, Link, RADIUS } from '@aragon/ui'
 import { network } from '../../environment'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
@@ -21,6 +21,7 @@ function useRepoBadge(repo) {
 }
 
 const RepoBadge = ({ repo }) => {
+  const theme = useTheme()
   const { baseUrl, icons, contractAddress, knownIcon, name } = useRepoBadge(
     repo
   )
@@ -41,9 +42,9 @@ const RepoBadge = ({ repo }) => {
         css={`
           display: flex;
           background: #daeaef;
-          border-radius: 3px;
+          border-radius: ${RADIUS}px;
           align-items: center;
-          height: 22px;
+          height: ${3 * GU}px;
           align-items: center;
           text-decoration: none;
           width: 100%;
@@ -52,8 +53,12 @@ const RepoBadge = ({ repo }) => {
         <AppIcon
           app={{ baseUrl, icons }}
           src={knownIcon || undefined}
-          radius={3}
-          css="min-width: 22px;"
+          radius={RADIUS}
+          css={`
+            min-width: 22px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+          `}
         />
         <div
           css={`
@@ -61,6 +66,7 @@ const RepoBadge = ({ repo }) => {
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+            color: ${theme.content};
           `}
         >
           {name}
