@@ -1,28 +1,19 @@
 import React, { useCallback } from 'react'
-import styled from 'styled-components'
-import {
-  Button,
-  Card,
-  CardLayout,
-  GU,
-  Info,
-  IconExternal,
-  Link,
-  Tag,
-  textStyle,
-  unselectable,
-  useLayout,
-  useTheme,
-} from '@aragon/ui'
+import { CardLayout, GU, Info, Link, useLayout } from '@aragon/ui'
 import { appsInDevelopment } from './discover-apps-data'
+import AppCard from '../AppCard'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 
-const DiscoverApps = React.memo(() => {
-  const theme = useTheme()
+const DiscoverApps = React.memo(function DiscoverApps() {
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
   const rowHeight = compactMode ? 148 : 294
   const columnWidthMin = compactMode ? 328 : 30 * GU
+  const handleClick = useCallback(link => {
+    if (link) {
+      window.open(link, '_blank', 'noopener')
+    }
+  }, [])
 
   return (
     <React.Fragment>
@@ -47,162 +38,22 @@ const DiscoverApps = React.memo(() => {
         You can also preview some of the apps being developed.
       </Info>
       <CardLayout columnWidthMin={columnWidthMin} rowHeight={rowHeight}>
-        {appsInDevelopment.map((app, i) => (
-          <AppCard key={i} app={app} compactMode={compactMode} />
-        ))}
+        {appsInDevelopment.map(
+          ({ link, icon, name, status, description }, i) => (
+            <AppCard
+              key={i}
+              onClick={handleClick}
+              link={link}
+              icon={<AppIcon size={9 * GU} src={icon} radius={12} />}
+              name={name}
+              tag={status}
+              description={description}
+            />
+          )
+        )}
       </CardLayout>
     </React.Fragment>
   )
 })
-
-function AppCard({ app, compactMode, onOpen, ...props }) {
-  const theme = useTheme()
-  const { link, icon, name, status, description } = app
-  const handleClick = useCallback(() => {
-    if (link) {
-      window.open(link, '_blank', 'noopener')
-    }
-  }, [link])
-
-  return (
-    <Card onClick={handleClick} css="display: block;">
-      <CardMain compactMode={compactMode}>
-        <StyledIconExternal
-          compactMode={compactMode}
-          theme={theme}
-          link={link}
-        />
-        <Icon compactMode={compactMode}>
-          <AppIcon size={9 * GU} src={icon} radius={12} />
-        </Icon>
-        <Name compactMode={compactMode}>{name}</Name>
-        <TagWrapper compactMode={compactMode} link={link}>
-          <Tag mode="indicator">{status}</Tag>
-        </TagWrapper>
-        <Description theme={theme} compactMode={compactMode}>
-          {description}
-        </Description>
-      </CardMain>
-    </Card>
-  )
-}
-
-const CardMain = styled.section`
-  ${unselectable};
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-  white-space: initial;
-
-  ${({ compactMode }) =>
-    compactMode
-      ? `
-          display: grid;
-          grid-template-columns: auto 1fr auto;
-          grid-template-rows: auto auto auto;
-          grid-template-areas:
-            "empty topright"
-            "icon title"
-            "icon description";
-          padding: ${1.5 * GU}px ${1.5 * GU}px ${4 * GU}px ${3 * GU}px;
-        `
-      : `
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding-top: ${5 * GU}px;
-        `}
-`
-
-const Icon = styled.div`
-  height: ${9 * GU}px;
-  width: ${9 * GU}px;
-  ${({ compactMode }) =>
-    compactMode
-      ? `
-        grid-area: icon;
-        margin-right: ${1.5 * GU}px;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-      `
-      : `
-        margin-bottom: ${2 * GU}px;
-      `}
-`
-
-const Name = styled.p`
-  display: flex;
-  width: 100%;
-  ${textStyle('title4')}
-  ${({ compactMode }) =>
-    compactMode
-      ? `
-        grid-area: title;
-        align-self: flex-end;
-      `
-      : `
-        justify-content: center;
-        margin-bottom: ${1 * GU}px;
-      `}
-`
-
-const TagWrapper = styled.div`
-  ${({ compactMode, link }) =>
-    compactMode
-      ? `
-        grid-area: topright;
-        text-align: right;
-        position: absolute;
-        right: ${link ? 3.5 * GU : 0}px;
-      `
-      : `
-        max-width: 100%;
-        padding: 0 ${2.5 * GU}px;
-        margin-bottom: ${1 * GU}px;
-      `}
-`
-
-const Description = styled.p`
-  color: ${({ theme }) => theme.contentSecondary};
-  ${textStyle('body2')};
-  text-align: left;
-
-  ${({ compactMode }) =>
-    compactMode
-      ? `
-        grid-area: description;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        overflow: hidden;
-        height: fit-content;
-        margin-top: ${1 * GU}px;
-      `
-      : `
-        flex: 1;
-        text-align: center;
-        padding: 0 1rem;
-      `}
-`
-
-const StyledIconExternal = styled(IconExternal)`
-  visibility: ${({ link }) => (link ? 'visible' : 'hidden')};
-  color: ${({ theme }) => theme.surfaceIcon};
-  ${({ compactMode }) =>
-    compactMode
-      ? `
-          grid-area: topright;
-          margin-left: auto;
-        `
-      : `
-          position: absolute;
-          top: ${2 * GU}px;
-          right: ${2 * GU}px;
-        `};
-`
 
 export default DiscoverApps
