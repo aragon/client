@@ -114,7 +114,7 @@ const AppContent = React.memo(
                         <h2
                           css={`
                           color: ${theme.contentSecondary};
-                          textStyle('body2');
+                          ${textStyle('body2'});
                           display: grid;
                           grid-gap: ${1.5 * GU}px;
                           grid-template-columns: auto auto;
