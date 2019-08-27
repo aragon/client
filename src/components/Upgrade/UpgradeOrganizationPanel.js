@@ -124,7 +124,7 @@ const UpgradeOrganizationPanel = React.memo(
           <Heading2 theme={theme}>Aragon official registry</Heading2>
           <p>
             <Link target="_blank" href={REGISTRY[1]}>
-              {sanitizeCodeRepositoryUrl(REGISTRY[0])}
+              {REGISTRY[0]}
             </Link>
           </p>
         </Part>
