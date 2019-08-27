@@ -145,7 +145,7 @@ const AppContent = React.memo(
                 <div
                   css={`
                     display: grid;
-                    grid-template-columns: ${compact ? 'auto' : '60% 40%'};
+                    grid-template-columns: ${compact ? 'auto' : '60% auto'};
                     grid-column-gap: ${compact ? 0 : 5 * GU}px;
                   `}
                 >
@@ -168,7 +168,6 @@ const AppContent = React.memo(
                           display: inline-grid;
                           grid-template-columns: auto;
                           grid-gap: ${1 * GU}px;
-                          width: calc(100% - ${!compact ? 5 * GU : 0}px);
                         `}
                       >
                         {instances.map(({ proxyAddress }) => (
@@ -259,7 +258,6 @@ const DetailsGroup = styled.div`
 `
 
 const BreakLink = styled.div`
-  width: ${({ compact }) => `calc(100% - ${!compact ? 5 * GU : 0}px)`};
   word-break: break-all;
 `
 
