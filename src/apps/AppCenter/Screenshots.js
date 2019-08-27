@@ -28,7 +28,7 @@ const Screenshots = React.memo(function Screenshots({
           const url = imgSrcFromBase(baseUrl, src)
 
           return (
-            <Link key={url} href={url} target="_blank">
+            <Link key={url} href={url} external>
               <img
                 key={src}
                 src={url}

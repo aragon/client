@@ -88,7 +88,7 @@ class UpgradeAppPanel extends React.PureComponent {
           <Heading2 theme={theme}>Changelog</Heading2>
           <p>
             {changelogUrl ? (
-              <Link href={changelogUrl} target="_blank">
+              <Link href={changelogUrl} external>
                 {parseHub(changelogUrl)}
               </Link>
             ) : (
@@ -99,7 +99,7 @@ class UpgradeAppPanel extends React.PureComponent {
           <Heading2 theme={theme}>Source code</Heading2>
           <p>
             {sourceUrl ? (
-              <Link href={sourceUrl} target="_blank">
+              <Link href={sourceUrl} external>
                 {parseHub(sourceUrl)}
               </Link>
             ) : (

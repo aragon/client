@@ -183,7 +183,7 @@ const AppContent = React.memo(
                       <Heading2 theme={theme}>Source code</Heading2>
                       <BreakLink compact={compact}>
                         {sourceUrl ? (
-                          <Link target="_blank" href={sourceUrl}>
+                          <Link external href={sourceUrl}>
                             {parseHub(sourceUrl)}
                           </Link>
                         ) : (
@@ -196,7 +196,7 @@ const AppContent = React.memo(
                         <Heading2 theme={theme}>Package Name</Heading2>
                         <BreakLink compact={compact}>
                           <Link
-                            target="_blank"
+                            external
                             href={blockExplorerUrl('address', repoAddress, {
                               networkType: network.type,
                             })}

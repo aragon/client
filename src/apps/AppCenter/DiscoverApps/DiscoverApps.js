@@ -36,12 +36,12 @@ const DiscoverApps = React.memo(() => {
         from here. In the meantime, you can use our{' '}
         <Link
           href="https://hack.aragon.org/docs/cli-dao-commands#dao-install"
-          target="_blank"
+          external
         >
           CLI guide
         </Link>{' '}
         and learn{' '}
-        <Link href="" target="_blank">
+        <Link href="https://hack.aragon.org/docs/tutorial" external>
           how to create apps yourself.
         </Link>
         You can also preview some of the apps being developed.
