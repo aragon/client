@@ -62,7 +62,6 @@ class UpgradeAppPanel extends React.PureComponent {
         title={`Upgrade “${name || 'Unknown'}”`}
         opened={Boolean(propsRepo)}
         onClose={onClose}
-        css={``}
       >
         <SidePanelSplit
           css={`
