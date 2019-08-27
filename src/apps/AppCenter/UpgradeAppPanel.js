@@ -71,13 +71,14 @@ class UpgradeAppPanel extends React.PureComponent {
           <div>
             <Heading2 theme={theme}>Current version</Heading2>
             <RepoVersionWrapper>
-              {currentVersion.version} <RepoBadge repo={currentVersion} />
+              {currentVersion.version}{' '}
+              <RepoBadge repoVersion={currentVersion} />
             </RepoVersionWrapper>
           </div>
           <div>
             <Heading2 theme={theme}>New version</Heading2>
             <RepoVersionWrapper>
-              {latestVersion.version} <RepoBadge repo={latestVersion} />
+              {latestVersion.version} <RepoBadge repoVersion={latestVersion} />
             </RepoVersionWrapper>
           </div>
         </SidePanelSplit>
