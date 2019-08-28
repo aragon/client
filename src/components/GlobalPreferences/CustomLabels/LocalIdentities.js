@@ -10,7 +10,6 @@ import {
   GU,
   IconArrowDown,
   IconArrowUp,
-  IconDown,
   IconDownload,
   IconExternal,
   IconGrid,
