@@ -56,7 +56,7 @@ const RepoBadge = React.memo(function({ repoVersion }) {
           src={knownIcon || undefined}
           radius={RADIUS}
           css={`
-            min-width: 22px;
+            min-width: ${3 * GU}px;
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
           `}
