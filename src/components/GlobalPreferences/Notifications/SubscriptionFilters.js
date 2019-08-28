@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, DropDown, GU, useLayout } from '@aragon/ui'
 import PropTypes from 'prop-types'
 
-const SubscriptionFilters = ({
+function SubscriptionFilters({
   organizations,
   selectedOrganization,
   onOrganizationChange,
@@ -13,7 +13,7 @@ const SubscriptionFilters = ({
   selectedEvent,
   onEventChange,
   onClearFilters,
-}) => {
+}) {
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
 
