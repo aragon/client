@@ -92,7 +92,7 @@ class Home extends React.Component {
             <Text size="small">
               {dao.endsWith('.eth')
                 ? `You are interacting with ${dao}`
-                : 'You are using Aragon 0.7 — Bella'}
+                : 'You are using Aragon 0.8 — Camino'}
             </Text>
           </div>
         </h1>
