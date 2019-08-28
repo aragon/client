@@ -43,6 +43,7 @@ export default function ManageNotifications({
   const [subscriptions, setSubscriptions] = useState([])
 
   const fetchSubscriptions = useCallback(() => {
+    setIsFetching(true)
     return getSubscriptions(token)
       .then(subscriptions => {
         setSubscriptions(subscriptions)
@@ -53,7 +54,7 @@ export default function ManageNotifications({
         setIsFetching(false)
         setApiError(error.message)
       })
-  }, [token])
+  }, [token, setSubscriptions, setIsFetching, setApiError])
 
   useEffect(() => {
     if (!token) {
@@ -108,8 +109,7 @@ export default function ManageNotifications({
           </React.Fragment>
         }
       />
-      {isFetching && <LoadingRing />}
-      {!isFetching && subscriptions.length > 0 && (
+      {subscriptions.length > 0 && (
         <SubscriptionsTable
           apps={apps}
           authToken={token}
