@@ -23,20 +23,28 @@ export function NotificationsVerify({
   }, [onEmailChange, onTokenChange])
 
   useEffect(() => {
+    let cancelled = false
     // Parse token from subsection /verify/[TOKEN] -> [TOKEN]
     const token = subsection.substring(VERIFY_SUBSECTION.length)
     verifyEmailToken(token)
       .then(longLivedToken => {
-        setVerified(true)
-        setIsFetching(false)
-        onTokenChange(longLivedToken)
+        if (!cancelled) {
+          setVerified(true)
+          setIsFetching(false)
+          onTokenChange(longLivedToken)
+        }
         return longLivedToken
       })
       .catch(e => {
-        setError(e)
-        setIsFetching(false)
-        setVerified(false)
+        if (!cancelled) {
+          setError(e)
+          setIsFetching(false)
+          setVerified(false)
+        }
       })
+    return () => {
+      cancelled = true
+    }
   }, [subsection, onTokenChange, onEmailChange])
 
   if (isFetching) {
