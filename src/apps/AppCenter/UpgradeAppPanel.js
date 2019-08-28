@@ -21,6 +21,7 @@ class UpgradeAppPanel extends React.PureComponent {
     repo: RepoType,
     onClose: PropTypes.func.isRequired,
     onUpgrade: PropTypes.func.isRequired,
+    theme: PropTypes.object.isRequired,
   }
   state = {
     repo: null,
@@ -49,7 +50,7 @@ class UpgradeAppPanel extends React.PureComponent {
       return null
     }
 
-    const { currentVersion, latestVersion, repoAddress } = repo
+    const { currentVersion, latestVersion } = repo
     const {
       name,
       changelog_url: changelogUrl,
