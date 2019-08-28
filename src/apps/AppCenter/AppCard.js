@@ -11,7 +11,6 @@ import {
   useLayout,
   useTheme,
 } from '@aragon/ui'
-import AppIcon from '../../components/AppIcon/AppIcon'
 
 const AppCard = React.memo(function AppCard({
   onClick,
@@ -27,7 +26,7 @@ const AppCard = React.memo(function AppCard({
   const handleClick = useCallback(() => onClick(link), [onClick, link])
 
   return (
-    <Card onClick={onClick} css={onClick ? 'display: block;' : ''}>
+    <Card onClick={handleClick} css={onClick ? 'display: block;' : ''}>
       <CardMain compactMode={compactMode}>
         {link && (
           <StyledIconExternal
