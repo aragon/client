@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, DropDown, GU } from '@aragon/ui'
+import { Button, DropDown, GU, useLayout } from '@aragon/ui'
 import PropTypes from 'prop-types'
 
 const SubscriptionFilters = ({
@@ -14,6 +14,9 @@ const SubscriptionFilters = ({
   onEventChange,
   onClearFilters,
 }) => {
+  const { layoutName } = useLayout()
+  const compact = layoutName === 'small'
+
   return (
     <div
       css={`
@@ -21,7 +24,8 @@ const SubscriptionFilters = ({
         margin-bottom: ${1 * GU}px;
         display: inline-grid;
         grid-gap: ${1.5 * GU}px;
-        grid-template-columns: auto auto auto auto;
+        grid-template-columns: ${compact ? 'auto' : 'auto auto auto auto'};
+        grid-template-rows: ${compact ? 'auto auto auto auto' : 'auto'};
       `}
     >
       <DropDown
