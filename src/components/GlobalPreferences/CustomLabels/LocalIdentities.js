@@ -294,7 +294,6 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
         disabled={disabled}
         compact={compact}
         selected={-1}
-        css="z-index: 2;"
         items={[
           <ActionSpan
             css={`
@@ -343,7 +342,6 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
                   grid-gap: ${1.5 * GU}px;
                   width: 100%;
                   align-items: center;
-                  z-index: 2;
                 `}
             `}
           >
@@ -405,7 +403,6 @@ const List = styled.ul`
   position: relative;
   left: -${3 * GU}px;
   background: ${({ surface }) => surface};
-  z-index: 1;
   border-top: ${({ border }) => `1px solid ${border};`};
   border-bottom: ${({ border }) => `1px solid ${border};`};
 
