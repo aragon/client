@@ -291,6 +291,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
   return (
     <React.Fragment>
       <DropDown
+        css="box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);"
         disabled={disabled}
         compact={compact}
         selected={-1}
