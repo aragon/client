@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useLayout, Card, CardLayout, GU } from '@aragon/ui'
+import { useLayout, CardLayout, GU } from '@aragon/ui'
 import { RepoType } from '../../../prop-types'
 import AppContent from './AppContent'
 import AppCard from '../AppCard'
