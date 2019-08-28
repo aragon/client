@@ -15,9 +15,7 @@ const Markdown = React.memo(({ text }) => {
         remark()
           .use(remark2react, {
             remarkReactComponents: {
-              a: ({ children, ...props }) => (
-                <Link external>{children}</Link>
-              ),
+              a: ({ children, ...props }) => <Link external>{children}</Link>,
             },
           })
           .processSync(text).contents
