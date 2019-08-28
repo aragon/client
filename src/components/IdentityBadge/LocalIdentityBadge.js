@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
+import { useLocalIdentity } from '../../hooks'
 import { isAddress } from '../../web3-utils'
 import {
   IdentityContext,
@@ -9,20 +10,12 @@ import {
 import IdentityBadgeWithNetwork from './IdentityBadgeWithNetwork'
 import LocalIdentityPopoverTitle from './LocalIdentityPopoverTitle'
 
-const LocalIdentityBadge = ({ entity, forceAddress, ...props }) => {
+function LocalIdentityBadge({ entity, forceAddress, ...props }) {
   const address = isAddress(entity) ? entity : null
 
-  const { resolve, identityEvents$ } = React.useContext(IdentityContext)
-  const { showLocalIdentityModal } = React.useContext(LocalIdentityModalContext)
-  const [label, setLabel] = React.useState(null)
-  const handleResolve = useCallback(async () => {
-    try {
-      const { name = null } = await resolve(address)
-      setLabel(name)
-    } catch (e) {
-      // address does not resolve to identity
-    }
-  }, [address, resolve])
+  const { identityEvents$ } = useContext(IdentityContext)
+  const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
+  const { name: label, handleResolve } = useLocalIdentity(address)
 
   const handleClick = useCallback(() => {
     showLocalIdentityModal(address)
@@ -34,54 +27,6 @@ const LocalIdentityBadge = ({ entity, forceAddress, ...props }) => {
         /* user cancelled modify intent */
       })
   }, [address, identityEvents$, handleResolve, showLocalIdentityModal])
-
-  const handleEvent = useCallback(
-    updatedAddress => {
-      if (updatedAddress.toLowerCase() === address.toLowerCase()) {
-        handleResolve()
-      }
-    },
-    [address, handleResolve]
-  )
-  const handleRemove = useCallback(
-    async addresses => {
-      const exists = addresses.find(
-        addr => addr.toLowerCase() === address.toLowerCase()
-      )
-      if (exists) {
-        setLabel(null)
-      }
-    },
-    [address]
-  )
-
-  const clearLabel = useCallback(() => {
-    setLabel(null)
-  }, [])
-
-  useEffect(() => {
-    handleResolve()
-    const subscription = identityEvents$.subscribe(event => {
-      switch (event.type) {
-        case identityEventTypes.MODIFY:
-          return handleEvent(event.address)
-        case identityEventTypes.IMPORT:
-          return handleResolve()
-        case identityEventTypes.REMOVE:
-          return handleRemove(event.addresses)
-      }
-    })
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [
-    clearLabel,
-    entity,
-    handleEvent,
-    handleResolve,
-    handleRemove,
-    identityEvents$,
-  ])
 
   if (address === null) {
     return <IdentityBadgeWithNetwork {...props} customLabel={entity} />

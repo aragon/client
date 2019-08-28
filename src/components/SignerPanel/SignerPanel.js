@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel } from '@aragon/ui'
+import { SidePanel, GU } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
@@ -27,13 +27,13 @@ import springs from '../../springs'
 import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 
 const INITIAL_STATE = {
-  panelOpened: false,
-  intent: {},
-  directPath: false,
   actionPaths: [],
+  directPath: false,
+  intent: {},
+  panelOpened: false,
   pretransaction: null,
-  status: STATUS_TX_CONFIRMING, // initially default to rendering the tx signing panel
   signError: null,
+  status: STATUS_TX_CONFIRMING, // initially default to rendering the tx signing panel
 }
 
 const RECIEPT_ERROR_STATUS = '0x0'
@@ -133,14 +133,27 @@ class SignerPanel extends React.PureComponent {
     }
   }
 
-  transactionIntent({ path, transaction = {} }) {
+  transactionIntent({ external, path, transaction = {} }) {
+    const { apps } = this.props
+
     // If the path includes forwarders, the intent is always the last node
     // Otherwise, it's the direct transaction
     const targetIntent = path.length > 1 ? path[path.length - 1] : transaction
     const { annotatedDescription, description, to } = targetIntent
-    const name = getAppName(this.props.apps, to)
+    const name = getAppName(apps, to)
+    const installed = apps.some(
+      ({ proxyAddress }) => proxyAddress === transaction.to
+    )
 
-    return { annotatedDescription, description, name, to, transaction }
+    return {
+      annotatedDescription,
+      description,
+      external,
+      installed,
+      name,
+      to,
+      transaction,
+    }
   }
 
   signTransaction(transaction, intent, isPretransaction = false) {
@@ -290,12 +303,12 @@ class SignerPanel extends React.PureComponent {
     } = this.props
 
     const {
-      panelOpened,
-      signError,
-      intent,
-      directPath,
       actionPaths,
+      directPath,
+      intent,
+      panelOpened,
       pretransaction,
+      signError,
       status,
     } = this.state
 
@@ -360,7 +373,6 @@ class SignerPanel extends React.PureComponent {
                               onClose={this.handleSignerClose}
                               intent={intent}
                               onSign={this.handleMsgSign}
-                              signError={Boolean(signError)}
                               signingEnabled={status === STATUS_MSG_CONFIRMING}
                             />
                           )}
@@ -396,7 +408,7 @@ class SignerPanel extends React.PureComponent {
 
 const Main = styled.div`
   position: relative;
-  margin: 0 -30px;
+  margin: 0 -${SidePanel.HORIZONTAL_PADDING}px;
   overflow-x: hidden;
   min-height: 0;
   flex-grow: 1;
@@ -407,13 +419,14 @@ const ScreenWrapper = styled(animated.div)`
   top: 0;
   left: 0;
   right: 0;
-  padding: 0 30px;
+  padding: 0 ${SidePanel.HORIZONTAL_PADDING}px;
   display: flex;
   min-height: 100%;
 `
 
 const Screen = styled.div`
   width: 100%;
+  margin-top: ${3 * GU}px;
 `
 
 export default function(props) {

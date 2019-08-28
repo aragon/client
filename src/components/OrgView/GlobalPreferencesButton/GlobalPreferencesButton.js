@@ -14,7 +14,7 @@ import IconCustomLabels from './IconCustomLabels'
 import IconNotifications from './IconNotifications'
 import IconHelpAndFeedback from './IconHelpAndFeedback'
 
-function GlobalSettingsButton({ onOpen }) {
+function GlobalPreferencesButton({ onOpen }) {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
   const containerRef = useRef()
@@ -126,7 +126,7 @@ function GlobalSettingsButton({ onOpen }) {
   )
 }
 
-GlobalSettingsButton.propTypes = {
+GlobalPreferencesButton.propTypes = {
   onOpen: PropTypes.func.isRequired,
 }
 
@@ -180,4 +180,4 @@ Item.propTypes = {
   lastItem: PropTypes.bool,
 }
 
-export default React.memo(GlobalSettingsButton)
+export default React.memo(GlobalPreferencesButton)

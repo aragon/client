@@ -37,7 +37,7 @@ if (
 
 ReactDOM.render(
   <GlobalErrorHandler>
-    <Main layout={false}>
+    <Main layout={false} scrollView={false}>
       <App />
     </Main>
   </GlobalErrorHandler>,
