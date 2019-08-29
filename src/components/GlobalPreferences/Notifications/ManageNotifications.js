@@ -5,6 +5,7 @@ import { AppType } from '../../../prop-types'
 import {
   Box,
   Button,
+  ButtonText,
   GU,
   DataView,
   IconTrash,
@@ -28,8 +29,13 @@ import {
   NOTIFICATION_SERVICE_TOKEN_KEY,
   NOTIFICATION_SERVICE_EMAIL_KEY,
 } from './constants'
-import { SubscriptionsForm } from './SubscriptionsForm'
+import SubscriptionsForm from './SubscriptionsForm'
 import SubscriptionFilters from './SubscriptionFilters'
+import NotificationsInfoBox, {
+  ICON_SUCCESS,
+  ICON_ERROR,
+  ICON_NEUTRAL,
+} from './NotificationsInfoBox'
 
 export default function ManageNotifications({
   apps,
@@ -46,13 +52,14 @@ export default function ManageNotifications({
     setIsFetching(true)
     return getSubscriptions(token)
       .then(subscriptions => {
+        setApiError(null) // reset the error after successfully fetching
         setSubscriptions(subscriptions)
         setIsFetching(false)
         return subscriptions
       })
       .catch(error => {
         setIsFetching(false)
-        setApiError(error.message)
+        setApiError(error)
       })
   }, [token, setSubscriptions, setIsFetching, setApiError])
 
@@ -65,16 +72,6 @@ export default function ManageNotifications({
 
   return (
     <React.Fragment>
-      {apiError && (
-        <Info
-          css={`
-            margin-bottom: ${GU}px;
-          `}
-          mode="error"
-        >
-          {apiError}
-        </Info>
-      )}
       <Split
         primary={
           <SubscriptionsForm
@@ -109,12 +106,15 @@ export default function ManageNotifications({
           </React.Fragment>
         }
       />
-      {subscriptions.length > 0 && (
+      {(apiError || subscriptions.length > 0) && (
         <SubscriptionsTable
           apps={apps}
+          apiError={apiError}
+          onApiError={setApiError}
           authToken={token}
           subscriptions={subscriptions}
-          onUnsubscribe={fetchSubscriptions}
+          fetchSubscriptions={fetchSubscriptions}
+          isFetchingSubscriptions={isFetching}
         />
       )}
     </React.Fragment>
@@ -143,7 +143,7 @@ function DeleteAccount({ token, onLogout, onApiError }) {
       setIsAccountDeleted(true)
       onLogout()
     } catch (e) {
-      onApiError(e.message)
+      onApiError(e)
     }
     setIsFetching(false)
   }, [onLogout, token, onApiError])
@@ -204,12 +204,14 @@ const filterSubscriptions = ({
 
 const SubscriptionsTable = React.memo(function SubscriptionsTable({
   apps,
+  apiError,
+  onApiError,
   authToken,
   subscriptions,
-  onUnsubscribe,
+  fetchSubscriptions,
+  isFetchingSubscriptions,
 }) {
   const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
-  const [apiError, setApiError] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const handleSelectEntries = useCallback(
     (entries, indexes) => {
@@ -232,14 +234,20 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
         // reset selection
         setIsSubmitting(false)
         // Refetch subscriptions
-        onUnsubscribe()
+        fetchSubscriptions()
         setSelectedSubscriptions([])
       } catch (e) {
-        setApiError(e.message)
+        onApiError(e)
         setIsSubmitting(false)
       }
     },
-    [authToken, onUnsubscribe, selectedSubscriptions, subscriptions]
+    [
+      authToken,
+      fetchSubscriptions,
+      selectedSubscriptions,
+      subscriptions,
+      onApiError,
+    ]
   )
 
   const organizations = Array.from(
@@ -268,6 +276,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     new Set(subscriptions.map(subscription => subscription.eventName))
   )
   const [selectedEvent, setSelectedEvent] = useState(-1)
+
   const onEventChange = useCallback(
     idx => {
       setSelectedEvent(idx)
@@ -287,6 +296,38 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     organization: organizations[selectedOrganization],
   })
   const theme = useTheme()
+
+  if (apiError) {
+    if (!(apiError instanceof TypeError)) {
+      console.error('--- error handling is wrong for api errors')
+    }
+    return (
+      <NotificationsInfoBox
+        showImage={false}
+        header="Error connecting to the Notifications server"
+        icon={ICON_ERROR}
+      >
+        <div>
+          There was an error when trying to connect to the Notifications server.
+          <React.Fragment>
+            Please
+            <ButtonText
+              disabled={isFetchingSubscriptions}
+              css={`
+                font-weight: bold;
+              `}
+              onClick={fetchSubscriptions}
+            >
+              retry {isFetchingSubscriptions && <LoadingRing />}
+            </ButtonText>
+            or try again later.
+          </React.Fragment>
+          )}
+        </div>
+      </NotificationsInfoBox>
+    )
+  }
+
   return (
     <DataView
       fields={[
@@ -380,8 +421,11 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
 
 SubscriptionsTable.propTypes = {
   apps: PropTypes.array,
+  apiError: PropTypes.string,
+  onApiError: PropTypes.func,
   authToken: PropTypes.string,
-  onUnsubscribe: PropTypes.func,
+  fetchSubscriptions: PropTypes.func,
+  isFetchingSubscriptions: PropTypes.bool,
   subscriptions: PropTypes.array,
 }
 

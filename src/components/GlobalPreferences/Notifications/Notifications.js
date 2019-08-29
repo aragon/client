@@ -8,7 +8,7 @@ import {
   NotificationsVerify,
   NotificationsPreVerify,
 } from './NotificationsVerify'
-import NotificationsVerifyBox from './NotificationsVerifyBox'
+import NotificationsInfoBox, { ICON_ERROR } from './NotificationsInfoBox'
 import { isAuthTokenValid } from './notification-service-api'
 
 import {
@@ -16,6 +16,7 @@ import {
   AUTH_PREVERIFY,
   AUTH_AUTHENTICATED,
   AUTH_AUTHENTICATION_FAILED,
+  AUTH_SERVICE_UNAVAILABLE,
   NOTIFICATION_SERVICE_EMAIL_KEY,
   NOTIFICATION_SERVICE_TOKEN_KEY,
   VERIFY_SUBSECTION,
@@ -45,6 +46,7 @@ function useAuthState() {
     }
 
     if (email && token) {
+      // TODO: move this block to a useCallback and return from hook to allow retrying to authenticate if service is down
       setAuthState(AUTH_AUTHENTICATING)
       isAuthTokenValid(token)
         .then(v => {
@@ -52,7 +54,12 @@ function useAuthState() {
           return v
         })
         .catch(e => {
-          setAuthState(AUTH_AUTHENTICATION_FAILED)
+          if (e instanceof TypeError) {
+            // network/service error
+            setAuthState(AUTH_SERVICE_UNAVAILABLE)
+          } else {
+            setAuthState(AUTH_AUTHENTICATION_FAILED)
+          }
         })
     }
   }, [email, token])
@@ -74,6 +81,9 @@ function useAuthState() {
     setToken(null)
   }, [setToken, setEmail])
 
+  const setServiceUnavailable = useCallback(() => {
+    setAuthState(AUTH_SERVICE_UNAVAILABLE)
+  }, [setAuthState])
   return {
     authState,
     email,
@@ -81,6 +91,7 @@ function useAuthState() {
     handleTokenChange: setToken,
     handleEmailChange: setEmail,
     handleLogout,
+    setServiceUnavailable,
   }
 }
 
@@ -139,7 +150,7 @@ export default function Notifications({
       return null
     case AUTH_AUTHENTICATION_FAILED:
       return (
-        <NotificationsVerifyBox header="Authentication Failed">
+        <NotificationsInfoBox header="Authentication Failed" icon={ICON_ERROR}>
           <div>
             Authentication was unsuccessful.{' '}
             <ButtonText
@@ -151,7 +162,28 @@ export default function Notifications({
               Try logging in again.
             </ButtonText>
           </div>
-        </NotificationsVerifyBox>
+        </NotificationsInfoBox>
+      )
+    case AUTH_SERVICE_UNAVAILABLE:
+      return (
+        <NotificationsInfoBox
+          header="Error fetching subscriptions data"
+          icon={ICON_ERROR}
+        >
+          <div>
+            There was an error when trying to connect to the Notifications
+            server. Please
+            <ButtonText
+              css={`
+                font-weight: bold;
+              `}
+              onClick={handleLogout}
+            >
+              sign out
+            </ButtonText>
+            or try again later.
+          </div>
+        </NotificationsInfoBox>
       )
     case AUTH_UNAUTHENTICATED:
     default:

@@ -16,7 +16,12 @@ export const ICON_NEUTRAL = 'neutral'
 export const ICON_ERROR = 'error'
 const ALLOWED_ICONS = [ICON_SUCCESS, ICON_NEUTRAL, ICON_ERROR]
 
-export default function NotificationsVerifyBox({ header, children, icon }) {
+export default function NotificationsInfoBox({
+  header,
+  children,
+  icon,
+  showImage = true,
+} = {}) {
   const theme = useTheme()
   let IconComponent = null
   switch (icon) {
@@ -33,7 +38,7 @@ export default function NotificationsVerifyBox({ header, children, icon }) {
 
   return (
     <Box heading="Email notifications">
-      <NotificationImage />
+      {showImage && <NotificationImage />}
       <div
         css={`
           height: ${GU * 24}px;
@@ -70,10 +75,11 @@ export default function NotificationsVerifyBox({ header, children, icon }) {
   )
 }
 
-NotificationsVerifyBox.propTypes = {
+NotificationsInfoBox.propTypes = {
   header: PropTypes.string,
   children: PropTypes.node,
   icon: PropTypes.oneOf(ALLOWED_ICONS),
+  showImage: PropTypes.bool,
 }
 
 export const NotificationImage = () => (

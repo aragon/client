@@ -58,7 +58,7 @@ function getSubscribables(apps, subscriptions) {
   return [subscribableApps, subscribableEvents]
 }
 
-export function SubscriptionsForm({
+export default function SubscriptionsForm({
   apps,
   dao,
   isFetchingSubscriptions,
@@ -140,7 +140,7 @@ export function SubscriptionsForm({
 
         await fetchSubscriptions()
       } catch (e) {
-        onApiError(e.message)
+        onApiError(e)
       }
       setIsSubmitting(false)
     },

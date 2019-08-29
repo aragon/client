@@ -1,13 +1,13 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, Button, GU, Info, LoadingRing, useTheme } from '@aragon/ui'
+import { ButtonText, Button, GU, Info, LoadingRing, useTheme } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
 import { VERIFY_SUBSECTION, ExpiredTokenError } from './constants'
-import NotificationsVerifyBox, {
+import NotificationsInfoBox, {
   ICON_SUCCESS,
   ICON_ERROR,
   ICON_NEUTRAL,
-} from './NotificationsVerifyBox'
+} from './NotificationsInfoBox'
 
 export function NotificationsVerify({
   subsection,
@@ -18,7 +18,6 @@ export function NotificationsVerify({
   const [isFetching, setIsFetching] = useState(true)
   const [verified, setVerified] = useState(false)
   const [error, setError] = useState(null)
-  const theme = useTheme()
 
   const handleResetAccount = useCallback(() => {
     // In error states we can clear email and token to reset the state
@@ -54,7 +53,7 @@ export function NotificationsVerify({
 
   if (isFetching) {
     return (
-      <NotificationsVerifyBox header="Verifying">
+      <NotificationsInfoBox header="Verifying">
         <div
           css={`
             display: flex;
@@ -64,93 +63,85 @@ export function NotificationsVerify({
         >
           <LoadingRing />
         </div>
-      </NotificationsVerifyBox>
+      </NotificationsInfoBox>
     )
   }
   if (verified) {
     return (
-      <NotificationsVerifyBox
+      <NotificationsInfoBox
         header="Verification Successful"
         icon={ICON_SUCCESS}
       >
         <div>
           Your email was verified and now you can subscribe to app events to
           receive email notifications. You may close this tab or{' '}
-          <ButtonBase
+          <ButtonText
             css={`
               font-weight: bold;
-              color: ${theme.link};
-              cursor: pointer;
             `}
             onClick={navigateToNotifications}
           >
             go to Notification preferences.
-          </ButtonBase>
+          </ButtonText>
         </div>
-      </NotificationsVerifyBox>
+      </NotificationsInfoBox>
     )
   }
 
   if (error && error instanceof ExpiredTokenError) {
     return (
-      <NotificationsVerifyBox header="Verification Failed" icon={ICON_ERROR}>
+      <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
         <div>
           The link you clicked to verify your email is not longer valid due to
           expiration.{' '}
         </div>
         Do not worry, you can go back and{' '}
-        <ButtonBase
+        <ButtonText
           css={`
             font-weight: bold;
-            color: ${theme.link};
-            cursor: pointer;
           `}
           onClick={handleResetAccount}
         >
           try to sign in again.
-        </ButtonBase>
-      </NotificationsVerifyBox>
+        </ButtonText>
+      </NotificationsInfoBox>
     )
   }
 
   if (error && error instanceof TypeError) {
     return (
-      <NotificationsVerifyBox header="Verification Failed" icon={ICON_ERROR}>
+      <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
         <div>
           There was an error when trying to connect to the Notifications server.
           Do not worry, you can go back and{' '}
-          <ButtonBase
+          <ButtonText
             css={`
               font-weight: bold;
-              color: ${theme.link};
-              cursor: pointer;
             `}
             onClick={handleResetAccount}
           >
             try to sign in again.
-          </ButtonBase>
+          </ButtonText>
         </div>
-      </NotificationsVerifyBox>
+      </NotificationsInfoBox>
     )
   }
 
   return (
-    <NotificationsVerifyBox header="Verification Failed" icon={ICON_ERROR}>
+    <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
       <div>
         Something has gone wrong during the email verification process. Do not
         worry, you can go back and{' '}
-        <ButtonBase
+        <ButtonText
           css={`
             font-weight: bold;
-            color: ${theme.link};
-            cursor: pointer;
           `}
           onClick={handleResetAccount}
         >
           try to sign in again.
-        </ButtonBase>
+        </ButtonText>
       </div>
-    </NotificationsVerifyBox>
+    </NotificationsInfoBox>
   )
 }
 
@@ -165,9 +156,8 @@ export function NotificationsPreVerify({ email, onEmailChange }) {
   const handleResetEmail = useCallback(() => onEmailChange(null), [
     onEmailChange,
   ])
-  const theme = useTheme()
   return (
-    <NotificationsVerifyBox
+    <NotificationsInfoBox
       icon={ICON_NEUTRAL}
       header="Awaiting verification. Please check your email!"
     >
@@ -177,18 +167,16 @@ export function NotificationsPreVerify({ email, onEmailChange }) {
       </p>
       <p>
         Something went wrong?{' '}
-        <ButtonBase
+        <ButtonText
           css={`
             font-weight: bold;
-            color: ${theme.link};
-            cursor: pointer;
           `}
           onClick={handleResetEmail}
         >
           Go back and try to sign in again.
-        </ButtonBase>
+        </ButtonText>
       </p>
-    </NotificationsVerifyBox>
+    </NotificationsInfoBox>
   )
 }
 NotificationsPreVerify.propTypes = {
