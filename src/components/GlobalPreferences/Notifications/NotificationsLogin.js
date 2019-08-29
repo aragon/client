@@ -147,14 +147,13 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
       </form>
 
       <Info>
-        Receive email notifications for new events in this organization. For
-        example, whenever a new vote is created or when funds are transferred,
-        you’ll get an email informing you of the latest activity in your
-        organization. How does it work? <br /> You will be asked to enter with
-        your email address whenever using a different browser session or device
-        to access your subsciptions. This process doesn't require a password;
-        you just need to confirm your email just for you to confirm your email
-        address.
+        Receive email notifications for the new app events. For example,
+        whenever a new vote is created or when tokens added, you’ll get an email
+        informing you of the latest activity in your organization. You will be
+        asked to enter with your email address whenever using a different
+        browser session or device to access your subsciptions. This process
+        doens’t require a password, just for you to confirm your email address
+        whenever you want to sing in.
       </Info>
     </Box>
   )
