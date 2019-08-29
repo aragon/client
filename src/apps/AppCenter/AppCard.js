@@ -38,7 +38,7 @@ const AppCard = React.memo(function AppCard({
         <Icon compactMode={compactMode}>{icon}</Icon>
         <Name compactMode={compactMode}>{name}</Name>
         <TagWrapper compactMode={compactMode} link={link}>
-          <Tag mode="indicator">{tag}</Tag>
+          {tag}
         </TagWrapper>
         <Description theme={theme} compactMode={compactMode}>
           {description}
@@ -53,7 +53,7 @@ AppCard.propTypes = {
   link: PropTypes.string,
   icon: PropTypes.node.isRequired,
   name: PropTypes.string.isRequired,
-  tag: PropTypes.string.isRequired,
+  tag: PropTypes.node.isRequired,
   description: PropTypes.string.isRequired,
 }
 
