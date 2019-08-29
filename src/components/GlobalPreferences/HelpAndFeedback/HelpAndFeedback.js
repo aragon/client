@@ -12,7 +12,7 @@ function HelpAndFeedback() {
   ])
 
   return (
-    <Box heading="Help Scout" padding={3 * GU}>
+    <Box heading="Help Scout">
       <div
         css={`
           display: flex;

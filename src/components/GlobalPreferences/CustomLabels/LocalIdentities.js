@@ -52,7 +52,7 @@ function LocalIdentities({
   const theme = useTheme()
 
   return (
-    <Box padding={3 * GU}>
+    <Box>
       <div
         css={`
           display: grid;
