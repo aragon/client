@@ -31,9 +31,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-        Featuring more templates to match with your
-        needs. Start a company, membership, or
-        reputation-based organization in just a few
+        Featuring redesign organization templates to
+        match your needs. Start a company, membership,
+        or reputation-based organization in just a few
         clicks.
       `,
     },
@@ -70,8 +70,8 @@ export const highlights = [
     description: {
       small: null,
       large: `
-        Whether it's a new vote, finance transfer, or
-        permissions change, subscribe to the events
+        Whether it's a new vote, financial transfer,
+        or permissions change, subscribe to the events
         that matter to you.
       `,
     },
@@ -109,8 +109,8 @@ export const highlights = [
       small: null,
       large: `
         Simplified permissions management that
-        makes it easy to understand at a glance who
-        has the authority in your organization.
+        makes it easier to understand who
+        has authority in your organization.
       `,
     },
     visual: {
