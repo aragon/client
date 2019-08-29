@@ -166,7 +166,7 @@ export function SubscriptionsForm({
     apps.length > 0
   ) {
     return (
-      <Box heading="Create Subscriptions">You are subscribed to all events</Box>
+      <Box heading="Create Subscriptions">You have subscribed to all app events available on this organization.</Box>
     )
   }
 

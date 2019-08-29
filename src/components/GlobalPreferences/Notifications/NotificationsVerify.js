@@ -24,7 +24,8 @@ export function NotificationsVerify({
     // In error states we can clear email and token to reset the state
     onEmailChange(null)
     onTokenChange(null)
-  }, [onEmailChange, onTokenChange])
+    navigateToNotifications()
+  }, [onEmailChange, onTokenChange, navigateToNotifications])
 
   useEffect(() => {
     let cancelled = false
@@ -149,23 +150,8 @@ export function NotificationsVerify({
           try to sign in again.
         </ButtonBase>
       </div>
-      <ResetButton onClick={handleResetAccount} />
     </NotificationsVerifyBox>
   )
-}
-
-const ResetButton = ({ onClick }) => (
-  <Button
-    css={`
-      margin-top: ${GU}px;
-    `}
-    onClick={onClick}
-    label="Reset email"
-  />
-)
-
-ResetButton.propTypes = {
-  onClick: PropTypes.func,
 }
 
 NotificationsVerify.propTypes = {
