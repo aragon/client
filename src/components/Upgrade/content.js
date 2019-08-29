@@ -31,10 +31,10 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      Featuring more templates to match with your
-      needs. Start a company, membership, or
-      reputation-based organization in just a few
-      clicks.
+        Featuring more templates to match with your
+        needs. Start a company, membership, or
+        reputation-based organization in just a few
+        clicks.
       `,
     },
     visual: {
@@ -51,9 +51,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      The voting app has been redesigned to make
-      governance more accessible. Easily find and
-      understand the details of a vote.
+        The voting app has been redesigned to make
+        governance more accessible. Easily find and
+        understand the details of a vote.
       `,
     },
     visual: {
@@ -70,9 +70,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      Whether it's a new vote, finance transfer, or
-      permissions change, subscribe to the events
-      that matter to you.
+        Whether it's a new vote, finance transfer, or
+        permissions change, subscribe to the events
+        that matter to you.
       `,
     },
     visual: {
@@ -89,9 +89,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      View and sort your organization’s finances for
-      greater clarity and insight. Now with more
-      powerful filters.
+        View and sort your organization’s finances for
+        greater clarity and insight. Now with more
+        powerful filters.
       `,
     },
     visual: {
@@ -108,9 +108,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      Simplified permissions management that
-      makes it easy to understand at a glance who
-      has the authority in your organization.
+        Simplified permissions management that
+        makes it easy to understand at a glance who
+        has the authority in your organization.
       `,
     },
     visual: {
@@ -127,9 +127,9 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      Aragon Agent enables organizations to interact
-      directly with any Ethereum application. Access
-      Web3 like never before.
+        Aragon Agent enables organizations to interact
+        directly with any Ethereum application. Access
+        Web3 like never before.
       `,
     },
     visual: {
@@ -146,8 +146,8 @@ export const highlights = [
     description: {
       small: null,
       large: `
-      A glimpse into the future of organizations that
-      you can use today.
+        A glimpse into the future of organizations that
+        you can use today.
       `,
     },
     visual: {
