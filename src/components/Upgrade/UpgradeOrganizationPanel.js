@@ -16,13 +16,10 @@ import {
   AragonType,
   DaoAddressType,
   ReposListType,
-  RepoContentType,
   RepoVersionType,
 } from '../../prop-types'
-import AppIcon from '../../components/AppIcon/AppIcon'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
-import { network } from '../../environment'
-import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
+import { isKnownRepo } from '../../repo-utils'
 import RepoBadge from '../../components/RepoBadge/RepoBadge'
 import { sanitizeCodeRepositoryUrl } from '../../url-utils'
 
@@ -174,7 +171,6 @@ UpgradeOrganizationPanel.propTypes = {
   onClose: PropTypes.func.isRequired,
   repos: ReposListType,
   daoAddress: DaoAddressType.isRequired,
-  theme: PropTypes.object,
   wrapper: AragonType,
 }
 

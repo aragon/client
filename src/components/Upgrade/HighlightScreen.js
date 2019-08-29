@@ -87,7 +87,7 @@ const HighlightScreen = ({
             ),
           }}
         >
-          New Bella 0.7
+          New Camino 0.8
         </AnimP>
         <AnimH1
           css={`
@@ -173,10 +173,10 @@ const HighlightScreen = ({
                       right: 0;
                       bottom: 0;
                       background: ${`
-                        ${visual.color}
-                        ${verticalMode ? '50% 40%' : '0 50%'} / cover
                         url(${visualSrc})
-                        no-repeat;
+                        ${verticalMode ? '50% 40%' : '0 50%'} / cover
+                        no-repeat,
+                        ${visual.color};
                       `};
                     `}
                     style={{ opacity }}

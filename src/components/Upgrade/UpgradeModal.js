@@ -33,8 +33,10 @@ const UpgradeModal = React.memo(({ visible, onUpgrade, onClose }) => {
             padding={0}
             width={Math.min(1055, width - 40)}
             visible={visible}
-            overlayColor="rgb(37, 49, 77, 0.75)"
             onClose={onClose}
+            css={`
+              z-index: 4;
+            `}
           >
             <div
               css="position: relative"

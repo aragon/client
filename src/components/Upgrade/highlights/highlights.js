@@ -101,7 +101,7 @@ const highlights = [
       color: '#dcddf0',
     },
     upgrade: {
-      small: 'Try Bella now',
+      small: 'Try Camino now',
       large: 'Upgrade your organization',
     },
   },

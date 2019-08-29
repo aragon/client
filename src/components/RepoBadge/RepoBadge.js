@@ -1,15 +1,14 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { blockExplorerUrl, useTheme, GU, LinkBase, RADIUS } from '@aragon/ui'
 import { network } from '../../environment'
 import AppIcon from '../../components/AppIcon/AppIcon'
-import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
-import { repoBaseUrl, sanitizeCodeRepositoryUrl } from '../../url-utils'
+import { KNOWN_ICONS } from '../../repo-utils'
+import { repoBaseUrl } from '../../url-utils'
 import { RepoVersionType } from '../../prop-types'
 
 function useRepoBadge(repoVersion) {
   const {
     content: { appId, contractAddress, name, icons },
-    version,
   } = repoVersion
 
   return {
@@ -21,7 +20,7 @@ function useRepoBadge(repoVersion) {
   }
 }
 
-const RepoBadge = ({ repoVersion }) => {
+const RepoBadge = React.memo(function({ repoVersion }) {
   const theme = useTheme()
   const { icons, baseUrl, contractAddress, knownIcon, name } = useRepoBadge(
     repoVersion
@@ -57,7 +56,7 @@ const RepoBadge = ({ repoVersion }) => {
           src={knownIcon || undefined}
           radius={RADIUS}
           css={`
-            min-width: 22px;
+            min-width: ${3 * GU}px;
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
           `}
@@ -76,7 +75,7 @@ const RepoBadge = ({ repoVersion }) => {
       </LinkBase>
     </div>
   )
-}
+})
 
 RepoBadge.propTypes = {
   repoVersion: RepoVersionType.isRequired,
