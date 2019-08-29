@@ -368,18 +368,20 @@ class Wrapper extends React.PureComponent {
 
     if (instanceId === 'apps') {
       return (
-        <AppCenter
-          appInstanceGroups={this.getAppInstancesGroups(apps)}
-          daoAddress={daoAddress}
-          params={params}
-          repos={repos}
-          canUpgradeOrg={canUpgradeOrg}
-          reposLoading={reposLoading}
-          onMessage={this.handleAppMessage}
-          onUpgradeAll={this.showOrgUpgradePanel}
-          onParamsRequest={this.handleParamsRequest}
-          wrapper={wrapper}
-        />
+        <AppInternal>
+          <AppCenter
+            appInstanceGroups={this.getAppInstancesGroups(apps)}
+            daoAddress={daoAddress}
+            params={params}
+            repos={repos}
+            canUpgradeOrg={canUpgradeOrg}
+            reposLoading={reposLoading}
+            onMessage={this.handleAppMessage}
+            onUpgradeAll={this.showOrgUpgradePanel}
+            onParamsRequest={this.handleParamsRequest}
+            wrapper={wrapper}
+          />
+        </AppInternal>
       )
     }
 
