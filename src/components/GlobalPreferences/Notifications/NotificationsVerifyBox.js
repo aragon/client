@@ -1,10 +1,36 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Box, IconCheck, GU, RADIUS, useTheme, textStyle } from '@aragon/ui'
+import {
+  Box,
+  IconCheck,
+  IconCross,
+  GU,
+  RADIUS,
+  useTheme,
+  textStyle,
+} from '@aragon/ui'
 import notificationSvg from './notifications.svg'
 
-export default function NotificationsVerifyBox({ header, children, success }) {
+export const ICON_SUCCESS = 'success'
+export const ICON_NEUTRAL = 'neutral'
+export const ICON_ERROR = 'error'
+const ALLOWED_ICONS = [ICON_SUCCESS, ICON_NEUTRAL, ICON_ERROR]
+
+export default function NotificationsVerifyBox({ header, children, icon }) {
   const theme = useTheme()
+  let IconComponent = null
+  switch (icon) {
+    case ICON_SUCCESS:
+      IconComponent = <Checkmark color={theme.accent} />
+      break
+    case ICON_NEUTRAL:
+      IconComponent = <Checkmark color={theme.disabled} />
+      break
+    case ICON_ERROR:
+      IconComponent = <Cross color={theme.negative} />
+      break
+  }
+
   return (
     <Box heading="Email notifications">
       <NotificationImage />
@@ -15,12 +41,12 @@ export default function NotificationsVerifyBox({ header, children, success }) {
           display: grid;
           border-radius: ${RADIUS}px;
           padding: ${3.5 * GU}px ${10 * GU}px;
-          grid-gap: ${2 * GU}px;
-          grid-template-columns: ${success ? 'auto 1fr' : '1fr'};
+          grid-gap: ${3 * GU}px;
+          grid-template-columns: ${icon ? 'auto 1fr' : '1fr'};
           align-items: center;
         `}
       >
-        {success && <Checkmark />}
+        {IconComponent}
         <div>
           <div
             css={`
@@ -44,6 +70,12 @@ export default function NotificationsVerifyBox({ header, children, success }) {
   )
 }
 
+NotificationsVerifyBox.propTypes = {
+  header: PropTypes.string,
+  children: PropTypes.node,
+  icon: PropTypes.oneOf(ALLOWED_ICONS),
+}
+
 export const NotificationImage = () => (
   <img
     src={notificationSvg}
@@ -56,28 +88,43 @@ export const NotificationImage = () => (
   />
 )
 
-export const Checkmark = () => {
-  const theme = useTheme()
-  return (
-    <div
-      css={`
-        border: 2px solid ${theme.accent};
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: ${theme.accent};
-      `}
-    >
-      <IconCheck />
-    </div>
-  )
+export const Checkmark = ({ color }) => (
+  <div
+    css={`
+      border: 2px solid ${color};
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${color};
+    `}
+  >
+    <IconCheck />
+  </div>
+)
+Checkmark.propTypes = {
+  color: PropTypes.object,
 }
 
-NotificationsVerifyBox.propTypes = {
-  header: PropTypes.string,
-  success: PropTypes.bool,
-  children: PropTypes.node,
+export const Cross = ({ color }) => (
+  <div
+    css={`
+      border: 2px solid ${color};
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${color};
+    `}
+  >
+    <IconCross />
+  </div>
+)
+
+Cross.propTypes = {
+  color: PropTypes.object,
 }
