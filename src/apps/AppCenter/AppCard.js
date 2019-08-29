@@ -115,7 +115,7 @@ const Name = styled.p`
       `
       : `
         justify-content: center;
-        margin-bottom: ${0.5 * GU}px;
+        margin-bottom: ${1 * GU}px;
       `}
 `
 
@@ -149,7 +149,7 @@ const Description = styled.p`
         -webkit-line-clamp: 2;
         overflow: hidden;
         height: fit-content;
-        margin-top: ${1 * GU}px;
+        margin-top: ${0.5 * GU}px;
       `
       : `
         flex: 1;
