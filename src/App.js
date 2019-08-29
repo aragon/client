@@ -426,7 +426,7 @@ class App extends React.Component {
                     apps={appsWithIdentifiers}
                     permissions={permissions}
                   >
-                    <div css="position: relative; z-index: 1">
+                    <div css="position: relative; z-index: 0">
                       <Wrapper
                         visible={mode === APP_MODE_ORG}
                         account={account}
@@ -454,7 +454,7 @@ class App extends React.Component {
                     </div>
                   </PermissionsProvider>
 
-                  <div css="position: relative; z-index: 2">
+                  <div css="position: relative; z-index: 1">
                     <Onboarding
                       visible={
                         mode === APP_MODE_START || mode === APP_MODE_SETUP
