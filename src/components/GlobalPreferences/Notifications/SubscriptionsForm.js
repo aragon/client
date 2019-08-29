@@ -20,13 +20,19 @@ const getEventNamesFromAbi = memoize(abi =>
 )
 
 const filterSubscribedEvents = (abiEvents, subscribedEvents) =>
-  abiEvents.filter(event => !subscribedEvents.includes(event))
+  abiEvents.filter(
+    eventName =>
+      !subscribedEvents.includes(eventName) &&
+      eventName !== 'ScriptResult' &&
+      eventName !== 'RecoverToVault'
+  )
 
 // Get subscribable events for the contractAddress from the ABI and filter out existing subscriptions
 function getSubscribableEvents({ subscriptions, abi, contractAddress } = {}) {
   const subscribedEvents = subscriptions
     .filter(subscription => subscription.contractAddress === contractAddress)
     .map(({ eventName }) => eventName)
+
   const abiEvents = getEventNamesFromAbi(abi)
   return filterSubscribedEvents(abiEvents, subscribedEvents)
 }
