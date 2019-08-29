@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Button,
-  TextInput,
   EscapeOutside,
+  TextInput,
   breakpoint,
-  font,
-  theme,
+  textStyle,
+  useTheme,
 } from '@aragon/ui'
 import { ModalContext } from '../ModalManager/ModalManager'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
@@ -85,7 +85,13 @@ const Modal = ({ address, label, onCancel, onSave }) => {
   return (
     <EscapeOutside onEscapeOutside={onCancel}>
       <Wrap>
-        <Title>{action} custom label</Title>
+        <h3
+          css={`
+            ${textStyle('title4')}
+          `}
+        >
+          {action} custom label
+        </h3>
         <Description>
           This label would be displayed instead of the following address and
           only be <span>stored on this device</span>.
@@ -140,10 +146,6 @@ const Wrap = styled.div`
   )}
 `
 
-const Title = styled.h3`
-  ${font({ size: 'xlarge' })};
-`
-
 const Description = styled.p`
   margin: 20px 0;
   & span {
@@ -151,17 +153,24 @@ const Description = styled.p`
   }
 `
 
-const Label = styled.label`
-  display: block;
-  margin: 20px 0;
-  text-transform: uppercase;
-  color: ${theme.textSecondary};
-  ${font({ size: 'xsmall' })};
+function Label(props) {
+  const theme = useTheme()
+  return (
+    <label
+      css={`
+        display: block;
+        margin: 20px 0;
+        color: ${theme.surfaceContentSecondary};
+        ${textStyle('label2')}
 
-  & > div {
-    margin: 5px 0;
-  }
-`
+        & > div {
+          margin: 5px 0;
+        }
+      `}
+      {...props}
+    />
+  )
+}
 
 const Controls = styled.div`
   display: grid;
