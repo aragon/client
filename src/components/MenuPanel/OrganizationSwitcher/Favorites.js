@@ -1,16 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  EthIdenticon,
-  IconPlus,
-  GU,
-  RADIUS,
-  textStyle,
-  useTheme,
-} from '@aragon/ui'
-import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
-import { getKnownOrganization } from '../../../known-organizations'
+import { EthIdenticon, IconPlus, GU, RADIUS, useTheme } from '@aragon/ui'
 import { network } from '../../../environment'
+import { getKnownOrganization } from '../../../known-organizations'
+import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
+import { addressesEqual } from '../../../web3-utils'
 import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
 import FavoritesMenuItemButton from '../../FavoritesMenu/FavoritesMenuItemButton'
 
@@ -125,10 +119,14 @@ class Favorites extends React.Component {
       }
     })
 
-    const currentItem = allItems.find(org => org.address === currentDao.address)
-    const otherItems = allItems.filter(
-      org => org.address !== currentDao.address
-    )
+    const favoriteItems = [...allItems].sort((org, org2) => {
+      if (addressesEqual(org.address === currentDao.address)) {
+        return -1
+      } else if (addressesEqual(org.address === currentDao.address)) {
+        return 1
+      }
+      return 0
+    })
 
     return (
       <section
@@ -138,31 +136,10 @@ class Favorites extends React.Component {
         `}
       >
         <FavoritesMenu
-          items={currentItem ? [currentItem] : []}
+          items={favoriteItems}
           onActivate={this.handleDaoOpened}
           onFavoriteUpdate={this.handleFavoriteUpdate}
         />
-        <label
-          css={`
-            display: block;
-            padding: ${1 * GU}px ${2 * GU}px;
-            border-top: 1px solid ${theme.border};
-            border-bottom: 1px solid ${theme.border};
-            color: ${theme.surfaceContentSecondary};
-            ${textStyle('label2')}
-          `}
-        >
-          Favorites
-        </label>
-        {otherItems.length > 0 && (
-          <React.Fragment>
-            <FavoritesMenu
-              items={otherItems}
-              onActivate={this.handleDaoOpened}
-              onFavoriteUpdate={this.handleFavoriteUpdate}
-            />
-          </React.Fragment>
-        )}
         <FavoritesMenuItemButton
           onClick={this.handleGoHome}
           css={`
