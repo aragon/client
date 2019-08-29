@@ -5,7 +5,6 @@ import {
   Card,
   GU,
   IconExternal,
-  Tag,
   textStyle,
   unselectable,
   useLayout,
