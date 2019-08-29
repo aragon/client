@@ -35,7 +35,7 @@ const UpgradeModal = React.memo(({ visible, onUpgrade, onClose }) => {
             visible={visible}
             onClose={onClose}
             css={`
-              z-index: 1;
+              z-index: 4;
             `}
           >
             <div
