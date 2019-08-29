@@ -163,10 +163,6 @@ function Close({ compact, onClick }) {
         <IconClose
           css={`
             color: ${theme.surfaceIcon};
-            & path {
-              stroke: ${theme.surfaceIcon};
-              stroke-width: 0.3px;
-            }
           `}
         />
       </ButtonIcon>
