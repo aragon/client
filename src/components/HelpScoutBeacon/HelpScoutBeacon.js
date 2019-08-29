@@ -64,12 +64,11 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
         position: absolute;
         bottom: ${2 * GU}px;
         right: ${2 * GU}px;
-        z-index: 4;
+        z-index: 2;
 
         ${breakpoint(
-          'medium',
+          'large',
           `
-            z-index: 2;
             bottom: ${3 * GU}px;
             right: ${3 * GU}px;
           `
@@ -322,7 +321,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
                 ),
               }}
             >
-              <IconQuestion width={18} height={18} />
+              <IconQuestion width={22} height={22} />
             </RoundButtonIcon>
           ))
         }

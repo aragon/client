@@ -13,6 +13,7 @@ import {
 } from './components/IdentityManager/IdentityManager'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
+import { addressesEqual } from './web3-utils'
 
 // Update `now` at a given interval.
 export function useNow(updateEvery = 1000) {
@@ -280,26 +281,34 @@ export function useLocalIdentity(entity) {
     }
   }, [resolve, entity])
 
+  const handleRemove = useCallback(
+    addresses => {
+      if (addresses.some(address => addressesEqual(entity, address))) {
+        setName(null)
+      }
+    },
+    [entity]
+  )
+
   useEffect(() => {
     handleResolve()
-    const subscription = identityEvents$.subscribe(({ address, type }) => {
-      switch (type) {
+    const subscription = identityEvents$.subscribe(event => {
+      switch (event.type) {
         case identityEventTypes.MODIFY:
-          if (entity.toLowerCase() === address.toLowerCase()) {
+          if (addressesEqual(entity, event.address)) {
             handleResolve()
           }
           return
-        case identityEventTypes.CLEAR:
-          setName(null)
-          return
         case identityEventTypes.IMPORT:
-          handleResolve()
+          return handleResolve()
+        case identityEventTypes.REMOVE:
+          return handleRemove(event.addresses)
       }
     })
     return () => {
       subscription.unsubscribe()
     }
-  }, [identityEvents$, handleResolve, entity])
+  }, [identityEvents$, handleResolve, entity, handleRemove])
 
-  return { name }
+  return { name, handleResolve }
 }

@@ -1,139 +1,147 @@
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { Text, useTheme } from '@aragon/ui'
-import HomeCard from './HomeCard'
+import { CardLayout, Card, GU, textStyle, useLayout } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { appIds } from '../../environment'
 
-import imgAssignTokens from './assets/assign-tokens.svg'
-import imgFinance from './assets/finance.svg'
-import imgPayment from './assets/payment.svg'
-import imgVote from './assets/vote.svg'
+import imgEagle from './assets/eagle.svg'
+import imgAssignTokens from './assets/assign-tokens.png'
+import imgCheckFinance from './assets/check-finance.png'
+import imgNewPayment from './assets/new-payment.png'
+import imgCreateNewVote from './assets/create-new-vote.png'
 
-const CARD_WIDTH = 200
-const CARD_HEIGHT = 180
-const CARD_MARGIN = 30
+const EAGLE_DIMENSIONS = [1307, 877]
 
-const actions = [
+const ACTIONS = [
   {
-    id: 'assign-tokens',
     label: 'Assign Tokens',
-    appName: 'Tokens',
     appId: appIds['TokenManager'],
     img: imgAssignTokens,
   },
   {
-    id: 'vote',
     label: 'Vote',
-    appName: 'Voting',
     appId: appIds['Voting'],
-    img: imgVote,
+    img: imgCreateNewVote,
   },
   {
-    id: 'check-finance',
     label: 'Check Finance',
-    appName: 'Finance',
     appId: appIds['Finance'],
-    img: imgFinance,
+    img: imgCheckFinance,
   },
   {
-    id: 'new-payment',
     label: 'New Payment',
-    appName: 'Finance',
     appId: appIds['Finance'],
-    img: imgPayment,
+    img: imgNewPayment,
   },
 ]
 
-class Home extends React.Component {
-  static propTypes = {
-    apps: PropTypes.arrayOf(AppType).isRequired,
-    dao: PropTypes.string.isRequired,
-    onOpenApp: PropTypes.func.isRequired,
-  }
-  handleCardAction = actionId => {
-    const { onOpenApp, apps } = this.props
-    const action = actions.find(action => action.id === actionId)
-    if (!action || !action.appId) {
-      return
-    }
-    const app = apps.find(({ appId }) => appId === action.appId)
-    if (app && onOpenApp) {
-      onOpenApp(app.proxyAddress)
-    }
-  }
-  render() {
-    const { theme, apps, dao } = this.props
+function Home({ apps, onOpenApp }) {
+  const { layoutWidth, layoutName } = useLayout()
 
-    const appActions = actions.filter(({ appId }) =>
-      apps.find(app => app.appId === appId)
-    )
+  const appActions = useMemo(
+    () =>
+      ACTIONS.filter(
+        ({ appId }) => apps.findIndex(app => app.appId === appId) > -1
+      ),
+    [apps]
+  )
 
-    return (
+  const handleOpen = useCallback(
+    appId => {
+      const app = apps.find(app => app.appId === appId)
+      if (app && onOpenApp) {
+        onOpenApp(app.proxyAddress)
+      }
+    },
+    [onOpenApp, apps]
+  )
+
+  return (
+    <div
+      css={`
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        background: fixed ${layoutName === 'small' ? '0%' : '50%'} 100% /
+          ${EAGLE_DIMENSIONS[0]}px ${EAGLE_DIMENSIONS[1]}px no-repeat
+          url(${imgEagle});
+        overflow: auto;
+      `}
+    >
       <div
         css={`
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          width: 100%;
-          height: 100%;
-          padding-top: 40px;
-          padding-bottom: 40px;
-          background-color: ${theme.background};
+          position: relative;
+          z-index: 2;
+          width: ${layoutWidth}px;
+          padding: ${6 * GU}px 0;
         `}
       >
-        <h1 css="margin-bottom: 30px">
-          <Text weight="bold" size="xxlarge">
-            Welcome to Aragon!
-          </Text>
-          <div>
-            <Text size="small">
-              {dao.endsWith('.eth')
-                ? `You are interacting with ${dao}`
-                : 'You are using Aragon 0.8 — Camino'}
-            </Text>
-          </div>
+        <h1
+          css={`
+            margin-bottom: ${6 * GU}px;
+            ${textStyle('title2')}
+            text-align: center;
+          `}
+        >
+          What do you want to do?
         </h1>
-        <p>
-          <Text color={theme.content}>What do you want to do?</Text>
-        </p>
-        <Cards>
-          {appActions.map(({ id, label, img }) => (
-            <CardWrap key={id}>
-              <HomeCard
-                id={id}
-                title={label}
-                icon={img}
-                onActivate={this.handleCardAction}
-              />
-            </CardWrap>
+        <CardLayout rowHeight={33 * GU} columnWidthMin={31 * GU}>
+          {appActions.map(({ appId, img, label }, index) => (
+            <HomeCard
+              key={index}
+              appId={appId}
+              img={img}
+              label={label}
+              onOpen={handleOpen}
+            />
           ))}
-        </Cards>
+        </CardLayout>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
-const Cards = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-width: calc(${CARD_WIDTH}px * 2 + ${CARD_MARGIN}px * 2);
-  margin-left: -${CARD_MARGIN}px;
-`
-
-const CardWrap = styled.div`
-  flex-shrink: 0;
-  flex-grow: 0;
-  width: ${CARD_WIDTH}px;
-  height: ${CARD_HEIGHT}px;
-  margin-top: ${CARD_MARGIN}px;
-  margin-left: ${CARD_MARGIN}px;
-`
-
-export default function(props) {
-  const theme = useTheme()
-  return <Home {...props} theme={theme} />
+Home.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  onOpenApp: PropTypes.func.isRequired,
 }
+
+function HomeCard({ onOpen, appId, label, img }) {
+  const handleClick = useCallback(() => {
+    onOpen(appId)
+  }, [onOpen, appId])
+
+  return (
+    <Card
+      onClick={handleClick}
+      css={`
+        display: flex;
+        flex-direction: column;
+      `}
+    >
+      <img src={img} alt="" width="184" height="145" />
+      <p
+        css={`
+          margin-top: ${2 * GU}px;
+          ${textStyle('title4')};
+        `}
+      >
+        {label}
+      </p>
+    </Card>
+  )
+}
+
+HomeCard.propTypes = {
+  onOpen: PropTypes.func.isRequired,
+  appId: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  img: PropTypes.string.isRequired,
+}
+
+export default React.memo(Home)
