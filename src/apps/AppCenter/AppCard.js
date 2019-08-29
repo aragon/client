@@ -116,7 +116,7 @@ const Name = styled.p`
       `
       : `
         justify-content: center;
-        margin-bottom: ${1 * GU}px;
+        margin-bottom: ${0.5 * GU}px;
       `}
 `
 
