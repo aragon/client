@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText } from '@aragon/ui'
+import { Link } from '@aragon/ui'
 import { EthereumAddressType } from '../../prop-types'
 import EtherscanLink from '../Etherscan/EtherscanLink'
 
@@ -9,14 +9,9 @@ const AddressLink = ({ children, to }) =>
     <EtherscanLink address={to}>
       {url =>
         url ? (
-          <ButtonText
-            href={url}
-            target="_blank"
-            horizontalPadding="none"
-            css="padding: 0"
-          >
+          <Link href={url} focusRingSpacing={[2, 2]}>
             {children || to}
-          </ButtonText>
+          </Link>
         ) : (
           to
         )

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import {
   Box,
   Button,
-  ButtonText,
   Header,
   IconCoin,
   Info,
+  Link,
   GU,
   textStyle,
   unselectable,
@@ -242,14 +242,6 @@ Organization.propTypes = {
   walletProviderId: PropTypes.string.isRequired,
 }
 
-const OpenAppButton = props => (
-  <ButtonText
-    css={`
-      padding: 0;
-      font-weight: 600;
-    `}
-    {...props}
-  />
-)
+const OpenAppButton = props => <Link css="font-weight: 600" {...props} />
 
 export default Organization
