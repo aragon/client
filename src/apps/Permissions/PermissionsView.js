@@ -21,7 +21,7 @@ const PermissionsView = React.memo(function PermissionsView({
   showApps,
 }) {
   const { layoutName } = useLayout()
-  const willRenderEntryChild = useMemo(
+  const willRenderEntryExpansion = useMemo(
     () => permissions.some(permission => permission.entities.length > 1),
     [permissions]
   )
@@ -48,7 +48,9 @@ const PermissionsView = React.memo(function PermissionsView({
       fields={permissions.length ? fields : []}
       entries={permissions}
       renderEntry={entry => renderEntry(entry, showApps)}
-      renderEntryChild={willRenderEntryChild ? renderEntryChild : undefined}
+      renderEntryExpansion={
+        willRenderEntryExpansion ? renderEntryExpansion : undefined
+      }
       renderEntryActions={entry => renderEntryActions(entry, onManageRole)}
     />
   )
@@ -82,7 +84,7 @@ function renderEntry({ entities, app, role, manager }, showApps) {
   return cells
 }
 
-function renderEntryChild({ entities, app, role }) {
+function renderEntryExpansion({ entities, app, role }) {
   return entities.length < 2
     ? null
     : entities.map(entity => (
