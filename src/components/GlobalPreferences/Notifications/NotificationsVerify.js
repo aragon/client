@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, Button, GU, Info, LoadingRing, useTheme } from '@aragon/ui'
+import { ButtonText, LoadingRing } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
 import { VERIFY_SUBSECTION, ExpiredTokenError } from './constants'
 import NotificationsInfoBox, {
