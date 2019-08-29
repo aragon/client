@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { CardLayout, GU, Info, Link, useLayout } from '@aragon/ui'
+import { CardLayout, GU, Info, Link, Tag, useLayout } from '@aragon/ui'
 import { appsInDevelopment } from './discover-apps-data'
 import AppCard from '../AppCard'
 import AppIcon from '../../../components/AppIcon/AppIcon'
@@ -46,7 +46,7 @@ const DiscoverApps = React.memo(function DiscoverApps() {
               link={link}
               icon={<AppIcon size={9 * GU} src={icon} radius={12} />}
               name={name}
-              tag={status}
+              tag={<Tag mode="indicator">{status}</Tag>}
               description={description}
             />
           )
