@@ -12,7 +12,7 @@ export const appsInDevelopment = [
     {
       icon: surveyIcon,
       name: 'Survey',
-      status: 'ready',
+      status: 'experimental',
       description: `Create multi-option signaling votes.`,
       link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
     },
