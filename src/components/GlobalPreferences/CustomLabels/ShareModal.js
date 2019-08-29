@@ -130,26 +130,23 @@ ShareModal.propTypes = {
   visible: PropTypes.bool.isRequired,
 }
 
-function ShareModalWithToast({ visible, onClose, link }) {
+function ShareModalWithToast({ visible, onClose, link, toast }) {
   const { inputRef, handleCopy, handleFocus } = useShareModal({
     visible,
     onClose,
+    toast,
   })
 
   return (
-    <Toast timeout={TIMEOUT_TOAST}>
-      {toast => (
-        <ShareModal
-          inputRef={inputRef}
-          link={link}
-          onClose={onClose}
-          onCopy={handleCopy}
-          onFocus={handleFocus}
-          toast={toast}
-          visible={visible}
-        />
-      )}
-    </Toast>
+    <ShareModal
+      inputRef={inputRef}
+      link={link}
+      onClose={onClose}
+      onCopy={handleCopy}
+      onFocus={handleFocus}
+      toast={toast}
+      visible={visible}
+    />
   )
 }
 
@@ -183,6 +180,11 @@ ShareModalWithToast.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   link: PropTypes.string.isRequired,
+  toast: PropTypes.func.isRequired,
 }
 
-export default React.memo(ShareModalWithToast)
+export default React.memo(props => (
+  <Toast timeout={TIMEOUT_TOAST}>
+    {toast => <ShareModalWithToast {...props} toast={toast} />}
+  </Toast>
+))
