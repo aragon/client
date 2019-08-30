@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import {
   Button,
-  ButtonText,
   GU,
   DataView,
   IconMail,
