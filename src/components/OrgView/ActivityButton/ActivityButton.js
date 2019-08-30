@@ -19,11 +19,25 @@ const { div: AnimDiv } = animated
 const ActivityButton = React.memo(function ActivityButton({ apps }) {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
-  const { unreadActivityCount } = useContext(ActivityContext)
+  const { markActivitiesRead, unreadActivityCount } = useContext(
+    ActivityContext
+  )
   const containerRef = useRef()
 
-  const handleToggle = useCallback(() => setOpened(opened => !opened), [])
-  const handleClose = useCallback(() => setOpened(false), [])
+  const handleToggle = useCallback(
+    () =>
+      setOpened(opened => {
+        if (opened) {
+          markActivitiesRead()
+        }
+        return !opened
+      }),
+    [markActivitiesRead]
+  )
+  const handleClose = useCallback(() => {
+    markActivitiesRead()
+    setOpened(false)
+  }, [markActivitiesRead])
 
   return (
     <React.Fragment>
