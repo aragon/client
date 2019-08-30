@@ -14,6 +14,7 @@ import memoize from 'lodash.memoize'
 import styled from 'styled-components'
 import { getEthNetworkType } from '../../../local-settings'
 import { createSubscription } from './notification-service-api'
+import notificationImage from './notification.png'
 
 const getEventNamesFromAbi = memoize(abi =>
   abi.filter(item => item.type === 'event').map(item => item.name)
@@ -173,7 +174,25 @@ export default function SubscriptionsForm({
   ) {
     return (
       <Box heading="Create Subscriptions">
-        You have subscribed to all app events available on this organization.
+        <div
+          css={`
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          `}
+        >
+          <img
+            src={notificationImage}
+            alt="Notifications"
+            css={`
+              display: block;
+              margin: 0 auto ${3 * GU}px;
+              height: 193px;
+            `}
+          />
+          You have subscribed to all app events available on this organization!
+        </div>
       </Box>
     )
   }
