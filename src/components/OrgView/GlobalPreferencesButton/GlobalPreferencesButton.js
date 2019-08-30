@@ -7,6 +7,7 @@ import {
   IconSettings,
   Popover,
   RADIUS,
+  textStyle,
   useTheme,
 } from '@aragon/ui'
 import IconNetwork from './IconNetwork'
@@ -70,11 +71,10 @@ function GlobalPreferencesButton({ onOpen }) {
               display: flex;
               align-items: center;
               height: ${4 * GU}px;
-              color: ${theme.surfaceContentSecondary};
-              text-transform: uppercase;
-              font-size: 12px;
               padding-left: ${2 * GU}px;
               border-bottom: 1px solid ${theme.border};
+              ${textStyle('label2')}
+              color: ${theme.surfaceContentSecondary};
             `}
           >
             Global preferences

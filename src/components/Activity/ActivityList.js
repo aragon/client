@@ -60,8 +60,7 @@ function ActivityList({ apps }) {
           >
             <label
               css={`
-                text-transform: uppercase;
-                font-size: 12px;
+                ${textStyle('label2')}
                 color: ${theme.surfaceContentSecondary};
               `}
             >
