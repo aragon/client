@@ -120,12 +120,11 @@ class Favorites extends React.Component {
     })
 
     const favoriteItems = [...allItems].sort((org, org2) => {
-      if (addressesEqual(org.address === currentDao.address)) {
-        return -1
-      } else if (addressesEqual(org.address === currentDao.address)) {
-        return 1
-      }
-      return 0
+      return addressesEqual(org.address, currentDao.address)
+        ? -1
+        : addressesEqual(org2.address, currentDao.address)
+        ? 1
+        : org.name.localeCompare(org2.name)
     })
 
     return (
