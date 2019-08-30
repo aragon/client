@@ -1,6 +1,17 @@
-import React from 'react'
+import React, { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
-import { IconCross, IconCheck, GU, textStyle, useTheme } from '@aragon/ui'
+import {
+  ButtonBase,
+  ButtonIcon,
+  IconCross,
+  IconCheck,
+  GU,
+  blockExplorerUrl,
+  textStyle,
+  useTheme,
+} from '@aragon/ui'
+import { ActivityContext } from '../../contexts/ActivityContext'
+import { network } from '../../environment'
 import { cssgu } from '../../utils'
 import { transformAddresses } from '../../web3-utils'
 import AppIcon from '../AppIcon/AppIcon'
@@ -15,67 +26,119 @@ import {
 
 const ActivityItem = ({ activity }) => {
   const theme = useTheme()
+  const { clearActivity } = useContext(ActivityContext)
+  const handleOpen = useCallback(() => {
+    if (activity.transactionHash) {
+      window.open(
+        blockExplorerUrl('transaction', activity.transactionHash, {
+          networkType: network.type,
+        }),
+        '_blank',
+        'noopener'
+      )
+    }
+  }, [activity])
+  const handleClose = useCallback(() => {
+    if (activity.transactionHash) {
+      clearActivity(activity.transactionHash)
+    }
+  }, [activity, clearActivity])
+
   const { app } = activity
 
   return (
-    <section
+    <div
       css={`
-        display: grid;
-        align-items: center;
-        grid-template-areas:
-          'title time'
-          'content content';
-        overflow: hidden;
         position: relative;
-        width: 100%;
-        padding: ${cssgu`2gu`};
-        background: ${theme.surface};
       `}
     >
-      <h1
+      <ButtonBase
+        element="div"
+        onClick={handleOpen}
         css={`
-          grid-area: title;
-          display: flex;
-          align-items: center;
+          text-align: left;
+          width: 100%;
         `}
       >
-        <div css="flex-shrink: 0">
-          <AppIcon app={app} />
-        </div>
-        <div
+        <section
           css={`
-            margin-left: ${cssgu`1gu`};
-            white-space: nowrap;
-            ${textStyle('body2')}
-            color: ${theme.surfaceContent};
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: ${cssgu`2gu`};
+            background: ${activity.read
+              ? theme.surface
+              : theme.surfaceHighlight};
+            transition-property: background;
+            transition-duration: 50ms;
+            transition-timing-function: ease-in-out;
+
+            &:active {
+              background: ${theme.surfaceUnder};
+            }
           `}
         >
-          {app ? app.name : 'Unknown'}
-        </div>
-      </h1>
-      <div
+          <h1
+            css={`
+              display: flex;
+              align-items: center;
+            `}
+          >
+            <div css="flex-shrink: 0">
+              <AppIcon app={app} />
+            </div>
+            <div
+              css={`
+                margin-left: ${cssgu`1gu`};
+                max-width: ${cssgu`12.5gu`};
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                ${textStyle('body2')}
+                color: ${theme.surfaceContent};
+              `}
+            >
+              {app ? app.name : 'Unknown'}
+            </div>
+            <TimeTag
+              date={activity.createdAt}
+              css={`
+                margin: 0 ${cssgu`1.5gu`};
+              `}
+            />
+          </h1>
+          <div
+            css={`
+              position: relative;
+              margin-top: ${2 * GU}px;
+            `}
+          >
+            <ItemContent text={activity.description} />
+            <StatusMessage activity={activity} />
+            <TransactionProgress
+              status={activity.status}
+              createdAt={activity.createdAt}
+            />
+          </div>
+        </section>
+      </ButtonBase>
+      <ButtonIcon
+        label="Remove"
+        onClick={handleClose}
         css={`
-          grid-area: time;
-          justify-self: end;
+          position: absolute;
+          top: ${1 * GU}px;
+          right: ${1 * GU}px;
+          z-index: 1;
         `}
       >
-        <TimeTag date={activity.createdAt} />
-      </div>
-      <div
-        css={`
-          grid-area: content;
-          position: relative;
-          margin-top: ${2 * GU}px;
-        `}
-      >
-        <ItemContent text={activity.description} />
-        <StatusMessage activity={activity} />
-        <TransactionProgress
-          status={activity.status}
-          createdAt={activity.createdAt}
+        <IconCross
+          css={`
+            color: ${theme.surfaceIcon};
+          `}
         />
-      </div>
-    </section>
+      </ButtonIcon>
+    </div>
   )
 }
 
