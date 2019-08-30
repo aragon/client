@@ -14,8 +14,10 @@ import { AppType } from '../../prop-types'
 import { addressesEqual } from '../../web3-utils'
 import ActivityItem from './ActivityItem'
 
-const MAX_HEIGHT_CLAMP = 80 * GU
-const MAX_HEIGHT_WINDOW_SCALE = 0.75
+const MIN_HEIGHT_CLAMP = 57.5 * GU
+const MAX_HEIGHT_CLAMP = 96 * GU
+const MAX_HEIGHT_WINDOW_SCALE = 0.8
+const HEADER_HEIGHT = 4 * GU
 
 const getAppByProxyAddress = (proxyAddress, apps) =>
   apps.find(app => addressesEqual(app.proxyAddress, proxyAddress)) || null
@@ -35,9 +37,12 @@ function ActivityList({ apps }) {
     [activities, apps]
   )
 
-  const maxHeight = Math.min(
-    MAX_HEIGHT_CLAMP,
-    Math.ceil(MAX_HEIGHT_WINDOW_SCALE * height)
+  const maxHeight = Math.max(
+    MIN_HEIGHT_CLAMP,
+    Math.min(
+      MAX_HEIGHT_CLAMP,
+      Math.ceil(MAX_HEIGHT_WINDOW_SCALE * height - HEADER_HEIGHT)
+    )
   )
 
   return (
@@ -53,7 +58,7 @@ function ActivityList({ apps }) {
               display: flex;
               align-items: center;
               justify-content: space-between;
-              height: ${4 * GU}px;
+              height: ${HEADER_HEIGHT}px;
               padding: 0 ${2 * GU}px;
               border-bottom: 1px solid ${theme.border};
             `}
