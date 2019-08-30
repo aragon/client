@@ -131,6 +131,7 @@ function Heading({
   const handleOnClear = useCallback(() => {
     onEntityTypeChange(-1)
     onSearchTermsChange('')
+    setSearchTermsInputValue('')
   }, [onEntityTypeChange, onSearchTermsChange])
 
   return (
