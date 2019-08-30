@@ -26,6 +26,7 @@ export default function ManageNotifications({
   email,
   onLogout,
   token,
+  onServiceUnavailable,
 }) {
   const [apiError, setApiError] = useState(null)
   const [isFetching, setIsFetching] = useState(true)
@@ -52,6 +53,18 @@ export default function ManageNotifications({
     }
     fetchSubscriptions()
   }, [fetchSubscriptions, token])
+
+  useEffect(() => {
+    // Effect for handling api errors
+    if (!apiError) {
+      return
+    }
+    if (apiError instanceof TypeError) {
+      onServiceUnavailable()
+    } else {
+      console.error('Unhandled API error:', apiError)
+    }
+  }, [apiError, onServiceUnavailable])
 
   return (
     <React.Fragment>
@@ -109,6 +122,7 @@ ManageNotifications.propTypes = {
   dao: PropTypes.string,
   email: PropTypes.string,
   onLogout: PropTypes.func,
+  onServiceUnavailable: PropTypes.func,
   token: PropTypes.string,
 }
 

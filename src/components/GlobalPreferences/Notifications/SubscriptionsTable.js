@@ -14,7 +14,6 @@ import {
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { deleteSubscriptions } from './notification-service-api'
 import SubscriptionFilters from './SubscriptionFilters'
-import NotificationsInfoBox, { ICON_ERROR } from './NotificationsInfoBox'
 
 const SubscriptionsTable = React.memo(function SubscriptionsTable({
   apps,
@@ -110,37 +109,6 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     organization: organizations[selectedOrganization],
   })
   const theme = useTheme()
-
-  if (apiError) {
-    if (!(apiError instanceof TypeError)) {
-      console.error('--- error handling is wrong for api errors')
-    }
-    return (
-      <NotificationsInfoBox
-        showImage={false}
-        header="Error connecting to the Notifications server"
-        icon={ICON_ERROR}
-      >
-        <div>
-          There was an error when trying to connect to the Notifications server.
-          <React.Fragment>
-            Please
-            <ButtonText
-              disabled={isFetchingSubscriptions}
-              css={`
-                font-weight: bold;
-              `}
-              onClick={fetchSubscriptions}
-            >
-              retry {isFetchingSubscriptions && <LoadingRing />}
-            </ButtonText>
-            or try again later.
-          </React.Fragment>
-          )}
-        </div>
-      </NotificationsInfoBox>
-    )
-  }
 
   return (
     <DataView

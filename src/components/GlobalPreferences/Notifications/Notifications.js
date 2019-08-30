@@ -34,6 +34,23 @@ function useAuthState() {
     localStorage.getItem(NOTIFICATION_SERVICE_TOKEN_KEY)
   )
 
+  const handleAuthenticate = useCallback(() => {
+    setAuthState(AUTH_AUTHENTICATING)
+    isAuthTokenValid(token)
+      .then(v => {
+        setAuthState(AUTH_AUTHENTICATED)
+        return v
+      })
+      .catch(e => {
+        if (e instanceof TypeError) {
+          // network/service error
+          setAuthState(AUTH_SERVICE_UNAVAILABLE)
+        } else {
+          setAuthState(AUTH_AUTHENTICATION_FAILED)
+        }
+      })
+  }, [setAuthState, token])
+
   useEffect(() => {
     if (!email && !token) {
       setAuthState(AUTH_UNAUTHENTICATED)
@@ -46,22 +63,9 @@ function useAuthState() {
     }
 
     if (email && token) {
-      // TODO: move this block to a useCallback and return from hook to allow retrying to authenticate if service is down
-      setAuthState(AUTH_AUTHENTICATING)
-      isAuthTokenValid(token)
-        .then(v => {
-          setAuthState(AUTH_AUTHENTICATED)
-          return v
-        })
-        .catch(e => {
-          if (e instanceof TypeError) {
-            // network/service error
-            setAuthState(AUTH_SERVICE_UNAVAILABLE)
-          } else {
-            setAuthState(AUTH_AUTHENTICATION_FAILED)
-          }
-        })
+      handleAuthenticate()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, token])
 
   useEffect(() => {
@@ -84,6 +88,7 @@ function useAuthState() {
   const setServiceUnavailable = useCallback(() => {
     setAuthState(AUTH_SERVICE_UNAVAILABLE)
   }, [setAuthState])
+
   return {
     authState,
     email,
@@ -92,6 +97,7 @@ function useAuthState() {
     handleEmailChange: setEmail,
     handleLogout,
     setServiceUnavailable,
+    handleAuthenticate,
   }
 }
 
@@ -106,9 +112,11 @@ export default function Notifications({
     authState,
     email,
     token,
+    handleAuthenticate,
     handleTokenChange,
     handleEmailChange,
     handleLogout,
+    setServiceUnavailable,
   } = useAuthState()
 
   const navigateToNotifications = useCallback(
@@ -138,6 +146,7 @@ export default function Notifications({
     case AUTH_AUTHENTICATED:
       return (
         <ManageNotifications
+          onServiceUnavailable={setServiceUnavailable}
           dao={dao}
           onLogout={handleLogout}
           apps={apps}
@@ -167,7 +176,7 @@ export default function Notifications({
     case AUTH_SERVICE_UNAVAILABLE:
       return (
         <NotificationsInfoBox
-          header="Error fetching subscriptions data"
+          header="Error connecting to the Notifications server"
           icon={ICON_ERROR}
         >
           <div>
@@ -181,7 +190,15 @@ export default function Notifications({
             >
               sign out
             </ButtonText>
-            or try again later.
+            or
+            <ButtonText
+              css={`
+                font-weight: bold;
+              `}
+              onClick={handleAuthenticate}
+            >
+              try again.
+            </ButtonText>
           </div>
         </NotificationsInfoBox>
       )
