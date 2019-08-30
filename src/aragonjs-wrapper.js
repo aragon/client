@@ -487,9 +487,6 @@ export const initDaoBuilder = (
   ensRegistryAddress,
   ipfsConf = ipfsDefaultConf
 ) => {
-  // DEV only
-  // provider = new Web3.providers.WebsocketProvider('ws://localhost:8546')
-
   return {
     build: async (templateName, organizationName, settings = {}) => {
       if (!organizationName) {
