@@ -25,7 +25,12 @@ import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferences
 function ThemeModeButton() {
   const { mode, toggle } = useThemeMode()
   return (
-    <ButtonBase onClick={toggle} css="padding: 8px">
+    <ButtonBase
+      onClick={toggle}
+      css={`
+        padding: ${1 * GU}px;
+      `}
+    >
       {mode === 'dark' ? '🌝' : '🌚'}
     </ButtonBase>
   )
