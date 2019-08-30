@@ -82,7 +82,7 @@ class ActionPathsContent extends React.Component {
                         instanceId: 'permissions',
                         params: `app.${value.proxyAddress}`,
                       })}`}
-                      focusRingSpacing={[2, 2]}
+                      focusRingSpacing={[3, 2]}
                       css="margin-right: 2px"
                     >
                       {value.name}

@@ -9,7 +9,7 @@ const AddressLink = ({ children, to }) =>
     <EtherscanLink address={to}>
       {url =>
         url ? (
-          <Link href={url} focusRingSpacing={[2, 2]}>
+          <Link href={url} focusRingSpacing={[3, 2]}>
             {children || to}
           </Link>
         ) : (
