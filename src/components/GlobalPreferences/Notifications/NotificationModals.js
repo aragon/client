@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, breakpoint, GU, Modal, textStyle } from '@aragon/ui'
 
-export default function ConfirmationModal({ onConfirm, onClose, visible }) {
+export function DeleteAccountConfirmationModal({
+  onConfirm,
+  onClose,
+  visible,
+}) {
   return (
     <Modal css="z-index: 2;" visible={visible} onClose={onClose}>
       <h2
@@ -11,7 +15,7 @@ export default function ConfirmationModal({ onConfirm, onClose, visible }) {
           ${textStyle('title2')}
         `}
       >
-        Unsubscribe from all email notifications
+        Delete your account
       </h2>
       <p
         css={`
@@ -26,7 +30,7 @@ export default function ConfirmationModal({ onConfirm, onClose, visible }) {
         <Button label="Cancel" onClick={onClose}>
           Cancel
         </Button>
-        <RemoveButton label="Unsubscribe" mode="strong" onClick={onConfirm}>
+        <RemoveButton label="Unsubscribe" mode="negative" onClick={onConfirm}>
           Unsubscribe
         </RemoveButton>
       </ModalControls>
@@ -34,7 +38,7 @@ export default function ConfirmationModal({ onConfirm, onClose, visible }) {
   )
 }
 
-ConfirmationModal.propTypes = {
+DeleteAccountConfirmationModal.propTypes = {
   onConfirm: PropTypes.func,
   onClose: PropTypes.func,
   visible: PropTypes.bool,

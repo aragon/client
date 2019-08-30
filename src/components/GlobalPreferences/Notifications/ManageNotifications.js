@@ -18,7 +18,7 @@ import {
 } from './constants'
 import SubscriptionsForm from './SubscriptionsForm'
 import SubscriptionsTable from './SubscriptionsTable'
-import ConfirmationModal from './ConfirmationModal'
+import { DeleteAccountConfirmationModal } from './NotificationModals'
 
 export default function ManageNotifications({
   apps,
@@ -162,7 +162,7 @@ function DeleteAccount({ token, onLogout, onApiError }) {
 
   return (
     <React.Fragment>
-      <ConfirmationModal
+      <DeleteAccountConfirmationModal
         visible={isModalOpen}
         onConfirm={onModalConfirm}
         onClose={onCloseModal}
