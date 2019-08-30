@@ -9,18 +9,25 @@ import {
   useTheme,
   textStyle,
 } from '@aragon/ui'
-import notificationSvg from './notifications.svg'
+import notification from './notification.png'
+import notificationError from './notification-error.png'
+import notificationNetworkError from './notification-network-error.png'
 
 export const ICON_SUCCESS = 'success'
 export const ICON_NEUTRAL = 'neutral'
 export const ICON_ERROR = 'error'
 const ALLOWED_ICONS = [ICON_SUCCESS, ICON_NEUTRAL, ICON_ERROR]
 
+export const IMAGE_NORMAL = 'IMAGE_NORMAL'
+export const IMAGE_ERROR = 'IMAGE_ERROR'
+export const IMAGE_NETWORK_ERROR = 'IMAGE_NETWORK_ERROR'
+const ALLOWED_IMAGES = [IMAGE_NORMAL, IMAGE_ERROR, IMAGE_NETWORK_ERROR]
+
 export default function NotificationsInfoBox({
   header,
   children,
   icon,
-  showImage = true,
+  image = IMAGE_NORMAL,
 } = {}) {
   const theme = useTheme()
   let IconComponent = null
@@ -35,10 +42,22 @@ export default function NotificationsInfoBox({
       IconComponent = <Cross color={theme.negative} />
       break
   }
+  let ImageComponent = null
+  switch (image) {
+    case IMAGE_NORMAL:
+      ImageComponent = <NotificationImage />
+      break
+    case IMAGE_ERROR:
+      ImageComponent = <NotificationErrorImage />
+      break
+    case IMAGE_NETWORK_ERROR:
+      ImageComponent = <NotificationNetworkErrorImage />
+      break
+  }
 
   return (
     <Box heading="Email notifications">
-      {showImage && <NotificationImage />}
+      {ImageComponent}
       <div
         css={`
           height: ${GU * 24}px;
@@ -79,17 +98,41 @@ NotificationsInfoBox.propTypes = {
   header: PropTypes.string,
   children: PropTypes.node,
   icon: PropTypes.oneOf(ALLOWED_ICONS),
-  showImage: PropTypes.bool,
+  image: PropTypes.oneOf(ALLOWED_IMAGES),
 }
 
 export const NotificationImage = () => (
   <img
-    src={notificationSvg}
+    src={notification}
     alt="Notifications"
     css={`
       display: block;
       margin: ${4 * GU}px auto;
       height: 193px;
+    `}
+  />
+)
+
+export const NotificationErrorImage = () => (
+  <img
+    src={notificationError}
+    alt="Notifications"
+    css={`
+      display: block;
+      margin: ${4 * GU}px auto;
+      height: 193px;
+    `}
+  />
+)
+
+export const NotificationNetworkErrorImage = () => (
+  <img
+    src={notificationNetworkError}
+    alt="Notifications"
+    css={`
+      display: block;
+      margin: ${4 * GU}px auto;
+      height: 270px;
     `}
   />
 )

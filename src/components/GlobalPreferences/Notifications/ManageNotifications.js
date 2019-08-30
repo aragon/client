@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react'
-
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
 import {
@@ -19,6 +18,7 @@ import {
 } from './constants'
 import SubscriptionsForm from './SubscriptionsForm'
 import SubscriptionsTable from './SubscriptionsTable'
+import ConfirmationModal from './ConfirmationModal'
 
 export default function ManageNotifications({
   apps,
@@ -143,26 +143,48 @@ function DeleteAccount({ token, onLogout, onApiError }) {
       onApiError(e)
     }
     setIsFetching(false)
-  }, [onLogout, token, onApiError])
+  }, [token, onLogout, onApiError])
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const onClick = useCallback(() => {
+    setIsModalOpen(true)
+  }, [setIsModalOpen])
+
+  const onCloseModal = useCallback(() => {
+    setIsModalOpen(false)
+  }, [setIsModalOpen])
+
+  const onModalConfirm = useCallback(() => {
+    setIsModalOpen(false)
+    handleDeleteAccount()
+  }, [handleDeleteAccount, setIsModalOpen])
 
   return (
-    <Box heading="Email Notification Data">
-      <Button onClick={handleDeleteAccount}>
-        {isFetching ? (
-          <LoadingRing />
-        ) : isAccountDeleted ? (
-          <IconCheck />
-        ) : (
-          <IconTrash
-            css={`
-              color: ${theme.negative};
-              margin-right: ${GU}px;
-            `}
-          />
-        )}
-        Delete your email
-      </Button>
-    </Box>
+    <React.Fragment>
+      <ConfirmationModal
+        visible={isModalOpen}
+        onConfirm={onModalConfirm}
+        onClose={onCloseModal}
+      />
+      <Box heading="Email Notification Data">
+        <Button onClick={onClick}>
+          {isFetching ? (
+            <LoadingRing />
+          ) : isAccountDeleted ? (
+            <IconCheck />
+          ) : (
+            <IconTrash
+              css={`
+                color: ${theme.negative};
+                margin-right: ${GU}px;
+              `}
+            />
+          )}
+          Delete your email
+        </Button>
+      </Box>
+    </React.Fragment>
   )
 }
 

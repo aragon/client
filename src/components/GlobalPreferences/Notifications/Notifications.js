@@ -8,7 +8,11 @@ import {
   NotificationsVerify,
   NotificationsPreVerify,
 } from './NotificationsVerify'
-import NotificationsInfoBox, { ICON_ERROR } from './NotificationsInfoBox'
+import NotificationsInfoBox, {
+  ICON_ERROR,
+  IMAGE_NETWORK_ERROR,
+  IMAGE_ERROR,
+} from './NotificationsInfoBox'
 import { isAuthTokenValid } from './notification-service-api'
 
 import {
@@ -159,7 +163,11 @@ export default function Notifications({
       return null
     case AUTH_AUTHENTICATION_FAILED:
       return (
-        <NotificationsInfoBox header="Authentication Failed" icon={ICON_ERROR}>
+        <NotificationsInfoBox
+          header="Authentication Failed"
+          icon={ICON_ERROR}
+          image={IMAGE_ERROR}
+        >
           <div>
             Authentication was unsuccessful.{' '}
             <ButtonText
@@ -178,6 +186,7 @@ export default function Notifications({
         <NotificationsInfoBox
           header="Error connecting to the Notifications server"
           icon={ICON_ERROR}
+          image={IMAGE_NETWORK_ERROR}
         >
           <div>
             There was an error when trying to connect to the Notifications
