@@ -144,7 +144,7 @@ class AppCenter extends React.Component {
               <Button
                 mode="strong"
                 onClick={onUpgradeAll}
-                label="Upgrade all"
+                label="Upgrade to 0.8"
                 icon={<IconRefresh />}
                 display={compactMode ? 'icon' : 'label'}
               />
