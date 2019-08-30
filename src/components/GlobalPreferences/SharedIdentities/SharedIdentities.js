@@ -37,7 +37,7 @@ function SharedIdentities({
         below, you will make them appear on this device (labels will be stored
         locally).
       </div>
-      <Box padding={false}>
+      <Box padding={0}>
         {isSaving ? (
           <div
             css={`
