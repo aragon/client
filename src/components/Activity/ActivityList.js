@@ -76,15 +76,17 @@ function ActivityList({ apps }) {
         >
           Activity
         </label>
-        <ButtonText
-          onClick={clearActivities}
-          css={`
-            padding: 0;
-            ${textStyle('label2')}
-          `}
-        >
-          Clear all
-        </ButtonText>
+        {canClear && (
+          <ButtonText
+            onClick={clearActivities}
+            css={`
+              padding: 0;
+              ${textStyle('label2')}
+            `}
+          >
+            Clear all
+          </ButtonText>
+        )}
       </div>
       {activityItems.length > 0 ? (
         <div
