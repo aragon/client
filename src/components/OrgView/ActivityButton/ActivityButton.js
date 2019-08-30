@@ -41,11 +41,17 @@ const ActivityButton = React.memo(function ActivityButton({ apps }) {
 
   return (
     <React.Fragment>
-      <div ref={containerRef}>
+      <div
+        ref={containerRef}
+        onClick={handleToggle}
+        css={`
+          padding-right: ${3 * GU}px;
+        `}
+      >
         <ButtonIcon
-          onClick={handleToggle}
           css={`
             height: 100%;
+            width: ${4.25 * GU}px;
             border-radius: 0;
           `}
           label="Transaction activity"

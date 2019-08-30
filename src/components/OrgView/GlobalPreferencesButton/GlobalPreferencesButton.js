@@ -37,6 +37,7 @@ function GlobalPreferencesButton({ onOpen }) {
           onClick={handleToggle}
           css={`
             height: 100%;
+            width: ${4.25 * GU}px;
             border-radius: 0;
           `}
           label="Global preferences"

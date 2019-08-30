@@ -122,12 +122,7 @@ function OrgView({
               }}
             />
           )}
-          <div
-            css={`
-              display: flex;
-              padding-right: ${2 * GU}px;
-            `}
-          >
+          <div css="display: flex">
             <ThemeModeButton />
             <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ActivityButton apps={apps} />
