@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import {
   Box,
   Button,
-  ButtonText,
   Header,
   IconCoin,
   Info,
+  Link,
   GU,
   textStyle,
   unselectable,
@@ -82,7 +82,7 @@ const Organization = React.memo(function Organization({
   return (
     <React.Fragment>
       <Header primary="Organization Settings" />
-      <Section heading="Organization address">
+      <Box heading="Organization address">
         <p
           css={`
             ${textStyle('body2')}
@@ -113,9 +113,9 @@ const Organization = React.memo(function Organization({
             </Info>
           </React.Fragment>
         )}
-      </Section>
+      </Box>
       {hasFinanceApp && testTokensEnabled(network.type) && (
-        <Section heading="Request test tokens">
+        <Box heading="Request test tokens">
           <p
             css={`
               margin-bottom: ${2 * GU}px;
@@ -168,10 +168,10 @@ const Organization = React.memo(function Organization({
               )}.`}
             </Info>
           )}
-        </Section>
+        </Box>
       )}
       {appsLoading ? (
-        <Section heading="Installed Aragon apps">
+        <Box heading="Installed Aragon apps">
           <div
             css={`
               display: flex;
@@ -183,9 +183,9 @@ const Organization = React.memo(function Organization({
           >
             Loading apps…
           </div>
-        </Section>
+        </Box>
       ) : (
-        <Section heading="Installed Aragon apps">
+        <Box heading="Installed Aragon apps">
           <ul
             css={`
               list-style: none;
@@ -225,7 +225,7 @@ const Organization = React.memo(function Organization({
               </li>
             ))}
           </ul>
-        </Section>
+        </Box>
       )}
     </React.Fragment>
   )
@@ -242,18 +242,6 @@ Organization.propTypes = {
   walletProviderId: PropTypes.string.isRequired,
 }
 
-const Section = ({ ...props }) => {
-  return <Box padding={3 * GU} {...props} />
-}
-
-const OpenAppButton = props => (
-  <ButtonText
-    css={`
-      padding: 0;
-      font-weight: 600;
-    `}
-    {...props}
-  />
-)
+const OpenAppButton = props => <Link css="font-weight: 600" {...props} />
 
 export default Organization

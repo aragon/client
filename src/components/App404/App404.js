@@ -1,11 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import EmptyAppCard from './EmptyAppCard'
+import { Button, EmptyStateCard } from '@aragon/ui'
+import notFoundIcon from './assets/not-found.svg'
 
 const App404 = ({ onNavigateBack }) => (
   <Main>
-    <EmptyAppCard onActivate={onNavigateBack} />
+    <EmptyStateCard
+      actionText="Go back"
+      illustration={<img width="60" height="60" src={notFoundIcon} alt="" />}
+      action={<Button label="Go back" onClick={onNavigateBack} />}
+      text="Oops, we couldn't find an app installed here."
+    />
   </Main>
 )
 

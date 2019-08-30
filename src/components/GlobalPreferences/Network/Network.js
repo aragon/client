@@ -32,7 +32,7 @@ function Network({ wrapper }) {
 
   return (
     <React.Fragment>
-      <Box heading={'Node settings'}>
+      <Box heading="Node settings">
         <Label>
           Ethereum node
           <TextInput
@@ -85,7 +85,7 @@ function Network({ wrapper }) {
           Save changes
         </Button>
       </Box>
-      <Box heading={'Troubleshooting'}>
+      <Box heading="Troubleshooting">
         <div
           css={`
             margin-bottom: ${2 * GU}px;

@@ -430,10 +430,6 @@ const CloseButton = React.memo(({ onClick, ...props }) => {
           height: 24px;
 
           & path {
-            stroke: ${theme.accentContent};
-            stroke-width: 0.3px;
-          }
-          & path {
             fill: ${theme.accentContent};
             opacity: 1;
           }
