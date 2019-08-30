@@ -93,17 +93,13 @@ function ActivityList({ apps }) {
               items={activityItems}
               keys={activity => activity.transactionHash}
               trail={50}
-              from={{
-                opacity: 0.3,
-                transform: 'translate3d(-20px, 0, 0)',
-              }}
               enter={{
                 opacity: 1,
                 transform: 'translate3d(0px, 0, 0)',
               }}
               leave={{
                 opacity: 0,
-                transform: 'translate3d(-20px, 0, 0)',
+                transform: 'translate3d(20px, 0, 0)',
               }}
               config={springs.smooth}
             >
