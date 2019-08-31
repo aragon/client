@@ -16,10 +16,10 @@ import { ACTIVITY_STATUS_PENDING } from '../../symbols'
 import { addressesEqual } from '../../web3-utils'
 import ActivityItem from './ActivityItem'
 
-const MIN_HEIGHT_CLAMP = 57.5 * GU
-const MAX_HEIGHT_CLAMP = 96 * GU
-const MAX_HEIGHT_WINDOW_SCALE = 0.8
-const HEADER_HEIGHT = 4 * GU
+// 8GU for top bar, 4GU for activity heading,
+// 11GU for HelpScout beacon (3GU top/bottom padding, 5GU beacon)
+const MIN_LIST_HEIGHT_ADJUST = (8 + 4 + 11) * GU
+const MAX_LIST_HEIGHT_CLAMP = 96 * GU
 
 const getAppByProxyAddress = (proxyAddress, apps) =>
   apps.find(app => addressesEqual(app.proxyAddress, proxyAddress)) || null
@@ -44,12 +44,9 @@ function ActivityList({ apps }) {
       activityItems.some(({ status }) => status !== ACTIVITY_STATUS_PENDING),
     [activityItems]
   )
-  const maxHeight = Math.max(
-    MIN_HEIGHT_CLAMP,
-    Math.min(
-      MAX_HEIGHT_CLAMP,
-      Math.ceil(MAX_HEIGHT_WINDOW_SCALE * height - HEADER_HEIGHT)
-    )
+  const maxHeight = Math.min(
+    MAX_LIST_HEIGHT_CLAMP,
+    Math.ceil(height - MIN_LIST_HEIGHT_ADJUST)
   )
 
   return (
@@ -63,7 +60,7 @@ function ActivityList({ apps }) {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          height: ${HEADER_HEIGHT}px;
+          height: ${4 * GU}px;
           padding: 0 ${2 * GU}px;
           border-bottom: 1px solid ${theme.border};
         `}
@@ -88,14 +85,14 @@ function ActivityList({ apps }) {
           </ButtonText>
         )}
       </div>
-      {activityItems.length > 0 ? (
-        <div
-          css={`
-            max-height: ${maxHeight}px;
-            overflow-x: hidden;
-            overflow-y: scroll;
-          `}
-        >
+      <div
+        css={`
+          max-height: ${maxHeight}px;
+          overflow-x: hidden;
+          overflow-y: scroll;
+        `}
+      >
+        {activityItems.length > 0 ? (
           <Transition
             native
             items={activityItems}
@@ -127,33 +124,33 @@ function ActivityList({ apps }) {
               </div>
             )}
           </Transition>
-        </div>
-      ) : (
-        <div
-          css={`
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: ${28.5 * GU}px;
-          `}
-        >
-          <img
-            src={activityNoResults}
-            alt="No results"
-            height="125px"
-            width="125px"
-          />
-          <span
+        ) : (
+          <div
             css={`
-              margin-top: ${2 * GU}px;
-              ${textStyle('body2')}
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: ${28.5 * GU}px;
             `}
           >
-            No activity yet!
-          </span>
-        </div>
-      )}
+            <img
+              src={activityNoResults}
+              alt="No results"
+              height="125px"
+              width="125px"
+            />
+            <span
+              css={`
+                margin-top: ${2 * GU}px;
+                ${textStyle('body2')}
+              `}
+            >
+              No activity yet!
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
