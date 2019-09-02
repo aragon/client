@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, LoadingRing } from '@aragon/ui'
+import { ButtonText, LoadingRing, textStyle } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
 import { VERIFY_SUBSECTION, ExpiredTokenError } from './constants'
 import NotificationsInfoBox, {
@@ -53,14 +53,22 @@ export function NotificationsVerify({
 
   if (isFetching) {
     return (
-      <NotificationsInfoBox header="Verifying">
+      <NotificationsInfoBox header="">
         <div
           css={`
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
           `}
         >
+          <p
+            css={`
+              ${textStyle('body1')};
+            `}
+          >
+            Verifying
+          </p>
           <LoadingRing />
         </div>
       </NotificationsInfoBox>
