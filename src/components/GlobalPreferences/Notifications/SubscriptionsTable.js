@@ -13,6 +13,7 @@ import {
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { deleteSubscriptions } from './notification-service-api'
 import SubscriptionFilters from './SubscriptionFilters'
+import { DeleteSubscriptionConfirmationModal } from './NotificationModals'
 
 const SubscriptionsTable = React.memo(function SubscriptionsTable({
   apps,
@@ -25,6 +26,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
 }) {
   const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const handleSelectEntries = useCallback(
     (entries, indexes) => {
       setSelectedSubscriptions(indexes)
@@ -101,6 +103,19 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     setSelectedOrganization(-1)
   }, [setSelectedEvent, setSelectedApp, setSelectedOrganization])
 
+  const onClick = useCallback(() => {
+    setIsModalOpen(true)
+  }, [setIsModalOpen])
+
+  const onCloseModal = useCallback(() => {
+    setIsModalOpen(false)
+  }, [setIsModalOpen])
+
+  const onModalConfirm = useCallback(() => {
+    setIsModalOpen(false)
+    handleUnsubscribe()
+  }, [handleUnsubscribe, setIsModalOpen])
+
   const filteredSubscriptions = filterSubscriptions({
     subscriptions,
     event: events[selectedEvent],
@@ -131,6 +146,11 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
       ]}
       heading={
         <React.Fragment>
+          <DeleteSubscriptionConfirmationModal
+            visible={isModalOpen}
+            onConfirm={onModalConfirm}
+            onClose={onCloseModal}
+          />
           <div
             css={`
               height: ${9 * GU}px;
@@ -149,7 +169,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
             </div>
             {selectedSubscriptions.length > 0 && (
               <div>
-                <Button disabled={false} onClick={handleUnsubscribe}>
+                <Button disabled={false} onClick={onClick}>
                   {isSubmitting ? (
                     <LoadingRing
                       css={`
