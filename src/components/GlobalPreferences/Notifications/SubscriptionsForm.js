@@ -244,7 +244,7 @@ export default function SubscriptionsForm({
           margin-top: ${4 * GU}px;
         `}
       >
-        <Button disabled={isSubscribeDisabled} onClick={handleSubscribe}>
+        <Button wide disabled={isSubscribeDisabled} onClick={handleSubscribe}>
           {isSubmitting ? (
             <LoadingRing
               css={`
