@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, Info, GU } from '@aragon/ui'
+import { Info, Link, GU } from '@aragon/ui'
 
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
@@ -51,17 +51,12 @@ export const NoWeb3Provider = ({ intent, onClose }) => {
   const actionText = (
     <span>
       Please install and enable{' '}
-      <ButtonText
+      <Link
         href={onElectron ? 'https://frame.sh/' : 'https://metamask.io/'}
-        target="_blank"
-        horizontalPadding="none"
-        css={`
-          padding: 0;
-          font-weight: 600;
-        `}
+        css="font-weight: 600"
       >
         {onElectron ? 'Frame' : 'Metamask'}
-      </ButtonText>
+      </Link>
       .
     </span>
   )
@@ -99,16 +94,9 @@ export const AccountLocked = ({
       actionText={
         <span>
           Please unlock and{' '}
-          <ButtonText
-            onClick={onRequestEnable}
-            horizontalPadding="none"
-            css={`
-              padding: 0;
-              font-weight: 600;
-            `}
-          >
+          <Link onClick={onRequestEnable} css="font-weight: 600">
             enable
-          </ButtonText>{' '}
+          </Link>{' '}
           {providerMessage}.
         </span>
       }

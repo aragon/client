@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { Box, Checkbox, Info, GU, textStyle, useTheme } from '@aragon/ui'
-import helpAndFeedbackSvg from './help-and-feedback.svg'
 import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
+import helpAndFeedbackPng from './assets/help-and-feedback.png'
 
 function HelpAndFeedback() {
   const theme = useTheme()
@@ -12,7 +12,7 @@ function HelpAndFeedback() {
   ])
 
   return (
-    <Box heading="Help Scout" padding={3 * GU}>
+    <Box heading="Help Scout">
       <div
         css={`
           display: flex;
@@ -33,7 +33,7 @@ function HelpAndFeedback() {
         </label>
       </div>
       <img
-        src={helpAndFeedbackSvg}
+        src={helpAndFeedbackPng}
         alt="Help Scout"
         css={`
           display: block;

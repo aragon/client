@@ -9,7 +9,7 @@ import {
   GU,
   LoadingRing,
   breakpoint,
-  font,
+  textStyle,
   useTheme,
 } from '@aragon/ui'
 
@@ -37,7 +37,7 @@ function SharedIdentities({
         below, you will make them appear on this device (labels will be stored
         locally).
       </div>
-      <Box padding={false}>
+      <Box padding={0}>
         {isSaving ? (
           <div
             css={`
@@ -57,9 +57,6 @@ function SharedIdentities({
             <div
               css={`
                 display: flex;
-                text-transform: uppercase;
-                color: ${theme.content};
-                ${font({ size: 'xsmall' })};
                 align-items: center;
                 padding: ${0.5 * GU}px ${2 * GU}px;
               `}
@@ -69,7 +66,12 @@ function SharedIdentities({
                 onChange={onToggleAll}
                 indeterminate={!allSelected && someSelected}
               />
-              <span>
+              <span
+                css={`
+                  color: ${theme.surfaceContentSecondary};
+                  ${textStyle('label2')}
+                `}
+              >
                 {Array.from(selected.values()).reduce(
                   (p, c) => p + Number(c),
                   0

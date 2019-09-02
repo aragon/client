@@ -27,13 +27,7 @@ const AppCard = React.memo(function AppCard({
   return (
     <Card onClick={handleClick} css={onClick ? 'display: block;' : ''}>
       <CardMain compactMode={compactMode}>
-        {link && (
-          <StyledIconExternal
-            compactMode={compactMode}
-            theme={theme}
-            link={link}
-          />
-        )}
+        {link && <StyledIconExternal compactMode={compactMode} theme={theme} />}
         <Icon compactMode={compactMode}>{icon}</Icon>
         <Name compactMode={compactMode}>{name}</Name>
         <TagWrapper compactMode={compactMode} link={link}>
@@ -158,21 +152,29 @@ const Description = styled.p`
       `}
 `
 
-const StyledIconExternal = styled(IconExternal)`
-  visibility: ${({ link }) => (link ? 'visible' : 'hidden')};
-  color: ${({ theme }) => theme.surfaceIcon};
-  ${({ compactMode }) =>
-    compactMode
-      ? `
-          grid-area: topright;
-          margin-left: auto;
-          margin-bottom: ${0.5 * GU}px;
-        `
-      : `
-          position: absolute;
-          top: ${2 * GU}px;
-          right: ${2 * GU}px;
-        `};
-`
+function StyledIconExternal({ compactMode, theme }) {
+  return (
+    <IconExternal
+      css={`
+        color: ${theme.surfaceIcon};
+        ${compactMode
+          ? `
+              grid-area: topright;
+              margin-left: auto;
+              margin-bottom: ${0.5 * GU}px;
+            `
+          : `
+              position: absolute;
+              top: ${2 * GU}px;
+              right: ${2 * GU}px;
+            `}
+      `}
+    />
+  )
+}
+StyledIconExternal.propTypes = {
+  compactMode: PropTypes.bool,
+  theme: PropTypes.object.isRequired,
+}
 
 export default AppCard

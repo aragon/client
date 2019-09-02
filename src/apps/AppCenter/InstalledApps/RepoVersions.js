@@ -2,12 +2,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Trail, animated } from 'react-spring'
-import { Info, Tag, GU, springs, textStyle, useTheme } from '@aragon/ui'
+import {
+  Info,
+  Tag,
+  GU,
+  springs,
+  textStyle,
+  useLayout,
+  useTheme,
+} from '@aragon/ui'
 import { format } from 'date-fns'
 import { RepoType } from '../../../prop-types'
 
+const { tr: AnimTr } = animated
+
 const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
   const theme = useTheme()
+  const { layoutName } = useLayout()
+  const padding = (layoutName === 'small' ? 2 : 3) * GU
 
   return (
     <div
@@ -21,6 +33,7 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
         css={`
           border-collapse: collapse;
           width: 100%;
+          margin-top: ${0.5 * GU}px;
         `}
       >
         <tbody>
@@ -39,7 +52,7 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
               const currentItem = version === currentVersion.version
 
               return (
-                <BodyTr
+                <AnimTr
                   key={name}
                   css={
                     currentItem ? `background: ${theme.surfaceSelected}` : ''
@@ -51,7 +64,11 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
                     ),
                   }}
                 >
-                  <Td>
+                  <Td
+                    css={`
+                      padding-left: ${padding}px;
+                    `}
+                  >
                     {version}{' '}
                     {currentItem && (
                       <Tag
@@ -65,13 +82,15 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
                   </Td>
                   <Td
                     css={`
+                      padding-right: ${padding}px;
+                      text-align: right;
                       color: ${theme.surfaceContentSecondary};
                       ${textStyle('body2')}
                     `}
                   >
                     {timestamp ? format(timestamp, 'dd/MM/yy') : ''}
                   </Td>
-                </BodyTr>
+                </AnimTr>
               )
             }
             /* eslint-enable react/prop-types */
@@ -82,7 +101,7 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
 
       <div
         css={`
-          margin: ${2 * GU}px;
+          margin: ${2 * GU}px ${padding}px;
         `}
       >
         <Info.Action>
@@ -99,22 +118,8 @@ RepoVersions.propTypes = {
   animate: PropTypes.bool,
 }
 
-const BodyTr = styled(animated.tr)`
-  &:first-child td {
-    padding-top: ${2 * GU}px;
-  }
-`
-
 const Td = styled.td`
   padding: ${1.5 * GU}px 0;
-  text-align: right;
-  &:first-child {
-    text-align: left;
-    padding-left: ${2 * GU}px;
-  }
-  &:last-child {
-    padding-right: ${2 * GU}px;
-  }
 `
 
 export default RepoVersions

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, textStyle, useTheme } from '@aragon/ui'
-import noResultsSvg from './no-results.svg'
+import noResultsPng from '../../../assets/no-results.png'
 
 function EmptyFilteredIdentities({ onClear }) {
   const theme = useTheme()
@@ -18,8 +18,9 @@ function EmptyFilteredIdentities({ onClear }) {
       <img
         css={`
           margin: ${4 * GU}px 0;
+          height: 176px;
         `}
-        src={noResultsSvg}
+        src={noResultsPng}
         alt="No results"
       />
       <h3

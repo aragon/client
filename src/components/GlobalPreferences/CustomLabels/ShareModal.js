@@ -44,9 +44,8 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
         <div>
           <div
             css={`
-              font-size: 12px;
-              line-height: 16px;
-              text-transform: uppercase;
+              ${textStyle('label2')}
+              color: ${theme.surfaceContentSecondary};
               margin-bottom: ${1 * GU}px;
             `}
           >

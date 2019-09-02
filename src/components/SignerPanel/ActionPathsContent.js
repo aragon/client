@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, Info, RadioList, GU } from '@aragon/ui'
+import { Info, Link, RadioList, GU } from '@aragon/ui'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import providerString from '../../provider-strings'
 import { getAppPath } from '../../routing'
@@ -75,18 +75,18 @@ class ActionPathsContent extends React.Component {
                 }
                 if (type === 'app') {
                   return (
-                    <ButtonText
+                    <Link
                       key={index}
                       href={`#${getAppPath({
                         dao,
                         instanceId: 'permissions',
                         params: `app.${value.proxyAddress}`,
                       })}`}
-                      target="_blank"
+                      focusRingSpacing={[3, 2]}
                       css="margin-right: 2px"
                     >
                       {value.name}
-                    </ButtonText>
+                    </Link>
                   )
                 }
                 if (type === 'role' || type === 'kernelNamespace') {

@@ -222,7 +222,6 @@ const AppContent = React.memo(
                     display: flex;
                     justify-content: space-between;
                     width: 100%;
-                    padding: 0 ${2 * GU}px;
                   `}
                 >
                   <ReposHeader theme={theme}>App version</ReposHeader>
