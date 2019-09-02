@@ -49,6 +49,7 @@
     "react-helmet": "^5.2.1",
     "react-onclickout": "^2.0.8",
     "react-spring": "^7.2.10",
+    "react-use-gesture": "^5.2.4",
     "react-with-gesture": "^4.0.4",
     "remark": "^10.0.1",
     "remark-react": "^5.0.1",
