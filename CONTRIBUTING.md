@@ -20,6 +20,8 @@ Start small, pick a subject you care about, are familiar with, or want to learn.
 
 If you're not already familiar with git or Github, here are a couple of friendly tutorials: [First Contributions](https://github.com/firstcontributions/first-contributions), [Open Source Guide](https://opensource.guide/), and [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
+An [architecture guide](./ARCHITECTURE.md) is available for the Aragon client's code bases to help guide you towards your first contribution.
+
 ## How to file an issue or report a bug
 
 If you see a problem, you can report it in our [issue tracker](https://github.com/aragon/aragon/issues).
@@ -56,9 +58,19 @@ The reviewer will be able to help you fix any problems and improve it!
 
 You can also edit a page directly through your browser by clicking the "EDIT" link in the top-right corner of any page and then clicking the pencil icon in the github copy of the page.
 
-## Styleguide and development processes
+### Tricks and tips
 
-We use [prettier](https://prettier.io/) and [eslint](https://eslint.org/) to automatically lint and format the project.
+Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
+
+#### App frontends
+
+For local development, where you may want to use a local version of [aragonUI](https://github.com/aragon/aragon-ui) or connect to a locally running instance of [aragon-apps](https://github.com/aragon/aragon-apps), you can follow [`@bpierre`'s gist](https://gist.github.com/bpierre/22572415b90577aa17e5953fa68980eb).
+
+In the future, we will improve this flow to make it much easier to get started.
+
+### Styleguide and development processes
+
+We use [prettier](https://prettier.io/) and [eslint](https://eslint.org/) to automatically lint and format the project. An `npm run lint` script is provided to automatically run the linter, and commit hooks are automatically installed to run the linter on commits and `prettier` on pushes.
 
 We generally avoid adding external dependencies if they can be ported over easily, due to numerous NPM-related security issues in the past (e.g. [`event-stream`](https://blog.npmjs.org/post/180565383195/details-about-the-event-stream-incident)).
 
