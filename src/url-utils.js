@@ -52,3 +52,8 @@ export function repoBaseUrl(repo, gateway = ipfsDefaultConf.gateway) {
     gateway
   )
 }
+
+// Removes the unecessary part of a URL
+export function simpleUrl(url = '') {
+  return url.replace(/^https?:\/\//, '')
+}
