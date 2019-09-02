@@ -160,7 +160,7 @@ export default function SubscriptionsForm({
 
   const theme = useTheme()
 
-  if (isFetchingSubscriptions || apps.length === 0) {
+  if (apps.length === 0) {
     // Every DAO must have apps, if apps.length is 0, the DAO is still loading
     return (
       <SubscriptionsFormBox>
