@@ -32,7 +32,7 @@ const SECTIONS = new Map([
 ])
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
-const TIMEOUT_TOAST = 4000
+
 const CUSTOM_LABELS_INDEX = 0
 const NETWORK_INDEX = 1
 const NOTIFICATIONS_INDEX = 2
