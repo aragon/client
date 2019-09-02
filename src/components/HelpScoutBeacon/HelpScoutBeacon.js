@@ -21,7 +21,7 @@ import {
 import useBeaconSuggestions from './useBeaconSuggestions'
 import { useHelpScout } from './useHelpScout'
 import BeaconHeadScripts from './BeaconHeadScripts'
-import helpScoutHeaderPng from '../../assets/help-scout-header.png'
+import helpScoutHeaderPng from './assets/help-scout-header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
 import { AppType } from '../../prop-types'
 
