@@ -2,7 +2,11 @@ import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import { ButtonText, GU, LoadingRing, textStyle } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
-import { VERIFY_SUBSECTION, ExpiredTokenError } from './constants'
+import {
+  VERIFY_SUBSECTION,
+  SUCCESSFUL_VERIFICATION_REDIRECTION_DELAY,
+  ExpiredTokenError,
+} from './constants'
 import NotificationsInfoBox, {
   ICON_SUCCESS,
   ICON_ERROR,
@@ -50,6 +54,19 @@ export function NotificationsVerify({
       cancelled = true
     }
   }, [subsection, onTokenChange, onEmailChange])
+
+  // Redirect user automatically after 10 seconds
+  useEffect(() => {
+    let timeoutId
+    if (verified) {
+      timeoutId = setTimeout(() => {
+        navigateToNotifications()
+      }, SUCCESSFUL_VERIFICATION_REDIRECTION_DELAY)
+    }
+    return () => {
+      timeoutId && clearTimeout(timeoutId)
+    }
+  }, [navigateToNotifications, verified])
 
   if (isFetching) {
     return (

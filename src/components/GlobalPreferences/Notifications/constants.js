@@ -29,6 +29,8 @@ export const UnauthorizedError = extendError('UnauthorizedError', {
   defaultMessage: 'Notification Service API unauthorized',
 })
 
+export const SUCCESSFUL_VERIFICATION_REDIRECTION_DELAY = 10 * 1000
+
 export const CREATE_SUBSCRIPTION_REQUIRED_KEYS = [
   'appName',
   'eventName',
