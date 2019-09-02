@@ -168,7 +168,7 @@ function DeleteAccount({ token, onLogout, onApiError }) {
         onClose={onCloseModal}
       />
       <Box heading="Email Notification Data">
-        <Button onClick={onClick}>
+        <Button wide onClick={onClick}>
           {isFetching ? (
             <LoadingRing />
           ) : isAccountDeleted ? (
