@@ -3,21 +3,25 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Button,
+  GU,
   Info,
-  SafeLink,
+  Link,
   SidePanel,
   SidePanelSeparator,
   SidePanelSplit,
+  textStyle,
+  useTheme,
 } from '@aragon/ui'
+import RepoBadge from '../../components/RepoBadge/RepoBadge'
 import { RepoType } from '../../prop-types'
-import { TextLabel } from '../../components/TextStyles'
-import { GU } from '../../utils'
+import { sanitizeCodeRepositoryUrl } from '../../url-utils'
 
 class UpgradeAppPanel extends React.PureComponent {
   static propTypes = {
     repo: RepoType,
     onClose: PropTypes.func.isRequired,
     onUpgrade: PropTypes.func.isRequired,
+    theme: PropTypes.object.isRequired,
   }
   state = {
     repo: null,
@@ -40,7 +44,7 @@ class UpgradeAppPanel extends React.PureComponent {
   }
   render() {
     const { repo } = this.state
-    const { repo: propsRepo, onClose } = this.props
+    const { repo: propsRepo, onClose, theme } = this.props
 
     if (!repo) {
       return null
@@ -51,7 +55,7 @@ class UpgradeAppPanel extends React.PureComponent {
       name,
       changelog_url: changelogUrl,
       source_url: sourceUrl,
-    } = repo.latestVersion.content
+    } = latestVersion.content
 
     return (
       <SidePanel
@@ -59,35 +63,45 @@ class UpgradeAppPanel extends React.PureComponent {
         opened={Boolean(propsRepo)}
         onClose={onClose}
       >
-        <SidePanelSplit>
+        <SidePanelSplit
+          css={`
+            border-bottom: 1px solid ${theme.border};
+            ${textStyle('body2')};
+          `}
+        >
           <div>
-            <Heading2>Current version</Heading2>
-            <div>{currentVersion.version}</div>
+            <Heading2 theme={theme}>Current version</Heading2>
+            <RepoVersionWrapper>
+              {currentVersion.version}{' '}
+              <RepoBadge repoVersion={currentVersion} />
+            </RepoVersionWrapper>
           </div>
           <div>
-            <Heading2>New version</Heading2>
-            <div>{latestVersion.version}</div>
+            <Heading2 theme={theme}>New version</Heading2>
+            <RepoVersionWrapper>
+              {latestVersion.version} <RepoBadge repoVersion={latestVersion} />
+            </RepoVersionWrapper>
           </div>
         </SidePanelSplit>
 
         <Part>
-          <Heading2>Changelog</Heading2>
+          <Heading2 theme={theme}>Changelog</Heading2>
           <p>
             {changelogUrl ? (
-              <SafeLink href={changelogUrl} target="_blank">
-                {changelogUrl}
-              </SafeLink>
+              <Link href={changelogUrl} external>
+                {sanitizeCodeRepositoryUrl(changelogUrl)}
+              </Link>
             ) : (
               'There is no changelog for this version.'
             )}
           </p>
 
-          <Heading2>Source code</Heading2>
+          <Heading2 theme={theme}>Source code</Heading2>
           <p>
             {sourceUrl ? (
-              <SafeLink href={sourceUrl} target="_blank">
-                {sourceUrl}
-              </SafeLink>
+              <Link href={sourceUrl} external>
+                {sanitizeCodeRepositoryUrl(sourceUrl)}
+              </Link>
             ) : (
               'There is no available source for this app.'
             )}
@@ -96,7 +110,7 @@ class UpgradeAppPanel extends React.PureComponent {
 
         <SidePanelSeparator />
         <Part>
-          <Heading2>Permissions</Heading2>
+          <Heading2 theme={theme}>Permissions</Heading2>
           <p>This upgrade doesn’t introduce any new permissions.</p>
         </Part>
 
@@ -123,15 +137,29 @@ class UpgradeAppPanel extends React.PureComponent {
   }
 }
 
-const Heading2 = styled(TextLabel).attrs({ as: 'h2' })`
+const RepoVersionWrapper = styled.div`
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  grid-gap: ${1 * GU}px;
+  align-items: center;
+`
+
+const Heading2 = styled.h2`
+  color: ${({ theme }) => theme.contentSecondary};
+  ${textStyle('label2')};
   white-space: nowrap;
+  margin-bottom: ${2 * GU}px;
 `
 
 const Part = styled.div`
+  ${textStyle('body2')};
   padding: ${GU}px 0 ${3 * GU}px;
   h2 {
     margin: ${2 * GU}px 0 ${GU}px;
   }
 `
 
-export default UpgradeAppPanel
+export default props => {
+  const theme = useTheme()
+  return <UpgradeAppPanel {...props} theme={theme} />
+}

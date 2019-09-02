@@ -5,20 +5,24 @@ import { Transition, animated } from 'react-spring'
 import {
   Button,
   ButtonIcon,
+  DiscButton,
   IconClose,
+  IconQuestion,
   LoadingRing,
-  SafeLink,
+  Link,
+  GU,
+  RADIUS,
   breakpoint,
   springs,
-  theme,
+  textStyle,
+  useTheme,
   useViewport,
 } from '@aragon/ui'
 import useBeaconSuggestions from './useBeaconSuggestions'
+import { useHelpScout } from './useHelpScout'
 import BeaconHeadScripts from './BeaconHeadScripts'
-import IconQuestion from './IconQuestion'
-import headerImg from './header.png'
+import helpScoutHeaderPng from './assets/help-scout-header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
-import { GU } from '../../utils'
 import { AppType } from '../../prop-types'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
@@ -26,7 +30,7 @@ const CLOSED = Symbol('closed, user can open opt-in or beacon')
 const OPENED = Symbol('opened, user can close opt-in or beacon')
 const OPENING = Symbol('opening')
 const CLOSING = Symbol('closing')
-const ROUND_BUTTON_HEIGHT = 40
+const DISC_BUTTON_HEIGHT = 40
 
 const Beacon = React.memo(function Beacon({ locator, apps }) {
   const [beaconReady, setBeaconReady] = useState(false)
@@ -60,12 +64,11 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
         position: absolute;
         bottom: ${2 * GU}px;
         right: ${2 * GU}px;
-        z-index: 4;
+        z-index: 2;
 
         ${breakpoint(
-          'medium',
+          'large',
           `
-            z-index: 10000;
             bottom: ${3 * GU}px;
             right: ${3 * GU}px;
           `
@@ -182,7 +185,7 @@ const HelpOptIn = React.memo(function HelpOptIn({
       )
     }
     return () => {
-      if (beaconIframe) {
+      if (beaconIframe && beaconIframe.contentWindow) {
         beaconIframe.contentWindow.removeEventListener(
           'blur',
           handleBeaconIframeBlur
@@ -243,18 +246,24 @@ HelpOptIn.propTypes = {
 }
 
 const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
+  const theme = useTheme()
   const { below } = useViewport()
+
   return (
-    <RoundButton
+    <DiscButton
+      description="Help"
       onClick={onToggle}
       css={`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: calc(100% - ${DISC_BUTTON_HEIGHT}px);
+        margin-top: ${2 * GU}px;
         ${below('medium') &&
           `
             position: absolute;
-            top: calc(-${ROUND_BUTTON_HEIGHT}px - ${3 * GU}px);
+            top: calc(-${DISC_BUTTON_HEIGHT}px - ${3 * GU}px);
           `}
-        margin-left: calc(100% - ${ROUND_BUTTON_HEIGHT}px);
-        margin-top: ${2 * GU}px;
       `}
     >
       <Transition
@@ -278,15 +287,10 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
               }}
             >
               <IconClose
-                color={theme.gradientText}
+                color={theme.helpContent}
                 css={`
-                  width: auto;
-                  height: 17px;
-
                   & path {
-                    fill: ${theme.gradientText};
-                    /* original size 10px * 1.7 = 17px*/
-                    transform: scale(1.7);
+                    fill: ${theme.helpContent};
                     opacity: 1;
                   }
                 `}
@@ -317,12 +321,12 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
                 ),
               }}
             >
-              <IconQuestion width={18} height={18} />
+              <IconQuestion width={22} height={22} />
             </RoundButtonIcon>
           ))
         }
       </Transition>
-    </RoundButton>
+    </DiscButton>
   )
 })
 
@@ -332,16 +336,17 @@ ToggleDialogueButton.propTypes = {
 }
 
 const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
+  const theme = useTheme()
   const { below } = useViewport()
 
   return (
     <animated.div {...styles}>
-      <Wrapper>
-        <Header>
+      <Wrapper theme={theme}>
+        <Header theme={theme}>
           {below('medium') && <CloseButton onClick={onClose} />}
-          <HeaderImage src={headerImg} alt="" />
+          <HeaderImage src={helpScoutHeaderPng} alt="" />
         </Header>
-        <Main>
+        <Main theme={theme}>
           {!optedIn ? (
             <React.Fragment>
               <div css={'flex: 1'}>
@@ -352,14 +357,17 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
                 </Paragraph>
                 <Paragraph>
                   For that, we use a third-party system called{' '}
-                  <StyledSafeLink href="https://www.helpscout.com/">
+                  <Link href="https://www.helpscout.com/" target="_blank">
                     HelpScout
-                  </StyledSafeLink>
+                  </Link>
                   . If you opt-in, we will load their program onto Aragon.
                   HelpScout is a{' '}
-                  <StyledSafeLink href="https://bcorporation.net/directory/help-scout">
+                  <Link
+                    target="_blank"
+                    href="https://bcorporation.net/directory/help-scout"
+                  >
                     Public Benefit Corp
-                  </StyledSafeLink>
+                  </Link>
                   .
                 </Paragraph>
               </div>
@@ -367,7 +375,10 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
                 mode="strong"
                 wide
                 onClick={onOptIn}
-                css={'font-size: 15px;'}
+                css={`
+                  ${textStyle('label1')};
+                  text-transform: unset;
+                `}
               >
                 Yes, I’d like help
               </Button>
@@ -398,6 +409,8 @@ OptInDialogue.propTypes = {
 }
 
 const CloseButton = React.memo(({ onClick, ...props }) => {
+  const theme = useTheme()
+
   return (
     <ButtonIcon
       label="Close"
@@ -411,15 +424,13 @@ const CloseButton = React.memo(({ onClick, ...props }) => {
       {...props}
     >
       <IconClose
-        color={theme.gradientText}
+        color={theme.accentContent}
         css={`
           width: auto;
           height: 24px;
 
           & path {
-            fill: ${theme.gradientText};
-            /* original size 10px * 2.4 = 24px*/
-            transform: scale(2.4);
+            fill: ${theme.accentContent};
             opacity: 1;
           }
         `}
@@ -444,7 +455,7 @@ const Paragraph = styled.p`
 `
 
 const Wrapper = styled.aside`
-  background: #fff;
+  background: ${({ theme }) => theme.helpSurface};
   position: absolute;
   bottom: ${-2 * GU}px;
   right: ${-2 * GU}px;
@@ -462,9 +473,8 @@ const Wrapper = styled.aside`
       width: 336px;
       height: 482px;
       position: unset;
-      border: 1px solid rgba(209, 209, 209, 0.5);
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-      border-radius: 3px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+      border-radius: ${RADIUS}px;
     `
   )}
 `
@@ -472,8 +482,7 @@ const Wrapper = styled.aside`
 const Header = styled.header`
   position: relative;
   height: 240px;
-  background-color: #08bee5;
-  color: ${theme.gradientText};
+  background-color: ${({ theme }) => theme.help};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -486,15 +495,17 @@ const Header = styled.header`
       /* needs both height and min-height as button uses flex: 1
        * and would push this upwards */
       min-height: 148px;
-      border-top-right-radius: 4px;
-      border-top-left-radius: 4px;
+      border-top-right-radius: ${RADIUS}px;
+      border-top-left-radius: ${RADIUS}px;
     `
   )}
 `
 
 const HeaderImage = styled.img`
+  width: 269px;
+  height: 139px;
   position: absolute;
-  bottom: -12px;
+  bottom: -6px;
 `
 
 const Main = styled.main`
@@ -502,43 +513,11 @@ const Main = styled.main`
   display: flex;
   flex-direction: column;
   padding: ${5 * GU}px ${3 * GU}px ${3 * GU}px;
+  color: ${({ theme }) => theme.helpSurfaceContent};
 `
 
 const Heading = styled.h3`
-  font-weight: bold;
-  color: #352c47;
-  font-size: 26px;
-  line-height: 40px;
-
-  ${breakpoint(
-    'medium',
-    `
-      font-size: 20px;
-      line-height: 31px;
-    `
-  )}
-`
-
-const StyledSafeLink = styled(SafeLink).attrs({ target: '_blank' })`
-  text-decoration: none;
-  color: ${theme.accent};
-
-  &:hover,
-  &:focus {
-    text-decoration: underline;
-  }
-`
-
-const RoundButton = styled(Button).attrs({ mode: 'strong' })`
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  border-radius: 50%;
-  width: ${ROUND_BUTTON_HEIGHT}px;
-  height: ${ROUND_BUTTON_HEIGHT}px;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  ${textStyle('title4')};
 `
 
 const RoundButtonIcon = styled(animated.div)`
@@ -546,4 +525,10 @@ const RoundButtonIcon = styled(animated.div)`
   position: absolute;
 `
 
-export default Beacon
+export default props => {
+  const { optedOut } = useHelpScout()
+  if (optedOut) {
+    return null
+  }
+  return <Beacon {...props} />
+}

@@ -49,7 +49,15 @@ class SandboxedWorker extends EventTarget {
     if (!workerFrameSandboxDisabled) {
       this.iframe.sandbox = workerFrameSandbox
     }
-    this.iframe.style = 'position: absolute; width: 0; height: 0; opacity:0;'
+    this.iframe.style = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      border: 0;
+    `
 
     const source = `
       <script>

@@ -12,7 +12,7 @@ export const appsInDevelopment = [
     {
       icon: surveyIcon,
       name: 'Survey',
-      status: 'ready',
+      status: 'experimental',
       description: `Create multi-option signaling votes.`,
       link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
     },
@@ -27,7 +27,8 @@ export const appsInDevelopment = [
       description: `
         Hold assets and perform actions from DAOs.
       `,
-      link: 'https://github.com/aragon/aragon-apps/tree/master/apps/agent',
+      link:
+        'https://hack.aragon.org/docs/guides-use-agent#installing-aragon-agent',
     },
     {
       icon: payrollIcon,
@@ -62,15 +63,12 @@ export const appsInDevelopment = [
     },
   ]),
 
-  // Alpha
-  ...shuffleArray([]),
-
-  // Pre-alpha
+  // In development
   ...shuffleArray([
     {
       icon: espressoIcon,
       name: 'Espresso',
-      status: 'pre-alpha',
+      status: 'in development',
       description: `
         Collaborative data vault.
         Encrypt and share data with people in your organization.
@@ -80,7 +78,7 @@ export const appsInDevelopment = [
     {
       icon: null,
       name: 'Liquid democracy',
-      status: 'pre-alpha',
+      status: 'in development',
       description: `
         Delegate your voting power to others,
         and vote on important matters.

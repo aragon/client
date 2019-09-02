@@ -1,75 +1,61 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ExternalLink, theme } from '@aragon/ui'
+import { Link, GU, RADIUS } from '@aragon/ui'
 import { RepoType } from '../../prop-types'
-import { GU, imgSrcFromBase } from '../../utils'
+import { imgSrcFromBase } from '../../utils'
 
-class Screenshots extends React.Component {
-  static propTypes = {
-    repo: RepoType.isRequired,
-    screenshots: PropTypes.arrayOf(
-      PropTypes.shape({
-        src: PropTypes.string.isRequired,
-      })
-    ).isRequired,
-  }
-  render() {
-    const {
-      screenshots,
-      repo: { baseUrl },
-    } = this.props
-    return (
+const Screenshots = React.memo(function Screenshots({
+  screenshots,
+  repo: { baseUrl },
+}) {
+  return (
+    <div
+      css={`
+        overflow-x: auto;
+      `}
+    >
       <div
         css={`
-          overflow-x: auto;
+          display: grid;
+          grid-template-columns: repeat(${screenshots.length}, 1fr);
+          grid-gap: ${3 * GU}px;
+          width: 100%;
+          /* some room for the box-shadow to show */
+          padding: 5px;
         `}
       >
-        <div
-          css={`
-            display: flex;
-            width: 100%;
-            padding-top: 2px;
-            padding-bottom: ${3 * GU}px;
-          `}
-        >
-          {screenshots.map(({ src }, index) => {
-            const url = imgSrcFromBase(baseUrl, src)
-            return (
-              <ExternalLink
-                key={url}
-                href={url}
+        {screenshots.map(({ src }, index) => {
+          const url = imgSrcFromBase(baseUrl, src)
+
+          return (
+            <Link key={url} href={url} external>
+              <img
+                key={src}
+                src={url}
+                alt=""
+                width="225"
+                height="143"
                 css={`
-                  flex-grow: 0;
-                  flex-shrink: 0;
-                  margin-left: 24px;
-                  border: 1px solid ${theme.contentBorder};
-                  outline: 0;
-                  &:focus {
-                    border-color: transparent;
-                    outline: 2px solid ${theme.accent};
-                  }
-                  &:first-child {
-                    margin-left: 0;
-                  }
+                  display: block;
+                  border-radius: ${RADIUS}px;
+                  box-shadow: 0px 3px 3px rgba(111, 116, 126, 0.15);
                 `}
-              >
-                <img
-                  key={src}
-                  src={url}
-                  alt=""
-                  width="198"
-                  height="120"
-                  css={`
-                    display: block;
-                  `}
-                />
-              </ExternalLink>
-            )
-          })}
-        </div>
+              />
+            </Link>
+          )
+        })}
       </div>
-    )
-  }
+    </div>
+  )
+})
+
+Screenshots.propTypes = {
+  repo: RepoType.isRequired,
+  screenshots: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 }
 
 export default Screenshots

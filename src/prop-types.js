@@ -58,18 +58,24 @@ const ethereumAddressValidator = (props, propName, componentName) => {
 
 export const EthereumAddressType = validatorCreator(ethereumAddressValidator)
 
+export const ActivityStatusType = PropTypes.oneOf([
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_FAILED,
+  ACTIVITY_STATUS_PENDING,
+  ACTIVITY_STATUS_TIMED_OUT,
+])
+
 export const AppType = PropTypes.shape({
-  abi: PropTypes.array.isRequired,
   appId: PropTypes.string.isRequired,
   baseUrl: PropTypes.string.isRequired,
   codeAddress: EthereumAddressType.isRequired,
-  functions: PropTypes.array.isRequired,
   hasWebApp: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
   proxyAddress: EthereumAddressType.isRequired,
   src: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 
+  // This content may not be available if the app's content couldn't be fetched
+  abi: PropTypes.array,
   appName: PropTypes.string,
   apmRegistry: PropTypes.string,
   content: PropTypes.shape({
@@ -77,14 +83,16 @@ export const AppType = PropTypes.shape({
     provider: PropTypes.string.isRequired,
   }),
   description: PropTypes.string,
+  functions: PropTypes.array,
   icons: PropTypes.arrayOf(
     PropTypes.shape({
       src: PropTypes.string.isRequired,
     })
   ),
+  isAragonOsInternalApp: PropTypes.bool,
   isForwarder: PropTypes.bool,
   kernelAddress: EthereumAddressType,
-  isAragonOsInternalApp: PropTypes.bool,
+  name: PropTypes.string,
   roles: PropTypes.array,
   status: PropTypes.string,
   version: PropTypes.string,
@@ -116,19 +124,11 @@ export const AppsStatusType = PropTypes.oneOf([
   APPS_STATUS_UNLOADED,
 ])
 
-export const DaoStatusType = PropTypes.oneOf([
-  DAO_STATUS_ERROR,
-  DAO_STATUS_READY,
-  DAO_STATUS_LOADING,
-  DAO_STATUS_UNLOADED,
-])
-
 export const AragonType = PropTypes.instanceOf(Aragon)
 
-export const FavoriteDaoType = PropTypes.shape({
-  name: PropTypes.string,
+export const DaoAddressType = PropTypes.shape({
   address: EthereumAddressType,
-  favorited: PropTypes.bool,
+  domain: PropTypes.string,
 })
 
 export const DaoItemType = PropTypes.shape({
@@ -136,9 +136,17 @@ export const DaoItemType = PropTypes.shape({
   address: EthereumAddressType,
 })
 
-export const DaoAddressType = PropTypes.shape({
+export const DaoStatusType = PropTypes.oneOf([
+  DAO_STATUS_ERROR,
+  DAO_STATUS_READY,
+  DAO_STATUS_LOADING,
+  DAO_STATUS_UNLOADED,
+])
+
+export const FavoriteDaoType = PropTypes.shape({
+  name: PropTypes.string,
   address: EthereumAddressType,
-  domain: PropTypes.string,
+  favorited: PropTypes.bool,
 })
 
 export const RenderFnType = PropTypes.oneOfType([
@@ -164,16 +172,15 @@ export const RepoContentType = PropTypes.shape({
   ),
 })
 
+export const RepoVersionType = PropTypes.shape({
+  content: RepoContentType.isRequired,
+  version: PropTypes.string.isRequired,
+})
+
 export const RepoType = PropTypes.shape({
   appId: PropTypes.string.isRequired,
-  currentVersion: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
-  latestVersion: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
+  currentVersion: RepoVersionType,
+  latestVersion: RepoVersionType,
   repoAddress: EthereumAddressType.isRequired,
   versions: PropTypes.arrayOf(
     PropTypes.shape({
@@ -193,11 +200,4 @@ export const ReactSpringStateType = PropTypes.oneOf([
   'enter',
   'update',
   'leave',
-])
-
-export const ActivityStatusType = PropTypes.oneOf([
-  ACTIVITY_STATUS_CONFIRMED,
-  ACTIVITY_STATUS_FAILED,
-  ACTIVITY_STATUS_PENDING,
-  ACTIVITY_STATUS_TIMED_OUT,
 ])
