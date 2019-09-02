@@ -88,56 +88,32 @@ export function NotificationsVerify({
     )
   }
 
+  let message
+
   if (error && error instanceof ExpiredTokenError) {
-    return (
-      <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
-        <div>The link you used to verify your email has expired.</div>
-        Do not worry, you can go back and{' '}
-        <ButtonText
-          css={`
-            font-weight: bold;
-          `}
-          onClick={handleResetAccount}
-        >
-          try to sign in again.
-        </ButtonText>
-      </NotificationsInfoBox>
+    message = <div>The link you used to verify your email has expired.</div>
+  } else if (error && error instanceof TypeError) {
+    message = (
+      <div>
+        There was an error when trying to connect to the Notifications server.
+      </div>
+    )
+  } else {
+    message = (
+      <div>Something has gone wrong during the email verification process.</div>
     )
   }
-
-  if (error && error instanceof TypeError) {
-    return (
-      <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
-        <div>
-          There was an error when trying to connect to the Notifications server.
-          Do not worry, you can go back and{' '}
-          <ButtonText
-            css={`
-              font-weight: bold;
-            `}
-            onClick={handleResetAccount}
-          >
-            try to sign in again.
-          </ButtonText>
-        </div>
-      </NotificationsInfoBox>
-    )
-  }
-
   return (
     <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
-      <div>
-        Something has gone wrong during the email verification process. Do not
-        worry, you can go back and{' '}
-        <ButtonText
-          css={`
-            font-weight: bold;
-          `}
-          onClick={handleResetAccount}
-        >
-          try to sign in again.
-        </ButtonText>
-      </div>
+      {message} Do not worry, you can go back and
+      <ButtonText
+        css={`
+          font-weight: bold;
+        `}
+        onClick={handleResetAccount}
+      >
+        try to sign in again.
+      </ButtonText>
     </NotificationsInfoBox>
   )
 }
