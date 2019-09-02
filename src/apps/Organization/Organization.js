@@ -25,8 +25,10 @@ const Organization = React.memo(function Organization({
   account,
   apps,
   appsLoading,
+  canUpgradeOrg,
   daoAddress,
   onOpenApp,
+  onShowOrgVersionDetails,
   walletNetwork,
   walletWeb3,
   walletProviderId,
@@ -61,6 +63,27 @@ const Organization = React.memo(function Organization({
   const enableTransactions = !!account && walletNetwork === network.type
   const shortAddresses = layoutName !== 'large'
 
+  const organizationText = checksummedDaoAddr ? (
+    <span>
+      This organization is deployed on the Ethereum {network.name}.{' '}
+      {canUpgradeOrg ? (
+        <span>
+          <Link onClick={onShowOrgVersionDetails}>
+            A new software update is available
+          </Link>
+          .
+        </span>
+      ) : (
+        <span>
+          The current software version is 0.8 Camino. You can see{' '}
+          <Link onClick={onShowOrgVersionDetails}>what's new here</Link>.
+        </span>
+      )}
+    </span>
+  ) : (
+    'Resolving DAO address…'
+  )
+
   const depositFundsHelpText = appsLoading ? (
     ''
   ) : hasFinanceApp || hasAgentApp ? (
@@ -88,9 +111,7 @@ const Organization = React.memo(function Organization({
             ${textStyle('body2')}
           `}
         >
-          {checksummedDaoAddr
-            ? `This organization is deployed on the Ethereum ${network.name}.`
-            : 'Resolving DAO address…'}
+          {organizationText}
         </p>
         {checksummedDaoAddr && (
           <React.Fragment>
@@ -235,8 +256,10 @@ Organization.propTypes = {
   account: EthereumAddressType,
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
+  canUpgradeOrg: PropTypes.bool.isRequired,
   daoAddress: DaoAddressType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
+  onShowOrgVersionDetails: PropTypes.func.isRequired,
   walletNetwork: PropTypes.string.isRequired,
   walletWeb3: PropTypes.object.isRequired,
   walletProviderId: PropTypes.string.isRequired,

@@ -11,6 +11,7 @@ import OrgView from './components/OrgView/OrgView'
 import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
+import UpgradeModal from './components/Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
 import { useIdentity } from './components/IdentityManager/IdentityManager'
 import {
@@ -65,6 +66,7 @@ class Wrapper extends React.PureComponent {
   state = {
     appLoading: false,
     orgUpgradePanelOpened: false,
+    upgradeModalOpened: false,
   }
 
   identitySubscription = null
@@ -80,6 +82,45 @@ class Wrapper extends React.PureComponent {
   componentDidUpdate(prevProps) {
     this.updateIdentityEvents(prevProps)
   }
+
+  getAppInstancesGroups = memoize(apps =>
+    apps.reduce((groups, app) => {
+      const group = groups.find(({ appId }) => appId === app.appId)
+
+      const {
+        // This is not technically fully true, but let's assume that only these
+        // aspects be different between multiple instances of the same app
+        codeAddress: instanceCodeAddress,
+        identifier: instanceIdentifier,
+        proxyAddress: instanceProxyAddress,
+        ...sharedAppInfo
+      } = app
+
+      const instance = {
+        codeAddress: instanceCodeAddress,
+        identifier: instanceIdentifier,
+        instanceId: instanceProxyAddress,
+        proxyAddress: instanceProxyAddress,
+      }
+
+      // Append the instance to the existing app group
+      if (group) {
+        group.instances.push(instance)
+        return groups
+      }
+
+      return groups.concat([
+        {
+          app: sharedAppInfo,
+          appId: app.appId,
+          name: app.name,
+          instances: [instance],
+          hasWebApp: app.hasWebApp,
+          repoName: app.appName,
+        },
+      ])
+    }, [])
+  )
 
   updateIdentityEvents(prevProps) {
     const { identityEvents$ } = this.props
@@ -173,47 +214,21 @@ class Wrapper extends React.PureComponent {
     this.openApp(this.props.locator.instanceId, { localPath })
   }
 
-  getAppInstancesGroups = memoize(apps =>
-    apps.reduce((groups, app) => {
-      const group = groups.find(({ appId }) => appId === app.appId)
-
-      const {
-        // This is not technically fully true, but let's assume that only these
-        // aspects be different between multiple instances of the same app
-        codeAddress: instanceCodeAddress,
-        identifier: instanceIdentifier,
-        proxyAddress: instanceProxyAddress,
-        ...sharedAppInfo
-      } = app
-
-      const instance = {
-        codeAddress: instanceCodeAddress,
-        identifier: instanceIdentifier,
-        instanceId: instanceProxyAddress,
-        proxyAddress: instanceProxyAddress,
-      }
-
-      // Append the instance to the existing app group
-      if (group) {
-        group.instances.push(instance)
-        return groups
-      }
-
-      return groups.concat([
-        {
-          app: sharedAppInfo,
-          appId: app.appId,
-          name: app.name,
-          instances: [instance],
-          hasWebApp: app.hasWebApp,
-          repoName: app.appName,
-        },
-      ])
-    }, [])
-  )
-
+  handleUpgradeModalOpen = () => {
+    this.setState({
+      upgradeModalOpened: true,
+    })
+  }
+  handleUpgradeModalClose = () => {
+    this.setState({
+      upgradeModalOpened: false,
+    })
+  }
   showOrgUpgradePanel = () => {
-    this.setState({ orgUpgradePanelOpened: true })
+    this.setState({
+      orgUpgradePanelOpened: true,
+      upgradeModalOpened: false,
+    })
   }
   hideOrgUpgradePanel = () => {
     this.setState({ orgUpgradePanelOpened: false })
@@ -241,7 +256,7 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
 
-    const { appLoading, orgUpgradePanelOpened } = this.state
+    const { appLoading, orgUpgradePanelOpened, upgradeModalOpened } = this.state
 
     const currentApp = apps.find(app =>
       addressesEqual(app.proxyAddress, locator.instanceId)
@@ -261,7 +276,7 @@ class Wrapper extends React.PureComponent {
         <BannerWrapper>
           <UpgradeBanner
             visible={canUpgradeOrg}
-            onUpgrade={this.showOrgUpgradePanel}
+            onMoreInfo={this.handleUpgradeModalOpen}
           />
         </BannerWrapper>
 
@@ -320,6 +335,12 @@ class Wrapper extends React.PureComponent {
           wrapper={wrapper}
           onScreenChange={this.openPreferences}
           onClose={this.closePreferences}
+        />
+
+        <UpgradeModal
+          visible={upgradeModalOpened}
+          onClose={this.handleUpgradeModalClose}
+          onUpgrade={this.showOrgUpgradePanel}
         />
       </div>
     )
@@ -392,9 +413,11 @@ class Wrapper extends React.PureComponent {
             account={account}
             apps={apps}
             appsLoading={appsLoading}
+            canUpgradeOrg={canUpgradeOrg}
             daoAddress={daoAddress}
             onMessage={this.handleAppMessage}
             onOpenApp={this.openApp}
+            onShowOrgVersionDetails={this.handleUpgradeModalOpen}
             walletNetwork={walletNetwork}
             walletWeb3={walletWeb3}
             walletProviderId={walletProviderId}
