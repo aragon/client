@@ -102,7 +102,14 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
                       color: ${theme.negative};
                     `}
                   />
-                ) : null
+                ) : (
+                  // hidden icon to avoid losing focus
+                  <IconCheck
+                    css={`
+                      opacity: 0;
+                    `}
+                  />
+                )
               }
               adornmentPosition="end"
               type="email"
