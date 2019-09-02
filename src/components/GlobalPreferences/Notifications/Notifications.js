@@ -159,8 +159,19 @@ export default function Notifications({
         />
       )
     case AUTH_AUTHENTICATING:
-      // return null to prevent flickering
-      return null
+      return (
+        <NotificationsVerifyBox header="Authenticating">
+          <div
+            css={`
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            `}
+          >
+            <LoadingRing />
+          </div>
+        </NotificationsVerifyBox>
+      )
     case AUTH_AUTHENTICATION_FAILED:
       return (
         <NotificationsInfoBox
