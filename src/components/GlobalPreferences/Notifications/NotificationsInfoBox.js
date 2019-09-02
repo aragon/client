@@ -74,7 +74,7 @@ export default function NotificationsInfoBox({
         <div>
           <div
             css={`
-              margin-bottom: ${2 * GU}px;
+              margin-bottom: ${1.5 * GU}px;
               ${textStyle('body1')};
             `}
           >
