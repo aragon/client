@@ -6,6 +6,7 @@ import {
   GU,
   IconMail,
   LoadingRing,
+  textStyle,
   useTheme,
 } from '@aragon/ui'
 import { AppType } from '../../../prop-types'
@@ -162,7 +163,24 @@ export default function SubscriptionsForm({
     // Every DAO must have apps, if apps.length is 0, the DAO is still loading
     return (
       <Box heading="Create Subscriptions">
-        <LoadingRing />
+        <div
+          css={`
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: ${25 * GU}px;
+          `}
+        >
+          <LoadingRing />
+          <p
+            css={`
+              margin-left: ${GU}px;
+              ${textStyle('body1')};
+            `}
+          >
+            Loading...
+          </p>
+        </div>
       </Box>
     )
   }

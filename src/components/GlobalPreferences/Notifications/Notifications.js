@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
-import { ButtonText } from '@aragon/ui'
+import { ButtonText, GU, LoadingRing, textStyle } from '@aragon/ui'
 import ManageNotifications from './ManageNotifications'
 import NotificationsLogin from './NotificationsLogin'
 import {
@@ -160,17 +160,26 @@ export default function Notifications({
       )
     case AUTH_AUTHENTICATING:
       return (
-        <NotificationsVerifyBox header="Authenticating">
+        <NotificationsInfoBox>
           <div
             css={`
               display: flex;
               justify-content: center;
               align-items: center;
+              min-height: ${25 * GU}px;
             `}
           >
             <LoadingRing />
+            <p
+              css={`
+                margin-left: ${GU}px;
+                ${textStyle('body1')};z
+              `}
+            >
+              Authenticating...
+            </p>
           </div>
-        </NotificationsVerifyBox>
+        </NotificationsInfoBox>
       )
     case AUTH_AUTHENTICATION_FAILED:
       return (

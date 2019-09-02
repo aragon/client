@@ -53,7 +53,7 @@ export function NotificationsVerify({
 
   if (isFetching) {
     return (
-      <NotificationsInfoBox header="">
+      <NotificationsInfoBox>
         <div
           css={`
             display: flex;
