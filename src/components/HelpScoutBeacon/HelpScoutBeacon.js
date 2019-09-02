@@ -21,7 +21,7 @@ import {
 import useBeaconSuggestions from './useBeaconSuggestions'
 import { useHelpScout } from './useHelpScout'
 import BeaconHeadScripts from './BeaconHeadScripts'
-import headerImg from './header.png'
+import helpScoutHeaderPng from './assets/help-scout-header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
 import { AppType } from '../../prop-types'
 
@@ -344,7 +344,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
       <Wrapper theme={theme}>
         <Header theme={theme}>
           {below('medium') && <CloseButton onClick={onClose} />}
-          <HeaderImage src={headerImg} alt="" />
+          <HeaderImage src={helpScoutHeaderPng} alt="" />
         </Header>
         <Main theme={theme}>
           {!optedIn ? (
@@ -505,7 +505,7 @@ const HeaderImage = styled.img`
   width: 269px;
   height: 139px;
   position: absolute;
-  bottom: -12px;
+  bottom: -6px;
 `
 
 const Main = styled.main`
