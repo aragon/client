@@ -91,10 +91,7 @@ export function NotificationsVerify({
   if (error && error instanceof ExpiredTokenError) {
     return (
       <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
-        <div>
-          The link you clicked to verify your email is not longer valid due to
-          expiration.{' '}
-        </div>
+        <div>The link you used to verify your email has expired.</div>
         Do not worry, you can go back and{' '}
         <ButtonText
           css={`
