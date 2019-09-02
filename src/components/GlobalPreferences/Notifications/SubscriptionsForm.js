@@ -7,6 +7,7 @@ import {
   IconMail,
   LoadingRing,
   textStyle,
+  useViewport,
   useTheme,
 } from '@aragon/ui'
 import { AppType } from '../../../prop-types'
@@ -162,7 +163,7 @@ export default function SubscriptionsForm({
   if (isFetchingSubscriptions || apps.length === 0) {
     // Every DAO must have apps, if apps.length is 0, the DAO is still loading
     return (
-      <Box heading="Create Subscriptions">
+      <SubscriptionsFormBox>
         <div
           css={`
             display: flex;
@@ -181,7 +182,7 @@ export default function SubscriptionsForm({
             Loading...
           </p>
         </div>
-      </Box>
+      </SubscriptionsFormBox>
     )
   }
 
@@ -191,7 +192,7 @@ export default function SubscriptionsForm({
     apps.length > 0
   ) {
     return (
-      <Box heading="Create Subscriptions">
+      <SubscriptionsFormBox>
         <div
           css={`
             display: flex;
@@ -211,7 +212,7 @@ export default function SubscriptionsForm({
           />
           You have subscribed to all app events available on this organization!
         </div>
-      </Box>
+      </SubscriptionsFormBox>
     )
   }
 
@@ -219,7 +220,7 @@ export default function SubscriptionsForm({
     selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
 
   return (
-    <Box heading="Create Subscriptions">
+    <SubscriptionsFormBox>
       <div
         css={`
           margin-bottom: ${2 * GU}px;
@@ -280,14 +281,9 @@ export default function SubscriptionsForm({
           Subscribe
         </Button>
       </div>
-    </Box>
+    </SubscriptionsFormBox>
   )
 }
-
-export const Label = styled.label`
-  display: block;
-  margin-bottom: ${GU}px;
-`
 
 SubscriptionsForm.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
@@ -297,4 +293,24 @@ SubscriptionsForm.propTypes = {
   fetchSubscriptions: PropTypes.func,
   subscriptions: PropTypes.array,
   token: PropTypes.string,
+}
+
+export const Label = styled.label`
+  display: block;
+  margin-bottom: ${GU}px;
+`
+
+const SubscriptionsFormBox = ({ children }) => {
+  const { above } = useViewport()
+  return (
+    <Box
+      padding={above('medium') ? 3 * GU : 2 * GU}
+      heading="Create Subscriptions"
+    >
+      {children}
+    </Box>
+  )
+}
+SubscriptionsFormBox.propTypes = {
+  children: PropTypes.node,
 }
