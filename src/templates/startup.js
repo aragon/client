@@ -1,13 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import {
-  Button,
-  Field,
-  GU,
-  Info,
-  Slider,
-  TextInput,
-  useTheme,
-} from '@aragon/ui'
+import { Field, GU, Info, TextInput, useTheme } from '@aragon/ui'
 import {
   ClaimDomain,
   Header,
@@ -224,7 +216,7 @@ export default {
       // },
     ],
     prepareTransaction(data) {
-      return txdata
+      // return txdata
     },
   },
 }

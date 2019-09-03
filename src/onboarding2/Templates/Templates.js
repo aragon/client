@@ -9,10 +9,13 @@ function Templates({ onUse, templates }) {
   const [templateDetailsOpened, setTemplateDetailsOpened] = useState(false)
   const [templateDetailsIndex, setTemplateDetailsIndex] = useState(0)
 
-  const handleOpen = useCallback(id => {
-    setTemplateDetailsIndex(templates.findIndex(t => t.id === id))
-    setTemplateDetailsOpened(true)
-  }, [])
+  const handleOpen = useCallback(
+    id => {
+      setTemplateDetailsIndex(templates.findIndex(t => t.id === id))
+      setTemplateDetailsOpened(true)
+    },
+    [templates]
+  )
 
   const handleDetailsClose = useCallback(() => {
     setTemplateDetailsOpened(false)

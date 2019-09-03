@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
 import { useViewport, GU } from '@aragon/ui'
 import templates from '../../templates'
 import Templates from '../Templates/Templates'
@@ -147,7 +146,6 @@ function Create() {
   const { above } = useViewport()
 
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
-  const [templateId, setTemplateId] = useState(null)
 
   const {
     TemplateScreen,
@@ -159,8 +157,6 @@ function Create() {
     templateScreenIndex,
     templateScreens,
   } = useTemplateState()
-
-  console.log('TTT_TTT', templateData)
 
   const steps = getSteps(status, template)
 
@@ -174,7 +170,7 @@ function Create() {
       return steps.length - 1
     }
     return templateScreenIndex + 1
-  }, [status, steps])
+  }, [status, steps.length, templateScreenIndex])
 
   // On load, restore the state directly
   useEffect(() => {

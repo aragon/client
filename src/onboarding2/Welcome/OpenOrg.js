@@ -1,15 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  BackButton,
-  Bar,
-  Box,
-  Button,
-  Field,
-  GU,
-  TextInput,
-  useTheme,
-} from '@aragon/ui'
+import { BackButton, Bar, Box, Button, GU, useTheme } from '@aragon/ui'
 import DomainField, {
   DOMAIN_CHECK,
 } from '../../components/DomainField/DomainField'
@@ -38,7 +29,11 @@ function OpenOrg({ onBack }) {
           height: ${36 * GU}px;
         `}
       >
-        <DomainField label="Name of existing organization" css="flex-grow: 1" />
+        <DomainField
+          status={DOMAIN_CHECK}
+          label="Name of existing organization"
+          css="flex-grow: 1"
+        />
         <div
           css={`
             display: flex;

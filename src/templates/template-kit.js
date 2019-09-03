@@ -144,7 +144,7 @@ function ClaimDomain({ back, data, fields, next, screenIndex, screens }) {
         </Info>
 
         <PrevNextFooter
-          backEnabled={true}
+          backEnabled
           nextEnabled={Boolean(domain)}
           onBack={back}
           onNext={handleNext}

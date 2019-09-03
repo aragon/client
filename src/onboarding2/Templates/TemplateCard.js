@@ -6,7 +6,7 @@ function TemplateCard({ onOpen, template }) {
   const theme = useTheme()
   const handleDetailsClick = useCallback(() => {
     onOpen(template.id)
-  }, [])
+  }, [onOpen, template.id])
   return (
     <Card
       width="100%"
