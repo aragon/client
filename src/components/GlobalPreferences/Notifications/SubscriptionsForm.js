@@ -265,7 +265,7 @@ export default function SubscriptionsForm({
         `}
       >
         <Button
-          wide={below('medium')}
+          wide={below('small')}
           disabled={isSubscribeDisabled}
           onClick={handleSubscribe}
         >
