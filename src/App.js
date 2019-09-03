@@ -481,17 +481,14 @@ class App extends React.Component {
                             </div>
                           </PermissionsProvider>
 
-                          <div css="position: relative; z-index: 2">
-                            <Onboarding
-                              status={
-                                mode === APP_MODE_START ||
-                                mode === APP_MODE_SETUP
-                                  ? locator.action || 'welcome'
-                                  : 'none'
-                              }
-                              selectorNetworks={selectorNetworks}
-                            />
-                          </div>
+                          <Onboarding
+                            selectorNetworks={selectorNetworks}
+                            status={
+                              mode === APP_MODE_START || mode === APP_MODE_SETUP
+                                ? locator.action || 'welcome'
+                                : 'none'
+                            }
+                          />
 
                           <HelpScoutBeacon locator={locator} apps={apps} />
                         </ActivityProvider>
