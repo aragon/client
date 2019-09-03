@@ -11,12 +11,11 @@ import {
   GU,
   blockExplorerUrl,
   textStyle,
-  useViewport,
+  useLayout,
   useTheme,
 } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
-import { MENU_PANEL_WIDTH } from '../../../components/MenuPanel/MenuPanel'
 import Markdown from '../../../components/Markdown/Markdown'
 import { RepoType } from '../../../prop-types'
 import { useRepoDetails } from '../../../hooks'
@@ -24,13 +23,10 @@ import { network } from '../../../environment'
 import Screenshots from '../Screenshots'
 import { sanitizeCodeRepositoryUrl } from '../../../url-utils'
 
-// Exclude the width of MenuPanel
-const appBelow = (below, value) =>
-  below(value + (below('medium') ? 0 : MENU_PANEL_WIDTH))
-
 const AppContent = React.memo(
   ({ repo, repoVersions, onRequestUpgrade, onClose }) => {
     const theme = useTheme()
+    const { layoutName } = useLayout()
     const {
       name,
       instances,
@@ -52,8 +48,7 @@ const AppContent = React.memo(
     } = repo
     const repoDetails = useRepoDetails(baseUrl, detailsUrl)
     const canUpgrade = currentVersion.version !== latestVersion
-    const { below, breakpoints } = useViewport()
-    const compact = appBelow(below, breakpoints.medium)
+    const compact = layoutName === 'small'
 
     return (
       <React.Fragment>
@@ -130,7 +125,7 @@ const AppContent = React.memo(
                       mode="strong"
                       onClick={onRequestUpgrade}
                       css={`
-                        width: 128px;
+                        width: ${compact ? '100%' : '128px'};
                         margin: ${2.5 * GU}px 0;
                         align-self: center;
                       `}
