@@ -17,14 +17,14 @@ const PLACEHOLDER_SCREENS = [
   'Review information',
 ]
 
-function getSteps(status, template) {
+function getSteps(status, template, templateData) {
   if (!template || status === STATUS_SELECT_TEMPLATE) {
     return ['Select template', ...PLACEHOLDER_SCREENS, 'Launch organization']
   }
   return [
     template.name,
-    ...((template.template && template.template.screens) || []).map(
-      ([name]) => name
+    ...((template.template && template.template.screens) || []).map(([name]) =>
+      typeof name === 'function' ? name(templateData) : name
     ),
     'Launch organization',
   ]
@@ -158,7 +158,7 @@ function Create() {
     templateScreens,
   } = useTemplateState()
 
-  const steps = getSteps(status, template)
+  const steps = getSteps(status, template, templateData)
 
   // The current create step (includes the template selection
   // and “launch organization”).
