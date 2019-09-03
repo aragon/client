@@ -7,8 +7,6 @@ const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
 const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
 
 function Voting({ back, data, fields, next, screenIndex, screens }) {
-  const theme = useTheme()
-
   const [support, setSupport] = useState(data.support || 50)
   const [quorum, setQuorum] = useState(data.quorum || 15)
   const [localDuration, setLocalDuration] = useState(data.duration || 0)
