@@ -257,7 +257,7 @@ const Heading2 = styled.h2`
 `
 
 const DetailsGroup = styled.div`
-  margin-bottom: ${3.5 * GU}px;
+  margin-bottom: ${3 * GU}px;
 `
 
 const BreakLink = styled.div`
