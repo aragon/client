@@ -34,6 +34,7 @@ function GlobalPreferencesButton({ onOpen }) {
     <React.Fragment>
       <div ref={containerRef}>
         <ButtonIcon
+          element="div"
           onClick={handleToggle}
           css={`
             height: 100%;
