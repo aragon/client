@@ -10,7 +10,7 @@ import ProgressBar from './ProgressBar'
 
 import closeSvg from './assets/close.svg'
 
-const UpgradeModal = React.memo(({ visible, onUpgrade, onClose }) => {
+const UpgradeModal = React.memo(({ visible, onUpgrade, onClose, canUpgradeOrg }) => {
   const steps = highlights.length
   const { step, next, prev, setStep, direction } = useSteps(steps)
 
@@ -103,6 +103,7 @@ const UpgradeModal = React.memo(({ visible, onUpgrade, onClose }) => {
                         showProgress={showProgress}
                         state={state}
                         {...highlights[index]}
+                        {...(canUpgradeOrg ? highlights['0.6'][index] : {})}
                       />
                     )
                   /* eslint-enable react/prop-types */
