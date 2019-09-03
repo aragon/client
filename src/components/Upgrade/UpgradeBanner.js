@@ -9,7 +9,7 @@ import { banner } from './content'
 const SHOW_UPGRADE_MODAL_KEY = 'SHOW_UPGRADE_MODAL_FIRST_TIME'
 const OCTOBER_1ST_2019 = new Date('October 1 2019 00:00').getTime()
 
-function useUpgradeBanner(onUpgrade) {
+function useUpgradeBanner(onUpgrade, visible) {
   const [showModal, setShowModal] = useState(false)
 
   const handleMoreInfo = useCallback(() => {
@@ -27,13 +27,14 @@ function useUpgradeBanner(onUpgrade) {
 
   useEffect(() => {
     if (
+      visible &&
       localStorage.getItem(SHOW_UPGRADE_MODAL_KEY) !== 'false' &&
       Date.now() < OCTOBER_1ST_2019
     ) {
       localStorage.setItem(SHOW_UPGRADE_MODAL_KEY, 'false')
       setShowModal(true)
     }
-  }, [])
+  }, [visible])
 
   return { showModal, handleMoreInfo, handleModalClose, handleUpgrade }
 }
@@ -48,7 +49,7 @@ const UpgradeBanner = React.memo(function UpgradeBanner({
     handleMoreInfo,
     handleModalClose,
     handleUpgrade,
-  } = useUpgradeBanner(onUpgrade)
+  } = useUpgradeBanner(onUpgrade, visible)
 
   return (
     <React.Fragment>
