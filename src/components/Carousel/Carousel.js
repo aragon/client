@@ -1,10 +1,8 @@
-import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { GU, useViewport, unselectable, springs } from '@aragon/ui'
-import { Spring } from 'react-spring'
 import { animated, useSpring } from 'react-spring/hooks'
 import { useDrag } from 'react-use-gesture'
-import { norm } from '../../math-utils'
 import PrevNext from './PrevNext'
 
 // TODO:
@@ -85,7 +83,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
           Math.floor(x / (itemWidth + itemSpacing)) * -1
         )
       ),
-    [items, itemWidth, itemSpacing]
+    [items, itemWidth, itemSpacing, visibleItems]
   )
 
   // The current x position, before the drag
@@ -125,7 +123,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
   // Update the transition when the base x position updates
   useEffect(() => {
     setX({ x: selectedX, immediate: false })
-  }, [selectedX])
+  }, [selectedX, setX])
 
   return (
     <div
