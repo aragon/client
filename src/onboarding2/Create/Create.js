@@ -241,18 +241,33 @@ function Create() {
           )}
           {status === STATUS_LAUNCH && null}
           {status === STATUS_TEMPLATE_SCREENS && (
-            <TemplateScreen
-              data={templateData}
-              fields={
-                {
-                  /* TODO: pass the fields from the template contract */
-                }
-              }
-              next={handleTemplateNext}
-              back={handleTemplateBack}
-              screens={templateScreens}
-              screenIndex={templateScreenIndex}
-            />
+            <div
+              css={`
+                display: grid;
+                align-items: center;
+                justify-content: center;
+              `}
+            >
+              <div
+                css={`
+                  max-width: ${82 * GU}px;
+                  padding-bottom: ${3 * GU}px;
+                `}
+              >
+                <TemplateScreen
+                  data={templateData}
+                  fields={
+                    {
+                      /* TODO: pass the fields from the template contract */
+                    }
+                  }
+                  next={handleTemplateNext}
+                  back={handleTemplateBack}
+                  screens={templateScreens}
+                  screenIndex={templateScreenIndex}
+                />
+              </div>
+            </div>
           )}
         </div>
       </section>
