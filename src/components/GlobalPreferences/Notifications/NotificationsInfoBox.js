@@ -8,6 +8,7 @@ import {
   RADIUS,
   useTheme,
   textStyle,
+  useViewport,
 } from '@aragon/ui'
 import notification from './notification.png'
 import notificationError from './notification-error.png'
@@ -29,6 +30,8 @@ export default function NotificationsInfoBox({
   icon,
   image = IMAGE_NORMAL,
 } = {}) {
+  const { below } = useViewport()
+  const small = below('small')
   const theme = useTheme()
   let IconComponent = null
   switch (icon) {
@@ -60,17 +63,25 @@ export default function NotificationsInfoBox({
       {ImageComponent}
       <div
         css={`
-          height: ${GU * 24}px;
+          min-height: ${GU * 24}px;
           background: ${theme.feedbackSurface};
           display: grid;
           border-radius: ${RADIUS}px;
-          padding: ${3.5 * GU}px ${10 * GU}px;
+          padding: ${small ? 2 * GU : 3.5 * GU}px ${small ? 3 * GU : 10 * GU}px;
           grid-gap: ${3 * GU}px;
-          grid-template-columns: ${icon ? 'auto 1fr' : '1fr'};
+          grid-template-columns: ${small || !icon ? '1fr' : 'auto 1fr'};
           align-items: center;
+          text-align: ${small ? 'center' : 'start'};
         `}
       >
-        {IconComponent}
+        <div
+          css={`
+            margin: ${small ? '0 auto' : '0'};
+          `}
+        >
+          {' '}
+          {IconComponent}
+        </div>
         <div>
           <div
             css={`
@@ -107,7 +118,7 @@ export const NotificationImage = () => (
     alt="Notifications"
     css={`
       display: block;
-      margin: ${4 * GU}px auto;
+      margin: ${3 * GU}px auto;
       height: 193px;
     `}
   />
@@ -119,7 +130,7 @@ export const NotificationErrorImage = () => (
     alt="Notifications"
     css={`
       display: block;
-      margin: ${4 * GU}px auto;
+      margin: ${3 * GU}px auto;
       height: 193px;
     `}
   />
@@ -131,7 +142,7 @@ export const NotificationNetworkErrorImage = () => (
     alt="Notifications"
     css={`
       display: block;
-      margin: ${4 * GU}px auto;
+      margin: ${3 * GU}px auto;
       height: 270px;
     `}
   />

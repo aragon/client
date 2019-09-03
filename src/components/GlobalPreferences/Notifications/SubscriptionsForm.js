@@ -159,6 +159,7 @@ export default function SubscriptionsForm({
   )
 
   const theme = useTheme()
+  const { below } = useViewport()
 
   if (apps.length === 0) {
     // Every DAO must have apps, if apps.length is 0, the DAO is still loading
@@ -263,7 +264,11 @@ export default function SubscriptionsForm({
           margin-top: ${4 * GU}px;
         `}
       >
-        <Button wide disabled={isSubscribeDisabled} onClick={handleSubscribe}>
+        <Button
+          wide={below('medium')}
+          disabled={isSubscribeDisabled}
+          onClick={handleSubscribe}
+        >
           {isSubmitting ? (
             <LoadingRing
               css={`
