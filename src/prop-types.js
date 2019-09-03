@@ -218,5 +218,4 @@ export const OrgTemplateType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   header: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  detailsUrl: PropTypes.string.isRequired,
 })

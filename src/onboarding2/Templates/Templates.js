@@ -1,11 +1,32 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { GU } from '@aragon/ui'
 import Carousel from '../../components/Carousel/Carousel'
-import templates from '../../templates'
-import TemplateCard from './TemplateCard'
 import Header from '../Header/Header'
+import TemplateCard from './TemplateCard'
+import TemplateDetails from './TemplateDetails'
 
-function Templates() {
+function Templates({ onUse, templates }) {
+  const [templateDetailsOpened, setTemplateDetailsOpened] = useState(false)
+  const [templateDetailsIndex, setTemplateDetailsIndex] = useState(0)
+
+  const handleOpen = useCallback(id => {
+    setTemplateDetailsIndex(templates.findIndex(t => t.id === id))
+    setTemplateDetailsOpened(true)
+  }, [])
+
+  const handleDetailsClose = useCallback(() => {
+    setTemplateDetailsOpened(false)
+  }, [])
+
+  const handleDetailsUse = useCallback(
+    id => {
+      setTemplateDetailsIndex(0)
+      setTemplateDetailsOpened(false)
+      onUse(id)
+    },
+    [onUse]
+  )
+
   return (
     <div
       css={`
@@ -34,10 +55,21 @@ function Templates() {
           itemHeight={48 * GU}
           itemSpacing={3 * GU}
           items={templates.map(template => (
-            <TemplateCard template={template} key={template.id} />
+            <TemplateCard
+              key={template.id}
+              template={template}
+              onOpen={handleOpen}
+            />
           ))}
         />
       </div>
+
+      <TemplateDetails
+        onClose={handleDetailsClose}
+        onUse={handleDetailsUse}
+        template={templates[templateDetailsIndex] || null}
+        visible={templateDetailsOpened}
+      />
     </div>
   )
 }

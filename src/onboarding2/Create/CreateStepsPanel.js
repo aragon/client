@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { GU, CircleGraph, useTheme } from '@aragon/ui'
+import { GU, useTheme } from '@aragon/ui'
 import CreateStepsItem from './CreateStepsItem'
+import CircleGraph from '../CircleGraph'
 
 function CreateStepsPanel({ step, steps }) {
   const theme = useTheme()

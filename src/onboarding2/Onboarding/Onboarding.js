@@ -48,17 +48,25 @@ function Onboarding({ status, selectorNetworks }) {
         overflow-y: auto;
       `}
     >
-      <OnboardingTopBar />
-      {(status === 'welcome' || status === 'open') && (
-        <Welcome
-          onBack={goToHome}
-          onOpen={goToOpen}
-          onCreate={openConnectModal}
-          openMode={status === 'open'}
-          selectorNetworks={selectorNetworks}
-        />
-      )}
-      {status === 'create' && <Create />}
+      <OnboardingTopBar onHome={goToHome} />
+      <div
+        css={`
+          position: relative;
+          z-index: 1;
+          height: 100%;
+        `}
+      >
+        {(status === 'welcome' || status === 'open') && (
+          <Welcome
+            onBack={goToHome}
+            onOpen={goToOpen}
+            onCreate={openConnectModal}
+            openMode={status === 'open'}
+            selectorNetworks={selectorNetworks}
+          />
+        )}
+        {status === 'create' && <Create />}
+      </div>
       <ConnectModal
         onClose={closeConnectModal}
         visible={connectModalOpened}

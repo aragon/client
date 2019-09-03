@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Card, textStyle, GU, Button, useTheme } from '@aragon/ui'
 import { OrgTemplateType } from '../../prop-types'
 
-function TemplateCard({ template }) {
+function TemplateCard({ onOpen, template }) {
   const theme = useTheme()
+  const handleDetailsClick = useCallback(() => {
+    onOpen(template.id)
+  }, [])
   return (
     <Card
       width="100%"
@@ -20,34 +23,48 @@ function TemplateCard({ template }) {
           flex-direction: column;
           justify-content: space-between;
           height: 100%;
-          padding: ${22 * GU}px ${3 * GU}px 0;
-          background: 0 0 / contain no-repeat url(${template.header});
+          overflow: hidden;
         `}
       >
         <div>
-          <h1
+          <img
+            src={template.header}
+            alt=""
             css={`
-              padding-bottom: ${1 * GU}px;
-              ${textStyle('body1')};
+              display: block;
+              width: 100%;
+              pointer-events: none;
+            `}
+          />
+          <div
+            css={`
+              padding: ${2.5 * GU}px ${3 * GU}px 0;
             `}
           >
-            {template.name}
-          </h1>
-          <p
-            css={`
-              ${textStyle('body2')};
-              color: ${theme.surfaceContentSecondary};
-            `}
-          >
-            {template.description}
-          </p>
+            <h1
+              css={`
+                padding-bottom: ${1 * GU}px;
+                ${textStyle('body1')};
+              `}
+            >
+              {template.name}
+            </h1>
+            <p
+              css={`
+                ${textStyle('body2')};
+                color: ${theme.surfaceContentSecondary};
+              `}
+            >
+              {template.description}
+            </p>
+          </div>
         </div>
         <div
           css={`
-            padding-bottom: ${2 * GU}px;
+            padding: 0 ${3 * GU}px ${2 * GU}px;
           `}
         >
-          <Button label="View details" wide />
+          <Button label="View details" wide onClick={handleDetailsClick} />
         </div>
       </section>
     </Card>
