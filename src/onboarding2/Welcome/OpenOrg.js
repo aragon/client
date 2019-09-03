@@ -10,7 +10,9 @@ import {
   TextInput,
   useTheme,
 } from '@aragon/ui'
-import Check from '../Check'
+import DomainField, {
+  DOMAIN_CHECK,
+} from '../../components/DomainField/DomainField'
 
 function OpenOrg({ onBack }) {
   const theme = useTheme()
@@ -36,57 +38,7 @@ function OpenOrg({ onBack }) {
           height: ${36 * GU}px;
         `}
       >
-        <div
-          css={`
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-          `}
-        >
-          <div
-            css={`
-              display: flex;
-              width: 100%;
-            `}
-          >
-            <Field
-              label="Name of existing organization"
-              css={`
-                width: 100%;
-              `}
-            >
-              <TextInput
-                wide
-                placeholder="Type an organization name"
-                adornment={
-                  <div
-                    css={`
-                      height: 100%;
-                      display: flex;
-                      align-items: center;
-                      border-left: 1px solid ${theme.border};
-                      padding: 0 ${2 * GU}px;
-                    `}
-                  >
-                    .aragonid.eth
-                  </div>
-                }
-                adornmentPosition="end"
-              />
-            </Field>
-            <div
-              css={`
-                display: flex;
-                align-items: center;
-                height: ${5 * GU}px;
-                margin-top: ${2.5 * GU}px;
-                margin-left: ${2 * GU}px;
-              `}
-            >
-              <Check />
-            </div>
-          </div>
-        </div>
+        <DomainField label="Name of existing organization" css="flex-grow: 1" />
         <div
           css={`
             display: flex;
