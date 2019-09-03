@@ -24,8 +24,8 @@
     "node": "10.x"
   },
   "dependencies": {
-    "@aragon/ui": "^1.0.0-alpha.21",
     "@aragon/templates-tokens": "^1.2.1",
+    "@aragon/ui": "^1.0.0-alpha.21",
     "@aragon/wrapper": "^5.0.0-rc.15",
     "@babel/polyfill": "^7.0.0",
     "@sentry/browser": "^5.5.0",

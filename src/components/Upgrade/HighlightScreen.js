@@ -61,7 +61,7 @@ const HighlightScreen = ({
           flex-shrink: 0;
           width: ${verticalMode ? 'auto' : `${RATIO_LEFT * 100}%`};
           height: ${verticalMode ? 'auto' : '100%'};
-          padding: ${verticalMode ? '30px 20px 90px' : '10vh 60px 90px'};
+          padding: ${verticalMode ? '30px 20px 90px' : `10vh 40px 90px`};
           max-width: ${verticalMode ? '420px' : 'none'};
           display: flex;
           flex-direction: column;
