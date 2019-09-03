@@ -22,7 +22,7 @@ export const banner = {
   button: 'More info',
 }
 
-export const highlights = [
+const highlights = [
   {
     title: {
       small: null,
@@ -162,3 +162,33 @@ export const highlights = [
     },
   },
 ]
+
+highlights['0.6'] = [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {
+    title: {
+      small: null,
+      large: 'What else is new?',
+    },
+    description: {
+      small: null,
+      large: `
+          A mobile-friendly UI, custom labels for apps
+          and addresses, an activity panel that keeps you
+          informed about the status of pending
+          transactions and much more!
+        `,
+    },
+    upgrade: {
+      small: 'Upgrade to 0.8 Camino',
+      large: 'Upgrade to 0.8 Camino',
+    },
+  },
+]
+
+export { highlights }
