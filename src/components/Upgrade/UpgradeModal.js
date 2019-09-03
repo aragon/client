@@ -12,7 +12,8 @@ import closeSvg from './assets/close.svg'
 
 const UpgradeModal = React.memo(
   ({ visible, onUpgrade, onClose, canUpgradeOrg }) => {
-    const steps = highlights.length
+    const content = highlights[canUpgradeOrg ? '0.6' : 'latest']
+    const steps = content.length
     const { step, next, prev, setStep, direction } = useSteps(steps)
 
     // Keyboard navigation
@@ -103,8 +104,7 @@ const UpgradeModal = React.memo(
                           enterProgress={enterProgress}
                           showProgress={showProgress}
                           state={state}
-                          {...highlights[index]}
-                          {...(canUpgradeOrg ? highlights['0.6'][index] : {})}
+                          {...content[index]}
                         />
                       )
                     /* eslint-enable react/prop-types */
