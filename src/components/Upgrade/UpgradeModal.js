@@ -139,6 +139,7 @@ UpgradeModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onUpgrade: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
+  canUpgradeOrg: PropTypes.bool,
 }
 
 export default UpgradeModal
