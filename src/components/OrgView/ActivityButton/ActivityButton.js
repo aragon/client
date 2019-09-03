@@ -41,18 +41,23 @@ const ActivityButton = React.memo(function ActivityButton({ apps }) {
 
   return (
     <React.Fragment>
-      <div
-        ref={containerRef}
-        onClick={handleToggle}
-        css={`
-          padding-right: ${3 * GU}px;
-        `}
-      >
+      <div ref={containerRef} css="width: 58px">
         <ButtonIcon
+          element="div"
+          onClick={handleToggle}
           css={`
             height: 100%;
-            width: ${4.25 * GU}px;
+            width: 100%;
             border-radius: 0;
+            padding-left: ${0.5 * GU}px;
+            justify-content: space-between;
+
+            /* This is a bit of a hack to get the focus ring to appear only
+             * around the button and not the spacer
+             */
+            &:focus:after {
+              right: ${3 * GU}px;
+            }
           `}
           label="Transaction activity"
         >
@@ -102,6 +107,14 @@ const ActivityButton = React.memo(function ActivityButton({ apps }) {
               )}
             </Spring>
           </div>
+          {/* Spacer to extend the width of the button to the edge of the top bar */}
+          <div
+            css={`
+              height: 100%;
+              width: ${3 * GU}px;
+              background: ${theme.surface};
+            `}
+          />
         </ButtonIcon>
       </div>
       <Popover
