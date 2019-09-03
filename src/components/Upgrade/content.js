@@ -23,7 +23,7 @@ export const banner = {
 }
 
 const highlights = {
-  ['latest']: [
+  'latest': [
     {
       title: {
         small: null,
@@ -163,7 +163,7 @@ const highlights = {
       },
     },
   ],
-  ['0.6']: [
+  '0.6': [
     {
       title: {
         small: null,
