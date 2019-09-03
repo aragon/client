@@ -1,26 +1,12 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { Button, springs, useViewport } from '@aragon/ui'
 import Banner, { BANNER_HEIGHT } from '../Banner/Banner'
 import { banner } from './content'
 
-const SHOW_UPGRADE_MODAL_KEY = 'SHOW_UPGRADE_MODAL_FIRST_TIME'
-const OCTOBER_1ST_2019 = new Date('October 1 2019 00:00').getTime()
-
 const UpgradeBanner = React.memo(({ visible, onMoreInfo }) => {
   const { width } = useViewport()
-
-  useEffect(() => {
-    if (
-      visible &&
-      localStorage.getItem(SHOW_UPGRADE_MODAL_KEY) !== 'false' &&
-      Date.now() < OCTOBER_1ST_2019
-    ) {
-      localStorage.setItem(SHOW_UPGRADE_MODAL_KEY, 'false')
-      onMoreInfo()
-    }
-  }, [onMoreInfo, visible])
 
   return (
     <React.Fragment>

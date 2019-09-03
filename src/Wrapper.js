@@ -27,6 +27,9 @@ import { getAppPath, getPreferencesSearch } from './routing'
 import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
 
+const SHOW_UPGRADE_MODAL_KEY = 'SHOW_UPGRADE_MODAL_FIRST_TIME'
+const OCTOBER_1ST_2019 = new Date('October 1 2019 00:00').getTime()
+
 class Wrapper extends React.PureComponent {
   static propTypes = {
     account: EthereumAddressType,
@@ -73,6 +76,17 @@ class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     this.startIdentitySubscription()
+
+    // Show the upgrade showcase on first load up to a certain point in time
+    if (
+      localStorage.getItem(SHOW_UPGRADE_MODAL_KEY) !== 'false' &&
+      Date.now() < OCTOBER_1ST_2019
+    ) {
+      localStorage.setItem(SHOW_UPGRADE_MODAL_KEY, 'false')
+      this.setState({
+        upgradeModalOpened: true,
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -226,7 +240,8 @@ class Wrapper extends React.PureComponent {
   }
   showOrgUpgradePanel = () => {
     this.setState({
-      orgUpgradePanelOpened: true,
+      // Only open the upgrade panel if the org can be upgraded
+      orgUpgradePanelOpened: this.props.canUpgradeOrg,
       upgradeModalOpened: false,
     })
   }
