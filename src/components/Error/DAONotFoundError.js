@@ -1,14 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  useTheme,
-  textStyle,
-  Button,
-  ButtonText,
-  Card,
-  GU,
-  Info,
-} from '@aragon/ui'
+import { useTheme, textStyle, ButtonText, Card, GU, Info } from '@aragon/ui'
 import { network } from '../../environment'
 import { isAddress } from '../../web3-utils'
 import notFoundImage from '../../assets/dao-not-found.png'
