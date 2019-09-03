@@ -19,6 +19,7 @@ import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import TimeTag from './TimeTag'
 import TransactionProgress from './TransactionProgress'
 import {
+  ACTIVITY_STATUS_PENDING,
   ACTIVITY_STATUS_CONFIRMED,
   ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_TIMED_OUT,
@@ -100,12 +101,14 @@ const ActivityItem = ({ activity }) => {
             >
               {app ? app.name : 'Unknown'}
             </div>
-            <TimeTag
-              date={activity.createdAt}
-              css={`
-                margin: 0 ${cssgu`1.5gu`};
-              `}
-            />
+            {activity.status !== ACTIVITY_STATUS_PENDING && (
+              <TimeTag
+                date={activity.createdAt}
+                css={`
+                  margin: 0 ${cssgu`1.5gu`};
+                `}
+              />
+            )}
           </h1>
           <div
             css={`
