@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { Field, GU, TextInput, useTheme } from '@aragon/ui'
 import Check from './Check'
 
@@ -8,7 +8,7 @@ export const DOMAIN_ERROR = Symbol('DOMAIN_ERROR')
 export const DOMAIN_NONE = Symbol('DOMAIN_NONE')
 
 function DomainField({
-  endLevels = '.aragonid.eth',
+  domainEnd = '.aragonid.eth',
   label = 'Name of the organization',
   onChange,
   placeholder = 'Type an organization name',
@@ -20,10 +20,17 @@ function DomainField({
 
   const handleInputChange = useCallback(
     event => {
-      onChange(event.target.value)
+      onChange((event.target.value + domainEnd).toLowerCase())
     },
     [onChange]
   )
+
+  const subdomain = useMemo(() => {
+    const lastIndex = value.lastIndexOf(domainEnd)
+    return lastIndex + domainEnd.length === value.length
+      ? value.slice(0, lastIndex)
+      : value
+  }, [value, domainEnd])
 
   return (
     <div
@@ -44,7 +51,7 @@ function DomainField({
           <TextInput
             wide
             placeholder={placeholder}
-            value={value}
+            value={subdomain}
             onChange={handleInputChange}
             adornment={
               <div
@@ -56,7 +63,7 @@ function DomainField({
                   padding: 0 ${2 * GU}px;
                 `}
               >
-                {endLevels}
+                {domainEnd}
               </div>
             }
             adornmentPosition="end"
