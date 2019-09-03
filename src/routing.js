@@ -34,15 +34,13 @@ export function parsePath(history, pathname, search = '') {
   const path = pathname + search
   const [, ...parts] = pathname.split('/')
 
-  // Start
+  // Onboarding
   if (!parts[0] || parts[0] === 'open' || parts[0] === 'create') {
-    return { path, mode: APP_MODE_START, action: parts[0] }
-  }
-
-  // Setup
-  if (parts[0] === 'setup') {
-    const [, step = null, ...setupParts] = parts
-    return { path, mode: APP_MODE_SETUP, step, parts: setupParts }
+    return {
+      path,
+      mode: parts[0] === 'create' ? APP_MODE_SETUP : APP_MODE_START,
+      action: parts[0],
+    }
   }
 
   let [dao] = parts
