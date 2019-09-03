@@ -89,7 +89,7 @@ function ActivityList({ apps }) {
         css={`
           max-height: ${maxHeight}px;
           overflow-x: hidden;
-          overflow-y: scroll;
+          overflow-y: auto;
         `}
       >
         {activityItems.length > 0 ? (
