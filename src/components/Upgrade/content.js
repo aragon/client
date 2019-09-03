@@ -32,11 +32,11 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-          Featuring redesign organization templates to
-          match your needs. Start a company, membership,
-          or reputation-based organization in just a few
-          clicks.
-        `,
+        Featuring redesign organization templates to
+        match your needs. Start a company, membership,
+        or reputation-based organization in just a few
+        clicks.
+      `,
     },
     visual: {
       small: small1,
@@ -52,10 +52,10 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-          The voting app has been redesigned to make
-          governance more accessible. Easily find and
-          understand the details of a vote.
-        `,
+        The voting app has been redesigned to make
+        governance more accessible. Easily find and
+        understand the details of a vote.
+      `,
     },
     visual: {
       small: small2,
@@ -71,10 +71,10 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-          Whether it's a new vote, financial transfer,
-          or permissions change, subscribe to the events
-          that matter to you.
-        `,
+        Whether it's a new vote, financial transfer,
+        or permissions change, subscribe to the events
+        that matter to you.
+      `,
     },
     visual: {
       small: small3,
@@ -90,10 +90,10 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-          View and sort your organization’s finances for
-          greater clarity and insight. Now with more
-          powerful filters.
-        `,
+        View and sort your organization’s finances for
+        greater clarity and insight. Now with more
+        powerful filters.
+      `,
     },
     visual: {
       small: small4,
@@ -109,10 +109,10 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-          Simplified permissions management that
-          makes it easier to understand who
-          has authority in your organization.
-        `,
+        Simplified permissions management that
+        makes it easier to understand who
+        has authority in your organization.
+      `,
     },
     visual: {
       small: small5,
@@ -128,10 +128,10 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-          Aragon Agent enables organizations to interact
-          directly with any Ethereum application. Access
-          Web3 like never before.
-        `,
+        Aragon Agent enables organizations to interact
+        directly with any Ethereum application. Access
+        Web3 like never before.
+      `,
     },
     visual: {
       small: small6,
@@ -147,9 +147,9 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-          A glimpse into the future of organizations that
-          you can use today.
-        `,
+        A glimpse into the future of organizations that
+        you can use today.
+      `,
     },
     visual: {
       small: small7,
@@ -173,11 +173,11 @@ highlights['0.6'][6] = {
   description: {
     small: null,
     large: `
-          A mobile-friendly UI, custom labels for apps
-          and addresses, an activity panel that keeps you
-          informed about the status of pending
-          transactions and much more!
-        `,
+      A mobile-friendly UI, custom labels for apps
+      and addresses, an activity panel that keeps you
+      informed about the status of pending
+      transactions and much more!
+    `,
   },
   visual: {
     small: small7,
