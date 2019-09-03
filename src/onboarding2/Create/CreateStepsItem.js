@@ -55,6 +55,8 @@ function CreateStepsItem({ step, label, currentStep }) {
           font-size: 18px;
           font-weight: 600;
           ${stepStyles};
+          flex-shrink: 0;
+          flex-grow: 0;
         `}
       >
         {step < currentStep ? <IconCheck /> : step + 1}
@@ -64,6 +66,8 @@ function CreateStepsItem({ step, label, currentStep }) {
           margin-left: ${3 * GU}px;
           font-size: 18px;
           font-weight: ${step === currentStep ? '600' : '400'};
+          overflow: hidden;
+          text-overflow: ellipsis;
         `}
       >
         {label}
