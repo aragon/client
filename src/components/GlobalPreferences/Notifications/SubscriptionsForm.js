@@ -265,6 +265,11 @@ export default function SubscriptionsForm({
         `}
       >
         <Button
+          css={`
+            background: ${theme.surfaceInteractive};
+            color: ${theme.surfaceContent};
+            border: 1px solid ${theme.border};
+          `}
           wide={below('small')}
           disabled={isSubscribeDisabled}
           onClick={handleSubscribe}
