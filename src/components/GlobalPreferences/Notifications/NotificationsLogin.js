@@ -17,7 +17,11 @@ import { network } from '../../../environment'
 import { validateEmail } from '../../../utils'
 import notificationSvg from './notifications.svg'
 
-export default function NotificationsLogin({ dao, authState, onEmailChange }) {
+export default function NotificationsLogin({
+  dao,
+  onEmailChange,
+  hasLoggedOut,
+}) {
   const [inputEmail, setInputEmail] = useState('')
   const [emailInvalid, setEmailInvalid] = useState(null)
   const [apiError, setApiError] = useState(null)
@@ -148,13 +152,18 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
       </form>
 
       <Info>
-        Receive email notifications for the new app events. For example,
-        whenever a new vote is created or when tokens added, you’ll get an email
-        informing you of the latest activity in your organization. You will be
-        asked to enter with your email address whenever using a different
-        browser session or device to access your subsciptions. This process
-        doens’t require a password, just for you to confirm your email address
-        whenever you want to sing in.
+        {hasLoggedOut
+          ? `You need to enter with your email address because your are using a
+        different browser session or device to access your subsciptions. This
+        process doens’t require a password, just for you to confirm your email
+        address.`
+          : `Receive email notifications for the new app events. For
+        example, whenever a new vote is created or when tokens added, you’ll get
+        an email informing you of the latest activity in your organization. You
+        will be asked to enter with your email address whenever using a
+        different browser session or device to access your subsciptions. This
+        process doens’t require a password, just for you to confirm your email
+        address whenever you want to sing in.`}
       </Info>
     </Box>
   )
@@ -174,6 +183,6 @@ const NotificationImage = () => (
 
 NotificationsLogin.propTypes = {
   dao: PropTypes.string,
-  authState: PropTypes.symbol,
   onEmailChange: PropTypes.func,
+  hasLoggedOut: PropTypes.bool,
 }

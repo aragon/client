@@ -23,6 +23,7 @@ import {
   AUTH_SERVICE_UNAVAILABLE,
   NOTIFICATION_SERVICE_EMAIL_KEY,
   NOTIFICATION_SERVICE_TOKEN_KEY,
+  NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY,
   VERIFY_SUBSECTION,
   AUTH_AUTHENTICATING,
 } from './constants'
@@ -36,6 +37,9 @@ function useAuthState() {
   )
   const [token, setToken] = useState(
     localStorage.getItem(NOTIFICATION_SERVICE_TOKEN_KEY)
+  )
+  const [hasLoggedOut, setHasLoggedOut] = useState(
+    localStorage.getItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY) === '1'
   )
 
   const handleAuthenticate = useCallback(() => {
@@ -84,10 +88,18 @@ function useAuthState() {
       : localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
   }, [email])
 
+  useEffect(() => {
+    hasLoggedOut
+      ? localStorage.setItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY, '1')
+      : localStorage.removeItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY)
+  }, [hasLoggedOut])
+
   const handleLogout = useCallback(() => {
     setEmail(null)
     setToken(null)
-  }, [setToken, setEmail])
+    // Set hasUsed to show a different login for previously logged in users
+    setHasLoggedOut(true)
+  }, [setToken, setEmail, setHasLoggedOut])
 
   const setServiceUnavailable = useCallback(() => {
     setAuthState(AUTH_SERVICE_UNAVAILABLE)
@@ -97,6 +109,7 @@ function useAuthState() {
     authState,
     email,
     token,
+    hasLoggedOut,
     handleTokenChange: setToken,
     handleEmailChange: setEmail,
     handleLogout,
@@ -116,6 +129,7 @@ export default function Notifications({
     authState,
     email,
     token,
+    hasLoggedOut,
     handleAuthenticate,
     handleTokenChange,
     handleEmailChange,
@@ -236,7 +250,7 @@ export default function Notifications({
       return (
         <NotificationsLogin
           dao={dao}
-          authState={authState}
+          hasLoggedOut={hasLoggedOut}
           onEmailChange={handleEmailChange}
         />
       )
