@@ -251,12 +251,6 @@ export default function SubscriptionsForm({
           Event
         </Label>
         <DropDown
-          css={`
-            background: ${theme.surfaceInteractive};
-            color: ${theme.surfaceContent};
-            border: 1px solid ${theme.border};
-            font-weight: 400;
-          `}
           disabled={selectedAppIdx === -1}
           placeholder="Select an Event"
           width="100%"
