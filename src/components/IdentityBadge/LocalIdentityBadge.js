@@ -43,7 +43,7 @@ function LocalIdentityBadge({ entity, forceAddress, ...props }) {
           <div
             css={`
               display: flex;
-              align-content: center;
+              align-items: center;
             `}
           >
             <IconLabel
