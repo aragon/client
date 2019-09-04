@@ -181,27 +181,33 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
             >
               Subscriptions
             </div>
-            {selectedSubscriptions.length > 0 && (
-              <div>
-                <Button disabled={false} onClick={onClick}>
-                  {isSubmitting ? (
-                    <LoadingRing
-                      css={`
-                        margin-right: ${GU}px;
-                      `}
-                    />
-                  ) : (
-                    <IconMail
-                      css={`
-                        color: ${theme.negative};
-                        margin-right: ${GU}px;
-                      `}
-                    />
-                  )}{' '}
-                  Unsubscribe
-                </Button>
-              </div>
-            )}
+            <div>
+              <Button
+                css={`
+                  background: ${theme.surfaceInteractive};
+                  color: ${theme.surfaceContent};
+                  border: 1px solid ${theme.border};
+                `}
+                disabled={selectedSubscriptions.length === 0}
+                onClick={onClick}
+              >
+                {isSubmitting ? (
+                  <LoadingRing
+                    css={`
+                      margin-right: ${GU}px;
+                    `}
+                  />
+                ) : (
+                  <IconMail
+                    css={`
+                      color: ${theme.negative};
+                      margin-right: ${GU}px;
+                    `}
+                  />
+                )}{' '}
+                Unsubscribe
+              </Button>
+            </div>
           </div>
           <SubscriptionFilters
             organizations={organizations}
