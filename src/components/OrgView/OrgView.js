@@ -100,6 +100,14 @@ function OrgView({
             justify-content: space-between;
             background: ${theme.surface};
             box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+
+            ${menuPanelOpen && iOS
+              ? `
+                position: absolute;
+                width: 100%;
+                z-index: 0;
+              `
+              : ''}
           `}
         >
           {autoClosingPanel ? (
@@ -134,6 +142,11 @@ function OrgView({
             flex-grow: 1;
             overflow-y: hidden;
             margin-top: 2px;
+            ${menuPanelOpen && iOS
+              ? `
+                padding-top: ${8 * GU}px;
+              `
+              : ''}
           `}
         >
           <div
