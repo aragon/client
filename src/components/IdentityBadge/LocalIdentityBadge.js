@@ -1,5 +1,6 @@
 import React, { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
+import { IconLabel, GU } from '@aragon/ui'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
 import { useLocalIdentity } from '../../hooks'
 import { isAddress } from '../../web3-utils'
@@ -38,7 +39,21 @@ function LocalIdentityBadge({ entity, forceAddress, ...props }) {
       entity={address}
       label={(!forceAddress && label) || ''}
       popoverAction={{
-        label: `${label ? 'Edit' : 'Add'} custom label`,
+        label: (
+          <div
+            css={`
+              display: flex;
+              align-content: center;
+            `}
+          >
+            <IconLabel
+              css={`
+                margin-right: ${1 * GU}px;
+              `}
+            />
+            {label ? 'Edit' : 'Add'} custom label
+          </div>
+        ),
         onClick: handleClick,
       }}
       popoverTitle={
