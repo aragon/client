@@ -318,6 +318,7 @@ class Wrapper extends React.PureComponent {
         <GlobalPreferences
           locator={locator}
           wrapper={wrapper}
+          apps={apps}
           onScreenChange={this.openPreferences}
           onClose={this.closePreferences}
         />
