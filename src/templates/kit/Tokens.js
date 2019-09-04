@@ -1,13 +1,16 @@
 import React, { useCallback, useState } from 'react'
 import {
   Button,
+  EthIdenticon,
   Field,
   GU,
+  RADIUS,
   IconPlus,
   IconTrash,
   Info,
   TextInput,
   useTheme,
+  isAddress,
 } from '@aragon/ui'
 import { Header, PrevNextFooter } from '.'
 
@@ -47,7 +50,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
       ...data,
       tokenName,
       tokenSymbol,
-      members,
+      members: members.filter(addr => isAddress(addr)),
     })
   }, [data, next, tokenName, tokenSymbol, members])
 
@@ -97,6 +100,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
               {members.map((account, i) => (
                 <div
                   css={`
+                    position: relative;
                     margin-bottom: ${1.5 * GU}px;
                   `}
                 >
@@ -119,7 +123,20 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
                     adornmentSettings={{ width: 52, padding: 8 }}
                     onChange={event => updateMember(i, event.target.value)}
                     value={account}
+                    css={`
+                      padding-left: ${4.5 * GU}px;
+                    `}
                     wide
+                  />
+
+                  <EthIdenticon
+                    address={account}
+                    radius={RADIUS}
+                    css={`
+                      position: absolute;
+                      top: ${1 * GU}px;
+                      left: ${1 * GU}px;
+                    `}
                   />
                 </div>
               ))}
