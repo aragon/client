@@ -186,11 +186,6 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
             </div>
             <div>
               <Button
-                css={`
-                  background: ${theme.surfaceInteractive};
-                  color: ${theme.surfaceContent};
-                  border: 1px solid ${theme.border};
-                `}
                 disabled={selectedSubscriptions.length === 0}
                 onClick={onClick}
               >
