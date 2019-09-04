@@ -34,45 +34,16 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     [setSelectedSubscriptions]
   )
 
-  const handleUnsubscribe = useCallback(
-    async e => {
-      setIsSubmitting(true)
-      try {
-        const subscriptionIds = selectedSubscriptions.map(
-          i => subscriptions[i].subscriptionId
-        )
-        await deleteSubscriptions({
-          subscriptionIds,
-          authToken,
-        })
-        // reset selection
-        setIsSubmitting(false)
-        // Refetch subscriptions
-        fetchSubscriptions()
-        setSelectedSubscriptions([])
-      } catch (e) {
-        onApiError(e)
-        setIsSubmitting(false)
-      }
-    },
-    [
-      authToken,
-      fetchSubscriptions,
-      selectedSubscriptions,
-      subscriptions,
-      onApiError,
-    ]
-  )
-
   const organizations = Array.from(
     new Set(subscriptions.map(subscription => subscription.ensName))
   )
   const [selectedOrganization, setSelectedOrganization] = useState(-1)
   const onOrganizationChange = useCallback(
     idx => {
+      setSelectedSubscriptions([])
       setSelectedOrganization(idx)
     },
-    [setSelectedOrganization]
+    [setSelectedOrganization, setSelectedSubscriptions]
   )
 
   // Get unique app names by matching subscriptions with
@@ -82,9 +53,10 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   const [selectedApp, setSelectedApp] = useState(-1)
   const onAppChange = useCallback(
     idx => {
+      setSelectedSubscriptions([])
       setSelectedApp(idx)
     },
-    [setSelectedApp]
+    [setSelectedApp, setSelectedSubscriptions]
   )
   const events = Array.from(
     new Set(subscriptions.map(subscription => subscription.eventName))
@@ -93,15 +65,23 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
 
   const onEventChange = useCallback(
     idx => {
+      setSelectedSubscriptions([])
       setSelectedEvent(idx)
     },
-    [setSelectedEvent]
+    [setSelectedEvent, setSelectedSubscriptions]
   )
   const onClearFilters = useCallback(() => {
     setSelectedEvent(-1)
     setSelectedApp(-1)
     setSelectedOrganization(-1)
-  }, [setSelectedEvent, setSelectedApp, setSelectedOrganization])
+    // Reset selection when filters cleared
+    setSelectedSubscriptions([])
+  }, [
+    setSelectedEvent,
+    setSelectedApp,
+    setSelectedOrganization,
+    setSelectedSubscriptions,
+  ])
 
   const onClick = useCallback(() => {
     setIsModalOpen(true)
@@ -111,17 +91,51 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     setIsModalOpen(false)
   }, [setIsModalOpen])
 
-  const onModalConfirm = useCallback(() => {
-    setIsModalOpen(false)
-    handleUnsubscribe()
-  }, [handleUnsubscribe, setIsModalOpen])
-
   const filteredSubscriptions = filterSubscriptions({
     subscriptions,
     event: events[selectedEvent],
     appName: subscriptionApps[selectedApp],
     organization: organizations[selectedOrganization],
   })
+
+  const handleUnsubscribe = useCallback(
+    async e => {
+      setIsSubmitting(true)
+      try {
+        const subscriptionIds = selectedSubscriptions.map(
+          i => filteredSubscriptions[i].subscriptionId
+        )
+        await deleteSubscriptions({
+          subscriptionIds,
+          authToken,
+        })
+
+        // reset selection
+        setIsSubmitting(false)
+        // Clear filters as the filter might no longer be valid as the item has been removed
+        onClearFilters()
+        // Refetch subscriptions
+        fetchSubscriptions()
+      } catch (e) {
+        onApiError(e)
+        setIsSubmitting(false)
+      }
+    },
+    [
+      selectedSubscriptions,
+      authToken,
+      onClearFilters,
+      fetchSubscriptions,
+      filteredSubscriptions,
+      onApiError,
+    ]
+  )
+
+  const onModalConfirm = useCallback(() => {
+    setIsModalOpen(false)
+    handleUnsubscribe()
+  }, [handleUnsubscribe, setIsModalOpen])
+
   const theme = useTheme()
 
   return (
