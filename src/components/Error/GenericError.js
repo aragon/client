@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   ButtonText,
@@ -20,7 +21,7 @@ const GenericError = React.memo(function GenericError({
   const [opened, setOpened] = useState(false)
   const toggle = useCallback(() => {
     setOpened(!opened)
-  })
+  }, [opened, setOpened])
 
   return (
     <EmptyStateCard
@@ -136,5 +137,10 @@ const GenericError = React.memo(function GenericError({
     />
   )
 })
+
+GenericError.propTypes = {
+  detailsTitle: PropTypes.node,
+  detailsContent: PropTypes.node,
+}
 
 export default GenericError
