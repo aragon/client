@@ -367,6 +367,7 @@ class Wrapper extends React.PureComponent {
           visible={upgradeModalOpened}
           onClose={this.handleUpgradeModalClose}
           onUpgrade={this.showOrgUpgradePanel}
+          canUpgradeOrg={canUpgradeOrg}
         />
       </div>
     )
