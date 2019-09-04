@@ -16,7 +16,6 @@ import { login } from './notification-service-api'
 import { network } from '../../../environment'
 import { validateEmail } from '../../../utils'
 import notificationSvg from './notifications.svg'
-import throttle from 'lodash.throttle'
 
 export default function NotificationsLogin({ dao, authState, onEmailChange }) {
   const [inputEmail, setInputEmail] = useState('')
@@ -25,14 +24,6 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
   // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
   const ethNetwork = network.type === 'main' ? 'mainnet' : 'rinkeby'
 
-  const handleEmailValidation = useCallback(
-    throttle(email => {
-      if (email.length > 3 && email.includes('@')) {
-        setEmailInvalid(!validateEmail(email))
-      }
-    }, 600),
-    [setEmailInvalid]
-  )
   const handleEmailBlur = useCallback(
     e => {
       const email = e.target.value
@@ -45,9 +36,12 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
     e => {
       const email = e.target.value
       setInputEmail(email)
-      handleEmailValidation(email)
+      if (validateEmail(email)) {
+        // Set only as valid while user typing. Use blur to set invalid
+        setEmailInvalid(false)
+      }
     },
-    [handleEmailValidation, setInputEmail]
+    [setInputEmail, setEmailInvalid]
   )
 
   const handleLogin = async e => {
