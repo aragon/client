@@ -8,6 +8,7 @@ import {
   IconTrash,
   IconCheck,
   LoadingRing,
+  useToast,
   useTheme,
   Split,
 } from '@aragon/ui'
@@ -66,6 +67,13 @@ export default function ManageNotifications({
     }
   }, [apiError, onServiceUnavailable])
 
+  const toast = useToast()
+
+  const handleLogout = useCallback(() => {
+    onLogout()
+    toast('Signed out from email notifications')
+  }, [onLogout, toast])
+
   return (
     <React.Fragment>
       <Split
@@ -89,7 +97,7 @@ export default function ManageNotifications({
                   margin-top: ${2 * GU}px;
                 `}
                 wide
-                onClick={onLogout}
+                onClick={handleLogout}
               >
                 Sign Out
               </Button>
@@ -98,6 +106,7 @@ export default function ManageNotifications({
               onApiError={setApiError}
               token={token}
               onLogout={onLogout}
+              toast={toast}
             />
           </React.Fragment>
         }
@@ -111,6 +120,7 @@ export default function ManageNotifications({
           subscriptions={subscriptions}
           fetchSubscriptions={fetchSubscriptions}
           isFetchingSubscriptions={isFetching}
+          toast={toast}
         />
       )}
     </React.Fragment>
@@ -126,7 +136,7 @@ ManageNotifications.propTypes = {
   token: PropTypes.string,
 }
 
-function DeleteAccount({ token, onLogout, onApiError }) {
+function DeleteAccount({ token, onLogout, onApiError, toast }) {
   const [isFetching, setIsFetching] = useState(false)
   const [isAccountDeleted, setIsAccountDeleted] = useState(false)
   const theme = useTheme()
@@ -139,11 +149,12 @@ function DeleteAccount({ token, onLogout, onApiError }) {
       localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
       setIsAccountDeleted(true)
       onLogout()
+      toast('Email notifications account deleted')
     } catch (e) {
       onApiError(e)
     }
     setIsFetching(false)
-  }, [token, onLogout, onApiError])
+  }, [token, onLogout, toast, onApiError])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -192,4 +203,5 @@ DeleteAccount.propTypes = {
   onApiError: PropTypes.func,
   onLogout: PropTypes.func,
   token: PropTypes.string,
+  toast: PropTypes.func,
 }

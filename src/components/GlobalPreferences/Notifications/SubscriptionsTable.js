@@ -23,6 +23,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   subscriptions,
   fetchSubscriptions,
   isFetchingSubscriptions,
+  toast,
 }) {
   const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -116,6 +117,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
         onClearFilters()
         // Refetch subscriptions
         fetchSubscriptions()
+        toast('Email notifications unsubscribed')
       } catch (e) {
         onApiError(e)
         setIsSubmitting(false)
@@ -126,6 +128,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
       authToken,
       onClearFilters,
       fetchSubscriptions,
+      toast,
       filteredSubscriptions,
       onApiError,
     ]
@@ -248,6 +251,7 @@ SubscriptionsTable.propTypes = {
   fetchSubscriptions: PropTypes.func,
   isFetchingSubscriptions: PropTypes.bool,
   subscriptions: PropTypes.array,
+  toast: PropTypes.func,
 }
 
 export const Label = styled.label`
