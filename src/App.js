@@ -266,7 +266,7 @@ class App extends React.Component {
         const canUpgradeOrg = repos.some(
           ({ appId, currentVersion, latestVersion }) =>
             isKnownRepo(appId) &&
-            currentVersion.version.split('.')[0] !==
+            currentVersion.version.split('.')[0] <
               latestVersion.version.split('.')[0]
         )
         this.setState({ canUpgradeOrg, repos })
