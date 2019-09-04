@@ -172,7 +172,7 @@ function LocalIdentities({
                     label="Toggle sort"
                     onClick={onToggleSort}
                     css={`
-                      padding: ${0.5 * GU}px ${1 * GU}px;
+                      padding: ${0.5 * GU}px ${3 * GU}px;
                       position: relative;
                       left: ${-3 * GU}px;
                       border-radius: 0;
@@ -187,6 +187,7 @@ function LocalIdentities({
                     <span
                       css={`
                         margin-right: ${1 * GU}px;
+                        ${textStyle('label2')}
                       `}
                     >
                       Custom label{' '}
