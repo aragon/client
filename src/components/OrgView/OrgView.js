@@ -17,6 +17,7 @@ import {
   DaoStatusType,
 } from '../../prop-types'
 import { DAO_STATUS_LOADING } from '../../symbols'
+import { iOS, isSafari } from '../../utils'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
 import ActivityButton from './ActivityButton/ActivityButton'
@@ -128,6 +129,20 @@ function OrgView({
             <ActivityButton apps={apps} />
           </div>
         </div>
+        <MenuPanel
+          activeInstanceId={activeInstanceId}
+          appInstanceGroups={appInstanceGroups}
+          appsStatus={appsStatus}
+          autoClosing={autoClosingPanel}
+          daoAddress={daoAddress}
+          daoStatus={daoStatus}
+          onMenuPanelClose={handleCloseMenuPanel}
+          onOpenApp={handleOpenApp}
+          opened={menuPanelOpen}
+          css={`
+            z-index: 3;
+          `}
+        />
         <div
           css={`
             flex-grow: 1;
@@ -137,24 +152,10 @@ function OrgView({
         >
           <div
             css={`
-              height: 100%;
+              height: ${iOS || isSafari ? '100vh' : '100%'};
               display: flex;
             `}
           >
-            <MenuPanel
-              activeInstanceId={activeInstanceId}
-              appInstanceGroups={appInstanceGroups}
-              appsStatus={appsStatus}
-              autoClosing={autoClosingPanel}
-              daoAddress={daoAddress}
-              daoStatus={daoStatus}
-              onMenuPanelClose={handleCloseMenuPanel}
-              onOpenApp={handleOpenApp}
-              opened={menuPanelOpen}
-              css={`
-                z-index: 3;
-              `}
-            />
             <div
               css={`
                 position: relative;
