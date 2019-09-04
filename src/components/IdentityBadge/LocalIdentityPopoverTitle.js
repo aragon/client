@@ -27,7 +27,6 @@ const WrapTitle = styled.div`
   display: grid;
   align-items: center;
   grid-template-columns: auto 1fr;
-  padding-right: 24px;
 `
 
 const Label = styled.span`

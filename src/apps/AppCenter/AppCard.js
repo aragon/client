@@ -151,7 +151,7 @@ const Description = styled.p`
 `
 
 function StyledIconExternal({ compactMode, theme }) {
-  const paddingGU = compactMode ? 1.5 : 2
+  const paddingGU = compactMode ? 1 : 1.5
   return (
     <IconExternal
       css={`
