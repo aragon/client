@@ -1,5 +1,5 @@
 import React from 'react'
-import { ClaimDomain, Review, Voting } from './kit'
+import { ClaimDomain, Review, Voting, Tokens } from './kit'
 
 import header from './assets/header-startup.svg'
 import icon from './assets/icon-startup.svg'
@@ -27,6 +27,7 @@ export default {
     screens: [
       [data => data.domain || 'Claim domain', ClaimDomain],
       ['Configure template', Voting],
+      ['Configure template', Tokens],
       [
         'Review information',
         ({ back, data, next }) => (
