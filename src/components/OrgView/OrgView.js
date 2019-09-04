@@ -129,20 +129,6 @@ function OrgView({
             <ActivityButton apps={apps} />
           </div>
         </div>
-        <MenuPanel
-          activeInstanceId={activeInstanceId}
-          appInstanceGroups={appInstanceGroups}
-          appsStatus={appsStatus}
-          autoClosing={autoClosingPanel}
-          daoAddress={daoAddress}
-          daoStatus={daoStatus}
-          onMenuPanelClose={handleCloseMenuPanel}
-          onOpenApp={handleOpenApp}
-          opened={menuPanelOpen}
-          css={`
-            z-index: 3;
-          `}
-        />
         <div
           css={`
             flex-grow: 1;
@@ -152,10 +138,30 @@ function OrgView({
         >
           <div
             css={`
-              height: ${iOS || isSafari ? '100vh' : '100%'};
               display: flex;
+              height: 100%;
+              ${iOS || isSafari
+                ? `
+                  height: 100vh;
+                  padding-bottom: ${8 * GU}px;
+                `
+                : ''}
             `}
           >
+            <MenuPanel
+              activeInstanceId={activeInstanceId}
+              appInstanceGroups={appInstanceGroups}
+              appsStatus={appsStatus}
+              autoClosing={autoClosingPanel}
+              daoAddress={daoAddress}
+              daoStatus={daoStatus}
+              onMenuPanelClose={handleCloseMenuPanel}
+              onOpenApp={handleOpenApp}
+              opened={menuPanelOpen}
+              css={`
+                z-index: 3;
+              `}
+            />
             <div
               css={`
                 position: relative;
