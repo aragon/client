@@ -7,6 +7,23 @@ export const DOMAIN_LOADING = Symbol('DOMAIN_LOADING')
 export const DOMAIN_ERROR = Symbol('DOMAIN_ERROR')
 export const DOMAIN_NONE = Symbol('DOMAIN_NONE')
 
+// Filter a subdomain
+function filterSubdomain(subdomain) {
+  return subdomain
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+    .slice(0, 30)
+}
+
+// Get the subdomain from a complete domain
+function getSubdomain(domain, domainEnd) {
+  const lastIndex = domain.lastIndexOf(domainEnd)
+  return lastIndex + domainEnd.length === domain.length
+    ? domain.slice(0, lastIndex)
+    : domain
+}
+
 function DomainField({
   domainEnd = '.aragonid.eth',
   label = 'Name of the organization',
@@ -20,17 +37,15 @@ function DomainField({
 
   const handleInputChange = useCallback(
     event => {
-      onChange((event.target.value + domainEnd).toLowerCase())
+      onChange(filterSubdomain(event.target.value) + domainEnd)
     },
     [onChange]
   )
 
-  const subdomain = useMemo(() => {
-    const lastIndex = value.lastIndexOf(domainEnd)
-    return lastIndex + domainEnd.length === value.length
-      ? value.slice(0, lastIndex)
-      : value
-  }, [value, domainEnd])
+  const subdomain = useMemo(() => getSubdomain(value, domainEnd), [
+    value,
+    domainEnd,
+  ])
 
   return (
     <div
