@@ -29,14 +29,14 @@ function LocalIdentityBadge({ entity, forceAddress, ...props }) {
   }, [address, identityEvents$, handleResolve, showLocalIdentityModal])
 
   if (address === null) {
-    return <IdentityBadgeWithNetwork {...props} customLabel={entity} />
+    return <IdentityBadgeWithNetwork {...props} label={entity} />
   }
 
   return (
     <IdentityBadgeWithNetwork
       {...props}
-      customLabel={(!forceAddress && label) || ''}
       entity={address}
+      label={(!forceAddress && label) || ''}
       popoverAction={{
         label: `${label ? 'Edit' : 'Add'} custom label`,
         onClick: handleClick,
