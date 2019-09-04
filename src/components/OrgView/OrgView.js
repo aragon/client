@@ -156,6 +156,10 @@ function OrgView({
               ${iOS || isSafari
                 ? `
                   height: 100vh;
+                  /* without this extra padding in iOS the content
+                   * was being cut off the screen; this is the same
+                   * height as the top header
+                  */
                   padding-bottom: ${8 * GU}px;
                 `
                 : ''}
