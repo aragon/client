@@ -24,7 +24,11 @@ import {
   RepoType,
 } from './prop-types'
 import { getAppPath, getPreferencesSearch } from './routing'
-import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
+import {
+  APP_MODE_ORG,
+  APPS_STATUS_LOADING,
+  DAO_STATUS_LOADING,
+} from './symbols'
 import { addressesEqual } from './web3-utils'
 
 const SHOW_UPGRADE_MODAL_KEY = 'SHOW_UPGRADE_MODAL_FIRST_TIME'
@@ -76,17 +80,7 @@ class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     this.startIdentitySubscription()
-
-    // Show the upgrade showcase on first load up to a certain point in time
-    if (
-      localStorage.getItem(SHOW_UPGRADE_MODAL_KEY) !== 'false' &&
-      Date.now() < OCTOBER_1ST_2019
-    ) {
-      localStorage.setItem(SHOW_UPGRADE_MODAL_KEY, 'false')
-      this.setState({
-        upgradeModalOpened: true,
-      })
-    }
+    this.showOrgUpgradePanelIfFirstVisit()
   }
 
   componentWillUnmount() {
@@ -95,6 +89,9 @@ class Wrapper extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     this.updateIdentityEvents(prevProps)
+    if (prevProps.locator !== this.props.locator) {
+      this.showOrgUpgradePanelIfFirstVisit()
+    }
   }
 
   getAppInstancesGroups = memoize(apps =>
@@ -245,6 +242,19 @@ class Wrapper extends React.PureComponent {
       upgradeModalOpened: false,
     })
   }
+  showOrgUpgradePanelIfFirstVisit = () => {
+    // Show the upgrade showcase on first load up to a certain point in time
+    if (
+      this.props.locator.mode === APP_MODE_ORG &&
+      localStorage.getItem(SHOW_UPGRADE_MODAL_KEY) !== 'false' &&
+      Date.now() < OCTOBER_1ST_2019
+    ) {
+      localStorage.setItem(SHOW_UPGRADE_MODAL_KEY, 'false')
+      this.setState({
+        upgradeModalOpened: true,
+      })
+    }
+  }
   hideOrgUpgradePanel = () => {
     this.setState({ orgUpgradePanelOpened: false })
   }
@@ -348,6 +358,7 @@ class Wrapper extends React.PureComponent {
         <GlobalPreferences
           locator={locator}
           wrapper={wrapper}
+          apps={apps}
           onScreenChange={this.openPreferences}
           onClose={this.closePreferences}
         />

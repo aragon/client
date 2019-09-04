@@ -40,7 +40,7 @@ const Wrapper = styled.section`
   h3,
   h4 {
     font-weight: bold;
-    margin: ${1 * GU}px 0;
+    margin-top: ${3 * GU}px;
     ${textStyle('label2')};
     color: ${({ theme }) => theme.contentSecondary};
   }
