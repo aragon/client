@@ -39,7 +39,7 @@ function DomainField({
     event => {
       onChange(filterSubdomain(event.target.value) + domainEnd)
     },
-    [onChange]
+    [domainEnd, onChange]
   )
 
   const subdomain = useMemo(() => getSubdomain(value, domainEnd), [

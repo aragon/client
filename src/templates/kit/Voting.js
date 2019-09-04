@@ -134,15 +134,15 @@ function VoteDuration({ duration = 0, onUpdate }) {
 
   const handleDaysChange = useCallback(
     event => updateLocalUnit(event, setDays),
-    []
+    [updateLocalUnit]
   )
   const handleHoursChange = useCallback(
     event => updateLocalUnit(event, setHours),
-    []
+    [updateLocalUnit]
   )
   const handleMinutesChange = useCallback(
     event => updateLocalUnit(event, setMinutes),
-    []
+    [updateLocalUnit]
   )
 
   return (

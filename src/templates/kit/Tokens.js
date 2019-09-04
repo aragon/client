@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import {
   Button,
   Field,
@@ -9,7 +9,7 @@ import {
   TextInput,
   useTheme,
 } from '@aragon/ui'
-import { Header, PercentageField, PrevNextFooter } from '.'
+import { Header, PrevNextFooter } from '.'
 
 function Tokens({ back, data, fields, next, screenIndex, screens }) {
   const theme = useTheme()
@@ -22,7 +22,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
     setTokenName(event.target.value)
   }, [])
 
-  const handleTokenSymbol = useCallback(event => {
+  const handleTokenSymbolChange = useCallback(event => {
     setTokenSymbol(event.target.value)
   }, [])
 
@@ -77,11 +77,19 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
           `}
         >
           <Field label="Token name">
-            <TextInput value="Bitcoin" wide />
+            <TextInput
+              value={tokenName}
+              onChange={handleTokenNameChange}
+              wide
+            />
           </Field>
 
           <Field label="Token symbol">
-            <TextInput value="BTC" wide />
+            <TextInput
+              value={tokenSymbol}
+              onChange={handleTokenSymbolChange}
+              wide
+            />
           </Field>
 
           <Field label="Members">
@@ -94,7 +102,6 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
                 >
                   <TextInput
                     key={i}
-                    value={account}
                     adornment={
                       <Button
                         onClick={() => removeMember(i)}
