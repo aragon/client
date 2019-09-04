@@ -134,7 +134,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
             <p
               css={`
                 color: ${theme.negative};
-                ${textStyle('body2')};
+                ${textStyle('body4')};
               `}
             >
               Error logging in. Please try again
@@ -144,7 +144,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
             <p
               css={`
                 color: ${theme.negative};
-                ${textStyle('body2')};
+                ${textStyle('body4')};
               `}
             >
               Please enter a valid email address
