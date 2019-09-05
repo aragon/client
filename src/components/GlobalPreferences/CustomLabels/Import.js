@@ -32,7 +32,7 @@ const fileImport = (cb, toast) => files => {
     try {
       const list = JSON.parse(event.target.result)
       if (verifyLocalIdentityObject(list)) {
-        toast('Custom labels imported')
+        toast('Custom labels imported successfully')
         cb(list)
       } else {
         throw new Error('There was an error reading from the file')

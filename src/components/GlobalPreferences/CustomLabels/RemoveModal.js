@@ -6,7 +6,7 @@ import { Button, GU, Modal, breakpoint, textStyle, useToast } from '@aragon/ui'
 function RemoveModal({ visible, onClose, onConfirm }) {
   const toast = useToast()
   const handleConfirm = useCallback(() => {
-    toast('Custom labels removed')
+    toast('Custom labels removed successfully')
     onConfirm()
   }, [onConfirm, toast])
 

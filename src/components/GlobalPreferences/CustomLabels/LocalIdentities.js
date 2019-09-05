@@ -281,7 +281,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
         return
       }
       if (!iOS && index === 1) {
-        toast('Custom labels exported')
+        toast('Custom labels exported successfully')
         onExport()
         return
       }
