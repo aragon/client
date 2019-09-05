@@ -73,10 +73,6 @@ export const sortAppsPair = (app1, app2) => {
 const appOverrides = {
   // Needed to change app name on sidebar for old versions whose aragonPM repo content cannot be changed anymore
   [appIds['TokenManager']]: { name: 'Tokens' },
-  [appIds['Agent']]: {
-    start_url: '/index.html',
-    script: 'script.js',
-  },
 }
 
 const appLocator = {}
@@ -86,10 +82,10 @@ if (assetBridge === 'local') {
    * Local settings *
    ******************/
   Object.assign(appLocator, {
+    [appIds['Agent']]: 'http://localhost:3005/',
     [appIds['Finance']]: 'http://localhost:3002/',
     [appIds['TokenManager']]: 'http://localhost:3003/',
     [appIds['Survey']]: 'http://localhost:3004/',
-    [appIds['Agent']]: 'http://localhost:3005/',
     [appIds['Voting']]: 'http://localhost:3001/',
   })
 } else if (assetBridge === 'preview') {
