@@ -103,6 +103,19 @@ function OrgView({
 
             ${menuPanelOpen && iOS
               ? `
+                /* behaviour only in iOS:
+                 * with the nested div->div->div structure
+                 * the 3rd div has positioned absolute
+                 * Chrome, Firefox and Safari uch div gets rendered
+                 * aboe the rest of the content (up the tree till a
+                 * position relative is found) but in iOS it gets
+                 * rendered below the sibling of the element with
+                 * position relative (and z-index did not work)
+                 * this fix gives the element an absolute (z-index
+                 * layers are then respected);
+                 * this also adds the appropriate value to recover the
+                 * elements height
+                 * */
                 position: absolute;
                 width: 100%;
                 z-index: 0;
@@ -155,12 +168,7 @@ function OrgView({
               height: 100%;
               ${iOS || isSafari
                 ? `
-                  height: 100vh;
-                  /* without this extra padding in iOS the content
-                   * was being cut off the screen; this is the same
-                   * height as the top header
-                  */
-                  padding-bottom: ${8 * GU}px;
+                  height: calc(100vh - ${8 * GU}px);
                 `
                 : ''}
             `}
