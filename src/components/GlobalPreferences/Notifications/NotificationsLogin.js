@@ -28,25 +28,19 @@ export default function NotificationsLogin({
   // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
   const ethNetwork = network.type === 'main' ? 'mainnet' : 'rinkeby'
 
-  const handleEmailBlur = useCallback(
-    e => {
-      const email = e.target.value
-      setEmailInvalid(!validateEmail(email))
-    },
-    [setEmailInvalid]
-  )
+  const handleEmailBlur = useCallback(e => {
+    const email = e.target.value
+    setEmailInvalid(!validateEmail(email))
+  }, [])
 
-  const handleEmailChange = useCallback(
-    e => {
-      const email = e.target.value
-      setInputEmail(email)
-      if (validateEmail(email)) {
-        // Set only as valid while user typing. Use blur to set invalid
-        setEmailInvalid(false)
-      }
-    },
-    [setInputEmail, setEmailInvalid]
-  )
+  const handleEmailChange = useCallback(e => {
+    const email = e.target.value
+    setInputEmail(email)
+    if (validateEmail(email)) {
+      // Set only as valid while user typing. Use blur to set invalid
+      setEmailInvalid(false)
+    }
+  }, [])
 
   const handleLogin = async e => {
     e && e.preventDefault()

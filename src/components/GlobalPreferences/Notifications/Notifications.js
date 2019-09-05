@@ -57,7 +57,7 @@ function useAuthState() {
           setAuthState(AUTH_AUTHENTICATION_FAILED)
         }
       })
-  }, [setAuthState, token])
+  }, [token])
 
   useEffect(() => {
     if (!email && !token) {
@@ -99,11 +99,11 @@ function useAuthState() {
     setToken(null)
     // Set hasUsed to show a different login for previously logged in users
     setHasLoggedOut(true)
-  }, [setToken, setEmail, setHasLoggedOut])
+  }, [])
 
   const setServiceUnavailable = useCallback(() => {
     setAuthState(AUTH_SERVICE_UNAVAILABLE)
-  }, [setAuthState])
+  }, [])
 
   return {
     authState,

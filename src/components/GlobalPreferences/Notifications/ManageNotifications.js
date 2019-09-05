@@ -46,7 +46,7 @@ export default function ManageNotifications({
         setIsFetching(false)
         setApiError(error)
       })
-  }, [token, setSubscriptions, setIsFetching, setApiError])
+  }, [token])
 
   useEffect(() => {
     if (!token) {
@@ -160,16 +160,16 @@ function DeleteAccount({ token, onLogout, onApiError, toast }) {
 
   const onClick = useCallback(() => {
     setIsModalOpen(true)
-  }, [setIsModalOpen])
+  }, [])
 
   const onCloseModal = useCallback(() => {
     setIsModalOpen(false)
-  }, [setIsModalOpen])
+  }, [])
 
   const onModalConfirm = useCallback(() => {
     setIsModalOpen(false)
     handleDeleteAccount()
-  }, [handleDeleteAccount, setIsModalOpen])
+  }, [handleDeleteAccount])
 
   return (
     <React.Fragment>
