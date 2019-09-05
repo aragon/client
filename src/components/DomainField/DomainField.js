@@ -71,11 +71,13 @@ function DomainField({
             adornment={
               <div
                 css={`
-                  height: 100%;
                   display: flex;
                   align-items: center;
-                  border-left: 1px solid ${theme.border};
+                  height: calc(100% - 2px);
+                  margin: 1px 0;
                   padding: 0 ${2 * GU}px;
+                  border-left: 1px solid ${theme.border};
+                  background: ${theme.surface};
                 `}
               >
                 {domainEnd}
