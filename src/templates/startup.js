@@ -45,13 +45,20 @@ export default {
               {
                 label: 'Voting',
                 fields: [
-                  ['Support', data.support],
-                  ['Minimum approval %', data.quorum],
+                  ['Support', `${data.support}%`],
+                  ['Minimum approval %', `${data.quorum}%`],
                 ],
               },
-              { label: 'Tokens', fields: [] },
-              { label: 'Finance', fields: [] },
-              { label: 'Payroll', fields: [] },
+              {
+                label: 'Tokens',
+                fields: [
+                  ['Token', `${data.tokenName} (${data.tokenSymbol})`],
+                  ...data.members.map((account, i) => [
+                    `Address ${i + 1}`,
+                    account,
+                  ]),
+                ],
+              },
             ]}
           />
         ),
