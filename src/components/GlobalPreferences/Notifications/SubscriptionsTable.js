@@ -23,98 +23,57 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   subscriptions,
   fetchSubscriptions,
   isFetchingSubscriptions,
+  toast,
 }) {
   const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const handleSelectEntries = useCallback(
-    (entries, indexes) => {
-      setSelectedSubscriptions(indexes)
-    },
-    [setSelectedSubscriptions]
-  )
-
-  const handleUnsubscribe = useCallback(
-    async e => {
-      setIsSubmitting(true)
-      try {
-        const subscriptionIds = selectedSubscriptions.map(
-          i => subscriptions[i].subscriptionId
-        )
-        await deleteSubscriptions({
-          subscriptionIds,
-          authToken,
-        })
-        // reset selection
-        setIsSubmitting(false)
-        // Refetch subscriptions
-        fetchSubscriptions()
-        setSelectedSubscriptions([])
-      } catch (e) {
-        onApiError(e)
-        setIsSubmitting(false)
-      }
-    },
-    [
-      authToken,
-      fetchSubscriptions,
-      selectedSubscriptions,
-      subscriptions,
-      onApiError,
-    ]
-  )
+  const handleSelectEntries = useCallback((entries, indexes) => {
+    setSelectedSubscriptions(indexes)
+  }, [])
 
   const organizations = Array.from(
     new Set(subscriptions.map(subscription => subscription.ensName))
   )
   const [selectedOrganization, setSelectedOrganization] = useState(-1)
-  const onOrganizationChange = useCallback(
-    idx => {
-      setSelectedOrganization(idx)
-    },
-    [setSelectedOrganization]
-  )
+  const onOrganizationChange = useCallback(idx => {
+    setSelectedSubscriptions([])
+    setSelectedOrganization(idx)
+  }, [])
 
   // Get unique app names by matching subscriptions with
   const subscriptionApps = Array.from(
     new Set(subscriptions.map(subscription => subscription.appName))
   )
   const [selectedApp, setSelectedApp] = useState(-1)
-  const onAppChange = useCallback(
-    idx => {
-      setSelectedApp(idx)
-    },
-    [setSelectedApp]
-  )
+  const onAppChange = useCallback(idx => {
+    setSelectedSubscriptions([])
+    setSelectedApp(idx)
+  }, [])
   const events = Array.from(
     new Set(subscriptions.map(subscription => subscription.eventName))
   )
   const [selectedEvent, setSelectedEvent] = useState(-1)
 
-  const onEventChange = useCallback(
-    idx => {
-      setSelectedEvent(idx)
-    },
-    [setSelectedEvent]
-  )
+  const onEventChange = useCallback(idx => {
+    setSelectedSubscriptions([])
+    setSelectedEvent(idx)
+  }, [])
   const onClearFilters = useCallback(() => {
     setSelectedEvent(-1)
     setSelectedApp(-1)
     setSelectedOrganization(-1)
-  }, [setSelectedEvent, setSelectedApp, setSelectedOrganization])
+    // Reset selection when filters cleared
+    setSelectedSubscriptions([])
+  }, [])
 
   const onClick = useCallback(() => {
     setIsModalOpen(true)
-  }, [setIsModalOpen])
+  }, [])
 
   const onCloseModal = useCallback(() => {
     setIsModalOpen(false)
-  }, [setIsModalOpen])
-
-  const onModalConfirm = useCallback(() => {
-    setIsModalOpen(false)
-    handleUnsubscribe()
-  }, [handleUnsubscribe, setIsModalOpen])
+  }, [])
 
   const filteredSubscriptions = filterSubscriptions({
     subscriptions,
@@ -122,6 +81,47 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     appName: subscriptionApps[selectedApp],
     organization: organizations[selectedOrganization],
   })
+
+  const handleUnsubscribe = useCallback(
+    async e => {
+      setIsSubmitting(true)
+      try {
+        const subscriptionIds = selectedSubscriptions.map(
+          i => filteredSubscriptions[i].subscriptionId
+        )
+        await deleteSubscriptions({
+          subscriptionIds,
+          authToken,
+        })
+
+        // reset selection
+        setIsSubmitting(false)
+        // Clear filters as the filter might no longer be valid as the item has been removed
+        onClearFilters()
+        // Refetch subscriptions
+        fetchSubscriptions()
+        toast('Email notifications unsubscribed')
+      } catch (e) {
+        onApiError(e)
+        setIsSubmitting(false)
+      }
+    },
+    [
+      selectedSubscriptions,
+      authToken,
+      onClearFilters,
+      fetchSubscriptions,
+      toast,
+      filteredSubscriptions,
+      onApiError,
+    ]
+  )
+
+  const onModalConfirm = useCallback(() => {
+    setIsModalOpen(false)
+    handleUnsubscribe()
+  }, [handleUnsubscribe])
+
   const theme = useTheme()
 
   return (
@@ -167,27 +167,28 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
             >
               Subscriptions
             </div>
-            {selectedSubscriptions.length > 0 && (
-              <div>
-                <Button disabled={false} onClick={onClick}>
-                  {isSubmitting ? (
-                    <LoadingRing
-                      css={`
-                        margin-right: ${GU}px;
-                      `}
-                    />
-                  ) : (
-                    <IconMail
-                      css={`
-                        color: ${theme.negative};
-                        margin-right: ${GU}px;
-                      `}
-                    />
-                  )}{' '}
-                  Unsubscribe
-                </Button>
-              </div>
-            )}
+            <div>
+              <Button
+                disabled={selectedSubscriptions.length === 0}
+                onClick={onClick}
+              >
+                {isSubmitting ? (
+                  <LoadingRing
+                    css={`
+                      margin-right: ${GU}px;
+                    `}
+                  />
+                ) : (
+                  <IconMail
+                    css={`
+                      color: ${theme.negative};
+                      margin-right: ${GU}px;
+                    `}
+                  />
+                )}{' '}
+                Unsubscribe
+              </Button>
+            </div>
           </div>
           <SubscriptionFilters
             organizations={organizations}
@@ -228,6 +229,7 @@ SubscriptionsTable.propTypes = {
   fetchSubscriptions: PropTypes.func,
   isFetchingSubscriptions: PropTypes.bool,
   subscriptions: PropTypes.array,
+  toast: PropTypes.func,
 }
 
 export const Label = styled.label`

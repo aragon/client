@@ -104,19 +104,14 @@ export default function SubscriptionsForm({
 
   let eventNames = selectedApp ? subscribableEvents[selectedAppIdx] : ['']
 
-  const handleAppChange = useCallback(
-    index => {
-      setSelectedAppIdx(index)
-      setSelectedEventIdx(-1)
-    },
-    [setSelectedAppIdx, setSelectedEventIdx]
-  )
-  const handleEventChange = useCallback(
-    index => {
-      setSelectedEventIdx(index)
-    },
-    [setSelectedEventIdx]
-  )
+  const handleAppChange = useCallback(index => {
+    setSelectedAppIdx(index)
+    setSelectedEventIdx(-1)
+  }, [])
+
+  const handleEventChange = useCallback(index => {
+    setSelectedEventIdx(index)
+  }, [])
 
   const handleSubscribe = useCallback(
     async e => {
