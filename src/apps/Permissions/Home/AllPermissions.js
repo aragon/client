@@ -161,7 +161,8 @@ function Heading({
             `}
           >
             <DropDown
-              placeholder="Entity type"
+              header="Type"
+              placeholder="Type"
               items={ENTITY_TYPES}
               selected={selectedEntityType}
               onChange={handleEntityDropDownChange}
