@@ -81,18 +81,26 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                 color: ${theme.contentSecondary};
               `}
             >
-              {template.longdesc}
+              {template.longdesc || template.description}
             </p>
             <div
               css={`
                 margin: ${5 * GU}px 0 0;
               `}
             >
-              <Field label="Case study" css="margin-bottom: 0">
-                <Link href={template.caseStudyUrl}>
-                  {simpleUrl(template.caseStudyUrl)}
+              {template.caseStudyUrl && (
+                <Field label="Case study">
+                  <Link href={template.caseStudyUrl}>
+                    {simpleUrl(template.caseStudyUrl)}
+                  </Link>
+                </Field>
+              )}
+              <Field label="Source code">
+                <Link href={template.sourceCodeUrl}>
+                  {simpleUrl(template.sourceCodeUrl)}
                 </Link>
               </Field>
+              <Field label="Registry">{template.registry}</Field>
             </div>
           </div>
 
@@ -121,24 +129,22 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
             Template configuration
           </h2>
 
-          <Field
-            label="Required modules"
-            css={`
-              height: 150px;
-            `}
-          />
-          <Field
-            label="Optional modules"
-            css={`
-              height: 150px;
-            `}
-          />
-          <Field label="Source code">
-            <Link href={template.sourceCodeUrl}>
-              {simpleUrl(template.sourceCodeUrl)}
-            </Link>
-          </Field>
-          <Field label="Registry">{template.registry}</Field>
+          {template.modules && template.modules.length > 0 && (
+            <Field
+              label="Required modules"
+              css={`
+                height: 150px;
+              `}
+            />
+          )}
+          {template.optionalModules && template.optionalModules.length > 0 && (
+            <Field
+              label="Optional modules"
+              css={`
+                height: 150px;
+              `}
+            />
+          )}
           {verticalMode && (
             <Button mode="strong" onClick={onUse} wide>
               Use this template
