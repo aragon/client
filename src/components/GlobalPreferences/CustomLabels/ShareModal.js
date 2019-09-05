@@ -8,14 +8,20 @@ import {
   Modal,
   TextInput,
   Toast,
+  useToast,
   breakpoint,
   textStyle,
   useTheme,
 } from '@aragon/ui'
+import { TIMEOUT_TOAST } from '../GlobalPreferences'
 
-const TIMEOUT_TOAST = 4000
-
-function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
+function ShareModal({ onClose, link, visible }) {
+  const toast = useToast()
+  const { inputRef, handleCopy, handleFocus } = useShareModal({
+    visible,
+    onClose,
+    toast,
+  })
   const theme = useTheme()
 
   return (
@@ -54,10 +60,10 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
           <TextInput
             ref={inputRef}
             value={link}
-            onFocus={onFocus}
+            onFocus={handleFocus}
             adornment={
               <ButtonIcon
-                onClick={onCopy}
+                onClick={handleCopy}
                 label="Copy to clipboard"
                 css={`
                   width: 38px;
@@ -108,7 +114,7 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
         <Button
           mode="strong"
           label="Copy link to clipboard"
-          onClick={onCopy}
+          onClick={handleCopy}
           css={`
             margin-left: ${2 * GU}px;
           `}
@@ -123,30 +129,8 @@ function ShareModal({ inputRef, onClose, onCopy, onFocus, link, visible }) {
 ShareModal.propTypes = {
   inputRef: PropTypes.object,
   onClose: PropTypes.func.isRequired,
-  onCopy: PropTypes.func.isRequired,
-  onFocus: PropTypes.func.isRequired,
   link: PropTypes.string.isRequired,
   visible: PropTypes.bool.isRequired,
-}
-
-function ShareModalWithToast({ visible, onClose, link, toast }) {
-  const { inputRef, handleCopy, handleFocus } = useShareModal({
-    visible,
-    onClose,
-    toast,
-  })
-
-  return (
-    <ShareModal
-      inputRef={inputRef}
-      link={link}
-      onClose={onClose}
-      onCopy={handleCopy}
-      onFocus={handleFocus}
-      toast={toast}
-      visible={visible}
-    />
-  )
 }
 
 function useShareModal({ visible, toast, onClose }) {
@@ -175,15 +159,4 @@ function useShareModal({ visible, toast, onClose }) {
   return { inputRef, handleCopy, handleFocus }
 }
 
-ShareModalWithToast.propTypes = {
-  visible: PropTypes.bool,
-  onClose: PropTypes.func.isRequired,
-  link: PropTypes.string.isRequired,
-  toast: PropTypes.func.isRequired,
-}
-
-export default React.memo(props => (
-  <Toast timeout={TIMEOUT_TOAST}>
-    {toast => <ShareModalWithToast {...props} toast={toast} />}
-  </Toast>
-))
+export default React.memo(ShareModal)
