@@ -17,7 +17,7 @@ function filterSubdomain(subdomain) {
 }
 
 // Get the subdomain from a complete domain
-function getSubdomain(domain, domainEnd) {
+function getSubdomain(domain = '', domainEnd = '') {
   const lastIndex = domain.lastIndexOf(domainEnd)
   return lastIndex + domainEnd.length === domain.length
     ? domain.slice(0, lastIndex)
