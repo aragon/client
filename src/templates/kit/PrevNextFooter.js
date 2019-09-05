@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, IconArrowLeft, useTheme } from '@aragon/ui'
+import { Button, IconArrowLeft, useTheme, useViewport } from '@aragon/ui'
 
 function PrevNextFooter({
   onNext,
@@ -10,6 +10,7 @@ function PrevNextFooter({
   backLabel = 'Back',
 }) {
   const theme = useTheme()
+  const { above } = useViewport()
   return (
     <div
       css={`
@@ -18,23 +19,26 @@ function PrevNextFooter({
         justify-content: space-between;
       `}
     >
-      <Button
-        disabled={!backEnabled}
-        icon={
-          <IconArrowLeft
-            css={`
-              color: ${theme.accent};
-            `}
-          />
-        }
-        label={backLabel}
-        onClick={onBack}
-      />
+      {above('medium') && (
+        <Button
+          disabled={!backEnabled}
+          icon={
+            <IconArrowLeft
+              css={`
+                color: ${theme.accent};
+              `}
+            />
+          }
+          label={backLabel}
+          onClick={onBack}
+        />
+      )}
       <Button
         disabled={!nextEnabled}
         label={nextLabel}
         mode="strong"
         onClick={onNext}
+        wide={!above('medium')}
       />
     </div>
   )
