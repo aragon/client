@@ -3,7 +3,7 @@ import espressoIcon from './icons/espresso.svg'
 import agentIcon from './icons/agent.svg'
 import surveyIcon from './icons/survey.svg'
 import pandoIcon from './icons/pando.svg'
-import tpsIcon from './icons/that-planning-suite.svg'
+import openEnterpriseIcon from './icons/open-enterprise.svg'
 import { shuffleArray } from '../../../utils'
 
 export const appsInDevelopment = [
@@ -43,13 +43,13 @@ export const appsInDevelopment = [
     },
     {
       icon: tpsIcon,
-      name: 'That Planning Suite',
+      name: 'Open Enterprise',
       status: 'experimental',
       description: `
         Suite for open and fluid organizations.
         Bounties, range voting, and more.
       `,
-      link: 'https://github.com/AutarkLabs/planning-suite',
+      link: 'https://github.com/AutarkLabs/open-enterprise',
     },
     {
       icon: pandoIcon,
