@@ -21,7 +21,7 @@ function DAONotFoundError({ dao }) {
         grid-template-rows: 1fr auto auto auto;
         grid-template-columns: 1fr;
         padding: ${2 * GU}px;
-        width: 579px;
+        width: ${72 * GU}px;
         height: auto;
         box-shadow: 0px 2px 4px rgba(180, 188, 202, 0.5);
       `}
