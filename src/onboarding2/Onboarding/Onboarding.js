@@ -2,9 +2,10 @@ import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useTheme } from '@aragon/ui'
 import ConnectModal from '../../components/ConnectModal/ConnectModal'
-import OnboardingTopBar from './OnboardingTopBar'
+import { saveTemplateState } from '../create-utils'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
+import OnboardingTopBar from './OnboardingTopBar'
 
 function Onboarding({ status, selectorNetworks }) {
   const theme = useTheme()
@@ -18,7 +19,10 @@ function Onboarding({ status, selectorNetworks }) {
     window.location.hash = '/open'
   }, [])
 
-  const openConnectModal = useCallback(() => {
+  const handleCreate = useCallback(() => {
+    // reset the creation state
+    saveTemplateState({})
+
     setConnectModalOpened(true)
   }, [])
 
@@ -60,7 +64,7 @@ function Onboarding({ status, selectorNetworks }) {
           <Welcome
             onBack={goToHome}
             onOpen={goToOpen}
-            onCreate={openConnectModal}
+            onCreate={handleCreate}
             openMode={status === 'open'}
             selectorNetworks={selectorNetworks}
           />
