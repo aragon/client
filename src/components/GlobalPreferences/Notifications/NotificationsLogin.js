@@ -42,16 +42,25 @@ export default function NotificationsLogin({
     }
   }, [])
 
-  const handleLogin = async e => {
-    e && e.preventDefault()
-    try {
-      await login({ email: inputEmail, dao, network: ethNetwork })
-      onEmailChange(inputEmail)
-    } catch (e) {
-      setApiError(e.message)
-      console.error('Failed to login', e)
-    }
-  }
+  const handleLogin = useCallback(
+    async e => {
+      e && e.preventDefault()
+
+      if (!validateEmail(inputEmail)) {
+        setEmailInvalid(true)
+        return
+      }
+
+      try {
+        await login({ email: inputEmail, dao, network: ethNetwork })
+        onEmailChange(inputEmail)
+      } catch (e) {
+        setApiError(e.message)
+        console.error('Failed to login', e)
+      }
+    },
+    [dao, ethNetwork, inputEmail, onEmailChange]
+  )
 
   const theme = useTheme()
 
