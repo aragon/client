@@ -12,8 +12,7 @@ function Header({
   return (
     <header
       css={`
-        padding-top: ${topSpacing}px;
-        padding-bottom: ${bottomSpacing}px;
+        padding: ${topSpacing}px ${2 * GU}px ${bottomSpacing}px;
         text-align: center;
       `}
     >
