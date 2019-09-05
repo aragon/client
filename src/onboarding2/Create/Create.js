@@ -3,7 +3,7 @@ import { useViewport, GU } from '@aragon/ui'
 import templates from '../../templates'
 import Templates from '../Templates/Templates'
 import CreateStepsPanel from './CreateStepsPanel'
-import { network } from '../../environment'
+import { loadTemplateState, saveTemplateState } from '../create-utils'
 
 const STATUS_SELECT_TEMPLATE = Symbol('STATUS_TEMPLATE')
 const STATUS_TEMPLATE_SCREENS = Symbol('STATUS_TEMPLATE_SCREENS')
@@ -28,24 +28,6 @@ function getSteps(status, template, templateData) {
     ),
     'Launch organization',
   ]
-}
-
-function loadTemplateState() {
-  const value = localStorage.getItem(`create-org:${network.type}`)
-  try {
-    const data = JSON.parse(value)
-    return {
-      templateScreenIndex: data.templateScreenIndex,
-      templateData: data.templateData || {},
-      templateId: data.templateId,
-    }
-  } catch (err) {
-    return {}
-  }
-}
-
-function saveTemplateState(state) {
-  localStorage.setItem(`create-org:${network.type}`, JSON.stringify(state))
 }
 
 // Handle and store everything related to a template state.
@@ -251,7 +233,7 @@ function Create() {
               <div
                 css={`
                   max-width: ${82 * GU}px;
-                  padding-bottom: ${3 * GU}px;
+                  padding: 0 ${3 * GU}px ${3 * GU}px;
                 `}
               >
                 <TemplateScreen
