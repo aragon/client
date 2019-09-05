@@ -438,18 +438,14 @@ const templateParamFilters = {
           `quorum (${minAcceptanceQuorum.toString()}) must be below 100%`
       )
     }
+    supportNeeded = supportNeeded.toString()
+    minAcceptanceQuorum = minAcceptanceQuorum.toString()
 
     const tokenBase = new BN(10).pow(new BN(18))
-    const holders = [{ address: account, balance: 1 }]
+    const accounts = [account]
+    const stakes = accounts.map(() => tokenBase.toString())
 
-    const [accounts, stakes] = holders.reduce(
-      ([accounts, stakes], holder) => [
-        [...accounts, holder.address],
-        [...stakes, tokenBase.muln(holder.balance)],
-      ],
-      [[], []]
-    )
-
+    // Note that we need all numerical arguments in string form for ABI encoding to work
     return [
       name,
       accounts,
