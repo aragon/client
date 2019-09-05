@@ -119,7 +119,7 @@ RepoVersions.propTypes = {
 }
 
 const Td = styled.td`
-  padding: ${1.5 * GU}px 0;
+  padding: ${1 * GU}px 0;
 `
 
 export default RepoVersions

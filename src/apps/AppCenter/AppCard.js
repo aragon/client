@@ -62,13 +62,12 @@ const CardMain = styled.section`
     compactMode
       ? `
           display: grid;
-          grid-template-columns: auto 1fr auto;
-          grid-template-rows: auto auto auto;
+          grid-template-columns: auto 1fr;
+          grid-template-rows: auto auto;
           grid-template-areas:
-            "empty topright"
             "icon title"
             "icon description";
-          padding: ${1.5 * GU}px ${1.5 * GU}px ${4 * GU}px ${3 * GU}px;
+          padding: ${3 * GU}px ${1.5 * GU}px ${1.5 * GU}px ${3 * GU}px;
         `
       : `
           display: flex;
@@ -117,10 +116,9 @@ const TagWrapper = styled.div`
   ${({ compactMode, link }) =>
     compactMode
       ? `
-        grid-area: topright;
-        text-align: right;
         position: absolute;
-        right: ${link ? 3.5 * GU : 0}px;
+        top: ${1.5 * GU}px;
+        right: ${(link ? 5 : 1.5) * GU}px;
       `
       : `
         max-width: 100%;
@@ -153,21 +151,14 @@ const Description = styled.p`
 `
 
 function StyledIconExternal({ compactMode, theme }) {
+  const paddingGU = compactMode ? 1 : 1.5
   return (
     <IconExternal
       css={`
         color: ${theme.surfaceIcon};
-        ${compactMode
-          ? `
-              grid-area: topright;
-              margin-left: auto;
-              margin-bottom: ${0.5 * GU}px;
-            `
-          : `
-              position: absolute;
-              top: ${2 * GU}px;
-              right: ${2 * GU}px;
-            `}
+        position: absolute;
+        top: ${paddingGU * GU}px;
+        right: ${paddingGU * GU}px;
       `}
     />
   )

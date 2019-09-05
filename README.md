@@ -1,17 +1,18 @@
-# Aragon <img align="right" src="https://github.com/aragon/design/blob/master/readme-logo.png" height="80px" />
+# Aragon <a href="https://aragon.org/"><img align="right" src="https://github.com/aragon/design/blob/master/readme-logo.png" height="80px" /></a>
 
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors)
 
-**🌎🚀 Trusted by over 600 organizations, securing more than $1MM in funds.**
+**🌎🚀 Trusted by over 600 organizations, securing more than $1MM in funds. [Try it out.](https://mainnet.aragon.org)**
 
-<img src=".github/screenshot.png" />
+<a href="https://mainnet.aragon.org/#/a1/"><img src=".github/screenshot.png" /></a>
 
 - 📚 Read the [User Guide](https://wiki.aragon.org/tutorials/Aragon_User_Guide/) first, if you have any questions as a user.
 - 💻 You may be interested in [Aragon Desktop](https://github.com/aragon/aragon-desktop/), the most decentralized Aragon experience to date.
 - 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
 - 📝 Please report any issues and feedback in the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.
 - 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat/channel/dev) channel.
+- 📖 To learn more about contributing to the Aragon client itself, please check the [contributing guide](./CONTRIBUTING.md)
 - 🚢 For an overview of what changed with each release, check the [releases](https://github.com/aragon/aragon/releases) and [changelog](https://github.com/aragon/aragon/blob/master/changelog.md).
 
 ## Quick start
@@ -25,6 +26,8 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 
 **Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
 
+More [configuration options](./CONFIGURATION.md) are available, depending on your needs.
+
 ## Deployments
 
 The Aragon client undergoes a number of different deployments, based on build environments, major release timelines, and quality assurance checks.
@@ -37,7 +40,7 @@ These should be seen as "official" builds, whose distributions are secured by IP
 
 ### Nightly / Per-PR builds
 
-Automatic [now](https://zeit.co/now) deployments will occur for each PR and merge to master. These are useful for quickly testing a new feature, change, or hotfix.
+Automatic [nightly.aragon.org](https://nightly.aragon.org) and [nightly-rinkeby.aragon.org](https://nightly-rinkeby.aragon.org) deployments will occur for each PR and merge to master through [now](https://zeit.co/now). These are useful for quickly testing a new feature, change, or hotfix.
 
 The official [now app for Github](https://zeit.co/github) is set up to publish nightlies against Rinkeby see [default now configuration](./now.json). Travis is set up to publish nightlies against mainnet (see [mainnet now configuration](./now-mainnet.json)).
 
@@ -45,9 +48,11 @@ The official [now app for Github](https://zeit.co/github) is set up to publish n
 
 #### 👋 Get started contributing with a [good first issue](https://github.com/aragon/aragon/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
+**🎓 You may be interested in the [Aragon client architecture guide](./ARCHITECTURE.md) if you're not familiar with how the project is set up.**
+
 Don't be shy to contribute even the smallest tweak. 🐲 There are still some dragons to be aware of, but we'll be here to help you get started!
 
-For more details about contributing to Aragon, please check the [contributing guide](./CONTRIBUTING.md).
+For other details about contributing to Aragon, more details are available in the [contributing guide](./CONTRIBUTING.md).
 
 #### Issues
 
@@ -57,21 +62,7 @@ If you come across an issue with Aragon, do a search in the [Issues](https://git
 - If the issue you found has been reported and is still open, but the issue is missing some details, you can add a comment to the issue thread describing the additional details.
 - If the issue you found has been reported but has been closed, you can comment on the closed issue thread and ask to have the issue reopened because you are still experiencing the issue. Alternatively, you can open a new issue, reference the closed issue by number or link, and state that you are still experiencing the issue. Provide any additional details in your post so we can better understand the issue and how to fix it.
 
-## Environment options
-
-The app can be configured in a number of ways via environment variables:
-
-- `ARAGON_DEMO_DAO`: Address of the demo organization suggested to users during onboarding
-- `REACT_APP_DEFAULT_ETH_NODE`: Url of the default Ethereum node to read blockchain data from (must be WebSocket protocol). If you intend to connect to a local ganache instance, by default you should set this to `ws://localhost:8545`.
-- `REACT_APP_ENS_REGISTRY_ADDRESS`: Address of the ENS registry that [APM](https://hack.aragon.org/docs/apm.html) repos were registered on. If you've deployed [aragonOS](https://github.com/aragon/aragonOS) to a local network, you can find the ENS registry's address in the migration's console output.
-- `REACT_APP_ETH_NETWORK_TYPE`: Expected network type to connect to. Either one of `main`, `rinkeby` or `local`.
-- `REACT_APP_ETH_SUBSCRIPTION_EVENT_DELAY`: Time (in ms) delay between receiving an event from `eth_subscribe` to sending it for processing. Useful in cases where a node sends events faster than it can commit state changes from the event. Defaults to 0 (no delay).
-- `REACT_APP_IPFS_GATEWAY`: Url of the [IPFS](https://ipfs.io) gateway to load APM repos from. If you intend to connect to a local IPFS daemon, by default you should set this to `http://localhost:8080/ipfs`
-- `REACT_APP_ASSET_BRIDGE`: Which source to load app frontend assets from. Can be one of `ipfs` (uses the configured IPFS gateway) or `local` (local development servers, running on `localhost:300x`). If you intend to serve assets from a local IPFS daemon, you should set this to `ipfs`.
-
-Without any settings, the app is configured to connect to our Rinkeby deployment fetching assets from IPFS.
-
-## Contributors
+#### Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 

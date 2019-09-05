@@ -22,7 +22,8 @@ export const banner = {
   button: 'More info',
 }
 
-export const highlights = [
+const highlights = {}
+highlights['latest'] = [
   {
     title: {
       small: null,
@@ -162,3 +163,32 @@ export const highlights = [
     },
   },
 ]
+
+highlights['0.6'] = [...highlights['latest']]
+highlights['0.6'][6] = {
+  title: {
+    small: null,
+    large: 'What else is new?',
+  },
+  description: {
+    small: null,
+    large: `
+      A mobile-friendly UI, custom labels for apps
+      and addresses, an activity panel that keeps you
+      informed about the status of pending
+      transactions and much more!
+    `,
+  },
+  visual: {
+    small: small7,
+    large: large7,
+    color:
+      'linear-gradient(296.62deg, #95BBCE -14.74%, #C5D0E6 38.16%, #E7E4F6 99.41%)',
+  },
+  upgrade: {
+    small: 'Upgrade to 0.8 Camino',
+    large: 'Upgrade to 0.8 Camino',
+  },
+}
+
+export { highlights }
