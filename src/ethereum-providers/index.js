@@ -49,7 +49,7 @@ const PROVIDERS = new Map(
   ].map(provider => [provider.id, provider])
 )
 
-// Get a string that that depend on the current Ethereum provider. The default
+// Get a string that depends on the current Ethereum provider. The default
 // string is used as an identifier (à la gettext). Also see identifyProvider()
 // in web3-utils.js for a list of provider IDs that can be detected.
 function getProviderString(string, providerId = 'unknown') {
