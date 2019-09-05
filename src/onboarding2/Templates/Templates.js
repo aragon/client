@@ -41,7 +41,7 @@ function Templates({ onUse, templates }) {
     >
       <Header
         title="Choose a template"
-        subtitle="Create your own organisation and token in a few minutes!"
+        subtitle="Create your own organization and token in a few minutes!"
         bottomSpacing={3 * GU}
       />
       <div

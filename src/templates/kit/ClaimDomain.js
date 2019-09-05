@@ -14,8 +14,8 @@ function ClaimDomain({
   next,
   screenIndex,
   screens,
-  screenTitle = 'Domain',
-  screenSubtitle = 'Create your own organisation and token in a few minutes!',
+  screenTitle = 'Claim a domain',
+  screenSubtitle = 'Create your own organization and token in a few minutes!',
 }) {
   const [domain, setDomain] = useState(data.domain || '')
 
