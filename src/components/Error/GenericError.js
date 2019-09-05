@@ -6,6 +6,7 @@ import {
   EmptyStateCard,
   GU,
   IconDown,
+  RADIUS,
   textStyle,
   useTheme,
 } from '@aragon/ui'
@@ -30,7 +31,7 @@ const GenericError = React.memo(function GenericError({
         grid-template-rows: 1fr auto auto auto;
         grid-template-columns: 1fr;
         padding: ${5 * GU}px ${6 * GU}px;
-        width: 579px;
+        width: ${72 * GU}px;
         height: auto;
         box-shadow: 0px 2px 4px rgba(180, 188, 202, 0.5);
       `}
@@ -101,12 +102,11 @@ const GenericError = React.memo(function GenericError({
                 <div
                   css={`
                     overflow: auto;
-                    padding: 15px;
+                    padding: ${2 * GU}px;
                     max-height: 200px;
-                    border-radius: 4px;
+                    border-radius: ${RADIUS}px;
                     color: ${theme.text};
-                    font-size: 14px;
-                    line-height: 1.6;
+                    ${textStyle('body3')};
                     white-space: pre;
                     background: #f6f6f6;
                   `}
@@ -114,8 +114,7 @@ const GenericError = React.memo(function GenericError({
                   {detailsTitle && (
                     <h2
                       css={`
-                        font-weight: bold;
-                        font-size: 16px;
+                        ${textStyle('body2')};
                         margin-bottom: 10px;
                       `}
                     >
