@@ -1,38 +1,80 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Field, GU, Info, TextInput, useTheme } from '@aragon/ui'
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react'
+import {
+  Field,
+  GU,
+  Help,
+  Info,
+  TextInput,
+  useTheme,
+  useViewport,
+} from '@aragon/ui'
 import { Header, PercentageField, PrevNextFooter } from '.'
 
 const MINUTE_IN_SECONDS = 60
 const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
 const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
 
+const DEFAULT_SUPPORT = 50
+const DEFAULT_QUORUM = 15
+const DEFAULT_DURATION = DAY_IN_SECONDS
+
+function reduceFields(fields, [field, value]) {
+  if (field === 'duration') {
+    return { ...fields, duration: value }
+  }
+  if (field === 'quorum') {
+    return {
+      ...fields,
+      quorum: value,
+      support: Math.max(fields.support, value),
+    }
+  }
+  if (field === 'support') {
+    return {
+      ...fields,
+      support: value,
+      quorum: Math.min(fields.quorum, value),
+    }
+  }
+  return fields
+}
+
 function Voting({ back, data, fields, next, screenIndex, screens }) {
-  const [support, setSupport] = useState(data.support || 50)
-  const [quorum, setQuorum] = useState(data.quorum || 15)
-  const [localDuration, setLocalDuration] = useState(data.duration || 0)
-
-  const handleSupportChange = useCallback(
-    value => {
-      setSupport(Math.max(value, quorum))
-    },
-    [quorum]
+  const [{ support, quorum, duration }, updateField] = useReducer(
+    reduceFields,
+    {
+      support: data.support || DEFAULT_SUPPORT,
+      quorum: data.quorum || DEFAULT_QUORUM,
+      duration: data.duration || DEFAULT_DURATION,
+    }
   )
 
-  const handleQuorumChange = useCallback(
-    value => {
-      setQuorum(Math.min(value, support))
-    },
-    [support]
-  )
+  const handleSupportChange = useCallback(value => {
+    updateField(['support', value])
+  }, [])
+
+  const handleQuorumChange = useCallback(value => {
+    updateField(['quorum', value])
+  }, [])
+
+  const handleDurationChange = useCallback(value => {
+    updateField(['duration', value])
+  }, [])
 
   const handleNext = useCallback(() => {
     next({
       ...data,
       support,
       quorum,
-      duration: localDuration,
+      duration,
     })
-  }, [data, next, support, quorum, localDuration])
+  }, [data, next, support, quorum, duration])
 
   return (
     <div
@@ -53,20 +95,43 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
         />
 
         <PercentageField
-          label="Support"
+          label={
+            <React.Fragment>
+              Support
+              <Help hint="What’s the support?">
+                <strong>Support</strong> is the number for what percent of the
+                tokens that participated in a vote must approve a proposal for
+                that proposal to pass. For example, if “Support” is set to 51%,
+                then 51% of tokens that vote on a proposal must approve the
+                proposal for it to pass.
+              </Help>
+            </React.Fragment>
+          }
           value={support}
           onChange={handleSupportChange}
         />
 
         <PercentageField
-          label="Minimum approval %"
+          label={
+            <React.Fragment>
+              Minimum approval %
+              <Help hint="What’s the minimum approval?">
+                <strong>Minimum Approval</strong> is the number for what percent
+                of the total outstanding supply of tokens must approve a
+                proposal for the vote to be considered valid. For example, if
+                the Min. Quorum is set to 20%, then 20% of the outstanding token
+                supply must vote to approve a proposal for the vote to be
+                considered valid.
+              </Help>
+            </React.Fragment>
+          }
           value={quorum}
           onChange={handleQuorumChange}
         />
 
         <VoteDuration
-          duration={data.duration || 0}
-          onUpdate={setLocalDuration}
+          duration={data.duration || DEFAULT_DURATION}
+          onUpdate={handleDurationChange}
         />
 
         <Info
@@ -74,8 +139,11 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
             margin-bottom: ${3 * GU}px;
           `}
         >
-          These settings will define your organization’s governance, for
-          example, the support required for a vote to pass or its duration.
+          These settings will define your organization’s governance. The support
+          and minimum approval thresholds are strict requirements, such that
+          votes will only pass if they achieve approval percentages greater than
+          these thresholds. These parameters currently{' '}
+          <strong>cannot be changed</strong> after the organization is created.
         </Info>
 
         <PrevNextFooter
@@ -92,6 +160,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
 
 function VoteDuration({ duration = 0, onUpdate }) {
   const theme = useTheme()
+  const { above } = useViewport()
 
   // Calculate the units based on the initial duration (in seconds).
   const [baseDays, baseHours, baseMinutes] = useMemo(() => {
@@ -146,45 +215,72 @@ function VoteDuration({ duration = 0, onUpdate }) {
   )
 
   return (
-    <Field label="vote duration">
-      <div css="display: flex">
-        {[
-          ['Days', handleDaysChange, days],
-          ['Hours', handleHoursChange, hours],
-          ['Minutes', handleMinutesChange, minutes],
-        ].map(([label, handler, value]) => (
-          <div
-            key={label}
-            css={`
-              margin-right: ${2 * GU}px;
-            `}
-          >
-            <TextInput
-              adornment={
-                <span
-                  css={`
-                    padding: 0 ${2 * GU}px;
-                    color: ${theme.contentSecondary};
-                  `}
-                >
-                  {label}
-                </span>
-              }
-              adornmentPosition="end"
-              adornmentSettings={{
-                width: 8 * GU,
-                padding: 0,
-              }}
-              onChange={handler}
-              value={value}
+    <Field
+      label={
+        <React.Fragment>
+          vote duration
+          <Help hint="What’s the vote duration?">
+            <strong>Vote Duration</strong> is the length of time that the vote
+            will be open for participation. For example, if the Vote Duration is
+            set to 24 H, then tokenholders have 24 hours to participate in the
+            vote.
+          </Help>
+        </React.Fragment>
+      }
+    >
+      {({ id }) => (
+        <div
+          css={`
+            display: flex;
+            padding-top: ${0.5 * GU}px;
+            width: 100%;
+          `}
+        >
+          {[
+            ['Days', handleDaysChange, days],
+            ['Hours', handleHoursChange, hours],
+            [
+              above('medium') ? 'Minutes' : 'Min.',
+              handleMinutesChange,
+              minutes,
+            ],
+          ].map(([label, handler, value], index) => (
+            <div
+              key={label}
               css={`
-                width: ${17 * GU}px;
-                text-align: center;
+                flex-grow: 1;
+                max-width: ${17 * GU}px;
+                & + & {
+                  margin-left: ${2 * GU}px;
+                }
               `}
-            />
-          </div>
-        ))}
-      </div>
+            >
+              <TextInput
+                id={index === 0 ? id : undefined}
+                adornment={
+                  <span
+                    css={`
+                      padding: 0 ${2 * GU}px;
+                      color: ${theme.contentSecondary};
+                    `}
+                  >
+                    {label}
+                  </span>
+                }
+                adornmentPosition="end"
+                adornmentSettings={{
+                  width: 8 * GU,
+                  padding: 0,
+                }}
+                onChange={handler}
+                value={value}
+                wide
+                css="text-align: center"
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </Field>
   )
 }
