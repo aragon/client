@@ -273,7 +273,7 @@ class App extends React.Component {
         const canUpgradeOrg = repos.some(
           ({ appId, currentVersion, latestVersion }) =>
             isKnownRepo(appId) &&
-            currentVersion.version.split('.')[0] !==
+            currentVersion.version.split('.')[0] <
               latestVersion.version.split('.')[0]
         )
         this.setState({ canUpgradeOrg, repos })
@@ -451,7 +451,7 @@ class App extends React.Component {
                             apps={appsWithIdentifiers}
                             permissions={permissions}
                           >
-                            <div css="position: relative; z-index: 1">
+                            <div css="position: relative; z-index: 0">
                               <Wrapper
                                 visible={mode === APP_MODE_ORG}
                                 account={account}

@@ -6,10 +6,10 @@ import {
   Button,
   ButtonBase,
   Checkbox,
+  DropDown,
   GU,
   IconArrowDown,
   IconArrowUp,
-  IconDown,
   IconDownload,
   IconExternal,
   IconGrid,
@@ -19,13 +19,12 @@ import {
   Info,
   TextInput,
   breakpoint,
-  font,
   useTheme,
   useViewport,
+  textStyle,
 } from '@aragon/ui'
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import Import from './Import'
-import ButtonDropDown from '../../ButtonDropDown/ButtonDropDown'
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { ASC, DESC } from './useLocalIdentities'
 import { iOS } from '../../../utils'
@@ -83,6 +82,8 @@ function LocalIdentities({
             value={searchTerm}
             css={`
               width: ${compact ? 25 * GU : 30 * GU}px;
+              ${textStyle('body2')};
+              color: ${searchTerm.trim() ? theme.surfaceContent : theme.hint};
             `}
           />
         </div>
@@ -120,7 +121,7 @@ function LocalIdentities({
           />
         )}
         <Actions
-          someSelected={someSelected}
+          disabled={!someSelected}
           onShare={onShare}
           onExport={onExport}
           onRemove={onRemove}
@@ -134,11 +135,12 @@ function LocalIdentities({
             css={`
               text-transform: uppercase;
               color: ${theme.content};
-              ${font({ size: 'xsmall' })};
               display: grid;
               grid-template-columns: 1fr 1fr;
               align-items: center;
               margin-bottom: ${1 * GU}px;
+              ${textStyle('label2')};
+              color: ${theme.contentSecondary};
             `}
           >
             <div
@@ -170,9 +172,9 @@ function LocalIdentities({
                     label="Toggle sort"
                     onClick={onToggleSort}
                     css={`
-                      padding: ${0.5 * GU}px ${1 * GU}px;
+                      padding: ${0.5 * GU}px ${3 * GU}px;
                       position: relative;
-                      left: ${-1 * GU}px;
+                      left: ${-3 * GU}px;
                       border-radius: 0;
                       display: flex;
                       align-items: center;
@@ -185,6 +187,7 @@ function LocalIdentities({
                     <span
                       css={`
                         margin-right: ${1 * GU}px;
+                        ${textStyle('label2')}
                       `}
                     >
                       Custom label{' '}
@@ -208,7 +211,7 @@ function LocalIdentities({
                 key={address}
                 css={`
                   /* needs spacing left to compensate for list being moved to the edge */
-                  padding: ${2 * GU}px;
+                  padding: ${2 * GU}px ${3 * GU}px;
                   display: grid;
                   grid-template-columns: 1fr 1fr;
                   align-items: center;
@@ -266,11 +269,11 @@ LocalIdentities.propTypes = {
   sortIdentities: PropTypes.oneOf([ASC, DESC]).isRequired,
 }
 
-function Actions({ onExport, onRemove, onShare, someSelected }) {
+function Actions({ onExport, onRemove, onShare, disabled }) {
   const theme = useTheme()
   const { below, above } = useViewport()
   const compact = below('medium')
-  const handleClick = useCallback(
+  const handleChange = useCallback(
     index => {
       if (index === 0) {
         onShare()
@@ -287,11 +290,17 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
 
   return (
     <React.Fragment>
-      <ButtonDropDown
+      <DropDown
+        css="box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);"
+        disabled={disabled}
         compact={compact}
-        css="z-index: 2;"
+        selected={-1}
         items={[
-          <ActionSpan>
+          <ActionSpan
+            css={`
+              color: ${theme.surfaceContent};
+            `}
+          >
             <IconShare
               css={`
                 color: ${theme.surfaceIcon};
@@ -320,11 +329,13 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
             <span>Remove</span>
           </ActionSpan>,
         ]}
-        cover={
+        placeholder={
           <span
             css={`
               height: 24px;
-              font-size: 16px;
+              $textStyle('body2');
+              color: ${theme.surfaceContent};
+
               ${above('medium') &&
                 `
                   display: grid;
@@ -332,7 +343,6 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
                   grid-gap: ${1.5 * GU}px;
                   width: 100%;
                   align-items: center;
-                  z-index: 2;
                 `}
             `}
           >
@@ -341,20 +351,10 @@ function Actions({ onExport, onRemove, onShare, someSelected }) {
                 color: ${theme.surfaceIcon};
               `}
             />
-            {!compact && (
-              <React.Fragment>
-                <span css="text-align: left;">Actions</span>
-                <IconDown
-                  size="small"
-                  css={`
-                    color: ${theme.surfaceIcon};
-                  `}
-                />
-              </React.Fragment>
-            )}
+            {!compact && <span css="text-align: left;">Actions</span>}
           </span>
         }
-        onClick={handleClick}
+        onChange={handleChange}
       />
     </React.Fragment>
   )
@@ -364,16 +364,19 @@ Actions.propTypes = {
   onExport: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onShare: PropTypes.func.isRequired,
-  someSelected: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool.isRequired,
 }
 
 const ActionSpan = styled.span`
   display: grid;
   align-items: center;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto 1fr;
   grid-gap: ${1 * GU}px;
-  padding-left: ${1 * GU}px;
-  font-size: 16px;
+  ${textStyle('body2')};
+
+  & span {
+    text-align: left;
+  }
 `
 
 const StyledCheckbox = styled(Checkbox)`
@@ -397,11 +400,10 @@ const List = styled.ul`
   padding: 0;
   list-style: none;
   overflow: hidden;
-  width: calc(100% + ${4 * GU}px);
+  width: calc(100% + ${5 * GU}px);
   position: relative;
-  left: -${2 * GU}px;
+  left: -${3 * GU}px;
   background: ${({ surface }) => surface};
-  z-index: 1;
   border-top: ${({ border }) => `1px solid ${border};`};
   border-bottom: ${({ border }) => `1px solid ${border};`};
 

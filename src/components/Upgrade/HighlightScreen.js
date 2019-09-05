@@ -61,7 +61,7 @@ const HighlightScreen = ({
           flex-shrink: 0;
           width: ${verticalMode ? 'auto' : `${RATIO_LEFT * 100}%`};
           height: ${verticalMode ? 'auto' : '100%'};
-          padding: ${verticalMode ? '30px 20px 90px' : '10vh 60px 90px'};
+          padding: ${verticalMode ? '30px 20px 90px' : `10vh 40px 90px`};
           max-width: ${verticalMode ? '420px' : 'none'};
           display: flex;
           flex-direction: column;
@@ -87,7 +87,7 @@ const HighlightScreen = ({
             ),
           }}
         >
-          New Bella 0.7
+          New Camino 0.8
         </AnimP>
         <AnimH1
           css={`
@@ -173,10 +173,10 @@ const HighlightScreen = ({
                       right: 0;
                       bottom: 0;
                       background: ${`
-                        ${visual.color}
-                        ${verticalMode ? '50% 40%' : '0 50%'} / cover
                         url(${visualSrc})
-                        no-repeat;
+                        ${verticalMode ? '50% 40%' : '0 50%'} / cover
+                        no-repeat,
+                        ${visual.color};
                       `};
                     `}
                     style={{ opacity }}

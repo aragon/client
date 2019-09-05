@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, GU, textStyle, useTheme } from '@aragon/ui'
-import noResultsSvg from '../../assets/no-results.svg'
+import { Link, GU, textStyle, useTheme } from '@aragon/ui'
+import noResultsPng from '../../assets/no-results.png'
 
 function EmptyFilteredPermissions({ onClear }) {
   const theme = useTheme()
@@ -20,7 +20,7 @@ function EmptyFilteredPermissions({ onClear }) {
           margin: ${4 * GU}px 0;
           height: 176px;
         `}
-        src={noResultsSvg}
+        src={noResultsPng}
         alt="No results"
       />
       <h3
@@ -42,9 +42,7 @@ function EmptyFilteredPermissions({ onClear }) {
         `}
       >
         There are no permissions matching your search criteria.{' '}
-        <ButtonText horizontalPadding="none" onClick={onClear}>
-          Clear filters
-        </ButtonText>
+        <Link onClick={onClear}>Clear filters</Link>
       </div>
     </div>
   )

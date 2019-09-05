@@ -131,6 +131,7 @@ function Heading({
   const handleOnClear = useCallback(() => {
     onEntityTypeChange(-1)
     onSearchTermsChange('')
+    setSearchTermsInputValue('')
   }, [onEntityTypeChange, onSearchTermsChange])
 
   return (
@@ -160,7 +161,8 @@ function Heading({
             `}
           >
             <DropDown
-              placeholder="Entity type"
+              header="Type"
+              placeholder="Type"
               items={ENTITY_TYPES}
               selected={selectedEntityType}
               onChange={handleEntityDropDownChange}

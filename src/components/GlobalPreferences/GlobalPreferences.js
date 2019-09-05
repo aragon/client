@@ -15,7 +15,7 @@ import {
   useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-import { AragonType } from '../../prop-types'
+import { AragonType, AppType } from '../../prop-types'
 import { useEsc } from '../../hooks'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
@@ -33,13 +33,20 @@ const SECTIONS = new Map([
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
 
+const CUSTOM_LABELS_INDEX = 0
+const NETWORK_INDEX = 1
+const NOTIFICATIONS_INDEX = 2
+const HELP_AND_FEEDBACK_INDEX = 3
+
 function GlobalPreferences({
+  apps,
   compact,
   locator,
   onClose,
   onNavigation,
   onScreenChange,
   sectionIndex,
+  subsection,
   wrapper,
 }) {
   const toast = useToast()
@@ -97,12 +104,20 @@ function GlobalPreferences({
             selected={sectionIndex}
           />
           <main>
-            {sectionIndex === 0 && (
+            {sectionIndex === CUSTOM_LABELS_INDEX && (
               <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
             )}
-            {sectionIndex === 1 && <Network wrapper={wrapper} />}
-            {sectionIndex === 2 && <Notifications />}
-            {sectionIndex === 3 && <HelpAndFeedback />}
+            {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
+            {sectionIndex === NOTIFICATIONS_INDEX && (
+              <Notifications
+                apps={apps}
+                dao={dao}
+                subsection={subsection}
+                handleNavigation={onNavigation}
+                navigationIndex={2}
+              />
+            )}
+            {sectionIndex === HELP_AND_FEEDBACK_INDEX && <HelpAndFeedback />}
           </main>
         </React.Fragment>
       )}
@@ -111,18 +126,20 @@ function GlobalPreferences({
 }
 
 GlobalPreferences.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
   compact: PropTypes.bool,
   locator: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   onNavigation: PropTypes.func.isRequired,
   onScreenChange: PropTypes.func.isRequired,
   sectionIndex: PropTypes.number,
+  subsection: PropTypes.string,
   wrapper: AragonType,
 }
 
 function useGlobalPreferences({ locator = {}, onScreenChange }) {
   const [sectionIndex, setSectionIndex] = useState(null)
-
+  const [subsection, setSubsection] = useState(null)
   const handleNavigation = useCallback(
     index => {
       onScreenChange(PATHS[index])
@@ -132,14 +149,21 @@ function useGlobalPreferences({ locator = {}, onScreenChange }) {
 
   useEffect(() => {
     const { preferences: { path = '' } = {} } = locator
-    if (!path || !SECTIONS.has(path)) {
+    if (!path) {
       setSectionIndex(null)
       return
     }
-    setSectionIndex(PATHS.findIndex(item => item === path))
-  }, [locator])
+    const index = PATHS.findIndex(item => path.startsWith(item))
+    setSectionIndex(index === -1 ? null : index)
 
-  return { sectionIndex, handleNavigation }
+    // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
+    const subsection = index !== -1 ? path.substring(PATHS[index].length) : null
+
+    setSubsection(subsection)
+    // Does the current path start with any of the declared route paths
+  }, [locator, sectionIndex])
+
+  return { sectionIndex, subsection, handleNavigation }
 }
 
 function Close({ compact, onClick }) {
@@ -163,10 +187,6 @@ function Close({ compact, onClick }) {
         <IconClose
           css={`
             color: ${theme.surfaceIcon};
-            & path {
-              stroke: ${theme.surfaceIcon};
-              stroke-width: 0.3px;
-            }
           `}
         />
       </ButtonIcon>
@@ -180,7 +200,7 @@ Close.propTypes = {
 }
 
 function AnimatedGlobalPreferences(props) {
-  const { sectionIndex, handleNavigation } = useGlobalPreferences({
+  const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences({
     locator: props.locator,
     onScreenChange: props.onScreenChange,
   })
@@ -222,6 +242,7 @@ function AnimatedGlobalPreferences(props) {
               {...props}
               compact={compact}
               sectionIndex={sectionIndex}
+              subsection={subsection}
               onNavigation={handleNavigation}
             />
           </AnimatedWrap>

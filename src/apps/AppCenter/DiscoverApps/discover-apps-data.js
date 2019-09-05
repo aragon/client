@@ -3,7 +3,7 @@ import espressoIcon from './icons/espresso.svg'
 import agentIcon from './icons/agent.svg'
 import surveyIcon from './icons/survey.svg'
 import pandoIcon from './icons/pando.svg'
-import tpsIcon from './icons/that-planning-suite.svg'
+import openEnterpriseIcon from './icons/open-enterprise.svg'
 import { shuffleArray } from '../../../utils'
 
 export const appsInDevelopment = [
@@ -12,7 +12,7 @@ export const appsInDevelopment = [
     {
       icon: surveyIcon,
       name: 'Survey',
-      status: 'ready',
+      status: 'experimental',
       description: `Create multi-option signaling votes.`,
       link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
     },
@@ -27,7 +27,8 @@ export const appsInDevelopment = [
       description: `
         Hold assets and perform actions from DAOs.
       `,
-      link: 'https://github.com/aragon/aragon-apps/tree/master/apps/agent',
+      link:
+        'https://hack.aragon.org/docs/guides-use-agent#installing-aragon-agent',
     },
     {
       icon: payrollIcon,
@@ -41,14 +42,14 @@ export const appsInDevelopment = [
         'https://github.com/aragon/aragon-apps/tree/master/future-apps/payroll',
     },
     {
-      icon: tpsIcon,
-      name: 'That Planning Suite',
+      icon: openEnterpriseIcon,
+      name: 'Open Enterprise',
       status: 'experimental',
       description: `
         Suite for open and fluid organizations.
         Bounties, range voting, and more.
       `,
-      link: 'https://github.com/AutarkLabs/planning-suite',
+      link: 'https://github.com/AutarkLabs/open-enterprise',
     },
     {
       icon: pandoIcon,
@@ -62,15 +63,12 @@ export const appsInDevelopment = [
     },
   ]),
 
-  // Alpha
-  ...shuffleArray([]),
-
-  // Pre-alpha
+  // In development
   ...shuffleArray([
     {
       icon: espressoIcon,
       name: 'Espresso',
-      status: 'pre-alpha',
+      status: 'in development',
       description: `
         Collaborative data vault.
         Encrypt and share data with people in your organization.
@@ -80,7 +78,7 @@ export const appsInDevelopment = [
     {
       icon: null,
       name: 'Liquid democracy',
-      status: 'pre-alpha',
+      status: 'in development',
       description: `
         Delegate your voting power to others,
         and vote on important matters.

@@ -46,7 +46,7 @@ function Onboarding({ status, selectorNetworks }) {
     <div
       css={`
         position: relative;
-        z-index: 2;
+        z-index: 1;
         background: ${theme.background};
         height: 100vh;
         overflow-y: auto;

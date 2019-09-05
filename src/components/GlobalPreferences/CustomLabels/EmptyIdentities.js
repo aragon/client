@@ -25,7 +25,7 @@ function EmptyIdentities({ onImport }) {
               color: ${theme.content};
             `}
             entity={getEmptyAddress()}
-            customLabel="Address badge"
+            label="Address badge"
             compact
             badgeOnly
           />

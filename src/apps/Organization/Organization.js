@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import {
   Box,
   Button,
-  ButtonText,
   Header,
   IconCoin,
   Info,
+  Link,
   GU,
   textStyle,
   unselectable,
@@ -25,8 +25,10 @@ const Organization = React.memo(function Organization({
   account,
   apps,
   appsLoading,
+  canUpgradeOrg,
   daoAddress,
   onOpenApp,
+  onShowOrgVersionDetails,
   walletNetwork,
   walletWeb3,
   walletProviderId,
@@ -61,6 +63,27 @@ const Organization = React.memo(function Organization({
   const enableTransactions = !!account && walletNetwork === network.type
   const shortAddresses = layoutName !== 'large'
 
+  const organizationText = checksummedDaoAddr ? (
+    <span>
+      This organization is deployed on the Ethereum {network.name}.{' '}
+      {canUpgradeOrg ? (
+        <span>
+          <Link onClick={onShowOrgVersionDetails}>
+            A new software update is available
+          </Link>
+          .
+        </span>
+      ) : (
+        <span>
+          The current software version is 0.8 Camino. You can see{' '}
+          <Link onClick={onShowOrgVersionDetails}>what's new here</Link>.
+        </span>
+      )}
+    </span>
+  ) : (
+    'Resolving DAO address…'
+  )
+
   const depositFundsHelpText = appsLoading ? (
     ''
   ) : hasFinanceApp || hasAgentApp ? (
@@ -82,15 +105,13 @@ const Organization = React.memo(function Organization({
   return (
     <React.Fragment>
       <Header primary="Organization Settings" />
-      <Section heading="Organization address">
+      <Box heading="Organization address">
         <p
           css={`
             ${textStyle('body2')}
           `}
         >
-          {checksummedDaoAddr
-            ? `This organization is deployed on the Ethereum ${network.name}.`
-            : 'Resolving DAO address…'}
+          {organizationText}
         </p>
         {checksummedDaoAddr && (
           <React.Fragment>
@@ -113,9 +134,9 @@ const Organization = React.memo(function Organization({
             </Info>
           </React.Fragment>
         )}
-      </Section>
+      </Box>
       {hasFinanceApp && testTokensEnabled(network.type) && (
-        <Section heading="Request test tokens">
+        <Box heading="Request test tokens">
           <p
             css={`
               margin-bottom: ${2 * GU}px;
@@ -168,10 +189,10 @@ const Organization = React.memo(function Organization({
               )}.`}
             </Info>
           )}
-        </Section>
+        </Box>
       )}
       {appsLoading ? (
-        <Section heading="Installed Aragon apps">
+        <Box heading="Installed Aragon apps">
           <div
             css={`
               display: flex;
@@ -183,9 +204,9 @@ const Organization = React.memo(function Organization({
           >
             Loading apps…
           </div>
-        </Section>
+        </Box>
       ) : (
-        <Section heading="Installed Aragon apps">
+        <Box heading="Installed Aragon apps">
           <ul
             css={`
               list-style: none;
@@ -225,7 +246,7 @@ const Organization = React.memo(function Organization({
               </li>
             ))}
           </ul>
-        </Section>
+        </Box>
       )}
     </React.Fragment>
   )
@@ -235,25 +256,15 @@ Organization.propTypes = {
   account: EthereumAddressType,
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
+  canUpgradeOrg: PropTypes.bool.isRequired,
   daoAddress: DaoAddressType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
+  onShowOrgVersionDetails: PropTypes.func.isRequired,
   walletNetwork: PropTypes.string.isRequired,
   walletWeb3: PropTypes.object.isRequired,
   walletProviderId: PropTypes.string.isRequired,
 }
 
-const Section = ({ ...props }) => {
-  return <Box padding={3 * GU} {...props} />
-}
-
-const OpenAppButton = props => (
-  <ButtonText
-    css={`
-      padding: 0;
-      font-weight: 600;
-    `}
-    {...props}
-  />
-)
+const OpenAppButton = props => <Link css="font-weight: 600" {...props} />
 
 export default Organization

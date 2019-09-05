@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { AragonType } from '../../../prop-types'
-import { Box, Button, Info, GU, Text, TextInput, theme } from '@aragon/ui'
+import {
+  Box,
+  Button,
+  Info,
+  GU,
+  TextInput,
+  textStyle,
+  useTheme,
+} from '@aragon/ui'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
 import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
@@ -20,20 +28,30 @@ function Network({ wrapper }) {
     handleIpfsGatewayChange,
     network,
   } = useNetwork(wrapper)
+  const theme = useTheme()
 
   return (
     <React.Fragment>
-      <Box heading={'Node settings'}>
+      <Box heading="Node settings">
         <Label>
           Ethereum node
           <TextInput
             value={ethNode}
             wide
             onChange={handleEthNodeChange}
-            css={networkError && `border-color: ${theme.negative};`}
+            css={`
+              ${textStyle('body2')};
+              color: ${theme.contentSecondary};
+              ${networkError ? `border-color: ${theme.negative};` : ''}
+            `}
           />
           {networkError && (
-            <Text color={theme.negative} size="xsmall">
+            <span
+              css={`
+                ${textStyle('body4')};
+                color: ${theme.negative};
+              `}
+            >
               {(() => {
                 if (networkError instanceof InvalidNetworkType) {
                   return `Node must be connected to ${sanitizeNetworkType(
@@ -48,7 +66,7 @@ function Network({ wrapper }) {
                 }
                 return 'URI does not seem to be a ETH node'
               })()}
-            </Text>
+            </span>
           )}
         </Label>
         <Label>
@@ -57,22 +75,26 @@ function Network({ wrapper }) {
             value={ipfsGateway}
             wide
             onChange={handleIpfsGatewayChange}
+            css={`
+              ${textStyle('body2')};
+              color: ${theme.contentSecondary};
+            `}
           />
         </Label>
         <Button mode="strong" onClick={handleNetworkChange}>
           Save changes
         </Button>
       </Box>
-      <Box heading={'Troubleshooting'}>
+      <Box heading="Troubleshooting">
         <div
           css={`
             margin-bottom: ${2 * GU}px;
           `}
         >
-          <Text>
+          <span>
             Press this button to refresh the cache of the application in your
             browser.
-          </Text>
+          </span>
         </div>
         <Button
           css={`
@@ -83,7 +105,7 @@ function Network({ wrapper }) {
           Clear application cache
         </Button>
         <Info>
-          This will only delete the data stored in youur browser to make the app
+          This will only delete the data stored in your browser to make the app
           load faster. No data related to the organization itself will be
           altered.
         </Info>

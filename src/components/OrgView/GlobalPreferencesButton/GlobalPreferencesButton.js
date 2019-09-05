@@ -7,6 +7,7 @@ import {
   IconSettings,
   Popover,
   RADIUS,
+  textStyle,
   useTheme,
 } from '@aragon/ui'
 import IconNetwork from './IconNetwork'
@@ -33,16 +34,18 @@ function GlobalPreferencesButton({ onOpen }) {
     <React.Fragment>
       <div ref={containerRef}>
         <ButtonIcon
+          element="div"
           onClick={handleToggle}
           css={`
             height: 100%;
-            width: 40px;
+            width: ${4.25 * GU}px;
+            border-radius: 0;
           `}
           label="Global preferences"
         >
           <IconSettings
             css={`
-              color: ${theme.surfaceIcon};
+              color: ${theme.hint};
             `}
           />
         </ButtonIcon>
@@ -56,7 +59,7 @@ function GlobalPreferencesButton({ onOpen }) {
       >
         <ul
           css={`
-            width: 260px;
+            width: ${42 * GU}px;
             padding: 0;
             margin: 0;
             list-style: none;
@@ -69,12 +72,11 @@ function GlobalPreferencesButton({ onOpen }) {
             css={`
               display: flex;
               align-items: center;
-              height: 32px;
-              color: ${theme.surfaceContentSecondary};
-              text-transform: uppercase;
-              font-size: 12px;
+              height: ${4 * GU}px;
               padding-left: ${2 * GU}px;
               border-bottom: 1px solid ${theme.border};
+              ${textStyle('label2')}
+              color: ${theme.surfaceContentSecondary};
             `}
           >
             Global preferences

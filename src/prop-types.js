@@ -66,17 +66,16 @@ export const ActivityStatusType = PropTypes.oneOf([
 ])
 
 export const AppType = PropTypes.shape({
-  abi: PropTypes.array.isRequired,
   appId: PropTypes.string.isRequired,
   baseUrl: PropTypes.string.isRequired,
   codeAddress: EthereumAddressType.isRequired,
-  functions: PropTypes.array.isRequired,
   hasWebApp: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
   proxyAddress: EthereumAddressType.isRequired,
   src: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 
+  // This content may not be available if the app's content couldn't be fetched
+  abi: PropTypes.array,
   appName: PropTypes.string,
   apmRegistry: PropTypes.string,
   content: PropTypes.shape({
@@ -84,14 +83,16 @@ export const AppType = PropTypes.shape({
     provider: PropTypes.string.isRequired,
   }),
   description: PropTypes.string,
+  functions: PropTypes.array,
   icons: PropTypes.arrayOf(
     PropTypes.shape({
       src: PropTypes.string.isRequired,
     })
   ),
+  isAragonOsInternalApp: PropTypes.bool,
   isForwarder: PropTypes.bool,
   kernelAddress: EthereumAddressType,
-  isAragonOsInternalApp: PropTypes.bool,
+  name: PropTypes.string,
   roles: PropTypes.array,
   status: PropTypes.string,
   version: PropTypes.string,
@@ -171,16 +172,15 @@ export const RepoContentType = PropTypes.shape({
   ),
 })
 
+export const RepoVersionType = PropTypes.shape({
+  content: RepoContentType.isRequired,
+  version: PropTypes.string.isRequired,
+})
+
 export const RepoType = PropTypes.shape({
   appId: PropTypes.string.isRequired,
-  currentVersion: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
-  latestVersion: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
+  currentVersion: RepoVersionType,
+  latestVersion: RepoVersionType,
   repoAddress: EthereumAddressType.isRequired,
   versions: PropTypes.arrayOf(
     PropTypes.shape({

@@ -1,11 +1,6 @@
 import BN from 'bn.js'
 import resolvePathname from 'resolve-pathname'
-import Aragon, {
-  providers,
-  setupTemplates,
-  isNameUsed,
-  ensResolve,
-} from '@aragon/wrapper'
+import Aragon, { providers, setupTemplates, ensResolve } from '@aragon/wrapper'
 import {
   appOverrides,
   sortAppsPair,
@@ -23,6 +18,7 @@ import {
   getWeb3,
   getUnknownBalance,
   getMainAccount,
+  isEmptyAddress,
   isValidEnsName,
 } from './web3-utils'
 import SandboxedWorker from './worker/SandboxedWorker'
@@ -191,6 +187,25 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
   }
 }, POLL_DELAY_NETWORK)
 
+const resolveEnsDomain = async (domain, opts) => {
+  try {
+    return await ensResolve(domain, opts)
+  } catch (err) {
+    if (err.message === 'ENS name not defined.') {
+      return ''
+    }
+    throw err
+  }
+}
+
+export const isEnsDomainAvailable = async name => {
+  const addr = await resolveEnsDomain(name, {
+    provider: web3Providers.default,
+    registryAddress: contractAddresses.ensRegistry,
+  })
+  return addr === '' || isEmptyAddress(addr)
+}
+
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
@@ -291,17 +306,6 @@ const subscribe = (
   }
 
   return subscriptions
-}
-
-const resolveEnsDomain = async (domain, opts) => {
-  try {
-    return await ensResolve(domain, opts)
-  } catch (err) {
-    if (err.message === 'ENS name not defined.') {
-      return ''
-    }
-    throw err
-  }
 }
 
 const initWrapper = async (
@@ -434,18 +438,14 @@ const templateParamFilters = {
           `quorum (${minAcceptanceQuorum.toString()}) must be below 100%`
       )
     }
+    supportNeeded = supportNeeded.toString()
+    minAcceptanceQuorum = minAcceptanceQuorum.toString()
 
     const tokenBase = new BN(10).pow(new BN(18))
-    const holders = [{ address: account, balance: 1 }]
+    const accounts = [account]
+    const stakes = accounts.map(() => tokenBase.toString())
 
-    const [accounts, stakes] = holders.reduce(
-      ([accounts, stakes], holder) => [
-        [...accounts, holder.address],
-        [...stakes, tokenBase.muln(holder.balance)],
-      ],
-      [[], []]
-    )
-
+    // Note that we need all numerical arguments in string form for ABI encoding to work
     return [
       name,
       accounts,
@@ -478,20 +478,11 @@ const templateParamFilters = {
   },
 }
 
-export const isNameAvailable = async name =>
-  !(await isNameUsed(name, {
-    provider: web3Providers.default,
-    registryAddress: contractAddresses.ensRegistry,
-  }))
-
 export const initDaoBuilder = (
   provider,
   ensRegistryAddress,
   ipfsConf = ipfsDefaultConf
 ) => {
-  // DEV only
-  // provider = new Web3.providers.WebsocketProvider('ws://localhost:8546')
-
   return {
     build: async (templateName, organizationName, settings = {}) => {
       if (!organizationName) {

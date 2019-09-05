@@ -21,7 +21,7 @@ import {
 import useBeaconSuggestions from './useBeaconSuggestions'
 import { useHelpScout } from './useHelpScout'
 import BeaconHeadScripts from './BeaconHeadScripts'
-import headerImg from './header.png'
+import helpScoutHeaderPng from './assets/help-scout-header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
 import { AppType } from '../../prop-types'
 
@@ -64,12 +64,11 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
         position: absolute;
         bottom: ${2 * GU}px;
         right: ${2 * GU}px;
-        z-index: 4;
+        z-index: 2;
 
         ${breakpoint(
-          'medium',
+          'large',
           `
-            z-index: 2;
             bottom: ${3 * GU}px;
             right: ${3 * GU}px;
           `
@@ -322,7 +321,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
                 ),
               }}
             >
-              <IconQuestion width={18} height={18} />
+              <IconQuestion width={22} height={22} />
             </RoundButtonIcon>
           ))
         }
@@ -345,7 +344,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
       <Wrapper theme={theme}>
         <Header theme={theme}>
           {below('medium') && <CloseButton onClick={onClose} />}
-          <HeaderImage src={headerImg} alt="" />
+          <HeaderImage src={helpScoutHeaderPng} alt="" />
         </Header>
         <Main theme={theme}>
           {!optedIn ? (
@@ -431,10 +430,6 @@ const CloseButton = React.memo(({ onClick, ...props }) => {
           height: 24px;
 
           & path {
-            stroke: ${theme.accentContent};
-            stroke-width: 0.3px;
-          }
-          & path {
             fill: ${theme.accentContent};
             opacity: 1;
           }
@@ -510,7 +505,7 @@ const HeaderImage = styled.img`
   width: 269px;
   height: 139px;
   position: absolute;
-  bottom: -12px;
+  bottom: -6px;
 `
 
 const Main = styled.main`

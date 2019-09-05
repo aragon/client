@@ -61,6 +61,7 @@ class ActivityProvider extends React.Component {
 
   componentDidMount() {
     this.updateStoredList()
+    this._checkInterval = setInterval(this.checkForTimedOut, 1000 * 30)
   }
 
   componentDidUpdate(prevProps) {
@@ -77,10 +78,6 @@ class ActivityProvider extends React.Component {
       { activities: this._storedList.getItems() },
       this.refreshPendingActivities
     )
-  }
-
-  componentWillMount() {
-    this._checkInterval = setInterval(this.checkForTimedOut, 1000 * 30)
   }
 
   componentWillUnmount() {

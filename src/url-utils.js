@@ -57,3 +57,19 @@ export function repoBaseUrl(repo, gateway = ipfsDefaultConf.gateway) {
 export function simpleUrl(url = '') {
   return url.replace(/^https?:\/\//, '')
 }
+
+const GITHUB = 'https://github.com'
+const GITLAB = 'https://gitlab.com'
+const BITBUCKET = 'https://bitbucket.com'
+
+export const sanitizeCodeRepositoryUrl = url => {
+  const lowerCasedURL = url.toLowerCase()
+
+  return lowerCasedURL.indexOf(GITHUB) === 0
+    ? 'GitHub'
+    : lowerCasedURL.indexOf(GITLAB) === 0
+    ? 'GitLab'
+    : lowerCasedURL.indexOf(BITBUCKET) === 0
+    ? 'Bitbucket'
+    : url
+}

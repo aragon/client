@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, Info, RadioList, GU } from '@aragon/ui'
+import { Info, Link, RadioList, GU, textStyle } from '@aragon/ui'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import { getProviderString } from '../../ethereum-providers'
 import { getAppPath } from '../../routing'
@@ -67,7 +67,9 @@ class ActionPathsContent extends React.Component {
                     >
                       <LocalIdentityBadge
                         entity={type === 'any-account' ? 'Any account' : value}
-                        fontSize="small"
+                        labelStyle={`
+                          ${textStyle('body3')}
+                        `}
                         compact
                       />
                     </span>
@@ -75,18 +77,18 @@ class ActionPathsContent extends React.Component {
                 }
                 if (type === 'app') {
                   return (
-                    <ButtonText
+                    <Link
                       key={index}
                       href={`#${getAppPath({
                         dao,
                         instanceId: 'permissions',
                         params: `app.${value.proxyAddress}`,
                       })}`}
-                      target="_blank"
+                      focusRingSpacing={[3, 2]}
                       css="margin-right: 2px"
                     >
                       {value.name}
-                    </ButtonText>
+                    </Link>
                   )
                 }
                 if (type === 'role' || type === 'kernelNamespace') {
@@ -114,7 +116,9 @@ class ActionPathsContent extends React.Component {
                     >
                       <LocalIdentityBadge
                         entity={value.name}
-                        fontSize="small"
+                        labelStyle={`
+                          ${textStyle('body3')}
+                        `}
                       />
                     </span>
                   )
@@ -192,7 +196,9 @@ class ActionPathsContent extends React.Component {
           The first will grant a token allowance to
           <LocalIdentityBadge
             entity={intent.transaction.token.spender}
-            fontSize="small"
+            labelStyle={`
+              ${textStyle('body3')}
+            `}
             compact
           />
           {'. '}
@@ -264,7 +270,9 @@ class ActionPathsContent extends React.Component {
                   </strong>{' '}
                   <LocalIdentityBadge
                     entity={intent.to}
-                    fontSize="small"
+                    labelStyle={`
+                      ${textStyle('body3')}
+                    `}
                     compact
                   />{' '}
                   before proceeding.
