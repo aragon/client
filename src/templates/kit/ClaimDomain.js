@@ -47,7 +47,7 @@ function ClaimDomain({
 
       <PrevNextFooter
         backEnabled
-        nextEnabled={Boolean(domain)}
+        nextEnabled={Boolean(domain && !domain.startsWith('.'))}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleNext}
