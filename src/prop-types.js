@@ -217,5 +217,16 @@ export const OrgTemplateType = PropTypes.shape({
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   header: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
+  longdesc: PropTypes.string,
+  caseStudyUrl: PropTypes.string,
+  sourceCodeUrl: PropTypes.string,
+  registry: PropTypes.string,
+  modules: PropTypes.array,
+  optionalModules: PropTypes.array,
+  template: PropTypes.shape({
+    screens: PropTypes.array.isRequired,
+    prepareTransaction: PropTypes.func.isRequired,
+  }).isRequired,
 })
