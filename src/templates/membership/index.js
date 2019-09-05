@@ -15,7 +15,8 @@ export default {
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/membership',
-  sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/master/templates/membership',
+  sourceCodeUrl:
+    'https://github.com/aragon/dao-templates/tree/master/templates/membership',
   registry: 'aragonpm.eth',
   modules: [],
   template: {

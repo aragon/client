@@ -15,7 +15,8 @@ export default {
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/reputation',
-  sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/master/templates/reputation',
+  sourceCodeUrl:
+    'https://github.com/aragon/dao-templates/tree/master/templates/reputation',
   registry: 'aragonpm.eth',
   modules: [],
   template: {
