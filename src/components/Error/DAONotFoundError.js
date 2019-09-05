@@ -73,7 +73,7 @@ function DAONotFoundError({ dao }) {
           If you arrived here through a link, please double check that you were
           given the correct link. Alternatively, you may
           <ButtonText
-            onClick={() => window.history.back()}
+            onClick={() => (window.location = window.location.origin)}
             css="margin-left: -5px;"
           >
             create a new organization.
