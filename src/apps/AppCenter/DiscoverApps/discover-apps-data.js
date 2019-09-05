@@ -42,7 +42,7 @@ export const appsInDevelopment = [
         'https://github.com/aragon/aragon-apps/tree/master/future-apps/payroll',
     },
     {
-      icon: tpsIcon,
+      icon: openEnterpriseIcon,
       name: 'Open Enterprise',
       status: 'experimental',
       description: `
