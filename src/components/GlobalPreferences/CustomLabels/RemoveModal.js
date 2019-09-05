@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, GU, Modal, breakpoint, textStyle } from '@aragon/ui'
+import { Button, GU, Modal, breakpoint, textStyle, useToast } from '@aragon/ui'
 
 function RemoveModal({ visible, onClose, onConfirm }) {
+  const toast = useToast()
+  const handleConfirm = useCallback(() => {
+    toast('Custom labels removed')
+    onConfirm()
+  }, [onConfirm])
+
   return (
     <Modal visible={visible} onClose={onClose} css="z-index: 2;">
       <h1
@@ -25,7 +31,11 @@ function RemoveModal({ visible, onClose, onConfirm }) {
         <Button label="Cancel" onClick={onClose}>
           Cancel
         </Button>
-        <RemoveButton label="Remove labels" mode="strong" onClick={onConfirm}>
+        <RemoveButton
+          label="Remove labels"
+          mode="strong"
+          onClick={handleConfirm}
+        >
           Remove
         </RemoveButton>
       </ModalControls>
