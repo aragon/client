@@ -8,7 +8,7 @@ function RemoveModal({ visible, onClose, onConfirm }) {
   const handleConfirm = useCallback(() => {
     toast('Custom labels removed')
     onConfirm()
-  }, [onConfirm])
+  }, [onConfirm, toast])
 
   return (
     <Modal visible={visible} onClose={onClose} css="z-index: 2;">

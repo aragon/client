@@ -287,7 +287,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
       }
       onRemove()
     },
-    [onShare, onExport, onRemove]
+    [onShare, onExport, onRemove, toast]
   )
 
   return (

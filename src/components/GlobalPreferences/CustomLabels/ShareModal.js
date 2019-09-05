@@ -7,7 +7,6 @@ import {
   IconCopy,
   Modal,
   TextInput,
-  Toast,
   useToast,
   breakpoint,
   textStyle,
@@ -127,7 +126,6 @@ function ShareModal({ onClose, link, visible }) {
 }
 
 ShareModal.propTypes = {
-  inputRef: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   link: PropTypes.string.isRequired,
   visible: PropTypes.bool.isRequired,
