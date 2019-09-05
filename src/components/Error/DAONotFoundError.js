@@ -28,7 +28,7 @@ function DAONotFoundError({ dao }) {
       illustration={
         <img
           src={notFoundImage}
-          alt="DAO not found"
+          alt="Organization not found"
           css={`
             width: 147px;
             height: 144px;
