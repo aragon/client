@@ -8,8 +8,10 @@ import {
   IconClose,
   Layout,
   Tabs,
+  ToastHub,
   breakpoint,
   springs,
+  useLayout,
   useTheme,
   useToast,
   useViewport,
@@ -23,6 +25,9 @@ import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
+import { useHelpScout } from '../HelpScoutBeacon/useHelpScout'
+
+const TIMEOUT_TOAST = 4000
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
@@ -274,4 +279,24 @@ const AnimatedWrap = styled(animated.div)`
   ${breakpoint('medium', `padding-bottom:0;`)}
 `
 
-export default React.memo(AnimatedGlobalPreferences)
+const GlobalPreferencesWithDependencies = React.memo(
+  function GlobalPreferencesWithDependencies(props) {
+    const { optedOut } = useHelpScout()
+    const { layoutName } = useLayout()
+    return (
+      <ToastHub
+        shift={optedOut ? 0 : layoutName === 'small' ? 5.5 * GU : 6.5 * GU}
+        timeout={TIMEOUT_TOAST}
+      >
+        <AnimatedGlobalPreferences {...props} />
+      </ToastHub>
+    )
+  }
+)
+
+export { TIMEOUT_TOAST }
+export default React.memo(props => (
+  <Layout>
+    <GlobalPreferencesWithDependencies {...props} />
+  </Layout>
+))
