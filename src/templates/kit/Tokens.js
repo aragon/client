@@ -4,13 +4,14 @@ import {
   EthIdenticon,
   Field,
   GU,
-  RADIUS,
+  Help,
   IconPlus,
   IconTrash,
   Info,
+  RADIUS,
   TextInput,
-  useTheme,
   isAddress,
+  useTheme,
 } from '@aragon/ui'
 import { Header, PrevNextFooter } from '.'
 
@@ -35,7 +36,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
 
   const removeMember = useCallback(index => {
     setMembers(members =>
-      members.length < 2 ? members : members.filter((_, i) => i !== index)
+      members.length < 2 ? [''] : members.filter((_, i) => i !== index)
     )
   }, [])
 
@@ -53,6 +54,8 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
       members: members.filter(addr => isAddress(addr)),
     })
   }, [data, next, tokenName, tokenSymbol, members])
+
+  const hideRemoveButton = members.length < 2 && !members[0]
 
   return (
     <div
@@ -79,26 +82,56 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
             grid-column-gap: ${1.5 * GU}px;
           `}
         >
-          <Field label="Token name">
-            <TextInput
-              value={tokenName}
-              onChange={handleTokenNameChange}
-              wide
-            />
+          <Field
+            label={
+              <React.Fragment>
+                Token name
+                <Help hint="What’s the token name?">
+                  <strong>Token name</strong> is the name you can assign to the
+                  token that will be minted when creating this organization.
+                </Help>
+              </React.Fragment>
+            }
+          >
+            {({ id }) => (
+              <TextInput
+                id={id}
+                onChange={handleTokenNameChange}
+                placeholder="My organization"
+                value={tokenName}
+                wide
+              />
+            )}
           </Field>
 
-          <Field label="Token symbol">
-            <TextInput
-              value={tokenSymbol}
-              onChange={handleTokenSymbolChange}
-              wide
-            />
+          <Field
+            label={
+              <React.Fragment>
+                Token symbol
+                <Help hint="What’s the token symbol?">
+                  <strong>Token symbol</strong> or ticker is a shortened name
+                  (typically in capital letters) that refers to a token or coin
+                  on a trading platform. For example: ANT.
+                </Help>
+              </React.Fragment>
+            }
+          >
+            {({ id }) => (
+              <TextInput
+                id={id}
+                onChange={handleTokenSymbolChange}
+                value={tokenSymbol}
+                placeholder="MYORG"
+                wide
+              />
+            )}
           </Field>
 
           <Field label="Members">
             <div>
               {members.map((account, i) => (
                 <div
+                  key={i}
                   css={`
                     position: relative;
                     margin-bottom: ${1.5 * GU}px;
@@ -107,37 +140,51 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
                   <TextInput
                     key={i}
                     adornment={
-                      <Button
-                        onClick={() => removeMember(i)}
-                        icon={
-                          <IconTrash
-                            css={`
-                              color: ${theme.negative};
-                            `}
-                          />
-                        }
-                        size="mini"
-                      />
+                      !hideRemoveButton && (
+                        <Button
+                          onClick={() => removeMember(i)}
+                          icon={
+                            <IconTrash
+                              css={`
+                                color: ${theme.negative};
+                              `}
+                            />
+                          }
+                          size="mini"
+                        />
+                      )
                     }
                     adornmentPosition="end"
                     adornmentSettings={{ width: 52, padding: 8 }}
                     onChange={event => updateMember(i, event.target.value)}
+                    placeholder="Ethereum address"
                     value={account}
+                    wide
                     css={`
                       padding-left: ${4.5 * GU}px;
                     `}
-                    wide
                   />
 
-                  <EthIdenticon
-                    address={account}
-                    radius={RADIUS}
+                  <div
                     css={`
                       position: absolute;
                       top: ${1 * GU}px;
                       left: ${1 * GU}px;
                     `}
-                  />
+                  >
+                    {isAddress(account) ? (
+                      <EthIdenticon address={account} radius={RADIUS} />
+                    ) : (
+                      <div
+                        css={`
+                          width: ${3 * GU}px;
+                          height: ${3 * GU}px;
+                          background: ${theme.disabled};
+                          border-radius: ${RADIUS}px;
+                        `}
+                      />
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -160,9 +207,9 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
             margin-bottom: ${3 * GU}px;
           `}
         >
-          These settings will define your organization’s finances, for example,
-          the duration of a budget or how often a recurrent payment should be
-          executed.
+          These settings will determine the name and symbol of the token that
+          will be created for your organization. Add members to define the
+          initial distribution of this token.
         </Info>
 
         <PrevNextFooter
