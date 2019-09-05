@@ -1,28 +1,23 @@
 import React from 'react'
-import { ClaimDomain, Review, Voting, Tokens } from './kit'
+import { ClaimDomain, Review, Voting, Tokens } from '../kit'
 
-import header from './assets/header-startup.svg'
-import icon from './assets/icon-startup.svg'
+import header from './header.svg'
+import icon from './icon.svg'
 
 export default {
-  id: 'startup',
-  name: 'Startup',
+  id: 'membership',
+  name: 'Membership',
   header,
   icon,
   description: `
-    Use fully transferrable tokens to represent ownership stake in your
-    organization. Decisions are made based on stake-weighted voting.
+    Use a non-transferrable token to represent membership. Decisions can be
+    made based on one-member-one-vote governance.
   `,
-  longdesc: `
-    The different type of business goals mentioned above can help you
-    determine which priorities you want to go after. You can use them as a
-    reference for adjustments and future decisions, and they can aid in
-    creating the right strategies for accomplishing your company goals and
-    objectives.
-  `,
-  caseStudyUrl: 'https://aragon.org/case-study/startup',
-  sourceCodeUrl: 'aragon/aragon/dao-kit-startup',
+  // longdesc: ``,
+  // caseStudyUrl: 'https://aragon.org/case-study/membership',
+  sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/master/templates/membership',
   registry: 'aragonpm.eth',
+  modules: [],
   template: {
     screens: [
       [data => data.domain || 'Claim domain', ClaimDomain],
@@ -38,7 +33,7 @@ export default {
               {
                 label: 'General info',
                 fields: [
-                  ['Template of organization', 'Startup'],
+                  ['Template of organization', 'Membership'],
                   ['Domain', data.domain],
                 ],
               },

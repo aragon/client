@@ -1,8 +1,7 @@
-import startup from './startup'
-import reputation from './reputation'
-import membership from './membership'
+import company from './company'
 import fundraising from './fundraising'
-import multisign from './multisign'
+import membership from './membership'
+import reputation from './reputation'
 
 // see the corresponding prop type, OrgTemplateType, in prop-types.js.
-export default [startup, reputation, membership, fundraising, multisign]
+export default [reputation, company, membership, fundraising]

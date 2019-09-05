@@ -36,7 +36,11 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
 
   const removeMember = useCallback(index => {
     setMembers(members =>
-      members.length < 2 ? [''] : members.filter((_, i) => i !== index)
+      members.length < 2
+        ? // When the remove button of the last field
+          // gets clicked, we only empty the field.
+          ['']
+        : members.filter((_, i) => i !== index)
     )
   }, [])
 
