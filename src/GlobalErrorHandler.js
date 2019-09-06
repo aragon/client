@@ -8,7 +8,7 @@ import { network } from './environment'
 import { DAONotFound } from './errors'
 import { getSentryDsn } from './local-settings'
 import eagleSvg from './assets/eagle.svg'
-import logo from './assets/logo.svg'
+import logo from './assets/logo.png'
 
 const SENTRY_DSN = getSentryDsn()
 const PACKAGE_VERSION = process.env.REACT_APP_PACKAGE_VERSION || ''
