@@ -11,7 +11,6 @@ import {
   ToastHub,
   breakpoint,
   springs,
-  useLayout,
   useTheme,
   useToast,
   useViewport,
@@ -284,10 +283,10 @@ const AnimatedWrap = styled(animated.div)`
 const GlobalPreferencesWithDependencies = React.memo(
   function GlobalPreferencesWithDependencies(props) {
     const { optedOut } = useHelpScout()
-    const { layoutName } = useLayout()
+    const { below } = useViewport()
     return (
       <ToastHub
-        shift={optedOut ? 0 : layoutName === 'small' ? 5.5 * GU : 6.5 * GU}
+        shift={optedOut ? 0 : below('medium') ? 5.5 * GU : 6.5 * GU}
         timeout={TIMEOUT_TOAST}
       >
         <AnimatedGlobalPreferences {...props} />
