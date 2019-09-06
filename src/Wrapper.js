@@ -8,7 +8,6 @@ import AppIFrame from './components/App/AppIFrame'
 import AppInternal from './components/App/AppInternal'
 import AppLoader from './components/App/AppLoader'
 import OrgView from './components/OrgView/OrgView'
-import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
 import UpgradeModal from './components/Upgrade/UpgradeModal'
@@ -23,7 +22,7 @@ import {
   EthereumAddressType,
   RepoType,
 } from './prop-types'
-import { getAppPath, getPreferencesSearch } from './routing'
+import { getAppPath } from './routing'
 import {
   APP_MODE_ORG,
   APPS_STATUS_LOADING,
@@ -161,18 +160,6 @@ class Wrapper extends React.PureComponent {
     historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
   }
 
-  closePreferences = () => {
-    const { historyPush, locator } = this.props
-    historyPush(getAppPath(locator))
-  }
-
-  openPreferences = (screen, data) => {
-    const { historyPush, locator } = this.props
-    historyPush(
-      getAppPath({ ...locator, search: getPreferencesSearch(screen, data) })
-    )
-  }
-
   handleAppIFrameRef = appIFrame => {
     this.appIFrame = appIFrame
   }
@@ -269,6 +256,7 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       daoStatus,
       locator,
+      openPreferences,
       onRequestEnable,
       repos,
       transactionBag,
@@ -315,7 +303,7 @@ class Wrapper extends React.PureComponent {
           daoAddress={daoAddress}
           daoStatus={daoStatus}
           onOpenApp={this.openApp}
-          onOpenPreferences={this.openPreferences}
+          onOpenPreferences={openPreferences}
           onRequestEnable={onRequestEnable}
         >
           <AppLoader
@@ -354,14 +342,6 @@ class Wrapper extends React.PureComponent {
             />
           )}
         </OrgView>
-
-        <GlobalPreferences
-          locator={locator}
-          wrapper={wrapper}
-          apps={apps}
-          onScreenChange={this.openPreferences}
-          onClose={this.closePreferences}
-        />
 
         <UpgradeModal
           visible={upgradeModalOpened}
