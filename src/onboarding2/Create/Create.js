@@ -212,11 +212,11 @@ function Create() {
     return templateScreenIndex + 1
   }, [status, steps.length, templateScreenIndex])
 
-  const {
-    deployTransactions,
-    signedTransactions,
-    transactionsStatus,
-  } = useDeploymentState(status, template, templateData)
+  const { transactionsStatus } = useDeploymentState(
+    status,
+    template,
+    templateData
+  )
 
   // On load, restore the state directly
   useEffect(() => {
@@ -329,7 +329,7 @@ function Create() {
                   #e7e4f6 100%
                 );
               `}
-            ></div>
+            />
           )}
         </div>
       </section>
