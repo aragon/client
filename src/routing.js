@@ -39,13 +39,19 @@ export function parsePath(history, pathname, search = '') {
 
   // Start
   if (!parts[0]) {
-    return { path, mode: APP_MODE_START }
+    return { path, mode: APP_MODE_START, preferences: parsePreferences(search) }
   }
 
   // Setup
   if (parts[0] === 'setup') {
     const [, step = null, ...setupParts] = parts
-    return { path, mode: APP_MODE_SETUP, step, parts: setupParts }
+    return {
+      path,
+      mode: APP_MODE_SETUP,
+      step,
+      parts: setupParts,
+      preferences: parsePreferences(search),
+    }
   }
 
   let [dao] = parts
@@ -101,6 +107,10 @@ export function getAppPath({
   params,
   search = '',
 } = {}) {
+  if (!fullDao) {
+    return `/${search}`
+  }
+
   const dao =
     fullDao.indexOf(ARAGONID_ENS_DOMAIN) > -1
       ? fullDao.substr(0, fullDao.indexOf(ARAGONID_ENS_DOMAIN) - 1)
@@ -123,8 +133,8 @@ export function getAppPath({
 const GLOBAL_PREFERENCES_QUERY_PARAM = '?preferences=/'
 const GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR = '&labels='
 
-function parsePreferences(search) {
-  const [, raw = ''] = search && search.split(GLOBAL_PREFERENCES_QUERY_PARAM)
+function parsePreferences(search = '') {
+  const [, raw = ''] = search.split(GLOBAL_PREFERENCES_QUERY_PARAM)
   const params = new Map()
   const [path = null, labels = null] = raw.split(
     GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR
