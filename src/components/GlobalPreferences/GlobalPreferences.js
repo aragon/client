@@ -77,7 +77,7 @@ function GlobalPreferences({
   useEsc(onClose)
 
   return (
-    <React.Fragment>
+    <Layout>
       <Close
         compact={compact}
         onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
@@ -125,7 +125,7 @@ function GlobalPreferences({
           </main>
         </React.Fragment>
       )}
-    </React.Fragment>
+    </Layout>
   )
 }
 
