@@ -13,56 +13,59 @@ import logo from '../../assets/logo.png'
 function OnboardingTopBar({ onHome }) {
   const theme = useTheme()
   return (
-    <div
-      css={`
-        position: fixed;
-        z-index: 2;
-        top: 0;
-        left: 0;
-        right: 0;
-        border-top: 2px solid ${theme.accent};
-        padding: ${2 * GU}px ${2 * GU}px 0;
-      `}
-    >
+    <React.Fragment>
       <div
         css={`
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
+          position: fixed;
+          z-index: 2;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 0;
         `}
       >
-        <div>
-          <ButtonBase
-            onClick={onHome}
-            focusRingRadius={RADIUS}
-            title="Back to home"
-            css={`
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-top: -${1 * GU}px;
-              margin-left: -${1 * GU}px;
-              padding: ${1 * GU}px;
-              border-radius: ${RADIUS}px;
-              &:active {
-                background: ${theme.surfacePressed};
-              }
-            `}
-          >
-            <img src={logo} alt="" width={4.5 * GU} />
-          </ButtonBase>
-        </div>
+        <div
+          css={`
+            position: absolute;
+            top: 0;
+            width: 100%;
+            border-top: 2px solid ${theme.accent};
+          `}
+        />
+        <ButtonBase
+          onClick={onHome}
+          focusRingRadius={RADIUS}
+          title="Back to home"
+          css={`
+            position: absolute;
+            top: ${1 * GU}px;
+            left: ${1 * GU}px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: ${1 * GU}px;
+            border-radius: ${RADIUS}px;
+            &:active {
+              background: ${theme.surfacePressed};
+            }
+          `}
+        >
+          <img src={logo} width={4.5 * GU} alt="" />
+        </ButtonBase>
 
-        <div>
-          <Button
-            display="icon"
-            icon={<IconSettings />}
-            label="Settings"
-            size="small"
-          />
-        </div>
+        <Button
+          display="icon"
+          icon={<IconSettings />}
+          label="Settings"
+          size="small"
+          css={`
+            position: absolute;
+            top: ${2 * GU}px;
+            right: ${1 * GU}px;
+          `}
+        />
       </div>
-    </div>
+    </React.Fragment>
   )
 }
 
