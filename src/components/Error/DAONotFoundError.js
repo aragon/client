@@ -61,7 +61,7 @@ function DAONotFoundError({ dao }) {
               <span css="font-weight: bold;">“{dao}”</span>
             ) : (
               <React.Fragment>
-                the <span css="font-weight: bold;">“{dao}”</span> ENS domain
+                the <strong>“{dao}”</strong> ENS domain
               </React.Fragment>
             )}
             on the Ethereum {network.name}.
