@@ -56,7 +56,7 @@ function DAONotFoundError({ dao }) {
               max-width: 417px;
             `}
           >
-            It looks like there's no organization associated with{' '}
+            It looks like there’s no organization associated with{' '}
             {isAddress(dao) ? (
               <span css="font-weight: bold;">“{dao}”</span>
             ) : (
