@@ -101,7 +101,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
               <TextInput
                 id={id}
                 onChange={handleTokenNameChange}
-                placeholder="My organization"
+                placeholder="My Organization Token"
                 value={tokenName}
                 wide
               />
@@ -125,7 +125,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
                 id={id}
                 onChange={handleTokenSymbolChange}
                 value={tokenSymbol}
-                placeholder="MYORG"
+                placeholder="MOT"
                 wide
               />
             )}
