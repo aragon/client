@@ -243,13 +243,15 @@ function AnimatedGlobalPreferences(props) {
               ),
             }}
           >
-            <GlobalPreferences
-              {...props}
-              compact={compact}
-              sectionIndex={sectionIndex}
-              subsection={subsection}
-              onNavigation={handleNavigation}
-            />
+            <Layout paddingBottom={0}>
+              <GlobalPreferences
+                {...props}
+                compact={compact}
+                sectionIndex={sectionIndex}
+                subsection={subsection}
+                onNavigation={handleNavigation}
+              />
+            </Layout>
           </AnimatedWrap>
         ))
       /* eslint-enable react/prop-types */
@@ -296,7 +298,5 @@ const GlobalPreferencesWithDependencies = React.memo(
 
 export { TIMEOUT_TOAST }
 export default React.memo(props => (
-  <Layout paddingBottom={0}>
-    <GlobalPreferencesWithDependencies {...props} />
-  </Layout>
+  <GlobalPreferencesWithDependencies {...props} />
 ))
