@@ -146,19 +146,21 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
                   <TextInput
                     key={i}
                     adornment={
-                      !hideRemoveButton && (
-                        <Button
-                          onClick={() => removeMember(i)}
-                          icon={
-                            <IconTrash
-                              css={`
-                                color: ${theme.negative};
-                              `}
-                            />
-                          }
-                          size="mini"
-                        />
-                      )
+                      <span>
+                        {!hideRemoveButton && (
+                          <Button
+                            onClick={() => removeMember(i)}
+                            icon={
+                              <IconTrash
+                                css={`
+                                  color: ${theme.negative};
+                                `}
+                              />
+                            }
+                            size="mini"
+                          />
+                        )}
+                      </span>
                     }
                     adornmentPosition="end"
                     adornmentSettings={{ width: 52, padding: 8 }}
