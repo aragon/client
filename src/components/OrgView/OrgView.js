@@ -1,14 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import {
-  ButtonBase,
-  ButtonIcon,
-  IconMenu,
-  GU,
-  useTheme,
-  useThemeMode,
-  useViewport,
-} from '@aragon/ui'
+import { ButtonIcon, IconMenu, GU, useTheme, useViewport } from '@aragon/ui'
 import {
   AppInstanceGroupType,
   AppsStatusType,
@@ -22,20 +14,6 @@ import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/Organization
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
 import ActivityButton from './ActivityButton/ActivityButton'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
-
-function ThemeModeButton() {
-  const { mode, toggle } = useThemeMode()
-  return (
-    <ButtonBase
-      onClick={toggle}
-      css={`
-        padding: ${1 * GU}px;
-      `}
-    >
-      {mode === 'dark' ? '🌝' : '🌚'}
-    </ButtonBase>
-  )
-}
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -145,7 +123,6 @@ function OrgView({
             />
           )}
           <div css="display: flex">
-            <ThemeModeButton />
             <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ActivityButton apps={apps} />
           </div>
