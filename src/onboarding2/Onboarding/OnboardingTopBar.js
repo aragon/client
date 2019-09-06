@@ -61,7 +61,7 @@ function OnboardingTopBar({ onHome }) {
           css={`
             position: absolute;
             top: ${2 * GU}px;
-            right: ${1 * GU}px;
+            right: ${2 * GU}px;
           `}
         />
       </div>
