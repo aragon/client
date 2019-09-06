@@ -150,7 +150,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
             />
           )}
           {verticalMode && (
-            <Button mode="strong" onClick={onUse} wide>
+            <Button mode="strong" onClick={handleUseClick} wide>
               Use this template
             </Button>
           )}
