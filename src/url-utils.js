@@ -53,7 +53,7 @@ export function repoBaseUrl(repo, gateway = ipfsDefaultConf.gateway) {
   )
 }
 
-// Removes the unecessary part of a URL
+// Removes the HTTP protocol of a URL
 export function stripUrlProtocol(url = '') {
   return url.replace(/^https?:\/\//, '')
 }
