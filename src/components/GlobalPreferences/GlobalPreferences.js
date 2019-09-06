@@ -14,7 +14,6 @@ import {
   useLayout,
   useTheme,
   useToast,
-  useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { AragonType, AppType } from '../../prop-types'
@@ -78,7 +77,7 @@ function GlobalPreferences({
   useEsc(onClose)
 
   return (
-    <Layout>
+    <React.Fragment>
       <Close
         compact={compact}
         onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
@@ -126,7 +125,7 @@ function GlobalPreferences({
           </main>
         </React.Fragment>
       )}
-    </Layout>
+    </React.Fragment>
   )
 }
 
@@ -210,8 +209,8 @@ function AnimatedGlobalPreferences(props) {
     onScreenChange: props.onScreenChange,
   })
 
-  const { below } = useViewport()
-  const compact = below('medium')
+  const { layoutName } = useLayout()
+  const compact = layoutName === 'small'
   const theme = useTheme()
 
   return (
@@ -232,7 +231,7 @@ function AnimatedGlobalPreferences(props) {
             accent={theme.accent}
             surface={theme.surface}
             style={{
-              zIndex: compact ? 2 : 5,
+              zIndex: 1,
               pointerEvents: blocking ? 'auto' : 'none',
               opacity,
               transform: enterProgress.interpolate(
