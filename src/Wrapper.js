@@ -47,6 +47,7 @@ class Wrapper extends React.PureComponent {
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
+    openPreferences: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
