@@ -51,7 +51,7 @@ export default {
                 label: 'Tokens',
                 fields: [
                   ['Token', `${data.tokenName} (${data.tokenSymbol})`],
-                  ...data.members.map((account, i) => [
+                  ...(data.members || []).map((account, i) => [
                     `Address ${i + 1}`,
                     account,
                   ]),
@@ -62,8 +62,40 @@ export default {
         ),
       ],
     ],
-    prepareTransaction(data) {
-      // return txdata
+    deploy(template, data) {
+      return [
+        {
+          name: 'First signature',
+          transaction: async () => {
+            return new Promise(resolve => {
+              setTimeout(() => resolve([]), 2000)
+            })
+            // const { tokenName, tokenSymbol } = data
+            // const call = template.methods.newToken(tokenName, tokenSymbol)
+            // const receipt = await call.send({
+            //   from,
+            //   ...(await applyCallGasOptions(call, options)),
+            // })
+            // return receipt.events.DeployToken.returnValues
+          },
+        },
+        {
+          name: 'Second signature',
+          transaction: async ([
+            returnValues /* returnValues from the previous transaction  */,
+          ]) => {
+            return new Promise(resolve => {
+              setTimeout(() => resolve([]), 2000)
+            })
+            // const call = template.methods.newInstance(/* … */)
+            // const receipt = await call.send({
+            //   from,
+            //   ...(await applyCallGasOptions(call, options)),
+            // })
+            // return receipt.events.DeployInstance.returnValues
+          },
+        },
+      ]
     },
   },
 }

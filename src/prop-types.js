@@ -227,6 +227,6 @@ export const OrgTemplateType = PropTypes.shape({
   optionalModules: PropTypes.array,
   template: PropTypes.shape({
     screens: PropTypes.array.isRequired,
-    prepareTransaction: PropTypes.func.isRequired,
+    deploy: PropTypes.func.isRequired,
   }).isRequired,
 })

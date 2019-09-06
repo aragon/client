@@ -3,11 +3,12 @@ import { useViewport, GU } from '@aragon/ui'
 import templates from '../../templates'
 import Templates from '../Templates/Templates'
 import CreateStepsPanel from './CreateStepsPanel'
+import DeploymentStepsPanel from './DeploymentStepsPanel'
 import { loadTemplateState, saveTemplateState } from '../create-utils'
 
 const STATUS_SELECT_TEMPLATE = Symbol('STATUS_TEMPLATE')
 const STATUS_TEMPLATE_SCREENS = Symbol('STATUS_TEMPLATE_SCREENS')
-const STATUS_LAUNCH = Symbol('STATUS_LAUNCH')
+const STATUS_DEPLOYMENT = Symbol('STATUS_DEPLOYMENT')
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -80,9 +81,7 @@ function useTemplateState() {
         return
       }
 
-      setTemplateScreenIndex(screenIndex =>
-        Math.min(screens.length - 1, updatedScreenIndex)
-      )
+      setTemplateScreenIndex(Math.min(screens.length, updatedScreenIndex))
     },
     [screens, templateScreenIndex]
   )
@@ -124,6 +123,65 @@ function useTemplateState() {
   }
 }
 
+function useDeploymentState(status, template, templateData) {
+  const [signedTransactions, setSignedTransactions] = useState(0)
+
+  const deployTransactions = useMemo(
+    () =>
+      status === STATUS_DEPLOYMENT
+        ? template.template.deploy({}, templateData)
+        : null,
+    [template, status, templateData]
+  )
+
+  // Call tx functions in the template, one after another.
+  useEffect(() => {
+    setSignedTransactions(0)
+
+    if (!deployTransactions) {
+      return
+    }
+
+    const createTransactions = async () => {
+      const allReturnValues = []
+      for (const deployTransaction of deployTransactions) {
+        allReturnValues.push(
+          await deployTransaction.transaction(allReturnValues)
+        )
+        setSignedTransactions(allReturnValues.length)
+      }
+    }
+    createTransactions()
+  }, [deployTransactions])
+
+  const transactionsStatus = useMemo(() => {
+    if (!deployTransactions) {
+      return []
+    }
+
+    const status = index => {
+      if (index === signedTransactions) {
+        return 'pending'
+      }
+      if (index < signedTransactions) {
+        return 'success'
+      }
+      return 'upcoming'
+    }
+
+    return deployTransactions.map(({ name }, index) => ({
+      name,
+      status: status(index),
+    }))
+  }, [deployTransactions, signedTransactions])
+
+  return {
+    deployTransactions,
+    signedTransactions,
+    transactionsStatus,
+  }
+}
+
 function Create() {
   const { above } = useViewport()
 
@@ -148,20 +206,33 @@ function Create() {
     if (status === STATUS_SELECT_TEMPLATE) {
       return 0
     }
-    if (status === STATUS_LAUNCH) {
+    if (status === STATUS_DEPLOYMENT) {
       return steps.length - 1
     }
     return templateScreenIndex + 1
   }, [status, steps.length, templateScreenIndex])
 
+  const {
+    deployTransactions,
+    signedTransactions,
+    transactionsStatus,
+  } = useDeploymentState(status, template, templateData)
+
   // On load, restore the state directly
   useEffect(() => {
-    if (template) {
+    if (
+      templateScreenIndex > -1 &&
+      templateScreenIndex < templateScreens.length
+    ) {
       setStatus(STATUS_TEMPLATE_SCREENS)
-    } else {
-      setStatus(STATUS_SELECT_TEMPLATE)
+      return
     }
-  }, [template])
+    if (templateScreenIndex === templateScreens.length) {
+      setStatus(STATUS_DEPLOYMENT)
+      return
+    }
+    setStatus(STATUS_SELECT_TEMPLATE)
+  }, [templateScreenIndex, templateScreens])
 
   const handleUseTemplate = useCallback(
     id => {
@@ -171,16 +242,8 @@ function Create() {
     [setTemplate]
   )
 
-  const handleTemplateNext = useCallback(
-    data => {
-      nextScreen(data)
-    },
-    [nextScreen]
-  )
-
-  const handleTemplateBack = useCallback(() => {
-    prevScreen()
-  }, [prevScreen])
+  const handleTemplateNext = useCallback(data => nextScreen(data), [nextScreen])
+  const handleTemplateBack = useCallback(() => prevScreen(), [prevScreen])
 
   return (
     <div
@@ -199,7 +262,12 @@ function Create() {
             flex-grow: 0;
           `}
         >
-          <CreateStepsPanel step={stepIndex} steps={steps} />
+          {status !== STATUS_DEPLOYMENT && (
+            <CreateStepsPanel step={stepIndex} steps={steps} />
+          )}
+          {status === STATUS_DEPLOYMENT && (
+            <DeploymentStepsPanel transactionsStatus={transactionsStatus} />
+          )}
         </div>
       )}
       <section
@@ -221,7 +289,6 @@ function Create() {
           {status === STATUS_SELECT_TEMPLATE && (
             <Templates templates={templates} onUse={handleUseTemplate} />
           )}
-          {status === STATUS_LAUNCH && null}
           {status === STATUS_TEMPLATE_SCREENS && (
             <div
               css={`
@@ -250,6 +317,19 @@ function Create() {
                 />
               </div>
             </div>
+          )}
+          {status === STATUS_DEPLOYMENT && (
+            <div
+              css={`
+                flex-grow: 1;
+                background: linear-gradient(
+                  328deg,
+                  #95bbce 0%,
+                  #c5d0e6 46.04%,
+                  #e7e4f6 100%
+                );
+              `}
+            ></div>
           )}
         </div>
       </section>

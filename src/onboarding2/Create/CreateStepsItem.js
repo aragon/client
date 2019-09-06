@@ -24,14 +24,7 @@ function CreateStepsItem({ step, label, currentStep }) {
       background: #ECEFF4;
       color: #9CA7B8;
     `
-  }, [
-    step,
-    currentStep,
-    theme.selected,
-    theme.selectedContent,
-    theme.positive,
-    theme.positiveContent,
-  ])
+  }, [step, currentStep, theme])
 
   return (
     <div
