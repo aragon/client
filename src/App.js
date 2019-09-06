@@ -1,7 +1,7 @@
 import React from 'react'
 import { createHashHistory as createHistory } from 'history'
 import { contractAddresses, network, web3Providers } from './environment'
-import { parsePath } from './routing'
+import { parsePath, getAppPath, getPreferencesSearch } from './routing'
 import initWrapper, {
   initDaoBuilder,
   pollMainAccount,
@@ -22,6 +22,8 @@ import { LocalIdentityModalProvider } from './components/LocalIdentityModal/Loca
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
 import HelpScoutBeacon from './components/HelpScoutBeacon/HelpScoutBeacon'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
+import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
+
 import { isKnownRepo } from './repo-utils'
 import {
   APP_MODE_START,
@@ -351,6 +353,17 @@ class App extends React.Component {
   handleOpenLocalIdentityModal = address => {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
+  closePreferences = () => {
+    const { locator } = this.state
+    this.historyPush(getAppPath(locator))
+  }
+
+  openPreferences = (screen, data) => {
+    const { locator } = this.state
+    this.historyPush(
+      getAppPath({ ...locator, search: getPreferencesSearch(screen, data) })
+    )
+  }
 
   render() {
     const {
@@ -450,6 +463,7 @@ class App extends React.Component {
                         walletWeb3={walletWeb3}
                         web3={web3}
                         wrapper={wrapper}
+                        openPreferences={this.openPreferences}
                       />
                     </div>
                   </PermissionsProvider>
@@ -474,6 +488,14 @@ class App extends React.Component {
                   </div>
 
                   <HelpScoutBeacon locator={locator} apps={apps} />
+
+                  <GlobalPreferences
+                    locator={locator}
+                    wrapper={wrapper}
+                    apps={apps}
+                    onScreenChange={this.openPreferences}
+                    onClose={this.closePreferences}
+                  />
                 </ActivityProvider>
               </FavoriteDaosProvider>
             </LocalIdentityModalProvider>
