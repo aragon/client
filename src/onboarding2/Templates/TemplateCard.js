@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Card, textStyle, GU, Button, useTheme } from '@aragon/ui'
+import { Card, Tag, textStyle, GU, Button, useTheme } from '@aragon/ui'
 import { OrgTemplateType } from '../../prop-types'
 
 function TemplateCard({ onOpen, template }) {
@@ -64,7 +64,19 @@ function TemplateCard({ onOpen, template }) {
             padding: 0 ${3 * GU}px ${2 * GU}px;
           `}
         >
-          <Button label="View details" wide onClick={handleDetailsClick} />
+          {template.disabled ? (
+            <div
+              css={`
+                display: flex;
+                justify-content: center;
+                height: ${5 * GU}px;
+              `}
+            >
+              <Tag mode="new">Coming soon</Tag>
+            </div>
+          ) : (
+            <Button label="View details" wide onClick={handleDetailsClick} />
+          )}
         </div>
       </section>
     </Card>

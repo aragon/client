@@ -6,6 +6,7 @@ import header from './header.svg'
 import icon from './icon.svg'
 
 export default {
+  disabled: true,
   id: 'fundraising',
   name: 'Fundraising',
   header,
