@@ -20,7 +20,8 @@ import {
   TextInput,
   breakpoint,
   useTheme,
-  useViewport,
+  useLayout,
+  useToast,
   textStyle,
 } from '@aragon/ui'
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
@@ -47,8 +48,8 @@ function LocalIdentities({
   someSelected,
   sortIdentities,
 }) {
-  const { below } = useViewport()
-  const compact = below('medium')
+  const { layoutName } = useLayout()
+  const compact = layoutName === 'small'
   const theme = useTheme()
 
   return (
@@ -271,8 +272,9 @@ LocalIdentities.propTypes = {
 
 function Actions({ onExport, onRemove, onShare, disabled }) {
   const theme = useTheme()
-  const { below, above } = useViewport()
-  const compact = below('medium')
+  const { layoutName } = useLayout()
+  const compact = layoutName === 'small'
+  const toast = useToast()
   const handleChange = useCallback(
     index => {
       if (index === 0) {
@@ -280,18 +282,22 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
         return
       }
       if (!iOS && index === 1) {
+        toast('Custom labels exported successfully')
         onExport()
         return
       }
       onRemove()
     },
-    [onShare, onExport, onRemove]
+    [onShare, onExport, onRemove, toast]
   )
 
   return (
     <React.Fragment>
       <DropDown
-        css="box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);"
+        css={`
+          box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+          ${compact ? 'min-width: unset' : ''}
+        `}
         disabled={disabled}
         compact={compact}
         selected={-1}
@@ -336,14 +342,17 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
               $textStyle('body2');
               color: ${theme.surfaceContent};
 
-              ${above('medium') &&
-                `
+              ${
+                !compact
+                  ? `
                   display: grid;
                   grid-template-columns: auto 1fr auto;
                   grid-gap: ${1.5 * GU}px;
                   width: 100%;
                   align-items: center;
-                `}
+                `
+                  : ''
+              }
             `}
           >
             <IconGrid

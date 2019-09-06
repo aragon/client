@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useDropzone } from 'react-dropzone'
-import { Button } from '@aragon/ui'
+import { Button, useToast } from '@aragon/ui'
 import { isString } from '../../../utils'
 import { isAddress } from '../../../web3-utils'
 
@@ -22,7 +22,7 @@ const verifyLocalIdentityObject = obj => {
   )
 }
 
-const fileImport = cb => files => {
+const fileImport = (cb, toast) => files => {
   if (!files || !files.length) {
     return
   }
@@ -32,6 +32,7 @@ const fileImport = cb => files => {
     try {
       const list = JSON.parse(event.target.result)
       if (verifyLocalIdentityObject(list)) {
+        toast('Custom labels imported successfully')
         cb(list)
       } else {
         throw new Error('There was an error reading from the file')
@@ -44,8 +45,9 @@ const fileImport = cb => files => {
 }
 
 const Import = ({ onImport, button }) => {
+  const toast = useToast()
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: fileImport(onImport),
+    onDrop: fileImport(onImport, toast),
     multiple: false,
   })
 
