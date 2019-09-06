@@ -20,8 +20,8 @@ function ClaimDomain({
   const [domain, setDomain] = useState(data.domain || '')
 
   const handleNext = useCallback(() => {
-    next({ domain })
-  }, [domain, next])
+    next({ ...data, domain })
+  }, [data, domain, next])
 
   return (
     <React.Fragment>
