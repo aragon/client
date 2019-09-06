@@ -10,7 +10,7 @@ import {
   useViewport,
   useTheme,
 } from '@aragon/ui'
-import { simpleUrl } from '../../url-utils'
+import { stripUrlProtocol, sanitizeCodeRepositoryUrl } from '../../url-utils'
 import AppIcon from '../../components/AppIcon/AppIcon'
 
 function TemplateDetails({ template, visible, onUse, onClose }) {
@@ -91,13 +91,17 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               {template.caseStudyUrl && (
                 <Field label="Case study">
                   <Link href={template.caseStudyUrl}>
-                    {simpleUrl(template.caseStudyUrl)}
+                    {sanitizeCodeRepositoryUrl(
+                      stripUrlProtocol(template.caseStudyUrl)
+                    )}
                   </Link>
                 </Field>
               )}
               <Field label="Source code">
                 <Link href={template.sourceCodeUrl}>
-                  {simpleUrl(template.sourceCodeUrl)}
+                  {sanitizeCodeRepositoryUrl(
+                    stripUrlProtocol(template.sourceCodeUrl)
+                  )}
                 </Link>
               </Field>
               <Field label="Registry">{template.registry}</Field>

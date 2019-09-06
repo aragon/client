@@ -54,22 +54,23 @@ export function repoBaseUrl(repo, gateway = ipfsDefaultConf.gateway) {
 }
 
 // Removes the unecessary part of a URL
-export function simpleUrl(url = '') {
+export function stripUrlProtocol(url = '') {
   return url.replace(/^https?:\/\//, '')
 }
 
-const GITHUB = 'https://github.com'
-const GITLAB = 'https://gitlab.com'
-const BITBUCKET = 'https://bitbucket.com'
+const CODE_REPO_SERVICES = [
+  ['GitHub', /^(?:https?:\/\/)?github\.com/i],
+  ['GitLab', /^(?:https?:\/\/)?gitlab\.com/i],
+  ['Bitbucket', /^(?:https?:\/\/)?bitbucket\.com/i],
+]
 
-export const sanitizeCodeRepositoryUrl = url => {
-  const lowerCasedURL = url.toLowerCase()
-
-  return lowerCasedURL.indexOf(GITHUB) === 0
-    ? 'GitHub'
-    : lowerCasedURL.indexOf(GITLAB) === 0
-    ? 'GitLab'
-    : lowerCasedURL.indexOf(BITBUCKET) === 0
-    ? 'Bitbucket'
-    : url
+// Return the name of a repository service based on a URL,
+// with or without the HTTP protocol prefix.
+export function sanitizeCodeRepositoryUrl(url) {
+  for (const [name, re] of CODE_REPO_SERVICES) {
+    if (re.test(url)) {
+      return name
+    }
+  }
+  return url
 }
