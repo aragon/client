@@ -20,7 +20,9 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
 
   const [tokenName, setTokenName] = useState(data.tokenName || '')
   const [tokenSymbol, setTokenSymbol] = useState(data.tokenSymbol || '')
-  const [members, setMembers] = useState(data.members || [''])
+  const [members, setMembers] = useState(
+    data.members && data.members.length > 0 ? data.members : ['']
+  )
 
   const handleTokenNameChange = useCallback(event => {
     setTokenName(event.target.value)
