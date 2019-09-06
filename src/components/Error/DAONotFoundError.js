@@ -1,13 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  useTheme,
-  textStyle,
-  ButtonText,
-  EmptyStateCard,
-  GU,
-  Info,
-} from '@aragon/ui'
+import { useTheme, textStyle, Link, EmptyStateCard, GU, Info } from '@aragon/ui'
 import { network } from '../../environment'
 import { isAddress } from '../../web3-utils'
 import notFoundImage from '../../assets/dao-not-found.png'
@@ -29,9 +22,9 @@ function DAONotFoundError({ dao }) {
         <img
           src={notFoundImage}
           alt="Organization not found"
+          width="147px"
+          height="144px"
           css={`
-            width: 147px;
-            height: 144px;
             margin: ${5 * GU}px auto ${1.5 * GU}px;
           `}
         />
@@ -53,7 +46,7 @@ function DAONotFoundError({ dao }) {
               ${textStyle('body2')};
               margin: auto;
               margin-bottom: ${6 * GU}px;
-              max-width: 417px;
+              max-width: ${52 * GU}px;
             `}
           >
             It looks like there’s no organization associated with{' '}
@@ -72,12 +65,9 @@ function DAONotFoundError({ dao }) {
         <Info css="text-align: left;">
           If you arrived here through a link, please double check that you were
           given the correct link. Alternatively, you may
-          <ButtonText
-            onClick={() => (window.location = window.location.origin)}
-            css="margin-left: -5px;"
-          >
+          <Link onClick={() => (window.location = window.location.origin)}>
             create a new organization.
-          </ButtonText>
+          </Link>
         </Info>
       }
     />

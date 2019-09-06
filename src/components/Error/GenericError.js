@@ -108,14 +108,14 @@ const GenericError = React.memo(function GenericError({
                 color: ${theme.text};
                 ${textStyle('body3')};
                 white-space: pre;
-                background: #f6f6f6;
+                background: ${theme.theme.surfaceUnder};
               `}
             >
               {detailsTitle && (
                 <h2
                   css={`
                     ${textStyle('body2')};
-                    margin-bottom: 10px;
+                    margin-bottom: ${1.5 * GU}px;
                   `}
                 >
                   {detailsTitle}
