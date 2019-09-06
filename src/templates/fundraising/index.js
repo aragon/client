@@ -29,6 +29,7 @@ export default {
         ({ back, data, next }) => (
           <Review
             back={back}
+            data={data}
             next={next}
             items={[
               {

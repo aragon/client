@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Accordion, GU, Info, textStyle, useTheme } from '@aragon/ui'
 import Header from '../../onboarding2/Header/Header'
@@ -6,12 +6,18 @@ import PrevNextFooter from './PrevNextFooter'
 
 function Review({
   back,
+  data,
   next,
   items,
   screenTitle = 'Review information',
   screenSubtitle = 'Have one last look at your settings below',
 }) {
   const theme = useTheme()
+
+  const handleNext = useCallback(() => {
+    next(data)
+  }, [data, next])
+
   return (
     <React.Fragment>
       <Header title={screenTitle} subtitle={screenSubtitle} />
@@ -71,7 +77,7 @@ function Review({
         nextEnabled
         nextLabel="Launch your organization"
         onBack={back}
-        onNext={next}
+        onNext={handleNext}
       />
     </React.Fragment>
   )
