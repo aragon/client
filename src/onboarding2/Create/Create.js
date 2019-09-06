@@ -2,9 +2,13 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useViewport, GU } from '@aragon/ui'
 import templates from '../../templates'
 import Templates from '../Templates/Templates'
+import Deployment from '../Deployment/Deployment'
+import DeploymentStepsPanel from '../Deployment/DeploymentStepsPanel'
 import CreateStepsPanel from './CreateStepsPanel'
-import DeploymentStepsPanel from './DeploymentStepsPanel'
 import { loadTemplateState, saveTemplateState } from '../create-utils'
+
+// TODO: move the creation state at an upper level, and use Create/Create and
+// Deployment/Deployment from there (instead of using Deployment from Create).
 
 const STATUS_SELECT_TEMPLATE = Symbol('STATUS_TEMPLATE')
 const STATUS_TEMPLATE_SCREENS = Symbol('STATUS_TEMPLATE_SCREENS')
@@ -318,19 +322,7 @@ function Create() {
               </div>
             </div>
           )}
-          {status === STATUS_DEPLOYMENT && (
-            <div
-              css={`
-                flex-grow: 1;
-                background: linear-gradient(
-                  328deg,
-                  #95bbce 0%,
-                  #c5d0e6 46.04%,
-                  #e7e4f6 100%
-                );
-              `}
-            />
-          )}
+          {status === STATUS_DEPLOYMENT && <Deployment />}
         </div>
       </section>
     </div>
