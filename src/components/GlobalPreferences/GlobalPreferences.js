@@ -103,7 +103,9 @@ function GlobalPreferences({
       ) : (
         <React.Fragment>
           <Tabs
-            items={VALUES}
+            items={VALUES.filter(
+              (_, index) => !!wrapper || index === NETWORK_INDEX
+            )}
             onChange={onNavigation}
             selected={sectionIndex}
           />
@@ -141,7 +143,7 @@ GlobalPreferences.propTypes = {
   wrapper: AragonType,
 }
 
-function useGlobalPreferences({ locator = {}, onScreenChange }) {
+function useGlobalPreferences({ locator = {}, onScreenChange, wrapper }) {
   const [sectionIndex, setSectionIndex] = useState(null)
   const [subsection, setSubsection] = useState(null)
   const handleNavigation = useCallback(
@@ -158,6 +160,10 @@ function useGlobalPreferences({ locator = {}, onScreenChange }) {
       return
     }
     const index = PATHS.findIndex(item => path.startsWith(item))
+
+    if (index !== NETWORK_INDEX && !wrapper) {
+      return
+    }
     setSectionIndex(index === -1 ? null : index)
 
     // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
@@ -165,7 +171,7 @@ function useGlobalPreferences({ locator = {}, onScreenChange }) {
 
     setSubsection(subsection)
     // Does the current path start with any of the declared route paths
-  }, [locator, sectionIndex])
+  }, [locator, sectionIndex, wrapper])
 
   return { sectionIndex, subsection, handleNavigation }
 }
@@ -207,6 +213,7 @@ function AnimatedGlobalPreferences(props) {
   const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences({
     locator: props.locator,
     onScreenChange: props.onScreenChange,
+    wrapper: props.wrapper,
   })
 
   const { layoutName } = useLayout()
@@ -260,6 +267,7 @@ function AnimatedGlobalPreferences(props) {
 AnimatedGlobalPreferences.propTypes = {
   locator: PropTypes.object,
   onScreenChange: PropTypes.func.isRequired,
+  wrapper: PropTypes.object,
 }
 
 const AnimatedWrap = styled(animated.div)`
