@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { GU, useTheme } from '@aragon/ui'
 import CreateStepsItem from './CreateStepsItem'
@@ -6,6 +6,40 @@ import CircleGraph from '../CircleGraph'
 
 function CreateStepsPanel({ step, steps }) {
   const theme = useTheme()
+
+  // Mark identical siblings to only show the last step
+  const [groupedSteps, displayedSteps] = useMemo(() => {
+    // these get updated by the .map() to avoid another iteration
+    const count = steps.length
+    let displayCount = 0
+    let lastDisplayIndex = 0
+
+    const groupedSteps = steps.map((step, index) => {
+      const hiddenCount = index - displayCount
+
+      if (step !== steps[index + 1]) {
+        displayCount++
+        return [index, index - hiddenCount, true]
+      }
+
+      let statusIndex = index
+      while (step === steps[statusIndex + 1] && statusIndex < steps.length) {
+        statusIndex++
+      }
+
+      return [
+        // The index used for the status in the panel (last of the group)
+        statusIndex,
+        // The index used for the display in the panel (first of the group)
+        index - hiddenCount,
+        // Do not display the step
+        false,
+      ]
+    })
+
+    return [groupedSteps, displayCount]
+  }, [steps, step])
+
   return (
     <aside
       css={`
@@ -25,7 +59,10 @@ function CreateStepsPanel({ step, steps }) {
           height: ${25 * GU}px;
         `}
       >
-        <CircleGraph value={step / (steps.length - 1)} size={25 * GU} />
+        <CircleGraph
+          value={groupedSteps[step][1] / (displayedSteps - 1)}
+          size={25 * GU}
+        />
         <div
           css={`
             position: absolute;
@@ -35,7 +72,7 @@ function CreateStepsPanel({ step, steps }) {
             opacity: 0.7;
           `}
         >
-          {`${step + 1}/${steps.length}`}
+          {`${groupedSteps[step][1] + 1}/${displayedSteps}`}
         </div>
       </div>
       <div
@@ -43,14 +80,18 @@ function CreateStepsPanel({ step, steps }) {
           padding: ${8 * GU}px ${3 * GU}px ${3 * GU}px;
         `}
       >
-        {steps.map((label, index) => (
-          <CreateStepsItem
-            key={index}
-            currentStep={step}
-            label={label}
-            step={index}
-          />
-        ))}
+        {groupedSteps.map(
+          ([statusIndex, displayIndex, show], index) =>
+            show && (
+              <CreateStepsItem
+                key={index}
+                currentStep={groupedSteps[step][0]}
+                label={steps[statusIndex]}
+                step={statusIndex}
+                stepNumber={displayIndex + 1}
+              />
+            )
+        )}
       </div>
     </aside>
   )

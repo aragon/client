@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { GU, IconCheck, useTheme } from '@aragon/ui'
 
-function CreateStepsItem({ step, label, currentStep }) {
+function CreateStepsItem({ stepNumber, step, label, currentStep, status }) {
   const theme = useTheme()
 
   const stepStyles = useMemo(() => {
@@ -52,7 +52,7 @@ function CreateStepsItem({ step, label, currentStep }) {
           flex-grow: 0;
         `}
       >
-        {step < currentStep ? <IconCheck /> : step + 1}
+        {step < currentStep ? <IconCheck /> : stepNumber}
       </div>
       <div
         css={`
