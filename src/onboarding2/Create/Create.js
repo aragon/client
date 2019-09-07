@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useViewport, GU } from '@aragon/ui'
+import { log } from '../../utils'
 import { loadTemplateState, saveTemplateState } from '../create-utils'
 import templates from '../../templates'
 import Templates from '../Templates/Templates'
@@ -72,7 +73,7 @@ function useTemplateState({ onScreenUpdate }) {
       updateTemplateScreen(templateId, templateScreenIndex)
       setTemplateData(templateData)
     }
-  }, [])
+  }, [updateTemplateScreen])
 
   // Save the template state
   useEffect(() => {
@@ -101,7 +102,7 @@ function useTemplateState({ onScreenUpdate }) {
         Math.min(template.screens.length, updatedScreenIndex)
       )
     },
-    [templateScreenIndex, template]
+    [updateTemplateScreen, templateScreenIndex, template]
   )
 
   const prevScreen = useCallback(() => {
@@ -143,8 +144,9 @@ function useDeploymentState(status, template, templateData) {
   const deployTransactions = useMemo(
     () =>
       status === STATUS_DEPLOYMENT
-        ? template.prepareTransactions(function createTransaction() {
+        ? template.prepareTransactions(function createTransaction(name, args) {
             // TODO
+            return [name, args]
           }, templateData)
         : null,
     [template, status, templateData]
@@ -160,8 +162,12 @@ function useDeploymentState(status, template, templateData) {
 
     const createTransactions = async () => {
       for (const deployTransaction of deployTransactions) {
-        // deployTransaction.transaction
-        await new Promise(resolve => setTimeout(resolve, 3000))
+        await new Promise(resolve =>
+          setTimeout(() => {
+            log('Transaction:', deployTransaction.transaction)
+            resolve()
+          }, 3000)
+        )
         setSignedTransactions(signed => signed + 1)
       }
     }

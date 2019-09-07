@@ -10,9 +10,7 @@ function CreateStepsPanel({ step, steps }) {
   // Mark identical siblings to only show the last step
   const [groupedSteps, displayedSteps] = useMemo(() => {
     // these get updated by the .map() to avoid another iteration
-    const count = steps.length
     let displayCount = 0
-    let lastDisplayIndex = 0
 
     const groupedSteps = steps.map((step, index) => {
       const hiddenCount = index - displayCount
@@ -38,7 +36,7 @@ function CreateStepsPanel({ step, steps }) {
     })
 
     return [groupedSteps, displayCount]
-  }, [steps, step])
+  }, [steps])
 
   return (
     <aside
