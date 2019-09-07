@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useTheme } from '@aragon/ui'
+import { useTheme, BREAKPOINTS } from '@aragon/ui'
 import ConnectModal from '../../components/ConnectModal/ConnectModal'
 import { saveTemplateState } from '../create-utils'
 import Welcome from '../Welcome/Welcome'
@@ -49,6 +49,7 @@ function Onboarding({ status, selectorNetworks }) {
         z-index: 1;
         background: ${theme.background};
         height: 100vh;
+        min-width: ${BREAKPOINTS.min}px;
         overflow-y: auto;
       `}
     >

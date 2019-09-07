@@ -243,11 +243,11 @@ function Create() {
     return templateScreenIndex + 1
   }, [status, steps.length, templateScreenIndex])
 
-  const { transactionsStatus } = useDeploymentState(
-    status,
-    template,
-    templateData
-  )
+  const {
+    deployTransactions,
+    signedTransactions,
+    transactionsStatus,
+  } = useDeploymentState(status, template, templateData)
 
   const handleUseTemplate = useCallback(
     id => {
@@ -315,7 +315,11 @@ function Create() {
               templateData={templateData}
             />
           )}
-          {status === STATUS_DEPLOYMENT && <Deployment />}
+          {status === STATUS_DEPLOYMENT && (
+            <Deployment
+              ready={signedTransactions === deployTransactions.length}
+            />
+          )}
         </div>
       </section>
     </div>
