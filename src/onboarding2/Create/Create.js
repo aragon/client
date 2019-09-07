@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useViewport, GU } from '@aragon/ui'
+import { loadTemplateState, saveTemplateState } from '../create-utils'
 import templates from '../../templates'
 import Templates from '../Templates/Templates'
 import Deployment from '../Deployment/Deployment'
 import DeploymentStepsPanel from '../Deployment/DeploymentStepsPanel'
 import CreateStepsPanel from './CreateStepsPanel'
-import { loadTemplateState, saveTemplateState } from '../create-utils'
 
 // TODO: move the creation state at an upper level, and use Create/Create and
-// Deployment/Deployment from there (instead of using Deployment from Create).
+// Deployment/Deployment from there (rather than having Deployment inside Create).
 
 const STATUS_SELECT_TEMPLATE = Symbol('STATUS_TEMPLATE')
 const STATUS_TEMPLATE_SCREENS = Symbol('STATUS_TEMPLATE_SCREENS')
@@ -28,28 +28,37 @@ function getSteps(status, template, templateData) {
   }
   return [
     template.name,
-    ...((template.template && template.template.screens) || []).map(([name]) =>
+    ...template.screens.map(([name]) =>
       typeof name === 'function' ? name(templateData) : name
     ),
     'Launch organization',
   ]
 }
 
+function getTemplate(templateId) {
+  return templates.find(template => template.id === templateId)
+}
+
 // Handle and store everything related to a template state.
-function useTemplateState() {
-  const [templateId, setTemplateId] = useState(null)
+function useTemplateState({ onScreenUpdate }) {
+  // The current template
+  const [template, setTemplate] = useState(null)
+
+  // The current screen in the template
   const [templateScreenIndex, setTemplateScreenIndex] = useState(-1)
+
+  // The data stored by the configuration screens
   const [templateData, setTemplateData] = useState({})
 
-  useEffect(() => {
-    if (templateId) {
-      saveTemplateState({
-        templateData,
-        templateId,
-        templateScreenIndex,
-      })
-    }
-  }, [templateData, templateId, templateScreenIndex])
+  const updateTemplateScreen = useCallback(
+    (templateId, screenIndex = 0) => {
+      const template = getTemplate(templateId)
+      setTemplate(template)
+      setTemplateScreenIndex(screenIndex)
+      onScreenUpdate(screenIndex, template ? template.screens : [])
+    },
+    [onScreenUpdate]
+  )
 
   useEffect(() => {
     const {
@@ -59,71 +68,71 @@ function useTemplateState() {
     } = loadTemplateState()
 
     if (templateId) {
+      updateTemplateScreen(templateId, templateScreenIndex)
       setTemplateData(templateData)
-      setTemplateId(templateId)
-      setTemplateScreenIndex(templateScreenIndex)
     }
   }, [])
 
-  const [template, screens] = useMemo(() => {
-    const template = templates.find(template => template.id === templateId)
-    return [
-      template,
-      (template && template.template && template.template.screens) || [],
-    ]
-  }, [templateId])
+  // Save the template state
+  useEffect(() => {
+    if (template && template.id) {
+      saveTemplateState({
+        templateData,
+        templateId: template.id,
+        templateScreenIndex,
+      })
+    }
+  }, [templateData, template, templateScreenIndex])
 
-  const updateScreenIndex = useCallback(
+  const relativeScreen = useCallback(
     diff => {
       const updatedScreenIndex = templateScreenIndex + diff
 
       // Back to the templates selection
-      if (updatedScreenIndex < 0) {
+      if (updatedScreenIndex < 0 || !template) {
         setTemplateData({})
-        setTemplateId(null)
-        setTemplateScreenIndex(-1)
+        updateTemplateScreen(null, -1)
         return
       }
 
-      setTemplateScreenIndex(Math.min(screens.length, updatedScreenIndex))
+      updateTemplateScreen(
+        template.id,
+        Math.min(template.screens.length, updatedScreenIndex)
+      )
     },
-    [screens, templateScreenIndex]
+    [templateScreenIndex, template]
   )
 
   const prevScreen = useCallback(() => {
-    updateScreenIndex(-1)
-  }, [updateScreenIndex])
+    relativeScreen(-1)
+  }, [relativeScreen])
 
   const nextScreen = useCallback(
     (templateData = {}) => {
       setTemplateData(templateData)
-      updateScreenIndex(1)
+      relativeScreen(1)
     },
-    [updateScreenIndex]
+    [relativeScreen]
   )
 
-  const setTemplate = useCallback(id => {
-    setTemplateId(id)
-    setTemplateScreenIndex(0)
-  }, [])
-
-  const TemplateScreen = useMemo(
-    () =>
-      (screens[templateScreenIndex] && screens[templateScreenIndex][1]) ||
-      (() => null),
-    [screens, templateScreenIndex]
-  )
+  const TemplateScreen = useMemo(() => {
+    return (
+      (template &&
+        template.screens[templateScreenIndex] &&
+        template.screens[templateScreenIndex][1]) ||
+      (() => null)
+    )
+  }, [template, templateScreenIndex])
 
   return {
     TemplateScreen,
     nextScreen,
     prevScreen,
-    setTemplate,
     setTemplateData,
     template,
     templateData,
     templateScreenIndex,
-    templateScreens: screens,
+    updateTemplateScreen,
   }
 }
 
@@ -191,16 +200,27 @@ function Create() {
 
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
 
+  const onScreenUpdate = useCallback((index, screens) => {
+    if (index > -1 && index < screens.length) {
+      setStatus(STATUS_TEMPLATE_SCREENS)
+      return
+    }
+    if (index === screens.length && screens.length > 0) {
+      setStatus(STATUS_DEPLOYMENT)
+      return
+    }
+    setStatus(STATUS_SELECT_TEMPLATE)
+  }, [])
+
   const {
     TemplateScreen,
     nextScreen,
     prevScreen,
-    setTemplate,
     template,
     templateData,
     templateScreenIndex,
-    templateScreens,
-  } = useTemplateState()
+    updateTemplateScreen,
+  } = useTemplateState({ onScreenUpdate })
 
   const steps = getSteps(status, template, templateData)
 
@@ -222,32 +242,15 @@ function Create() {
     templateData
   )
 
-  // On load, restore the state directly
-  useEffect(() => {
-    if (
-      templateScreenIndex > -1 &&
-      templateScreenIndex < templateScreens.length
-    ) {
-      setStatus(STATUS_TEMPLATE_SCREENS)
-      return
-    }
-    if (templateScreenIndex === templateScreens.length) {
-      setStatus(STATUS_DEPLOYMENT)
-      return
-    }
-    setStatus(STATUS_SELECT_TEMPLATE)
-  }, [templateScreenIndex, templateScreens])
-
   const handleUseTemplate = useCallback(
     id => {
-      setStatus(STATUS_TEMPLATE_SCREENS)
-      setTemplate(id)
+      updateTemplateScreen(id)
     },
-    [setTemplate]
+    [updateTemplateScreen]
   )
 
   const handleTemplateNext = useCallback(data => nextScreen(data), [nextScreen])
-  const handleTemplateBack = useCallback(() => prevScreen(), [prevScreen])
+  const handleTemplatePrev = useCallback(() => prevScreen(), [prevScreen])
 
   return (
     <div
