@@ -6,6 +6,7 @@ import Templates from '../Templates/Templates'
 import Deployment from '../Deployment/Deployment'
 import DeploymentStepsPanel from '../Deployment/DeploymentStepsPanel'
 import CreateStepsPanel from './CreateStepsPanel'
+import TemplateScreens from './TemplateScreens'
 
 // TODO: move the creation state at an upper level, and use Create/Create and
 // Deployment/Deployment from there (rather than having Deployment inside Create).
@@ -291,39 +292,22 @@ function Create() {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+            position: relative;
+            overflow: hidden;
           `}
         >
           {status === STATUS_SELECT_TEMPLATE && (
             <Templates templates={templates} onUse={handleUseTemplate} />
           )}
           {status === STATUS_TEMPLATE_SCREENS && (
-            <div
-              css={`
-                display: grid;
-                align-items: center;
-                justify-content: center;
-              `}
-            >
-              <div
-                css={`
-                  max-width: ${82 * GU}px;
-                  padding: 0 ${3 * GU}px ${3 * GU}px;
-                `}
-              >
-                <TemplateScreen
-                  data={templateData}
-                  fields={
-                    {
-                      /* TODO: pass the fields from the template contract */
-                    }
-                  }
-                  next={handleTemplateNext}
-                  back={handleTemplateBack}
-                  screens={templateScreens}
-                  screenIndex={templateScreenIndex}
-                />
-              </div>
-            </div>
+            <TemplateScreens
+              TemplateScreen={TemplateScreen}
+              onNext={handleTemplateNext}
+              onPrev={handleTemplatePrev}
+              screenIndex={templateScreenIndex}
+              screens={template.screens}
+              templateData={templateData}
+            />
           )}
           {status === STATUS_DEPLOYMENT && <Deployment />}
         </div>
