@@ -143,7 +143,9 @@ function useDeploymentState(status, template, templateData) {
   const deployTransactions = useMemo(
     () =>
       status === STATUS_DEPLOYMENT
-        ? template.template.deploy({}, templateData)
+        ? template.prepareTransactions(function createTransaction() {
+            // TODO
+          }, templateData)
         : null,
     [template, status, templateData]
   )
@@ -157,12 +159,10 @@ function useDeploymentState(status, template, templateData) {
     }
 
     const createTransactions = async () => {
-      const allReturnValues = []
       for (const deployTransaction of deployTransactions) {
-        allReturnValues.push(
-          await deployTransaction.transaction(allReturnValues)
-        )
-        setSignedTransactions(allReturnValues.length)
+        // deployTransaction.transaction
+        await new Promise(resolve => setTimeout(resolve, 3000))
+        setSignedTransactions(signed => signed + 1)
       }
     }
     createTransactions()
