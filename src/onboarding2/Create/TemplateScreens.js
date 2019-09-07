@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { GU, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 
@@ -12,6 +12,14 @@ function TemplateScreens({
   screens,
   templateData,
 }) {
+  const [prevIndex, setPrevIndex] = useState(-1)
+
+  useEffect(() => {
+    setPrevIndex(screenIndex)
+  }, [screenIndex])
+
+  const direction = screenIndex > prevIndex ? 1 : -1
+
   return (
     <Transition
       native
@@ -19,9 +27,12 @@ function TemplateScreens({
       unique
       items={{ screenIndex, Screen: TemplateScreen }}
       keys={({ screenIndex }) => screenIndex}
-      from={{ opacity: 0, transform: 'translate3d(20%, 0, 0)' }}
-      enter={{ opacity: 1, transform: 'translate3d(0%, 0, 0)' }}
-      leave={{ opacity: 0, transform: 'translate3d(-20%, 0, 0)' }}
+      from={{ opacity: 0, transform: `translate3d(${10 * direction}%, 0, 0)` }}
+      enter={{ opacity: 1, transform: `translate3d(0%, 0, 0)` }}
+      leave={{
+        opacity: 0,
+        transform: `translate3d(${-10 * direction}%, 0, 0)`,
+      }}
       config={springs.smooth}
     >
       {({ screenIndex, Screen }) => ({ opacity, transform }) => (
