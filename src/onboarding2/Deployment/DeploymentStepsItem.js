@@ -71,7 +71,7 @@ function DeploymentStepsItem({ index, name, status }) {
               color: ${theme.surfaceContentSecondary};
             `}
           >
-            Transaction successful
+            Signature successful
           </div>
         )}
       </div>
