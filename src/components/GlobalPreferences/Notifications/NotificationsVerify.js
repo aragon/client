@@ -11,6 +11,8 @@ import NotificationsInfoBox, {
   ICON_SUCCESS,
   ICON_ERROR,
   ICON_NEUTRAL,
+  IMAGE_ERROR,
+  IMAGE_NORMAL,
 } from './NotificationsInfoBox'
 
 export function NotificationsVerify({
@@ -130,7 +132,11 @@ export function NotificationsVerify({
   }
 
   return (
-    <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
+    <NotificationsInfoBox
+      header="Verification Failed"
+      icon={ICON_ERROR}
+      image={IMAGE_ERROR}
+    >
       {message} Don't worry, you can go back and
       <Link
         css={`
