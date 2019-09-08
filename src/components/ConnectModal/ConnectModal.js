@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, GU, Modal, textStyle, useTheme } from '@aragon/ui'
+import { Link, GU, Modal, textStyle, useTheme } from '@aragon/ui'
 import providers from '../../ethereum-providers'
 import ProviderCard from './ProviderCard'
 
@@ -67,9 +67,7 @@ function ConnectModal({ visible, onConnect, onClose }) {
             color: ${theme.contentSecondary};
           `}
         >
-          <ButtonText href="https://example.com/" external>
-            What is a Ethereum provider?
-          </ButtonText>
+          <Link href="https://example.com/">What is a Ethereum provider?</Link>
         </p>
       </section>
     </Modal>
