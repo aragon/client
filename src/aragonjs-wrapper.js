@@ -1,6 +1,11 @@
 import BN from 'bn.js'
 import resolvePathname from 'resolve-pathname'
-import Aragon, { providers, ensResolve } from '@aragon/wrapper'
+import Aragon, {
+  apm,
+  ensResolve,
+  getRecommendedGasLimit,
+  providers,
+} from '@aragon/wrapper'
 import {
   appOverrides,
   sortAppsPair,
@@ -190,7 +195,10 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
 
 const resolveEnsDomain = async (domain, opts) => {
   try {
-    return await ensResolve(domain, opts)
+    return await ensResolve(domain, {
+      provider: web3Providers.default,
+      registryAddress: contractAddresses.ensRegistry,
+    })
   } catch (err) {
     if (err.message === 'ENS name not defined.') {
       return ''
@@ -200,10 +208,7 @@ const resolveEnsDomain = async (domain, opts) => {
 }
 
 export const isEnsDomainAvailable = async name => {
-  const addr = await resolveEnsDomain(name, {
-    provider: web3Providers.default,
-    registryAddress: contractAddresses.ensRegistry,
-  })
+  const addr = await resolveEnsDomain(name)
   return addr === '' || isEmptyAddress(addr)
 }
 
@@ -311,7 +316,6 @@ const subscribe = (
 
 const initWrapper = async (
   dao,
-  ensRegistryAddress,
   {
     provider,
     walletProvider = null,
@@ -329,12 +333,7 @@ const initWrapper = async (
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
-  const daoAddress = isDomain
-    ? await resolveEnsDomain(dao, {
-        provider,
-        registryAddress: ensRegistryAddress,
-      })
-    : dao
+  const daoAddress = isDomain ? await resolveEnsDomain(dao) : dao
 
   if (!daoAddress) {
     throw new DAONotFound(dao)
@@ -346,7 +345,7 @@ const initWrapper = async (
     provider,
     defaultGasPriceFn,
     apm: {
-      ensRegistryAddress,
+      ensRegistryAddress: contractAddresses.ensRegistry,
       ipfs: ipfsConf,
     },
     cache: {
@@ -420,4 +419,5 @@ const initWrapper = async (
   return wrapper
 }
 
+export { getRecommendedGasLimit }
 export default initWrapper

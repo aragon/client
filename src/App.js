@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
-import { contractAddresses, network, web3Providers } from './environment'
+import { network, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
   pollMainAccount,
@@ -179,7 +179,7 @@ class App extends React.Component {
     })
 
     log('Init DAO', dao)
-    initWrapper(dao, contractAddresses.ensRegistry, {
+    initWrapper(dao, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
       onDaoAddress: ({ address, domain }) => {
