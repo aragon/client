@@ -73,8 +73,7 @@ function useAuthState() {
     if (email && token) {
       handleAuthenticate()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [email, token])
+  }, [email, token, handleAuthenticate])
 
   useEffect(() => {
     token
