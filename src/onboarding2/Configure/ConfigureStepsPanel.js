@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { GU, useTheme } from '@aragon/ui'
-import CreateStepsItem from './CreateStepsItem'
+import ConfigureStepsItem from './ConfigureStepsItem'
 import CircleGraph from '../CircleGraph'
 
-function CreateStepsPanel({ step, steps }) {
+function ConfigureStepsPanel({ step, steps }) {
   const theme = useTheme()
 
   // Mark identical siblings to only show the last step
@@ -81,7 +81,7 @@ function CreateStepsPanel({ step, steps }) {
         {groupedSteps.map(
           ([statusIndex, displayIndex, show], index) =>
             show && (
-              <CreateStepsItem
+              <ConfigureStepsItem
                 key={index}
                 currentStep={groupedSteps[step][0]}
                 label={steps[statusIndex]}
@@ -95,9 +95,9 @@ function CreateStepsPanel({ step, steps }) {
   )
 }
 
-CreateStepsPanel.propTypes = {
+ConfigureStepsPanel.propTypes = {
   step: PropTypes.number.isRequired,
   steps: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
-export default CreateStepsPanel
+export default ConfigureStepsPanel

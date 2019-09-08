@@ -4,7 +4,7 @@ import { Transition, animated } from 'react-spring'
 
 const AnimatedDiv = animated.div
 
-function TemplateScreens({
+function ConfigureTemplateScreens({
   TemplateScreen,
   onNext,
   onPrev,
@@ -73,4 +73,4 @@ function TemplateScreens({
   )
 }
 
-export default TemplateScreens
+export default ConfigureTemplateScreens

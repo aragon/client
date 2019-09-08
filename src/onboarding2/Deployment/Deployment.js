@@ -10,6 +10,7 @@ import {
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { TITLE_ONBOARDING } from '../styles'
+import DeploymentStepsPanel from './DeploymentStepsPanel'
 
 import progressImgLarge from './assets/illustration-progress-large.svg'
 import progressImgMedium from './assets/illustration-progress-medium.svg'
@@ -171,25 +172,62 @@ function BoxReady({ opacity, boxTransform }) {
   )
 }
 
-const Deployment = React.memo(function Deployment({ ready }) {
+const Deployment = React.memo(function Deployment({
+  ready,
+  transactionsStatus,
+}) {
+  const { above } = useViewport()
   return (
-    <Transition
-      native
-      reset
-      unique
-      items={ready}
-      from={{ opacity: 0, transform: `translate3d(10%, 0, 0)` }}
-      enter={{ opacity: 1, transform: `translate3d(0%, 0, 0)` }}
-      leave={{ opacity: 0, transform: `translate3d(-10%, 0, 0)` }}
-      config={springs.smooth}
-    >
-      {ready => ({ opacity, transform }) =>
-        ready ? (
-          <BoxReady opacity={opacity} boxTransform={transform} />
-        ) : (
-          <BoxProgress opacity={opacity} boxTransform={transform} />
-        )}
-    </Transition>
+    <React.Fragment>
+      {above('large') && (
+        <div
+          css={`
+            width: ${41 * GU}px;
+            flex-shrink: 0;
+            flex-grow: 0;
+          `}
+        >
+          <DeploymentStepsPanel transactionsStatus={transactionsStatus} />
+        </div>
+      )}
+      <section
+        css={`
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          flex-grow: 1;
+          flex-shrink: 1;
+        `}
+      >
+        <div
+          css={`
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+          `}
+        >
+          <Transition
+            native
+            reset
+            unique
+            items={ready}
+            from={{ opacity: 0, transform: `translate3d(10%, 0, 0)` }}
+            enter={{ opacity: 1, transform: `translate3d(0%, 0, 0)` }}
+            leave={{ opacity: 0, transform: `translate3d(-10%, 0, 0)` }}
+            config={springs.smooth}
+          >
+            {ready => ({ opacity, transform }) =>
+              ready ? (
+                <BoxReady opacity={opacity} boxTransform={transform} />
+              ) : (
+                <BoxProgress opacity={opacity} boxTransform={transform} />
+              )}
+          </Transition>
+        </div>
+      </section>
+    </React.Fragment>
   )
 })
 

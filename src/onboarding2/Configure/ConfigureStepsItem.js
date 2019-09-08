@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { GU, IconCheck, useTheme } from '@aragon/ui'
 
-function CreateStepsItem({ stepNumber, step, label, currentStep, status }) {
+function ConfigureStepsItem({ stepNumber, step, label, currentStep, status }) {
   const theme = useTheme()
 
   const stepStyles = useMemo(() => {
@@ -69,10 +69,10 @@ function CreateStepsItem({ stepNumber, step, label, currentStep, status }) {
   )
 }
 
-CreateStepsItem.propTypes = {
+ConfigureStepsItem.propTypes = {
   step: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
   currentStep: PropTypes.number.isRequired,
 }
 
-export default CreateStepsItem
+export default ConfigureStepsItem

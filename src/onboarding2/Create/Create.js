@@ -1,16 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useViewport, GU } from '@aragon/ui'
 import { log } from '../../utils'
 import { loadTemplateState, saveTemplateState } from '../create-utils'
 import templates from '../../templates'
-import Templates from '../Templates/Templates'
+import Configure from '../Configure/Configure'
 import Deployment from '../Deployment/Deployment'
-import DeploymentStepsPanel from '../Deployment/DeploymentStepsPanel'
-import CreateStepsPanel from './CreateStepsPanel'
-import TemplateScreens from './TemplateScreens'
-
-// TODO: move the creation state at an upper level, and use Create/Create and
-// Deployment/Deployment from there (rather than having Deployment inside Create).
 
 const STATUS_SELECT_TEMPLATE = Symbol('STATUS_TEMPLATE')
 const STATUS_TEMPLATE_SCREENS = Symbol('STATUS_TEMPLATE_SCREENS')
@@ -18,15 +11,19 @@ const STATUS_DEPLOYMENT = Symbol('STATUS_DEPLOYMENT')
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
-const PLACEHOLDER_SCREENS = [
+const CONFIGURE_PLACEHOLDER_SCREENS = [
   'Claim domain',
   'Configure template',
   'Review information',
 ]
 
-function getSteps(status, template, templateData) {
+function getConfigureSteps(status, template, templateData) {
   if (!template || status === STATUS_SELECT_TEMPLATE) {
-    return ['Select template', ...PLACEHOLDER_SCREENS, 'Launch organization']
+    return [
+      'Select template',
+      ...CONFIGURE_PLACEHOLDER_SCREENS,
+      'Launch organization',
+    ]
   }
   return [
     template.name,
@@ -37,12 +34,12 @@ function getSteps(status, template, templateData) {
   ]
 }
 
-function getTemplate(templateId) {
+function getTemplateById(templateId) {
   return templates.find(template => template.id === templateId)
 }
 
 // Handle and store everything related to a template state.
-function useTemplateState({ onScreenUpdate }) {
+function useConfigureState({ onScreenUpdate }) {
   // The current template
   const [template, setTemplate] = useState(null)
 
@@ -54,7 +51,7 @@ function useTemplateState({ onScreenUpdate }) {
 
   const updateTemplateScreen = useCallback(
     (templateId, screenIndex = 0) => {
-      const template = getTemplate(templateId)
+      const template = getTemplateById(templateId)
       setTemplate(template)
       setTemplateScreenIndex(screenIndex)
       onScreenUpdate(screenIndex, template ? template.screens : [])
@@ -203,8 +200,6 @@ function useDeploymentState(status, template, templateData) {
 }
 
 function Create() {
-  const { above } = useViewport()
-
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
 
   const onScreenUpdate = useCallback((index, screens) => {
@@ -227,21 +222,21 @@ function Create() {
     templateData,
     templateScreenIndex,
     updateTemplateScreen,
-  } = useTemplateState({ onScreenUpdate })
+  } = useConfigureState({ onScreenUpdate })
 
-  const steps = getSteps(status, template, templateData)
+  const configureSteps = getConfigureSteps(status, template, templateData)
 
   // The current create step (includes the template selection
   // and “launch organization”).
-  const stepIndex = useMemo(() => {
+  const configureStepIndex = useMemo(() => {
     if (status === STATUS_SELECT_TEMPLATE) {
       return 0
     }
     if (status === STATUS_DEPLOYMENT) {
-      return steps.length - 1
+      return configureSteps.length - 1
     }
     return templateScreenIndex + 1
-  }, [status, steps.length, templateScreenIndex])
+  }, [status, configureSteps.length, templateScreenIndex])
 
   const {
     deployTransactions,
@@ -268,60 +263,26 @@ function Create() {
         flex-grow: 1;
       `}
     >
-      {above('large') && (
-        <div
-          css={`
-            width: ${41 * GU}px;
-            flex-shrink: 0;
-            flex-grow: 0;
-          `}
-        >
-          {status !== STATUS_DEPLOYMENT && (
-            <CreateStepsPanel step={stepIndex} steps={steps} />
-          )}
-          {status === STATUS_DEPLOYMENT && (
-            <DeploymentStepsPanel transactionsStatus={transactionsStatus} />
-          )}
-        </div>
+      {status === STATUS_DEPLOYMENT ? (
+        <Deployment
+          ready={signedTransactions === deployTransactions.length}
+          transactionsStatus={transactionsStatus}
+        />
+      ) : (
+        <Configure
+          mode={status === STATUS_SELECT_TEMPLATE ? 'select' : 'configure'}
+          TemplateScreen={TemplateScreen}
+          onNextTemplateScreen={handleTemplateNext}
+          onPrevTemplateScreen={handleTemplatePrev}
+          onUseTemplate={handleUseTemplate}
+          status={status}
+          stepIndex={configureStepIndex}
+          steps={configureSteps}
+          template={template}
+          templateData={templateData}
+          templateScreenIndex={templateScreenIndex}
+        />
       )}
-      <section
-        css={`
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          flex-grow: 1;
-          flex-shrink: 1;
-        `}
-      >
-        <div
-          css={`
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            position: relative;
-            overflow: hidden;
-          `}
-        >
-          {status === STATUS_SELECT_TEMPLATE && (
-            <Templates templates={templates} onUse={handleUseTemplate} />
-          )}
-          {status === STATUS_TEMPLATE_SCREENS && (
-            <TemplateScreens
-              TemplateScreen={TemplateScreen}
-              onNext={handleTemplateNext}
-              onPrev={handleTemplatePrev}
-              screenIndex={templateScreenIndex}
-              screens={template.screens}
-              templateData={templateData}
-            />
-          )}
-          {status === STATUS_DEPLOYMENT && (
-            <Deployment
-              ready={signedTransactions === deployTransactions.length}
-            />
-          )}
-        </div>
-      </section>
     </div>
   )
 }

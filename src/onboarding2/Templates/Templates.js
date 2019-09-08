@@ -1,21 +1,19 @@
 import React, { useState, useCallback } from 'react'
 import { GU } from '@aragon/ui'
+import templates from '../../templates'
 import Carousel from '../../components/Carousel/Carousel'
 import Header from '../Header/Header'
 import TemplateCard from './TemplateCard'
 import TemplateDetails from './TemplateDetails'
 
-function Templates({ onUse, templates }) {
+function Templates({ onUse }) {
   const [templateDetailsOpened, setTemplateDetailsOpened] = useState(false)
   const [templateDetailsIndex, setTemplateDetailsIndex] = useState(0)
 
-  const handleOpen = useCallback(
-    id => {
-      setTemplateDetailsIndex(templates.findIndex(t => t.id === id))
-      setTemplateDetailsOpened(true)
-    },
-    [templates]
-  )
+  const handleOpen = useCallback(id => {
+    setTemplateDetailsIndex(templates.findIndex(t => t.id === id))
+    setTemplateDetailsOpened(true)
+  }, [])
 
   const handleDetailsClose = useCallback(() => {
     setTemplateDetailsOpened(false)
