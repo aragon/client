@@ -409,7 +409,7 @@ const List = styled.ul`
   padding: 0;
   list-style: none;
   overflow: hidden;
-  width: calc(100% + ${5 * GU}px);
+  width: calc(100% + ${6 * GU}px);
   position: relative;
   left: -${3 * GU}px;
   background: ${({ surface }) => surface};
