@@ -4,7 +4,7 @@ import { CardLayout, Card, GU, textStyle, useLayout } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { appIds } from '../../environment'
 
-import imgEagle from './assets/eagle.svg'
+import imgEagle from '../../assets/eagle.svg'
 import imgAssignTokens from './assets/assign-tokens.png'
 import imgCheckFinance from './assets/check-finance.png'
 import imgNewPayment from './assets/new-payment.png'
