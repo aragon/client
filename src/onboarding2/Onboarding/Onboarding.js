@@ -38,6 +38,14 @@ function Onboarding({ status, selectorNetworks }) {
     [closeConnectModal]
   )
 
+  const connectProviderError = useCallback(
+    (provider, err) => {
+      closeConnectModal()
+      // TODO
+    },
+    [closeConnectModal]
+  )
+
   if (status === 'none') {
     return null
   }
@@ -76,6 +84,7 @@ function Onboarding({ status, selectorNetworks }) {
         onClose={closeConnectModal}
         visible={connectModalOpened}
         onConnect={connectProvider}
+        onConnectError={connectProviderError}
       />
     </div>
   )

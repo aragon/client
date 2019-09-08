@@ -3,15 +3,16 @@ import PropTypes from 'prop-types'
 import { Card, GU, textStyle, useTheme } from '@aragon/ui'
 import { EthereumProviderType } from '../../prop-types'
 
-function ProviderCard({ provider, onConnect }) {
+function ProviderCard({ provider, onConnect, onConnectError }) {
   const theme = useTheme()
 
-  const handleClick = useCallback(() => {
-    async function connect() {
+  const handleClick = useCallback(async () => {
+    try {
       await provider.connect()
       onConnect(provider.id)
+    } catch (err) {
+      onConnectError(provider.id, err)
     }
-    connect()
   }, [onConnect, provider])
 
   return (
@@ -62,6 +63,7 @@ function ProviderCard({ provider, onConnect }) {
 ProviderCard.propTypes = {
   provider: EthereumProviderType.isRequired,
   onConnect: PropTypes.func.isRequired,
+  onConnectError: PropTypes.func.isRequired,
 }
 
 export default ProviderCard

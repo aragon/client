@@ -4,7 +4,7 @@ import { Link, GU, Modal, textStyle, useTheme } from '@aragon/ui'
 import providers from '../../ethereum-providers'
 import ProviderCard from './ProviderCard'
 
-function ConnectModal({ visible, onConnect, onClose }) {
+function ConnectModal({ visible, onConnect, onConnectError, onClose }) {
   const theme = useTheme()
 
   const modalWidth = useCallback(viewport => {
@@ -57,6 +57,7 @@ function ConnectModal({ visible, onConnect, onClose }) {
               key={provider.name}
               provider={provider}
               onConnect={onConnect}
+              onConnectError={onConnectError}
             />
           ))}
         </div>
@@ -77,6 +78,7 @@ function ConnectModal({ visible, onConnect, onClose }) {
 ConnectModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   onConnect: PropTypes.func.isRequired,
+  onConnectError: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 }
 

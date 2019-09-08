@@ -13,7 +13,7 @@ const PROVIDERS = new Map(
       name: 'Frame',
       type: 'Desktop',
       image: frame,
-      connect: () => {},
+      connect: async () => true,
       strings: {
         'your Ethereum provider': 'Frame',
       },
@@ -23,7 +23,7 @@ const PROVIDERS = new Map(
       name: 'Metamask',
       type: 'Desktop',
       image: metamask,
-      connect: () => {},
+      connect: async () => true,
       strings: {
         'your Ethereum provider': 'Metamask',
       },
@@ -33,7 +33,7 @@ const PROVIDERS = new Map(
       name: 'Status',
       type: 'Mobile',
       image: status,
-      connect: () => {},
+      connect: async () => true,
       strings: {
         'your Ethereum provider': 'Status',
       },
@@ -43,7 +43,7 @@ const PROVIDERS = new Map(
       name: 'Cipher',
       type: 'Mobile',
       image: cipher,
-      connect: () => {},
+      connect: async () => true,
       strings: {
         'your Ethereum provider': 'Cipher',
       },
