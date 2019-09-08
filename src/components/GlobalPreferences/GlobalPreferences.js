@@ -242,15 +242,13 @@ function AnimatedGlobalPreferences(props) {
               ),
             }}
           >
-            <Layout paddingBottom={0}>
-              <GlobalPreferences
-                {...props}
-                compact={compact}
-                sectionIndex={sectionIndex}
-                subsection={subsection}
-                onNavigation={handleNavigation}
-              />
-            </Layout>
+            <GlobalPreferences
+              {...props}
+              compact={compact}
+              sectionIndex={sectionIndex}
+              subsection={subsection}
+              onNavigation={handleNavigation}
+            />
           </AnimatedWrap>
         ))
       /* eslint-enable react/prop-types */
