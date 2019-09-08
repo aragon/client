@@ -24,11 +24,11 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
       1,
       Math.floor((containerWidth - itemSpacing * 2) / (itemWidth + itemSpacing))
     )
+    const lastSelectionableItem = items.length - visibleItems
+
     setVisibleItems(visibleItems)
     setSelected(selected =>
-      selected > items.length - visibleItems
-        ? items.length - visibleItems
-        : selected
+      selected > lastSelectionableItem ? lastSelectionableItem : selected
     )
   }, [containerWidth, itemSpacing, itemWidth, items])
 
@@ -80,6 +80,9 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
         0,
         Math.min(
           items.length - visibleItems,
+
+          // We multiply by -1 because the resulting number is either negative
+          // (if the first item starts to disappear on the left edge), or 0.
           Math.floor(x / (itemWidth + itemSpacing)) * -1
         )
       ),
@@ -101,7 +104,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
   }))
 
   // Update the transition during drag
-  const bindDrag = useDrag(({ vxvy, event, down, delta }) => {
+  const bindDrag = useDrag(({ event, down, delta }) => {
     const updatedX = Math.max(lastX, Math.min(sideSpace, selectedX + delta[0]))
 
     if (down) {
