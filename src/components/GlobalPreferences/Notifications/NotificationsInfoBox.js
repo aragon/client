@@ -1,18 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Box,
-  IconCheck,
-  IconCross,
-  GU,
-  RADIUS,
-  useTheme,
-  textStyle,
-  useViewport,
-} from '@aragon/ui'
+import { Box, GU, RADIUS, useTheme, textStyle, useViewport } from '@aragon/ui'
 import notification from './notification.png'
 import notificationError from './notification-error.png'
 import notificationNetworkError from './notification-network-error.png'
+import FeedbackIndicator from '../../FeedbackIndicator/FeedbackIndicator'
 
 export const ICON_SUCCESS = 'success'
 export const ICON_NEUTRAL = 'neutral'
@@ -36,13 +28,13 @@ export default function NotificationsInfoBox({
   let IconComponent = null
   switch (icon) {
     case ICON_SUCCESS:
-      IconComponent = <Checkmark color={theme.accent} />
+      IconComponent = <FeedbackIndicator status="success" />
       break
     case ICON_NEUTRAL:
-      IconComponent = <Checkmark color={theme.disabled} />
+      IconComponent = <FeedbackIndicator status="pending" />
       break
     case ICON_ERROR:
-      IconComponent = <Cross color={theme.negative} />
+      IconComponent = <FeedbackIndicator status="error" />
       break
   }
   let ImageComponent = null
@@ -63,6 +55,9 @@ export default function NotificationsInfoBox({
       <div
         css={`
           margin: ${3 * GU}px auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         `}
       >
         {ImageComponent}
@@ -133,44 +128,3 @@ const NotificationNetworkErrorImage = () => (
     height="270"
   />
 )
-
-const Checkmark = ({ color }) => (
-  <div
-    css={`
-      border: 2px solid ${color};
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: ${color};
-    `}
-  >
-    <IconCheck />
-  </div>
-)
-Checkmark.propTypes = {
-  color: PropTypes.object,
-}
-
-const Cross = ({ color }) => (
-  <div
-    css={`
-      border: 2px solid ${color};
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: ${color};
-    `}
-  >
-    <IconCross />
-  </div>
-)
-
-Cross.propTypes = {
-  color: PropTypes.object,
-}
