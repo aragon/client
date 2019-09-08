@@ -79,30 +79,7 @@ export default function SubscriptionsForm({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [subscribableApps, setSubscribableApps] = useState([])
   const [subscribableEvents, setSubscribableEvents] = useState([])
-  useEffect(() => {
-    const [newSubscribableApps, newSubscribableEvents] = getSubscribables(
-      apps,
-      subscriptions
-    )
-    if (
-      !newSubscribableApps[selectedAppIdx] || // case 1: selection is no longer valid
-      (subscribableApps[selectedAppIdx] && // case 2: The selection has changed due to a new array of subscribable apps
-        newSubscribableApps[selectedAppIdx].proxyAddress !==
-          subscribableApps[selectedAppIdx].proxyAddress)
-    ) {
-      // Reset the app if the selected app is no longer unavailable
-      setSelectedAppIdx(-1)
-    }
 
-    setSubscribableApps(newSubscribableApps)
-    setSubscribableEvents(newSubscribableEvents)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apps, subscriptions])
-
-  const appNames = subscribableApps.map(
-    app => `${app.name} ${app.identifier ? `(${app.identifier})` : ''}`
-  )
   const selectedApp =
     selectedAppIdx === -1 ? null : subscribableApps[selectedAppIdx]
   const eventNames = selectedApp ? subscribableEvents[selectedAppIdx] : ['']
@@ -155,9 +132,26 @@ export default function SubscriptionsForm({
       onApiError,
     ]
   )
+  useEffect(() => {
+    const [newSubscribableApps, newSubscribableEvents] = getSubscribables(
+      apps,
+      subscriptions
+    )
+    if (
+      !newSubscribableApps[selectedAppIdx] || // case 1: selection is no longer valid
+      (subscribableApps[selectedAppIdx] && // case 2: The selection has changed due to a new array of subscribable apps
+        newSubscribableApps[selectedAppIdx].proxyAddress !==
+          subscribableApps[selectedAppIdx].proxyAddress)
+    ) {
+      // Reset the app if the selected app is no longer unavailable
+      setSelectedAppIdx(-1)
+    }
 
-  const theme = useTheme()
-  const { below } = useViewport()
+    setSubscribableApps(newSubscribableApps)
+    setSubscribableEvents(newSubscribableEvents)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apps, subscriptions])
 
   if (apps.length === 0) {
     // Every DAO must have apps, if apps.length is 0, the DAO is still loading
@@ -215,6 +209,9 @@ export default function SubscriptionsForm({
     )
   }
 
+  const appNames = subscribableApps.map(
+    app => `${app.name} ${app.identifier ? `(${app.identifier})` : ''}`
+  )
   const isSubscribeDisabled =
     selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
 
@@ -298,22 +295,11 @@ SubscriptionsForm.propTypes = {
   token: PropTypes.string,
 }
 
-export const Label = styled.label`
+const SubscriptionsFormBox = props => {
+  return <Box heading="Create Subscriptions" {...props} />
+}
+
+const Label = styled.label`
   display: block;
   margin-bottom: ${GU}px;
 `
-
-const SubscriptionsFormBox = ({ children }) => {
-  const { above } = useViewport()
-  return (
-    <Box
-      padding={above('medium') ? 3 * GU : 2 * GU}
-      heading="Create Subscriptions"
-    >
-      {children}
-    </Box>
-  )
-}
-SubscriptionsFormBox.propTypes = {
-  children: PropTypes.node,
-}
