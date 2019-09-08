@@ -1,9 +1,11 @@
+import { isElectron } from '../utils'
+
 import frame from './icons/Frame.png'
 import cipher from './icons/Cipher.png'
 import metamask from './icons/Metamask.png'
 import status from './icons/Status.png'
 
-// see the corresponding prop type, EthereumProviderType, in prop-types.js.
+// See the corresponding prop type, EthereumProviderType, in prop-types.js.
 const PROVIDERS = new Map(
   [
     {
@@ -49,13 +51,28 @@ const PROVIDERS = new Map(
   ].map(provider => [provider.id, provider])
 )
 
-// Get a string that depends on the current Ethereum provider. The default
-// string is used as an identifier (à la gettext). Also see identifyProvider()
-// in web3-utils.js for a list of provider IDs that can be detected.
+// Get a providers object for a given ID.
+function getProvider(providerId) {
+  return PROVIDERS.get(providerId)
+}
+
+// Get a string that depends on the current Ethereum provider.
+// The default string is used as an identifier (à la gettext).
 function getProviderString(string, providerId = 'unknown') {
-  const provider = PROVIDERS.get(providerId)
+  const provider = getProvider(providerId)
   return (provider && provider.strings[string]) || string
 }
 
-export { getProviderString }
+// Get an identifier for the provider, if it can be detected.
+function identifyProvider(provider) {
+  if (provider && isElectron()) {
+    return 'frame'
+  }
+  if (provider && provider.isMetaMask) {
+    return 'metamask'
+  }
+  return 'unknown'
+}
+
+export { getProvider, identifyProvider, getProviderString }
 export default PROVIDERS
