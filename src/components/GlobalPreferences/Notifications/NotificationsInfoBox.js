@@ -60,7 +60,13 @@ export default function NotificationsInfoBox({
 
   return (
     <Box heading="Email notifications">
-      {ImageComponent}
+      <div
+        css={`
+          margin: ${3 * GU}px auto;
+        `}
+      >
+        {ImageComponent}
+      </div>
       <div
         css={`
           min-height: ${GU * 24}px;
@@ -112,43 +118,23 @@ NotificationsInfoBox.propTypes = {
   image: PropTypes.oneOf(ALLOWED_IMAGES),
 }
 
-export const NotificationImage = () => (
-  <img
-    src={notification}
-    alt="Notifications"
-    css={`
-      display: block;
-      margin: ${3 * GU}px auto;
-      height: 193px;
-    `}
-  />
+const NotificationImage = () => (
+  <img src={notification} alt="Notifications" height="193" />
 )
 
-export const NotificationErrorImage = () => (
-  <img
-    src={notificationError}
-    alt="Notifications"
-    css={`
-      display: block;
-      margin: ${3 * GU}px auto;
-      height: 193px;
-    `}
-  />
+const NotificationErrorImage = () => (
+  <img src={notificationError} alt="Notifications error" height="193" />
 )
 
-export const NotificationNetworkErrorImage = () => (
+const NotificationNetworkErrorImage = () => (
   <img
     src={notificationNetworkError}
-    alt="Notifications"
-    css={`
-      display: block;
-      margin: ${3 * GU}px auto;
-      height: 270px;
-    `}
+    alt="Notifications network error"
+    height="270"
   />
 )
 
-export const Checkmark = ({ color }) => (
+const Checkmark = ({ color }) => (
   <div
     css={`
       border: 2px solid ${color};
@@ -168,7 +154,7 @@ Checkmark.propTypes = {
   color: PropTypes.object,
 }
 
-export const Cross = ({ color }) => (
+const Cross = ({ color }) => (
   <div
     css={`
       border: 2px solid ${color};

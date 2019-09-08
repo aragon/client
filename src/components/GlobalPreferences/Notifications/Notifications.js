@@ -187,10 +187,10 @@ export default function Notifications({
             <p
               css={`
                 margin-left: ${GU}px;
-                ${textStyle('body1')};z
+                ${textStyle('body1')};
               `}
             >
-              Authenticating...
+              Authenticating…
             </p>
           </div>
         </NotificationsInfoBox>
@@ -218,12 +218,12 @@ export default function Notifications({
     case AUTH_SERVICE_UNAVAILABLE:
       return (
         <NotificationsInfoBox
-          header="Error connecting to the Notifications server"
+          header="Error connecting to the notifications server"
           icon={ICON_ERROR}
           image={IMAGE_NETWORK_ERROR}
         >
           <div>
-            There was an error when trying to connect to the Notifications
+            There was an error when trying to connect to the notifications
             server. Please
             <ButtonText
               css={`

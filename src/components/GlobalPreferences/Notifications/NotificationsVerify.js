@@ -81,9 +81,9 @@ export function NotificationsVerify({
           <LoadingRing />
           <p
             css={`
-                margin-left: ${GU}px;
-                ${textStyle('body1')};z
-              `}
+              margin-left: ${GU}px;
+              ${textStyle('body1')};
+            `}
           >
             Verifying...
           </p>

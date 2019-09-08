@@ -7,7 +7,7 @@ import {
   IconMail,
   LoadingRing,
   textStyle,
-  useViewport,
+  useLayout,
   useTheme,
 } from '@aragon/ui'
 import { AppType } from '../../../prop-types'
@@ -26,6 +26,7 @@ const filterSubscribedEvents = (abiEvents, subscribedEvents) =>
   abiEvents.filter(
     eventName =>
       !subscribedEvents.includes(eventName) &&
+      // Ignore rare / internal events
       eventName !== 'ScriptResult' &&
       eventName !== 'RecoverToVault'
   )
@@ -70,6 +71,9 @@ export default function SubscriptionsForm({
   subscriptions,
   token,
 }) {
+  const theme = useTheme()
+  const { layoutName } = useLayout()
+
   const [selectedAppIdx, setSelectedAppIdx] = useState(-1)
   const [selectedEventIdx, setSelectedEventIdx] = useState(-1)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -101,8 +105,7 @@ export default function SubscriptionsForm({
   )
   const selectedApp =
     selectedAppIdx === -1 ? null : subscribableApps[selectedAppIdx]
-
-  let eventNames = selectedApp ? subscribableEvents[selectedAppIdx] : ['']
+  const eventNames = selectedApp ? subscribableEvents[selectedAppIdx] : ['']
 
   const handleAppChange = useCallback(index => {
     setSelectedAppIdx(index)
@@ -175,7 +178,7 @@ export default function SubscriptionsForm({
               ${textStyle('body1')};
             `}
           >
-            Loading...
+            Loading…
           </p>
         </div>
       </SubscriptionsFormBox>
@@ -199,11 +202,11 @@ export default function SubscriptionsForm({
         >
           <img
             src={notificationImage}
-            alt="Notifications"
+            alt=""
+            height="193"
             css={`
               display: block;
               margin: 0 auto ${3 * GU}px;
-              height: 193px;
             `}
           />
           You have subscribed to all app events available on this organization!
@@ -260,7 +263,7 @@ export default function SubscriptionsForm({
         `}
       >
         <Button
-          wide={below('small')}
+          wide={layoutName === 'small'}
           disabled={isSubscribeDisabled}
           onClick={handleSubscribe}
         >

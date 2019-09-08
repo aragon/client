@@ -29,6 +29,8 @@ export default function ManageNotifications({
   token,
   onServiceUnavailable,
 }) {
+  const toast = useToast()
+
   const [apiError, setApiError] = useState(null)
   const [isFetching, setIsFetching] = useState(true)
   const [subscriptions, setSubscriptions] = useState([])
@@ -67,8 +69,6 @@ export default function ManageNotifications({
     }
   }, [apiError, onServiceUnavailable])
 
-  const toast = useToast()
-
   const handleLogout = useCallback(() => {
     onLogout()
     toast('Signed out from email notifications')
@@ -99,7 +99,7 @@ export default function ManageNotifications({
                 wide
                 onClick={handleLogout}
               >
-                Sign Out
+                Sign out
               </Button>
             </Box>
             <DeleteAccount
@@ -137,9 +137,13 @@ ManageNotifications.propTypes = {
 }
 
 function DeleteAccount({ token, onLogout, onApiError, toast }) {
+  const theme = useTheme()
+
   const [isFetching, setIsFetching] = useState(false)
   const [isAccountDeleted, setIsAccountDeleted] = useState(false)
-  const theme = useTheme()
+  const [deleteAccountModalOpened, setDeleteAccountModalOpened] = useState(
+    false
+  )
 
   const handleDeleteAccount = useCallback(async () => {
     try {
@@ -156,28 +160,21 @@ function DeleteAccount({ token, onLogout, onApiError, toast }) {
     setIsFetching(false)
   }, [token, onLogout, toast, onApiError])
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
   const onClick = useCallback(() => {
-    setIsModalOpen(true)
+    setDeleteAccountModalOpened(true)
   }, [])
 
   const onCloseModal = useCallback(() => {
-    setIsModalOpen(false)
+    setDeleteAccountModalOpened(false)
   }, [])
 
   const onModalConfirm = useCallback(() => {
-    setIsModalOpen(false)
+    setDeleteAccountModalOpened(false)
     handleDeleteAccount()
   }, [handleDeleteAccount])
 
   return (
     <React.Fragment>
-      <DeleteAccountConfirmationModal
-        visible={isModalOpen}
-        onConfirm={onModalConfirm}
-        onClose={onCloseModal}
-      />
       <Box heading="Email Notification Data">
         <Button wide onClick={onClick}>
           {isFetching ? (
@@ -195,6 +192,11 @@ function DeleteAccount({ token, onLogout, onApiError, toast }) {
           Delete your email
         </Button>
       </Box>
+      <DeleteAccountConfirmationModal
+        visible={deleteAccountModalOpened}
+        onConfirm={onModalConfirm}
+        onClose={onCloseModal}
+      />
     </React.Fragment>
   )
 }
