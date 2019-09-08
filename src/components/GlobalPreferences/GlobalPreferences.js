@@ -302,8 +302,4 @@ const GlobalPreferencesWithDependencies = React.memo(
 )
 
 export { TIMEOUT_TOAST }
-export default React.memo(props => (
-  <Layout>
-    <GlobalPreferencesWithDependencies {...props} />
-  </Layout>
-))
+export default React.memo(GlobalPreferencesWithDependencies)

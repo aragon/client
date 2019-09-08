@@ -10,7 +10,7 @@ import { getNetworkConfig } from './network-config'
 import { noop } from './utils'
 import { toWei, getInjectedProvider } from './web3-utils'
 
-const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault']
+const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault', 'Agent']
 const networkType = getEthNetworkType()
 
 export const appIds = {
@@ -82,6 +82,7 @@ if (assetBridge === 'local') {
    * Local settings *
    ******************/
   Object.assign(appLocator, {
+    [appIds['Agent']]: 'http://localhost:3005/',
     [appIds['Finance']]: 'http://localhost:3002/',
     [appIds['TokenManager']]: 'http://localhost:3003/',
     [appIds['Survey']]: 'http://localhost:3004/',

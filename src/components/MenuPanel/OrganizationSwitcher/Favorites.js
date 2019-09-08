@@ -105,7 +105,7 @@ class Favorites extends React.Component {
         image: knownOrg ? (
           <img
             src={knownOrg.image}
-            width="48"
+            width={6 * GU}
             alt=""
             css={`
               object-fit: contain;
@@ -114,7 +114,7 @@ class Favorites extends React.Component {
             `}
           />
         ) : (
-          <EthIdenticon address={org.address} />
+          <EthIdenticon address={org.address} radius={1.5 * GU} />
         ),
       }
     })

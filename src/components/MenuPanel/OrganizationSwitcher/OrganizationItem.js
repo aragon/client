@@ -26,7 +26,7 @@ class OrganizationItem extends React.Component {
           {knownOrg ? (
             <img
               src={knownOrg.image}
-              width="48"
+              width={6 * GU}
               alt=""
               css={`
                 object-fit: contain;
@@ -35,7 +35,7 @@ class OrganizationItem extends React.Component {
               `}
             />
           ) : (
-            <EthIdenticon address={dao.address} />
+            <EthIdenticon address={dao.address} radius={1.5 * GU} />
           )}
         </OrgIcon>
         <span

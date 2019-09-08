@@ -1,14 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import {
-  ButtonBase,
-  ButtonIcon,
-  IconMenu,
-  GU,
-  useTheme,
-  useThemeMode,
-  useViewport,
-} from '@aragon/ui'
+import { ButtonIcon, IconMenu, GU, useTheme, useViewport } from '@aragon/ui'
 import {
   AppInstanceGroupType,
   AppsStatusType,
@@ -17,24 +9,11 @@ import {
   DaoStatusType,
 } from '../../prop-types'
 import { DAO_STATUS_LOADING } from '../../symbols'
+import { iOS, isSafari } from '../../utils'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
 import ActivityButton from './ActivityButton/ActivityButton'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
-
-function ThemeModeButton() {
-  const { mode, toggle } = useThemeMode()
-  return (
-    <ButtonBase
-      onClick={toggle}
-      css={`
-        padding: ${1 * GU}px;
-      `}
-    >
-      {mode === 'dark' ? '🌝' : '🌚'}
-    </ButtonBase>
-  )
-}
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -99,6 +78,27 @@ function OrgView({
             justify-content: space-between;
             background: ${theme.surface};
             box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+
+            ${menuPanelOpen && iOS
+              ? `
+                /* behaviour only in iOS:
+                 * with the nested div->div->div structure
+                 * the 3rd div has positioned absolute
+                 * Chrome, Firefox and Safari uch div gets rendered
+                 * aboe the rest of the content (up the tree till a
+                 * position relative is found) but in iOS it gets
+                 * rendered below the sibling of the element with
+                 * position relative (and z-index did not work)
+                 * this fix gives the element an absolute (z-index
+                 * layers are then respected);
+                 * this also adds the appropriate value to recover the
+                 * elements height
+                 * */
+                position: absolute;
+                width: 100%;
+                z-index: 0;
+              `
+              : ''}
           `}
         >
           {autoClosingPanel ? (
@@ -123,7 +123,6 @@ function OrgView({
             />
           )}
           <div css="display: flex">
-            <ThemeModeButton />
             <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ActivityButton apps={apps} />
           </div>
@@ -133,12 +132,22 @@ function OrgView({
             flex-grow: 1;
             overflow-y: hidden;
             margin-top: 2px;
+            ${menuPanelOpen && iOS
+              ? `
+                padding-top: ${8 * GU}px;
+              `
+              : ''}
           `}
         >
           <div
             css={`
-              height: 100%;
               display: flex;
+              height: 100%;
+              ${iOS || isSafari
+                ? `
+                  height: calc(100vh - ${8 * GU}px);
+                `
+                : ''}
             `}
           >
             <MenuPanel

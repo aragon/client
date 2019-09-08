@@ -16,50 +16,51 @@ import { login } from './notification-service-api'
 import { network } from '../../../environment'
 import { validateEmail } from '../../../utils'
 import notificationSvg from './notifications.svg'
-import throttle from 'lodash.throttle'
 
-export default function NotificationsLogin({ dao, authState, onEmailChange }) {
+export default function NotificationsLogin({
+  dao,
+  onEmailChange,
+  hasLoggedOut,
+}) {
   const [inputEmail, setInputEmail] = useState('')
   const [emailInvalid, setEmailInvalid] = useState(null)
   const [apiError, setApiError] = useState(null)
   // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
   const ethNetwork = network.type === 'main' ? 'mainnet' : 'rinkeby'
 
-  const handleEmailValidation = useCallback(
-    throttle(email => {
-      if (email.length > 3 && email.includes('@')) {
-        setEmailInvalid(!validateEmail(email))
-      }
-    }, 600),
-    [setEmailInvalid]
-  )
-  const handleEmailBlur = useCallback(
-    e => {
-      const email = e.target.value
-      setEmailInvalid(!validateEmail(email))
-    },
-    [setEmailInvalid]
-  )
+  const handleEmailBlur = useCallback(e => {
+    const email = e.target.value
+    setEmailInvalid(!validateEmail(email))
+  }, [])
 
-  const handleEmailChange = useCallback(
-    e => {
-      const email = e.target.value
-      setInputEmail(email)
-      handleEmailValidation(email)
-    },
-    [handleEmailValidation, setInputEmail]
-  )
-
-  const handleLogin = async e => {
-    e && e.preventDefault()
-    try {
-      await login({ email: inputEmail, dao, network: ethNetwork })
-      onEmailChange(inputEmail)
-    } catch (e) {
-      setApiError(e.message)
-      console.error('Failed to login', e)
+  const handleEmailChange = useCallback(e => {
+    const email = e.target.value
+    setInputEmail(email)
+    if (validateEmail(email)) {
+      // Set only as valid while user typing. Use blur to set invalid
+      setEmailInvalid(false)
     }
-  }
+  }, [])
+
+  const handleLogin = useCallback(
+    async e => {
+      e && e.preventDefault()
+
+      if (!validateEmail(inputEmail)) {
+        setEmailInvalid(true)
+        return
+      }
+
+      try {
+        await login({ email: inputEmail, dao, network: ethNetwork })
+        onEmailChange(inputEmail)
+      } catch (e) {
+        setApiError(e.message)
+        console.error('Failed to login', e)
+      }
+    },
+    [dao, ethNetwork, inputEmail, onEmailChange]
+  )
 
   const theme = useTheme()
 
@@ -134,7 +135,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
             <p
               css={`
                 color: ${theme.negative};
-                ${textStyle('body2')};
+                ${textStyle('body4')};
               `}
             >
               Error logging in. Please try again
@@ -144,7 +145,7 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
             <p
               css={`
                 color: ${theme.negative};
-                ${textStyle('body2')};
+                ${textStyle('body4')};
               `}
             >
               Please enter a valid email address
@@ -154,13 +155,18 @@ export default function NotificationsLogin({ dao, authState, onEmailChange }) {
       </form>
 
       <Info>
-        Receive email notifications for the new app events. For example,
-        whenever a new vote is created or when tokens added, you’ll get an email
-        informing you of the latest activity in your organization. You will be
-        asked to enter with your email address whenever using a different
-        browser session or device to access your subsciptions. This process
-        doens’t require a password, just for you to confirm your email address
-        whenever you want to sing in.
+        {hasLoggedOut
+          ? `You need to enter with your email address because your are using a
+        different browser session or device to access your subsciptions. This
+        process doens’t require a password, just for you to confirm your email
+        address.`
+          : `Receive email notifications for the new app events. For
+        example, whenever a new vote is created or when tokens added, you’ll get
+        an email informing you of the latest activity in your organization. You
+        will be asked to enter with your email address whenever using a
+        different browser session or device to access your subsciptions. This
+        process doens’t require a password, just for you to confirm your email
+        address whenever you want to sing in.`}
       </Info>
     </Box>
   )
@@ -180,6 +186,6 @@ const NotificationImage = () => (
 
 NotificationsLogin.propTypes = {
   dao: PropTypes.string,
-  authState: PropTypes.symbol,
   onEmailChange: PropTypes.func,
+  hasLoggedOut: PropTypes.bool,
 }

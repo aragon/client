@@ -74,10 +74,8 @@ function useSharedLink({ wrapper, toast, locator, onScreenChange }) {
     setSelected(initialSelected)
   }, [initialSelected, setSelected])
   useEffect(() => {
-    const {
-      preferences: { params },
-    } = locator
-    if (!params.has('labels')) {
+    const { preferences: { params } = {} } = locator
+    if (!params || !params.has('labels')) {
       return
     }
     try {
