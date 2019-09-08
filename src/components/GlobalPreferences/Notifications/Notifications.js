@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
-import { ButtonText, GU, LoadingRing, textStyle } from '@aragon/ui'
+import { Link, GU, LoadingRing, textStyle } from '@aragon/ui'
 import ManageNotifications from './ManageNotifications'
 import NotificationsLogin from './NotificationsLogin'
 import {
@@ -204,14 +204,15 @@ export default function Notifications({
         >
           <div>
             Authentication was unsuccessful.{' '}
-            <ButtonText
+            <Link
               css={`
                 font-weight: bold;
               `}
               onClick={handleLogout}
             >
-              Try logging in again.
-            </ButtonText>
+              Try logging in again
+            </Link>
+            .
           </div>
         </NotificationsInfoBox>
       )
@@ -225,23 +226,24 @@ export default function Notifications({
           <div>
             There was an error when trying to connect to the notifications
             server. Please
-            <ButtonText
+            <Link
               css={`
                 font-weight: bold;
               `}
               onClick={handleLogout}
             >
               sign out
-            </ButtonText>
+            </Link>
             or
-            <ButtonText
+            <Link
               css={`
                 font-weight: bold;
               `}
               onClick={handleAuthenticate}
             >
-              try again.
-            </ButtonText>
+              try again
+            </Link>
+            .
           </div>
         </NotificationsInfoBox>
       )

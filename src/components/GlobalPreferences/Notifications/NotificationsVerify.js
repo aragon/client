@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, GU, LoadingRing, textStyle } from '@aragon/ui'
+import { Link, GU, LoadingRing, textStyle } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
 import {
   VERIFY_SUBSECTION,
@@ -100,21 +100,21 @@ export function NotificationsVerify({
         <div>
           Your email was verified and now you can subscribe to app events to
           receive email notifications. You may close this tab or{' '}
-          <ButtonText
+          <Link
             css={`
               font-weight: bold;
             `}
             onClick={navigateToNotifications}
           >
-            go to Notification preferences.
-          </ButtonText>
+            go to Notification preferences
+          </Link>
+          .
         </div>
       </NotificationsInfoBox>
     )
   }
 
   let message
-
   if (error && error instanceof ExpiredTokenError) {
     message = <div>The link you used to verify your email has expired.</div>
   } else if (error && error instanceof TypeError) {
@@ -128,17 +128,19 @@ export function NotificationsVerify({
       <div>Something has gone wrong during the email verification process.</div>
     )
   }
+
   return (
     <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
-      {message} Do not worry, you can go back and
-      <ButtonText
+      {message} Don't worry, you can go back and
+      <Link
         css={`
           font-weight: bold;
         `}
         onClick={handleResetAccount}
       >
-        try to sign in again.
-      </ButtonText>
+        try to sign in again
+      </Link>
+      .
     </NotificationsInfoBox>
   )
 }
@@ -165,14 +167,15 @@ export function NotificationsPreVerify({ email, onEmailChange }) {
       </p>
       <p>
         Something went wrong?{' '}
-        <ButtonText
+        <Link
           css={`
             font-weight: bold;
           `}
           onClick={handleResetEmail}
         >
-          Go back and try to sign in again.
-        </ButtonText>
+          Go back and try to sign in again
+        </Link>
+        .
       </p>
     </NotificationsInfoBox>
   )
