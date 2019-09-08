@@ -33,7 +33,7 @@ function Network({ wrapper }) {
   return (
     <React.Fragment>
       <Box heading="Node settings">
-        <Label>
+        <Label theme={theme}>
           Ethereum node
           <TextInput
             value={ethNode}
@@ -41,7 +41,7 @@ function Network({ wrapper }) {
             onChange={handleEthNodeChange}
             css={`
               ${textStyle('body2')};
-              color: ${theme.contentSecondary};
+              color: ${theme.content};
               ${networkError ? `border-color: ${theme.negative};` : ''}
             `}
           />
@@ -69,7 +69,7 @@ function Network({ wrapper }) {
             </span>
           )}
         </Label>
-        <Label>
+        <Label theme={theme}>
           IPFS Gateway
           <TextInput
             value={ipfsGateway}
@@ -77,7 +77,7 @@ function Network({ wrapper }) {
             onChange={handleIpfsGatewayChange}
             css={`
               ${textStyle('body2')};
-              color: ${theme.contentSecondary};
+              color: ${theme.content};
             `}
           />
         </Label>
@@ -173,6 +173,7 @@ const useNetwork = wrapper => {
 }
 
 const Label = styled.label`
+  color: ${({ theme }) => theme.contentSecondary};
   display: block;
   margin-bottom: ${2 * GU}px;
 `
