@@ -77,9 +77,12 @@ function Permissions({
 
   // `localPath` should change every time we navigate into and out of a detailed
   // permissions view, so this ensures the user starts at the top of the screen
-  // on every navigation change
+  // on every navigation change.
   useEffect(() => {
-    scrollTopElement.current.scrollIntoView()
+    // The `false` is only here as a quick fix to prevent the top banner to
+    // disappear when present. It will get removed once the issue with the top
+    // banner is identified and fixed.
+    scrollTopElement.current.scrollIntoView(false)
   }, [localPath])
 
   const location = getLocation(localPath, apps)
