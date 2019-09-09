@@ -1,6 +1,7 @@
 import React from 'react'
 import { AppBadge, Button, DropDown, GU, useLayout } from '@aragon/ui'
 import PropTypes from 'prop-types'
+import { AppType } from '../../../prop-types'
 
 function SubscriptionFilters({
   organizations,
@@ -97,6 +98,7 @@ SubscriptionFilters.propTypes = {
   selectedEvent: PropTypes.number,
   onEventChange: PropTypes.func,
   onClearFilters: PropTypes.func,
+  appsFull: PropTypes.arrayOf(AppType).isRequired,
 }
 
 export default SubscriptionFilters
