@@ -89,18 +89,21 @@ function Tokens({
   const addMember = useCallback(() => {
     setFormError(null)
     setMembers(members => [...members, ['', accountStake]])
-  }, [])
+  }, [accountStake])
 
-  const removeMember = useCallback(index => {
-    setFormError(null)
-    setMembers(members =>
-      members.length < 2
-        ? // When the remove button of the last field
-          // gets clicked, we only empty the field.
-          [['', accountStake]]
-        : members.filter((_, i) => i !== index)
-    )
-  }, [])
+  const removeMember = useCallback(
+    index => {
+      setFormError(null)
+      setMembers(members =>
+        members.length < 2
+          ? // When the remove button of the last field
+            // gets clicked, we only empty the field.
+            [['', accountStake]]
+          : members.filter((_, i) => i !== index)
+      )
+    },
+    [accountStake]
+  )
 
   const updateMember = useCallback((index, updatedAccount, updatedStake) => {
     setFormError(null)

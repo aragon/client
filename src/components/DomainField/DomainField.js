@@ -48,7 +48,7 @@ const DomainField = React.forwardRef(function DomainField(
       const subdomain = filterSubdomain(event.target.value, detectFullDomains)
       onChange(subdomain, subdomain + domainEnd)
     },
-    [domainEnd, onChange]
+    [domainEnd, onChange, detectFullDomains]
   )
 
   const displayDomainEnd =

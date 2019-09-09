@@ -21,6 +21,12 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
     onUse(template.id)
   }, [onUse, template])
 
+  const handleSectionRef = useCallback(element => {
+    if (element) {
+      element.focus()
+    }
+  }, [])
+
   const modalWidth = useCallback(() => {
     if (above('large')) {
       return 130 * GU
@@ -40,12 +46,6 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
   if (above('large')) padding = 7 * GU
 
   const verticalMode = below('large')
-
-  const handleSectionRef = useCallback(element => {
-    if (element) {
-      element.focus()
-    }
-  }, [])
 
   return (
     <Modal visible={visible} width={modalWidth} onClose={onClose} padding={0}>

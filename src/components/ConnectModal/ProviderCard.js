@@ -13,7 +13,7 @@ function ProviderCard({ provider, onConnect, onConnectError }) {
     } catch (err) {
       onConnectError(provider.id, err)
     }
-  }, [onConnect, provider])
+  }, [onConnect, onConnectError, provider])
 
   return (
     <Card
