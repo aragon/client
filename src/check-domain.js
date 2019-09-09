@@ -24,7 +24,7 @@ function useCheckDomain(domain, invertCheck = false) {
       try {
         const available = await isEnsDomainAvailable(completeDomain(domain))
         if (!cancelled) {
-          setExists(invertCheck ? !available : available)
+          setExists(available)
           setLoading(false)
         }
       } catch (err) {
@@ -43,7 +43,7 @@ function useCheckDomain(domain, invertCheck = false) {
     return () => {
       cancelled = true
     }
-  }, [domain, invertCheck])
+  }, [domain])
 
   const domainStatus = useMemo(() => {
     if (!domain) {
