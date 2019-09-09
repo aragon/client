@@ -37,6 +37,7 @@ function Welcome({
     [selectorNetworksSorted]
   )
 
+  // TODO: add loading indicator for fetching available templates
   return (
     <div
       css={`
