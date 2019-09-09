@@ -77,7 +77,7 @@ function ConnectModal({
               color: ${theme.contentSecondary};
             `}
           >
-            <Link href="https://example.com/">
+            <Link href="https://www.ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">
               What is a Ethereum provider?
             </Link>
           </p>

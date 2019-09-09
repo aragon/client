@@ -115,7 +115,7 @@ function BoxProgress({ opacity, boxTransform }) {
               margin-bottom: ${2 * GU}px;
             `}
         >
-          21st century <span css="color: #8DB9D5">organizations</span>
+          Organizations <span css="color: #8DB9D5">of the future</span>
         </h1>
         <p
           css={`
@@ -124,9 +124,9 @@ function BoxProgress({ opacity, boxTransform }) {
             color: ${theme.surfaceContentSecondary};
           `}
         >
-          Aragon organizations are digital natives.
-          <br /> They live on Ethereum, a ledger secured by incentives and
-          cryptography. No one can take your organization away from you.
+          Aragon empowers you to freely organize and collaborate without borders
+          or intermediaries. Create global, bureaucracy-free organizations,
+          companies, and communities.
         </p>
       </div>
     </BoxBase>
@@ -164,7 +164,7 @@ function BoxReady({ opacity, boxTransform }) {
           <p>
             <strong>All done!</strong>
           </p>
-          <p css="font-weight: 400">Your decentralized organization is ready</p>
+          <p css="font-weight: 400">Your organization is ready</p>
           <Button label="Get started" mode="strong" href="/" external={false} />
         </div>
       </div>

@@ -160,7 +160,7 @@ function Tokens({
       >
         <Header
           title="Configure template"
-          subtitle="Choose your Tokens settings below."
+          subtitle="Choose your Tokens app settings below."
         />
 
         <div
@@ -222,7 +222,7 @@ function Tokens({
                 ${fieldsLayout}
               `}
             >
-              <div>Members</div>
+              <div>Tokenholders</div>
               {!fixedStake && <div>Balances</div>}
             </div>
           }

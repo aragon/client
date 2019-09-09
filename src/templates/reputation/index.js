@@ -22,6 +22,8 @@ export default {
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/reputation',
+  // TODO: Insert proper user guide URL
+  userGuide: 'https://help.aragon.org/',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/reputation',
   registry: 'aragonpm.eth',
@@ -41,26 +43,26 @@ export default {
             {
               label: 'General info',
               fields: [
-                ['Template of organization', 'Reputation'],
-                ['Domain', completeDomain(data.domain)],
+                ['Organization template', 'Reputation'],
+                ['Name', completeDomain(data.domain)],
               ],
             },
             {
-              label: 'Voting',
+              label: 'Voting app',
               fields: [
                 ['Support', `${data.voting.support}%`],
                 ['Minimum approval %', `${data.voting.quorum}%`],
               ],
             },
             {
-              label: 'Tokens',
+              label: 'Tokens app',
               fields: [
                 [
-                  'Token',
-                  `${data.tokens.tokenName} (${data.tokens.tokenSymbol})`,
+                  'Token name & symbol',
+                  `${data.tokenName} (${data.tokenSymbol})`,
                 ],
                 ...data.tokens.members.map(([account], i) => [
-                  `Address ${i + 1}`,
+                  `Tokenholder #${i + 1}`,
                   account,
                 ]),
               ],

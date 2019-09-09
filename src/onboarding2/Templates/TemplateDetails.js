@@ -106,6 +106,15 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                   </Link>
                 </Field>
               )}
+              {template.userGuide && (
+                <Field label="User guide">
+                  <Link href={template.userGuide}>
+                    {sanitizeCodeRepositoryUrl(
+                      stripUrlProtocol(template.userGuide)
+                    )}
+                  </Link>
+                </Field>
+              )}
               <Field label="Source code">
                 <Link href={template.sourceCodeUrl}>
                   {sanitizeCodeRepositoryUrl(

@@ -70,8 +70,8 @@ class ConfigureVotingDefaultsContent extends React.PureComponent {
           <SubmitForm onSubmit={onSubmit} ref={formRef}>
             <TextContainer>
               <Text size="large" color={theme.textSecondary} align="center">
-                Choose your voting settings below. You can’t change the support
-                required later, so pick carefully.
+                Choose your Voting app settings below. You can’t change the
+                support required later, so pick carefully.
               </Text>
             </TextContainer>
             <Fields>
