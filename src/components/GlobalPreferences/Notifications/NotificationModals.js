@@ -71,7 +71,7 @@ DeleteSubscriptionConfirmationModal.propTypes = {
   visible: PropTypes.bool,
 }
 
-export function ConfirmationModal({
+function ConfirmationModal({
   children,
   onConfirm,
   onClose,
@@ -110,7 +110,7 @@ ConfirmationModal.propTypes = {
   visible: PropTypes.bool,
 }
 
-export const ModalControls = styled.div`
+const ModalControls = styled.div`
   margin-top: ${3 * GU}px;
   display: grid;
   grid-gap: ${1.5 * GU}px;
@@ -124,7 +124,7 @@ export const ModalControls = styled.div`
   )}
 `
 
-export const RemoveButton = styled(Button)`
+const RemoveButton = styled(Button)`
   ${breakpoint(
     'medium',
     `

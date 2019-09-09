@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, GU, LoadingRing, textStyle } from '@aragon/ui'
+import { Link, GU, LoadingRing, textStyle } from '@aragon/ui'
 import { verifyEmailToken } from './notification-service-api'
 import {
   VERIFY_SUBSECTION,
@@ -11,6 +11,8 @@ import NotificationsInfoBox, {
   ICON_SUCCESS,
   ICON_ERROR,
   ICON_NEUTRAL,
+  IMAGE_ERROR,
+  IMAGE_NORMAL,
 } from './NotificationsInfoBox'
 
 export function NotificationsVerify({
@@ -70,7 +72,7 @@ export function NotificationsVerify({
 
   if (isFetching) {
     return (
-      <NotificationsInfoBox>
+      <NotificationsInfoBox image={IMAGE_NORMAL}>
         <div
           css={`
             display: flex;
@@ -81,9 +83,9 @@ export function NotificationsVerify({
           <LoadingRing />
           <p
             css={`
-                margin-left: ${GU}px;
-                ${textStyle('body1')};z
-              `}
+              margin-left: ${GU}px;
+              ${textStyle('body1')};
+            `}
           >
             Verifying...
           </p>
@@ -95,26 +97,27 @@ export function NotificationsVerify({
     return (
       <NotificationsInfoBox
         header="Verification Successful"
+        image={IMAGE_NORMAL}
         icon={ICON_SUCCESS}
       >
         <div>
           Your email was verified and now you can subscribe to app events to
           receive email notifications. You may close this tab or{' '}
-          <ButtonText
+          <Link
             css={`
               font-weight: bold;
             `}
             onClick={navigateToNotifications}
           >
-            go to Notification preferences.
-          </ButtonText>
+            go to Notification preferences
+          </Link>
+          .
         </div>
       </NotificationsInfoBox>
     )
   }
 
   let message
-
   if (error && error instanceof ExpiredTokenError) {
     message = <div>The link you used to verify your email has expired.</div>
   } else if (error && error instanceof TypeError) {
@@ -128,17 +131,23 @@ export function NotificationsVerify({
       <div>Something has gone wrong during the email verification process.</div>
     )
   }
+
   return (
-    <NotificationsInfoBox header="Verification Failed" icon={ICON_ERROR}>
-      {message} Do not worry, you can go back and
-      <ButtonText
+    <NotificationsInfoBox
+      header="Verification Failed"
+      icon={ICON_ERROR}
+      image={IMAGE_ERROR}
+    >
+      {message} Don't worry, you can go back and
+      <Link
         css={`
           font-weight: bold;
         `}
         onClick={handleResetAccount}
       >
-        try to sign in again.
-      </ButtonText>
+        try to sign in again
+      </Link>
+      .
     </NotificationsInfoBox>
   )
 }
@@ -165,14 +174,15 @@ export function NotificationsPreVerify({ email, onEmailChange }) {
       </p>
       <p>
         Something went wrong?{' '}
-        <ButtonText
+        <Link
           css={`
             font-weight: bold;
           `}
           onClick={handleResetEmail}
         >
-          Go back and try to sign in again.
-        </ButtonText>
+          Go back and try to sign in again
+        </Link>
+        .
       </p>
     </NotificationsInfoBox>
   )

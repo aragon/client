@@ -49,21 +49,19 @@ function SubscriptionFilters({
         selected={selectedEvent}
         onChange={onEventChange}
       />
-      {
-        <Button
-          css={`
-            justify-self: end;
-            opacity: ${selectedOrganization !== -1 ||
-            selectedApp !== -1 ||
-            selectedEvent !== -1
-              ? 1
-              : 0};
-          `}
-          onClick={onClearFilters}
-        >
-          Clear Filters
-        </Button>
-      }
+      <Button
+        css={`
+          justify-self: end;
+          opacity: ${selectedOrganization !== -1 ||
+          selectedApp !== -1 ||
+          selectedEvent !== -1
+            ? 1
+            : 0};
+        `}
+        onClick={onClearFilters}
+      >
+        Clear filters
+      </Button>
     </div>
   )
 }
