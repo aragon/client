@@ -201,6 +201,7 @@ function Onboarding({
         {status === 'create' && Array.isArray(templates) && (
           <Create
             account={account}
+            onOpenOrg={goToOrg}
             templates={templates}
             walletWeb3={walletWeb3}
             web3={web3}
