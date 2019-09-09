@@ -15,7 +15,7 @@ import {
 import { login } from './notification-service-api'
 import { network } from '../../../environment'
 import { validateEmail } from '../../../utils'
-import notificationSvg from './notifications.svg'
+import notificationPng from './notifications.png'
 
 export default function NotificationsLogin({
   dao,
@@ -174,7 +174,7 @@ export default function NotificationsLogin({
 
 const NotificationImage = () => (
   <img
-    src={notificationSvg}
+    src={notificationPng}
     alt="Notifications"
     css={`
       display: block;
