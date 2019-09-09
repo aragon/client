@@ -488,9 +488,6 @@ class App extends React.Component {
                         walletProviderId={walletProviderId}
                       />
                     </div>
-
-                    <HelpScoutBeacon locator={locator} apps={apps} />
-
                     <GlobalPreferences
                       locator={locator}
                       wrapper={wrapper}
@@ -498,6 +495,7 @@ class App extends React.Component {
                       onScreenChange={this.openPreferences}
                       onClose={this.closePreferences}
                     />
+                    <HelpScoutBeacon locator={locator} apps={apps} />
                   </ActivityProvider>
                 </FavoriteDaosProvider>
               </LocalIdentityModalProvider>
