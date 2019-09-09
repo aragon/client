@@ -60,7 +60,7 @@ function ConnectModal({
               padding-bottom: ${1 * GU}px;
             `}
           >
-            Connect to an Ethereum provider
+            Enable your Ethereum provider
           </h1>
           <p
             css={`
@@ -68,7 +68,8 @@ function ConnectModal({
               color: ${theme.contentSecondary};
             `}
           >
-            Please install an Ethereum provider to fully use Aragon
+            You need to enable your Ethereum provider in order to create an
+            organization.
           </p>
           <p
             css={`
