@@ -193,7 +193,7 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
   }
 }, POLL_DELAY_NETWORK)
 
-const resolveEnsDomain = async (domain, opts) => {
+export const resolveEnsDomain = async domain => {
   try {
     return await ensResolve(domain, {
       provider: web3Providers.default,
@@ -210,6 +210,15 @@ const resolveEnsDomain = async (domain, opts) => {
 export const isEnsDomainAvailable = async name => {
   const addr = await resolveEnsDomain(name)
   return addr === '' || isEmptyAddress(addr)
+}
+
+export const fetchApmArtifact = async (
+  repoAddress,
+  ipfsConf = ipfsDefaultConf
+) => {
+  return apm(getWeb3(web3Providers.default), {
+    ipfsGateway: ipfsConf.gateway,
+  }).fetchLatestRepoContent(repoAddress)
 }
 
 // Subscribe to aragon.js observables
