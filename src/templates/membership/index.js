@@ -11,11 +11,13 @@ export default {
   header,
   icon,
   description: `
-    Use a non-transferrable token to represent membership. Decisions can be
+    Use a non-transferrable token to represent membership. Decisions are
     made based on one-member-one-vote governance.
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/membership',
+  // TODO: Insert proper user guide URL
+  userGuide: 'https://help.aragon.org/',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/membership',
   registry: 'aragonpm.eth',
@@ -35,23 +37,23 @@ export default {
             {
               label: 'General info',
               fields: [
-                ['Template of organization', 'Membership'],
-                ['Domain', data.domain],
+                ['Organization template', 'Membership'],
+                ['Name', data.domain],
               ],
             },
             {
-              label: 'Voting',
+              label: 'Voting app',
               fields: [
                 ['Support', `${data.support}%`],
                 ['Minimum approval %', `${data.quorum}%`],
               ],
             },
             {
-              label: 'Tokens',
+              label: 'Tokens app',
               fields: [
-                ['Token', `${data.tokenName} (${data.tokenSymbol})`],
+                ['Token name & symbol', `${data.tokenName} (${data.tokenSymbol})`],
                 ...data.members.map((account, i) => [
-                  `Address ${i + 1}`,
+                  `Tokenholder #${i + 1}`,
                   account,
                 ]),
               ],

@@ -215,6 +215,7 @@ export const EthereumProviderType = PropTypes.shape({
 // see templates/
 export const OrgTemplateType = PropTypes.shape({
   caseStudyUrl: PropTypes.string,
+  userGuide: PropTypes.string,
   description: PropTypes.string.isRequired,
   header: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,

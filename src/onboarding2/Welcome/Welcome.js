@@ -53,7 +53,7 @@ function Welcome({
       >
         <Header
           title="Welcome to Aragon"
-          subtitle="Create your own organization and token in a few minutes!"
+          subtitle="Create your own organization in a few minutes!"
         />
 
         <Split
@@ -76,7 +76,6 @@ function Welcome({
                 />
                 <WelcomeAction
                   title="Open an existing organization"
-                  subtitle="Find an existing organization"
                   illustration={actionOpen}
                   onActivate={onOpen}
                 />
@@ -94,8 +93,8 @@ function Welcome({
           `}
         >
           Do you need more information about Aragon?{' '}
-          <ButtonText href="https://wiki.aragon.org/" external>
-            Visit our Wiki
+          <ButtonText href="https://aragon.org/" external>
+            Visit our homepage
           </ButtonText>
         </p>
       </Layout>

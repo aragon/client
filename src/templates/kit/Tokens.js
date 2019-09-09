@@ -78,7 +78,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
       >
         <Header
           title="Configure template"
-          subtitle="Choose your Tokens settings below."
+          subtitle="Choose your Tokens app settings below."
         />
 
         <div
@@ -133,7 +133,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
             )}
           </Field>
 
-          <Field label="Members">
+          <Field label="Tokenholders">
             <div>
               {members.map((account, i) => (
                 <div
@@ -216,7 +216,7 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
           `}
         >
           These settings will determine the name and symbol of the token that
-          will be created for your organization. Add members to define the
+          will be created for your organization. Add addresses to define the
           initial distribution of this token.
         </Info>
 

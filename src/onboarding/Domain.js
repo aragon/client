@@ -67,7 +67,7 @@ class DomainContent extends React.PureComponent {
       <React.Fragment>
         <Title>
           <Text size="great" weight="bold" color={theme.textDimmed}>
-            Claim a domain name
+            Claim a name
           </Text>
         </Title>
         <p>

@@ -13,10 +13,12 @@ export default {
   icon,
   description: `
     Initialize a transparent and accountable crowdfunding campaign for your
-    project or community organization.
+    organization.
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/fundraising',
+  // TODO: Insert proper user guide URL
+  userGuide: 'https://help.aragon.org/',
   // sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/master/templates/',
   registry: 'aragonpm.eth',
   modules: [],
@@ -35,23 +37,23 @@ export default {
             {
               label: 'General info',
               fields: [
-                ['Template of organization', 'Fundraising'],
-                ['Domain', data.domain],
+                ['Organization template', 'Fundraising'],
+                ['Name', data.domain],
               ],
             },
             {
-              label: 'Voting',
+              label: 'Voting app',
               fields: [
                 ['Support', `${data.support}%`],
                 ['Minimum approval %', `${data.quorum}%`],
               ],
             },
             {
-              label: 'Tokens',
+              label: 'Tokens app',
               fields: [
-                ['Token', `${data.tokenName} (${data.tokenSymbol})`],
+                ['Token name & symbol', `${data.tokenName} (${data.tokenSymbol})`],
                 ...data.members.map((account, i) => [
-                  `Address ${i + 1}`,
+                  `Tokenholder #${i + 1}`,
                   account,
                 ]),
               ],
