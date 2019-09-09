@@ -72,7 +72,7 @@ export function NotificationsVerify({
 
   if (isFetching) {
     return (
-      <NotificationsInfoBox>
+      <NotificationsInfoBox image={IMAGE_NORMAL}>
         <div
           css={`
             display: flex;
@@ -97,6 +97,7 @@ export function NotificationsVerify({
     return (
       <NotificationsInfoBox
         header="Verification Successful"
+        image={IMAGE_NORMAL}
         icon={ICON_SUCCESS}
       >
         <div>
