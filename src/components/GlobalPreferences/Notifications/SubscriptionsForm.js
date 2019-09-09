@@ -211,12 +211,18 @@ export default function SubscriptionsForm({
   }
 
   const appBadges = subscribableApps.map(
-    ({ contractAddress, icons: [{ src: iconSrc }], name, appName }) => {
+    ({
+      contractAddress,
+      icons: [{ src: iconSrc }],
+      name,
+      appName,
+      baseUrl,
+    }) => {
       return (
         <AppBadge
           appBadge={contractAddress}
           badgeOnly
-          iconSrc={iconSrc}
+          iconSrc={`${baseUrl}${iconSrc}`}
           label={name || appName}
         />
       )

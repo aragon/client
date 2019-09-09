@@ -27,13 +27,14 @@ function SubscriptionFilters({
       contractAddress,
       icons: [{ src: iconSrc }],
       name,
+      baseUrl,
     } = app
     return (
       <AppBadge
         appAddress={contractAddress}
         label={name}
         badgeOnly
-        iconSrc={iconSrc}
+        iconSrc={`${baseUrl}${iconSrc}`}
       />
     )
   })
