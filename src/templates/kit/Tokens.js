@@ -332,7 +332,7 @@ function MemberField({
             <span css="transform: translateY(1px)">
               {!hideRemoveButton && (
                 <Button
-                  onClick={handleRemove}
+                  display="icon"
                   icon={
                     <IconTrash
                       css={`
@@ -341,6 +341,7 @@ function MemberField({
                     />
                   }
                   label="Remove"
+                  onClick={handleRemove}
                   size="mini"
                 />
               )}
