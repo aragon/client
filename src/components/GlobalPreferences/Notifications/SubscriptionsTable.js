@@ -43,6 +43,8 @@ function filterSubscriptions({
   })
 }
 
+const DEFAULT_CONSTANT = -1
+
 const SubscriptionsTable = React.memo(function SubscriptionsTable({
   apps,
   apiError,
@@ -55,9 +57,11 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
 }) {
   const theme = useTheme()
 
-  const [selectedOrganization, setSelectedOrganization] = useState(-1)
-  const [selectedApp, setSelectedApp] = useState(-1)
-  const [selectedEvent, setSelectedEvent] = useState(-1)
+  const [selectedOrganization, setSelectedOrganization] = useState(
+    DEFAULT_CONSTANT
+  )
+  const [selectedApp, setSelectedApp] = useState(DEFAULT_CONSTANT)
+  const [selectedEvent, setSelectedEvent] = useState(DEFAULT_CONSTANT)
   const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [deleteModalOpened, setDeleteModalOpened] = useState(false)
@@ -67,20 +71,20 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   }, [])
   const onOrganizationChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedOrganization(idx === 0 ? -1 : idx)
+    setSelectedOrganization(idx || DEFAULT_CONSTANT)
   }, [])
   const onAppChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedApp(idx === 0 ? -1 : idx)
+    setSelectedApp(idx || DEFAULT_CONSTANT)
   }, [])
   const onEventChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedEvent(idx === 0 ? -1 : idx)
+    setSelectedEvent(idx || DEFAULT_CONSTANT)
   }, [])
   const onClearFilters = useCallback(() => {
-    setSelectedEvent(-1)
-    setSelectedApp(-1)
-    setSelectedOrganization(-1)
+    setSelectedEvent(DEFAULT_CONSTANT)
+    setSelectedApp(DEFAULT_CONSTANT)
+    setSelectedOrganization(DEFAULT_CONSTANT)
     // Reset selection when filters cleared
     setSelectedSubscriptions([])
   }, [])
