@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import {
+  AppBadge,
   Box,
   Button,
   DropDown,
@@ -209,8 +210,17 @@ export default function SubscriptionsForm({
     )
   }
 
-  const appNames = subscribableApps.map(
-    app => `${app.name} ${app.identifier ? `(${app.identifier})` : ''}`
+  const appBadges = subscribableApps.map(
+    ({ contractAddress, icons: [{ src: iconSrc }], name, appName }) => {
+      return (
+        <AppBadge
+          appBadge={contractAddress}
+          badgeOnly
+          iconSrc={iconSrc}
+          label={name || appName}
+        />
+      )
+    }
   )
   const isSubscribeDisabled =
     selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
@@ -232,7 +242,7 @@ export default function SubscriptionsForm({
         <DropDown
           wide
           placeholder="Select an App"
-          items={appNames}
+          items={appBadges}
           selected={selectedAppIdx}
           onChange={handleAppChange}
         />
