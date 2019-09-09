@@ -133,10 +133,11 @@ function BoxProgress({ opacity, boxTransform }) {
   )
 }
 
-function BoxReady({ opacity, boxTransform }) {
+function BoxReady({ onOpenOrg, opacity, boxTransform }) {
   const { below } = useViewport()
   const fullWidth = below('large')
   const small = below('medium')
+
   return (
     <BoxBase opacity={opacity} boxTransform={boxTransform}>
       <div
@@ -165,7 +166,7 @@ function BoxReady({ opacity, boxTransform }) {
             <strong>All done!</strong>
           </p>
           <p css="font-weight: 400">Your organization is ready</p>
-          <Button label="Get started" mode="strong" href="/" external={false} />
+          <Button label="Get started" mode="strong" onClick={onOpenOrg} />
         </div>
       </div>
     </BoxBase>
@@ -173,6 +174,7 @@ function BoxReady({ opacity, boxTransform }) {
 }
 
 const Deployment = React.memo(function Deployment({
+  onOpenOrg,
   ready,
   transactionsStatus,
 }) {
@@ -221,7 +223,11 @@ const Deployment = React.memo(function Deployment({
           >
             {ready => ({ opacity, transform }) =>
               ready ? (
-                <BoxReady opacity={opacity} boxTransform={transform} />
+                <BoxReady
+                  onOpenOrg={onOpenOrg}
+                  opacity={opacity}
+                  boxTransform={transform}
+                />
               ) : (
                 <BoxProgress opacity={opacity} boxTransform={transform} />
               )}

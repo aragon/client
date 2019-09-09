@@ -340,6 +340,7 @@ function MemberField({
                       `}
                     />
                   }
+                  label="Remove"
                   size="mini"
                 />
               )}

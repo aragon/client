@@ -59,7 +59,7 @@ export default {
               fields: [
                 [
                   'Token name & symbol',
-                  `${data.tokenName} (${data.tokenSymbol})`,
+                  `${data.tokens.tokenName} (${data.tokens.tokenSymbol})`,
                 ],
                 ...data.tokens.members.map(([account], i) => [
                   `Tokenholder #${i + 1}`,
@@ -89,7 +89,7 @@ export default {
     // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
     // often not mined
     const forceMultipleTransactions =
-      network.type === 'rinkeby' && members.length > 2
+      network.type === 'rinkeby' && members.length > 1
 
     if (!hasPayroll && !forceMultipleTransactions) {
       return [

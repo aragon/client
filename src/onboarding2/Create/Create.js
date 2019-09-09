@@ -302,7 +302,7 @@ function useDeploymentState(
   }
 }
 
-function Create({ account, templates, walletWeb3, web3 }) {
+function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
 
   const onScreenUpdate = useCallback((index, screens) => {
@@ -388,6 +388,12 @@ function Create({ account, templates, walletWeb3, web3 }) {
   const handleTemplateNext = useCallback(data => nextScreen(data), [nextScreen])
   const handleTemplatePrev = useCallback(() => prevScreen(), [prevScreen])
 
+  const handleOpenNewOrg = useCallback(() => {
+    if (templateData && templateData.domain) {
+      onOpenOrg(templateData.domain)
+    }
+  }, [templateData, onOpenOrg])
+
   return (
     <div
       css={`
@@ -400,6 +406,7 @@ function Create({ account, templates, walletWeb3, web3 }) {
       {status === STATUS_DEPLOYMENT ? (
         <Deployment
           loadingTransactions={fetchingTemplateInformation}
+          onOpenOrg={handleOpenNewOrg}
           ready={
             Array.isArray(deployTransactions) &&
             deployTransactions.length > 0 &&
@@ -428,6 +435,7 @@ function Create({ account, templates, walletWeb3, web3 }) {
 }
 Create.propTypes = {
   account: EthereumAddressType,
+  onOpenOrg: PropTypes.func.isRequired,
   templates: PropTypes.array.isRequired,
   walletWeb3: PropTypes.object,
   web3: PropTypes.object,
