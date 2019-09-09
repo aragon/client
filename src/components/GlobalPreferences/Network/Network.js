@@ -41,7 +41,7 @@ function Network({ wrapper }) {
             onChange={handleEthNodeChange}
             css={`
               ${textStyle('body2')};
-              color: ${theme.content};
+              color: ${theme.contentSecondary};
               ${networkError ? `border-color: ${theme.negative};` : ''}
             `}
           />
@@ -77,7 +77,7 @@ function Network({ wrapper }) {
             onChange={handleIpfsGatewayChange}
             css={`
               ${textStyle('body2')};
-              color: ${theme.content};
+              color: ${theme.contentSecondary};
             `}
           />
         </Label>
@@ -173,7 +173,7 @@ const useNetwork = wrapper => {
 }
 
 const Label = styled.label`
-  color: ${({ theme }) => theme.contentSecondary};
+  color: ${({ theme }) => theme.content};
   display: block;
   margin-bottom: ${2 * GU}px;
 `
