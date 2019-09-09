@@ -163,13 +163,12 @@ export default function NotificationsLogin({
           : `Receive email notifications for new app events. For example,
         whenever a new vote is created or when tokens are issued, you’ll get
         an email informing you of this activity in your organization.
-        You will be asked to enter your email address whenever using a
-        different browser session or device to access your notification
-        subscriptions. This process doesn’t require a password, just for you to
-        confirm your email address whenever you want to activate email
-        notifications. The email address you enter here is only used to send you
-        notifications that you have explicitly opted into and will not be
-        shared, rented, or sold for any marketing purposes.`}
+        This process doesn’t require a password. You will be asked to enter
+        your email address whenever using a different browser session
+        or device to access your notification subscriptions. The email address
+        you enter here is only used to send you notifications that you have
+        explicitly opted into and will not be shared, rented,
+        or sold for any marketing purposes.`}
       </Info>
     </Box>
   )
