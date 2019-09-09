@@ -4,19 +4,28 @@ import { useTheme, BREAKPOINTS } from '@aragon/ui'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import ConnectModal from '../../components/ConnectModal/ConnectModal'
 import { EthereumAddressType } from '../../prop-types'
+import { log } from '../../utils'
 import { saveTemplateState } from '../create-utils'
-import templates from '../../templates'
+import {
+  TEMPLATE_LOADING,
+  TEMPLATE_AVAILABLE,
+  TEMPLATE_UNAVAILABLE,
+} from '../symbols'
+import embeddedTemplates from '../../templates'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
 
+const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
+  ...template,
+  status: TEMPLATE_LOADING,
+}))
+
 function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
   const theme = useTheme()
   const [connectModalOpened, setConnectModalOpened] = useState(false)
-  const [availableTemplates, setAvailableTemplates] = useState([])
-  const [fetchingAvailableTemplates, setFetchingAvailableTemplates] = useState(
-    false
-  )
+  const [templates, setTemplates] = useState(initialEmbeddedTemplates)
+  const [templatesResolved, setTemplatesResolved] = useState(false)
 
   const goToHome = useCallback(() => {
     window.location.hash = '/'
@@ -59,41 +68,39 @@ function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
 
   useEffect(() => {
     let cancelled = false
-    if (status === 'create') {
-      setFetchingAvailableTemplates(true)
+    if (status === 'create' && !templatesResolved) {
       Promise.all(
-        templates.map(async template => {
+        embeddedTemplates.map(async template => {
           try {
             const repoAddress = await resolveEnsDomain(template.id)
             return {
               repoAddress,
+              status: TEMPLATE_AVAILABLE,
               ...template,
             }
-          } catch (_) {}
-
-          // Only remove non-disabled ones
-          return template.disabled ? template : null
+          } catch (_) {
+            return {
+              status: TEMPLATE_UNAVAILABLE,
+              ...template,
+            }
+          }
         })
       )
         .then(templatesWithRepoAddress => {
           if (!cancelled) {
-            const availableTemplates = templatesWithRepoAddress.filter(Boolean)
-            setAvailableTemplates(availableTemplates)
-            setFetchingAvailableTemplates(false)
+            setTemplates(templatesWithRepoAddress)
+            setTemplatesResolved(true)
           }
           return null
         })
-        .catch(() => {
-          if (!cancelled) {
-            setAvailableTemplates(null)
-            setFetchingAvailableTemplates(false)
-          }
+        .catch(err => {
+          log('Failed to resolve templates through ENS', err)
         })
     }
     return () => {
       cancelled = true
     }
-  }, [status])
+  }, [status, templatesResolved])
 
   if (status === 'none') {
     return null
@@ -120,8 +127,6 @@ function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
       >
         {(status === 'welcome' || status === 'open') && (
           <Welcome
-            fetchingTemplates={fetchingAvailableTemplates}
-            noAvailableTemplates={availableTemplates == null}
             onBack={goToHome}
             onOpen={goToOpen}
             onOpenOrg={goToOrg}
@@ -130,10 +135,10 @@ function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
             selectorNetworks={selectorNetworks}
           />
         )}
-        {status === 'create' && Array.isArray(availableTemplates) && (
+        {status === 'create' && Array.isArray(templates) && (
           <Create
             account={account}
-            templates={availableTemplates}
+            templates={templates}
             walletWeb3={walletWeb3}
             web3={web3}
           />

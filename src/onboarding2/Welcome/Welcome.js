@@ -37,7 +37,6 @@ function Welcome({
     [selectorNetworksSorted]
   )
 
-  // TODO: add loading indicator for fetching available templates
   return (
     <div
       css={`
@@ -107,6 +106,7 @@ function Welcome({
 Welcome.propTypes = {
   onBack: PropTypes.func.isRequired,
   onOpen: PropTypes.func.isRequired,
+  onOpenOrg: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
   openMode: PropTypes.bool.isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.string).isRequired,

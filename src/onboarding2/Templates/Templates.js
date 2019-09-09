@@ -64,22 +64,19 @@ function Templates({ onUse, templates }) {
             items={templates.map(template => (
               <TemplateCard
                 key={template.id}
-                template={template}
                 onOpen={handleOpen}
+                template={template}
               />
             ))}
           />
         )}
       </div>
-
-      {Boolean(selectedTemplate) && (
-        <TemplateDetails
-          onClose={handleDetailsClose}
-          onUse={handleDetailsUse}
-          template={selectedTemplate}
-          visible={templateDetailsOpened}
-        />
-      )}
+      <TemplateDetails
+        onClose={handleDetailsClose}
+        onUse={handleDetailsUse}
+        template={selectedTemplate}
+        visible={templateDetailsOpened}
+      />
     </div>
   )
 }

@@ -14,9 +14,9 @@ function Configure({
   stepIndex,
   steps,
   template,
-  templates,
   templateData,
   templateScreenIndex,
+  templates,
 }) {
   const { above } = useViewport()
   const screens = (template && template.screens) || []
@@ -51,7 +51,9 @@ function Configure({
             overflow: hidden;
           `}
         >
-          {mode === 'select' && <Templates onUse={onUseTemplate} templates={templates} />}
+          {mode === 'select' && (
+            <Templates onUse={onUseTemplate} templates={templates} />
+          )}
           {mode === 'configure' && (
             <ConfigureTemplateScreens
               TemplateScreen={TemplateScreen}

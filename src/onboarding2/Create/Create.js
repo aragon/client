@@ -418,9 +418,9 @@ function Create({ account, templates, walletWeb3, web3 }) {
           stepIndex={configureStepIndex}
           steps={configureSteps}
           template={template}
-          templates={templates}
           templateData={templateData}
           templateScreenIndex={templateScreenIndex}
+          templates={templates}
         />
       )}
     </div>
