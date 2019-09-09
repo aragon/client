@@ -52,6 +52,7 @@ function ActivityList({ apps }) {
   return (
     <div
       css={`
+        /* Use 20px as the padding setting for popper is 10px */
         width: ${below('medium') ? `calc(100vw - 20px)` : `${42 * GU}px`};
       `}
     >
