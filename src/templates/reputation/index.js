@@ -91,7 +91,7 @@ export default {
     // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
     // often not mined
     const forceMultipleTransactions =
-      network.type === 'rinkeby' && members.length > 2
+      network.type === 'rinkeby' && members.length > 1
 
     if (!hasPayroll && !forceMultipleTransactions) {
       return [
