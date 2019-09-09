@@ -1,12 +1,13 @@
 import React, { useCallback, useMemo } from 'react'
 import { EthIdenticon, Box, GU } from '@aragon/ui'
 import FavoritesMenu from '../../components/FavoritesMenu/FavoritesMenu'
+import { useFavoriteDaos } from '../../contexts/FavoriteDaosContext'
+import { network } from '../../environment'
 import {
   getKnownOrganization,
   getRecommendedOrganizations,
 } from '../../known-organizations'
-import { network } from '../../environment'
-import { useFavoriteDaos } from '../../contexts/FavoriteDaosContext'
+import { addressesEqual } from '../../web3-utils'
 
 const MAX_SUGGESTIONS = 6
 const RECOMMENDED_ORGS = getRecommendedOrganizations(network.type)
@@ -19,11 +20,31 @@ function Suggestions() {
     addFavorite,
   } = useFavoriteDaos()
 
+  const suggestedOrgs = useMemo(() => {
+    const orgs = new Map(
+      [...favoriteOrgs].map(org => [org.address.toLowerCase(), org])
+    )
+
+    // Keep filling with recommended orgs until we reach the max
+    RECOMMENDED_ORGS.forEach(org => {
+      const orgAddress = org.address.toLowerCase()
+      if (orgs.size < MAX_SUGGESTIONS && !orgs.has(orgAddress)) {
+        orgs.set(orgAddress, org)
+      }
+    })
+
+    return [...orgs.values()].sort((org, org2) => {
+      const { address, name = '' } = org
+      const { address: address2, name: name2 = '' } = org2
+      return name.localeCompare(name2) || address > address2 ? 1 : -1
+    })
+  }, [favoriteOrgs])
+
   const updateFavorite = useCallback(
     (address, favorite) => {
-      const org =
-        favoriteOrgs.find(org => org.address === address) ||
-        RECOMMENDED_ORGS.find(org => org.address === address)
+      const org = suggestedOrgs.find(org =>
+        addressesEqual(org.address, address)
+      )
 
       // Can’t find the org
       if (!org) {
@@ -36,32 +57,15 @@ function Suggestions() {
         removeFavoriteByAddress(org.address)
       }
     },
-    [addFavorite, removeFavoriteByAddress, favoriteOrgs]
+    [addFavorite, removeFavoriteByAddress, suggestedOrgs]
   )
 
-  const suggestedOrgs = useMemo(() => {
-    const orgs = [...favoriteOrgs]
-
-    // Keep filling with recommended orgs until we reach the max
-    let i = 0
-    while (i < RECOMMENDED_ORGS.length && orgs.length < MAX_SUGGESTIONS) {
-      if (
-        orgs.findIndex(org => org.address === RECOMMENDED_ORGS[i].address) ===
-        -1
-      ) {
-        orgs.push(RECOMMENDED_ORGS[i])
-      }
-      i++
-    }
-    return orgs.sort((a, b) => (a.address > b.address ? 1 : -1))
-  }, [favoriteOrgs])
-
-  const openDao = useCallback(
+  const openOrg = useCallback(
     address => {
-      const dao = suggestedOrgs.find(org => org.address === address)
-      if (dao) {
-        window.location.hash = `/${dao.name || dao.address}`
-      }
+      const org = suggestedOrgs.find(org =>
+        addressesEqual(org.address, address)
+      )
+      window.location.hash = `/${(org && org.name) || address}`
     },
     [suggestedOrgs]
   )
@@ -93,7 +97,7 @@ function Suggestions() {
             secondary: knownOrg ? knownOrg.template : '',
           }
         })}
-        onActivate={openDao}
+        onActivate={openOrg}
         onFavoriteUpdate={updateFavorite}
       />
     </Box>
