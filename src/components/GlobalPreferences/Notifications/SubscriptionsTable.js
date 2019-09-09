@@ -92,20 +92,25 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     setDeleteModalOpened(false)
   }, [])
 
-  const organizations = Array.from(
-    new Set(subscriptions.map(subscription => subscription.ensName))
-  )
-  const subscriptionApps = Array.from(
-    new Set(subscriptions.map(subscription => subscription.appName))
-  )
-  const events = Array.from(
-    new Set(subscriptions.map(subscription => subscription.eventName))
-  )
+  const organizations = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.ensName)),
+  ]
+  const subscriptionApps = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.appName)),
+  ]
+  const events = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.eventName)),
+  ]
   const filteredSubscriptions = filterSubscriptions({
     subscriptions,
-    event: events[selectedEvent],
-    appName: subscriptionApps[selectedApp],
-    organization: organizations[selectedOrganization],
+    event: selectedEvent > 0 ? events[selectedEvent] : null,
+    appName: selectedApp > 0 ? subscriptionApps[selectedApp] : null,
+    organization: selectedOrganization
+      ? organizations[selectedOrganization]
+      : null,
   })
 
   const handleUnsubscribe = useCallback(
