@@ -7,6 +7,10 @@ import { ClaimDomain, Review, Voting, Tokens } from '../kit'
 import header from './header.svg'
 import icon from './icon.svg'
 
+function completeDomain(domain) {
+  return domain ? `${domain}.aragonid.eth` : ''
+}
+
 export default {
   id: 'reputation-template.aragonpm.eth',
   name: 'Reputation',
@@ -23,7 +27,7 @@ export default {
   registry: 'aragonpm.eth',
   modules: [],
   screens: [
-    [data => data.domain || 'Claim domain', ClaimDomain],
+    [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
     ['Configure template', Tokens],
     [
@@ -38,7 +42,7 @@ export default {
               label: 'General info',
               fields: [
                 ['Template of organization', 'Reputation'],
-                ['Domain', data.domain],
+                ['Domain', completeDomain(data.domain)],
               ],
             },
             {
