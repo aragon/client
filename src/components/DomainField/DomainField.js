@@ -1,58 +1,64 @@
-import React, { useCallback, useMemo } from 'react'
-import { Field, GU, TextInput, useTheme } from '@aragon/ui'
-import Check from './Check'
-
-export const DOMAIN_CHECK = Symbol('DOMAIN_CHECK')
-export const DOMAIN_LOADING = Symbol('DOMAIN_LOADING')
-export const DOMAIN_ERROR = Symbol('DOMAIN_ERROR')
-export const DOMAIN_NONE = Symbol('DOMAIN_NONE')
+import React, { useCallback, useImperativeHandle, useMemo, useRef } from 'react'
+import { Field, GU, TextInput, LoadingRing, useTheme } from '@aragon/ui'
+import CheckDisc from './CheckDisc'
+import ErrorDisc from './ErrorDisc'
+import {
+  DOMAIN_CHECK,
+  DOMAIN_LOADING,
+  DOMAIN_ERROR,
+  DOMAIN_NONE,
+} from '../../check-domain'
 
 // Filter a subdomain
-function filterSubdomain(subdomain) {
-  return subdomain
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '')
-    .slice(0, 30)
+function filterSubdomain(subdomain, detectFullDomains) {
+  const subdomainFiltered = subdomain.trim().toLowerCase()
+  return detectFullDomains
+    ? subdomainFiltered.replace(/\.\./g, '.')
+    : subdomainFiltered.replace(/[^a-z0-9]/g, '').slice(0, 30)
 }
 
-// Get the subdomain from a complete domain
-function getSubdomain(domain = '', domainEnd = '') {
-  const lastIndex = domain.lastIndexOf(domainEnd)
-  return lastIndex + domainEnd.length === domain.length
-    ? domain.slice(0, lastIndex)
-    : domain
-}
-
-function DomainField({
-  domainEnd = '.aragonid.eth',
-  label = 'Name of the organization',
-  onChange,
-  placeholder = 'Type an organization name',
-  status = DOMAIN_CHECK,
-  value,
-  ...props
-}) {
+const DomainField = React.forwardRef(function DomainField(
+  {
+    domainEnd = '.aragonid.eth',
+    label = 'Name of the organization',
+    onChange,
+    placeholder = 'Type an organization name',
+    status = DOMAIN_CHECK,
+    value,
+    detectFullDomains = false,
+    focusRef,
+    ...props
+  },
+  ref
+) {
   const theme = useTheme()
+
+  const inputRef = useRef()
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+      }
+    },
+  }))
 
   const handleInputChange = useCallback(
     event => {
-      onChange(filterSubdomain(event.target.value) + domainEnd)
+      const subdomain = filterSubdomain(event.target.value, detectFullDomains)
+      onChange(subdomain, subdomain + domainEnd)
     },
     [domainEnd, onChange]
   )
 
-  const subdomain = useMemo(() => getSubdomain(value, domainEnd), [
-    value,
-    domainEnd,
-  ])
+  const displayDomainEnd =
+    Boolean(domainEnd) && !(detectFullDomains && value.includes('.'))
 
   return (
     <div
       css={`
         display: flex;
         align-items: center;
-        flex-grow: 1;
       `}
       {...props}
     >
@@ -64,14 +70,15 @@ function DomainField({
       >
         <Field label={label} css="width: 100%">
           <TextInput
+            ref={inputRef}
             wide
             placeholder={placeholder}
-            value={subdomain}
+            value={value}
             onChange={handleInputChange}
             adornment={
               <div
                 css={`
-                  display: flex;
+                  display: ${displayDomainEnd ? 'flex' : 'none'};
                   align-items: center;
                   height: calc(100% - 2px);
                   margin: 1px 0;
@@ -96,12 +103,21 @@ function DomainField({
               margin-left: ${2 * GU}px;
             `}
           >
-            {status === DOMAIN_CHECK && <Check />}
+            {status === DOMAIN_CHECK && <CheckDisc />}
+            {status === DOMAIN_LOADING && (
+              <LoadingRing
+                css={`
+                  width: ${3 * GU}px;
+                  height: ${3 * GU}px;
+                `}
+              />
+            )}
+            {status === DOMAIN_ERROR && <ErrorDisc />}
           </div>
         )}
       </div>
     </div>
   )
-}
+})
 
 export default DomainField

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTheme, GU, IconCheck } from '@aragon/ui'
 
-function Check() {
+function CheckDisc() {
   const theme = useTheme()
   return (
     <div
@@ -21,4 +21,4 @@ function Check() {
   )
 }
 
-export default Check
+export default CheckDisc
