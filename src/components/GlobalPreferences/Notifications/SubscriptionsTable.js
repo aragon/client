@@ -239,9 +239,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
             if (!app) {
               return appName
             }
-            return (
-              <LocalLabelAppBadge app={app} apps={apps} editLabel compact />
-            )
+            return <LocalLabelAppBadge app={app} apps={apps} compact />
           })()
 
           return [
