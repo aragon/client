@@ -391,4 +391,18 @@ function MemberField({
   )
 }
 
+function formatReviewFields(tokensData) {
+  return [
+    [
+      'Token name & symbol',
+      `${tokensData.tokenName} (${tokensData.tokenSymbol})`,
+    ],
+    ...tokensData.members.map(([account], i) => [
+      `Tokenholder #${i + 1}`,
+      account,
+    ]),
+  ]
+}
+
+Tokens.formatReviewFields = formatReviewFields
 export default Tokens
