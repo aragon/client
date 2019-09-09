@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { Info, GU, SafeLink } from '@aragon/ui'
+import { Info, GU, Link } from '@aragon/ui'
 import { useCheckDomain, DOMAIN_CHECK, DOMAIN_ERROR } from '../../check-domain'
 import { DomainField, Header, PrevNextFooter } from '.'
 
@@ -64,10 +64,8 @@ function ClaimDomain({
         `}
       >
         Aragon uses the{' '}
-        <SafeLink href="https://ens.domains/" target="_blank">
-          Ethereum Name Service (ENS)
-        </SafeLink>{' '}
-        to assig names to organizations. The name you choose will be mapped to
+        <Link href="https://ens.domains/">Ethereum Name Service (ENS)</Link> to
+        assign names to organizations. The name you choose will be mapped to
         your organization’s Ethereum address and cannot be changed after you
         launch your organization.
       </Info>
