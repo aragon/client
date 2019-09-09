@@ -232,6 +232,7 @@ export default function SubscriptionsForm({
         </Label>
         <DropDown
           wide
+          header="App"
           placeholder="Select an App"
           items={appLabels}
           selected={selectedAppIdx}
