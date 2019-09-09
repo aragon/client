@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import {
-  AppBadge,
   Box,
   Button,
   DropDown,
@@ -18,6 +17,7 @@ import styled from 'styled-components'
 import { getEthNetworkType } from '../../../local-settings'
 import { createSubscription } from './notification-service-api'
 import notificationImage from './notification.png'
+import AppLabel from './AppLabel'
 
 const getEventNamesFromAbi = memoize(abi =>
   abi.filter(item => item.type === 'event').map(item => item.name)
@@ -210,24 +210,9 @@ export default function SubscriptionsForm({
     )
   }
 
-  const appBadges = subscribableApps.map(
-    ({
-      contractAddress,
-      icons: [{ src: iconSrc }],
-      name,
-      appName,
-      baseUrl,
-    }) => {
-      return (
-        <AppBadge
-          appBadge={contractAddress}
-          badgeOnly
-          iconSrc={`${baseUrl}${iconSrc}`}
-          label={name || appName}
-        />
-      )
-    }
-  )
+  const appLabels = subscribableApps.map(app => {
+    return <AppLabel app={app} apps={apps} />
+  })
   const isSubscribeDisabled =
     selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
 
@@ -248,7 +233,7 @@ export default function SubscriptionsForm({
         <DropDown
           wide
           placeholder="Select an App"
-          items={appBadges}
+          items={appLabels}
           selected={selectedAppIdx}
           onChange={handleAppChange}
         />

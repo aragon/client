@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import {
-  AppBadge,
   Button,
   GU,
   DataView,
@@ -16,6 +15,7 @@ import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { deleteSubscriptions } from './notification-service-api'
 import SubscriptionFilters from './SubscriptionFilters'
 import { DeleteSubscriptionConfirmationModal } from './NotificationModals'
+import AppLabel from './AppLabel'
 
 /**
  * Filters the subscriptions based on the search criteria
@@ -234,29 +234,17 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
           index,
           { selected, mode }
         ) => {
-          const appBadge = (() => {
-            const app = apps.find(app => app.appName === appName)
+          const appLabel = (() => {
+            const app = apps.find(a => a.contractAddress === contractAddress)
             if (!app) {
               return appName
             }
-            const {
-              contractAddress,
-              icons: [{ src: iconSrc }],
-              name,
-              baseUrl,
-            } = app
-            return (
-              <AppBadge
-                appAddress={contractAddress}
-                label={name}
-                badgeOnly
-                iconSrc={`${baseUrl}${iconSrc}`}
-              />
-            )
+            return <AppLabel app={app} apps={apps} />
           })()
+
           return [
             <Label>{ensName}</Label>,
-            <Label>{appBadge}</Label>,
+            <Label>{appLabel} </Label>,
             <LocalIdentityBadge entity={contractAddress} />,
             <Label>{eventName}</Label>,
           ]
