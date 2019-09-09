@@ -25,6 +25,7 @@ const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
 function Onboarding({
   account,
   balance,
+  isContractAccount,
   status,
   selectorNetworks,
   walletWeb3,
@@ -54,7 +55,8 @@ function Onboarding({
   useEffect(() => {
     const requirementsErrorUpdated = validateCreationRequirements(
       account,
-      balance
+      balance,
+      isContractAccount
     )
 
     if (
@@ -63,13 +65,17 @@ function Onboarding({
     ) {
       setRequirementsError(requirementsErrorUpdated)
     }
-  }, [account, balance, requirementsError])
+  }, [account, balance, isContractAccount, requirementsError])
 
   const handleCreate = useCallback(() => {
     // reset the creation state
     saveTemplateState({})
 
-    const requirementsError = validateCreationRequirements(account, balance)
+    const requirementsError = validateCreationRequirements(
+      account,
+      balance,
+      isContractAccount
+    )
     setRequirementsError(requirementsError)
 
     // Account not connected
@@ -83,7 +89,7 @@ function Onboarding({
     if (requirementsError[0] === null) {
       window.location.hash = '/create'
     }
-  }, [account, balance])
+  }, [account, balance, isContractAccount])
 
   const closeConnectModal = useCallback(
     provider => {

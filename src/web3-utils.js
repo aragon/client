@@ -108,6 +108,23 @@ export function getInjectedProvider() {
   return null
 }
 
+/**
+ * Get whether an account is a contract
+ *
+ * @param {Web3} web3 The web3 instance
+ * @param {string} account The account being checked
+ *
+ * @returns {boolean} Whether the account is a contract or not
+ */
+export async function getIsContractAccount(web3, account) {
+  try {
+    const accountCode = await web3.eth.getCode(account)
+    return accountCode !== '0x'
+  } catch (err) {
+    return false
+  }
+}
+
 // Get the first account of a web3 instance
 export async function getMainAccount(web3) {
   try {
