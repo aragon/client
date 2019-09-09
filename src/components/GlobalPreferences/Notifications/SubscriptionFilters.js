@@ -63,7 +63,7 @@ function SubscriptionFilters({
       return appName
     }
 
-    return <AppLabel app={app} apps={appsFull} />
+    return app.name
   })
 
   return (
