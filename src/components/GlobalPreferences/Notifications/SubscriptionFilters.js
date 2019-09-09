@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, DropDown, GU, useLayout } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
-import AppLabel from './AppLabel'
+import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
 
 function SubscriptionFilters({
   organizations,
@@ -24,7 +24,15 @@ function SubscriptionFilters({
     if (!app) {
       return appName
     }
-    return <AppLabel app={app} apps={appsFull} noIdentifier badgeOnly compact />
+    return (
+      <LocalLabelAppBadge
+        app={app}
+        apps={appsFull}
+        noIdentifier
+        badgeOnly
+        compact
+      />
+    )
   })
 
   return (

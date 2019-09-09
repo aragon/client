@@ -15,7 +15,7 @@ import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { deleteSubscriptions } from './notification-service-api'
 import SubscriptionFilters from './SubscriptionFilters'
 import { DeleteSubscriptionConfirmationModal } from './NotificationModals'
-import AppLabel from './AppLabel'
+import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
 
 /**
  * Filters the subscriptions based on the search criteria
@@ -239,7 +239,9 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
             if (!app) {
               return appName
             }
-            return <AppLabel app={app} apps={apps} editLabel compact />
+            return (
+              <LocalLabelAppBadge app={app} apps={apps} editLabel compact />
+            )
           })()
 
           return [
