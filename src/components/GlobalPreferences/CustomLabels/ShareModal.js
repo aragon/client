@@ -12,7 +12,7 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
-import { TIMEOUT_TOAST } from '../GlobalPreferences'
+import { TIMEOUT_TOAST } from '../../CustomToast/CustomToast'
 
 function ShareModal({ onClose, link, visible }) {
   const toast = useToast()
