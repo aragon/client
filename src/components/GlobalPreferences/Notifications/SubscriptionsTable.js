@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import {
+  AppBadge,
   Button,
   GU,
   DataView,
@@ -231,12 +232,33 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
           { appName, contractAddress, ensName, eventName },
           index,
           { selected, mode }
-        ) => [
-          <Label>{ensName}</Label>,
-          <Label>{appName}</Label>,
-          <LocalIdentityBadge entity={contractAddress} />,
-          <Label>{eventName}</Label>,
-        ]}
+        ) => {
+          const appBadge = (() => {
+            const app = apps.find(app => app.appName === appName)
+            if (!app) {
+              return appName
+            }
+            const {
+              contractAddress,
+              icons: [{ src: iconSrc }],
+              name,
+            } = app
+            return (
+              <AppBadge
+                appAddress={contractAddress}
+                label={name}
+                badgeOnly
+                iconSrc={iconSrc}
+              />
+            )
+          })()
+          return [
+            <Label>{ensName}</Label>,
+            <Label>{appBadge}</Label>,
+            <LocalIdentityBadge entity={contractAddress} />,
+            <Label>{eventName}</Label>,
+          ]
+        }}
       />
       <DeleteSubscriptionConfirmationModal
         visible={deleteModalOpened}
