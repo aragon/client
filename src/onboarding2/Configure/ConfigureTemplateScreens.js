@@ -27,22 +27,30 @@ function ConfigureTemplateScreens({
       unique
       items={{ screenIndex, Screen: TemplateScreen }}
       keys={({ screenIndex }) => screenIndex}
-      from={{ opacity: 0, transform: `translate3d(${10 * direction}%, 0, 0)` }}
-      enter={{ opacity: 1, transform: `translate3d(0%, 0, 0)` }}
+      from={{
+        opacity: 0,
+        position: 'absolute',
+        transform: `translate3d(${10 * direction}%, 0, 0)`,
+      }}
+      enter={{
+        opacity: 1,
+        position: 'static',
+        transform: `translate3d(0%, 0, 0)`,
+      }}
       leave={{
         opacity: 0,
+        position: 'absolute',
         transform: `translate3d(${-10 * direction}%, 0, 0)`,
       }}
       config={springs.smooth}
     >
-      {({ screenIndex, Screen }) => ({ opacity, transform }) => (
+      {({ screenIndex, Screen }) => ({ opacity, transform, position }) => (
         <AnimatedDiv
-          style={{ opacity, transform }}
+          style={{ opacity, transform, position }}
           css={`
             display: grid;
             align-items: center;
             justify-content: center;
-            position: absolute;
             top: 0;
             left: 0;
             right: 0;
