@@ -20,7 +20,7 @@ function ClaimDomain({
   const [domain, setDomain] = useState(data.domain || '')
 
   const handleNext = useCallback(() => {
-    next({ ...data, domain })
+    next({ ...data, domain: domain.replace(/.aragonid.eth$/, '') })
   }, [data, domain, next])
 
   return (
