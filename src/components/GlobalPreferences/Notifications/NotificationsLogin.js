@@ -161,7 +161,7 @@ export default function NotificationsLogin({
         process doens’t require a password, just for you to confirm your email
         address.`
           : `Receive email notifications for new app events. For example,
-        whenever a new vote is created or when tokens are issued, you’ll get
+        whenever a new vote is created or when funds are transferred, you’ll get
         an email informing you of this activity in your organization.
         This process doesn’t require a password. You will be asked to enter
         your email address whenever using a different browser session
