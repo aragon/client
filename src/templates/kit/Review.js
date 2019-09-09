@@ -66,9 +66,9 @@ function Review({
           margin: ${3 * GU}px 0;
         `}
       >
-        Carefully review your configuration settings. If something doesn't
-        look right, you can always go back and change it before launching
-        your organization.
+        Carefully review your configuration settings. If something doesn’t look
+        right, you can always go back and change it before launching your
+        organization.
       </Info>
 
       <PrevNextFooter
