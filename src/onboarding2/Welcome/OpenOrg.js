@@ -104,9 +104,11 @@ function OpenOrg({ onOpenOrg, onBack }) {
             justify-content: flex-end;
           `}
         >
-          <Button mode="strong" onClick={handleSubmit}>
-            Open organization
-          </Button>
+          <Button
+            label="Open organization"
+            mode="strong"
+            onClick={handleSubmit}
+          />
         </div>
       </form>
     </Box>
