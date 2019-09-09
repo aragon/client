@@ -80,8 +80,14 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
     })
   }, [data, next, support, quorum, duration])
 
+  const handleSupportRef = useCallback(ref => {
+    if (ref) {
+      ref.focus()
+    }
+  }, [])
+
   return (
-    <div
+    <form
       css={`
         display: grid;
         align-items: center;
@@ -95,19 +101,20 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
       >
         <Header
           title="Configure template"
-          subtitle="Choose your Voting settings below."
+          subtitle="Choose your Voting app settings below."
         />
 
         <PercentageField
+          ref={handleSupportRef}
           label={
             <React.Fragment>
               Support
               <Help hint="What’s the support?">
-                <strong>Support</strong> is the number for what percent of the
-                tokens that participated in a vote must approve a proposal for
-                that proposal to pass. For example, if “Support” is set to 51%,
-                then 51% of tokens that vote on a proposal must approve the
-                proposal for it to pass.
+                <strong>Support</strong> is the percentage of votes on a
+                proposal that the total support must be greater than for the
+                proposal to be approved. For example, if “Support” is set to
+                51%, then more than 51% of the votes on a proposal must vote
+                “Yes” for the proposal to pass.
               </Help>
             </React.Fragment>
           }
@@ -120,12 +127,12 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
             <React.Fragment>
               Minimum approval %
               <Help hint="What’s the minimum approval?">
-                <strong>Minimum Approval</strong> is the number for what percent
-                of the total outstanding supply of tokens must approve a
-                proposal for the vote to be considered valid. For example, if
-                the Min. Quorum is set to 20%, then 20% of the outstanding token
-                supply must vote to approve a proposal for the vote to be
-                considered valid.
+                <strong>Minimum Approval</strong> is the percentage of the total
+                token supply that support for a proposal must be greater than
+                for the proposal to be considered valid. For example, if the
+                Minimum Approval is set to 20%, then more than 20% of the
+                outstanding token supply must vote to approve a proposal for the
+                vote to be considered valid.
               </Help>
             </React.Fragment>
           }
@@ -143,11 +150,11 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
             margin-bottom: ${3 * GU}px;
           `}
         >
-          These settings will define your organization’s governance. The support
-          and minimum approval thresholds are strict requirements, such that
-          votes will only pass if they achieve approval percentages greater than
-          these thresholds. These parameters currently{' '}
-          <strong>cannot be changed</strong> after the organization is created.
+          The support and minimum approval thresholds are strict requirements,
+          such that votes will only pass if they achieve approval percentages
+          greater than these thresholds. These parameters currently{' '}
+          <strong>cannot be changed</strong> on the included Voting app after
+          the organization is created.
         </Info>
 
         <PrevNextFooter
@@ -158,7 +165,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
           onNext={handleNext}
         />
       </div>
-    </div>
+    </form>
   )
 }
 
@@ -226,8 +233,8 @@ function VoteDuration({ duration = 0, onUpdate }) {
           <Help hint="What’s the vote duration?">
             <strong>Vote Duration</strong> is the length of time that the vote
             will be open for participation. For example, if the Vote Duration is
-            set to 24 H, then tokenholders have 24 hours to participate in the
-            vote.
+            set to 24 hours, then tokenholders have 24 hours to participate in
+            the vote.
           </Help>
         </React.Fragment>
       }

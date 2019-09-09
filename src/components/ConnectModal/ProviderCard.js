@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Card, GU, textStyle, useTheme } from '@aragon/ui'
 import { EthereumProviderType } from '../../prop-types'
@@ -6,18 +6,17 @@ import { EthereumProviderType } from '../../prop-types'
 function ProviderCard({ provider, onConnect, onConnectError }) {
   const theme = useTheme()
 
-  const handleClick = useCallback(async () => {
-    try {
-      await provider.connect()
-      onConnect(provider.id)
-    } catch (err) {
-      onConnectError(provider.id, err)
-    }
-  }, [onConnect, provider])
+  // const handleClick = useCallback(async () => {
+  //   try {
+  //     await provider.connect()
+  //     onConnect(provider.id)
+  //   } catch (err) {
+  //     onConnectError(provider.id, err)
+  //   }
+  // }, [onConnect, onConnectError, provider])
 
   return (
     <Card
-      onClick={handleClick}
       css={`
         width: ${24 * GU}px;
         height: ${30 * GU}px;

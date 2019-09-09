@@ -11,6 +11,8 @@ import actionCreate from './assets/action-create.png'
 import actionOpen from './assets/action-open.png'
 
 function Welcome({
+  account,
+  createError,
   onBack,
   onCreate,
   onOpen,
@@ -53,7 +55,7 @@ function Welcome({
       >
         <Header
           title="Welcome to Aragon"
-          subtitle="Create your own organization and token in a few minutes!"
+          subtitle="Create your own organization in a few minutes!"
         />
 
         <Split
@@ -70,13 +72,15 @@ function Welcome({
                 />
                 <WelcomeAction
                   title="Create an organization"
-                  subtitle="You need at least 0.1 ETH"
+                  subtitle={<CreateSubtitle error={createError} />}
                   illustration={actionCreate}
                   onActivate={onCreate}
+                  hasError={
+                    createError[0] !== null && createError[0] !== 'no-account'
+                  }
                 />
                 <WelcomeAction
                   title="Open an existing organization"
-                  subtitle="Find an existing organization"
                   illustration={actionOpen}
                   onActivate={onOpen}
                 />
@@ -94,7 +98,9 @@ function Welcome({
           `}
         >
           Do you need more information about Aragon?{' '}
-          <Link href="https://wiki.aragon.org/">Visit our Wiki</Link>
+          <Link href="https://aragon.org/" external>
+            Visit our homepage
+          </Link>
         </p>
       </Layout>
     </div>
@@ -107,7 +113,31 @@ Welcome.propTypes = {
   onOpenOrg: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
   openMode: PropTypes.bool.isRequired,
-  selectorNetworks: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
+    .isRequired,
+}
+
+function CreateSubtitle({ error }) {
+  const theme = useTheme()
+  const [errorType, errorData] = error
+  if (errorType === 'minimum-balance' || errorType === 'unknown-balance') {
+    return (
+      <span
+        css={`
+          color: ${theme.negative};
+        `}
+      >
+        You need at least {errorData.minimumBalance} ETH (
+        <strong>
+          {errorType === 'unknown-balance'
+            ? 'your balance is unknown'
+            : `you have ${errorData.balance} ETH`}
+        </strong>
+        ).
+      </span>
+    )
+  }
+  return 'Start your organization with Aragon'
 }
 
 export default Welcome

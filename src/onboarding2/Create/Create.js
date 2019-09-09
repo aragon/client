@@ -21,7 +21,7 @@ const STATUS_DEPLOYMENT = Symbol('STATUS_DEPLOYMENT')
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
 const CONFIGURE_PLACEHOLDER_SCREENS = [
-  'Claim domain',
+  'Claim a name',
   'Configure template',
   'Review information',
 ]

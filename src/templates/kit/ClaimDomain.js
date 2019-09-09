@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { Info, GU } from '@aragon/ui'
+import { Info, GU, SafeLink } from '@aragon/ui'
 import { useCheckDomain, DOMAIN_CHECK, DOMAIN_ERROR } from '../../check-domain'
 import { DomainField, Header, PrevNextFooter } from '.'
 
@@ -9,8 +9,7 @@ function ClaimDomain({
   next,
   screenIndex,
   screens,
-  screenTitle = 'Claim a domain',
-  screenSubtitle = 'Create your own organization and token in a few minutes!',
+  screenTitle = 'Claim a name',
 }) {
   const [domain, setDomain] = useState(data.domain || '')
   const [displayError, setDisplayError] = useState(false)
@@ -21,7 +20,7 @@ function ClaimDomain({
     setDisplayError(false)
   }, [])
 
-  const handleSubmit = useCallback(() => {
+  const handleNext = useCallback(() => {
     setDisplayError(domainCheckStatus === DOMAIN_ERROR)
     if (domainCheckStatus === DOMAIN_CHECK) {
       next({ ...data, domain })
@@ -36,50 +35,51 @@ function ClaimDomain({
   }, [])
 
   return (
-    <React.Fragment>
-      <Header title={screenTitle} subtitle={screenSubtitle} />
+    <form>
+      <Header title={screenTitle} />
 
-      <form onSubmit={handleSubmit}>
-        <DomainField
-          ref={handleDomainFieldRef}
-          label="Create your domain"
-          onChange={handleDomainChange}
-          value={domain}
-          status={domainCheckStatus}
-        />
+      <DomainField
+        ref={handleDomainFieldRef}
+        label="Organization's name"
+        onChange={handleDomainChange}
+        value={domain}
+        status={domainCheckStatus}
+      />
 
-        {displayError && (
-          <Info
-            mode="error"
-            css={`
-              margin-bottom: ${3 * GU}px;
-            `}
-          >
-            This organization domain name already exists. You may want to try a
-            different one.
-          </Info>
-        )}
-
+      {displayError && (
         <Info
+          mode="error"
           css={`
             margin-bottom: ${3 * GU}px;
           `}
         >
-          Aragon uses the <strong>Ethereum Name Service (ENS)</strong> to assign
-          names to organizations. The domain name you choose will be mapped to
-          your organization’s Ethereum address and cannot be changed after you
-          launch your organization.
+          This organization domain name already exists. You may want to try a
+          different one.
         </Info>
+      )}
 
-        <PrevNextFooter
-          backEnabled
-          nextEnabled={Boolean(domain.trim())}
-          nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
-          onBack={back}
-          onNext={handleSubmit}
-        />
-      </form>
-    </React.Fragment>
+      <Info
+        css={`
+          margin-bottom: ${3 * GU}px;
+        `}
+      >
+        Aragon uses the{' '}
+        <SafeLink href="https://ens.domains/" target="_blank">
+          Ethereum Name Service (ENS)
+        </SafeLink>{' '}
+        to assig names to organizations. The name you choose will be mapped to
+        your organization’s Ethereum address and cannot be changed after you
+        launch your organization.
+      </Info>
+
+      <PrevNextFooter
+        backEnabled
+        nextEnabled={Boolean(domain.trim())}
+        nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
+        onBack={back}
+        onNext={handleNext}
+      />
+    </form>
   )
 }
 

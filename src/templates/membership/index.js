@@ -7,25 +7,31 @@ import { ClaimDomain, Review, Voting, Tokens } from '../kit'
 import header from './header.svg'
 import icon from './icon.svg'
 
+function completeDomain(domain) {
+  return domain ? `${domain}.aragonid.eth` : ''
+}
+
 export default {
   id: 'membership-template.aragonpm.eth',
   name: 'Membership',
   header,
   icon,
   description: `
-    Use a non-transferrable token to represent membership. Decisions can be
+    Use a non-transferrable token to represent membership. Decisions are
     made based on one-member-one-vote governance.
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/membership',
+  // TODO: Insert proper user guide URL
+  userGuide: 'https://help.aragon.org/',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/membership',
   registry: 'aragonpm.eth',
   modules: [],
   screens: [
-    [data => data.domain || 'Claim domain', ClaimDomain],
+    [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
-    ['Configure template', Tokens],
+    ['Configure template', props => <Tokens {...props} accountStake={1} />],
     [
       'Review information',
       ({ back, data, next }) => (
@@ -37,26 +43,26 @@ export default {
             {
               label: 'General info',
               fields: [
-                ['Template of organization', 'Membership'],
-                ['Domain', data.domain],
+                ['Organization template', 'Membership'],
+                ['Name', completeDomain(data.domain)],
               ],
             },
             {
-              label: 'Voting',
+              label: 'Voting app',
               fields: [
                 ['Support', `${data.voting.support}%`],
                 ['Minimum approval %', `${data.voting.quorum}%`],
               ],
             },
             {
-              label: 'Tokens',
+              label: 'Tokens app',
               fields: [
                 [
-                  'Token',
-                  `${data.tokens.tokenName} (${data.tokens.tokenSymbol})`,
+                  'Token name & symbol',
+                  `${data.tokenName} (${data.tokenSymbol})`,
                 ],
-                ...data.tokens.members.map((account, i) => [
-                  `Address ${i + 1}`,
+                ...data.tokens.members.map(([account], i) => [
+                  `Tokenholder #${i + 1}`,
                   account,
                 ]),
               ],
@@ -93,7 +99,7 @@ export default {
             tokenName,
             tokenSymbol,
             domain,
-            members,
+            members.map(([account]) => account),
             votingSettings,
             financePeriod,
             useAgentAsVault,
@@ -111,7 +117,7 @@ export default {
         name: 'Create organization',
         transaction: createTx('newInstance', [
           domain,
-          members,
+          members.map(([account]) => account),
           votingSettings,
           financePeriod,
           useAgentAsVault,

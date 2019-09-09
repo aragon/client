@@ -22,6 +22,12 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
     onUse(template.id)
   }, [onUse, template])
 
+  const handleSectionRef = useCallback(element => {
+    if (element) {
+      element.focus()
+    }
+  }, [])
+
   const modalWidth = useCallback(() => {
     if (above('large')) {
       return 130 * GU
@@ -45,6 +51,8 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
   return (
     <Modal visible={visible} width={modalWidth} onClose={onClose} padding={0}>
       <section
+        ref={handleSectionRef}
+        tabIndex="0"
         css={`
           ${verticalMode
             ? ''
@@ -94,6 +102,15 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                   <Link href={template.caseStudyUrl}>
                     {sanitizeCodeRepositoryUrl(
                       stripUrlProtocol(template.caseStudyUrl)
+                    )}
+                  </Link>
+                </Field>
+              )}
+              {template.userGuide && (
+                <Field label="User guide">
+                  <Link href={template.userGuide}>
+                    {sanitizeCodeRepositoryUrl(
+                      stripUrlProtocol(template.userGuide)
                     )}
                   </Link>
                 </Field>

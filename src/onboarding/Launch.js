@@ -21,7 +21,7 @@ class LaunchContent extends React.PureComponent {
       <Content>
         <Title>
           <Text size="great" weight="bold" color={theme.textDimmed}>
-            All done! Your decentralized organization is ready.
+            All done! Your organization is ready.
           </Text>
         </Title>
         <StyledButton mode="strong" onClick={this.props.onConfirm}>

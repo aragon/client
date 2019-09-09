@@ -305,6 +305,7 @@ class App extends React.Component {
       apps,
       appIdentifiers,
       appsStatus,
+      balance,
       canUpgradeOrg,
       connected,
       daoAddress,
@@ -422,6 +423,7 @@ class App extends React.Component {
 
                           <Onboarding
                             account={account}
+                            balance={balance}
                             selectorNetworks={selectorNetworks}
                             status={
                               mode === APP_MODE_START || mode === APP_MODE_SETUP

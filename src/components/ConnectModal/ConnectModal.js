@@ -1,15 +1,41 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Link, GU, Modal, textStyle, useTheme } from '@aragon/ui'
+import {
+  Button,
+  GU,
+  IconConnect,
+  Link,
+  Modal,
+  textStyle,
+  useTheme,
+  useViewport,
+} from '@aragon/ui'
 import providers from '../../ethereum-providers'
+import { enableWallet } from '../../wallet-utils'
 import ProviderCard from './ProviderCard'
 
-function ConnectModal({ visible, onConnect, onConnectError, onClose }) {
+function ConnectModal({
+  account,
+  onClose,
+  onConnect,
+  onConnectError,
+  visible,
+}) {
   const theme = useTheme()
+  const { above, below } = useViewport()
 
-  const modalWidth = useCallback(viewport => {
-    return 130 * GU
+  const modalWidth = useCallback(({ width }) => {
+    return Math.min(130 * GU, width - 8 * GU)
   }, [])
+
+  useEffect(() => {
+    if (account) {
+      onConnect()
+    }
+  }, [account, onConnect])
+
+  const largeMode = above('large')
+  const smallMode = below('medium')
 
   return (
     <Modal visible={visible} width={modalWidth} onClose={onClose}>
@@ -23,19 +49,18 @@ function ConnectModal({ visible, onConnect, onConnectError, onClose }) {
         <header
           css={`
             padding-top: ${4 * GU}px;
-            padding-bottom: ${7 * GU}px;
             text-align: center;
           `}
         >
           <h1
             css={`
               // Not in aragonUI - exceptionally used here
-              font-size: 40px;
+              font-size: ${smallMode ? '30px' : '40px'};
               font-weight: 600;
-              padding-bottom: ${2 * GU}px;
+              padding-bottom: ${1 * GU}px;
             `}
           >
-            Connect to an Ethereum provider
+            Enable your Ethereum provider
           </h1>
           <p
             css={`
@@ -43,33 +68,45 @@ function ConnectModal({ visible, onConnect, onConnectError, onClose }) {
               color: ${theme.contentSecondary};
             `}
           >
-            Please install an Ethereum provider to fully use Aragon
+            You need to enable your Ethereum provider in order to create an
+            organization.
+          </p>
+          <p
+            css={`
+              padding: ${2 * GU}px 0 ${4 * GU}px;
+              text-align: center;
+              color: ${theme.contentSecondary};
+            `}
+          >
+            <Link href="https://www.ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">
+              What is a Ethereum provider?
+            </Link>
           </p>
         </header>
-        <div
-          css={`
-            display: flex;
-            justify-content: space-between;
-          `}
-        >
-          {[...providers.values()].map(provider => (
-            <ProviderCard
-              key={provider.name}
-              provider={provider}
-              onConnect={onConnect}
-              onConnectError={onConnectError}
-            />
-          ))}
-        </div>
-        <p
-          css={`
-            padding: ${4 * GU}px 0 ${4 * GU}px;
-            text-align: center;
-            color: ${theme.contentSecondary};
-          `}
-        >
-          <Link href="https://example.com/">What is a Ethereum provider?</Link>
-        </p>
+        {largeMode && (
+          <div
+            css={`
+              display: flex;
+              justify-content: space-between;
+              padding-bottom: ${4 * GU}px;
+            `}
+          >
+            {[...providers.values()].map(provider => (
+              <ProviderCard
+                key={provider.name}
+                provider={provider}
+                onConnect={onConnect}
+                onConnectError={onConnectError}
+              />
+            ))}
+          </div>
+        )}
+        <Button
+          icon={<IconConnect />}
+          label="Enable account"
+          mode="strong"
+          onClick={enableWallet}
+        />
       </section>
     </Modal>
   )
@@ -80,6 +117,7 @@ ConnectModal.propTypes = {
   onConnect: PropTypes.func.isRequired,
   onConnectError: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  account: PropTypes.string,
 }
 
 export default ConnectModal

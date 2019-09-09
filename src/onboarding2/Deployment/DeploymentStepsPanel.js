@@ -37,7 +37,7 @@ function DeploymentStepsPanel({ transactionsStatus }) {
           color: ${theme.surfaceContentSecondary};
         `}
       >
-        Creating your organization
+        Launching your organization
       </div>
 
       <div

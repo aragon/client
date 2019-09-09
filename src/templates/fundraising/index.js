@@ -5,6 +5,10 @@ import { ClaimDomain, Review, Voting, Tokens } from '../kit'
 import header from './header.svg'
 import icon from './icon.svg'
 
+function completeDomain(domain) {
+  return domain ? `${domain}.aragonid.eth` : ''
+}
+
 export default {
   disabled: true,
   id: 'fundraising',
@@ -13,15 +17,17 @@ export default {
   icon,
   description: `
     Initialize a transparent and accountable crowdfunding campaign for your
-    project or community organization.
+    organization.
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/fundraising',
+  // TODO: Insert proper user guide URL
+  userGuide: 'https://help.aragon.org/',
   // sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/master/templates/',
   registry: 'aragonpm.eth',
   modules: [],
   screens: [
-    [data => data.domain || 'Claim domain', ClaimDomain],
+    [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
     ['Configure template', Tokens],
     [
@@ -35,23 +41,26 @@ export default {
             {
               label: 'General info',
               fields: [
-                ['Template of organization', 'Fundraising'],
-                ['Domain', data.domain],
+                ['Organization template', 'Fundraising'],
+                ['Name', completeDomain(data.domain)],
               ],
             },
             {
-              label: 'Voting',
+              label: 'Voting app',
               fields: [
                 ['Support', `${data.support}%`],
                 ['Minimum approval %', `${data.quorum}%`],
               ],
             },
             {
-              label: 'Tokens',
+              label: 'Tokens app',
               fields: [
-                ['Token', `${data.tokenName} (${data.tokenSymbol})`],
-                ...data.members.map((account, i) => [
-                  `Address ${i + 1}`,
+                [
+                  'Token name & symbol',
+                  `${data.tokenName} (${data.tokenSymbol})`,
+                ],
+                ...data.tokens.members.map(([account], i) => [
+                  `Tokenholder #${i + 1}`,
                   account,
                 ]),
               ],

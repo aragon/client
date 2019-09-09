@@ -7,6 +7,10 @@ import { ClaimDomain, Review, Voting, Tokens } from '../kit'
 import header from './header.svg'
 import icon from './icon.svg'
 
+function completeDomain(domain) {
+  return domain ? `${domain}.aragonid.eth` : ''
+}
+
 export default {
   id: 'reputation-template.aragonpm.eth',
   name: 'Reputation',
@@ -18,12 +22,14 @@ export default {
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/reputation',
+  // TODO: Insert proper user guide URL
+  userGuide: 'https://help.aragon.org/',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/reputation',
   registry: 'aragonpm.eth',
   modules: [],
   screens: [
-    [data => data.domain || 'Claim domain', ClaimDomain],
+    [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
     ['Configure template', Tokens],
     [
@@ -37,26 +43,26 @@ export default {
             {
               label: 'General info',
               fields: [
-                ['Template of organization', 'Reputation'],
-                ['Domain', data.domain],
+                ['Organization template', 'Reputation'],
+                ['Name', completeDomain(data.domain)],
               ],
             },
             {
-              label: 'Voting',
+              label: 'Voting app',
               fields: [
                 ['Support', `${data.voting.support}%`],
                 ['Minimum approval %', `${data.voting.quorum}%`],
               ],
             },
             {
-              label: 'Tokens',
+              label: 'Tokens app',
               fields: [
                 [
-                  'Token',
-                  `${data.tokens.tokenName} (${data.tokens.tokenSymbol})`,
+                  'Token name & symbol',
+                  `${data.tokenName} (${data.tokenSymbol})`,
                 ],
-                ...data.tokens.members.map((account, i) => [
-                  `Address ${i + 1}`,
+                ...data.tokens.members.map(([account], i) => [
+                  `Tokenholder #${i + 1}`,
                   account,
                 ]),
               ],
@@ -95,7 +101,7 @@ export default {
             tokenName,
             tokenSymbol,
             domain,
-            members,
+            members.map(([account]) => account),
             stakes,
             votingSettings,
             financePeriod,
@@ -114,7 +120,7 @@ export default {
         name: 'Create organization',
         transaction: createTx('newInstance', [
           domain,
-          members,
+          members.map(([account]) => account),
           stakes,
           votingSettings,
           financePeriod,
