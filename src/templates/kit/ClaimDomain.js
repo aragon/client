@@ -40,7 +40,7 @@ function ClaimDomain({
 
       <DomainField
         ref={handleDomainFieldRef}
-        label="Organization's name"
+        label="Organization’s name"
         onChange={handleDomainChange}
         value={domain}
         status={domainCheckStatus}
