@@ -18,7 +18,6 @@ function OpenOrg({ onOpenOrg, onBack }) {
   const theme = useTheme()
   const [domainValue, setDomainValue] = useState('')
   const [displayError, setDisplayError] = useState(false)
-
   const domainCheckStatus = useCheckDomain(domainValue)
 
   const handleDomainChange = useCallback((subdomain, domain) => {
