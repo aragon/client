@@ -117,6 +117,7 @@ ConnectModal.propTypes = {
   onConnect: PropTypes.func.isRequired,
   onConnectError: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  account: PropTypes.string,
 }
 
 export default ConnectModal
