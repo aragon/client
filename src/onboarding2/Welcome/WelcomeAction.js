@@ -45,14 +45,16 @@ function WelcomeAction({
           >
             {title}
           </h1>
-          <p
-            css={`
-              ${textStyle('body2')};
-              color: ${theme.surfaceContentSecondary};
-            `}
-          >
-            {subtitle}
-          </p>
+          {subtitle && (
+            <p
+              css={`
+                ${textStyle('body2')};
+                color: ${theme.surfaceContentSecondary};
+              `}
+            >
+              {subtitle}
+            </p>
+          )}
         </div>
       </section>
     </Card>
@@ -62,7 +64,7 @@ function WelcomeAction({
 WelcomeAction.propTypes = {
   illustration: PropTypes.node.isRequired,
   title: PropTypes.node.isRequired,
-  subtitle: PropTypes.node.isRequired,
+  subtitle: PropTypes.node,
   onActivate: PropTypes.func.isRequired,
 }
 
