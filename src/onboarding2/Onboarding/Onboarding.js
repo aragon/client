@@ -2,12 +2,13 @@ import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, BREAKPOINTS } from '@aragon/ui'
 import ConnectModal from '../../components/ConnectModal/ConnectModal'
+import { EthereumAddressType } from '../../prop-types'
 import { saveTemplateState } from '../create-utils'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
 
-function Onboarding({ status, selectorNetworks }) {
+function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
   const theme = useTheme()
   const [connectModalOpened, setConnectModalOpened] = useState(false)
 
@@ -96,9 +97,12 @@ function Onboarding({ status, selectorNetworks }) {
 }
 
 Onboarding.propTypes = {
+  account: EthereumAddressType,
   status: PropTypes.string.isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,
+  walletWeb3: PropTypes.object,
+  web3: PropTypes.object,
 }
 
 export default Onboarding

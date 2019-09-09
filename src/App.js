@@ -421,12 +421,15 @@ class App extends React.Component {
                           </PermissionsProvider>
 
                           <Onboarding
+                            account={account}
                             selectorNetworks={selectorNetworks}
                             status={
                               mode === APP_MODE_START || mode === APP_MODE_SETUP
                                 ? locator.action || 'welcome'
                                 : 'none'
                             }
+                            walletWeb3={walletWeb3}
+                            web3={web3}
                           />
 
                           <HelpScoutBeacon locator={locator} apps={apps} />
