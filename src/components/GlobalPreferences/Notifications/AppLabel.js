@@ -4,7 +4,13 @@ import { AppBadge, GU, Tag } from '@aragon/ui'
 import { useLocalIdentity } from '../../../hooks'
 import { AppType } from '../../../prop-types'
 
-const AppLabel = React.memo(function AppLabel({ apps, app, noIdentifier }) {
+const AppLabel = React.memo(function AppLabel({
+  apps,
+  app,
+  noIdentifier,
+  editLabel,
+  ...props
+}) {
   const {
     name: appName,
     proxyAddress,
@@ -31,8 +37,8 @@ const AppLabel = React.memo(function AppLabel({ apps, app, noIdentifier }) {
       <AppBadge
         appAddress={app.contractAddress}
         label={label}
-        compact
         iconSrc={iconSrc}
+        {...props}
       />
       {!onlyOneInstance && !noIdentifier && !name && (
         <Tag
@@ -52,6 +58,7 @@ AppLabel.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   app: AppType.isRequired,
   noIdentifier: PropTypes.bool,
+  editLabel: PropTypes.bool,
 }
 
 export default AppLabel

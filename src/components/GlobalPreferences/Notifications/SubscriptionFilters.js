@@ -24,7 +24,7 @@ function SubscriptionFilters({
     if (!app) {
       return appName
     }
-    return <AppLabel app={app} apps={appsFull} noIdentifier />
+    return <AppLabel app={app} apps={appsFull} noIdentifier badgeOnly compact />
   })
 
   return (

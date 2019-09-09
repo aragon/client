@@ -211,7 +211,7 @@ export default function SubscriptionsForm({
   }
 
   const appLabels = subscribableApps.map(app => {
-    return <AppLabel app={app} apps={apps} />
+    return <AppLabel app={app} apps={apps} badgeOnly compact />
   })
   const isSubscribeDisabled =
     selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting

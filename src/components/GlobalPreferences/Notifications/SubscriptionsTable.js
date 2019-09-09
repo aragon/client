@@ -239,7 +239,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
             if (!app) {
               return appName
             }
-            return <AppLabel app={app} apps={apps} />
+            return <AppLabel app={app} apps={apps} editLabel compact />
           })()
 
           return [
