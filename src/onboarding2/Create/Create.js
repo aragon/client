@@ -256,7 +256,7 @@ function useDeploymentState(
             log('Failed onboarding transaction', err)
             if (!cancelled) {
               setTransactionProgress(({ signed, errored }) => ({
-                errored: errored + 1,
+                errored: signed,
                 signed,
               }))
             }
