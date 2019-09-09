@@ -42,7 +42,7 @@ function validationError(tokenName, tokenSymbol, members) {
   if (!validateDuplicateAddresses(members)) {
     return 'One of your members is using the same address than another member. Please ensure every member address is unique.'
   }
-  if (!tokenName) {
+  if (!tokenName.trim()) {
     return 'Please add a token name.'
   }
   if (!tokenSymbol) {
@@ -79,7 +79,7 @@ function Tokens({
 
   const handleTokenNameChange = useCallback(event => {
     setFormError(null)
-    setTokenName(event.target.value.trim())
+    setTokenName(event.target.value)
   }, [])
 
   const handleTokenSymbolChange = useCallback(event => {
