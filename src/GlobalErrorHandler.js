@@ -72,6 +72,8 @@ class GlobalErrorHandler extends React.Component {
               position: absolute;
               top: ${2 * GU}px;
               left: ${2 * GU}px;
+              width: ${4.5 * GU}px;
+              height: ${4.25 * GU}px;
             `}
             alt="Logo"
           />
