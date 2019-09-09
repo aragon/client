@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { AppBadge, GU, Tag } from '@aragon/ui'
-import { useLocalIdentity } from '../../../hooks'
-import { AppType } from '../../../prop-types'
+import { useLocalIdentity } from '../../hooks'
+import { AppType } from '../../prop-types'
 
-const AppLabel = React.memo(function AppLabel({
+const LocalLabelAppBadge = React.memo(function LocalLabelAppBadge({
   apps,
   app,
   noIdentifier,
@@ -54,11 +54,11 @@ const AppLabel = React.memo(function AppLabel({
   )
 })
 
-AppLabel.propTypes = {
+LocalLabelAppBadge.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   app: AppType.isRequired,
   noIdentifier: PropTypes.bool,
   editLabel: PropTypes.bool,
 }
 
-export default AppLabel
+export default LocalLabelAppBadge
