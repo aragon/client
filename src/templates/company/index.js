@@ -59,7 +59,7 @@ export default {
               fields: [
                 [
                   'Token name & symbol',
-                  `${data.tokenName} (${data.tokenSymbol})`,
+                  `${data.tokens.tokenName} (${data.tokens.tokenSymbol})`,
                 ],
                 ...data.tokens.members.map(([account], i) => [
                   `Tokenholder #${i + 1}`,
@@ -79,8 +79,8 @@ export default {
 
     const { domain, tokens, voting } = data
     const { tokenName, tokenSymbol, members } = tokens
-    const stake = new BN(10).pow(new BN(18)).toString()
-    const stakes = members.map(() => stake)
+    const baseStake = new BN(10).pow(new BN(18))
+    const stakes = members.map(([_, stake]) => baseStake.muln(stake).toString())
 
     const { support, quorum, duration } = voting
     const onePercent = new BN(10).pow(new BN(16))
@@ -91,7 +91,7 @@ export default {
     // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
     // often not mined
     const forceMultipleTransactions =
-      network.type === 'rinkeby' && members.length > 2
+      network.type === 'rinkeby' && members.length > 1
 
     if (!hasPayroll && !forceMultipleTransactions) {
       return [

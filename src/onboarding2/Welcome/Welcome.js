@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonText, DropDown, GU, Layout, Split, useTheme } from '@aragon/ui'
+import { Link, DropDown, GU, Layout, Split, useTheme } from '@aragon/ui'
 import { network } from '../../environment'
 import Header from '../Header/Header'
 import OpenOrg from './OpenOrg'
@@ -98,9 +98,9 @@ function Welcome({
           `}
         >
           Do you need more information about Aragon?{' '}
-          <ButtonText href="https://aragon.org/" external>
+          <Link href="https://aragon.org/" external>
             Visit our homepage
-          </ButtonText>
+          </Link>
         </p>
       </Layout>
     </div>

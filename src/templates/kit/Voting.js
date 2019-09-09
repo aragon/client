@@ -130,7 +130,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
                 <strong>Minimum Approval</strong> is the percentage of the total
                 token supply that support for a proposal must be greater than
                 for the proposal to be considered valid. For example, if the
-                Minimum Approval is set to 20%, then more than 20% of the
+                “Minimum Approval” is set to 20%, then more than 20% of the
                 outstanding token supply must vote to approve a proposal for the
                 vote to be considered valid.
               </Help>
@@ -152,9 +152,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
         >
           The support and minimum approval thresholds are strict requirements,
           such that votes will only pass if they achieve approval percentages
-          greater than these thresholds. These parameters currently{' '}
-          <strong>cannot be changed</strong> on the included Voting app after
-          the organization is created.
+          greater than these thresholds.
         </Info>
 
         <PrevNextFooter

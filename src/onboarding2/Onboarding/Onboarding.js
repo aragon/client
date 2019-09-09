@@ -208,6 +208,7 @@ function Onboarding({
         {status === 'create' && Array.isArray(templates) && (
           <Create
             account={account}
+            onOpenOrg={goToOrg}
             templates={templates}
             walletWeb3={walletWeb3}
             web3={web3}
@@ -227,7 +228,7 @@ function Onboarding({
 
 Onboarding.propTypes = {
   account: EthereumAddressType,
-  status: PropTypes.string.isRequired,
+  status: PropTypes.oneOf(['none', 'welcome', 'open', 'create']).isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,
   walletWeb3: PropTypes.object,
