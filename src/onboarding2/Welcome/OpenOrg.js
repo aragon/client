@@ -1,12 +1,49 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { BackButton, Bar, Box, Button, GU, useTheme } from '@aragon/ui'
-import DomainField, {
-  DOMAIN_CHECK,
-} from '../../components/DomainField/DomainField'
+import {
+  BackButton,
+  Bar,
+  Box,
+  Button,
+  GU,
+  Info,
+  useKeyDown,
+  useTheme,
+} from '@aragon/ui'
+import KEYS from '../../keycodes'
+import DomainField from '../../components/DomainField/DomainField'
+import { useCheckDomain, DOMAIN_CHECK, DOMAIN_ERROR } from '../../check-domain'
 
-function OpenOrg({ onBack }) {
+function OpenOrg({ onOpenOrg, onBack }) {
   const theme = useTheme()
+  const [domainValue, setDomainValue] = useState('')
+  const [displayError, setDisplayError] = useState(false)
+
+  const domainCheckStatus = useCheckDomain(domainValue)
+
+  const handleDomainChange = useCallback((subdomain, domain) => {
+    setDomainValue(subdomain)
+    setDisplayError(false)
+  }, [])
+
+  const handleSubmit = useCallback(() => {
+    setDisplayError(domainCheckStatus === DOMAIN_ERROR)
+    if (domainCheckStatus === DOMAIN_CHECK) {
+      onOpenOrg(domainValue)
+    }
+  }, [domainValue, onOpenOrg, domainCheckStatus])
+
+  useKeyDown(KEYS.esc, () => {
+    onBack()
+  })
+
+  // focus on mount
+  const handleDomainFieldRef = useCallback(ref => {
+    if (ref) {
+      ref.focus()
+    }
+  }, [])
+
   return (
     <Box padding={5 * GU}>
       <Bar
@@ -21,7 +58,8 @@ function OpenOrg({ onBack }) {
         <BackButton onClick={onBack} />
       </Bar>
 
-      <div
+      <form
+        onSubmit={handleSubmit}
         css={`
           display: flex;
           flex-direction: column;
@@ -29,20 +67,49 @@ function OpenOrg({ onBack }) {
           height: ${36 * GU}px;
         `}
       >
-        <DomainField
-          status={DOMAIN_CHECK}
-          label="Name of existing organization"
-          css="flex-grow: 1"
-        />
+        <div
+          css={`
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            justify-content: center;
+          `}
+        >
+          <div css="position: relative">
+            <DomainField
+              ref={handleDomainFieldRef}
+              detectFullDomains
+              value={domainValue}
+              onChange={handleDomainChange}
+              status={domainCheckStatus}
+              label="Name of existing organization"
+            />
+            {displayError && (
+              <Info
+                mode="error"
+                css={`
+                  position: absolute;
+                  top: ${10.5 * GU}px;
+                  width: 100%;
+                `}
+              >
+                This organization doesn’t seem to exist.
+              </Info>
+            )}
+          </div>
+        </div>
         <div
           css={`
             display: flex;
             justify-content: flex-end;
           `}
         >
-          <Button mode="strong">Open organization</Button>
+          <Button mode="strong" onClick={handleSubmit}>
+            Open organization
+          </Button>
         </div>
-      </div>
+      </form>
     </Box>
   )
 }

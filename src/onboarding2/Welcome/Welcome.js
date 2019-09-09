@@ -10,7 +10,14 @@ import WelcomeAction from './WelcomeAction'
 import actionCreate from './assets/action-create.png'
 import actionOpen from './assets/action-open.png'
 
-function Welcome({ onBack, onOpen, onCreate, openMode, selectorNetworks }) {
+function Welcome({
+  onBack,
+  onCreate,
+  onOpen,
+  onOpenOrg,
+  openMode,
+  selectorNetworks,
+}) {
   const theme = useTheme()
 
   const selectorNetworksSorted = useMemo(() => {
@@ -52,7 +59,7 @@ function Welcome({ onBack, onOpen, onCreate, openMode, selectorNetworks }) {
         <Split
           primary={
             openMode ? (
-              <OpenOrg onBack={onBack} />
+              <OpenOrg onBack={onBack} onOpenOrg={onOpenOrg} />
             ) : (
               <div>
                 <DropDown

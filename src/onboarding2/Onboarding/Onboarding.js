@@ -19,6 +19,10 @@ function Onboarding({ status, selectorNetworks }) {
     window.location.hash = '/open'
   }, [])
 
+  const goToOrg = useCallback(domain => {
+    window.location.hash = `/${domain}`
+  }, [])
+
   const handleCreate = useCallback(() => {
     // reset the creation state
     saveTemplateState({})
@@ -73,6 +77,7 @@ function Onboarding({ status, selectorNetworks }) {
           <Welcome
             onBack={goToHome}
             onOpen={goToOpen}
+            onOpenOrg={goToOrg}
             onCreate={handleCreate}
             openMode={status === 'open'}
             selectorNetworks={selectorNetworks}

@@ -1,4 +1,4 @@
-import React, { useCallback, useImperativeHandle, useMemo, useRef } from 'react'
+import React, { useCallback, useImperativeHandle, useRef } from 'react'
 import { Field, GU, TextInput, LoadingRing, useTheme } from '@aragon/ui'
 import CheckDisc from './CheckDisc'
 import ErrorDisc from './ErrorDisc'
