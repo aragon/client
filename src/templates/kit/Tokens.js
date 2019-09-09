@@ -67,12 +67,13 @@ function Tokens({
 
   const fixedStake = accountStake !== -1
 
-  const [tokenName, setTokenName] = useState(data.tokenName || '')
-  const [tokenSymbol, setTokenSymbol] = useState(data.tokenSymbol || '')
+  const { tokens: tokensData = {} } = data
+  const [tokenName, setTokenName] = useState(tokensData.tokenName || '')
+  const [tokenSymbol, setTokenSymbol] = useState(tokensData.tokenSymbol || '')
 
   const [members, setMembers] = useState(
-    data.members && data.members.length > 0
-      ? data.members
+    tokensData.members && tokensData.members.length > 0
+      ? tokensData.members
       : [['', accountStake]]
   )
 
@@ -120,11 +121,13 @@ function Tokens({
     if (!error) {
       next({
         ...data,
-        tokenName,
-        tokenSymbol,
-        members: members.filter(
-          ([account, stake]) => isAddress(account) && stake > 0
-        ),
+        tokens: {
+          tokenName,
+          tokenSymbol,
+          members: members.filter(
+            ([account, stake]) => isAddress(account) && stake > 0
+          ),
+        },
       })
     }
   }, [data, next, tokenName, tokenSymbol, members])

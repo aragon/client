@@ -10,6 +10,7 @@ import {
   useViewport,
   useTheme,
 } from '@aragon/ui'
+import { TEMPLATE_LOADING, TEMPLATE_UNAVAILABLE } from '../symbols'
 import { stripUrlProtocol, sanitizeCodeRepositoryUrl } from '../../url-utils'
 import AppIcon from '../../components/AppIcon/AppIcon'
 
@@ -117,9 +118,10 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
           </div>
 
           {!verticalMode && (
-            <Button mode="strong" onClick={handleUseClick} wide>
-              Use this template
-            </Button>
+            <SelectTemplateButton
+              onClick={handleUseClick}
+              template={template}
+            />
           )}
         </div>
         <div
@@ -158,21 +160,44 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
             />
           )}
           {verticalMode && (
-            <Button mode="strong" onClick={handleUseClick} wide>
-              Use this template
-            </Button>
+            <SelectTemplateButton
+              onClick={handleUseClick}
+              template={template}
+            />
           )}
         </div>
       </section>
     </Modal>
   )
 }
-
 TemplateDetails.propTypes = {
   onClose: PropTypes.func.isRequired,
   onUse: PropTypes.func.isRequired,
   template: PropTypes.object.isRequired,
   visible: PropTypes.bool.isRequired,
+}
+
+function SelectTemplateButton({ onClick, template }) {
+  const templateLoading = template.status === TEMPLATE_LOADING
+  const templateUnavailable = template.status === TEMPLATE_UNAVAILABLE
+  return (
+    <Button
+      disabled={templateLoading || templateUnavailable}
+      mode="strong"
+      onClick={onClick}
+      wide
+    >
+      {templateLoading
+        ? 'Loading template…'
+        : templateUnavailable
+        ? 'This template is not available at the moment'
+        : 'Use this template'}
+    </Button>
+  )
+}
+SelectTemplateButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  template: PropTypes.object.isRequired,
 }
 
 export default TemplateDetails

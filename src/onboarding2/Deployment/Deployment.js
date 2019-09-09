@@ -176,6 +176,7 @@ const Deployment = React.memo(function Deployment({
   ready,
   transactionsStatus,
 }) {
+  // TODO: handle loading state for transactions
   const { above } = useViewport()
   return (
     <React.Fragment>
