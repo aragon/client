@@ -41,9 +41,17 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
 
   const verticalMode = below('large')
 
+  const handleSectionRef = useCallback(element => {
+    if (element) {
+      element.focus()
+    }
+  }, [])
+
   return (
     <Modal visible={visible} width={modalWidth} onClose={onClose} padding={0}>
       <section
+        ref={handleSectionRef}
+        tabIndex="0"
         css={`
           ${verticalMode
             ? ''
