@@ -39,6 +39,7 @@ function PrevNextFooter({
         mode="strong"
         onClick={onNext}
         wide={!above('medium')}
+        type="submit"
       />
     </div>
   )
