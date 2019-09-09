@@ -1,8 +1,46 @@
-import React from 'react'
-import { Button, DropDown, GU, useLayout } from '@aragon/ui'
+import React, { useState, useEffect } from 'react'
+import { Button, DropDown, GU, Tag, useLayout } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
-import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
+import { useLocalIdentity } from '../../../hooks'
+
+const AppLabel = React.memo(function AppLabel({ apps, app }) {
+  const { name: appName, proxyAddress, contractAddress, identifier } = app
+  const [label, setLabel] = useState(appName)
+  const { name } = useLocalIdentity(proxyAddress)
+  const onlyOneInstance =
+    apps.filter(a => a.contractAddress === contractAddress).length === 1
+
+  useEffect(() => {
+    setLabel(name || appName)
+  }, [appName, name])
+
+  return (
+    <div
+      css={`
+        display: flex;
+        align-items: center;
+      `}
+    >
+      {label}
+      {!onlyOneInstance && !name && (
+        <Tag
+          mode="identifier"
+          css={`
+            margin-left: ${1 * GU}px;
+          `}
+        >
+          {identifier}
+        </Tag>
+      )}
+    </div>
+  )
+})
+
+AppLabel.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  app: AppType.isRequired,
+}
 
 function SubscriptionFilters({
   organizations,
@@ -24,15 +62,8 @@ function SubscriptionFilters({
     if (!app) {
       return appName
     }
-    return (
-      <LocalLabelAppBadge
-        app={app}
-        apps={appsFull}
-        noIdentifier
-        badgeOnly
-        compact
-      />
-    )
+
+    return <AppLabel app={app} apps={appsFull} />
   })
 
   return (
