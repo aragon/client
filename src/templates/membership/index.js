@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import BN from 'bn.js'
+import { network } from '../../environment'
 import { ClaimDomain, Review, Voting, Tokens } from '../kit'
 
 import header from './header.svg'
@@ -79,7 +80,12 @@ export default {
     const adjustedQuorum = onePercent.muln(quorum).toString()
     const votingSettings = [adjustedSupport, adjustedQuorum, duration]
 
-    if (!hasPayroll) {
+    // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
+    // often not mined
+    const forceMultipleTransactions =
+      network.type === 'rinkeby' && members.length > 2
+
+    if (!hasPayroll && !forceMultipleTransactions) {
       return [
         {
           name: 'Create organization',
