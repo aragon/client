@@ -1,7 +1,9 @@
 import { network } from '../environment'
 
+const TEMPLATE_STATE_KEY = `create-org:${network.type}`
+
 export function loadTemplateState() {
-  const value = localStorage.getItem(`create-org:${network.type}`)
+  const value = localStorage.getItem(TEMPLATE_STATE_KEY)
   try {
     const data = JSON.parse(value)
     return {

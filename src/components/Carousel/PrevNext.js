@@ -13,6 +13,7 @@ function PrevNext({ onClick, type }) {
         position: absolute;
         z-index: 1;
         top: 50%;
+        height: ${6 * GU}px;
         ${next ? 'right' : 'left'}: ${5 * GU}px;
       `}
     >

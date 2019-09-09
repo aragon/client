@@ -96,7 +96,7 @@ function Onboarding({ status, selectorNetworks }) {
 }
 
 Onboarding.propTypes = {
-  status: PropTypes.string.isRequired,
+  status: PropTypes.oneOf(['none', 'welcome', 'open', 'create']).isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,
 }
