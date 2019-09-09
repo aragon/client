@@ -1,8 +1,21 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useImperativeHandle, useRef } from 'react'
 import { Field, GU, Slider, TextInput, textStyle, useTheme } from '@aragon/ui'
 
-function PercentageField({ label = 'Percentage', value, onChange }) {
+const PercentageField = React.forwardRef(function PercentageField(
+  { label = 'Percentage', value, onChange },
+  ref
+) {
   const theme = useTheme()
+
+  const inputRef = useRef()
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+      }
+    },
+  }))
 
   const handleSliderChange = useCallback(
     v => {
@@ -48,6 +61,7 @@ function PercentageField({ label = 'Percentage', value, onChange }) {
             `}
           >
             <TextInput
+              ref={inputRef}
               id={id}
               value={value}
               onChange={handleInputChange}
@@ -77,6 +91,6 @@ function PercentageField({ label = 'Percentage', value, onChange }) {
       )}
     </Field>
   )
-}
+})
 
 export default PercentageField
