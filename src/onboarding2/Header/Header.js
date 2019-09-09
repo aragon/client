@@ -42,7 +42,7 @@ function Header({
 
 Header.propTypes = {
   title: PropTypes.node.isRequired,
-  subtitle: PropTypes.node.isRequired,
+  subtitle: PropTypes.node,
   topSpacing: PropTypes.number.isRequired,
   bottomSpacing: PropTypes.number.isRequired,
 }
