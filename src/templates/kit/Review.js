@@ -66,10 +66,9 @@ function Review({
           margin: ${3 * GU}px 0;
         `}
       >
-        Aragon uses the <strong>Ethereum Name Service (ENS)</strong> to assign
-        names to organizations. The domain name you choose will be mapped to
-        your organization’s Ethereum address and cannot be changed after you
-        launch your organization.
+        Carefully review your configuration settings. If something doesn't
+        look right, you can always go back and change it before launching
+        your organization.
       </Info>
 
       <PrevNextFooter
