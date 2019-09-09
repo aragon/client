@@ -14,6 +14,7 @@ function Configure({
   stepIndex,
   steps,
   template,
+  templates,
   templateData,
   templateScreenIndex,
 }) {
@@ -50,7 +51,7 @@ function Configure({
             overflow: hidden;
           `}
         >
-          {mode === 'select' && <Templates onUse={onUseTemplate} />}
+          {mode === 'select' && <Templates onUse={onUseTemplate} templates={templates} />}
           {mode === 'configure' && (
             <ConfigureTemplateScreens
               TemplateScreen={TemplateScreen}

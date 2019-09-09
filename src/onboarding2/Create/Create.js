@@ -34,12 +34,12 @@ function getConfigureSteps(status, template, templateData) {
   ]
 }
 
-function getTemplateById(templateId) {
+function getTemplateById(templates, templateId) {
   return templates.find(template => template.id === templateId)
 }
 
 // Handle and store everything related to a template state.
-function useConfigureState({ onScreenUpdate }) {
+function useConfigureState(templates, onScreenUpdate) {
   // The current template
   const [template, setTemplate] = useState(null)
 
@@ -51,12 +51,12 @@ function useConfigureState({ onScreenUpdate }) {
 
   const updateTemplateScreen = useCallback(
     (templateId, screenIndex = 0) => {
-      const template = getTemplateById(templateId)
+      const template = getTemplateById(templates, templateId)
       setTemplate(template)
       setTemplateScreenIndex(screenIndex)
       onScreenUpdate(screenIndex, template ? template.screens : [])
     },
-    [onScreenUpdate]
+    [templates, onScreenUpdate]
   )
 
   useEffect(() => {
@@ -199,7 +199,7 @@ function useDeploymentState(status, template, templateData) {
   }
 }
 
-function Create() {
+function Create({ account, templates, walletWeb3, web3 }) {
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
 
   const onScreenUpdate = useCallback((index, screens) => {
@@ -222,7 +222,7 @@ function Create() {
     templateData,
     templateScreenIndex,
     updateTemplateScreen,
-  } = useConfigureState({ onScreenUpdate })
+  } = useConfigureState(templates, onScreenUpdate)
 
   const configureSteps = getConfigureSteps(status, template, templateData)
 
@@ -279,12 +279,19 @@ function Create() {
           stepIndex={configureStepIndex}
           steps={configureSteps}
           template={template}
+          templates={templates}
           templateData={templateData}
           templateScreenIndex={templateScreenIndex}
         />
       )}
     </div>
   )
+}
+Create.propTypes = {
+  account: EthereumAddressType,
+  templates: PropTypes.array.isRequired,
+  walletWeb3: PropTypes.object,
+  web3: PropTypes.object,
 }
 
 export default Create
