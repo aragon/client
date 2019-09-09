@@ -85,11 +85,19 @@ function Onboarding({
     }
   }, [account, balance])
 
-  const closeConnectModal = useCallback(provider => {
-    setConnectModalOpened(false)
-    setConnectIntent('')
-    window.location.hash = '/'
-  }, [])
+  const closeConnectModal = useCallback(
+    provider => {
+      setConnectModalOpened(false)
+      setConnectIntent('')
+
+      // Redirect to / if the modal get closed on /create
+      // without having connected an account.
+      if (status === 'create' && !account) {
+        window.location.hash = '/'
+      }
+    },
+    [account, status]
+  )
 
   const handleProviderConnect = useCallback(
     provider => {
@@ -106,7 +114,6 @@ function Onboarding({
   const connectProviderError = useCallback(
     (provider, err) => {
       closeConnectModal()
-      // TODO
     },
     [closeConnectModal]
   )
@@ -157,7 +164,7 @@ function Onboarding({
       if (!account) {
         setConnectModalOpened(true)
       }
-    }, 500)
+    }, 1000)
 
     return () => {
       clearTimeout(id)
