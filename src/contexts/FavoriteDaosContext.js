@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
-import StoredList from '../StoredList'
-import { network } from '../environment'
 import uniqby from 'lodash.uniqby'
+import PropTypes from 'prop-types'
+import { network } from '../environment'
+import StoredList from '../StoredList'
+import { addressesEqual } from '../web3-utils'
 
 const FavoriteDaosContext = React.createContext()
 
@@ -16,7 +17,7 @@ const filterFavoritesDaos = daos =>
         name: dao.name || '',
         address: dao.address,
       })),
-    dao => dao.address
+    dao => dao.address.toLowerCase()
   )
 
 class FavoriteDaosProvider extends React.Component {
@@ -42,13 +43,15 @@ class FavoriteDaosProvider extends React.Component {
 
   isAddressFavorited = address => {
     return (
-      this.state.favoriteDaos.findIndex(dao => dao.address === address) > -1
+      this.state.favoriteDaos.findIndex(dao =>
+        addressesEqual(dao.address, address)
+      ) > -1
     )
   }
 
   addFavorite = dao => {
-    const daoIndex = this.state.favoriteDaos.findIndex(
-      ({ address }) => address === dao.address
+    const daoIndex = this.state.favoriteDaos.findIndex(({ address }) =>
+      addressesEqual(address, dao.address)
     )
     if (daoIndex === -1) {
       this.setState({
@@ -58,8 +61,8 @@ class FavoriteDaosProvider extends React.Component {
   }
 
   removeFavoriteByAddress = address => {
-    const daoIndex = this.state.favoriteDaos.findIndex(
-      dao => dao.address === address
+    const daoIndex = this.state.favoriteDaos.findIndex(({ address }) =>
+      addressesEqual(address, address)
     )
     if (daoIndex > -1) {
       const favs = storedList.remove(daoIndex)
