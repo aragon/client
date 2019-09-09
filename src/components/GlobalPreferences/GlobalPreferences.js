@@ -23,7 +23,6 @@ import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
-import { useHelpScout } from '../HelpScoutBeacon/useHelpScout'
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
