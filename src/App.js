@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
-import { contractAddresses, network, web3Providers } from './environment'
+import { network, web3Providers } from './environment'
 import { parsePath } from './routing'
 import initWrapper, {
-  initDaoBuilder,
   pollMainAccount,
   pollNetwork,
   pollConnectivity,
@@ -39,9 +38,6 @@ import {
   DAO_STATUS_READY,
   DAO_STATUS_LOADING,
   DAO_STATUS_UNLOADED,
-  DAO_CREATION_STATUS_NONE,
-  DAO_CREATION_STATUS_SUCCESS,
-  DAO_CREATION_STATUS_ERROR,
 } from './symbols'
 
 const INITIAL_DAO_STATE = {
@@ -76,13 +72,7 @@ class App extends React.Component {
     ...INITIAL_DAO_STATE,
     account: '',
     balance: getUnknownBalance(),
-    buildData: null, // data returned by aragon.js when a DAO is created
     connected: false,
-    // daoCreationStatus is one of:
-    //  - DAO_CREATION_STATUS_NONE
-    //  - DAO_CREATION_STATUS_SUCCESS
-    //  - DAO_CREATION_STATUS_ERROR
-    daoCreationStatus: DAO_CREATION_STATUS_NONE,
     fatalError: null,
     identityIntent: null,
     locator: {},
@@ -152,10 +142,6 @@ class App extends React.Component {
   updateLocator = locator => {
     const { locator: prevLocator } = this.state
 
-    if (locator.mode === APP_MODE_START || locator.mode === APP_MODE_SETUP) {
-      this.updateDaoBuilder()
-    }
-
     // New DAO: need to reinit the wrapper
     if (locator.dao && (!prevLocator || locator.dao !== prevLocator.dao)) {
       this.updateDao(locator.dao)
@@ -168,47 +154,6 @@ class App extends React.Component {
     }
 
     this.setState({ locator, prevLocator })
-  }
-
-  async updateDaoBuilder() {
-    const daoBuilder = initDaoBuilder(
-      web3Providers.wallet,
-      contractAddresses.ensRegistry
-    )
-    this.setState({
-      daoBuilder,
-      appsStatus: APPS_STATUS_UNLOADED,
-      daoStatus: DAO_STATUS_UNLOADED,
-    })
-  }
-
-  handleResetDaoBuilder = () => {
-    this.setState({
-      appsStatus: APPS_STATUS_UNLOADED,
-      buildData: null,
-      daoCreationStatus: DAO_CREATION_STATUS_NONE,
-      daoStatus: DAO_STATUS_UNLOADED,
-    })
-  }
-
-  handleBuildDao = async (templateName, organizationName, data) => {
-    const { daoBuilder } = this.state
-    try {
-      const [token, dao] = await daoBuilder.build(
-        templateName,
-        organizationName,
-        data
-      )
-      const domain = `${organizationName}.aragonid.eth`
-      this.setState({
-        daoCreationStatus: DAO_CREATION_STATUS_SUCCESS,
-        buildData: { token, dao, domain },
-      })
-      log('DAO created', dao, token, domain)
-    } catch (err) {
-      log(err)
-      this.setState({ daoCreationStatus: DAO_CREATION_STATUS_ERROR })
-    }
   }
 
   updateDao(dao = null) {
@@ -234,7 +179,7 @@ class App extends React.Component {
     })
 
     log('Init DAO', dao)
-    initWrapper(dao, contractAddresses.ensRegistry, {
+    initWrapper(dao, {
       provider: web3Providers.default,
       walletProvider: web3Providers.wallet,
       onDaoAddress: ({ address, domain }) => {
@@ -349,13 +294,6 @@ class App extends React.Component {
     }
   }
 
-  handleCompleteOnboarding = () => {
-    const { domain } = this.state.buildData
-    this.historyPush(`/${domain}`)
-  }
-  handleOpenOrganization = address => {
-    this.historyPush(`/${address}`)
-  }
   handleOpenLocalIdentityModal = address => {
     return this.state.wrapper.requestAddressIdentityModification(address)
   }
@@ -483,12 +421,15 @@ class App extends React.Component {
                           </PermissionsProvider>
 
                           <Onboarding
+                            account={account}
                             selectorNetworks={selectorNetworks}
                             status={
                               mode === APP_MODE_START || mode === APP_MODE_SETUP
                                 ? locator.action || 'welcome'
                                 : 'none'
                             }
+                            walletWeb3={walletWeb3}
+                            web3={web3}
                           />
 
                           <HelpScoutBeacon locator={locator} apps={apps} />

@@ -8,11 +8,11 @@ import { noop } from '../utils'
 import imgPending from '../assets/transaction-pending.svg'
 import imgSuccess from '../assets/transaction-success.svg'
 import imgError from '../assets/transaction-error.svg'
-import {
-  DAO_CREATION_STATUS_NONE,
-  DAO_CREATION_STATUS_SUCCESS,
-  DAO_CREATION_STATUS_ERROR,
-} from '../symbols'
+
+// Quick fix for linting issues; this file will be removed soon anyway
+const DAO_CREATION_STATUS_NONE = ''
+const DAO_CREATION_STATUS_SUCCESS = ''
+const DAO_CREATION_STATUS_ERROR = ''
 
 class Sign extends React.Component {
   static defaultProps = {

@@ -46,12 +46,14 @@ function reduceFields(fields, [field, value]) {
 }
 
 function Voting({ back, data, fields, next, screenIndex, screens }) {
+  const { voting: votingData = {} } = data
+
   const [{ support, quorum, duration }, updateField] = useReducer(
     reduceFields,
     {
-      support: data.support || DEFAULT_SUPPORT,
-      quorum: data.quorum || DEFAULT_QUORUM,
-      duration: data.duration || DEFAULT_DURATION,
+      support: votingData.support || DEFAULT_SUPPORT,
+      quorum: votingData.quorum || DEFAULT_QUORUM,
+      duration: votingData.duration || DEFAULT_DURATION,
     }
   )
 
@@ -70,9 +72,11 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
   const handleNext = useCallback(() => {
     next({
       ...data,
-      support,
-      quorum,
-      duration,
+      voting: {
+        support: Math.floor(support),
+        quorum: Math.floor(quorum),
+        duration,
+      },
     })
   }, [data, next, support, quorum, duration])
 
