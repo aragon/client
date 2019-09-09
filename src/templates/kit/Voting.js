@@ -76,8 +76,14 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
     })
   }, [data, next, support, quorum, duration])
 
+  const handleSupportRef = useCallback(ref => {
+    if (ref) {
+      ref.focus()
+    }
+  }, [])
+
   return (
-    <div
+    <form
       css={`
         display: grid;
         align-items: center;
@@ -95,6 +101,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
         />
 
         <PercentageField
+          ref={handleSupportRef}
           label={
             <React.Fragment>
               Support
@@ -154,7 +161,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
           onNext={handleNext}
         />
       </div>
-    </div>
+    </form>
   )
 }
 
