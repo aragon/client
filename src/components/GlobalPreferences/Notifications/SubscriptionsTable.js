@@ -216,6 +216,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
               selectedOrganization={selectedOrganization}
               onOrganizationChange={onOrganizationChange}
               apps={subscriptionApps}
+              appsFull={apps}
               selectedApp={selectedApp}
               onAppChange={onAppChange}
               events={events}

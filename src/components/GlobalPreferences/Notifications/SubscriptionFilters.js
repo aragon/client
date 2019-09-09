@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, DropDown, GU, useLayout } from '@aragon/ui'
+import { AppBadge, Button, DropDown, GU, useLayout } from '@aragon/ui'
 import PropTypes from 'prop-types'
 
 function SubscriptionFilters({
@@ -7,6 +7,7 @@ function SubscriptionFilters({
   selectedOrganization,
   onOrganizationChange,
   apps,
+  appsFull,
   selectedApp,
   onAppChange,
   events,
@@ -16,6 +17,25 @@ function SubscriptionFilters({
 }) {
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
+  const appBadges = apps.map(appName => {
+    const app = appsFull.find(app => app.appName === appName)
+    if (!app) {
+      return appName
+    }
+    const {
+      contractAddress,
+      icons: [{ src: iconSrc }],
+      name,
+    } = app
+    return (
+      <AppBadge
+        appAddress={contractAddress}
+        label={name}
+        badgeOnly
+        iconSrc={iconSrc}
+      />
+    )
+  })
 
   return (
     <div
@@ -38,7 +58,7 @@ function SubscriptionFilters({
       <DropDown
         placeholder="App"
         header="App"
-        items={apps}
+        items={appBadges}
         selected={selectedApp}
         onChange={onAppChange}
       />
