@@ -84,7 +84,7 @@ function Tokens({
 
   const handleTokenSymbolChange = useCallback(event => {
     setFormError(null)
-    setTokenSymbol(event.target.value.trim())
+    setTokenSymbol(event.target.value.trim().toUpperCase())
   }, [])
 
   const addMember = useCallback(() => {
