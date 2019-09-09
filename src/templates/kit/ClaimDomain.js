@@ -1,12 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Info, GU, SafeLink } from '@aragon/ui'
-import {
-  DOMAIN_CHECK,
-  DOMAIN_NONE,
-  DomainField,
-  Header,
-  PrevNextFooter,
-} from '.'
+import { useCheckDomain, DOMAIN_CHECK, DOMAIN_ERROR } from '../../check-domain'
+import { DomainField, Header, PrevNextFooter } from '.'
 
 function ClaimDomain({
   back,
@@ -17,21 +12,51 @@ function ClaimDomain({
   screenTitle = 'Claim a name',
 }) {
   const [domain, setDomain] = useState(data.domain || '')
+  const [displayError, setDisplayError] = useState(false)
+  const domainCheckStatus = useCheckDomain(domain, true)
+
+  const handleDomainChange = useCallback(domain => {
+    setDomain(domain)
+    setDisplayError(false)
+  }, [])
 
   const handleNext = useCallback(() => {
-    next({ ...data, domain })
-  }, [data, domain, next])
+    setDisplayError(domainCheckStatus === DOMAIN_ERROR)
+    if (domainCheckStatus === DOMAIN_CHECK) {
+      next({ ...data, domain })
+    }
+  }, [domain, next, data, domainCheckStatus])
+
+  // focus on mount
+  const handleDomainFieldRef = useCallback(ref => {
+    if (ref) {
+      ref.focus()
+    }
+  }, [])
 
   return (
-    <React.Fragment>
+    <form>
       <Header title={screenTitle} />
 
       <DomainField
+        ref={handleDomainFieldRef}
         label="Organization's name"
-        onChange={setDomain}
+        onChange={handleDomainChange}
         value={domain}
-        status={domain ? DOMAIN_CHECK : DOMAIN_NONE}
+        status={domainCheckStatus}
       />
+
+      {displayError && (
+        <Info
+          mode="error"
+          css={`
+            margin-bottom: ${3 * GU}px;
+          `}
+        >
+          This organization domain name already exists. You may want to try a
+          different one.
+        </Info>
+      )}
 
       <Info
         css={`
@@ -49,12 +74,12 @@ function ClaimDomain({
 
       <PrevNextFooter
         backEnabled
-        nextEnabled={Boolean(domain && !domain.startsWith('.'))}
+        nextEnabled={Boolean(domain.trim())}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleNext}
       />
-    </React.Fragment>
+    </form>
   )
 }
 

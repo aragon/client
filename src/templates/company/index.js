@@ -1,12 +1,18 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
+import BN from 'bn.js'
+import { network } from '../../environment'
 import { ClaimDomain, Review, Voting, Tokens } from '../kit'
 
 import header from './header.svg'
 import icon from './icon.svg'
 
+function completeDomain(domain) {
+  return domain ? `${domain}.aragonid.eth` : ''
+}
+
 export default {
-  id: 'company',
+  id: 'company-template.aragonpm.eth',
   name: 'Company',
   header,
   icon,
@@ -23,9 +29,9 @@ export default {
   registry: 'aragonpm.eth',
   modules: [],
   screens: [
-    [data => data.domain || 'Claim domain', ClaimDomain],
+    [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
-    ['Configure template', Tokens],
+    ['Configure template', props => <Tokens {...props} accountStake={1} />],
     [
       'Review information',
       ({ back, data, next }) => (
@@ -38,21 +44,21 @@ export default {
               label: 'General info',
               fields: [
                 ['Organization template', 'Company'],
-                ['Name', data.domain],
+                ['Name', completeDomain(data.domain)],
               ],
             },
             {
               label: 'Voting app',
               fields: [
-                ['Support', `${data.support}%`],
-                ['Minimum approval %', `${data.quorum}%`],
+                ['Support', `${data.voting.support}%`],
+                ['Minimum approval %', `${data.voting.quorum}%`],
               ],
             },
             {
               label: 'Tokens app',
               fields: [
                 ['Token name & symbol', `${data.tokenName} (${data.tokenSymbol})`],
-                ...data.members.map((account, i) => [
+                ...data.tokens.members.map(([account], i) => [
                   `Tokenholder #${i + 1}`,
                   account,
                 ]),
@@ -64,31 +70,39 @@ export default {
     ],
   ],
   prepareTransactions(createTx, data) {
+    const financePeriod = 0 // default
     const hasPayroll = false
+    const useAgentAsVault = false
 
-    const {
-      tokenName,
-      tokenSymbol,
-      subdomain,
-      holders,
-      stakes,
-      votingSettings,
-      financePeriod,
-    } = data
+    const { domain, tokens, voting } = data
+    const { tokenName, tokenSymbol, members } = tokens
+    const stake = new BN(10).pow(new BN(18)).toString()
+    const stakes = members.map(() => stake)
 
-    if (!hasPayroll) {
+    const { support, quorum, duration } = voting
+    const onePercent = new BN(10).pow(new BN(16))
+    const adjustedSupport = onePercent.muln(support).toString()
+    const adjustedQuorum = onePercent.muln(quorum).toString()
+    const votingSettings = [adjustedSupport, adjustedQuorum, duration]
+
+    // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
+    // often not mined
+    const forceMultipleTransactions =
+      network.type === 'rinkeby' && members.length > 2
+
+    if (!hasPayroll && !forceMultipleTransactions) {
       return [
         {
           name: 'Create organization',
           transaction: createTx('newTokenAndInstance', [
             tokenName,
             tokenSymbol,
-            subdomain,
-            holders,
+            domain,
+            members.map(([account]) => account),
             stakes,
             votingSettings,
             financePeriod,
-            true,
+            useAgentAsVault,
           ]),
         },
       ]
@@ -102,12 +116,12 @@ export default {
       {
         name: 'Create organization',
         transaction: createTx('newInstance', [
-          subdomain,
-          holders,
+          domain,
+          members.map(([account]) => account),
           stakes,
           votingSettings,
           financePeriod,
-          true,
+          useAgentAsVault,
         ]),
       },
     ]

@@ -67,7 +67,7 @@ function Suggestions() {
   )
 
   return (
-    <Box heading="Explore" padding={false}>
+    <Box heading="Explore" padding={0}>
       <FavoritesMenu
         items={suggestedOrgs.map(org => {
           const knownOrg = getKnownOrganization(network.type, org.address)

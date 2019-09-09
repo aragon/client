@@ -1,9 +1,3 @@
-export {
-  DOMAIN_CHECK,
-  DOMAIN_ERROR,
-  DOMAIN_LOADING,
-  DOMAIN_NONE,
-} from '../../check-domain'
 export { default as ClaimDomain } from './ClaimDomain'
 export {
   default as DomainField,

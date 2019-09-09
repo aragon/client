@@ -1,6 +1,11 @@
 import BN from 'bn.js'
 import resolvePathname from 'resolve-pathname'
-import Aragon, { providers, setupTemplates, ensResolve } from '@aragon/wrapper'
+import Aragon, {
+  apm,
+  ensResolve,
+  getRecommendedGasLimit,
+  providers,
+} from '@aragon/wrapper'
 import {
   appOverrides,
   sortAppsPair,
@@ -75,6 +80,7 @@ const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
     .sort(sortAppsPair)
 }
 
+// TODO: move polling and ens related utilities to web3-utils
 const pollEvery = (fn, delay) => {
   let timer = -1
   let stop = false
@@ -187,9 +193,12 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
   }
 }, POLL_DELAY_NETWORK)
 
-const resolveEnsDomain = async (domain, opts) => {
+export const resolveEnsDomain = async domain => {
   try {
-    return await ensResolve(domain, opts)
+    return await ensResolve(domain, {
+      provider: web3Providers.default,
+      registryAddress: contractAddresses.ensRegistry,
+    })
   } catch (err) {
     if (err.message === 'ENS name not defined.') {
       return ''
@@ -199,11 +208,17 @@ const resolveEnsDomain = async (domain, opts) => {
 }
 
 export const isEnsDomainAvailable = async name => {
-  const addr = await resolveEnsDomain(name, {
-    provider: web3Providers.default,
-    registryAddress: contractAddresses.ensRegistry,
-  })
+  const addr = await resolveEnsDomain(name)
   return addr === '' || isEmptyAddress(addr)
+}
+
+export const fetchApmArtifact = async (
+  repoAddress,
+  ipfsConf = ipfsDefaultConf
+) => {
+  return apm(getWeb3(web3Providers.default), {
+    ipfsGateway: ipfsConf.gateway,
+  }).fetchLatestRepoContent(repoAddress)
 }
 
 // Subscribe to aragon.js observables
@@ -310,7 +325,6 @@ const subscribe = (
 
 const initWrapper = async (
   dao,
-  ensRegistryAddress,
   {
     provider,
     walletProvider = null,
@@ -328,12 +342,7 @@ const initWrapper = async (
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
-  const daoAddress = isDomain
-    ? await resolveEnsDomain(dao, {
-        provider,
-        registryAddress: ensRegistryAddress,
-      })
-    : dao
+  const daoAddress = isDomain ? await resolveEnsDomain(dao) : dao
 
   if (!daoAddress) {
     throw new DAONotFound(dao)
@@ -345,7 +354,7 @@ const initWrapper = async (
     provider,
     defaultGasPriceFn,
     apm: {
-      ensRegistryAddress,
+      ensRegistryAddress: contractAddresses.ensRegistry,
       ipfs: ipfsConf,
     },
     cache: {
@@ -419,110 +428,5 @@ const initWrapper = async (
   return wrapper
 }
 
-const templateParamFilters = {
-  democracy: (
-    // name: String of organization name
-    // supportNeeded: BN between 0 (0%) and 1e18 - 1 (99.99...%).
-    // minAcceptanceQuorum: BN between 0 (0%) and 1e18 - 1(99.99...%).
-    // voteDuration: Duration in seconds.
-    { name, supportNeeded, minAcceptanceQuorum, voteDuration },
-    account
-  ) => {
-    const percentageMax = new BN(10).pow(new BN(18))
-    if (
-      supportNeeded.gte(percentageMax) ||
-      minAcceptanceQuorum.gte(percentageMax)
-    ) {
-      throw new Error(
-        `supported needed ${supportNeeded.toString()} and minimum acceptance` +
-          `quorum (${minAcceptanceQuorum.toString()}) must be below 100%`
-      )
-    }
-    supportNeeded = supportNeeded.toString()
-    minAcceptanceQuorum = minAcceptanceQuorum.toString()
-
-    const tokenBase = new BN(10).pow(new BN(18))
-    const accounts = [account]
-    const stakes = accounts.map(() => tokenBase.toString())
-
-    // Note that we need all numerical arguments in string form for ABI encoding to work
-    return [
-      name,
-      accounts,
-      stakes,
-      supportNeeded,
-      minAcceptanceQuorum,
-      voteDuration,
-    ]
-  },
-
-  multisig: (
-    // name: String of organization name
-    // signers: Accounts corresponding to the signers.
-    // neededSignatures: Minimum number of signatures needed.
-    { name, signers, neededSignatures },
-    account
-  ) => {
-    if (!signers || signers.length === 0) {
-      throw new Error('signers should contain at least one account:', signers)
-    }
-
-    if (neededSignatures < 1 || neededSignatures > signers.length) {
-      throw new Error(
-        `neededSignatures must be between 1 and the total number of signers (${signers.length})`,
-        neededSignatures
-      )
-    }
-
-    return [name, signers, neededSignatures]
-  },
-}
-
-export const initDaoBuilder = (
-  provider,
-  ensRegistryAddress,
-  ipfsConf = ipfsDefaultConf
-) => {
-  return {
-    build: async (templateName, organizationName, settings = {}) => {
-      if (!organizationName) {
-        throw new Error('No organization name set')
-      }
-      if (!templateName || !templateParamFilters[templateName]) {
-        throw new Error('The template name doesn’t exist')
-      }
-
-      const web3 = getWeb3(provider)
-      const account = await getMainAccount(web3)
-
-      if (account === null) {
-        throw new Error(
-          'No accounts detected in the environment (try to unlock your wallet)'
-        )
-      }
-
-      const templates = setupTemplates(account, {
-        provider,
-        defaultGasPriceFn,
-        apm: {
-          ensRegistryAddress,
-          ipfs: ipfsConf,
-        },
-      })
-      const templateFilter = templateParamFilters[templateName]
-      const templateInstanceParams = templateFilter(
-        { name: organizationName, ...settings },
-        account
-      )
-      const tokenParams = [settings.tokenName, settings.tokenSymbol]
-
-      return templates.newDAO(
-        templateName,
-        { params: tokenParams },
-        { params: templateInstanceParams }
-      )
-    },
-  }
-}
-
+export { getRecommendedGasLimit }
 export default initWrapper

@@ -6,6 +6,7 @@ import DeploymentStepsItem from './DeploymentStepsItem'
 function DeploymentStepsPanel({ transactionsStatus }) {
   const theme = useTheme()
 
+  // TODO: handle transaction error
   const [pending, allSuccess] = useMemo(() => {
     return [
       transactionsStatus.findIndex(({ status }) => status === 'pending'),
@@ -36,7 +37,7 @@ function DeploymentStepsPanel({ transactionsStatus }) {
           color: ${theme.surfaceContentSecondary};
         `}
       >
-        Creating your organization
+        Launching your organization
       </div>
 
       <div

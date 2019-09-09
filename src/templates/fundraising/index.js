@@ -5,6 +5,10 @@ import { ClaimDomain, Review, Voting, Tokens } from '../kit'
 import header from './header.svg'
 import icon from './icon.svg'
 
+function completeDomain(domain) {
+  return domain ? `${domain}.aragonid.eth` : ''
+}
+
 export default {
   disabled: true,
   id: 'fundraising',
@@ -23,7 +27,7 @@ export default {
   registry: 'aragonpm.eth',
   modules: [],
   screens: [
-    [data => data.domain || 'Claim domain', ClaimDomain],
+    [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
     ['Configure template', Tokens],
     [
@@ -38,7 +42,7 @@ export default {
               label: 'General info',
               fields: [
                 ['Organization template', 'Fundraising'],
-                ['Name', data.domain],
+                ['Name', completeDomain(data.domain)],
               ],
             },
             {
@@ -52,7 +56,7 @@ export default {
               label: 'Tokens app',
               fields: [
                 ['Token name & symbol', `${data.tokenName} (${data.tokenSymbol})`],
-                ...data.members.map((account, i) => [
+                ...data.tokens.members.map(([account], i) => [
                   `Tokenholder #${i + 1}`,
                   account,
                 ]),
