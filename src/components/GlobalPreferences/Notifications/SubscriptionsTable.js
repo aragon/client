@@ -67,15 +67,15 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   }, [])
   const onOrganizationChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedOrganization(idx)
+    setSelectedOrganization(idx === 0 ? -1 : idx)
   }, [])
   const onAppChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedApp(idx)
+    setSelectedApp(idx === 0 ? -1 : idx)
   }, [])
   const onEventChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedEvent(idx)
+    setSelectedEvent(idx === 0 ? -1 : idx)
   }, [])
   const onClearFilters = useCallback(() => {
     setSelectedEvent(-1)
