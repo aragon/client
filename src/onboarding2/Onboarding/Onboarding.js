@@ -1,15 +1,31 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, BREAKPOINTS } from '@aragon/ui'
+import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import ConnectModal from '../../components/ConnectModal/ConnectModal'
+import { EthereumAddressType } from '../../prop-types'
+import { log } from '../../utils'
 import { saveTemplateState } from '../create-utils'
+import {
+  TEMPLATE_LOADING,
+  TEMPLATE_AVAILABLE,
+  TEMPLATE_UNAVAILABLE,
+} from '../symbols'
+import embeddedTemplates from '../../templates'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
 
-function Onboarding({ status, selectorNetworks }) {
+const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
+  ...template,
+  status: TEMPLATE_LOADING,
+}))
+
+function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
   const theme = useTheme()
   const [connectModalOpened, setConnectModalOpened] = useState(false)
+  const [templates, setTemplates] = useState(initialEmbeddedTemplates)
+  const [templatesResolved, setTemplatesResolved] = useState(false)
 
   const goToHome = useCallback(() => {
     window.location.hash = '/'
@@ -50,6 +66,42 @@ function Onboarding({ status, selectorNetworks }) {
     [closeConnectModal]
   )
 
+  useEffect(() => {
+    let cancelled = false
+    if (status === 'create' && !templatesResolved) {
+      Promise.all(
+        embeddedTemplates.map(async template => {
+          try {
+            const repoAddress = await resolveEnsDomain(template.id)
+            return {
+              repoAddress,
+              status: TEMPLATE_AVAILABLE,
+              ...template,
+            }
+          } catch (_) {
+            return {
+              status: TEMPLATE_UNAVAILABLE,
+              ...template,
+            }
+          }
+        })
+      )
+        .then(templatesWithRepoAddress => {
+          if (!cancelled) {
+            setTemplates(templatesWithRepoAddress)
+            setTemplatesResolved(true)
+          }
+          return null
+        })
+        .catch(err => {
+          log('Failed to resolve templates through ENS', err)
+        })
+    }
+    return () => {
+      cancelled = true
+    }
+  }, [status, templatesResolved])
+
   if (status === 'none') {
     return null
   }
@@ -83,7 +135,14 @@ function Onboarding({ status, selectorNetworks }) {
             selectorNetworks={selectorNetworks}
           />
         )}
-        {status === 'create' && <Create />}
+        {status === 'create' && Array.isArray(templates) && (
+          <Create
+            account={account}
+            templates={templates}
+            walletWeb3={walletWeb3}
+            web3={web3}
+          />
+        )}
       </div>
       <ConnectModal
         onClose={closeConnectModal}
@@ -96,9 +155,12 @@ function Onboarding({ status, selectorNetworks }) {
 }
 
 Onboarding.propTypes = {
+  account: EthereumAddressType,
   status: PropTypes.oneOf(['none', 'welcome', 'open', 'create']).isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,
+  walletWeb3: PropTypes.object,
+  web3: PropTypes.object,
 }
 
 export default Onboarding

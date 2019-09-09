@@ -1,19 +1,22 @@
 import React, { useState, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import { GU } from '@aragon/ui'
-import templates from '../../templates'
 import Carousel from '../../components/Carousel/Carousel'
 import Header from '../Header/Header'
 import TemplateCard from './TemplateCard'
 import TemplateDetails from './TemplateDetails'
 
-function Templates({ onUse }) {
+function Templates({ onUse, templates }) {
   const [templateDetailsOpened, setTemplateDetailsOpened] = useState(false)
   const [templateDetailsIndex, setTemplateDetailsIndex] = useState(0)
 
-  const handleOpen = useCallback(id => {
-    setTemplateDetailsIndex(templates.findIndex(t => t.id === id))
-    setTemplateDetailsOpened(true)
-  }, [])
+  const handleOpen = useCallback(
+    id => {
+      setTemplateDetailsIndex(templates.findIndex(t => t.id === id))
+      setTemplateDetailsOpened(true)
+    },
+    [templates]
+  )
 
   const handleDetailsClose = useCallback(() => {
     setTemplateDetailsOpened(false)
@@ -27,6 +30,8 @@ function Templates({ onUse }) {
     },
     [onUse]
   )
+
+  const selectedTemplate = templates[templateDetailsIndex]
 
   return (
     <div
@@ -51,28 +56,33 @@ function Templates({ onUse }) {
           padding-bottom: ${3 * GU}px;
         `}
       >
-        <Carousel
-          itemWidth={38 * GU}
-          itemHeight={48 * GU}
-          itemSpacing={3 * GU}
-          items={templates.map(template => (
-            <TemplateCard
-              key={template.id}
-              template={template}
-              onOpen={handleOpen}
-            />
-          ))}
-        />
+        {templates.length > 0 && (
+          <Carousel
+            itemWidth={38 * GU}
+            itemHeight={48 * GU}
+            itemSpacing={3 * GU}
+            items={templates.map(template => (
+              <TemplateCard
+                key={template.id}
+                onOpen={handleOpen}
+                template={template}
+              />
+            ))}
+          />
+        )}
       </div>
-
       <TemplateDetails
         onClose={handleDetailsClose}
         onUse={handleDetailsUse}
-        template={templates[templateDetailsIndex] || null}
+        template={selectedTemplate}
         visible={templateDetailsOpened}
       />
     </div>
   )
+}
+Templates.propTypes = {
+  onUse: PropTypes.func.isRequired,
+  templates: PropTypes.array.isRequired,
 }
 
 export default Templates

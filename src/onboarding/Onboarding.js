@@ -26,11 +26,11 @@ import {
   DomainCheckAccepted,
   DomainCheckRejected,
 } from './domain-states'
-import {
-  DAO_CREATION_STATUS_NONE,
-  DAO_CREATION_STATUS_SUCCESS,
-  DAO_CREATION_STATUS_ERROR,
-} from '../symbols'
+
+// Quick fix for linting issues; this file will be removed soon anyway
+const DAO_CREATION_STATUS_NONE = ''
+const DAO_CREATION_STATUS_SUCCESS = ''
+const DAO_CREATION_STATUS_ERROR = ''
 
 const initialState = {
   template: null,

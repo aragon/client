@@ -18,10 +18,13 @@ import { Header, PrevNextFooter } from '.'
 function Tokens({ back, data, fields, next, screenIndex, screens }) {
   const theme = useTheme()
 
-  const [tokenName, setTokenName] = useState(data.tokenName || '')
-  const [tokenSymbol, setTokenSymbol] = useState(data.tokenSymbol || '')
+  const { tokens: tokensData = {} } = data
+  const [tokenName, setTokenName] = useState(tokensData.tokenName || '')
+  const [tokenSymbol, setTokenSymbol] = useState(tokensData.tokenSymbol || '')
   const [members, setMembers] = useState(
-    data.members && data.members.length > 0 ? data.members : ['']
+    tokensData.members && tokensData.members.length > 0
+      ? tokensData.members
+      : ['']
   )
 
   const handleTokenNameChange = useCallback(event => {
@@ -55,9 +58,11 @@ function Tokens({ back, data, fields, next, screenIndex, screens }) {
   const handleNext = useCallback(() => {
     next({
       ...data,
-      tokenName,
-      tokenSymbol,
-      members: members.filter(addr => isAddress(addr)),
+      tokens: {
+        tokenName,
+        tokenSymbol,
+        members: members.filter(addr => isAddress(addr)),
+      },
     })
   }, [data, next, tokenName, tokenSymbol, members])
 
