@@ -1,18 +1,12 @@
-import React, { useContext, useMemo, useEffect, useState } from 'react'
-import { AppBadge, GU, RADIUS, Tag } from '@aragon/ui'
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { GU, RADIUS, Tag } from '@aragon/ui'
 import AppIcon from '../../AppIcon/AppIcon'
 import { useLocalIdentity } from '../../../hooks'
+import { AppType } from '../../../prop-types'
 
-const AppLabel = ({ apps, app }) => {
-  const {
-    name: appName,
-    proxyAddress,
-    contractAddress,
-    icons: [{ src: iconSrc }],
-    baseUrl,
-    identifier,
-  } = app
-  //
+const AppLabel = React.memo(function AppLabel({ apps, app }) {
+  const { name: appName, proxyAddress, contractAddress, identifier } = app
   const [label, setLabel] = useState(appName)
   const { name } = useLocalIdentity(proxyAddress)
   const onlyOneInstance =
@@ -70,6 +64,11 @@ const AppLabel = ({ apps, app }) => {
       {label}
     </div>
   )
+})
+
+AppLabel.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  app: AppType.isRequired,
 }
 
 export default AppLabel
