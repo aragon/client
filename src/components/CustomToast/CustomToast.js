@@ -1,10 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { GU, ToastHub, useViewport } from '@aragon/ui'
 import { useHelpScout } from '../HelpScoutBeacon/useHelpScout'
 
 const TIMEOUT_TOAST = 4000
 
-function CustomToast({ children }) {
+const CustomToast = React.memo(function CustomToast({ children }) {
   const { below } = useViewport()
   const { optedOut } = useHelpScout()
   return (
@@ -15,6 +16,10 @@ function CustomToast({ children }) {
       {children}
     </ToastHub>
   )
+})
+
+CustomToast.propTypes = {
+  children: PropTypes.node.isRequired,
 }
 
 export { TIMEOUT_TOAST }
