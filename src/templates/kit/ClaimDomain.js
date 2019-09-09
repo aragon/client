@@ -66,10 +66,10 @@ function ClaimDomain({
         Aragon uses the{' '}
         <SafeLink href="https://ens.domains/" target="_blank">
           Ethereum Name Service (ENS)
-        </SafeLink>
-        {' '} to assig names to organizations. The name you choose will be
-        mapped to your organization’s Ethereum address and cannot be changed
-        after you launch your organization.
+        </SafeLink>{' '}
+        to assig names to organizations. The name you choose will be mapped to
+        your organization’s Ethereum address and cannot be changed after you
+        launch your organization.
       </Info>
 
       <PrevNextFooter

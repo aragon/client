@@ -68,7 +68,10 @@ function ConnectModal({ visible, onConnect, onConnectError, onClose }) {
             color: ${theme.contentSecondary};
           `}
         >
-          <SafeLink href="https://www.ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use" target="_blank">
+          <SafeLink
+            href="https://www.ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use"
+            target="_blank"
+          >
             What is a Ethereum provider?
           </SafeLink>
         </p>

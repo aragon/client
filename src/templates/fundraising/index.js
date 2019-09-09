@@ -55,7 +55,10 @@ export default {
             {
               label: 'Tokens app',
               fields: [
-                ['Token name & symbol', `${data.tokenName} (${data.tokenSymbol})`],
+                [
+                  'Token name & symbol',
+                  `${data.tokenName} (${data.tokenSymbol})`,
+                ],
                 ...data.tokens.members.map(([account], i) => [
                   `Tokenholder #${i + 1}`,
                   account,

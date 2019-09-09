@@ -110,10 +110,11 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
             <React.Fragment>
               Support
               <Help hint="What’s the support?">
-                <strong>Support</strong> is the percentage of votes on a proposal
-                that the total support must be greater than for the proposal to be
-                approved. For example, if “Support” is set to 51%, then more than 51%
-                of the votes on a proposal must vote “Yes” for the proposal to pass.
+                <strong>Support</strong> is the percentage of votes on a
+                proposal that the total support must be greater than for the
+                proposal to be approved. For example, if “Support” is set to
+                51%, then more than 51% of the votes on a proposal must vote
+                “Yes” for the proposal to pass.
               </Help>
             </React.Fragment>
           }
@@ -127,11 +128,11 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
               Minimum approval %
               <Help hint="What’s the minimum approval?">
                 <strong>Minimum Approval</strong> is the percentage of the total
-                token supply that support for a proposal must be greater than for
-                the proposal to be considered valid. For example, if the Minimum
-                Approval is set to 20%, then more than 20% of the outstanding token
-                supply must vote to approve a proposal for the vote to be considered
-                valid.
+                token supply that support for a proposal must be greater than
+                for the proposal to be considered valid. For example, if the
+                Minimum Approval is set to 20%, then more than 20% of the
+                outstanding token supply must vote to approve a proposal for the
+                vote to be considered valid.
               </Help>
             </React.Fragment>
           }
@@ -150,9 +151,10 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
           `}
         >
           The support and minimum approval thresholds are strict requirements,
-          such that votes will only pass if they achieve approval percentages greater than
-          these thresholds. These parameters currently <strong>cannot be changed</strong>{' '}
-          on the included Voting app after the organization is created.
+          such that votes will only pass if they achieve approval percentages
+          greater than these thresholds. These parameters currently{' '}
+          <strong>cannot be changed</strong> on the included Voting app after
+          the organization is created.
         </Info>
 
         <PrevNextFooter

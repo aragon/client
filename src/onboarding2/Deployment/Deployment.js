@@ -124,9 +124,9 @@ function BoxProgress({ opacity, boxTransform }) {
             color: ${theme.surfaceContentSecondary};
           `}
         >
-          Aragon empowers you to freely organize and collaborate without
-          borders or intermediaries. Create global, bureaucracy-free
-          organizations, companies, and communities.
+          Aragon empowers you to freely organize and collaborate without borders
+          or intermediaries. Create global, bureaucracy-free organizations,
+          companies, and communities.
         </p>
       </div>
     </BoxBase>
