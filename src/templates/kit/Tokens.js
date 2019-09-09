@@ -329,7 +329,7 @@ function MemberField({
       <div>
         <TextInput
           adornment={
-            <span>
+            <span css="transform: translateY(1px)">
               {!hideRemoveButton && (
                 <Button
                   onClick={handleRemove}
