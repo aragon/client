@@ -15,17 +15,27 @@ import embeddedTemplates from '../../templates'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
+import validateCreationRequirements from '../validate-requirements'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
   status: TEMPLATE_LOADING,
 }))
 
-function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
+function Onboarding({
+  account,
+  balance,
+  status,
+  selectorNetworks,
+  walletWeb3,
+  web3,
+}) {
   const theme = useTheme()
   const [connectModalOpened, setConnectModalOpened] = useState(false)
   const [templates, setTemplates] = useState(initialEmbeddedTemplates)
   const [templatesResolved, setTemplatesResolved] = useState(false)
+  const [connectIntent, setConnectIntent] = useState('')
+  const [requirementsError, setRequirementsError] = useState([null])
 
   const goToHome = useCallback(() => {
     window.location.hash = '/'
@@ -39,23 +49,58 @@ function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
     window.location.hash = `/${domain}`
   }, [])
 
+  // Update the requirements live if an error is being displayed,
+  // on click otherwise (see handleCreate).
+  useEffect(() => {
+    const requirementsErrorUpdated = validateCreationRequirements(
+      account,
+      balance
+    )
+
+    if (
+      requirementsError[0] !== null &&
+      requirementsError[0] !== requirementsErrorUpdated[0]
+    ) {
+      setRequirementsError(requirementsErrorUpdated)
+    }
+  }, [account, balance, requirementsError])
+
   const handleCreate = useCallback(() => {
     // reset the creation state
     saveTemplateState({})
 
-    setConnectModalOpened(true)
-  }, [])
+    const requirementsError = validateCreationRequirements(account, balance)
+    setRequirementsError(requirementsError)
+
+    // Account not connected
+    if (requirementsError[0] === 'no-account') {
+      setConnectIntent('create')
+      setConnectModalOpened(true)
+      return
+    }
+
+    // No error, we can go to create straight away
+    if (requirementsError[0] === null) {
+      window.location.hash = '/create'
+    }
+  }, [account, balance])
 
   const closeConnectModal = useCallback(provider => {
     setConnectModalOpened(false)
+    setConnectIntent('')
+    window.location.hash = '/'
   }, [])
 
-  const connectProvider = useCallback(
+  const handleProviderConnect = useCallback(
     provider => {
       closeConnectModal()
-      window.location.hash = '/create'
+
+      // For now this is always true, but it may change in the future
+      if (connectIntent === 'create') {
+        window.location.hash = '/create'
+      }
     },
-    [closeConnectModal]
+    [closeConnectModal, connectIntent]
   )
 
   const connectProviderError = useCallback(
@@ -102,6 +147,23 @@ function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
     }
   }, [status, templatesResolved])
 
+  useEffect(() => {
+    if (status !== 'create') {
+      return
+    }
+
+    // Even when connected, the account usually arrives after some delay.
+    const id = setTimeout(() => {
+      if (!account) {
+        setConnectModalOpened(true)
+      }
+    }, 500)
+
+    return () => {
+      clearTimeout(id)
+    }
+  }, [status, account])
+
   if (status === 'none') {
     return null
   }
@@ -127,6 +189,7 @@ function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
       >
         {(status === 'welcome' || status === 'open') && (
           <Welcome
+            createError={requirementsError}
             onBack={goToHome}
             onOpen={goToOpen}
             onOpenOrg={goToOrg}
@@ -145,9 +208,10 @@ function Onboarding({ account, status, selectorNetworks, walletWeb3, web3 }) {
         )}
       </div>
       <ConnectModal
+        account={account}
         onClose={closeConnectModal}
         visible={connectModalOpened}
-        onConnect={connectProvider}
+        onConnect={handleProviderConnect}
         onConnectError={connectProviderError}
       />
     </div>

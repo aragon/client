@@ -2,7 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Card, GU, textStyle, useTheme } from '@aragon/ui'
 
-function WelcomeAction({ illustration, title, subtitle, onActivate }) {
+function WelcomeAction({
+  hasError,
+  illustration,
+  onActivate,
+  subtitle,
+  title,
+}) {
   const theme = useTheme()
   return (
     <Card
@@ -11,6 +17,7 @@ function WelcomeAction({ illustration, title, subtitle, onActivate }) {
       height={150}
       css={`
         margin-top: ${1.5 * GU}px;
+        ${hasError && `border: 1px solid ${theme.negative};`}
       `}
     >
       <section
