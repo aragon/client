@@ -13,6 +13,7 @@ import {
   useLayout,
   useTheme,
   useToast,
+  useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { AragonType, AppType } from '../../prop-types'
@@ -212,8 +213,8 @@ function AnimatedGlobalPreferences(props) {
     wrapper: props.wrapper,
   })
 
-  const { layoutName } = useLayout()
-  const compact = layoutName === 'small'
+  const { below } = useViewport()
+  const compact = below('medium')
   const theme = useTheme()
 
   return (
