@@ -21,7 +21,7 @@ function ClaimDomain({
     setDisplayError(false)
   }, [])
 
-  const handleSubmit = useCallback(() => {
+  const handleNext = useCallback(() => {
     setDisplayError(domainCheckStatus === DOMAIN_ERROR)
     if (domainCheckStatus === DOMAIN_CHECK) {
       next({ ...data, domain })
@@ -36,50 +36,48 @@ function ClaimDomain({
   }, [])
 
   return (
-    <React.Fragment>
+    <form>
       <Header title={screenTitle} subtitle={screenSubtitle} />
 
-      <form onSubmit={handleSubmit}>
-        <DomainField
-          ref={handleDomainFieldRef}
-          label="Create your domain"
-          onChange={handleDomainChange}
-          value={domain}
-          status={domainCheckStatus}
-        />
+      <DomainField
+        ref={handleDomainFieldRef}
+        label="Create your domain"
+        onChange={handleDomainChange}
+        value={domain}
+        status={domainCheckStatus}
+      />
 
-        {displayError && (
-          <Info
-            mode="error"
-            css={`
-              margin-bottom: ${3 * GU}px;
-            `}
-          >
-            This organization domain name already exists. You may want to try a
-            different one.
-          </Info>
-        )}
-
+      {displayError && (
         <Info
+          mode="error"
           css={`
             margin-bottom: ${3 * GU}px;
           `}
         >
-          Aragon uses the <strong>Ethereum Name Service (ENS)</strong> to assign
-          names to organizations. The domain name you choose will be mapped to
-          your organization’s Ethereum address and cannot be changed after you
-          launch your organization.
+          This organization domain name already exists. You may want to try a
+          different one.
         </Info>
+      )}
 
-        <PrevNextFooter
-          backEnabled
-          nextEnabled={Boolean(domain.trim())}
-          nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
-          onBack={back}
-          onNext={handleSubmit}
-        />
-      </form>
-    </React.Fragment>
+      <Info
+        css={`
+          margin-bottom: ${3 * GU}px;
+        `}
+      >
+        Aragon uses the <strong>Ethereum Name Service (ENS)</strong> to assign
+        names to organizations. The domain name you choose will be mapped to
+        your organization’s Ethereum address and cannot be changed after you
+        launch your organization.
+      </Info>
+
+      <PrevNextFooter
+        backEnabled
+        nextEnabled={Boolean(domain.trim())}
+        nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
+        onBack={back}
+        onNext={handleNext}
+      />
+    </form>
   )
 }
 
