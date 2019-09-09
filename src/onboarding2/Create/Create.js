@@ -388,6 +388,8 @@ function Create({ account, templates, walletWeb3, web3 }) {
   const handleTemplateNext = useCallback(data => nextScreen(data), [nextScreen])
   const handleTemplatePrev = useCallback(() => prevScreen(), [prevScreen])
 
+  const newOrgDomain = templateData && templateData.domain
+
   return (
     <div
       css={`
@@ -400,6 +402,7 @@ function Create({ account, templates, walletWeb3, web3 }) {
       {status === STATUS_DEPLOYMENT ? (
         <Deployment
           loadingTransactions={fetchingTemplateInformation}
+          newOrgDomain={newOrgDomain}
           ready={
             Array.isArray(deployTransactions) &&
             deployTransactions.length > 0 &&

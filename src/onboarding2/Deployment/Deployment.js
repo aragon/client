@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import {
   Button,
   GU,
@@ -133,10 +133,15 @@ function BoxProgress({ opacity, boxTransform }) {
   )
 }
 
-function BoxReady({ opacity, boxTransform }) {
+function BoxReady({ newOrgDomain, opacity, boxTransform }) {
   const { below } = useViewport()
   const fullWidth = below('large')
   const small = below('medium')
+
+  const goToOrg = useCallback(() => {
+    window.location.hash = newOrgDomain
+  }, [newOrgDomain])
+
   return (
     <BoxBase opacity={opacity} boxTransform={boxTransform}>
       <div
@@ -165,7 +170,7 @@ function BoxReady({ opacity, boxTransform }) {
             <strong>All done!</strong>
           </p>
           <p css="font-weight: 400">Your organization is ready</p>
-          <Button label="Get started" mode="strong" href="/" external={false} />
+          <Button label="Get started" mode="strong" onClick={goToOrg} />
         </div>
       </div>
     </BoxBase>
@@ -173,6 +178,7 @@ function BoxReady({ opacity, boxTransform }) {
 }
 
 const Deployment = React.memo(function Deployment({
+  newOrgDomain,
   ready,
   transactionsStatus,
 }) {
@@ -221,7 +227,11 @@ const Deployment = React.memo(function Deployment({
           >
             {ready => ({ opacity, transform }) =>
               ready ? (
-                <BoxReady opacity={opacity} boxTransform={transform} />
+                <BoxReady
+                  newOrgDomain={newOrgDomain}
+                  opacity={opacity}
+                  boxTransform={transform}
+                />
               ) : (
                 <BoxProgress opacity={opacity} boxTransform={transform} />
               )}
