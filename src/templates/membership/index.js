@@ -55,7 +55,7 @@ export default {
                   'Token',
                   `${data.tokens.tokenName} (${data.tokens.tokenSymbol})`,
                 ],
-                ...data.tokens.members.map((account, i) => [
+                ...data.tokens.members.map(([account], i) => [
                   `Address ${i + 1}`,
                   account,
                 ]),
@@ -93,7 +93,7 @@ export default {
             tokenName,
             tokenSymbol,
             domain,
-            members,
+            members.map(([account]) => account),
             votingSettings,
             financePeriod,
             useAgentAsVault,
@@ -111,7 +111,7 @@ export default {
         name: 'Create organization',
         transaction: createTx('newInstance', [
           domain,
-          members,
+          members.map(([account]) => account),
           votingSettings,
           financePeriod,
           useAgentAsVault,

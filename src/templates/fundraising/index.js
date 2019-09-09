@@ -50,7 +50,7 @@ export default {
               label: 'Tokens',
               fields: [
                 ['Token', `${data.tokenName} (${data.tokenSymbol})`],
-                ...data.members.map((account, i) => [
+                ...data.tokens.members.map(([account], i) => [
                   `Address ${i + 1}`,
                   account,
                 ]),
