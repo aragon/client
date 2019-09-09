@@ -23,6 +23,7 @@ const LocalLabelAppBadge = React.memo(function LocalLabelAppBadge({
     contractAddress,
     identifier,
     icons: [{ src: iconSrc }],
+    baseUrl,
   } = app
   const [label, setLabel] = useState(appName)
   const { name, handleResolve } = useLocalIdentity(proxyAddress)
@@ -56,7 +57,7 @@ const LocalLabelAppBadge = React.memo(function LocalLabelAppBadge({
       <AppBadge
         appAddress={app.contractAddress}
         label={label}
-        iconSrc={iconSrc}
+        iconSrc={`${baseUrl}${iconSrc}`}
         {...props}
         popoverAction={{
           label: <LocalLabelPopoverActionLabel hasLabel={Boolean(label)} />,
