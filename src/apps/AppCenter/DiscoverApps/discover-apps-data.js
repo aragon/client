@@ -4,10 +4,11 @@ import agentIcon from './icons/agent.svg'
 import surveyIcon from './icons/survey.svg'
 import pandoIcon from './icons/pando.svg'
 import openEnterpriseIcon from './icons/open-enterprise.svg'
+import redemptionsIcon from './icons/redemptions.svg'
 import { shuffleArray } from '../../../utils'
 
 export const appsInDevelopment = [
-  // Ready
+  // Experimental
   ...shuffleArray([
     {
       icon: surveyIcon,
@@ -16,10 +17,6 @@ export const appsInDevelopment = [
       description: `Create multi-option signaling votes.`,
       link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
     },
-  ]),
-
-  // Experimental
-  ...shuffleArray([
     {
       icon: agentIcon,
       name: 'Agent',
@@ -40,6 +37,16 @@ export const appsInDevelopment = [
       `,
       link:
         'https://github.com/aragon/aragon-apps/tree/master/future-apps/payroll',
+    },
+    {
+      icon: redemptionsIcon,
+      name: 'Redemptions',
+      status: 'experimental',
+      description: `
+        Redeem tokens in exchange for a proportional
+        amount of the organization's eligible assets
+      `,
+      link: 'https://github.com/1Hive/redemptions-app',
     },
     {
       icon: openEnterpriseIcon,
@@ -63,16 +70,6 @@ export const appsInDevelopment = [
     },
     {
       icon: null,
-      name: 'Redemptions',
-      status: 'experimental',
-      description: `
-        Redeem tokens in exchange for a proportional
-        amount of the organization's eligible assets
-      `,
-      link: 'https://github.com/1Hive/redemptions-app',
-    },
-    {
-      icon: null,
       name: 'Token Request',
       status: 'experimental',
       description: `
@@ -90,30 +87,6 @@ export const appsInDevelopment = [
         period of time in order to forward an intent
       `,
       link: 'https://github.com/1Hive/lock-app',
-    },
-  ]),
-
-  // In development
-  ...shuffleArray([
-    {
-      icon: espressoIcon,
-      name: 'Espresso',
-      status: 'in development',
-      description: `
-        Collaborative data vault.
-        Encrypt and share data with people in your organization.
-      `,
-      link: 'https://github.com/espresso-org',
-    },
-    {
-      icon: null,
-      name: 'Liquid democracy',
-      status: 'in development',
-      description: `
-        Delegate your voting power to others,
-        and vote on important matters.
-      `,
-      link: 'https://github.com/aragonlabs/liquid-democracy',
     },
   ]),
 ]
