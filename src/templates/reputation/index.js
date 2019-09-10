@@ -81,7 +81,7 @@ export default {
     const { tokenName, tokenSymbol, members } = tokens
     const baseStake = new BN(10).pow(new BN(18))
     const stakes = members.map(([_, stake]) =>
-      baseStake.mul(new BN(stake)).toString()
+      baseStake.mul(new BN(stake.toString())).toString()
     )
     const accounts = members.map(([account]) => account)
 
