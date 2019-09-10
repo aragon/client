@@ -8,6 +8,7 @@ import {
   RADIUS,
   useTheme,
 } from '@aragon/ui'
+import AccountModule from '../../components/AccountModule/AccountModule'
 import logo from '../../assets/logo.png'
 
 function OnboardingTopBar({ onHome, status }) {
@@ -65,18 +66,30 @@ function OnboardingTopBar({ onHome, status }) {
           <img src={logo} width={4.5 * GU} alt="" />
         </ButtonBase>
 
-        <Button
-          display="icon"
-          icon={<IconSettings />}
-          label="Settings"
-          size="small"
-          onClick={handleSettingsClick}
+        <div
           css={`
+            display: flex;
+            align-items: center;
             position: absolute;
             top: ${2 * GU}px;
             right: ${2 * GU}px;
           `}
-        />
+        >
+          <div
+            css={`
+              margin-right: ${1 * GU}px;
+            `}
+          >
+            <AccountModule compact />
+          </div>
+          <Button
+            display="icon"
+            icon={<IconSettings />}
+            label="Settings"
+            size="small"
+            onClick={handleSettingsClick}
+          />
+        </div>
       </div>
     </React.Fragment>
   )

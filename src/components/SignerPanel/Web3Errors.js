@@ -94,7 +94,11 @@ export const AccountLocked = ({
       actionText={
         <span>
           Please unlock and{' '}
-          <Link onClick={onRequestEnable} css="font-weight: 600">
+          <Link
+            onClick={onRequestEnable}
+            focusRingSpacing={[3, 2]}
+            css="font-weight: 600"
+          >
             enable
           </Link>{' '}
           {providerMessage}.

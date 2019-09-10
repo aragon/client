@@ -26,6 +26,7 @@ import HelpScoutBeacon from './components/HelpScoutBeacon/HelpScoutBeacon'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import CustomToast from './components/CustomToast/CustomToast'
+import { AccountProvider } from './account'
 
 import { isKnownRepo } from './repo-utils'
 import {
@@ -107,7 +108,9 @@ class App extends React.Component {
         if (account) {
           getIsContractAccount(getWeb3(web3Providers.wallet))
             .then(isContractAccount => this.setState({ isContractAccount }))
-            .catch(err => err)
+            .catch(err => {
+              log("Error fetching account's code", err)
+            })
         }
       },
       onBalance: balance => {
@@ -390,86 +393,95 @@ class App extends React.Component {
               <HelpScoutProvider>
                 <CustomToast>
                   <IdentityProvider onResolve={this.handleIdentityResolve}>
-                    <LocalIdentityModalProvider
-                      onShowLocalIdentityModal={
-                        this.handleOpenLocalIdentityModal
-                      }
+                    <AccountProvider
+                      account={account}
+                      balance={balance}
+                      isContract={isContractAccount}
+                      walletNetwork={walletNetwork}
+                      walletProviderId={walletProviderId}
                     >
-                      <LocalIdentityModal
-                        address={intentAddress}
-                        label={intentLabel}
-                        opened={identityIntent !== null}
-                        onCancel={this.handleIdentityCancel}
-                        onSave={this.handleIdentitySave}
-                      />
-                      <FavoriteDaosProvider>
-                        <ActivityProvider
-                          account={account}
-                          daoDomain={daoAddress.domain}
-                          web3={web3}
-                        >
-                          <PermissionsProvider
-                            wrapper={wrapper}
-                            apps={appsWithIdentifiers}
-                            permissions={permissions}
-                          >
-                            <div css="position: relative; z-index: 0">
-                              <Wrapper
-                                visible={mode === APP_MODE_ORG}
-                                account={account}
-                                apps={appsWithIdentifiers}
-                                appsStatus={appsStatus}
-                                canUpgradeOrg={canUpgradeOrg}
-                                connected={connected}
-                                daoAddress={daoAddress}
-                                daoStatus={daoStatus}
-                                historyBack={this.historyBack}
-                                historyPush={this.historyPush}
-                                locator={locator}
-                                onRequestAppsReload={
-                                  this.handleRequestAppsReload
-                                }
-                                onRequestEnable={enableWallet}
-                                openPreferences={this.openPreferences}
-                                permissionsLoading={permissionsLoading}
-                                repos={repos}
-                                signatureBag={signatureBag}
-                                transactionBag={transactionBag}
-                                walletNetwork={walletNetwork}
-                                walletProviderId={walletProviderId}
-                                walletWeb3={walletWeb3}
-                                web3={web3}
-                                wrapper={wrapper}
-                              />
-                            </div>
-                          </PermissionsProvider>
-
-                          <Onboarding
+                      <LocalIdentityModalProvider
+                        onShowLocalIdentityModal={
+                          this.handleOpenLocalIdentityModal
+                        }
+                      >
+                        <LocalIdentityModal
+                          address={intentAddress}
+                          label={intentLabel}
+                          opened={identityIntent !== null}
+                          onCancel={this.handleIdentityCancel}
+                          onSave={this.handleIdentitySave}
+                        />
+                        <FavoriteDaosProvider>
+                          <ActivityProvider
                             account={account}
-                            balance={balance}
-                            isContractAccount={isContractAccount}
-                            selectorNetworks={selectorNetworks}
-                            status={
-                              mode === APP_MODE_START || mode === APP_MODE_SETUP
-                                ? locator.action || 'welcome'
-                                : 'none'
-                            }
-                            walletWeb3={walletWeb3}
+                            daoDomain={daoAddress.domain}
                             web3={web3}
-                          />
+                          >
+                            <PermissionsProvider
+                              wrapper={wrapper}
+                              apps={appsWithIdentifiers}
+                              permissions={permissions}
+                            >
+                              <div css="position: relative; z-index: 0">
+                                <Wrapper
+                                  visible={mode === APP_MODE_ORG}
+                                  account={account}
+                                  apps={appsWithIdentifiers}
+                                  appsStatus={appsStatus}
+                                  canUpgradeOrg={canUpgradeOrg}
+                                  connected={connected}
+                                  daoAddress={daoAddress}
+                                  daoStatus={daoStatus}
+                                  historyBack={this.historyBack}
+                                  historyPush={this.historyPush}
+                                  locator={locator}
+                                  onRequestAppsReload={
+                                    this.handleRequestAppsReload
+                                  }
+                                  onRequestEnable={enableWallet}
+                                  openPreferences={this.openPreferences}
+                                  permissionsLoading={permissionsLoading}
+                                  repos={repos}
+                                  signatureBag={signatureBag}
+                                  transactionBag={transactionBag}
+                                  walletNetwork={walletNetwork}
+                                  walletProviderId={walletProviderId}
+                                  walletWeb3={walletWeb3}
+                                  web3={web3}
+                                  wrapper={wrapper}
+                                />
+                              </div>
+                            </PermissionsProvider>
 
-                          <GlobalPreferences
-                            locator={locator}
-                            wrapper={wrapper}
-                            apps={apps}
-                            onScreenChange={this.openPreferences}
-                            onClose={this.closePreferences}
-                          />
+                            <Onboarding
+                              account={account}
+                              balance={balance}
+                              isContractAccount={isContractAccount}
+                              selectorNetworks={selectorNetworks}
+                              status={
+                                mode === APP_MODE_START ||
+                                mode === APP_MODE_SETUP
+                                  ? locator.action || 'welcome'
+                                  : 'none'
+                              }
+                              walletWeb3={walletWeb3}
+                              web3={web3}
+                            />
 
-                          <HelpScoutBeacon locator={locator} apps={apps} />
-                        </ActivityProvider>
-                      </FavoriteDaosProvider>
-                    </LocalIdentityModalProvider>
+                            <GlobalPreferences
+                              locator={locator}
+                              wrapper={wrapper}
+                              apps={apps}
+                              onScreenChange={this.openPreferences}
+                              onClose={this.closePreferences}
+                            />
+
+                            <HelpScoutBeacon locator={locator} apps={apps} />
+                          </ActivityProvider>
+                        </FavoriteDaosProvider>
+                      </LocalIdentityModalProvider>
+                    </AccountProvider>
                   </IdentityProvider>
                 </CustomToast>
               </HelpScoutProvider>

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, BREAKPOINTS } from '@aragon/ui'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
-import { EthereumAddressType } from '../../prop-types'
 import { log } from '../../utils'
 import embeddedTemplates from '../../templates'
 import ConnectModal from '../../components/ConnectModal/ConnectModal'
@@ -13,26 +12,25 @@ import {
   TEMPLATE_AVAILABLE,
   TEMPLATE_UNAVAILABLE,
 } from '../symbols'
+import { useAccount } from '../../account'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
-import OnboardingTopBar from './OnboardingTopBar'
 import validateCreationRequirements from '../validate-requirements'
+import OnboardingTopBar from './OnboardingTopBar'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
   status: TEMPLATE_LOADING,
 }))
 
-function Onboarding({
-  account,
-  balance,
-  isContractAccount,
-  status,
-  selectorNetworks,
-  walletWeb3,
-  web3,
-}) {
+function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
   const theme = useTheme()
+  const {
+    balance,
+    address: account,
+    isContract: isContractAccount,
+  } = useAccount()
+
   const [connectModalOpened, setConnectModalOpened] = useState(false)
   const [templates, setTemplates] = useState(initialEmbeddedTemplates)
   const [templatesResolved, setTemplatesResolved] = useState(false)
@@ -234,7 +232,6 @@ function Onboarding({
 }
 
 Onboarding.propTypes = {
-  account: EthereumAddressType,
   status: PropTypes.oneOf(['none', 'welcome', 'open', 'create']).isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,
