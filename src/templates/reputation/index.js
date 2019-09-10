@@ -22,7 +22,8 @@ export default {
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/reputation',
-  userGuide: 'https://help.aragon.org/article/32-create-a-new-reputation-organization',
+  userGuide:
+    'https://help.aragon.org/article/32-create-a-new-reputation-organization',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/reputation',
   registry: 'aragonpm.eth',
