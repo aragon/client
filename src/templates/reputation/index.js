@@ -30,8 +30,8 @@ export default {
     { appName: 'voting.aragonpm.eth', label: 'Voting' },
     { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
-    { appName: 'vault.aragonpm.eth', label: 'Vault' },
   ],
+  optionalModules: [{ appName: 'agent.aragonpm.eth', label: 'Agent' }],
   screens: [
     [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
@@ -74,9 +74,10 @@ export default {
   prepareTransactions(createTx, data) {
     const financePeriod = 0 // default
     const hasPayroll = false
-    const useAgentAsVault = false
 
-    const { domain, tokens, voting } = data
+    const { domain, optionalModules = [], tokens, voting } = data
+    const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
+
     const { tokenName, tokenSymbol, members } = tokens
     const baseStake = new BN(10).pow(new BN(18))
     const stakes = members.map(([_, stake]) => baseStake.muln(stake).toString())
