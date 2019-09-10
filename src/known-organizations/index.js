@@ -5,8 +5,13 @@ import melonCouncilImage from './images/melon-council.svg'
 import blankDaoImage from './images/blankdao.svg'
 import livepeerImage from './images/livepeer.svg'
 import myBitImage from './images/mybit.svg'
+import onehive from './images/1hive.svg'
+import aragonMesh from './images/aragon-mesh.svg'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
+const TEMPLATE_REPUTATION = 'Reputation'
+const TEMPLATE_COMPANY = 'Company'
+const TEMPLATE_MEMBERSHIP = 'Membership'
 
 export const KnownOrganizations = {
   main: new Map(
@@ -70,20 +75,44 @@ export const KnownOrganizations = {
   rinkeby: new Map(
     [
       {
-        address: '0x383037aD4E2341835Bfe719E4Bddc5936c271409',
-        domain: 'governance.aragonproject.eth',
-        name: 'Aragon Governance',
-        image: aragonGovernanceImage,
+        address: '0x43374144C33DEF77A0ebaceC72E9C944A6c375FE',
+        domain: 'reputation08.aragonid.eth',
+        name: 'Example reputation organization',
+        image: null,
         recommended: true,
-        template: TEMPLATE_DEMOCRACY,
+        template: TEMPLATE_REPUTATION,
       },
       {
-        address: '0x837354C9dBEB4169157ef335762367e350e90eEd',
-        domain: 'a1.aragonid.eth',
-        name: 'Aragon One',
-        image: aragonOneImage,
+        address: '0xb2a22974bd09EB5D1B5c726E7C29f4faeF636dd2',
+        domain: 'company08.aragonid.eth',
+        name: 'Example company',
+        image: null,
         recommended: true,
-        template: TEMPLATE_DEMOCRACY,
+        template: TEMPLATE_COMPANY,
+      },
+      {
+        address: '0x0d9938b8720EB5124371C9FA2049144626F67D2E',
+        domain: 'membership08.aragonid.eth',
+        name: 'Example membership',
+        image: null,
+        recommended: true,
+        template: TEMPLATE_MEMBERSHIP,
+      },
+      {
+        address: '0xA4F8CDF0c0829165c6B0338E15414b015186188F',
+        domain: '1hive.aragonid.eth',
+        name: '1Hive',
+        image: onehive,
+        recommended: true,
+        template: null,
+      },
+      {
+        address: '0xa48300a4E89b59A79452Db7d3CD408Df57f4aa78',
+        domain: 'mesh.aragonid.eth',
+        name: 'Aragon Mesh',
+        image: aragonMesh,
+        recommended: true,
+        template: null,
       },
     ].map(org => [org.address, org])
   ),
