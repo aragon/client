@@ -465,7 +465,7 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
         }
         content={
           <p>
-            An error has occurred during the signature process. Do not worry,
+            An error has occurred during the signature process. Don't worry,
             you can try again without losing your information.
           </p>
         }
