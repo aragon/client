@@ -14,7 +14,6 @@ import { AppType } from '../../../prop-types'
 import PropTypes from 'prop-types'
 import memoize from 'lodash.memoize'
 import styled from 'styled-components'
-import { getEthNetworkType } from '../../../local-settings'
 import { createSubscription } from './notification-service-api'
 import notificationImage from './notification.png'
 import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
@@ -108,7 +107,6 @@ export default function SubscriptionsForm({
           appContractAddress: proxyAddress,
           ensName: dao,
           eventName,
-          network: getEthNetworkType(),
           token,
         }
         await createSubscription(payload)
