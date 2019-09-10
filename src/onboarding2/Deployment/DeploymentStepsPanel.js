@@ -81,7 +81,8 @@ DeploymentStepsPanel.propTypes = {
   transactionsStatus: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
-      status: PropTypes.oneOf(['success', 'pending', 'upcoming']).isRequired,
+      status: PropTypes.oneOf(['success', 'pending', 'upcoming', 'error'])
+        .isRequired,
     })
   ).isRequired,
 }
