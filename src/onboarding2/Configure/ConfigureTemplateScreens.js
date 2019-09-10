@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { GU, springs } from '@aragon/ui'
+import { GU, springs, useViewport } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 
 const AnimatedDiv = animated.div
@@ -13,6 +13,7 @@ function ConfigureTemplateScreens({
   templateData,
 }) {
   const [prevIndex, setPrevIndex] = useState(-1)
+  const { below } = useViewport()
 
   useEffect(() => {
     setPrevIndex(screenIndex)
@@ -59,7 +60,8 @@ function ConfigureTemplateScreens({
           <div
             css={`
               max-width: ${82 * GU}px;
-              padding: 0 ${3 * GU}px ${3 * GU}px;
+              padding: 0 ${3 * GU}px ${(below('medium') ? 9 : 0) * GU}px
+                ${3 * GU}px;
             `}
           >
             <Screen
