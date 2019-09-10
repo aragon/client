@@ -39,7 +39,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_DEMOCRACY,
       },
       {
-        address: '0x67757A18eDA83125270Ef94dCec7658Eb39bD8a5',
+        address: '0x67757a18eda83125270ef94dcec7658eb39bd8a5',
         domain: 'blankdao.aragonid.eth',
         name: 'BlankDAO',
         image: blankDaoImage,
@@ -47,7 +47,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_DEMOCRACY,
       },
       {
-        address: '0xcD3d9b832BfF15E0a519610372c6AAC651872DdE',
+        address: '0xcd3d9b832bff15e0a519610372c6aac651872dde',
         domain: '',
         name: 'MyBit',
         image: myBitImage,
@@ -55,7 +55,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_DEMOCRACY,
       },
       {
-        address: '0x0ee165029b09d91a54687041Adbc705F6376C67F',
+        address: '0x0ee165029b09d91a54687041adbc705f6376c67f',
         domain: '',
         name: 'Livepeer',
         image: livepeerImage,
@@ -114,7 +114,7 @@ export const KnownOrganizations = {
         recommended: true,
         template: null,
       },
-    ].map(org => [org.address, org])
+    ].map(org => [org.address.toLowerCase(), org])
   ),
 }
 
