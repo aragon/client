@@ -13,7 +13,7 @@ import {
   isAddress,
   useTheme,
 } from '@aragon/ui'
-import { Header, PrevNextFooter } from '.'
+import { Header, PrevNextFooter, IdentityBadge } from '.'
 
 function useFieldsLayout() {
   // In its own hook to be adapted on smaller views
@@ -399,7 +399,7 @@ function formatReviewFields(tokensData) {
     ],
     ...tokensData.members.map(([account], i) => [
       `Tokenholder #${i + 1}`,
-      account,
+      <IdentityBadge entity={account} />,
     ]),
   ]
 }
