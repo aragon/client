@@ -340,7 +340,9 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
             css={`
               height: 24px;
               $textStyle('body2');
-              color: ${disabled ? theme.contentSecondary : theme.surfaceContent};
+              color: ${
+                disabled ? theme.contentSecondary : theme.surfaceContent
+              };
 
               ${
                 !compact
