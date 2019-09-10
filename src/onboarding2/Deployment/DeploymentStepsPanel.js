@@ -8,6 +8,9 @@ function DeploymentStepsPanel({ transactionsStatus }) {
 
   // TODO: handle transaction error
   const [pending, allSuccess] = useMemo(() => {
+    if (transactionsStatus.length === 0) {
+      return [true, false]
+    }
     return [
       transactionsStatus.findIndex(({ status }) => status === 'pending'),
       transactionsStatus[transactionsStatus.length - 1].status === 'success',
@@ -27,7 +30,10 @@ function DeploymentStepsPanel({ transactionsStatus }) {
       `}
     >
       <ProgressBar
-        value={allSuccess ? 1 : pending / transactionsStatus.length}
+        value={Math.max(
+          0,
+          Math.min(1, allSuccess ? 1 : pending / transactionsStatus.length)
+        )}
       />
       <div
         css={`
@@ -81,7 +87,8 @@ DeploymentStepsPanel.propTypes = {
   transactionsStatus: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
-      status: PropTypes.oneOf(['success', 'pending', 'upcoming']).isRequired,
+      status: PropTypes.oneOf(['success', 'pending', 'upcoming', 'error'])
+        .isRequired,
     })
   ).isRequired,
 }
