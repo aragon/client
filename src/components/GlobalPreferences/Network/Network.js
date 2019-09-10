@@ -8,6 +8,7 @@ import {
   GU,
   TextInput,
   textStyle,
+  useLayout,
   useTheme,
 } from '@aragon/ui'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
@@ -29,6 +30,7 @@ function Network({ wrapper }) {
     network,
   } = useNetwork(wrapper)
   const theme = useTheme()
+  const { layoutName } = useLayout()
 
   return (
     <React.Fragment>
@@ -81,7 +83,11 @@ function Network({ wrapper }) {
             `}
           />
         </Label>
-        <Button mode="strong" onClick={handleNetworkChange}>
+        <Button
+          mode="strong"
+          onClick={handleNetworkChange}
+          wide={layoutName === 'small'}
+        >
           Save changes
         </Button>
       </Box>
@@ -101,6 +107,7 @@ function Network({ wrapper }) {
             margin-bottom: ${2 * GU}px;
           `}
           onClick={handleClearCache}
+          wide={layoutName === 'small'}
         >
           Clear application cache
         </Button>
