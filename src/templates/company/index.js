@@ -25,7 +25,7 @@ export default {
   // TODO: Insert proper user guide URL
   userGuide: 'https://help.aragon.org/',
   sourceCodeUrl:
-    'https://github.com/aragon/dao-templates/tree/master/templates/company',
+    'https://github.com/aragon/dao-templates/tree/templates-company-v1.0.0/templates/company',
   registry: 'aragonpm.eth',
   modules: [
     { appName: 'voting.aragonpm.eth', label: 'Voting' },

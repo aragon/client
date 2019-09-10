@@ -25,7 +25,7 @@ export default {
   // TODO: Insert proper user guide URL
   userGuide: 'https://help.aragon.org/',
   sourceCodeUrl:
-    'https://github.com/aragon/dao-templates/tree/master/templates/membership',
+    'https://github.com/aragon/dao-templates/tree/templates-membership-v1.0.0/templates/membership',
   registry: 'aragonpm.eth',
   modules: [
     { appName: 'voting.aragonpm.eth', label: 'Voting' },
