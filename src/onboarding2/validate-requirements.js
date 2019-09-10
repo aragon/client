@@ -5,7 +5,7 @@ const MINIMUM_BALANCE = new BN(toWei('0.1'))
 const BALANCE_DECIMALS = 3
 
 function isBalanceUnknown(balance) {
-  return balance.eqn(-1)
+  return !balance || balance.eqn(-1)
 }
 
 function localFormatBalance(balance) {

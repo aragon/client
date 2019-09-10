@@ -457,9 +457,6 @@ class App extends React.Component {
                               </PermissionsProvider>
 
                               <Onboarding
-                                account={account}
-                                balance={balance}
-                                isContractAccount={isContractAccount}
                                 selectorNetworks={selectorNetworks}
                                 status={
                                   mode === APP_MODE_START ||
