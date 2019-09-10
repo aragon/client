@@ -112,9 +112,8 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     subscriptions,
     event: selectedEvent > 0 ? events[selectedEvent] : null,
     appName: selectedApp > 0 ? subscriptionApps[selectedApp] : null,
-    organization: selectedOrganization
-      ? organizations[selectedOrganization]
-      : null,
+    organization:
+      selectedOrganization > 0 ? organizations[selectedOrganization] : null,
   })
 
   const handleUnsubscribe = useCallback(
