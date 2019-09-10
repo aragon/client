@@ -271,7 +271,7 @@ export default function SubscriptionsForm({
           ) : (
             <IconMail
               css={`
-                color: ${theme.surfaceContent};
+                color: ${theme.accentContent};
                 margin-right: ${GU}px;
               `}
             />
