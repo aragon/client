@@ -13,7 +13,7 @@ import initWrapper, {
 import Wrapper from './Wrapper'
 import { Onboarding } from './onboarding2'
 import { identifyProvider } from './ethereum-providers'
-import { getWeb3, getUnknownBalance } from './web3-utils'
+import { getWeb3, getUnknownBalance, getIsContractAccount } from './web3-utils'
 import { enableWallet } from './wallet-utils'
 import { log } from './utils'
 import { ActivityProvider } from './contexts/ActivityContext'
@@ -78,6 +78,7 @@ class App extends React.Component {
     connected: false,
     fatalError: null,
     identityIntent: null,
+    isContractAccount: null,
     locator: {},
     prevLocator: null,
     selectorNetworks: SELECTOR_NETWORKS,
@@ -102,6 +103,12 @@ class App extends React.Component {
         this.setState({ account })
         if (account && this.state.wrapper) {
           this.state.wrapper.setAccounts([account])
+        }
+
+        if (account) {
+          getIsContractAccount(getWeb3(web3Providers.wallet))
+            .then(isContractAccount => this.setState({ isContractAccount }))
+            .catch(err => err)
         }
       },
       onBalance: balance => {
@@ -327,6 +334,7 @@ class App extends React.Component {
       daoStatus,
       fatalError,
       identityIntent,
+      isContractAccount,
       locator,
       permissions,
       permissionsLoading,
@@ -441,6 +449,7 @@ class App extends React.Component {
                             <Onboarding
                               account={account}
                               balance={balance}
+                              isContractAccount={isContractAccount}
                               selectorNetworks={selectorNetworks}
                               status={
                                 mode === APP_MODE_START ||

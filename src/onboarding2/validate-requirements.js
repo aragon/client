@@ -14,7 +14,7 @@ function localFormatBalance(balance) {
     : formatBalance(balance, { precision: BALANCE_DECIMALS })
 }
 
-function validateCreationRequirements(account, balance) {
+function validateCreationRequirements(account, balance, isContractAccount) {
   if (!account) {
     return ['no-account']
   }
@@ -26,7 +26,7 @@ function validateCreationRequirements(account, balance) {
       },
     ]
   }
-  if (balance.lt(MINIMUM_BALANCE)) {
+  if (balance.lt(MINIMUM_BALANCE) && !(isContractAccount === true)) {
     return [
       'minimum-balance',
       {
