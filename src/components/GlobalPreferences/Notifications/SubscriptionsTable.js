@@ -10,10 +10,38 @@ import {
   useTheme,
   textStyle,
 } from '@aragon/ui'
+import { AppType } from '../../../prop-types'
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { deleteSubscriptions } from './notification-service-api'
 import SubscriptionFilters from './SubscriptionFilters'
 import { DeleteSubscriptionConfirmationModal } from './NotificationModals'
+
+/**
+ * Filters the subscriptions based on the search criteria
+ *
+ * @param {Object} options options
+ * @param {[Object]} options.subscriptions array of subscriptions as per the API schema
+ * @param {String} options.organization organization to filter by or -1 to not search
+ * @param {String} options.appName appName to filter by or -1 to not search
+ * @param {String} options.event event name to filter by or -1 to not search
+ *
+ * @returns {[Object]} Array of filtered subscriptions
+ */
+function filterSubscriptions({
+  subscriptions,
+  organization,
+  appName,
+  event,
+} = {}) {
+  return subscriptions.filter(subscription => {
+    const matchingOrg = organization
+      ? organization === subscription.ensName
+      : true
+    const matchingApp = appName ? appName === subscription.appName : true
+    const matchingEvent = event ? event === subscription.eventName : true
+    return matchingOrg && matchingApp && matchingEvent
+  })
+}
 
 const SubscriptionsTable = React.memo(function SubscriptionsTable({
   apps,
@@ -25,36 +53,26 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   isFetchingSubscriptions,
   toast,
 }) {
+  const theme = useTheme()
+
+  const [selectedOrganization, setSelectedOrganization] = useState(-1)
+  const [selectedApp, setSelectedApp] = useState(-1)
+  const [selectedEvent, setSelectedEvent] = useState(-1)
   const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [deleteModalOpened, setDeleteModalOpened] = useState(false)
+
   const handleSelectEntries = useCallback((entries, indexes) => {
     setSelectedSubscriptions(indexes)
   }, [])
-
-  const organizations = Array.from(
-    new Set(subscriptions.map(subscription => subscription.ensName))
-  )
-  const [selectedOrganization, setSelectedOrganization] = useState(-1)
   const onOrganizationChange = useCallback(idx => {
     setSelectedSubscriptions([])
     setSelectedOrganization(idx)
   }, [])
-
-  // Get unique app names by matching subscriptions with
-  const subscriptionApps = Array.from(
-    new Set(subscriptions.map(subscription => subscription.appName))
-  )
-  const [selectedApp, setSelectedApp] = useState(-1)
   const onAppChange = useCallback(idx => {
     setSelectedSubscriptions([])
     setSelectedApp(idx)
   }, [])
-  const events = Array.from(
-    new Set(subscriptions.map(subscription => subscription.eventName))
-  )
-  const [selectedEvent, setSelectedEvent] = useState(-1)
-
   const onEventChange = useCallback(idx => {
     setSelectedSubscriptions([])
     setSelectedEvent(idx)
@@ -68,13 +86,21 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   }, [])
 
   const onClick = useCallback(() => {
-    setIsModalOpen(true)
+    setDeleteModalOpened(true)
   }, [])
-
   const onCloseModal = useCallback(() => {
-    setIsModalOpen(false)
+    setDeleteModalOpened(false)
   }, [])
 
+  const organizations = Array.from(
+    new Set(subscriptions.map(subscription => subscription.ensName))
+  )
+  const subscriptionApps = Array.from(
+    new Set(subscriptions.map(subscription => subscription.appName))
+  )
+  const events = Array.from(
+    new Set(subscriptions.map(subscription => subscription.eventName))
+  )
   const filteredSubscriptions = filterSubscriptions({
     subscriptions,
     event: events[selectedEvent],
@@ -118,149 +144,122 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   )
 
   const onModalConfirm = useCallback(() => {
-    setIsModalOpen(false)
+    setDeleteModalOpened(false)
     handleUnsubscribe()
   }, [handleUnsubscribe])
 
-  const theme = useTheme()
-
   return (
-    <DataView
-      fields={[
-        {
-          label: 'Organization',
-          priority: 3,
-        },
-        {
-          label: 'App',
-          priority: 2,
-        },
-        {
-          label: 'Contract',
-          priority: 2,
-        },
-        {
-          label: 'Event',
-          priority: 1,
-        },
-      ]}
-      heading={
-        <React.Fragment>
-          <DeleteSubscriptionConfirmationModal
-            visible={isModalOpen}
-            onConfirm={onModalConfirm}
-            onClose={onCloseModal}
-          />
-          <div
-            css={`
-              height: ${9 * GU}px;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            `}
-          >
+    <React.Fragment>
+      <DataView
+        fields={[
+          {
+            label: 'Organization',
+            priority: 3,
+          },
+          {
+            label: 'App',
+            priority: 2,
+          },
+          {
+            label: 'Contract',
+            priority: 2,
+          },
+          {
+            label: 'Event',
+            priority: 1,
+          },
+        ]}
+        heading={
+          <React.Fragment>
             <div
               css={`
-                color: ${theme.content};
-                ${textStyle('body1')}
+                height: ${9 * GU}px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
               `}
             >
-              Subscriptions
-            </div>
-            <div>
-              <Button
-                disabled={selectedSubscriptions.length === 0}
-                onClick={onClick}
+              <div
+                css={`
+                  color: ${theme.content};
+                  ${textStyle('body1')}
+                `}
               >
-                {isSubmitting ? (
-                  <LoadingRing
-                    css={`
-                      margin-right: ${GU}px;
-                    `}
-                  />
-                ) : (
-                  <IconMail
-                    css={`
-                      color: ${theme.negative};
-                      margin-right: ${GU}px;
-                    `}
-                  />
-                )}{' '}
-                Unsubscribe
-              </Button>
+                Subscriptions
+              </div>
+              <div>
+                <Button
+                  disabled={selectedSubscriptions.length === 0}
+                  onClick={onClick}
+                >
+                  {isSubmitting ? (
+                    <LoadingRing
+                      css={`
+                        margin-right: ${GU}px;
+                      `}
+                    />
+                  ) : (
+                    <IconMail
+                      css={`
+                        color: ${theme.negative};
+                        margin-right: ${GU}px;
+                      `}
+                    />
+                  )}{' '}
+                  Unsubscribe
+                </Button>
+              </div>
             </div>
-          </div>
-          <SubscriptionFilters
-            organizations={organizations}
-            selectedOrganization={selectedOrganization}
-            onOrganizationChange={onOrganizationChange}
-            apps={subscriptionApps}
-            selectedApp={selectedApp}
-            onAppChange={onAppChange}
-            events={events}
-            selectedEvent={selectedEvent}
-            onEventChange={onEventChange}
-            onClearFilters={onClearFilters}
-          />
-        </React.Fragment>
-      }
-      entries={filteredSubscriptions}
-      onSelectEntries={handleSelectEntries}
-      selection={selectedSubscriptions}
-      renderEntry={(
-        { appName, contractAddress, ensName, eventName },
-        index,
-        { selected, mode }
-      ) => [
-        <Label>{ensName}</Label>,
-        <Label>{appName}</Label>,
-        <LocalIdentityBadge entity={contractAddress} />,
-        <Label>{eventName}</Label>,
-      ]}
-    />
+            <SubscriptionFilters
+              organizations={organizations}
+              selectedOrganization={selectedOrganization}
+              onOrganizationChange={onOrganizationChange}
+              apps={subscriptionApps}
+              selectedApp={selectedApp}
+              onAppChange={onAppChange}
+              events={events}
+              selectedEvent={selectedEvent}
+              onEventChange={onEventChange}
+              onClearFilters={onClearFilters}
+            />
+          </React.Fragment>
+        }
+        entries={filteredSubscriptions}
+        onSelectEntries={handleSelectEntries}
+        selection={selectedSubscriptions}
+        renderEntry={(
+          { appName, contractAddress, ensName, eventName },
+          index,
+          { selected, mode }
+        ) => [
+          <Label>{ensName}</Label>,
+          <Label>{appName}</Label>,
+          <LocalIdentityBadge entity={contractAddress} />,
+          <Label>{eventName}</Label>,
+        ]}
+      />
+      <DeleteSubscriptionConfirmationModal
+        visible={deleteModalOpened}
+        onConfirm={onModalConfirm}
+        onClose={onCloseModal}
+      />
+    </React.Fragment>
   )
 })
 
 SubscriptionsTable.propTypes = {
-  apps: PropTypes.array,
+  apps: PropTypes.arrayOf(AppType).isRequired,
   apiError: PropTypes.string,
-  onApiError: PropTypes.func,
+  onApiError: PropTypes.func.isRequired,
   authToken: PropTypes.string,
-  fetchSubscriptions: PropTypes.func,
+  fetchSubscriptions: PropTypes.func.isRequired,
   isFetchingSubscriptions: PropTypes.bool,
-  subscriptions: PropTypes.array,
-  toast: PropTypes.func,
+  subscriptions: PropTypes.array.isRequired,
+  toast: PropTypes.func.isRequired,
 }
 
-export const Label = styled.label`
+const Label = styled.label`
   display: block;
 `
-
-/**
- * Filters the subscriptions based on the search criteria
- *
- * @param {Object} options options
- * @param {[Object]} options.subscriptions array of subscriptions as per the API schema
- * @param {String} options.organization organization to filter by or -1 to not search
- * @param {String} options.appName appName to filter by or -1 to not search
- * @param {String} options.event event name to filter by or -1 to not search
- *
- * @returns {[Object]} Array of filtered subscriptions
- */
-function filterSubscriptions({
-  subscriptions,
-  organization,
-  appName,
-  event,
-} = {}) {
-  return subscriptions.filter(subscription => {
-    const matchingOrg = organization
-      ? organization === subscription.ensName
-      : true
-    const matchingApp = appName ? appName === subscription.appName : true
-    const matchingEvent = event ? event === subscription.eventName : true
-    return matchingOrg && matchingApp && matchingEvent
-  })
-}
 
 export default SubscriptionsTable

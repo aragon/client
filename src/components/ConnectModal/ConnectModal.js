@@ -10,32 +10,24 @@ import {
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import providers from '../../ethereum-providers'
 import { enableWallet } from '../../wallet-utils'
-import ProviderCard from './ProviderCard'
+import providersImage from './assets/providers.png'
 
-function ConnectModal({
-  account,
-  onClose,
-  onConnect,
-  onConnectError,
-  visible,
-}) {
+function ConnectModal({ account, onClose, onConnect, visible }) {
   const theme = useTheme()
-  const { above, below } = useViewport()
+  const { below } = useViewport()
+  const smallMode = below('medium')
 
-  const modalWidth = useCallback(({ width }) => {
-    return Math.min(130 * GU, width - 8 * GU)
-  }, [])
+  const modalWidth = useCallback(
+    ({ width }) => Math.min(55 * GU, width - 4 * GU),
+    []
+  )
 
   useEffect(() => {
     if (account) {
       onConnect()
     }
   }, [account, onConnect])
-
-  const largeMode = above('large')
-  const smallMode = below('medium')
 
   return (
     <Modal visible={visible} width={modalWidth} onClose={onClose}>
@@ -44,68 +36,67 @@ function ConnectModal({
           display: flex;
           flex-direction: column;
           align-items: center;
+          padding: ${smallMode ? 0 : 3 * GU}px;
+          padding-top: ${smallMode ? 5 * GU : 3 * GU}px;
+          padding-bottom: ${smallMode ? 0 : 2 * GU}px;
         `}
       >
         <header
           css={`
-            padding-top: ${4 * GU}px;
             text-align: center;
           `}
         >
           <h1
             css={`
-              // Not in aragonUI - exceptionally used here
-              font-size: ${smallMode ? '30px' : '40px'};
+              max-width: ${35 * GU}px;
+              margin: 0 auto ${1 * GU}px;
+              ${textStyle('title1')};
               font-weight: 600;
-              padding-bottom: ${1 * GU}px;
             `}
           >
             Enable your Ethereum provider
           </h1>
           <p
             css={`
-              ${textStyle('title4')};
+              max-width: ${35 * GU}px;
+              ${textStyle('body1')};
               color: ${theme.contentSecondary};
             `}
           >
-            You need to enable your Ethereum provider in order to create an
-            organization.
+            You need to enable your Ethereum provider to create an organization
           </p>
           <p
             css={`
-              padding: ${2 * GU}px 0 ${4 * GU}px;
+              padding: ${3 * GU}px 0;
               text-align: center;
               color: ${theme.contentSecondary};
             `}
           >
             <Link href="https://www.ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">
-              What is an Ethereum provider?
+              What is a Ethereum provider?
             </Link>
           </p>
         </header>
-        {largeMode && (
-          <div
+        <div>
+          <img
+            width="296"
+            height="80"
+            src={providersImage}
+            alt=""
             css={`
-              display: flex;
-              justify-content: space-between;
-              padding-bottom: ${4 * GU}px;
+              display: block;
+              margin: 0 auto ${4 * GU}px;
+              width: ${smallMode ? 222 : 296}px;
+              height: auto;
             `}
-          >
-            {[...providers.values()].map(provider => (
-              <ProviderCard
-                key={provider.name}
-                provider={provider}
-                onConnect={onConnect}
-                onConnectError={onConnectError}
-              />
-            ))}
-          </div>
-        )}
+          />
+        </div>
         <Button
           icon={<IconConnect />}
           label="Enable account"
           mode="strong"
           onClick={enableWallet}
+          wide
         />
       </section>
     </Modal>
@@ -115,7 +106,6 @@ function ConnectModal({
 ConnectModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   onConnect: PropTypes.func.isRequired,
-  onConnectError: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   account: PropTypes.string,
 }

@@ -1,7 +1,6 @@
 import React, { useCallback, useImperativeHandle, useRef } from 'react'
 import { Field, GU, TextInput, LoadingRing, useTheme } from '@aragon/ui'
-import CheckDisc from './CheckDisc'
-import ErrorDisc from './ErrorDisc'
+import CheckDisc from '../CheckDisc/CheckDisc'
 import {
   DOMAIN_CHECK,
   DOMAIN_LOADING,
@@ -103,7 +102,7 @@ const DomainField = React.forwardRef(function DomainField(
               margin-left: ${2 * GU}px;
             `}
           >
-            {status === DOMAIN_CHECK && <CheckDisc />}
+            {status === DOMAIN_CHECK && <CheckDisc mode="success" />}
             {status === DOMAIN_LOADING && (
               <LoadingRing
                 css={`
@@ -112,7 +111,7 @@ const DomainField = React.forwardRef(function DomainField(
                 `}
               />
             )}
-            {status === DOMAIN_ERROR && <ErrorDisc />}
+            {status === DOMAIN_ERROR && <CheckDisc mode="error" />}
           </div>
         )}
       </div>

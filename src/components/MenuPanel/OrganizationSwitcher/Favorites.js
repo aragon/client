@@ -167,7 +167,7 @@ class Favorites extends React.Component {
           >
             <IconPlus />
           </span>
-          <span>Open a new organization</span>
+          <span>Open another organization</span>
         </FavoritesMenuItemButton>
       </section>
     )

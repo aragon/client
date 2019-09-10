@@ -26,7 +26,7 @@ const getAppByProxyAddress = (proxyAddress, apps) =>
 
 function ActivityList({ apps }) {
   const theme = useTheme()
-  const { height } = useViewport()
+  const { below, height } = useViewport()
   const { activities, clearActivities } = useContext(ActivityContext)
   const activityItems = useMemo(
     () =>
@@ -52,7 +52,8 @@ function ActivityList({ apps }) {
   return (
     <div
       css={`
-        width: ${42 * GU}px;
+        /* Use 20px as the padding setting for popper is 10px */
+        width: ${below('medium') ? `calc(100vw - 20px)` : `${42 * GU}px`};
       `}
     >
       <div

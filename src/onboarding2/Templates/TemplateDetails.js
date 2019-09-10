@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {
   Button,
   Field,
+  IconCheck,
   GU,
   Link,
   Modal,
@@ -13,6 +14,7 @@ import {
 import { TEMPLATE_LOADING, TEMPLATE_UNAVAILABLE } from '../symbols'
 import { stripUrlProtocol, sanitizeCodeRepositoryUrl } from '../../url-utils'
 import AppIcon from '../../components/AppIcon/AppIcon'
+import KnownAppBadge from '../../templates/kit/KnownAppBadge'
 
 function TemplateDetails({ template, visible, onUse, onClose }) {
   const theme = useTheme()
@@ -157,8 +159,40 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               label="Required modules"
               css={`
                 height: 150px;
+                margin-bottom: ${4 * GU}px;
               `}
-            />
+            >
+              {template.modules.map(({ appName, label }, index) => (
+                <div
+                  key={index}
+                  css={`
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: ${2 * GU}px;
+
+                    & + & {
+                      margin-top: ${1.5 * GU}px;
+                    }
+                  `}
+                >
+                  <KnownAppBadge appName={appName} label={label} />
+                  <div
+                    css={`
+                      display: flex;
+                      align-items: center;
+                    `}
+                  >
+                    <IconCheck
+                      css={`
+                        color: ${theme.positive};
+                        margin-right: ${0.25 * GU}px;
+                      `}
+                    />
+                    Included
+                  </div>
+                </div>
+              ))}
+            </Field>
           )}
           {template.optionalModules && template.optionalModules.length > 0 && (
             <Field

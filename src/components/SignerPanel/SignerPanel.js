@@ -37,6 +37,15 @@ const INITIAL_STATE = {
 }
 
 const RECIEPT_ERROR_STATUS = '0x0'
+const WEB3_TX_OBJECT_KEYS = new Set([
+  'from',
+  'to',
+  'value',
+  'gas',
+  'gasPrice',
+  'data',
+  'nonce',
+])
 
 const getAppName = (apps, proxyAddress) => {
   const app = apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
@@ -46,6 +55,13 @@ const getAppName = (apps, proxyAddress) => {
 const getPretransactionDescription = intent =>
   `Allow ${intent.name} to ${intent.description.slice(0, 1).toLowerCase() +
     intent.description.slice(1)}`
+
+// Clean up a transaction object removing all non-standard transaction parameters
+// https://web3js.readthedocs.io/en/v1.2.0/web3-eth.html#sendtransaction
+const sanitizeTxObject = tx =>
+  Object.keys(tx)
+    .filter(key => WEB3_TX_OBJECT_KEYS.has(key))
+    .reduce((newTx, key) => ({ ...newTx, [key]: tx[key] }), {})
 
 class SignerPanel extends React.PureComponent {
   static propTypes = {
@@ -168,7 +184,7 @@ class SignerPanel extends React.PureComponent {
 
     return new Promise((resolve, reject) => {
       walletWeb3.eth
-        .sendTransaction(transaction)
+        .sendTransaction(sanitizeTxObject(transaction))
         .on('transactionHash', transactionHash => {
           resolve(transactionHash)
           // Get account count/nonce for the transaction and update the activity item.

@@ -87,7 +87,7 @@ Review.propTypes = {
   next: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      label: PropTypes.string.isRequired,
+      label: PropTypes.node.isRequired,
       fields: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.node)).isRequired,
     })
   ).isRequired,

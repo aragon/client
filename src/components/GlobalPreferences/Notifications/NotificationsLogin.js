@@ -15,7 +15,7 @@ import {
 import { login } from './notification-service-api'
 import { network } from '../../../environment'
 import { validateEmail } from '../../../utils'
-import notificationSvg from './notifications.svg'
+import notificationPng from './notifications.png'
 
 export default function NotificationsLogin({
   dao,
@@ -129,7 +129,7 @@ export default function NotificationsLogin({
             `}
             onClick={handleLogin}
             icon={<IconMail />}
-            label="Sign in"
+            label="Activate"
           />
           {apiError && (
             <p
@@ -160,13 +160,15 @@ export default function NotificationsLogin({
         different browser session or device to access your subsciptions. This
         process doens’t require a password, just for you to confirm your email
         address.`
-          : `Receive email notifications for the new app events. For
-        example, whenever a new vote is created or when tokens added, you’ll get
-        an email informing you of the latest activity in your organization. You
-        will be asked to enter with your email address whenever using a
-        different browser session or device to access your subsciptions. This
-        process doens’t require a password, just for you to confirm your email
-        address whenever you want to sing in.`}
+          : `Receive email notifications for new app events. For example,
+        whenever a new vote is created or when funds are transferred, you’ll get
+        an email informing you of this activity in your organization.
+        This process doesn’t require a password. You will be asked to enter
+        your email address whenever using a different browser session
+        or device to access your notification subscriptions. The email address
+        you enter here is only used to send you notifications that you have
+        explicitly opted into and will not be shared, rented,
+        or sold for any marketing purposes.`}
       </Info>
     </Box>
   )
@@ -174,7 +176,7 @@ export default function NotificationsLogin({
 
 const NotificationImage = () => (
   <img
-    src={notificationSvg}
+    src={notificationPng}
     alt="Notifications"
     css={`
       display: block;

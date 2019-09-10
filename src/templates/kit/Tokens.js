@@ -13,7 +13,7 @@ import {
   isAddress,
   useTheme,
 } from '@aragon/ui'
-import { Header, PrevNextFooter } from '.'
+import { Header, PrevNextFooter, IdentityBadge } from '.'
 
 function useFieldsLayout() {
   // In its own hook to be adapted on smaller views
@@ -391,4 +391,18 @@ function MemberField({
   )
 }
 
+function formatReviewFields(tokensData) {
+  return [
+    [
+      'Token name & symbol',
+      `${tokensData.tokenName} (${tokensData.tokenSymbol})`,
+    ],
+    ...tokensData.members.map(([account], i) => [
+      `Tokenholder #${i + 1}`,
+      <IdentityBadge entity={account} />,
+    ]),
+  ]
+}
+
+Tokens.formatReviewFields = formatReviewFields
 export default Tokens

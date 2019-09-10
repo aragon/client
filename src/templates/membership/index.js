@@ -2,7 +2,7 @@
 import React from 'react'
 import BN from 'bn.js'
 import { network } from '../../environment'
-import { ClaimDomain, Review, Voting, Tokens } from '../kit'
+import { ClaimDomain, KnownAppBadge, Review, Tokens, Voting } from '../kit'
 
 import header from './header.svg'
 import icon from './icon.svg'
@@ -27,7 +27,12 @@ export default {
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/membership',
   registry: 'aragonpm.eth',
-  modules: [],
+  modules: [
+    { appName: 'voting.aragonpm.eth', label: 'Voting' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
+    { appName: 'finance.aragonpm.eth', label: 'Finance' },
+    { appName: 'vault.aragonpm.eth', label: 'Vault' },
+  ],
   screens: [
     [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
@@ -48,24 +53,19 @@ export default {
               ],
             },
             {
-              label: 'Voting app',
-              fields: [
-                ['Support', `${data.voting.support}%`],
-                ['Minimum approval %', `${data.voting.quorum}%`],
-              ],
+              label: (
+                <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
+              ),
+              fields: Voting.formatReviewFields(data.voting),
             },
             {
-              label: 'Tokens app',
-              fields: [
-                [
-                  'Token name & symbol',
-                  `${data.tokens.tokenName} (${data.tokens.tokenSymbol})`,
-                ],
-                ...data.tokens.members.map(([account], i) => [
-                  `Tokenholder #${i + 1}`,
-                  account,
-                ]),
-              ],
+              label: (
+                <KnownAppBadge
+                  appName="token-manager.aragonpm.eth"
+                  label="Tokens"
+                />
+              ),
+              fields: Tokens.formatReviewFields(data.tokens),
             },
           ]}
         />

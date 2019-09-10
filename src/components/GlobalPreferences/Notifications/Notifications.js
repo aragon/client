@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { AppType } from '../../../prop-types'
-import { ButtonText, GU, LoadingRing, textStyle } from '@aragon/ui'
+import { Link, GU, LoadingRing, textStyle } from '@aragon/ui'
 import ManageNotifications from './ManageNotifications'
 import NotificationsLogin from './NotificationsLogin'
 import {
@@ -73,8 +73,7 @@ function useAuthState() {
     if (email && token) {
       handleAuthenticate()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [email, token])
+  }, [email, token, handleAuthenticate])
 
   useEffect(() => {
     token
@@ -187,10 +186,10 @@ export default function Notifications({
             <p
               css={`
                 margin-left: ${GU}px;
-                ${textStyle('body1')};z
+                ${textStyle('body1')};
               `}
             >
-              Authenticating...
+              Authenticating…
             </p>
           </div>
         </NotificationsInfoBox>
@@ -204,44 +203,46 @@ export default function Notifications({
         >
           <div>
             Authentication was unsuccessful.{' '}
-            <ButtonText
+            <Link
               css={`
                 font-weight: bold;
               `}
               onClick={handleLogout}
             >
-              Try logging in again.
-            </ButtonText>
+              Try logging in again
+            </Link>
+            .
           </div>
         </NotificationsInfoBox>
       )
     case AUTH_SERVICE_UNAVAILABLE:
       return (
         <NotificationsInfoBox
-          header="Error connecting to the Notifications server"
+          header="Error connecting to the notifications server"
           icon={ICON_ERROR}
           image={IMAGE_NETWORK_ERROR}
         >
           <div>
-            There was an error when trying to connect to the Notifications
+            There was an error when trying to connect to the notifications
             server. Please
-            <ButtonText
+            <Link
               css={`
                 font-weight: bold;
               `}
               onClick={handleLogout}
             >
               sign out
-            </ButtonText>
+            </Link>
             or
-            <ButtonText
+            <Link
               css={`
                 font-weight: bold;
               `}
               onClick={handleAuthenticate}
             >
-              try again.
-            </ButtonText>
+              try again
+            </Link>
+            .
           </div>
         </NotificationsInfoBox>
       )
