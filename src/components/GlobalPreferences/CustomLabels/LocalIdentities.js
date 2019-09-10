@@ -295,7 +295,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
     <React.Fragment>
       <DropDown
         css={`
-          box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+          box-shadow: ${disabled ? 'none' : '0px 1px 3px rgba(0, 0, 0, 0.1)'};
           ${compact ? 'min-width: unset' : ''}
         `}
         disabled={disabled}
@@ -340,7 +340,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
             css={`
               height: 24px;
               $textStyle('body2');
-              color: ${theme.surfaceContent};
+              color: ${disabled ? theme.hint : theme.surfaceContent};
 
               ${
                 !compact
@@ -419,6 +419,8 @@ const List = styled.ul`
   ${breakpoint(
     'medium',
     `
+      left: -${3 * GU}px;
+      width: calc(100% + ${6 * GU}px);
       max-height: 40vh;
       overflow: auto;
 

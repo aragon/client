@@ -224,7 +224,7 @@ export default function Notifications({
         >
           <div>
             There was an error when trying to connect to the notifications
-            server. Please
+            server. Please{' '}
             <Link
               css={`
                 font-weight: bold;
