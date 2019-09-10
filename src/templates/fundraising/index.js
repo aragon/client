@@ -47,23 +47,11 @@ export default {
             },
             {
               label: 'Voting app',
-              fields: [
-                ['Support', `${data.support}%`],
-                ['Minimum approval %', `${data.quorum}%`],
-              ],
+              fields: Voting.formatReviewFields(data.voting),
             },
             {
               label: 'Tokens app',
-              fields: [
-                [
-                  'Token name & symbol',
-                  `${data.tokenName} (${data.tokenSymbol})`,
-                ],
-                ...data.tokens.members.map(([account], i) => [
-                  `Tokenholder #${i + 1}`,
-                  account,
-                ]),
-              ],
+              fields: Tokens.formatReviewFields(data.tokens),
             },
           ]}
         />

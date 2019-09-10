@@ -1,4 +1,10 @@
-import React, { useCallback, useImperativeHandle, useRef } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import { Field, GU, Slider, TextInput, textStyle, useTheme } from '@aragon/ui'
 
 const PercentageField = React.forwardRef(function PercentageField(
@@ -6,16 +12,25 @@ const PercentageField = React.forwardRef(function PercentageField(
   ref
 ) {
   const theme = useTheme()
-
   const inputRef = useRef()
+  const [textFieldValue, setTextFieldValue] = useState(value)
 
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-      }
-    },
-  }))
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus: () => {
+        if (inputRef.current) {
+          inputRef.current.focus()
+        }
+      },
+      element: inputRef.current,
+    }),
+    []
+  )
+
+  useEffect(() => {
+    setTextFieldValue(value)
+  }, [value])
 
   const handleSliderChange = useCallback(
     v => {
@@ -23,15 +38,21 @@ const PercentageField = React.forwardRef(function PercentageField(
     },
     [onChange]
   )
-  const handleInputChange = useCallback(
+
+  const handleInputChange = useCallback(event => {
+    const value = parseInt(event.target.value, 10)
+    if (!isNaN(value) && value >= 0 && value <= 100) {
+      setTextFieldValue(value)
+    }
+  }, [])
+
+  const handleInputBlur = useCallback(
     event => {
-      const value = parseInt(event.target.value, 10)
-      if (!isNaN(value) && value >= 0 && value <= 100) {
-        onChange(value)
-      }
+      onChange(textFieldValue)
     },
-    [onChange]
+    [onChange, textFieldValue]
   )
+
   return (
     <Field label={label}>
       {({ id }) => (
@@ -63,8 +84,9 @@ const PercentageField = React.forwardRef(function PercentageField(
             <TextInput
               ref={inputRef}
               id={id}
-              value={value}
+              value={textFieldValue}
               onChange={handleInputChange}
+              onBlur={handleInputBlur}
               wide
               css={`
                 padding-right: ${3.5 * GU}px;

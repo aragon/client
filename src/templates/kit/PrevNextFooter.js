@@ -1,16 +1,34 @@
-import React from 'react'
+import React, { useRef, useImperativeHandle } from 'react'
 import { Button, IconArrowLeft, useTheme, useViewport } from '@aragon/ui'
 
-function PrevNextFooter({
-  onNext,
-  onBack,
-  nextEnabled = true,
-  backEnabled = true,
-  nextLabel = 'Next',
-  backLabel = 'Back',
-}) {
+const PrevNextFooter = React.forwardRef(function PrevNextFooter(
+  {
+    onNext,
+    onBack,
+    nextEnabled = true,
+    backEnabled = true,
+    nextLabel = 'Next',
+    backLabel = 'Back',
+  },
+  ref
+) {
   const theme = useTheme()
   const { above } = useViewport()
+
+  const nextRef = useRef()
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focusNext: () => {
+        if (nextRef.current) {
+          nextRef.current.focus()
+        }
+      },
+    }),
+    []
+  )
+
   return (
     <div
       css={`
@@ -34,6 +52,7 @@ function PrevNextFooter({
         />
       )}
       <Button
+        ref={nextRef}
         disabled={!nextEnabled}
         label={nextLabel}
         mode="strong"
@@ -43,6 +62,6 @@ function PrevNextFooter({
       />
     </div>
   )
-}
+})
 
 export default PrevNextFooter

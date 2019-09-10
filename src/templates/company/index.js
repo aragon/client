@@ -56,10 +56,7 @@ export default {
               label: (
                 <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
               ),
-              fields: [
-                ['Support', `${data.voting.support}%`],
-                ['Minimum approval %', `${data.voting.quorum}%`],
-              ],
+              fields: Voting.formatReviewFields(data.voting),
             },
             {
               label: (
@@ -68,16 +65,7 @@ export default {
                   label="Tokens"
                 />
               ),
-              fields: [
-                [
-                  'Token name & symbol',
-                  `${data.tokens.tokenName} (${data.tokens.tokenSymbol})`,
-                ],
-                ...data.tokens.members.map(([account], i) => [
-                  `Tokenholder #${i + 1}`,
-                  account,
-                ]),
-              ],
+              fields: Tokens.formatReviewFields(data.tokens),
             },
           ]}
         />
