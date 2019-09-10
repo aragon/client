@@ -11,7 +11,7 @@ import {
 import AccountModule from '../../components/AccountModule/AccountModule'
 import logo from '../../assets/logo.png'
 
-function OnboardingTopBar({ onHome, status }) {
+function OnboardingTopBar({ onHome, status, solid }) {
   const theme = useTheme()
 
   const handleSettingsClick = useCallback(() => {
@@ -25,16 +25,21 @@ function OnboardingTopBar({ onHome, status }) {
     window.location.hash = path + '?preferences=/network'
   }, [status])
 
+  console.log('?solid', solid)
+
   return (
     <React.Fragment>
       <div
         css={`
-          position: fixed;
+          position: absolute;
           z-index: 2;
           top: 0;
           left: 0;
           right: 0;
-          height: 0;
+          height: ${7.5 * GU}px;
+          background: rgba(255, 255, 255, ${solid ? 0.8 : 0});
+          transition: background 150ms ease-in-out;
+          backdrop-filter: blur(6px);
         `}
       >
         <div
