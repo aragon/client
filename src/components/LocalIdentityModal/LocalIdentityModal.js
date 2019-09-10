@@ -126,7 +126,6 @@ const Error = styled.div`
 
 const Wrap = styled.div`
   background: #fff;
-  padding: 16px;
   max-width: calc(100vw - 32px);
 
   ${breakpoint(
@@ -155,7 +154,8 @@ function Label(props) {
         display: block;
         margin: 20px 0;
         color: ${theme.surfaceContentSecondary};
-        ${textStyle('label2')} & > div {
+        ${textStyle('label2')};
+        & > div {
           margin: 5px 0;
         }
       `}
