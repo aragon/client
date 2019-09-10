@@ -456,7 +456,7 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
       <ErrorModal
         action={
           <Button mode="strong" onClick={() => setAttempts(a => a + 1)}>
-            OK, let’s try again{' '}
+            OK, let’s try again
           </Button>
         }
         content={
@@ -465,7 +465,7 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
             you can try again without losing your information.
           </p>
         }
-        header={'Something went wrong'}
+        header="Something went wrong"
         visible={erroredTransactions > -1}
       />
     </div>
