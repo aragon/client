@@ -105,7 +105,8 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
 
   // Update the transition during drag
   const bindDrag = useDrag(({ event, down, delta }) => {
-    const updatedX = Math.max(lastX, Math.min(sideSpace, selectedX + delta[0]))
+    const deltaMul = 3 * delta[0]
+    const updatedX = Math.max(lastX, Math.min(sideSpace, selectedX + deltaMul))
 
     if (down) {
       setX({
@@ -160,13 +161,13 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
         {items.map((item, i) => (
           <AnimatedDiv
             key={i}
-            style={{
-              opacity: drag.interpolate(drag =>
-                drag || (i >= selected && i < selected + visibleItems)
-                  ? 1
-                  : 0.25
-              ),
-            }}
+            // style={{
+            //   opacity: drag.interpolate(drag =>
+            //     drag || (i >= selected && i < selected + visibleItems)
+            //       ? 1
+            //       : 0.25
+            //   ),
+            // }}
             css={`
               flex-grow: 0;
               flex-shrink: 0;
