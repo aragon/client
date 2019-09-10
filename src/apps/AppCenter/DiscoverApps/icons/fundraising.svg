@@ -1,13 +1,1 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="24" height="24" fill="url(#paint0_linear)"/>
-<path d="M7.9874 15.9935C10.1897 15.9935 11.9751 14.2083 11.9751 12.0061C11.9751 9.80394 10.1897 8.01871 7.9874 8.01871C5.78505 8.01871 3.99969 9.80394 3.99969 12.0061C3.99969 14.2083 5.78505 15.9935 7.9874 15.9935Z" fill="white" fill-opacity="0.4" stroke="white" stroke-width="0.6"/>
-<path d="M16.0126 15.9935C18.215 15.9935 20.0003 14.2083 20.0003 12.0061C20.0003 9.80394 18.215 8.01871 16.0126 8.01871C13.8103 8.01871 12.0249 9.80394 12.0249 12.0061C12.0249 14.2083 13.8103 15.9935 16.0126 15.9935Z" fill="white" fill-opacity="0.4" stroke="white" stroke-width="0.6"/>
-<path d="M12.0065 11.9748C14.2088 11.9748 15.9942 10.1896 15.9942 7.98742C15.9942 5.78523 14.2088 4 12.0065 4C9.80412 4 8.01877 5.78523 8.01877 7.98742C8.01877 10.1896 9.80412 11.9748 12.0065 11.9748Z" fill="white" fill-opacity="0.4" stroke="white" stroke-width="0.6"/>
-<path d="M12.0065 20.0008C14.2088 20.0008 15.9942 18.2156 15.9942 16.0134C15.9942 13.8112 14.2088 12.0259 12.0065 12.0259C9.80412 12.0259 8.01877 13.8112 8.01877 16.0134C8.01877 18.2156 9.80412 20.0008 12.0065 20.0008Z" fill="white" fill-opacity="0.4" stroke="white" stroke-width="0.6"/>
-<defs>
-<linearGradient id="paint0_linear" x1="-15.5384" y1="-12.5287" x2="22.5903" y2="25.4161" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FF9372"/>
-<stop offset="1" stop-color="#FFD770"/>
-</linearGradient>
-</defs>
-</svg>
+<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="url(#paint0_linear)" d="M0 0h24v24H0z"/><path d="M7.987 15.993a3.988 3.988 0 1 0 0-7.975 3.988 3.988 0 0 0 0 7.975z" fill="#fff" fill-opacity=".4" stroke="#fff" stroke-width=".6"/><path d="M16.013 15.993a3.988 3.988 0 1 0 0-7.975 3.988 3.988 0 0 0 0 7.975z" fill="#fff" fill-opacity=".4" stroke="#fff" stroke-width=".6"/><path d="M12.007 11.975a3.988 3.988 0 1 0 0-7.975 3.988 3.988 0 0 0 0 7.975zM12.007 20a3.988 3.988 0 1 0 0-7.974 3.988 3.988 0 0 0 0 7.975z" fill="#fff" fill-opacity=".4" stroke="#fff" stroke-width=".6"/><defs><linearGradient id="paint0_linear" x1="-15.538" y1="-12.529" x2="22.59" y2="25.416" gradientUnits="userSpaceOnUse"><stop stop-color="#FF9372"/><stop offset="1" stop-color="#FFD770"/></linearGradient></defs></svg>
