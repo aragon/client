@@ -25,7 +25,7 @@ const SET_PERMISSION_MANAGER = Symbol('SET_PERMISSION_MANAGER')
 const REMOVE_PERMISSION_MANAGER = Symbol('REMOVE_PERMISSION_MANAGER')
 
 const UPDATE_ACTIONS = new Map([
-  [NO_UPDATE_ACTION, { label: 'Select an action', message: null }],
+  [NO_UPDATE_ACTION, { label: 'Select an update', message: null }],
   [
     SET_PERMISSION_MANAGER,
     {
@@ -286,22 +286,24 @@ class ManageRolePanel extends React.PureComponent {
             margin-top: ${3 * GU}px;
           `}
         >
-          <Field label="App">
+          <Field label="On app">
             {app && (
               <AppInstanceLabel app={app} proxyAddress={app.proxyAddress} />
             )}
           </Field>
 
-          <Field label="Action description">{role && role.name}</Field>
+          <Field label="Action">
+            {(role && role.name) || 'Unnamed permission'}
+          </Field>
 
           {(action === VIEW_PERMISSION || isUpdateAction) && (
-            <Field label="Manager">
+            <Field label="Managed by">
               <FlexRow>{this.renderManager()}</FlexRow>
             </Field>
           )}
 
           {isUpdateAction && (
-            <Field label="Action">
+            <Field label="Update">
               <DropDown
                 items={updateActionsItems}
                 selected={updateActionIndex}

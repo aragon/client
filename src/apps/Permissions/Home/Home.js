@@ -9,6 +9,7 @@ import AllPermissions from './AllPermissions'
 function Home({
   apps,
   appsLoading,
+  onAssignPermission,
   onChangeTab,
   onManageRole,
   onOpenApp,
@@ -27,6 +28,7 @@ function Home({
   const permissionsFiltered = permissions.filter(
     permission =>
       permission.app &&
+      (permission.entities.length > 0 || permission.manager) &&
       Boolean(permission.app.isAragonOsInternalApp) === internalAppsOnly
   )
 
@@ -37,6 +39,7 @@ function Home({
       <AllPermissions
         permissions={permissionsFiltered}
         loading={appsLoading || permissionsLoading}
+        onAssignPermission={onAssignPermission}
         onManageRole={onManageRole}
       />
     </React.Fragment>
@@ -47,6 +50,7 @@ Home.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
   permissionsLoading: PropTypes.bool.isRequired,
+  onAssignPermission: PropTypes.func.isRequired,
   onManageRole: PropTypes.func.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onChangeTab: PropTypes.func.isRequired,

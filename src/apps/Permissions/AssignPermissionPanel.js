@@ -164,7 +164,7 @@ class AssignPermissionPanel extends React.PureComponent {
           <EntitySelector
             includeAnyEntity
             apps={this.getNamedApps()}
-            label="Grant permission to"
+            label="Assign to entity"
             labelCustomAddress="Grant permission to"
             selectedIndex={assignEntityIndex}
             onChange={this.handleEntityChange}
@@ -172,7 +172,7 @@ class AssignPermissionPanel extends React.PureComponent {
           />
 
           {selectedApp && (
-            <Field label="To perform action">
+            <Field label="Action">
               <DropDown
                 placeholder="Select an action"
                 items={rolesItems}
