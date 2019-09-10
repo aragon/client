@@ -39,7 +39,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_DEMOCRACY,
       },
       {
-        address: '0x67757A18eDA83125270Ef94dCec7658Eb39bD8a5',
+        address: '0x67757a18eda83125270ef94dcec7658eb39bd8a5',
         domain: 'blankdao.aragonid.eth',
         name: 'BlankDAO',
         image: blankDaoImage,
@@ -47,7 +47,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_DEMOCRACY,
       },
       {
-        address: '0xcD3d9b832BfF15E0a519610372c6AAC651872DdE',
+        address: '0xcd3d9b832bff15e0a519610372c6aac651872dde',
         domain: '',
         name: 'MyBit',
         image: myBitImage,
@@ -55,7 +55,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_DEMOCRACY,
       },
       {
-        address: '0x0ee165029b09d91a54687041Adbc705F6376C67F',
+        address: '0x0ee165029b09d91a54687041adbc705f6376c67f',
         domain: '',
         name: 'Livepeer',
         image: livepeerImage,
@@ -70,12 +70,12 @@ export const KnownOrganizations = {
         recommended: true,
         template: TEMPLATE_DEMOCRACY,
       },
-    ].map(org => [org.address, org])
+    ].map(org => [org.address.toLowerCase(), org])
   ),
   rinkeby: new Map(
     [
       {
-        address: '0x43374144C33DEF77A0ebaceC72E9C944A6c375FE',
+        address: '0x43374144c33def77a0ebacec72e9c944a6c375fe',
         domain: 'reputation08.aragonid.eth',
         name: 'Example reputation organization',
         image: null,
@@ -83,7 +83,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_REPUTATION,
       },
       {
-        address: '0xb2a22974bd09EB5D1B5c726E7C29f4faeF636dd2',
+        address: '0xb2a22974bd09eb5d1b5c726e7c29f4faef636dd2',
         domain: 'company08.aragonid.eth',
         name: 'Example company',
         image: null,
@@ -91,7 +91,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_COMPANY,
       },
       {
-        address: '0x0d9938b8720EB5124371C9FA2049144626F67D2E',
+        address: '0x0d9938b8720eb5124371c9fa2049144626f67d2e',
         domain: 'membership08.aragonid.eth',
         name: 'Example membership',
         image: null,
@@ -99,7 +99,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_MEMBERSHIP,
       },
       {
-        address: '0xe520428C232F6Da6f694b121181f907931fD2211',
+        address: '0xe520428c232f6da6f694b121181f907931fd2211',
         domain: 'hive.aragonid.eth',
         name: '1Hive',
         image: onehive,
@@ -107,14 +107,14 @@ export const KnownOrganizations = {
         template: null,
       },
       {
-        address: '0xa48300a4E89b59A79452Db7d3CD408Df57f4aa78',
+        address: '0xa48300a4e89b59a79452db7d3cd408df57f4aa78',
         domain: 'mesh.aragonid.eth',
         name: 'Aragon Mesh',
         image: aragonMesh,
         recommended: true,
         template: null,
       },
-    ].map(org => [org.address, org])
+    ].map(org => [org.address.toLowerCase(), org])
   ),
 }
 
