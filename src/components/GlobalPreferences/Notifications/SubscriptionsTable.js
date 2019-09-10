@@ -43,6 +43,8 @@ function filterSubscriptions({
   })
 }
 
+const DEFAULT_CONSTANT = -1
+
 const SubscriptionsTable = React.memo(function SubscriptionsTable({
   apps,
   apiError,
@@ -55,9 +57,11 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
 }) {
   const theme = useTheme()
 
-  const [selectedOrganization, setSelectedOrganization] = useState(-1)
-  const [selectedApp, setSelectedApp] = useState(-1)
-  const [selectedEvent, setSelectedEvent] = useState(-1)
+  const [selectedOrganization, setSelectedOrganization] = useState(
+    DEFAULT_CONSTANT
+  )
+  const [selectedApp, setSelectedApp] = useState(DEFAULT_CONSTANT)
+  const [selectedEvent, setSelectedEvent] = useState(DEFAULT_CONSTANT)
   const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [deleteModalOpened, setDeleteModalOpened] = useState(false)
@@ -67,20 +71,20 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   }, [])
   const onOrganizationChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedOrganization(idx)
+    setSelectedOrganization(idx || DEFAULT_CONSTANT)
   }, [])
   const onAppChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedApp(idx)
+    setSelectedApp(idx || DEFAULT_CONSTANT)
   }, [])
   const onEventChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedEvent(idx)
+    setSelectedEvent(idx || DEFAULT_CONSTANT)
   }, [])
   const onClearFilters = useCallback(() => {
-    setSelectedEvent(-1)
-    setSelectedApp(-1)
-    setSelectedOrganization(-1)
+    setSelectedEvent(DEFAULT_CONSTANT)
+    setSelectedApp(DEFAULT_CONSTANT)
+    setSelectedOrganization(DEFAULT_CONSTANT)
     // Reset selection when filters cleared
     setSelectedSubscriptions([])
   }, [])
@@ -92,20 +96,24 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     setDeleteModalOpened(false)
   }, [])
 
-  const organizations = Array.from(
-    new Set(subscriptions.map(subscription => subscription.ensName))
-  )
-  const subscriptionApps = Array.from(
-    new Set(subscriptions.map(subscription => subscription.appName))
-  )
-  const events = Array.from(
-    new Set(subscriptions.map(subscription => subscription.eventName))
-  )
+  const organizations = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.ensName)),
+  ]
+  const subscriptionApps = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.appName)),
+  ]
+  const events = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.eventName)),
+  ]
   const filteredSubscriptions = filterSubscriptions({
     subscriptions,
-    event: events[selectedEvent],
-    appName: subscriptionApps[selectedApp],
-    organization: organizations[selectedOrganization],
+    event: selectedEvent > 0 ? events[selectedEvent] : null,
+    appName: selectedApp > 0 ? subscriptionApps[selectedApp] : null,
+    organization:
+      selectedOrganization > 0 ? organizations[selectedOrganization] : null,
   })
 
   const handleUnsubscribe = useCallback(
