@@ -93,7 +93,9 @@ class AssignPermissionPanel extends React.PureComponent {
     return true
   }
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault()
+
     const { roleIndex, assignEntityAddress } = this.state
     const { grantPermission, onClose } = this.props
 
@@ -147,6 +149,7 @@ class AssignPermissionPanel extends React.PureComponent {
         onTransitionEnd={this.handlePanelTransitionEnd}
       >
         <form
+          onSubmit={this.handleSubmit}
           css={`
             margin-top: ${3 * GU}px;
           `}
