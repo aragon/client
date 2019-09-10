@@ -157,7 +157,7 @@ const ItemContent = React.memo(
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         white-space: normal;
-        word-break: break-all;
+        word-break: break-word;
         overflow: hidden;
         ${textStyle('body2')}
       `}
