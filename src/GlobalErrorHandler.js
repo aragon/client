@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { BaseStyles, GU, PublicUrl } from '@aragon/ui'
+import { BaseStyles, GU, PublicUrl, useTheme } from '@aragon/ui'
 import * as Sentry from '@sentry/browser'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
@@ -17,6 +17,7 @@ const EAGLE_DIMENSIONS = [1307, 877]
 class GlobalErrorHandler extends React.Component {
   static propTypes = {
     children: PropTypes.node,
+    theme: PropTypes.object,
   }
   state = { error: null, errorStack: null }
   componentDidCatch(error, errorInfo) {
@@ -50,7 +51,7 @@ class GlobalErrorHandler extends React.Component {
     window.location.reload()
   }
   render() {
-    const { children } = this.props
+    const { theme, children } = this.props
     const { error, errorStack } = this.state
 
     if (!error) {
@@ -64,8 +65,9 @@ class GlobalErrorHandler extends React.Component {
           css={`
             height: 100vh;
             overflow: auto;
-            background: fixed 50% 100% / ${EAGLE_DIMENSIONS[0]}px
-              ${EAGLE_DIMENSIONS[1]}px no-repeat url(${eagleSvg});
+            background: ${theme.background} fixed 50% 100% /
+              ${EAGLE_DIMENSIONS[0]}px ${EAGLE_DIMENSIONS[1]}px no-repeat
+              url(${eagleSvg});
           `}
         >
           <img
@@ -105,4 +107,7 @@ class GlobalErrorHandler extends React.Component {
   }
 }
 
-export default GlobalErrorHandler
+export default props => {
+  const theme = useTheme()
+  return <GlobalErrorHandler theme={theme} {...props} />
+}
