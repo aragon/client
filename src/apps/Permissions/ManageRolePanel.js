@@ -25,7 +25,7 @@ const SET_PERMISSION_MANAGER = Symbol('SET_PERMISSION_MANAGER')
 const REMOVE_PERMISSION_MANAGER = Symbol('REMOVE_PERMISSION_MANAGER')
 
 const UPDATE_ACTIONS = new Map([
-  [NO_UPDATE_ACTION, { label: 'Select an action', message: null }],
+  [NO_UPDATE_ACTION, { label: 'Select an update', message: null }],
   [
     SET_PERMISSION_MANAGER,
     {
@@ -292,7 +292,7 @@ class ManageRolePanel extends React.PureComponent {
             )}
           </Field>
 
-          <Field label="Permission">
+          <Field label="Action">
             {(role && role.name) || 'Unnamed permission'}
           </Field>
 
@@ -303,7 +303,7 @@ class ManageRolePanel extends React.PureComponent {
           )}
 
           {isUpdateAction && (
-            <Field label="Action">
+            <Field label="Update">
               <DropDown
                 items={updateActionsItems}
                 selected={updateActionIndex}
