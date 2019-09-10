@@ -16,7 +16,11 @@ import {
 } from '@aragon/ui'
 import { usePermissions } from '../../contexts/PermissionsContext'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import { isBurnEntity } from '../../permissions'
+import {
+  getUnassignedEntity,
+  isBurnEntity,
+  isUnassignedEntity,
+} from '../../permissions'
 import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
 const PermissionsView = React.memo(function PermissionsView({
@@ -138,12 +142,21 @@ function EntryActions({ entry, onAssignPermission, onManageRole }) {
   if (isBurnEntity(manager)) {
     actions.push([handleManageRole, IconView, 'View permission'])
   } else {
-    actions.push(
-      ...[
-        [handleManageRole, IconEdit, 'Manage role'],
-        [onAssignPermission, IconCirclePlus, 'Assign permission'],
-      ]
-    )
+    if (isUnassignedEntity(manager)) {
+      actions.push([
+        handleManageRole,
+        IconEdit,
+        entities.length > 0 ? 'Re-initialize permission' : 'Create permission',
+      ])
+    } else {
+      actions.push(
+        ...[
+          [handleManageRole, IconEdit, 'Manage role'],
+          [onAssignPermission, IconCirclePlus, 'Assign permission'],
+        ]
+      )
+    }
+
     if (entities.length === 1 && entityAddress) {
       actions.push([
         handleRevokePermission,
@@ -232,7 +245,11 @@ function EntryEntities({ entities }) {
         ${textStyle('body2')}
       `}
     >
-      {entities.length === 0 ? 'Not assigned' : `${entities.length} entities`}
+      {entities.length === 0 ? (
+        <PermissionsIdentityBadge entity={getUnassignedEntity()} />
+      ) : (
+        `${entities.length} entities`
+      )}
     </span>
   )
 }

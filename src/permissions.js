@@ -8,6 +8,7 @@ import { addressesEqual } from './web3-utils'
 //               discarded and frozen role
 const ANY_ENTITY = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 const BURN_ENTITY = '0x0000000000000000000000000000000000000001'
+const UNASSIGNED_ENTITY = '0x0000000000000000000000000000000000000000'
 const KERNEL_ROLES = [
   {
     name: 'Manage apps',
@@ -25,6 +26,10 @@ export function getBurnEntity() {
   return BURN_ENTITY
 }
 
+export function getUnassignedEntity() {
+  return UNASSIGNED_ENTITY
+}
+
 // Check if the address represents “Any address”
 export function isAnyEntity(address) {
   return addressesEqual(address, ANY_ENTITY)
@@ -33,6 +38,11 @@ export function isAnyEntity(address) {
 // Check if the address represents the “Burned address”
 export function isBurnEntity(address) {
   return addressesEqual(address, BURN_ENTITY)
+}
+
+// Check if the address represents an unassigned entity (either non-existent or 0x00)
+export function isUnassignedEntity(address) {
+  return addressesEqual(address, UNASSIGNED_ENTITY)
 }
 
 // Get a role from the known roles (kernel)
@@ -45,21 +55,24 @@ export function getKnownRole(roleBytes) {
   return null
 }
 
-// Get a flattened list of all permissions grouped by their roles, with their assigned entities
-export function permissionsByRole(permissions) {
-  return Object.entries(permissions).reduce(
-    (entries, [appAddress, roles]) => [
-      ...entries,
-      ...Object.entries(roles).reduce(
-        (entries, [roleBytes, { allowedEntities: entities = [], manager }]) => [
-          ...entries,
-          { appAddress, roleBytes, manager, entities },
-        ],
-        []
-      ),
-    ],
-    []
-  )
+// Get a flattened list of all app permissions grouped by their roles,
+// with their assigned entities (if any)
+export function permissionsByRole(apps, permissions) {
+  return apps
+    .map(app => {
+      const { proxyAddress: appAddress, roles = [] } = app
+      const appPermissions = permissions[appAddress] || {}
+      return roles.map(({ bytes: roleBytes }) => {
+        const rolePermissions = appPermissions[roleBytes] || {}
+        return {
+          appAddress,
+          roleBytes,
+          entities: rolePermissions.allowedEntities || [],
+          manager: rolePermissions.manager || getUnassignedEntity(),
+        }
+      })
+    })
+    .flat()
 }
 
 // Get the roles of an app.

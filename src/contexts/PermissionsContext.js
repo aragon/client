@@ -165,7 +165,7 @@ function usePermissionsByRole() {
 
   return useMemo(
     () =>
-      permissionsByRole(permissions).map(
+      permissionsByRole(apps, permissions).map(
         ({ appAddress, entities, roleBytes, ...permission }) => {
           const app = apps.find(app =>
             addressesEqual(app.proxyAddress, appAddress)
