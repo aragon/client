@@ -1,5 +1,4 @@
 import payrollIcon from './icons/payroll.svg'
-import espressoIcon from './icons/espresso.svg'
 import agentIcon from './icons/agent.svg'
 import surveyIcon from './icons/survey.svg'
 import pandoIcon from './icons/pando.svg'
