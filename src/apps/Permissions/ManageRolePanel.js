@@ -286,16 +286,18 @@ class ManageRolePanel extends React.PureComponent {
             margin-top: ${3 * GU}px;
           `}
         >
-          <Field label="App">
+          <Field label="On app">
             {app && (
               <AppInstanceLabel app={app} proxyAddress={app.proxyAddress} />
             )}
           </Field>
 
-          <Field label="Action description">{role && role.name}</Field>
+          <Field label="Permission">
+            {(role && role.name) || 'Unnamed permission'}
+          </Field>
 
           {(action === VIEW_PERMISSION || isUpdateAction) && (
-            <Field label="Manager">
+            <Field label="Managed by">
               <FlexRow>{this.renderManager()}</FlexRow>
             </Field>
           )}
