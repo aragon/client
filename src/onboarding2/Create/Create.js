@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
+import { Button } from '@aragon/ui'
 import {
   fetchApmArtifact,
   getRecommendedGasLimit,
@@ -13,6 +14,7 @@ import {
 } from '../create-utils'
 import Configure from '../Configure/Configure'
 import Deployment from '../Deployment/Deployment'
+import ErrorModal from '../../components/ErrorModal/ErrorModal'
 
 const STATUS_SELECT_TEMPLATE = Symbol('STATUS_TEMPLATE')
 const STATUS_TEMPLATE_SCREENS = Symbol('STATUS_TEMPLATE_SCREENS')
@@ -205,14 +207,15 @@ function useTemplateRepoInformation(templateRepoAddress) {
 }
 
 function useDeploymentState(
-  walletWeb3,
   account,
+  applyEstimateGas,
+  attempts,
   status,
   template,
-  templateData,
   templateAbi,
   templateAddress,
-  applyEstimateGas
+  templateData,
+  walletWeb3
 ) {
   const [transactionProgress, setTransactionProgress] = useState({
     signing: 0,
@@ -232,7 +235,11 @@ function useDeploymentState(
 
   // Call tx functions in the template, one after another.
   useEffect(() => {
-    setTransactionProgress({ signed: 0, errored: -1 })
+    if (attempts === 0) {
+      setTransactionProgress({ signed: 0, errored: -1 })
+    } else {
+      setTransactionProgress(txProgress => ({ ...txProgress, errored: -1 }))
+    }
 
     if (!deployTransactions) {
       return
@@ -241,45 +248,53 @@ function useDeploymentState(
     let cancelled = false
     const createTransactions = async () => {
       // Only process the next transaction after the previous one was successfully mined
-      deployTransactions.reduce(async (deployPromise, { transaction }) => {
-        // Wait for the previous promise; if component has unmounted, don't progress any further
-        await deployPromise
+      deployTransactions
+        // If we're retrying, only retry from the last signed one
+        .slice(transactionProgress.signed)
+        .reduce(async (deployPromise, { transaction }) => {
+          // Wait for the previous promise; if component has unmounted, don't progress any further
+          await deployPromise
 
-        transaction = {
-          ...transaction,
-          from: account,
-        }
-        try {
-          transaction = await applyEstimateGas(transaction)
-        } catch (_) {}
-
-        if (!cancelled) {
-          try {
-            await walletWeb3.eth.sendTransaction(transaction)
-
-            if (!cancelled) {
-              setTransactionProgress(({ signed, errored }) => ({
-                signed: signed + 1,
-                errored,
-              }))
-            }
-          } catch (err) {
-            log('Failed onboarding transaction', err)
-            if (!cancelled) {
-              setTransactionProgress(({ signed, errored }) => ({
-                errored: signed,
-                signed,
-              }))
-            }
-
-            // Re-throw error to stop later transactions from being signed
-            throw err
+          transaction = {
+            ...transaction,
+            from: account,
           }
-        }
-      }, Promise.resolve())
+          try {
+            transaction = await applyEstimateGas(transaction)
+          } catch (_) {}
+
+          if (!cancelled) {
+            try {
+              await walletWeb3.eth.sendTransaction(transaction)
+
+              if (!cancelled) {
+                setTransactionProgress(({ signed, errored }) => ({
+                  signed: signed + 1,
+                  errored,
+                }))
+              }
+            } catch (err) {
+              log('Failed onboarding transaction', err)
+              if (!cancelled) {
+                setTransactionProgress(({ signed, errored }) => ({
+                  errored: signed,
+                  signed,
+                }))
+              }
+
+              // Re-throw error to stop later transactions from being signed
+              throw err
+            }
+          }
+        }, Promise.resolve())
     }
     createTransactions()
-  }, [walletWeb3, account, applyEstimateGas, deployTransactions])
+
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletWeb3, account, applyEstimateGas, deployTransactions, attempts])
 
   const transactionsStatus = useMemo(() => {
     if (!deployTransactions) {
@@ -309,6 +324,7 @@ function useDeploymentState(
   return {
     deployTransactions,
     signedTransactions: transactionProgress.signed,
+    erroredTransactions: transactionProgress.errored,
     transactionsStatus,
   }
 }
@@ -374,19 +390,23 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
     [web3]
   )
 
+  const [attempts, setAttempts] = useState(0)
+
   const {
     deployTransactions,
+    erroredTransactions,
     signedTransactions,
     transactionsStatus,
   } = useDeploymentState(
-    walletWeb3,
     account,
+    applyEstimateGas,
+    attempts,
     status,
     template,
-    templateData,
     templateAbi,
     templateAddress,
-    applyEstimateGas
+    templateData,
+    walletWeb3
   )
 
   const handleUseTemplate = useCallback(
@@ -441,6 +461,21 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
           templates={templates}
         />
       )}
+      <ErrorModal
+        action={
+          <Button mode="strong" onClick={() => setAttempts(a => a + 1)}>
+            OK, let’s try again
+          </Button>
+        }
+        content={
+          <p>
+            An error has occurred during the signature process. Don't worry, you
+            can try to send the transaction again.
+          </p>
+        }
+        header="Something went wrong"
+        visible={erroredTransactions > -1}
+      />
     </div>
   )
 }
