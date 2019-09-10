@@ -8,9 +8,6 @@ import iconSvgTokens from './icons/token-manager.svg'
 import iconSvgVault from './icons/vault.svg'
 import iconSvgVoting from './icons/voting.svg'
 
-// AppBadge always requires an address be passed in
-const MOCK_APP_ADDRESS = '0x0000000000000000000000000000000000000000'
-
 const KNOWN_ICONS = new Map([
   ['agent.aragonpm.eth', iconSvgAgent],
   ['finance.aragonpm.eth', iconSvgFinance],
@@ -21,14 +18,7 @@ const KNOWN_ICONS = new Map([
 ])
 
 function KnownAppBadge({ appName, compact, label }) {
-  return (
-    <AppBadge
-      badgeOnly
-      appAddress={MOCK_APP_ADDRESS}
-      iconSrc={KNOWN_ICONS.get(appName)}
-      label={label}
-    />
-  )
+  return <AppBadge badgeOnly iconSrc={KNOWN_ICONS.get(appName)} label={label} />
 }
 KnownAppBadge.propTypes = {
   appName: PropTypes.string.isRequired,
