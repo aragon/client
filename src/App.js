@@ -109,7 +109,9 @@ class App extends React.Component {
         if (account) {
           getIsContractAccount(getWeb3(web3Providers.wallet))
             .then(isContractAccount => this.setState({ isContractAccount }))
-            .catch(err => err)
+            .catch(err => {
+              log("Error fetching account's code", err)
+            })
         }
       },
       onBalance: balance => {
@@ -392,6 +394,8 @@ class App extends React.Component {
               <IdentityProvider onResolve={this.handleIdentityResolve}>
                 <AccountProvider
                   account={account}
+                  balance={balance}
+                  isContract={isContractAccount}
                   walletNetwork={walletNetwork}
                   walletProviderId={walletProviderId}
                 >
