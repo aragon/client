@@ -36,7 +36,7 @@ export default {
   screens: [
     [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
     ['Configure template', Voting],
-    ['Configure template', props => <Tokens {...props} accountStake={1} />],
+    ['Configure template', Tokens],
     [
       'Review information',
       ({ back, data, next }) => (
