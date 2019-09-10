@@ -139,10 +139,10 @@ function EntryActions({ entry, onAssignPermission, onManageRole }) {
   }, [revokePermission, entityAddress, proxyAddress, roleBytes])
 
   const actions = []
-  if (isBurnEntity(manager)) {
+  if (manager.type === 'burn') {
     actions.push([handleManageRole, IconView, 'View permission'])
   } else {
-    if (isUnassignedEntity(manager)) {
+    if (manager.type === 'unassigned') {
       actions.push([
         handleManageRole,
         IconEdit,
