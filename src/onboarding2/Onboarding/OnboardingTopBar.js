@@ -25,8 +25,6 @@ function OnboardingTopBar({ onHome, status, solid }) {
     window.location.hash = path + '?preferences=/network'
   }, [status])
 
-  console.log('?solid', solid)
-
   return (
     <React.Fragment>
       <div
