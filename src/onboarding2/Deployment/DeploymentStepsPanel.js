@@ -1,21 +1,10 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { textStyle, GU, useTheme, ProgressBar, Info } from '@aragon/ui'
 import DeploymentStepsItem from './DeploymentStepsItem'
 
-function DeploymentStepsPanel({ transactionsStatus }) {
+function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
   const theme = useTheme()
-
-  // TODO: handle transaction error
-  const [pending, allSuccess] = useMemo(() => {
-    if (transactionsStatus.length === 0) {
-      return [true, false]
-    }
-    return [
-      transactionsStatus.findIndex(({ status }) => status === 'pending'),
-      transactionsStatus[transactionsStatus.length - 1].status === 'success',
-    ]
-  }, [transactionsStatus])
 
   return (
     <aside
