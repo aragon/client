@@ -10,8 +10,8 @@ import {
 import { network } from '../../../environment'
 
 // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
-const sanitizeNetworkType = network =>
-  network.type === 'main' ? 'mainnet' : 'rinkeby'
+const sanitizeNetworkType = networkType =>
+  networkType === 'main' ? 'mainnet' : 'rinkeby'
 
 const isAuthTokenExpired = response =>
   response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
