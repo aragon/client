@@ -192,6 +192,7 @@ function Permissions({
         <Home
           apps={apps}
           appsLoading={appsLoading}
+          onAssignPermission={createPermission}
           onChangeTab={setHomeTab}
           onManageRole={manageRole}
           onOpenApp={openApp}
@@ -205,6 +206,7 @@ function Permissions({
         <AppPermissions
           app={location.app}
           loading={appsLoading}
+          onAssignPermission={createPermission}
           onBack={openHome}
           onManageRole={manageRole}
         />

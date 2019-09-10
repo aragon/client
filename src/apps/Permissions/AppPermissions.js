@@ -6,7 +6,13 @@ import { usePermissionsByRole } from '../../contexts/PermissionsContext'
 import EmptyBlock from './EmptyBlock'
 import PermissionsView from './PermissionsView'
 
-function AppPermissions({ app, loading, onBack, onManageRole }) {
+function AppPermissions({
+  app,
+  loading,
+  onAssignPermission,
+  onBack,
+  onManageRole,
+}) {
   const permissions = usePermissionsByRole()
 
   if (loading) {
@@ -37,6 +43,7 @@ function AppPermissions({ app, loading, onBack, onManageRole }) {
             Available permissions
           </span>
         }
+        onAssignPermission={onAssignPermission}
         onManageRole={onManageRole}
         permissions={appPermissions}
         showApps={false}
@@ -48,6 +55,7 @@ function AppPermissions({ app, loading, onBack, onManageRole }) {
 AppPermissions.propTypes = {
   app: AppType, // may not be available if still loading
   loading: PropTypes.bool.isRequired,
+  onAssignPermission: PropTypes.func.isRequired,
   onManageRole: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
 }

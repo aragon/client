@@ -16,7 +16,12 @@ import PermissionsView from '../PermissionsView'
 
 const ENTITY_TYPES = ['All entities', 'Accounts', 'Apps']
 
-function AllPermissions({ loading, permissions, onManageRole }) {
+function AllPermissions({
+  loading,
+  permissions,
+  onAssignPermission,
+  onManageRole,
+}) {
   const [selectedEntityType, setSelectedEntityType] = useState(-1)
   const [searchTerms, setSearchTerms] = useState('')
   const { layoutName } = useLayout()
@@ -69,6 +74,7 @@ function AllPermissions({ loading, permissions, onManageRole }) {
   return (
     <PermissionsView
       permissions={filteredPermissions}
+      onAssignPermission={onAssignPermission}
       onManageRole={onManageRole}
       heading={
         layoutName === 'large' && (
@@ -90,6 +96,7 @@ function AllPermissions({ loading, permissions, onManageRole }) {
 
 AllPermissions.propTypes = {
   loading: PropTypes.bool.isRequired,
+  onAssignPermission: PropTypes.func.isRequired,
   onManageRole: PropTypes.func.isRequired,
   permissions: PropTypes.array.isRequired,
 }
