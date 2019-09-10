@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import { AppBadge, GU, Tag } from '@aragon/ui'
 import { useLocalIdentity } from '../../hooks'
 import { AppType } from '../../prop-types'
+import iconSvgAcl from '../AppIcon/assets/app-acl.svg'
+import iconSvgKernel from '../AppIcon/assets/app-kernel.svg'
+import iconSvgRegistry from '../AppIcon/assets/app-registry.svg'
 import LocalLabelPopoverTitle from './LocalLabelPopoverTitle'
 import LocalLabelPopoverActionLabel from './LocalLabelPopoverActionLabel'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
@@ -11,6 +14,21 @@ import {
   identityEventTypes,
 } from '../IdentityManager/IdentityManager'
 
+const KNOWN_ICONS = new Map([
+  [
+    '0x3b4bf6bf3ad5000ecf0f989d5befde585c6860fea3e574a4fab4c49d1c177d9c',
+    iconSvgKernel,
+  ],
+  [
+    '0xddbcfd564f642ab5627cf68b9b7d374fb4f8a36e941a75d89c87998cef03bd61',
+    iconSvgRegistry,
+  ],
+  [
+    '0xe3262375f45a6e2026b7e7b18c2b807434f2508fe1a2a3dfb493c7df8f4aad6a',
+    iconSvgAcl,
+  ],
+])
+
 const LocalLabelAppBadge = React.memo(function LocalLabelAppBadge({
   apps,
   app,
@@ -18,19 +36,18 @@ const LocalLabelAppBadge = React.memo(function LocalLabelAppBadge({
   ...props
 }) {
   const {
-    name: appName,
-    proxyAddress,
-    contractAddress,
-    identifier,
-    icons: [{ src: iconSrc }],
+    appId,
     baseUrl,
+    name: appName,
+    icons = [],
+    identifier,
+    proxyAddress,
   } = app
   const [label, setLabel] = useState(appName)
   const { name, handleResolve } = useLocalIdentity(proxyAddress)
   const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
   const { identityEvents$ } = useContext(IdentityContext)
-  const onlyOneInstance =
-    apps.filter(a => a.contractAddress === contractAddress).length === 1
+  const onlyOneInstance = apps.filter(a => a.appId === appId).length === 1
 
   useEffect(() => {
     setLabel(name || appName)
@@ -47,6 +64,8 @@ const LocalLabelAppBadge = React.memo(function LocalLabelAppBadge({
       })
   }, [proxyAddress, identityEvents$, handleResolve, showLocalIdentityModal])
 
+  const { src: iconSrc } = icons[0] || {}
+
   return (
     <div
       css={`
@@ -55,9 +74,9 @@ const LocalLabelAppBadge = React.memo(function LocalLabelAppBadge({
       `}
     >
       <AppBadge
-        appAddress={app.contractAddress}
+        appAddress={proxyAddress}
         label={label}
-        iconSrc={`${baseUrl}${iconSrc}`}
+        iconSrc={iconSrc ? `${baseUrl}${iconSrc}` : KNOWN_ICONS.get(appId)}
         {...props}
         popoverAction={{
           label: <LocalLabelPopoverActionLabel hasLabel={Boolean(label)} />,
@@ -85,7 +104,6 @@ LocalLabelAppBadge.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   app: AppType.isRequired,
   noIdentifier: PropTypes.bool,
-  editLabel: PropTypes.bool,
 }
 
 export default LocalLabelAppBadge
