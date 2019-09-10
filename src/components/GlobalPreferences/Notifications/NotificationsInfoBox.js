@@ -21,7 +21,7 @@ export default function NotificationsInfoBox({
   children,
   icon,
   image = IMAGE_NORMAL,
-} = {}) {
+}) {
   const { below } = useViewport()
   const small = below('small')
   const theme = useTheme()

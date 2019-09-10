@@ -24,7 +24,7 @@ export default {
   // caseStudyUrl: 'https://aragon.org/case-study/membership',
   userGuide: 'https://help.aragon.org/article/34-create-a-new-membership-organization',
   sourceCodeUrl:
-    'https://github.com/aragon/dao-templates/tree/master/templates/membership',
+    'https://github.com/aragon/dao-templates/tree/templates-membership-v1.0.0/templates/membership',
   registry: 'aragonpm.eth',
   modules: [
     { appName: 'voting.aragonpm.eth', label: 'Voting' },
@@ -79,12 +79,14 @@ export default {
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
 
     const { tokenName, tokenSymbol, members } = tokens
+    const accounts = members.map(([account]) => account)
 
     const { support, quorum, duration } = voting
     const onePercent = new BN(10).pow(new BN(16))
-    const adjustedSupport = onePercent.muln(support).toString()
-    const adjustedQuorum = onePercent.muln(quorum).toString()
-    const votingSettings = [adjustedSupport, adjustedQuorum, duration]
+    const adjustedSupport = onePercent.mul(new BN(support)).toString()
+    const adjustedQuorum = onePercent.mul(new BN(quorum)).toString()
+    const adjustedDuration = new BN(duration).toString()
+    const votingSettings = [adjustedSupport, adjustedQuorum, adjustedDuration]
 
     // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
     // often not mined
@@ -99,7 +101,7 @@ export default {
             tokenName,
             tokenSymbol,
             domain,
-            members.map(([account]) => account),
+            accounts,
             votingSettings,
             financePeriod,
             useAgentAsVault,
@@ -117,7 +119,7 @@ export default {
         name: 'Create organization',
         transaction: createTx('newInstance', [
           domain,
-          members.map(([account]) => account),
+          accounts,
           votingSettings,
           financePeriod,
           useAgentAsVault,
