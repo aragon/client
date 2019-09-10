@@ -89,14 +89,24 @@ export function parsePath(history, pathname, search = '') {
   return completeLocator
 }
 
-// Return a path string for an app instance
+// Return a path string from a locator object.
 export function getAppPath({
   dao: fullDao,
   instanceId = 'home',
   localPath = '',
   params,
   search = '',
+  mode,
+  action,
 } = {}) {
+  if (mode === APP_MODE_SETUP) {
+    return '/create'
+  }
+
+  if (mode === APP_MODE_START) {
+    return `/${action}`
+  }
+
   if (!fullDao) {
     return `/${search}`
   }
