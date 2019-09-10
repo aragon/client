@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   Button,
   GU,
+  ProgressBar,
   RADIUS,
   springs,
   textStyle,
@@ -74,10 +75,21 @@ function BoxBase({
   )
 }
 
-function BoxProgress({ opacity, boxTransform }) {
+function BoxProgress({
+  allSuccess,
+  boxTransform,
+  opacity,
+  pending,
+  transactionsStatus,
+}) {
   const theme = useTheme()
   const { below } = useViewport()
   const fullWidth = below('large')
+
+  const progress = Math.max(
+    0,
+    Math.min(1, allSuccess ? 1 : pending / transactionsStatus.length)
+  )
 
   return (
     <BoxBase
@@ -130,6 +142,36 @@ function BoxProgress({ opacity, boxTransform }) {
           or intermediaries. Create global, bureaucracy-free organizations,
           companies, and communities.
         </p>
+
+        {fullWidth && (
+          <div
+            css={`
+              padding-top: ${2 * GU}px;
+            `}
+          >
+            <div
+              css={`
+                font-size: 13px;
+                font-weight: 800;
+                text-align: center;
+                padding-bottom: ${1 * GU}px;
+              `}
+            >
+              {Math.round(progress * 100)}%
+            </div>
+            <ProgressBar value={progress} />
+            <div
+              css={`
+                padding: ${3 * GU}px 0 ${3 * GU}px;
+                ${textStyle('body1')};
+                text-align: center;
+                color: ${theme.surfaceContentSecondary};
+              `}
+            >
+              Launching your organization
+            </div>
+          </div>
+        )}
       </div>
     </BoxBase>
   )
@@ -182,6 +224,18 @@ const Deployment = React.memo(function Deployment({
 }) {
   // TODO: handle loading state for transactions
   const { above } = useViewport()
+
+  // TODO: handle transaction error
+  const [pending, allSuccess] = useMemo(() => {
+    if (transactionsStatus.length === 0) {
+      return [true, false]
+    }
+    return [
+      transactionsStatus.findIndex(({ status }) => status === 'pending'),
+      transactionsStatus[transactionsStatus.length - 1].status === 'success',
+    ]
+  }, [transactionsStatus])
+
   return (
     <React.Fragment>
       {above('large') && (
@@ -192,7 +246,11 @@ const Deployment = React.memo(function Deployment({
             flex-grow: 0;
           `}
         >
-          <DeploymentStepsPanel transactionsStatus={transactionsStatus} />
+          <DeploymentStepsPanel
+            allSuccess={allSuccess}
+            pending={pending}
+            transactionsStatus={transactionsStatus}
+          />
         </div>
       )}
       <section
@@ -231,7 +289,13 @@ const Deployment = React.memo(function Deployment({
                   boxTransform={transform}
                 />
               ) : (
-                <BoxProgress opacity={opacity} boxTransform={transform} />
+                <BoxProgress
+                  allSuccess={allSuccess}
+                  boxTransform={transform}
+                  opacity={opacity}
+                  pending={pending}
+                  transactionsStatus={transactionsStatus}
+                />
               )}
           </Transition>
         </div>
