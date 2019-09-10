@@ -23,6 +23,7 @@ const PercentageField = React.forwardRef(function PercentageField(
           inputRef.current.focus()
         }
       },
+      element: inputRef.current,
     }),
     []
   )
@@ -45,9 +46,12 @@ const PercentageField = React.forwardRef(function PercentageField(
     }
   }, [])
 
-  const handleInputBlur = useCallback(() => {
-    onChange(textFieldValue)
-  }, [onChange, textFieldValue])
+  const handleInputBlur = useCallback(
+    event => {
+      onChange(textFieldValue)
+    },
+    [onChange, textFieldValue]
+  )
 
   return (
     <Field label={label}>
