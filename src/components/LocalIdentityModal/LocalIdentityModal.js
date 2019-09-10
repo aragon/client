@@ -102,7 +102,9 @@ const LocalModal = ({ address, label, onCancel, onSave }) => {
           <Error>{error}</Error>
         </Label>
         <Controls>
-          <Button onClick={handleCancel}>Cancel</Button>
+          <Button css="min-width: 128px;" onClick={handleCancel}>
+            Cancel
+          </Button>
           <StyledSaveButton mode="strong" onClick={handleSave}>
             Save
           </StyledSaveButton>
@@ -177,6 +179,8 @@ const Controls = styled.div`
 `
 
 const StyledSaveButton = styled(Button)`
+  min-width: 128px;
+
   ${breakpoint(
     'medium',
     `
