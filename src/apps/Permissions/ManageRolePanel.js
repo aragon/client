@@ -14,7 +14,7 @@ import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
-import AppInstanceLabel from '../../components/AppInstanceLabel'
+import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
 import EntitySelector from './EntitySelector'
 import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
@@ -252,9 +252,7 @@ class ManageRolePanel extends React.PureComponent {
       return 'No manager'
     }
     if (manager.type === 'app') {
-      return (
-        <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
-      )
+      return <LocalLabelAppBadge app={manager.app} apps={[]} noIdentifier />
     }
     return <PermissionsIdentityBadge entity={manager.address} />
   }
@@ -290,9 +288,7 @@ class ManageRolePanel extends React.PureComponent {
           `}
         >
           <Field label="On app">
-            {app && (
-              <AppInstanceLabel app={app} proxyAddress={app.proxyAddress} />
-            )}
+            {app && <LocalLabelAppBadge app={app} apps={[]} noIdentifier />}
           </Field>
 
           <Field label="Action">

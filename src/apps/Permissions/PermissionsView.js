@@ -15,12 +15,8 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { usePermissions } from '../../contexts/PermissionsContext'
-import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import {
-  getUnassignedEntity,
-  isBurnEntity,
-  isUnassignedEntity,
-} from '../../permissions'
+import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
+import { getUnassignedEntity } from '../../permissions'
 import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
 const PermissionsView = React.memo(function PermissionsView({
@@ -85,9 +81,9 @@ function renderEntry({ entities, app, role, manager }, showApps) {
     >
       {role.name}
     </span>,
-    <LocalIdentityBadge entity={app.proxyAddress} shorten />,
+    <LocalLabelAppBadge app={app} apps={[]} noIdentifier />,
     <EntryEntities entities={entities} />,
-    <PermissionsIdentityBadge entity={manager} />,
+    <EntityBadge entity={manager} />,
   ]
 
   if (!showApps) {
@@ -139,10 +135,10 @@ function EntryActions({ entry, onAssignPermission, onManageRole }) {
   }, [revokePermission, entityAddress, proxyAddress, roleBytes])
 
   const actions = []
-  if (isBurnEntity(manager)) {
+  if (manager.type === 'burn') {
     actions.push([handleManageRole, IconView, 'View permission'])
   } else {
-    if (isUnassignedEntity(manager)) {
+    if (manager.type === 'unassigned') {
       actions.push([
         handleManageRole,
         IconEdit,
@@ -217,7 +213,7 @@ function ChildEntity({ appAddress, entity, roleBytes }) {
         align-items: center;
       `}
     >
-      <PermissionsIdentityBadge entity={entityAddress} />
+      <EntityBadge entity={entity} />
       <ButtonIcon
         label="Revoke permission"
         mode="button"
@@ -236,7 +232,7 @@ function ChildEntity({ appAddress, entity, roleBytes }) {
 /* eslint-disable react/prop-types */
 function EntryEntities({ entities }) {
   if (entities.length === 1) {
-    return <PermissionsIdentityBadge entity={entities[0].address} />
+    return <EntityBadge entity={entities[0]} />
   }
 
   return (
@@ -252,6 +248,16 @@ function EntryEntities({ entities }) {
       )}
     </span>
   )
+}
+/* eslint-enable react/prop-types */
+
+/* eslint-disable react/prop-types */
+function EntityBadge({ entity }) {
+  if (entity.type === 'app') {
+    return <LocalLabelAppBadge app={entity.app} apps={[]} noIdentifier />
+  }
+
+  return <PermissionsIdentityBadge entity={entity.address} />
 }
 /* eslint-enable react/prop-types */
 

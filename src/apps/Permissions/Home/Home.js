@@ -28,7 +28,8 @@ function Home({
   const permissionsFiltered = permissions.filter(
     permission =>
       permission.app &&
-      (permission.entities.length > 0 || permission.manager) &&
+      (permission.entities.length > 0 ||
+        permission.manager.type !== 'unassigned') &&
       Boolean(permission.app.isAragonOsInternalApp) === internalAppsOnly
   )
 
