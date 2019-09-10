@@ -14,7 +14,12 @@ function ErrorModal({ action, content, header, onClose, visible }) {
   )
 
   return (
-    <Modal visible={visible} width={modalWidth} onClose={onClose}>
+    <Modal
+      visible={visible}
+      width={modalWidth}
+      onClose={onClose}
+      closeButton={Boolean(onClose)}
+    >
       <section
         css={`
           display: flex;
@@ -55,7 +60,7 @@ ErrorModal.propTypes = {
   action: PropTypes.node,
   content: PropTypes.node.isRequired,
   header: PropTypes.node.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   visible: PropTypes.bool.isRequired,
 }
 
