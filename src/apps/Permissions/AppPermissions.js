@@ -31,8 +31,7 @@ function AppPermissions({ app, loading, onBack, onManageRole }) {
         heading={
           <span
             css={`
-              ${textStyle('body2')}
-              font-weight: 600;
+              ${textStyle('body1')}
             `}
           >
             Available permissions
