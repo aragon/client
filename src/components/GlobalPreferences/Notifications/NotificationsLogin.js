@@ -13,7 +13,6 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { login } from './notification-service-api'
-import { network } from '../../../environment'
 import { validateEmail } from '../../../utils'
 import notificationPng from './notifications.png'
 
@@ -25,8 +24,6 @@ export default function NotificationsLogin({
   const [inputEmail, setInputEmail] = useState('')
   const [emailInvalid, setEmailInvalid] = useState(null)
   const [apiError, setApiError] = useState(null)
-  // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
-  const ethNetwork = network.type === 'main' ? 'mainnet' : 'rinkeby'
 
   const handleEmailBlur = useCallback(e => {
     const email = e.target.value
@@ -52,14 +49,14 @@ export default function NotificationsLogin({
       }
 
       try {
-        await login({ email: inputEmail, dao, network: ethNetwork })
+        await login({ email: inputEmail, dao })
         onEmailChange(inputEmail)
       } catch (e) {
         setApiError(e.message)
         console.error('Failed to login', e)
       }
     },
-    [dao, ethNetwork, inputEmail, onEmailChange]
+    [dao, inputEmail, onEmailChange]
   )
 
   const theme = useTheme()

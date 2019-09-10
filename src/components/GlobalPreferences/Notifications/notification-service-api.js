@@ -7,21 +7,27 @@ import {
   ExpiredTokenError,
   UnauthorizedError,
 } from './constants'
-import { getEthNetworkType } from '../../../local-settings'
+import { network } from '../../../environment'
+
+// The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
+const sanitizeNetworkType = network =>
+  network.type === 'main' ? 'mainnet' : 'rinkeby'
 
 const isAuthTokenExpired = response =>
   response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
 
 const isUnauthorized = rawResponse => rawResponse.status === 401
 
-export const login = async ({ email, dao, network }) => {
+const NETWORK_NOTIFICATIONS = sanitizeNetworkType(network.type)
+
+export const login = async ({ email, dao }) => {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_LOGIN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, dao, network }),
+      body: JSON.stringify({ email, dao, network: NETWORK_NOTIFICATIONS }),
     })
     if (!rawResponse.ok) {
       throw new Error(rawResponse.statusText)
@@ -182,7 +188,7 @@ export async function deleteSubscriptions({ subscriptionIds, authToken } = {}) {
 
 export async function getSubscriptions(token) {
   const url = new URL(NOTIFICATION_SERVICE_SUBSCRIPTIONS)
-  url.searchParams.append('network', getEthNetworkType())
+  url.searchParams.append('network', NETWORK_NOTIFICATIONS)
 
   try {
     const rawResponse = await fetch(url, {
@@ -223,7 +229,6 @@ export async function getSubscriptions(token) {
  * @param {string} options.eventName event name as defined in the ABI
  * @param {string} options.contractAddress address of the proxy contract
  * @param {string} options.ensName ens name of the DAO with the app installed
- * @param {string} options.network network, e.g. mainnet, rinkeby
  * @param {object} options.abi abi of the appName
  *
  * @returns {Promise} Promise that resolves with response body if successful
@@ -234,7 +239,6 @@ export const createSubscription = async ({
   appContractAddress,
   ensName,
   eventName,
-  network,
   token,
 } = {}) => {
   try {
@@ -247,10 +251,10 @@ export const createSubscription = async ({
       body: JSON.stringify({
         appName,
         eventName,
-        contractAddress: appContractAddress,
         ensName,
-        network,
         abi,
+        contractAddress: appContractAddress,
+        network: NETWORK_NOTIFICATIONS,
       }),
     })
 
