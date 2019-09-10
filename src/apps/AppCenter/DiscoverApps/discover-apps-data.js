@@ -61,6 +61,33 @@ export const appsInDevelopment = [
       `,
       link: 'https://github.com/pandonetwork/pando',
     },
+    {
+      icon: null,
+      name: 'Redemptions',
+      status: 'experimental',
+      description: `
+        Redeem tokens in exchange for a proportional amount of the organization's eligible assets
+      `,
+      link: 'https://github.com/1Hive/redemptions-app',
+    },
+    {
+      icon: null,
+      name: 'Token Request',
+      status: 'experimental',
+      description: `
+        Requests an organization's tokens in exchange for payment
+      `,
+      link: 'https://github.com/1Hive/token-request-app',
+    },
+    {
+      icon: null,
+      name: 'Lock',
+      status: 'experimental',
+      description: `
+        Require users to lock tokens for a configurable period of time in order to forward an intent
+      `,
+      link: 'https://github.com/1Hive/lock-app',
+    },
   ]),
 
   // In development
