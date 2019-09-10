@@ -6,7 +6,6 @@
 import Web3 from 'web3'
 import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
-import { isElectron } from './utils'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -109,6 +108,23 @@ export function getInjectedProvider() {
   return null
 }
 
+/**
+ * Get whether an account is a contract
+ *
+ * @param {Web3} web3 The web3 instance
+ * @param {string} account The account being checked
+ *
+ * @returns {boolean} Whether the account is a contract or not
+ */
+export async function getIsContractAccount(web3, account) {
+  try {
+    const accountCode = await web3.eth.getCode(account)
+    return accountCode !== '0x'
+  } catch (err) {
+    return false
+  }
+}
+
 // Get the first account of a web3 instance
 export async function getMainAccount(web3) {
   try {
@@ -138,17 +154,6 @@ export function getWeb3(provider) {
   const web3 = new Web3(provider)
   web3Cache.set(provider, web3)
   return web3
-}
-
-// Returns an identifier for the provider, if it can be detected
-export function identifyProvider(provider) {
-  if (provider && isElectron()) {
-    return 'frame'
-  }
-  if (provider && provider.isMetaMask) {
-    return 'metamask'
-  }
-  return 'unknown'
 }
 
 export function isConnected(provider) {

@@ -201,3 +201,31 @@ export const ReactSpringStateType = PropTypes.oneOf([
   'update',
   'leave',
 ])
+
+// see ethereum-providers/
+export const EthereumProviderType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  connect: PropTypes.func.isRequired,
+  strings: PropTypes.object.isRequired,
+})
+
+// see templates/
+export const OrgTemplateType = PropTypes.shape({
+  caseStudyUrl: PropTypes.string,
+  userGuide: PropTypes.string,
+  description: PropTypes.string.isRequired,
+  header: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  longdesc: PropTypes.string,
+  modules: PropTypes.array,
+  name: PropTypes.string.isRequired,
+  optionalModules: PropTypes.array,
+  prepareTransactions: PropTypes.func.isRequired,
+  registry: PropTypes.string,
+  screens: PropTypes.array.isRequired,
+  sourceCodeUrl: PropTypes.string,
+})

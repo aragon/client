@@ -45,7 +45,9 @@ class Favorites extends React.Component {
     const localDaos = [
       ...favoriteDaos
         .map(dao => ({ ...dao, favorited: true }))
-        .sort(dao => (dao.address === currentDao.address ? -1 : 0)),
+        .sort(dao =>
+          addressesEqual(dao.address, currentDao.address) ? -1 : 0
+        ),
     ]
 
     // If the current DAO is favorited, it is already in the local list
@@ -55,13 +57,17 @@ class Favorites extends React.Component {
   }
 
   isDaoFavorited({ address }) {
-    return this.props.favoriteDaos.some(dao => dao.address === address)
+    return this.props.favoriteDaos.some(dao =>
+      addressesEqual(dao.address, address)
+    )
   }
 
   currentDaoWithFavoriteState() {
     const { currentDao } = this.props
     const { localDaos } = this.state
-    const daoItem = localDaos.find(dao => currentDao.address === dao.address)
+    const daoItem = localDaos.find(dao =>
+      addressesEqual(currentDao.address, dao.address)
+    )
     return {
       ...currentDao,
       favorited: daoItem ? daoItem.favorited : false,
@@ -72,10 +78,10 @@ class Favorites extends React.Component {
     window.location.hash = ''
   }
 
-  handleDaoOpened = address => {
+  handleOpenOrg = address => {
     const { currentDao, favoriteDaos } = this.props
-    const dao = [currentDao, ...favoriteDaos].find(
-      dao => dao.address === address
+    const dao = [currentDao, ...favoriteDaos].find(dao =>
+      addressesEqual(dao.address, address)
     )
     window.location.hash = `/${(dao && dao.name) || address}`
   }
@@ -85,7 +91,7 @@ class Favorites extends React.Component {
 
     this.setState({
       localDaos: localDaos.map(dao =>
-        dao.address === address ? { ...dao, favorited } : dao
+        addressesEqual(dao.address, address) ? { ...dao, favorited } : dao
       ),
     })
   }
@@ -120,11 +126,13 @@ class Favorites extends React.Component {
     })
 
     const favoriteItems = [...allItems].sort((org, org2) => {
+      const { name = '' } = org
+      const { name: name2 = '' } = org
       return addressesEqual(org.address, currentDao.address)
         ? -1
         : addressesEqual(org2.address, currentDao.address)
         ? 1
-        : org.name.localeCompare(org2.name)
+        : name.localeCompare(name2)
     })
 
     return (
@@ -136,7 +144,7 @@ class Favorites extends React.Component {
       >
         <FavoritesMenu
           items={favoriteItems}
-          onActivate={this.handleDaoOpened}
+          onActivate={this.handleOpenOrg}
           onFavoriteUpdate={this.handleFavoriteUpdate}
         />
         <FavoritesMenuItemButton

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Info, Link, RadioList, GU, textStyle } from '@aragon/ui'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
-import providerString from '../../provider-strings'
+import { getProviderString } from '../../ethereum-providers'
 import { getAppPath } from '../../routing'
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
@@ -289,7 +289,7 @@ class ActionPathsContent extends React.Component {
             `}
           >
             This action requires two transactions to be signed in{' '}
-            {providerString('your Ethereum provider', walletProviderId)}.{' '}
+            {getProviderString('your Ethereum provider', walletProviderId)}.{' '}
             {approveTransactionMessage}
             Please confirm them one after another.
           </Info>

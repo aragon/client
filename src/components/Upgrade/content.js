@@ -52,7 +52,7 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-        The voting app has been redesigned to make
+        The Voting app has been redesigned to make
         governance more accessible. Easily find and
         understand the details of a vote.
       `,
