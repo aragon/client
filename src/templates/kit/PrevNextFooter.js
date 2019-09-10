@@ -1,5 +1,5 @@
 import React, { useRef, useImperativeHandle } from 'react'
-import { Button, IconArrowLeft, useTheme, useViewport } from '@aragon/ui'
+import { Button, IconArrowLeft, GU, useTheme } from '@aragon/ui'
 
 const PrevNextFooter = React.forwardRef(function PrevNextFooter(
   {
@@ -13,7 +13,6 @@ const PrevNextFooter = React.forwardRef(function PrevNextFooter(
   ref
 ) {
   const theme = useTheme()
-  const { above } = useViewport()
 
   const nextRef = useRef()
 
@@ -37,28 +36,28 @@ const PrevNextFooter = React.forwardRef(function PrevNextFooter(
         justify-content: space-between;
       `}
     >
-      {above('medium') && (
-        <Button
-          disabled={!backEnabled}
-          icon={
-            <IconArrowLeft
-              css={`
-                color: ${theme.accent};
-              `}
-            />
-          }
-          label={backLabel}
-          onClick={onBack}
-        />
-      )}
+      <Button
+        disabled={!backEnabled}
+        icon={
+          <IconArrowLeft
+            css={`
+              color: ${theme.accent};
+            `}
+          />
+        }
+        label={backLabel}
+        onClick={onBack}
+      />
       <Button
         ref={nextRef}
         disabled={!nextEnabled}
         label={nextLabel}
         mode="strong"
         onClick={onNext}
-        wide={!above('medium')}
         type="submit"
+        css={`
+          margin-left: ${1.5 * GU}px;
+        `}
       />
     </div>
   )
