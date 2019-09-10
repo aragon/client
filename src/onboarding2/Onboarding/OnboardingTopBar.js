@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -10,8 +10,20 @@ import {
 } from '@aragon/ui'
 import logo from '../../assets/logo.png'
 
-function OnboardingTopBar({ onHome }) {
+function OnboardingTopBar({ onHome, status }) {
   const theme = useTheme()
+
+  const handleSettingsClick = useCallback(() => {
+    let path = '/'
+    if (status === 'open') {
+      path = '/open'
+    }
+    if (status === 'create') {
+      path = '/create'
+    }
+    window.location.hash = path + '?preferences=/network'
+  }, [status])
+
   return (
     <React.Fragment>
       <div
@@ -58,6 +70,7 @@ function OnboardingTopBar({ onHome }) {
           icon={<IconSettings />}
           label="Settings"
           size="small"
+          onClick={handleSettingsClick}
           css={`
             position: absolute;
             top: ${2 * GU}px;

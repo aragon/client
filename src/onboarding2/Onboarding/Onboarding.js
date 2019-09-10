@@ -187,7 +187,7 @@ function Onboarding({
         overflow-y: auto;
       `}
     >
-      <OnboardingTopBar onHome={goToHome} />
+      <OnboardingTopBar onHome={goToHome} status={status} />
       <div
         css={`
           position: relative;
