@@ -98,18 +98,15 @@ export default function SubscriptionsForm({
       setIsSubmitting(true)
       const { abi, appName, proxyAddress } = selectedApp
       const eventName = eventNames[selectedEventIdx]
-
-      const abiSubset = [
-        abi.find(({ name, type }) => type === 'event' && name === eventName),
-      ]
+      const abiEventSubset = abi.filter(({ name, type }) => type === 'event')
 
       try {
         const payload = {
-          abi: abiSubset,
+          abi: abiEventSubset,
           appName,
           appContractAddress: proxyAddress,
           ensName: dao,
-          eventName: eventNames[selectedEventIdx],
+          eventName,
           network: getEthNetworkType(),
           token,
         }
