@@ -131,10 +131,8 @@ const Wrap = styled.div`
   ${breakpoint(
     'medium',
     `
-      padding: 16px 32px;
-      max-width: 50vw;
       /* wide identity badge + paddings */
-      min-width: ${400 + 32 * 2}px;
+      min-width: ${400 + 16 * 2}px;
     `
   )};
 `
