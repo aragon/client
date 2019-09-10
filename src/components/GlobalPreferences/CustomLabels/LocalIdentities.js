@@ -419,6 +419,8 @@ const List = styled.ul`
   ${breakpoint(
     'medium',
     `
+      left: -${3 * GU}px;
+      width: calc(100% + ${6 * GU}px);
       max-height: 40vh;
       overflow: auto;
 
