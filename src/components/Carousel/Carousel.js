@@ -74,6 +74,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
   )
 
   // Get an item index from the container x position
+  /*
   const itemFromX = useCallback(
     x =>
       Math.max(
@@ -88,6 +89,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
       ),
     [items, itemWidth, itemSpacing, visibleItems]
   )
+  */
 
   // The current x position, before the drag
   const selectedX = xFromItem(selected)
@@ -96,7 +98,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
   const lastX = xFromItem(items.length - visibleItems)
 
   // Handles the actual x position, with the drag
-  const [{ x, drag }, setX] = useSpring(() => ({
+  const [{ x }, setX] = useSpring(() => ({
     x: selectedX,
     config: springs.lazy,
     drag: false,
