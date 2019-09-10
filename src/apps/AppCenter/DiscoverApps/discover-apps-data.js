@@ -66,7 +66,8 @@ export const appsInDevelopment = [
       name: 'Redemptions',
       status: 'experimental',
       description: `
-        Redeem tokens in exchange for a proportional amount of the organization's eligible assets
+        Redeem tokens in exchange for a proportional
+        amount of the organization's eligible assets
       `,
       link: 'https://github.com/1Hive/redemptions-app',
     },
@@ -75,7 +76,8 @@ export const appsInDevelopment = [
       name: 'Token Request',
       status: 'experimental',
       description: `
-        Requests an organization's tokens in exchange for payment
+        Requests an organization's tokens in exchange
+        for payment
       `,
       link: 'https://github.com/1Hive/token-request-app',
     },
@@ -84,7 +86,8 @@ export const appsInDevelopment = [
       name: 'Lock',
       status: 'experimental',
       description: `
-        Require users to lock tokens for a configurable period of time in order to forward an intent
+        Require users to lock tokens for a configurable
+        period of time in order to forward an intent
       `,
       link: 'https://github.com/1Hive/lock-app',
     },
