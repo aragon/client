@@ -409,9 +409,9 @@ const List = styled.ul`
   padding: 0;
   list-style: none;
   overflow: hidden;
-  width: calc(100% + ${6 * GU}px);
+  width: calc(100% + ${4 * GU}px);
   position: relative;
-  left: -${3 * GU}px;
+  left: -${2 * GU}px;
   background: ${({ surface }) => surface};
   border-top: ${({ border }) => `1px solid ${border};`};
   border-bottom: ${({ border }) => `1px solid ${border};`};

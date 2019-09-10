@@ -1,20 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { BaseStyles, PublicUrl, useTheme } from '@aragon/ui'
+import { BaseStyles, GU, PublicUrl } from '@aragon/ui'
 import * as Sentry from '@sentry/browser'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
 import { network } from './environment'
 import { DAONotFound } from './errors'
 import { getSentryDsn } from './local-settings'
+import eagleSvg from './assets/eagle.svg'
+import logo from './assets/logo.png'
 
 const SENTRY_DSN = getSentryDsn()
 const PACKAGE_VERSION = process.env.REACT_APP_PACKAGE_VERSION || ''
+const EAGLE_DIMENSIONS = [1307, 877]
 
 class GlobalErrorHandler extends React.Component {
   static propTypes = {
     children: PropTypes.node,
-    theme: PropTypes.object,
   }
   state = { error: null, errorStack: null }
   componentDidCatch(error, errorInfo) {
@@ -48,8 +50,9 @@ class GlobalErrorHandler extends React.Component {
     window.location.reload()
   }
   render() {
-    const { theme, children } = this.props
+    const { children } = this.props
     const { error, errorStack } = this.state
+
     if (!error) {
       return children
     }
@@ -61,9 +64,21 @@ class GlobalErrorHandler extends React.Component {
           css={`
             height: 100vh;
             overflow: auto;
-            background: ${theme.background};
+            background: fixed 50% 100% / ${EAGLE_DIMENSIONS[0]}px
+              ${EAGLE_DIMENSIONS[1]}px no-repeat url(${eagleSvg});
           `}
         >
+          <img
+            src={logo}
+            css={`
+              position: absolute;
+              top: ${2 * GU}px;
+              left: ${2 * GU}px;
+              width: ${4.5 * GU}px;
+              height: ${4.25 * GU}px;
+            `}
+            alt="Logo"
+          />
           <div
             css={`
               display: flex;
@@ -90,7 +105,4 @@ class GlobalErrorHandler extends React.Component {
   }
 }
 
-export default props => {
-  const theme = useTheme()
-  return <GlobalErrorHandler theme={theme} {...props} />
-}
+export default GlobalErrorHandler

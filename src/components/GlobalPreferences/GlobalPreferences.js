@@ -8,7 +8,6 @@ import {
   IconClose,
   Layout,
   Tabs,
-  ToastHub,
   breakpoint,
   springs,
   useTheme,
@@ -24,9 +23,6 @@ import CustomLabels from './CustomLabels/CustomLabels'
 import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
-import { useHelpScout } from '../HelpScoutBeacon/useHelpScout'
-
-const TIMEOUT_TOAST = 4000
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
@@ -103,7 +99,9 @@ function GlobalPreferences({
       ) : (
         <React.Fragment>
           <Tabs
-            items={VALUES}
+            items={VALUES.filter(
+              (_, index) => !!wrapper || index === NETWORK_INDEX
+            )}
             onChange={onNavigation}
             selected={sectionIndex}
           />
@@ -141,7 +139,7 @@ GlobalPreferences.propTypes = {
   wrapper: AragonType,
 }
 
-function useGlobalPreferences({ locator = {}, onScreenChange }) {
+function useGlobalPreferences({ locator = {}, onScreenChange, wrapper }) {
   const [sectionIndex, setSectionIndex] = useState(null)
   const [subsection, setSubsection] = useState(null)
   const handleNavigation = useCallback(
@@ -158,6 +156,10 @@ function useGlobalPreferences({ locator = {}, onScreenChange }) {
       return
     }
     const index = PATHS.findIndex(item => path.startsWith(item))
+
+    if (index !== NETWORK_INDEX && !wrapper) {
+      return
+    }
     setSectionIndex(index === -1 ? null : index)
 
     // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
@@ -165,7 +167,7 @@ function useGlobalPreferences({ locator = {}, onScreenChange }) {
 
     setSubsection(subsection)
     // Does the current path start with any of the declared route paths
-  }, [locator, sectionIndex])
+  }, [locator, sectionIndex, wrapper])
 
   return { sectionIndex, subsection, handleNavigation }
 }
@@ -207,6 +209,7 @@ function AnimatedGlobalPreferences(props) {
   const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences({
     locator: props.locator,
     onScreenChange: props.onScreenChange,
+    wrapper: props.wrapper,
   })
 
   const { below } = useViewport()
@@ -231,7 +234,7 @@ function AnimatedGlobalPreferences(props) {
             accent={theme.accent}
             surface={theme.surface}
             style={{
-              zIndex: compact ? 2 : 5,
+              zIndex: 1,
               pointerEvents: blocking ? 'auto' : 'none',
               opacity,
               transform: enterProgress.interpolate(
@@ -260,6 +263,7 @@ function AnimatedGlobalPreferences(props) {
 AnimatedGlobalPreferences.propTypes = {
   locator: PropTypes.object,
   onScreenChange: PropTypes.func.isRequired,
+  wrapper: PropTypes.object,
 }
 
 const AnimatedWrap = styled(animated.div)`
@@ -278,22 +282,4 @@ const AnimatedWrap = styled(animated.div)`
   ${breakpoint('medium', `padding-bottom:0;`)}
 `
 
-const GlobalPreferencesWithDependencies = React.memo(
-  function GlobalPreferencesWithDependencies(props) {
-    const { optedOut } = useHelpScout()
-    const { below } = useViewport()
-    return (
-      <ToastHub
-        shift={optedOut ? 0 : below('medium') ? 5.5 * GU : 6.5 * GU}
-        timeout={TIMEOUT_TOAST}
-      >
-        <AnimatedGlobalPreferences {...props} />
-      </ToastHub>
-    )
-  }
-)
-
-export { TIMEOUT_TOAST }
-export default React.memo(props => (
-  <GlobalPreferencesWithDependencies {...props} />
-))
+export default React.memo(AnimatedGlobalPreferences)

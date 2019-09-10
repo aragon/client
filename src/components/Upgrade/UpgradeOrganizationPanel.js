@@ -33,22 +33,24 @@ const REGISTRY = ['aragonpm.eth', 'https://etherscan.io/address/aragonpm.eth']
 const UpgradeOrganizationPanel = React.memo(
   ({ repos = [], opened, onClose, daoAddress, wrapper }) => {
     const theme = useTheme()
+    const knownUpgradableRepos = useMemo(
+      () => repos.filter(repo => isKnownRepo(repo.appId)),
+      [repos]
+    )
     const [currentVersions, newVersions] = useMemo(
       () =>
-        repos
-          .filter(repo => isKnownRepo(repo.appId))
-          .reduce(
-            (results, repo) => [
-              [...results[0], repo.currentVersion],
-              [...results[1], repo.latestVersion],
-            ],
-            [[], []]
-          ),
-      [repos]
+        knownUpgradableRepos.reduce(
+          (results, repo) => [
+            [...results[0], repo.currentVersion],
+            [...results[1], repo.latestVersion],
+          ],
+          [[], []]
+        ),
+      [knownUpgradableRepos]
     )
 
     const handleUpgradeAll = useCallback(async () => {
-      const upgradeIntents = repos.map(({ appId, versions }) => {
+      const upgradeIntents = knownUpgradableRepos.map(({ appId, versions }) => {
         const newContractAddress = versions[versions.length - 1].contractAddress
         return [
           daoAddress.address,
@@ -80,7 +82,7 @@ const UpgradeOrganizationPanel = React.memo(
         // The user just can't perform this action, show the signing panel's error screen
         await wrapper.performTransactionPath([])
       }
-    }, [daoAddress, onClose, repos, wrapper])
+    }, [knownUpgradableRepos, daoAddress, onClose, wrapper])
 
     return (
       <SidePanel

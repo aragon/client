@@ -9,6 +9,7 @@ import {
   RADIUS,
   textStyle,
   useTheme,
+  useViewport,
 } from '@aragon/ui'
 import IconNetwork from './IconNetwork'
 import IconCustomLabels from './IconCustomLabels'
@@ -17,6 +18,7 @@ import IconHelpAndFeedback from './IconHelpAndFeedback'
 
 function GlobalPreferencesButton({ onOpen }) {
   const theme = useTheme()
+  const { below } = useViewport()
   const [opened, setOpened] = useState(false)
   const containerRef = useRef()
 
@@ -59,7 +61,8 @@ function GlobalPreferencesButton({ onOpen }) {
       >
         <ul
           css={`
-            width: ${42 * GU}px;
+            /* Use 20px as the padding setting for popper is 10px */
+            width: ${below('medium') ? `calc(100vw - 20px)` : `${42 * GU}px`};
             padding: 0;
             margin: 0;
             list-style: none;

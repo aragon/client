@@ -33,7 +33,7 @@ function Network({ wrapper }) {
   return (
     <React.Fragment>
       <Box heading="Node settings">
-        <Label>
+        <Label theme={theme}>
           Ethereum node
           <TextInput
             value={ethNode}
@@ -69,7 +69,7 @@ function Network({ wrapper }) {
             </span>
           )}
         </Label>
-        <Label>
+        <Label theme={theme}>
           IPFS Gateway
           <TextInput
             value={ipfsGateway}
@@ -173,6 +173,7 @@ const useNetwork = wrapper => {
 }
 
 const Label = styled.label`
+  color: ${({ theme }) => theme.content};
   display: block;
   margin-bottom: ${2 * GU}px;
 `

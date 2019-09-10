@@ -20,7 +20,13 @@ function HelpAndFeedback() {
           margin-bottom: ${4 * GU}px;
         `}
       >
-        <label css="cursor: pointer">
+        <label
+          css={`
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+          `}
+        >
           <Checkbox onChange={handleOptOutChange} checked={!optedOut} />
           <span
             css={`
