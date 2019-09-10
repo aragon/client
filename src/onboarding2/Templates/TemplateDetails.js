@@ -57,11 +57,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
         tabIndex="0"
         css={`
           ${verticalMode
-            ? `
-              max-height: 90vh;
-              overflow: hidden;
-              overflow-y: auto;
-            `
+            ? ''
             : `
               display: grid;
               grid-template-columns: auto ${48 * GU}px;
