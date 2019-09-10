@@ -99,8 +99,8 @@ export const KnownOrganizations = {
         template: TEMPLATE_MEMBERSHIP,
       },
       {
-        address: '0xA4F8CDF0c0829165c6B0338E15414b015186188F',
-        domain: '1hive.aragonid.eth',
+        address: '0xe520428C232F6Da6f694b121181f907931fD2211',
+        domain: 'hive.aragonid.eth',
         name: '1Hive',
         image: onehive,
         recommended: true,
