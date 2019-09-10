@@ -235,7 +235,11 @@ function useDeploymentState(
 
   // Call tx functions in the template, one after another.
   useEffect(() => {
-    setTransactionProgress({ signed: 0, errored: -1 })
+    if (attempts === 0) {
+      setTransactionProgress({ signed: 0, errored: -1 })
+    } else {
+      setTransactionProgress(txProgress => ({ ...txProgress, errored: -1 }))
+    }
 
     if (!deployTransactions) {
       return
@@ -286,7 +290,7 @@ function useDeploymentState(
     return () => {
       cancelled = true
     }
-  }, [walletWeb3, account, applyEstimateGas, deployTransactions])
+  }, [walletWeb3, account, applyEstimateGas, deployTransactions, attempts])
 
   const transactionsStatus = useMemo(() => {
     if (!deployTransactions) {
