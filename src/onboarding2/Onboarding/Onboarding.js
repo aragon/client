@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, useTheme, BREAKPOINTS } from '@aragon/ui'
+import { useTheme, BREAKPOINTS } from '@aragon/ui'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { EthereumAddressType } from '../../prop-types'
 import { log } from '../../utils'

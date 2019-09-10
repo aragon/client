@@ -1,15 +1,6 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  GU,
-  IconConnect,
-  Link,
-  Modal,
-  textStyle,
-  useTheme,
-  useViewport,
-} from '@aragon/ui'
+import { GU, Modal, textStyle, useTheme, useViewport } from '@aragon/ui'
 import CheckDisc from '../CheckDisc/CheckDisc'
 
 function ErrorModal({ action, content, header, onClose, visible }) {
