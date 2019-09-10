@@ -262,7 +262,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
         ${below('medium') &&
           `
             position: absolute;
-            top: calc(-${DISC_BUTTON_HEIGHT}px - ${3 * GU}px);
+            top: calc(-${DISC_BUTTON_HEIGHT}px - ${2 * GU}px);
           `}
       `}
     >
