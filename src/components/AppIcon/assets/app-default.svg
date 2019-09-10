@@ -1,1 +1,11 @@
-<svg width="56" height="56" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M56 0H0v56h56V0z" fill="url(#paint0_linear)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M28.363 10.74L13.04 19.56v17.645l15.322 8.821 15.323-8.821V19.56l-15.322-8.82z" fill="url(#paint1_linear)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M28.363 46.027V10.74l15.323 8.821v17.645l-15.323 8.821z" fill="#73F0F8"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13.041 19.561l15.322-8.822 15.323 8.822-15.323 8.426-15.322-8.425z" fill="url(#paint2_linear)"/><defs><linearGradient id="paint0_linear" x1="0" y1="0" x2="56" y2="53.105" gradientUnits="userSpaceOnUse"><stop stop-color="#33BCE6"/><stop offset="1" stop-color="#48E2E5"/></linearGradient><linearGradient id="paint1_linear" x1="14.618" y1="19.282" x2="31.423" y2="43.942" gradientUnits="userSpaceOnUse"><stop stop-color="#2597B7"/><stop offset="1" stop-color="#39C5E1"/></linearGradient><linearGradient id="paint2_linear" x1="14.799" y1="19.363" x2="43.686" y2="19.363" gradientUnits="userSpaceOnUse"><stop stop-color="#3DCEE5"/><stop offset="1" stop-color="#48E2E6"/></linearGradient></defs></svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="24" height="24" fill="#30D2F3"/>
+<path d="M19 15.3383V8.66166C19 8.18888 18.7515 7.75201 18.3482 7.5156L12.6518 4.1773C12.2485 3.9409 11.7515 3.9409 11.3482 4.1773L5.65183 7.51563C5.24847 7.75204 5 8.18888 5 8.66169V15.3383C5 15.8111 5.24847 16.248 5.65183 16.4844L11.3482 19.8227C11.7515 20.0591 12.2485 20.0591 12.6518 19.8227L18.3481 16.4843C18.7515 16.248 19 15.8111 19 15.3383Z" fill="#0AC0E5"/>
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="5" y="4" width="14" height="16">
+<path d="M19 15.3383V8.66166C19 8.18888 18.7515 7.75201 18.3482 7.5156L12.6518 4.1773C12.2485 3.9409 11.7515 3.9409 11.3482 4.1773L5.65183 7.51563C5.24847 7.75204 5 8.18888 5 8.66169V15.3383C5 15.8111 5.24847 16.248 5.65183 16.4844L11.3482 19.8227C11.7515 20.0591 12.2485 20.0591 12.6518 19.8227L18.3481 16.4843C18.7515 16.248 19 15.8111 19 15.3383Z" fill="#0AC0E5"/>
+</mask>
+<g mask="url(#mask0)">
+<path d="M12 10.3333V20.6666L19.8812 17.8333L19.5528 7.16665L12 10.3333Z" fill="#3CDEFF"/>
+</g>
+<path d="M12 12L18.8254 8.00001C18.7128 7.80213 18.5499 7.63382 18.3482 7.51564L12.6518 4.1773C12.2485 3.9409 11.7515 3.9409 11.3481 4.1773L5.65181 7.51564C5.45013 7.63382 5.28714 7.80213 5.17462 8.00001L12 12Z" fill="#71E7FF"/>
+</svg>
