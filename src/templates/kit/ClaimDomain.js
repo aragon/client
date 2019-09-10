@@ -20,12 +20,16 @@ function ClaimDomain({
     setDisplayError(false)
   }, [])
 
-  const handleNext = useCallback(() => {
-    setDisplayError(domainCheckStatus === DOMAIN_ERROR)
-    if (domainCheckStatus === DOMAIN_CHECK) {
-      next({ ...data, domain })
-    }
-  }, [domain, next, data, domainCheckStatus])
+  const handleSubmit = useCallback(
+    event => {
+      event.preventDefault()
+      setDisplayError(domainCheckStatus === DOMAIN_ERROR)
+      if (domainCheckStatus === DOMAIN_CHECK) {
+        next({ ...data, domain })
+      }
+    },
+    [domain, next, data, domainCheckStatus]
+  )
 
   // focus on mount
   const handleDomainFieldRef = useCallback(ref => {
@@ -75,7 +79,7 @@ function ClaimDomain({
         nextEnabled={Boolean(domain.trim())}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
-        onNext={handleNext}
+        onNext={handleSubmit}
       />
     </form>
   )

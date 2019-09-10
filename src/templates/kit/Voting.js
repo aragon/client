@@ -103,28 +103,32 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
 
   const prevNextRef = useRef()
 
-  const handleNext = useCallback(() => {
-    const error = validationError(duration)
-    setFormError(error)
+  const handleSubmit = useCallback(
+    event => {
+      event.preventDefault()
+      const error = validationError(duration)
+      setFormError(error)
 
-    // If one of the percentage fields is focused when the form is submitted,
-    // move the focus on the next button instead.
-    if (isPercentageFieldFocused() && prevNextRef.current) {
-      prevNextRef.current.focusNext()
-      return
-    }
+      // If one of the percentage fields is focused when the form is submitted,
+      // move the focus on the next button instead.
+      if (isPercentageFieldFocused() && prevNextRef.current) {
+        prevNextRef.current.focusNext()
+        return
+      }
 
-    if (!error) {
-      next({
-        ...data,
-        voting: {
-          support: Math.floor(support),
-          quorum: Math.floor(quorum),
-          duration,
-        },
-      })
-    }
-  }, [data, next, support, quorum, duration, isPercentageFieldFocused])
+      if (!error) {
+        next({
+          ...data,
+          voting: {
+            support: Math.floor(support),
+            quorum: Math.floor(quorum),
+            duration,
+          },
+        })
+      }
+    },
+    [data, next, support, quorum, duration, isPercentageFieldFocused]
+  )
 
   return (
     <form
@@ -210,7 +214,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
           nextEnabled
           nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
           onBack={back}
-          onNext={handleNext}
+          onNext={handleSubmit}
         />
       </div>
     </form>

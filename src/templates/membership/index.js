@@ -22,7 +22,8 @@ export default {
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/membership',
-  userGuide: 'https://help.aragon.org/article/34-create-a-new-membership-organization',
+  userGuide:
+    'https://help.aragon.org/article/34-create-a-new-membership-organization',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/membership',
   registry: 'aragonpm.eth',

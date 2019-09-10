@@ -115,22 +115,26 @@ function Tokens({
     )
   }, [])
 
-  const handleNext = useCallback(() => {
-    const error = validationError(tokenName, tokenSymbol, members)
-    setFormError(error)
-    if (!error) {
-      next({
-        ...data,
-        tokens: {
-          tokenName,
-          tokenSymbol,
-          members: members.filter(
-            ([account, stake]) => isAddress(account) && stake > 0
-          ),
-        },
-      })
-    }
-  }, [data, next, tokenName, tokenSymbol, members])
+  const handleSubmit = useCallback(
+    event => {
+      event.preventDefault()
+      const error = validationError(tokenName, tokenSymbol, members)
+      setFormError(error)
+      if (!error) {
+        next({
+          ...data,
+          tokens: {
+            tokenName,
+            tokenSymbol,
+            members: members.filter(
+              ([account, stake]) => isAddress(account) && stake > 0
+            ),
+          },
+        })
+      }
+    },
+    [data, next, tokenName, tokenSymbol, members]
+  )
 
   const handleTokenNameRef = useCallback(element => {
     if (element) {
@@ -280,7 +284,7 @@ function Tokens({
         nextEnabled={!disableNext}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
-        onNext={handleNext}
+        onNext={handleSubmit}
       />
     </form>
   )
