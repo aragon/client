@@ -124,7 +124,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
         },
       })
     }
-  }, [data, next, support, quorum, duration])
+  }, [data, next, support, quorum, duration, isPercentageFieldFocused])
 
   return (
     <form
