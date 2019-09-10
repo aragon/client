@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useReducer,
   useState,
+  useRef,
 } from 'react'
 import {
   Field,
@@ -23,6 +24,13 @@ const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
 const DEFAULT_SUPPORT = 50
 const DEFAULT_QUORUM = 15
 const DEFAULT_DURATION = DAY_IN_SECONDS
+
+function validationError(duration) {
+  if (duration < 10 * MINUTE_IN_SECONDS) {
+    return 'Please ensure the vote duration is equal to or longer than 10 minutes.'
+  }
+  return null
+}
 
 function reduceFields(fields, [field, value]) {
   if (field === 'duration') {
@@ -48,6 +56,8 @@ function reduceFields(fields, [field, value]) {
 function Voting({ back, data, fields, next, screenIndex, screens }) {
   const { voting: votingData = {} } = data
 
+  const [formError, setFormError] = useState()
+
   const [{ support, quorum, duration }, updateField] = useReducer(
     reduceFields,
     {
@@ -58,33 +68,63 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
   )
 
   const handleSupportChange = useCallback(value => {
+    setFormError(null)
     updateField(['support', value])
   }, [])
 
   const handleQuorumChange = useCallback(value => {
+    setFormError(null)
     updateField(['quorum', value])
   }, [])
 
   const handleDurationChange = useCallback(value => {
+    setFormError(null)
     updateField(['duration', value])
   }, [])
 
-  const handleNext = useCallback(() => {
-    next({
-      ...data,
-      voting: {
-        support: Math.floor(support),
-        quorum: Math.floor(quorum),
-        duration,
-      },
-    })
-  }, [data, next, support, quorum, duration])
+  const supportRef = useRef()
+  const quorumRef = useRef()
 
   const handleSupportRef = useCallback(ref => {
+    supportRef.current = ref
     if (ref) {
       ref.focus()
     }
   }, [])
+
+  const isPercentageFieldFocused = useCallback(() => {
+    return (
+      (supportRef.current &&
+        supportRef.current.element === document.activeElement) ||
+      (quorumRef.current &&
+        quorumRef.current.element === document.activeElement)
+    )
+  }, [])
+
+  const prevNextRef = useRef()
+
+  const handleNext = useCallback(() => {
+    const error = validationError(duration)
+    setFormError(error)
+
+    // If one of the percentage fields is focused when the form is submitted,
+    // move the focus on the next button instead.
+    if (isPercentageFieldFocused() && prevNextRef.current) {
+      prevNextRef.current.focusNext()
+      return
+    }
+
+    if (!error) {
+      next({
+        ...data,
+        voting: {
+          support: Math.floor(support),
+          quorum: Math.floor(quorum),
+          duration,
+        },
+      })
+    }
+  }, [data, next, support, quorum, duration])
 
   return (
     <form
@@ -123,6 +163,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
         />
 
         <PercentageField
+          ref={quorumRef}
           label={
             <React.Fragment>
               Minimum approval %
@@ -140,10 +181,18 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
           onChange={handleQuorumChange}
         />
 
-        <VoteDuration
-          duration={data.duration || DEFAULT_DURATION}
-          onUpdate={handleDurationChange}
-        />
+        <VoteDuration duration={duration} onUpdate={handleDurationChange} />
+
+        {formError && (
+          <Info
+            mode="error"
+            css={`
+              margin-bottom: ${3 * GU}px;
+            `}
+          >
+            {formError}
+          </Info>
+        )}
 
         <Info
           css={`
@@ -156,6 +205,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
         </Info>
 
         <PrevNextFooter
+          ref={prevNextRef}
           backEnabled
           nextEnabled
           nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
