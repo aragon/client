@@ -115,7 +115,9 @@ function BoxProgress({ opacity, boxTransform }) {
               margin-bottom: ${2 * GU}px;
             `}
         >
-          Organizations<br/><span css="color: #8DB9D5">of the future</span>
+          Organizations
+          <br />
+          <span css="color: #8DB9D5">of the future</span>
         </h1>
         <p
           css={`
