@@ -22,8 +22,7 @@ export default {
   `,
   // longdesc: ``,
   // caseStudyUrl: 'https://aragon.org/case-study/membership',
-  // TODO: Insert proper user guide URL
-  userGuide: 'https://help.aragon.org/',
+  userGuide: 'https://help.aragon.org/article/34-create-a-new-membership-organization',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/membership',
   registry: 'aragonpm.eth',

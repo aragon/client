@@ -22,8 +22,7 @@ export default {
   `,
   // longdesc: '',
   // caseStudyUrl: 'https://aragon.org/case-study/company',
-  // TODO: Insert proper user guide URL
-  userGuide: 'https://help.aragon.org/',
+  userGuide: 'https://help.aragon.org/article/30-create-a-new-company-organization',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/master/templates/company',
   registry: 'aragonpm.eth',
