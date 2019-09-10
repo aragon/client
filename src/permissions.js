@@ -111,6 +111,9 @@ function resolveEntity(apps, address) {
   if (isBurnEntity(address)) {
     return { ...entity, type: 'burn' }
   }
+  if (isUnassignedEntity(address)) {
+    return { ...entity, type: 'unassigned' }
+  }
   const app = apps.find(app => addressesEqual(app.proxyAddress, address))
   return app ? { ...entity, app, type: 'app' } : entity
 }
