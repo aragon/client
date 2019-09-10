@@ -80,7 +80,7 @@ function OnboardingTopBar({ onHome, status }) {
               margin-right: ${1 * GU}px;
             `}
           >
-            <AccountModule />
+            <AccountModule compact />
           </div>
           <Button
             display="icon"

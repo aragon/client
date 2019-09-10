@@ -17,16 +17,16 @@ import { useAccount } from '../../account'
 
 function getNetworkName(networkId) {
   if (networkId === 'main') return 'Mainnet'
-  if (networkId === 'rinkeby') return 'Testnet (Rinkeby)'
+  if (networkId === 'rinkeby') return 'Rinkeby'
   return networkId
 }
 
-function AccountModule() {
+function AccountModule({ compact }) {
   const { connected } = useAccount()
-  return connected ? <ConnectedMode /> : <NonConnectedMode />
+  return connected ? <ConnectedMode /> : <NonConnectedMode compact={compact} />
 }
 
-function NonConnectedMode() {
+function NonConnectedMode({ compact }) {
   const { enable } = useAccount()
   return (
     <div
@@ -34,10 +34,11 @@ function NonConnectedMode() {
         display: flex;
         align-items: center;
         text-align: left;
-        padding: 0 ${2 * GU}px;
+        padding: 0 ${(compact ? 1 : 2) * GU}px;
       `}
     >
       <Button
+        size={compact ? 'small' : 'medium'}
         icon={<IconConnect />}
         label="Enable account"
         onClick={enable}
