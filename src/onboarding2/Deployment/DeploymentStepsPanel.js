@@ -8,6 +8,9 @@ function DeploymentStepsPanel({ transactionsStatus }) {
 
   // TODO: handle transaction error
   const [pending, allSuccess] = useMemo(() => {
+    if (transactionsStatus.length === 0) {
+      return [true, false]
+    }
     return [
       transactionsStatus.findIndex(({ status }) => status === 'pending'),
       transactionsStatus[transactionsStatus.length - 1].status === 'success',
