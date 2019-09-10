@@ -30,6 +30,7 @@ function WelcomeAction({
         <div
           css={`
             width: ${19 * GU}px;
+            text-align: center;
           `}
         >
           <img
