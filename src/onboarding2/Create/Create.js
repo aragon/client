@@ -230,7 +230,7 @@ function useDeploymentState(
             templateData
           )
         : null,
-    [status, templateAbi, templateAddress, template, templateData, attempts]
+    [status, templateAbi, templateAddress, template, templateData]
   )
 
   // Call tx functions in the template, one after another.
@@ -248,48 +248,52 @@ function useDeploymentState(
     let cancelled = false
     const createTransactions = async () => {
       // Only process the next transaction after the previous one was successfully mined
-      deployTransactions.reduce(async (deployPromise, { transaction }) => {
-        // Wait for the previous promise; if component has unmounted, don't progress any further
-        await deployPromise
+      deployTransactions
+        // If we're retrying, only retry from the last signed one
+        .slice(transactionProgress.signed)
+        .reduce(async (deployPromise, { transaction }) => {
+          // Wait for the previous promise; if component has unmounted, don't progress any further
+          await deployPromise
 
-        transaction = {
-          ...transaction,
-          from: account,
-        }
-        try {
-          transaction = await applyEstimateGas(transaction)
-        } catch (_) {}
-
-        if (!cancelled) {
-          try {
-            await walletWeb3.eth.sendTransaction(transaction)
-
-            if (!cancelled) {
-              setTransactionProgress(({ signed, errored }) => ({
-                signed: signed + 1,
-                errored,
-              }))
-            }
-          } catch (err) {
-            log('Failed onboarding transaction', err)
-            if (!cancelled) {
-              setTransactionProgress(({ signed, errored }) => ({
-                errored: signed,
-                signed,
-              }))
-            }
-
-            // Re-throw error to stop later transactions from being signed
-            throw err
+          transaction = {
+            ...transaction,
+            from: account,
           }
-        }
-      }, Promise.resolve())
+          try {
+            transaction = await applyEstimateGas(transaction)
+          } catch (_) {}
+
+          if (!cancelled) {
+            try {
+              await walletWeb3.eth.sendTransaction(transaction)
+
+              if (!cancelled) {
+                setTransactionProgress(({ signed, errored }) => ({
+                  signed: signed + 1,
+                  errored,
+                }))
+              }
+            } catch (err) {
+              log('Failed onboarding transaction', err)
+              if (!cancelled) {
+                setTransactionProgress(({ signed, errored }) => ({
+                  errored: signed,
+                  signed,
+                }))
+              }
+
+              // Re-throw error to stop later transactions from being signed
+              throw err
+            }
+          }
+        }, Promise.resolve())
     }
     createTransactions()
 
     return () => {
       cancelled = true
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletWeb3, account, applyEstimateGas, deployTransactions, attempts])
 
   const transactionsStatus = useMemo(() => {
@@ -465,8 +469,8 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
         }
         content={
           <p>
-            An error has occurred during the signature process. Don't worry,
-            you can try to send the transaction again.
+            An error has occurred during the signature process. Don't worry, you
+            can try to send the transaction again.
           </p>
         }
         header="Something went wrong"
