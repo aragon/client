@@ -54,8 +54,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
               font-weight: 600;
             `}
           >
-            Enable your
-            <wbr /> Ethereum provider
+            Enable your Ethereum provider
           </h1>
           <p
             css={`

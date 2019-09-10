@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, BREAKPOINTS } from '@aragon/ui'
+import { Button, useTheme, BREAKPOINTS } from '@aragon/ui'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
-import ConnectModal from '../../components/ConnectModal/ConnectModal'
 import { EthereumAddressType } from '../../prop-types'
 import { log } from '../../utils'
+import embeddedTemplates from '../../templates'
+import ConnectModal from '../../components/ConnectModal/ConnectModal'
+
 import { saveTemplateState } from '../create-utils'
 import {
   TEMPLATE_LOADING,
   TEMPLATE_AVAILABLE,
   TEMPLATE_UNAVAILABLE,
 } from '../symbols'
-import embeddedTemplates from '../../templates'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
