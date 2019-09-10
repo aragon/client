@@ -1,13 +1,15 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
+  Checkbox,
   Field,
   IconCheck,
   GU,
   Link,
   Modal,
   textStyle,
+  unselectable,
   useViewport,
   useTheme,
 } from '@aragon/ui'
@@ -19,10 +21,14 @@ import KnownAppBadge from '../../templates/kit/KnownAppBadge'
 function TemplateDetails({ template, visible, onUse, onClose }) {
   const theme = useTheme()
   const { above, below, width } = useViewport()
+  const [templateOptionalModules, setTemplateOptionalModules] = useState({})
 
   const handleUseClick = useCallback(() => {
-    onUse(template.id)
-  }, [onUse, template])
+    const selectedOptionalModules = Object.entries(templateOptionalModules)
+      .filter(([_, value]) => Boolean(value))
+      .map(([appName]) => appName)
+    onUse(template.id, selectedOptionalModules)
+  }, [onUse, template, templateOptionalModules])
 
   const handleSectionRef = useCallback(element => {
     if (element) {
@@ -180,6 +186,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                     css={`
                       display: flex;
                       align-items: center;
+                      ${unselectable}
                     `}
                   >
                     <IconCheck
@@ -200,7 +207,49 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               css={`
                 height: 150px;
               `}
-            />
+            >
+              {template.optionalModules.map(({ appName, label }, index) => (
+                <div
+                  key={index}
+                  css={`
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: ${2 * GU}px;
+
+                    & + & {
+                      margin-top: ${1.5 * GU}px;
+                    }
+                  `}
+                >
+                  <KnownAppBadge appName={appName} label={label} />
+                  <div
+                    css={`
+                      display: flex;
+                      align-items: center;
+                      ${unselectable}
+                    `}
+                  >
+                    <Checkbox
+                      checked={templateOptionalModules[appName]}
+                      onChange={() => {
+                        setTemplateOptionalModules(modules => ({
+                          ...modules,
+                          [appName]: !modules[appName],
+                        }))
+                      }}
+                      css={`
+                        margin-right: ${1.5 * GU}px;
+                        border-color: ${theme.hint};
+                        &:active {
+                          border-color: ${theme.hint};
+                        }
+                      `}
+                    />
+                    Include
+                  </div>
+                </div>
+              ))}
+            </Field>
           )}
           {verticalMode && (
             <SelectTemplateButton

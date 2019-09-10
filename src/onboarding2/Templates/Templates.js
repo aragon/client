@@ -23,10 +23,10 @@ function Templates({ onUse, templates }) {
   }, [])
 
   const handleDetailsUse = useCallback(
-    id => {
+    (id, optionalModules) => {
       setTemplateDetailsIndex(0)
       setTemplateDetailsOpened(false)
-      onUse(id)
+      onUse(id, optionalModules)
     },
     [onUse]
   )

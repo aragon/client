@@ -68,6 +68,17 @@ function useConfigureState(templates, onScreenUpdate) {
     [templates, onScreenUpdate]
   )
 
+  const selectTemplate = useCallback(
+    (templateId, optionalModules) => {
+      updateTemplateScreen(templateId, 0)
+      setTemplateData(data => ({
+        ...data,
+        optionalModules,
+      }))
+    },
+    [updateTemplateScreen]
+  )
+
   useEffect(() => {
     const {
       templateData,
@@ -136,11 +147,11 @@ function useConfigureState(templates, onScreenUpdate) {
     TemplateScreen,
     nextScreen,
     prevScreen,
+    selectTemplate,
     setTemplateData,
     template,
     templateData,
     templateScreenIndex,
-    updateTemplateScreen,
   }
 }
 
@@ -321,10 +332,10 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
     TemplateScreen,
     nextScreen,
     prevScreen,
+    selectTemplate,
     template,
     templateData,
     templateScreenIndex,
-    updateTemplateScreen,
   } = useConfigureState(templates, onScreenUpdate)
 
   const configureSteps = getConfigureSteps(status, template, templateData)
@@ -379,10 +390,10 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
   )
 
   const handleUseTemplate = useCallback(
-    id => {
-      updateTemplateScreen(id)
+    (id, optionalModules) => {
+      selectTemplate(id, optionalModules)
     },
-    [updateTemplateScreen]
+    [selectTemplate]
   )
 
   const handleTemplateNext = useCallback(data => nextScreen(data), [nextScreen])
