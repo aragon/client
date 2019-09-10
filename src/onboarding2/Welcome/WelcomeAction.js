@@ -29,9 +29,8 @@ function WelcomeAction({
       >
         <div
           css={`
-            display: flex;
-            justify-content: center;
             width: ${19 * GU}px;
+            text-align: center;
           `}
         >
           <img src={illustration} alt="" width="110" />
