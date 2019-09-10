@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, BREAKPOINTS } from '@aragon/ui'
+import throttle from 'lodash.throttle'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { log } from '../../utils'
 import embeddedTemplates from '../../templates'
@@ -176,57 +177,73 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     }
   }, [status, account])
 
+  const [solidTopBar, setSolidTopBar] = useState(false)
+
+  const updateSolidScrollBar = useCallback(
+    throttle(solid => {
+      setSolidTopBar(solid)
+    }, 50),
+    []
+  )
+
+  const handleOnBoardingScroll = useCallback(event => {
+    updateSolidScrollBar(event.target.scrollTop > 0)
+  }, [])
+
   if (status === 'none') {
     return null
   }
 
   return (
-    <div
-      css={`
-        position: relative;
-        z-index: 1;
-        background: ${theme.background};
-        height: 100vh;
-        min-width: ${BREAKPOINTS.min}px;
-        overflow-y: auto;
-      `}
-    >
-      <OnboardingTopBar onHome={goToHome} status={status} />
+    <div css="position: relative; z-index: 1">
+      <OnboardingTopBar onHome={goToHome} status={status} solid={solidTopBar} />
       <div
+        onScroll={handleOnBoardingScroll}
         css={`
           position: relative;
           z-index: 1;
-          height: 100%;
+          background: ${theme.background};
+          height: 100vh;
+          min-width: ${BREAKPOINTS.min}px;
+          overflow-y: auto;
         `}
       >
-        {(status === 'welcome' || status === 'open') && (
-          <Welcome
-            createError={requirementsError}
-            onBack={goToHome}
-            onOpen={goToOpen}
-            onOpenOrg={goToOrg}
-            onCreate={handleCreate}
-            openMode={status === 'open'}
-            selectorNetworks={selectorNetworks}
-          />
-        )}
-        {status === 'create' && Array.isArray(templates) && (
-          <Create
-            account={account}
-            onOpenOrg={goToOrg}
-            templates={templates}
-            walletWeb3={walletWeb3}
-            web3={web3}
-          />
-        )}
+        <div
+          css={`
+            position: relative;
+            z-index: 1;
+            height: 100%;
+          `}
+        >
+          {(status === 'welcome' || status === 'open') && (
+            <Welcome
+              createError={requirementsError}
+              onBack={goToHome}
+              onOpen={goToOpen}
+              onOpenOrg={goToOrg}
+              onCreate={handleCreate}
+              openMode={status === 'open'}
+              selectorNetworks={selectorNetworks}
+            />
+          )}
+          {status === 'create' && Array.isArray(templates) && (
+            <Create
+              account={account}
+              onOpenOrg={goToOrg}
+              templates={templates}
+              walletWeb3={walletWeb3}
+              web3={web3}
+            />
+          )}
+        </div>
+        <ConnectModal
+          account={account}
+          onClose={closeConnectModal}
+          visible={connectModalOpened}
+          onConnect={handleProviderConnect}
+          onConnectError={connectProviderError}
+        />
       </div>
-      <ConnectModal
-        account={account}
-        onClose={closeConnectModal}
-        visible={connectModalOpened}
-        onConnect={handleProviderConnect}
-        onConnectError={connectProviderError}
-      />
     </div>
   )
 }

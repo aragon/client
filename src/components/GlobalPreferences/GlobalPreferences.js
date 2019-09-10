@@ -79,7 +79,7 @@ function GlobalPreferences({
     (_, index) => !!wrapper || index === NETWORK_INDEX
   )
   return (
-    <Layout>
+    <Layout css="z-index: 2">
       <Close
         compact={compact}
         onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
