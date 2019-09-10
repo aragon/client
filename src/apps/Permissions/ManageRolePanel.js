@@ -179,7 +179,9 @@ class ManageRolePanel extends React.PureComponent {
     return false
   }
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault()
+
     const { newRoleManagerValue, assignEntityAddress } = this.state
     const {
       app,
@@ -282,6 +284,7 @@ class ManageRolePanel extends React.PureComponent {
         onTransitionEnd={this.handlePanelTransitionEnd}
       >
         <form
+          onSubmit={this.handleSubmit}
           css={`
             margin-top: ${3 * GU}px;
           `}
