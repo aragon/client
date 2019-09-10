@@ -15,19 +15,19 @@ import providersImage from './assets/providers.png'
 
 function ConnectModal({ account, onClose, onConnect, visible }) {
   const theme = useTheme()
-  const { above, below } = useViewport()
+  const { below } = useViewport()
+  const smallMode = below('medium')
 
-  const modalWidth = useCallback(({ width }) => {
-    return Math.min(55 * GU, width - 4 * GU)
-  }, [])
+  const modalWidth = useCallback(
+    ({ width }) => Math.min(55 * GU, width - 4 * GU),
+    []
+  )
 
   useEffect(() => {
     if (account) {
       onConnect()
     }
   }, [account, onConnect])
-
-  const smallMode = below('medium')
 
   return (
     <Modal visible={visible} width={modalWidth} onClose={onClose}>
