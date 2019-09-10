@@ -17,7 +17,7 @@ import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadg
 import { useAccount } from '../../account'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
-import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
+import { AppType, DaoAddressType } from '../../prop-types'
 import { getProviderString } from '../../ethereum-providers'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
