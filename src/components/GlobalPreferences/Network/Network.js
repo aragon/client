@@ -31,6 +31,7 @@ function Network({ wrapper }) {
   } = useNetwork(wrapper)
   const theme = useTheme()
   const { layoutName } = useLayout()
+  const compact = layoutName === 'small'
 
   return (
     <React.Fragment>
@@ -83,11 +84,7 @@ function Network({ wrapper }) {
             `}
           />
         </Label>
-        <Button
-          mode="strong"
-          onClick={handleNetworkChange}
-          wide={layoutName === 'small'}
-        >
+        <Button mode="strong" onClick={handleNetworkChange} wide={compact}>
           Save changes
         </Button>
       </Box>
@@ -107,7 +104,7 @@ function Network({ wrapper }) {
             margin-bottom: ${2 * GU}px;
           `}
           onClick={handleClearCache}
-          wide={layoutName === 'small'}
+          wide={compact}
         >
           Clear application cache
         </Button>
