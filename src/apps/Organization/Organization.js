@@ -14,15 +14,15 @@ import {
   useTheme,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
+import { useAccount } from '../../account'
 import { appIds, network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
-import { AppType, DaoAddressType, EthereumAddressType } from '../../prop-types'
+import { AppType, DaoAddressType } from '../../prop-types'
 import { getProviderString } from '../../ethereum-providers'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
 
 const Organization = React.memo(function Organization({
-  account,
   apps,
   appsLoading,
   canUpgradeOrg,
@@ -35,6 +35,7 @@ const Organization = React.memo(function Organization({
 }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
+  const { address: account } = useAccount()
 
   const handleDepositTestTokens = useCallback(() => {
     const finance = apps.find(app => app.appId === appIds.Finance)
@@ -253,10 +254,9 @@ const Organization = React.memo(function Organization({
 })
 
 Organization.propTypes = {
-  account: EthereumAddressType,
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
-  canUpgradeOrg: PropTypes.bool.isRequired,
+  canUpgradeOrg: PropTypes.bool,
   daoAddress: DaoAddressType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onShowOrgVersionDetails: PropTypes.func.isRequired,

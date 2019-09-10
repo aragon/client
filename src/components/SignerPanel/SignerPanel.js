@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { SidePanel, GU } from '@aragon/ui'
@@ -20,6 +20,7 @@ import {
   isConfirmingSignature,
   isSignatureSuccess,
 } from './signer-statuses'
+import { useAccount } from '../../account'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { network } from '../../environment'
 import { AppType, EthereumAddressType } from '../../prop-types'
@@ -361,7 +362,6 @@ class SignerPanel extends React.PureComponent {
                         <ValidateWalletWeb3
                           intent={intent}
                           isTransaction={isTransaction}
-                          hasAccount={Boolean(account)}
                           hasWeb3={Boolean(getInjectedProvider())}
                           networkType={network.type}
                           onClose={this.handleSignerClose}
@@ -451,10 +451,12 @@ export default function(props) {
     setActivityConfirmed,
     setActivityFailed,
     setActivityNonce,
-  } = React.useContext(ActivityContext)
+  } = useContext(ActivityContext)
+  const { address: account } = useAccount()
   return (
     <SignerPanel
       {...props}
+      account={account}
       addTransactionActivity={addTransactionActivity}
       setActivityConfirmed={setActivityConfirmed}
       setActivityFailed={setActivityFailed}

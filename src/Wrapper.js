@@ -19,7 +19,6 @@ import {
   AragonType,
   DaoAddressType,
   DaoStatusType,
-  EthereumAddressType,
   RepoType,
 } from './prop-types'
 import { getAppPath } from './routing'
@@ -35,7 +34,6 @@ const OCTOBER_1ST_2019 = new Date('October 1 2019 00:00').getTime()
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
-    account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
     canUpgradeOrg: PropTypes.bool,
@@ -61,7 +59,6 @@ class Wrapper extends React.PureComponent {
   }
 
   static defaultProps = {
-    account: '',
     connected: false,
     transactionBag: null,
     signatureBag: null,
@@ -249,7 +246,6 @@ class Wrapper extends React.PureComponent {
 
   render() {
     const {
-      account,
       apps,
       appsStatus,
       canUpgradeOrg,
@@ -295,7 +291,6 @@ class Wrapper extends React.PureComponent {
         </BannerWrapper>
 
         <OrgView
-          account={account}
           activeInstanceId={locator.instanceId}
           appInstanceGroups={this.getAppInstancesGroups(apps)}
           apps={apps}
@@ -321,7 +316,6 @@ class Wrapper extends React.PureComponent {
           </AppLoader>
 
           <SignerPanel
-            account={account}
             apps={apps}
             dao={locator.dao}
             onRequestEnable={onRequestEnable}
@@ -355,7 +349,6 @@ class Wrapper extends React.PureComponent {
   }
   renderApp(instanceId, { params, localPath }) {
     const {
-      account,
       apps,
       appsStatus,
       canUpgradeOrg,
@@ -418,7 +411,6 @@ class Wrapper extends React.PureComponent {
       return (
         <AppInternal>
           <Organization
-            account={account}
             apps={apps}
             appsLoading={appsLoading}
             canUpgradeOrg={canUpgradeOrg}
