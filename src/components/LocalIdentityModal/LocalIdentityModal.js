@@ -4,34 +4,28 @@ import styled from 'styled-components'
 import {
   Button,
   EscapeOutside,
+  Modal,
   TextInput,
   breakpoint,
   textStyle,
   useTheme,
 } from '@aragon/ui'
-import { ModalContext } from '../ModalManager/ModalManager'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
 import { EthereumAddressType } from '../../prop-types'
 
 const LocalIdentityModal = React.memo(
   ({ opened, address, label, onCancel, onSave }) => {
-    const { showModal, hideModal } = React.useContext(ModalContext)
-
-    const modalProps = React.useMemo(
-      () => ({ address, label, onCancel, onSave }),
-      [address, label, onCancel, onSave]
+    return (
+      <Modal visible={opened} onClose={onCancel}>
+        <LocalModal
+          address={address}
+          label={label}
+          onCancel={onCancel}
+          onSave={onSave}
+        />
+      </Modal>
     )
-
-    React.useEffect(() => {
-      if (opened) {
-        showModal(Modal, modalProps)
-      } else {
-        hideModal()
-      }
-    }, [opened, modalProps, showModal, hideModal])
-
-    return null
   }
 )
 
@@ -43,7 +37,7 @@ LocalIdentityModal.propTypes = {
   onSave: PropTypes.func.isRequired,
 }
 
-const Modal = ({ address, label, onCancel, onSave }) => {
+const LocalModal = ({ address, label, onCancel, onSave }) => {
   const [action, setAction] = React.useState(null)
   const [error, setError] = React.useState(null)
   const labelInput = React.useRef(null)
@@ -87,7 +81,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
       <Wrap>
         <h3
           css={`
-            ${textStyle('title4')}
+            ${textStyle('title4')};
           `}
         >
           {action} custom label
@@ -118,7 +112,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
   )
 }
 
-Modal.propTypes = {
+LocalModal.propTypes = {
   address: EthereumAddressType,
   label: PropTypes.string,
   onCancel: PropTypes.func,
@@ -132,18 +126,15 @@ const Error = styled.div`
 
 const Wrap = styled.div`
   background: #fff;
-  padding: 16px;
   max-width: calc(100vw - 32px);
 
   ${breakpoint(
     'medium',
     `
-      padding: 16px 32px;
-      max-width: 50vw;
       /* wide identity badge + paddings */
-      min-width: ${400 + 32 * 2}px;
+      min-width: ${400 + 16 * 2}px;
     `
-  )}
+  )};
 `
 
 const Description = styled.p`
@@ -161,8 +152,7 @@ function Label(props) {
         display: block;
         margin: 20px 0;
         color: ${theme.surfaceContentSecondary};
-        ${textStyle('label2')}
-
+        ${textStyle('label2')};
         & > div {
           margin: 5px 0;
         }
@@ -183,7 +173,7 @@ const Controls = styled.div`
       display: flex;
       justify-content: flex-end;
     `
-  )}
+  )};
 `
 
 const StyledSaveButton = styled(Button)`
@@ -192,7 +182,7 @@ const StyledSaveButton = styled(Button)`
     `
       margin-left: 16px;
     `
-  )}
+  )};
 `
 
 export default LocalIdentityModal
