@@ -129,7 +129,7 @@ export default function NotificationsLogin({
             `}
             onClick={handleLogin}
             icon={<IconMail />}
-            label="Activate"
+            label="Sign in"
           />
           {apiError && (
             <p
