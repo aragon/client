@@ -15,6 +15,7 @@ import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { deleteSubscriptions } from './notification-service-api'
 import SubscriptionFilters from './SubscriptionFilters'
 import { DeleteSubscriptionConfirmationModal } from './NotificationModals'
+import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
 
 /**
  * Filters the subscriptions based on the search criteria
@@ -223,6 +224,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
               selectedOrganization={selectedOrganization}
               onOrganizationChange={onOrganizationChange}
               apps={subscriptionApps}
+              appsFull={apps}
               selectedApp={selectedApp}
               onAppChange={onAppChange}
               events={events}
@@ -239,12 +241,22 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
           { appName, contractAddress, ensName, eventName },
           index,
           { selected, mode }
-        ) => [
-          <Label>{ensName}</Label>,
-          <Label>{appName}</Label>,
-          <LocalIdentityBadge entity={contractAddress} />,
-          <Label>{eventName}</Label>,
-        ]}
+        ) => {
+          const appLabel = (() => {
+            const app = apps.find(a => a.contractAddress === contractAddress)
+            if (!app) {
+              return appName
+            }
+            return <LocalLabelAppBadge app={app} apps={apps} />
+          })()
+
+          return [
+            <Label>{ensName}</Label>,
+            <Label>{appLabel} </Label>,
+            <LocalIdentityBadge entity={contractAddress} />,
+            <Label>{eventName}</Label>,
+          ]
+        }}
       />
       <DeleteSubscriptionConfirmationModal
         visible={deleteModalOpened}

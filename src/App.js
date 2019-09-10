@@ -472,7 +472,7 @@ class App extends React.Component {
                             <GlobalPreferences
                               locator={locator}
                               wrapper={wrapper}
-                              apps={apps}
+                              apps={appsWithIdentifiers}
                               onScreenChange={this.openPreferences}
                               onClose={this.closePreferences}
                             />
