@@ -95,7 +95,7 @@
     "build:ropsten": "cross-env REACT_APP_ETH_NETWORK_TYPE=ropsten npm run build",
     "lint": "eslint ./src",
     "test": "npm run lint",
-    "now-build": "cross-env REACT_APP_ASSET_BRIDGE=preview npm run build -- build/rinkeby",
+    "now-build": "npm run build:mainnet -- build && npm run build -- build/rinkeby",
     "publish:major": "node scripts/publish major --only-content --files build/",
     "publish:minor": "node scripts/publish minor --only-content --files build/",
     "publish:patch": "node scripts/publish patch --only-content --files build/",
