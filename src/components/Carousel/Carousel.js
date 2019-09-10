@@ -111,15 +111,24 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
       setX({
         x: updatedX,
         drag: delta[0] !== 0,
-        immediate: false, // TODO: keep going until we decelerate enough, then stick to an item
+        immediate: true, // TODO: keep going until we decelerate enough, then stick to an item
       })
     } else {
+      let target = selected
+      if (Math.abs(delta[0]) > itemWidth / 2) {
+        if (delta[0] > 0) {
+          target = Math.max(0, selected - 1)
+        } else {
+          target = Math.min(selected + 1, items.length - 1)
+        }
+      }
+
       setX({
-        x: xFromItem(selected),
+        x: xFromItem(target),
         drag: false,
         immediate: false,
       })
-      setSelected(itemFromX(updatedX))
+      setSelected(target)
     }
   })
 
@@ -160,13 +169,13 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
         {items.map((item, i) => (
           <AnimatedDiv
             key={i}
-            style={{
-              opacity: drag.interpolate(drag =>
-                drag || (i >= selected && i < selected + visibleItems)
-                  ? 1
-                  : 0.25
-              ),
-            }}
+            // style={{
+            //   opacity: drag.interpolate(drag =>
+            //     drag || (i >= selected && i < selected + visibleItems)
+            //       ? 1
+            //       : 0.25
+            //   ),
+            // }}
             css={`
               flex-grow: 0;
               flex-shrink: 0;
