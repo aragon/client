@@ -5,11 +5,12 @@ const which = require('which')
 
 try {
   which.sync('aragon')
-} catch {
+} catch (err) {
   console.log('Publishing requires @aragon/cli to be locally installed.')
   console.log(
     'Please do an `npm install -g @aragon/cli` and run this command again.'
   )
+  console.log(err)
   return
 }
 
