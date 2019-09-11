@@ -67,7 +67,7 @@ const TransactionProgress = React.memo(function TransactionProgress({
             {(showTimer || showConfirmed) && (
               <TimeTag
                 date={estimate}
-                label={showConfirmed && 'confirmed'}
+                label={showConfirmed ? 'confirmed' : null}
                 css={`
                   margin-left: ${2 * GU}px;
                 `}
