@@ -85,7 +85,7 @@ highlights['latest'] = [
   {
     title: {
       small: null,
-      large: 'Beter financial visibility',
+      large: 'Better financial visibility',
     },
     description: {
       small: null,
