@@ -5,10 +5,11 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import PropTypes from 'prop-types'
 import { Field, GU, Slider, TextInput, textStyle, useTheme } from '@aragon/ui'
 
 const PercentageField = React.forwardRef(function PercentageField(
-  { label = 'Percentage', value, onChange },
+  { label, value, onChange },
   ref
 ) {
   const theme = useTheme()
@@ -114,5 +115,15 @@ const PercentageField = React.forwardRef(function PercentageField(
     </Field>
   )
 })
+
+PercentageField.defaultProps = {
+  label: 'Percentage',
+}
+
+PercentageField.propTypes = {
+  label: PropTypes.node,
+  value: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+}
 
 export default PercentageField

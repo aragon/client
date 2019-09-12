@@ -6,6 +6,7 @@ import React, {
   useState,
   useRef,
 } from 'react'
+import PropTypes from 'prop-types'
 import {
   Field,
   GU,
@@ -15,7 +16,7 @@ import {
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { Header, PercentageField, Navigation } from '..'
+import { Header, PercentageField, Navigation, ScreenPropsType } from '..'
 
 const MINUTE_IN_SECONDS = 60
 const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
@@ -53,8 +54,8 @@ function reduceFields(fields, [field, value]) {
   return fields
 }
 
-function Voting({
-  dataKey = 'voting',
+function VotingScreen({
+  dataKey,
   screenProps: { back, data, next, screenIndex, screens },
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
@@ -216,6 +217,15 @@ function Voting({
   )
 }
 
+VotingScreen.propTypes = {
+  dataKey: PropTypes.string,
+  screenProps: ScreenPropsType.isRequired,
+}
+
+VotingScreen.defaultProps = {
+  dataKey: 'voting',
+}
+
 function VoteDuration({ duration = 0, onUpdate }) {
   const theme = useTheme()
   const { above } = useViewport()
@@ -343,6 +353,15 @@ function VoteDuration({ duration = 0, onUpdate }) {
   )
 }
 
+VoteDuration.propTypes = {
+  duration: PropTypes.number,
+  onUpdate: PropTypes.func.isRequired,
+}
+
+VoteDuration.defaultProps = {
+  duration: 0,
+}
+
 function formatDuration(duration) {
   const units = [DAY_IN_SECONDS, HOUR_IN_SECONDS, MINUTE_IN_SECONDS]
 
@@ -380,5 +399,5 @@ function formatReviewFields(screenData) {
   ]
 }
 
-Voting.formatReviewFields = formatReviewFields
-export default Voting
+VotingScreen.formatReviewFields = formatReviewFields
+export default VotingScreen
