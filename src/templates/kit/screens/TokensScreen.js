@@ -188,11 +188,7 @@ function Tokens({
         justify-content: center;
       `}
     >
-      <div
-        css={`
-          max-width: ${82 * GU}px;
-        `}
-      >
+      <div>
         <Header
           title="Configure template"
           subtitle="Choose your Tokens app settings below."
@@ -249,45 +245,45 @@ function Tokens({
             )}
           </Field>
         </div>
-        <Field
-          label={
-            <div
-              css={`
-                width: 100%;
-                ${fieldsLayout}
-              `}
-            >
-              <div>Tokenholders</div>
-              {!fixedStake && <div>Balances</div>}
-            </div>
-          }
-        >
-          <div>
-            {members.map((member, index) => (
-              <MemberField
-                key={index}
-                index={index}
-                member={member}
-                onRemove={removeMember}
-                hideRemoveButton={hideRemoveButton}
-                onUpdate={updateMember}
-                displayStake={!fixedStake}
-              />
-            ))}
-          </div>
-          <Button
-            icon={
-              <IconPlus
-                css={`
-                  color: ${theme.accent};
-                `}
-              />
-            }
-            label="Add more"
-            onClick={addMember}
-          />
-        </Field>
       </div>
+      <Field
+        label={
+          <div
+            css={`
+              width: 100%;
+              ${fieldsLayout}
+            `}
+          >
+            <div>Tokenholders</div>
+            {!fixedStake && <div>Balances</div>}
+          </div>
+        }
+      >
+        <div ref={membersRef}>
+          {members.map((member, index) => (
+            <MemberField
+              key={index}
+              index={index}
+              member={member}
+              onRemove={removeMember}
+              hideRemoveButton={hideRemoveButton}
+              onUpdate={updateMember}
+              displayStake={!fixedStake}
+            />
+          ))}
+        </div>
+        <Button
+          icon={
+            <IconPlus
+              css={`
+                color: ${theme.accent};
+              `}
+            />
+          }
+          label="Add more"
+          onClick={addMember}
+        />
+      </Field>
 
       {formError && (
         <Info

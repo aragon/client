@@ -139,85 +139,79 @@ function Voting({
         justify-content: center;
       `}
     >
-      <div
-        css={`
-          max-width: ${82 * GU}px;
-        `}
-      >
-        <Header
-          title="Configure template"
-          subtitle="Choose your Voting app settings below."
-        />
+      <Header
+        title="Configure template"
+        subtitle="Choose your Voting app settings below."
+      />
 
-        <PercentageField
-          ref={handleSupportRef}
-          label={
-            <React.Fragment>
-              Support
-              <Help hint="What’s the support?">
-                <strong>Support</strong> is the percentage of votes on a
-                proposal that the total support must be greater than for the
-                proposal to be approved. For example, if “Support” is set to
-                51%, then more than 51% of the votes on a proposal must vote
-                “Yes” for the proposal to pass.
-              </Help>
-            </React.Fragment>
-          }
-          value={support}
-          onChange={handleSupportChange}
-        />
+      <PercentageField
+        ref={handleSupportRef}
+        label={
+          <React.Fragment>
+            Support
+            <Help hint="What’s the support?">
+              <strong>Support</strong> is the percentage of votes on a proposal
+              that the total support must be greater than for the proposal to be
+              approved. For example, if “Support” is set to 51%, then more than
+              51% of the votes on a proposal must vote “Yes” for the proposal to
+              pass.
+            </Help>
+          </React.Fragment>
+        }
+        value={support}
+        onChange={handleSupportChange}
+      />
 
-        <PercentageField
-          ref={quorumRef}
-          label={
-            <React.Fragment>
-              Minimum approval %
-              <Help hint="What’s the minimum approval?">
-                <strong>Minimum Approval</strong> is the percentage of the total
-                token supply that support for a proposal must be greater than
-                for the proposal to be considered valid. For example, if the
-                “Minimum Approval” is set to 20%, then more than 20% of the
-                outstanding token supply must vote to approve a proposal for the
-                vote to be considered valid.
-              </Help>
-            </React.Fragment>
-          }
-          value={quorum}
-          onChange={handleQuorumChange}
-        />
+      <PercentageField
+        ref={quorumRef}
+        label={
+          <React.Fragment>
+            Minimum approval %
+            <Help hint="What’s the minimum approval?">
+              <strong>Minimum Approval</strong> is the percentage of the total
+              token supply that support for a proposal must be greater than for
+              the proposal to be considered valid. For example, if the “Minimum
+              Approval” is set to 20%, then more than 20% of the outstanding
+              token supply must vote to approve a proposal for the vote to be
+              considered valid.
+            </Help>
+          </React.Fragment>
+        }
+        value={quorum}
+        onChange={handleQuorumChange}
+      />
 
-        <VoteDuration duration={duration} onUpdate={handleDurationChange} />
+      <VoteDuration duration={duration} onUpdate={handleDurationChange} />
 
-        {formError && (
-          <Info
-            mode="error"
-            css={`
-              margin-bottom: ${3 * GU}px;
-            `}
-          >
-            {formError}
-          </Info>
-        )}
-
+      {formError && (
         <Info
+          mode="error"
           css={`
             margin-bottom: ${3 * GU}px;
           `}
         >
-          The support and minimum approval thresholds are strict requirements,
-          such that votes will only pass if they achieve approval percentages
-          greater than these thresholds.
+          {formError}
         </Info>
+      )}
 
-        <Navigation
-          ref={prevNextRef}
-          backEnabled
-          nextEnabled
-          nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
-          onBack={back}
-          onNext={handleSubmit}
-        />
-      </div>
+      <Info
+        css={`
+          margin-bottom: ${3 * GU}px;
+        `}
+      >
+        The support and minimum approval thresholds are strict requirements,
+        such that votes will only pass if they achieve approval percentages
+        greater than these thresholds.
+      </Info>
+
+      <Navigation
+        ref={prevNextRef}
+        backEnabled
+        nextEnabled
+        nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
+        onBack={back}
+        onNext={handleSubmit}
+      />
     </form>
   )
 }
