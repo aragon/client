@@ -17,7 +17,7 @@ export default {
   header,
   icon,
   description: `
-    Use non-transferrable tokens to represent reputation. Decisions are made
+    Use non-transferable tokens to represent reputation. Decisions are made
     using reputation-weighted voting.
   `,
   // longdesc: ``,
