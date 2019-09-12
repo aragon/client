@@ -1,10 +1,11 @@
 import React, { useCallback, useImperativeHandle, useRef } from 'react'
+import PropTypes from 'prop-types'
 import { Field, GU, TextInput, LoadingRing, useTheme } from '@aragon/ui'
 import CheckDisc from '../CheckDisc/CheckDisc'
 import {
   DOMAIN_CHECK,
-  DOMAIN_LOADING,
   DOMAIN_ERROR,
+  DOMAIN_LOADING,
   DOMAIN_NONE,
 } from '../../check-domain'
 
@@ -18,14 +19,14 @@ function filterSubdomain(subdomain, detectFullDomains) {
 
 const DomainField = React.forwardRef(function DomainField(
   {
+    detectFullDomains = false,
     domainEnd = '.aragonid.eth',
+    focusRef,
     label = 'Name of the organization',
     onChange,
     placeholder = 'Type an organization name',
     status = DOMAIN_CHECK,
     value,
-    detectFullDomains = false,
-    focusRef,
     ...props
   },
   ref
@@ -118,5 +119,29 @@ const DomainField = React.forwardRef(function DomainField(
     </div>
   )
 })
+
+DomainField.propTypes = {
+  detectFullDomains: PropTypes.bool,
+  domainEnd: PropTypes.string,
+  focusRef: PropTypes.array,
+  label: PropTypes.node,
+  onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  status: PropTypes.oneOf([
+    DOMAIN_CHECK,
+    DOMAIN_ERROR,
+    DOMAIN_LOADING,
+    DOMAIN_NONE,
+  ]),
+  value: PropTypes.string.isRequired,
+}
+
+DomainField.defaultProps = {
+  detectFullDomains: false,
+  domainEnd: '.aragonid.eth',
+  label: 'Name of the organization',
+  placeholder: 'Type an organization name',
+  status: DOMAIN_CHECK,
+}
 
 export default DomainField
