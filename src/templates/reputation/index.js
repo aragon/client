@@ -2,7 +2,13 @@
 import React from 'react'
 import BN from 'bn.js'
 import { network } from '../../environment'
-import { ClaimDomain, KnownAppBadge, Review, Tokens, Voting } from '../kit'
+import {
+  ClaimDomainScreen,
+  KnownAppBadge,
+  ReviewScreen,
+  TokensScreen,
+  VotingScreen,
+} from '../kit'
 
 import header from './header.svg'
 import icon from './icon.svg'
@@ -20,8 +26,6 @@ export default {
     Use non-transferrable tokens to represent reputation. Decisions are made
     using reputation-weighted voting.
   `,
-  // longdesc: ``,
-  // caseStudyUrl: 'https://aragon.org/case-study/reputation',
   userGuide:
     'https://help.aragon.org/article/32-create-a-new-reputation-organization',
   sourceCodeUrl:
@@ -34,42 +38,46 @@ export default {
   ],
   optionalModules: [{ appName: 'agent.aragonpm.eth', label: 'Agent' }],
   screens: [
-    [data => completeDomain(data.domain) || 'Claim domain', ClaimDomain],
-    ['Configure template', Voting],
-    ['Configure template', Tokens],
+    [
+      data => completeDomain(data.domain) || 'Claim domain',
+      props => <ClaimDomainScreen screenProps={props} />,
+    ],
+    ['Configure template', props => <VotingScreen screenProps={props} />],
+    ['Configure template', props => <TokensScreen screenProps={props} />],
     [
       'Review information',
-      ({ back, data, next }) => (
-        <Review
-          back={back}
-          data={data}
-          next={next}
-          items={[
-            {
-              label: 'General info',
-              fields: [
-                ['Organization template', 'Reputation'],
-                ['Name', completeDomain(data.domain)],
-              ],
-            },
-            {
-              label: (
-                <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
-              ),
-              fields: Voting.formatReviewFields(data.voting),
-            },
-            {
-              label: (
-                <KnownAppBadge
-                  appName="token-manager.aragonpm.eth"
-                  label="Tokens"
-                />
-              ),
-              fields: Tokens.formatReviewFields(data.tokens),
-            },
-          ]}
-        />
-      ),
+      props => {
+        const { domain, voting, tokens } = props.data
+        return (
+          <ReviewScreen
+            screenProps={props}
+            items={[
+              {
+                label: 'General info',
+                fields: [
+                  ['Organization template', 'Reputation'],
+                  ['Name', completeDomain(domain)],
+                ],
+              },
+              {
+                label: (
+                  <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
+                ),
+                fields: VotingScreen.formatReviewFields(voting),
+              },
+              {
+                label: (
+                  <KnownAppBadge
+                    appName="token-manager.aragonpm.eth"
+                    label="Tokens"
+                  />
+                ),
+                fields: TokensScreen.formatReviewFields(tokens),
+              },
+            ]}
+          />
+        )
+      },
     ],
   ],
   prepareTransactions(createTx, data) {

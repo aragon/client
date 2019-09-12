@@ -1,17 +1,26 @@
 import React, { useCallback, useState } from 'react'
 import { Info, GU, Link } from '@aragon/ui'
-import { useCheckDomain, DOMAIN_CHECK, DOMAIN_ERROR } from '../../check-domain'
-import { DomainField, Header, PrevNextFooter } from '.'
+import {
+  useCheckDomain,
+  DOMAIN_CHECK,
+  DOMAIN_ERROR,
+} from '../../../check-domain'
+import { DomainField, Header, Navigation } from '..'
 
 function ClaimDomain({
-  back,
-  data,
-  next,
-  screenIndex,
-  screens,
-  screenTitle = 'Claim a name',
+  dataKey = null,
+  screenProps: {
+    back,
+    data,
+    next,
+    screenIndex,
+    screens,
+    screenTitle = 'Claim a name',
+  },
 }) {
-  const [domain, setDomain] = useState(data.domain || '')
+  const screenData = (dataKey ? data[dataKey] : data) || {}
+
+  const [domain, setDomain] = useState(screenData.domain || '')
   const [displayError, setDisplayError] = useState(false)
   const domainCheckStatus = useCheckDomain(domain, true)
 
@@ -25,7 +34,7 @@ function ClaimDomain({
       event.preventDefault()
       setDisplayError(domainCheckStatus === DOMAIN_ERROR)
       if (domainCheckStatus === DOMAIN_CHECK) {
-        next({ ...data, domain })
+        next(dataKey ? { ...data, [dataKey]: domain } : { ...data, domain })
       }
     },
     [domain, next, data, domainCheckStatus]
@@ -74,7 +83,7 @@ function ClaimDomain({
         launch your organization.
       </Info>
 
-      <PrevNextFooter
+      <Navigation
         backEnabled
         nextEnabled={Boolean(domain.trim())}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}

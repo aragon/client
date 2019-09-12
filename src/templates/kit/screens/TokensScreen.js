@@ -13,7 +13,7 @@ import {
   isAddress,
   useTheme,
 } from '@aragon/ui'
-import { Header, PrevNextFooter, IdentityBadge } from '.'
+import { Header, Navigation, IdentityBadge } from '..'
 
 function useFieldsLayout() {
   // In its own hook to be adapted on smaller views
@@ -52,14 +52,12 @@ function validationError(tokenName, tokenSymbol, members) {
 }
 
 function Tokens({
-  back,
-  data,
-  fields,
-  next,
-  screenIndex,
-  screens,
   accountStake = -1,
+  dataKey = 'tokens',
+  screenProps: { back, data, next, screenIndex, screens },
 }) {
+  const screenData = (dataKey ? data[dataKey] : data) || {}
+
   const theme = useTheme()
   const fieldsLayout = useFieldsLayout()
 
@@ -67,13 +65,12 @@ function Tokens({
 
   const fixedStake = accountStake !== -1
 
-  const { tokens: tokensData = {} } = data
-  const [tokenName, setTokenName] = useState(tokensData.tokenName || '')
-  const [tokenSymbol, setTokenSymbol] = useState(tokensData.tokenSymbol || '')
+  const [tokenName, setTokenName] = useState(screenData.tokenName || '')
+  const [tokenSymbol, setTokenSymbol] = useState(screenData.tokenSymbol || '')
 
   const [members, setMembers] = useState(
-    tokensData.members && tokensData.members.length > 0
-      ? tokensData.members
+    screenData.members && screenData.members.length > 0
+      ? screenData.members
       : [['', accountStake]]
   )
 
@@ -121,16 +118,14 @@ function Tokens({
       const error = validationError(tokenName, tokenSymbol, members)
       setFormError(error)
       if (!error) {
-        next({
-          ...data,
-          tokens: {
-            tokenName,
-            tokenSymbol,
-            members: members.filter(
-              ([account, stake]) => isAddress(account) && stake > 0
-            ),
-          },
-        })
+        const screenData = {
+          tokenName,
+          tokenSymbol,
+          members: members.filter(
+            ([account, stake]) => isAddress(account) && stake > 0
+          ),
+        }
+        next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
     [data, next, tokenName, tokenSymbol, members]
@@ -279,7 +274,7 @@ function Tokens({
         distribution of this token.
       </Info>
 
-      <PrevNextFooter
+      <Navigation
         backEnabled
         nextEnabled={!disableNext}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
@@ -395,13 +390,13 @@ function MemberField({
   )
 }
 
-function formatReviewFields(tokensData) {
+function formatReviewFields(screenData) {
   return [
     [
       'Token name & symbol',
-      `${tokensData.tokenName} (${tokensData.tokenSymbol})`,
+      `${screenData.tokenName} (${screenData.tokenSymbol})`,
     ],
-    ...tokensData.members.map(([account], i) => [
+    ...screenData.members.map(([account], i) => [
       `Tokenholder #${i + 1}`,
       <IdentityBadge entity={account} />,
     ]),

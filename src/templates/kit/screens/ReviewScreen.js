@@ -1,13 +1,18 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Accordion, GU, Info, textStyle, useTheme } from '@aragon/ui'
-import Header from '../../onboarding2/Header/Header'
-import PrevNextFooter from './PrevNextFooter'
+import {
+  Accordion,
+  GU,
+  Info,
+  KEY_ENTER,
+  textStyle,
+  useKeyDown,
+  useTheme,
+} from '@aragon/ui'
+import { Header, Navigation } from '..'
 
 function Review({
-  back,
-  data,
-  next,
+  screenProps: { back, data, next },
   items,
   screenTitle = 'Review information',
   screenSubtitle = 'Have one last look at your settings below',
@@ -18,8 +23,35 @@ function Review({
     next(data)
   }, [data, next])
 
+  const containerRef = useRef()
+  const prevNextRef = useRef()
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.focus()
+    }
+  }, [])
+
+  useKeyDown(KEY_ENTER, () => {
+    // Don’t focus too early or the button will get clicked
+    setTimeout(() => {
+      if (
+        document.activeElement === containerRef.current &&
+        prevNextRef.current
+      ) {
+        prevNextRef.current.focusNext()
+      }
+    }, 0)
+  })
+
   return (
-    <React.Fragment>
+    <div
+      ref={containerRef}
+      tabIndex="0"
+      css={`
+        outline: 0;
+      `}
+    >
       <Header title={screenTitle} subtitle={screenSubtitle} />
 
       <Accordion
@@ -71,20 +103,19 @@ function Review({
         organization.
       </Info>
 
-      <PrevNextFooter
+      <Navigation
+        ref={prevNextRef}
         backEnabled
         nextEnabled
         nextLabel="Launch your organization"
         onBack={back}
         onNext={handleNext}
       />
-    </React.Fragment>
+    </div>
   )
 }
 
 Review.propTypes = {
-  back: PropTypes.func.isRequired,
-  next: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.node.isRequired,
