@@ -11,7 +11,6 @@ import actionCreate from './assets/action-create.png'
 import actionOpen from './assets/action-open.png'
 
 function Welcome({
-  account,
   createError,
   onBack,
   onCreate,
@@ -108,6 +107,7 @@ function Welcome({
 }
 
 Welcome.propTypes = {
+  createError: PropTypes.array.isRequired,
   onBack: PropTypes.func.isRequired,
   onOpen: PropTypes.func.isRequired,
   onOpenOrg: PropTypes.func.isRequired,
@@ -138,6 +138,10 @@ function CreateSubtitle({ error }) {
     )
   }
   return 'Start your organization with Aragon'
+}
+
+CreateSubtitle.propTypes = {
+  error: PropTypes.array.isRequired,
 }
 
 export default Welcome

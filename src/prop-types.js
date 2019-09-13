@@ -213,19 +213,28 @@ export const EthereumProviderType = PropTypes.shape({
 })
 
 // see templates/
+const OrgTemplateModuleType = PropTypes.shape({
+  appName: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+})
 export const OrgTemplateType = PropTypes.shape({
   caseStudyUrl: PropTypes.string,
-  userGuide: PropTypes.string,
   description: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
   header: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  longdesc: PropTypes.string,
-  modules: PropTypes.array,
+  longDesc: PropTypes.string,
+  modules: PropTypes.arrayOf(OrgTemplateModuleType.isRequired),
   name: PropTypes.string.isRequired,
-  optionalModules: PropTypes.array,
-  prepareTransactions: PropTypes.func.isRequired,
+  optionalModules: PropTypes.arrayOf(OrgTemplateModuleType.isRequired),
+  prepareTransactions: PropTypes.func,
   registry: PropTypes.string,
-  screens: PropTypes.array.isRequired,
+  screens: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired
+    )
+  ),
   sourceCodeUrl: PropTypes.string,
+  userGuideUrl: PropTypes.string,
 })

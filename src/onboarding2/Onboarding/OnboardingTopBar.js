@@ -100,6 +100,8 @@ function OnboardingTopBar({ onHome, status, solid }) {
 
 OnboardingTopBar.propTypes = {
   onHome: PropTypes.func.isRequired,
+  status: PropTypes.string.isRequired,
+  solid: PropTypes.bool,
 }
 
 export default OnboardingTopBar

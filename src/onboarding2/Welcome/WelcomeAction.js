@@ -69,10 +69,11 @@ function WelcomeAction({
 }
 
 WelcomeAction.propTypes = {
+  hasError: PropTypes.bool,
   illustration: PropTypes.node.isRequired,
-  title: PropTypes.node.isRequired,
-  subtitle: PropTypes.node,
   onActivate: PropTypes.func.isRequired,
+  subtitle: PropTypes.node,
+  title: PropTypes.node.isRequired,
 }
 
 export default WelcomeAction

@@ -11,9 +11,6 @@ export default {
     Initialize a transparent and accountable crowdfunding campaign for your
     organization.
   `,
-  userGuide: 'https://help.aragon.org/',
+  userGuideUrl: 'https://help.aragon.org/',
   registry: 'aragonpm.eth',
-  modules: [],
-  screens: [],
-  prepareTransactions: () => [],
 }

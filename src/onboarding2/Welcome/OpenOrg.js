@@ -117,6 +117,7 @@ function OpenOrg({ onOpenOrg, onBack }) {
 
 OpenOrg.propTypes = {
   onBack: PropTypes.func.isRequired,
+  onOpenOrg: PropTypes.func.isRequired,
 }
 
 export default OpenOrg

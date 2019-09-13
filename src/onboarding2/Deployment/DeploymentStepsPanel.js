@@ -73,6 +73,8 @@ function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
 }
 
 DeploymentStepsPanel.propTypes = {
+  allSuccess: PropTypes.bool.isRequired,
+  pending: PropTypes.number.isRequired,
   transactionsStatus: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,

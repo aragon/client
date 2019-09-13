@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   GU,
@@ -19,6 +20,14 @@ import allDoneImg from './assets/illustration-all-done.png'
 
 const AnimDiv = animated.div
 const AnimSection = animated.section
+
+const TransactionsStatusType = PropTypes.arrayOf(
+  PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    status: PropTypes.oneOf(['error', 'pending', 'success', 'upcoming'])
+      .isRequired,
+  })
+)
 
 function BoxBase({
   children,
@@ -73,6 +82,14 @@ function BoxBase({
       </AnimSection>
     </AnimDiv>
   )
+}
+
+BoxBase.propTypes = {
+  children: PropTypes.node.isRequired,
+  flexDirection: PropTypes.oneOf(['column', 'row']),
+  background: PropTypes.string.isRequired,
+  opacity: PropTypes.object.isRequired,
+  boxTransform: PropTypes.object.isRequired,
 }
 
 function BoxProgress({
@@ -177,6 +194,14 @@ function BoxProgress({
   )
 }
 
+BoxProgress.propTypes = {
+  allSuccess: PropTypes.bool.isRequired,
+  boxTransform: PropTypes.object.isRequired,
+  opacity: PropTypes.object.isRequired,
+  pending: PropTypes.number.isRequired,
+  transactionsStatus: TransactionsStatusType.isRequired,
+}
+
 function BoxReady({ onOpenOrg, opacity, boxTransform }) {
   const { below } = useViewport()
   const fullWidth = below('large')
@@ -215,6 +240,12 @@ function BoxReady({ onOpenOrg, opacity, boxTransform }) {
       </div>
     </BoxBase>
   )
+}
+
+BoxReady.propTypes = {
+  onOpenOrg: PropTypes.func.isRequired,
+  opacity: PropTypes.object.isRequired,
+  boxTransform: PropTypes.object.isRequired,
 }
 
 const Deployment = React.memo(function Deployment({
@@ -281,27 +312,37 @@ const Deployment = React.memo(function Deployment({
             leave={{ opacity: 0, transform: `translate3d(-10%, 0, 0)` }}
             config={springs.smooth}
           >
-            {ready => ({ opacity, transform }) =>
-              ready ? (
-                <BoxReady
-                  onOpenOrg={onOpenOrg}
-                  opacity={opacity}
-                  boxTransform={transform}
-                />
-              ) : (
-                <BoxProgress
-                  allSuccess={allSuccess}
-                  boxTransform={transform}
-                  opacity={opacity}
-                  pending={pending}
-                  transactionsStatus={transactionsStatus}
-                />
-              )}
+            {ready =>
+              /* eslint-disable react/prop-types */
+              ({ opacity, transform }) =>
+                ready ? (
+                  <BoxReady
+                    onOpenOrg={onOpenOrg}
+                    opacity={opacity}
+                    boxTransform={transform}
+                  />
+                ) : (
+                  <BoxProgress
+                    allSuccess={allSuccess}
+                    boxTransform={transform}
+                    opacity={opacity}
+                    pending={pending}
+                    transactionsStatus={transactionsStatus}
+                  />
+                )
+            /* eslint-enable react/prop-types */
+            }
           </Transition>
         </div>
       </section>
     </React.Fragment>
   )
 })
+
+Deployment.propTypes = {
+  onOpenOrg: PropTypes.func.isRequired,
+  ready: PropTypes.bool.isRequired,
+  transactionsStatus: TransactionsStatusType.isRequired,
+}
 
 export default Deployment

@@ -15,10 +15,11 @@ import {
 import Configure from '../Configure/Configure'
 import Deployment from '../Deployment/Deployment'
 import ErrorModal from '../../components/ErrorModal/ErrorModal'
-
-const STATUS_SELECT_TEMPLATE = Symbol('STATUS_TEMPLATE')
-const STATUS_TEMPLATE_SCREENS = Symbol('STATUS_TEMPLATE_SCREENS')
-const STATUS_DEPLOYMENT = Symbol('STATUS_DEPLOYMENT')
+import {
+  STATUS_SELECT_TEMPLATE,
+  STATUS_TEMPLATE_SCREENS,
+  STATUS_DEPLOYMENT,
+} from './create-statuses'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -355,6 +356,7 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
   } = useConfigureState(templates, onScreenUpdate)
 
   const configureSteps = getConfigureSteps(status, template, templateData)
+  const templateScreens = (template && template.screens) || []
 
   // The current create step (includes the template selection
   // and “launch organization”).
@@ -452,10 +454,10 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
           onNextTemplateScreen={handleTemplateNext}
           onPrevTemplateScreen={handleTemplatePrev}
           onUseTemplate={handleUseTemplate}
+          screens={templateScreens}
           status={status}
           stepIndex={configureStepIndex}
           steps={configureSteps}
-          template={template}
           templateData={templateData}
           templateScreenIndex={templateScreenIndex}
           templates={templates}

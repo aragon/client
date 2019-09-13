@@ -26,7 +26,7 @@ export default {
     Use transferrable tokens to represent ownership stake in your
     organization. Decisions are made based on stake-weighted voting.
   `,
-  userGuide:
+  userGuideUrl:
     'https://help.aragon.org/article/30-create-a-new-company-organization',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/templates-company-v1.0.0/templates/company',
