@@ -32,7 +32,7 @@ highlights['latest'] = [
     description: {
       small: null,
       large: `
-        Featuring redesign organization templates to
+        Featuring redesigned organization templates to
         match your needs. Start a company, membership,
         or reputation-based organization in just a few
         clicks.
@@ -142,7 +142,7 @@ highlights['latest'] = [
   {
     title: {
       small: null,
-      large: 'Organizations re-imagined',
+      large: 'Organizations reimagined',
     },
     description: {
       small: null,
@@ -176,7 +176,7 @@ highlights['0.6'][6] = {
       A mobile-friendly UI, custom labels for apps
       and addresses, an activity panel that keeps you
       informed about the status of pending
-      transactions and much more!
+      transactions, and much more!
     `,
   },
   visual: {
