@@ -4,8 +4,6 @@ import styled from 'styled-components'
 import {
   Box,
   Button,
-  ButtonBase,
-  Checkbox,
   DataView,
   DropDown,
   GU,
@@ -19,7 +17,6 @@ import {
   IconTrash,
   Info,
   TextInput,
-  breakpoint,
   useTheme,
   useLayout,
   useToast,
@@ -49,10 +46,6 @@ function LocalIdentities({
   someSelected,
   sortIdentities,
 }) {
-  const { layoutName } = useLayout()
-  const compact = layoutName === 'small'
-  const theme = useTheme()
-
   if (!identities.length) {
     return (
       <Box>
