@@ -186,9 +186,12 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     []
   )
 
-  const handleOnBoardingScroll = useCallback(event => {
-    updateSolidScrollBar(event.target.scrollTop > 0)
-  }, [])
+  const handleOnBoardingScroll = useCallback(
+    event => {
+      updateSolidScrollBar(event.target.scrollTop > 0)
+    },
+    [updateSolidScrollBar]
+  )
 
   if (status === 'none') {
     return null
