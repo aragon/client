@@ -47,6 +47,8 @@ function LocalIdentities({
   someSelected,
   sortIdentities,
 }) {
+  const { layoutName } = useLayout()
+  const compact = layoutName === 'small'
   const theme = useTheme()
 
   if (!identities.length) {
@@ -58,94 +60,116 @@ function LocalIdentities({
   }
 
   return (
-    <DataView
-      heading={
-        <Filters
-          searchTerm={searchTerm}
-          onSearchChange={onSearchChange}
-          onImport={onImport}
-          onShare={onShare}
-          onExport={onExport}
-          onRemove={onRemove}
-          someSelected={someSelected}
-        />
-      }
-      selection={identities.reduce(
-        (p, { address }, index) => [
-          ...p,
-          ...(identitiesSelected.get(address) ? [index] : []),
-        ],
-        []
-      )}
-      onSelectEntries={(_, indexes) => {
-        // toggle all
-        if (
-          ((allSelected || !someSelected) &&
-            identities.length === indexes.length) ||
-          indexes.length === 0
-        ) {
-          onToggleAll()
-          return
+    <React.Fragment>
+      <Info
+        css={`
+          margin: 0 ${compact ? `${2 * GU}px` : 0} ${2 * GU}px;
+          margin-bottom: ${2 * GU}px;
+        `}
+      >
+        Any labels you add or import will only be shown on this device, and not
+        stored anywhere else. If you want to share the labels with other devices
+        or users, you will need to export them and share the .json file.
+      </Info>
+      <DataView
+        mode="table"
+        heading={
+          <Filters
+            searchTerm={searchTerm}
+            onSearchChange={onSearchChange}
+            onImport={onImport}
+            onShare={onShare}
+            onExport={onExport}
+            onRemove={onRemove}
+            someSelected={someSelected}
+          />
         }
+        selection={identities.reduce(
+          (p, { address }, index) => [
+            ...p,
+            ...(identitiesSelected.get(address) ? [index] : []),
+          ],
+          []
+        )}
+        onSelectEntries={(_, indexes) => {
+          // toggle all
+          if (
+            ((allSelected || !someSelected) &&
+              identities.length === indexes.length) ||
+            indexes.length === 0
+          ) {
+            onToggleAll()
+            return
+          }
 
-        // toggle some (in reality only one but same process)
-        identities
-          .filter(
-            ({ address }, index) =>
-              indexes.includes(index) !== identitiesSelected.get(address)
-          )
-          .map(({ address }) => address)
-          .forEach(onToggleIdentity)
-      }}
-      fields={[
-        <div
-          css={`
-            display: inline-flex;
-            align-items: center;
-            height: 16px;
-          `}
-        >
-          <ButtonBase
-            label="Toggle sort"
-            onClick={onToggleSort}
+          // toggle some (in reality only one but same process)
+          identities
+            .filter(
+              ({ address }, index) =>
+                indexes.includes(index) !== identitiesSelected.get(address)
+            )
+            .map(({ address }) => address)
+            .forEach(onToggleIdentity)
+        }}
+        fields={[
+          <div
             css={`
-              padding: ${0.5 * GU}px ${3 * GU}px;
-              position: relative;
-              left: ${-3 * GU}px;
-              border-radius: 0;
-              display: flex;
+              display: inline-flex;
               align-items: center;
-              &:active {
-                background: ${theme.surfaceSelected};
-              }
+              height: 16px;
             `}
           >
-            <span
+            <ButtonBase
+              label="Toggle sort"
+              onClick={onToggleSort}
               css={`
-                margin-right: ${1 * GU}px;
-                ${textStyle('label2')}
+                padding: ${0.5 * GU}px ${3 * GU}px;
+                position: relative;
+                left: ${-3 * GU}px;
+                border-radius: 0;
+                display: flex;
+                align-items: center;
+                &:active {
+                  background: ${theme.surfaceSelected};
+                }
               `}
             >
-              Custom label{' '}
-            </span>
-            {sortIdentities === ASC ? (
-              <IconArrowDown size="small" />
-            ) : (
-              <IconArrowUp size="small" />
-            )}
-          </ButtonBase>
-        </div>,
-        'Address',
-      ]}
-      entries={identities}
-      renderEntry={({ address, name }) => [
-        name,
-        <LocalIdentityBadge entity={address} forceAddress />,
-      ]}
-      renderSelectionCount={count =>
-        `${count} label${count > 1 ? 's' : ''} selected`
-      }
-    />
+              <span
+                css={`
+                  margin-right: ${1 * GU}px;
+                  ${textStyle('label2')}
+                `}
+              >
+                Custom label{' '}
+              </span>
+              {sortIdentities === ASC ? (
+                <IconArrowDown size="small" />
+              ) : (
+                <IconArrowUp size="small" />
+              )}
+            </ButtonBase>
+          </div>,
+          'Address',
+        ]}
+        entries={identities}
+        renderEntry={({ address, name }) => [
+          <span
+            css={`
+              width: ${compact ? '168px' : '100%'};
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            `}
+          >
+            {name}
+          </span>,
+          <LocalIdentityBadge entity={address} forceAddress />,
+        ]}
+        renderSelectionCount={count =>
+          `${count} label${count > 1 ? 's' : ''} selected`
+        }
+      />
+    </React.Fragment>
   )
 }
 
