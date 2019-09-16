@@ -29,7 +29,7 @@ import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { ASC, DESC } from './useLocalIdentities'
 import { iOS } from '../../../utils'
 
-function LocalIdentities({
+const LocalIdentities = React.memo(function LocalIdentities({
   allSelected,
   identities,
   identitiesSelected,
@@ -171,7 +171,7 @@ function LocalIdentities({
       />
     </React.Fragment>
   )
-}
+})
 
 LocalIdentities.propTypes = {
   allSelected: PropTypes.bool.isRequired,
@@ -192,7 +192,7 @@ LocalIdentities.propTypes = {
   sortIdentities: PropTypes.oneOf([ASC, DESC]).isRequired,
 }
 
-function Filters({
+const Filters = React.memo(function Filters({
   onExport,
   onImport,
   onRemove,
@@ -281,9 +281,24 @@ function Filters({
       />
     </div>
   )
+})
+
+Filters.propTypes = {
+  onExport: PropTypes.func.isRequired,
+  onImport: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onSearchChange: PropTypes.func.isRequired,
+  onShare: PropTypes.func.isRequired,
+  searchTerm: PropTypes.string.isRequired,
+  someSelected: PropTypes.bool.isRequired,
 }
 
-function Actions({ onExport, onRemove, onShare, disabled }) {
+const Actions = React.memo(function Actions({
+  onExport,
+  onRemove,
+  onShare,
+  disabled,
+}) {
   const theme = useTheme()
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
@@ -382,7 +397,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
       />
     </React.Fragment>
   )
-}
+})
 
 Actions.propTypes = {
   onExport: PropTypes.func.isRequired,
