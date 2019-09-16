@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { BackButton, Bar, textStyle } from '@aragon/ui'
 import { AppType } from '../../prop-types'
@@ -15,14 +15,18 @@ function AppPermissions({
 }) {
   const permissions = usePermissionsByRole()
 
+  const appPermissions = useMemo(
+    () =>
+      permissions.filter(
+        permission =>
+          permission.app && permission.app.proxyAddress === app.proxyAddress
+      ),
+    [permissions, app.proxyAddress]
+  )
+
   if (loading) {
     return <EmptyBlock>Loading permissions…</EmptyBlock>
   }
-
-  const appPermissions = permissions.filter(
-    permission =>
-      permission.app && permission.app.proxyAddress === app.proxyAddress
-  )
 
   if (appPermissions.length === 0) {
     return <EmptyBlock>No permissions found.</EmptyBlock>
