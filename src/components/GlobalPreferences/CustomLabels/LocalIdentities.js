@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import {
   Box,
   Button,
+  ButtonBase,
   DataView,
   DropDown,
   GU,
@@ -46,6 +47,8 @@ function LocalIdentities({
   someSelected,
   sortIdentities,
 }) {
+  const theme = useTheme()
+
   if (!identities.length) {
     return (
       <Box>
@@ -94,7 +97,46 @@ function LocalIdentities({
           .map(({ address }) => address)
           .forEach(onToggleIdentity)
       }}
-      fields={['Custom Label', 'Address']}
+      fields={[
+        <div
+          css={`
+            display: inline-flex;
+            align-items: center;
+            height: 16px;
+          `}
+        >
+          <ButtonBase
+            label="Toggle sort"
+            onClick={onToggleSort}
+            css={`
+              padding: ${0.5 * GU}px ${3 * GU}px;
+              position: relative;
+              left: ${-3 * GU}px;
+              border-radius: 0;
+              display: flex;
+              align-items: center;
+              &:active {
+                background: ${theme.surfaceSelected};
+              }
+            `}
+          >
+            <span
+              css={`
+                margin-right: ${1 * GU}px;
+                ${textStyle('label2')}
+              `}
+            >
+              Custom label{' '}
+            </span>
+            {sortIdentities === ASC ? (
+              <IconArrowDown size="small" />
+            ) : (
+              <IconArrowUp size="small" />
+            )}
+          </ButtonBase>
+        </div>,
+        'Address',
+      ]}
       entries={identities}
       renderEntry={({ address, name }) => [
         name,
