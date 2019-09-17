@@ -330,7 +330,13 @@ function useDeploymentState(
   }
 }
 
-function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
+const Create = React.memo(function Create({
+  account,
+  onOpenOrg,
+  templates,
+  walletWeb3,
+  web3,
+}) {
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
 
   const onScreenUpdate = useCallback((index, screens) => {
@@ -480,7 +486,8 @@ function Create({ account, onOpenOrg, templates, walletWeb3, web3 }) {
       />
     </div>
   )
-}
+})
+
 Create.propTypes = {
   account: EthereumAddressType,
   onOpenOrg: PropTypes.func.isRequired,

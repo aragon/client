@@ -231,9 +231,7 @@ export const OrgTemplateType = PropTypes.shape({
   prepareTransactions: PropTypes.func,
   registry: PropTypes.string,
   screens: PropTypes.arrayOf(
-    PropTypes.arrayOf(
-      PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired
-    )
+    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.func]))
   ),
   sourceCodeUrl: PropTypes.string,
   userGuideUrl: PropTypes.string,

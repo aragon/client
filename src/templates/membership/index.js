@@ -23,7 +23,7 @@ export default {
   header,
   icon,
   description: `
-    Use a non-transferrable token to represent membership. Decisions are
+    Use a non-transferable token to represent membership. Decisions are
     made based on one-member-one-vote governance.
   `,
   userGuideUrl:

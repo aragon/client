@@ -10,7 +10,7 @@ import WelcomeAction from './WelcomeAction'
 import actionCreate from './assets/action-create.png'
 import actionOpen from './assets/action-open.png'
 
-function Welcome({
+const Welcome = React.memo(function Welcome({
   createError,
   onBack,
   onCreate,
@@ -104,7 +104,7 @@ function Welcome({
       </Layout>
     </div>
   )
-}
+})
 
 Welcome.propTypes = {
   createError: PropTypes.array.isRequired,

@@ -19,7 +19,5 @@ export const ScreenPropsType = PropTypes.shape({
    *   PropTypes.func,
    * ])
    */
-  screens: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.func])
-  ).isRequired,
+  screens: PropTypes.arrayOf(PropTypes.any).isRequired,
 })
