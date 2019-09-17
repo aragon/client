@@ -47,6 +47,10 @@ function useSelectIdentities(identities, filteredIdentities) {
     }
   }, [initialSelected, setSelected, firstRender])
 
+  useEffect(() => {
+    setFirstRender(true)
+  }, [identities])
+
   return {
     allSelected,
     handleToggleIdentity,
