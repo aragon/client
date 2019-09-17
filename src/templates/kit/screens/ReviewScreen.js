@@ -9,13 +9,13 @@ import {
   useKeyDown,
   useTheme,
 } from '@aragon/ui'
-import { Header, Navigation } from '..'
+import { Header, Navigation, ScreenPropsType } from '..'
 
-function Review({
-  screenProps: { back, data, next },
+function ReviewScreen({
   items,
-  screenTitle = 'Review information',
+  screenProps: { back, data, next },
   screenSubtitle = 'Have one last look at your settings below',
+  screenTitle = 'Review information',
 }) {
   const theme = useTheme()
 
@@ -109,13 +109,21 @@ function Review({
   )
 }
 
-Review.propTypes = {
+ReviewScreen.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.node.isRequired,
       fields: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.node)).isRequired,
     })
   ).isRequired,
+  screenProps: ScreenPropsType.isRequired,
+  screenSubtitle: PropTypes.node.isRequired,
+  screenTitle: PropTypes.node.isRequired,
 }
 
-export default Review
+ReviewScreen.defaultProps = {
+  screenTitle: 'Review information',
+  screenSubtitle: 'Have one last look at your settings below',
+}
+
+export default ReviewScreen

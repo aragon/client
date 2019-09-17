@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   EthIdenticon,
@@ -13,7 +14,7 @@ import {
   isAddress,
   useTheme,
 } from '@aragon/ui'
-import { Header, Navigation, IdentityBadge } from '..'
+import { Header, Navigation, IdentityBadge, ScreenPropsType } from '..'
 
 function useFieldsLayout() {
   // In its own hook to be adapted for smaller views
@@ -52,8 +53,8 @@ function validationError(tokenName, tokenSymbol, members) {
 }
 
 function Tokens({
-  accountStake = -1,
-  dataKey = 'tokens',
+  accountStake,
+  dataKey,
   screenProps: { back, data, next, screenIndex, screens },
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
@@ -115,7 +116,7 @@ function Tokens({
     setFormError(null)
     setMembers(members => [...members, ['', accountStake]])
     focusLastMember()
-  }, [accountStake])
+  }, [accountStake, focusLastMember])
 
   const removeMember = useCallback(
     index => {
@@ -129,7 +130,7 @@ function Tokens({
       )
       focusLastMember()
     },
-    [accountStake]
+    [accountStake, focusLastMember]
   )
 
   const updateMember = useCallback((index, updatedAccount, updatedStake) => {
@@ -157,7 +158,7 @@ function Tokens({
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [data, next, tokenName, tokenSymbol, members]
+    [data, dataKey, members, next, tokenName, tokenSymbol]
   )
 
   // Focus the token name as soon as it becomes available
@@ -166,6 +167,12 @@ function Tokens({
       element.focus()
     }
   }, [])
+
+  // Focus the token fields as they are added afterwards
+  // const [focusTokenFields, setFocusTokenFields] = useState(false)
+  // useEffect(() => {
+  //   setFocusTokenFields(true)
+  // }, [])
 
   const hideRemoveButton = members.length < 2 && !members[0]
 
@@ -245,7 +252,7 @@ function Tokens({
           <div
             css={`
               width: 100%;
-              ${fieldsLayout};
+              ${fieldsLayout}
             `}
           >
             <div>Tokenholders</div>
@@ -309,6 +316,17 @@ function Tokens({
       />
     </form>
   )
+}
+
+Tokens.propTypes = {
+  accountStake: PropTypes.number,
+  dataKey: PropTypes.string,
+  screenProps: ScreenPropsType.isRequired,
+}
+
+Tokens.defaultProps = {
+  accountStake: -1,
+  dataKey: 'tokens',
 }
 
 function MemberField({
@@ -415,6 +433,17 @@ function MemberField({
       </div>
     </div>
   )
+}
+
+MemberField.propTypes = {
+  displayStake: PropTypes.bool.isRequired,
+  hideRemoveButton: PropTypes.bool.isRequired,
+  index: PropTypes.number.isRequired,
+  member: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  ).isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 }
 
 function formatReviewFields(screenData) {

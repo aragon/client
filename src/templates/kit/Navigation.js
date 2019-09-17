@@ -1,15 +1,9 @@
 import React, { useRef, useImperativeHandle } from 'react'
+import PropTypes from 'prop-types'
 import { Button, IconArrowLeft, GU, useTheme } from '@aragon/ui'
 
 const Navigation = React.forwardRef(function Navigation(
-  {
-    onNext,
-    onBack,
-    nextEnabled = true,
-    backEnabled = true,
-    nextLabel = 'Next',
-    backLabel = 'Back',
-  },
+  { backEnabled, backLabel, nextEnabled, nextLabel, onBack, onNext },
   ref
 ) {
   const theme = useTheme()
@@ -62,5 +56,21 @@ const Navigation = React.forwardRef(function Navigation(
     </div>
   )
 })
+
+Navigation.propTypes = {
+  backEnabled: PropTypes.bool.isRequired,
+  backLabel: PropTypes.string.isRequired,
+  nextEnabled: PropTypes.bool.isRequired,
+  nextLabel: PropTypes.string.isRequired,
+  onBack: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+}
+
+Navigation.defaultProps = {
+  backEnabled: true,
+  backLabel: 'Back',
+  nextEnabled: true,
+  nextLabel: 'Next',
+}
 
 export default Navigation

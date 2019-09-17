@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   GU,
@@ -10,6 +11,11 @@ import {
   useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
+import {
+  TRANSACTION_STATUS_PENDING,
+  TRANSACTION_STATUS_SUCCESS,
+} from '../../symbols'
+import { TransactionStatusType } from '../../prop-types'
 import { TITLE_ONBOARDING } from '../styles'
 import DeploymentStepsPanel from './DeploymentStepsPanel'
 
@@ -73,6 +79,14 @@ function BoxBase({
       </AnimSection>
     </AnimDiv>
   )
+}
+
+BoxBase.propTypes = {
+  children: PropTypes.node.isRequired,
+  flexDirection: PropTypes.oneOf(['column', 'row']),
+  background: PropTypes.string.isRequired,
+  opacity: PropTypes.object.isRequired,
+  boxTransform: PropTypes.object.isRequired,
 }
 
 function BoxProgress({
@@ -177,6 +191,19 @@ function BoxProgress({
   )
 }
 
+BoxProgress.propTypes = {
+  allSuccess: PropTypes.bool.isRequired,
+  boxTransform: PropTypes.object.isRequired,
+  opacity: PropTypes.object.isRequired,
+  pending: PropTypes.number.isRequired,
+  transactionsStatus: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      status: TransactionStatusType.isRequired,
+    })
+  ).isRequired,
+}
+
 function BoxReady({ onOpenOrg, opacity, boxTransform }) {
   const { below } = useViewport()
   const fullWidth = below('large')
@@ -217,6 +244,12 @@ function BoxReady({ onOpenOrg, opacity, boxTransform }) {
   )
 }
 
+BoxReady.propTypes = {
+  onOpenOrg: PropTypes.func.isRequired,
+  opacity: PropTypes.object.isRequired,
+  boxTransform: PropTypes.object.isRequired,
+}
+
 const Deployment = React.memo(function Deployment({
   onOpenOrg,
   ready,
@@ -231,8 +264,11 @@ const Deployment = React.memo(function Deployment({
       return [true, false]
     }
     return [
-      transactionsStatus.findIndex(({ status }) => status === 'pending'),
-      transactionsStatus[transactionsStatus.length - 1].status === 'success',
+      transactionsStatus.findIndex(
+        ({ status }) => status === TRANSACTION_STATUS_PENDING
+      ),
+      transactionsStatus[transactionsStatus.length - 1].status ===
+        TRANSACTION_STATUS_SUCCESS,
     ]
   }, [transactionsStatus])
 
@@ -281,27 +317,42 @@ const Deployment = React.memo(function Deployment({
             leave={{ opacity: 0, transform: `translate3d(-10%, 0, 0)` }}
             config={springs.smooth}
           >
-            {ready => ({ opacity, transform }) =>
-              ready ? (
-                <BoxReady
-                  onOpenOrg={onOpenOrg}
-                  opacity={opacity}
-                  boxTransform={transform}
-                />
-              ) : (
-                <BoxProgress
-                  allSuccess={allSuccess}
-                  boxTransform={transform}
-                  opacity={opacity}
-                  pending={pending}
-                  transactionsStatus={transactionsStatus}
-                />
-              )}
+            {ready =>
+              /* eslint-disable react/prop-types */
+              ({ opacity, transform }) =>
+                ready ? (
+                  <BoxReady
+                    onOpenOrg={onOpenOrg}
+                    opacity={opacity}
+                    boxTransform={transform}
+                  />
+                ) : (
+                  <BoxProgress
+                    allSuccess={allSuccess}
+                    boxTransform={transform}
+                    opacity={opacity}
+                    pending={pending}
+                    transactionsStatus={transactionsStatus}
+                  />
+                )
+            /* eslint-enable react/prop-types */
+            }
           </Transition>
         </div>
       </section>
     </React.Fragment>
   )
 })
+
+Deployment.propTypes = {
+  onOpenOrg: PropTypes.func.isRequired,
+  ready: PropTypes.bool.isRequired,
+  transactionsStatus: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      status: TransactionStatusType.isRequired,
+    })
+  ).isRequired,
+}
 
 export default Deployment

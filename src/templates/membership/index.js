@@ -26,7 +26,7 @@ export default {
     Use a non-transferable token to represent membership. Decisions are
     made based on one-member-one-vote governance.
   `,
-  userGuide:
+  userGuideUrl:
     'https://help.aragon.org/article/34-create-a-new-membership-organization',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/templates-membership-v1.0.0/templates/membership',

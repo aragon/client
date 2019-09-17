@@ -1,22 +1,17 @@
 import React, { useCallback, useState } from 'react'
+import PropTypes from 'prop-types'
 import { Info, GU, Link } from '@aragon/ui'
 import {
   useCheckDomain,
   DOMAIN_CHECK,
   DOMAIN_ERROR,
 } from '../../../check-domain'
-import { DomainField, Header, Navigation } from '..'
+import { DomainField, Header, Navigation, ScreenPropsType } from '..'
 
-function ClaimDomain({
+function ClaimDomainScreen({
   dataKey = null,
-  screenProps: {
-    back,
-    data,
-    next,
-    screenIndex,
-    screens,
-    screenTitle = 'Claim a name',
-  },
+  screenProps: { back, data, next, screenIndex, screens },
+  screenTitle = 'Claim a name',
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
@@ -37,7 +32,7 @@ function ClaimDomain({
         next(dataKey ? { ...data, [dataKey]: domain } : { ...data, domain })
       }
     },
-    [domain, next, data, domainCheckStatus]
+    [data, dataKey, domain, domainCheckStatus, next]
   )
 
   // focus on mount
@@ -94,4 +89,15 @@ function ClaimDomain({
   )
 }
 
-export default ClaimDomain
+ClaimDomainScreen.propTypes = {
+  dataKey: PropTypes.string,
+  screenProps: ScreenPropsType.isRequired,
+  screenTitle: PropTypes.string,
+}
+
+ClaimDomainScreen.defaultProps = {
+  dataKey: null,
+  screenTitle: 'Claim a name',
+}
+
+export default ClaimDomainScreen

@@ -1,3 +1,4 @@
+export * from './prop-types'
 export { default as ClaimDomainScreen } from './screens/ClaimDomainScreen'
 export {
   default as DomainField,

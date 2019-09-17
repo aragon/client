@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { GU, springs, useViewport } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 
@@ -45,42 +46,55 @@ function ConfigureTemplateScreens({
       }}
       config={springs.smooth}
     >
-      {({ screenIndex, Screen }) => ({ opacity, transform, position }) => (
-        <AnimatedDiv
-          style={{ opacity, transform, position }}
-          css={`
-            display: grid;
-            align-items: center;
-            justify-content: center;
-            top: 0;
-            left: 0;
-            right: 0;
-          `}
-        >
-          <div
+      {({ screenIndex, Screen }) =>
+        /* eslint-disable react/prop-types */
+        ({ opacity, transform, position }) => (
+          <AnimatedDiv
+            style={{ opacity, transform, position }}
             css={`
-              max-width: ${82 * GU}px;
-              padding: 0 ${3 * GU}px ${(below('medium') ? 9 : 3) * GU}px
-                ${3 * GU}px;
+              display: grid;
+              align-items: center;
+              justify-content: center;
+              top: 0;
+              left: 0;
+              right: 0;
             `}
           >
-            <Screen
-              back={onPrev}
-              data={templateData}
-              fields={
-                {
-                  /* TODO: pass the fields from the template contract */
+            <div
+              css={`
+                max-width: ${82 * GU}px;
+                padding: 0 ${3 * GU}px ${(below('medium') ? 9 : 3) * GU}px
+                  ${3 * GU}px;
+              `}
+            >
+              <Screen
+                data={templateData}
+                fields={
+                  {
+                    /* TODO: pass the fields from the template contract */
+                  }
                 }
-              }
-              next={onNext}
-              screenIndex={screenIndex}
-              screens={screens}
-            />
-          </div>
-        </AnimatedDiv>
-      )}
+                next={onNext}
+                back={onPrev}
+                screens={screens}
+                screenIndex={screenIndex}
+              />
+            </div>
+          </AnimatedDiv>
+        )
+      /* eslint-enable react/prop-types */
+      }
     </Transition>
   )
+}
+
+ConfigureTemplateScreens.propTypes = {
+  TemplateScreen: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrev: PropTypes.func.isRequired,
+  screenIndex: PropTypes.number.isRequired,
+  screens: PropTypes.array.isRequired,
+  templateData: PropTypes.object.isRequired,
 }
 
 export default ConfigureTemplateScreens

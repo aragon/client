@@ -1,4 +1,5 @@
 import React, { useRef } from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   EthIdenticon,
@@ -26,6 +27,10 @@ function AccountModule({ compact }) {
   return connected ? <ConnectedMode /> : <NonConnectedMode compact={compact} />
 }
 
+AccountModule.propTypes = {
+  compact: PropTypes.bool,
+}
+
 function NonConnectedMode({ compact }) {
   const { enable } = useAccount()
   return (
@@ -46,6 +51,10 @@ function NonConnectedMode({ compact }) {
       />
     </div>
   )
+}
+
+NonConnectedMode.propTypes = {
+  compact: PropTypes.bool,
 }
 
 function ConnectedMode() {

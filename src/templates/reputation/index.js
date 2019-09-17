@@ -26,7 +26,7 @@ export default {
     Use non-transferable tokens to represent reputation. Decisions are made
     using reputation-weighted voting.
   `,
-  userGuide:
+  userGuideUrl:
     'https://help.aragon.org/article/32-create-a-new-reputation-organization',
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/templates-reputation-v1.0.0/templates/reputation',

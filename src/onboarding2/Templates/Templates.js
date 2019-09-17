@@ -80,6 +80,7 @@ function Templates({ onUse, templates }) {
     </div>
   )
 }
+
 Templates.propTypes = {
   onUse: PropTypes.func.isRequired,
   templates: PropTypes.array.isRequired,
