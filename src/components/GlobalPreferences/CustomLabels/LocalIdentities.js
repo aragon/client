@@ -248,7 +248,7 @@ const Filters = React.memo(function Filters({
               css={`
                 ${compact &&
                   `
-                      width: 50px;
+                      width: ${5 * GU}px;
                       min-width: unset;
                       padding: 0;
                     `}
