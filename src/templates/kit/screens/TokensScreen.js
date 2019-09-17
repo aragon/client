@@ -190,7 +190,7 @@ function Tokens({
 
         <div
           css={`
-            ${fieldsLayout}
+            ${fieldsLayout};
           `}
         >
           <Field
@@ -245,7 +245,7 @@ function Tokens({
           <div
             css={`
               width: 100%;
-              ${fieldsLayout}
+              ${fieldsLayout};
             `}
           >
             <div>Tokenholders</div>
@@ -347,7 +347,7 @@ function MemberField({
     <div
       className="member"
       css={`
-        ${fieldsLayout}
+        ${fieldsLayout};
         position: relative;
         margin-bottom: ${1.5 * GU}px;
       `}
