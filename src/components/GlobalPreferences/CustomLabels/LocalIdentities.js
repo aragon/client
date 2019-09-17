@@ -155,7 +155,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
         renderEntry={({ address, name }) => [
           <span
             css={`
-              width: ${compact ? '168px' : '100%'};
+              width: ${compact ? `${21 * GU}px` : '100%'};
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
