@@ -439,7 +439,9 @@ MemberField.propTypes = {
   displayStake: PropTypes.bool.isRequired,
   hideRemoveButton: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
-  member: PropTypes.arrayOf(PropTypes.number).isRequired,
+  member: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  ).isRequired,
   onRemove: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
 }

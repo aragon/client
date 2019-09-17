@@ -11,6 +11,11 @@ import {
   useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
+import {
+  TRANSACTION_STATUS_PENDING,
+  TRANSACTION_STATUS_SUCCESS,
+} from '../../symbols'
+import { TransactionStatusType } from '../../prop-types'
 import { TITLE_ONBOARDING } from '../styles'
 import DeploymentStepsPanel from './DeploymentStepsPanel'
 
@@ -20,14 +25,6 @@ import allDoneImg from './assets/illustration-all-done.png'
 
 const AnimDiv = animated.div
 const AnimSection = animated.section
-
-const TransactionsStatusType = PropTypes.arrayOf(
-  PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    status: PropTypes.oneOf(['error', 'pending', 'success', 'upcoming'])
-      .isRequired,
-  })
-)
 
 function BoxBase({
   children,
@@ -199,7 +196,12 @@ BoxProgress.propTypes = {
   boxTransform: PropTypes.object.isRequired,
   opacity: PropTypes.object.isRequired,
   pending: PropTypes.number.isRequired,
-  transactionsStatus: TransactionsStatusType.isRequired,
+  transactionsStatus: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      status: TransactionStatusType.isRequired,
+    })
+  ).isRequired,
 }
 
 function BoxReady({ onOpenOrg, opacity, boxTransform }) {
@@ -262,8 +264,11 @@ const Deployment = React.memo(function Deployment({
       return [true, false]
     }
     return [
-      transactionsStatus.findIndex(({ status }) => status === 'pending'),
-      transactionsStatus[transactionsStatus.length - 1].status === 'success',
+      transactionsStatus.findIndex(
+        ({ status }) => status === TRANSACTION_STATUS_PENDING
+      ),
+      transactionsStatus[transactionsStatus.length - 1].status ===
+        TRANSACTION_STATUS_SUCCESS,
     ]
   }, [transactionsStatus])
 
@@ -342,7 +347,12 @@ const Deployment = React.memo(function Deployment({
 Deployment.propTypes = {
   onOpenOrg: PropTypes.func.isRequired,
   ready: PropTypes.bool.isRequired,
-  transactionsStatus: TransactionsStatusType.isRequired,
+  transactionsStatus: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      status: TransactionStatusType.isRequired,
+    })
+  ).isRequired,
 }
 
 export default Deployment

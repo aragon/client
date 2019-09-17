@@ -6,6 +6,12 @@ import {
   getRecommendedGasLimit,
 } from '../../aragonjs-wrapper'
 import { EthereumAddressType } from '../../prop-types'
+import {
+  TRANSACTION_STATUS_ERROR,
+  TRANSACTION_STATUS_PENDING,
+  TRANSACTION_STATUS_SUCCESS,
+  TRANSACTION_STATUS_UPCOMING,
+} from '../../symbols'
 import { log } from '../../utils'
 import {
   loadTemplateState,
@@ -305,15 +311,15 @@ function useDeploymentState(
     const { signed, errored } = transactionProgress
     const status = index => {
       if (errored !== -1 && index >= errored) {
-        return 'error'
+        return TRANSACTION_STATUS_ERROR
       }
       if (index === signed) {
-        return 'pending'
+        return TRANSACTION_STATUS_PENDING
       }
       if (index < signed) {
-        return 'success'
+        return TRANSACTION_STATUS_SUCCESS
       }
-      return 'upcoming'
+      return TRANSACTION_STATUS_UPCOMING
     }
 
     return deployTransactions.map(({ name }, index) => ({

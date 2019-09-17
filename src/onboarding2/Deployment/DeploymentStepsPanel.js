@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { textStyle, GU, useTheme, ProgressBar, Info } from '@aragon/ui'
 import DeploymentStepsItem from './DeploymentStepsItem'
+import { TransactionStatusType } from '../../prop-types'
 
 function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
   const theme = useTheme()
@@ -78,8 +79,7 @@ DeploymentStepsPanel.propTypes = {
   transactionsStatus: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
-      status: PropTypes.oneOf(['success', 'pending', 'upcoming', 'error'])
-        .isRequired,
+      status: TransactionStatusType.isRequired,
     })
   ).isRequired,
 }
