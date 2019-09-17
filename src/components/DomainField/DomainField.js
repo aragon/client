@@ -19,13 +19,13 @@ function filterSubdomain(subdomain, detectFullDomains) {
 
 const DomainField = React.forwardRef(function DomainField(
   {
-    detectFullDomains = false,
-    domainEnd = '.aragonid.eth',
+    detectFullDomains,
+    domainEnd,
     focusRef,
-    label = 'Name of the organization',
+    label,
     onChange,
-    placeholder = 'Type an organization name',
-    status = DOMAIN_CHECK,
+    placeholder,
+    status,
     value,
     ...props
   },
