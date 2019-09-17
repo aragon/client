@@ -63,7 +63,7 @@ const Search = React.memo(function Search({ onChange, value }) {
             left: 0;
             padding: ${2 * GU}px;
             right: 0;
-            background: white;
+            background: ${theme.surface};
             z-index: 1;
           `
           : ''}
