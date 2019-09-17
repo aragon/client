@@ -15,7 +15,7 @@ import {
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { Header, PercentageField, PrevNextFooter } from '.'
+import { Header, PercentageField, Navigation } from '..'
 
 const MINUTE_IN_SECONDS = 60
 const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
@@ -53,17 +53,20 @@ function reduceFields(fields, [field, value]) {
   return fields
 }
 
-function Voting({ back, data, fields, next, screenIndex, screens }) {
-  const { voting: votingData = {} } = data
+function Voting({
+  dataKey = 'voting',
+  screenProps: { back, data, next, screenIndex, screens },
+}) {
+  const screenData = (dataKey ? data[dataKey] : data) || {}
 
   const [formError, setFormError] = useState()
 
   const [{ support, quorum, duration }, updateField] = useReducer(
     reduceFields,
     {
-      support: votingData.support || DEFAULT_SUPPORT,
-      quorum: votingData.quorum || DEFAULT_QUORUM,
-      duration: votingData.duration || DEFAULT_DURATION,
+      support: screenData.support || DEFAULT_SUPPORT,
+      quorum: screenData.quorum || DEFAULT_QUORUM,
+      duration: screenData.duration || DEFAULT_DURATION,
     }
   )
 
@@ -117,17 +120,15 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
       }
 
       if (!error) {
-        next({
-          ...data,
-          voting: {
-            support: Math.floor(support),
-            quorum: Math.floor(quorum),
-            duration,
-          },
-        })
+        const screenData = {
+          support: Math.floor(support),
+          quorum: Math.floor(quorum),
+          duration,
+        }
+        next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [data, next, support, quorum, duration, isPercentageFieldFocused]
+    [data, dataKey, duration, isPercentageFieldFocused, next, quorum, support]
   )
 
   return (
@@ -208,7 +209,7 @@ function Voting({ back, data, fields, next, screenIndex, screens }) {
           greater than these thresholds.
         </Info>
 
-        <PrevNextFooter
+        <Navigation
           ref={prevNextRef}
           backEnabled
           nextEnabled
@@ -377,11 +378,11 @@ function formatDuration(duration) {
     )
 }
 
-function formatReviewFields(votingData) {
+function formatReviewFields(screenData) {
   return [
-    ['Support', `${votingData.support}%`],
-    ['Minimum approval %', `${votingData.quorum}%`],
-    ['Vote duration', formatDuration(votingData.duration)],
+    ['Support', `${screenData.support}%`],
+    ['Minimum approval %', `${screenData.quorum}%`],
+    ['Vote duration', formatDuration(screenData.duration)],
   ]
 }
 

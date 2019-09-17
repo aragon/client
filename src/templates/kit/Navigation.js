@@ -1,7 +1,7 @@
 import React, { useRef, useImperativeHandle } from 'react'
 import { Button, IconArrowLeft, GU, useTheme } from '@aragon/ui'
 
-const PrevNextFooter = React.forwardRef(function PrevNextFooter(
+const Navigation = React.forwardRef(function Navigation(
   {
     onNext,
     onBack,
@@ -63,4 +63,4 @@ const PrevNextFooter = React.forwardRef(function PrevNextFooter(
   )
 })
 
-export default PrevNextFooter
+export default Navigation

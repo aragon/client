@@ -1,14 +1,14 @@
-export { default as ClaimDomain } from './ClaimDomain'
+export { default as ClaimDomainScreen } from './screens/ClaimDomainScreen'
 export {
   default as DomainField,
 } from '../../components/DomainField/DomainField'
+export { default as Header } from '../../onboarding2/Header/Header'
 export {
   default as IdentityBadge,
 } from '../../components/IdentityBadge/LocalIdentityBadge'
-export { default as Header } from '../../onboarding2/Header/Header'
 export { default as KnownAppBadge } from './KnownAppBadge'
+export { default as Navigation } from './Navigation'
 export { default as PercentageField } from './PercentageField'
-export { default as PrevNextFooter } from './PrevNextFooter'
-export { default as Review } from './Review'
-export { default as Tokens } from './Tokens'
-export { default as Voting } from './Voting'
+export { default as ReviewScreen } from './screens/ReviewScreen'
+export { default as TokensScreen } from './screens/TokensScreen'
+export { default as VotingScreen } from './screens/VotingScreen'
