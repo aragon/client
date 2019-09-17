@@ -224,8 +224,8 @@ export const OrgTemplateType = PropTypes.shape({
   modules: PropTypes.array,
   name: PropTypes.string.isRequired,
   optionalModules: PropTypes.array,
-  prepareTransactions: PropTypes.func.isRequired,
+  prepareTransactions: PropTypes.func,
   registry: PropTypes.string,
-  screens: PropTypes.array.isRequired,
+  screens: PropTypes.array,
   sourceCodeUrl: PropTypes.string,
 })
