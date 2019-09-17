@@ -11,7 +11,7 @@ import initWrapper, {
   pollConnectivity,
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
-import { Onboarding } from './onboarding2'
+import { Onboarding } from './onboarding'
 import { identifyProvider } from './ethereum-providers'
 import { getWeb3, getUnknownBalance, getIsContractAccount } from './web3-utils'
 import { enableWallet } from './wallet-utils'
