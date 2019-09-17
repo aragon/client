@@ -3,7 +3,7 @@ export { default as ClaimDomainScreen } from './screens/ClaimDomainScreen'
 export {
   default as DomainField,
 } from '../../components/DomainField/DomainField'
-export { default as Header } from '../../onboarding2/Header/Header'
+export { default as Header } from '../../onboarding/Header/Header'
 export {
   default as IdentityBadge,
 } from '../../components/IdentityBadge/LocalIdentityBadge'
