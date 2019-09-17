@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import {
@@ -109,13 +109,25 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     'All',
     ...new Set(subscriptions.map(subscription => subscription.eventName)),
   ]
-  const filteredSubscriptions = filterSubscriptions({
-    subscriptions,
-    event: selectedEvent > 0 ? events[selectedEvent] : null,
-    appName: selectedApp > 0 ? subscriptionApps[selectedApp] : null,
-    organization:
-      selectedOrganization > 0 ? organizations[selectedOrganization] : null,
-  })
+  const filteredSubscriptions = useMemo(
+    () =>
+      filterSubscriptions({
+        subscriptions,
+        event: selectedEvent > 0 ? events[selectedEvent] : null,
+        appName: selectedApp > 0 ? subscriptionApps[selectedApp] : null,
+        organization:
+          selectedOrganization > 0 ? organizations[selectedOrganization] : null,
+      }),
+    [
+      events,
+      organizations,
+      selectedApp,
+      selectedEvent,
+      selectedOrganization,
+      subscriptionApps,
+      subscriptions,
+    ]
+  )
 
   const handleUnsubscribe = useCallback(
     async e => {

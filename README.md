@@ -7,7 +7,7 @@
 
 <a href="https://mainnet.aragon.org/#/a1/"><img src=".github/screenshot.png" /></a>
 
-- 📚 Read the [User Guide](https://wiki.aragon.org/tutorials/Aragon_User_Guide/) first, if you have any questions as a user.
+- 📚 Read the [User Guide](https://help.aragon.org/) first, if you have any questions as a user.
 - 💻 You may be interested in [Aragon Desktop](https://github.com/aragon/aragon-desktop/), the most decentralized Aragon experience to date.
 - 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
 - 📝 Please report any issues and feedback in the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.

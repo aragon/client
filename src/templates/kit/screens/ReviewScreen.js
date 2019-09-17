@@ -45,13 +45,7 @@ function Review({
   })
 
   return (
-    <div
-      ref={containerRef}
-      tabIndex="0"
-      css={`
-        outline: 0;
-      `}
-    >
+    <div ref={containerRef} tabIndex="0" css="outline: 0">
       <Header title={screenTitle} subtitle={screenSubtitle} />
 
       <Accordion

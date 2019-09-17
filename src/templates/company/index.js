@@ -23,7 +23,7 @@ export default {
   header,
   icon,
   description: `
-    Use transferrable tokens to represent ownership stake in your
+    Use transferable tokens to represent ownership stake in your
     organization. Decisions are made based on stake-weighted voting.
   `,
   userGuide:

@@ -62,6 +62,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
         ref={handleSectionRef}
         tabIndex="0"
         css={`
+          outline: 0;
           ${verticalMode
             ? ''
             : `

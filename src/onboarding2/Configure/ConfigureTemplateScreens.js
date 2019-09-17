@@ -65,6 +65,7 @@ function ConfigureTemplateScreens({
             `}
           >
             <Screen
+              back={onPrev}
               data={templateData}
               fields={
                 {
@@ -72,9 +73,8 @@ function ConfigureTemplateScreens({
                 }
               }
               next={onNext}
-              back={onPrev}
-              screens={screens}
               screenIndex={screenIndex}
+              screens={screens}
             />
           </div>
         </AnimatedDiv>
