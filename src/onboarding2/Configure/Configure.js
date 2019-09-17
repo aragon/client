@@ -7,6 +7,9 @@ import ConfigureTemplateScreens from './ConfigureTemplateScreens'
 import * as CreateStatuses from '../Create/create-statuses'
 import { OrgTemplateType } from '../../prop-types'
 
+export const CONFIGURE_MODE_SELECT = Symbol('CONFIGURE_MODE_SELECT')
+export const CONFIGURE_MODE_CONFIGURE = Symbol('CONFIGURE_MODE_CONFIGURE')
+
 function Configure({
   TemplateScreen,
   mode,
@@ -53,10 +56,10 @@ function Configure({
             overflow: hidden;
           `}
         >
-          {mode === 'select' && (
+          {mode === CONFIGURE_MODE_SELECT && (
             <Templates onUse={onUseTemplate} templates={templates} />
           )}
-          {mode === 'configure' && (
+          {mode === CONFIGURE_MODE_CONFIGURE && (
             <ConfigureTemplateScreens
               TemplateScreen={TemplateScreen}
               onNext={onNextTemplateScreen}
@@ -74,7 +77,8 @@ function Configure({
 
 Configure.propTypes = {
   TemplateScreen: PropTypes.func.isRequired,
-  mode: PropTypes.oneOf(['select', 'configure']).isRequired,
+  mode: PropTypes.oneOf([CONFIGURE_MODE_SELECT, CONFIGURE_MODE_CONFIGURE])
+    .isRequired,
   onNextTemplateScreen: PropTypes.func.isRequired,
   onPrevTemplateScreen: PropTypes.func.isRequired,
   onUseTemplate: PropTypes.func.isRequired,

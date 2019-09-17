@@ -18,7 +18,10 @@ import {
   saveTemplateState,
   prepareTransactionCreatorFromAbi,
 } from '../create-utils'
-import Configure from '../Configure/Configure'
+import Configure, {
+  CONFIGURE_MODE_SELECT,
+  CONFIGURE_MODE_CONFIGURE,
+} from '../Configure/Configure'
 import Deployment from '../Deployment/Deployment'
 import ErrorModal from '../../components/ErrorModal/ErrorModal'
 import {
@@ -461,7 +464,11 @@ const Create = React.memo(function Create({
         />
       ) : (
         <Configure
-          mode={status === STATUS_SELECT_TEMPLATE ? 'select' : 'configure'}
+          mode={
+            status === STATUS_SELECT_TEMPLATE
+              ? CONFIGURE_MODE_SELECT
+              : CONFIGURE_MODE_CONFIGURE
+          }
           TemplateScreen={TemplateScreen}
           onNextTemplateScreen={handleTemplateNext}
           onPrevTemplateScreen={handleTemplatePrev}
