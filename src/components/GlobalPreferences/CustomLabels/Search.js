@@ -71,13 +71,7 @@ const Search = React.memo(function Search({ onChange, value }) {
     >
       <TextInput
         adornment={
-          value.trim() === EMPTY ? (
-            <IconSearch
-              css={`
-                color: ${theme.surfaceOpened};
-              `}
-            />
-          ) : (
+          compact || value.trim() !== EMPTY ? (
             <ButtonIcon label="Clear search" onClick={clear}>
               <IconCross
                 css={`
@@ -85,6 +79,12 @@ const Search = React.memo(function Search({ onChange, value }) {
                 `}
               />
             </ButtonIcon>
+          ) : (
+            <IconSearch
+              css={`
+                color: ${theme.surfaceOpened};
+              `}
+            />
           )
         }
         adornmentPosition="end"
