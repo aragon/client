@@ -13,16 +13,15 @@ import {
   IconDownload,
   IconExternal,
   IconGrid,
-  IconSearch,
   IconShare,
   IconTrash,
   Info,
-  TextInput,
   useTheme,
   useLayout,
   useToast,
   textStyle,
 } from '@aragon/ui'
+import Search from './Search'
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import Import from './Import'
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
@@ -216,30 +215,7 @@ const Filters = React.memo(function Filters({
         margin-bottom: ${2 * GU}px;
       `}
     >
-      <div
-        css={`
-          position: relative;
-        `}
-      >
-        <TextInput
-          adornment={
-            <IconSearch
-              css={`
-                color: ${theme.surfaceOpened};
-              `}
-            />
-          }
-          adornmentPosition="end"
-          placeholder="Search"
-          onChange={onSearchChange}
-          value={searchTerm}
-          css={`
-            width: ${compact ? 25 * GU : 30 * GU}px;
-            ${textStyle('body2')};
-            color: ${searchTerm.trim() ? theme.surfaceContent : theme.hint};
-          `}
-        />
-      </div>
+      <Search onChange={onSearchChange} value={searchTerm} />
       {!iOS && (
         <Import
           onImport={onImport}
@@ -417,5 +393,4 @@ const ActionSpan = styled.span`
     text-align: left;
   }
 `
-
-export default React.memo(LocalIdentities)
+export default LocalIdentities
