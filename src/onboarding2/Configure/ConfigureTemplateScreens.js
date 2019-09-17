@@ -60,7 +60,7 @@ function ConfigureTemplateScreens({
           <div
             css={`
               max-width: ${82 * GU}px;
-              padding: 0 ${3 * GU}px ${(below('medium') ? 9 : 0) * GU}px
+              padding: 0 ${3 * GU}px ${(below('medium') ? 9 : 3) * GU}px
                 ${3 * GU}px;
             `}
           >

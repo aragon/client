@@ -13,7 +13,4 @@ export default {
   `,
   userGuide: 'https://help.aragon.org/',
   registry: 'aragonpm.eth',
-  modules: [],
-  screens: [],
-  prepareTransactions: () => [],
 }

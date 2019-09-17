@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import {
   Button,
   EthIdenticon,
@@ -16,7 +16,7 @@ import {
 import { Header, Navigation, IdentityBadge } from '..'
 
 function useFieldsLayout() {
-  // In its own hook to be adapted on smaller views
+  // In its own hook to be adapted for smaller views
   return `
     display: grid;
     grid-template-columns: auto ${12 * GU}px;
@@ -84,9 +84,37 @@ function Tokens({
     setTokenSymbol(event.target.value.trim().toUpperCase())
   }, [])
 
+  const membersRef = useRef()
+  const [focusLastMemberNext, setFocusLastMemberNext] = useState(false)
+
+  useEffect(() => {
+    if (!focusLastMemberNext || !membersRef.current) {
+      return
+    }
+
+    setFocusLastMemberNext(false)
+
+    // This could be managed in individual MemberField components, but using
+    // the container with a .member class makes it simpler to manage, since we
+    // want to focus in three cases:
+    //   - A new field is being added.
+    //   - A field is being removed.
+    //   - The first field is being emptied.
+    //
+    const elts = membersRef.current.querySelectorAll('.member')
+    if (elts.length > 0) {
+      elts[elts.length - 1].querySelector('input').focus()
+    }
+  }, [focusLastMemberNext])
+
+  const focusLastMember = useCallback(() => {
+    setFocusLastMemberNext(true)
+  }, [])
+
   const addMember = useCallback(() => {
     setFormError(null)
     setMembers(members => [...members, ['', accountStake]])
+    focusLastMember()
   }, [accountStake])
 
   const removeMember = useCallback(
@@ -99,6 +127,7 @@ function Tokens({
             [['', accountStake]]
           : members.filter((_, i) => i !== index)
       )
+      focusLastMember()
     },
     [accountStake]
   )
@@ -131,6 +160,7 @@ function Tokens({
     [data, next, tokenName, tokenSymbol, members]
   )
 
+  // Focus the token name as soon as it becomes available
   const handleTokenNameRef = useCallback(element => {
     if (element) {
       element.focus()
@@ -152,11 +182,7 @@ function Tokens({
         justify-content: center;
       `}
     >
-      <div
-        css={`
-          max-width: ${82 * GU}px;
-        `}
-      >
+      <div>
         <Header
           title="Configure template"
           subtitle="Choose your Tokens app settings below."
@@ -164,7 +190,7 @@ function Tokens({
 
         <div
           css={`
-            ${fieldsLayout}
+            ${fieldsLayout};
           `}
         >
           <Field
@@ -213,45 +239,45 @@ function Tokens({
             )}
           </Field>
         </div>
-        <Field
-          label={
-            <div
-              css={`
-                width: 100%;
-                ${fieldsLayout}
-              `}
-            >
-              <div>Tokenholders</div>
-              {!fixedStake && <div>Balances</div>}
-            </div>
-          }
-        >
-          <div>
-            {members.map((member, index) => (
-              <MemberField
-                key={index}
-                index={index}
-                member={member}
-                onRemove={removeMember}
-                hideRemoveButton={hideRemoveButton}
-                onUpdate={updateMember}
-                displayStake={!fixedStake}
-              />
-            ))}
-          </div>
-          <Button
-            icon={
-              <IconPlus
-                css={`
-                  color: ${theme.accent};
-                `}
-              />
-            }
-            label="Add more"
-            onClick={addMember}
-          />
-        </Field>
       </div>
+      <Field
+        label={
+          <div
+            css={`
+              width: 100%;
+              ${fieldsLayout};
+            `}
+          >
+            <div>Tokenholders</div>
+            {!fixedStake && <div>Balances</div>}
+          </div>
+        }
+      >
+        <div ref={membersRef}>
+          {members.map((member, index) => (
+            <MemberField
+              key={index}
+              index={index}
+              member={member}
+              onRemove={removeMember}
+              hideRemoveButton={hideRemoveButton}
+              onUpdate={updateMember}
+              displayStake={!fixedStake}
+            />
+          ))}
+        </div>
+        <Button
+          icon={
+            <IconPlus
+              css={`
+                color: ${theme.accent};
+              `}
+            />
+          }
+          label="Add more"
+          onClick={addMember}
+        />
+      </Field>
 
       {formError && (
         <Info
@@ -319,8 +345,9 @@ function MemberField({
 
   return (
     <div
+      className="member"
       css={`
-        ${fieldsLayout}
+        ${fieldsLayout};
         position: relative;
         margin-bottom: ${1.5 * GU}px;
       `}
