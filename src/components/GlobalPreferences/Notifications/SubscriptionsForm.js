@@ -271,7 +271,9 @@ export default function SubscriptionsForm({
           ) : (
             <IconMail
               css={`
-                color: ${theme.accentContent};
+                color: ${isSubscribeDisabled
+                  ? theme.disabledIcon
+                  : theme.accentContent};
                 margin-right: ${GU}px;
               `}
             />
