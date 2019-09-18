@@ -5,7 +5,7 @@ import {
   Box,
   Button,
   ButtonBase,
-  Checkbox,
+  DataView,
   DropDown,
   GU,
   IconArrowDown,
@@ -18,7 +18,6 @@ import {
   IconTrash,
   Info,
   TextInput,
-  breakpoint,
   useTheme,
   useLayout,
   useToast,
@@ -30,7 +29,7 @@ import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { ASC, DESC } from './useLocalIdentities'
 import { iOS } from '../../../utils'
 
-function LocalIdentities({
+const LocalIdentities = React.memo(function LocalIdentities({
   allSelected,
   identities,
   identitiesSelected,
@@ -52,204 +51,127 @@ function LocalIdentities({
   const compact = layoutName === 'small'
   const theme = useTheme()
 
+  if (!identities.length) {
+    return (
+      <Box>
+        <EmptyFilteredIdentities onClear={onClear} />
+      </Box>
+    )
+  }
+
   return (
-    <Box>
-      <div
+    <React.Fragment>
+      <Info
         css={`
-          display: grid;
-          grid-template-columns: auto auto auto;
-          grid-gap: ${1 * GU}px;
-          align-items: center;
-          justify-content: flex-end;
+          margin: 0 ${compact ? `${2 * GU}px` : 0} ${2 * GU}px;
           margin-bottom: ${2 * GU}px;
         `}
       >
-        <div
-          css={`
-            position: relative;
-          `}
-        >
-          <TextInput
-            adornment={
-              <IconSearch
-                css={`
-                  color: ${theme.surfaceOpened};
-                `}
-              />
-            }
-            adornmentPosition="end"
-            placeholder="Search"
-            onChange={onSearchChange}
-            value={searchTerm}
-            css={`
-              width: ${compact ? 25 * GU : 30 * GU}px;
-              ${textStyle('body2')};
-              color: ${searchTerm.trim() ? theme.surfaceContent : theme.hint};
-            `}
-          />
-        </div>
-        {!iOS && (
-          <Import
+        Any labels you add or import will only be shown on this device, and not
+        stored anywhere else. If you want to share the labels with other devices
+        or users, you will need to export them and share the .json file.
+      </Info>
+      <DataView
+        mode="table"
+        heading={
+          <Filters
+            searchTerm={searchTerm}
+            onSearchChange={onSearchChange}
             onImport={onImport}
-            button={
-              <Button
-                css={`
-                  ${compact &&
-                    `
-                      width: 50px;
-                      min-width: unset;
-                      padding: 0;
-                    `}
-                `}
-              >
-                <IconDownload
-                  css={`
-                    color: ${theme.surfaceOpened};
-                  `}
-                />
-                {!compact && (
-                  <span
-                    css={`
-                      display: inline-block;
-                      padding-left: ${1.5 * GU}px;
-                    `}
-                  >
-                    Import
-                  </span>
-                )}
-              </Button>
-            }
+            onShare={onShare}
+            onExport={onExport}
+            onRemove={onRemove}
+            someSelected={someSelected}
           />
+        }
+        selection={identities.reduce(
+          (p, { address }, index) => [
+            ...p,
+            ...(identitiesSelected.get(address) ? [index] : []),
+          ],
+          []
         )}
-        <Actions
-          disabled={!someSelected}
-          onShare={onShare}
-          onExport={onExport}
-          onRemove={onRemove}
-        />
-      </div>
-      {!identities.length ? (
-        <EmptyFilteredIdentities onClear={onClear} />
-      ) : (
-        <React.Fragment>
+        onSelectEntries={(_, indexes) => {
+          // toggle all
+          if (
+            ((allSelected || !someSelected) &&
+              identities.length === indexes.length) ||
+            indexes.length === 0
+          ) {
+            onToggleAll()
+            return
+          }
+
+          // toggle some (in reality only one but same process)
+          identities
+            .filter(
+              ({ address }, index) =>
+                indexes.includes(index) !== identitiesSelected.get(address)
+            )
+            .map(({ address }) => address)
+            .forEach(onToggleIdentity)
+        }}
+        fields={[
           <div
             css={`
-              text-transform: uppercase;
-              color: ${theme.content};
-              display: grid;
-              grid-template-columns: 1fr 1fr;
+              display: inline-flex;
               align-items: center;
-              margin-bottom: ${1 * GU}px;
-              ${textStyle('label2')};
-              color: ${theme.contentSecondary};
+              height: 16px;
             `}
           >
-            <div
+            <ButtonBase
+              label="Toggle sort"
+              onClick={onToggleSort}
               css={`
+                padding: ${0.5 * GU}px ${3 * GU}px;
+                position: relative;
+                left: ${-3 * GU}px;
+                border-radius: 0;
                 display: flex;
                 align-items: center;
+                &:active {
+                  background: ${theme.surfaceSelected};
+                }
               `}
             >
-              <StyledCheckbox
-                checked={allSelected}
-                onChange={onToggleAll}
-                indeterminate={!allSelected && someSelected}
-              />
-              {someSelected ? (
-                `${identities.reduce(
-                  (p, { address }) =>
-                    p + Number(identitiesSelected.get(address)),
-                  0
-                )} labels selected`
-              ) : (
-                <div
-                  css={`
-                    display: inline-flex;
-                    align-items: center;
-                    height: 16px;
-                  `}
-                >
-                  <ButtonBase
-                    label="Toggle sort"
-                    onClick={onToggleSort}
-                    css={`
-                      padding: ${0.5 * GU}px ${3 * GU}px;
-                      position: relative;
-                      left: ${-3 * GU}px;
-                      border-radius: 0;
-                      display: flex;
-                      align-items: center;
-
-                      &:active {
-                        background: ${theme.surfaceSelected};
-                      }
-                    `}
-                  >
-                    <span
-                      css={`
-                        margin-right: ${1 * GU}px;
-                        ${textStyle('label2')}
-                      `}
-                    >
-                      Custom label{' '}
-                    </span>
-                    {sortIdentities === ASC ? (
-                      <IconArrowDown size="small" />
-                    ) : (
-                      <IconArrowUp size="small" />
-                    )}
-                  </ButtonBase>
-                </div>
-              )}
-            </div>
-            <div css="text-align: right;">
-              <span>Address</span>
-            </div>
-          </div>
-          <List border={theme.border} surface={theme.surface}>
-            {identities.map(({ address, name }) => (
-              <li
-                key={address}
+              <span
                 css={`
-                  /* needs spacing left to compensate for list being moved to the edge */
-                  padding: ${2 * GU}px ${3 * GU}px;
-                  display: grid;
-                  grid-template-columns: 1fr 1fr;
-                  align-items: center;
-                  border-bottom: 1px solid ${theme.border};
-                  background: ${identitiesSelected.get(address)
-                    ? theme.surfaceSelected
-                    : theme.surface};
+                  margin-right: ${1 * GU}px;
+                  ${textStyle('label2')}
                 `}
               >
-                <Label>
-                  <StyledCheckbox
-                    checked={identitiesSelected.get(address)}
-                    onChange={onToggleIdentity(address)}
-                  />
-                  <span>{name}</span>
-                </Label>
-                <div css="text-align: right;">
-                  <LocalIdentityBadge entity={address} forceAddress />
-                </div>
-              </li>
-            ))}
-          </List>
-          <Info
+                Custom label{' '}
+              </span>
+              {sortIdentities === ASC ? (
+                <IconArrowDown size="small" />
+              ) : (
+                <IconArrowUp size="small" />
+              )}
+            </ButtonBase>
+          </div>,
+          'Address',
+        ]}
+        entries={identities}
+        renderEntry={({ address, name }) => [
+          <span
             css={`
-              margin-top: ${3 * GU}px;
+              width: ${compact ? `${21 * GU}px` : '100%'};
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
             `}
           >
-            Any labels you add or import will only be shown on this device, and
-            not stored anywhere else. If you want to share the labels with other
-            devices or users, you will need to export them and share the .json
-            file.
-          </Info>
-        </React.Fragment>
-      )}
-    </Box>
+            {name}
+          </span>,
+          <LocalIdentityBadge entity={address} forceAddress />,
+        ]}
+        renderSelectionCount={count =>
+          `${count} label${count > 1 ? 's' : ''} selected`
+        }
+      />
+    </React.Fragment>
   )
-}
+})
 
 LocalIdentities.propTypes = {
   allSelected: PropTypes.bool.isRequired,
@@ -270,7 +192,113 @@ LocalIdentities.propTypes = {
   sortIdentities: PropTypes.oneOf([ASC, DESC]).isRequired,
 }
 
-function Actions({ onExport, onRemove, onShare, disabled }) {
+const Filters = React.memo(function Filters({
+  onExport,
+  onImport,
+  onRemove,
+  onSearchChange,
+  onShare,
+  searchTerm,
+  someSelected,
+}) {
+  const { layoutName } = useLayout()
+  const compact = layoutName === 'small'
+  const theme = useTheme()
+
+  return (
+    <div
+      css={`
+        display: grid;
+        grid-template-columns: auto auto auto;
+        grid-gap: ${1 * GU}px;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: ${2 * GU}px;
+      `}
+    >
+      <div
+        css={`
+          position: relative;
+        `}
+      >
+        <TextInput
+          adornment={
+            <IconSearch
+              css={`
+                color: ${theme.surfaceOpened};
+              `}
+            />
+          }
+          adornmentPosition="end"
+          placeholder="Search"
+          onChange={onSearchChange}
+          value={searchTerm}
+          css={`
+            width: ${compact ? 25 * GU : 30 * GU}px;
+            ${textStyle('body2')};
+            color: ${searchTerm.trim() ? theme.surfaceContent : theme.hint};
+          `}
+        />
+      </div>
+      {!iOS && (
+        <Import
+          onImport={onImport}
+          button={
+            <Button
+              css={`
+                ${compact &&
+                  `
+                      width: ${5 * GU}px;
+                      min-width: unset;
+                      padding: 0;
+                    `}
+              `}
+            >
+              <IconDownload
+                css={`
+                  color: ${theme.surfaceOpened};
+                `}
+              />
+              {!compact && (
+                <span
+                  css={`
+                    display: inline-block;
+                    padding-left: ${1.5 * GU}px;
+                  `}
+                >
+                  Import
+                </span>
+              )}
+            </Button>
+          }
+        />
+      )}
+      <Actions
+        disabled={!someSelected}
+        onShare={onShare}
+        onExport={onExport}
+        onRemove={onRemove}
+      />
+    </div>
+  )
+})
+
+Filters.propTypes = {
+  onExport: PropTypes.func.isRequired,
+  onImport: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onSearchChange: PropTypes.func.isRequired,
+  onShare: PropTypes.func.isRequired,
+  searchTerm: PropTypes.string.isRequired,
+  someSelected: PropTypes.bool.isRequired,
+}
+
+const Actions = React.memo(function Actions({
+  onExport,
+  onRemove,
+  onShare,
+  disabled,
+}) {
   const theme = useTheme()
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
@@ -369,7 +397,7 @@ function Actions({ onExport, onRemove, onShare, disabled }) {
       />
     </React.Fragment>
   )
-}
+})
 
 Actions.propTypes = {
   onExport: PropTypes.func.isRequired,
@@ -388,52 +416,6 @@ const ActionSpan = styled.span`
   & span {
     text-align: left;
   }
-`
-
-const StyledCheckbox = styled(Checkbox)`
-  margin-right: ${3 * GU}px;
-  min-width: 14px;
-`
-
-const Label = styled.label`
-  display: flex;
-  align-items: center;
-  min-width: 0;
-
-  & > span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`
-
-const List = styled.ul`
-  padding: 0;
-  list-style: none;
-  overflow: hidden;
-  width: calc(100% + ${4 * GU}px);
-  position: relative;
-  left: -${2 * GU}px;
-  background: ${({ surface }) => surface};
-  border-top: ${({ border }) => `1px solid ${border};`};
-  border-bottom: ${({ border }) => `1px solid ${border};`};
-
-  ${breakpoint(
-    'medium',
-    `
-      left: -${3 * GU}px;
-      width: calc(100% + ${6 * GU}px);
-      max-height: 40vh;
-      overflow: auto;
-
-      li:first-child {
-        border-top: none;
-      }
-      li:last-child {
-        border-bottom: none;
-      }
-    `
-  )}
 `
 
 export default React.memo(LocalIdentities)

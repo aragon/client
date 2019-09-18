@@ -35,7 +35,7 @@ function useSelectIdentities(identities, filteredIdentities) {
     selected,
   ])
   const handleToggleIdentity = useCallback(
-    address => () =>
+    address =>
       setSelected(new Map([...selected, [address, !selected.get(address)]])),
     [selected, setSelected]
   )
