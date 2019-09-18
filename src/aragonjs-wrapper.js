@@ -10,6 +10,8 @@ import {
   appOverrides,
   sortAppsPair,
   ipfsDefaultConf,
+  defaultFeatherNode,
+  featherCacheEnabled,
   web3Providers,
   contractAddresses,
   defaultGasPriceFn,
@@ -373,10 +375,13 @@ const initWrapper = async (
 
   const account = await getMainAccount(web3)
   try {
+    // Initialise wrapper
     await wrapper.init({
       accounts: {
         providedAccounts: account ? [account] : [],
       },
+      featherNode: defaultFeatherNode,
+      hydrateFromFeather: featherCacheEnabled,
     })
   } catch (err) {
     if (err.message === 'Provided daoAddress is not a DAO') {

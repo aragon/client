@@ -5,6 +5,8 @@ import {
   getDefaultEthNode,
   getEthNetworkType,
   getIpfsGateway,
+  getFeatherNode,
+  getFeatherCacheEnabled,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 import { noop } from './utils'
@@ -100,6 +102,9 @@ export { appLocator, appOverrides }
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
 }
+
+export const defaultFeatherNode = getFeatherNode()
+export const featherCacheEnabled = getFeatherCacheEnabled()
 
 const networkConfig = getNetworkConfig(networkType)
 export const network = networkConfig.settings

@@ -7,13 +7,25 @@ import {
   Info,
   GU,
   TextInput,
+  Checkbox,
   textStyle,
   useLayout,
   useTheme,
 } from '@aragon/ui'
-import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
+import {
+  defaultEthNode,
+  ipfsDefaultConf,
+  defaultFeatherNode,
+  featherCacheEnabled,
+  network,
+} from '../../../environment'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
-import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
+import {
+  setDefaultEthNode,
+  setIpfsGateway,
+  setFeatherNode,
+  setFeatherCacheEnabled,
+} from '../../../local-settings'
 import keycodes from '../../../keycodes'
 import { sanitizeNetworkType } from '../../../network-config'
 import { checkValidEthNode } from '../../../web3-utils'
@@ -22,11 +34,15 @@ function Network({ wrapper }) {
   const {
     ethNode,
     ipfsGateway,
+    featherNode,
+    cacheEnabled,
     handleNetworkChange,
     handleClearCache,
     networkError,
     handleEthNodeChange,
     handleIpfsGatewayChange,
+    handleFeatherNodeChange,
+    handleFeatherEnabledChange,
     network,
   } = useNetwork(wrapper)
   const theme = useTheme()
@@ -84,6 +100,30 @@ function Network({ wrapper }) {
             `}
           />
         </Label>
+        <Label theme={theme}>
+          Feather Cache Node
+          <TextInput
+            value={featherNode}
+            wide
+            onChange={handleFeatherNodeChange}
+            css={`
+              ${textStyle('body2')};
+              color: ${theme.contentSecondary};
+            `}
+          />
+          <Checkbox
+            onChange={handleFeatherEnabledChange}
+            checked={cacheEnabled}
+          />
+          <span
+            css={`
+              color: ${theme.surfaceContentSecondary};
+              ${textStyle('body3')}
+            `}
+          >
+            Enable cache
+          </span>
+        </Label>
         <Button mode="strong" onClick={handleNetworkChange} wide={compact}>
           Save changes
         </Button>
@@ -126,6 +166,8 @@ const useNetwork = wrapper => {
   const [networkError, setNetworkError] = useState(null)
   const [ethNode, setEthNodeValue] = useState(defaultEthNode)
   const [ipfsGateway, setIpfsGatewayValue] = useState(ipfsDefaultConf.gateway)
+  const [featherNode, setFeatherNodeValue] = useState(defaultFeatherNode)
+  const [cacheEnabled, setCacheEnabledValue] = useState(featherCacheEnabled)
 
   const handleNetworkChange = useCallback(async () => {
     try {
@@ -137,9 +179,12 @@ const useNetwork = wrapper => {
 
     setDefaultEthNode(ethNode)
     setIpfsGateway(ipfsGateway)
+    setFeatherNode(featherNode)
+    setFeatherCacheEnabled(cacheEnabled)
+
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
-  }, [ethNode, ipfsGateway])
+  }, [ethNode, ipfsGateway, featherNode, cacheEnabled])
   const handleClearCache = useCallback(async () => {
     await wrapper.cache.clear()
     window.localStorage.clear()
@@ -166,6 +211,8 @@ const useNetwork = wrapper => {
     ethNode,
     network,
     ipfsGateway,
+    featherNode,
+    cacheEnabled,
     handleNetworkChange,
     handleClearCache,
     networkError,
@@ -173,6 +220,9 @@ const useNetwork = wrapper => {
       setEthNodeValue(value),
     handleIpfsGatewayChange: ({ currentTarget: { value } }) =>
       setIpfsGatewayValue(value),
+    handleFeatherNodeChange: ({ currentTarget: { value } }) =>
+      setFeatherNodeValue(value),
+    handleFeatherEnabledChange: enabled => setCacheEnabledValue(enabled),
   }
 }
 

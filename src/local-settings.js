@@ -5,6 +5,8 @@ const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
 const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
 const ETH_SUBSCRIPTION_EVENT_DELAY = 'ETH_SUBSCRIPTION_EVENT_DELAY'
 const IPFS_GATEWAY = 'IPFS_GATEWAY'
+const FEATHER_NODE = 'FEATHER_NODE'
+const FEATHER_CACHE_ENABLED = 'FEATHER_CACHED_ENABLED'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 const SENTRY_DSN = 'SENTRY_DSN'
 
@@ -19,6 +21,8 @@ const CONFIGURATION_VARS = [
     process.env.REACT_APP_ETH_SUBSCRIPTION_EVENT_DELAY,
   ],
   [IPFS_GATEWAY, process.env.REACT_APP_IPFS_GATEWAY],
+  [FEATHER_NODE, process.env.REACT_APP_FEATHER_NODE],
+  [FEATHER_CACHE_ENABLED, process.env.REACT_APP_FEATHER_CACHE_ENABLED],
   [SELECTED_CURRENCY, process.env.REACT_APP_SELECTED_CURRENCY],
   [SENTRY_DSN, process.env.REACT_APP_SENTRY_DSN],
 ].reduce(
@@ -80,6 +84,22 @@ export function getIpfsGateway() {
 
 export function setIpfsGateway(gateway) {
   return setLocalSetting(IPFS_GATEWAY, gateway)
+}
+
+export function getFeatherNode() {
+  return getLocalSetting(FEATHER_NODE, 'http://bzz.cool:3333')
+}
+
+export function setFeatherNode(node) {
+  return setLocalSetting(FEATHER_NODE, node)
+}
+
+export function getFeatherCacheEnabled() {
+  return getLocalSetting(FEATHER_CACHE_ENABLED, 'false') === 'true'
+}
+
+export function setFeatherCacheEnabled(enabled) {
+  return setLocalSetting(FEATHER_CACHE_ENABLED, enabled)
 }
 
 export function getSelectedCurrency() {
