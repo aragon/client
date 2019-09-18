@@ -12,7 +12,7 @@ import {
   textStyle,
 } from '@aragon/ui'
 
-const SEARCH_COMPACT = Symbol('compact')
+const SEARCH_CLOSED = Symbol('closed')
 const SEARCH_OPEN = Symbol('open')
 const EMPTY = ''
 
@@ -21,18 +21,18 @@ const Search = React.memo(function Search({ onChange, value }) {
   const compact = layoutName === 'small'
   const theme = useTheme()
 
-  const [mode, setMode] = useState(compact ? SEARCH_COMPACT : SEARCH_OPEN)
+  const [mode, setMode] = useState(compact ? SEARCH_CLOSED : SEARCH_OPEN)
   const open = useCallback(() => setMode(SEARCH_OPEN), [setMode])
   const clear = useCallback(() => {
-    setMode(compact ? SEARCH_COMPACT : SEARCH_OPEN)
+    setMode(compact ? SEARCH_CLOSED : SEARCH_OPEN)
     onChange({ currentTarget: { value: EMPTY } })
   }, [onChange, compact])
 
   useEffect(() => {
-    setMode(compact ? SEARCH_COMPACT : SEARCH_OPEN)
+    setMode(compact ? SEARCH_CLOSED : SEARCH_OPEN)
   }, [compact])
 
-  if (mode === SEARCH_COMPACT) {
+  if (mode === SEARCH_CLOSED) {
     return (
       <Button
         onClick={open}
