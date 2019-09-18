@@ -224,10 +224,10 @@ const Filters = React.memo(function Filters({
               css={`
                 ${compact &&
                   `
-                      width: ${5 * GU}px;
-                      min-width: unset;
-                      padding: 0;
-                    `}
+                    width: ${5 * GU}px;
+                    min-width: unset;
+                    padding: 0;
+                  `}
               `}
             >
               <IconDownload
