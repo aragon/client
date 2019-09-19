@@ -163,7 +163,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
 
           {template.modules && template.modules.length > 0 && (
             <Field
-              label="Required modules"
+              label="Required apps"
               css={`
                 height: 150px;
                 margin-bottom: ${4 * GU}px;
@@ -204,7 +204,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
           )}
           {template.optionalModules && template.optionalModules.length > 0 && (
             <Field
-              label="Optional modules"
+              label="Optional apps"
               css={`
                 height: 150px;
               `}
