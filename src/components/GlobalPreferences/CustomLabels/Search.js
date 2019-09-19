@@ -25,8 +25,14 @@ const Search = React.memo(function Search({ onChange, value }) {
   const open = useCallback(() => setMode(SEARCH_OPEN), [setMode])
   const clear = useCallback(() => {
     setMode(compact ? SEARCH_CLOSED : SEARCH_OPEN)
-    onChange({ currentTarget: { value: EMPTY } })
+    onChange(EMPTY)
   }, [onChange, compact])
+  const handleChange = useCallback(
+    ({ currentTarget: { value } }) => {
+      onChange(value)
+    },
+    [onChange]
+  )
 
   useEffect(() => {
     setMode(compact ? SEARCH_CLOSED : SEARCH_OPEN)
@@ -89,7 +95,7 @@ const Search = React.memo(function Search({ onChange, value }) {
         }
         adornmentPosition="end"
         placeholder="Search"
-        onChange={onChange}
+        onChange={handleChange}
         value={value}
         wide
         css={`
