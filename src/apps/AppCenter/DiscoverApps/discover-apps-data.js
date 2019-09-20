@@ -4,6 +4,8 @@ import surveyIcon from './icons/survey.svg'
 import pandoIcon from './icons/pando.svg'
 import openEnterpriseIcon from './icons/open-enterprise.svg'
 import redemptionsIcon from './icons/redemptions.svg'
+import tokenRequestIcon from './icons/token-request.svg'
+import timeLockIcon from './icons/time-lock.svg'
 import { shuffleArray } from '../../../utils'
 
 export const appsInDevelopment = [
@@ -68,7 +70,7 @@ export const appsInDevelopment = [
       link: 'https://github.com/pandonetwork/pando',
     },
     {
-      icon: null,
+      icon: tokenRequestIcon,
       name: 'Token Request',
       status: 'experimental',
       description: `
@@ -78,14 +80,14 @@ export const appsInDevelopment = [
       link: 'https://github.com/1Hive/token-request-app',
     },
     {
-      icon: null,
-      name: 'Lock',
+      icon: timeLockIcon,
+      name: 'Time Lock',
       status: 'experimental',
       description: `
         Require users to lock tokens for a configurable
         period of time in order to forward an intent
       `,
-      link: 'https://github.com/1Hive/lock-app',
+      link: 'https://github.com/1Hive/time-lock-app',
     },
   ]),
 ]
