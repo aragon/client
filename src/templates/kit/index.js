@@ -4,6 +4,7 @@ export {
   default as DomainField,
 } from '../../components/DomainField/DomainField'
 export { default as Duration } from './Duration'
+export { default as FundraisingScreen } from './screens/FundraisingScreen'
 export { default as Header } from '../../onboarding/Header/Header'
 export {
   default as IdentityBadge,
