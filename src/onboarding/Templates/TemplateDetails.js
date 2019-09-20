@@ -117,9 +117,9 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               )}
               {template.userGuideUrl && (
                 <Field label="User guide">
-                  <Link href={template.userGuide}>
+                  <Link href={template.userGuideUrl}>
                     {sanitizeCodeRepositoryUrl(
-                      stripUrlProtocol(template.userGuide)
+                      stripUrlProtocol(template.userGuideUrl)
                     )}
                   </Link>
                 </Field>
