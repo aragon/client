@@ -14,7 +14,13 @@ import {
   isAddress,
   useTheme,
 } from '@aragon/ui'
-import { Header, Navigation, IdentityBadge, ScreenPropsType } from '..'
+import {
+  KnownAppBadge,
+  Header,
+  Navigation,
+  IdentityBadge,
+  ScreenPropsType,
+} from '..'
 
 function useFieldsLayout() {
   // In its own hook to be adapted for smaller views
@@ -55,6 +61,7 @@ function validationError(tokenName, tokenSymbol, members) {
 function Tokens({
   accountStake,
   dataKey,
+  appLabel,
   screenProps: { back, data, next, screenIndex, screens },
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
@@ -192,7 +199,29 @@ function Tokens({
       <div>
         <Header
           title="Configure template"
-          subtitle="Choose your Tokens app settings below."
+          subtitle={
+            <span
+              css={`
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              `}
+            >
+              Choose your
+              <span
+                css={`
+                  display: flex;
+                  margin: 0 ${1.5 * GU}px;
+                `}
+              >
+                <KnownAppBadge
+                  appName="token-manager.aragonpm.eth"
+                  label={appLabel}
+                />
+              </span>
+              settings below.
+            </span>
+          }
         />
 
         <div
@@ -319,6 +348,7 @@ function Tokens({
 }
 
 Tokens.propTypes = {
+  appLabel: PropTypes.string,
   accountStake: PropTypes.number,
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
@@ -327,6 +357,7 @@ Tokens.propTypes = {
 Tokens.defaultProps = {
   accountStake: -1,
   dataKey: 'tokens',
+  appLabel: 'Tokens',
 }
 
 function MemberField({
