@@ -31,12 +31,12 @@ export default {
   sourceCodeUrl:
     'https://github.com/aragon/dao-templates/tree/templates-membership-v1.0.0/templates/membership',
   registry: 'aragonpm.eth',
-  modules: [
+  apps: [
     { appName: 'voting.aragonpm.eth', label: 'Voting' },
     { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
   ],
-  optionalModules: [{ appName: 'agent.aragonpm.eth', label: 'Agent' }],
+  optionalApps: [{ appName: 'agent.aragonpm.eth', label: 'Agent' }],
   screens: [
     [
       data => completeDomain(data.domain) || 'Claim domain',
@@ -87,8 +87,8 @@ export default {
     const financePeriod = 0 // default
     const hasPayroll = false
 
-    const { domain, optionalModules = [], tokens, voting } = data
-    const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
+    const { domain, optionalApps = [], tokens, voting } = data
+    const useAgentAsVault = optionalApps.includes('agent.aragonpm.eth')
 
     const { tokenName, tokenSymbol, members } = tokens
     const accounts = members.map(([account]) => account)

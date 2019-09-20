@@ -81,11 +81,11 @@ function useConfigureState(templates, onScreenUpdate) {
   )
 
   const selectTemplate = useCallback(
-    (templateId, optionalModules) => {
+    (templateId, optionalApps) => {
       updateTemplateScreen(templateId, 0)
       setTemplateData(data => ({
         ...data,
-        optionalModules,
+        optionalApps,
       }))
     },
     [updateTemplateScreen]
@@ -427,8 +427,8 @@ const Create = React.memo(function Create({
   )
 
   const handleUseTemplate = useCallback(
-    (id, optionalModules) => {
-      selectTemplate(id, optionalModules)
+    (id, optionalApps) => {
+      selectTemplate(id, optionalApps)
     },
     [selectTemplate]
   )
