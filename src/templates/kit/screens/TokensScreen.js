@@ -162,7 +162,11 @@ function Tokens({
             ([account, stake]) => isAddress(account) && stake > 0
           ),
         }
-        next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
+        next(
+          dataKey
+            ? { ...data, [dataKey]: screenData }
+            : { ...data, ...screenData }
+        )
       }
     },
     [data, dataKey, members, next, tokenName, tokenSymbol]
