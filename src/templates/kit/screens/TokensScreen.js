@@ -487,9 +487,18 @@ function formatReviewFields(screenData) {
       'Token name & symbol',
       `${screenData.tokenName} (${screenData.tokenSymbol})`,
     ],
-    ...screenData.members.map(([account], i) => [
+    ...screenData.members.map(([account, amount], i) => [
       `Tokenholder #${i + 1}`,
-      <IdentityBadge entity={account} />,
+      <div css="display: flex">
+        <IdentityBadge entity={account} />
+        <span
+          css={`
+            margin-left: ${2 * GU}px;
+          `}
+        >
+          {amount} {screenData.tokenSymbol}
+        </span>
+      </div>,
     ]),
   ]
 }
