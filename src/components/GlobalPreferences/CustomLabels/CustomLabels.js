@@ -10,11 +10,10 @@ import useFilterIdentities from './useFilterIdentities'
 import useSelectIdentities from './useSelectIdentities'
 import useIdentitiesActions from './useIdentitiesActions'
 import useLocalIdentityModal from './useLocalIdentityModal'
+import useSort from './useSort'
 
 function CustomLabels({ wrapper, dao, locator }) {
-  const { identities, sortIdentities, handleToggleSort } = useLocalIdentities(
-    wrapper
-  )
+  const { identities } = useLocalIdentities(wrapper)
   const {
     filteredIdentities,
     handleSearchTermChange,
@@ -50,6 +49,9 @@ function CustomLabels({ wrapper, dao, locator }) {
     () => handleSearchTermChange({ currentTarget: { value: '' } }),
     [handleSearchTermChange]
   )
+  const { sortedIdentities, sort, handleToggleSort } = useSort(
+    filteredIdentities
+  )
 
   return (
     <React.Fragment>
@@ -68,7 +70,7 @@ function CustomLabels({ wrapper, dao, locator }) {
       ) : (
         <LocalIdentities
           allSelected={allSelected}
-          identities={filteredIdentities}
+          identities={sortedIdentities}
           identitiesSelected={identitiesSelected}
           onClear={handleClearSearchTerm}
           onExport={handleExport}
@@ -82,7 +84,7 @@ function CustomLabels({ wrapper, dao, locator }) {
           searchTerm={searchTerm}
           onShowLocalIdentityModal={handleShowLocalIdentityModal}
           someSelected={someSelected}
-          sortIdentities={sortIdentities}
+          sort={sort}
         />
       )}
     </React.Fragment>
