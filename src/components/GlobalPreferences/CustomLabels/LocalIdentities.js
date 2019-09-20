@@ -26,7 +26,7 @@ import {
 import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import Import from './Import'
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
-import { ASC, DESC } from './useLocalIdentities'
+import { ASC, DESC } from './useSort'
 import { iOS } from '../../../utils'
 
 const LocalIdentities = React.memo(function LocalIdentities({
@@ -45,7 +45,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
   onToggleSort,
   searchTerm,
   someSelected,
-  sortIdentities,
+  sort,
 }) {
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
@@ -142,7 +142,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
               >
                 Custom label{' '}
               </span>
-              {sortIdentities === ASC ? (
+              {sort === ASC ? (
                 <IconArrowDown size="small" />
               ) : (
                 <IconArrowUp size="small" />
@@ -189,7 +189,7 @@ LocalIdentities.propTypes = {
   onToggleSort: PropTypes.func.isRequired,
   searchTerm: PropTypes.string.isRequired,
   someSelected: PropTypes.bool.isRequired,
-  sortIdentities: PropTypes.oneOf([ASC, DESC]).isRequired,
+  sort: PropTypes.oneOf([ASC, DESC]).isRequired,
 }
 
 const Filters = React.memo(function Filters({
