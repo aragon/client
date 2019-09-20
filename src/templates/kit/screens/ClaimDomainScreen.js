@@ -42,6 +42,8 @@ function ClaimDomainScreen({
     }
   }, [])
 
+  const nextScreen = screens[screenIndex + 1]
+
   return (
     <form>
       <Header title={screenTitle} />
@@ -80,8 +82,12 @@ function ClaimDomainScreen({
 
       <Navigation
         backEnabled
-        nextEnabled={Boolean(domain.trim())}
-        nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
+        nextEnabled={Boolean(nextScreen && domain.trim())}
+        nextLabel={
+          nextScreen
+            ? `Next: ${screens[screenIndex + 1][0]}`
+            : 'Launch your organization'
+        }
         onBack={back}
         onNext={handleSubmit}
       />
