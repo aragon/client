@@ -371,6 +371,8 @@ const Create = React.memo(function Create({
     templateScreenIndex,
   } = useConfigureState(templates, onScreenUpdate)
 
+  console.log(' TemplateData ', templateData)
+
   const configureSteps = getConfigureSteps(status, template, templateData)
   const templateScreens = (template && template.screens) || []
 

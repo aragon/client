@@ -13,6 +13,11 @@ import iconSvgRewards from './icons/rewards.svg'
 import iconSvgTokens from './icons/token-manager.svg'
 import iconSvgVault from './icons/vault.svg'
 import iconSvgVoting from './icons/voting.svg'
+import iconTimeLock from '../dandelion/config/icons/time-lock.svg'
+import iconTokenRequest from '../dandelion/config/icons/token-request.svg'
+import iconDissentVoting from '../dandelion/config/icons/dissent-voting.svg'
+import iconDelay from '../dandelion/config/icons/delay.svg'
+import iconRedemptions from '../dandelion/config/icons/redemptions.svg'
 
 const KNOWN_ICONS = new Map([
   ['address-book.aragonpm.eth', iconSvgAddressBook],
@@ -27,6 +32,11 @@ const KNOWN_ICONS = new Map([
   ['token-manager.aragonpm.eth', iconSvgTokens],
   ['vault.aragonpm.eth', iconSvgVault],
   ['voting.aragonpm.eth', iconSvgVoting],
+  ['token-request.aragonpm.eth', iconTokenRequest],
+  ['time-lock.aragonpm.eth', iconTimeLock],
+  ['dissent-voting.aragonpm.eth', iconDissentVoting],
+  ['delay.aragonpm.eth', iconDelay],
+  [('redemptions.aragonpm.eth', iconRedemptions)],
 ])
 
 function KnownAppBadge({ appName, compact, label }) {
