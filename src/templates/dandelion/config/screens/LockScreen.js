@@ -10,22 +10,40 @@ import PropTypes from 'prop-types'
 import {
   Field,
   GU,
+  theme,
   Help,
   Info,
+  Button,
   TextInput,
   useTheme,
   useViewport,
+  IconTrash,
 } from '@aragon/ui'
-import { Header, Navigation, ScreenPropsType } from '../../../kit'
+import {
+  Header,
+  Navigation,
+  ScreenPropsType,
+  PercentageField,
+} from '../../../kit'
 
 const MINUTE_IN_SECONDS = 60
 const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
 const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
+const SPAM_PENALTY_DEFAULT = 50
 
 const DEFAULT_DURATION = DAY_IN_SECONDS
 
 const DURATION_LABEL = 'lock duration'
 const DURATION_HELP_TEXT = `Lock Duration, The lock duration is the period of time that the tokens will be locked. `
+
+function useFieldsLayout() {
+  // In its own hook to be adapted for smaller views
+  return `
+    display: grid;
+    grid-template-columns: auto ${12 * GU}px;
+    grid-column-gap: ${1.5 * GU}px;
+  `
+}
 
 function validationError(duration) {
   if (duration < 10 * MINUTE_IN_SECONDS) {
@@ -38,6 +56,15 @@ function reduceFields(fields, [field, value]) {
   if (field === 'duration') {
     return { ...fields, duration: value }
   }
+  if (field === 'tokenAddress') {
+    return { ...fields, tokenAddress: value }
+  }
+  if (field === 'lockAmount') {
+    return { ...fields, lockAmount: value }
+  }
+  if (field === 'spamPenalty') {
+    return { ...fields, spamPenalty: value }
+  }
   return fields
 }
 
@@ -47,15 +74,44 @@ function LockScreen({
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
-  const [formError, setFormError] = useState()
+  const fieldsLayout = useFieldsLayout()
 
-  const [{ duration }, updateField] = useReducer(reduceFields, {
+  const [formError, setFormError] = useState()
+  // const [tokenAddress, setTokenAddress] = useState()
+
+  const [
+    { duration, tokenAddress, lockAmount, spamPenalty },
+    updateField,
+  ] = useReducer(reduceFields, {
     duration: screenData.duration || DEFAULT_DURATION,
+    tokenAddress: screenData.tokenAddress || '',
+    lockAmount: screenData.lockAmount || '',
+    spamPenalty: screenData.spamPenalty || SPAM_PENALTY_DEFAULT,
   })
 
   const handleDurationChange = useCallback(value => {
     setFormError(null)
     updateField(['duration', value])
+  }, [])
+
+  const handleTokenAddressChange = useCallback(event => {
+    setFormError(null)
+    updateField(['tokenAddress', event.target.value])
+  }, [])
+
+  const handleSpamPenaltyChange = useCallback(value => {
+    setFormError(null)
+    updateField(['spamPenalty', value])
+  }, [])
+
+  const handleLockAmountChange = useCallback(event => {
+    setFormError(null)
+    updateField(['lockAmount', event.target.value])
+  }, [])
+
+  const handleClearTokenAddress = useCallback(() => {
+    setFormError(null)
+    updateField(['tokenAddress', ''])
   }, [])
 
   const prevNextRef = useRef()
@@ -73,7 +129,7 @@ function LockScreen({
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [data, dataKey, duration, next]
+    [data, dataKey, duration, tokenAddress, lockAmount, next]
   )
 
   return (
@@ -89,12 +145,107 @@ function LockScreen({
         subtitle="Choose your time lock app settings below."
       />
 
+      <div
+        css={`
+          ${fieldsLayout};
+        `}
+      >
+        <Field
+          label={
+            <React.Fragment>
+              Token address
+              <Help hint="What’s the token address?">
+                <strong>Token address</strong> is the address of the token to be
+                locked.
+              </Help>
+            </React.Fragment>
+          }
+        >
+          <TextInput
+            adornment={
+              <span css="transform: translateY(1px)">
+                <Button
+                  display="icon"
+                  icon={
+                    <IconTrash
+                      css={`
+                        color: ${theme.negative};
+                      `}
+                    />
+                  }
+                  label="Remove"
+                  onClick={handleClearTokenAddress}
+                  size="mini"
+                />
+              </span>
+            }
+            adornmentPosition="end"
+            adornmentSettings={{ width: 52, padding: 8 }}
+            onChange={handleTokenAddressChange}
+            placeholder="Ethereum token address"
+            value={tokenAddress}
+            wide
+            css={`
+              padding-left: ${1 * GU}px;
+            `}
+          />
+        </Field>
+
+        <Field
+          label={
+            <React.Fragment>
+              Lock amount
+              <Help hint="What’s the lock amount?">
+                <strong>Lock amount</strong> is the amount of tokens to lock.
+              </Help>
+            </React.Fragment>
+          }
+        >
+          <TextInput
+            onChange={handleLockAmountChange}
+            value={lockAmount}
+            wide
+          />
+        </Field>
+      </div>
+
+      <PercentageField
+        label={
+          <React.Fragment>
+            Spam penalty %
+            <Help hint="What’s the spam penalty?">
+              <strong>Spam penalty</strong>
+            </Help>
+          </React.Fragment>
+        }
+        value={spamPenalty}
+        onChange={handleSpamPenaltyChange}
+      />
+
       <TimeConfig
         duration={duration}
         onUpdate={handleDurationChange}
         label={DURATION_LABEL}
         helpText={DURATION_HELP_TEXT}
       />
+
+      {/* <PercentageField
+        ref={handleSupportRef}
+        label={
+          <React.Fragment>
+            Spam penalty
+            <Help hint="What’s the support?">
+              <strong>Support</strong> is the percentage of votes on a proposal
+              that the total support must be greater than for the proposal to be
+              approved. For example, if “Support” is set to 51%, then more than
+              51% of the votes on a proposal must vote “Yes” for the proposal to
+              pass.
+            </Help>
+          </React.Fragment>
+        }
+        value={support}
+        onChange={handleSupportChange}
+      /> */}
 
       {formError && (
         <Info
@@ -112,8 +263,12 @@ function LockScreen({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        The lock duration is the period of time that the tokens needs to be
-        locked in order to forward an intent .
+        These settings will determine the token to be locked, how long tokens
+        are locked, the amount of tokens to lock and a penalty percentage for
+        spamming proposals. At initialization the token address parameter can be
+        set to an ERC20 token. It cannot be changed. If a change is necessary
+        the user can install a new instance and change permissions in the
+        organization to reflect the change.
       </Info>
 
       <Navigation
