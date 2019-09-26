@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useViewport, GU } from '@aragon/ui'
-import Templates from '../Templates/Templates'
+import Templates from '../templates/Templates'
 import ConfigureStepsPanel from './ConfigureStepsPanel'
 import ConfigureTemplateScreens from './ConfigureTemplateScreens'
 import * as CreateStatuses from '../Create/create-statuses'
