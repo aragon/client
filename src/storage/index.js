@@ -71,7 +71,7 @@ const pinataNode = (key, secret) => {
             pinata_secret_api_key: secret,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(json),
+          body: json,
         })
         const { IpfsHash } = await response.json()
         return { cid: IpfsHash }
@@ -82,8 +82,35 @@ const pinataNode = (key, secret) => {
 
 const getInfuraNode = () => {
   const getEndpoint = `https://ipfs.infura.io:5001/api/v0/dag/get?arg=`
-  const putEndpoint = `https://ipfs.infura.io:5001/api/v0/dag/put`
+  const putEndpoint = `https://ipfs.infura.io:5001/api/v0/dag/put?pin=true`
 
+  return {
+    dag: {
+      get: async cid => {
+        const url = `${getEndpoint}${cid}`
+        const response = await fetch(url, {
+          method: 'GET',
+        })
+        return response.json()
+      },
+      put: async json => {
+        let data = new FormData()
+        data.append('v0', JSON.stringify(json))
+        const response = await fetch(putEndpoint, {
+          method: 'POST',
+          body: data,
+        })
+        const { Cid } = await response.json()
+        return { cid: Cid['/'] }
+      },
+    },
+  }
+}
+
+const getAragonAssociationNode = () => {
+  const baseEndpoint = 'https://aragon-1.pinata.cloud:443/ipfs/api/v0'
+  const getEndpoint = `${baseEndpoint}/dag/get?arg=`
+  const putEndpoint = `${baseEndpoint}/dag/put?pin=true`
   return {
     dag: {
       get: async cid => {
@@ -117,7 +144,9 @@ export const createIpfsProvider = async (provider, uri = '', creds) => {
       }
     case 'infura':
       return getInfuraNode()
+    case 'aragon_association':
+      return getAragonAssociationNode()
     default:
-      return getInfuraNode()
+      return getAragonAssociationNode()
   }
 }
