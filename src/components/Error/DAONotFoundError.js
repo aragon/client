@@ -56,7 +56,7 @@ function DAONotFoundError({ dao }) {
               <React.Fragment>
                 the <strong>“{dao}”</strong> ENS domain
               </React.Fragment>
-            )}
+            )}{' '}
             on the Ethereum {network.name}.
           </div>
         </React.Fragment>
@@ -64,7 +64,7 @@ function DAONotFoundError({ dao }) {
       action={
         <Info css="text-align: left;">
           If you arrived here through a link, please double check that you were
-          given the correct link. Alternatively, you may
+          given the correct link. Alternatively, you may{' '}
           <Link onClick={() => (window.location = window.location.origin)}>
             create a new organization.
           </Link>

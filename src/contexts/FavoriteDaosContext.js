@@ -1,10 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import StoredList from '../StoredList'
-import { network } from '../environment'
+import React, { useContext } from 'react'
 import uniqby from 'lodash.uniqby'
+import PropTypes from 'prop-types'
+import { network } from '../environment'
+import StoredList from '../StoredList'
+import { addressesEqual } from '../web3-utils'
 
-const { Provider, Consumer } = React.createContext()
+const FavoriteDaosContext = React.createContext()
 
 const storedList = new StoredList(`favorite-daos:${network.type}`)
 
@@ -16,7 +17,7 @@ const filterFavoritesDaos = daos =>
         name: dao.name || '',
         address: dao.address,
       })),
-    dao => dao.address
+    dao => dao.address.toLowerCase()
   )
 
 class FavoriteDaosProvider extends React.Component {
@@ -42,17 +43,31 @@ class FavoriteDaosProvider extends React.Component {
 
   isAddressFavorited = address => {
     return (
-      this.state.favoriteDaos.findIndex(dao => dao.address === address) > -1
+      this.state.favoriteDaos.findIndex(dao =>
+        addressesEqual(dao.address, address)
+      ) > -1
     )
   }
 
+  addFavorite = dao => {
+    const daoIndex = this.state.favoriteDaos.findIndex(({ address }) =>
+      addressesEqual(address, dao.address)
+    )
+    if (daoIndex === -1) {
+      this.setState({
+        favoriteDaos: storedList.add({ name: dao.name, address: dao.address }),
+      })
+    }
+  }
+
   removeFavoriteByAddress = address => {
-    const daoIndex = this.state.favoriteDaos.findIndex(
-      dao => dao.address === address
+    const daoIndex = this.state.favoriteDaos.findIndex(({ address }) =>
+      addressesEqual(address, address)
     )
     if (daoIndex > -1) {
+      const favs = storedList.remove(daoIndex)
       this.setState({
-        favoriteDaos: storedList.remove(daoIndex),
+        favoriteDaos: favs,
       })
     }
   }
@@ -67,19 +82,25 @@ class FavoriteDaosProvider extends React.Component {
     const { children } = this.props
     const { favoriteDaos } = this.state
     return (
-      <Provider
+      <FavoriteDaosContext.Provider
         value={{
-          ...this.state,
           favoriteDaos,
+          addFavorite: this.addFavorite,
           isAddressFavorited: this.isAddressFavorited,
           removeFavoriteByAddress: this.removeFavoriteByAddress,
           updateFavoriteDaos: this.updateFavoriteDaos,
         }}
       >
         {children}
-      </Provider>
+      </FavoriteDaosContext.Provider>
     )
   }
 }
 
-export { FavoriteDaosProvider, Consumer as FavoriteDaosConsumer }
+function useFavoriteDaos() {
+  return useContext(FavoriteDaosContext)
+}
+
+const FavoriteDaosConsumer = FavoriteDaosContext.Consumer
+
+export { FavoriteDaosProvider, FavoriteDaosConsumer, useFavoriteDaos }

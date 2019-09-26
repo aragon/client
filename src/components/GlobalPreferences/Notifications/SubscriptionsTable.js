@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import {
@@ -15,6 +15,7 @@ import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { deleteSubscriptions } from './notification-service-api'
 import SubscriptionFilters from './SubscriptionFilters'
 import { DeleteSubscriptionConfirmationModal } from './NotificationModals'
+import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
 
 /**
  * Filters the subscriptions based on the search criteria
@@ -43,6 +44,8 @@ function filterSubscriptions({
   })
 }
 
+const DEFAULT_CONSTANT = -1
+
 const SubscriptionsTable = React.memo(function SubscriptionsTable({
   apps,
   apiError,
@@ -55,9 +58,11 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
 }) {
   const theme = useTheme()
 
-  const [selectedOrganization, setSelectedOrganization] = useState(-1)
-  const [selectedApp, setSelectedApp] = useState(-1)
-  const [selectedEvent, setSelectedEvent] = useState(-1)
+  const [selectedOrganization, setSelectedOrganization] = useState(
+    DEFAULT_CONSTANT
+  )
+  const [selectedApp, setSelectedApp] = useState(DEFAULT_CONSTANT)
+  const [selectedEvent, setSelectedEvent] = useState(DEFAULT_CONSTANT)
   const [selectedSubscriptions, setSelectedSubscriptions] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [deleteModalOpened, setDeleteModalOpened] = useState(false)
@@ -67,20 +72,20 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
   }, [])
   const onOrganizationChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedOrganization(idx)
+    setSelectedOrganization(idx || DEFAULT_CONSTANT)
   }, [])
   const onAppChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedApp(idx)
+    setSelectedApp(idx || DEFAULT_CONSTANT)
   }, [])
   const onEventChange = useCallback(idx => {
     setSelectedSubscriptions([])
-    setSelectedEvent(idx)
+    setSelectedEvent(idx || DEFAULT_CONSTANT)
   }, [])
   const onClearFilters = useCallback(() => {
-    setSelectedEvent(-1)
-    setSelectedApp(-1)
-    setSelectedOrganization(-1)
+    setSelectedEvent(DEFAULT_CONSTANT)
+    setSelectedApp(DEFAULT_CONSTANT)
+    setSelectedOrganization(DEFAULT_CONSTANT)
     // Reset selection when filters cleared
     setSelectedSubscriptions([])
   }, [])
@@ -92,21 +97,37 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
     setDeleteModalOpened(false)
   }, [])
 
-  const organizations = Array.from(
-    new Set(subscriptions.map(subscription => subscription.ensName))
+  const organizations = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.ensName)),
+  ]
+  const subscriptionApps = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.appName)),
+  ]
+  const events = [
+    'All',
+    ...new Set(subscriptions.map(subscription => subscription.eventName)),
+  ]
+  const filteredSubscriptions = useMemo(
+    () =>
+      filterSubscriptions({
+        subscriptions,
+        event: selectedEvent > 0 ? events[selectedEvent] : null,
+        appName: selectedApp > 0 ? subscriptionApps[selectedApp] : null,
+        organization:
+          selectedOrganization > 0 ? organizations[selectedOrganization] : null,
+      }),
+    [
+      events,
+      organizations,
+      selectedApp,
+      selectedEvent,
+      selectedOrganization,
+      subscriptionApps,
+      subscriptions,
+    ]
   )
-  const subscriptionApps = Array.from(
-    new Set(subscriptions.map(subscription => subscription.appName))
-  )
-  const events = Array.from(
-    new Set(subscriptions.map(subscription => subscription.eventName))
-  )
-  const filteredSubscriptions = filterSubscriptions({
-    subscriptions,
-    event: events[selectedEvent],
-    appName: subscriptionApps[selectedApp],
-    organization: organizations[selectedOrganization],
-  })
 
   const handleUnsubscribe = useCallback(
     async e => {
@@ -215,6 +236,7 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
               selectedOrganization={selectedOrganization}
               onOrganizationChange={onOrganizationChange}
               apps={subscriptionApps}
+              appsFull={apps}
               selectedApp={selectedApp}
               onAppChange={onAppChange}
               events={events}
@@ -231,12 +253,22 @@ const SubscriptionsTable = React.memo(function SubscriptionsTable({
           { appName, contractAddress, ensName, eventName },
           index,
           { selected, mode }
-        ) => [
-          <Label>{ensName}</Label>,
-          <Label>{appName}</Label>,
-          <LocalIdentityBadge entity={contractAddress} />,
-          <Label>{eventName}</Label>,
-        ]}
+        ) => {
+          const appLabel = (() => {
+            const app = apps.find(a => a.contractAddress === contractAddress)
+            if (!app) {
+              return appName
+            }
+            return <LocalLabelAppBadge app={app} apps={apps} />
+          })()
+
+          return [
+            <Label>{ensName}</Label>,
+            <Label>{appLabel} </Label>,
+            <LocalIdentityBadge entity={contractAddress} />,
+            <Label>{eventName}</Label>,
+          ]
+        }}
       />
       <DeleteSubscriptionConfirmationModal
         visible={deleteModalOpened}

@@ -12,11 +12,8 @@ const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
  * Onboarding:
  *
  * /
- * /setup/template
- * /setup/domain
- * /setup/configure/1
- * /setup/configure/2
- * /setup/registering
+ * /open
+ * /create
  *
  * App:
  *
@@ -37,19 +34,12 @@ export function parsePath(history, pathname, search = '') {
   const path = pathname + search
   const [, ...parts] = pathname.split('/')
 
-  // Start
-  if (!parts[0]) {
-    return { path, mode: APP_MODE_START, preferences: parsePreferences(search) }
-  }
-
-  // Setup
-  if (parts[0] === 'setup') {
-    const [, step = null, ...setupParts] = parts
+  // Onboarding
+  if (!parts[0] || parts[0] === 'open' || parts[0] === 'create') {
     return {
       path,
-      mode: APP_MODE_SETUP,
-      step,
-      parts: setupParts,
+      mode: parts[0] === 'create' ? APP_MODE_SETUP : APP_MODE_START,
+      action: parts[0],
       preferences: parsePreferences(search),
     }
   }
@@ -99,14 +89,24 @@ export function parsePath(history, pathname, search = '') {
   return completeLocator
 }
 
-// Return a path string for an app instance
+// Return a path string from a locator object.
 export function getAppPath({
   dao: fullDao,
   instanceId = 'home',
   localPath = '',
   params,
   search = '',
+  mode,
+  action,
 } = {}) {
+  if (mode === APP_MODE_SETUP) {
+    return '/create'
+  }
+
+  if (mode === APP_MODE_START) {
+    return `/${action}`
+  }
+
   if (!fullDao) {
     return `/${search}`
   }

@@ -4,7 +4,7 @@ import { Info, Link, GU } from '@aragon/ui'
 
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
-import providerString from '../../provider-strings'
+import { getProviderString } from '../../ethereum-providers'
 import { isElectron } from '../../utils'
 
 const Web3ProviderError = ({
@@ -82,7 +82,7 @@ export const AccountLocked = ({
   onRequestEnable,
   walletProviderId,
 }) => {
-  const providerMessage = providerString(
+  const providerMessage = getProviderString(
     'your Ethereum provider',
     walletProviderId
   )
@@ -94,7 +94,11 @@ export const AccountLocked = ({
       actionText={
         <span>
           Please unlock and{' '}
-          <Link onClick={onRequestEnable} css="font-weight: 600">
+          <Link
+            onClick={onRequestEnable}
+            focusRingSpacing={[3, 2]}
+            css="font-weight: 600"
+          >
             enable
           </Link>{' '}
           {providerMessage}.
@@ -124,7 +128,7 @@ export const WrongNetwork = ({
       You need to be connected to the ${networkType} network
     `}
     actionText={`
-      Please connect ${providerString(
+      Please connect ${getProviderString(
         'your Ethereum provider',
         walletProviderId
       )} to the ${networkType} network.

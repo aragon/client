@@ -13,6 +13,10 @@ import {
   ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_PENDING,
   ACTIVITY_STATUS_TIMED_OUT,
+  TRANSACTION_STATUS_ERROR,
+  TRANSACTION_STATUS_PENDING,
+  TRANSACTION_STATUS_SUCCESS,
+  TRANSACTION_STATUS_UPCOMING,
 } from './symbols'
 import { isAddress } from './web3-utils'
 
@@ -200,4 +204,49 @@ export const ReactSpringStateType = PropTypes.oneOf([
   'enter',
   'update',
   'leave',
+])
+
+// see ethereum-providers/
+export const EthereumProviderType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  connect: PropTypes.func.isRequired,
+  strings: PropTypes.object.isRequired,
+})
+
+// see templates/
+const OrgTemplateAppType = PropTypes.shape({
+  appName: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+})
+export const OrgTemplateType = PropTypes.shape({
+  apps: PropTypes.arrayOf(OrgTemplateAppType.isRequired),
+  caseStudyUrl: PropTypes.string,
+  description: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+  header: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  longDesc: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  optionalApps: PropTypes.arrayOf(OrgTemplateAppType.isRequired),
+  prepareTransactions: PropTypes.func,
+  registry: PropTypes.string,
+  screens: PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.func]))
+  ),
+  sourceCodeUrl: PropTypes.string,
+  userGuideUrl: PropTypes.string,
+})
+
+// The status of a single transaction (only used to deploy an org for now).
+// The “upcoming” status is used to indicate that the transaction is waiting
+// for another one to be mined before being processed.
+export const TransactionStatusType = PropTypes.oneOf([
+  TRANSACTION_STATUS_ERROR,
+  TRANSACTION_STATUS_PENDING,
+  TRANSACTION_STATUS_SUCCESS,
+  TRANSACTION_STATUS_UPCOMING,
 ])

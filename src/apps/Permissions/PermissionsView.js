@@ -5,17 +5,23 @@ import {
   ContextMenu,
   ContextMenuItem,
   DataView,
+  IconCirclePlus,
+  IconEdit,
   IconTrash,
+  IconView,
+  GU,
   textStyle,
   useLayout,
   useTheme,
 } from '@aragon/ui'
 import { usePermissions } from '../../contexts/PermissionsContext'
-import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
+import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
+import { getUnassignedEntity } from '../../permissions'
 import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
 const PermissionsView = React.memo(function PermissionsView({
   permissions,
+  onAssignPermission,
   onManageRole,
   heading,
   showApps,
@@ -51,13 +57,16 @@ const PermissionsView = React.memo(function PermissionsView({
       renderEntryExpansion={
         willRenderEntryExpansion ? renderEntryExpansion : undefined
       }
-      renderEntryActions={entry => renderEntryActions(entry, onManageRole)}
+      renderEntryActions={entry =>
+        renderEntryActions(entry, onAssignPermission, onManageRole)
+      }
     />
   )
 })
 
 PermissionsView.propTypes = {
   heading: PropTypes.node,
+  onAssignPermission: PropTypes.func.isRequired,
   onManageRole: PropTypes.func.isRequired,
   permissions: PropTypes.array.isRequired,
   showApps: PropTypes.bool.isRequired,
@@ -72,9 +81,9 @@ function renderEntry({ entities, app, role, manager }, showApps) {
     >
       {role.name}
     </span>,
-    <LocalIdentityBadge entity={app.proxyAddress} shorten />,
+    <LocalLabelAppBadge app={app} apps={[]} noIdentifier />,
     <EntryEntities entities={entities} />,
-    <PermissionsIdentityBadge entity={manager} />,
+    <EntityBadge entity={manager} />,
   ]
 
   if (!showApps) {
@@ -97,25 +106,87 @@ function renderEntryExpansion({ entities, app, role }) {
       ))
 }
 
-function renderEntryActions(entry, onManageRole) {
-  return <EntryActions entry={entry} onManageRole={onManageRole} />
+function renderEntryActions(entry, onAssignPermission, onManageRole) {
+  return (
+    <EntryActions
+      entry={entry}
+      onAssignPermission={onAssignPermission}
+      onManageRole={onManageRole}
+    />
+  )
 }
 
 /* eslint-disable react/prop-types */
-function EntryActions({ entry, onManageRole }) {
-  const { role, app } = entry
+function EntryActions({ entry, onAssignPermission, onManageRole }) {
+  const theme = useTheme()
+  const { revokePermission } = usePermissions()
+
+  const { app, entities, manager, role } = entry
   const { proxyAddress } = app
+  const { address: entityAddress } = entities[0] || {}
   const roleBytes = role.bytes
 
-  const handleManageRoleClick = useCallback(() => {
+  const handleManageRole = useCallback(() => {
     onManageRole(proxyAddress, roleBytes)
   }, [roleBytes, proxyAddress, onManageRole])
 
+  const handleRevokePermission = useCallback(() => {
+    revokePermission({ appAddress: proxyAddress, entityAddress, roleBytes })
+  }, [revokePermission, entityAddress, proxyAddress, roleBytes])
+
+  const actions = []
+  if (manager.type === 'burn') {
+    actions.push([handleManageRole, IconView, 'View permission'])
+  } else {
+    if (manager.type === 'unassigned') {
+      actions.push([
+        handleManageRole,
+        IconEdit,
+        entities.length > 0 ? 'Re-initialize permission' : 'Create permission',
+      ])
+    } else {
+      actions.push(
+        ...[
+          [handleManageRole, IconEdit, 'Manage role'],
+          [onAssignPermission, IconCirclePlus, 'Assign permission'],
+        ]
+      )
+    }
+
+    if (entities.length === 1 && entityAddress) {
+      actions.push([
+        handleRevokePermission,
+        IconTrash,
+        'Revoke permission',
+        theme.negative,
+      ])
+    }
+  }
+
   return (
-    <ContextMenu>
-      <ContextMenuItem onClick={handleManageRoleClick}>
-        Manage role
-      </ContextMenuItem>
+    <ContextMenu zIndex={2}>
+      {actions.map(([onClick, Icon, label, color], index) => (
+        <ContextMenuItem onClick={onClick} key={index}>
+          <span
+            css={`
+              position: relative;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: ${color || theme.surfaceContentSecondary};
+            `}
+          >
+            <Icon />
+          </span>
+          <span
+            css={`
+              margin-left: ${1 * GU}px;
+            `}
+          >
+            {label}
+          </span>
+        </ContextMenuItem>
+      ))}
     </ContextMenu>
   )
 }
@@ -142,7 +213,7 @@ function ChildEntity({ appAddress, entity, roleBytes }) {
         align-items: center;
       `}
     >
-      <PermissionsIdentityBadge entity={entityAddress} />
+      <EntityBadge entity={entity} />
       <ButtonIcon
         label="Revoke permission"
         mode="button"
@@ -161,7 +232,7 @@ function ChildEntity({ appAddress, entity, roleBytes }) {
 /* eslint-disable react/prop-types */
 function EntryEntities({ entities }) {
   if (entities.length === 1) {
-    return <PermissionsIdentityBadge entity={entities[0].address} />
+    return <EntityBadge entity={entities[0]} />
   }
 
   return (
@@ -170,9 +241,23 @@ function EntryEntities({ entities }) {
         ${textStyle('body2')}
       `}
     >
-      {entities.length === 0 ? 'Not assigned' : `${entities.length} entities`}
+      {entities.length === 0 ? (
+        <PermissionsIdentityBadge entity={getUnassignedEntity()} />
+      ) : (
+        `${entities.length} entities`
+      )}
     </span>
   )
+}
+/* eslint-enable react/prop-types */
+
+/* eslint-disable react/prop-types */
+function EntityBadge({ entity }) {
+  if (entity.type === 'app') {
+    return <LocalLabelAppBadge app={entity.app} apps={[]} noIdentifier />
+  }
+
+  return <PermissionsIdentityBadge entity={entity.address} />
 }
 /* eslint-enable react/prop-types */
 

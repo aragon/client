@@ -262,7 +262,7 @@ const ToggleDialogueButton = React.memo(({ open, onToggle }) => {
         ${below('medium') &&
           `
             position: absolute;
-            top: calc(-${DISC_BUTTON_HEIGHT}px - ${3 * GU}px);
+            top: calc(-${DISC_BUTTON_HEIGHT}px - ${2 * GU}px);
           `}
       `}
     >
@@ -502,7 +502,7 @@ const Header = styled.header`
 `
 
 const HeaderImage = styled.img`
-  width: 269px;
+  width: 300px;
   height: 139px;
   position: absolute;
   bottom: -6px;

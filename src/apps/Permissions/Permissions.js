@@ -4,10 +4,10 @@ import { AppType, AragonType } from '../../prop-types'
 import { Button, GU, Header, IconPlus, useLayout } from '@aragon/ui'
 import { addressesEqual, isAddress } from '../../web3-utils'
 import { usePermissions } from '../../contexts/PermissionsContext'
-import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import Home from './Home/Home'
+import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
 import AppPermissions from './AppPermissions'
 import AssignPermissionPanel from './AssignPermissionPanel'
+import Home from './Home/Home'
 import ManageRolePanel from './ManageRolePanel'
 
 const HOME_TABS = ['App permissions', 'System permissions']
@@ -166,10 +166,7 @@ function Permissions({
                 >
                   {`${location.app.name} permissions`}
                 </div>
-                <LocalIdentityBadge
-                  entity={location.app.proxyAddress}
-                  shorten
-                />
+                <LocalLabelAppBadge app={location.app} apps={[]} noIdentifier />
               </div>
             </Header.Title>
           ) : (
@@ -192,6 +189,7 @@ function Permissions({
         <Home
           apps={apps}
           appsLoading={appsLoading}
+          onAssignPermission={createPermission}
           onChangeTab={setHomeTab}
           onManageRole={manageRole}
           onOpenApp={openApp}
@@ -205,6 +203,7 @@ function Permissions({
         <AppPermissions
           app={location.app}
           loading={appsLoading}
+          onAssignPermission={createPermission}
           onBack={openHome}
           onManageRole={manageRole}
         />

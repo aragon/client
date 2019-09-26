@@ -145,7 +145,7 @@ export function NotificationsVerify({
         `}
         onClick={handleResetAccount}
       >
-        try to activate again
+        try to sign in again
       </Link>
       .
     </NotificationsInfoBox>
@@ -180,7 +180,7 @@ export function NotificationsPreVerify({ email, onEmailChange }) {
           `}
           onClick={handleResetEmail}
         >
-          Go back and try to activate again
+          Go back and try to sign in again
         </Link>
         .
       </p>

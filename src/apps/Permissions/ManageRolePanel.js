@@ -14,7 +14,7 @@ import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { isBurnEntity } from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
-import AppInstanceLabel from '../../components/AppInstanceLabel'
+import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
 import EntitySelector from './EntitySelector'
 import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
@@ -25,7 +25,7 @@ const SET_PERMISSION_MANAGER = Symbol('SET_PERMISSION_MANAGER')
 const REMOVE_PERMISSION_MANAGER = Symbol('REMOVE_PERMISSION_MANAGER')
 
 const UPDATE_ACTIONS = new Map([
-  [NO_UPDATE_ACTION, { label: 'Select an action', message: null }],
+  [NO_UPDATE_ACTION, { label: 'Select an update', message: null }],
   [
     SET_PERMISSION_MANAGER,
     {
@@ -179,7 +179,9 @@ class ManageRolePanel extends React.PureComponent {
     return false
   }
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault()
+
     const { newRoleManagerValue, assignEntityAddress } = this.state
     const {
       app,
@@ -250,9 +252,7 @@ class ManageRolePanel extends React.PureComponent {
       return 'No manager'
     }
     if (manager.type === 'app') {
-      return (
-        <AppInstanceLabel app={manager.app} proxyAddress={manager.address} />
-      )
+      return <LocalLabelAppBadge app={manager.app} apps={[]} noIdentifier />
     }
     return <PermissionsIdentityBadge entity={manager.address} />
   }
@@ -282,26 +282,27 @@ class ManageRolePanel extends React.PureComponent {
         onTransitionEnd={this.handlePanelTransitionEnd}
       >
         <form
+          onSubmit={this.handleSubmit}
           css={`
             margin-top: ${3 * GU}px;
           `}
         >
-          <Field label="App">
-            {app && (
-              <AppInstanceLabel app={app} proxyAddress={app.proxyAddress} />
-            )}
+          <Field label="On app">
+            {app && <LocalLabelAppBadge app={app} apps={[]} noIdentifier />}
           </Field>
 
-          <Field label="Action description">{role && role.name}</Field>
+          <Field label="Action">
+            {(role && role.name) || 'Unnamed permission'}
+          </Field>
 
           {(action === VIEW_PERMISSION || isUpdateAction) && (
-            <Field label="Manager">
+            <Field label="Managed by">
               <FlexRow>{this.renderManager()}</FlexRow>
             </Field>
           )}
 
           {isUpdateAction && (
-            <Field label="Action">
+            <Field label="Update">
               <DropDown
                 items={updateActionsItems}
                 selected={updateActionIndex}

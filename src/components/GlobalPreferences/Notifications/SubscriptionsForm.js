@@ -14,9 +14,9 @@ import { AppType } from '../../../prop-types'
 import PropTypes from 'prop-types'
 import memoize from 'lodash.memoize'
 import styled from 'styled-components'
-import { getEthNetworkType } from '../../../local-settings'
 import { createSubscription } from './notification-service-api'
 import notificationImage from './notification.png'
+import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
 
 const getEventNamesFromAbi = memoize(abi =>
   abi.filter(item => item.type === 'event').map(item => item.name)
@@ -98,19 +98,15 @@ export default function SubscriptionsForm({
       setIsSubmitting(true)
       const { abi, appName, proxyAddress } = selectedApp
       const eventName = eventNames[selectedEventIdx]
-
-      const abiSubset = [
-        abi.find(({ name, type }) => type === 'event' && name === eventName),
-      ]
+      const abiEventSubset = abi.filter(({ name, type }) => type === 'event')
 
       try {
         const payload = {
-          abi: abiSubset,
+          abi: abiEventSubset,
           appName,
           appContractAddress: proxyAddress,
           ensName: dao,
-          eventName: eventNames[selectedEventIdx],
-          network: getEthNetworkType(),
+          eventName,
           token,
         }
         await createSubscription(payload)
@@ -209,9 +205,9 @@ export default function SubscriptionsForm({
     )
   }
 
-  const appNames = subscribableApps.map(
-    app => `${app.name} ${app.identifier ? `(${app.identifier})` : ''}`
-  )
+  const appLabels = subscribableApps.map(app => {
+    return <LocalLabelAppBadge app={app} apps={apps} badgeOnly compact />
+  })
   const isSubscribeDisabled =
     selectedAppIdx === -1 || selectedEventIdx === -1 || isSubmitting
 
@@ -231,8 +227,9 @@ export default function SubscriptionsForm({
         </Label>
         <DropDown
           wide
+          header="App"
           placeholder="Select an App"
-          items={appNames}
+          items={appLabels}
           selected={selectedAppIdx}
           onChange={handleAppChange}
         />
@@ -274,7 +271,9 @@ export default function SubscriptionsForm({
           ) : (
             <IconMail
               css={`
-                color: ${theme.surfaceContentSecondary};
+                color: ${isSubscribeDisabled
+                  ? theme.disabledIcon
+                  : theme.accentContent};
                 margin-right: ${GU}px;
               `}
             />

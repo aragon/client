@@ -93,7 +93,9 @@ class AssignPermissionPanel extends React.PureComponent {
     return true
   }
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault()
+
     const { roleIndex, assignEntityAddress } = this.state
     const { grantPermission, onClose } = this.props
 
@@ -147,6 +149,7 @@ class AssignPermissionPanel extends React.PureComponent {
         onTransitionEnd={this.handlePanelTransitionEnd}
       >
         <form
+          onSubmit={this.handleSubmit}
           css={`
             margin-top: ${3 * GU}px;
           `}
@@ -164,7 +167,7 @@ class AssignPermissionPanel extends React.PureComponent {
           <EntitySelector
             includeAnyEntity
             apps={this.getNamedApps()}
-            label="Grant permission to"
+            label="Assign to entity"
             labelCustomAddress="Grant permission to"
             selectedIndex={assignEntityIndex}
             onChange={this.handleEntityChange}
@@ -172,7 +175,7 @@ class AssignPermissionPanel extends React.PureComponent {
           />
 
           {selectedApp && (
-            <Field label="To perform action">
+            <Field label="Action">
               <DropDown
                 placeholder="Select an action"
                 items={rolesItems}

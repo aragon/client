@@ -1,13 +1,15 @@
 import payrollIcon from './icons/payroll.svg'
-import espressoIcon from './icons/espresso.svg'
 import agentIcon from './icons/agent.svg'
 import surveyIcon from './icons/survey.svg'
 import pandoIcon from './icons/pando.svg'
 import openEnterpriseIcon from './icons/open-enterprise.svg'
+import redemptionsIcon from './icons/redemptions.svg'
+import tokenRequestIcon from './icons/token-request.svg'
+import timeLockIcon from './icons/time-lock.svg'
 import { shuffleArray } from '../../../utils'
 
 export const appsInDevelopment = [
-  // Ready
+  // Experimental
   ...shuffleArray([
     {
       icon: surveyIcon,
@@ -16,10 +18,6 @@ export const appsInDevelopment = [
       description: `Create multi-option signaling votes.`,
       link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
     },
-  ]),
-
-  // Experimental
-  ...shuffleArray([
     {
       icon: agentIcon,
       name: 'Agent',
@@ -42,6 +40,16 @@ export const appsInDevelopment = [
         'https://github.com/aragon/aragon-apps/tree/master/future-apps/payroll',
     },
     {
+      icon: redemptionsIcon,
+      name: 'Redemptions',
+      status: 'experimental',
+      description: `
+        Redeem tokens in exchange for a proportional
+        amount of the organization's eligible assets
+      `,
+      link: 'https://github.com/1Hive/redemptions-app',
+    },
+    {
       icon: openEnterpriseIcon,
       name: 'Open Enterprise',
       status: 'experimental',
@@ -61,29 +69,25 @@ export const appsInDevelopment = [
       `,
       link: 'https://github.com/pandonetwork/pando',
     },
-  ]),
-
-  // In development
-  ...shuffleArray([
     {
-      icon: espressoIcon,
-      name: 'Espresso',
-      status: 'in development',
+      icon: tokenRequestIcon,
+      name: 'Token Request',
+      status: 'experimental',
       description: `
-        Collaborative data vault.
-        Encrypt and share data with people in your organization.
+        Requests an organization's tokens in exchange
+        for payment
       `,
-      link: 'https://github.com/espresso-org',
+      link: 'https://github.com/1Hive/token-request-app',
     },
     {
-      icon: null,
-      name: 'Liquid democracy',
-      status: 'in development',
+      icon: timeLockIcon,
+      name: 'Time Lock',
+      status: 'experimental',
       description: `
-        Delegate your voting power to others,
-        and vote on important matters.
+        Require users to lock tokens for a configurable
+        period of time in order to forward an intent
       `,
-      link: 'https://github.com/aragonlabs/liquid-democracy',
+      link: 'https://github.com/1Hive/time-lock-app',
     },
   ]),
 ]
