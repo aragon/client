@@ -18,6 +18,7 @@ import {
   IconTrash,
   Info,
   TextInput,
+  SearchInput,
   useTheme,
   useLayout,
   useToast,
@@ -38,6 +39,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
   onImport,
   onRemove,
   onSearchChange,
+  setSearchTerm,
   onShare,
   onShowLocalIdentityModal,
   onToggleAll,
@@ -77,6 +79,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
           <Filters
             searchTerm={searchTerm}
             onSearchChange={onSearchChange}
+            setSearchTerm={setSearchTerm}
             onImport={onImport}
             onShare={onShare}
             onExport={onExport}
@@ -182,6 +185,7 @@ LocalIdentities.propTypes = {
   onImport: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func.isRequired,
+  setSearchTerm: PropTypes.func.isRequired,
   onShare: PropTypes.func.isRequired,
   onShowLocalIdentityModal: PropTypes.func.isRequired,
   onToggleAll: PropTypes.func.isRequired,
@@ -197,6 +201,7 @@ const Filters = React.memo(function Filters({
   onImport,
   onRemove,
   onSearchChange,
+  setSearchTerm,
   onShare,
   searchTerm,
   someSelected,
@@ -204,6 +209,10 @@ const Filters = React.memo(function Filters({
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
   const theme = useTheme()
+  const searchStyles = `
+    ${textStyle('body2')};
+    color: ${searchTerm.trim() ? theme.surfaceContent : theme.hint};
+  `
 
   return (
     <div
@@ -221,24 +230,35 @@ const Filters = React.memo(function Filters({
           position: relative;
         `}
       >
-        <TextInput
-          adornment={
-            <IconSearch
-              css={`
-                color: ${theme.surfaceOpened};
-              `}
-            />
-          }
-          adornmentPosition="end"
-          placeholder="Search"
-          onChange={onSearchChange}
-          value={searchTerm}
-          css={`
-            width: ${compact ? 25 * GU : 30 * GU}px;
-            ${textStyle('body2')};
-            color: ${searchTerm.trim() ? theme.surfaceContent : theme.hint};
-          `}
-        />
+        {compact ? (
+          <TextInput
+            adornment={
+              <IconSearch
+                css={`
+                  color: ${theme.surfaceOpened};
+                `}
+              />
+            }
+            adornmentPosition="end"
+            placeholder="Search"
+            onChange={onSearchChange}
+            value={searchTerm}
+            css={`
+              width: ${25 * GU}px;
+              ${searchStyles};
+            `}
+          />
+        ) : (
+          <SearchInput
+            onChange={setSearchTerm}
+            value={searchTerm}
+            placeholder="Search"
+            css={`
+              width: ${30 * GU}px;
+              ${searchStyles};
+            `}
+          />
+        )}
       </div>
       {!iOS && (
         <Import
@@ -288,6 +308,7 @@ Filters.propTypes = {
   onImport: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func.isRequired,
+  setSearchTerm: PropTypes.func.isRequired,
   onShare: PropTypes.func.isRequired,
   searchTerm: PropTypes.string.isRequired,
   someSelected: PropTypes.bool.isRequired,

@@ -17,6 +17,7 @@ function CustomLabels({ wrapper, dao, locator }) {
   const {
     filteredIdentities,
     handleSearchTermChange,
+    setSearchTerm,
     searchTerm,
   } = useFilterIdentities(identities)
   const {
@@ -77,6 +78,7 @@ function CustomLabels({ wrapper, dao, locator }) {
           onImport={handleImport}
           onRemove={handleRemoveModalOpen}
           onSearchChange={handleSearchTermChange}
+          setSearchTerm={setSearchTerm}
           onShare={handleShareModalOpen}
           onToggleAll={handleToggleAll}
           onToggleIdentity={handleToggleIdentity}
