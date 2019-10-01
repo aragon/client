@@ -39,7 +39,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
   onImport,
   onRemove,
   onSearchChange,
-  setSearchTerm,
+  onSearchTerm,
   onShare,
   onShowLocalIdentityModal,
   onToggleAll,
@@ -79,7 +79,7 @@ const LocalIdentities = React.memo(function LocalIdentities({
           <Filters
             searchTerm={searchTerm}
             onSearchChange={onSearchChange}
-            setSearchTerm={setSearchTerm}
+            onSearchTerm={onSearchTerm}
             onImport={onImport}
             onShare={onShare}
             onExport={onExport}
@@ -185,7 +185,7 @@ LocalIdentities.propTypes = {
   onImport: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func.isRequired,
-  setSearchTerm: PropTypes.func.isRequired,
+  onSearchTerm: PropTypes.func.isRequired,
   onShare: PropTypes.func.isRequired,
   onShowLocalIdentityModal: PropTypes.func.isRequired,
   onToggleAll: PropTypes.func.isRequired,
@@ -201,7 +201,7 @@ const Filters = React.memo(function Filters({
   onImport,
   onRemove,
   onSearchChange,
-  setSearchTerm,
+  onSearchTerm,
   onShare,
   searchTerm,
   someSelected,
@@ -250,7 +250,7 @@ const Filters = React.memo(function Filters({
           />
         ) : (
           <SearchInput
-            onChange={setSearchTerm}
+            onChange={onSearchTerm}
             value={searchTerm}
             placeholder="Search"
             css={`
@@ -308,7 +308,7 @@ Filters.propTypes = {
   onImport: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func.isRequired,
-  setSearchTerm: PropTypes.func.isRequired,
+  onSearchTerm: PropTypes.func.isRequired,
   onShare: PropTypes.func.isRequired,
   searchTerm: PropTypes.string.isRequired,
   someSelected: PropTypes.bool.isRequired,
