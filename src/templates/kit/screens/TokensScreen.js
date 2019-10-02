@@ -376,7 +376,7 @@ Tokens.defaultProps = {
   accountStake: -1,
   dataKey: 'tokens',
   appLabel: 'Tokens',
-  editMembers: false,
+  editMembers: true,
 }
 
 function MemberField({
