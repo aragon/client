@@ -4,6 +4,7 @@ import { GU, Help, Info } from '@aragon/ui'
 import {
   Duration,
   Header,
+  KnownAppBadge,
   Navigation,
   PercentageField,
   ScreenPropsType,
@@ -46,6 +47,7 @@ function reduceFields(fields, [field, value]) {
 }
 
 function VotingScreen({
+  appLabel,
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
 }) {
@@ -137,7 +139,26 @@ function VotingScreen({
     >
       <Header
         title="Configure template"
-        subtitle="Choose your Voting app settings below."
+        subtitle={
+          <span
+            css={`
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
+          >
+            Choose your
+            <span
+              css={`
+                display: flex;
+                margin: 0 ${1.5 * GU}px;
+              `}
+            >
+              <KnownAppBadge appName="voting.aragonpm.eth" label={appLabel} />
+            </span>
+            settings below.
+          </span>
+        }
       />
 
       <PercentageField
@@ -227,11 +248,13 @@ function VotingScreen({
 }
 
 VotingScreen.propTypes = {
+  appLabel: PropTypes.string,
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
 }
 
 VotingScreen.defaultProps = {
+  appLabel: 'Voting',
   dataKey: 'voting',
 }
 

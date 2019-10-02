@@ -15,10 +15,10 @@ import {
   useTheme,
 } from '@aragon/ui'
 import {
-  KnownAppBadge,
   Header,
-  Navigation,
   IdentityBadge,
+  KnownAppBadge,
+  Navigation,
   ScreenPropsType,
 } from '..'
 
