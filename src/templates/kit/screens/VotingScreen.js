@@ -165,7 +165,7 @@ function VotingScreen({
         ref={handleSupportRef}
         label={
           <React.Fragment>
-            Support
+            Support %
             <Help hint="What’s the support?">
               <strong>Support</strong> is the percentage of votes on a proposal
               that the total support must be greater than for the proposal to be
@@ -289,7 +289,7 @@ function formatDuration(duration) {
 
 function formatReviewFields(screenData) {
   return [
-    ['Support', `${screenData.support}%`],
+    ['Support %', `${screenData.support}%`],
     ['Minimum approval %', `${screenData.quorum}%`],
     ['Vote duration', formatDuration(screenData.duration)],
   ]
