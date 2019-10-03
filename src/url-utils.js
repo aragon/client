@@ -53,9 +53,9 @@ export function repoBaseUrl(repo, gateway = ipfsDefaultConf.gateway) {
   )
 }
 
-// Removes the HTTP protocol of a URL
+// Removes the HTTP protocol of a URL, and the final slash.
 export function stripUrlProtocol(url = '') {
-  return url.replace(/^https?:\/\//, '')
+  return url.replace(/^https?:\/\//, '').replace(/\/$/, '')
 }
 
 const CODE_REPO_SERVICES = [

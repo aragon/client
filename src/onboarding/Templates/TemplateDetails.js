@@ -117,9 +117,9 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               )}
               {template.userGuideUrl && (
                 <Field label="User guide">
-                  <Link href={template.userGuide}>
+                  <Link href={template.userGuideUrl}>
                     {sanitizeCodeRepositoryUrl(
-                      stripUrlProtocol(template.userGuide)
+                      stripUrlProtocol(template.userGuideUrl)
                     )}
                   </Link>
                 </Field>
@@ -165,7 +165,6 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
             <Field
               label="Required apps"
               css={`
-                height: 150px;
                 margin-bottom: ${4 * GU}px;
               `}
             >
@@ -209,47 +208,44 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                 height: 150px;
               `}
             >
-              {template.optionalApps.map(({ appName, label }, index) => (
-                <div
-                  key={index}
-                  css={`
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: ${2 * GU}px;
-
-                    & + & {
-                      margin-top: ${1.5 * GU}px;
-                    }
-                  `}
-                >
-                  <KnownAppBadge appName={appName} label={label} />
+              {() =>
+                template.optionalApps.map(({ appName, label }, index) => (
                   <div
+                    key={index}
                     css={`
                       display: flex;
-                      align-items: center;
-                      ${unselectable}
+                      justify-content: space-between;
+                      margin-top: ${2 * GU}px;
+
+                      & + & {
+                        margin-top: ${1.5 * GU}px;
+                      }
                     `}
                   >
-                    <Checkbox
-                      checked={templateOptionalApps[appName]}
-                      onChange={() => {
-                        setTemplateOptionalApps(apps => ({
-                          ...apps,
-                          [appName]: !apps[appName],
-                        }))
-                      }}
+                    <KnownAppBadge appName={appName} label={label} />
+                    <label
                       css={`
-                        margin-right: ${1.5 * GU}px;
-                        border-color: ${theme.hint};
-                        &:active {
-                          border-color: ${theme.hint};
-                        }
+                        display: flex;
+                        align-items: center;
                       `}
-                    />
-                    Include
+                    >
+                      <Checkbox
+                        checked={templateOptionalApps[appName]}
+                        onChange={() => {
+                          setTemplateOptionalApps(apps => ({
+                            ...apps,
+                            [appName]: !apps[appName],
+                          }))
+                        }}
+                        css={`
+                          margin-right: ${1.5 * GU}px;
+                        `}
+                      />
+                      Include
+                    </label>
                   </div>
-                </div>
-              ))}
+                ))
+              }
             </Field>
           )}
           {verticalMode && (
