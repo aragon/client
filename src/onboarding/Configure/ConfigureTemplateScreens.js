@@ -52,9 +52,6 @@ function ConfigureTemplateScreens({
           <AnimatedDiv
             style={{ opacity, transform, position }}
             css={`
-              display: grid;
-              align-items: center;
-              justify-content: center;
               top: 0;
               left: 0;
               right: 0;
@@ -62,6 +59,7 @@ function ConfigureTemplateScreens({
           >
             <div
               css={`
+                margin: 0 auto;
                 max-width: ${82 * GU}px;
                 padding: 0 ${3 * GU}px ${(below('medium') ? 9 : 3) * GU}px
                   ${3 * GU}px;

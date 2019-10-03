@@ -10,14 +10,14 @@ import useFilterIdentities from './useFilterIdentities'
 import useSelectIdentities from './useSelectIdentities'
 import useIdentitiesActions from './useIdentitiesActions'
 import useLocalIdentityModal from './useLocalIdentityModal'
+import useSort from './useSort'
 
 function CustomLabels({ wrapper, dao, locator }) {
-  const { identities, sortIdentities, handleToggleSort } = useLocalIdentities(
-    wrapper
-  )
+  const { identities } = useLocalIdentities(wrapper)
   const {
     filteredIdentities,
     handleSearchTermChange,
+    onSearchTerm,
     searchTerm,
   } = useFilterIdentities(identities)
   const {
@@ -46,9 +46,11 @@ function CustomLabels({ wrapper, dao, locator }) {
     wrapper,
   })
   const { handleShowLocalIdentityModal } = useLocalIdentityModal()
-  const handleClearSearchTerm = useCallback(
-    () => handleSearchTermChange({ currentTarget: { value: '' } }),
-    [handleSearchTermChange]
+  const handleClearSearchTerm = useCallback(() => handleSearchTermChange(''), [
+    handleSearchTermChange,
+  ])
+  const { sortedIdentities, sort, handleToggleSort } = useSort(
+    filteredIdentities
   )
 
   return (
@@ -68,13 +70,14 @@ function CustomLabels({ wrapper, dao, locator }) {
       ) : (
         <LocalIdentities
           allSelected={allSelected}
-          identities={filteredIdentities}
+          identities={sortedIdentities}
           identitiesSelected={identitiesSelected}
           onClear={handleClearSearchTerm}
           onExport={handleExport}
           onImport={handleImport}
           onRemove={handleRemoveModalOpen}
           onSearchChange={handleSearchTermChange}
+          onSearchTerm={onSearchTerm}
           onShare={handleShareModalOpen}
           onToggleAll={handleToggleAll}
           onToggleIdentity={handleToggleIdentity}
@@ -82,7 +85,7 @@ function CustomLabels({ wrapper, dao, locator }) {
           searchTerm={searchTerm}
           onShowLocalIdentityModal={handleShowLocalIdentityModal}
           someSelected={someSelected}
-          sortIdentities={sortIdentities}
+          sort={sort}
         />
       )}
     </React.Fragment>

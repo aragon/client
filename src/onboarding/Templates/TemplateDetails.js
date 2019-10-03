@@ -21,14 +21,14 @@ import KnownAppBadge from '../../templates/kit/KnownAppBadge'
 function TemplateDetails({ template, visible, onUse, onClose }) {
   const theme = useTheme()
   const { above, below, width } = useViewport()
-  const [templateOptionalModules, setTemplateOptionalModules] = useState({})
+  const [templateOptionalApps, setTemplateOptionalApps] = useState({})
 
   const handleUseClick = useCallback(() => {
-    const selectedOptionalModules = Object.entries(templateOptionalModules)
+    const selectedOptionalApps = Object.entries(templateOptionalApps)
       .filter(([_, value]) => Boolean(value))
       .map(([appName]) => appName)
-    onUse(template.id, selectedOptionalModules)
-  }, [onUse, template, templateOptionalModules])
+    onUse(template.id, selectedOptionalApps)
+  }, [onUse, template, templateOptionalApps])
 
   const handleSectionRef = useCallback(element => {
     if (element) {
@@ -117,9 +117,9 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               )}
               {template.userGuideUrl && (
                 <Field label="User guide">
-                  <Link href={template.userGuide}>
+                  <Link href={template.userGuideUrl}>
                     {sanitizeCodeRepositoryUrl(
-                      stripUrlProtocol(template.userGuide)
+                      stripUrlProtocol(template.userGuideUrl)
                     )}
                   </Link>
                 </Field>
@@ -161,15 +161,14 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
             Template configuration
           </h2>
 
-          {template.modules && template.modules.length > 0 && (
+          {template.apps && template.apps.length > 0 && (
             <Field
-              label="Required modules"
+              label="Required apps"
               css={`
-                height: 150px;
                 margin-bottom: ${4 * GU}px;
               `}
             >
-              {template.modules.map(({ appName, label }, index) => (
+              {template.apps.map(({ appName, label }, index) => (
                 <div
                   key={index}
                   css={`
@@ -202,54 +201,51 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               ))}
             </Field>
           )}
-          {template.optionalModules && template.optionalModules.length > 0 && (
+          {template.optionalApps && template.optionalApps.length > 0 && (
             <Field
-              label="Optional modules"
+              label="Optional apps"
               css={`
                 height: 150px;
               `}
             >
-              {template.optionalModules.map(({ appName, label }, index) => (
-                <div
-                  key={index}
-                  css={`
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: ${2 * GU}px;
-
-                    & + & {
-                      margin-top: ${1.5 * GU}px;
-                    }
-                  `}
-                >
-                  <KnownAppBadge appName={appName} label={label} />
+              {() =>
+                template.optionalApps.map(({ appName, label }, index) => (
                   <div
+                    key={index}
                     css={`
                       display: flex;
-                      align-items: center;
-                      ${unselectable}
+                      justify-content: space-between;
+                      margin-top: ${2 * GU}px;
+
+                      & + & {
+                        margin-top: ${1.5 * GU}px;
+                      }
                     `}
                   >
-                    <Checkbox
-                      checked={templateOptionalModules[appName]}
-                      onChange={() => {
-                        setTemplateOptionalModules(modules => ({
-                          ...modules,
-                          [appName]: !modules[appName],
-                        }))
-                      }}
+                    <KnownAppBadge appName={appName} label={label} />
+                    <label
                       css={`
-                        margin-right: ${1.5 * GU}px;
-                        border-color: ${theme.hint};
-                        &:active {
-                          border-color: ${theme.hint};
-                        }
+                        display: flex;
+                        align-items: center;
                       `}
-                    />
-                    Include
+                    >
+                      <Checkbox
+                        checked={templateOptionalApps[appName]}
+                        onChange={() => {
+                          setTemplateOptionalApps(apps => ({
+                            ...apps,
+                            [appName]: !apps[appName],
+                          }))
+                        }}
+                        css={`
+                          margin-right: ${1.5 * GU}px;
+                        `}
+                      />
+                      Include
+                    </label>
                   </div>
-                </div>
-              ))}
+                ))
+              }
             </Field>
           )}
           {verticalMode && (

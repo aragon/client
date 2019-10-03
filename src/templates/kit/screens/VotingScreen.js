@@ -1,22 +1,14 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-  useRef,
-} from 'react'
+import React, { useCallback, useReducer, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
+import { GU, Help, Info } from '@aragon/ui'
 import {
-  Field,
-  GU,
-  Help,
-  Info,
-  TextInput,
-  useTheme,
-  useViewport,
-} from '@aragon/ui'
-import { Header, PercentageField, Navigation, ScreenPropsType } from '..'
+  Duration,
+  Header,
+  KnownAppBadge,
+  Navigation,
+  PercentageField,
+  ScreenPropsType,
+} from '..'
 
 const MINUTE_IN_SECONDS = 60
 const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
@@ -55,6 +47,7 @@ function reduceFields(fields, [field, value]) {
 }
 
 function VotingScreen({
+  appLabel,
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
 }) {
@@ -126,7 +119,7 @@ function VotingScreen({
           quorum: Math.floor(quorum),
           duration,
         }
-        next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
+        next({ ...data, ...(dataKey ? { [dataKey]: screenData } : screenData) })
       }
     },
     [data, dataKey, duration, isPercentageFieldFocused, next, quorum, support]
@@ -142,14 +135,33 @@ function VotingScreen({
     >
       <Header
         title="Configure template"
-        subtitle="Choose your Voting app settings below."
+        subtitle={
+          <span
+            css={`
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
+          >
+            Choose your
+            <span
+              css={`
+                display: flex;
+                margin: 0 ${1.5 * GU}px;
+              `}
+            >
+              <KnownAppBadge appName="voting.aragonpm.eth" label={appLabel} />
+            </span>
+            settings below.
+          </span>
+        }
       />
 
       <PercentageField
         ref={handleSupportRef}
         label={
           <React.Fragment>
-            Support
+            Support %
             <Help hint="What’s the support?">
               <strong>Support</strong> is the percentage of votes on a proposal
               that the total support must be greater than for the proposal to be
@@ -182,7 +194,21 @@ function VotingScreen({
         onChange={handleQuorumChange}
       />
 
-      <VoteDuration duration={duration} onUpdate={handleDurationChange} />
+      <Duration
+        duration={duration}
+        onUpdate={handleDurationChange}
+        label={
+          <React.Fragment>
+            Vote duration
+            <Help hint="What’s the vote duration?">
+              <strong>Vote Duration</strong> is the length of time that the vote
+              will be open for participation. For example, if the Vote Duration
+              is set to 24 hours, then tokenholders have 24 hours to participate
+              in the vote.
+            </Help>
+          </React.Fragment>
+        }
+      />
 
       {formError && (
         <Info
@@ -218,148 +244,14 @@ function VotingScreen({
 }
 
 VotingScreen.propTypes = {
+  appLabel: PropTypes.string,
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
 }
 
 VotingScreen.defaultProps = {
+  appLabel: 'Voting',
   dataKey: 'voting',
-}
-
-function VoteDuration({ duration = 0, onUpdate }) {
-  const theme = useTheme()
-  const { above } = useViewport()
-
-  // Calculate the units based on the initial duration (in seconds).
-  const [baseDays, baseHours, baseMinutes] = useMemo(() => {
-    let remaining = duration
-
-    const days = Math.floor(remaining / DAY_IN_SECONDS)
-    remaining -= days * DAY_IN_SECONDS
-
-    const hours = Math.floor(remaining / HOUR_IN_SECONDS)
-    remaining -= hours * HOUR_IN_SECONDS
-
-    const minutes = Math.floor(remaining / MINUTE_IN_SECONDS)
-    remaining -= minutes * MINUTE_IN_SECONDS
-
-    return [days, hours, minutes]
-  }, [duration])
-
-  // Local units state − updated from the initial duration if needed.
-  const [minutes, setMinutes] = useState(baseMinutes)
-  const [hours, setHours] = useState(baseHours)
-  const [days, setDays] = useState(baseDays)
-
-  // If any of the units change, call onUpdate() with the updated duration,
-  // so that it can get updated if the “next” button gets pressed.
-  useEffect(() => {
-    onUpdate(
-      minutes * MINUTE_IN_SECONDS +
-        hours * HOUR_IN_SECONDS +
-        days * DAY_IN_SECONDS
-    )
-  }, [onUpdate, minutes, hours, days])
-
-  // Invoked by handleDaysChange etc. to update a local unit.
-  const updateLocalUnit = useCallback((event, stateSetter) => {
-    const value = Number(event.target.value)
-    if (!isNaN(value)) {
-      stateSetter(value)
-    }
-  }, [])
-
-  const handleDaysChange = useCallback(
-    event => updateLocalUnit(event, setDays),
-    [updateLocalUnit]
-  )
-  const handleHoursChange = useCallback(
-    event => updateLocalUnit(event, setHours),
-    [updateLocalUnit]
-  )
-  const handleMinutesChange = useCallback(
-    event => updateLocalUnit(event, setMinutes),
-    [updateLocalUnit]
-  )
-
-  return (
-    <Field
-      label={
-        <React.Fragment>
-          vote duration
-          <Help hint="What’s the vote duration?">
-            <strong>Vote Duration</strong> is the length of time that the vote
-            will be open for participation. For example, if the Vote Duration is
-            set to 24 hours, then tokenholders have 24 hours to participate in
-            the vote.
-          </Help>
-        </React.Fragment>
-      }
-    >
-      {({ id }) => (
-        <div
-          css={`
-            display: flex;
-            padding-top: ${0.5 * GU}px;
-            width: 100%;
-          `}
-        >
-          {[
-            ['Days', handleDaysChange, days],
-            ['Hours', handleHoursChange, hours],
-            [
-              above('medium') ? 'Minutes' : 'Min.',
-              handleMinutesChange,
-              minutes,
-            ],
-          ].map(([label, handler, value], index) => (
-            <div
-              key={label}
-              css={`
-                flex-grow: 1;
-                max-width: ${17 * GU}px;
-                & + & {
-                  margin-left: ${2 * GU}px;
-                }
-              `}
-            >
-              <TextInput
-                id={index === 0 ? id : undefined}
-                adornment={
-                  <span
-                    css={`
-                      padding: 0 ${2 * GU}px;
-                      color: ${theme.contentSecondary};
-                    `}
-                  >
-                    {label}
-                  </span>
-                }
-                adornmentPosition="end"
-                adornmentSettings={{
-                  width: 8 * GU,
-                  padding: 0,
-                }}
-                onChange={handler}
-                value={value}
-                wide
-                css="text-align: center"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </Field>
-  )
-}
-
-VoteDuration.propTypes = {
-  duration: PropTypes.number,
-  onUpdate: PropTypes.func.isRequired,
-}
-
-VoteDuration.defaultProps = {
-  duration: 0,
 }
 
 function formatDuration(duration) {
@@ -393,7 +285,7 @@ function formatDuration(duration) {
 
 function formatReviewFields(screenData) {
   return [
-    ['Support', `${screenData.support}%`],
+    ['Support %', `${screenData.support}%`],
     ['Minimum approval %', `${screenData.quorum}%`],
     ['Vote duration', formatDuration(screenData.duration)],
   ]

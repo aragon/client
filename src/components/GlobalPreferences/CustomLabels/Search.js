@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useMemo, useEffect, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -7,6 +7,7 @@ import {
   IconCross,
   IconSearch,
   TextInput,
+  SearchInput,
   useTheme,
   useLayout,
   textStyle,
@@ -37,6 +38,15 @@ const Search = React.memo(function Search({ onChange, value }) {
   useEffect(() => {
     setMode(compact ? SEARCH_CLOSED : SEARCH_OPEN)
   }, [compact])
+
+  const searchStyles = useMemo(
+    () =>
+      `
+        ${textStyle('body2')};
+        color: ${value.trim() ? theme.surfaceContent : theme.hint};
+      `,
+    [value, theme]
+  )
 
   if (mode === SEARCH_CLOSED) {
     return (
@@ -75,9 +85,9 @@ const Search = React.memo(function Search({ onChange, value }) {
           : ''}
       `}
     >
-      <TextInput
-        adornment={
-          compact || value.trim() !== EMPTY ? (
+      {compact ? (
+        <TextInput
+          adornment={
             <ButtonIcon label="Clear search" onClick={clear}>
               <IconCross
                 css={`
@@ -85,25 +95,28 @@ const Search = React.memo(function Search({ onChange, value }) {
                 `}
               />
             </ButtonIcon>
-          ) : (
-            <IconSearch
-              css={`
-                color: ${theme.surfaceOpened};
-              `}
-            />
-          )
-        }
-        adornmentPosition="end"
-        placeholder="Search"
-        onChange={handleChange}
-        value={value}
-        wide
-        css={`
-          max-width: ${compact ? 'unset' : 30 * GU}px;
-          ${textStyle('body2')};
-          color: ${value.trim() ? theme.surfaceContent : theme.hint};
-        `}
-      />
+          }
+          adornmentPosition="end"
+          placeholder="Search"
+          onChange={handleChange}
+          value={value}
+          wide
+          css={`
+            max-width: unset;
+            ${searchStyles};
+          `}
+        />
+      ) : (
+        <SearchInput
+          onChange={onChange}
+          value={value}
+          placeholder="Search"
+          css={`
+            width: ${30 * GU}px;
+            ${searchStyles};
+          `}
+        />
+      )}
     </div>
   )
 })
