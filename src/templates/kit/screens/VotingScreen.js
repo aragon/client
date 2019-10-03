@@ -119,11 +119,7 @@ function VotingScreen({
           quorum: Math.floor(quorum),
           duration,
         }
-        next(
-          dataKey
-            ? { ...data, [dataKey]: screenData }
-            : { ...data, ...screenData }
-        )
+        next({ ...data, ...(dataKey ? { [dataKey]: screenData } : screenData) })
       }
     },
     [data, dataKey, duration, isPercentageFieldFocused, next, quorum, support]
