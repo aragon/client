@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
+import { Decimal } from 'decimal.js'
 import {
   ClaimDomainScreen,
   FundraisingScreen,
@@ -8,16 +9,124 @@ import {
   TokensScreen,
   VotingScreen,
 } from '../kit'
-
+import BoardInfo from './components/BoardInfo'
+import ShareInfo from './components/ShareInfo'
 import header from './header.svg'
 import icon from './icon.svg'
+
+function BN(value) {
+  return new Decimal(value)
+}
+
+const PPM = BN(10).pow(BN(6))
+const oneDay = BN(24).mul(BN(3600))
+const oneMonth = BN(30).mul(oneDay)
+const oneDAI = BN(10).pow(BN(18))
+const onePercent = BN(10).pow(BN(16))
+const onePercentPPM = BN(10).pow(BN(4))
+const oneBlock = BN(15)
+const one = BN(1)
+const two = BN(2)
 
 function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
 }
 
+function extractVotingSettings(voting) {
+  const support = onePercent.mul(BN(voting.support)).toFixed(0)
+  const quorum = onePercent.mul(BN(voting.quorum)).toFixed(0)
+  const duration = BN(voting.duration).toFixed(0)
+
+  return [support, quorum, duration]
+}
+
+function extractFundraisingAppsSettings(fundraising) {
+  const goal = oneDAI.mul(BN(fundraising.targetGoal)).toFixed(0)
+  const period = oneDay.mul(BN(fundraising.fundingPeriod)).toFixed(0)
+  const exchangeRate = PPM.div(BN(fundraising.presalePrice)).toFixed(0)
+  const vestingCliffPeriod = oneDay.mul(BN(fundraising.cliffPeriod)).toFixed(0)
+  const vestingCompletePeriod = oneDay
+    .mul(BN(fundraising.vestingSchedule))
+    .toFixed(0)
+  const maximumMonthlyUpdates = onePercent
+    .mul(BN(fundraising.maximumMonthlyUpdates))
+    .toFixed(0)
+  const supplyOfferedPct = onePercentPPM
+    .mul(BN(fundraising.tokensOffered))
+    .toFixed(0)
+  const fundingForBeneficiaryPct = onePercentPPM
+    .mul(BN(fundraising.projectFunding))
+    .toFixed(0)
+
+  return {
+    goal,
+    period,
+    exchangeRate,
+    vestingCliffPeriod,
+    vestingCompletePeriod,
+    maximumMonthlyUpdates,
+    supplyOfferedPct,
+    fundingForBeneficiaryPct,
+  }
+}
+
+function extractCollateralizationSettings(fundraising) {
+  const cwDAI = BN(0.1)
+
+  const slippages = [
+    BN(fundraising.slippageDai)
+      .mul(onePercent)
+      .toFixed(0),
+    BN(fundraising.slippageAnt)
+      .mul(onePercent)
+      .toFixed(0),
+  ]
+  const tapRate = BN(fundraising.tapRate)
+    .mul(oneDAI)
+    .div(oneMonth)
+    .mul(oneBlock)
+    .toFixed(0)
+  const tapFloor = oneDAI.mul(BN(fundraising.tapFloor)).toFixed(0)
+
+  const xRate = one.div(BN(fundraising.presalePrice))
+  const goal = BN(fundraising.targetGoal).times(oneDAI)
+  const growth = BN(fundraising.expectedGrowth)
+  const pctOffered = BN(fundraising.tokensOffered).div(BN(100))
+  const pctBeneficiary = BN(fundraising.projectFunding).div(BN(100))
+
+  const sSupply = goal.times(xRate).div(pctOffered)
+  const sBalance = goal.times(one.minus(pctBeneficiary))
+  const sPrice = BN(fundraising.initialPricePerShare)
+  const sMarketCap = sSupply.times(sPrice)
+
+  const eMarketCap = sMarketCap.times(growth)
+  const ePrice = sPrice.times(growth.squareRoot())
+
+  const ppSupplyDAI = ePrice
+    .div(eMarketCap.pow(one.minus(cwDAI)).times(sPrice.pow(cwDAI)))
+    .pow(one.div(cwDAI.minus(one)))
+  const vSupplyDAI = ppSupplyDAI.minus(sSupply)
+
+  const ppBalanceDAI = sPrice.times(ppSupplyDAI).times(cwDAI)
+  const vBalanceDAI = ppBalanceDAI.minus(sBalance)
+
+  const virtualSupplies = [vSupplyDAI.toFixed(0), vSupplyDAI.toFixed(0)]
+  const virtualBalances = [
+    vBalanceDAI.toFixed(0),
+    vBalanceDAI.div(BN(10)).toFixed(0),
+  ]
+
+  return {
+    virtualSupplies,
+    virtualBalances,
+    slippages,
+    tapRate,
+    tapFloor,
+  }
+}
+
 export default {
-  id: 'fundraising',
+  id: 'fundraising-multisig-template.aragonpm.eth',
   name: 'Fundraising',
   header,
   icon,
@@ -29,46 +138,76 @@ export default {
   sourceCodeUrl: 'https://github.com/AragonBlack/fundraising',
   registry: 'aragonpm.eth',
   apps: [
-    { appName: 'voting.aragonpm.eth', label: 'Voting' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens ANT' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens DAI' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Board Token' },
+    { appName: 'voting.aragonpm.eth', label: 'Board Voting [Multisig]' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Share Token' },
+    { appName: 'voting.aragonpm.eth', label: 'Share Voting [Democracy]' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
+    { appName: 'agent.aragonpm.eth', label: 'Agent [Reserve Pool]' },
+    { appName: 'presale.aragonpm.eth', label: 'Presale' },
+    {
+      appName: 'batched-bancor-market-maker.aragonpm.eth',
+      label: 'Market Maker [Batched Bancor]',
+    },
+    { appName: 'tap.aragonpm.eth', label: 'Tap' },
+    {
+      appName: 'aragon-fundraising.aragonpm.eth',
+      label: 'Aragon Fundraising [API]',
+    },
   ],
-  optionalApps: [
-    { appName: 'payroll.aragonpm.eth', label: 'Payroll' },
-    { appName: 'agent.aragonpm.eth', label: 'Agent' },
-  ],
+  optionalApps: [],
   screens: [
     [
       data => completeDomain(data.domain) || 'Claim domain',
       props => <ClaimDomainScreen screenProps={props} />,
     ],
-    ['Configure template', props => <FundraisingScreen screenProps={props} />],
-    ['Configure template', props => <VotingScreen screenProps={props} />],
+    ['Configure board', props => <BoardInfo screenProps={props} />],
     [
-      'Configure template',
+      'Configure board',
       props => (
         <TokensScreen
-          appLabel="Tokens ANT"
-          dataKey="tokensAnt"
+          appLabel="Board Token"
+          dataKey="boardToken"
           screenProps={props}
+          accountStake={1}
         />
       ),
     ],
     [
-      'Configure template',
+      'Configure board',
+      props => <VotingScreen dataKey="boardVoting" screenProps={props} />,
+    ],
+    ['Configure shareholders', props => <ShareInfo screenProps={props} />],
+    [
+      'Configure shareholders',
       props => (
         <TokensScreen
-          appLabel="Tokens DAI"
-          dataKey="tokensDai"
+          appLabel="Share Token"
+          dataKey="shareToken"
           screenProps={props}
+          editMembers={false}
         />
       ),
+    ],
+    [
+      'Configure shareholders',
+      props => <VotingScreen dataKey="shareVoting" screenProps={props} />,
+    ],
+    [
+      'Configure fundraising',
+      props => <FundraisingScreen screenProps={props} />,
     ],
     [
       'Review information',
       props => {
-        const { domain, voting, tokensAnt, tokensDai, fundraising } = props.data
+        const {
+          domain,
+          boardToken,
+          boardVoting,
+          shareToken,
+          shareVoting,
+          fundraising,
+        } = props.data
         return (
           <ReviewScreen
             screenProps={props}
@@ -83,35 +222,47 @@ export default {
               {
                 label: (
                   <KnownAppBadge
+                    appName="token-manager.aragonpm.eth"
+                    label="Board Token"
+                  />
+                ),
+                fields: TokensScreen.formatReviewFields(boardToken),
+              },
+              {
+                label: (
+                  <KnownAppBadge
+                    appName="voting.aragonpm.eth"
+                    label="Board Voting"
+                  />
+                ),
+                fields: VotingScreen.formatReviewFields(boardVoting),
+              },
+              {
+                label: (
+                  <KnownAppBadge
+                    appName="token-manager.aragonpm.eth"
+                    label="Share Token"
+                  />
+                ),
+                fields: TokensScreen.formatReviewFields(shareToken),
+              },
+              {
+                label: (
+                  <KnownAppBadge
+                    appName="voting.aragonpm.eth"
+                    label="Share Voting"
+                  />
+                ),
+                fields: VotingScreen.formatReviewFields(shareVoting),
+              },
+              {
+                label: (
+                  <KnownAppBadge
                     appName="fundraising.aragonpm.eth"
                     label="Fundraising"
                   />
                 ),
                 fields: FundraisingScreen.formatReviewFields(fundraising),
-              },
-              {
-                label: (
-                  <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
-                ),
-                fields: VotingScreen.formatReviewFields(voting),
-              },
-              {
-                label: (
-                  <KnownAppBadge
-                    appName="token-manager.aragonpm.eth"
-                    label="Tokens ANT"
-                  />
-                ),
-                fields: TokensScreen.formatReviewFields(tokensAnt),
-              },
-              {
-                label: (
-                  <KnownAppBadge
-                    appName="token-manager.aragonpm.eth"
-                    label="Tokens DAI"
-                  />
-                ),
-                fields: TokensScreen.formatReviewFields(tokensDai),
               },
             ]}
           />
@@ -120,6 +271,85 @@ export default {
     ],
   ],
   prepareTransactions(createTx, data) {
-    return []
+    const financePeriod = 0 // default
+    const openDate = 0 // default
+
+    const {
+      domain,
+      boardToken,
+      boardVoting,
+      shareToken,
+      shareVoting,
+      fundraising,
+    } = data
+
+    const boardMembers = boardToken.members.map(member => member[0])
+    const boardVotingSettings = extractVotingSettings(boardVoting)
+    const shareVotingSettings = extractVotingSettings(shareVoting)
+    const {
+      goal,
+      period,
+      exchangeRate,
+      vestingCliffPeriod,
+      vestingCompletePeriod,
+      maximumMonthlyUpdates,
+      supplyOfferedPct,
+      fundingForBeneficiaryPct,
+    } = extractFundraisingAppsSettings(fundraising)
+    const {
+      virtualSupplies,
+      virtualBalances,
+      slippages,
+      tapRate,
+      tapFloor,
+    } = extractCollateralizationSettings(fundraising)
+
+    return [
+      {
+        name: 'Prepare instance',
+        transaction: createTx('prepareInstance', [
+          boardToken.tokenName,
+          boardToken.tokenSymbol,
+          boardMembers,
+          boardVotingSettings,
+          financePeriod,
+        ]),
+      },
+      {
+        name: 'Install share apps',
+        transaction: createTx('installShareApps', [
+          domain,
+          shareToken.tokenName,
+          shareToken.tokenSymbol,
+          shareVotingSettings,
+        ]),
+      },
+      {
+        name: 'Install fundraising apps',
+        transaction: createTx('installFundraisingApps', [
+          goal,
+          period,
+          exchangeRate,
+          vestingCliffPeriod,
+          vestingCompletePeriod,
+          supplyOfferedPct,
+          fundingForBeneficiaryPct,
+          openDate,
+          fundraising.batchLength,
+          maximumMonthlyUpdates,
+          maximumMonthlyUpdates,
+        ]),
+      },
+      {
+        name: 'Finalize instance',
+        transaction: createTx('finalizeInstance', [
+          virtualSupplies,
+          virtualBalances,
+          slippages,
+          tapRate,
+          tapFloor,
+        ]),
+      },
+    ]
   },
 }
