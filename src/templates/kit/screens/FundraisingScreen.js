@@ -1,16 +1,7 @@
 import React, { useCallback, useReducer, useState } from 'react'
 import { Decimal } from 'decimal.js'
 import PropTypes from 'prop-types'
-import {
-  Field,
-  GU,
-  Help,
-  Info,
-  Tabs,
-  TextInput,
-  textStyle,
-  useTheme,
-} from '@aragon/ui'
+import { Field, GU, Help, Tabs, TextInput, useTheme } from '@aragon/ui'
 import {
   Header,
   KnownAppBadge,
@@ -182,7 +173,6 @@ function FundraisingScreen({
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
-  const theme = useTheme()
   const [tab, setTab] = useState(0)
   const { fields, bindUpdate } = useConfigureFields(
     screenData.fundraising || {}
@@ -193,7 +183,8 @@ function FundraisingScreen({
       event.preventDefault()
 
       // TODO: validation
-      // const minimumGrowth = updateMinimumGrowth(fields)
+      const minimumGrowth = updateMinimumGrowth(fields)
+      console.log(minimumGrowth)
       const error = null
       if (!error) {
         const screenData = {
@@ -202,7 +193,7 @@ function FundraisingScreen({
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [fields]
+    [data, dataKey, fields, next]
   )
 
   return (

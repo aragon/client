@@ -26,7 +26,6 @@ const onePercent = BN(10).pow(BN(16))
 const onePercentPPM = BN(10).pow(BN(4))
 const oneBlock = BN(15)
 const one = BN(1)
-const two = BN(2)
 
 function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
