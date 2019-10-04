@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  Box,
   Button,
   ButtonBase,
   DataView,
@@ -53,14 +52,6 @@ const LocalIdentities = React.memo(function LocalIdentities({
   const compact = layoutName === 'small'
   const theme = useTheme()
 
-  if (!identities.length) {
-    return (
-      <Box>
-        <EmptyFilteredIdentities onClear={onClear} />
-      </Box>
-    )
-  }
-
   return (
     <React.Fragment>
       <Info
@@ -76,16 +67,21 @@ const LocalIdentities = React.memo(function LocalIdentities({
       <DataView
         mode="table"
         heading={
-          <Filters
-            searchTerm={searchTerm}
-            onSearchChange={onSearchChange}
-            onSearchTerm={onSearchTerm}
-            onImport={onImport}
-            onShare={onShare}
-            onExport={onExport}
-            onRemove={onRemove}
-            someSelected={someSelected}
-          />
+          <React.Fragment>
+            <Filters
+              searchTerm={searchTerm}
+              onSearchChange={onSearchChange}
+              onSearchTerm={onSearchTerm}
+              onImport={onImport}
+              onShare={onShare}
+              onExport={onExport}
+              onRemove={onRemove}
+              someSelected={someSelected}
+            />
+            {!identities.length && (
+              <EmptyFilteredIdentities onClear={onClear} />
+            )}
+          </React.Fragment>
         }
         selection={identities.reduce(
           (p, { address }, index) => [
@@ -94,66 +90,75 @@ const LocalIdentities = React.memo(function LocalIdentities({
           ],
           []
         )}
-        onSelectEntries={(_, indexes) => {
-          // toggle all
-          if (
-            ((allSelected || !someSelected) &&
-              identities.length === indexes.length) ||
-            indexes.length === 0
-          ) {
-            onToggleAll()
-            return
-          }
-
-          // toggle some (in reality only one but same process)
-          identities
-            .filter(
-              ({ address }, index) =>
-                indexes.includes(index) !== identitiesSelected.get(address)
-            )
-            .map(({ address }) => address)
-            .forEach(onToggleIdentity)
-        }}
-        fields={[
-          <div
-            css={`
-              display: inline-flex;
-              align-items: center;
-              height: 16px;
-            `}
-          >
-            <ButtonBase
-              label="Toggle sort"
-              onClick={onToggleSort}
-              css={`
-                padding: ${0.5 * GU}px ${3 * GU}px;
-                position: relative;
-                left: ${-3 * GU}px;
-                border-radius: 0;
-                display: flex;
-                align-items: center;
-                &:active {
-                  background: ${theme.surfaceSelected};
+        onSelectEntries={
+          identities.length
+            ? (_, indexes) => {
+                // toggle all
+                if (
+                  ((allSelected || !someSelected) &&
+                    identities.length === indexes.length) ||
+                  indexes.length === 0
+                ) {
+                  onToggleAll()
+                  return
                 }
-              `}
-            >
-              <span
-                css={`
-                  margin-right: ${1 * GU}px;
-                  ${textStyle('label2')}
-                `}
-              >
-                Custom label{' '}
-              </span>
-              {sort === ASC ? (
-                <IconArrowDown size="small" />
-              ) : (
-                <IconArrowUp size="small" />
-              )}
-            </ButtonBase>
-          </div>,
-          'Address',
-        ]}
+
+                // toggle some (in reality only one but same process)
+                identities
+                  .filter(
+                    ({ address }, index) =>
+                      indexes.includes(index) !==
+                      identitiesSelected.get(address)
+                  )
+                  .map(({ address }) => address)
+                  .forEach(onToggleIdentity)
+              }
+            : undefined
+        }
+        fields={
+          identities.length
+            ? [
+                <div
+                  css={`
+                    display: inline-flex;
+                    align-items: center;
+                    height: 16px;
+                  `}
+                >
+                  <ButtonBase
+                    label="Toggle sort"
+                    onClick={onToggleSort}
+                    css={`
+                      padding: ${0.5 * GU}px ${3 * GU}px;
+                      position: relative;
+                      left: ${-3 * GU}px;
+                      border-radius: 0;
+                      display: flex;
+                      align-items: center;
+                      &:active {
+                        background: ${theme.surfaceSelected};
+                      }
+                    `}
+                  >
+                    <span
+                      css={`
+                        margin-right: ${1 * GU}px;
+                        ${textStyle('label2')}
+                      `}
+                    >
+                      Custom label{' '}
+                    </span>
+                    {sort === ASC ? (
+                      <IconArrowDown size="small" />
+                    ) : (
+                      <IconArrowUp size="small" />
+                    )}
+                  </ButtonBase>
+                </div>,
+                'Address',
+              ]
+            : []
+        }
         entries={identities}
         renderEntry={({ address, name }) => [
           <span
