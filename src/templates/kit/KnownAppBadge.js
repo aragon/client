@@ -32,11 +32,11 @@ const KNOWN_ICONS = new Map([
   ['token-manager.aragonpm.eth', iconSvgTokens],
   ['vault.aragonpm.eth', iconSvgVault],
   ['voting.aragonpm.eth', iconSvgVoting],
-  ['token-request.aragonpm.eth', iconTokenRequest],
-  ['time-lock.aragonpm.eth', iconTimeLock],
-  ['dissent-voting.aragonpm.eth', iconDissentVoting],
-  ['delay.aragonpm.eth', iconDelay],
-  [('redemptions.aragonpm.eth', iconRedemptions)],
+  ['token-request.open.aragonpm.eth', iconTokenRequest],
+  ['time-lock.open.aragonpm.eth', iconTimeLock],
+  ['dissent-voting.open.aragonpm.eth', iconDissentVoting],
+  ['delay.open.aragonpm.eth', iconDelay],
+  ['redemptions.open.aragonpm.eth', iconRedemptions],
 ])
 
 function KnownAppBadge({ appName, compact, label }) {

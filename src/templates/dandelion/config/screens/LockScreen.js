@@ -53,8 +53,8 @@ function validationError(duration) {
 }
 
 function reduceFields(fields, [field, value]) {
-  if (field === 'duration') {
-    return { ...fields, duration: value }
+  if (field === 'lockDuration') {
+    return { ...fields, lockDuration: value }
   }
   if (field === 'tokenAddress') {
     return { ...fields, tokenAddress: value }
@@ -80,10 +80,10 @@ function LockScreen({
   // const [tokenAddress, setTokenAddress] = useState()
 
   const [
-    { duration, tokenAddress, lockAmount, spamPenalty },
+    { lockDuration, tokenAddress, lockAmount, spamPenalty },
     updateField,
   ] = useReducer(reduceFields, {
-    duration: screenData.duration || DEFAULT_DURATION,
+    lockDuration: screenData.lockDuration || DEFAULT_DURATION,
     tokenAddress: screenData.tokenAddress || '',
     lockAmount: screenData.lockAmount || '',
     spamPenalty: screenData.spamPenalty || SPAM_PENALTY_DEFAULT,
@@ -91,7 +91,7 @@ function LockScreen({
 
   const handleDurationChange = useCallback(value => {
     setFormError(null)
-    updateField(['duration', value])
+    updateField(['lockDuration', value])
   }, [])
 
   const handleTokenAddressChange = useCallback(event => {
@@ -105,8 +105,9 @@ function LockScreen({
   }, [])
 
   const handleLockAmountChange = useCallback(event => {
+    const value = parseInt(event.target.value, 10)
     setFormError(null)
-    updateField(['lockAmount', event.target.value])
+    updateField(['lockAmount', isNaN(value) ? -1 : value])
   }, [])
 
   const handleClearTokenAddress = useCallback(() => {
@@ -119,17 +120,20 @@ function LockScreen({
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
-      const error = validationError(duration)
+      const error = validationError(lockDuration)
       setFormError(error)
 
       if (!error) {
         const screenData = {
-          duration,
+          tokenAddress,
+          lockDuration,
+          spamPenalty,
+          lockAmount,
         }
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [data, dataKey, duration, tokenAddress, lockAmount, next]
+    [data, dataKey, lockDuration, tokenAddress, lockAmount, next]
   )
 
   return (
@@ -203,7 +207,7 @@ function LockScreen({
         >
           <TextInput
             onChange={handleLockAmountChange}
-            value={lockAmount}
+            value={lockAmount === -1 ? '' : lockAmount}
             wide
           />
         </Field>
@@ -223,7 +227,7 @@ function LockScreen({
       />
 
       <TimeConfig
-        duration={duration}
+        duration={lockDuration}
         onUpdate={handleDurationChange}
         label={DURATION_LABEL}
         helpText={DURATION_HELP_TEXT}
@@ -453,7 +457,7 @@ function formatDuration(duration) {
 }
 
 function formatReviewFields(screenData) {
-  return [['Lock duration', formatDuration(screenData.duration)]]
+  return [['Lock duration', formatDuration(screenData.lockDuration)]]
 }
 
 LockScreen.formatReviewFields = formatReviewFields

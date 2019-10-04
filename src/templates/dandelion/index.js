@@ -7,8 +7,9 @@ import {
   KnownAppBadge,
   ReviewScreen,
   TokensScreen,
+  VotingScreen,
 } from '../kit'
-import { VotingScreen, DelayScreen, LockScreen } from './config'
+import { DelayScreen, LockScreen } from './config'
 
 import header from './header.svg'
 import icon from './icon.svg'
@@ -18,28 +19,28 @@ function completeDomain(domain) {
 }
 
 export default {
-  id: 'dandelion-template.aragonpm.eth',
+  id: 'dandelion-org-template.open.aragonpm.eth',
   name: 'Dandelion',
   header,
   icon,
   description: `
-  Facilitate collaboration by providing an organization structure that makes it easy for contributors easily part ways when disagreements occur.
+  Facilitate collaboration by providing an organization structure that makes it easy for contributors to simply part ways when disagreements occur.
   `,
   // userGuideUrl:
   //   'https://help.aragon.org/article/32-create-a-new-reputation-organization',
   caseStudyUrl: 'aragon.org/case-study/hivecommons',
   sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/templates/1hive',
-  registry: 'aragonpm.eth',
-  modules: [
+  registry: 'open.aragonpm.eth',
+  apps: [
     { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
-    { appName: 'dissent-voting.aragonpm.eth', label: 'Voting' },
-    { appName: 'delay.aragonpm.eth', label: 'Delay' },
-    { appName: 'time-lock.aragonpm.eth', label: 'Time Lock' },
-    { appName: 'redemptions.aragonpm.eth', label: 'Redemptions' },
-    { appName: 'token-request.aragonpm.eth', label: 'Token Request' },
+    { appName: 'voting.aragonpm.eth', label: 'Voting' },
+    { appName: 'delay.open.aragonpm.eth', label: 'Delay' },
+    { appName: 'time-lock.open.aragonpm.eth', label: 'Time Lock' },
+    { appName: 'redemptions.open.aragonpm.eth', label: 'Redemptions' },
+    { appName: 'token-request.open.aragonpm.eth', label: 'Token Request' },
   ],
-  optionalModules: [{ appName: 'agent.aragonpm.eth', label: 'Agent' }],
+  optionalApps: [{ appName: 'agent.aragonpm.eth', label: 'Agent' }],
   screens: [
     [
       data => completeDomain(data.domain) || 'Claim domain',
@@ -85,14 +86,17 @@ export default {
               },
               {
                 label: (
-                  <KnownAppBadge appName="delay.aragonpm.eth" label="Delay" />
+                  <KnownAppBadge
+                    appName="delay.open.aragonpm.eth"
+                    label="Delay"
+                  />
                 ),
                 fields: DelayScreen.formatReviewFields(delay),
               },
               {
                 label: (
                   <KnownAppBadge
-                    appName="time-lock.aragonpm.eth"
+                    appName="time-lock.open.aragonpm.eth"
                     label="Time lock"
                   />
                 ),
@@ -108,7 +112,7 @@ export default {
     const financePeriod = 0 // default
     const hasPayroll = false
 
-    const { domain, optionalModules = [], tokens, voting } = data
+    const { domain, optionalModules = [], tokens, voting, lock } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
 
     const { tokenName, tokenSymbol, members } = tokens
@@ -125,6 +129,20 @@ export default {
     const adjustedDuration = new BN(duration).toString()
     const votingSettings = [adjustedSupport, adjustedQuorum, adjustedDuration]
 
+    const { lockDuration, lockAmount, spamPenalty, tokenAddress } = lock
+    const adjustedSpamPenalty = onePercent.mul(new BN(spamPenalty)).toString()
+    const adjustedLockAmount = baseStake
+      .mul(new BN(lockAmount.toString()))
+      .toString()
+    const adjustedLockDuration = new BN(lockDuration).toString()
+    const lockSettings = [
+      adjustedLockDuration,
+      adjustedLockAmount,
+      adjustedSpamPenalty,
+    ]
+
+    const acceptedDepositToken = ['0x0000000000000000000000000000000000000000']
+
     // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
     // often not mined
     const forceMultipleTransactions =
@@ -134,15 +152,24 @@ export default {
       return [
         {
           name: 'Create organization',
-          transaction: createTx('newTokenAndInstance', [
+          transaction: createTx('newTokenAndBaseInstance', [
             tokenName,
             tokenSymbol,
             domain,
             accounts,
             stakes,
-            votingSettings,
             financePeriod,
             useAgentAsVault,
+          ]),
+        },
+        {
+          name: 'Install dandelion apps',
+          transaction: createTx('installDandelionApps', [
+            domain,
+            acceptedDepositToken,
+            tokenAddress,
+            lockSettings,
+            votingSettings,
           ]),
         },
       ]
@@ -159,7 +186,6 @@ export default {
           domain,
           accounts,
           stakes,
-          votingSettings,
           financePeriod,
           useAgentAsVault,
         ]),
