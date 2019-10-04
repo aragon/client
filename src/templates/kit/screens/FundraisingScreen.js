@@ -193,7 +193,7 @@ function FundraisingScreen({
       event.preventDefault()
 
       // TODO: validation
-      const minimumGrowth = updateMinimumGrowth(fields)
+      // const minimumGrowth = updateMinimumGrowth(fields)
       const error = null
       if (!error) {
         const screenData = {
