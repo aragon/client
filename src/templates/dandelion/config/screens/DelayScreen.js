@@ -49,8 +49,8 @@ function DelayScreen({
 
   const [formError, setFormError] = useState()
 
-  const [{ duration }, updateField] = useReducer(reduceFields, {
-    duration: screenData.duration || DEFAULT_DURATION,
+  const [{ delayDuration }, updateField] = useReducer(reduceFields, {
+    delayDuration: screenData.delayDuration || DEFAULT_DURATION,
   })
 
   const handleDurationChange = useCallback(value => {
@@ -63,17 +63,17 @@ function DelayScreen({
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
-      const error = validationError(duration)
+      const error = validationError(delayDuration)
       setFormError(error)
 
       if (!error) {
         const screenData = {
-          duration,
+          delayDuration,
         }
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [data, dataKey, duration, next]
+    [data, dataKey, delayDuration, next]
   )
 
   return (
@@ -90,7 +90,7 @@ function DelayScreen({
       />
 
       <TimeConfig
-        duration={duration}
+        duration={delayDuration}
         onUpdate={handleDurationChange}
         label={DURATION_LABEL}
         helpText={DURATION_HELP_TEXT}

@@ -112,7 +112,7 @@ export default {
     const financePeriod = 0 // default
     const hasPayroll = false
 
-    const { domain, optionalModules = [], tokens, voting, lock } = data
+    const { domain, optionalModules = [], tokens, voting, lock, delay } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
 
     const { tokenName, tokenSymbol, members } = tokens
@@ -131,15 +131,16 @@ export default {
 
     const { lockDuration, lockAmount, spamPenalty, tokenAddress } = lock
     const adjustedSpamPenalty = onePercent.mul(new BN(spamPenalty)).toString()
-    const adjustedLockAmount = baseStake
-      .mul(new BN(lockAmount.toString()))
-      .toString()
+    const adjustedLockAmount = new BN(lockAmount.toString()).toString()
     const adjustedLockDuration = new BN(lockDuration).toString()
     const lockSettings = [
       adjustedLockDuration,
       adjustedLockAmount,
       adjustedSpamPenalty,
     ]
+
+    const { delayDuration } = delay
+    const adjustedDelayDuration = new BN(delayDuration).toString()
 
     const acceptedDepositToken = ['0x0000000000000000000000000000000000000000']
 
@@ -167,9 +168,11 @@ export default {
           transaction: createTx('installDandelionApps', [
             domain,
             acceptedDepositToken,
+            acceptedDepositToken,
             tokenAddress,
             lockSettings,
             votingSettings,
+            adjustedDelayDuration,
           ]),
         },
       ]
@@ -188,6 +191,18 @@ export default {
           stakes,
           financePeriod,
           useAgentAsVault,
+        ]),
+      },
+      {
+        name: 'Install dandelion apps',
+        transaction: createTx('installDandelionApps', [
+          domain,
+          acceptedDepositToken,
+          acceptedDepositToken,
+          tokenAddress,
+          lockSettings,
+          votingSettings,
+          delayDuration,
         ]),
       },
     ]
