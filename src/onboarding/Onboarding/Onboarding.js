@@ -6,6 +6,7 @@ import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { log } from '../../utils'
 import embeddedTemplates from '../../templates'
 import ConnectModal from '../../components/ConnectModal/ConnectModal'
+import NetworkRedirectModal from '../../components/NetworkRedirectModal/NetworkRedirectModal'
 
 import { saveTemplateState } from '../create-utils'
 import {
@@ -39,9 +40,13 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     balance,
     address: account,
     isContract: isContractAccount,
+    networkId,
   } = useAccount()
 
   const [connectModalOpened, setConnectModalOpened] = useState(false)
+  const [networkRedirectModalOpened, setNetworkRedirectModalOpened] = useState(
+    false
+  )
   const [templates, setTemplates] = useState(initialEmbeddedTemplates)
   const [templatesResolved, setTemplatesResolved] = useState(false)
   const [connectIntent, setConnectIntent] = useState('')
@@ -65,7 +70,9 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     const requirementsErrorUpdated = validateCreationRequirements(
       account,
       balance,
-      isContractAccount
+      isContractAccount,
+      networkId,
+      selectorNetworks
     )
 
     if (
@@ -74,7 +81,14 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     ) {
       setRequirementsError(requirementsErrorUpdated)
     }
-  }, [account, balance, isContractAccount, requirementsError])
+  }, [
+    account,
+    balance,
+    isContractAccount,
+    networkId,
+    requirementsError,
+    selectorNetworks,
+  ])
 
   const handleCreate = useCallback(() => {
     // reset the creation state
@@ -83,9 +97,19 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     const requirementsError = validateCreationRequirements(
       account,
       balance,
-      isContractAccount
+      isContractAccount,
+      networkId,
+      selectorNetworks
     )
+
     setRequirementsError(requirementsError)
+
+    // Wrong network
+    if (requirementsError[0] === 'wrong-network') {
+      setConnectIntent('create')
+      setNetworkRedirectModalOpened(true)
+      return
+    }
 
     // Account not connected
     if (requirementsError[0] === 'no-account') {
@@ -98,7 +122,11 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     if (requirementsError[0] === null) {
       window.location.hash = '/create'
     }
-  }, [account, balance, isContractAccount])
+  }, [account, balance, isContractAccount, networkId, selectorNetworks])
+
+  const closeNetworkRedirectModal = () => {
+    setNetworkRedirectModalOpened(false)
+  }
 
   const closeConnectModal = useCallback(
     provider => {
@@ -118,12 +146,15 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     provider => {
       closeConnectModal()
 
-      // For now this is always true, but it may change in the future
-      if (connectIntent === 'create') {
-        window.location.hash = '/create'
+      // If there's no other requirement errors
+      if (requirementsError[0] === null) {
+        // For now this is always true, but it may change in the future
+        if (connectIntent === 'create') {
+          window.location.hash = '/create'
+        }
       }
     },
-    [closeConnectModal, connectIntent]
+    [closeConnectModal, connectIntent, requirementsError]
   )
 
   const connectProviderError = useCallback(
@@ -171,6 +202,7 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     }
   }, [status, templatesResolved])
 
+  // Re-validate during creation process
   useEffect(() => {
     if (status !== 'create') {
       return
@@ -186,7 +218,7 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     return () => {
       clearTimeout(id)
     }
-  }, [status, account])
+  }, [status, account, networkId])
 
   const [solidTopBar, setSolidTopBar] = useState(false)
 
@@ -204,6 +236,17 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     [updateSolidScrollBar]
   )
 
+  const changeNetwork = useCallback(
+    network => {
+      // eslint-disable-next-line no-unused-vars
+      const [type, name, url] = selectorNetworks.filter(
+        ([type, name, url]) => name === network
+      )[0]
+
+      window.location = url
+    },
+    [selectorNetworks]
+  )
   if (status === 'none') {
     return null
   }
@@ -231,13 +274,16 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
         >
           {(status === 'welcome' || status === 'open') && (
             <Welcome
-              createError={requirementsError}
+              createError={
+                networkRedirectModalOpened ? [null] : requirementsError
+              }
               onBack={goToHome}
               onOpen={goToOpen}
               onOpenOrg={goToOrg}
               onCreate={handleCreate}
               openMode={status === 'open'}
               selectorNetworks={selectorNetworks}
+              onNetworkChange={changeNetwork}
             />
           )}
           {status === 'create' && Array.isArray(templates) && (
@@ -257,6 +303,15 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
           onConnect={handleProviderConnect}
           onConnectError={connectProviderError}
         />
+        {requirementsError[0] === 'wrong-network' ? (
+          <NetworkRedirectModal
+            visible={networkRedirectModalOpened}
+            error={requirementsError}
+            onRedirect={changeNetwork}
+            onClose={closeNetworkRedirectModal}
+            selectorNetworks={selectorNetworks}
+          />
+        ) : null}
       </div>
     </div>
   )
