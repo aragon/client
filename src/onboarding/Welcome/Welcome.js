@@ -17,6 +17,7 @@ const Welcome = React.memo(function Welcome({
   onOpen,
   onOpenOrg,
   openMode,
+  onNetworkChange,
   selectorNetworks,
 }) {
   const theme = useTheme()
@@ -31,11 +32,11 @@ const Welcome = React.memo(function Welcome({
       })
   }, [selectorNetworks])
 
-  const changeNetwork = useCallback(
+  const networkNameById = useCallback(
     index => {
-      window.location = selectorNetworksSorted[index].url
+      onNetworkChange(selectorNetworksSorted[index].name)
     },
-    [selectorNetworksSorted]
+    [onNetworkChange, selectorNetworksSorted]
   )
 
   return (
@@ -66,12 +67,17 @@ const Welcome = React.memo(function Welcome({
                 <DropDown
                   items={selectorNetworksSorted.map(network => network.name)}
                   placeholder={selectorNetworksSorted[0].name}
-                  onChange={changeNetwork}
+                  onChange={index => onNetworkChange(networkNameById(index))}
                   wide
                 />
                 <WelcomeAction
                   title="Create an organization"
-                  subtitle={<CreateSubtitle error={createError} />}
+                  subtitle={
+                    <CreateSubtitle
+                      selectorNetworks={selectorNetworks}
+                      error={createError}
+                    />
+                  }
                   illustration={actionCreate}
                   onActivate={onCreate}
                   hasError={
@@ -112,12 +118,13 @@ Welcome.propTypes = {
   onOpen: PropTypes.func.isRequired,
   onOpenOrg: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
+  onNetworkChange: PropTypes.func.isRequired,
   openMode: PropTypes.bool.isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,
 }
 
-function CreateSubtitle({ error }) {
+function CreateSubtitle({ error, selectorNetworks }) {
   const theme = useTheme()
   const [errorType, errorData] = error
   if (errorType === 'minimum-balance' || errorType === 'unknown-balance') {
@@ -137,11 +144,45 @@ function CreateSubtitle({ error }) {
       </span>
     )
   }
+
+  if (errorType === 'wrong-network') {
+    const { actual, expected, supported } = errorData
+    const targetUrl = selectorNetworks.reduce(
+      (previous, [type, name, url]) => (type === actual ? url : previous),
+      null
+    )
+
+    return (
+      <span
+        css={`
+          color: ${theme.negative};
+        `}
+      >
+        {supported ? (
+          <strong>
+            Please connect your provider to {expected} network or
+            <Link
+              css={`
+                color: ${theme.negative};
+              `}
+              href={targetUrl}
+            >
+              switch to the {actual} version of Aragon
+            </Link>
+            .
+          </strong>
+        ) : (
+          <strong>Please connect your provider to {expected} network.</strong>
+        )}
+      </span>
+    )
+  }
   return 'Start your organization with Aragon'
 }
 
 CreateSubtitle.propTypes = {
   error: PropTypes.array.isRequired,
+  selectorNetworks: PropTypes.array.isRequired,
 }
 
 export default Welcome
