@@ -14,6 +14,8 @@ import { DelayScreen, LockScreen } from './config'
 import header from './header.svg'
 import icon from './icon.svg'
 
+const ETH_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
 }
@@ -109,7 +111,6 @@ export default {
     ],
   ],
   prepareTransactions(createTx, data) {
-    const financePeriod = 0 // default
     const hasPayroll = false
 
     const { domain, optionalModules = [], tokens, voting, lock, delay } = data
@@ -142,7 +143,7 @@ export default {
     const { delayDuration } = delay
     const adjustedDelayDuration = new BN(delayDuration).toString()
 
-    const acceptedDepositToken = ['0x0000000000000000000000000000000000000000']
+    const acceptedDepositToken = [ETH_ADDRESS]
 
     // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
     // often not mined
@@ -159,7 +160,6 @@ export default {
             domain,
             accounts,
             stakes,
-            financePeriod,
             useAgentAsVault,
           ]),
         },
@@ -189,7 +189,6 @@ export default {
           domain,
           accounts,
           stakes,
-          financePeriod,
           useAgentAsVault,
         ]),
       },
