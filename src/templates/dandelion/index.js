@@ -21,7 +21,7 @@ function completeDomain(domain) {
 }
 
 export default {
-  id: 'dandelion-org-template.open.aragonpm.eth',
+  id: 'dandelion-org-template-staging.open.aragonpm.eth',
   name: 'Dandelion',
   header,
   icon,
@@ -185,7 +185,7 @@ export default {
       },
       {
         name: 'Create organization',
-        transaction: createTx('newInstance', [
+        transaction: createTx('newBaseInstance', [
           domain,
           accounts,
           stakes,
@@ -201,7 +201,7 @@ export default {
           tokenAddress,
           lockSettings,
           votingSettings,
-          delayDuration,
+          adjustedDelayDuration,
         ]),
       },
     ]
