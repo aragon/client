@@ -1,7 +1,7 @@
-import React, { useCallback, useReducer, useState } from 'react'
+import React, { useCallback, useMemo, useReducer, useState } from 'react'
 import { Decimal } from 'decimal.js'
 import PropTypes from 'prop-types'
-import { Field, GU, Help, Tabs, TextInput, useTheme } from '@aragon/ui'
+import { Field, GU, Help, Info, Tabs, TextInput, useTheme } from '@aragon/ui'
 import {
   Header,
   KnownAppBadge,
@@ -21,6 +21,7 @@ const DEFAULT_VALUES = {
   initialPricePerShare: 1,
   targetGoal: 25000,
   presalePrice: 1,
+  presalePriceInput: '1',
   tokensOffered: 90,
   projectFunding: 10,
   vestingSchedule: 365,
@@ -54,7 +55,7 @@ function intDef(value, defaultValue = 0) {
 }
 
 function floatDef(value, defaultValue = 0) {
-  const floatValue = Number(value)
+  const floatValue = parseFloat(value)
   return isNaN(floatValue) ? defaultValue : floatValue
 }
 
@@ -105,23 +106,61 @@ function reduceFields(fields, [field, value]) {
   const updateField = value => ({ ...fields, [field]: value })
 
   if (
-    field === 'targetGoal' ||
     field === 'fundingPeriod' ||
-    field === 'tapRate' ||
     field === 'tapFloor' ||
-    field === 'maximumMonthlyUpdates' ||
     field === 'expectedGrowth' ||
-    field === 'batchLength' ||
-    field === 'slippageDai' ||
-    field === 'slippageAnt' ||
-    field === 'tokensOffered' ||
     field === 'projectFunding'
   ) {
     return updateField(intDef(value))
   }
 
-  if (field === 'presalePrice' || field === 'initialPricePerShare') {
-    return updateField(floatDef(value))
+  if (field === 'batchLength') {
+    return updateField(Math.max(1, intDef(value)))
+  }
+
+  if (field === 'slippageDai') {
+    return updateField(Math.max(1, intDef(value)))
+  }
+
+  if (field === 'slippageAnt') {
+    return updateField(Math.max(1, intDef(value)))
+  }
+
+  if (field === 'tapRate') {
+    return updateField(Math.max(1, intDef(value)))
+  }
+
+  if (field === 'maximumMonthlyUpdates') {
+    return updateField(Math.max(1, intDef(value)))
+  }
+
+  if (field === 'targetGoal') {
+    return updateField(Math.max(1, intDef(value)))
+  }
+
+  if (field === 'presalePriceInput') {
+    return {
+      ...fields,
+      presalePrice: Math.max(1, floatDef(value)),
+      presalePriceInput: value,
+    }
+  }
+
+  if (field === 'presalePrice') {
+    const presalePrice = Math.max(1, floatDef(value))
+    return {
+      ...fields,
+      presalePrice,
+      presalePriceInput: presalePrice,
+    }
+  }
+
+  if (field === 'initialPricePerShare') {
+    return updateField(Math.max(fields.presalePrice + 1, floatDef(value)))
+  }
+
+  if (field === 'tokensOffered') {
+    return updateField(Math.max(1, intDef(value)))
   }
 
   if (field === 'vestingSchedule') {
@@ -139,16 +178,13 @@ function updateMinimumGrowth(fields) {
   const oneDAI = BN(10).pow(BN(18))
   const one = BN(1)
   const two = BN(2)
+  const oneHundred = BN(100)
   const cwDAI = BN(0.1)
-
-  console.log('Fields')
-
-  console.log(fields)
 
   const xRate = one.div(BN(fields.presalePrice))
   const goal = BN(fields.targetGoal).times(oneDAI)
-  const pctOffered = BN(fields.tokensOffered).div(BN(100))
-  const pctBeneficiary = BN(fields.projectFunding).div(BN(100))
+  const pctOffered = BN(fields.tokensOffered).div(oneHundred)
+  const pctBeneficiary = BN(fields.projectFunding).div(oneHundred)
 
   const sPrice = BN(fields.initialPricePerShare)
   const sSupply = goal.times(xRate).div(pctOffered)
@@ -164,7 +200,6 @@ function updateMinimumGrowth(fields) {
     .div(cwDAI.mul(sPrice))
     .pow(exponent)
     .add(one)
-    .toFixed(0)
 }
 
 function FundraisingScreen({
@@ -174,35 +209,33 @@ function FundraisingScreen({
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
   const [tab, setTab] = useState(0)
-  const { fields, bindUpdate } = useConfigureFields(
-    screenData.fundraising || {}
-  )
+  const { fields, bindUpdate } = useConfigureFields(screenData || {})
+
+  const minimumGrowth = useMemo(() => updateMinimumGrowth(fields), [fields])
+
+  const nextEnabled = useMemo(() => {
+    if (minimumGrowth.gte(fields.expectedGrowth)) {
+      return false
+    }
+    return true
+  }, [fields, minimumGrowth])
 
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
 
-      // TODO: validation
-      const minimumGrowth = updateMinimumGrowth(fields)
-      console.log(minimumGrowth)
-      const error = null
-      if (!error) {
-        const screenData = {
-          ...fields,
-        }
-        next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
+      const screenData = {
+        ...fields,
+        minimumGrowth: minimumGrowth.toFixed(0),
       }
+
+      next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
     },
-    [data, dataKey, fields, next]
+    [data, dataKey, fields, next, minimumGrowth]
   )
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      css={`
-        width: 100%;
-      `}
-    >
+    <form css="width: 100%">
       <Header
         title="Configure fundraising"
         subtitle={
@@ -245,8 +278,9 @@ function FundraisingScreen({
             <Field key="presalePrice" label="Price">
               <ConfigInput
                 label="DAI per share"
-                onChange={bindUpdate('presalePrice')}
-                value={fields.presalePrice}
+                onChange={bindUpdate('presalePriceInput')}
+                onChangeDone={bindUpdate('presalePrice')}
+                value={fields.presalePriceInput}
               />
             </Field>
             <Field key="fundingPeriod" label="Funding period">
@@ -398,9 +432,34 @@ function FundraisingScreen({
         </div>
       )}
 
+      <Info
+        mode={minimumGrowth.gte(fields.expectedGrowth) ? 'warning' : 'info'}
+        css={`
+          margin-bottom: ${3 * GU}px;
+        `}
+      >
+        <p>
+          The current minimum growth is {minimumGrowth.toFixed(0)}. This value
+          is calculated from the presale price, target goal, tokens offered,
+          project funding, or initialPricePerShare.
+        </p>
+        {minimumGrowth.gte(fields.expectedGrowth) && (
+          <p
+            css={`
+              margin-top: ${1 * GU}px;
+            `}
+          >
+            <strong>
+              Please make sure the expected growth ({fields.expectedGrowth}) is
+              greater than the minimum growth.
+            </strong>
+          </p>
+        )}
+      </Info>
+
       <Navigation
         backEnabled
-        nextEnabled
+        nextEnabled={nextEnabled}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}
@@ -440,6 +499,7 @@ function ConfigInput({
   width = -1,
   labelWidth = 8 * GU,
   onChange,
+  onChangeDone = () => null,
   ...props
 }) {
   const theme = useTheme()
@@ -449,6 +509,13 @@ function ConfigInput({
       onChange(event.target.value)
     },
     [onChange]
+  )
+
+  const handleBlur = useCallback(
+    event => {
+      onChangeDone(event.target.value)
+    },
+    [onChangeDone]
   )
 
   return (
@@ -476,6 +543,7 @@ function ConfigInput({
         adornmentPosition="end"
         adornmentSettings={{ width: labelWidth, padding: 0 }}
         onChange={handleChange}
+        onBlur={handleBlur}
         wide
         {...props}
       />
