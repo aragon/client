@@ -317,7 +317,6 @@ export default {
       {
         name: 'Install share apps',
         transaction: createTx('installShareApps', [
-          domain,
           shareToken.tokenName,
           shareToken.tokenSymbol,
           shareVotingSettings,
@@ -342,6 +341,7 @@ export default {
       {
         name: 'Finalize instance',
         transaction: createTx('finalizeInstance', [
+          domain,
           virtualSupplies,
           virtualBalances,
           slippages,
