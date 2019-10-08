@@ -93,20 +93,61 @@ function updateVestingSchedule(fields, value) {
     -1,
     Math.min(fields.cliffPeriod, vestingSchedule - 1)
   )
-  return { ...fields, vestingSchedule, cliffPeriod }
+  const fundingPeriod = Math.max(
+    -1,
+    Math.min(fields.fundingPeriod, cliffPeriod - 1)
+  )
+  return { ...fields, cliffPeriod, fundingPeriod, vestingSchedule }
 }
 
 function updateCliffPeriod(fields, value) {
   const cliffPeriod = Math.max(-1, intDef(value, -1))
+  const fundingPeriod = Math.max(
+    -1,
+    Math.min(fields.fundingPeriod, cliffPeriod - 1)
+  )
   const vestingSchedule = Math.max(-1, fields.vestingSchedule, cliffPeriod + 1)
-  return { ...fields, vestingSchedule, cliffPeriod }
+  return { ...fields, cliffPeriod, fundingPeriod, vestingSchedule }
+}
+
+function updateFundingPeriod(fields, value) {
+  const fundingPeriod = Math.max(-1, intDef(value))
+  const cliffPeriod = Math.max(-1, fields.cliffPeriod, fundingPeriod + 1)
+  const vestingSchedule = Math.max(-1, fields.vestingSchedule, cliffPeriod + 1)
+  return { ...fields, cliffPeriod, fundingPeriod, vestingSchedule }
+}
+
+function updateInitialPricePerShare(fields, value) {
+  const initialPricePerShare = Math.max(0.1, floatDef(value))
+  const presalePrice = Math.min(fields.presalePrice, initialPricePerShare - 0.1)
+  return {
+    ...fields,
+    initialPricePerShare,
+    initialPricePerShareInput: initialPricePerShare,
+    presalePrice,
+    presalePriceInput: presalePrice,
+  }
+}
+
+function updatePresalePrice(fields, value) {
+  const presalePrice = Math.max(0.1, floatDef(value))
+  const initialPricePerShare = Math.max(
+    fields.initialPricePerShare,
+    presalePrice + 0.1
+  )
+  return {
+    ...fields,
+    initialPricePerShare,
+    initialPricePerShareInput: initialPricePerShare,
+    presalePrice,
+    presalePriceInput: presalePrice,
+  }
 }
 
 function reduceFields(fields, [field, value]) {
   const updateField = value => ({ ...fields, [field]: value })
 
   if (
-    field === 'fundingPeriod' ||
     field === 'tapFloor' ||
     field === 'expectedGrowth' ||
     field === 'projectFunding'
@@ -139,24 +180,19 @@ function reduceFields(fields, [field, value]) {
   }
 
   if (field === 'presalePriceInput') {
-    return {
-      ...fields,
-      presalePrice: Math.max(1, floatDef(value)),
-      presalePriceInput: value,
-    }
+    return { ...fields, presalePriceInput: value }
   }
 
   if (field === 'presalePrice') {
-    const presalePrice = Math.max(1, floatDef(value))
-    return {
-      ...fields,
-      presalePrice,
-      presalePriceInput: presalePrice,
-    }
+    return updatePresalePrice(fields, value)
+  }
+
+  if (field === 'initialPricePerShareInput') {
+    return { ...fields, initialPricePerShareInput: value }
   }
 
   if (field === 'initialPricePerShare') {
-    return updateField(Math.max(fields.presalePrice + 1, floatDef(value)))
+    return updateInitialPricePerShare(fields, value)
   }
 
   if (field === 'tokensOffered') {
@@ -169,6 +205,10 @@ function reduceFields(fields, [field, value]) {
 
   if (field === 'cliffPeriod') {
     return updateCliffPeriod(fields, value)
+  }
+
+  if (field === 'fundingPeriod') {
+    return updateFundingPeriod(fields, value)
   }
 
   return fields
@@ -287,7 +327,7 @@ function FundraisingScreen({
               <ConfigInput
                 label={labelDays(fields.fundingPeriod)}
                 onChange={bindUpdate('fundingPeriod')}
-                value={fields.fundingPeriod}
+                value={fields.fundingPeriod === -1 ? '' : fields.fundingPeriod}
               />
             </Field>
             <PercentageField
@@ -355,8 +395,9 @@ function FundraisingScreen({
                 {id => (
                   <ConfigInput
                     id={id}
-                    onChange={bindUpdate('initialPricePerShare')}
-                    value={fields.initialPricePerShare}
+                    onChange={bindUpdate('initialPricePerShareInput')}
+                    onChangeDone={bindUpdate('initialPricePerShare')}
+                    value={fields.initialPricePerShareInput}
                     width={INPUT_MEDIUM}
                   />
                 )}
