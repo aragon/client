@@ -1,14 +1,7 @@
 import React, { useCallback, useReducer, useState } from 'react'
+import { Decimal } from 'decimal.js'
 import PropTypes from 'prop-types'
-import {
-  Field,
-  GU,
-  Info,
-  Tabs,
-  TextInput,
-  textStyle,
-  useTheme,
-} from '@aragon/ui'
+import { Field, GU, Help, Tabs, TextInput, useTheme } from '@aragon/ui'
 import {
   Header,
   KnownAppBadge,
@@ -18,35 +11,37 @@ import {
 } from '..'
 
 const TABS = ['Overview', 'Advanced']
-
-const DESCRIPTION_LIMIT = 250
-
 const INPUT_SMALL = 17 * GU
 const INPUT_MEDIUM = 24 * GU
 
 const DEFAULT_VALUES = {
   cliffPeriod: 90,
-  description: '',
-  expectedGrowth: 10,
+  expectedGrowth: 200,
   fundingPeriod: 14,
-  initialPricePerToken: 1,
-  monthlyAllowance: 5000,
+  initialPricePerShare: 1,
   targetGoal: 25000,
+  presalePrice: 1,
   tokensOffered: 90,
-  upfrontCosts: 10000,
+  projectFunding: 10,
   vestingSchedule: 365,
   batchLength: 1,
   slippageDai: 25,
   slippageAnt: 100,
-  initialMonthlyAllocationDai: 25,
-  initialMonthlyAllocationAnt: 100,
-  initialTapFloorsDai: 25,
-  initialTapFloorsAnt: 100,
-  maximumMonthlyAllocationAndFloorIncreases: 50,
+  tapRate: 2500,
+  tapFloor: 2500,
+  maximumMonthlyUpdates: 50,
+}
+
+function BN(value) {
+  return new Decimal(value)
 }
 
 function labelDays(value) {
   return value === 1 ? 'Day' : 'Days'
+}
+
+function labelBatch(value) {
+  return value === 1 ? 'Block' : 'Blocks'
 }
 
 function def(value, defaultValue) {
@@ -56,6 +51,11 @@ function def(value, defaultValue) {
 function intDef(value, defaultValue = 0) {
   const intValue = parseInt(value, 10)
   return isNaN(intValue) ? defaultValue : intValue
+}
+
+function floatDef(value, defaultValue = 0) {
+  const floatValue = Number(value)
+  return isNaN(floatValue) ? defaultValue : floatValue
 }
 
 function dataDefaults(data) {
@@ -104,29 +104,24 @@ function updateCliffPeriod(fields, value) {
 function reduceFields(fields, [field, value]) {
   const updateField = value => ({ ...fields, [field]: value })
 
-  if (field === 'description') {
-    return updateField(value)
-  }
-
   if (
-    field === 'monthlyAllowance' ||
-    field === 'upfrontCosts' ||
     field === 'targetGoal' ||
-    field === 'fundingPeriod'
+    field === 'fundingPeriod' ||
+    field === 'tapRate' ||
+    field === 'tapFloor' ||
+    field === 'maximumMonthlyUpdates' ||
+    field === 'expectedGrowth' ||
+    field === 'batchLength' ||
+    field === 'slippageDai' ||
+    field === 'slippageAnt' ||
+    field === 'tokensOffered' ||
+    field === 'projectFunding'
   ) {
     return updateField(intDef(value))
   }
 
-  if (field === 'tokensOffered') {
-    return updateField(value)
-  }
-
-  if (field === 'initialPricePerToken') {
-    return updateField(intDef(value))
-  }
-
-  if (field === 'expectedGrowth') {
-    return updateField(intDef(value))
+  if (field === 'presalePrice' || field === 'initialPricePerShare') {
+    return updateField(floatDef(value))
   }
 
   if (field === 'vestingSchedule') {
@@ -137,39 +132,39 @@ function reduceFields(fields, [field, value]) {
     return updateCliffPeriod(fields, value)
   }
 
-  if (field === 'batchLength') {
-    return updateField(intDef(value))
-  }
-
-  if (field === 'slippageDai') {
-    return updateField(intDef(value))
-  }
-
-  if (field === 'slippageAnt') {
-    return updateField(intDef(value))
-  }
-
-  if (field === 'initialMonthlyAllocationDai') {
-    return updateField(intDef(value))
-  }
-
-  if (field === 'initialMonthlyAllocationAnt') {
-    return updateField(intDef(value))
-  }
-
-  if (field === 'initialTapFloorsDai') {
-    return updateField(intDef(value))
-  }
-
-  if (field === 'initialTapFloorsAnt') {
-    return updateField(intDef(value))
-  }
-
-  if (field === 'maximumMonthlyAllocationAndFloorIncreases') {
-    return updateField(intDef(value))
-  }
-
   return fields
+}
+
+function updateMinimumGrowth(fields) {
+  const oneDAI = BN(10).pow(BN(18))
+  const one = BN(1)
+  const two = BN(2)
+  const cwDAI = BN(0.1)
+
+  console.log('Fields')
+
+  console.log(fields)
+
+  const xRate = one.div(BN(fields.presalePrice))
+  const goal = BN(fields.targetGoal).times(oneDAI)
+  const pctOffered = BN(fields.tokensOffered).div(BN(100))
+  const pctBeneficiary = BN(fields.projectFunding).div(BN(100))
+
+  const sPrice = BN(fields.initialPricePerShare)
+  const sSupply = goal.times(xRate).div(pctOffered)
+  const sBalance = goal.times(one.minus(pctBeneficiary))
+
+  const exponent = two
+    .times(cwDAI)
+    .minus(two)
+    .div(two.times(cwDAI).minus(one))
+
+  return sBalance
+    .times(sSupply.pow(one.minus(cwDAI).div(cwDAI.minus(one))))
+    .div(cwDAI.mul(sPrice))
+    .pow(exponent)
+    .add(one)
+    .toFixed(0)
 }
 
 function FundraisingScreen({
@@ -178,7 +173,6 @@ function FundraisingScreen({
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
-  const theme = useTheme()
   const [tab, setTab] = useState(0)
   const { fields, bindUpdate } = useConfigureFields(
     screenData.fundraising || {}
@@ -189,8 +183,9 @@ function FundraisingScreen({
       event.preventDefault()
 
       // TODO: validation
+      const minimumGrowth = updateMinimumGrowth(fields)
+      console.log(minimumGrowth)
       const error = null
-
       if (!error) {
         const screenData = {
           ...fields,
@@ -198,7 +193,7 @@ function FundraisingScreen({
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [data, next, dataKey, fields]
+    [data, dataKey, fields, next]
   )
 
   return (
@@ -209,7 +204,7 @@ function FundraisingScreen({
       `}
     >
       <Header
-        title="Configure template"
+        title="Configure fundraising"
         subtitle={
           <span
             css={`
@@ -239,100 +234,98 @@ function FundraisingScreen({
 
       {tab === 0 && (
         <div>
-          <Section title="Project’s pitch">
-            <Field label="Description" css="position: relative">
-              {({ id }) => (
-                <React.Fragment>
-                  <ConfigInput
-                    id={id}
-                    multiline
-                    onChange={bindUpdate('description')}
-                    value={fields.description}
-                    wide
-                    css={`
-                      min-height: ${33 * GU}px;
-                    `}
-                  />
-                  <div
-                    css={`
-                      position: absolute;
-                      right: ${1 * GU}px;
-                      bottom: ${1 * GU}px;
-                      ${textStyle('body3')};
-                      color: ${fields.description.length < DESCRIPTION_LIMIT
-                        ? theme.surfaceContentSecondary
-                        : theme.negative};
-                    `}
-                  >
-                    Max: {DESCRIPTION_LIMIT} characters
-                  </div>
-                </React.Fragment>
-              )}
+          <Section title="Presale terms">
+            <Field key="targetGoal" label="Target Goal">
+              <ConfigInput
+                label="DAI"
+                onChange={bindUpdate('targetGoal')}
+                value={fields.targetGoal}
+              />
             </Field>
+            <Field key="presalePrice" label="Price">
+              <ConfigInput
+                label="DAI per share"
+                onChange={bindUpdate('presalePrice')}
+                value={fields.presalePrice}
+              />
+            </Field>
+            <Field key="fundingPeriod" label="Funding period">
+              <ConfigInput
+                label={labelDays(fields.fundingPeriod)}
+                onChange={bindUpdate('fundingPeriod')}
+                value={fields.fundingPeriod}
+              />
+            </Field>
+            <PercentageField
+              label={
+                <React.Fragment>
+                  Tokens offered %
+                  <Help hint="What’s tokens offered %?">
+                    <strong>Tokens offered %</strong> describes the percentage
+                    of the initial shares supply that will be offered during the
+                    presale. The remaining of this supply will be minted and
+                    sent to the board multisig if and when presale succeeds.
+                  </Help>
+                </React.Fragment>
+              }
+              value={fields.tokensOffered}
+              onChange={bindUpdate('tokensOffered')}
+            />
+            <PercentageField
+              label={
+                <React.Fragment>
+                  Project funding %
+                  <Help hint="What’s the project funding?">
+                    <strong>Project funding</strong> describes the percentage of
+                    the presale goal that will be sent to the board multisig if
+                    and when presale succeeds. The remaining of the funds will
+                    be sent to the market maker reserve pool to support trading.
+                  </Help>
+                </React.Fragment>
+              }
+              value={fields.projectFunding}
+              onChange={bindUpdate('projectFunding')}
+            />
           </Section>
 
-          <Section title="Fundraising terms">
-            <div css="display: flex">
-              {[
-                ['Upfront costs', 'upfrontCosts', fields.upfrontCosts],
-                [
-                  'Monthly allowance',
-                  'monthlyAllowance',
-                  fields.monthlyAllowance,
-                ],
-                ['Target goal', 'targetGoal', fields.targetGoal],
-              ].map(([label, id, value]) => (
-                <Field
-                  key={id}
-                  label={label}
-                  css={`
-                    width: calc(100% / 3);
-                    & + & {
-                      margin-left: ${2 * GU}px;
-                    }
-                  `}
-                >
-                  <ConfigInput
-                    label="DAI"
-                    onChange={bindUpdate(id)}
-                    value={value}
-                    wide
-                  />
-                </Field>
-              ))}
-            </div>
-
-            <Field label="Funding period">
+          <Section title="Investment terms">
+            <Field label="Vesting schedule">
               {id => (
                 <ConfigInput
                   id={id}
-                  label={labelDays(fields.fundingPeriod)}
-                  onChange={bindUpdate('fundingPeriod')}
-                  value={fields.fundingPeriod}
+                  label={labelDays(fields.vestingSchedule)}
+                  onChange={bindUpdate('vestingSchedule')}
+                  value={
+                    fields.vestingSchedule === -1 ? '' : fields.vestingSchedule
+                  }
+                  width={INPUT_SMALL}
+                />
+              )}
+            </Field>
+            <Field label="Cliff period">
+              {id => (
+                <ConfigInput
+                  id={id}
+                  label={labelDays(fields.cliffPeriod)}
+                  onChange={bindUpdate('cliffPeriod')}
+                  value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
                   width={INPUT_SMALL}
                 />
               )}
             </Field>
           </Section>
 
-          <Section title="Investment terms">
-            <PercentageField
-              label={<React.Fragment>Tokens offered %</React.Fragment>}
-              value={fields.tokensOffered}
-              onChange={bindUpdate('tokensOffered')}
-            />
-
-            <div
-              css={`
-                display: flex;
-              `}
-            >
-              <Field label="Initial price per token">
-                <ConfigInput
-                  onChange={bindUpdate('initialPricePerToken')}
-                  value={fields.initialPricePerToken}
-                  width={INPUT_MEDIUM}
-                />
+          <Section title="Trading terms">
+            <div css="display: flex;">
+              <Field label="Initial price per share">
+                {id => (
+                  <ConfigInput
+                    id={id}
+                    onChange={bindUpdate('initialPricePerShare')}
+                    value={fields.initialPricePerShare}
+                    width={INPUT_MEDIUM}
+                  />
+                )}
               </Field>
               <Field
                 label="Expected growth"
@@ -349,126 +342,57 @@ function FundraisingScreen({
                 />
               </Field>
             </div>
-
-            <Field label="Vesting schedule">
-              {id => (
-                <ConfigInput
-                  id={id}
-                  label={labelDays(fields.vestingSchedule)}
-                  onChange={bindUpdate('vestingSchedule')}
-                  value={
-                    fields.vestingSchedule === -1 ? '' : fields.vestingSchedule
-                  }
-                  width={INPUT_SMALL}
-                />
-              )}
-            </Field>
-
-            <Field label="Cliff period">
-              {id => (
-                <ConfigInput
-                  id={id}
-                  label={labelDays(fields.cliffPeriod)}
-                  onChange={bindUpdate('cliffPeriod')}
-                  value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
-                  width={INPUT_SMALL}
-                />
-              )}
-            </Field>
           </Section>
-
-          <Info
-            css={`
-              margin-bottom: ${3 * GU}px;
-            `}
-          >
-            Initial exchange rate offered to raise the target funding goal will
-            be:{' '}
-            <strong>180000 Tokens offered at a rate of 9 Tokens per DAI</strong>
-            .
-          </Info>
         </div>
       )}
 
       {tab === 1 && (
         <div>
           <Section title="Trading terms">
-            <div
-              css={`
-                display: flex;
-              `}
-            >
-              <Field
-                label="Batch length"
-                css={`
-                  display: flex;
-                  margin-right: ${6 * GU}px;
-                `}
-              >
-                <ConfigInput
-                  width={INPUT_SMALL}
-                  value={fields.batchLength}
-                  onChange={bindUpdate('batchLength')}
-                />
-              </Field>
-              <Field
-                label="Slippage %"
-                css={`
-                  margin-left: ${2 * GU}px;
-                `}
-              >
-                <div css="display: flex">
-                  <ConfigInput
-                    label="DAI"
-                    onChange={bindUpdate('slippageDai')}
-                    value={fields.slippageDai}
-                    width={INPUT_SMALL}
-                  />
-                  <ConfigInput
-                    label="ANT"
-                    onChange={bindUpdate('slippageAnt')}
-                    value={fields.slippageAnt}
-                    width={INPUT_SMALL}
-                  />
-                </div>
-              </Field>
-            </div>
-            <Field label="Initial monthly allocation">
+            <Field label="Batch length">
+              <ConfigInput
+                width={INPUT_SMALL}
+                label={labelBatch(fields.batchLength)}
+                value={fields.batchLength}
+                onChange={bindUpdate('batchLength')}
+              />
+            </Field>
+            <Field label="Slippage %">
               <div css="display: flex">
                 <ConfigInput
                   label="DAI"
-                  onChange={bindUpdate('initialMonthlyAllocationDai')}
-                  value={fields.initialMonthlyAllocationDai}
-                  width={INPUT_MEDIUM}
+                  onChange={bindUpdate('slippageDai')}
+                  value={fields.slippageDai}
+                  width={INPUT_SMALL}
                 />
                 <ConfigInput
                   label="ANT"
-                  onChange={bindUpdate('initialMonthlyAllocationAnt')}
-                  value={fields.initialMonthlyAllocationAnt}
-                  width={INPUT_MEDIUM}
+                  onChange={bindUpdate('slippageAnt')}
+                  value={fields.slippageAnt}
+                  width={INPUT_SMALL}
                 />
               </div>
             </Field>
-            <Field label="Initial tap floors">
-              <div css="display: flex">
-                <ConfigInput
-                  label="DAI"
-                  onChange={bindUpdate('initialTapFloorsDai')}
-                  value={fields.initialTapFloorsDai}
-                  width={INPUT_MEDIUM}
-                />
-                <ConfigInput
-                  label="ANT"
-                  onChange={bindUpdate('initialTapFloorsAnt')}
-                  value={fields.initialTapFloorsAnt}
-                  width={INPUT_MEDIUM}
-                />
-              </div>
+            <Field label="Initial monthly allocation">
+              <ConfigInput
+                label="DAI"
+                onChange={bindUpdate('tapRate')}
+                value={fields.tapRate}
+                width={INPUT_MEDIUM}
+              />
+            </Field>
+            <Field label="Initial tap floor">
+              <ConfigInput
+                label="DAI"
+                onChange={bindUpdate('tapFloor')}
+                value={fields.tapFloor}
+                width={INPUT_MEDIUM}
+              />
             </Field>
             <PercentageField
-              label="Maximum monthly allocation and floor increases %"
-              value={fields.maximumMonthlyAllocationAndFloorIncreases}
-              onChange={bindUpdate('maximumMonthlyAllocationAndFloorIncreases')}
+              label="Maximum monthly allocation increases and floor decreases %"
+              value={fields.maximumMonthlyUpdates}
+              onChange={bindUpdate('maximumMonthlyUpdates')}
             />
           </Section>
         </div>
