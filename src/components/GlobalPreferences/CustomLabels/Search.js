@@ -17,15 +17,19 @@ const SEARCH_CLOSED = Symbol('closed')
 const SEARCH_OPEN = Symbol('open')
 const EMPTY = ''
 
+function getDefaultSearchState(compact) {
+  return compact ? SEARCH_CLOSED : SEARCH_OPEN
+}
+
 const Search = React.memo(function Search({ onChange, value }) {
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
   const theme = useTheme()
 
-  const [mode, setMode] = useState(compact ? SEARCH_CLOSED : SEARCH_OPEN)
+  const [mode, setMode] = useState(getDefaultSearchState(compact))
   const open = useCallback(() => setMode(SEARCH_OPEN), [setMode])
   const clear = useCallback(() => {
-    setMode(compact ? SEARCH_CLOSED : SEARCH_OPEN)
+    setMode(getDefaultSearchState(compact))
     onChange(EMPTY)
   }, [onChange, compact])
   const handleChange = useCallback(
@@ -36,7 +40,7 @@ const Search = React.memo(function Search({ onChange, value }) {
   )
 
   useEffect(() => {
-    setMode(compact ? SEARCH_CLOSED : SEARCH_OPEN)
+    setMode(getDefaultSearchState(compact))
   }, [compact])
 
   const searchStyles = useMemo(
