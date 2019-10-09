@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  Box,
   Button,
   ButtonBase,
   DataView,
@@ -22,7 +21,6 @@ import {
   textStyle,
 } from '@aragon/ui'
 import Search from './Search'
-import EmptyFilteredIdentities from './EmptyFilteredIdentities'
 import Import from './Import'
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { ASC, DESC } from './useSort'
@@ -51,13 +49,6 @@ const LocalIdentities = React.memo(function LocalIdentities({
   const compact = layoutName === 'small'
   const theme = useTheme()
 
-  if (!identities.length) {
-    return (
-      <Box>
-        <EmptyFilteredIdentities onClear={onClear} />
-      </Box>
-    )
-  }
 
   return (
     <React.Fragment>
@@ -73,6 +64,8 @@ const LocalIdentities = React.memo(function LocalIdentities({
       </Info>
       <DataView
         mode="table"
+        status={identities.length > 0 ? 'default' : 'empty-search'}
+        onStatusEmptyClear={onClear}
         heading={
           <Filters
             searchTerm={searchTerm}
