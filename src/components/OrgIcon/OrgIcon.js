@@ -29,9 +29,7 @@ function OrgIcon({ orgAddress, size }) {
           width={size}
           height={size}
           alt=""
-          css={`
-            object-fit: contain;
-          `}
+          css="object-fit: contain"
         />
       ) : (
         <EthIdenticon address={orgAddress} />
