@@ -78,7 +78,6 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     isContractAccount,
     networkId,
     requirementsError,
-    selectorNetworks,
   ])
 
   const handleCreate = useCallback(() => {
@@ -113,7 +112,7 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     if (requirementsError[0] === null) {
       window.location.hash = '/create'
     }
-  }, [account, balance, isContractAccount, networkId, selectorNetworks])
+  }, [account, balance, isContractAccount, networkId])
 
   const closeNetworkRedirectModal = () => {
     setNetworkRedirectModalOpened(false)
