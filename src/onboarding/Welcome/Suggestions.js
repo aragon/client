@@ -1,13 +1,10 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { EthIdenticon, Box, GU } from '@aragon/ui'
 import FavoritesMenu from '../../components/FavoritesMenu/FavoritesMenu'
 import { useFavoriteDaos } from '../../contexts/FavoriteDaosContext'
 import { network } from '../../environment'
-import {
-  getKnownOrganization,
-  getRecommendedOrganizations,
-} from '../../known-organizations'
+import { getKnownOrganization } from '../../known-organizations'
 import { addressesEqual } from '../../web3-utils'
 
 function Suggestions({ suggestedOrgs }) {
