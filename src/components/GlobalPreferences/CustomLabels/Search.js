@@ -1,12 +1,10 @@
-import React, { useMemo, useEffect, useState, useCallback } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
-  ButtonIcon,
   GU,
   IconCross,
   IconSearch,
-  TextInput,
   SearchInput,
   useTheme,
   useLayout,
@@ -28,29 +26,23 @@ const Search = React.memo(function Search({ onChange, value }) {
 
   const [mode, setMode] = useState(getDefaultSearchState(compact))
   const open = useCallback(() => setMode(SEARCH_OPEN), [setMode])
+
+  const searchInputRef = useRef()
+
   const clear = useCallback(() => {
     setMode(getDefaultSearchState(compact))
     onChange(EMPTY)
   }, [onChange, compact])
-  const handleChange = useCallback(
-    ({ currentTarget: { value } }) => {
-      onChange(value)
-    },
-    [onChange]
-  )
 
   useEffect(() => {
     setMode(getDefaultSearchState(compact))
   }, [compact])
 
-  const searchStyles = useMemo(
-    () =>
-      `
-        ${textStyle('body2')};
-        color: ${value.trim() ? theme.surfaceContent : theme.hint};
-      `,
-    [value, theme]
-  )
+  useEffect(() => {
+    if (mode && searchInputRef.current) {
+      searchInputRef.current.focus()
+    }
+  }, [mode])
 
   if (mode === SEARCH_CLOSED) {
     return (
@@ -62,6 +54,20 @@ const Search = React.memo(function Search({ onChange, value }) {
       />
     )
   }
+
+  const searchInputExtraProps = compact
+    ? {
+        adornment: (
+          <Button
+            display="icon"
+            icon={<IconCross />}
+            label="Clear search input"
+            onClick={clear}
+          />
+        ),
+        wide: true,
+      }
+    : {}
 
   return (
     <div
@@ -81,38 +87,18 @@ const Search = React.memo(function Search({ onChange, value }) {
           : ''}
       `}
     >
-      {compact ? (
-        <TextInput
-          adornment={
-            <ButtonIcon label="Clear search" onClick={clear}>
-              <IconCross
-                css={`
-                  color: ${theme.surfaceOpened};
-                `}
-              />
-            </ButtonIcon>
-          }
-          adornmentPosition="end"
-          placeholder="Search"
-          onChange={handleChange}
-          value={value}
-          wide
-          css={`
-            max-width: unset;
-            ${searchStyles};
-          `}
-        />
-      ) : (
-        <SearchInput
-          onChange={onChange}
-          value={value}
-          placeholder="Search"
-          css={`
-            width: ${30 * GU}px;
-            ${searchStyles};
-          `}
-        />
-      )}
+      <SearchInput
+        ref={searchInputRef}
+        onChange={onChange}
+        placeholder="Search"
+        value={value}
+        {...searchInputExtraProps}
+        css={`
+          ${compact ? '' : `width: ${30 * GU}px`};
+          ${textStyle('body2')};
+          color: ${value ? theme.surfaceContent : theme.hint};
+        `}
+      />
     </div>
   )
 })
