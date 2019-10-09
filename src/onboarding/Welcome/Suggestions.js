@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { EthIdenticon, Box, GU } from '@aragon/ui'
+import { Box } from '@aragon/ui'
 import FavoritesMenu from '../../components/FavoritesMenu/FavoritesMenu'
+import OrgIcon from '../../components/OrgIcon/OrgIcon'
 import { useFavoriteDaos } from '../../contexts/FavoriteDaosContext'
 import { network } from '../../environment'
 import { getKnownOrganization } from '../../known-organizations'
@@ -56,21 +57,7 @@ function Suggestions({ suggestedOrgs }) {
           return {
             favorited: isAddressFavorited(org.address),
             id: org.address,
-            roundedImage: !knownOrg,
-            image: knownOrg ? (
-              <img
-                src={knownOrg.image}
-                width={3 * GU}
-                alt=""
-                css={`
-                  object-fit: contain;
-                  width: 100%;
-                  height: 100%;
-                `}
-              />
-            ) : (
-              <EthIdenticon address={org.address} />
-            ),
+            image: <OrgIcon orgAddress={org.address} />,
             name: knownOrg ? knownOrg.name : org.name || org.address,
             secondary: knownOrg ? knownOrg.template : '',
           }

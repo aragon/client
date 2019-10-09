@@ -9,7 +9,6 @@ function FavoritesMenuItem({
   image,
   name,
   secondary,
-  roundedImage,
   onActivate,
   onFavoriteUpdate,
 }) {
@@ -53,21 +52,7 @@ function FavoritesMenuItem({
               margin-right: ${1 * GU}px;
             `}
           >
-            <div
-              css={`
-                overflow: hidden;
-                width: ${3 * GU}px;
-                height: ${3 * GU}px;
-                flex-shrink: 0;
-                flex-grow: 0;
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
-                border-radius: ${roundedImage ? '50%' : '0'};
-              `}
-            >
-              {image}
-            </div>
+            {image}
           </div>
           <div
             css={`
@@ -120,7 +105,6 @@ FavoritesMenuItem.propTypes = {
   name: PropTypes.string.isRequired,
   onActivate: PropTypes.func.isRequired,
   onFavoriteUpdate: PropTypes.func.isRequired,
-  roundedImage: PropTypes.bool,
   secondary: PropTypes.string,
 }
 
