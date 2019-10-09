@@ -51,19 +51,11 @@ const Search = React.memo(function Search({ onChange, value }) {
   if (mode === SEARCH_CLOSED) {
     return (
       <Button
+        display="icon"
+        icon={<IconSearch />}
+        label="Search"
         onClick={open}
-        css={`
-          padding: 0;
-          min-width: unset;
-          width: ${5 * GU}px;
-        `}
-      >
-        <IconSearch
-          css={`
-            color: ${theme.surfaceOpened};
-          `}
-        />
-      </Button>
+      />
     )
   }
 

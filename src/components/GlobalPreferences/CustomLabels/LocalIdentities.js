@@ -225,31 +225,10 @@ const Filters = React.memo(function Filters({
           onImport={onImport}
           button={
             <Button
-              css={`
-                ${compact &&
-                  `
-                    width: ${5 * GU}px;
-                    min-width: unset;
-                    padding: 0;
-                  `}
-              `}
-            >
-              <IconDownload
-                css={`
-                  color: ${theme.surfaceOpened};
-                `}
-              />
-              {!compact && (
-                <span
-                  css={`
-                    display: inline-block;
-                    padding-left: ${1.5 * GU}px;
-                  `}
-                >
-                  Import
-                </span>
-              )}
-            </Button>
+              icon={<IconDownload />}
+              label="Import"
+              display={compact ? 'icon' : 'auto'}
+            />
           }
         />
       )}
@@ -345,9 +324,9 @@ const Actions = React.memo(function Actions({
           </ActionSpan>,
         ]}
         placeholder={
-          <span
+          <div
             css={`
-              height: 24px;
+              height: ${3 * GU}px;
               $textStyle('body2');
               color: ${
                 disabled ? theme.contentSecondary : theme.surfaceContent
@@ -372,7 +351,7 @@ const Actions = React.memo(function Actions({
               `}
             />
             {!compact && <span css="text-align: left;">Actions</span>}
-          </span>
+          </div>
         }
         onChange={handleChange}
       />
