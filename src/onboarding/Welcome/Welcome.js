@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Link, DropDown, GU, Layout, Split, useTheme } from '@aragon/ui'
 import { network } from '../../environment'
+import { useSuggestedOrgs } from '../../suggested-orgs'
 import Header from '../Header/Header'
 import OpenOrg from './OpenOrg'
 import Suggestions from './Suggestions'
@@ -38,6 +39,33 @@ const Welcome = React.memo(function Welcome({
     [selectorNetworksSorted]
   )
 
+  const suggestedOrgs = useSuggestedOrgs()
+
+  const primaryContent = openMode ? (
+    <OpenOrg onBack={onBack} onOpenOrg={onOpenOrg} />
+  ) : (
+    <div>
+      <DropDown
+        items={selectorNetworksSorted.map(network => network.name)}
+        placeholder={selectorNetworksSorted[0].name}
+        onChange={changeNetwork}
+        wide
+      />
+      <WelcomeAction
+        title="Create an organization"
+        subtitle={<CreateSubtitle error={createError} />}
+        illustration={actionCreate}
+        onActivate={onCreate}
+        hasError={createError[0] !== null && createError[0] !== 'no-account'}
+      />
+      <WelcomeAction
+        title="Open an existing organization"
+        illustration={actionOpen}
+        onActivate={onOpen}
+      />
+    </div>
+  )
+
   return (
     <div
       css={`
@@ -57,37 +85,14 @@ const Welcome = React.memo(function Welcome({
           subtitle="Create your own organization in a few minutes!"
         />
 
+      {suggestedOrgs.length > 0 ? (
         <Split
-          primary={
-            openMode ? (
-              <OpenOrg onBack={onBack} onOpenOrg={onOpenOrg} />
-            ) : (
-              <div>
-                <DropDown
-                  items={selectorNetworksSorted.map(network => network.name)}
-                  placeholder={selectorNetworksSorted[0].name}
-                  onChange={changeNetwork}
-                  wide
-                />
-                <WelcomeAction
-                  title="Create an organization"
-                  subtitle={<CreateSubtitle error={createError} />}
-                  illustration={actionCreate}
-                  onActivate={onCreate}
-                  hasError={
-                    createError[0] !== null && createError[0] !== 'no-account'
-                  }
-                />
-                <WelcomeAction
-                  title="Open an existing organization"
-                  illustration={actionOpen}
-                  onActivate={onOpen}
-                />
-              </div>
-            )
-          }
-          secondary={<Suggestions />}
+          primary={primaryContent}
+          secondary={<Suggestions suggestedOrgs={suggestedOrgs} />}
         />
+      ) : (
+        primaryContent
+      )}
 
         <p
           css={`

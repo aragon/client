@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import PropTypes from 'prop-types'
 import { EthIdenticon, Box, GU } from '@aragon/ui'
 import FavoritesMenu from '../../components/FavoritesMenu/FavoritesMenu'
 import { useFavoriteDaos } from '../../contexts/FavoriteDaosContext'
@@ -9,36 +10,12 @@ import {
 } from '../../known-organizations'
 import { addressesEqual } from '../../web3-utils'
 
-const MAX_SUGGESTIONS = 6
-const RECOMMENDED_ORGS = getRecommendedOrganizations(network.type)
-
-function Suggestions() {
+function Suggestions({ suggestedOrgs }) {
   const {
-    favoriteDaos: favoriteOrgs,
     isAddressFavorited,
     removeFavoriteByAddress,
     addFavorite,
   } = useFavoriteDaos()
-
-  const suggestedOrgs = useMemo(() => {
-    const orgs = new Map(
-      [...favoriteOrgs].map(org => [org.address.toLowerCase(), org])
-    )
-
-    // Keep filling with recommended orgs until we reach the max
-    RECOMMENDED_ORGS.forEach(org => {
-      const orgAddress = org.address.toLowerCase()
-      if (orgs.size < MAX_SUGGESTIONS && !orgs.has(orgAddress)) {
-        orgs.set(orgAddress, org)
-      }
-    })
-
-    return [...orgs.values()].sort((org, org2) => {
-      const { address, name = '' } = org
-      const { address: address2, name: name2 = '' } = org2
-      return name.localeCompare(name2) || address > address2 ? 1 : -1
-    })
-  }, [favoriteOrgs])
 
   const updateFavorite = useCallback(
     (address, favorite) => {
@@ -69,6 +46,10 @@ function Suggestions() {
     },
     [suggestedOrgs]
   )
+
+  if (suggestedOrgs.length === 0) {
+    return null
+  }
 
   return (
     <Box heading="Explore" padding={0}>
@@ -102,6 +83,10 @@ function Suggestions() {
       />
     </Box>
   )
+}
+
+Suggestions.propTypes = {
+  suggestedOrgs: PropTypes.array.isRequired,
 }
 
 export default Suggestions
