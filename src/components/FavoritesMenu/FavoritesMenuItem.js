@@ -60,6 +60,7 @@ function FavoritesMenuItem({
               flex-direction: column;
               align-items: flex-start;
               min-width: 0;
+              text-align: left;
             `}
           >
             <div
