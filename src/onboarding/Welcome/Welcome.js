@@ -67,23 +67,16 @@ const Welcome = React.memo(function Welcome({
   )
 
   return (
-    <div
-      css={`
-        display: grid;
-        align-items: center;
-        justify-content: center;
-      `}
+    <Layout
+      breakpoints={{
+        medium: 84 * GU,
+        large: 112 * GU,
+      }}
     >
-      <Layout
-        breakpoints={{
-          medium: 84 * GU,
-          large: 112 * GU,
-        }}
-      >
-        <Header
-          title="Welcome to Aragon"
-          subtitle="Create your own organization in a few minutes!"
-        />
+      <Header
+        title="Welcome to Aragon"
+        subtitle="Create your own organization in a few minutes!"
+      />
 
       {suggestedOrgs.length > 0 ? (
         <Split
@@ -94,20 +87,19 @@ const Welcome = React.memo(function Welcome({
         primaryContent
       )}
 
-        <p
-          css={`
-            padding: ${4 * GU}px 0 ${4 * GU}px;
-            text-align: center;
-            color: ${theme.contentSecondary};
-          `}
-        >
-          Do you need more information about Aragon?{' '}
-          <Link href="https://aragon.org/" external>
-            Visit our homepage
-          </Link>
-        </p>
-      </Layout>
-    </div>
+      <p
+        css={`
+          padding: ${4 * GU}px 0 ${4 * GU}px;
+          text-align: center;
+          color: ${theme.contentSecondary};
+        `}
+      >
+        Do you need more information about Aragon?{' '}
+        <Link href="https://aragon.org/" external>
+          Visit our homepage
+        </Link>
+      </p>
+    </Layout>
   )
 })
 
