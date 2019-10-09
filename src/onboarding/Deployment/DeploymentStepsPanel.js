@@ -64,11 +64,13 @@ function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
         </div>
       </div>
 
-      <Info>
-        It might take some time before these transactions get processed. Please
-        be patient and{' '}
-        <strong>do not close this window until it finishes.</strong>
-      </Info>
+      {!allSuccess && (
+        <Info>
+          It might take some time before these transactions get processed.
+          Please be patient and{' '}
+          <strong>do not close this window until it finishes.</strong>
+        </Info>
+      )}
     </aside>
   )
 }
