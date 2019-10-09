@@ -30,7 +30,6 @@ function FavoritesMenu({ items, onActivate, onFavoriteUpdate }) {
             name={item.name}
             onActivate={onActivate}
             onFavoriteUpdate={onFavoriteUpdate}
-            roundedImage={item.roundedImage}
             secondary={item.secondary}
           />
         </li>
@@ -46,7 +45,6 @@ FavoritesMenu.propTypes = {
       id: PropTypes.string,
       image: PropTypes.node,
       name: PropTypes.node,
-      roundedImage: PropTypes.bool,
       secondary: PropTypes.node,
     }).isRequired
   ),
