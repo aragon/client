@@ -206,7 +206,6 @@ const Filters = React.memo(function Filters({
 }) {
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
-  const theme = useTheme()
 
   return (
     <div
