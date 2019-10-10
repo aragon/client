@@ -320,6 +320,15 @@
       "contributions": [
         "maintenance"
       ]
+    },
+    {
+      "login": "geleeroyale",
+      "name": "geleeroyale",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/317685?v=4",
+      "profile": "http://geleeroyale.netlify.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

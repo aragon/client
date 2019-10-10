@@ -1,9 +1,9 @@
 import React from 'react'
-import styled from 'styled-components'
-import { EthIdenticon, GU, textStyle } from '@aragon/ui'
+import { GU, textStyle } from '@aragon/ui'
 import { DaoItemType } from '../../../prop-types'
 import { getKnownOrganization } from '../../../known-organizations'
 import { network } from '../../../environment'
+import OrgIcon from '../../OrgIcon/OrgIcon'
 
 class OrganizationItem extends React.Component {
   static propTypes = {
@@ -22,22 +22,7 @@ class OrganizationItem extends React.Component {
         `}
         {...props}
       >
-        <OrgIcon rounded={!knownOrg}>
-          {knownOrg ? (
-            <img
-              src={knownOrg.image}
-              width={6 * GU}
-              alt=""
-              css={`
-                object-fit: contain;
-                width: 100%;
-                height: 100%;
-              `}
-            />
-          ) : (
-            <EthIdenticon address={dao.address} radius={1.5 * GU} />
-          )}
-        </OrgIcon>
+        <OrgIcon orgAddress={dao.address} />
         <span
           css={`
             padding-left: ${1 * GU}px;
@@ -53,17 +38,5 @@ class OrganizationItem extends React.Component {
     )
   }
 }
-
-const OrgIcon = styled.div`
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  flex-grow: 0;
-  width: ${3 * GU}px;
-  height: ${3 * GU}px;
-  border-radius: ${p => (p.rounded ? '50%' : '0')};
-  overflow: hidden;
-`
 
 export default OrganizationItem
