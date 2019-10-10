@@ -160,7 +160,7 @@ export default {
       appName: 'aragon-fundraising.aragonpm.eth',
       label: 'Aragon Fundraising',
     },
-    { appName: 'agent.aragonpm.eth', label: 'Agent [Reserve Pool]' },
+    { appName: 'agent.aragonpm.eth', label: 'Reserve Pool (Agent)' },
     { appName: 'token-manager.aragonpm.eth', label: 'Board Token' },
     { appName: 'voting.aragonpm.eth', label: 'Board Voting' },
     { appName: 'token-manager.aragonpm.eth', label: 'Shareholder Token' },
