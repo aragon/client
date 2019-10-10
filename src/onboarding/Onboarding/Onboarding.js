@@ -129,19 +129,21 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
     if (status === 'create' && !templatesResolved) {
       Promise.all(
         embeddedTemplates.map(async template => {
+          let repoAddress
           try {
-            const repoAddress = await resolveEnsDomain(template.id)
-            return {
-              repoAddress,
-              status: TEMPLATE_AVAILABLE,
-              ...template,
-            }
-          } catch (_) {
-            return {
-              status: TEMPLATE_UNAVAILABLE,
-              ...template,
-            }
-          }
+            repoAddress = await resolveEnsDomain(template.id)
+          } catch (_) {}
+
+          return repoAddress
+            ? {
+                repoAddress,
+                status: TEMPLATE_AVAILABLE,
+                ...template,
+              }
+            : {
+                status: TEMPLATE_UNAVAILABLE,
+                ...template,
+              }
         })
       )
         .then(templatesWithRepoAddress => {
