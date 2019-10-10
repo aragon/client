@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import { Decimal } from 'decimal.js'
+import { network } from '../../environment'
 import {
   ClaimDomainScreen,
   FundraisingScreen,
@@ -146,6 +147,8 @@ function extractCollateralizationSettings(fundraising) {
 export default {
   id: 'fundraising-multisig-template.aragonpm.eth',
   name: 'Fundraising',
+  new: true,
+  disabled: network.type !== 'rinkeby',
   header,
   icon,
   description: `
