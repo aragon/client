@@ -39,7 +39,7 @@ const Search = React.memo(function Search({ onChange, value }) {
   }, [compact])
 
   useEffect(() => {
-    if (mode && searchInputRef.current) {
+    if (mode === SEARCH_OPEN && searchInputRef.current) {
       searchInputRef.current.focus()
     }
   }, [mode])
