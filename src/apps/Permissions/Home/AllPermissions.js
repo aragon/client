@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import {
   DropDown,
   GU,
-  IconSearch,
-  TextInput,
+  SearchInput,
   textStyle,
   useLayout,
   useTheme,
@@ -126,11 +125,11 @@ function Heading({
   )
 
   const handleSearchInputChange = useCallback(
-    event => {
+    value => {
       // immediately update the text field
-      setSearchTermsInputValue(event.target.value)
+      setSearchTermsInputValue(value)
       // but debounce the external update
-      debouncedSearchTermsUpdate(event.target.value)
+      debouncedSearchTermsUpdate(value)
     },
     [debouncedSearchTermsUpdate]
   )
@@ -177,18 +176,10 @@ function Heading({
               `}
             />
           </label>
-          <TextInput
+          <SearchInput
             css={`
               width: ${38 * GU}px;
             `}
-            adornment={
-              <IconSearch
-                css={`
-                  color: ${theme.surfaceIcon};
-                `}
-              />
-            }
-            adornmentPosition="end"
             onChange={handleSearchInputChange}
             placeholder="Search by app or role"
             value={searchTermsInputValue}
