@@ -58,7 +58,7 @@ function ShareInfo({
           shares.
         </Paragraph>
         <Paragraph>
-          This is why shareholder votes, where most of the organization's
+          This is why shareholder votes, where most of the organization’s
           decisions are made, can only be opened and initiated by the board.
         </Paragraph>
       </Info>
