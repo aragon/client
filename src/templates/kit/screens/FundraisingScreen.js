@@ -269,8 +269,11 @@ function FundraisingScreen({
         ...fields,
         minimumGrowth: minimumGrowth.toFixed(0),
       }
+      const mergedData = dataKey
+        ? { ...data, [dataKey]: screenData }
+        : { ...data, ...screenData }
 
-      next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
+      next(mergedData)
     },
     [data, dataKey, fields, next, minimumGrowth]
   )
