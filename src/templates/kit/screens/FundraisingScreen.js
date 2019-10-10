@@ -70,24 +70,6 @@ function dataDefaults(data) {
   )
 }
 
-function useConfigureFields(data) {
-  const [fields, _update] = useReducer(reduceFields, dataDefaults(data))
-
-  // Update a field by using its name and value as parameters
-  const update = useCallback((...params) => _update(params), [])
-
-  // Bind the update function to a callback passing the value, e.g.:
-  //
-  //  <PercentageField
-  //   onChange={bindUpdate('fieldName')}
-  //   value={fieldValue}
-  //  />
-  //
-  const bindUpdate = useCallback(name => value => update(name, value), [update])
-
-  return { fields, update, bindUpdate }
-}
-
 function updateVestingSchedule(fields, value) {
   const vestingSchedule = Math.max(-1, intDef(value, -1))
   const cliffPeriod = Math.max(
@@ -143,6 +125,34 @@ function updatePresalePrice(fields, value) {
     presalePrice,
     presalePriceInput: presalePrice,
   }
+}
+
+function updateMinimumGrowth(fields) {
+  const oneDAI = BN(10).pow(BN(18))
+  const one = BN(1)
+  const two = BN(2)
+  const oneHundred = BN(100)
+  const cwDAI = BN(0.1)
+
+  const xRate = one.div(BN(fields.presalePrice))
+  const goal = BN(fields.targetGoal).times(oneDAI)
+  const pctOffered = BN(fields.tokensOffered).div(oneHundred)
+  const pctBeneficiary = BN(fields.projectFunding).div(oneHundred)
+
+  const sPrice = BN(fields.initialPricePerShare)
+  const sSupply = goal.times(xRate).div(pctOffered)
+  const sBalance = goal.times(one.minus(pctBeneficiary))
+
+  const exponent = two
+    .times(cwDAI)
+    .minus(two)
+    .div(two.times(cwDAI).minus(one))
+
+  return sBalance
+    .times(sSupply.pow(one.minus(cwDAI).div(cwDAI.minus(one))))
+    .div(cwDAI.mul(sPrice))
+    .pow(exponent)
+    .add(one)
 }
 
 function reduceFields(fields, [field, value]) {
@@ -215,32 +225,22 @@ function reduceFields(fields, [field, value]) {
   return fields
 }
 
-function updateMinimumGrowth(fields) {
-  const oneDAI = BN(10).pow(BN(18))
-  const one = BN(1)
-  const two = BN(2)
-  const oneHundred = BN(100)
-  const cwDAI = BN(0.1)
+function useConfigureFields(data) {
+  const [fields, _update] = useReducer(reduceFields, dataDefaults(data))
 
-  const xRate = one.div(BN(fields.presalePrice))
-  const goal = BN(fields.targetGoal).times(oneDAI)
-  const pctOffered = BN(fields.tokensOffered).div(oneHundred)
-  const pctBeneficiary = BN(fields.projectFunding).div(oneHundred)
+  // Update a field by using its name and value as parameters
+  const update = useCallback((...params) => _update(params), [])
 
-  const sPrice = BN(fields.initialPricePerShare)
-  const sSupply = goal.times(xRate).div(pctOffered)
-  const sBalance = goal.times(one.minus(pctBeneficiary))
+  // Bind the update function to a callback passing the value, e.g.:
+  //
+  //  <PercentageField
+  //   onChange={bindUpdate('fieldName')}
+  //   value={fieldValue}
+  //  />
+  //
+  const bindUpdate = useCallback(name => value => update(name, value), [update])
 
-  const exponent = two
-    .times(cwDAI)
-    .minus(two)
-    .div(two.times(cwDAI).minus(one))
-
-  return sBalance
-    .times(sSupply.pow(one.minus(cwDAI).div(cwDAI.minus(one))))
-    .div(cwDAI.mul(sPrice))
-    .pow(exponent)
-    .add(one)
+  return { fields, update, bindUpdate }
 }
 
 function FundraisingScreen({
