@@ -67,6 +67,7 @@ function Tokens({
   appLabel,
   editMembers,
   screenProps: { back, data, next, screenIndex, screens },
+  title,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
@@ -211,7 +212,7 @@ function Tokens({
     >
       <div>
         <Header
-          title="Configure template"
+          title={title}
           subtitle={
             <span
               css={`
@@ -368,15 +369,17 @@ Tokens.propTypes = {
   appLabel: PropTypes.string,
   accountStake: PropTypes.number,
   dataKey: PropTypes.string,
-  screenProps: ScreenPropsType.isRequired,
   editMembers: PropTypes.bool,
+  screenProps: ScreenPropsType.isRequired,
+  title: PropTypes.string,
 }
 
 Tokens.defaultProps = {
   accountStake: -1,
-  dataKey: 'tokens',
   appLabel: 'Tokens',
+  dataKey: 'tokens',
   editMembers: true,
+  title: 'Configure template',
 }
 
 function MemberField({

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { GU, Info } from '@aragon/ui'
+import { GU, useTheme } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '../../kit'
 
 function BoardInfo({
@@ -16,9 +17,11 @@ function BoardInfo({
 
   return (
     <div>
-      <Header title="First step: the board" />
-      <Info
-        title="About the board"
+      <Header
+        title="Organization's Board"
+        subtitle="Read the following information attentively"
+      />
+      <div
         css={`
           margin-bottom: ${3 * GU}px;
         `}
@@ -27,29 +30,29 @@ function BoardInfo({
           The board acts as the representatives of the project being funded by
           the fundraising campaign. Board members are represented through a
           custom token and enforce their decision via a dedicated voting app set
-          to be used as a multisig. Their privileges are intentionnaly limited
+          to be used as a multisig. Their privileges are intentionally limited
           to protect shareholders.
         </Paragraph>
-        <Paragraph>Thus, they only have the following rights:</Paragraph>
+        <Paragraph>The board only has the ability to:</Paragraph>
         <Paragraph>
-          <strong>Handling board members.</strong> The board decides on who is
-          to be included or excluded from the board.
+          <Strong>Handle board members.</Strong> The board decides on who is to
+          be included or excluded from the board.
         </Paragraph>
         <Paragraph>
-          <strong>Opening presale.</strong> The board decides on when the
+          <Strong>Open the presale.</Strong> The board decides on when the
           presale—and thus the fundraising campaign—is started.
         </Paragraph>
         <Paragraph>
-          <strong>Handling fundraising proceeds.</strong> The fundraising
+          <Strong>Handle the fundraising's proceeds.</Strong> The fundraising
           proceeds are periodically transferred to a Vault / Finance app
           controlled by the Board at their discretion.
         </Paragraph>
         <Paragraph>
-          <strong>Opening votes.</strong> The board decides on when new votes
-          should be opened for shareholders to enforce decisions over the
+          <Strong>Open shareholder votes.</Strong> The board decides on when new
+          votes should be opened for shareholders to enforce decisions over the
           organization.
         </Paragraph>
-      </Info>
+      </div>
       <Navigation
         backEnabled
         nextEnabled
@@ -65,10 +68,28 @@ BoardInfo.propTypes = {
   screenProps: ScreenPropsType.isRequired,
 }
 
-const Paragraph = styled.p`
-  & + & {
-    margin-top: ${1 * GU}px;
-  }
+function Paragraph({ children, ...props }) {
+  const theme = useTheme()
+  return (
+    <p
+      css={`
+        color: ${theme.contentSecondary};
+        & + & {
+          margin-top: ${2 * GU}px;
+        }
+      `}
+      {...props}
+    >
+      {children}
+    </p>
+  )
+}
+Paragraph.propTypes = {
+  children: PropTypes.node,
+}
+
+const Strong = styled.strong`
+  font-weight: 800;
 `
 
 export default BoardInfo

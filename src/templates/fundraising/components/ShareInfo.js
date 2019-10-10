@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { GU, Info } from '@aragon/ui'
+import { GU, Info, useTheme } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '../../kit'
 
 function ShareInfo({
@@ -16,9 +17,11 @@ function ShareInfo({
 
   return (
     <div>
-      <Header title="Second step: shareholders" />
-      <Info
-        title="About the shareholders"
+      <Header
+        title="Organization's Shareholders"
+        subtitle="Read the following information attentively"
+      />
+      <div
         css={`
           margin-bottom: ${3 * GU}px;
         `}
@@ -29,38 +32,43 @@ function ShareInfo({
           voting app. They hold most of the governance rights over the
           organization.
         </Paragraph>
+
         <Paragraph>Shareholders can:</Paragraph>
         <Paragraph>
-          <strong>Buy and redeem tokens.</strong> Shareholders can buy and
+          <Strong>Buy and redeem tokens.</Strong> Shareholders can buy and
           redeem tokens through the Aragon Fundraising interface.
         </Paragraph>
         <Paragraph>
-          <strong>Handle fundraising parameters.</strong> Shareholders decide on
+          <Strong>Handle fundraising parameters.</Strong> Shareholders decide on
           how beneficiary, fees, and collateralization settings should be
           updated. They also control the amount of funds automatically
           transferred to the board each month.
         </Paragraph>
         <Paragraph>
-          <strong>Handle organization settings.</strong> Shareholders decide on
+          <Strong>Handle organization settings.</Strong> Shareholders decide on
           which apps are installed or upgraded and which permissions are set.
         </Paragraph>
-      </Info>
+      </div>
       <Info
         css={`
           margin-bottom: ${3 * GU}px;
         `}
       >
-        <Paragraph>
+        <p>
           This architecture grants most of the governance rights to
           shareholders, to protect their investment. However, this also requires
           the organization to be able to mitigate situations where a shareholder
           could own the whole organization by owning more than 50% of the
           shares.
-        </Paragraph>
-        <Paragraph>
+        </p>
+        <p
+          css={`
+            margin-top: ${1 * GU}px;
+          `}
+        >
           This is why shareholder votes, where most of the organization’s
           decisions are made, can only be opened and initiated by the board.
-        </Paragraph>
+        </p>
       </Info>
       <Navigation
         backEnabled
@@ -77,10 +85,28 @@ ShareInfo.propTypes = {
   screenProps: ScreenPropsType.isRequired,
 }
 
-const Paragraph = styled.p`
-  & + & {
-    margin-top: ${1 * GU}px;
-  }
+function Paragraph({ children, ...props }) {
+  const theme = useTheme()
+  return (
+    <p
+      css={`
+        color: ${theme.contentSecondary};
+        & + & {
+          margin-top: ${2 * GU}px;
+        }
+      `}
+      {...props}
+    >
+      {children}
+    </p>
+  )
+}
+Paragraph.propTypes = {
+  children: PropTypes.node,
+}
+
+const Strong = styled.strong`
+  font-weight: 800;
 `
 
 export default ShareInfo

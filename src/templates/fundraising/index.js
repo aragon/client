@@ -178,16 +178,24 @@ export default {
       'Configure board',
       props => (
         <TokensScreen
+          accountStake={1}
           appLabel="Board Token"
           dataKey="boardToken"
           screenProps={props}
-          accountStake={1}
+          title="Configure board"
         />
       ),
     ],
     [
       'Configure board',
-      props => <VotingScreen dataKey="boardVoting" screenProps={props} />,
+      props => (
+        <VotingScreen
+          appLabel="Board Voting"
+          dataKey="boardVoting"
+          screenProps={props}
+          title="Configure board"
+        />
+      ),
     ],
     ['Configure shareholders', props => <ShareInfo screenProps={props} />],
     [
@@ -196,14 +204,22 @@ export default {
         <TokensScreen
           appLabel="Share Token"
           dataKey="shareToken"
-          screenProps={props}
           editMembers={false}
+          screenProps={props}
+          title="Configure shareholders"
         />
       ),
     ],
     [
       'Configure shareholders',
-      props => <VotingScreen dataKey="shareVoting" screenProps={props} />,
+      props => (
+        <VotingScreen
+          appLabel="Share Voting"
+          dataKey="shareVoting"
+          screenProps={props}
+          title="Configure shareholders"
+        />
+      ),
     ],
     [
       'Configure fundraising',
