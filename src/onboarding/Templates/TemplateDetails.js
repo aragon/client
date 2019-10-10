@@ -239,6 +239,10 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                         }}
                         css={`
                           margin-right: ${1.5 * GU}px;
+                          border-color: #8fa4b5;
+                          &:active {
+                            border-color: #8fa4b5;
+                          }
                         `}
                       />
                       Include
