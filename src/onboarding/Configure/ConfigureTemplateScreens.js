@@ -61,8 +61,7 @@ function ConfigureTemplateScreens({
               css={`
                 margin: 0 auto;
                 max-width: ${82 * GU}px;
-                padding: 0 ${3 * GU}px ${(below('medium') ? 9 : 3) * GU}px
-                  ${3 * GU}px;
+                padding: 0 ${3 * GU}px ${(below('medium') ? 9 : 6) * GU}px ${3 * GU}px;
               `}
             >
               <Screen

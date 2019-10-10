@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { AppBadge } from '@aragon/ui'
 import iconSvgAgent from './icons/agent.svg'
 import iconSvgFinance from './icons/finance.svg'
+import iconSvgFundraising from './icons/fundraising.svg'
 import iconSvgPayroll from './icons/payroll.svg'
 import iconSvgTokens from './icons/token-manager.svg'
 import iconSvgVault from './icons/vault.svg'
@@ -10,6 +11,7 @@ import iconSvgVoting from './icons/voting.svg'
 
 const KNOWN_ICONS = new Map([
   ['agent.aragonpm.eth', iconSvgAgent],
+  ['aragon-fundraising.aragonpm.eth', iconSvgFundraising],
   ['finance.aragonpm.eth', iconSvgFinance],
   ['payroll.aragonpm.eth', iconSvgPayroll],
   ['token-manager.aragonpm.eth', iconSvgTokens],
