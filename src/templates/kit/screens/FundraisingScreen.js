@@ -505,9 +505,11 @@ function FundraisingScreen({
         `}
       >
         <p>
-          The current minimum growth is {minimumGrowth.toFixed(0)}. This value
-          is calculated from the presale price, target goal, tokens offered,
-          project funding, and initial price per share.
+          The current minimum growth is{' '}
+          <strong>{minimumGrowth.toFixed(0)} times</strong> the organization's
+          initial market capitalization. This value is calculated from the
+          presale price, target goal, tokens offered, project funding, and
+          initial price per share.
         </p>
         {!acceptableMinimumGrowth && (
           <p
@@ -516,8 +518,9 @@ function FundraisingScreen({
             `}
           >
             <strong>
-              Please make sure that the expected growth ({fields.expectedGrowth}
-              ) is greater than the minimum growth.
+              Please adjust some parameters to change the expected growth (
+              {fields.expectedGrowth}) to be greater than the minimum growth (
+              {minimumGrowth.toFixed(0)}).
             </strong>
           </p>
         )}
