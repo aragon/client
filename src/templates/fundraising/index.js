@@ -133,7 +133,7 @@ export default {
     Initialize a transparent and accountable crowdfunding campaign for your
     organization.
   `,
-  userGuideUrl: 'https://help.aragon.org/',
+  userGuideUrl: 'https://fundraising.aragon.black/',
   sourceCodeUrl: 'https://github.com/AragonBlack/fundraising',
   registry: 'aragonpm.eth',
   apps: [
