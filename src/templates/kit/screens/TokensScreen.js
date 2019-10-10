@@ -188,12 +188,6 @@ function Tokens({
     }
   }, [])
 
-  // Focus the token fields as they are added afterwards
-  // const [focusTokenFields, setFocusTokenFields] = useState(false)
-  // useEffect(() => {
-  //   setFocusTokenFields(true)
-  // }, [])
-
   const hideRemoveButton = members.length < 2 && !members[0]
 
   const disableNext =
