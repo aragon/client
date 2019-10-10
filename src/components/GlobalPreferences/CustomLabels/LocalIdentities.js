@@ -49,7 +49,6 @@ const LocalIdentities = React.memo(function LocalIdentities({
   const compact = layoutName === 'small'
   const theme = useTheme()
 
-
   return (
     <React.Fragment>
       <Info
