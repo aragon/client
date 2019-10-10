@@ -137,22 +137,16 @@ export default {
   sourceCodeUrl: 'https://github.com/AragonBlack/fundraising',
   registry: 'aragonpm.eth',
   apps: [
+    {
+      appName: 'aragon-fundraising.aragonpm.eth',
+      label: 'Aragon Fundraising',
+    },
+    { appName: 'agent.aragonpm.eth', label: 'Agent [Reserve Pool]' },
     { appName: 'token-manager.aragonpm.eth', label: 'Board Token' },
     { appName: 'voting.aragonpm.eth', label: 'Board Voting [Multisig]' },
     { appName: 'token-manager.aragonpm.eth', label: 'Share Token' },
-    { appName: 'voting.aragonpm.eth', label: 'Share Voting [Democracy]' },
+    { appName: 'voting.aragonpm.eth', label: 'Share Voting' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
-    { appName: 'agent.aragonpm.eth', label: 'Agent [Reserve Pool]' },
-    { appName: 'presale.aragonpm.eth', label: 'Presale' },
-    {
-      appName: 'batched-bancor-market-maker.aragonpm.eth',
-      label: 'Market Maker [Batched Bancor]',
-    },
-    { appName: 'tap.aragonpm.eth', label: 'Tap' },
-    {
-      appName: 'aragon-fundraising.aragonpm.eth',
-      label: 'Aragon Fundraising [API]',
-    },
   ],
   optionalApps: [],
   screens: [
@@ -257,7 +251,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="fundraising.aragonpm.eth"
+                    appName="aragon-fundraising.aragonpm.eth"
                     label="Fundraising"
                   />
                 ),

@@ -295,7 +295,7 @@ function FundraisingScreen({
               `}
             >
               <KnownAppBadge
-                appName="fundraising.aragonpm.eth"
+                appName="aragon-fundraising.aragonpm.eth"
                 label="Fundraising"
               />
             </span>
