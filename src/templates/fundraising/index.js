@@ -162,9 +162,9 @@ export default {
     },
     { appName: 'agent.aragonpm.eth', label: 'Agent [Reserve Pool]' },
     { appName: 'token-manager.aragonpm.eth', label: 'Board Token' },
-    { appName: 'voting.aragonpm.eth', label: 'Board Voting [Multisig]' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Share Token' },
-    { appName: 'voting.aragonpm.eth', label: 'Share Voting' },
+    { appName: 'voting.aragonpm.eth', label: 'Board Voting' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Shareholder Token' },
+    { appName: 'voting.aragonpm.eth', label: 'Shareholder Voting' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
   ],
   optionalApps: [],
@@ -202,7 +202,7 @@ export default {
       'Configure shareholders',
       props => (
         <TokensScreen
-          appLabel="Share Token"
+          appLabel="Shareholder Token"
           dataKey="shareToken"
           editMembers={false}
           screenProps={props}
@@ -214,7 +214,7 @@ export default {
       'Configure shareholders',
       props => (
         <VotingScreen
-          appLabel="Share Voting"
+          appLabel="Shareholder Voting"
           dataKey="shareVoting"
           screenProps={props}
           title="Configure shareholders"
@@ -269,7 +269,7 @@ export default {
                 label: (
                   <KnownAppBadge
                     appName="token-manager.aragonpm.eth"
-                    label="Share Token"
+                    label="Shareholder Token"
                   />
                 ),
                 fields: TokensScreen.formatReviewFields(shareToken),
@@ -278,7 +278,7 @@ export default {
                 label: (
                   <KnownAppBadge
                     appName="voting.aragonpm.eth"
-                    label="Share Voting"
+                    label="Shareholder Voting"
                   />
                 ),
                 fields: VotingScreen.formatReviewFields(shareVoting),
