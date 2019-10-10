@@ -368,34 +368,49 @@ function FundraisingScreen({
           </Section>
 
           <Section title="Investment terms">
-            <Field label="Vesting schedule">
-              {id => (
-                <ConfigInput
-                  id={id}
-                  label={labelDays(fields.vestingSchedule)}
-                  onChange={bindUpdate('vestingSchedule')}
-                  value={
-                    fields.vestingSchedule === -1 ? '' : fields.vestingSchedule
-                  }
-                  width={INPUT_SMALL}
-                />
-              )}
-            </Field>
-            <Field label="Cliff period">
-              {id => (
-                <ConfigInput
-                  id={id}
-                  label={labelDays(fields.cliffPeriod)}
-                  onChange={bindUpdate('cliffPeriod')}
-                  value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
-                  width={INPUT_SMALL}
-                />
-              )}
-            </Field>
+            <div css="display: flex">
+              <Field
+                label="Vesting schedule"
+                css={`
+                  margin-bottom: 0;
+                `}
+              >
+                {id => (
+                  <ConfigInput
+                    id={id}
+                    label={labelDays(fields.vestingSchedule)}
+                    onChange={bindUpdate('vestingSchedule')}
+                    value={
+                      fields.vestingSchedule === -1
+                        ? ''
+                        : fields.vestingSchedule
+                    }
+                    width={INPUT_SMALL}
+                  />
+                )}
+              </Field>
+              <Field
+                label="Cliff period"
+                css={`
+                  margin-left: ${2 * GU}px;
+                  margin-bottom: 0;
+                `}
+              >
+                {id => (
+                  <ConfigInput
+                    id={id}
+                    label={labelDays(fields.cliffPeriod)}
+                    onChange={bindUpdate('cliffPeriod')}
+                    value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
+                    width={INPUT_SMALL}
+                  />
+                )}
+              </Field>
+            </div>
           </Section>
 
           <Section title="Trading terms">
-            <div css="display: flex;">
+            <div css="display: flex">
               <Field label="Initial price per share">
                 {id => (
                   <ConfigInput
