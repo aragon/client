@@ -37,18 +37,20 @@ export function appBaseUrl(app, gateway = ipfsDefaultConf.gateway) {
   return contentBaseUrl(app.content, gateway)
 }
 
-export function repoBaseUrl(repo, gateway = ipfsDefaultConf.gateway) {
-  const { appId, latestVersion = {} } = repo
-
+export function repoBaseUrl(
+  appId,
+  repoVersion,
+  gateway = ipfsDefaultConf.gateway
+) {
   // Support overriding app URLs, see network-config.js
   if (appLocator[appId]) {
     return appLocator[appId]
   }
 
   return contentBaseUrl(
-    // The latest version's content is the artifact.json and manifest.json, so we need to
+    // The version's content is the artifact.json and manifest.json, so we need to
     // look up content again for the actual content location
-    latestVersion.content && latestVersion.content.content,
+    repoVersion.content && repoVersion.content.content,
     gateway
   )
 }
