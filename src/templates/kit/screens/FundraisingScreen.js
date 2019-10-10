@@ -254,7 +254,7 @@ function FundraisingScreen({
 
   const minimumGrowth = useMemo(() => updateMinimumGrowth(fields), [fields])
 
-  const nextEnabled = useMemo(() => {
+  const acceptableMinimumGrowth = useMemo(() => {
     if (minimumGrowth.gte(fields.expectedGrowth)) {
       return false
     }
@@ -476,7 +476,7 @@ function FundraisingScreen({
       )}
 
       <Info
-        mode={minimumGrowth.gte(fields.expectedGrowth) ? 'warning' : 'info'}
+        mode={acceptableMinimumGrowth ? 'info' : 'warning'}
         css={`
           margin-bottom: ${3 * GU}px;
         `}
@@ -486,7 +486,7 @@ function FundraisingScreen({
           is calculated from the presale price, target goal, tokens offered,
           project funding, and initial price per share.
         </p>
-        {minimumGrowth.gte(fields.expectedGrowth) && (
+        {!acceptableMinimumGrowth && (
           <p
             css={`
               margin-top: ${1 * GU}px;
@@ -502,7 +502,7 @@ function FundraisingScreen({
 
       <Navigation
         backEnabled
-        nextEnabled={nextEnabled}
+        nextEnabled={acceptableMinimumGrowth}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}
