@@ -644,36 +644,39 @@ function ReviewFields({ data }) {
         {
           group: 'Presale campaign terms',
           fields: [
-            'targetGoal',
-            'presalePrice',
-            'fundingPeriod',
-            'tokensOffered',
-            'projectFunding',
+            ['targetGoal', 'DAI'],
+            ['presalePrice', 'DAI', 'Presale price per share'],
+            ['fundingPeriod', 'days'],
+            ['tokensOffered', '%', 'Token supply offered'],
+            ['projectFunding', '%'],
           ],
         },
         {
           group: 'Investment terms',
-          fields: ['initialPricePerShare', 'expectedGrowth'],
+          fields: [
+            ['initialPricePerShare', 'DAI', 'Initial trading price per share'],
+            ['expectedGrowth', 'times'],
+          ],
         },
         {
           group: 'Trading terms',
           fields: [
-            'vestingSchedule',
-            'cliffPeriod',
-            'batchLength',
-            'slippageDai',
-            'slippageAnt',
-            ['tapRate', 'Initial monthly allocation'],
-            'tapFloor',
-            'maximumMonthlyUpdates',
+            ['vestingSchedule', 'days'],
+            ['cliffPeriod', 'days'],
+            ['batchLength', 'blocks'],
+            ['slippageDai', '%'],
+            ['slippageAnt', '%'],
+            ['tapRate', 'DAI', 'Initial monthly allocation'],
+            ['tapFloor', 'DAI'],
+            ['maximumMonthlyUpdates', '%', 'Maximum monthly allocation update'],
           ],
         },
       ]
         .map(group => ({
           ...group,
-          fields: group.fields.map(name => [
-            Array.isArray(name) ? name[1] : camelCaseToName(name),
-            data[Array.isArray(name) ? name[0] : name],
+          fields: group.fields.map(([field, unit, label]) => [
+            label || camelCaseToName(field),
+            `${data[field]} ${unit}`,
           ]),
         }))
         .map(({ group, fields }) => {
