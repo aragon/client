@@ -21,7 +21,6 @@ import {
 } from '..'
 
 const TABS = ['Overview', 'Advanced']
-const INPUT_SMALL = 17 * GU
 const INPUT_MEDIUM = 24 * GU
 
 const DEFAULT_VALUES = {
@@ -322,28 +321,32 @@ function FundraisingScreen({
       {tab === 0 && (
         <div>
           <Section title="Presale terms">
-            <Field key="targetGoal" label="Target Goal">
-              <ConfigInput
-                label="DAI"
-                onChange={bindUpdate('targetGoal')}
-                value={fields.targetGoal}
-              />
-            </Field>
-            <Field key="presalePrice" label="Price">
-              <ConfigInput
-                label="DAI per share"
-                onChange={bindUpdate('presalePriceInput')}
-                onChangeDone={bindUpdate('presalePrice')}
-                value={fields.presalePriceInput}
-              />
-            </Field>
-            <Field key="fundingPeriod" label="Funding period">
-              <ConfigInput
-                label={labelDays(fields.fundingPeriod)}
-                onChange={bindUpdate('fundingPeriod')}
-                value={fields.fundingPeriod === -1 ? '' : fields.fundingPeriod}
-              />
-            </Field>
+            <div css="display: flex">
+              <InlineField key="targetGoal" label="Target Goal">
+                <ConfigInput
+                  label="DAI"
+                  onChange={bindUpdate('targetGoal')}
+                  value={fields.targetGoal}
+                />
+              </InlineField>
+              <InlineField key="presalePrice" label="Price">
+                <ConfigInput
+                  label="DAI per share"
+                  onChange={bindUpdate('presalePriceInput')}
+                  onChangeDone={bindUpdate('presalePrice')}
+                  value={fields.presalePriceInput}
+                />
+              </InlineField>
+              <InlineField key="fundingPeriod" label="Funding period">
+                <ConfigInput
+                  label={labelDays(fields.fundingPeriod)}
+                  onChange={bindUpdate('fundingPeriod')}
+                  value={
+                    fields.fundingPeriod === -1 ? '' : fields.fundingPeriod
+                  }
+                />
+              </InlineField>
+            </div>
             <PercentageField
               label={
                 <React.Fragment>
@@ -379,12 +382,7 @@ function FundraisingScreen({
 
           <Section title="Investment terms">
             <div css="display: flex">
-              <Field
-                label="Vesting schedule"
-                css={`
-                  margin-bottom: 0;
-                `}
-              >
+              <InlineField label="Vesting schedule">
                 {id => (
                   <ConfigInput
                     id={id}
@@ -395,48 +393,43 @@ function FundraisingScreen({
                         ? ''
                         : fields.vestingSchedule
                     }
-                    width={INPUT_SMALL}
+                    width={INPUT_MEDIUM}
                   />
                 )}
-              </Field>
-              <Field
-                label="Cliff period"
-                css={`
-                  margin-left: ${2 * GU}px;
-                  margin-bottom: 0;
-                `}
-              >
+              </InlineField>
+              <InlineField label="Cliff period">
                 {id => (
                   <ConfigInput
                     id={id}
                     label={labelDays(fields.cliffPeriod)}
                     onChange={bindUpdate('cliffPeriod')}
                     value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
-                    width={INPUT_SMALL}
+                    width={INPUT_MEDIUM}
                   />
                 )}
-              </Field>
+              </InlineField>
             </div>
           </Section>
 
           <Section title="Trading terms">
             <div css="display: flex">
-              <Field label="Initial price per share">
+              <InlineField label="Initial price per share">
                 {id => (
                   <ConfigInput
                     id={id}
+                    label="DAI per share"
                     onChange={bindUpdate('initialPricePerShareInput')}
                     onChangeDone={bindUpdate('initialPricePerShare')}
                     value={fields.initialPricePerShareInput}
                     width={INPUT_MEDIUM}
                   />
                 )}
-              </Field>
-              <Field
+              </InlineField>
+              <InlineField
                 label="Expected growth"
                 css={`
                   flex-grow: 1;
-                  margin-left: ${2 * GU}px;
+                  width: 100%;
                 `}
               >
                 <ConfigInput
@@ -445,7 +438,7 @@ function FundraisingScreen({
                   value={fields.expectedGrowth}
                   wide
                 />
-              </Field>
+              </InlineField>
             </div>
           </Section>
         </div>
@@ -456,28 +449,30 @@ function FundraisingScreen({
           <Section title="Trading terms">
             <Field label="Batch length">
               <ConfigInput
-                width={INPUT_SMALL}
+                width={INPUT_MEDIUM}
                 label={labelBatch(fields.batchLength)}
                 value={fields.batchLength}
                 onChange={bindUpdate('batchLength')}
               />
             </Field>
-            <Field label="Slippage %">
-              <div css="display: flex">
+            <div css="display: flex">
+              <InlineField label="DAI slippage %">
                 <ConfigInput
-                  label="DAI"
+                  label="%"
                   onChange={bindUpdate('slippageDai')}
                   value={fields.slippageDai}
-                  width={INPUT_SMALL}
+                  width={INPUT_MEDIUM}
                 />
+              </InlineField>
+              <InlineField label="ANT slippage %">
                 <ConfigInput
-                  label="ANT"
+                  label="%"
                   onChange={bindUpdate('slippageAnt')}
                   value={fields.slippageAnt}
-                  width={INPUT_SMALL}
+                  width={INPUT_MEDIUM}
                 />
-              </div>
-            </Field>
+              </InlineField>
+            </div>
             <Field label="Initial monthly allocation">
               <ConfigInput
                 label="DAI"
@@ -551,17 +546,37 @@ FundraisingScreen.defaultProps = {
 /* eslint-disable react/prop-types */
 
 function Section({ title, children }) {
+  const theme = useTheme()
   return (
-    <section>
+    <section
+      css={`
+        & + & {
+          border-top: 1px solid ${theme.border};
+        }
+      `}
+    >
       <h1
         css={`
-          margin: ${4 * GU}px 0 ${3 * GU}px;
+          margin: ${3 * GU}px 0;
         `}
       >
         {title}
       </h1>
       <div>{children}</div>
     </section>
+  )
+}
+
+function InlineField(props) {
+  return (
+    <Field
+      css={`
+        & + & {
+          margin-left: ${2 * GU}px;
+        }
+      `}
+      {...props}
+    />
   )
 }
 
