@@ -1,7 +1,17 @@
 import React, { useCallback, useMemo, useReducer, useState } from 'react'
 import { Decimal } from 'decimal.js'
 import PropTypes from 'prop-types'
-import { Field, GU, Help, Info, Tabs, TextInput, useTheme } from '@aragon/ui'
+import {
+  Field,
+  GU,
+  Help,
+  Info,
+  Tabs,
+  TextInput,
+  textStyle,
+  useTheme,
+  useViewport,
+} from '@aragon/ui'
 import {
   Header,
   KnownAppBadge,
@@ -612,15 +622,123 @@ function ConfigInput({
   )
 }
 
-/* eslint-enable react/prop-types */
-
-// TODO: proper formatting
 function formatReviewFields(screenData) {
-  return Object.entries(screenData).map(([name, value]) => [
-    name.replace(/([A-Z])/g, ' $1'),
-    value === '' ? 'None' : value,
-  ])
+  return <ReviewFields data={screenData} />
 }
+
+function camelCaseToName(value) {
+  return value.replace(/([A-Z])/g, ' $1')
+}
+
+function ReviewFields({ data }) {
+  const theme = useTheme()
+  const { below } = useViewport()
+  return (
+    <div
+      css={`
+        width: 100%;
+        padding: ${3 * GU}px 0;
+      `}
+    >
+      {[
+        {
+          group: 'Presale campaign terms',
+          fields: [
+            'targetGoal',
+            'presalePrice',
+            'fundingPeriod',
+            'tokensOffered',
+            'projectFunding',
+          ],
+        },
+        {
+          group: 'Investment terms',
+          fields: ['initialPricePerShare', 'expectedGrowth'],
+        },
+        {
+          group: 'Trading terms',
+          fields: [
+            'vestingSchedule',
+            'cliffPeriod',
+            'batchLength',
+            'slippageDai',
+            'slippageAnt',
+            ['tapRate', 'Initial monthly allocation'],
+            'tapFloor',
+            'maximumMonthlyUpdates',
+          ],
+        },
+      ]
+        .map(group => ({
+          ...group,
+          fields: group.fields.map(name => [
+            Array.isArray(name) ? name[1] : camelCaseToName(name),
+            data[Array.isArray(name) ? name[0] : name],
+          ]),
+        }))
+        .map(({ group, fields }) => {
+          return (
+            <section
+              key={group}
+              css={`
+                border: 1px solid ${theme.border};
+                & + & {
+                  margin-top: ${3 * GU}px;
+                }
+              `}
+            >
+              <h1
+                css={`
+                  display: flex;
+                  align-items: center;
+                  height: ${7 * GU}px;
+                  padding-left: ${3 * GU}px;
+                  border-bottom: 1px solid ${theme.border};
+                  ${textStyle('body1')};
+                `}
+              >
+                {group}
+              </h1>
+              <div
+                css={`
+                  display: grid;
+                  grid-template-columns: repeat(
+                    ${below('medium') ? '1' : '2'},
+                    1fr
+                  );
+                  grid-gap: ${3 * GU}px;
+                  padding: ${3 * GU}px;
+                `}
+              >
+                {fields.map(([label, content]) => (
+                  <div key={label}>
+                    <h2
+                      css={`
+                        margin-bottom: ${1 * GU}px;
+                        color: ${theme.contentSecondary};
+                        ${textStyle('label2')};
+                      `}
+                    >
+                      {label}
+                    </h2>
+                    <div
+                      css={`
+                        ${textStyle('body1')};
+                      `}
+                    >
+                      {content}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )
+        })}
+    </div>
+  )
+}
+
+/* eslint-enable react/prop-types */
 
 FundraisingScreen.formatReviewFields = formatReviewFields
 export default FundraisingScreen
