@@ -501,7 +501,12 @@ function formatReviewFields(screenData) {
     ],
     ...screenData.members.map(([account, amount], i) => [
       `Tokenholder #${i + 1}`,
-      <div css="display: flex">
+      <div
+        css={`
+          display: flex;
+          align-items: center;
+        `}
+      >
         <IdentityBadge entity={account} />
         <span
           css={`
