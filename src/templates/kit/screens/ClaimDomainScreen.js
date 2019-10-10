@@ -14,6 +14,7 @@ function ClaimDomainScreen({
   screenTitle,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
+  const nextScreen = screens[screenIndex + 1]
 
   const [domain, setDomain] = useState(screenData.domain || '')
   const [displayError, setDisplayError] = useState(false)
@@ -41,8 +42,6 @@ function ClaimDomainScreen({
       ref.focus()
     }
   }, [])
-
-  const nextScreen = screens[screenIndex + 1]
 
   return (
     <form>
@@ -84,9 +83,7 @@ function ClaimDomainScreen({
         backEnabled
         nextEnabled={Boolean(nextScreen && domain.trim())}
         nextLabel={
-          nextScreen
-            ? `Next: ${screens[screenIndex + 1][0]}`
-            : 'Launch your organization'
+          nextScreen ? `Next: ${nextScreen[0]}` : 'Launch your organization'
         }
         onBack={back}
         onNext={handleSubmit}
