@@ -18,12 +18,12 @@ function BN(value) {
   return new Decimal(value)
 }
 
-const PPM = BN(10).pow(BN(6))
 const oneDay = BN(24).mul(BN(3600))
 const oneMonth = BN(30).mul(oneDay)
 const oneDAI = BN(10).pow(BN(18))
 const onePercent = BN(10).pow(BN(16))
 const onePercentPPM = BN(10).pow(BN(4))
+const PPM = onePercentPPM.mul(BN(100))
 const oneBlock = BN(15)
 const one = BN(1)
 
@@ -31,12 +31,31 @@ function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
 }
 
+function adjustVotingSettings(support, quorum) {
+  // The max value for both support and quorum is 100% - 1
+  const hundredPercent = onePercent.mul(BN(100))
+
+  let adjustedSupport = onePercent.mul(BN(support))
+  if (adjustedSupport.eq(hundredPercent)) {
+    adjustedSupport = adjustedSupport.sub(one)
+  }
+
+  let adjustedQuorum = onePercent.mul(BN(quorum))
+  if (adjustedQuorum.eq(hundredPercent)) {
+    adjustedQuorum = adjustedQuorum.sub(one)
+  }
+
+  return [adjustedSupport.toFixed(0), adjustedQuorum.toFixed(0)]
+}
+
 function extractVotingSettings(voting) {
-  const support = onePercent.mul(BN(voting.support)).toFixed(0)
-  const quorum = onePercent.mul(BN(voting.quorum)).toFixed(0)
+  const [adjustedSupport, adjustedQuorum] = adjustVotingSettings(
+    voting.support,
+    voting.quorum
+  )
   const duration = BN(voting.duration).toFixed(0)
 
-  return [support, quorum, duration]
+  return [adjustedSupport, adjustedQuorum, duration]
 }
 
 function extractFundraisingAppsSettings(fundraising) {
