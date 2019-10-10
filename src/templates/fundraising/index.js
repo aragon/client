@@ -18,12 +18,12 @@ function BN(value) {
   return new Decimal(value)
 }
 
-const PPM = BN(10).pow(BN(6))
 const oneDay = BN(24).mul(BN(3600))
 const oneMonth = BN(30).mul(oneDay)
 const oneDAI = BN(10).pow(BN(18))
 const onePercent = BN(10).pow(BN(16))
 const onePercentPPM = BN(10).pow(BN(4))
+const PPM = onePercentPPM.mul(BN(100))
 const oneBlock = BN(15)
 const one = BN(1)
 
@@ -31,12 +31,31 @@ function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
 }
 
+function adjustVotingSettings(support, quorum) {
+  // The max value for both support and quorum is 100% - 1
+  const hundredPercent = onePercent.mul(BN(100))
+
+  let adjustedSupport = onePercent.mul(BN(support))
+  if (adjustedSupport.eq(hundredPercent)) {
+    adjustedSupport = adjustedSupport.sub(one)
+  }
+
+  let adjustedQuorum = onePercent.mul(BN(quorum))
+  if (adjustedQuorum.eq(hundredPercent)) {
+    adjustedQuorum = adjustedQuorum.sub(one)
+  }
+
+  return [adjustedSupport.toFixed(0), adjustedQuorum.toFixed(0)]
+}
+
 function extractVotingSettings(voting) {
-  const support = onePercent.mul(BN(voting.support)).toFixed(0)
-  const quorum = onePercent.mul(BN(voting.quorum)).toFixed(0)
+  const [adjustedSupport, adjustedQuorum] = adjustVotingSettings(
+    voting.support,
+    voting.quorum
+  )
   const duration = BN(voting.duration).toFixed(0)
 
-  return [support, quorum, duration]
+  return [adjustedSupport, adjustedQuorum, duration]
 }
 
 function extractFundraisingAppsSettings(fundraising) {
@@ -133,26 +152,20 @@ export default {
     Initialize a transparent and accountable crowdfunding campaign for your
     organization.
   `,
-  userGuideUrl: 'https://help.aragon.org/',
+  userGuideUrl: 'https://fundraising.aragon.black/',
   sourceCodeUrl: 'https://github.com/AragonBlack/fundraising',
   registry: 'aragonpm.eth',
   apps: [
-    { appName: 'token-manager.aragonpm.eth', label: 'Board Token' },
-    { appName: 'voting.aragonpm.eth', label: 'Board Voting [Multisig]' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Share Token' },
-    { appName: 'voting.aragonpm.eth', label: 'Share Voting [Democracy]' },
-    { appName: 'finance.aragonpm.eth', label: 'Finance' },
-    { appName: 'agent.aragonpm.eth', label: 'Agent [Reserve Pool]' },
-    { appName: 'presale.aragonpm.eth', label: 'Presale' },
-    {
-      appName: 'batched-bancor-market-maker.aragonpm.eth',
-      label: 'Market Maker [Batched Bancor]',
-    },
-    { appName: 'tap.aragonpm.eth', label: 'Tap' },
     {
       appName: 'aragon-fundraising.aragonpm.eth',
-      label: 'Aragon Fundraising [API]',
+      label: 'Fundraising',
     },
+    { appName: 'agent.aragonpm.eth', label: 'Agent: Reserve Pool' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Board' },
+    { appName: 'voting.aragonpm.eth', label: 'Voting: Board' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Shareholder' },
+    { appName: 'voting.aragonpm.eth', label: 'Voting: Shareholder' },
+    { appName: 'finance.aragonpm.eth', label: 'Finance' },
   ],
   optionalApps: [],
   screens: [
@@ -165,32 +178,48 @@ export default {
       'Configure board',
       props => (
         <TokensScreen
+          accountStake={1}
           appLabel="Board Token"
           dataKey="boardToken"
           screenProps={props}
-          accountStake={1}
+          title="Configure board"
         />
       ),
     ],
     [
       'Configure board',
-      props => <VotingScreen dataKey="boardVoting" screenProps={props} />,
+      props => (
+        <VotingScreen
+          appLabel="Board Voting"
+          dataKey="boardVoting"
+          screenProps={props}
+          title="Configure board"
+        />
+      ),
     ],
     ['Configure shareholders', props => <ShareInfo screenProps={props} />],
     [
       'Configure shareholders',
       props => (
         <TokensScreen
-          appLabel="Share Token"
+          appLabel="Shareholder Token"
           dataKey="shareToken"
-          screenProps={props}
           editMembers={false}
+          screenProps={props}
+          title="Configure shareholders"
         />
       ),
     ],
     [
       'Configure shareholders',
-      props => <VotingScreen dataKey="shareVoting" screenProps={props} />,
+      props => (
+        <VotingScreen
+          appLabel="Shareholder Voting"
+          dataKey="shareVoting"
+          screenProps={props}
+          title="Configure shareholders"
+        />
+      ),
     ],
     [
       'Configure fundraising',
@@ -240,7 +269,7 @@ export default {
                 label: (
                   <KnownAppBadge
                     appName="token-manager.aragonpm.eth"
-                    label="Share Token"
+                    label="Shareholder Token"
                   />
                 ),
                 fields: TokensScreen.formatReviewFields(shareToken),
@@ -249,7 +278,7 @@ export default {
                 label: (
                   <KnownAppBadge
                     appName="voting.aragonpm.eth"
-                    label="Share Voting"
+                    label="Shareholder Voting"
                   />
                 ),
                 fields: VotingScreen.formatReviewFields(shareVoting),
@@ -257,7 +286,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="fundraising.aragonpm.eth"
+                    appName="aragon-fundraising.aragonpm.eth"
                     label="Fundraising"
                   />
                 ),

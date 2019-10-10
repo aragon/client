@@ -50,6 +50,7 @@ function VotingScreen({
   appLabel,
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
+  title,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
@@ -134,7 +135,7 @@ function VotingScreen({
       `}
     >
       <Header
-        title="Configure template"
+        title={title}
         subtitle={
           <span
             css={`
@@ -247,11 +248,13 @@ VotingScreen.propTypes = {
   appLabel: PropTypes.string,
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
+  title: PropTypes.string,
 }
 
 VotingScreen.defaultProps = {
   appLabel: 'Voting',
   dataKey: 'voting',
+  title: 'Configure template',
 }
 
 function formatDuration(duration) {

@@ -70,24 +70,6 @@ function dataDefaults(data) {
   )
 }
 
-function useConfigureFields(data) {
-  const [fields, _update] = useReducer(reduceFields, dataDefaults(data))
-
-  // Update a field by using its name and value as parameters
-  const update = useCallback((...params) => _update(params), [])
-
-  // Bind the update function to a callback passing the value, e.g.:
-  //
-  //  <PercentageField
-  //   onChange={bindUpdate('fieldName')}
-  //   value={fieldValue}
-  //  />
-  //
-  const bindUpdate = useCallback(name => value => update(name, value), [update])
-
-  return { fields, update, bindUpdate }
-}
-
 function updateVestingSchedule(fields, value) {
   const vestingSchedule = Math.max(-1, intDef(value, -1))
   const cliffPeriod = Math.max(
@@ -143,6 +125,34 @@ function updatePresalePrice(fields, value) {
     presalePrice,
     presalePriceInput: presalePrice,
   }
+}
+
+function updateMinimumGrowth(fields) {
+  const oneDAI = BN(10).pow(BN(18))
+  const one = BN(1)
+  const two = BN(2)
+  const oneHundred = BN(100)
+  const cwDAI = BN(0.1)
+
+  const xRate = one.div(BN(fields.presalePrice))
+  const goal = BN(fields.targetGoal).times(oneDAI)
+  const pctOffered = BN(fields.tokensOffered).div(oneHundred)
+  const pctBeneficiary = BN(fields.projectFunding).div(oneHundred)
+
+  const sPrice = BN(fields.initialPricePerShare)
+  const sSupply = goal.times(xRate).div(pctOffered)
+  const sBalance = goal.times(one.minus(pctBeneficiary))
+
+  const exponent = two
+    .times(cwDAI)
+    .minus(two)
+    .div(two.times(cwDAI).minus(one))
+
+  return sBalance
+    .times(sSupply.pow(one.minus(cwDAI).div(cwDAI.minus(one))))
+    .div(cwDAI.mul(sPrice))
+    .pow(exponent)
+    .add(one)
 }
 
 function reduceFields(fields, [field, value]) {
@@ -215,32 +225,22 @@ function reduceFields(fields, [field, value]) {
   return fields
 }
 
-function updateMinimumGrowth(fields) {
-  const oneDAI = BN(10).pow(BN(18))
-  const one = BN(1)
-  const two = BN(2)
-  const oneHundred = BN(100)
-  const cwDAI = BN(0.1)
+function useConfigureFields(data) {
+  const [fields, _update] = useReducer(reduceFields, dataDefaults(data))
 
-  const xRate = one.div(BN(fields.presalePrice))
-  const goal = BN(fields.targetGoal).times(oneDAI)
-  const pctOffered = BN(fields.tokensOffered).div(oneHundred)
-  const pctBeneficiary = BN(fields.projectFunding).div(oneHundred)
+  // Update a field by using its name and value as parameters
+  const update = useCallback((...params) => _update(params), [])
 
-  const sPrice = BN(fields.initialPricePerShare)
-  const sSupply = goal.times(xRate).div(pctOffered)
-  const sBalance = goal.times(one.minus(pctBeneficiary))
+  // Bind the update function to a callback passing the value, e.g.:
+  //
+  //  <PercentageField
+  //   onChange={bindUpdate('fieldName')}
+  //   value={fieldValue}
+  //  />
+  //
+  const bindUpdate = useCallback(name => value => update(name, value), [update])
 
-  const exponent = two
-    .times(cwDAI)
-    .minus(two)
-    .div(two.times(cwDAI).minus(one))
-
-  return sBalance
-    .times(sSupply.pow(one.minus(cwDAI).div(cwDAI.minus(one))))
-    .div(cwDAI.mul(sPrice))
-    .pow(exponent)
-    .add(one)
+  return { fields, update, bindUpdate }
 }
 
 function FundraisingScreen({
@@ -254,7 +254,7 @@ function FundraisingScreen({
 
   const minimumGrowth = useMemo(() => updateMinimumGrowth(fields), [fields])
 
-  const nextEnabled = useMemo(() => {
+  const acceptableMinimumGrowth = useMemo(() => {
     if (minimumGrowth.gte(fields.expectedGrowth)) {
       return false
     }
@@ -269,8 +269,11 @@ function FundraisingScreen({
         ...fields,
         minimumGrowth: minimumGrowth.toFixed(0),
       }
+      const mergedData = dataKey
+        ? { ...data, [dataKey]: screenData }
+        : { ...data, ...screenData }
 
-      next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
+      next(mergedData)
     },
     [data, dataKey, fields, next, minimumGrowth]
   )
@@ -295,7 +298,7 @@ function FundraisingScreen({
               `}
             >
               <KnownAppBadge
-                appName="fundraising.aragonpm.eth"
+                appName="aragon-fundraising.aragonpm.eth"
                 label="Fundraising"
               />
             </span>
@@ -334,11 +337,11 @@ function FundraisingScreen({
             <PercentageField
               label={
                 <React.Fragment>
-                  Tokens offered %
-                  <Help hint="What’s tokens offered %?">
+                  Initial tokens offered %
+                  <Help hint="What’s initial tokens offered %?">
                     <strong>Tokens offered %</strong> describes the percentage
                     of the initial shares supply that will be offered during the
-                    presale. The remaining of this supply will be minted and
+                    presale. The remainder of this supply will be minted and
                     sent to the board multisig if and when presale succeeds.
                   </Help>
                 </React.Fragment>
@@ -350,11 +353,12 @@ function FundraisingScreen({
               label={
                 <React.Fragment>
                   Project funding %
-                  <Help hint="What’s the project funding?">
+                  <Help hint="What’s the project funding %?">
                     <strong>Project funding</strong> describes the percentage of
                     the presale goal that will be sent to the board multisig if
-                    and when presale succeeds. The remaining of the funds will
-                    be sent to the market maker reserve pool to support trading.
+                    and when presale succeeds. The remainder of the contributed
+                    funds will be sent to the market maker's reserve pool to
+                    support trading.
                   </Help>
                 </React.Fragment>
               }
@@ -364,34 +368,49 @@ function FundraisingScreen({
           </Section>
 
           <Section title="Investment terms">
-            <Field label="Vesting schedule">
-              {id => (
-                <ConfigInput
-                  id={id}
-                  label={labelDays(fields.vestingSchedule)}
-                  onChange={bindUpdate('vestingSchedule')}
-                  value={
-                    fields.vestingSchedule === -1 ? '' : fields.vestingSchedule
-                  }
-                  width={INPUT_SMALL}
-                />
-              )}
-            </Field>
-            <Field label="Cliff period">
-              {id => (
-                <ConfigInput
-                  id={id}
-                  label={labelDays(fields.cliffPeriod)}
-                  onChange={bindUpdate('cliffPeriod')}
-                  value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
-                  width={INPUT_SMALL}
-                />
-              )}
-            </Field>
+            <div css="display: flex">
+              <Field
+                label="Vesting schedule"
+                css={`
+                  margin-bottom: 0;
+                `}
+              >
+                {id => (
+                  <ConfigInput
+                    id={id}
+                    label={labelDays(fields.vestingSchedule)}
+                    onChange={bindUpdate('vestingSchedule')}
+                    value={
+                      fields.vestingSchedule === -1
+                        ? ''
+                        : fields.vestingSchedule
+                    }
+                    width={INPUT_SMALL}
+                  />
+                )}
+              </Field>
+              <Field
+                label="Cliff period"
+                css={`
+                  margin-left: ${2 * GU}px;
+                  margin-bottom: 0;
+                `}
+              >
+                {id => (
+                  <ConfigInput
+                    id={id}
+                    label={labelDays(fields.cliffPeriod)}
+                    onChange={bindUpdate('cliffPeriod')}
+                    value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
+                    width={INPUT_SMALL}
+                  />
+                )}
+              </Field>
+            </div>
           </Section>
 
           <Section title="Trading terms">
-            <div css="display: flex;">
+            <div css="display: flex">
               <Field label="Initial price per share">
                 {id => (
                   <ConfigInput
@@ -475,7 +494,7 @@ function FundraisingScreen({
       )}
 
       <Info
-        mode={minimumGrowth.gte(fields.expectedGrowth) ? 'warning' : 'info'}
+        mode={acceptableMinimumGrowth ? 'info' : 'warning'}
         css={`
           margin-bottom: ${3 * GU}px;
         `}
@@ -483,17 +502,17 @@ function FundraisingScreen({
         <p>
           The current minimum growth is {minimumGrowth.toFixed(0)}. This value
           is calculated from the presale price, target goal, tokens offered,
-          project funding, or initialPricePerShare.
+          project funding, and initial price per share.
         </p>
-        {minimumGrowth.gte(fields.expectedGrowth) && (
+        {!acceptableMinimumGrowth && (
           <p
             css={`
               margin-top: ${1 * GU}px;
             `}
           >
             <strong>
-              Please make sure the expected growth ({fields.expectedGrowth}) is
-              greater than the minimum growth.
+              Please make sure that the expected growth ({fields.expectedGrowth}
+              ) is greater than the minimum growth.
             </strong>
           </p>
         )}
@@ -501,7 +520,7 @@ function FundraisingScreen({
 
       <Navigation
         backEnabled
-        nextEnabled={nextEnabled}
+        nextEnabled={acceptableMinimumGrowth}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}
