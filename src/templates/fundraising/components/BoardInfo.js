@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
-import { GU, Info, Text } from '@aragon/ui'
+import styled from 'styled-components'
+import { GU, Info } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '../../kit'
 
 function BoardInfo({
@@ -17,36 +18,37 @@ function BoardInfo({
     <div>
       <Header title="First step: the board" />
       <Info
+        title="About the board"
         css={`
           margin-bottom: ${3 * GU}px;
         `}
       >
-        <Text.Paragraph>
-          The board is the representative of the project being funded by the
-          fundraising campaign. Board members are represented through a custom
-          token and enforce their decision through a dedicated voting app set to
-          be used as a multisig. Their privileges are intentionnaly limited to
-          protect shareholders. Thus, they only have the following rights.
-        </Text.Paragraph>
-        <Text.Paragraph>
-          <Text weight="bold">Handling board members.</Text> The board decides
-          on who is to be included / excluded from the board.
-        </Text.Paragraph>
-        <Text.Paragraph>
-          <Text weight="bold">Opening presale.</Text> The board decides on when
-          the presale - and thus the fundraising campaign - is to be open.
-        </Text.Paragraph>
-        <Text.Paragraph>
-          <Text weight="bold">Handling fundraising proceeds.</Text> The board
-          decides on what use is to be made of the fundraising proceeds which
-          are periodically transferred to their discretionnary Vault / Finance
-          app.
-        </Text.Paragraph>
-        <Text.Paragraph>
-          <Text weight="bold">Opening votes.</Text> The board decides on when
-          new votes should be open for shareholders to enforce decisions over
-          the organization.
-        </Text.Paragraph>
+        <Paragraph>
+          The board acts as the representatives of the project being funded by
+          the fundraising campaign. Board members are represented through a
+          custom token and enforce their decision via a dedicated voting app set
+          to be used as a multisig. Their privileges are intentionnaly limited
+          to protect shareholders.
+        </Paragraph>
+        <Paragraph>Thus, they only have the following rights:</Paragraph>
+        <Paragraph>
+          <strong>Handling board members.</strong> The board decides on who is
+          to be included or excluded from the board.
+        </Paragraph>
+        <Paragraph>
+          <strong>Opening presale.</strong> The board decides on when the
+          presale—and thus the fundraising campaign—is started.
+        </Paragraph>
+        <Paragraph>
+          <strong>Handling fundraising proceeds.</strong> The fundraising
+          proceeds are periodically transferred to a Vault / Finance app
+          controlled by the Board at their discretion.
+        </Paragraph>
+        <Paragraph>
+          <strong>Opening votes.</strong> The board decides on when new votes
+          should be opened for shareholders to enforce decisions over the
+          organization.
+        </Paragraph>
       </Info>
       <Navigation
         backEnabled
@@ -63,6 +65,10 @@ BoardInfo.propTypes = {
   screenProps: ScreenPropsType.isRequired,
 }
 
-BoardInfo.defaultProps = {}
+const Paragraph = styled.p`
+  & + & {
+    margin-top: ${1 * GU}px;
+  }
+`
 
 export default BoardInfo
