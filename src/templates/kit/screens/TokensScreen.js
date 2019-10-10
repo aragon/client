@@ -172,11 +172,11 @@ function Tokens({
             ([account, stake]) => isAddress(account) && stake > 0
           ),
         }
-        next(
-          dataKey
-            ? { ...data, [dataKey]: screenData }
-            : { ...data, ...screenData }
-        )
+        const mergedData = dataKey
+          ? { ...data, [dataKey]: screenData }
+          : { ...data, ...screenData }
+
+        next(mergedData)
       }
     },
     [data, dataKey, editMembers, members, next, tokenName, tokenSymbol]
