@@ -18,7 +18,7 @@ function ShareInfo({
   return (
     <div>
       <Header
-        title="Organization's Shareholders"
+        title="Organization's shareholders"
         subtitle="Read the following information attentively"
       />
       <div

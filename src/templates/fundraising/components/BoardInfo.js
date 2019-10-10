@@ -18,7 +18,7 @@ function BoardInfo({
   return (
     <div>
       <Header
-        title="Organization's Board"
+        title="Organization's board"
         subtitle="Read the following information attentively"
       />
       <div
