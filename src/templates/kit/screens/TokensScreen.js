@@ -172,11 +172,11 @@ function Tokens({
             ([account, stake]) => isAddress(account) && stake > 0
           ),
         }
-        next(
-          dataKey
-            ? { ...data, [dataKey]: screenData }
-            : { ...data, ...screenData }
-        )
+        const mergedData = dataKey
+          ? { ...data, [dataKey]: screenData }
+          : { ...data, ...screenData }
+
+        next(mergedData)
       }
     },
     [data, dataKey, editMembers, members, next, tokenName, tokenSymbol]
@@ -501,7 +501,12 @@ function formatReviewFields(screenData) {
     ],
     ...screenData.members.map(([account, amount], i) => [
       `Tokenholder #${i + 1}`,
-      <div css="display: flex">
+      <div
+        css={`
+          display: flex;
+          align-items: center;
+        `}
+      >
         <IdentityBadge entity={account} />
         <span
           css={`
