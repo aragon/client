@@ -9,9 +9,9 @@ import {
 import { DomainField, Header, Navigation, ScreenPropsType } from '..'
 
 function ClaimDomainScreen({
-  dataKey = null,
+  dataKey,
   screenProps: { back, data, next, screenIndex, screens },
-  screenTitle = 'Claim a name',
+  screenTitle,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 

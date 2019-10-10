@@ -14,8 +14,8 @@ import { Header, Navigation, ScreenPropsType } from '..'
 function ReviewScreen({
   items,
   screenProps: { back, data, next },
-  screenSubtitle = 'Have one last look at your settings below',
-  screenTitle = 'Review information',
+  screenSubtitle,
+  screenTitle,
 }) {
   const theme = useTheme()
 
