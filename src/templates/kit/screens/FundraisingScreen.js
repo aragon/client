@@ -334,11 +334,11 @@ function FundraisingScreen({
             <PercentageField
               label={
                 <React.Fragment>
-                  Tokens offered %
-                  <Help hint="What’s tokens offered %?">
+                  Initial tokens offered %
+                  <Help hint="What’s initial tokens offered %?">
                     <strong>Tokens offered %</strong> describes the percentage
                     of the initial shares supply that will be offered during the
-                    presale. The remaining of this supply will be minted and
+                    presale. The remainder of this supply will be minted and
                     sent to the board multisig if and when presale succeeds.
                   </Help>
                 </React.Fragment>
@@ -350,11 +350,12 @@ function FundraisingScreen({
               label={
                 <React.Fragment>
                   Project funding %
-                  <Help hint="What’s the project funding?">
+                  <Help hint="What’s the project funding %?">
                     <strong>Project funding</strong> describes the percentage of
                     the presale goal that will be sent to the board multisig if
-                    and when presale succeeds. The remaining of the funds will
-                    be sent to the market maker reserve pool to support trading.
+                    and when presale succeeds. The remainder of the contributed
+                    funds will be sent to the market maker's reserve pool to
+                    support trading.
                   </Help>
                 </React.Fragment>
               }
@@ -483,7 +484,7 @@ function FundraisingScreen({
         <p>
           The current minimum growth is {minimumGrowth.toFixed(0)}. This value
           is calculated from the presale price, target goal, tokens offered,
-          project funding, or initialPricePerShare.
+          project funding, and initial price per share.
         </p>
         {minimumGrowth.gte(fields.expectedGrowth) && (
           <p
@@ -492,8 +493,8 @@ function FundraisingScreen({
             `}
           >
             <strong>
-              Please make sure the expected growth ({fields.expectedGrowth}) is
-              greater than the minimum growth.
+              Please make sure that the expected growth ({fields.expectedGrowth}
+              ) is greater than the minimum growth.
             </strong>
           </p>
         )}
