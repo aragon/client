@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
-  Box,
   Button,
   ButtonBase,
   DataView,
@@ -13,18 +12,15 @@ import {
   IconDownload,
   IconExternal,
   IconGrid,
-  IconSearch,
   IconShare,
   IconTrash,
   Info,
-  TextInput,
-  SearchInput,
   useTheme,
   useLayout,
   useToast,
   textStyle,
 } from '@aragon/ui'
-import EmptyFilteredIdentities from './EmptyFilteredIdentities'
+import Search from './Search'
 import Import from './Import'
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { ASC, DESC } from './useSort'
@@ -53,14 +49,6 @@ const LocalIdentities = React.memo(function LocalIdentities({
   const compact = layoutName === 'small'
   const theme = useTheme()
 
-  if (!identities.length) {
-    return (
-      <Box>
-        <EmptyFilteredIdentities onClear={onClear} />
-      </Box>
-    )
-  }
-
   return (
     <React.Fragment>
       <Info
@@ -75,6 +63,8 @@ const LocalIdentities = React.memo(function LocalIdentities({
       </Info>
       <DataView
         mode="table"
+        status={identities.length > 0 ? 'default' : 'empty-search'}
+        onStatusEmptyClear={onClear}
         heading={
           <Filters
             searchTerm={searchTerm}
@@ -208,11 +198,6 @@ const Filters = React.memo(function Filters({
 }) {
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
-  const theme = useTheme()
-  const searchStyles = `
-    ${textStyle('body2')};
-    color: ${searchTerm.trim() ? theme.surfaceContent : theme.hint};
-  `
 
   return (
     <div
@@ -225,71 +210,16 @@ const Filters = React.memo(function Filters({
         margin-bottom: ${2 * GU}px;
       `}
     >
-      <div
-        css={`
-          position: relative;
-        `}
-      >
-        {compact ? (
-          <TextInput
-            adornment={
-              <IconSearch
-                css={`
-                  color: ${theme.surfaceOpened};
-                `}
-              />
-            }
-            adornmentPosition="end"
-            placeholder="Search"
-            onChange={onSearchChange}
-            value={searchTerm}
-            css={`
-              width: ${25 * GU}px;
-              ${searchStyles};
-            `}
-          />
-        ) : (
-          <SearchInput
-            onChange={onSearchTerm}
-            value={searchTerm}
-            placeholder="Search"
-            css={`
-              width: ${30 * GU}px;
-              ${searchStyles};
-            `}
-          />
-        )}
-      </div>
+      <Search onChange={onSearchChange} value={searchTerm} />
       {!iOS && (
         <Import
           onImport={onImport}
           button={
             <Button
-              css={`
-                ${compact &&
-                  `
-                      width: ${5 * GU}px;
-                      min-width: unset;
-                      padding: 0;
-                    `}
-              `}
-            >
-              <IconDownload
-                css={`
-                  color: ${theme.surfaceOpened};
-                `}
-              />
-              {!compact && (
-                <span
-                  css={`
-                    display: inline-block;
-                    padding-left: ${1.5 * GU}px;
-                  `}
-                >
-                  Import
-                </span>
-              )}
-            </Button>
+              icon={<IconDownload />}
+              label="Import"
+              display={compact ? 'icon' : 'auto'}
+            />
           }
         />
       )}
@@ -385,9 +315,9 @@ const Actions = React.memo(function Actions({
           </ActionSpan>,
         ]}
         placeholder={
-          <span
+          <div
             css={`
-              height: 24px;
+              height: ${3 * GU}px;
               $textStyle('body2');
               color: ${
                 disabled ? theme.contentSecondary : theme.surfaceContent
@@ -412,7 +342,7 @@ const Actions = React.memo(function Actions({
               `}
             />
             {!compact && <span css="text-align: left;">Actions</span>}
-          </span>
+          </div>
         }
         onChange={handleChange}
       />
@@ -438,5 +368,4 @@ const ActionSpan = styled.span`
     text-align: left;
   }
 `
-
-export default React.memo(LocalIdentities)
+export default LocalIdentities

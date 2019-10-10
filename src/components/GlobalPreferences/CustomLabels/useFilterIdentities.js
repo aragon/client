@@ -17,8 +17,7 @@ function useFilterIdentities(identities) {
 
   return {
     filteredIdentities,
-    handleSearchTermChange: ({ currentTarget: { value } }) =>
-      setSearchTerm(value),
+    handleSearchTermChange: setSearchTerm,
     searchTerm,
     onSearchTerm: setSearchTerm,
   }

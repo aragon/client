@@ -46,10 +46,9 @@ function CustomLabels({ wrapper, dao, locator }) {
     wrapper,
   })
   const { handleShowLocalIdentityModal } = useLocalIdentityModal()
-  const handleClearSearchTerm = useCallback(
-    () => handleSearchTermChange({ currentTarget: { value: '' } }),
-    [handleSearchTermChange]
-  )
+  const handleClearSearchTerm = useCallback(() => handleSearchTermChange(''), [
+    handleSearchTermChange,
+  ])
   const { sortedIdentities, sort, handleToggleSort } = useSort(
     filteredIdentities
   )
