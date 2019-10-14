@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { EthIdenticon, IconPlus, GU, RADIUS, useTheme } from '@aragon/ui'
+import { IconPlus, GU, RADIUS, useTheme } from '@aragon/ui'
 import { network } from '../../../environment'
 import { getKnownOrganization } from '../../../known-organizations'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { addressesEqual } from '../../../web3-utils'
 import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
 import FavoritesMenuItemButton from '../../FavoritesMenu/FavoritesMenuItemButton'
+import OrgIcon from '../../OrgIcon/OrgIcon'
 
 class Favorites extends React.Component {
   static propTypes = {
@@ -106,22 +107,8 @@ class Favorites extends React.Component {
       return {
         ...org,
         id: org.address,
-        roundedImage: true,
         name: knownOrg ? knownOrg.name : org.name || org.address,
-        image: knownOrg ? (
-          <img
-            src={knownOrg.image}
-            width={6 * GU}
-            alt=""
-            css={`
-              object-fit: contain;
-              width: 100%;
-              height: 100%;
-            `}
-          />
-        ) : (
-          <EthIdenticon address={org.address} radius={1.5 * GU} />
-        ),
+        image: <OrgIcon orgAddress={org.address} />,
       }
     })
 

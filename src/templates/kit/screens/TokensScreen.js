@@ -14,7 +14,13 @@ import {
   isAddress,
   useTheme,
 } from '@aragon/ui'
-import { Header, Navigation, IdentityBadge, ScreenPropsType } from '..'
+import {
+  Header,
+  IdentityBadge,
+  KnownAppBadge,
+  Navigation,
+  ScreenPropsType,
+} from '..'
 
 function useFieldsLayout() {
   // In its own hook to be adapted for smaller views
@@ -33,14 +39,17 @@ function validateDuplicateAddresses(members) {
   return validAddresses.length === new Set(validAddresses).size
 }
 
-function validationError(tokenName, tokenSymbol, members) {
-  if (!members.some(([address]) => isAddress(address))) {
+function validationError(tokenName, tokenSymbol, members, editMembers) {
+  if (editMembers && !members.some(([address]) => isAddress(address))) {
     return 'You need at least one valid address.'
   }
-  if (!members.some(([address, stake]) => isAddress(address) && stake > 0)) {
+  if (
+    editMembers &&
+    !members.some(([address, stake]) => isAddress(address) && stake > 0)
+  ) {
     return 'You need at least one valid address with a positive balance.'
   }
-  if (!validateDuplicateAddresses(members)) {
+  if (editMembers && !validateDuplicateAddresses(members)) {
     return 'One of your members is using the same address than another member. Please ensure every member address is unique.'
   }
   if (!tokenName.trim()) {
@@ -55,7 +64,10 @@ function validationError(tokenName, tokenSymbol, members) {
 function Tokens({
   accountStake,
   dataKey,
+  appLabel,
+  editMembers,
   screenProps: { back, data, next, screenIndex, screens },
+  title,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
@@ -145,7 +157,12 @@ function Tokens({
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
-      const error = validationError(tokenName, tokenSymbol, members)
+      const error = validationError(
+        tokenName,
+        tokenSymbol,
+        members,
+        editMembers
+      )
       setFormError(error)
       if (!error) {
         const screenData = {
@@ -155,10 +172,14 @@ function Tokens({
             ([account, stake]) => isAddress(account) && stake > 0
           ),
         }
-        next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
+        const mergedData = dataKey
+          ? { ...data, [dataKey]: screenData }
+          : { ...data, ...screenData }
+
+        next(mergedData)
       }
     },
-    [data, dataKey, members, next, tokenName, tokenSymbol]
+    [data, dataKey, editMembers, members, next, tokenName, tokenSymbol]
   )
 
   // Focus the token name as soon as it becomes available
@@ -168,18 +189,12 @@ function Tokens({
     }
   }, [])
 
-  // Focus the token fields as they are added afterwards
-  // const [focusTokenFields, setFocusTokenFields] = useState(false)
-  // useEffect(() => {
-  //   setFocusTokenFields(true)
-  // }, [])
-
   const hideRemoveButton = members.length < 2 && !members[0]
 
   const disableNext =
     !tokenName ||
     !tokenSymbol ||
-    members.every(([account, stake]) => !account || stake < 0)
+    (editMembers && members.every(([account, stake]) => !account || stake < 0))
 
   return (
     <form
@@ -191,8 +206,30 @@ function Tokens({
     >
       <div>
         <Header
-          title="Configure template"
-          subtitle="Choose your Tokens app settings below."
+          title={title}
+          subtitle={
+            <span
+              css={`
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              `}
+            >
+              Choose your
+              <span
+                css={`
+                  display: flex;
+                  margin: 0 ${1.5 * GU}px;
+                `}
+              >
+                <KnownAppBadge
+                  appName="token-manager.aragonpm.eth"
+                  label={appLabel}
+                />
+              </span>
+              settings below.
+            </span>
+          }
         />
 
         <div
@@ -247,44 +284,46 @@ function Tokens({
           </Field>
         </div>
       </div>
-      <Field
-        label={
-          <div
-            css={`
-              width: 100%;
-              ${fieldsLayout}
-            `}
-          >
-            <div>Tokenholders</div>
-            {!fixedStake && <div>Balances</div>}
-          </div>
-        }
-      >
-        <div ref={membersRef}>
-          {members.map((member, index) => (
-            <MemberField
-              key={index}
-              index={index}
-              member={member}
-              onRemove={removeMember}
-              hideRemoveButton={hideRemoveButton}
-              onUpdate={updateMember}
-              displayStake={!fixedStake}
-            />
-          ))}
-        </div>
-        <Button
-          icon={
-            <IconPlus
+      {editMembers && (
+        <Field
+          label={
+            <div
               css={`
-                color: ${theme.accent};
+                width: 100%;
+                ${fieldsLayout}
               `}
-            />
+            >
+              <div>Tokenholders</div>
+              {!fixedStake && <div>Balances</div>}
+            </div>
           }
-          label="Add more"
-          onClick={addMember}
-        />
-      </Field>
+        >
+          <div ref={membersRef}>
+            {members.map((member, index) => (
+              <MemberField
+                key={index}
+                index={index}
+                member={member}
+                onRemove={removeMember}
+                hideRemoveButton={hideRemoveButton}
+                onUpdate={updateMember}
+                displayStake={!fixedStake}
+              />
+            ))}
+          </div>
+          <Button
+            icon={
+              <IconPlus
+                css={`
+                  color: ${theme.accent};
+                `}
+              />
+            }
+            label="Add more"
+            onClick={addMember}
+          />
+        </Field>
+      )}
 
       {formError && (
         <Info
@@ -303,8 +342,10 @@ function Tokens({
         `}
       >
         These settings will determine the name and symbol of the token that will
-        be created for your organization. Add members to define the initial
-        distribution of this token.
+        be created for your organization.
+        {editMembers
+          ? ' Add members to define the initial distribution of this token.'
+          : ''}
       </Info>
 
       <Navigation
@@ -319,14 +360,20 @@ function Tokens({
 }
 
 Tokens.propTypes = {
+  appLabel: PropTypes.string,
   accountStake: PropTypes.number,
   dataKey: PropTypes.string,
+  editMembers: PropTypes.bool,
   screenProps: ScreenPropsType.isRequired,
+  title: PropTypes.string,
 }
 
 Tokens.defaultProps = {
   accountStake: -1,
+  appLabel: 'Tokens',
   dataKey: 'tokens',
+  editMembers: true,
+  title: 'Configure template',
 }
 
 function MemberField({
@@ -452,9 +499,23 @@ function formatReviewFields(screenData) {
       'Token name & symbol',
       `${screenData.tokenName} (${screenData.tokenSymbol})`,
     ],
-    ...screenData.members.map(([account], i) => [
+    ...screenData.members.map(([account, amount], i) => [
       `Tokenholder #${i + 1}`,
-      <IdentityBadge entity={account} />,
+      <div
+        css={`
+          display: flex;
+          align-items: center;
+        `}
+      >
+        <IdentityBadge entity={account} />
+        <span
+          css={`
+            margin-left: ${2 * GU}px;
+          `}
+        >
+          {amount} {screenData.tokenSymbol}
+        </span>
+      </div>,
     ]),
   ]
 }

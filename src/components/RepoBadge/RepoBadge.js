@@ -1,30 +1,16 @@
 import React from 'react'
-import { blockExplorerUrl, useTheme, GU, LinkBase, RADIUS } from '@aragon/ui'
+import { LinkBase, GU, RADIUS, blockExplorerUrl, useTheme } from '@aragon/ui'
 import { network } from '../../environment'
 import AppIcon from '../../components/AppIcon/AppIcon'
-import { KNOWN_ICONS } from '../../repo-utils'
 import { repoBaseUrl } from '../../url-utils'
 import { RepoVersionType } from '../../prop-types'
 
-function useRepoBadge(repoVersion) {
+const RepoBadge = React.memo(function({ repoVersion }) {
+  const theme = useTheme()
   const {
     content: { appId, contractAddress, name, icons },
   } = repoVersion
-
-  return {
-    baseUrl: repoBaseUrl(repoVersion),
-    icons: icons,
-    contractAddress,
-    knownIcon: KNOWN_ICONS.has(appId) ? KNOWN_ICONS.get(appId) : null,
-    name: name,
-  }
-}
-
-const RepoBadge = React.memo(function({ repoVersion }) {
-  const theme = useTheme()
-  const { icons, baseUrl, contractAddress, knownIcon, name } = useRepoBadge(
-    repoVersion
-  )
+  const baseUrl = repoBaseUrl(appId, repoVersion)
 
   return (
     <div
@@ -42,7 +28,8 @@ const RepoBadge = React.memo(function({ repoVersion }) {
         })}
         css={`
           display: flex;
-          background: #daeaef;
+          background: ${theme.badge};
+          color: ${theme.badgeContent};
           border-radius: ${RADIUS}px;
           align-items: center;
           height: ${3 * GU}px;
@@ -52,8 +39,7 @@ const RepoBadge = React.memo(function({ repoVersion }) {
         `}
       >
         <AppIcon
-          app={{ baseUrl, icons }}
-          src={knownIcon || undefined}
+          app={{ appId, baseUrl, icons }}
           radius={RADIUS}
           css={`
             min-width: ${3 * GU}px;
