@@ -5,7 +5,11 @@ import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
 import App from './App'
 import GlobalErrorHandler from './GlobalErrorHandler'
-import { getPackageVersion, getLastPackageVersion } from './local-settings'
+import {
+  getLastPackageVersion,
+  getPackageVersion,
+  setPackageVersion,
+} from './local-settings'
 
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
@@ -34,6 +38,11 @@ if (
         databases.forEach(({ name }) => window.indexedDB.deleteDatabase(name))
       )
   }
+}
+
+// Save the current package version
+if (packageVersion !== lastPackageVersion) {
+  setPackageVersion(packageVersion)
 }
 
 ReactDOM.render(
