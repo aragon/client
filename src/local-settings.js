@@ -10,23 +10,48 @@ const SENTRY_DSN = 'SENTRY_DSN'
 
 // process.env vars have to be declared statically (to be replaced by parcel).
 const CONFIGURATION_VARS = [
-  [ASSET_BRIDGE, process.env.REACT_APP_ASSET_BRIDGE],
-  [DEFAULT_ETH_NODE, process.env.REACT_APP_DEFAULT_ETH_NODE],
-  [ENS_REGISTRY_ADDRESS, process.env.REACT_APP_ENS_REGISTRY_ADDRESS],
-  [ETH_NETWORK_TYPE, process.env.REACT_APP_ETH_NETWORK_TYPE],
+  [
+    ASSET_BRIDGE,
+    process.env.REACT_APP_ASSET_BRIDGE,
+    process.env.ARAGON_ASSET_BRIDGE,
+  ],
+  [
+    DEFAULT_ETH_NODE,
+    process.env.REACT_APP_DEFAULT_ETH_NODE,
+    process.env.ARAGON_DEFAULT_ETH_NODE,
+  ],
+  [
+    ENS_REGISTRY_ADDRESS,
+    process.env.REACT_APP_ENS_REGISTRY_ADDRESS,
+    process.env.ARAGON_ENS_REGISTRY_ADDRESS,
+  ],
+  [
+    ETH_NETWORK_TYPE,
+    process.env.REACT_APP_ETH_NETWORK_TYPE,
+    process.env.ARAGON_ETH_NETWORK_TYPE,
+  ],
   [
     ETH_SUBSCRIPTION_EVENT_DELAY,
     process.env.REACT_APP_ETH_SUBSCRIPTION_EVENT_DELAY,
+    process.env.ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY,
   ],
-  [IPFS_GATEWAY, process.env.REACT_APP_IPFS_GATEWAY],
-  [SELECTED_CURRENCY, process.env.REACT_APP_SELECTED_CURRENCY],
-  [SENTRY_DSN, process.env.REACT_APP_SENTRY_DSN],
+  [
+    IPFS_GATEWAY,
+    process.env.REACT_APP_IPFS_GATEWAY,
+    process.env.ARAGON_IPFS_GATEWAY,
+  ],
+  [
+    SELECTED_CURRENCY,
+    process.env.REACT_APP_SELECTED_CURRENCY,
+    process.env.ARAGON_SELECTED_CURRENCY,
+  ],
+  [SENTRY_DSN, process.env.REACT_APP_SENTRY_DSN, process.env.ARAGON_SENTRY_DSN],
 ].reduce(
-  (acc, [option, envValue]) => ({
+  (acc, [option, envValueCompat, envValue]) => ({
     ...acc,
     [option]: {
       storageKey: `${option}_KEY`,
-      envValue: envValue || null,
+      envValue: envValue || envValueCompat || null,
     },
   }),
   {}
