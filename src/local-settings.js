@@ -7,8 +7,9 @@ const ETH_SUBSCRIPTION_EVENT_DELAY = 'ETH_SUBSCRIPTION_EVENT_DELAY'
 const IPFS_GATEWAY = 'IPFS_GATEWAY'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 const SENTRY_DSN = 'SENTRY_DSN'
+const PACKAGE_VERSION = 'PACKAGE_VERSION'
 
-// process.env vars have to be declared statically (to be replaced by parcel).
+// Parcel requires env vars to be declared statically.
 const CONFIGURATION_VARS = [
   [
     ASSET_BRIDGE,
@@ -46,6 +47,11 @@ const CONFIGURATION_VARS = [
     process.env.ARAGON_SELECTED_CURRENCY,
   ],
   [SENTRY_DSN, process.env.REACT_APP_SENTRY_DSN, process.env.ARAGON_SENTRY_DSN],
+  [
+    PACKAGE_VERSION,
+    process.env.REACT_APP_PACKAGE_VERSION,
+    process.env.ARAGON_PACKAGE_VERSION,
+  ],
 ].reduce(
   (acc, [option, envValueCompat, envValue]) => ({
     ...acc,
@@ -57,27 +63,33 @@ const CONFIGURATION_VARS = [
   {}
 )
 
-function getLocalSetting(confKey, settingDefault) {
-  const confVar = CONFIGURATION_VARS[confKey]
-  return (
-    window.localStorage.getItem(confVar.storageKey) ||
-    confVar.envValue ||
-    settingDefault
-  )
+// Get a setting from localStorage
+function getLocalStorageSetting(confKey) {
+  return window.localStorage.getItem(CONFIGURATION_VARS[confKey].storageKey)
 }
 
-function setLocalSetting(confKey, setting) {
+// Get a setting from the env vars
+function getEnvSetting(confKey) {
+  return CONFIGURATION_VARS[confKey].envValue
+}
+
+// Get a local setting: from the local storage if available, or the env vars.
+function getLocalSetting(confKey) {
+  return getLocalStorageSetting(confKey) || getEnvSetting(confKey)
+}
+
+function setLocalSetting(confKey, value) {
   const confVar = CONFIGURATION_VARS[confKey]
-  return window.localStorage.setItem(confVar.storageKey, setting)
+  return window.localStorage.setItem(confVar.storageKey, value)
 }
 
 export function getAssetBridge() {
-  return getLocalSetting(ASSET_BRIDGE, '')
+  return getLocalSetting(ASSET_BRIDGE) || ''
 }
 
 export function getDefaultEthNode() {
   // Let the network configuration handle node defaults
-  return getLocalSetting(DEFAULT_ETH_NODE, '')
+  return getLocalSetting(DEFAULT_ETH_NODE) || ''
 }
 
 export function setDefaultEthNode(node) {
@@ -85,36 +97,46 @@ export function setDefaultEthNode(node) {
 }
 
 export function getEnsRegistryAddress() {
-  return getLocalSetting(
-    ENS_REGISTRY_ADDRESS,
-    '' // Let the network configuration handle contract address defaults
-  )
+  // Let the network configuration handle contract address defaults
+  return getLocalSetting(ENS_REGISTRY_ADDRESS) || ''
 }
 
 export function getEthNetworkType() {
-  return getLocalSetting(ETH_NETWORK_TYPE, 'rinkeby')
+  return getLocalSetting(ETH_NETWORK_TYPE) || 'rinkeby'
 }
 
 export function getEthSubscriptionEventDelay() {
-  return getLocalSetting(ETH_SUBSCRIPTION_EVENT_DELAY, 0)
+  return getLocalSetting(ETH_SUBSCRIPTION_EVENT_DELAY) || 0
 }
 
 export function getIpfsGateway() {
-  return getLocalSetting(IPFS_GATEWAY, 'https://ipfs.eth.aragon.network/ipfs')
+  return getLocalSetting(IPFS_GATEWAY) || 'https://ipfs.eth.aragon.network/ipfs'
 }
 
 export function setIpfsGateway(gateway) {
-  return setLocalSetting(IPFS_GATEWAY, gateway)
+  return setLocalSetting(IPFS_GATEWAY) || gateway
 }
 
 export function getSelectedCurrency() {
-  return getLocalSetting(SELECTED_CURRENCY, 'USD').toUpperCase()
+  return (getLocalSetting(SELECTED_CURRENCY) || 'USD').toUpperCase()
 }
 
 export function setSelectedCurrency(currency) {
-  return setLocalSetting(SELECTED_CURRENCY, currency.toUpperCase())
+  return setLocalSetting(SELECTED_CURRENCY) || currency.toUpperCase()
 }
 
 export function getSentryDsn() {
-  return getLocalSetting(SENTRY_DSN, '')
+  return getLocalSetting(SENTRY_DSN) || ''
+}
+
+export function getPackageVersion() {
+  return getEnvSetting(PACKAGE_VERSION) || ''
+}
+
+export function getLastPackageVersion() {
+  return getLocalStorageSetting(PACKAGE_VERSION) || ''
+}
+
+export function setPackageVersion(version, purge) {
+  return setLocalSetting(PACKAGE_VERSION, version)
 }
