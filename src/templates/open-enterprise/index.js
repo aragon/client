@@ -28,16 +28,16 @@ export default {
   `,
   userGuideUrl: 'https://autark.gitbook.io/open-enterprise/',
   sourceCodeUrl: 'https://github.com/AutarkLabs/open-enterprise',
-  registry: 'hatch.aragonpm.eth',
+  registry: 'aragonpm.eth',
   apps: [
     { appName: 'voting.aragonpm.eth', label: 'Voting' },
     { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
-    { appName: 'address-book.hatch.aragonpm.eth', label: 'Address Book' },
-    { appName: 'allocations.hatch.aragonpm.eth', label: 'Allocations' },
-    { appName: 'dot-voting.hatch.aragonpm.eth', label: 'Dot Voting' },
-    { appName: 'projects.hatch.aragonpm.eth', label: 'Projects' },
-    { appName: 'rewards.hatch.aragonpm.eth', label: 'Rewards' },
+    { appName: 'address-book.aragonpm.eth', label: 'Address Book' },
+    { appName: 'allocations.aragonpm.eth', label: 'Allocations' },
+    { appName: 'dot-voting.aragonpm.eth', label: 'Dot Voting' },
+    { appName: 'projects.aragonpm.eth', label: 'Projects' },
+    { appName: 'rewards.aragonpm.eth', label: 'Rewards' },
   ],
   screens: [
     [
@@ -71,7 +71,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="dot-voting.hatch.aragonpm.eth"
+                    appName="dot-voting.aragonpm.eth"
                     label="Dot Voting"
                   />
                 ),

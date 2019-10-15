@@ -168,7 +168,7 @@ function DotVotingScreen({
               `}
             >
               <KnownAppBadge
-                appName="dot-voting.hatch.aragonpm.eth"
+                appName="dot-voting.aragonpm.eth"
                 label={appLabel}
               />
             </span>
