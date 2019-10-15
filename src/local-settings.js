@@ -1,5 +1,5 @@
 // List of configurable settings
-const ASSET_BRIDGE = 'ASSET_BRIDGE'
+const APP_LOCATOR = 'APP_LOCATOR'
 const DEFAULT_ETH_NODE = 'DEFAULT_ETH_NODE'
 const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
 const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
@@ -12,8 +12,8 @@ const PACKAGE_VERSION = 'PACKAGE_VERSION'
 // Parcel requires env vars to be declared statically.
 const CONFIGURATION_VARS = [
   [
-    ASSET_BRIDGE,
-    process.env.ARAGON_ASSET_BRIDGE,
+    APP_LOCATOR,
+    process.env.ARAGON_APP_LOCATOR,
     process.env.REACT_APP_ASSET_BRIDGE,
   ],
   [
@@ -83,8 +83,8 @@ function setLocalSetting(confKey, value) {
   return window.localStorage.setItem(confVar.storageKey, value)
 }
 
-export function getAssetBridge() {
-  return getLocalSetting(ASSET_BRIDGE) || ''
+export function getAppLocator() {
+  return getLocalSetting(APP_LOCATOR) || ''
 }
 
 export function getDefaultEthNode() {
