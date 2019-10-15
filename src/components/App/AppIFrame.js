@@ -78,7 +78,7 @@ class AppIFrame extends React.Component {
     const containerNode = this.iframe.parentNode
     this.iframe.remove()
     this.iframe.src = src
-    containerNode.append(this.iframe)
+    containerNode.appendChild(this.iframe)
 
     this.loadingStart()
 
