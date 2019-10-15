@@ -12,5 +12,18 @@
   "plugins": [
     ["styled-components", { "displayName": true }],
     "@babel/plugin-proposal-class-properties"
-  ]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": "commonjs",
+            "targets": { "node": "current" }
+          }
+        ]
+      ]
+    }
+  }
 }
