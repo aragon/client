@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react'
 import BN from 'bn.js'
 import {
@@ -97,9 +96,8 @@ export default {
     const financePeriod = 0 // default
 
     const { domain, dotVoting, tokens, voting } = data
-    const useDiscussions = dotVoting.discussions
-
     const { tokenName, tokenSymbol, members } = tokens
+
     const baseStake = new BN(10).pow(new BN(18))
     const stakes = members.map(([_, stake]) =>
       baseStake.mul(new BN(stake.toString())).toString()
@@ -146,7 +144,7 @@ export default {
         transaction: createTx('newOpenEnterprise', [
           dotVotingSettings,
           allocationsPeriod,
-          useDiscussions,
+          false, // useDiscussions option, will revisit when forwarding API gets ready
         ]),
       },
     ]

@@ -17,7 +17,6 @@ const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
 const DEFAULT_SUPPORT = 0
 const DEFAULT_QUORUM = 15
 const DEFAULT_DURATION = MINUTE_IN_SECONDS
-const DEFAULT_DISCUSSIONS = false
 
 function validationError(duration) {
   if (duration < 1 * MINUTE_IN_SECONDS) {
@@ -27,9 +26,6 @@ function validationError(duration) {
 }
 
 function reduceFields(fields, [field, value]) {
-  if (field === 'discussions') {
-    return { ...fields, discussions: value }
-  }
   if (field === 'duration') {
     return { ...fields, duration: value }
   }
@@ -51,13 +47,12 @@ function DotVotingScreen({
 
   const [formError, setFormError] = useState()
 
-  const [{ support, quorum, duration, discussions }, updateField] = useReducer(
+  const [{ support, quorum, duration }, updateField] = useReducer(
     reduceFields,
     {
       support: screenData.support || DEFAULT_SUPPORT,
       quorum: screenData.quorum || DEFAULT_QUORUM,
       duration: screenData.duration || DEFAULT_DURATION,
-      discussions: screenData.discussions || DEFAULT_DISCUSSIONS,
     }
   )
 
@@ -75,12 +70,6 @@ function DotVotingScreen({
     setFormError(null)
     updateField(['duration', value])
   }, [])
-
-  // Disabled for now until Discussions is ready to use
-  // const handleDiscussionsChange = useCallback(value => {
-  //   setFormError(null)
-  //   updateField(['discussions', value])
-  // }, [])
 
   const supportRef = useRef()
   const quorumRef = useRef()
@@ -121,7 +110,6 @@ function DotVotingScreen({
           support: Math.floor(support),
           quorum: Math.floor(quorum),
           duration,
-          discussions,
         }
         next(
           dataKey
@@ -130,16 +118,7 @@ function DotVotingScreen({
         )
       }
     },
-    [
-      data,
-      dataKey,
-      discussions,
-      duration,
-      isPercentageFieldFocused,
-      next,
-      quorum,
-      support,
-    ]
+    [data, dataKey, duration, isPercentageFieldFocused, next, quorum, support]
   )
 
   return (
@@ -225,38 +204,6 @@ function DotVotingScreen({
           </React.Fragment>
         }
       />
-      {/* 
-      // Disabled for now, as Discussions needs Forwarded Actions API (aragon.js#314) to work
-      // It needs to import Checkbox after re-enabling the block
-      <label
-        css={`
-          display: flex;
-          align-items: center;
-          margin-bottom: ${3 * GU}px;
-        `}
-      >
-        <Checkbox
-          checked={discussions}
-          onChange={handleDiscussionsChange}
-          css={`
-            margin-right: ${2 * GU}px;
-          `}
-        />
-        Enable discussions
-        <span
-          css={`
-            margin-left: ${1 * GU}px;
-            margin-top: ${-0.375 * GU}px;
-          `}
-        >
-          <Help hint="What’s this option?">
-            <strong>Enable discussions:</strong> When enabled, each individual
-            dot vote will have a built-in module for users to be able to comment
-            on the vote.
-          </Help>
-        </span>
-      </label>
-      */}
       {formError && (
         <Info
           mode="error"
@@ -333,8 +280,6 @@ function formatReviewFields(screenData) {
     ['Support %', `${screenData.support}%`],
     ['Minimum participation %', `${screenData.quorum}%`],
     ['Vote duration', formatDuration(screenData.duration)],
-    // Disabled for now, enforcing it to be false (it will be true by default in the future)
-    // ['Discussions', screenData.discussions ? 'Enabled' : 'Disabled'],
   ]
 }
 
