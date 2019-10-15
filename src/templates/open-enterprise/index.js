@@ -128,10 +128,9 @@ export default {
     ]
 
     /* For Open Enterprise, is currently not possible to use a single tx, the creation process cost is ~10M gas */
-
     return [
       {
-        name: 'Create token and base organization',
+        name: 'Create organization',
         transaction: createTx('newTokenAndInstance', [
           tokenName,
           tokenSymbol,
@@ -143,7 +142,7 @@ export default {
         ]),
       },
       {
-        name: 'Setup Open Enterprise apps',
+        name: 'Install Open Enterprise',
         transaction: createTx('newOpenEnterprise', [
           dotVotingSettings,
           allocationsPeriod,
