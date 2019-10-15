@@ -113,7 +113,11 @@ export default {
     const adjustedDuration = new BN(duration).toString()
     const votingSettings = [adjustedSupport, adjustedQuorum, adjustedDuration]
 
-    const { dvSupport, dvQuorum, dvDuration } = dotVoting
+    const {
+      support: dvSupport,
+      quorum: dvQuorum,
+      duration: dvDuration,
+    } = dotVoting
     const adjustedDvSupport = onePercent.mul(new BN(dvSupport)).toString()
     const adjustedDvQuorum = onePercent.mul(new BN(dvQuorum)).toString()
     const adjustedDvDuration = new BN(dvDuration).toString()
