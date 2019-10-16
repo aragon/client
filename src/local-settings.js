@@ -129,6 +129,8 @@ export function getSentryDsn() {
   return getLocalSetting(SENTRY_DSN) || ''
 }
 
+// The previous package version is stored in localStorage,
+// while the current one is coming from the environment.
 export function getPackageVersion() {
   return getEnvSetting(PACKAGE_VERSION) || ''
 }
