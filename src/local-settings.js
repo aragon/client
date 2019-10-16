@@ -114,7 +114,7 @@ export function getIpfsGateway() {
 }
 
 export function setIpfsGateway(gateway) {
-  return setLocalSetting(IPFS_GATEWAY) || gateway
+  return setLocalSetting(IPFS_GATEWAY, gateway)
 }
 
 export function getSelectedCurrency() {
@@ -122,7 +122,7 @@ export function getSelectedCurrency() {
 }
 
 export function setSelectedCurrency(currency) {
-  return setLocalSetting(SELECTED_CURRENCY) || currency.toUpperCase()
+  return setLocalSetting(SELECTED_CURRENCY, currency.toUpperCase())
 }
 
 export function getSentryDsn() {
