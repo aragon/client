@@ -30,10 +30,18 @@ function reduceFields(fields, [field, value]) {
     return { ...fields, duration: value }
   }
   if (field === 'quorum') {
-    return { ...fields, quorum: value }
+    return {
+      ...fields,
+      quorum: Math.max(1, value), // prevents 0% quorum (not supported in contract)
+      support: Math.min(fields.support, value),
+    }
   }
   if (field === 'support') {
-    return { ...fields, support: value }
+    return {
+      ...fields,
+      support: value,
+      quorum: Math.max(fields.quorum, value),
+    }
   }
   return fields
 }
