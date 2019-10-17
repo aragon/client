@@ -44,6 +44,7 @@ function OnboardingTopBar({ status, solid }) {
           css={`
             position: absolute;
             top: 0;
+            z-index: 1;
             width: 100%;
             border-top: 2px solid ${theme.accent};
           `}
@@ -62,13 +63,17 @@ function OnboardingTopBar({ status, solid }) {
             display: flex;
             align-items: center;
             position: absolute;
-            top: ${2 * GU}px;
+            top: 0;
             right: ${2 * GU}px;
+            height: 100%;
           `}
         >
           <div
             css={`
+              display: flex;
+              align-items: center;
               margin-right: ${1 * GU}px;
+              height: 100%;
             `}
           >
             <AccountModule compact />
