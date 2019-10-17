@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
-  Checkbox,
+  Switch,
   Field,
   IconCheck,
   GU,
@@ -215,6 +215,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                     css={`
                       display: flex;
                       justify-content: space-between;
+                      align-items: center;
                       margin-top: ${2 * GU}px;
 
                       & + & {
@@ -223,30 +224,15 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                     `}
                   >
                     <KnownAppBadge appName={appName} label={label} />
-                    <label
-                      css={`
-                        display: flex;
-                        align-items: center;
-                      `}
-                    >
-                      <Checkbox
-                        checked={templateOptionalApps[appName]}
-                        onChange={() => {
-                          setTemplateOptionalApps(apps => ({
-                            ...apps,
-                            [appName]: !apps[appName],
-                          }))
-                        }}
-                        css={`
-                          margin-right: ${1.5 * GU}px;
-                          border-color: #8fa4b5;
-                          &:active {
-                            border-color: #8fa4b5;
-                          }
-                        `}
-                      />
-                      Include
-                    </label>
+                    <Switch
+                      checked={templateOptionalApps[appName]}
+                      onChange={() => {
+                        setTemplateOptionalApps(apps => ({
+                          ...apps,
+                          [appName]: !apps[appName],
+                        }))
+                      }}
+                    />
                   </div>
                 ))
               }
