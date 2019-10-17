@@ -12,11 +12,11 @@ execute(`copy-aragon-ui-assets -n aragon-ui ./build`, {
   stdio: 'inherit',
 })
 
-process.env.REACT_APP_PACKAGE_VERSION = version
-process.env.REACT_APP_ETH_NETWORK_TYPE = 'local'
-process.env.REACT_APP_ENS_REGISTRY_ADDRESS = DEFAULT_LOCAL_ENS_ADDRESS
-process.env.REACT_APP_IPFS_GATEWAY = DEFAULT_LOCAL_IPFS_GATEWAY
-process.env.REACT_APP_ASSET_BRIDGE = 'ipfs'
+process.env.ARAGON_PACKAGE_VERSION = version
+process.env.ARAGON_ETH_NETWORK_TYPE = 'local'
+process.env.ARAGON_ENS_REGISTRY_ADDRESS = DEFAULT_LOCAL_ENS_ADDRESS
+process.env.ARAGON_IPFS_GATEWAY = DEFAULT_LOCAL_IPFS_GATEWAY
+process.env.ARAGON_APP_LOCATOR = 'ipfs'
 
 execute(
   `parcel build src/index.html --out-dir ./build --public-url ./ --no-cache`,

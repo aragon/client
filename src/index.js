@@ -1,26 +1,32 @@
-import '@babel/polyfill'
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
-import GlobalErrorHandler from './GlobalErrorHandler'
 import App from './App'
+import GlobalErrorHandler from './GlobalErrorHandler'
+import {
+  getLastPackageVersion,
+  getPackageVersion,
+  setPackageVersion,
+} from './local-settings'
 
-const PACKAGE_VERSION = process.env.REACT_APP_PACKAGE_VERSION || ''
-const PACKAGE_VERSION_KEY = 'PACKAGE_VERSION_KEY'
+const packageVersion = getPackageVersion()
+const lastPackageVersion = getLastPackageVersion()
 
-// Purge localstorage cache when upgrading between different minor versions
-const lastAppVersion = window.localStorage.getItem(PACKAGE_VERSION_KEY) || ''
-const [lastMajorVersion, lastMinorVersion] = lastAppVersion.split('.')
-const [currentMajorVersion, currentMinorVersion] = PACKAGE_VERSION.split('.')
+const [currentMajorVersion, currentMinorVersion] = packageVersion.split('.')
+const [lastMajorVersion, lastMinorVersion] = lastPackageVersion.split('.')
+
+// Setting a package version also clears all local storage data.
 if (
   lastMajorVersion !== currentMajorVersion ||
   lastMinorVersion !== currentMinorVersion
 ) {
+  // Purge localstorage when upgrading between different minor versions.
   window.localStorage.clear()
-  window.localStorage.setItem(PACKAGE_VERSION_KEY, PACKAGE_VERSION)
 
-  // Attempt to clean up indexedDB storage as well
+  // Attempt to clean up indexedDB storage as well.
   if (
     window.indexedDB &&
     window.indexedDB.databases &&
@@ -33,6 +39,11 @@ if (
         databases.forEach(({ name }) => window.indexedDB.deleteDatabase(name))
       )
   }
+}
+
+// Save the current package version
+if (packageVersion !== lastPackageVersion) {
+  setPackageVersion(packageVersion)
 }
 
 ReactDOM.render(
