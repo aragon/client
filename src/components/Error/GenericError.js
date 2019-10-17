@@ -2,7 +2,8 @@ import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
-  ButtonText,
+  ButtonBase,
+  Link,
   Card,
   GU,
   IconDown,
@@ -10,6 +11,7 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
+
 import notFoundImage from '../../assets/dao-not-found.png'
 
 const SUPPORT_URL = 'https://github.com/aragon/aragon/issues/new'
@@ -28,27 +30,27 @@ const GenericError = React.memo(function GenericError({
   return (
     <Card
       css={`
-        display: grid;
-        grid-template-rows: 1fr auto auto auto;
-        grid-template-columns: 1fr;
+        display: block;
         padding: ${5 * GU}px ${6 * GU}px;
-        width: ${72 * GU}px;
+        width: 100%;
+        max-width: ${72 * GU}px;
         height: auto;
-        box-shadow: 0px 2px 4px rgba(180, 188, 202, 0.5);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       `}
     >
       <img
+        alt=""
         src={notFoundImage}
-        alt="DAO not found"
+        width="147"
+        height="144"
         css={`
-          width: 147px;
-          height: 144px;
+          display: block;
           margin: ${5 * GU}px auto ${1.5 * GU}px;
         `}
       />
       <h1
         css={`
-          color: ${theme.feedbackSurfaceContent};
+          color: ${theme.surfaceContent};
           ${textStyle('title2')};
           margin-bottom: ${1.5 * GU}px;
           text-align: center;
@@ -56,22 +58,17 @@ const GenericError = React.memo(function GenericError({
       >
         An unexpected error has occurred
       </h1>
-      <div
+      <p
         css={`
-          color: ${theme.feedbackSurfaceContentSecondary};
-          ${textStyle('body2')};
-          margin: auto;
           margin-bottom: ${5 * GU}px;
-          max-width: ${52 * GU}px;
           text-align: center;
+          color: ${theme.surfaceContentSecondary};
+          ${textStyle('body2')};
         `}
       >
-        Something went wrong! Hit reload to restart the app, or you can
-        <ButtonText href={SUPPORT_URL} css="margin: 0 -5px;">
-          contact
-        </ButtonText>
-        us if the problem persists.
-      </div>
+        Something went wrong! Hit reload to restart the app, or you can{' '}
+        <Link href={SUPPORT_URL}>contact</Link> us if the problem persists.
+      </p>
       {(detailsTitle || detailsContent) && (
         <div
           css={`
@@ -79,12 +76,12 @@ const GenericError = React.memo(function GenericError({
             margin-bottom: ${5 * GU}px;
           `}
         >
-          <ButtonText
+          <ButtonBase
             onClick={toggle}
             css={`
               display: flex;
               align-items: center;
-              color: ${theme.feedbackSurfaceContentSecondary};
+              color: ${theme.surfaceContentSecondary};
               ${textStyle('label2')};
             `}
           >
@@ -97,7 +94,7 @@ const GenericError = React.memo(function GenericError({
                 transform: rotate3d(0, 0, 1, ${opened ? 180 : 0}deg);
               `}
             />
-          </ButtonText>
+          </ButtonBase>
           {opened && (
             <div
               css={`
@@ -106,9 +103,9 @@ const GenericError = React.memo(function GenericError({
                 max-height: 200px;
                 border-radius: ${RADIUS}px;
                 color: ${theme.text};
-                ${textStyle('body3')};
                 white-space: pre;
                 background: ${theme.surfaceUnder};
+                ${textStyle('body3')};
               `}
             >
               {detailsTitle && (
@@ -144,14 +141,10 @@ const GenericError = React.memo(function GenericError({
           onClick={() => window.location.reload(true)}
           wide={!reportCallback}
           css={`
-            ${reportCallback
-              ? `
-                margin-left: ${1.5 * GU}px;
-              `
-              : ''}
+            margin-left: ${reportCallback ? 1.5 * GU : 0}px;
           `}
         >
-          Restart this app
+          Reload
         </Button>
       </div>
     </Card>

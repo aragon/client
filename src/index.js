@@ -47,10 +47,10 @@ if (packageVersion !== lastPackageVersion) {
 }
 
 ReactDOM.render(
-  <GlobalErrorHandler>
-    <Main layout={false} scrollView={false}>
+  <Main layout={false} scrollView={false}>
+    <GlobalErrorHandler>
       <App />
-    </Main>
-  </GlobalErrorHandler>,
+    </GlobalErrorHandler>
+  </Main>,
   document.getElementById('root')
 )

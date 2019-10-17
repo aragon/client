@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { BaseStyles, GU, PublicUrl, useTheme } from '@aragon/ui'
+import { BaseStyles, GU, PublicUrl, useTheme, useViewport } from '@aragon/ui'
 import * as Sentry from '@sentry/browser'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
@@ -17,6 +17,7 @@ const EAGLE_DIMENSIONS = [1307, 877]
 class GlobalErrorHandler extends React.Component {
   static propTypes = {
     children: PropTypes.node,
+    compact: PropTypes.bool,
     theme: PropTypes.object,
   }
   state = { error: null, errorStack: null }
@@ -51,7 +52,7 @@ class GlobalErrorHandler extends React.Component {
     window.location.reload()
   }
   render() {
-    const { theme, children } = this.props
+    const { theme, children, compact } = this.props
     const { error, errorStack } = this.state
 
     if (!error) {
@@ -64,6 +65,7 @@ class GlobalErrorHandler extends React.Component {
         <div
           css={`
             height: 100vh;
+            min-width: ${45 * GU}px;
             overflow: auto;
             background: ${theme.background} fixed 50% 100% /
               ${EAGLE_DIMENSIONS[0]}px ${EAGLE_DIMENSIONS[1]}px no-repeat
@@ -78,15 +80,16 @@ class GlobalErrorHandler extends React.Component {
               left: ${2 * GU}px;
               width: ${4.5 * GU}px;
               height: ${4.25 * GU}px;
+              opacity: ${Number(!compact)};
+              transition: opacity 50ms;
             `}
-            alt="Logo"
+            alt="Aragon"
           />
           <div
             css={`
               display: flex;
               justify-content: center;
               align-items: center;
-              margin-top: -30px;
               padding: 50px 20px 20px;
               min-height: 100%;
             `}
@@ -107,7 +110,8 @@ class GlobalErrorHandler extends React.Component {
   }
 }
 
-export default props => {
+export default function GlobalErrorHandlerWithHooks(props) {
   const theme = useTheme()
-  return <GlobalErrorHandler theme={theme} {...props} />
+  const { width: vw } = useViewport()
+  return <GlobalErrorHandler theme={theme} {...props} compact={vw < 720} />
 }
