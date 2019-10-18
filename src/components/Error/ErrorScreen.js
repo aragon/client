@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { ButtonBase, Card, GU, useTheme, useViewport } from '@aragon/ui'
 import HelpScoutBeacon from '../HelpScoutBeacon/HelpScoutBeacon'
+import HomeButton from '../HomeButton/HomeButton'
 
 import eagleSvg from '../../assets/eagle.svg'
 import logo from '../../assets/logo.png'
@@ -23,23 +24,17 @@ function ErrorScreen({ children }) {
           url(${eagleSvg});
       `}
     >
-      <ButtonBase
-        href="/"
-        external={false}
+      <HomeButton
+        onClick={() => {
+          // force a refresh rather than only changing the hash
+          window.location = '/'
+        }}
         css={`
           position: absolute;
-          top: ${2 * GU}px;
-          left: ${2 * GU}px;
+          top: ${1 * GU}px;
+          left: ${1 * GU}px;
         `}
-      >
-        <img
-          src={logo}
-          alt="Aragon"
-          width={4.5 * GU}
-          height={4.25 * GU}
-          css="display:block"
-        />
-      </ButtonBase>
+      />
       <div
         css={`
           display: flex;
