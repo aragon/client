@@ -210,7 +210,7 @@ function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
 
   return (
     <div css="position: relative; z-index: 1">
-      <OnboardingTopBar onHome={goToHome} status={status} solid={solidTopBar} />
+      <OnboardingTopBar status={status} solid={solidTopBar} />
       <div
         onScroll={handleOnBoardingScroll}
         css={`

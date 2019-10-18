@@ -11,6 +11,7 @@ import {
   getPackageVersion,
   setPackageVersion,
 } from './local-settings'
+import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
@@ -47,10 +48,12 @@ if (packageVersion !== lastPackageVersion) {
 }
 
 ReactDOM.render(
-  <GlobalErrorHandler>
-    <Main layout={false} scrollView={false}>
-      <App />
-    </Main>
-  </GlobalErrorHandler>,
+  <Main layout={false} scrollView={false}>
+    <HelpScoutProvider>
+      <GlobalErrorHandler>
+        <App />
+      </GlobalErrorHandler>
+    </HelpScoutProvider>
+  </Main>,
   document.getElementById('root')
 )
