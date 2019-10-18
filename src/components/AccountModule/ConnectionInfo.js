@@ -5,11 +5,17 @@ import {
   textStyle,
   IdentityBadge,
   useTheme,
+  IconCopy,
   IconCheck,
   IconCross,
+  ButtonBase,
 } from '@aragon/ui'
 
-import { useConnectionColor, useNetworkConnectionData } from './utils'
+import {
+  useConnectionColor,
+  useNetworkConnectionData,
+  useCopyToClipboard,
+} from './utils'
 import { useAccount } from '../../account'
 import SyncedInfo from './SyncedInfo'
 
@@ -28,6 +34,8 @@ const ConnectionInfo = () => {
     clientNetworkName,
     hasNetworkMismatch,
   } = useNetworkConnectionData()
+
+  const copyAddress = useCopyToClipboard(address, 'Address copied')
 
   const Icon = hasNetworkMismatch ? IconCross : IconCheck
 
@@ -74,7 +82,25 @@ const ConnectionInfo = () => {
             />
             <span>{providerInfo.name}</span>
           </FlexWrapper>
-          <IdentityBadge entity={address} compact />
+          <FlexWrapper>
+            <IdentityBadge
+              entity={address}
+              compact
+              onClick={copyAddress}
+              css={`
+                &:active {
+                  background: none;
+                }
+              `}
+            />
+            <ButtonBase onClick={copyAddress}>
+              <IconCopy
+                css={`
+                  color: ${theme.hint};
+                `}
+              />
+            </ButtonBase>
+          </FlexWrapper>
         </FlexWrapper>
         <FlexWrapper
           css={`

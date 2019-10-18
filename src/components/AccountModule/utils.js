@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useTheme } from '@aragon/ui'
+import { useTheme, useToast } from '@aragon/ui'
+import * as clipboard from 'clipboard-polyfill'
 
 import { web3Providers } from '../../environment'
 import { getWeb3 } from '../../web3-utils'
@@ -53,4 +54,12 @@ export const useConnectionColor = () => {
   const { hasNetworkMismatch } = useNetworkConnectionData()
 
   return hasNetworkMismatch ? theme.negative : theme.positive
+}
+
+export const useCopyToClipboard = (payload, toastText) => {
+  const toast = useToast()
+  return () => {
+    clipboard.writeText(payload)
+    toastText && toast(toastText)
+  }
 }
