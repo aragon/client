@@ -4,6 +4,7 @@ import frame from './icons/Frame.png'
 import cipher from './icons/Cipher.png'
 import metamask from './icons/Metamask.png'
 import status from './icons/Status.png'
+import wallet from './icons/wallet.svg'
 
 // See the corresponding prop type, EthereumProviderType, in prop-types.js.
 const PROVIDERS = new Map(
@@ -46,6 +47,16 @@ const PROVIDERS = new Map(
       connect: async () => true,
       strings: {
         'your Ethereum provider': 'Cipher',
+      },
+    },
+    {
+      id: 'unknown',
+      name: 'Unknown',
+      type: 'Desktop',
+      image: wallet,
+      connect: async () => true,
+      strings: {
+        'your Ethereum provider': 'Unknown',
       },
     },
   ].map(provider => [provider.id, provider])
