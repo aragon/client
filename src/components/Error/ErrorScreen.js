@@ -81,11 +81,13 @@ function Container({ children }) {
         min-width: ${45 * GU}px;
         overflow: auto;
         background: ${theme.surface};
+        display: grid;
+        align-items: center;
       `}
     >
       <div
         css={`
-          padding: ${5 * GU}px ${6 * GU}px;
+          padding: ${5 * GU}px ${6 * GU}px ${6 * GU}px;
         `}
       >
         {children}
