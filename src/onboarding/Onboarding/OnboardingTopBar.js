@@ -1,13 +1,6 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  ButtonBase,
-  GU,
-  IconSettings,
-  RADIUS,
-  useTheme,
-} from '@aragon/ui'
+import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
 
@@ -87,7 +80,6 @@ function OnboardingTopBar({ status, solid }) {
 }
 
 OnboardingTopBar.propTypes = {
-  onHome: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired,
   solid: PropTypes.bool,
 }
