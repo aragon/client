@@ -1,15 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, GU, useTheme, useViewport } from '@aragon/ui'
+import { ButtonBase, Card, GU, useTheme, useViewport } from '@aragon/ui'
+import HelpScoutBeacon from '../HelpScoutBeacon/HelpScoutBeacon'
+
 import eagleSvg from '../../assets/eagle.svg'
 import logo from '../../assets/logo.png'
+import notFoundImage from '../../assets/dao-not-found.png'
 
 const EAGLE_DIMENSIONS = [1307, 877]
 
 function ErrorScreen({ children }) {
   const theme = useTheme()
-  const { width: vw } = useViewport()
-  const compact = vw < 720
 
   return (
     <div
@@ -29,28 +30,90 @@ function ErrorScreen({ children }) {
           position: absolute;
           top: ${2 * GU}px;
           left: ${2 * GU}px;
-          opacity: ${Number(!compact)};
-          transition: opacity 50ms;
         `}
       >
-        <img src={logo} alt="Aragon" width={4.5 * GU} height={4.25 * GU} />
+        <img
+          src={logo}
+          alt="Aragon"
+          width={4.5 * GU}
+          height={4.25 * GU}
+          css="display:block"
+        />
       </ButtonBase>
       <div
         css={`
           display: flex;
           justify-content: center;
           align-items: center;
-          padding: 50px 20px 20px;
+          padding: ${8 * GU}px;
           min-height: 100%;
         `}
       >
-        {children}
+        <Container>
+          <img
+            src={notFoundImage}
+            alt=""
+            width="147"
+            height="144"
+            css={`
+              display: block;
+              margin: ${5 * GU}px auto ${1.5 * GU}px;
+            `}
+          />
+          {children}
+        </Container>
       </div>
+      <HelpScoutBeacon locator={{}} apps={[]} />
     </div>
   )
 }
 
 ErrorScreen.propTypes = {
+  children: PropTypes.node,
+}
+
+function Container({ children }) {
+  const theme = useTheme()
+  const { width } = useViewport()
+  return width < 60 * GU ? (
+    <div
+      css={`
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        min-width: ${45 * GU}px;
+        overflow: auto;
+        background: ${theme.surface};
+      `}
+    >
+      <div
+        css={`
+          padding: ${5 * GU}px ${6 * GU}px;
+        `}
+      >
+        {children}
+      </div>
+    </div>
+  ) : (
+    <Card
+      css={`
+        display: block;
+        padding: ${5 * GU}px ${6 * GU}px;
+        width: 100%;
+        max-width: ${72 * GU}px;
+        height: auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        cursor: unset;
+      `}
+    >
+      {children}
+    </Card>
+  )
+}
+
+Container.propTypes = {
   children: PropTypes.node,
 }
 

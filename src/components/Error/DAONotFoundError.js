@@ -1,33 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, textStyle, Link, Card, GU, Info } from '@aragon/ui'
+import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
 import { network } from '../../environment'
 import { isAddress } from '../../web3-utils'
-import notFoundImage from '../../assets/dao-not-found.png'
 
 function DAONotFoundError({ dao }) {
   const theme = useTheme()
   return (
-    <Card
-      css={`
-        display: block;
-        padding: ${5 * GU}px ${6 * GU}px;
-        width: 100%;
-        max-width: ${72 * GU}px;
-        height: auto;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      `}
-    >
-      <img
-        src={notFoundImage}
-        alt=""
-        width="147"
-        height="144"
-        css={`
-          display: block;
-          margin: ${5 * GU}px auto ${1.5 * GU}px;
-        `}
-      />
+    <React.Fragment>
       <h1
         css={`
           color: ${theme.surfaceContent};
@@ -67,7 +47,7 @@ function DAONotFoundError({ dao }) {
           create a new organization.
         </Link>
       </Info>
-    </Card>
+    </React.Fragment>
   )
 }
 

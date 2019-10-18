@@ -4,15 +4,12 @@ import {
   Button,
   ButtonBase,
   Link,
-  Card,
   GU,
   IconDown,
   RADIUS,
   textStyle,
   useTheme,
 } from '@aragon/ui'
-
-import notFoundImage from '../../assets/dao-not-found.png'
 
 const SUPPORT_URL = 'https://github.com/aragon/aragon/issues/new'
 
@@ -28,26 +25,7 @@ const GenericError = React.memo(function GenericError({
   }, [opened, setOpened])
 
   return (
-    <Card
-      css={`
-        display: block;
-        padding: ${5 * GU}px ${6 * GU}px;
-        width: 100%;
-        max-width: ${72 * GU}px;
-        height: auto;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      `}
-    >
-      <img
-        alt=""
-        src={notFoundImage}
-        width="147"
-        height="144"
-        css={`
-          display: block;
-          margin: ${5 * GU}px auto ${1.5 * GU}px;
-        `}
-      />
+    <React.Fragment>
       <h1
         css={`
           color: ${theme.surfaceContent};
@@ -147,7 +125,7 @@ const GenericError = React.memo(function GenericError({
           Reload
         </Button>
       </div>
-    </Card>
+    </React.Fragment>
   )
 })
 
