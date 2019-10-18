@@ -75,9 +75,10 @@ function GlobalPreferences({
 
   useEsc(onClose)
 
-  const tabItems = VALUES.filter(
-    (_, index) => !!wrapper || index === NETWORK_INDEX
+  const tabItems = VALUES.filter((_, index) =>
+    Boolean(wrapper || index === NETWORK_INDEX)
   )
+
   return (
     <Layout css="z-index: 2">
       <Close
@@ -132,7 +133,7 @@ function GlobalPreferences({
             {sectionIndex === CUSTOM_LABELS_INDEX && (
               <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
             )}
-            {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
+            {sectionIndex === NETWORK_INDEX && <Network />}
             {sectionIndex === NOTIFICATIONS_INDEX && (
               <Notifications
                 apps={apps}

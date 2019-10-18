@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { AragonType } from '../../../prop-types'
 import {
   Box,
   Button,
-  Info,
   GU,
   TextInput,
   textStyle,
@@ -18,17 +16,16 @@ import keycodes from '../../../keycodes'
 import { sanitizeNetworkType } from '../../../network-config'
 import { checkValidEthNode } from '../../../web3-utils'
 
-function Network({ wrapper }) {
+function Network() {
   const {
     ethNode,
     ipfsGateway,
     handleNetworkChange,
-    handleClearCache,
     networkError,
     handleEthNodeChange,
     handleIpfsGatewayChange,
     network,
-  } = useNetwork(wrapper)
+  } = useNetwork()
   const theme = useTheme()
   const { layoutName } = useLayout()
   const compact = layoutName === 'small'
@@ -88,41 +85,11 @@ function Network({ wrapper }) {
           Save changes
         </Button>
       </Box>
-      <Box heading="Troubleshooting">
-        <div
-          css={`
-            margin-bottom: ${2 * GU}px;
-          `}
-        >
-          <span>
-            Press this button to refresh the cache of the application in your
-            browser.
-          </span>
-        </div>
-        <Button
-          css={`
-            margin-bottom: ${2 * GU}px;
-          `}
-          onClick={handleClearCache}
-          wide={compact}
-        >
-          Clear application cache
-        </Button>
-        <Info>
-          This will only delete the data stored in your browser to make the app
-          load faster. No data related to the organization itself will be
-          altered.
-        </Info>
-      </Box>
     </React.Fragment>
   )
 }
 
-Network.propTypes = {
-  wrapper: AragonType,
-}
-
-const useNetwork = wrapper => {
+const useNetwork = () => {
   const [networkError, setNetworkError] = useState(null)
   const [ethNode, setEthNodeValue] = useState(defaultEthNode)
   const [ipfsGateway, setIpfsGatewayValue] = useState(ipfsDefaultConf.gateway)
@@ -140,11 +107,7 @@ const useNetwork = wrapper => {
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
   }, [ethNode, ipfsGateway])
-  const handleClearCache = useCallback(async () => {
-    await wrapper.cache.clear()
-    window.localStorage.clear()
-    window.location.reload()
-  }, [wrapper])
+
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
       if (
@@ -167,7 +130,6 @@ const useNetwork = wrapper => {
     network,
     ipfsGateway,
     handleNetworkChange,
-    handleClearCache,
     networkError,
     handleEthNodeChange: ({ currentTarget: { value } }) =>
       setEthNodeValue(value),
