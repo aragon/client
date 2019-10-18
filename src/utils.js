@@ -1,6 +1,20 @@
 import resolvePathname from 'resolve-pathname'
 import { GU } from '@aragon/ui'
 
+export async function clearCache() {
+  // Clear localstorage
+  window.localStorage.clear()
+
+  // Attempt to clean up indexedDB storage as well.
+  // Note: this doesn’t work on Firefox at the moment.
+  try {
+    const databases = await window.indexedDB.databases()
+    for (const db of databases) {
+      window.indexedDB.deleteDatabase(db.name)
+    }
+  } catch (_) {}
+}
+
 // Get the icon URL of an app (legacy)
 export function legacyAppIconUrl(app) {
   return app && app.baseUrl

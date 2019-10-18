@@ -11,6 +11,7 @@ import {
   getPackageVersion,
   setPackageVersion,
 } from './local-settings'
+import { clearCache } from './utils'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 
 const packageVersion = getPackageVersion()
@@ -24,22 +25,7 @@ if (
   lastMajorVersion !== currentMajorVersion ||
   lastMinorVersion !== currentMinorVersion
 ) {
-  // Purge localstorage when upgrading between different minor versions.
-  window.localStorage.clear()
-
-  // Attempt to clean up indexedDB storage as well.
-  if (
-    window.indexedDB &&
-    window.indexedDB.databases &&
-    window.indexedDB.deleteDatabase
-  ) {
-    // eslint-disable-next-line promise/catch-or-return
-    window.indexedDB
-      .databases()
-      .then(databases =>
-        databases.forEach(({ name }) => window.indexedDB.deleteDatabase(name))
-      )
-  }
+  clearCache()
 }
 
 // Save the current package version
