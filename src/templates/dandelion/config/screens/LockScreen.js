@@ -18,6 +18,7 @@ import {
   useTheme,
   useViewport,
   IconTrash,
+  isAddress,
 } from '@aragon/ui'
 import {
   Header,
@@ -45,7 +46,13 @@ function useFieldsLayout() {
   `
 }
 
-function validationError(duration) {
+function validationError(duration, tokenAddress, lockAmount) {
+  if (!tokenAddress || !isAddress(tokenAddress)) {
+    return 'You need at least one valid address.'
+  }
+  if (!lockAmount > 0) {
+    return 'You need to set a positive lock amount'
+  }
   if (duration < 10 * MINUTE_IN_SECONDS) {
     return 'Please ensure the lock duration is equal to or longer than 10 minutes.'
   }
@@ -120,7 +127,7 @@ function LockScreen({
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
-      const error = validationError(lockDuration)
+      const error = validationError(lockDuration, tokenAddress, lockAmount)
       setFormError(error)
 
       if (!error) {

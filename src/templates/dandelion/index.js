@@ -7,12 +7,12 @@ import {
   KnownAppBadge,
   ReviewScreen,
   TokensScreen,
-  VotingScreen,
 } from '../kit'
-import { DelayScreen, LockScreen } from './config'
+import { DelayScreen, LockScreen, VotingScreen } from './config'
 
 import header from './header.svg'
 import icon from './icon.svg'
+import useBlockTime from './config/helpers/useBlockTime'
 
 const ETH_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -36,7 +36,10 @@ export default {
   apps: [
     { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
-    { appName: 'voting.aragonpm.eth', label: 'Voting' },
+    {
+      appName: 'dandelion-voting.open.aragonpm.eth',
+      label: 'Voting',
+    },
     { appName: 'delay.open.aragonpm.eth', label: 'Delay' },
     { appName: 'time-lock.open.aragonpm.eth', label: 'Time Lock' },
     { appName: 'redemptions.open.aragonpm.eth', label: 'Redemptions' },
@@ -71,7 +74,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="dissent-voting.aragonpm.eth"
+                    appName="dandelion-voting.open.aragonpm.eth"
                     label="Voting"
                   />
                 ),
@@ -80,7 +83,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="token-manager.aragonpm.eth"
+                    appName="token-manager.open.aragonpm.eth"
                     label="Tokens"
                   />
                 ),
@@ -112,7 +115,7 @@ export default {
   ],
   prepareTransactions(createTx, data) {
     const hasPayroll = false
-
+    const blockTime = useBlockTime()
     const { domain, optionalModules = [], tokens, voting, lock, delay } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
 
@@ -123,13 +126,20 @@ export default {
     )
     const accounts = members.map(([account]) => account)
 
-    const { support, quorum, duration } = voting
+    const { support, quorum, duration, buffer } = voting
     const onePercent = new BN(10).pow(new BN(16))
     const adjustedSupport = onePercent.mul(new BN(support)).toString()
     const adjustedQuorum = onePercent.mul(new BN(quorum)).toString()
-    const adjustedDuration = new BN(duration).toString()
-    const votingSettings = [adjustedSupport, adjustedQuorum, adjustedDuration]
-
+    const numericVotingDuration = duration / blockTime
+    const adjustedDuration = new BN(numericVotingDuration).toString()
+    const numericBuffer = buffer / blockTime
+    const adjustedBuffer = new BN(numericBuffer).toString()
+    const votingSettings = [
+      adjustedSupport,
+      adjustedQuorum,
+      adjustedDuration,
+      adjustedBuffer,
+    ]
     const { lockDuration, lockAmount, spamPenalty, tokenAddress } = lock
     const adjustedSpamPenalty = onePercent.mul(new BN(spamPenalty)).toString()
     const adjustedLockAmount = new BN(lockAmount.toString()).toString()
@@ -142,6 +152,9 @@ export default {
 
     const { delayDuration } = delay
     const adjustedDelayDuration = new BN(delayDuration).toString()
+    const dissentWindowBlocks = new BN(
+      delayDuration + numericVotingDuration
+    ).toString()
 
     const acceptedDepositToken = [ETH_ADDRESS]
 
@@ -173,6 +186,7 @@ export default {
             lockSettings,
             votingSettings,
             adjustedDelayDuration,
+            dissentWindowBlocks,
           ]),
         },
       ]

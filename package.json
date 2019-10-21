@@ -24,6 +24,8 @@
     "node": "10.x"
   },
   "dependencies": {
+    "@aragon/api": "^2.0.0-beta.7",
+    "@aragon/api-react": "^2.0.0-beta.6",
     "@aragon/templates-tokens": "^1.2.1",
     "@aragon/ui": "^1.2.1",
     "@aragon/wrapper": "^5.0.0-rc.22",
@@ -42,7 +44,7 @@
     "lodash.throttle": "^4.1.1",
     "lodash.uniqby": "^4.7.0",
     "prop-types": "^15.6.2",
-    "react": "^16.8.6",
+    "react": "^16.10.2",
     "react-dom": "^16.8.6",
     "react-dropzone": "^10.1.3",
     "react-helmet": "^5.2.1",

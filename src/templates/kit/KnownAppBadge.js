@@ -15,7 +15,7 @@ import iconSvgVault from './icons/vault.svg'
 import iconSvgVoting from './icons/voting.svg'
 import iconTimeLock from '../dandelion/config/icons/time-lock.svg'
 import iconTokenRequest from '../dandelion/config/icons/token-request.svg'
-import iconDissentVoting from '../dandelion/config/icons/dissent-voting.svg'
+import iconDandelionVoting from '../dandelion/config/icons/dandelion-voting.svg'
 import iconDelay from '../dandelion/config/icons/delay.svg'
 import iconRedemptions from '../dandelion/config/icons/redemptions.svg'
 
@@ -34,7 +34,7 @@ const KNOWN_ICONS = new Map([
   ['voting.aragonpm.eth', iconSvgVoting],
   ['token-request.open.aragonpm.eth', iconTokenRequest],
   ['time-lock.open.aragonpm.eth', iconTimeLock],
-  ['dissent-voting.open.aragonpm.eth', iconDissentVoting],
+  ['dandelion-voting.open.aragonpm.eth', iconDandelionVoting],
   ['delay.open.aragonpm.eth', iconDelay],
   ['redemptions.open.aragonpm.eth', iconRedemptions],
 ])
