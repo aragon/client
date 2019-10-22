@@ -8,6 +8,6 @@ const NETWORK_TIMES = new Map([
   ['goerli', 15],
   ['private', 8],
 ])
-export default function useBlockTime() {
+export default function getBlockTime() {
   return network ? NETWORK_TIMES.get(network.type) : null
 }

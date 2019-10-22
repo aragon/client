@@ -12,7 +12,7 @@ import { DelayScreen, LockScreen, VotingScreen } from './config'
 
 import header from './header.svg'
 import icon from './icon.svg'
-import useBlockTime from './config/helpers/useBlockTime'
+import getBlockTime from './config/helpers/getBlockTime'
 
 const ETH_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -115,7 +115,7 @@ export default {
   ],
   prepareTransactions(createTx, data) {
     const hasPayroll = false
-    const blockTime = useBlockTime()
+    const blockTime = getBlockTime()
     const { domain, optionalModules = [], tokens, voting, lock, delay } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
 
