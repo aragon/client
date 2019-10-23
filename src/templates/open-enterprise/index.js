@@ -1,5 +1,6 @@
 import React from 'react'
 import BN from 'bn.js'
+import { network } from '../../environment'
 import {
   ClaimDomainScreen,
   DotVotingScreen,
@@ -16,9 +17,29 @@ function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
 }
 
+function adjustVotingSettings(support, quorum) {
+  // The max value for both support and quorum is 100% - 1
+  const onePercent = new BN(10).pow(new BN(16))
+  const hundredPercent = onePercent.mul(new BN(100))
+
+  let adjustedSupport = onePercent.mul(new BN(support))
+  if (adjustedSupport.eq(hundredPercent)) {
+    adjustedSupport = adjustedSupport.sub(new BN(1))
+  }
+
+  let adjustedQuorum = onePercent.mul(new BN(quorum))
+  if (adjustedQuorum.eq(hundredPercent)) {
+    adjustedQuorum = adjustedQuorum.sub(new BN(1))
+  }
+
+  return [adjustedSupport.toString(), adjustedQuorum.toString()]
+}
+
 export default {
   id: 'open-enterprise-template.aragonpm.eth',
   name: 'Open Enterprise',
+  new: true,
+  disabled: network.type !== 'rinkeby',
   header,
   icon,
   description: `
@@ -105,9 +126,10 @@ export default {
     const accounts = members.map(([account]) => account)
 
     const { support, quorum, duration } = voting
-    const onePercent = new BN(10).pow(new BN(16))
-    const adjustedSupport = onePercent.mul(new BN(support)).toString()
-    const adjustedQuorum = onePercent.mul(new BN(quorum)).toString()
+    const [adjustedSupport, adjustedQuorum] = adjustVotingSettings(
+      support,
+      quorum
+    )
     const adjustedDuration = new BN(duration).toString()
     const votingSettings = [adjustedSupport, adjustedQuorum, adjustedDuration]
 
