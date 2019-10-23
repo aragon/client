@@ -7,10 +7,10 @@ import dandelion from './dandelion'
 
 // see the corresponding prop type, OrgTemplateType, in prop-types.js.
 export default [
+  dandelion,
   reputation,
   company,
   membership,
   fundraising,
   openEnterprise,
-  dandelion,
 ]

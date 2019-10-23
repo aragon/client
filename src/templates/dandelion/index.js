@@ -151,7 +151,8 @@ export default {
     ]
 
     const { delayDuration } = delay
-    const adjustedDelayDuration = new BN(delayDuration).toString()
+    const numericDelay = delay / blockTime
+    const adjustedDelayDuration = new BN(numericDelay).toString()
     const dissentWindowBlocks = new BN(
       delayDuration + numericVotingDuration
     ).toString()

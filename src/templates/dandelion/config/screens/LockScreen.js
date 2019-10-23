@@ -53,8 +53,8 @@ function validationError(duration, tokenAddress, lockAmount) {
   if (!lockAmount > 0) {
     return 'You need to set a positive lock amount'
   }
-  if (duration < 10 * MINUTE_IN_SECONDS) {
-    return 'Please ensure the lock duration is equal to or longer than 10 minutes.'
+  if (duration < 1 * MINUTE_IN_SECONDS) {
+    return 'Please ensure the lock duration is equal to or longer than 1 minute.'
   }
   return null
 }

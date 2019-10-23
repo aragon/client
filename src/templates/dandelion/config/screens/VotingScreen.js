@@ -42,8 +42,8 @@ set to 24 hours, then tokenholders have 24 hours to participate in
 the vote.`
 
 function validationError(duration) {
-  if (duration < 10 * MINUTE_IN_SECONDS) {
-    return 'Please ensure the vote duration is equal to or longer than 10 minutes.'
+  if (duration < 1 * MINUTE_IN_SECONDS) {
+    return 'Please ensure the vote duration is equal to or longer than 1 minute.'
   }
   return null
 }
@@ -134,7 +134,7 @@ function VotingScreen({
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
-      const error = validationError(duration) || validationError(buffer)
+      const error = validationError(duration)
       setFormError(error)
 
       // If one of the percentage fields is focused when the form is submitted,

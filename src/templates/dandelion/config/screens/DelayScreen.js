@@ -28,8 +28,8 @@ const DURATION_LABEL = 'delay duration'
 const DURATION_HELP_TEXT = `Delay Duration, The delay duration enforces a waiting period before an intent can be executed.`
 
 function validationError(duration) {
-  if (duration < 10 * MINUTE_IN_SECONDS) {
-    return 'Please ensure the delay duration is equal to or longer than 10 minutes.'
+  if (duration < 1 * MINUTE_IN_SECONDS) {
+    return 'Please ensure the delay duration is equal to or longer than 1 minute.'
   }
   return null
 }
