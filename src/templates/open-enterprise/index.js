@@ -13,26 +13,38 @@ import {
 import header from './header.svg'
 import icon from './icon.svg'
 
+const ONE_PERCENT = new BN(10).pow(new BN(16))
+
 function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
 }
 
 function adjustVotingSettings(support, quorum) {
   // The max value for both support and quorum is 100% - 1
-  const onePercent = new BN(10).pow(new BN(16))
-  const hundredPercent = onePercent.mul(new BN(100))
+  const hundredPercent = ONE_PERCENT.mul(new BN(100))
 
-  let adjustedSupport = onePercent.mul(new BN(support))
+  let adjustedSupport = ONE_PERCENT.mul(new BN(support))
   if (adjustedSupport.eq(hundredPercent)) {
     adjustedSupport = adjustedSupport.sub(new BN(1))
   }
 
-  let adjustedQuorum = onePercent.mul(new BN(quorum))
+  let adjustedQuorum = ONE_PERCENT.mul(new BN(quorum))
   if (adjustedQuorum.eq(hundredPercent)) {
     adjustedQuorum = adjustedQuorum.sub(new BN(1))
   }
 
   return [adjustedSupport.toString(), adjustedQuorum.toString()]
+}
+
+function adjustDotVotingSettings(dvSupport, dvQuorum) {
+  const adjustedDvSupport = ONE_PERCENT.mul(new BN(dvSupport))
+
+  // The min value for quorum must be 1 or greater
+  const adjustedDvQuorum = dvQuorum.isZero()
+    ? new BN(1)
+    : ONE_PERCENT.mul(new BN(dvQuorum))
+
+  return [adjustedDvSupport.toString(), adjustedDvQuorum.toString()]
 }
 
 export default {
@@ -138,8 +150,10 @@ export default {
       quorum: dvQuorum,
       duration: dvDuration,
     } = dotVoting
-    const adjustedDvSupport = onePercent.mul(new BN(dvSupport)).toString()
-    const adjustedDvQuorum = onePercent.mul(new BN(dvQuorum)).toString()
+    const [adjustedDvSupport, adjustedDvQuorum] = adjustDotVotingSettings(
+      dvSupport,
+      dvQuorum
+    )
     const adjustedDvDuration = new BN(dvDuration).toString()
     const dotVotingSettings = [
       adjustedDvQuorum,

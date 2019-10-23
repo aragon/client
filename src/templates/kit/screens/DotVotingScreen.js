@@ -32,8 +32,9 @@ function reduceFields(fields, [field, value]) {
   if (field === 'quorum') {
     return {
       ...fields,
-      quorum: Math.max(1, value), // prevents 0% quorum (not supported in contract)
       support: Math.min(fields.support, value),
+      // 0% quorum is not possible, but this is handled in each template
+      quorum: value,
     }
   }
   if (field === 'support') {
