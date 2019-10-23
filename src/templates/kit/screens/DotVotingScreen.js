@@ -169,10 +169,11 @@ function DotVotingScreen({
           <React.Fragment>
             Support %
             <Help hint="What’s the support?">
-              <strong>Support</strong> is the minimum percentage of votes
-              required on a dot voting option for it to be considered valid. For
-              example, if "Support %" is set to 5%, then an option needs at
-              least 5% of the total dot votes to be considered valid.
+              <strong>Support</strong> is the relative percentage of votes that
+              are required to support a dot voting option for the option to be
+              considered valid. For example, if "Support %" is set to 5%, then
+              an option needs at least 5% of the total dot votes to be
+              considered valid.
             </Help>
           </React.Fragment>
         }
