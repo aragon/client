@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ButtonBase, Card, GU, useTheme, useViewport } from '@aragon/ui'
+import { Card, GU, useTheme, useViewport } from '@aragon/ui'
 import HelpScoutBeacon from '../HelpScoutBeacon/HelpScoutBeacon'
 import HomeButton from '../HomeButton/HomeButton'
 
 import eagleSvg from '../../assets/eagle.svg'
-import logo from '../../assets/logo.png'
 import notFoundImage from '../../assets/dao-not-found.png'
 
 const EAGLE_DIMENSIONS = [1307, 877]
