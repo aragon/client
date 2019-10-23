@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ActionPathsContent from './ActionPathsContent'
-import ImpossibleContent from './ImpossibleContent'
+import ImpossibleAction from './ImpossibleAction'
 
 const ConfirmTransaction = ({
+  dao,
   direct,
   intent,
-  dao,
   onClose,
   onSign,
   paths,
@@ -20,9 +20,9 @@ const ConfirmTransaction = ({
 
   return possible ? (
     <ActionPathsContent
-      intent={intent}
-      direct={direct}
       dao={dao}
+      direct={direct}
+      intent={intent}
       onSign={onSign}
       paths={paths}
       pretransaction={pretransaction}
@@ -30,14 +30,14 @@ const ConfirmTransaction = ({
       walletProviderId={walletProviderId}
     />
   ) : (
-    <ImpossibleContent error={signError} intent={intent} onClose={onClose} />
+    <ImpossibleAction error={signError} intent={intent} onClose={onClose} />
   )
 }
 
 ConfirmTransaction.propTypes = {
+  dao: PropTypes.string,
   direct: PropTypes.bool.isRequired,
   intent: PropTypes.object.isRequired,
-  dao: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   onSign: PropTypes.func.isRequired,
   paths: PropTypes.array.isRequired,

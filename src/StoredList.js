@@ -49,8 +49,8 @@ class StoredList {
   }
   remove(index) {
     return this.update([
-      this.items.slice(0, index),
-      this.items.slice(index + 1),
+      ...this.items.slice(0, index),
+      ...this.items.slice(index + 1),
     ])
   }
 }

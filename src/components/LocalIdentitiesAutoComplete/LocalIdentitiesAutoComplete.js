@@ -1,135 +1,136 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { EthIdenticon, IdentityBadge, theme } from '@aragon/ui'
-import AutoCompleteSelected from '../AutoComplete/AutoCompleteSelected'
+import {
+  _AutoCompleteSelected as AutoCompleteSelected,
+  EthIdenticon,
+  IdentityBadge,
+  GU,
+  RADIUS,
+  useTheme,
+} from '@aragon/ui'
 import { AragonType } from '../../prop-types'
 
 const withKey = item => ({ key: item.address, ...item })
 const sortAlphAsc = (a, b) => a.name.localeCompare(b.name)
 
-function LocalIdentitiesAutoComplete({
-  forwardedRef,
-  onChange,
-  placeholder,
-  required,
-  value,
-  wide,
-  wrapper,
-}) {
-  const ref = forwardedRef
-  const [items, setItems] = useState([])
-  const [selected, setSelected] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
+const LocalIdentitiesAutoComplete = React.memo(
+  React.forwardRef(function LocalIdentitiesAutoComplete(
+    { onChange, placeholder, required, value, wide, wrapper },
+    ref
+  ) {
+    const theme = useTheme()
+    const [items, setItems] = useState([])
+    const [selected, setSelected] = useState(null)
+    const [searchTerm, setSearchTerm] = useState('')
 
-  const handleSearch = useCallback(
-    async term => {
-      if (!wrapper) {
-        return
-      }
-      if (term.length < 3) {
-        setItems([])
-        return
-      }
-      const items = await wrapper.searchIdentities(term)
-      setItems(items.map(withKey).sort(sortAlphAsc))
-    },
-    [wrapper]
-  )
-  const handleChange = useCallback(
-    value => {
-      setSearchTerm(value)
-      handleSearch(value)
-      onChange(value)
-    },
-    [onChange, handleSearch]
-  )
-  const handleSelect = useCallback(
-    selected => {
-      const { name, address } = selected
-      setSearchTerm(name)
-      handleSearch(name)
-      setSelected(selected)
-      onChange(address)
-    },
-    [onChange, handleSearch]
-  )
-  const handleSelectedClick = () => {
-    setSelected(null)
-    onChange(selected.name)
-  }
-
-  useEffect(() => {
-    const effect = async () => {
-      // reset
-      if (value === '') {
-        setSelected(null)
+    const handleSearch = useCallback(
+      async term => {
+        if (!wrapper) {
+          return
+        }
+        if (term.length < 3) {
+          setItems([])
+          return
+        }
+        const items = await wrapper.searchIdentities(term)
+        setItems(items.map(withKey).sort(sortAlphAsc))
+      },
+      [wrapper]
+    )
+    const handleChange = useCallback(
+      value => {
         setSearchTerm(value)
         handleSearch(value)
-        return
-      }
-      // value coming from up the tree not from typing
-      if (searchTerm === '' && wrapper) {
-        const exists = await wrapper.searchIdentities(value)
-        if (exists && exists.length === 1) {
-          const item = exists[0]
-          if (
-            item.name.toLowerCase() === value.toLowerCase() ||
-            item.address.toLowerCase() === value.toLowerCase()
-          ) {
-            setSelected(item)
-            setSearchTerm(item.name)
-            handleSearch(item.name)
-            return
-          }
-        }
-        setSearchTerm(value)
-      }
+        onChange(value)
+      },
+      [onChange, handleSearch]
+    )
+    const handleSelect = useCallback(
+      selected => {
+        const { name, address } = selected
+        setSearchTerm(name)
+        handleSearch(name)
+        setSelected(selected)
+        onChange(address)
+      },
+      [onChange, handleSearch]
+    )
+    const handleSelectedClick = () => {
+      setSelected(null)
+      onChange(selected.name)
     }
-    effect()
-  }, [selected, value, wrapper, handleSearch, searchTerm])
 
-  return (
-    <AutoCompleteSelected
-      itemButtonStyles={`
-          border-left: 3px solid transparent;
+    useEffect(() => {
+      const effect = async () => {
+        // reset
+        if (value === '') {
+          setSelected(null)
+          setSearchTerm(value)
+          handleSearch(value)
+          return
+        }
+        // value coming from up the tree not from typing
+        if (searchTerm === '' && wrapper) {
+          const exists = await wrapper.searchIdentities(value)
+          if (exists && exists.length === 1) {
+            const item = exists[0]
+            if (
+              item.name.toLowerCase() === value.toLowerCase() ||
+              item.address.toLowerCase() === value.toLowerCase()
+            ) {
+              setSelected(item)
+              setSearchTerm(item.name)
+              handleSearch(item.name)
+              return
+            }
+          }
+          setSearchTerm(value)
+        }
+      }
+      effect()
+    }, [selected, value, wrapper, handleSearch, searchTerm])
+
+    return (
+      <AutoCompleteSelected
+        itemButtonStyles={`
           cursor: pointer;
           border-radius: 0;
-
-          &:hover,
           &:focus {
             outline: 2px solid ${theme.accent};
+          }
+          &:active {
             background: #f9fafc;
-            border-left: 3px solid ${theme.accent}
           }
         `}
-      items={items}
-      onChange={handleChange}
-      onSelect={handleSelect}
-      onSelectedClick={handleSelectedClick}
-      placeholder={placeholder}
-      ref={ref}
-      renderItem={Item}
-      renderSelected={Selected}
-      required={required}
-      selected={selected}
-      selectedButtonStyles={`
-          &:hover,
-          &:focus {
+        items={items}
+        onChange={handleChange}
+        onSelect={handleSelect}
+        onSelectedClick={handleSelectedClick}
+        placeholder={placeholder}
+        ref={ref}
+        renderItem={Item}
+        renderSelected={Selected}
+        required={required}
+        selected={selected}
+        selectedButtonStyles={`
+          padding: 0;
+
+          &:focus,
+          &:active {
             outline: none;
-            border: 1px solid ${theme.accent};
-            border-radius: 3px;
+            border-radius: ${RADIUS}px;
           }
         `}
-      value={searchTerm}
-      wide={wide}
-    />
-  )
-}
+        value={searchTerm}
+        wide={wide}
+      />
+    )
+  })
+)
 
 LocalIdentitiesAutoComplete.propTypes = {
   onChange: PropTypes.func.isRequired,
-  forwardedRef: PropTypes.object,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
   value: PropTypes.string,
@@ -174,10 +175,10 @@ Selected.propTypes = {
 }
 
 const Option = styled.div`
-  padding: 8px;
+  padding: ${1 * GU}px;
   display: grid;
   grid-template-columns: auto minmax(140px, 1fr);
-  grid-gap: 8px;
+  grid-gap: ${1 * GU}px;
   align-items: center;
 `
 
@@ -190,8 +191,4 @@ const Name = styled.div`
   color: #000;
 `
 
-const LocalIdentitiesAutoCompleteMemo = React.memo(LocalIdentitiesAutoComplete)
-
-export default React.forwardRef((props, ref) => (
-  <LocalIdentitiesAutoCompleteMemo {...props} forwardedRef={ref} />
-))
+export default LocalIdentitiesAutoComplete

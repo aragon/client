@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel } from '@aragon/ui'
+import { SidePanel, GU } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
@@ -20,6 +20,7 @@ import {
   isConfirmingSignature,
   isSignatureSuccess,
 } from './signer-statuses'
+import { useAccount } from '../../account'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { network } from '../../environment'
 import { AppType, EthereumAddressType } from '../../prop-types'
@@ -27,16 +28,25 @@ import springs from '../../springs'
 import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 
 const INITIAL_STATE = {
-  panelOpened: false,
-  intent: {},
-  directPath: false,
   actionPaths: [],
+  directPath: false,
+  intent: {},
+  panelOpened: false,
   pretransaction: null,
-  status: STATUS_TX_CONFIRMING, // initially default to rendering the tx signing panel
   signError: null,
+  status: STATUS_TX_CONFIRMING, // initially default to rendering the tx signing panel
 }
 
 const RECIEPT_ERROR_STATUS = '0x0'
+const WEB3_TX_OBJECT_KEYS = new Set([
+  'from',
+  'to',
+  'value',
+  'gas',
+  'gasPrice',
+  'data',
+  'nonce',
+])
 
 const getAppName = (apps, proxyAddress) => {
   const app = apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
@@ -46,6 +56,13 @@ const getAppName = (apps, proxyAddress) => {
 const getPretransactionDescription = intent =>
   `Allow ${intent.name} to ${intent.description.slice(0, 1).toLowerCase() +
     intent.description.slice(1)}`
+
+// Clean up a transaction object removing all non-standard transaction parameters
+// https://web3js.readthedocs.io/en/v1.2.0/web3-eth.html#sendtransaction
+const sanitizeTxObject = tx =>
+  Object.keys(tx)
+    .filter(key => WEB3_TX_OBJECT_KEYS.has(key))
+    .reduce((newTx, key) => ({ ...newTx, [key]: tx[key] }), {})
 
 class SignerPanel extends React.PureComponent {
   static propTypes = {
@@ -133,14 +150,27 @@ class SignerPanel extends React.PureComponent {
     }
   }
 
-  transactionIntent({ path, transaction = {} }) {
+  transactionIntent({ external, path, transaction = {} }) {
+    const { apps } = this.props
+
     // If the path includes forwarders, the intent is always the last node
     // Otherwise, it's the direct transaction
     const targetIntent = path.length > 1 ? path[path.length - 1] : transaction
     const { annotatedDescription, description, to } = targetIntent
-    const name = getAppName(this.props.apps, to)
+    const name = getAppName(apps, to)
+    const installed = apps.some(
+      ({ proxyAddress }) => proxyAddress === transaction.to
+    )
 
-    return { annotatedDescription, description, name, to, transaction }
+    return {
+      annotatedDescription,
+      description,
+      external,
+      installed,
+      name,
+      to,
+      transaction,
+    }
   }
 
   signTransaction(transaction, intent, isPretransaction = false) {
@@ -155,7 +185,7 @@ class SignerPanel extends React.PureComponent {
 
     return new Promise((resolve, reject) => {
       walletWeb3.eth
-        .sendTransaction(transaction)
+        .sendTransaction(sanitizeTxObject(transaction))
         .on('transactionHash', transactionHash => {
           resolve(transactionHash)
           // Get account count/nonce for the transaction and update the activity item.
@@ -290,12 +320,12 @@ class SignerPanel extends React.PureComponent {
     } = this.props
 
     const {
-      panelOpened,
-      signError,
-      intent,
-      directPath,
       actionPaths,
+      directPath,
+      intent,
+      panelOpened,
       pretransaction,
+      signError,
       status,
     } = this.state
 
@@ -332,7 +362,6 @@ class SignerPanel extends React.PureComponent {
                         <ValidateWalletWeb3
                           intent={intent}
                           isTransaction={isTransaction}
-                          hasAccount={Boolean(account)}
                           hasWeb3={Boolean(getInjectedProvider())}
                           networkType={network.type}
                           onClose={this.handleSignerClose}
@@ -360,7 +389,6 @@ class SignerPanel extends React.PureComponent {
                               onClose={this.handleSignerClose}
                               intent={intent}
                               onSign={this.handleMsgSign}
-                              signError={Boolean(signError)}
                               signingEnabled={status === STATUS_MSG_CONFIRMING}
                             />
                           )}
@@ -396,7 +424,7 @@ class SignerPanel extends React.PureComponent {
 
 const Main = styled.div`
   position: relative;
-  margin: 0 -30px;
+  margin: 0 -${SidePanel.HORIZONTAL_PADDING}px;
   overflow-x: hidden;
   min-height: 0;
   flex-grow: 1;
@@ -407,13 +435,14 @@ const ScreenWrapper = styled(animated.div)`
   top: 0;
   left: 0;
   right: 0;
-  padding: 0 30px;
+  padding: 0 ${SidePanel.HORIZONTAL_PADDING}px;
   display: flex;
   min-height: 100%;
 `
 
 const Screen = styled.div`
   width: 100%;
+  margin-top: ${3 * GU}px;
 `
 
 export default function(props) {
@@ -422,10 +451,12 @@ export default function(props) {
     setActivityConfirmed,
     setActivityFailed,
     setActivityNonce,
-  } = React.useContext(ActivityContext)
+  } = useContext(ActivityContext)
+  const { address: account } = useAccount()
   return (
     <SignerPanel
       {...props}
+      account={account}
       addTransactionActivity={addTransactionActivity}
       setActivityConfirmed={setActivityConfirmed}
       setActivityFailed={setActivityFailed}

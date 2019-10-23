@@ -1,3 +1,4 @@
-export { default as Permissions } from './Permissions/Permissions'
-export { default as Settings } from './Settings/Settings'
 export { default as AppCenter } from './AppCenter/AppCenter'
+export { default as Home } from './Home/Home'
+export { default as Organization } from './Organization/Organization'
+export { default as Permissions } from './Permissions/Permissions'

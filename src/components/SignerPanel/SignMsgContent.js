@@ -1,8 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { Info, Text, SidePanelSeparator, theme } from '@aragon/ui'
-
+import { Info, GU, textStyle, useTheme } from '@aragon/ui'
 import SignerButton from './SignerButton'
 import ToggleContent from './ToggleContent'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
@@ -11,37 +9,46 @@ import { AppType, EthereumAddressType } from '../../prop-types'
 import { isHumanReadable } from '../../utils'
 
 const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
-  const locateAppInfo = (apps, requestingApp) =>
-    apps.find(({ proxyAddress }) => proxyAddress === requestingApp)
+  const { message, requestingApp: requestingAppAddress } = intent
 
-  const humanReadableMessage = isHumanReadable(intent.message)
+  const requestingApp = useMemo(
+    () =>
+      apps.find(({ proxyAddress }) => proxyAddress === requestingAppAddress),
+    [apps, requestingAppAddress]
+  )
+  const humanReadableMessage = isHumanReadable(message)
+
   return (
     <React.Fragment>
-      <span css="margin-right: 4px">
+      <p
+        css={`
+          margin-bottom: ${3 * GU}px;
+        `}
+      >
         You are about to sign this message with the connected account{' '}
-        <LocalIdentityBadge entity={account} />
-      </span>
-      <Separator />
+        <LocalIdentityBadge entity={account} compact />.
+      </p>
       <Label>Signature requested by</Label>
-      <AppInstanceLabel
-        app={locateAppInfo(apps, intent.requestingApp)}
-        proxyAddress={intent.requestingApp}
-        showIcon
-      />
-      <Separator />
+      <div
+        css={`
+          margin-bottom: ${3 * GU}px;
+        `}
+      >
+        <AppInstanceLabel
+          app={requestingApp}
+          proxyAddress={requestingAppAddress}
+          showIcon
+        />
+      </div>
       {humanReadableMessage ? (
         <React.Fragment>
           <Label>Message</Label>
-          <Info>{intent.message}</Info>
+          <Info mode="description">{message}</Info>
         </React.Fragment>
       ) : (
-        <React.Fragment>
-          <ToggleContent labelOpen="Hide message" labelClosed="Show message">
-            <React.Fragment>
-              <LongMessage>{intent.message}</LongMessage>
-            </React.Fragment>
-          </ToggleContent>
-        </React.Fragment>
+        <ToggleContent labelOpen="Hide message" labelClosed="Show message">
+          <Info mode="description">{message}</Info>
+        </ToggleContent>
       )}
       <SignerButton onClick={onSign} disabled={!signingEnabled}>
         Sign message
@@ -58,24 +65,18 @@ SignMsgContent.propTypes = {
   signingEnabled: PropTypes.bool,
 }
 
-const Separator = styled(SidePanelSeparator)`
-  margin-top: 18px;
-  margin-bottom: 18px;
-`
-
-const Label = styled(Text).attrs({
-  smallcaps: true,
-  color: theme.textSecondary,
-})`
-  display: block;
-  margin-bottom: 10px;
-`
-
-const LongMessage = styled(Info)`
-  margin-top: 10px;
-  max-height: 350px;
-  overflow-y: scroll;
-  word-break: break-word;
-`
+function Label(props) {
+  const theme = useTheme()
+  return (
+    <div
+      css={`
+        ${textStyle('label2')}
+        color: ${theme.surfaceContentSecondary};
+        margin-bottom: ${2 * GU}px;
+      `}
+      {...props}
+    />
+  )
+}
 
 export default SignMsgContent

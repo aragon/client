@@ -3,62 +3,54 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   Button,
-  ExternalLink,
+  Link,
   Info,
   SidePanel,
   SidePanelSeparator,
   SidePanelSplit,
-  blockExplorerUrl,
+  GU,
+  textStyle,
+  useTheme,
 } from '@aragon/ui'
-import { AragonType, DaoAddressType, ReposListType } from '../../prop-types'
-import { TextLabel } from '../../components/TextStyles'
-import AppIcon from '../../components/AppIcon/AppIcon'
+import {
+  AragonType,
+  DaoAddressType,
+  ReposListType,
+  RepoVersionType,
+} from '../../prop-types'
 import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
-import { network } from '../../environment'
-import { KNOWN_ICONS, isKnownRepo } from '../../repo-utils'
-import { repoBaseUrl } from '../../url-utils'
-import { GU } from '../../utils'
+import { isKnownRepo } from '../../repo-utils'
+import RepoBadge from '../../components/RepoBadge/RepoBadge'
+import { sanitizeCodeRepositoryUrl } from '../../url-utils'
 
-const VERSION = '0.7 Bella'
+const VERSION = '0.8 Camino'
 const SOURCE = [
   'github.com/aragon/aragon-apps',
   'https://github.com/aragon/aragon-apps',
 ]
 const REGISTRY = ['aragonpm.eth', 'https://etherscan.io/address/aragonpm.eth']
 
-function getAppVersionData(repo) {
-  const { content, version } = repo
-  return {
-    appId: content.appId,
-    baseUrl: repoBaseUrl(repo),
-    contractAddress: content.contractAddress,
-    icons: content.icons,
-    knownIcon: KNOWN_ICONS.has(content.appId)
-      ? KNOWN_ICONS.get(content.appId)
-      : null,
-    name: content.name,
-    version,
-  }
-}
-
 const UpgradeOrganizationPanel = React.memo(
   ({ repos = [], opened, onClose, daoAddress, wrapper }) => {
+    const theme = useTheme()
+    const knownUpgradableRepos = useMemo(
+      () => repos.filter(repo => isKnownRepo(repo.appId)),
+      [repos]
+    )
     const [currentVersions, newVersions] = useMemo(
       () =>
-        repos
-          .filter(repo => isKnownRepo(repo.appId))
-          .reduce(
-            (results, repo) => [
-              [...results[0], getAppVersionData(repo.currentVersion)],
-              [...results[1], getAppVersionData(repo.latestVersion)],
-            ],
-            [[], []]
-          ),
-      [repos]
+        knownUpgradableRepos.reduce(
+          (results, repo) => [
+            [...results[0], repo.currentVersion],
+            [...results[1], repo.latestVersion],
+          ],
+          [[], []]
+        ),
+      [knownUpgradableRepos]
     )
 
     const handleUpgradeAll = useCallback(async () => {
-      const upgradeIntents = repos.map(({ appId, versions }) => {
+      const upgradeIntents = knownUpgradableRepos.map(({ appId, versions }) => {
         const newContractAddress = versions[versions.length - 1].contractAddress
         return [
           daoAddress.address,
@@ -71,22 +63,26 @@ const UpgradeOrganizationPanel = React.memo(
       // The animation helps us a little bit with the lag on calculating the path
       onClose()
 
-      const upgradePath = await wrapper.getTransactionPathForIntentBasket(
-        upgradeIntents,
-        { checkMode: 'single' }
-      )
+      const {
+        path,
+        transactions,
+      } = await wrapper.getTransactionPathForIntentBasket(upgradeIntents, {
+        checkMode: 'single',
+      })
 
-      if (upgradePath.direct) {
+      if (Array.isArray(path) && path.length) {
+        // We can use the power of calls scripts to do a single transaction!
+        await wrapper.performTransactionPath(path)
+      } else if (Array.isArray(transactions) && transactions.length) {
         // User has direct access, so we need to send these intents one by one
-        for (const transaction of upgradePath.transactions) {
+        for (const transaction of transactions) {
           await wrapper.performTransactionPath([transaction])
         }
       } else {
-        // We can use the power of calls scripts to do a single transaction!
-        // Or, the user just can't perform this action.
-        await wrapper.performTransactionPath(upgradePath.path)
+        // The user just can't perform this action, show the signing panel's error screen
+        await wrapper.performTransactionPath([])
       }
-    }, [daoAddress, onClose, repos, wrapper])
+    }, [knownUpgradableRepos, daoAddress, onClose, wrapper])
 
     return (
       <SidePanel
@@ -94,32 +90,47 @@ const UpgradeOrganizationPanel = React.memo(
         opened={opened}
         onClose={onClose}
       >
-        <SidePanelSplit>
+        <SidePanelSplit
+          css={`
+            border-bottom: 1px solid ${theme.border};
+            ${textStyle('body2')};
+          `}
+        >
           <div>
-            <Heading2>Current version</Heading2>
+            <Heading2 theme={theme}>Current version</Heading2>
             <div>
               {currentVersions.map(appVersion => (
-                <AppVersion key={appVersion.appId} {...appVersion} />
+                <AppVersion
+                  key={appVersion.content.appId}
+                  repoVersion={appVersion}
+                />
               ))}
             </div>
           </div>
           <div>
-            <Heading2>New version</Heading2>
+            <Heading2 theme={theme}>New version</Heading2>
             {newVersions.map(appVersion => (
-              <AppVersion key={appVersion.appId} {...appVersion} />
+              <AppVersion
+                key={appVersion.content.appId}
+                repoVersion={appVersion}
+              />
             ))}
           </div>
         </SidePanelSplit>
 
         <Part>
-          <Heading2>Source code</Heading2>
+          <Heading2 theme={theme}>Source code</Heading2>
           <p>
-            <ExternalLink href={SOURCE[1]}>{SOURCE[0]}</ExternalLink>
+            <Link external href={SOURCE[1]}>
+              {sanitizeCodeRepositoryUrl(SOURCE[0])}
+            </Link>
           </p>
 
-          <Heading2>Aragon official registry</Heading2>
+          <Heading2 theme={theme}>Aragon official registry</Heading2>
           <p>
-            <ExternalLink href={REGISTRY[1]}>{REGISTRY[0]}</ExternalLink>
+            <Link external href={REGISTRY[1]}>
+              {REGISTRY[0]}
+            </Link>
           </p>
         </Part>
 
@@ -131,7 +142,16 @@ const UpgradeOrganizationPanel = React.memo(
               margin: ${2 * GU}px 0;
             `}
           >
-            <Info.Action title="Action to be triggered">
+            <Button mode="strong" wide onClick={handleUpgradeAll}>
+              Upgrade your organization
+            </Button>
+          </div>
+          <div
+            css={`
+              margin: ${2 * GU}px 0;
+            `}
+          >
+            <Info>
               <p
                 css={`
                   margin-top: ${GU}px;
@@ -140,16 +160,7 @@ const UpgradeOrganizationPanel = React.memo(
               >
                 All your app instances will be upgraded to Aragon {VERSION}.
               </p>
-            </Info.Action>
-          </div>
-          <div
-            css={`
-              margin: ${2 * GU}px 0;
-            `}
-          >
-            <Button mode="strong" wide onClick={handleUpgradeAll}>
-              Upgrade your organization
-            </Button>
+            </Info>
           </div>
         </Part>
       </SidePanel>
@@ -165,78 +176,39 @@ UpgradeOrganizationPanel.propTypes = {
   wrapper: AragonType,
 }
 
-const AppVersion = ({
-  baseUrl,
-  contractAddress,
-  icons,
-  knownIcon,
-  name,
-  version,
-}) => {
-  const major = version.split('.')[0]
+const AppVersion = ({ repoVersion }) => {
+  const { version } = repoVersion
   return (
     <div
       css={`
-        display: flex;
+        display: inline-grid;
+        grid-template-columns: 4ch auto;
+        grid-gap: ${2 * GU}px;
         align-items: center;
-        margin: 10px 0;
+        margin: ${0.5 * GU}px 0;
       `}
     >
-      <div
-        css={`
-          width: 20px;
-          margin-right: 5px;
-        `}
-      >
-        v{major || version}
-      </div>
-      <ExternalLink
-        href={blockExplorerUrl('address', contractAddress, {
-          networkType: network.type,
-        })}
-        css={`
-          display: flex;
-          background: #daeaef;
-          border-radius: 3px;
-          align-items: center;
-          height: 22px;
-          align-items: center;
-          text-decoration: none;
-        `}
-      >
-        <AppIcon
-          app={{ baseUrl, icons }}
-          src={knownIcon || undefined}
-          radius={3}
-        />
-        <div
-          css={`
-            padding: 0 5px;
-          `}
-        >
-          {name}
-        </div>
-      </ExternalLink>
+      <div>{version}</div>
+      <RepoBadge repoVersion={repoVersion} />
     </div>
   )
 }
 
 AppVersion.propTypes = {
-  baseUrl: PropTypes.string.isRequired,
-  contractAddress: PropTypes.string.isRequired,
-  icons: PropTypes.array.isRequired,
-  knownIcon: PropTypes.string,
-  name: PropTypes.string.isRequired,
-  version: PropTypes.string.isRequired,
+  repoVersion: RepoVersionType.isRequired,
 }
 
-const Heading2 = styled(TextLabel).attrs({ as: 'h2' })`
+const Heading2 = styled.h2`
+  color: ${({ theme }) => theme.contentSecondary};
+  ${textStyle('label2')};
   white-space: nowrap;
+  margin-bottom: ${2 * GU}px;
 `
 
 const Part = styled.div`
+  ${textStyle('body2')};
   padding: ${GU}px 0 ${3 * GU}px;
-  ${Heading2} {
+  h2 {
     margin: ${2 * GU}px 0 ${GU}px;
   }
 `

@@ -1,111 +1,167 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
 import {
+  ButtonBase,
   ButtonIcon,
-  IconClose,
-  IconError,
-  SafeLink,
+  IconCross,
+  IconCheck,
+  GU,
   blockExplorerUrl,
-  theme,
+  textStyle,
+  useTheme,
 } from '@aragon/ui'
+import { ActivityContext } from '../../contexts/ActivityContext'
 import { network } from '../../environment'
 import { cssgu } from '../../utils'
 import { transformAddresses } from '../../web3-utils'
 import AppIcon from '../AppIcon/AppIcon'
-import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import IconSuccess from '../../icons/IconSuccess'
-import IconPending from '../../icons/IconPending'
+import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import TimeTag from './TimeTag'
 import TransactionProgress from './TransactionProgress'
 import {
+  ACTIVITY_STATUS_PENDING,
   ACTIVITY_STATUS_CONFIRMED,
   ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_TIMED_OUT,
 } from '../../symbols'
 
-const ActivityItem = ({ activity, onDiscard }) => {
+const ActivityItem = ({ activity }) => {
+  const theme = useTheme()
+  const { clearActivity } = useContext(ActivityContext)
+  const handleOpen = useCallback(() => {
+    if (activity.transactionHash) {
+      window.open(
+        blockExplorerUrl('transaction', activity.transactionHash, {
+          networkType: network.type,
+        }),
+        '_blank',
+        'noopener'
+      )
+    }
+  }, [activity])
+  const handleClose = useCallback(() => {
+    if (activity.transactionHash) {
+      clearActivity(activity.transactionHash)
+    }
+  }, [activity, clearActivity])
+
   const { app } = activity
 
-  const handleClose = useCallback(() => {
-    onDiscard(activity)
-  }, [onDiscard, activity])
-
   return (
-    <section
+    <div
       css={`
-        display: grid;
-        align-items: center;
-        grid-template-areas:
-          'title time'
-          'content content';
-        overflow: hidden;
         position: relative;
-        width: 100%;
-        padding: ${cssgu`3gu`};
-        transition: background 0.5s;
-        background: rgba(255, 255, 255, ${activity.read ? '0' : '0.6'});
-        border-bottom: 1px solid ${theme.contentBorder};
       `}
     >
-      <CloseButton onClick={handleClose} />
-      <h1
+      <ButtonBase
+        element="div"
+        onClick={handleOpen}
         css={`
-          grid-area: title;
-          display: flex;
-          align-items: center;
+          text-align: left;
+          width: 100%;
         `}
       >
-        <div css="flex-shrink: 0">
-          <AppIcon app={app} />
-        </div>
-        <div
+        <section
           css={`
-            margin-left: ${cssgu`1gu`};
-            font-weight: 600;
-            font-size: 16px;
-            white-space: nowrap;
-            color: ${theme.textPrimary};
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: ${cssgu`2gu`};
+            background: ${activity.read
+              ? theme.surface
+              : theme.surfaceHighlight};
+            transition-property: background;
+            transition-duration: 50ms;
+            transition-timing-function: ease-in-out;
+
+            &:active {
+              background: ${theme.surfaceUnder};
+            }
           `}
         >
-          {app ? app.name : 'Unknown'}
-        </div>
-      </h1>
-      <div
+          <h1
+            css={`
+              display: flex;
+              align-items: center;
+            `}
+          >
+            <div css="flex-shrink: 0">
+              <AppIcon app={app} />
+            </div>
+            <div
+              css={`
+                margin-left: ${cssgu`1gu`};
+                max-width: ${cssgu`12.5gu`};
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                ${textStyle('body2')}
+                color: ${theme.surfaceContent};
+              `}
+            >
+              {app ? app.name : 'Unknown'}
+            </div>
+            {activity.status !== ACTIVITY_STATUS_PENDING && (
+              <TimeTag
+                date={activity.createdAt}
+                css={`
+                  margin: 0 ${cssgu`1.5gu`};
+                `}
+              />
+            )}
+          </h1>
+          <div
+            css={`
+              position: relative;
+              margin-top: ${2 * GU}px;
+            `}
+          >
+            <ItemContent text={activity.description} />
+            <StatusMessage activity={activity} />
+            <TransactionProgress
+              status={activity.status}
+              createdAt={activity.createdAt}
+            />
+          </div>
+        </section>
+      </ButtonBase>
+      <ButtonIcon
+        label="Remove"
+        onClick={handleClose}
         css={`
-          grid-area: time;
-          justify-self: end;
+          position: absolute;
+          top: ${1 * GU}px;
+          right: ${1 * GU}px;
+          z-index: 1;
         `}
       >
-        <TimeTag date={activity.createdAt} />
-      </div>
-      <div
-        css={`
-          grid-area: content;
-          overflow: hidden;
-          position: relative;
-          margin: 10px 0 0;
-          font-size: 15px;
-        `}
-      >
-        <ItemContent text={activity.description} />
-        <StatusMessage activity={activity} />
-        <TransactionProgress
-          status={activity.status}
-          createdAt={activity.createdAt}
+        <IconCross
+          css={`
+            color: ${theme.surfaceIcon};
+          `}
         />
-      </div>
-    </section>
+      </ButtonIcon>
+    </div>
   )
 }
 
 ActivityItem.propTypes = {
   activity: PropTypes.object.isRequired,
-  onDiscard: PropTypes.func.isRequired,
 }
 
 const ItemContent = React.memo(
   ({ text = '' }) => (
-    <p>
+    <p
+      css={`
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        white-space: normal;
+        word-break: break-word;
+        overflow: hidden;
+        ${textStyle('body2')}
+      `}
+    >
       {transformAddresses(text, (part, isAddress, index) =>
         isAddress ? (
           <span title={part} key={index}>
@@ -124,44 +180,46 @@ ItemContent.propTypes = {
   text: PropTypes.string.isRequired,
 }
 
-function getStatusData(activity) {
-  const txLink = (
-    <SafeLink
-      target="_blank"
-      href={blockExplorerUrl('transaction', activity.transactionHash, {
-        networkType: network.type,
-      })}
-    >
-      Transaction
-    </SafeLink>
-  )
+function getStatusData(activity, theme) {
   if (activity.status === ACTIVITY_STATUS_CONFIRMED) {
-    return [<IconSuccess />, <span>{txLink} confirmed.</span>]
+    return [
+      <IconCheck size="small" />,
+      <span>Transaction confirmed</span>,
+      theme.positive,
+    ]
   }
   if (activity.status === ACTIVITY_STATUS_FAILED) {
-    return [<IconError />, <span>{txLink} failed.</span>]
+    return [
+      <IconCross size="small" />,
+      <span>Transaction failed</span>,
+      theme.negative,
+    ]
   }
   if (activity.status === ACTIVITY_STATUS_TIMED_OUT) {
-    return [<IconError />, <span>{txLink} timed out.</span>]
+    return [
+      <IconCross size="small" />,
+      <span>Transaction timed out</span>,
+      theme.negative,
+    ]
   }
-  return [<IconPending />, <span>{txLink} pending.</span>]
+  return [null, <span>Transaction pending</span>, theme.surfaceContentSecondary]
 }
 
 const StatusMessage = ({ activity }) => {
-  const [icon, content] = getStatusData(activity)
+  const theme = useTheme()
+  const [icon, content, color] = getStatusData(activity, theme)
   return (
     <div
       css={`
         display: flex;
         align-items: center;
-        margin-top: 10px;
-        font-size: 14px;
-        a {
-          color: ${theme.accent};
-        }
+        margin-top: ${2 * GU}px;
+        ${textStyle('label2')}
+        color: ${color}
       `}
     >
-      {icon} <div css="margin-left: 5px">{content}</div>
+      {icon}
+      {content}
     </div>
   )
 }
@@ -169,19 +227,5 @@ const StatusMessage = ({ activity }) => {
 StatusMessage.propTypes = {
   activity: PropTypes.object.isRequired,
 }
-
-const CloseButton = props => (
-  <ButtonIcon
-    {...props}
-    label="Close"
-    css={`
-      position: absolute;
-      top: 0;
-      right: 0;
-    `}
-  >
-    <IconClose />
-  </ButtonIcon>
-)
 
 export default ActivityItem

@@ -13,6 +13,10 @@ import {
   ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_PENDING,
   ACTIVITY_STATUS_TIMED_OUT,
+  TRANSACTION_STATUS_ERROR,
+  TRANSACTION_STATUS_PENDING,
+  TRANSACTION_STATUS_SUCCESS,
+  TRANSACTION_STATUS_UPCOMING,
 } from './symbols'
 import { isAddress } from './web3-utils'
 
@@ -58,18 +62,24 @@ const ethereumAddressValidator = (props, propName, componentName) => {
 
 export const EthereumAddressType = validatorCreator(ethereumAddressValidator)
 
+export const ActivityStatusType = PropTypes.oneOf([
+  ACTIVITY_STATUS_CONFIRMED,
+  ACTIVITY_STATUS_FAILED,
+  ACTIVITY_STATUS_PENDING,
+  ACTIVITY_STATUS_TIMED_OUT,
+])
+
 export const AppType = PropTypes.shape({
-  abi: PropTypes.array.isRequired,
   appId: PropTypes.string.isRequired,
   baseUrl: PropTypes.string.isRequired,
   codeAddress: EthereumAddressType.isRequired,
-  functions: PropTypes.array.isRequired,
   hasWebApp: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
   proxyAddress: EthereumAddressType.isRequired,
   src: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 
+  // This content may not be available if the app's content couldn't be fetched
+  abi: PropTypes.array,
   appName: PropTypes.string,
   apmRegistry: PropTypes.string,
   content: PropTypes.shape({
@@ -77,14 +87,16 @@ export const AppType = PropTypes.shape({
     provider: PropTypes.string.isRequired,
   }),
   description: PropTypes.string,
+  functions: PropTypes.array,
   icons: PropTypes.arrayOf(
     PropTypes.shape({
       src: PropTypes.string.isRequired,
     })
   ),
+  isAragonOsInternalApp: PropTypes.bool,
   isForwarder: PropTypes.bool,
   kernelAddress: EthereumAddressType,
-  isAragonOsInternalApp: PropTypes.bool,
+  name: PropTypes.string,
   roles: PropTypes.array,
   status: PropTypes.string,
   version: PropTypes.string,
@@ -116,19 +128,11 @@ export const AppsStatusType = PropTypes.oneOf([
   APPS_STATUS_UNLOADED,
 ])
 
-export const DaoStatusType = PropTypes.oneOf([
-  DAO_STATUS_ERROR,
-  DAO_STATUS_READY,
-  DAO_STATUS_LOADING,
-  DAO_STATUS_UNLOADED,
-])
-
 export const AragonType = PropTypes.instanceOf(Aragon)
 
-export const FavoriteDaoType = PropTypes.shape({
-  name: PropTypes.string,
+export const DaoAddressType = PropTypes.shape({
   address: EthereumAddressType,
-  favorited: PropTypes.bool,
+  domain: PropTypes.string,
 })
 
 export const DaoItemType = PropTypes.shape({
@@ -136,9 +140,17 @@ export const DaoItemType = PropTypes.shape({
   address: EthereumAddressType,
 })
 
-export const DaoAddressType = PropTypes.shape({
+export const DaoStatusType = PropTypes.oneOf([
+  DAO_STATUS_ERROR,
+  DAO_STATUS_READY,
+  DAO_STATUS_LOADING,
+  DAO_STATUS_UNLOADED,
+])
+
+export const FavoriteDaoType = PropTypes.shape({
+  name: PropTypes.string,
   address: EthereumAddressType,
-  domain: PropTypes.string,
+  favorited: PropTypes.bool,
 })
 
 export const RenderFnType = PropTypes.oneOfType([
@@ -164,16 +176,15 @@ export const RepoContentType = PropTypes.shape({
   ),
 })
 
+export const RepoVersionType = PropTypes.shape({
+  content: RepoContentType.isRequired,
+  version: PropTypes.string.isRequired,
+})
+
 export const RepoType = PropTypes.shape({
   appId: PropTypes.string.isRequired,
-  currentVersion: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
-  latestVersion: PropTypes.shape({
-    content: RepoContentType.isRequired,
-    version: PropTypes.string.isRequired,
-  }),
+  currentVersion: RepoVersionType,
+  latestVersion: RepoVersionType,
   repoAddress: EthereumAddressType.isRequired,
   versions: PropTypes.arrayOf(
     PropTypes.shape({
@@ -195,9 +206,47 @@ export const ReactSpringStateType = PropTypes.oneOf([
   'leave',
 ])
 
-export const ActivityStatusType = PropTypes.oneOf([
-  ACTIVITY_STATUS_CONFIRMED,
-  ACTIVITY_STATUS_FAILED,
-  ACTIVITY_STATUS_PENDING,
-  ACTIVITY_STATUS_TIMED_OUT,
+// see ethereum-providers/
+export const EthereumProviderType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  connect: PropTypes.func.isRequired,
+  strings: PropTypes.object.isRequired,
+})
+
+// see templates/
+const OrgTemplateAppType = PropTypes.shape({
+  appName: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+})
+export const OrgTemplateType = PropTypes.shape({
+  apps: PropTypes.arrayOf(OrgTemplateAppType.isRequired),
+  caseStudyUrl: PropTypes.string,
+  description: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+  header: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  longDesc: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  optionalApps: PropTypes.arrayOf(OrgTemplateAppType.isRequired),
+  prepareTransactions: PropTypes.func,
+  registry: PropTypes.string,
+  screens: PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.func]))
+  ),
+  sourceCodeUrl: PropTypes.string,
+  userGuideUrl: PropTypes.string,
+})
+
+// The status of a single transaction (only used to deploy an org for now).
+// The “upcoming” status is used to indicate that the transaction is waiting
+// for another one to be mined before being processed.
+export const TransactionStatusType = PropTypes.oneOf([
+  TRANSACTION_STATUS_ERROR,
+  TRANSACTION_STATUS_PENDING,
+  TRANSACTION_STATUS_SUCCESS,
+  TRANSACTION_STATUS_UPCOMING,
 ])

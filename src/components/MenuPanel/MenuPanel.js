@@ -1,36 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import throttle from 'lodash.throttle'
-import color from 'onecolor'
-import { ButtonBase, springs, theme, unselectable } from '@aragon/ui'
+import {
+  ButtonBase,
+  IconDown,
+  GU,
+  springs,
+  textStyle,
+  unselectable,
+  useTheme,
+} from '@aragon/ui'
 import memoize from 'lodash.memoize'
+import { lerp } from '../../math-utils'
 import {
   AppInstanceGroupType,
   AppsStatusType,
   DaoAddressType,
   DaoStatusType,
-  EthereumAddressType,
 } from '../../prop-types'
-import { DAO_STATUS_LOADING } from '../../symbols'
 import { staticApps } from '../../static-apps'
-import MenuPanelFooter from './MenuPanelFooter'
-import MenuPanelAppGroup from './MenuPanelAppGroup'
+import { DAO_STATUS_LOADING } from '../../symbols'
+import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
-import ActivityAlert from '../Activity/ActivityAlert'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
-import IconArrow from '../../icons/IconArrow'
 
-export const MENU_PANEL_SHADOW_WIDTH = 15
-export const MENU_PANEL_WIDTH = 220
-export const MENU_ITEM_HEIGHT = 40
+export const MENU_PANEL_SHADOW_WIDTH = 3
+export const MENU_PANEL_WIDTH = 28 * GU
+
+const { div: AnimDiv } = animated
 
 const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
+const APP_ORGANIZATION = staticApps.get('organization').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
-const APP_SETTINGS = staticApps.get('settings').app
 
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',
@@ -49,71 +52,18 @@ const interpolateToggleElevation = (value, fn = v => v) =>
 
 class MenuPanel extends React.PureComponent {
   static propTypes = {
-    account: EthereumAddressType,
     activeInstanceId: PropTypes.string,
-    activityToggleRef: PropTypes.any,
     appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
     appsStatus: AppsStatusType.isRequired,
-    connected: PropTypes.bool.isRequired,
     daoAddress: DaoAddressType.isRequired,
     daoStatus: DaoStatusType.isRequired,
-    onActivityButtonClick: PropTypes.func.isRequired,
     onOpenApp: PropTypes.func.isRequired,
-    onOpenPreferences: PropTypes.func.isRequired,
-    onRequestAppsReload: PropTypes.func.isRequired,
-    onRequestEnable: PropTypes.func.isRequired,
-    unreadActivityCount: PropTypes.number,
-    viewportHeight: PropTypes.number,
+    showOrgSwitcher: PropTypes.bool,
   }
-
-  _contentRef = React.createRef()
-  _innerContentRef = React.createRef()
-  _activityToggle = React.createRef()
-  _systemAppsToggled = false
 
   state = {
-    animate: false,
-    notifications: [],
-    scrollVisible: false,
     systemAppsOpened: systemAppsOpenedState.isOpen(),
     systemAppsToggled: false,
-  }
-
-  componentDidMount() {
-    this.updateScrollVisible()
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.viewportHeight !== this.props.viewportHeight) {
-      this.tryUpdateScrollVisible()
-    }
-  }
-
-  // A throttled version of updateScrollVisible with additional checks
-  // to reduce performance overhead.
-  tryUpdateScrollVisible = throttle(() => {
-    if (
-      this.props.appInstanceGroups.length > 0 ||
-      this.state.systemAppsToggled
-    ) {
-      this.updateScrollVisible()
-    }
-  }, 100)
-
-  // ResizeObserver is still not supported everywhere, so… this method checks
-  // if the height of the content is higher than the height of the container,
-  // which means that there is a scrollbar displayed.
-  // It is called in two cases: when the viewport’s height changes, and when
-  // the system menu open / close transition is running.
-  updateScrollVisible = () => {
-    const content = this._contentRef.current
-    const innerContent = this._innerContentRef.current
-    this.setState({
-      scrollVisible:
-        content &&
-        innerContent &&
-        innerContent.clientHeight > content.clientHeight,
-    })
   }
 
   getRenderableAppGroups = memoize(appGroups =>
@@ -121,7 +71,7 @@ class MenuPanel extends React.PureComponent {
       .filter(appGroup => appGroup.hasWebApp)
       .map(appGroup => ({
         ...appGroup,
-        icon: <AppIcon app={appGroup.app} size={22} />,
+        icon: <AppIcon app={appGroup.app} />,
       }))
   )
 
@@ -137,136 +87,127 @@ class MenuPanel extends React.PureComponent {
 
   render() {
     const {
-      activityToggleRef,
-      account,
       appInstanceGroups,
-      connected,
       daoAddress,
       daoStatus,
-      onActivityButtonClick,
-      onOpenPreferences,
-      unreadActivityCount,
-      onRequestEnable,
+      showOrgSwitcher,
     } = this.props
-    const { scrollVisible, systemAppsOpened, systemAppsToggled } = this.state
+    const { systemAppsOpened, systemAppsToggled } = this.state
 
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
     const menuApps = [APP_HOME, appGroups]
-    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_SETTINGS]
+    const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_ORGANIZATION]
 
     return (
       <Main>
-        <In>
-          <Header>
-            <HeaderSlot css="width: 170px">
-              <OrganizationSwitcher
-                loading={daoStatus === DAO_STATUS_LOADING}
-                currentDao={{
-                  name: daoAddress.domain,
-                  address: daoAddress.address,
-                }}
-              />
-            </HeaderSlot>
-            <HeaderSlot css="width: 50px" ref={activityToggleRef}>
-              <ActivityAlert
-                onClick={onActivityButtonClick}
-                unreadActivityCount={unreadActivityCount}
-              />
-            </HeaderSlot>
-          </Header>
-          <Content ref={this._contentRef}>
-            <div className="in" ref={this._innerContentRef}>
-              <h1>Apps</h1>
-
-              <div>
-                {menuApps.map(app =>
-                  // If it's an array, it's the group being loaded from the ACL
-                  Array.isArray(app)
-                    ? this.renderLoadedAppGroup(app)
-                    : this.renderAppGroup(app, false)
-                )}
-              </div>
-              <Spring
-                config={springs.smooth}
-                from={{ openProgress: 0 }}
-                to={{ openProgress: Number(systemAppsOpened) }}
-                immediate={!systemAppsToggled}
-                onFrame={this.tryUpdateScrollVisible}
-                native
-              >
-                {({ openProgress }) => (
-                  <div>
-                    <SystemAppsToggle onClick={this.handleToggleSystemApps}>
-                      <SystemAppsToggleShadow
-                        style={{
-                          transform: interpolateToggleElevation(
-                            openProgress,
-                            v => `scale3d(${v}, 1, 1)`
-                          ),
-                          opacity: interpolateToggleElevation(openProgress),
-                        }}
-                      />
-                      <h1
-                        css={`
-                          display: flex;
-                          justify-content: flex-start;
-                          align-items: flex-end;
-                        `}
-                      >
-                        <span>System</span>
-                        <SystemAppsToggleArrow
-                          style={{
-                            marginLeft: '5px',
-                            transform: openProgress.interpolate(
-                              v => `rotate(${(1 - v) * 180}deg)`
-                            ),
-                            transformOrigin: '50% calc(50% - 0.5px)',
-                          }}
-                        />
-                      </h1>
-                    </SystemAppsToggle>
-                    <div css="overflow: hidden">
-                      <animated.div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'flex-end',
-                          width: '100%',
-                          opacity: openProgress,
-                          height: openProgress.interpolate(
-                            v => v * systemApps.length * MENU_ITEM_HEIGHT + 'px'
-                          ),
-                        }}
-                      >
-                        {systemApps.map(app => this.renderAppGroup(app, true))}
-                      </animated.div>
-                    </div>
-                  </div>
-                )}
-              </Spring>
-            </div>
-          </Content>
-          {scrollVisible && (
-            <div
-              css={`
-                width: 100%;
-                height: 0;
-                border-bottom: 1px solid ${theme.contentBorder};
-              `}
+        <div
+          css={`
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-shrink: 1;
+            box-shadow: 2px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.05);
+          `}
+        >
+          {showOrgSwitcher && (
+            <OrganizationSwitcher
+              loading={daoStatus === DAO_STATUS_LOADING}
+              currentDao={{
+                name: daoAddress.domain,
+                address: daoAddress.address,
+              }}
             />
           )}
-          <MenuPanelFooter
-            account={account}
-            onRequestEnable={onRequestEnable}
-            connected={connected}
-            onOpenPreferences={onOpenPreferences}
-          />
-        </In>
+          <nav
+            css={`
+              overflow-y: auto;
+              flex: 1 1 0;
+              padding-top: ${(showOrgSwitcher ? 1 : 3) * GU}px;
+            `}
+          >
+            <Heading label="Apps" />
+            <div
+              css={`
+                margin-top: ${0.5 * GU}px;
+              `}
+            >
+              {menuApps.map(app =>
+                // If it's an array, it's the group being loaded from the ACL
+                Array.isArray(app)
+                  ? this.renderLoadedAppGroup(app)
+                  : this.renderAppGroup(app)
+              )}
+            </div>
+            <Spring
+              config={springs.smooth}
+              from={{ openProgress: 0 }}
+              to={{ openProgress: Number(systemAppsOpened) }}
+              immediate={!systemAppsToggled}
+              native
+            >
+              {({ openProgress }) => (
+                <div
+                  css={`
+                    margin-top: ${1 * GU}px;
+                    padding-bottom: ${3 * GU}px;
+                  `}
+                >
+                  <SystemAppsToggle onClick={this.handleToggleSystemApps}>
+                    <SystemAppsToggleShadow
+                      style={{
+                        transform: interpolateToggleElevation(
+                          openProgress,
+                          v => `scale3d(${v}, 1, 1)`
+                        ),
+                        opacity: interpolateToggleElevation(openProgress),
+                      }}
+                    />
+                    <Heading
+                      label="System"
+                      css={`
+                        height: ${5 * GU}px;
+                      `}
+                    >
+                      <SystemAppsToggleArrow
+                        style={{
+                          marginLeft: `${1 * GU}px`,
+                          transform: openProgress.interpolate(
+                            v => `rotate(${(1 - v) * 180}deg)`
+                          ),
+                          transformOrigin: '50% calc(50% - 0.5px)',
+                        }}
+                      />
+                    </Heading>
+                  </SystemAppsToggle>
+                  <div css="overflow: hidden">
+                    <AnimDiv
+                      css={`
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-end;
+                      `}
+                      style={{
+                        opacity: openProgress,
+                        height: openProgress.interpolate(
+                          v =>
+                            v * systemApps.length * MENU_ITEM_BASE_HEIGHT + 'px'
+                        ),
+                      }}
+                    >
+                      {systemApps.map(app => this.renderAppGroup(app))}
+                    </AnimDiv>
+                  </div>
+                </div>
+              )}
+            </Spring>
+          </nav>
+        </div>
       </Main>
     )
   }
 
-  renderAppGroup(app, isSystem) {
+  renderAppGroup(app) {
     const { activeInstanceId, onOpenApp } = this.props
 
     const { appId, name, icon, instances } = app
@@ -280,7 +221,6 @@ class MenuPanel extends React.PureComponent {
         <MenuPanelAppGroup
           name={name}
           icon={icon}
-          system={isSystem}
           instances={instances}
           active={isActive}
           expand={isActive}
@@ -292,7 +232,7 @@ class MenuPanel extends React.PureComponent {
   }
 
   renderLoadedAppGroup(appGroups) {
-    const { appsStatus, activeInstanceId, onRequestAppsReload } = this.props
+    const { appsStatus, activeInstanceId } = this.props
 
     // Used by the menu transition
     const expandedInstancesCount = appGroups.reduce(
@@ -311,7 +251,6 @@ class MenuPanel extends React.PureComponent {
       <MenuPanelAppsLoader
         key="menu-apps"
         appsStatus={appsStatus}
-        onRetry={onRequestAppsReload}
         appsCount={appGroups.length}
         expandedInstancesCount={expandedInstancesCount}
       >
@@ -321,23 +260,163 @@ class MenuPanel extends React.PureComponent {
   }
 }
 
-const SystemAppsToggle = styled(ButtonBase)`
-  position: relative;
-  width: 100%;
-  padding: 0;
-  margin: 20px 0 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  outline: none;
-  &:active {
-    background: ${color(theme.secondaryBackground)
-      .alpha(0.3)
-      .cssa()};
-  }
-`
+function AnimatedMenuPanel({
+  autoClosing,
+  className,
+  onMenuPanelClose,
+  opened,
+  ...props
+}) {
+  const theme = useTheme()
+  const [animate, setAnimate] = useState(autoClosing)
+
+  useEffect(() => {
+    // If autoClosing has changed, it means we are switching from autoClosing
+    // to fixed or the opposite, and we should stop animating the panel for a
+    // short period of time.
+    setAnimate(false)
+    const animateTimer = setTimeout(() => setAnimate(true), 0)
+    return () => clearTimeout(animateTimer)
+  }, [autoClosing])
+
+  return (
+    <Spring
+      from={{ menuPanelProgress: 0 }}
+      to={{ menuPanelProgress: Number(opened) }}
+      config={springs.lazy}
+      immediate={!animate}
+      native
+    >
+      {({ menuPanelProgress }) => (
+        <div
+          className={className}
+          css={`
+            /* When the panel is autoclosing, we want it over the top bar as well */
+            ${autoClosing
+              ? `
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                top: 0;
+                ${!opened ? 'pointer-events: none' : ''}
+              `
+              : ''}
+          `}
+        >
+          {autoClosing && (
+            <AnimDiv
+              onClick={onMenuPanelClose}
+              css={`
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                background: ${theme.overlay.alpha(0.9)};
+                ${!opened ? 'pointer-events: none' : ''}
+              `}
+              style={{
+                opacity: menuPanelProgress,
+              }}
+            />
+          )}
+          <AnimDiv
+            css={`
+              width: ${MENU_PANEL_WIDTH}px;
+              height: 100%;
+              flex: none;
+            `}
+            style={{
+              position: autoClosing ? 'absolute' : 'relative',
+              transform: menuPanelProgress.interpolate(
+                v =>
+                  `translate3d(
+                    ${lerp(
+                      v,
+                      -(MENU_PANEL_WIDTH + MENU_PANEL_SHADOW_WIDTH),
+                      0
+                    )}px, 0, 0)`
+              ),
+            }}
+          >
+            <MenuPanel showOrgSwitcher={autoClosing} {...props} />
+          </AnimDiv>
+        </div>
+      )}
+    </Spring>
+  )
+}
+AnimatedMenuPanel.propTypes = {
+  autoClosing: PropTypes.bool,
+  className: PropTypes.string,
+  onMenuPanelClose: PropTypes.func.isRequired,
+  opened: PropTypes.bool,
+  ...MenuPanel.propTypes,
+}
+
+function Main(props) {
+  const theme = useTheme()
+  return (
+    <div
+      css={`
+        background: ${theme.surface};
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex: none;
+        flex-direction: column;
+        ${unselectable};
+      `}
+      {...props}
+    />
+  )
+}
+
+function Heading({ label, children, ...props }) {
+  const theme = useTheme()
+  return (
+    <h1
+      css={`
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: ${3 * GU}px;
+        margin-left: ${3 * GU}px;
+        color: ${theme.surfaceContentSecondary};
+        ${textStyle('label2')}
+        font-weight: 400;
+      `}
+      {...props}
+    >
+      <div
+        css={`
+          margin-top: 2px;
+        `}
+      >
+        {label}
+      </div>
+      {children && <div>{children}</div>}
+    </h1>
+  )
+}
+Heading.propTypes = {
+  children: PropTypes.node,
+  label: PropTypes.node,
+}
+
+function SystemAppsToggle(props) {
+  const theme = useTheme()
+  return (
+    <ButtonBase
+      css={`
+        position: relative;
+        width: 100%;
+        &:active {
+          background: ${theme.surfacePressed};
+        }
+      `}
+      {...props}
+    />
+  )
+}
 
 const SystemAppsToggleArrow = props => (
   <animated.div {...props}>
@@ -346,11 +425,9 @@ const SystemAppsToggleArrow = props => (
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 22px;
-        height: 22px;
       `}
     >
-      <IconArrow />
+      <IconDown size="tiny" />
     </div>
   </animated.div>
 )
@@ -359,8 +436,8 @@ const SystemAppsToggleShadow = props => (
   <div
     css={`
       position: absolute;
-      left: 20px;
-      right: 20px;
+      left: ${3 * GU}px;
+      right: ${3 * GU}px;
       bottom: 0;
     `}
   >
@@ -375,60 +452,4 @@ const SystemAppsToggleShadow = props => (
   </div>
 )
 
-const Main = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  ${unselectable};
-`
-
-const In = styled.div`
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  flex-shrink: 1;
-  background: #fff;
-  border-right: 1px solid ${theme.contentBorder};
-  box-shadow: 1px 0 ${MENU_PANEL_SHADOW_WIDTH}px rgba(0, 0, 0, 0.1);
-`
-
-const Header = styled.div`
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  height: 64px;
-  border-bottom: 1px solid ${theme.contentBorder};
-`
-
-const HeaderSlot = styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-`
-
-const Content = styled.nav`
-  overflow-y: auto;
-  flex: 1 1 0;
-  .in {
-    padding: 10px 0 10px;
-  }
-  h1 {
-    margin: 10px 30px;
-    color: ${theme.textSecondary};
-    text-transform: lowercase;
-    font-variant: small-caps;
-    font-weight: 600;
-  }
-  ul {
-    list-style: none;
-  }
-  li {
-    display: flex;
-    align-items: center;
-  }
-`
-export default MenuPanel
+export default AnimatedMenuPanel

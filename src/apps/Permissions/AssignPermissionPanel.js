@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { SidePanel, DropDown, Info, Field, Button } from '@aragon/ui'
+import { Button, DropDown, Info, Field, SidePanel, GU } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
@@ -8,10 +8,10 @@ import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntitySelector from './EntitySelector'
 
 const DEFAULT_STATE = {
-  assignEntityIndex: 0,
+  assignEntityIndex: -1,
   assignEntityAddress: '',
-  appIndex: 0,
-  roleIndex: 0,
+  appIndex: -1,
+  roleIndex: -1,
 }
 
 // The permission panel, wrapped in a PermissionsContext (see end of file)
@@ -30,11 +30,11 @@ class AssignPermissionPanel extends React.PureComponent {
   }
 
   handleAppChange = index => {
-    this.setState({ appIndex: index, roleIndex: 0 })
+    this.setState({ appIndex: index || -1, roleIndex: -1 })
   }
 
   handleRoleChange = index => {
-    this.setState({ roleIndex: index })
+    this.setState({ roleIndex: index || -1 })
   }
 
   getNamedApps() {
@@ -93,7 +93,9 @@ class AssignPermissionPanel extends React.PureComponent {
     return true
   }
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault()
+
     const { roleIndex, assignEntityAddress } = this.state
     const { grantPermission, onClose } = this.props
 
@@ -110,8 +112,8 @@ class AssignPermissionPanel extends React.PureComponent {
     }
 
     grantPermission({
+      appAddress: selectedApp.proxyAddress,
       entityAddress: assignEntityAddress,
-      proxyAddress: selectedApp.proxyAddress,
       roleBytes: role.bytes,
     })
 
@@ -125,7 +127,10 @@ class AssignPermissionPanel extends React.PureComponent {
   }
 
   handleEntityChange = ({ index, address }) => {
-    this.setState({ assignEntityIndex: index, assignEntityAddress: address })
+    this.setState({
+      assignEntityIndex: index || -1,
+      assignEntityAddress: address,
+    })
   }
 
   render() {
@@ -143,11 +148,17 @@ class AssignPermissionPanel extends React.PureComponent {
         onClose={onClose}
         onTransitionEnd={this.handlePanelTransitionEnd}
       >
-        <React.Fragment>
+        <form
+          onSubmit={this.handleSubmit}
+          css={`
+            margin-top: ${3 * GU}px;
+          `}
+        >
           <Field label="On app">
             <DropDown
+              placeholder="Select an app"
               items={appsItems}
-              active={appIndex}
+              selected={appIndex}
               onChange={this.handleAppChange}
               wide
             />
@@ -155,41 +166,46 @@ class AssignPermissionPanel extends React.PureComponent {
 
           <EntitySelector
             includeAnyEntity
-            label="Grant permission to"
-            labelCustomAddress="Grant permission to"
-            activeIndex={assignEntityIndex}
             apps={this.getNamedApps()}
+            label="Assign to entity"
+            labelCustomAddress="Grant permission to"
+            selectedIndex={assignEntityIndex}
             onChange={this.handleEntityChange}
             wrapper={wrapper}
           />
 
           {selectedApp && (
-            <Field label="To perform action">
+            <Field label="Action">
               <DropDown
+                placeholder="Select an action"
                 items={rolesItems}
-                active={roleIndex}
+                selected={roleIndex}
                 onChange={this.handleRoleChange}
                 wide
               />
             </Field>
           )}
 
-          <Field style={{ paddingTop: '20px' }}>
-            <Button
-              mode="strong"
-              onClick={this.handleSubmit}
-              disabled={!this.canSubmit()}
-              wide
-            >
-              {'Add permission'}
-            </Button>
-          </Field>
+          <Button
+            type="submit"
+            mode="strong"
+            onClick={this.handleSubmit}
+            disabled={!this.canSubmit()}
+            wide
+          >
+            {'Add permission'}
+          </Button>
 
-          <Info.Action title="Adding the permission might create a vote">
+          <Info
+            title="Adding the permission might create a vote"
+            css={`
+              margin-top: ${3 * GU}px;
+            `}
+          >
             The Voting app will automatically create a new vote if granting the
             permission requires a vote to pass.
-          </Info.Action>
-        </React.Fragment>
+          </Info>
+        </form>
       </SidePanel>
     )
   }
@@ -197,10 +213,11 @@ class AssignPermissionPanel extends React.PureComponent {
 
 export default props => (
   <PermissionsConsumer>
-    {({ getAppRoles, createPermission, grantPermission }) => (
+    {({ getAppRoles, grantPermission }) => (
       <AssignPermissionPanel
+        getAppRoles={getAppRoles}
+        grantPermission={grantPermission}
         {...props}
-        {...{ getAppRoles, createPermission, grantPermission }}
       />
     )}
   </PermissionsConsumer>

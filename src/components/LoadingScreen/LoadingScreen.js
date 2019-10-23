@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { springs } from '@aragon/ui'
+import { springs, useTheme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import AnimatedLogo from './AnimatedLogo'
 
@@ -12,6 +12,7 @@ const LoadingScreen = React.memo(function LoadingScreen({
   ...props
 }) {
   const [visible, setVisible] = useState(true)
+  const theme = useTheme()
 
   // Update `visible` based on the current progress
   useEffect(() => {
@@ -57,7 +58,7 @@ const LoadingScreen = React.memo(function LoadingScreen({
                 flex-direction: column;
                 width: 100%;
                 height: 100%;
-                background: white;
+                background: ${theme.background};
               `}
             >
               <AnimatedLogo done={progress === 1} />

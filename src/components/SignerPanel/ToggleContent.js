@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { font, springs } from '@aragon/ui'
+import { IconDown, GU, springs, textStyle, useTheme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-
-import IconArrow from '../../icons/IconArrow'
 
 export default class ToggleContent extends React.Component {
   static propTypes = {
@@ -26,9 +24,17 @@ export default class ToggleContent extends React.Component {
       <div>
         <Label onClick={this.handleClick}>
           {opened ? labelOpen : labelClosed}{' '}
-          <Rotate opened={opened}>
-            <IconArrow />
-          </Rotate>
+          <div
+            css={`
+              display: flex;
+              align-items: center;
+              padding: 0 ${1 * GU}px;
+              transition: transform 150ms ease-in-out;
+              transform: rotate3d(0, 0, 1, ${opened ? 180 : 0}deg);
+            `}
+          >
+            <IconDown size="tiny" />
+          </div>
         </Label>
 
         <Transition
@@ -48,26 +54,30 @@ export default class ToggleContent extends React.Component {
   }
 }
 
-const Label = styled.button.attrs({ type: 'button' })`
-  cursor: pointer;
-  ${font({ weight: 'bold' })};
-  background: none;
-  border: 0;
-  outline: 0;
-  padding: 0;
-  img {
-    margin-left: 10px;
-  }
-  display: flex;
-  flex-direction: row;
-`
-const Content = styled(animated.div)`
-  overflow: hidden;
-`
+function Label(props) {
+  const theme = useTheme()
+  return (
+    <button
+      type="button"
+      css={`
+        cursor: pointer;
+        background: none;
+        border: 0;
+        outline: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        ${textStyle('label2')}
+        color: ${theme.surfaceContentSecondary};
+        margin-bottom: ${2 * GU}px;
+      `}
+      {...props}
+    />
+  )
+}
 
-const Rotate = styled.div`
-  transform-origin: 50% 50%;
-  transform: rotate(${p => (p.opened ? 0 : 180)}deg);
-  transition: transform 200ms ease-in-out;
-  margin-left: 4px;
+const Content = styled(animated.div)`
+  max-height: 360px;
+  overflow: hidden;
+  overflow-y: scroll;
 `

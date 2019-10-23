@@ -311,6 +311,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "abhinavsagar",
+      "name": "Abhinav Sagar",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/40603139?v=4",
+      "profile": "https://github.com/abhinavsagar",
+      "contributions": [
+        "maintenance"
+      ]
+    },
+    {
+      "login": "geleeroyale",
+      "name": "geleeroyale",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/317685?v=4",
+      "profile": "http://geleeroyale.netlify.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

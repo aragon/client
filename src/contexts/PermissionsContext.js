@@ -1,18 +1,16 @@
-import React from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { AppType } from '../prop-types'
 import {
-  appPermissions,
   appRoles,
   entityResolver,
   roleResolver,
-  entityRoles,
-  permissionsByEntity,
+  permissionsByRole,
 } from '../permissions'
-import { AppType } from '../prop-types'
 import { log, noop } from '../utils'
-import { getEmptyAddress } from '../web3-utils'
+import { addressesEqual, getEmptyAddress } from '../web3-utils'
 
-const { Provider, Consumer } = React.createContext()
+const PermissionsContext = React.createContext()
 
 class PermissionsProvider extends React.Component {
   static propTypes = {
@@ -41,14 +39,14 @@ class PermissionsProvider extends React.Component {
     }
   }
 
-  revokePermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
+  revokePermission = async ({ appAddress, entityAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
     const transaction = await wrapper.performACLIntent('revokePermission', [
       entityAddress,
-      proxyAddress,
+      appAddress,
       roleBytes,
     ])
     log('revokePermission tx:', transaction)
@@ -56,8 +54,8 @@ class PermissionsProvider extends React.Component {
 
   // create a permission (= set a manager + grant a permission)
   createPermission = async ({
+    appAddress,
     entityAddress,
-    proxyAddress,
     roleBytes = null,
     manager,
   }) => {
@@ -65,84 +63,52 @@ class PermissionsProvider extends React.Component {
     if (wrapper === null) {
       return
     }
-    log('createPermission', [entityAddress, proxyAddress, roleBytes, manager])
+    log('createPermission', [entityAddress, appAddress, roleBytes, manager])
     const transaction = await wrapper.performACLIntent('createPermission', [
       entityAddress,
-      proxyAddress,
+      appAddress,
       roleBytes,
       manager,
     ])
     log('createPermission tx:', transaction)
   }
 
-  grantPermission = async ({ entityAddress, proxyAddress, roleBytes }) => {
+  grantPermission = async ({ appAddress, entityAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
     const transaction = await wrapper.performACLIntent('grantPermission', [
       entityAddress,
-      proxyAddress,
+      appAddress,
       roleBytes,
     ])
     log('grantPermission tx:', transaction)
   }
 
-  removePermissionManager = async ({ proxyAddress, roleBytes }) => {
+  removePermissionManager = async ({ appAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
     const transaction = await wrapper.performACLIntent(
       'removePermissionManager',
-      [proxyAddress, roleBytes]
+      [appAddress, roleBytes]
     )
     log('removePermissionManager tx:', transaction)
   }
 
-  setPermissionManager = async ({ entityAddress, proxyAddress, roleBytes }) => {
+  setPermissionManager = async ({ entityAddress, appAddress, roleBytes }) => {
     const { wrapper } = this.props
     if (wrapper === null) {
       return
     }
     const transaction = await wrapper.performACLIntent('setPermissionManager', [
       entityAddress,
-      proxyAddress,
+      appAddress,
       roleBytes,
     ])
     log('setPermissionManager tx:', transaction)
-  }
-
-  // Get the roles assigned to an address
-  getEntityRoles = address => {
-    const { resolveEntity, resolveRole } = this.state
-    const { permissions } = this.props
-    if (!(permissions && resolveEntity && resolveRole)) {
-      return []
-    }
-    return entityRoles(
-      address,
-      permissionsByEntity(permissions),
-      (roleBytes, proxyAddress) => ({
-        role: resolveRole(proxyAddress, roleBytes),
-        roleFrom: resolveEntity(proxyAddress),
-        proxyAddress,
-        roleBytes,
-      })
-    )
-  }
-
-  // Get the permissions declared on an app
-  getAppPermissions = app => {
-    const { resolveEntity, resolveRole } = this.state
-    const { permissions } = this.props
-    if (!(app && permissions && resolveEntity && resolveRole)) {
-      return []
-    }
-    return appPermissions(app, permissions, (entityAddress, roleBytes) => ({
-      role: resolveRole(app.proxyAddress, roleBytes),
-      entity: resolveEntity(entityAddress),
-    }))
   }
 
   // Get the roles of an app
@@ -166,56 +132,60 @@ class PermissionsProvider extends React.Component {
     return resolveEntity((role && role.manager) || getEmptyAddress())
   }
 
-  // Get a list of entities with the roles assigned to them
-  getRolesByEntity = () => {
-    const { resolveEntity } = this.state
-    const { permissions } = this.props
-
-    if (!(permissions && resolveEntity)) {
-      return []
-    }
-
-    return Object.entries(permissionsByEntity(permissions))
-      .map(([entityAddress, apps]) => {
-        const entity = resolveEntity(entityAddress)
-        const roles = this.getEntityRoles(entityAddress)
-        return { entity, entityAddress, roles }
-      })
-      .sort((a, b) => {
-        if (a.entity && a.entity.type === 'any') {
-          return -1
-        }
-        if (b.entity && b.entity.type === 'any') {
-          return 1
-        }
-        return 0
-      })
-  }
-
   render() {
-    const { children, permissions, wrapper } = this.props
+    const { children, permissions } = this.props
     return (
-      <Provider
+      <PermissionsContext.Provider
         value={{
           ...this.state,
           permissions,
-          wrapper,
-          revokePermission: this.revokePermission,
+          getAppRoles: this.getAppRoles,
           createPermission: this.createPermission,
+          getRoleManager: this.getRoleManager,
           grantPermission: this.grantPermission,
           removePermissionManager: this.removePermissionManager,
+          revokePermission: this.revokePermission,
           setPermissionManager: this.setPermissionManager,
-          getEntityRoles: this.getEntityRoles,
-          getAppPermissions: this.getAppPermissions,
-          getAppRoles: this.getAppRoles,
-          getRoleManager: this.getRoleManager,
-          getRolesByEntity: this.getRolesByEntity,
         }}
       >
         {children}
-      </Provider>
+      </PermissionsContext.Provider>
     )
   }
 }
 
-export { PermissionsProvider, Consumer as PermissionsConsumer }
+const PermissionsConsumer = PermissionsContext.Consumer
+
+function usePermissions() {
+  return useContext(PermissionsContext)
+}
+
+function usePermissionsByRole() {
+  const { apps, permissions, resolveRole, resolveEntity } = usePermissions()
+
+  return useMemo(
+    () =>
+      permissionsByRole(apps, permissions).map(
+        ({ appAddress, entities, manager, roleBytes, ...permission }) => {
+          const app = apps.find(app =>
+            addressesEqual(app.proxyAddress, appAddress)
+          )
+          return {
+            ...permission,
+            app: app || null,
+            entities: entities.map(resolveEntity),
+            manager: resolveEntity(manager),
+            role: resolveRole(appAddress, roleBytes),
+          }
+        }
+      ),
+    [apps, permissions, resolveRole, resolveEntity]
+  )
+}
+
+export {
+  PermissionsProvider,
+  PermissionsConsumer,
+  usePermissions,
+  usePermissionsByRole,
+}

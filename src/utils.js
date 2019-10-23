@@ -1,17 +1,5 @@
 import resolvePathname from 'resolve-pathname'
-
-// Stealing this from recompose / etc for now
-export function compose(...funcs) {
-  if (funcs.length === 0) {
-    return arg => arg
-  }
-
-  if (funcs.length === 1) {
-    return funcs[0]
-  }
-
-  return funcs.reduce((a, b) => (...args) => a(b(...args)))
-}
+import { GU } from '@aragon/ui'
 
 // Get the icon URL of an app (legacy)
 export function legacyAppIconUrl(app) {
@@ -111,9 +99,6 @@ export function shuffleArray(original) {
   return array
 }
 
-// GU = Grid Unit
-export const GU = 8
-
 // Makes “gu” a CSS unit in a string, e.g.
 // cssgu`10px 2gu 4gu`
 export function cssgu(strings, ...substitutions) {
@@ -125,3 +110,15 @@ export function cssgu(strings, ...substitutions) {
       return isNaN(value) ? match : `${value * GU}px`
     })
 }
+
+// Email validation regex from https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+export function validateEmail(email) {
+  // eslint-disable-next-line no-useless-escape
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+}
+
+export const iOS =
+  /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+
+export const isSafari = /Version\/[\d.]+.*Safari/.test(navigator.userAgent)

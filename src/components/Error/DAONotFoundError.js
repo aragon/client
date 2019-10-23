@@ -1,76 +1,58 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { theme, Button } from '@aragon/ui'
-import ErrorCard from './ErrorCard'
+import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
 import { network } from '../../environment'
 import { isAddress } from '../../web3-utils'
 
-const DAONotFoundError = ({ dao }) => (
-  <ErrorCard title="Organization not found">
-    <Paragraph>
-      It looks like there's no organization associated with{' '}
-      {isAddress(dao) ? `“${dao}”` : `the “${dao}” ENS domain`} on the Ethereum{' '}
-      {network.name}.
-    </Paragraph>
-    <Paragraph>
-      If you arrived here through a link, please double check that you were
-      given the correct link.
-    </Paragraph>
-    <Paragraph>
-      Alternatively, you may{' '}
-      <StyledLink href="/">create a new organization</StyledLink>.
-    </Paragraph>
-    <ButtonBox>
-      <IssueLink mode="text" href="/" style={{ color: theme.textSecondary }}>
-        Back
-      </IssueLink>
-      <ButtonsSpacer />
-      <Button
-        mode="strong"
-        onClick={() => {
-          window.location.reload(true)
-        }}
-        compact
+function DAONotFoundError({ dao }) {
+  const theme = useTheme()
+  return (
+    <React.Fragment>
+      <h1
+        css={`
+          color: ${theme.surfaceContent};
+          ${textStyle('title2')};
+          margin-bottom: ${1.5 * GU}px;
+          text-align: center;
+        `}
       >
-        Try again
-      </Button>
-    </ButtonBox>
-  </ErrorCard>
-)
+        Organization not found
+      </h1>
+      <div
+        css={`
+          margin-bottom: ${6 * GU}px;
+          text-align: center;
+          color: ${theme.surfaceContentSecondary};
+          ${textStyle('body2')};
+        `}
+      >
+        It looks like there’s no organization associated with{' '}
+        {isAddress(dao) ? (
+          <span css="font-weight: bold;">“{dao}”</span>
+        ) : (
+          <React.Fragment>
+            the <strong>“{dao}”</strong> ENS domain
+          </React.Fragment>
+        )}{' '}
+        on the Ethereum {network.name}.
+      </div>
+      <Info>
+        If you arrived here through a link, please double check that you were
+        given the correct link. Alternatively, you may{' '}
+        <Link
+          onClick={() => {
+            window.location = '/'
+          }}
+        >
+          create a new organization.
+        </Link>
+      </Info>
+    </React.Fragment>
+  )
+}
+
 DAONotFoundError.propTypes = {
   dao: PropTypes.string,
 }
-
-const Paragraph = styled.p`
-  & + & {
-    margin-top: 10px;
-  }
-`
-
-const StyledLink = styled.a`
-  text-decoration-color: ${theme.accent};
-  color: ${theme.accent};
-`
-
-const ButtonsSpacer = styled.span`
-  width: 10px;
-`
-
-const ButtonBox = styled.div`
-  margin: 20px 0 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
-
-const IssueLink = styled(Button.Anchor)`
-  margin-left: -10px;
-  color: ${theme.textSecondary};
-  text-decoration: none;
-  &:hover {
-    color: ${theme.textPrimary};
-  }
-`
 
 export default DAONotFoundError

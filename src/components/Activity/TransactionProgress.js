@@ -1,11 +1,10 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { ProgressBar } from '@aragon/ui'
+import { ProgressBar, GU } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { ActivityStatusType } from '../../prop-types'
 import { norm } from '../../math-utils'
 import { useNow } from '../../hooks'
-import { ActivityPanelReadyContext } from './ActivityPanel'
 import TimeTag from './TimeTag'
 import {
   ACTIVITY_STATUS_CONFIRMED,
@@ -35,7 +34,6 @@ const TransactionProgress = React.memo(function TransactionProgress({
   const now = useNow().getTime()
 
   // Only animate things if the panel is ready (opened).
-  const animate = useContext(ActivityPanelReadyContext)
   const estimate = createdAt + TX_DURATION_AVERAGE
   const threshold = createdAt + TX_DURATION_THRESHOLD
 
@@ -59,21 +57,20 @@ const TransactionProgress = React.memo(function TransactionProgress({
             style={{
               display: 'flex',
               alignItems: 'center',
-              paddingTop: '10px',
+              paddingTop: `${1 * GU}px`,
               ...transition,
             }}
           >
             <div css="flex-grow: 1">
-              <ProgressBar
-                value={showConfirmed ? 1 : progress}
-                animate={animate}
-              />
+              <ProgressBar animate value={showConfirmed ? 1 : progress} />
             </div>
             {(showTimer || showConfirmed) && (
               <TimeTag
                 date={estimate}
-                label={showConfirmed && 'confirmed'}
-                css="margin-left: 8px"
+                label={showConfirmed ? 'confirmed' : null}
+                css={`
+                  margin-left: ${2 * GU}px;
+                `}
               />
             )}
           </animated.div>

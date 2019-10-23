@@ -1,31 +1,31 @@
 import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, TextInput, breakpoint, font, theme } from '@aragon/ui'
-import { ModalContext } from '../ModalManager/ModalManager'
-import EscapeOutside from '../EscapeOutside/EscapeOutside'
+import {
+  Button,
+  EscapeOutside,
+  Modal,
+  TextInput,
+  breakpoint,
+  textStyle,
+  useTheme,
+} from '@aragon/ui'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
 import { EthereumAddressType } from '../../prop-types'
 
 const LocalIdentityModal = React.memo(
   ({ opened, address, label, onCancel, onSave }) => {
-    const { showModal, hideModal } = React.useContext(ModalContext)
-
-    const modalProps = React.useMemo(
-      () => ({ address, label, onCancel, onSave }),
-      [address, label, onCancel, onSave]
+    return (
+      <Modal visible={opened} onClose={onCancel}>
+        <LocalModal
+          address={address}
+          label={label}
+          onCancel={onCancel}
+          onSave={onSave}
+        />
+      </Modal>
     )
-
-    React.useEffect(() => {
-      if (opened) {
-        showModal(Modal, modalProps)
-      } else {
-        hideModal()
-      }
-    }, [opened, modalProps, showModal, hideModal])
-
-    return null
   }
 )
 
@@ -37,7 +37,7 @@ LocalIdentityModal.propTypes = {
   onSave: PropTypes.func.isRequired,
 }
 
-const Modal = ({ address, label, onCancel, onSave }) => {
+const LocalModal = ({ address, label, onCancel, onSave }) => {
   const [action, setAction] = React.useState(null)
   const [error, setError] = React.useState(null)
   const labelInput = React.useRef(null)
@@ -79,7 +79,13 @@ const Modal = ({ address, label, onCancel, onSave }) => {
   return (
     <EscapeOutside onEscapeOutside={onCancel}>
       <Wrap>
-        <Title>{action} custom label</Title>
+        <h3
+          css={`
+            ${textStyle('title4')};
+          `}
+        >
+          {action} custom label
+        </h3>
         <Description>
           This label would be displayed instead of the following address and
           only be <span>stored on this device</span>.
@@ -96,7 +102,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
           <Error>{error}</Error>
         </Label>
         <Controls>
-          <Button mode="secondary" onClick={handleCancel}>
+          <Button css="min-width: 128px;" onClick={handleCancel}>
             Cancel
           </Button>
           <StyledSaveButton mode="strong" onClick={handleSave}>
@@ -108,7 +114,7 @@ const Modal = ({ address, label, onCancel, onSave }) => {
   )
 }
 
-Modal.propTypes = {
+LocalModal.propTypes = {
   address: EthereumAddressType,
   label: PropTypes.string,
   onCancel: PropTypes.func,
@@ -122,22 +128,15 @@ const Error = styled.div`
 
 const Wrap = styled.div`
   background: #fff;
-  padding: 16px;
   max-width: calc(100vw - 32px);
 
   ${breakpoint(
     'medium',
     `
-      padding: 16px 32px;
-      max-width: 50vw;
       /* wide identity badge + paddings */
-      min-width: ${400 + 32 * 2}px;
+      min-width: ${400 + 16 * 2}px;
     `
-  )}
-`
-
-const Title = styled.h3`
-  ${font({ size: 'xlarge' })};
+  )};
 `
 
 const Description = styled.p`
@@ -147,17 +146,23 @@ const Description = styled.p`
   }
 `
 
-const Label = styled.label`
-  display: block;
-  margin: 20px 0;
-  text-transform: uppercase;
-  color: ${theme.textSecondary};
-  ${font({ size: 'xsmall' })};
-
-  & > div {
-    margin: 5px 0;
-  }
-`
+function Label(props) {
+  const theme = useTheme()
+  return (
+    <label
+      css={`
+        display: block;
+        margin: 20px 0;
+        color: ${theme.surfaceContentSecondary};
+        ${textStyle('label2')};
+        & > div {
+          margin: 5px 0;
+        }
+      `}
+      {...props}
+    />
+  )
+}
 
 const Controls = styled.div`
   display: grid;
@@ -170,16 +175,18 @@ const Controls = styled.div`
       display: flex;
       justify-content: flex-end;
     `
-  )}
+  )};
 `
 
 const StyledSaveButton = styled(Button)`
+  min-width: 128px;
+
   ${breakpoint(
     'medium',
     `
       margin-left: 16px;
     `
-  )}
+  )};
 `
 
 export default LocalIdentityModal

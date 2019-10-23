@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+const execute = require('child_process').execSync
+const which = require('which')
+
+try {
+  which.sync('aragon')
+} catch (err) {
+  console.log('Publishing requires @aragon/cli to be locally installed.')
+  console.log(
+    'Please do an `npm install -g @aragon/cli` and run this command again.'
+  )
+  console.log(err)
+  return
+}
+
+// First two args are node and this script
+const publishArgs = process.argv.slice(2).join(' ')
+
+execute(`aragon apm publish ${publishArgs}`, { stdio: 'inherit' })

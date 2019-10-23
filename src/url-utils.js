@@ -37,18 +37,42 @@ export function appBaseUrl(app, gateway = ipfsDefaultConf.gateway) {
   return contentBaseUrl(app.content, gateway)
 }
 
-export function repoBaseUrl(repo, gateway = ipfsDefaultConf.gateway) {
-  const { appId, latestVersion = {} } = repo
-
+export function repoBaseUrl(
+  appId,
+  repoVersion,
+  gateway = ipfsDefaultConf.gateway
+) {
   // Support overriding app URLs, see network-config.js
   if (appLocator[appId]) {
     return appLocator[appId]
   }
 
   return contentBaseUrl(
-    // The latest version's content is the artifact.json and manifest.json, so we need to
+    // The version's content is the artifact.json and manifest.json, so we need to
     // look up content again for the actual content location
-    latestVersion.content && latestVersion.content.content,
+    repoVersion.content && repoVersion.content.content,
     gateway
   )
+}
+
+// Removes the HTTP protocol of a URL, and the final slash.
+export function stripUrlProtocol(url = '') {
+  return url.replace(/^https?:\/\//, '').replace(/\/$/, '')
+}
+
+const CODE_REPO_SERVICES = [
+  ['GitHub', /^(?:https?:\/\/)?github\.com/i],
+  ['GitLab', /^(?:https?:\/\/)?gitlab\.com/i],
+  ['Bitbucket', /^(?:https?:\/\/)?bitbucket\.com/i],
+]
+
+// Return the name of a repository service based on a URL,
+// with or without the HTTP protocol prefix.
+export function sanitizeCodeRepositoryUrl(url) {
+  for (const [name, re] of CODE_REPO_SERVICES) {
+    if (re.test(url)) {
+      return name
+    }
+  }
+  return url
 }

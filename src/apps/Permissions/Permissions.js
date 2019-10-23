@@ -1,308 +1,240 @@
-import React from 'react'
+import React, { useEffect, useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { AppType, AragonType } from '../../prop-types'
-import { IconPlus } from '@aragon/ui'
-import { addressesEqual, shortenAddress, isAddress } from '../../web3-utils'
-import Screen from './Screen'
-import Home from './Home/Home'
+import { Button, GU, Header, IconPlus, useLayout } from '@aragon/ui'
+import { addressesEqual, isAddress } from '../../web3-utils'
+import { usePermissions } from '../../contexts/PermissionsContext'
+import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
 import AppPermissions from './AppPermissions'
-import EntityPermissions from './EntityPermissions'
-import NavigationItem from './NavigationItem'
 import AssignPermissionPanel from './AssignPermissionPanel'
+import Home from './Home/Home'
 import ManageRolePanel from './ManageRolePanel'
-import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import AppLayout from '../../components/AppLayout/AppLayout'
 
-class Permissions extends React.Component {
-  static propTypes = {
-    apps: PropTypes.arrayOf(AppType).isRequired,
-    appsLoading: PropTypes.bool.isRequired,
-    onMessage: PropTypes.func.isRequired,
-    onParamsRequest: PropTypes.func.isRequired,
-    params: PropTypes.string,
-    permissionsLoading: PropTypes.bool.isRequired,
-    wrapper: AragonType,
+const HOME_TABS = ['App permissions', 'System permissions']
+
+function getAppByProxyAddress(proxyAddress, apps) {
+  if (!proxyAddress) {
+    return null
   }
+  return apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
+}
 
-  state = {
-    // Only animate screens after the component is rendered once
-    animateScreens: false,
-    showAssignPermissionPanel: false,
-  }
+function getLocation(localPath, apps) {
+  const home = { screen: 'home' }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({ animateScreens: true })
-    }, 0)
-  }
-
-  componentDidUpdate(prevProps) {
-    const prevScreen = this.getLocation(prevProps.params).screen
-    const screen = this.getLocation(this.props.params).screen
-    if (prevScreen !== screen) {
-      this._scrollTopElement.scrollIntoView()
-    }
-  }
-
-  getLocation(params) {
-    const home = { screen: 'home' }
-
-    if (!params) {
-      return home
-    }
-
-    // Not using "/" as a separator because
-    // it would get encoded by encodeURIComponent().
-    const [
-      screen,
-      data = null,
-      secondaryScreen = null,
-      secondaryData = null,
-    ] = params.split('.')
-
-    if (screen === 'app' && isAddress(data)) {
-      return {
-        screen,
-        address: data,
-        app: this.getAppByProxyAddress(data),
-        secondaryScreen,
-        secondaryData,
-      }
-    }
-
-    if (screen === 'entity' && isAddress(data)) {
-      return { screen, address: data }
-    }
-
+  if (!localPath) {
     return home
   }
 
-  getAppByProxyAddress(proxyAddress) {
-    if (!proxyAddress) {
-      return null
-    }
-    return this.props.apps.find(app =>
-      addressesEqual(app.proxyAddress, proxyAddress)
-    )
-  }
+  const [
+    screen,
+    data = null,
+    secondaryScreen = null,
+    secondaryData = null,
+  ] = localPath.replace(/^\//, '').split('/')
 
-  goToHome = () => {
-    this.props.onParamsRequest(null)
-  }
-
-  handleOpenApp = proxyAddress => {
-    this.props.onParamsRequest(`app.${proxyAddress}`)
-  }
-
-  handleOpenEntity = address => {
-    if (this.getAppByProxyAddress(address)) {
-      return this.handleOpenApp(address)
-    }
-    this.props.onParamsRequest(`entity.${address}`)
-  }
-
-  handleManageRole = (proxyAddress, roleBytes) => {
-    this.props.onParamsRequest(`app.${proxyAddress}.role.${roleBytes}`)
-  }
-
-  createPermission = () => {
-    this.setState({ showAssignPermissionPanel: true })
-  }
-
-  closeAssignPermissionPanel = () => {
-    this.setState({ showAssignPermissionPanel: false })
-  }
-
-  closeManageRolePanel = () => {
-    const { params, onParamsRequest } = this.props
-    const location = this.getLocation(params)
-    const openedApp = location.screen === 'app' ? location.app : null
-    if (openedApp) {
-      onParamsRequest(`app.${openedApp.proxyAddress}`)
+  if (screen === 'app' && isAddress(data)) {
+    return {
+      screen,
+      app: getAppByProxyAddress(data, apps),
+      secondaryScreen,
+      secondaryData,
     }
   }
 
-  handleMenuPanelOpen = () => {
-    this.props.onMessage({
-      data: { from: 'app', name: 'menuPanel', value: true },
-    })
+  if (screen === 'role') {
+    const appAddress = (data || '').slice(0, 42)
+    const roleBytes = (data || '').slice(42)
+    if (isAddress(appAddress)) {
+      return {
+        screen: 'home',
+        app: getAppByProxyAddress(appAddress, apps),
+        secondaryScreen: 'role',
+        secondaryData: roleBytes,
+      }
+    }
   }
 
-  // Assemble the navigation items
-  getNavigationItems(location, resolveEntity) {
-    const items = ['Permissions']
-    const openedApp = location.screen === 'app' ? location.app : null
-    const openedEntityAddress =
-      location.screen === 'entity' ? location.address : null
-
-    if (location.screen === 'app') {
-      return [
-        ...items,
-        <NavigationItem
-          title={openedApp ? openedApp.name || 'Unknown app' : 'Permissions'}
-          badge={{
-            label:
-              (openedApp && openedApp.identifier) ||
-              shortenAddress(location.address),
-            title: `Address: ${location.address}`,
-          }}
-        />,
-      ]
-    }
-
-    const entity = resolveEntity && resolveEntity(openedEntityAddress)
-
-    if (entity && entity.type === 'app') {
-      return [
-        ...items,
-        <NavigationItem
-          title="Entity permissions"
-          badge={{
-            label: entity.app.identifier || shortenAddress(location.address),
-            title: `Address: ${location.address}`,
-          }}
-        />,
-      ]
-    }
-
-    if (openedEntityAddress) {
-      return [
-        ...items,
-        <NavigationItem
-          title="Entity permissions"
-          address={openedEntityAddress}
-          entity={entity}
-        />,
-      ]
-    }
-
-    return items
-  }
-
-  render() {
-    const {
-      apps,
-      appsLoading,
-      permissionsLoading,
-      params,
-      wrapper,
-    } = this.props
-    const { showAssignPermissionPanel, animateScreens } = this.state
-    const location = this.getLocation(params)
-
-    return (
-      <PermissionsConsumer>
-        {({ resolveEntity, resolveRole, permissions }) => {
-          const navigationItems = this.getNavigationItems(
-            location,
-            resolveEntity
-          )
-
-          const managedRole =
-            location.screen === 'app' &&
-            location.app &&
-            location.secondaryScreen === 'role'
-              ? resolveRole(location.app.proxyAddress, location.secondaryData)
-              : null
-
-          return (
-            <React.Fragment>
-              <AppLayout
-                title="Permissions"
-                navigationItems={navigationItems}
-                onNavigationBack={this.goToHome}
-                onMenuOpen={this.handleMenuPanelOpen}
-                smallViewPadding={30}
-                mainButton={{
-                  icon: <IconPlus />,
-                  label: 'Add permission',
-                  onClick: this.createPermission,
-                  disabled: appsLoading || permissionsLoading,
-                }}
-              >
-                <ScrollTopElement
-                  ref={el => {
-                    this._scrollTopElement = el
-                  }}
-                />
-
-                <Wrap>
-                  <Screen position={0} animate={animateScreens}>
-                    {location.screen === 'home' && (
-                      <Home
-                        apps={apps}
-                        appsLoading={appsLoading}
-                        permissionsLoading={permissionsLoading}
-                        onOpenApp={this.handleOpenApp}
-                        onOpenEntity={this.handleOpenEntity}
-                      />
-                    )}
-                  </Screen>
-
-                  <Screen position={1} animate={animateScreens}>
-                    {['app', 'entity'].includes(location.screen) && (
-                      <React.Fragment>
-                        {location.screen === 'app' && (
-                          <AppPermissions
-                            app={location.app}
-                            loading={appsLoading}
-                            address={location.address}
-                            onManageRole={this.handleManageRole}
-                          />
-                        )}
-                        {location.screen === 'entity' && (
-                          <EntityPermissions
-                            title="Permissions granted to this entity"
-                            loading={appsLoading || permissionsLoading}
-                            address={location.address}
-                          />
-                        )}
-                      </React.Fragment>
-                    )}
-                  </Screen>
-                </Wrap>
-              </AppLayout>
-
-              <AssignPermissionPanel
-                apps={apps}
-                opened={showAssignPermissionPanel}
-                onClose={this.closeAssignPermissionPanel}
-                wrapper={wrapper}
-              />
-
-              <ManageRolePanel
-                app={location.app}
-                apps={apps}
-                opened={managedRole !== null}
-                onClose={this.closeManageRolePanel}
-                role={managedRole}
-              />
-            </React.Fragment>
-          )
-        }}
-      </PermissionsConsumer>
-    )
-  }
+  return home
 }
 
-const Wrap = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflowx: hidden;
-  min-width: 320px;
-`
+function Permissions({
+  apps,
+  appsLoading,
+  onPathRequest,
+  localPath,
+  permissionsLoading,
+  wrapper,
+}) {
+  const { layoutName } = useLayout()
+  const [showAssignPermissionPanel, setShowAssignPermissionPanel] = useState(
+    false
+  )
+  const { resolveRole } = usePermissions()
+  const scrollTopElement = useRef(null)
 
-// This element is only used to reset the view scroll using scrollIntoView()
-const ScrollTopElement = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 1px;
-`
+  const [homeTab, setHomeTab] = useState(0)
+
+  // `localPath` should change every time we navigate into and out of a detailed
+  // permissions view, so this ensures the user starts at the top of the screen
+  // on every navigation change.
+  useEffect(() => {
+    // The `false` is only here as a quick fix to prevent the top banner to
+    // disappear when present. It will get removed once the issue with the top
+    // banner is identified and fixed.
+    scrollTopElement.current.scrollIntoView(false)
+  }, [localPath])
+
+  const location = getLocation(localPath, apps)
+
+  const openHome = useCallback(() => {
+    onPathRequest('/')
+  }, [onPathRequest])
+
+  const openApp = useCallback(
+    proxyAddress => {
+      onPathRequest(`/app/${proxyAddress}`)
+    },
+    [onPathRequest]
+  )
+
+  const manageRole = useCallback(
+    (proxyAddress, roleBytes) => {
+      onPathRequest(
+        location.screen === 'app'
+          ? `/app/${proxyAddress}/role/${roleBytes}`
+          : `/role/${proxyAddress}${roleBytes}`
+      )
+    },
+    [onPathRequest, location]
+  )
+
+  const createPermission = useCallback(() => {
+    setShowAssignPermissionPanel(true)
+  }, [])
+
+  const closeAssignPermissionPanel = useCallback(() => {
+    setShowAssignPermissionPanel(false)
+  }, [])
+
+  const closeManageRolePanel = useCallback(() => {
+    const location = getLocation(localPath, apps)
+    const openedApp = location.screen === 'app' ? location.app : null
+    if (openedApp) {
+      openApp(openedApp.proxyAddress)
+    } else {
+      openHome()
+    }
+  }, [apps, localPath, openApp, openHome])
+
+  const managedRole =
+    location.app && location.secondaryScreen === 'role'
+      ? resolveRole(location.app.proxyAddress, location.secondaryData)
+      : null
+
+  return (
+    <React.Fragment>
+      <div
+        css={`
+          // This element is only used to reset
+          // the view scroll using scrollIntoView()
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 1px;
+          height: 1px;
+        `}
+        ref={scrollTopElement}
+      />
+
+      <Header
+        primary={
+          location.screen === 'app' && location.app ? (
+            <Header.Title>
+              <div
+                css={`
+                  display: flex;
+                  align-items: center;
+                `}
+              >
+                <div
+                  css={`
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    margin-right: ${2 * GU}px;
+                  `}
+                >
+                  {`${location.app.name} permissions`}
+                </div>
+                <LocalLabelAppBadge app={location.app} apps={[]} noIdentifier />
+              </div>
+            </Header.Title>
+          ) : (
+            'Permissions'
+          )
+        }
+        secondary={
+          <Button
+            mode="strong"
+            onClick={createPermission}
+            label="New permission"
+            icon={<IconPlus />}
+            display={layoutName === 'small' ? 'icon' : 'label'}
+            disabled={appsLoading || permissionsLoading}
+          />
+        }
+      />
+
+      {location.screen === 'home' && (
+        <Home
+          apps={apps}
+          appsLoading={appsLoading}
+          onAssignPermission={createPermission}
+          onChangeTab={setHomeTab}
+          onManageRole={manageRole}
+          onOpenApp={openApp}
+          permissionsLoading={permissionsLoading}
+          selectedTab={homeTab}
+          tabs={HOME_TABS}
+        />
+      )}
+
+      {location.screen === 'app' && (
+        <AppPermissions
+          app={location.app}
+          loading={appsLoading}
+          onAssignPermission={createPermission}
+          onBack={openHome}
+          onManageRole={manageRole}
+        />
+      )}
+
+      <AssignPermissionPanel
+        apps={apps}
+        opened={showAssignPermissionPanel}
+        onClose={closeAssignPermissionPanel}
+        wrapper={wrapper}
+      />
+
+      <ManageRolePanel
+        app={location.app}
+        apps={apps}
+        opened={managedRole !== null}
+        onClose={closeManageRolePanel}
+        role={managedRole}
+        wrapper={wrapper}
+      />
+    </React.Fragment>
+  )
+}
+
+Permissions.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  appsLoading: PropTypes.bool.isRequired,
+  onPathRequest: PropTypes.func.isRequired,
+  localPath: PropTypes.string,
+  permissionsLoading: PropTypes.bool.isRequired,
+  wrapper: AragonType,
+}
 
 export default Permissions

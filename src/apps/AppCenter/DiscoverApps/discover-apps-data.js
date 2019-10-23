@@ -1,25 +1,23 @@
 import payrollIcon from './icons/payroll.svg'
-import espressoIcon from './icons/espresso.svg'
 import agentIcon from './icons/agent.svg'
 import surveyIcon from './icons/survey.svg'
 import pandoIcon from './icons/pando.svg'
-import tpsIcon from './icons/that-planning-suite.svg'
+import openEnterpriseIcon from './icons/open-enterprise.svg'
+import redemptionsIcon from './icons/redemptions.svg'
+import tokenRequestIcon from './icons/token-request.svg'
+import timeLockIcon from './icons/time-lock.svg'
 import { shuffleArray } from '../../../utils'
 
 export const appsInDevelopment = [
-  // Ready
+  // Experimental
   ...shuffleArray([
     {
       icon: surveyIcon,
       name: 'Survey',
-      status: 'ready',
+      status: 'experimental',
       description: `Create multi-option signaling votes.`,
       link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
     },
-  ]),
-
-  // Experimental
-  ...shuffleArray([
     {
       icon: agentIcon,
       name: 'Agent',
@@ -27,7 +25,8 @@ export const appsInDevelopment = [
       description: `
         Hold assets and perform actions from DAOs.
       `,
-      link: 'https://github.com/aragon/aragon-apps/tree/master/apps/agent',
+      link:
+        'https://hack.aragon.org/docs/guides-use-agent#installing-aragon-agent',
     },
     {
       icon: payrollIcon,
@@ -41,14 +40,24 @@ export const appsInDevelopment = [
         'https://github.com/aragon/aragon-apps/tree/master/future-apps/payroll',
     },
     {
-      icon: tpsIcon,
-      name: 'That Planning Suite',
+      icon: redemptionsIcon,
+      name: 'Redemptions',
+      status: 'experimental',
+      description: `
+        Redeem tokens in exchange for a proportional
+        amount of the organization's eligible assets
+      `,
+      link: 'https://github.com/1Hive/redemptions-app',
+    },
+    {
+      icon: openEnterpriseIcon,
+      name: 'Open Enterprise',
       status: 'experimental',
       description: `
         Suite for open and fluid organizations.
         Bounties, range voting, and more.
       `,
-      link: 'https://github.com/AutarkLabs/planning-suite',
+      link: 'https://github.com/AutarkLabs/open-enterprise',
     },
     {
       icon: pandoIcon,
@@ -60,32 +69,25 @@ export const appsInDevelopment = [
       `,
       link: 'https://github.com/pandonetwork/pando',
     },
-  ]),
-
-  // Alpha
-  ...shuffleArray([]),
-
-  // Pre-alpha
-  ...shuffleArray([
     {
-      icon: espressoIcon,
-      name: 'Espresso',
-      status: 'pre-alpha',
+      icon: tokenRequestIcon,
+      name: 'Token Request',
+      status: 'experimental',
       description: `
-        Collaborative data vault.
-        Encrypt and share data with people in your organization.
+        Requests an organization's tokens in exchange
+        for payment
       `,
-      link: 'https://github.com/espresso-org',
+      link: 'https://github.com/1Hive/token-request-app',
     },
     {
-      icon: null,
-      name: 'Liquid democracy',
-      status: 'pre-alpha',
+      icon: timeLockIcon,
+      name: 'Time Lock',
+      status: 'experimental',
       description: `
-        Delegate your voting power to others,
-        and vote on important matters.
+        Require users to lock tokens for a configurable
+        period of time in order to forward an intent
       `,
-      link: 'https://github.com/aragonlabs/liquid-democracy',
+      link: 'https://github.com/1Hive/time-lock-app',
     },
   ]),
 ]

@@ -1,6 +1,5 @@
 import { staticApps } from './static-apps'
 import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
-
 import { isAddress, isValidEnsName } from './web3-utils'
 
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
@@ -13,42 +12,36 @@ export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
  * Onboarding:
  *
  * /
- * /setup/template
- * /setup/domain
- * /setup/configure/1
- * /setup/configure/2
- * /setup/registering
+ * /open
+ * /create
  *
  * App:
  *
  * Note: a dao_address can be either of the form /0xcafe… or abc.aragonid.eth
  *
  * /{dao_address}
- * /{dao_address}/settings
  * /{dao_address}/permissions
  * /{dao_address}/0x{app_instance_address}?p={app_params}
  *
  *
  * Available modes:
- *   - start: the screen you see when opening /.
- *   - setup: the onboarding screens.
- *   - org: when the path starts with a DAO address.
- *   - invalid: the DAO given is not valid
+ *   - APP_MODE_START: the screen you see when opening /.
+ *   - APP_MODE_SETUP: the onboarding screens.
+ *   - APP_MODE_ORG: when the path starts with a DAO address.
  */
-export const parsePath = (pathname, search = '') => {
+export function parsePath(pathname, search = '') {
   const path = pathname + search
   const [, ...parts] = pathname.split('/')
   const base = { path, pathname, search }
 
-  // Start
-  if (!parts[0]) {
-    return { ...base, mode: APP_MODE_START }
-  }
-
-  // Setup
-  if (parts[0] === 'setup') {
-    const [, step = null, ...setupParts] = parts
-    return { ...base, mode: APP_MODE_SETUP, step, parts: setupParts }
+  // Onboarding
+  if (!parts[0] || parts[0] === 'open' || parts[0] === 'create') {
+    return {
+      ...base,
+      mode: parts[0] === 'create' ? APP_MODE_SETUP : APP_MODE_START,
+      action: parts[0],
+      preferences: parsePreferences(search),
+    }
   }
 
   let [dao] = parts
@@ -78,16 +71,15 @@ export const parsePath = (pathname, search = '') => {
     instancePathParts ? instancePathParts.join('/') : ''
   }`
 
-  const completeLocator = {
+  return {
     ...base,
     mode: APP_MODE_ORG,
     dao,
     instanceId: instanceId || 'home',
     params,
+    preferences: parsePreferences(search),
     instancePath,
   }
-
-  return completeLocator
 }
 
 function encodePath(path) {
@@ -97,26 +89,78 @@ function encodePath(path) {
     .join('/')
 }
 
-// Return a path string for an app instance
-export const getAppPath = ({
+// Return a path string from a locator object.
+export function getAppPath({
   dao,
   instanceId = 'home',
-  instancePath = '/',
-} = {}) => {
+  instancePath = '',
+  params,
+  search = '',
+  mode,
+  action,
+} = {}) {
   // Always start with /
   if (!instancePath.startsWith('/')) {
     instancePath = `/${instancePath}`
   }
 
+  if (mode === APP_MODE_SETUP) {
+    return '/create'
+  }
+
+  if (mode === APP_MODE_START) {
+    return `/${action}`
+  }
+
+  // Only keep the DAO name if it ends in aragonid.eth
   if (dao.endsWith(ARAGONID_ENS_DOMAIN)) {
-    dao = dao.replace(/\.aragonid\.eth$/, '')
+    dao = dao.substr(0, dao.indexOf(ARAGONID_ENS_DOMAIN) - 1)
   }
 
-  if (staticApps.has(instanceId)) {
-    return `/${dao}${staticApps.get(instanceId).route}${encodePath(
-      instancePath
-    )}`
+  if (!dao) {
+    return `/${search}`
   }
 
-  return `/${dao}/${instanceId}${encodePath(instancePath)}`
+  // The search takes priority over app params for now. App params are going to
+  // be replaced soon so it shouldn’t be an issue.
+  if (!search && params) {
+    search = `?p=${encodeURIComponent(params)}`
+  }
+
+  // Either the address of an app instance or the path of an internal app.
+  const instancePart = staticApps.has(instanceId)
+    ? staticApps.get(instanceId).route
+    : `/${instanceId}`
+
+  return '/' + dao + instancePart + encodePath(instancePath) + search
+}
+
+// Preferences
+const GLOBAL_PREFERENCES_QUERY_PARAM = '?preferences=/'
+const GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR = '&labels='
+
+function parsePreferences(search = '') {
+  const [, raw = ''] = search.split(GLOBAL_PREFERENCES_QUERY_PARAM)
+  const params = new Map()
+  const [path = null, labels = null] = raw.split(
+    GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR
+  )
+  if (labels) {
+    params.set('labels', labels)
+  }
+  return { path, params }
+}
+
+// For preferences, get the “search” part of the path (?=something)
+// This function will probably be unified with parsePath() later.
+export function getPreferencesSearch(screen, { labels } = {}) {
+  let search = `${GLOBAL_PREFERENCES_QUERY_PARAM}${screen}`
+
+  // For now `labels` is expected to be a string, but we might move the
+  // conversion here at some point in the future.
+  if (labels) {
+    search += GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR + labels
+  }
+
+  return search
 }

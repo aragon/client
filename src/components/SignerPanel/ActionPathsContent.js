@@ -1,22 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Info, RadioList, SafeLink } from '@aragon/ui'
-import SignerButton from './SignerButton'
-import AddressLink from './AddressLink'
+import { Info, Link, RadioList, GU, textStyle } from '@aragon/ui'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
-import providerString from '../../provider-strings'
+import { getProviderString } from '../../ethereum-providers'
 import { getAppPath } from '../../routing'
+import AddressLink from './AddressLink'
+import SignerButton from './SignerButton'
 
 const RADIO_ITEM_TITLE_LENGTH = 30
 
 class ActionPathsContent extends React.Component {
   static propTypes = {
+    dao: PropTypes.string.isRequired,
     direct: PropTypes.bool.isRequired,
     intent: PropTypes.object.isRequired,
-    dao: PropTypes.string.isRequired,
-    onSign: PropTypes.func.isRequired,
     paths: PropTypes.array.isRequired,
     pretransaction: PropTypes.object,
+    onSign: PropTypes.func.isRequired,
     signingEnabled: PropTypes.bool,
     walletProviderId: PropTypes.string.isRequired,
   }
@@ -47,7 +47,7 @@ class ActionPathsContent extends React.Component {
         <p>This transaction will {showPaths ? 'eventually' : ''} perform</p>
         <div
           css={`
-            margin: 10px 0 10px 15px;
+            margin: ${0.5 * GU}px 0 ${0.5 * GU}px ${1 * GU}px;
             line-height: 1.6;
           `}
         >
@@ -67,7 +67,9 @@ class ActionPathsContent extends React.Component {
                     >
                       <LocalIdentityBadge
                         entity={type === 'any-account' ? 'Any account' : value}
-                        fontSize="small"
+                        labelStyle={`
+                          ${textStyle('body3')}
+                        `}
                         compact
                       />
                     </span>
@@ -75,18 +77,18 @@ class ActionPathsContent extends React.Component {
                 }
                 if (type === 'app') {
                   return (
-                    <SafeLink
+                    <Link
                       key={index}
                       href={`#${getAppPath({
                         dao,
                         instanceId: 'permissions',
                         params: `app.${value.proxyAddress}`,
                       })}`}
-                      target="_blank"
+                      focusRingSpacing={[3, 2]}
                       css="margin-right: 2px"
                     >
                       {value.name}
-                    </SafeLink>
+                    </Link>
                   )
                 }
                 if (type === 'role' || type === 'kernelNamespace') {
@@ -114,7 +116,9 @@ class ActionPathsContent extends React.Component {
                     >
                       <LocalIdentityBadge
                         entity={value.name}
-                        fontSize="small"
+                        labelStyle={`
+                          ${textStyle('body3')}
+                        `}
                       />
                     </span>
                   )
@@ -173,8 +177,8 @@ class ActionPathsContent extends React.Component {
   }
   render() {
     const {
-      intent,
       direct,
+      intent,
       paths,
       pretransaction,
       signingEnabled,
@@ -183,20 +187,46 @@ class ActionPathsContent extends React.Component {
     const { selected } = this.state
     const showPaths = !direct
     const radioItems = paths.map(this.getPathRadioItem)
+
+    const approveTransactionMessage =
+      intent.transaction &&
+      intent.transaction.token &&
+      intent.transaction.token.spender ? (
+        <React.Fragment>
+          The first will grant a token allowance to
+          <LocalIdentityBadge
+            entity={intent.transaction.token.spender}
+            labelStyle={`
+              ${textStyle('body3')}
+            `}
+            compact
+          />
+          {'. '}
+        </React.Fragment>
+      ) : null
+
     return (
       <React.Fragment>
         {showPaths ? (
-          <div css="margin-bottom: 40px">
-            <Info.Permissions title="Permission note:">
+          <div
+            css={`
+              margin-bottom: ${3 * GU}px;
+            `}
+          >
+            <Info mode="warning" title="Permission note">
               You cannot directly perform this action. You do not have the
               necessary permissions.
-            </Info.Permissions>
-            <div css="margin-top: 25px">
+            </Info>
+            <div
+              css={`
+                margin-top: ${4 * GU}px;
+              `}
+            >
               <RadioList
                 title="Action Requirement"
                 description={
                   paths.length > 1
-                    ? 'Here are some options you can use to perform it:'
+                    ? 'Here are some options to perform this action:'
                     : 'You can perform this action through:'
                 }
                 items={radioItems}
@@ -206,21 +236,63 @@ class ActionPathsContent extends React.Component {
             </div>
           </div>
         ) : (
-          <h2 css="margin-bottom: 10px">
+          <h2
+            css={`
+              margin-bottom: ${2 * GU}px;
+            `}
+          >
             You can directly perform this action:
           </h2>
         )}
-        <Info.Action icon={null} title="Action to be triggered">
+        <Info mode="description" title="Action to be triggered">
           {this.renderDescription(showPaths, intent)}
-        </Info.Action>
-        {pretransaction && (
-          <div css="margin-top: 20px">
-            <Info.Action title="Two transactions required">
-              This action requires two transactions to be signed in{' '}
-              {providerString('your Ethereum provider', walletProviderId)},
-              please confirm them one after another.
-            </Info.Action>
+        </Info>
+        {intent.external && (
+          <div
+            css={`
+              margin-top: ${3 * GU}px;
+            `}
+          >
+            <Info mode="warning" title="Warning">
+              {intent.installed ? (
+                `Be aware that this is an attempt to execute a transaction on
+                 another app that is installed in this organization. You may
+                 want to double check that app’s functionality before
+                 proceeding.`
+              ) : (
+                <span>
+                  Be aware that this is an attempt to execute a transaction on
+                  an <strong css="font-weight: 800">external contract</strong>{' '}
+                  that has not been reviewed or audited. This means that it
+                  might behave unexpectedly. Please{' '}
+                  <strong css="font-weight: 800">
+                    make sure you trust the contract at
+                  </strong>{' '}
+                  <LocalIdentityBadge
+                    entity={intent.to}
+                    labelStyle={`
+                      ${textStyle('body3')}
+                    `}
+                    compact
+                  />{' '}
+                  before proceeding.
+                </span>
+              )}
+            </Info>
           </div>
+        )}
+        {pretransaction && (
+          <Info
+            title="Two transactions required"
+            css={`
+              margin-top: ${3 * GU}px;
+            `}
+          >
+            This action requires two transactions to be signed in{' '}
+            {getProviderString('your Ethereum provider', walletProviderId)}.{' '}
+            {approveTransactionMessage}
+            Please confirm them one after another.
+          </Info>
         )}
         <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>
           Create transaction

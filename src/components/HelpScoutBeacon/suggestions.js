@@ -12,9 +12,9 @@ const suggestions = [
     ],
   ],
   [
-    'settings',
+    'organization',
     [
-      '5cce3bd204286306738eb793', // settings
+      '5cce3bd204286306738eb793', // organization
       aboutAragon,
     ],
   ],
@@ -43,21 +43,21 @@ const suggestions = [
     ],
   ],
   [
-    'finance',
+    '0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae',
     [
       '5cce39b32c7d3a177d6e5b8b', // finance
       aboutAragon,
     ],
   ],
   [
-    'token manager',
+    '0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f',
     [
       '5cce38892c7d3a177d6e5b84', // token manager
       aboutAragon,
     ],
   ],
   [
-    'voting',
+    '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
     [
       '5cce393a2c7d3a177d6e5b87', // voting
       aboutAragon,

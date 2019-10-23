@@ -13,10 +13,7 @@ import {
 } from './components/IdentityManager/IdentityManager'
 import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
-import { atou } from './string-utils'
-
-const KEYCODE_UP = 38
-const KEYCODE_DOWN = 40
+import { addressesEqual } from './web3-utils'
 
 // Update `now` at a given interval.
 export function useNow(updateEvery = 1000) {
@@ -152,7 +149,7 @@ export function useRepoDetails(baseUrl, detailsUrl) {
   return usePromise(fetchDescription, [detailsUrl], null)
 }
 
-export function useEsc(cb, deps) {
+export function useEsc(cb) {
   const handlekeyDown = useCallback(
     e => {
       if (e.keyCode === keycodes.esc) {
@@ -165,38 +162,6 @@ export function useEsc(cb, deps) {
     window.addEventListener('keydown', handlekeyDown)
     return () => window.removeEventListener('keydown', handlekeyDown)
   }, [handlekeyDown])
-}
-
-const QUERY_VAR = '?labels='
-// checks if query string var exists
-// parses data and validates data consistency (will throw if prop don't exist)
-export function useSharedLabels(dao) {
-  const [isSharedLink, setIsSharedLink] = useState(false)
-  const [sharedLabels, setSharedLabels] = useState([])
-
-  const removeSharedLink = useCallback(
-    () => (window.location.hash = `#/${dao}`),
-    [dao]
-  )
-
-  useEffect(() => {
-    const index = window.location.hash.indexOf(QUERY_VAR)
-    if (index > -1) {
-      const raw = window.location.hash.substr(index + QUERY_VAR.length)
-      try {
-        const data = JSON.parse(atou(raw))
-        setSharedLabels(data.map(({ address, name }) => ({ address, name })))
-        setIsSharedLink(true)
-      } catch (e) {
-        console.warn(
-          'There was an error parsing/validating the shared data: ',
-          e
-        )
-      }
-    }
-  }, [])
-
-  return { isSharedLink, setIsSharedLink, sharedLabels, removeSharedLink }
 }
 
 export function useSelected(initial) {
@@ -238,7 +203,9 @@ export function useOnBlur(cb, ref = useRef()) {
   /* eslint-enable react-hooks/rules-of-hooks */
   const handleBlur = useCallback(
     e => {
-      if (!ref.current.contains(e.relatedTarget)) {
+      // when event is triggered by click relatedTarget is null
+      // when another element is gaining focus then it holds some value
+      if (e.relatedTarget && !ref.current.contains(e.relatedTarget)) {
         cb()
       }
     },
@@ -275,8 +242,8 @@ export function useArrowKeysFocus(query, containerRef = useRef()) {
   const handleKeyDown = useCallback(
     e => {
       const { keyCode } = e
-      if (keyCode === KEYCODE_UP || keyCode === KEYCODE_DOWN) {
-        cycleFocus(e, keyCode === KEYCODE_UP ? -1 : 1)
+      if (keyCode === keycodes.up || keyCode === keycodes.down) {
+        cycleFocus(e, keyCode === keycodes.up ? -1 : 1)
       }
     },
     [cycleFocus]
@@ -314,26 +281,34 @@ export function useLocalIdentity(entity) {
     }
   }, [resolve, entity])
 
+  const handleRemove = useCallback(
+    addresses => {
+      if (addresses.some(address => addressesEqual(entity, address))) {
+        setName(null)
+      }
+    },
+    [entity]
+  )
+
   useEffect(() => {
     handleResolve()
-    const subscription = identityEvents$.subscribe(({ address, type }) => {
-      switch (type) {
+    const subscription = identityEvents$.subscribe(event => {
+      switch (event.type) {
         case identityEventTypes.MODIFY:
-          if (entity.toLowerCase() === address.toLowerCase()) {
+          if (addressesEqual(entity, event.address)) {
             handleResolve()
           }
           return
-        case identityEventTypes.CLEAR:
-          setName(null)
-          return
         case identityEventTypes.IMPORT:
-          handleResolve()
+          return handleResolve()
+        case identityEventTypes.REMOVE:
+          return handleRemove(event.addresses)
       }
     })
     return () => {
       subscription.unsubscribe()
     }
-  }, [identityEvents$, handleResolve, entity])
+  }, [identityEvents$, handleResolve, entity, handleRemove])
 
-  return { name }
+  return { name, handleResolve }
 }

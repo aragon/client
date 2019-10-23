@@ -1,16 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { IconPlus, theme } from '@aragon/ui'
+import { IconPlus, GU, RADIUS, useTheme } from '@aragon/ui'
+import { network } from '../../../environment'
+import { getKnownOrganization } from '../../../known-organizations'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
-import FavoriteRow from './FavoriteRow'
-import ItemButton from './ItemButton'
+import { addressesEqual } from '../../../web3-utils'
+import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
+import FavoritesMenuItemButton from '../../FavoritesMenu/FavoritesMenuItemButton'
+import OrgIcon from '../../OrgIcon/OrgIcon'
 
 class Favorites extends React.Component {
   static propTypes = {
     favoriteDaos: PropTypes.arrayOf(FavoriteDaoType),
     currentDao: DaoItemType,
     onUpdate: PropTypes.func.isRequired,
+    theme: PropTypes.object,
   }
 
   state = { localDaos: [] }
@@ -42,7 +46,9 @@ class Favorites extends React.Component {
     const localDaos = [
       ...favoriteDaos
         .map(dao => ({ ...dao, favorited: true }))
-        .sort(dao => (dao.address === currentDao.address ? -1 : 1)),
+        .sort(dao =>
+          addressesEqual(dao.address, currentDao.address) ? -1 : 0
+        ),
     ]
 
     // If the current DAO is favorited, it is already in the local list
@@ -52,13 +58,17 @@ class Favorites extends React.Component {
   }
 
   isDaoFavorited({ address }) {
-    return this.props.favoriteDaos.some(dao => dao.address === address)
+    return this.props.favoriteDaos.some(dao =>
+      addressesEqual(dao.address, address)
+    )
   }
 
   currentDaoWithFavoriteState() {
     const { currentDao } = this.props
     const { localDaos } = this.state
-    const daoItem = localDaos.find(dao => currentDao.address === dao.address)
+    const daoItem = localDaos.find(dao =>
+      addressesEqual(currentDao.address, dao.address)
+    )
     return {
       ...currentDao,
       favorited: daoItem ? daoItem.favorited : false,
@@ -69,90 +79,89 @@ class Favorites extends React.Component {
     window.location.hash = ''
   }
 
-  handleDaoOpened = dao => {
-    window.location.hash = `/${dao.name || dao.address}`
+  handleOpenOrg = address => {
+    const { currentDao, favoriteDaos } = this.props
+    const dao = [currentDao, ...favoriteDaos].find(dao =>
+      addressesEqual(dao.address, address)
+    )
+    window.location.hash = `/${(dao && dao.name) || address}`
   }
 
-  handleFavoriteUpdate = ({ address }, favorited) => {
+  handleFavoriteUpdate = (address, favorited) => {
     const { localDaos } = this.state
 
     this.setState({
       localDaos: localDaos.map(dao =>
-        dao.address === address ? { ...dao, favorited } : dao
+        addressesEqual(dao.address, address) ? { ...dao, favorited } : dao
       ),
     })
   }
 
   render() {
+    const { theme } = this.props
     const { localDaos } = this.state
     const currentDao = this.currentDaoWithFavoriteState()
-    const daosListWithoutCurrent = localDaos.filter(
-      dao => dao.address !== currentDao.address
-    )
+
+    const allItems = localDaos.map(org => {
+      const knownOrg = getKnownOrganization(network.type, org.address)
+      return {
+        ...org,
+        id: org.address,
+        name: knownOrg ? knownOrg.name : org.name || org.address,
+        image: <OrgIcon orgAddress={org.address} />,
+      }
+    })
+
+    const favoriteItems = [...allItems].sort((org, org2) => {
+      const { name = '' } = org
+      const { name: name2 = '' } = org
+      return addressesEqual(org.address, currentDao.address)
+        ? -1
+        : addressesEqual(org2.address, currentDao.address)
+        ? 1
+        : name.localeCompare(name2)
+    })
+
     return (
-      <section aria-label="Organizations">
-        <ItemButton
+      <section
+        aria-label="Organizations"
+        css={`
+          width: ${42 * GU}px;
+        `}
+      >
+        <FavoritesMenu
+          items={favoriteItems}
+          onActivate={this.handleOpenOrg}
+          onFavoriteUpdate={this.handleFavoriteUpdate}
+        />
+        <FavoritesMenuItemButton
           onClick={this.handleGoHome}
           css={`
             width: 100%;
-            padding: 0 20px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid ${theme.contentBorder};
+            padding: 0 ${2 * GU}px;
+            border-top: 1px solid ${theme.border};
           `}
         >
           <span
             css={`
               display: flex;
               align-items: center;
-              width: 24px;
-              margin-right: 13px;
-              color: ${theme.accent};
+              margin-right: ${1 * GU}px;
+              color: ${theme.accentContent};
+              background: ${theme.accent};
+              border-radius: ${RADIUS}px;
             `}
           >
             <IconPlus />
           </span>
-          <span>Open organization…</span>
-        </ItemButton>
-
-        <SectionTitle>Current</SectionTitle>
-        <FavoriteRow
-          dao={currentDao}
-          onOpen={this.handleDaoOpened}
-          onUpdate={this.handleFavoriteUpdate}
-        />
-        {daosListWithoutCurrent.length > 0 && (
-          <React.Fragment>
-            <SectionTitle>Favorites</SectionTitle>
-            <List>
-              {daosListWithoutCurrent.map(dao => (
-                <li key={dao.address}>
-                  <FavoriteRow
-                    dao={dao}
-                    onOpen={this.handleDaoOpened}
-                    onUpdate={this.handleFavoriteUpdate}
-                  />
-                </li>
-              ))}
-            </List>
-          </React.Fragment>
-        )}
+          <span>Open another organization</span>
+        </FavoritesMenuItemButton>
       </section>
     )
   }
 }
 
-const SectionTitle = styled.h1`
-  margin: 10px 20px;
-  color: #707070;
-  text-transform: lowercase;
-  font-variant: small-caps;
-  font-weight: 600;
-`
-
-const List = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
-`
-
-export default Favorites
+export default props => {
+  const theme = useTheme()
+  return <Favorites theme={theme} {...props} />
+}

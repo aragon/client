@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import provider from 'eth-provider'
 import {
-  getAssetBridge,
+  getAppLocator,
   getDefaultEthNode,
   getEthNetworkType,
   getIpfsGateway,
@@ -10,10 +10,11 @@ import { getNetworkConfig } from './network-config'
 import { noop } from './utils'
 import { toWei, getInjectedProvider } from './web3-utils'
 
-const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault']
+const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault', 'Agent']
 const networkType = getEthNetworkType()
 
 export const appIds = {
+  Agent: '0x9ac98dc5f995bf0211ed589ef022719d1487e5cb2bab505676f0d084c07cf89a',
   Finance: '0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae',
   TokenManager:
     '0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f',
@@ -69,28 +70,29 @@ export const sortAppsPair = (app1, app2) => {
 }
 
 // Use appOverrides to override specific keys in an app instance, e.g. the start_url or script location
-// Needed to change app name on sidebar
 const appOverrides = {
+  // Needed to change app name on sidebar for old versions whose aragonPM repo content cannot be changed anymore
   [appIds['TokenManager']]: { name: 'Tokens' },
 }
 
 const appLocator = {}
-const assetBridge = getAssetBridge()
-if (assetBridge === 'local') {
+const appLocatorString = getAppLocator()
+if (appLocatorString === 'local') {
   /******************
    * Local settings *
    ******************/
   Object.assign(appLocator, {
+    [appIds['Agent']]: 'http://localhost:3005/',
     [appIds['Finance']]: 'http://localhost:3002/',
     [appIds['TokenManager']]: 'http://localhost:3003/',
     [appIds['Survey']]: 'http://localhost:3004/',
     [appIds['Voting']]: 'http://localhost:3001/',
   })
-} else if (assetBridge === 'ipfs') {
+} else if (appLocatorString === 'ipfs') {
   // We don't need to provide anything here as by default, the apps will be loaded from IPFS
-} else if (assetBridge) {
+} else if (appLocatorString) {
   console.error(
-    `The specified asset bridge (${assetBridge}) in the configuration is not one of 'ipfs', or 'local'. Defaulting to using 'ipfs'.`
+    `The specified app locator (${appLocatorString}) in the configuration is not one of 'ipfs', or 'local'. Defaulting to using 'ipfs'.`
   )
 }
 export { appLocator, appOverrides }
@@ -133,6 +135,3 @@ export const defaultGasPriceFn =
   networkType === 'main'
     ? noop // On mainnet rely on the provider's gas estimation
     : () => toWei('10', 'gwei') // on all other networks just hardcode it
-
-// Get the address of the demo DAO
-export const getDemoDao = () => process.env.ARAGON_DEMO_DAO || ''

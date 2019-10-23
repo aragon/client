@@ -2,17 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
-import { useViewport } from '@aragon/ui'
-import { AppCenter, Permissions, Settings } from './apps'
-import AppIFrame from './components/App/AppIFrame'
+import { AppCenter, Home, Organization, Permissions } from './apps'
 import App404 from './components/App404/App404'
-import Home from './components/Home/Home'
-import Preferences from './components/Preferences/Preferences'
-import CombinedPanel from './components/MenuPanel/CombinedPanel'
+import AppIFrame from './components/App/AppIFrame'
+import AppInternal from './components/App/AppInternal'
+import AppLoader from './components/App/AppLoader'
+import OrgView from './components/OrgView/OrgView'
 import SignerPanel from './components/SignerPanel/SignerPanel'
 import UpgradeBanner from './components/Upgrade/UpgradeBanner'
+import UpgradeModal from './components/Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from './components/Upgrade/UpgradeOrganizationPanel'
-import AppLoader from './components/App/AppLoader'
 import { useIdentity } from './components/IdentityManager/IdentityManager'
 import {
   AppType,
@@ -20,19 +19,23 @@ import {
   AragonType,
   DaoAddressType,
   DaoStatusType,
-  EthereumAddressType,
   RepoType,
 } from './prop-types'
 import { getAppPath } from './routing'
-import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
+import {
+  APP_MODE_ORG,
+  APPS_STATUS_LOADING,
+  DAO_STATUS_LOADING,
+} from './symbols'
 import { addressesEqual } from './web3-utils'
+
+const SHOW_UPGRADE_MODAL_KEY = 'SHOW_UPGRADE_MODAL_FIRST_TIME'
+const OCTOBER_1ST_2019 = new Date('October 1 2019 00:00').getTime()
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
-    account: EthereumAddressType,
     apps: PropTypes.arrayOf(AppType).isRequired,
     appsStatus: AppsStatusType.isRequired,
-    autoClosingPanel: PropTypes.bool.isRequired,
     canUpgradeOrg: PropTypes.bool,
     connected: PropTypes.bool,
     daoAddress: DaoAddressType.isRequired,
@@ -41,8 +44,8 @@ class Wrapper extends React.PureComponent {
     historyPush: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
-    onRequestAppsReload: PropTypes.func.isRequired,
     onRequestEnable: PropTypes.func.isRequired,
+    openPreferences: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
@@ -56,7 +59,6 @@ class Wrapper extends React.PureComponent {
   }
 
   static defaultProps = {
-    account: '',
     connected: false,
     transactionBag: null,
     signatureBag: null,
@@ -67,15 +69,15 @@ class Wrapper extends React.PureComponent {
 
   state = {
     appLoading: false,
-    menuPanelOpened: !this.props.autoClosingPanel,
     orgUpgradePanelOpened: false,
-    preferencesOpened: false,
+    upgradeModalOpened: false,
   }
 
   identitySubscription = null
 
   componentDidMount() {
     this.startIdentitySubscription()
+    this.showOrgUpgradePanelIfFirstVisit()
   }
 
   componentWillUnmount() {
@@ -83,161 +85,25 @@ class Wrapper extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    this.updateAutoClosingPanel(prevProps)
     this.updateIdentityEvents(prevProps)
     this.updateInstancePath(prevProps)
+    if (prevProps.locator !== this.props.locator) {
+      this.showOrgUpgradePanelIfFirstVisit()
+    }
   }
 
   updateInstancePath(prevProps) {
     const { locator } = this.props
-    if (locator.instancePath !== prevProps.locator.instancePath) {
+    if (
+      locator.instancePath === prevProps.locator.instancePath &&
+      this.appIFrame
+    ) {
       this.appIFrame.sendMessage({
         from: 'wrapper',
         name: 'path',
         value: locator.instancePath,
       })
     }
-  }
-
-  updateAutoClosingPanel(prevProps) {
-    const { autoClosingPanel } = this.props
-    if (autoClosingPanel !== prevProps.autoClosingPanel) {
-      this.setState({ menuPanelOpened: !autoClosingPanel })
-      this.sendDisplayMenuButtonStatus()
-    }
-  }
-
-  updateIdentityEvents(prevProps) {
-    const { identityEvents$ } = this.props
-    if (identityEvents$ !== prevProps.identityEvents$) {
-      this.stopIdentitySubscription()
-      this.startIdentitySubscription()
-    }
-  }
-
-  startIdentitySubscription() {
-    const { identityEvents$ } = this.props
-    this.identitySubscription = identityEvents$.subscribe(event => {
-      if (this.appIFrame) {
-        this.appIFrame.reloadIframe()
-      }
-    })
-  }
-
-  stopIdentitySubscription() {
-    if (this.identitySubscription) {
-      this.identitySubscription.unsubscribe()
-    }
-  }
-
-  sendDisplayMenuButtonStatus() {
-    const { autoClosingPanel } = this.props
-    if (this.appIFrame) {
-      this.appIFrame.sendMessage({
-        from: 'wrapper',
-        name: 'displayMenuButton',
-        value: autoClosingPanel,
-      })
-    }
-  }
-
-  openApp = (instanceId, instancePath) => {
-    if (this.props.autoClosingPanel) {
-      this.handleMenuPanelClose()
-    }
-
-    const { historyPush, locator } = this.props
-    historyPush(getAppPath({ dao: locator.dao, instanceId, instancePath }))
-  }
-
-  handleAppIFrameRef = appIFrame => {
-    this.appIFrame = appIFrame
-  }
-
-  handleAppIFrameLoadingSuccess = async ({ iframeElement }) => {
-    const {
-      apps,
-      wrapper,
-      locator: { instanceId },
-    } = this.props
-    if (!wrapper) {
-      console.error(
-        `Attempted to connect app (${instanceId}) before aragonAPI was ready`
-      )
-      return
-    }
-    if (!apps.find(app => addressesEqual(app.proxyAddress, instanceId))) {
-      console.error(
-        `The requested app (${instanceId}) could not be found in the installed apps`
-      )
-      return
-    }
-
-    await wrapper.connectAppIFrame(iframeElement, instanceId)
-
-    this.appIFrame.sendMessage({
-      from: 'wrapper',
-      name: 'ready',
-      value: true,
-    })
-    this.sendDisplayMenuButtonStatus()
-    this.setState({ appLoading: false })
-  }
-  handleAppIFrameLoadingStart = event => {
-    this.setState({ appLoading: true })
-  }
-  handleAppIFrameLoadingCancel = event => {
-    this.setState({ appLoading: false })
-  }
-  handleAppIFrameLoadingError = event => {
-    this.setState({ appLoading: false })
-  }
-  handleAppMessage = ({ data: { name, value } }) => {
-    if (
-      // “menuPanel: Boolean” is deprecated but still supported for a while if
-      // value is `true`.
-      name === 'menuPanel' ||
-      // “requestMenu: true” should now be used.
-      name === 'requestMenu'
-    ) {
-      this.setState({ menuPanelOpened: value === true })
-    }
-
-    if (name === 'requestPath') {
-      this.openApp(value[1] || this.props.locator.instanceId, value[0])
-    }
-
-    if (name === 'ready') {
-      this.appIFrame.sendMessage({
-        from: 'wrapper',
-        name: 'apps',
-        value: this.props.apps,
-      })
-      this.appIFrame.sendMessage({
-        from: 'wrapper',
-        name: 'path',
-        value: this.props.locator.instancePath,
-      })
-    }
-  }
-  handleMenuPanelOpen = () => {
-    this.setState({ menuPanelOpened: true })
-  }
-  handleMenuPanelClose = () => {
-    this.setState({ menuPanelOpened: false })
-  }
-  handleClosePreferences = () => {
-    this.setState({ preferencesOpened: false })
-  }
-  handleOpenPreferences = () => {
-    if (this.props.autoClosingPanel) {
-      this.handleMenuPanelClose()
-    }
-    this.setState({ preferencesOpened: true })
-  }
-  // params need to be a string
-  handleParamsRequest = params => {
-    this.openApp(this.props.locator.instanceId)
   }
 
   getAppInstancesGroups = memoize(apps =>
@@ -279,8 +145,117 @@ class Wrapper extends React.PureComponent {
     }, [])
   )
 
+  updateIdentityEvents(prevProps) {
+    const { identityEvents$ } = this.props
+    if (identityEvents$ !== prevProps.identityEvents$) {
+      this.stopIdentitySubscription()
+      this.startIdentitySubscription()
+    }
+  }
+
+  startIdentitySubscription() {
+    const { identityEvents$ } = this.props
+    this.identitySubscription = identityEvents$.subscribe(event => {
+      if (this.appIFrame) {
+        this.appIFrame.reloadIframe()
+      }
+    })
+  }
+
+  stopIdentitySubscription() {
+    if (this.identitySubscription) {
+      this.identitySubscription.unsubscribe()
+    }
+  }
+
+  openApp = (instanceId, { params, instancePath } = {}) => {
+    const { historyPush, locator } = this.props
+    historyPush(
+      getAppPath({ dao: locator.dao, instanceId, params, instancePath })
+    )
+  }
+
+  handleAppIFrameRef = appIFrame => {
+    this.appIFrame = appIFrame
+  }
+
+  handleAppIFrameLoadingSuccess = async ({ iframeElement }) => {
+    const {
+      apps,
+      wrapper,
+      locator: { instanceId },
+    } = this.props
+    if (!wrapper) {
+      console.error(
+        `Attempted to connect app (${instanceId}) before aragonAPI was ready`
+      )
+      return
+    }
+    if (!apps.find(app => addressesEqual(app.proxyAddress, instanceId))) {
+      console.error(
+        `The requested app (${instanceId}) could not be found in the installed apps`
+      )
+      return
+    }
+
+    await wrapper.connectAppIFrame(iframeElement, instanceId)
+
+    this.appIFrame.sendMessage({
+      from: 'wrapper',
+      name: 'ready',
+      value: true,
+    })
+    this.setState({ appLoading: false })
+  }
+  handleAppIFrameLoadingStart = event => {
+    this.setState({ appLoading: true })
+  }
+  handleAppIFrameLoadingCancel = event => {
+    this.setState({ appLoading: false })
+  }
+  handleAppIFrameLoadingError = event => {
+    this.setState({ appLoading: false })
+  }
+
+  // params need to be a string
+  handleParamsRequest = params => {
+    this.openApp(this.props.locator.instanceId, { params })
+  }
+
+  // Update the local path of the current instance
+  handlePathRequest = instancePath => {
+    this.openApp(this.props.locator.instanceId, { instancePath })
+  }
+
+  handleUpgradeModalOpen = () => {
+    this.setState({
+      upgradeModalOpened: true,
+    })
+  }
+  handleUpgradeModalClose = () => {
+    this.setState({
+      upgradeModalOpened: false,
+    })
+  }
   showOrgUpgradePanel = () => {
-    this.setState({ orgUpgradePanelOpened: true })
+    this.setState({
+      // Only open the upgrade panel if the org can be upgraded
+      orgUpgradePanelOpened: this.props.canUpgradeOrg,
+      upgradeModalOpened: false,
+    })
+  }
+  showOrgUpgradePanelIfFirstVisit = () => {
+    // Show the upgrade showcase on first load up to a certain point in time
+    if (
+      this.props.locator.mode === APP_MODE_ORG &&
+      localStorage.getItem(SHOW_UPGRADE_MODAL_KEY) !== 'false' &&
+      Date.now() < OCTOBER_1ST_2019
+    ) {
+      localStorage.setItem(SHOW_UPGRADE_MODAL_KEY, 'false')
+      this.setState({
+        upgradeModalOpened: true,
+      })
+    }
   }
   hideOrgUpgradePanel = () => {
     this.setState({ orgUpgradePanelOpened: false })
@@ -288,16 +263,14 @@ class Wrapper extends React.PureComponent {
 
   render() {
     const {
-      account,
       apps,
       appsStatus,
-      autoClosingPanel,
       canUpgradeOrg,
       connected,
       daoAddress,
       daoStatus,
       locator,
-      onRequestAppsReload,
+      openPreferences,
       onRequestEnable,
       repos,
       transactionBag,
@@ -310,106 +283,100 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
 
-    const {
-      appLoading,
-      menuPanelOpened,
-      orgUpgradePanelOpened,
-      preferencesOpened,
-    } = this.state
+    const { appLoading, orgUpgradePanelOpened, upgradeModalOpened } = this.state
 
     const currentApp = apps.find(app =>
       addressesEqual(app.proxyAddress, locator.instanceId)
     )
 
     return (
-      <Main visible={visible}>
-        <Preferences
-          dao={locator.dao}
-          opened={preferencesOpened}
-          onClose={this.handleClosePreferences}
-          wrapper={wrapper}
-        />
-
+      <div
+        css={`
+          display: ${visible ? 'flex' : 'none'};
+          flex-direction: column;
+          position: relative;
+          z-index: 0;
+          height: 100vh;
+          min-width: 360px;
+        `}
+      >
         <BannerWrapper>
           <UpgradeBanner
             visible={canUpgradeOrg}
-            onUpgrade={this.showOrgUpgradePanel}
+            onMoreInfo={this.handleUpgradeModalOpen}
           />
         </BannerWrapper>
 
-        <CombinedPanel
-          account={account}
+        <OrgView
           activeInstanceId={locator.instanceId}
           appInstanceGroups={this.getAppInstancesGroups(apps)}
           apps={apps}
           appsStatus={appsStatus}
-          autoClosing={autoClosingPanel}
           connected={connected}
           daoAddress={daoAddress}
           daoStatus={daoStatus}
-          onMenuPanelClose={this.handleMenuPanelClose}
-          onMenuPanelOpen={this.handleMenuPanelOpen}
           onOpenApp={this.openApp}
-          onOpenPreferences={this.handleOpenPreferences}
-          onRequestAppsReload={onRequestAppsReload}
+          onOpenPreferences={openPreferences}
           onRequestEnable={onRequestEnable}
-          opened={menuPanelOpened}
         >
-          <AppScreen>
-            <AppLoader
-              appLoading={appLoading}
-              appsLoading={!wrapper || appsStatus === APPS_STATUS_LOADING}
-              currentAppName={currentApp ? currentApp.name : ''}
-              daoLoading={daoStatus === DAO_STATUS_LOADING}
-              instanceId={locator.instanceId}
-            >
-              {this.renderApp(
-                locator.instanceId,
-                locator.params,
-                locator.instancePath
-              )}
-            </AppLoader>
-          </AppScreen>
-        </CombinedPanel>
-        <SignerPanel
-          account={account}
-          apps={apps}
-          dao={locator.dao}
-          onRequestEnable={onRequestEnable}
-          transactionBag={transactionBag}
-          signatureBag={signatureBag}
-          walletNetwork={walletNetwork}
-          walletProviderId={walletProviderId}
-          walletWeb3={walletWeb3}
-          web3={web3}
-        />
+          <AppLoader
+            appLoading={appLoading}
+            appsLoading={!wrapper || appsStatus === APPS_STATUS_LOADING}
+            currentAppName={currentApp ? currentApp.name : ''}
+            daoLoading={daoStatus === DAO_STATUS_LOADING}
+            instanceId={locator.instanceId}
+          >
+            {this.renderApp(
+              locator.instanceId,
+              locator.params,
+              locator.instancePath
+            )}
+          </AppLoader>
 
-        {canUpgradeOrg && (
-          <UpgradeOrganizationPanel
-            daoAddress={daoAddress}
-            opened={orgUpgradePanelOpened}
-            onClose={this.hideOrgUpgradePanel}
-            repos={repos}
-            wrapper={wrapper}
+          <SignerPanel
+            apps={apps}
+            dao={locator.dao}
+            onRequestEnable={onRequestEnable}
+            transactionBag={transactionBag}
+            signatureBag={signatureBag}
+            walletNetwork={walletNetwork}
+            walletProviderId={walletProviderId}
+            walletWeb3={walletWeb3}
+            web3={web3}
           />
-        )}
-      </Main>
+
+          {canUpgradeOrg && (
+            <UpgradeOrganizationPanel
+              daoAddress={daoAddress}
+              opened={orgUpgradePanelOpened}
+              onClose={this.hideOrgUpgradePanel}
+              repos={repos}
+              wrapper={wrapper}
+            />
+          )}
+        </OrgView>
+
+        <UpgradeModal
+          visible={upgradeModalOpened}
+          onClose={this.handleUpgradeModalClose}
+          onUpgrade={this.showOrgUpgradePanel}
+          canUpgradeOrg={canUpgradeOrg}
+        />
+      </div>
     )
   }
   renderApp(instanceId, params, instancePath) {
     const {
-      account,
       apps,
       appsStatus,
-      connected,
+      canUpgradeOrg,
       daoAddress,
-      locator,
       permissionsLoading,
       repos,
       walletNetwork,
+      walletProviderId,
       walletWeb3,
       wrapper,
-      canUpgradeOrg,
     } = this.props
 
     const appsLoading = appsStatus === APPS_STATUS_LOADING
@@ -417,60 +384,63 @@ class Wrapper extends React.PureComponent {
 
     if (instanceId === 'home') {
       return (
-        <Home
-          apps={apps}
-          connected={connected}
-          dao={locator.dao}
-          onMessage={this.handleAppMessage}
-          onOpenApp={this.openApp}
-        />
+        <AppInternal>
+          <Home apps={apps} onOpenApp={this.openApp} />
+        </AppInternal>
       )
     }
 
     if (instanceId === 'permissions') {
       return (
-        <Permissions
-          apps={apps}
-          appsLoading={appsLoading}
-          permissionsLoading={permissionsLoading}
-          params={params}
-          onMessage={this.handleAppMessage}
-          onParamsRequest={this.handleParamsRequest}
-          wrapper={wrapper}
-        />
+        <AppInternal>
+          <Permissions
+            apps={apps}
+            appsLoading={appsLoading}
+            permissionsLoading={permissionsLoading}
+            localPath={instancePath}
+            onMessage={this.handleAppMessage}
+            onPathRequest={this.handlePathRequest}
+            wrapper={wrapper}
+          />
+        </AppInternal>
       )
     }
 
     if (instanceId === 'apps') {
       return (
-        <AppCenter
-          appInstanceGroups={this.getAppInstancesGroups(apps)}
-          daoAddress={daoAddress}
-          params={params}
-          repos={repos}
-          canUpgradeOrg={canUpgradeOrg}
-          reposLoading={reposLoading}
-          onMessage={this.handleAppMessage}
-          onUpgradeAll={this.showOrgUpgradePanel}
-          onParamsRequest={this.handleParamsRequest}
-          wrapper={wrapper}
-        />
+        <AppInternal>
+          <AppCenter
+            appInstanceGroups={this.getAppInstancesGroups(apps)}
+            daoAddress={daoAddress}
+            params={params}
+            repos={repos}
+            canUpgradeOrg={canUpgradeOrg}
+            reposLoading={reposLoading}
+            onMessage={this.handleAppMessage}
+            onUpgradeAll={this.showOrgUpgradePanel}
+            onParamsRequest={this.handleParamsRequest}
+            wrapper={wrapper}
+          />
+        </AppInternal>
       )
     }
 
-    if (instanceId === 'settings') {
+    if (instanceId === 'organization') {
       return (
-        <Settings
-          account={account}
-          apps={apps}
-          appsLoading={appsLoading}
-          daoAddress={daoAddress}
-          onMessage={this.handleAppMessage}
-          onOpenApp={this.openApp}
-          walletNetwork={walletNetwork}
-          walletWeb3={walletWeb3}
-          wrapper={wrapper}
-        />
+        <AppInternal>
+          <Organization
+            apps={apps}
+            appsLoading={appsLoading}
+            canUpgradeOrg={canUpgradeOrg}
+            daoAddress={daoAddress}
+            onMessage={this.handleAppMessage}
+            onOpenApp={this.openApp}
+            onShowOrgVersionDetails={this.handleUpgradeModalOpen}
+            walletNetwork={walletNetwork}
+            walletWeb3={walletWeb3}
+            walletProviderId={walletProviderId}
+          />
+        </AppInternal>
       )
     }
 
@@ -498,36 +468,13 @@ class Wrapper extends React.PureComponent {
   }
 }
 
-const Main = styled.div`
-  display: ${p => (p.visible ? 'flex' : 'none')};
-  flex-direction: column;
-  position: relative;
-  z-index: 0;
-  height: 100vh;
-  min-width: 320px;
-`
-
 const BannerWrapper = styled.div`
   position: relative;
   z-index: 1;
   flex-shrink: 0;
 `
 
-const AppScreen = styled.div`
-  position: relative;
-  z-index: 1;
-  flex-grow: 1;
-  overflow: auto;
-`
-
 export default props => {
-  const { below } = useViewport()
   const { identityEvents$ } = useIdentity()
-  return (
-    <Wrapper
-      {...props}
-      autoClosingPanel={below('medium')}
-      identityEvents$={identityEvents$}
-    />
-  )
+  return <Wrapper {...props} identityEvents$={identityEvents$} />
 }

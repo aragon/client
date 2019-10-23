@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Info, SafeLink, theme } from '@aragon/ui'
-import styled from 'styled-components'
+import { Info, Link, GU } from '@aragon/ui'
 
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
-import providerString from '../../provider-strings'
+import { getProviderString } from '../../ethereum-providers'
 import { isElectron } from '../../utils'
 
 const Web3ProviderError = ({
@@ -15,7 +14,7 @@ const Web3ProviderError = ({
   actionText,
 }) => (
   <React.Fragment>
-    <Info.Action title="You can't perform any action">
+    <Info mode="description" title="You can't perform any action">
       {neededText} in order to perform{' '}
       {description ? `“${description}”` : 'this action'}
       {name && (
@@ -23,8 +22,15 @@ const Web3ProviderError = ({
           on <AddressLink to={to}>{name}</AddressLink>
         </React.Fragment>
       )}
-      .<p css="margin-top: 15px">{actionText}</p>
-    </Info.Action>
+      .
+      <p
+        css={`
+          margin-top: ${2 * GU}px;
+        `}
+      >
+        {actionText}
+      </p>
+    </Info>
     <SignerButton onClick={onClose}>Close</SignerButton>
   </React.Fragment>
 )
@@ -45,12 +51,12 @@ export const NoWeb3Provider = ({ intent, onClose }) => {
   const actionText = (
     <span>
       Please install and enable{' '}
-      <SafeLink
+      <Link
         href={onElectron ? 'https://frame.sh/' : 'https://metamask.io/'}
-        target="_blank"
+        css="font-weight: 600"
       >
         {onElectron ? 'Frame' : 'Metamask'}
-      </SafeLink>
+      </Link>
       .
     </span>
   )
@@ -76,7 +82,7 @@ export const AccountLocked = ({
   onRequestEnable,
   walletProviderId,
 }) => {
-  const providerMessage = providerString(
+  const providerMessage = getProviderString(
     'your Ethereum provider',
     walletProviderId
   )
@@ -88,7 +94,13 @@ export const AccountLocked = ({
       actionText={
         <span>
           Please unlock and{' '}
-          <ButtonLink onClick={onRequestEnable}>enable</ButtonLink>{' '}
+          <Link
+            onClick={onRequestEnable}
+            focusRingSpacing={[3, 2]}
+            css="font-weight: 600"
+          >
+            enable
+          </Link>{' '}
           {providerMessage}.
         </span>
       }
@@ -103,16 +115,6 @@ AccountLocked.propTypes = {
   walletProviderId: PropTypes.string.isRequired,
 }
 
-const ButtonLink = styled.button.attrs({ type: 'button' })`
-  padding: 0;
-  font-size: inherit;
-  text-decoration: underline;
-  color: ${theme.textPrimary};
-  cursor: pointer;
-  background: none;
-  border: 0;
-`
-
 export const WrongNetwork = ({
   intent,
   networkType,
@@ -126,7 +128,7 @@ export const WrongNetwork = ({
       You need to be connected to the ${networkType} network
     `}
     actionText={`
-      Please connect ${providerString(
+      Please connect ${getProviderString(
         'your Ethereum provider',
         walletProviderId
       )} to the ${networkType} network.

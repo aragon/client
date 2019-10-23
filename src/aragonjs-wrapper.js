@@ -1,10 +1,10 @@
 import BN from 'bn.js'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
-  providers,
-  setupTemplates,
-  isNameUsed,
+  apm,
   ensResolve,
+  getRecommendedGasLimit,
+  providers,
 } from '@aragon/wrapper'
 import {
   appOverrides,
@@ -14,17 +14,20 @@ import {
   contractAddresses,
   defaultGasPriceFn,
 } from './environment'
+import { NoConnection, DAONotFound } from './errors'
+import { getEthSubscriptionEventDelay } from './local-settings'
+import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash } from './utils'
 import {
   getWeb3,
   getUnknownBalance,
   getMainAccount,
+  isEmptyAddress,
   isValidEnsName,
 } from './web3-utils'
-import { WorkerSubscriptionPool } from './worker-utils'
-import { NoConnection, DAONotFound } from './errors'
-import IframeWorker from './iframe-worker'
+import SandboxedWorker from './worker/SandboxedWorker'
+import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 
 const POLL_DELAY_ACCOUNT = 2000
 const POLL_DELAY_NETWORK = 2000
@@ -77,6 +80,7 @@ const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
     .sort(sortAppsPair)
 }
 
+// TODO: move polling and ens related utilities to web3-utils
 const pollEvery = (fn, delay) => {
   let timer = -1
   let stop = false
@@ -189,6 +193,34 @@ export const pollNetwork = pollEvery((provider, onNetwork) => {
   }
 }, POLL_DELAY_NETWORK)
 
+export const resolveEnsDomain = async domain => {
+  try {
+    return await ensResolve(domain, {
+      provider: web3Providers.default,
+      registryAddress: contractAddresses.ensRegistry,
+    })
+  } catch (err) {
+    if (err.message === 'ENS name not defined.') {
+      return ''
+    }
+    throw err
+  }
+}
+
+export const isEnsDomainAvailable = async name => {
+  const addr = await resolveEnsDomain(name)
+  return addr === '' || isEmptyAddress(addr)
+}
+
+export const fetchApmArtifact = async (
+  repoAddress,
+  ipfsConf = ipfsDefaultConf
+) => {
+  return apm(getWeb3(web3Providers.default), {
+    ipfsGateway: ipfsConf.gateway,
+  }).fetchLatestRepoContent(repoAddress)
+}
+
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,
@@ -267,18 +299,15 @@ const subscribe = (
 
           // If the app has been updated, reset its cache and restart its worker
           if (updated && workerSubscriptionPool.hasWorker(proxyAddress)) {
-            await workerSubscriptionPool.removeWorker(proxyAddress, true)
+            await workerSubscriptionPool.removeWorker(proxyAddress, {
+              clearCache: true,
+            })
           }
 
           // If another execution context already loaded this app's worker
           // before we got to it here, let's short circuit
           if (!workerSubscriptionPool.hasWorker(proxyAddress)) {
-            const worker = new IframeWorker(scriptUrl, { name: workerName })
-            worker.addEventListener(
-              'error',
-              err => console.error(`Error from worker for ${workerName}:`, err),
-              false
-            )
+            const worker = new SandboxedWorker(scriptUrl, { name: workerName })
 
             const provider = new providers.MessagePortMessage(worker)
             workerSubscriptionPool.addWorker({
@@ -294,25 +323,12 @@ const subscribe = (
   return subscriptions
 }
 
-const resolveEnsDomain = async (domain, opts) => {
-  try {
-    return await ensResolve(domain, opts)
-  } catch (err) {
-    if (err.message === 'ENS name not defined.') {
-      return ''
-    }
-    throw err
-  }
-}
-
 const initWrapper = async (
   dao,
-  ensRegistryAddress,
   {
     provider,
     walletProvider = null,
     ipfsConf = ipfsDefaultConf,
-    onError = noop,
     onApps = noop,
     onPermissions = noop,
     onForwarders = noop,
@@ -326,12 +342,7 @@ const initWrapper = async (
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
-  const daoAddress = isDomain
-    ? await resolveEnsDomain(dao, {
-        provider,
-        registryAddress: ensRegistryAddress,
-      })
-    : dao
+  const daoAddress = isDomain ? await resolveEnsDomain(dao) : dao
 
   if (!daoAddress) {
     throw new DAONotFound(dao)
@@ -343,8 +354,17 @@ const initWrapper = async (
     provider,
     defaultGasPriceFn,
     apm: {
-      ensRegistryAddress,
+      ensRegistryAddress: contractAddresses.ensRegistry,
       ipfs: ipfsConf,
+    },
+    cache: {
+      // If the worker's origin sandbox is disabed, it has full access to IndexedDB.
+      // We force a downgrade to localStorage to avoid using IndexedDB.
+      forceLocalStorage: workerFrameSandboxDisabled,
+    },
+    events: {
+      // Infura hack: delay event processing for specified number of ms
+      subscriptionEventDelay: getEthSubscriptionEventDelay(),
     },
   })
 
@@ -363,12 +383,7 @@ const initWrapper = async (
       throw new DAONotFound(dao)
     }
     if (err.message === 'connection not open') {
-      onError(
-        new NoConnection(
-          'The wrapper can not be initialized without a connection'
-        )
-      )
-      return
+      throw new NoConnection('No Ethereum connection detected')
     }
 
     throw err
@@ -413,125 +428,5 @@ const initWrapper = async (
   return wrapper
 }
 
-const templateParamFilters = {
-  democracy: (
-    // name: String of organization name
-    // supportNeeded: BN between 0 (0%) and 1e18 - 1 (99.99...%).
-    // minAcceptanceQuorum: BN between 0 (0%) and 1e18 - 1(99.99...%).
-    // voteDuration: Duration in seconds.
-    { name, supportNeeded, minAcceptanceQuorum, voteDuration },
-    account
-  ) => {
-    const percentageMax = new BN(10).pow(new BN(18))
-    if (
-      supportNeeded.gte(percentageMax) ||
-      minAcceptanceQuorum.gte(percentageMax)
-    ) {
-      throw new Error(
-        `supported needed ${supportNeeded.toString()} and minimum acceptance` +
-          `quorum (${minAcceptanceQuorum.toString()}) must be below 100%`
-      )
-    }
-
-    const tokenBase = new BN(10).pow(new BN(18))
-    const holders = [{ address: account, balance: 1 }]
-
-    const [accounts, stakes] = holders.reduce(
-      ([accounts, stakes], holder) => [
-        [...accounts, holder.address],
-        [...stakes, tokenBase.muln(holder.balance)],
-      ],
-      [[], []]
-    )
-
-    return [
-      name,
-      accounts,
-      stakes,
-      supportNeeded,
-      minAcceptanceQuorum,
-      voteDuration,
-    ]
-  },
-
-  multisig: (
-    // name: String of organization name
-    // signers: Accounts corresponding to the signers.
-    // neededSignatures: Minimum number of signatures needed.
-    { name, signers, neededSignatures },
-    account
-  ) => {
-    if (!signers || signers.length === 0) {
-      throw new Error('signers should contain at least one account:', signers)
-    }
-
-    if (neededSignatures < 1 || neededSignatures > signers.length) {
-      throw new Error(
-        `neededSignatures must be between 1 and the total number of signers (${
-          signers.length
-        })`,
-        neededSignatures
-      )
-    }
-
-    return [name, signers, neededSignatures]
-  },
-}
-
-export const isNameAvailable = async name =>
-  !(await isNameUsed(name, {
-    provider: web3Providers.default,
-    registryAddress: contractAddresses.ensRegistry,
-  }))
-
-export const initDaoBuilder = (
-  provider,
-  ensRegistryAddress,
-  ipfsConf = ipfsDefaultConf
-) => {
-  // DEV only
-  // provider = new Web3.providers.WebsocketProvider('ws://localhost:8546')
-
-  return {
-    build: async (templateName, organizationName, settings = {}) => {
-      if (!organizationName) {
-        throw new Error('No organization name set')
-      }
-      if (!templateName || !templateParamFilters[templateName]) {
-        throw new Error('The template name doesn’t exist')
-      }
-
-      const web3 = getWeb3(provider)
-      const account = await getMainAccount(web3)
-
-      if (account === null) {
-        throw new Error(
-          'No accounts detected in the environment (try to unlock your wallet)'
-        )
-      }
-
-      const templates = setupTemplates(account, {
-        provider,
-        defaultGasPriceFn,
-        apm: {
-          ensRegistryAddress,
-          ipfs: ipfsConf,
-        },
-      })
-      const templateFilter = templateParamFilters[templateName]
-      const templateInstanceParams = templateFilter(
-        { name: organizationName, ...settings },
-        account
-      )
-      const tokenParams = [settings.tokenName, settings.tokenSymbol]
-
-      return templates.newDAO(
-        templateName,
-        { params: tokenParams },
-        { params: templateInstanceParams }
-      )
-    },
-  }
-}
-
+export { getRecommendedGasLimit }
 export default initWrapper

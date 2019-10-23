@@ -1,49 +1,24 @@
 import React from 'react'
-import { IconSettings, IconPermissions, IconApps } from '@aragon/ui'
 import AppIcon from './components/AppIcon/AppIcon'
 
-const homeApp = {
-  appId: 'home',
-  name: 'Home',
-  instances: [{ instanceId: 'home' }],
+function staticApp(id, name, route = `/${id}`) {
+  const app = {
+    name,
+    appId: id,
+    instances: [{ instanceId: id }],
+  }
+
+  app.icon = <AppIcon app={app} />
+
+  return { app, route }
 }
 
 export const staticApps = new Map(
   Object.entries({
-    apps: {
-      app: {
-        appId: 'apps',
-        name: 'App Center',
-        icon: <IconApps />,
-        instances: [{ instanceId: 'apps' }],
-      },
-      route: '/apps',
-    },
-    home: {
-      app: {
-        ...homeApp,
-        icon: <AppIcon app={homeApp} />,
-      },
-      route: '/',
-    },
-    permissions: {
-      app: {
-        appId: 'permissions',
-        name: 'Permissions',
-        icon: <IconPermissions />,
-        instances: [{ instanceId: 'permissions' }],
-      },
-      route: '/permissions',
-    },
-    settings: {
-      app: {
-        appId: 'settings',
-        name: 'Settings',
-        icon: <IconSettings />,
-        instances: [{ instanceId: 'settings' }],
-      },
-      route: '/settings',
-    },
+    apps: staticApp('apps', 'App Center'),
+    home: staticApp('home', 'Home', ''),
+    organization: staticApp('organization', 'Organization'),
+    permissions: staticApp('permissions', 'Permissions'),
   })
 )
 

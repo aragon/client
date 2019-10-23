@@ -21,7 +21,7 @@ function useBeaconSuggestions({
     }
     const app = apps.find(({ proxyAddress }) => proxyAddress === instanceId)
     if (app) {
-      return app.name.toLowerCase()
+      return app.appId
     }
     return null
   }, [path, instanceId, apps])

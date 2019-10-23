@@ -1,70 +1,41 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
-import { theme } from '@aragon/ui'
-import color from 'onecolor'
-import MenuPanelInstance from './MenuPanelInstance'
+import { ButtonBase, GU, textStyle, useTheme } from '@aragon/ui'
+import MenuPanelAppInstance, {
+  MENU_PANEL_APP_INSTANCE_HEIGHT,
+} from './MenuPanelAppInstance'
 import { AppInstanceType } from '../../prop-types'
 import springs from '../../springs'
 import { useLocalIdentity } from '../../hooks'
 
-function MenuPanelItem({
-  active,
-  onClick,
+export const MENU_ITEM_BASE_HEIGHT = 5 * GU
+
+const { div: AnimDiv } = animated
+
+const MenuPanelAppGroup = React.memo(function MenuPanelAppGroup({
   name,
   icon,
-  instanceId,
-  singleInstance,
-}) {
-  const [label, setLabel] = useState(name)
-  const { name: localIdentity } = useLocalIdentity(instanceId)
-  useEffect(() => {
-    setLabel((singleInstance && localIdentity) || name)
-  }, [singleInstance, localIdentity, name])
-
-  return (
-    <ButtonItem
-      role="button"
-      className={`item ${active ? 'active' : ''}`}
-      onClick={onClick}
-    >
-      <span>
-        <span className="icon">{icon}</span>
-        <span className="name">{label}</span>
-      </span>
-    </ButtonItem>
-  )
-}
-
-MenuPanelItem.propTypes = {
-  active: PropTypes.bool,
-  icon: PropTypes.object.isRequired,
-  instanceId: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  singleInstance: PropTypes.bool.isRequired,
-}
-
-const Item = React.memo(MenuPanelItem)
-
-function MenuPanelAppGroup({
-  name,
-  icon,
-  system,
   instances,
   activeInstanceId,
   active,
   expand,
   onActivate,
 }) {
-  const handleAppClick = () => {
-    const [instance] = instances
+  const theme = useTheme()
+
+  const handleAppClick = useCallback(() => {
+    const instance = instances[0]
     if (instance) {
       onActivate(instance.instanceId)
     }
-  }
-  const handleInstanceClick = instanceId => onActivate(instanceId)
+  }, [instances, onActivate])
+
+  const handleInstanceClick = useCallback(
+    instanceId => onActivate(instanceId),
+    [onActivate]
+  )
+
   const singleInstance = instances.length === 1
 
   return (
@@ -74,10 +45,40 @@ function MenuPanelAppGroup({
       native
     >
       {({ openProgress }) => (
-        <Main active={active} system={system}>
-          <ActiveBackground style={{ opacity: Number(active) }} />
+        <div
+          css={`
+            position: relative;
+            width: 100%;
 
-          <MenuItemBar
+            transition: background 150ms ease-in-out;
+
+            ${active
+              ? `
+                transition: none;
+                background: ${theme.surfacePressed};
+              `
+              : ''}
+            &:active {
+              background: ${theme.surfacePressed};
+            }
+
+            .instances {
+              /* 3GU left padding + 3GU icon + 1GU padding to align instance with menu item */
+              padding-left: ${7 * GU}px;
+              padding-right: ${2 * GU}px;
+              overflow: hidden;
+              list-style: none;
+            }
+          `}
+        >
+          <AnimDiv
+            css={`
+              position: absolute;
+              left: 0;
+              width: 3px;
+              height: 100%;
+              background: ${theme.accent};
+            `}
             style={{
               opacity: openProgress,
               transform: openProgress.interpolate(
@@ -86,12 +87,13 @@ function MenuPanelAppGroup({
             }}
           />
 
-          <Item
-            instanceId={instances[0].instanceId}
-            onClick={handleAppClick}
-            icon={icon}
-            name={name}
+          <MenuPanelItem
             active={active}
+            icon={icon}
+            instanceId={instances[0].instanceId}
+            name={name}
+            onClick={handleAppClick}
+            openProgress={openProgress}
             singleInstance={singleInstance}
           />
 
@@ -100,16 +102,17 @@ function MenuPanelAppGroup({
               className="instances"
               style={{
                 height: openProgress.interpolate(
-                  v => `${(instances.length * 30 + 5) * v}px`
+                  v =>
+                    `${(instances.length * MENU_PANEL_APP_INSTANCE_HEIGHT + 0) *
+                      v}px`
                 ),
-                paddingBottom: openProgress.interpolate(v => `${5 * v}px`),
               }}
             >
               {instances.map(({ instanceId, identifier }) => {
                 const label = identifier || instanceId
                 return label ? (
                   <li key={instanceId}>
-                    <MenuPanelInstance
+                    <MenuPanelAppInstance
                       id={instanceId}
                       name={label}
                       active={instanceId === activeInstanceId}
@@ -120,12 +123,11 @@ function MenuPanelAppGroup({
               })}
             </animated.ul>
           )}
-        </Main>
+        </div>
       )}
     </Spring>
   )
-}
-
+})
 MenuPanelAppGroup.propTypes = {
   active: PropTypes.bool.isRequired,
   activeInstanceId: PropTypes.string,
@@ -134,85 +136,56 @@ MenuPanelAppGroup.propTypes = {
   instances: PropTypes.arrayOf(AppInstanceType).isRequired,
   name: PropTypes.string.isRequired,
   onActivate: PropTypes.func.isRequired,
-  system: PropTypes.bool,
 }
 
-const Main = styled.div`
-  position: relative;
-  width: 100%;
+const MenuPanelItem = React.memo(function MenuPanelItem({
+  active,
+  onClick,
+  name,
+  icon,
+  instanceId,
+  openProgress,
+  singleInstance,
+}) {
+  const { name: localIdentity } = useLocalIdentity(instanceId)
+  const label = (singleInstance && localIdentity) || name
 
-  a[role='button'] {
-    outline: 0;
-  }
-  .item {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    cursor: pointer;
-    padding: 0 10px 0 30px;
-    transition: background 150ms ease-in-out;
-    &:active {
-      background: ${color(theme.secondaryBackground)
-        .alpha(0.3)
-        .cssa()};
-    }
-    &.active {
-      transition: none;
-      background: none;
-    }
-  }
-  .name {
-    font-weight: ${({ active }) => (active ? '800' : '400')};
-  }
-  .icon {
-    display: flex;
-    width: 22px;
-    height: 22px;
-    margin-right: 15px;
-    color: ${({ active }) =>
-      active ? theme.textPrimary : theme.textSecondary};
-    filter: ${({ system }) =>
-      system ? `brightness(${({ active }) => (active ? 0 : 100)}%)` : 'none'};
+  return (
+    <ButtonBase
+      onClick={onClick}
+      css={`
+        display: flex;
+        align-items: center;
+        height: ${MENU_ITEM_BASE_HEIGHT}px;
+        width: 100%;
+        padding: 0 ${2 * GU}px 0 ${3 * GU}px;
+        border-radius: 0;
+        text-align: left;
+        ${active ? 'font-weight: 600' : ''}
+      `}
+    >
+      <span>{icon}</span>
+      <span
+        css={`
+          margin-left: ${1 * GU}px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          ${textStyle('body2')}
+        `}
+      >
+        {label}
+      </span>
+    </ButtonBase>
+  )
+})
+MenuPanelItem.propTypes = {
+  active: PropTypes.bool,
+  icon: PropTypes.object.isRequired,
+  instanceId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  openProgress: PropTypes.object.isRequired,
+  singleInstance: PropTypes.bool.isRequired,
+}
 
-    & > img {
-      border-radius: 5px;
-    }
-  }
-  .instances {
-    overflow: hidden;
-    padding: 0 10px 0 30px;
-  }
-  .instances li {
-    display: flex;
-  }
-`
-
-const ButtonItem = styled.span`
-  display: flex;
-  justify-content: space-between;
-  & > span {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-`
-
-const ActiveBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  background: ${color(theme.secondaryBackground)
-    .alpha(0.3)
-    .cssa()};
-`
-
-const MenuItemBar = styled(animated.div)`
-  position: absolute;
-  width: 4px;
-  height: 100%;
-  background: ${theme.accent};
-`
-
-export default React.memo(MenuPanelAppGroup)
+export default MenuPanelAppGroup
