@@ -40,7 +40,7 @@ function adjustDotVotingSettings(dvSupport, dvQuorum) {
   const adjustedDvSupport = ONE_PERCENT.mul(new BN(dvSupport))
 
   // The min value for quorum must be 1 or greater
-  const adjustedDvQuorum = dvQuorum.isZero()
+  const adjustedDvQuorum = new BN(dvQuorum).isZero()
     ? new BN(1)
     : ONE_PERCENT.mul(new BN(dvQuorum))
 
@@ -55,8 +55,8 @@ export default {
   header,
   icon,
   description: `
-    A suite of apps for organizations, including project management
-    , bounties, budget planning and rewards.
+    A suite of apps for organizations, including project management,
+    bounties, budget planning and rewards.
   `,
   userGuideUrl: 'https://autark.gitbook.io/open-enterprise/',
   sourceCodeUrl: 'https://github.com/AutarkLabs/open-enterprise',

@@ -16,7 +16,7 @@ const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
 
 const DEFAULT_SUPPORT = 0
 const DEFAULT_QUORUM = 15
-const DEFAULT_DURATION = MINUTE_IN_SECONDS
+const DEFAULT_DURATION = DAY_IN_SECONDS
 
 function validationError(duration) {
   if (duration < 1 * MINUTE_IN_SECONDS) {
