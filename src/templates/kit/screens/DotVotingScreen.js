@@ -33,7 +33,8 @@ function reduceFields(fields, [field, value]) {
     return {
       ...fields,
       support: Math.min(fields.support, value),
-      // 0% quorum is not possible, but this is handled in each template
+      // 100% quorum is not possible, but any adjustments necessary should be handled in the
+      // template frontends themselves
       quorum: value,
     }
   }
