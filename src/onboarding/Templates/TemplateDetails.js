@@ -163,7 +163,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
 
           {template.apps && template.apps.length > 0 && (
             <Field
-              label="Required apps"
+              label="Included apps"
               css={`
                 margin-bottom: ${4 * GU}px;
               `}
