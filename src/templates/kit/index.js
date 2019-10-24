@@ -3,6 +3,7 @@ export { default as ClaimDomainScreen } from './screens/ClaimDomainScreen'
 export {
   default as DomainField,
 } from '../../components/DomainField/DomainField'
+export { default as DotVotingScreen } from './screens/DotVotingScreen'
 export { default as Duration } from './Duration'
 export { default as FundraisingScreen } from './screens/FundraisingScreen'
 export { default as Header } from '../../onboarding/Header/Header'

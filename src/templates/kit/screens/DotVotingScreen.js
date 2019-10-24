@@ -14,13 +14,13 @@ const MINUTE_IN_SECONDS = 60
 const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
 const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
 
-const DEFAULT_SUPPORT = 50
+const DEFAULT_SUPPORT = 0
 const DEFAULT_QUORUM = 15
 const DEFAULT_DURATION = DAY_IN_SECONDS
 
 function validationError(duration) {
-  if (duration < 10 * MINUTE_IN_SECONDS) {
-    return 'Please ensure the vote duration is equal to or longer than 10 minutes.'
+  if (duration < 1 * MINUTE_IN_SECONDS) {
+    return 'Please ensure the vote duration is equal to or longer than 1 minute.'
   }
   return null
 }
@@ -32,29 +32,26 @@ function reduceFields(fields, [field, value]) {
   if (field === 'quorum') {
     return {
       ...fields,
+      support: Math.min(fields.support, value),
       // 100% quorum is not possible, but any adjustments necessary should be handled in the
       // template frontends themselves
       quorum: value,
-      support: Math.max(fields.support, value),
     }
   }
   if (field === 'support') {
     return {
       ...fields,
-      // 100% support is not possible, but any adjustments necessary should be handled in the
-      // template frontends themselves
       support: value,
-      quorum: Math.min(fields.quorum, value),
+      quorum: Math.max(fields.quorum, value),
     }
   }
   return fields
 }
 
-function VotingScreen({
+function DotVotingScreen({
   appLabel,
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
-  title,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
@@ -124,11 +121,11 @@ function VotingScreen({
           quorum: Math.floor(quorum),
           duration,
         }
-        const mergedData = dataKey
-          ? { ...data, [dataKey]: screenData }
-          : { ...data, ...screenData }
-
-        next(mergedData)
+        next(
+          dataKey
+            ? { ...data, [dataKey]: screenData }
+            : { ...data, ...screenData }
+        )
       }
     },
     [data, dataKey, duration, isPercentageFieldFocused, next, quorum, support]
@@ -143,7 +140,7 @@ function VotingScreen({
       `}
     >
       <Header
-        title={title}
+        title="Configure template"
         subtitle={
           <span
             css={`
@@ -159,13 +156,15 @@ function VotingScreen({
                 margin: 0 ${1.5 * GU}px;
               `}
             >
-              <KnownAppBadge appName="voting.aragonpm.eth" label={appLabel} />
+              <KnownAppBadge
+                appName="dot-voting.aragonpm.eth"
+                label={appLabel}
+              />
             </span>
             settings below.
           </span>
         }
       />
-
       <PercentageField
         ref={handleSupportRef}
         label={
@@ -173,34 +172,34 @@ function VotingScreen({
             Support %
             <Help hint="What’s the support?">
               <strong>Support</strong> is the relative percentage of votes that
-              are required to be “Yes” for a proposal to be approved. For
-              example, if “Support” is set to 51%, then more than 51% of the
-              votes on a proposal must vote “Yes” for it to pass.
+              are required to support a dot voting option for the option to be
+              considered valid. For example, if "Support %" is set to 5%, then
+              an option needs at least 5% of the total dot votes to be
+              considered valid.
             </Help>
           </React.Fragment>
         }
         value={support}
         onChange={handleSupportChange}
       />
-
       <PercentageField
         ref={quorumRef}
         label={
           <React.Fragment>
-            Minimum approval %
-            <Help hint="What’s the minimum approval?">
-              <strong>Minimum Approval</strong> is the percentage of the total
-              token supply that is required to vote “Yes” on a proposal before
-              it can be approved. For example, if the “Minimum Approval” is set
-              to 20%, then more than 20% of the outstanding token supply must
-              vote “Yes” on a proposal for it to pass.
+            Minimum Participation %
+            <Help hint="What’s the minimum participation?">
+              <strong>Minimum Participation</strong> is the minimum percentage
+              of the total token supply that is required to participate in a dot
+              vote for the proposal to be considered valid. For example, if
+              "Minimum Participation %" is set to 51%, then at least 51% of the
+              outstanding token supply must have participated in the vote for
+              the vote to be considered valid.
             </Help>
           </React.Fragment>
         }
         value={quorum}
         onChange={handleQuorumChange}
       />
-
       <Duration
         duration={duration}
         onUpdate={handleDurationChange}
@@ -210,13 +209,12 @@ function VotingScreen({
             <Help hint="What’s the vote duration?">
               <strong>Vote Duration</strong> is the length of time that the vote
               will be open for participation. For example, if the Vote Duration
-              is set to 24 hours, then tokenholders have 24 hours to participate
-              in the vote.
+              is set to 24 hours, then token-holders have 24 hours to
+              participate in the vote.
             </Help>
           </React.Fragment>
         }
       />
-
       {formError && (
         <Info
           mode="error"
@@ -227,17 +225,15 @@ function VotingScreen({
           {formError}
         </Info>
       )}
-
       <Info
         css={`
           margin-bottom: ${3 * GU}px;
         `}
       >
-        The support and minimum approval thresholds are strict requirements,
-        such that votes will only pass if they achieve approval percentages
-        greater than these thresholds.
+        The support and minimum participation thresholds are strict
+        requirements, such that dot votes will only pass if they achieve
+        participation percentages greater than these thresholds.
       </Info>
-
       <Navigation
         ref={prevNextRef}
         backEnabled
@@ -250,17 +246,15 @@ function VotingScreen({
   )
 }
 
-VotingScreen.propTypes = {
+DotVotingScreen.propTypes = {
   appLabel: PropTypes.string,
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
-  title: PropTypes.string,
 }
 
-VotingScreen.defaultProps = {
-  appLabel: 'Voting',
-  dataKey: 'voting',
-  title: 'Configure template',
+DotVotingScreen.defaultProps = {
+  appLabel: 'Dot Voting',
+  dataKey: 'dotVoting',
 }
 
 function formatDuration(duration) {
@@ -295,10 +289,10 @@ function formatDuration(duration) {
 function formatReviewFields(screenData) {
   return [
     ['Support %', `${screenData.support}%`],
-    ['Minimum approval %', `${screenData.quorum}%`],
+    ['Minimum participation %', `${screenData.quorum}%`],
     ['Vote duration', formatDuration(screenData.duration)],
   ]
 }
 
-VotingScreen.formatReviewFields = formatReviewFields
-export default VotingScreen
+DotVotingScreen.formatReviewFields = formatReviewFields
+export default DotVotingScreen
