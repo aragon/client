@@ -78,14 +78,7 @@ function TemplateCard({ onOpen, template }) {
             padding: 0 ${3 * GU}px ${2 * GU}px;
           `}
         >
-          {!template.disabled && (
-            <Button
-              wide
-              disabled={template.disabled}
-              label="View details"
-              onClick={handleDetailsClick}
-            />
-          )}
+          <Button wide label="View details" onClick={handleDetailsClick} />
         </div>
       </section>
     </Card>

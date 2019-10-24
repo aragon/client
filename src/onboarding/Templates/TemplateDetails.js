@@ -258,11 +258,12 @@ TemplateDetails.propTypes = {
 
 function SelectTemplateButton({ onClick, template }) {
   const templateLoading = template.status === TEMPLATE_LOADING
-  const templateUnavailable = template.status === TEMPLATE_UNAVAILABLE
-  const label = templateLoading
-    ? 'Loading template…'
-    : templateUnavailable
+  const templateUnavailable =
+    template.disabled || template.status === TEMPLATE_UNAVAILABLE
+  const label = templateUnavailable
     ? 'This template is not available at the moment'
+    : templateLoading
+    ? 'Loading template…'
     : 'Use this template'
 
   return (
