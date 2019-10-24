@@ -1,7 +1,7 @@
 # Aragon <a href="https://aragon.org/"><img align="right" src="https://github.com/aragon/design/blob/master/readme-logo.png" height="80px" /></a>
 
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
-[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors)
 
 **🌎🚀 Trusted by over 700 organizations, securing more than $1MM in funds. [Try it out.](https://mainnet.aragon.org)**
 
@@ -113,6 +113,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Schwartz10"><img src="https://avatars1.githubusercontent.com/u/12353734?v=4" width="75px;" alt="Jon"/><br /><sub><b>Jon</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=Schwartz10" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/abhinavsagar"><img src="https://avatars0.githubusercontent.com/u/40603139?v=4" width="75px;" alt="Abhinav Sagar"/><br /><sub><b>Abhinav Sagar</b></sub></a><br /><a href="#maintenance-abhinavsagar" title="Maintenance">🚧</a></td>
     <td align="center"><a href="http://geleeroyale.netlify.com"><img src="https://avatars1.githubusercontent.com/u/317685?v=4" width="75px;" alt="geleeroyale"/><br /><sub><b>geleeroyale</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=geleeroyale" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/ottodevs"><img src="https://avatars2.githubusercontent.com/u/5030059?v=4" width="75px;" alt="Otto G"/><br /><sub><b>Otto G</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=ottodevs" title="Code">💻</a></td>
   </tr>
 </table>
 
