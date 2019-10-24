@@ -338,6 +338,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "adekbadek",
+      "name": "Adam Boro",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7383192?v=4",
+      "profile": "https://adamboro.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
