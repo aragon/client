@@ -115,6 +115,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://geleeroyale.netlify.com"><img src="https://avatars1.githubusercontent.com/u/317685?v=4" width="75px;" alt="geleeroyale"/><br /><sub><b>geleeroyale</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=geleeroyale" title="Documentation">📖</a></td>
   </tr>
   <tr>
+    <td align="center"><a href="https://github.com/ottodevs"><img src="https://avatars2.githubusercontent.com/u/5030059?v=4" width="75px;" alt="Otto G"/><br /><sub><b>Otto G</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=ottodevs" title="Code">💻</a></td>
     <td align="center"><a href="https://adamboro.com/"><img src="https://avatars0.githubusercontent.com/u/7383192?v=4" width="75px;" alt="Adam Boro"/><br /><sub><b>Adam Boro</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=adekbadek" title="Code">💻</a></td>
   </tr>
 </table>
