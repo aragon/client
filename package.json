@@ -136,7 +136,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "\\.(svg|png)$": "<rootDir>/src/empty-string.js"
+      "\\.(svg|png)$": "<rootDir>/src/test/empty-string.js"
     }
   }
 }
