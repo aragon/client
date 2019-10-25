@@ -233,6 +233,7 @@ const subscribe = (
     onIdentityIntent,
     onSignatures,
     onTransaction,
+    onRequestPath,
   },
   { ipfsConf }
 ) => {
@@ -245,6 +246,7 @@ const subscribe = (
     identityIntents,
     signatures,
     transactions,
+    pathIntents,
   } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
@@ -259,6 +261,7 @@ const subscribe = (
     signatures: signatures.subscribe(onSignatures),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
+    pathIntents: pathIntents.subscribe(onRequestPath),
 
     apps: apps.subscribe(apps => {
       onApps(
@@ -339,6 +342,7 @@ const initWrapper = async (
     onSignatures = noop,
     onDaoAddress = noop,
     onWeb3 = noop,
+    onRequestPath = noop,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -400,6 +404,7 @@ const initWrapper = async (
       onIdentityIntent,
       onSignatures,
       onTransaction,
+      onRequestPath,
     },
     { ipfsConf }
   )

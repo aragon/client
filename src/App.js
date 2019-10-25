@@ -273,6 +273,24 @@ class App extends React.Component {
           },
         })
       },
+      onRequestPath: ({ appAddress, path, resolve, reject }) => {
+        const { locator } = this.state
+        if (appAddress !== locator.instanceId) {
+          reject(
+            `Can’t change the path of ${appAddress}: the app is not currently active.`
+          )
+          return
+        }
+
+        resolve()
+
+        window.location.hash = getAppPath({
+          dao,
+          instanceId: locator.instanceId,
+          instancePath: path,
+          mode: APP_MODE_ORG,
+        })
+      },
     })
       .then(wrapper => {
         log('wrapper', wrapper)

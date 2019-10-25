@@ -1,8 +1,20 @@
 import { staticApps } from './static-apps'
 import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
 import { isAddress, isValidEnsName } from './web3-utils'
+import { addStartingSlash } from './utils'
 
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
+
+function encodeAppPath(path) {
+  return path
+    .split('/')
+    .map(v => encodeURIComponent(v))
+    .join('/')
+}
+
+function decodeAppPathParts(pathParts) {
+  return pathParts.map(v => decodeURIComponent(v)).join('/')
+}
 
 /*
  * Parse a path and a search query and return a “locator” object.
@@ -68,7 +80,7 @@ export function parsePath(pathname, search = '') {
 
   // The local path of an app (internal or external)
   const instancePath = `/${
-    instancePathParts ? instancePathParts.join('/') : ''
+    instancePathParts ? decodeAppPathParts(instancePathParts) : ''
   }`
 
   return {
@@ -80,13 +92,6 @@ export function parsePath(pathname, search = '') {
     preferences: parsePreferences(search),
     instancePath,
   }
-}
-
-function encodePath(path) {
-  return path
-    .split('/')
-    .map(v => encodeURIComponent(v))
-    .join('/')
 }
 
 // Return a path string from a locator object.
@@ -132,7 +137,13 @@ export function getAppPath({
     ? staticApps.get(instanceId).route
     : `/${instanceId}`
 
-  return '/' + dao + instancePart + encodePath(instancePath) + search
+  return (
+    '/' +
+    dao +
+    instancePart +
+    addStartingSlash(encodeAppPath(instancePath)) +
+    search
+  )
 }
 
 // Preferences

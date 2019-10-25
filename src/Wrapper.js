@@ -93,16 +93,14 @@ class Wrapper extends React.PureComponent {
   }
 
   updateInstancePath(prevProps) {
-    const { locator } = this.props
-    if (
-      locator.instancePath === prevProps.locator.instancePath &&
-      this.appIFrame
-    ) {
-      this.appIFrame.sendMessage({
-        from: 'wrapper',
-        name: 'path',
-        value: locator.instancePath,
-      })
+    const { locator, wrapper } = this.props
+
+    const updated =
+      locator.instanceId !== prevProps.locator.instanceId ||
+      locator.instancePath !== prevProps.locator.instancePath
+
+    if (wrapper && updated) {
+      wrapper.setAppPath(locator.instanceId, locator.instancePath)
     }
   }
 
@@ -215,6 +213,13 @@ class Wrapper extends React.PureComponent {
   }
   handleAppIFrameLoadingError = event => {
     this.setState({ appLoading: false })
+  }
+
+  handleAppMessage = ({ data: { name, value } }) => {
+    const { wrapper, locator } = this.props
+    if (name === 'ready') {
+      wrapper.setAppPath(locator.instanceId, locator.instancePath)
+    }
   }
 
   // params need to be a string
