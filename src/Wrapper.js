@@ -166,11 +166,9 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  openApp = (instanceId, { params, instancePath } = {}) => {
+  openApp = (instanceId, { instancePath } = {}) => {
     const { historyPush, locator } = this.props
-    historyPush(
-      getAppPath({ dao: locator.dao, instanceId, params, instancePath })
-    )
+    historyPush(getAppPath({ dao: locator.dao, instanceId, instancePath }))
   }
 
   handleAppIFrameRef = appIFrame => {
@@ -220,11 +218,6 @@ class Wrapper extends React.PureComponent {
     if (name === 'ready') {
       wrapper.setAppPath(locator.instanceId, locator.instancePath)
     }
-  }
-
-  // params need to be a string
-  handleParamsRequest = params => {
-    this.openApp(this.props.locator.instanceId, { params })
   }
 
   // Update the local path of the current instance
@@ -331,11 +324,7 @@ class Wrapper extends React.PureComponent {
             daoLoading={daoStatus === DAO_STATUS_LOADING}
             instanceId={locator.instanceId}
           >
-            {this.renderApp(
-              locator.instanceId,
-              locator.params,
-              locator.instancePath
-            )}
+            {this.renderApp(locator.instanceId, locator.instancePath)}
           </AppLoader>
 
           <SignerPanel
@@ -370,7 +359,7 @@ class Wrapper extends React.PureComponent {
       </div>
     )
   }
-  renderApp(instanceId, params, instancePath) {
+  renderApp(instanceId, instancePath) {
     const {
       apps,
       appsStatus,
@@ -417,13 +406,13 @@ class Wrapper extends React.PureComponent {
           <AppCenter
             appInstanceGroups={this.getAppInstancesGroups(apps)}
             daoAddress={daoAddress}
-            params={params}
             repos={repos}
             canUpgradeOrg={canUpgradeOrg}
             reposLoading={reposLoading}
             onMessage={this.handleAppMessage}
             onUpgradeAll={this.showOrgUpgradePanel}
-            onParamsRequest={this.handleParamsRequest}
+            localPath={instancePath}
+            onPathRequest={this.handlePathRequest}
             wrapper={wrapper}
           />
         </AppInternal>

@@ -42,7 +42,6 @@ describe('parsePath()', () => {
         dao: 'p.aragonid.eth',
         instanceId: 'home',
         instancePath: '/',
-        params: null,
       })
     )
   })
@@ -54,7 +53,6 @@ describe('parsePath()', () => {
         instanceId: ADDRESS,
         instancePath: '/',
         mode: APP_MODE_ORG,
-        params: null,
       })
     )
   })
@@ -66,7 +64,6 @@ describe('parsePath()', () => {
         instanceId: ADDRESS,
         instancePath: '/test',
         mode: APP_MODE_ORG,
-        params: null,
       })
     )
   })
@@ -90,7 +87,6 @@ describe('parsePath()', () => {
         instanceId: ADDRESS,
         instancePath: '///',
         mode: APP_MODE_ORG,
-        params: null,
       })
     )
   })

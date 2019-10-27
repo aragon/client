@@ -33,7 +33,7 @@ function decodeAppPathParts(pathParts) {
  *
  * /{dao_address}
  * /{dao_address}/permissions
- * /{dao_address}/0x{app_instance_address}?p={app_params}
+ * /{dao_address}/0x{app_instance_address}
  *
  *
  * Available modes:
@@ -65,17 +65,6 @@ export function parsePath(pathname, search = '') {
     dao += `.${ARAGONID_ENS_DOMAIN}`
   }
 
-  // Organization
-  const rawParams = search && search.split('?p=')[1]
-  let params = null
-  if (rawParams) {
-    try {
-      params = decodeURIComponent(rawParams)
-    } catch (err) {
-      console.log('The params (“p”) URL parameter is not valid.')
-    }
-  }
-
   const [, instanceId, ...instancePathParts] = parts
 
   // The local path of an app (internal or external)
@@ -88,7 +77,6 @@ export function parsePath(pathname, search = '') {
     mode: APP_MODE_ORG,
     dao,
     instanceId: instanceId || 'home',
-    params,
     preferences: parsePreferences(search),
     instancePath,
   }
@@ -99,7 +87,6 @@ export function getAppPath({
   dao,
   instanceId = 'home',
   instancePath = '',
-  params,
   search = '',
   mode,
   action,
@@ -124,12 +111,6 @@ export function getAppPath({
 
   if (!dao) {
     return `/${search}`
-  }
-
-  // The search takes priority over app params for now. App params are going to
-  // be replaced soon so it shouldn’t be an issue.
-  if (!search && params) {
-    search = `?p=${encodeURIComponent(params)}`
   }
 
   // Either the address of an app instance or the path of an internal app.
