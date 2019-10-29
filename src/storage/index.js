@@ -150,3 +150,31 @@ export const createIpfsProvider = async (provider, uri = '', creds) => {
       return getAragonAssociationNode()
   }
 }
+
+export const ensureServerIsListeningToStorageContract = async contractAddress => {
+  try {
+    const response = await fetch('http://localhost:3001/api/v0/contracts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ contractAddress }),
+    })
+    if (response.status === 201 || response.sstatus === 204) return true
+    return false
+  } catch (err) {
+    return false
+  }
+}
+
+export const optmisticallyPinDag = async dag => {
+  const response = await fetch('http://localhost:3001/api/v0/dag/put', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dag),
+  })
+
+  return response.text()
+}

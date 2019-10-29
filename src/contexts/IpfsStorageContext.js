@@ -8,9 +8,10 @@ import React, {
 import PropTypes from 'prop-types'
 import {
   createIpfsProvider,
+  ensureServerIsListeningToStorageContract,
   instantiateStorageContract,
   getFromCache,
-  storeInCache,
+  optmisticallyPinDag,
 } from '../storage'
 import { AppType, AragonType } from '../prop-types'
 
@@ -117,7 +118,7 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
         throw new Error('type of value param must be object')
       }
       const set = async () => {
-        const { cid } = await ipfsStore.ipfsEndpoints.dag.put(dag)
+        const cid = await optmisticallyPinDag(dag)
         await storageContract.registerData(
           wrapper.web3.utils.fromAscii(key),
           cid
@@ -128,12 +129,7 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
       }
       return set()
     },
-    [
-      ipfsStore.ipfsEndpoints,
-      ipfsStore.isStorageAppInstalled,
-      storageContract,
-      wrapper,
-    ]
+    [ipfsStore.isStorageAppInstalled, storageContract, wrapper]
   )
 
   const getData = useCallback(
@@ -158,28 +154,6 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
     ]
   )
 
-  const updateIpfsProvider = useCallback(
-    (provider, uri, port, providerKey, providerSecret) => {
-      const update = async () => {
-        try {
-          storeInCache(wrapper, provider, {
-            providerKey,
-            providerSecret,
-          })
-          await storageContract.registerStorageProvider(provider, uri, port)
-          dispatchToIpfsStore(providerFound(provider, uri, port))
-          const creds = await getFromCache(wrapper, provider)
-          const ipfsEndpoints = await createIpfsProvider(provider, uri, creds)
-          dispatchToIpfsStore(connectionSuccess(ipfsEndpoints))
-        } catch (error) {
-          dispatchToIpfsStore(connectionFailure(error))
-        }
-      }
-      update()
-    },
-    [wrapper, storageContract]
-  )
-
   useEffect(() => {
     const getStorageProvider = async storageApp => {
       try {
@@ -188,7 +162,9 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
           storageApp.abi,
           wrapper
         )
+        await ensureServerIsListeningToStorageContract(storageApp.proxyAddress)
         setStorageContract(storageContract)
+        // These get provider lines need to be replaced
         const res = await storageContract.getStorageProvider()
         const provider = res['0']
         const uri = res['1']
@@ -211,9 +187,7 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
   }, [wrapper, storageApp])
 
   return (
-    <IPFSStorageContext.Provider
-      value={{ ...ipfsStore, updateIpfsProvider, setData, getData }}
-    >
+    <IPFSStorageContext.Provider value={{ ...ipfsStore, setData, getData }}>
       {children}
     </IPFSStorageContext.Provider>
   )

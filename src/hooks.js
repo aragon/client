@@ -326,7 +326,6 @@ export const useOrganizationDataStore = () => {
     error,
     getData,
     setData,
-    updateIpfsProvider,
     isStorageAppInstalled,
   } = useContext(IPFSStorageContext)
 
@@ -341,7 +340,6 @@ export const useOrganizationDataStore = () => {
     error,
     getData,
     setData,
-    updateIpfsProvider,
     isStorageAppInstalled,
   }
 }
