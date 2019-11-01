@@ -8,13 +8,14 @@ import {
   ReviewScreen,
   TokensScreen,
 } from '../kit'
-import { DelayScreen, LockScreen, VotingScreen } from './config'
+import { LockScreen, VotingScreen } from './config'
 
 import header from './header.svg'
 import icon from './icon.svg'
 import getBlockTime from './config/helpers/getBlockTime'
 
 const ETH_ADDRESS = '0x0000000000000000000000000000000000000000'
+const onePercent = new BN(10).pow(new BN(16))
 
 function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
@@ -40,7 +41,6 @@ export default {
       appName: 'dandelion-voting.open.aragonpm.eth',
       label: 'Voting',
     },
-    { appName: 'delay.open.aragonpm.eth', label: 'Delay' },
     { appName: 'time-lock.open.aragonpm.eth', label: 'Time Lock' },
     { appName: 'redemptions.open.aragonpm.eth', label: 'Redemptions' },
     { appName: 'token-request.open.aragonpm.eth', label: 'Token Request' },
@@ -53,13 +53,12 @@ export default {
     ],
     ['Configure template', props => <VotingScreen screenProps={props} />],
     ['Configure template', props => <TokensScreen screenProps={props} />],
-    ['Configure template', props => <DelayScreen screenProps={props} />],
     ['Configure template', props => <LockScreen screenProps={props} />],
 
     [
       'Review information',
       props => {
-        const { domain, voting, tokens, delay, lock } = props.data
+        const { domain, voting, tokens, lock } = props.data
         return (
           <ReviewScreen
             screenProps={props}
@@ -92,15 +91,6 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="delay.open.aragonpm.eth"
-                    label="Delay"
-                  />
-                ),
-                fields: DelayScreen.formatReviewFields(delay),
-              },
-              {
-                label: (
-                  <KnownAppBadge
                     appName="time-lock.open.aragonpm.eth"
                     label="Time lock"
                   />
@@ -116,9 +106,10 @@ export default {
   prepareTransactions(createTx, data) {
     const hasPayroll = false
     const blockTime = getBlockTime()
-    const { domain, optionalModules = [], tokens, voting, lock, delay } = data
+    const { domain, optionalModules = [], tokens, voting, lock } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
 
+    // Tokens app
     const { tokenName, tokenSymbol, members } = tokens
     const baseStake = new BN(10).pow(new BN(18))
     const stakes = members.map(([_, stake]) =>
@@ -126,37 +117,43 @@ export default {
     )
     const accounts = members.map(([account]) => account)
 
-    const { support, quorum, duration, buffer } = voting
-    const onePercent = new BN(10).pow(new BN(16))
+    // Voting app
+    const { support, quorum, duration, buffer, delay } = voting
     const adjustedSupport = onePercent.mul(new BN(support)).toString()
     const adjustedQuorum = onePercent.mul(new BN(quorum)).toString()
+
     const numericVotingDuration = duration / blockTime
     const adjustedDuration = new BN(numericVotingDuration).toString()
+
     const numericBuffer = buffer / blockTime
     const adjustedBuffer = new BN(numericBuffer).toString()
+
+    const numericDelay = delay / blockTime
+    const adjustedDelay = new BN(numericDelay).toString()
+
     const votingSettings = [
       adjustedSupport,
       adjustedQuorum,
       adjustedDuration,
       adjustedBuffer,
+      adjustedDelay,
     ]
+
+    // Time Lock app
     const { lockDuration, lockAmount, spamPenalty, tokenAddress } = lock
-    const adjustedSpamPenalty = onePercent.mul(new BN(spamPenalty)).toString()
-    const adjustedLockAmount = new BN(lockAmount.toString()).toString()
     const adjustedLockDuration = new BN(lockDuration).toString()
+    const adjustedLockAmount = new BN(lockAmount.toString()).toString()
+    const adjustedSpamPenalty = onePercent.mul(new BN(spamPenalty)).toString()
     const lockSettings = [
       adjustedLockDuration,
       adjustedLockAmount,
       adjustedSpamPenalty,
     ]
 
-    const { delayDuration } = delay
-    const numericDelay = delay / blockTime
-    const adjustedDelayDuration = new BN(numericDelay).toString()
-    const dissentWindowBlocks = new BN(
-      delayDuration + numericVotingDuration
-    ).toString()
+    // Redemptions apps
+    const redeemableTokens = [ETH_ADDRESS]
 
+    // Token Request app
     const acceptedDepositToken = [ETH_ADDRESS]
 
     // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
@@ -181,13 +178,11 @@ export default {
           name: 'Install dandelion apps',
           transaction: createTx('installDandelionApps', [
             domain,
-            acceptedDepositToken,
+            redeemableTokens,
             acceptedDepositToken,
             tokenAddress,
             lockSettings,
             votingSettings,
-            adjustedDelayDuration,
-            dissentWindowBlocks,
           ]),
         },
       ]
@@ -211,12 +206,11 @@ export default {
         name: 'Install dandelion apps',
         transaction: createTx('installDandelionApps', [
           domain,
-          acceptedDepositToken,
+          redeemableTokens,
           acceptedDepositToken,
           tokenAddress,
           lockSettings,
           votingSettings,
-          adjustedDelayDuration,
         ]),
       },
     ]
