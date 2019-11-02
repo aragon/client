@@ -1,6 +1,5 @@
 import React from 'react'
 import BN from 'bn.js'
-import { network } from '../../environment'
 import {
   ClaimDomainScreen,
   DotVotingScreen,
@@ -51,7 +50,6 @@ export default {
   id: 'open-enterprise-template.aragonpm.eth',
   name: 'Open Enterprise',
   new: true,
-  disabled: network.type !== 'rinkeby',
   header,
   icon,
   description: `
