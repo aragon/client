@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-  useRef,
-} from 'react'
+import React, { useCallback, useReducer, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   Field,
@@ -15,8 +8,6 @@ import {
   Info,
   Button,
   TextInput,
-  useTheme,
-  useViewport,
   IconTrash,
   isAddress,
 } from '@aragon/ui'
@@ -25,6 +16,7 @@ import {
   Navigation,
   ScreenPropsType,
   PercentageField,
+  Duration,
 } from '../../../kit'
 
 const MINUTE_IN_SECONDS = 60
@@ -60,11 +52,11 @@ function validationError(duration, tokenAddress, lockAmount) {
 }
 
 function reduceFields(fields, [field, value]) {
-  if (field === 'lockDuration') {
-    return { ...fields, lockDuration: value }
-  }
   if (field === 'tokenAddress') {
     return { ...fields, tokenAddress: value }
+  }
+  if (field === 'lockDuration') {
+    return { ...fields, lockDuration: value }
   }
   if (field === 'lockAmount') {
     return { ...fields, lockAmount: value }
@@ -140,7 +132,7 @@ function LockScreen({
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [data, dataKey, lockDuration, tokenAddress, lockAmount, next]
+    [lockDuration, tokenAddress, lockAmount, spamPenalty, next, dataKey, data]
   )
 
   return (
@@ -220,24 +212,31 @@ function LockScreen({
         </Field>
       </div>
 
+      <Duration
+        duration={lockDuration}
+        onUpdate={handleDurationChange}
+        label={
+          <React.Fragment>
+            {DURATION_LABEL}
+            <Help hint="What’s the lock duration?">{DURATION_HELP_TEXT}</Help>
+          </React.Fragment>
+        }
+      />
+
       <PercentageField
         label={
           <React.Fragment>
             Spam penalty %
             <Help hint="What’s the spam penalty?">
               <strong>Spam penalty</strong>
+              Is a % of the base lock amount and lock duration. The more active
+              locks an account has, the more tokens will have to lock and for a
+              longer period of time for subsequent proposals.
             </Help>
           </React.Fragment>
         }
         value={spamPenalty}
         onChange={handleSpamPenaltyChange}
-      />
-
-      <TimeConfig
-        duration={lockDuration}
-        onUpdate={handleDurationChange}
-        label={DURATION_LABEL}
-        helpText={DURATION_HELP_TEXT}
       />
 
       {/* <PercentageField
@@ -303,137 +302,6 @@ LockScreen.defaultProps = {
   dataKey: 'lock',
 }
 
-function TimeConfig({ duration = 0, onUpdate, label, helpText }) {
-  const theme = useTheme()
-  const { above } = useViewport()
-
-  // Calculate the units based on the initial duration (in seconds).
-  const [baseDays, baseHours, baseMinutes] = useMemo(() => {
-    let remaining = duration
-
-    const days = Math.floor(remaining / DAY_IN_SECONDS)
-    remaining -= days * DAY_IN_SECONDS
-
-    const hours = Math.floor(remaining / HOUR_IN_SECONDS)
-    remaining -= hours * HOUR_IN_SECONDS
-
-    const minutes = Math.floor(remaining / MINUTE_IN_SECONDS)
-    remaining -= minutes * MINUTE_IN_SECONDS
-
-    return [days, hours, minutes]
-  }, [duration])
-
-  // Local units state − updated from the initial duration if needed.
-  const [minutes, setMinutes] = useState(baseMinutes)
-  const [hours, setHours] = useState(baseHours)
-  const [days, setDays] = useState(baseDays)
-
-  // If any of the units change, call onUpdate() with the updated duration,
-  // so that it can get updated if the “next” button gets pressed.
-  useEffect(() => {
-    onUpdate(
-      minutes * MINUTE_IN_SECONDS +
-        hours * HOUR_IN_SECONDS +
-        days * DAY_IN_SECONDS
-    )
-  }, [onUpdate, minutes, hours, days])
-
-  // Invoked by handleDaysChange etc. to update a local unit.
-  const updateLocalUnit = useCallback((event, stateSetter) => {
-    const value = Number(event.target.value)
-    if (!isNaN(value)) {
-      stateSetter(value)
-    }
-  }, [])
-
-  const handleDaysChange = useCallback(
-    event => updateLocalUnit(event, setDays),
-    [updateLocalUnit]
-  )
-  const handleHoursChange = useCallback(
-    event => updateLocalUnit(event, setHours),
-    [updateLocalUnit]
-  )
-  const handleMinutesChange = useCallback(
-    event => updateLocalUnit(event, setMinutes),
-    [updateLocalUnit]
-  )
-
-  return (
-    <Field
-      label={
-        <React.Fragment>
-          {label}
-          <Help hint="What’s the vote duration?">{helpText}</Help>
-        </React.Fragment>
-      }
-    >
-      {({ id }) => (
-        <div
-          css={`
-            display: flex;
-            padding-top: ${0.5 * GU}px;
-            width: 100%;
-          `}
-        >
-          {[
-            ['Days', handleDaysChange, days],
-            ['Hours', handleHoursChange, hours],
-            [
-              above('medium') ? 'Minutes' : 'Min.',
-              handleMinutesChange,
-              minutes,
-            ],
-          ].map(([label, handler, value], index) => (
-            <div
-              key={label}
-              css={`
-                flex-grow: 1;
-                max-width: ${17 * GU}px;
-                & + & {
-                  margin-left: ${2 * GU}px;
-                }
-              `}
-            >
-              <TextInput
-                id={index === 0 ? id : undefined}
-                adornment={
-                  <span
-                    css={`
-                      padding: 0 ${2 * GU}px;
-                      color: ${theme.contentSecondary};
-                    `}
-                  >
-                    {label}
-                  </span>
-                }
-                adornmentPosition="end"
-                adornmentSettings={{
-                  width: 8 * GU,
-                  padding: 0,
-                }}
-                onChange={handler}
-                value={value}
-                wide
-                css="text-align: center"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </Field>
-  )
-}
-
-TimeConfig.propTypes = {
-  duration: PropTypes.number,
-  onUpdate: PropTypes.func.isRequired,
-}
-
-TimeConfig.defaultProps = {
-  duration: 0,
-}
-
 function formatDuration(duration) {
   const units = [DAY_IN_SECONDS, HOUR_IN_SECONDS, MINUTE_IN_SECONDS]
 
@@ -464,7 +332,13 @@ function formatDuration(duration) {
 }
 
 function formatReviewFields(screenData) {
-  return [['Lock duration', formatDuration(screenData.lockDuration)]]
+  return [
+    // TODO: Show token name and symbol
+    ['Token address', `${screenData.tokenAddress}`],
+    ['Lock amount', `${screenData.lockAmount} tokens`],
+    ['Lock duration', formatDuration(screenData.lockDuration)],
+    ['Spam penalty', `${screenData.spamPenalty} %`],
+  ]
 }
 
 LockScreen.formatReviewFields = formatReviewFields

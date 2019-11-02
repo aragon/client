@@ -108,6 +108,8 @@ export default {
     const blockTime = getBlockTime()
     const { domain, optionalModules = [], tokens, voting, lock } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
+    console.log('optionalModules', optionalModules)
+    console.log('use agent as vault', useAgentAsVault)
 
     // Tokens app
     const { tokenName, tokenSymbol, members } = tokens
@@ -116,6 +118,9 @@ export default {
       baseStake.mul(new BN(stake.toString())).toString()
     )
     const accounts = members.map(([account]) => account)
+
+    // Finance app
+    const financePeriod = 0 // Fallback to default 30 days
 
     // Voting app
     const { support, quorum, duration, buffer, delay } = voting
@@ -171,6 +176,7 @@ export default {
             domain,
             accounts,
             stakes,
+            financePeriod,
             useAgentAsVault,
           ]),
         },
@@ -199,6 +205,7 @@ export default {
           domain,
           accounts,
           stakes,
+          financePeriod,
           useAgentAsVault,
         ]),
       },

@@ -1,26 +1,12 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-  useRef,
-} from 'react'
+import React, { useCallback, useReducer, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Field,
-  GU,
-  Help,
-  Info,
-  TextInput,
-  useTheme,
-  useViewport,
-} from '@aragon/ui'
+import { GU, Help, Info } from '@aragon/ui'
 import {
   Header,
   PercentageField,
   Navigation,
   ScreenPropsType,
+  Duration,
 } from '../../../kit'
 
 const MINUTE_IN_SECONDS = 60
@@ -31,15 +17,20 @@ const DEFAULT_SUPPORT = 50
 const DEFAULT_QUORUM = 15
 const DEFAULT_DURATION = DAY_IN_SECONDS
 const DEFAULT_BUFFER = DAY_IN_SECONDS
+const DEFAULT_DELAY = HOUR_IN_SECONDS
 
-const DURATION_LABEL = 'vote duration'
-const DURATION_HELP_TEXT = `Vote Duration, Votes are processed in sequence with the start time of each proposal seperated by a proposal buffer`
-
-const BUFFER_LABEL = 'vote buffer'
-const BUFFER_HELP_TEXT = `Vote Buffer is the length of time that the vote
+const DURATION_LABEL = 'Vote duration'
+const DURATION_HELP_TEXT = `Vote Duration is the length of time that the vote
 will be open for participation. For example, if the Vote Duration is
 set to 24 hours, then tokenholders have 24 hours to participate in
 the vote.`
+
+const BUFFER_LABEL = 'Vote buffer'
+const BUFFER_HELP_TEXT = `Votes are processed in sequence with the start time of each proposal seperated by a proposal buffer`
+
+const DELAY_LABEL = 'Vote delay'
+const DELAY_HELP_TEXT =
+  'Vote Delay is the delay period after a vote is approved but before it can be executed'
 
 function validationError(duration) {
   if (duration < 1 * MINUTE_IN_SECONDS) {
@@ -54,6 +45,9 @@ function reduceFields(fields, [field, value]) {
   }
   if (field === 'buffer') {
     return { ...fields, buffer: value }
+  }
+  if (field === 'delay') {
+    return { ...fields, delay: value }
   }
   if (field === 'quorum') {
     return {
@@ -80,15 +74,16 @@ function VotingScreen({
 
   const [formError, setFormError] = useState()
 
-  const [{ support, quorum, duration, buffer }, updateField] = useReducer(
-    reduceFields,
-    {
-      support: screenData.support || DEFAULT_SUPPORT,
-      quorum: screenData.quorum || DEFAULT_QUORUM,
-      duration: screenData.duration || DEFAULT_DURATION,
-      buffer: screenData.buffer || DEFAULT_BUFFER,
-    }
-  )
+  const [
+    { support, quorum, duration, buffer, delay },
+    updateField,
+  ] = useReducer(reduceFields, {
+    support: screenData.support || DEFAULT_SUPPORT,
+    quorum: screenData.quorum || DEFAULT_QUORUM,
+    duration: screenData.duration || DEFAULT_DURATION,
+    buffer: screenData.buffer || DEFAULT_BUFFER,
+    delay: screenData.delay || DEFAULT_DELAY,
+  })
 
   const handleSupportChange = useCallback(value => {
     setFormError(null)
@@ -108,6 +103,11 @@ function VotingScreen({
   const handleBufferChange = useCallback(value => {
     setFormError(null)
     updateField(['buffer', value])
+  }, [])
+
+  const handleDelayChange = useCallback(value => {
+    setFormError(null)
+    updateField(['delay', value])
   }, [])
 
   const supportRef = useRef()
@@ -150,19 +150,21 @@ function VotingScreen({
           quorum: Math.floor(quorum),
           duration,
           buffer,
+          delay,
         }
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
     [
-      data,
-      dataKey,
       duration,
-      buffer,
       isPercentageFieldFocused,
-      next,
-      quorum,
       support,
+      quorum,
+      buffer,
+      delay,
+      next,
+      dataKey,
+      data,
     ]
   )
 
@@ -183,7 +185,7 @@ function VotingScreen({
         ref={handleSupportRef}
         label={
           <React.Fragment>
-            Support
+            Support %
             <Help hint="What’s the support?">
               <strong>Support</strong> is the percentage of votes on a proposal
               that the total support must be greater than for the proposal to be
@@ -216,17 +218,35 @@ function VotingScreen({
         onChange={handleQuorumChange}
       />
 
-      <TimeConfig
+      <Duration
         duration={duration}
         onUpdate={handleDurationChange}
-        label={DURATION_LABEL}
-        helpText={DURATION_HELP_TEXT}
+        label={
+          <React.Fragment>
+            {DURATION_LABEL}
+            <Help hint="What’s the vote duration?">{DURATION_HELP_TEXT}</Help>
+          </React.Fragment>
+        }
       />
-      <TimeConfig
-        duration={duration}
+      <Duration
+        duration={buffer}
         onUpdate={handleBufferChange}
-        label={BUFFER_LABEL}
-        helpText={BUFFER_HELP_TEXT}
+        label={
+          <React.Fragment>
+            {BUFFER_LABEL}
+            <Help hint="What’s the vote buffer?">{BUFFER_HELP_TEXT}</Help>
+          </React.Fragment>
+        }
+      />
+      <Duration
+        duration={delay}
+        onUpdate={handleDelayChange}
+        label={
+          <React.Fragment>
+            {DELAY_LABEL}
+            <Help hint="What’s the vote delay?">{DELAY_HELP_TEXT}</Help>
+          </React.Fragment>
+        }
       />
 
       {formError && (
@@ -268,138 +288,9 @@ VotingScreen.propTypes = {
 }
 
 VotingScreen.defaultProps = {
+  appLabel: 'Voting',
   dataKey: 'voting',
-}
-
-function TimeConfig({ duration = 0, onUpdate, label, helpText }) {
-  const theme = useTheme()
-  const { above } = useViewport()
-
-  // Calculate the units based on the initial duration (in seconds).
-  const [baseDays, baseHours, baseMinutes] = useMemo(() => {
-    let remaining = duration
-
-    const days = Math.floor(remaining / DAY_IN_SECONDS)
-    remaining -= days * DAY_IN_SECONDS
-
-    const hours = Math.floor(remaining / HOUR_IN_SECONDS)
-    remaining -= hours * HOUR_IN_SECONDS
-
-    const minutes = Math.floor(remaining / MINUTE_IN_SECONDS)
-    remaining -= minutes * MINUTE_IN_SECONDS
-
-    return [days, hours, minutes]
-  }, [duration])
-
-  // Local units state − updated from the initial duration if needed.
-  const [minutes, setMinutes] = useState(baseMinutes)
-  const [hours, setHours] = useState(baseHours)
-  const [days, setDays] = useState(baseDays)
-
-  // If any of the units change, call onUpdate() with the updated duration,
-  // so that it can get updated if the “next” button gets pressed.
-  useEffect(() => {
-    onUpdate(
-      minutes * MINUTE_IN_SECONDS +
-        hours * HOUR_IN_SECONDS +
-        days * DAY_IN_SECONDS
-    )
-  }, [onUpdate, minutes, hours, days])
-
-  // Invoked by handleDaysChange etc. to update a local unit.
-  const updateLocalUnit = useCallback((event, stateSetter) => {
-    const value = Number(event.target.value)
-    if (!isNaN(value)) {
-      stateSetter(value)
-    }
-  }, [])
-
-  const handleDaysChange = useCallback(
-    event => updateLocalUnit(event, setDays),
-    [updateLocalUnit]
-  )
-  const handleHoursChange = useCallback(
-    event => updateLocalUnit(event, setHours),
-    [updateLocalUnit]
-  )
-  const handleMinutesChange = useCallback(
-    event => updateLocalUnit(event, setMinutes),
-    [updateLocalUnit]
-  )
-
-  return (
-    <Field
-      label={
-        <React.Fragment>
-          {label}
-          <Help hint="What’s the vote duration?">{helpText}}</Help>
-        </React.Fragment>
-      }
-    >
-      {({ id }) => (
-        <div
-          css={`
-            display: flex;
-            padding-top: ${0.5 * GU}px;
-            width: 100%;
-          `}
-        >
-          {[
-            ['Days', handleDaysChange, days],
-            ['Hours', handleHoursChange, hours],
-            [
-              above('medium') ? 'Minutes' : 'Min.',
-              handleMinutesChange,
-              minutes,
-            ],
-          ].map(([label, handler, value], index) => (
-            <div
-              key={label}
-              css={`
-                flex-grow: 1;
-                max-width: ${17 * GU}px;
-                & + & {
-                  margin-left: ${2 * GU}px;
-                }
-              `}
-            >
-              <TextInput
-                id={index === 0 ? id : undefined}
-                adornment={
-                  <span
-                    css={`
-                      padding: 0 ${2 * GU}px;
-                      color: ${theme.contentSecondary};
-                    `}
-                  >
-                    {label}
-                  </span>
-                }
-                adornmentPosition="end"
-                adornmentSettings={{
-                  width: 8 * GU,
-                  padding: 0,
-                }}
-                onChange={handler}
-                value={value}
-                wide
-                css="text-align: center"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </Field>
-  )
-}
-
-TimeConfig.propTypes = {
-  duration: PropTypes.number,
-  onUpdate: PropTypes.func.isRequired,
-}
-
-TimeConfig.defaultProps = {
-  duration: 0,
+  title: 'Configure template',
 }
 
 function formatDuration(duration) {
@@ -437,6 +328,7 @@ function formatReviewFields(screenData) {
     ['Minimum approval %', `${screenData.quorum}%`],
     ['Vote duration', formatDuration(screenData.duration)],
     ['Vote buffer', formatDuration(screenData.buffer)],
+    ['Vote delay', formatDuration(screenData.delay)],
   ]
 }
 
