@@ -145,7 +145,7 @@ function LockScreen({
     >
       <Header
         title="Configure template"
-        subtitle="Choose your time lock app settings below."
+        subtitle="Choose your Time Lock app settings below."
       />
 
       <div
