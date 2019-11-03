@@ -30,11 +30,7 @@ import {
   STATUS_DEPLOYMENT,
 } from './create-statuses'
 
-function useRouterArgs(location) {
-  const args = location.hash.split('/')
-  const setArgs = args => history.pushState(null, null, '#' + args.join('/'))
-  return [args, setArgs]
-}
+import { useRouterArgs } from '../../routing'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.

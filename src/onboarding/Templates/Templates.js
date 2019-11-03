@@ -44,7 +44,7 @@ function Templates({ onUse, templates }) {
   const handleDetailsClose = useCallback(() => {
     setArgs(['create'])
     setTemplateDetailsOpened(false)
-  }, [])
+  }, [setArgs])
 
   const handleDetailsUse = useCallback(
     (id, optionalApps) => {

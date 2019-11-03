@@ -158,3 +158,9 @@ export function getPreferencesSearch(screen, { labels } = {}) {
 
   return search
 }
+
+export function useRouterArgs(location) {
+  const args = location.hash.split('/')
+  const setArgs = args => history.pushState(null, null, '#/' + args.join('/'))
+  return [args, setArgs]
+}
