@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { GU } from '@aragon/ui'
 import Carousel from '../../components/Carousel/Carousel'
@@ -6,19 +6,43 @@ import Header from '../Header/Header'
 import TemplateCard from './TemplateCard'
 import TemplateDetails from './TemplateDetails'
 
+// TODO: Make that generic
+function useRouterArgs(location) {
+  const args = location.hash.split('/')
+  const setArgs = args => history.pushState(null, null, '#/' + args.join('/'))
+  return [args, setArgs]
+}
+
 function Templates({ onUse, templates }) {
   const [templateDetailsOpened, setTemplateDetailsOpened] = useState(false)
   const [templateDetailsIndex, setTemplateDetailsIndex] = useState(0)
 
+  const [args, setArgs] = useRouterArgs(location)
+  const templateUrl = args[2]
+
+  useEffect(() => {
+    const templateIndex = templates.findIndex(
+      t => t.name.toLowerCase() === decodeURIComponent(templateUrl)
+    )
+    if (templateIndex !== -1) {
+      setTemplateDetailsIndex(templateIndex)
+      setTemplateDetailsOpened(true)
+    }
+  }, [templates, templateUrl])
+
   const handleOpen = useCallback(
     id => {
-      setTemplateDetailsIndex(templates.findIndex(t => t.id === id))
+      const templateIndex = templates.findIndex(t => t.id === id)
+      const template = templates[templateIndex]
+      setTemplateDetailsIndex(templateIndex)
       setTemplateDetailsOpened(true)
+      setArgs(['create', encodeURIComponent(template.name.toLowerCase())])
     },
-    [templates]
+    [setArgs, templates]
   )
 
   const handleDetailsClose = useCallback(() => {
+    setArgs(['create'])
     setTemplateDetailsOpened(false)
   }, [])
 

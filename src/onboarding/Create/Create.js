@@ -30,6 +30,12 @@ import {
   STATUS_DEPLOYMENT,
 } from './create-statuses'
 
+function useRouterArgs(location) {
+  const args = location.hash.split('/')
+  const setArgs = args => history.pushState(null, null, '#' + args.join('/'))
+  return [args, setArgs]
+}
+
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
 const CONFIGURE_PLACEHOLDER_SCREENS = [
@@ -70,6 +76,10 @@ function useConfigureState(templates, onScreenUpdate) {
   // The data stored by the configuration screens
   const [templateData, setTemplateData] = useState({})
 
+  // The template name requested through URL
+  const [args] = useRouterArgs(location)
+  const templateUrl = args[2]
+
   const updateTemplateScreen = useCallback(
     (templateId, screenIndex = 0) => {
       const template = getTemplateById(templates, templateId)
@@ -98,11 +108,19 @@ function useConfigureState(templates, onScreenUpdate) {
       templateScreenIndex,
     } = loadTemplateState()
 
-    if (templateId) {
+    const templateUrlFound = templates.find(
+      template =>
+        template.name.toLowerCase() === decodeURIComponent(templateUrl)
+    )
+    // A must be false or == b
+    if (
+      templateId &&
+      (!templateUrlFound || templateId === templateUrlFound.id)
+    ) {
       updateTemplateScreen(templateId, templateScreenIndex)
       setTemplateData(templateData)
     }
-  }, [updateTemplateScreen])
+  }, [templateUrl, templates, updateTemplateScreen])
 
   // Save the template state
   useEffect(() => {
@@ -131,7 +149,7 @@ function useConfigureState(templates, onScreenUpdate) {
         Math.min(template.screens.length, updatedScreenIndex)
       )
     },
-    [updateTemplateScreen, templateScreenIndex, template]
+    [templateScreenIndex, template, updateTemplateScreen]
   )
 
   const prevScreen = useCallback(() => {
