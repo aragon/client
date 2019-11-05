@@ -7,6 +7,7 @@ import livepeerImage from './images/livepeer.svg'
 import myBitImage from './images/mybit.svg'
 import onehive from './images/1hive.svg'
 import aragonMesh from './images/aragon-mesh.svg'
+import lightwaveImage from './images/lightwave.svg'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -69,6 +70,14 @@ export const KnownOrganizations = {
         image: brightIdImage,
         recommended: true,
         template: TEMPLATE_DEMOCRACY,
+      },
+       {
+        address: '0x5fEED010a99f695852F8eB7B12E77CF6eCd7bE17',
+        domain: 'lightwave.aragonid.eth',
+        name: 'Lightwave',
+        image: lightwaveImage,
+        recommended: true,
+        template: TEMPLATE_MEMBERSHIP,
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),
