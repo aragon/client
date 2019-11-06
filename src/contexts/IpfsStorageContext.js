@@ -98,6 +98,9 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
   const [storageContract, setStorageContract] = useState({})
   const setData = useCallback(
     (key, dag) => {
+      if (!ipfsStore.isStorageAppInstalled) {
+        throw new Error('No storage app installed')
+      }
       if (typeof dag !== 'object') {
         throw new Error('type of value param must be object')
       }
@@ -108,9 +111,6 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
           cid
         )
       }
-      if (!ipfsStore.isStorageAppInstalled) {
-        throw new Error('No storage app installed')
-      }
       return set()
     },
     [ipfsStore.isStorageAppInstalled, storageContract, wrapper]
@@ -119,14 +119,13 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
   const getData = useCallback(
     key => {
       const get = async () => {
+        if (!ipfsStore.isStorageAppInstalled) {
+          throw new Error('No storage app installed')
+        }
         const cid = await storageContract.getRegisteredData(
           wrapper.web3.utils.fromAscii(key)
         )
         return ipfsStore.ipfsEndpoints.dag.get(cid)
-      }
-
-      if (!ipfsStore.isStorageAppInstalled) {
-        throw new Error('No storage app installed')
       }
       return get()
     },
@@ -135,6 +134,7 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
 
   useEffect(() => {
     const getStorageProvider = async () => {
+      dispatchToIpfsStore(connecting())
       let storageApp
       try {
         const appAddressNameSpace = await wrapper.kernelProxy.call(
