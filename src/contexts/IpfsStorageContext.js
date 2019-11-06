@@ -96,7 +96,6 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
     initialStorageContextValue
   )
   const [storageContract, setStorageContract] = useState({})
-  const storageApp = apps.find(({ name }) => name === 'Storage')
   const setData = useCallback(
     (key, dag) => {
       if (typeof dag !== 'object') {
@@ -135,7 +134,29 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
   )
 
   useEffect(() => {
-    const getStorageProvider = async storageApp => {
+    const getStorageProvider = async () => {
+      let storageApp
+      try {
+        const appAddressNameSpace = await wrapper.kernelProxy.call(
+          'APP_ADDR_NAMESPACE'
+        )
+        const defaultStorageAppProxyAddress = await wrapper.kernelProxy.call(
+          'getApp',
+          appAddressNameSpace,
+          '0xa53eae0295e6028e828951e8a5a05c14acb4d7bc636d130658894dd48b93ec9a'
+        )
+        storageApp = apps.find(
+          ({ proxyAddress }) =>
+            proxyAddress.toLowerCase() ===
+            defaultStorageAppProxyAddress.toLowerCase()
+        )
+        if (!storageApp) {
+          dispatchToIpfsStore(noStorageApp())
+        }
+      } catch (error) {
+        dispatchToIpfsStore(connectionFailure(error))
+      }
+
       try {
         const storageContract = instantiateStorageContract(
           storageApp.proxyAddress,
@@ -151,14 +172,8 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
         dispatchToIpfsStore(connectionFailure(error))
       }
     }
-
-    if (storageApp) {
-      dispatchToIpfsStore(connecting())
-      getStorageProvider(storageApp)
-    } else {
-      dispatchToIpfsStore(noStorageApp())
-    }
-  }, [wrapper, storageApp])
+    getStorageProvider()
+  }, [wrapper, apps])
 
   return (
     <IPFSStorageContext.Provider value={{ ...ipfsStore, setData, getData }}>
