@@ -44,11 +44,24 @@ function TemplateCard({ onOpen, template }) {
           >
             <h1
               css={`
+                display: flex;
+                align-items: center;
                 padding-bottom: ${1 * GU}px;
                 ${textStyle('body1')};
               `}
             >
-              {template.name}
+              <span>{template.name}</span>
+              {(template.disabled || template.new) && (
+                <Tag
+                  mode="new"
+                  css={`
+                    margin-left: ${1 * GU}px;
+                    flex-shrink: 0;
+                  `}
+                >
+                  {template.disabled ? 'Coming soon' : 'New'}
+                </Tag>
+              )}
             </h1>
             <p
               css={`
@@ -65,19 +78,7 @@ function TemplateCard({ onOpen, template }) {
             padding: 0 ${3 * GU}px ${2 * GU}px;
           `}
         >
-          {template.disabled ? (
-            <div
-              css={`
-                display: flex;
-                justify-content: center;
-                height: ${5 * GU}px;
-              `}
-            >
-              <Tag mode="new">Coming soon</Tag>
-            </div>
-          ) : (
-            <Button label="View details" wide onClick={handleDetailsClick} />
-          )}
+          <Button wide label="View details" onClick={handleDetailsClick} />
         </div>
       </section>
     </Card>

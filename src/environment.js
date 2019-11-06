@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import provider from 'eth-provider'
 import {
-  getAssetBridge,
+  getAppLocator,
   getDefaultEthNode,
   getEthNetworkType,
   getIpfsGateway,
@@ -77,8 +77,8 @@ const appOverrides = {
 }
 
 const appLocator = {}
-const assetBridge = getAssetBridge()
-if (assetBridge === 'local') {
+const appLocatorString = getAppLocator()
+if (appLocatorString === 'local') {
   /******************
    * Local settings *
    ******************/
@@ -89,11 +89,11 @@ if (assetBridge === 'local') {
     [appIds['Survey']]: 'http://localhost:3004/',
     [appIds['Voting']]: 'http://localhost:3001/',
   })
-} else if (assetBridge === 'ipfs') {
+} else if (appLocatorString === 'ipfs') {
   // We don't need to provide anything here as by default, the apps will be loaded from IPFS
-} else if (assetBridge) {
+} else if (appLocatorString) {
   console.error(
-    `The specified asset bridge (${assetBridge}) in the configuration is not one of 'ipfs', or 'local'. Defaulting to using 'ipfs'.`
+    `The specified app locator (${appLocatorString}) in the configuration is not one of 'ipfs', or 'local'. Defaulting to using 'ipfs'.`
   )
 }
 export { appLocator, appOverrides }
@@ -136,6 +136,3 @@ export const defaultGasPriceFn =
   networkType === 'main'
     ? noop // On mainnet rely on the provider's gas estimation
     : () => toWei('10', 'gwei') // on all other networks just hardcode it
-
-// Get the address of the demo DAO
-export const getDemoDao = () => process.env.ARAGON_DEMO_DAO || ''

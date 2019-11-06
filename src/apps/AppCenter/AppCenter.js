@@ -95,7 +95,8 @@ class AppCenter extends React.Component {
       )
       return {
         ...repo,
-        baseUrl: repoBaseUrl(repo),
+        // Use latest version's assets
+        baseUrl: repoBaseUrl(repo.appId, repo.latestVersion),
         name: appGroup.name,
         instances: appGroup.instances,
         repoName: appGroup.repoName,

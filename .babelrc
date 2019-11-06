@@ -4,7 +4,8 @@
       "@babel/preset-env",
       {
         "modules": false,
-        "useBuiltIns": false
+        "useBuiltIns": "entry",
+        "core-js": 3,
       }
     ],
     "@babel/preset-react"
@@ -12,5 +13,18 @@
   "plugins": [
     ["styled-components", { "displayName": true }],
     "@babel/plugin-proposal-class-properties"
-  ]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": "commonjs",
+            "targets": { "node": "current" }
+          }
+        ]
+      ]
+    }
+  }
 }

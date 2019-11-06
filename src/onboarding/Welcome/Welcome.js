@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Link, DropDown, GU, Layout, Split, useTheme } from '@aragon/ui'
 import { network } from '../../environment'
+import { useSuggestedOrgs } from '../../suggested-orgs'
 import Header from '../Header/Header'
 import OpenOrg from './OpenOrg'
 import Suggestions from './Suggestions'
@@ -38,71 +39,67 @@ const Welcome = React.memo(function Welcome({
     [selectorNetworksSorted]
   )
 
-  return (
-    <div
-      css={`
-        display: grid;
-        align-items: center;
-        justify-content: center;
-      `}
-    >
-      <Layout
-        breakpoints={{
-          medium: 84 * GU,
-          large: 112 * GU,
-        }}
-      >
-        <Header
-          title="Welcome to Aragon"
-          subtitle="Create your own organization in a few minutes!"
-        />
+  const suggestedOrgs = useSuggestedOrgs()
 
-        <Split
-          primary={
-            openMode ? (
-              <OpenOrg onBack={onBack} onOpenOrg={onOpenOrg} />
-            ) : (
-              <div>
-                <DropDown
-                  items={selectorNetworksSorted.map(network => network.name)}
-                  placeholder={selectorNetworksSorted[0].name}
-                  onChange={changeNetwork}
-                  wide
-                />
-                <WelcomeAction
-                  title="Create an organization"
-                  subtitle={<CreateSubtitle error={createError} />}
-                  illustration={actionCreate}
-                  onActivate={onCreate}
-                  hasError={
-                    createError[0] !== null && createError[0] !== 'no-account'
-                  }
-                />
-                <WelcomeAction
-                  title="Open an existing organization"
-                  illustration={actionOpen}
-                  onActivate={onOpen}
-                />
-              </div>
-            )
-          }
-          secondary={<Suggestions />}
-        />
-
-        <p
-          css={`
-            padding: ${4 * GU}px 0 ${4 * GU}px;
-            text-align: center;
-            color: ${theme.contentSecondary};
-          `}
-        >
-          Do you need more information about Aragon?{' '}
-          <Link href="https://aragon.org/" external>
-            Visit our homepage
-          </Link>
-        </p>
-      </Layout>
+  const primaryContent = openMode ? (
+    <OpenOrg onBack={onBack} onOpenOrg={onOpenOrg} />
+  ) : (
+    <div>
+      <DropDown
+        items={selectorNetworksSorted.map(network => network.name)}
+        placeholder={selectorNetworksSorted[0].name}
+        onChange={changeNetwork}
+        wide
+      />
+      <WelcomeAction
+        title="Create an organization"
+        subtitle={<CreateSubtitle error={createError} />}
+        illustration={actionCreate}
+        onActivate={onCreate}
+        hasError={createError[0] !== null && createError[0] !== 'no-account'}
+      />
+      <WelcomeAction
+        title="Open an existing organization"
+        illustration={actionOpen}
+        onActivate={onOpen}
+      />
     </div>
+  )
+
+  return (
+    <Layout
+      breakpoints={{
+        medium: 84 * GU,
+        large: 112 * GU,
+      }}
+    >
+      <Header
+        title="Welcome to Aragon"
+        subtitle="Create your own organization in a few minutes!"
+      />
+
+      {suggestedOrgs.length > 0 ? (
+        <Split
+          primary={primaryContent}
+          secondary={<Suggestions suggestedOrgs={suggestedOrgs} />}
+        />
+      ) : (
+        primaryContent
+      )}
+
+      <p
+        css={`
+          padding: ${4 * GU}px 0 ${4 * GU}px;
+          text-align: center;
+          color: ${theme.contentSecondary};
+        `}
+      >
+        Do you need more information about Aragon?{' '}
+        <Link href="https://aragon.org/" external>
+          Visit our homepage
+        </Link>
+      </p>
+    </Layout>
   )
 })
 

@@ -261,7 +261,7 @@ const Deployment = React.memo(function Deployment({
   // TODO: handle transaction error
   const [pending, allSuccess] = useMemo(() => {
     if (transactionsStatus.length === 0) {
-      return [true, false]
+      return [0, false]
     }
     return [
       transactionsStatus.findIndex(

@@ -17,7 +17,7 @@ function WelcomeAction({
       height={150}
       css={`
         margin-top: ${1.5 * GU}px;
-        ${hasError && `border: 1px solid ${theme.negative};`}
+        border: 1px solid ${hasError ? theme.negative : 'transparent'};
       `}
     >
       <section

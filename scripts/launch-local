@@ -7,6 +7,13 @@ const {
   DEFAULT_LOCAL_IPFS_GATEWAY,
 } = require('./config/local')
 
+const ARAGON_ENS_REGISTRY_ADDRESS =
+  process.env.ARAGON_ENS_REGISTRY_ADDRESS ||
+  process.env.REACT_APP_ENS_REGISTRY_ADDRESS
+
+const ARAGON_APP_LOCATOR =
+  process.env.ARAGON_APP_LOCATOR || process.env.REACT_APP_ASSET_BRIDGE
+
 // Determine if quiet mode enabled
 const quietMode = process.argv.includes('-q') || process.argv.includes('-Q')
 
@@ -19,16 +26,16 @@ const log = (...args) => {
 log('Running aragon/aragon on local environment settings...\n')
 
 // Set up defaults for development environment
-process.env.REACT_APP_ETH_NETWORK_TYPE = 'local'
+process.env.ARAGON_ETH_NETWORK_TYPE = 'local'
 
-// Default REACT_APP_ENS_REGISTRY_ADDRESS if not set
-if (!process.env.REACT_APP_ENS_REGISTRY_ADDRESS) {
-  process.env.REACT_APP_ENS_REGISTRY_ADDRESS = DEFAULT_LOCAL_ENS_ADDRESS
+// Default ARAGON_ENS_REGISTRY_ADDRESS if not set
+if (!ARAGON_ENS_REGISTRY_ADDRESS) {
+  process.env.ARAGON_ENS_REGISTRY_ADDRESS = DEFAULT_LOCAL_ENS_ADDRESS
   log(
     `ENS Registry address not specified, defaulting to aragen's default deployment (${DEFAULT_LOCAL_ENS_ADDRESS}).`
   )
   log(
-    "Warning: if you are not using aragen, restart this command with REACT_APP_ENS_REGISTRY_ADDRESS exported to your locally deployed ENS Registry's address.\n"
+    "Warning: if you are not using aragen, restart this command with ARAGON_ENS_REGISTRY_ADDRESS exported to your locally deployed ENS Registry's address.\n"
   )
 }
 
@@ -39,18 +46,18 @@ ps.lookup({ command: 'ipfs' }, function(err, resultList) {
   }
 
   if (resultList.length > 0) {
-    process.env.REACT_APP_IPFS_GATEWAY = DEFAULT_LOCAL_IPFS_GATEWAY
+    process.env.ARAGON_IPFS_GATEWAY = DEFAULT_LOCAL_IPFS_GATEWAY
     log('Found a local IPFS daemon running...')
     log(
       `The app will be configured to connect and serve assets from the default gateway (${DEFAULT_LOCAL_IPFS_GATEWAY}).`
     )
     // If no asset bridge is defined, default to using IPFS as the bridge
-    if (!process.env.REACT_APP_ASSET_BRIDGE) {
-      process.env.REACT_APP_ASSET_BRIDGE = 'ipfs'
+    if (!ARAGON_APP_LOCATOR) {
+      process.env.ARAGON_APP_LOCATOR = 'ipfs'
       log('Also defaulting the asset bridge to IPFS.\n')
     }
   } else {
-    process.env.REACT_APP_ASSET_BRIDGE = 'local'
+    process.env.ARAGON_APP_LOCATOR = 'local'
   }
 
   execute('npm start', { stdio: 'inherit' })

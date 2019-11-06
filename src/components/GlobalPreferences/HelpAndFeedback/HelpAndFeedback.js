@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Box, Checkbox, Info, GU, textStyle, useTheme } from '@aragon/ui'
+import { Box, Switch, Info, GU, textStyle, useTheme } from '@aragon/ui'
 import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
 import helpAndFeedbackPng from './assets/help-and-feedback.png'
 
@@ -27,10 +27,11 @@ function HelpAndFeedback() {
             align-items: center;
           `}
         >
-          <Checkbox onChange={handleOptOutChange} checked={!optedOut} />
+          <Switch onChange={handleOptOutChange} checked={!optedOut} />
           <span
             css={`
               color: ${theme.surfaceContentSecondary};
+              padding-left: ${1.5 * GU}px;
               ${textStyle('title4')}
             `}
           >

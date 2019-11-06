@@ -14,8 +14,8 @@ import { Header, Navigation, ScreenPropsType } from '..'
 function ReviewScreen({
   items,
   screenProps: { back, data, next },
-  screenSubtitle = 'Have one last look at your settings below',
-  screenTitle = 'Review information',
+  screenSubtitle,
+  screenTitle,
 }) {
   const theme = useTheme()
 
@@ -51,38 +51,44 @@ function ReviewScreen({
       <Accordion
         items={items.map(item => [
           item.label,
-          <div
-            css={`
-              padding: ${7 * GU}px;
-            `}
-          >
-            {item.fields.map(([label, content]) => (
-              <section
-                key={label}
+          <div css="width: 100%">
+            {Array.isArray(item.fields) ? (
+              <div
                 css={`
-                  & + & {
-                    margin-top: ${3 * GU}px;
-                  }
+                  padding: ${7 * GU}px;
                 `}
               >
-                <h1
-                  css={`
-                    margin-bottom: ${1 * GU}px;
-                    ${textStyle('label2')}
-                    color: ${theme.contentSecondary};
-                  `}
-                >
-                  {label}
-                </h1>
-                <div
-                  css={`
-                    ${textStyle('body1')};
-                  `}
-                >
-                  {content}
-                </div>
-              </section>
-            ))}
+                {item.fields.map(([label, content]) => (
+                  <section
+                    key={label}
+                    css={`
+                      & + & {
+                        margin-top: ${3 * GU}px;
+                      }
+                    `}
+                  >
+                    <h1
+                      css={`
+                        margin-bottom: ${1 * GU}px;
+                        color: ${theme.contentSecondary};
+                        ${textStyle('label2')};
+                      `}
+                    >
+                      {label}
+                    </h1>
+                    <div
+                      css={`
+                        ${textStyle('body1')};
+                      `}
+                    >
+                      {content}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            ) : (
+              item.fields
+            )}
           </div>,
         ])}
       />
@@ -113,7 +119,13 @@ ReviewScreen.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.node.isRequired,
-      fields: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.node)).isRequired,
+      fields: PropTypes.oneOfType([
+        // Render by field
+        PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.node)).isRequired,
+
+        // Simple node: custom rendering
+        PropTypes.node,
+      ]),
     })
   ).isRequired,
   screenProps: ScreenPropsType.isRequired,

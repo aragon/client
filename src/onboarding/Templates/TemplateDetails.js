@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
-  Checkbox,
+  Switch,
   Field,
   IconCheck,
   GU,
@@ -117,9 +117,9 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               )}
               {template.userGuideUrl && (
                 <Field label="User guide">
-                  <Link href={template.userGuide}>
+                  <Link href={template.userGuideUrl}>
                     {sanitizeCodeRepositoryUrl(
-                      stripUrlProtocol(template.userGuide)
+                      stripUrlProtocol(template.userGuideUrl)
                     )}
                   </Link>
                 </Field>
@@ -165,7 +165,6 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
             <Field
               label="Required apps"
               css={`
-                height: 150px;
                 margin-bottom: ${4 * GU}px;
               `}
             >
@@ -209,28 +208,23 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                 height: 150px;
               `}
             >
-              {template.optionalApps.map(({ appName, label }, index) => (
-                <div
-                  key={index}
-                  css={`
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: ${2 * GU}px;
-
-                    & + & {
-                      margin-top: ${1.5 * GU}px;
-                    }
-                  `}
-                >
-                  <KnownAppBadge appName={appName} label={label} />
+              {() =>
+                template.optionalApps.map(({ appName, label }, index) => (
                   <div
+                    key={index}
                     css={`
                       display: flex;
+                      justify-content: space-between;
                       align-items: center;
-                      ${unselectable}
+                      margin-top: ${2 * GU}px;
+
+                      & + & {
+                        margin-top: ${1.5 * GU}px;
+                      }
                     `}
                   >
-                    <Checkbox
+                    <KnownAppBadge appName={appName} label={label} />
+                    <Switch
                       checked={templateOptionalApps[appName]}
                       onChange={() => {
                         setTemplateOptionalApps(apps => ({
@@ -238,18 +232,10 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                           [appName]: !apps[appName],
                         }))
                       }}
-                      css={`
-                        margin-right: ${1.5 * GU}px;
-                        border-color: ${theme.hint};
-                        &:active {
-                          border-color: ${theme.hint};
-                        }
-                      `}
                     />
-                    Include
                   </div>
-                </div>
-              ))}
+                ))
+              }
             </Field>
           )}
           {verticalMode && (
@@ -272,11 +258,12 @@ TemplateDetails.propTypes = {
 
 function SelectTemplateButton({ onClick, template }) {
   const templateLoading = template.status === TEMPLATE_LOADING
-  const templateUnavailable = template.status === TEMPLATE_UNAVAILABLE
-  const label = templateLoading
-    ? 'Loading template…'
-    : templateUnavailable
+  const templateUnavailable =
+    template.disabled || template.status === TEMPLATE_UNAVAILABLE
+  const label = templateUnavailable
     ? 'This template is not available at the moment'
+    : templateLoading
+    ? 'Loading template…'
     : 'Use this template'
 
   return (

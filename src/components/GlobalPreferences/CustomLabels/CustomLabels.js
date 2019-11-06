@@ -17,6 +17,7 @@ function CustomLabels({ wrapper, dao, locator }) {
   const {
     filteredIdentities,
     handleSearchTermChange,
+    onSearchTerm,
     searchTerm,
   } = useFilterIdentities(identities)
   const {
@@ -45,10 +46,9 @@ function CustomLabels({ wrapper, dao, locator }) {
     wrapper,
   })
   const { handleShowLocalIdentityModal } = useLocalIdentityModal()
-  const handleClearSearchTerm = useCallback(
-    () => handleSearchTermChange({ currentTarget: { value: '' } }),
-    [handleSearchTermChange]
-  )
+  const handleClearSearchTerm = useCallback(() => handleSearchTermChange(''), [
+    handleSearchTermChange,
+  ])
   const { sortedIdentities, sort, handleToggleSort } = useSort(
     filteredIdentities
   )
@@ -77,6 +77,7 @@ function CustomLabels({ wrapper, dao, locator }) {
           onImport={handleImport}
           onRemove={handleRemoveModalOpen}
           onSearchChange={handleSearchTermChange}
+          onSearchTerm={onSearchTerm}
           onShare={handleShareModalOpen}
           onToggleAll={handleToggleAll}
           onToggleIdentity={handleToggleIdentity}

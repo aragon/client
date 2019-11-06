@@ -1,17 +1,10 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  ButtonBase,
-  GU,
-  IconSettings,
-  RADIUS,
-  useTheme,
-} from '@aragon/ui'
+import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
-import logo from '../../assets/logo.png'
+import HomeButton from '../../components/HomeButton/HomeButton'
 
-function OnboardingTopBar({ onHome, status, solid }) {
+function OnboardingTopBar({ status, solid }) {
   const theme = useTheme()
 
   const handleSettingsClick = useCallback(() => {
@@ -48,26 +41,14 @@ function OnboardingTopBar({ onHome, status, solid }) {
             border-top: 2px solid ${theme.accent};
           `}
         />
-        <ButtonBase
-          onClick={onHome}
-          focusRingRadius={RADIUS}
-          title="Back to home"
+
+        <HomeButton
           css={`
             position: absolute;
             top: ${1 * GU}px;
             left: ${1 * GU}px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: ${1 * GU}px;
-            border-radius: ${RADIUS}px;
-            &:active {
-              background: ${theme.surfacePressed};
-            }
           `}
-        >
-          <img src={logo} width={4.5 * GU} alt="" />
-        </ButtonBase>
+        />
 
         <div
           css={`
@@ -99,7 +80,6 @@ function OnboardingTopBar({ onHome, status, solid }) {
 }
 
 OnboardingTopBar.propTypes = {
-  onHome: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired,
   solid: PropTypes.bool,
 }

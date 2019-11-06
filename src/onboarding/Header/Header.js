@@ -27,14 +27,14 @@ function Header({
         {title}
       </h1>
       {subtitle && (
-        <p
+        <div
           css={`
             ${textStyle('title4')};
             color: ${theme.contentSecondary};
           `}
         >
           {subtitle}
-        </p>
+        </div>
       )}
     </header>
   )
