@@ -14,6 +14,7 @@ import {
   optmisticallyPinDag,
 } from '../storage'
 import { AppType, AragonType } from '../prop-types'
+import { appIds } from '../environment'
 
 export const IPFSStorageContext = createContext({})
 
@@ -143,7 +144,7 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
         const defaultStorageAppProxyAddress = await wrapper.kernelProxy.call(
           'getApp',
           appAddressNameSpace,
-          '0xa53eae0295e6028e828951e8a5a05c14acb4d7bc636d130658894dd48b93ec9a'
+          appIds.Storage
         )
         storageApp = apps.find(
           ({ proxyAddress }) =>
