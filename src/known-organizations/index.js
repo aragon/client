@@ -71,7 +71,7 @@ export const KnownOrganizations = {
         recommended: true,
         template: TEMPLATE_DEMOCRACY,
       },
-       {
+      {
         address: '0x5fEED010a99f695852F8eB7B12E77CF6eCd7bE17',
         domain: 'lightwave.aragonid.eth',
         name: 'Lightwave',
