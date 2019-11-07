@@ -1,7 +1,7 @@
 on: push
-name: lint and build
+name: CI
 jobs:
-  lint_and_build:
+  CI:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -9,10 +9,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10
-    - name: npm install, build, and test
+    - name: npm install
+      run: npm install
+    - name: npm lint and build
       run: |
-        npm install
         npm run lint
         npm run build
-      env:
-        CI: true
+    env:
+      CI: true
