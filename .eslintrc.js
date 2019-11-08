@@ -23,7 +23,7 @@ module.exports = {
   rules: {
     'react/prop-types': 'warn',
     'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
+    'react-hooks/exhaustive-deps': 'error',
     'import/no-unresolved': [
       'error',
       { ignore: ['^react(-dom)?$', '^styled-components$'] },
