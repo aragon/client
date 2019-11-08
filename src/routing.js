@@ -6,10 +6,12 @@ import { addStartingSlash } from './utils'
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 
 function encodeAppPath(path) {
-  return path
-    .split('/')
-    .map(v => encodeURIComponent(v))
-    .join('/')
+  return addStartingSlash(
+    path
+      .split('/')
+      .map(v => encodeURIComponent(v))
+      .join('/')
+  )
 }
 
 function decodeAppPathParts(pathParts) {
@@ -74,11 +76,11 @@ export function parsePath(pathname, search = '') {
 
   return {
     ...base,
-    mode: APP_MODE_ORG,
     dao,
     instanceId: instanceId || 'home',
-    preferences: parsePreferences(search),
     instancePath,
+    mode: APP_MODE_ORG,
+    preferences: parsePreferences(search),
   }
 }
 
@@ -91,11 +93,6 @@ export function getAppPath({
   mode,
   action,
 } = {}) {
-  // Always start with /
-  if (!instancePath.startsWith('/')) {
-    instancePath = `/${instancePath}`
-  }
-
   if (mode === APP_MODE_SETUP) {
     return '/create'
   }
@@ -118,13 +115,7 @@ export function getAppPath({
     ? staticApps.get(instanceId).route
     : `/${instanceId}`
 
-  return (
-    '/' +
-    dao +
-    instancePart +
-    addStartingSlash(encodeAppPath(instancePath)) +
-    search
-  )
+  return '/' + dao + instancePart + encodeAppPath(instancePath) + search
 }
 
 // Preferences
