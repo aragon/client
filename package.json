@@ -133,5 +133,10 @@
       "eslint --fix",
       "git add"
     ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(svg|png)$": "<rootDir>/src/test/empty-string.js"
+    }
   }
 }

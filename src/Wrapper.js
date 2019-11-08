@@ -86,8 +86,21 @@ class Wrapper extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     this.updateIdentityEvents(prevProps)
+    this.updateInstancePath(prevProps)
     if (prevProps.locator !== this.props.locator) {
       this.showOrgUpgradePanelIfFirstVisit()
+    }
+  }
+
+  updateInstancePath(prevProps) {
+    const { locator, wrapper } = this.props
+
+    const updated =
+      locator.instanceId !== prevProps.locator.instanceId ||
+      locator.instancePath !== prevProps.locator.instancePath
+
+    if (wrapper && updated) {
+      wrapper.setAppPath(locator.instanceId, locator.instancePath)
     }
   }
 
@@ -153,9 +166,9 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  openApp = (instanceId, { params, localPath } = {}) => {
+  openApp = (instanceId, { instancePath } = {}) => {
     const { historyPush, locator } = this.props
-    historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
+    historyPush(getAppPath({ dao: locator.dao, instanceId, instancePath }))
   }
 
   handleAppIFrameRef = appIFrame => {
@@ -200,14 +213,16 @@ class Wrapper extends React.PureComponent {
     this.setState({ appLoading: false })
   }
 
-  // params need to be a string
-  handleParamsRequest = params => {
-    this.openApp(this.props.locator.instanceId, { params })
+  handleAppMessage = ({ data: { name, value } }) => {
+    const { wrapper, locator } = this.props
+    if (name === 'ready') {
+      wrapper.setAppPath(locator.instanceId, locator.instancePath)
+    }
   }
 
   // Update the local path of the current instance
-  handlePathRequest = localPath => {
-    this.openApp(this.props.locator.instanceId, { localPath })
+  handlePathRequest = instancePath => {
+    this.openApp(this.props.locator.instanceId, { instancePath })
   }
 
   handleUpgradeModalOpen = () => {
@@ -309,10 +324,7 @@ class Wrapper extends React.PureComponent {
             daoLoading={daoStatus === DAO_STATUS_LOADING}
             instanceId={locator.instanceId}
           >
-            {this.renderApp(locator.instanceId, {
-              params: locator.params,
-              localPath: locator.localPath,
-            })}
+            {this.renderApp(locator.instanceId, locator.instancePath)}
           </AppLoader>
 
           <SignerPanel
@@ -347,7 +359,7 @@ class Wrapper extends React.PureComponent {
       </div>
     )
   }
-  renderApp(instanceId, { params, localPath }) {
+  renderApp(instanceId, instancePath) {
     const {
       apps,
       appsStatus,
@@ -379,7 +391,7 @@ class Wrapper extends React.PureComponent {
             apps={apps}
             appsLoading={appsLoading}
             permissionsLoading={permissionsLoading}
-            localPath={localPath}
+            localPath={instancePath}
             onMessage={this.handleAppMessage}
             onPathRequest={this.handlePathRequest}
             wrapper={wrapper}
@@ -394,13 +406,13 @@ class Wrapper extends React.PureComponent {
           <AppCenter
             appInstanceGroups={this.getAppInstancesGroups(apps)}
             daoAddress={daoAddress}
-            params={params}
             repos={repos}
             canUpgradeOrg={canUpgradeOrg}
             reposLoading={reposLoading}
             onMessage={this.handleAppMessage}
             onUpgradeAll={this.showOrgUpgradePanel}
-            onParamsRequest={this.handleParamsRequest}
+            localPath={instancePath}
+            onPathRequest={this.handlePathRequest}
             wrapper={wrapper}
           />
         </AppInternal>

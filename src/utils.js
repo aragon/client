@@ -71,6 +71,10 @@ export function removeStartingSlash(str) {
   return str.replace(/^\/+/, '')
 }
 
+export function addStartingSlash(str) {
+  return str.startsWith('/') ? str : `/${str}`
+}
+
 // Append a trailing slash if needed
 export function appendTrailingSlash(str) {
   return str + (str.endsWith('/') ? '' : '/')

@@ -4,11 +4,16 @@ import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
 import { network, web3Providers } from './environment'
-import { parsePath, getAppPath, getPreferencesSearch } from './routing'
+import {
+  ARAGONID_ENS_DOMAIN,
+  getAppPath,
+  getPreferencesSearch,
+  parsePath,
+} from './routing'
 import initWrapper, {
+  pollConnectivity,
   pollMainAccount,
   pollNetwork,
-  pollConnectivity,
 } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import { Onboarding } from './onboarding'
@@ -130,7 +135,7 @@ class App extends React.Component {
   // Handle URL changes
   handleHistoryChange = ({ pathname, search, state = {} }) => {
     if (!state.alreadyParsed) {
-      this.updateLocator(parsePath(this.history, pathname, search))
+      this.updateLocator(parsePath(pathname, search))
     }
   }
 
@@ -162,6 +167,15 @@ class App extends React.Component {
     // need to cancel the subscribtions.
     if (!locator.dao && prevLocator && prevLocator.dao) {
       this.updateDao(null)
+    }
+
+    // Replace URL with non-aragonid.eth version
+    if (locator.dao && locator.dao.endsWith(ARAGONID_ENS_DOMAIN)) {
+      this.history.replace({
+        pathname: locator.pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
+        search: locator.search,
+        state: { alreadyParsed: true },
+      })
     }
 
     this.setState({ locator, prevLocator })
@@ -259,6 +273,24 @@ class App extends React.Component {
           },
         })
       },
+      onRequestPath: ({ appAddress, path, resolve, reject }) => {
+        const { locator } = this.state
+        if (appAddress !== locator.instanceId) {
+          reject(
+            `Can’t change the path of ${appAddress}: the app is not currently active.`
+          )
+          return
+        }
+
+        resolve()
+
+        window.location.hash = getAppPath({
+          dao,
+          instanceId: locator.instanceId,
+          instancePath: path,
+          mode: APP_MODE_ORG,
+        })
+      },
     })
       .then(wrapper => {
         log('wrapper', wrapper)
@@ -311,7 +343,7 @@ class App extends React.Component {
 
   closePreferences = () => {
     const { locator } = this.state
-    this.historyPush(getAppPath(locator))
+    this.historyPush(getAppPath({ ...locator, search: '' }))
   }
 
   openPreferences = (screen, data) => {
