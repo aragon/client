@@ -20,7 +20,6 @@ function OrgIcon({ orgAddress, size }) {
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        border-radius: ${!knownOrgImage ? '50%' : '0'};
       `}
     >
       {knownOrgImage ? (
@@ -32,7 +31,12 @@ function OrgIcon({ orgAddress, size }) {
           css="object-fit: contain"
         />
       ) : (
-        <EthIdenticon address={orgAddress} />
+        <EthIdenticon
+          address={orgAddress}
+          css={`
+            border-radius: 50%;
+          `}
+        />
       )}
     </div>
   )
