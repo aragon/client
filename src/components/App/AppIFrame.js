@@ -18,7 +18,6 @@ class AppIFrame extends React.Component {
   }
   static defaultProps = {
     iframeRef: noop,
-    instancePath: '/',
     onLoadingCancel: noop,
     onLoadingError: noop,
     onLoadingSuccess: noop,
@@ -32,7 +31,6 @@ class AppIFrame extends React.Component {
   componentDidMount() {
     window.addEventListener('message', this.handleReceiveMessage, false)
     this.navigateIFrame(this.props.app.src)
-    this.setState({ instancePath: this.props.instancePath })
   }
   componentWillReceiveProps(nextProps) {
     const { app: nextApp } = nextProps
