@@ -3,10 +3,10 @@ import { APP_MODE_START, APP_MODE_SETUP, APP_MODE_ORG } from './symbols'
 
 const ADDRESS = '0xc41e4c10b37d3397a99d4a90e7d85508a69a5c4c'
 
-function locator(path, data) {
+function locator(data) {
   return {
-    path,
-    pathname: path,
+    // Just for convenience, set `pathname` to `path` if `pathname` doesn’t exist.
+    pathname: data.pathname === undefined ? data.path : data.pathname,
     preferences: { params: new Map(), path: '' },
     search: '',
     ...data,
@@ -16,28 +16,32 @@ function locator(path, data) {
 describe('parsePath()', () => {
   test('handles modes', () => {
     expect(parsePath('/')).toEqual(
-      locator('/', {
+      locator({
+        path: '/',
         action: '',
         mode: APP_MODE_START,
       })
     )
 
     expect(parsePath('/create')).toEqual(
-      locator('/create', {
+      locator({
+        path: '/create',
         action: 'create',
         mode: APP_MODE_SETUP,
       })
     )
 
     expect(parsePath('/open')).toEqual(
-      locator('/open', {
+      locator({
+        path: '/open',
         action: 'open',
         mode: APP_MODE_START,
       })
     )
 
     expect(parsePath('/p')).toEqual(
-      locator('/p', {
+      locator({
+        path: '/p',
         mode: APP_MODE_ORG,
         dao: 'p.aragonid.eth',
         instanceId: 'home',
@@ -48,7 +52,8 @@ describe('parsePath()', () => {
 
   test('handles org paths', () => {
     expect(parsePath(`/p/${ADDRESS}`)).toEqual(
-      locator(`/p/${ADDRESS}`, {
+      locator({
+        path: `/p/${ADDRESS}`,
         dao: 'p.aragonid.eth',
         instanceId: ADDRESS,
         instancePath: '/',
@@ -59,7 +64,8 @@ describe('parsePath()', () => {
 
   test('handles app paths', () => {
     expect(parsePath(`/p/${ADDRESS}/test`)).toEqual(
-      locator(`/p/${ADDRESS}/test`, {
+      locator({
+        path: `/p/${ADDRESS}/test`,
         dao: 'p.aragonid.eth',
         instanceId: ADDRESS,
         instancePath: '/test',
@@ -70,10 +76,11 @@ describe('parsePath()', () => {
 
   test('handles preferences paths', () => {
     expect(parsePath('/open', '?preferences=/network')).toEqual(
-      locator('/open', {
+      locator({
+        path: '/open?preferences=/network',
+        pathname: '/open',
         action: 'open',
         mode: APP_MODE_START,
-        path: '/open?preferences=/network',
         preferences: { params: new Map(), path: 'network' },
         search: '?preferences=/network',
       })
@@ -82,12 +89,13 @@ describe('parsePath()', () => {
 
   test('handles an app path with a preference path', () => {
     expect(parsePath(`/p/${ADDRESS}/test`, '?preferences=/network')).toEqual(
-      locator(`/p/${ADDRESS}/test`, {
+      locator({
+        path: `/p/${ADDRESS}/test?preferences=/network`,
+        pathname: `/p/${ADDRESS}/test`,
         dao: 'p.aragonid.eth',
         instanceId: ADDRESS,
         instancePath: '/test',
         mode: APP_MODE_ORG,
-        path: `/p/${ADDRESS}/test?preferences=/network`,
         preferences: { params: new Map(), path: 'network' },
         search: '?preferences=/network',
       })
@@ -96,7 +104,8 @@ describe('parsePath()', () => {
 
   test('handles malformed paths', () => {
     expect(parsePath(`/p/${ADDRESS}///`)).toEqual(
-      locator(`/p/${ADDRESS}///`, {
+      locator({
+        path: `/p/${ADDRESS}///`,
         dao: 'p.aragonid.eth',
         instanceId: ADDRESS,
         instancePath: '///',
