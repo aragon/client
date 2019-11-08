@@ -62,7 +62,7 @@ function useUpgradeApp(wrapper, kernelAddress, { onDone }) {
         onDone()
       }
     },
-    [wrapper, kernelAddress]
+    [wrapper, kernelAddress, onDone]
   )
 
   return upgradeApp
@@ -125,17 +125,23 @@ const AppCenter = React.memo(function AppCenter({
     },
   })
 
-  const changeScreen = useCallback(screenIndex => {
-    onPathRequest(`/${SCREENS[screenIndex].id}`)
-  }, [])
+  const changeScreen = useCallback(
+    screenIndex => {
+      onPathRequest(`/${SCREENS[screenIndex].id}`)
+    },
+    [onPathRequest]
+  )
 
-  const handleOpenRepo = useCallback(repoName => {
-    onPathRequest(`/installed/${repoName}`)
-  }, [])
+  const handleOpenRepo = useCallback(
+    repoName => {
+      onPathRequest(`/installed/${repoName}`)
+    },
+    [onPathRequest]
+  )
 
   const handleCloseRepo = useCallback(() => {
     onPathRequest(`/installed`)
-  }, [])
+  }, [onPathRequest])
 
   return (
     <React.Fragment>
