@@ -8,7 +8,6 @@ class AppIFrame extends React.Component {
   static propTypes = {
     app: AppType.isRequired,
     iframeRef: PropTypes.func,
-    instancePath: PropTypes.string,
     onLoadingCancel: PropTypes.func,
     onLoadingError: PropTypes.func,
     onLoadingSuccess: PropTypes.func,

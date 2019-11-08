@@ -449,7 +449,6 @@ class Wrapper extends React.PureComponent {
       <AppIFrame
         ref={this.handleAppIFrameRef}
         app={app}
-        instancePath={instancePath}
         onLoadingCancel={this.handleAppIFrameLoadingCancel}
         onLoadingError={this.handleAppIFrameLoadingError}
         onLoadingStart={this.handleAppIFrameLoadingStart}
