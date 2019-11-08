@@ -39,7 +39,7 @@ function decodeAppPathParts(pathParts) {
  * Available modes:
  *   - APP_MODE_START: the screen you see when opening /.
  *   - APP_MODE_SETUP: the onboarding screens.
- *   - APP_MODE_ORG: when the path starts with a DAO address.
+ *   - APP_MODE_ORG: when the path starts with a DAO address or ENS name.
  */
 export function parsePath(pathname, search = '') {
   const path = pathname + search
