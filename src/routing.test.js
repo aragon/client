@@ -74,8 +74,22 @@ describe('parsePath()', () => {
         action: 'open',
         mode: APP_MODE_START,
         path: '/open?preferences=/network',
-        search: '?preferences=/network',
         preferences: { params: new Map(), path: 'network' },
+        search: '?preferences=/network',
+      })
+    )
+  })
+
+  test('handles an app path with a preference path', () => {
+    expect(parsePath(`/p/${ADDRESS}/test`, '?preferences=/network')).toEqual(
+      locator(`/p/${ADDRESS}/test`, {
+        dao: 'p.aragonid.eth',
+        instanceId: ADDRESS,
+        instancePath: '/test',
+        mode: APP_MODE_ORG,
+        path: `/p/${ADDRESS}/test?preferences=/network`,
+        preferences: { params: new Map(), path: 'network' },
+        search: '?preferences=/network',
       })
     )
   })
