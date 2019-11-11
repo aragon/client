@@ -30,7 +30,19 @@ export const optmisticallyPinDag = async dag => {
   )
 }
 
-export const getIPFSProvider = async () => {
+const getIPFSGatewayURLs = async () => {
   const response = await fetch('http://localhost:3001/api/v0/ipfs-provider')
   return response.json()
+}
+
+export const createIpfsProvider = async () => {
+  const { baseUrl, dagGetUrl } = await getIPFSGatewayURLs()
+  return {
+    dag: {
+      get: async cid => {
+        const response = await fetch(`${baseUrl}${dagGetUrl}${cid}`)
+        return response.json()
+      },
+    },
+  }
 }

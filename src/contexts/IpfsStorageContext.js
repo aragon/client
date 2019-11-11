@@ -10,7 +10,6 @@ import {
   createIpfsProvider,
   ensureServerIsListeningToStorageContract,
   instantiateStorageContract,
-  getIPFSProvider,
   optmisticallyPinDag,
 } from '../storage'
 import { AppType, AragonType } from '../prop-types'
@@ -136,7 +135,6 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
   useEffect(() => {
     const getStorageProvider = async () => {
       dispatchToIpfsStore(connecting())
-      let storageApp
       try {
         const appAddressNameSpace = await wrapper.kernelProxy.call(
           'APP_ADDR_NAMESPACE'
@@ -146,29 +144,25 @@ export const IPFSStorageProvider = ({ children, apps, wrapper }) => {
           appAddressNameSpace,
           appIds.Storage
         )
-        storageApp = apps.find(
+        const storageApp = apps.find(
           ({ proxyAddress }) =>
             proxyAddress.toLowerCase() ===
             defaultStorageAppProxyAddress.toLowerCase()
         )
         if (!storageApp) {
           dispatchToIpfsStore(noStorageApp())
+        } else {
+          const storageContract = instantiateStorageContract(
+            storageApp.proxyAddress,
+            storageApp.abi,
+            wrapper
+          )
+          await ensureServerIsListeningToStorageContract(
+            storageApp.proxyAddress
+          )
+          setStorageContract(storageContract)
+          dispatchToIpfsStore(connectionSuccess(await createIpfsProvider()))
         }
-      } catch (error) {
-        dispatchToIpfsStore(connectionFailure(error))
-      }
-
-      try {
-        const storageContract = instantiateStorageContract(
-          storageApp.proxyAddress,
-          storageApp.abi,
-          wrapper
-        )
-        await ensureServerIsListeningToStorageContract(storageApp.proxyAddress)
-        setStorageContract(storageContract)
-        const { alias } = await getIPFSProvider()
-        const ipfsEndpoints = await createIpfsProvider(alias)
-        dispatchToIpfsStore(connectionSuccess(ipfsEndpoints))
       } catch (error) {
         dispatchToIpfsStore(connectionFailure(error))
       }
