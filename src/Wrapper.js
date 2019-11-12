@@ -22,15 +22,8 @@ import {
   RepoType,
 } from './prop-types'
 import { getAppPath } from './routing'
-import {
-  APP_MODE_ORG,
-  APPS_STATUS_LOADING,
-  DAO_STATUS_LOADING,
-} from './symbols'
+import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-
-const SHOW_UPGRADE_MODAL_KEY = 'SHOW_UPGRADE_MODAL_FIRST_TIME'
-const OCTOBER_1ST_2019 = new Date('October 1 2019 00:00').getTime()
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -77,7 +70,6 @@ class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     this.startIdentitySubscription()
-    this.showOrgUpgradePanelIfFirstVisit()
   }
 
   componentWillUnmount() {
@@ -87,9 +79,6 @@ class Wrapper extends React.PureComponent {
   componentDidUpdate(prevProps) {
     this.updateIdentityEvents(prevProps)
     this.updateInstancePath(prevProps)
-    if (prevProps.locator !== this.props.locator) {
-      this.showOrgUpgradePanelIfFirstVisit()
-    }
   }
 
   updateInstancePath(prevProps) {
@@ -241,19 +230,6 @@ class Wrapper extends React.PureComponent {
       orgUpgradePanelOpened: this.props.canUpgradeOrg,
       upgradeModalOpened: false,
     })
-  }
-  showOrgUpgradePanelIfFirstVisit = () => {
-    // Show the upgrade showcase on first load up to a certain point in time
-    if (
-      this.props.locator.mode === APP_MODE_ORG &&
-      localStorage.getItem(SHOW_UPGRADE_MODAL_KEY) !== 'false' &&
-      Date.now() < OCTOBER_1ST_2019
-    ) {
-      localStorage.setItem(SHOW_UPGRADE_MODAL_KEY, 'false')
-      this.setState({
-        upgradeModalOpened: true,
-      })
-    }
   }
   hideOrgUpgradePanel = () => {
     this.setState({ orgUpgradePanelOpened: false })
