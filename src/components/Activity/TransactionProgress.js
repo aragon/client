@@ -40,7 +40,7 @@ const TransactionProgress = React.memo(function TransactionProgress({
   const progress = getProgress(status, createdAt, estimate, threshold, now)
   const showConfirmed = status === ACTIVITY_STATUS_CONFIRMED
   const showTimer =
-    !showConfirmed && (now < threshold && status === ACTIVITY_STATUS_PENDING)
+    !showConfirmed && now < threshold && status === ACTIVITY_STATUS_PENDING
 
   return (
     <Transition
