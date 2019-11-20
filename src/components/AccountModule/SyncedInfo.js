@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import { GU } from '@aragon/ui'
 import { getWeb3Instances } from './utils'
 
 const SyncedInfo = () => {
@@ -18,12 +18,12 @@ const SyncedInfo = () => {
   return (
     <div
       css={`
-        margin-top: 10px;
+        margin-top: ${1 * GU}px;
       `}
     >
       <span
         css={`
-          padding-right: 10px;
+          padding-right: ${1 * GU}px;
           opacity: 0.8;
         `}
       >
