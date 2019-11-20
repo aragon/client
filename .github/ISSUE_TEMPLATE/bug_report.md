@@ -33,7 +33,7 @@ If applicable, add screenshots to help explain your problem.
  - OS and OS version: [e.g. Linux Mint 18.0]
  - Browser and browser version: [e.g. Firefox 64.0]
 
-**Smartphone (please complete the following information):**
+**Smartphone or tablet (please complete the following information):**
  - Device: [e.g. Fairphone 2]
  - OS and OS version: [e.g. Android 8.0.0]
  - Browser and browser version: [e.g. Firefox 64.0.1]
