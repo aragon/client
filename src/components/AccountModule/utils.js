@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTheme } from '@aragon/ui'
 
 import { web3Providers } from '../../environment'
+import { getNetworkByChainId } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
 
 export const getWeb3Instances = () => {
@@ -13,38 +14,35 @@ export const getWeb3Instances = () => {
   }
 }
 
-const normaliseNetworkName = networkId =>
-  ({
-    '1': 'Main',
-    '3': 'Ropsten',
-    '4': 'Rinkeby',
-  }[networkId] || networkId)
+function normalizeNetworkName(chainId) {
+  return getNetworkByChainId(chainId).settings.shortName
+}
 
 export const useNetworkConnectionData = () => {
-  const [walletNetworkId, setWalletNetworkId] = useState()
-  const [clientNetworkId, setClientNetworkId] = useState()
+  const [walletChainId, setWalletChainId] = useState()
+  const [clientChainId, setClientChainId] = useState()
 
   useEffect(() => {
     const { web3, walletWeb3 } = getWeb3Instances()
-    web3.eth.net.getId((err, networkId) => {
+    web3.eth.getChainId((err, chainId) => {
       if (!err) {
-        setClientNetworkId(networkId)
+        setClientChainId(chainId)
       }
     })
-    walletWeb3.eth.net.getId((err, networkId) => {
+    walletWeb3.eth.getChainId((err, chainId) => {
       if (!err) {
-        setWalletNetworkId(networkId)
+        setWalletChainId(chainId)
       }
     })
   }, [])
 
   return {
-    walletNetworkName: normaliseNetworkName(walletNetworkId),
-    clientNetworkName: normaliseNetworkName(clientNetworkId),
+    walletNetworkName: normalizeNetworkName(walletChainId),
+    clientNetworkName: normalizeNetworkName(clientChainId),
     hasNetworkMismatch:
-      walletNetworkId !== undefined &&
-      clientNetworkId !== undefined &&
-      walletNetworkId !== clientNetworkId,
+      walletChainId !== undefined &&
+      clientChainId !== undefined &&
+      walletChainId !== clientChainId,
   }
 }
 
