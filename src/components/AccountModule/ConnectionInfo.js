@@ -1,14 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import {
-  GU,
-  textStyle,
-  IdentityBadge,
-  useTheme,
-  IconCopy,
-  IconCheck,
-  IconCross,
   ButtonBase,
+  GU,
+  IconCheck,
+  IconCopy,
+  IconCross,
+  IdentityBadge,
+  RADIUS,
+  textStyle,
+  useTheme,
 } from '@aragon/ui'
 
 import { useCopyToClipboard } from '../../copy-to-clipboard'
@@ -80,17 +81,24 @@ const ConnectionInfo = () => {
             <span>{providerInfo.name}</span>
           </FlexWrapper>
           <FlexWrapper>
-            <IdentityBadge
-              entity={address}
-              compact
+            <ButtonBase
               onClick={copyAddress}
+              focusRingRadius={RADIUS}
               css={`
+                display: flex;
+                align-items: center;
+                padding: ${0.5 * GU}px;
                 &:active {
-                  background: none;
+                  background: ${theme.surfacePressed};
                 }
               `}
-            />
-            <ButtonBase onClick={copyAddress}>
+            >
+              <IdentityBadge
+                entity={address}
+                compact
+                badgeOnly
+                css="cursor: pointer"
+              />
               <IconCopy
                 css={`
                   color: ${theme.hint};
