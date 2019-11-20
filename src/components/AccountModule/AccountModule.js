@@ -60,8 +60,7 @@ function ConnectedMode() {
           display: flex;
           align-items: center;
           text-align: left;
-          padding: 0 ${1 * GU}px 0 ${2 * GU}px;
-
+          padding: 0 ${1 * GU}px;
           &:active {
             background: ${theme.surfacePressed};
           }
@@ -75,11 +74,7 @@ function ConnectedMode() {
             padding: 0 ${1 * GU}px 0 ${2 * GU}px;
           `}
         >
-          <div
-            css={`
-              position: relative;
-            `}
-          >
+          <div css="position: relative">
             <EthIdenticon address={address} radius={RADIUS} />
             <div
               css={`
@@ -128,13 +123,10 @@ function ConnectedMode() {
               `}
             >
               {hasNetworkMismatch
-                ? `
-                   Wrong network
-                 `
-                : `
-                 Connected ${walletNetworkName ? `to ${walletNetworkName}` : ''}
-
-              `}
+                ? 'Wrong network'
+                : `Connected ${
+                    walletNetworkName ? `to ${walletNetworkName}` : ''
+                  }`}
             </div>
           </div>
 

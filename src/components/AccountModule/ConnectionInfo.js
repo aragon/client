@@ -22,7 +22,7 @@ const FlexWrapper = styled.div`
   align-items: center;
 `
 
-const ConnectionInfo = () => {
+function ConnectionInfo() {
   const { address, providerInfo } = useAccount()
   const theme = useTheme()
   const connectionColor = useConnectionColor()
@@ -65,16 +65,16 @@ const ConnectionInfo = () => {
         <FlexWrapper>
           <FlexWrapper
             css={`
-              margin-right: 25px;
+              margin-right: ${3 * GU}px;
             `}
           >
             <img
               src={providerInfo.image}
               alt=""
               css={`
-                width: 20px;
-                height: 20px;
-                margin-right: 5px;
+                width: ${2.5 * GU}px;
+                height: ${2.5 * GU}px;
+                margin-right: ${0.5 * GU}px;
                 transform: translateY(-2px);
               `}
             />
@@ -110,23 +110,27 @@ const ConnectionInfo = () => {
         <FlexWrapper
           css={`
             display: flex;
-            margin-top: 10px;
-            margin-left: -5px;
+            margin-top: ${1 * GU}px;
             color: ${connectionColor};
-            text-transform: uppercase;
-            font-size: 12px;
+            ${textStyle('label2')};
           `}
         >
           <Icon size="small" />
           {walletNetworkName && (
-            <span>Connected to Ethereum {walletNetworkName} Network</span>
+            <span
+              css={`
+                margin-left: ${0.5 * GU}px;
+              `}
+            >
+              Connected to Ethereum {walletNetworkName} Network
+            </span>
           )}
         </FlexWrapper>
 
         {hasNetworkMismatch ? (
           <div
             css={`
-              margin-top: 10px;
+              margin-top: ${1 * GU}px;
             `}
           >
             Please connect to the Ethereum {clientNetworkName} Network.
