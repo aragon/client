@@ -1,4 +1,4 @@
-import { useTheme, useToast } from '@aragon/ui'
+import { useToast } from '@aragon/ui'
 import * as clipboard from 'clipboard-polyfill'
 
 export function useCopyToClipboard(payload, toastText) {
