@@ -11,12 +11,9 @@ import {
   ButtonBase,
 } from '@aragon/ui'
 
-import {
-  useConnectionColor,
-  useNetworkConnectionData,
-  useCopyToClipboard,
-} from './utils'
+import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useAccount } from '../../account'
+import { useConnectionColor, useNetworkConnectionData } from './utils'
 import SyncedInfo from './SyncedInfo'
 
 const FlexWrapper = styled.div`
