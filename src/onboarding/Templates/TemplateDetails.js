@@ -163,7 +163,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
 
           {template.apps && template.apps.length > 0 && (
             <Field
-              label="Required apps"
+              label="Included apps"
               css={`
                 margin-bottom: ${4 * GU}px;
               `}
@@ -258,11 +258,12 @@ TemplateDetails.propTypes = {
 
 function SelectTemplateButton({ onClick, template }) {
   const templateLoading = template.status === TEMPLATE_LOADING
-  const templateUnavailable = template.status === TEMPLATE_UNAVAILABLE
-  const label = templateLoading
-    ? 'Loading template…'
-    : templateUnavailable
+  const templateUnavailable =
+    template.disabled || template.status === TEMPLATE_UNAVAILABLE
+  const label = templateUnavailable
     ? 'This template is not available at the moment'
+    : templateLoading
+    ? 'Loading template…'
     : 'Use this template'
 
   return (

@@ -1,8 +1,22 @@
 import { staticApps } from './static-apps'
 import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
 import { isAddress, isValidEnsName } from './web3-utils'
+import { addStartingSlash } from './utils'
 
-const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
+export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
+
+function encodeAppPath(path) {
+  return addStartingSlash(
+    path
+      .split('/')
+      .map(v => encodeURIComponent(v))
+      .join('/')
+  )
+}
+
+function decodeAppPathParts(pathParts) {
+  return pathParts.map(v => decodeURIComponent(v)).join('/')
+}
 
 /*
  * Parse a path and a search query and return a “locator” object.
@@ -21,23 +35,23 @@ const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
  *
  * /{dao_address}
  * /{dao_address}/permissions
- * /{dao_address}/0x{app_instance_address}?p={app_params}
+ * /{dao_address}/0x{app_instance_address}
  *
  *
  * Available modes:
- *   - start: the screen you see when opening /.
- *   - setup: the onboarding screens.
- *   - org: when the path starts with a DAO address.
- *   - invalid: the DAO given is not valid
+ *   - APP_MODE_START: the screen you see when opening /.
+ *   - APP_MODE_SETUP: the onboarding screens.
+ *   - APP_MODE_ORG: when the path starts with a DAO address or ENS name.
  */
-export function parsePath(history, pathname, search = '') {
+export function parsePath(pathname, search = '') {
   const path = pathname + search
   const [, ...parts] = pathname.split('/')
+  const base = { path, pathname, search }
 
   // Onboarding
   if (!parts[0] || parts[0] === 'open' || parts[0] === 'create') {
     return {
-      path,
+      ...base,
       mode: parts[0] === 'create' ? APP_MODE_SETUP : APP_MODE_START,
       action: parts[0],
       preferences: parsePreferences(search),
@@ -51,50 +65,30 @@ export function parsePath(history, pathname, search = '') {
   // Assume .aragonid.eth if not given a valid address or a valid ENS domain
   if (!validAddress && !validDomain) {
     dao += `.${ARAGONID_ENS_DOMAIN}`
-  } else if (validDomain && dao.endsWith(ARAGONID_ENS_DOMAIN)) {
-    // Replace URL with non-aragonid.eth version
-    history.replace({
-      pathname: pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
-      search,
-      state: {
-        alreadyParsed: true,
-      },
-    })
   }
 
-  // Organization
-  const rawParams = search && search.split('?p=')[1]
-  let params = null
-  if (rawParams) {
-    try {
-      params = decodeURIComponent(rawParams)
-    } catch (err) {
-      console.log('The params (“p”) URL parameter is not valid.')
-    }
-  }
+  const [, instanceId, ...instancePathParts] = parts
 
-  const [, instanceId, ...appParts] = parts
+  // The local path of an app (internal or external)
+  const instancePath = `/${
+    instancePathParts ? decodeAppPathParts(instancePathParts) : ''
+  }`
 
-  const completeLocator = {
-    path,
-    mode: APP_MODE_ORG,
+  return {
+    ...base,
     dao,
     instanceId: instanceId || 'home',
-    params,
-    parts: appParts,
-    localPath: appParts.length ? `/${appParts.join('/')}` : '',
+    instancePath,
+    mode: APP_MODE_ORG,
     preferences: parsePreferences(search),
   }
-
-  return completeLocator
 }
 
 // Return a path string from a locator object.
 export function getAppPath({
-  dao: fullDao,
+  dao,
   instanceId = 'home',
-  localPath = '',
-  params,
+  instancePath = '',
   search = '',
   mode,
   action,
@@ -107,26 +101,21 @@ export function getAppPath({
     return `/${action}`
   }
 
-  if (!fullDao) {
+  // Only keep the DAO name if it ends in aragonid.eth
+  if (dao.endsWith(ARAGONID_ENS_DOMAIN)) {
+    dao = dao.substr(0, dao.indexOf(ARAGONID_ENS_DOMAIN) - 1)
+  }
+
+  if (!dao) {
     return `/${search}`
   }
 
-  const dao =
-    fullDao.indexOf(ARAGONID_ENS_DOMAIN) > -1
-      ? fullDao.substr(0, fullDao.indexOf(ARAGONID_ENS_DOMAIN) - 1)
-      : fullDao
+  // Either the address of an app instance or the path of an internal app.
+  const instancePart = staticApps.has(instanceId)
+    ? staticApps.get(instanceId).route
+    : `/${instanceId}`
 
-  // The search takes priority over app params for now. App params are going to
-  // be replaced soon so it shouldn’t be an issue.
-  if (!search && params) {
-    search = `?p=${encodeURIComponent(params)}`
-  }
-
-  if (staticApps.has(instanceId)) {
-    return '/' + dao + staticApps.get(instanceId).route + localPath + search
-  }
-
-  return `/${dao}/${instanceId}${search}`
+  return '/' + dao + instancePart + encodeAppPath(instancePath) + search
 }
 
 // Preferences

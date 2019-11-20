@@ -15,16 +15,20 @@ function AppPermissions({
 }) {
   const permissions = usePermissionsByRole()
 
+  const appProxyAddress = app ? app.proxyAddress : null
+
   const appPermissions = useMemo(
     () =>
-      permissions.filter(
-        permission =>
-          permission.app && permission.app.proxyAddress === app.proxyAddress
-      ),
-    [permissions, app.proxyAddress]
+      appProxyAddress
+        ? permissions.filter(
+            permission =>
+              permission.app && permission.app.proxyAddress === appProxyAddress
+          )
+        : [],
+    [permissions, appProxyAddress]
   )
 
-  if (loading) {
+  if (loading || !appProxyAddress) {
     return <EmptyBlock>Loading permissions…</EmptyBlock>
   }
 
