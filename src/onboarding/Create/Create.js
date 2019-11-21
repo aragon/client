@@ -17,6 +17,7 @@ import {
   loadTemplateState,
   saveTemplateState,
   prepareTransactionCreatorFromAbi,
+  getGasPrice,
 } from '../create-utils'
 import Configure, {
   CONFIGURE_MODE_SELECT,
@@ -399,8 +400,10 @@ const Create = React.memo(function Create({
         estimatedGas,
         { gasFuzzFactor: 1.1 }
       )
+      const priceInWei = await getGasPrice()
       return {
         ...transaction,
+        gasPrice: priceInWei,
         gas: recommendedLimit,
       }
     },
