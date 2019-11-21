@@ -5,7 +5,7 @@ import { useHelpScout } from '../HelpScoutBeacon/useHelpScout'
 
 const TIMEOUT_TOAST = 4000
 
-const CustomToast = React.memo(function CustomToast({ children }) {
+function CustomToast({ children }) {
   const { below } = useViewport()
   const { optedOut } = useHelpScout()
   return (
@@ -16,7 +16,7 @@ const CustomToast = React.memo(function CustomToast({ children }) {
       {children}
     </ToastHub>
   )
-})
+}
 
 CustomToast.propTypes = {
   children: PropTypes.node.isRequired,
