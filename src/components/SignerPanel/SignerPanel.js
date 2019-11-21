@@ -83,7 +83,7 @@ class SignerPanel extends React.PureComponent {
 
   state = { ...INITIAL_STATE }
 
-  componentWillReceiveProps({ transactionBag, signatureBag }) {
+  componentDidUpdate({ transactionBag, signatureBag }) {
     // Received a new transaction to sign
     const receivedTransactionBag =
       transactionBag && transactionBag !== this.props.transactionBag
