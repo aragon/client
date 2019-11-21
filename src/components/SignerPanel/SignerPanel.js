@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { SidePanel, GU } from '@aragon/ui'
+import { SidePanel, GU, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
@@ -24,7 +24,6 @@ import { useAccount } from '../../account'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { network } from '../../environment'
 import { AppType, EthereumAddressType } from '../../prop-types'
-import springs from '../../springs'
 import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 
 const INITIAL_STATE = {
