@@ -251,10 +251,9 @@ class MenuPanel extends React.PureComponent {
       <MenuPanelAppsLoader
         key="menu-apps"
         appsStatus={appsStatus}
-        appsCount={appGroups.length}
         expandedInstancesCount={expandedInstancesCount}
       >
-        {() => appGroups.map(app => this.renderAppGroup(app))}
+        {appGroups.map(app => this.renderAppGroup(app))}
       </MenuPanelAppsLoader>
     )
   }
