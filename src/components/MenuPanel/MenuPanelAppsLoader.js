@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Spring, animated } from 'react-spring'
 import { LoadingRing, GU, textStyle, springs } from '@aragon/ui'
 import { AppsStatusType } from '../../prop-types'
@@ -13,8 +12,6 @@ const AnimatedDiv = animated.div
 
 const BASE_LOADER_HEIGHT = 5 * GU
 const X_SHIFT = 5 * GU
-
-const springDebug = { mass: 1, tension: 50, friction: 40 }
 
 function MenuPanelAppsLoader({ appsStatus, children, expandedInstancesCount }) {
   const [showApps, setShowApps] = useState(false)

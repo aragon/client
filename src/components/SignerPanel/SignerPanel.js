@@ -83,41 +83,45 @@ class SignerPanel extends React.PureComponent {
 
   state = { ...INITIAL_STATE }
 
-  componentDidUpdate({ transactionBag, signatureBag }) {
-    // Received a new transaction to sign
-    const receivedTransactionBag =
-      transactionBag && transactionBag !== this.props.transactionBag
-    if (receivedTransactionBag) {
-      this.setState({
-        ...INITIAL_STATE,
-        panelOpened: true,
-        status: STATUS_TX_CONFIRMING,
+  componentDidUpdate(prevProps, prevState) {
+    const { status } = this.state
+    const { transactionBag, signatureBag } = this.props
 
-        // When Aragon.js starts returning the new format (see
-        // stateFromTransactionBag), we can simply search and replace this
-        // function with `transactionBag`.
-        ...this.stateFromTransactionBag(transactionBag),
-      })
+    // Received a new transaction to sign
+    if (transactionBag && transactionBag !== prevProps.transactionBag) {
+      this.transactionBagUpdate(transactionBag)
     }
 
     // Received a new message to sign
-    const receivedSignatureBag =
-      signatureBag && signatureBag !== this.props.signatureBag
-    if (receivedSignatureBag) {
-      this.setState({
-        ...INITIAL_STATE,
-        panelOpened: true,
-        status: STATUS_MSG_CONFIRMING,
-        ...this.stateFromMsgSigBag(signatureBag),
-      })
+    if (signatureBag && signatureBag !== prevProps.signatureBag) {
+      this.signatureBagUpdate(signatureBag)
     }
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { status } = this.state
     if (prevState.status !== status && !isSignatureSuccess(status)) {
       clearTimeout(this._closeTimer)
     }
+  }
+
+  transactionBagUpdate(transactionBag) {
+    this.setState({
+      ...INITIAL_STATE,
+      panelOpened: true,
+      status: STATUS_TX_CONFIRMING,
+
+      // When Aragon.js starts returning the new format (see
+      // stateFromTransactionBag), we can simply search and replace this
+      // function with `transactionBag`.
+      ...this.stateFromTransactionBag(transactionBag),
+    })
+  }
+
+  signatureBagUpdate(signatureBag) {
+    this.setState({
+      ...INITIAL_STATE,
+      panelOpened: true,
+      status: STATUS_MSG_CONFIRMING,
+      ...this.stateFromMsgSigBag(signatureBag),
+    })
   }
 
   // This is a temporary method to reshape the transaction bag
