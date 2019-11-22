@@ -109,20 +109,19 @@ export const pollWallet = pollEvery(onUpdate => {
   }
 }, WALLET_POLL_DELAY)
 
-// useWallet() provides everything related to the account currently connected.
+// useWallet() provides everything related to the account
+// currently connected, which we refer to as the “wallet”.
 
 const WalletContext = React.createContext()
+
+export function useWallet() {
+  return useContext(WalletContext)
+}
 
 export function WalletProvider(props) {
   const [wallet, setWallet] = useState(BASE_WALLET)
 
-  useEffect(() => {
-    pollWallet(setWallet)
-  }, [])
+  useEffect(() => pollWallet(setWallet), [])
 
   return <WalletContext.Provider value={wallet} {...props} />
-}
-
-export function useWallet() {
-  return useContext(WalletContext)
 }
