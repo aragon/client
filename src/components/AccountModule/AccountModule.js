@@ -31,13 +31,8 @@ function ConnectedMode() {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
 
-  const close = useCallback(() => {
-    setOpened(false)
-  }, [])
-
-  const toggle = useCallback(() => {
-    setOpened(!opened)
-  }, [opened])
+  const close = () => setOpened(false)
+  const toggle = () => setOpened(opened => !opened)
 
   const connectionColor = useConnectionColor()
 
