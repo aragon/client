@@ -1,7 +1,6 @@
-/*
- This utils library is meant to capture all of the
- * web3-related utilities that we use. Any utilities we need from web3-utils
- * should be re-exported from this file.
+/* This utils library is meant to capture all of the web3-related utilities
+ * that we use. Any utilities we need from web3-utils should be re-exported
+ * from this file.
  */
 import Web3 from 'web3'
 import BN from 'bn.js'
