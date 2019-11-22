@@ -48,6 +48,7 @@ function useAccount() {
     walletNetwork,
     walletProviderId,
   } = useContext(AccountManagerContext)
+
   const { name: label } = useLocalIdentity(account)
 
   return {

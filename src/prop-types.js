@@ -250,3 +250,16 @@ export const TransactionStatusType = PropTypes.oneOf([
   TRANSACTION_STATUS_SUCCESS,
   TRANSACTION_STATUS_UPCOMING,
 ])
+
+// See wallet-utils.js
+export const WalletType = PropTypes.shape({
+  account: PropTypes.string,
+  balance: PropTypes.object.isRequired,
+  chainId: PropTypes.number.isRequired,
+  enable: PropTypes.bool.isRequired,
+  isConnected: PropTypes.bool.isRequired,
+  isContract: PropTypes.bool.isRequired,
+  networkType: PropTypes.string.isRequired,
+  providerInfo: PropTypes.object.isRequired,
+  web3: PropTypes.object.isRequired,
+})

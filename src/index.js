@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
 import App from './App'
 import GlobalErrorHandler from './GlobalErrorHandler'
+import { WalletProvider } from './wallet-utils'
 import {
   getLastPackageVersion,
   getPackageVersion,
@@ -51,7 +52,9 @@ ReactDOM.render(
   <Main layout={false} scrollView={false}>
     <HelpScoutProvider>
       <GlobalErrorHandler>
-        <App />
+        <WalletProvider>
+          <App />
+        </WalletProvider>
       </GlobalErrorHandler>
     </HelpScoutProvider>
   </Main>,
