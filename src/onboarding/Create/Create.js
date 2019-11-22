@@ -13,11 +13,11 @@ import {
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
 import { log } from '../../utils'
+import { getGasPrice } from '../../web3-utils'
 import {
   loadTemplateState,
   saveTemplateState,
   prepareTransactionCreatorFromAbi,
-  getGasPrice,
 } from '../create-utils'
 import Configure, {
   CONFIGURE_MODE_SELECT,
@@ -400,11 +400,11 @@ const Create = React.memo(function Create({
         estimatedGas,
         { gasFuzzFactor: 1.1 }
       )
-      const priceInWei = await getGasPrice()
+      const recommendedPrice = await getGasPrice()
       return {
         ...transaction,
-        gasPrice: priceInWei,
         gas: recommendedLimit,
+        gasPrice: recommendedPrice,
       }
     },
     [web3]

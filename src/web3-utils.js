@@ -4,8 +4,11 @@
  * from this file.
  */
 import Web3 from 'web3'
+import { toWei } from 'web3-utils'
 import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
+import { network } from './environment'
+import { log } from './utils'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -123,6 +126,53 @@ export async function getIsContractAccount(web3, account) {
   } catch (err) {
     return false
   }
+}
+
+const gasPriceApi = 'https://ethgasstation.info/json/ethgasAPI.json'
+export async function getGasPrice({
+  mainnet: { safeMinimum = '3' } = {},
+} = {}) {
+  if (network.type === 'main') {
+    const safeMinimumInWei = toWei(safeMinimum, 'gwei')
+    let priceInWei
+
+    try {
+      const response = await fetch(gasPriceApi, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+      })
+      const jsonResponse = await response.json()
+      // Note that all prices from ethgasstation need to be divided by 10 to be in gwei.
+      // The response contains a list of suggested gas prices from 2-120 in
+      // gasPriceRange, so 40 is "slightly higher than the recommended price".
+      const fasterPrice = (jsonResponse.gasPriceRange[40] || 0) / 10
+      // Just in case, if this isn't available or is way too high,
+      // prefer the suggested safe low price.
+      const safePrice = (jsonResponse.safeLow || 0) / 10
+      const recommendedPrice =
+        fasterPrice < safePrice || fasterPrice - safePrice > 10
+          ? safePrice
+          : fasterPrice
+      priceInWei = toWei(recommendedPrice.toString(), 'gwei')
+    } catch (e) {
+      log('Error fetching gas price: ', e)
+    }
+
+    // If we couldn't find the price or it was lower than the safe minimum,
+    // use the safe minimum
+    priceInWei = new BN(priceInWei || 0).lt(new BN(safeMinimumInWei))
+      ? safeMinimumInWei
+      : priceInWei
+    return priceInWei
+  }
+
+  if (network.type === 'rinkeby') {
+    // Hardcode 10 for rinkeby gas price
+    return toWei('10', 'gwei')
+  }
+
+  // Otherwise, don't return anything to let the web3 provider handle gas price
 }
 
 // Get the first account of a web3 instance

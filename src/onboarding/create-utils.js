@@ -1,6 +1,5 @@
 import { network, web3Providers } from '../environment'
 import { getWeb3 } from '../web3-utils'
-import { log } from '../utils'
 
 const TEMPLATE_STATE_KEY = `create-org:${network.type}`
 
@@ -39,32 +38,4 @@ export function prepareTransactionCreatorFromAbi(abi, toAddress) {
       to: toAddress,
     }
   }
-}
-
-export async function getGasPrice(safeMinimum = '3') {
-  const web3 = getWeb3(web3Providers.default)
-  try {
-    const response = await fetch(
-      'https://ethgasstation.info/json/ethgasAPI.json',
-      {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-      }
-    )
-    const jsonResponse = await response.json()
-    // using '40' as a safe price, the reponse has a list of suggested gas prices in
-    // gasPriceRange from 2-100, the range is always from 2-100 so 40
-    // is "slightly higher than the recommended price"
-    const gasPrice = jsonResponse.gasPriceRange[40]
-    const priceInWei = web3.utils.toWei(
-      gasPrice < parseInt(safeMinimum) ? safeMinimum : gasPrice.toString(),
-      'gwei'
-    )
-    return priceInWei
-  } catch (e) {
-    log('Error fetching gas price: ', e)
-  }
-  const priceInWei = web3.utils.toWei(safeMinimum, 'gwei') // If we can't fetch a price default to the safe minimum
-  return priceInWei
 }
