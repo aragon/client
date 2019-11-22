@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useTheme } from '@aragon/ui'
 
 import { web3Providers } from '../../environment'
 import { getNetworkByChainId } from '../../network-config'
@@ -44,11 +43,4 @@ export const useNetworkConnectionData = () => {
       clientChainId !== undefined &&
       walletChainId !== clientChainId,
   }
-}
-
-export const useConnectionColor = () => {
-  const theme = useTheme()
-  const { hasNetworkMismatch } = useNetworkConnectionData()
-
-  return hasNetworkMismatch ? theme.negative : theme.positive
 }

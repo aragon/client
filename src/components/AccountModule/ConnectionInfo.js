@@ -14,7 +14,7 @@ import {
 
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useAccount } from '../../account'
-import { useConnectionColor, useNetworkConnectionData } from './utils'
+import { useNetworkConnectionData } from './utils'
 import SyncedInfo from './SyncedInfo'
 
 const FlexWrapper = styled.div`
@@ -25,7 +25,6 @@ const FlexWrapper = styled.div`
 function ConnectionInfo() {
   const { address, providerInfo } = useAccount()
   const theme = useTheme()
-  const connectionColor = useConnectionColor()
 
   const {
     walletNetworkName,
@@ -111,7 +110,7 @@ function ConnectionInfo() {
           css={`
             display: flex;
             margin-top: ${1 * GU}px;
-            color: ${connectionColor};
+            color: ${hasNetworkMismatch ? theme.negative : theme.positive};
             ${textStyle('label2')};
           `}
         >

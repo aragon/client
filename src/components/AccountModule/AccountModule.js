@@ -15,7 +15,7 @@ import { shortenAddress } from '../../web3-utils'
 import { useAccount } from '../../account'
 import NotConnected from './NotConnected'
 import ConnectionInfo from './ConnectionInfo'
-import { useConnectionColor, useNetworkConnectionData } from './utils'
+import { useNetworkConnectionData } from './utils'
 
 function AccountModule({ compact }) {
   const { connected } = useAccount()
@@ -33,8 +33,6 @@ function ConnectedMode() {
 
   const close = () => setOpened(false)
   const toggle = () => setOpened(opened => !opened)
-
-  const connectionColor = useConnectionColor()
 
   const containerRef = useRef()
 
@@ -78,7 +76,9 @@ function ConnectedMode() {
                 right: -3px;
                 width: 10px;
                 height: 10px;
-                background: ${connectionColor};
+                background: ${hasNetworkMismatch
+                  ? theme.negative
+                  : theme.positive};
                 border: 2px solid ${theme.surface};
                 border-radius: 50%;
               `}
@@ -114,7 +114,7 @@ function ConnectedMode() {
             <div
               css={`
                 font-size: 11px; /* doesn’t exist in aragonUI */
-                color: ${connectionColor};
+                color: ${hasNetworkMismatch ? theme.negative : theme.positive};
               `}
             >
               {hasNetworkMismatch
