@@ -20,7 +20,7 @@ import { AppType, DaoAddressType } from '../../prop-types'
 import { getProviderString } from '../../ethereum-providers'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
-import { useWallet } from '../../wallet-utils'
+import { useWallet } from '../../wallet'
 
 const Organization = React.memo(function Organization({
   apps,

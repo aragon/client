@@ -13,7 +13,7 @@ import {
 } from '@aragon/ui'
 
 import { useCopyToClipboard } from '../../copy-to-clipboard'
-import { useWallet } from '../../wallet-utils'
+import { useWallet } from '../../wallet'
 import { useNetworkConnectionData } from './utils'
 import SyncedInfo from './SyncedInfo'
 

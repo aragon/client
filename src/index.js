@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
 import App from './App'
 import GlobalErrorHandler from './GlobalErrorHandler'
-import { WalletProvider } from './wallet-utils'
+import { WalletProvider } from './wallet'
 import {
   getLastPackageVersion,
   getPackageVersion,

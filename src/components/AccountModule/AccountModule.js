@@ -13,7 +13,7 @@ import {
 } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
 import { useLocalIdentity } from '../../hooks'
-import { useWallet } from '../../wallet-utils'
+import { useWallet } from '../../wallet'
 import NotConnected from './NotConnected'
 import ConnectionInfo from './ConnectionInfo'
 import { useNetworkConnectionData } from './utils'

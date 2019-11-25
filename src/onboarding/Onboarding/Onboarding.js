@@ -13,7 +13,7 @@ import {
   TEMPLATE_AVAILABLE,
   TEMPLATE_UNAVAILABLE,
 } from '../symbols'
-import { useWallet } from '../../wallet-utils'
+import { useWallet } from '../../wallet'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
 import validateCreationRequirements from '../validate-requirements'

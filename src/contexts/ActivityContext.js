@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import StoredList from '../StoredList'
 import { network } from '../environment'
-import { useWallet } from '../wallet-utils'
+import { useWallet } from '../wallet'
 import { EthereumAddressType } from '../prop-types'
 import {
   ACTIVITY_STATUS_CONFIRMED,

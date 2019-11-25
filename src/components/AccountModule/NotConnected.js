@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, IconConnect } from '@aragon/ui'
-import { enableWallet } from '../../wallet-utils'
+import { enableWallet } from '../../wallet'
 
 function NotConnected({ compact }) {
   return (

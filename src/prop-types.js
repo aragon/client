@@ -251,7 +251,7 @@ export const TransactionStatusType = PropTypes.oneOf([
   TRANSACTION_STATUS_UPCOMING,
 ])
 
-// See wallet-utils.js
+// See src/wallet.js
 export const WalletType = PropTypes.shape({
   account: PropTypes.string,
   balance: PropTypes.object.isRequired,
