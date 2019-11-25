@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
-import { WalletType } from './prop-types'
+import { EthereumAddressType } from './prop-types'
 import { network, web3Providers } from './environment'
 import {
   ARAGONID_ENS_DOMAIN,
@@ -26,7 +26,6 @@ import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityMod
 import HelpScoutBeacon from './components/HelpScoutBeacon/HelpScoutBeacon'
 import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import CustomToast from './components/CustomToast/CustomToast'
-import { AccountProvider } from './account'
 
 import { isKnownRepo } from './repo-utils'
 import {
@@ -69,7 +68,7 @@ if (network.type === 'ropsten') {
 class App extends React.Component {
   static propTypes = {
     theme: PropTypes.object.isRequired,
-    wallet: WalletType.isRequired,
+    walletAccount: EthereumAddressType,
   }
 
   state = {
@@ -100,8 +99,11 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.wallet !== prevProps.wallet && this.state.wrapper) {
-      this.state.wrapper.setAccounts([this.props.wallet])
+    const { walletAccount } = this.props
+    if (walletAccount !== prevProps.walletAccount && this.state.wrapper) {
+      this.state.wrapper.setAccounts(
+        walletAccount === null ? [] : [walletAccount]
+      )
     }
   }
 
@@ -266,9 +268,9 @@ class App extends React.Component {
       },
     })
       .then(wrapper => {
-        const { wallet } = this.props
-        if (wallet.account) {
-          wrapper.setAccounts([wallet.account])
+        const { walletAccount } = this.props
+        if (walletAccount !== null) {
+          wrapper.setAccounts([walletAccount])
         }
         this.setState({ wrapper })
         return wrapper
@@ -330,7 +332,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { theme, wallet } = this.props
+    const { theme } = this.props
     const {
       apps,
       appIdentifiers,
@@ -393,84 +395,72 @@ class App extends React.Component {
             >
               <CustomToast>
                 <IdentityProvider onResolve={this.handleIdentityResolve}>
-                  <AccountProvider
-                    account={wallet.account}
-                    balance={wallet.balance}
-                    isContract={wallet.isContractAccount}
-                    walletNetwork={wallet.networkType}
-                    walletProviderId={wallet.providerInfo.id}
+                  <LocalIdentityModalProvider
+                    onShowLocalIdentityModal={this.handleOpenLocalIdentityModal}
                   >
-                    <LocalIdentityModalProvider
-                      onShowLocalIdentityModal={
-                        this.handleOpenLocalIdentityModal
-                      }
-                    >
-                      <LocalIdentityModal
-                        address={intentAddress}
-                        label={intentLabel}
-                        opened={identityIntent !== null}
-                        onCancel={this.handleIdentityCancel}
-                        onSave={this.handleIdentitySave}
-                      />
-                      <FavoriteDaosProvider>
-                        <ActivityProvider
-                          daoDomain={daoAddress.domain}
-                          web3={web3}
+                    <LocalIdentityModal
+                      address={intentAddress}
+                      label={intentLabel}
+                      opened={identityIntent !== null}
+                      onCancel={this.handleIdentityCancel}
+                      onSave={this.handleIdentitySave}
+                    />
+                    <FavoriteDaosProvider>
+                      <ActivityProvider
+                        daoDomain={daoAddress.domain}
+                        web3={web3}
+                      >
+                        <PermissionsProvider
+                          wrapper={wrapper}
+                          apps={appsWithIdentifiers}
+                          permissions={permissions}
                         >
-                          <PermissionsProvider
-                            wrapper={wrapper}
-                            apps={appsWithIdentifiers}
-                            permissions={permissions}
-                          >
-                            <div css="position: relative; z-index: 0">
-                              <Wrapper
-                                visible={mode === APP_MODE_ORG}
-                                apps={appsWithIdentifiers}
-                                appsStatus={appsStatus}
-                                canUpgradeOrg={canUpgradeOrg}
-                                connected={connected}
-                                daoAddress={daoAddress}
-                                daoStatus={daoStatus}
-                                historyBack={this.historyBack}
-                                historyPush={this.historyPush}
-                                locator={locator}
-                                onRequestAppsReload={
-                                  this.handleRequestAppsReload
-                                }
-                                openPreferences={this.openPreferences}
-                                permissionsLoading={permissionsLoading}
-                                repos={repos}
-                                signatureBag={signatureBag}
-                                transactionBag={transactionBag}
-                                web3={web3}
-                                wrapper={wrapper}
-                              />
-                            </div>
-                          </PermissionsProvider>
+                          <div css="position: relative; z-index: 0">
+                            <Wrapper
+                              visible={mode === APP_MODE_ORG}
+                              apps={appsWithIdentifiers}
+                              appsStatus={appsStatus}
+                              canUpgradeOrg={canUpgradeOrg}
+                              connected={connected}
+                              daoAddress={daoAddress}
+                              daoStatus={daoStatus}
+                              historyBack={this.historyBack}
+                              historyPush={this.historyPush}
+                              locator={locator}
+                              onRequestAppsReload={this.handleRequestAppsReload}
+                              openPreferences={this.openPreferences}
+                              permissionsLoading={permissionsLoading}
+                              repos={repos}
+                              signatureBag={signatureBag}
+                              transactionBag={transactionBag}
+                              web3={web3}
+                              wrapper={wrapper}
+                            />
+                          </div>
+                        </PermissionsProvider>
 
-                          <Onboarding
-                            selectorNetworks={selectorNetworks}
-                            status={
-                              mode === APP_MODE_START || mode === APP_MODE_SETUP
-                                ? locator.action || 'welcome'
-                                : 'none'
-                            }
-                            web3={web3}
-                          />
+                        <Onboarding
+                          selectorNetworks={selectorNetworks}
+                          status={
+                            mode === APP_MODE_START || mode === APP_MODE_SETUP
+                              ? locator.action || 'welcome'
+                              : 'none'
+                          }
+                          web3={web3}
+                        />
 
-                          <GlobalPreferences
-                            locator={locator}
-                            wrapper={wrapper}
-                            apps={appsWithIdentifiers}
-                            onScreenChange={this.openPreferences}
-                            onClose={this.closePreferences}
-                          />
+                        <GlobalPreferences
+                          locator={locator}
+                          wrapper={wrapper}
+                          apps={appsWithIdentifiers}
+                          onScreenChange={this.openPreferences}
+                          onClose={this.closePreferences}
+                        />
 
-                          <HelpScoutBeacon locator={locator} apps={apps} />
-                        </ActivityProvider>
-                      </FavoriteDaosProvider>
-                    </LocalIdentityModalProvider>
-                  </AccountProvider>
+                        <HelpScoutBeacon locator={locator} apps={apps} />
+                      </ActivityProvider>
+                    </FavoriteDaosProvider>
+                  </LocalIdentityModalProvider>
                 </IdentityProvider>
               </CustomToast>
             </animated.div>
@@ -483,6 +473,6 @@ class App extends React.Component {
 
 export default function(props) {
   const theme = useTheme()
-  const wallet = useWallet()
-  return <App theme={theme} wallet={wallet} {...props} />
+  const { account } = useWallet()
+  return <App theme={theme} walletAccount={account} {...props} />
 }

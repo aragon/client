@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, IconConnect } from '@aragon/ui'
+import { enableWallet } from '../../wallet-utils'
 
-import { useAccount } from '../../account'
-
-const NotConnected = ({ compact }) => {
-  const { enable } = useAccount()
+function NotConnected({ compact }) {
   return (
     <div
       css={`
@@ -19,7 +17,7 @@ const NotConnected = ({ compact }) => {
         size={compact ? 'small' : 'medium'}
         icon={<IconConnect />}
         label="Enable account"
-        onClick={enable}
+        onClick={enableWallet}
         wide
       />
     </div>

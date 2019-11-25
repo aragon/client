@@ -12,14 +12,15 @@ import {
   ButtonBase,
 } from '@aragon/ui'
 import { shortenAddress } from '../../web3-utils'
-import { useAccount } from '../../account'
+import { useLocalIdentity } from '../../hooks'
+import { useWallet } from '../../wallet-utils'
 import NotConnected from './NotConnected'
 import ConnectionInfo from './ConnectionInfo'
 import { useNetworkConnectionData } from './utils'
 
 function AccountModule({ compact }) {
-  const { connected } = useAccount()
-  return connected ? <ConnectedMode /> : <NotConnected compact={compact} />
+  const { isConnected } = useWallet()
+  return isConnected ? <ConnectedMode /> : <NotConnected compact={compact} />
 }
 
 AccountModule.propTypes = {
@@ -27,9 +28,10 @@ AccountModule.propTypes = {
 }
 
 function ConnectedMode() {
-  const { address, label } = useAccount()
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
+  const wallet = useWallet()
+  const { name: label } = useLocalIdentity(wallet.account)
 
   const close = () => setOpened(false)
   const toggle = () => setOpened(opened => !opened)
@@ -68,7 +70,7 @@ function ConnectedMode() {
           `}
         >
           <div css="position: relative">
-            <EthIdenticon address={address} radius={RADIUS} />
+            <EthIdenticon address={wallet.account} radius={RADIUS} />
             <div
               css={`
                 position: absolute;
@@ -108,7 +110,7 @@ function ConnectedMode() {
                   {label}
                 </div>
               ) : (
-                <div>{shortenAddress(address)}</div>
+                <div>{shortenAddress(wallet.account)}</div>
               )}
             </div>
             <div
@@ -140,7 +142,7 @@ function ConnectedMode() {
         visible={opened}
         opener={containerRef.current}
       >
-        <ConnectionInfo address={address} />
+        <ConnectionInfo address={wallet.account} />
       </Popover>
     </div>
   )

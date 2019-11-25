@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { IconLabel, GU } from '@aragon/ui'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
-import { useAccount } from '../../account'
+import { useWallet } from '../../wallet-utils'
 import { useLocalIdentity } from '../../hooks'
 import { addressesEqual, isAddress } from '../../web3-utils'
 import {
@@ -14,11 +14,10 @@ import LocalIdentityPopoverTitle from './LocalIdentityPopoverTitle'
 
 function LocalIdentityBadge({ entity, forceAddress, ...props }) {
   const address = isAddress(entity) ? entity : null
-
-  const { address: connectedAccount } = useAccount()
   const { identityEvents$ } = useContext(IdentityContext)
   const { showLocalIdentityModal } = useContext(LocalIdentityModalContext)
   const { name: label, handleResolve } = useLocalIdentity(address)
+  const wallet = useWallet()
 
   const handleClick = useCallback(() => {
     showLocalIdentityModal(address)
@@ -38,7 +37,7 @@ function LocalIdentityBadge({ entity, forceAddress, ...props }) {
   return (
     <IdentityBadgeWithNetwork
       {...props}
-      connectedAccount={addressesEqual(address, connectedAccount)}
+      connectedAccount={addressesEqual(address, wallet.account)}
       entity={address}
       label={(!forceAddress && label) || ''}
       popoverAction={{

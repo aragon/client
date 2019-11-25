@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useAccount } from '../../account'
+import { useWallet } from '../../wallet-utils'
 import { NoWeb3Provider, AccountLocked, WrongNetwork } from './Web3Errors'
 
 const ValidateWalletWeb3 = ({
@@ -14,13 +14,13 @@ const ValidateWalletWeb3 = ({
   walletNetworkType,
   walletProviderId,
 }) => {
-  const { connected } = useAccount()
+  const wallet = useWallet()
 
   if (!hasWeb3) {
     return <NoWeb3Provider intent={intent} onClose={onClose} />
   }
 
-  if (!connected) {
+  if (!wallet.isConnected) {
     return (
       <AccountLocked
         intent={intent}
