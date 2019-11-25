@@ -93,7 +93,7 @@ function ConnectionInfo() {
               `}
             >
               <IdentityBadge
-                entity={address}
+                entity={account}
                 compact
                 badgeOnly
                 css="cursor: pointer"
