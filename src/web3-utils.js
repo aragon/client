@@ -137,45 +137,49 @@ export async function getGasPrice({
     return toWei('10', 'gwei')
   }
 
-  // Mainnet and gas estimation not disabled
-  if (!disableEstimate) {
-    const safeMinimumInWei = toWei(safeMinimum, 'gwei')
-    let priceInWei
-
-    try {
-      const response = await fetch(gasPriceApi, {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-      })
-      const jsonResponse = await response.json()
-      // Note that all prices from ethgasstation need to be divided by 10 to be in gwei.
-      // The response contains a list of suggested gas prices from 2-120 in
-      // gasPriceRange, so 40 is "slightly higher than the recommended price".
-      let fasterPrice = parseInt(jsonResponse.gasPriceRange[40], 10)
-      fasterPrice = isNaN(fasterPrice) ? 0 : fasterPrice / 10
-      // Just in case, if this isn't available or is way too high,
-      // prefer the suggested safe low price.
-      let safePrice = parseInt(jsonResponse.safeLow, 10)
-      safePrice = isNaN(safePrice) ? 0 : safePrice / 10
-      const recommendedPrice = Math.max(
-        safePrice,
-        Math.min(fasterPrice, safePrice + 10)
-      )
-      priceInWei = toWei(recommendedPrice.toString(), 'gwei')
-    } catch (e) {
-      log('Error fetching gas price: ', e)
-    }
-
-    // If we couldn't find the price or it was lower than the safe minimum,
-    // use the safe minimum
-    priceInWei = new BN(priceInWei || 0).lt(new BN(safeMinimumInWei))
-      ? safeMinimumInWei
-      : priceInWei
-    return priceInWei
+  // Mainnet and gas estimation disabled; let the web3 provider handle gas price
+  if (disableEstimate) {
+    return
   }
 
-  // Return undefined to let the web3 provider handle gas price
+  const safeMinimumInWei = toWei(safeMinimum, 'gwei')
+  let priceInWei
+
+  try {
+    const response = await fetch(gasPriceApi, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+    })
+    const jsonResponse = await response.json()
+
+    // Note that all prices from ethgasstation need to be divided by 10 to be in gwei.
+    // The response contains a list of suggested gas prices from 2-120 in
+    // gasPriceRange, so 40 is "slightly higher than the recommended price".
+    let fasterPrice = parseInt(jsonResponse.gasPriceRange[40], 10)
+    fasterPrice = isNaN(fasterPrice) ? 0 : fasterPrice / 10
+
+    // Just in case, if this isn't available or is way too high,
+    // prefer the suggested safe low price.
+    let safePrice = parseInt(jsonResponse.safeLow, 10)
+    safePrice = isNaN(safePrice) ? 0 : safePrice / 10
+
+    const recommendedPrice = Math.max(
+      safePrice,
+      Math.min(fasterPrice, safePrice + 10)
+    )
+
+    priceInWei = toWei(recommendedPrice.toString(), 'gwei')
+  } catch (e) {
+    log('Error fetching gas price: ', e)
+  }
+
+  // If we couldn't find the price or it was lower than the safe minimum,
+  // use the safe minimum
+  priceInWei = new BN(priceInWei || 0).lt(new BN(safeMinimumInWei))
+    ? safeMinimumInWei
+    : priceInWei
+  return priceInWei
 }
 
 // Get the first account of a web3 instance
