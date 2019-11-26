@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
 import App from './App'
 import GlobalErrorHandler from './GlobalErrorHandler'
-import { WalletProvider } from './wallet'
+import { WalletProvider, WalletBlockNumberProvider } from './wallet'
 import {
   getLastPackageVersion,
   getPackageVersion,
@@ -52,9 +52,11 @@ ReactDOM.render(
   <Main layout={false} scrollView={false}>
     <HelpScoutProvider>
       <GlobalErrorHandler>
-        <WalletProvider>
-          <App />
-        </WalletProvider>
+        <WalletBlockNumberProvider>
+          <WalletProvider>
+            <App />
+          </WalletProvider>
+        </WalletBlockNumberProvider>
       </GlobalErrorHandler>
     </HelpScoutProvider>
   </Main>,

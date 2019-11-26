@@ -1,21 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { GU } from '@aragon/ui'
-import { web3Providers } from '../../environment'
-import { getWeb3 } from '../../web3-utils'
+import { useWalletBlockNumber } from '../../wallet'
 
-const SyncedInfo = () => {
-  const [lastBlockIndex, setLastBlockIndex] = useState()
-
-  useEffect(() => {
-    const walletWeb3 = getWeb3(web3Providers.wallet)
-
-    async function getLastBlockNumber() {
-      const latest = await walletWeb3.eth.getBlockNumber()
-      setLastBlockIndex(latest)
-    }
-    getLastBlockNumber()
-  }, [])
-
+function SyncedInfo() {
+  const blockNumber = useWalletBlockNumber()
   return (
     <div
       css={`
@@ -30,7 +18,7 @@ const SyncedInfo = () => {
       >
         Synced:
       </span>
-      <span>current block: {lastBlockIndex || '…'}</span>
+      <span>current block: {blockNumber || '…'}</span>
     </div>
   )
 }

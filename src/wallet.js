@@ -111,7 +111,6 @@ export const pollWallet = pollEvery(onUpdate => {
 
 // useWallet() provides everything related to the account
 // currently connected, which we refer to as the “wallet”.
-
 const WalletContext = React.createContext()
 
 export function useWallet() {
@@ -124,4 +123,46 @@ export function WalletProvider(props) {
   useEffect(() => pollWallet(setWallet), [])
 
   return <WalletContext.Provider value={wallet} {...props} />
+}
+
+// useWalletBlockNumber() is independent from
+// useWallet() because it updates more often.
+const WalletBlockNumberContext = React.createContext()
+
+export function WalletBlockNumberProvider(props) {
+  const [blockNumber, setBlockNumber] = useState(-1)
+  const { eth } = WALLET_WEB3
+
+  useEffect(() => {
+    const sub = eth.subscribe(
+      'newBlockHeaders',
+      (err, { number: blockNumber }) => {
+        if (!err) {
+          setBlockNumber(blockNumber)
+        }
+      }
+    )
+
+    let cancelInitialQuery = false
+    eth
+      .getBlockNumber()
+      .then(blockNumber => {
+        if (cancelInitialQuery) {
+          setBlockNumber(blockNumber)
+        }
+        return null
+      })
+      .catch(() => null)
+
+    return () => {
+      sub.unsubscribe()
+      cancelInitialQuery = true
+    }
+  }, [eth])
+
+  return <WalletBlockNumberContext.Provider value={blockNumber} {...props} />
+}
+
+export function useWalletBlockNumber() {
+  return useContext(WalletBlockNumberContext)
 }
