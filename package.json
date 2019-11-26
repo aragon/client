@@ -29,6 +29,7 @@
     "@aragon/wrapper": "^5.0.0-rc.20",
     "@sentry/browser": "^5.5.0",
     "@ungap/event-target": "^0.1.0",
+    "clipboard-polyfill": "^2.8.6",
     "core-js": "^3.3.2",
     "date-fns": "2.0.0-alpha.22",
     "decimal.js": "^10.2.0",
@@ -51,8 +52,8 @@
     "remark-react": "^5.0.1",
     "resolve-pathname": "^3.0.0",
     "styled-components": "^4.1.3",
-    "web3": "^1.2.1",
-    "web3-utils": "^1.2.1"
+    "web3": "^1.2.2",
+    "web3-utils": "^1.2.2"
   },
   "devDependencies": {
     "@aragon/os": "^4.0.0",
