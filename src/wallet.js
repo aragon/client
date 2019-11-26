@@ -14,7 +14,7 @@ const WALLET_WEB3 = getWeb3(web3Providers.wallet)
 const WALLET_PROVIDER_INFO = getProvider(identifyProvider(web3Providers.wallet))
 const WALLET_POLL_DELAY = 2000
 
-const BASE_WALLET = {
+const NO_WALLET = {
   account: null,
   balance: getUnknownBalance(),
   chainId: -1,
@@ -52,7 +52,7 @@ export function enableWallet() {
 // Keep polling the main account from the wallet.
 // See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
 export const pollWallet = pollEvery(onUpdate => {
-  let lastWallet = BASE_WALLET
+  let lastWallet = NO_WALLET
 
   const hasChanged = wallet =>
     !(
@@ -87,7 +87,7 @@ export const pollWallet = pollEvery(onUpdate => {
         ])
 
         return {
-          ...BASE_WALLET,
+          ...NO_WALLET,
           account,
           balance,
           chainId,
@@ -96,7 +96,7 @@ export const pollWallet = pollEvery(onUpdate => {
           networkType,
         }
       } catch (err) {
-        return BASE_WALLET
+        return NO_WALLET
       }
     },
 
@@ -118,7 +118,7 @@ export function useWallet() {
 }
 
 export function WalletProvider(props) {
-  const [wallet, setWallet] = useState(BASE_WALLET)
+  const [wallet, setWallet] = useState(NO_WALLET)
 
   useEffect(() => pollWallet(setWallet), [])
 
