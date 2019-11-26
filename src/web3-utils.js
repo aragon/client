@@ -152,14 +152,16 @@ export async function getGasPrice({
       // Note that all prices from ethgasstation need to be divided by 10 to be in gwei.
       // The response contains a list of suggested gas prices from 2-120 in
       // gasPriceRange, so 40 is "slightly higher than the recommended price".
-      const fasterPrice = (jsonResponse.gasPriceRange[40] || 0) / 10
+      let fasterPrice = parseInt(jsonResponse.gasPriceRange[40], 10)
+      fasterPrice = isNaN(fasterPrice) ? 0 : fasterPrice / 10
       // Just in case, if this isn't available or is way too high,
       // prefer the suggested safe low price.
-      const safePrice = (jsonResponse.safeLow || 0) / 10
-      const recommendedPrice =
-        fasterPrice < safePrice || fasterPrice - safePrice > 10
-          ? safePrice
-          : fasterPrice
+      let safePrice = parseInt(jsonResponse.safeLow, 10)
+      safePrice = isNaN(safePrice) ? 0 : safePrice / 10
+      const recommendedPrice = Math.max(
+        safePrice,
+        Math.min(fasterPrice, safePrice + 10)
+      )
       priceInWei = toWei(recommendedPrice.toString(), 'gwei')
     } catch (e) {
       log('Error fetching gas price: ', e)
