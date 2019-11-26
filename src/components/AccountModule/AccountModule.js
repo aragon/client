@@ -10,7 +10,9 @@ import {
   useTheme,
   unselectable,
   ButtonBase,
+  springs,
 } from '@aragon/ui'
+import { Spring, animated } from 'react-spring'
 import { shortenAddress } from '../../web3-utils'
 import { useAccount } from '../../account'
 import NotConnected from './NotConnected'
@@ -20,6 +22,8 @@ import { useNetworkConnectionData } from './utils'
 // Metamask seems to take about ~200ms to send the connected accounts.
 // This is to avoid a flash with the connection button.
 const ACCOUNT_MODULE_DISPLAY_DELAY = 500
+
+const AnimatedDiv = animated.div
 
 function AccountModule({ compact }) {
   const { connected } = useAccount()
@@ -37,7 +41,30 @@ function AccountModule({ compact }) {
     return null
   }
 
-  return connected ? <ConnectedMode /> : <NotConnected compact={compact} />
+  return (
+    <Spring
+      from={{ opacity: 0, scale: 0.96 }}
+      to={{ opacity: 1, scale: 1 }}
+      config={springs.swift}
+      native
+    >
+      {({ opacity, scale }) => (
+        <AnimatedDiv
+          style={{
+            opacity,
+            transform: scale.interpolate(v => `scale3d(${v}, ${v}, 1)`),
+          }}
+          css={`
+            display: flex;
+            height: 100%;
+            align-items: center;
+          `}
+        >
+          {connected ? <ConnectedMode /> : <NotConnected compact={compact} />}
+        </AnimatedDiv>
+      )}
+    </Spring>
+  )
 }
 
 AccountModule.propTypes = {
