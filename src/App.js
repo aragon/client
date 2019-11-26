@@ -157,6 +157,7 @@ class App extends React.Component {
   }
 
   updateDao(dao = null) {
+    const { walletAccount } = this.props
     // Cancel the subscriptions / unload the wrapper
     if (this.state.wrapper) {
       this.state.wrapper.cancel()
@@ -181,6 +182,7 @@ class App extends React.Component {
     log('Init DAO', dao)
     initWrapper(dao, {
       provider: web3Providers.default,
+      walletAccount,
       walletProvider: web3Providers.wallet,
       onDaoAddress: ({ address, domain }) => {
         log('dao address', address)

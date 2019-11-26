@@ -18,12 +18,7 @@ import { getEthSubscriptionEventDelay } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash, pollEvery } from './utils'
-import {
-  getMainAccount,
-  getWeb3,
-  isEmptyAddress,
-  isValidEnsName,
-} from './web3-utils'
+import { getWeb3, isEmptyAddress, isValidEnsName } from './web3-utils'
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 
@@ -249,6 +244,7 @@ const initWrapper = async (
     onDaoAddress = noop,
     onWeb3 = noop,
     onRequestPath = noop,
+    walletAccount = null,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -281,11 +277,10 @@ const initWrapper = async (
   const web3 = getWeb3(walletProvider || provider)
   onWeb3(web3)
 
-  const account = await getMainAccount(web3)
   try {
     await wrapper.init({
       accounts: {
-        providedAccounts: account ? [account] : [],
+        providedAccounts: walletAccount ? [walletAccount] : [],
       },
     })
   } catch (err) {
