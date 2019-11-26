@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   EthIdenticon,
@@ -17,8 +17,26 @@ import NotConnected from './NotConnected'
 import ConnectionInfo from './ConnectionInfo'
 import { useNetworkConnectionData } from './utils'
 
+// Metamask seems to take about ~200ms to send the connected accounts.
+// This is to avoid a flash with the connection button.
+const ACCOUNT_MODULE_DISPLAY_DELAY = 500
+
 function AccountModule({ compact }) {
   const { connected } = useAccount()
+  const [display, setDisplay] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDisplay(true)
+    }, ACCOUNT_MODULE_DISPLAY_DELAY)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (!display) {
+    return null
+  }
+
   return connected ? <ConnectedMode /> : <NotConnected compact={compact} />
 }
 
