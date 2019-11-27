@@ -11,14 +11,18 @@ import {
   ipfsDefaultConf,
   web3Providers,
   contractAddresses,
-  defaultGasPriceFn,
 } from './environment'
 import { NoConnection, DAONotFound } from './errors'
 import { getEthSubscriptionEventDelay } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash, pollEvery } from './utils'
-import { getWeb3, isEmptyAddress, isValidEnsName } from './web3-utils'
+import {
+  getGasPrice,
+  getWeb3,
+  isEmptyAddress,
+  isValidEnsName,
+} from './web3-utils'
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 
@@ -258,7 +262,9 @@ const initWrapper = async (
 
   const wrapper = new Aragon(daoAddress, {
     provider,
-    defaultGasPriceFn,
+    // Let web3 provider handle gas estimations on mainnet
+    defaultGasPriceFn: () =>
+      getGasPrice({ mainnet: { disableEstimate: true } }),
     apm: {
       ensRegistryAddress: contractAddresses.ensRegistry,
       ipfs: ipfsConf,

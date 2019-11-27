@@ -7,8 +7,7 @@ import {
   getIpfsGateway,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
-import { noop } from './utils'
-import { toWei, getInjectedProvider } from './web3-utils'
+import { getInjectedProvider } from './web3-utils'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault', 'Agent']
 const networkType = getEthNetworkType()
@@ -130,8 +129,3 @@ export const web3Providers = {
   // Only use eth-provider to connect to frame if no injected provider is detected
   wallet: getInjectedProvider() || provider(['frame']),
 }
-
-export const defaultGasPriceFn =
-  networkType === 'main'
-    ? noop // On mainnet rely on the provider's gas estimation
-    : () => toWei('10', 'gwei') // on all other networks just hardcode it

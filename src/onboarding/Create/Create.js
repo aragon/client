@@ -13,6 +13,7 @@ import {
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
 import { log } from '../../utils'
+import { getGasPrice } from '../../web3-utils'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -399,9 +400,11 @@ const Create = React.memo(function Create({
         estimatedGas,
         { gasFuzzFactor: 1.1 }
       )
+      const recommendedPrice = await getGasPrice()
       return {
         ...transaction,
         gas: recommendedLimit,
+        gasPrice: recommendedPrice,
       }
     },
     [web3]
