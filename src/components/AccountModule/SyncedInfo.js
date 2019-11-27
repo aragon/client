@@ -18,7 +18,7 @@ function SyncedInfo() {
       >
         Synced:
       </span>
-      <span>current block: {blockNumber || '…'}</span>
+      <span>current block: {blockNumber === -1 ? '…' : blockNumber}</span>
     </div>
   )
 }
