@@ -1,4 +1,5 @@
 // List of configurable settings
+const CLIENT_THEME = 'THEME'
 const APP_LOCATOR = 'APP_LOCATOR'
 const DEFAULT_ETH_NODE = 'DEFAULT_ETH_NODE'
 const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
@@ -52,6 +53,7 @@ const CONFIGURATION_VARS = [
     process.env.ARAGON_PACKAGE_VERSION,
     process.env.REACT_APP_PACKAGE_VERSION,
   ],
+  [CLIENT_THEME, process.env.ARAGON_CLIENT_THEME],
 ].reduce(
   (acc, [option, envValue, envValueCompat]) => ({
     ...acc,
@@ -139,6 +141,20 @@ export function getLastPackageVersion() {
   return getLocalStorageSetting(PACKAGE_VERSION) || ''
 }
 
-export function setPackageVersion(version, purge) {
+export function setPackageVersion(version) {
   return setLocalSetting(PACKAGE_VERSION, version)
+}
+
+export function getClientTheme() {
+  const storedClientTheme = getLocalStorageSetting(CLIENT_THEME)
+  if (storedClientTheme) {
+    try {
+      return JSON.parse(storedClientTheme)
+    } catch (err) {}
+  }
+  return { appearance: 'light', theme: null }
+}
+
+export function setClientTheme(appearance, theme = null) {
+  return setLocalSetting(CLIENT_THEME, JSON.stringify({ appearance, theme }))
 }

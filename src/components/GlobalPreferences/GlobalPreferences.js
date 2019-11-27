@@ -31,6 +31,7 @@ const SECTIONS = new Map([
   ['network', 'Network'],
   ['notifications', 'Notifications'],
   ['help-and-feedback', 'Help and feedback'],
+  ['theme', 'Appearance'],
 ])
 const PATHS = Array.from(SECTIONS.keys())
 const VALUES = Array.from(SECTIONS.values())
