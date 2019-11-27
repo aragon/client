@@ -1,4 +1,5 @@
 import aragonGovernanceImage from './images/aragon-governance.svg'
+import aragonNetworkImage from './images/aragon-network.svg'
 import aragonOneImage from './images/aragon-one.svg'
 import brightIdImage from './images/brightid.svg'
 import melonCouncilImage from './images/melon-council.svg'
@@ -77,6 +78,13 @@ export const KnownOrganizations = {
         name: 'Lightwave',
         image: lightwaveImage,
         recommended: true,
+        template: TEMPLATE_MEMBERSHIP,
+      },
+      {
+        address: '0x40204DaaCb1480019A7A6826C699903dF94eE019',
+        domain: 'network.aragonid.eth',
+        name: 'Aragon Network (AGP-126)',
+        image: aragonNetworkImage,
         template: TEMPLATE_MEMBERSHIP,
       },
     ].map(org => [org.address.toLowerCase(), org])

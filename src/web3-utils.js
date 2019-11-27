@@ -1,5 +1,4 @@
-/*
- * This utils library is meant to capture all of the web3-related utilities
+/* This utils library is meant to capture all of the web3-related utilities
  * that we use. Any utilities we need from web3-utils should be re-exported
  * from this file.
  */
@@ -13,6 +12,24 @@ import { log } from './utils'
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
 const ETH_ADDRESS_TEST_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
+
+// Filter the value we get from getBalance() before passing it to BN.js.
+// This is because passing some values to BN.js can lead to an infinite loop
+// when .toString() is called. Returns "-1" when the value is invalid.
+//
+// See https://github.com/indutny/bn.js/issues/186
+const filterBalanceValue = value => {
+  if (value === null) {
+    return '-1'
+  }
+  if (typeof value === 'object') {
+    value = String(value)
+  }
+  if (typeof value === 'string') {
+    return /^[0-9]+$/.test(value) ? value : '-1'
+  }
+  return '-1'
+}
 
 /**
  * Check address equality without checksums
@@ -109,6 +126,15 @@ export function getInjectedProvider() {
     return window.web3.currentProvider
   }
   return null
+}
+
+export async function getAccountBalance(web3, account) {
+  try {
+    const balanceValue = await web3.eth.getBalance(account)
+    return new BN(filterBalanceValue(balanceValue))
+  } catch (err) {
+    return getUnknownBalance()
+  }
 }
 
 /**

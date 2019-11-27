@@ -13,7 +13,7 @@ import {
   TEMPLATE_AVAILABLE,
   TEMPLATE_UNAVAILABLE,
 } from '../symbols'
-import { useAccount } from '../../account'
+import { useWallet } from '../../wallet'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
 import validateCreationRequirements from '../validate-requirements'
@@ -33,13 +33,15 @@ const initialEmbeddedTemplates = sortedEmbeddedTemplates.map(template => ({
   status: TEMPLATE_LOADING,
 }))
 
-function Onboarding({ status, selectorNetworks, walletWeb3, web3 }) {
+function Onboarding({ status, selectorNetworks, web3 }) {
   const theme = useTheme()
+
   const {
+    account,
     balance,
-    address: account,
     isContract: isContractAccount,
-  } = useAccount()
+    web3: walletWeb3,
+  } = useWallet()
 
   const [connectModalOpened, setConnectModalOpened] = useState(false)
   const [templates, setTemplates] = useState(initialEmbeddedTemplates)
@@ -266,7 +268,6 @@ Onboarding.propTypes = {
   status: PropTypes.oneOf(['none', 'welcome', 'open', 'create']).isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,
-  walletWeb3: PropTypes.object,
   web3: PropTypes.object,
 }
 

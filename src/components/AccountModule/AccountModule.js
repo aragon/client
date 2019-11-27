@@ -1,78 +1,89 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
-  Button,
   EthIdenticon,
   Popover,
   GU,
   IconDown,
-  IconConnect,
   RADIUS,
   textStyle,
   useTheme,
-  IdentityBadge,
   unselectable,
+  ButtonBase,
+  springs,
 } from '@aragon/ui'
+import { Spring, animated } from 'react-spring'
 import { shortenAddress } from '../../web3-utils'
-import { useAccount } from '../../account'
+import { useLocalIdentity } from '../../hooks'
+import { useWallet } from '../../wallet'
+import NotConnected from './NotConnected'
+import ConnectionInfo from './ConnectionInfo'
+import { useNetworkConnectionData } from './utils'
 
-function getNetworkName(networkId) {
-  if (networkId === 'main') return 'Mainnet'
-  if (networkId === 'rinkeby') return 'Rinkeby'
-  return networkId
-}
+// Metamask seems to take about ~200ms to send the connected accounts.
+// This is to avoid a flash with the connection button.
+const ACCOUNT_MODULE_DISPLAY_DELAY = 500
+
+const AnimatedDiv = animated.div
 
 function AccountModule({ compact }) {
-  const { connected } = useAccount()
-  return connected ? <ConnectedMode /> : <NonConnectedMode compact={compact} />
+  const { isConnected } = useWallet()
+  const [display, setDisplay] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDisplay(true)
+    }, ACCOUNT_MODULE_DISPLAY_DELAY)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (!display) {
+    return null
+  }
+
+  return (
+    <Spring
+      from={{ opacity: 0, scale: 0.96 }}
+      to={{ opacity: 1, scale: 1 }}
+      config={springs.swift}
+      native
+    >
+      {({ opacity, scale }) => (
+        <AnimatedDiv
+          style={{
+            opacity,
+            transform: scale.interpolate(v => `scale3d(${v}, ${v}, 1)`),
+          }}
+          css={`
+            display: flex;
+            height: 100%;
+            align-items: center;
+          `}
+        >
+          {isConnected ? <ConnectedMode /> : <NotConnected compact={compact} />}
+        </AnimatedDiv>
+      )}
+    </Spring>
+  )
 }
 
 AccountModule.propTypes = {
   compact: PropTypes.bool,
 }
 
-function NonConnectedMode({ compact }) {
-  const { enable } = useAccount()
-  return (
-    <div
-      css={`
-        display: flex;
-        align-items: center;
-        text-align: left;
-        padding: 0 ${(compact ? 1 : 2) * GU}px;
-      `}
-    >
-      <Button
-        size={compact ? 'small' : 'medium'}
-        icon={<IconConnect />}
-        label="Enable account"
-        onClick={enable}
-        wide
-      />
-    </div>
-  )
-}
-
-NonConnectedMode.propTypes = {
-  compact: PropTypes.bool,
-}
-
 function ConnectedMode() {
-  const { address, label, networkId } = useAccount()
   const theme = useTheme()
-  // const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useState(false)
+  const wallet = useWallet()
+  const { name: label } = useLocalIdentity(wallet.account)
 
-  // const open = useCallback(() => {
-  //   setOpened(true)
-  // }, [])
-
-  // const close = useCallback(() => {
-  //   setOpened(false)
-  // }, [])
+  const close = () => setOpened(false)
+  const toggle = () => setOpened(opened => !opened)
 
   const containerRef = useRef()
 
-  const networkName = getNetworkName(networkId)
+  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
 
   return (
     <div
@@ -83,121 +94,100 @@ function ConnectedMode() {
         ${unselectable};
       `}
     >
-      {/* <ButtonBase
-        onClick={open}
+      <ButtonBase
+        onClick={toggle}
         css={`
           display: flex;
           align-items: center;
           text-align: left;
-          padding: 0 ${1 * GU}px 0 ${2 * GU}px;
-
+          padding: 0 ${1 * GU}px;
           &:active {
             background: ${theme.surfacePressed};
           }
         `}
-      > */}
-      <div
-        css={`
-          display: flex;
-          align-items: center;
-          text-align: left;
-          padding: 0 ${1 * GU}px 0 ${2 * GU}px;
-        `}
       >
         <div
           css={`
-            position: relative;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            padding: 0 ${1 * GU}px 0 ${2 * GU}px;
           `}
         >
-          <EthIdenticon address={address} radius={RADIUS} />
-          <div
-            css={`
-              position: absolute;
-              bottom: -3px;
-              right: -3px;
-              width: 10px;
-              height: 10px;
-              background: ${theme.positive};
-              border: 2px solid ${theme.surface};
-              border-radius: 50%;
-            `}
-          />
-        </div>
-        <div
-          css={`
-            padding-left: ${1 * GU}px;
-            padding-right: ${0.5 * GU}px;
-          `}
-        >
-          <div
-            css={`
-              margin-bottom: -5px;
-              ${textStyle('body2')}
-            `}
-          >
-            {label ? (
-              <div
-                css={`
-                  overflow: hidden;
-                  max-width: ${16 * GU}px;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                `}
-              >
-                {label}
-              </div>
-            ) : (
-              <div>{shortenAddress(address)}</div>
-            )}
+          <div css="position: relative">
+            <EthIdenticon address={wallet.account} radius={RADIUS} />
+            <div
+              css={`
+                position: absolute;
+                bottom: -3px;
+                right: -3px;
+                width: 10px;
+                height: 10px;
+                background: ${hasNetworkMismatch
+                  ? theme.negative
+                  : theme.positive};
+                border: 2px solid ${theme.surface};
+                border-radius: 50%;
+              `}
+            />
           </div>
           <div
             css={`
-              font-size: 11px; /* doesn’t exist in aragonUI */
-              color: ${theme.surfaceContentSecondary};
+              padding-left: ${1 * GU}px;
+              padding-right: ${0.5 * GU}px;
             `}
           >
-            Connected {networkName ? `to ${networkName}` : ''}
+            <div
+              css={`
+                margin-bottom: -5px;
+                ${textStyle('body2')}
+              `}
+            >
+              {label ? (
+                <div
+                  css={`
+                    overflow: hidden;
+                    max-width: ${16 * GU}px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                  `}
+                >
+                  {label}
+                </div>
+              ) : (
+                <div>{shortenAddress(wallet.account)}</div>
+              )}
+            </div>
+            <div
+              css={`
+                font-size: 11px; /* doesn’t exist in aragonUI */
+                color: ${hasNetworkMismatch ? theme.negative : theme.positive};
+              `}
+            >
+              {hasNetworkMismatch
+                ? 'Wrong network'
+                : `Connected ${
+                    walletNetworkName ? `to ${walletNetworkName}` : ''
+                  }`}
+            </div>
           </div>
-        </div>
-        {null && (
+
           <IconDown
             size="small"
             css={`
               color: ${theme.surfaceIcon};
             `}
           />
-        )}
-        {/* </ButtonBase> */}
-      </div>
+        </div>
+      </ButtonBase>
       <Popover
         closeOnOpenerFocus
         placement="bottom-end"
         onClose={close}
-        visible={false}
+        visible={opened}
         opener={containerRef.current}
       >
-        <section>
-          <h1
-            css={`
-              display: flex;
-              align-items: center;
-              height: ${4 * GU}px;
-              padding: 0 ${2 * GU}px;
-              ${textStyle('label2')};
-              color: ${theme.surfaceContentSecondary};
-              border-bottom: 1px solid ${theme.border};
-            `}
-          >
-            Ethereum connection
-          </h1>
-          <div
-            css={`
-              padding: ${3 * GU}px ${2 * GU}px;
-            `}
-          >
-            <IdentityBadge entity={address} compact />
-          </div>
-        </section>
+        <ConnectionInfo address={wallet.account} />
       </Popover>
     </div>
   )

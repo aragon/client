@@ -10,7 +10,7 @@ import {
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { enableWallet } from '../../wallet-utils'
+import { enableWallet } from '../../wallet'
 import providersImage from './assets/providers.png'
 
 function ConnectModal({ account, onClose, onConnect, visible }) {

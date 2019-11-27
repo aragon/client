@@ -1,12 +1,11 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
-import { ButtonBase, GU, textStyle, useTheme } from '@aragon/ui'
+import { ButtonBase, GU, textStyle, useTheme, springs } from '@aragon/ui'
 import MenuPanelAppInstance, {
   MENU_PANEL_APP_INSTANCE_HEIGHT,
 } from './MenuPanelAppInstance'
 import { AppInstanceType } from '../../prop-types'
-import springs from '../../springs'
 import { useLocalIdentity } from '../../hooks'
 
 export const MENU_ITEM_BASE_HEIGHT = 5 * GU

@@ -14,6 +14,7 @@ export const networkConfigs = {
     settings: {
       chainId: 1,
       name: 'Mainnet',
+      shortName: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
     },
   },
@@ -28,6 +29,7 @@ export const networkConfigs = {
     settings: {
       chainId: 4,
       name: 'Rinkeby testnet',
+      shortName: 'Rinkeby',
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
     },
   },
@@ -42,6 +44,7 @@ export const networkConfigs = {
     settings: {
       chainId: 3,
       name: 'Ropsten testnet',
+      shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
     },
   },
@@ -54,7 +57,21 @@ export const networkConfigs = {
     },
     settings: {
       name: 'local testnet',
+      shortName: 'Local',
       type: 'private',
+    },
+  },
+  unknown: {
+    addresses: {
+      ensRegistry: localEnsRegistryAddress,
+    },
+    nodes: {
+      defaultEth: 'ws://localhost:8545',
+    },
+    settings: {
+      name: `Unknown network`,
+      shortName: 'Unknown',
+      type: 'unknown',
     },
   },
 }
@@ -62,12 +79,21 @@ export const networkConfigs = {
 export function getNetworkConfig(type) {
   return (
     networkConfigs[type] || {
-      ...networkConfigs.local,
+      ...networkConfigs.unknown,
       settings: {
+        ...networkConfigs.unknown.settings,
         name: `Unsupported network (${type})`,
-        type: 'unknown',
       },
     }
+  )
+}
+
+export function getNetworkByChainId(chainId = -1) {
+  chainId = Number(chainId)
+  return (
+    Object.values(networkConfigs).find(
+      network => network.settings.chainId === chainId
+    ) || networkConfigs.unknown
   )
 }
 
