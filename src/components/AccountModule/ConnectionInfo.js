@@ -13,7 +13,7 @@ import {
 } from '@aragon/ui'
 
 import { useCopyToClipboard } from '../../copy-to-clipboard'
-import { useAccount } from '../../account'
+import { useWallet } from '../../wallet'
 import { useNetworkConnectionData } from './utils'
 import SyncedInfo from './SyncedInfo'
 
@@ -23,7 +23,7 @@ const FlexWrapper = styled.div`
 `
 
 function ConnectionInfo() {
-  const { address, providerInfo } = useAccount()
+  const { account, providerInfo } = useWallet()
   const theme = useTheme()
 
   const {
@@ -32,7 +32,7 @@ function ConnectionInfo() {
     hasNetworkMismatch,
   } = useNetworkConnectionData()
 
-  const copyAddress = useCopyToClipboard(address, 'Address copied')
+  const copyAddress = useCopyToClipboard(account, 'Address copied')
 
   const Icon = hasNetworkMismatch ? IconCross : IconCheck
 
@@ -93,7 +93,7 @@ function ConnectionInfo() {
               `}
             >
               <IdentityBadge
-                entity={address}
+                entity={account}
                 compact
                 badgeOnly
                 css="cursor: pointer"

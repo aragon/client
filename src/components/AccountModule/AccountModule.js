@@ -14,7 +14,8 @@ import {
 } from '@aragon/ui'
 import { Spring, animated } from 'react-spring'
 import { shortenAddress } from '../../web3-utils'
-import { useAccount } from '../../account'
+import { useLocalIdentity } from '../../hooks'
+import { useWallet } from '../../wallet'
 import NotConnected from './NotConnected'
 import ConnectionInfo from './ConnectionInfo'
 import { useNetworkConnectionData } from './utils'
@@ -26,7 +27,7 @@ const ACCOUNT_MODULE_DISPLAY_DELAY = 500
 const AnimatedDiv = animated.div
 
 function AccountModule({ compact }) {
-  const { connected } = useAccount()
+  const { isConnected } = useWallet()
   const [display, setDisplay] = useState(false)
 
   useEffect(() => {
@@ -60,7 +61,7 @@ function AccountModule({ compact }) {
             align-items: center;
           `}
         >
-          {connected ? <ConnectedMode /> : <NotConnected compact={compact} />}
+          {isConnected ? <ConnectedMode /> : <NotConnected compact={compact} />}
         </AnimatedDiv>
       )}
     </Spring>
@@ -72,9 +73,10 @@ AccountModule.propTypes = {
 }
 
 function ConnectedMode() {
-  const { address, label } = useAccount()
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
+  const wallet = useWallet()
+  const { name: label } = useLocalIdentity(wallet.account)
 
   const close = () => setOpened(false)
   const toggle = () => setOpened(opened => !opened)
@@ -113,7 +115,7 @@ function ConnectedMode() {
           `}
         >
           <div css="position: relative">
-            <EthIdenticon address={address} radius={RADIUS} />
+            <EthIdenticon address={wallet.account} radius={RADIUS} />
             <div
               css={`
                 position: absolute;
@@ -153,7 +155,7 @@ function ConnectedMode() {
                   {label}
                 </div>
               ) : (
-                <div>{shortenAddress(address)}</div>
+                <div>{shortenAddress(wallet.account)}</div>
               )}
             </div>
             <div
@@ -185,7 +187,7 @@ function ConnectedMode() {
         visible={opened}
         opener={containerRef.current}
       >
-        <ConnectionInfo address={address} />
+        <ConnectionInfo address={wallet.account} />
       </Popover>
     </div>
   )

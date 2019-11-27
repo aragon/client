@@ -3,6 +3,11 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { SidePanel, GU, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
+import { network } from '../../environment'
+import { useWallet } from '../../wallet'
+import { ActivityContext } from '../../contexts/ActivityContext'
+import { AppType, EthereumAddressType } from '../../prop-types'
+import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
@@ -20,11 +25,6 @@ import {
   isConfirmingSignature,
   isSignatureSuccess,
 } from './signer-statuses'
-import { useAccount } from '../../account'
-import { ActivityContext } from '../../contexts/ActivityContext'
-import { network } from '../../environment'
-import { AppType, EthereumAddressType } from '../../prop-types'
-import { addressesEqual, getInjectedProvider } from '../../web3-utils'
 
 const INITIAL_STATE = {
   actionPaths: [],
@@ -449,21 +449,27 @@ const Screen = styled.div`
 `
 
 export default function(props) {
+  const wallet = useWallet()
+
   const {
     addTransactionActivity,
     setActivityConfirmed,
     setActivityFailed,
     setActivityNonce,
   } = useContext(ActivityContext)
-  const { address: account } = useAccount()
+
   return (
     <SignerPanel
       {...props}
-      account={account}
+      account={wallet.account}
       addTransactionActivity={addTransactionActivity}
+      onRequestEnable={wallet.enable}
       setActivityConfirmed={setActivityConfirmed}
       setActivityFailed={setActivityFailed}
       setActivityNonce={setActivityNonce}
+      walletNetwork={wallet.networkType}
+      walletProviderId={wallet.providerInfo.id}
+      walletWeb3={wallet.web3}
     />
   )
 }

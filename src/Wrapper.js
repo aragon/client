@@ -37,16 +37,12 @@ class Wrapper extends React.PureComponent {
     historyPush: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
-    onRequestEnable: PropTypes.func.isRequired,
     openPreferences: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
     signatureBag: PropTypes.object,
     visible: PropTypes.bool.isRequired,
-    walletNetwork: PropTypes.string,
-    walletProviderId: PropTypes.string,
-    walletWeb3: PropTypes.object,
     web3: PropTypes.object,
     wrapper: AragonType,
   }
@@ -55,9 +51,6 @@ class Wrapper extends React.PureComponent {
     connected: false,
     transactionBag: null,
     signatureBag: null,
-    walletNetwork: '',
-    walletProviderId: '',
-    walletWeb3: null,
   }
 
   state = {
@@ -245,14 +238,10 @@ class Wrapper extends React.PureComponent {
       daoStatus,
       locator,
       openPreferences,
-      onRequestEnable,
       repos,
       transactionBag,
       signatureBag,
       visible,
-      walletNetwork,
-      walletProviderId,
-      walletWeb3,
       web3,
       wrapper,
     } = this.props
@@ -291,7 +280,6 @@ class Wrapper extends React.PureComponent {
           daoStatus={daoStatus}
           onOpenApp={this.openApp}
           onOpenPreferences={openPreferences}
-          onRequestEnable={onRequestEnable}
         >
           <AppLoader
             appLoading={appLoading}
@@ -306,12 +294,8 @@ class Wrapper extends React.PureComponent {
           <SignerPanel
             apps={apps}
             dao={locator.dao}
-            onRequestEnable={onRequestEnable}
             transactionBag={transactionBag}
             signatureBag={signatureBag}
-            walletNetwork={walletNetwork}
-            walletProviderId={walletProviderId}
-            walletWeb3={walletWeb3}
             web3={web3}
           />
 
@@ -343,9 +327,6 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       permissionsLoading,
       repos,
-      walletNetwork,
-      walletProviderId,
-      walletWeb3,
       wrapper,
     } = this.props
 
@@ -406,9 +387,6 @@ class Wrapper extends React.PureComponent {
             onMessage={this.handleAppMessage}
             onOpenApp={this.openApp}
             onShowOrgVersionDetails={this.handleUpgradeModalOpen}
-            walletNetwork={walletNetwork}
-            walletWeb3={walletWeb3}
-            walletProviderId={walletProviderId}
           />
         </AppInternal>
       )

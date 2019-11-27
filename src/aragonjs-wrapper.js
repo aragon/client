@@ -1,4 +1,3 @@
-import BN from 'bn.js'
 import resolvePathname from 'resolve-pathname'
 import Aragon, {
   apm,
@@ -18,19 +17,11 @@ import { NoConnection, DAONotFound } from './errors'
 import { getEthSubscriptionEventDelay } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
-import { noop, removeStartingSlash } from './utils'
-import {
-  getWeb3,
-  getUnknownBalance,
-  getMainAccount,
-  isEmptyAddress,
-  isValidEnsName,
-} from './web3-utils'
+import { noop, removeStartingSlash, pollEvery } from './utils'
+import { getWeb3, isEmptyAddress, isValidEnsName } from './web3-utils'
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 
-const POLL_DELAY_ACCOUNT = 2000
-const POLL_DELAY_NETWORK = 2000
 const POLL_DELAY_CONNECTIVITY = 2000
 
 const applyAppOverrides = apps =>
@@ -80,81 +71,6 @@ const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
     .sort(sortAppsPair)
 }
 
-// TODO: move polling and ens related utilities to web3-utils
-const pollEvery = (fn, delay) => {
-  let timer = -1
-  let stop = false
-  const poll = async (request, onResult) => {
-    const result = await request()
-    if (!stop) {
-      onResult(result)
-      timer = setTimeout(poll.bind(null, request, onResult), delay)
-    }
-  }
-  return (...params) => {
-    const { request, onResult } = fn(...params)
-    poll(request, onResult)
-    return () => {
-      stop = true
-      clearTimeout(timer)
-    }
-  }
-}
-
-// Filter the value we get from getBalance() before passing it to BN.js.
-// This is because passing some values to BN.js can lead to an infinite loop
-// when .toString() is called. Returns "-1" when the value is invalid.
-//
-// See https://github.com/indutny/bn.js/issues/186
-const filterBalanceValue = value => {
-  if (value === null) {
-    return '-1'
-  }
-  if (typeof value === 'object') {
-    value = String(value)
-  }
-  if (typeof value === 'string') {
-    return /^[0-9]+$/.test(value) ? value : '-1'
-  }
-  return '-1'
-}
-
-// Keep polling the main account.
-// See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
-export const pollMainAccount = pollEvery(
-  (provider, { onAccount = () => {}, onBalance = () => {} } = {}) => {
-    const web3 = getWeb3(provider)
-    let lastAccount = null
-    let lastBalance = getUnknownBalance()
-
-    return {
-      request: () =>
-        getMainAccount(web3)
-          .then(account => {
-            if (!account) {
-              throw new Error('no account')
-            }
-            return web3.eth
-              .getBalance(account)
-              .then(filterBalanceValue)
-              .then(balance => ({ account, balance: new BN(balance) }))
-          })
-          .catch(() => ({ account: null, balance: getUnknownBalance() })),
-      onResult: ({ account, balance }) => {
-        if (account !== lastAccount) {
-          lastAccount = account
-          onAccount(account)
-        }
-        if (!balance.eq(lastBalance)) {
-          lastBalance = balance
-          onBalance(balance)
-        }
-      },
-    }
-  },
-  POLL_DELAY_ACCOUNT
-)
-
 export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
   let lastFound = null
   return {
@@ -177,21 +93,6 @@ export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
   }
   // web.eth.net.isListening()
 }, POLL_DELAY_CONNECTIVITY)
-
-// Keep polling the network.
-export const pollNetwork = pollEvery((provider, onNetwork) => {
-  const web3 = getWeb3(provider)
-  let lastFound = null
-  return {
-    request: () => web3.eth.net.getNetworkType(),
-    onResult: network => {
-      if (network !== lastFound) {
-        lastFound = network
-        onNetwork(network)
-      }
-    },
-  }
-}, POLL_DELAY_NETWORK)
 
 export const resolveEnsDomain = async domain => {
   try {
@@ -343,6 +244,7 @@ const initWrapper = async (
     onDaoAddress = noop,
     onWeb3 = noop,
     onRequestPath = noop,
+    walletAccount = null,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -375,11 +277,10 @@ const initWrapper = async (
   const web3 = getWeb3(walletProvider || provider)
   onWeb3(web3)
 
-  const account = await getMainAccount(web3)
   try {
     await wrapper.init({
       accounts: {
-        providedAccounts: account ? [account] : [],
+        providedAccounts: walletAccount ? [walletAccount] : [],
       },
     })
   } catch (err) {
