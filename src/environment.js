@@ -7,6 +7,7 @@ import {
   getIpfsGateway,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
+import WalletLink from 'walletlink'
 import { getInjectedProvider } from './web3-utils'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault', 'Agent']
@@ -20,6 +21,27 @@ export const appIds = {
   Survey: '0x030b2ab880b88e228f2da5a3d19a2a31bc10dbf91fb1143776a6de489389471e',
   Vault: '0x7e852e0fcfce6551c13800f1e7476f982525c2b5277ba14b24339c68416336d1',
   Voting: '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
+}
+
+const getMobileProvider = type => {
+  if (type === 'walletlink') {
+    return getWalletLinkProvider()
+  }
+  // TODO: support walletconnect
+}
+
+const getWalletLinkProvider = () => {
+  const walletLink = new WalletLink({
+    appName: 'Aragon',
+    appLogoUrl:
+      'https://wiki.aragon.org/design/logo/png/imagetype_vertical@2x.png',
+  })
+
+  return walletLink.makeWeb3Provider(
+    // defaultEthNode, 1
+    'https://mainnet.infura.io/v3/550f7df376a54d39a8456352a1f9c1ef', // TODO: use aragon's node (jorge's token)
+    1 // TODO: get chainID from env
+  )
 }
 
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
@@ -127,5 +149,8 @@ export const defaultEthNode =
 export const web3Providers = {
   default: new Web3.providers.WebsocketProvider(defaultEthNode),
   // Only use eth-provider to connect to frame if no injected provider is detected
-  wallet: getInjectedProvider() || provider(['frame']),
+  wallet:
+    getInjectedProvider() ||
+    getMobileProvider('walletlink') ||
+    provider(['frame']),
 }

@@ -49,6 +49,18 @@ const PROVIDERS = new Map(
         'your Ethereum provider': 'Cipher',
       },
     },
+
+    {
+      id: 'coinbasewallet',
+      name: 'Coinbase',
+      type: 'Mobile',
+      image:
+        'https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwi1puTvl5XmAhV6IbkGHUvdCiUQjRx6BAgBEAQ&url=https%3A%2F%2Ftoshi.en.aptoide.com%2Fversions&psig=AOvVaw28cCIgStDfNcpeS-J492ea&ust=1575315006228687', // TODO: image
+      connect: async () => true,
+      strings: {
+        'your Ethereum provider': 'Coinbase Wallet',
+      },
+    },
     {
       id: 'unknown',
       name: 'Unknown',
@@ -76,12 +88,21 @@ function getProviderString(string, providerId = 'unknown') {
 
 // Get an identifier for the provider, if it can be detected.
 function identifyProvider(provider) {
+  console.log(Object.entries(provider))
+
   if (provider && isElectron()) {
     return 'frame'
   }
   if (provider && provider.isMetaMask) {
     return 'metamask'
   }
+
+  console.log(provider, provider._relay, provider._relay.appName)
+
+  if (provider && provider._relay && provider._relay.appName) {
+    return 'coinbasewallet'
+  }
+
   return 'unknown'
 }
 
