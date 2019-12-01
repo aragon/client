@@ -39,8 +39,8 @@ const getWalletLinkProvider = () => {
 
   return walletLink.makeWeb3Provider(
     // defaultEthNode, 1
-    'https://mainnet.infura.io/v3/550f7df376a54d39a8456352a1f9c1ef', // TODO: use aragon's node (jorge's token)
-    1 // TODO: get chainID from env
+    'https://rinkeby.infura.io/v3/550f7df376a54d39a8456352a1f9c1ef', // TODO: use aragon's node (jorge's token)
+    networkConfig.settings.chainId
   )
 }
 
