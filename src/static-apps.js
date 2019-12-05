@@ -19,6 +19,7 @@ export const staticApps = new Map(
     home: staticApp('home', 'Home', ''),
     organization: staticApp('organization', 'Organization'),
     permissions: staticApp('permissions', 'Permissions'),
+    araConsole: staticApp('araconsole', 'Console'),
   })
 )
 
