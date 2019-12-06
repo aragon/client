@@ -146,7 +146,7 @@ const AppCenter = React.memo(function AppCenter({
   return (
     <React.Fragment>
       <Header
-        primary="App center"
+        primary="App Center"
         secondary={
           canUpgradeOrg &&
           screen !== 'discover' &&
