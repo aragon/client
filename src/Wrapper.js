@@ -245,7 +245,7 @@ class Wrapper extends React.PureComponent {
       web3,
       wrapper,
     } = this.props
-
+    console.log('repos:', repos)
     const { appLoading, orgUpgradePanelOpened, upgradeModalOpened } = this.state
 
     const currentApp = apps.find(app =>
