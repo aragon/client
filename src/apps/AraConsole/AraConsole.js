@@ -5,6 +5,7 @@ import Web3 from 'web3'
 import { AragonType, AppType } from '../../prop-types'
 import { log } from '../../utils'
 import { getInjectedProvider } from '../../web3-utils'
+
 function AraConsole({ apps, wrapper }) {
   return (
     <>
@@ -31,14 +32,24 @@ function Console({ apps, wrapper }) {
 
   const handleDaoInstall = useCallback(
     async params => {
-      // we need to create an array of intents for the install calls
-      // 1 - call newAppInstance & initialize (will be done on the same call)
+      // we need to create an array of intents (intent basket) for the install calls
+      // 1 - call newAppInstance & initialize
       // 2 - get contract address & set permissions
 
-      // testing impl for now with just creating the app instance & init
+      // process the initArgs
       const [appName, ...initArgs] = params
+      const permIndex = initArgs.indexOf('-p')
+      let permParams = []
+      let initParams = []
+      if (permIndex !== -1) {
+        permParams = initArgs
+          .slice(permIndex + 1)
+          .map(permission => permission.split(':'))
+      }
+      initParams = initArgs.slice(0, permIndex)
+
+      log('permParams', permParams, initParams)
       const web3 = new Web3(getInjectedProvider())
-      console.log(web3)
 
       if (!web3) {
         toast('You need to have a Dapp browser extension for this command')
@@ -58,34 +69,28 @@ function Console({ apps, wrapper }) {
         app => app.name.toLowerCase() === 'kernel'
       )[0].proxyAddress
 
-      const appId = apps.filter(app => app.name.toLowerCase() === appName)[0]
-        .appId
-      // const
+      const appId = apps.find(app => app.name.toLowerCase() === appName).appId
 
       const ensDomain = await wrapper.ens.resolve(appId)
       log('ensDomain', ensDomain)
-      const { abi, contractAddress } = await wrapper.apm.fetchLatestRepoContent(
-        ensDomain,
-        {
-          fetchTimeout: 3000,
-        }
-      )
+      const repoContent = await wrapper.apm.fetchLatestRepoContent(ensDomain, {
+        fetchTimeout: 3000,
+      })
+      const { abi, contractAddress, roles } = repoContent
+      log('roles', roles)
       const initializeAbi = abi.find(({ name }) => name === 'initialize')
-
+      log('repoContent', repoContent)
       const encodedInitializeFunc = web3.eth.abi.encodeFunctionCall(
         initializeAbi,
-        [...initArgs]
+        [...initParams]
       )
       log('encoded', encodedInitializeFunc)
 
-      // we actually need to get an intent basket
       const path = await wrapper.getTransactionPath(
         kernelProxyAddress,
         'newAppInstance',
         [appId, contractAddress]
       )
-
-      log('path', path)
 
       // Get the second to last item in the path, as it is the account that will execute kernel.newAppInstance
       const scriptExecutor = path[path.length - 2].to
@@ -100,20 +105,45 @@ function Console({ apps, wrapper }) {
 
       log('counter', counterfactualAppAddr)
 
-      if (Array.isArray(path) && path.length) {
-        const transId = await wrapper.performTransactionPath(path)
+      const installAppIntent = [
+        [kernelProxyAddress, 'newAppInstance', [appId, contractAddress]],
+      ]
+
+      const aclProxyAddress = apps.find(app => app.name.toLowerCase() === 'acl')
+        .proxyAddress
+      log('aclProxy', aclProxyAddress)
+      const permissionIntents = permParams.map(([role, from, to]) => {
+        const roleBytes = apps
+          .find(app => app.name.toLowerCase() === appName)
+          .roles.find(availableRole => availableRole.id === role).bytes
+        return [
+          aclProxyAddress,
+          'createPermission',
+          [to, counterfactualAppAddr, roleBytes, from],
+        ]
+      })
+      log('permissionIntents', permissionIntents)
+      const intentBasket = [...installAppIntent, ...permissionIntents]
+      log('intentbasket', intentBasket)
+      const {
+        pathForBasket,
+        transactions,
+      } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
+      log('DONE', pathForBasket, transactions)
+      if (Array.isArray(pathForBasket) && pathForBasket.length) {
+        const transId = await wrapper.performTransactionPath(pathForBasket)
         log(transId)
+      } else if (Array.isArray(transactions) && transactions.length) {
+        for (const transaction of transactions) {
+          await wrapper.performTransactionPath([transaction])
+        }
       } else {
         await wrapper.performTransactionPath([])
       }
-      log('trans path', path)
-
-      // todo create permission
-      // dao install vault -p TRANSFER_TOKENS_ROLE 0xab 0xcd -p X_ROLE 0x12 0x34
+      log('trans pathForBasket', pathForBasket)
     },
     [toast, apps, wrapper]
   )
-
   // Handle DAO execution
   const handleDaoExec = useCallback(
     async params => {
@@ -133,8 +163,6 @@ function Console({ apps, wrapper }) {
         args
       )
 
-      // futureAppAddr = await wrapper.kernelProxy.call('newAppInstance', appId, appCode, ...)
-
       if (Array.isArray(path) && path.length) {
         const transId = await wrapper.performTransactionPath(path)
         log(transId)
@@ -146,10 +174,8 @@ function Console({ apps, wrapper }) {
     [apps, wrapper, toast]
   )
 
-  // dao exec tokens mint 0x5790dB5E4D9e868BB86F5280926b9838758234DD 1000
   // Handle console input
   const handleConsoleInput = useCallback(() => {
-    console.log(command)
     if (command.includes('dao exec')) {
       handleDaoExec(command.split(' ').slice(2))
     } else if (command.includes('dao install')) {
