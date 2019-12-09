@@ -41,50 +41,49 @@ function Console({ apps, wrapper }) {
       const permIndex = initArgs.indexOf('-p')
       let permParams = []
       let initParams = []
+
       if (permIndex !== -1) {
         permParams = initArgs
           .slice(permIndex + 1)
           .map(permission => permission.split(':'))
       }
+      // TODO: fix this, not right (-1 doesn't mean slice until end)
       initParams = initArgs.slice(0, permIndex)
-
+      log('initParams', initParams)
       log('permParams', permParams, initParams)
+
       const web3 = new Web3(getInjectedProvider())
 
       if (!web3) {
         toast('You need to have a Dapp browser extension for this command')
       }
-      log('initArgs', initArgs)
 
-      const abiEntries = apps.filter(
-        app => app.name.toLowerCase() === appName
-      )[0].abi
-      log('abiEntries', abiEntries)
-      const inputs = abiEntries.filter(
-        abiEntry => abiEntry.name === 'initialize'
-      )[0].inputs
-      log('inputs', inputs)
-
-      const kernelProxyAddress = apps.filter(
+      const kernelProxyAddress = apps.find(
         app => app.name.toLowerCase() === 'kernel'
-      )[0].proxyAddress
+      ).proxyAddress
 
       const appId = apps.find(app => app.name.toLowerCase() === appName).appId
 
       const ensDomain = await wrapper.ens.resolve(appId)
       log('ensDomain', ensDomain)
+
       const repoContent = await wrapper.apm.fetchLatestRepoContent(ensDomain, {
         fetchTimeout: 3000,
       })
       const { abi, contractAddress, roles } = repoContent
-      log('roles', roles)
-      const initializeAbi = abi.find(({ name }) => name === 'initialize')
-      log('repoContent', repoContent)
+
+      const { name, type, inputs } = abi.find(
+        ({ name }) => name === 'initialize'
+      )
+
       const encodedInitializeFunc = web3.eth.abi.encodeFunctionCall(
-        initializeAbi,
+        {
+          name,
+          type,
+          inputs,
+        },
         [...initParams]
       )
-      log('encoded', encodedInitializeFunc)
 
       const path = await wrapper.getTransactionPath(
         kernelProxyAddress,
@@ -98,12 +97,10 @@ function Console({ apps, wrapper }) {
         'newAppInstance',
         appId,
         contractAddress,
-        '0x',
+        encodedInitializeFunc,
         false,
         { from: scriptExecutor }
       )
-
-      log('counter', counterfactualAppAddr)
 
       const installAppIntent = [
         [kernelProxyAddress, 'newAppInstance', [appId, contractAddress]],
@@ -111,20 +108,19 @@ function Console({ apps, wrapper }) {
 
       const aclProxyAddress = apps.find(app => app.name.toLowerCase() === 'acl')
         .proxyAddress
-      log('aclProxy', aclProxyAddress)
+
       const permissionIntents = permParams.map(([role, from, to]) => {
-        const roleBytes = apps
-          .find(app => app.name.toLowerCase() === appName)
-          .roles.find(availableRole => availableRole.id === role).bytes
+        const roleBytes = roles.find(availableRole => availableRole.id === role)
+          .bytes
         return [
           aclProxyAddress,
           'createPermission',
           [to, counterfactualAppAddr, roleBytes, from],
         ]
       })
-      log('permissionIntents', permissionIntents)
+
       const intentBasket = [...installAppIntent, ...permissionIntents]
-      log('intentbasket', intentBasket)
+
       const {
         pathForBasket,
         transactions,
@@ -140,7 +136,6 @@ function Console({ apps, wrapper }) {
       } else {
         await wrapper.performTransactionPath([])
       }
-      log('trans pathForBasket', pathForBasket)
     },
     [toast, apps, wrapper]
   )
