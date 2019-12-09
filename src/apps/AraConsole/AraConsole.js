@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Header, textStyle, GU, TextInput, useToast } from '@aragon/ui'
+import { Box, Header, textStyle, GU, useToast, TextInput } from '@aragon/ui'
 import Web3 from 'web3'
 import { AragonType, AppType } from '../../prop-types'
 import { log } from '../../utils'
 import { getInjectedProvider } from '../../web3-utils'
+import Console from './Console'
+import { ReactThemes } from 'react-terminal-component'
+import proxy from '@aragon/wrapper/dist/core/proxy'
 
 function AraConsole({ apps, wrapper }) {
   return (
     <>
       <Header primary="Aragon Console" />
-      <ConsoleInfo />
-      <Console apps={apps} wrapper={wrapper} />
+      <ConsoleWrapper apps={apps} wrapper={wrapper} />
     </>
   )
 }
@@ -21,9 +23,7 @@ AraConsole.propTypes = {
   wrapper: AragonType,
 }
 
-const ENTER_KEY = 13
-
-function Console({ apps, wrapper }) {
+function ConsoleWrapper({ apps, wrapper }) {
   const [command, setCommand] = useState('')
   useEffect(() => {
     log('apps observable', apps, wrapper)
@@ -87,8 +87,8 @@ function Console({ apps, wrapper }) {
 
       const path = await wrapper.getTransactionPath(
         kernelProxyAddress,
-        'newAppInstance',
-        [appId, contractAddress]
+        'newAppInstance(bytes32,address,bytes,bool)',
+        [appId, contractAddress, encodedInitializeFunc, false]
       )
 
       // Get the second to last item in the path, as it is the account that will execute kernel.newAppInstance
@@ -103,7 +103,11 @@ function Console({ apps, wrapper }) {
       )
 
       const installAppIntent = [
-        [kernelProxyAddress, 'newAppInstance', [appId, contractAddress]],
+        [
+          kernelProxyAddress,
+          'newAppInstance(bytes32,address,bytes,bool)',
+          [appId, contractAddress, encodedInitializeFunc, false],
+        ],
       ]
 
       const aclProxyAddress = apps.find(app => app.name.toLowerCase() === 'acl')
@@ -112,6 +116,7 @@ function Console({ apps, wrapper }) {
       const permissionIntents = permParams.map(([role, from, to]) => {
         const roleBytes = roles.find(availableRole => availableRole.id === role)
           .bytes
+
         return [
           aclProxyAddress,
           'createPermission',
@@ -120,7 +125,7 @@ function Console({ apps, wrapper }) {
       })
 
       const intentBasket = [...installAppIntent, ...permissionIntents]
-
+      log(intentBasket, permissionIntents)
       const {
         pathForBasket,
         transactions,
@@ -147,11 +152,14 @@ function Console({ apps, wrapper }) {
         return
       }
       const [appName, methodSignature, ...args] = params
-      log(params)
-      const proxyAddress = apps.filter(
-        app => app.name.toLowerCase() === appName
-      )[0].proxyAddress
-      log(proxyAddress)
+      log('params', appName, methodSignature, args)
+      apps.find(app => {
+        console.log(`comparing ${app.name.toLowerCase()} to ${appName}`)
+        return app.name.toLowerCase() === appName
+      })
+
+      const proxyAddress = apps.find(app => app.name.toLowerCase() === appName)
+        .proxyAddress
       const path = await wrapper.getTransactionPath(
         proxyAddress,
         methodSignature,
@@ -169,40 +177,50 @@ function Console({ apps, wrapper }) {
     [apps, wrapper, toast]
   )
 
+  const handleDaoAct = useCallback(() => {}, [])
+
   // Handle console input
   const handleConsoleInput = useCallback(() => {
-    if (command.includes('dao exec')) {
+    if (command.includes('exec')) {
       handleDaoExec(command.split(' ').slice(2))
-    } else if (command.includes('dao install')) {
+    } else if (command.includes('install')) {
       handleDaoInstall(command.split(' ').slice(2))
+    } else if (command.includes('act')) {
+      handleDaoAct()
     } else {
       toast('Unrecognized Command')
       setCommand('')
     }
-  }, [command, handleDaoExec, handleDaoInstall, toast])
+  }, [command, handleDaoExec, handleDaoInstall, handleDaoAct, toast])
 
   return (
-    <Box heading="Console">
-      <TextInput
-        value={command}
-        onChange={e => setCommand(e.target.value)}
-        onKeyDown={e => {
-          if (e.keyCode === ENTER_KEY) {
-            handleConsoleInput()
-          }
-        }}
-        wide
-      />
-    </Box>
+    <>
+      {/* <Console
+        promptSymbol="🦅"
+        handleAct={handleDaoAct}
+        handleExec={handleDaoExec}
+        handleInstall={handleDaoInstall}
+        theme={ReactThemes.sea}
+        clickToFocus
+      /> */}
+      <Box heading="Console">
+        <TextInput
+          value={command}
+          onChange={e => setCommand(e.target.value)}
+          onKeyDown={e => {
+            if (e.keyCode === 13) {
+              handleConsoleInput()
+            }
+          }}
+          wide
+        />
+      </Box>
+    </>
   )
 }
 
-Console.propTypes = {
+ConsoleWrapper.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
-  wrapper: AragonType,
-}
-
-Console.propTypes = {
   wrapper: AragonType,
 }
 
