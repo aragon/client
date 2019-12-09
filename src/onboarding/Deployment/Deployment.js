@@ -255,7 +255,6 @@ const Deployment = React.memo(function Deployment({
   ready,
   transactionsStatus,
 }) {
-  // TODO: handle loading state for transactions
   const { above } = useViewport()
 
   // TODO: handle transaction error

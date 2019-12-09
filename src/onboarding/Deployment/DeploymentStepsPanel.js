@@ -55,14 +55,18 @@ function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
         </h1>
 
         <div>
-          {transactionsStatus.map(({ name, status }, index) => (
-            <DeploymentStepsItem
-              key={index}
-              index={index}
-              name={name}
-              status={status}
-            />
-          ))}
+          {transactionsStatus.map(
+            ({ name, status, dateStart, gasPrice }, index) => (
+              <DeploymentStepsItem
+                key={index}
+                index={index}
+                name={name}
+                status={status}
+                dateStart={dateStart}
+                gasPrice={gasPrice}
+              />
+            )
+          )}
         </div>
       </div>
 

@@ -232,6 +232,7 @@ function useDeploymentState(
     signing: 0,
     error: -1,
   })
+  const [submittedTransactions, setSubmittedTransactions] = useState({})
 
   const deployTransactions = useMemo(
     () =>
@@ -247,7 +248,7 @@ function useDeploymentState(
   // Call tx functions in the template, one after another.
   useEffect(() => {
     if (attempts === 0) {
-      setTransactionProgress({ signed: 0, errored: -1 })
+      setTransactionProgress({ submitted: -1, signed: -1, errored: -1 })
     } else {
       setTransactionProgress(txProgress => ({ ...txProgress, errored: -1 }))
     }
@@ -262,7 +263,7 @@ function useDeploymentState(
       deployTransactions
         // If we're retrying, only retry from the last signed one
         .slice(transactionProgress.signed)
-        .reduce(async (deployPromise, { transaction }) => {
+        .reduce(async (deployPromise, { transaction }, i) => {
           // Wait for the previous promise; if component has unmounted, don't progress any further
           await deployPromise
 
@@ -276,20 +277,37 @@ function useDeploymentState(
 
           if (!cancelled) {
             try {
-              await walletWeb3.eth.sendTransaction(transaction)
+              await walletWeb3.eth
+                .sendTransaction(transaction)
+                .on('transactionHash', async hash => {
+                  setTransactionProgress(prev => ({
+                    ...prev,
+                    submitted: prev.submitted + 1,
+                  }))
+                  const submittedTransaction = await walletWeb3.eth.getTransaction(
+                    hash
+                  )
+                  setSubmittedTransactions(prev => ({
+                    ...prev,
+                    [i]: {
+                      dateStart: new Date(),
+                      gasPrice: submittedTransaction.gasPrice / 1000000000,
+                    },
+                  }))
+                })
 
               if (!cancelled) {
-                setTransactionProgress(({ signed, errored }) => ({
-                  signed: signed + 1,
-                  errored,
+                setTransactionProgress(prev => ({
+                  ...prev,
+                  signed: prev.signed + 1,
                 }))
               }
             } catch (err) {
               log('Failed onboarding transaction', err)
               if (!cancelled) {
-                setTransactionProgress(({ signed, errored }) => ({
-                  errored: signed,
-                  signed,
+                setTransactionProgress(prev => ({
+                  ...prev,
+                  errored: prev.signed,
                 }))
               }
 
@@ -312,16 +330,16 @@ function useDeploymentState(
       return []
     }
 
-    const { signed, errored } = transactionProgress
+    const { submitted, signed, errored } = transactionProgress
     const status = index => {
       if (errored !== -1 && index >= errored) {
         return TRANSACTION_STATUS_ERROR
       }
-      if (index === signed) {
-        return TRANSACTION_STATUS_PENDING
-      }
-      if (index < signed) {
+      if (index <= signed) {
         return TRANSACTION_STATUS_SUCCESS
+      }
+      if (index <= submitted) {
+        return TRANSACTION_STATUS_PENDING
       }
       return TRANSACTION_STATUS_UPCOMING
     }
@@ -329,8 +347,14 @@ function useDeploymentState(
     return deployTransactions.map(({ name }, index) => ({
       name,
       status: status(index),
+      dateStart: submittedTransactions[index]
+        ? submittedTransactions[index].dateStart
+        : undefined,
+      gasPrice: submittedTransactions[index]
+        ? submittedTransactions[index].gasPrice
+        : undefined,
     }))
-  }, [deployTransactions, transactionProgress])
+  }, [deployTransactions, transactionProgress, submittedTransactions])
 
   return {
     deployTransactions,
