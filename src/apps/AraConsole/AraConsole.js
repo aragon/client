@@ -6,11 +6,13 @@ import {
   Button,
   Info,
   TextInput,
-  IconDown,
+  useTheme,
   useToast,
   GU,
 } from '@aragon/ui'
 import Web3 from 'web3'
+import IconPrompt from './IconPrompt'
+import IconEnter from './IconEnter'
 import { AragonType, AppType } from '../../prop-types'
 import { log } from '../../utils'
 import { getInjectedProvider } from '../../web3-utils'
@@ -31,6 +33,7 @@ AraConsole.propTypes = {
 
 function ConsoleWrapper({ apps, wrapper }) {
   const [command, setCommand] = useState('')
+  const theme = useTheme()
   useEffect(() => {
     log('apps observable', apps, wrapper)
   }, [apps, wrapper])
@@ -208,12 +211,10 @@ function ConsoleWrapper({ apps, wrapper }) {
       >
         <TextInput
           value={command}
+          adornment={<IconPrompt />}
+          adornmentPosition="start"
           onChange={e => setCommand(e.target.value)}
-          onKeyDown={e => {
-            if (e.keyCode === 13) {
-              handleConsoleInput()
-            }
-          }}
+          onKeyDown={e => e.keyCode === 13 && handleConsoleInput()}
           css={`
             margin-right: ${1.5 * GU}px;
           `}
@@ -221,15 +222,19 @@ function ConsoleWrapper({ apps, wrapper }) {
         />
         <Button
           mode="strong"
-          icon={<IconDown />}
+          icon={<IconEnter />}
           label="Execute"
           display="icon"
+          onClick={handleConsoleInput}
         />
       </div>
       <Info
         css={`
           margin: ${2 * GU}px 0 ${2 * GU}px 0;
         `}
+        background={`${theme.background}`}
+        borderColor={`#ABBECF`}
+        color={`${theme.content}`}
       >
         Available commands
       </Info>
@@ -249,71 +254,5 @@ ConsoleWrapper.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   wrapper: AragonType,
 }
-
-// function ConsoleInfo() {
-//   return (
-//     <>
-//       <Box heading="Information">
-//         <h3
-//           css={`
-//             ${textStyle('title3')}
-//           `}
-//         >
-//           Available console commands
-//         </h3>
-//         <p
-//           css={`
-//             margin-top: ${2 * GU}px;
-//           `}
-//         >
-//           <span
-//             css={`
-//               ${textStyle('label1')}
-//             `}
-//           >
-//             Dao Install{' '}
-//           </span>
-//           - Can be used to install a new instance of an app in your DAO.
-//         </p>
-//         <p
-//           css={`
-//             margin-top: ${2 * GU}px;
-//           `}
-//         >
-//           <span
-//             css={`
-//               ${textStyle('label1')}
-//             `}
-//           >
-//             Dao exec{' '}
-//           </span>
-//           - Performs transactions in your DAO.
-//         </p>
-//         <p
-//           css={`
-//             margin-top: ${2 * GU}px;
-//           `}
-//         >
-//           <span
-//             css={`
-//               ${textStyle('label1')}
-//             `}
-//           >
-//             Dao Act{' '}
-//           </span>
-//           - syntax sugar over{' '}
-//           <span
-//             css={`
-//               ${textStyle('label1')}
-//             `}
-//           >
-//             Dao Exec{' '}
-//           </span>
-//           for doing transactions with an Agent app instance from your DAO.
-//         </p>
-//       </Box>
-//     </>
-//   )
-// }
 
 export default AraConsole
