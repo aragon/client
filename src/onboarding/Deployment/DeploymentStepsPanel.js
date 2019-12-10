@@ -1,11 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { textStyle, GU, useTheme, ProgressBar, Info } from '@aragon/ui'
+import { textStyle, GU, Link, useTheme, ProgressBar, Info } from '@aragon/ui'
 import DeploymentStepsItem from './DeploymentStepsItem'
 import { TransactionStatusType } from '../../prop-types'
+import { web3Providers } from '../../environment'
+import { identifyProvider } from '../../ethereum-providers'
 
 function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
   const theme = useTheme()
+  const provider = identifyProvider(web3Providers.wallet)
 
   return (
     <aside
@@ -65,10 +68,19 @@ function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
       </div>
 
       {!allSuccess && (
-        <Info>
+        <Info mode="warning">
           It might take some time before these transactions get processed.
-          Please be patient and{' '}
-          <strong>do not close this window until it finishes.</strong>
+          Please be patient and do not close this window until it finishes.
+          {provider === 'metamask'
+            ? ' Additionally, do not use the "Speed Up" MetaMask feature, otherwise it will result in configuration errors. '
+            : ' '}
+          For more details,{' '}
+          <Link
+            href="https://help.aragon.org/category/24-troubleshooting"
+            css={'display: inline; white-space: normal'}
+          >
+            refer to the documentation.
+          </Link>
         </Info>
       )}
     </aside>
