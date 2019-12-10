@@ -127,7 +127,7 @@ function ConsoleWrapper({ apps, wrapper }) {
       const intentBasket = [...installAppIntent, ...permissionIntents]
       log(intentBasket, permissionIntents)
       const {
-        pathForBasket,
+        path: pathForBasket,
         transactions,
       } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
       log('DONE', pathForBasket, transactions)
