@@ -1,18 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Header, textStyle, GU, useToast, TextInput } from '@aragon/ui'
+import {
+  Box,
+  Header,
+  Button,
+  Info,
+  TextInput,
+  IconDown,
+  useToast,
+  GU,
+} from '@aragon/ui'
 import Web3 from 'web3'
 import { AragonType, AppType } from '../../prop-types'
 import { log } from '../../utils'
 import { getInjectedProvider } from '../../web3-utils'
-import Console from './Console'
-import { ReactThemes } from 'react-terminal-component'
-import proxy from '@aragon/wrapper/dist/core/proxy'
 
 function AraConsole({ apps, wrapper }) {
   return (
     <>
-      <Header primary="Aragon Console" />
+      <Header primary="Console" />
       <ConsoleWrapper apps={apps} wrapper={wrapper} />
     </>
   )
@@ -194,16 +200,12 @@ function ConsoleWrapper({ apps, wrapper }) {
   }, [command, handleDaoExec, handleDaoInstall, handleDaoAct, toast])
 
   return (
-    <>
-      {/* <Console
-        promptSymbol="🦅"
-        handleAct={handleDaoAct}
-        handleExec={handleDaoExec}
-        handleInstall={handleDaoInstall}
-        theme={ReactThemes.sea}
-        clickToFocus
-      /> */}
-      <Box heading="Console">
+    <Box>
+      <div
+        css={`
+          display: flex;
+        `}
+      >
         <TextInput
           value={command}
           onChange={e => setCommand(e.target.value)}
@@ -212,10 +214,34 @@ function ConsoleWrapper({ apps, wrapper }) {
               handleConsoleInput()
             }
           }}
+          css={`
+            margin-right: ${1.5 * GU}px;
+          `}
           wide
         />
-      </Box>
-    </>
+        <Button
+          mode="strong"
+          icon={<IconDown />}
+          label="Execute"
+          display="icon"
+        />
+      </div>
+      <Info
+        css={`
+          margin: ${2 * GU}px 0 ${2 * GU}px 0;
+        `}
+      >
+        Available commands
+      </Info>
+      <Info
+        css={`
+          margin-top: ${2 * GU}px;
+        `}
+      >
+        You can use the top/down arrow on your keyboard to display the console
+        history.
+      </Info>
+    </Box>
   )
 }
 
@@ -224,70 +250,70 @@ ConsoleWrapper.propTypes = {
   wrapper: AragonType,
 }
 
-function ConsoleInfo() {
-  return (
-    <>
-      <Box heading="Information">
-        <h3
-          css={`
-            ${textStyle('title3')}
-          `}
-        >
-          Available console commands
-        </h3>
-        <p
-          css={`
-            margin-top: ${2 * GU}px;
-          `}
-        >
-          <span
-            css={`
-              ${textStyle('label1')}
-            `}
-          >
-            Dao Install{' '}
-          </span>
-          - Can be used to install a new instance of an app in your DAO.
-        </p>
-        <p
-          css={`
-            margin-top: ${2 * GU}px;
-          `}
-        >
-          <span
-            css={`
-              ${textStyle('label1')}
-            `}
-          >
-            Dao exec{' '}
-          </span>
-          - Performs transactions in your DAO.
-        </p>
-        <p
-          css={`
-            margin-top: ${2 * GU}px;
-          `}
-        >
-          <span
-            css={`
-              ${textStyle('label1')}
-            `}
-          >
-            Dao Act{' '}
-          </span>
-          - syntax sugar over{' '}
-          <span
-            css={`
-              ${textStyle('label1')}
-            `}
-          >
-            Dao Exec{' '}
-          </span>
-          for doing transactions with an Agent app instance from your DAO.
-        </p>
-      </Box>
-    </>
-  )
-}
+// function ConsoleInfo() {
+//   return (
+//     <>
+//       <Box heading="Information">
+//         <h3
+//           css={`
+//             ${textStyle('title3')}
+//           `}
+//         >
+//           Available console commands
+//         </h3>
+//         <p
+//           css={`
+//             margin-top: ${2 * GU}px;
+//           `}
+//         >
+//           <span
+//             css={`
+//               ${textStyle('label1')}
+//             `}
+//           >
+//             Dao Install{' '}
+//           </span>
+//           - Can be used to install a new instance of an app in your DAO.
+//         </p>
+//         <p
+//           css={`
+//             margin-top: ${2 * GU}px;
+//           `}
+//         >
+//           <span
+//             css={`
+//               ${textStyle('label1')}
+//             `}
+//           >
+//             Dao exec{' '}
+//           </span>
+//           - Performs transactions in your DAO.
+//         </p>
+//         <p
+//           css={`
+//             margin-top: ${2 * GU}px;
+//           `}
+//         >
+//           <span
+//             css={`
+//               ${textStyle('label1')}
+//             `}
+//           >
+//             Dao Act{' '}
+//           </span>
+//           - syntax sugar over{' '}
+//           <span
+//             css={`
+//               ${textStyle('label1')}
+//             `}
+//           >
+//             Dao Exec{' '}
+//           </span>
+//           for doing transactions with an Agent app instance from your DAO.
+//         </p>
+//       </Box>
+//     </>
+//   )
+// }
 
 export default AraConsole

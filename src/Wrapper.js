@@ -391,7 +391,7 @@ class Wrapper extends React.PureComponent {
       )
     }
 
-    if (instanceId === 'araconsole') {
+    if (instanceId === 'console') {
       return (
         <AppInternal>
           <AraConsole apps={apps} wrapper={wrapper} />
