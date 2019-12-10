@@ -13,7 +13,7 @@ import {
 import IconPrompt from './IconPrompt'
 import IconEnter from './IconEnter'
 import { useWallet } from '../../wallet'
-import { encodeFunctionCall } from './utils'
+import { encodeFunctionCall, Parse } from './utils'
 import { log } from '../../utils'
 import { AragonType, AppType } from '../../prop-types'
 
@@ -21,6 +21,8 @@ import { AragonType, AppType } from '../../prop-types'
 // from the aragon.js apm repo content fetcher
 const REPO_FETCH_TIMEOUT = 3000
 const ENTER_KEY = 13
+const KNOWN_COMMANDS = ['install', 'exec', 'act']
+const KNOWN_APPS = ['voting', 'finance', 'vault', 'agent', 'tokens']
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
@@ -285,7 +287,6 @@ function Prompt({
         mode="strong"
         icon={<IconEnter />}
         label="Execute"
-        display="icon"
         onClick={handleConsoleInput}
       />
     </>
