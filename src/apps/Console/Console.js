@@ -10,42 +10,47 @@ import {
   useToast,
   GU,
 } from '@aragon/ui'
-import Web3 from 'web3'
 import IconPrompt from './IconPrompt'
 import IconEnter from './IconEnter'
-import { AragonType, AppType } from '../../prop-types'
+import { useWallet } from '../../wallet'
+import { encodeFunctionCall } from './utils'
 import { log } from '../../utils'
-import { getInjectedProvider } from '../../web3-utils'
+import { AragonType, AppType } from '../../prop-types'
 
-function AraConsole({ apps, wrapper }) {
-  return (
-    <>
-      <Header primary="Console" />
-      <ConsoleWrapper apps={apps} wrapper={wrapper} />
-    </>
-  )
-}
+// Maximum time (in milliseconds) to wait for a response
+// from the aragon.js apm repo content fetcher
+const REPO_FETCH_TIMEOUT = 3000
+const ENTER_KEY = 13
 
-AraConsole.propTypes = {
-  apps: PropTypes.arrayOf(AppType).isRequired,
-  wrapper: AragonType,
-}
-
-function ConsoleWrapper({ apps, wrapper }) {
+function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
   const theme = useTheme()
+
   useEffect(() => {
     log('apps observable', apps, wrapper)
   }, [apps, wrapper])
+
   const toast = useToast()
+  const { isConnected, web3 } = useWallet()
+
+  const performIntents = useCallback(
+    async (intentPaths, transactionPaths) => {
+      if (Array.isArray(intentPaths) && intentPaths.length) {
+        const transId = await wrapper.performTransactionPath(intentPaths)
+        log(transId)
+      } else if (Array.isArray(transactionPaths) && transactionPaths.length) {
+        for (const transaction of transactionPaths) {
+          await wrapper.performTransactionPath([transaction])
+        }
+      } else {
+        await wrapper.performTransactionPath([])
+      }
+    },
+    [wrapper]
+  )
 
   const handleDaoInstall = useCallback(
     async params => {
-      // we need to create an array of intents (intent basket) for the install calls
-      // 1 - call newAppInstance & initialize
-      // 2 - get contract address & set permissions
-
-      // process the initArgs
       const [appName, ...initArgs] = params
       const permIndex = initArgs.indexOf('-p')
       let permParams = []
@@ -56,14 +61,11 @@ function ConsoleWrapper({ apps, wrapper }) {
           .slice(permIndex + 1)
           .map(permission => permission.split(':'))
       }
-      // TODO: fix this, not right (-1 doesn't mean slice until end)
-      initParams = initArgs.slice(0, permIndex)
+      initParams =
+        permIndex === -1 ? [...initArgs] : initArgs.slice(0, permIndex)
       log('initParams', initParams)
-      log('permParams', permParams, initParams)
 
-      const web3 = new Web3(getInjectedProvider())
-
-      if (!web3) {
+      if (!isConnected) {
         toast('You need to have a Dapp browser extension for this command')
       }
 
@@ -77,7 +79,7 @@ function ConsoleWrapper({ apps, wrapper }) {
       log('ensDomain', ensDomain)
 
       const repoContent = await wrapper.apm.fetchLatestRepoContent(ensDomain, {
-        fetchTimeout: 3000,
+        fetchTimeout: REPO_FETCH_TIMEOUT,
       })
       const { abi, contractAddress, roles } = repoContent
 
@@ -140,18 +142,9 @@ function ConsoleWrapper({ apps, wrapper }) {
         transactions,
       } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
       log('DONE', pathForBasket, transactions)
-      if (Array.isArray(pathForBasket) && pathForBasket.length) {
-        const transId = await wrapper.performTransactionPath(pathForBasket)
-        log(transId)
-      } else if (Array.isArray(transactions) && transactions.length) {
-        for (const transaction of transactions) {
-          await wrapper.performTransactionPath([transaction])
-        }
-      } else {
-        await wrapper.performTransactionPath([])
-      }
+      performIntents(path, transactions)
     },
-    [toast, apps, wrapper]
+    [toast, apps, wrapper, isConnected, web3, performIntents]
   )
   // Handle DAO execution
   const handleDaoExec = useCallback(
@@ -175,21 +168,94 @@ function ConsoleWrapper({ apps, wrapper }) {
         args
       )
 
-      if (Array.isArray(path) && path.length) {
-        const transId = await wrapper.performTransactionPath(path)
-        log(transId)
-      } else {
-        await wrapper.performTransactionPath([])
-      }
+      performIntents(path)
       log('trans path', path)
     },
-    [apps, wrapper, toast]
+    [apps, wrapper, toast, performIntents]
   )
 
-  const handleDaoAct = useCallback(() => {}, [])
+  const handleDaoAct = useCallback(
+    async params => {
+      if (params.length < 3) {
+        toast('Not enough arguments for DAO EXEC')
+        return
+      }
 
+      const [
+        selectedAgentInstance,
+        targetAddress,
+        methodSignature,
+        ...args
+      ] = params
+
+      const encodedFunctionCall = encodeFunctionCall(methodSignature, [...args])
+
+      const path = await wrapper.getTransactionPath(
+        selectedAgentInstance,
+        'execute(address,uint256,bytes)',
+        [targetAddress, 0, encodedFunctionCall]
+      )
+
+      performIntents(path)
+    },
+    [toast, wrapper, performIntents]
+  )
+
+  return (
+    <>
+      <Header primary="Console" />
+      <Box>
+        <div
+          css={`
+            display: flex;
+          `}
+        >
+          <Prompt
+            command={command}
+            onChange={setCommand}
+            handleDaoAct={handleDaoAct}
+            handleDaoExec={handleDaoExec}
+            handleDaoInstall={handleDaoInstall}
+          />
+        </div>
+        <Info
+          css={`
+            margin: ${2 * GU}px 0 ${2 * GU}px 0;
+          `}
+          background={`${theme.background}`}
+          borderColor={`#ABBECF`}
+          color={`${theme.content}`}
+        >
+          Available commands
+        </Info>
+        <Info
+          css={`
+            margin-top: ${2 * GU}px;
+          `}
+        >
+          You can use the top/down arrow on your keyboard to display the console
+          history.
+        </Info>
+      </Box>
+    </>
+  )
+}
+
+Console.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  wrapper: AragonType,
+}
+
+function Prompt({
+  command,
+  onChange,
+  handleDaoAct,
+  handleDaoExec,
+  handleDaoInstall,
+}) {
+  const toast = useToast()
   // Handle console input
-  const handleConsoleInput = useCallback(() => {
+  function handleConsoleInput() {
     if (command.includes('exec')) {
       handleDaoExec(command.split(' ').slice(2))
     } else if (command.includes('install')) {
@@ -198,61 +264,40 @@ function ConsoleWrapper({ apps, wrapper }) {
       handleDaoAct()
     } else {
       toast('Unrecognized Command')
-      setCommand('')
+      onChange('')
     }
-  }, [command, handleDaoExec, handleDaoInstall, handleDaoAct, toast])
+  }
 
   return (
-    <Box>
-      <div
+    <>
+      <TextInput
+        value={command}
+        adornment={<IconPrompt />}
+        adornmentPosition="start"
+        onChange={e => onChange(e.target.value)}
+        onKeyDown={e => e.keyCode === ENTER_KEY && handleConsoleInput()}
         css={`
-          display: flex;
+          margin-right: ${1.5 * GU}px;
         `}
-      >
-        <TextInput
-          value={command}
-          adornment={<IconPrompt />}
-          adornmentPosition="start"
-          onChange={e => setCommand(e.target.value)}
-          onKeyDown={e => e.keyCode === 13 && handleConsoleInput()}
-          css={`
-            margin-right: ${1.5 * GU}px;
-          `}
-          wide
-        />
-        <Button
-          mode="strong"
-          icon={<IconEnter />}
-          label="Execute"
-          display="icon"
-          onClick={handleConsoleInput}
-        />
-      </div>
-      <Info
-        css={`
-          margin: ${2 * GU}px 0 ${2 * GU}px 0;
-        `}
-        background={`${theme.background}`}
-        borderColor={`#ABBECF`}
-        color={`${theme.content}`}
-      >
-        Available commands
-      </Info>
-      <Info
-        css={`
-          margin-top: ${2 * GU}px;
-        `}
-      >
-        You can use the top/down arrow on your keyboard to display the console
-        history.
-      </Info>
-    </Box>
+        wide
+      />
+      <Button
+        mode="strong"
+        icon={<IconEnter />}
+        label="Execute"
+        display="icon"
+        onClick={handleConsoleInput}
+      />
+    </>
   )
 }
 
-ConsoleWrapper.propTypes = {
-  apps: PropTypes.arrayOf(AppType).isRequired,
-  wrapper: AragonType,
+Prompt.propTypes = {
+  command: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  handleDaoAct: PropTypes.func.isRequired,
+  handleDaoExec: PropTypes.func.isRequired,
+  handleDaoInstall: PropTypes.func.isRequired,
 }
 
-export default AraConsole
+export default Console

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
-import { AppCenter, Home, Organization, Permissions, AraConsole } from './apps'
+import { AppCenter, Home, Organization, Permissions, Console } from './apps'
 import App404 from './components/App404/App404'
 import AppIFrame from './components/App/AppIFrame'
 import AppInternal from './components/App/AppInternal'
@@ -394,7 +394,7 @@ class Wrapper extends React.PureComponent {
     if (instanceId === 'console') {
       return (
         <AppInternal>
-          <AraConsole apps={apps} wrapper={wrapper} />
+          <Console apps={apps} wrapper={wrapper} />
         </AppInternal>
       )
     }

@@ -34,7 +34,7 @@ const APP_APPS_CENTER = staticApps.get('apps').app
 const APP_HOME = staticApps.get('home').app
 const APP_ORGANIZATION = staticApps.get('organization').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
-const APP_CONSOLE = staticApps.get('araConsole').app
+const APP_CONSOLE = staticApps.get('console').app
 
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',
