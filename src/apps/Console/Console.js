@@ -10,10 +10,11 @@ import {
   useToast,
   GU,
 } from '@aragon/ui'
+import ConsoleFeedback from './ConsoleFeedback'
 import IconPrompt from './IconPrompt'
 import IconEnter from './IconEnter'
 import { useWallet } from '../../wallet'
-import { encodeFunctionCall, Parse } from './utils'
+import { encodeFunctionCall, Parse, STAGES } from './utils'
 import { log } from '../../utils'
 import { AragonType, AppType } from '../../prop-types'
 
@@ -21,19 +22,47 @@ import { AragonType, AppType } from '../../prop-types'
 // from the aragon.js apm repo content fetcher
 const REPO_FETCH_TIMEOUT = 3000
 const ENTER_KEY = 13
-const KNOWN_COMMANDS = ['install', 'exec', 'act']
-const KNOWN_APPS = ['voting', 'finance', 'vault', 'agent', 'tokens']
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
+  const [parsedState, setParsedState] = useState({
+    isDisabled: true,
+    stage: STAGES.INITIAL_STAGE,
+  })
   const theme = useTheme()
+  const toast = useToast()
+  const { isConnected, web3 } = useWallet()
 
   useEffect(() => {
     log('apps observable', apps, wrapper)
   }, [apps, wrapper])
 
-  const toast = useToast()
-  const { isConnected, web3 } = useWallet()
+  function handleChange(input) {
+    const parsingResult = Parse(input)
+    setParsedState(parsingResult)
+    setCommand(input)
+  }
+
+  function handleCommandClick(clickedCommand) {
+    const newCommand = `${command}${clickedCommand.toLowerCase()}/`
+    const parsingResult = Parse(newCommand)
+    setParsedState(parsingResult)
+    setCommand(newCommand)
+  }
+
+  // Handle console input
+  function handleSubmit() {
+    if (parsedState.input[0] === 'exec') {
+      handleDaoExec(parsedState.input.slice(1))
+    } else if (parsedState.input[0] === 'install') {
+      handleDaoInstall(parsedState.input.slice(1))
+    } else if (parsedState.input[0] === 'act') {
+      handleDaoAct(parsedState.input.slice(1))
+    } else {
+      toast('Unrecognized Command')
+      handleChange('')
+    }
+  }
 
   const performIntents = useCallback(
     async (intentPaths, transactionPaths) => {
@@ -53,19 +82,28 @@ function Console({ apps, wrapper }) {
 
   const handleDaoInstall = useCallback(
     async params => {
-      const [appName, ...initArgs] = params
+      const [appName, initArgs] = params
       const permIndex = initArgs.indexOf('-p')
       let permParams = []
       let initParams = []
 
       if (permIndex !== -1) {
         permParams = initArgs
-          .slice(permIndex + 1)
+          .split('-p')
+          .filter(permission => permission !== '')
+          .map(permission => permission.trim(' '))
           .map(permission => permission.split(':'))
       }
       initParams =
-        permIndex === -1 ? [...initArgs] : initArgs.slice(0, permIndex)
-      log('initParams', initParams)
+        permIndex === -1
+          ? initArgs.split(' ').filter(arg => arg !== '')
+          : initArgs
+              .slice(0, permIndex)
+              .split(' ')
+              .filter(arg => arg !== '')
+      if (initParams.length) {
+        permParams.splice(0, 1)
+      }
 
       if (!isConnected) {
         toast('You need to have a Dapp browser extension for this command')
@@ -74,11 +112,9 @@ function Console({ apps, wrapper }) {
       const kernelProxyAddress = apps.find(
         app => app.name.toLowerCase() === 'kernel'
       ).proxyAddress
-
       const appId = apps.find(app => app.name.toLowerCase() === appName).appId
 
       const ensDomain = await wrapper.ens.resolve(appId)
-      log('ensDomain', ensDomain)
 
       const repoContent = await wrapper.apm.fetchLatestRepoContent(ensDomain, {
         fetchTimeout: REPO_FETCH_TIMEOUT,
@@ -138,47 +174,46 @@ function Console({ apps, wrapper }) {
       })
 
       const intentBasket = [...installAppIntent, ...permissionIntents]
-      log(intentBasket, permissionIntents)
       const {
         path: pathForBasket,
         transactions,
       } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
-      log('DONE', pathForBasket, transactions)
-      performIntents(path, transactions)
+      performIntents(pathForBasket, transactions)
     },
     [toast, apps, wrapper, isConnected, web3, performIntents]
   )
   // Handle DAO execution
   const handleDaoExec = useCallback(
     async params => {
-      if (params.length < 3) {
+      if (params.length < 2) {
         toast('Not enough arguments for DAO EXEC')
         return
       }
-      const [appName, methodSignature, ...args] = params
-      log('params', appName, methodSignature, args)
-      apps.find(app => {
-        console.log(`comparing ${app.name.toLowerCase()} to ${appName}`)
-        return app.name.toLowerCase() === appName
-      })
+      const [appName, methodSignature, args] = params
+
+      const splitArgs = args
+        .split(' ')
+        .map(arg => arg.trim(' '))
+        .filter(arg => arg !== '')
+
+      apps.find(app => app.name.toLowerCase() === appName)
 
       const proxyAddress = apps.find(app => app.name.toLowerCase() === appName)
         .proxyAddress
       const path = await wrapper.getTransactionPath(
         proxyAddress,
         methodSignature,
-        args
+        splitArgs
       )
 
       performIntents(path)
-      log('trans path', path)
     },
     [apps, wrapper, toast, performIntents]
   )
 
   const handleDaoAct = useCallback(
     async params => {
-      if (params.length < 3) {
+      if (params.length < 2) {
         toast('Not enough arguments for DAO EXEC')
         return
       }
@@ -187,10 +222,19 @@ function Console({ apps, wrapper }) {
         selectedAgentInstance,
         targetAddress,
         methodSignature,
-        ...args
+        args,
       ] = params
 
-      const encodedFunctionCall = encodeFunctionCall(methodSignature, [...args])
+      const splitArgs = args
+        .split(' ')
+        .map(arg => arg.trim(' '))
+        .filter(arg => arg !== '')
+
+      const encodedFunctionCall = encodeFunctionCall(
+        methodSignature,
+        [...splitArgs],
+        web3
+      )
 
       const path = await wrapper.getTransactionPath(
         selectedAgentInstance,
@@ -200,9 +244,9 @@ function Console({ apps, wrapper }) {
 
       performIntents(path)
     },
-    [toast, wrapper, performIntents]
+    [toast, wrapper, performIntents, web3]
   )
-
+  const currentStage = parsedState.stage || ''
   return (
     <>
       <Header primary="Console" />
@@ -214,10 +258,12 @@ function Console({ apps, wrapper }) {
         >
           <Prompt
             command={command}
-            onChange={setCommand}
+            disabled={parsedState.isDisabled}
+            handleChange={handleChange}
             handleDaoAct={handleDaoAct}
             handleDaoExec={handleDaoExec}
             handleDaoInstall={handleDaoInstall}
+            handleSubmit={handleSubmit}
           />
         </div>
         <Info
@@ -228,7 +274,11 @@ function Console({ apps, wrapper }) {
           borderColor={`#ABBECF`}
           color={`${theme.content}`}
         >
-          Available commands
+          <ConsoleFeedback
+            stage={currentStage}
+            handleCommandClick={handleCommandClick}
+            apps={apps}
+          />
         </Info>
         <Info
           css={`
@@ -248,36 +298,15 @@ Console.propTypes = {
   wrapper: AragonType,
 }
 
-function Prompt({
-  command,
-  onChange,
-  handleDaoAct,
-  handleDaoExec,
-  handleDaoInstall,
-}) {
-  const toast = useToast()
-  // Handle console input
-  function handleConsoleInput() {
-    if (command.includes('exec')) {
-      handleDaoExec(command.split(' ').slice(2))
-    } else if (command.includes('install')) {
-      handleDaoInstall(command.split(' ').slice(2))
-    } else if (command.includes('act')) {
-      handleDaoAct()
-    } else {
-      toast('Unrecognized Command')
-      onChange('')
-    }
-  }
-
+function Prompt({ command, disabled, handleChange, handleSubmit }) {
   return (
     <>
       <TextInput
         value={command}
         adornment={<IconPrompt />}
         adornmentPosition="start"
-        onChange={e => onChange(e.target.value)}
-        onKeyDown={e => e.keyCode === ENTER_KEY && handleConsoleInput()}
+        onChange={e => handleChange(e.target.value)}
+        onKeyDown={e => e.keyCode === ENTER_KEY && !disabled && handleSubmit()}
         css={`
           margin-right: ${1.5 * GU}px;
         `}
@@ -287,7 +316,8 @@ function Prompt({
         mode="strong"
         icon={<IconEnter />}
         label="Execute"
-        onClick={handleConsoleInput}
+        disabled={disabled}
+        onClick={handleSubmit}
       />
     </>
   )
@@ -295,10 +325,9 @@ function Prompt({
 
 Prompt.propTypes = {
   command: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  handleDaoAct: PropTypes.func.isRequired,
-  handleDaoExec: PropTypes.func.isRequired,
-  handleDaoInstall: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 export default Console

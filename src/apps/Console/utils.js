@@ -13,6 +13,17 @@ const BUTTON_ICON_SIZES = new Map([
   ['mini', 'small'],
 ])
 
+export const KNOWN_COMMANDS = ['install', 'exec', 'act']
+export const KNOWN_APPS = ['voting', 'finance', 'vault', 'agent', 'tokens']
+export const STAGES = {
+  INITIAL_STAGE: 'INITIAL_STAGE',
+  ACT_SELECT_INSTANCE_STAGE: 'ACT_SELECT_INSTANCE_STAGE',
+  EXEC_SELECT_APP_STAGE: 'EXEC_SELECT_APP_STAGE',
+  INSTALL_PARAMS_STAGE: 'INSTALL_PARAMS_STAGE',
+  INSTALL_SELECT_APP_STAGE: 'INSTALL_SELECT_APP_STAGE',
+  EXEC_METHOD_STAGE: 'EXEC_METHOD_STAGE',
+}
+
 export function useIconSize(size) {
   const [insideButtonIcon, buttonData] = useInside('Button:icon')
 
@@ -39,21 +50,20 @@ export function encodeFunctionCall(signature, params = [], web3) {
   return `${sigBytes}${paramBytes.slice(2)}`
 }
 
-export const KNOWN_COMMANDS = ['install', 'exec', 'act']
-export const KNOWN_APPS = ['voting', 'finance', 'vault', 'agent', 'tokens']
-export const STAGES = {
-  INITIAL_STAGE: 'INITIAL_STAGE',
-  ACT_SELECT_INSTANCE_STAGE: 'ACT_SELECT_INSTANCE_STAGE',
-  EXEC_SELECT_APP_STAGE: 'EXEC_SELECT_APP_STAGE',
-  INSTALL_PARAMS_STAGE: 'INSTALL_PARAMS_STAGE',
-  EXEC_METHOD_STAGE: 'EXEC_METHOD_STAGE',
-}
-
 export function Parse(input) {
+  if (input === '') {
+    return {
+      stage: STAGES.INITIAL_STAGE,
+      input: [''],
+      errors: [],
+      isDisabled: true,
+    }
+  }
   // Invalid input for parser
   if (!input || typeof input !== 'string') {
     return {
       errors: ['INVALID_INPUT'],
+      isDisabled: true,
     }
   }
   // We start splitting by forward slashes
@@ -64,6 +74,7 @@ export function Parse(input) {
       stage: STAGES.INITIAL_STAGE,
       input: splitInput,
       errors: [],
+      isDisabled: true,
     }
   }
 
@@ -74,6 +85,7 @@ export function Parse(input) {
   if (!knownCommand) {
     return {
       errors: ['UNKNOWN_COMMAND'],
+      isDisabled: true,
     }
   }
 
@@ -82,6 +94,7 @@ export function Parse(input) {
       stage: STAGES.ACT_SELECT_INSTANCE_STAGE,
       input: splitInput,
       errors: [],
+      isDisabled: false,
     }
   }
   // At this stage, user is selecting or typing on exec or install
@@ -93,6 +106,7 @@ export function Parse(input) {
           : STAGES.INSTALL_SELECT_APP_STAGE,
       input: splitInput,
       errors: [],
+      isDisabled: true,
     }
   }
 
@@ -103,6 +117,7 @@ export function Parse(input) {
   if (!knownApp) {
     return {
       errors: ['UNKNOWN_APP'],
+      isDisabled: true,
     }
   }
 
@@ -116,5 +131,6 @@ export function Parse(input) {
         : STAGES.EXEC_METHOD_STAGE,
     input: splitInput,
     errors: [],
+    isDisabled: false,
   }
 }
