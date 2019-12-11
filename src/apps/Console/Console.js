@@ -22,9 +22,13 @@ import { AragonType, AppType } from '../../prop-types'
 // from the aragon.js apm repo content fetcher
 const REPO_FETCH_TIMEOUT = 3000
 const ENTER_KEY = 13
+const UP_KEY = 38
+const DOWN_KEY = 40
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
+  const [commandHistory, setCommandHistory] = useState([])
+  const [currentHistory, setCurrentHistory] = useState(0)
   const [loading, setLoading] = useState(false)
   const [parsedState, setParsedState] = useState({
     isDisabled: true,
@@ -84,171 +88,195 @@ function Console({ apps, wrapper }) {
   const handleDaoInstall = useCallback(
     async params => {
       setLoading(true)
-      const [appName, initArgs] = params
-      const permIndex = initArgs.indexOf('-p')
-      let permParams = []
-      let initParams = []
+      try {
+        const [appName, initArgs] = params
+        const permIndex = initArgs.indexOf('-p')
+        let permParams = []
+        let initParams = []
 
-      if (permIndex !== -1) {
-        permParams = initArgs
-          .split('-p')
-          .filter(permission => permission !== '')
-          .map(permission => permission.trim(' '))
-          .map(permission => permission.split(':'))
-      }
-      initParams =
-        permIndex === -1
-          ? initArgs.split(' ').filter(arg => arg !== '')
-          : initArgs
-              .slice(0, permIndex)
-              .split(' ')
-              .filter(arg => arg !== '')
-      if (initParams.length) {
-        permParams.splice(0, 1)
-      }
+        if (permIndex !== -1) {
+          permParams = initArgs
+            .split('-p')
+            .filter(permission => permission !== '')
+            .map(permission => permission.trim(' '))
+            .map(permission => permission.split(':'))
+        }
+        initParams =
+          permIndex === -1
+            ? initArgs.split(' ').filter(arg => arg !== '')
+            : initArgs
+                .slice(0, permIndex)
+                .split(' ')
+                .filter(arg => arg !== '')
+        if (initParams.length) {
+          permParams.splice(0, 1)
+        }
+        log('params', initParams, permParams)
+        if (!isConnected) {
+          toast('You need to have a Dapp browser extension for this command')
+        }
 
-      if (!isConnected) {
-        toast('You need to have a Dapp browser extension for this command')
-      }
+        const kernelProxyAddress = apps.find(
+          app => app.name.toLowerCase() === 'kernel'
+        ).proxyAddress
+        const appId = apps.find(app => app.name.toLowerCase() === appName).appId
 
-      const kernelProxyAddress = apps.find(
-        app => app.name.toLowerCase() === 'kernel'
-      ).proxyAddress
-      const appId = apps.find(app => app.name.toLowerCase() === appName).appId
+        const ensDomain = await wrapper.ens.resolve(appId)
 
-      const ensDomain = await wrapper.ens.resolve(appId)
+        const repoContent = await wrapper.apm.fetchLatestRepoContent(
+          ensDomain,
+          {
+            fetchTimeout: REPO_FETCH_TIMEOUT,
+          }
+        )
+        const { abi, contractAddress, roles } = repoContent
 
-      const repoContent = await wrapper.apm.fetchLatestRepoContent(ensDomain, {
-        fetchTimeout: REPO_FETCH_TIMEOUT,
-      })
-      const { abi, contractAddress, roles } = repoContent
-
-      const { name, type, inputs } = abi.find(
-        ({ name }) => name === 'initialize'
-      )
-
-      const encodedInitializeFunc = web3.eth.abi.encodeFunctionCall(
-        {
-          name,
-          type,
-          inputs,
-        },
-        [...initParams]
-      )
-
-      const path = await wrapper.getTransactionPath(
-        kernelProxyAddress,
-        'newAppInstance(bytes32,address,bytes,bool)',
-        [appId, contractAddress, encodedInitializeFunc, false]
-      )
-
-      // Get the second to last item in the path, as it is the account that will execute kernel.newAppInstance
-      const scriptExecutor = path[path.length - 2].to
-      const counterfactualAppAddr = await wrapper.kernelProxy.call(
-        'newAppInstance',
-        appId,
-        contractAddress,
-        encodedInitializeFunc,
-        false,
-        { from: scriptExecutor }
-      )
-
-      const installAppIntent = [
-        [
+        const { name, type, inputs } = abi.find(
+          ({ name }) => name === 'initialize'
+        )
+        log('abi log', name, type, inputs)
+        const obj = {
+          name: name,
+          type: type,
+          inputs: inputs,
+        }
+        log(obj)
+        const encodedInitializeFunc = web3.eth.abi.encodeFunctionCall(obj, [
+          ...initParams,
+        ])
+        log('here right?')
+        const path = await wrapper.getTransactionPath(
           kernelProxyAddress,
           'newAppInstance(bytes32,address,bytes,bool)',
-          [appId, contractAddress, encodedInitializeFunc, false],
-        ],
-      ]
-
-      const aclProxyAddress = apps.find(app => app.name.toLowerCase() === 'acl')
-        .proxyAddress
-
-      const permissionIntents = permParams.map(([role, from, to]) => {
-        const roleBytes = roles.find(availableRole => availableRole.id === role)
-          .bytes
-
-        return [
-          aclProxyAddress,
-          'createPermission',
-          [to, counterfactualAppAddr, roleBytes, from],
+          [appId, contractAddress, encodedInitializeFunc, false]
+        )
+        log('or here', path)
+        // Get the second to last item in the path, as it is the account that will execute kernel.newAppInstance
+        const scriptExecutor = path[path.length - 2].to
+        const counterfactualAppAddr = await wrapper.kernelProxy.call(
+          'newAppInstance',
+          appId,
+          contractAddress,
+          encodedInitializeFunc,
+          false,
+          { from: scriptExecutor }
+        )
+        log('maybe here')
+        const installAppIntent = [
+          [
+            kernelProxyAddress,
+            'newAppInstance(bytes32,address,bytes,bool)',
+            [appId, contractAddress, encodedInitializeFunc, false],
+          ],
         ]
-      })
 
-      const intentBasket = [...installAppIntent, ...permissionIntents]
-      const {
-        path: pathForBasket,
-        transactions,
-      } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
-      performIntents(pathForBasket, transactions)
-      setLoading(false)
+        const aclProxyAddress = apps.find(
+          app => app.name.toLowerCase() === 'acl'
+        ).proxyAddress
+
+        const permissionIntents = permParams.map(([role, from, to]) => {
+          const roleBytes = roles.find(
+            availableRole => availableRole.id === role
+          ).bytes
+
+          return [
+            aclProxyAddress,
+            'createPermission',
+            [to, counterfactualAppAddr, roleBytes, from],
+          ]
+        })
+
+        const intentBasket = [...installAppIntent, ...permissionIntents]
+        const {
+          path: pathForBasket,
+          transactions,
+        } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
+        log('finally here')
+        performIntents(pathForBasket, transactions)
+      } catch (error) {
+        console.error(error)
+        toast('Command execution failed')
+      } finally {
+        setLoading(false)
+      }
     },
     [toast, apps, wrapper, isConnected, web3, performIntents]
   )
   // Handle DAO execution
   const handleDaoExec = useCallback(
     async params => {
-      if (params.length < 2) {
-        toast('Not enough arguments for DAO EXEC')
-        return
+      try {
+        if (params.length < 2) {
+          toast('Not enough arguments for DAO EXEC')
+          return
+        }
+        setLoading(true)
+        const [appName, methodSignature, args] = params
+
+        const splitArgs = args
+          .split(' ')
+          .map(arg => arg.trim(' '))
+          .filter(arg => arg !== '')
+
+        apps.find(app => app.name.toLowerCase() === appName)
+
+        const proxyAddress = apps.find(
+          app => app.name.toLowerCase() === appName
+        ).proxyAddress
+        const path = await wrapper.getTransactionPath(
+          proxyAddress,
+          methodSignature,
+          splitArgs
+        )
+
+        performIntents(path)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
       }
-      setLoading(true)
-      const [appName, methodSignature, args] = params
-
-      const splitArgs = args
-        .split(' ')
-        .map(arg => arg.trim(' '))
-        .filter(arg => arg !== '')
-
-      apps.find(app => app.name.toLowerCase() === appName)
-
-      const proxyAddress = apps.find(app => app.name.toLowerCase() === appName)
-        .proxyAddress
-      const path = await wrapper.getTransactionPath(
-        proxyAddress,
-        methodSignature,
-        splitArgs
-      )
-
-      performIntents(path)
-      setLoading(false)
     },
     [apps, wrapper, toast, performIntents]
   )
 
   const handleDaoAct = useCallback(
     async params => {
-      if (params.length < 2) {
-        toast('Not enough arguments for DAO EXEC')
-        return
+      try {
+        if (params.length < 2) {
+          toast('Not enough arguments for DAO EXEC')
+          return
+        }
+        setLoading(true)
+        const [
+          selectedAgentInstance,
+          targetAddress,
+          methodSignature,
+          args,
+        ] = params
+
+        const splitArgs = args
+          .split(' ')
+          .map(arg => arg.trim(' '))
+          .filter(arg => arg !== '')
+
+        const encodedFunctionCall = encodeFunctionCall(
+          methodSignature,
+          [...splitArgs],
+          web3
+        )
+
+        const path = await wrapper.getTransactionPath(
+          selectedAgentInstance,
+          'execute(address,uint256,bytes)',
+          [targetAddress, 0, encodedFunctionCall]
+        )
+
+        performIntents(path)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
       }
-      setLoading(true)
-      const [
-        selectedAgentInstance,
-        targetAddress,
-        methodSignature,
-        args,
-      ] = params
-
-      const splitArgs = args
-        .split(' ')
-        .map(arg => arg.trim(' '))
-        .filter(arg => arg !== '')
-
-      const encodedFunctionCall = encodeFunctionCall(
-        methodSignature,
-        [...splitArgs],
-        web3
-      )
-
-      const path = await wrapper.getTransactionPath(
-        selectedAgentInstance,
-        'execute(address,uint256,bytes)',
-        [targetAddress, 0, encodedFunctionCall]
-      )
-
-      performIntents(path)
-      setLoading(false)
     },
     [toast, wrapper, performIntents, web3]
   )
@@ -270,6 +298,10 @@ function Console({ apps, wrapper }) {
             handleDaoExec={handleDaoExec}
             handleDaoInstall={handleDaoInstall}
             handleSubmit={handleSubmit}
+            commandHistory={commandHistory}
+            currentHistory={currentHistory}
+            setCommandHistory={setCommandHistory}
+            setCurrentHistory={setCurrentHistory}
           />
         </div>
         <Info
@@ -305,7 +337,16 @@ Console.propTypes = {
   wrapper: AragonType,
 }
 
-function Prompt({ command, disabled, handleChange, handleSubmit }) {
+function Prompt({
+  command,
+  disabled,
+  handleChange,
+  handleSubmit,
+  commandHistory,
+  currentHistory,
+  setCommandHistory,
+  setCurrentHistory,
+}) {
   return (
     <>
       <TextInput
@@ -313,7 +354,34 @@ function Prompt({ command, disabled, handleChange, handleSubmit }) {
         adornment={<IconPrompt />}
         adornmentPosition="start"
         onChange={e => handleChange(e.target.value)}
-        onKeyDown={e => e.keyCode === ENTER_KEY && !disabled && handleSubmit()}
+        onKeyDown={e => {
+          if (e.keyCode === ENTER_KEY && !disabled) {
+            setCommandHistory([...commandHistory, command])
+            handleSubmit()
+          } else if (e.keyCode === UP_KEY) {
+            // calculate prev
+            if (commandHistory.length === 0) {
+              return
+            }
+            // Don't allow values that are not in the range of 0...commandHistory.length
+            const prevHistory =
+              (((currentHistory - 1) % commandHistory.length) +
+                commandHistory.length) %
+              commandHistory.length
+            // set the current history number to prevHistory
+            setCurrentHistory(prevHistory)
+            // set the current command to the previous one
+            handleChange(commandHistory[prevHistory])
+          } else if (e.keyCode === DOWN_KEY) {
+            if (commandHistory.length === 0) {
+              return
+            }
+            // Ditto
+            const nextHistory = (currentHistory + 1) % commandHistory.length
+            setCurrentHistory(nextHistory)
+            handleChange(commandHistory[nextHistory])
+          }
+        }}
         css={`
           margin-right: ${1.5 * GU}px;
         `}
@@ -335,6 +403,10 @@ Prompt.propTypes = {
   disabled: PropTypes.bool.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  commandHistory: PropTypes.array,
+  currentHistory: PropTypes.number,
+  setCommandHistory: PropTypes.func,
+  setCurrentHistory: PropTypes.func,
 }
 
 export default Console
