@@ -25,6 +25,7 @@ const ENTER_KEY = 13
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
+  const [loading, setLoading] = useState(false)
   const [parsedState, setParsedState] = useState({
     isDisabled: true,
     stage: STAGES.INITIAL_STAGE,
@@ -82,6 +83,7 @@ function Console({ apps, wrapper }) {
 
   const handleDaoInstall = useCallback(
     async params => {
+      setLoading(true)
       const [appName, initArgs] = params
       const permIndex = initArgs.indexOf('-p')
       let permParams = []
@@ -179,6 +181,7 @@ function Console({ apps, wrapper }) {
         transactions,
       } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
       performIntents(pathForBasket, transactions)
+      setLoading(false)
     },
     [toast, apps, wrapper, isConnected, web3, performIntents]
   )
@@ -189,6 +192,7 @@ function Console({ apps, wrapper }) {
         toast('Not enough arguments for DAO EXEC')
         return
       }
+      setLoading(true)
       const [appName, methodSignature, args] = params
 
       const splitArgs = args
@@ -207,6 +211,7 @@ function Console({ apps, wrapper }) {
       )
 
       performIntents(path)
+      setLoading(false)
     },
     [apps, wrapper, toast, performIntents]
   )
@@ -217,7 +222,7 @@ function Console({ apps, wrapper }) {
         toast('Not enough arguments for DAO EXEC')
         return
       }
-
+      setLoading(true)
       const [
         selectedAgentInstance,
         targetAddress,
@@ -243,6 +248,7 @@ function Console({ apps, wrapper }) {
       )
 
       performIntents(path)
+      setLoading(false)
     },
     [toast, wrapper, performIntents, web3]
   )
@@ -278,6 +284,7 @@ function Console({ apps, wrapper }) {
             stage={currentStage}
             handleCommandClick={handleCommandClick}
             apps={apps}
+            loading={loading}
           />
         </Info>
         <Info

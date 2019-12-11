@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, textStyle, GU } from '@aragon/ui'
+import { Link, textStyle, GU, LoadingRing } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import { AppType } from '../../prop-types'
 import { STAGES } from './utils'
@@ -8,9 +8,33 @@ export default function ConsoleFeedback({
   stage = STAGES.INITIAL_STAGE,
   handleCommandClick,
   apps,
+  loading,
 }) {
   function handleClick(command) {
     handleCommandClick(command)
+  }
+
+  if (loading) {
+    return (
+      <div
+        css={`
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `}
+      >
+        <LoadingRing />
+        <span
+          css={`
+            margin-left: ${1 * GU}px;
+            ${textStyle('body2')}
+          `}
+        >
+          Executing Command...
+        </span>
+      </div>
+    )
   }
   if (stage === STAGES.INITIAL_STAGE) {
     return (
@@ -193,5 +217,6 @@ export default function ConsoleFeedback({
 ConsoleFeedback.propTypes = {
   stage: PropTypes.string,
   handleCommandClick: PropTypes.func,
-  apps: AppType,
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  loading: PropTypes.bool,
 }
