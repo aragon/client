@@ -49,6 +49,7 @@ export function enableWallet() {
     provider.send('eth_requestAccounts')
   }
 }
+
 // Keep polling the main account from the wallet.
 // See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
 export const pollWallet = pollEvery(onUpdate => {
@@ -131,20 +132,16 @@ const WalletBlockNumberContext = React.createContext()
 
 export function WalletBlockNumberProvider(props) {
   const [blockNumber, setBlockNumber] = useState(-1)
-  const { eth } = WALLET_WEB3
 
   useEffect(() => {
-    const sub = eth.subscribe(
-      'newBlockHeaders',
-      (err, { number: blockNumber }) => {
-        if (!err) {
-          setBlockNumber(blockNumber)
-        }
+    const sub = WALLET_WEB3.eth.subscribe('newBlockHeaders', (err, block) => {
+      if (!err) {
+        setBlockNumber(block.number)
       }
-    )
+    })
 
     let cancelInitialQuery = false
-    eth
+    WALLET_WEB3.eth
       .getBlockNumber()
       .then(blockNumber => {
         if (cancelInitialQuery) {
@@ -158,7 +155,7 @@ export function WalletBlockNumberProvider(props) {
       sub.unsubscribe()
       cancelInitialQuery = true
     }
-  }, [eth])
+  }, [])
 
   return <WalletBlockNumberContext.Provider value={blockNumber} {...props} />
 }
