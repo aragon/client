@@ -23,7 +23,8 @@ export const appsInDevelopment = [
       name: 'Agent',
       status: 'experimental',
       description: `
-        Hold assets and perform actions from DAOs.
+        Hold assets and interact with any other Ethereum 
+        app, directly from your Aragon organization.
       `,
       link:
         'https://hack.aragon.org/docs/guides-use-agent#installing-aragon-agent',
