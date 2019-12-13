@@ -219,11 +219,10 @@ function Console({ apps, wrapper }) {
           .map(arg => arg.trim(' '))
           .filter(arg => arg !== '')
 
-        apps.find(app => app.name.toLowerCase() === appName)
-
         const proxyAddress = apps.find(
           app => app.name.toLowerCase() === appName
         ).proxyAddress
+
         const path = await wrapper.getTransactionPath(
           proxyAddress,
           methodSignature,
@@ -259,7 +258,7 @@ function Console({ apps, wrapper }) {
           .split(' ')
           .map(arg => arg.trim(' '))
           .filter(arg => arg !== '')
-
+        log('split args', splitArgs)
         const encodedFunctionCall = encodeFunctionCall(
           methodSignature,
           [...splitArgs],
