@@ -44,6 +44,7 @@ function Console({ apps, wrapper }) {
 
   function handleChange(input) {
     const parsingResult = Parse(input)
+    console.log(parsingResult)
     setParsedState(parsingResult)
     setCommand(input)
   }
@@ -144,13 +145,13 @@ function Console({ apps, wrapper }) {
         const encodedInitializeFunc = web3.eth.abi.encodeFunctionCall(obj, [
           ...initParams,
         ])
-        log('here right?')
+
         const path = await wrapper.getTransactionPath(
           kernelProxyAddress,
           'newAppInstance(bytes32,address,bytes,bool)',
           [appId, contractAddress, encodedInitializeFunc, false]
         )
-        log('or here', path)
+
         // Get the second to last item in the path, as it is the account that will execute kernel.newAppInstance
         const scriptExecutor = path[path.length - 2].to
         const counterfactualAppAddr = await wrapper.kernelProxy.call(
@@ -161,7 +162,7 @@ function Console({ apps, wrapper }) {
           false,
           { from: scriptExecutor }
         )
-        log('maybe here')
+
         const installAppIntent = [
           [
             kernelProxyAddress,
@@ -191,7 +192,7 @@ function Console({ apps, wrapper }) {
           path: pathForBasket,
           transactions,
         } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
-        log('finally here')
+
         performIntents(pathForBasket, transactions)
       } catch (error) {
         console.error(error)
@@ -392,7 +393,7 @@ function Prompt({
       <Button
         mode="strong"
         icon={<IconEnter />}
-        label="Execute"
+        label="Enter"
         disabled={disabled}
         onClick={handleSubmit}
       />

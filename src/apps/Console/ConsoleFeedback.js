@@ -40,8 +40,14 @@ export default function ConsoleFeedback({
   if (stage === STAGES.INITIAL_STAGE) {
     return (
       <>
-        You can interact with this organization by using the following CLI
-        commands:
+        <p
+          css={`
+            ${textStyle('body2')}
+          `}
+        >
+          You can interact with this organization by using the following CLI
+          commands:
+        </p>
         <div
           css={`
             width: 100%;
@@ -67,7 +73,13 @@ export default function ConsoleFeedback({
   } else if (stage === STAGES.INSTALL_SELECT_APP_STAGE) {
     return (
       <>
-        You can install the following apps:
+        <p
+          css={`
+            ${textStyle('body2')}
+          `}
+        >
+          You can install the following apps:
+        </p>
         <div
           css={`
             width: 100%;
@@ -93,8 +105,14 @@ export default function ConsoleFeedback({
   } else if (stage === STAGES.INSTALL_PARAMS_STAGE) {
     return (
       <>
-        Please enter the corresponding parameters & permissions needed for
-        installing the app, ex:
+        <p
+          css={`
+            ${textStyle('body2')}
+          `}
+        >
+          Please enter the corresponding parameters & permissions needed for
+          installing the app, ex:
+        </p>
         <div
           css={`
             width: 100%;
@@ -111,13 +129,25 @@ export default function ConsoleFeedback({
             {`<initparams> -p PERMISSION_ROLE:ADDRESS_FROM:ADDRESS_TO`}
           </p>
         </div>
-        You can set the permissions with a -p flag behind each.
+        <p
+          css={`
+            ${textStyle('body2')}
+          `}
+        >
+          You can set the permissions with a -p flag behind each.
+        </p>
       </>
     )
   } else if (stage === STAGES.EXEC_SELECT_APP_STAGE) {
     return (
       <>
-        You can interact with the following apps:
+        <p
+          css={`
+            ${textStyle('body2')}
+          `}
+        >
+          You can interact with the following apps:
+        </p>
         <div
           css={`
             width: 100%;
@@ -143,8 +173,14 @@ export default function ConsoleFeedback({
   } else if (stage === STAGES.EXEC_METHOD_STAGE) {
     return (
       <>
-        Please enter the corresponding method & parameters needed for
-        interacting with the app, like so:
+        <p
+          css={`
+            ${textStyle('body2')}
+          `}
+        >
+          Please enter the corresponding method & parameters needed for
+          interacting with the app, like so:
+        </p>
         <div
           css={`
             width: 100%;
@@ -161,14 +197,27 @@ export default function ConsoleFeedback({
             {`<...initparams>`}
           </p>
         </div>
-        You can set the permissions with a -p flag behind each.
+        <p
+          css={`
+            ${textStyle('body2')}
+          `}
+        >
+          You can set the permissions with a -p flag behind each.
+        </p>
       </>
     )
   } else if (stage === STAGES.ACT_SELECT_INSTANCE_STAGE) {
     return (
       <>
-        Please select the corresponding agent instance you want to interact
-        with:
+        <p
+          css={`
+            ${textStyle('body2')}
+            margin: 0 0 ${GU}px 0;
+          `}
+        >
+          Please select the corresponding agent instance you want to interact
+          with:
+        </p>
         {apps
           .filter(app => app.name.toLowerCase() === 'agent')
           .map((agentApp, index) => (
@@ -184,7 +233,14 @@ export default function ConsoleFeedback({
               Agent #{index + 1}
             </Link>
           ))}
-        and then pass the parameters required for the agent execute function:
+        <p
+          css={`
+            ${textStyle('body2')}
+            margin: ${GU}px 0 ${GU}px 0;
+          `}
+        >
+          and then pass the parameters required for the agent execute function:
+        </p>
         <div
           css={`
             width: 100%;

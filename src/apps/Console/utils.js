@@ -14,7 +14,15 @@ const BUTTON_ICON_SIZES = new Map([
 ])
 
 export const KNOWN_COMMANDS = ['install', 'exec', 'act']
-export const KNOWN_APPS = ['voting', 'finance', 'vault', 'agent', 'tokens']
+export const KNOWN_APPS = [
+  'voting',
+  'finance',
+  'vault',
+  'agent',
+  'tokens',
+  'kernel',
+  'acl',
+]
 export const STAGES = {
   INITIAL_STAGE: 'INITIAL_STAGE',
   ACT_SELECT_INSTANCE_STAGE: 'ACT_SELECT_INSTANCE_STAGE',
