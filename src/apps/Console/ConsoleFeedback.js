@@ -22,6 +22,7 @@ export default function ConsoleFeedback({
           display: flex;
           align-items: center;
           justify-content: center;
+          padding: 50px 0 50px 0;
         `}
       >
         <LoadingRing />
@@ -197,7 +198,7 @@ export default function ConsoleFeedback({
             `}
           >
             act/{'<agentProxyAddress>'}/{'targetAddress'}/
-            {`<functionSignature> <...params>`}
+            {`<functionSignature>/<...params>`}
           </p>
         </div>
       </>

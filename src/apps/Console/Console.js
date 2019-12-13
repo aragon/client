@@ -319,14 +319,16 @@ function Console({ apps, wrapper }) {
             loading={loading}
           />
         </Info>
-        <Info
-          css={`
-            margin-top: ${2 * GU}px;
-          `}
-        >
-          You can use the top/down arrow on your keyboard to display the console
-          history.
-        </Info>
+        {!loading && (
+          <Info
+            css={`
+              margin-top: ${2 * GU}px;
+            `}
+          >
+            You can use the top/down arrow on your keyboard to display the
+            console history.
+          </Info>
+        )}
       </Box>
     </>
   )
