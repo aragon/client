@@ -19,6 +19,7 @@ const Web3ProviderError = ({
       {description ? `“${description}”` : 'this action'}
       {name && (
         <React.Fragment>
+          {' '}
           on <AddressLink to={to}>{name}</AddressLink>
         </React.Fragment>
       )}
