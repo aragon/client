@@ -83,7 +83,12 @@ function BoxBase({
 
 BoxBase.propTypes = {
   children: PropTypes.node.isRequired,
-  flexDirection: PropTypes.oneOf(['column', 'row']),
+  flexDirection: PropTypes.oneOf([
+    'column',
+    'column-reverse',
+    'row',
+    'row-reverse',
+  ]),
   background: PropTypes.string.isRequired,
   opacity: PropTypes.object.isRequired,
   boxTransform: PropTypes.object.isRequired,
