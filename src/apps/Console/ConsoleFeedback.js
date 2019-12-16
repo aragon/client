@@ -194,16 +194,9 @@ export default function ConsoleFeedback({
             `}
           >
             exec/app/method/
-            {`<...initparams>`}
+            {`<...params>`}
           </p>
         </div>
-        <p
-          css={`
-            ${textStyle('body2')}
-          `}
-        >
-          You can set the permissions with a -p flag behind each.
-        </p>
       </>
     )
   } else if (stage === STAGES.ACT_SELECT_INSTANCE_STAGE) {

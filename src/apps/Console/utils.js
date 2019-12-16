@@ -58,6 +58,41 @@ export function encodeFunctionCall(signature, params = [], web3) {
   return `${sigBytes}${paramBytes.slice(2)}`
 }
 
+export function parseCommand(command) {
+  if (typeof command !== 'string') {
+    throw new Error(`Wrong type passed in. Needs string, got ${typeof method}`)
+  }
+  return command.split('/')
+}
+
+export function parseMethodCall(method) {
+  if (typeof method !== 'string') {
+    throw new Error(`Wrong type passed in. Needs string, got ${typeof method}`)
+  }
+  const trimmedMethod = method.trim(' ')
+  const areParenthesisMalformed =
+    trimmedMethod.indexOf('(') === 0 ||
+    trimmedMethod.indexOf(')') !== trimmedMethod.length - 1
+  const [methodName, params] = trimmedMethod.replace(')', '').split('(')
+  if (methodName === '' || areParenthesisMalformed) {
+    throw new Error('Malformed method call.')
+  }
+  if (params === '') {
+    return [methodName]
+  }
+  const splitParams = params.split(',').map(param => param.trim(' '))
+  const isCalledWithArguments = splitParams.reduce(
+    (hasArgs, currentParam) => hasArgs && currentParam.indexOf(':') !== -1,
+    true
+  )
+  if (!isCalledWithArguments) {
+    return [methodName, splitParams]
+  }
+  const methodParams = splitParams.map(param => param.split(':')[0])
+  const methodArgs = splitParams.map(param => param.split(':')[1])
+  return [methodName, methodParams, methodArgs]
+}
+
 export function Parse(input) {
   if (input === '') {
     return {
