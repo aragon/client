@@ -62,6 +62,7 @@ export function parseCommand(command) {
   if (typeof command !== 'string') {
     throw new Error(`Wrong type passed in. Needs string, got ${typeof method}`)
   }
+
   return command.split('/')
 }
 
@@ -74,25 +75,72 @@ export function parseMethodCall(method) {
     trimmedMethod.indexOf('(') === 0 ||
     trimmedMethod.indexOf(')') !== trimmedMethod.length - 1
   const [methodName, params] = trimmedMethod.replace(')', '').split('(')
+
   if (methodName === '' || areParenthesisMalformed) {
     throw new Error('Malformed method call.')
   }
+
   if (params === '') {
     return [methodName]
   }
+
   const splitParams = params.split(',').map(param => param.trim(' '))
   const isCalledWithArguments = splitParams.reduce(
     (hasArgs, currentParam) => hasArgs && currentParam.indexOf(':') !== -1,
     true
   )
+
   if (!isCalledWithArguments) {
     return [methodName, splitParams]
   }
+
   const methodParams = splitParams.map(param => param.split(':')[0])
   const methodArgs = splitParams.map(param => param.split(':')[1])
   return [methodName, methodParams, methodArgs]
 }
 
+export function parseInitParams(params) {
+  if (typeof params !== 'string') {
+    throw new Error(`Wrong type passed in. Needs string, got ${typeof method}`)
+  }
+
+  const areParamsMalformed =
+    params.indexOf('(') !== 0 || params.indexOf(')') !== params.length - 1
+
+  if (areParamsMalformed) {
+    throw new Error('Malformed init params.')
+  }
+
+  return params
+    .replace('(', '')
+    .replace(')', '')
+    .split(',')
+    .map(param => param.trim(' '))
+    .filter(param => param !== '')
+}
+
+export function parsePermissions(permissions) {
+  if (typeof permissions !== 'string') {
+    throw new Error(`Wrong type passed in. Needs string, got ${typeof method}`)
+  }
+
+  const parsedPermissions = permissions
+    .split(',')
+    .map(permission => permission.trim(' '))
+    .map(permission => permission.split(':'))
+
+  const arePermissionsFormattedCorrectly = parsedPermissions.reduce(
+    (arePastPermissionsValid, currentPermissionParams) =>
+      arePastPermissionsValid && currentPermissionParams.length === 3,
+    true
+  )
+
+  if (!arePermissionsFormattedCorrectly) {
+    throw new Error('Permissions malformed.')
+  }
+
+  return parsedPermissions
+}
 export function Parse(input) {
   if (input === '') {
     return {

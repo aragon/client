@@ -1,4 +1,9 @@
-import { parseMethodCall, parseCommand } from './utils'
+import {
+  parseMethodCall,
+  parseCommand,
+  parseInitParams,
+  parsePermissions,
+} from './utils'
 
 describe('Parse command tests', () => {
   test('Handles empty strings', () => {
@@ -35,6 +40,37 @@ describe('parseMethodCall tests', () => {
     expect(parseMethodCall('vote(uint256,bool,bool)')).toEqual([
       'vote',
       ['uint256', 'bool', 'bool'],
+    ])
+  })
+})
+
+describe('parseInitParams tests', () => {
+  test('Errors out on malformed calls', () => {
+    expect(() => parseInitParams('0x(5,3)')).toThrow('Malformed')
+    expect(() => parseInitParams('0x,1,false)')).toThrow('Malformed')
+  })
+
+  test('Handles parsing correctly', () => {
+    expect(parseInitParams('(0x,true,1)')).toEqual(['0x', 'true', '1'])
+    expect(parseInitParams('(0x)')).toEqual(['0x'])
+    expect(parseInitParams('()')).toEqual([])
+  })
+})
+
+describe('parsePermissions tests', () => {
+  test('Errors out on malformed calls', () => {
+    expect(() => parsePermissions('0x:1')).toThrow('malformed')
+    expect(() => parsePermissions('0x')).toThrow('malformed')
+    expect(() => parsePermissions('0x,0x:1:2')).toThrow('malformed')
+  })
+
+  test('Handles parsing correctly', () => {
+    expect(parsePermissions('TRANSFER_ROLE:0x:0x')).toEqual([
+      ['TRANSFER_ROLE', '0x', '0x'],
+    ])
+    expect(parsePermissions('TRANSFER_ROLE:0x:0x,VOTE_ROLE:0x:0x')).toEqual([
+      ['TRANSFER_ROLE', '0x', '0x'],
+      ['VOTE_ROLE', '0x', '0x'],
     ])
   })
 })
