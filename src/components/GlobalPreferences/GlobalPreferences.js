@@ -47,6 +47,7 @@ function GlobalPreferences({
   onClose,
   onNavigation,
   onScreenChange,
+  historyPush,
   sectionIndex,
   subsection,
   wrapper,
@@ -142,7 +143,13 @@ function GlobalPreferences({
                 navigationIndex={2}
               />
             )}
-            {sectionIndex === HELP_AND_FEEDBACK_INDEX && <HelpAndFeedback />}
+            {sectionIndex === HELP_AND_FEEDBACK_INDEX && (
+              <HelpAndFeedback
+                historyPush={historyPush}
+                locator={locator}
+                onClose={onClose}
+              />
+            )}
           </main>
         </React.Fragment>
       )}
@@ -157,6 +164,7 @@ GlobalPreferences.propTypes = {
   onClose: PropTypes.func.isRequired,
   onNavigation: PropTypes.func.isRequired,
   onScreenChange: PropTypes.func.isRequired,
+  historyPush: PropTypes.func.isRequired,
   sectionIndex: PropTypes.number,
   subsection: PropTypes.string,
   wrapper: AragonType,

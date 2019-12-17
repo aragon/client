@@ -53,7 +53,7 @@ export default function ConsoleFeedback({
             margin-top: ${GU}px;
           `}
         >
-          {['Install', 'Exec', 'Act'].map(command => (
+          {['Exec', 'Act'].map(command => (
             <Link
               key={command}
               css={`

@@ -238,11 +238,12 @@ function Console({ apps, wrapper }) {
         performIntents(path)
       } catch (error) {
         console.error(error)
+        toast('Command execution failed.')
       } finally {
         setLoading(false)
       }
     },
-    [wrapper, performIntents, web3]
+    [wrapper, performIntents, web3, toast]
   )
   return (
     <>
