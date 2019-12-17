@@ -13,24 +13,8 @@ const BUTTON_ICON_SIZES = new Map([
   ['mini', 'small'],
 ])
 
+// Known commands to be displayed on the console
 export const KNOWN_COMMANDS = ['install', 'exec', 'act']
-export const KNOWN_APPS = [
-  'voting',
-  'finance',
-  'vault',
-  'agent',
-  'tokens',
-  'kernel',
-  'acl',
-]
-export const STAGES = {
-  INITIAL_STAGE: 'INITIAL_STAGE',
-  ACT_SELECT_INSTANCE_STAGE: 'ACT_SELECT_INSTANCE_STAGE',
-  EXEC_SELECT_APP_STAGE: 'EXEC_SELECT_APP_STAGE',
-  INSTALL_PARAMS_STAGE: 'INSTALL_PARAMS_STAGE',
-  INSTALL_SELECT_APP_STAGE: 'INSTALL_SELECT_APP_STAGE',
-  EXEC_METHOD_STAGE: 'EXEC_METHOD_STAGE',
-}
 
 export function useIconSize(size) {
   const [insideButtonIcon, buttonData] = useInside('Button:icon')
@@ -140,88 +124,4 @@ export function parsePermissions(permissions) {
   }
 
   return parsedPermissions
-}
-export function Parse(input) {
-  if (input === '') {
-    return {
-      stage: STAGES.INITIAL_STAGE,
-      input: [''],
-      errors: [],
-      isDisabled: true,
-    }
-  }
-  // Invalid input for parser
-  if (!input || typeof input !== 'string') {
-    return {
-      errors: ['INVALID_INPUT'],
-      isDisabled: true,
-    }
-  }
-  // We start splitting by forward slashes
-  const splitInput = input.trim().split('/')
-  // user still typing
-  if (splitInput.length === 1) {
-    return {
-      stage: STAGES.INITIAL_STAGE,
-      input: splitInput,
-      errors: [],
-      isDisabled: true,
-    }
-  }
-
-  const knownCommand = KNOWN_COMMANDS.find(
-    knownCommand => knownCommand === splitInput[0].toLowerCase()
-  )
-  // invalid command
-  if (!knownCommand) {
-    return {
-      errors: ['UNKNOWN_COMMAND'],
-      isDisabled: true,
-    }
-  }
-
-  if (knownCommand.toLowerCase() === 'act') {
-    return {
-      stage: STAGES.ACT_SELECT_INSTANCE_STAGE,
-      input: splitInput,
-      errors: [],
-      isDisabled: false,
-    }
-  }
-  // At this stage, user is selecting or typing on exec or install
-  if (splitInput.length === 2) {
-    return {
-      stage:
-        knownCommand === 'exec'
-          ? STAGES.EXEC_SELECT_APP_STAGE
-          : STAGES.INSTALL_SELECT_APP_STAGE,
-      input: splitInput,
-      errors: [],
-      isDisabled: true,
-    }
-  }
-
-  const knownApp = KNOWN_APPS.find(
-    knownApp => knownApp === splitInput[1].toLowerCase()
-  )
-
-  if (!knownApp) {
-    return {
-      errors: ['UNKNOWN_APP'],
-      isDisabled: true,
-    }
-  }
-
-  // Here, the user has selected an app to install or execute a command on
-  // Specific methods will need to take control as information will be fetched
-  // for the intended app to interact with
-  return {
-    stage:
-      knownCommand === 'install'
-        ? STAGES.INSTALL_PARAMS_STAGE
-        : STAGES.EXEC_METHOD_STAGE,
-    input: splitInput,
-    errors: [],
-    isDisabled: false,
-  }
 }

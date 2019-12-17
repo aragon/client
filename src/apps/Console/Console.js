@@ -14,7 +14,13 @@ import ConsoleFeedback from './ConsoleFeedback'
 import IconPrompt from './IconPrompt'
 import IconEnter from './IconEnter'
 import { useWallet } from '../../wallet'
-import { encodeFunctionCall, Parse, STAGES } from './utils'
+import {
+  encodeFunctionCall,
+  parseCommand,
+  parseMethodCall,
+  parseInitParams,
+  parsePermissions,
+} from './utils'
 import { log } from '../../utils'
 import { AragonType, AppType } from '../../prop-types'
 
@@ -30,40 +36,37 @@ function Console({ apps, wrapper }) {
   const [commandHistory, setCommandHistory] = useState([])
   const [currentHistory, setCurrentHistory] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [parsedState, setParsedState] = useState({
-    isDisabled: true,
-    stage: STAGES.INITIAL_STAGE,
-  })
+  const [parsedState, setParsedState] = useState([])
   const theme = useTheme()
   const toast = useToast()
   const { isConnected, web3 } = useWallet()
 
   useEffect(() => {
     log('apps observable', apps, wrapper)
-  }, [apps, wrapper])
+  }, [apps, wrapper, parsedState])
 
   function handleChange(input) {
-    const parsingResult = Parse(input)
-    console.log(parsingResult)
+    const parsingResult = parseCommand(input)
+    log(parsingResult)
     setParsedState(parsingResult)
     setCommand(input)
   }
 
   function handleCommandClick(clickedCommand) {
     const newCommand = `${command}${clickedCommand.toLowerCase()}/`
-    const parsingResult = Parse(newCommand)
+    const parsingResult = parseCommand(newCommand)
     setParsedState(parsingResult)
     setCommand(newCommand)
   }
 
   // Handle console input
   function handleSubmit() {
-    if (parsedState.input[0] === 'exec') {
-      handleDaoExec(parsedState.input.slice(1))
-    } else if (parsedState.input[0] === 'install') {
-      handleDaoInstall(parsedState.input.slice(1))
-    } else if (parsedState.input[0] === 'act') {
-      handleDaoAct(parsedState.input.slice(1))
+    if (parsedState[0] === 'exec') {
+      handleDaoExec(parsedState.slice(1))
+    } else if (parsedState[0] === 'install') {
+      handleDaoInstall(parsedState.slice(1))
+    } else if (parsedState[0] === 'act') {
+      handleDaoAct(parsedState.slice(1))
     } else {
       toast('Unrecognized Command')
       handleChange('')
@@ -90,61 +93,45 @@ function Console({ apps, wrapper }) {
     async params => {
       setLoading(true)
       try {
-        const [appName, initArgs] = params
-        const permIndex = initArgs.indexOf('-p')
-        let permParams = []
-        let initParams = []
-
-        if (permIndex !== -1) {
-          permParams = initArgs
-            .split('-p')
-            .filter(permission => permission !== '')
-            .map(permission => permission.trim(' '))
-            .map(permission => permission.split(':'))
-        }
-        initParams =
-          permIndex === -1
-            ? initArgs.split(' ').filter(arg => arg !== '')
-            : initArgs
-                .slice(0, permIndex)
-                .split(' ')
-                .filter(arg => arg !== '')
-        if (initParams.length) {
-          permParams.splice(0, 1)
-        }
-        log('params', initParams, permParams)
         if (!isConnected) {
           toast('You need to have a Dapp browser extension for this command')
+          setLoading(false)
+          return
         }
-
-        const kernelProxyAddress = apps.find(
-          app => app.name.toLowerCase() === 'kernel'
-        ).proxyAddress
+        // Get & properly parse arguments
+        const [appName, initArgs, permArgs] = params
+        const parsedInitArgs = parseInitParams(initArgs)
+        const parsedPermArgs = parsePermissions(permArgs)
+        // Resolve namehash (TODO) and ens domain to fetch the app's repo content
         const appId = apps.find(app => app.name.toLowerCase() === appName).appId
 
         const ensDomain = await wrapper.ens.resolve(appId)
 
-        const repoContent = await wrapper.apm.fetchLatestRepoContent(
-          ensDomain,
-          {
-            fetchTimeout: REPO_FETCH_TIMEOUT,
-          }
-        )
-        const { abi, contractAddress, roles } = repoContent
-
+        const {
+          abi,
+          contractAddress,
+          roles,
+        } = await wrapper.apm.fetchLatestRepoContent(ensDomain, {
+          fetchTimeout: REPO_FETCH_TIMEOUT,
+        })
+        // get the initialize function to properly install the app
         const { name, type, inputs } = abi.find(
           ({ name }) => name === 'initialize'
         )
-        log('abi log', name, type, inputs)
-        const obj = {
+
+        const functionObject = {
           name: name,
           type: type,
           inputs: inputs,
         }
-        log(obj)
-        const encodedInitializeFunc = web3.eth.abi.encodeFunctionCall(obj, [
-          ...initParams,
-        ])
+        const encodedInitializeFunc = web3.eth.abi.encodeFunctionCall(
+          functionObject,
+          parsedInitArgs
+        )
+
+        const kernelProxyAddress = apps.find(
+          app => app.name.toLowerCase() === 'kernel'
+        ).proxyAddress
 
         const path = await wrapper.getTransactionPath(
           kernelProxyAddress,
@@ -175,7 +162,7 @@ function Console({ apps, wrapper }) {
           app => app.name.toLowerCase() === 'acl'
         ).proxyAddress
 
-        const permissionIntents = permParams.map(([role, from, to]) => {
+        const permissionIntents = parsedPermArgs.map(([role, from, to]) => {
           const roleBytes = roles.find(
             availableRole => availableRole.id === role
           ).bytes
@@ -207,26 +194,14 @@ function Console({ apps, wrapper }) {
   const handleDaoExec = useCallback(
     async params => {
       try {
-        if (params.length < 2) {
-          toast('Not enough arguments for DAO EXEC')
-          return
-        }
         setLoading(true)
-        const [appName, methodSignature, args] = params
-
-        const splitArgs = args
-          .split(' ')
-          .map(arg => arg.trim(' '))
-          .filter(arg => arg !== '')
-
-        const proxyAddress = apps.find(
-          app => app.name.toLowerCase() === appName
-        ).proxyAddress
-
+        const [proxyAddress, methodWithArgs] = params
+        const [methodSignature, args] = parseMethodCall(methodWithArgs)
+        log('utility method', methodSignature, args)
         const path = await wrapper.getTransactionPath(
           proxyAddress,
           methodSignature,
-          splitArgs
+          args
         )
 
         performIntents(path)
@@ -236,32 +211,21 @@ function Console({ apps, wrapper }) {
         setLoading(false)
       }
     },
-    [apps, wrapper, toast, performIntents]
+    [wrapper, performIntents]
   )
 
   const handleDaoAct = useCallback(
     async params => {
       try {
-        if (params.length < 2) {
-          toast('Not enough arguments for DAO EXEC')
-          return
-        }
         setLoading(true)
-        const [
-          selectedAgentInstance,
-          targetAddress,
-          methodSignature,
-          args,
-        ] = params
-
-        const splitArgs = args
-          .split(' ')
-          .map(arg => arg.trim(' '))
-          .filter(arg => arg !== '')
-        log('split args', splitArgs)
+        const [selectedAgentInstance, targetAddress, methodWithArgs] = params
+        const [methodName, methodParams, methodArgs] = parseMethodCall(
+          methodWithArgs
+        )
+        const methodSignature = `${methodName}(${methodParams.join(',')})`
         const encodedFunctionCall = encodeFunctionCall(
           methodSignature,
-          [...splitArgs],
+          methodArgs,
           web3
         )
 
@@ -278,9 +242,8 @@ function Console({ apps, wrapper }) {
         setLoading(false)
       }
     },
-    [toast, wrapper, performIntents, web3]
+    [wrapper, performIntents, web3]
   )
-  const currentStage = parsedState.stage || ''
   return (
     <>
       <Header primary="Console" />
@@ -292,7 +255,7 @@ function Console({ apps, wrapper }) {
         >
           <Prompt
             command={command}
-            disabled={parsedState.isDisabled}
+            disabled={false}
             handleChange={handleChange}
             handleDaoAct={handleDaoAct}
             handleDaoExec={handleDaoExec}
@@ -313,7 +276,7 @@ function Console({ apps, wrapper }) {
           color={`${theme.content}`}
         >
           <ConsoleFeedback
-            stage={currentStage}
+            currentParsedCommand={parsedState}
             handleCommandClick={handleCommandClick}
             apps={apps}
             loading={loading}

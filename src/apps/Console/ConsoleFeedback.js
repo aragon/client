@@ -2,10 +2,9 @@ import React from 'react'
 import { Link, textStyle, GU, LoadingRing } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import { AppType } from '../../prop-types'
-import { STAGES } from './utils'
 
 export default function ConsoleFeedback({
-  stage = STAGES.INITIAL_STAGE,
+  currentParsedCommand,
   handleCommandClick,
   apps,
   loading,
@@ -13,7 +12,6 @@ export default function ConsoleFeedback({
   function handleClick(command) {
     handleCommandClick(command)
   }
-
   if (loading) {
     return (
       <div
@@ -37,7 +35,8 @@ export default function ConsoleFeedback({
       </div>
     )
   }
-  if (stage === STAGES.INITIAL_STAGE) {
+  console.log('current', currentParsedCommand)
+  if (currentParsedCommand.length < 2) {
     return (
       <>
         <p
@@ -70,7 +69,10 @@ export default function ConsoleFeedback({
         </div>
       </>
     )
-  } else if (stage === STAGES.INSTALL_SELECT_APP_STAGE) {
+  } else if (
+    currentParsedCommand[0] === 'install' &&
+    currentParsedCommand.length < 3
+  ) {
     return (
       <>
         <p
@@ -102,7 +104,10 @@ export default function ConsoleFeedback({
         </div>
       </>
     )
-  } else if (stage === STAGES.INSTALL_PARAMS_STAGE) {
+  } else if (
+    currentParsedCommand[0] === 'install' &&
+    currentParsedCommand.length >= 3
+  ) {
     return (
       <>
         <p
@@ -126,7 +131,7 @@ export default function ConsoleFeedback({
             `}
           >
             install/app/
-            {`<initparams> -p PERMISSION_ROLE:ADDRESS_FROM:ADDRESS_TO`}
+            {`(...initparams)/...PERMISSION_ROLE:ADDRESS_FROM:ADDRESS_TO`}
           </p>
         </div>
         <p
@@ -134,11 +139,14 @@ export default function ConsoleFeedback({
             ${textStyle('body2')}
           `}
         >
-          You can set the permissions with a -p flag behind each.
+          You can set multiple permissions by separating them with a comma.
         </p>
       </>
     )
-  } else if (stage === STAGES.EXEC_SELECT_APP_STAGE) {
+  } else if (
+    currentParsedCommand[0] === 'exec' &&
+    currentParsedCommand.length < 3
+  ) {
     return (
       <>
         <p
@@ -162,15 +170,18 @@ export default function ConsoleFeedback({
                 display: block;
                 margin-bottom: ${GU}px;
               `}
-              onClick={() => handleClick(app.name.toLowerCase())}
+              onClick={() => handleClick(app.proxyAddress)}
             >
-              {app.name}
+              {`${app.name} (${app.proxyAddress})`}
             </Link>
           ))}
         </div>
       </>
     )
-  } else if (stage === STAGES.EXEC_METHOD_STAGE) {
+  } else if (
+    currentParsedCommand[0] === 'exec' &&
+    currentParsedCommand.length >= 3
+  ) {
     return (
       <>
         <p
@@ -193,13 +204,13 @@ export default function ConsoleFeedback({
               ${textStyle('address1')}
             `}
           >
-            exec/app/method/
-            {`<...params>`}
+            exec/app/
+            {`methodName(...args)`}
           </p>
         </div>
       </>
     )
-  } else if (stage === STAGES.ACT_SELECT_INSTANCE_STAGE) {
+  } else if (currentParsedCommand[0] === 'act') {
     return (
       <>
         <p
@@ -247,7 +258,7 @@ export default function ConsoleFeedback({
             `}
           >
             act/{'<agentProxyAddress>'}/{'targetAddress'}/
-            {`<functionSignature>/<...params>`}
+            {`functionSignature(param: arg)`}
           </p>
         </div>
       </>
@@ -265,7 +276,7 @@ export default function ConsoleFeedback({
 }
 
 ConsoleFeedback.propTypes = {
-  stage: PropTypes.string,
+  currentParsedCommand: PropTypes.array,
   handleCommandClick: PropTypes.func,
   apps: PropTypes.arrayOf(AppType).isRequired,
   loading: PropTypes.bool,
