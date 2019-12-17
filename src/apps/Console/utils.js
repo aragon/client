@@ -78,8 +78,12 @@ export function parseMethodCall(method) {
     return [methodName, splitParams]
   }
 
-  const methodParams = splitParams.map(param => param.split(':')[0])
-  const methodArgs = splitParams.map(param => param.split(':')[1])
+  const methodParams = splitParams.map(
+    paramAndArgs => paramAndArgs.split(':')[0]
+  )
+  const methodArgs = splitParams
+    .map(paramAndArgs => paramAndArgs.split(':')[1])
+    .map(arg => arg.trim(' '))
   return [methodName, methodParams, methodArgs]
 }
 
@@ -112,6 +116,7 @@ export function parsePermissions(permissions) {
     .split(',')
     .map(permission => permission.trim(' '))
     .map(permission => permission.split(':'))
+    .map(permissionArr => permissionArr.map(permArg => permArg.trim(' ')))
 
   const arePermissionsFormattedCorrectly = parsedPermissions.reduce(
     (arePastPermissionsValid, currentPermissionParams) =>

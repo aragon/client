@@ -41,6 +41,16 @@ describe('parseMethodCall tests', () => {
       'vote',
       ['uint256', 'bool', 'bool'],
     ])
+    expect(parseMethodCall('vote(uint256, int, bool)')).toEqual([
+      'vote',
+      ['uint256', 'int', 'bool'],
+    ])
+  })
+
+  test('Handles method calls with arguments', () => {
+    expect(
+      parseMethodCall('vote(uint256: 7, bool: true, bool: false)')
+    ).toEqual(['vote', ['uint256', 'bool', 'bool'], ['7', 'true', 'false']])
   })
 })
 
@@ -70,6 +80,12 @@ describe('parsePermissions tests', () => {
     ])
     expect(parsePermissions('TRANSFER_ROLE:0x:0x,VOTE_ROLE:0x:0x')).toEqual([
       ['TRANSFER_ROLE', '0x', '0x'],
+      ['VOTE_ROLE', '0x', '0x'],
+    ])
+    expect(
+      parsePermissions('EXECUTE_ACTIONS_ROLE:0x:0x, VOTE_ROLE:0x:0x')
+    ).toEqual([
+      ['EXECUTE_ACTIONS_ROLE', '0x', '0x'],
       ['VOTE_ROLE', '0x', '0x'],
     ])
   })
