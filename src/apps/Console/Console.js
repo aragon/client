@@ -10,6 +10,7 @@ import {
   useToast,
   GU,
 } from '@aragon/ui'
+import { hash } from 'eth-ens-namehash'
 import ConsoleFeedback from './ConsoleFeedback'
 import IconPrompt from './IconPrompt'
 import IconEnter from './IconEnter'
@@ -30,6 +31,7 @@ const REPO_FETCH_TIMEOUT = 3000
 const ENTER_KEY = 13
 const UP_KEY = 38
 const DOWN_KEY = 40
+const APP_POSTFIX = '.aragonpm.eth'
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
@@ -102,11 +104,9 @@ function Console({ apps, wrapper }) {
         const [appName, initArgs, permArgs] = params
         const parsedInitArgs = parseInitParams(initArgs)
         const parsedPermArgs = parsePermissions(permArgs)
-        // Resolve namehash (TODO) and ens domain to fetch the app's repo content
-        const appId = apps.find(app => app.name.toLowerCase() === appName).appId
-
+        // Resolve namehash and ens domain to fetch the app's repo content
+        const appId = hash(`${appName}${APP_POSTFIX}`)
         const ensDomain = await wrapper.ens.resolve(appId)
-
         const {
           abi,
           contractAddress,
@@ -255,7 +255,6 @@ function Console({ apps, wrapper }) {
         >
           <Prompt
             command={command}
-            disabled={false}
             handleChange={handleChange}
             handleDaoAct={handleDaoAct}
             handleDaoExec={handleDaoExec}
@@ -304,7 +303,6 @@ Console.propTypes = {
 
 function Prompt({
   command,
-  disabled,
   handleChange,
   handleSubmit,
   commandHistory,
@@ -312,6 +310,15 @@ function Prompt({
   setCommandHistory,
   setCurrentHistory,
 }) {
+  function isDisabled() {
+    const parsedCommand = parseCommand(command)
+    const isValidInstall =
+      parsedCommand[0] === 'install' && parsedCommand.length === 4
+    const isValidExec =
+      parsedCommand[0] === 'exec' && parsedCommand.length === 3
+    const isValidAct = parsedCommand[0] === 'act' && parsedCommand.length === 4
+    return !(isValidInstall || isValidExec || isValidAct)
+  }
   return (
     <>
       <TextInput
@@ -320,7 +327,7 @@ function Prompt({
         adornmentPosition="start"
         onChange={e => handleChange(e.target.value)}
         onKeyDown={e => {
-          if (e.keyCode === ENTER_KEY && !disabled) {
+          if (e.keyCode === ENTER_KEY && !isDisabled()) {
             setCommandHistory([...commandHistory, command])
             handleSubmit()
           } else if (e.keyCode === UP_KEY) {
@@ -356,7 +363,7 @@ function Prompt({
         mode="strong"
         icon={<IconEnter />}
         label="Enter"
-        disabled={disabled}
+        disabled={isDisabled()}
         onClick={handleSubmit}
       />
     </>
@@ -365,7 +372,6 @@ function Prompt({
 
 Prompt.propTypes = {
   command: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   commandHistory: PropTypes.array,

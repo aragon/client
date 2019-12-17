@@ -33,6 +33,7 @@
     "core-js": "^3.3.2",
     "date-fns": "2.0.0-alpha.22",
     "decimal.js": "^10.2.0",
+    "eth-ens-namehash": "^2.0.8",
     "eth-provider": "^0.2.0",
     "file-saver": "^2.0.1",
     "history": "^4.9.0",
