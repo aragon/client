@@ -83,7 +83,7 @@ export const KnownOrganizations = {
       {
         address: '0x40204DaaCb1480019A7A6826C699903dF94eE019',
         domain: 'network.aragonid.eth',
-        name: 'Aragon Network (AGP-126)',
+        name: 'Aragon Network',
         image: aragonNetworkImage,
         template: TEMPLATE_MEMBERSHIP,
       },
