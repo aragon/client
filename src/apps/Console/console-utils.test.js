@@ -3,7 +3,7 @@ import {
   parseCommand,
   parseInitParams,
   parsePermissions,
-} from './utils'
+} from './console-utils'
 
 describe('Parse command tests', () => {
   test('Handles empty strings', () => {
@@ -35,6 +35,15 @@ describe('parseMethodCall tests', () => {
     expect(() => parseMethodCall('y(bool:true')).toThrow('Malformed')
   })
 
+  test('Throws on parameters and arguments mismatch', () => {
+    expect(() =>
+      parseMethodCall('vote(uint256:,bool: true,bool: false')
+    ).toThrow('failed')
+    expect(() => parseMethodCall('vote(uint256: 1, bool: , bool:)')).toThrow(
+      'failed'
+    )
+  })
+
   test('Handles method calls without arguments', () => {
     expect(parseMethodCall('vote()')).toEqual(['vote'])
     expect(parseMethodCall('vote(uint256,bool,bool)')).toEqual([
@@ -56,10 +65,15 @@ describe('parseMethodCall tests', () => {
 
 describe('parseInitParams tests', () => {
   test('Errors out on malformed calls', () => {
-    expect(() => parseInitParams('0x(5,3)')).toThrow('Malformed')
-    expect(() => parseInitParams('0x,1,false)')).toThrow('Malformed')
+    expect(() => parseInitParams('0x(5,3)')).toThrow('malformed')
+    expect(() => parseInitParams('0x,1,false)')).toThrow('malformed')
   })
 
+  test('Throws on dangling commands or skipped params', () => {
+    expect(() => parseInitParams('(,,100)')).toThrow('skipped')
+    expect(() => parseInitParams('( , , , true)')).toThrow('skipped')
+    expect(() => parseInitParams('(, , true, )')).toThrow('skipped')
+  })
   test('Handles parsing correctly', () => {
     expect(parseInitParams('(0x,true,1)')).toEqual(['0x', 'true', '1'])
     expect(parseInitParams('(0x)')).toEqual(['0x'])

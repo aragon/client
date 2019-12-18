@@ -1,5 +1,5 @@
 import React from 'react'
-import { useIconSize } from './utils'
+import { useIconSize } from './useIconSize'
 import PropTypes from 'prop-types'
 
 export default function IconPrompt({ size, ...props }) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -6,80 +6,43 @@ import {
   Button,
   Info,
   TextInput,
+  IconEnter,
   useTheme,
   useToast,
   GU,
 } from '@aragon/ui'
-import { hash } from 'eth-ens-namehash'
+import { hash as namehash } from 'eth-ens-namehash'
+import { encodeFunctionCall } from 'web3-eth-abi'
 import ConsoleFeedback from './ConsoleFeedback'
-import IconPrompt from './IconPrompt'
-import IconEnter from './IconEnter'
-import { useWallet } from '../../wallet'
 import {
-  encodeFunctionCall,
   parseCommand,
   parseMethodCall,
   parseInitParams,
   parsePermissions,
-} from './utils'
-import { log } from '../../utils'
+} from './console-utils'
+import IconPrompt from './IconPrompt'
+import KEYCODES from '../../keycodes'
+import { clamp } from '../../math-utils'
 import { AragonType, AppType } from '../../prop-types'
-
+import { encodeFunctionCallFromSignature } from './web3-encoding-utils'
+import { useWallet } from '../../wallet'
 // Maximum time (in milliseconds) to wait for a response
 // from the aragon.js apm repo content fetcher
 const REPO_FETCH_TIMEOUT = 3000
-const ENTER_KEY = 13
-const UP_KEY = 38
-const DOWN_KEY = 40
 const APP_POSTFIX = '.aragonpm.eth'
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
-  const [commandHistory, setCommandHistory] = useState([])
-  const [currentHistory, setCurrentHistory] = useState(0)
   const [loading, setLoading] = useState(false)
   const [parsedState, setParsedState] = useState([])
   const theme = useTheme()
   const toast = useToast()
-  const { isConnected, web3 } = useWallet()
-
-  useEffect(() => {
-    log('apps observable', apps, wrapper)
-  }, [apps, wrapper, parsedState])
-
-  function handleChange(input) {
-    const parsingResult = parseCommand(input)
-    log(parsingResult)
-    setParsedState(parsingResult)
-    setCommand(input)
-  }
-
-  function handleCommandClick(clickedCommand) {
-    const newCommand = `${command}${clickedCommand.toLowerCase()}/`
-    const parsingResult = parseCommand(newCommand)
-    setParsedState(parsingResult)
-    setCommand(newCommand)
-  }
-
-  // Handle console input
-  function handleSubmit() {
-    if (parsedState[0] === 'exec') {
-      handleDaoExec(parsedState.slice(1))
-    } else if (parsedState[0] === 'install') {
-      handleDaoInstall(parsedState.slice(1))
-    } else if (parsedState[0] === 'act') {
-      handleDaoAct(parsedState.slice(1))
-    } else {
-      toast('Unrecognized Command')
-      handleChange('')
-    }
-  }
+  const { web3 } = useWallet()
 
   const performIntents = useCallback(
     async (intentPaths, transactionPaths) => {
       if (Array.isArray(intentPaths) && intentPaths.length) {
-        const transId = await wrapper.performTransactionPath(intentPaths)
-        log(transId)
+        await wrapper.performTransactionPath(intentPaths)
       } else if (Array.isArray(transactionPaths) && transactionPaths.length) {
         for (const transaction of transactionPaths) {
           await wrapper.performTransactionPath([transaction])
@@ -95,17 +58,12 @@ function Console({ apps, wrapper }) {
     async params => {
       setLoading(true)
       try {
-        if (!isConnected) {
-          toast('You need to have a Dapp browser extension for this command')
-          setLoading(false)
-          return
-        }
         // Get & properly parse arguments
         const [appName, initArgs, permArgs] = params
         const parsedInitArgs = parseInitParams(initArgs)
         const parsedPermArgs = parsePermissions(permArgs)
         // Resolve namehash and ens domain to fetch the app's repo content
-        const appId = hash(`${appName}${APP_POSTFIX}`)
+        const appId = namehash(`${appName}${APP_POSTFIX}`)
         const ensDomain = await wrapper.ens.resolve(appId)
         const {
           abi,
@@ -124,7 +82,7 @@ function Console({ apps, wrapper }) {
           type: type,
           inputs: inputs,
         }
-        const encodedInitializeFunc = web3.eth.abi.encodeFunctionCall(
+        const encodedInitializeFunc = encodeFunctionCall(
           functionObject,
           parsedInitArgs
         )
@@ -188,7 +146,7 @@ function Console({ apps, wrapper }) {
         setLoading(false)
       }
     },
-    [toast, apps, wrapper, isConnected, web3, performIntents]
+    [toast, apps, wrapper, performIntents]
   )
   // Handle DAO execution
   const handleDaoExec = useCallback(
@@ -197,7 +155,6 @@ function Console({ apps, wrapper }) {
         setLoading(true)
         const [proxyAddress, methodWithArgs] = params
         const [methodSignature, args] = parseMethodCall(methodWithArgs)
-        log('utility method', methodSignature, args)
         const path = await wrapper.getTransactionPath(
           proxyAddress,
           methodSignature,
@@ -223,7 +180,7 @@ function Console({ apps, wrapper }) {
           methodWithArgs
         )
         const methodSignature = `${methodName}(${methodParams.join(',')})`
-        const encodedFunctionCall = encodeFunctionCall(
+        const encodedFunctionCall = encodeFunctionCallFromSignature(
           methodSignature,
           methodArgs,
           web3
@@ -243,8 +200,41 @@ function Console({ apps, wrapper }) {
         setLoading(false)
       }
     },
-    [wrapper, performIntents, web3, toast]
+    [wrapper, performIntents, toast, web3]
   )
+
+  // handle input change
+  function handleChange(input) {
+    const parsingResult = parseCommand(input)
+    setParsedState(parsingResult)
+    setCommand(input)
+  }
+
+  // Handle command clicks
+  const handleCommandClick = useCallback(
+    clickedCommand => {
+      const newCommand = `${command}${clickedCommand.toLowerCase()}/`
+      const parsingResult = parseCommand(newCommand)
+      setParsedState(parsingResult)
+      setCommand(newCommand)
+    },
+    [command]
+  )
+
+  // Handle console command submission
+  const handleSubmit = useCallback(() => {
+    if (parsedState[0] === 'exec') {
+      handleDaoExec(parsedState.slice(1))
+    } else if (parsedState[0] === 'install') {
+      handleDaoInstall(parsedState.slice(1))
+    } else if (parsedState[0] === 'act') {
+      handleDaoAct(parsedState.slice(1))
+    } else {
+      toast('Unrecognized Command')
+      handleChange('')
+    }
+  }, [handleDaoAct, handleDaoExec, handleDaoInstall, parsedState, toast])
+
   return (
     <>
       <Header primary="Console" />
@@ -257,14 +247,7 @@ function Console({ apps, wrapper }) {
           <Prompt
             command={command}
             handleChange={handleChange}
-            handleDaoAct={handleDaoAct}
-            handleDaoExec={handleDaoExec}
-            handleDaoInstall={handleDaoInstall}
             handleSubmit={handleSubmit}
-            commandHistory={commandHistory}
-            currentHistory={currentHistory}
-            setCommandHistory={setCommandHistory}
-            setCurrentHistory={setCurrentHistory}
           />
         </div>
         <Info
@@ -276,9 +259,9 @@ function Console({ apps, wrapper }) {
           color={`${theme.content}`}
         >
           <ConsoleFeedback
+            apps={apps}
             currentParsedCommand={parsedState}
             handleCommandClick={handleCommandClick}
-            apps={apps}
             loading={loading}
           />
         </Info>
@@ -302,16 +285,10 @@ Console.propTypes = {
   wrapper: AragonType,
 }
 
-function Prompt({
-  command,
-  handleChange,
-  handleSubmit,
-  commandHistory,
-  currentHistory,
-  setCommandHistory,
-  setCurrentHistory,
-}) {
-  function isDisabled() {
+function Prompt({ command, handleChange, handleSubmit }) {
+  const [commandHistory, setCommandHistory] = useState([])
+  const [historyIndex, setHistoryIndex] = useState(0)
+  const isDisabled = useMemo(() => {
     const parsedCommand = parseCommand(command)
     const isValidInstall =
       parsedCommand[0] === 'install' && parsedCommand.length === 4
@@ -319,7 +296,8 @@ function Prompt({
       parsedCommand[0] === 'exec' && parsedCommand.length === 3
     const isValidAct = parsedCommand[0] === 'act' && parsedCommand.length === 4
     return !(isValidInstall || isValidExec || isValidAct)
-  }
+  }, [command])
+
   return (
     <>
       <TextInput
@@ -328,30 +306,21 @@ function Prompt({
         adornmentPosition="start"
         onChange={e => handleChange(e.target.value)}
         onKeyDown={e => {
-          if (e.keyCode === ENTER_KEY && !isDisabled()) {
-            setCommandHistory([...commandHistory, command])
+          if (e.keyCode === KEYCODES.enter && !isDisabled) {
+            const newCommandHistory = [...commandHistory, command]
+            setCommandHistory(newCommandHistory)
+            setHistoryIndex(newCommandHistory.length - 1)
             handleSubmit()
-          } else if (e.keyCode === UP_KEY) {
-            // calculate prev
+          } else if (e.keyCode === KEYCODES.up || e.keyCode === KEYCODES.down) {
             if (commandHistory.length === 0) {
               return
             }
-            // Don't allow values that are not in the range of 0...commandHistory.length
-            const prevHistory =
-              (((currentHistory - 1) % commandHistory.length) +
-                commandHistory.length) %
-              commandHistory.length
-            // set the current history number to prevHistory
-            setCurrentHistory(prevHistory)
-            // set the current command to the previous one
-            handleChange(commandHistory[prevHistory])
-          } else if (e.keyCode === DOWN_KEY) {
-            if (commandHistory.length === 0) {
-              return
-            }
-            // Ditto
-            const nextHistory = (currentHistory + 1) % commandHistory.length
-            setCurrentHistory(nextHistory)
+            const nextHistory = clamp(
+              historyIndex + e.keyCode === KEYCODES.up ? -1 : 1,
+              0,
+              commandHistory.length - 1
+            )
+            setHistoryIndex(nextHistory)
             handleChange(commandHistory[nextHistory])
           }
         }}
@@ -364,7 +333,7 @@ function Prompt({
         mode="strong"
         icon={<IconEnter />}
         label="Enter"
-        disabled={isDisabled()}
+        disabled={isDisabled}
         onClick={handleSubmit}
       />
     </>
@@ -375,10 +344,6 @@ Prompt.propTypes = {
   command: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  commandHistory: PropTypes.array,
-  currentHistory: PropTypes.number,
-  setCommandHistory: PropTypes.func,
-  setCurrentHistory: PropTypes.func,
 }
 
 export default Console

@@ -20,7 +20,7 @@ export default function ConsoleFeedback({
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 50px 0 50px 0;
+          padding: ${GU * 6}px 0 ${GU * 6}px 0;
         `}
       >
         <LoadingRing />
@@ -35,7 +35,6 @@ export default function ConsoleFeedback({
       </div>
     )
   }
-  console.log('current', currentParsedCommand)
   if (currentParsedCommand.length < 2) {
     return (
       <>

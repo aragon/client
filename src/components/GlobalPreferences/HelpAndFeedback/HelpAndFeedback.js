@@ -13,7 +13,7 @@ function HelpAndFeedback({ historyPush, onClose, locator }) {
     optedOut,
   ])
 
-  const handleGoToInAppConsole = useCallback(() => {
+  const handleGoToEmbeddedConsole = useCallback(() => {
     onClose()
     historyPush(
       getAppPath({
@@ -69,7 +69,7 @@ function HelpAndFeedback({ historyPush, onClose, locator }) {
           will disable that functionality as well.
         </Info>
       </Box>
-      <Box heading="In-app Console">
+      <Box heading="Embedded Console">
         <div
           css={`
             display: flex;
@@ -77,9 +77,9 @@ function HelpAndFeedback({ historyPush, onClose, locator }) {
           `}
         >
           <Button
-            label="Go to in-app console"
+            label="Go to the embedded console"
             mode="strong"
-            onClick={handleGoToInAppConsole}
+            onClick={handleGoToEmbeddedConsole}
           />
         </div>
       </Box>
