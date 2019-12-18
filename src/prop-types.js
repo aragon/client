@@ -13,10 +13,11 @@ import {
   ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_PENDING,
   ACTIVITY_STATUS_TIMED_OUT,
-  TRANSACTION_STATUS_ERROR,
+  TRANSACTION_STATUS_UPCOMING,
+  TRANSACTION_STATUS_SIGNING,
   TRANSACTION_STATUS_PENDING,
   TRANSACTION_STATUS_SUCCESS,
-  TRANSACTION_STATUS_UPCOMING,
+  TRANSACTION_STATUS_ERROR,
 } from './symbols'
 import { isAddress } from './web3-utils'
 
@@ -245,10 +246,11 @@ export const OrgTemplateType = PropTypes.shape({
 // The “upcoming” status is used to indicate that the transaction is waiting
 // for another one to be mined before being processed.
 export const TransactionStatusType = PropTypes.oneOf([
-  TRANSACTION_STATUS_ERROR,
+  TRANSACTION_STATUS_UPCOMING,
+  TRANSACTION_STATUS_SIGNING,
   TRANSACTION_STATUS_PENDING,
   TRANSACTION_STATUS_SUCCESS,
-  TRANSACTION_STATUS_UPCOMING,
+  TRANSACTION_STATUS_ERROR,
 ])
 
 // See src/wallet.js

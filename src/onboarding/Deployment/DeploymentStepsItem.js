@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { textStyle, GU, IconCheck, useTheme } from '@aragon/ui'
 import { TransactionStatusType } from '../../prop-types'
 import {
+  TRANSACTION_STATUS_UPCOMING,
+  TRANSACTION_STATUS_SIGNING,
   TRANSACTION_STATUS_PENDING,
   TRANSACTION_STATUS_SUCCESS,
-  TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
 import styled from 'styled-components'
 import { addMinutes } from 'date-fns'
@@ -40,7 +41,7 @@ function DeploymentStepsItem({ index, name, status, dateStart, gasPrice }) {
 
   useMemo(() => {
     if (gasPrice === undefined) return
-    fetch('https:ethgasstation.info/json/predictTable.json')
+    fetch('https://ethgasstation.info/json/predictTable.json')
       .then(response =>
         response
           .json()
@@ -112,7 +113,9 @@ function DeploymentStepsItem({ index, name, status, dateStart, gasPrice }) {
           {status === TRANSACTION_STATUS_SUCCESS ? (
             <IconCheck />
           ) : (
-            status === TRANSACTION_STATUS_UPCOMING && index + 1
+            (status === TRANSACTION_STATUS_UPCOMING ||
+              status === TRANSACTION_STATUS_SIGNING) &&
+            index + 1
           )}
         </div>
       )}
@@ -154,6 +157,8 @@ DeploymentStepsItem.propTypes = {
 const StatusMessage = ({ status, remainingTime, remainingTimeUnit }) => {
   switch (status) {
     case TRANSACTION_STATUS_UPCOMING:
+      return ''
+    case TRANSACTION_STATUS_SIGNING:
       return 'Waiting for signature'
     case TRANSACTION_STATUS_PENDING:
       const displayTime = ` - ${remainingTime} ${remainingTimeUnit}`
@@ -238,7 +243,11 @@ const HalfHider = styled.div`
   );
 `
 
-const HalfRing = styled.div`
+const HalfRing = styled.div.attrs(({ angle }) => ({
+  style: {
+    transform: `rotate(${angle}deg)`,
+  },
+}))`
   position: absolute;
   top: 0px;
   width: ${({ diameter }) => diameter}px;
@@ -246,7 +255,6 @@ const HalfRing = styled.div`
   border: 2px solid ${({ theme }) => theme.selected};
   border-radius: 50%;
   clip-path: inset(0px ${({ diameter }) => diameter / 2}px 0px 0px);
-  transform: rotate(${({ angle }) => angle}deg);
 `
 
 export default DeploymentStepsItem

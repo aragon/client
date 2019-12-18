@@ -7,13 +7,14 @@ import {
 } from '../../aragonjs-wrapper'
 import { EthereumAddressType } from '../../prop-types'
 import {
-  TRANSACTION_STATUS_ERROR,
+  TRANSACTION_STATUS_UPCOMING,
+  TRANSACTION_STATUS_SIGNING,
   TRANSACTION_STATUS_PENDING,
   TRANSACTION_STATUS_SUCCESS,
-  TRANSACTION_STATUS_UPCOMING,
+  TRANSACTION_STATUS_ERROR,
 } from '../../symbols'
 import { log } from '../../utils'
-import { getGasPrice } from '../../web3-utils'
+import { getGasPrice, fromWei } from '../../web3-utils'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -262,7 +263,7 @@ function useDeploymentState(
       // Only process the next transaction after the previous one was successfully mined
       deployTransactions
         // If we're retrying, only retry from the last signed one
-        .slice(transactionProgress.signed)
+        .slice(transactionProgress.signed + 1)
         .reduce(async (deployPromise, { transaction }, i) => {
           // Wait for the previous promise; if component has unmounted, don't progress any further
           await deployPromise
@@ -291,7 +292,7 @@ function useDeploymentState(
                     ...prev,
                     [i]: {
                       dateStart: new Date(),
-                      gasPrice: submittedTransaction.gasPrice / 1000000000,
+                      gasPrice: fromWei(submittedTransaction.gasPrice, 'gwei'),
                     },
                   }))
                 })
@@ -341,24 +342,31 @@ function useDeploymentState(
       if (index <= submitted) {
         return TRANSACTION_STATUS_PENDING
       }
+      if (signed === submitted && index === signed + 1) {
+        return TRANSACTION_STATUS_SIGNING
+      }
+      if (index <= submitted) {
+        return TRANSACTION_STATUS_PENDING
+      }
       return TRANSACTION_STATUS_UPCOMING
     }
 
-    return deployTransactions.map(({ name }, index) => ({
-      name,
-      status: status(index),
-      dateStart: submittedTransactions[index]
-        ? submittedTransactions[index].dateStart
-        : undefined,
-      gasPrice: submittedTransactions[index]
-        ? submittedTransactions[index].gasPrice
-        : undefined,
-    }))
+    return deployTransactions.map(({ name }, index) => {
+      let deployment = {
+        name,
+        status: status(index),
+      }
+      if (submittedTransactions[index]) {
+        const { dateStart, gasPrice } = submittedTransactions[index]
+        deployment = { ...deployment, dateStart, gasPrice }
+      }
+      return deployment
+    })
   }, [deployTransactions, transactionProgress, submittedTransactions])
 
   return {
     deployTransactions,
-    signedTransactions: transactionProgress.signed,
+    signedTransactions: transactionProgress.signed + 1,
     erroredTransactions: transactionProgress.errored,
     transactionsStatus,
   }
