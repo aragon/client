@@ -83,7 +83,7 @@ function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
           )}
           For more details,{' '}
           <InlineLink href="https://help.aragon.org/article/39-launch-taking-a-long-time-to-process">
-            refer to the documentation.
+            refer to the help desk.
           </InlineLink>
         </Info>
       )}
