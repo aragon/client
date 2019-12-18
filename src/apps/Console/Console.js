@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -11,25 +11,20 @@ import {
   useToast,
   GU,
 } from '@aragon/ui'
-import { hash as namehash } from 'eth-ens-namehash'
-import { encodeFunctionCall } from 'web3-eth-abi'
-import ConsoleFeedback from './ConsoleFeedback'
+import { performTransactionPaths } from '../../aragonjs-wrapper'
 import {
-  parseCommand,
-  parseMethodCall,
-  parseInitParams,
-  parsePermissions,
-} from './console-utils'
+  getInstallTransactionPath,
+  getExecTransactionPath,
+  getActTransactionPath,
+} from './CommandHandlers'
+import ConsoleFeedback from './ConsoleFeedback'
+import { parseCommand } from './console-utils'
 import IconPrompt from './IconPrompt'
 import KEYCODES from '../../keycodes'
 import { clamp } from '../../math-utils'
 import { AragonType, AppType } from '../../prop-types'
-import { encodeFunctionCallFromSignature } from './web3-encoding-utils'
-import { useWallet } from '../../wallet'
-// Maximum time (in milliseconds) to wait for a response
-// from the aragon.js apm repo content fetcher
-const REPO_FETCH_TIMEOUT = 3000
-const APP_POSTFIX = '.aragonpm.eth'
+
+const HISTORY_ARRAY = 'HISTORY_ARRAY'
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
@@ -37,19 +32,9 @@ function Console({ apps, wrapper }) {
   const [parsedState, setParsedState] = useState([])
   const theme = useTheme()
   const toast = useToast()
-  const { web3 } = useWallet()
-
-  const performIntents = useCallback(
-    async (intentPaths, transactionPaths) => {
-      if (Array.isArray(intentPaths) && intentPaths.length) {
-        await wrapper.performTransactionPath(intentPaths)
-      } else if (Array.isArray(transactionPaths) && transactionPaths.length) {
-        for (const transaction of transactionPaths) {
-          await wrapper.performTransactionPath([transaction])
-        }
-      } else {
-        await wrapper.performTransactionPath([])
-      }
+  const performIntents = useMemo(
+    () => transactionPaths => {
+      performTransactionPaths(wrapper, transactionPaths)
     },
     [wrapper]
   )
@@ -58,87 +43,8 @@ function Console({ apps, wrapper }) {
     async params => {
       setLoading(true)
       try {
-        // Get & properly parse arguments
-        const [appName, initArgs, permArgs] = params
-        const parsedInitArgs = parseInitParams(initArgs)
-        const parsedPermArgs = parsePermissions(permArgs)
-        // Resolve namehash and ens domain to fetch the app's repo content
-        const appId = namehash(`${appName}${APP_POSTFIX}`)
-        const ensDomain = await wrapper.ens.resolve(appId)
-        const {
-          abi,
-          contractAddress,
-          roles,
-        } = await wrapper.apm.fetchLatestRepoContent(ensDomain, {
-          fetchTimeout: REPO_FETCH_TIMEOUT,
-        })
-        // get the initialize function to properly install the app
-        const { name, type, inputs } = abi.find(
-          ({ name }) => name === 'initialize'
-        )
-
-        const functionObject = {
-          name: name,
-          type: type,
-          inputs: inputs,
-        }
-        const encodedInitializeFunc = encodeFunctionCall(
-          functionObject,
-          parsedInitArgs
-        )
-
-        const kernelProxyAddress = apps.find(
-          app => app.name.toLowerCase() === 'kernel'
-        ).proxyAddress
-
-        const path = await wrapper.getTransactionPath(
-          kernelProxyAddress,
-          'newAppInstance(bytes32,address,bytes,bool)',
-          [appId, contractAddress, encodedInitializeFunc, false]
-        )
-
-        // Get the second to last item in the path, as it is the account that will execute kernel.newAppInstance
-        const scriptExecutor = path[path.length - 2].to
-        const counterfactualAppAddr = await wrapper.kernelProxy.call(
-          'newAppInstance',
-          appId,
-          contractAddress,
-          encodedInitializeFunc,
-          false,
-          { from: scriptExecutor }
-        )
-
-        const installAppIntent = [
-          [
-            kernelProxyAddress,
-            'newAppInstance(bytes32,address,bytes,bool)',
-            [appId, contractAddress, encodedInitializeFunc, false],
-          ],
-        ]
-
-        const aclProxyAddress = apps.find(
-          app => app.name.toLowerCase() === 'acl'
-        ).proxyAddress
-
-        const permissionIntents = parsedPermArgs.map(([role, from, to]) => {
-          const roleBytes = roles.find(
-            availableRole => availableRole.id === role
-          ).bytes
-
-          return [
-            aclProxyAddress,
-            'createPermission',
-            [to, counterfactualAppAddr, roleBytes, from],
-          ]
-        })
-
-        const intentBasket = [...installAppIntent, ...permissionIntents]
-        const {
-          path: pathForBasket,
-          transactions,
-        } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
-
-        performIntents(pathForBasket, transactions)
+        const path = await getInstallTransactionPath(wrapper, apps, params)
+        performIntents([path])
       } catch (error) {
         console.error(error)
         toast('Command execution failed')
@@ -148,20 +54,13 @@ function Console({ apps, wrapper }) {
     },
     [toast, apps, wrapper, performIntents]
   )
-  // Handle DAO execution
+
   const handleDaoExec = useCallback(
     async params => {
       try {
         setLoading(true)
-        const [proxyAddress, methodWithArgs] = params
-        const [methodSignature, args] = parseMethodCall(methodWithArgs)
-        const path = await wrapper.getTransactionPath(
-          proxyAddress,
-          methodSignature,
-          args
-        )
-
-        performIntents(path)
+        const path = await getExecTransactionPath(wrapper, params)
+        performIntents([path])
       } catch (error) {
         console.error(error)
       } finally {
@@ -175,24 +74,8 @@ function Console({ apps, wrapper }) {
     async params => {
       try {
         setLoading(true)
-        const [selectedAgentInstance, targetAddress, methodWithArgs] = params
-        const [methodName, methodParams, methodArgs] = parseMethodCall(
-          methodWithArgs
-        )
-        const methodSignature = `${methodName}(${methodParams.join(',')})`
-        const encodedFunctionCall = encodeFunctionCallFromSignature(
-          methodSignature,
-          methodArgs,
-          web3
-        )
-
-        const path = await wrapper.getTransactionPath(
-          selectedAgentInstance,
-          'execute(address,uint256,bytes)',
-          [targetAddress, 0, encodedFunctionCall]
-        )
-
-        performIntents(path)
+        const path = await getActTransactionPath(wrapper, params)
+        performIntents([path])
       } catch (error) {
         console.error(error)
         toast('Command execution failed.')
@@ -200,15 +83,15 @@ function Console({ apps, wrapper }) {
         setLoading(false)
       }
     },
-    [wrapper, performIntents, toast, web3]
+    [wrapper, toast, performIntents]
   )
 
   // handle input change
-  function handleChange(input) {
+  const handleChange = useCallback(input => {
     const parsingResult = parseCommand(input)
     setParsedState(parsingResult)
     setCommand(input)
-  }
+  }, [])
 
   // Handle command clicks
   const handleCommandClick = useCallback(
@@ -230,10 +113,17 @@ function Console({ apps, wrapper }) {
     } else if (parsedState[0] === 'act') {
       handleDaoAct(parsedState.slice(1))
     } else {
-      toast('Unrecognized Command')
+      toast('Unrecognized command')
       handleChange('')
     }
-  }, [handleDaoAct, handleDaoExec, handleDaoInstall, parsedState, toast])
+  }, [
+    handleDaoAct,
+    handleDaoExec,
+    handleDaoInstall,
+    parsedState,
+    toast,
+    handleChange,
+  ])
 
   return (
     <>
@@ -288,6 +178,17 @@ Console.propTypes = {
 function Prompt({ command, handleChange, handleSubmit }) {
   const [commandHistory, setCommandHistory] = useState([])
   const [historyIndex, setHistoryIndex] = useState(0)
+
+  useEffect(() => {
+    const historyArray = localStorage.getItem(HISTORY_ARRAY)
+    if (!historyArray) {
+      return
+    }
+    const parsedHistoryArray = JSON.parse(historyArray)
+    setCommandHistory(parsedHistoryArray)
+    setHistoryIndex(parsedHistoryArray.length - 1)
+  }, [])
+
   const isDisabled = useMemo(() => {
     const parsedCommand = parseCommand(command)
     const isValidInstall =
@@ -308,6 +209,10 @@ function Prompt({ command, handleChange, handleSubmit }) {
         onKeyDown={e => {
           if (e.keyCode === KEYCODES.enter && !isDisabled) {
             const newCommandHistory = [...commandHistory, command]
+            localStorage.setItem(
+              HISTORY_ARRAY,
+              JSON.stringify(newCommandHistory)
+            )
             setCommandHistory(newCommandHistory)
             setHistoryIndex(newCommandHistory.length - 1)
             handleSubmit()
@@ -316,10 +221,11 @@ function Prompt({ command, handleChange, handleSubmit }) {
               return
             }
             const nextHistory = clamp(
-              historyIndex + e.keyCode === KEYCODES.up ? -1 : 1,
+              historyIndex + (e.keyCode === KEYCODES.up ? -1 : 1),
               0,
               commandHistory.length - 1
             )
+
             setHistoryIndex(nextHistory)
             handleChange(commandHistory[nextHistory])
           }

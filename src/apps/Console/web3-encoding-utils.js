@@ -1,6 +1,7 @@
-export function encodeFunctionCallFromSignature(signature, params = [], web3) {
-  console.log('hm', signature, params)
-  const sigBytes = web3.eth.abi.encodeFunctionSignature(signature)
+import abi from 'web3-eth-abi'
+
+export function encodeFunctionCallFromSignature(signature, params = []) {
+  const sigBytes = abi.encodeFunctionSignature(signature)
 
   const types = signature.replace(')', '').split('(')[1]
 
@@ -8,8 +9,7 @@ export function encodeFunctionCallFromSignature(signature, params = [], web3) {
   if (types === '') {
     return sigBytes
   }
-  console.log(types)
-  const paramBytes = web3.eth.abi.encodeParameters(types.split(','), params)
+  const paramBytes = abi.encodeParameters(types.split(','), params)
 
   return `${sigBytes}${paramBytes.slice(2)}`
 }

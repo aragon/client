@@ -35,7 +35,6 @@ export function parseMethodCall(method) {
     (haveSeenSeparator, param) => haveSeenSeparator || param.includes(':'),
     false
   )
-  console.log(isCalledWithArguments)
   if (!isCalledWithArguments) {
     const skippedParams = splitParams.includes('')
     if (skippedParams) {

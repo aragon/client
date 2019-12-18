@@ -73,14 +73,22 @@ function HelpAndFeedback({ historyPush, onClose, locator }) {
         <div
           css={`
             display: flex;
-            justify-content: center;
+            flex-direction: column;
           `}
         >
           <Button
+            css={`
+              margin-bottom: ${GU}px;
+            `}
             label="Go to the embedded console"
             mode="strong"
             onClick={handleGoToEmbeddedConsole}
           />
+          <Info>
+            The embedded console lets you interact with your DAO as you would
+            with Aragon CLI, but inside the client. Be noted that this feature
+            is highly experimental.
+          </Info>
         </div>
       </Box>
     </>
