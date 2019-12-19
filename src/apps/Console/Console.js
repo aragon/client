@@ -138,6 +138,7 @@ function Console({ apps, wrapper }) {
             command={command}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
+            loading={loading}
           />
         </div>
         <Info
@@ -175,7 +176,7 @@ Console.propTypes = {
   wrapper: AragonType,
 }
 
-function Prompt({ command, handleChange, handleSubmit }) {
+function Prompt({ command, handleChange, handleSubmit, loading }) {
   const [commandHistory, setCommandHistory] = useState([])
   const [historyIndex, setHistoryIndex] = useState(0)
 
@@ -196,8 +197,8 @@ function Prompt({ command, handleChange, handleSubmit }) {
     const isValidExec =
       parsedCommand[0] === 'exec' && parsedCommand.length === 3
     const isValidAct = parsedCommand[0] === 'act' && parsedCommand.length === 4
-    return !(isValidInstall || isValidExec || isValidAct)
-  }, [command])
+    return !(isValidInstall || isValidExec || isValidAct) || loading
+  }, [command, loading])
 
   return (
     <>
@@ -226,6 +227,11 @@ function Prompt({ command, handleChange, handleSubmit }) {
               commandHistory.length - 1
             )
 
+            if (e.keyCode === KEYCODES.down && nextHistory === historyIndex) {
+              handleChange('')
+              return
+            }
+
             setHistoryIndex(nextHistory)
             handleChange(commandHistory[nextHistory])
           }
@@ -250,6 +256,7 @@ Prompt.propTypes = {
   command: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 }
 
 export default Console

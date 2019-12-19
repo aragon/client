@@ -88,6 +88,7 @@ class MenuPanel extends React.PureComponent {
 
   render() {
     const {
+      activeInstanceId,
       appInstanceGroups,
       daoAddress,
       daoStatus,
@@ -204,7 +205,7 @@ class MenuPanel extends React.PureComponent {
                     config={springs.smooth}
                     from={{ opacity: 0 }}
                     to={{
-                      opacity: window.location.hash.includes('console'),
+                      opacity: activeInstanceId === 'console',
                     }}
                   >
                     {props => (
