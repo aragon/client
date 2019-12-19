@@ -31,6 +31,7 @@ export const MENU_PANEL_WIDTH = 28 * GU
 const { div: AnimDiv } = animated
 
 const APP_APPS_CENTER = staticApps.get('apps').app
+const APP_CONSOLE = staticApps.get('console').app
 const APP_HOME = staticApps.get('home').app
 const APP_ORGANIZATION = staticApps.get('organization').app
 const APP_PERMISSIONS = staticApps.get('permissions').app
@@ -98,6 +99,7 @@ class MenuPanel extends React.PureComponent {
     const menuApps = [APP_HOME, appGroups]
     const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_ORGANIZATION]
 
+    console.log(window.location)
     return (
       <Main>
         <div
@@ -198,6 +200,19 @@ class MenuPanel extends React.PureComponent {
                       {systemApps.map(app => this.renderAppGroup(app))}
                     </AnimDiv>
                   </div>
+                  <Spring
+                    config={springs.smooth}
+                    from={{ opacity: 0 }}
+                    to={{
+                      opacity: window.location.hash.includes('console'),
+                    }}
+                  >
+                    {props => (
+                      <div style={props}>
+                        {this.renderAppGroup(APP_CONSOLE)}
+                      </div>
+                    )}
+                  </Spring>
                 </div>
               )}
             </Spring>
