@@ -126,6 +126,16 @@ export const fetchApmArtifact = async (
   }).fetchLatestRepoContent(repoAddress)
 }
 
+export const performTransactionPaths = async (wrapper, transactionPaths) => {
+  if (Array.isArray(transactionPaths) && transactionPaths.length) {
+    for (const transaction of transactionPaths) {
+      await wrapper.performTransactionPath(transaction)
+    }
+  } else {
+    await wrapper.performTransactionPath([])
+  }
+}
+
 // Subscribe to aragon.js observables
 const subscribe = (
   wrapper,

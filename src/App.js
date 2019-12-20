@@ -470,6 +470,7 @@ class App extends React.Component {
                           apps={appsWithIdentifiers}
                           onScreenChange={this.openPreferences}
                           onClose={this.closePreferences}
+                          historyPush={this.historyPush}
                         />
 
                         <HelpScoutBeacon locator={locator} apps={apps} />

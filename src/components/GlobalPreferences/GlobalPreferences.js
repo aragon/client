@@ -43,6 +43,7 @@ const HELP_AND_FEEDBACK_INDEX = 3
 function GlobalPreferences({
   apps,
   compact,
+  historyPush,
   locator,
   onClose,
   onNavigation,
@@ -142,7 +143,13 @@ function GlobalPreferences({
                 navigationIndex={2}
               />
             )}
-            {sectionIndex === HELP_AND_FEEDBACK_INDEX && <HelpAndFeedback />}
+            {sectionIndex === HELP_AND_FEEDBACK_INDEX && (
+              <HelpAndFeedback
+                historyPush={historyPush}
+                locator={locator}
+                onClose={onClose}
+              />
+            )}
           </main>
         </React.Fragment>
       )}
@@ -153,6 +160,7 @@ function GlobalPreferences({
 GlobalPreferences.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   compact: PropTypes.bool,
+  historyPush: PropTypes.func.isRequired,
   locator: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   onNavigation: PropTypes.func.isRequired,
