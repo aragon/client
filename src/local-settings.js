@@ -1,14 +1,14 @@
 // List of configurable settings
-const CLIENT_THEME = 'THEME'
 const APP_LOCATOR = 'APP_LOCATOR'
+const CLIENT_THEME = 'THEME'
 const DEFAULT_ETH_NODE = 'DEFAULT_ETH_NODE'
 const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
 const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
 const ETH_SUBSCRIPTION_EVENT_DELAY = 'ETH_SUBSCRIPTION_EVENT_DELAY'
 const IPFS_GATEWAY = 'IPFS_GATEWAY'
+const PACKAGE_VERSION = 'PACKAGE_VERSION'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 const SENTRY_DSN = 'SENTRY_DSN'
-const PACKAGE_VERSION = 'PACKAGE_VERSION'
 
 // Parcel requires env vars to be declared statically.
 const CONFIGURATION_VARS = [
@@ -152,7 +152,13 @@ export function getClientTheme() {
       return JSON.parse(storedClientTheme)
     } catch (err) {}
   }
-  return { appearance: 'light', theme: null }
+  return {
+    // To be replaced by an “auto” state
+    appearance: window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light',
+    theme: null,
+  }
 }
 
 export function setClientTheme(appearance, theme = null) {
