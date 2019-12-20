@@ -122,7 +122,7 @@ function MenuPanel({
         </MenuPanelAppsLoader>
       )
     },
-    [appsStatus, activeInstanceId]
+    [appsStatus, activeInstanceId, renderAppGroup]
   )
 
   const appGroups = useMemo(
