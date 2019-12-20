@@ -9,16 +9,16 @@ import { getAppPath } from '../../../routing'
 function HelpAndFeedback({ historyPush, locator, onClose }) {
   const theme = useTheme()
   const { optedOut, setOptedOut } = useHelpScout()
-  const { consoleHidden, setConsoleHidden } = useConsole()
+  const { consoleVisible, setConsoleVisible } = useConsole()
 
-  const handleOptOutChange = useCallback(() => setOptedOut(!optedOut), [
-    setOptedOut,
-    optedOut,
-  ])
+  const handleOptOutChange = useCallback(
+    () => setOptedOut(optedOut => !optedOut),
+    [setOptedOut]
+  )
 
   const handleOptOutConsoleChange = useCallback(
-    () => setConsoleHidden(!consoleHidden),
-    [consoleHidden, setConsoleHidden]
+    () => setConsoleVisible(consoleVisible => !consoleVisible),
+    [setConsoleVisible]
   )
 
   const handleConsoleLinkClick = useCallback(() => {
@@ -95,7 +95,7 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
           >
             <Switch
               onChange={handleOptOutConsoleChange}
-              checked={!consoleHidden}
+              checked={consoleVisible}
             />
             <span
               css={`

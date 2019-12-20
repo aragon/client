@@ -7,16 +7,18 @@ export const CONSOLE_COMMAND_HISTORY_KEY = 'CONSOLE_COMMAND_HISTORY'
 export const ConsoleOptOutContext = React.createContext()
 
 function ConsoleOptOutProvider({ children }) {
-  const [consoleHidden, setConsoleHidden] = useState(
+  const [consoleVisible, setConsoleVisible] = useState(
     localStorage.getItem(CONSOLE_OPTOUT_KEY) === 'true'
   )
 
   useEffect(() => {
-    localStorage.setItem(CONSOLE_OPTOUT_KEY, consoleHidden ? 'true' : 'false')
-  }, [consoleHidden])
+    localStorage.setItem(CONSOLE_OPTOUT_KEY, consoleVisible ? 'true' : 'false')
+  }, [consoleVisible])
 
   return (
-    <ConsoleOptOutContext.Provider value={{ consoleHidden, setConsoleHidden }}>
+    <ConsoleOptOutContext.Provider
+      value={{ consoleVisible, setConsoleVisible }}
+    >
       {children}
     </ConsoleOptOutContext.Provider>
   )

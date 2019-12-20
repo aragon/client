@@ -472,23 +472,23 @@ const SystemAppsToggleShadow = props => (
 )
 
 function ConsoleAppGroup({ isConsoleInstanceActive, ...props }) {
-  const { consoleHidden } = useConsole()
+  const { consoleVisible } = useConsole()
 
   return (
     <Spring
-      immediate={!consoleHidden}
+      immediate={consoleVisible}
       config={springs.swift}
       from={{ opacity: 0 }}
       to={{
-        opacity: Number(isConsoleInstanceActive || !consoleHidden),
+        opacity: Number(isConsoleInstanceActive || consoleVisible),
       }}
     >
       {({ opacity }) => (
         <AnimDiv
           style={{ opacity }}
           css={`
-            display: ${consoleHidden ? 'hidden' : 'auto'};
-            pointer-events: ${consoleHidden && isConsoleInstanceActive
+            display: ${consoleVisible ? 'auto' : 'hidden'};
+            pointer-events: ${!consoleVisible && isConsoleInstanceActive
               ? 'none'
               : 'auto'};
           `}
