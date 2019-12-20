@@ -9,10 +9,7 @@ import { getAppPath } from '../../../routing'
 function HelpAndFeedback({ historyPush, locator, onClose }) {
   const theme = useTheme()
   const { optedOut, setOptedOut } = useHelpScout()
-  const {
-    optedOut: optedOutFromConsole,
-    setOptedOut: setOptedOutFromConsole,
-  } = useConsole()
+  const { consoleHidden, setConsoleHidden } = useConsole()
 
   const handleOptOutChange = useCallback(() => setOptedOut(!optedOut), [
     setOptedOut,
@@ -20,8 +17,8 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
   ])
 
   const handleOptOutConsoleChange = useCallback(
-    () => setOptedOutFromConsole(!optedOutFromConsole),
-    [optedOutFromConsole, setOptedOutFromConsole]
+    () => setConsoleHidden(!consoleHidden),
+    [consoleHidden, setConsoleHidden]
   )
 
   const handleConsoleLinkClick = useCallback(() => {
@@ -43,7 +40,7 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
           css={`
             display: block;
             margin: 0 auto;
-            margin-bottom: ${5 * GU}px;
+            margin-bottom: ${6 * GU}px;
             width: 300px;
             height: 156px;
           `}
@@ -64,9 +61,9 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
             <Switch onChange={handleOptOutChange} checked={!optedOut} />
             <span
               css={`
-                color: ${theme.surfaceContentSecondary};
+                color: ${theme.surfaceContent};
                 padding-left: ${1.5 * GU}px;
-                ${textStyle('title4')}
+                ${textStyle('body2')}
               `}
             >
               Allow Help Scout feedback module
@@ -97,14 +94,14 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
           >
             <Switch
               onChange={handleOptOutConsoleChange}
-              checked={!optedOutFromConsole}
+              checked={!consoleHidden}
             />
             <span
               css={`
-                color: ${theme.surfaceContentSecondary};
+                color: ${theme.surfaceContent};
                 padding-left: ${1.5 * GU}px;
                 align-items: center;
-                ${textStyle('title4')}
+                ${textStyle('body2')}
               `}
             >
               Display the <Link onClick={handleConsoleLinkClick}>console</Link>{' '}
