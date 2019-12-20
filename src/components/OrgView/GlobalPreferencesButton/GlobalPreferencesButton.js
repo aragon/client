@@ -13,10 +13,11 @@ import {
   useViewport,
 } from '@aragon/ui'
 import { useClientTheme } from '../../../client-theme'
-import IconNetwork from './IconNetwork'
-import IconCustomLabels from './IconCustomLabels'
-import IconNotifications from './IconNotifications'
-import IconHelpAndFeedback from './IconHelpAndFeedback'
+
+import iconNetwork from '../../../assets/global-preferences-network.svg'
+import iconCustomLabels from '../../../assets/global-preferences-custom-labels.svg'
+import iconNotifications from '../../../assets/global-preferences-notifications.svg'
+import iconHelpAndFeedback from '../../../assets/global-preferences-help-and-feedback.svg'
 
 function GlobalPreferencesButton({ onOpen }) {
   const theme = useTheme()
@@ -94,22 +95,22 @@ function GlobalPreferencesButton({ onOpen }) {
           </li>
           <Item
             onClick={handleItemClick('custom-labels')}
-            icon={<IconCustomLabels />}
+            icon={iconCustomLabels}
             label="Custom labels"
           />
           <Item
             onClick={handleItemClick('network')}
-            icon={<IconNetwork />}
+            icon={iconNetwork}
             label="Network"
           />
           <Item
             onClick={handleItemClick('notifications')}
-            icon={<IconNotifications />}
+            icon={iconNotifications}
             label="Notifications"
           />
           <Item
             onClick={handleItemClick('help-and-feedback')}
-            icon={<IconHelpAndFeedback />}
+            icon={iconHelpAndFeedback}
             label="Help & Feedback"
           />
           <Item
@@ -174,7 +175,7 @@ function Item({ icon, label, onClick, lastItem }) {
             }
           `}
         >
-          {icon}
+          {icon && <img src={icon} alt="" />}
           <div
             css={`
               flex-grow: 1;
