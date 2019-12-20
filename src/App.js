@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
-import { useTheme, useThemeMode } from '@aragon/ui'
+import { useTheme } from '@aragon/ui'
 import { EthereumAddressType } from './prop-types'
 import { network, web3Providers } from './environment'
 import { useClientTheme } from './client-theme'
@@ -108,7 +108,10 @@ class App extends React.Component {
       wrapper.setAccounts(walletAccount === null ? [] : [walletAccount])
     }
 
-    if (wrapper && clientTheme !== prevProps.clientTheme) {
+    if (
+      wrapper &&
+      (!prevProps.wrapper || clientTheme !== prevProps.clientTheme)
+    ) {
       wrapper.setGuiStyle(clientTheme.appearance, clientTheme.theme)
     }
   }
@@ -486,13 +489,7 @@ class App extends React.Component {
 export default function(props) {
   const { account } = useWallet()
   const theme = useTheme()
-  const themeMode = useThemeMode()
   const clientTheme = useClientTheme()
-  const { appearance } = clientTheme
-
-  useEffect(() => {
-    themeMode.set(appearance)
-  }, [appearance, themeMode])
 
   return (
     <App

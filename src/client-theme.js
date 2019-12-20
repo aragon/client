@@ -15,11 +15,14 @@ function ClientThemeProvider(props) {
     setClientTheme(newAppearance)
   }, [appearance])
 
-  const clientTheme = useMemo(() => ({ appearance, theme, toggleAppearance }), [
-    appearance,
-    theme,
-    toggleAppearance,
-  ])
+  const clientTheme = useMemo(
+    () => ({
+      appearance,
+      theme,
+      toggleAppearance,
+    }),
+    [appearance, theme, toggleAppearance]
+  )
 
   return <ClientThemeContext.Provider value={clientTheme} {...props} />
 }
