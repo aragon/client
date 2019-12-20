@@ -347,7 +347,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "e18r",
+      "name": "Emilio Silva Schlenker",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/16065447?v=4",
+      "profile": "https://github.com/e18r",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }

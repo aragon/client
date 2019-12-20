@@ -263,7 +263,7 @@ class ActionPathsContent extends React.Component {
                 <span>
                   Be aware that this is an attempt to execute a transaction on
                   an <strong css="font-weight: 800">external contract</strong>{' '}
-                  that has not been reviewed or audited. This means that it
+                  that may not have been reviewed or audited. This means that it
                   might behave unexpectedly. Please{' '}
                   <strong css="font-weight: 800">
                     make sure you trust the contract at
