@@ -12,8 +12,8 @@ import {
   getPackageVersion,
   setPackageVersion,
 } from './local-settings'
+import { ConsoleOptOutProvider } from './apps/Console/useConsole'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
-
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
 
@@ -51,13 +51,15 @@ if (packageVersion !== lastPackageVersion) {
 ReactDOM.render(
   <Main layout={false} scrollView={false}>
     <HelpScoutProvider>
-      <GlobalErrorHandler>
-        <WalletBlockNumberProvider>
-          <WalletProvider>
-            <App />
-          </WalletProvider>
-        </WalletBlockNumberProvider>
-      </GlobalErrorHandler>
+      <ConsoleOptOutProvider>
+        <GlobalErrorHandler>
+          <WalletBlockNumberProvider>
+            <WalletProvider>
+              <App />
+            </WalletProvider>
+          </WalletBlockNumberProvider>
+        </GlobalErrorHandler>
+      </ConsoleOptOutProvider>
     </HelpScoutProvider>
   </Main>,
   document.getElementById('root')

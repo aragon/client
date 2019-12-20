@@ -1,18 +1,13 @@
 import { hash as namehash } from 'eth-ens-namehash'
 import abi from 'web3-eth-abi'
-import {
-  parseInitParams,
-  parsePermissions,
-  parseMethodCall,
-} from './console-utils'
-import { encodeFunctionCallFromSignature } from './web3-encoding-utils'
+import { parseInitParams, parsePermissions } from '../console-utils'
 
 // Maximum time (in milliseconds) to wait for a response
 // from the aragon.js apm repo content fetcher
 const REPO_FETCH_TIMEOUT = 3000
 const APP_POSTFIX = '.aragonpm.eth'
 
-export async function getInstallTransactionPath(wrapper, apps, params) {
+export default async function installHandler(params, { apps, wrapper }) {
   // Get & properly parse arguments
   const [appName, initArgs, permArgs] = params
   const parsedInitArgs = parseInitParams(initArgs)
@@ -91,33 +86,4 @@ export async function getInstallTransactionPath(wrapper, apps, params) {
   } = await wrapper.getTransactionPathForIntentBasket(intentBasket)
 
   return pathForBasket
-}
-
-export async function getExecTransactionPath(wrapper, params) {
-  const [proxyAddress, methodWithArgs] = params
-  const [methodSignature, args] = parseMethodCall(methodWithArgs)
-  const path = await wrapper.getTransactionPath(
-    proxyAddress,
-    methodSignature,
-    args
-  )
-  return path
-}
-
-export async function getActTransactionPath(wrapper, params) {
-  const [selectedAgentInstance, targetAddress, methodWithArgs] = params
-  const [methodName, methodParams, methodArgs] = parseMethodCall(methodWithArgs)
-  const methodSignature = `${methodName}(${methodParams.join(',')})`
-
-  const encodedFunctionCall = encodeFunctionCallFromSignature(
-    methodSignature,
-    methodArgs
-  )
-
-  const path = await wrapper.getTransactionPath(
-    selectedAgentInstance,
-    'execute(address,uint256,bytes)',
-    [targetAddress, 0, encodedFunctionCall]
-  )
-  return path
 }

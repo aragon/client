@@ -24,6 +24,7 @@ import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
+import { ConsoleOptOutContext } from '../../apps/Console/useConsole'
 
 export const MENU_PANEL_SHADOW_WIDTH = 3
 export const MENU_PANEL_WIDTH = 28 * GU
@@ -88,14 +89,12 @@ class MenuPanel extends React.PureComponent {
 
   render() {
     const {
-      activeInstanceId,
       appInstanceGroups,
       daoAddress,
       daoStatus,
       showOrgSwitcher,
     } = this.props
     const { systemAppsOpened, systemAppsToggled } = this.state
-
     const appGroups = this.getRenderableAppGroups(appInstanceGroups)
     const menuApps = [APP_HOME, appGroups]
     const systemApps = [APP_PERMISSIONS, APP_APPS_CENTER, APP_ORGANIZATION]
@@ -201,19 +200,31 @@ class MenuPanel extends React.PureComponent {
                       {systemApps.map(app => this.renderAppGroup(app))}
                     </AnimDiv>
                   </div>
-                  <Spring
-                    config={springs.smooth}
-                    from={{ opacity: 0 }}
-                    to={{
-                      opacity: activeInstanceId === 'console',
-                    }}
-                  >
-                    {props => (
-                      <div style={props}>
-                        {this.renderAppGroup(APP_CONSOLE)}
-                      </div>
-                    )}
-                  </Spring>
+                  <div>
+                    <ConsoleOptOutContext.Consumer>
+                      {({ optedOut }) =>
+                        !optedOut ? (
+                          this.renderAppGroup(APP_CONSOLE)
+                        ) : (
+                          <Spring
+                            config={springs.smooth}
+                            from={{ opacity: 0 }}
+                            to={{
+                              opacity:
+                                window.location.hash.includes('console') &&
+                                optedOut,
+                            }}
+                          >
+                            {props => (
+                              <div style={props}>
+                                {this.renderAppGroup(APP_CONSOLE)}
+                              </div>
+                            )}
+                          </Spring>
+                        )
+                      }
+                    </ConsoleOptOutContext.Consumer>
+                  </div>
                 </div>
               )}
             </Spring>

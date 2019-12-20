@@ -1,19 +1,30 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Switch, Info, Button, GU, textStyle, useTheme } from '@aragon/ui'
+import { Box, Switch, Info, Link, GU, textStyle, useTheme } from '@aragon/ui'
 import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
 import helpAndFeedbackPng from './assets/help-and-feedback.png'
+import { useConsole } from '../../../apps/Console/useConsole'
 import { getAppPath } from '../../../routing'
 
-function HelpAndFeedback({ historyPush, onClose, locator }) {
+function HelpAndFeedback({ historyPush, locator, onClose }) {
   const theme = useTheme()
   const { optedOut, setOptedOut } = useHelpScout()
+  const {
+    optedOut: optedOutFromConsole,
+    setOptedOut: setOptedOutFromConsole,
+  } = useConsole()
+
   const handleOptOutChange = useCallback(() => setOptedOut(!optedOut), [
     setOptedOut,
     optedOut,
   ])
 
-  const handleGoToEmbeddedConsole = useCallback(() => {
+  const handleOptOutConsoleChange = useCallback(
+    () => setOptedOutFromConsole(!optedOutFromConsole),
+    [optedOutFromConsole, setOptedOutFromConsole]
+  )
+
+  const handleConsoleLinkClick = useCallback(() => {
     onClose()
     historyPush(
       getAppPath({
@@ -21,16 +32,26 @@ function HelpAndFeedback({ historyPush, onClose, locator }) {
         instanceId: 'console',
       })
     )
-  }, [onClose, historyPush, locator.dao])
+  }, [historyPush, locator, onClose])
 
   return (
     <>
       <Box heading="Help Scout">
+        <img
+          src={helpAndFeedbackPng}
+          alt="Help Scout"
+          css={`
+            display: block;
+            margin: 0 auto;
+            margin-bottom: ${5 * GU}px;
+            width: 300px;
+            height: 156px;
+          `}
+        />
         <div
           css={`
             display: flex;
-            justify-content: center;
-            margin-bottom: ${4 * GU}px;
+            margin-bottom: ${2 * GU}px;
           `}
         >
           <label
@@ -52,17 +73,6 @@ function HelpAndFeedback({ historyPush, onClose, locator }) {
             </span>
           </label>
         </div>
-        <img
-          src={helpAndFeedbackPng}
-          alt="Help Scout"
-          css={`
-            display: block;
-            margin: 0 auto;
-            margin-bottom: ${4 * GU}px;
-            width: 300px;
-            height: 156px;
-          `}
-        />
         <Info>
           Help Scout lets you easily browse the knowledge base and open tickets
           so you can get support when using Aragon organizations. Disabling it
@@ -74,16 +84,33 @@ function HelpAndFeedback({ historyPush, onClose, locator }) {
           css={`
             display: flex;
             flex-direction: column;
+            justify-content: center;
           `}
         >
-          <Button
+          <label
             css={`
-              margin-bottom: ${GU}px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              margin-bottom: ${2 * GU}px;
             `}
-            label="Go to the embedded console"
-            mode="strong"
-            onClick={handleGoToEmbeddedConsole}
-          />
+          >
+            <Switch
+              onChange={handleOptOutConsoleChange}
+              checked={!optedOutFromConsole}
+            />
+            <span
+              css={`
+                color: ${theme.surfaceContentSecondary};
+                padding-left: ${1.5 * GU}px;
+                align-items: center;
+                ${textStyle('title4')}
+              `}
+            >
+              Display the <Link onClick={handleConsoleLinkClick}>console</Link>{' '}
+              in the System apps menu
+            </span>
+          </label>
           <Info>
             The embedded console lets you interact with your DAO as you would
             with Aragon CLI, but inside the client. Be noted that this feature

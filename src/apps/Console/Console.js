@@ -12,19 +12,14 @@ import {
   GU,
 } from '@aragon/ui'
 import { performTransactionPaths } from '../../aragonjs-wrapper'
-import {
-  getInstallTransactionPath,
-  getExecTransactionPath,
-  getActTransactionPath,
-} from './CommandHandlers'
 import ConsoleFeedback from './ConsoleFeedback'
 import { parseCommand } from './console-utils'
+import handlers from './handlers'
 import IconPrompt from './IconPrompt'
 import KEYCODES from '../../keycodes'
 import { clamp } from '../../math-utils'
 import { AragonType, AppType } from '../../prop-types'
-
-const HISTORY_ARRAY = 'HISTORY_ARRAY'
+import { CONSOLE_COMMAND_HISTORY_KEY } from './useConsole'
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
@@ -39,11 +34,11 @@ function Console({ apps, wrapper }) {
     [wrapper]
   )
 
-  const handleDaoInstall = useCallback(
-    async params => {
+  const executeCommand = useCallback(
+    async (commandHandler, params) => {
       setLoading(true)
       try {
-        const path = await getInstallTransactionPath(wrapper, apps, params)
+        const path = await commandHandler(params, { apps, wrapper })
         performIntents([path])
       } catch (error) {
         console.error(error)
@@ -53,37 +48,6 @@ function Console({ apps, wrapper }) {
       }
     },
     [toast, apps, wrapper, performIntents]
-  )
-
-  const handleDaoExec = useCallback(
-    async params => {
-      try {
-        setLoading(true)
-        const path = await getExecTransactionPath(wrapper, params)
-        performIntents([path])
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setLoading(false)
-      }
-    },
-    [wrapper, performIntents]
-  )
-
-  const handleDaoAct = useCallback(
-    async params => {
-      try {
-        setLoading(true)
-        const path = await getActTransactionPath(wrapper, params)
-        performIntents([path])
-      } catch (error) {
-        console.error(error)
-        toast('Command execution failed.')
-      } finally {
-        setLoading(false)
-      }
-    },
-    [wrapper, toast, performIntents]
   )
 
   // handle input change
@@ -104,26 +68,18 @@ function Console({ apps, wrapper }) {
     [command]
   )
 
-  // Handle console command submission
   const handleSubmit = useCallback(() => {
-    if (parsedState[0] === 'exec') {
-      handleDaoExec(parsedState.slice(1))
-    } else if (parsedState[0] === 'install') {
-      handleDaoInstall(parsedState.slice(1))
-    } else if (parsedState[0] === 'act') {
-      handleDaoAct(parsedState.slice(1))
-    } else {
+    const [commandName, ...params] = parsedState
+    const handler = handlers.get(commandName)
+
+    if (typeof handler !== 'function') {
       toast('Unrecognized command')
       handleChange('')
+      return
     }
-  }, [
-    handleDaoAct,
-    handleDaoExec,
-    handleDaoInstall,
-    parsedState,
-    toast,
-    handleChange,
-  ])
+
+    executeCommand(handler, params)
+  }, [parsedState, toast, handleChange, executeCommand])
 
   return (
     <>
@@ -181,7 +137,7 @@ function Prompt({ command, handleChange, handleSubmit, loading }) {
   const [historyIndex, setHistoryIndex] = useState(0)
 
   useEffect(() => {
-    const historyArray = localStorage.getItem(HISTORY_ARRAY)
+    const historyArray = localStorage.getItem(CONSOLE_COMMAND_HISTORY_KEY)
     if (!historyArray) {
       return
     }
@@ -211,7 +167,7 @@ function Prompt({ command, handleChange, handleSubmit, loading }) {
           if (e.keyCode === KEYCODES.enter && !isDisabled) {
             const newCommandHistory = [...commandHistory, command]
             localStorage.setItem(
-              HISTORY_ARRAY,
+              CONSOLE_COMMAND_HISTORY_KEY,
               JSON.stringify(newCommandHistory)
             )
             setCommandHistory(newCommandHistory)
