@@ -105,7 +105,6 @@ class MenuPanel extends React.PureComponent {
       APP_CONSOLE,
     ]
 
-    console.log(window.location)
     return (
       <Main>
         <div
