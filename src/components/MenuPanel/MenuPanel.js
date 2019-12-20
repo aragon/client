@@ -206,27 +206,33 @@ class MenuPanel extends React.PureComponent {
                         app.appId === 'console' ? (
                           <div key={app.appId}>
                             <ConsoleOptOutContext.Consumer>
-                              {({ consoleHidden }) =>
-                                !consoleHidden ? (
-                                  this.renderAppGroup(app)
-                                ) : (
-                                  <Spring
-                                    config={springs.smooth}
-                                    from={{ opacity: 0 }}
-                                    to={{
-                                      opacity:
-                                        activeInstanceId === 'console' &&
-                                        consoleHidden,
-                                    }}
-                                  >
-                                    {props => (
-                                      <div style={props} key={app.appId}>
+                              {({ consoleHidden }) => (
+                                <Spring
+                                  immediate={!consoleHidden}
+                                  config={springs.swift}
+                                  from={{ opacity: 0 }}
+                                  to={{
+                                    opacity: Number(
+                                      activeInstanceId === 'console' ||
+                                        !consoleHidden
+                                    ),
+                                  }}
+                                >
+                                  {({ opacity }) => (
+                                    <SystemAppConsoleWrapper
+                                      consoleHidden={consoleHidden}
+                                      isConsoleInstanceActive={
+                                        app.appId === 'console'
+                                      }
+                                      opacity={opacity}
+                                    >
+                                      <div key={app.appId}>
                                         {this.renderAppGroup(app)}
                                       </div>
-                                    )}
-                                  </Spring>
-                                )
-                              }
+                                    </SystemAppConsoleWrapper>
+                                  )}
+                                </Spring>
+                              )}
                             </ConsoleOptOutContext.Consumer>
                           </div>
                         ) : (
@@ -486,5 +492,32 @@ const SystemAppsToggleShadow = props => (
     </animated.div>
   </div>
 )
+
+const SystemAppConsoleWrapper = ({
+  children,
+  consoleHidden,
+  isConsoleInstanceActive,
+  opacity,
+  ...props
+}) => (
+  <AnimDiv
+    style={{ opacity }}
+    css={`
+      display: ${(consoleHidden && 'hidden') || 'auto'};
+      pointer-events: ${(consoleHidden && isConsoleInstanceActive && 'none') ||
+        'auto'};
+    `}
+    {...props}
+  >
+    {children}
+  </AnimDiv>
+)
+
+SystemAppConsoleWrapper.propTypes = {
+  children: PropTypes.node,
+  consoleHidden: PropTypes.bool,
+  isConsoleInstanceActive: PropTypes.bool,
+  opacity: PropTypes.number,
+}
 
 export default AnimatedMenuPanel
