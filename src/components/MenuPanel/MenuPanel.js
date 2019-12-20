@@ -122,7 +122,7 @@ function MenuPanel({
         </MenuPanelAppsLoader>
       )
     },
-    [appsStatus, activeInstanceId, renderAppGroup]
+    [appsStatus, activeInstanceId]
   )
 
   const appGroups = useMemo(
@@ -242,7 +242,27 @@ function MenuPanel({
                       ),
                     }}
                   >
-                    {systemApps.map(app => renderAppGroup(app))}
+                    {systemApps.map(app =>
+                      app.appId !== 'console' ? (
+                        renderAppGroup(app)
+                      ) : (
+                        <Spring
+                          key={app.appId}
+                          immediate={consoleVisible}
+                          config={springs.swift}
+                          from={{ opacity: 0 }}
+                          to={{
+                            opacity: Number(showConsole),
+                          }}
+                        >
+                          {({ opacity }) => (
+                            <AnimDiv style={{ opacity }}>
+                              {renderAppGroup(app)}
+                            </AnimDiv>
+                          )}
+                        </Spring>
+                      )
+                    )}
                   </AnimDiv>
                 </div>
               </div>
