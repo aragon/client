@@ -40,7 +40,8 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
           css={`
             display: block;
             margin: 0 auto;
-            margin-bottom: ${6 * GU}px;
+            margin-bottom: ${7 * GU}px;
+            margin-top: ${4 * GU}px;
             width: 300px;
             height: 156px;
           `}
