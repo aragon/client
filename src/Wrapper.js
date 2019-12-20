@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
-import { AppCenter, Home, Organization, Permissions } from './apps'
+import { AppCenter, Console, Home, Organization, Permissions } from './apps'
 import App404 from './components/App404/App404'
 import AppIFrame from './components/App/AppIFrame'
 import AppInternal from './components/App/AppInternal'
@@ -245,7 +245,6 @@ class Wrapper extends React.PureComponent {
       web3,
       wrapper,
     } = this.props
-
     const { appLoading, orgUpgradePanelOpened, upgradeModalOpened } = this.state
 
     const currentApp = apps.find(app =>
@@ -388,6 +387,14 @@ class Wrapper extends React.PureComponent {
             onOpenApp={this.openApp}
             onShowOrgVersionDetails={this.handleUpgradeModalOpen}
           />
+        </AppInternal>
+      )
+    }
+
+    if (instanceId === 'console') {
+      return (
+        <AppInternal>
+          <Console apps={apps} wrapper={wrapper} />
         </AppInternal>
       )
     }
