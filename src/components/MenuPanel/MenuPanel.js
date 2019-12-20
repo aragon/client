@@ -18,13 +18,13 @@ import {
   DaoAddressType,
   DaoStatusType,
 } from '../../prop-types'
+import { useConsole } from '../../apps/Console/useConsole'
 import { staticApps } from '../../static-apps'
 import { DAO_STATUS_LOADING } from '../../symbols'
 import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
-import { ConsoleOptOutContext } from '../../apps/Console/useConsole'
 
 export const MENU_PANEL_SHADOW_WIDTH = 3
 export const MENU_PANEL_WIDTH = 28 * GU
@@ -203,40 +203,18 @@ class MenuPanel extends React.PureComponent {
                       }}
                     >
                       {systemApps.map(app =>
-                        app.appId === 'console' ? (
-                          <div key={app.appId}>
-                            <ConsoleOptOutContext.Consumer>
-                              {({ consoleHidden }) => (
-                                <Spring
-                                  immediate={!consoleHidden}
-                                  config={springs.swift}
-                                  from={{ opacity: 0 }}
-                                  to={{
-                                    opacity: Number(
-                                      activeInstanceId === 'console' ||
-                                        !consoleHidden
-                                    ),
-                                  }}
-                                >
-                                  {({ opacity }) => (
-                                    <SystemAppConsoleWrapper
-                                      consoleHidden={consoleHidden}
-                                      isConsoleInstanceActive={
-                                        app.appId === 'console'
-                                      }
-                                      opacity={opacity}
-                                    >
-                                      <div key={app.appId}>
-                                        {this.renderAppGroup(app)}
-                                      </div>
-                                    </SystemAppConsoleWrapper>
-                                  )}
-                                </Spring>
-                              )}
-                            </ConsoleOptOutContext.Consumer>
-                          </div>
-                        ) : (
+                        app.appId !== 'console' ? (
                           this.renderAppGroup(app)
+                        ) : (
+                          <div key={app.appId}>
+                            <ConsoleAppGroup
+                              isConsoleInstanceActive={
+                                activeInstanceId === 'console'
+                              }
+                            >
+                              {this.renderAppGroup(app)}
+                            </ConsoleAppGroup>
+                          </div>
                         )
                       )}
                     </AnimDiv>
@@ -493,31 +471,35 @@ const SystemAppsToggleShadow = props => (
   </div>
 )
 
-const SystemAppConsoleWrapper = ({
-  children,
-  consoleHidden,
-  isConsoleInstanceActive,
-  opacity,
-  ...props
-}) => (
-  <AnimDiv
-    style={{ opacity }}
-    css={`
-      display: ${(consoleHidden && 'hidden') || 'auto'};
-      pointer-events: ${(consoleHidden && isConsoleInstanceActive && 'none') ||
-        'auto'};
-    `}
-    {...props}
-  >
-    {children}
-  </AnimDiv>
-)
+function ConsoleAppGroup({ isConsoleInstanceActive, ...props }) {
+  const { consoleHidden } = useConsole()
 
-SystemAppConsoleWrapper.propTypes = {
-  children: PropTypes.node,
-  consoleHidden: PropTypes.bool,
+  return (
+    <Spring
+      immediate={!consoleHidden}
+      config={springs.swift}
+      from={{ opacity: 0 }}
+      to={{
+        opacity: Number(isConsoleInstanceActive || !consoleHidden),
+      }}
+    >
+      {({ opacity }) => (
+        <AnimDiv
+          style={{ opacity }}
+          css={`
+            display: ${consoleHidden ? 'hidden' : 'auto'};
+            pointer-events: ${consoleHidden && isConsoleInstanceActive
+              ? 'none'
+              : 'auto'};
+          `}
+          {...props}
+        />
+      )}
+    </Spring>
+  )
+}
+ConsoleAppGroup.propTypes = {
   isConsoleInstanceActive: PropTypes.bool,
-  opacity: PropTypes.number,
 }
 
 export default AnimatedMenuPanel
