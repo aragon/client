@@ -13,7 +13,7 @@ import {
   getPackageVersion,
   setPackageVersion,
 } from './local-settings'
-import { ConsoleOptOutProvider } from './apps/Console/useConsole'
+import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
@@ -54,7 +54,7 @@ function Providers() {
   return (
     <Main layout={false} scrollView={false} theme={appearance}>
       <HelpScoutProvider>
-        <ConsoleOptOutProvider>
+        <ConsoleVisibleProvider>
           <GlobalErrorHandler>
             <WalletBlockNumberProvider>
               <WalletProvider>
@@ -62,7 +62,7 @@ function Providers() {
               </WalletProvider>
             </WalletBlockNumberProvider>
           </GlobalErrorHandler>
-        </ConsoleOptOutProvider>
+        </ConsoleVisibleProvider>
       </HelpScoutProvider>
     </Main>
   )
