@@ -6,13 +6,14 @@ import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
 import App from './App'
 import GlobalErrorHandler from './GlobalErrorHandler'
+import { ClientThemeProvider, useClientTheme } from './client-theme'
 import { WalletProvider, WalletBlockNumberProvider } from './wallet'
 import {
   getLastPackageVersion,
   getPackageVersion,
   setPackageVersion,
 } from './local-settings'
-import { ConsoleOptOutProvider } from './apps/Console/useConsole'
+import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
@@ -48,19 +49,28 @@ if (packageVersion !== lastPackageVersion) {
   setPackageVersion(packageVersion)
 }
 
+function Providers() {
+  const { appearance } = useClientTheme()
+  return (
+    <Main layout={false} scrollView={false} theme={appearance}>
+      <HelpScoutProvider>
+        <ConsoleVisibleProvider>
+          <GlobalErrorHandler>
+            <WalletBlockNumberProvider>
+              <WalletProvider>
+                <App />
+              </WalletProvider>
+            </WalletBlockNumberProvider>
+          </GlobalErrorHandler>
+        </ConsoleVisibleProvider>
+      </HelpScoutProvider>
+    </Main>
+  )
+}
+
 ReactDOM.render(
-  <Main layout={false} scrollView={false}>
-    <HelpScoutProvider>
-      <ConsoleOptOutProvider>
-        <GlobalErrorHandler>
-          <WalletBlockNumberProvider>
-            <WalletProvider>
-              <App />
-            </WalletProvider>
-          </WalletBlockNumberProvider>
-        </GlobalErrorHandler>
-      </ConsoleOptOutProvider>
-    </HelpScoutProvider>
-  </Main>,
+  <ClientThemeProvider>
+    <Providers />
+  </ClientThemeProvider>,
   document.getElementById('root')
 )

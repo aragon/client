@@ -1,13 +1,14 @@
 // List of configurable settings
 const APP_LOCATOR = 'APP_LOCATOR'
+const CLIENT_THEME = 'THEME'
 const DEFAULT_ETH_NODE = 'DEFAULT_ETH_NODE'
 const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
 const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
 const ETH_SUBSCRIPTION_EVENT_DELAY = 'ETH_SUBSCRIPTION_EVENT_DELAY'
 const IPFS_GATEWAY = 'IPFS_GATEWAY'
+const PACKAGE_VERSION = 'PACKAGE_VERSION'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 const SENTRY_DSN = 'SENTRY_DSN'
-const PACKAGE_VERSION = 'PACKAGE_VERSION'
 
 // Parcel requires env vars to be declared statically.
 const CONFIGURATION_VARS = [
@@ -52,6 +53,7 @@ const CONFIGURATION_VARS = [
     process.env.ARAGON_PACKAGE_VERSION,
     process.env.REACT_APP_PACKAGE_VERSION,
   ],
+  [CLIENT_THEME, process.env.ARAGON_CLIENT_THEME],
 ].reduce(
   (acc, [option, envValue, envValueCompat]) => ({
     ...acc,
@@ -139,6 +141,26 @@ export function getLastPackageVersion() {
   return getLocalStorageSetting(PACKAGE_VERSION) || ''
 }
 
-export function setPackageVersion(version, purge) {
+export function setPackageVersion(version) {
   return setLocalSetting(PACKAGE_VERSION, version)
+}
+
+export function getClientTheme() {
+  const storedClientTheme = getLocalStorageSetting(CLIENT_THEME)
+  if (storedClientTheme) {
+    try {
+      return JSON.parse(storedClientTheme)
+    } catch (err) {}
+  }
+  return {
+    // To be replaced by an “auto” state
+    appearance: window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light',
+    theme: null,
+  }
+}
+
+export function setClientTheme(appearance, theme = null) {
+  return setLocalSetting(CLIENT_THEME, JSON.stringify({ appearance, theme }))
 }

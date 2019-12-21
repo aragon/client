@@ -312,3 +312,21 @@ export function useLocalIdentity(entity) {
 
   return { name, handleResolve }
 }
+
+export function useMatchMedia(query) {
+  const [matches, setMatches] = useState(false)
+
+  const mq = useMemo(() => window.matchMedia(query), [query])
+
+  useEffect(() => {
+    const fn = ({ matches }) => setMatches(matches)
+    mq.addListener(fn)
+    return () => mq.removeListener(fn)
+  }, [mq, query])
+
+  return matches
+}
+
+export function usePrefersDarkMode() {
+  return useMatchMedia('(prefers-color-scheme: dark)')
+}

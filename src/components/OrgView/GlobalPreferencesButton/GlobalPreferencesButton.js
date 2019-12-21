@@ -7,18 +7,23 @@ import {
   IconSettings,
   Popover,
   RADIUS,
+  Switch,
   textStyle,
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import IconNetwork from './IconNetwork'
-import IconCustomLabels from './IconCustomLabels'
-import IconNotifications from './IconNotifications'
-import IconHelpAndFeedback from './IconHelpAndFeedback'
+import { useClientTheme } from '../../../client-theme'
+
+import iconNetwork from '../../../assets/global-preferences-network.svg'
+import iconCustomLabels from '../../../assets/global-preferences-custom-labels.svg'
+import iconNotifications from '../../../assets/global-preferences-notifications.svg'
+import iconHelpAndFeedback from '../../../assets/global-preferences-help-and-feedback.svg'
 
 function GlobalPreferencesButton({ onOpen }) {
   const theme = useTheme()
+  const clientTheme = useClientTheme()
   const { below } = useViewport()
+
   const [opened, setOpened] = useState(false)
   const containerRef = useRef()
 
@@ -32,6 +37,10 @@ function GlobalPreferencesButton({ onOpen }) {
     [onOpen]
   )
 
+  const toggleDarkMode = useCallback(() => {
+    clientTheme.toggleAppearance()
+  }, [clientTheme])
+
   return (
     <React.Fragment>
       <div ref={containerRef}>
@@ -39,8 +48,8 @@ function GlobalPreferencesButton({ onOpen }) {
           element="div"
           onClick={handleToggle}
           css={`
-            height: 100%;
             width: ${4.25 * GU}px;
+            height: 100%;
             border-radius: 0;
           `}
           label="Global preferences"
@@ -84,47 +93,43 @@ function GlobalPreferencesButton({ onOpen }) {
           >
             Global preferences
           </li>
-          <li
-            css={`
-              border-bottom: 1px solid ${theme.border};
-            `}
-          >
-            <Item
-              onClick={handleItemClick('custom-labels')}
-              icon={<IconCustomLabels />}
-              label="Custom labels"
-            />
-          </li>
-          <li
-            css={`
-              border-bottom: 1px solid ${theme.border};
-            `}
-          >
-            <Item
-              onClick={handleItemClick('network')}
-              icon={<IconNetwork />}
-              label="Network"
-            />
-          </li>
-          <li
-            css={`
-              border-bottom: 1px solid ${theme.border};
-            `}
-          >
-            <Item
-              onClick={handleItemClick('notifications')}
-              icon={<IconNotifications />}
-              label="Notifications"
-            />
-          </li>
-          <li>
-            <Item
-              lastItem
-              onClick={handleItemClick('help-and-feedback')}
-              icon={<IconHelpAndFeedback />}
-              label="Help & Feedback"
-            />
-          </li>
+          <Item
+            onClick={handleItemClick('custom-labels')}
+            icon={iconCustomLabels}
+            label="Custom labels"
+          />
+          <Item
+            onClick={handleItemClick('network')}
+            icon={iconNetwork}
+            label="Network"
+          />
+          <Item
+            onClick={handleItemClick('notifications')}
+            icon={iconNotifications}
+            label="Notifications"
+          />
+          <Item
+            onClick={handleItemClick('help-and-feedback')}
+            icon={iconHelpAndFeedback}
+            label="Help & Feedback"
+          />
+          <Item
+            onClick={toggleDarkMode}
+            label={
+              <React.Fragment>
+                <div
+                  css={`
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                  `}
+                >
+                  <span>Dark mode</span>
+                  <Switch checked={clientTheme.appearance === 'dark'} />
+                </div>
+              </React.Fragment>
+            }
+          />
         </ul>
       </Popover>
     </React.Fragment>
@@ -139,48 +144,57 @@ function Item({ icon, label, onClick, lastItem }) {
   const theme = useTheme()
 
   return (
-    <ButtonBase
+    <li
       css={`
-        width: 100%;
-        height: 100%;
-        height: 56px;
-        display: block;
-        padding: 0;
-        border-radius: 0;
+        & + & {
+          border-top: 1px solid ${theme.border};
+        }
       `}
-      onClick={onClick}
-      label={label}
     >
-      <div
+      <ButtonBase
+        onClick={onClick}
+        label={label}
         css={`
           width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: flex-end;
-          padding: ${2 * GU}px;
-          justify-content: left;
-          ${lastItem &&
-            `
-              border-bottom-left-radius: ${RADIUS}px;
-              border-bottom-right-radius: ${RADIUS}px;
-            `}
-
-          &:active,
-          &:focus {
-            background: ${theme.surfaceSelected};
-          }
+          height: ${7 * GU}px;
+          border-radius: 0;
         `}
       >
-        {icon}
-        <span css={icon && `margin-left: ${1 * GU}px;`}>{label}</span>
-      </div>
-    </ButtonBase>
+        <div
+          css={`
+            display: flex;
+            width: 100%;
+            height: 100%;
+            padding: ${2 * GU}px;
+            justify-content: left;
+            align-items: center;
+
+            &:active,
+            &:focus {
+              background: ${theme.surfacePressed};
+            }
+          `}
+        >
+          {icon && <img src={icon} alt="" />}
+          <div
+            css={`
+              flex-grow: 1;
+              display: flex;
+              align-items: center;
+              margin-left: ${icon ? 1 * GU : 0}px;
+            `}
+          >
+            {label}
+          </div>
+        </div>
+      </ButtonBase>
+    </li>
   )
 }
 
 Item.propTypes = {
-  icon: PropTypes.node.isRequired,
-  label: PropTypes.string.isRequired,
+  icon: PropTypes.node,
+  label: PropTypes.node.isRequired,
   onClick: PropTypes.func.isRequired,
   lastItem: PropTypes.bool,
 }

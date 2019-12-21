@@ -1,35 +1,35 @@
 import React, { useEffect, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 
-const CONSOLE_OPTOUT_KEY = 'CONSOLE_OPTOUT'
+const CONSOLE_VISIBLE_KEY = 'CONSOLE_VISIBLE'
 export const CONSOLE_COMMAND_HISTORY_KEY = 'CONSOLE_COMMAND_HISTORY'
 
-export const ConsoleOptOutContext = React.createContext()
+export const ConsoleVisibleContext = React.createContext()
 
-function ConsoleOptOutProvider({ children }) {
+function ConsoleVisibleProvider({ children }) {
   const [consoleVisible, setConsoleVisible] = useState(
-    localStorage.getItem(CONSOLE_OPTOUT_KEY) === 'true'
+    localStorage.getItem(CONSOLE_VISIBLE_KEY) === 'true'
   )
 
   useEffect(() => {
-    localStorage.setItem(CONSOLE_OPTOUT_KEY, consoleVisible ? 'true' : 'false')
+    localStorage.setItem(CONSOLE_VISIBLE_KEY, consoleVisible ? 'true' : 'false')
   }, [consoleVisible])
 
   return (
-    <ConsoleOptOutContext.Provider
+    <ConsoleVisibleContext.Provider
       value={{ consoleVisible, setConsoleVisible }}
     >
       {children}
-    </ConsoleOptOutContext.Provider>
+    </ConsoleVisibleContext.Provider>
   )
 }
 
-ConsoleOptOutProvider.propTypes = {
+ConsoleVisibleProvider.propTypes = {
   children: PropTypes.node,
 }
 
 function useConsole() {
-  return useContext(ConsoleOptOutContext)
+  return useContext(ConsoleVisibleContext)
 }
 
-export { useConsole, ConsoleOptOutProvider }
+export { useConsole, ConsoleVisibleProvider }

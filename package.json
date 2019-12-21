@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
-    "@aragon/ui": "^1.1.0",
-    "@aragon/wrapper": "^5.0.0-rc.21",
+    "@aragon/ui": "^1.2.1",
+    "@aragon/wrapper": "^5.0.0-rc.22",
     "@sentry/browser": "^5.5.0",
     "@ungap/event-target": "^0.1.0",
     "clipboard-polyfill": "^2.8.6",

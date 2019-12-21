@@ -1,6 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonIcon, IconMenu, GU, useTheme, useViewport } from '@aragon/ui'
+import {
+  ButtonIcon,
+  IconMenu,
+  GU,
+  useTheme,
+  useViewport,
+  springs,
+} from '@aragon/ui'
+import { Transition, animated } from 'react-spring'
 import {
   AppInstanceGroupType,
   AppsStatusType,
@@ -10,6 +18,7 @@ import {
 } from '../../prop-types'
 import { DAO_STATUS_LOADING } from '../../symbols'
 import { iOS, isSafari } from '../../utils'
+import { useClientTheme } from '../../client-theme'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
 import AccountModule from '../AccountModule/AccountModule'
@@ -18,6 +27,8 @@ import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferences
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
+
+const AnimatedDiv = animated.div
 
 function OrgView({
   activeInstanceId,
@@ -31,6 +42,7 @@ function OrgView({
   onOpenPreferences,
 }) {
   const theme = useTheme()
+  const { appearance } = useClientTheme()
   const { width, below } = useViewport()
 
   const autoClosingPanel = below('medium')
@@ -56,6 +68,21 @@ function OrgView({
   useEffect(() => {
     setMenuPanelOpen(!autoClosingPanel)
   }, [autoClosingPanel])
+
+  const [showAppOverlay, setShowAppOverlay] = useState(false)
+
+  useEffect(() => {
+    setShowAppOverlay(true)
+
+    const timer = setTimeout(() => {
+      setShowAppOverlay(false)
+    }, 0)
+
+    return () => {
+      clearTimeout(timer)
+      setShowAppOverlay(false)
+    }
+  }, [appearance])
 
   return (
     <AppWidthContext.Provider
@@ -164,19 +191,51 @@ function OrgView({
               onMenuPanelClose={handleCloseMenuPanel}
               onOpenApp={handleOpenApp}
               opened={menuPanelOpen}
-              css={`
-                z-index: 3;
-              `}
+              css="z-index: 3"
             />
             <div
               css={`
+                flex-grow: 1;
+                display: flex;
                 position: relative;
                 z-index: 1;
-                flex-grow: 1;
-                overflow: hidden;
               `}
             >
-              {children}
+              <Transition
+                config={springs.lazy}
+                items={showAppOverlay}
+                immediate={showAppOverlay}
+                enter={{ opacity: 1 }}
+                leave={{ opacity: 0 }}
+              >
+                {show =>
+                  show &&
+                  (({ opacity }) => (
+                    <AnimatedDiv
+                      style={{ opacity }}
+                      css={`
+                        position: absolute;
+                        z-index: 2;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: ${theme.background};
+                      `}
+                    />
+                  ))
+                }
+              </Transition>
+              <div
+                css={`
+                  position: relative;
+                  z-index: 1;
+                  flex-grow: 1;
+                  overflow: hidden;
+                `}
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>

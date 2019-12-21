@@ -140,43 +140,43 @@ export const performTransactionPaths = async (wrapper, transactionPaths) => {
 const subscribe = (
   wrapper,
   {
-    onApps,
-    onPermissions,
-    onForwarders,
     onAppIdentifiers,
-    onInstalledRepos,
+    onApps,
+    onForwarders,
     onIdentityIntent,
+    onInstalledRepos,
+    onPermissions,
+    onRequestPath,
     onSignatures,
     onTransaction,
-    onRequestPath,
   },
   { ipfsConf }
 ) => {
   const {
-    apps,
-    permissions,
-    forwarders,
     appIdentifiers,
-    installedRepos,
+    apps,
+    forwarders,
     identityIntents,
+    installedRepos,
+    pathIntents,
+    permissions,
     signatures,
     transactions,
-    pathIntents,
   } = wrapper
 
   const workerSubscriptionPool = new WorkerSubscriptionPool()
 
   const subscriptions = {
-    permissions: permissions.subscribe(onPermissions),
-    forwarders: forwarders.subscribe(onForwarders),
     appIdentifiers: appIdentifiers.subscribe(onAppIdentifiers),
-    installedRepos: installedRepos.subscribe(onInstalledRepos),
-    identityIntents: identityIntents.subscribe(onIdentityIntent),
-    transactions: transactions.subscribe(onTransaction),
-    signatures: signatures.subscribe(onSignatures),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
+    forwarders: forwarders.subscribe(onForwarders),
+    identityIntents: identityIntents.subscribe(onIdentityIntent),
+    installedRepos: installedRepos.subscribe(onInstalledRepos),
     pathIntents: pathIntents.subscribe(onRequestPath),
+    permissions: permissions.subscribe(onPermissions),
+    signatures: signatures.subscribe(onSignatures),
+    transactions: transactions.subscribe(onTransaction),
 
     apps: apps.subscribe(apps => {
       onApps(
@@ -244,21 +244,22 @@ const subscribe = (
 const initWrapper = async (
   dao,
   {
-    provider,
-    walletProvider = null,
+    guiStyle = null,
     ipfsConf = ipfsDefaultConf,
-    onApps = noop,
-    onPermissions = noop,
-    onForwarders = noop,
     onAppIdentifiers = noop,
-    onInstalledRepos = noop,
-    onIdentityIntent = noop,
-    onTransaction = noop,
-    onSignatures = noop,
+    onApps = noop,
     onDaoAddress = noop,
-    onWeb3 = noop,
+    onForwarders = noop,
+    onIdentityIntent = noop,
+    onInstalledRepos = noop,
+    onPermissions = noop,
     onRequestPath = noop,
+    onSignatures = noop,
+    onTransaction = noop,
+    onWeb3 = noop,
+    provider,
     walletAccount = null,
+    walletProvider = null,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -290,14 +291,14 @@ const initWrapper = async (
     },
   })
 
-  const web3 = getWeb3(walletProvider || provider)
-  onWeb3(web3)
+  onWeb3(getWeb3(walletProvider || provider))
 
   try {
     await wrapper.init({
       accounts: {
         providedAccounts: walletAccount ? [walletAccount] : [],
       },
+      guiStyle,
     })
   } catch (err) {
     if (err.message === 'Provided daoAddress is not a DAO') {
@@ -313,15 +314,15 @@ const initWrapper = async (
   const subscriptions = subscribe(
     wrapper,
     {
-      onApps,
-      onPermissions,
-      onForwarders,
       onAppIdentifiers,
-      onInstalledRepos,
+      onApps,
+      onForwarders,
       onIdentityIntent,
+      onInstalledRepos,
+      onPermissions,
+      onRequestPath,
       onSignatures,
       onTransaction,
-      onRequestPath,
     },
     { ipfsConf }
   )

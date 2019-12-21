@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
-import { EthereumAddressType } from './prop-types'
+import { EthereumAddressType, ClientThemeType } from './prop-types'
 import { network, web3Providers } from './environment'
+import { useClientTheme } from './client-theme'
 import {
   ARAGONID_ENS_DOMAIN,
   getAppPath,
@@ -67,6 +68,7 @@ if (network.type === 'ropsten') {
 
 class App extends React.Component {
   static propTypes = {
+    clientTheme: ClientThemeType.isRequired,
     theme: PropTypes.object.isRequired,
     walletAccount: EthereumAddressType,
   }
@@ -99,11 +101,18 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { walletAccount } = this.props
-    if (walletAccount !== prevProps.walletAccount && this.state.wrapper) {
-      this.state.wrapper.setAccounts(
-        walletAccount === null ? [] : [walletAccount]
-      )
+    const { clientTheme, walletAccount } = this.props
+    const { wrapper } = this.state
+
+    if (wrapper && walletAccount !== prevProps.walletAccount) {
+      wrapper.setAccounts(walletAccount === null ? [] : [walletAccount])
+    }
+
+    if (
+      wrapper &&
+      (!prevProps.wrapper || clientTheme !== prevProps.clientTheme)
+    ) {
+      wrapper.setGuiStyle(clientTheme.appearance, clientTheme.theme)
     }
   }
 
@@ -157,7 +166,7 @@ class App extends React.Component {
   }
 
   updateDao(dao = null) {
-    const { walletAccount } = this.props
+    const { clientTheme, walletAccount } = this.props
     // Cancel the subscriptions / unload the wrapper
     if (this.state.wrapper) {
       this.state.wrapper.cancel()
@@ -181,6 +190,10 @@ class App extends React.Component {
 
     log('Init DAO', dao)
     initWrapper(dao, {
+      guiStyle: {
+        appearance: clientTheme.appearance,
+        theme: clientTheme.theme,
+      },
       provider: web3Providers.default,
       walletAccount,
       walletProvider: web3Providers.wallet,
@@ -475,7 +488,16 @@ class App extends React.Component {
 }
 
 export default function(props) {
-  const theme = useTheme()
   const { account } = useWallet()
-  return <App theme={theme} walletAccount={account} {...props} />
+  const theme = useTheme()
+  const clientTheme = useClientTheme()
+
+  return (
+    <App
+      clientTheme={clientTheme}
+      theme={theme}
+      walletAccount={account}
+      {...props}
+    />
+  )
 }
