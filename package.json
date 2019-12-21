@@ -1,7 +1,7 @@
 {
   "name": "aragon",
   "description": "Aragon DApp",
-  "version": "0.8.5-hotfix",
+  "version": "0.8.6",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "repository": {
