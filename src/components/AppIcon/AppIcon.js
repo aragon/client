@@ -11,6 +11,7 @@ import iconSvgKernel from './assets/app-kernel.svg'
 import iconSvgPermissions from './assets/app-permissions.svg'
 import iconSvgRegistry from './assets/app-registry.svg'
 import iconSvgSettings from './assets/app-settings.svg'
+import iconSvgConsole from './assets/app-console.svg'
 
 const DEFAULT_SIZE = 24
 const DEFAULT_RADIUS = RADIUS
@@ -20,6 +21,7 @@ const DISPLAY_FALLBACK_DELAY = 50
 
 const KNOWN_ICONS = new Map([
   ['apps', iconSvgApps],
+  ['console', iconSvgConsole],
   ['home', iconSvgHome],
   ['organization', iconSvgSettings],
   ['permissions', iconSvgPermissions],
