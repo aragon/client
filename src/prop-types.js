@@ -263,3 +263,18 @@ export const WalletType = PropTypes.shape({
   providerInfo: PropTypes.object.isRequired,
   web3: PropTypes.object.isRequired,
 })
+
+export const AragonUiAppearanceType = PropTypes.oneOf(['dark', 'light'])
+
+export const AragonUiThemeType = PropTypes.oneOf([
+  PropTypes.string,
+  PropTypes.shape({
+    _name: PropTypes.string.isRequired,
+    _appearance: AragonUiAppearanceType.isRequired,
+  }),
+])
+
+export const ClientThemeType = PropTypes.shape({
+  theme: AragonUiThemeType,
+  appearance: AragonUiAppearanceType.isRequired,
+})

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
-import { EthereumAddressType } from './prop-types'
+import { EthereumAddressType, ClientThemeType } from './prop-types'
 import { network, web3Providers } from './environment'
 import { useClientTheme } from './client-theme'
 import {
@@ -68,7 +68,7 @@ if (network.type === 'ropsten') {
 
 class App extends React.Component {
   static propTypes = {
-    clientTheme: PropTypes.object.isRequired,
+    clientTheme: ClientThemeType.isRequired,
     theme: PropTypes.object.isRequired,
     walletAccount: EthereumAddressType,
   }
