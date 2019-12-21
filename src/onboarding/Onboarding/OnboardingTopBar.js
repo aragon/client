@@ -28,7 +28,7 @@ function OnboardingTopBar({ status, solid }) {
           left: 0;
           right: 0;
           height: ${7.5 * GU}px;
-          background: rgba(255, 255, 255, ${solid ? 0.8 : 0});
+          background: ${theme.surface.alpha(solid ? 0.8 : 0)};
           transition: background 150ms ease-in-out;
           backdrop-filter: blur(6px);
         `}
