@@ -162,48 +162,12 @@ export default {
     // Token Request app
     const acceptedDepositToken = [ETH_ADDRESS]
 
-    // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
-    // often not mined
-    const forceMultipleTransactions =
-      network.type === 'rinkeby' && members.length > 1
-
-    if (!hasPayroll && !forceMultipleTransactions) {
-      return [
-        {
-          name: 'Create organization',
-          transaction: createTx('newTokenAndBaseInstance', [
-            tokenName,
-            tokenSymbol,
-            domain,
-            accounts,
-            stakes,
-            financePeriod,
-            useAgentAsVault,
-          ]),
-        },
-        {
-          name: 'Install dandelion apps',
-          transaction: createTx('installDandelionApps', [
-            domain,
-            redeemableTokens,
-            acceptedDepositToken,
-            tokenAddress,
-            lockSettings,
-            votingSettings,
-          ]),
-        },
-      ]
-    }
-
     return [
       {
-        name: 'Create token',
-        transaction: createTx('newToken', [tokenName, tokenSymbol]),
-      },
-      {
         name: 'Create organization',
-        transaction: createTx('newBaseInstance', [
-          domain,
+        transaction: createTx('newTokenAndBaseInstance', [
+          tokenName,
+          tokenSymbol,
           accounts,
           stakes,
           financePeriod,
