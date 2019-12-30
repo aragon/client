@@ -9,6 +9,7 @@ import myBitImage from './images/mybit.svg'
 import onehive from './images/1hive.svg'
 import aragonMesh from './images/aragon-mesh.svg'
 import lightwaveImage from './images/lightwave.svg'
+import saintFameImage from './images/saint-fame.svg'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -86,6 +87,13 @@ export const KnownOrganizations = {
         name: 'Aragon Network',
         image: aragonNetworkImage,
         template: TEMPLATE_MEMBERSHIP,
+      },
+      {
+        address: '0x4d2e79c0df917721f082bc1fd7322356962d1eb6',
+        domain: 'sf.aragonid.eth',
+        name: 'Saint Fame',
+        image: saintFameImage,
+        template: TEMPLATE_REPUTATION,
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),
