@@ -22,7 +22,7 @@ function completeDomain(domain) {
 }
 
 export default {
-  id: 'dandelion-org-template-staging.open.aragonpm.eth',
+  id: 'dandelion-org-template.open.aragonpm.eth',
   name: 'Dandelion',
   new: true,
   header,
