@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import BN from 'bn.js'
-import { network } from '../../environment'
 import {
   ClaimDomainScreen,
   KnownAppBadge,
@@ -105,7 +104,6 @@ export default {
     ],
   ],
   prepareTransactions(createTx, data) {
-    const hasPayroll = false
     const blockTime = getBlockTime()
     const { domain, optionalModules = [], tokens, voting, lock } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
