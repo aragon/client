@@ -131,10 +131,7 @@ function DeploymentStepsItem({ index, name, status, dateStart, gasPrice }) {
             color: ${theme.surfaceContentSecondary};
           `}
         >
-          <StatusMessage
-            status={status}
-            remainingTime={remainingTime}
-          />
+          <StatusMessage status={status} remainingTime={remainingTime} />
         </div>
       </div>
     </div>
