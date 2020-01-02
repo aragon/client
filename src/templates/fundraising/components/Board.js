@@ -28,7 +28,6 @@ import {
   IdentityBadge,
   KnownAppBadge,
   Navigation,
-  PercentageField,
   ScreenPropsType,
 } from '../../kit'
 
@@ -82,7 +81,13 @@ function validateDuplicateAddresses(members) {
   return validAddresses.length === new Set(validAddresses).size
 }
 
-function validationErrorToken(tokenName, tokenSymbol, members) {
+function validationError(
+  tokenName,
+  tokenSymbol,
+  members,
+  signatures,
+  duration
+) {
   if (!members.some(address => isAddress(address))) {
     return 'You need at least one valid address.'
   }
@@ -95,10 +100,9 @@ function validationErrorToken(tokenName, tokenSymbol, members) {
   if (!tokenSymbol) {
     return 'Please add a token symbol.'
   }
-  return null
-}
-
-function validationErrorVoting(duration) {
+  if (signatures < 0) {
+    return 'Please ensure that board voting requires at least one signature.'
+  }
   if (duration < 10 * MINUTE_IN_SECONDS) {
     return 'Please ensure the vote duration is equal to or longer than 10 minutes.'
   }
@@ -124,7 +128,10 @@ function Board({
       ? screenData.members
       : ['']
   )
-  const [signatures, setSignatures] = useState(screenData.signatures || -1)
+  console.log('Signatures ' + screenData.signatures)
+  const [signatures, setSignatures] = useState(
+    screenData.signatures >= 0 ? screenData.signatures : -1
+  )
   const [{ support, quorum, duration }, updateField] = useReducer(
     reduceFields,
     {
@@ -135,20 +142,11 @@ function Board({
   )
 
   const membersRef = useRef()
-  const supportRef = useRef()
-  const quorumRef = useRef()
 
   // Focus the token name as soon as it becomes available
   const handleTokenNameRef = useCallback(element => {
     if (element) {
       element.focus()
-    }
-  }, [])
-
-  const handleSupportRef = useCallback(ref => {
-    supportRef.current = ref
-    if (ref) {
-      ref.focus()
     }
   }, [])
 
@@ -221,16 +219,6 @@ function Board({
     )
   }, [])
 
-  const handleSupportChange = useCallback(value => {
-    setFormError(null)
-    updateField(['support', value])
-  }, [])
-
-  const handleQuorumChange = useCallback(value => {
-    setFormError(null)
-    updateField(['quorum', value])
-  }, [])
-
   const handleDurationChange = useCallback(value => {
     setFormError(null)
     updateField(['duration', value])
@@ -249,7 +237,13 @@ function Board({
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
-      const error = validationErrorToken(tokenName, tokenSymbol, members)
+      const error = validationError(
+        tokenName,
+        tokenSymbol,
+        members,
+        signatures,
+        duration
+      )
       setFormError(error)
 
       if (!error) {
@@ -276,36 +270,12 @@ function Board({
       next,
       tokenName,
       tokenSymbol,
+      signatures,
       support,
       quorum,
       duration,
     ]
   )
-
-  const isPercentageFieldFocused = useCallback(() => {
-    return (
-      (supportRef.current &&
-        supportRef.current.element === document.activeElement) ||
-      (quorumRef.current &&
-        quorumRef.current.element === document.activeElement)
-    )
-  }, [])
-
-  const prevNextRef = useRef()
-
-  const Subtitle = ({ content }) => {
-    return (
-      <h4
-        css={`
-          ${textStyle('title4')};
-          color: ${theme.contentSecondary};
-          margin-bottom: ${3 * GU}px;
-        `}
-      >
-        {content}
-      </h4>
-    )
-  }
 
   return (
     <form
@@ -559,6 +529,21 @@ Board.defaultProps = {
 
 Board.formatReviewFields = formatReviewFields
 
+function Subtitle({ content }) {
+  const theme = useTheme()
+
+  return (
+    <h4
+      css={`
+        ${textStyle('title4')};
+        color: ${theme.contentSecondary};
+        margin-bottom: ${3 * GU}px;
+      `}
+    >
+      {content}
+    </h4>
+  )
+}
 function MemberField({ index, member, hideRemoveButton, onUpdate, onRemove }) {
   const theme = useTheme()
   const fieldsLayout = useFieldsLayout()
