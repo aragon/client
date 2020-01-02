@@ -69,6 +69,7 @@ function MenuPanel({
 
   const handleToggleSystemApps = useCallback(() => {
     setSystemAppsOpened(opened => !opened)
+    systemAppsOpenedState.set(!systemAppsOpenedState.isOpen())
     setSystemAppsToggled(true)
   }, [])
 
@@ -149,7 +150,7 @@ function MenuPanel({
   useEffect(() => {
     const isSystemAppActive =
       systemApps.some(systemApp => systemApp.appId === activeInstanceId) ||
-      systemAppsOpened
+      systemAppsOpenedState.isOpen()
     setSystemAppsOpened(isSystemAppActive)
     setSystemAppsToggled(true)
   }, [systemApps, activeInstanceId, systemAppsToggled, systemAppsOpened])
