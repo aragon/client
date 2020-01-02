@@ -128,7 +128,6 @@ function Board({
       ? screenData.members
       : ['']
   )
-  console.log('Signatures ' + screenData.signatures)
   const [signatures, setSignatures] = useState(
     screenData.signatures >= 0 ? screenData.signatures : -1
   )
