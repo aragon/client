@@ -230,9 +230,7 @@ const HalfHider = styled.div`
   height: ${({ diameter }) => diameter}px;
   clip-path: inset(
     ${({ side, diameter }) =>
-      side === 'right'
-        ? `0px 0px 0px ${diameter / 2}px`
-        : `0px ${diameter / 2}px 0px 0px`}
+      side === 'right' ? `0 0 0 ${diameter / 2}px` : `0 ${diameter / 2}px 0 0`}
   );
 `
 
@@ -242,12 +240,12 @@ const HalfRing = styled.div.attrs(({ angle }) => ({
   },
 }))`
   position: absolute;
-  top: 0px;
+  top: 0;
   width: ${({ diameter }) => diameter}px;
   height: ${({ diameter }) => diameter}px;
   border: 2px solid ${({ theme }) => theme.selected};
   border-radius: 50%;
-  clip-path: inset(0px ${({ diameter }) => diameter / 2}px 0px 0px);
+  clip-path: inset(0 ${({ diameter }) => diameter / 2}px 0 0);
 `
 
 export default DeploymentStepsItem
