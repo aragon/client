@@ -10,6 +10,8 @@ import {
   TokensScreen,
   VotingScreen,
 } from '../kit'
+import Board from './components/Board'
+
 import BoardInfo from './components/BoardInfo'
 import ShareInfo from './components/ShareInfo'
 import header from './header.svg'
@@ -148,7 +150,7 @@ export default {
   id: 'fundraising-multisig-template.aragonpm.eth',
   name: 'Fundraising',
   new: true,
-  disabled: network.type !== 'rinkeby',
+  // disabled: network.type !== 'rinkeby',
   header,
   icon,
   description: `
@@ -180,21 +182,10 @@ export default {
     [
       'Configure board',
       props => (
-        <TokensScreen
+        <Board
           accountStake={1}
           appLabel="Board Token"
-          dataKey="boardToken"
-          screenProps={props}
-          title="Configure board"
-        />
-      ),
-    ],
-    [
-      'Configure board',
-      props => (
-        <VotingScreen
-          appLabel="Board Voting"
-          dataKey="boardVoting"
+          dataKey="board"
           screenProps={props}
           title="Configure board"
         />
@@ -233,8 +224,7 @@ export default {
       props => {
         const {
           domain,
-          boardToken,
-          boardVoting,
+          board,
           shareToken,
           shareVoting,
           fundraising,
@@ -251,22 +241,8 @@ export default {
                 ],
               },
               {
-                label: (
-                  <KnownAppBadge
-                    appName="token-manager.aragonpm.eth"
-                    label="Board Token"
-                  />
-                ),
-                fields: TokensScreen.formatReviewFields(boardToken),
-              },
-              {
-                label: (
-                  <KnownAppBadge
-                    appName="voting.aragonpm.eth"
-                    label="Board Voting"
-                  />
-                ),
-                fields: VotingScreen.formatReviewFields(boardVoting),
+                label: 'Board',
+                fields: Board.formatReviewFields(board),
               },
               {
                 label: (
@@ -305,17 +281,10 @@ export default {
     const financePeriod = 0 // default
     const openDate = 0 // default
 
-    const {
-      domain,
-      boardToken,
-      boardVoting,
-      shareToken,
-      shareVoting,
-      fundraising,
-    } = data
+    const { domain, board, shareToken, shareVoting, fundraising } = data
 
-    const boardMembers = boardToken.members.map(member => member[0])
-    const boardVotingSettings = extractVotingSettings(boardVoting)
+    const boardMembers = board.members
+    const boardVotingSettings = extractVotingSettings(board)
     const shareVotingSettings = extractVotingSettings(shareVoting)
     const {
       goal,
@@ -339,8 +308,8 @@ export default {
       {
         name: 'Prepare instance',
         transaction: createTx('prepareInstance', [
-          boardToken.tokenName,
-          boardToken.tokenSymbol,
+          board.tokenName,
+          board.tokenSymbol,
           boardMembers,
           boardVotingSettings,
           financePeriod,
