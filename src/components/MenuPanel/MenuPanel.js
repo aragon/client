@@ -145,6 +145,15 @@ function MenuPanel({
     ...(showConsole ? [APP_CONSOLE] : []),
   ]
 
+  // Automatically open the menu if a system app instance is active
+  useEffect(() => {
+    const isSystemAppActive =
+      systemApps.some(systemApp => systemApp.appId === activeInstanceId) ||
+      systemAppsOpened
+    setSystemAppsOpened(isSystemAppActive)
+    setSystemAppsToggled(true)
+  }, [systemApps, activeInstanceId, systemAppsToggled, systemAppsOpened])
+
   return (
     <Main>
       <div
