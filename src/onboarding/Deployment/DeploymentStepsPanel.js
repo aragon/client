@@ -56,7 +56,7 @@ function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
 
         <div>
           {transactionsStatus.map(
-            ({ name, status, dateStart, gasPrice }, index) => (
+            ({ dateStart, gasPrice, name, status }, index) => (
               <DeploymentStepsItem
                 key={index}
                 index={index}
