@@ -8,6 +8,7 @@ import {
   Navigation,
   PercentageField,
   ScreenPropsType,
+  TokenSelectionField,
 } from '..'
 
 const MINUTE_IN_SECONDS = 60
@@ -28,6 +29,9 @@ function validationError(duration) {
 function reduceFields(fields, [field, value]) {
   if (field === 'duration') {
     return { ...fields, duration: value }
+  }
+  if (field === 'govToken') {
+    return { ...fields, govToken: value }
   }
   if (field === 'quorum') {
     return {
@@ -60,12 +64,13 @@ function VotingScreen({
 
   const [formError, setFormError] = useState()
 
-  const [{ support, quorum, duration }, updateField] = useReducer(
+  const [{ support, quorum, duration, govToken }, updateField] = useReducer(
     reduceFields,
     {
       support: screenData.support || DEFAULT_SUPPORT,
       quorum: screenData.quorum || DEFAULT_QUORUM,
       duration: screenData.duration || DEFAULT_DURATION,
+      govToken: 'govToken' in screenData ? screenData.govToken : -1,
     }
   )
 
@@ -82,6 +87,11 @@ function VotingScreen({
   const handleDurationChange = useCallback(value => {
     setFormError(null)
     updateField(['duration', value])
+  }, [])
+
+  const handleGovTokenChange = useCallback(value => {
+    setFormError(null)
+    updateField(['govToken', value])
   }, [])
 
   const supportRef = useRef()
@@ -122,6 +132,7 @@ function VotingScreen({
         const screenData = {
           support: Math.floor(support),
           quorum: Math.floor(quorum),
+          govToken: data.selectedTokens > 1 ? govToken : 0,
           duration,
         }
         const mergedData = dataKey
@@ -131,8 +142,19 @@ function VotingScreen({
         next(mergedData)
       }
     },
-    [data, dataKey, duration, isPercentageFieldFocused, next, quorum, support]
+    [
+      data,
+      dataKey,
+      duration,
+      govToken,
+      isPercentageFieldFocused,
+      next,
+      quorum,
+      support,
+    ]
   )
+
+  const disableNext = data.selectedTokens > 1 && govToken === -1
 
   return (
     <form
@@ -165,6 +187,14 @@ function VotingScreen({
           </span>
         }
       />
+
+      {data.selectedTokens > 1 && (
+        <TokenSelectionField
+          onChange={handleGovTokenChange}
+          selected={govToken}
+          tokens={[data.tokens, data.secondTokens]}
+        />
+      )}
 
       <PercentageField
         ref={handleSupportRef}
@@ -241,7 +271,7 @@ function VotingScreen({
       <Navigation
         ref={prevNextRef}
         backEnabled
-        nextEnabled
+        nextEnabled={!disableNext}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}
