@@ -9,31 +9,27 @@ import {
   TRANSACTION_STATUS_SUCCESS,
 } from '../../symbols'
 import styled from 'styled-components'
-import { addMinutes } from 'date-fns'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
 
 function DeploymentStepsItem({ index, name, status, dateStart, gasPrice }) {
   const theme = useTheme()
   const [remainingTime, setRemainingTime] = useState(0)
-  const [remainingTimeUnit, setRemainingTimeUnit] = useState('')
   const [completedFraction, setCompletedFraction] = useState(0)
 
   const updateTime = useCallback(
     dateEnd => {
       const now = new Date()
       if (now > dateEnd) {
-        setRemainingTime(0)
-        setRemainingTimeUnit('sec')
+        setRemainingTime('')
         setCompletedFraction(1)
         return
       }
-      const time = (dateEnd - now) / 1000
-      const unit = time < 60 ? 'sec' : time < 3600 ? 'min' : 'hr'
-      const amount = Math.floor(
-        unit === 'sec' ? time : unit === 'min' ? 1 + time / 60 : 1 + time / 3600
-      )
+      const amount = ` - ${dateEnd.fromNow()}`
       const fraction = (now - dateStart) / (dateEnd - dateStart)
       setRemainingTime(amount)
-      setRemainingTimeUnit(unit)
       setCompletedFraction(fraction)
     },
     [dateStart]
@@ -54,7 +50,7 @@ function DeploymentStepsItem({ index, name, status, dateStart, gasPrice }) {
                 ? priceAbove
                 : priceBelow
             const expectedTime = priceCloser.expectedTime
-            const dateEnd = addMinutes(dateStart, expectedTime)
+            const dateEnd = dayjs(dateStart).add(expectedTime, 'minute')
             updateTime(dateEnd)
             setInterval(() => updateTime(dateEnd), 1000)
             return null
@@ -138,7 +134,6 @@ function DeploymentStepsItem({ index, name, status, dateStart, gasPrice }) {
           <StatusMessage
             status={status}
             remainingTime={remainingTime}
-            remainingTimeUnit={remainingTimeUnit}
           />
         </div>
       </div>
@@ -154,15 +149,14 @@ DeploymentStepsItem.propTypes = {
   gasPrice: PropTypes.number,
 }
 
-const StatusMessage = ({ status, remainingTime, remainingTimeUnit }) => {
+const StatusMessage = ({ status, remainingTime }) => {
   switch (status) {
     case TRANSACTION_STATUS_UPCOMING:
       return ''
     case TRANSACTION_STATUS_SIGNING:
       return 'Waiting for signature'
-    case TRANSACTION_STATUS_PENDING:
-      const displayTime = ` - ${remainingTime} ${remainingTimeUnit}`
-      return `Transaction in progress${displayTime}`
+    default:
+      return `Transaction in progress${remainingTime}`
     case TRANSACTION_STATUS_SUCCESS:
       return ''
   }
@@ -171,7 +165,6 @@ const StatusMessage = ({ status, remainingTime, remainingTimeUnit }) => {
 StatusMessage.propTypes = {
   status: TransactionStatusType.isRequired,
   remainingTime: PropTypes.number,
-  remainingTimeUnit: PropTypes.string,
 }
 
 const ProgressRing = ({ value, diameter }) => {
