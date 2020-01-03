@@ -11,7 +11,7 @@ import {
   VotingScreen,
 } from '../kit'
 import Board from './components/Board'
-
+import Share from './components/Share'
 import BoardInfo from './components/BoardInfo'
 import ShareInfo from './components/ShareInfo'
 import header from './header.svg'
@@ -182,34 +182,15 @@ export default {
     [
       'Configure board',
       props => (
-        <Board
-          accountStake={1}
-          appLabel="Board Token"
-          dataKey="board"
-          screenProps={props}
-          title="Configure board"
-        />
+        <Board dataKey="board" screenProps={props} title="Configure board" />
       ),
     ],
     ['Configure shareholders', props => <ShareInfo screenProps={props} />],
     [
       'Configure shareholders',
       props => (
-        <TokensScreen
-          appLabel="Shareholder Token"
-          dataKey="shareToken"
-          editMembers={false}
-          screenProps={props}
-          title="Configure shareholders"
-        />
-      ),
-    ],
-    [
-      'Configure shareholders',
-      props => (
-        <VotingScreen
-          appLabel="Shareholder Voting"
-          dataKey="shareVoting"
+        <Share
+          dataKey="share"
           screenProps={props}
           title="Configure shareholders"
         />
@@ -222,13 +203,7 @@ export default {
     [
       'Review information',
       props => {
-        const {
-          domain,
-          board,
-          shareToken,
-          shareVoting,
-          fundraising,
-        } = props.data
+        const { domain, board, share, fundraising } = props.data
         return (
           <ReviewScreen
             screenProps={props}
@@ -245,22 +220,8 @@ export default {
                 fields: Board.formatReviewFields(board),
               },
               {
-                label: (
-                  <KnownAppBadge
-                    appName="token-manager.aragonpm.eth"
-                    label="Shareholder Token"
-                  />
-                ),
-                fields: TokensScreen.formatReviewFields(shareToken),
-              },
-              {
-                label: (
-                  <KnownAppBadge
-                    appName="voting.aragonpm.eth"
-                    label="Shareholder Voting"
-                  />
-                ),
-                fields: VotingScreen.formatReviewFields(shareVoting),
+                label: 'Shareholders',
+                fields: Share.formatReviewFields(share),
               },
               {
                 label: (
@@ -281,11 +242,11 @@ export default {
     const financePeriod = 0 // default
     const openDate = 0 // default
 
-    const { domain, board, shareToken, shareVoting, fundraising } = data
+    const { domain, board, share, fundraising } = data
 
     const boardMembers = board.members
     const boardVotingSettings = extractVotingSettings(board)
-    const shareVotingSettings = extractVotingSettings(shareVoting)
+    const shareVotingSettings = extractVotingSettings(share)
     const {
       goal,
       period,
@@ -318,8 +279,8 @@ export default {
       {
         name: 'Install share apps',
         transaction: createTx('installShareApps', [
-          shareToken.tokenName,
-          shareToken.tokenSymbol,
+          share.tokenName,
+          share.tokenSymbol,
           shareVotingSettings,
         ]),
       },
