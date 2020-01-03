@@ -521,9 +521,9 @@ Board.propTypes = {
 }
 
 Board.defaultProps = {
-  appLabel: 'Tokens',
-  dataKey: 'tokens',
-  title: 'Configure template',
+  appLabel: 'Board',
+  dataKey: 'board',
+  title: 'Configure board',
 }
 
 Board.formatReviewFields = formatReviewFields
