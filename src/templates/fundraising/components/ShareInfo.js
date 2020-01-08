@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { GU, Info, useTheme } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '../../kit'
 
@@ -105,8 +104,22 @@ Paragraph.propTypes = {
   children: PropTypes.node,
 }
 
-const Strong = styled.strong`
-  font-weight: 800;
-`
+function Strong({ children, ...props }) {
+  const theme = useTheme()
+  return (
+    <span
+      css={`
+        color: ${theme.content};
+        font-weight: 800;
+      `}
+      {...props}
+    >
+      {children}
+    </span>
+  )
+}
+Strong.propTypes = {
+  children: PropTypes.string,
+}
 
 export default ShareInfo

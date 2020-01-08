@@ -1,14 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import { Decimal } from 'decimal.js'
-import { network } from '../../environment'
 import {
   ClaimDomainScreen,
   FundraisingScreen,
   KnownAppBadge,
   ReviewScreen,
-  TokensScreen,
-  VotingScreen,
 } from '../kit'
 import Board from './components/Board'
 import Share from './components/Share'

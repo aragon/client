@@ -100,7 +100,7 @@ function validationError(
   if (!tokenSymbol) {
     return 'Please add a token symbol.'
   }
-  if (!signatures || signatures < 0) {
+  if (signatures < 0) {
     return 'Please ensure that board voting requires at least one signature.'
   }
   if (duration < 10 * MINUTE_IN_SECONDS) {
@@ -189,7 +189,6 @@ function Board({
     !tokenName ||
     !tokenSymbol ||
     !members.every(account => account && account !== '') ||
-    !signatures ||
     signatures < 0
 
   const addMember = useCallback(() => {
@@ -520,14 +519,12 @@ function Board({
 }
 
 Board.propTypes = {
-  appLabel: PropTypes.string,
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
   title: PropTypes.string,
 }
 
 Board.defaultProps = {
-  appLabel: 'Board',
   dataKey: 'board',
   title: 'Configure board',
 }
@@ -548,6 +545,10 @@ function Subtitle({ content }) {
       {content}
     </h4>
   )
+}
+
+Subtitle.propTypes = {
+  content: PropTypes.any,
 }
 function MemberField({ index, member, hideRemoveButton, onUpdate, onRemove }) {
   const theme = useTheme()
@@ -627,7 +628,6 @@ function MemberField({ index, member, hideRemoveButton, onUpdate, onRemove }) {
           )}
         </div>
       </div>
-      <div></div>
     </div>
   )
 }
@@ -688,7 +688,7 @@ function formatReviewFields(screenData) {
           css={`
             margin-left: ${2 * GU}px;
           `}
-        ></span>
+        />
       </div>,
     ]),
     [

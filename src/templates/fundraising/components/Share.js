@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useReducer,
-  useState,
-  useRef,
-} from 'react'
+import React, { useCallback, useReducer, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   Field,
@@ -86,7 +80,6 @@ function Share({
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
-  const theme = useTheme()
   const fieldsLayout = useFieldsLayout()
 
   const [formError, setFormError] = useState()
@@ -184,7 +177,17 @@ function Share({
         next(mergedData)
       }
     },
-    [data, dataKey, next, tokenName, tokenSymbol, support, quorum, duration]
+    [
+      data,
+      dataKey,
+      next,
+      tokenName,
+      tokenSymbol,
+      support,
+      quorum,
+      duration,
+      isPercentageFieldFocused,
+    ]
   )
 
   return (
@@ -410,6 +413,10 @@ function Subtitle({ content }) {
   )
 }
 
+Subtitle.propTypes = {
+  content: PropTypes.any,
+}
+
 function formatDuration(duration) {
   const units = [DAY_IN_SECONDS, HOUR_IN_SECONDS, MINUTE_IN_SECONDS]
 
@@ -452,15 +459,13 @@ function formatReviewFields(screenData) {
 }
 
 Share.propTypes = {
-  appLabel: PropTypes.string,
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
   title: PropTypes.string,
 }
 
 Share.defaultProps = {
-  appLabel: 'Tokens',
-  dataKey: 'tokens',
+  dataKey: 'share',
   title: 'Configure template',
 }
 
