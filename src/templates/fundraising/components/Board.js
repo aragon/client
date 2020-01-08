@@ -100,7 +100,7 @@ function validationError(
   if (!tokenSymbol) {
     return 'Please add a token symbol.'
   }
-  if (signatures < 0) {
+  if (!signatures || signatures < 0) {
     return 'Please ensure that board voting requires at least one signature.'
   }
   if (duration < 10 * MINUTE_IN_SECONDS) {
@@ -188,7 +188,9 @@ function Board({
   const disableNext =
     !tokenName ||
     !tokenSymbol ||
-    !members.every(account => account && account !== '')
+    !members.every(account => account && account !== '') ||
+    !signatures ||
+    signatures < 0
 
   const addMember = useCallback(() => {
     setFormError(null)
@@ -232,6 +234,10 @@ function Board({
     },
     [members]
   )
+
+  useEffect(() => {
+    handleSignaturesChange(signatures)
+  }, [handleSignaturesChange, members, signatures])
 
   const handleSubmit = useCallback(
     event => {
@@ -334,8 +340,8 @@ function Board({
               Board token name
               <Help hint="What’s the board token name?">
                 <strong>Board token name</strong> is the name you can assign to
-                the token that will represent your organization's board. For
-                example: My Board Token.
+                the token that will represent your organization's board.{' '}
+                <i>For example: My Board Token.</i>
               </Help>
             </React.Fragment>
           }
@@ -359,7 +365,7 @@ function Board({
               <Help hint="What’s the board token symbol?">
                 <strong>Board token symbol</strong> is a shortened name
                 (typically in capital letters) that will refer to the token
-                representing your organization's board. For example: BRD.
+                representing your organization's board. <i>For example: BRD.</i>
               </Help>
             </React.Fragment>
           }

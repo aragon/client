@@ -7,25 +7,17 @@ import React, {
 } from 'react'
 import PropTypes from 'prop-types'
 import {
-  Button,
-  DropDown,
-  EthIdenticon,
   Field,
   GU,
   Help,
-  IconPlus,
-  IconTrash,
   Info,
-  RADIUS,
   TextInput,
   textStyle,
-  isAddress,
   useTheme,
 } from '@aragon/ui'
 import {
   Duration,
   Header,
-  IdentityBadge,
   KnownAppBadge,
   Navigation,
   PercentageField,
@@ -252,8 +244,8 @@ function Share({
               <Help hint="What’s the share token name?">
                 <strong>Share token name</strong> is the name you can assign to
                 the bonded token traded through your fundraising campaign and
-                representing your organization's shareholders. For example: My
-                Share Token.
+                representing your organization's shareholders.{' '}
+                <i>For example: My Share Token.</i>
               </Help>
             </React.Fragment>
           }
@@ -278,7 +270,7 @@ function Share({
                 <strong>Share token symbol</strong> is a shortened name
                 (typically in capital letters) that will refer to the bonded
                 token traded through your fundraising campaign and representing
-                your organization's shareholders. For example: SHR.
+                your organization's shareholders. <i>For example: SHR.</i>
               </Help>
             </React.Fragment>
           }
@@ -353,11 +345,11 @@ function Share({
           <React.Fragment>
             Minimum approval %
             <Help hint="What’s the minimum approval?">
-              <strong>Minimum Approval</strong> is the percentage of the total
-              share supply that is required to vote “Yes” on a proposal before
-              it can be approved. For example, if the “Minimum Approval” is set
-              to 20%, then more than 20% of the outstanding share supply must
-              vote “Yes” on a proposal for it to pass.
+              <strong>Minimum Approval</strong> is the percentage of the total{' '}
+              {tokenSymbol} supply that is required to vote “Yes” on a proposal
+              before it can be approved. For example, if the “Minimum Approval”
+              is set to 20%, then more than 20% of the outstanding {tokenSymbol}{' '}
+              supply must vote “Yes” on a proposal for it to pass.
             </Help>
           </React.Fragment>
         }
