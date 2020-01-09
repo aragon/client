@@ -137,10 +137,7 @@ export function WalletBlockNumberProvider(props) {
   useEffect(() => {
     const pollBlockNumber = pollEvery(() => {
       return {
-        request: () =>
-          WALLET_WEB3.eth
-            .getBlockNumber()
-            .then(latestBlockNumber => latestBlockNumber),
+        request: () => WALLET_WEB3.eth.getBlockNumber(),
         onResult: latestBlockNumber => setBlockNumber(latestBlockNumber),
       }
     }, WALLET_BLOCK_POLL_DELAY)
