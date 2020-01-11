@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, GU, IconConnect } from '@aragon/ui'
+import { Button, GU, IconConnect, useViewport } from '@aragon/ui'
 import { enableWallet } from '../../wallet'
 
 function NotConnected({ compact }) {
+  const { below } = useViewport()
+
   return (
     <div
       css={`
@@ -14,6 +16,7 @@ function NotConnected({ compact }) {
       `}
     >
       <Button
+        display={below('medium') ? 'icon' : 'all'}
         size={compact ? 'small' : 'medium'}
         icon={<IconConnect />}
         label="Enable account"

@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
+import ClientConnectionModule from '../../components/AccountModule/ClientConnectionModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
 
 function OnboardingTopBar({ status, solid }) {
@@ -70,6 +71,7 @@ function OnboardingTopBar({ status, solid }) {
             `}
           >
             <AccountModule compact />
+            <ClientConnectionModule />
           </div>
           <Button
             display="icon"
