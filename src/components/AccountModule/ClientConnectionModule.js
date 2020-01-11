@@ -14,6 +14,9 @@ import {
   getLatestBlockTimestamp,
   useNetworkConnectionData,
 } from './utils'
+import { pollEvery } from '../../utils'
+
+const BLOCK_TIMESTAMP_BLOCK_DELAY = 60000
 
 function ClientConnectionModule() {
   const theme = useTheme()
@@ -25,13 +28,18 @@ function ClientConnectionModule() {
   const containerRef = useRef()
   const { clientNetworkName } = useNetworkConnectionData()
   const { connectionType } = getSyncInfo()
+
   useEffect(() => {
-    async function getTimestamp() {
-      const timestamp = await getLatestBlockTimestamp()
-      console.log(timestamp)
-      setLatestBlockTimestamp(timestamp)
-    }
-    getTimestamp()
+    const pollBlockTimestamp = pollEvery(
+      () => ({
+        request: () => getLatestBlockTimestamp(),
+        onResult: timestamp => setLatestBlockTimestamp(timestamp),
+      }),
+      BLOCK_TIMESTAMP_BLOCK_DELAY
+    )
+    const cleanUpTimestampPoll = pollBlockTimestamp()
+
+    return () => cleanUpTimestampPoll()
   }, [])
 
   if (!latestBlockTimestamp) {
