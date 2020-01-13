@@ -5,12 +5,12 @@ const execute = require('child_process').execSync
 
 const clientPort = process.env.ARAGON_PORT || process.env.REACT_APP_PORT || 3000
 
-execute(`copy-aragon-ui-assets -n aragon-ui ./build`, {
+execute(`copy-aragon-ui-assets -n aragon-ui ./public`, {
   stdio: 'inherit',
 })
 
 process.env.ARAGON_PACKAGE_VERSION = version
 execute(
-  `parcel serve src/index.html --port ${clientPort} --out-dir ./build --no-cache`,
+  `parcel serve src/index.html --port ${clientPort} --out-dir ./public --no-cache`,
   { stdio: 'inherit' }
 )
