@@ -40,8 +40,8 @@ export const useNetworkConnectionData = () => {
 export function getSyncInfo(latestBlockTimestamp) {
   const blockDiff = new Date() - new Date(latestBlockTimestamp * 1000)
   const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
-
-  if (latestBlockDifference > 45) {
+  const offline = !window.navigator.onLine
+  if (offline || latestBlockDifference > 45) {
     return {
       connectionType: 'dropped',
       syncHeader: '',
@@ -49,7 +49,7 @@ export function getSyncInfo(latestBlockTimestamp) {
     }
   } else if (latestBlockDifference >= 30) {
     return {
-      connectionType: 'error',
+      connectionType: 'dropped',
       syncHeader: 'Last known state: ',
       syncInfo: `${latestBlockDifference} min behind`,
     }

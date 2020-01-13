@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { GU } from '@aragon/ui'
 import { useClientBlockNumber } from './useClientBlockNumber'
 import { getSyncInfo } from './utils'
@@ -31,6 +32,10 @@ function ClientSyncedInfo({ latestBlockTimestamp }) {
       <span>{correctSyncInfo}</span>
     </div>
   ) : null
+}
+
+ClientSyncedInfo.propTypes = {
+  latestBlockTimestamp: PropTypes.number,
 }
 
 export default ClientSyncedInfo

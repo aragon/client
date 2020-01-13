@@ -7,7 +7,9 @@ import {
   useTheme,
   unselectable,
   ButtonBase,
+  springs,
 } from '@aragon/ui'
+import { Spring, animated } from 'react-spring'
 import ClientConnectionInfo from './ClientConnectionInfo'
 import {
   getSyncInfo,
@@ -16,9 +18,54 @@ import {
 } from './utils'
 import { pollEvery } from '../../utils'
 
+// Metamask seems to take about ~200ms to send the connected accounts.
+// This is to avoid unnecesarily displaying the Client Connection Module.
+const ACCOUNT_MODULE_DISPLAY_DELAY = 500
 const BLOCK_TIMESTAMP_BLOCK_DELAY = 60000
 
+const AnimatedDiv = animated.div
+
 function ClientConnectionModule() {
+  const [display, setDisplay] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDisplay(true)
+    }, ACCOUNT_MODULE_DISPLAY_DELAY)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (!display) {
+    return null
+  }
+  return (
+    <Spring
+      from={{ opacity: 0, scale: 0.96 }}
+      to={{ opacity: 1, scale: 1 }}
+      config={springs.swift}
+      native
+    >
+      {({ opacity, scale }) => (
+        <AnimatedDiv
+          style={{
+            opacity,
+            transform: scale.interpolate(v => `scale3d(${v}, ${v}, 1)`),
+          }}
+          css={`
+            display: flex;
+            height: 100%;
+            align-items: center;
+          `}
+        >
+          <ConnectionDetails />
+        </AnimatedDiv>
+      )}
+    </Spring>
+  )
+}
+
+function ConnectionDetails() {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
   const [latestBlockTimestamp, setLatestBlockTimestamp] = useState(null)
@@ -27,7 +74,7 @@ function ClientConnectionModule() {
 
   const containerRef = useRef()
   const { clientNetworkName } = useNetworkConnectionData()
-  const { connectionType } = getSyncInfo()
+  const { connectionType } = getSyncInfo(latestBlockTimestamp)
 
   useEffect(() => {
     const pollBlockTimestamp = pollEvery(
@@ -145,5 +192,7 @@ function ClientConnectionModule() {
     </div>
   )
 }
+
+// function MobileConnectedMode
 
 export default ClientConnectionModule

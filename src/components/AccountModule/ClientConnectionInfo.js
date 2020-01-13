@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { GU, IconCheck, IconCross, textStyle, useTheme } from '@aragon/ui'
 import { useNetworkConnectionData } from './utils'
@@ -15,6 +16,7 @@ function ClientConnectionInfo({ connectionType, latestBlockTimestamp }) {
   const { clientNetworkName } = useNetworkConnectionData()
 
   const Icon = connectionType === 'healthy' ? IconCheck : IconCross
+
   const connectionStatusColor =
     connectionType === 'healthy'
       ? theme.positive
@@ -67,9 +69,53 @@ function ClientConnectionInfo({ connectionType, latestBlockTimestamp }) {
           )}
         </FlexWrapper>
         <ClientSyncedInfo latestBlockTimestamp={latestBlockTimestamp} />
+        <ConnectionMessage connectionType={connectionType} />
       </div>
     </section>
   )
+}
+
+ClientConnectionInfo.propTypes = {
+  connectionType: PropTypes.string,
+  latestBlockTimestamp: PropTypes.number,
+}
+
+function ConnectionMessage({ connectionType }) {
+  let content = null
+
+  if (connectionType === 'warning') {
+    content = (
+      <span>
+        We've detected the Ethereum node you are connected to seems to be having
+        troubles syncing blocks. You can change the node settings in Network
+        Settings.
+      </span>
+    )
+  }
+
+  if (connectionType === 'dropped') {
+    content = (
+      <span>
+        We cannot connect to the Ethereum node. You can change the node settings
+        in Network Settings.
+      </span>
+    )
+  }
+
+  return (
+    <div
+      css={`
+        margin-top: ${GU}px;
+        margin-bottom: ${GU}px;
+      `}
+    >
+      {content}
+    </div>
+  )
+}
+
+ConnectionMessage.propTypes = {
+  connectionType: PropTypes.string,
 }
 
 export default ClientConnectionInfo

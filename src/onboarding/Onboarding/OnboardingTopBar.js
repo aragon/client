@@ -4,10 +4,11 @@ import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import ClientConnectionModule from '../../components/AccountModule/ClientConnectionModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
+import { useWallet } from '../../wallet'
 
 function OnboardingTopBar({ status, solid }) {
   const theme = useTheme()
-
+  const { isConnected } = useWallet()
   const handleSettingsClick = useCallback(() => {
     let path = '/'
     if (status === 'open') {
@@ -71,7 +72,7 @@ function OnboardingTopBar({ status, solid }) {
             `}
           >
             <AccountModule compact />
-            <ClientConnectionModule />
+            {!isConnected && <ClientConnectionModule />}
           </div>
           <Button
             display="icon"

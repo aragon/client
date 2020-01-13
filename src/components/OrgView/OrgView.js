@@ -25,6 +25,7 @@ import AccountModule from '../AccountModule/AccountModule'
 import ClientConnectionModule from '../AccountModule/ClientConnectionModule'
 import ActivityButton from './ActivityButton/ActivityButton'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
+import { useWallet } from '../../wallet'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -45,7 +46,7 @@ function OrgView({
   const theme = useTheme()
   const { appearance } = useClientTheme()
   const { width, below } = useViewport()
-
+  const { isConnected } = useWallet()
   const autoClosingPanel = below('medium')
   const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
 
@@ -155,7 +156,7 @@ function OrgView({
           )}
           <div css="display: flex">
             <AccountModule />
-            <ClientConnectionModule />
+            {!isConnected && <ClientConnectionModule />}
             <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ActivityButton apps={apps} />
           </div>
