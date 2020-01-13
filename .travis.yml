@@ -24,5 +24,4 @@ deploy:
     script: ./scripts/travis_wait -i 60 -l 2400 "now -A now-mainnet.json --prod --token $NOW_TOKEN"
     skip_cleanup: true
     on:
-      branch: master
       condition: $TASK = build
