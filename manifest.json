@@ -5,5 +5,5 @@
     "src": "images/icon.png",
     "sizes": "192x192"
   }],
-  "start_url": "/build/index.html"
+  "start_url": "index.html"
 }
