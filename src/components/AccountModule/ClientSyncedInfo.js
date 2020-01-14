@@ -1,21 +1,38 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { GU } from '@aragon/ui'
 import { useClientBlockNumber } from './useClientBlockNumber'
-import { getSyncInfo } from './utils'
 
-function ClientSyncedInfo({ latestBlockTimestamp }) {
+function ClientSyncedInfo({ syncDelay, listening, online }) {
+  const [correctSyncInfo, setCorrectSyncInfo] = useState({
+    header: '',
+    info: '',
+  })
+  console.log(syncDelay)
   const latestClientBlockNumber = useClientBlockNumber()
+  useEffect(() => {
+    if (syncDelay >= 45) {
+      setCorrectSyncInfo({ header: '', info: '' })
+    } else if (syncDelay >= 30) {
+      setCorrectSyncInfo({
+        header: 'Last known state: ',
+        info: `${syncDelay} min behind`,
+      })
+    } else if (syncDelay >= 3) {
+      setCorrectSyncInfo({
+        header: 'Out of sync: ',
+        info: `${syncDelay} min behind`,
+      })
+    } else {
+      console.log(listening, online)
+      setCorrectSyncInfo({
+        header: 'Synced: ',
+        info: `current block ${latestClientBlockNumber}`,
+      })
+    }
+  }, [syncDelay, latestClientBlockNumber, listening, online])
 
-  const { connectionType, syncHeader, syncInfo } = getSyncInfo(
-    latestBlockTimestamp
-  )
-
-  const correctSyncInfo = syncInfo.includes('current')
-    ? `${syncInfo} ${latestClientBlockNumber}`
-    : syncInfo
-
-  return connectionType !== 'dropped' ? (
+  return listening && online && syncDelay < 45 ? (
     <div
       css={`
         margin-top: ${1 * GU}px;
@@ -27,15 +44,17 @@ function ClientSyncedInfo({ latestBlockTimestamp }) {
           opacity: 0.8;
         `}
       >
-        {syncHeader}
+        {correctSyncInfo.header}
       </span>
-      <span>{correctSyncInfo}</span>
+      <span>{correctSyncInfo.info}</span>
     </div>
   ) : null
 }
 
 ClientSyncedInfo.propTypes = {
-  latestBlockTimestamp: PropTypes.number,
+  syncDelay: PropTypes.number,
+  listening: PropTypes.bool,
+  online: PropTypes.bool,
 }
 
 export default ClientSyncedInfo

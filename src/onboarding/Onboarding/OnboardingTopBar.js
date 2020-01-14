@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import ClientConnectionModule from '../../components/AccountModule/ClientConnectionModule'
+import UserConnectionModule from '../../components/AccountModule/UserConnectionModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
 import { useWallet } from '../../wallet'
 
@@ -71,7 +72,7 @@ function OnboardingTopBar({ status, solid }) {
               height: 100%;
             `}
           >
-            <AccountModule compact />
+            <UserConnectionModule compact />
             {!isConnected && <ClientConnectionModule />}
           </div>
           <Button

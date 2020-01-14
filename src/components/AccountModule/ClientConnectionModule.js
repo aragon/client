@@ -14,44 +14,28 @@ import {
 } from '@aragon/ui'
 import { Spring, animated } from 'react-spring'
 import ClientConnectionInfo from './ClientConnectionInfo'
-import {
-  getSyncInfo,
-  getLatestBlockTimestamp,
-  useNetworkConnectionData,
-} from './utils'
-import { pollEvery } from '../../utils'
+import { useNetworkConnectionData, resolveConnectionMessage } from './utils'
+import { useSyncInfo } from './useSyncInfo'
 
 // This is to avoid unnecesarily displaying the Client Connection Module
 // if the user has a wallet connected.
 const ACCOUNT_MODULE_DISPLAY_DELAY = 500
-const BLOCK_TIMESTAMP_BLOCK_DELAY = 60000
 
 const AnimatedDiv = animated.div
 
 function ClientConnectionModule() {
   const [opened, setOpened] = useState(false)
   const [display, setDisplay] = useState(false)
-  const [latestBlockTimestamp, setLatestBlockTimestamp] = useState(null)
+  const {
+    isListening: listening,
+    isOnline: online,
+    connectionStatus,
+    syncDelay,
+  } = useSyncInfo()
   const { clientNetworkName } = useNetworkConnectionData()
   const { below } = useViewport()
-
   const close = () => setOpened(false)
   const toggle = () => setOpened(opened => !opened)
-
-  const { connectionType } = getSyncInfo(latestBlockTimestamp)
-
-  useEffect(() => {
-    const pollBlockTimestamp = pollEvery(
-      () => ({
-        request: () => getLatestBlockTimestamp(),
-        onResult: timestamp => setLatestBlockTimestamp(timestamp),
-      }),
-      BLOCK_TIMESTAMP_BLOCK_DELAY
-    )
-    const cleanUpTimestampPoll = pollBlockTimestamp()
-
-    return () => cleanUpTimestampPoll()
-  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -88,8 +72,10 @@ function ClientConnectionModule() {
             <MobileConnectionDetails
               clientNetworkName={clientNetworkName}
               close={close}
-              connectionType={connectionType}
-              latestBlockTimestamp={latestBlockTimestamp}
+              connectionStatus={connectionStatus}
+              listening={listening}
+              online={online}
+              syncDelay={syncDelay}
               toggle={toggle}
               opened={opened}
             />
@@ -97,8 +83,10 @@ function ClientConnectionModule() {
             <ConnectionDetails
               clientNetworkName={clientNetworkName}
               close={close}
-              connectionType={connectionType}
-              latestBlockTimestamp={latestBlockTimestamp}
+              connectionStatus={connectionStatus}
+              listening={listening}
+              online={online}
+              syncDelay={syncDelay}
               toggle={toggle}
               opened={opened}
             />
@@ -112,31 +100,28 @@ function ClientConnectionModule() {
 function ConnectionDetails({
   clientNetworkName,
   close,
-  connectionType,
-  latestBlockTimestamp,
+  connectionStatus,
+  listening,
+  online,
   opened,
+  syncDelay,
   toggle,
 }) {
   const containerRef = useRef()
   const theme = useTheme()
 
   const connectionColor =
-    connectionType === 'dropped'
+    connectionStatus === 'error' || !listening || !online
       ? theme.negative
-      : connectionType === 'warning'
+      : connectionStatus === 'warning'
       ? theme.warning
       : theme.positive
-  const connectionMessage =
-    connectionType === 'healthy'
-      ? `Connected to ${clientNetworkName}`
-      : connectionType === 'warning'
-      ? 'Syncing issues'
-      : 'No Connection'
-
-  if (!latestBlockTimestamp) {
-    return null
-  }
-
+  const connectionMessage = resolveConnectionMessage(
+    connectionStatus,
+    listening,
+    online,
+    clientNetworkName
+  )
   return (
     <div
       ref={containerRef}
@@ -232,8 +217,10 @@ function ConnectionDetails({
         `}
       >
         <ClientConnectionInfo
-          connectionType={connectionType}
-          latestBlockTimestamp={latestBlockTimestamp}
+          connectionStatus={connectionStatus}
+          syncDelay={syncDelay}
+          online={online}
+          listening={listening}
         />
       </Popover>
     </div>
@@ -243,8 +230,10 @@ function ConnectionDetails({
 ConnectionDetails.propTypes = {
   clientNetworkName: PropTypes.string,
   close: PropTypes.func,
-  connectionType: PropTypes.string,
-  latestBlockTimestamp: PropTypes.number,
+  connectionStatus: PropTypes.string,
+  listening: PropTypes.bool,
+  online: PropTypes.bool,
+  syncDelay: PropTypes.number,
   opened: PropTypes.bool,
   toggle: PropTypes.func,
 }
@@ -252,16 +241,15 @@ ConnectionDetails.propTypes = {
 function MobileConnectionDetails({
   clientNetworkName,
   close,
-  connectionType,
-  latestBlockTimestamp,
+  connectionStatus,
+  listening,
+  online,
   opened,
+  syncDelay,
   toggle,
 }) {
   const containerRef = useRef()
   const theme = useTheme()
-  if (!latestBlockTimestamp) {
-    return null
-  }
 
   return (
     <div
@@ -340,8 +328,10 @@ function MobileConnectionDetails({
         `}
       >
         <ClientConnectionInfo
-          connectionType={connectionType}
-          latestBlockTimestamp={latestBlockTimestamp}
+          connectionStatus={connectionStatus}
+          syncDelay={syncDelay}
+          online={online}
+          listening={listening}
         />
       </Popover>
     </div>
@@ -351,8 +341,10 @@ function MobileConnectionDetails({
 MobileConnectionDetails.propTypes = {
   clientNetworkName: PropTypes.string,
   close: PropTypes.func,
-  connectionType: PropTypes.string,
-  latestBlockTimestamp: PropTypes.number,
+  connectionStatus: PropTypes.string,
+  listening: PropTypes.bool,
+  online: PropTypes.bool,
+  syncDelay: PropTypes.number,
   opened: PropTypes.bool,
   toggle: PropTypes.func,
 }

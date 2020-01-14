@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-
 import { web3Providers, network } from '../../environment'
 import { getNetworkByChainId } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
@@ -65,4 +64,19 @@ export function getSyncInfo(latestBlockTimestamp) {
     syncHeader: 'Synced:',
     syncInfo: 'current block:',
   }
+}
+
+export function resolveConnectionMessage(
+  connectionStatus,
+  listening,
+  online,
+  clientNetworkName
+) {
+  const connectionMessage =
+    connectionStatus === 'error' || !listening || !online
+      ? 'No connection'
+      : connectionStatus === 'warning'
+      ? 'Syncing issues'
+      : `Connected to ${clientNetworkName}`
+  return connectionMessage
 }

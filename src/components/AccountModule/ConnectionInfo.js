@@ -39,7 +39,7 @@ function ConnectionInfo() {
   return (
     <section
       css={`
-        max-width: ${42 * GU}px;
+        max-width: ${51 * GU}px;
       `}
     >
       <h1
@@ -77,7 +77,7 @@ function ConnectionInfo() {
                 transform: translateY(-2px);
               `}
             />
-            <span>{providerInfo.name}</span>
+            <span>Wallet Connected</span>
           </FlexWrapper>
           <FlexWrapper>
             <ButtonBase
