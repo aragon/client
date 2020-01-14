@@ -23,7 +23,12 @@ function ClientConnectionInfo({ connectionType, latestBlockTimestamp }) {
       : connectionType === 'warning'
       ? theme.warning
       : theme.negative
-
+  const connectionMessage =
+    connectionType === 'healthy'
+      ? `Connected to Ethereum ${clientNetworkName} Network`
+      : connectionType === 'warning'
+      ? 'Network Syncing issues'
+      : 'No Connection'
   return (
     <section
       css={`
@@ -64,7 +69,7 @@ function ClientConnectionInfo({ connectionType, latestBlockTimestamp }) {
                 margin-left: ${0.5 * GU}px;
               `}
             >
-              Connected to Ethereum {clientNetworkName} Network
+              {connectionMessage}
             </span>
           )}
         </FlexWrapper>

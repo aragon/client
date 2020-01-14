@@ -35,6 +35,7 @@ function ClientConnectionModule() {
   const { clientNetworkName } = useNetworkConnectionData()
   const { below } = useViewport()
 
+  const close = () => setOpened(false)
   const toggle = () => setOpened(opened => !opened)
 
   const { connectionType } = getSyncInfo(latestBlockTimestamp)
@@ -86,6 +87,7 @@ function ClientConnectionModule() {
           {below('medium') ? (
             <MobileConnectionDetails
               clientNetworkName={clientNetworkName}
+              close={close}
               connectionType={connectionType}
               latestBlockTimestamp={latestBlockTimestamp}
               toggle={toggle}
@@ -94,6 +96,7 @@ function ClientConnectionModule() {
           ) : (
             <ConnectionDetails
               clientNetworkName={clientNetworkName}
+              close={close}
               connectionType={connectionType}
               latestBlockTimestamp={latestBlockTimestamp}
               toggle={toggle}
@@ -108,6 +111,7 @@ function ClientConnectionModule() {
 
 function ConnectionDetails({
   clientNetworkName,
+  close,
   connectionType,
   latestBlockTimestamp,
   opened,
@@ -115,9 +119,24 @@ function ConnectionDetails({
 }) {
   const containerRef = useRef()
   const theme = useTheme()
+
+  const connectionColor =
+    connectionType === 'dropped'
+      ? theme.negative
+      : connectionType === 'warning'
+      ? theme.warning
+      : theme.positive
+  const connectionMessage =
+    connectionType === 'healthy'
+      ? `Connected to ${clientNetworkName}`
+      : connectionType === 'warning'
+      ? 'Syncing issues'
+      : 'No Connection'
+
   if (!latestBlockTimestamp) {
     return null
   }
+
   return (
     <div
       ref={containerRef}
@@ -155,7 +174,7 @@ function ConnectionDetails({
                 right: -3px;
                 width: 10px;
                 height: 10px;
-                background: ${theme.positive};
+                background: ${connectionColor};
                 border: 2px solid ${theme.surface};
                 border-radius: 50%;
               `}
@@ -187,10 +206,10 @@ function ConnectionDetails({
             <div
               css={`
                 font-size: 11px; /* doesn’t exist in aragonUI */
-                color: ${theme.positive};
+                color: ${connectionColor};
               `}
             >
-              Connected to {clientNetworkName}
+              {connectionMessage}
             </div>
           </div>
 
@@ -208,6 +227,9 @@ function ConnectionDetails({
         onClose={close}
         visible={opened}
         opener={containerRef.current}
+        css={`
+          width: 410px;
+        `}
       >
         <ClientConnectionInfo
           connectionType={connectionType}
@@ -220,6 +242,7 @@ function ConnectionDetails({
 
 ConnectionDetails.propTypes = {
   clientNetworkName: PropTypes.string,
+  close: PropTypes.func,
   connectionType: PropTypes.string,
   latestBlockTimestamp: PropTypes.number,
   opened: PropTypes.bool,
@@ -228,6 +251,7 @@ ConnectionDetails.propTypes = {
 
 function MobileConnectionDetails({
   clientNetworkName,
+  close,
   connectionType,
   latestBlockTimestamp,
   opened,
@@ -311,6 +335,9 @@ function MobileConnectionDetails({
         onClose={close}
         visible={opened}
         opener={containerRef.current}
+        css={`
+          width: 328px;
+        `}
       >
         <ClientConnectionInfo
           connectionType={connectionType}
@@ -323,6 +350,7 @@ function MobileConnectionDetails({
 
 MobileConnectionDetails.propTypes = {
   clientNetworkName: PropTypes.string,
+  close: PropTypes.func,
   connectionType: PropTypes.string,
   latestBlockTimestamp: PropTypes.number,
   opened: PropTypes.bool,
