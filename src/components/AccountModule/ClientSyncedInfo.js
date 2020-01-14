@@ -8,7 +8,6 @@ function ClientSyncedInfo({ syncDelay, listening, online }) {
     header: '',
     info: '',
   })
-  console.log(syncDelay)
   const latestClientBlockNumber = useClientBlockNumber()
   useEffect(() => {
     if (syncDelay >= 45) {

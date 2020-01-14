@@ -251,6 +251,12 @@ function MobileConnectionDetails({
   const containerRef = useRef()
   const theme = useTheme()
 
+  const connectionColor =
+    connectionStatus === 'error' || !listening || !online
+      ? theme.negative
+      : connectionStatus === 'warning'
+      ? theme.warning
+      : theme.positive
   return (
     <div
       ref={containerRef}
@@ -290,7 +296,7 @@ function MobileConnectionDetails({
                 right: -3px;
                 width: 10px;
                 height: 10px;
-                background: ${theme.positive};
+                background: ${connectionColor};
                 border: 2px solid ${theme.surface};
                 border-radius: 50%;
               `}

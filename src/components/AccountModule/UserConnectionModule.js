@@ -16,10 +16,11 @@ import {
 import { Spring, animated } from 'react-spring'
 import { shortenAddress } from '../../web3-utils'
 import { useLocalIdentity } from '../../hooks'
+import { useSyncInfo } from './useSyncInfo'
 import { useWallet } from '../../wallet'
 import NotConnected from './NotConnected'
 import ConnectionInfo from './ConnectionInfo'
-import { useNetworkConnectionData } from './utils'
+import { useNetworkConnectionData, resolveUserConnectionDetails } from './utils'
 
 // Metamask seems to take about ~200ms to send the connected accounts.
 // This is to avoid a flash with the connection button.
@@ -79,6 +80,19 @@ function ConnectedMode() {
   const wallet = useWallet()
   const { above } = useViewport()
   const { name: label } = useLocalIdentity(wallet.account)
+  const {
+    isListening: walletListening,
+    isOnline: walletOnline,
+    connectionStatus: walletConnectionStatus,
+    syncDelay: walletSyncDelay,
+  } = useSyncInfo('wallet')
+
+  const {
+    isListening: clientListening,
+    isOnline: clientOnline,
+    connectionStatus: clientConnectionStatus,
+    syncDelay: clientSyncDelay,
+  } = useSyncInfo()
 
   const close = () => setOpened(false)
   const toggle = () => setOpened(opened => !opened)
@@ -86,6 +100,16 @@ function ConnectedMode() {
   const containerRef = useRef()
 
   const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
+
+  const connectionDetails = resolveUserConnectionDetails(
+    clientListening,
+    walletListening,
+    clientOnline,
+    walletOnline,
+    clientSyncDelay,
+    walletSyncDelay,
+    walletNetworkName
+  )
 
   return (
     <div
@@ -127,7 +151,7 @@ function ConnectedMode() {
                 height: 10px;
                 background: ${hasNetworkMismatch
                   ? theme.negative
-                  : theme.positive};
+                  : theme[connectionDetails.color]};
                 border: 2px solid ${theme.surface};
                 border-radius: 50%;
               `}
@@ -165,16 +189,12 @@ function ConnectedMode() {
                 <div
                   css={`
                     font-size: 11px; /* doesn’t exist in aragonUI */
-                    color: ${hasNetworkMismatch
-                      ? theme.negative
-                      : theme.positive};
+                    color: ${theme[connectionDetails.color]};
                   `}
                 >
                   {hasNetworkMismatch
                     ? 'Wrong network'
-                    : `Connected ${
-                        walletNetworkName ? `to ${walletNetworkName}` : ''
-                      }`}
+                    : connectionDetails.message}
                 </div>
               </div>
 
@@ -198,7 +218,16 @@ function ConnectedMode() {
           width: ${above('medium') ? '410px' : '328px'};
         `}
       >
-        <ConnectionInfo address={wallet.account} />
+        <ConnectionInfo
+          clientListening={clientListening}
+          clientOnline={clientOnline}
+          clientConnectionStatus={clientConnectionStatus}
+          clientSyncDelay={clientSyncDelay}
+          walletListening={walletListening}
+          walletOnline={walletListening}
+          walletConnectionStatus={walletConnectionStatus}
+          walletSyncDelay={walletSyncDelay}
+        />
       </Popover>
     </div>
   )

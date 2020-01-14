@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
   ButtonBase,
@@ -14,7 +15,7 @@ import {
 
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
-import { useNetworkConnectionData } from './utils'
+import { useNetworkConnectionData, resolveUserConnectionDetails } from './utils'
 import SyncedInfo from './SyncedInfo'
 
 const FlexWrapper = styled.div`
@@ -22,7 +23,16 @@ const FlexWrapper = styled.div`
   align-items: center;
 `
 
-function ConnectionInfo() {
+function ConnectionInfo({
+  clientListening,
+  clientOnline,
+  clientConnectionStatus,
+  clientSyncDelay,
+  walletListening,
+  walletOnline,
+  walletConnectionStatus,
+  walletSyncDelay,
+}) {
   const { account, providerInfo } = useWallet()
   const theme = useTheme()
 
@@ -36,6 +46,15 @@ function ConnectionInfo() {
 
   const Icon = hasNetworkMismatch ? IconCross : IconCheck
 
+  const connectionDetails = resolveUserConnectionDetails(
+    clientListening,
+    walletListening,
+    clientOnline,
+    walletOnline,
+    clientSyncDelay,
+    walletSyncDelay,
+    walletNetworkName
+  )
   return (
     <section
       css={`
@@ -77,7 +96,7 @@ function ConnectionInfo() {
                 transform: translateY(-2px);
               `}
             />
-            <span>Wallet Connected</span>
+            <span>Wallet</span>
           </FlexWrapper>
           <FlexWrapper>
             <ButtonBase
@@ -110,7 +129,9 @@ function ConnectionInfo() {
           css={`
             display: flex;
             margin-top: ${1 * GU}px;
-            color: ${hasNetworkMismatch ? theme.negative : theme.positive};
+            color: ${hasNetworkMismatch
+              ? theme.negative
+              : theme[connectionDetails.color]};
             ${textStyle('label2')};
           `}
         >
@@ -121,7 +142,7 @@ function ConnectionInfo() {
                 margin-left: ${0.5 * GU}px;
               `}
             >
-              Connected to Ethereum {walletNetworkName} Network
+              {connectionDetails.message}
             </span>
           )}
         </FlexWrapper>
@@ -135,11 +156,32 @@ function ConnectionInfo() {
             Please connect to the Ethereum {clientNetworkName} Network.
           </div>
         ) : (
-          <SyncedInfo />
+          <SyncedInfo
+            clientSyncDelay={clientSyncDelay}
+            walletSyncDelay={walletSyncDelay}
+            walletListening={walletListening}
+            clientListening={clientListening}
+            walletOnline={walletOnline}
+            clientOnline={clientOnline}
+            walletConnectionStatus={walletConnectionStatus}
+            clientConnectionStatus={clientConnectionStatus}
+            walletNetworkName={walletNetworkName}
+          />
         )}
       </div>
     </section>
   )
+}
+
+ConnectionInfo.propTypes = {
+  clientListening: PropTypes.bool,
+  clientOnline: PropTypes.bool,
+  clientConnectionStatus: PropTypes.string,
+  clientSyncDelay: PropTypes.number,
+  walletListening: PropTypes.bool,
+  walletOnline: PropTypes.bool,
+  walletConnectionStatus: PropTypes.string,
+  walletSyncDelay: PropTypes.number,
 }
 
 export default ConnectionInfo
