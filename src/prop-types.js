@@ -93,18 +93,24 @@ export const AppType = PropTypes.shape({
       src: PropTypes.string.isRequired,
     })
   ),
-  isAragonOsInternalApp: PropTypes.bool,
-  isForwarder: PropTypes.bool,
-  kernelAddress: EthereumAddressType,
   name: PropTypes.string,
   roles: PropTypes.array,
   status: PropTypes.string,
   version: PropTypes.string,
+
+  // This content is only available if the app is an aragonOS internal app
+  isAragonOsInternalApp: PropTypes.bool,
+
+  // This content is not available if the app is the Kernel
+  isForwarder: PropTypes.bool,
+  kernelAddress: EthereumAddressType,
 })
 
 export const AppsListType = PropTypes.arrayOf(AppType)
 
 export const AppInstanceType = PropTypes.shape({
+  // Note that app instances also include embedded applications, like Home, that do not have
+  // associated on-chain information
   codeAddress: EthereumAddressType,
   identifier: PropTypes.string,
   instanceId: PropTypes.oneOfType([EthereumAddressType, PropTypes.string])
@@ -115,9 +121,11 @@ export const AppInstanceType = PropTypes.shape({
 export const AppInstanceGroupType = PropTypes.shape({
   app: PropTypes.object.isRequired,
   appId: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
   instances: PropTypes.arrayOf(AppInstanceType).isRequired,
-  hasWebApp: PropTypes.bool.isRequired,
+
+  // This content may not be available if the app's content couldn't be fetched
+  hasWebApp: PropTypes.bool,
+  name: PropTypes.string,
   repoName: PropTypes.string,
 })
 
