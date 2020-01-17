@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { GU, IconCheck, IconCross, textStyle, useTheme } from '@aragon/ui'
-import { useNetworkConnectionData, resolveConnectionMessage } from './utils'
+import { resolveConnectionMessage, useNetworkConnectionData } from './utils'
 import ClientSyncedInfo from './ClientSyncedInfo'
 
 const FlexWrapper = styled.div`
@@ -90,8 +90,8 @@ function ClientConnectionInfo({
 
 ClientConnectionInfo.propTypes = {
   connectionStatus: PropTypes.string,
-  online: PropTypes.bool,
   listening: PropTypes.bool,
+  online: PropTypes.bool,
   syncDelay: PropTypes.number,
 }
 

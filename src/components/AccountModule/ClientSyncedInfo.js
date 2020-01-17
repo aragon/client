@@ -51,9 +51,9 @@ function ClientSyncedInfo({ syncDelay, listening, online }) {
 }
 
 ClientSyncedInfo.propTypes = {
-  syncDelay: PropTypes.number,
   listening: PropTypes.bool,
   online: PropTypes.bool,
+  syncDelay: PropTypes.number,
 }
 
 export default ClientSyncedInfo

@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
+  Button,
+  ButtonBase,
   Popover,
   GU,
   IconDown,
   textStyle,
+  springs,
   useTheme,
   unselectable,
-  ButtonBase,
-  Button,
   useViewport,
-  springs,
 } from '@aragon/ui'
-import { Spring, animated } from 'react-spring'
+import { animated, Spring } from 'react-spring'
 import ClientConnectionInfo from './ClientConnectionInfo'
-import { useNetworkConnectionData, resolveConnectionMessage } from './utils'
+import { resolveConnectionMessage, useNetworkConnectionData } from './utils'
 import { useSyncInfo } from './useSyncInfo'
 
-// This is to avoid unnecesarily displaying the Client Connection Module
+// This is to avoid unnecessarily displaying the Client Connection Module
 // if the user has a wallet connected.
 const ACCOUNT_MODULE_DISPLAY_DELAY = 500
 
@@ -109,7 +109,6 @@ function ConnectionDetails({
 }) {
   const containerRef = useRef()
   const theme = useTheme()
-
   const connectionColor =
     connectionStatus === 'error' || !listening || !online
       ? theme.negative
@@ -233,8 +232,8 @@ ConnectionDetails.propTypes = {
   connectionStatus: PropTypes.string,
   listening: PropTypes.bool,
   online: PropTypes.bool,
-  syncDelay: PropTypes.number,
   opened: PropTypes.bool,
+  syncDelay: PropTypes.number,
   toggle: PropTypes.func,
 }
 
@@ -350,8 +349,8 @@ MobileConnectionDetails.propTypes = {
   connectionStatus: PropTypes.string,
   listening: PropTypes.bool,
   online: PropTypes.bool,
-  syncDelay: PropTypes.number,
   opened: PropTypes.bool,
+  syncDelay: PropTypes.number,
   toggle: PropTypes.func,
 }
 

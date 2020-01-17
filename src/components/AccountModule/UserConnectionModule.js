@@ -1,26 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
+  ButtonBase,
   EthIdenticon,
-  Popover,
   GU,
   IconDown,
+  Popover,
   RADIUS,
+  springs,
   textStyle,
   useTheme,
   useViewport,
   unselectable,
-  ButtonBase,
-  springs,
 } from '@aragon/ui'
-import { Spring, animated } from 'react-spring'
+import { animated, Spring } from 'react-spring'
 import { shortenAddress } from '../../web3-utils'
 import { useLocalIdentity } from '../../hooks'
 import { useSyncInfo } from './useSyncInfo'
 import { useWallet } from '../../wallet'
 import NotConnected from './NotConnected'
 import ConnectionInfo from './ConnectionInfo'
-import { useNetworkConnectionData, resolveUserConnectionDetails } from './utils'
+import { resolveUserConnectionDetails, useNetworkConnectionData } from './utils'
 
 // Metamask seems to take about ~200ms to send the connected accounts.
 // This is to avoid a flash with the connection button.

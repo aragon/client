@@ -174,13 +174,13 @@ function ConnectionInfo({
 }
 
 ConnectionInfo.propTypes = {
+  clientConnectionStatus: PropTypes.string,
   clientListening: PropTypes.bool,
   clientOnline: PropTypes.bool,
-  clientConnectionStatus: PropTypes.string,
   clientSyncDelay: PropTypes.number,
+  walletConnectionStatus: PropTypes.string,
   walletListening: PropTypes.bool,
   walletOnline: PropTypes.bool,
-  walletConnectionStatus: PropTypes.string,
   walletSyncDelay: PropTypes.number,
 }
 
