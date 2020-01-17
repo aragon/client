@@ -16,7 +16,7 @@ import {
 import { animated, Spring } from 'react-spring'
 import { shortenAddress } from '../../web3-utils'
 import { useLocalIdentity } from '../../hooks'
-import { useSyncInfo } from './useSyncInfo'
+import { useSyncInfo, CONNECTION_STATUS_ERROR } from './useSyncInfo'
 import { useWallet } from '../../wallet'
 import NotConnected from './NotConnected'
 import ConnectionInfo from './ConnectionInfo'

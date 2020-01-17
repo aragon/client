@@ -14,8 +14,12 @@ import {
 } from '@aragon/ui'
 import { animated, Spring } from 'react-spring'
 import ClientConnectionInfo from './ClientConnectionInfo'
-import { resolveConnectionMessage, useNetworkConnectionData } from './utils'
-import { useSyncInfo } from './useSyncInfo'
+import {
+  resolveConnectionMessage,
+  useNetworkConnectionData,
+  useConnectionStatusColor,
+} from './utils'
+import { useSyncInfo, CONNECTION_STATUS_ERROR } from './useSyncInfo'
 
 // This is to avoid unnecessarily displaying the Client Connection Module
 // if the user has a wallet connected.
@@ -109,12 +113,9 @@ function ConnectionDetails({
 }) {
   const containerRef = useRef()
   const theme = useTheme()
-  const connectionColor =
-    connectionStatus === 'error' || !listening || !online
-      ? theme.negative
-      : connectionStatus === 'warning'
-      ? theme.warning
-      : theme.positive
+  const connectionColor = useConnectionStatusColor(
+    listening && online ? status : CONNECTION_STATUS_ERROR
+  )
   const connectionMessage = resolveConnectionMessage(
     connectionStatus,
     listening,
@@ -249,13 +250,10 @@ function MobileConnectionDetails({
 }) {
   const containerRef = useRef()
   const theme = useTheme()
+  const connectionColor = useConnectionStatusColor(
+    listening && online ? status : CONNECTION_STATUS_ERROR
+  )
 
-  const connectionColor =
-    connectionStatus === 'error' || !listening || !online
-      ? theme.negative
-      : connectionStatus === 'warning'
-      ? theme.warning
-      : theme.positive
   return (
     <div
       ref={containerRef}

@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useTheme } from '@aragon/ui'
 import { web3Providers, network } from '../../environment'
 import { getNetworkByChainId } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
+import {
+  CONNECTION_STATUS_WARNING,
+  CONNECTION_STATUS_ERROR,
+ } from './useSyncInfo'
 
 const connectionMessages = {
   userConnectionDropped: `We cannot connect to the wallet's Ethereum node. You can change the node settings in Network Settings. You will still see new transactions from the client appear.`,
@@ -9,6 +14,22 @@ const connectionMessages = {
     'We cannot connect to the Ethereum node. You can change the node settings in Network Settings, or refresh the client.',
   networkSyncingIssues: `We've detected the Ethereum node you are connected to seems to be having troubles syncing blocks. You can change the node settings in Network Settings.`,
   majorNetworkSlowdown: `We've detected the Ethereum node you are connected to seems to be having troubles syncing blocks. You can change the node settings in Network Settings. Do not sign any transactions until this error disappears.`,
+}
+
+// window.location.hash = getAppPath({
+//  // … (current state)
+//  search: getPreferencesSearch('network')
+// })
+
+export function useConnectionStatusColor(status) {
+  const theme = useTheme()
+  if (CONNECTION_STATUS_ERROR) {
+    return theme.negative
+  }
+  if (CONNECTION_STATUS_WARNING) {
+    return theme.warning
+  }
+  return theme.positive
 }
 
 export async function getLatestBlockTimestamp() {
