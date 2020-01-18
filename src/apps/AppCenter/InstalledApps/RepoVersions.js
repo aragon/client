@@ -49,7 +49,8 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
           >
             {/* eslint-disable react/prop-types */
             ({ timestamp, version }) => ({ progress }) => {
-              const currentItem = version === currentVersion.version
+              const currentItem =
+                Boolean(currentVersion) && version === currentVersion.version
 
               return (
                 <AnimTr
@@ -111,7 +112,8 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
           </Info.Action>
         ) : (
           <Info.Warning>
-            This organization is currently using an unpublished version of this application.
+            This organization is currently using an unpublished version of this
+            application.
           </Info.Warning>
         )}
       </div>

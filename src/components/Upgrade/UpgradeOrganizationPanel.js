@@ -37,17 +37,6 @@ const UpgradeOrganizationPanel = React.memo(
       () => repos.filter(repo => isKnownRepo(repo.appId)),
       [repos]
     )
-    const [currentVersions, newVersions] = useMemo(
-      () =>
-        knownUpgradableRepos.reduce(
-          (results, repo) => [
-            [...results[0], repo.currentVersion],
-            [...results[1], repo.latestVersion],
-          ],
-          [[], []]
-        ),
-      [knownUpgradableRepos]
-    )
 
     const handleUpgradeAll = useCallback(async () => {
       const upgradeIntents = knownUpgradableRepos.map(({ appId, versions }) => {
@@ -98,21 +87,21 @@ const UpgradeOrganizationPanel = React.memo(
         >
           <div>
             <Heading2 theme={theme}>Current version</Heading2>
-            <div>
-              {currentVersions.map(appVersion => (
-                <AppVersion
-                  key={appVersion.content.appId}
-                  repoVersion={appVersion}
-                />
-              ))}
-            </div>
+            {knownUpgradableRepos.map(repo => (
+              <AppVersion
+                key={repo.appId}
+                latestVersion={repo.latestVersion}
+                version={repo.currentVersion}
+              />
+            ))}
           </div>
           <div>
             <Heading2 theme={theme}>New version</Heading2>
-            {newVersions.map(appVersion => (
+            {knownUpgradableRepos.map(repo => (
               <AppVersion
-                key={appVersion.content.appId}
-                repoVersion={appVersion}
+                key={repo.appId}
+                latestVersion={repo.latestVersion}
+                version={repo.latestVersion}
               />
             ))}
           </div>
@@ -176,8 +165,7 @@ UpgradeOrganizationPanel.propTypes = {
   wrapper: AragonType,
 }
 
-const AppVersion = ({ repoVersion }) => {
-  const { version } = repoVersion
+const AppVersion = ({ latestVersion, version }) => {
   return (
     <div
       css={`
@@ -188,14 +176,15 @@ const AppVersion = ({ repoVersion }) => {
         margin: ${0.5 * GU}px 0;
       `}
     >
-      <div>{version}</div>
-      <RepoBadge repoVersion={repoVersion} />
+      <div>{version.version}</div>
+      <RepoBadge displayVersion={version} latestVersion={latestVersion} />
     </div>
   )
 }
 
 AppVersion.propTypes = {
-  repoVersion: RepoVersionType.isRequired,
+  latestVersion: RepoVersionType.isRequired,
+  version: RepoVersionType.isRequired,
 }
 
 const Heading2 = styled.h2`
