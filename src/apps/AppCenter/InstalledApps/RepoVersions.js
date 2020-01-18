@@ -111,7 +111,7 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
           </Info.Action>
         ) : (
           <Info.Warning>
-            This organization is currently using an published version of this application.
+            This organization is currently using an unpublished version of this application.
           </Info.Warning>
         )}
       </div>
