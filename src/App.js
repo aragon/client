@@ -235,10 +235,10 @@ class App extends React.Component {
           ({ appId, currentVersion, latestVersion }) =>
             isKnownRepo(appId) &&
             // If the installed app version is not a published version,
-            // also consider it for upgrades
-            (!currentVersion ||
-              currentVersion.version.split('.')[0] <
-                latestVersion.version.split('.')[0])
+            // never consider the organization for upgrades
+            Boolean(currentVersion) &&
+            currentVersion.version.split('.')[0] <
+              latestVersion.version.split('.')[0]
         )
         this.setState({ canUpgradeOrg, repos })
       },
