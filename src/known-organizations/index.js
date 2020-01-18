@@ -89,7 +89,7 @@ export const KnownOrganizations = {
         template: TEMPLATE_MEMBERSHIP,
       },
       {
-        address: '0x4d2e79c0df917721f082bc1fd7322356962d1eb6',
+        address: '0x08ac31Dd93c16F1f6c4A0FAE540bA1aD52f581d0',
         domain: 'sf.aragonid.eth',
         name: 'Saint Fame',
         image: saintFameImage,
