@@ -134,10 +134,10 @@ class UpgradeAppPanel extends React.PureComponent {
             </Button>
           </div>
 
-          <Info.Action>
+          <Info>
             All the “{name}” app instances installed on your organization will
             be upgraded.
-          </Info.Action>
+          </Info>
         </Part>
       </SidePanel>
     )

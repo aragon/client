@@ -106,15 +106,15 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
         `}
       >
         {currentVersion ? (
-          <Info.Action>
+          <Info>
             Minor and patch upgrades are front-end only, and are performed
             automatically.
-          </Info.Action>
+          </Info>
         ) : (
-          <Info.Warning>
+          <Info mode="warning">
             This organization is currently using an unpublished version of this
             application.
-          </Info.Warning>
+          </Info>
         )}
       </div>
     </div>
