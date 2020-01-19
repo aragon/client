@@ -15,22 +15,20 @@ import {
 
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
-import { useNetworkConnectionData, resolveUserConnectionDetails } from './utils'
-import SyncedInfo from './SyncedInfo'
+import { useNetworkConnectionData, useWalletConnectionDetails } from './utils'
+import WalletSyncedInfo from './WalletSyncedInfo'
 
 const FlexWrapper = styled.div`
   display: inline-flex;
   align-items: center;
 `
 
-function ConnectionInfo({
+function WalletConnectionInfo({
   clientListening,
   clientOnline,
-  clientConnectionStatus,
   clientSyncDelay,
   walletListening,
   walletOnline,
-  walletConnectionStatus,
   walletSyncDelay,
 }) {
   const { account, providerInfo } = useWallet()
@@ -44,9 +42,7 @@ function ConnectionInfo({
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 
-  const Icon = hasNetworkMismatch ? IconCross : IconCheck
-
-  const connectionDetails = resolveUserConnectionDetails(
+  const { connectionMessage, connectionColor } = useWalletConnectionDetails(
     clientListening,
     walletListening,
     clientOnline,
@@ -55,6 +51,12 @@ function ConnectionInfo({
     walletSyncDelay,
     walletNetworkName
   )
+
+  const Icon =
+    hasNetworkMismatch || connectionColor !== theme.positive
+      ? IconCross
+      : IconCheck
+
   return (
     <section
       css={`
@@ -129,9 +131,7 @@ function ConnectionInfo({
           css={`
             display: flex;
             margin-top: ${1 * GU}px;
-            color: ${hasNetworkMismatch
-              ? theme.negative
-              : theme[connectionDetails.color]};
+            color: ${hasNetworkMismatch ? theme.negative : connectionColor};
             ${textStyle('label2')};
           `}
         >
@@ -142,7 +142,7 @@ function ConnectionInfo({
                 margin-left: ${0.5 * GU}px;
               `}
             >
-              {connectionDetails.message}
+              {connectionMessage}
             </span>
           )}
         </FlexWrapper>
@@ -156,16 +156,12 @@ function ConnectionInfo({
             Please connect to the Ethereum {clientNetworkName} Network.
           </div>
         ) : (
-          <SyncedInfo
-            clientSyncDelay={clientSyncDelay}
-            walletSyncDelay={walletSyncDelay}
-            walletListening={walletListening}
+          <WalletSyncedInfo
             clientListening={clientListening}
-            walletOnline={walletOnline}
             clientOnline={clientOnline}
-            walletConnectionStatus={walletConnectionStatus}
-            clientConnectionStatus={clientConnectionStatus}
-            walletNetworkName={walletNetworkName}
+            clientSyncDelay={clientSyncDelay}
+            walletListening={walletListening}
+            walletSyncDelay={walletSyncDelay}
           />
         )}
       </div>
@@ -173,15 +169,13 @@ function ConnectionInfo({
   )
 }
 
-ConnectionInfo.propTypes = {
-  clientConnectionStatus: PropTypes.string,
+WalletConnectionInfo.propTypes = {
   clientListening: PropTypes.bool,
   clientOnline: PropTypes.bool,
   clientSyncDelay: PropTypes.number,
-  walletConnectionStatus: PropTypes.string,
   walletListening: PropTypes.bool,
   walletOnline: PropTypes.bool,
   walletSyncDelay: PropTypes.number,
 }
 
-export default ConnectionInfo
+export default WalletConnectionInfo

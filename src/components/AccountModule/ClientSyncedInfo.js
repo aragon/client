@@ -23,7 +23,6 @@ function ClientSyncedInfo({ syncDelay, listening, online }) {
         info: `${syncDelay} min behind`,
       })
     } else {
-      console.log(listening, online)
       setCorrectSyncInfo({
         header: 'Synced: ',
         info: `current block ${latestClientBlockNumber}`,

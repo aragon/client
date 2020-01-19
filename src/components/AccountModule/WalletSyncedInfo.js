@@ -4,7 +4,7 @@ import { GU } from '@aragon/ui'
 import { useWalletBlockNumber } from '../../wallet'
 import { resolveUserSyncInfo } from './utils'
 
-function SyncedInfo({
+function WalletSyncedInfo({
   clientListening,
   clientOnline,
   clientSyncDelay,
@@ -52,7 +52,7 @@ function SyncedInfo({
   )
 }
 
-SyncedInfo.propTypes = {
+WalletSyncedInfo.propTypes = {
   clientListening: PropTypes.bool,
   clientOnline: PropTypes.bool,
   clientSyncDelay: PropTypes.number,
@@ -60,4 +60,4 @@ SyncedInfo.propTypes = {
   walletSyncDelay: PropTypes.number,
 }
 
-export default SyncedInfo
+export default WalletSyncedInfo

@@ -15,9 +15,9 @@ import {
 import { animated, Spring } from 'react-spring'
 import ClientConnectionInfo from './ClientConnectionInfo'
 import {
-  resolveConnectionMessage,
-  useNetworkConnectionData,
+  getConnectionMessage,
   useConnectionStatusColor,
+  useNetworkConnectionData,
 } from './utils'
 import { useSyncInfo, CONNECTION_STATUS_ERROR } from './useSyncInfo'
 
@@ -116,12 +116,13 @@ function ConnectionDetails({
   const connectionColor = useConnectionStatusColor(
     listening && online ? status : CONNECTION_STATUS_ERROR
   )
-  const connectionMessage = resolveConnectionMessage(
+  const connectionMessage = getConnectionMessage(
     connectionStatus,
     listening,
     online,
     clientNetworkName
   )
+
   return (
     <div
       ref={containerRef}
@@ -230,7 +231,7 @@ function ConnectionDetails({
 ConnectionDetails.propTypes = {
   clientNetworkName: PropTypes.string,
   close: PropTypes.func,
-  connectionStatus: PropTypes.string,
+  connectionStatus: PropTypes.symbol,
   listening: PropTypes.bool,
   online: PropTypes.bool,
   opened: PropTypes.bool,
@@ -344,7 +345,7 @@ function MobileConnectionDetails({
 MobileConnectionDetails.propTypes = {
   clientNetworkName: PropTypes.string,
   close: PropTypes.func,
-  connectionStatus: PropTypes.string,
+  connectionStatus: PropTypes.symbol,
   listening: PropTypes.bool,
   online: PropTypes.bool,
   opened: PropTypes.bool,

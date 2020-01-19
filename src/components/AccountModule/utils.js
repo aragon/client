@@ -4,9 +4,9 @@ import { web3Providers, network } from '../../environment'
 import { getNetworkByChainId } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
 import {
-  CONNECTION_STATUS_WARNING,
   CONNECTION_STATUS_ERROR,
- } from './useSyncInfo'
+  CONNECTION_STATUS_WARNING,
+} from './useSyncInfo'
 
 const connectionMessages = {
   userConnectionDropped: `We cannot connect to the wallet's Ethereum node. You can change the node settings in Network Settings. You will still see new transactions from the client appear.`,
@@ -23,10 +23,10 @@ const connectionMessages = {
 
 export function useConnectionStatusColor(status) {
   const theme = useTheme()
-  if (CONNECTION_STATUS_ERROR) {
+  if (status === CONNECTION_STATUS_ERROR) {
     return theme.negative
   }
-  if (CONNECTION_STATUS_WARNING) {
+  if (status === CONNECTION_STATUS_WARNING) {
     return theme.warning
   }
   return theme.positive
@@ -65,52 +65,22 @@ export const useNetworkConnectionData = () => {
   }
 }
 
-export function getSyncInfo(latestBlockTimestamp) {
-  const blockDiff = new Date() - new Date(latestBlockTimestamp * 1000)
-  const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
-  const offline = !window.navigator.onLine
-  if (offline || latestBlockDifference > 45) {
-    return {
-      connectionType: 'dropped',
-      syncHeader: '',
-      syncInfo: '',
-    }
-  } else if (latestBlockDifference >= 30) {
-    return {
-      connectionType: 'dropped',
-      syncHeader: 'Last known state: ',
-      syncInfo: `${latestBlockDifference} min behind`,
-    }
-  } else if (latestBlockDifference >= 3) {
-    return {
-      connectionType: 'warning',
-      syncHeader: 'Out of sync: ',
-      syncInfo: `${latestBlockDifference} min behind`,
-    }
-  }
-  return {
-    connectionType: 'healthy',
-    syncHeader: 'Synced:',
-    syncInfo: 'current block:',
-  }
-}
-
-export function resolveConnectionMessage(
+export function getConnectionMessage(
   connectionStatus,
   listening,
   online,
   clientNetworkName
 ) {
   const connectionMessage =
-    connectionStatus === 'error' || !listening || !online
+    connectionStatus === CONNECTION_STATUS_ERROR || !listening || !online
       ? 'No connection'
-      : connectionStatus === 'warning'
+      : connectionStatus === CONNECTION_STATUS_WARNING
       ? 'Syncing issues'
       : `Connected to ${clientNetworkName}`
   return connectionMessage
 }
 
-export function resolveUserConnectionDetails(
+export function useWalletConnectionDetails(
   clientListening,
   userListening,
   clientOnline,
@@ -119,6 +89,7 @@ export function resolveUserConnectionDetails(
   userSyncDelay,
   clientNetworkName
 ) {
+  const theme = useTheme()
   let connectionDetails = {}
   const networkSlowdown =
     userSyncDelay >= 5 &&
@@ -135,18 +106,18 @@ export function resolveUserConnectionDetails(
     userSyncDelay >= 30
   ) {
     connectionDetails = {
-      message: 'No connection',
-      color: 'negative',
+      connectionMessage: 'No connection',
+      connectionColor: theme.negative,
     }
   } else if (userSyncDelay >= 3 || clientSyncDelay >= 3) {
     connectionDetails = {
-      message: 'Syncing issues',
-      color: 'warning',
+      connectionMessage: 'Syncing issues',
+      connectionColor: theme.warning,
     }
   } else {
     connectionDetails = {
-      message: `Connected to ${clientNetworkName}`,
-      color: 'positive',
+      connectionMessage: `Connected to ${clientNetworkName}`,
+      connectionColor: theme.positive,
     }
   }
   return connectionDetails

@@ -14,7 +14,9 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   const selectedWeb3 = getWeb3(web3Providers[wantedWeb3])
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
-  const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS_HEALTHY)
+  const [connectionStatus, setConnectionStatus] = useState(
+    CONNECTION_STATUS_HEALTHY
+  )
   const [syncDelay, setSyncDelay] = useState(0)
 
   const handleWebsocketDrop = useCallback(() => {
@@ -30,7 +32,10 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   // check for connection loss from the browser
   useEffect(() => {
     const goOnline = () => setIsOnline(true)
-    const goOffline = () => setIsOnline(false)
+    const goOffline = () => {
+      setIsOnline(false)
+      setConnectionStatus(CONNECTION_STATUS_ERROR)
+    }
     window.addEventListener('online', goOnline)
     window.addEventListener('offline', goOffline)
 

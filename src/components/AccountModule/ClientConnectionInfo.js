@@ -2,8 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { GU, IconCheck, IconCross, textStyle, useTheme } from '@aragon/ui'
-import { resolveConnectionMessage, useNetworkConnectionData } from './utils'
 import ClientSyncedInfo from './ClientSyncedInfo'
+import {
+  getConnectionMessage,
+  useConnectionStatusColor,
+  useNetworkConnectionData,
+} from './utils'
+import {
+  CONNECTION_STATUS_ERROR,
+  CONNECTION_STATUS_HEALTHY,
+  CONNECTION_STATUS_WARNING,
+} from './useSyncInfo'
 
 const FlexWrapper = styled.div`
   display: inline-flex;
@@ -19,20 +28,22 @@ function ClientConnectionInfo({
   const theme = useTheme()
   const { clientNetworkName } = useNetworkConnectionData()
 
-  const Icon = connectionStatus === 'healthy' ? IconCheck : IconCross
-
-  const connectionStatusColor =
-    connectionStatus === 'healthy'
-      ? theme.positive
-      : connectionStatus === 'warning'
-      ? theme.warning
-      : theme.negative
-  const connectionMessage = resolveConnectionMessage(
+  const Icon =
+    connectionStatus === CONNECTION_STATUS_HEALTHY ? IconCheck : IconCross
+  const connectionStatusColor = useConnectionStatusColor(
+    listening && online ? connectionStatus : CONNECTION_STATUS_ERROR
+  )
+  let connectionMessage = getConnectionMessage(
     connectionStatus,
     listening,
     online,
     clientNetworkName
   )
+
+  if (connectionStatus === CONNECTION_STATUS_HEALTHY) {
+    connectionMessage = `Connected to Ethereum ${clientNetworkName} Network`
+  }
+
   return (
     <section
       css={`
@@ -89,7 +100,7 @@ function ClientConnectionInfo({
 }
 
 ClientConnectionInfo.propTypes = {
-  connectionStatus: PropTypes.string,
+  connectionStatus: PropTypes.symbol,
   listening: PropTypes.bool,
   online: PropTypes.bool,
   syncDelay: PropTypes.number,
@@ -98,7 +109,7 @@ ClientConnectionInfo.propTypes = {
 function ConnectionInfoMessage({ connectionStatus }) {
   let content = null
 
-  if (connectionStatus === 'warning') {
+  if (connectionStatus === CONNECTION_STATUS_WARNING) {
     content = (
       <span>
         We've detected the Ethereum node you are connected to seems to be having
@@ -108,7 +119,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
     )
   }
 
-  if (connectionStatus === 'error') {
+  if (connectionStatus === CONNECTION_STATUS_ERROR) {
     content = (
       <span>
         We cannot connect to the Ethereum node. You can change the node settings
@@ -130,7 +141,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
 }
 
 ConnectionInfoMessage.propTypes = {
-  connectionStatus: PropTypes.string,
+  connectionStatus: PropTypes.symbol,
 }
 
 export default ClientConnectionInfo

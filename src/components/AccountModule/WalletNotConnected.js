@@ -16,6 +16,9 @@ function NotConnected({ compact }) {
       `}
     >
       <Button
+        css={`
+          min-width: 40px;
+        `}
         display={below('medium') ? 'icon' : 'all'}
         size={compact ? 'small' : 'medium'}
         icon={<IconConnect />}

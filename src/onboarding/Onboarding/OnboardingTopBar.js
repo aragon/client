@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import ClientConnectionModule from '../../components/AccountModule/ClientConnectionModule'
-import UserConnectionModule from '../../components/AccountModule/UserConnectionModule'
+import WalletConnectionModule from '../../components/AccountModule/WalletConnectionModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
 import { useWallet } from '../../wallet'
 
@@ -71,14 +71,14 @@ function OnboardingTopBar({ status, solid }) {
               height: 100%;
             `}
           >
-            <UserConnectionModule compact />
+            <WalletConnectionModule />
             {!isConnected && <ClientConnectionModule />}
           </div>
           <Button
             display="icon"
             icon={<IconSettings />}
             label="Settings"
-            size="small"
+            size="medium"
             onClick={handleSettingsClick}
           />
         </div>

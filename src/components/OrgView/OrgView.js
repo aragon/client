@@ -22,7 +22,7 @@ import { useClientTheme } from '../../client-theme'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
 import ClientConnectionModule from '../AccountModule/ClientConnectionModule'
-import UserConnectionModule from '../AccountModule/UserConnectionModule'
+import WalletConnectionModule from '../AccountModule/WalletConnectionModule'
 import ActivityButton from './ActivityButton/ActivityButton'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
 import { useWallet } from '../../wallet'
@@ -155,7 +155,7 @@ function OrgView({
             />
           )}
           <div css="display: flex">
-            <UserConnectionModule />
+            <WalletConnectionModule />
             {!isConnected && <ClientConnectionModule />}
             <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ActivityButton apps={apps} />
