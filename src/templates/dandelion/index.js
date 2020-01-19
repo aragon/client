@@ -12,6 +12,7 @@ import { LockScreen, VotingScreen } from './config'
 import header from './header.svg'
 import icon from './icon.svg'
 import getBlockTime from './config/helpers/getBlockTime'
+import { ETHER_TOKEN_FAKE_ADDRESS } from './config/helpers/tokens'
 
 const onePercent = new BN(10).pow(new BN(16))
 
@@ -107,7 +108,7 @@ export default {
     const { domain, optionalModules = [], tokens, voting, lock } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
 
-    // TODO: Check why agent not setted as default vault when selected
+    // TODO: Check why agent not setted as default vault when including it
     console.log('optionalModules', optionalModules)
     console.log('use agent as vault', useAgentAsVault)
 
@@ -156,10 +157,10 @@ export default {
     ]
 
     // Redemptions apps
-    const redeemableTokens = [ETH_ADDRESS]
+    const redeemableTokens = [ETHER_TOKEN_FAKE_ADDRESS]
 
     // Token Request app
-    const acceptedDepositToken = [ETH_ADDRESS]
+    const acceptedDepositToken = [ETHER_TOKEN_FAKE_ADDRESS]
 
     return [
       {
