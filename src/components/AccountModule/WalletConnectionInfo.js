@@ -52,11 +52,11 @@ function WalletConnectionInfo({
     walletNetworkName
   )
 
-  const Icon =
-    hasNetworkMismatch || connectionColor !== theme.positive
-      ? IconCross
-      : IconCheck
+  const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
 
+  const formattedConnectionMessage = connectionMessage.includes('Connected')
+    ? `Connected to ${walletNetworkName} Network`
+    : connectionMessage
   return (
     <section
       css={`
@@ -82,7 +82,11 @@ function WalletConnectionInfo({
           padding: ${2 * GU}px;
         `}
       >
-        <FlexWrapper>
+        <FlexWrapper
+          css={`
+            width: 100%;
+          `}
+        >
           <FlexWrapper
             css={`
               margin-right: ${3 * GU}px;
@@ -100,13 +104,19 @@ function WalletConnectionInfo({
             />
             <span>Wallet</span>
           </FlexWrapper>
-          <FlexWrapper>
+          <FlexWrapper
+            css={`
+              width: 100%;
+              justify-content: flex-end;
+            `}
+          >
             <ButtonBase
               onClick={copyAddress}
               focusRingRadius={RADIUS}
               css={`
                 display: flex;
                 align-items: center;
+                justify-self: flex-end;
                 padding: ${0.5 * GU}px;
                 &:active {
                   background: ${theme.surfacePressed};
@@ -131,7 +141,7 @@ function WalletConnectionInfo({
           css={`
             display: flex;
             margin-top: ${1 * GU}px;
-            color: ${hasNetworkMismatch ? theme.negative : connectionColor};
+            color: ${connectionColor};
             ${textStyle('label2')};
           `}
         >
@@ -142,7 +152,7 @@ function WalletConnectionInfo({
                 margin-left: ${0.5 * GU}px;
               `}
             >
-              {connectionMessage}
+              {formattedConnectionMessage}
             </span>
           )}
         </FlexWrapper>

@@ -21,9 +21,9 @@ const FlexWrapper = styled.div`
 
 function ClientConnectionInfo({
   connectionStatus,
-  syncDelay,
-  online,
   listening,
+  online,
+  syncDelay,
 }) {
   const theme = useTheme()
   const { clientNetworkName } = useNetworkConnectionData()

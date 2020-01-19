@@ -90,7 +90,6 @@ function WalletConnectedMode() {
     connectionStatus: walletConnectionStatus,
     syncDelay: walletSyncDelay,
   } = useSyncInfo('wallet')
-
   const {
     isListening: clientListening,
     isOnline: clientOnline,
@@ -153,9 +152,7 @@ function WalletConnectedMode() {
                 right: -3px;
                 width: 10px;
                 height: 10px;
-                background: ${hasNetworkMismatch
-                  ? theme.negative
-                  : connectionColor};
+                background: ${connectionColor};
                 border: 2px solid ${theme.surface};
                 border-radius: 50%;
               `}

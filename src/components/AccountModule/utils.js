@@ -32,6 +32,49 @@ export function useConnectionStatusColor(status) {
   return theme.positive
 }
 
+export function useWalletConnectionDetails(
+  clientListening,
+  walletListening,
+  clientOnline,
+  walletOnline,
+  clientSyncDelay,
+  walletSyncDelay,
+  clientNetworkName
+) {
+  const theme = useTheme()
+  let connectionDetails = {}
+  const networkSlowdown =
+    walletSyncDelay >= 5 &&
+    clientSyncDelay >= 5 &&
+    Math.abs(walletSyncDelay - clientSyncDelay) <= 3
+
+  if (
+    !clientListening ||
+    !walletListening ||
+    !clientOnline ||
+    !walletOnline ||
+    networkSlowdown ||
+    clientSyncDelay >= 30 ||
+    walletSyncDelay >= 30
+  ) {
+    connectionDetails = {
+      connectionMessage: 'No connection',
+      connectionColor: theme.negative,
+    }
+  } else if (walletSyncDelay >= 3 || clientSyncDelay >= 3) {
+    connectionDetails = {
+      connectionMessage: 'Syncing issues',
+      connectionColor: theme.warning,
+    }
+  } else {
+    connectionDetails = {
+      connectionMessage: `Connected to ${clientNetworkName}`,
+      connectionColor: theme.positive,
+    }
+  }
+  return connectionDetails
+}
+
 export async function getLatestBlockTimestamp() {
   const clientWeb3 = getWeb3(web3Providers.default)
   const latestBlockInfo = await clientWeb3.eth.getBlock('latest')
@@ -78,49 +121,6 @@ export function getConnectionMessage(
       ? 'Syncing issues'
       : `Connected to ${clientNetworkName}`
   return connectionMessage
-}
-
-export function useWalletConnectionDetails(
-  clientListening,
-  userListening,
-  clientOnline,
-  userOnline,
-  clientSyncDelay,
-  userSyncDelay,
-  clientNetworkName
-) {
-  const theme = useTheme()
-  let connectionDetails = {}
-  const networkSlowdown =
-    userSyncDelay >= 5 &&
-    clientSyncDelay >= 5 &&
-    Math.abs(userSyncDelay - clientSyncDelay) <= 3
-
-  if (
-    !clientListening ||
-    !userListening ||
-    !clientOnline ||
-    !userOnline ||
-    networkSlowdown ||
-    clientSyncDelay >= 30 ||
-    userSyncDelay >= 30
-  ) {
-    connectionDetails = {
-      connectionMessage: 'No connection',
-      connectionColor: theme.negative,
-    }
-  } else if (userSyncDelay >= 3 || clientSyncDelay >= 3) {
-    connectionDetails = {
-      connectionMessage: 'Syncing issues',
-      connectionColor: theme.warning,
-    }
-  } else {
-    connectionDetails = {
-      connectionMessage: `Connected to ${clientNetworkName}`,
-      connectionColor: theme.positive,
-    }
-  }
-  return connectionDetails
 }
 
 export function resolveUserSyncInfo(

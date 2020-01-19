@@ -19,7 +19,7 @@ import {
   useConnectionStatusColor,
   useNetworkConnectionData,
 } from './utils'
-import { useSyncInfo, CONNECTION_STATUS_ERROR } from './useSyncInfo'
+import { CONNECTION_STATUS_ERROR, useSyncInfo } from './useSyncInfo'
 
 // This is to avoid unnecessarily displaying the Client Connection Module
 // if the user has a wallet connected.
@@ -74,9 +74,9 @@ function ClientConnectionModule() {
         >
           {below('medium') ? (
             <MobileConnectionDetails
+              connectionStatus={connectionStatus}
               clientNetworkName={clientNetworkName}
               close={close}
-              connectionStatus={connectionStatus}
               listening={listening}
               online={online}
               syncDelay={syncDelay}
@@ -85,9 +85,9 @@ function ClientConnectionModule() {
             />
           ) : (
             <ConnectionDetails
+              connectionStatus={connectionStatus}
               clientNetworkName={clientNetworkName}
               close={close}
-              connectionStatus={connectionStatus}
               listening={listening}
               online={online}
               syncDelay={syncDelay}
@@ -209,19 +209,19 @@ function ConnectionDetails({
       </ButtonBase>
       <Popover
         closeOnOpenerFocus
-        placement="bottom-end"
         onClose={close}
-        visible={opened}
         opener={containerRef.current}
+        placement="bottom-end"
+        visible={opened}
         css={`
           width: 410px;
         `}
       >
         <ClientConnectionInfo
           connectionStatus={connectionStatus}
-          syncDelay={syncDelay}
-          online={online}
           listening={listening}
+          online={online}
+          syncDelay={syncDelay}
         />
       </Popover>
     </div>
@@ -229,9 +229,9 @@ function ConnectionDetails({
 }
 
 ConnectionDetails.propTypes = {
+  connectionStatus: PropTypes.symbol,
   clientNetworkName: PropTypes.string,
   close: PropTypes.func,
-  connectionStatus: PropTypes.symbol,
   listening: PropTypes.bool,
   online: PropTypes.bool,
   opened: PropTypes.bool,
@@ -323,19 +323,19 @@ function MobileConnectionDetails({
       </Button>
       <Popover
         closeOnOpenerFocus
-        placement="bottom-end"
         onClose={close}
-        visible={opened}
         opener={containerRef.current}
+        placement="bottom-end"
+        visible={opened}
         css={`
           width: 328px;
         `}
       >
         <ClientConnectionInfo
           connectionStatus={connectionStatus}
-          syncDelay={syncDelay}
-          online={online}
           listening={listening}
+          online={online}
+          syncDelay={syncDelay}
         />
       </Popover>
     </div>
@@ -343,9 +343,9 @@ function MobileConnectionDetails({
 }
 
 MobileConnectionDetails.propTypes = {
+  connectionStatus: PropTypes.symbol,
   clientNetworkName: PropTypes.string,
   close: PropTypes.func,
-  connectionStatus: PropTypes.symbol,
   listening: PropTypes.bool,
   online: PropTypes.bool,
   opened: PropTypes.bool,

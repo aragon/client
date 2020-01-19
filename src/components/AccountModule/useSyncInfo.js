@@ -6,9 +6,9 @@ import { getWeb3 } from '../../web3-utils'
 
 const BLOCK_TIMESTAMP_BLOCK_DELAY = 60000
 
+export const CONNECTION_STATUS_ERROR = Symbol('CONNECTION_STATUS_ERROR')
 export const CONNECTION_STATUS_HEALTHY = Symbol('CONNECTION_STATUS_HEALTHY')
 export const CONNECTION_STATUS_WARNING = Symbol('CONNECTION_STATUS_WARNING')
-export const CONNECTION_STATUS_ERROR = Symbol('CONNECTION_STATUS_ERROR')
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const selectedWeb3 = getWeb3(web3Providers[wantedWeb3])

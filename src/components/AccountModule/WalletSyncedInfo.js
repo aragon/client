@@ -20,6 +20,7 @@ function WalletSyncedInfo({
     walletSyncDelay,
     walletBlockNumber
   )
+
   return (
     <React.Fragment>
       {userSyncInfo.header && (

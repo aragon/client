@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { GU } from '@aragon/ui'
 import { useClientBlockNumber } from './useClientBlockNumber'
 
-function ClientSyncedInfo({ syncDelay, listening, online }) {
+function ClientSyncedInfo({ listening, online, syncDelay }) {
   const [correctSyncInfo, setCorrectSyncInfo] = useState({
     header: '',
     info: '',

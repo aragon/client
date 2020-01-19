@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, GU, IconConnect, useViewport } from '@aragon/ui'
 import { enableWallet } from '../../wallet'
 
-function NotConnected({ compact }) {
+function WalletNotConnected({ compact }) {
   const { below } = useViewport()
 
   return (
@@ -30,8 +30,8 @@ function NotConnected({ compact }) {
   )
 }
 
-NotConnected.propTypes = {
+WalletNotConnected.propTypes = {
   compact: PropTypes.bool,
 }
 
-export default NotConnected
+export default WalletNotConnected
