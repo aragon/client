@@ -1,16 +1,6 @@
 import React, { useCallback, useReducer, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Field,
-  GU,
-  theme,
-  Help,
-  Info,
-  Button,
-  TextInput,
-  IconTrash,
-  isAddress,
-} from '@aragon/ui'
+import { Field, GU, Help, Info, TextInput, isAddress } from '@aragon/ui'
 import {
   Header,
   Navigation,
@@ -18,6 +8,8 @@ import {
   PercentageField,
   Duration,
 } from '../../../kit'
+import TokenSelector from '../TokenSelector/TokenSelector'
+import { getDefaultLockTokenByNetwork } from '../helpers/tokens'
 
 const MINUTE_IN_SECONDS = 60
 const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
@@ -75,8 +67,11 @@ function LockScreen({
 
   const fieldsLayout = useFieldsLayout()
 
+  const [selectedTokenIndex, setSelectedTokenIndex] = useState(-1)
   const [formError, setFormError] = useState()
   // const [tokenAddress, setTokenAddress] = useState()
+
+  const DEFAULT_LOCK_TOKEN = getDefaultLockTokenByNetwork()
 
   const [
     { lockDuration, tokenAddress, lockAmount, spamPenalty },
@@ -93,9 +88,10 @@ function LockScreen({
     updateField(['lockDuration', value])
   }, [])
 
-  const handleTokenAddressChange = useCallback(event => {
+  const handleTokenAddressChange = useCallback(({ address, index, value }) => {
     setFormError(null)
-    updateField(['tokenAddress', event.target.value])
+    setSelectedTokenIndex(index)
+    updateField(['tokenAddress', address])
   }, [])
 
   const handleSpamPenaltyChange = useCallback(value => {
@@ -107,11 +103,6 @@ function LockScreen({
     const value = parseInt(event.target.value, 10)
     setFormError(null)
     updateField(['lockAmount', isNaN(value) ? -1 : value])
-  }, [])
-
-  const handleClearTokenAddress = useCallback(() => {
-    setFormError(null)
-    updateField(['tokenAddress', ''])
   }, [])
 
   const prevNextRef = useRef()
@@ -164,33 +155,11 @@ function LockScreen({
             </React.Fragment>
           }
         >
-          <TextInput
-            adornment={
-              <span css="transform: translateY(1px)">
-                <Button
-                  display="icon"
-                  icon={
-                    <IconTrash
-                      css={`
-                        color: ${theme.negative};
-                      `}
-                    />
-                  }
-                  label="Remove"
-                  onClick={handleClearTokenAddress}
-                  size="mini"
-                />
-              </span>
-            }
-            adornmentPosition="end"
-            adornmentSettings={{ width: 52, padding: 8 }}
+          <TokenSelector
+            selectedIndex={selectedTokenIndex}
             onChange={handleTokenAddressChange}
-            placeholder="Ethereum token address"
             value={tokenAddress}
-            wide
-            css={`
-              padding-left: ${1 * GU}px;
-            `}
+            tokens={[DEFAULT_LOCK_TOKEN]}
           />
         </Field>
 

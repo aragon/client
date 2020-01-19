@@ -13,7 +13,6 @@ import header from './header.svg'
 import icon from './icon.svg'
 import getBlockTime from './config/helpers/getBlockTime'
 
-const ETH_ADDRESS = '0x0000000000000000000000000000000000000000'
 const onePercent = new BN(10).pow(new BN(16))
 
 function completeDomain(domain) {
@@ -107,6 +106,8 @@ export default {
     const blockTime = getBlockTime()
     const { domain, optionalModules = [], tokens, voting, lock } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
+
+    // TODO: Check why agent not setted as default vault when selected
     console.log('optionalModules', optionalModules)
     console.log('use agent as vault', useAgentAsVault)
 
