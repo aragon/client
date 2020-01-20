@@ -455,6 +455,7 @@ class App extends React.Component {
                         </PermissionsProvider>
 
                         <Onboarding
+                          locator={locator}
                           selectorNetworks={selectorNetworks}
                           status={
                             mode === APP_MODE_START || mode === APP_MODE_SETUP

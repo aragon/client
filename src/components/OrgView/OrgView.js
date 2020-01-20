@@ -40,6 +40,7 @@ function OrgView({
   children,
   daoAddress,
   daoStatus,
+  locator,
   onOpenApp,
   onOpenPreferences,
 }) {
@@ -155,8 +156,8 @@ function OrgView({
             />
           )}
           <div css="display: flex">
-            <WalletConnectionModule />
-            {!isConnected && <ClientConnectionModule />}
+            <WalletConnectionModule locator={locator} />
+            {!isConnected && <ClientConnectionModule locator={locator} />}
             <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ActivityButton apps={apps} />
           </div>
@@ -254,6 +255,7 @@ OrgView.propTypes = {
   children: PropTypes.node,
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,
+  locator: PropTypes.object,
   onOpenApp: PropTypes.func.isRequired,
   onOpenPreferences: PropTypes.func.isRequired,
 }

@@ -27,6 +27,7 @@ function WalletConnectionInfo({
   clientListening,
   clientOnline,
   clientSyncDelay,
+  locator,
   walletListening,
   walletOnline,
   walletSyncDelay,
@@ -170,6 +171,7 @@ function WalletConnectionInfo({
             clientListening={clientListening}
             clientOnline={clientOnline}
             clientSyncDelay={clientSyncDelay}
+            locator={locator}
             walletListening={walletListening}
             walletSyncDelay={walletSyncDelay}
           />
@@ -183,6 +185,7 @@ WalletConnectionInfo.propTypes = {
   clientListening: PropTypes.bool,
   clientOnline: PropTypes.bool,
   clientSyncDelay: PropTypes.number,
+  locator: PropTypes.object,
   walletListening: PropTypes.bool,
   walletOnline: PropTypes.bool,
   walletSyncDelay: PropTypes.number,

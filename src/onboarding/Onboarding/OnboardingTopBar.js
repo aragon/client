@@ -6,7 +6,7 @@ import WalletConnectionModule from '../../components/AccountModule/WalletConnect
 import HomeButton from '../../components/HomeButton/HomeButton'
 import { useWallet } from '../../wallet'
 
-function OnboardingTopBar({ status, solid }) {
+function OnboardingTopBar({ locator, status, solid }) {
   const theme = useTheme()
   const { isConnected } = useWallet()
   const handleSettingsClick = useCallback(() => {
@@ -71,8 +71,8 @@ function OnboardingTopBar({ status, solid }) {
               height: 100%;
             `}
           >
-            <WalletConnectionModule />
-            {!isConnected && <ClientConnectionModule />}
+            <WalletConnectionModule locator={locator} />
+            {!isConnected && <ClientConnectionModule locator={locator} />}
           </div>
           <Button
             display="icon"
@@ -88,6 +88,7 @@ function OnboardingTopBar({ status, solid }) {
 }
 
 OnboardingTopBar.propTypes = {
+  locator: PropTypes.object,
   status: PropTypes.string.isRequired,
   solid: PropTypes.bool,
 }

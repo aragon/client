@@ -27,7 +27,7 @@ const ACCOUNT_MODULE_DISPLAY_DELAY = 500
 
 const AnimatedDiv = animated.div
 
-function ClientConnectionModule() {
+function ClientConnectionModule({ locator }) {
   const [opened, setOpened] = useState(false)
   const [display, setDisplay] = useState(false)
   const {
@@ -78,6 +78,7 @@ function ClientConnectionModule() {
               clientNetworkName={clientNetworkName}
               close={close}
               listening={listening}
+              locator={locator}
               online={online}
               syncDelay={syncDelay}
               toggle={toggle}
@@ -89,6 +90,7 @@ function ClientConnectionModule() {
               clientNetworkName={clientNetworkName}
               close={close}
               listening={listening}
+              locator={locator}
               online={online}
               syncDelay={syncDelay}
               toggle={toggle}
@@ -101,11 +103,16 @@ function ClientConnectionModule() {
   )
 }
 
+ClientConnectionModule.propTypes = {
+  locator: PropTypes.object,
+}
+
 function ConnectionDetails({
   clientNetworkName,
   close,
   connectionStatus,
   listening,
+  locator,
   online,
   opened,
   syncDelay,
@@ -220,6 +227,7 @@ function ConnectionDetails({
         <ClientConnectionInfo
           connectionStatus={connectionStatus}
           listening={listening}
+          locator={locator}
           online={online}
           syncDelay={syncDelay}
         />
@@ -233,6 +241,7 @@ ConnectionDetails.propTypes = {
   clientNetworkName: PropTypes.string,
   close: PropTypes.func,
   listening: PropTypes.bool,
+  locator: PropTypes.object,
   online: PropTypes.bool,
   opened: PropTypes.bool,
   syncDelay: PropTypes.number,
@@ -244,6 +253,7 @@ function MobileConnectionDetails({
   close,
   connectionStatus,
   listening,
+  locator,
   online,
   opened,
   syncDelay,
@@ -334,6 +344,7 @@ function MobileConnectionDetails({
         <ClientConnectionInfo
           connectionStatus={connectionStatus}
           listening={listening}
+          locator={locator}
           online={online}
           syncDelay={syncDelay}
         />
@@ -347,6 +358,7 @@ MobileConnectionDetails.propTypes = {
   clientNetworkName: PropTypes.string,
   close: PropTypes.func,
   listening: PropTypes.bool,
+  locator: PropTypes.object,
   online: PropTypes.bool,
   opened: PropTypes.bool,
   syncDelay: PropTypes.number,

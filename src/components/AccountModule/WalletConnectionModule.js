@@ -28,7 +28,7 @@ const ACCOUNT_MODULE_DISPLAY_DELAY = 500
 
 const AnimatedDiv = animated.div
 
-function WalletConnectionModule({ compact }) {
+function WalletConnectionModule({ locator, compact }) {
   const { isConnected } = useWallet()
   const [display, setDisplay] = useState(false)
 
@@ -64,7 +64,7 @@ function WalletConnectionModule({ compact }) {
           `}
         >
           {isConnected ? (
-            <WalletConnectedMode />
+            <WalletConnectedMode locator={locator} />
           ) : (
             <WalletNotConnected compact={compact} />
           )}
@@ -75,10 +75,11 @@ function WalletConnectionModule({ compact }) {
 }
 
 WalletConnectionModule.propTypes = {
+  locator: PropTypes.object,
   compact: PropTypes.bool,
 }
 
-function WalletConnectedMode() {
+function WalletConnectedMode({ locator }) {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
   const wallet = useWallet()
@@ -222,6 +223,7 @@ function WalletConnectedMode() {
           clientOnline={clientOnline}
           clientConnectionStatus={clientConnectionStatus}
           clientSyncDelay={clientSyncDelay}
+          locator={locator}
           walletListening={walletListening}
           walletOnline={walletListening}
           walletConnectionStatus={walletConnectionStatus}
@@ -232,4 +234,7 @@ function WalletConnectedMode() {
   )
 }
 
+WalletConnectedMode.propTypes = {
+  locator: PropTypes.object,
+}
 export default WalletConnectionModule

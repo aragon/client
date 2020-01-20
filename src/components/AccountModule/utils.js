@@ -1,21 +1,26 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from '@aragon/ui'
+import { fromWei } from 'web3-utils'
 import { web3Providers, network } from '../../environment'
 import { getNetworkByChainId } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
+import { useWallet } from '../../wallet'
 import {
   CONNECTION_STATUS_ERROR,
   CONNECTION_STATUS_WARNING,
 } from './useSyncInfo'
 
 export const STATUS_WALLET_CONNECTION_DROPPED = Symbol(
-  'WALLET_CONNECTION_DROPPED'
+  'STATUS_WALLET_CONNECTION_DROPPED'
 )
 export const STATUS_CLIENT_CONNECTION_DROPPED = Symbol(
-  'CLIENT_CONNECTION_DROPPED'
+  'STATUS_CLIENT_CONNECTION_DROPPED'
 )
-export const STATUS_NETWORK_SYNC_ISSUES = Symbol('NETWORK_SYNC_ISSUES')
-export const STATUS_MAJOR_NETWORK_SLOWDOWN = Symbol('MAJOR_NETWORK_SLOWDOWN')
+export const STATUS_NETWORK_SYNC_ISSUES = Symbol('STATUS_NETWORK_SYNC_ISSUES')
+export const STATUS_MAJOR_NETWORK_SLOWDOWN = Symbol(
+  'STATUS_MAJOR_NETWORK_SLOWDOWN'
+)
+export const STATUS_TOO_LITTLE_ETH = Symbol('STATUS_TOO_LITTLE_ETH')
 export const STATUS_CONNECTION_OK = Symbol('')
 // window.location.hash = getAppPath({
 //  // … (current state)
@@ -157,7 +162,7 @@ export function getClientSyncState(
   }
 }
 
-export function getWalletSyncState(
+export function useWalletSyncState(
   clientListening,
   walletListening,
   clientOnline,
@@ -165,7 +170,10 @@ export function getWalletSyncState(
   walletSyncDelay,
   currentBlock
 ) {
+  const { balance: balanceInWei } = useWallet()
+  const balance = fromWei(balanceInWei)
   let syncInfo = { header: '', info: '', message: '' }
+
   if (!clientOnline || !clientListening) {
     syncInfo = {
       header: '',
@@ -194,7 +202,7 @@ export function getWalletSyncState(
     syncInfo = {
       header: 'Synced: ',
       info: `current block ${currentBlock}`,
-      message: STATUS_CONNECTION_OK,
+      message: balance < 0.005 ? STATUS_TOO_LITTLE_ETH : STATUS_CONNECTION_OK,
     }
   }
 

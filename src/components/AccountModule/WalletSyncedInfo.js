@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { GU, Link } from '@aragon/ui'
 import { getAppPath, getPreferencesSearch } from '../../routing'
 import { useWalletBlockNumber } from '../../wallet'
 import {
-  getWalletSyncState,
+  useWalletSyncState,
   STATUS_CLIENT_CONNECTION_DROPPED,
   STATUS_CONNECTION_OK,
   STATUS_MAJOR_NETWORK_SLOWDOWN,
   STATUS_NETWORK_SYNC_ISSUES,
+  STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './utils'
 
@@ -16,11 +17,12 @@ function WalletSyncedInfo({
   clientListening,
   clientOnline,
   clientSyncDelay,
+  locator,
   walletSyncDelay,
   walletListening,
 }) {
   const walletBlockNumber = useWalletBlockNumber()
-  const walletSyncInfo = getWalletSyncState(
+  const walletSyncInfo = useWalletSyncState(
     clientListening,
     walletListening,
     clientOnline,
@@ -54,7 +56,10 @@ function WalletSyncedInfo({
             margin-top: ${1 * GU}px;
           `}
         >
-          <ConnectionInfoMessage connectionStatus={walletSyncInfo.message} />
+          <ConnectionInfoMessage
+            connectionStatus={walletSyncInfo.message}
+            locator={locator}
+          />
         </div>
       )}
     </React.Fragment>
@@ -65,26 +70,27 @@ WalletSyncedInfo.propTypes = {
   clientListening: PropTypes.bool,
   clientOnline: PropTypes.bool,
   clientSyncDelay: PropTypes.number,
+  locator: PropTypes.object,
   walletListening: PropTypes.bool,
   walletSyncDelay: PropTypes.number,
 }
 
-function ConnectionInfoMessage({ connectionStatus }) {
+function ConnectionInfoMessage({ connectionStatus, locator }) {
+  const handleNetworkSettingsClick = useCallback(() => {
+    window.location.hash = getAppPath({
+      dao: locator.dao || '',
+      search: getPreferencesSearch('network'),
+    })
+  }, [locator])
+
   let content = null
+
   if (connectionStatus === STATUS_WALLET_CONNECTION_DROPPED) {
     content = (
       <span>
         We cannot connect to the wallet's Ethereum node. You can change the node
         settings in
-        <Link
-          onClick={() =>
-            (window.location.hash = getAppPath({
-              search: getPreferencesSearch('network'),
-            }))
-          }
-        >
-          Network Settings.
-        </Link>
+        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
         You will still see new transactions from the client appear.
       </span>
     )
@@ -95,15 +101,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
       <span>
         We cannot connect to the wallet's Ethereum node. You can change the node
         settings in
-        <Link
-          onClick={() =>
-            (window.location.hash = getAppPath({
-              search: getPreferencesSearch('network'),
-            }))
-          }
-        >
-          Network Settings.
-        </Link>
+        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
         You can also refresh the client.
       </span>
     )
@@ -114,15 +112,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
       <span>
         We cannot connect to the wallet's Ethereum node. You can change the node
         settings in
-        <Link
-          onClick={() =>
-            (window.location.hash = getAppPath({
-              search: getPreferencesSearch('network'),
-            }))
-          }
-        >
-          Network Settings.
-        </Link>
+        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
       </span>
     )
   }
@@ -132,16 +122,16 @@ function ConnectionInfoMessage({ connectionStatus }) {
       <span>
         We cannot connect to the wallet's Ethereum node. You can change the node
         settings in
-        <Link
-          onClick={() =>
-            (window.location.hash = getAppPath({
-              search: getPreferencesSearch('network'),
-            }))
-          }
-        >
-          Network Settings.
-        </Link>
+        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
         Do not sign any transactions until this error disappears.
+      </span>
+    )
+  }
+
+  if (connectionStatus === STATUS_TOO_LITTLE_ETH) {
+    content = (
+      <span>
+        You do not have enough ETH in your account to sign any transactions.
       </span>
     )
   }

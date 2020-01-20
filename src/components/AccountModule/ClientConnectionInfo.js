@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { GU, IconCheck, IconCross, Link, textStyle, useTheme } from '@aragon/ui'
@@ -23,6 +23,7 @@ const FlexWrapper = styled.div`
 function ClientConnectionInfo({
   connectionStatus,
   listening,
+  locator,
   online,
   syncDelay,
 }) {
@@ -94,7 +95,10 @@ function ClientConnectionInfo({
           listening={listening}
           online={online}
         />
-        <ConnectionInfoMessage connectionStatus={connectionStatus} />
+        <ConnectionInfoMessage
+          locator={locator}
+          connectionStatus={connectionStatus}
+        />
       </div>
     </section>
   )
@@ -103,27 +107,26 @@ function ClientConnectionInfo({
 ClientConnectionInfo.propTypes = {
   connectionStatus: PropTypes.symbol,
   listening: PropTypes.bool,
+  locator: PropTypes.object,
   online: PropTypes.bool,
   syncDelay: PropTypes.number,
 }
 
-function ConnectionInfoMessage({ connectionStatus }) {
+function ConnectionInfoMessage({ connectionStatus, locator }) {
   let content = null
+  const handleNetworkSettingsClick = useCallback(() => {
+    window.location.hash = getAppPath({
+      dao: locator.dao || '',
+      search: getPreferencesSearch('network'),
+    })
+  }, [locator])
 
   if (connectionStatus === CONNECTION_STATUS_WARNING) {
     content = (
       <span>
         We've detected the Ethereum node you are connected to seems to be having
         troubles syncing blocks. You can change the node settings in{' '}
-        <Link
-          onClick={() =>
-            (window.location.hash = getAppPath({
-              search: getPreferencesSearch('network'),
-            }))
-          }
-        >
-          Network Settings.
-        </Link>
+        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
       </span>
     )
   }
@@ -133,15 +136,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
       <span>
         We cannot connect to the Ethereum node. You can change the node settings
         in
-        <Link
-          onClick={() =>
-            (window.location.hash = getAppPath({
-              search: getPreferencesSearch('network'),
-            }))
-          }
-        >
-          Network Settings.
-        </Link>
+        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
       </span>
     )
   }
@@ -159,6 +154,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
 }
 
 ConnectionInfoMessage.propTypes = {
+  locator: PropTypes.object,
   connectionStatus: PropTypes.symbol,
 }
 
