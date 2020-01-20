@@ -8,14 +8,15 @@ import {
   CONNECTION_STATUS_WARNING,
 } from './useSyncInfo'
 
-const connectionMessages = {
-  userConnectionDropped: `We cannot connect to the wallet's Ethereum node. You can change the node settings in Network Settings. You will still see new transactions from the client appear.`,
-  clientConnectionDropped:
-    'We cannot connect to the Ethereum node. You can change the node settings in Network Settings, or refresh the client.',
-  networkSyncingIssues: `We've detected the Ethereum node you are connected to seems to be having troubles syncing blocks. You can change the node settings in Network Settings.`,
-  majorNetworkSlowdown: `We've detected the Ethereum node you are connected to seems to be having troubles syncing blocks. You can change the node settings in Network Settings. Do not sign any transactions until this error disappears.`,
-}
-
+export const STATUS_WALLET_CONNECTION_DROPPED = Symbol(
+  'WALLET_CONNECTION_DROPPED'
+)
+export const STATUS_CLIENT_CONNECTION_DROPPED = Symbol(
+  'CLIENT_CONNECTION_DROPPED'
+)
+export const STATUS_NETWORK_SYNC_ISSUES = Symbol('NETWORK_SYNC_ISSUES')
+export const STATUS_MAJOR_NETWORK_SLOWDOWN = Symbol('MAJOR_NETWORK_SLOWDOWN')
+export const STATUS_CONNECTION_OK = Symbol('')
 // window.location.hash = getAppPath({
 //  // … (current state)
 //  search: getPreferencesSearch('network')
@@ -123,12 +124,45 @@ export function getConnectionMessage(
   return connectionMessage
 }
 
-export function resolveUserSyncInfo(
+export function getClientSyncState(
+  listening,
+  online,
+  syncDelay,
+  latestClientBlockNumber
+) {
+  if (!listening || !online || syncDelay >= 45) {
+    return {
+      header: '',
+      info: '',
+    }
+  }
+
+  if (syncDelay >= 30) {
+    return {
+      header: 'Last known state:',
+      info: `${syncDelay} min behind`,
+    }
+  }
+
+  if (syncDelay >= 3) {
+    return {
+      header: 'Out of sync',
+      info: `${syncDelay} min behind`,
+    }
+  }
+
+  return {
+    header: 'Synced',
+    info: `current block ${latestClientBlockNumber}`,
+  }
+}
+
+export function getWalletSyncState(
   clientListening,
-  userListening,
+  walletListening,
   clientOnline,
   clientSyncDelay,
-  userSyncDelay,
+  walletSyncDelay,
   currentBlock
 ) {
   let syncInfo = { header: '', info: '', message: '' }
@@ -136,31 +170,31 @@ export function resolveUserSyncInfo(
     syncInfo = {
       header: '',
       info: '',
-      message: connectionMessages.clientConnectionDropped,
+      message: STATUS_CLIENT_CONNECTION_DROPPED,
     }
-  } else if (!userListening) {
+  } else if (!walletListening) {
     syncInfo = {
       header: '',
       info: '',
-      message: connectionMessages.userConnectionDropped,
+      message: STATUS_WALLET_CONNECTION_DROPPED,
     }
-  } else if (clientSyncDelay >= 30 && userSyncDelay >= 30) {
+  } else if (clientSyncDelay >= 30 && walletSyncDelay >= 30) {
     syncInfo = {
       header: 'Last known state: ',
       info: `${clientSyncDelay} min behind`,
-      message: connectionMessages.majorNetworkSlowdown,
+      message: STATUS_MAJOR_NETWORK_SLOWDOWN,
     }
   } else if (clientSyncDelay >= 3 || clientSyncDelay >= 3) {
     syncInfo = {
       header: 'Out of sync: ',
       info: `${clientSyncDelay} min behind`,
-      message: connectionMessages.networkSyncingIssues,
+      message: STATUS_NETWORK_SYNC_ISSUES,
     }
   } else {
     syncInfo = {
       header: 'Synced: ',
       info: `current block ${currentBlock}`,
-      message: '',
+      message: STATUS_CONNECTION_OK,
     }
   }
 

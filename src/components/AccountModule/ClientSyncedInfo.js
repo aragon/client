@@ -1,52 +1,39 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { GU } from '@aragon/ui'
 import { useClientBlockNumber } from './useClientBlockNumber'
+import { getClientSyncState } from './utils'
 
 function ClientSyncedInfo({ listening, online, syncDelay }) {
-  const [correctSyncInfo, setCorrectSyncInfo] = useState({
-    header: '',
-    info: '',
-  })
   const latestClientBlockNumber = useClientBlockNumber()
-  useEffect(() => {
-    if (syncDelay >= 45) {
-      setCorrectSyncInfo({ header: '', info: '' })
-    } else if (syncDelay >= 30) {
-      setCorrectSyncInfo({
-        header: 'Last known state: ',
-        info: `${syncDelay} min behind`,
-      })
-    } else if (syncDelay >= 3) {
-      setCorrectSyncInfo({
-        header: 'Out of sync: ',
-        info: `${syncDelay} min behind`,
-      })
-    } else {
-      setCorrectSyncInfo({
-        header: 'Synced: ',
-        info: `current block ${latestClientBlockNumber}`,
-      })
-    }
-  }, [syncDelay, latestClientBlockNumber, listening, online])
+  const { header, info } = getClientSyncState(
+    listening,
+    online,
+    syncDelay,
+    latestClientBlockNumber
+  )
 
-  return listening && online && syncDelay < 45 ? (
-    <div
-      css={`
-        margin-top: ${1 * GU}px;
-      `}
-    >
-      <span
-        css={`
-          padding-right: ${1 * GU}px;
-          opacity: 0.8;
-        `}
-      >
-        {correctSyncInfo.header}
-      </span>
-      <span>{correctSyncInfo.info}</span>
-    </div>
-  ) : null
+  return (
+    <React.Fragment>
+      {header && info && (
+        <div
+          css={`
+            margin-top: ${1 * GU}px;
+          `}
+        >
+          <span
+            css={`
+              padding-right: ${1 * GU}px;
+              opacity: 0.8;
+            `}
+          >
+            {header}
+          </span>
+          <span>{info}</span>
+        </div>
+      )}
+    </React.Fragment>
+  )
 }
 
 ClientSyncedInfo.propTypes = {

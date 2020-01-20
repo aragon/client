@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { GU, IconCheck, IconCross, textStyle, useTheme } from '@aragon/ui'
+import { GU, IconCheck, IconCross, Link, textStyle, useTheme } from '@aragon/ui'
 import ClientSyncedInfo from './ClientSyncedInfo'
+import { getAppPath, getPreferencesSearch } from '../../routing'
 import {
   getConnectionMessage,
   useConnectionStatusColor,
@@ -27,12 +28,12 @@ function ClientConnectionInfo({
 }) {
   const theme = useTheme()
   const { clientNetworkName } = useNetworkConnectionData()
-
-  const Icon =
-    connectionStatus === CONNECTION_STATUS_HEALTHY ? IconCheck : IconCross
   const connectionStatusColor = useConnectionStatusColor(
     listening && online ? connectionStatus : CONNECTION_STATUS_ERROR
   )
+
+  const Icon =
+    connectionStatus === CONNECTION_STATUS_HEALTHY ? IconCheck : IconCross
   let connectionMessage = getConnectionMessage(
     connectionStatus,
     listening,
@@ -113,8 +114,16 @@ function ConnectionInfoMessage({ connectionStatus }) {
     content = (
       <span>
         We've detected the Ethereum node you are connected to seems to be having
-        troubles syncing blocks. You can change the node settings in Network
-        Settings.
+        troubles syncing blocks. You can change the node settings in{' '}
+        <Link
+          onClick={() =>
+            (window.location.hash = getAppPath({
+              search: getPreferencesSearch('network'),
+            }))
+          }
+        >
+          Network Settings.
+        </Link>
       </span>
     )
   }
@@ -123,7 +132,16 @@ function ConnectionInfoMessage({ connectionStatus }) {
     content = (
       <span>
         We cannot connect to the Ethereum node. You can change the node settings
-        in Network Settings.
+        in
+        <Link
+          onClick={() =>
+            (window.location.hash = getAppPath({
+              search: getPreferencesSearch('network'),
+            }))
+          }
+        >
+          Network Settings.
+        </Link>
       </span>
     )
   }

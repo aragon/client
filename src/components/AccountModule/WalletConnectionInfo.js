@@ -55,7 +55,7 @@ function WalletConnectionInfo({
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
 
   const formattedConnectionMessage = connectionMessage.includes('Connected')
-    ? `Connected to ${walletNetworkName} Network`
+    ? `Connected to Ethereum ${walletNetworkName} Network`
     : connectionMessage
   return (
     <section
