@@ -150,4 +150,9 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   )
 }
 
+ConnectionInfoMessage.propTypes = {
+  connectionStatus: PropTypes.string,
+  locator: PropTypes.object,
+}
+
 export default WalletSyncedInfo

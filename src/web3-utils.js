@@ -18,7 +18,7 @@ const ETH_ADDRESS_TEST_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
 // when .toString() is called. Returns "-1" when the value is invalid.
 //
 // See https://github.com/indutny/bn.js/issues/186
-const filterBalanceValue = value => {
+export function filterBalanceValue(value) {
   if (value === null) {
     return '-1'
   }

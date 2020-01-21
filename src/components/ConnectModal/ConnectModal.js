@@ -10,13 +10,14 @@ import {
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { enableWallet } from '../../wallet'
+import { useWallet } from '../../wallet'
 import providersImage from './assets/providers.png'
 
 function ConnectModal({ account, onClose, onConnect, visible }) {
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
+  const wallet = useWallet()
 
   const modalWidth = useCallback(
     ({ width }) => Math.min(55 * GU, width - 4 * GU),
@@ -95,7 +96,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
           icon={<IconConnect />}
           label="Enable account"
           mode="strong"
-          onClick={enableWallet}
+          onClick={() => wallet.activate()}
           wide
         />
       </section>

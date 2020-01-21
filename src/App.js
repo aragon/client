@@ -4,6 +4,7 @@ import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
 import { EthereumAddressType, ClientThemeType } from './prop-types'
+import { useWallet } from './wallet'
 import { network, web3Providers } from './environment'
 import { useClientTheme } from './client-theme'
 import {
@@ -16,7 +17,6 @@ import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import { Onboarding } from './onboarding'
 import { getWeb3 } from './web3-utils'
-import { useWallet } from './wallet'
 import { log } from './utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
@@ -100,7 +100,7 @@ class App extends React.Component {
     })
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { clientTheme, walletAccount } = this.props
     const { wrapper } = this.state
 
@@ -110,7 +110,7 @@ class App extends React.Component {
 
     if (
       wrapper &&
-      (!prevProps.wrapper || clientTheme !== prevProps.clientTheme)
+      (!prevState.wrapper || clientTheme !== prevProps.clientTheme)
     ) {
       wrapper.setGuiStyle(clientTheme.appearance, clientTheme.theme)
     }

@@ -5,6 +5,8 @@ import cipher from './icons/Cipher.png'
 import metamask from './icons/Metamask.png'
 import status from './icons/Status.png'
 import wallet from './icons/wallet.svg'
+import fortmatic from './icons/Fortmatic.svg'
+import portis from './icons/Portis.svg'
 
 // See the corresponding prop type, EthereumProviderType, in prop-types.js.
 const PROVIDERS = new Map(
@@ -14,7 +16,6 @@ const PROVIDERS = new Map(
       name: 'Frame',
       type: 'Desktop',
       image: frame,
-      connect: async () => true,
       strings: {
         'your Ethereum provider': 'Frame',
       },
@@ -24,7 +25,6 @@ const PROVIDERS = new Map(
       name: 'Metamask',
       type: 'Desktop',
       image: metamask,
-      connect: async () => true,
       strings: {
         'your Ethereum provider': 'Metamask',
       },
@@ -34,7 +34,6 @@ const PROVIDERS = new Map(
       name: 'Status',
       type: 'Mobile',
       image: status,
-      connect: async () => true,
       strings: {
         'your Ethereum provider': 'Status',
       },
@@ -44,9 +43,26 @@ const PROVIDERS = new Map(
       name: 'Cipher',
       type: 'Mobile',
       image: cipher,
-      connect: async () => true,
       strings: {
         'your Ethereum provider': 'Cipher',
+      },
+    },
+    {
+      id: 'fortmatic',
+      name: 'Fortmatic',
+      type: 'Any',
+      image: fortmatic,
+      strings: {
+        'your Ethereum provider': 'Fortmatic',
+      },
+    },
+    {
+      id: 'portis',
+      name: 'Portis',
+      type: 'Any',
+      image: portis,
+      strings: {
+        'your Ethereum provider': 'Portis',
       },
     },
     {
@@ -54,9 +70,8 @@ const PROVIDERS = new Map(
       name: 'Unknown',
       type: 'Desktop',
       image: wallet,
-      connect: async () => true,
       strings: {
-        'your Ethereum provider': 'Unknown',
+        'your Ethereum provider': 'your provider',
       },
     },
   ].map(provider => [provider.id, provider])
@@ -85,5 +100,20 @@ function identifyProvider(provider) {
   return 'unknown'
 }
 
-export { getProvider, identifyProvider, getProviderString }
+// Get a provider from its useWallet() identifier.
+function getProviderFromUseWalletId(id) {
+  if (id === 'injected') {
+    return (
+      getProvider(identifyProvider(window.ethereum)) || getProvider('unknown')
+    )
+  }
+  return getProvider(id) || getProvider('unknown')
+}
+
+export {
+  getProvider,
+  identifyProvider,
+  getProviderString,
+  getProviderFromUseWalletId,
+}
 export default PROVIDERS

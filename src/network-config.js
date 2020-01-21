@@ -1,6 +1,12 @@
-import { getEnsRegistryAddress } from './local-settings'
+import {
+  getEnsRegistryAddress,
+  getFortmaticApiKey,
+  getPortisDappId,
+} from './local-settings'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
+const fortmaticApiKey = getFortmaticApiKey()
+const portisDappId = getPortisDappId()
 
 export const networkConfigs = {
   main: {
@@ -17,6 +23,12 @@ export const networkConfigs = {
       shortName: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
     },
+    providers: [
+      { id: 'injected' },
+      { id: 'frame' },
+      fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
+      portisDappId ? { id: 'portis', conf: portisDappId } : null,
+    ].filter(p => p),
   },
   rinkeby: {
     addresses: {
@@ -32,6 +44,13 @@ export const networkConfigs = {
       shortName: 'Rinkeby',
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
     },
+    // providers: ['injected', 'frame'],
+    providers: [
+      { id: 'injected' },
+      { id: 'frame' },
+      fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
+      portisDappId ? { id: 'portis', conf: portisDappId } : null,
+    ].filter(p => p),
   },
   ropsten: {
     addresses: {
@@ -47,6 +66,7 @@ export const networkConfigs = {
       shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
     },
+    providers: ['injected', 'frame'],
   },
   local: {
     addresses: {
@@ -60,6 +80,7 @@ export const networkConfigs = {
       shortName: 'Local',
       type: 'private',
     },
+    providers: ['injected', 'frame'],
   },
   unknown: {
     addresses: {
@@ -73,6 +94,7 @@ export const networkConfigs = {
       shortName: 'Unknown',
       type: 'unknown',
     },
+    providers: ['injected', 'frame'],
   },
 }
 

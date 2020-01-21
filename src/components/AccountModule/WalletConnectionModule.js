@@ -18,7 +18,7 @@ import { shortenAddress } from '../../web3-utils'
 import { useLocalIdentity } from '../../hooks'
 import { useSyncInfo } from './useSyncInfo'
 import { useWallet } from '../../wallet'
-import WalletNotConnected from './WalletNotConnected'
+import ButtonConnect from './ButtonConnect'
 import WalletConnectionInfo from './WalletConnectionInfo'
 import { useNetworkConnectionData, useWalletConnectionDetails } from './utils'
 
@@ -28,7 +28,7 @@ const ACCOUNT_MODULE_DISPLAY_DELAY = 500
 
 const AnimatedDiv = animated.div
 
-function WalletConnectionModule({ locator, compact }) {
+function WalletConnectionModule({ locator }) {
   const { isConnected } = useWallet()
   const [display, setDisplay] = useState(false)
 
@@ -66,7 +66,7 @@ function WalletConnectionModule({ locator, compact }) {
           {isConnected ? (
             <WalletConnectedMode locator={locator} />
           ) : (
-            <WalletNotConnected compact={compact} />
+            <ButtonConnect />
           )}
         </AnimatedDiv>
       )}
@@ -76,7 +76,6 @@ function WalletConnectionModule({ locator, compact }) {
 
 WalletConnectionModule.propTypes = {
   locator: PropTypes.object,
-  compact: PropTypes.bool,
 }
 
 function WalletConnectedMode({ locator }) {

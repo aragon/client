@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
+  Button,
   ButtonBase,
   GU,
   IconCheck,
@@ -32,7 +33,7 @@ function WalletConnectionInfo({
   walletOnline,
   walletSyncDelay,
 }) {
-  const { account, providerInfo } = useWallet()
+  const { account, providerInfo, deactivate } = useWallet()
   const theme = useTheme()
 
   const {
@@ -58,6 +59,7 @@ function WalletConnectionInfo({
   const formattedConnectionMessage = connectionMessage.includes('Connected')
     ? `Connected to Ethereum ${walletNetworkName} Network`
     : connectionMessage
+
   return (
     <section
       css={`
@@ -176,6 +178,16 @@ function WalletConnectionInfo({
             walletSyncDelay={walletSyncDelay}
           />
         )}
+
+        <Button
+          onClick={deactivate}
+          wide
+          css={`
+            margin-top: ${1 * GU}px;
+          `}
+        >
+          Disconnect wallet
+        </Button>
       </div>
     </section>
   )

@@ -458,12 +458,16 @@ export default function(props) {
     setActivityNonce,
   } = useContext(ActivityContext)
 
+  if (!wallet.web3) {
+    return null
+  }
+
   return (
     <SignerPanel
       {...props}
       account={wallet.account}
       addTransactionActivity={addTransactionActivity}
-      onRequestEnable={wallet.enable}
+      onRequestEnable={wallet.activate}
       setActivityConfirmed={setActivityConfirmed}
       setActivityFailed={setActivityFailed}
       setActivityNonce={setActivityNonce}

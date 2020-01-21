@@ -102,6 +102,7 @@ export const ipfsDefaultConf = {
 
 const networkConfig = getNetworkConfig(networkType)
 export const network = networkConfig.settings
+export const providers = networkConfig.providers
 
 export const contractAddresses = {
   ensRegistry: networkConfig.addresses.ensRegistry,
