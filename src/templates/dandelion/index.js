@@ -7,12 +7,16 @@ import {
   ReviewScreen,
   TokensScreen,
 } from '../kit'
-import { LockScreen, VotingScreen } from './config'
+import {
+  LockScreen,
+  VotingScreen,
+  RedemptionsScreen,
+  TokenRequestScreen,
+} from './config'
 
 import header from './header.svg'
 import icon from './icon.svg'
 import getBlockTime from './config/helpers/getBlockTime'
-import { ETHER_TOKEN_FAKE_ADDRESS } from './config/helpers/tokens'
 
 const onePercent = new BN(10).pow(new BN(16))
 
@@ -54,11 +58,20 @@ export default {
     ['Configure template', props => <VotingScreen screenProps={props} />],
     ['Configure template', props => <TokensScreen screenProps={props} />],
     ['Configure template', props => <LockScreen screenProps={props} />],
+    ['Configure template', props => <RedemptionsScreen screenProps={props} />],
+    ['Configure template', props => <TokenRequestScreen screenProps={props} />],
 
     [
       'Review information',
       props => {
-        const { domain, voting, tokens, lock } = props.data
+        const {
+          domain,
+          voting,
+          tokens,
+          lock,
+          redemptions,
+          tokenRequest,
+        } = props.data
         return (
           <ReviewScreen
             screenProps={props}
@@ -97,6 +110,24 @@ export default {
                 ),
                 fields: LockScreen.formatReviewFields(lock),
               },
+              {
+                label: (
+                  <KnownAppBadge
+                    appName="redemptions.open.aragonpm.eth"
+                    label="Redemptions"
+                  />
+                ),
+                fields: RedemptionsScreen.formatReviewFields(redemptions),
+              },
+              {
+                label: (
+                  <KnownAppBadge
+                    appName="token-request.open.aragonpm.eth"
+                    label="Token Request"
+                  />
+                ),
+                fields: TokenRequestScreen.formatReviewFields(tokenRequest),
+              },
             ]}
           />
         )
@@ -105,7 +136,15 @@ export default {
   ],
   prepareTransactions(createTx, data) {
     const blockTime = getBlockTime()
-    const { domain, optionalModules = [], tokens, voting, lock } = data
+    const {
+      domain,
+      optionalModules = [],
+      tokens,
+      voting,
+      lock,
+      redemptions,
+      tokenRequest,
+    } = data
     const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
 
     // TODO: Check why agent not setted as default vault when including it
@@ -146,7 +185,7 @@ export default {
     ]
 
     // Time Lock app
-    const { lockDuration, lockAmount, spamPenalty, tokenAddress } = lock
+    const { lockDuration, lockAmount, spamPenalty, lockToken } = lock
     const adjustedLockDuration = new BN(lockDuration).toString()
     const adjustedLockAmount = new BN(lockAmount.toString()).toString()
     const adjustedSpamPenalty = onePercent.mul(new BN(spamPenalty)).toString()
@@ -157,10 +196,14 @@ export default {
     ]
 
     // Redemptions apps
-    const redeemableTokens = [ETHER_TOKEN_FAKE_ADDRESS]
+    const redeemableTokens = redemptions.redeemableTokens.map(
+      token => token.address
+    )
 
     // Token Request app
-    const acceptedDepositToken = [ETHER_TOKEN_FAKE_ADDRESS]
+    const acceptedDepositToken = tokenRequest.acceptedTokens.map(
+      token => token.address
+    )
 
     return [
       {
@@ -180,7 +223,7 @@ export default {
           domain,
           redeemableTokens,
           acceptedDepositToken,
-          tokenAddress,
+          lockToken.address,
           lockSettings,
           votingSettings,
         ]),

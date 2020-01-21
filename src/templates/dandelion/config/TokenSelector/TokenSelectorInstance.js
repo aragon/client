@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { GU } from '@aragon/ui'
+import { addressesEqual, GU } from '@aragon/ui'
 import { shortenAddress } from '../../../../web3-utils'
+import { ETHER_TOKEN_FAKE_ADDRESS } from '../helpers/tokens'
 
 /* eslint-disable react/prop-types */
 const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
@@ -47,7 +48,8 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
           ({name})
         </span>
       )}
-      {shortenAddress(address)}
+      {!addressesEqual(address, ETHER_TOKEN_FAKE_ADDRESS) &&
+        shortenAddress(address)}
     </div>
   )
 })

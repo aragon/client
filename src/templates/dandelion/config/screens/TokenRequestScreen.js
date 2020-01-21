@@ -1,0 +1,242 @@
+import React, { useCallback, useState, useRef } from 'react'
+import PropTypes from 'prop-types'
+import { addressesEqual, Field, GU, Help, Info, isAddress } from '@aragon/ui'
+import {
+  Header,
+  Navigation,
+  ScreenPropsType,
+  KnownAppBadge,
+} from '../../../kit'
+import MultiTokenSelector from '../TokenSelector/MultiTokenSelector'
+import { getDefaultAcceptedTokens } from '../helpers/tokens'
+import { shortenAddress } from '../../../../web3-utils'
+
+function useFieldsLayout() {
+  // In its own hook to be adapted for smaller views
+  return `margin-bottom: ${2 * GU}px`
+}
+
+function validationError(acceptedTokens) {
+  if (acceptedTokens.length === 0) {
+    return 'You need to select at least one accepted token.'
+  }
+
+  const notValidAddress = acceptedTokens.some(
+    token => !isAddress(token.address)
+  )
+
+  if (notValidAddress) {
+    return 'One or more accepted tokens are not valid addresses.'
+  }
+
+  return null
+}
+
+const EMPTY_TOKEN = { token: { address: '' }, selectedIndex: -1 }
+
+function TokenRequestScreen({
+  appLabel,
+  dataKey,
+  screenProps: { back, data, next, screenIndex, screens },
+  title,
+}) {
+  const screenData = (dataKey ? data[dataKey] : data) || {}
+
+  const [acceptedTokens, setAcceptedTokens] = useState(
+    screenData.acceptedTokens && screenData.acceptedTokens.length > 0
+      ? screenData.acceptedTokens
+      : [EMPTY_TOKEN]
+  )
+
+  const [formError, setFormError] = useState()
+
+  const DEFAULT_ACCEPTED_TOKENS = getDefaultAcceptedTokens()
+
+  const fieldsLayout = useFieldsLayout()
+  const prevNextRef = useRef()
+
+  const handleTokenAdded = useCallback(() => {
+    setFormError(null)
+    setAcceptedTokens(acceptedTokens => [...acceptedTokens, EMPTY_TOKEN])
+  }, [])
+
+  const handleTokenRemoved = useCallback(index => {
+    setFormError(null)
+    setAcceptedTokens(acceptedTokens =>
+      acceptedTokens.filter((_, i) => i !== index)
+    )
+  }, [])
+
+  const handleTokenUpdated = useCallback(
+    ({ token: newToken, selectedIndex: newSelectedIndex, componentIndex }) => {
+      const duplicate = acceptedTokens.some(
+        ({ token }) =>
+          isAddress(newToken.address) &&
+          addressesEqual(token.address, newToken.address)
+      )
+
+      if (duplicate) {
+        setFormError('Token already selected')
+        return
+      }
+
+      setFormError(null)
+
+      setAcceptedTokens(acceptedTokens =>
+        acceptedTokens.map((item, i) =>
+          i === componentIndex
+            ? { token: newToken, selectedIndex: newSelectedIndex }
+            : item
+        )
+      )
+    },
+    [acceptedTokens]
+  )
+
+  const handleSubmit = useCallback(
+    event => {
+      event.preventDefault()
+
+      const filteredAcceptedTokens = acceptedTokens
+        .filter(({ token }) => token.address !== '')
+        .map(({ token }) => token)
+
+      const error = validationError(filteredAcceptedTokens)
+      setFormError(error)
+
+      if (!error) {
+        const screenData = {
+          acceptedTokens: filteredAcceptedTokens,
+        }
+        next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
+      }
+    },
+    [acceptedTokens, next, dataKey, data]
+  )
+
+  return (
+    <form>
+      <Header
+        title={title}
+        subtitle={
+          <span
+            css={`
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
+          >
+            Choose your
+            <span
+              css={`
+                display: flex;
+                margin: 0 ${1.5 * GU}px;
+              `}
+            >
+              <KnownAppBadge
+                appName="token-request.open.aragonpm.eth"
+                label={appLabel}
+              />
+            </span>
+            settings below.
+          </span>
+        }
+      />
+
+      <div
+        css={`
+          ${fieldsLayout};
+        `}
+      >
+        <Field
+          label={
+            <React.Fragment>
+              Accepted Tokens
+              <Help hint="What are the accepted tokens?">
+                <strong>Accepted tokens</strong> are ERC20 tokens that will be
+                accepted as payment in exchange for Organization's tokens
+              </Help>
+            </React.Fragment>
+          }
+          css={`
+            margin: 0;
+          `}
+        />
+        <MultiTokenSelector
+          onAddToken={handleTokenAdded}
+          onRemoveToken={handleTokenRemoved}
+          onUpdateToken={handleTokenUpdated}
+          tokens={acceptedTokens}
+          items={DEFAULT_ACCEPTED_TOKENS}
+        />
+      </div>
+
+      {formError && (
+        <Info
+          mode="error"
+          css={`
+            margin-bottom: ${3 * GU}px;
+          `}
+        >
+          {formError}
+        </Info>
+      )}
+
+      <Info
+        css={`
+          margin-bottom: ${3 * GU}px;
+        `}
+      >
+        These settings will determine which assets will be accepted as payment
+        in exchange for Organization's tokens.
+      </Info>
+
+      <Navigation
+        ref={prevNextRef}
+        backEnabled
+        nextEnabled
+        nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
+        onBack={back}
+        onNext={handleSubmit}
+      />
+    </form>
+  )
+}
+
+TokenRequestScreen.propTypes = {
+  appLabel: PropTypes.string,
+  dataKey: PropTypes.string,
+  screenProps: ScreenPropsType.isRequired,
+  title: PropTypes.string,
+}
+
+TokenRequestScreen.defaultProps = {
+  appLabel: 'Token Request',
+  dataKey: 'tokenRequest',
+  title: 'Configure template',
+}
+
+function formatReviewFields(screenData) {
+  return [
+    [
+      'Accepted tokens',
+      <div>
+        {screenData.acceptedTokens.map((token, index) => (
+          <div
+            key={index}
+            css={`
+              display: grid;
+              grid-template-columns: 1fr 2fr;
+            `}
+          >
+            <span>{token.symbol || 'Custom token'}</span>
+            <span> {shortenAddress(token.address)}</span>
+          </div>
+        ))}
+      </div>,
+    ],
+  ]
+}
+
+TokenRequestScreen.formatReviewFields = formatReviewFields
+export default TokenRequestScreen

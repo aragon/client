@@ -1,78 +1,69 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { DropDown, Field, TextInput, GU } from '@aragon/ui'
 
-import { network } from '../../../../environment'
-import { isAddress } from '../../../../web3-utils'
 import TokenSelectorInstance from './TokenSelectorInstance'
 
-const INITIAL_STATE = {
-  customToken: {
-    address: '',
-    value: '',
-  },
-}
 /* eslint-disable react/prop-types */
-class TokenSelector extends React.Component {
-  static defaultProps = {
-    onChange: () => {},
-    tokens: [],
-    label: 'Token',
-    labelCustomToken: 'Token address or symbol',
-    selectedIndex: -1,
-  }
-  state = {
-    ...INITIAL_STATE,
-  }
-  handleChange = index => {
-    this.setState({ ...INITIAL_STATE }, () => {
-      const address = this.getAddressFromTokens(index)
-      this.props.onChange({
-        address,
-        index,
-        value: address,
-      })
-    })
-  }
-  handleCustomTokenChange = event => {
-    const { value } = event.target
+function TokenSelector({
+  onChange,
+  tokens,
+  componentIndex,
+  selectedIndex,
+  showCustomMode,
+  value,
+}) {
+  const [customToken, setCustomToken] = useState({
+    address: selectedIndex === 0 ? value : '',
+  })
 
-    // Use the verified token address if provided a symbol and it matches
-    // The symbols in the verified map are all capitalized
-    const resolvedAddress =
-      !isAddress(value) && network && network.type === 'main'
-        ? this.props.tokens.get(value.toUpperCase()) || ''
-        : value
+  const showCustomToken = selectedIndex === 0
+  const showCustomHorizontal = showCustomMode === 'horizontal'
+  const dropdownWidth = showCustomToken && showCustomHorizontal ? '30%' : '100%'
 
-    this.setState(
-      {
-        customToken: {
-          value,
-          address: resolvedAddress,
-        },
-      },
-      () => {
-        this.props.onChange({
-          value,
-          index: 0,
-          address: resolvedAddress,
-        })
+  const getTokenByIndex = useCallback(
+    index => {
+      if (index === 0) {
+        return customToken
       }
-    )
-  }
-  getAddressFromTokens(index) {
-    if (index === 0) {
-      return this.state.customToken.address
-    }
 
-    // Adjust for custom address
-    const token = this.props.tokens[index - 1]
-    return token.address
+      // Adjust for custom address
+      return tokens[index - 1]
+    },
+    [customToken, tokens]
+  )
+
+  const handleChange = useCallback(
+    index => {
+      const token = getTokenByIndex(index)
+      onChange({
+        token,
+        selectedIndex: index,
+        componentIndex,
+      })
+    },
+    [componentIndex, getTokenByIndex, onChange]
+  )
+
+  const handleCustomTokenChange = useCallback(
+    event => {
+      const { value } = event.target
+
+      setCustomToken(value)
+      onChange({
+        token: { address: value },
+        selectedIndex: 0,
+        componentIndex,
+      })
+    },
+    [componentIndex, onChange]
+  )
+
+  const getItems = () => {
+    return ['Other…', ...getTokenItems()]
   }
-  getItems() {
-    return ['Other…', ...this.getTokenItems()]
-  }
-  getTokenItems() {
-    return this.props.tokens.map(({ address, name, symbol, verified }) => (
+
+  const getTokenItems = () => {
+    return tokens.map(({ address, name, symbol, verified }) => (
       <TokenSelectorInstance
         address={address}
         name={name}
@@ -81,45 +72,61 @@ class TokenSelector extends React.Component {
       />
     ))
   }
-  render() {
-    const { customToken } = this.state
-    const { selectedIndex } = this.props
-    const items = this.getItems()
-    const showCustomToken = selectedIndex === 0
-    return (
-      <React.Fragment>
-        <DropDown
-          header="Token"
-          placeholder="Select a token"
-          items={items}
-          selected={selectedIndex}
-          onChange={this.handleChange}
-          required
-          wide
-          css={`
-            margin-bottom: ${1.5 * GU}px;
-          `}
-        />
 
-        {showCustomToken && (
-          <Field
-            label={'Select custom token'}
-            css={`
-              margin: 0;
-            `}
-          >
-            <TextInput
-              placeholder="SYM…"
-              value={customToken.value}
-              onChange={this.handleCustomTokenChange}
-              required
-              wide
-            />
-          </Field>
-        )}
-      </React.Fragment>
-    )
-  }
+  const items = getItems()
+
+  return (
+    <div
+      css={`
+          display: ${showCustomHorizontal ? 'flex' : 'block'};
+          align-items: flex-end;
+          width 100%;
+        `}
+    >
+      <DropDown
+        header="Token"
+        placeholder="Select a token"
+        items={items}
+        selected={selectedIndex}
+        onChange={handleChange}
+        width={dropdownWidth}
+        required
+        css={`
+          margin-bottom: ${showCustomHorizontal ? '0' : `${1.5 * GU}px`};
+          margin-right: ${1 * GU}px;
+          min-width: 150px;
+        `}
+      />
+
+      {showCustomToken && (
+        <Field
+          label={'Select custom token'}
+          css={`
+            margin: 0;
+            width: 100%;
+            margin-right: ${1 * GU}px;
+          `}
+        >
+          <TextInput
+            placeholder="SYM…"
+            value={customToken.address}
+            onChange={handleCustomTokenChange}
+            required
+            wide
+          />
+        </Field>
+      )}
+    </div>
+  )
+}
+
+TokenSelector.defaultProps = {
+  onChange: () => {},
+  tokens: [],
+  label: 'Token',
+  labelCustomToken: 'Token address or symbol',
+  selectedIndex: -1,
+  showCustomMode: 'vertical',
 }
 
 export default TokenSelector

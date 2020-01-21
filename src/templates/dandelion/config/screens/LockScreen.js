@@ -7,9 +7,11 @@ import {
   ScreenPropsType,
   PercentageField,
   Duration,
+  KnownAppBadge,
 } from '../../../kit'
 import TokenSelector from '../TokenSelector/TokenSelector'
 import { getDefaultLockTokenByNetwork } from '../helpers/tokens'
+import { shortenAddress } from '../../../../web3-utils'
 
 const MINUTE_IN_SECONDS = 60
 const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
@@ -44,8 +46,8 @@ function validationError(duration, tokenAddress, lockAmount) {
 }
 
 function reduceFields(fields, [field, value]) {
-  if (field === 'tokenAddress') {
-    return { ...fields, tokenAddress: value }
+  if (field === 'lockToken') {
+    return { ...fields, lockToken: value }
   }
   if (field === 'lockDuration') {
     return { ...fields, lockDuration: value }
@@ -59,26 +61,27 @@ function reduceFields(fields, [field, value]) {
   return fields
 }
 
+const EMPTY_TOKEN = { data: { address: '' }, selectedIndex: -1 }
+
 function LockScreen({
+  appLabel,
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
+  title,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
   const fieldsLayout = useFieldsLayout()
-
-  const [selectedTokenIndex, setSelectedTokenIndex] = useState(-1)
   const [formError, setFormError] = useState()
-  // const [tokenAddress, setTokenAddress] = useState()
 
   const DEFAULT_LOCK_TOKEN = getDefaultLockTokenByNetwork()
 
   const [
-    { lockDuration, tokenAddress, lockAmount, spamPenalty },
+    { lockDuration, lockToken, lockAmount, spamPenalty },
     updateField,
   ] = useReducer(reduceFields, {
     lockDuration: screenData.lockDuration || DEFAULT_DURATION,
-    tokenAddress: screenData.tokenAddress || '',
+    lockToken: screenData.lockToken || EMPTY_TOKEN,
     lockAmount: screenData.lockAmount || '',
     spamPenalty: screenData.spamPenalty || SPAM_PENALTY_DEFAULT,
   })
@@ -88,10 +91,9 @@ function LockScreen({
     updateField(['lockDuration', value])
   }, [])
 
-  const handleTokenAddressChange = useCallback(({ address, index, value }) => {
+  const handleTokenChange = useCallback(({ token, selectedIndex }) => {
     setFormError(null)
-    setSelectedTokenIndex(index)
-    updateField(['tokenAddress', address])
+    updateField(['lockToken', { data: token, selectedIndex }])
   }, [])
 
   const handleSpamPenaltyChange = useCallback(value => {
@@ -110,12 +112,16 @@ function LockScreen({
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
-      const error = validationError(lockDuration, tokenAddress, lockAmount)
+      const error = validationError(
+        lockDuration,
+        lockToken.data.address,
+        lockAmount
+      )
       setFormError(error)
 
       if (!error) {
         const screenData = {
-          tokenAddress,
+          lockToken: lockToken.data,
           lockDuration,
           spamPenalty,
           lockAmount,
@@ -123,7 +129,7 @@ function LockScreen({
         next(dataKey ? { ...data, [dataKey]: screenData } : screenData)
       }
     },
-    [lockDuration, tokenAddress, lockAmount, spamPenalty, next, dataKey, data]
+    [lockDuration, lockToken, lockAmount, spamPenalty, next, dataKey, data]
   )
 
   return (
@@ -135,8 +141,30 @@ function LockScreen({
       `}
     >
       <Header
-        title="Configure template"
-        subtitle="Choose your Time Lock app settings below."
+        title={title}
+        subtitle={
+          <span
+            css={`
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
+          >
+            Choose your
+            <span
+              css={`
+                display: flex;
+                margin: 0 ${1.5 * GU}px;
+              `}
+            >
+              <KnownAppBadge
+                appName="time-lock.open.aragonpm.eth"
+                label={appLabel}
+              />
+            </span>
+            settings below.
+          </span>
+        }
       />
 
       <div
@@ -156,9 +184,9 @@ function LockScreen({
           }
         >
           <TokenSelector
-            selectedIndex={selectedTokenIndex}
-            onChange={handleTokenAddressChange}
-            value={tokenAddress}
+            selectedIndex={lockToken.selectedIndex}
+            onChange={handleTokenChange}
+            value={lockToken.data.address}
             tokens={[DEFAULT_LOCK_TOKEN]}
           />
         </Field>
@@ -208,24 +236,6 @@ function LockScreen({
         onChange={handleSpamPenaltyChange}
       />
 
-      {/* <PercentageField
-        ref={handleSupportRef}
-        label={
-          <React.Fragment>
-            Spam penalty
-            <Help hint="What’s the support?">
-              <strong>Support</strong> is the percentage of votes on a proposal
-              that the total support must be greater than for the proposal to be
-              approved. For example, if “Support” is set to 51%, then more than
-              51% of the votes on a proposal must vote “Yes” for the proposal to
-              pass.
-            </Help>
-          </React.Fragment>
-        }
-        value={support}
-        onChange={handleSupportChange}
-      /> */}
-
       {formError && (
         <Info
           mode="error"
@@ -263,12 +273,16 @@ function LockScreen({
 }
 
 LockScreen.propTypes = {
+  appLabel: PropTypes.string,
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
+  title: PropTypes.string,
 }
 
 LockScreen.defaultProps = {
+  appLabel: 'Time Lock',
   dataKey: 'lock',
+  title: 'Configure template',
 }
 
 function formatDuration(duration) {
@@ -301,12 +315,17 @@ function formatDuration(duration) {
 }
 
 function formatReviewFields(screenData) {
+  const { lockToken, lockAmount, lockDuration, spamPenalty } = screenData
   return [
-    // TODO: Show token name and symbol
-    ['Token address', `${screenData.tokenAddress}`],
-    ['Lock amount', `${screenData.lockAmount} tokens`],
-    ['Lock duration', formatDuration(screenData.lockDuration)],
-    ['Spam penalty', `${screenData.spamPenalty} %`],
+    [
+      'Token',
+      `${lockToken.symbol} ${lockToken.name} ${shortenAddress(
+        lockToken.address
+      )}`,
+    ],
+    ['Lock amount', `${lockAmount} tokens`],
+    ['Lock duration', formatDuration(lockDuration)],
+    ['Spam penalty', `${spamPenalty} %`],
   ]
 }
 
