@@ -22,7 +22,7 @@ function validationError(redeemableTokens) {
   }
 
   const notValidAddress = redeemableTokens.some(
-    token => !isAddress(token.address)
+    ({ token }) => !isAddress(token.address)
   )
 
   if (notValidAddress) {
@@ -72,7 +72,7 @@ function RedemptionsScreen({
       const duplicate = redeemableTokens.some(
         ({ token, selectedIndex }, index) =>
           isAddress(newToken.address) &&
-          selectedIndex !== newSelectedIndex &&
+          index !== componentIndex &&
           addressesEqual(token.address, newToken.address)
       )
 
@@ -98,9 +98,9 @@ function RedemptionsScreen({
     event => {
       event.preventDefault()
 
-      const filteredRedeemableTokens = redeemableTokens
-        .filter(({ token }) => token.address !== '')
-        .map(({ token }) => token)
+      const filteredRedeemableTokens = redeemableTokens.filter(
+        ({ token }) => token.address !== ''
+      )
 
       const error = validationError(filteredRedeemableTokens)
       setFormError(error)
@@ -223,7 +223,7 @@ function formatReviewFields(screenData) {
     [
       'Redeemable tokens',
       <div>
-        {screenData.redeemableTokens.map((token, index) => (
+        {screenData.redeemableTokens.map(({ token }, index) => (
           <div
             key={index}
             css={`

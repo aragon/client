@@ -22,7 +22,7 @@ function validationError(acceptedTokens) {
   }
 
   const notValidAddress = acceptedTokens.some(
-    token => !isAddress(token.address)
+    ({ token }) => !isAddress(token.address)
   )
 
   if (notValidAddress) {
@@ -70,8 +70,9 @@ function TokenRequestScreen({
   const handleTokenUpdated = useCallback(
     ({ token: newToken, selectedIndex: newSelectedIndex, componentIndex }) => {
       const duplicate = acceptedTokens.some(
-        ({ token }) =>
+        ({ token }, index) =>
           isAddress(newToken.address) &&
+          index !== componentIndex &&
           addressesEqual(token.address, newToken.address)
       )
 
@@ -97,9 +98,9 @@ function TokenRequestScreen({
     event => {
       event.preventDefault()
 
-      const filteredAcceptedTokens = acceptedTokens
-        .filter(({ token }) => token.address !== '')
-        .map(({ token }) => token)
+      const filteredAcceptedTokens = acceptedTokens.filter(
+        ({ token }) => token.address !== ''
+      )
 
       const error = validationError(filteredAcceptedTokens)
       setFormError(error)
@@ -221,7 +222,7 @@ function formatReviewFields(screenData) {
     [
       'Accepted tokens',
       <div>
-        {screenData.acceptedTokens.map((token, index) => (
+        {screenData.acceptedTokens.map(({ token }, index) => (
           <div
             key={index}
             css={`

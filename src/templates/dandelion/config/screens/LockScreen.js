@@ -5,7 +5,6 @@ import {
   Header,
   Navigation,
   ScreenPropsType,
-  PercentageField,
   Duration,
   KnownAppBadge,
 } from '../../../kit'
@@ -96,9 +95,9 @@ function LockScreen({
     updateField(['lockToken', { data: token, selectedIndex }])
   }, [])
 
-  const handleSpamPenaltyChange = useCallback(value => {
+  const handleSpamPenaltyChange = useCallback(event => {
     setFormError(null)
-    updateField(['spamPenalty', value])
+    updateField(['spamPenalty', event.target.value])
   }, [])
 
   const handleLockAmountChange = useCallback(event => {
@@ -121,7 +120,7 @@ function LockScreen({
 
       if (!error) {
         const screenData = {
-          lockToken: lockToken.data,
+          lockToken: lockToken,
           lockDuration,
           spamPenalty,
           lockAmount,
@@ -220,7 +219,7 @@ function LockScreen({
         }
       />
 
-      <PercentageField
+      <Field
         label={
           <React.Fragment>
             Spam penalty %
@@ -232,9 +231,15 @@ function LockScreen({
             </Help>
           </React.Fragment>
         }
-        value={spamPenalty}
-        onChange={handleSpamPenaltyChange}
-      />
+      >
+        <TextInput
+          type="number"
+          step={1}
+          onChange={handleSpamPenaltyChange}
+          value={spamPenalty}
+        />
+        <span> %</span>
+      </Field>
 
       {formError && (
         <Info
@@ -319,8 +324,8 @@ function formatReviewFields(screenData) {
   return [
     [
       'Token',
-      `${lockToken.symbol} ${lockToken.name} ${shortenAddress(
-        lockToken.address
+      `${lockToken.data.symbol} ${lockToken.data.name} ${shortenAddress(
+        lockToken.data.address
       )}`,
     ],
     ['Lock amount', `${lockAmount} tokens`],

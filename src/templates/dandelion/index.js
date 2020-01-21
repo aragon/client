@@ -186,6 +186,7 @@ export default {
 
     // Time Lock app
     const { lockDuration, lockAmount, spamPenalty, lockToken } = lock
+    const lockTokenAddress = lockToken.data.address
     const adjustedLockDuration = new BN(lockDuration).toString()
     const adjustedLockAmount = new BN(lockAmount.toString()).toString()
     const adjustedSpamPenalty = onePercent.mul(new BN(spamPenalty)).toString()
@@ -197,13 +198,13 @@ export default {
 
     // Redemptions apps
     const redeemableTokens = redemptions.redeemableTokens.map(
-      token => token.address
+      ({ token }) => token.address
     )
 
     // Token Request app
-    const acceptedDepositToken = tokenRequest.acceptedTokens.map(
-      token => token.address
-    )
+    const acceptedDepositToken = tokenRequest.acceptedTokens
+      .map(({ token }) => token.address)
+      .sort()
 
     return [
       {
@@ -223,7 +224,7 @@ export default {
           domain,
           redeemableTokens,
           acceptedDepositToken,
-          lockToken.address,
+          lockTokenAddress,
           lockSettings,
           votingSettings,
         ]),
