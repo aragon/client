@@ -49,7 +49,8 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
           >
             {/* eslint-disable react/prop-types */
             ({ timestamp, version }) => ({ progress }) => {
-              const currentItem = version === currentVersion.version
+              const currentItem =
+                Boolean(currentVersion) && version === currentVersion.version
 
               return (
                 <AnimTr
@@ -104,10 +105,17 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
           margin: ${2 * GU}px ${padding}px;
         `}
       >
-        <Info.Action>
-          Minor and patch upgrades are front-end only, and are performed
-          automatically.
-        </Info.Action>
+        {currentVersion ? (
+          <Info>
+            Minor and patch upgrades are front-end only, and are performed
+            automatically.
+          </Info>
+        ) : (
+          <Info mode="warning">
+            This organization is currently using an unpublished version of this
+            application.
+          </Info>
+        )}
       </div>
     </div>
   )

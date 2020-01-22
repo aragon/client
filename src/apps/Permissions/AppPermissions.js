@@ -33,7 +33,14 @@ function AppPermissions({
   }
 
   if (appPermissions.length === 0) {
-    return <EmptyBlock>No permissions found.</EmptyBlock>
+    return (
+      <React.Fragment>
+        <Bar>
+          <BackButton onClick={onBack} />
+        </Bar>
+        <EmptyBlock>No permissions found.</EmptyBlock>
+      </React.Fragment>
+    )
   }
 
   return (

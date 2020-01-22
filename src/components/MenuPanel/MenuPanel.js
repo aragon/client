@@ -65,11 +65,42 @@ function MenuPanel({
   const [systemAppsOpened, setSystemAppsOpened] = useState(
     systemAppsOpenedState.isOpen()
   )
-  const [systemAppsToggled, setSystemAppsToggled] = useState(false)
+  const [showSystemsAppsAnimation, setShowSystemsAppsAnimation] = useState(
+    false
+  )
+
+  const appGroups = useMemo(
+    () =>
+      appInstanceGroups
+        .filter(appGroup => appGroup.hasWebApp)
+        .map(appGroup => ({
+          ...appGroup,
+          icon: <AppIcon app={appGroup.app} />,
+        })),
+    [appInstanceGroups]
+  )
+
+  const showConsole = consoleVisible || activeInstanceId === 'console'
+  const menuApps = [APP_HOME, appGroups]
+  const systemApps = [
+    APP_PERMISSIONS,
+    APP_APPS_CENTER,
+    APP_ORGANIZATION,
+    ...(showConsole ? [APP_CONSOLE] : []),
+  ]
+
+  const isSystemAppActive = useMemo(
+    () => systemApps.some(systemApp => systemApp.appId === activeInstanceId),
+    [activeInstanceId, systemApps]
+  )
 
   const handleToggleSystemApps = useCallback(() => {
-    setSystemAppsOpened(opened => !opened)
-    setSystemAppsToggled(true)
+    setSystemAppsOpened(opened => {
+      const openedState = !opened
+      systemAppsOpenedState.set(openedState)
+      return openedState
+    })
+    setShowSystemsAppsAnimation(true)
   }, [])
 
   const renderAppGroup = useCallback(
@@ -125,25 +156,12 @@ function MenuPanel({
     [appsStatus, activeInstanceId, renderAppGroup]
   )
 
-  const appGroups = useMemo(
-    () =>
-      appInstanceGroups
-        .filter(appGroup => appGroup.hasWebApp)
-        .map(appGroup => ({
-          ...appGroup,
-          icon: <AppIcon app={appGroup.app} />,
-        })),
-    [appInstanceGroups]
-  )
-
-  const showConsole = consoleVisible || activeInstanceId === 'console'
-  const menuApps = [APP_HOME, appGroups]
-  const systemApps = [
-    APP_PERMISSIONS,
-    APP_APPS_CENTER,
-    APP_ORGANIZATION,
-    ...(showConsole ? [APP_CONSOLE] : []),
-  ]
+  useEffect(() => {
+    // Automatically toggle the system apps menu if a system app is activated/deactivated
+    // If the user has manually opened the system apps menu, keep it open
+    setSystemAppsOpened(isSystemAppActive || systemAppsOpenedState.isOpen())
+    setShowSystemsAppsAnimation(true)
+  }, [isSystemAppActive])
 
   return (
     <Main>
@@ -190,7 +208,7 @@ function MenuPanel({
             config={springs.smooth}
             from={{ openProgress: 0 }}
             to={{ openProgress: Number(systemAppsOpened) }}
-            immediate={!systemAppsToggled}
+            immediate={!showSystemsAppsAnimation}
             native
           >
             {({ openProgress }) => (
