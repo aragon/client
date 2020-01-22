@@ -187,27 +187,6 @@ function FundraisingScreen({
     return true
   }, [fields, minimumGrowth])
 
-  const fieldsAreValid = useMemo(() => {
-    if (!acceptableMinimumGrowth) {
-      return false
-    }
-
-    if (fields.fundingPeriod >= fields.cliffPeriod) {
-      return false
-    }
-
-    if (fields.cliffPeriod >= fields.vestingSchedule) {
-      return false
-    }
-
-    return true
-  }, [
-    acceptableMinimumGrowth,
-    fields.cliffPeriod,
-    fields.fundingPeriod,
-    fields.vestingSchedule,
-  ])
-
   const handleSubmit = useCallback(
     event => {
       event.preventDefault()
@@ -755,7 +734,7 @@ function FundraisingScreen({
       )}
       <Navigation
         backEnabled
-        nextEnabled={fieldsAreValid}
+        nextEnabled={acceptableMinimumGrowth}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}
