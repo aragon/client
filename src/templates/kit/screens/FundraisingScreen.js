@@ -157,6 +157,16 @@ function useConfigureFields(data) {
   return { fields, update, bindUpdate }
 }
 
+function validationError(fields) {
+  if (fields.fundingPeriod >= fields.cliffPeriod) {
+    return 'Please make sure the cliff period is longer than the presale funding period.'
+  }
+  if (fields.cliffPeriod >= fields.vestingSchedule) {
+    return 'Please make sure the vesting schedule is longer than the cliff period.'
+  }
+  return null
+}
+
 function FundraisingScreen({
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
@@ -164,7 +174,7 @@ function FundraisingScreen({
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
   const [tab, setTab] = useState(0)
-  const [formError, setFormError] = useState()
+  const [formError, setFormError] = useState(null)
 
   const { fields, bindUpdate } = useConfigureFields(screenData || {})
 
@@ -178,10 +188,7 @@ function FundraisingScreen({
   }, [fields, minimumGrowth])
 
   const fieldsAreValid = useMemo(() => {
-    const error = validationError(fields)
-    setFormError(error)
-
-    if (minimumGrowth.gte(fields.expectedGrowth)) {
+    if (!acceptableMinimumGrowth) {
       return false
     }
 
@@ -194,17 +201,12 @@ function FundraisingScreen({
     }
 
     return true
-  }, [fields, minimumGrowth])
-
-  function validationError(fields) {
-    if (fields.fundingPeriod >= fields.cliffPeriod) {
-      return 'Please make sure the cliff period is longer than the presale funding period.'
-    }
-    if (fields.cliffPeriod >= fields.vestingSchedule) {
-      return 'Please make sure the vesting schedule is longer than the cliff period.'
-    }
-    return null
-  }
+  }, [
+    acceptableMinimumGrowth,
+    fields.cliffPeriod,
+    fields.fundingPeriod,
+    fields.vestingSchedule,
+  ])
 
   const handleSubmit = useCallback(
     event => {
@@ -225,7 +227,7 @@ function FundraisingScreen({
         next(mergedData)
       }
     },
-    [data, dataKey, fields, next, minimumGrowth]
+    [data, dataKey, fields, minimumGrowth, next]
   )
 
   return (
