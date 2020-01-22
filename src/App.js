@@ -100,7 +100,7 @@ class App extends React.Component {
     })
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { clientTheme, walletAccount } = this.props
     const { wrapper } = this.state
 
@@ -110,7 +110,7 @@ class App extends React.Component {
 
     if (
       wrapper &&
-      (!prevProps.wrapper || clientTheme !== prevProps.clientTheme)
+      (!prevState.wrapper || clientTheme !== prevProps.clientTheme)
     ) {
       wrapper.setGuiStyle(clientTheme.appearance, clientTheme.theme)
     }
