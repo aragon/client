@@ -8,6 +8,7 @@ import {
   GU,
   Link,
   Modal,
+  Tag,
   textStyle,
   unselectable,
   useViewport,
@@ -85,6 +86,9 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
             </div>
             <h1
               css={`
+                display: flex;
+                align-items: center;
+
                 // Not in aragonUI - exceptionally used here
                 font-size: 40px;
                 font-weight: 600;
@@ -92,6 +96,21 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               `}
             >
               {template.name}
+              {(template.disabled || template.new || template.beta) && (
+                <Tag
+                  mode="new"
+                  css={`
+                    margin-left: ${1 * GU}px;
+                    flex-shrink: 0;
+                  `}
+                >
+                  {template.disabled
+                    ? 'Coming soon'
+                    : template.beta
+                    ? 'Beta'
+                    : 'New'}
+                </Tag>
+              )}
             </h1>
             <p
               css={`
