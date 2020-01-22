@@ -209,7 +209,7 @@ function Share({
               margin-bottom
             `}
           >
-            Choose your shareholders
+            Choose your
             <span
               css={`
                 display: flex;
@@ -218,7 +218,7 @@ function Share({
             >
               <KnownAppBadge
                 appName="token-manager.aragonpm.eth"
-                label="Token"
+                label="Token: shareholders"
               />
             </span>
             settings
@@ -230,10 +230,9 @@ function Share({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        The <span css={textStyle('label3')}>share token name</span> and{' '}
-        <span css={textStyle('label3')}>share token symbol</span> settings will
-        determine the name and symbol of the bonded token traded through your
-        fundraising campaign and representing your organization's shareholders.
+        These settings configure the token that will represent your
+        organization's shareholders. This is the token that will be traded
+        through your fundraising campaign.
       </Info>
       <div
         css={`
@@ -245,10 +244,9 @@ function Share({
             <React.Fragment>
               Share token name
               <Help hint="What’s the share token name?">
-                <strong>Share token name</strong> is the name you can assign to
-                the bonded token traded through your fundraising campaign and
-                representing your organization's shareholders.{' '}
-                <i>For example: My Share Token.</i>
+                <strong>Share token name</strong> will be the name assigned to
+                the token representing your organization's shareholders.{' '}
+                <em>For example: My Share Token.</em>
               </Help>
             </React.Fragment>
           }
@@ -270,10 +268,10 @@ function Share({
             <React.Fragment>
               Share token symbol
               <Help hint="What’s share token symbol?">
-                <strong>Share token symbol</strong> is a shortened name
-                (typically in capital letters) that will refer to the bonded
-                token traded through your fundraising campaign and representing
-                your organization's shareholders. <i>For example: SHR.</i>
+                <strong>Share token symbol</strong> will be the shortened name
+                (typically in capital letters) assigned to the token
+                representing your organization's shareholders.{' '}
+                <em>For example: SHR.</em>
               </Help>
             </React.Fragment>
           }
@@ -300,14 +298,17 @@ function Share({
               margin-bottom
             `}
           >
-            Choose your shareholders
+            Choose your
             <span
               css={`
                 display: flex;
                 margin: 0 ${1.5 * GU}px;
               `}
             >
-              <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
+              <KnownAppBadge
+                appName="voting.aragonpm.eth"
+                label="Voting: shareholders"
+              />
             </span>
             settings
           </span>
@@ -319,9 +320,14 @@ function Share({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        The support and minimum approval thresholds are strict requirements,
-        such that votes will only pass if they achieve approval percentages
-        greater than these thresholds.
+        <p>
+          These settings affect the decision making process for shareholders.
+        </p>
+        <p css={`margin-top: {1 * GU}px`}>
+          The support and minimum approval thresholds are strict requirements,
+          such that votes will only pass if they achieve approval percentages
+          greater than these thresholds.
+        </p>
       </Info>
 
       <PercentageField
@@ -331,10 +337,10 @@ function Share({
             Support %
             <Help hint="What’s the support?">
               <strong>Support</strong> is the relative percentage of
-              shareholders votes that are required to be “Yes” for a proposal to
-              be approved. For example, if “Support” is set to 51%, then more
-              than 51% of the shareholders votes on a proposal must vote “Yes”
-              for it to pass.
+              shareholders' tokens that are required to vote “Yes” for a
+              proposal to be approved. For example, if “Support” is set to 51%,
+              then more than 51% of the tokens used to vote on a proposal must
+              be “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -368,9 +374,9 @@ function Share({
             Vote duration
             <Help hint="What’s the vote duration?">
               <strong>Vote Duration</strong> is the length of time that
-              shareholders votes will be open for participation. For example, if
-              the Vote Duration is set to 24 hours, then shareholders will have
-              24 hours to participate in the vote.
+              shareholders' votes will be open for participation. For example,
+              if the Vote Duration is set to 24 hours, then shareholders will
+              have 24 hours to participate in the vote.
             </Help>
           </React.Fragment>
         }

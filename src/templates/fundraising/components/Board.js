@@ -300,7 +300,7 @@ function Board({
               margin-bottom
             `}
           >
-            Choose your board
+            Choose your
             <span
               css={`
                 display: flex;
@@ -309,7 +309,7 @@ function Board({
             >
               <KnownAppBadge
                 appName="token-manager.aragonpm.eth"
-                label="Token"
+                label="Tokens: Board"
               />
             </span>
             settings
@@ -321,12 +321,9 @@ function Board({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        The <span css={textStyle('label3')}>board token name</span> and{' '}
-        <span css={textStyle('label3')}>board token symbol</span> settings will
-        determine the name and symbol of the token representing your
-        organization's board. The{' '}
-        <span css={textStyle('label3')}>board members</span> setting will
-        determine the members of your organization's board.
+        These settings determine who should be a member of the Board and
+        information related to the token used for determining membership. The
+        Board acts similarly to a traditional multisig account.
       </Info>
       <div
         css={`
@@ -338,9 +335,9 @@ function Board({
             <React.Fragment>
               Board token name
               <Help hint="What’s the board token name?">
-                <strong>Board token name</strong> is the name you can assign to
-                the token that will represent your organization's board.{' '}
-                <i>For example: My Board Token.</i>
+                <strong>Board token name</strong> will be the name assigned to
+                the token representing your organization's board.{' '}
+                <em>For example: My Board Token.</em>
               </Help>
             </React.Fragment>
           }
@@ -362,9 +359,10 @@ function Board({
             <React.Fragment>
               Board token symbol
               <Help hint="What’s the board token symbol?">
-                <strong>Board token symbol</strong> is a shortened name
-                (typically in capital letters) that will refer to the token
-                representing your organization's board. <i>For example: BRD.</i>
+                <strong>Board token symbol</strong> will be the shortened name
+                (typically in capital letters) assigned to the token
+                representing your organization's board.{' '}
+                <em>For example: BRD.</em>
               </Help>
             </React.Fragment>
           }
@@ -427,14 +425,17 @@ function Board({
               margin-bottom
             `}
           >
-            Choose your board
+            Choose your
             <span
               css={`
                 display: flex;
                 margin: 0 ${1.5 * GU}px;
               `}
             >
-              <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
+              <KnownAppBadge
+                appName="voting.aragonpm.eth"
+                label="Voting: Board"
+              />
             </span>
             settings
           </span>
@@ -446,11 +447,7 @@ function Board({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        The <span css={textStyle('label3')}>number of signatures</span> setting
-        will determine the number of board members who will need to approve a
-        vote for it to pass. The{' '}
-        <span css={textStyle('label3')}>Vote Duration</span> setting is the
-        length of time that board's votes will be open for participation.
+        These settings affect the decision making process for board members.
       </Info>
       <Field
         label={

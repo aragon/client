@@ -34,7 +34,7 @@ function BoardInfo({
         </Paragraph>
         <Paragraph>The board only has the ability to:</Paragraph>
         <Paragraph>
-          <Strong>Handle board members.</Strong> The board decides on who is to
+          <Strong>Manage board members.</Strong> The board decides on who is to
           be included or excluded from the board.
         </Paragraph>
         <Paragraph>

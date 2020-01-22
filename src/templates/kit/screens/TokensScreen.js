@@ -293,7 +293,7 @@ function Tokens({
                 ${fieldsLayout}
               `}
             >
-              <div>Tokenholders</div>
+              <div>Token holders</div>
               {!fixedStake && <div>Balances</div>}
             </div>
           }

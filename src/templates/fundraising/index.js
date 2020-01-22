@@ -146,12 +146,10 @@ function extractCollateralizationSettings(fundraising) {
 export default {
   id: 'fundraising-multisig-template.aragonpm.eth',
   name: 'Fundraising',
-  new: true,
-  // disabled: network.type !== 'rinkeby',
   header,
   icon,
   description: `
-    Initialize a transparent and accountable crowdfunding campaign for your
+    Launch a transparent and accountable crowdfunding campaign for your
     organization.
   `,
   userGuideUrl: 'https://fundraising.aragon.black/',
@@ -163,10 +161,10 @@ export default {
       label: 'Fundraising',
     },
     { appName: 'agent.aragonpm.eth', label: 'Agent: Reserve Pool' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Board' },
     { appName: 'voting.aragonpm.eth', label: 'Voting: Board' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Shareholder' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Board' },
     { appName: 'voting.aragonpm.eth', label: 'Voting: Shareholder' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Shareholder' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
   ],
   optionalApps: [],

@@ -26,7 +26,7 @@ function ShareInfo({
         `}
       >
         <Paragraph>
-          The shareholders are the ones contributing to the fundraising
+          The shareholders are the accounts contributing to the fundraising
           campaign. They are represented through a custom bonded-token and a
           voting app. They hold most of the governance rights over the
           organization.
