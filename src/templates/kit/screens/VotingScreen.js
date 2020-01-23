@@ -172,10 +172,10 @@ function VotingScreen({
           <React.Fragment>
             Support %
             <Help hint="What’s the support?">
-              <strong>Support</strong> is the relative percentage of votes that
-              are required to be “Yes” for a proposal to be approved. For
+              <strong>Support</strong> is the relative percentage of tokens that
+              are required to vote “Yes” for a proposal to be approved. For
               example, if “Support” is set to 51%, then more than 51% of the
-              votes on a proposal must vote “Yes” for it to pass.
+              tokens used to vote on a proposal must be “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -210,8 +210,8 @@ function VotingScreen({
             <Help hint="What’s the vote duration?">
               <strong>Vote Duration</strong> is the length of time that the vote
               will be open for participation. For example, if the Vote Duration
-              is set to 24 hours, then tokenholders have 24 hours to participate
-              in the vote.
+              is set to 24 hours, then token holders have 24 hours to
+              participate in the vote.
             </Help>
           </React.Fragment>
         }
