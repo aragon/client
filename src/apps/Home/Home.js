@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { CardLayout, Card, GU, textStyle, useLayout } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { appIds } from '../../environment'
-import { useClientTheme } from '../../client-theme'
 
 import imgEagle from '../../assets/eagle.svg'
 import imgAssignTokens from './assets/assign-tokens.png'
@@ -11,7 +10,7 @@ import imgCheckFinance from './assets/check-finance.png'
 import imgNewPayment from './assets/new-payment.png'
 import imgCreateNewVote from './assets/create-new-vote.png'
 
-const EAGLE_DIMENSIONS = [1307, 877]
+const EAGLE_DIMENSIONS = [1241, 833]
 
 const ACTIONS = [
   {
@@ -38,7 +37,6 @@ const ACTIONS = [
 
 function Home({ apps, onOpenApp }) {
   const { layoutWidth, layoutName } = useLayout()
-  const { appearance } = useClientTheme()
 
   const appActions = useMemo(
     () =>
@@ -58,24 +56,6 @@ function Home({ apps, onOpenApp }) {
     [onOpenApp, apps]
   )
 
-  // This is to prevent a flash with the wrong background image when changing
-  // theme, as the overlay displayed when changing the theme is at an upper
-  // level, in OrgView.
-  const [background, setBackground] = useState()
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setBackground(
-        appearance === 'light'
-          ? `fixed ${layoutName === 'small' ? '0%' : '50%'} 100% / ${
-              EAGLE_DIMENSIONS[0]
-            }px ${EAGLE_DIMENSIONS[1]}px no-repeat url(${imgEagle})`
-          : 'none'
-      )
-    }, 0)
-
-    return () => clearTimeout(timer)
-  }, [appearance, layoutName])
-
   return (
     <div
       css={`
@@ -87,7 +67,9 @@ function Home({ apps, onOpenApp }) {
         display: grid;
         align-items: center;
         justify-content: center;
-        background: ${background};
+        background: fixed ${layoutName === 'small' ? '0%' : '50%'} 100% /
+          ${EAGLE_DIMENSIONS[0]}px ${EAGLE_DIMENSIONS[1]}px no-repeat
+          url(${imgEagle});
         overflow: auto;
       `}
     >
