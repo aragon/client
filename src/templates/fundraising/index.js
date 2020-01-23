@@ -146,7 +146,7 @@ function extractCollateralizationSettings(fundraising) {
 export default {
   id: 'fundraising-multisig-template.aragonpm.eth',
   name: 'Fundraising',
-  beta: true,
+  disabled: true,
   header,
   icon,
   description: `
