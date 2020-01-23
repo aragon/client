@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
+import {
+  CONNECTION_STATUS_ERROR,
+  CONNECTION_STATUS_HEALTHY,
+  CONNECTION_STATUS_WARNING,
+} from './connection-statuses'
 import { web3Providers } from '../../environment'
-import { getLatestBlockTimestamp } from './utils'
 import { pollEvery } from '../../utils'
-import { getWeb3 } from '../../web3-utils'
+import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
 
-const BLOCK_TIMESTAMP_BLOCK_DELAY = 60000
-
-export const CONNECTION_STATUS_ERROR = Symbol('CONNECTION_STATUS_ERROR')
-export const CONNECTION_STATUS_HEALTHY = Symbol('CONNECTION_STATUS_HEALTHY')
-export const CONNECTION_STATUS_WARNING = Symbol('CONNECTION_STATUS_WARNING')
+const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const selectedWeb3 = getWeb3(web3Providers[wantedWeb3])
@@ -49,7 +49,7 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   useEffect(() => {
     const pollBlockTimestamp = pollEvery(
       () => ({
-        request: () => getLatestBlockTimestamp(),
+        request: () => getLatestBlockTimestamp(selectedWeb3),
         onResult: timestamp => {
           const blockDiff = new Date() - new Date(timestamp * 1000)
           const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
@@ -63,12 +63,12 @@ export function useSyncInfo(wantedWeb3 = 'default') {
           setSyncDelay(latestBlockDifference)
         },
       }),
-      BLOCK_TIMESTAMP_BLOCK_DELAY
+      BLOCK_TIMESTAMP_POLL_INTERVAL
     )
     const cleanUpTimestampPoll = pollBlockTimestamp()
 
     return () => cleanUpTimestampPoll()
-  }, [])
+  }, [selectedWeb3])
 
   return {
     connectionStatus,

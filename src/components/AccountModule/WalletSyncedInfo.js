@@ -1,17 +1,18 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { GU, Link } from '@aragon/ui'
+import { network } from '../../environment'
 import { getAppPath, getPreferencesSearch } from '../../routing'
 import { useWalletBlockNumber } from '../../wallet'
+import { useWalletSyncState } from './useWalletSyncState'
 import {
-  useWalletSyncState,
   STATUS_CLIENT_CONNECTION_DROPPED,
   STATUS_CONNECTION_OK,
   STATUS_MAJOR_NETWORK_SLOWDOWN,
   STATUS_NETWORK_SYNC_ISSUES,
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
-} from './utils'
+} from './connection-statuses'
 
 function WalletSyncedInfo({
   clientListening,
@@ -88,10 +89,9 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   if (connectionStatus === STATUS_WALLET_CONNECTION_DROPPED) {
     content = (
       <span>
-        We cannot connect to the wallet's Ethereum node. You can change the node
-        settings in
-        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
-        You will still see new transactions from the client appear.
+        We were unable to fetch network information from your wallet. You may
+        not be able to send transactions. Please contact your wallet for support
+        if this issue persists.
       </span>
     )
   }
@@ -110,9 +110,9 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   if (connectionStatus === STATUS_NETWORK_SYNC_ISSUES) {
     content = (
       <span>
-        We cannot connect to the wallet's Ethereum node. You can change the node
-        settings in
-        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
+        Your wallet may not accurately reflect the current state of Ethereum's
+        {network.name}. Please contact your wallet for support if this issue
+        persists.
       </span>
     )
   }
@@ -120,10 +120,8 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   if (connectionStatus === STATUS_MAJOR_NETWORK_SLOWDOWN) {
     content = (
       <span>
-        We cannot connect to the wallet's Ethereum node. You can change the node
-        settings in
-        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
-        Do not sign any transactions until this error disappears.
+        The Ethereum {network.name} may be experiencing a global slowdown.
+        Please avoid signing any transactions until this error is resolved.
       </span>
     )
   }
@@ -131,7 +129,7 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   if (connectionStatus === STATUS_TOO_LITTLE_ETH) {
     content = (
       <span>
-        You do not have enough ETH in your account to sign any transactions.
+        You may not have enough ETH in your account to send any transactions.
       </span>
     )
   }
@@ -140,14 +138,21 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
     content && (
       <div
         css={`
-          margin-top: ${GU}px;
-          margin-bottom: ${GU}px;
+          margin-top: ${1 * GU}px;
+          margin-bottom: ${1 * GU}px;
         `}
       >
         {content}
       </div>
     )
   )
+}
+
+ConnectionInfoMessage.propTypes = {
+  connectionStatus: PropTypes.oneOf([
+    'Symbol(STATUS_CLIENT_CONNECTION_DROPPED)',
+  ]),
+  locator: PropTypes.object,
 }
 
 export default WalletSyncedInfo

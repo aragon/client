@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import {
   ButtonBase,
   GU,
@@ -15,13 +14,11 @@ import {
 
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
-import { useNetworkConnectionData, useWalletConnectionDetails } from './utils'
+import {
+  useNetworkConnectionData,
+  useWalletConnectionDetails,
+} from './connection-hooks'
 import WalletSyncedInfo from './WalletSyncedInfo'
-
-const FlexWrapper = styled.div`
-  display: inline-flex;
-  align-items: center;
-`
 
 function WalletConnectionInfo({
   clientListening,
@@ -43,7 +40,7 @@ function WalletConnectionInfo({
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 
-  const { connectionMessage, connectionColor } = useWalletConnectionDetails(
+  const { connectionMessageLong, connectionColor } = useWalletConnectionDetails(
     clientListening,
     walletListening,
     clientOnline,
@@ -55,9 +52,6 @@ function WalletConnectionInfo({
 
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
 
-  const formattedConnectionMessage = connectionMessage.includes('Connected')
-    ? `Connected to Ethereum ${walletNetworkName} Network`
-    : connectionMessage
   return (
     <section
       css={`
@@ -83,13 +77,17 @@ function WalletConnectionInfo({
           padding: ${2 * GU}px;
         `}
       >
-        <FlexWrapper
+        <div
           css={`
+            display: inline-flex;
+            align-items: center;
             width: 100%;
           `}
         >
-          <FlexWrapper
+          <div
             css={`
+              display: inline-flex;
+              align-items: center;
               margin-right: ${3 * GU}px;
             `}
           >
@@ -103,10 +101,12 @@ function WalletConnectionInfo({
                 transform: translateY(-2px);
               `}
             />
-            <span>Wallet</span>
-          </FlexWrapper>
-          <FlexWrapper
+            <span>{providerInfo.name}</span>
+          </div>
+          <div
             css={`
+              display: inline-flex;
+              align-items: center;
               width: 100%;
               justify-content: flex-end;
             `}
@@ -118,8 +118,6 @@ function WalletConnectionInfo({
                 display: flex;
                 align-items: center;
                 justify-self: flex-end;
-                padding: ${0.5 * GU}px;
-                &:active {
                   background: ${theme.surfacePressed};
                 }
               `}
@@ -136,9 +134,9 @@ function WalletConnectionInfo({
                 `}
               />
             </ButtonBase>
-          </FlexWrapper>
-        </FlexWrapper>
-        <FlexWrapper
+          </div>
+        </div>
+        <div
           css={`
             display: flex;
             margin-top: ${1 * GU}px;
@@ -153,10 +151,10 @@ function WalletConnectionInfo({
                 margin-left: ${0.5 * GU}px;
               `}
             >
-              {formattedConnectionMessage}
+              {connectionMessageLong}
             </span>
           )}
-        </FlexWrapper>
+        </div>
 
         {hasNetworkMismatch ? (
           <div

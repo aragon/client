@@ -15,11 +15,12 @@ import {
 import { animated, Spring } from 'react-spring'
 import ClientConnectionInfo from './ClientConnectionInfo'
 import {
-  getConnectionMessage,
   useConnectionStatusColor,
   useNetworkConnectionData,
-} from './utils'
-import { CONNECTION_STATUS_ERROR, useSyncInfo } from './useSyncInfo'
+} from './connection-hooks'
+import { getConnectionMessage } from './utils'
+import { CONNECTION_STATUS_ERROR } from './connection-statuses'
+import { useSyncInfo } from './useSyncInfo'
 
 // This is to avoid unnecessarily displaying the Client Connection Module
 // if the user has a wallet connected.

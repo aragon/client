@@ -1,24 +1,19 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { GU, IconCheck, IconCross, Link, textStyle, useTheme } from '@aragon/ui'
-import ClientSyncedInfo from './ClientSyncedInfo'
 import { getAppPath, getPreferencesSearch } from '../../routing'
-import {
-  getConnectionMessage,
-  useConnectionStatusColor,
-  useNetworkConnectionData,
-} from './utils'
+import ClientSyncedInfo from './ClientSyncedInfo'
 import {
   CONNECTION_STATUS_ERROR,
   CONNECTION_STATUS_HEALTHY,
   CONNECTION_STATUS_WARNING,
-} from './useSyncInfo'
-
-const FlexWrapper = styled.div`
-  display: inline-flex;
-  align-items: center;
-`
+} from './connection-statuses'
+import {
+  useConnectionStatusColor,
+  useNetworkConnectionData,
+} from './connection-hooks'
+import { network } from '../../environment'
+import { getConnectionMessage } from './utils'
 
 function ClientConnectionInfo({
   connectionStatus,
@@ -33,7 +28,7 @@ function ClientConnectionInfo({
     listening && online ? connectionStatus : CONNECTION_STATUS_ERROR
   )
 
-  const Icon =
+  const IconConnectionStatus =
     connectionStatus === CONNECTION_STATUS_HEALTHY ? IconCheck : IconCross
   let connectionMessage = getConnectionMessage(
     connectionStatus,
@@ -41,10 +36,6 @@ function ClientConnectionInfo({
     online,
     clientNetworkName
   )
-
-  if (connectionStatus === CONNECTION_STATUS_HEALTHY) {
-    connectionMessage = `Connected to Ethereum ${clientNetworkName} Network`
-  }
 
   return (
     <section
@@ -71,16 +62,17 @@ function ClientConnectionInfo({
           padding: ${2 * GU}px;
         `}
       >
-        <FlexWrapper
+        <div
           css={`
             display: flex;
+            align-items: center;
             margin-top: ${1 * GU}px;
             color: ${connectionStatusColor};
             ${textStyle('label2')};
           `}
         >
-          <Icon size="small" />
-          {clientNetworkName && (
+          <IconConnectionStatus size="small" />
+          {connectionMessage && (
             <span
               css={`
                 margin-left: ${0.5 * GU}px;
@@ -89,7 +81,7 @@ function ClientConnectionInfo({
               {connectionMessage}
             </span>
           )}
-        </FlexWrapper>
+        </div>
         <ClientSyncedInfo
           syncDelay={syncDelay}
           listening={listening}
@@ -113,7 +105,6 @@ ClientConnectionInfo.propTypes = {
 }
 
 function ConnectionInfoMessage({ connectionStatus, locator }) {
-  let content = null
   const handleNetworkSettingsClick = useCallback(() => {
     window.location.hash = getAppPath({
       dao: locator.dao || '',
@@ -121,12 +112,15 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
     })
   }, [locator])
 
+  let content = null
+
   if (connectionStatus === CONNECTION_STATUS_WARNING) {
     content = (
       <span>
-        We've detected the Ethereum node you are connected to seems to be having
-        troubles syncing blocks. You can change the node settings in{' '}
-        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
+        The Ethereum node you are connected may not accurately reflect the
+        current state of Ethereum's {network.name}. You can change the node
+        settings in{' '}
+        <Link onClick={handleNetworkSettingsClick}>Network Settings</Link>.
       </span>
     )
   }
@@ -134,22 +128,24 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   if (connectionStatus === CONNECTION_STATUS_ERROR) {
     content = (
       <span>
-        We cannot connect to the Ethereum node. You can change the node settings
-        in
-        <Link onClick={handleNetworkSettingsClick}>Network Settings.</Link>
+        We were unable to connect to the configured Ethereum node. You can
+        change the node settings in{' '}
+        <Link onClick={handleNetworkSettingsClick}>Network Settings</Link>.
       </span>
     )
   }
 
   return (
-    <div
-      css={`
-        margin-top: ${GU}px;
-        margin-bottom: ${GU}px;
-      `}
-    >
-      {content}
-    </div>
+    content && (
+      <div
+        css={`
+          margin-top: ${1 * GU}px;
+          margin-bottom: ${1 * GU}px;
+        `}
+      >
+        {content}
+      </div>
+    )
   )
 }
 

@@ -17,7 +17,7 @@ function WalletNotConnected({ compact }) {
     >
       <Button
         css={`
-          min-width: 40px;
+          min-width: ${5 * GU}px;
         `}
         display={below('medium') ? 'icon' : 'all'}
         size={compact ? 'small' : 'medium'}

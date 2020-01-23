@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { GU } from '@aragon/ui'
+import { GU, useTheme } from '@aragon/ui'
 import { useClientBlockNumber } from './useClientBlockNumber'
 import { getClientSyncState } from './utils'
 
 function ClientSyncedInfo({ listening, online, syncDelay }) {
   const latestClientBlockNumber = useClientBlockNumber()
-  const { header, info } = getClientSyncState(
+  const theme = useTheme()
+  const { state, description } = getClientSyncState(
     listening,
     online,
     syncDelay,
@@ -15,7 +16,7 @@ function ClientSyncedInfo({ listening, online, syncDelay }) {
 
   return (
     <React.Fragment>
-      {header && info && (
+      {state && description && (
         <div
           css={`
             margin-top: ${1 * GU}px;
@@ -24,12 +25,12 @@ function ClientSyncedInfo({ listening, online, syncDelay }) {
           <span
             css={`
               padding-right: ${1 * GU}px;
-              opacity: 0.8;
+              color: ${theme.surfaceSecondary};
             `}
           >
-            {header}
+            {state}
           </span>
-          <span>{info}</span>
+          <span>{description}</span>
         </div>
       )}
     </React.Fragment>

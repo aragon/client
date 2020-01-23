@@ -20,7 +20,10 @@ import { useSyncInfo } from './useSyncInfo'
 import { useWallet } from '../../wallet'
 import WalletNotConnected from './WalletNotConnected'
 import WalletConnectionInfo from './WalletConnectionInfo'
-import { useNetworkConnectionData, useWalletConnectionDetails } from './utils'
+import {
+  useNetworkConnectionData,
+  useWalletConnectionDetails,
+} from './connection-hooks'
 
 // Metamask seems to take about ~200ms to send the connected accounts.
 // This is to avoid a flash with the connection button.
@@ -215,7 +218,7 @@ function WalletConnectedMode({ locator }) {
         visible={opened}
         opener={containerRef.current}
         css={`
-          width: ${above('medium') ? '410px' : '328px'};
+          width: ${above('medium') ? 51 * GU : 41 * GU}px;
         `}
       >
         <WalletConnectionInfo
