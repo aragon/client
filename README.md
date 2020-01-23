@@ -119,6 +119,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/ottodevs"><img src="https://avatars2.githubusercontent.com/u/5030059?v=4" width="75px;" alt=""/><br /><sub><b>Otto G</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=ottodevs" title="Code">💻</a></td>
     <td align="center"><a href="https://adamboro.com/"><img src="https://avatars0.githubusercontent.com/u/7383192?v=4" width="75px;" alt=""/><br /><sub><b>Adam Boro</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=adekbadek" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/e18r"><img src="https://avatars3.githubusercontent.com/u/16065447?v=4" width="75px;" alt=""/><br /><sub><b>Emilio Silva Schlenker</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=e18r" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/osarrouy"><img src="https://avatars1.githubusercontent.com/u/86822?v=4" width="75px;" alt=""/><br /><sub><b>Olivier Sarrouy</b></sub></a><br /><a href="https://github.com/aragon/aragon/commits?author=osarrouy" title="Code">💻</a></td>
   </tr>
 </table>
 
