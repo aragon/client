@@ -5,4 +5,4 @@ import openEnterprise from './open-enterprise'
 import reputation from './reputation'
 
 // see the corresponding prop type, OrgTemplateType, in prop-types.js.
-export default [reputation, company, membership, fundraising, openEnterprise]
+export default [company, openEnterprise, fundraising, membership, reputation]
