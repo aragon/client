@@ -374,7 +374,7 @@ function FundraisingScreen({
             />
           </Section>
 
-          <Section title="Investment terms">
+          <Section title="Contribution terms">
             <Info
               css={`
                 margin-bottom: ${3 * GU}px;
@@ -545,7 +545,7 @@ function FundraisingScreen({
                         margin-top: ${1 * GU}px;
                       `}
                     >
-                      This protects investors by controlling how quickly the
+                      This protects holders by controlling how quickly the
                       flow of funds from the market-maker's reserve pool to the
                       Board-controlled vault can evolve.
                     </p>
@@ -920,7 +920,7 @@ function ReviewFields({ data }) {
           ],
         },
         {
-          group: 'Investment terms',
+          group: 'Contribution terms',
           fields: [
             ['cliffPeriod', 'days'],
             ['vestingSchedule', 'days'],

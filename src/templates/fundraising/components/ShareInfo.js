@@ -17,7 +17,7 @@ function ShareInfo({
   return (
     <div>
       <Header
-        title="Organization's shareholders"
+        title="Organization's token holders"
         subtitle="Read the following information attentively"
       />
       <div
@@ -26,25 +26,25 @@ function ShareInfo({
         `}
       >
         <Paragraph>
-          The shareholders are the accounts contributing to the fundraising
+          The token holders are the accounts contributing to the fundraising
           campaign. They are represented through a custom bonded-token and a
           voting app. They hold most of the governance rights over the
           organization.
         </Paragraph>
 
-        <Paragraph>Shareholders can:</Paragraph>
+        <Paragraph>token holders can:</Paragraph>
         <Paragraph>
-          <Strong>Buy and redeem tokens.</Strong> Shareholders can buy and
+          <Strong>Buy and redeem tokens.</Strong> Token holders can buy and
           redeem tokens through the Aragon Fundraising interface.
         </Paragraph>
         <Paragraph>
-          <Strong>Handle fundraising parameters.</Strong> Shareholders decide on
+          <Strong>Handle fundraising parameters.</Strong> Token holders decide on
           how beneficiary, fees, and collateralization settings should be
           updated. They also control the amount of funds automatically
           transferred to the board each month.
         </Paragraph>
         <Paragraph>
-          <Strong>Handle organization settings.</Strong> Shareholders decide on
+          <Strong>Handle organization settings.</Strong> Token holders decide on
           which apps are installed or upgraded and which permissions are set.
         </Paragraph>
       </div>
@@ -55,8 +55,8 @@ function ShareInfo({
       >
         <p>
           This architecture grants most of the governance rights to
-          shareholders, to protect their investment. However, this also requires
-          the organization to be able to mitigate situations where a shareholder
+          token holders, to protect their contribution. However, this also requires
+          the organization to be able to mitigate situations where a token holder
           could own the whole organization by owning more than 50% of the
           shares.
         </p>
@@ -65,7 +65,7 @@ function ShareInfo({
             margin-top: ${1 * GU}px;
           `}
         >
-          This is why shareholder votes, where most of the organization’s
+          This is why token holder votes, where most of the organization’s
           decisions are made, can only be opened and initiated by the board.
         </p>
       </Info>

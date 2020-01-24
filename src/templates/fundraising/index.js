@@ -162,10 +162,10 @@ export default {
       label: 'Fundraising',
     },
     { appName: 'agent.aragonpm.eth', label: 'Agent: Reserve Pool' },
-    { appName: 'voting.aragonpm.eth', label: 'Voting: Board' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Board' },
-    { appName: 'voting.aragonpm.eth', label: 'Voting: Shareholder' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Shareholder' },
+    { appName: 'voting.aragonpm.eth', label: 'Voting: Council' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Council' },
+    { appName: 'voting.aragonpm.eth', label: 'Voting: Token Holder' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Token Holder' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
   ],
   optionalApps: [],
@@ -174,21 +174,21 @@ export default {
       data => completeDomain(data.domain) || 'Claim domain',
       props => <ClaimDomainScreen screenProps={props} />,
     ],
-    ['Configure board', props => <BoardInfo screenProps={props} />],
+    ['Configure council', props => <BoardInfo screenProps={props} />],
     [
-      'Configure board',
+      'Configure council',
       props => (
-        <Board dataKey="board" screenProps={props} title="Configure board" />
+        <Board dataKey="board" screenProps={props} title="Configure council" />
       ),
     ],
-    ['Configure shareholders', props => <ShareInfo screenProps={props} />],
+    ['Configure token holders', props => <ShareInfo screenProps={props} />],
     [
-      'Configure shareholders',
+      'Configure token holders',
       props => (
         <Share
           dataKey="share"
           screenProps={props}
-          title="Configure shareholders"
+          title="Configure token holders"
         />
       ),
     ],
@@ -212,11 +212,11 @@ export default {
                 ],
               },
               {
-                label: 'Board',
+                label: 'Council',
                 fields: Board.formatReviewFields(board),
               },
               {
-                label: 'Shareholders',
+                label: 'Token Holders',
                 fields: Share.formatReviewFields(share),
               },
               {

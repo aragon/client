@@ -17,7 +17,7 @@ function BoardInfo({
   return (
     <div>
       <Header
-        title="Organization's board"
+        title="Organization's council"
         subtitle="Read the following information attentively"
       />
       <div
@@ -26,29 +26,29 @@ function BoardInfo({
         `}
       >
         <Paragraph>
-          The board acts as the representatives of the project being funded by
+          The council acts as the representatives of the project being funded by
           the fundraising campaign. Board members are represented through a
           custom token and enforce their decision via a dedicated voting app set
           to be used as a multisig. Their privileges are intentionally limited
-          to protect shareholders.
+          to protect token holders.
         </Paragraph>
-        <Paragraph>The board only has the ability to:</Paragraph>
+        <Paragraph>The council only has the ability to:</Paragraph>
         <Paragraph>
-          <Strong>Manage board members.</Strong> The board decides on who is to
-          be included or excluded from the board.
+          <Strong>Manage council members.</Strong> The council decides on who is to
+          be included or excluded from the council.
         </Paragraph>
         <Paragraph>
-          <Strong>Open the presale.</Strong> The board decides on when the
+          <Strong>Open the presale.</Strong> The council decides on when the
           presale—and thus the fundraising campaign—is started.
         </Paragraph>
         <Paragraph>
           <Strong>Handle the fundraising's proceeds.</Strong> The fundraising
           proceeds are periodically transferred to a Vault / Finance app
-          controlled by the Board at their discretion.
+          controlled by the council at their discretion.
         </Paragraph>
         <Paragraph>
-          <Strong>Open shareholder votes.</Strong> The board decides on when new
-          votes should be opened for shareholders to enforce decisions over the
+          <Strong>Open token holder votes.</Strong> The council decides on when new
+          votes should be opened for token holders to enforce decisions over the
           organization.
         </Paragraph>
       </div>
