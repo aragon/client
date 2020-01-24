@@ -41,7 +41,7 @@ function ShareInfo({
           <Strong>Handle fundraising parameters.</Strong> Token holders decide
           on how beneficiary, fees, and collateralization settings should be
           updated. They also control the amount of funds automatically
-          transferred to the board each month.
+          transferred to the council each month.
         </Paragraph>
         <Paragraph>
           <Strong>Handle organization settings.</Strong> Token holders decide on
@@ -66,7 +66,7 @@ function ShareInfo({
           `}
         >
           This is why token holder votes, where most of the organization’s
-          decisions are made, can only be opened and initiated by the board.
+          decisions are made, can only be opened and initiated by the council.
         </p>
       </Info>
       <Navigation

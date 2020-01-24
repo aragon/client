@@ -218,7 +218,7 @@ function Share({
             >
               <KnownAppBadge
                 appName="token-manager.aragonpm.eth"
-                label="Token: Token holders"
+                label="Token: Token Holders"
               />
             </span>
             settings
@@ -242,10 +242,10 @@ function Share({
         <Field
           label={
             <React.Fragment>
-              Token name
+              Organization token name
               <Help hint="What’s the token name?">
-                <strong>Token name</strong> will be the name assigned to the
-                token representing your organization.{' '}
+                <strong>Organization token name</strong> will be the name
+                assigned to the token representing your organization.{' '}
                 <em>For example: My Token.</em>
               </Help>
             </React.Fragment>
@@ -266,11 +266,11 @@ function Share({
         <Field
           label={
             <React.Fragment>
-              Share token symbol
-              <Help hint="What’s share token symbol?">
-                <strong>Token symbol</strong> will be the shortened name
-                (typically in capital letters) assigned to the organization's
-                token. <em>For example: TKN.</em>
+              Organization token symbol
+              <Help hint="What’s token symbol?">
+                <strong>Organization token symbol</strong> will be the shortened
+                name (typically in capital letters) assigned to the
+                organization's token. <em>For example: TKN.</em>
               </Help>
             </React.Fragment>
           }
@@ -306,7 +306,7 @@ function Share({
             >
               <KnownAppBadge
                 appName="voting.aragonpm.eth"
-                label="Voting: Token Holder"
+                label="Voting: Token Holders"
               />
             </span>
             settings

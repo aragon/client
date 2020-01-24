@@ -347,8 +347,8 @@ function FundraisingScreen({
                     <strong>Initial tokens offered %</strong> describes the
                     percentage of the initial {data.share.tokenSymbol} token
                     supply that will be offered during the presale. The
-                    remainder of this supply will be minted and sent the Board
-                    if the presale succeeds.
+                    remainder of this supply will be minted and sent to the
+                    council if the presale succeeds.
                   </Help>
                 </React.Fragment>
               }
@@ -362,7 +362,7 @@ function FundraisingScreen({
                   <Help hint="What’s the project funding %?">
                     <strong>Project funding %</strong> describes the percentage
                     of DAI raised during the presale that will be sent to the
-                    Board (to bootstrap the campaign's underlying project) if
+                    council (to bootstrap the campaign's underlying project) if
                     the presale succeeds. The remainder of the raised DAI will
                     be sent to the automated market maker's reserve pool to
                     support trading of ${data.share.tokenSymbol}.
@@ -454,9 +454,9 @@ function FundraisingScreen({
             >
               <p>
                 The funds collected by the fundraising campaign are released
-                over time to a Board-controlled vault to sustain the underlying
-                project. This mechanism is called the <em>tap</em> and can be
-                configured over time.
+                over time to a council-controlled vault to sustain the
+                underlying project. This mechanism is called the <em>tap</em>{' '}
+                and can be configured over time.
               </p>
             </Info>
             <Field
@@ -467,7 +467,7 @@ function FundraisingScreen({
                     <p>
                       <strong>Tap rate</strong> defines the amount of DAI which
                       can be released every month from the market-maker's
-                      reserve pool to the Board-controlled vault.{' '}
+                      reserve pool to the council-controlled vault.{' '}
                       <em>For example: 3000 DAI / month.</em>
                     </p>
                     <p
@@ -547,7 +547,7 @@ function FundraisingScreen({
                     >
                       This protects holders by controlling how quickly the flow
                       of funds from the market-maker's reserve pool to the
-                      Board-controlled vault can evolve.
+                      council-controlled vault can evolve.
                     </p>
                   </Help>
                 </React.Fragment>
