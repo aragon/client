@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { GU, useTheme } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '../../kit'
 
-function BoardInfo({
+function CouncilInfo({
   screenProps: { back, data, next, screenIndex, screens },
 }) {
   const handleSubmit = useCallback(
@@ -63,7 +63,7 @@ function BoardInfo({
   )
 }
 
-BoardInfo.propTypes = {
+CouncilInfo.propTypes = {
   screenProps: ScreenPropsType.isRequired,
 }
 
@@ -105,4 +105,4 @@ Strong.propTypes = {
   children: PropTypes.string,
 }
 
-export default BoardInfo
+export default CouncilInfo

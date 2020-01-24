@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { GU, Info, useTheme } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '../../kit'
 
-function ShareInfo({
+function HoldersInfo({
   screenProps: { back, data, next, screenIndex, screens },
 }) {
   const handleSubmit = useCallback(
@@ -80,7 +80,7 @@ function ShareInfo({
   )
 }
 
-ShareInfo.propTypes = {
+HoldersInfo.propTypes = {
   screenProps: ScreenPropsType.isRequired,
 }
 
@@ -122,4 +122,4 @@ Strong.propTypes = {
   children: PropTypes.string,
 }
 
-export default ShareInfo
+export default HoldersInfo

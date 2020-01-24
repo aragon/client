@@ -109,7 +109,7 @@ function validationError(
   return null
 }
 
-function Board({
+function Council({
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
   title,
@@ -515,18 +515,18 @@ function Board({
   )
 }
 
-Board.propTypes = {
+Council.propTypes = {
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
   title: PropTypes.string,
 }
 
-Board.defaultProps = {
+Council.defaultProps = {
   dataKey: 'council',
   title: 'Configure council',
 }
 
-Board.formatReviewFields = formatReviewFields
+Council.formatReviewFields = formatReviewFields
 
 function Subtitle({ content }) {
   const theme = useTheme()
@@ -698,4 +698,4 @@ function formatReviewFields(screenData) {
   ]
 }
 
-export default Board
+export default Council

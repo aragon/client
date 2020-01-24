@@ -27,7 +27,7 @@ const DEFAULT_VALUES = {
   cliffPeriod: 90,
   expectedGrowth: 200,
   fundingPeriod: 14,
-  initialPricePerShare: 1,
+  initialPricePerToken: 1,
   targetGoal: 25000,
   presalePrice: 1,
   tokensOffered: 90,
@@ -89,7 +89,7 @@ function updateMinimumGrowth(fields) {
   const pctOffered = BN(fields.tokensOffered).div(oneHundred)
   const pctBeneficiary = BN(fields.projectFunding).div(oneHundred)
 
-  const sPrice = BN(fields.initialPricePerShare)
+  const sPrice = BN(fields.initialPricePerToken)
   const sSupply = goal.times(xRate).div(pctOffered)
   const sBalance = goal.times(one.minus(pctBeneficiary))
 
@@ -131,7 +131,7 @@ function reduceFields(fields, [field, value]) {
     return updateField(Math.max(1, intDef(value)))
   }
 
-  if (field === 'presalePrice' || field === 'initialPricePerShare') {
+  if (field === 'presalePrice' || field === 'initialPricePerToken') {
     return updateField(Math.max(0.1, floatDef(value)))
   }
 
@@ -249,10 +249,11 @@ function FundraisingScreen({
             >
               <p>
                 Your fundraising campaign will start with a presale during which
-                your {data.share.tokenSymbol} tokens will be sold at a constant
-                price. If your presale succeeds in reaching the goal within its
-                time period, trading will open. Otherwise, your fundraising
-                campaign will abort with contributors allocated refunds.
+                your {data.holders.tokenSymbol} tokens will be sold at a
+                constant price. If your presale succeeds in reaching the goal
+                within its time period, trading will open. Otherwise, your
+                fundraising campaign will abort with contributors allocated
+                refunds.
               </p>
             </Info>
             <div css="display: flex">
@@ -286,10 +287,10 @@ function FundraisingScreen({
                     <Help hint="What’s the presale price?">
                       <p>
                         <strong>Presale price</strong> is the constant price (in
-                        DAI) your {data.share.tokenSymbol} tokens will sold at
+                        DAI) your {data.holders.tokenSymbol} tokens will sold at
                         during the presale.{' '}
                         <em>
-                          For example: 3 DAI per {data.share.tokenSymbol}.
+                          For example: 3 DAI per {data.holders.tokenSymbol}.
                         </em>
                       </p>
                       <p
@@ -298,7 +299,7 @@ function FundraisingScreen({
                         `}
                       >
                         Later on, if the presale succeeds and trading opens,
-                        your ${data.share.tokenSymbol} tokens' price will be
+                        your ${data.holders.tokenSymbol} tokens' price will be
                         dynamically adjusted based on the market.
                       </p>
                     </Help>
@@ -308,7 +309,7 @@ function FundraisingScreen({
                 {({ id }) => (
                   <ConfigInput
                     id={id}
-                    label={`DAI per ${data.share.tokenSymbol}`}
+                    label={`DAI per ${data.holders.tokenSymbol}`}
                     onChange={bindUpdate('presalePrice')}
                     value={fields.presalePrice}
                   />
@@ -345,7 +346,7 @@ function FundraisingScreen({
                   Initial tokens offered %
                   <Help hint="What’s initial tokens offered %?">
                     <strong>Initial tokens offered %</strong> describes the
-                    percentage of the initial {data.share.tokenSymbol} token
+                    percentage of the initial {data.holders.tokenSymbol} token
                     supply that will be offered during the presale. The
                     remainder of this supply will be minted and sent to the
                     council if the presale succeeds.
@@ -365,7 +366,7 @@ function FundraisingScreen({
                     council (to bootstrap the campaign's underlying project) if
                     the presale succeeds. The remainder of the raised DAI will
                     be sent to the automated market maker's reserve pool to
-                    support trading of ${data.share.tokenSymbol}.
+                    support trading of ${data.holders.tokenSymbol}.
                   </Help>
                 </React.Fragment>
               }
@@ -381,15 +382,15 @@ function FundraisingScreen({
               `}
             >
               <p>
-                {data.share.tokenSymbol} tokens purchased during the presale
+                {data.holders.tokenSymbol} tokens purchased during the presale
                 will be vested and thus un-transferable as long as the vesting
                 cliff period has not been reached. The amount of{' '}
-                {data.share.tokenSymbol} tokens that are unlocked at the cliff
+                {data.holders.tokenSymbol} tokens that are unlocked at the cliff
                 is directly proportional to the overall vesting schedule.
               </p>
               <p>
                 When the vesting schedule completes, all{' '}
-                {data.share.tokenSymbol} tokens will become transferable.
+                {data.holders.tokenSymbol} tokens will become transferable.
               </p>
             </Info>
             <div css="display: flex">
@@ -399,7 +400,7 @@ function FundraisingScreen({
                     Cliff period
                     <Help hint="What’s the cliff period?">
                       <strong>Cliff period</strong> describes the length of time
-                      required before any {data.share.tokenSymbol} tokens
+                      required before any {data.holders.tokenSymbol} tokens
                       purchased during the presale become transferable.{' '}
                       <em>For example: {fields.fundingPeriod + 30} days.</em>
                     </Help>
@@ -422,7 +423,7 @@ function FundraisingScreen({
                     Vesting schedule
                     <Help hint="What’s the vesting schedule?">
                       <strong>Vesting schedule</strong> describes the length of
-                      time required for all {data.share.tokenSymbol} tokens
+                      time required for all {data.holders.tokenSymbol} tokens
                       purchased during the presale to become transferable.{' '}
                       <em>For example: {fields.cliffPeriod + 30} days.</em>
                     </Help>
@@ -508,9 +509,9 @@ function FundraisingScreen({
                       `}
                     >
                       This ensures that the market-maker's reserve pool can't be
-                      emptied - and thus that the {data.share.tokenSymbol} price
-                      can't fall down all the way to zero - even if over a long
-                      period of time.
+                      emptied - and thus that the {data.holders.tokenSymbol}{' '}
+                      price can't fall down all the way to zero - even if over a
+                      long period of time.
                     </p>
                   </Help>
                 </React.Fragment>
@@ -570,7 +571,7 @@ function FundraisingScreen({
                 organization's initial market capitalization. This value is
                 calculated from the presale price, presale goal, initial token %
                 offered, project funding %, and initial trading price per{' '}
-                {data.share.tokenSymbol}.
+                {data.holders.tokenSymbol}.
               </p>
               {!acceptableMinimumGrowth && (
                 <p
@@ -590,16 +591,17 @@ function FundraisingScreen({
               <InlineField
                 label={
                   <React.Fragment>
-                    Initial price per {data.share.tokenSymbol}
+                    Initial price per {data.holders.tokenSymbol}
                     <Help
-                      hint={`What’s the initial price per ${data.share.tokenSymbol}?`}
+                      hint={`What’s the initial price per ${data.holders.tokenSymbol}?`}
                     >
                       <strong>
-                        Initial price per {data.share.tokenSymbol}
+                        Initial price per {data.holders.tokenSymbol}
                       </strong>{' '}
-                      will be the price in DAI for each {data.share.tokenSymbol}{' '}
-                      token when trading initially opens. Afterwards, the price
-                      will automatically adjust according to the market.
+                      will be the price in DAI for each{' '}
+                      {data.holders.tokenSymbol} token when trading initially
+                      opens. Afterwards, the price will automatically adjust
+                      according to the market.
                     </Help>
                   </React.Fragment>
                 }
@@ -607,9 +609,9 @@ function FundraisingScreen({
                 {({ id }) => (
                   <ConfigInput
                     id={id}
-                    label={`DAI per ${data.share.tokenSymbol}`}
-                    onChange={bindUpdate('initialPricePerShare')}
-                    value={fields.initialPricePerShare}
+                    label={`DAI per ${data.holders.tokenSymbol}`}
+                    onChange={bindUpdate('initialPricePerToken')}
+                    value={fields.initialPricePerToken}
                     width={INPUT_MEDIUM}
                   />
                 )}
@@ -622,8 +624,8 @@ function FundraisingScreen({
                       <p>
                         <strong>Expected growth</strong> is the expected
                         long-term market capitalization growth of{' '}
-                        {data.share.tokenSymbol}. We use this value to set the
-                        parameterization of {data.share.tokenSymbol}'s bonding
+                        {data.holders.tokenSymbol}. We use this value to set the
+                        parameterization of {data.holders.tokenSymbol}'s bonding
                         curve such that the token's price will be 10x its
                         initial trading price once its reached this
                         capitalization.
@@ -913,7 +915,7 @@ function ReviewFields({ data }) {
           group: 'Presale terms',
           fields: [
             ['targetGoal', 'DAI', 'Goal'],
-            ['presalePrice', 'DAI per share', 'Price'],
+            ['presalePrice', 'DAI per token', 'Price'],
             ['fundingPeriod', 'days', 'Period'],
             ['tokensOffered', '%', 'Initial tokens offered'],
             ['projectFunding', '%', 'Project funding'],
@@ -937,7 +939,7 @@ function ReviewFields({ data }) {
         {
           group: 'Trading terms',
           fields: [
-            ['initialPricePerShare', 'DAI per share', 'Initial trading price'],
+            ['initialPricePerToken', 'DAI per token', 'Initial trading price'],
             ['expectedGrowth', 'times'],
           ],
         },

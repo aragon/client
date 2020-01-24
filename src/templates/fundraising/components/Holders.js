@@ -73,7 +73,7 @@ function validationError(tokenName, tokenSymbol, duration) {
   return null
 }
 
-function Share({
+function Holders({
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
   title,
@@ -463,17 +463,17 @@ function formatReviewFields(screenData) {
   ]
 }
 
-Share.propTypes = {
+Holders.propTypes = {
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
   title: PropTypes.string,
 }
 
-Share.defaultProps = {
-  dataKey: 'share',
+Holders.defaultProps = {
+  dataKey: 'holders',
   title: 'Configure template',
 }
 
-Share.formatReviewFields = formatReviewFields
+Holders.formatReviewFields = formatReviewFields
 
-export default Share
+export default Holders
