@@ -38,8 +38,8 @@ function ShareInfo({
           redeem tokens through the Aragon Fundraising interface.
         </Paragraph>
         <Paragraph>
-          <Strong>Handle fundraising parameters.</Strong> Token holders decide on
-          how beneficiary, fees, and collateralization settings should be
+          <Strong>Handle fundraising parameters.</Strong> Token holders decide
+          on how beneficiary, fees, and collateralization settings should be
           updated. They also control the amount of funds automatically
           transferred to the board each month.
         </Paragraph>
@@ -54,10 +54,10 @@ function ShareInfo({
         `}
       >
         <p>
-          This architecture grants most of the governance rights to
-          token holders, to protect their contribution. However, this also requires
-          the organization to be able to mitigate situations where a token holder
-          could own the whole organization by owning more than 50% of the
+          This architecture grants most of the governance rights to token
+          holders, to protect their contribution. However, this also requires
+          the organization to be able to mitigate situations where a token
+          holder could own the whole organization by owning more than 50% of the
           shares.
         </p>
         <p

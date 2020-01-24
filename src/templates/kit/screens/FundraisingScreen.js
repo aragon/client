@@ -545,8 +545,8 @@ function FundraisingScreen({
                         margin-top: ${1 * GU}px;
                       `}
                     >
-                      This protects holders by controlling how quickly the
-                      flow of funds from the market-maker's reserve pool to the
+                      This protects holders by controlling how quickly the flow
+                      of funds from the market-maker's reserve pool to the
                       Board-controlled vault can evolve.
                     </p>
                   </Help>

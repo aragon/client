@@ -485,10 +485,10 @@ function Board({
           <React.Fragment>
             Vote duration
             <Help hint="What’s the vote duration?">
-              <strong>Vote Duration</strong> is the length of time that council's
-              votes will be open for participation. For example, if the Vote
-              Duration is set to 24 hours, then council members will have 24 hours
-              to participate in the vote.
+              <strong>Vote Duration</strong> is the length of time that
+              council's votes will be open for participation. For example, if
+              the Vote Duration is set to 24 hours, then council members will
+              have 24 hours to participate in the vote.
             </Help>
           </React.Fragment>
         }

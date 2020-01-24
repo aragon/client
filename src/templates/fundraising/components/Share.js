@@ -244,8 +244,8 @@ function Share({
             <React.Fragment>
               Token name
               <Help hint="What’s the token name?">
-                <strong>Token name</strong> will be the name assigned to
-                the token representing your organization.{' '}
+                <strong>Token name</strong> will be the name assigned to the
+                token representing your organization.{' '}
                 <em>For example: My Token.</em>
               </Help>
             </React.Fragment>
@@ -269,8 +269,8 @@ function Share({
               Share token symbol
               <Help hint="What’s share token symbol?">
                 <strong>Token symbol</strong> will be the shortened name
-                (typically in capital letters) assigned to the organization's token.{' '}
-                <em>For example: TKN.</em>
+                (typically in capital letters) assigned to the organization's
+                token. <em>For example: TKN.</em>
               </Help>
             </React.Fragment>
           }
@@ -335,11 +335,11 @@ function Share({
           <React.Fragment>
             Support %
             <Help hint="What’s the support?">
-              <strong>Support</strong> is the relative percentage of
-              token holders that are required to vote “Yes” for a
-              proposal to be approved. For example, if “Support” is set to 51%,
-              then more than 51% of the tokens used to vote on a proposal must
-              be “Yes” for it to pass.
+              <strong>Support</strong> is the relative percentage of token
+              holders that are required to vote “Yes” for a proposal to be
+              approved. For example, if “Support” is set to 51%, then more than
+              51% of the tokens used to vote on a proposal must be “Yes” for it
+              to pass.
             </Help>
           </React.Fragment>
         }
@@ -372,10 +372,10 @@ function Share({
           <React.Fragment>
             Vote duration
             <Help hint="What’s the vote duration?">
-              <strong>Vote Duration</strong> is the length of time that
-              token holders' votes will be open for participation. For example,
-              if the Vote Duration is set to 24 hours, token holders will
-              have 24 hours to participate in the vote.
+              <strong>Vote Duration</strong> is the length of time that token
+              holders' votes will be open for participation. For example, if the
+              Vote Duration is set to 24 hours, token holders will have 24 hours
+              to participate in the vote.
             </Help>
           </React.Fragment>
         }

@@ -34,8 +34,8 @@ function BoardInfo({
         </Paragraph>
         <Paragraph>The council only has the ability to:</Paragraph>
         <Paragraph>
-          <Strong>Manage council members.</Strong> The council decides on who is to
-          be included or excluded from the council.
+          <Strong>Manage council members.</Strong> The council decides on who is
+          to be included or excluded from the council.
         </Paragraph>
         <Paragraph>
           <Strong>Open the presale.</Strong> The council decides on when the
@@ -47,9 +47,9 @@ function BoardInfo({
           controlled by the council at their discretion.
         </Paragraph>
         <Paragraph>
-          <Strong>Open token holder votes.</Strong> The council decides on when new
-          votes should be opened for token holders to enforce decisions over the
-          organization.
+          <Strong>Open token holder votes.</Strong> The council decides on when
+          new votes should be opened for token holders to enforce decisions over
+          the organization.
         </Paragraph>
       </div>
       <Navigation
