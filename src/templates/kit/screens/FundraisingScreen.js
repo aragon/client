@@ -406,7 +406,7 @@ function FundraisingScreen({
                       <strong>Cliff period</strong> describes the length of time
                       required before any {data.holders.tokenSymbol} tokens
                       purchased during the presale become transferable.{' '}
-                      <em>For example: {fields.fundingPeriod + 30} days.</em>
+                      <em>For example: {fields.fundingPeriod + 15} days.</em>
                     </Help>
                   </React.Fragment>
                 }
