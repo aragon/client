@@ -32,7 +32,7 @@ function HoldersInfo({
           organization.
         </Paragraph>
 
-        <Paragraph>token holders can:</Paragraph>
+        <Paragraph>Token holders can:</Paragraph>
         <Paragraph>
           <Strong>Buy and redeem tokens.</Strong> Token holders can buy and
           redeem tokens through the Aragon Fundraising interface.
@@ -45,7 +45,7 @@ function HoldersInfo({
         </Paragraph>
         <Paragraph>
           <Strong>Handle organization settings.</Strong> Token holders decide on
-          which apps are installed or upgraded and which permissions are set.
+          which apps can be installed or upgraded and which permissions are set.
         </Paragraph>
       </div>
       <Info

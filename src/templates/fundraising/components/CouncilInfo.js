@@ -26,11 +26,11 @@ function CouncilInfo({
         `}
       >
         <Paragraph>
-          The council acts as the representatives of the project being funded by
-          the fundraising campaign. Council members are represented through a
-          custom token and enforce their decision via a dedicated voting app set
-          to be used as a multisig. Their privileges are intentionally limited
-          to protect token holders.
+          The council acts as the project team being funded by the fundraising
+          campaign. Council members are represented through a custom token and
+          enforce their decisions via a dedicated voting app that acts similarly
+          to a traditional multisig account. Their privileges are intentionally
+          limited to protect token holders.
         </Paragraph>
         <Paragraph>The council only has the ability to:</Paragraph>
         <Paragraph>

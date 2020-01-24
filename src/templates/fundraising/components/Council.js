@@ -336,7 +336,7 @@ function Council({
               Council token name
               <Help hint="What’s the council token name?">
                 <strong>Council token name</strong> will be the name assigned to
-                the token representing your organization's council.{' '}
+                the token representing the organization's council.{' '}
                 <em>For example: My Council Token.</em>
               </Help>
             </React.Fragment>
@@ -361,8 +361,8 @@ function Council({
               <Help hint="What’s the council token symbol?">
                 <strong>Council token symbol</strong> will be the shortened name
                 (typically in capital letters) assigned to the token
-                representing your organization's council.{' '}
-                <em>For example: BRD.</em>
+                representing the organization's council.{' '}
+                <em>For example: CNL.</em>
               </Help>
             </React.Fragment>
           }

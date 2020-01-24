@@ -230,9 +230,8 @@ function Holders({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        These settings configure the token that will represent your
-        organization. This is the token that can be acquired through the
-        fundraising campaign.
+        These settings configure the token that will represent the organization.
+        This is the token that can be acquired through the fundraising campaign.
       </Info>
       <div
         css={`
@@ -245,7 +244,7 @@ function Holders({
               Organization token name
               <Help hint="What’s the token name?">
                 <strong>Organization token name</strong> will be the name
-                assigned to the token representing your organization.{' '}
+                assigned to the token representing the organization.{' '}
                 <em>For example: My Token.</em>
               </Help>
             </React.Fragment>
@@ -338,8 +337,8 @@ function Holders({
               <strong>Support</strong> is the relative percentage of token
               holders that are required to vote “Yes” for a proposal to be
               approved. For example, if “Support” is set to 51%, then more than
-              51% of the tokens used to vote on a proposal must be “Yes” for it
-              to pass.
+              51% of the {tokenSymbol || 'tokens'} used to vote on a proposal
+              must be “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -354,10 +353,11 @@ function Holders({
             Minimum approval %
             <Help hint="What’s the minimum approval?">
               <strong>Minimum Approval</strong> is the percentage of the total{' '}
-              {tokenSymbol} supply that is required to vote “Yes” on a proposal
-              before it can be approved. For example, if the “Minimum Approval”
-              is set to 20%, then more than 20% of the outstanding {tokenSymbol}{' '}
-              supply must vote “Yes” on a proposal for it to pass.
+              {tokenSymbol || 'token'} supply that is required to vote “Yes” on
+              a proposal before it can be approved. For example, if the “Minimum
+              Approval” is set to 20%, then more than 20% of the outstanding{' '}
+              {tokenSymbol || 'token'} supply must vote “Yes” on a proposal for
+              it to pass.
             </Help>
           </React.Fragment>
         }

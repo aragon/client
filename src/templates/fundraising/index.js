@@ -178,7 +178,11 @@ export default {
     [
       'Configure council',
       props => (
-        <Council dataKey="council" screenProps={props} title="Configure council" />
+        <Council
+          dataKey="council"
+          screenProps={props}
+          title="Configure council"
+        />
       ),
     ],
     ['Configure token holders', props => <HoldersInfo screenProps={props} />],
@@ -273,7 +277,7 @@ export default {
         ]),
       },
       {
-        name: 'Install token holder apps',
+        name: 'Install Token Holder apps',
         // Note that we need to keep this usage of "share"
         // as the template contract only exposes "installShareApps()"
         transaction: createTx('installShareApps', [

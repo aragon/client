@@ -249,10 +249,10 @@ function FundraisingScreen({
             >
               <p>
                 Your fundraising campaign will start with a presale during which
-                your {data.holders.tokenSymbol} tokens will be sold at a
-                constant price. If your presale succeeds in reaching the goal
-                within its time period, trading will open. Otherwise, your
-                fundraising campaign will abort with contributors allocated
+                the organization's {data.holders.tokenSymbol} tokens will be
+                sold at a constant price. If the presale succeeds in reaching
+                the goal within its time period, trading will open. Otherwise,
+                your fundraising campaign will abort with contributors allocated
                 refunds.
               </p>
             </Info>
@@ -287,8 +287,8 @@ function FundraisingScreen({
                     <Help hint="What’s the presale price?">
                       <p>
                         <strong>Presale price</strong> is the constant price (in
-                        DAI) your {data.holders.tokenSymbol} tokens will sold at
-                        during the presale.{' '}
+                        DAI) the organization's {data.holders.tokenSymbol}{' '}
+                        tokens will be sold at during the presale.{' '}
                         <em>
                           For example: 3 DAI per {data.holders.tokenSymbol}.
                         </em>
@@ -298,9 +298,9 @@ function FundraisingScreen({
                           margin-top: ${1 * GU}px;
                         `}
                       >
-                        Later on, if the presale succeeds and trading opens,
-                        your ${data.holders.tokenSymbol} tokens' price will be
-                        dynamically adjusted based on the market.
+                        Later on, if the presale succeeds and trading opens, the
+                        price of the organization's {data.holders.tokenSymbol}{' '}
+                        tokens will be dynamically adjusted based on the market.
                       </p>
                     </Help>
                   </React.Fragment>
@@ -388,7 +388,11 @@ function FundraisingScreen({
                 {data.holders.tokenSymbol} tokens that are unlocked at the cliff
                 is directly proportional to the overall vesting schedule.
               </p>
-              <p>
+              <p
+                css={`
+                  margin-top: ${1 * GU}px;
+                `}
+              >
                 When the vesting schedule completes, all{' '}
                 {data.holders.tokenSymbol} tokens will become transferable.
               </p>
@@ -635,8 +639,9 @@ function FundraisingScreen({
                           margin-top: ${1 * GU}px;
                         `}
                       >
-                        Setting a high expected growth will cause your bonding
-                        curve to be <em>more sensitive</em> to volatility.
+                        Setting a high expected growth will cause the bonding
+                        curve attached to {data.holders.tokenSymbol} to be{' '}
+                        <em>more sensitive</em> to volatility.
                       </p>
                     </Help>
                   </React.Fragment>
