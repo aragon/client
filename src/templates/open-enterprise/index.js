@@ -176,7 +176,7 @@ export default {
   optionalApps: [{ appName: 'agent.aragonpm.eth', label: 'Agent' }],
   apps: [
     { appName: 'voting.aragonpm.eth', label: 'Voting' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
+    { appName: 'token-manager.hatch.aragonpm.eth', label: 'Tokens' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
     { appName: 'address-book.aragonpm.eth', label: 'Address Book' },
     { appName: 'allocations.aragonpm.eth', label: 'Allocations' },
