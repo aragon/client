@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { addressesEqual, GU } from '@aragon/ui'
 import { shortenAddress } from '../../../../web3-utils'
-import { ETHER_TOKEN_FAKE_ADDRESS } from '../helpers/tokens'
+import { ETHER_TOKEN_FAKE_ADDRESS } from '../../config/helpers/tokens'
 
 /* eslint-disable react/prop-types */
 const TokenSelectorInstance = React.memo(function TokenSelectorInstance({

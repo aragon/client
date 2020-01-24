@@ -8,7 +8,7 @@ import {
   Duration,
   KnownAppBadge,
 } from '../../../kit'
-import TokenSelector from '../TokenSelector/TokenSelector'
+import TokenSelector from '../../components/TokenSelector/TokenSelector'
 import { getDefaultLockTokenByNetwork } from '../helpers/tokens'
 import { shortenAddress } from '../../../../web3-utils'
 

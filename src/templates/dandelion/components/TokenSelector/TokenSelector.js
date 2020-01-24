@@ -93,7 +93,7 @@ function TokenSelector({
         required
         css={`
           margin-bottom: ${showCustomHorizontal ? '0' : `${1.5 * GU}px`};
-          margin-right: ${1 * GU}px;
+          margin-right: ${componentIndex !== 0 ? `${1 * GU}px` : '0'};
           min-width: 150px;
         `}
       />

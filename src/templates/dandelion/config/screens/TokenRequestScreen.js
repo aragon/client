@@ -7,7 +7,7 @@ import {
   ScreenPropsType,
   KnownAppBadge,
 } from '../../../kit'
-import MultiTokenSelector from '../TokenSelector/MultiTokenSelector'
+import MultiTokenSelector from '../../components/TokenSelector/MultiTokenSelector'
 import { getDefaultAcceptedTokens } from '../helpers/tokens'
 import { shortenAddress } from '../../../../web3-utils'
 

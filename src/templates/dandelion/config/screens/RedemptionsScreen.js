@@ -7,7 +7,7 @@ import {
   ScreenPropsType,
   KnownAppBadge,
 } from '../../../kit'
-import MultiTokenSelector from '../TokenSelector/MultiTokenSelector'
+import MultiTokenSelector from '../../components/TokenSelector/MultiTokenSelector'
 import { getDefaultRedeemableTokens } from '../helpers/tokens'
 import { shortenAddress } from '../../../../web3-utils'
 
@@ -70,7 +70,7 @@ function RedemptionsScreen({
   const handleTokenUpdated = useCallback(
     ({ token: newToken, selectedIndex: newSelectedIndex, componentIndex }) => {
       const duplicate = redeemableTokens.some(
-        ({ token, selectedIndex }, index) =>
+        ({ token }, index) =>
           isAddress(newToken.address) &&
           index !== componentIndex &&
           addressesEqual(token.address, newToken.address)

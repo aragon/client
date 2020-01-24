@@ -138,18 +138,14 @@ export default {
     const blockTime = getBlockTime()
     const {
       domain,
-      optionalModules = [],
+      optionalApps = [],
       tokens,
       voting,
       lock,
       redemptions,
       tokenRequest,
     } = data
-    const useAgentAsVault = optionalModules.includes('agent.aragonpm.eth')
-
-    // TODO: Check why agent not setted as default vault when including it
-    console.log('optionalModules', optionalModules)
-    console.log('use agent as vault', useAgentAsVault)
+    const useAgentAsVault = optionalApps.includes('agent.aragonpm.eth')
 
     // Tokens app
     const { tokenName, tokenSymbol, members } = tokens
