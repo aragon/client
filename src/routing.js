@@ -1,3 +1,6 @@
+import PropTypes from 'prop-types'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { createHashHistory as createHistory } from 'history'
 import { staticApps } from './static-apps'
 import { APP_MODE_START, APP_MODE_ORG, APP_MODE_SETUP } from './symbols'
 import { isAddress, isValidEnsName } from './web3-utils'
@@ -146,4 +149,83 @@ export function getPreferencesSearch(screen, { labels } = {}) {
   }
 
   return search
+}
+
+const RoutingContext = React.createContext()
+
+export function RoutingProvider({ children }) {
+  const [history, setHistory] = useState()
+  const [locator, setLocator] = useState(parsePath('/'))
+  const path = locator.path
+
+  // Change the URL if needed
+  const setPath = useCallback(
+    newPath => {
+      if (history && newPath !== path) {
+        history.push(newPath)
+      }
+    },
+    [history, path]
+  )
+
+  const goTo = useCallback(
+    (newLocator, extend = true) => {
+      setPath(getAppPath(extend ? { ...locator, ...newLocator } : newLocator))
+    },
+    [locator, setPath]
+  )
+
+  const goBack = useCallback(() => {
+    if (history) {
+      history.goBack()
+    }
+  }, [history])
+
+  useEffect(() => {
+    const history = createHistory()
+
+    const updateLocator = ({ pathname, search, state = {} }) => {
+      if (state.alreadyParsed) {
+        return
+      }
+
+      const locator = parsePath(pathname, search)
+
+      // Replace URL with non-aragonid.eth version
+      if (locator.dao && locator.dao.endsWith(ARAGONID_ENS_DOMAIN)) {
+        history.replace({
+          pathname: locator.pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
+          search: locator.search,
+          state: { alreadyParsed: true },
+        })
+      }
+
+      setLocator(locator)
+    }
+
+    setHistory(history)
+    updateLocator(history.location)
+
+    // history.listen() returns a function that stops listening.
+    return history.listen(updateLocator)
+  }, [])
+
+  return (
+    <RoutingContext.Provider
+      value={{
+        goBack,
+        goTo,
+        locator,
+        setPath,
+      }}
+    >
+      {children}
+    </RoutingContext.Provider>
+  )
+}
+
+RoutingProvider.propTypes = { children: PropTypes.node }
+
+export function useRouting() {
+  return useContext(RoutingContext)
 }

@@ -1,17 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { createHashHistory as createHistory } from 'history'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
 import { EthereumAddressType, ClientThemeType } from './prop-types'
 import { network, web3Providers } from './environment'
 import { useClientTheme } from './client-theme'
-import {
-  ARAGONID_ENS_DOMAIN,
-  getAppPath,
-  getPreferencesSearch,
-  parsePath,
-} from './routing'
+import { getPreferencesSearch, useRouting } from './routing'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import { Onboarding } from './onboarding'
@@ -70,6 +64,7 @@ class App extends React.Component {
   static propTypes = {
     clientTheme: ClientThemeType.isRequired,
     theme: PropTypes.object.isRequired,
+    routing: PropTypes.object.isRequired,
     walletAccount: EthereumAddressType,
   }
 
@@ -78,7 +73,6 @@ class App extends React.Component {
     connected: false,
     fatalError: null,
     identityIntent: null,
-    locator: {},
     prevLocator: null,
     selectorNetworks: SELECTOR_NETWORKS,
     transactionBag: null,
@@ -87,13 +81,7 @@ class App extends React.Component {
     wrapper: null,
   }
 
-  history = createHistory()
-
   componentDidMount() {
-    const { pathname, search } = this.history.location
-    this.handleHistoryChange({ pathname, search })
-    this.history.listen(this.handleHistoryChange)
-
     // Only the default, because the app can work without the wallet
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
@@ -101,7 +89,7 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { clientTheme, walletAccount } = this.props
+    const { routing, clientTheme, walletAccount } = this.props
     const { wrapper } = this.state
 
     if (wrapper && walletAccount !== prevProps.walletAccount) {
@@ -114,33 +102,23 @@ class App extends React.Component {
     ) {
       wrapper.setGuiStyle(clientTheme.appearance, clientTheme.theme)
     }
-  }
 
-  // Handle URL changes
-  handleHistoryChange = ({ pathname, search, state = {} }) => {
-    if (!state.alreadyParsed) {
-      this.updateLocator(parsePath(pathname, search))
-    }
-  }
-
-  // Change the URL if needed
-  historyPush = path => {
-    if (path !== this.state.locator.path) {
-      this.history.push(path)
+    if (routing.locator !== prevProps.routing.locator) {
+      this.updateLocator(routing.locator)
     }
   }
 
   // Change the URL to the previous one
   historyBack = () => {
     if (this.state.prevLocator) {
-      this.history.goBack()
+      this.routing.goBack()
     } else {
-      this.history.replace('/')
+      this.routing.setPath('/')
     }
   }
 
   updateLocator = locator => {
-    const { locator: prevLocator } = this.state
+    const { prevLocator } = this.state
 
     // New DAO: need to reinit the wrapper
     if (locator.dao && (!prevLocator || locator.dao !== prevLocator.dao)) {
@@ -153,16 +131,7 @@ class App extends React.Component {
       this.updateDao(null)
     }
 
-    // Replace URL with non-aragonid.eth version
-    if (locator.dao && locator.dao.endsWith(ARAGONID_ENS_DOMAIN)) {
-      this.history.replace({
-        pathname: locator.pathname.replace(`.${ARAGONID_ENS_DOMAIN}`, ''),
-        search: locator.search,
-        state: { alreadyParsed: true },
-      })
-    }
-
-    this.setState({ locator, prevLocator })
+    this.setState({ prevLocator })
   }
 
   updateDao(dao = null) {
@@ -267,8 +236,8 @@ class App extends React.Component {
         })
       },
       onRequestPath: ({ appAddress, path, resolve, reject }) => {
-        const { locator } = this.state
-        if (appAddress !== locator.instanceId) {
+        const { routing } = this.props
+        if (appAddress !== routing.locator.instanceId) {
           reject(
             `Can’t change the path of ${appAddress}: the app is not currently active.`
           )
@@ -277,12 +246,15 @@ class App extends React.Component {
 
         resolve()
 
-        window.location.hash = getAppPath({
-          dao,
-          instanceId: locator.instanceId,
-          instancePath: path,
-          mode: APP_MODE_ORG,
-        })
+        routing.goTo(
+          {
+            dao,
+            instanceId: routing.locator.instanceId,
+            instancePath: path,
+            mode: APP_MODE_ORG,
+          },
+          false
+        )
       },
     })
       .then(wrapper => {
@@ -338,19 +310,17 @@ class App extends React.Component {
   }
 
   closePreferences = () => {
-    const { locator } = this.state
-    this.historyPush(getAppPath({ ...locator, search: '' }))
+    this.props.routing.goTo({ search: '' })
   }
 
   openPreferences = (screen, data) => {
-    const { locator } = this.state
-    this.historyPush(
-      getAppPath({ ...locator, search: getPreferencesSearch(screen, data) })
-    )
+    this.props.routing.goTo({
+      search: getPreferencesSearch(screen, data),
+    })
   }
 
   render() {
-    const { theme } = this.props
+    const { theme, routing } = this.props
     const {
       apps,
       appIdentifiers,
@@ -361,7 +331,6 @@ class App extends React.Component {
       daoStatus,
       fatalError,
       identityIntent,
-      locator,
       permissions,
       permissionsLoading,
       repos,
@@ -372,11 +341,11 @@ class App extends React.Component {
       wrapper,
     } = this.state
 
-    const { mode } = locator
+    const { locator } = routing
     const { address: intentAddress = null, label: intentLabel = '' } =
       identityIntent || {}
 
-    if (!mode) {
+    if (!locator.mode) {
       return null
     }
     if (fatalError !== null) {
@@ -435,7 +404,7 @@ class App extends React.Component {
                         >
                           <div css="position: relative; z-index: 0">
                             <Wrapper
-                              visible={mode === APP_MODE_ORG}
+                              visible={locator.mode === APP_MODE_ORG}
                               apps={appsWithIdentifiers}
                               appsStatus={appsStatus}
                               canUpgradeOrg={canUpgradeOrg}
@@ -443,7 +412,6 @@ class App extends React.Component {
                               daoAddress={daoAddress}
                               daoStatus={daoStatus}
                               historyBack={this.historyBack}
-                              historyPush={this.historyPush}
                               locator={locator}
                               onRequestAppsReload={this.handleRequestAppsReload}
                               openPreferences={this.openPreferences}
@@ -460,7 +428,8 @@ class App extends React.Component {
                         <Onboarding
                           selectorNetworks={selectorNetworks}
                           status={
-                            mode === APP_MODE_START || mode === APP_MODE_SETUP
+                            locator.mode === APP_MODE_START ||
+                            locator.mode === APP_MODE_SETUP
                               ? locator.action || 'welcome'
                               : 'none'
                           }
@@ -473,7 +442,6 @@ class App extends React.Component {
                           apps={appsWithIdentifiers}
                           onScreenChange={this.openPreferences}
                           onClose={this.closePreferences}
-                          historyPush={this.historyPush}
                         />
 
                         <HelpScoutBeacon locator={locator} apps={apps} />
@@ -490,14 +458,16 @@ class App extends React.Component {
   }
 }
 
-export default function(props) {
+export default function AppHooksWrapper(props) {
   const { account } = useWallet()
   const theme = useTheme()
   const clientTheme = useClientTheme()
+  const routing = useRouting()
 
   return (
     <App
       clientTheme={clientTheme}
+      routing={routing}
       theme={theme}
       walletAccount={account}
       {...props}

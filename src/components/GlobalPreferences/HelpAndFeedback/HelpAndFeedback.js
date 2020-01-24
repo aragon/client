@@ -1,15 +1,16 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Box, Switch, Info, Link, GU, textStyle, useTheme } from '@aragon/ui'
+import { useRouting } from '../../../routing'
 import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
 import helpAndFeedbackPng from './assets/help-and-feedback.png'
 import { useConsole } from '../../../apps/Console/useConsole'
-import { getAppPath } from '../../../routing'
 
-function HelpAndFeedback({ historyPush, locator, onClose }) {
+function HelpAndFeedback({ locator, onClose }) {
   const theme = useTheme()
   const { optedOut, setOptedOut } = useHelpScout()
   const { consoleVisible, setConsoleVisible } = useConsole()
+  const routing = useRouting()
 
   const handleOptOutChange = useCallback(
     () => setOptedOut(optedOut => !optedOut),
@@ -23,13 +24,11 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
 
   const handleConsoleLinkClick = useCallback(() => {
     onClose()
-    historyPush(
-      getAppPath({
-        dao: locator.dao,
-        instanceId: 'console',
-      })
-    )
-  }, [historyPush, locator, onClose])
+    routing.goTo({
+      dao: locator.dao,
+      instanceId: 'console',
+    })
+  }, [routing, locator, onClose])
 
   return (
     <>
@@ -121,7 +120,6 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
 }
 
 HelpAndFeedback.propTypes = {
-  historyPush: PropTypes.func,
   onClose: PropTypes.func,
   locator: PropTypes.object,
 }

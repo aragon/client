@@ -13,6 +13,7 @@ import {
   getPackageVersion,
   setPackageVersion,
 } from './local-settings'
+import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 const packageVersion = getPackageVersion()
@@ -53,17 +54,19 @@ function Providers() {
   const { appearance } = useClientTheme()
   return (
     <Main layout={false} scrollView={false} theme={appearance}>
-      <HelpScoutProvider>
-        <ConsoleVisibleProvider>
-          <GlobalErrorHandler>
-            <WalletBlockNumberProvider>
-              <WalletProvider>
-                <App />
-              </WalletProvider>
-            </WalletBlockNumberProvider>
-          </GlobalErrorHandler>
-        </ConsoleVisibleProvider>
-      </HelpScoutProvider>
+      <RoutingProvider>
+        <HelpScoutProvider>
+          <ConsoleVisibleProvider>
+            <GlobalErrorHandler>
+              <WalletBlockNumberProvider>
+                <WalletProvider>
+                  <App />
+                </WalletProvider>
+              </WalletBlockNumberProvider>
+            </GlobalErrorHandler>
+          </ConsoleVisibleProvider>
+        </HelpScoutProvider>
+      </RoutingProvider>
     </Main>
   )
 }

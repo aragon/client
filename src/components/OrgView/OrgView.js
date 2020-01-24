@@ -60,7 +60,7 @@ function OrgView({
       if (autoClosingPanel) {
         handleCloseMenuPanel()
       }
-      onOpenApp(args)
+      onOpenApp(...args)
     },
     [autoClosingPanel, handleCloseMenuPanel, onOpenApp]
   )
