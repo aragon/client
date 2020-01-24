@@ -27,11 +27,9 @@ const DEFAULT_VALUES = {
   cliffPeriod: 90,
   expectedGrowth: 200,
   fundingPeriod: 14,
-  initialPricePerShare: 1.1,
-  initialPricePerShareInput: '1.1',
+  initialPricePerShare: 1,
   targetGoal: 25000,
   presalePrice: 1,
-  presalePriceInput: '1',
   tokensOffered: 90,
   projectFunding: 10,
   vestingSchedule: 365,
@@ -79,63 +77,6 @@ function dataDefaults(data) {
   )
 }
 
-function updateVestingSchedule(fields, value) {
-  const vestingSchedule = Math.max(-1, intDef(value, -1))
-  const cliffPeriod = Math.max(
-    -1,
-    Math.min(fields.cliffPeriod, vestingSchedule - 1)
-  )
-  const fundingPeriod = Math.max(
-    -1,
-    Math.min(fields.fundingPeriod, cliffPeriod - 1)
-  )
-  return { ...fields, cliffPeriod, fundingPeriod, vestingSchedule }
-}
-
-function updateCliffPeriod(fields, value) {
-  const cliffPeriod = Math.max(-1, intDef(value, -1))
-  const fundingPeriod = Math.max(
-    -1,
-    Math.min(fields.fundingPeriod, cliffPeriod - 1)
-  )
-  const vestingSchedule = Math.max(-1, fields.vestingSchedule, cliffPeriod + 1)
-  return { ...fields, cliffPeriod, fundingPeriod, vestingSchedule }
-}
-
-function updateFundingPeriod(fields, value) {
-  const fundingPeriod = Math.max(-1, intDef(value))
-  const cliffPeriod = Math.max(-1, fields.cliffPeriod, fundingPeriod + 1)
-  const vestingSchedule = Math.max(-1, fields.vestingSchedule, cliffPeriod + 1)
-  return { ...fields, cliffPeriod, fundingPeriod, vestingSchedule }
-}
-
-function updateInitialPricePerShare(fields, value) {
-  const initialPricePerShare = Math.max(0.1, floatDef(value))
-  const presalePrice = Math.min(fields.presalePrice, initialPricePerShare - 0.1)
-  return {
-    ...fields,
-    initialPricePerShare,
-    initialPricePerShareInput: initialPricePerShare,
-    presalePrice,
-    presalePriceInput: presalePrice,
-  }
-}
-
-function updatePresalePrice(fields, value) {
-  const presalePrice = Math.max(0.1, floatDef(value))
-  const initialPricePerShare = Math.max(
-    fields.initialPricePerShare,
-    presalePrice + 0.1
-  )
-  return {
-    ...fields,
-    initialPricePerShare,
-    initialPricePerShareInput: initialPricePerShare,
-    presalePrice,
-    presalePriceInput: presalePrice,
-  }
-}
-
 function updateMinimumGrowth(fields) {
   const oneDAI = BN(10).pow(BN(18))
   const one = BN(1)
@@ -175,60 +116,23 @@ function reduceFields(fields, [field, value]) {
     return updateField(intDef(value))
   }
 
-  if (field === 'batchLength') {
+  if (
+    field === 'batchLength' ||
+    field === 'slippageDai' ||
+    field === 'slippageAnt' ||
+    field === 'tapRate' ||
+    field === 'maximumMonthlyUpdates' ||
+    field === 'targetGoal' ||
+    field === 'tokensOffered' ||
+    field === 'vestingSchedule' ||
+    field === 'cliffPeriod' ||
+    field === 'fundingPeriod'
+  ) {
     return updateField(Math.max(1, intDef(value)))
   }
 
-  if (field === 'slippageDai') {
-    return updateField(Math.max(1, intDef(value)))
-  }
-
-  if (field === 'slippageAnt') {
-    return updateField(Math.max(1, intDef(value)))
-  }
-
-  if (field === 'tapRate') {
-    return updateField(Math.max(1, intDef(value)))
-  }
-
-  if (field === 'maximumMonthlyUpdates') {
-    return updateField(Math.max(1, intDef(value)))
-  }
-
-  if (field === 'targetGoal') {
-    return updateField(Math.max(1, intDef(value)))
-  }
-
-  if (field === 'presalePriceInput') {
-    return { ...fields, presalePriceInput: value }
-  }
-
-  if (field === 'presalePrice') {
-    return updatePresalePrice(fields, value)
-  }
-
-  if (field === 'initialPricePerShareInput') {
-    return { ...fields, initialPricePerShareInput: value }
-  }
-
-  if (field === 'initialPricePerShare') {
-    return updateInitialPricePerShare(fields, value)
-  }
-
-  if (field === 'tokensOffered') {
-    return updateField(Math.max(1, intDef(value)))
-  }
-
-  if (field === 'vestingSchedule') {
-    return updateVestingSchedule(fields, value)
-  }
-
-  if (field === 'cliffPeriod') {
-    return updateCliffPeriod(fields, value)
-  }
-
-  if (field === 'fundingPeriod') {
-    return updateFundingPeriod(fields, value)
+  if (field === 'presalePrice' || field === 'initialPricePerShare') {
+    return updateField(Math.max(0.1, floatDef(value)))
   }
 
   return fields
@@ -247,9 +151,20 @@ function useConfigureFields(data) {
   //   value={fieldValue}
   //  />
   //
+
   const bindUpdate = useCallback(name => value => update(name, value), [update])
 
   return { fields, update, bindUpdate }
+}
+
+function validationError(fields) {
+  if (fields.fundingPeriod >= fields.cliffPeriod) {
+    return 'Please make sure the cliff period is longer than the presale funding period.'
+  }
+  if (fields.cliffPeriod >= fields.vestingSchedule) {
+    return 'Please make sure the vesting schedule is longer than the cliff period.'
+  }
+  return null
 }
 
 function FundraisingScreen({
@@ -259,6 +174,8 @@ function FundraisingScreen({
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
   const [tab, setTab] = useState(0)
+  const [formError, setFormError] = useState(null)
+
   const { fields, bindUpdate } = useConfigureFields(screenData || {})
 
   const minimumGrowth = useMemo(() => updateMinimumGrowth(fields), [fields])
@@ -274,17 +191,22 @@ function FundraisingScreen({
     event => {
       event.preventDefault()
 
-      const screenData = {
-        ...fields,
-        minimumGrowth: minimumGrowth.toFixed(0),
-      }
-      const mergedData = dataKey
-        ? { ...data, [dataKey]: screenData }
-        : { ...data, ...screenData }
+      const error = validationError(fields)
+      setFormError(error)
 
-      next(mergedData)
+      if (!error) {
+        const screenData = {
+          ...fields,
+          minimumGrowth: minimumGrowth.toFixed(0),
+        }
+        const mergedData = dataKey
+          ? { ...data, [dataKey]: screenData }
+          : { ...data, ...screenData }
+
+        next(mergedData)
+      }
     },
-    [data, dataKey, fields, next, minimumGrowth]
+    [data, dataKey, fields, minimumGrowth, next]
   )
 
   return (
@@ -317,34 +239,104 @@ function FundraisingScreen({
       />
 
       <Tabs items={TABS} selected={tab} onChange={setTab} />
-
       {tab === 0 && (
         <div>
           <Section title="Presale terms">
+            <Info
+              css={`
+                margin-bottom: ${3 * GU}px;
+              `}
+            >
+              <p>
+                Your fundraising campaign will start with a presale during which
+                your {data.share.tokenSymbol} tokens will be sold at a constant
+                price. If your presale succeeds in reaching the goal within its
+                time period, trading will open. Otherwise, your fundraising
+                campaign will abort with contributors allocated refunds.
+              </p>
+            </Info>
             <div css="display: flex">
-              <InlineField key="targetGoal" label="Target Goal">
-                <ConfigInput
-                  label="DAI"
-                  onChange={bindUpdate('targetGoal')}
-                  value={fields.targetGoal}
-                />
+              <InlineField
+                key="targetGoal"
+                label={
+                  <React.Fragment>
+                    Presale goal
+                    <Help hint="What’s the presale goal?">
+                      <strong>Presale goal</strong> describes the amount of DAI
+                      that must be raised during the presale period for it to
+                      succeed. <em>For example: 50000 DAI.</em>
+                    </Help>
+                  </React.Fragment>
+                }
+              >
+                {({ id }) => (
+                  <ConfigInput
+                    id={id}
+                    label="DAI"
+                    onChange={bindUpdate('targetGoal')}
+                    value={fields.targetGoal}
+                  />
+                )}
               </InlineField>
-              <InlineField key="presalePrice" label="Price">
-                <ConfigInput
-                  label="DAI per share"
-                  onChange={bindUpdate('presalePriceInput')}
-                  onChangeDone={bindUpdate('presalePrice')}
-                  value={fields.presalePriceInput}
-                />
+              <InlineField
+                key="presalePrice"
+                label={
+                  <React.Fragment>
+                    Presale price
+                    <Help hint="What’s the presale price?">
+                      <p>
+                        <strong>Presale price</strong> is the constant price (in
+                        DAI) your {data.share.tokenSymbol} tokens will sold at
+                        during the presale.{' '}
+                        <em>
+                          For example: 3 DAI per {data.share.tokenSymbol}.
+                        </em>
+                      </p>
+                      <p
+                        css={`
+                          margin-top: ${1 * GU}px;
+                        `}
+                      >
+                        Later on, if the presale succeeds and trading opens,
+                        your ${data.share.tokenSymbol} tokens' price will be
+                        dynamically adjusted based on the market.
+                      </p>
+                    </Help>
+                  </React.Fragment>
+                }
+              >
+                {({ id }) => (
+                  <ConfigInput
+                    id={id}
+                    label={`DAI per ${data.share.tokenSymbol}`}
+                    onChange={bindUpdate('presalePrice')}
+                    value={fields.presalePrice}
+                  />
+                )}
               </InlineField>
-              <InlineField key="fundingPeriod" label="Funding period">
-                <ConfigInput
-                  label={labelDays(fields.fundingPeriod)}
-                  onChange={bindUpdate('fundingPeriod')}
-                  value={
-                    fields.fundingPeriod === -1 ? '' : fields.fundingPeriod
-                  }
-                />
+              <InlineField
+                key="fundingPeriod"
+                label={
+                  <React.Fragment>
+                    Presale period
+                    <Help hint="What’s the presale period?">
+                      <strong>Presale period</strong> describes the length of
+                      time the presale will be open.{' '}
+                      <em>For example: 30 days.</em>
+                    </Help>
+                  </React.Fragment>
+                }
+              >
+                {({ id }) => (
+                  <ConfigInput
+                    id={id}
+                    label={labelDays(fields.fundingPeriod)}
+                    onChange={bindUpdate('fundingPeriod')}
+                    value={
+                      fields.fundingPeriod === -1 ? '' : fields.fundingPeriod
+                    }
+                  />
+                )}
               </InlineField>
             </div>
             <PercentageField
@@ -352,10 +344,11 @@ function FundraisingScreen({
                 <React.Fragment>
                   Initial tokens offered %
                   <Help hint="What’s initial tokens offered %?">
-                    <strong>Tokens offered %</strong> describes the percentage
-                    of the initial shares supply that will be offered during the
-                    presale. The remainder of this supply will be minted and
-                    sent to the board multisig if and when presale succeeds.
+                    <strong>Initial tokens offered %</strong> describes the
+                    percentage of the initial {data.share.tokenSymbol} token
+                    supply that will be offered during the presale. The
+                    remainder of this supply will be minted and sent the Board
+                    if the presale succeeds.
                   </Help>
                 </React.Fragment>
               }
@@ -367,11 +360,12 @@ function FundraisingScreen({
                 <React.Fragment>
                   Project funding %
                   <Help hint="What’s the project funding %?">
-                    <strong>Project funding</strong> describes the percentage of
-                    the presale goal that will be sent to the board multisig if
-                    and when presale succeeds. The remainder of the contributed
-                    funds will be sent to the market maker's reserve pool to
-                    support trading.
+                    <strong>Project funding %</strong> describes the percentage
+                    of DAI raised during the presale that will be sent to the
+                    Board (to bootstrap the campaign's underlying project) if
+                    the presale succeeds. The remainder of the raised DAI will
+                    be sent to the automated market maker's reserve pool to
+                    support trading of ${data.share.tokenSymbol}.
                   </Help>
                 </React.Fragment>
               }
@@ -381,9 +375,61 @@ function FundraisingScreen({
           </Section>
 
           <Section title="Investment terms">
+            <Info
+              css={`
+                margin-bottom: ${3 * GU}px;
+              `}
+            >
+              <p>
+                {data.share.tokenSymbol} tokens purchased during the presale
+                will be vested and thus un-transferable as long as the vesting
+                cliff period has not been reached. The amount of{' '}
+                {data.share.tokenSymbol} tokens that are unlocked at the cliff
+                is directly proportional to the overall vesting schedule.
+              </p>
+              <p>
+                When the vesting schedule completes, all{' '}
+                {data.share.tokenSymbol} tokens will become transferable.
+              </p>
+            </Info>
             <div css="display: flex">
-              <InlineField label="Vesting schedule">
-                {id => (
+              <InlineField
+                label={
+                  <React.Fragment>
+                    Cliff period
+                    <Help hint="What’s the cliff period?">
+                      <strong>Cliff period</strong> describes the length of time
+                      required before any {data.share.tokenSymbol} tokens
+                      purchased during the presale become transferable.{' '}
+                      <em>For example: {fields.fundingPeriod + 30} days.</em>
+                    </Help>
+                  </React.Fragment>
+                }
+              >
+                {({ id }) => (
+                  <ConfigInput
+                    id={id}
+                    label={labelDays(fields.cliffPeriod)}
+                    onChange={bindUpdate('cliffPeriod')}
+                    value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
+                    width={INPUT_MEDIUM}
+                  />
+                )}
+              </InlineField>
+              <InlineField
+                label={
+                  <React.Fragment>
+                    Vesting schedule
+                    <Help hint="What’s the vesting schedule?">
+                      <strong>Vesting schedule</strong> describes the length of
+                      time required for all {data.share.tokenSymbol} tokens
+                      purchased during the presale to become transferable.{' '}
+                      <em>For example: {fields.cliffPeriod + 30} days.</em>
+                    </Help>
+                  </React.Fragment>
+                }
+              >
+                {({ id }) => (
                   <ConfigInput
                     id={id}
                     label={labelDays(fields.vestingSchedule)}
@@ -397,47 +443,216 @@ function FundraisingScreen({
                   />
                 )}
               </InlineField>
-              <InlineField label="Cliff period">
-                {id => (
-                  <ConfigInput
-                    id={id}
-                    label={labelDays(fields.cliffPeriod)}
-                    onChange={bindUpdate('cliffPeriod')}
-                    value={fields.cliffPeriod === -1 ? '' : fields.cliffPeriod}
-                    width={INPUT_MEDIUM}
-                  />
-                )}
-              </InlineField>
             </div>
           </Section>
 
+          <Section title="Operation terms">
+            <Info
+              css={`
+                margin-bottom: ${3 * GU}px;
+              `}
+            >
+              <p>
+                The funds collected by the fundraising campaign are released
+                over time to a Board-controlled vault to sustain the underlying
+                project. This mechanism is called the <em>tap</em> and can be
+                configured over time.
+              </p>
+            </Info>
+            <Field
+              label={
+                <React.Fragment>
+                  Initial tap rate
+                  <Help hint="What’s the tap rate?">
+                    <p>
+                      <strong>Tap rate</strong> defines the amount of DAI which
+                      can be released every month from the market-maker's
+                      reserve pool to the Board-controlled vault.{' '}
+                      <em>For example: 3000 DAI / month.</em>
+                    </p>
+                    <p
+                      css={`
+                        margin-top: ${1 * GU}px;
+                      `}
+                    >
+                      This is the flow of funds that will actually support the
+                      campaign's underlying project.
+                    </p>
+                  </Help>
+                </React.Fragment>
+              }
+            >
+              {({ id }) => (
+                <ConfigInput
+                  id={id}
+                  label="DAI"
+                  onChange={bindUpdate('tapRate')}
+                  value={fields.tapRate}
+                  width={INPUT_MEDIUM}
+                />
+              )}
+            </Field>
+            <Field
+              label={
+                <React.Fragment>
+                  Initial tap floor
+                  <Help hint="What’s the tap floor?">
+                    <p>
+                      <strong>Tap floor</strong> defines the amount of DAI which
+                      will be kept in the market-maker's reserve pool regardless
+                      of the tap rate. <em>For example: 5000 DAI.</em>
+                    </p>
+                    <p
+                      css={`
+                        margin-top: ${1 * GU}px;
+                      `}
+                    >
+                      This ensures that the market-maker's reserve pool can't be
+                      emptied - and thus that the {data.share.tokenSymbol} price
+                      can't fall down all the way to zero - even if over a long
+                      period of time.
+                    </p>
+                  </Help>
+                </React.Fragment>
+              }
+            >
+              {({ id }) => (
+                <ConfigInput
+                  id={id}
+                  label="DAI"
+                  onChange={bindUpdate('tapFloor')}
+                  value={fields.tapFloor}
+                  width={INPUT_MEDIUM}
+                />
+              )}
+            </Field>
+            <PercentageField
+              label={
+                <React.Fragment>
+                  Maximum monthly tap rate increases and tap floor decreases %
+                  <Help hint="What’s the maximum monthly tap rate increases and tap floor decreases %?">
+                    <p>
+                      <strong>
+                        Maximum monthly tap rate increases and tap floor
+                        decreases
+                      </strong>{' '}
+                      defines how fast you can increase the tap rate and
+                      decrease the tap floor each month.{' '}
+                      <em>For example: 50%.</em>
+                    </p>
+                    <p
+                      css={`
+                        margin-top: ${1 * GU}px;
+                      `}
+                    >
+                      This protects investors by controlling how quickly the
+                      flow of funds from the market-maker's reserve pool to the
+                      Board-controlled vault can evolve.
+                    </p>
+                  </Help>
+                </React.Fragment>
+              }
+              value={fields.maximumMonthlyUpdates}
+              onChange={bindUpdate('maximumMonthlyUpdates')}
+            />
+          </Section>
+
           <Section title="Trading terms">
+            <Info
+              mode={acceptableMinimumGrowth ? 'info' : 'warning'}
+              css={`
+                margin-bottom: ${3 * GU}px;
+              `}
+            >
+              <p>
+                The current minimum growth is{' '}
+                <strong>{minimumGrowth.toFixed(0)} times</strong> the
+                organization's initial market capitalization. This value is
+                calculated from the presale price, presale goal, initial token %
+                offered, project funding %, and initial trading price per{' '}
+                {data.share.tokenSymbol}.
+              </p>
+              {!acceptableMinimumGrowth && (
+                <p
+                  css={`
+                    margin-top: ${1 * GU}px;
+                  `}
+                >
+                  <strong>
+                    Please adjust the mentioned parameters to change the
+                    expected growth ({fields.expectedGrowth}) to be greater than
+                    the minimum growth ({minimumGrowth.toFixed(0)}).
+                  </strong>
+                </p>
+              )}
+            </Info>
             <div css="display: flex">
-              <InlineField label="Initial price per share">
-                {id => (
+              <InlineField
+                label={
+                  <React.Fragment>
+                    Initial price per {data.share.tokenSymbol}
+                    <Help
+                      hint={`What’s the initial price per ${data.share.tokenSymbol}?`}
+                    >
+                      <strong>
+                        Initial price per {data.share.tokenSymbol}
+                      </strong>{' '}
+                      will be the price in DAI for each {data.share.tokenSymbol}{' '}
+                      token when trading initially opens. Afterwards, the price
+                      will automatically adjust according to the market.
+                    </Help>
+                  </React.Fragment>
+                }
+              >
+                {({ id }) => (
                   <ConfigInput
                     id={id}
-                    label="DAI per share"
-                    onChange={bindUpdate('initialPricePerShareInput')}
-                    onChangeDone={bindUpdate('initialPricePerShare')}
-                    value={fields.initialPricePerShareInput}
+                    label={`DAI per ${data.share.tokenSymbol}`}
+                    onChange={bindUpdate('initialPricePerShare')}
+                    value={fields.initialPricePerShare}
                     width={INPUT_MEDIUM}
                   />
                 )}
               </InlineField>
               <InlineField
-                label="Expected growth"
+                label={
+                  <React.Fragment>
+                    Expected growth
+                    <Help hint="What's the expected growth?">
+                      <p>
+                        <strong>Expected growth</strong> is the expected
+                        long-term market capitalization growth of{' '}
+                        {data.share.tokenSymbol}. We use this value to set the
+                        parameterization of {data.share.tokenSymbol}'s bonding
+                        curve such that the token's price will be 10x its
+                        initial trading price once its reached this
+                        capitalization.
+                      </p>
+                      <p
+                        css={`
+                          margin-top: ${1 * GU}px;
+                        `}
+                      >
+                        Setting a high expected growth will cause your bonding
+                        curve to be <em>more sensitive</em> to volatility.
+                      </p>
+                    </Help>
+                  </React.Fragment>
+                }
                 css={`
                   flex-grow: 1;
                   width: 100%;
                 `}
               >
-                <ConfigInput
-                  label="Times Initial Market Cap"
-                  onChange={bindUpdate('expectedGrowth')}
-                  value={fields.expectedGrowth}
-                  wide
-                />
+                {({ id }) => (
+                  <ConfigInput
+                    id={id}
+                    label="Times Initial Market Cap"
+                    onChange={bindUpdate('expectedGrowth')}
+                    value={fields.expectedGrowth}
+                    wide
+                  />
+                )}
               </InlineField>
             </div>
           </Section>
@@ -446,86 +661,77 @@ function FundraisingScreen({
 
       {tab === 1 && (
         <div>
-          <Section title="Trading terms">
-            <Field label="Batch length">
-              <ConfigInput
-                width={INPUT_MEDIUM}
-                label={labelBatch(fields.batchLength)}
-                value={fields.batchLength}
-                onChange={bindUpdate('batchLength')}
-              />
+          <Section title="Market making terms">
+            <Field
+              label={
+                <React.Fragment>
+                  Batch length
+                  <Help hint="What’s the batch length?">
+                    <p>
+                      <strong>Batch length</strong> defines the number of blocks
+                      a trading batch will last. <em>For example: 2 blocks.</em>{' '}
+                    </p>
+                    <p
+                      css={`
+                        margin-top: ${1 * GU}px;
+                      `}
+                    >
+                      All orders opened during a given batch will be matched at
+                      the exact same price (though this price may be different
+                      for buy and sell orders). This prevents front-running
+                      attacks and enables slow trading.
+                    </p>
+                  </Help>
+                </React.Fragment>
+              }
+            >
+              {({ id }) => (
+                <ConfigInput
+                  id={id}
+                  width={INPUT_MEDIUM}
+                  label={labelBatch(fields.batchLength)}
+                  value={fields.batchLength}
+                  onChange={bindUpdate('batchLength')}
+                />
+              )}
             </Field>
             <div css="display: flex">
-              <InlineField label="DAI slippage %">
-                <ConfigInput
-                  label="%"
-                  onChange={bindUpdate('slippageDai')}
-                  value={fields.slippageDai}
-                  width={INPUT_MEDIUM}
-                />
+              <InlineField label={<SlippageLabel slippageToken="DAI" />}>
+                {({ id }) => (
+                  <ConfigInput
+                    id={id}
+                    label="%"
+                    onChange={bindUpdate('slippageDai')}
+                    value={fields.slippageDai}
+                    width={INPUT_MEDIUM}
+                  />
+                )}
               </InlineField>
-              <InlineField label="ANT slippage %">
-                <ConfigInput
-                  label="%"
-                  onChange={bindUpdate('slippageAnt')}
-                  value={fields.slippageAnt}
-                  width={INPUT_MEDIUM}
-                />
+              <InlineField label={<SlippageLabel slippageToken="ANT" />}>
+                {({ id }) => (
+                  <ConfigInput
+                    id={id}
+                    label="%"
+                    onChange={bindUpdate('slippageAnt')}
+                    value={fields.slippageAnt}
+                    width={INPUT_MEDIUM}
+                  />
+                )}
               </InlineField>
             </div>
-            <Field label="Initial monthly allocation">
-              <ConfigInput
-                label="DAI"
-                onChange={bindUpdate('tapRate')}
-                value={fields.tapRate}
-                width={INPUT_MEDIUM}
-              />
-            </Field>
-            <Field label="Initial tap floor">
-              <ConfigInput
-                label="DAI"
-                onChange={bindUpdate('tapFloor')}
-                value={fields.tapFloor}
-                width={INPUT_MEDIUM}
-              />
-            </Field>
-            <PercentageField
-              label="Maximum monthly allocation increases and floor decreases %"
-              value={fields.maximumMonthlyUpdates}
-              onChange={bindUpdate('maximumMonthlyUpdates')}
-            />
           </Section>
         </div>
       )}
-
-      <Info
-        mode={acceptableMinimumGrowth ? 'info' : 'warning'}
-        css={`
-          margin-bottom: ${3 * GU}px;
-        `}
-      >
-        <p>
-          The current minimum growth is{' '}
-          <strong>{minimumGrowth.toFixed(0)} times</strong> the organization's
-          initial market capitalization. This value is calculated from the
-          presale price, target goal, tokens offered, project funding, and
-          initial price per share.
-        </p>
-        {!acceptableMinimumGrowth && (
-          <p
-            css={`
-              margin-top: ${1 * GU}px;
-            `}
-          >
-            <strong>
-              Please adjust some parameters to change the expected growth (
-              {fields.expectedGrowth}) to be greater than the minimum growth (
-              {minimumGrowth.toFixed(0)}).
-            </strong>
-          </p>
-        )}
-      </Info>
-
+      {formError && (
+        <Info
+          mode="error"
+          css={`
+            margin-bottom: ${3 * GU}px;
+          `}
+        >
+          {formError}
+        </Info>
+      )}
       <Navigation
         backEnabled
         nextEnabled={acceptableMinimumGrowth}
@@ -640,6 +846,50 @@ function ConfigInput({
   )
 }
 
+function SlippageLabel({ slippageToken }) {
+  return (
+    <React.Fragment>
+      DAI slippage %
+      <Help hint="What’s the DAI slippage %?">
+        <p>
+          <strong>{slippageToken} slippage %</strong> defines the maximum price
+          slippage in {slippageToken} that may occur on orders during any given
+          batch.
+        </p>
+        <p
+          css={`
+            margin-top: ${1 * GU}px;
+          `}
+        >
+          For example, with a value of 25%, this would mean that:
+        </p>
+        <ol
+          css={`
+            padding-left: ${2 * GU}px;
+          `}
+        >
+          <li>
+            The price of any buy orders in a batch can't rise above 125% of the
+            batch's opening price
+          </li>
+          <li>
+            The price of any sell orders price in a batch can't fall below 75%
+            of the batch's opening price.
+          </li>
+        </ol>
+        <p
+          css={`
+            margin-top: ${1 * GU}px;
+          `}
+        >
+          Any order that would break these limits will automatically be
+          dismissed.
+        </p>
+      </Help>
+    </React.Fragment>
+  )
+}
+
 function formatReviewFields(screenData) {
   return <ReviewFields data={screenData} />
 }
@@ -660,33 +910,43 @@ function ReviewFields({ data }) {
     >
       {[
         {
-          group: 'Presale campaign terms',
+          group: 'Presale terms',
           fields: [
-            ['targetGoal', 'DAI'],
-            ['presalePrice', 'DAI', 'Presale price per share'],
-            ['fundingPeriod', 'days'],
-            ['tokensOffered', '%', 'Token supply offered'],
-            ['projectFunding', '%'],
+            ['targetGoal', 'DAI', 'Goal'],
+            ['presalePrice', 'DAI per share', 'Price'],
+            ['fundingPeriod', 'days', 'Period'],
+            ['tokensOffered', '%', 'Initial tokens offered'],
+            ['projectFunding', '%', 'Project funding'],
           ],
         },
         {
           group: 'Investment terms',
           fields: [
-            ['initialPricePerShare', 'DAI', 'Initial trading price per share'],
-            ['expectedGrowth', 'times'],
+            ['cliffPeriod', 'days'],
+            ['vestingSchedule', 'days'],
+          ],
+        },
+        {
+          group: 'Operation terms',
+          fields: [
+            ['tapRate', 'DAI', 'Initial tap rate'],
+            ['tapFloor', 'DAI', 'Initial tap floor'],
+            ['maximumMonthlyUpdates', '%', 'Maximum tap monthly updates'],
           ],
         },
         {
           group: 'Trading terms',
           fields: [
-            ['vestingSchedule', 'days'],
-            ['cliffPeriod', 'days'],
-            ['batchLength', 'blocks'],
+            ['initialPricePerShare', 'DAI per share', 'Initial trading price'],
+            ['expectedGrowth', 'times'],
+          ],
+        },
+        {
+          group: 'Market making terms',
+          fields: [
+            ['batchLength', 'block(s)'],
             ['slippageDai', '%'],
             ['slippageAnt', '%'],
-            ['tapRate', 'DAI', 'Initial monthly allocation'],
-            ['tapFloor', 'DAI'],
-            ['maximumMonthlyUpdates', '%', 'Maximum monthly allocation update'],
           ],
         },
       ]

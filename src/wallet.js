@@ -13,6 +13,7 @@ import {
 const WALLET_WEB3 = getWeb3(web3Providers.wallet)
 const WALLET_PROVIDER_INFO = getProvider(identifyProvider(web3Providers.wallet))
 const WALLET_POLL_DELAY = 2000
+const WALLET_BLOCK_POLL_DELAY = 5000
 
 const NO_WALLET = {
   account: null,
@@ -134,27 +135,16 @@ export function WalletBlockNumberProvider(props) {
   const [blockNumber, setBlockNumber] = useState(-1)
 
   useEffect(() => {
-    const sub = WALLET_WEB3.eth.subscribe('newBlockHeaders', (err, block) => {
-      if (!err) {
-        setBlockNumber(block.number)
+    const pollBlockNumber = pollEvery(() => {
+      return {
+        request: () => WALLET_WEB3.eth.getBlockNumber(),
+        onResult: latestBlockNumber => setBlockNumber(latestBlockNumber),
       }
-    })
+    }, WALLET_BLOCK_POLL_DELAY)
 
-    let cancelInitialQuery = false
-    WALLET_WEB3.eth
-      .getBlockNumber()
-      .then(blockNumber => {
-        if (cancelInitialQuery) {
-          setBlockNumber(blockNumber)
-        }
-        return null
-      })
-      .catch(() => null)
+    const cleanBlockPoll = pollBlockNumber()
 
-    return () => {
-      sub.unsubscribe()
-      cancelInitialQuery = true
-    }
+    return () => cleanBlockPoll()
   }, [])
 
   return <WalletBlockNumberContext.Provider value={blockNumber} {...props} />

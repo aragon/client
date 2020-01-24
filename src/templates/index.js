@@ -6,11 +6,12 @@ import reputation from './reputation'
 import dandelion from './dandelion'
 
 // see the corresponding prop type, OrgTemplateType, in prop-types.js.
+
 export default [
-  dandelion,
-  reputation,
   company,
-  membership,
-  fundraising,
+  dandelion,
   openEnterprise,
+  fundraising,
+  membership,
+  reputation,
 ]

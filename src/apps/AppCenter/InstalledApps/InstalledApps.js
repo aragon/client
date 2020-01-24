@@ -43,7 +43,9 @@ const InstalledApps = React.memo(function InstalledApps({
           latestVersion,
         } = repo
         const { description, icons } = latestVersion.content
-        const canUpgrade = currentVersion.version !== latestVersion.version
+        const canUpgrade =
+          Boolean(currentVersion) &&
+          currentVersion.version !== latestVersion.version
         const handleClick = () => onOpenApp(repoName)
 
         return (

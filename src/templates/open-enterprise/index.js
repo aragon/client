@@ -49,7 +49,6 @@ function adjustDotVotingSettings(dvSupport, dvQuorum) {
 export default {
   id: 'open-enterprise-template.aragonpm.eth',
   name: 'Open Enterprise',
-  new: true,
   header,
   icon,
   description: `

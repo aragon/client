@@ -7,8 +7,8 @@ const {
   DEFAULT_LOCAL_IPFS_GATEWAY,
 } = require('./config/local')
 
-execute('rimraf ./build', { stdio: 'inherit' })
-execute(`copy-aragon-ui-assets -n aragon-ui ./build`, {
+execute('rimraf ./public', { stdio: 'inherit' })
+execute(`copy-aragon-ui-assets -n aragon-ui ./public`, {
   stdio: 'inherit',
 })
 
@@ -19,6 +19,6 @@ process.env.ARAGON_IPFS_GATEWAY = DEFAULT_LOCAL_IPFS_GATEWAY
 process.env.ARAGON_APP_LOCATOR = 'ipfs'
 
 execute(
-  `parcel build src/index.html --out-dir ./build --public-url ./ --no-cache`,
+  `parcel build src/index.html --out-dir ./public --public-url ./ --no-cache`,
   { stdio: 'inherit' }
 )

@@ -73,13 +73,20 @@ class UpgradeAppPanel extends React.PureComponent {
             <Heading2 theme={theme}>Current version</Heading2>
             <RepoVersionWrapper>
               {currentVersion.version}{' '}
-              <RepoBadge repoVersion={currentVersion} />
+              <RepoBadge
+                displayVersion={currentVersion}
+                latestVersion={latestVersion}
+              />
             </RepoVersionWrapper>
           </div>
           <div>
             <Heading2 theme={theme}>New version</Heading2>
             <RepoVersionWrapper>
-              {latestVersion.version} <RepoBadge repoVersion={latestVersion} />
+              {latestVersion.version}{' '}
+              <RepoBadge
+                displayVersion={latestVersion}
+                latestVersion={latestVersion}
+              />
             </RepoVersionWrapper>
           </div>
         </SidePanelSplit>
@@ -127,10 +134,10 @@ class UpgradeAppPanel extends React.PureComponent {
             </Button>
           </div>
 
-          <Info.Action>
+          <Info>
             All the “{name}” app instances installed on your organization will
             be upgraded.
-          </Info.Action>
+          </Info>
         </Part>
       </SidePanel>
     )

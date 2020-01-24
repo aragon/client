@@ -3,7 +3,9 @@
   "public": true,
   "scope": "aragon",
   "alias": "nightly.aragon.org",
-  "builds": [
-    { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
-  ]
+  "build": {
+    "env": {
+      "ARAGON_ETH_NETWORK_TYPE": "main"
+    }
+  }
 }

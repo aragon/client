@@ -5,12 +5,18 @@ import AppIcon from '../../components/AppIcon/AppIcon'
 import { repoBaseUrl } from '../../url-utils'
 import { RepoVersionType } from '../../prop-types'
 
-const RepoBadge = React.memo(function({ repoVersion }) {
+const RepoBadge = React.memo(function RepoBadge({
+  displayVersion,
+  latestVersion,
+}) {
   const theme = useTheme()
+
+  // If content from the display version isn't available, default to using the latest version
+  const version = displayVersion || latestVersion
   const {
     content: { appId, contractAddress, name, icons },
-  } = repoVersion
-  const baseUrl = repoBaseUrl(appId, repoVersion)
+  } = version
+  const baseUrl = repoBaseUrl(appId, version)
 
   return (
     <div
@@ -64,7 +70,8 @@ const RepoBadge = React.memo(function({ repoVersion }) {
 })
 
 RepoBadge.propTypes = {
-  repoVersion: RepoVersionType.isRequired,
+  displayVersion: RepoVersionType,
+  latestVersion: RepoVersionType.isRequired,
 }
 
 export default RepoBadge
