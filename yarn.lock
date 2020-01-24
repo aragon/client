@@ -9178,9 +9178,9 @@ quote-stream@^1.0.1, quote-stream@~1.0.2:
     through2 "^2.0.0"
 
 radspec@^1.5.0:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/radspec/-/radspec-1.6.2.tgz#811ff8fa84e4a72df3240f83cc04ea72998cf000"
-  integrity sha512-zjvjN8RiWB1YBI5rOhI8Mf/rx3yKR1tQgKvx+aA+fkLayPt69QItmrO8YeFQKdRZzPcBKJbGBjJIXuBZxZh/rw==
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/radspec/-/radspec-1.6.3.tgz#a5c93ae3d1e41b497eaa2991e39496efc41af14f"
+  integrity sha512-I+KGe7MIL8c34VS3f3+Ik4iUEm3Q0yzZJtnqPcqP0wKEQg1U/oy/X2VOpdHHvPVOmVExM2bMj62eWXMr45IxrA==
   dependencies:
     "@babel/runtime" "^7.1.2"
     bn.js "^4.11.8"
