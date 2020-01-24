@@ -101,7 +101,7 @@ function validationError(
     return 'Please add a token symbol.'
   }
   if (signatures < 0) {
-    return 'Please ensure that board voting requires at least one signature.'
+    return 'Please ensure that council voting requires at least one signature.'
   }
   if (duration < 10 * MINUTE_IN_SECONDS) {
     return 'Please ensure the vote duration is equal to or longer than 10 minutes.'
@@ -109,7 +109,7 @@ function validationError(
   return null
 }
 
-function Board({
+function Council({
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
   title,
@@ -309,7 +309,7 @@ function Board({
             >
               <KnownAppBadge
                 appName="token-manager.aragonpm.eth"
-                label="Tokens: Board"
+                label="Tokens: Council"
               />
             </span>
             settings
@@ -321,9 +321,9 @@ function Board({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        These settings determine who should be a member of the Board and
+        These settings determine who should be a member of the council and
         information related to the token used for determining membership. The
-        Board acts similarly to a traditional multisig account.
+        council acts similarly to a traditional multisig account.
       </Info>
       <div
         css={`
@@ -333,11 +333,11 @@ function Board({
         <Field
           label={
             <React.Fragment>
-              Board token name
-              <Help hint="What’s the board token name?">
-                <strong>Board token name</strong> will be the name assigned to
-                the token representing your organization's board.{' '}
-                <em>For example: My Board Token.</em>
+              Council token name
+              <Help hint="What’s the council token name?">
+                <strong>Council token name</strong> will be the name assigned to
+                the token representing the organization's council.{' '}
+                <em>For example: My Council Token.</em>
               </Help>
             </React.Fragment>
           }
@@ -347,7 +347,7 @@ function Board({
               ref={handleTokenNameRef}
               id={id}
               onChange={handleTokenNameChange}
-              placeholder="My Board Token"
+              placeholder="My Council Token"
               value={tokenName}
               wide
             />
@@ -357,12 +357,12 @@ function Board({
         <Field
           label={
             <React.Fragment>
-              Board token symbol
-              <Help hint="What’s the board token symbol?">
-                <strong>Board token symbol</strong> will be the shortened name
+              Council token symbol
+              <Help hint="What’s the council token symbol?">
+                <strong>Council token symbol</strong> will be the shortened name
                 (typically in capital letters) assigned to the token
-                representing your organization's board.{' '}
-                <em>For example: BRD.</em>
+                representing the organization's council.{' '}
+                <em>For example: CNL.</em>
               </Help>
             </React.Fragment>
           }
@@ -372,7 +372,7 @@ function Board({
               id={id}
               onChange={handleTokenSymbolChange}
               value={tokenSymbol}
-              placeholder="BRD"
+              placeholder="CNL"
               wide
             />
           )}
@@ -386,7 +386,7 @@ function Board({
               ${fieldsLayout}
             `}
           >
-            <div>Board members</div>
+            <div>Council members</div>
           </div>
         }
       >
@@ -434,7 +434,7 @@ function Board({
             >
               <KnownAppBadge
                 appName="voting.aragonpm.eth"
-                label="Voting: Board"
+                label="Voting: Council"
               />
             </span>
             settings
@@ -447,14 +447,14 @@ function Board({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        These settings affect the decision making process for board members.
+        These settings affect the decision making process for council members.
       </Info>
       <Field
         label={
           <React.Fragment>
             Number of signatures
             <Help hint="What’s the number of signatures?">
-              <strong>Number of signatures</strong> is the number of board
+              <strong>Number of signatures</strong> is the number of council
               members who need to approve a vote for it to pass.
             </Help>
           </React.Fragment>
@@ -485,10 +485,10 @@ function Board({
           <React.Fragment>
             Vote duration
             <Help hint="What’s the vote duration?">
-              <strong>Vote Duration</strong> is the length of time that board's
-              votes will be open for participation. For example, if the Vote
-              Duration is set to 24 hours, then board members will have 24 hours
-              to participate in the vote.
+              <strong>Vote Duration</strong> is the length of time that
+              council's votes will be open for participation. For example, if
+              the Vote Duration is set to 24 hours, then council members will
+              have 24 hours to participate in the vote.
             </Help>
           </React.Fragment>
         }
@@ -515,18 +515,18 @@ function Board({
   )
 }
 
-Board.propTypes = {
+Council.propTypes = {
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
   title: PropTypes.string,
 }
 
-Board.defaultProps = {
-  dataKey: 'board',
-  title: 'Configure board',
+Council.defaultProps = {
+  dataKey: 'council',
+  title: 'Configure council',
 }
 
-Board.formatReviewFields = formatReviewFields
+Council.formatReviewFields = formatReviewFields
 
 function Subtitle({ content }) {
   const theme = useTheme()
@@ -698,4 +698,4 @@ function formatReviewFields(screenData) {
   ]
 }
 
-export default Board
+export default Council

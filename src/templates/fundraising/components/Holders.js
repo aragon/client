@@ -73,7 +73,7 @@ function validationError(tokenName, tokenSymbol, duration) {
   return null
 }
 
-function Share({
+function Holders({
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
   title,
@@ -218,7 +218,7 @@ function Share({
             >
               <KnownAppBadge
                 appName="token-manager.aragonpm.eth"
-                label="Token: shareholders"
+                label="Token: Token Holders"
               />
             </span>
             settings
@@ -230,9 +230,8 @@ function Share({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        These settings configure the token that will represent your
-        organization's shareholders. This is the token that will be traded
-        through your fundraising campaign.
+        These settings configure the token that will represent the organization.
+        This is the token that can be acquired through the fundraising campaign.
       </Info>
       <div
         css={`
@@ -242,11 +241,11 @@ function Share({
         <Field
           label={
             <React.Fragment>
-              Share token name
-              <Help hint="What’s the share token name?">
-                <strong>Share token name</strong> will be the name assigned to
-                the token representing your organization's shareholders.{' '}
-                <em>For example: My Share Token.</em>
+              Organization token name
+              <Help hint="What’s the token name?">
+                <strong>Organization token name</strong> will be the name
+                assigned to the token representing the organization.{' '}
+                <em>For example: My Token.</em>
               </Help>
             </React.Fragment>
           }
@@ -256,7 +255,7 @@ function Share({
               ref={handleTokenNameRef}
               id={id}
               onChange={handleTokenNameChange}
-              placeholder="My Share Token"
+              placeholder="My Token"
               value={tokenName}
               wide
             />
@@ -266,12 +265,11 @@ function Share({
         <Field
           label={
             <React.Fragment>
-              Share token symbol
-              <Help hint="What’s share token symbol?">
-                <strong>Share token symbol</strong> will be the shortened name
-                (typically in capital letters) assigned to the token
-                representing your organization's shareholders.{' '}
-                <em>For example: SHR.</em>
+              Organization token symbol
+              <Help hint="What’s token symbol?">
+                <strong>Organization token symbol</strong> will be the shortened
+                name (typically in capital letters) assigned to the
+                organization's token. <em>For example: TKN.</em>
               </Help>
             </React.Fragment>
           }
@@ -281,7 +279,7 @@ function Share({
               id={id}
               onChange={handleTokenSymbolChange}
               value={tokenSymbol}
-              placeholder="SHR"
+              placeholder="TKN"
               wide
             />
           )}
@@ -307,7 +305,7 @@ function Share({
             >
               <KnownAppBadge
                 appName="voting.aragonpm.eth"
-                label="Voting: shareholders"
+                label="Voting: Token Holders"
               />
             </span>
             settings
@@ -321,7 +319,7 @@ function Share({
         `}
       >
         <p>
-          These settings affect the decision making process for shareholders.
+          These settings affect the decision making process for token holders.
         </p>
         <p css={`margin-top: {1 * GU}px`}>
           The support and minimum approval thresholds are strict requirements,
@@ -336,11 +334,11 @@ function Share({
           <React.Fragment>
             Support %
             <Help hint="What’s the support?">
-              <strong>Support</strong> is the relative percentage of
-              shareholders' tokens that are required to vote “Yes” for a
-              proposal to be approved. For example, if “Support” is set to 51%,
-              then more than 51% of the tokens used to vote on a proposal must
-              be “Yes” for it to pass.
+              <strong>Support</strong> is the relative percentage of token
+              holders that are required to vote “Yes” for a proposal to be
+              approved. For example, if “Support” is set to 51%, then more than
+              51% of the {tokenSymbol || 'tokens'} used to vote on a proposal
+              must be “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -355,10 +353,11 @@ function Share({
             Minimum approval %
             <Help hint="What’s the minimum approval?">
               <strong>Minimum Approval</strong> is the percentage of the total{' '}
-              {tokenSymbol} supply that is required to vote “Yes” on a proposal
-              before it can be approved. For example, if the “Minimum Approval”
-              is set to 20%, then more than 20% of the outstanding {tokenSymbol}{' '}
-              supply must vote “Yes” on a proposal for it to pass.
+              {tokenSymbol || 'token'} supply that is required to vote “Yes” on
+              a proposal before it can be approved. For example, if the “Minimum
+              Approval” is set to 20%, then more than 20% of the outstanding{' '}
+              {tokenSymbol || 'token'} supply must vote “Yes” on a proposal for
+              it to pass.
             </Help>
           </React.Fragment>
         }
@@ -373,10 +372,10 @@ function Share({
           <React.Fragment>
             Vote duration
             <Help hint="What’s the vote duration?">
-              <strong>Vote Duration</strong> is the length of time that
-              shareholders' votes will be open for participation. For example,
-              if the Vote Duration is set to 24 hours, then shareholders will
-              have 24 hours to participate in the vote.
+              <strong>Vote Duration</strong> is the length of time that token
+              holders' votes will be open for participation. For example, if the
+              Vote Duration is set to 24 hours, token holders will have 24 hours
+              to participate in the vote.
             </Help>
           </React.Fragment>
         }
@@ -464,17 +463,17 @@ function formatReviewFields(screenData) {
   ]
 }
 
-Share.propTypes = {
+Holders.propTypes = {
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
   title: PropTypes.string,
 }
 
-Share.defaultProps = {
-  dataKey: 'share',
+Holders.defaultProps = {
+  dataKey: 'holders',
   title: 'Configure template',
 }
 
-Share.formatReviewFields = formatReviewFields
+Holders.formatReviewFields = formatReviewFields
 
-export default Share
+export default Holders

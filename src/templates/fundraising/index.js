@@ -7,10 +7,10 @@ import {
   KnownAppBadge,
   ReviewScreen,
 } from '../kit'
-import Board from './components/Board'
-import Share from './components/Share'
-import BoardInfo from './components/BoardInfo'
-import ShareInfo from './components/ShareInfo'
+import Council from './components/Council'
+import CouncilInfo from './components/CouncilInfo'
+import Holders from './components/Holders'
+import HoldersInfo from './components/HoldersInfo'
 import header from './header.svg'
 import icon from './icon.svg'
 
@@ -114,7 +114,7 @@ function extractCollateralizationSettings(fundraising) {
 
   const sSupply = goal.times(xRate).div(pctOffered)
   const sBalance = goal.times(one.minus(pctBeneficiary))
-  const sPrice = BN(fundraising.initialPricePerShare)
+  const sPrice = BN(fundraising.initialPricePerToken)
   const sMarketCap = sSupply.times(sPrice)
 
   const eMarketCap = sMarketCap.times(growth)
@@ -146,7 +146,7 @@ function extractCollateralizationSettings(fundraising) {
 export default {
   id: 'fundraising-multisig-template.aragonpm.eth',
   name: 'Fundraising',
-  disabled: true,
+  beta: true,
   header,
   icon,
   description: `
@@ -162,10 +162,10 @@ export default {
       label: 'Fundraising',
     },
     { appName: 'agent.aragonpm.eth', label: 'Agent: Reserve Pool' },
-    { appName: 'voting.aragonpm.eth', label: 'Voting: Board' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Board' },
-    { appName: 'voting.aragonpm.eth', label: 'Voting: Shareholder' },
-    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Shareholder' },
+    { appName: 'voting.aragonpm.eth', label: 'Voting: Council' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Council' },
+    { appName: 'voting.aragonpm.eth', label: 'Voting: Token Holder' },
+    { appName: 'token-manager.aragonpm.eth', label: 'Tokens: Token Holder' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
   ],
   optionalApps: [],
@@ -174,21 +174,25 @@ export default {
       data => completeDomain(data.domain) || 'Claim domain',
       props => <ClaimDomainScreen screenProps={props} />,
     ],
-    ['Configure board', props => <BoardInfo screenProps={props} />],
+    ['Configure council', props => <CouncilInfo screenProps={props} />],
     [
-      'Configure board',
+      'Configure council',
       props => (
-        <Board dataKey="board" screenProps={props} title="Configure board" />
+        <Council
+          dataKey="council"
+          screenProps={props}
+          title="Configure council"
+        />
       ),
     ],
-    ['Configure shareholders', props => <ShareInfo screenProps={props} />],
+    ['Configure token holders', props => <HoldersInfo screenProps={props} />],
     [
-      'Configure shareholders',
+      'Configure token holders',
       props => (
-        <Share
-          dataKey="share"
+        <Holders
+          dataKey="holders"
           screenProps={props}
-          title="Configure shareholders"
+          title="Configure token holders"
         />
       ),
     ],
@@ -199,7 +203,7 @@ export default {
     [
       'Review information',
       props => {
-        const { domain, board, share, fundraising } = props.data
+        const { domain, council, holders, fundraising } = props.data
         return (
           <ReviewScreen
             screenProps={props}
@@ -212,12 +216,12 @@ export default {
                 ],
               },
               {
-                label: 'Board',
-                fields: Board.formatReviewFields(board),
+                label: 'Council',
+                fields: Council.formatReviewFields(council),
               },
               {
-                label: 'Shareholders',
-                fields: Share.formatReviewFields(share),
+                label: 'Token Holders',
+                fields: Holders.formatReviewFields(holders),
               },
               {
                 label: (
@@ -238,11 +242,11 @@ export default {
     const financePeriod = 0 // default
     const openDate = 0 // default
 
-    const { domain, board, share, fundraising } = data
+    const { domain, council, holders, fundraising } = data
 
-    const boardMembers = board.members
-    const boardVotingSettings = extractVotingSettings(board)
-    const shareVotingSettings = extractVotingSettings(share)
+    const councilMembers = council.members
+    const councilVotingSettings = extractVotingSettings(council)
+    const holdersVotingSettings = extractVotingSettings(holders)
     const {
       goal,
       period,
@@ -263,25 +267,27 @@ export default {
 
     return [
       {
-        name: 'Prepare instance',
+        name: 'Prepare organization',
         transaction: createTx('prepareInstance', [
-          board.tokenName,
-          board.tokenSymbol,
-          boardMembers,
-          boardVotingSettings,
+          council.tokenName,
+          council.tokenSymbol,
+          councilMembers,
+          councilVotingSettings,
           financePeriod,
         ]),
       },
       {
-        name: 'Install share apps',
+        name: 'Install Token Holder apps',
+        // Note that we need to keep this usage of "share"
+        // as the template contract only exposes "installShareApps()"
         transaction: createTx('installShareApps', [
-          share.tokenName,
-          share.tokenSymbol,
-          shareVotingSettings,
+          holders.tokenName,
+          holders.tokenSymbol,
+          holdersVotingSettings,
         ]),
       },
       {
-        name: 'Install fundraising apps',
+        name: 'Install Fundraising',
         transaction: createTx('installFundraisingApps', [
           goal,
           period,
@@ -297,7 +303,7 @@ export default {
         ]),
       },
       {
-        name: 'Finalize instance',
+        name: 'Finalize organization',
         transaction: createTx('finalizeInstance', [
           domain,
           virtualSupplies,
