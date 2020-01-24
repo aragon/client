@@ -80,7 +80,8 @@ const loadReviewScreen = () => props => {
           label="Second Tokens"
         />
       ),
-      fields: Tokens.formatReviewFields(secondTokens),
+      fields:
+        selectedTokens > 1 ? Tokens.formatReviewFields(secondTokens) : null,
     },
   ]
 
