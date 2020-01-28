@@ -219,11 +219,11 @@ export async function getMainAccount(web3) {
 }
 
 export async function getLatestBlockTimestamp(web3) {
-  const latestBlockInfo = await web3.eth.getBlock('latest')
-  if (!latestBlockInfo) {
-    return 0 // we should have a retry mechanism
+  const { timestamp } = await web3.eth.getBlock('latest')
+  if (!timestamp) {
+    throw new Error('Could not fetch the latest block timestamp')
   }
-  return latestBlockInfo.timestamp
+  return new Date(timestamp * 1000)
 }
 
 export function getUnknownBalance() {

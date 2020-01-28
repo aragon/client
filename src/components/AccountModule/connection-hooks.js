@@ -1,31 +1,27 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from '@aragon/ui'
 import { web3Providers, network } from '../../environment'
-import { getNetworkByChainId } from '../../network-config'
 import { getWeb3 } from '../../web3-utils'
 import {
-  CONNECTION_STATUS_ERROR,
-  CONNECTION_STATUS_WARNING,
+  STATUS_CONNECTION_ERROR,
+  STATUS_CONNECTION_WARNING,
 } from './connection-statuses'
 import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
   OK_PROVIDER_SYNC_DELAY,
+  normalizeNetworkName,
 } from './utils'
 
 export function useConnectionStatusColor(status) {
   const theme = useTheme()
-  if (status === CONNECTION_STATUS_ERROR) {
+  if (status === STATUS_CONNECTION_ERROR) {
     return theme.negative
   }
-  if (status === CONNECTION_STATUS_WARNING) {
+  if (status === STATUS_CONNECTION_WARNING) {
     return theme.warning
   }
   return theme.positive
-}
-
-export function normalizeNetworkName(chainId) {
-  return getNetworkByChainId(chainId).settings.shortName
 }
 
 export const useNetworkConnectionData = () => {

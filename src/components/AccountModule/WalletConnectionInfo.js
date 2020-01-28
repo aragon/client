@@ -118,8 +118,7 @@ function WalletConnectionInfo({
                 display: flex;
                 align-items: center;
                 justify-self: flex-end;
-                  background: ${theme.surfacePressed};
-                }
+                background: ${theme.surfacePressed};
               `}
             >
               <IdentityBadge

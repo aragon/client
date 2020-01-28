@@ -19,7 +19,7 @@ import {
   useNetworkConnectionData,
 } from './connection-hooks'
 import { getConnectionMessage } from './utils'
-import { CONNECTION_STATUS_ERROR } from './connection-statuses'
+import { STATUS_CONNECTION_ERROR } from './connection-statuses'
 import { useSyncInfo } from './useSyncInfo'
 
 // This is to avoid unnecessarily displaying the Client Connection Module
@@ -122,7 +122,7 @@ function ConnectionDetails({
   const containerRef = useRef()
   const theme = useTheme()
   const connectionColor = useConnectionStatusColor(
-    listening && online ? status : CONNECTION_STATUS_ERROR
+    listening && online ? status : STATUS_CONNECTION_ERROR
   )
   const connectionMessage = getConnectionMessage(
     connectionStatus,
@@ -263,7 +263,7 @@ function MobileConnectionDetails({
   const containerRef = useRef()
   const theme = useTheme()
   const connectionColor = useConnectionStatusColor(
-    listening && online ? status : CONNECTION_STATUS_ERROR
+    listening && online ? status : STATUS_CONNECTION_ERROR
   )
 
   return (

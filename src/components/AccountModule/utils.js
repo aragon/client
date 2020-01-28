@@ -1,7 +1,8 @@
 import {
-  CONNECTION_STATUS_ERROR,
-  CONNECTION_STATUS_WARNING,
+  STATUS_CONNECTION_ERROR,
+  STATUS_CONNECTION_WARNING,
 } from './connection-statuses'
+import { getNetworkByChainId } from '../../network-config'
 
 export const DROPPED_PROVIDER_SYNC_DELAY = 45
 export const MAX_PROVIDER_SYNC_DELAY = 30
@@ -15,9 +16,9 @@ export function getConnectionMessage(
   clientNetworkName
 ) {
   const connectionMessage =
-    connectionStatus === CONNECTION_STATUS_ERROR || !listening || !online
+    connectionStatus === STATUS_CONNECTION_ERROR || !listening || !online
       ? 'No connection'
-      : connectionStatus === CONNECTION_STATUS_WARNING
+      : connectionStatus === STATUS_CONNECTION_WARNING
       ? 'Syncing issues'
       : `Connected to ${clientNetworkName}`
   return connectionMessage
@@ -54,4 +55,8 @@ export function getClientSyncState(
     state: 'Synced:',
     description: `current block ${latestClientBlockNumber}`,
   }
+}
+
+export function normalizeNetworkName(chainId) {
+  return getNetworkByChainId(chainId).settings.shortName
 }

@@ -4,9 +4,9 @@ import { GU, IconCheck, IconCross, Link, textStyle, useTheme } from '@aragon/ui'
 import { getAppPath, getPreferencesSearch } from '../../routing'
 import ClientSyncedInfo from './ClientSyncedInfo'
 import {
-  CONNECTION_STATUS_ERROR,
-  CONNECTION_STATUS_HEALTHY,
-  CONNECTION_STATUS_WARNING,
+  STATUS_CONNECTION_ERROR,
+  STATUS_CONNECTION_HEALTHY,
+  STATUS_CONNECTION_WARNING,
 } from './connection-statuses'
 import {
   useConnectionStatusColor,
@@ -25,11 +25,11 @@ function ClientConnectionInfo({
   const theme = useTheme()
   const { clientNetworkName } = useNetworkConnectionData()
   const connectionStatusColor = useConnectionStatusColor(
-    listening && online ? connectionStatus : CONNECTION_STATUS_ERROR
+    listening && online ? connectionStatus : STATUS_CONNECTION_ERROR
   )
 
   const IconConnectionStatus =
-    connectionStatus === CONNECTION_STATUS_HEALTHY ? IconCheck : IconCross
+    connectionStatus === STATUS_CONNECTION_HEALTHY ? IconCheck : IconCross
   let connectionMessage = getConnectionMessage(
     connectionStatus,
     listening,
@@ -114,7 +114,7 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
 
   let content = null
 
-  if (connectionStatus === CONNECTION_STATUS_WARNING) {
+  if (connectionStatus === STATUS_CONNECTION_WARNING) {
     content = (
       <span>
         The Ethereum node you are connected may not accurately reflect the
@@ -125,7 +125,7 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
     )
   }
 
-  if (connectionStatus === CONNECTION_STATUS_ERROR) {
+  if (connectionStatus === STATUS_CONNECTION_ERROR) {
     content = (
       <span>
         We were unable to connect to the configured Ethereum node. You can

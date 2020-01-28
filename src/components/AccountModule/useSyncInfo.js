@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
-  CONNECTION_STATUS_ERROR,
-  CONNECTION_STATUS_HEALTHY,
-  CONNECTION_STATUS_WARNING,
+  STATUS_CONNECTION_ERROR,
+  STATUS_CONNECTION_HEALTHY,
+  STATUS_CONNECTION_WARNING,
 } from './connection-statuses'
 import { web3Providers } from '../../environment'
 import { pollEvery } from '../../utils'
@@ -15,13 +15,13 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
   const [connectionStatus, setConnectionStatus] = useState(
-    CONNECTION_STATUS_HEALTHY
+    STATUS_CONNECTION_HEALTHY
   )
   const [syncDelay, setSyncDelay] = useState(0)
 
   const handleWebsocketDrop = useCallback(() => {
     setIsListening(false)
-    setConnectionStatus(CONNECTION_STATUS_ERROR)
+    setConnectionStatus(STATUS_CONNECTION_ERROR)
   }, [])
   // listen to web3 connection drop due to inactivity
   useEffect(() => {
@@ -34,7 +34,7 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     const goOnline = () => setIsOnline(true)
     const goOffline = () => {
       setIsOnline(false)
-      setConnectionStatus(CONNECTION_STATUS_ERROR)
+      setConnectionStatus(STATUS_CONNECTION_ERROR)
     }
     window.addEventListener('online', goOnline)
     window.addEventListener('offline', goOffline)
@@ -51,14 +51,14 @@ export function useSyncInfo(wantedWeb3 = 'default') {
       () => ({
         request: () => getLatestBlockTimestamp(selectedWeb3),
         onResult: timestamp => {
-          const blockDiff = new Date() - new Date(timestamp * 1000)
+          const blockDiff = new Date() - timestamp
           const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
           const connectionHealth =
             latestBlockDifference >= 30
-              ? CONNECTION_STATUS_ERROR
+              ? STATUS_CONNECTION_ERROR
               : latestBlockDifference >= 3
-              ? CONNECTION_STATUS_WARNING
-              : CONNECTION_STATUS_HEALTHY
+              ? STATUS_CONNECTION_WARNING
+              : STATUS_CONNECTION_HEALTHY
           setConnectionStatus(connectionHealth)
           setSyncDelay(latestBlockDifference)
         },
