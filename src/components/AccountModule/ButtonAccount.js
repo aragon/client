@@ -109,10 +109,13 @@ const ButtonAccount = React.forwardRef(function ButtonAccount(
   )
 })
 ButtonAccount.propTypes = {
-  connectionColor: PropTypes.string.isRequired,
+  connectionColor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(String),
+  ]).isRequired,
   connectionMessage: PropTypes.string.isRequired,
   hasNetworkMismatch: PropTypes.bool.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   onClick: PropTypes.func.isRequired,
 }
 

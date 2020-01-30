@@ -87,7 +87,7 @@ AccountModulePopover.propTypes = {
   height: PropTypes.number.isRequired,
   onClose: PropTypes.func.isRequired,
   onOpen: PropTypes.func.isRequired,
-  opener: PropTypes.any.isRequired,
+  opener: PropTypes.any,
   screenId: PropTypes.string.isRequired,
   visible: PropTypes.bool.isRequired,
 }
