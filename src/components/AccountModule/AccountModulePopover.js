@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { GU, Popover, springs, textStyle, useTheme } from '@aragon/ui'
 import { Spring, animated } from 'react-spring'
