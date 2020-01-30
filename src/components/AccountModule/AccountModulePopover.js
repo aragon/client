@@ -16,24 +16,14 @@ function AccountModulePopover({
   screenId,
   onOpen,
 }) {
-  const popoverRef = useRef()
   const theme = useTheme()
 
   // TODO (min width)
   // const { width: vw } = useViewport()
   // maxWidth: `${Math.max(vw, 43 * GU)}px`,
 
-  useEffect(() => {
-    // This check also avoids to call onOpen() during the first render
-    if (popoverRef.current && screenId !== 'providers') {
-      popoverRef.current.focus()
-      onOpen()
-    }
-  }, [screenId, onOpen])
-
   return (
     <Popover
-      ref={popoverRef}
       closeOnOpenerFocus
       onClose={onClose}
       opener={opener}

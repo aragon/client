@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { GU, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
@@ -48,29 +48,11 @@ function AccountModule({ locator }) {
   const [animate, setAnimate] = useState(false)
   const [activatingDelayed, setActivatingDelayed] = useState(false)
   const [activationError, setActivationError] = useState(null)
-  const [direction, setDirection] = useState(1)
-  const [screenIndex, setScreenIndex] = useState(0)
 
   const { account, activating } = wallet
 
-  const updateScreen = useCallback(
-    id => {
-      const newScreenIndex = SCREENS.findIndex(screen => screen.id === id)
-      if (newScreenIndex > -1 && newScreenIndex !== screenIndex) {
-        setDirection(screenIndex > newScreenIndex ? -1 : 1)
-        setScreenIndex(newScreenIndex)
-      }
-    },
-    [screenIndex]
-  )
-
-  const screen = SCREENS[screenIndex]
-
   const clearError = useCallback(() => setActivationError(null), [])
-  const close = useCallback(() => {
-    setOpened(false)
-    setActivationError(null)
-  }, [])
+
   const open = useCallback(() => setOpened(true), [])
   const toggle = useCallback(() => setOpened(opened => !opened), [])
 
@@ -130,18 +112,38 @@ function AccountModule({ locator }) {
     }
   }, [activating])
 
-  useEffect(() => {
-    if (activationError) {
-      return updateScreen('error')
-    }
-    if (activatingDelayed) {
-      return updateScreen('connecting')
-    }
-    if (account) {
-      return updateScreen('connected')
-    }
-    return updateScreen('providers')
-  }, [account, activationError, activatingDelayed, updateScreen])
+  const previousScreenIndex = useRef(-1)
+
+  const { screenIndex, direction } = useMemo(() => {
+    const screenId = (() => {
+      if (activationError) return 'error'
+      if (activatingDelayed) return 'connecting'
+      if (account) return 'connected'
+      return 'providers'
+    })()
+
+    const screenIndex = SCREENS.findIndex(screen => screen.id === screenId)
+    const direction = previousScreenIndex.current > screenIndex ? -1 : 1
+
+    previousScreenIndex.current = screenIndex
+
+    return { direction, screenIndex }
+  }, [account, activationError, activatingDelayed])
+
+  const screen = SCREENS[screenIndex]
+  const screenId = screen.id
+
+  const handlePopoverClose = useCallback(
+    reject => {
+      if (screenId === 'connecting' || screenId === 'error') {
+        // reject closing the popover
+        return false
+      }
+      setOpened(false)
+      setActivationError(null)
+    },
+    [screenId]
+  )
 
   return (
     <div
@@ -167,11 +169,11 @@ function AccountModule({ locator }) {
         animateHeight={animate}
         heading={screen.title}
         height={screen.height}
-        onClose={close}
+        onClose={handlePopoverClose}
         onOpen={open}
         opener={buttonRef.current}
-        screenId={screen.id}
-        visible={opened || screen.id === 'connecting' || screen.id === 'error'}
+        screenId={screenId}
+        visible={opened}
       >
         <Transition
           native
