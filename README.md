@@ -13,7 +13,7 @@
 - 📝 Please report any issues and feedback in the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.
 - 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat/channel/dev) channel.
 - 📖 To learn more about contributing to the Aragon client itself, please check the [contributing guide](./CONTRIBUTING.md)
-- 🚢 For an overview of what changed with each release, check the [releases](https://github.com/aragon/aragon/releases) and [changelog](https://github.com/aragon/aragon/blob/master/changelog.md).
+- 🚢 For an overview of what changed with each release, check the [releases](https://github.com/aragon/aragon/releases) and [changelog](https://github.com/aragon/aragon/blob/master/CHANGELOG.md).
 
 ## Quick start
 
@@ -26,7 +26,7 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 
 **Note**: Windows users may need to install the [windows-build-tools](https://www.npmjs.com/package/windows-build-tools) before installing this project's dependencies.
 
-More [configuration options](./CONFIGURATION.md) are available, depending on your needs.
+More [configuration options](docs/CONFIGURATION.md) are available, and depending on your needs, you may find the [frontend development setup guide](docs/FRONTEND_SETUP.md) helpful.
 
 ## Deployments
 
@@ -40,19 +40,19 @@ These should be seen as "official" builds, whose distributions are secured by IP
 
 ### Nightly / Per-PR builds
 
-Automatic [nightly.aragon.org](https://nightly.aragon.org) and [nightly-rinkeby.aragon.org](https://nightly-rinkeby.aragon.org) deployments will occur for each PR and merge to master through [now](https://zeit.co/now). These are useful for quickly testing a new feature, change, or hotfix.
+Automatic [nightly.aragon.org](https://nightly.aragon.org) and [nightly-rinkeby.aragon.org](https://nightly-rinkeby.aragon.org) deployments will occur for each PR and merge to master through [Now](https://zeit.co/now). These are useful for quickly testing a new feature, change, or hotfix.
 
-The official [now app for Github](https://zeit.co/github) is set up to publish nightlies against Rinkeby see [default now configuration](./now.json). Travis is set up to publish nightlies against mainnet (see [mainnet now configuration](./now-mainnet.json)).
+The official [Now app for Github](https://zeit.co/github) is set up to publish nightlies against Rinkeby see [default Now configuration](./now.json). Travis is set up to publish nightlies against mainnet (see [mainnet Now configuration](./now-mainnet.json)).
 
 ## Contributing
 
 #### 👋 Get started contributing with a [good first issue](https://github.com/aragon/aragon/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
-**🎓 You may be interested in the [Aragon client architecture guide](./ARCHITECTURE.md) if you're not familiar with how the project is set up.**
+**🎓 You may be interested in the [Aragon client architecture guide](./docs/ARCHITECTURE.md) if you're not familiar with how the project is set up.**
 
 Don't be shy to contribute even the smallest tweak. 🐲 There are still some dragons to be aware of, but we'll be here to help you get started!
 
-For other details about contributing to Aragon, more details are available in the [contributing guide](./CONTRIBUTING.md).
+For other details about contributing to Aragon, more information is available in the [contributing guide](./CONTRIBUTING.md).
 
 #### Issues
 
