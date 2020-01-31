@@ -64,7 +64,7 @@ Windows users may need to install the [windows-build-tools](https://www.npmjs.co
 
 #### App frontends
 
-For local development, where you may want to use a local version of [aragonUI](https://github.com/aragon/aragon-ui) or connect to a locally running instance of [aragon-apps](https://github.com/aragon/aragon-apps), you can follow [`@bpierre`'s gist](https://gist.github.com/bpierre/22572415b90577aa17e5953fa68980eb).
+For local development, where you may want to use a local version of [aragonUI](https://github.com/aragon/aragon-ui) or connect to a locally running instance of [aragon-apps](https://github.com/aragon/aragon-apps), you can follow the [frontend development setup guide](docs/FRONTEND_SETUP.md).
 
 In the future, we will improve this flow to make it much easier to get started.
 
