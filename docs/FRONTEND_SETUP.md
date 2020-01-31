@@ -1,4 +1,4 @@
-# Contributing to the Aragon frontend
+# Frontend Setup to develop on Aragon
 
 This guide is directed at frontend contributions to the Aragon codebase. It describes a simple workflow to conrtibute to aragonUI, the Aragon client, or the apps. For a more general guide about contributing, see [CONTRIBUTING.md](https://github.com/aragon/aragon/blob/master/CONTRIBUTING.md).
 
