@@ -20,7 +20,7 @@ With exec, you can interact with the apps installed on your DAO if you ever need
 methodName(argument1, argument2...)
 ```
 
-After this is done, you can hit the `enter` key, or click the enter button. This will execute the command, and will open the Menu Panel for signing, or, if you do not have enough permissions to execute the command, display an error. Here's a full example of a command with `exec`:
+After this is done, you can hit the `enter` key, or click the enter button. This will execute the command, and will open the Signer Panel, or, if you do not have enough permissions to execute the command, display an error. Here's a full example of a command with `exec`:
 
 ```
 exec/0x104ad299ed53c9f76e4e653d634fbfb038a98a3d/mint(0x5790dB5E4D9e868BB86F5280926b9838758234DD, 1000000000000000000)
@@ -38,7 +38,7 @@ methodName(type1: arg1, type2, arg2...)
 ```
 
 After this is done, you can hit the enter key or click the enter button. As with exec, this will
-execute the command and open the Menu Panel for you to sign the transaction. Here's a full example
+execute the command and open the Signer Panel for you to sign the transaction. Here's a full example
 of a command with `act`:
 
 ```
