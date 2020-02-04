@@ -174,7 +174,11 @@ export default function ConsoleFeedback({
               `}
               onClick={() => handleClick(app.proxyAddress)}
             >
-              <span>{app.name}</span> (<span title={app.proxyAddress}>{shortenAddress(app.proxyAddress)}</span>)
+              <span>{app.name}</span> (
+              <span title={app.proxyAddress}>
+                {shortenAddress(app.proxyAddress)}
+              </span>
+              )
             </Link>
           ))}
         </div>
