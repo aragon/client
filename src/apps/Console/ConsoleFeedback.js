@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, textStyle, GU, LoadingRing } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import { AppType } from '../../prop-types'
+import { shortenAddress } from '../../web3-utils'
 
 export default function ConsoleFeedback({
   currentParsedCommand,
@@ -114,7 +115,7 @@ export default function ConsoleFeedback({
             ${textStyle('body2')}
           `}
         >
-          Please enter the corresponding parameters & permissions needed for
+          Please enter the corresponding parameters &amp; permissions needed for
           installing the app, ex:
         </p>
         <div
@@ -159,6 +160,8 @@ export default function ConsoleFeedback({
           css={`
             width: 100%;
             margin-top: ${GU}px;
+            overflow: hidden;
+            text-overflow: ellipsis;
           `}
         >
           {apps.map(app => (
@@ -171,7 +174,11 @@ export default function ConsoleFeedback({
               `}
               onClick={() => handleClick(app.proxyAddress)}
             >
-              {`${app.name} (${app.proxyAddress})`}
+              <span>{app.name}</span> (
+              <span title={app.proxyAddress}>
+                {shortenAddress(app.proxyAddress)}
+              </span>
+              )
             </Link>
           ))}
         </div>
@@ -188,7 +195,7 @@ export default function ConsoleFeedback({
             ${textStyle('body2')}
           `}
         >
-          Please enter the corresponding method & parameters needed for
+          Please enter the corresponding method &amp; arguments needed for
           interacting with the app, like so:
         </p>
         <div
@@ -203,7 +210,7 @@ export default function ConsoleFeedback({
               ${textStyle('address1')}
             `}
           >
-            exec/app/
+            exec/appAddress/
             {`methodName(...args)`}
           </p>
         </div>
@@ -243,6 +250,7 @@ export default function ConsoleFeedback({
           `}
         >
           and then pass the parameters required for the agent execute function:
+          the target address, and the human-readable function call.
         </p>
         <div
           css={`
@@ -257,7 +265,7 @@ export default function ConsoleFeedback({
             `}
           >
             act/{'<agentProxyAddress>'}/{'targetAddress'}/
-            {`functionSignature(param: arg)`}
+            {`methodName(type: arg)`}
           </p>
         </div>
       </>
