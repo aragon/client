@@ -36,27 +36,22 @@ exec/0x104ad299ed53c9f76e4e653d634fbfb038a98a3d/mint(0x5790dB5E4D9e868BB86F52809
 
 `act` allows you to execute actions from an installed Aragon Agent app in the client itself, without needing to install [Frame](http://frame.sh/) or [aragonCLI](https://hack.aragon.org/docs/cli-intro.html).
 
-Using the `act` command is easy: select the command, and then select the Agent instance you would
-like to interact with. After this, the command requires two more inputs: the target address (the address of the Voting app you would like to interact with, for example), and the method you would like to call on that target. For these inputs, `act` expects this exact structure:
+Using the `act` command is easy: select the command, and then select the Agent instance you would like to interact with. After this, the command requires two more inputs: the target address (the address of the Voting app you would like to interact with, for example), and the method you would like to call on that target. For these inputs, `act` expects this exact structure:
 
 ```
 methodName(type1: arg1, type2, arg2...)
 ```
-Note that `act` requires you to provide the type of each parameter, as it otherwise won't know how to encode the method call!
-After this is done, you can hit the enter key or click the enter button. As with `exec`, this will
-execute the command and open the Signer Panel for you to sign the transaction.
+Note that `act` requires you to provide the type of each parameter, as it otherwise won't know how to encode the method call! After this is done, you can hit the enter key or click the enter button. As with `exec`, this will execute the command and open the Signer Panel for you to sign the transaction.
 
-Here's a full example
-of a command with `act`:
+Here's a full example of a command with `act`:
 
 ```
 act/0x77df6ca4cc96d16edc7858cfc00f70fdc98bb027/0xe96c9851773ec7adcb6a155c7d4acf19a4ede7ae/vote(uint256: 10, bool: true, bool: false)
 ```
 
-The above command will select the Agent at `0x77df...b027`, interact with the Voting app at
- `0xe96c...e7ae` (installed on a different organization), and execute the method `vote(uint256 voteId, bool supports, bool executesIfDecided)`.
+The above command will select the Agent at `0x77df...b027`, interact with the Voting app at `0xe96c...e7ae` (installed on a different organization), and execute the method `vote(uint256 voteId, bool supports, bool executesIfDecided)`.
  
- Note that as of now, you cannot use `act` to execute actions requiring ETH. If you need this functionality, you can use `exec` and call `execute()` with the encoded calldata.
+Note that as of now, you cannot use `act` to execute actions requiring ETH. If you need this functionality, you can use `exec` and call `execute()` with the encoded calldata.
 
 ## Jump into the code
 
