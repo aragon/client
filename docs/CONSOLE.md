@@ -1,26 +1,32 @@
 # Power-user console
 
-This guide is directed at Power-users of the aragon client that desire to take full advantage of the in-app console added on `0.8.6`. This console lets user executes actions with their aragon agent app throught `act` and execute actions on their organizations with `exec`.
+This guide is directed at power-users of the Aragon client that desire to take full advantage of the in-app console added with the [`0.8.6` release](https://twitter.com/AragonOneTeam/status/1208841798069694464).
+
+The in-app console allows you to access functionality that may be difficult to access or exposed yet in the frontend.
 
 ## How to access it
 
-- **If you do not have the console activated:** Click the "Global Preferences" icon, go to "Help and Feedback", and click the `console` link on the "Embedded console" box. If you wish to permanently pin it to the System apps menu, do it by clicking the slider. If not, as soon as you leave the console, it will dissappear from the System Apps menu and also close the menu itself if it was not open before.
+- **If you do not have the console pinned:** Open the "Settings" selector from the top bar, go to "Help and Feedback", and then click the `console` link on the "Embedded console" section. If you would like to pin the app to the System Apps menu, you may do so by enabling the toggle. If not, as soon as you leave the console, it will disappear from the System Apps menu.
 
-- **If you have the console activated:** Click the "Console" app.
+- **If you have the console activated:** Click the "Console" app in the System Apps menu.
 
 ## Usage
 
-The console defines clickable commands which you can select to autofill the prompt. You can also type the commands yourself, and the console will change state accordingly. You can also use the up/down arrow keys to display the console history. Here is the user guide for each handler:
+The console defines clickable commands which you can select to autofill the prompt. You can also type the commands yourself, and the console will change state accordingly. You can also use the up/down arrow keys to display the console history.
+
+Documentation for each available command's arguments:
 
 ### exec
 
-With exec, you can interact with the apps installed on your DAO if you ever need to do something that you would do from the CLI. When you click the command, or write `exec/` on the console, you will see the list of apps installed, along with their addresses. You can click the one you want to interact with, or write the address manually. After this is done, the console will prompt you to write the smart contract method of the app you want to call (you can see the standard app contracts in this [monorepo](https://github.com/aragon/aragon-apps)), with this **exact** structure:
+`exec` allows you to interact with the apps installed in your organization. When you click the command, or write `exec/` on the console, you will see the list of apps installed, along with their addresses. You can click the one you want to interact with, or write the address manually. The console will then prompt you to write the method you'd like to call on the app's smart contract, with this **exact** structure:
 
 ```
-methodName(argument1, argument2...)
+methodName(argument1, argument2, ...)
 ```
 
-After this is done, you can hit the `enter` key, or click the enter button. This will execute the command, and will open the Signer Panel, or, if you do not have enough permissions to execute the command, display an error. Here's a full example of a command with `exec`:
+After this is done, you can hit the `enter` key, or click the enter button. This will execute the command, and will open the Signer Panel, or, if you do not have enough permissions to execute the command, display an error.
+
+A full example of a command with `exec`, executing a `mint()` on the Tokens app:
 
 ```
 exec/0x104ad299ed53c9f76e4e653d634fbfb038a98a3d/mint(0x5790dB5E4D9e868BB86F5280926b9838758234DD, 1000000000000000000)
@@ -28,25 +34,29 @@ exec/0x104ad299ed53c9f76e4e653d634fbfb038a98a3d/mint(0x5790dB5E4D9e868BB86F52809
 
 ### act
 
-Act allows you to use your aragon agent from the client itself, without needing to setup your local environment for the aragonCLI. This is very powerful, as you can now execute actions on your agent's behalf without leaving the client itself.
+`act` allows you to execute actions from an installed Aragon Agent app in the client itself, without needing to install [Frame](http://frame.sh/) or [aragonCLI](https://hack.aragon.org/docs/cli-intro.html).
 
-Using the `act` command is easy: select the command, and then select the agent instance you would
-like to use. After this, the command needs two more things: the target address (the address of the voting app you would like to interact with, for example), and the method name you would like to call with this exact structure:
+Using the `act` command is easy: select the command, and then select the Agent instance you would
+like to interact with. After this, the command requires two more inputs: the target address (the address of the Voting app you would like to interact with, for example), and the method you would like to call on that target. For these inputs, `act` expects this exact structure:
 
 ```
 methodName(type1: arg1, type2, arg2...)
 ```
+Note that `act` requires you to provide the type of each parameter, as it otherwise won't know how to encode the method call!
+After this is done, you can hit the enter key or click the enter button. As with `exec`, this will
+execute the command and open the Signer Panel for you to sign the transaction.
 
-After this is done, you can hit the enter key or click the enter button. As with exec, this will
-execute the command and open the Signer Panel for you to sign the transaction. Here's a full example
+Here's a full example
 of a command with `act`:
 
 ```
 act/0x77df6ca4cc96d16edc7858cfc00f70fdc98bb027/0xe96c9851773ec7adcb6a155c7d4acf19a4ede7ae/vote(uint256: 10, bool: true, bool: false)
 ```
 
-This command will select the agent with address 0x77df6a..., interact with a voting app with address
-of 0xe96c9..., and execute the method vote, on vote number 10, supporting the vote with `true`. Note that as of now, you cannot send ETH through the console with the agent.
+The above command will select the Agent at `0x77df...b027`, interact with the Voting app at
+ `0xe96c...e7ae` (installed on a different organization), and execute the method `vote(uint256 voteId, bool supports, bool executesIfDecided)`.
+ 
+ Note that as of now, you cannot use `act` to execute actions requiring ETH. If you need this functionality, you can use `exec` and call `execute()` with the encoded calldata.
 
 ## Jump into the code
 
