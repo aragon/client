@@ -25,7 +25,7 @@ function completeDomain(domain) {
 }
 
 export default {
-  id: 'dandelion-org-template.open.aragonpm.eth',
+  id: 'dandelion-org-template.aragonpm.eth',
   name: 'Dandelion',
   new: true,
   header,
@@ -37,17 +37,17 @@ export default {
   //   'https://help.aragon.org/article/32-create-a-new-reputation-organization',
   caseStudyUrl: 'aragon.org/case-study/hivecommons',
   sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/templates/1hive',
-  registry: 'open.aragonpm.eth',
+  registry: 'aragonpm.eth',
   apps: [
     { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
     { appName: 'finance.aragonpm.eth', label: 'Finance' },
     {
-      appName: 'dandelion-voting.open.aragonpm.eth',
+      appName: 'dandelion-voting.aragonpm.eth',
       label: 'Voting',
     },
-    { appName: 'time-lock.open.aragonpm.eth', label: 'Time Lock' },
-    { appName: 'redemptions.open.aragonpm.eth', label: 'Redemptions' },
-    { appName: 'token-request.open.aragonpm.eth', label: 'Token Request' },
+    { appName: 'time-lock.aragonpm.eth', label: 'Time Lock' },
+    { appName: 'redemptions.aragonpm.eth', label: 'Redemptions' },
+    { appName: 'token-request.aragonpm.eth', label: 'Token Request' },
   ],
   optionalApps: [{ appName: 'agent.aragonpm.eth', label: 'Agent' }],
   screens: [
@@ -86,7 +86,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="dandelion-voting.open.aragonpm.eth"
+                    appName="dandelion-voting.aragonpm.eth"
                     label="Voting"
                   />
                 ),
@@ -95,7 +95,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="token-manager.open.aragonpm.eth"
+                    appName="token-manager.aragonpm.eth"
                     label="Tokens"
                   />
                 ),
@@ -104,7 +104,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="time-lock.open.aragonpm.eth"
+                    appName="time-lock.aragonpm.eth"
                     label="Time lock"
                   />
                 ),
@@ -113,7 +113,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="redemptions.open.aragonpm.eth"
+                    appName="redemptions.aragonpm.eth"
                     label="Redemptions"
                   />
                 ),
@@ -122,7 +122,7 @@ export default {
               {
                 label: (
                   <KnownAppBadge
-                    appName="token-request.open.aragonpm.eth"
+                    appName="token-request.aragonpm.eth"
                     label="Token Request"
                   />
                 ),
