@@ -157,7 +157,7 @@ function LockScreen({
               `}
             >
               <KnownAppBadge
-                appName="time-lock.open.aragonpm.eth"
+                appName="time-lock.aragonpm.eth"
                 label={appLabel}
               />
             </span>
