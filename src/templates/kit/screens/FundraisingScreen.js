@@ -714,6 +714,17 @@ function FundraisingScreen({
                   />
                 )}
               </InlineField>
+              <InlineField label={<SlippageLabel slippageToken="ANT" />}>
+                {({ id }) => (
+                  <ConfigInput
+                    id={id}
+                    label="%"
+                    onChange={bindUpdate('slippageAnt')}
+                    value={fields.slippageAnt}
+                    width={INPUT_MEDIUM}
+                  />
+                )}
+              </InlineField>
             </div>
           </Section>
         </div>
@@ -846,7 +857,7 @@ function SlippageLabel({ slippageToken }) {
   return (
     <React.Fragment>
       {slippageToken} slippage %
-      <Help hint="What’s the DAI slippage %?">
+      <Help hint={`What’s the ${slippageToken} slippage %?`}>
         <p>
           <strong>{slippageToken} slippage %</strong> defines the maximum price
           slippage in {slippageToken} that may occur on orders during any given
