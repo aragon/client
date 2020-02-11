@@ -33,9 +33,7 @@ export default {
   description: `
   Facilitate collaboration by providing an organization structure that makes it easy for contributors to simply part ways when disagreements occur.
   `,
-  // userGuideUrl:
-  //   'https://help.aragon.org/article/32-create-a-new-reputation-organization',
-  caseStudyUrl: 'aragon.org/case-study/hivecommons',
+  userGuideUrl: 'http://dandelion.1hive.org',
   sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/templates/1hive',
   registry: 'aragonpm.eth',
   apps: [
