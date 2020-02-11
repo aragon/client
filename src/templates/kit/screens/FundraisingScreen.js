@@ -856,8 +856,8 @@ function ConfigInput({
 function SlippageLabel({ slippageToken }) {
   return (
     <React.Fragment>
-      DAI slippage %
-      <Help hint="What’s the DAI slippage %?">
+      {slippageToken} slippage %
+      <Help hint={`What’s the ${slippageToken} slippage %?`}>
         <p>
           <strong>{slippageToken} slippage %</strong> defines the maximum price
           slippage in {slippageToken} that may occur on orders during any given
