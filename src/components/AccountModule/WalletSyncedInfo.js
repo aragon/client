@@ -110,7 +110,7 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   if (connectionStatus === STATUS_NETWORK_SYNC_ISSUES) {
     content = (
       <span>
-        Your wallet may not accurately reflect the current state of Ethereum's
+        Your wallet may not accurately reflect the current state of Ethereum's{' '}
         {network.name}. Please contact your wallet for support if this issue
         persists.
       </span>
