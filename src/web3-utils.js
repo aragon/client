@@ -219,7 +219,7 @@ export async function getMainAccount(web3) {
 }
 
 export async function getLatestBlockTimestamp(web3) {
-  const { timestamp } = await web3.eth.getBlock('latest') || {}
+  const { timestamp } = (await web3.eth.getBlock('latest')) || {}
   if (!timestamp) {
     throw new Error('Could not fetch the latest block timestamp')
   }
