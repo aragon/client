@@ -33,7 +33,7 @@ function useFieldsLayout() {
 
 function validationError(duration, tokenAddress, lockAmount) {
   if (!tokenAddress || !isAddress(tokenAddress)) {
-    return 'You need at least one valid address.'
+    return 'You need to select at least one valid token to be locked.'
   }
   if (!lockAmount > 0) {
     return 'You need to set a positive lock amount'
