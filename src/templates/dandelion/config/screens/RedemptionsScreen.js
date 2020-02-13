@@ -26,7 +26,7 @@ function validationError(redeemableTokens) {
   )
 
   if (notValidAddress) {
-    return 'One or more redeemable tokens are not valid addresses.'
+    return 'One or more selected tokens are not valid addresses.'
   }
 
   return null
