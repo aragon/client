@@ -189,7 +189,7 @@ function RedemptionsScreen({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        These settings will determine which assets held within an organization’s
+        These settings will determine which ERC20 assets held by an organization
         Vault are eligible for redemption.
       </Info>
 
