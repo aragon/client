@@ -156,7 +156,7 @@ function RedemptionsScreen({
               <Help hint="What are redeemable tokens?">
                 <strong>Redeemable tokens</strong> are ERC20 tokens that can be
                 redeemed in exchange for the organization's tokens. They represent
-                assets within the Organization's vault.
+                assets held by the organization.
               </Help>
             </React.Fragment>
           }
