@@ -31,7 +31,7 @@ export default {
   header,
   icon,
   description: `
-  Facilitate collaboration by providing an organization structure that makes it easy for contributors to simply part ways when disagreements occur.
+  Facilitate collaboration with an organization that makes it easy for contributors to simply part ways when disagreements occur.
   `,
   userGuideUrl: 'http://dandelion.1hive.org',
   sourceCodeUrl: 'https://github.com/1hive/dandelion-org',
