@@ -33,7 +33,7 @@ export default {
   description: `
   Facilitate collaboration with an organization that makes it easy for contributors to simply part ways when disagreements occur.
   `,
-  userGuideUrl: 'http://dandelion.1hive.org',
+  userGuideUrl: 'https://1hive.org/dandelion',
   sourceCodeUrl: 'https://github.com/1hive/dandelion-org',
   registry: 'aragonpm.eth',
   apps: [
