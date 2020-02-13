@@ -328,7 +328,7 @@ function formatReviewFields(screenData) {
         lockToken.data.address
       )}`,
     ],
-    ['Lock amount', `${lockAmount} tokens`],
+    ['Lock amount', `${lockAmount === 1 ? 'token : 'tokens' }`],
     ['Lock duration', formatDuration(lockDuration)],
     ['Spam penalty', `${spamPenalty} %`],
   ]
