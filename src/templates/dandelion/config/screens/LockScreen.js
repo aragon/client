@@ -195,7 +195,7 @@ function LockScreen({
             <React.Fragment>
               Lock amount
               <Help hint="What’s the lock amount?">
-                <strong>Lock amount</strong> is the amount of tokens to lock.
+                <strong>Lock amount</strong> is the amount of tokens a user will need to lock in order to perform an action that has been protected by the Time Lock app.
               </Help>
             </React.Fragment>
           }
