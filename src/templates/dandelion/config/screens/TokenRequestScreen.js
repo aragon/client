@@ -189,7 +189,7 @@ function TokenRequestScreen({
         `}
       >
         These settings will determine which assets will be accepted as payment
-        in exchange for Organization's tokens.
+        in exchange for the organization's tokens.
       </Info>
 
       <Navigation
