@@ -26,7 +26,7 @@ function validationError(acceptedTokens) {
   )
 
   if (notValidAddress) {
-    return 'One or more accepted tokens are not valid addresses.'
+    return 'One or more selected tokens are not valid addresses.'
   }
 
   return null
