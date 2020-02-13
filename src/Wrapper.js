@@ -246,7 +246,6 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
     const { appLoading, orgUpgradePanelOpened, upgradeModalOpened } = this.state
-
     const currentApp = apps.find(app =>
       addressesEqual(app.proxyAddress, locator.instanceId)
     )
@@ -277,6 +276,7 @@ class Wrapper extends React.PureComponent {
           connected={connected}
           daoAddress={daoAddress}
           daoStatus={daoStatus}
+          locator={locator}
           onOpenApp={this.openApp}
           onOpenPreferences={openPreferences}
         >

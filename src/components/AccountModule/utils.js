@@ -1,29 +1,62 @@
-import { useState, useEffect } from 'react'
-
-import { web3Providers, network } from '../../environment'
+import {
+  STATUS_CONNECTION_ERROR,
+  STATUS_CONNECTION_WARNING,
+} from './connection-statuses'
 import { getNetworkByChainId } from '../../network-config'
-import { getWeb3 } from '../../web3-utils'
 
-function normalizeNetworkName(chainId) {
-  return getNetworkByChainId(chainId).settings.shortName
+export const DROPPED_PROVIDER_SYNC_DELAY = 45
+export const MAX_PROVIDER_SYNC_DELAY = 30
+export const MILD_PROVIDER_SYNC_DELAY = 5
+export const OK_PROVIDER_SYNC_DELAY = 3
+
+export function getConnectionMessage(
+  connectionStatus,
+  listening,
+  online,
+  clientNetworkName
+) {
+  const connectionMessage =
+    connectionStatus === STATUS_CONNECTION_ERROR || !listening || !online
+      ? 'No connection'
+      : connectionStatus === STATUS_CONNECTION_WARNING
+      ? 'Syncing issues'
+      : `Connected to ${clientNetworkName}`
+  return connectionMessage
 }
 
-export const useNetworkConnectionData = () => {
-  const [walletChainId, setWalletChainId] = useState(-1)
-  const clientChainId = network.chainId
+export function getClientSyncState(
+  listening,
+  online,
+  syncDelay,
+  latestClientBlockNumber
+) {
+  if (!listening || !online || syncDelay >= DROPPED_PROVIDER_SYNC_DELAY) {
+    return {
+      state: '',
+      description: '',
+    }
+  }
 
-  useEffect(() => {
-    const walletWeb3 = getWeb3(web3Providers.wallet)
-    walletWeb3.eth.getChainId((err, chainId) => {
-      if (!err) {
-        setWalletChainId(chainId)
-      }
-    })
-  }, [])
+  if (syncDelay >= MAX_PROVIDER_SYNC_DELAY) {
+    return {
+      state: 'Last known state:',
+      description: `${syncDelay} min behind`,
+    }
+  }
+
+  if (syncDelay >= OK_PROVIDER_SYNC_DELAY) {
+    return {
+      state: 'Out of sync:',
+      description: `${syncDelay} min behind`,
+    }
+  }
 
   return {
-    walletNetworkName: normalizeNetworkName(walletChainId),
-    clientNetworkName: normalizeNetworkName(clientChainId),
-    hasNetworkMismatch: walletChainId !== -1 && walletChainId !== clientChainId,
+    state: 'Synced:',
+    description: `current block ${latestClientBlockNumber}`,
   }
+}
+
+export function normalizeNetworkName(chainId) {
+  return getNetworkByChainId(chainId).settings.shortName
 }

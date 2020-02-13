@@ -15,6 +15,7 @@ import {
 } from './local-settings'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
+import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
 
@@ -56,11 +57,13 @@ function Providers() {
       <HelpScoutProvider>
         <ConsoleVisibleProvider>
           <GlobalErrorHandler>
-            <WalletBlockNumberProvider>
-              <WalletProvider>
-                <App />
-              </WalletProvider>
-            </WalletBlockNumberProvider>
+            <ClientBlockNumberProvider>
+              <WalletBlockNumberProvider>
+                <WalletProvider>
+                  <App />
+                </WalletProvider>
+              </WalletBlockNumberProvider>
+            </ClientBlockNumberProvider>
           </GlobalErrorHandler>
         </ConsoleVisibleProvider>
       </HelpScoutProvider>

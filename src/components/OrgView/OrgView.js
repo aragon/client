@@ -21,9 +21,11 @@ import { iOS, isSafari } from '../../utils'
 import { useClientTheme } from '../../client-theme'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
-import AccountModule from '../AccountModule/AccountModule'
+import ClientConnectionModule from '../AccountModule/ClientConnectionModule'
+import WalletConnectionModule from '../AccountModule/WalletConnectionModule'
 import ActivityButton from './ActivityButton/ActivityButton'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
+import { useWallet } from '../../wallet'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -38,13 +40,14 @@ function OrgView({
   children,
   daoAddress,
   daoStatus,
+  locator,
   onOpenApp,
   onOpenPreferences,
 }) {
   const theme = useTheme()
   const { appearance } = useClientTheme()
   const { width, below } = useViewport()
-
+  const { isConnected } = useWallet()
   const autoClosingPanel = below('medium')
   const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
 
@@ -153,7 +156,8 @@ function OrgView({
             />
           )}
           <div css="display: flex">
-            <AccountModule />
+            <WalletConnectionModule locator={locator} />
+            {!isConnected && <ClientConnectionModule locator={locator} />}
             <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ActivityButton apps={apps} />
           </div>
@@ -251,6 +255,7 @@ OrgView.propTypes = {
   children: PropTypes.node,
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,
+  locator: PropTypes.object,
   onOpenApp: PropTypes.func.isRequired,
   onOpenPreferences: PropTypes.func.isRequired,
 }
