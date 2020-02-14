@@ -216,9 +216,12 @@ function LockScreen({
               <React.Fragment>
                 Spam penalty %
                 <Help hint="What’s the spam penalty?">
-                  For each additional active lock a user creates, the required
-                  token amount and duration of the next lock will be increased
-                  by this percentage of the base amount and duration.
+                  <strong>Spam penalty</strong> is a percentage representing the
+                  rate token amounts and durations grow as users create
+                  overlapping locks. For each additional overlapping lock, the
+                  required token amount and duration of the next lock will be
+                  increased by this percentage multiplied by the base token
+                  amount and duration.
                 </Help>
               </React.Fragment>
             }

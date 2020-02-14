@@ -1,5 +1,6 @@
 import { network } from '../../../../environment'
 
+// Estimates based on block propagation rates in Feb. 2020
 const NETWORK_TIMES = new Map([
   ['main', 13],
   ['kovan', 4],
