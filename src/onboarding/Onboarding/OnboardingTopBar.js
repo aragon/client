@@ -2,9 +2,8 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import { useWallet } from '../../wallet'
-import ClientConnectionModule from '../../components/AccountModule/ClientConnectionModule'
-import WalletConnectionModule from '../../components/AccountModule/WalletConnectionModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
+import AccountModule from '../../components/AccountModule/AccountModule'
 
 function OnboardingTopBar({ locator, status, solid }) {
   const theme = useTheme()
@@ -71,8 +70,7 @@ function OnboardingTopBar({ locator, status, solid }) {
               height: 100%;
             `}
           >
-            <WalletConnectionModule locator={locator} />
-            {!account && <ClientConnectionModule locator={locator} />}
+            <AccountModule locator={locator} />
           </div>
           <Button
             display="icon"
