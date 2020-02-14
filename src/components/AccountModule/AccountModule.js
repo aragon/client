@@ -6,15 +6,15 @@ import { useWallet } from '../../wallet'
 import { useLocalIdentity } from '../../hooks'
 import { useSyncInfo } from './useSyncInfo'
 import { useNetworkConnectionData, useWalletConnectionDetails } from './utils'
+import { providers } from '../../environment'
+import AccountModulePopover from './AccountModulePopover'
+import ButtonConnect from './ButtonConnect'
+import ButtonAccount from './ButtonAccount'
 
 import ProvidersScreen from './AccountModuleProvidersScreen'
 import ConnectingScreen from './AccountModuleConnectingScreen'
 import ConnectedScreen from './AccountModuleConnectedScreen'
 import ErrorScreen from './AccountModuleErrorScreen'
-
-import AccountModulePopover from './AccountModulePopover'
-import ButtonConnect from './ButtonConnect'
-import ButtonAccount from './ButtonAccount'
 
 const AnimatedDiv = animated.div
 
@@ -22,7 +22,10 @@ const SCREENS = [
   {
     id: 'providers',
     title: 'Use account from',
-    height: 38 * GU,
+    height:
+      4 * GU + // header
+      (12 + 1.5) * GU * Math.ceil(providers.length / 2) + // buttons
+      7 * GU, // footer
   },
   {
     id: 'connecting',
