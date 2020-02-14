@@ -8,13 +8,11 @@ import {
   KnownAppBadge,
 } from '../../../kit'
 import MultiTokenSelector from '../../components/TokenSelector/MultiTokenSelector'
-import { getDefaultRedeemableTokens } from '../helpers/tokens'
+import {
+  getDefaultRedeemableTokens,
+  ETHER_TOKEN_FAKE_ADDRESS,
+} from '../helpers/tokens'
 import { shortenAddress } from '../../../../web3-utils'
-
-function useFieldsLayout() {
-  // In its own hook to be adapted for smaller views
-  return `margin-bottom: ${2 * GU}px`
-}
 
 function validationError(redeemableTokens) {
   if (redeemableTokens.length === 0) {
@@ -32,6 +30,7 @@ function validationError(redeemableTokens) {
   return null
 }
 
+const DEFAULT_REDEEMABLE_TOKENS = getDefaultRedeemableTokens()
 const EMPTY_TOKEN = { token: { address: '' }, selectedIndex: -1 }
 
 function RedemptionsScreen({
@@ -48,11 +47,8 @@ function RedemptionsScreen({
       : [EMPTY_TOKEN]
   )
 
-  const [formError, setFormError] = useState()
+  const [formError, setFormError] = useState(null)
 
-  const DEFAULT_REDEEMABLE_TOKENS = getDefaultRedeemableTokens()
-
-  const fieldsLayout = useFieldsLayout()
   const prevNextRef = useRef()
 
   const handleTokenAdded = useCallback(() => {
@@ -115,6 +111,8 @@ function RedemptionsScreen({
     [redeemableTokens, next, dataKey, data]
   )
 
+  const disableNext = !redeemableTokens[0].token.address
+
   return (
     <form>
       <Header
@@ -146,7 +144,7 @@ function RedemptionsScreen({
 
       <div
         css={`
-          ${fieldsLayout};
+          margin-bottom: ${2 * GU}px;
         `}
       >
         <Field
@@ -196,7 +194,7 @@ function RedemptionsScreen({
       <Navigation
         ref={prevNextRef}
         backEnabled
-        nextEnabled
+        nextEnabled={!disableNext}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}
@@ -232,7 +230,9 @@ function formatReviewFields(screenData) {
             `}
           >
             <span>{token.symbol || 'Custom token'}</span>
-            <span> {shortenAddress(token.address)}</span>
+            {!addressesEqual(token.address, ETHER_TOKEN_FAKE_ADDRESS) && (
+              <span> {shortenAddress(token.address)}</span>
+            )}
           </div>
         ))}
       </div>,

@@ -1,15 +1,15 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { DropDown, Field, TextInput, GU } from '@aragon/ui'
 
 import TokenSelectorInstance from './TokenSelectorInstance'
 
 /* eslint-disable react/prop-types */
 function TokenSelector({
-  onChange,
-  tokens,
   componentIndex,
+  onChange,
   selectedIndex,
   showCustomMode,
+  tokens,
   value,
 }) {
   const [customToken, setCustomToken] = useState({
@@ -58,22 +58,20 @@ function TokenSelector({
     [componentIndex, onChange]
   )
 
-  const getItems = () => {
-    return ['Other…', ...getTokenItems()]
-  }
-
-  const getTokenItems = () => {
-    return tokens.map(({ address, name, symbol, verified }) => (
-      <TokenSelectorInstance
-        address={address}
-        name={name}
-        showIcon={verified}
-        symbol={symbol}
-      />
-    ))
-  }
-
-  const items = getItems()
+  const items = useMemo(
+    () => [
+      'Other',
+      ...tokens.map(({ address, name, symbol, verified }) => (
+        <TokenSelectorInstance
+          address={address}
+          name={name}
+          showIcon={verified}
+          symbol={symbol}
+        />
+      )),
+    ],
+    [tokens]
+  )
 
   return (
     <div
@@ -93,7 +91,9 @@ function TokenSelector({
         required
         css={`
           margin-bottom: ${showCustomHorizontal ? '0' : `${1.5 * GU}px`};
-          margin-right: ${componentIndex !== 0 ? `${1 * GU}px` : '0'};
+          margin-right: ${showCustomToken || componentIndex !== 0
+            ? `${1 * GU}px`
+            : '0'};
           min-width: 150px;
         `}
       />
@@ -104,7 +104,7 @@ function TokenSelector({
           css={`
             margin: 0;
             width: 100%;
-            margin-right: ${1 * GU}px;
+            margin-right: ${componentIndex !== 0 ? `${1 * GU}px` : '0'};
           `}
         >
           <TextInput

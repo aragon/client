@@ -8,15 +8,15 @@ import {
   TokensScreen,
 } from '../kit'
 import {
+  DandelionVotingScreen,
   LockScreen,
-  VotingScreen,
   RedemptionsScreen,
   TokenRequestScreen,
 } from './config'
 
+import getBlockTime from './config/helpers/getBlockTime'
 import header from './header.svg'
 import icon from './icon.svg'
-import getBlockTime from './config/helpers/getBlockTime'
 
 const onePercent = new BN(10).pow(new BN(16))
 
@@ -53,7 +53,10 @@ export default {
       data => completeDomain(data.domain) || 'Claim domain',
       props => <ClaimDomainScreen screenProps={props} />,
     ],
-    ['Configure template', props => <VotingScreen screenProps={props} />],
+    [
+      'Configure template',
+      props => <DandelionVotingScreen screenProps={props} />,
+    ],
     ['Configure template', props => <TokensScreen screenProps={props} />],
     ['Configure template', props => <LockScreen screenProps={props} />],
     ['Configure template', props => <RedemptionsScreen screenProps={props} />],
@@ -88,7 +91,7 @@ export default {
                     label="Voting"
                   />
                 ),
-                fields: VotingScreen.formatReviewFields(voting),
+                fields: DandelionVotingScreen.formatReviewFields(voting),
               },
               {
                 label: (

@@ -8,29 +8,18 @@ import {
   ScreenPropsType,
   Duration,
 } from '../../../kit'
-
-const MINUTE_IN_SECONDS = 60
-const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
-const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
+import {
+  formatDuration,
+  DAY_IN_SECONDS,
+  HOUR_IN_SECONDS,
+  MINUTE_IN_SECONDS,
+} from '../../../kit/kit-utils'
 
 const DEFAULT_SUPPORT = 50
 const DEFAULT_QUORUM = 1
 const DEFAULT_DURATION = DAY_IN_SECONDS
 const DEFAULT_BUFFER = HOUR_IN_SECONDS
 const DEFAULT_DELAY = DAY_IN_SECONDS
-
-const DURATION_LABEL = 'Vote duration'
-const DURATION_HELP_TEXT = `Vote Duration is the length of time that the vote
-will be open for participation. For example, if the Vote Duration is
-set to 24 hours, then tokenholders have 24 hours to participate in
-the vote.`
-
-const BUFFER_LABEL = 'Vote buffer'
-const BUFFER_HELP_TEXT = `Votes are processed in sequence with the start time of each proposal seperated by a proposal buffer`
-
-const DELAY_LABEL = 'Vote delay'
-const DELAY_HELP_TEXT =
-  'Vote Delay is the delay period after a vote is approved but before it can be executed'
 
 function validationError(duration) {
   if (duration < 1 * MINUTE_IN_SECONDS) {
@@ -66,13 +55,13 @@ function reduceFields(fields, [field, value]) {
   return fields
 }
 
-function VotingScreen({
+function DandelionVotingScreen({
   dataKey,
   screenProps: { back, data, next, screenIndex, screens },
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
-  const [formError, setFormError] = useState()
+  const [formError, setFormError] = useState(null)
 
   const [
     { support, quorum, duration, buffer, delay },
@@ -187,11 +176,10 @@ function VotingScreen({
           <React.Fragment>
             Support %
             <Help hint="What’s the support?">
-              <strong>Support</strong> is the percentage of votes on a proposal
-              that the total support must be greater than for the proposal to be
-              approved. For example, if “Support” is set to 51%, then more than
-              51% of the votes on a proposal must vote “Yes” for the proposal to
-              pass.
+              <strong>Support</strong> is the relative percentage of tokens that
+              are required to vote “Yes” for a proposal to be approved. For
+              example, if “Support” is set to 51%, then more than 51% of the
+              tokens used to vote on a proposal must be “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -206,11 +194,10 @@ function VotingScreen({
             Minimum approval %
             <Help hint="What’s the minimum approval?">
               <strong>Minimum Approval</strong> is the percentage of the total
-              token supply that support for a proposal must be greater than for
-              the proposal to be considered valid. For example, if the “Minimum
-              Approval” is set to 20%, then more than 20% of the outstanding
-              token supply must vote to approve a proposal for the vote to be
-              considered valid.
+              token supply that is required to vote “Yes” on a proposal before
+              it can be approved. For example, if the “Minimum Approval” is set
+              to 20%, then more than 20% of the outstanding token supply must
+              vote “Yes” on a proposal for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -223,8 +210,13 @@ function VotingScreen({
         onUpdate={handleDurationChange}
         label={
           <React.Fragment>
-            {DURATION_LABEL}
-            <Help hint="What’s the vote duration?">{DURATION_HELP_TEXT}</Help>
+            Vote duration
+            <Help hint="What’s the vote duration?">
+              <strong>Vote Duration</strong> is the length of time that the vote
+              will be open for participation. For example, if the Vote Duration
+              is set to 24 hours, then tokenholders have 24 hours to participate
+              in the vote.`
+            </Help>
           </React.Fragment>
         }
       />
@@ -233,8 +225,11 @@ function VotingScreen({
         onUpdate={handleBufferChange}
         label={
           <React.Fragment>
-            {BUFFER_LABEL}
-            <Help hint="What’s the vote buffer?">{BUFFER_HELP_TEXT}</Help>
+            Vote buffer
+            <Help hint="What’s the vote buffer?">
+              Votes are processed in sequence with the start time of each
+              proposal seperated by a proposal buffer
+            </Help>
           </React.Fragment>
         }
       />
@@ -243,8 +238,11 @@ function VotingScreen({
         onUpdate={handleDelayChange}
         label={
           <React.Fragment>
-            {DELAY_LABEL}
-            <Help hint="What’s the vote delay?">{DELAY_HELP_TEXT}</Help>
+            Vote delay
+            <Help hint="What’s the vote delay?">
+              <strong>Vote Delay</strong> is the delay period after a vote is
+              approved but before it can be executed
+            </Help>
           </React.Fragment>
         }
       />
@@ -282,44 +280,15 @@ function VotingScreen({
   )
 }
 
-VotingScreen.propTypes = {
+DandelionVotingScreen.propTypes = {
   dataKey: PropTypes.string,
   screenProps: ScreenPropsType.isRequired,
 }
 
-VotingScreen.defaultProps = {
+DandelionVotingScreen.defaultProps = {
   appLabel: 'Voting',
   dataKey: 'voting',
   title: 'Configure template',
-}
-
-function formatDuration(duration) {
-  const units = [DAY_IN_SECONDS, HOUR_IN_SECONDS, MINUTE_IN_SECONDS]
-
-  // Convert in independent unit values
-  const [days, hours, minutes] = units.reduce(
-    ([unitValues, duration], unitInSeconds) => [
-      [...unitValues, Math.floor(duration / unitInSeconds)],
-      duration % unitInSeconds,
-    ],
-    [[], duration]
-  )[0]
-
-  // Format
-  return [
-    [days, 'day', 'days'],
-    [hours, 'hour', 'hours'],
-    [minutes, 'minute', 'minutes'],
-  ]
-    .filter(([value]) => value > 0)
-    .reduce(
-      (str, [value, unitSingular, unitPlural], index, values) =>
-        str +
-        (index > 0 && index < values.length - 1 ? ', ' : '') +
-        (values.length > 1 && index === values.length - 1 ? ' and ' : '') +
-        `${value} ${value === 1 ? unitSingular : unitPlural}`,
-      ''
-    )
 }
 
 function formatReviewFields(screenData) {
@@ -332,5 +301,5 @@ function formatReviewFields(screenData) {
   ]
 }
 
-VotingScreen.formatReviewFields = formatReviewFields
-export default VotingScreen
+DandelionVotingScreen.formatReviewFields = formatReviewFields
+export default DandelionVotingScreen

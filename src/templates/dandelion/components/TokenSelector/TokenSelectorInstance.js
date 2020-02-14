@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { addressesEqual, GU } from '@aragon/ui'
+import { addressesEqual, GU, tokenIconUrl } from '@aragon/ui'
 import { shortenAddress } from '../../../../web3-utils'
 import { ETHER_TOKEN_FAKE_ADDRESS } from '../../config/helpers/tokens'
 
@@ -19,7 +19,7 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
       `}
     >
       {showIcon ? (
-        <Icon src={`https://chasing-coins.com/coin/logo/${symbol}`} />
+        <Icon src={tokenIconUrl(address)} />
       ) : (
         <div
           css={`
@@ -36,20 +36,30 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
           {symbol}
         </span>
       )}
-      {name && (
-        <span
-          css={`
-            max-width: 110px;
-            margin-right: ${1 * GU}px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          `}
-        >
-          ({name})
-        </span>
-      )}
-      {!addressesEqual(address, ETHER_TOKEN_FAKE_ADDRESS) &&
-        shortenAddress(address)}
+      <div>
+        (
+        {name && (
+          <span
+            css={`
+              max-width: 110px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            `}
+          >
+            {name}
+          </span>
+        )}
+        {!addressesEqual(address, ETHER_TOKEN_FAKE_ADDRESS) && (
+          <span
+            css={`
+              margin-left: ${1 * GU}px;
+            `}
+          >
+            {shortenAddress(address)}
+          </span>
+        )}
+        )
+      </div>
     </div>
   )
 })
@@ -58,4 +68,4 @@ const Icon = styled.img.attrs({ alt: '', width: '16', height: '16' })`
   margin-right: ${1 * GU}px;
 `
 
-export default React.memo(TokenSelectorInstance)
+export default TokenSelectorInstance

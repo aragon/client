@@ -8,13 +8,11 @@ import {
   KnownAppBadge,
 } from '../../../kit'
 import MultiTokenSelector from '../../components/TokenSelector/MultiTokenSelector'
-import { getDefaultAcceptedTokens } from '../helpers/tokens'
+import {
+  getDefaultAcceptedTokens,
+  ETHER_TOKEN_FAKE_ADDRESS,
+} from '../helpers/tokens'
 import { shortenAddress } from '../../../../web3-utils'
-
-function useFieldsLayout() {
-  // In its own hook to be adapted for smaller views
-  return `margin-bottom: ${2 * GU}px`
-}
 
 function validationError(acceptedTokens) {
   if (acceptedTokens.length === 0) {
@@ -32,6 +30,7 @@ function validationError(acceptedTokens) {
   return null
 }
 
+const DEFAULT_ACCEPTED_TOKENS = getDefaultAcceptedTokens()
 const EMPTY_TOKEN = { token: { address: '' }, selectedIndex: -1 }
 
 function TokenRequestScreen({
@@ -48,11 +47,8 @@ function TokenRequestScreen({
       : [EMPTY_TOKEN]
   )
 
-  const [formError, setFormError] = useState()
+  const [formError, setFormError] = useState(null)
 
-  const DEFAULT_ACCEPTED_TOKENS = getDefaultAcceptedTokens()
-
-  const fieldsLayout = useFieldsLayout()
   const prevNextRef = useRef()
 
   const handleTokenAdded = useCallback(() => {
@@ -115,6 +111,8 @@ function TokenRequestScreen({
     [acceptedTokens, next, dataKey, data]
   )
 
+  const disableNext = !acceptedTokens[0].token.address
+
   return (
     <form>
       <Header
@@ -146,7 +144,7 @@ function TokenRequestScreen({
 
       <div
         css={`
-          ${fieldsLayout};
+          margin-bottom: ${2 * GU}px;
         `}
       >
         <Field
@@ -195,7 +193,7 @@ function TokenRequestScreen({
       <Navigation
         ref={prevNextRef}
         backEnabled
-        nextEnabled
+        nextEnabled={!disableNext}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}
@@ -231,7 +229,9 @@ function formatReviewFields(screenData) {
             `}
           >
             <span>{token.symbol || 'Custom token'}</span>
-            <span> {shortenAddress(token.address)}</span>
+            {!addressesEqual(token.address, ETHER_TOKEN_FAKE_ADDRESS) && (
+              <span> {shortenAddress(token.address)}</span>
+            )}
           </div>
         ))}
       </div>,

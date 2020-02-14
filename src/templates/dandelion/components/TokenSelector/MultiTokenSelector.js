@@ -51,16 +51,17 @@ const TokenSelectorItem = ({
   onRemoveToken,
   items,
 }) => {
+  const theme = useTheme()
+
   const handleRemove = useCallback(() => {
     onRemoveToken(index)
   }, [index, onRemoveToken])
 
-  const theme = useTheme()
   return (
     <div
       css={`
         display: flex;
-        align-items: center;
+        align-items: ${selectedIndex === 0 ? 'baseline' : 'center'};
         margin-bottom: ${1.5 * GU}px;
         width: 100%;
       `}
