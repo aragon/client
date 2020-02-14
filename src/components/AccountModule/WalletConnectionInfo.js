@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import PropTypes from 'prop-types'
 import {
   ButtonBase,
   GU,
@@ -14,15 +14,21 @@ import {
 
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
-import { useNetworkConnectionData } from './utils'
-import SyncedInfo from './SyncedInfo'
+import {
+  useNetworkConnectionData,
+  useWalletConnectionDetails,
+} from './connection-hooks'
+import WalletSyncedInfo from './WalletSyncedInfo'
 
-const FlexWrapper = styled.div`
-  display: inline-flex;
-  align-items: center;
-`
-
-function ConnectionInfo() {
+function WalletConnectionInfo({
+  clientListening,
+  clientOnline,
+  clientSyncDelay,
+  locator,
+  walletListening,
+  walletOnline,
+  walletSyncDelay,
+}) {
   const { account, providerInfo } = useWallet()
   const theme = useTheme()
 
@@ -34,12 +40,22 @@ function ConnectionInfo() {
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 
-  const Icon = hasNetworkMismatch ? IconCross : IconCheck
+  const { connectionMessageLong, connectionColor } = useWalletConnectionDetails(
+    clientListening,
+    walletListening,
+    clientOnline,
+    walletOnline,
+    clientSyncDelay,
+    walletSyncDelay,
+    walletNetworkName
+  )
+
+  const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
 
   return (
     <section
       css={`
-        max-width: ${42 * GU}px;
+        max-width: ${51 * GU}px;
       `}
     >
       <h1
@@ -61,9 +77,17 @@ function ConnectionInfo() {
           padding: ${2 * GU}px;
         `}
       >
-        <FlexWrapper>
-          <FlexWrapper
+        <div
+          css={`
+            display: inline-flex;
+            align-items: center;
+            width: 100%;
+          `}
+        >
+          <div
             css={`
+              display: inline-flex;
+              align-items: center;
               margin-right: ${3 * GU}px;
             `}
           >
@@ -78,14 +102,22 @@ function ConnectionInfo() {
               `}
             />
             <span>{providerInfo.name}</span>
-          </FlexWrapper>
-          <FlexWrapper>
+          </div>
+          <div
+            css={`
+              display: inline-flex;
+              align-items: center;
+              width: 100%;
+              justify-content: flex-end;
+            `}
+          >
             <ButtonBase
               onClick={copyAddress}
               focusRingRadius={RADIUS}
               css={`
                 display: flex;
                 align-items: center;
+                justify-self: flex-end;
                 padding: ${0.5 * GU}px;
                 &:active {
                   background: ${theme.surfacePressed};
@@ -104,13 +136,13 @@ function ConnectionInfo() {
                 `}
               />
             </ButtonBase>
-          </FlexWrapper>
-        </FlexWrapper>
-        <FlexWrapper
+          </div>
+        </div>
+        <div
           css={`
             display: flex;
             margin-top: ${1 * GU}px;
-            color: ${hasNetworkMismatch ? theme.negative : theme.positive};
+            color: ${connectionColor};
             ${textStyle('label2')};
           `}
         >
@@ -121,10 +153,10 @@ function ConnectionInfo() {
                 margin-left: ${0.5 * GU}px;
               `}
             >
-              Connected to Ethereum {walletNetworkName} Network
+              {connectionMessageLong}
             </span>
           )}
-        </FlexWrapper>
+        </div>
 
         {hasNetworkMismatch ? (
           <div
@@ -135,11 +167,28 @@ function ConnectionInfo() {
             Please connect to the Ethereum {clientNetworkName} Network.
           </div>
         ) : (
-          <SyncedInfo />
+          <WalletSyncedInfo
+            clientListening={clientListening}
+            clientOnline={clientOnline}
+            clientSyncDelay={clientSyncDelay}
+            locator={locator}
+            walletListening={walletListening}
+            walletSyncDelay={walletSyncDelay}
+          />
         )}
       </div>
     </section>
   )
 }
 
-export default ConnectionInfo
+WalletConnectionInfo.propTypes = {
+  clientListening: PropTypes.bool,
+  clientOnline: PropTypes.bool,
+  clientSyncDelay: PropTypes.number,
+  locator: PropTypes.object,
+  walletListening: PropTypes.bool,
+  walletOnline: PropTypes.bool,
+  walletSyncDelay: PropTypes.number,
+}
+
+export default WalletConnectionInfo

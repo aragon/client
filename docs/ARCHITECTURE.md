@@ -49,9 +49,9 @@ If you find an issue, or would like to add a feature, ask yourself these followi
 - **Else**
 	- ✅ **This repo is probably the right one to work on!** If you're still not sure, please file an issue and ask us!
 
-## Starting development
+## Starting frontend development
 
-The best guide to working on the Aragon client, aragonUI, and `aragon-apps`'s frontends in a local environment is [`@bpierre`'s gist](https://gist.github.com/bpierre/22572415b90577aa17e5953fa68980eb).
+Refer to the [frontend development setup](./FRONTEND_SETUP.md) to set up everything you need to start local development on the Client or an app in `aragon-app`!
 
 ## Your own Aragon app
 

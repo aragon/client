@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
-import AccountModule from '../../components/AccountModule/AccountModule'
+import ClientConnectionModule from '../../components/AccountModule/ClientConnectionModule'
+import WalletConnectionModule from '../../components/AccountModule/WalletConnectionModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
+import { useWallet } from '../../wallet'
 
-function OnboardingTopBar({ status, solid }) {
+function OnboardingTopBar({ locator, status, solid }) {
   const theme = useTheme()
-
+  const { isConnected } = useWallet()
   const handleSettingsClick = useCallback(() => {
     let path = '/'
     if (status === 'open') {
@@ -69,13 +71,14 @@ function OnboardingTopBar({ status, solid }) {
               height: 100%;
             `}
           >
-            <AccountModule compact />
+            <WalletConnectionModule locator={locator} />
+            {!isConnected && <ClientConnectionModule locator={locator} />}
           </div>
           <Button
             display="icon"
             icon={<IconSettings />}
             label="Settings"
-            size="small"
+            size="medium"
             onClick={handleSettingsClick}
           />
         </div>
@@ -85,6 +88,7 @@ function OnboardingTopBar({ status, solid }) {
 }
 
 OnboardingTopBar.propTypes = {
+  locator: PropTypes.object,
   status: PropTypes.string.isRequired,
   solid: PropTypes.bool,
 }

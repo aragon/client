@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, GU, IconConnect } from '@aragon/ui'
+import { Button, GU, IconConnect, useViewport } from '@aragon/ui'
 import { enableWallet } from '../../wallet'
 
-function NotConnected({ compact }) {
+function WalletNotConnected({ compact }) {
+  const { below } = useViewport()
+
   return (
     <div
       css={`
@@ -14,6 +16,10 @@ function NotConnected({ compact }) {
       `}
     >
       <Button
+        css={`
+          min-width: ${5 * GU}px;
+        `}
+        display={below('medium') ? 'icon' : 'all'}
         size={compact ? 'small' : 'medium'}
         icon={<IconConnect />}
         label="Enable account"
@@ -24,8 +30,8 @@ function NotConnected({ compact }) {
   )
 }
 
-NotConnected.propTypes = {
+WalletNotConnected.propTypes = {
   compact: PropTypes.bool,
 }
 
-export default NotConnected
+export default WalletNotConnected
