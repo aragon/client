@@ -290,11 +290,11 @@ function formatReviewFields(screenData) {
   return [
     [
       'Token',
-      `${lockToken.data.symbol} ${lockToken.data.name} ${shortenAddress(
+      `${lockToken.data.symbol} (${lockToken.data.name} ${shortenAddress(
         lockToken.data.address
-      )}`,
+      )})`,
     ],
-    ['Lock amount', `${lockAmount === 1 ? 'token' : 'tokens'}`],
+    ['Lock amount', `${lockAmount} ${lockAmount === 1 ? 'token' : 'tokens'}`],
     ['Lock duration', formatDuration(lockDuration)],
     ['Spam penalty', `${spamPenalty} %`],
   ]
