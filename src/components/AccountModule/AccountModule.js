@@ -5,7 +5,10 @@ import { Transition, animated } from 'react-spring'
 import { useWallet } from '../../wallet'
 import { useLocalIdentity } from '../../hooks'
 import { useSyncInfo } from './useSyncInfo'
-import { useNetworkConnectionData, useWalletConnectionDetails } from './utils'
+import {
+  useNetworkConnectionData,
+  useWalletConnectionDetails,
+} from './connection-hooks'
 import { providers } from '../../environment'
 import AccountModulePopover from './AccountModulePopover'
 import ButtonConnect from './ButtonConnect'
@@ -274,6 +277,7 @@ function useConnectionInfo() {
     connectionStatus: walletConnectionStatus,
     syncDelay: walletSyncDelay,
   } = useSyncInfo('wallet')
+
   const {
     isListening: clientListening,
     isOnline: clientOnline,

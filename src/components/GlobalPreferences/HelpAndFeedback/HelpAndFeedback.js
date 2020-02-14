@@ -110,9 +110,9 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
             </span>
           </label>
           <Info>
-            The embedded console lets you interact with your DAO as you would
-            with Aragon CLI, but inside the client. Be noted that this feature
-            is highly experimental.
+            The embedded console lets you interact with your organization as you
+            would with aragonCLI, but inside the frontend client. Please note
+            that this feature is highly experimental.
           </Info>
         </div>
       </Box>

@@ -1,7 +1,7 @@
 {
   "name": "aragon",
   "description": "Aragon DApp",
-  "version": "0.8.6",
+  "version": "0.8.7-hotfix",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "repository": {
@@ -26,7 +26,7 @@
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
     "@aragon/ui": "^1.2.1",
-    "@aragon/wrapper": "^5.0.0-rc.22",
+    "@aragon/wrapper": "^5.0.0-rc.23",
     "@sentry/browser": "^5.5.0",
     "@ungap/event-target": "^0.1.0",
     "clipboard-polyfill": "^2.8.6",
@@ -105,10 +105,9 @@
     "lint": "eslint ./src",
     "test": "npm run lint && npm run jest",
     "jest": "jest",
-    "now-build": "npm run build:mainnet -- build && npm run build -- build/rinkeby",
-    "publish:major": "node scripts/publish major --only-content --files build/",
-    "publish:minor": "node scripts/publish minor --only-content --files build/",
-    "publish:patch": "node scripts/publish patch --only-content --files build/",
+    "publish:major": "node scripts/publish major --only-content --files public/",
+    "publish:minor": "node scripts/publish minor --only-content --files public/",
+    "publish:patch": "node scripts/publish patch --only-content --files public/",
     "publish:mainnet:major": "npm run publish:major -- --environment mainnet --build-script build:mainnet",
     "publish:mainnet:minor": "npm run publish:minor -- --environment mainnet --build-script build:mainnet",
     "publish:mainnet:patch": "npm run publish:patch -- --environment mainnet --build-script build:mainnet",

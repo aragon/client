@@ -1,27 +1,27 @@
 import { useState, useEffect, useCallback } from 'react'
+import {
+  STATUS_CONNECTION_ERROR,
+  STATUS_CONNECTION_HEALTHY,
+  STATUS_CONNECTION_WARNING,
+} from './connection-statuses'
 import { web3Providers } from '../../environment'
-import { getLatestBlockTimestamp } from './utils'
 import { pollEvery } from '../../utils'
-import { getWeb3 } from '../../web3-utils'
+import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
 
-const BLOCK_TIMESTAMP_BLOCK_DELAY = 60000
-
-export const CONNECTION_STATUS_ERROR = Symbol('CONNECTION_STATUS_ERROR')
-export const CONNECTION_STATUS_HEALTHY = Symbol('CONNECTION_STATUS_HEALTHY')
-export const CONNECTION_STATUS_WARNING = Symbol('CONNECTION_STATUS_WARNING')
+const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const selectedWeb3 = getWeb3(web3Providers[wantedWeb3])
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
   const [connectionStatus, setConnectionStatus] = useState(
-    CONNECTION_STATUS_HEALTHY
+    STATUS_CONNECTION_HEALTHY
   )
   const [syncDelay, setSyncDelay] = useState(0)
 
   const handleWebsocketDrop = useCallback(() => {
     setIsListening(false)
-    setConnectionStatus(CONNECTION_STATUS_ERROR)
+    setConnectionStatus(STATUS_CONNECTION_ERROR)
   }, [])
   // listen to web3 connection drop due to inactivity
   useEffect(() => {
@@ -34,7 +34,7 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     const goOnline = () => setIsOnline(true)
     const goOffline = () => {
       setIsOnline(false)
-      setConnectionStatus(CONNECTION_STATUS_ERROR)
+      setConnectionStatus(STATUS_CONNECTION_ERROR)
     }
     window.addEventListener('online', goOnline)
     window.addEventListener('offline', goOffline)
@@ -49,26 +49,26 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   useEffect(() => {
     const pollBlockTimestamp = pollEvery(
       () => ({
-        request: () => getLatestBlockTimestamp(),
+        request: () => getLatestBlockTimestamp(selectedWeb3),
         onResult: timestamp => {
-          const blockDiff = new Date() - new Date(timestamp * 1000)
+          const blockDiff = new Date() - timestamp
           const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
           const connectionHealth =
             latestBlockDifference >= 30
-              ? CONNECTION_STATUS_ERROR
+              ? STATUS_CONNECTION_ERROR
               : latestBlockDifference >= 3
-              ? CONNECTION_STATUS_WARNING
-              : CONNECTION_STATUS_HEALTHY
+              ? STATUS_CONNECTION_WARNING
+              : STATUS_CONNECTION_HEALTHY
           setConnectionStatus(connectionHealth)
           setSyncDelay(latestBlockDifference)
         },
       }),
-      BLOCK_TIMESTAMP_BLOCK_DELAY
+      BLOCK_TIMESTAMP_POLL_INTERVAL
     )
     const cleanUpTimestampPoll = pollBlockTimestamp()
 
     return () => cleanUpTimestampPoll()
-  }, [])
+  }, [selectedWeb3])
 
   return {
     connectionStatus,

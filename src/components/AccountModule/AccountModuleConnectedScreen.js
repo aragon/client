@@ -13,10 +13,12 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
-
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
-import { useNetworkConnectionData, useWalletConnectionDetails } from './utils'
+import {
+  useNetworkConnectionData,
+  useWalletConnectionDetails,
+} from './connection-hooks'
 import WalletSyncedInfo from './WalletSyncedInfo'
 
 function AccountModuleConnectedScreen({

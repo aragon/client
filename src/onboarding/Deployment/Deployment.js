@@ -28,10 +28,10 @@ const AnimSection = animated.section
 
 function BoxBase({
   children,
-  flexDirection = 'column',
   background,
-  opacity,
   boxTransform,
+  direction = 'column',
+  opacity,
 }) {
   const theme = useTheme()
   const { below } = useViewport()
@@ -58,8 +58,8 @@ function BoxBase({
         style={{ transform: boxTransform }}
         css={`
           flex-grow: 1;
-          display: ${flexDirection === 'column' ? 'grid' : 'flex'};
-          flex-direction: ${flexDirection};
+          display: ${direction === 'column' ? 'grid' : 'flex'};
+          flex-direction: ${direction};
           align-items: center;
           justify-content: center;
           max-width: ${fullWidth ? 'none' : `${128 * GU}px`};
@@ -83,10 +83,15 @@ function BoxBase({
 
 BoxBase.propTypes = {
   children: PropTypes.node.isRequired,
-  flexDirection: PropTypes.oneOf(['column', 'row']),
   background: PropTypes.string.isRequired,
-  opacity: PropTypes.object.isRequired,
   boxTransform: PropTypes.object.isRequired,
+  direction: PropTypes.oneOf([
+    'column',
+    'column-reverse',
+    'row',
+    'row-reverse',
+  ]),
+  opacity: PropTypes.object.isRequired,
 }
 
 function BoxProgress({
@@ -107,15 +112,15 @@ function BoxProgress({
 
   return (
     <BoxBase
-      opacity={opacity}
-      boxTransform={boxTransform}
-      flexDirection={fullWidth ? 'column' : 'row-reverse'}
       background="linear-gradient(
         328deg,
         #95bbce 0%,
         #c5d0e6 46.04%,
         #e7e4f6 100%
       )"
+      boxTransform={boxTransform}
+      direction={fullWidth ? 'column' : 'row-reverse'}
+      opacity={opacity}
     >
       <div
         css={`

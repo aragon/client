@@ -16,6 +16,7 @@ import {
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
+
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
 

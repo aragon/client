@@ -47,7 +47,8 @@ const AppContent = React.memo(
       repoName,
     } = repo
     const repoDetails = useRepoDetails(baseUrl, detailsUrl)
-    const canUpgrade = currentVersion.version !== latestVersion
+    const canUpgrade =
+      Boolean(currentVersion) && currentVersion.version !== latestVersion
     const compact = layoutName === 'small'
 
     return (

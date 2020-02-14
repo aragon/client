@@ -92,7 +92,7 @@ class Wrapper extends React.PureComponent {
 
       const {
         // This is not technically fully true, but let's assume that only these
-        // aspects be different between multiple instances of the same app
+        // aspects are different between multiple instances of the same app
         codeAddress: instanceCodeAddress,
         identifier: instanceIdentifier,
         proxyAddress: instanceProxyAddress,

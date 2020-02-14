@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
-import HomeButton from '../../components/HomeButton/HomeButton'
 import AccountModule from '../../components/AccountModule/AccountModule'
+import HomeButton from '../../components/HomeButton/HomeButton'
 
 function OnboardingTopBar({ locator, status, solid }) {
   const theme = useTheme()
+
   const handleSettingsClick = useCallback(() => {
     let path = '/'
     if (status === 'open') {

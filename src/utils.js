@@ -5,7 +5,16 @@ export function pollEvery(fn, delay) {
   let timer = -1
   let stop = false
   const poll = async (request, onResult) => {
-    const result = await request()
+    let result
+    try {
+      result = await request()
+    } catch (err) {
+      log('Polling failed for fn:', fn)
+      log('Error:', err)
+      // Stop polling and let requester handle
+      throw err
+    }
+
     if (!stop) {
       onResult(result)
       timer = setTimeout(poll.bind(null, request, onResult), delay)

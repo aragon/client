@@ -21,9 +21,9 @@ import { iOS, isSafari } from '../../utils'
 import { useClientTheme } from '../../client-theme'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
-import AccountModule from '../AccountModule/AccountModule'
 import ActivityButton from './ActivityButton/ActivityButton'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
+import AccountModule from '../AccountModule/AccountModule'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
