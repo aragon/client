@@ -51,6 +51,7 @@ function AccountModule({ locator }) {
   const [animate, setAnimate] = useState(false)
   const [activatingDelayed, setActivatingDelayed] = useState(false)
   const [activationError, setActivationError] = useState(null)
+  const popoverFocusElement = useRef()
 
   const { account, activating } = wallet
 
@@ -102,6 +103,10 @@ function AccountModule({ locator }) {
 
   // Always show the “connecting…” screen, even if there are no delay
   useEffect(() => {
+    if (activationError) {
+      setActivatingDelayed(null)
+    }
+
     if (activating) {
       setActivatingDelayed(activating)
       return
@@ -110,10 +115,9 @@ function AccountModule({ locator }) {
     const timer = setTimeout(() => {
       setActivatingDelayed(null)
     }, 500)
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [activating])
+
+    return () => clearTimeout(timer)
+  }, [activating, activationError])
 
   const previousScreenIndex = useRef(-1)
 
@@ -148,6 +152,14 @@ function AccountModule({ locator }) {
     [screenId]
   )
 
+  // Prevents to lose the focus on the popover when a screen leaves while an
+  // element inside is focused (e.g. when clicking on the “disconnect” button).
+  useEffect(() => {
+    if (popoverFocusElement.current) {
+      popoverFocusElement.current.focus()
+    }
+  }, [screenId])
+
   return (
     <div
       ref={buttonRef}
@@ -178,65 +190,72 @@ function AccountModule({ locator }) {
         screenId={screenId}
         visible={opened}
       >
-        <Transition
-          native
-          immediate={!animate}
-          config={springs.smooth}
-          items={{ screen, activating: activatingDelayed }}
-          keys={({ screen }) => screen.id + activatingDelayed}
-          from={{
-            opacity: 0,
-            transform: `translate3d(${3 * GU * direction}px, 0, 0)`,
-          }}
-          enter={{ opacity: 1, transform: `translate3d(0, 0, 0)` }}
-          leave={{
-            opacity: 0,
-            transform: `translate3d(${3 * GU * -direction}px, 0, 0)`,
-          }}
-        >
-          {({ screen, activating }) => ({ opacity, transform }) => (
-            <AnimatedDiv
-              style={{ opacity, transform }}
-              css={`
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-              `}
-            >
-              {(() => {
-                if (screen.id === 'connecting') {
-                  return (
-                    <ConnectingScreen
-                      providerId={activating}
-                      onCancel={handleCancelConnection}
-                    />
-                  )
-                }
-                if (screen.id === 'connected') {
-                  return (
-                    <ConnectedScreen
-                      clientListening={clientListening}
-                      clientOnline={clientOnline}
-                      clientConnectionStatus={clientConnectionStatus}
-                      clientSyncDelay={clientSyncDelay}
-                      locator={locator}
-                      walletListening={walletListening}
-                      walletOnline={walletListening}
-                      walletConnectionStatus={walletConnectionStatus}
-                      walletSyncDelay={walletSyncDelay}
-                    />
-                  )
-                }
-                if (screen.id === 'error') {
-                  return <ErrorScreen onBack={clearError} />
-                }
-                return <ProvidersScreen onActivate={handleActivate} />
-              })()}
-            </AnimatedDiv>
-          )}
-        </Transition>
+        <div ref={popoverFocusElement} tabIndex="0" css="outline: 0">
+          <Transition
+            native
+            immediate={!animate}
+            config={springs.smooth}
+            items={{ screen, activating: activatingDelayed }}
+            keys={({ screen }) => screen.id + activatingDelayed}
+            from={{
+              opacity: 0,
+              transform: `translate3d(${3 * GU * direction}px, 0, 0)`,
+            }}
+            enter={{ opacity: 1, transform: `translate3d(0, 0, 0)` }}
+            leave={{
+              opacity: 0,
+              transform: `translate3d(${3 * GU * -direction}px, 0, 0)`,
+            }}
+          >
+            {({ screen, activating }) => ({ opacity, transform }) => (
+              <AnimatedDiv
+                style={{ opacity, transform }}
+                css={`
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                `}
+              >
+                {(() => {
+                  if (screen.id === 'connecting') {
+                    return (
+                      <ConnectingScreen
+                        providerId={activating}
+                        onCancel={handleCancelConnection}
+                      />
+                    )
+                  }
+                  if (screen.id === 'connected') {
+                    return (
+                      <ConnectedScreen
+                        clientListening={clientListening}
+                        clientOnline={clientOnline}
+                        clientConnectionStatus={clientConnectionStatus}
+                        clientSyncDelay={clientSyncDelay}
+                        locator={locator}
+                        walletListening={walletListening}
+                        walletOnline={walletListening}
+                        walletConnectionStatus={walletConnectionStatus}
+                        walletSyncDelay={walletSyncDelay}
+                      />
+                    )
+                  }
+                  if (screen.id === 'error') {
+                    return (
+                      <ErrorScreen
+                        error={activationError}
+                        onBack={clearError}
+                      />
+                    )
+                  }
+                  return <ProvidersScreen onActivate={handleActivate} />
+                })()}
+              </AnimatedDiv>
+            )}
+          </Transition>
+        </div>
       </AccountModulePopover>
     </div>
   )
