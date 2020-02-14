@@ -24,7 +24,7 @@ function validationError(acceptedTokens) {
   )
 
   if (notValidAddress) {
-    return 'One or more accepted tokens are not valid addresses.'
+    return 'One or more selected tokens are not valid addresses.'
   }
 
   return null
@@ -153,7 +153,7 @@ function TokenRequestScreen({
               Accepted Tokens
               <Help hint="What are the accepted tokens?">
                 <strong>Accepted tokens</strong> are ERC20 tokens that will be
-                accepted as payment in exchange for Organization's tokens
+                accepted as payment in exchange for the organization's tokens
               </Help>
             </React.Fragment>
           }
@@ -187,7 +187,7 @@ function TokenRequestScreen({
         `}
       >
         These settings will determine which assets will be accepted as payment
-        in exchange for Organization's tokens.
+        in exchange for the organization's tokens.
       </Info>
 
       <Navigation

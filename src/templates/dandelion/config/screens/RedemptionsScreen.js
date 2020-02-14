@@ -24,7 +24,7 @@ function validationError(redeemableTokens) {
   )
 
   if (notValidAddress) {
-    return 'One or more redeemable tokens are not valid addresses.'
+    return 'One or more selected tokens are not valid addresses.'
   }
 
   return null
@@ -153,8 +153,8 @@ function RedemptionsScreen({
               Redeemable tokens
               <Help hint="What are redeemable tokens?">
                 <strong>Redeemable tokens</strong> are ERC20 tokens that can be
-                redeemed in exchange for organization tokens. This represent
-                assets within the Organization's vault.
+                redeemed in exchange for the organization's tokens. They represent
+                assets held by the organization.
               </Help>
             </React.Fragment>
           }
@@ -187,8 +187,8 @@ function RedemptionsScreen({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        These settings will determine which assets held within an organization’s
-        Vault are eligible for redemption.
+        These settings will determine which ERC20 assets held by an organization
+       are eligible for redemption.
       </Info>
 
       <Navigation

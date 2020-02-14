@@ -26,8 +26,8 @@ function validationError(lockAmount, lockDuration, lockToken) {
   if (!lockToken || !isAddress(lockToken)) {
     return 'You need at least one valid address.'
   }
-  if (!lockAmount > 0) {
-    return 'You need to set a positive lock amount'
+  if (lockAmount <= 0) {
+    return 'You need to set a positive lock amount.'
   }
   if (lockDuration < 1 * MINUTE_IN_SECONDS) {
     return 'Please ensure the lock duration is equal to or longer than 1 minute.'
@@ -195,7 +195,9 @@ function LockScreen({
             <React.Fragment>
               Lock amount
               <Help hint="What’s the lock amount?">
-                <strong>Lock amount</strong> is the amount of tokens to lock.
+                <strong>Lock amount</strong> is the amount of tokens a user will
+                need to lock in order to perform an action that has been
+                protected by the Time Lock app.
               </Help>
             </React.Fragment>
           }
@@ -292,7 +294,7 @@ function formatReviewFields(screenData) {
         lockToken.data.address
       )}`,
     ],
-    ['Lock amount', `${lockAmount} tokens`],
+    ['Lock amount', `${lockAmount === 1 ? 'token' : 'tokens'}`],
     ['Lock duration', formatDuration(lockDuration)],
     ['Spam penalty', `${spamPenalty} %`],
   ]

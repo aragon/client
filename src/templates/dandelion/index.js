@@ -31,10 +31,10 @@ export default {
   header,
   icon,
   description: `
-  Facilitate collaboration by providing an organization structure that makes it easy for contributors to simply part ways when disagreements occur.
+  Facilitate collaboration with an organization that makes it easy for contributors to simply part ways when disagreements occur.
   `,
-  userGuideUrl: 'http://dandelion.1hive.org',
-  sourceCodeUrl: 'https://github.com/aragon/dao-templates/tree/templates/1hive',
+  userGuideUrl: 'https://1hive.org/dandelion',
+  sourceCodeUrl: 'https://github.com/1hive/dandelion-org',
   registry: 'aragonpm.eth',
   apps: [
     { appName: 'token-manager.aragonpm.eth', label: 'Tokens' },
