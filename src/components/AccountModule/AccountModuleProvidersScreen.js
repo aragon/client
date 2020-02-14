@@ -93,7 +93,9 @@ function AccountModuleProvidersScreen({ onActivate }) {
           margin-top: ${2 * GU}px;
         `}
       >
-        <Link>What is an Ethereum provider?</Link>
+        <Link href="https://ethereum.org/wallets/" css="text-decoration: none">
+          Don’t have an Ethereum account?
+        </Link>
       </div>
     </div>
   )

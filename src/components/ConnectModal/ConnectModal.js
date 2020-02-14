@@ -55,7 +55,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
               font-weight: 600;
             `}
           >
-            Enable your Ethereum provider
+            Connect your Ethereum account
           </h1>
           <p
             css={`
@@ -64,7 +64,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
               color: ${theme.contentSecondary};
             `}
           >
-            You need to enable your Ethereum provider to create an organization
+            You need to connect your Ethereum account to create an organization
           </p>
           <p
             css={`
@@ -94,7 +94,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
         </div>
         <Button
           icon={<IconConnect />}
-          label="Enable account"
+          label="Connect account"
           mode="strong"
           onClick={() => wallet.activate()}
           wide

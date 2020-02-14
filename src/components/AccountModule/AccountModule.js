@@ -21,22 +21,22 @@ const AnimatedDiv = animated.div
 const SCREENS = [
   {
     id: 'providers',
-    title: 'Ethereum providers',
+    title: 'Use account from',
     height: 38 * GU,
   },
   {
     id: 'connecting',
-    title: 'Ethereum providers',
+    title: 'Use account from',
     height: 38 * GU,
   },
   {
     id: 'connected',
-    title: 'Active wallet',
+    title: 'Active account',
     height: 32 * GU,
   },
   {
     id: 'error',
-    title: 'Ethereum providers',
+    title: 'Connection error',
     height: 50 * GU,
   },
 ]
