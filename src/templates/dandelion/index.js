@@ -24,6 +24,24 @@ function completeDomain(domain) {
   return domain ? `${domain}.aragonid.eth` : ''
 }
 
+function adjustVotingSettings(support, quorum) {
+  // The max value for both support and quorum is 100% - 1
+  const onePercent = new BN(10).pow(new BN(16))
+  const hundredPercent = onePercent.mul(new BN(100))
+
+  let adjustedSupport = onePercent.mul(new BN(support))
+  if (adjustedSupport.eq(hundredPercent)) {
+    adjustedSupport = adjustedSupport.sub(new BN(1))
+  }
+
+  let adjustedQuorum = onePercent.mul(new BN(quorum))
+  if (adjustedQuorum.eq(hundredPercent)) {
+    adjustedQuorum = adjustedQuorum.sub(new BN(1))
+  }
+
+  return [adjustedSupport.toString(), adjustedQuorum.toString()]
+}
+
 export default {
   id: 'dandelion-org-template.aragonpm.eth',
   name: 'Dandelion',
@@ -161,9 +179,11 @@ export default {
 
     // Voting app
     const { support, quorum, duration, buffer, delay } = voting
-    const adjustedSupport = onePercent.mul(new BN(support)).toString()
-    const adjustedQuorum = onePercent.mul(new BN(quorum)).toString()
 
+    const [adjustedSupport, adjustedQuorum] = adjustVotingSettings(
+      support,
+      quorum
+    )
     const numericVotingDuration = duration / blockTime
     const adjustedDuration = new BN(numericVotingDuration).toString()
 
