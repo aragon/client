@@ -18,6 +18,7 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
         align-items: center;
       `}
     >
+      {/* TODO: Set network type when available  */}
       {showIcon ? (
         <Icon src={tokenIconUrl(address)} />
       ) : (

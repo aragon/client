@@ -111,7 +111,7 @@ function TokenRequestScreen({
     [acceptedTokens, next, dataKey, data]
   )
 
-  const disableNext = !acceptedTokens[0].token.address
+  const nextEnabled = Boolean(acceptedTokens[0].token.address)
 
   return (
     <form>
@@ -193,7 +193,7 @@ function TokenRequestScreen({
       <Navigation
         ref={prevNextRef}
         backEnabled
-        nextEnabled={!disableNext}
+        nextEnabled={nextEnabled}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}

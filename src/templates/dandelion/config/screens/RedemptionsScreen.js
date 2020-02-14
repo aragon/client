@@ -111,7 +111,7 @@ function RedemptionsScreen({
     [redeemableTokens, next, dataKey, data]
   )
 
-  const disableNext = !redeemableTokens[0].token.address
+  const nextEnabled = Boolean(redeemableTokens[0].token.address)
 
   return (
     <form>
@@ -187,14 +187,14 @@ function RedemptionsScreen({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        These settings will determine which ERC20 assets held by an organization
-        are eligible for redemption.
+        These settings determine which ERC20 assets held by the organization
+        will be eligible for redemption.
       </Info>
 
       <Navigation
         ref={prevNextRef}
         backEnabled
-        nextEnabled={!disableNext}
+        nextEnabled={nextEnabled}
         nextLabel={`Next: ${screens[screenIndex + 1][0]}`}
         onBack={back}
         onNext={handleSubmit}

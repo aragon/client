@@ -227,8 +227,8 @@ function DandelionVotingScreen({
           <React.Fragment>
             Vote buffer
             <Help hint="What’s the vote buffer?">
-              Votes are processed in sequence with the start time of each
-              proposal seperated by a proposal buffer
+              is the amount of time separating the start of each new vote, as
+              all votes are processed in sequence.
             </Help>
           </React.Fragment>
         }
@@ -240,8 +240,8 @@ function DandelionVotingScreen({
           <React.Fragment>
             Vote delay
             <Help hint="What’s the vote delay?">
-              <strong>Vote Delay</strong> is the delay period after a vote is
-              approved but before it can be executed
+              <strong>Vote Delay</strong> is the period an approved vote must
+              wait before it can be executed.
             </Help>
           </React.Fragment>
         }

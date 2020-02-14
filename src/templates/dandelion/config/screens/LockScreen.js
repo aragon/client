@@ -43,52 +43,40 @@ function LockScreen({
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
 
+  const [lockAmount, setLockAmount] = useState(screenData.lockAmount || -1)
+  const [lockDuration, setLockDuration] = useState(
+    screenData.lockDuration || DEFAULT_DURATION
+  )
+  const [lockToken, setLockToken] = useState(
+    screenData.lockToken || EMPTY_TOKEN
+  )
+  const [spamPenalty, setSpamPenalty] = useState(
+    screenData.spamPenalty || DEFAULT_SPAM_PENALTY
+  )
   const [formError, setFormError] = useState(null)
-
-  const [
-    { lockAmount, lockDuration, lockToken, spamPenalty },
-    updateField,
-  ] = useState({
-    lockAmount: screenData.lockAmount || -1,
-    lockDuration: screenData.lockDuration || DEFAULT_DURATION,
-    lockToken: screenData.lockToken || EMPTY_TOKEN,
-    spamPenalty: screenData.spamPenalty || DEFAULT_SPAM_PENALTY,
-  })
 
   const handleLockAmountChange = useCallback(event => {
     setFormError(null)
 
     const value = parseInt(event.target.value, 10)
-    updateField(settings => ({
-      ...settings,
-      lockAmount: isNaN(value) ? -1 : value,
-    }))
+    setLockAmount(isNaN(value) ? -1 : value)
   }, [])
 
   const handleLockDurationChange = useCallback(value => {
     setFormError(null)
-    updateField(settings => ({
-      ...settings,
-      lockDuration: value,
-    }))
+    setLockDuration(value)
   }, [])
 
   const handleLockTokenChange = useCallback(({ token, selectedIndex }) => {
     setFormError(null)
-    updateField(settings => ({
-      ...settings,
-      lockToken: { data: token, selectedIndex },
-    }))
+    setLockToken({ data: token, selectedIndex })
   }, [])
 
   const handleSpamPenaltyChange = useCallback(event => {
     setFormError(null)
 
     const spamPenalty = event.target.value
-    updateField(settings => ({
-      ...settings,
-      spamPenalty,
-    }))
+    setSpamPenalty(spamPenalty)
   }, [])
 
   const prevNextRef = useRef()
@@ -229,8 +217,8 @@ function LockScreen({
                 Spam penalty %
                 <Help hint="What’s the spam penalty?">
                   For each additional active lock a user creates, the required
-                  amount of tokens and duration of the next lock will be
-                  increased by this percentage of the base amount and duration.
+                  token amount and duration of the next lock will be increased
+                  by this percentage of the base amount and duration.
                 </Help>
               </React.Fragment>
             }
@@ -241,7 +229,7 @@ function LockScreen({
               onChange={handleSpamPenaltyChange}
               value={spamPenalty}
               css={`
-                width: 136px;
+                max-width: ${17 * GU}px;
               `}
             />
             <span> %</span>
