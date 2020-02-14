@@ -151,7 +151,14 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
 }
 
 ConnectionInfoMessage.propTypes = {
-  connectionStatus: PropTypes.string,
+  connectionStatus: PropTypes.oneOf([
+    STATUS_CLIENT_CONNECTION_DROPPED,
+    STATUS_CONNECTION_OK,
+    STATUS_MAJOR_NETWORK_SLOWDOWN,
+    STATUS_NETWORK_SYNC_ISSUES,
+    STATUS_TOO_LITTLE_ETH,
+    STATUS_WALLET_CONNECTION_DROPPED,
+  ]),
   locator: PropTypes.object,
 }
 
