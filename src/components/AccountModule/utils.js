@@ -172,7 +172,6 @@ export function useWalletSyncState(
 ) {
   const { balance: balanceInWei } = useWallet()
   const balance = fromWei(balanceInWei)
-  let syncInfo = { header: '', info: '', message: '' }
 
   if (!clientOnline || !clientListening) {
     return {

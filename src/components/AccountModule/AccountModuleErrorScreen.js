@@ -84,8 +84,7 @@ function AccountModuleErrorScreen({ error, onBack }) {
 
 AccountModuleErrorScreen.propTypes = {
   onBack: PropTypes.func.isRequired,
-  secondary: PropTypes.string,
-  title: PropTypes.string,
+  error: PropTypes.instanceOf(Error),
 }
 
 export default AccountModuleErrorScreen

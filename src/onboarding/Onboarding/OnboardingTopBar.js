@@ -1,13 +1,11 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
-import { useWallet } from '../../wallet'
 import HomeButton from '../../components/HomeButton/HomeButton'
 import AccountModule from '../../components/AccountModule/AccountModule'
 
 function OnboardingTopBar({ locator, status, solid }) {
   const theme = useTheme()
-  const { account } = useWallet()
   const handleSettingsClick = useCallback(() => {
     let path = '/'
     if (status === 'open') {
