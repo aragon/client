@@ -4,6 +4,7 @@
   "version": "0.8.7-hotfix",
   "private": true,
   "license": "AGPL-3.0-or-later",
+  "author": "Aragon Association <legal@aragon.org>",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/aragon/aragon.git"
@@ -19,7 +20,6 @@
     "blockchain",
     "startups"
   ],
-  "author": "Aragon Institution MTU <contact@aragon.one>",
   "engines": {
     "node": "10.x"
   },
