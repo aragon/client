@@ -60,21 +60,14 @@ ProviderButton.propTypes = {
 
 function AccountModuleProvidersScreen({ onActivate }) {
   return (
-    <div
-      css={`
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: 100%;
-        padding: ${2 * GU}px ${2 * GU}px 0;
-      `}
-    >
+    <div>
       <div
         css={`
           display: grid;
           grid-gap: ${1.5 * GU}px;
           grid-auto-flow: row;
           grid-template-columns: repeat(2, 1fr);
+          padding: ${2 * GU}px;
         `}
       >
         {providersInfo.map(([id, provider]) => (
@@ -90,7 +83,7 @@ function AccountModuleProvidersScreen({ onActivate }) {
         css={`
           display: flex;
           justify-content: center;
-          margin-top: ${2 * GU}px;
+          padding: 0 ${2 * GU}px ${1 * GU}px;
         `}
       >
         <Link href="https://ethereum.org/wallets/" css="text-decoration: none">
