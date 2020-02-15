@@ -20,6 +20,7 @@ function AccountModulePopover({
   const theme = useTheme()
   const [animate, setAnimate] = useState(false)
   const [height, setHeight] = useState(30 * GU)
+  const [measuredHeight, setMeasuredHeight] = useState(true)
 
   // Prevents to lose the focus on the popover when a screen leaves while an
   // element inside is focused (e.g. when clicking on the “disconnect” button).
@@ -89,7 +90,7 @@ function AccountModulePopover({
             <AnimatedDiv
               ref={popoverFocusElement}
               tabIndex="0"
-              style={{ height }}
+              style={{ height: measuredHeight ? height : 'auto' }}
               css={`
                 position: relative;
                 flex-grow: 1;
@@ -113,6 +114,12 @@ function AccountModulePopover({
                   transform: `translate3d(${3 * GU * -direction}px, 0, 0)`,
                 }}
                 immediate={!animate}
+                onRest={(_, status) => {
+                  setMeasuredHeight(false)
+                }}
+                onStart={(_, status) => {
+                  setMeasuredHeight(true)
+                }}
               >
                 {screenData => ({ opacity, transform }) => (
                   <AnimatedDiv
@@ -122,9 +129,8 @@ function AccountModulePopover({
                       }
                     }}
                     style={{ opacity, transform }}
-                    immediate={!animate}
                     css={`
-                      position: absolute;
+                      position: ${measuredHeight ? 'absolute' : 'static'};
                       top: 0;
                       left: 0;
                       right: 0;
