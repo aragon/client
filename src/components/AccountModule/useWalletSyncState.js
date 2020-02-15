@@ -24,7 +24,7 @@ export function useWalletSyncState(
     return {
       header: '',
       info: '',
-      message: STATUS_CLIENT_CONNECTION_DROPPED,
+      status: STATUS_CLIENT_CONNECTION_DROPPED,
     }
   }
 
@@ -32,31 +32,37 @@ export function useWalletSyncState(
     return {
       header: '',
       info: '',
-      message: STATUS_WALLET_CONNECTION_DROPPED,
+      status: STATUS_WALLET_CONNECTION_DROPPED,
     }
   }
 
   if (clientSyncDelay >= 30 && walletSyncDelay >= 30) {
     return {
-      header: 'Last known state: ',
+      header: 'Last known state:',
       info: `${clientSyncDelay} min behind`,
-      message: STATUS_MAJOR_NETWORK_SLOWDOWN,
+      status: STATUS_MAJOR_NETWORK_SLOWDOWN,
     }
   }
 
   if (clientSyncDelay >= 3 || walletSyncDelay >= 3) {
     return {
-      header: 'Out of sync: ',
+      header: 'Out of sync:',
       info: `${clientSyncDelay} min behind`,
-      message: STATUS_NETWORK_SYNC_ISSUES,
+      status: STATUS_NETWORK_SYNC_ISSUES,
+    }
+  }
+
+  if (balance.lt(minimumTransactionBalance) && balance.gtn(-1)) {
+    return {
+      header: 'Synced:',
+      info: currentBlock ? `current block ${currentBlock}` : '',
+      status: STATUS_TOO_LITTLE_ETH,
     }
   }
 
   return {
-    header: 'Synced: ',
-    info: `current block ${currentBlock}`,
-    message: balance.lt(minimumTransactionBalance)
-      ? STATUS_TOO_LITTLE_ETH
-      : STATUS_CONNECTION_OK,
+    header: 'Synced:',
+    info: currentBlock ? `current block ${currentBlock}` : '',
+    status: STATUS_CONNECTION_OK,
   }
 }

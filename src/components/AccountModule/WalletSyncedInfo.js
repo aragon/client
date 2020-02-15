@@ -23,6 +23,7 @@ function WalletSyncedInfo({
   walletListening,
 }) {
   const walletBlockNumber = useWalletBlockNumber()
+
   const walletSyncInfo = useWalletSyncState(
     clientListening,
     walletListening,
@@ -51,14 +52,14 @@ function WalletSyncedInfo({
           <span>{walletSyncInfo.info}</span>
         </div>
       )}
-      {walletSyncInfo.message !== STATUS_CONNECTION_OK && (
+      {walletSyncInfo.status !== STATUS_CONNECTION_OK && (
         <div
           css={`
             margin-top: ${1 * GU}px;
           `}
         >
           <ConnectionInfoMessage
-            connectionStatus={walletSyncInfo.message}
+            connectionStatus={walletSyncInfo.status}
             locator={locator}
           />
         </div>
