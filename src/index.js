@@ -54,8 +54,8 @@ if (packageVersion !== lastPackageVersion) {
 function Providers() {
   const { appearance } = useClientTheme()
   return (
-    <WalletProvider>
-      <Main layout={false} scrollView={false} theme={appearance}>
+    <Main layout={false} scrollView={false} theme={appearance}>
+      <WalletProvider>
         <HelpScoutProvider>
           <ConsoleVisibleProvider>
             <GlobalErrorHandler>
@@ -65,8 +65,8 @@ function Providers() {
             </GlobalErrorHandler>
           </ConsoleVisibleProvider>
         </HelpScoutProvider>
-      </Main>
-    </WalletProvider>
+      </WalletProvider>
+    </Main>
   )
 }
 
