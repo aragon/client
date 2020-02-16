@@ -9,15 +9,15 @@ import {
 } from './connection-statuses'
 import { useWallet } from '../../wallet'
 
-export function useWalletSyncState(
+function useSyncState(
   clientListening,
   walletListening,
   clientOnline,
   clientSyncDelay,
-  walletSyncDelay,
-  currentBlock
+  walletSyncDelay
 ) {
-  const { balance } = useWallet()
+  const { balance, getBlockNumber } = useWallet()
+  const currentBlock = getBlockNumber()
   const minimumTransactionBalance = new BN(0.005)
 
   if (!clientOnline || !clientListening) {
@@ -66,3 +66,5 @@ export function useWalletSyncState(
     status: STATUS_CONNECTION_OK,
   }
 }
+
+export default useSyncState

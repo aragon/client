@@ -90,8 +90,3 @@ WalletProvider.propTypes = { children: PropTypes.node }
 export function useWallet() {
   return useContext(WalletContext)
 }
-
-export function useWalletBlockNumber() {
-  const { getBlockNumber } = useWalletBase()
-  return getBlockNumber()
-}
