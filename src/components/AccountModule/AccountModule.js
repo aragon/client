@@ -17,22 +17,10 @@ import ConnectedScreen from './AccountModuleConnectedScreen'
 import ErrorScreen from './AccountModuleErrorScreen'
 
 const SCREENS = [
-  {
-    id: 'providers',
-    title: 'Use account from',
-  },
-  {
-    id: 'connecting',
-    title: 'Use account from',
-  },
-  {
-    id: 'connected',
-    title: 'Active account',
-  },
-  {
-    id: 'error',
-    title: 'Connection error',
-  },
+  { id: 'providers', title: 'Use account from' },
+  { id: 'connecting', title: 'Use account from' },
+  { id: 'connected', title: 'Active account' },
+  { id: 'error', title: 'Connection error' },
 ]
 
 function AccountModule({ locator }) {
