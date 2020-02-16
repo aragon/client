@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
@@ -76,84 +76,94 @@ function GlobalPreferences({
 
   useEsc(onClose)
 
-  const tabItems = VALUES.filter(
-    (_, index) => !!wrapper || index === NETWORK_INDEX
+  const tabItems = VALUES.filter((_, index) =>
+    Boolean(wrapper || index === NETWORK_INDEX)
   )
+
+  const container = useRef()
+  useEffect(() => {
+    if (container.current) {
+      container.current.focus()
+    }
+  }, [])
+
   return (
-    <Layout css="z-index: 2">
-      <Close
-        compact={compact}
-        onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
-      />
-      <Header
-        primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
-        css={`
-          padding-top: ${!compact ? 10 * GU : 0}px;
-        `}
-      />
-      {isSharedLink ? (
-        <SharedIdentities
-          isSaving={isSavingSharedLink}
-          onSave={handleSharedIdentitiesSave}
-          onCancel={handleSharedIdentitiesCancel}
-          identities={sharedIdentities}
-          onToggleAll={handleSharedIdentitiesToggleAll}
-          onToggleIdentity={handleSharedIdentitiesToggleIdentity}
-          selected={sharedIdentitiesSelected}
-          allSelected={sharedIdentitiesAllSelected}
-          someSelected={sharedIdentitiesSomeSelected}
+    <div ref={container} tabIndex="0">
+      <Layout css="z-index: 2">
+        <Close
+          compact={compact}
+          onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
         />
-      ) : (
-        <React.Fragment>
-          {tabItems.length > 1 ? (
-            <Tabs
-              items={tabItems}
-              onChange={onNavigation}
-              selected={sectionIndex}
-            />
-          ) : (
-            <Bar>
-              <div
-                css={`
-                  display: flex;
-                  height: 100%;
-                  align-items: center;
-                  padding-left: ${compact ? 2 * GU : 3 * GU}px;
-                  color: ${compact
-                    ? theme.surfaceContent
-                    : theme.surfaceContentSecondary};
-                  ${textStyle('body2')}
-                `}
-              >
-                {tabItems[0]}
-              </div>
-            </Bar>
-          )}
-          <main>
-            {sectionIndex === CUSTOM_LABELS_INDEX && (
-              <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
-            )}
-            {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
-            {sectionIndex === NOTIFICATIONS_INDEX && (
-              <Notifications
-                apps={apps}
-                dao={dao}
-                subsection={subsection}
-                handleNavigation={onNavigation}
-                navigationIndex={2}
+        <Header
+          primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
+          css={`
+            padding-top: ${!compact ? 10 * GU : 0}px;
+          `}
+        />
+        {isSharedLink ? (
+          <SharedIdentities
+            isSaving={isSavingSharedLink}
+            onSave={handleSharedIdentitiesSave}
+            onCancel={handleSharedIdentitiesCancel}
+            identities={sharedIdentities}
+            onToggleAll={handleSharedIdentitiesToggleAll}
+            onToggleIdentity={handleSharedIdentitiesToggleIdentity}
+            selected={sharedIdentitiesSelected}
+            allSelected={sharedIdentitiesAllSelected}
+            someSelected={sharedIdentitiesSomeSelected}
+          />
+        ) : (
+          <React.Fragment>
+            {tabItems.length > 1 ? (
+              <Tabs
+                items={tabItems}
+                onChange={onNavigation}
+                selected={sectionIndex}
               />
+            ) : (
+              <Bar>
+                <div
+                  css={`
+                    display: flex;
+                    height: 100%;
+                    align-items: center;
+                    padding-left: ${compact ? 2 * GU : 3 * GU}px;
+                    color: ${compact
+                      ? theme.surfaceContent
+                      : theme.surfaceContentSecondary};
+                    ${textStyle('body2')}
+                  `}
+                >
+                  {tabItems[0]}
+                </div>
+              </Bar>
             )}
-            {sectionIndex === HELP_AND_FEEDBACK_INDEX && (
-              <HelpAndFeedback
-                historyPush={historyPush}
-                locator={locator}
-                onClose={onClose}
-              />
-            )}
-          </main>
-        </React.Fragment>
-      )}
-    </Layout>
+            <main>
+              {sectionIndex === CUSTOM_LABELS_INDEX && (
+                <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
+              )}
+              {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
+              {sectionIndex === NOTIFICATIONS_INDEX && (
+                <Notifications
+                  apps={apps}
+                  dao={dao}
+                  subsection={subsection}
+                  handleNavigation={onNavigation}
+                  navigationIndex={2}
+                />
+              )}
+              {sectionIndex === HELP_AND_FEEDBACK_INDEX && (
+                <HelpAndFeedback
+                  historyPush={historyPush}
+                  locator={locator}
+                  onClose={onClose}
+                />
+              )}
+            </main>
+          </React.Fragment>
+        )}
+      </Layout>
+    </div>
   )
 }
 
