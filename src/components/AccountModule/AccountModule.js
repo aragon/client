@@ -149,17 +149,25 @@ function AccountModule({ locator }) {
           account,
           activating: activatingDelayed,
           activationError,
+          providerInfo: wallet.providerInfo,
           screenId,
         }}
-        screenKey={({ account, activating, activationError, screenId }) =>
+        screenKey={({
+          account,
+          activating,
+          activationError,
+          providerInfo,
+          screenId,
+        }) =>
+          (activationError ? activationError.name : '') +
           account +
           activating +
-          (activationError ? activationError.name : '') +
+          providerInfo.id +
           screenId
         }
         visible={opened}
       >
-        {({ account, screenId, activating, activationError }) => {
+        {({ account, screenId, activating, activationError, providerInfo }) => {
           if (screenId === 'connecting') {
             return (
               <ConnectingScreen
@@ -177,6 +185,7 @@ function AccountModule({ locator }) {
                 clientOnline={clientOnline}
                 clientSyncDelay={clientSyncDelay}
                 locator={locator}
+                providerInfo={providerInfo}
                 walletConnectionStatus={walletConnectionStatus}
                 walletListening={walletListening}
                 walletOnline={walletListening}

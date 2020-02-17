@@ -13,7 +13,7 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
-import { EthereumAddressType } from '../../prop-types'
+import { EthereumAddressType, EthereumProviderType } from '../../prop-types'
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
 import {
@@ -28,6 +28,7 @@ function AccountModuleConnectedScreen({
   clientOnline,
   clientSyncDelay,
   locator,
+  providerInfo,
   walletListening,
   walletOnline,
   walletSyncDelay,
@@ -80,7 +81,7 @@ function AccountModuleConnectedScreen({
           `}
         >
           <img
-            src={wallet.providerInfo.image}
+            src={providerInfo.image}
             alt=""
             css={`
               width: ${2.5 * GU}px;
@@ -89,7 +90,7 @@ function AccountModuleConnectedScreen({
               transform: translateY(-2px);
             `}
           />
-          <span>Wallet</span>
+          <span>{providerInfo.name}</span>
         </FlexWrapper>
         <FlexWrapper
           css={`
@@ -182,6 +183,7 @@ AccountModuleConnectedScreen.propTypes = {
   clientOnline: PropTypes.bool,
   clientSyncDelay: PropTypes.number,
   locator: PropTypes.object,
+  providerInfo: EthereumProviderType,
   walletListening: PropTypes.bool,
   walletOnline: PropTypes.bool,
   walletSyncDelay: PropTypes.number,
