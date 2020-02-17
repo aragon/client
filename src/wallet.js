@@ -12,13 +12,7 @@ const NETWORK_TYPE_DEFAULT = 'private'
 const WalletContext = React.createContext()
 
 function WalletContextProvider({ children }) {
-  const {
-    account,
-    balance,
-    connected,
-    ethereum,
-    ...walletBaseRest
-  } = useWalletBase()
+  const { account, balance, ethereum, ...walletBaseRest } = useWalletBase()
 
   const [walletWeb3, setWalletWeb3] = useState(null)
   const [networkType, setNetworkType] = useState(NETWORK_TYPE_DEFAULT)
