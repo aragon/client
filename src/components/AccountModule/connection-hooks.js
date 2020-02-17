@@ -30,6 +30,10 @@ export function useNetworkConnectionData() {
   const clientChainId = network.chainId
 
   useEffect(() => {
+    if (!walletWeb3) {
+      return
+    }
+
     let cancelled = false
     walletWeb3.eth.getChainId((err, chainId) => {
       if (!err && !cancelled) {
