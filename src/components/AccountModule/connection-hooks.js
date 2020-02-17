@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from '@aragon/ui'
-import { web3Providers, network } from '../../environment'
+import { network } from '../../environment'
 import { useWallet } from '../../wallet'
 import {
   STATUS_CONNECTION_ERROR,
