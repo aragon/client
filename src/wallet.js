@@ -4,10 +4,9 @@ import BN from 'bn.js'
 import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
 import { getFortmaticApiKey, getPortisDappId } from './local-settings'
 import { identifyProvider, getProvider } from './ethereum-providers'
-import { network, web3Providers } from './environment'
+import { network } from './environment'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 
-const WALLET_PROVIDER_INFO = getProvider(identifyProvider(web3Providers.wallet))
 const NETWORK_TYPE_DEFAULT = 'private'
 
 const WalletContext = React.createContext()
@@ -59,7 +58,7 @@ function WalletContextProvider({ children }) {
       balance: new BN(filterBalanceValue(balance)),
       ethereum,
       networkType,
-      providerInfo: WALLET_PROVIDER_INFO, // TODO: get the info of the local provider
+      providerInfo: getProvider(identifyProvider(ethereum)),
       web3: walletWeb3,
       ...walletBaseRest,
     }),
