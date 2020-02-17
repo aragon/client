@@ -6,12 +6,17 @@ import {
 } from './connection-statuses'
 import { web3Providers } from '../../environment'
 import { pollEvery } from '../../utils'
+import { useWallet } from '../../wallet'
 import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
 export function useSyncInfo(wantedWeb3 = 'default') {
-  const selectedWeb3 = getWeb3(web3Providers[wantedWeb3])
+  const wallet = useWallet()
+  const clientWeb3 = getWeb3(web3Providers.default)
+  const walletWeb3 = wallet.web3
+  const selectedWeb3 = wantedWeb3 === 'wallet' ? walletWeb3 : clientWeb3
+
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
   const [connectionStatus, setConnectionStatus] = useState(
@@ -23,8 +28,13 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     setIsListening(false)
     setConnectionStatus(STATUS_CONNECTION_ERROR)
   }, [])
+
   // listen to web3 connection drop due to inactivity
   useEffect(() => {
+    if (!selectedWeb3) {
+      return
+    }
+
     selectedWeb3.currentProvider.on('end', handleWebsocketDrop)
     selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
   }, [selectedWeb3, handleWebsocketDrop])
