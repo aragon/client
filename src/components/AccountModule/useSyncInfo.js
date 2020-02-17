@@ -37,6 +37,11 @@ export function useSyncInfo(wantedWeb3 = 'default') {
 
     selectedWeb3.currentProvider.on('end', handleWebsocketDrop)
     selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
+
+    return () => {
+      selectedWeb3.currentProvider.removeListener('end', handleWebsocketDrop)
+      selectedWeb3.currentProvider.removeListener('error', handleWebsocketDrop)
+    }
   }, [selectedWeb3, handleWebsocketDrop])
 
   // check for connection loss from the browser
@@ -57,6 +62,10 @@ export function useSyncInfo(wantedWeb3 = 'default') {
 
   // listen for connection status with block timestamps
   useEffect(() => {
+    if (!selectedWeb3) {
+      return
+    }
+
     const pollBlockTimestamp = pollEvery(
       () => ({
         request: () => getLatestBlockTimestamp(selectedWeb3),
