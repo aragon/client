@@ -19,7 +19,7 @@ const ValidateWalletWeb3 = ({
     return <NoWeb3Provider intent={intent} onClose={onClose} />
   }
 
-  if (!wallet.isConnected) {
+  if (!wallet.connected) {
     return (
       <AccountLocked
         intent={intent}

@@ -59,7 +59,7 @@ const Organization = React.memo(function Organization({
   const checksummedDaoAddr =
     daoAddress.address && toChecksumAddress(daoAddress.address)
   const enableTransactions =
-    wallet.isConnected && wallet.networkType === network.type
+    wallet.connected && wallet.networkType === network.type
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (

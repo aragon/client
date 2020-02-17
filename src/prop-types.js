@@ -265,7 +265,7 @@ export const WalletType = PropTypes.shape({
   balance: PropTypes.object.isRequired,
   chainId: PropTypes.number.isRequired,
   enable: PropTypes.bool.isRequired,
-  isConnected: PropTypes.bool.isRequired,
+  connected: PropTypes.bool.isRequired,
   isContract: PropTypes.bool.isRequired,
   networkType: PropTypes.string.isRequired,
   providerInfo: PropTypes.object.isRequired,
