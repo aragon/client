@@ -115,7 +115,9 @@ function AccountModulePopover({
                 }}
                 immediate={!animate}
                 onRest={(_, status) => {
-                  setMeasuredHeight(false)
+                  if (status === 'update') {
+                    setMeasuredHeight(false)
+                  }
                 }}
                 onStart={(_, status) => {
                   setMeasuredHeight(true)
