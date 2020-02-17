@@ -15,7 +15,7 @@ function Web3ProviderError({
 }) {
   return (
     <React.Fragment>
-      <Info mode="description" title="You can't perform any action">
+      <Info mode="description" title="You can’t perform any action">
         {neededText} in order to perform{' '}
         {description ? `“${description}”` : 'this action'}
         {name && (

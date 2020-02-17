@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useWallet } from '../../wallet'
 import { NoWeb3Provider, AccountLocked, WrongNetwork } from './Web3Errors'
 
-const ValidateWalletWeb3 = ({
+function ValidateWalletWeb3({
   children,
   hasWeb3,
   intent,
@@ -12,7 +12,7 @@ const ValidateWalletWeb3 = ({
   onClose,
   walletNetworkType,
   walletProviderId,
-}) => {
+}) {
   const wallet = useWallet()
 
   if (!hasWeb3) {

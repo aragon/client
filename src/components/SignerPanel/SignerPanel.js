@@ -7,7 +7,7 @@ import { network } from '../../environment'
 import { useWallet } from '../../wallet'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { AppType, EthereumAddressType } from '../../prop-types'
-import { addressesEqual, getInjectedProvider } from '../../web3-utils'
+import { addressesEqual } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
@@ -312,7 +312,14 @@ class SignerPanel extends React.PureComponent {
   }
 
   render() {
-    const { account, dao, walletNetwork, walletProviderId, apps } = this.props
+    const {
+      account,
+      apps,
+      dao,
+      walletNetwork,
+      walletProviderId,
+      walletWeb3,
+    } = this.props
 
     const {
       actionPaths,
@@ -357,7 +364,7 @@ class SignerPanel extends React.PureComponent {
                         <ValidateWalletWeb3
                           intent={intent}
                           isTransaction={isTransaction}
-                          hasWeb3={Boolean(getInjectedProvider())}
+                          hasWeb3={Boolean(walletWeb3)}
                           networkType={network.type}
                           onClose={this.handleSignerClose}
                           walletNetworkType={walletNetwork}
