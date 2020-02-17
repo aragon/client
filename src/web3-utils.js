@@ -115,19 +115,6 @@ export function getEmptyAddress() {
   return EMPTY_ADDRESS
 }
 
-/*
- * Return the injected provider, if any.
- */
-export function getInjectedProvider() {
-  if (window.ethereum) {
-    return window.ethereum
-  }
-  if (window.web3 && window.web3.currentProvider) {
-    return window.web3.currentProvider
-  }
-  return null
-}
-
 export async function getAccountBalance(web3, account) {
   try {
     const balanceValue = await web3.eth.getBalance(account)
