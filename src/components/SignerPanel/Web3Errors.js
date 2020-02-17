@@ -7,34 +7,36 @@ import SignerButton from './SignerButton'
 import { getProviderString } from '../../ethereum-providers'
 import { isElectron } from '../../utils'
 
-const Web3ProviderError = ({
+function Web3ProviderError({
   intent: { description, name, to },
   onClose,
   neededText,
   actionText,
-}) => (
-  <React.Fragment>
-    <Info mode="description" title="You can't perform any action">
-      {neededText} in order to perform{' '}
-      {description ? `“${description}”` : 'this action'}
-      {name && (
-        <React.Fragment>
-          {' '}
-          on <AddressLink to={to}>{name}</AddressLink>
-        </React.Fragment>
-      )}
-      .
-      <p
-        css={`
-          margin-top: ${2 * GU}px;
-        `}
-      >
-        {actionText}
-      </p>
-    </Info>
-    <SignerButton onClick={onClose}>Close</SignerButton>
-  </React.Fragment>
-)
+}) {
+  return (
+    <React.Fragment>
+      <Info mode="description" title="You can't perform any action">
+        {neededText} in order to perform{' '}
+        {description ? `“${description}”` : 'this action'}
+        {name && (
+          <React.Fragment>
+            {' '}
+            on <AddressLink to={to}>{name}</AddressLink>
+          </React.Fragment>
+        )}
+        .
+        <p
+          css={`
+            margin-top: ${2 * GU}px;
+          `}
+        >
+          {actionText}
+        </p>
+      </Info>
+      <SignerButton onClick={onClose}>Close</SignerButton>
+    </React.Fragment>
+  )
+}
 
 Web3ProviderError.propTypes = {
   actionText: PropTypes.node.isRequired,
@@ -43,7 +45,7 @@ Web3ProviderError.propTypes = {
   onClose: PropTypes.func.isRequired,
 }
 
-export const NoWeb3Provider = ({ intent, onClose }) => {
+export function NoWeb3Provider({ intent, onClose }) {
   const onElectron = isElectron()
   const neededText = onElectron
     ? 'You need to have Frame installed and enabled'
@@ -77,12 +79,7 @@ NoWeb3Provider.propTypes = {
   onClose: PropTypes.func.isRequired,
 }
 
-export const AccountLocked = ({
-  intent,
-  onClose,
-  onRequestEnable,
-  walletProviderId,
-}) => {
+export function AccountLocked({ intent, onClose, walletProviderId }) {
   const providerMessage = getProviderString(
     'your Ethereum provider',
     walletProviderId
@@ -92,19 +89,7 @@ export const AccountLocked = ({
       intent={intent}
       onClose={onClose}
       neededText={`You need to unlock and enable ${providerMessage}`}
-      actionText={
-        <span>
-          Please unlock and{' '}
-          <Link
-            onClick={onRequestEnable}
-            focusRingSpacing={[3, 2]}
-            css="font-weight: 600"
-          >
-            enable
-          </Link>{' '}
-          {providerMessage}.
-        </span>
-      }
+      actionText={<span>Please connect your account.</span>}
     />
   )
 }
@@ -112,30 +97,31 @@ export const AccountLocked = ({
 AccountLocked.propTypes = {
   intent: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  onRequestEnable: PropTypes.func.isRequired,
   walletProviderId: PropTypes.string.isRequired,
 }
 
-export const WrongNetwork = ({
+export function WrongNetwork({
   intent,
   networkType,
   onClose,
   walletProviderId,
-}) => (
-  <Web3ProviderError
-    intent={intent}
-    onClose={onClose}
-    neededText={`
+}) {
+  return (
+    <Web3ProviderError
+      intent={intent}
+      onClose={onClose}
+      neededText={`
       You need to be connected to the ${networkType} network
     `}
-    actionText={`
+      actionText={`
       Please connect ${getProviderString(
         'your Ethereum provider',
         walletProviderId
       )} to the ${networkType} network.
     `}
-  />
-)
+    />
+  )
+}
 
 WrongNetwork.propTypes = {
   intent: PropTypes.object.isRequired,

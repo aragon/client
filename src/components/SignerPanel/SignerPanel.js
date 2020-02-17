@@ -68,7 +68,6 @@ class SignerPanel extends React.PureComponent {
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
     dao: PropTypes.string,
-    onRequestEnable: PropTypes.func.isRequired,
     addTransactionActivity: PropTypes.func.isRequired,
     setActivityConfirmed: PropTypes.func.isRequired,
     setActivityFailed: PropTypes.func.isRequired,
@@ -76,7 +75,7 @@ class SignerPanel extends React.PureComponent {
     transactionBag: PropTypes.object,
     signatureBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object.isRequired,
+    walletWeb3: PropTypes.object,
     web3: PropTypes.object.isRequired,
     walletProviderId: PropTypes.string.isRequired,
   }
@@ -313,14 +312,7 @@ class SignerPanel extends React.PureComponent {
   }
 
   render() {
-    const {
-      account,
-      dao,
-      onRequestEnable,
-      walletNetwork,
-      walletProviderId,
-      apps,
-    } = this.props
+    const { account, dao, walletNetwork, walletProviderId, apps } = this.props
 
     const {
       actionPaths,
@@ -368,7 +360,6 @@ class SignerPanel extends React.PureComponent {
                           hasWeb3={Boolean(getInjectedProvider())}
                           networkType={network.type}
                           onClose={this.handleSignerClose}
-                          onRequestEnable={onRequestEnable}
                           walletNetworkType={walletNetwork}
                           walletProviderId={walletProviderId}
                         >
@@ -448,7 +439,7 @@ const Screen = styled.div`
   margin-top: ${3 * GU}px;
 `
 
-export default function(props) {
+export default function SignerPanelWrapper(props) {
   const wallet = useWallet()
 
   const {
@@ -458,16 +449,11 @@ export default function(props) {
     setActivityNonce,
   } = useContext(ActivityContext)
 
-  if (!wallet.web3) {
-    return null
-  }
-
   return (
     <SignerPanel
       {...props}
       account={wallet.account}
       addTransactionActivity={addTransactionActivity}
-      onRequestEnable={wallet.activate}
       setActivityConfirmed={setActivityConfirmed}
       setActivityFailed={setActivityFailed}
       setActivityNonce={setActivityNonce}

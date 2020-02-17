@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-
 import { web3Providers } from '../../environment'
 import { pollEvery } from '../../utils'
 import { getWeb3 } from '../../web3-utils'
