@@ -13,6 +13,7 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
+import { EthereumAddressType } from '../../prop-types'
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
 import {
@@ -22,6 +23,7 @@ import {
 import WalletSyncedInfo from './WalletSyncedInfo'
 
 function AccountModuleConnectedScreen({
+  account,
   clientListening,
   clientOnline,
   clientSyncDelay,
@@ -39,7 +41,7 @@ function AccountModuleConnectedScreen({
     hasNetworkMismatch,
   } = useNetworkConnectionData()
 
-  const copyAddress = useCopyToClipboard(wallet.account, 'Address copied')
+  const copyAddress = useCopyToClipboard(account, 'Address copied')
 
   const { connectionMessage, connectionColor } = useWalletConnectionDetails(
     clientListening,
@@ -109,7 +111,7 @@ function AccountModuleConnectedScreen({
             `}
           >
             <IdentityBadge
-              entity={wallet.account}
+              entity={account}
               compact
               badgeOnly
               css="cursor: pointer"
@@ -175,6 +177,7 @@ function AccountModuleConnectedScreen({
 }
 
 AccountModuleConnectedScreen.propTypes = {
+  account: EthereumAddressType,
   clientListening: PropTypes.bool,
   clientOnline: PropTypes.bool,
   clientSyncDelay: PropTypes.number,
