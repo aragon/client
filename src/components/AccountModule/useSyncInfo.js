@@ -31,16 +31,23 @@ export function useSyncInfo(wantedWeb3 = 'default') {
 
   // listen to web3 connection drop due to inactivity
   useEffect(() => {
-    if (!selectedWeb3) {
+    if (!selectedWeb3 || !selectedWeb3.currentProvider) {
       return
     }
 
-    selectedWeb3.currentProvider.on('end', handleWebsocketDrop)
-    selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
+    if (selectedWeb3.currentProvider.on) {
+      selectedWeb3.currentProvider.on('end', handleWebsocketDrop)
+      selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
+    }
 
     return () => {
-      selectedWeb3.currentProvider.removeListener('end', handleWebsocketDrop)
-      selectedWeb3.currentProvider.removeListener('error', handleWebsocketDrop)
+      if (selectedWeb3.currentProvider.removeEventListener) {
+        selectedWeb3.currentProvider.removeListener('end', handleWebsocketDrop)
+        selectedWeb3.currentProvider.removeListener(
+          'error',
+          handleWebsocketDrop
+        )
+      }
     }
   }, [selectedWeb3, handleWebsocketDrop])
 
