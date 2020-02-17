@@ -220,7 +220,6 @@ export const EthereumProviderType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
-  connect: PropTypes.func.isRequired,
   strings: PropTypes.object.isRequired,
 })
 
