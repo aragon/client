@@ -196,7 +196,6 @@ class App extends React.Component {
       },
       provider: web3Providers.default,
       walletAccount,
-      walletProvider: web3Providers.wallet,
       onDaoAddress: ({ address, domain }) => {
         log('dao address', address)
         log('dao domain', domain)
@@ -204,9 +203,6 @@ class App extends React.Component {
           daoStatus: DAO_STATUS_READY,
           daoAddress: { address, domain },
         })
-      },
-      onWeb3: web3 => {
-        log('web3', web3)
       },
       onApps: apps => {
         log('apps updated', apps)
