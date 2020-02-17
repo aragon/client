@@ -79,7 +79,7 @@ function AccountModule({ locator }) {
 
     const timer = setTimeout(() => {
       setActivatingDelayed(null)
-    }, 500)
+    }, 400)
 
     return () => clearTimeout(timer)
   }, [activating, activationError])
