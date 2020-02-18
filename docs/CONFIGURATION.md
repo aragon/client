@@ -38,8 +38,14 @@ API key from [Portis](portis.io). Requires separate keys for testnet / mainnet.
 
 API key from [Formatic](fortmatic.com). Requires separate keys for testnet / mainnet.
 
-## Etc.
+## 3rd Party APIs
 
 ### `ARAGON_SENTRY_DSN`
 
 [Sentry DSN](https://docs.sentry.io/error-reporting/configuration/?platform=node#dsn) for forwarding error logs.
+
+## Development settings
+
+### `ARAGON_PORT`
+
+Local server port to start the app on. Defaults to `3000`.
