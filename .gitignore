@@ -9,6 +9,9 @@ coverage/
 # production
 public/
 
+# zeit now configuration
+.now
+
 # misc
 .DS_Store
 .cache
