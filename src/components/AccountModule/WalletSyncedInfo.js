@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { GU, Link } from '@aragon/ui'
 import { network } from '../../environment'
 import { getAppPath, getPreferencesSearch } from '../../routing'
-import { useWalletBlockNumber } from '../../wallet'
-import { useWalletSyncState } from './useWalletSyncState'
+import useSyncState from './useSyncState'
 import {
   STATUS_CLIENT_CONNECTION_DROPPED,
   STATUS_CONNECTION_OK,
@@ -22,19 +21,17 @@ function WalletSyncedInfo({
   walletSyncDelay,
   walletListening,
 }) {
-  const walletBlockNumber = useWalletBlockNumber()
-  const walletSyncInfo = useWalletSyncState(
+  const { header, info, status } = useSyncState(
     clientListening,
     walletListening,
     clientOnline,
     clientSyncDelay,
-    walletSyncDelay,
-    walletBlockNumber
+    walletSyncDelay
   )
 
   return (
     <React.Fragment>
-      {walletSyncInfo.header && (
+      {header && (
         <div
           css={`
             margin-top: ${1 * GU}px;
@@ -46,21 +43,18 @@ function WalletSyncedInfo({
               opacity: 0.8;
             `}
           >
-            {walletSyncInfo.header}
+            {header}
           </span>
-          <span>{walletSyncInfo.info}</span>
+          <span>{info}</span>
         </div>
       )}
-      {walletSyncInfo.message !== STATUS_CONNECTION_OK && (
+      {status !== STATUS_CONNECTION_OK && (
         <div
           css={`
-            margin-top: ${1 * GU}px;
+            margin: ${1 * GU}px 0;
           `}
         >
-          <ConnectionInfoMessage
-            connectionStatus={walletSyncInfo.message}
-            locator={locator}
-          />
+          <ConnectionInfoMessage connectionStatus={status} locator={locator} />
         </div>
       )}
     </React.Fragment>
@@ -84,10 +78,8 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
     })
   }, [locator])
 
-  let content = null
-
   if (connectionStatus === STATUS_WALLET_CONNECTION_DROPPED) {
-    content = (
+    return (
       <span>
         We were unable to fetch network information from your wallet. You may
         not be able to send transactions. Please contact your wallet for support
@@ -97,7 +89,7 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   }
 
   if (connectionStatus === STATUS_CLIENT_CONNECTION_DROPPED) {
-    content = (
+    return (
       <span>
         We cannot connect to the wallet's Ethereum node. You can change the node
         settings in
@@ -108,7 +100,7 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   }
 
   if (connectionStatus === STATUS_NETWORK_SYNC_ISSUES) {
-    content = (
+    return (
       <span>
         Your wallet may not accurately reflect the current state of Ethereum's{' '}
         {network.name}. Please contact your wallet for support if this issue
@@ -118,7 +110,7 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   }
 
   if (connectionStatus === STATUS_MAJOR_NETWORK_SLOWDOWN) {
-    content = (
+    return (
       <span>
         The Ethereum {network.name} may be experiencing a global slowdown.
         Please avoid signing any transactions until this error is resolved.
@@ -127,29 +119,25 @@ function ConnectionInfoMessage({ connectionStatus, locator }) {
   }
 
   if (connectionStatus === STATUS_TOO_LITTLE_ETH) {
-    content = (
+    return (
       <span>
         You may not have enough ETH in your account to send any transactions.
       </span>
     )
   }
 
-  return (
-    content && (
-      <div
-        css={`
-          margin-top: ${1 * GU}px;
-          margin-bottom: ${1 * GU}px;
-        `}
-      >
-        {content}
-      </div>
-    )
-  )
+  return null
 }
 
 ConnectionInfoMessage.propTypes = {
-  connectionStatus: PropTypes.oneOf([STATUS_CLIENT_CONNECTION_DROPPED]),
+  connectionStatus: PropTypes.oneOf([
+    STATUS_CLIENT_CONNECTION_DROPPED,
+    STATUS_CONNECTION_OK,
+    STATUS_MAJOR_NETWORK_SLOWDOWN,
+    STATUS_NETWORK_SYNC_ISSUES,
+    STATUS_TOO_LITTLE_ETH,
+    STATUS_WALLET_CONNECTION_DROPPED,
+  ]),
   locator: PropTypes.object,
 }
 

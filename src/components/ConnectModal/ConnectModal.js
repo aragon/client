@@ -10,13 +10,14 @@ import {
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { enableWallet } from '../../wallet'
+import { useWallet } from '../../wallet'
 import providersImage from './assets/providers.png'
 
 function ConnectModal({ account, onClose, onConnect, visible }) {
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
+  const wallet = useWallet()
 
   const modalWidth = useCallback(
     ({ width }) => Math.min(55 * GU, width - 4 * GU),
@@ -54,7 +55,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
               font-weight: 600;
             `}
           >
-            Enable your Ethereum provider
+            Connect your Ethereum account
           </h1>
           <p
             css={`
@@ -63,7 +64,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
               color: ${theme.contentSecondary};
             `}
           >
-            You need to enable your Ethereum provider to create an organization
+            You need to connect your Ethereum account to create an organization
           </p>
           <p
             css={`
@@ -93,9 +94,9 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
         </div>
         <Button
           icon={<IconConnect />}
-          label="Enable account"
+          label="Connect account"
           mode="strong"
-          onClick={enableWallet}
+          onClick={() => wallet.activate()}
           wide
         />
       </section>

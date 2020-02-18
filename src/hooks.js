@@ -272,6 +272,7 @@ export function useLocalIdentity(entity) {
   const { resolve, identityEvents$ } = useContext(IdentityContext)
   const [name, setName] = useState(null)
 
+  // TODO: stop exporting this function as it is not cancellable from the outside.
   const handleResolve = useCallback(async () => {
     try {
       const { name = null } = (await resolve(entity)) || {}
@@ -291,24 +292,39 @@ export function useLocalIdentity(entity) {
   )
 
   useEffect(() => {
-    handleResolve()
+    let cancelled = false
+
+    const updateEntityName = async () => {
+      try {
+        const resolved = await resolve(entity)
+        if (!cancelled) {
+          setName((resolved && resolved.name) || null)
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setName(null)
+        }
+      }
+    }
+
     const subscription = identityEvents$.subscribe(event => {
       switch (event.type) {
         case identityEventTypes.MODIFY:
           if (addressesEqual(entity, event.address)) {
-            handleResolve()
+            updateEntityName()
           }
           return
         case identityEventTypes.IMPORT:
-          return handleResolve()
+          return updateEntityName()
         case identityEventTypes.REMOVE:
           return handleRemove(event.addresses)
       }
     })
     return () => {
+      cancelled = true
       subscription.unsubscribe()
     }
-  }, [identityEvents$, handleResolve, entity, handleRemove])
+  }, [identityEvents$, resolve, entity, handleRemove])
 
   return { name, handleResolve }
 }

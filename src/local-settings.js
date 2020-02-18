@@ -9,6 +9,9 @@ const IPFS_GATEWAY = 'IPFS_GATEWAY'
 const PACKAGE_VERSION = 'PACKAGE_VERSION'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 const SENTRY_DSN = 'SENTRY_DSN'
+const PORTIS_DAPP_ID = 'PORTIS_DAPP_ID'
+const FORTMATIC_API_KEY = 'FORTMATIC_API_KEY'
+const FORTMATIC_SITE_VERIFICATION = 'FORTMATIC_SITE_VERIFICATION'
 
 // Parcel requires env vars to be declared statically.
 const CONFIGURATION_VARS = [
@@ -54,6 +57,9 @@ const CONFIGURATION_VARS = [
     process.env.REACT_APP_PACKAGE_VERSION,
   ],
   [CLIENT_THEME, process.env.ARAGON_CLIENT_THEME],
+  [PORTIS_DAPP_ID, process.env.ARAGON_PORTIS_DAPP_ID],
+  [FORTMATIC_API_KEY, process.env.ARAGON_FORTMATIC_API_KEY],
+  [FORTMATIC_SITE_VERIFICATION, process.env.ARAGON_FORTMATIC_SITE_VERIFICATION],
 ].reduce(
   (acc, [option, envValue, envValueCompat]) => ({
     ...acc,
@@ -163,4 +169,12 @@ export function getClientTheme() {
 
 export function setClientTheme(appearance, theme = null) {
   return setLocalSetting(CLIENT_THEME, JSON.stringify({ appearance, theme }))
+}
+
+export function getPortisDappId() {
+  return getLocalSetting(PORTIS_DAPP_ID) || ''
+}
+
+export function getFortmaticApiKey() {
+  return getLocalSetting(FORTMATIC_API_KEY) || ''
 }

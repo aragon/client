@@ -220,7 +220,6 @@ export const EthereumProviderType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
-  connect: PropTypes.func.isRequired,
   strings: PropTypes.object.isRequired,
 })
 
@@ -265,7 +264,7 @@ export const WalletType = PropTypes.shape({
   balance: PropTypes.object.isRequired,
   chainId: PropTypes.number.isRequired,
   enable: PropTypes.bool.isRequired,
-  isConnected: PropTypes.bool.isRequired,
+  connected: PropTypes.bool.isRequired,
   isContract: PropTypes.bool.isRequired,
   networkType: PropTypes.string.isRequired,
   providerInfo: PropTypes.object.isRequired,

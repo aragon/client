@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from '@aragon/ui'
-import { web3Providers, network } from '../../environment'
-import { getWeb3 } from '../../web3-utils'
+import { network } from '../../environment'
+import { useWallet } from '../../wallet'
 import {
   STATUS_CONNECTION_ERROR,
   STATUS_CONNECTION_WARNING,
@@ -24,18 +24,26 @@ export function useConnectionStatusColor(status) {
   return theme.positive
 }
 
-export const useNetworkConnectionData = () => {
+export function useNetworkConnectionData() {
+  const { web3: walletWeb3 } = useWallet()
   const [walletChainId, setWalletChainId] = useState(-1)
   const clientChainId = network.chainId
 
   useEffect(() => {
-    const walletWeb3 = getWeb3(web3Providers.wallet)
+    if (!walletWeb3) {
+      return
+    }
+
+    let cancelled = false
     walletWeb3.eth.getChainId((err, chainId) => {
-      if (!err) {
+      if (!err && !cancelled) {
         setWalletChainId(chainId)
       }
     })
-  }, [])
+    return () => {
+      cancelled = true
+    }
+  }, [walletWeb3])
 
   return {
     walletNetworkName: normalizeNetworkName(walletChainId),

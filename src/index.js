@@ -6,8 +6,8 @@ import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
 import App from './App'
 import GlobalErrorHandler from './GlobalErrorHandler'
+import { WalletProvider } from './wallet'
 import { ClientThemeProvider, useClientTheme } from './client-theme'
-import { WalletProvider, WalletBlockNumberProvider } from './wallet'
 import {
   getLastPackageVersion,
   getPackageVersion,
@@ -16,6 +16,7 @@ import {
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
+
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
 
@@ -54,19 +55,17 @@ function Providers() {
   const { appearance } = useClientTheme()
   return (
     <Main layout={false} scrollView={false} theme={appearance}>
-      <HelpScoutProvider>
-        <ConsoleVisibleProvider>
-          <GlobalErrorHandler>
-            <ClientBlockNumberProvider>
-              <WalletBlockNumberProvider>
-                <WalletProvider>
-                  <App />
-                </WalletProvider>
-              </WalletBlockNumberProvider>
-            </ClientBlockNumberProvider>
-          </GlobalErrorHandler>
-        </ConsoleVisibleProvider>
-      </HelpScoutProvider>
+      <WalletProvider>
+        <HelpScoutProvider>
+          <ConsoleVisibleProvider>
+            <GlobalErrorHandler>
+              <ClientBlockNumberProvider>
+                <App />
+              </ClientBlockNumberProvider>
+            </GlobalErrorHandler>
+          </ConsoleVisibleProvider>
+        </HelpScoutProvider>
+      </WalletProvider>
     </Main>
   )
 }

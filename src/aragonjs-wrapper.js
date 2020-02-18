@@ -256,10 +256,8 @@ const initWrapper = async (
     onRequestPath = noop,
     onSignatures = noop,
     onTransaction = noop,
-    onWeb3 = noop,
     provider,
     walletAccount = null,
-    walletProvider = null,
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
@@ -290,8 +288,6 @@ const initWrapper = async (
       subscriptionEventDelay: getEthSubscriptionEventDelay(),
     },
   })
-
-  onWeb3(getWeb3(walletProvider || provider))
 
   try {
     await wrapper.init({
