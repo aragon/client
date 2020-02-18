@@ -2,6 +2,8 @@
 
 The app can be configured in a number of ways via environment variables. Without any settings, the app is configured to connect to our Rinkeby deployment fetching assets from IPFS.
 
+## General settings
+
 ### `ARAGON_DEFAULT_ETH_NODE`
 
 Url of the default Ethereum node to read blockchain data from (must be WebSocket protocol). If you intend to connect to a local ganache instance, by default you should set this to `ws://localhost:8545`.
@@ -24,4 +26,20 @@ Url of the [IPFS](https://ipfs.io) gateway to load APM repos from. If you intend
 
 ### `ARAGON_APP_LOCATOR`
 
-Which source to load app frontend assets from. Can be one of `ipfs` (uses the configured IPFS gateway) or `local` (local development servers, running on `localhost:300x`). If you intend to serve assets from a local IPFS daemon, you should set this to `ipfs`.
+Which source to load app frontend assets from. Can be one of `ipfs` (uses the configured IPFS gateway) or `local` (local development servers for each app, running on `localhost:300x`). If you intend to serve assets from a local IPFS daemon, you should set this to `ipfs`.
+
+## Ethereum Providers
+
+### `ARAGON_PORTIS_DAPP_ID`
+
+API key from [Portis](portis.io). Requires separate keys for testnet / mainnet.
+
+### `ARAGON_FORTMATIC_API_KEY`
+
+API key from [Formatic](fortmatic.com). Requires separate keys for testnet / mainnet.
+
+## Etc.
+
+### `ARAGON_SENTRY_DSN`
+
+[Sentry DSN](https://docs.sentry.io/error-reporting/configuration/?platform=node#dsn) for forwarding error logs.
