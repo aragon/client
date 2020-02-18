@@ -30,13 +30,13 @@ Which source to load app frontend assets from. Can be one of `ipfs` (uses the co
 
 ## Ethereum Providers
 
-### `ARAGON_PORTIS_DAPP_ID`
-
-API key from [Portis](portis.io). Requires separate keys for testnet / mainnet.
-
 ### `ARAGON_FORTMATIC_API_KEY`
 
 API key from [Formatic](fortmatic.com). Requires separate keys for testnet / mainnet.
+
+### `ARAGON_PORTIS_DAPP_ID`
+
+API key from [Portis](portis.io). Requires separate keys for testnet / mainnet.
 
 ## 3rd Party APIs
 
