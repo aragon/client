@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require('dotenv').config()
+
 const version = require('../package.json').version
 const execute = require('child_process').execSync
 
