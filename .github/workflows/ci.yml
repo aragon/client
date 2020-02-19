@@ -8,12 +8,12 @@ jobs:
     - name: Install node
       uses: actions/setup-node@v1
       with:
-        node-version: 10
+        node-version: 12
     - name: npm install
       run: npm install
-    - name: npm lint and build
-      run: |
-        npm run lint
-        npm run build
+    - name: npm build
+      run: npm run build
+    - name: npm test
+      run: npm run test
     env:
       CI: true
