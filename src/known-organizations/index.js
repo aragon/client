@@ -10,6 +10,7 @@ import onehive from './images/1hive.svg'
 import aragonMesh from './images/aragon-mesh.svg'
 import lightwaveImage from './images/lightwave.svg'
 import saintFameImage from './images/saint-fame.svg'
+import decentralandImage from './images/decentraland.svg'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -19,6 +20,13 @@ const TEMPLATE_MEMBERSHIP = 'Membership'
 export const KnownOrganizations = {
   main: new Map(
     [
+      {
+        address: '0xF47917B108ca4B820CCEA2587546fbB9f7564b56',
+        domain: 'dcl.eth',
+        image: decentralandImage,
+        name: 'Decentraland',
+        template: TEMPLATE_DEMOCRACY,
+      },
       {
         address: '0xfe1f2de598f42ce67bb9aad5ad473f0272d09b74',
         domain: 'meloncouncil.eth',

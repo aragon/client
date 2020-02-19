@@ -1,5 +1,10 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+# configuration
+# (keep `.env.sample`, but ignore all other `.env`s)
+!.env.sample
+.env*
+
 # dependencies
 node_modules/
 
@@ -9,13 +14,12 @@ coverage/
 # production
 public/
 
+# zeit now configuration
+.now
+
 # misc
 .DS_Store
 .cache
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 npm-debug.log*
 yarn-debug.log*

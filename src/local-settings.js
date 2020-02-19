@@ -11,7 +11,6 @@ const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 const SENTRY_DSN = 'SENTRY_DSN'
 const PORTIS_DAPP_ID = 'PORTIS_DAPP_ID'
 const FORTMATIC_API_KEY = 'FORTMATIC_API_KEY'
-const FORTMATIC_SITE_VERIFICATION = 'FORTMATIC_SITE_VERIFICATION'
 
 // Parcel requires env vars to be declared statically.
 const CONFIGURATION_VARS = [
@@ -59,7 +58,6 @@ const CONFIGURATION_VARS = [
   [CLIENT_THEME, process.env.ARAGON_CLIENT_THEME],
   [PORTIS_DAPP_ID, process.env.ARAGON_PORTIS_DAPP_ID],
   [FORTMATIC_API_KEY, process.env.ARAGON_FORTMATIC_API_KEY],
-  [FORTMATIC_SITE_VERIFICATION, process.env.ARAGON_FORTMATIC_SITE_VERIFICATION],
 ].reduce(
   (acc, [option, envValue, envValueCompat]) => ({
     ...acc,
