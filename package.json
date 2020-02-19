@@ -102,7 +102,7 @@
     "build:staging": "cross-env ARAGON_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm run build",
     "build:ropsten": "cross-env ARAGON_ETH_NETWORK_TYPE=ropsten npm run build",
     "lint": "eslint ./src",
-    "test": "npm run lint && npm run jest",
+    "test": "npm run lint",
     "jest": "jest",
     "publish:major": "node scripts/publish major --only-content --files public/",
     "publish:minor": "node scripts/publish minor --only-content --files public/",
