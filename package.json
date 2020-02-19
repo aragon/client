@@ -140,6 +140,7 @@
   "jest": {
     "moduleNameMapper": {
       "\\.(svg|png)$": "<rootDir>/src/test/empty-string.js"
-    }
+    },
+    "moduleDirectories": ["<rootDir>/node_modules"]
   }
 }
