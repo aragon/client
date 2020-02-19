@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
-    "@aragon/ui": "^1.3.0",
+    "@aragon/ui": "^1.3.1",
     "@aragon/wrapper": "^5.0.0-rc.25",
     "@sentry/browser": "^5.5.0",
     "@ungap/event-target": "^0.1.0",
@@ -65,7 +65,7 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^24.9.0",
+    "babel-jest": "^25.1.0",
     "babel-plugin-styled-components": "^1.10.6",
     "cross-env": "^5.2.0",
     "eslint": "^5.6.0",
@@ -81,7 +81,7 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "eslint-plugin-standard": "^4.0.0",
     "husky": "^1.0.1",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
     "lint-staged": "^8.1.1",
     "parcel-bundler": "^1.10.1",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
@@ -103,7 +103,7 @@
     "build:staging": "cross-env ARAGON_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm run build",
     "build:ropsten": "cross-env ARAGON_ETH_NETWORK_TYPE=ropsten npm run build",
     "lint": "eslint ./src",
-    "test": "npm run lint",
+    "test": "npm run lint && npm run jest",
     "jest": "jest",
     "publish:major": "node scripts/publish major --only-content --files public/",
     "publish:minor": "node scripts/publish minor --only-content --files public/",
@@ -140,6 +140,7 @@
   "jest": {
     "moduleNameMapper": {
       "\\.(svg|png)$": "<rootDir>/src/test/empty-string.js"
-    }
+    },
+    "moduleDirectories": ["<rootDir>/node_modules"]
   }
 }
