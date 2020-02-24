@@ -70,7 +70,7 @@ function CircleGraph({ value, label, size, strokeWidth }) {
               css={`
                 font-size: 52px;
                 font-weight: 600;
-                color: #25314d;
+                color: ${theme.surfaceContent};
               `}
             >
               {progressValue.interpolate(t =>
