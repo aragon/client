@@ -37,7 +37,8 @@ LocalIdentityModal.propTypes = {
   onSave: PropTypes.func.isRequired,
 }
 
-const LocalModal = ({ address, label, onCancel, onSave }) => {
+function LocalModal({ address, label, onCancel, onSave }) {
+  const theme = useTheme()
   const [action, setAction] = React.useState(null)
   const [error, setError] = React.useState(null)
   const labelInput = React.useRef(null)
@@ -78,7 +79,20 @@ const LocalModal = ({ address, label, onCancel, onSave }) => {
 
   return (
     <EscapeOutside onEscapeOutside={onCancel}>
-      <Wrap>
+      <div
+        css={`
+          background: ${theme.surface};
+          max-width: calc(100vw - 32px);
+
+          ${breakpoint(
+            'medium',
+            `
+              /* wide identity badge + paddings */
+              min-width: ${400 + 16 * 2}px;
+            `
+          )};
+        `}
+      >
         <h3
           css={`
             ${textStyle('title4')};
@@ -109,7 +123,7 @@ const LocalModal = ({ address, label, onCancel, onSave }) => {
             Save
           </StyledSaveButton>
         </Controls>
-      </Wrap>
+      </div>
     </EscapeOutside>
   )
 }
@@ -124,19 +138,6 @@ LocalModal.propTypes = {
 const Error = styled.div`
   color: #f56a6a;
   text-transform: initial;
-`
-
-const Wrap = styled.div`
-  background: #fff;
-  max-width: calc(100vw - 32px);
-
-  ${breakpoint(
-    'medium',
-    `
-      /* wide identity badge + paddings */
-      min-width: ${400 + 16 * 2}px;
-    `
-  )};
 `
 
 const Description = styled.p`

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import {
   Bar,
   ButtonIcon,
@@ -39,6 +38,8 @@ const CUSTOM_LABELS_INDEX = 0
 const NETWORK_INDEX = 1
 const NOTIFICATIONS_INDEX = 2
 const HELP_AND_FEEDBACK_INDEX = 3
+
+const AnimatedDiv = animated.div
 
 function GlobalPreferences({
   apps,
@@ -271,9 +272,7 @@ function AnimatedGlobalPreferences(props) {
         /* eslint-disable react/prop-types */
         // z-index 2 on mobile keeps the menu above this preferences modal
         (({ opacity, enterProgress, blocking }) => (
-          <AnimatedWrap
-            accent={theme.accent}
-            surface={theme.surface}
+          <AnimatedDiv
             style={{
               zIndex: 1,
               pointerEvents: blocking ? 'auto' : 'none',
@@ -285,6 +284,19 @@ function AnimatedGlobalPreferences(props) {
                 `
               ),
             }}
+            css={`
+              position: fixed;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              overflow: auto;
+              min-width: 360px;
+              padding-bottom: ${2 * GU}px;
+              border-top: 2px solid ${theme.accent};
+              background: ${theme.surface};
+              ${breakpoint('medium', `padding-bottom:0;`)}
+            `}
           >
             <GlobalPreferences
               {...props}
@@ -293,7 +305,7 @@ function AnimatedGlobalPreferences(props) {
               subsection={subsection}
               onNavigation={handleNavigation}
             />
-          </AnimatedWrap>
+          </AnimatedDiv>
         ))
       /* eslint-enable react/prop-types */
       }
@@ -306,21 +318,5 @@ AnimatedGlobalPreferences.propTypes = {
   onScreenChange: PropTypes.func.isRequired,
   wrapper: PropTypes.object,
 }
-
-const AnimatedWrap = styled(animated.div)`
-  position: fixed;
-  background: #fff;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  min-width: 360px;
-  border-top: ${({ accent }) => `2px solid ${accent}`};
-  background: ${({ surface }) => surface};
-  overflow: auto;
-  padding-bottom: ${2 * GU}px;
-
-  ${breakpoint('medium', `padding-bottom:0;`)}
-`
 
 export default React.memo(AnimatedGlobalPreferences)
