@@ -3,21 +3,18 @@ import PropTypes from 'prop-types'
 import {
   Button,
   GU,
-  IconConnect,
   Link,
   Modal,
   textStyle,
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { useWallet } from '../../wallet'
 import providersImage from './assets/providers.png'
 
 function ConnectModal({ account, onClose, onConnect, visible }) {
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
-  const wallet = useWallet()
 
   const modalWidth = useCallback(
     ({ width }) => Math.min(55 * GU, width - 4 * GU),
@@ -92,13 +89,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
             `}
           />
         </div>
-        <Button
-          icon={<IconConnect />}
-          label="Connect account"
-          mode="strong"
-          onClick={() => wallet.activate()}
-          wide
-        />
+        <Button label="Close" mode="strong" onClick={onClose} wide />
       </section>
     </Modal>
   )
