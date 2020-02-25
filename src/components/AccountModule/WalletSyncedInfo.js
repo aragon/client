@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { GU, Link } from '@aragon/ui'
 import { network } from '../../environment'
 import { getAppPath, getPreferencesSearch } from '../../routing'
-import useSyncState from './useSyncState'
 import {
   STATUS_CLIENT_CONNECTION_DROPPED,
   STATUS_CONNECTION_OK,
@@ -13,22 +12,7 @@ import {
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
 
-function WalletSyncedInfo({
-  clientListening,
-  clientOnline,
-  clientSyncDelay,
-  locator,
-  walletSyncDelay,
-  walletListening,
-}) {
-  const { header, info, status } = useSyncState(
-    clientListening,
-    walletListening,
-    clientOnline,
-    clientSyncDelay,
-    walletSyncDelay
-  )
-
+function WalletSyncedInfo({ header, info, locator, status }) {
   return (
     <React.Fragment>
       {header && (
@@ -62,12 +46,17 @@ function WalletSyncedInfo({
 }
 
 WalletSyncedInfo.propTypes = {
-  clientListening: PropTypes.bool,
-  clientOnline: PropTypes.bool,
-  clientSyncDelay: PropTypes.number,
+  header: PropTypes.string,
+  info: PropTypes.string,
   locator: PropTypes.object,
-  walletListening: PropTypes.bool,
-  walletSyncDelay: PropTypes.number,
+  status: PropTypes.oneOf([
+    STATUS_CLIENT_CONNECTION_DROPPED,
+    STATUS_CONNECTION_OK,
+    STATUS_MAJOR_NETWORK_SLOWDOWN,
+    STATUS_NETWORK_SYNC_ISSUES,
+    STATUS_TOO_LITTLE_ETH,
+    STATUS_WALLET_CONNECTION_DROPPED,
+  ]),
 }
 
 function ConnectionInfoMessage({ connectionStatus, locator }) {

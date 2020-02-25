@@ -18,6 +18,7 @@ import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
 import {
   useNetworkConnectionData,
+  useSyncState,
   useWalletConnectionDetails,
 } from './connection-hooks'
 import WalletSyncedInfo from './WalletSyncedInfo'
@@ -44,6 +45,13 @@ function AccountModuleConnectedScreen({
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 
+  const { header, info, status } = useSyncState(
+    clientListening,
+    walletListening,
+    clientOnline,
+    clientSyncDelay,
+    walletSyncDelay
+  )
   const { connectionMessage, connectionColor } = useWalletConnectionDetails(
     clientListening,
     walletListening,
@@ -155,12 +163,10 @@ function AccountModuleConnectedScreen({
         </div>
       ) : (
         <WalletSyncedInfo
-          clientListening={clientListening}
-          clientOnline={clientOnline}
-          clientSyncDelay={clientSyncDelay}
+          header={header}
+          info={info}
           locator={locator}
-          walletListening={walletListening}
-          walletSyncDelay={walletSyncDelay}
+          status={status}
         />
       )}
 
