@@ -1,16 +1,17 @@
 import aragonGovernanceImage from './images/aragon-governance.svg'
+import aragonMesh from './images/aragon-mesh.svg'
 import aragonNetworkImage from './images/aragon-network.svg'
 import aragonOneImage from './images/aragon-one.svg'
-import brightIdImage from './images/brightid.svg'
-import melonCouncilImage from './images/melon-council.svg'
 import blankDaoImage from './images/blankdao.svg'
+import brightIdImage from './images/brightid.svg'
+import decentralandImage from './images/decentraland.svg'
+import lexdaoImage from './images/lexdao.png'
+import lightwaveImage from './images/lightwave.svg'
 import livepeerImage from './images/livepeer.svg'
+import melonCouncilImage from './images/melon-council.svg'
 import myBitImage from './images/mybit.svg'
 import onehive from './images/1hive.svg'
-import aragonMesh from './images/aragon-mesh.svg'
-import lightwaveImage from './images/lightwave.svg'
 import saintFameImage from './images/saint-fame.svg'
-import decentralandImage from './images/decentraland.svg'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -102,6 +103,13 @@ export const KnownOrganizations = {
         name: 'Saint Fame',
         image: saintFameImage,
         template: TEMPLATE_REPUTATION,
+      },
+      {
+        address: '0xa365A8429FceFdbE1E684dDdDA3531b6e8d96e75',
+        domain: 'lexdao.aragonid.eth',
+        image: lexdaoImage,
+        name: 'lexDAO',
+        template: TEMPLATE_MEMBERSHIP,
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),
