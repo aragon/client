@@ -12,7 +12,7 @@ import melonCouncilImage from './images/melon-council.svg'
 import myBitImage from './images/mybit.svg'
 import onehive from './images/1hive.svg'
 import saintFameImage from './images/saint-fame.svg'
-import pieDAOImage from './images/pie-dao.svg'
+import pieDAOImage from './images/pie-dao.png'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
