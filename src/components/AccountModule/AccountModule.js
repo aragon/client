@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useWallet } from '../../wallet'
 import { useLocalIdentity } from '../../hooks'
-import { useSyncInfo } from './useSyncInfo'
 import {
   useNetworkConnectionData,
+  useSyncInfo,
   useWalletConnectionDetails,
 } from './connection-hooks'
 import AccountModulePopover from './AccountModulePopover'
@@ -24,13 +24,13 @@ const SCREENS = [
 ]
 
 function AccountModule({ locator }) {
-  const buttonRef = useRef()
-  const wallet = useWallet()
   const [opened, setOpened] = useState(false)
   const [activatingDelayed, setActivatingDelayed] = useState(false)
   const [activationError, setActivationError] = useState(null)
+  const buttonRef = useRef()
+  const wallet = useWallet()
 
-  const { account, activating } = wallet
+  const { account, activating, providerInfo } = wallet
 
   const clearError = useCallback(() => setActivationError(null), [])
 
@@ -88,9 +88,15 @@ function AccountModule({ locator }) {
 
   const { screenIndex, direction } = useMemo(() => {
     const screenId = (() => {
-      if (activationError) return 'error'
-      if (activatingDelayed) return 'connecting'
-      if (account) return 'connected'
+      if (activationError) {
+        return 'error'
+      }
+      if (activatingDelayed) {
+        return 'connecting'
+      }
+      if (account) {
+        return 'connected'
+      }
       return 'providers'
     })()
 
@@ -105,17 +111,14 @@ function AccountModule({ locator }) {
   const screen = SCREENS[screenIndex]
   const screenId = screen.id
 
-  const handlePopoverClose = useCallback(
-    reject => {
-      if (screenId === 'connecting' || screenId === 'error') {
-        // reject closing the popover
-        return false
-      }
-      setOpened(false)
-      setActivationError(null)
-    },
-    [screenId]
-  )
+  const handlePopoverClose = useCallback(() => {
+    if (screenId === 'connecting' || screenId === 'error') {
+      // reject closing the popover
+      return false
+    }
+    setOpened(false)
+    setActivationError(null)
+  }, [screenId])
 
   return (
     <div
@@ -126,7 +129,7 @@ function AccountModule({ locator }) {
         height: 100%;
       `}
     >
-      {screen.id === 'connected' ? (
+      {screenId === 'connected' ? (
         <ButtonAccount
           connectionColor={connectionColor}
           connectionMessage={connectionMessage}
@@ -149,7 +152,7 @@ function AccountModule({ locator }) {
           account,
           activating: activatingDelayed,
           activationError,
-          providerInfo: wallet.providerInfo,
+          providerInfo,
           screenId,
         }}
         screenKey={({
@@ -202,6 +205,7 @@ function AccountModule({ locator }) {
     </div>
   )
 }
+
 AccountModule.propTypes = {
   locator: PropTypes.object,
 }
