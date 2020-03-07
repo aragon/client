@@ -17,6 +17,7 @@ function WalletContextProvider({ children }) {
     balance,
     ethereum,
     activated,
+    activating,
     ...walletBaseRest
   } = useWalletBase()
 
@@ -63,13 +64,13 @@ function WalletContextProvider({ children }) {
       ...walletBaseRest,
     }),
     [
+      activated,
       account,
       balance,
       ethereum,
       networkType,
       walletBaseRest,
       walletWeb3,
-      activated,
     ]
   )
 
