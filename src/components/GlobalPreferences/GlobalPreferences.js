@@ -89,7 +89,7 @@ function GlobalPreferences({
   }, [])
 
   return (
-    <div ref={container} tabIndex="0">
+    <div ref={container} tabIndex="0" css="outline: 0">
       <Layout css="z-index: 2">
         <Close
           compact={compact}
