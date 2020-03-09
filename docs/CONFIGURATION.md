@@ -28,6 +28,30 @@ Url of the [IPFS](https://ipfs.io) gateway to load APM repos from. If you intend
 
 Which source to load app frontend assets from. Can be one of `ipfs` (uses the configured IPFS gateway) or `local` (local development servers for each app, running on `localhost:300x`). If you intend to serve assets from a local IPFS daemon, you should set this to `ipfs`.
 
+It is also possible to define how every app is loaded individually using a comma-separated list, which contains a series of locations defined as `<app ID>:<app location>`.
+
+```console
+ARAGON_APP_LOCATOR=0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae:http://localhost:1234,0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae:http://localhost:3333 npm start
+```
+
+Individual app locators can also its “known name” if it exist. Known names are `Agent`, `Finance`, `Fundraising`, `Survey`, `TokenManager`, `Vault`, and `Voting`. When a known name is used without any location, they will get fetched them from their [assigned local ports](src/known-app-ids.js), which are used by their respective development servers (see [aragon-apps](https://github.com/aragon/aragon-apps)).
+
+```console
+ARAGON_APP_LOCATOR=Agent,Finance npm start
+```
+
+Locations can also be a domain or an IP without the `http://` prefix, in which case it will get added:
+
+```console
+ARAGON_APP_LOCATOR=Agent:localhost:1234,Finance:192.168.1.4 npm start
+```
+
+And they can also be a port, in which case `http://localhost` will get used:
+
+```console
+ARAGON_APP_LOCATOR=Agent:3333,Finance:4444 npm start
+```
+
 ## Ethereum Providers
 
 ### `ARAGON_FORTMATIC_API_KEY`
