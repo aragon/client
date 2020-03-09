@@ -243,7 +243,7 @@ const Organization = React.memo(function Organization({
                   ${textStyle('body2')}
                 `}
               >
-                Import this organization's smart contracts into your Tenderly
+                Import this organization’s smart contracts into your Tenderly
                 dashboard.
               </p>
               <Button
