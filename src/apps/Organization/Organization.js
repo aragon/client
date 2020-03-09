@@ -176,62 +176,6 @@ const Organization = React.memo(function Organization({
           </React.Fragment>
         )}
       </Box>
-      {hasFinanceApp && testTokensEnabled(network.type) && (
-        <Box heading="Request test tokens">
-          <p
-            css={`
-              margin-bottom: ${2 * GU}px;
-              ${textStyle('body2')}
-            `}
-          >
-            Deposit some tokens into your organization for testing purposes.
-          </p>
-          <Button
-            label="Request test tokens"
-            icon={<IconCoin />}
-            display="all"
-            onClick={handleDepositTestTokens}
-            disabled={!enableTransactions}
-            css={`
-              margin-bottom: ${2 * GU}px;
-            `}
-          />
-          {enableTransactions ? (
-            <Info>
-              <p>
-                Requesting tokens will assign random{' '}
-                <strong css="font-weight: 800">test tokens</strong> to your
-                organization. These tokens are named after existing projects,
-                but keep in mind{' '}
-                <strong css="font-weight: 800">they are not real tokens</strong>
-                .
-              </p>
-              <p
-                css={`
-                  margin-top: ${1 * GU}px;
-                `}
-              >
-                You can view the received tokens in{' '}
-                <OpenAppButton onClick={handleOpenFinanceApp}>
-                  Finance
-                </OpenAppButton>
-                .
-              </p>
-            </Info>
-          ) : (
-            <Info mode="warning">
-              {`Please ${
-                wallet.networkType !== network.type
-                  ? `select the ${sanitizeNetworkType(network.type)} network`
-                  : 'unlock your account'
-              } in ${getProviderString(
-                'your Ethereum provider',
-                wallet.providerInfo.id
-              )}.`}
-            </Info>
-          )}
-        </Box>
-      )}
       {appsLoading ? (
         <Box heading="Installed Aragon apps">
           <div
@@ -328,6 +272,62 @@ const Organization = React.memo(function Organization({
             </Info>
           </Box>
         </React.Fragment>
+      )}
+      {hasFinanceApp && testTokensEnabled(network.type) && (
+        <Box heading="Request test tokens">
+          <p
+            css={`
+              margin-bottom: ${2 * GU}px;
+              ${textStyle('body2')}
+            `}
+          >
+            Deposit some tokens into your organization for testing purposes.
+          </p>
+          <Button
+            label="Request test tokens"
+            icon={<IconCoin />}
+            display="all"
+            onClick={handleDepositTestTokens}
+            disabled={!enableTransactions}
+            css={`
+              margin-bottom: ${2 * GU}px;
+            `}
+          />
+          {enableTransactions ? (
+            <Info>
+              <p>
+                Requesting tokens will assign random{' '}
+                <strong css="font-weight: 800">test tokens</strong> to your
+                organization. These tokens are named after existing projects,
+                but keep in mind{' '}
+                <strong css="font-weight: 800">they are not real tokens</strong>
+                .
+              </p>
+              <p
+                css={`
+                  margin-top: ${1 * GU}px;
+                `}
+              >
+                You can view the received tokens in{' '}
+                <OpenAppButton onClick={handleOpenFinanceApp}>
+                  Finance
+                </OpenAppButton>
+                .
+              </p>
+            </Info>
+          ) : (
+            <Info mode="warning">
+              {`Please ${
+                wallet.networkType !== network.type
+                  ? `select the ${sanitizeNetworkType(network.type)} network`
+                  : 'unlock your account'
+              } in ${getProviderString(
+                'your Ethereum provider',
+                wallet.providerInfo.id
+              )}.`}
+            </Info>
+          )}
+        </Box>
       )}
     </React.Fragment>
   )
