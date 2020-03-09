@@ -4,7 +4,8 @@
       "@babel/preset-env",
       {
         "modules": false,
-        "useBuiltIns": false
+        "useBuiltIns": "entry",
+        "core-js": 3,
       }
     ],
     "@babel/preset-react"

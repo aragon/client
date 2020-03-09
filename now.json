@@ -3,10 +3,14 @@
   "public": true,
   "scope": "aragon",
   "alias": "nightly-rinkeby.aragon.org",
-  "builds": [
-    { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build/rinkeby" } }
-  ],
   "github": {
     "silent": true
+  },
+  "build": {
+    "env": {
+      "ARAGON_FORTMATIC_API_KEY": "@aragon-client-fortmatic-testnet-api-key",
+      "ARAGON_PORTIS_DAPP_ID": "@aragon-client-portis-dapp-id",
+      "ARAGON_SENTRY_DSN": "@aragon-client-sentry-dsn"
+    }
   }
 }

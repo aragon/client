@@ -1,16 +1,13 @@
 import Web3 from 'web3'
-import provider from 'eth-provider'
 import appIds from './known-app-ids'
-import getAppLocator from './app-locator'
+import { parseAppLocator } from './app-locator'
 import {
-  getAssetBridge,
+  getAppLocator,
   getDefaultEthNode,
   getEthNetworkType,
   getIpfsGateway,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
-import { noop } from './utils'
-import { getInjectedProvider, toWei } from './web3-utils'
 
 const appsOrder = [
   'TokenManager',
@@ -20,6 +17,7 @@ const appsOrder = [
   'Agent',
   'Fundraising',
 ]
+
 const networkType = getEthNetworkType()
 
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
@@ -74,7 +72,7 @@ export const appOverrides = {
   [appIds['TokenManager']]: { name: 'Tokens' },
 }
 
-export const appLocator = getAppLocator(getAssetBridge())
+export const appLocator = parseAppLocator(getAppLocator())
 
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
@@ -82,6 +80,7 @@ export const ipfsDefaultConf = {
 
 const networkConfig = getNetworkConfig(networkType)
 export const network = networkConfig.settings
+export const providers = networkConfig.providers
 
 export const contractAddresses = {
   ensRegistry: networkConfig.addresses.ensRegistry,
@@ -106,14 +105,4 @@ export const defaultEthNode =
 
 export const web3Providers = {
   default: new Web3.providers.WebsocketProvider(defaultEthNode),
-  // Only use eth-provider to connect to frame if no injected provider is detected
-  wallet: getInjectedProvider() || provider(['frame']),
 }
-
-export const defaultGasPriceFn =
-  networkType === 'main'
-    ? noop // On mainnet rely on the provider's gas estimation
-    : () => toWei('10', 'gwei') // on all other networks just hardcode it
-
-// Get the address of the demo DAO
-export const getDemoDao = () => process.env.ARAGON_DEMO_DAO || ''

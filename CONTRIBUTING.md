@@ -20,7 +20,7 @@ Start small, pick a subject you care about, are familiar with, or want to learn.
 
 If you're not already familiar with git or Github, here are a couple of friendly tutorials: [First Contributions](https://github.com/firstcontributions/first-contributions), [Open Source Guide](https://opensource.guide/), and [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
-An [architecture guide](./ARCHITECTURE.md) is available for the Aragon client's code bases to help guide you towards your first contribution.
+An [architecture guide](docs/ARCHITECTURE.md) is available for the Aragon client's code bases to help guide you towards your first contribution. You may especially find the [guide for setting up your local development environment](docs/FRONTEND_SETUP.md) useful!
 
 ## How to file an issue or report a bug
 
@@ -64,7 +64,7 @@ Windows users may need to install the [windows-build-tools](https://www.npmjs.co
 
 #### App frontends
 
-For local development, where you may want to use a local version of [aragonUI](https://github.com/aragon/aragon-ui) or connect to a locally running instance of [aragon-apps](https://github.com/aragon/aragon-apps), you can follow [`@bpierre`'s gist](https://gist.github.com/bpierre/22572415b90577aa17e5953fa68980eb).
+For local development, where you may want to use a local version of [aragonUI](https://github.com/aragon/aragon-ui) or connect to a locally running instance of [aragon-apps](https://github.com/aragon/aragon-apps), you should follow the [frontend development setup guide](docs/FRONTEND_SETUP.md).
 
 In the future, we will improve this flow to make it much easier to get started.
 

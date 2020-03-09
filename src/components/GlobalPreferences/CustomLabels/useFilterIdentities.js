@@ -19,7 +19,6 @@ function useFilterIdentities(identities) {
     filteredIdentities,
     handleSearchTermChange: setSearchTerm,
     searchTerm,
-    onSearchTerm: setSearchTerm,
   }
 }
 

@@ -10,7 +10,7 @@ import imgCheckFinance from './assets/check-finance.png'
 import imgNewPayment from './assets/new-payment.png'
 import imgCreateNewVote from './assets/create-new-vote.png'
 
-const EAGLE_DIMENSIONS = [1307, 877]
+const EAGLE_DIMENSIONS = [1241, 833]
 
 const ACTIONS = [
   {

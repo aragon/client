@@ -153,7 +153,7 @@ export default function NotificationsLogin({
 
       <Info>
         {hasLoggedOut
-          ? `You need to enter with your email address because your are using a
+          ? `You need to enter with your email address because you are using a
         different browser session or device to access your subsciptions. This
         process doens’t require a password, just for you to confirm your email
         address.`

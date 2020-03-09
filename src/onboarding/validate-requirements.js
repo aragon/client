@@ -18,15 +18,11 @@ function validateCreationRequirements(account, balance, isContractAccount) {
   if (!account) {
     return ['no-account']
   }
-  if (isBalanceUnknown(balance)) {
-    return [
-      'unknown-balance',
-      {
-        minimumBalance: fromWei(String(MINIMUM_BALANCE)),
-      },
-    ]
-  }
-  if (balance.lt(MINIMUM_BALANCE) && !(isContractAccount === true)) {
+  if (
+    !isBalanceUnknown(balance) &&
+    balance.lt(MINIMUM_BALANCE) &&
+    !(isContractAccount === true)
+  ) {
     return [
       'minimum-balance',
       {

@@ -51,7 +51,7 @@ function TemplateCard({ onOpen, template }) {
               `}
             >
               <span>{template.name}</span>
-              {(template.disabled || template.new) && (
+              {(template.disabled || template.new || template.beta) && (
                 <Tag
                   mode="new"
                   css={`
@@ -59,7 +59,11 @@ function TemplateCard({ onOpen, template }) {
                     flex-shrink: 0;
                   `}
                 >
-                  {template.disabled ? 'Coming soon' : 'New'}
+                  {template.disabled
+                    ? 'Coming soon'
+                    : template.beta
+                    ? 'Beta'
+                    : 'New'}
                 </Tag>
               )}
             </h1>
@@ -78,14 +82,7 @@ function TemplateCard({ onOpen, template }) {
             padding: 0 ${3 * GU}px ${2 * GU}px;
           `}
         >
-          {!template.disabled && (
-            <Button
-              wide
-              disabled={template.disabled}
-              label="View details"
-              onClick={handleDetailsClick}
-            />
-          )}
+          <Button wide label="View details" onClick={handleDetailsClick} />
         </div>
       </section>
     </Card>

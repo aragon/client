@@ -1,206 +1,260 @@
-import React, { useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useWallet } from '../../wallet'
+import { useLocalIdentity } from '../../hooks'
 import {
-  Button,
-  EthIdenticon,
-  Popover,
-  GU,
-  IconDown,
-  IconConnect,
-  RADIUS,
-  textStyle,
-  useTheme,
-  IdentityBadge,
-  unselectable,
-} from '@aragon/ui'
-import { shortenAddress } from '../../web3-utils'
-import { useAccount } from '../../account'
+  useNetworkConnectionData,
+  useSyncInfo,
+  useWalletConnectionDetails,
+} from './connection-hooks'
+import AccountModulePopover from './AccountModulePopover'
+import ButtonConnect from './ButtonConnect'
+import ButtonAccount from './ButtonAccount'
 
-function getNetworkName(networkId) {
-  if (networkId === 'main') return 'Mainnet'
-  if (networkId === 'rinkeby') return 'Rinkeby'
-  return networkId
-}
+import ProvidersScreen from './AccountModuleProvidersScreen'
+import ConnectingScreen from './AccountModuleConnectingScreen'
+import ConnectedScreen from './AccountModuleConnectedScreen'
+import ErrorScreen from './AccountModuleErrorScreen'
 
-function AccountModule({ compact }) {
-  const { connected } = useAccount()
-  return connected ? <ConnectedMode /> : <NonConnectedMode compact={compact} />
-}
+const SCREENS = [
+  { id: 'providers', title: 'Use account from' },
+  { id: 'connecting', title: 'Use account from' },
+  { id: 'connected', title: 'Active account' },
+  { id: 'error', title: 'Connection error' },
+]
 
-AccountModule.propTypes = {
-  compact: PropTypes.bool,
-}
+function AccountModule({ locator }) {
+  const [opened, setOpened] = useState(false)
+  const [activatingDelayed, setActivatingDelayed] = useState(false)
+  const [activationError, setActivationError] = useState(null)
+  const buttonRef = useRef()
+  const wallet = useWallet()
 
-function NonConnectedMode({ compact }) {
-  const { enable } = useAccount()
+  const { account, activating, providerInfo } = wallet
+
+  const clearError = useCallback(() => setActivationError(null), [])
+
+  const open = useCallback(() => setOpened(true), [])
+  const toggle = useCallback(() => setOpened(opened => !opened), [])
+
+  const handleCancelConnection = useCallback(() => {
+    wallet.deactivate()
+  }, [wallet])
+
+  const handleActivate = useCallback(
+    async providerId => {
+      try {
+        await wallet.activate(providerId)
+      } catch (error) {
+        setActivationError(error)
+      }
+    },
+    [wallet]
+  )
+
+  const {
+    clientConnectionStatus,
+    clientListening,
+    clientOnline,
+    clientSyncDelay,
+    connectionColor,
+    connectionMessage,
+    hasNetworkMismatch,
+    label,
+    walletConnectionStatus,
+    walletListening,
+    walletSyncDelay,
+  } = useConnectionInfo()
+
+  // Always show the “connecting…” screen, even if there are no delay
+  useEffect(() => {
+    if (activationError) {
+      setActivatingDelayed(null)
+    }
+
+    if (activating) {
+      setActivatingDelayed(activating)
+      return
+    }
+
+    const timer = setTimeout(() => {
+      setActivatingDelayed(null)
+    }, 400)
+
+    return () => clearTimeout(timer)
+  }, [activating, activationError])
+
+  const previousScreenIndex = useRef(-1)
+
+  const { screenIndex, direction } = useMemo(() => {
+    const screenId = (() => {
+      if (activationError) {
+        return 'error'
+      }
+      if (activatingDelayed) {
+        return 'connecting'
+      }
+      if (account) {
+        return 'connected'
+      }
+      return 'providers'
+    })()
+
+    const screenIndex = SCREENS.findIndex(screen => screen.id === screenId)
+    const direction = previousScreenIndex.current > screenIndex ? -1 : 1
+
+    previousScreenIndex.current = screenIndex
+
+    return { direction, screenIndex }
+  }, [account, activationError, activatingDelayed])
+
+  const screen = SCREENS[screenIndex]
+  const screenId = screen.id
+
+  const handlePopoverClose = useCallback(() => {
+    if (screenId === 'connecting' || screenId === 'error') {
+      // reject closing the popover
+      return false
+    }
+    setOpened(false)
+    setActivationError(null)
+  }, [screenId])
+
   return (
     <div
+      ref={buttonRef}
       css={`
         display: flex;
         align-items: center;
-        text-align: left;
-        padding: 0 ${(compact ? 1 : 2) * GU}px;
-      `}
-    >
-      <Button
-        size={compact ? 'small' : 'medium'}
-        icon={<IconConnect />}
-        label="Enable account"
-        onClick={enable}
-        wide
-      />
-    </div>
-  )
-}
-
-NonConnectedMode.propTypes = {
-  compact: PropTypes.bool,
-}
-
-function ConnectedMode() {
-  const { address, label, networkId } = useAccount()
-  const theme = useTheme()
-  // const [opened, setOpened] = useState(false)
-
-  // const open = useCallback(() => {
-  //   setOpened(true)
-  // }, [])
-
-  // const close = useCallback(() => {
-  //   setOpened(false)
-  // }, [])
-
-  const containerRef = useRef()
-
-  const networkName = getNetworkName(networkId)
-
-  return (
-    <div
-      ref={containerRef}
-      css={`
-        display: flex;
         height: 100%;
-        ${unselectable};
       `}
     >
-      {/* <ButtonBase
-        onClick={open}
-        css={`
-          display: flex;
-          align-items: center;
-          text-align: left;
-          padding: 0 ${1 * GU}px 0 ${2 * GU}px;
-
-          &:active {
-            background: ${theme.surfacePressed};
+      {screenId === 'connected' ? (
+        <ButtonAccount
+          connectionColor={connectionColor}
+          connectionMessage={connectionMessage}
+          hasNetworkMismatch={hasNetworkMismatch}
+          label={label}
+          onClick={toggle}
+        />
+      ) : (
+        <ButtonConnect onClick={toggle} />
+      )}
+      <AccountModulePopover
+        direction={direction}
+        heading={screen.title}
+        keys={({ screenId }) => screenId + activating + activationError.name}
+        onClose={handlePopoverClose}
+        onOpen={open}
+        opener={buttonRef.current}
+        screenId={screenId}
+        screenData={{
+          account,
+          activating: activatingDelayed,
+          activationError,
+          providerInfo,
+          screenId,
+        }}
+        screenKey={({
+          account,
+          activating,
+          activationError,
+          providerInfo,
+          screenId,
+        }) =>
+          (activationError ? activationError.name : '') +
+          account +
+          activating +
+          providerInfo.id +
+          screenId
+        }
+        visible={opened}
+      >
+        {({ account, screenId, activating, activationError, providerInfo }) => {
+          if (screenId === 'connecting') {
+            return (
+              <ConnectingScreen
+                providerId={activating}
+                onCancel={handleCancelConnection}
+              />
+            )
           }
-        `}
-      > */}
-      <div
-        css={`
-          display: flex;
-          align-items: center;
-          text-align: left;
-          padding: 0 ${1 * GU}px 0 ${2 * GU}px;
-        `}
-      >
-        <div
-          css={`
-            position: relative;
-          `}
-        >
-          <EthIdenticon address={address} radius={RADIUS} />
-          <div
-            css={`
-              position: absolute;
-              bottom: -3px;
-              right: -3px;
-              width: 10px;
-              height: 10px;
-              background: ${theme.positive};
-              border: 2px solid ${theme.surface};
-              border-radius: 50%;
-            `}
-          />
-        </div>
-        <div
-          css={`
-            padding-left: ${1 * GU}px;
-            padding-right: ${0.5 * GU}px;
-          `}
-        >
-          <div
-            css={`
-              margin-bottom: -5px;
-              ${textStyle('body2')}
-            `}
-          >
-            {label ? (
-              <div
-                css={`
-                  overflow: hidden;
-                  max-width: ${16 * GU}px;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                `}
-              >
-                {label}
-              </div>
-            ) : (
-              <div>{shortenAddress(address)}</div>
-            )}
-          </div>
-          <div
-            css={`
-              font-size: 11px; /* doesn’t exist in aragonUI */
-              color: ${theme.surfaceContentSecondary};
-            `}
-          >
-            Connected {networkName ? `to ${networkName}` : ''}
-          </div>
-        </div>
-        {null && (
-          <IconDown
-            size="small"
-            css={`
-              color: ${theme.surfaceIcon};
-            `}
-          />
-        )}
-        {/* </ButtonBase> */}
-      </div>
-      <Popover
-        closeOnOpenerFocus
-        placement="bottom-end"
-        onClose={close}
-        visible={false}
-        opener={containerRef.current}
-      >
-        <section>
-          <h1
-            css={`
-              display: flex;
-              align-items: center;
-              height: ${4 * GU}px;
-              padding: 0 ${2 * GU}px;
-              ${textStyle('label2')};
-              color: ${theme.surfaceContentSecondary};
-              border-bottom: 1px solid ${theme.border};
-            `}
-          >
-            Ethereum connection
-          </h1>
-          <div
-            css={`
-              padding: ${3 * GU}px ${2 * GU}px;
-            `}
-          >
-            <IdentityBadge entity={address} compact />
-          </div>
-        </section>
-      </Popover>
+          if (screenId === 'connected') {
+            return (
+              <ConnectedScreen
+                account={account}
+                clientConnectionStatus={clientConnectionStatus}
+                clientListening={clientListening}
+                clientOnline={clientOnline}
+                clientSyncDelay={clientSyncDelay}
+                locator={locator}
+                providerInfo={providerInfo}
+                walletConnectionStatus={walletConnectionStatus}
+                walletListening={walletListening}
+                walletOnline={walletListening}
+                walletSyncDelay={walletSyncDelay}
+              />
+            )
+          }
+          if (screenId === 'error') {
+            return <ErrorScreen error={activationError} onBack={clearError} />
+          }
+          return <ProvidersScreen onActivate={handleActivate} />
+        }}
+      </AccountModulePopover>
     </div>
   )
+}
+
+AccountModule.propTypes = {
+  locator: PropTypes.object,
+}
+
+function useConnectionInfo() {
+  const wallet = useWallet()
+  const { name: label } = useLocalIdentity(wallet.account || '')
+
+  const {
+    isListening: walletListening,
+    isOnline: walletOnline,
+    connectionStatus: walletConnectionStatus,
+    syncDelay: walletSyncDelay,
+  } = useSyncInfo('wallet')
+
+  const {
+    isListening: clientListening,
+    isOnline: clientOnline,
+    connectionStatus: clientConnectionStatus,
+    syncDelay: clientSyncDelay,
+  } = useSyncInfo()
+
+  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
+
+  const { connectionMessage, connectionColor } = useWalletConnectionDetails(
+    clientListening,
+    walletListening,
+    clientOnline,
+    walletOnline,
+    clientSyncDelay,
+    walletSyncDelay,
+    walletNetworkName
+  )
+
+  return {
+    clientConnectionStatus,
+    clientListening,
+    clientOnline,
+    clientSyncDelay,
+    connectionColor,
+    connectionMessage,
+    hasNetworkMismatch,
+    label,
+    walletConnectionStatus,
+    walletListening,
+    walletNetworkName,
+    walletOnline,
+    walletSyncDelay,
+  }
 }
 
 export default AccountModule

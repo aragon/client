@@ -1,17 +1,10 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  ButtonBase,
-  GU,
-  IconSettings,
-  RADIUS,
-  useTheme,
-} from '@aragon/ui'
+import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
-import logo from '../../assets/logo.png'
+import HomeButton from '../../components/HomeButton/HomeButton'
 
-function OnboardingTopBar({ onHome, status, solid }) {
+function OnboardingTopBar({ locator, status, solid }) {
   const theme = useTheme()
 
   const handleSettingsClick = useCallback(() => {
@@ -35,7 +28,7 @@ function OnboardingTopBar({ onHome, status, solid }) {
           left: 0;
           right: 0;
           height: ${7.5 * GU}px;
-          background: rgba(255, 255, 255, ${solid ? 0.8 : 0});
+          background: ${theme.surface.alpha(solid ? 0.8 : 0)};
           transition: background 150ms ease-in-out;
           backdrop-filter: blur(6px);
         `}
@@ -44,52 +37,45 @@ function OnboardingTopBar({ onHome, status, solid }) {
           css={`
             position: absolute;
             top: 0;
+            z-index: 1;
             width: 100%;
             border-top: 2px solid ${theme.accent};
           `}
         />
-        <ButtonBase
-          onClick={onHome}
-          focusRingRadius={RADIUS}
-          title="Back to home"
+
+        <HomeButton
           css={`
             position: absolute;
             top: ${1 * GU}px;
             left: ${1 * GU}px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: ${1 * GU}px;
-            border-radius: ${RADIUS}px;
-            &:active {
-              background: ${theme.surfacePressed};
-            }
           `}
-        >
-          <img src={logo} width={4.5 * GU} alt="" />
-        </ButtonBase>
+        />
 
         <div
           css={`
             display: flex;
             align-items: center;
             position: absolute;
-            top: ${2 * GU}px;
+            top: 0;
             right: ${2 * GU}px;
+            height: 100%;
           `}
         >
           <div
             css={`
+              display: flex;
+              align-items: center;
               margin-right: ${1 * GU}px;
+              height: 100%;
             `}
           >
-            <AccountModule compact />
+            <AccountModule locator={locator} />
           </div>
           <Button
             display="icon"
             icon={<IconSettings />}
             label="Settings"
-            size="small"
+            size="medium"
             onClick={handleSettingsClick}
           />
         </div>
@@ -99,7 +85,7 @@ function OnboardingTopBar({ onHome, status, solid }) {
 }
 
 OnboardingTopBar.propTypes = {
-  onHome: PropTypes.func.isRequired,
+  locator: PropTypes.object,
   status: PropTypes.string.isRequired,
   solid: PropTypes.bool,
 }

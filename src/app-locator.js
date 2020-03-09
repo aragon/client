@@ -66,16 +66,16 @@ function getAppUrl(appId, location) {
 // "0x6b20…:3333": load the app with 0x6b20… ID from localhost & the 3333 port.
 // "Voting:http://example.com:4444/": load the Voting app from example.com & the 4444 port.
 //
-export default function getAppLocator(assetBridge) {
-  if (!assetBridge || assetBridge === 'ipfs') {
+export function parseAppLocator(appLocator) {
+  if (!appLocator || appLocator === 'ipfs') {
     return {}
   }
 
-  if (assetBridge === 'local') {
+  if (appLocator === 'local') {
     return DEFAULT_LOCAL_URLS
   }
 
-  return assetBridge.split(',').reduce((appLocator, bridge) => {
+  return appLocator.split(',').reduce((appLocator, bridge) => {
     const [app, location] = splitBridge(bridge)
 
     const appId = getAppId(app)

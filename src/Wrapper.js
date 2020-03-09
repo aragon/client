@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
-import { AppCenter, Home, Organization, Permissions } from './apps'
+import { AppCenter, Console, Home, Organization, Permissions } from './apps'
 import App404 from './components/App404/App404'
 import AppIFrame from './components/App/AppIFrame'
 import AppInternal from './components/App/AppInternal'
@@ -22,15 +22,8 @@ import {
   RepoType,
 } from './prop-types'
 import { getAppPath } from './routing'
-import {
-  APP_MODE_ORG,
-  APPS_STATUS_LOADING,
-  DAO_STATUS_LOADING,
-} from './symbols'
+import { APPS_STATUS_LOADING, DAO_STATUS_LOADING } from './symbols'
 import { addressesEqual } from './web3-utils'
-
-const SHOW_UPGRADE_MODAL_KEY = 'SHOW_UPGRADE_MODAL_FIRST_TIME'
-const OCTOBER_1ST_2019 = new Date('October 1 2019 00:00').getTime()
 
 class Wrapper extends React.PureComponent {
   static propTypes = {
@@ -44,16 +37,12 @@ class Wrapper extends React.PureComponent {
     historyPush: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
     locator: PropTypes.object.isRequired,
-    onRequestEnable: PropTypes.func.isRequired,
     openPreferences: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     transactionBag: PropTypes.object,
     signatureBag: PropTypes.object,
     visible: PropTypes.bool.isRequired,
-    walletNetwork: PropTypes.string,
-    walletProviderId: PropTypes.string,
-    walletWeb3: PropTypes.object,
     web3: PropTypes.object,
     wrapper: AragonType,
   }
@@ -62,9 +51,6 @@ class Wrapper extends React.PureComponent {
     connected: false,
     transactionBag: null,
     signatureBag: null,
-    walletNetwork: '',
-    walletProviderId: '',
-    walletWeb3: null,
   }
 
   state = {
@@ -77,7 +63,6 @@ class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     this.startIdentitySubscription()
-    this.showOrgUpgradePanelIfFirstVisit()
   }
 
   componentWillUnmount() {
@@ -86,8 +71,18 @@ class Wrapper extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     this.updateIdentityEvents(prevProps)
-    if (prevProps.locator !== this.props.locator) {
-      this.showOrgUpgradePanelIfFirstVisit()
+    this.updateInstancePath(prevProps)
+  }
+
+  updateInstancePath(prevProps) {
+    const { locator, wrapper } = this.props
+
+    const updated =
+      locator.instanceId !== prevProps.locator.instanceId ||
+      locator.instancePath !== prevProps.locator.instancePath
+
+    if (wrapper && updated) {
+      wrapper.setAppPath(locator.instanceId, locator.instancePath)
     }
   }
 
@@ -97,7 +92,7 @@ class Wrapper extends React.PureComponent {
 
       const {
         // This is not technically fully true, but let's assume that only these
-        // aspects be different between multiple instances of the same app
+        // aspects are different between multiple instances of the same app
         codeAddress: instanceCodeAddress,
         identifier: instanceIdentifier,
         proxyAddress: instanceProxyAddress,
@@ -153,9 +148,9 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  openApp = (instanceId, { params, localPath } = {}) => {
+  openApp = (instanceId, { instancePath } = {}) => {
     const { historyPush, locator } = this.props
-    historyPush(getAppPath({ dao: locator.dao, instanceId, params, localPath }))
+    historyPush(getAppPath({ dao: locator.dao, instanceId, instancePath }))
   }
 
   handleAppIFrameRef = appIFrame => {
@@ -200,14 +195,16 @@ class Wrapper extends React.PureComponent {
     this.setState({ appLoading: false })
   }
 
-  // params need to be a string
-  handleParamsRequest = params => {
-    this.openApp(this.props.locator.instanceId, { params })
+  handleAppMessage = ({ data: { name, value } }) => {
+    const { wrapper, locator } = this.props
+    if (name === 'ready') {
+      wrapper.setAppPath(locator.instanceId, locator.instancePath)
+    }
   }
 
   // Update the local path of the current instance
-  handlePathRequest = localPath => {
-    this.openApp(this.props.locator.instanceId, { localPath })
+  handlePathRequest = instancePath => {
+    this.openApp(this.props.locator.instanceId, { instancePath })
   }
 
   handleUpgradeModalOpen = () => {
@@ -227,19 +224,6 @@ class Wrapper extends React.PureComponent {
       upgradeModalOpened: false,
     })
   }
-  showOrgUpgradePanelIfFirstVisit = () => {
-    // Show the upgrade showcase on first load up to a certain point in time
-    if (
-      this.props.locator.mode === APP_MODE_ORG &&
-      localStorage.getItem(SHOW_UPGRADE_MODAL_KEY) !== 'false' &&
-      Date.now() < OCTOBER_1ST_2019
-    ) {
-      localStorage.setItem(SHOW_UPGRADE_MODAL_KEY, 'false')
-      this.setState({
-        upgradeModalOpened: true,
-      })
-    }
-  }
   hideOrgUpgradePanel = () => {
     this.setState({ orgUpgradePanelOpened: false })
   }
@@ -254,20 +238,14 @@ class Wrapper extends React.PureComponent {
       daoStatus,
       locator,
       openPreferences,
-      onRequestEnable,
       repos,
       transactionBag,
       signatureBag,
       visible,
-      walletNetwork,
-      walletProviderId,
-      walletWeb3,
       web3,
       wrapper,
     } = this.props
-
     const { appLoading, orgUpgradePanelOpened, upgradeModalOpened } = this.state
-
     const currentApp = apps.find(app =>
       addressesEqual(app.proxyAddress, locator.instanceId)
     )
@@ -298,9 +276,9 @@ class Wrapper extends React.PureComponent {
           connected={connected}
           daoAddress={daoAddress}
           daoStatus={daoStatus}
+          locator={locator}
           onOpenApp={this.openApp}
           onOpenPreferences={openPreferences}
-          onRequestEnable={onRequestEnable}
         >
           <AppLoader
             appLoading={appLoading}
@@ -309,21 +287,14 @@ class Wrapper extends React.PureComponent {
             daoLoading={daoStatus === DAO_STATUS_LOADING}
             instanceId={locator.instanceId}
           >
-            {this.renderApp(locator.instanceId, {
-              params: locator.params,
-              localPath: locator.localPath,
-            })}
+            {this.renderApp(locator.instanceId, locator.instancePath)}
           </AppLoader>
 
           <SignerPanel
             apps={apps}
             dao={locator.dao}
-            onRequestEnable={onRequestEnable}
             transactionBag={transactionBag}
             signatureBag={signatureBag}
-            walletNetwork={walletNetwork}
-            walletProviderId={walletProviderId}
-            walletWeb3={walletWeb3}
             web3={web3}
           />
 
@@ -347,7 +318,7 @@ class Wrapper extends React.PureComponent {
       </div>
     )
   }
-  renderApp(instanceId, { params, localPath }) {
+  renderApp(instanceId, instancePath) {
     const {
       apps,
       appsStatus,
@@ -355,9 +326,6 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       permissionsLoading,
       repos,
-      walletNetwork,
-      walletProviderId,
-      walletWeb3,
       wrapper,
     } = this.props
 
@@ -379,7 +347,7 @@ class Wrapper extends React.PureComponent {
             apps={apps}
             appsLoading={appsLoading}
             permissionsLoading={permissionsLoading}
-            localPath={localPath}
+            localPath={instancePath}
             onMessage={this.handleAppMessage}
             onPathRequest={this.handlePathRequest}
             wrapper={wrapper}
@@ -394,13 +362,13 @@ class Wrapper extends React.PureComponent {
           <AppCenter
             appInstanceGroups={this.getAppInstancesGroups(apps)}
             daoAddress={daoAddress}
-            params={params}
             repos={repos}
             canUpgradeOrg={canUpgradeOrg}
             reposLoading={reposLoading}
             onMessage={this.handleAppMessage}
             onUpgradeAll={this.showOrgUpgradePanel}
-            onParamsRequest={this.handleParamsRequest}
+            localPath={instancePath}
+            onPathRequest={this.handlePathRequest}
             wrapper={wrapper}
           />
         </AppInternal>
@@ -418,10 +386,15 @@ class Wrapper extends React.PureComponent {
             onMessage={this.handleAppMessage}
             onOpenApp={this.openApp}
             onShowOrgVersionDetails={this.handleUpgradeModalOpen}
-            walletNetwork={walletNetwork}
-            walletWeb3={walletWeb3}
-            walletProviderId={walletProviderId}
           />
+        </AppInternal>
+      )
+    }
+
+    if (instanceId === 'console') {
+      return (
+        <AppInternal>
+          <Console apps={apps} wrapper={wrapper} />
         </AppInternal>
       )
     }

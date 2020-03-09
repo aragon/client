@@ -2,12 +2,13 @@ import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
-  Checkbox,
+  Switch,
   Field,
   IconCheck,
   GU,
   Link,
   Modal,
+  Tag,
   textStyle,
   unselectable,
   useViewport,
@@ -85,6 +86,9 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
             </div>
             <h1
               css={`
+                display: flex;
+                align-items: center;
+
                 // Not in aragonUI - exceptionally used here
                 font-size: 40px;
                 font-weight: 600;
@@ -92,6 +96,21 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               `}
             >
               {template.name}
+              {(template.disabled || template.new || template.beta) && (
+                <Tag
+                  mode="new"
+                  css={`
+                    margin-left: ${1 * GU}px;
+                    flex-shrink: 0;
+                  `}
+                >
+                  {template.disabled
+                    ? 'Coming soon'
+                    : template.beta
+                    ? 'Beta'
+                    : 'New'}
+                </Tag>
+              )}
             </h1>
             <p
               css={`
@@ -163,7 +182,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
 
           {template.apps && template.apps.length > 0 && (
             <Field
-              label="Required apps"
+              label="Included apps"
               css={`
                 margin-bottom: ${4 * GU}px;
               `}
@@ -215,6 +234,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                     css={`
                       display: flex;
                       justify-content: space-between;
+                      align-items: center;
                       margin-top: ${2 * GU}px;
 
                       & + & {
@@ -223,30 +243,15 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                     `}
                   >
                     <KnownAppBadge appName={appName} label={label} />
-                    <label
-                      css={`
-                        display: flex;
-                        align-items: center;
-                      `}
-                    >
-                      <Checkbox
-                        checked={templateOptionalApps[appName]}
-                        onChange={() => {
-                          setTemplateOptionalApps(apps => ({
-                            ...apps,
-                            [appName]: !apps[appName],
-                          }))
-                        }}
-                        css={`
-                          margin-right: ${1.5 * GU}px;
-                          border-color: #8fa4b5;
-                          &:active {
-                            border-color: #8fa4b5;
-                          }
-                        `}
-                      />
-                      Include
-                    </label>
+                    <Switch
+                      checked={templateOptionalApps[appName]}
+                      onChange={() => {
+                        setTemplateOptionalApps(apps => ({
+                          ...apps,
+                          [appName]: !apps[appName],
+                        }))
+                      }}
+                    />
                   </div>
                 ))
               }
@@ -272,11 +277,12 @@ TemplateDetails.propTypes = {
 
 function SelectTemplateButton({ onClick, template }) {
   const templateLoading = template.status === TEMPLATE_LOADING
-  const templateUnavailable = template.status === TEMPLATE_UNAVAILABLE
-  const label = templateLoading
-    ? 'Loading template…'
-    : templateUnavailable
+  const templateUnavailable =
+    template.disabled || template.status === TEMPLATE_UNAVAILABLE
+  const label = templateUnavailable
     ? 'This template is not available at the moment'
+    : templateLoading
+    ? 'Loading template…'
     : 'Use this template'
 
   return (

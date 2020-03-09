@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useWallet } from '../wallet'
 import StoredList from '../StoredList'
 import { network } from '../environment'
 import { EthereumAddressType } from '../prop-types'
@@ -41,7 +42,7 @@ const getStoredList = (daoDomain, account) =>
   })
 
 // Provides easy access to the user activities list
-class ActivityProvider extends React.Component {
+class ActivityProviderBase extends React.Component {
   static propTypes = {
     account: EthereumAddressType, // Current wallet
     children: PropTypes.node,
@@ -254,6 +255,12 @@ class ActivityProvider extends React.Component {
     )
   }
 }
+
+function ActivityProvider(props) {
+  const { account } = useWallet()
+  return <ActivityProviderBase account={account} {...props} />
+}
+ActivityProvider.propTypes = ActivityProviderBase.propTypes
 
 const ActivityConsumer = ActivityContext.Consumer
 

@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { textStyle, GU, useTheme, ProgressBar, Info } from '@aragon/ui'
+import { textStyle, GU, Link, useTheme, ProgressBar, Info } from '@aragon/ui'
+import { useWallet } from '../../wallet'
 import DeploymentStepsItem from './DeploymentStepsItem'
 import { TransactionStatusType } from '../../prop-types'
 
 function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
   const theme = useTheme()
+  const { providerInfo } = useWallet()
 
   return (
     <aside
@@ -65,10 +67,24 @@ function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
       </div>
 
       {!allSuccess && (
-        <Info>
+        <Info mode="warning">
           It might take some time before these transactions get processed.
-          Please be patient and{' '}
-          <strong>do not close this window until it finishes.</strong>
+          Please be patient and <strong>do not close this window</strong> until
+          it finishes.{' '}
+          {providerInfo.id === 'metamask' && (
+            <>
+              Additionally, do not use the{' '}
+              <InlineLink href="https://metamask.zendesk.com/hc/en-us/articles/360015489251-How-to-Speed-Up-a-Transaction">
+                "Speed Up"
+              </InlineLink>{' '}
+              MetaMask feature, otherwise you may not be able to finish creating
+              your organization.{' '}
+            </>
+          )}
+          For more details,{' '}
+          <InlineLink href="https://help.aragon.org/article/39-launch-taking-a-long-time-to-process">
+            refer to the help desk.
+          </InlineLink>
         </Info>
       )}
     </aside>
@@ -84,6 +100,17 @@ DeploymentStepsPanel.propTypes = {
       status: TransactionStatusType.isRequired,
     })
   ).isRequired,
+}
+
+const InlineLink = ({ href, children }) => (
+  <Link href={href} css={'display: inline; white-space: normal'}>
+    {children}
+  </Link>
+)
+
+InlineLink.propTypes = {
+  href: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
 }
 
 export default DeploymentStepsPanel

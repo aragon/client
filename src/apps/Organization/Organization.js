@@ -14,7 +14,6 @@ import {
   useTheme,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import { useAccount } from '../../account'
 import appIds from '../../known-app-ids'
 import { network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
@@ -22,6 +21,7 @@ import { AppType, DaoAddressType } from '../../prop-types'
 import { getProviderString } from '../../ethereum-providers'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
+import { useWallet } from '../../wallet'
 
 const Organization = React.memo(function Organization({
   apps,
@@ -30,20 +30,17 @@ const Organization = React.memo(function Organization({
   daoAddress,
   onOpenApp,
   onShowOrgVersionDetails,
-  walletNetwork,
-  walletWeb3,
-  walletProviderId,
 }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
-  const { address: account } = useAccount()
+  const wallet = useWallet()
 
   const handleDepositTestTokens = useCallback(() => {
     const finance = apps.find(app => app.appId === appIds.Finance)
     if (finance && finance.proxyAddress) {
-      airdrop(walletWeb3, finance.proxyAddress, account)
+      airdrop(wallet.web3, finance.proxyAddress, wallet.account)
     }
-  }, [account, apps, walletWeb3])
+  }, [apps, wallet])
   const handleOpenAgentApp = useCallback(() => {
     const agent = apps.find(app => app.appId === appIds.Agent)
     if (agent && agent.proxyAddress) {
@@ -62,7 +59,8 @@ const Organization = React.memo(function Organization({
   const hasFinanceApp = apps.some(app => app.appId === appIds.Finance)
   const checksummedDaoAddr =
     daoAddress.address && toChecksumAddress(daoAddress.address)
-  const enableTransactions = !!account && walletNetwork === network.type
+  const enableTransactions =
+    wallet.connected && wallet.networkType === network.type
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (
@@ -182,12 +180,12 @@ const Organization = React.memo(function Organization({
           ) : (
             <Info mode="warning">
               {`Please ${
-                walletNetwork !== network.type
+                wallet.networkType !== network.type
                   ? `select the ${sanitizeNetworkType(network.type)} network`
                   : 'unlock your account'
               } in ${getProviderString(
                 'your Ethereum provider',
-                walletProviderId
+                wallet.providerInfo.id
               )}.`}
             </Info>
           )}
@@ -261,9 +259,6 @@ Organization.propTypes = {
   daoAddress: DaoAddressType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onShowOrgVersionDetails: PropTypes.func.isRequired,
-  walletNetwork: PropTypes.string.isRequired,
-  walletWeb3: PropTypes.object.isRequired,
-  walletProviderId: PropTypes.string.isRequired,
 }
 
 const OpenAppButton = props => <Link css="font-weight: 600" {...props} />

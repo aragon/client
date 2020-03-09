@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { GU, Info, useTheme } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '../../kit'
 
-function ShareInfo({
+function HoldersInfo({
   screenProps: { back, data, next, screenIndex, screens },
 }) {
   const handleSubmit = useCallback(
@@ -18,7 +17,7 @@ function ShareInfo({
   return (
     <div>
       <Header
-        title="Organization's shareholders"
+        title="Organization's token holders"
         subtitle="Read the following information attentively"
       />
       <div
@@ -27,26 +26,26 @@ function ShareInfo({
         `}
       >
         <Paragraph>
-          The shareholders are the ones contributing to the fundraising
+          The token holders are the accounts contributing to the fundraising
           campaign. They are represented through a custom bonded-token and a
           voting app. They hold most of the governance rights over the
           organization.
         </Paragraph>
 
-        <Paragraph>Shareholders can:</Paragraph>
+        <Paragraph>Token holders can:</Paragraph>
         <Paragraph>
-          <Strong>Buy and redeem tokens.</Strong> Shareholders can buy and
+          <Strong>Buy and redeem tokens.</Strong> Token holders can buy and
           redeem tokens through the Aragon Fundraising interface.
         </Paragraph>
         <Paragraph>
-          <Strong>Handle fundraising parameters.</Strong> Shareholders decide on
-          how beneficiary, fees, and collateralization settings should be
+          <Strong>Handle fundraising parameters.</Strong> Token holders decide
+          on how beneficiary, fees, and collateralization settings should be
           updated. They also control the amount of funds automatically
-          transferred to the board each month.
+          transferred to the council each month.
         </Paragraph>
         <Paragraph>
-          <Strong>Handle organization settings.</Strong> Shareholders decide on
-          which apps are installed or upgraded and which permissions are set.
+          <Strong>Handle organization settings.</Strong> Token holders decide on
+          which apps can be installed or upgraded and which permissions are set.
         </Paragraph>
       </div>
       <Info
@@ -55,10 +54,10 @@ function ShareInfo({
         `}
       >
         <p>
-          This architecture grants most of the governance rights to
-          shareholders, to protect their investment. However, this also requires
-          the organization to be able to mitigate situations where a shareholder
-          could own the whole organization by owning more than 50% of the
+          This architecture grants most of the governance rights to token
+          holders, to protect their contribution. However, this also requires
+          the organization to be able to mitigate situations where a token
+          holder could own the whole organization by owning more than 50% of the
           shares.
         </p>
         <p
@@ -66,8 +65,8 @@ function ShareInfo({
             margin-top: ${1 * GU}px;
           `}
         >
-          This is why shareholder votes, where most of the organization’s
-          decisions are made, can only be opened and initiated by the board.
+          This is why token holder votes, where most of the organization’s
+          decisions are made, can only be opened and initiated by the council.
         </p>
       </Info>
       <Navigation
@@ -81,7 +80,7 @@ function ShareInfo({
   )
 }
 
-ShareInfo.propTypes = {
+HoldersInfo.propTypes = {
   screenProps: ScreenPropsType.isRequired,
 }
 
@@ -105,8 +104,22 @@ Paragraph.propTypes = {
   children: PropTypes.node,
 }
 
-const Strong = styled.strong`
-  font-weight: 800;
-`
+function Strong({ children, ...props }) {
+  const theme = useTheme()
+  return (
+    <span
+      css={`
+        color: ${theme.content};
+        font-weight: 800;
+      `}
+      {...props}
+    >
+      {children}
+    </span>
+  )
+}
+Strong.propTypes = {
+  children: PropTypes.string,
+}
 
-export default ShareInfo
+export default HoldersInfo

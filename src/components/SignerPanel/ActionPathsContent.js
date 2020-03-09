@@ -263,7 +263,7 @@ class ActionPathsContent extends React.Component {
                 <span>
                   Be aware that this is an attempt to execute a transaction on
                   an <strong css="font-weight: 800">external contract</strong>{' '}
-                  that has not been reviewed or audited. This means that it
+                  that may not have been reviewed or audited. This means that it
                   might behave unexpectedly. Please{' '}
                   <strong css="font-weight: 800">
                     make sure you trust the contract at
@@ -284,14 +284,28 @@ class ActionPathsContent extends React.Component {
         {pretransaction && (
           <Info
             title="Two transactions required"
+            mode="warning"
             css={`
               margin-top: ${3 * GU}px;
             `}
           >
-            This action requires two transactions to be signed in{' '}
-            {getProviderString('your Ethereum provider', walletProviderId)}.{' '}
-            {approveTransactionMessage}
-            Please confirm them one after another.
+            <p>
+              This action requires two transactions to be signed in{' '}
+              {getProviderString('your Ethereum provider', walletProviderId)}.{' '}
+              {approveTransactionMessage}
+              Please confirm them one after another.
+            </p>
+            <p
+              css={`
+                margin-top: ${1 * GU}px;
+              `}
+            >
+              In some situations,{' '}
+              {getProviderString('your Ethereum provider', walletProviderId)}{' '}
+              may warn you that the second transaction will fail.{' '}
+              <strong css="font-weight: 800">Please ignore this warning</strong>
+              .
+            </p>
           </Info>
         )}
         <SignerButton onClick={this.handleSign} disabled={!signingEnabled}>

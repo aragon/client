@@ -1,6 +1,35 @@
 import resolvePathname from 'resolve-pathname'
 import { GU } from '@aragon/ui'
 
+export function pollEvery(fn, delay) {
+  let timer = -1
+  let stop = false
+  const poll = async (request, onResult) => {
+    let result
+    try {
+      result = await request()
+    } catch (err) {
+      log('Polling failed for fn:', fn)
+      log('Error:', err)
+      // Stop polling and let requester handle
+      throw err
+    }
+
+    if (!stop) {
+      onResult(result)
+      timer = setTimeout(poll.bind(null, request, onResult), delay)
+    }
+  }
+  return (...params) => {
+    const { request, onResult } = fn(...params)
+    poll(request, onResult)
+    return () => {
+      stop = true
+      clearTimeout(timer)
+    }
+  }
+}
+
 // Get the icon URL of an app (legacy)
 export function legacyAppIconUrl(app) {
   return app && app.baseUrl
@@ -69,6 +98,10 @@ export const identity = arg => arg
 
 export function removeStartingSlash(str) {
   return str.replace(/^\/+/, '')
+}
+
+export function addStartingSlash(str) {
+  return str.startsWith('/') ? str : `/${str}`
 }
 
 // Append a trailing slash if needed

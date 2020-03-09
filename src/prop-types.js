@@ -93,18 +93,24 @@ export const AppType = PropTypes.shape({
       src: PropTypes.string.isRequired,
     })
   ),
-  isAragonOsInternalApp: PropTypes.bool,
-  isForwarder: PropTypes.bool,
-  kernelAddress: EthereumAddressType,
   name: PropTypes.string,
   roles: PropTypes.array,
   status: PropTypes.string,
   version: PropTypes.string,
+
+  // This content is only available if the app is an aragonOS internal app
+  isAragonOsInternalApp: PropTypes.bool,
+
+  // This content is not available if the app is the Kernel
+  isForwarder: PropTypes.bool,
+  kernelAddress: EthereumAddressType,
 })
 
 export const AppsListType = PropTypes.arrayOf(AppType)
 
 export const AppInstanceType = PropTypes.shape({
+  // Note that app instances also include embedded applications, like Home, that do not have
+  // associated on-chain information
   codeAddress: EthereumAddressType,
   identifier: PropTypes.string,
   instanceId: PropTypes.oneOfType([EthereumAddressType, PropTypes.string])
@@ -115,9 +121,11 @@ export const AppInstanceType = PropTypes.shape({
 export const AppInstanceGroupType = PropTypes.shape({
   app: PropTypes.object.isRequired,
   appId: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
   instances: PropTypes.arrayOf(AppInstanceType).isRequired,
-  hasWebApp: PropTypes.bool.isRequired,
+
+  // This content may not be available if the app's content couldn't be fetched
+  hasWebApp: PropTypes.bool,
+  name: PropTypes.string,
   repoName: PropTypes.string,
 })
 
@@ -184,7 +192,7 @@ export const RepoVersionType = PropTypes.shape({
 export const RepoType = PropTypes.shape({
   appId: PropTypes.string.isRequired,
   currentVersion: RepoVersionType,
-  latestVersion: RepoVersionType,
+  latestVersion: RepoVersionType.isRequired,
   repoAddress: EthereumAddressType.isRequired,
   versions: PropTypes.arrayOf(
     PropTypes.shape({
@@ -194,7 +202,7 @@ export const RepoType = PropTypes.shape({
       version: PropTypes.string.isRequired,
       versionId: PropTypes.string.isRequired,
     })
-  ),
+  ).isRequired,
 })
 
 export const ReposListType = PropTypes.arrayOf(RepoType)
@@ -212,7 +220,6 @@ export const EthereumProviderType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
-  connect: PropTypes.func.isRequired,
   strings: PropTypes.object.isRequired,
 })
 
@@ -250,3 +257,31 @@ export const TransactionStatusType = PropTypes.oneOf([
   TRANSACTION_STATUS_SUCCESS,
   TRANSACTION_STATUS_UPCOMING,
 ])
+
+// See src/wallet.js
+export const WalletType = PropTypes.shape({
+  account: PropTypes.string,
+  balance: PropTypes.object.isRequired,
+  chainId: PropTypes.number.isRequired,
+  enable: PropTypes.bool.isRequired,
+  connected: PropTypes.bool.isRequired,
+  isContract: PropTypes.bool.isRequired,
+  networkType: PropTypes.string.isRequired,
+  providerInfo: PropTypes.object.isRequired,
+  web3: PropTypes.object.isRequired,
+})
+
+export const AragonUiAppearanceType = PropTypes.oneOf(['dark', 'light'])
+
+export const AragonUiThemeType = PropTypes.oneOf([
+  PropTypes.string,
+  PropTypes.shape({
+    _name: PropTypes.string.isRequired,
+    _appearance: AragonUiAppearanceType.isRequired,
+  }),
+])
+
+export const ClientThemeType = PropTypes.shape({
+  theme: AragonUiThemeType,
+  appearance: AragonUiAppearanceType.isRequired,
+})

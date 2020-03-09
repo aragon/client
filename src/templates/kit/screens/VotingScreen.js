@@ -10,9 +10,7 @@ import {
   ScreenPropsType,
 } from '..'
 
-const MINUTE_IN_SECONDS = 60
-const HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
-const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
+import { formatDuration, DAY_IN_SECONDS, MINUTE_IN_SECONDS } from '../kit-utils'
 
 const DEFAULT_SUPPORT = 50
 const DEFAULT_QUORUM = 15
@@ -32,6 +30,8 @@ function reduceFields(fields, [field, value]) {
   if (field === 'quorum') {
     return {
       ...fields,
+      // 100% quorum is not possible, but any adjustments necessary should be handled in the
+      // template frontends themselves
       quorum: value,
       support: Math.max(fields.support, value),
     }
@@ -39,6 +39,8 @@ function reduceFields(fields, [field, value]) {
   if (field === 'support') {
     return {
       ...fields,
+      // 100% support is not possible, but any adjustments necessary should be handled in the
+      // template frontends themselves
       support: value,
       quorum: Math.min(fields.quorum, value),
     }
@@ -168,10 +170,10 @@ function VotingScreen({
           <React.Fragment>
             Support %
             <Help hint="What’s the support?">
-              <strong>Support</strong> is the relative percentage of votes that
-              are required to be “Yes” for a proposal to be approved. For
+              <strong>Support</strong> is the relative percentage of tokens that
+              are required to vote “Yes” for a proposal to be approved. For
               example, if “Support” is set to 51%, then more than 51% of the
-              votes on a proposal must vote “Yes” for it to pass.
+              tokens used to vote on a proposal must be “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -206,8 +208,8 @@ function VotingScreen({
             <Help hint="What’s the vote duration?">
               <strong>Vote Duration</strong> is the length of time that the vote
               will be open for participation. For example, if the Vote Duration
-              is set to 24 hours, then tokenholders have 24 hours to participate
-              in the vote.
+              is set to 24 hours, then token holders have 24 hours to
+              participate in the vote.
             </Help>
           </React.Fragment>
         }
@@ -257,35 +259,6 @@ VotingScreen.defaultProps = {
   appLabel: 'Voting',
   dataKey: 'voting',
   title: 'Configure template',
-}
-
-function formatDuration(duration) {
-  const units = [DAY_IN_SECONDS, HOUR_IN_SECONDS, MINUTE_IN_SECONDS]
-
-  // Convert in independent unit values
-  const [days, hours, minutes] = units.reduce(
-    ([unitValues, duration], unitInSeconds) => [
-      [...unitValues, Math.floor(duration / unitInSeconds)],
-      duration % unitInSeconds,
-    ],
-    [[], duration]
-  )[0]
-
-  // Format
-  return [
-    [days, 'day', 'days'],
-    [hours, 'hour', 'hours'],
-    [minutes, 'minute', 'minutes'],
-  ]
-    .filter(([value]) => value > 0)
-    .reduce(
-      (str, [value, unitSingular, unitPlural], index, values) =>
-        str +
-        (index > 0 && index < values.length - 1 ? ', ' : '') +
-        (values.length > 1 && index === values.length - 1 ? ' and ' : '') +
-        `${value} ${value === 1 ? unitSingular : unitPlural}`,
-      ''
-    )
 }
 
 function formatReviewFields(screenData) {

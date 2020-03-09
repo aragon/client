@@ -1,5 +1,5 @@
 import appIds from './known-app-ids'
-import getAppLocator from './app-locator'
+import { parseAppLocator } from './app-locator'
 
 const CUSTOM_APP_1 =
   '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -7,7 +7,7 @@ const CUSTOM_APP_2 =
   '0x0000000000000000000000000000000000000000000000000000000000000001'
 
 test('all known apps local', () => {
-  expect(getAppLocator('local')).toEqual({
+  expect(parseAppLocator('local')).toEqual({
     [appIds['Voting']]: 'http://localhost:3001/',
     [appIds['Finance']]: 'http://localhost:3002/',
     [appIds['TokenManager']]: 'http://localhost:3003/',
@@ -22,13 +22,13 @@ test('one local app', () => {
     [appIds['Voting']]: 'http://localhost:3001/',
   }
 
-  expect(getAppLocator('Voting:local')).toEqual(result)
-  expect(getAppLocator('Voting:')).toEqual(result)
-  expect(getAppLocator('Voting')).toEqual(result)
-  expect(getAppLocator(',Voting,')).toEqual(result)
-  expect(getAppLocator(',Voting:,')).toEqual(result)
-  expect(getAppLocator(',Voting:local,')).toEqual(result)
-  expect(getAppLocator(',Voting:local,')).toEqual(result)
+  expect(parseAppLocator('Voting:local')).toEqual(result)
+  expect(parseAppLocator('Voting:')).toEqual(result)
+  expect(parseAppLocator('Voting')).toEqual(result)
+  expect(parseAppLocator(',Voting,')).toEqual(result)
+  expect(parseAppLocator(',Voting:,')).toEqual(result)
+  expect(parseAppLocator(',Voting:local,')).toEqual(result)
+  expect(parseAppLocator(',Voting:local,')).toEqual(result)
 })
 
 test('multiple local apps', () => {
@@ -37,12 +37,12 @@ test('multiple local apps', () => {
     [appIds['TokenManager']]: 'http://localhost:3003/',
   }
 
-  expect(getAppLocator('Voting:local,TokenManager')).toEqual(result)
-  expect(getAppLocator('Voting,TokenManager:,')).toEqual(result)
+  expect(parseAppLocator('Voting:local,TokenManager')).toEqual(result)
+  expect(parseAppLocator('Voting,TokenManager:,')).toEqual(result)
 })
 
 test('local port', () => {
-  expect(getAppLocator('Voting:1234,TokenManager:3333')).toEqual({
+  expect(parseAppLocator('Voting:1234,TokenManager:3333')).toEqual({
     [appIds['Voting']]: 'http://localhost:1234/',
     [appIds['TokenManager']]: 'http://localhost:3333/',
   })
@@ -55,7 +55,7 @@ test('custom app', () => {
   }
 
   expect(
-    getAppLocator(
+    parseAppLocator(
       `${CUSTOM_APP_1}:http://example.org/` +
         `,${CUSTOM_APP_2}:http://example.org:4444/`
     )
@@ -70,7 +70,7 @@ test('mixed apps', () => {
   }
 
   expect(
-    getAppLocator(
+    parseAppLocator(
       `Voting:local,TokenManager:http://example.com/,${CUSTOM_APP_1}:http://example.org/`
     )
   ).toEqual(result)

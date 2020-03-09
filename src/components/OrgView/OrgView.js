@@ -1,6 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonIcon, IconMenu, GU, useTheme, useViewport } from '@aragon/ui'
+import {
+  ButtonIcon,
+  IconMenu,
+  GU,
+  useTheme,
+  useViewport,
+  springs,
+} from '@aragon/ui'
+import { Transition, animated } from 'react-spring'
 import {
   AppInstanceGroupType,
   AppsStatusType,
@@ -10,14 +18,17 @@ import {
 } from '../../prop-types'
 import { DAO_STATUS_LOADING } from '../../symbols'
 import { iOS, isSafari } from '../../utils'
+import { useClientTheme } from '../../client-theme'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
-import AccountModule from '../AccountModule/AccountModule'
 import ActivityButton from './ActivityButton/ActivityButton'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
+import AccountModule from '../AccountModule/AccountModule'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
+
+const AnimatedDiv = animated.div
 
 function OrgView({
   activeInstanceId,
@@ -27,12 +38,13 @@ function OrgView({
   children,
   daoAddress,
   daoStatus,
+  locator,
   onOpenApp,
   onOpenPreferences,
 }) {
   const theme = useTheme()
+  const { appearance } = useClientTheme()
   const { width, below } = useViewport()
-
   const autoClosingPanel = below('medium')
   const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
 
@@ -56,6 +68,21 @@ function OrgView({
   useEffect(() => {
     setMenuPanelOpen(!autoClosingPanel)
   }, [autoClosingPanel])
+
+  const [showAppOverlay, setShowAppOverlay] = useState(false)
+
+  useEffect(() => {
+    setShowAppOverlay(true)
+
+    const timer = setTimeout(() => {
+      setShowAppOverlay(false)
+    }, 0)
+
+    return () => {
+      clearTimeout(timer)
+      setShowAppOverlay(false)
+    }
+  }, [appearance])
 
   return (
     <AppWidthContext.Provider
@@ -126,7 +153,7 @@ function OrgView({
             />
           )}
           <div css="display: flex">
-            <AccountModule />
+            <AccountModule locator={locator} />
             <GlobalPreferencesButton onOpen={onOpenPreferences} />
             <ActivityButton apps={apps} />
           </div>
@@ -138,8 +165,8 @@ function OrgView({
             margin-top: 2px;
             ${menuPanelOpen && iOS
               ? `
-                padding-top: ${8 * GU}px;
-              `
+                  padding-top: ${8 * GU}px;
+                `
               : ''}
           `}
         >
@@ -164,19 +191,51 @@ function OrgView({
               onMenuPanelClose={handleCloseMenuPanel}
               onOpenApp={handleOpenApp}
               opened={menuPanelOpen}
-              css={`
-                z-index: 3;
-              `}
+              css="z-index: 3"
             />
             <div
               css={`
+                flex-grow: 1;
+                display: flex;
                 position: relative;
                 z-index: 1;
-                flex-grow: 1;
-                overflow: hidden;
               `}
             >
-              {children}
+              <Transition
+                config={springs.lazy}
+                items={showAppOverlay}
+                immediate={showAppOverlay}
+                enter={{ opacity: 1 }}
+                leave={{ opacity: 0 }}
+              >
+                {show =>
+                  show &&
+                  (({ opacity }) => (
+                    <AnimatedDiv
+                      style={{ opacity }}
+                      css={`
+                        position: absolute;
+                        z-index: 2;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: ${theme.background};
+                      `}
+                    />
+                  ))
+                }
+              </Transition>
+              <div
+                css={`
+                  position: relative;
+                  z-index: 1;
+                  flex-grow: 1;
+                  overflow: hidden;
+                `}
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>
@@ -192,6 +251,7 @@ OrgView.propTypes = {
   children: PropTypes.node,
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,
+  locator: PropTypes.object,
   onOpenApp: PropTypes.func.isRequired,
   onOpenPreferences: PropTypes.func.isRequired,
 }

@@ -329,7 +329,44 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "ottodevs",
+      "name": "Otto G",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5030059?v=4",
+      "profile": "https://github.com/ottodevs",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "adekbadek",
+      "name": "Adam Boro",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7383192?v=4",
+      "profile": "https://adamboro.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "e18r",
+      "name": "Emilio Silva Schlenker",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/16065447?v=4",
+      "profile": "https://github.com/e18r",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "osarrouy",
+      "name": "Olivier Sarrouy",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/86822?v=4",
+      "profile": "https://github.com/osarrouy",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { AppType, AragonType } from '../../prop-types'
 import { Button, GU, Header, IconPlus, useLayout } from '@aragon/ui'
+import { removeStartingSlash } from '../../utils'
 import { addressesEqual, isAddress } from '../../web3-utils'
 import { usePermissions } from '../../contexts/PermissionsContext'
 import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
@@ -31,7 +32,7 @@ function getLocation(localPath, apps) {
     data = null,
     secondaryScreen = null,
     secondaryData = null,
-  ] = localPath.replace(/^\//, '').split('/')
+  ] = removeStartingSlash(localPath).split('/')
 
   if (screen === 'app' && isAddress(data)) {
     return {

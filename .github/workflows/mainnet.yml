@@ -1,0 +1,30 @@
+name: Mainnet deployment
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: npm install
+      run: npm install
+    - name: npm test
+      run: npm run test
+    - name: now
+      run: >
+        now
+        -A now-mainnet.json
+        --confirm
+        --prod
+        --token=${{ secrets.ZEIT_TOKEN }}
+        --build-env NOW_GITHUB_COMMIT_SHA="$(git log --pretty=format:'%h' -n 1)"
+    env:
+      CI: true
