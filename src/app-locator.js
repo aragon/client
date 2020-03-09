@@ -36,7 +36,7 @@ function getAppId(app) {
   return null
 }
 
-function getAppUrl(appId, location) {
+function getAppUrl(appId, location = '') {
   // get the default URL for this appId (if location is local)
   if ((!location || location === 'local') && DEFAULT_LOCAL_URLS[appId]) {
     return DEFAULT_LOCAL_URLS[appId]
