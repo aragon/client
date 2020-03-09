@@ -102,6 +102,7 @@ const Organization = React.memo(function Organization({
     daoAddress.address && toChecksumAddress(daoAddress.address)
   const enableTransactions =
     wallet.connected && wallet.networkType === network.type
+  const isMainnet = network.type === 'main'
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (
@@ -251,6 +252,7 @@ const Organization = React.memo(function Organization({
                 label="Import organization into Tenderly"
                 icon={<IconExternal />}
                 display="all"
+                disabled={!isMainnet}
                 css={`
                   margin-bottom: ${2 * GU}px;
                 `}
@@ -266,9 +268,19 @@ const Organization = React.memo(function Organization({
                     margin-top: ${1 * GU}px;
                   `}
                 >
-                  By importing your organization into Tenderly, you will be able
-                  to easily inspect, review, and monitor the smart contracts
-                  that make up this organization.
+                  {isMainnet ? (
+                    <span>
+                      By importing your organization into Tenderly, you will be
+                      able to easily inspect, review, and monitor the smart
+                      contracts that make up this organization.
+                    </span>
+                  ) : (
+                    <span>
+                      Unfortunately, importing into Tenderly is not available on
+                      the {sanitizeNetworkType(network.type)} network. Please
+                      use Aragon on Ethereum mainnet instead.
+                    </span>
+                  )}
                 </p>
               </Info>
             </Box>
