@@ -14,7 +14,8 @@ import {
   useTheme,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import { appIds, network } from '../../environment'
+import appIds from '../../known-app-ids'
+import { network } from '../../environment'
 import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { getProviderString } from '../../ethereum-providers'
