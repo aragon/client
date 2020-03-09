@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
   Button,
   Header,
   IconCoin,
+  IconExternal,
   Info,
   Link,
   GU,
@@ -15,9 +16,10 @@ import {
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { appIds, network } from '../../environment'
+import { getProviderString } from '../../ethereum-providers'
 import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType } from '../../prop-types'
-import { getProviderString } from '../../ethereum-providers'
+import { ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
 import { useWallet } from '../../wallet'
@@ -26,6 +28,7 @@ const Organization = React.memo(function Organization({
   apps,
   appsLoading,
   canUpgradeOrg,
+  dao,
   daoAddress,
   onOpenApp,
   onShowOrgVersionDetails,
@@ -52,6 +55,45 @@ const Organization = React.memo(function Organization({
       onOpenApp(finance.proxyAddress)
     }
   }, [apps, onOpenApp])
+
+  const tenderlyImportUrl = useMemo(() => {
+    if (appsLoading) {
+      return ''
+    }
+
+    const contractsToImport = apps.map(({ name, proxyAddress }) => ({
+      name,
+      address: toChecksumAddress(proxyAddress),
+    }))
+
+    let contractsQueryParameter
+    let projectName = dao
+    try {
+      contractsQueryParameter = encodeURIComponent(
+        JSON.stringify(contractsToImport)
+      )
+      if (projectName.endsWith(ARAGONID_ENS_DOMAIN)) {
+        projectName = projectName.substr(
+          0,
+          dao.indexOf(ARAGONID_ENS_DOMAIN) - 1
+        )
+      }
+      projectName = encodeURIComponent(projectName)
+    } catch (err) {
+      console.error(
+        'Failed to encode query parameters for importing into Tenderly:',
+        err
+      )
+      return ''
+    }
+
+    return (
+      'https://dashboard.tenderly.dev/integration?' +
+      `integration=aragon&network=${network.chainId}&` +
+      `project=${projectName}&` +
+      `contracts=${contractsQueryParameter}`
+    )
+  }, [apps, appsLoading, dao])
 
   const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
   const hasAgentApp = apps.some(app => app.appId === appIds.Agent)
@@ -97,8 +139,8 @@ const Organization = React.memo(function Organization({
     </span>
   ) : (
     `This organization does not have a Finance or Agent app installed and may
-       not be able to receive funds. Please check with the organization’s
-       administrators if any other installed apps are able to receive funds.`
+     not be able to receive funds. Please check with the organization’s
+     administrators if any other installed apps are able to receive funds.`
   )
 
   return (
@@ -205,47 +247,87 @@ const Organization = React.memo(function Organization({
           </div>
         </Box>
       ) : (
-        <Box heading="Installed Aragon apps">
-          <ul
-            css={`
-              list-style: none;
-              display: grid;
-              grid-template-columns: minmax(50%, 1fr) minmax(50%, 1fr);
-              grid-column-gap: ${2 * GU}px;
-              margin-bottom: -${3 * GU}px;
-            `}
-          >
-            {apmApps.map(({ appId, description, name, proxyAddress, tags }) => (
-              <li
-                key={proxyAddress}
+        <React.Fragment>
+          <Box heading="Installed Aragon apps">
+            <ul
+              css={`
+                list-style: none;
+                display: grid;
+                grid-template-columns: minmax(50%, 1fr) minmax(50%, 1fr);
+                grid-column-gap: ${2 * GU}px;
+                margin-bottom: -${3 * GU}px;
+              `}
+            >
+              {apmApps.map(
+                ({ appId, description, name, proxyAddress, tags }) => (
+                  <li
+                    key={proxyAddress}
+                    css={`
+                      margin-bottom: ${3 * GU}px;
+                    `}
+                  >
+                    <label
+                      css={`
+                        color: ${theme.surfaceContentSecondary};
+                        ${unselectable()};
+                        ${textStyle('label2')};
+                      `}
+                    >
+                      {name}
+                      {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
+                    </label>
+                    <div
+                      css={`
+                        margin-top: ${1 * GU}px;
+                      `}
+                    >
+                      <LocalIdentityBadge
+                        entity={proxyAddress}
+                        shorten={shortAddresses}
+                      />
+                    </div>
+                  </li>
+                )
+              )}
+            </ul>
+          </Box>
+          <Box heading="Import organization into Tenderly">
+            <p
+              css={`
+                margin-bottom: ${2 * GU}px;
+                ${textStyle('body2')}
+              `}
+            >
+              Import this organization's smart contracts into your Tenderly
+              dashboard.
+            </p>
+            <Button
+              href={tenderlyImportUrl}
+              label="Import organization into Tenderly"
+              icon={<IconExternal />}
+              display="all"
+              css={`
+                margin-bottom: ${2 * GU}px;
+              `}
+            />
+            <Info>
+              <p>
+                <Link href="https://tenderly.dev/">Tenderly</Link> is a
+                real-time monitoring, alerting, and troubleshooting solution for
+                smart contracts.
+              </p>
+              <p
                 css={`
-                  margin-bottom: ${3 * GU}px;
+                  margin-top: ${1 * GU}px;
                 `}
               >
-                <label
-                  css={`
-                    color: ${theme.surfaceContentSecondary};
-                    ${unselectable()};
-                    ${textStyle('label2')};
-                  `}
-                >
-                  {name}
-                  {tags.length > 0 ? ` (${tags.join(', ')})` : ''}
-                </label>
-                <div
-                  css={`
-                    margin-top: ${1 * GU}px;
-                  `}
-                >
-                  <LocalIdentityBadge
-                    entity={proxyAddress}
-                    shorten={shortAddresses}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Box>
+                By importing your organization into Tenderly, you will be able
+                to easily inspect, review, and monitor the smart contracts that
+                make up this organization.
+              </p>
+            </Info>
+          </Box>
+        </React.Fragment>
       )}
     </React.Fragment>
   )
@@ -255,6 +337,7 @@ Organization.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
   canUpgradeOrg: PropTypes.bool,
+  dao: PropTypes.string,
   daoAddress: DaoAddressType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onShowOrgVersionDetails: PropTypes.func.isRequired,
