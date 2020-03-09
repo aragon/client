@@ -34,7 +34,7 @@ It is also possible to define how every app is loaded individually using a comma
 ARAGON_APP_LOCATOR=0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae:http://localhost:1234,0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae:http://localhost:3333 npm start
 ```
 
-Individual app locators can also its “known name” if it exist. Known names are `Agent`, `Finance`, `Fundraising`, `Survey`, `TokenManager`, `Vault`, and `Voting`. When a known name is used without any location, they will get fetched them from their [assigned local ports](src/known-app-ids.js), which are used by their respective development servers (see [aragon-apps](https://github.com/aragon/aragon-apps)).
+Individual app locators can also use its “known name” if it exists. Known names are `Agent`, `Finance`, `Fundraising`, `Survey`, `TokenManager`, `Vault`, and `Voting`. When a known name is used without any location, they will be fetched from their [assigned local ports](src/known-app-ids.js), which are used by their respective development servers (see [aragon-apps](https://github.com/aragon/aragon-apps)).
 
 ```console
 ARAGON_APP_LOCATOR=Agent,Finance npm start
