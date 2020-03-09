@@ -235,42 +235,44 @@ const Organization = React.memo(function Organization({
               )}
             </ul>
           </Box>
-          <Box heading="Import organization into Tenderly">
-            <p
-              css={`
-                margin-bottom: ${2 * GU}px;
-                ${textStyle('body2')}
-              `}
-            >
-              Import this organization's smart contracts into your Tenderly
-              dashboard.
-            </p>
-            <Button
-              href={tenderlyImportUrl}
-              label="Import organization into Tenderly"
-              icon={<IconExternal />}
-              display="all"
-              css={`
-                margin-bottom: ${2 * GU}px;
-              `}
-            />
-            <Info>
-              <p>
-                <Link href="https://tenderly.dev/">Tenderly</Link> is a
-                real-time monitoring, alerting, and troubleshooting solution for
-                smart contracts.
-              </p>
+          {tenderlyImportUrl && (
+            <Box heading="Import organization into Tenderly">
               <p
                 css={`
-                  margin-top: ${1 * GU}px;
+                  margin-bottom: ${2 * GU}px;
+                  ${textStyle('body2')}
                 `}
               >
-                By importing your organization into Tenderly, you will be able
-                to easily inspect, review, and monitor the smart contracts that
-                make up this organization.
+                Import this organization's smart contracts into your Tenderly
+                dashboard.
               </p>
-            </Info>
-          </Box>
+              <Button
+                href={tenderlyImportUrl}
+                label="Import organization into Tenderly"
+                icon={<IconExternal />}
+                display="all"
+                css={`
+                  margin-bottom: ${2 * GU}px;
+                `}
+              />
+              <Info>
+                <p>
+                  <Link href="https://tenderly.dev/">Tenderly</Link> is a
+                  real-time monitoring, alerting, and troubleshooting solution
+                  for smart contracts.
+                </p>
+                <p
+                  css={`
+                    margin-top: ${1 * GU}px;
+                  `}
+                >
+                  By importing your organization into Tenderly, you will be able
+                  to easily inspect, review, and monitor the smart contracts
+                  that make up this organization.
+                </p>
+              </Info>
+            </Box>
+          )}
         </React.Fragment>
       )}
       {hasFinanceApp && testTokensEnabled(network.type) && (
