@@ -40,6 +40,12 @@ Individual app locators can also its “known name” if it exist. Known names a
 ARAGON_APP_LOCATOR=Agent,Finance npm start
 ```
 
+Another option is to use the ENS name of any app:
+
+```console
+ARAGON_APP_LOCATOR=voting.aragonpm.eth:1234 npm start
+```
+
 Locations can also be a domain or an IP without the `http://` prefix, in which case it will get added:
 
 ```console

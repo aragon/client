@@ -101,3 +101,14 @@ test('IP', () => {
     result
   )
 })
+
+test('ENS IDs', () => {
+  const result = {
+    [appIds['Voting']]: 'http://localhost:3001/',
+    [appIds['Finance']]: 'http://localhost:3333/',
+  }
+
+  expect(
+    parseAppLocator('voting.aragonpm.eth,finance.aragonpm.eth:3333')
+  ).toEqual(result)
+})

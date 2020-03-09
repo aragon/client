@@ -1,3 +1,4 @@
+import { hash as namehash } from 'eth-ens-namehash'
 import appIds from './known-app-ids'
 import { appendTrailingSlash } from './utils'
 
@@ -27,6 +28,11 @@ function getAppId(app) {
   // known app name
   if (appIds[app]) {
     return appIds[app]
+  }
+
+  // ENS app ID
+  if (app.endsWith('.aragonpm.eth')) {
+    return namehash(app)
   }
 
   // probably a valid app ID
