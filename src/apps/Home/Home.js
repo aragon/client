@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { CardLayout, Card, GU, textStyle, useLayout } from '@aragon/ui'
 import { AppType } from '../../prop-types'
-import { appIds } from '../../environment'
+import appIds from '../../known-app-ids'
 
 import imgEagle from '../../assets/eagle.svg'
 import imgAssignTokens from './assets/assign-tokens.png'

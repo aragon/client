@@ -1,4 +1,6 @@
 import Web3 from 'web3'
+import appIds from './known-app-ids'
+import { parseAppLocator } from './app-locator'
 import {
   getAppLocator,
   getDefaultEthNode,
@@ -7,18 +9,9 @@ import {
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 
-const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Vault', 'Agent']
-const networkType = getEthNetworkType()
+const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Agent']
 
-export const appIds = {
-  Agent: '0x9ac98dc5f995bf0211ed589ef022719d1487e5cb2bab505676f0d084c07cf89a',
-  Finance: '0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae',
-  TokenManager:
-    '0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f',
-  Survey: '0x030b2ab880b88e228f2da5a3d19a2a31bc10dbf91fb1143776a6de489389471e',
-  Vault: '0x7e852e0fcfce6551c13800f1e7476f982525c2b5277ba14b24339c68416336d1',
-  Voting: '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4',
-}
+const networkType = getEthNetworkType()
 
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
 export const sortAppsPair = (app1, app2) => {
@@ -67,32 +60,12 @@ export const sortAppsPair = (app1, app2) => {
 }
 
 // Use appOverrides to override specific keys in an app instance, e.g. the start_url or script location
-const appOverrides = {
+export const appOverrides = {
   // Needed to change app name on sidebar for old versions whose aragonPM repo content cannot be changed anymore
   [appIds['TokenManager']]: { name: 'Tokens' },
 }
 
-const appLocator = {}
-const appLocatorString = getAppLocator()
-if (appLocatorString === 'local') {
-  /******************
-   * Local settings *
-   ******************/
-  Object.assign(appLocator, {
-    [appIds['Agent']]: 'http://localhost:3005/',
-    [appIds['Finance']]: 'http://localhost:3002/',
-    [appIds['TokenManager']]: 'http://localhost:3003/',
-    [appIds['Survey']]: 'http://localhost:3004/',
-    [appIds['Voting']]: 'http://localhost:3001/',
-  })
-} else if (appLocatorString === 'ipfs') {
-  // We don't need to provide anything here as by default, the apps will be loaded from IPFS
-} else if (appLocatorString) {
-  console.error(
-    `The specified app locator (${appLocatorString}) in the configuration is not one of 'ipfs', or 'local'. Defaulting to using 'ipfs'.`
-  )
-}
-export { appLocator, appOverrides }
+export const appLocator = parseAppLocator(getAppLocator())
 
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
