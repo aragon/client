@@ -1,4 +1,5 @@
 import appIds from './known-app-ids'
+import { appendTrailingSlash } from './utils'
 
 // Known apps and their assigned ports
 const DEFAULT_LOCAL_URLS = {
@@ -37,22 +38,25 @@ function getAppId(app) {
 }
 
 function getAppUrl(appId, location = '') {
-  // get the default URL for this appId (if location is local)
-  if ((!location || location === 'local') && DEFAULT_LOCAL_URLS[appId]) {
-    return DEFAULT_LOCAL_URLS[appId]
+  // Probably a valid port, default to localhost.
+  if (/^[0-9]+$/.test(location)) {
+    return `http://localhost:${location}/`
   }
 
-  // probably a valid HTTP URL
+  // Get the default URL for this appId (when location=local).
+  if (!location || location === 'local') {
+    return DEFAULT_LOCAL_URLS[appId] || null
+  }
+
+  // Probably a valid HTTP URL.
   if (location.startsWith('http')) {
     return location
   }
 
-  // probably a valid port, default to localhost
-  if (/^[0-9]+$/.test(location)) {
-    return `http://localhost:${location}/`
-  }
-  // no URL found
-  return null
+  // Probably a domain or an IP.
+  return `http://${
+    location.includes('/') ? location : appendTrailingSlash(location)
+  }`
 }
 
 // The app locator object can be used to know where to fetch an app from.

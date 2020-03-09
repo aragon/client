@@ -75,3 +75,29 @@ test('mixed apps', () => {
     )
   ).toEqual(result)
 })
+
+test('domain', () => {
+  const result = {
+    [appIds['Voting']]: 'http://localhost/',
+    [appIds['Finance']]: 'http://finance.local/app',
+    [appIds['TokenManager']]: 'http://token-manager/',
+    [appIds['Fundraising']]: 'http://localhost:3333/',
+  }
+
+  expect(
+    parseAppLocator(
+      'Voting:localhost,Finance:finance.local/app,TokenManager:token-manager,Fundraising:localhost:3333'
+    )
+  ).toEqual(result)
+})
+
+test('IP', () => {
+  const result = {
+    [appIds['Voting']]: 'http://1.2.3.4/',
+    [appIds['Finance']]: 'http://1.2.3.4:3423/app',
+  }
+
+  expect(parseAppLocator('Voting:1.2.3.4,Finance:1.2.3.4:3423/app')).toEqual(
+    result
+  )
+})
