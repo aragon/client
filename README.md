@@ -10,8 +10,8 @@
 - 📚 Read the [User Guide](https://help.aragon.org/) first, if you have any questions as a user.
 - 💻 You may be interested in [Aragon Desktop](https://github.com/aragon/aragon-desktop/), the most decentralized Aragon experience to date.
 - 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
-- 📝 Please report any issues and feedback in the [Aragon Chat #feedback](https://aragon.chat/channel/feedback) channel.
-- 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [#dev](https://aragon.chat/channel/dev) channel.
+- 📝 Please report any issues and feedback in the [Aragon Client channel](https://spectrum.chat/aragon/aragon-client).
+- 🔧 For technical stuff, use this project's [issues](http://github.com/aragon/aragon/issues) or join the technical conversation in our [Developer hangout](https://spectrum.chat/aragon/general-development) channel.
 - 📖 To learn more about contributing to the Aragon client itself, please check the [contributing guide](./CONTRIBUTING.md)
 - 🚢 For an overview of what changed with each release, check the [releases](https://github.com/aragon/aragon/releases) and [changelog](https://github.com/aragon/aragon/blob/master/CHANGELOG.md).
 
