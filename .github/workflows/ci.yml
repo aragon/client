@@ -13,7 +13,10 @@ jobs:
       run: npm install
     - name: npm build
       run: npm run build
+    - name: npm bundlewatch
+      run: npm run bundlewatch
     - name: npm test
       run: npm run test
     env:
       CI: true
+
