@@ -51,7 +51,7 @@ act/0x77df6ca4cc96d16edc7858cfc00f70fdc98bb027/0xe96c9851773ec7adcb6a155c7d4acf1
 
 The above command will select the Agent at `0x77df...b027`, interact with the Voting app at `0xe96c...e7ae` (installed on a different organization), and execute the method `vote(uint256 voteId, bool supports, bool executesIfDecided)`.
  
-Note that as of now, you cannot use `act` to execute actions requiring ETH. If you need this functionality, you can use `exec` and call `execute()` with the encoded calldata.
+The last parameter the `act` command can receive, which is optional, is the amount of ETH to send, in wei. You can also use the `exec()` command with the encoded calldata necessary.
 
 ## Jump into the code
 
