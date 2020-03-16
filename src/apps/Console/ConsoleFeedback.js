@@ -250,7 +250,8 @@ export default function ConsoleFeedback({
           `}
         >
           and then pass the parameters required for the agent execute function:
-          the target address, and the human-readable function call.
+          the target address, the human-readable function call, and (optional)
+          the amount of ETH to be sent with the action.
         </p>
         <div
           css={`
