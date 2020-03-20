@@ -66,7 +66,7 @@ export const networkConfigs = {
       shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
     },
-    providers: ['injected', 'frame'],
+    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
   local: {
     addresses: {
@@ -80,7 +80,7 @@ export const networkConfigs = {
       shortName: 'Local',
       type: 'private',
     },
-    providers: ['injected', 'frame'],
+    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
   unknown: {
     addresses: {
@@ -94,7 +94,7 @@ export const networkConfigs = {
       shortName: 'Unknown',
       type: 'unknown',
     },
-    providers: ['injected', 'frame'],
+    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
 }
 
