@@ -1,12 +1,11 @@
 # Configuration for https://probot.github.io/apps/stale
 
-daysUntilStale: 60
-daysUntilClose: 7
-
+only: pulls
 staleLabel: abandoned
 
 pulls:
   daysUntilStale: 30
+  daysUntilClose: 7
   markComment: >
     This pull request has been automatically marked as stale because it has not had
     recent activity. It will be closed if no further activity occurs. Thank you
