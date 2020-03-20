@@ -4,9 +4,8 @@ addReviewers: true
 addAssignees: false
 
 reviewers:
-  - sohkai
   - bpierre
-  - aquigorka
+  - evalir
 
 skipKeywords:
   - wip
