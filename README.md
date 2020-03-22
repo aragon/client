@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors)
 
-**🌎🚀 Trusted by over 700 organizations, securing more than $1MM in funds. [Try it out.](https://mainnet.aragon.org)**
+**🌎🚀 Trusted by over 1000 organizations, securing more than $20MM in funds. [Try it out.](https://mainnet.aragon.org)**
 
 <a href="https://mainnet.aragon.org/#/a1/"><img src=".github/screenshot.png" /></a>
 
