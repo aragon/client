@@ -20,8 +20,4 @@ jobs:
         run: yarn test
     env:
       CI: true
-      CI_REPO_OWNER: aragon
-      CI_REPO_NAME: aragon
-      CI_COMMIT_SHA: ${{ github.sha }}
-      CI_BRANCH: ${{ github.head_ref }}
       BUNDLEWATCH_GITHUB_TOKEN: ${{ github.token }}
