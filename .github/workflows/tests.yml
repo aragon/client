@@ -10,11 +10,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-      - name: install
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: bundlewatch
+      - name: Run bundlewatch
         run: yarn bundlewatch
-      - name: test
+      - name: Run tests
         run: yarn test
     env:
       CI: true
