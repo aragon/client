@@ -14,7 +14,7 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Build Aragon
         run: yarn build
-      - name: Run bundlewatch
+      - name: Run BundleWatch
         run: yarn bundlewatch
       - name: Run tests
         run: yarn test
