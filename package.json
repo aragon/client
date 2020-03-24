@@ -23,10 +23,12 @@
   "engines": {
     "node": ">= 10.0.0"
   },
-  "bundlewatch" : {
+  "bundlewatch": {
     "files": [
       {
-        "path": "public/*.js"
+        "path": "public/*.js",
+        "maxSize": "1600kb",
+        "compression": "gzip"
       }
     ]
   },
