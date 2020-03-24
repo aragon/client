@@ -21,7 +21,16 @@
     "startups"
   ],
   "engines": {
-    "node": "10.x"
+    "node": ">= 10.0.0"
+  },
+  "bundlewatch": {
+    "files": [
+      {
+        "path": "public/*.js",
+        "maxSize": "1600kb",
+        "compression": "gzip"
+      }
+    ]
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
@@ -67,6 +76,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^25.1.0",
     "babel-plugin-styled-components": "^1.10.6",
+    "bundlewatch": "^0.2.6",
     "cross-env": "^5.2.0",
     "eslint": "^5.6.0",
     "eslint-config-prettier": "^6.7.0",
@@ -90,6 +100,7 @@
     "rimraf": "^2.6.2"
   },
   "scripts": {
+    "bundlewatch": "bundlewatch",
     "start": "node scripts/start",
     "start:local": "node scripts/launch-local",
     "start:mainnet": "cross-env ARAGON_ETH_NETWORK_TYPE=main npm start",
