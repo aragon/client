@@ -1,0 +1,24 @@
+name: Run tests
+
+on: push
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: install
+        run: yarn install --frozen-lockfile
+      - name: bundlewatch
+        run: yarn bundlewatch
+      - name: test
+        run: yarn test
+    env:
+      CI: true
+      CI_REPO_OWNER: aragon
+      CI_REPO_NAME: aragon
+      CI_COMMIT_SHA: ${{ github.sha }}
+      CI_BRANCH: ${{ github.head_ref }}
