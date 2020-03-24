@@ -20,4 +20,4 @@ jobs:
         run: yarn test
     env:
       CI: true
-      BUNDLEWATCH_GITHUB_TOKEN: ${{ github.token }}
+      BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
