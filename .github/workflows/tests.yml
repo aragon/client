@@ -12,6 +12,8 @@ jobs:
           node-version: 12
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Build Aragon
+        run: yarn build
       - name: Run bundlewatch
         run: yarn bundlewatch
       - name: Run tests
