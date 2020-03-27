@@ -131,7 +131,7 @@ export default function ConsoleFeedback({
             `}
           >
             install/app/
-            {`(...initparams)/...PERMISSION_ROLE:ADDRESS_FROM:ADDRESS_TO`}
+            {`(...initparams)/...PERMISSION_ROLE:ADDRESS_MANAGER:ADDRESS_GRANTEE`}
           </p>
         </div>
         <p
