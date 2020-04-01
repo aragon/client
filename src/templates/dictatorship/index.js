@@ -24,7 +24,7 @@ export default {
   icon,
   description: `
     From Hungary, to Russia, to China, to Venezuela: Dictatorship is the
-    new Democracy. Introducing the Aragon Dictatorship template.
+    new Democracy. Introducing the Dictatorship template.
   `,
   userGuideUrl: 'https://en.wikipedia.org/wiki/Human_rights_in_North_Korea',
   sourceCodeUrl: 'Code is closed source',
