@@ -45,7 +45,6 @@ function adjustVotingSettings(support, quorum) {
 export default {
   id: 'dandelion-org-template.aragonpm.eth',
   name: 'Dandelion',
-  new: true,
   header,
   icon,
   description: `

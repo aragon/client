@@ -1,4 +1,5 @@
 import company from './company'
+import dictatorship from './dictatorship'
 import fundraising from './fundraising'
 import membership from './membership'
 import openEnterprise from './open-enterprise'
@@ -10,6 +11,7 @@ import dandelion from './dandelion'
 export default [
   company,
   dandelion,
+  dictatorship,
   fundraising,
   openEnterprise,
   membership,
