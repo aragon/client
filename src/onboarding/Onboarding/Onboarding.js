@@ -21,9 +21,9 @@ import OnboardingTopBar from './OnboardingTopBar'
 
 const sortedEmbeddedTemplates = Array.from(embeddedTemplates).sort(
   (first, second) => {
-    // Put new templates first and disabled templates last
-    first = first.disabled ? -1 : first.new ? 1 : 0
-    second = second.disabled ? -1 : second.new ? 1 : 0
+    // Put joke templates first and disabled templates last
+    first = first.disabled ? -1 : first.joke ? 1 : 0
+    second = second.disabled ? -1 : second.joke ? 1 : 0
     return second - first
   }
 )

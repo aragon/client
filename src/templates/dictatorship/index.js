@@ -19,7 +19,7 @@ function completeDomain(domain) {
 export default {
   id: 'dictatorship-template.open.aragonpm.eth',
   name: 'Dictatorship',
-  new: true,
+  joke: true,
   header,
   icon,
   description: `
