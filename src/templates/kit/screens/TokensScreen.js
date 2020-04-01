@@ -39,8 +39,18 @@ function validateDuplicateAddresses(members) {
   return validAddresses.length === new Set(validAddresses).size
 }
 
-function validationError(tokenName, tokenSymbol, members, editMembers) {
-  if (editMembers && !members.some(([address]) => isAddress(address))) {
+function validationError(
+  tokenName,
+  tokenSymbol,
+  members,
+  editMembers,
+  allowNoHolders
+) {
+  if (
+    !allowNoHolders &&
+    editMembers &&
+    !members.some(([address]) => isAddress(address))
+  ) {
     return 'You need at least one valid address.'
   }
   if (
@@ -63,6 +73,7 @@ function validationError(tokenName, tokenSymbol, members, editMembers) {
 
 function Tokens({
   accountStake,
+  allowNoHolders,
   dataKey,
   appLabel,
   editMembers,
@@ -161,7 +172,8 @@ function Tokens({
         tokenName,
         tokenSymbol,
         members,
-        editMembers
+        editMembers,
+        allowNoHolders
       )
       setFormError(error)
       if (!error) {
@@ -179,7 +191,16 @@ function Tokens({
         next(mergedData)
       }
     },
-    [data, dataKey, editMembers, members, next, tokenName, tokenSymbol]
+    [
+      allowNoHolders,
+      data,
+      dataKey,
+      editMembers,
+      members,
+      next,
+      tokenName,
+      tokenSymbol,
+    ]
   )
 
   // Focus the token name as soon as it becomes available
@@ -362,6 +383,7 @@ function Tokens({
 Tokens.propTypes = {
   appLabel: PropTypes.string,
   accountStake: PropTypes.number,
+  allowNoHolders: PropTypes.bool,
   dataKey: PropTypes.string,
   editMembers: PropTypes.bool,
   screenProps: ScreenPropsType.isRequired,
@@ -370,6 +392,7 @@ Tokens.propTypes = {
 
 Tokens.defaultProps = {
   accountStake: -1,
+  allowNoHolders: false,
   appLabel: 'Tokens',
   dataKey: 'tokens',
   editMembers: true,

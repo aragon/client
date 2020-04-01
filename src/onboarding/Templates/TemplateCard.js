@@ -51,7 +51,10 @@ function TemplateCard({ onOpen, template }) {
               `}
             >
               <span>{template.name}</span>
-              {(template.disabled || template.new || template.beta) && (
+              {(template.disabled ||
+                template.joke ||
+                template.new ||
+                template.beta) && (
                 <Tag
                   mode="new"
                   css={`
@@ -63,6 +66,8 @@ function TemplateCard({ onOpen, template }) {
                     ? 'Coming soon'
                     : template.beta
                     ? 'Beta'
+                    : template.joke
+                    ? 'April Fools'
                     : 'New'}
                 </Tag>
               )}
