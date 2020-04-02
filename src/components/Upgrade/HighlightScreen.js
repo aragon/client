@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, springs } from '@aragon/ui'
+import { Button, springs, useTheme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { ReactSpringStateType } from '../../prop-types'
 import RemoteImage from '../RemoteImage'
@@ -29,8 +29,10 @@ const HighlightScreen = ({
   verticalMode,
   visual,
 }) => {
-  const visualSrc = compactMode && visual.small ? visual.small : visual.large
   const [leaving, setLeaving] = useState(false)
+  const theme = useTheme()
+  const visualSrc = compactMode && visual.small ? visual.small : visual.large
+
   useEffect(() => {
     if (state === 'leave') {
       setLeaving(true)
@@ -77,7 +79,7 @@ const HighlightScreen = ({
       >
         <AnimP
           css={`
-            color: rgba(0, 0, 0, 0.5);
+            color: ${theme.contentSecondary};
             text-transform: uppercase;
             font-size: ${compactMode ? 12 : 16}px;
           `}
@@ -114,7 +116,7 @@ const HighlightScreen = ({
             css={`
               line-height: 1.8;
               font-size: ${compactMode ? 16 : 18}px;
-              color: ${compactMode ? '#8E97B5' : '#000000'};
+              color: ${compactMode ? theme.contentSecondary : theme.content};
             `}
           >
             {compactMode && description.small
