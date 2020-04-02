@@ -324,7 +324,6 @@ class Wrapper extends React.PureComponent {
       appsStatus,
       canUpgradeOrg,
       daoAddress,
-      locator,
       permissionsLoading,
       repos,
       wrapper,
@@ -383,7 +382,6 @@ class Wrapper extends React.PureComponent {
             apps={apps}
             appsLoading={appsLoading}
             canUpgradeOrg={canUpgradeOrg}
-            dao={locator.dao}
             daoAddress={daoAddress}
             onMessage={this.handleAppMessage}
             onOpenApp={this.openApp}
