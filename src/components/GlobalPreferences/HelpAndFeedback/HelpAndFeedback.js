@@ -112,10 +112,12 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
           <Info>
             The embedded console lets you interact with your organization as you
             would with aragonCLI, but inside the frontend client. Please note
-            that this feature is highly experimental. Documentation about the
-            console is available{' '}
-            <Link href="https://github.com/aragon/aragon/blob/master/docs/CONSOLE.md">
-              here
+            that this feature is highly experimental. Please read the{' '}
+            <Link
+              external
+              href="https://github.com/aragon/aragon/blob/master/docs/CONSOLE.md"
+            >
+              documentation
             </Link>
             .
           </Info>
