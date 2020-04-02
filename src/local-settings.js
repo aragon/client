@@ -26,6 +26,7 @@ const CONFIGURATION_VARS = [
   ],
   [
     ENS_REGISTRY_ADDRESS,
+    getUrlParam('ens'),
     process.env.ARAGON_ENS_REGISTRY_ADDRESS,
     process.env.REACT_APP_ENS_REGISTRY_ADDRESS,
   ],
@@ -59,15 +60,20 @@ const CONFIGURATION_VARS = [
   [PORTIS_DAPP_ID, process.env.ARAGON_PORTIS_DAPP_ID],
   [FORTMATIC_API_KEY, process.env.ARAGON_FORTMATIC_API_KEY],
 ].reduce(
-  (acc, [option, envValue, envValueCompat]) => ({
+  (acc, [option, ...envValues]) => ({
     ...acc,
     [option]: {
       storageKey: `${option}_KEY`,
-      envValue: envValue || envValueCompat || null,
+      envValue: envValues.reduce((prevVal, envValue) => prevVal || envValue),
     },
   }),
   {}
 )
+
+// Get a search param from the location's hash
+function getUrlParam(paramName) {
+  return new URLSearchParams(window.location.hash.split('?')[1]).get(paramName)
+}
 
 // Get a setting from localStorage
 function getLocalStorageSetting(confKey) {
