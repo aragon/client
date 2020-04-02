@@ -36,7 +36,25 @@ The Aragon client undergoes a number of different deployments, based on build en
 
 Regular updates, with incrementing minor or patch versions, are published onto the `aragon.aragonpm.eth` repo on all supported Ethereum environments.
 
-These should be seen as "official" builds, whose distributions are secured by IPFS. Most users will likely see this version of the app, due to [mainnet.aragon.org](https://mainnet.aragon.org) and [rinkeby.aragon.org](https://rinkeby.aragon.org) pointing to these builds.
+These should be seen as "official" builds, whose distributions are secured by IPFS. Most users see this version of the app, due to [mainnet.aragon.org](https://mainnet.aragon.org) and [rinkeby.aragon.org](https://rinkeby.aragon.org) pointing to these builds.
+
+#### Secrets
+
+A number of environment secrets are required during publishing and these are sometimes different per network.
+
+You may either specific these secrets as environment variables or use a `.env`. An Aragon One encrypted file ([`.env.enc`](./.env.enc)) is included in this repo with the current secrets used in production.
+
+To decrypt:
+
+```
+keybase decrypt -i .env.enc -o .env
+```
+
+To encrypt:
+
+```
+keybase encrypt --team aragonone -i .env -o .env.enc
+```
 
 ### Nightly / Per-PR builds
 

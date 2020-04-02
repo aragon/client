@@ -1,9 +1,10 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # configuration
-# (keep `.env.sample`, but ignore all other `.env`s)
-!.env.sample
+# (keep `.env.enc` and `.env.sample`, but ignore all other `.env`s)
 .env*
+!.env.enc
+!.env.sample
 
 # dependencies
 node_modules/
