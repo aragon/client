@@ -89,7 +89,7 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
                       ${textStyle('body2')}
                     `}
                   >
-                    {timestamp ? format(timestamp, 'dd/MM/yy') : ''}
+                    {timestamp ? format(timestamp, 'yy/MM/dd') : ''}
                   </Td>
                 </AnimTr>
               )
