@@ -24,6 +24,8 @@ const NO_UPDATE_ACTION = Symbol('NO_UPDATE_ACTION')
 const SET_PERMISSION_MANAGER = Symbol('SET_PERMISSION_MANAGER')
 const REMOVE_PERMISSION_MANAGER = Symbol('REMOVE_PERMISSION_MANAGER')
 
+const ANY_ACCOUNT_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+
 const UPDATE_ACTIONS = new Map([
   [NO_UPDATE_ACTION, { label: 'Select an update', message: null }],
   [
@@ -354,6 +356,18 @@ class ManageRolePanel extends React.PureComponent {
             >
               {isUpdateAction ? 'Update permission' : 'Initialize permission'}
             </Button>
+          )}
+
+          {this.state.newRoleManagerValue === ANY_ACCOUNT_ADDRESS && (
+            <Info
+              mode="warning"
+              css={`
+                margin-top: ${3 * GU}px;
+              `}
+            >
+              Be aware that using this address will let anyone manage this
+              permission.
+            </Info>
           )}
 
           {message && (
