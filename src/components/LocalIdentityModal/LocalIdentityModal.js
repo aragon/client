@@ -15,13 +15,14 @@ import keycodes from '../../keycodes'
 import { EthereumAddressType } from '../../prop-types'
 
 const LocalIdentityModal = React.memo(
-  ({ opened, address, label, onCancel, onSave }) => {
+  ({ opened, address, label, onCancel, onDelete, onSave }) => {
     return (
       <Modal visible={opened} onClose={onCancel}>
         <LocalModal
           address={address}
           label={label}
           onCancel={onCancel}
+          onDelete={onDelete}
           onSave={onSave}
         />
       </Modal>
@@ -37,7 +38,7 @@ LocalIdentityModal.propTypes = {
   onSave: PropTypes.func.isRequired,
 }
 
-function LocalModal({ address, label, onCancel, onSave }) {
+function LocalModal({ address, label, onCancel, onDelete, onSave }) {
   const theme = useTheme()
   const [action, setAction] = React.useState(null)
   const [error, setError] = React.useState(null)
@@ -52,11 +53,13 @@ function LocalModal({ address, label, onCancel, onSave }) {
       const label = labelInput.current.value.trim()
       if (label) {
         onSave({ address, label })
+      } else {
+        onDelete([address])
       }
     } catch (e) {
       setError(e)
     }
-  }, [address, labelInput, onSave])
+  }, [address, labelInput, onDelete, onSave])
 
   const handleKeyDown = useCallback(
     e => {
@@ -132,6 +135,7 @@ LocalModal.propTypes = {
   address: EthereumAddressType,
   label: PropTypes.string,
   onCancel: PropTypes.func,
+  onDelete: PropTypes.func,
   onSave: PropTypes.func,
 }
 
