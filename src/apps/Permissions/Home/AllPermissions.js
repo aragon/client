@@ -23,8 +23,24 @@ function AllPermissions({
 }) {
   const [selectedEntityType, setSelectedEntityType] = useState(-1)
   const [searchTerms, setSearchTerms] = useState('')
+  const [page, setPage] = useState(0)
   const { layoutName } = useLayout()
 
+  const handleEntityTypeChange = useCallback(
+    entity => {
+      setPage(0)
+      setSelectedEntityType(entity)
+    },
+    [setPage, setSelectedEntityType]
+  )
+
+  const handlSearchTermsChange = useCallback(
+    terms => {
+      setPage(0)
+      setSearchTerms(terms)
+    },
+    [setPage, setSearchTerms]
+  )
   const filteredPermissions = useMemo(() => {
     return (
       permissions
@@ -75,6 +91,8 @@ function AllPermissions({
       permissions={filteredPermissions}
       onAssignPermission={onAssignPermission}
       onManageRole={onManageRole}
+      page={page}
+      onPageChange={setPage}
       heading={
         layoutName === 'large' && (
           <Heading
@@ -82,9 +100,9 @@ function AllPermissions({
               !filteredPermissions.length && permissions.length
             )}
             selectedEntityType={selectedEntityType}
-            onEntityTypeChange={setSelectedEntityType}
+            onEntityTypeChange={handleEntityTypeChange}
             searchTerms={searchTerms}
-            onSearchTermsChange={setSearchTerms}
+            onSearchTermsChange={handlSearchTermsChange}
           />
         )
       }

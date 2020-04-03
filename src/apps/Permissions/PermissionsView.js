@@ -23,6 +23,8 @@ const PermissionsView = React.memo(function PermissionsView({
   permissions,
   onAssignPermission,
   onManageRole,
+  page,
+  onPageChange,
   heading,
   showApps,
 }) {
@@ -46,6 +48,8 @@ const PermissionsView = React.memo(function PermissionsView({
   return (
     <DataView
       heading={heading}
+      page={page}
+      onPageChange={onPageChange}
       mode={
         layoutName === 'large' || (layoutName === 'medium' && !showApps)
           ? 'table'
