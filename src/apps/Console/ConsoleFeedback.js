@@ -271,7 +271,7 @@ export default function ConsoleFeedback({
               `}
               onClick={() => handleClick(agentApp.proxyAddress)}
             >
-              Agent #{index + 1}
+              Agent #{index + 1} ({shortenAddress(agentApp.proxyAddress)})
             </Link>
           ))}
       </>
