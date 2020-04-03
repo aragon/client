@@ -71,6 +71,8 @@ const PermissionsView = React.memo(function PermissionsView({
 PermissionsView.propTypes = {
   heading: PropTypes.node,
   onAssignPermission: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
   onManageRole: PropTypes.func.isRequired,
   permissions: PropTypes.array.isRequired,
   showApps: PropTypes.bool.isRequired,
