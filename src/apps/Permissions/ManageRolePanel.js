@@ -269,7 +269,7 @@ class ManageRolePanel extends React.PureComponent {
     const action = this.getCurrentAction()
     const isUpdateAction = UPDATE_ACTIONS.has(action)
     const message = this.getMessage(action)
-
+    console.log(this.state.assignEntityAddress)
     return (
       <SidePanel
         title={
@@ -358,14 +358,16 @@ class ManageRolePanel extends React.PureComponent {
             </Button>
           )}
 
-          {this.state.newRoleManagerValue === ANY_ACCOUNT_ADDRESS && (
+          {(this.state.newRoleManagerValue === ANY_ACCOUNT_ADDRESS ||
+            this.state.assignEntityAddress === ANY_ACCOUNT_ADDRESS) && (
             <Info
               mode="warning"
               css={`
                 margin-top: ${3 * GU}px;
               `}
             >
-              Be aware that using this address will let anyone manage this
+              Be aware that assigning the permission or manager role to this
+              address will let anyone perform this action or manage this
               permission.
             </Info>
           )}

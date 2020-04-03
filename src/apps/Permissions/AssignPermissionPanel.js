@@ -14,6 +14,8 @@ const DEFAULT_STATE = {
   roleIndex: -1,
 }
 
+const ANY_ACCOUNT_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+
 // The permission panel, wrapped in a PermissionsContext (see end of file)
 class AssignPermissionPanel extends React.PureComponent {
   static propTypes = {
@@ -195,6 +197,18 @@ class AssignPermissionPanel extends React.PureComponent {
           >
             {'Add permission'}
           </Button>
+
+          {this.state.assignEntityAddress === ANY_ACCOUNT_ADDRESS && (
+            <Info
+              mode="warning"
+              css={`
+                margin-top: ${3 * GU}px;
+              `}
+            >
+              Be aware that assigning the permission to this address will let
+              anyone perform this action.
+            </Info>
+          )}
 
           <Info
             title="Adding the permission might create a vote"
