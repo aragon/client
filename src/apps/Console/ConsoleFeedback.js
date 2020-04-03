@@ -216,7 +216,38 @@ export default function ConsoleFeedback({
         </div>
       </>
     )
-  } else if (currentParsedCommand[0] === 'act') {
+  } else if (
+    currentParsedCommand[0] === 'act' &&
+    currentParsedCommand.length <= 2
+  ) {
+    const agentInstalled =
+      apps.filter(app => app.name.toLowerCase() === 'agent').length > 0
+    if (!agentInstalled) {
+      return (
+        <>
+          <p
+            css={`
+            ${textStyle('body2')}
+            margin: 0 0 ${GU}px 0;
+          `}
+          >
+            There are no agent instances installed in this organization. Please
+            read{' '}
+            <Link
+              external
+              href="https://hack.aragon.org/docs/cli-dao-commands#dao-install"
+            >
+              the documentation
+            </Link>{' '}
+            on how to install an application using the CLI, or go to our{' '}
+            <Link external href="https://discord.gg/ruBR6GN">
+              Discord
+            </Link>{' '}
+            server to help you install it.
+          </p>
+        </>
+      )
+    }
     return (
       <>
         <p
@@ -243,15 +274,20 @@ export default function ConsoleFeedback({
               Agent #{index + 1}
             </Link>
           ))}
-        <p
-          css={`
-            ${textStyle('body2')}
-            margin: ${GU}px 0 ${GU}px 0;
-          `}
-        >
-          and then pass the parameters required for the agent execute function:
-          the target address, and the human-readable function call.
+      </>
+    )
+  } else if (
+    currentParsedCommand[0] === 'act' &&
+    currentParsedCommand.length >= 2
+  ) {
+    return (
+      <>
+        <p css={`${textStyle('body2')} margin: 0 0 ${GU}px 0;`}>
+          Pass the paremeters required for the agent execute function: the
+          target address, and the human-readable function call, in the format
+          shown below:
         </p>
+
         <div
           css={`
             width: 100%;
