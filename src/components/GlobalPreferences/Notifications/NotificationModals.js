@@ -1,13 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, breakpoint, GU, Modal, textStyle } from '@aragon/ui'
+import { Button, GU, Modal, textStyle, useViewport } from '@aragon/ui'
 
 export function DeleteAccountConfirmationModal({
   onClose,
   onConfirm,
   ...props
 }) {
+  const { above } = useViewport()
+
   return (
     <ConfirmationModal
       {...props}
@@ -17,12 +19,13 @@ export function DeleteAccountConfirmationModal({
       body="This action will unsubscribe you from all email notifications from all
       organization' events."
     >
-      <ModalControls>
+      <ModalControls large={above('medium')}>
         <Button label="Cancel" onClick={onClose}>
           Cancel
         </Button>
         <RemoveButton
           label="Delete Account"
+          large={above('medium')}
           mode="negative"
           onClick={onConfirm}
         >
@@ -44,6 +47,8 @@ export function DeleteSubscriptionConfirmationModal({
   onConfirm,
   ...props
 }) {
+  const { above } = useViewport()
+
   return (
     <ConfirmationModal
       {...props}
@@ -53,11 +58,16 @@ export function DeleteSubscriptionConfirmationModal({
       body="This action will unsubscribe you from the selected email notifications
     from the organization’s events."
     >
-      <ModalControls>
+      <ModalControls large={above('medium')}>
         <Button label="Cancel" onClick={onClose}>
           Cancel
         </Button>
-        <RemoveButton label="Unsubscribe" mode="strong" onClick={onConfirm}>
+        <RemoveButton
+          large={above('medium')}
+          label="Unsubscribe"
+          mode="strong"
+          onClick={onConfirm}
+        >
           Unsubscribe
         </RemoveButton>
       </ModalControls>
@@ -115,20 +125,18 @@ const ModalControls = styled.div`
   display: grid;
   grid-gap: ${1.5 * GU}px;
   grid-template-columns: 1fr 1fr;
-  ${breakpoint(
-    'medium',
+  ${({ large }) =>
+    large &&
     `
       display: flex;
       justify-content: flex-end;
-    `
-  )}
+    `}
 `
 
 const RemoveButton = styled(Button)`
-  ${breakpoint(
-    'medium',
+  ${({ large }) =>
+    large &&
     `
       margin-left: ${1.5 * GU}px;
-    `
-  )}
+    `}
 `

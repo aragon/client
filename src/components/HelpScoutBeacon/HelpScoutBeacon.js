@@ -12,7 +12,6 @@ import {
   Link,
   GU,
   RADIUS,
-  breakpoint,
   springs,
   textStyle,
   useTheme,
@@ -38,6 +37,7 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
   const [optedIn, setOptedIn] = useState(
     localStorage.getItem(HELPSCOUT_BEACON_KEY) === '1'
   )
+  const { above } = useViewport()
 
   const handleOptIn = () => {
     localStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
@@ -66,13 +66,11 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
         right: ${2 * GU}px;
         z-index: 2;
 
-        ${breakpoint(
-          'large',
+        ${above('large') &&
           `
             bottom: ${3 * GU}px;
             right: ${3 * GU}px;
-          `
-        )}
+          `}
       `}
     >
       <BeaconHeadScripts optedIn={optedIn} onReady={handleBeaconReady} />
@@ -337,25 +335,91 @@ ToggleDialogueButton.propTypes = {
 
 const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
   const theme = useTheme()
-  const { below } = useViewport()
+  const { below, above } = useViewport()
 
   return (
     <animated.div {...styles}>
-      <Wrapper theme={theme}>
-        <Header theme={theme}>
+      <aside
+        css={`
+          background: ${theme.helpSurface};
+          position: absolute;
+          bottom: ${-2 * GU}px;
+          right: ${-2 * GU}px;
+          width: 100vw;
+          height: 100vh;
+          z-index: 1;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+
+          ${above('medium') &&
+            `
+                bottom: calc(-40px - ${4 * GU}px);
+                width: 336px;
+                height: 482px;
+                position: unset;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+                border-radius: ${RADIUS}px;
+            `}
+        `}
+      >
+        <header
+          css={`
+            position: relative;
+            height: 240px;
+            background-color: ${theme.help};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+
+            ${above('medium') &&
+              `
+                  height: 148px;
+                  /* needs both height and min-height as button uses flex: 1
+                   * and would push this upwards */
+                  min-height: 148px;
+                  border-top-right-radius: ${RADIUS}px;
+                  border-top-left-radius: ${RADIUS}px;
+              `}
+          `}
+        >
           {below('medium') && <CloseButton onClick={onClose} />}
-          <HeaderImage src={helpScoutHeaderPng} alt="" />
-        </Header>
-        <Main theme={theme}>
+          <img
+            src={helpScoutHeaderPng}
+            alt=""
+            css={`
+              width: 300px;
+              height: 139px;
+              position: absolute;
+              bottom: -6px;
+            `}
+          />
+        </header>
+        <main
+          css={`
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: ${5 * GU}px ${3 * GU}px ${3 * GU}px;
+            color: ${theme.helpSurfaceContent};
+          `}
+        >
           {!optedIn ? (
             <React.Fragment>
               <div css={'flex: 1'}>
-                <Heading>We need your consent.</Heading>
-                <Paragraph>
+                <h3
+                  css={`
+                    ${textStyle('title4')};
+                  `}
+                >
+                  We need your consent.
+                </h3>
+                <Paragraph isSmall={above('medium')}>
                   We want to assist you in using the product, providing help,
                   and answers to common questions.
                 </Paragraph>
-                <Paragraph>
+                <Paragraph isSmall={above('medium')}>
                   For that, we use a third-party system called{' '}
                   <Link href="https://www.helpscout.com/" target="_blank">
                     HelpScout
@@ -396,8 +460,8 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
               <div>Loading…</div>
             </div>
           )}
-        </Main>
-      </Wrapper>
+        </main>
+      </aside>
     </animated.div>
   )
 })
@@ -444,80 +508,11 @@ const Paragraph = styled.p`
   margin-top: ${1 * GU}px;
   font-size: 15px;
   line-height: 26px;
-
-  ${breakpoint(
-    'medium',
+  ${({ isSmall }) =>
+    isSmall &&
     `
-      font-size: 13px;
-      line-height: 21px;
-    `
-  )}
-`
-
-const Wrapper = styled.aside`
-  background: ${({ theme }) => theme.helpSurface};
-  position: absolute;
-  bottom: ${-2 * GU}px;
-  right: ${-2 * GU}px;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-
-  ${breakpoint(
-    'medium',
-    `
-      bottom: calc(-40px - ${4 * GU}px);
-      width: 336px;
-      height: 482px;
-      position: unset;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
-      border-radius: ${RADIUS}px;
-    `
-  )}
-`
-
-const Header = styled.header`
-  position: relative;
-  height: 240px;
-  background-color: ${({ theme }) => theme.help};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
-  ${breakpoint(
-    'medium',
-    `
-      height: 148px;
-      /* needs both height and min-height as button uses flex: 1
-       * and would push this upwards */
-      min-height: 148px;
-      border-top-right-radius: ${RADIUS}px;
-      border-top-left-radius: ${RADIUS}px;
-    `
-  )}
-`
-
-const HeaderImage = styled.img`
-  width: 300px;
-  height: 139px;
-  position: absolute;
-  bottom: -6px;
-`
-
-const Main = styled.main`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: ${5 * GU}px ${3 * GU}px ${3 * GU}px;
-  color: ${({ theme }) => theme.helpSurfaceContent};
-`
-
-const Heading = styled.h3`
-  ${textStyle('title4')};
+        font-size: 13px; line-height: 21px;
+    `}
 `
 
 const RoundButtonIcon = styled(animated.div)`

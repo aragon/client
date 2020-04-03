@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { Button, GU, Modal, breakpoint, textStyle, useToast } from '@aragon/ui'
+import { Button, GU, Modal, textStyle, useToast, useViewport } from '@aragon/ui'
 
 function RemoveModal({ visible, onClose, onConfirm }) {
   const toast = useToast()
+  const { above } = useViewport()
   const handleConfirm = useCallback(() => {
     toast('Custom labels removed successfully')
     onConfirm()
@@ -27,18 +27,36 @@ function RemoveModal({ visible, onClose, onConfirm }) {
         This action will irreversibly delete the selected labels you have added
         to your organization on this device.
       </p>
-      <ModalControls>
+      <div
+        css={`
+          margin-top: ${3 * GU}px;
+          display: grid;
+          grid-gap: ${1.5 * GU}px;
+          grid-template-columns: 1fr 1fr;
+          ${above('medium') &&
+            `
+                display: flex;
+                justify-content: flex-end;
+            `}
+        `}
+      >
         <Button label="Cancel" onClick={onClose}>
           Cancel
         </Button>
-        <RemoveButton
+        <Button
           label="Remove labels"
           mode="strong"
           onClick={handleConfirm}
+          css={`
+            ${above('medium') &&
+              `
+                  margin-left: ${1.5 * GU}px;
+             `}
+          `}
         >
           Remove
-        </RemoveButton>
-      </ModalControls>
+        </Button>
+      </div>
     </Modal>
   )
 }
@@ -48,28 +66,5 @@ RemoveModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
 }
-
-const ModalControls = styled.div`
-  margin-top: ${3 * GU}px;
-  display: grid;
-  grid-gap: ${1.5 * GU}px;
-  grid-template-columns: 1fr 1fr;
-  ${breakpoint(
-    'medium',
-    `
-      display: flex;
-      justify-content: flex-end;
-    `
-  )}
-`
-
-const RemoveButton = styled(Button)`
-  ${breakpoint(
-    'medium',
-    `
-      margin-left: ${1.5 * GU}px;
-    `
-  )}
-`
 
 export default React.memo(RemoveModal)
