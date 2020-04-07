@@ -11,7 +11,7 @@ import {
   breakpoint,
 } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { isBurnEntity } from '../../permissions'
+import { ANY_ENTITY, isBurnEntity } from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
@@ -23,8 +23,6 @@ const VIEW_PERMISSION = Symbol('VIEW_PERMISSION')
 const NO_UPDATE_ACTION = Symbol('NO_UPDATE_ACTION')
 const SET_PERMISSION_MANAGER = Symbol('SET_PERMISSION_MANAGER')
 const REMOVE_PERMISSION_MANAGER = Symbol('REMOVE_PERMISSION_MANAGER')
-
-const ANY_ACCOUNT_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 
 const UPDATE_ACTIONS = new Map([
   [NO_UPDATE_ACTION, { label: 'Select an update', message: null }],
@@ -269,7 +267,7 @@ class ManageRolePanel extends React.PureComponent {
     const action = this.getCurrentAction()
     const isUpdateAction = UPDATE_ACTIONS.has(action)
     const message = this.getMessage(action)
-    console.log(this.state.assignEntityAddress)
+
     return (
       <SidePanel
         title={
@@ -358,8 +356,8 @@ class ManageRolePanel extends React.PureComponent {
             </Button>
           )}
 
-          {(this.state.newRoleManagerValue === ANY_ACCOUNT_ADDRESS ||
-            this.state.assignEntityAddress === ANY_ACCOUNT_ADDRESS) && (
+          {(this.state.newRoleManagerValue === ANY_ENTITY ||
+            this.state.assignEntityAddress === ANY_ENTITY) && (
             <Info
               mode="warning"
               css={`

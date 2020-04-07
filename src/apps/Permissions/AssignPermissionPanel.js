@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, DropDown, Info, Field, SidePanel, GU } from '@aragon/ui'
+import { ANY_ENTITY } from '../../permissions'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
@@ -13,8 +14,6 @@ const DEFAULT_STATE = {
   appIndex: -1,
   roleIndex: -1,
 }
-
-const ANY_ACCOUNT_ADDRESS = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 
 // The permission panel, wrapped in a PermissionsContext (see end of file)
 class AssignPermissionPanel extends React.PureComponent {
@@ -198,7 +197,7 @@ class AssignPermissionPanel extends React.PureComponent {
             {'Add permission'}
           </Button>
 
-          {this.state.assignEntityAddress === ANY_ACCOUNT_ADDRESS && (
+          {this.state.assignEntityAddress === ANY_ENTITY && (
             <Info
               mode="warning"
               css={`
