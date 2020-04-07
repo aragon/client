@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import {
   ButtonBase,
-  IconDown,
+  Details,
   GU,
+  IconDown,
   springs,
   textStyle,
   unselectable,
@@ -65,9 +66,6 @@ function MenuPanel({
   const [systemAppsOpened, setSystemAppsOpened] = useState(
     systemAppsOpenedState.isOpen()
   )
-  const [showSystemsAppsAnimation, setShowSystemsAppsAnimation] = useState(
-    false
-  )
 
   const appGroups = useMemo(
     () =>
@@ -100,7 +98,6 @@ function MenuPanel({
       systemAppsOpenedState.set(openedState)
       return openedState
     })
-    setShowSystemsAppsAnimation(true)
   }, [])
 
   const renderAppGroup = useCallback(
@@ -160,7 +157,6 @@ function MenuPanel({
     // Automatically toggle the system apps menu if a system app is activated/deactivated
     // If the user has manually opened the system apps menu, keep it open
     setSystemAppsOpened(isSystemAppActive || systemAppsOpenedState.isOpen())
-    setShowSystemsAppsAnimation(true)
   }, [isSystemAppActive])
 
   return (
@@ -204,93 +200,26 @@ function MenuPanel({
                 : renderAppGroup(app)
             )}
           </div>
-          <Spring
-            config={springs.smooth}
-            from={{ openProgress: 0 }}
-            to={{ openProgress: Number(systemAppsOpened) }}
-            immediate={!showSystemsAppsAnimation}
-            native
+
+          <div
+            css={`
+              padding-top: ${1 * GU}px;
+            `}
           >
-            {({ openProgress }) => (
-              <div
-                css={`
-                  margin-top: ${1 * GU}px;
-                  padding-bottom: ${3 * GU}px;
-                `}
-              >
-                <SystemAppsToggle onClick={handleToggleSystemApps}>
-                  <SystemAppsToggleShadow
-                    style={{
-                      transform: interpolateToggleElevation(
-                        openProgress,
-                        v => `scale3d(${v}, 1, 1)`
-                      ),
-                      opacity: interpolateToggleElevation(openProgress),
-                    }}
-                  />
-                  <Heading
-                    label="System"
-                    css={`
-                      height: ${5 * GU}px;
-                    `}
-                  >
-                    <SystemAppsToggleArrow
-                      style={{
-                        marginLeft: `${1 * GU}px`,
-                        transform: openProgress.interpolate(
-                          v => `rotate(${(1 - v) * 180}deg)`
-                        ),
-                        transformOrigin: '50% calc(50% - 0.5px)',
-                      }}
-                    />
-                  </Heading>
-                </SystemAppsToggle>
-                <div css="overflow: hidden">
-                  <AnimDiv
-                    css={`
-                      display: flex;
-                      flex-direction: column;
-                      justify-content: flex-end;
-                    `}
-                    style={{
-                      opacity: openProgress,
-                      height: openProgress.interpolate(
-                        v =>
-                          v * systemApps.length * MENU_ITEM_BASE_HEIGHT + 'px'
-                      ),
-                    }}
-                  >
-                    {systemApps.map(app =>
-                      app.appId !== 'console' ? (
-                        renderAppGroup(app)
-                      ) : (
-                        <Spring
-                          key={app.appId}
-                          immediate={consoleVisible}
-                          config={springs.swift}
-                          from={{ opacity: 0 }}
-                          to={{
-                            opacity: Number(showConsole),
-                          }}
-                        >
-                          {({ opacity }) => (
-                            <AnimDiv style={{ opacity }}>
-                              {renderAppGroup(app)}
-                            </AnimDiv>
-                          )}
-                        </Spring>
-                      )
-                    )}
-                  </AnimDiv>
-                </div>
-              </div>
-            )}
-          </Spring>
+            <Details
+              label="System"
+              opened={systemAppsOpened}
+              onToggle={handleToggleSystemApps}
+            >
+              {systemApps.map(app => renderAppGroup(app))}
+            </Details>
+          </div>
         </nav>
       </div>
     </Main>
   )
 }
+
 MenuPanel.propTypes = {
   activeInstanceId: PropTypes.string,
   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
