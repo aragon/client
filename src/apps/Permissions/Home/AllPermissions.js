@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   DropDown,
@@ -26,21 +26,24 @@ function AllPermissions({
   const [page, setPage] = useState(0)
   const { layoutName } = useLayout()
 
-  const handleEntityTypeChange = useCallback(
-    entity => {
-      setPage(0)
-      setSelectedEntityType(entity)
-    },
-    [setPage, setSelectedEntityType]
-  )
+  const permissionsKey = permissions
+    .map(permission => `${permission.app.proxyAddress}-${permission.role.id}`)
+    .join('')
 
-  const handlSearchTermsChange = useCallback(
-    terms => {
-      setPage(0)
-      setSearchTerms(terms)
-    },
-    [setPage, setSearchTerms]
-  )
+  useEffect(() => {
+    setPage(0)
+  }, [permissionsKey])
+
+  const handleEntityTypeChange = useCallback(entity => {
+    setPage(0)
+    setSelectedEntityType(entity)
+  }, [])
+
+  const handlSearchTermsChange = useCallback(terms => {
+    setPage(0)
+    setSearchTerms(terms)
+  }, [])
+
   const filteredPermissions = useMemo(() => {
     return (
       permissions
