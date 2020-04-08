@@ -354,12 +354,12 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
 
           ${above('medium') &&
             `
-                bottom: calc(-40px - ${4 * GU}px);
-                width: 336px;
-                height: 482px;
-                position: unset;
-                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
-                border-radius: ${RADIUS}px;
+              bottom: calc(-${5 * GU}px - ${4 * GU}px);
+              width: ${42 * GU}px;
+              height: ${60.25 * GU}px;
+              position: unset;
+              box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+              border-radius: ${RADIUS}px;
             `}
         `}
       >
@@ -375,12 +375,12 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
 
             ${above('medium') &&
               `
-                  height: 148px;
-                  /* needs both height and min-height as button uses flex: 1
-                   * and would push this upwards */
-                  min-height: 148px;
-                  border-top-right-radius: ${RADIUS}px;
-                  border-top-left-radius: ${RADIUS}px;
+                // Needs both height and min-height as button
+                // uses flex: 1 and would push this upwards.
+                height: ${18.5 * GU}px;
+                min-height: ${18.5 * GU}px;
+                border-top-right-radius: ${RADIUS}px;
+                border-top-left-radius: ${RADIUS}px;
               `}
           `}
         >
