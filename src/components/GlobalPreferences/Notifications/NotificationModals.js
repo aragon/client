@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Button, GU, Modal, textStyle, useViewport } from '@aragon/ui'
 
 export function DeleteAccountConfirmationModal({
@@ -81,14 +80,7 @@ DeleteSubscriptionConfirmationModal.propTypes = {
   visible: PropTypes.bool,
 }
 
-function ConfirmationModal({
-  children,
-  onConfirm,
-  onClose,
-  visible,
-  header,
-  body,
-}) {
+function ConfirmationModal({ children, onClose, visible, header, body }) {
   return (
     <Modal css="z-index: 2;" visible={visible} onClose={onClose}>
       <h2
@@ -115,28 +107,62 @@ ConfirmationModal.propTypes = {
   body: PropTypes.string,
   children: PropTypes.node,
   header: PropTypes.string,
-  onConfirm: PropTypes.func,
   onClose: PropTypes.func,
   visible: PropTypes.bool,
 }
 
-const ModalControls = styled.div`
-  margin-top: ${3 * GU}px;
-  display: grid;
-  grid-gap: ${1.5 * GU}px;
-  grid-template-columns: 1fr 1fr;
-  ${({ large }) =>
-    large &&
-    `
-      display: flex;
-      justify-content: flex-end;
-    `}
-`
+function ModalControls({ children }) {
+  const { above } = useViewport()
 
-const RemoveButton = styled(Button)`
-  ${({ large }) =>
-    large &&
-    `
-      margin-left: ${1.5 * GU}px;
-    `}
-`
+  return (
+    <div
+      css={`
+        margin-top: ${3 * GU}px;
+        display: grid;
+        grid-gap: ${1.5 * GU}px;
+        grid-template-columns: 1fr 1fr;
+        ${above('medium') &&
+          `
+            display: flex;
+            justify-content: flex-end;
+          `}
+      `}
+    >
+      {children}
+    </div>
+  )
+}
+
+ModalControls.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+}
+
+function RemoveButton({ children, label, mode, onClick }) {
+  const { above } = useViewport()
+
+  return (
+    <Button
+      label={label}
+      mode={mode}
+      onClick={onClick}
+      css={`
+        ${above('medium') &&
+          `
+            margin-left:${1.5 * GU}px;
+          `}
+      `}
+    >
+      {children}
+    </Button>
+  )
+}
+
+RemoveButton.propTypes = {
+  children: PropTypes.node,
+  label: PropTypes.string,
+  mode: PropTypes.string,
+  onClick: PropTypes.func,
+}
