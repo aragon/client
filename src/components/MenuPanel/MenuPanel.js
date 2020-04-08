@@ -2,10 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import {
-  ButtonBase,
   Details,
   GU,
-  IconDown,
   springs,
   textStyle,
   unselectable,
@@ -21,7 +19,7 @@ import {
 import { useConsole } from '../../apps/Console/useConsole'
 import { staticApps } from '../../static-apps'
 import { DAO_STATUS_LOADING } from '../../symbols'
-import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
+import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
@@ -46,11 +44,6 @@ const systemAppsOpenedState = {
     localStorage.setItem(this.key, opened ? '1' : '0')
   },
 }
-
-// Interpolate the elevation of a toggle from which a drawer slides down.
-// In / out example: [0, 0.25, 0.5, 0.75, 1] => [0, 0.5, 1, 0.5, 0]
-const interpolateToggleElevation = (value, fn = v => v) =>
-  value.interpolate(v => fn(1 - Math.abs(v * 2 - 1)))
 
 function MenuPanel({
   activeInstanceId,
@@ -371,55 +364,5 @@ Heading.propTypes = {
   children: PropTypes.node,
   label: PropTypes.node,
 }
-
-function SystemAppsToggle(props) {
-  const theme = useTheme()
-  return (
-    <ButtonBase
-      css={`
-        position: relative;
-        width: 100%;
-        &:active {
-          background: ${theme.surfacePressed};
-        }
-      `}
-      {...props}
-    />
-  )
-}
-
-const SystemAppsToggleArrow = props => (
-  <animated.div {...props}>
-    <div
-      css={`
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `}
-    >
-      <IconDown size="tiny" />
-    </div>
-  </animated.div>
-)
-
-const SystemAppsToggleShadow = props => (
-  <div
-    css={`
-      position: absolute;
-      left: ${3 * GU}px;
-      right: ${3 * GU}px;
-      bottom: 0;
-    `}
-  >
-    <animated.div {...props}>
-      <div
-        css={`
-          height: 1px;
-          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-        `}
-      />
-    </animated.div>
-  </div>
-)
 
 export default AnimatedMenuPanel
