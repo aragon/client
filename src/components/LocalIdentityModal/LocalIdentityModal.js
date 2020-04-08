@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {
   Button,
   EscapeOutside,
+  GU,
   Modal,
   TextInput,
   textStyle,
@@ -100,7 +101,7 @@ function LocalModal({ address, label, onCancel, onSave }) {
         </h3>
         <p
           css={`
-            margin: 20px 0;
+            margin: ${5 * GU}px 0;
             & span {
               font-weight: bold;
             }
@@ -120,7 +121,7 @@ function LocalModal({ address, label, onCancel, onSave }) {
           />
           <div
             css={`
-              color: #f56a6a;
+              color: ${theme.negative};
               text-transform: initial;
             `}
           >
@@ -130,7 +131,7 @@ function LocalModal({ address, label, onCancel, onSave }) {
         <div
           css={`
             display: grid;
-            grid-gap: 10px;
+            grid-gap: ${1 * GU}px;
             grid-template-columns: 1fr 1fr;
             ${above('medium') &&
               `
@@ -139,14 +140,19 @@ function LocalModal({ address, label, onCancel, onSave }) {
               `};
           `}
         >
-          <Button css="min-width: 128px;" onClick={handleCancel}>
+          <Button
+            onClick={handleCancel}
+            css={`
+              min-width: ${8 * GU}px;
+            `}
+          >
             Cancel
           </Button>
           <Button
             mode="strong"
             onClick={handleSave}
             css={`
-              min-width: 128px;
+              min-width: ${8 * GU}px;
               ${above('medium') &&
                 `
                   margin-left: ${2 * GU}px;

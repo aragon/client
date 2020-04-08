@@ -366,7 +366,7 @@ const OptInDialogue = React.memo(({ onClose, onOptIn, optedIn, ...styles }) => {
         <header
           css={`
             position: relative;
-            height: 240px;
+            height: ${30 * GU}px;
             background-color: ${theme.help};
             display: flex;
             align-items: center;
@@ -503,17 +503,27 @@ const CloseButton = React.memo(({ onClick, ...props }) => {
   )
 })
 
-const Paragraph = styled.p`
-  color: #5d6e7f;
-  margin-top: ${1 * GU}px;
-  font-size: 15px;
-  line-height: 26px;
-  ${({ isSmall }) =>
-    isSmall &&
-    `
-        font-size: 13px; line-height: 21px;
-    `}
-`
+function Paragraph({ children }) {
+  const { above } = useViewport()
+
+  return (
+    <p
+      css={`
+        color: #5d6e7f;
+        margin-top: ${1 * GU}px;
+        font-size: 15px;
+        line-height: 26px;
+        ${above('medium') &&
+          `
+            font-size: 13px;
+            line-height: 21px;
+          `}
+      `}
+    >
+      {children}
+    </p>
+  )
+}
 
 const RoundButtonIcon = styled(animated.div)`
   display: flex;
