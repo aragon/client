@@ -50,8 +50,8 @@ function RemoveModal({ visible, onClose, onConfirm }) {
           css={`
             ${above('medium') &&
               `
-                  margin-left: ${1.5 * GU}px;
-             `}
+                margin-left: ${1.5 * GU}px;
+              `}
           `}
         >
           Remove
