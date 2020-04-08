@@ -231,7 +231,7 @@ export default function ConsoleFeedback({
             margin: 0 0 ${GU}px 0;
           `}
           >
-            There are no agent instances installed in this organization. Please
+            There are no Agent instances installed in this organization. Please
             read{' '}
             <Link
               external
@@ -239,7 +239,7 @@ export default function ConsoleFeedback({
             >
               the documentation
             </Link>{' '}
-            on how to install an application using the CLI, or go to our{' '}
+            on how to install an Agent using the CLI, or go to our{' '}
             <Link external href="https://discord.gg/ruBR6GN">
               Discord
             </Link>{' '}
@@ -283,7 +283,7 @@ export default function ConsoleFeedback({
     return (
       <>
         <p css={`${textStyle('body2')} margin: 0 0 ${GU}px 0;`}>
-          Pass the paremeters required for the agent execute function: the
+          Pass the paremeters required for the Agent's execute function: the
           target address, and the human-readable function call, in the format
           shown below:
         </p>
