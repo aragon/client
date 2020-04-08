@@ -41,7 +41,7 @@ const AppInstanceLabel = React.memo(
             ${above('medium') &&
               `
                 display: inline;
-                margin-right: 10px;
+                margin-right: ${1 * GU}px;
               `}
           `}
         >
