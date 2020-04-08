@@ -20,12 +20,12 @@ import { getUnassignedEntity } from '../../permissions'
 import PermissionsIdentityBadge from './PermissionsIdentityBadge'
 
 const PermissionsView = React.memo(function PermissionsView({
-  permissions,
+  heading,
   onAssignPermission,
   onManageRole,
-  page,
   onPageChange,
-  heading,
+  page,
+  permissions,
   showApps,
 }) {
   const { layoutName } = useLayout()
@@ -71,9 +71,9 @@ const PermissionsView = React.memo(function PermissionsView({
 PermissionsView.propTypes = {
   heading: PropTypes.node,
   onAssignPermission: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
   onManageRole: PropTypes.func.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
   permissions: PropTypes.array.isRequired,
   showApps: PropTypes.bool.isRequired,
 }

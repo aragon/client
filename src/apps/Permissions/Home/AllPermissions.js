@@ -28,7 +28,7 @@ function AllPermissions({
 
   const permissionsKey = permissions
     .map(permission => `${permission.app.proxyAddress}-${permission.role.id}`)
-    .join('')
+    .join(',')
 
   useEffect(() => {
     setPage(0)
