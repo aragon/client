@@ -10,7 +10,7 @@ const buttonTransitionStyles = show => ({
   pointerEvents: show ? 'auto' : 'none',
 })
 
-const Navigation = ({ step, steps, onPrev, onNext }) => {
+function Navigation({ step, steps, onPrev, onNext }) {
   const showPrev = step > 0
   const showNext = step < steps - 1
 
@@ -59,7 +59,7 @@ Navigation.propTypes = {
   onNext: PropTypes.func.isRequired,
 }
 
-const NavButton = ({ type, ...props }) => {
+function NavButton({ type, ...props }) {
   const icon = type === 'next' ? <IconRight /> : <IconLeft />
 
   return (
