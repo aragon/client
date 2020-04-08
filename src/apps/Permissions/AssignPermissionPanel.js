@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, DropDown, Info, Field, SidePanel, GU } from '@aragon/ui'
+import { ANY_ENTITY } from '../../permissions'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
@@ -195,6 +196,18 @@ class AssignPermissionPanel extends React.PureComponent {
           >
             {'Add permission'}
           </Button>
+
+          {this.state.assignEntityAddress === ANY_ENTITY && (
+            <Info
+              mode="warning"
+              css={`
+                margin-top: ${3 * GU}px;
+              `}
+            >
+              Be aware that assigning the permission to this address will let
+              anyone perform this action.
+            </Info>
+          )}
 
           <Info
             title="Adding the permission might create a vote"
