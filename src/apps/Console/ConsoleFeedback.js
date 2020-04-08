@@ -240,7 +240,7 @@ export default function ConsoleFeedback({
               the documentation
             </Link>{' '}
             on how to install an Agent using the CLI, or go to our{' '}
-            <Link external href="https://discord.gg/ruBR6GN">
+            <Link external href="https://spectrum.chat/aragon">
               Discord
             </Link>{' '}
             server to help you install it.
