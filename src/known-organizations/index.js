@@ -1,24 +1,36 @@
 import aragonGovernanceImage from './images/aragon-governance.svg'
+import aragonMesh from './images/aragon-mesh.svg'
 import aragonNetworkImage from './images/aragon-network.svg'
 import aragonOneImage from './images/aragon-one.svg'
-import brightIdImage from './images/brightid.svg'
-import melonCouncilImage from './images/melon-council.svg'
 import blankDaoImage from './images/blankdao.svg'
+import brightIdImage from './images/brightid.svg'
+import decentralandImage from './images/decentraland.svg'
+import millstoneImage from './images/millstone.png'
+import lexdaoImage from './images/lexdao.png'
+import lightwaveImage from './images/lightwave.svg'
 import livepeerImage from './images/livepeer.svg'
+import melonCouncilImage from './images/melon-council.svg'
 import myBitImage from './images/mybit.svg'
 import onehive from './images/1hive.svg'
-import aragonMesh from './images/aragon-mesh.svg'
-import lightwaveImage from './images/lightwave.svg'
 import saintFameImage from './images/saint-fame.svg'
+import pieDaoImage from './images/pie-dao.png'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
 const TEMPLATE_COMPANY = 'Company'
 const TEMPLATE_MEMBERSHIP = 'Membership'
+const TEMPLATE_DANDELION = 'Dandelion'
 
 export const KnownOrganizations = {
   main: new Map(
     [
+      {
+        address: '0xF47917B108ca4B820CCEA2587546fbB9f7564b56',
+        domain: 'dcl.eth',
+        image: decentralandImage,
+        name: 'Decentraland',
+        template: TEMPLATE_DEMOCRACY,
+      },
       {
         address: '0xfe1f2de598f42ce67bb9aad5ad473f0272d09b74',
         domain: 'meloncouncil.eth',
@@ -94,6 +106,27 @@ export const KnownOrganizations = {
         name: 'Saint Fame',
         image: saintFameImage,
         template: TEMPLATE_REPUTATION,
+      },
+      {
+        address: '0xa365A8429FceFdbE1E684dDdDA3531b6e8d96e75',
+        domain: 'lexdao.aragonid.eth',
+        image: lexdaoImage,
+        name: 'lexDAO',
+        template: TEMPLATE_MEMBERSHIP,
+      },
+      {
+        address: '0x0c188b183ff758500d1d18b432313d10e9f6b8a4',
+        domain: 'piedao.aragonid.eth',
+        image: pieDaoImage,
+        name: 'PieDAO',
+        template: TEMPLATE_DANDELION,
+      },
+      {
+        address: '0xC9Fe36760d8Fe233307E26b094De1f4fA090a12A',
+        domain: 'millstone.aragonid.eth',
+        image: millstoneImage,
+        name: 'Millstone',
+        template: TEMPLATE_COMPANY,
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),

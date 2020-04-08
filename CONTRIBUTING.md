@@ -20,7 +20,7 @@ Start small, pick a subject you care about, are familiar with, or want to learn.
 
 If you're not already familiar with git or Github, here are a couple of friendly tutorials: [First Contributions](https://github.com/firstcontributions/first-contributions), [Open Source Guide](https://opensource.guide/), and [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
-An [architecture guide](./ARCHITECTURE.md) is available for the Aragon client's code bases to help guide you towards your first contribution.
+An [architecture guide](docs/ARCHITECTURE.md) is available for the Aragon client's code bases to help guide you towards your first contribution. You may especially find the [guide for setting up your local development environment](docs/FRONTEND_SETUP.md) useful!
 
 ## How to file an issue or report a bug
 
@@ -44,7 +44,7 @@ If the answer to either of those two questions are "yes", then you're probably d
 ## Fixing issues
 
 1. [Find an issue](https://github.com/aragon/aragon/issues) that you are interested in.
-    - You may want to ask on the issue or on Aragon Chat's [#dev channel](https://aragon.chat/channel/dev) if anyone has already started working on the issue.
+    - You may want to ask on the issue or in the [Aragon Client Spectrum channel](https://spectrum.chat/aragon/aragon-client) if anyone has already started working on the issue.
 1. Fork and clone a local copy of the repository.
 1. Make the appropriate changes for the issue you are trying to address or the feature that you want to add.
 1. Push the changes to the remote repository.
@@ -64,7 +64,7 @@ Windows users may need to install the [windows-build-tools](https://www.npmjs.co
 
 #### App frontends
 
-For local development, where you may want to use a local version of [aragonUI](https://github.com/aragon/aragon-ui) or connect to a locally running instance of [aragon-apps](https://github.com/aragon/aragon-apps), you can follow [`@bpierre`'s gist](https://gist.github.com/bpierre/22572415b90577aa17e5953fa68980eb).
+For local development, where you may want to use a local version of [aragonUI](https://github.com/aragon/aragon-ui) or connect to a locally running instance of [aragon-apps](https://github.com/aragon/aragon-apps), you should follow the [frontend development setup guide](docs/FRONTEND_SETUP.md).
 
 In the future, we will improve this flow to make it much easier to get started.
 
@@ -76,4 +76,4 @@ We generally avoid adding external dependencies if they can be ported over easil
 
 ## Community
 
-If you need help, please reach out to Aragon core contributors and community members in the Aragon Chat [#dev](https://aragon.chat/channel/dev) and [#dev-help](https://aragon.chat/channel/dev-help) channels. We'd love to hear from you and know what you're working on!
+If you need help, please reach out to Aragon core contributors and community members in the [Aragon Client Spectrum channel](https://spectrum.chat/aragon/aragon-client).  We'd love to hear from you and know what you're working on!

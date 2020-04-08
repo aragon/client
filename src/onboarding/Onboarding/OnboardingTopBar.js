@@ -4,7 +4,7 @@ import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
 
-function OnboardingTopBar({ status, solid }) {
+function OnboardingTopBar({ locator, status, solid }) {
   const theme = useTheme()
 
   const handleSettingsClick = useCallback(() => {
@@ -69,13 +69,13 @@ function OnboardingTopBar({ status, solid }) {
               height: 100%;
             `}
           >
-            <AccountModule compact />
+            <AccountModule locator={locator} />
           </div>
           <Button
             display="icon"
             icon={<IconSettings />}
             label="Settings"
-            size="small"
+            size="medium"
             onClick={handleSettingsClick}
           />
         </div>
@@ -85,6 +85,7 @@ function OnboardingTopBar({ status, solid }) {
 }
 
 OnboardingTopBar.propTypes = {
+  locator: PropTypes.object,
   status: PropTypes.string.isRequired,
   solid: PropTypes.bool,
 }

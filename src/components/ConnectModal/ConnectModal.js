@@ -3,14 +3,12 @@ import PropTypes from 'prop-types'
 import {
   Button,
   GU,
-  IconConnect,
   Link,
   Modal,
   textStyle,
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { enableWallet } from '../../wallet'
 import providersImage from './assets/providers.png'
 
 function ConnectModal({ account, onClose, onConnect, visible }) {
@@ -54,7 +52,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
               font-weight: 600;
             `}
           >
-            Enable your Ethereum provider
+            Connect your Ethereum account
           </h1>
           <p
             css={`
@@ -63,7 +61,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
               color: ${theme.contentSecondary};
             `}
           >
-            You need to enable your Ethereum provider to create an organization
+            You need to connect your Ethereum account to create an organization
           </p>
           <p
             css={`
@@ -91,13 +89,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
             `}
           />
         </div>
-        <Button
-          icon={<IconConnect />}
-          label="Enable account"
-          mode="strong"
-          onClick={enableWallet}
-          wide
-        />
+        <Button label="Close" mode="strong" onClick={onClose} wide />
       </section>
     </Modal>
   )

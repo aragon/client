@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useWallet } from '../wallet'
 import StoredList from '../StoredList'
 import { network } from '../environment'
-import { useWallet } from '../wallet'
 import { EthereumAddressType } from '../prop-types'
 import {
   ACTIVITY_STATUS_CONFIRMED,

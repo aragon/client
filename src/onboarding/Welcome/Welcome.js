@@ -117,7 +117,7 @@ Welcome.propTypes = {
 function CreateSubtitle({ error }) {
   const theme = useTheme()
   const [errorType, errorData] = error
-  if (errorType === 'minimum-balance' || errorType === 'unknown-balance') {
+  if (errorType === 'minimum-balance') {
     return (
       <span
         css={`
@@ -125,11 +125,7 @@ function CreateSubtitle({ error }) {
         `}
       >
         You need at least {errorData.minimumBalance} ETH (
-        <strong>
-          {errorType === 'unknown-balance'
-            ? 'your balance is unknown'
-            : `you have ${errorData.balance} ETH`}
-        </strong>
+        <strong>you have {errorData.balance} ETH</strong>
         ).
       </span>
     )

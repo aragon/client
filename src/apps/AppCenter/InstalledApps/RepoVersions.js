@@ -11,8 +11,8 @@ import {
   useLayout,
   useTheme,
 } from '@aragon/ui'
-import { format } from 'date-fns'
 import { RepoType } from '../../../prop-types'
+import { dateFormat } from '../../../date-utils'
 
 const { tr: AnimTr } = animated
 
@@ -89,7 +89,16 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
                       ${textStyle('body2')}
                     `}
                   >
-                    {timestamp ? format(timestamp, 'dd/MM/yy') : ''}
+                    {timestamp ? (
+                      <time
+                        dateTime={dateFormat(timestamp, 'iso')}
+                        title={dateFormat(timestamp, 'standard')}
+                      >
+                        {dateFormat(timestamp, 'onlyDate')}
+                      </time>
+                    ) : (
+                      ''
+                    )}
                   </Td>
                 </AnimTr>
               )

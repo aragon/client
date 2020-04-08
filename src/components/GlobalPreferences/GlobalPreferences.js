@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import {
   Bar,
   ButtonIcon,
@@ -9,7 +8,6 @@ import {
   IconClose,
   Layout,
   Tabs,
-  breakpoint,
   springs,
   textStyle,
   useTheme,
@@ -39,6 +37,8 @@ const CUSTOM_LABELS_INDEX = 0
 const NETWORK_INDEX = 1
 const NOTIFICATIONS_INDEX = 2
 const HELP_AND_FEEDBACK_INDEX = 3
+
+const AnimatedDiv = animated.div
 
 function GlobalPreferences({
   apps,
@@ -75,80 +75,90 @@ function GlobalPreferences({
 
   useEsc(onClose)
 
-  const tabItems = VALUES.filter(
-    (_, index) => !!wrapper || index === NETWORK_INDEX
+  const tabItems = VALUES.filter((_, index) =>
+    Boolean(wrapper || index === NETWORK_INDEX)
   )
+
+  const container = useRef()
+  useEffect(() => {
+    if (container.current) {
+      container.current.focus()
+    }
+  }, [])
+
   return (
-    <Layout css="z-index: 2">
-      <Close
-        compact={compact}
-        onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
-      />
-      <Header
-        primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
-        css={`
-          padding-top: ${!compact ? 10 * GU : 0}px;
-        `}
-      />
-      {isSharedLink ? (
-        <SharedIdentities
-          isSaving={isSavingSharedLink}
-          onSave={handleSharedIdentitiesSave}
-          onCancel={handleSharedIdentitiesCancel}
-          identities={sharedIdentities}
-          onToggleAll={handleSharedIdentitiesToggleAll}
-          onToggleIdentity={handleSharedIdentitiesToggleIdentity}
-          selected={sharedIdentitiesSelected}
-          allSelected={sharedIdentitiesAllSelected}
-          someSelected={sharedIdentitiesSomeSelected}
+    <div ref={container} tabIndex="0" css="outline: 0">
+      <Layout css="z-index: 2">
+        <Close
+          compact={compact}
+          onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
         />
-      ) : (
-        <React.Fragment>
-          {tabItems.length > 1 ? (
-            <Tabs
-              items={tabItems}
-              onChange={onNavigation}
-              selected={sectionIndex}
-            />
-          ) : (
-            <Bar>
-              <div
-                css={`
-                  display: flex;
-                  height: 100%;
-                  align-items: center;
-                  padding-left: ${compact ? 2 * GU : 3 * GU}px;
-                  color: ${compact
-                    ? theme.surfaceContent
-                    : theme.surfaceContentSecondary};
-                  ${textStyle('body2')}
-                `}
-              >
-                {tabItems[0]}
-              </div>
-            </Bar>
-          )}
-          <main>
-            {sectionIndex === CUSTOM_LABELS_INDEX && (
-              <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
-            )}
-            {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
-            {sectionIndex === NOTIFICATIONS_INDEX && (
-              <Notifications
-                apps={apps}
-                dao={dao}
-                subsection={subsection}
-                handleNavigation={onNavigation}
-                navigationIndex={2}
+        <Header
+          primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
+          css={`
+            padding-top: ${!compact ? 10 * GU : 0}px;
+          `}
+        />
+        {isSharedLink ? (
+          <SharedIdentities
+            isSaving={isSavingSharedLink}
+            onSave={handleSharedIdentitiesSave}
+            onCancel={handleSharedIdentitiesCancel}
+            identities={sharedIdentities}
+            onToggleAll={handleSharedIdentitiesToggleAll}
+            onToggleIdentity={handleSharedIdentitiesToggleIdentity}
+            selected={sharedIdentitiesSelected}
+            allSelected={sharedIdentitiesAllSelected}
+            someSelected={sharedIdentitiesSomeSelected}
+          />
+        ) : (
+          <React.Fragment>
+            {tabItems.length > 1 ? (
+              <Tabs
+                items={tabItems}
+                onChange={onNavigation}
+                selected={sectionIndex}
               />
+            ) : (
+              <Bar>
+                <div
+                  css={`
+                    display: flex;
+                    height: 100%;
+                    align-items: center;
+                    padding-left: ${compact ? 2 * GU : 3 * GU}px;
+                    color: ${compact
+                      ? theme.surfaceContent
+                      : theme.surfaceContentSecondary};
+                    ${textStyle('body2')}
+                  `}
+                >
+                  {tabItems[0]}
+                </div>
+              </Bar>
             )}
-            {sectionIndex === HELP_AND_FEEDBACK_INDEX && (
-              <HelpAndFeedback locator={locator} onClose={onClose} />
-            )}
-          </main>
-        </React.Fragment>
-      )}
-    </Layout>
+            <main>
+              {sectionIndex === CUSTOM_LABELS_INDEX && (
+                <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
+              )}
+              {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
+              {sectionIndex === NOTIFICATIONS_INDEX && (
+                <Notifications
+                  apps={apps}
+                  dao={dao}
+                  subsection={subsection}
+                  handleNavigation={onNavigation}
+                  navigationIndex={2}
+                />
+              )}
+              {sectionIndex === HELP_AND_FEEDBACK_INDEX && (
+                <HelpAndFeedback locator={locator} onClose={onClose} />
+              )}
+            </main>
+          </React.Fragment>
+        )}
+      </Layout>
+    </div>
   )
 }
 
@@ -237,7 +247,7 @@ function AnimatedGlobalPreferences(props) {
     wrapper: props.wrapper,
   })
 
-  const { below } = useViewport()
+  const { below, above } = useViewport()
   const compact = below('medium')
   const theme = useTheme()
 
@@ -255,9 +265,7 @@ function AnimatedGlobalPreferences(props) {
         /* eslint-disable react/prop-types */
         // z-index 2 on mobile keeps the menu above this preferences modal
         (({ opacity, enterProgress, blocking }) => (
-          <AnimatedWrap
-            accent={theme.accent}
-            surface={theme.surface}
+          <AnimatedDiv
             style={{
               zIndex: 1,
               pointerEvents: blocking ? 'auto' : 'none',
@@ -269,6 +277,22 @@ function AnimatedGlobalPreferences(props) {
                 `
               ),
             }}
+            css={`
+              position: fixed;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              overflow: auto;
+              min-width: 360px;
+              padding-bottom: ${2 * GU}px;
+              border-top: 2px solid ${theme.accent};
+              background: ${theme.surface};
+              ${above('medium') &&
+                `
+                  padding-bottom: 0;
+                `}
+            `}
           >
             <GlobalPreferences
               {...props}
@@ -277,7 +301,7 @@ function AnimatedGlobalPreferences(props) {
               subsection={subsection}
               onNavigation={handleNavigation}
             />
-          </AnimatedWrap>
+          </AnimatedDiv>
         ))
       /* eslint-enable react/prop-types */
       }
@@ -290,21 +314,5 @@ AnimatedGlobalPreferences.propTypes = {
   onScreenChange: PropTypes.func.isRequired,
   wrapper: PropTypes.object,
 }
-
-const AnimatedWrap = styled(animated.div)`
-  position: fixed;
-  background: #fff;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  min-width: 360px;
-  border-top: ${({ accent }) => `2px solid ${accent}`};
-  background: ${({ surface }) => surface};
-  overflow: auto;
-  padding-bottom: ${2 * GU}px;
-
-  ${breakpoint('medium', `padding-bottom:0;`)}
-`
 
 export default React.memo(AnimatedGlobalPreferences)

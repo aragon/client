@@ -18,7 +18,7 @@ const ETH_ADDRESS_TEST_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
 // when .toString() is called. Returns "-1" when the value is invalid.
 //
 // See https://github.com/indutny/bn.js/issues/186
-const filterBalanceValue = value => {
+export function filterBalanceValue(value) {
   if (value === null) {
     return '-1'
   }
@@ -115,19 +115,6 @@ export function getEmptyAddress() {
   return EMPTY_ADDRESS
 }
 
-/*
- * Return the injected provider, if any.
- */
-export function getInjectedProvider() {
-  if (window.ethereum) {
-    return window.ethereum
-  }
-  if (window.web3 && window.web3.currentProvider) {
-    return window.web3.currentProvider
-  }
-  return null
-}
-
 export async function getAccountBalance(web3, account) {
   try {
     const balanceValue = await web3.eth.getBalance(account)
@@ -216,6 +203,14 @@ export async function getMainAccount(web3) {
   } catch (err) {
     return null
   }
+}
+
+export async function getLatestBlockTimestamp(web3) {
+  const { timestamp } = (await web3.eth.getBlock('latest')) || {}
+  if (!timestamp) {
+    throw new Error('Could not fetch the latest block timestamp')
+  }
+  return new Date(timestamp * 1000)
 }
 
 export function getUnknownBalance() {

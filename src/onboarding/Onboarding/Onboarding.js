@@ -33,7 +33,7 @@ const initialEmbeddedTemplates = sortedEmbeddedTemplates.map(template => ({
   status: TEMPLATE_LOADING,
 }))
 
-function Onboarding({ status, selectorNetworks, web3 }) {
+function Onboarding({ locator, status, selectorNetworks, web3 }) {
   const theme = useTheme()
 
   const {
@@ -212,7 +212,7 @@ function Onboarding({ status, selectorNetworks, web3 }) {
 
   return (
     <div css="position: relative; z-index: 1">
-      <OnboardingTopBar status={status} solid={solidTopBar} />
+      <OnboardingTopBar locator={locator} status={status} solid={solidTopBar} />
       <div
         onScroll={handleOnBoardingScroll}
         css={`
@@ -265,6 +265,7 @@ function Onboarding({ status, selectorNetworks, web3 }) {
 }
 
 Onboarding.propTypes = {
+  locator: PropTypes.object,
   status: PropTypes.oneOf(['none', 'welcome', 'open', 'create']).isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,

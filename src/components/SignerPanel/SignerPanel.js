@@ -7,7 +7,7 @@ import { network } from '../../environment'
 import { useWallet } from '../../wallet'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { AppType, EthereumAddressType } from '../../prop-types'
-import { addressesEqual, getInjectedProvider } from '../../web3-utils'
+import { addressesEqual } from '../../web3-utils'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
@@ -68,7 +68,6 @@ class SignerPanel extends React.PureComponent {
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
     dao: PropTypes.string,
-    onRequestEnable: PropTypes.func.isRequired,
     addTransactionActivity: PropTypes.func.isRequired,
     setActivityConfirmed: PropTypes.func.isRequired,
     setActivityFailed: PropTypes.func.isRequired,
@@ -76,7 +75,7 @@ class SignerPanel extends React.PureComponent {
     transactionBag: PropTypes.object,
     signatureBag: PropTypes.object,
     walletNetwork: PropTypes.string.isRequired,
-    walletWeb3: PropTypes.object.isRequired,
+    walletWeb3: PropTypes.object,
     web3: PropTypes.object.isRequired,
     walletProviderId: PropTypes.string.isRequired,
   }
@@ -315,11 +314,11 @@ class SignerPanel extends React.PureComponent {
   render() {
     const {
       account,
+      apps,
       dao,
-      onRequestEnable,
       walletNetwork,
       walletProviderId,
-      apps,
+      walletWeb3,
     } = this.props
 
     const {
@@ -365,10 +364,9 @@ class SignerPanel extends React.PureComponent {
                         <ValidateWalletWeb3
                           intent={intent}
                           isTransaction={isTransaction}
-                          hasWeb3={Boolean(getInjectedProvider())}
+                          hasWeb3={Boolean(walletWeb3)}
                           networkType={network.type}
                           onClose={this.handleSignerClose}
-                          onRequestEnable={onRequestEnable}
                           walletNetworkType={walletNetwork}
                           walletProviderId={walletProviderId}
                         >
@@ -448,7 +446,7 @@ const Screen = styled.div`
   margin-top: ${3 * GU}px;
 `
 
-export default function(props) {
+export default function SignerPanelWrapper(props) {
   const wallet = useWallet()
 
   const {
@@ -463,7 +461,6 @@ export default function(props) {
       {...props}
       account={wallet.account}
       addTransactionActivity={addTransactionActivity}
-      onRequestEnable={wallet.enable}
       setActivityConfirmed={setActivityConfirmed}
       setActivityFailed={setActivityFailed}
       setActivityNonce={setActivityNonce}

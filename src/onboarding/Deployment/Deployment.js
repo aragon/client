@@ -276,7 +276,6 @@ const Deployment = React.memo(function Deployment({
         TRANSACTION_STATUS_SUCCESS,
     ]
   }, [transactionsStatus])
-
   return (
     <React.Fragment>
       {above('large') && (

@@ -249,7 +249,6 @@ class Wrapper extends React.PureComponent {
       wrapper,
     } = this.props
     const { appLoading, orgUpgradePanelOpened, upgradeModalOpened } = this.state
-
     const currentApp = apps.find(app =>
       addressesEqual(app.proxyAddress, routing.locator.instanceId)
     )
@@ -332,6 +331,7 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       permissionsLoading,
       repos,
+      routing,
       wrapper,
     } = this.props
 
@@ -388,6 +388,7 @@ class Wrapper extends React.PureComponent {
             apps={apps}
             appsLoading={appsLoading}
             canUpgradeOrg={canUpgradeOrg}
+            dao={routing.locator.dao}
             daoAddress={daoAddress}
             onMessage={this.handleAppMessage}
             onOpenApp={this.openApp}

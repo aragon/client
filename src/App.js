@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
 import { EthereumAddressType, ClientThemeType } from './prop-types'
+import { useWallet } from './wallet'
 import { network, web3Providers } from './environment'
 import { useClientTheme } from './client-theme'
 import { getPreferencesSearch, useRouting } from './routing'
@@ -10,7 +11,6 @@ import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import Wrapper from './Wrapper'
 import { Onboarding } from './onboarding'
 import { getWeb3 } from './web3-utils'
-import { useWallet } from './wallet'
 import { log } from './utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
@@ -165,7 +165,6 @@ class App extends React.Component {
       },
       provider: web3Providers.default,
       walletAccount,
-      walletProvider: web3Providers.wallet,
       onDaoAddress: ({ address, domain }) => {
         log('dao address', address)
         log('dao domain', domain)
@@ -173,9 +172,6 @@ class App extends React.Component {
           daoStatus: DAO_STATUS_READY,
           daoAddress: { address, domain },
         })
-      },
-      onWeb3: web3 => {
-        log('web3', web3)
       },
       onApps: apps => {
         log('apps updated', apps)
@@ -426,6 +422,7 @@ class App extends React.Component {
                         </PermissionsProvider>
 
                         <Onboarding
+                          locator={locator}
                           selectorNetworks={selectorNetworks}
                           status={
                             locator.mode === APP_MODE_START ||

@@ -5,7 +5,11 @@
   "alias": "nightly.aragon.org",
   "build": {
     "env": {
-      "ARAGON_ETH_NETWORK_TYPE": "main"
+      "ARAGON_ETH_NETWORK_TYPE": "main",
+      "ARAGON_FORTMATIC_API_KEY": "@aragon-client-fortmatic-api-key",
+      "ARAGON_PORTIS_DAPP_ID": "@aragon-client-portis-dapp-id",
+      "ARAGON_SENTRY_DSN": "@aragon-client-sentry-dsn",
+      "ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY": "5000"
     }
   }
 }
