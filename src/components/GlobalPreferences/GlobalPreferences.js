@@ -8,7 +8,6 @@ import {
   IconClose,
   Layout,
   Tabs,
-  breakpoint,
   springs,
   textStyle,
   useTheme,
@@ -254,7 +253,7 @@ function AnimatedGlobalPreferences(props) {
     wrapper: props.wrapper,
   })
 
-  const { below } = useViewport()
+  const { below, above } = useViewport()
   const compact = below('medium')
   const theme = useTheme()
 
@@ -295,7 +294,10 @@ function AnimatedGlobalPreferences(props) {
               padding-bottom: ${2 * GU}px;
               border-top: 2px solid ${theme.accent};
               background: ${theme.surface};
-              ${breakpoint('medium', `padding-bottom:0;`)}
+              ${above('medium') &&
+                `
+                  padding-bottom: 0;
+                `}
             `}
           >
             <GlobalPreferences
