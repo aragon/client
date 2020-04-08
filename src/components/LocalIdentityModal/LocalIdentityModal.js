@@ -86,8 +86,8 @@ function LocalModal({ address, label, onCancel, onSave }) {
 
           ${above('medium') &&
             `
-                /* wide identity badge + paddings */
-                min-width: ${400 + 16 * 2}px;
+              /* wide identity badge + paddings */
+              min-width: ${54 * GU}px;
             `};
         `}
       >
@@ -134,8 +134,8 @@ function LocalModal({ address, label, onCancel, onSave }) {
             grid-template-columns: 1fr 1fr;
             ${above('medium') &&
               `
-                  display: flex;
-                  justify-content: flex-end;
+                display: flex;
+                justify-content: flex-end;
               `};
           `}
         >
@@ -149,7 +149,7 @@ function LocalModal({ address, label, onCancel, onSave }) {
               min-width: 128px;
               ${above('medium') &&
                 `
-                   margin-left: 16px;
+                  margin-left: ${2 * GU}px;
                 `}
             `}
           >

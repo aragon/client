@@ -93,15 +93,15 @@ function SharedIdentities({
 
                 ${above('medium') &&
                   `
-                      max-height: 40vh;
-                      overflow: auto;
+                    max-height: 40vh;
+                    overflow: auto;
 
-                      li:first-child {
-                        border-top: none;
-                      }
-                      li:last-child {
-                        border-bottom: none;
-                      }
+                    li:first-child {
+                      border-top: none;
+                    }
+                    li:last-child {
+                      border-bottom: none;
+                    }
                   `}
               `}
             >

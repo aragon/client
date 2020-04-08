@@ -101,7 +101,7 @@ function ShareModal({ onClose, link, visible }) {
           text-align: right;
           ${above('medium') &&
             `
-                display: block;
+              display: block;
             `}
         `}
       >

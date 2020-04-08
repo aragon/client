@@ -296,7 +296,7 @@ function AnimatedGlobalPreferences(props) {
               background: ${theme.surface};
               ${above('medium') &&
                 `
-                   padding-bottom: 0;
+                  padding-bottom: 0;
                 `}
             `}
           >

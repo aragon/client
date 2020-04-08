@@ -35,8 +35,8 @@ function RemoveModal({ visible, onClose, onConfirm }) {
           grid-template-columns: 1fr 1fr;
           ${above('medium') &&
             `
-                display: flex;
-                justify-content: flex-end;
+              display: flex;
+              justify-content: flex-end;
             `}
         `}
       >
@@ -50,8 +50,8 @@ function RemoveModal({ visible, onClose, onConfirm }) {
           css={`
             ${above('medium') &&
               `
-                  margin-left: ${1.5 * GU}px;
-             `}
+                margin-left: ${1.5 * GU}px;
+              `}
           `}
         >
           Remove
