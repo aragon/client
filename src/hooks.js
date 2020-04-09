@@ -11,7 +11,6 @@ import {
   IdentityContext,
   identityEventTypes,
 } from './components/IdentityManager/IdentityManager'
-import keycodes from './keycodes'
 import { log, removeStartingSlash } from './utils'
 import { addressesEqual } from './web3-utils'
 
@@ -27,31 +26,6 @@ export function useNow(updateEvery = 1000) {
     }
   }, [updateEvery])
   return now
-}
-
-// Handle arrow keys.
-export function useArrows({ onUp, onLeft, onDown, onRight } = {}) {
-  useEffect(() => {
-    const actions = [
-      [keycodes.up, onUp],
-      [keycodes.left, onLeft],
-      [keycodes.down, onDown],
-      [keycodes.right, onRight],
-    ]
-    const onKeyDown = e => {
-      for (const [keyCode, cb] of actions) {
-        if (cb && e.keyCode === keyCode) {
-          e.preventDefault()
-          cb()
-          break
-        }
-      }
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('keydown', onKeyDown)
-    }
-  }, [onUp, onLeft, onDown, onRight])
 }
 
 function stepsReducer(state, { type, value, steps }) {
@@ -149,21 +123,6 @@ export function useRepoDetails(baseUrl, detailsUrl) {
   return usePromise(fetchDescription, [detailsUrl], null)
 }
 
-export function useEsc(cb) {
-  const handlekeyDown = useCallback(
-    e => {
-      if (e.keyCode === keycodes.esc) {
-        cb()
-      }
-    },
-    [cb]
-  )
-  useEffect(() => {
-    window.addEventListener('keydown', handlekeyDown)
-    return () => window.removeEventListener('keydown', handlekeyDown)
-  }, [handlekeyDown])
-}
-
 export function useSelected(initial) {
   const [selected, setSelected] = useState(initial)
   const [allSelected, someSelected] = useMemo(
@@ -213,59 +172,6 @@ export function useOnBlur(cb, ref = useRef()) {
   )
 
   return { ref, handleBlur }
-}
-
-/* eslint-disable react-hooks/rules-of-hooks */
-export function useArrowKeysFocus(query, containerRef = useRef()) {
-  /* eslint-enable react-hooks/rules-of-hooks */
-  const [highlightedIndex, setHighlightedIndex] = useState(-1)
-
-  const reset = () => setHighlightedIndex(-1)
-  const cycleFocus = useCallback(
-    (e, change) => {
-      e.preventDefault()
-      const elements = document.querySelectorAll(query)
-      let next = highlightedIndex + change
-      if (next > elements.length - 1) {
-        next = 0
-      }
-      if (next < 0) {
-        next = elements.length - 1
-      }
-      if (!elements[next]) {
-        next = -1
-      }
-      setHighlightedIndex(next)
-    },
-    [highlightedIndex, query]
-  )
-  const handleKeyDown = useCallback(
-    e => {
-      const { keyCode } = e
-      if (keyCode === keycodes.up || keyCode === keycodes.down) {
-        cycleFocus(e, keyCode === keycodes.up ? -1 : 1)
-      }
-    },
-    [cycleFocus]
-  )
-
-  const { handleBlur: handleContainerBlur } = useOnBlur(reset, containerRef)
-  useEffect(() => {
-    if (highlightedIndex === -1) {
-      return
-    }
-    const elements = document.querySelectorAll(query)
-    if (!elements[highlightedIndex]) {
-      return
-    }
-    elements[highlightedIndex].focus()
-  }, [highlightedIndex, query])
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [handleKeyDown])
-
-  return { containerRef, handleContainerBlur }
 }
 
 export function useLocalIdentity(entity) {
@@ -332,6 +238,7 @@ export function useLocalIdentity(entity) {
   return { name, handleResolve }
 }
 
+// TODO: use in the future to detect dark mode
 export function useMatchMedia(query) {
   const [matches, setMatches] = useState(false)
 
