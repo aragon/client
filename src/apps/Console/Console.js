@@ -108,7 +108,7 @@ function Console({ apps, wrapper }) {
           <ConsoleFeedback
             apps={apps}
             currentParsedCommand={parsedState}
-            handleCommandClick={handleCommandClick}
+            onCommandClick={handleCommandClick}
             loading={loading}
           />
         </Info>

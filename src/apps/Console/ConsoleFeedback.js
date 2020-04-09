@@ -8,8 +8,8 @@ import { shortenAddress } from '../../web3-utils'
 function ConsoleFeedback({
   apps,
   currentParsedCommand,
-  handleCommandClick,
   loading,
+  onCommandClick,
 }) {
   if (loading) {
     return (
@@ -53,7 +53,7 @@ function ConsoleFeedback({
               css={`
                 display: block;
               `}
-              onClick={() => handleCommandClick(command)}
+              onClick={() => onCommandClick(command)}
             >
               {command}
             </InteractiveCommand>
@@ -79,7 +79,7 @@ function ConsoleFeedback({
                 css={`
                   display: block;
                 `}
-                onClick={() => handleCommandClick(command.toLowerCase())}
+                onClick={() => onCommandClick(command.toLowerCase())}
               >
                 {command}
               </InteractiveCommand>
@@ -125,7 +125,7 @@ function ConsoleFeedback({
                 css={`
                   display: block;
                 `}
-                onClick={() => handleCommandClick(app.proxyAddress)}
+                onClick={() => onCommandClick(app.proxyAddress)}
               >
                 <span>{app.name}</span> (
                 <span title={app.proxyAddress}>
@@ -202,7 +202,7 @@ function ConsoleFeedback({
                   css={`
                     display: block;
                   `}
-                  onClick={() => handleCommandClick(agentApp.proxyAddress)}
+                  onClick={() => onCommandClick(agentApp.proxyAddress)}
                 >
                   Agent #{index + 1} ({shortenAddress(agentApp.proxyAddress)})
                 </InteractiveCommand>
@@ -268,8 +268,8 @@ function ConsoleFeedback({
 ConsoleFeedback.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   currentParsedCommand: PropTypes.array,
-  handleCommandClick: PropTypes.func,
   loading: PropTypes.bool,
+  onCommandClick: PropTypes.func,
 }
 
 const Command = styled.p`
