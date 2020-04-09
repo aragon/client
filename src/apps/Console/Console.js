@@ -13,7 +13,7 @@ import {
 } from '@aragon/ui'
 import { performTransactionPaths } from '../../aragonjs-wrapper'
 import ConsoleFeedback from './ConsoleFeedback'
-import { parseCommand } from './console-utils'
+import { buildCommand, parseCommand } from './console-utils'
 import handlers from './handlers'
 import IconPrompt from './IconPrompt'
 import KEYCODES from '../../keycodes'
@@ -60,7 +60,7 @@ function Console({ apps, wrapper }) {
   // Handle command clicks
   const handleCommandClick = useCallback(
     clickedCommand => {
-      const newCommand = `${command}${clickedCommand.toLowerCase()}/`
+      const newCommand = buildCommand(command, clickedCommand)
       const parsingResult = parseCommand(newCommand)
       setParsedState(parsingResult)
       setCommand(newCommand)

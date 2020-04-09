@@ -1,9 +1,31 @@
 import {
+  buildCommand,
   parseMethodCall,
   parseCommand,
   parseInitParams,
   parsePermissions,
 } from './console-utils'
+
+describe('Build command tests', () => {
+  test('Builds from empty strings', () => {
+    expect(buildCommand('', 'command')).toEqual('command/')
+  })
+
+  test('Builds from existing tokens', () => {
+    expect(buildCommand('command/first/', 'second')).toEqual(
+      'command/first/second/'
+    )
+  })
+
+  test('Eliminates dangling characters from last token', () => {
+    expect(buildCommand('command/incomple', 'first')).toEqual('command/first/')
+  })
+
+  test('Errors out on wrong types', () => {
+    expect(() => buildCommand(null, 'first')).toThrow('wrong type')
+    expect(() => buildCommand('command/', null)).toThrow('wrong type')
+  })
+})
 
 describe('Parse command tests', () => {
   test('Handles empty strings', () => {
@@ -25,25 +47,13 @@ describe('Parse command tests', () => {
       '(0x,1)',
     ])
   })
+
+  test('Errors out on wrong types', () => {
+    expect(() => parseCommand(null)).toThrow('wrong type')
+  })
 })
 
 describe('parseMethodCall tests', () => {
-  test('Errors out on malformed calls', () => {
-    expect(() => parseMethodCall('')).toThrow('Malformed')
-    expect(() => parseMethodCall('  ')).toThrow('Malformed')
-    expect(() => parseMethodCall('y')).toThrow('Malformed')
-    expect(() => parseMethodCall('y(bool:true')).toThrow('Malformed')
-  })
-
-  test('Throws on parameters and arguments mismatch', () => {
-    expect(() =>
-      parseMethodCall('vote(uint256:,bool: true,bool: false')
-    ).toThrow('failed')
-    expect(() => parseMethodCall('vote(uint256: 1, bool: , bool:)')).toThrow(
-      'failed'
-    )
-  })
-
   test('Handles method calls without arguments', () => {
     expect(parseMethodCall('vote()')).toEqual(['vote'])
     expect(parseMethodCall('vote(uint256,bool,bool)')).toEqual([
@@ -61,9 +71,39 @@ describe('parseMethodCall tests', () => {
       parseMethodCall('vote(uint256: 7, bool: true, bool: false)')
     ).toEqual(['vote', ['uint256', 'bool', 'bool'], ['7', 'true', 'false']])
   })
+
+  test('Errors out on wrong types', () => {
+    expect(() => parseMethodCall(null)).toThrow('wrong type')
+  })
+
+  test('Errors out on malformed calls', () => {
+    expect(() => parseMethodCall('')).toThrow('malformed')
+    expect(() => parseMethodCall('  ')).toThrow('malformed')
+    expect(() => parseMethodCall('y')).toThrow('malformed')
+    expect(() => parseMethodCall('y(bool:true')).toThrow('malformed')
+  })
+
+  test('Throws on parameters and arguments mismatch', () => {
+    expect(() =>
+      parseMethodCall('vote(uint256:,bool: true,bool: false')
+    ).toThrow('failed')
+    expect(() => parseMethodCall('vote(uint256: 1, bool: , bool:)')).toThrow(
+      'failed'
+    )
+  })
 })
 
 describe('parseInitParams tests', () => {
+  test('Handles parsing correctly', () => {
+    expect(parseInitParams('(0x,true,1)')).toEqual(['0x', 'true', '1'])
+    expect(parseInitParams('(0x)')).toEqual(['0x'])
+    expect(parseInitParams('()')).toEqual([])
+  })
+
+  test('Errors out on wrong types', () => {
+    expect(() => parseInitParams(null)).toThrow('wrong type')
+  })
+
   test('Errors out on malformed calls', () => {
     expect(() => parseInitParams('0x(5,3)')).toThrow('malformed')
     expect(() => parseInitParams('0x,1,false)')).toThrow('malformed')
@@ -74,20 +114,9 @@ describe('parseInitParams tests', () => {
     expect(() => parseInitParams('( , , , true)')).toThrow('skipped')
     expect(() => parseInitParams('(, , true, )')).toThrow('skipped')
   })
-  test('Handles parsing correctly', () => {
-    expect(parseInitParams('(0x,true,1)')).toEqual(['0x', 'true', '1'])
-    expect(parseInitParams('(0x)')).toEqual(['0x'])
-    expect(parseInitParams('()')).toEqual([])
-  })
 })
 
 describe('parsePermissions tests', () => {
-  test('Errors out on malformed calls', () => {
-    expect(() => parsePermissions('0x:1')).toThrow('malformed')
-    expect(() => parsePermissions('0x')).toThrow('malformed')
-    expect(() => parsePermissions('0x,0x:1:2')).toThrow('malformed')
-  })
-
   test('Handles parsing correctly', () => {
     expect(parsePermissions('TRANSFER_ROLE:0x:0x')).toEqual([
       ['TRANSFER_ROLE', '0x', '0x'],
@@ -102,5 +131,15 @@ describe('parsePermissions tests', () => {
       ['EXECUTE_ACTIONS_ROLE', '0x', '0x'],
       ['VOTE_ROLE', '0x', '0x'],
     ])
+  })
+
+  test('Errors out on wrong types', () => {
+    expect(() => parsePermissions(null)).toThrow('wrong type')
+  })
+
+  test('Errors out on malformed calls', () => {
+    expect(() => parsePermissions('0x:1')).toThrow('malformed')
+    expect(() => parsePermissions('0x')).toThrow('malformed')
+    expect(() => parsePermissions('0x,0x:1:2')).toThrow('malformed')
   })
 })

@@ -1,3 +1,25 @@
+import { appendTrailingSlash } from '../../utils'
+
+const SEPARATOR = '/'
+
+export function buildCommand(command, nextToken) {
+  if (typeof command !== 'string' || typeof nextToken !== 'string') {
+    throw new Error(
+      `Parsing command failed, reason: wrong type passed in. Expected string, got ${typeof method}`
+    )
+  }
+
+  return appendTrailingSlash(
+    command
+      .split(SEPARATOR)
+      // Remove the last item, which will be an empty string if the command was
+      // terminated correctly with a /
+      .slice(0, -1)
+      .concat(nextToken.toLowerCase())
+      .join('/')
+  )
+}
+
 export function parseCommand(command) {
   if (typeof command !== 'string') {
     throw new Error(
@@ -5,7 +27,7 @@ export function parseCommand(command) {
     )
   }
 
-  return command.split('/')
+  return command.split(SEPARATOR)
 }
 
 export function parseMethodCall(method) {
@@ -22,7 +44,7 @@ export function parseMethodCall(method) {
 
   if (methodName === '' || areParenthesisMalformed) {
     throw new Error(
-      'Parsing method failed, reason: Malformed method call. Please check if a parenthesis has been misplaced or if you are not passing the method name.'
+      'Parsing method failed, reason: malformed method call. Please check if a parenthesis has been misplaced or if you are not passing the method name.'
     )
   }
 
