@@ -415,7 +415,7 @@ class ManageRolePanel extends React.PureComponent {
               `}
             >
               Be aware that granting the manager role to this address will
-              remove the currently assigned one. the permission can only be
+              remove the currently assigned one. The permission can only be
               granted or revoked if it is initialized again (requiring the
               “Create permission” action on the ACL app).
             </Info>
