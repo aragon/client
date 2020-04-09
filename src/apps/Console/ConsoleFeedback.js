@@ -238,12 +238,24 @@ function ConsoleFeedback({
           `}
         >
           <li>
-            the target address, which is the address of the contract to interact
-            with.
-          </li>{' '}
+            <span
+              css={`
+                ${textStyle('address1')}
+              `}
+            >
+              targetAddress
+            </span>
+            : the address of the contract to interact with
+          </li>
           <li>
-            the human-readable function call, which is the name of the method
-            you want to call, along with its types and parameters.
+            <span
+              css={`
+                ${textStyle('address1')}
+              `}
+            >
+              methodName
+            </span>
+            : the function call, with its types and parameters
           </li>
         </ul>
       </>
