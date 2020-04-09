@@ -13,6 +13,7 @@ const INSTALLABLE_APPS = [
   ['Vault', 'vault'],
   ['Voting', 'voting'],
 ]
+const SUGGESTED_COMMANDS = ['Exec', 'Act']
 
 function ConsoleFeedback({
   apps,
@@ -56,7 +57,7 @@ function ConsoleFeedback({
             overflow: auto;
           `}
         >
-          {['Exec', 'Act'].map(command => (
+          {SUGGESTED_COMMANDS.map(command => (
             <InteractiveCommand
               key={command}
               css={`
