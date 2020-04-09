@@ -17,8 +17,8 @@ const DEFAULT_QUORUM = 15
 const DEFAULT_DURATION = DAY_IN_SECONDS
 
 function validationError(duration) {
-  if (duration < 10 * MINUTE_IN_SECONDS) {
-    return 'Please ensure the vote duration is equal to or longer than 10 minutes.'
+  if (duration < 1 * MINUTE_IN_SECONDS) {
+    return 'Please ensure the vote duration is equal to or longer than 1 minute.'
   }
   return null
 }
