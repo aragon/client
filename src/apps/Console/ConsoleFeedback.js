@@ -5,6 +5,15 @@ import { Link, textStyle, GU, LoadingRing } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 
+// Tuple of [display name, app name]
+const INSTALLABLE_APPS = [
+  ['Agent', 'agent'],
+  ['Finance', 'finance'],
+  ['Tokens', 'token-manager'],
+  ['Vault', 'vault'],
+  ['Voting', 'voting'],
+]
+
 function ConsoleFeedback({
   apps,
   currentParsedCommand,
@@ -73,15 +82,15 @@ function ConsoleFeedback({
               overflow: auto;
             `}
           >
-            {['Agent', 'Finance', 'Tokens', 'Vault', 'Voting'].map(command => (
+            {INSTALLABLE_APPS.map(([displayName, appName]) => (
               <InteractiveCommand
-                key={command}
+                key={appName}
                 css={`
                   display: block;
                 `}
-                onClick={() => onCommandClick(command.toLowerCase())}
+                onClick={() => onCommandClick(appName)}
               >
-                {command}
+                {displayName}
               </InteractiveCommand>
             ))}
           </div>
