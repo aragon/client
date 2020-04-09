@@ -1,6 +1,7 @@
 import React from 'react'
-import { Link, textStyle, GU, LoadingRing } from '@aragon/ui'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { Link, textStyle, GU, LoadingRing } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 
@@ -25,10 +26,10 @@ function ConsoleFeedback({
         <span
           css={`
             margin-left: ${1 * GU}px;
-            ${textStyle('body2')}
+            ${textStyle('body2')};
           `}
         >
-          Executing Command...
+          Executing command...
         </span>
       </div>
     )
@@ -37,32 +38,25 @@ function ConsoleFeedback({
   if (currentParsedCommand.length < 2) {
     return (
       <>
-        <p
-          css={`
-            ${textStyle('body2')}
-          `}
-        >
+        <Paragraph>
           You can interact with this organization by using the following console
           commands:
-        </p>
+        </Paragraph>
         <div
           css={`
-            width: 100%;
-            margin-top: ${1 * GU}px;
+            overflow: auto;
           `}
         >
           {['Exec', 'Act'].map(command => (
-            <Link
+            <InteractiveCommand
               key={command}
               css={`
-                ${textStyle('address1')}
                 display: block;
-                margin-bottom: ${1 * GU}px;
               `}
               onClick={() => handleCommandClick(command)}
             >
               {command}
-            </Link>
+            </InteractiveCommand>
           ))}
         </div>
       </>
@@ -73,31 +67,22 @@ function ConsoleFeedback({
     if (currentParsedCommand.length < 3) {
       return (
         <>
-          <p
-            css={`
-              ${textStyle('body2')}
-            `}
-          >
-            You can install the following apps:
-          </p>
+          <Paragraph>You can install the following apps:</Paragraph>
           <div
             css={`
-              width: 100%;
-              margin-top: ${1 * GU}px;
+              overflow: auto;
             `}
           >
             {['Agent', 'Finance', 'Tokens', 'Vault', 'Voting'].map(command => (
-              <Link
+              <InteractiveCommand
                 key={command}
                 css={`
-                  ${textStyle('address1')}
                   display: block;
-                  margin-bottom: ${1 * GU}px;
                 `}
                 onClick={() => handleCommandClick(command.toLowerCase())}
               >
                 {command}
-              </Link>
+              </InteractiveCommand>
             ))}
           </div>
         </>
@@ -106,36 +91,20 @@ function ConsoleFeedback({
 
     return (
       <>
-        <p
-          css={`
-            ${textStyle('body2')}
-          `}
-        >
+        <Paragraph>
           Please enter the corresponding parameters and permissions needed for
           installing the app, in this format:
-        </p>
-        <div
+        </Paragraph>
+        <Command
           css={`
-            width: 100%;
-            margin-top: ${1 * GU}px;
-            margin-bottom: ${1 * GU}px;
+            margin-left: ${1 * GU}px;
           `}
         >
-          <p
-            css={`
-              ${textStyle('address1')}
-            `}
-          >
-            install/appName/(...initparams)/...PERMISSION_ROLE:ADDRESS_MANAGER:ADDRESS_GRANTEE
-          </p>
-        </div>
-        <p
-          css={`
-            ${textStyle('body2')}
-          `}
-        >
+          install/appName/(...initparams)/...PERMISSION_ROLE:ADDRESS_MANAGER:ADDRESS_GRANTEE
+        </Command>
+        <Paragraph>
           You can set multiple permissions by separating them with a comma.
-        </p>
+        </Paragraph>
       </>
     )
   }
@@ -144,28 +113,17 @@ function ConsoleFeedback({
     if (currentParsedCommand.length < 3) {
       return (
         <>
-          <p
-            css={`
-              ${textStyle('body2')}
-            `}
-          >
-            You can interact with the following apps:
-          </p>
+          <Paragraph>You can interact with the following apps:</Paragraph>
           <div
             css={`
-              width: 100%;
-              margin-top: ${1 * GU}px;
-              overflow: hidden;
-              text-overflow: ellipsis;
+              overflow: auto;
             `}
           >
             {apps.map(app => (
-              <Link
+              <InteractiveCommand
                 key={app.proxyAddress}
                 css={`
-                  ${textStyle('address1')}
                   display: block;
-                  margin-bottom: ${1 * GU}px;
                 `}
                 onClick={() => handleCommandClick(app.proxyAddress)}
               >
@@ -174,7 +132,7 @@ function ConsoleFeedback({
                   {shortenAddress(app.proxyAddress)}
                 </span>
                 )
-              </Link>
+              </InteractiveCommand>
             ))}
           </div>
         </>
@@ -183,29 +141,17 @@ function ConsoleFeedback({
 
     return (
       <>
-        <p
-          css={`
-            ${textStyle('body2')}
-          `}
-        >
+        <Paragraph>
           Please enter the corresponding method and parameters needed for
-          interacting with the app, like so:
-        </p>
-        <div
+          interacting with the app, in this format:
+        </Paragraph>
+        <Command
           css={`
-            width: 100%;
-            margin-top: ${1 * GU}px;
-            margin-bottom: ${1 * GU}px;
+            margin-left: ${1 * GU}px;
           `}
         >
-          <p
-            css={`
-              ${textStyle('address1')}
-            `}
-          >
-            exec/appAddress/methodName(...args)
-          </p>
-        </div>
+          exec/appAddress/methodName(...args)
+        </Command>
       </>
     )
   }
@@ -217,20 +163,10 @@ function ConsoleFeedback({
       if (!agentInstalled) {
         return (
           <>
-            <p
-              css={`
-                ${textStyle('body2')}
-              `}
-            >
+            <Paragraph>
               There are no Agent instances installed in this organization.
-            </p>
-            <p
-              css={`
-                ${textStyle('body2')}
-                margin-top: ${1 * GU}px;
-                margin-bottom: ${1 * GU}px;
-              `}
-            >
+            </Paragraph>
+            <Paragraph>
               If you would like to install an Agent, please read{' '}
               <Link
                 external
@@ -243,79 +179,62 @@ function ConsoleFeedback({
                 Spectrum community
               </Link>{' '}
               for help.
-            </p>
+            </Paragraph>
           </>
         )
       }
 
       return (
         <>
-          <p
+          <Paragraph>
+            Please select the corresponding Agent instance to interact with:
+          </Paragraph>
+          <div
             css={`
-              ${textStyle('body2')}
-              margin-bottom: ${1 * GU}px;
+              overflow: auto;
             `}
           >
-            Please select the corresponding Agent instance to interact with:
-          </p>
-          {apps
-            .filter(app => app.name.toLowerCase() === 'agent')
-            .map((agentApp, index) => (
-              <Link
-                key={agentApp.proxyAddress}
-                css={`
-                  ${textStyle('address1')}
-                  display: block;
-                  margin-bottom: ${1 * GU}px;
-                `}
-                onClick={() => handleCommandClick(agentApp.proxyAddress)}
-              >
-                Agent #{index + 1} ({shortenAddress(agentApp.proxyAddress)})
-              </Link>
-            ))}
+            {apps
+              .filter(app => app.name.toLowerCase() === 'agent')
+              .map((agentApp, index) => (
+                <InteractiveCommand
+                  key={agentApp.proxyAddress}
+                  css={`
+                    display: block;
+                  `}
+                  onClick={() => handleCommandClick(agentApp.proxyAddress)}
+                >
+                  Agent #{index + 1} ({shortenAddress(agentApp.proxyAddress)})
+                </InteractiveCommand>
+              ))}
+          </div>
         </>
       )
     }
 
     return (
       <>
-        <p
+        <Paragraph>
+          Pass the parameters required for the Agent's execute function, in this
+          format:
+        </Paragraph>
+        <Command
           css={`
-            ${textStyle('body2')}
-            margin-bottom: ${1 * GU}px;
+            margin-left: ${1 * GU}px;
           `}
         >
-          Pass the parameters required for the Agent's execute function, in the
-          following format:
-        </p>
-        <div
-          css={`
-            width: 100%;
-            margin-top: ${1 * GU}px;
-            margin-bottom: ${1 * GU}px;
-          `}
-        >
-          <p
-            css={`
-              ${textStyle('address1')}
-            `}
-          >
-            act/agentAddress/targetAddress/methodName(type: arg)
-          </p>
-        </div>
-        <p
-          css={`
-            ${textStyle('body2')}
-            margin-bottom: ${1 * GU}px;
-          `}
-        >
-          Where:
-        </p>
+          act/agentAddress/targetAddress/methodName(type: arg)
+        </Command>
+        <Paragraph>Where:</Paragraph>
         <ul
           css={`
-            ${textStyle('body2')}
             margin-bottom: ${1 * GU}px;
             list-style-position: inside;
+            ${textStyle('body2')};
+
+            > li {
+              margin-left: ${1 * GU}px;
+            }
           `}
         >
           <li>
@@ -331,15 +250,7 @@ function ConsoleFeedback({
     )
   }
 
-  return (
-    <p
-      css={`
-        ${textStyle('address1')}
-      `}
-    >
-      Unrecognized Command
-    </p>
-  )
+  return <Command css="margin: 0">Unrecognized command</Command>
 }
 
 ConsoleFeedback.propTypes = {
@@ -348,5 +259,17 @@ ConsoleFeedback.propTypes = {
   handleCommandClick: PropTypes.func,
   loading: PropTypes.bool,
 }
+
+const Command = styled.p`
+  margin-bottom: ${1 * GU}px;
+  ${textStyle('address1')};
+`
+
+const InteractiveCommand = props => <Command as={Link} {...props} />
+
+const Paragraph = styled.p`
+  margin-bottom: ${1 * GU}px;
+  ${textStyle('body2')};
+`
 
 export default ConsoleFeedback
