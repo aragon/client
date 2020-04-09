@@ -10,9 +10,6 @@ export default function ConsoleFeedback({
   apps,
   loading,
 }) {
-  function handleClick(command) {
-    handleCommandClick(command)
-  }
   if (loading) {
     return (
       <div
@@ -36,6 +33,7 @@ export default function ConsoleFeedback({
       </div>
     )
   }
+
   if (currentParsedCommand.length < 2) {
     return (
       <>
@@ -61,7 +59,7 @@ export default function ConsoleFeedback({
                 display: block;
                 margin-bottom: ${1 * GU}px;
               `}
-              onClick={() => handleClick(command)}
+              onClick={() => handleCommandClick(command)}
             >
               {command}
             </Link>
@@ -69,10 +67,43 @@ export default function ConsoleFeedback({
         </div>
       </>
     )
-  } else if (
-    currentParsedCommand[0] === 'install' &&
-    currentParsedCommand.length < 3
-  ) {
+  }
+
+  if (currentParsedCommand[0] === 'install') {
+    if (currentParsedCommand.length < 3) {
+      return (
+        <>
+          <p
+            css={`
+              ${textStyle('body2')}
+            `}
+          >
+            You can install the following apps:
+          </p>
+          <div
+            css={`
+              width: 100%;
+              margin-top: ${1 * GU}px;
+            `}
+          >
+            {['Agent', 'Finance', 'Tokens', 'Vault', 'Voting'].map(command => (
+              <Link
+                key={command}
+                css={`
+                  ${textStyle('address1')}
+                  display: block;
+                  margin-bottom: ${1 * GU}px;
+                `}
+                onClick={() => handleCommandClick(command.toLowerCase())}
+              >
+                {command}
+              </Link>
+            ))}
+          </div>
+        </>
+      )
+    }
+
     return (
       <>
         <p
@@ -80,43 +111,8 @@ export default function ConsoleFeedback({
             ${textStyle('body2')}
           `}
         >
-          You can install the following apps:
-        </p>
-        <div
-          css={`
-            width: 100%;
-            margin-top: ${1 * GU}px;
-          `}
-        >
-          {['Tokens', 'Voting', 'Finance', 'Vault', 'Agent'].map(command => (
-            <Link
-              key={command}
-              css={`
-                ${textStyle('address1')}
-                display: block;
-                margin-bottom: ${1 * GU}px;
-              `}
-              onClick={() => handleClick(command.toLowerCase())}
-            >
-              {command}
-            </Link>
-          ))}
-        </div>
-      </>
-    )
-  } else if (
-    currentParsedCommand[0] === 'install' &&
-    currentParsedCommand.length >= 3
-  ) {
-    return (
-      <>
-        <p
-          css={`
-            ${textStyle('body2')}
-          `}
-        >
-          Please enter the corresponding parameters &amp; permissions needed for
-          installing the app, ex:
+          Please enter the corresponding parameters and permissions needed for
+          installing the app, in this format:
         </p>
         <div
           css={`
@@ -130,8 +126,7 @@ export default function ConsoleFeedback({
               ${textStyle('address1')}
             `}
           >
-            install/app/
-            {`(...initparams)/...PERMISSION_ROLE:ADDRESS_MANAGER:ADDRESS_GRANTEE`}
+            install/appName/(...initparams)/...PERMISSION_ROLE:ADDRESS_MANAGER:ADDRESS_GRANTEE
           </p>
         </div>
         <p
@@ -143,7 +138,9 @@ export default function ConsoleFeedback({
         </p>
       </>
     )
-  } else if (currentParsedCommand[0] === 'exec') {
+  }
+
+  if (currentParsedCommand[0] === 'exec') {
     if (currentParsedCommand.length < 3) {
       return (
         <>
@@ -170,7 +167,7 @@ export default function ConsoleFeedback({
                   display: block;
                   margin-bottom: ${1 * GU}px;
                 `}
-                onClick={() => handleClick(app.proxyAddress)}
+                onClick={() => handleCommandClick(app.proxyAddress)}
               >
                 <span>{app.name}</span> (
                 <span title={app.proxyAddress}>
@@ -182,36 +179,38 @@ export default function ConsoleFeedback({
           </div>
         </>
       )
-    } else {
-      return (
-        <>
+    }
+
+    return (
+      <>
+        <p
+          css={`
+            ${textStyle('body2')}
+          `}
+        >
+          Please enter the corresponding method and parameters needed for
+          interacting with the app, like so:
+        </p>
+        <div
+          css={`
+            width: 100%;
+            margin-top: ${1 * GU}px;
+            margin-bottom: ${1 * GU}px;
+          `}
+        >
           <p
             css={`
-              ${textStyle('body2')}
+              ${textStyle('address1')}
             `}
           >
-            Please enter the corresponding method and parameters needed for
-            interacting with the app, like so:
+            exec/appAddress/methodName(...args)
           </p>
-          <div
-            css={`
-              width: 100%;
-              margin-top: ${1 * GU}px;
-              margin-bottom: ${1 * GU}px;
-            `}
-          >
-            <p
-              css={`
-                ${textStyle('address1')}
-              `}
-            >
-              exec/appAddress/methodName(...args)
-            </p>
-          </div>
-        </>
-      )
-    }
-  } else if (currentParsedCommand[0] === 'act') {
+        </div>
+      </>
+    )
+  }
+
+  if (currentParsedCommand[0] === 'act') {
     if (currentParsedCommand.length < 3) {
       const agentInstalled =
         apps.filter(app => app.name.toLowerCase() === 'agent').length > 0
@@ -269,68 +268,69 @@ export default function ConsoleFeedback({
                   display: block;
                   margin-bottom: ${1 * GU}px;
                 `}
-                onClick={() => handleClick(agentApp.proxyAddress)}
+                onClick={() => handleCommandClick(agentApp.proxyAddress)}
               >
                 Agent #{index + 1} ({shortenAddress(agentApp.proxyAddress)})
               </Link>
             ))}
         </>
       )
-    } else {
-      return (
-        <>
-          <p
-            css={`
-              ${textStyle('body2')}
-              margin-bottom: ${1 * GU}px;
-            `}
-          >
-            Pass the parameters required for the Agent's execute function, in
-            the following format:
-          </p>
-          <div
-            css={`
-              width: 100%;
-              margin-top: ${1 * GU}px;
-              margin-bottom: ${1 * GU}px;
-            `}
-          >
-            <p
-              css={`
-                ${textStyle('address1')}
-              `}
-            >
-              act/agentAddress/targetAddress/methodName(type: arg)
-            </p>
-          </div>
-          <p
-            css={`
-              ${textStyle('body2')}
-              margin-bottom: ${1 * GU}px;
-            `}
-          >
-            Where:
-          </p>
-          <ul
-            css={`
-              ${textStyle('body2')}
-              margin-bottom: ${1 * GU}px;
-              list-style-position: inside;
-            `}
-          >
-            <li>
-              the target address, which is the address of the contract to
-              interact with.
-            </li>{' '}
-            <li>
-              the human-readable function call, which is the name of the method
-              you want to call, along with its types and parameters.
-            </li>
-          </ul>
-        </>
-      )
     }
+
+    return (
+      <>
+        <p
+          css={`
+            ${textStyle('body2')}
+            margin-bottom: ${1 * GU}px;
+          `}
+        >
+          Pass the parameters required for the Agent's execute function, in the
+          following format:
+        </p>
+        <div
+          css={`
+            width: 100%;
+            margin-top: ${1 * GU}px;
+            margin-bottom: ${1 * GU}px;
+          `}
+        >
+          <p
+            css={`
+              ${textStyle('address1')}
+            `}
+          >
+            act/agentAddress/targetAddress/methodName(type: arg)
+          </p>
+        </div>
+        <p
+          css={`
+            ${textStyle('body2')}
+            margin-bottom: ${1 * GU}px;
+          `}
+        >
+          Where:
+        </p>
+        <ul
+          css={`
+            ${textStyle('body2')}
+            margin-bottom: ${1 * GU}px;
+            list-style-position: inside;
+          `}
+        >
+          <li>
+            the target address, which is the address of the contract to interact
+            with.
+          </li>{' '}
+          <li>
+            the human-readable function call, which is the name of the method
+            you want to call, along with its types and parameters.
+          </li>
+        </ul>
+      </>
+    )
   }
+
   return (
     <p
       css={`
