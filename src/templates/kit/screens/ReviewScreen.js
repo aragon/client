@@ -4,11 +4,11 @@ import {
   Accordion,
   GU,
   Info,
-  KEY_ENTER,
   textStyle,
   useKeyDown,
   useTheme,
 } from '@aragon/ui'
+import keycodes from '../../../keycodes'
 import { Header, Navigation, ScreenPropsType } from '..'
 
 function ReviewScreen({
@@ -32,7 +32,7 @@ function ReviewScreen({
     }
   }, [])
 
-  useKeyDown(KEY_ENTER, () => {
+  useKeyDown(keycodes.enter, () => {
     // Don’t focus too early or the button will get clicked
     setTimeout(() => {
       if (

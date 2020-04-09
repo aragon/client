@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { AragonType } from '../../../prop-types'
 import {
@@ -8,6 +8,7 @@ import {
   GU,
   TextInput,
   textStyle,
+  useKeyDown,
   useLayout,
   useTheme,
 } from '@aragon/ui'
@@ -145,22 +146,18 @@ const useNetwork = wrapper => {
     window.localStorage.clear()
     window.location.reload()
   }, [wrapper])
-  const handleKeyPress = useCallback(
-    ({ keyCode }) => {
+
+  useKeyDown(
+    keycodes.enter,
+    useCallback(() => {
       if (
-        keyCode === keycodes.enter &&
-        (ipfsGateway !== ipfsDefaultConf.gateway || ethNode !== defaultEthNode)
+        ipfsGateway !== ipfsDefaultConf.gateway ||
+        ethNode !== defaultEthNode
       ) {
         handleNetworkChange()
       }
-    },
-    [handleNetworkChange, ethNode, ipfsGateway]
+    }, [ethNode, ipfsGateway, handleNetworkChange])
   )
-
-  useEffect(() => {
-    window.addEventListener('keypress', handleKeyPress)
-    return () => window.removeEventListener('keypress', handleKeyPress)
-  }, [handleKeyPress])
 
   return {
     ethNode,

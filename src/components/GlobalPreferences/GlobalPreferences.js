@@ -9,13 +9,14 @@ import {
   Tabs,
   noop,
   springs,
+  useKeyDown,
   useTheme,
   useToast,
   useViewport,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
+import keycodes from '../../keycodes'
 import { AragonType, AppType } from '../../prop-types'
-import { useEsc } from '../../hooks'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
@@ -67,12 +68,12 @@ function GlobalPreferencesContent({
     sharedIdentitiesSomeSelected,
   } = useSharedLink({ wrapper, toast, locator, onScreenChange })
 
-  const handleSharedIdentitiesClose = () => {
+  const handleSharedIdentitiesClose = useCallback(() => {
     handleSharedIdentitiesCancel()
     onClose()
-  }
+  }, [handleSharedIdentitiesCancel, onClose])
 
-  useEsc(onClose)
+  useKeyDown(keycodes.esc, onClose)
 
   const container = useRef()
   useEffect(() => {

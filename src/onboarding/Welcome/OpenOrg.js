@@ -10,7 +10,7 @@ import {
   useKeyDown,
   useTheme,
 } from '@aragon/ui'
-import KEYS from '../../keycodes'
+import keycodes from '../../keycodes'
 import DomainField from '../../components/DomainField/DomainField'
 import { useCheckDomain, DOMAIN_CHECK, DOMAIN_ERROR } from '../../check-domain'
 
@@ -32,9 +32,7 @@ function OpenOrg({ onOpenOrg, onBack }) {
     }
   }, [domainValue, onOpenOrg, domainCheckStatus])
 
-  useKeyDown(KEYS.esc, () => {
-    onBack()
-  })
+  useKeyDown(keycodes.esc, onBack)
 
   // focus on mount
   const handleDomainFieldRef = useCallback(ref => {

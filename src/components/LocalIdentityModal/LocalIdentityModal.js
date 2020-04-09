@@ -7,6 +7,7 @@ import {
   Modal,
   TextInput,
   textStyle,
+  useKeyDown,
   useTheme,
   useViewport,
 } from '@aragon/ui'
@@ -39,15 +40,18 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
     }
   }, [address, labelInput, onDelete, onSave])
 
-  const handleKeyDown = useCallback(
-    e => {
-      if (e.keyCode === keycodes.enter) {
-        handleSave()
-      } else if (e.keyCode === keycodes.esc) {
-        handleCancel()
-      }
-    },
-    [handleCancel, handleSave]
+  useKeyDown(
+    [keycodes.enter, keycodes.esc],
+    useCallback(
+      keycode => {
+        if (keycode === keycodes.enter) {
+          handleSave()
+        } else if (keycode === keycodes.esc) {
+          handleCancel()
+        }
+      },
+      [handleCancel, handleSave]
+    )
   )
 
   useEffect(() => {
@@ -55,11 +59,7 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
 
     labelInput.current.focus()
     labelInput.current.select()
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [label, labelInput, handleKeyDown])
+  }, [label, labelInput])
 
   return (
     <EscapeOutside onEscapeOutside={onCancel}>

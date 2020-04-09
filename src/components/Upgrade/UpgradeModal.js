@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { ButtonIcon, Modal, Viewport, springs } from '@aragon/ui'
+import { ButtonIcon, Modal, Viewport, springs, useKeyDown } from '@aragon/ui'
 import { Transition } from 'react-spring'
-import { useArrows, useSteps } from '../../hooks'
+import { useSteps } from '../../hooks'
+import keycodes from '../../keycodes'
 import { highlights } from './content'
 import Navigation from './Navigation'
 import HighlightScreen, { RATIO_LEFT } from './HighlightScreen'
@@ -17,7 +18,23 @@ const UpgradeModal = React.memo(
     const { step, next, prev, setStep, direction } = useSteps(steps)
 
     // Keyboard navigation
-    useArrows(visible ? { onLeft: prev, onRight: next } : {})
+    useKeyDown(
+      [keycodes.left, keycodes.right],
+      useCallback(
+        (keycode, e) => {
+          if (visible) {
+            e.preventDefault()
+
+            if (keycode === keycodes.left) {
+              prev()
+            } else if (keycode === keycodes.right) {
+              next()
+            }
+          }
+        },
+        [next, prev, visible]
+      )
+    )
 
     useEffect(() => {
       if (visible) {

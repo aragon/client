@@ -16,7 +16,7 @@ import ConsoleFeedback from './ConsoleFeedback'
 import { buildCommand, parseCommand } from './console-utils'
 import handlers from './handlers'
 import IconPrompt from './IconPrompt'
-import KEYCODES from '../../keycodes'
+import keycodes from '../../keycodes'
 import { clamp } from '../../math-utils'
 import { AragonType, AppType } from '../../prop-types'
 import { CONSOLE_COMMAND_HISTORY_KEY } from './useConsole'
@@ -151,7 +151,7 @@ function Prompt({ command, loading, onChange, onSubmit }) {
   const handleChange = useCallback(e => onChange(e.target.value), [onChange])
   const handleKeyDown = useCallback(
     e => {
-      if (e.keyCode === KEYCODES.enter && !isDisabled) {
+      if (e.keyCode === keycodes.enter && !isDisabled) {
         const newCommandHistory = [...commandHistory, command]
         localStorage.setItem(
           CONSOLE_COMMAND_HISTORY_KEY,
@@ -160,17 +160,17 @@ function Prompt({ command, loading, onChange, onSubmit }) {
         setCommandHistory(newCommandHistory)
         setHistoryIndex(newCommandHistory.length - 1)
         onSubmit()
-      } else if (e.keyCode === KEYCODES.up || e.keyCode === KEYCODES.down) {
+      } else if (e.keyCode === keycodes.up || e.keyCode === keycodes.down) {
         if (commandHistory.length === 0) {
           return
         }
         const nextHistory = clamp(
-          historyIndex + (e.keyCode === KEYCODES.up ? -1 : 1),
+          historyIndex + (e.keyCode === keycodes.up ? -1 : 1),
           0,
           commandHistory.length - 1
         )
 
-        if (e.keyCode === KEYCODES.down && nextHistory === historyIndex) {
+        if (e.keyCode === keycodes.down && nextHistory === historyIndex) {
           onChange('')
           return
         }
