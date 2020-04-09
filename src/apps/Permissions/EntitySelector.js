@@ -1,7 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { DropDown, Field } from '@aragon/ui'
-import { getAnyEntity } from '../../permissions'
+import {
+  getAnyEntity,
+  getBurnEntity,
+  getUnassignedEntity,
+} from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
 import { getEmptyAddress } from '../../web3-utils'
 import AppInstanceLabel from '../../components/AppInstanceLabel'
@@ -11,6 +15,8 @@ class EntitySelector extends React.Component {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     includeAnyEntity: PropTypes.bool,
+    includeBurnEntity: PropTypes.bool,
+    includeUnassignedEntity: PropTypes.bool,
     label: PropTypes.string.isRequired,
     labelCustomAddress: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
@@ -46,7 +52,7 @@ class EntitySelector extends React.Component {
   }
   getAddress(index) {
     if (index === -1 || index === 0) {
-      return getEmptyAddress()
+      return ''
     }
 
     const items = this.getItems()
@@ -55,15 +61,30 @@ class EntitySelector extends React.Component {
       return this.state.customAddress
     }
 
-    if (this.props.includeAnyEntity && index === items.length - 2) {
+    if (this.props.includeAnyEntity && items[index] === 'Any account') {
       return getAnyEntity()
+    }
+
+    if (this.props.includeBurnEntity && items[index] === 'Burn role') {
+      return getBurnEntity()
+    }
+
+    if (
+      this.props.includeUnassignedEntity &&
+      items[index] === 'Unassign role'
+    ) {
+      return getUnassignedEntity()
     }
 
     const app = this.getApps()[index - 1]
     return (app && app.proxyAddress) || getEmptyAddress()
   }
   getItems() {
-    const { includeAnyEntity } = this.props
+    const {
+      includeAnyEntity,
+      includeBurnEntity,
+      includeUnassignedEntity,
+    } = this.props
 
     const items = [
       'Select an entity',
@@ -73,6 +94,14 @@ class EntitySelector extends React.Component {
     if (includeAnyEntity) {
       // Add immediately before last item
       items.splice(-1, 0, 'Any account')
+    }
+
+    if (includeBurnEntity) {
+      items.splice(-1, 0, 'Burn role')
+    }
+
+    if (includeUnassignedEntity) {
+      items.splice(-1, 0, 'Unassign role')
     }
 
     return items

@@ -11,7 +11,11 @@ import {
   breakpoint,
 } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { ANY_ENTITY, isBurnEntity } from '../../permissions'
+import {
+  isAnyEntity,
+  isBurnEntity,
+  isUnassignedEntity,
+} from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
@@ -268,6 +272,18 @@ class ManageRolePanel extends React.PureComponent {
     const isUpdateAction = UPDATE_ACTIONS.has(action)
     const message = this.getMessage(action)
 
+    const granteeIsAnyEntity = isAnyEntity(this.state.assignEntityAddress)
+    const managerIsAnyEntity = isAnyEntity(this.state.newRoleManagerValue)
+    const bothIsAnyEntity = managerIsAnyEntity && granteeIsAnyEntity
+
+    const granteeIsBurnEntity = isBurnEntity(this.state.assignEntityAddress)
+    const managerIsBurnEntity = isBurnEntity(this.state.newRoleManagerValue)
+    const bothIsBurnEntity = managerIsBurnEntity && granteeIsBurnEntity
+
+    const managerIsUnassignedEntity = isUnassignedEntity(
+      this.state.newRoleManagerValue
+    )
+
     return (
       <SidePanel
         title={
@@ -314,6 +330,9 @@ class ManageRolePanel extends React.PureComponent {
 
           {action === SET_PERMISSION_MANAGER && (
             <EntitySelector
+              includeAnyEntity
+              includeBurnEntity
+              includeUnassignedEntity
               label="New manager"
               labelCustomAddress="Address for new manager"
               selectedIndex={assignManagerIndex}
@@ -335,6 +354,8 @@ class ManageRolePanel extends React.PureComponent {
                 wrapper={wrapper}
               />
               <EntitySelector
+                includeAnyEntity
+                includeBurnEntity
                 label="Manager"
                 labelCustomAddress="Address for manager"
                 selectedIndex={assignManagerIndex}
@@ -356,17 +377,47 @@ class ManageRolePanel extends React.PureComponent {
             </Button>
           )}
 
-          {(this.state.newRoleManagerValue === ANY_ENTITY ||
-            this.state.assignEntityAddress === ANY_ENTITY) && (
+          {(granteeIsAnyEntity || managerIsAnyEntity) && (
             <Info
               mode="warning"
               css={`
                 margin-top: ${3 * GU}px;
               `}
             >
-              Be aware that assigning the permission or manager role to this
-              address will let anyone perform this action or manage this
-              permission.
+              Be aware that granting the {granteeIsAnyEntity && 'permission'}{' '}
+              {bothIsAnyEntity && 'or'} {managerIsAnyEntity && 'manager role'}{' '}
+              to this address will let anyone{' '}
+              {granteeIsAnyEntity && 'perform this action'}{' '}
+              {bothIsAnyEntity && 'or'}{' '}
+              {managerIsAnyEntity && 'manage this permission.'}
+            </Info>
+          )}
+
+          {(granteeIsBurnEntity || managerIsBurnEntity) && (
+            <Info
+              mode="warning"
+              css={`
+                margin-top: ${3 * GU}px;
+              `}
+            >
+              Be aware that granting the {granteeIsBurnEntity && 'permission'}{' '}
+              {bothIsBurnEntity && 'or'} {managerIsBurnEntity && 'manager role'}{' '}
+              to this address will "burn" the permission, effectively freezing
+              it and disallowing any further changes.
+            </Info>
+          )}
+
+          {managerIsUnassignedEntity && (
+            <Info
+              mode="warning"
+              css={`
+                margin-top: ${3 * GU}px;
+              `}
+            >
+              Be aware that granting the manager role to this address will
+              remove the currently assigned one. the permission can only be
+              granted or revoked if it is initialized again (requiring the
+              “Create permission” action on the ACL app).
             </Info>
           )}
 

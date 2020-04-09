@@ -6,7 +6,7 @@ import { addressesEqual } from './web3-utils'
 //               that permission
 //   Burn entity: If a role's permission manager is set as "burn entity", then it is assumed to be a
 //               discarded and frozen role
-export const ANY_ENTITY = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
+const ANY_ENTITY = '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF'
 const BURN_ENTITY = '0x0000000000000000000000000000000000000001'
 const UNASSIGNED_ENTITY = '0x0000000000000000000000000000000000000000'
 const KERNEL_ROLES = [
