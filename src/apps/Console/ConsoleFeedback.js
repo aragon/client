@@ -44,7 +44,7 @@ export default function ConsoleFeedback({
             ${textStyle('body2')}
           `}
         >
-          You can interact with this organization by using the following CLI
+          You can interact with this organization by using the following console
           commands:
         </p>
         <div
@@ -190,7 +190,7 @@ export default function ConsoleFeedback({
               ${textStyle('body2')}
             `}
           >
-            Please enter the corresponding method and arguments needed for
+            Please enter the corresponding method and parameters needed for
             interacting with the app, like so:
           </p>
           <div
@@ -205,8 +205,7 @@ export default function ConsoleFeedback({
                 ${textStyle('address1')}
               `}
             >
-              exec/appAddress/
-              {`methodName(...args)`}
+              exec/appAddress/methodName(...args)
             </p>
           </div>
         </>
@@ -240,11 +239,11 @@ export default function ConsoleFeedback({
               >
                 the documentation
               </Link>{' '}
-              on how to install an Agent using the CLI, or go to our{' '}
+              or ask our{' '}
               <Link external href="https://spectrum.chat/aragon">
-                Discord
+                Spectrum community
               </Link>{' '}
-              server to help you install it.
+              for help.
             </p>
           </>
         )
@@ -258,8 +257,7 @@ export default function ConsoleFeedback({
               margin-bottom: ${1 * GU}px;
             `}
           >
-            Please select the corresponding agent instance you want to interact
-            with:
+            Please select the corresponding Agent instance to interact with:
           </p>
           {apps
             .filter(app => app.name.toLowerCase() === 'agent')
@@ -287,7 +285,31 @@ export default function ConsoleFeedback({
               margin-bottom: ${1 * GU}px;
             `}
           >
-            Pass the paremeters required for the Agent's execute function:
+            Pass the parameters required for the Agent's execute function, in
+            the following format:
+          </p>
+          <div
+            css={`
+              width: 100%;
+              margin-top: ${1 * GU}px;
+              margin-bottom: ${1 * GU}px;
+            `}
+          >
+            <p
+              css={`
+                ${textStyle('address1')}
+              `}
+            >
+              act/agentAddress/targetAddress/methodName(type: arg)
+            </p>
+          </div>
+          <p
+            css={`
+              ${textStyle('body2')}
+              margin-bottom: ${1 * GU}px;
+            `}
+          >
+            Where:
           </p>
           <ul
             css={`
@@ -305,30 +327,6 @@ export default function ConsoleFeedback({
               you want to call, along with its types and parameters.
             </li>
           </ul>
-          <p
-            css={`
-              ${textStyle('body2')}
-              margin-bottom: ${1 * GU}px;
-            `}
-          >
-            The format required looks as follows:
-          </p>
-          <div
-            css={`
-              width: 100%;
-              margin-top: ${1 * GU}px;
-              margin-bottom: ${1 * GU}px;
-            `}
-          >
-            <p
-              css={`
-                ${textStyle('address1')}
-              `}
-            >
-              act/{'<agentProxyAddress>'}/{'targetAddress'}/
-              {`methodName(type: arg)`}
-            </p>
-          </div>
         </>
       )
     }
