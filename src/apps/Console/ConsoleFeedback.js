@@ -144,7 +144,7 @@ export default function ConsoleFeedback({
       </>
     )
   } else if (currentParsedCommand[0] === 'exec') {
-    if (currentParsedCommand.length <= 2) {
+    if (currentParsedCommand.length < 3) {
       return (
         <>
           <p
@@ -212,7 +212,7 @@ export default function ConsoleFeedback({
       )
     }
   } else if (currentParsedCommand[0] === 'act') {
-    if (currentParsedCommand.length <= 2) {
+    if (currentParsedCommand.length < 3) {
       const agentInstalled =
         apps.filter(app => app.name.toLowerCase() === 'agent').length > 0
       if (!agentInstalled) {
