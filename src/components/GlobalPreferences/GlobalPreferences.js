@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
-  Bar,
   ButtonIcon,
   GU,
   Header,
@@ -9,7 +8,6 @@ import {
   Layout,
   Tabs,
   springs,
-  textStyle,
   useTheme,
   useToast,
   useViewport,
@@ -52,7 +50,6 @@ function GlobalPreferences({
   subsection,
   wrapper,
 }) {
-  const theme = useTheme()
   const toast = useToast()
   const { dao } = locator
 
@@ -75,10 +72,6 @@ function GlobalPreferences({
   }
 
   useEsc(onClose)
-
-  const tabItems = VALUES.filter((_, index) =>
-    Boolean(wrapper || index === NETWORK_INDEX)
-  )
 
   const container = useRef()
   useEffect(() => {
@@ -114,30 +107,13 @@ function GlobalPreferences({
           />
         ) : (
           <React.Fragment>
-            {tabItems.length > 1 ? (
-              <Tabs
-                items={tabItems}
-                onChange={onNavigation}
-                selected={sectionIndex}
-              />
-            ) : (
-              <Bar>
-                <div
-                  css={`
-                    display: flex;
-                    height: 100%;
-                    align-items: center;
-                    padding-left: ${compact ? 2 * GU : 3 * GU}px;
-                    color: ${compact
-                      ? theme.surfaceContent
-                      : theme.surfaceContentSecondary};
-                    ${textStyle('body2')}
-                  `}
-                >
-                  {tabItems[0]}
-                </div>
-              </Bar>
-            )}
+            <Tabs
+              items={VALUES.filter((_, index) =>
+                Boolean(wrapper || index === NETWORK_INDEX)
+              )}
+              onChange={onNavigation}
+              selected={sectionIndex}
+            />
             <main>
               {sectionIndex === CUSTOM_LABELS_INDEX && (
                 <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
