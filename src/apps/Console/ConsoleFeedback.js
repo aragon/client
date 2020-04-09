@@ -5,9 +5,9 @@ import { AppType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 
 export default function ConsoleFeedback({
+  apps,
   currentParsedCommand,
   handleCommandClick,
-  apps,
   loading,
 }) {
   if (loading) {
@@ -343,8 +343,8 @@ export default function ConsoleFeedback({
 }
 
 ConsoleFeedback.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
   currentParsedCommand: PropTypes.array,
   handleCommandClick: PropTypes.func,
-  apps: PropTypes.arrayOf(AppType).isRequired,
   loading: PropTypes.bool,
 }
