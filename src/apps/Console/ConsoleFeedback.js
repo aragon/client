@@ -38,7 +38,7 @@ function ConsoleFeedback({
             ${textStyle('body2')};
           `}
         >
-          Executing command...
+          Executing command…
         </span>
       </div>
     )
@@ -109,7 +109,7 @@ function ConsoleFeedback({
             margin-left: ${1 * GU}px;
           `}
         >
-          install/appName/(...initparams)/...PERMISSION_ROLE:ADDRESS_MANAGER:ADDRESS_GRANTEE
+          install/appName/(…initparams)/…PERMISSION_ROLE:ADDRESS_MANAGER:ADDRESS_GRANTEE
         </Command>
         <Paragraph>
           You can set multiple permissions by separating them with a comma.
@@ -159,7 +159,7 @@ function ConsoleFeedback({
             margin-left: ${1 * GU}px;
           `}
         >
-          exec/appAddress/methodName(...args)
+          exec/appAddress/methodName(…args)
         </Command>
       </>
     )
