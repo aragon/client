@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { AppType } from '../../prop-types'
 import { shortenAddress } from '../../web3-utils'
 
-export default function ConsoleFeedback({
+function ConsoleFeedback({
   apps,
   currentParsedCommand,
   handleCommandClick,
@@ -348,3 +348,5 @@ ConsoleFeedback.propTypes = {
   handleCommandClick: PropTypes.func,
   loading: PropTypes.bool,
 }
+
+export default ConsoleFeedback
