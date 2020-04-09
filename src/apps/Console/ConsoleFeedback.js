@@ -143,133 +143,188 @@ export default function ConsoleFeedback({
         </p>
       </>
     )
-  } else if (
-    currentParsedCommand[0] === 'exec' &&
-    currentParsedCommand.length < 3
-  ) {
-    return (
-      <>
-        <p
-          css={`
-            ${textStyle('body2')}
-          `}
-        >
-          You can interact with the following apps:
-        </p>
-        <div
-          css={`
-            width: 100%;
-            margin-top: ${GU}px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          `}
-        >
-          {apps.map(app => (
-            <Link
-              key={app.proxyAddress}
-              css={`
-                ${textStyle('address1')}
-                display: block;
-                margin-bottom: ${GU}px;
-              `}
-              onClick={() => handleClick(app.proxyAddress)}
-            >
-              <span>{app.name}</span> (
-              <span title={app.proxyAddress}>
-                {shortenAddress(app.proxyAddress)}
-              </span>
-              )
-            </Link>
-          ))}
-        </div>
-      </>
-    )
-  } else if (
-    currentParsedCommand[0] === 'exec' &&
-    currentParsedCommand.length >= 3
-  ) {
-    return (
-      <>
-        <p
-          css={`
-            ${textStyle('body2')}
-          `}
-        >
-          Please enter the corresponding method &amp; arguments needed for
-          interacting with the app, like so:
-        </p>
-        <div
-          css={`
-            width: 100%;
-            margin-top: ${GU}px;
-            margin-bottom: ${GU}px;
-          `}
-        >
+  } else if (currentParsedCommand[0] === 'exec') {
+    if (currentParsedCommand.length <= 2) {
+      return (
+        <>
           <p
             css={`
-              ${textStyle('address1')}
+              ${textStyle('body2')}
             `}
           >
-            exec/appAddress/
-            {`methodName(...args)`}
+            You can interact with the following apps:
           </p>
-        </div>
-      </>
-    )
+          <div
+            css={`
+              width: 100%;
+              margin-top: ${GU}px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            `}
+          >
+            {apps.map(app => (
+              <Link
+                key={app.proxyAddress}
+                css={`
+                  ${textStyle('address1')}
+                  display: block;
+                  margin-bottom: ${GU}px;
+                `}
+                onClick={() => handleClick(app.proxyAddress)}
+              >
+                <span>{app.name}</span> (
+                <span title={app.proxyAddress}>
+                  {shortenAddress(app.proxyAddress)}
+                </span>
+                )
+              </Link>
+            ))}
+          </div>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <p
+            css={`
+              ${textStyle('body2')}
+            `}
+          >
+            Please enter the corresponding method and arguments needed for
+            interacting with the app, like so:
+          </p>
+          <div
+            css={`
+              width: 100%;
+              margin-top: ${GU}px;
+              margin-bottom: ${GU}px;
+            `}
+          >
+            <p
+              css={`
+                ${textStyle('address1')}
+              `}
+            >
+              exec/appAddress/
+              {`methodName(...args)`}
+            </p>
+          </div>
+        </>
+      )
+    }
   } else if (currentParsedCommand[0] === 'act') {
-    return (
-      <>
-        <p
-          css={`
-            ${textStyle('body2')}
-            margin: 0 0 ${GU}px 0;
-          `}
-        >
-          Please select the corresponding agent instance you want to interact
-          with:
-        </p>
-        {apps
-          .filter(app => app.name.toLowerCase() === 'agent')
-          .map((agentApp, index) => (
-            <Link
-              key={agentApp.proxyAddress}
+    if (currentParsedCommand.length <= 2) {
+      const agentInstalled =
+        apps.filter(app => app.name.toLowerCase() === 'agent').length > 0
+      if (!agentInstalled) {
+        return (
+          <>
+            <p
               css={`
-                ${textStyle('address1')}
-                display: block;
-                margin-bottom: ${GU}px;
+                ${textStyle('body2')}
+                margin: 0 0 ${GU}px 0;
               `}
-              onClick={() => handleClick(agentApp.proxyAddress)}
             >
-              Agent #{index + 1}
-            </Link>
-          ))}
-        <p
-          css={`
-            ${textStyle('body2')}
-            margin: ${GU}px 0 ${GU}px 0;
-          `}
-        >
-          and then pass the parameters required for the agent execute function:
-          the target address, and the human-readable function call.
-        </p>
-        <div
-          css={`
-            width: 100%;
-            margin-top: ${GU}px;
-            margin-bottom: ${GU}px;
-          `}
-        >
+              There are no Agent instances installed in this organization.
+              Please read{' '}
+              <Link
+                external
+                href="https://hack.aragon.org/docs/cli-dao-commands#dao-install"
+              >
+                the documentation
+              </Link>{' '}
+              on how to install an Agent using the CLI, or go to our{' '}
+              <Link external href="https://spectrum.chat/aragon">
+                Discord
+              </Link>{' '}
+              server to help you install it.
+            </p>
+          </>
+        )
+      }
+
+      return (
+        <>
           <p
             css={`
-              ${textStyle('address1')}
+              ${textStyle('body2')}
+              margin: 0 0 ${GU}px 0;
             `}
           >
-            act/{'<agentProxyAddress>'}/{'targetAddress'}/
-            {`methodName(type: arg)`}
+            Please select the corresponding agent instance you want to interact
+            with:
           </p>
-        </div>
-      </>
-    )
+          {apps
+            .filter(app => app.name.toLowerCase() === 'agent')
+            .map((agentApp, index) => (
+              <Link
+                key={agentApp.proxyAddress}
+                css={`
+                  ${textStyle('address1')}
+                  display: block;
+                  margin-bottom: ${GU}px;
+                `}
+                onClick={() => handleClick(agentApp.proxyAddress)}
+              >
+                Agent #{index + 1} ({shortenAddress(agentApp.proxyAddress)})
+              </Link>
+            ))}
+        </>
+      )
+    } else {
+      return (
+        <>
+          <p
+            css={`
+              ${textStyle('body2')}
+              margin: 0 0 ${GU}px 0;
+            `}
+          >
+            Pass the paremeters required for the Agent's execute function:
+          </p>
+          <ul
+            css={`
+              ${textStyle('body2')}
+              margin: 0 0 ${GU}px 0;
+              list-style-position: inside;
+            `}
+          >
+            <li>
+              the target address, which is the address of the contract to
+              interact with.
+            </li>{' '}
+            <li>
+              the human-readable function call, which is the name of the method
+              you want to call, along with its types and parameters.
+            </li>
+          </ul>
+          <p
+            css={`
+              ${textStyle('body2')}
+              margin: 0 0 ${GU}px 0;
+            `}
+          >
+            The format required looks as follows:
+          </p>
+          <div
+            css={`
+              width: 100%;
+              margin-top: ${GU}px;
+              margin-bottom: ${GU}px;
+            `}
+          >
+            <p
+              css={`
+                ${textStyle('address1')}
+              `}
+            >
+              act/{'<agentProxyAddress>'}/{'targetAddress'}/
+              {`methodName(type: arg)`}
+            </p>
+          </div>
+        </>
+      )
+    }
   }
   return (
     <p
