@@ -21,7 +21,7 @@ export default function ConsoleFeedback({
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: ${GU * 6}px 0 ${GU * 6}px 0;
+          padding: ${6 * GU}px 0 ${6 * GU}px 0;
         `}
       >
         <LoadingRing />
@@ -50,7 +50,7 @@ export default function ConsoleFeedback({
         <div
           css={`
             width: 100%;
-            margin-top: ${GU}px;
+            margin-top: ${1 * GU}px;
           `}
         >
           {['Exec', 'Act'].map(command => (
@@ -59,7 +59,7 @@ export default function ConsoleFeedback({
               css={`
                 ${textStyle('address1')}
                 display: block;
-                margin-bottom: ${GU}px;
+                margin-bottom: ${1 * GU}px;
               `}
               onClick={() => handleClick(command)}
             >
@@ -85,7 +85,7 @@ export default function ConsoleFeedback({
         <div
           css={`
             width: 100%;
-            margin-top: ${GU}px;
+            margin-top: ${1 * GU}px;
           `}
         >
           {['Tokens', 'Voting', 'Finance', 'Vault', 'Agent'].map(command => (
@@ -94,7 +94,7 @@ export default function ConsoleFeedback({
               css={`
                 ${textStyle('address1')}
                 display: block;
-                margin-bottom: ${GU}px;
+                margin-bottom: ${1 * GU}px;
               `}
               onClick={() => handleClick(command.toLowerCase())}
             >
@@ -121,8 +121,8 @@ export default function ConsoleFeedback({
         <div
           css={`
             width: 100%;
-            margin-top: ${GU}px;
-            margin-bottom: ${GU}px;
+            margin-top: ${1 * GU}px;
+            margin-bottom: ${1 * GU}px;
           `}
         >
           <p
@@ -157,7 +157,7 @@ export default function ConsoleFeedback({
           <div
             css={`
               width: 100%;
-              margin-top: ${GU}px;
+              margin-top: ${1 * GU}px;
               overflow: hidden;
               text-overflow: ellipsis;
             `}
@@ -168,7 +168,7 @@ export default function ConsoleFeedback({
                 css={`
                   ${textStyle('address1')}
                   display: block;
-                  margin-bottom: ${GU}px;
+                  margin-bottom: ${1 * GU}px;
                 `}
                 onClick={() => handleClick(app.proxyAddress)}
               >
@@ -196,8 +196,8 @@ export default function ConsoleFeedback({
           <div
             css={`
               width: 100%;
-              margin-top: ${GU}px;
-              margin-bottom: ${GU}px;
+              margin-top: ${1 * GU}px;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             <p
@@ -222,11 +222,18 @@ export default function ConsoleFeedback({
             <p
               css={`
                 ${textStyle('body2')}
-                margin: 0 0 ${GU}px 0;
               `}
             >
               There are no Agent instances installed in this organization.
-              Please read{' '}
+            </p>
+            <p
+              css={`
+                ${textStyle('body2')}
+                margin-top: ${1 * GU}px;
+                margin-bottom: ${1 * GU}px;
+              `}
+            >
+              If you would like to install an Agent, please read{' '}
               <Link
                 external
                 href="https://hack.aragon.org/docs/cli-dao-commands#dao-install"
@@ -248,7 +255,7 @@ export default function ConsoleFeedback({
           <p
             css={`
               ${textStyle('body2')}
-              margin: 0 0 ${GU}px 0;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             Please select the corresponding agent instance you want to interact
@@ -262,7 +269,7 @@ export default function ConsoleFeedback({
                 css={`
                   ${textStyle('address1')}
                   display: block;
-                  margin-bottom: ${GU}px;
+                  margin-bottom: ${1 * GU}px;
                 `}
                 onClick={() => handleClick(agentApp.proxyAddress)}
               >
@@ -277,7 +284,7 @@ export default function ConsoleFeedback({
           <p
             css={`
               ${textStyle('body2')}
-              margin: 0 0 ${GU}px 0;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             Pass the paremeters required for the Agent's execute function:
@@ -285,7 +292,7 @@ export default function ConsoleFeedback({
           <ul
             css={`
               ${textStyle('body2')}
-              margin: 0 0 ${GU}px 0;
+              margin-bottom: ${1 * GU}px;
               list-style-position: inside;
             `}
           >
@@ -301,7 +308,7 @@ export default function ConsoleFeedback({
           <p
             css={`
               ${textStyle('body2')}
-              margin: 0 0 ${GU}px 0;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             The format required looks as follows:
@@ -309,8 +316,8 @@ export default function ConsoleFeedback({
           <div
             css={`
               width: 100%;
-              margin-top: ${GU}px;
-              margin-bottom: ${GU}px;
+              margin-top: ${1 * GU}px;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             <p
