@@ -119,15 +119,16 @@ export function getAppPath({
 }
 
 // Preferences
-const GLOBAL_PREFERENCES_QUERY_PARAM = '?preferences=/'
+const GLOBAL_PREFERENCES_QUERY_PARAM = '?preferences='
 const GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR = '&labels='
 
 function parsePreferences(search = '') {
-  const [, raw = ''] = search.split(GLOBAL_PREFERENCES_QUERY_PARAM)
   const params = new Map()
-  const [path = null, labels = null] = raw.split(
-    GLOBAL_PREFERENCES_SHARE_LINK_QUERY_VAR
-  )
+  const searchParams = new URLSearchParams(search)
+
+  const path = searchParams.get('preferences')
+  const labels = searchParams.get('labels')
+
   if (labels) {
     params.set('labels', labels)
   }
