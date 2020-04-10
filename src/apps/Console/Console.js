@@ -142,7 +142,9 @@ function Prompt({ command, loading, onChange, onSubmit }) {
       parsedCommand[0] === 'install' && parsedCommand.length === 4
     const isValidExec =
       parsedCommand[0] === 'exec' && parsedCommand.length === 3
-    const isValidAct = parsedCommand[0] === 'act' && parsedCommand.length === 4
+    const isValidAct =
+      parsedCommand[0] === 'act' &&
+      (parsedCommand.length === 4 || parsedCommand.length === 5)
     return !(isValidInstall || isValidExec || isValidAct) || loading
   }, [command, loading])
 
