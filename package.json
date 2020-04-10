@@ -1,7 +1,7 @@
 {
   "name": "aragon",
   "description": "Aragon DApp",
-  "version": "0.8.9",
+  "version": "0.8.10",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "author": "Aragon Association <legal@aragon.org>",
@@ -21,7 +21,16 @@
     "startups"
   ],
   "engines": {
-    "node": "10.x"
+    "node": ">= 10.0.0"
+  },
+  "bundlewatch": {
+    "files": [
+      {
+        "path": "public/*.js",
+        "maxSize": "1600kb",
+        "compression": "gzip"
+      }
+    ]
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
@@ -31,7 +40,7 @@
     "@ungap/event-target": "^0.1.0",
     "clipboard-polyfill": "^2.8.6",
     "core-js": "^3.3.2",
-    "date-fns": "2.0.0-alpha.22",
+    "dayjs": "^1.8.14",
     "decimal.js": "^10.2.0",
     "dotenv": "^8.2.0",
     "eth-ens-namehash": "^2.0.8",
@@ -67,6 +76,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^25.1.0",
     "babel-plugin-styled-components": "^1.10.6",
+    "bundlewatch": "^0.2.6",
     "cross-env": "^5.2.0",
     "eslint": "^5.6.0",
     "eslint-config-prettier": "^6.7.0",
@@ -90,6 +100,7 @@
     "rimraf": "^2.6.2"
   },
   "scripts": {
+    "bundlewatch": "bundlewatch",
     "start": "node scripts/start",
     "start:local": "node scripts/launch-local",
     "start:mainnet": "cross-env ARAGON_ETH_NETWORK_TYPE=main npm start",
@@ -141,6 +152,8 @@
     "moduleNameMapper": {
       "\\.(svg|png)$": "<rootDir>/src/test/empty-string.js"
     },
-    "moduleDirectories": ["<rootDir>/node_modules"]
+    "moduleDirectories": [
+      "<rootDir>/node_modules"
+    ]
   }
 }

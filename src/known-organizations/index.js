@@ -5,6 +5,7 @@ import aragonOneImage from './images/aragon-one.svg'
 import blankDaoImage from './images/blankdao.svg'
 import brightIdImage from './images/brightid.svg'
 import decentralandImage from './images/decentraland.svg'
+import millstoneImage from './images/millstone.png'
 import lexdaoImage from './images/lexdao.png'
 import lightwaveImage from './images/lightwave.svg'
 import livepeerImage from './images/livepeer.svg'
@@ -119,6 +120,13 @@ export const KnownOrganizations = {
         image: pieDaoImage,
         name: 'PieDAO',
         template: TEMPLATE_DANDELION,
+      },
+      {
+        address: '0xC9Fe36760d8Fe233307E26b094De1f4fA090a12A',
+        domain: 'millstone.aragonid.eth',
+        image: millstoneImage,
+        name: 'Millstone',
+        template: TEMPLATE_COMPANY,
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),

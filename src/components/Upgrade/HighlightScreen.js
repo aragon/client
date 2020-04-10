@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, springs } from '@aragon/ui'
+import { Button, springs, useImageExists, useTheme } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { ReactSpringStateType } from '../../prop-types'
-import RemoteImage from '../RemoteImage'
 
 // Ratios based on the the design files
 export const RATIO_LEFT = 500 / 1055
@@ -29,8 +28,11 @@ const HighlightScreen = ({
   verticalMode,
   visual,
 }) => {
-  const visualSrc = compactMode && visual.small ? visual.small : visual.large
   const [leaving, setLeaving] = useState(false)
+  const theme = useTheme()
+  const visualSrc = compactMode && visual.small ? visual.small : visual.large
+  const { exists: visualSrcExists } = useImageExists(visualSrc)
+
   useEffect(() => {
     if (state === 'leave') {
       setLeaving(true)
@@ -77,7 +79,7 @@ const HighlightScreen = ({
       >
         <AnimP
           css={`
-            color: rgba(0, 0, 0, 0.5);
+            color: ${theme.contentSecondary};
             text-transform: uppercase;
             font-size: ${compactMode ? 12 : 16}px;
           `}
@@ -114,7 +116,7 @@ const HighlightScreen = ({
             css={`
               line-height: 1.8;
               font-size: ${compactMode ? 16 : 18}px;
-              color: ${compactMode ? '#8E97B5' : '#000000'};
+              color: ${compactMode ? theme.contentSecondary : theme.content};
             `}
           >
             {compactMode && description.small
@@ -139,55 +141,52 @@ const HighlightScreen = ({
           )}
         </AnimDiv>
       </AnimDiv>
-      <RemoteImage src={visualSrc}>
-        {({ exists }) => (
-          <AnimDiv
-            css={`
-              overflow: hidden;
-              position: relative;
-              z-index: 2;
-              flex-shrink: 1;
-              width: 100%;
-              height: ${verticalMode ? `${RATIO_TOP * 100}%` : '100%'};
-              background: ${visual.color};
-            `}
-            style={{ opacity: leaving ? 0 : 1 }}
-          >
-            <Transition
-              native
-              items={exists}
-              from={{ opacity: 0 }}
-              enter={{ opacity: 1 }}
-              leave={{ opacity: 0 }}
-              config={springs.lazy}
-            >
-              {exists =>
-                exists &&
-                /* eslint-disable react/prop-types */
-                (({ opacity }) => (
-                  <AnimDiv
-                    css={`
-                      position: absolute;
-                      top: 0;
-                      left: 0;
-                      right: 0;
-                      bottom: 0;
-                      background: ${`
+
+      <AnimDiv
+        css={`
+          overflow: hidden;
+          position: relative;
+          z-index: 2;
+          flex-shrink: 1;
+          width: 100%;
+          height: ${verticalMode ? `${RATIO_TOP * 100}%` : '100%'};
+          background: ${visual.color};
+        `}
+        style={{ opacity: leaving ? 0 : 1 }}
+      >
+        <Transition
+          native
+          items={visualSrcExists}
+          from={{ opacity: 0 }}
+          enter={{ opacity: 1 }}
+          leave={{ opacity: 0 }}
+          config={springs.lazy}
+        >
+          {exists =>
+            exists &&
+            /* eslint-disable react/prop-types */
+            (({ opacity }) => (
+              <AnimDiv
+                css={`
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                  background: ${`
                         url(${visualSrc})
                         ${verticalMode ? '50% 40%' : '0 50%'} / cover
                         no-repeat,
                         ${visual.color};
                       `};
-                    `}
-                    style={{ opacity }}
-                  />
-                ))
-              /* eslint-enable react/prop-types */
-              }
-            </Transition>
-          </AnimDiv>
-        )}
-      </RemoteImage>
+                `}
+                style={{ opacity }}
+              />
+            ))
+          /* eslint-enable react/prop-types */
+          }
+        </Transition>
+      </AnimDiv>
     </div>
   )
 }

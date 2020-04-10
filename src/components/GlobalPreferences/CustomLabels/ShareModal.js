@@ -8,9 +8,9 @@ import {
   Modal,
   TextInput,
   useToast,
-  breakpoint,
   textStyle,
   useTheme,
+  useViewport,
 } from '@aragon/ui'
 import { TIMEOUT_TOAST } from '../../CustomToast/CustomToast'
 
@@ -22,6 +22,7 @@ function ShareModal({ onClose, link, visible }) {
     toast,
   })
   const theme = useTheme()
+  const { above } = useViewport()
 
   return (
     <Modal visible={visible} onClose={onClose} css="z-index: 2;">
@@ -98,13 +99,10 @@ function ShareModal({ onClose, link, visible }) {
           display: flex;
           justify-content: space-between;
           text-align: right;
-
-          ${breakpoint(
-            'medium',
+          ${above('medium') &&
             `
               display: block;
-            `
-          )}
+            `}
         `}
       >
         <Button label="Close modal" onClick={onClose}>

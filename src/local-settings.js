@@ -112,7 +112,8 @@ export function getEthNetworkType() {
 }
 
 export function getEthSubscriptionEventDelay() {
-  return getLocalSetting(ETH_SUBSCRIPTION_EVENT_DELAY) || 0
+  const delay = parseInt(getLocalSetting(ETH_SUBSCRIPTION_EVENT_DELAY), 10)
+  return Number.isFinite(delay) ? delay : 0
 }
 
 export function getIpfsGateway() {
