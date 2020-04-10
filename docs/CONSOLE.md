@@ -50,8 +50,15 @@ act/0x77df6ca4cc96d16edc7858cfc00f70fdc98bb027/0xe96c9851773ec7adcb6a155c7d4acf1
 ```
 
 The above command will select the Agent at `0x77df...b027`, interact with the Voting app at `0xe96c...e7ae` (installed on a different organization), and execute the method `vote(uint256 voteId, bool supports, bool executesIfDecided)`.
- 
-The last parameter the `act` command can receive, which is optional, is the amount of ETH to send, in wei. You can also use the `exec()` command with the encoded calldata necessary.
+
+The act command can receive the amount of ETH to send using the last parameter of the command, in wei. This parameter is optional. You can also use the exec() command with the necessary encoded calldata.
+
+Here's an example of how to send 0.5 ETH to a contract:
+
+```
+act/0x77df6ca4cc96d16edc7858cfc00f70fdc98bb027/0x03C125d6a3f73cb90381d2F23142b462803BdAA6/500000000000000000
+```
+
 
 ## Jump into the code
 
