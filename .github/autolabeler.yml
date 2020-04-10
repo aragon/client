@@ -1,0 +1,8 @@
+'app: app center': ['/src/apps/AppCenter']
+'app: console': ['/src/apps/Console']
+'app: organization': ['/src/apps/Organization']
+'app: permissions': ['/src/apps/Permissions']
+'module: account': ['/src/components/AccountModule', '/src/ethereum-providers']
+'module: onboarding': ['/src/onboarding', '/src/templates']
+'module: preferences': ['/src/components/GlobalPreferences']
+'security': ['/src/components/security']

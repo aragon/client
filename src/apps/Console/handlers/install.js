@@ -12,9 +12,15 @@ export default async function installHandler(params, { apps, wrapper }) {
   const [appName, initArgs, permArgs] = params
   const parsedInitArgs = parseInitParams(initArgs)
   const parsedPermArgs = parsePermissions(permArgs)
+
   // Resolve namehash and ens domain to fetch the app's repo content
-  const appId = namehash(`${appName}${APP_POSTFIX}`)
+  const fullAppName = (appName.endsWith(APP_POSTFIX)
+    ? appName
+    : `${appName}${APP_POSTFIX}`
+  ).toLowerCase()
+  const appId = namehash(fullAppName)
   const ensDomain = await wrapper.ens.resolve(appId)
+
   const {
     abi: appAbi,
     contractAddress,
@@ -22,18 +28,11 @@ export default async function installHandler(params, { apps, wrapper }) {
   } = await wrapper.apm.fetchLatestRepoContent(ensDomain, {
     fetchTimeout: REPO_FETCH_TIMEOUT,
   })
-  // get the initialize function to properly install the app
-  const { name, type, inputs } = appAbi.find(
-    ({ name }) => name === 'initialize'
-  )
 
-  const functionObject = {
-    name: name,
-    type: type,
-    inputs: inputs,
-  }
+  // Get the initialize function to install and initialize the app
+  const initializeAbi = appAbi.find(({ name }) => name === 'initialize')
   const encodedInitializeFunc = abi.encodeFunctionCall(
-    functionObject,
+    initializeAbi,
     parsedInitArgs
   )
 

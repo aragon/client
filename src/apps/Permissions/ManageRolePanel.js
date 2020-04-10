@@ -11,7 +11,7 @@ import {
   breakpoint,
 } from '@aragon/ui'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
-import { isBurnEntity } from '../../permissions'
+import { ANY_ENTITY, isBurnEntity } from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
 import { isAddress, isEmptyAddress } from '../../web3-utils'
 import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
@@ -354,6 +354,20 @@ class ManageRolePanel extends React.PureComponent {
             >
               {isUpdateAction ? 'Update permission' : 'Initialize permission'}
             </Button>
+          )}
+
+          {(this.state.newRoleManagerValue === ANY_ENTITY ||
+            this.state.assignEntityAddress === ANY_ENTITY) && (
+            <Info
+              mode="warning"
+              css={`
+                margin-top: ${3 * GU}px;
+              `}
+            >
+              Be aware that assigning the permission or manager role to this
+              address will let anyone perform this action or manage this
+              permission.
+            </Info>
           )}
 
           {message && (
