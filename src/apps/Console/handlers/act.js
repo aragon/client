@@ -9,7 +9,10 @@ export default async function actHandler(params, { wrapper }) {
     ethAmount = 0,
   ] = params
   const [methodName, methodParams, methodArgs] = parseMethodCall(methodWithArgs)
-  const methodSignature = `${methodName}(${methodParams.join(',')})`
+
+  const methodSignature = methodParams
+    ? `${methodName}(${methodParams.join(',')})`
+    : `${methodName}()`
 
   const encodedFunctionCall = encodeFunctionCallFromSignature(
     methodSignature,
