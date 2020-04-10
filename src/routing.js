@@ -126,7 +126,7 @@ function parsePreferences(search = '') {
   const params = new Map()
   const searchParams = new URLSearchParams(search)
 
-  const path = searchParams.get('preferences')
+  const path = searchParams.get('preferences') || ''
   const labels = searchParams.get('labels')
 
   if (labels) {
