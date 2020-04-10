@@ -6,7 +6,7 @@ export default async function actHandler(params, { wrapper }) {
     selectedAgentInstance,
     targetAddress,
     methodWithArgs,
-    ethAmount = 0,
+    ethAmount = '0',
   ] = params
   const [methodName, methodParams, methodArgs] = parseMethodCall(methodWithArgs)
 
