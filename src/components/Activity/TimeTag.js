@@ -1,19 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { GU, textStyle, useTheme } from '@aragon/ui'
-import { formatDistance, formatDistanceStrict } from 'date-fns'
 import { useNow } from '../../hooks'
-
-function getRelativeTime(now, targetDate) {
-  const past = targetDate < now
-  const fn = past ? formatDistance : formatDistanceStrict
-  const options = { addSuffix: true, ...(past && { unit: 'minute' }) }
-  return fn(targetDate, now, options)
-    .replace('about', '')
-    .replace(/minutes?/, 'min')
-    .replace(/seconds?/, 'sec')
-    .trim()
-}
+import { getRelativeTime } from '../../date-utils'
 
 function TimeTag({ date, label, ...props }) {
   const theme = useTheme()
