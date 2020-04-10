@@ -46,6 +46,7 @@ function OrgAppLoader({
       instanceId={locator.instanceId}
     >
       <Apps
+        apps={apps}
         appsStatus={appsStatus}
         daoStatus={daoStatus}
         locator={locator}
