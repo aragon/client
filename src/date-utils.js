@@ -5,8 +5,6 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
 const KNOWN_FORMATS = {
-  iso: "yyyy-MM-dd'T'HH:mm:ss",
-  standard: 'dd MMM yyyy, HH:mm:ss',
   onlyDate: 'yyyy-MM-dd',
 }
 
