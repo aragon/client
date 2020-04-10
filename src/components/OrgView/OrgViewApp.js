@@ -21,7 +21,7 @@ import {
 } from '../../prop-types'
 import { DAO_STATUS_LOADING, APPS_STATUS_LOADING } from '../../symbols'
 
-function OrgAppLoader({
+function OrgViewApp({
   apps,
   appsStatus,
   daoStatus,
@@ -45,7 +45,7 @@ function OrgAppLoader({
       daoLoading={daoStatus === DAO_STATUS_LOADING}
       instanceId={locator.instanceId}
     >
-      <Apps
+      <App
         apps={apps}
         appsStatus={appsStatus}
         daoStatus={daoStatus}
@@ -58,7 +58,7 @@ function OrgAppLoader({
   )
 }
 
-function Apps({
+function App({
   apps,
   appInstanceGroups,
   appsStatus,
@@ -255,7 +255,7 @@ function Apps({
   )
 }
 
-OrgAppLoader.propTypes = {
+OrgViewApp.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
   appsStatus: AppsStatusType.isRequired,
@@ -269,7 +269,7 @@ OrgAppLoader.propTypes = {
   wrapper: AragonType,
 }
 
-Apps.propTypes = {
+App.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
   appsStatus: AppsStatusType.isRequired,
@@ -286,4 +286,4 @@ Apps.propTypes = {
   wrapper: AragonType,
 }
 
-export default OrgAppLoader
+export default OrgViewApp

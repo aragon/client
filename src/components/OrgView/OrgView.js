@@ -26,7 +26,7 @@ import ActivityButton from './ActivityButton/ActivityButton'
 import AccountModule from '../AccountModule/AccountModule'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
-import OrgAppLoader from './OrgAppLoader'
+import OrgViewApp from './OrgViewApp'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import SignerPanel from '../SignerPanel/SignerPanel'
 import UpgradeBanner from '../Upgrade/UpgradeBanner'
@@ -337,7 +337,7 @@ function OrgView({
                     overflow: hidden;
                   `}
                 >
-                  <OrgAppLoader
+                  <OrgViewApp
                     apps={apps}
                     appInstanceGroups={appInstanceGroups}
                     appsStatus={appsStatus}
