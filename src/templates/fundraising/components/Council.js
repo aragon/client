@@ -359,7 +359,7 @@ function Council({
           label={
             <React.Fragment>
               Council token symbol
-              <Help hint="What is the Council Token Symbol?">
+              <Help hint="What is Council Token Symbol?">
                 <strong>Council Token Symbol</strong> will be the shortened name
                 (typically in capital letters) assigned to the token
                 representing the organization's council.{' '}
