@@ -10,7 +10,7 @@ import { OrgTemplateType } from '../../prop-types'
 export const CONFIGURE_MODE_SELECT = Symbol('CONFIGURE_MODE_SELECT')
 export const CONFIGURE_MODE_CONFIGURE = Symbol('CONFIGURE_MODE_CONFIGURE')
 
-function Configure({
+function Setup({
   TemplateScreen,
   mode,
   onNextTemplateScreen,
@@ -75,7 +75,7 @@ function Configure({
   )
 }
 
-Configure.propTypes = {
+Setup.propTypes = {
   TemplateScreen: PropTypes.func.isRequired,
   mode: PropTypes.oneOf([CONFIGURE_MODE_SELECT, CONFIGURE_MODE_CONFIGURE])
     .isRequired,
@@ -91,4 +91,4 @@ Configure.propTypes = {
   templates: PropTypes.arrayOf(OrgTemplateType).isRequired,
 }
 
-export default Configure
+export default Setup
