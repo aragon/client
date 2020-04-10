@@ -168,12 +168,12 @@ function DotVotingScreen({
         label={
           <React.Fragment>
             Support %
-            <Help hint="What’s the support?">
+            <Help hint="What is Support?">
               <strong>Support</strong> is the relative percentage of votes that
               are required to support a dot voting option for the option to be
-              considered valid. For example, if "Support %" is set to 5%, then
-              an option needs at least 5% of the total dot votes to be
-              considered valid.
+              considered valid. For example, if "Support" is set to 5%, then an
+              option needs at least 5% of the total dot votes to be considered
+              valid.
             </Help>
           </React.Fragment>
         }
@@ -185,11 +185,11 @@ function DotVotingScreen({
         label={
           <React.Fragment>
             Minimum Participation %
-            <Help hint="What’s the minimum participation?">
+            <Help hint="What is Minimum Participation?">
               <strong>Minimum Participation</strong> is the minimum percentage
               of the total token supply that is required to participate in a dot
               vote for the proposal to be considered valid. For example, if
-              "Minimum Participation %" is set to 51%, then at least 51% of the
+              "Minimum Participation %" is set to 50%, then at least 50% of the
               outstanding token supply must have participated in the vote for
               the vote to be considered valid.
             </Help>
@@ -204,7 +204,7 @@ function DotVotingScreen({
         label={
           <React.Fragment>
             Vote duration
-            <Help hint="What’s the vote duration?">
+            <Help hint="What is Vote Duration?">
               <strong>Vote Duration</strong> is the length of time that the vote
               will be open for participation. For example, if the Vote Duration
               is set to 24 hours, then token-holders have 24 hours to
