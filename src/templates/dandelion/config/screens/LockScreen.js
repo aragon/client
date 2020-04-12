@@ -163,8 +163,8 @@ function LockScreen({
           label={
             <React.Fragment>
               Token to lock
-              <Help hint="What’s the token to lock?">
-                <strong>Token to lock</strong> is the address of the token to be
+              <Help hint="What is Token to Lock?">
+                <strong>Token to Lock</strong> is the address of the token to be
                 locked. This value cannot be easily modified, so pick wisely!
               </Help>
             </React.Fragment>
@@ -182,8 +182,8 @@ function LockScreen({
           label={
             <React.Fragment>
               Lock amount
-              <Help hint="What’s the lock amount?">
-                <strong>Lock amount</strong> is the amount of tokens a user will
+              <Help hint="What is Lock Amount?">
+                <strong>Lock Amount</strong> is the amount of tokens a user will
                 need to lock in order to perform an action that has been
                 protected by the Time Lock app.
               </Help>
@@ -203,7 +203,7 @@ function LockScreen({
             label={
               <React.Fragment>
                 Lock duration
-                <Help hint="What’s the lock duration?">
+                <Help hint="What is Lock Duration?">
                   <strong>Lock Duration</strong> is the period of time that the
                   tokens will be locked.
                 </Help>
@@ -215,8 +215,8 @@ function LockScreen({
             label={
               <React.Fragment>
                 Spam penalty %
-                <Help hint="What’s the spam penalty?">
-                  <strong>Spam penalty</strong> is a percentage representing the
+                <Help hint="What is Spam Penalty?">
+                  <strong>Spam Penalty</strong> is a percentage representing the
                   rate token amounts and durations grow as users create
                   overlapping locks. For each additional overlapping lock, the
                   required token amount and duration of the next lock will be

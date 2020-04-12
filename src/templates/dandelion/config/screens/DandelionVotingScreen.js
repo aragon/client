@@ -175,11 +175,11 @@ function DandelionVotingScreen({
         label={
           <React.Fragment>
             Support %
-            <Help hint="What’s the support?">
+            <Help hint="What is Support?">
               <strong>Support</strong> is the relative percentage of tokens that
               are required to vote “Yes” for a proposal to be approved. For
-              example, if “Support” is set to 51%, then more than 51% of the
-              tokens used to vote on a proposal must be “Yes” for it to pass.
+              example, if “Support” is set to 50%, then more than 50% of the
+              tokens used to vote on a proposal must vote “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -192,7 +192,7 @@ function DandelionVotingScreen({
         label={
           <React.Fragment>
             Minimum approval %
-            <Help hint="What’s the minimum approval?">
+            <Help hint="What is Minimum Approval?">
               <strong>Minimum Approval</strong> is the percentage of the total
               token supply that is required to vote “Yes” on a proposal before
               it can be approved. For example, if the “Minimum Approval” is set
@@ -211,7 +211,7 @@ function DandelionVotingScreen({
         label={
           <React.Fragment>
             Vote duration
-            <Help hint="What’s the vote duration?">
+            <Help hint="What is Vote Duration?">
               <strong>Vote Duration</strong> is the length of time that the vote
               will be open for participation. For example, if the Vote Duration
               is set to 24 hours, then tokenholders have 24 hours to participate
@@ -226,7 +226,7 @@ function DandelionVotingScreen({
         label={
           <React.Fragment>
             Vote buffer
-            <Help hint="What’s the vote buffer?">
+            <Help hint="What is Vote Buffer?">
               <strong>Vote Buffer</strong> is the minimum amount of time
               separating the start time of each new vote, as votes are processed
               in the sequence they were created.
@@ -240,7 +240,7 @@ function DandelionVotingScreen({
         label={
           <React.Fragment>
             Vote delay
-            <Help hint="What’s the vote delay?">
+            <Help hint="What is Vote Delay?">
               <strong>Vote Delay</strong> is the period of time an approved vote
               must wait before being executed.
             </Help>
