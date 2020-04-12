@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useViewport, GU } from '@aragon/ui'
-import Templates from '../Templates/Templates'
-import SetupStepsPanel from './SetupStepsPanel'
 import ConfigureTemplateScreens from './ConfigureTemplateScreens'
+import SetupStepsPanel from './SetupStepsPanel'
 import * as CreateStatuses from '../Create/create-statuses'
+import Templates from '../Templates/Templates'
 import { OrgTemplateType } from '../../prop-types'
 
 export const SETUP_MODE_SELECT = Symbol('SETUP_MODE_SELECT')

@@ -19,7 +19,7 @@ import {
   saveTemplateState,
   prepareTransactionCreatorFromAbi,
 } from '../create-utils'
-import Setup, { SETUP_MODE_SELECT, SETUP_MODE_CONFIGURE } from '../Setup/Setup'
+import Setup, { SETUP_MODE_CONFIGURE, SETUP_MODE_SELECT } from '../Setup/Setup'
 import Deployment from '../Deployment/Deployment'
 import ErrorModal from '../../components/ErrorModal/ErrorModal'
 import {
