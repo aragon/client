@@ -172,7 +172,7 @@ function DotVotingScreen({
               <strong>Support</strong> is the relative percentage of votes that
               are required to support a dot voting option for the option to be
               considered valid. For example, if "Support" is set to 5%, then an
-              option needs at least 5% of the total dot votes to be considered
+              option needs more than 5% of the total dot votes to be considered
               valid.
             </Help>
           </React.Fragment>
@@ -189,7 +189,7 @@ function DotVotingScreen({
               <strong>Minimum Participation</strong> is the minimum percentage
               of the total token supply that is required to participate in a dot
               vote for the proposal to be considered valid. For example, if
-              "Minimum Participation %" is set to 50%, then at least 50% of the
+              "Minimum Participation" is set to 50%, then more than 50% of the
               outstanding token supply must have participated in the vote for
               the vote to be considered valid.
             </Help>
