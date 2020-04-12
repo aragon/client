@@ -135,7 +135,7 @@ export const KnownOrganizations = {
         image: valtechImage,
         name: 'Valtech',
         template: TEMPLATE_COMPANY,
-      }
+      },
     ].map(org => [org.address.toLowerCase(), org])
   ),
   rinkeby: new Map(
