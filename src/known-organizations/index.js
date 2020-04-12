@@ -14,6 +14,7 @@ import myBitImage from './images/mybit.svg'
 import onehive from './images/1hive.svg'
 import saintFameImage from './images/saint-fame.svg'
 import pieDaoImage from './images/pie-dao.png'
+import valtechImage from './images/valtech.png'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -128,6 +129,13 @@ export const KnownOrganizations = {
         name: 'Millstone',
         template: TEMPLATE_COMPANY,
       },
+      {
+        address: '0x4Eef8CFf7fd9bfab6CbcDF05b74d2161cadAFf52',
+        domain: 'valtech.aragonid.eth',
+        image: valtechImage,
+        name: 'Valtech',
+        template: TEMPLATE_COMPANY,
+      }
     ].map(org => [org.address.toLowerCase(), org])
   ),
   rinkeby: new Map(
