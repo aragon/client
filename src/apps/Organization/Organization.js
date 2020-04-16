@@ -20,7 +20,7 @@ import { network } from '../../environment'
 import { getProviderString } from '../../ethereum-providers'
 import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType } from '../../prop-types'
-import { ARAGONID_ENS_DOMAIN } from '../../routing'
+import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
 import { useWallet } from '../../wallet'
@@ -29,7 +29,6 @@ const Organization = React.memo(function Organization({
   apps,
   appsLoading,
   canUpgradeOrg,
-  dao,
   daoAddress,
   onOpenApp,
   onShowOrgVersionDetails,
@@ -37,6 +36,8 @@ const Organization = React.memo(function Organization({
   const theme = useTheme()
   const { layoutName } = useLayout()
   const wallet = useWallet()
+  const { mode } = useRouting()
+  const { orgAddress } = mode
 
   const handleDepositTestTokens = useCallback(() => {
     const finance = apps.find(app => app.appId === appIds.Finance)
@@ -44,12 +45,14 @@ const Organization = React.memo(function Organization({
       airdrop(wallet.web3, finance.proxyAddress, wallet.account)
     }
   }, [apps, wallet])
+
   const handleOpenAgentApp = useCallback(() => {
     const agent = apps.find(app => app.appId === appIds.Agent)
     if (agent && agent.proxyAddress) {
       onOpenApp(agent.proxyAddress)
     }
   }, [apps, onOpenApp])
+
   const handleOpenFinanceApp = useCallback(() => {
     const finance = apps.find(app => app.appId === appIds.Finance)
     if (finance && finance.proxyAddress) {
@@ -68,7 +71,7 @@ const Organization = React.memo(function Organization({
     }))
 
     let contractsQueryParameter
-    let projectName = dao
+    let projectName = orgAddress
     try {
       contractsQueryParameter = encodeURIComponent(
         JSON.stringify(contractsToImport)
@@ -76,7 +79,7 @@ const Organization = React.memo(function Organization({
       if (projectName.endsWith(ARAGONID_ENS_DOMAIN)) {
         projectName = projectName.substr(
           0,
-          dao.indexOf(ARAGONID_ENS_DOMAIN) - 1
+          orgAddress.indexOf(ARAGONID_ENS_DOMAIN) - 1
         )
       }
       projectName = encodeURIComponent(projectName)
@@ -94,7 +97,7 @@ const Organization = React.memo(function Organization({
       `project=${projectName}&` +
       `contracts=${contractsQueryParameter}`
     )
-  }, [apps, appsLoading, dao])
+  }, [apps, appsLoading, orgAddress])
 
   const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
   const hasAgentApp = apps.some(app => app.appId === appIds.Agent)
@@ -124,7 +127,7 @@ const Organization = React.memo(function Organization({
       )}
     </span>
   ) : (
-    'Resolving DAO address…'
+    'Resolving organization address…'
   )
 
   const depositFundsHelpText = appsLoading ? (
@@ -352,7 +355,6 @@ Organization.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
   canUpgradeOrg: PropTypes.bool,
-  dao: PropTypes.string,
   daoAddress: DaoAddressType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
   onShowOrgVersionDetails: PropTypes.func.isRequired,

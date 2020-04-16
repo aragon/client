@@ -4,11 +4,10 @@ import {
   identityEventTypes,
 } from '../../IdentityManager/IdentityManager'
 import { useSelected } from '../../../hooks'
+import { useRouting } from '../../../routing'
 import { atou } from '../../../string-utils'
 
-const CUSTOM_LABELS_PATH = 'custom-labels'
-
-function useSharedLink({ wrapper, toast, locator, onScreenChange }) {
+function useSharedLink({ wrapper, toast }) {
   const { identityEvents$ } = useIdentity()
   const [isSharedLink, setIsSharedLink] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -20,10 +19,11 @@ function useSharedLink({ wrapper, toast, locator, onScreenChange }) {
   const { selected, setSelected, someSelected, allSelected } = useSelected(
     initialSelected
   )
+  const routing = useRouting()
 
   const openScreenHome = useCallback(() => {
-    onScreenChange(CUSTOM_LABELS_PATH)
-  }, [onScreenChange])
+    routing.update({ preferences: { section: 'custom-labels' } })
+  }, [routing])
 
   const handleSharedIdentitiesSave = useCallback(async () => {
     if (!wrapper) {
@@ -64,6 +64,7 @@ function useSharedLink({ wrapper, toast, locator, onScreenChange }) {
     )
     setSelected(newSelected)
   }, [sharedIdentities, setSelected, someSelected, allSelected])
+
   const handleToggleIdentity = useCallback(
     address => () =>
       setSelected(new Map([...selected, [address, !selected.get(address)]])),
@@ -73,19 +74,22 @@ function useSharedLink({ wrapper, toast, locator, onScreenChange }) {
   useEffect(() => {
     setSelected(initialSelected)
   }, [initialSelected, setSelected])
+
   useEffect(() => {
-    const { preferences: { params } = {} } = locator
-    if (!params || !params.has('labels')) {
+    const { preferences } = routing
+
+    if (!preferences.data.labels) {
       return
     }
+
     try {
-      const data = JSON.parse(window.decodeURI(atou(params.get('labels'))))
+      const data = JSON.parse(window.decodeURI(atou(preferences.data.labels)))
       setSharedIdentities(data.map(({ address, name }) => ({ address, name })))
       setIsSharedLink(true)
     } catch (e) {
       console.warn('There was an error parsing/validating the shared data: ', e)
     }
-  }, [locator])
+  }, [routing])
 
   return {
     handleSharedIdentitiesCancel,

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { GU, Link } from '@aragon/ui'
 import { network } from '../../environment'
-import { useRouting, getAppPath, getPreferencesSearch } from '../../routing'
+import { useRouting } from '../../routing'
 import {
   STATUS_CLIENT_CONNECTION_DROPPED,
   STATUS_CONNECTION_OK,
@@ -59,14 +59,13 @@ WalletSyncedInfo.propTypes = {
 }
 
 function ConnectionInfoMessage({ connectionStatus }) {
-  const { locator } = useRouting()
+  const routing = useRouting()
 
   const handleNetworkSettingsClick = useCallback(() => {
-    window.location.hash = getAppPath({
-      dao: locator.dao || '',
-      search: getPreferencesSearch('network'),
+    routing.update({
+      preferences: { section: 'network' },
     })
-  }, [locator])
+  }, [routing])
 
   if (connectionStatus === STATUS_WALLET_CONNECTION_DROPPED) {
     return (

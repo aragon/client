@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Info, Link, RadioList, GU, textStyle } from '@aragon/ui'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import { getProviderString } from '../../ethereum-providers'
-import { getAppPath } from '../../routing'
+import { useRouting } from '../../routing'
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
 
@@ -11,12 +11,12 @@ const RADIO_ITEM_TITLE_LENGTH = 30
 
 class ActionPathsContent extends React.Component {
   static propTypes = {
-    dao: PropTypes.string.isRequired,
     direct: PropTypes.bool.isRequired,
     intent: PropTypes.object.isRequired,
+    routing: PropTypes.object.isRequired,
+    onSign: PropTypes.func.isRequired,
     paths: PropTypes.array.isRequired,
     pretransaction: PropTypes.object,
-    onSign: PropTypes.func.isRequired,
     signingEnabled: PropTypes.bool,
     walletProviderId: PropTypes.string.isRequired,
   }
@@ -41,7 +41,7 @@ class ActionPathsContent extends React.Component {
     showPaths,
     { description, name, to, annotatedDescription }
   ) {
-    const { dao } = this.props
+    const { routing } = this.props
     return (
       <React.Fragment>
         <p>This transaction will {showPaths ? 'eventually' : ''} perform</p>
@@ -79,10 +79,12 @@ class ActionPathsContent extends React.Component {
                   return (
                     <Link
                       key={index}
-                      href={`#${getAppPath({
-                        dao,
-                        instanceId: 'permissions',
-                        params: `app.${value.proxyAddress}`,
+                      href={`#${routing.path({
+                        mode: {
+                          name: 'org',
+                          instanceId: 'permissions',
+                          params: `app.${value.proxyAddress}`,
+                        },
                       })}`}
                       focusRingSpacing={[3, 2]}
                       css="margin-right: 2px"
@@ -316,4 +318,7 @@ class ActionPathsContent extends React.Component {
   }
 }
 
-export default ActionPathsContent
+export default props => {
+  const routing = useRouting()
+  return <ActionPathsContent routing={routing} {...props} />
+}

@@ -31,7 +31,7 @@ const OPENING = Symbol('opening')
 const CLOSING = Symbol('closing')
 const DISC_BUTTON_HEIGHT = 40
 
-const Beacon = React.memo(function Beacon({ locator, apps }) {
+const Beacon = React.memo(function Beacon({ apps }) {
   const [beaconReady, setBeaconReady] = useState(false)
   const [openOnReady, setOpenOnReady] = useState(false)
   const [optedIn, setOptedIn] = useState(
@@ -56,7 +56,7 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
     }
   }, [openOnReady])
 
-  useBeaconSuggestions({ apps, locator, optedIn, beaconReady })
+  useBeaconSuggestions({ apps, optedIn, beaconReady })
 
   return (
     <div
@@ -85,7 +85,6 @@ const Beacon = React.memo(function Beacon({ locator, apps }) {
 
 Beacon.propTypes = {
   apps: PropTypes.arrayOf(AppType),
-  locator: PropTypes.object,
 }
 
 const HelpOptIn = React.memo(function HelpOptIn({

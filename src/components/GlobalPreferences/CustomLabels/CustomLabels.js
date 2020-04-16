@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import PropTypes from 'prop-types'
 import { AragonType } from '../../../prop-types'
 import ShareModal from './ShareModal'
 import RemoveModal from './RemoveModal'
@@ -12,13 +11,15 @@ import useIdentitiesActions from './useIdentitiesActions'
 import useLocalIdentityModal from './useLocalIdentityModal'
 import useSort from './useSort'
 
-function CustomLabels({ wrapper, dao, locator }) {
+function CustomLabels({ wrapper }) {
   const { identities } = useLocalIdentities(wrapper)
+
   const {
     filteredIdentities,
     handleSearchTermChange,
     searchTerm,
   } = useFilterIdentities(identities)
+
   const {
     allSelected,
     handleToggleAll,
@@ -26,6 +27,7 @@ function CustomLabels({ wrapper, dao, locator }) {
     identitiesSelected,
     someSelected,
   } = useSelectIdentities(identities, filteredIdentities)
+
   const {
     handleExport,
     handleImport,
@@ -38,16 +40,18 @@ function CustomLabels({ wrapper, dao, locator }) {
     shareLink,
     shareModalOpened,
   } = useIdentitiesActions({
-    locator,
     filteredIdentities,
     identitiesSelected,
     someSelected,
     wrapper,
   })
+
   const { handleShowLocalIdentityModal } = useLocalIdentityModal()
+
   const handleClearSearchTerm = useCallback(() => handleSearchTermChange(''), [
     handleSearchTermChange,
   ])
+
   const { sortedIdentities, sort, handleToggleSort } = useSort(
     filteredIdentities
   )
@@ -91,9 +95,7 @@ function CustomLabels({ wrapper, dao, locator }) {
 }
 
 CustomLabels.propTypes = {
-  dao: PropTypes.string,
   wrapper: AragonType,
-  locator: PropTypes.object,
 }
 
 export default React.memo(CustomLabels)

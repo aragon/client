@@ -19,6 +19,7 @@ import {
 import { DAO_STATUS_LOADING } from '../../symbols'
 import { iOS, isSafari } from '../../utils'
 import { useClientTheme } from '../../client-theme'
+import { useRouting } from '../../routing'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
 import ActivityButton from './ActivityButton/ActivityButton'
@@ -31,7 +32,6 @@ const AppWidthContext = React.createContext(0)
 const AnimatedDiv = animated.div
 
 function OrgView({
-  activeInstanceId,
   appInstanceGroups,
   apps,
   appsStatus,
@@ -39,9 +39,9 @@ function OrgView({
   daoAddress,
   daoStatus,
   onOpenApp,
-  onOpenPreferences,
 }) {
   const theme = useTheme()
+  const routing = useRouting()
   const { appearance } = useClientTheme()
   const { width, below } = useViewport()
   const autoClosingPanel = below('medium')
@@ -51,6 +51,10 @@ function OrgView({
     () => setMenuPanelOpen(opened => !opened),
     []
   )
+
+  const onOpenPreferences = useCallback(() => {
+    routing.update({ preferences: { section: 'custom-labels' } })
+  }, [routing])
 
   const handleCloseMenuPanel = useCallback(() => setMenuPanelOpen(false), [])
 
@@ -181,7 +185,6 @@ function OrgView({
             `}
           >
             <MenuPanel
-              activeInstanceId={activeInstanceId}
               appInstanceGroups={appInstanceGroups}
               appsStatus={appsStatus}
               autoClosing={autoClosingPanel}
@@ -243,7 +246,6 @@ function OrgView({
   )
 }
 OrgView.propTypes = {
-  activeInstanceId: PropTypes.string,
   apps: PropTypes.arrayOf(AppType).isRequired,
   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
   appsStatus: AppsStatusType.isRequired,
@@ -251,7 +253,6 @@ OrgView.propTypes = {
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,
   onOpenApp: PropTypes.func.isRequired,
-  onOpenPreferences: PropTypes.func.isRequired,
 }
 
 export { AppWidthContext }

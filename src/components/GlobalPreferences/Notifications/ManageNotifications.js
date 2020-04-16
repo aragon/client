@@ -23,7 +23,6 @@ import { DeleteAccountConfirmationModal } from './NotificationModals'
 
 export default function ManageNotifications({
   apps,
-  dao,
   email,
   onLogout,
   token,
@@ -81,7 +80,6 @@ export default function ManageNotifications({
           <SubscriptionsForm
             onApiError={setApiError}
             fetchSubscriptions={fetchSubscriptions}
-            dao={dao}
             apps={apps}
             token={token}
             isFetchingSubscriptions={isFetching}
@@ -129,7 +127,6 @@ export default function ManageNotifications({
 
 ManageNotifications.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
-  dao: PropTypes.string,
   email: PropTypes.string,
   onLogout: PropTypes.func,
   onServiceUnavailable: PropTypes.func,

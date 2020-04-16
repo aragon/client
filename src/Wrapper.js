@@ -35,7 +35,6 @@ class Wrapper extends React.PureComponent {
     daoStatus: DaoStatusType.isRequired,
     historyBack: PropTypes.func.isRequired,
     identityEvents$: PropTypes.object.isRequired,
-    openPreferences: PropTypes.func.isRequired,
     permissionsLoading: PropTypes.bool.isRequired,
     repos: PropTypes.arrayOf(RepoType).isRequired,
     routing: PropTypes.object.isRequired,
@@ -75,15 +74,20 @@ class Wrapper extends React.PureComponent {
 
   updateInstancePath(prevProps) {
     const { routing, wrapper } = this.props
-    const { locator } = routing
-    const prevLocator = prevProps.routing.locator
 
-    const updated =
-      locator.instanceId !== prevLocator.instanceId ||
-      locator.instancePath !== prevLocator.instancePath
+    const { mode } = routing
+    const { mode: prevMode } = prevProps.routing || {}
 
-    if (wrapper && updated) {
-      wrapper.setAppPath(locator.instanceId, locator.instancePath)
+    if (!wrapper || mode.name !== 'org' || mode.instanceId === null) {
+      return
+    }
+
+    const update =
+      mode.instanceId !== prevMode.instanceId ||
+      mode.instancePath !== prevMode.instancePath
+
+    if (update) {
+      wrapper.setAppPath(mode.instanceId, mode.instancePath)
     }
   }
 
@@ -150,8 +154,9 @@ class Wrapper extends React.PureComponent {
   }
 
   openApp = (instanceId, { instancePath } = {}) => {
-    const { routing } = this.props
-    routing.goTo({ dao: routing.locator.dao, instanceId, instancePath })
+    this.props.routing.update(({ mode }) => ({
+      mode: { ...mode, instanceId, instancePath },
+    }))
   }
 
   handleAppIFrameRef = appIFrame => {
@@ -160,7 +165,7 @@ class Wrapper extends React.PureComponent {
 
   handleAppIFrameLoadingSuccess = async ({ iframeElement }) => {
     const { apps, wrapper, routing } = this.props
-    const { instanceId } = routing.locator
+    const { instanceId } = routing.mode
 
     if (!wrapper) {
       console.error(
@@ -196,18 +201,18 @@ class Wrapper extends React.PureComponent {
 
   handleAppMessage = ({ data: { name, value } }) => {
     const { wrapper, routing } = this.props
-    if (name === 'ready') {
-      wrapper.setAppPath(
-        routing.locator.instanceId,
-        routing.locator.instancePath
-      )
+    const { mode } = routing
+    if (name === 'ready' && mode.name === 'org') {
+      wrapper.setAppPath(mode.instanceId, mode.instancePath)
     }
   }
 
   // Update the local path of the current instance
   handlePathRequest = instancePath => {
-    const { instanceId } = this.props.routing.locator
-    this.openApp(instanceId, { instancePath })
+    const { mode } = this.props.routing
+    if (mode.name === 'org') {
+      this.openApp(mode.instanceId, { instancePath })
+    }
   }
 
   handleUpgradeModalOpen = () => {
@@ -239,18 +244,19 @@ class Wrapper extends React.PureComponent {
       connected,
       daoAddress,
       daoStatus,
-      openPreferences,
       repos,
       routing,
-      transactionBag,
       signatureBag,
+      transactionBag,
       visible,
       web3,
       wrapper,
     } = this.props
     const { appLoading, orgUpgradePanelOpened, upgradeModalOpened } = this.state
+    const { mode } = routing
+
     const currentApp = apps.find(app =>
-      addressesEqual(app.proxyAddress, routing.locator.instanceId)
+      addressesEqual(app.proxyAddress, mode.instanceId)
     )
 
     return (
@@ -272,7 +278,6 @@ class Wrapper extends React.PureComponent {
         </BannerWrapper>
 
         <OrgView
-          activeInstanceId={routing.locator.instanceId}
           appInstanceGroups={this.getAppInstancesGroups(apps)}
           apps={apps}
           appsStatus={appsStatus}
@@ -280,24 +285,19 @@ class Wrapper extends React.PureComponent {
           daoAddress={daoAddress}
           daoStatus={daoStatus}
           onOpenApp={this.openApp}
-          onOpenPreferences={openPreferences}
         >
           <AppLoader
             appLoading={appLoading}
             appsLoading={!wrapper || appsStatus === APPS_STATUS_LOADING}
             currentAppName={currentApp ? currentApp.name : ''}
             daoLoading={daoStatus === DAO_STATUS_LOADING}
-            instanceId={routing.locator.instanceId}
+            instanceId={mode.instanceId}
           >
-            {this.renderApp(
-              routing.locator.instanceId,
-              routing.locator.instancePath
-            )}
+            {this.renderApp(mode.instanceId, mode.instancePath)}
           </AppLoader>
 
           <SignerPanel
             apps={apps}
-            dao={routing.locator.dao}
             transactionBag={transactionBag}
             signatureBag={signatureBag}
             web3={web3}
@@ -331,7 +331,6 @@ class Wrapper extends React.PureComponent {
       daoAddress,
       permissionsLoading,
       repos,
-      routing,
       wrapper,
     } = this.props
 
@@ -388,7 +387,6 @@ class Wrapper extends React.PureComponent {
             apps={apps}
             appsLoading={appsLoading}
             canUpgradeOrg={canUpgradeOrg}
-            dao={routing.locator.dao}
             daoAddress={daoAddress}
             onMessage={this.handleAppMessage}
             onOpenApp={this.openApp}

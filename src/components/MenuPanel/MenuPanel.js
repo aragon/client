@@ -18,6 +18,7 @@ import {
   DaoStatusType,
 } from '../../prop-types'
 import { useConsole } from '../../apps/Console/useConsole'
+import { useRouting } from '../../routing'
 import { staticApps } from '../../static-apps'
 import { DAO_STATUS_LOADING } from '../../symbols'
 import MenuPanelAppGroup, { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
@@ -52,7 +53,6 @@ const interpolateToggleElevation = (value, fn = v => v) =>
   value.interpolate(v => fn(1 - Math.abs(v * 2 - 1)))
 
 function MenuPanel({
-  activeInstanceId,
   appInstanceGroups,
   appsStatus,
   daoAddress,
@@ -60,8 +60,8 @@ function MenuPanel({
   onOpenApp,
   showOrgSwitcher,
 }) {
+  const { mode } = useRouting()
   const { consoleVisible } = useConsole()
-
   const [systemAppsOpened, setSystemAppsOpened] = useState(
     systemAppsOpenedState.isOpen()
   )
@@ -79,6 +79,8 @@ function MenuPanel({
         })),
     [appInstanceGroups]
   )
+
+  const activeInstanceId = (mode.name === 'org' && mode.instanceId) || null
 
   const showConsole = consoleVisible || activeInstanceId === 'console'
   const menuApps = [APP_HOME, appGroups]
@@ -292,7 +294,6 @@ function MenuPanel({
   )
 }
 MenuPanel.propTypes = {
-  activeInstanceId: PropTypes.string,
   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
   appsStatus: AppsStatusType.isRequired,
   daoAddress: DaoAddressType.isRequired,

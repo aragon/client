@@ -13,6 +13,7 @@ import {
   TEMPLATE_AVAILABLE,
   TEMPLATE_UNAVAILABLE,
 } from '../symbols'
+import { useRouting } from '../../routing'
 import { useWallet } from '../../wallet'
 import Welcome from '../Welcome/Welcome'
 import Create from '../Create/Create'
@@ -33,8 +34,9 @@ const initialEmbeddedTemplates = sortedEmbeddedTemplates.map(template => ({
   status: TEMPLATE_LOADING,
 }))
 
-function Onboarding({ locator, status, selectorNetworks, web3 }) {
+function Onboarding({ selectorNetworks, web3 }) {
   const theme = useTheme()
+  const routing = useRouting()
 
   const {
     account,
@@ -49,17 +51,27 @@ function Onboarding({ locator, status, selectorNetworks, web3 }) {
   const [connectIntent, setConnectIntent] = useState('')
   const [requirementsError, setRequirementsError] = useState([null])
 
+  const status =
+    (routing.mode.name === 'onboarding' && routing.mode.status) || 'none'
+
   const goToHome = useCallback(() => {
-    window.location.hash = '/'
-  }, [])
+    routing.update({ mode: { name: 'onboarding', status: null } })
+  }, [routing])
 
   const goToOpen = useCallback(() => {
-    window.location.hash = '/open'
-  }, [])
+    routing.update({ mode: { name: 'onboarding', status: 'open' } })
+  }, [routing])
 
-  const goToOrg = useCallback(domain => {
-    window.location.hash = `/${domain}`
-  }, [])
+  const goToCreate = useCallback(() => {
+    routing.update({ mode: { name: 'onboarding', status: 'create' } })
+  }, [routing])
+
+  const goToOrg = useCallback(
+    orgAddress => {
+      routing.update({ mode: { name: 'org', orgAddress } })
+    },
+    [routing]
+  )
 
   // Update the requirements live if an error is being displayed,
   // on click otherwise (see handleCreate).
@@ -98,9 +110,9 @@ function Onboarding({ locator, status, selectorNetworks, web3 }) {
 
     // No error, we can go to create straight away
     if (requirementsError[0] === null) {
-      window.location.hash = '/create'
+      goToCreate()
     }
-  }, [account, balance, isContractAccount])
+  }, [account, balance, isContractAccount, goToCreate])
 
   const closeConnectModal = useCallback(
     provider => {
@@ -110,10 +122,10 @@ function Onboarding({ locator, status, selectorNetworks, web3 }) {
       // Redirect to / if the modal get closed on /create
       // without having connected an account.
       if (status === 'create' && !account) {
-        window.location.hash = '/'
+        goToHome()
       }
     },
-    [account, status]
+    [account, status, goToHome]
   )
 
   const handleProviderConnect = useCallback(
@@ -122,10 +134,10 @@ function Onboarding({ locator, status, selectorNetworks, web3 }) {
 
       // For now this is always true, but it may change in the future
       if (connectIntent === 'create') {
-        window.location.hash = '/create'
+        goToCreate()
       }
     },
-    [closeConnectModal, connectIntent]
+    [closeConnectModal, connectIntent, goToCreate]
   )
 
   const connectProviderError = useCallback(
@@ -212,7 +224,7 @@ function Onboarding({ locator, status, selectorNetworks, web3 }) {
 
   return (
     <div css="position: relative; z-index: 1">
-      <OnboardingTopBar locator={locator} status={status} solid={solidTopBar} />
+      <OnboardingTopBar status={status} solid={solidTopBar} />
       <div
         onScroll={handleOnBoardingScroll}
         css={`
@@ -265,8 +277,6 @@ function Onboarding({ locator, status, selectorNetworks, web3 }) {
 }
 
 Onboarding.propTypes = {
-  locator: PropTypes.object,
-  status: PropTypes.oneOf(['none', 'welcome', 'open', 'create']).isRequired,
   selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
     .isRequired,
   web3: PropTypes.object,

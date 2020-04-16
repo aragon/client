@@ -1,12 +1,11 @@
 import React, { useCallback } from 'react'
-import PropTypes from 'prop-types'
 import { Box, Switch, Info, Link, GU, textStyle, useTheme } from '@aragon/ui'
 import { useRouting } from '../../../routing'
 import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
 import helpAndFeedbackPng from './assets/help-and-feedback.png'
 import { useConsole } from '../../../apps/Console/useConsole'
 
-function HelpAndFeedback({ locator, onClose }) {
+function HelpAndFeedback() {
   const theme = useTheme()
   const { optedOut, setOptedOut } = useHelpScout()
   const { consoleVisible, setConsoleVisible } = useConsole()
@@ -23,12 +22,15 @@ function HelpAndFeedback({ locator, onClose }) {
   )
 
   const handleConsoleLinkClick = useCallback(() => {
-    onClose()
-    routing.goTo({
-      dao: locator.dao,
-      instanceId: 'console',
+    routing.update({
+      mode: {
+        mode: 'org',
+        orgAddress: routing.mode.orgAddress,
+        instanceId: 'console',
+      },
+      preferences: {},
     })
-  }, [routing, locator, onClose])
+  }, [routing])
 
   return (
     <>
@@ -132,11 +134,6 @@ function HelpAndFeedback({ locator, onClose }) {
       </Box>
     </>
   )
-}
-
-HelpAndFeedback.propTypes = {
-  onClose: PropTypes.func,
-  locator: PropTypes.object,
 }
 
 export default React.memo(HelpAndFeedback)
