@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   DropDown,
@@ -23,7 +23,26 @@ function AllPermissions({
 }) {
   const [selectedEntityType, setSelectedEntityType] = useState(-1)
   const [searchTerms, setSearchTerms] = useState('')
+  const [page, setPage] = useState(0)
   const { layoutName } = useLayout()
+
+  const permissionsKey = permissions
+    .map(permission => `${permission.app.proxyAddress}-${permission.role.id}`)
+    .join(',')
+
+  useEffect(() => {
+    setPage(0)
+  }, [permissionsKey])
+
+  const handleEntityTypeChange = useCallback(entity => {
+    setPage(0)
+    setSelectedEntityType(entity)
+  }, [])
+
+  const handlSearchTermsChange = useCallback(terms => {
+    setPage(0)
+    setSearchTerms(terms)
+  }, [])
 
   const filteredPermissions = useMemo(() => {
     return (
@@ -75,6 +94,8 @@ function AllPermissions({
       permissions={filteredPermissions}
       onAssignPermission={onAssignPermission}
       onManageRole={onManageRole}
+      page={page}
+      onPageChange={setPage}
       heading={
         layoutName === 'large' && (
           <Heading
@@ -82,9 +103,9 @@ function AllPermissions({
               !filteredPermissions.length && permissions.length
             )}
             selectedEntityType={selectedEntityType}
-            onEntityTypeChange={setSelectedEntityType}
+            onEntityTypeChange={handleEntityTypeChange}
             searchTerms={searchTerms}
-            onSearchTermsChange={setSearchTerms}
+            onSearchTermsChange={handlSearchTermsChange}
           />
         )
       }
