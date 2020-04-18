@@ -410,6 +410,15 @@
       "contributions": [
         "business"
       ]
+    },
+    {
+      "login": "iwaduarte",
+      "name": "iwaduarte",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/24816534?v=4",
+      "profile": "http://iwaduarte.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
