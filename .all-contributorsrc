@@ -419,6 +419,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ECWireless",
+      "name": "EC Wireless",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/40322776?v=4",
+      "profile": "http://valtechcreative.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
