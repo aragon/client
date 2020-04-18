@@ -374,6 +374,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Evalir",
+      "name": "Enrique Ortiz",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/26014927?v=4",
+      "profile": "http://enriqueortiz.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
