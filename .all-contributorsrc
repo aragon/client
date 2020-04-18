@@ -401,6 +401,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "MickdeGraaf",
+      "name": "Mick de Graaf",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1282116?v=4",
+      "profile": "https://mickdegraaf.nl",
+      "contributions": [
+        "business"
+      ]
     }
   ],
   "contributorsPerLine": 7,
