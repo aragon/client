@@ -5,19 +5,19 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Install node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Build Aragon
-        run: yarn build
-      - name: Run BundleWatch
-        run: yarn bundlewatch
-      - name: Run tests
-        run: yarn test
+    - uses: actions/checkout@v1
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+    - name: Build Aragon
+      run: yarn build
+    - name: Run BundleWatch
+      run: yarn bundlewatch
+    - name: Run tests
+      run: yarn test
     env:
       CI: true
       BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
