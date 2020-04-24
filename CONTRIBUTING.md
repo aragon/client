@@ -39,7 +39,7 @@ In order to determine whether you are dealing with a security issue, ask yoursel
 
 If the answer to either of those two questions are "yes", then you're probably dealing with a security issue. Note that even if you answer "no" to both questions, you may still be dealing with a security issue, so if you're unsure, please send a email.
 
-#### If you're interested in the smart contracts underlying Aragon, a [bug bounty program](https://wiki.aragon.org/dev/bug_bounty/) with payouts up to $50,000 is available for rewarding contributors who find security vulnerabilities.
+#### If you're interested in the smart contracts underlying Aragon, a [bug bounty program](https://wiki.aragon.org/association/security/client_bug_bounty/) with payouts up to $50,000 is available for rewarding contributors who find security vulnerabilities.
 
 ## Fixing issues
 
