@@ -6,7 +6,7 @@ Feel welcome and read the following sections in order to know how to ask questio
 
 There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into the project.
 
-All members of our community are expected to follow our [Code of Conduct](https://wiki.aragon.org/documentation/Code_of_Conduct/). Please make sure you are welcoming and friendly in all of our spaces.
+All members of our community are expected to follow our [Code of Conduct](https://wiki.aragon.org/about/code_of_conduct/). Please make sure you are welcoming and friendly in all of our spaces.
 
 ## Your first contribution
 
