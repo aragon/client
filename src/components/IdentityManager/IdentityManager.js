@@ -17,7 +17,7 @@ const IdentityContext = React.createContext({
     Promise.reject(Error('Please set resolve using IdentityProvider')),
 })
 
-const IdentityProvider = ({ onResolve, children }) => {
+function IdentityProvider({ onResolve, children }) {
   return (
     <IdentityContext.Provider value={{ resolve: onResolve, identityEvents$ }}>
       {children}
