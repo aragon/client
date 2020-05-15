@@ -1,5 +1,4 @@
 import resolvePathname from 'resolve-pathname'
-import { GU } from '@aragon/ui'
 
 export function pollEvery(fn, delay) {
   let timer = -1
@@ -132,19 +131,6 @@ export function shuffleArray(original) {
   return array
 }
 
-// Makes “gu” a CSS unit in a string, e.g.
-// cssgu`10px 2gu 4gu`
-export function cssgu(strings, ...substitutions) {
-  return strings
-    .map((str, i) => str + (substitutions[i] || ''))
-    .join('')
-    .replace(/([0-9]+(?:\.[0-9]+)?)gu/g, (match, value) => {
-      value = parseFloat(value)
-      return isNaN(value) ? match : `${value * GU}px`
-    })
-}
-
-// Email validation regex from https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 export function validateEmail(email) {
   // eslint-disable-next-line no-useless-escape
   return /^.+\@.+\..+$/.test(email)

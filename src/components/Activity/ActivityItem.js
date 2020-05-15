@@ -12,7 +12,6 @@ import {
 } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { network } from '../../environment'
-import { cssgu } from '../../utils'
 import { transformAddresses } from '../../web3-utils'
 import AppIcon from '../AppIcon/AppIcon'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
@@ -66,7 +65,7 @@ const ActivityItem = ({ activity }) => {
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            padding: ${cssgu`2gu`};
+            padding: ${2 * GU}px;
             background: ${activity.read
               ? theme.surface
               : theme.surfaceHighlight};
@@ -90,8 +89,8 @@ const ActivityItem = ({ activity }) => {
             </div>
             <div
               css={`
-                margin-left: ${cssgu`1gu`};
-                max-width: ${cssgu`12.5gu`};
+                margin-left: ${1 * GU}px;
+                max-width: ${12.5 * GU}px
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -105,7 +104,7 @@ const ActivityItem = ({ activity }) => {
               <TimeTag
                 date={activity.createdAt}
                 css={`
-                  margin: 0 ${cssgu`1.5gu`};
+                  margin: 0 ${1.5 * GU}px;
                 `}
               />
             )}
