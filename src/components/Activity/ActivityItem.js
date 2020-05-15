@@ -163,9 +163,7 @@ const ItemContent = React.memo(
     >
       {transformAddresses(text, (part, isAddress, index) =>
         isAddress ? (
-          <span title={part} key={index}>
-            <LocalIdentityBadge entity={part} compact />
-          </span>
+          <LocalIdentityBadge key={index} entity={part} compact />
         ) : (
           <span key={index}>{part}</span>
         )
