@@ -105,7 +105,7 @@ export default function NotificationsLogin({
               }
               adornmentPosition="end"
               type="email"
-              placeholder="you@example.com"
+              placeholder="you@example.org"
               wide
               value={inputEmail}
               onChange={handleEmailChange}
