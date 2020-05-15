@@ -88,23 +88,17 @@ export default function NotificationsLogin({
                   : theme.border};
               `}
               adornment={
-                emailInvalid === false ? (
-                  <IconCheck
-                    css={`
-                      color: ${theme.positive};
-                    `}
-                  />
-                ) : inputEmail.trim() ? (
+                emailInvalid ? (
                   <IconCross
                     css={`
                       color: ${theme.negative};
                     `}
                   />
                 ) : (
-                  // hidden icon to avoid losing focus
                   <IconCheck
                     css={`
-                      opacity: 0;
+                      opacity: ${inputEmail.trim() ? '1' : '0'};
+                      color: ${theme.positive};
                     `}
                   />
                 )
