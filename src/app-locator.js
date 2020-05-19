@@ -74,7 +74,7 @@ function getAppUrl(appId, location = '') {
 // "Finance:1234": load the finance app from localhost & the port 1234.
 // "Finance,TokenManager": load the finance app and the Tokens app locally.
 // "0x6b20…:3333": load the app with 0x6b20… ID from localhost & the 3333 port.
-// "Voting:http://example.com:4444/": load the Voting app from example.com & the 4444 port.
+// "Voting:http://example.org:4444/": load the Voting app from example.org & the 4444 port.
 //
 export function parseAppLocator(appLocator) {
   if (!appLocator || appLocator === 'ipfs') {
