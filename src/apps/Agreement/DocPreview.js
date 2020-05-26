@@ -29,16 +29,23 @@ These guidelines apply to all proposals put forth to the Ethical Network organiz
 function DocPreview() {
   return (
     <Box>
-      <h1
-        css={`
-          ${textStyle('title2')};
-          text-align: center;
-          margin-bottom: ${3 * GU}px;
-        `}
-      >
-        DAO Agreement
-      </h1>
-      <Markdown text={exampleDoc} />
+      <article>
+        <header>
+          <h1
+            css={`
+              ${textStyle('title2')};
+              text-align: center;
+              margin-bottom: ${3 * GU}px;
+            `}
+          >
+            DAO Agreement
+          </h1>
+        </header>
+
+        <main>
+          <Markdown text={exampleDoc} />
+        </main>
+      </article>
     </Box>
   )
 }
