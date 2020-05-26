@@ -2,7 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import memoize from 'lodash.memoize'
-import { AppCenter, Console, Home, Organization, Permissions } from './apps'
+import {
+  Agreement,
+  AppCenter,
+  Console,
+  Home,
+  Organization,
+  Permissions,
+} from './apps'
 import App404 from './components/App404/App404'
 import AppIFrame from './components/App/AppIFrame'
 import AppInternal from './components/App/AppInternal'
@@ -353,6 +360,14 @@ class Wrapper extends React.PureComponent {
             onPathRequest={this.handlePathRequest}
             wrapper={wrapper}
           />
+        </AppInternal>
+      )
+    }
+
+    if (instanceId === 'agreement') {
+      return (
+        <AppInternal>
+          <Agreement />
         </AppInternal>
       )
     }

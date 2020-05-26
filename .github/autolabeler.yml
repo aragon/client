@@ -2,6 +2,7 @@
 'app: console': ['/src/apps/Console']
 'app: organization': ['/src/apps/Organization']
 'app: permissions': ['/src/apps/Permissions']
+'app: agreement': ['/src/apps/Agreement']
 'module: account': ['/src/components/AccountModule', '/src/ethereum-providers']
 'module: onboarding': ['/src/onboarding', '/src/templates']
 'module: preferences': ['/src/components/GlobalPreferences']
