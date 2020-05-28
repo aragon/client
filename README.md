@@ -41,7 +41,7 @@ These should be seen as "official" builds, whose distributions are secured by IP
 
 A number of environment secrets are required during publishing and these are sometimes different per network.
 
-You may either specific these secrets as environment variables or use a `.env`. An Aragon One encrypted file ([`.env.enc`](./.env.enc)) is included in this repo with the current secrets used in production.
+You may either specify these secrets as environment variables or use a `.env`. An Aragon One encrypted file ([`.env.enc`](./.env.enc)) is included in this repo with the current secrets used in production.
 
 To decrypt:
 
