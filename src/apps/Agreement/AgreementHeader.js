@@ -16,7 +16,7 @@ import icon from './icon.svg'
 const STATUS_PENDING = 'pending'
 const STATUS_ACTIVE = 'active'
 
-function TitleWithActions({ status }) {
+function AgreementHeader({ status }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
 
@@ -133,12 +133,12 @@ function TitleWithActions({ status }) {
   )
 }
 
-TitleWithActions.defaultProps = {
+AgreementHeader.defaultProps = {
   status: STATUS_PENDING,
 }
 
-TitleWithActions.propTypes = {
+AgreementHeader.propTypes = {
   status: PropTypes.oneOf([STATUS_PENDING, STATUS_ACTIVE]).isRequired,
 }
 
-export default TitleWithActions
+export default AgreementHeader

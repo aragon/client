@@ -26,7 +26,7 @@ In case of any dispute between one or more ENT holders and one or more other ENT
 ### 2. Proposal guidelines
 These guidelines apply to all proposals put forth to the Ethical Network organization`
 
-function DocPreview() {
+function AgreementDoc() {
   return (
     <Box>
       <article>
@@ -50,4 +50,4 @@ function DocPreview() {
   )
 }
 
-export default DocPreview
+export default AgreementDoc
