@@ -58,7 +58,7 @@ const GenericError = React.memo(function GenericError({
             css={`
               overflow: auto;
               padding: ${2 * GU}px;
-              max-height: 200px;
+              max-height: ${25 * GU}px;
               border-radius: ${RADIUS}px;
               color: ${theme.text};
               white-space: pre;
