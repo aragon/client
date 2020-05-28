@@ -19,6 +19,7 @@ function InfoField({ label, children, ...props }) {
         margin-bottom: 0;
       `}
     >
+      {/* Pass unused id to disable clickable label  */}
       {({ id }) => <React.Fragment>{children}</React.Fragment>}
     </Field>
   )
@@ -34,7 +35,7 @@ function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
         display: grid;
         grid-gap: ${layoutName === 'small' ? GU * 3 : GU * 4}px;
         grid-template-columns: ${layoutName === 'small'
-          ? '1fr'
+          ? 'minmax(0, 1fr)'
           : '1fr 1fr 1fr'};
       `}
     >

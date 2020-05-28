@@ -8,6 +8,7 @@ import {
   IconTrash,
   useTheme,
   GU,
+  useLayout,
 } from '@aragon/ui'
 import { KnownAppBadge } from '../../templates/kit'
 
@@ -53,6 +54,8 @@ function EntryActions() {
 /* eslint-enable react/prop-types */
 
 function DisputableApps({ items }) {
+  const layoutName = useLayout()
+
   return (
     <DataView
       fields={[
@@ -68,7 +71,9 @@ function DisputableApps({ items }) {
               align-items: center;
 
               /* Height must match expansion button to align nicely */
-              height: 32px;
+              ${(layoutName === 'medium' || layoutName === 'large') &&
+                'height: 32px;'}
+              
             `}
           >
             <KnownAppBadge appName="voting.aragonpm.eth" label="Test app" />

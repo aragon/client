@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import {
   IconGrid,
   textStyle,
@@ -9,6 +9,8 @@ import {
   IconCheck,
   noop,
   useLayout,
+  IconWrite,
+  IconShare,
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import icon from './icon.svg'
@@ -16,9 +18,50 @@ import icon from './icon.svg'
 const STATUS_PENDING = 'pending'
 const STATUS_ACTIVE = 'active'
 
+/* eslint-disable react/prop-types */
+function DropdownItem({ Icon, label }) {
+  const theme = useTheme()
+
+  return (
+    <div
+      css={`
+        display: flex;
+      `}
+    >
+      <span
+        css={`
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: ${theme.surfaceContentSecondary};
+        `}
+      >
+        <Icon />
+      </span>
+      <span
+        css={`
+          margin-left: ${1 * GU}px;
+        `}
+      >
+        {label}
+      </span>
+    </div>
+  )
+}
+/* eslint-disable react/prop-types */
+
 function AgreementHeader({ status }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
+
+  const dropdownItems = useMemo(
+    () => [
+      <DropdownItem Icon={IconWrite} label="Sign" />,
+      <DropdownItem Icon={IconShare} label="Share" />,
+    ],
+    []
+  )
 
   const renderDecorativeIcon = useCallback(() => {
     if (layoutName === 'medium' || layoutName === 'large') {
@@ -102,6 +145,7 @@ function AgreementHeader({ status }) {
             <div
               css={`
                 display: flex;
+                flex-shrink: 0;
                 align-items: center;
               `}
             >
@@ -114,19 +158,21 @@ function AgreementHeader({ status }) {
               >
                 <IconGrid size="medium" />
               </span>
-              {(layoutName === 'medium' || layoutName === 'large') && (
-                <span
-                  css={`
-                    margin-left: ${GU}px;
-                  `}
-                >
-                  Actions
-                </span>
-              )}
+
+              <span
+                css={`
+                  margin-left: ${GU}px;
+                `}
+              >
+                Actions
+              </span>
             </div>
           }
-          items={['Sign', 'Share']}
-          width={layoutName === 'small' ? '50px' : '140px'}
+          items={dropdownItems}
+          header="Actions"
+          css={`
+            flex-shrink: 0;
+          `}
         />
       </div>
     </div>
