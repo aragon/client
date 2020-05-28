@@ -241,8 +241,8 @@ function Tokens({
             label={
               <React.Fragment>
                 Token name
-                <Help hint="What’s the token name?">
-                  <strong>Token name</strong> is the name you can assign to the
+                <Help hint="What is Token Name?">
+                  <strong>Token Name</strong> is the name you can assign to the
                   token that will be minted when creating this organization.
                 </Help>
               </React.Fragment>
@@ -264,8 +264,8 @@ function Tokens({
             label={
               <React.Fragment>
                 Token symbol
-                <Help hint="What’s the token symbol?">
-                  <strong>Token symbol</strong> or ticker is a shortened name
+                <Help hint="What is Token Symbol?">
+                  <strong>Token Symbol</strong> or ticker is a shortened name
                   (typically in capital letters) that refers to a token or coin
                   on a trading platform. For example: ANT.
                 </Help>

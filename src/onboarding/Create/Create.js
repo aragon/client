@@ -19,10 +19,7 @@ import {
   saveTemplateState,
   prepareTransactionCreatorFromAbi,
 } from '../create-utils'
-import Configure, {
-  CONFIGURE_MODE_SELECT,
-  CONFIGURE_MODE_CONFIGURE,
-} from '../Configure/Configure'
+import Setup, { SETUP_MODE_CONFIGURE, SETUP_MODE_SELECT } from '../Setup/Setup'
 import Deployment from '../Deployment/Deployment'
 import ErrorModal from '../../components/ErrorModal/ErrorModal'
 import {
@@ -466,11 +463,11 @@ const Create = React.memo(function Create({
           transactionsStatus={transactionsStatus}
         />
       ) : (
-        <Configure
+        <Setup
           mode={
             status === STATUS_SELECT_TEMPLATE
-              ? CONFIGURE_MODE_SELECT
-              : CONFIGURE_MODE_CONFIGURE
+              ? SETUP_MODE_SELECT
+              : SETUP_MODE_CONFIGURE
           }
           TemplateScreen={TemplateScreen}
           onNextTemplateScreen={handleTemplateNext}

@@ -169,11 +169,11 @@ function VotingScreen({
         label={
           <React.Fragment>
             Support %
-            <Help hint="What’s the support?">
+            <Help hint="What is Support?">
               <strong>Support</strong> is the relative percentage of tokens that
               are required to vote “Yes” for a proposal to be approved. For
-              example, if “Support” is set to 51%, then more than 51% of the
-              tokens used to vote on a proposal must be “Yes” for it to pass.
+              example, if “Support” is set to 50%, then more than 50% of the
+              tokens used to vote on a proposal must vote “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -186,7 +186,7 @@ function VotingScreen({
         label={
           <React.Fragment>
             Minimum approval %
-            <Help hint="What’s the minimum approval?">
+            <Help hint="What is Minimum Approval?">
               <strong>Minimum Approval</strong> is the percentage of the total
               token supply that is required to vote “Yes” on a proposal before
               it can be approved. For example, if the “Minimum Approval” is set

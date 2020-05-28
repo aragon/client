@@ -244,8 +244,8 @@ function Holders({
           label={
             <React.Fragment>
               Organization token name
-              <Help hint="What’s the token name?">
-                <strong>Organization token name</strong> will be the name
+              <Help hint="What is Organization Token Name?">
+                <strong>Organization Token Name</strong> will be the name
                 assigned to the token representing the organization.{' '}
                 <em>For example: My Token.</em>
               </Help>
@@ -268,8 +268,8 @@ function Holders({
           label={
             <React.Fragment>
               Organization token symbol
-              <Help hint="What’s token symbol?">
-                <strong>Organization token symbol</strong> will be the shortened
+              <Help hint="What is Organization Token Symbol?">
+                <strong>Organization Token Symbol</strong> will be the shortened
                 name (typically in capital letters) assigned to the
                 organization's token. <em>For example: TKN.</em>
               </Help>
@@ -335,12 +335,12 @@ function Holders({
         label={
           <React.Fragment>
             Support %
-            <Help hint="What’s the support?">
-              <strong>Support</strong> is the relative percentage of token
-              holders that are required to vote “Yes” for a proposal to be
-              approved. For example, if “Support” is set to 51%, then more than
-              51% of the {tokenSymbol || 'tokens'} used to vote on a proposal
-              must be “Yes” for it to pass.
+            <Help hint="What is Support?">
+              <strong>Support</strong> is the relative percentage of tokens that
+              are required to vote “Yes” for a proposal to be approved. For
+              example, if “Support” is set to 50%, then more than 50% of the{' '}
+              {tokenSymbol || 'tokens'} used to vote on a proposal must vote
+              “Yes” for it to pass.
             </Help>
           </React.Fragment>
         }
@@ -353,7 +353,7 @@ function Holders({
         label={
           <React.Fragment>
             Minimum approval %
-            <Help hint="What’s the minimum approval?">
+            <Help hint="What is Minimum Approval?">
               <strong>Minimum Approval</strong> is the percentage of the total{' '}
               {tokenSymbol || 'token'} supply that is required to vote “Yes” on
               a proposal before it can be approved. For example, if the “Minimum
@@ -373,7 +373,7 @@ function Holders({
         label={
           <React.Fragment>
             Vote duration
-            <Help hint="What’s the vote duration?">
+            <Help hint="What is Vote Duration?">
               <strong>Vote Duration</strong> is the length of time that token
               holders' votes will be open for participation. For example, if the
               Vote Duration is set to 24 hours, token holders will have 24 hours

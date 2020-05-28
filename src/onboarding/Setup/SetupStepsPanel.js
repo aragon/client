@@ -4,7 +4,7 @@ import { GU, useTheme } from '@aragon/ui'
 import ConfigureStepsItem from './ConfigureStepsItem'
 import CircleGraph from '../CircleGraph'
 
-function ConfigureStepsPanel({ step, steps }) {
+function SetupStepsPanel({ step, steps }) {
   const theme = useTheme()
 
   // Mark identical siblings to only show the last step
@@ -95,9 +95,9 @@ function ConfigureStepsPanel({ step, steps }) {
   )
 }
 
-ConfigureStepsPanel.propTypes = {
+SetupStepsPanel.propTypes = {
   step: PropTypes.number.isRequired,
   steps: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
-export default ConfigureStepsPanel
+export default SetupStepsPanel
