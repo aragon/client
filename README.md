@@ -95,6 +95,9 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 Amongst other dependencies, the Aragon client is built upon these packages that you may also find useful for your projects:
 
-- [aragonUI](https://github.com/aragon/aragon-ui): a React component library used to build user interfaces within the [Aragon design system](https://blog.aragon.org/introducing-aragonds-the-new-aragon-design-system/)
-- [use-wallet](https://github.com/aragon/use-wallet): a React utility that aims to make the integration between your dapp and your users' web3 wallets as straightforward as possible
+- [aragonUI](https://github.com/aragon/aragon-ui): React component library used to build user interfaces within the [Aragon design system](https://blog.aragon.org/introducing-aragonds-the-new-aragon-design-system/)
+- [use-inside](https://github.com/aragon/use-inside): React utility that allows a component to be aware of being "inside" the subtree of another component
+- [use-token](https://github.com/aragon/use-token): React utility for fetching information related to tokens on Ethereum
+- [use-viewport](https://github.com/aragon/use-viewport): React utility providing the current window size and convenient functions for responsive apps
+- [use-wallet](https://github.com/aragon/use-wallet): React utility aiming to make the integration between your dapp and your users' web3 wallets as straightforward as possible
 - [web3-react](https://github.com/NoahZinsmeister/web3-react): a simple, maximally extensible React framework for supporting arbitrary web3 wallets
