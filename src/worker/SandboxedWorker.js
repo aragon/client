@@ -111,8 +111,13 @@ class SandboxedWorker extends EventTarget {
             }
           })
 
-          // Clean up the url we created to spawn the worker
-          URL.revokeObjectURL(workerUrl)
+          window.addEventListener('unload', () => {
+            // Clean up the url we created to spawn the worker when the iframe is unloaded
+            // Note that we **NEED** to do this late, as Chrome 83+ appears to have
+            // introduced a race condition with starting workers using object URLs,
+            // preventing us from synchronously revoking this object URL immediately.
+            URL.revokeObjectURL(workerUrl)
+          })
         }
 
         init()
