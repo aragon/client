@@ -2,29 +2,12 @@ import React from 'react'
 import {
   GU,
   useLayout,
-  Field,
   Link,
   IdentityBadge,
   TransactionBadge,
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
-
-/* eslint-disable react/prop-types */
-function InfoField({ label, children, ...props }) {
-  return (
-    <Field
-      label={label}
-      {...props}
-      css={`
-        margin-bottom: 0;
-      `}
-    >
-      {/* Pass unused id to disable clickable label  */}
-      {({ id }) => <React.Fragment>{children}</React.Fragment>}
-    </Field>
-  )
-}
-/* eslint-enable react/prop-types */
+import InfoField from './InfoField'
 
 function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
   const { layoutName } = useLayout()

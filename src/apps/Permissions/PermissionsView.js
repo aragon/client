@@ -219,6 +219,7 @@ function ChildEntity({ appAddress, entity, roleBytes }) {
         align-items: center;
       `}
     >
+      dsdff
       <EntityBadge entity={entity} />
       <ButtonIcon
         label="Revoke permission"

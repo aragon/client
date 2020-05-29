@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { Box, Button, Header, Split, IconEdit, useLayout } from '@aragon/ui'
 import DisputableApps from './DisputableApps'
 import AgreementDetails from './AgreementDetails'
@@ -8,17 +8,19 @@ import AgreementHeader from './AgreementHeader'
 function Agreement() {
   const { layoutName } = useLayout()
 
-  const testItem = {
-    actions: ['Action one', 'Action two', 'Action three'],
-    collateral: 100,
-    challenge: 100,
-    signerEligibility: 1,
-    challengeEligibility: 'everyone',
-    challengePeriod: 48,
-    settlementPeriod: 24,
-  }
+  const testItem = useMemo(() => {
+    return {
+      actions: ['Action one', 'Action two', 'Action three'],
+      collateral: 100,
+      challenge: 100,
+      signerEligibility: 1,
+      challengeEligibility: 'everyone',
+      challengePeriod: 48,
+      settlementPeriod: 24,
+    }
+  }, [])
 
-  const testItems = [testItem, testItem, testItem]
+  const testItems = useMemo(() => [testItem, testItem, testItem], [testItem])
 
   const handleUpdateAgreement = useCallback(() => {}, [])
 

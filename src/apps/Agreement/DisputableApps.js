@@ -11,8 +11,27 @@ import {
   useLayout,
 } from '@aragon/ui'
 import { KnownAppBadge } from '../../templates/kit'
+import InfoField from './InfoField'
 
-/* eslint-disable react/prop-types */
+function renderEntry(actions, layoutName) {
+  return [
+    <div
+      css={`
+        display flex;
+        align-items: center;
+
+        /* Height must match expansion button to align nicely */
+        ${(layoutName === 'medium' || layoutName === 'large') &&
+          'height: 32px;'}
+        
+      `}
+    >
+      <KnownAppBadge appName="voting.aragonpm.eth" label="Test app" />
+    </div>,
+    <React.Fragment>{actions.join(', ')}</React.Fragment>,
+  ]
+}
+
 function EntryActions() {
   const theme = useTheme()
 
@@ -51,11 +70,24 @@ function EntryActions() {
     </ContextMenu>
   )
 }
-/* eslint-enable react/prop-types */
+
+function EntryExpansion() {
+  return (
+    <div
+      css={`
+        width: 100%;
+      `}
+    >
+      <InfoField label="test">dsdfsdf</InfoField>
+      <InfoField label="test">dsdfsdf</InfoField>
+      <InfoField label="test">dsdfsdf</InfoField>
+      <InfoField label="test">dsdfsdf</InfoField>
+    </div>
+  )
+}
 
 function DisputableApps({ items }) {
   const layoutName = useLayout()
-
   return (
     <DataView
       fields={[
@@ -63,33 +95,8 @@ function DisputableApps({ items }) {
         { label: 'Allowed Actions', align: 'left' },
       ]}
       entries={items}
-      renderEntry={({ actions }) => {
-        return [
-          <div
-            css={`
-              display flex;
-              align-items: center;
-
-              /* Height must match expansion button to align nicely */
-              ${(layoutName === 'medium' || layoutName === 'large') &&
-                'height: 32px;'}
-              
-            `}
-          >
-            <KnownAppBadge appName="voting.aragonpm.eth" label="Test app" />
-          </div>,
-          <React.Fragment>{actions.join(', ')}</React.Fragment>,
-        ]
-      }}
-      renderEntryExpansion={() => (
-        <div
-          css={`
-            width: 100%;
-          `}
-        >
-          Content
-        </div>
-      )}
+      renderEntry={({ actions }) => renderEntry(actions, layoutName)}
+      renderEntryExpansion={() => <EntryExpansion />}
       renderEntryActions={() => <EntryActions />}
     />
   )
