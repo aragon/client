@@ -5,7 +5,7 @@ import AgreementDetails from './AgreementDetails'
 import AgreementDoc from './AgreementDoc'
 import AgreementHeader from './AgreementHeader'
 
-function Agreement() {
+const Agreement = React.memo(function Agreement() {
   const { layoutName } = useLayout()
 
   const testItem = useMemo(() => {
@@ -64,6 +64,6 @@ function Agreement() {
       />
     </React.Fragment>
   )
-}
+})
 
 export default Agreement

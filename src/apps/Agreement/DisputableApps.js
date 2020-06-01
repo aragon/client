@@ -12,6 +12,7 @@ import {
   Help,
   Box,
   textStyle,
+  tokenIconUrl,
 } from '@aragon/ui'
 import { KnownAppBadge } from '../../templates/kit'
 import InfoField from './InfoField'
@@ -129,7 +130,6 @@ function EmptyState() {
   )
 }
 
-/* eslint-disable react/prop-types */
 function SubtleLabel({ children }) {
   const theme = useTheme()
 
@@ -143,7 +143,46 @@ function SubtleLabel({ children }) {
     </span>
   )
 }
-/* eslint-enable react/prop-types */
+
+SubtleLabel.propTypes = {
+  children: PropTypes.node,
+}
+
+function TokenAmount({ tokenAddress, tokenSymbol, amount }) {
+  const iconSize = 20
+
+  return (
+    <div
+      css={`
+        position: relative;
+        padding-left: ${iconSize + GU}px;
+      `}
+    >
+      <span
+        css={`
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: ${iconSize}px;
+          height: ${iconSize}px;
+          background-position: 50% 50%;
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-image: url(${tokenIconUrl(tokenAddress)});
+        `}
+      />
+      <span>
+        {amount} {tokenSymbol} <SubtleLabel>(per action)</SubtleLabel>
+      </span>
+    </div>
+  )
+}
+
+TokenAmount.propTypes = {
+  tokenAddress: PropTypes.string,
+  tokenSymbol: PropTypes.string,
+  amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+}
 
 function EntryExpansion() {
   return (
@@ -158,7 +197,7 @@ function EntryExpansion() {
         css={`
           display: inline-grid;
           grid-template-columns: 1fr 1fr;
-          column-gap: ${GU * 4}px;
+          column-gap: ${GU * 8}px;
           row-gap: ${GU * 3}px;
         `}
       >
@@ -173,7 +212,11 @@ function EntryExpansion() {
             </React.Fragment>
           }
         >
-          100 ANT <SubtleLabel>(per action)</SubtleLabel>
+          <TokenAmount
+            tokenAddress="0x960b236A07cf122663c4303350609A66A7B288C0"
+            tokenSymbol="ANT"
+            amount="100"
+          />
         </InfoField>
         <InfoField
           label={
@@ -199,7 +242,11 @@ function EntryExpansion() {
             </React.Fragment>
           }
         >
-          100 ANT <SubtleLabel>(per action)</SubtleLabel>
+          <TokenAmount
+            tokenAddress="0x960b236A07cf122663c4303350609A66A7B288C0"
+            tokenSymbol="ANT"
+            amount="100"
+          />
         </InfoField>
         <InfoField
           label={

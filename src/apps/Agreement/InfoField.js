@@ -18,8 +18,8 @@ function InfoField({ label, children, ...props }) {
 }
 
 InfoField.propTypes = {
-  label: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
+  label: PropTypes.node,
+  children: PropTypes.node,
 }
 
 export default InfoField
