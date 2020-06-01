@@ -13,6 +13,7 @@ import {
   Box,
   textStyle,
   tokenIconUrl,
+  TokenBadge,
 } from '@aragon/ui'
 import { KnownAppBadge } from '../../templates/kit'
 import InfoField from './InfoField'
@@ -148,7 +149,7 @@ SubtleLabel.propTypes = {
   children: PropTypes.node,
 }
 
-function TokenAmount({ tokenAddress, tokenSymbol, amount }) {
+function TokenAmount({ address, symbol, amount }) {
   const iconSize = 20
 
   return (
@@ -168,19 +169,19 @@ function TokenAmount({ tokenAddress, tokenSymbol, amount }) {
           background-position: 50% 50%;
           background-repeat: no-repeat;
           background-size: contain;
-          background-image: url(${tokenIconUrl(tokenAddress)});
+          background-image: url(${tokenIconUrl(address)});
         `}
       />
       <span>
-        {amount} {tokenSymbol} <SubtleLabel>(per action)</SubtleLabel>
+        {amount} {symbol} <SubtleLabel>(per action)</SubtleLabel>
       </span>
     </div>
   )
 }
 
 TokenAmount.propTypes = {
-  tokenAddress: PropTypes.string,
-  tokenSymbol: PropTypes.string,
+  address: PropTypes.string,
+  symbol: PropTypes.string,
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }
 
@@ -213,8 +214,8 @@ function EntryExpansion() {
           }
         >
           <TokenAmount
-            tokenAddress="0x960b236A07cf122663c4303350609A66A7B288C0"
-            tokenSymbol="ANT"
+            address="0x960b236A07cf122663c4303350609A66A7B288C0"
+            symbol="ANT"
             amount="100"
           />
         </InfoField>
@@ -243,8 +244,8 @@ function EntryExpansion() {
           }
         >
           <TokenAmount
-            tokenAddress="0x960b236A07cf122663c4303350609A66A7B288C0"
-            tokenSymbol="ANT"
+            address="0x960b236A07cf122663c4303350609A66A7B288C0"
+            symbol="ANT"
             amount="100"
           />
         </InfoField>
@@ -267,7 +268,19 @@ function EntryExpansion() {
             grid-column: span 2;
           `}
         >
-          Open to tokenholders with a minimun token balance of 1
+          Open to tokenholders with a minimun token balance of 1{' '}
+          <div
+            css={`
+              display: inline-block;
+              position: relative;
+              top: 3px;
+            `}
+          >
+            <TokenBadge
+              address="0x960b236A07cf122663c4303350609A66A7B288C0"
+              symbol="ANT"
+            />
+          </div>
         </InfoField>
 
         <InfoField
