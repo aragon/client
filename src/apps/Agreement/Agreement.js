@@ -13,8 +13,8 @@ import DisputableAppsEmpty from './DisputableApps/DisputableAppsEmpty'
 import AgreementDetails from './AgreementDetails'
 import AgreementDoc from './AgreementDoc'
 import AgreementHeader from './AgreementHeader'
-import AgreementChecklist from './AgreementChecklist'
-import AgreementHistory from './AgreementHistory'
+import ConfigurationChecklist from './ConfigurationChecklist'
+import VersionHistory from './VersionHistory'
 
 const Agreement = React.memo(function Agreement() {
   const { layoutName } = useLayout()
@@ -98,8 +98,8 @@ const Agreement = React.memo(function Agreement() {
         }
         secondary={
           <React.Fragment>
-            <AgreementChecklist />
-            <AgreementHistory />
+            <ConfigurationChecklist />
+            <VersionHistory />
           </React.Fragment>
         }
       />
