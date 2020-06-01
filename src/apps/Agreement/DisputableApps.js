@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   DataView,
@@ -9,9 +9,13 @@ import {
   useTheme,
   GU,
   useLayout,
+  Help,
+  Box,
+  textStyle,
 } from '@aragon/ui'
 import { KnownAppBadge } from '../../templates/kit'
 import InfoField from './InfoField'
+import noRegisteredApps from './assets/no-registered-apps.png'
 
 function renderEntry(actions, layoutName) {
   return [
@@ -38,10 +42,13 @@ function EntryActions() {
   const handleUpdateApp = useCallback(() => {}, [])
   const handleRemoveApp = useCallback(() => {}, [])
 
-  const actions = [
-    [handleUpdateApp, IconEdit, 'Update'],
-    [handleRemoveApp, IconTrash, 'Remove'],
-  ]
+  const actions = useMemo(
+    () => [
+      [handleUpdateApp, IconEdit, 'Update'],
+      [handleRemoveApp, IconTrash, 'Remove'],
+    ],
+    [handleUpdateApp, handleRemoveApp]
+  )
 
   return (
     <ContextMenu>
@@ -53,7 +60,7 @@ function EntryActions() {
               display: flex;
               align-items: center;
               justify-content: center;
-              color: ${theme.surfaceContentSecondary};
+              color: ${theme.surfaceIcon};
             `}
           >
             <Icon />
@@ -71,36 +78,184 @@ function EntryActions() {
   )
 }
 
+function EmptyState() {
+  const theme = useTheme()
+  const { layoutName } = useLayout()
+
+  return (
+    <Box heading="Apps registered to this agreement">
+      <div
+        css={`
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        `}
+      >
+        <img
+          src={noRegisteredApps}
+          css={`
+            height: ${layoutName === 'small' ? '100px' : '130px'};
+          `}
+        />
+
+        <div
+          css={`
+            text-align: center;
+            max-width: ${GU * 60}px;
+          `}
+        >
+          <h2
+            css={`
+              ${textStyle('body1')}
+              color: ${theme.surfaceContent};
+              margin-top: ${GU * 3}px;
+              margin-bottom: ${GU * 1}px;
+            `}
+          >
+            There’re no registered apps yet.
+          </h2>
+          <p
+            css={`
+                ${textStyle('body2')}
+                color: ${theme.surfaceContentSecondary};
+              `}
+          >
+            You can configure any of the available apps, upgrade or install new
+            ones, to make their actions bound by the Agreement.
+          </p>
+        </div>
+      </div>
+    </Box>
+  )
+}
+
+/* eslint-disable react/prop-types */
+function SubtleLabel({ children }) {
+  const theme = useTheme()
+
+  return (
+    <span
+      css={`
+        color: ${theme.surfaceContentSecondary};
+      `}
+    >
+      {children}
+    </span>
+  )
+}
+/* eslint-enable react/prop-types */
+
 function EntryExpansion() {
   return (
     <div
       css={`
         width: 100%;
+        padding-top: ${GU * 3}px;
+        padding-bottom: ${GU * 3}px;
       `}
     >
-      <InfoField label="test">dsdfsdf</InfoField>
-      <InfoField label="test">dsdfsdf</InfoField>
-      <InfoField label="test">dsdfsdf</InfoField>
-      <InfoField label="test">dsdfsdf</InfoField>
+      <div
+        css={`
+          display: inline-grid;
+          grid-template-columns: 1fr 1fr;
+          column-gap: ${GU * 4}px;
+          row-gap: ${GU * 3}px;
+        `}
+      >
+        <InfoField
+          label={
+            <React.Fragment>
+              Action Collateral
+              <Help hint="What is Action Collateral?">
+                <strong>Action Collateral</strong> is the lorem ipsum dolor sit
+                amet, consectetur adipiscing elit.
+              </Help>
+            </React.Fragment>
+          }
+        >
+          100 ANT <SubtleLabel>(per action)</SubtleLabel>
+        </InfoField>
+        <InfoField
+          label={
+            <React.Fragment>
+              Challenge Period
+              <Help hint="What is Challenge Period?">
+                <strong>Challenge Period</strong> is the lorem ipsum dolor sit
+                amet, consectetur adipiscing elit.
+              </Help>
+            </React.Fragment>
+          }
+        >
+          48 <SubtleLabel>Hours</SubtleLabel>
+        </InfoField>
+        <InfoField
+          label={
+            <React.Fragment>
+              Challenge Collateral
+              <Help hint="What is Challenge Collateral?">
+                <strong>Challenge Collateral</strong> is the lorem ipsum dolor
+                sit amet, consectetur adipiscing elit.
+              </Help>
+            </React.Fragment>
+          }
+        >
+          100 ANT <SubtleLabel>(per action)</SubtleLabel>
+        </InfoField>
+        <InfoField
+          label={
+            <React.Fragment>
+              Settlement Period
+              <Help hint="What is Settlement Period?">
+                <strong>Settlement Period</strong> is the lorem ipsum dolor sit
+                amet, consectetur adipiscing elit.
+              </Help>
+            </React.Fragment>
+          }
+        >
+          24 <SubtleLabel>Hours</SubtleLabel>
+        </InfoField>
+        <InfoField
+          label="Signer Eligibility"
+          css={`
+            grid-column: span 2;
+          `}
+        >
+          Open to tokenholders with a minimun token balance of 1
+        </InfoField>
+
+        <InfoField
+          label="Challenger Eligibility"
+          css={`
+            grid-column: span 2;
+          `}
+        >
+          Open to everyone
+        </InfoField>
+      </div>
     </div>
   )
 }
 
-function DisputableApps({ items }) {
+const DisputableApps = React.memo(({ items }) => {
   const layoutName = useLayout()
-  return (
-    <DataView
-      fields={[
-        { label: 'App', priority: 1, childStart: true },
-        { label: 'Allowed Actions', align: 'left' },
-      ]}
-      entries={items}
-      renderEntry={({ actions }) => renderEntry(actions, layoutName)}
-      renderEntryExpansion={() => <EntryExpansion />}
-      renderEntryActions={() => <EntryActions />}
-    />
-  )
-}
+
+  if (items && items.length > 0) {
+    return (
+      <DataView
+        fields={[
+          { label: 'App', priority: 1, childStart: true },
+          { label: 'Actions', align: 'left' },
+        ]}
+        entries={items}
+        renderEntry={({ actions }) => renderEntry(actions, layoutName)}
+        renderEntryExpansion={() => <EntryExpansion />}
+        renderEntryActions={() => <EntryActions />}
+      />
+    )
+  } else {
+    return <EmptyState />
+  }
+})
 
 DisputableApps.propTypes = {
   items: PropTypes.arrayOf(

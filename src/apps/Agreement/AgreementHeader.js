@@ -13,7 +13,7 @@ import {
   IconShare,
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
-import icon from './icon.svg'
+import icon from './assets/icon.svg'
 
 const STATUS_PENDING = 'pending'
 const STATUS_ACTIVE = 'active'
@@ -34,14 +34,14 @@ function DropdownItem({ Icon, label }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          color: ${theme.surfaceContentSecondary};
+          color: ${theme.surfaceIcon};
         `}
       >
         <Icon />
       </span>
       <span
         css={`
-          margin-left: ${1 * GU}px;
+          margin-left: ${GU}px;
         `}
       >
         {label}
@@ -153,7 +153,7 @@ function AgreementHeader({ status }) {
                 css={`
                   display: inline-flex;
 
-                  color: ${theme.surfaceContentSecondary};
+                  color: ${theme.surfaceIcon};
                 `}
               >
                 <IconGrid size="medium" />
