@@ -13,6 +13,8 @@ import DisputableAppsEmpty from './DisputableApps/DisputableAppsEmpty'
 import AgreementDetails from './AgreementDetails'
 import AgreementDoc from './AgreementDoc'
 import AgreementHeader from './AgreementHeader'
+import AgreementChecklist from './AgreementChecklist'
+import AgreementHistory from './AgreementHistory'
 
 const Agreement = React.memo(function Agreement() {
   const { layoutName } = useLayout()
@@ -24,7 +26,7 @@ const Agreement = React.memo(function Agreement() {
     console.log('Remove app entry')
   }, [])
 
-  const testItem = useMemo(() => {
+  const disputableAppItem = useMemo(() => {
     return {
       entryActions: [
         [handleUpdateApp, IconEdit, 'Update'],
@@ -52,7 +54,10 @@ const Agreement = React.memo(function Agreement() {
     }
   }, [handleUpdateApp, handleRemoveApp])
 
-  const testItems = useMemo(() => [testItem, testItem, testItem], [testItem])
+  const disputableApps = useMemo(
+    () => [disputableAppItem, disputableAppItem, disputableAppItem],
+    [disputableAppItem]
+  )
 
   const handleUpdateAgreement = useCallback(() => {}, [])
 
@@ -83,8 +88,8 @@ const Agreement = React.memo(function Agreement() {
                 ContractHash="0x281c36aee917b24d8e5f59481f6639d81e4cf7125b09fb93a2b43c31ef3fc115"
               />
             </Box>
-            {testItems && testItems.length > 0 ? (
-              <DisputableApps items={testItems} />
+            {disputableApps && disputableApps.length > 0 ? (
+              <DisputableApps items={disputableApps} />
             ) : (
               <DisputableAppsEmpty />
             )}
@@ -93,8 +98,8 @@ const Agreement = React.memo(function Agreement() {
         }
         secondary={
           <React.Fragment>
-            <Box heading="Configuration checklist">Configuration checklist</Box>
-            <Box heading="Version history">Version history</Box>
+            <AgreementChecklist />
+            <AgreementHistory />
           </React.Fragment>
         }
       />

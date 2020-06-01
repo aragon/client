@@ -52,7 +52,7 @@ function renderEntry({ allowedActions }, layoutName) {
         
       `}
     >
-      <KnownAppBadge appName="voting.aragonpm.eth" label="Test app" />
+      <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
     </div>,
     <React.Fragment>{allowedActions.join(', ')}</React.Fragment>,
   ]
