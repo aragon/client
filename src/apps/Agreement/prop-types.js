@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 const ItemType = PropTypes.shape({
-  entryActions: PropTypes.arrayOf(PropTypes.func),
+  entryActions: PropTypes.arrayOf(PropTypes.array),
   allowedActions: PropTypes.arrayOf(PropTypes.string).isRequired,
   actionCollateral: PropTypes.shape({
     amount: PropTypes.number,

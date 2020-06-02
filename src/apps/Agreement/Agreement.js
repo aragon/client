@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
   Box,
   Button,
@@ -17,6 +17,12 @@ import ConfigurationChecklist from './ConfigurationChecklist'
 import VersionHistory from './VersionHistory'
 
 const Agreement = React.memo(function Agreement() {
+  const [checklistItems, setChecklistItems] = useState([
+    ['Create Agreement', true],
+    ['Set permissions', true],
+    ['Set actions requirements', false],
+    ['Share with members', false],
+  ])
   const { layoutName } = useLayout()
 
   const handleUpdateApp = useCallback(() => {
@@ -59,7 +65,14 @@ const Agreement = React.memo(function Agreement() {
     [disputableAppItem]
   )
 
-  const handleUpdateAgreement = useCallback(() => {}, [])
+  const handleChecklistClose = useCallback(() => {
+    setChecklistItems([
+      ['Create Agreement', true],
+      ['Set permissions', true],
+      ['Set actions requirements', true],
+      ['Share with members', false],
+    ])
+  }, [])
 
   return (
     <React.Fragment>
@@ -68,7 +81,6 @@ const Agreement = React.memo(function Agreement() {
         secondary={
           <Button
             mode="strong"
-            onClick={handleUpdateAgreement}
             label="Update Agreement"
             icon={<IconEdit />}
             display={layoutName === 'small' ? 'icon' : 'label'}
@@ -98,7 +110,10 @@ const Agreement = React.memo(function Agreement() {
         }
         secondary={
           <React.Fragment>
-            <ConfigurationChecklist />
+            <ConfigurationChecklist
+              items={checklistItems}
+              onClose={handleChecklistClose}
+            />
             <VersionHistory />
           </React.Fragment>
         }
