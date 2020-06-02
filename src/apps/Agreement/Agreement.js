@@ -17,13 +17,14 @@ import ConfigurationChecklist from './ConfigurationChecklist'
 import VersionHistory from './VersionHistory'
 
 const Agreement = React.memo(function Agreement() {
+  const { layoutName } = useLayout()
   const [checklistItems, setChecklistItems] = useState([
     ['Create Agreement', true],
     ['Set permissions', true],
     ['Set actions requirements', true],
     ['Share with members', false],
   ])
-  const { layoutName } = useLayout()
+  const [checklistCompleted, setChecklistCompleted] = useState(false)
 
   const handleUpdateApp = useCallback(() => {
     console.log('Update app entry')
@@ -74,6 +75,10 @@ const Agreement = React.memo(function Agreement() {
     ])
   }, [])
 
+  const handleChecklistClose = useCallback(() => {
+    setChecklistCompleted(true)
+  }, [])
+
   return (
     <React.Fragment>
       <Header
@@ -110,10 +115,14 @@ const Agreement = React.memo(function Agreement() {
         }
         secondary={
           <React.Fragment>
-            <ConfigurationChecklist
-              items={checklistItems}
-              onTestProgress={handleProgressTest}
-            />
+            {!checklistCompleted && (
+              <ConfigurationChecklist
+                items={checklistItems}
+                onTestProgress={handleProgressTest}
+                onCloseClick={handleChecklistClose}
+              />
+            )}
+
             <VersionHistory />
           </React.Fragment>
         }

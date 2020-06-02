@@ -8,15 +8,19 @@ import {
   ProgressBar,
   textStyle,
   Button,
+  springs,
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import checklistCompleteGraphic from './assets/checklist-complete.png'
+import { Transition, animated } from 'react-spring'
 
 function countProgress(items) {
   return items.filter(([_, checked]) => checked).length
 }
 
-function ConfigurationChecklist({ items, onClose, onTestProgress }) {
+const AnimatedDiv = animated.div
+
+function ConfigurationChecklist({ items, onCloseClick, onTestProgress }) {
   const [progress, setProgress] = useState(countProgress(items))
   const theme = useTheme()
 
@@ -29,36 +33,56 @@ function ConfigurationChecklist({ items, onClose, onTestProgress }) {
 
   return (
     <Box heading="Configuration checklist" padding={0}>
-      {checklistComplete ? (
-        <BoxInner
-          css={`
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          `}
-        >
-          <h2
-            css={`
-              text-align: center;
-              margin-bottom: ${2 * GU}px;
-            `}
-          >
-            All done! Congratulations!
-          </h2>
-          <img
-            src={checklistCompleteGraphic}
-            css={`
-              height: 130px;
-            `}
-          />
-        </BoxInner>
-      ) : (
+      <Transition
+        native
+        items={checklistComplete}
+        from={{
+          opacity: 0,
+          transform: 'scale(0.7)',
+        }}
+        enter={{
+          opacity: 1,
+          transform: 'scale(1)',
+        }}
+        config={springs.smooth}
+      >
+        {show =>
+          show &&
+          (props => (
+            <BoxInner>
+              <AnimatedDiv
+                style={props}
+                css={`
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                `}
+              >
+                <h2
+                  css={`
+                    text-align: center;
+                    margin-bottom: ${2 * GU}px;
+                  `}
+                >
+                  All done! Congratulations!
+                </h2>
+                <img
+                  src={checklistCompleteGraphic}
+                  css={`
+                    height: 130px;
+                  `}
+                />
+              </AnimatedDiv>
+            </BoxInner>
+          ))
+        }
+      </Transition>
+      {!checklistComplete &&
         items.map(([label, checked]) => (
           <BoxInner key={label}>
             <ChecklistItem label={label} checked={checked} />
           </BoxInner>
-        ))
-      )}
+        ))}
 
       <BoxInner>
         <div
@@ -88,7 +112,7 @@ function ConfigurationChecklist({ items, onClose, onTestProgress }) {
             <Button
               label="Close"
               wide
-              onClick={onClose}
+              onClick={onCloseClick}
               css={`
                 margin-top: ${2 * GU}px;
               `}
@@ -111,7 +135,8 @@ function ConfigurationChecklist({ items, onClose, onTestProgress }) {
 
 ConfigurationChecklist.propTypes = {
   items: PropTypes.arrayOf(PropTypes.array),
-  onClose: PropTypes.func,
+  onCloseClick: PropTypes.func,
+  onTestProgress: PropTypes.func,
 }
 
 /* eslint-disable react/prop-types */
