@@ -10,16 +10,18 @@ import {
   Button,
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
+import checklistCompleteGraphic from './assets/checklist-complete.png'
 
 function countProgress(items) {
   return items.filter(([_, checked]) => checked).length
 }
 
-function ConfigurationChecklist({ items, onClose }) {
+function ConfigurationChecklist({ items, onClose, onTestProgress }) {
   const [progress, setProgress] = useState(countProgress(items))
   const theme = useTheme()
 
   const barProgress = (1 / items.length) * progress
+  const checklistComplete = items.length === progress
 
   useEffect(() => {
     setProgress(countProgress(items))
@@ -27,11 +29,37 @@ function ConfigurationChecklist({ items, onClose }) {
 
   return (
     <Box heading="Configuration checklist" padding={0}>
-      {items.map(([label, checked]) => (
-        <BoxInner key={label}>
-          <ChecklistItem label={label} checked={checked} />
+      {checklistComplete ? (
+        <BoxInner
+          css={`
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          `}
+        >
+          <h2
+            css={`
+              text-align: center;
+              margin-bottom: ${2 * GU}px;
+            `}
+          >
+            All done! Congratulations!
+          </h2>
+          <img
+            src={checklistCompleteGraphic}
+            css={`
+              height: 130px;
+            `}
+          />
         </BoxInner>
-      ))}
+      ) : (
+        items.map(([label, checked]) => (
+          <BoxInner key={label}>
+            <ChecklistItem label={label} checked={checked} />
+          </BoxInner>
+        ))
+      )}
+
       <BoxInner>
         <div
           css={`
@@ -56,14 +84,25 @@ function ConfigurationChecklist({ items, onClose }) {
             </span>
           </label>
           <ProgressBar value={barProgress} />
-          <Button
-            label="Close"
-            wide
-            onClick={onClose}
-            css={`
-              margin-top: ${2 * GU}px;
-            `}
-          />
+          {checklistComplete ? (
+            <Button
+              label="Close"
+              wide
+              onClick={onClose}
+              css={`
+                margin-top: ${2 * GU}px;
+              `}
+            />
+          ) : (
+            <Button
+              label="Test progress"
+              wide
+              onClick={onTestProgress}
+              css={`
+                margin-top: ${2 * GU}px;
+              `}
+            />
+          )}
         </div>
       </BoxInner>
     </Box>
@@ -103,7 +142,7 @@ function ChecklistItem({ label, checked }) {
   )
 }
 
-function BoxInner({ children }) {
+function BoxInner({ children, ...props }) {
   const { layoutName } = useLayout()
   const theme = useTheme()
 
@@ -116,6 +155,7 @@ function BoxInner({ children }) {
           border-top: 1px solid ${theme.border};
         }
       `}
+      {...props}
     >
       {children}
     </div>

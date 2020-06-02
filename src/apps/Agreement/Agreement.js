@@ -20,7 +20,7 @@ const Agreement = React.memo(function Agreement() {
   const [checklistItems, setChecklistItems] = useState([
     ['Create Agreement', true],
     ['Set permissions', true],
-    ['Set actions requirements', false],
+    ['Set actions requirements', true],
     ['Share with members', false],
   ])
   const { layoutName } = useLayout()
@@ -65,12 +65,12 @@ const Agreement = React.memo(function Agreement() {
     [disputableAppItem]
   )
 
-  const handleChecklistClose = useCallback(() => {
+  const handleProgressTest = useCallback(() => {
     setChecklistItems([
       ['Create Agreement', true],
       ['Set permissions', true],
       ['Set actions requirements', true],
-      ['Share with members', false],
+      ['Share with members', true],
     ])
   }, [])
 
@@ -112,7 +112,7 @@ const Agreement = React.memo(function Agreement() {
           <React.Fragment>
             <ConfigurationChecklist
               items={checklistItems}
-              onClose={handleChecklistClose}
+              onTestProgress={handleProgressTest}
             />
             <VersionHistory />
           </React.Fragment>
