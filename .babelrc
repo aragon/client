@@ -6,13 +6,13 @@
         "modules": false,
         "useBuiltIns": "entry",
         "core-js": 3,
+        "shippedProposals": true,
       }
     ],
     "@babel/preset-react"
   ],
   "plugins": [
     ["styled-components", { "displayName": true }],
-    "@babel/plugin-proposal-class-properties"
   ],
   "env": {
     "test": {
