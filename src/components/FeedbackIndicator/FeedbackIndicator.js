@@ -17,8 +17,8 @@ const FeedbackIndicator = ({ status, ...props }) => {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         border: 2px solid ${color};
         border-radius: 50%;
         transition: border-color 150ms ease-in-out;
@@ -27,7 +27,7 @@ const FeedbackIndicator = ({ status, ...props }) => {
     >
       {status === 'error' ? (
         <IconCross
-          size="medium"
+          size="large"
           css={`
             color: ${color};
             transition: color 150ms ease-in-out;
@@ -35,7 +35,7 @@ const FeedbackIndicator = ({ status, ...props }) => {
         />
       ) : (
         <IconCheck
-          size="medium"
+          size="large"
           css={`
             color: ${color};
             transition: color 150ms ease-in-out;
