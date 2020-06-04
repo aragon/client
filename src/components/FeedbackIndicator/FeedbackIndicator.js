@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { IconCheck, IconCross, useTheme } from '@aragon/ui'
+import { GU, IconCheck, IconCross, useTheme } from '@aragon/ui'
 
 const FeedbackIndicator = ({ status, ...props }) => {
   const theme = useTheme()
@@ -17,8 +17,8 @@ const FeedbackIndicator = ({ status, ...props }) => {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 64px;
-        height: 64px;
+        width: ${8 * GU}px;
+        height: ${8 * GU}px;
         border: 2px solid ${color};
         border-radius: 50%;
         transition: border-color 150ms ease-in-out;

@@ -144,7 +144,7 @@ class SigningStatus extends React.Component {
 }
 
 const Status = styled.div`
-  height: 300px;
+  height: ${38 * GU}px;
   display: flex;
   flex-direction: column;
   justify-content: center;
