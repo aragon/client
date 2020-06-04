@@ -64,7 +64,9 @@ const CONFIGURATION_VARS = [
     ...acc,
     [option]: {
       storageKey: `${option}_KEY`,
-      envValue: envValues.reduce((prevVal, envValue) => prevVal || envValue),
+      envValue: envValues.reduce(
+        (prevVal, envValue) => prevVal || envValue || null
+      ),
     },
   }),
   {}
