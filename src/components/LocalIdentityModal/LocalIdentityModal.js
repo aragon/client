@@ -177,7 +177,7 @@ function Label(props) {
 export default function LocalIdentityModal({ opened, onCancel, ...props }) {
   return (
     <Modal visible={opened} onClose={onCancel}>
-      <LocalIdentityModal onCancel={onCancel} {...props} />
+      <LocalModal onCancel={onCancel} {...props} />
     </Modal>
   )
 }
