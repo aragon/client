@@ -1,13 +1,13 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { saveAs } from 'file-saver'
-import { useRouting } from '../../../routing'
 import {
-  useIdentity,
   identityEventTypes,
+  useIdentity,
 } from '../../IdentityManager/IdentityManager'
-import { utoa } from '../../../string-utils'
-import { log } from '../../../utils'
 import { dateFormat } from '../../../date-utils'
+import { log } from '../../../utils'
+import { useRouting } from '../../../routing'
+import { utoa } from '../../../string-utils'
 
 function useIdentitiesActions({
   filteredIdentities,

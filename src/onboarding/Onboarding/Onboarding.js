@@ -1,24 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, BREAKPOINTS } from '@aragon/ui'
 import throttle from 'lodash.throttle'
-import { resolveEnsDomain } from '../../aragonjs-wrapper'
-import { log } from '../../utils'
-import embeddedTemplates from '../../templates'
-import ConnectModal from '../../components/ConnectModal/ConnectModal'
-
-import { saveTemplateState } from '../create-utils'
+import { BREAKPOINTS, useTheme } from '@aragon/ui'
 import {
-  TEMPLATE_LOADING,
   TEMPLATE_AVAILABLE,
+  TEMPLATE_LOADING,
   TEMPLATE_UNAVAILABLE,
 } from '../symbols'
+import ConnectModal from '../../components/ConnectModal/ConnectModal'
+import Create from '../Create/Create'
+import OnboardingTopBar from './OnboardingTopBar'
+import Welcome from '../Welcome/Welcome'
+import embeddedTemplates from '../../templates'
+import { log } from '../../utils'
+import { resolveEnsDomain } from '../../aragonjs-wrapper'
+import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
 import { useWallet } from '../../wallet'
-import Welcome from '../Welcome/Welcome'
-import Create from '../Create/Create'
 import validateCreationRequirements from '../validate-requirements'
-import OnboardingTopBar from './OnboardingTopBar'
 
 const sortedEmbeddedTemplates = Array.from(embeddedTemplates).sort(
   (first, second) => {
@@ -112,7 +111,7 @@ function Onboarding({ selectorNetworks, web3 }) {
     if (requirementsError[0] === null) {
       goToCreate()
     }
-  }, [account, balance, isContractAccount, goToCreate])
+  }, [account, balance, goToCreate, isContractAccount])
 
   const closeConnectModal = useCallback(
     provider => {
@@ -125,7 +124,7 @@ function Onboarding({ selectorNetworks, web3 }) {
         goToHome()
       }
     },
-    [account, status, goToHome]
+    [account, goToHome, status]
   )
 
   const handleProviderConnect = useCallback(
