@@ -314,6 +314,15 @@ class App extends React.Component {
       .catch(identityIntent.reject)
   }
 
+  handleIdentityDelete = addresses => {
+    const { identityIntent } = this.state
+    this.state.wrapper
+      .removeLocalIdentities(addresses)
+      .then(identityIntent.resolve)
+      .then(this.setState({ identityIntent: null }))
+      .catch(identityIntent.reject)
+  }
+
   handleIdentityResolve = address => {
     // returns promise
     if (this.state.wrapper) {
@@ -416,6 +425,7 @@ class App extends React.Component {
                       label={intentLabel}
                       opened={identityIntent !== null}
                       onCancel={this.handleIdentityCancel}
+                      onDelete={this.handleIdentityDelete}
                       onSave={this.handleIdentitySave}
                     />
                     <FavoriteDaosProvider>
