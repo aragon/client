@@ -8,9 +8,9 @@ import {
   IdentityBadge,
   GU,
   LoadingRing,
-  breakpoint,
   textStyle,
   useTheme,
+  useViewport,
 } from '@aragon/ui'
 
 function SharedIdentities({
@@ -25,6 +25,7 @@ function SharedIdentities({
   onToggleIdentity,
 }) {
   const theme = useTheme()
+  const { above } = useViewport()
 
   return (
     <React.Fragment>
@@ -79,7 +80,31 @@ function SharedIdentities({
                 labels selected
               </span>
             </div>
-            <List border={theme.border} surface={theme.surface}>
+            <ul
+              css={`
+                padding: 0;
+                list-style: none;
+                overflow: hidden;
+                width: 100%;
+                background: ${theme.surface};
+                z-index: 1;
+                border-top: ${theme.border};
+                border-bottom: ${theme.border};
+
+                ${above('medium') &&
+                  `
+                    max-height: 40vh;
+                    overflow: auto;
+
+                    li:first-child {
+                      border-top: none;
+                    }
+                    li:last-child {
+                      border-bottom: none;
+                    }
+                  `}
+              `}
+            >
               {identities.map(({ address, name }) => (
                 <li
                   key={address}
@@ -94,19 +119,26 @@ function SharedIdentities({
                       : theme.surface};
                   `}
                 >
-                  <Label>
+                  <label
+                    css={`
+                      display: block;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                    `}
+                  >
                     <StyledCheckbox
                       checked={selected.get(address)}
                       onChange={onToggleIdentity(address)}
                     />
                     {name}
-                  </Label>
+                  </label>
                   <div css="text-align: right;">
                     <IdentityBadge entity={address} />
                   </div>
                 </li>
               ))}
-            </List>
+            </ul>
             <div
               css={`
                 text-align: right;
@@ -146,39 +178,6 @@ SharedIdentities.propTypes = {
 
 const StyledCheckbox = styled(Checkbox)`
   margin-right: ${3 * GU}px;
-`
-
-const Label = styled.label`
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`
-
-const List = styled.ul`
-  padding: 0;
-  list-style: none;
-  overflow: hidden;
-  width: 100%;
-  background: ${({ surface }) => surface};
-  z-index: 1;
-  border-top: ${({ border }) => `1px solid ${border};`};
-  border-bottom: ${({ border }) => `1px solid ${border};`};
-
-  ${breakpoint(
-    'medium',
-    `
-      max-height: 40vh;
-      overflow: auto;
-
-      li:first-child {
-        border-top: none;
-      }
-      li:last-child {
-        border-bottom: none;
-      }
-    `
-  )}
 `
 
 export default React.memo(SharedIdentities)

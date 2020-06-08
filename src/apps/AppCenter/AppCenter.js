@@ -74,14 +74,15 @@ function getExtendedRepos(appInstanceGroups, repos) {
     const appGroup = appInstanceGroups.find(
       appGroup => appGroup.appId === repo.appId
     )
-    const { name, instances, repoName } = appGroup
+    const { name, instances, repoName } = appGroup || {}
+
     return {
       ...repo,
       // Use latest version’s assets
       baseUrl: repoBaseUrl(repo.appId, repo.latestVersion),
-      instances,
-      name,
-      repoName,
+      instances: instances || [],
+      name: name || '',
+      repoName: repoName || '',
     }
   })
 }

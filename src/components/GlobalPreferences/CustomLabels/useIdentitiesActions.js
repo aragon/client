@@ -1,5 +1,4 @@
 import { useState, useMemo, useCallback } from 'react'
-import { format } from 'date-fns'
 import { saveAs } from 'file-saver'
 import {
   useIdentity,
@@ -8,6 +7,7 @@ import {
 import { utoa } from '../../../string-utils'
 import { log } from '../../../utils'
 import { getAppPath, getPreferencesSearch } from '../../../routing'
+import { dateFormat } from '../../../date-utils'
 
 const CUSTOM_LABELS_PATH = 'custom-labels'
 
@@ -64,7 +64,7 @@ function useIdentitiesActions({
       return
     }
     // standard: https://en.wikipedia.org/wiki/ISO_8601
-    const today = format(Date.now(), 'yyyy-MM-dd')
+    const today = dateFormat(Date.now(), 'onlyDate')
     const blob = new Blob(
       [
         JSON.stringify(

@@ -13,7 +13,7 @@ import {
 } from '@aragon/ui'
 import { performTransactionPaths } from '../../aragonjs-wrapper'
 import ConsoleFeedback from './ConsoleFeedback'
-import { parseCommand } from './console-utils'
+import { buildCommand, parseCommand } from './console-utils'
 import handlers from './handlers'
 import IconPrompt from './IconPrompt'
 import KEYCODES from '../../keycodes'
@@ -60,7 +60,7 @@ function Console({ apps, wrapper }) {
   // Handle command clicks
   const handleCommandClick = useCallback(
     clickedCommand => {
-      const newCommand = `${command}${clickedCommand.toLowerCase()}/`
+      const newCommand = buildCommand(command, clickedCommand)
       const parsingResult = parseCommand(newCommand)
       setParsedState(parsingResult)
       setCommand(newCommand)
@@ -92,9 +92,9 @@ function Console({ apps, wrapper }) {
         >
           <Prompt
             command={command}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
             loading={loading}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
           />
         </div>
         <Info
@@ -108,7 +108,7 @@ function Console({ apps, wrapper }) {
           <ConsoleFeedback
             apps={apps}
             currentParsedCommand={parsedState}
-            handleCommandClick={handleCommandClick}
+            onCommandClick={handleCommandClick}
             loading={loading}
           />
         </Info>
@@ -132,9 +132,55 @@ Console.propTypes = {
   wrapper: AragonType,
 }
 
-function Prompt({ command, handleChange, handleSubmit, loading }) {
+function Prompt({ command, loading, onChange, onSubmit }) {
   const [commandHistory, setCommandHistory] = useState([])
   const [historyIndex, setHistoryIndex] = useState(0)
+
+  const isDisabled = useMemo(() => {
+    const parsedCommand = parseCommand(command)
+    const isValidInstall =
+      parsedCommand[0] === 'install' && parsedCommand.length === 4
+    const isValidExec =
+      parsedCommand[0] === 'exec' && parsedCommand.length === 3
+    const isValidAct =
+      parsedCommand[0] === 'act' &&
+      (parsedCommand.length === 4 || parsedCommand.length === 5)
+    return !(isValidInstall || isValidExec || isValidAct) || loading
+  }, [command, loading])
+
+  const handleChange = useCallback(e => onChange(e.target.value), [onChange])
+  const handleKeyDown = useCallback(
+    e => {
+      if (e.keyCode === KEYCODES.enter && !isDisabled) {
+        const newCommandHistory = [...commandHistory, command]
+        localStorage.setItem(
+          CONSOLE_COMMAND_HISTORY_KEY,
+          JSON.stringify(newCommandHistory)
+        )
+        setCommandHistory(newCommandHistory)
+        setHistoryIndex(newCommandHistory.length - 1)
+        onSubmit()
+      } else if (e.keyCode === KEYCODES.up || e.keyCode === KEYCODES.down) {
+        if (commandHistory.length === 0) {
+          return
+        }
+        const nextHistory = clamp(
+          historyIndex + (e.keyCode === KEYCODES.up ? -1 : 1),
+          0,
+          commandHistory.length - 1
+        )
+
+        if (e.keyCode === KEYCODES.down && nextHistory === historyIndex) {
+          onChange('')
+          return
+        }
+
+        setHistoryIndex(nextHistory)
+        onChange(commandHistory[nextHistory])
+      }
+    },
+    [command, commandHistory, historyIndex, isDisabled, onChange, onSubmit]
+  )
 
   useEffect(() => {
     const historyArray = localStorage.getItem(CONSOLE_COMMAND_HISTORY_KEY)
@@ -146,52 +192,14 @@ function Prompt({ command, handleChange, handleSubmit, loading }) {
     setHistoryIndex(parsedHistoryArray.length - 1)
   }, [])
 
-  const isDisabled = useMemo(() => {
-    const parsedCommand = parseCommand(command)
-    const isValidInstall =
-      parsedCommand[0] === 'install' && parsedCommand.length === 4
-    const isValidExec =
-      parsedCommand[0] === 'exec' && parsedCommand.length === 3
-    const isValidAct = parsedCommand[0] === 'act' && parsedCommand.length === 4
-    return !(isValidInstall || isValidExec || isValidAct) || loading
-  }, [command, loading])
-
   return (
     <>
       <TextInput
         value={command}
         adornment={<IconPrompt />}
         adornmentPosition="start"
-        onChange={e => handleChange(e.target.value)}
-        onKeyDown={e => {
-          if (e.keyCode === KEYCODES.enter && !isDisabled) {
-            const newCommandHistory = [...commandHistory, command]
-            localStorage.setItem(
-              CONSOLE_COMMAND_HISTORY_KEY,
-              JSON.stringify(newCommandHistory)
-            )
-            setCommandHistory(newCommandHistory)
-            setHistoryIndex(newCommandHistory.length - 1)
-            handleSubmit()
-          } else if (e.keyCode === KEYCODES.up || e.keyCode === KEYCODES.down) {
-            if (commandHistory.length === 0) {
-              return
-            }
-            const nextHistory = clamp(
-              historyIndex + (e.keyCode === KEYCODES.up ? -1 : 1),
-              0,
-              commandHistory.length - 1
-            )
-
-            if (e.keyCode === KEYCODES.down && nextHistory === historyIndex) {
-              handleChange('')
-              return
-            }
-
-            setHistoryIndex(nextHistory)
-            handleChange(commandHistory[nextHistory])
-          }
-        }}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
         css={`
           margin-right: ${1.5 * GU}px;
         `}
@@ -202,7 +210,7 @@ function Prompt({ command, handleChange, handleSubmit, loading }) {
         icon={<IconEnter />}
         label="Enter"
         disabled={isDisabled}
-        onClick={handleSubmit}
+        onClick={onSubmit}
       />
     </>
   )
@@ -210,9 +218,9 @@ function Prompt({ command, handleChange, handleSubmit, loading }) {
 
 Prompt.propTypes = {
   command: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default Console

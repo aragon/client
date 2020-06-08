@@ -89,7 +89,7 @@ const Organization = React.memo(function Organization({
     }
 
     return (
-      'https://dashboard.tenderly.dev/integration?' +
+      'https://dashboard.tenderly.co/integration?' +
       `integration=aragon&network=${network.chainId}&` +
       `project=${projectName}&` +
       `contracts=${contractsQueryParameter}`
@@ -260,7 +260,7 @@ const Organization = React.memo(function Organization({
               />
               <Info>
                 <p>
-                  <Link href="https://tenderly.dev/">Tenderly</Link> is a
+                  <Link href="https://tenderly.co/">Tenderly</Link> is a
                   real-time monitoring, alerting, and troubleshooting solution
                   for smart contracts.
                 </p>

@@ -6,19 +6,21 @@ import {
   GU,
   Modal,
   TextInput,
-  breakpoint,
   textStyle,
   useTheme,
+  useViewport,
 } from '@aragon/ui'
 import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
 import { EthereumAddressType } from '../../prop-types'
 
 function LocalIdentityModal({ address, label, onCancel, onDelete, onSave }) {
-  const theme = useTheme()
   const [action, setAction] = useState(null)
   const [error, setError] = useState(null)
   const labelInput = useRef(null)
+
+  const { above } = useViewport()
+  const theme = useTheme()
 
   const handleCancel = useCallback(() => {
     onCancel()
@@ -66,13 +68,11 @@ function LocalIdentityModal({ address, label, onCancel, onDelete, onSave }) {
           background: ${theme.surface};
           max-width: calc(100vw - ${4 * GU}px);
 
-          ${breakpoint(
-            'medium',
+          ${above('medium') &&
             `
               /* wide identity badge + paddings */
-              min-width: ${400 + GU * 4}px;
-            `
-          )};
+              min-width: ${54 * GU}px;
+            `};
         `}
       >
         <h3
@@ -84,7 +84,7 @@ function LocalIdentityModal({ address, label, onCancel, onDelete, onSave }) {
         </h3>
         <p
           css={`
-            margin: ${3 * GU}px 0;
+            margin: ${5 * GU}px 0;
           `}
         >
           This label would be displayed instead of the following address and
@@ -113,20 +113,18 @@ function LocalIdentityModal({ address, label, onCancel, onDelete, onSave }) {
             display: grid;
             grid-gap: ${1 * GU}px;
             grid-template-columns: 1fr 1fr;
-            ${breakpoint(
-              'medium',
+            ${above('medium') &&
               `
                 display: flex;
                 justify-content: flex-end;
-              `
-            )};
+              `};
           `}
         >
           <Button
-            css={`
-              min-width: ${16 * GU}px;
-            `}
             onClick={handleCancel}
+            css={`
+              min-width: ${8 * GU}px;
+            `}
           >
             Cancel
           </Button>
@@ -134,13 +132,11 @@ function LocalIdentityModal({ address, label, onCancel, onDelete, onSave }) {
             mode="strong"
             onClick={handleSave}
             css={`
-              min-width: ${16 * GU}px;
-              ${breakpoint(
-                'medium',
+              min-width: ${8 * GU}px;
+              ${above('medium') &&
                 `
                   margin-left: ${2 * GU}px;
-                `
-              )};
+                `}
             `}
           >
             Save

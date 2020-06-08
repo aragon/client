@@ -131,22 +131,22 @@ const Description = styled.p`
   color: ${({ theme }) => theme.contentSecondary};
   ${textStyle('body2')};
   text-align: left;
+  grid-area: description;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: fit-content;
 
   ${({ compactMode }) =>
     compactMode
       ? `
-        grid-area: description;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
-        overflow: hidden;
-        height: fit-content;
         margin-top: ${0.5 * GU}px;
       `
       : `
-        flex: 1;
         text-align: center;
         padding: 0 1rem;
+        -webkit-line-clamp: 3;
       `}
 `
 

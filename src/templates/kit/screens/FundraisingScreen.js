@@ -262,8 +262,8 @@ function FundraisingScreen({
                 label={
                   <React.Fragment>
                     Presale goal
-                    <Help hint="What’s the presale goal?">
-                      <strong>Presale goal</strong> describes the amount of DAI
+                    <Help hint="What is Presale Goal?">
+                      <strong>Presale Goal</strong> describes the amount of DAI
                       that must be raised during the presale period for it to
                       succeed. <em>For example: 50000 DAI.</em>
                     </Help>
@@ -284,9 +284,9 @@ function FundraisingScreen({
                 label={
                   <React.Fragment>
                     Presale price
-                    <Help hint="What’s the presale price?">
+                    <Help hint="What is Presale Price?">
                       <p>
-                        <strong>Presale price</strong> is the constant price (in
+                        <strong>Presale Price</strong> is the constant price (in
                         DAI) the organization's {data.holders.tokenSymbol}{' '}
                         tokens will be sold at during the presale.{' '}
                         <em>
@@ -320,8 +320,8 @@ function FundraisingScreen({
                 label={
                   <React.Fragment>
                     Presale period
-                    <Help hint="What’s the presale period?">
-                      <strong>Presale period</strong> describes the length of
+                    <Help hint="What is Presale Period?">
+                      <strong>Presale Period</strong> describes the length of
                       time the presale will be open.{' '}
                       <em>For example: 30 days.</em>
                     </Help>
@@ -344,8 +344,8 @@ function FundraisingScreen({
               label={
                 <React.Fragment>
                   Initial tokens offered %
-                  <Help hint="What’s initial tokens offered %?">
-                    <strong>Initial tokens offered %</strong> describes the
+                  <Help hint="What is Initial Tokens Offered %?">
+                    <strong>Initial Tokens Offered %</strong> describes the
                     percentage of the initial {data.holders.tokenSymbol} token
                     supply that will be offered during the presale. The
                     remainder of this supply will be minted and sent to the
@@ -360,8 +360,8 @@ function FundraisingScreen({
               label={
                 <React.Fragment>
                   Project funding %
-                  <Help hint="What’s the project funding %?">
-                    <strong>Project funding %</strong> describes the percentage
+                  <Help hint="What is Project Funding %?">
+                    <strong>Project Funding %</strong> describes the percentage
                     of DAI raised during the presale that will be sent to the
                     council (to bootstrap the campaign's underlying project) if
                     the presale succeeds. The remainder of the raised DAI will
@@ -402,8 +402,8 @@ function FundraisingScreen({
                 label={
                   <React.Fragment>
                     Cliff period
-                    <Help hint="What’s the cliff period?">
-                      <strong>Cliff period</strong> describes the length of time
+                    <Help hint="What is Cliff Period?">
+                      <strong>Cliff Period</strong> describes the length of time
                       required before any {data.holders.tokenSymbol} tokens
                       purchased during the presale become transferable.{' '}
                       <em>For example: {fields.fundingPeriod + 15} days.</em>
@@ -425,7 +425,7 @@ function FundraisingScreen({
                 label={
                   <React.Fragment>
                     Vesting schedule
-                    <Help hint="What’s the vesting schedule?">
+                    <Help hint="What is Vesting Schedule?">
                       <strong>Vesting schedule</strong> describes the length of
                       time required for all {data.holders.tokenSymbol} tokens
                       purchased during the presale to become transferable.{' '}
@@ -468,9 +468,9 @@ function FundraisingScreen({
               label={
                 <React.Fragment>
                   Initial tap rate
-                  <Help hint="What’s the tap rate?">
+                  <Help hint="What is Tap Rate?">
                     <p>
-                      <strong>Tap rate</strong> defines the amount of DAI which
+                      <strong>Tap Rate</strong> defines the amount of DAI which
                       can be released every month from the market-maker's
                       reserve pool to the council-controlled vault.{' '}
                       <em>For example: 3000 DAI / month.</em>
@@ -501,9 +501,9 @@ function FundraisingScreen({
               label={
                 <React.Fragment>
                   Initial tap floor
-                  <Help hint="What’s the tap floor?">
+                  <Help hint="What is Tap Floor?">
                     <p>
-                      <strong>Tap floor</strong> defines the amount of DAI which
+                      <strong>Tap Floor</strong> defines the amount of DAI which
                       will be kept in the market-maker's reserve pool regardless
                       of the tap rate. <em>For example: 5000 DAI.</em>
                     </p>
@@ -535,7 +535,7 @@ function FundraisingScreen({
               label={
                 <React.Fragment>
                   Maximum monthly tap rate increases and tap floor decreases %
-                  <Help hint="What’s the maximum monthly tap rate increases and tap floor decreases %?">
+                  <Help hint="What is the maximum monthly tap rate increases and tap floor decreases %?">
                     <p>
                       <strong>
                         Maximum monthly tap rate increases and tap floor
@@ -597,10 +597,10 @@ function FundraisingScreen({
                   <React.Fragment>
                     Initial price per {data.holders.tokenSymbol}
                     <Help
-                      hint={`What’s the initial price per ${data.holders.tokenSymbol}?`}
+                      hint={`What is Initial Price per ${data.holders.tokenSymbol}?`}
                     >
                       <strong>
-                        Initial price per {data.holders.tokenSymbol}
+                        Initial Price per {data.holders.tokenSymbol}
                       </strong>{' '}
                       will be the price in DAI for each{' '}
                       {data.holders.tokenSymbol} token when trading initially
@@ -624,9 +624,9 @@ function FundraisingScreen({
                 label={
                   <React.Fragment>
                     Expected growth
-                    <Help hint="What's the expected growth?">
+                    <Help hint="What is Expected Growth?">
                       <p>
-                        <strong>Expected growth</strong> is the expected
+                        <strong>Expected Growth</strong> is the expected
                         long-term market capitalization growth of{' '}
                         {data.holders.tokenSymbol}. We use this value to set the
                         parameterization of {data.holders.tokenSymbol}'s bonding
@@ -673,7 +673,7 @@ function FundraisingScreen({
               label={
                 <React.Fragment>
                   Batch length
-                  <Help hint="What’s the batch length?">
+                  <Help hint="What is Batch Length?">
                     <p>
                       <strong>Batch length</strong> defines the number of blocks
                       a trading batch will last. <em>For example: 2 blocks.</em>{' '}
@@ -857,9 +857,9 @@ function SlippageLabel({ slippageToken }) {
   return (
     <React.Fragment>
       {slippageToken} slippage %
-      <Help hint={`What’s the ${slippageToken} slippage %?`}>
+      <Help hint={`What is ${slippageToken} Slippage %?`}>
         <p>
-          <strong>{slippageToken} slippage %</strong> defines the maximum price
+          <strong>{slippageToken} Slippage %</strong> defines the maximum price
           slippage in {slippageToken} that may occur on orders during any given
           batch.
         </p>
