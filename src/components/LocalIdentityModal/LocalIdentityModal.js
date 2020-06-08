@@ -14,28 +14,7 @@ import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
 import { EthereumAddressType } from '../../prop-types'
 
-const LocalIdentityModal = React.memo(function LocalidentityModal({
-  opened,
-  onCancel,
-  ...props
-}) {
-  return (
-    <Modal visible={opened} onClose={onCancel}>
-      <LocalModal onCancel={onCancel} {...props} />
-    </Modal>
-  )
-})
-
-LocalIdentityModal.propTypes = {
-  opened: PropTypes.bool.isRequired,
-  address: EthereumAddressType,
-  label: PropTypes.string,
-  onCancel: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
-}
-
-function LocalModal({ address, label, onCancel, onDelete, onSave }) {
+function LocalIdentityModal({ address, label, onCancel, onDelete, onSave }) {
   const theme = useTheme()
   const [action, setAction] = useState(null)
   const [error, setError] = useState(null)
@@ -106,13 +85,10 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
         <p
           css={`
             margin: ${3 * GU}px 0;
-            & span {
-              font-weight: bold;
-            }
           `}
         >
           This label would be displayed instead of the following address and
-          only be <span>stored on this device</span>.
+          only be <strong>stored on this device</strong>.
         </p>
         <IdentityBadgeWithNetwork entity={address} />
         <Label>
@@ -125,7 +101,7 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
           />
           <div
             css={`
-              color: #f56a6a;
+              color: ${theme.negative};
               text-transform: initial;
             `}
           >
@@ -175,7 +151,7 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
   )
 }
 
-LocalModal.propTypes = {
+LocalIdentityModal.propTypes = {
   address: EthereumAddressType,
   label: PropTypes.string,
   onCancel: PropTypes.func,
@@ -202,4 +178,10 @@ function Label(props) {
   )
 }
 
-export default LocalIdentityModal
+export default ({ opened, onCancel, ...props }) => {
+  return (
+    <Modal visible={opened} onClose={onCancel}>
+      <LocalIdentityModal onCancel={onCancel} {...props} />
+    </Modal>
+  )
+}
