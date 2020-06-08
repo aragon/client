@@ -14,7 +14,7 @@ import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
 import { EthereumAddressType } from '../../prop-types'
 
-function LocalIdentityModal({ address, label, onCancel, onDelete, onSave }) {
+function LocalModal({ address, label, onCancel, onDelete, onSave }) {
   const [action, setAction] = useState(null)
   const [error, setError] = useState(null)
   const labelInput = useRef(null)
@@ -147,7 +147,7 @@ function LocalIdentityModal({ address, label, onCancel, onDelete, onSave }) {
   )
 }
 
-LocalIdentityModal.propTypes = {
+LocalModal.propTypes = {
   address: EthereumAddressType,
   label: PropTypes.string,
   onCancel: PropTypes.func,
@@ -174,10 +174,15 @@ function Label(props) {
   )
 }
 
-export default ({ opened, onCancel, ...props }) => {
+export default function LocalIdentityModal({ opened, onCancel, ...props }) {
   return (
     <Modal visible={opened} onClose={onCancel}>
       <LocalIdentityModal onCancel={onCancel} {...props} />
     </Modal>
   )
+}
+
+LocalIdentityModal.propTypes = {
+  onCancel: PropTypes.func,
+  opened: PropTypes.bool,
 }
