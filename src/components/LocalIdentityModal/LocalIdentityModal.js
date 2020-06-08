@@ -91,7 +91,7 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
             'medium',
             `
               /* wide identity badge + paddings */
-              min-width: ${400 + GU * 4}px;
+              min-width: ${(50 + 4) * GU}px;
             `
           )};
         `}
