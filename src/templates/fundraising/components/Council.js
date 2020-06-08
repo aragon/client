@@ -335,8 +335,8 @@ function Council({
           label={
             <React.Fragment>
               Council token name
-              <Help hint="What’s the council token name?">
-                <strong>Council token name</strong> will be the name assigned to
+              <Help hint="What is Council Token Name?">
+                <strong>Council Token Name</strong> will be the name assigned to
                 the token representing the organization's council.{' '}
                 <em>For example: My Council Token.</em>
               </Help>
@@ -359,8 +359,8 @@ function Council({
           label={
             <React.Fragment>
               Council token symbol
-              <Help hint="What’s the council token symbol?">
-                <strong>Council token symbol</strong> will be the shortened name
+              <Help hint="What is Council Token Symbol?">
+                <strong>Council Token Symbol</strong> will be the shortened name
                 (typically in capital letters) assigned to the token
                 representing the organization's council.{' '}
                 <em>For example: CNL.</em>
@@ -454,8 +454,8 @@ function Council({
         label={
           <React.Fragment>
             Number of signatures
-            <Help hint="What’s the number of signatures?">
-              <strong>Number of signatures</strong> is the number of council
+            <Help hint="What is Number of Signatures?">
+              <strong>Number of Signatures</strong> is the number of council
               members who need to approve a vote for it to pass.
             </Help>
           </React.Fragment>
@@ -485,7 +485,7 @@ function Council({
         label={
           <React.Fragment>
             Vote duration
-            <Help hint="What’s the vote duration?">
+            <Help hint="What is Vote Duration?">
               <strong>Vote Duration</strong> is the length of time that
               council's votes will be open for participation. For example, if
               the Vote Duration is set to 24 hours, then council members will

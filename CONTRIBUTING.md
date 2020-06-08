@@ -6,7 +6,7 @@ Feel welcome and read the following sections in order to know how to ask questio
 
 There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into the project.
 
-All members of our community are expected to follow our [Code of Conduct](https://wiki.aragon.org/documentation/Code_of_Conduct/). Please make sure you are welcoming and friendly in all of our spaces.
+All members of our community are expected to follow our [Code of Conduct](https://wiki.aragon.org/about/code_of_conduct/). Please make sure you are welcoming and friendly in all of our spaces.
 
 ## Your first contribution
 
@@ -39,7 +39,7 @@ In order to determine whether you are dealing with a security issue, ask yoursel
 
 If the answer to either of those two questions are "yes", then you're probably dealing with a security issue. Note that even if you answer "no" to both questions, you may still be dealing with a security issue, so if you're unsure, please send a email.
 
-#### If you're interested in the smart contracts underlying Aragon, a [bug bounty program](https://wiki.aragon.org/dev/bug_bounty/) with payouts up to $50,000 is available for rewarding contributors who find security vulnerabilities.
+#### If you're interested in the smart contracts underlying Aragon, a [bug bounty program](https://wiki.aragon.org/association/security/client_bug_bounty/) with payouts up to $50,000 is available for rewarding contributors who find security vulnerabilities.
 
 ## Fixing issues
 

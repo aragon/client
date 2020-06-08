@@ -462,12 +462,12 @@ class App extends React.Component {
                         />
 
                         <GlobalPreferences
-                          locator={locator}
-                          wrapper={wrapper}
                           apps={appsWithIdentifiers}
-                          onScreenChange={this.openPreferences}
-                          onClose={this.closePreferences}
                           historyPush={this.historyPush}
+                          locator={locator}
+                          onClose={this.closePreferences}
+                          onScreenChange={this.openPreferences}
+                          wrapper={wrapper}
                         />
 
                         <HelpScoutBeacon locator={locator} apps={apps} />

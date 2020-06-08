@@ -320,6 +320,9 @@ export function useLocalIdentity(entity) {
           return handleRemove(event.addresses)
       }
     })
+
+    updateEntityName()
+
     return () => {
       cancelled = true
       subscription.unsubscribe()

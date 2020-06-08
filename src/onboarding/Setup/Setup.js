@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useViewport, GU } from '@aragon/ui'
-import Templates from '../Templates/Templates'
-import ConfigureStepsPanel from './ConfigureStepsPanel'
 import ConfigureTemplateScreens from './ConfigureTemplateScreens'
+import SetupStepsPanel from './SetupStepsPanel'
 import * as CreateStatuses from '../Create/create-statuses'
+import Templates from '../Templates/Templates'
 import { OrgTemplateType } from '../../prop-types'
 
-export const CONFIGURE_MODE_SELECT = Symbol('CONFIGURE_MODE_SELECT')
-export const CONFIGURE_MODE_CONFIGURE = Symbol('CONFIGURE_MODE_CONFIGURE')
+export const SETUP_MODE_SELECT = Symbol('SETUP_MODE_SELECT')
+export const SETUP_MODE_CONFIGURE = Symbol('SETUP_MODE_CONFIGURE')
 
-function Configure({
+function Setup({
   TemplateScreen,
   mode,
   onNextTemplateScreen,
@@ -35,7 +35,7 @@ function Configure({
             flex-grow: 0;
           `}
         >
-          <ConfigureStepsPanel step={stepIndex} steps={steps} />
+          <SetupStepsPanel step={stepIndex} steps={steps} />
         </div>
       )}
       <section
@@ -56,10 +56,10 @@ function Configure({
             overflow: hidden;
           `}
         >
-          {mode === CONFIGURE_MODE_SELECT && (
+          {mode === SETUP_MODE_SELECT && (
             <Templates onUse={onUseTemplate} templates={templates} />
           )}
-          {mode === CONFIGURE_MODE_CONFIGURE && (
+          {mode === SETUP_MODE_CONFIGURE && (
             <ConfigureTemplateScreens
               TemplateScreen={TemplateScreen}
               onNext={onNextTemplateScreen}
@@ -75,10 +75,9 @@ function Configure({
   )
 }
 
-Configure.propTypes = {
+Setup.propTypes = {
   TemplateScreen: PropTypes.func.isRequired,
-  mode: PropTypes.oneOf([CONFIGURE_MODE_SELECT, CONFIGURE_MODE_CONFIGURE])
-    .isRequired,
+  mode: PropTypes.oneOf([SETUP_MODE_SELECT, SETUP_MODE_CONFIGURE]).isRequired,
   onNextTemplateScreen: PropTypes.func.isRequired,
   onPrevTemplateScreen: PropTypes.func.isRequired,
   onUseTemplate: PropTypes.func.isRequired,
@@ -91,4 +90,4 @@ Configure.propTypes = {
   templates: PropTypes.arrayOf(OrgTemplateType).isRequired,
 }
 
-export default Configure
+export default Setup

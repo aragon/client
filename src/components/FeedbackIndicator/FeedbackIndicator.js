@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { IconCheck, IconCross, useTheme } from '@aragon/ui'
+import { GU, IconCheck, IconCross, useTheme } from '@aragon/ui'
 
 const FeedbackIndicator = ({ status, ...props }) => {
   const theme = useTheme()
@@ -17,8 +17,8 @@ const FeedbackIndicator = ({ status, ...props }) => {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 60px;
-        height: 60px;
+        width: ${8 * GU}px;
+        height: ${8 * GU}px;
         border: 2px solid ${color};
         border-radius: 50%;
         transition: border-color 150ms ease-in-out;
@@ -27,7 +27,7 @@ const FeedbackIndicator = ({ status, ...props }) => {
     >
       {status === 'error' ? (
         <IconCross
-          size="medium"
+          size="large"
           css={`
             color: ${color};
             transition: color 150ms ease-in-out;
@@ -35,7 +35,7 @@ const FeedbackIndicator = ({ status, ...props }) => {
         />
       ) : (
         <IconCheck
-          size="medium"
+          size="large"
           css={`
             color: ${color};
             transition: color 150ms ease-in-out;
