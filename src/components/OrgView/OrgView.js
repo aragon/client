@@ -1,19 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import {
   ButtonIcon,
-  IconMenu,
   GU,
+  IconMenu,
+  springs,
   useTheme,
   useViewport,
-  springs,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import {
-  AragonType,
-  AppsStatusType,
   AppType,
+  AppsStatusType,
+  AragonType,
   DaoAddressType,
   DaoStatusType,
   RepoType,
@@ -179,15 +178,21 @@ function OrgView({
         position: relative;
         z-index: 0;
         height: 100vh;
-        min-width: 360px;
+        min-width: ${45 * GU}px;
       `}
     >
-      <BannerWrapper>
+      <div
+        css={`
+          position: relative;
+          z-index: 1;
+          flex-shrink: 0;
+        `}
+      >
         <UpgradeBanner
           visible={canUpgradeOrg}
           onMoreInfo={handleUpgradeModalOpen}
         />
-      </BannerWrapper>
+      </div>
       <AppWidthContext.Provider
         value={autoClosingPanel ? width : width - MENU_PANEL_WIDTH}
       >
@@ -387,12 +392,6 @@ function OrgView({
     </div>
   )
 }
-
-const BannerWrapper = styled.div`
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-`
 
 OrgView.propTypes = {
   activeInstanceId: PropTypes.string,
