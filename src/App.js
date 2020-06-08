@@ -430,6 +430,7 @@ class App extends React.Component {
                         >
                           <div css="position: relative; z-index: 0">
                             <OrgView
+                              activeInstanceId={locator.instanceId}
                               visible={mode === APP_MODE_ORG}
                               apps={appsWithIdentifiers}
                               appsStatus={appsStatus}
