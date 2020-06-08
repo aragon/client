@@ -82,6 +82,7 @@ function GlobalPreferencesContent({
   }, [])
 
   const [menuItems, menuItemIndex] = useMemo(() => {
+    // Only show network preferences if the `wrapper` does not exist yet (for example, during onboarding)
     return wrapper
       ? [SECTION_VALUES, sectionIndex]
       : [[SECTION_VALUES[NETWORK_INDEX]], 0]
