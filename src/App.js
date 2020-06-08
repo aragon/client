@@ -430,7 +430,7 @@ class App extends React.Component {
                         >
                           <div css="position: relative; z-index: 0">
                             <OrgView
-                              visible={mode === APP_MODE_ORG}
+                              activeInstanceId={locator.instanceId}
                               apps={appsWithIdentifiers}
                               appsStatus={appsStatus}
                               canUpgradeOrg={canUpgradeOrg}
@@ -444,6 +444,7 @@ class App extends React.Component {
                               repos={repos}
                               signatureBag={signatureBag}
                               transactionBag={transactionBag}
+                              visible={mode === APP_MODE_ORG}
                               web3={web3}
                               wrapper={wrapper}
                             />
