@@ -23,10 +23,6 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
   const { above } = useViewport()
   const theme = useTheme()
 
-  const handleCancel = useCallback(() => {
-    onCancel()
-  }, [onCancel])
-
   const handleSave = useCallback(() => {
     try {
       const label = labelInput.current.value.trim()
@@ -47,10 +43,10 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
         if (keycode === keycodes.enter) {
           handleSave()
         } else if (keycode === keycodes.esc) {
-          handleCancel()
+          onCancel()
         }
       },
-      [handleCancel, handleSave]
+      [onCancel, handleSave]
     )
   )
 
@@ -121,7 +117,7 @@ function LocalModal({ address, label, onCancel, onDelete, onSave }) {
           `}
         >
           <Button
-            onClick={handleCancel}
+            onClick={onCancel}
             css={`
               min-width: ${8 * GU}px;
             `}
