@@ -23,8 +23,10 @@ import {
 import { DAO_STATUS_LOADING, APPS_STATUS_LOADING } from '../../symbols'
 
 function OrgViewApp({ apps, appsStatus, daoStatus, wrapper, ...props }) {
-  const { instanceId } = useRouting()
+  const routing = useRouting()
   const [appLoading, setAppLoading] = useState(false)
+
+  const { instanceId } = routing.mode
 
   const currentApp = useMemo(
     () => apps.find(app => addressesEqual(app.proxyAddress, instanceId)),
