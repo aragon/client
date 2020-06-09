@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
-  Bar,
   ButtonIcon,
   GU,
   Header,
   IconClose,
   Layout,
   Tabs,
+  noop,
   springs,
-  textStyle,
   useTheme,
   useToast,
   useViewport,
@@ -31,8 +30,8 @@ const SECTIONS = new Map([
   ['notifications', 'Notifications'],
   ['help-and-feedback', 'Help and feedback'],
 ])
-const PATHS = Array.from(SECTIONS.keys())
-const VALUES = Array.from(SECTIONS.values())
+const SECTION_PATHS = Array.from(SECTIONS.keys())
+const SECTION_VALUES = Array.from(SECTIONS.values())
 
 const CUSTOM_LABELS_INDEX = 0
 const NETWORK_INDEX = 1
@@ -41,7 +40,7 @@ const HELP_AND_FEEDBACK_INDEX = 3
 
 const AnimatedDiv = animated.div
 
-function GlobalPreferences({
+function GlobalPreferencesContent({
   apps,
   compact,
   onNavigation,
@@ -49,7 +48,6 @@ function GlobalPreferences({
   subsection,
   wrapper,
 }) {
-  const theme = useTheme()
   const toast = useToast()
   const routing = useRouting()
 
@@ -77,16 +75,19 @@ function GlobalPreferences({
 
   useEsc(closePreferences)
 
-  const tabItems = VALUES.filter((_, index) =>
-    Boolean(wrapper || index === NETWORK_INDEX)
-  )
-
   const container = useRef()
   useEffect(() => {
     if (container.current) {
       container.current.focus()
     }
   }, [])
+
+  const [menuItems, menuItemIndex] = useMemo(() => {
+    // Only show network preferences if the `wrapper` does not exist yet (for example, during onboarding)
+    return wrapper
+      ? [SECTION_VALUES, sectionIndex]
+      : [[SECTION_VALUES[NETWORK_INDEX]], 0]
+  }, [wrapper, sectionIndex])
 
   return (
     <div ref={container} tabIndex="0" css="outline: 0">
@@ -117,30 +118,11 @@ function GlobalPreferences({
           />
         ) : (
           <React.Fragment>
-            {tabItems.length > 1 ? (
-              <Tabs
-                items={tabItems}
-                onChange={onNavigation}
-                selected={sectionIndex}
-              />
-            ) : (
-              <Bar>
-                <div
-                  css={`
-                    display: flex;
-                    height: 100%;
-                    align-items: center;
-                    padding-left: ${compact ? 2 * GU : 3 * GU}px;
-                    color: ${compact
-                      ? theme.surfaceContent
-                      : theme.surfaceContentSecondary};
-                    ${textStyle('body2')}
-                  `}
-                >
-                  {tabItems[0]}
-                </div>
-              </Bar>
-            )}
+            <Tabs
+              items={menuItems}
+              onChange={wrapper ? onNavigation : noop}
+              selected={menuItemIndex}
+            />
             <main>
               {sectionIndex === CUSTOM_LABELS_INDEX && (
                 <CustomLabels wrapper={wrapper} />
@@ -163,7 +145,7 @@ function GlobalPreferences({
   )
 }
 
-GlobalPreferences.propTypes = {
+GlobalPreferencesContent.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   compact: PropTypes.bool,
   onNavigation: PropTypes.func.isRequired,
@@ -172,20 +154,20 @@ GlobalPreferences.propTypes = {
   wrapper: AragonType,
 }
 
-function useGlobalPreferences({ wrapper }) {
+function useGlobalPreferences() {
   const routing = useRouting()
   const { preferences } = routing
 
   const handleNavigation = useCallback(
     index => {
-      routing.update({ preferences: { section: PATHS[index] } })
+      routing.update({ preferences: { section: SECTION_PATHS[index] } })
     },
     [routing]
   )
 
   const { subsection } = preferences
 
-  const sectionIndex = PATHS.findIndex(
+  const sectionIndex = SECTION_PATHS.findIndex(
     section => section === preferences.section
   )
 
@@ -225,10 +207,8 @@ Close.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-function AnimatedGlobalPreferences(props) {
-  const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences({
-    wrapper: props.wrapper,
-  })
+function GlobalPreferences(props) {
+  const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences()
 
   const { below, above } = useViewport()
   const compact = below('medium')
@@ -277,7 +257,7 @@ function AnimatedGlobalPreferences(props) {
                 `}
             `}
           >
-            <GlobalPreferences
+            <GlobalPreferencesContent
               {...props}
               compact={compact}
               sectionIndex={sectionIndex}
@@ -292,9 +272,9 @@ function AnimatedGlobalPreferences(props) {
   )
 }
 
-AnimatedGlobalPreferences.propTypes = {
+GlobalPreferences.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   wrapper: PropTypes.object,
 }
 
-export default React.memo(AnimatedGlobalPreferences)
+export default React.memo(GlobalPreferences)
