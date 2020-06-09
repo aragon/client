@@ -437,6 +437,15 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "andy-hook",
+      "name": "Andy Hook",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/11708259?v=4",
+      "profile": "https://andyhook.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
