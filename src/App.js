@@ -14,7 +14,6 @@ import {
   parsePath,
 } from './routing'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
-import Wrapper from './Wrapper'
 import { Onboarding } from './onboarding'
 import { getWeb3 } from './web3-utils'
 import { log } from './utils'
@@ -27,6 +26,7 @@ import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityMod
 import HelpScoutBeacon from './components/HelpScoutBeacon/HelpScoutBeacon'
 import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import CustomToast from './components/CustomToast/CustomToast'
+import OrgView from './components/OrgView/OrgView'
 
 import { isKnownRepo } from './repo-utils'
 import {
@@ -314,6 +314,15 @@ class App extends React.Component {
       .catch(identityIntent.reject)
   }
 
+  handleIdentityDelete = addresses => {
+    const { identityIntent } = this.state
+    this.state.wrapper
+      .removeLocalIdentities(addresses)
+      .then(identityIntent.resolve)
+      .then(this.setState({ identityIntent: null }))
+      .catch(identityIntent.reject)
+  }
+
   handleIdentityResolve = address => {
     // returns promise
     if (this.state.wrapper) {
@@ -352,7 +361,6 @@ class App extends React.Component {
       appIdentifiers,
       appsStatus,
       canUpgradeOrg,
-      connected,
       daoAddress,
       daoStatus,
       fatalError,
@@ -417,6 +425,7 @@ class App extends React.Component {
                       label={intentLabel}
                       opened={identityIntent !== null}
                       onCancel={this.handleIdentityCancel}
+                      onDelete={this.handleIdentityDelete}
                       onSave={this.handleIdentitySave}
                     />
                     <FavoriteDaosProvider>
@@ -430,23 +439,22 @@ class App extends React.Component {
                           permissions={permissions}
                         >
                           <div css="position: relative; z-index: 0">
-                            <Wrapper
-                              visible={mode === APP_MODE_ORG}
+                            <OrgView
+                              activeInstanceId={locator.instanceId}
                               apps={appsWithIdentifiers}
                               appsStatus={appsStatus}
                               canUpgradeOrg={canUpgradeOrg}
-                              connected={connected}
                               daoAddress={daoAddress}
                               daoStatus={daoStatus}
                               historyBack={this.historyBack}
                               historyPush={this.historyPush}
                               locator={locator}
-                              onRequestAppsReload={this.handleRequestAppsReload}
-                              openPreferences={this.openPreferences}
+                              onOpenPreferences={this.openPreferences}
                               permissionsLoading={permissionsLoading}
                               repos={repos}
                               signatureBag={signatureBag}
                               transactionBag={transactionBag}
+                              visible={mode === APP_MODE_ORG}
                               web3={web3}
                               wrapper={wrapper}
                             />
