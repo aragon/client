@@ -1,11 +1,10 @@
-import React, { useState, useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
-  ButtonBase,
-  Link,
+  Details,
   GU,
-  IconDown,
+  Link,
   RADIUS,
   textStyle,
   useTheme,
@@ -19,10 +18,6 @@ const GenericError = React.memo(function GenericError({
   reportCallback,
 }) {
   const theme = useTheme()
-  const [opened, setOpened] = useState(false)
-  const toggle = useCallback(() => {
-    setOpened(!opened)
-  }, [opened, setOpened])
 
   return (
     <React.Fragment>
@@ -48,58 +43,43 @@ const GenericError = React.memo(function GenericError({
         <Link href={SUPPORT_URL}>contact</Link> us if the problem persists.
       </p>
       {(detailsTitle || detailsContent) && (
-        <div
-          css={`
-            text-align: left;
-            margin-bottom: ${5 * GU}px;
-          `}
-        >
-          <ButtonBase
-            onClick={toggle}
-            css={`
-              display: flex;
-              align-items: center;
-              color: ${theme.surfaceContentSecondary};
-              ${textStyle('label2')};
-            `}
-          >
-            Click here to see more details
-            <IconDown
-              size="tiny"
+        <Details
+          label={
+            <span
               css={`
-                margin-left: ${0.5 * GU}px;
-                transition: transform 150ms ease-in-out;
-                transform: rotate3d(0, 0, 1, ${opened ? 180 : 0}deg);
-              `}
-            />
-          </ButtonBase>
-          {opened && (
-            <div
-              css={`
-                overflow: auto;
-                padding: ${2 * GU}px;
-                max-height: 200px;
-                border-radius: ${RADIUS}px;
-                color: ${theme.text};
-                white-space: pre;
-                background: ${theme.surfaceUnder};
-                ${textStyle('body3')};
+                margin-left: ${-1 * GU}px;
               `}
             >
-              {detailsTitle && (
-                <h2
-                  css={`
-                    ${textStyle('body2')};
-                    margin-bottom: ${1.5 * GU}px;
-                  `}
-                >
-                  {detailsTitle}
-                </h2>
-              )}
-              {detailsContent}
-            </div>
-          )}
-        </div>
+              Click here to see more details
+            </span>
+          }
+        >
+          <div
+            css={`
+              overflow: auto;
+              padding: ${2 * GU}px;
+              max-height: ${25 * GU}px;
+              border-radius: ${RADIUS}px;
+              color: ${theme.text};
+              white-space: pre;
+              background: ${theme.surfaceUnder};
+              ${textStyle('body3')};
+              text-align: left;
+            `}
+          >
+            {detailsTitle && (
+              <h2
+                css={`
+                  ${textStyle('body2')};
+                  margin-bottom: ${1.5 * GU}px;
+                `}
+              >
+                {detailsTitle}
+              </h2>
+            )}
+            {detailsContent}
+          </div>
+        </Details>
       )}
       <div
         css={`

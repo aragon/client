@@ -57,7 +57,10 @@ const LocalLabelAppBadge = React.memo(function LocalLabelAppBadge({
     showLocalIdentityModal(proxyAddress)
       .then(handleResolve)
       .then(() =>
-        identityEvents$.next({ type: identityEventTypes.MODIFY, proxyAddress })
+        identityEvents$.next({
+          type: identityEventTypes.MODIFY,
+          address: proxyAddress,
+        })
       )
       .catch(e => {
         /* user cancelled modify intent */
