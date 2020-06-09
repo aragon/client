@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
 [![All Contributors](https://img.shields.io/badge/all_contributors-47-orange.svg?style=flat-square)](#contributors)
 
-**🌎🚀 Trusted by over 1000 organizations, securing more than \$20MM in funds. [Try it out.](https://mainnet.aragon.org)**
+**🌎🚀 Trusted by over 1000 organizations, securing more than $20MM in funds. [Try it out.](https://mainnet.aragon.org)**
 
 <a href="https://mainnet.aragon.org/#/a1/"><img src=".github/screenshot.png" /></a>
 
@@ -153,7 +153,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
