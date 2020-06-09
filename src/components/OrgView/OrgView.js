@@ -113,10 +113,6 @@ function OrgView({
     [routing]
   )
 
-  const onOpenPreferences = useCallback(() => {
-    routing.update({ preferences: { section: 'custom-labels' } })
-  }, [routing])
-
   const handleCloseMenuPanel = useCallback(() => setMenuPanelOpen(false), [])
 
   const hideOrgUpgradePanel = useCallback(() => {
@@ -264,7 +260,7 @@ function OrgView({
             )}
             <div css="display: flex">
               <AccountModule />
-              <GlobalPreferencesButton onOpen={onOpenPreferences} />
+              <GlobalPreferencesButton />
               <ActivityButton apps={apps} />
             </div>
           </div>
