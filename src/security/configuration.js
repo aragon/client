@@ -3,6 +3,13 @@ import { iOS, isSafari } from '../utils'
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe for details about sandbox
 // `sandbox` works like a whitelist: by default, almost every functionality is restricted.
 export const appIframeSandbox = [
+  // Allows downloads to be initiated by the user
+  // Required for Chrome 83+ (see https://www.chromestatus.com/feature/5706745674465280)
+  'allow-downloads',
+
+  // Allow forms to be submitted
+  'allow-forms',
+
   // Allows new browsing contexts to be created (window.open, target="_blank").
   'allow-popups',
 
@@ -14,9 +21,6 @@ export const appIframeSandbox = [
 
   // Gotta run 'em all!
   'allow-scripts',
-
-  // Allow forms to be submitted
-  'allow-forms',
 
   // Note that we haven't enabled:
   //   - 'allow-same-origin':
