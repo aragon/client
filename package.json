@@ -1,7 +1,7 @@
 {
   "name": "aragon",
   "description": "Aragon DApp",
-  "version": "0.8.10-hotfix",
+  "version": "0.8.11",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "author": "Aragon Association <legal@aragon.org>",
@@ -34,9 +34,9 @@
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
-    "@aragon/ui": "^1.4.0",
-    "@aragon/wrapper": "^5.0.0-rc.26",
-    "@sentry/browser": "^5.5.0",
+    "@aragon/ui": "^1.4.2",
+    "@aragon/wrapper": "^5.0.0-rc.27",
+    "@sentry/browser": "^5.17.0",
     "@ungap/event-target": "^0.1.0",
     "clipboard-polyfill": "^2.8.6",
     "core-js": "^3.3.2",
@@ -62,10 +62,10 @@
     "remark-react": "^5.0.1",
     "resolve-pathname": "^3.0.0",
     "styled-components": "^4.1.3",
-    "use-wallet": "^0.4.4",
-    "web3": "^1.2.2",
-    "web3-eth-abi": "^1.2.4",
-    "web3-utils": "^1.2.2"
+    "use-wallet": "^0.5.0",
+    "web3": "^1.2.6",
+    "web3-eth-abi": "^1.2.6",
+    "web3-utils": "^1.2.6"
   },
   "devDependencies": {
     "@aragon/os": "^4.0.0",
@@ -98,6 +98,10 @@
     "prettier": "^1.19.1",
     "ps-node": "^0.1.6",
     "rimraf": "^2.6.2"
+  },
+  "resolutions": {
+    "@aragon/wrapper/web3": "1.2.6",
+    "@aragon/wrapper/web3-eth-abi": "1.2.6"
   },
   "scripts": {
     "bundlewatch": "bundlewatch",
