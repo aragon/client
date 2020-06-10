@@ -102,7 +102,7 @@ class ActionPathsContent extends React.Component {
                         font-style: italic;
                       `}
                     >
-                      {value.name}
+                      “{value.name}”
                     </span>
                   )
                 }

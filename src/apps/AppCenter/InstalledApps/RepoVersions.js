@@ -91,7 +91,7 @@ const RepoVersions = ({ animate, repo: { currentVersion, versions } }) => {
                   >
                     {timestamp ? (
                       <time
-                        dateTime={dateFormat(timestamp, 'iso')}
+                        dateTime={dateFormat(timestamp)}
                         title={dateFormat(timestamp, 'standard')}
                       >
                         {dateFormat(timestamp, 'onlyDate')}

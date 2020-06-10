@@ -5,10 +5,12 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
 const KNOWN_FORMATS = {
-  onlyDate: 'yyyy-MM-dd',
+  onlyDate: 'YYYY-MM-DD',
+  standard: 'ddd MMM YYYY, HH:mm:ss',
 }
 
 export function dateFormat(date, formatName) {
+  // dayjs.format() applies ISO format by default if no format is given
   return dayjs(date).format(KNOWN_FORMATS[formatName])
 }
 
