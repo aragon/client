@@ -76,10 +76,10 @@ function TokenSelector({
   return (
     <div
       css={`
-          display: ${showCustomHorizontal ? 'flex' : 'block'};
-          align-items: flex-end;
-          width 100%;
-        `}
+        display: ${showCustomHorizontal ? 'flex' : 'block'};
+        align-items: flex-end;
+        width 100%;
+      `}
     >
       <DropDown
         header="Token"
