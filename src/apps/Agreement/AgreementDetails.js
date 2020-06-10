@@ -16,7 +16,7 @@ function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
     <div
       css={`
         display: grid;
-        grid-gap: ${layoutName === 'small' ? GU * 3 : GU * 4}px;
+        grid-gap: ${layoutName === 'small' ? 3 * GU : 4 * GU}px;
         grid-template-columns: ${layoutName === 'small'
           ? 'minmax(0, 1fr)'
           : '1fr 1fr 1fr'};

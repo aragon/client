@@ -20,7 +20,7 @@ function countProgress(items) {
 
 const AnimatedDiv = animated.div
 
-function ConfigurationChecklist({ items, onCloseClick, onTestProgress }) {
+function ConfigurationChecklist({ items, onClose }) {
   const [progress, setProgress] = useState(countProgress(items))
   const theme = useTheme()
 
@@ -87,7 +87,7 @@ function ConfigurationChecklist({ items, onCloseClick, onTestProgress }) {
       <BoxInner>
         <div
           css={`
-            padding-bottom: ${GU}px;
+            padding-bottom: ${1 * GU}px;
           `}
         >
           <label
@@ -99,7 +99,7 @@ function ConfigurationChecklist({ items, onCloseClick, onTestProgress }) {
               color: ${theme.surfaceContentSecondary};
 
               line-height: 1.2;
-              margin-bottom: ${GU}px;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             <span>Progress</span>
@@ -108,20 +108,11 @@ function ConfigurationChecklist({ items, onCloseClick, onTestProgress }) {
             </span>
           </label>
           <ProgressBar value={barProgress} />
-          {checklistComplete ? (
+          {checklistComplete && (
             <Button
               label="Close"
               wide
-              onClick={onCloseClick}
-              css={`
-                margin-top: ${2 * GU}px;
-              `}
-            />
-          ) : (
-            <Button
-              label="Test progress"
-              wide
-              onClick={onTestProgress}
+              onClick={onClose}
               css={`
                 margin-top: ${2 * GU}px;
               `}
@@ -131,12 +122,6 @@ function ConfigurationChecklist({ items, onCloseClick, onTestProgress }) {
       </BoxInner>
     </Box>
   )
-}
-
-ConfigurationChecklist.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.array),
-  onCloseClick: PropTypes.func,
-  onTestProgress: PropTypes.func,
 }
 
 /* eslint-disable react/prop-types */
@@ -187,5 +172,10 @@ function BoxInner({ children, ...props }) {
   )
 }
 /* eslint-enable react/prop-types */
+
+ConfigurationChecklist.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.array),
+  onClose: PropTypes.func,
+}
 
 export default ConfigurationChecklist

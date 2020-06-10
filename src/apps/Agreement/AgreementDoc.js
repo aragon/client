@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Box, textStyle, GU } from '@aragon/ui'
 import Markdown from '../../components/Markdown/Markdown'
 
@@ -26,7 +27,7 @@ In case of any dispute between one or more ENT holders and one or more other ENT
 ### 2. Proposal guidelines
 These guidelines apply to all proposals put forth to the Ethical Network organization`
 
-function AgreementDoc() {
+function AgreementDoc({ title }) {
   return (
     <Box>
       <article>
@@ -38,7 +39,7 @@ function AgreementDoc() {
               margin-bottom: ${3 * GU}px;
             `}
           >
-            DAO Agreement
+            {title}
           </h1>
         </header>
 
@@ -48,6 +49,10 @@ function AgreementDoc() {
       </article>
     </Box>
   )
+}
+
+AgreementDoc.propTypes = {
+  title: PropTypes.string,
 }
 
 export default AgreementDoc

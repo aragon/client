@@ -11,11 +11,11 @@ import {
 } from '@aragon/ui'
 import { KnownAppBadge } from '../../../templates/kit'
 import InfoField from './../InfoField'
-import { ItemsType } from './../prop-types'
+import { AppItemsType } from './../prop-types'
 import SubtleLabel from './SubtleLabel'
 import TokenAmount from './TokenAmount'
 
-const EXPANDABLE_ROW_GAP = `${GU * 3}px`
+const EXPANDABLE_ROW_GAP = `${3 * GU}px`
 
 const DisputableApps = React.memo(({ items }) => {
   const { layoutName } = useLayout()
@@ -34,10 +34,6 @@ const DisputableApps = React.memo(({ items }) => {
     />
   )
 })
-
-DisputableApps.propTypes = {
-  items: ItemsType.isRequired,
-}
 
 function renderEntry({ allowedActions }, layoutName) {
   return [
@@ -103,15 +99,15 @@ function renderEntryExpansion(entry, layoutName) {
     <div
       css={`
         width: 100%;
-        padding-top: ${GU * 3}px;
-        padding-bottom: ${GU * 3}px;
+        padding-top: ${3 * GU}px;
+        padding-bottom: ${3 * GU}px;
       `}
     >
       <div
         css={`
           display: inline-grid;
           grid-template-columns: ${layoutName === 'small' ? '1fr' : '1fr 1fr'};
-          column-gap: ${GU * 8}px;
+          column-gap: ${8 * GU}px;
         `}
       >
         <div>
@@ -220,6 +216,10 @@ function renderEntryExpansion(entry, layoutName) {
       </InfoField>
     </div>
   )
+}
+
+DisputableApps.propTypes = {
+  items: AppItemsType.isRequired,
 }
 
 export default DisputableApps

@@ -18,22 +18,22 @@ function DisputableAppsEmpty() {
         <img
           src={noRegisteredApps}
           css={`
-            height: ${layoutName === 'small' ? '100px' : '130px'};
+            height: ${layoutName === 'small' ? 12 * GU : 16 * GU}px;
           `}
         />
 
         <div
           css={`
             text-align: center;
-            max-width: ${GU * 60}px;
+            max-width: ${60 * GU}px;
           `}
         >
           <h2
             css={`
               ${textStyle('body1')}
               color: ${theme.surfaceContent};
-              margin-top: ${GU * 3}px;
-              margin-bottom: ${GU * 1}px;
+              margin-top: ${3 * GU}px;
+              margin-bottom: ${1 * GU}px;
             `}
           >
             There’re no registered apps yet.

@@ -18,26 +18,41 @@ import VersionHistory from './VersionHistory'
 
 const Agreement = React.memo(function Agreement() {
   const { layoutName } = useLayout()
-  const [checklistItems, setChecklistItems] = useState([
-    ['Create Agreement', true],
-    ['Set permissions', true],
-    ['Set actions requirements', true],
-    ['Share with members', false],
-  ])
   const [checklistCompleted, setChecklistCompleted] = useState(false)
 
-  const handleUpdateApp = useCallback(() => {
-    console.log('Update app entry')
-  }, [])
-  const handleRemoveApp = useCallback(() => {
-    console.log('Remove app entry')
+  const handleChecklistClose = useCallback(() => {
+    setChecklistCompleted(true)
   }, [])
 
-  const disputableAppItem = useMemo(() => {
+  // TODO: Replace with real data
+  const mockChecklistItems = useMemo(
+    () => [
+      ['Create Agreement', true],
+      ['Set permissions', true],
+      ['Set actions requirements', true],
+      ['Share with members', false],
+    ],
+    []
+  )
+
+  // TODO: Replace with real data
+  const mockAppItem = useMemo(() => {
     return {
       entryActions: [
-        [handleUpdateApp, IconEdit, 'Update'],
-        [handleRemoveApp, IconTrash, 'Remove'],
+        [
+          () => {
+            console.log('Update disputable app')
+          },
+          IconEdit,
+          'Update',
+        ],
+        [
+          () => {
+            console.log('Remove disputable app')
+          },
+          IconTrash,
+          'Remove',
+        ],
       ],
       allowedActions: ['Action one', 'Action two', 'Action three'],
       actionCollateral: {
@@ -59,25 +74,11 @@ const Agreement = React.memo(function Agreement() {
       challengePeriod: 48,
       settlementPeriod: 24,
     }
-  }, [handleUpdateApp, handleRemoveApp])
-
-  const disputableApps = useMemo(
-    () => [disputableAppItem, disputableAppItem, disputableAppItem],
-    [disputableAppItem]
-  )
-
-  const handleProgressTest = useCallback(() => {
-    setChecklistItems([
-      ['Create Agreement', true],
-      ['Set permissions', true],
-      ['Set actions requirements', true],
-      ['Share with members', true],
-    ])
   }, [])
 
-  const handleChecklistClose = useCallback(() => {
-    setChecklistCompleted(true)
-  }, [])
+  const mockAppItems = useMemo(() => [mockAppItem, mockAppItem, mockAppItem], [
+    mockAppItem,
+  ])
 
   return (
     <React.Fragment>
@@ -97,7 +98,16 @@ const Agreement = React.memo(function Agreement() {
         primary={
           <React.Fragment>
             <Box>
-              <AgreementHeader />
+              <AgreementHeader
+                title="DAO Agreement"
+                status="pending"
+                onSign={() => {
+                  console.log('Signed')
+                }}
+                onShare={() => {
+                  console.log('Shared')
+                }}
+              />
               <AgreementDetails
                 IPFSLink="QmXpcBiGZ7Uep2tmhxLhfA8ak1aYDUyevFSnpUa4Gc9kRn"
                 AuthorHash="0xc41e4c10b37d3397a99d4a90e7d85508a69a5c4c"
@@ -105,21 +115,20 @@ const Agreement = React.memo(function Agreement() {
                 ContractHash="0x281c36aee917b24d8e5f59481f6639d81e4cf7125b09fb93a2b43c31ef3fc115"
               />
             </Box>
-            {disputableApps && disputableApps.length > 0 ? (
-              <DisputableApps items={disputableApps} />
+            {mockAppItems.length > 0 ? (
+              <DisputableApps items={mockAppItems} />
             ) : (
               <DisputableAppsEmpty />
             )}
-            <AgreementDoc />
+            <AgreementDoc title="DAO Agreement" />
           </React.Fragment>
         }
         secondary={
           <React.Fragment>
             {!checklistCompleted && (
               <ConfigurationChecklist
-                items={checklistItems}
-                onTestProgress={handleProgressTest}
-                onCloseClick={handleChecklistClose}
+                items={mockChecklistItems}
+                onClose={handleChecklistClose}
               />
             )}
 

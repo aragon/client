@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-const ItemType = PropTypes.shape({
+const AppItemType = PropTypes.shape({
   entryActions: PropTypes.arrayOf(PropTypes.array),
   allowedActions: PropTypes.arrayOf(PropTypes.string).isRequired,
   actionCollateral: PropTypes.shape({
@@ -23,4 +23,4 @@ const ItemType = PropTypes.shape({
   settlementPeriod: PropTypes.number.isRequired,
 })
 
-export const ItemsType = PropTypes.arrayOf(ItemType)
+export const AppItemsType = PropTypes.arrayOf(AppItemType)
