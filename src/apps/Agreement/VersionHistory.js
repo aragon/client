@@ -1,8 +1,5 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
-  Box,
-  Timer,
-  Link,
   GU,
   useTheme,
   ContextMenu,
@@ -10,53 +7,32 @@ import {
   IconView,
   useLayout,
 } from '@aragon/ui'
+import PropTypes from 'prop-types'
 
-function VersionHistory() {
+function VersionHistory({ items }) {
+  const itemsToRender = useMemo(
+    () =>
+      items.map((item, i) => {
+        return {
+          title:
+            i === items.length - 1 ? 'Created Agreement' : 'Updated Agreement',
+          date: item,
+        }
+      }),
+    [items]
+  )
+
   return (
-    <Box padding={0} heading="Version history">
-      <CreationPending />
-      <HistoryEntry />
-      <HistoryEntry />
-    </Box>
+    <React.Fragment>
+      {itemsToRender.map(({ title, date }, i) => (
+        <HistoryEntry title={title} date={date} key={i} />
+      ))}
+    </React.Fragment>
   )
 }
 
-function CreationPending() {
-  const { layoutName } = useLayout()
-
-  const NOW = Date.now()
-  const DAY = 1000 * 60 * 60 * 24
-
-  const endDate = new Date(NOW + 5 * DAY)
-
-  return (
-    <div
-      css={`
-        padding: ${layoutName === 'small' ? GU * 2 : GU * 3}px;
-      `}
-    >
-      <h2
-        css={`
-          line-height: 1.2;
-        `}
-      >
-        Agreement creation pending
-      </h2>
-      <Link
-        href=""
-        css={`
-          line-height: 1;
-          margin-bottom: ${GU * 2}px;
-        `}
-      >
-        <span>View vote</span>
-      </Link>
-      <Timer end={endDate} />
-    </div>
-  )
-}
-
-function HistoryEntry() {
+/* eslint-disable react/prop-types */
+function HistoryEntry({ title, date }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
 
@@ -65,7 +41,7 @@ function HistoryEntry() {
       css={`
         display: flex;
         justify-content: space-between;
-        padding: ${layoutName === 'small' ? GU * 2 : GU * 3}px;
+        padding: ${layoutName === 'small' ? 2 * GU : 3 * GU}px;
         & + & {
           border-top: 1px solid ${theme.border};
         }
@@ -74,18 +50,19 @@ function HistoryEntry() {
       <div>
         <h2
           css={`
-            line-height: 1.2;
-            margin-bottom: ${GU}px;
+            line-height: 1.1;
+            margin-bottom: ${1 * GU}px;
           `}
         >
-          Updated Agreement
+          {title}
         </h2>
         <p
           css={`
+            line-height: 1.1;
             color: ${theme.surfaceContentSecondary};
           `}
         >
-          2020/05/20
+          {date}
         </p>
       </div>
       <div>
@@ -114,6 +91,11 @@ function HistoryEntry() {
       </div>
     </div>
   )
+}
+/* eslint-disable react/prop-types */
+
+VersionHistory.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.string),
 }
 
 export default VersionHistory

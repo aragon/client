@@ -15,13 +15,24 @@ import AgreementDoc from './AgreementDoc'
 import AgreementHeader from './AgreementHeader'
 import ConfigurationChecklist from './ConfigurationChecklist'
 import VersionHistory from './VersionHistory'
+import VotePending from './VotePending'
+import { STATUS_PENDING, STATUS_ACTIVE } from './agreement-statuses'
 
 const Agreement = React.memo(function Agreement() {
   const { layoutName } = useLayout()
   const [checklistCompleted, setChecklistCompleted] = useState(false)
+  const [agreementStatus, setAgreementStatus] = useState(STATUS_PENDING)
 
   const handleChecklistClose = useCallback(() => {
     setChecklistCompleted(true)
+  }, [])
+
+  // TODO: Replace with real data
+  const mockEndDate = useMemo(() => {
+    const NOW = Date.now()
+    const DAY = 1000 * 60 * 60 * 24
+
+    return new Date(NOW + 5 * DAY)
   }, [])
 
   // TODO: Replace with real data
@@ -32,6 +43,12 @@ const Agreement = React.memo(function Agreement() {
       ['Set actions requirements', true],
       ['Share with members', false],
     ],
+    []
+  )
+
+  // TODO: Replace with real data
+  const mockHistoryItems = useMemo(
+    () => ['2020/05/22', '2020/05/21', '2020/05/20'],
     []
   )
 
@@ -88,6 +105,14 @@ const Agreement = React.memo(function Agreement() {
           <Button
             mode="strong"
             label="Update Agreement"
+            onClick={() => {
+              // TODO: This is just for testing the status change effect on UI state
+              setAgreementStatus(
+                agreementStatus === STATUS_ACTIVE
+                  ? STATUS_PENDING
+                  : STATUS_ACTIVE
+              )
+            }}
             icon={<IconEdit />}
             display={layoutName === 'small' ? 'icon' : 'label'}
           />
@@ -100,7 +125,7 @@ const Agreement = React.memo(function Agreement() {
             <Box>
               <AgreementHeader
                 title="DAO Agreement"
-                status="pending"
+                status={agreementStatus}
                 onSign={() => {
                   console.log('Signed')
                 }}
@@ -132,7 +157,14 @@ const Agreement = React.memo(function Agreement() {
               />
             )}
 
-            <VersionHistory />
+            <Box heading="Version history" padding={0}>
+              {agreementStatus === STATUS_PENDING && (
+                <VotePending endDate={mockEndDate} />
+              )}
+              {agreementStatus === STATUS_ACTIVE && (
+                <VersionHistory items={mockHistoryItems} />
+              )}
+            </Box>
           </React.Fragment>
         }
       />

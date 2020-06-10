@@ -12,10 +12,8 @@ import {
   IconShare,
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
+import { STATUS_PENDING, STATUS_ACTIVE } from './agreement-statuses'
 import icon from './assets/icon.svg'
-
-const STATUS_PENDING = 'pending'
-const STATUS_ACTIVE = 'active'
 
 function AgreementHeader({ title, status, onSign, onShare }) {
   const theme = useTheme()
