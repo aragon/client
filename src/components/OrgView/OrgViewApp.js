@@ -152,7 +152,7 @@ function App({
       }
     })
 
-    if (wrapper) {
+    if (wrapper && instanceId && instancePath) {
       wrapper.setAppPath(instanceId, instancePath)
     }
 
