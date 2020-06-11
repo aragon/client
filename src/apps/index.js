@@ -1,3 +1,4 @@
+export { default as Agreement } from './Agreement/Agreement'
 export { default as AppCenter } from './AppCenter/AppCenter'
 export { default as Console } from './Console/Console'
 export { default as Home } from './Home/Home'

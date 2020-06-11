@@ -15,6 +15,7 @@ function staticApp(id, name, route = `/${id}`) {
 
 export const staticApps = new Map(
   Object.entries({
+    agreement: staticApp('agreement', 'Agreement'),
     apps: staticApp('apps', 'App Center'),
     console: staticApp('console', 'Console'),
     home: staticApp('home', 'Home', ''),
