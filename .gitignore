@@ -23,6 +23,3 @@ yarn-error.log*
 
 public/apps/
 public/aragon-ui/
-
-# ignore package-lock files (only use yarn.lock)
-package-lock.json
