@@ -54,16 +54,16 @@ function OrgViewApp({ apps, appsStatus, daoStatus, wrapper, ...props }) {
 }
 
 function App({
-  apps,
   appInstanceGroups,
+  apps,
   appsStatus,
   canUpgradeOrg,
   daoAddress,
   historyBack,
-  permissionsLoading,
   onOpenApp,
   onShowOrgUpgradePanel,
   onUpgradeModalOpen,
+  permissionsLoading,
   repos,
   setAppLoading,
   wrapper,
@@ -82,24 +82,9 @@ function App({
     appIFrameRef.current = appIFrame
   }, [])
 
-  const handleAppIFrameLoadingStart = useCallback(
-    event => {
-      setAppLoading(true)
-    },
-    [setAppLoading]
-  )
-  const handleAppIFrameLoadingCancel = useCallback(
-    event => {
-      setAppLoading(false)
-    },
-    [setAppLoading]
-  )
-  const handleAppIFrameLoadingError = useCallback(
-    event => {
-      setAppLoading(false)
-    },
-    [setAppLoading]
-  )
+  const handleAppIFrameLoadingStart = () => setAppLoading(true)
+  const handleAppIFrameLoadingCancel = () => setAppLoading(false)
+  const handleAppIFrameLoadingError = () => setAppLoading(false)
 
   const handleAppIFrameLoadingSuccess = useCallback(
     async ({ iframeElement }) => {
