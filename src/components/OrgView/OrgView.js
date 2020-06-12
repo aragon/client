@@ -21,6 +21,7 @@ import {
 import { DAO_STATUS_LOADING } from '../../symbols'
 import { iOS, isSafari } from '../../utils'
 import { useClientTheme } from '../../client-theme'
+import { useRouting } from '../../routing'
 import ActivityButton from './ActivityButton/ActivityButton'
 import AccountModule from '../AccountModule/AccountModule'
 import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
@@ -32,26 +33,20 @@ import UpgradeBanner from '../Upgrade/UpgradeBanner'
 import UpgradeModal from '../Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from '../Upgrade/UpgradeOrganizationPanel'
 
-import { getAppPath } from '../../routing'
-
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
 
 const AnimatedDiv = animated.div
 
 function OrgView({
-  activeInstanceId,
   apps,
   appsStatus,
   canUpgradeOrg,
   daoAddress,
   daoStatus,
   historyBack,
-  historyPush,
-  locator,
-  onOpenPreferences,
-  permissionsLoading,
   repos,
+  permissionsLoading,
   signatureBag,
   transactionBag,
   visible,
@@ -59,6 +54,7 @@ function OrgView({
   wrapper,
 }) {
   const theme = useTheme()
+  const routing = useRouting()
   const { appearance } = useClientTheme()
   const { width, below } = useViewport()
   const autoClosingPanel = below('medium')
@@ -110,9 +106,11 @@ function OrgView({
 
   const openApp = useCallback(
     (instanceId, { instancePath } = {}) => {
-      historyPush(getAppPath({ dao: locator.dao, instanceId, instancePath }))
+      routing.update(({ mode }) => ({
+        mode: { ...mode, instanceId, instancePath },
+      }))
     },
-    [historyPush, locator.dao]
+    [routing]
   )
 
   const handleCloseMenuPanel = useCallback(() => setMenuPanelOpen(false), [])
@@ -261,8 +259,8 @@ function OrgView({
               />
             )}
             <div css="display: flex">
-              <AccountModule locator={locator} />
-              <GlobalPreferencesButton onOpen={onOpenPreferences} />
+              <AccountModule />
+              <GlobalPreferencesButton />
               <ActivityButton apps={apps} />
             </div>
           </div>
@@ -290,7 +288,6 @@ function OrgView({
               `}
             >
               <MenuPanel
-                activeInstanceId={activeInstanceId}
                 appInstanceGroups={appInstanceGroups}
                 appsStatus={appsStatus}
                 autoClosing={autoClosingPanel}
@@ -350,7 +347,6 @@ function OrgView({
                     daoAddress={daoAddress}
                     daoStatus={daoStatus}
                     historyBack={historyBack}
-                    locator={locator}
                     onOpenApp={handleOpenApp}
                     onShowOrgUpgradePanel={showOrgUpgradePanel}
                     onUpgradeModalOpen={handleUpgradeModalOpen}
@@ -361,7 +357,6 @@ function OrgView({
 
                   <SignerPanel
                     apps={apps}
-                    dao={locator.dao}
                     transactionBag={transactionBag}
                     signatureBag={signatureBag}
                     web3={web3}
@@ -394,16 +389,12 @@ function OrgView({
 }
 
 OrgView.propTypes = {
-  activeInstanceId: PropTypes.string,
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsStatus: AppsStatusType.isRequired,
   canUpgradeOrg: PropTypes.bool,
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,
   historyBack: PropTypes.func.isRequired,
-  historyPush: PropTypes.func.isRequired,
-  locator: PropTypes.object,
-  onOpenPreferences: PropTypes.func.isRequired,
   permissionsLoading: PropTypes.bool.isRequired,
   repos: PropTypes.arrayOf(RepoType).isRequired,
   signatureBag: PropTypes.object,

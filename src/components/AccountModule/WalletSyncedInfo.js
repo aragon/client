@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { GU, Link } from '@aragon/ui'
 import { network } from '../../environment'
-import { getAppPath, getPreferencesSearch } from '../../routing'
+import { useRouting } from '../../routing'
 import {
   STATUS_CLIENT_CONNECTION_DROPPED,
   STATUS_CONNECTION_OK,
@@ -12,7 +12,7 @@ import {
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
 
-function WalletSyncedInfo({ header, info, locator, status }) {
+function WalletSyncedInfo({ header, info, status }) {
   return (
     <React.Fragment>
       {header && (
@@ -38,7 +38,7 @@ function WalletSyncedInfo({ header, info, locator, status }) {
             margin: ${1 * GU}px 0;
           `}
         >
-          <ConnectionInfoMessage connectionStatus={status} locator={locator} />
+          <ConnectionInfoMessage connectionStatus={status} />
         </div>
       )}
     </React.Fragment>
@@ -48,7 +48,6 @@ function WalletSyncedInfo({ header, info, locator, status }) {
 WalletSyncedInfo.propTypes = {
   header: PropTypes.string,
   info: PropTypes.string,
-  locator: PropTypes.object,
   status: PropTypes.oneOf([
     STATUS_CLIENT_CONNECTION_DROPPED,
     STATUS_CONNECTION_OK,
@@ -59,13 +58,15 @@ WalletSyncedInfo.propTypes = {
   ]),
 }
 
-function ConnectionInfoMessage({ connectionStatus, locator }) {
+function ConnectionInfoMessage({ connectionStatus }) {
+  const routing = useRouting()
+
   const handleNetworkSettingsClick = useCallback(() => {
-    window.location.hash = getAppPath({
-      dao: locator.dao || '',
-      search: getPreferencesSearch('network'),
-    })
-  }, [locator])
+    routing.update(locator => ({
+      ...locator,
+      preferences: { section: 'network' },
+    }))
+  }, [routing])
 
   if (connectionStatus === STATUS_WALLET_CONNECTION_DROPPED) {
     return (
@@ -127,7 +128,6 @@ ConnectionInfoMessage.propTypes = {
     STATUS_TOO_LITTLE_ETH,
     STATUS_WALLET_CONNECTION_DROPPED,
   ]),
-  locator: PropTypes.object,
 }
 
 export default WalletSyncedInfo

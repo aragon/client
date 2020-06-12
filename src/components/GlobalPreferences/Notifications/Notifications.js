@@ -120,7 +120,6 @@ function useAuthState() {
 export default function Notifications({
   apps,
   subsection,
-  dao,
   handleNavigation,
   navigationIndex,
 }) {
@@ -164,7 +163,6 @@ export default function Notifications({
       return (
         <ManageNotifications
           onServiceUnavailable={setServiceUnavailable}
-          dao={dao}
           onLogout={handleLogout}
           apps={apps}
           email={email}
@@ -250,7 +248,6 @@ export default function Notifications({
     default:
       return (
         <NotificationsLogin
-          dao={dao}
           hasLoggedOut={hasLoggedOut}
           onEmailChange={handleEmailChange}
         />
@@ -261,7 +258,6 @@ export default function Notifications({
 Notifications.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   subsection: PropTypes.string,
-  dao: PropTypes.string,
   handleNavigation: PropTypes.func,
   navigationIndex: PropTypes.number,
 }

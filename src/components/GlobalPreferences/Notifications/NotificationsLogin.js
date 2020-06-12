@@ -14,16 +14,15 @@ import {
 } from '@aragon/ui'
 import { login } from './notification-service-api'
 import { validateEmail } from '../../../utils'
+import { useRouting } from '../../../routing'
 import notificationPng from './notifications.png'
 
-export default function NotificationsLogin({
-  dao,
-  onEmailChange,
-  hasLoggedOut,
-}) {
+export default function NotificationsLogin({ onEmailChange, hasLoggedOut }) {
   const [inputEmail, setInputEmail] = useState('')
   const [emailInvalid, setEmailInvalid] = useState(null)
   const [apiError, setApiError] = useState(null)
+
+  const { mode } = useRouting()
 
   const handleEmailBlur = useCallback(e => {
     const email = e.target.value
@@ -49,14 +48,14 @@ export default function NotificationsLogin({
       }
 
       try {
-        await login({ email: inputEmail, dao })
+        await login({ email: inputEmail, dao: mode.orgAddress })
         onEmailChange(inputEmail)
       } catch (e) {
         setApiError(e.message)
         console.error('Failed to login', e)
       }
     },
-    [dao, inputEmail, onEmailChange]
+    [mode, inputEmail, onEmailChange]
   )
 
   const theme = useTheme()
@@ -178,7 +177,6 @@ const NotificationImage = () => (
 )
 
 NotificationsLogin.propTypes = {
-  dao: PropTypes.string,
   onEmailChange: PropTypes.func,
   hasLoggedOut: PropTypes.bool,
 }

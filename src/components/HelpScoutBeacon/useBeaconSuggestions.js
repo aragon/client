@@ -1,30 +1,30 @@
 import { useEffect, useCallback, useState } from 'react'
 import suggestions from './suggestions'
 import { staticApps } from '../../static-apps'
+import { useRouting } from '../../routing'
 
 const sectionToSuggestions = new Map(suggestions)
 
-function useBeaconSuggestions({
-  apps,
-  beaconReady,
-  locator: { instanceId, path },
-  optedIn,
-}) {
+function useBeaconSuggestions({ apps, beaconReady, optedIn }) {
+  const { mode } = useRouting()
   const [originalOptedIn] = useState(optedIn)
   const [shouldSuggest, setShouldSuggest] = useState(false)
+
   const getSection = useCallback(() => {
-    if (path === '/') {
+    if (mode.name === 'onboarding') {
       return 'onboarding'
     }
-    if (staticApps.has(instanceId)) {
-      return instanceId
+    if (staticApps.has(mode.instanceId)) {
+      return mode.instanceId
     }
-    const app = apps.find(({ proxyAddress }) => proxyAddress === instanceId)
+    const app = apps.find(
+      ({ proxyAddress }) => proxyAddress === mode.instanceId
+    )
     if (app) {
       return app.appId
     }
     return null
-  }, [path, instanceId, apps])
+  }, [mode, apps])
 
   useEffect(() => {
     if (!shouldSuggest) {

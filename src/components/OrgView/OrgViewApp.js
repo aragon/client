@@ -7,6 +7,7 @@ import AppIFrame from '../App/AppIFrame'
 import AppInternal from '../App/AppInternal'
 import AppLoader from '../App/AppLoader'
 import { useIdentity } from '../IdentityManager/IdentityManager'
+import { useRouting } from '../../routing'
 
 import { addressesEqual } from '../../web3-utils'
 
@@ -21,20 +22,15 @@ import {
 } from '../../prop-types'
 import { DAO_STATUS_LOADING, APPS_STATUS_LOADING } from '../../symbols'
 
-function OrgViewApp({
-  apps,
-  appsStatus,
-  daoStatus,
-  locator,
-  wrapper,
-  ...props
-}) {
+function OrgViewApp({ apps, appsStatus, daoStatus, wrapper, ...props }) {
+  const routing = useRouting()
   const [appLoading, setAppLoading] = useState(false)
 
+  const { instanceId } = routing.mode
+
   const currentApp = useMemo(
-    () =>
-      apps.find(app => addressesEqual(app.proxyAddress, locator.instanceId)),
-    [apps, locator.instanceId]
+    () => apps.find(app => addressesEqual(app.proxyAddress, instanceId)),
+    [apps, instanceId]
   )
 
   return (
@@ -43,13 +39,12 @@ function OrgViewApp({
       appsLoading={!wrapper || appsStatus === APPS_STATUS_LOADING}
       currentAppName={currentApp ? currentApp.name : ''}
       daoLoading={daoStatus === DAO_STATUS_LOADING}
-      instanceId={locator.instanceId}
+      instanceId={instanceId}
     >
       <App
         apps={apps}
         appsStatus={appsStatus}
         daoStatus={daoStatus}
-        locator={locator}
         setAppLoading={setAppLoading}
         wrapper={wrapper}
         {...props}
@@ -59,26 +54,27 @@ function OrgViewApp({
 }
 
 function App({
-  apps,
   appInstanceGroups,
+  apps,
   appsStatus,
   canUpgradeOrg,
   daoAddress,
   historyBack,
-  locator,
-  permissionsLoading,
   onOpenApp,
   onShowOrgUpgradePanel,
   onUpgradeModalOpen,
+  permissionsLoading,
   repos,
   setAppLoading,
   wrapper,
 }) {
   const { identityEvents$ } = useIdentity()
+  const routing = useRouting()
   const appIFrameRef = useRef(null)
   const identitySubscription = useRef(null)
 
-  const { instanceId, instancePath } = locator
+  const { instanceId, instancePath } = routing.mode
+
   const appsLoading = appsStatus === APPS_STATUS_LOADING
   const reposLoading = appsLoading || Boolean(apps.length && !repos.length)
 
@@ -86,24 +82,9 @@ function App({
     appIFrameRef.current = appIFrame
   }, [])
 
-  const handleAppIFrameLoadingStart = useCallback(
-    event => {
-      setAppLoading(true)
-    },
-    [setAppLoading]
-  )
-  const handleAppIFrameLoadingCancel = useCallback(
-    event => {
-      setAppLoading(false)
-    },
-    [setAppLoading]
-  )
-  const handleAppIFrameLoadingError = useCallback(
-    event => {
-      setAppLoading(false)
-    },
-    [setAppLoading]
-  )
+  const handleAppIFrameLoadingStart = () => setAppLoading(true)
+  const handleAppIFrameLoadingCancel = () => setAppLoading(false)
+  const handleAppIFrameLoadingError = () => setAppLoading(false)
 
   const handleAppIFrameLoadingSuccess = useCallback(
     async ({ iframeElement }) => {
@@ -156,14 +137,14 @@ function App({
       }
     })
 
-    if (wrapper) {
-      wrapper.setAppPath(locator.instanceId, locator.instancePath)
+    if (wrapper && instanceId && instancePath) {
+      wrapper.setAppPath(instanceId, instancePath)
     }
 
     return () => {
       identitySubscription.current.unsubscribe()
     }
-  }, [identityEvents$, locator.instanceId, locator.instancePath, wrapper])
+  }, [identityEvents$, instanceId, instancePath, wrapper])
 
   if (instanceId === 'home') {
     return (
@@ -215,7 +196,6 @@ function App({
           apps={apps}
           appsLoading={appsLoading}
           canUpgradeOrg={canUpgradeOrg}
-          dao={locator.dao}
           daoAddress={daoAddress}
           onMessage={handleAppMessage}
           onOpenApp={onOpenApp}
@@ -263,7 +243,6 @@ OrgViewApp.propTypes = {
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,
   historyBack: PropTypes.func.isRequired,
-  locator: PropTypes.object,
   permissionsLoading: PropTypes.bool,
   repos: PropTypes.arrayOf(RepoType).isRequired,
   wrapper: AragonType,
@@ -276,7 +255,6 @@ App.propTypes = {
   canUpgradeOrg: PropTypes.bool,
   daoAddress: DaoAddressType.isRequired,
   historyBack: PropTypes.func.isRequired,
-  locator: PropTypes.object,
   onOpenApp: PropTypes.func.isRequired,
   onShowOrgUpgradePanel: PropTypes.func.isRequired,
   onUpgradeModalOpen: PropTypes.func.isRequired,

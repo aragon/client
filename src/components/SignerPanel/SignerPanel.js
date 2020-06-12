@@ -67,7 +67,6 @@ class SignerPanel extends React.PureComponent {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
-    dao: PropTypes.string,
     addTransactionActivity: PropTypes.func.isRequired,
     setActivityConfirmed: PropTypes.func.isRequired,
     setActivityFailed: PropTypes.func.isRequired,
@@ -315,7 +314,6 @@ class SignerPanel extends React.PureComponent {
     const {
       account,
       apps,
-      dao,
       walletNetwork,
       walletProviderId,
       walletWeb3,
@@ -372,7 +370,6 @@ class SignerPanel extends React.PureComponent {
                         >
                           {isTransaction ? (
                             <ConfirmTransaction
-                              dao={dao}
                               direct={directPath}
                               intent={intent}
                               onClose={this.handleSignerClose}

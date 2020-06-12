@@ -61,51 +61,54 @@ const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
       </div>
     )
   }
-  if (currentDao.address) {
-    return (
-      <div
+
+  if (!currentDao.address) {
+    return null
+  }
+
+  return (
+    <div
+      css={`
+        display: flex;
+        align-items: center;
+        position: relative;
+      `}
+    >
+      <ButtonBase
+        ref={buttonRef}
+        onClick={handleToggleMenu}
         css={`
-          display: flex;
-          align-items: center;
-          position: relative;
+          flex-grow: 1;
+          padding: ${2 * GU}px ${2 * GU}px ${2 * GU}px ${3 * GU}px;
+          width: 100%;
+          height: 100%;
+          min-width: ${28 * GU}px;
+          border-radius: 0;
+          &:active {
+            background: ${theme.surfacePressed};
+          }
         `}
       >
-        <ButtonBase
-          ref={buttonRef}
-          onClick={handleToggleMenu}
+        <OrganizationItem
+          dao={currentDao}
           css={`
-            flex-grow: 1;
-            padding: ${2 * GU}px ${2 * GU}px ${2 * GU}px ${3 * GU}px;
-            width: 100%;
-            height: 100%;
-            min-width: ${28 * GU}px;
-            border-radius: 0;
-            &:active {
-              background: ${theme.surfacePressed};
-            }
+            ${textStyle('body1')}
           `}
-        >
-          <OrganizationItem
-            dao={currentDao}
-            css={`
-              ${textStyle('body1')}
-            `}
-          />
-        </ButtonBase>
-        <Popover
-          onClose={closeMenu}
-          visible={menuOpened}
-          opener={buttonRef.current}
-        >
-          <Favorites
-            favoriteDaos={favoriteDaos}
-            currentDao={currentDao}
-            onUpdate={handleFavoritesUpdate}
-          />
-        </Popover>
-      </div>
-    )
-  }
+        />
+      </ButtonBase>
+      <Popover
+        onClose={closeMenu}
+        visible={menuOpened}
+        opener={buttonRef.current}
+      >
+        <Favorites
+          favoriteDaos={favoriteDaos}
+          currentDao={currentDao}
+          onUpdate={handleFavoritesUpdate}
+        />
+      </Popover>
+    </div>
+  )
 })
 
 OrganizationSwitcher.propTypes = {

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import PropTypes from 'prop-types'
 import { useWallet } from '../../wallet'
 import { useLocalIdentity } from '../../hooks'
 import {
@@ -23,7 +22,7 @@ const SCREENS = [
   { id: 'error', title: 'Connection error' },
 ]
 
-function AccountModule({ locator }) {
+function AccountModule() {
   const [opened, setOpened] = useState(false)
   const [activatingDelayed, setActivatingDelayed] = useState(false)
   const [activationError, setActivationError] = useState(null)
@@ -187,7 +186,6 @@ function AccountModule({ locator }) {
                 clientListening={clientListening}
                 clientOnline={clientOnline}
                 clientSyncDelay={clientSyncDelay}
-                locator={locator}
                 providerInfo={providerInfo}
                 walletConnectionStatus={walletConnectionStatus}
                 walletListening={walletListening}
@@ -204,10 +202,6 @@ function AccountModule({ locator }) {
       </AccountModulePopover>
     </div>
   )
-}
-
-AccountModule.propTypes = {
-  locator: PropTypes.object,
 }
 
 function useConnectionInfo() {
