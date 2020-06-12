@@ -34,7 +34,10 @@ function GlobalPreferencesButton() {
   const handleItemClick = useCallback(
     path => {
       setOpened(false)
-      routing.update({ preferences: { section: path } })
+      routing.update(locator => ({
+        ...locator,
+        preferences: { section: path },
+      }))
     },
     [routing]
   )

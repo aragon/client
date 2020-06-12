@@ -54,20 +54,32 @@ function Onboarding({ selectorNetworks, web3 }) {
     (routing.mode.name === 'onboarding' && routing.mode.status) || 'none'
 
   const goToHome = useCallback(() => {
-    routing.update({ mode: { name: 'onboarding', status: null } })
+    routing.update(locator => ({
+      ...locator,
+      mode: { name: 'onboarding', status: null },
+    }))
   }, [routing])
 
   const goToOpen = useCallback(() => {
-    routing.update({ mode: { name: 'onboarding', status: 'open' } })
+    routing.update(locator => ({
+      ...locator,
+      mode: { name: 'onboarding', status: 'open' },
+    }))
   }, [routing])
 
   const goToCreate = useCallback(() => {
-    routing.update({ mode: { name: 'onboarding', status: 'create' } })
+    routing.update(locator => ({
+      ...locator,
+      mode: { name: 'onboarding', status: 'create' },
+    }))
   }, [routing])
 
   const goToOrg = useCallback(
     orgAddress => {
-      routing.update({ mode: { name: 'org', orgAddress } })
+      routing.update(locator => ({
+        ...locator,
+        mode: { name: 'org', orgAddress },
+      }))
     },
     [routing]
   )

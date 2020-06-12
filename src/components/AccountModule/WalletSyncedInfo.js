@@ -62,9 +62,10 @@ function ConnectionInfoMessage({ connectionStatus }) {
   const routing = useRouting()
 
   const handleNetworkSettingsClick = useCallback(() => {
-    routing.update({
+    routing.update(locator => ({
+      ...locator,
       preferences: { section: 'network' },
-    })
+    }))
   }, [routing])
 
   if (connectionStatus === STATUS_WALLET_CONNECTION_DROPPED) {

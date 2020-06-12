@@ -7,24 +7,21 @@ import { useConsole } from '../../../apps/Console/useConsole'
 
 function HelpAndFeedback() {
   const theme = useTheme()
+  const routing = useRouting()
   const { optedOut, setOptedOut } = useHelpScout()
   const { consoleVisible, setConsoleVisible } = useConsole()
-  const routing = useRouting()
 
-  const handleOptOutChange = useCallback(
-    () => setOptedOut(optedOut => !optedOut),
-    [setOptedOut]
-  )
+  const toggleOptedOut = useCallback(() => {
+    setOptedOut(optedOut => !optedOut)
+  }, [setOptedOut])
 
-  const handleOptOutConsoleChange = useCallback(
-    () => setConsoleVisible(consoleVisible => !consoleVisible),
-    [setConsoleVisible]
-  )
+  const toggleConsole = useCallback(() => {
+    setConsoleVisible(visible => !visible)
+  }, [setConsoleVisible])
 
   const handleConsoleLinkClick = useCallback(() => {
     routing.update({
       mode: {
-        mode: 'org',
         orgAddress: routing.mode.orgAddress,
         instanceId: 'console',
       },
@@ -55,12 +52,11 @@ function HelpAndFeedback() {
         >
           <label
             css={`
-              cursor: pointer;
               display: flex;
               align-items: center;
             `}
           >
-            <Switch onChange={handleOptOutChange} checked={!optedOut} />
+            <Switch onChange={toggleOptedOut} checked={!optedOut} />
             <span
               css={`
                 color: ${theme.surfaceContent};
@@ -88,16 +84,12 @@ function HelpAndFeedback() {
         >
           <label
             css={`
-              cursor: pointer;
               display: flex;
               align-items: center;
               margin-bottom: ${2 * GU}px;
             `}
           >
-            <Switch
-              onChange={handleOptOutConsoleChange}
-              checked={consoleVisible}
-            />
+            <Switch onChange={toggleConsole} checked={consoleVisible} />
             <span
               css={`
                 color: ${theme.surfaceContent};
@@ -106,7 +98,12 @@ function HelpAndFeedback() {
                 ${textStyle('body2')}
               `}
             >
-              Display the <Link onClick={handleConsoleLinkClick}>console</Link>{' '}
+              Display the{' '}
+              {routing.locator.mode.name === 'org' ? (
+                <Link onClick={handleConsoleLinkClick}>console</Link>
+              ) : (
+                <>console</>
+              )}{' '}
               in the System apps menu
             </span>
           </label>

@@ -201,32 +201,29 @@ export function RoutingProvider({ children }) {
   }, [])
 
   const getPathFromLocator = useCallback(
-    (locatorUpdate, extend = true) => {
+    locatorUpdate => {
       if (typeof locatorUpdate === 'function') {
         locatorUpdate = locatorUpdate(locator)
       }
 
-      const baseLocator = extend
-        ? { ...locator, ...locatorUpdate }
-        : locatorUpdate
+      return getPath({
+        ...locatorUpdate,
+        mode: locatorUpdate.mode
+          ? {
+              ...locatorUpdate.mode,
 
-      const mode = locatorUpdate.mode
-        ? {
-            ...locatorUpdate.mode,
-
-            // If no mode name is set, use the current
-            name: locatorUpdate.mode.name || locator.mode.name,
-          }
-        : locator.mode
-
-      return getPath({ ...baseLocator, mode })
+              // If no mode name is set, use the current
+              name: locatorUpdate.mode.name || locator.mode.name,
+            }
+          : locator.mode,
+      })
     },
     [locator]
   )
 
   const updatePathFromLocator = useCallback(
-    (locatorUpdate, extend = true) => {
-      updatePath(getPathFromLocator(locatorUpdate, extend))
+    locatorUpdate => {
+      updatePath(getPathFromLocator(locatorUpdate))
     },
     [getPathFromLocator, updatePath]
   )

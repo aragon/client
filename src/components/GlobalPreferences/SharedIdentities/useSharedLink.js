@@ -22,7 +22,10 @@ function useSharedLink({ wrapper, toast }) {
   const routing = useRouting()
 
   const openScreenHome = useCallback(() => {
-    routing.update({ preferences: { section: 'custom-labels' } })
+    routing.update(locator => ({
+      ...locator,
+      preferences: { section: 'custom-labels' },
+    }))
   }, [routing])
 
   const handleSharedIdentitiesSave = useCallback(async () => {

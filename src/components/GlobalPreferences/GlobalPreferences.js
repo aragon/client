@@ -65,7 +65,7 @@ function GlobalPreferencesContent({
   } = useSharedLink({ wrapper, toast })
 
   const closePreferences = useCallback(() => {
-    routing.update({ preferences: {} })
+    routing.update(locator => ({ ...locator, preferences: {} }))
   }, [routing])
 
   const handleSharedIdentitiesClose = () => {
@@ -160,7 +160,10 @@ function useGlobalPreferences() {
 
   const handleNavigation = useCallback(
     index => {
-      routing.update({ preferences: { section: SECTION_PATHS[index] } })
+      routing.update(locator => ({
+        ...locator,
+        preferences: { section: SECTION_PATHS[index] },
+      }))
     },
     [routing]
   )

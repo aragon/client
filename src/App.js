@@ -215,17 +215,14 @@ class App extends React.Component {
 
         resolve()
 
-        routing.update(
-          ({ mode }) => ({
-            mode: {
-              name: 'org',
-              orgAddress: mode.orgAddress,
-              instanceId: mode.instanceId,
-              instancePath: path,
-            },
-          }),
-          false
-        )
+        routing.update(({ mode }) => ({
+          mode: {
+            name: 'org',
+            orgAddress: mode.orgAddress,
+            instanceId: mode.instanceId,
+            instancePath: path,
+          },
+        }))
       },
     })
       .then(wrapper => {
