@@ -19,6 +19,8 @@ function AgreementHeader({ title, status, onSign, onShare }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
 
+  const compactMode = layoutName === 'small'
+
   const handleDropdownChange = useCallback(
     index => {
       if (index === 0) {
@@ -44,10 +46,10 @@ function AgreementHeader({ title, status, onSign, onShare }) {
       css={`
         display: flex;
         align-items: center;
-        margin-bottom: ${layoutName === 'small' ? 4 * GU : 5 * GU}px;
+        margin-bottom: ${compactMode ? 4 * GU : 5 * GU}px;
       `}
     >
-      {layoutName !== 'small' && <DecorativeIcon />}
+      {compactMode && <DecorativeIcon />}
       <div
         css={`
           display: flex;
@@ -58,9 +60,7 @@ function AgreementHeader({ title, status, onSign, onShare }) {
         <div>
           <h1
             css={`
-              ${layoutName === 'small'
-                ? textStyle('title3')
-                : textStyle('title2')};
+              ${compactMode ? textStyle('title3') : textStyle('title2')};
               line-height: 1.3;
               margin-bottom: ${1 * GU}px;
             `}
@@ -152,7 +152,7 @@ function DropdownItem({ Icon, label }) {
       </span>
       <span
         css={`
-          margin-left: ${GU}px;
+          margin-left: ${1 * GU}px;
         `}
       >
         {label}
@@ -176,8 +176,8 @@ function DecorativeIcon() {
       <img
         src={icon}
         alt=""
-        width="70"
-        height="70"
+        width={8.75 * GU}
+        height={8.75 * GU}
         css={`
           display: block;
         `}
