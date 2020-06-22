@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, textStyle, RADIUS, GU } from '@aragon/ui'
-import { keyframes, css } from 'styled-components'
+import { css, keyframes } from 'styled-components'
+import { GU, RADIUS, textStyle, useTheme } from '@aragon/ui'
 
 const STATUS_DISABLED = 'STATUS_DISABLED'
 const STATUS_ACTIVE = 'STATUS_ACTIVE'
