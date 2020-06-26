@@ -1,7 +1,7 @@
 {
   "name": "aragon",
   "description": "Aragon DApp",
-  "version": "0.8.11",
+  "version": "0.8.12",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "author": "Aragon Association <legal@aragon.org>",
@@ -35,7 +35,7 @@
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
     "@aragon/ui": "^1.4.2",
-    "@aragon/wrapper": "^5.0.0-rc.27",
+    "@aragon/wrapper": "^5.0.0-rc.28",
     "@sentry/browser": "^5.17.0",
     "@ungap/event-target": "^0.1.0",
     "clipboard-polyfill": "^2.8.6",
