@@ -101,45 +101,50 @@ export function parsePath(pathname, search = '') {
 
 // Return a path string from a locator updater.
 export function getPath({ mode, preferences } = {}) {
-  // preferences
+  // Preferences
   const search =
     preferences && preferences.section ? getPreferencesSearch(preferences) : ''
 
+  // Fallback if no expected path was found
+  const fallbackPath = `/${search}`
+
   if (!mode) {
-    return `/${search}`
+    return fallbackPath
   }
 
   if (mode.name === 'onboarding') {
-    return `/${
-      !mode.status || mode.status === 'welcome' ? '' : mode.status
-    }${search}`
+    const { status } = mode
+    return `/${!status || status === 'welcome' ? '' : status}${search}`
   }
 
-  if (mode.name !== 'org') {
-    return `/${search}`
-  }
+  if (mode.name === 'org') {
+    let { orgAddress } = mode
 
-  // Only keep the full address if it ends in aragonid.eth
-  let { orgAddress } = mode
-  if (orgAddress.endsWith(ARAGONID_ENS_DOMAIN)) {
-    orgAddress = orgAddress.substr(
-      0,
-      orgAddress.indexOf(ARAGONID_ENS_DOMAIN) - 1
+    if (!orgAddress) {
+      return fallbackPath
+    }
+
+    // Only keep the full address if it ends in aragonid.eth
+    if (orgAddress.endsWith(ARAGONID_ENS_DOMAIN)) {
+      orgAddress = orgAddress.substr(
+        0,
+        orgAddress.indexOf(ARAGONID_ENS_DOMAIN) - 1
+      )
+    }
+
+    const { instanceId = '', instancePath = '' } = mode
+
+    // Either the address of an app instance or the path of an internal app.
+    const instancePart = staticApps.has(instanceId)
+      ? staticApps.get(instanceId).route
+      : `/${instanceId}`
+
+    return (
+      '/' + orgAddress + instancePart + encodeAppPath(instancePath) + search
     )
   }
 
-  if (!orgAddress) {
-    return `/${search}`
-  }
-
-  const { instanceId = '', instancePath = '' } = mode
-
-  // Either the address of an app instance or the path of an internal app.
-  const instancePart = staticApps.has(instanceId)
-    ? staticApps.get(instanceId).route
-    : `/${instanceId}`
-
-  return '/' + orgAddress + instancePart + encodeAppPath(instancePath) + search
+  return fallbackPath
 }
 
 // Preferences
