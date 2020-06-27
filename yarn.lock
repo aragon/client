@@ -50,10 +50,10 @@
     recursive-copy "^2.0.9"
     use-inside "^0.2.0"
 
-"@aragon/wrapper@^5.0.0-rc.27":
-  version "5.0.0-rc.27"
-  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-5.0.0-rc.27.tgz#945ead7f6504c42c0a8f4897f3a2f7cc526ac26a"
-  integrity sha512-ixbOYf/9dVV1xOIeBs8SF+vTx2mv0hxxSVZ5ExvBW91ILpqM3JHuCoITeuGdg7tvPS5/riKCmAJcbGB7SOlI0Q==
+"@aragon/wrapper@^5.0.0-rc.28":
+  version "5.0.0-rc.28"
+  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-5.0.0-rc.28.tgz#4d00928e1633935106395e558d05d0521ea6760e"
+  integrity sha512-78fWoE/oAOGHNlvq+aZyXy0hZ6JBeqxdS07HXvyucb/fFhphG/puDmkDudP1esMIYmQbbviB+dT6mpa2ctTzQw==
   dependencies:
     "@aragon/os" "^4.2.1"
     "@aragon/rpc-messenger" "^2.0.0"
@@ -10321,9 +10321,9 @@ quote-stream@^1.0.1, quote-stream@~1.0.2:
     through2 "^2.0.0"
 
 radspec@^1.5.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/radspec/-/radspec-1.7.0.tgz#f31e1c78332c8bb038d40e1800376c6c16ea950c"
-  integrity sha512-JEOHkI+FJB+KlqklvIc1oqMTypJIWKv9wA+/AI5XwQqs4+ExUvouEcOOqcXv+QXPtsZeaMZSn2aWdIZcEVccyw==
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/radspec/-/radspec-1.8.0.tgz#462f25a2f3ada799bf9368462b8ccb6c5e89dc30"
+  integrity sha512-z36e6LG7o2dxrFLhaIBmy5ohUwtTJKXPBBqYdAMeF8bxKogPzcKbviZe4rdahA0jQSKOHkFp2cj2hXkOk65+6Q==
   dependencies:
     "@babel/runtime" "^7.1.2"
     bn.js "^4.11.8"
