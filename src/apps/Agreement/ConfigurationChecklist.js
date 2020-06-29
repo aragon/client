@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { Transition, animated } from 'react-spring'
 import {
   Box,
-  useLayout,
-  GU,
-  useTheme,
-  ProgressBar,
-  textStyle,
   Button,
+  ProgressBar,
   springs,
+  textStyle,
+  useLayout,
+  useTheme,
+  GU,
 } from '@aragon/ui'
-import PropTypes from 'prop-types'
 import checklistCompleteGraphic from './assets/checklist-complete.png'
-import { Transition, animated } from 'react-spring'
 
 function countProgress(items) {
   return items.filter(([_, checked]) => checked).length
@@ -48,7 +48,7 @@ function ConfigurationChecklist({ items, onClose }) {
         {show =>
           show &&
           (props => (
-            <BoxInner>
+            <BoxSection>
               <AnimatedDiv
                 style={props}
                 css={`
@@ -72,18 +72,18 @@ function ConfigurationChecklist({ items, onClose }) {
                   `}
                 />
               </AnimatedDiv>
-            </BoxInner>
+            </BoxSection>
           ))
         }
       </Transition>
       {!checklistComplete &&
         items.map(([label, checked]) => (
-          <BoxInner key={label}>
+          <BoxSection key={label}>
             <ChecklistItem label={label} checked={checked} />
-          </BoxInner>
+          </BoxSection>
         ))}
 
-      <BoxInner>
+      <BoxSection>
         <div
           css={`
             padding-bottom: ${1 * GU}px;
@@ -91,14 +91,12 @@ function ConfigurationChecklist({ items, onClose }) {
         >
           <label
             css={`
-              ${textStyle('label2')}
-
               display: flex;
               justify-content: space-between;
               color: ${theme.surfaceContentSecondary};
-
-              line-height: 1.2;
               margin-bottom: ${1 * GU}px;
+
+              ${textStyle('label2')}
             `}
           >
             <span>Progress</span>
@@ -118,12 +116,21 @@ function ConfigurationChecklist({ items, onClose }) {
             />
           )}
         </div>
-      </BoxInner>
+      </BoxSection>
     </Box>
   )
 }
 
+ConfigurationChecklist.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.array),
+  onClose: PropTypes.func,
+}
+
 /* eslint-disable react/prop-types */
+
+// Checklist items use a custom style and not a standard checkbox because they are non-interactive and thus should not:
+// - Look like other elements that are known to be interactive
+// - Have or inherit hover, active or focus states
 function ChecklistItem({ label, checked }) {
   const theme = useTheme()
 
@@ -153,7 +160,6 @@ function ChecklistItem({ label, checked }) {
           color: ${checked
             ? theme.surfaceContent
             : theme.surfaceContentSecondary};
-          line-height: 1.1;
         `}
       >
         {label}
@@ -180,7 +186,7 @@ const Check = ({ color }) => (
   </svg>
 )
 
-function BoxInner({ children, ...props }) {
+function BoxSection({ children, ...props }) {
   const { layoutName } = useLayout()
   const theme = useTheme()
 
@@ -200,10 +206,5 @@ function BoxInner({ children, ...props }) {
   )
 }
 /* eslint-enable react/prop-types */
-
-ConfigurationChecklist.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.array),
-  onClose: PropTypes.func,
-}
 
 export default ConfigurationChecklist
