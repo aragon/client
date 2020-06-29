@@ -139,6 +139,7 @@ function ChecklistItem({ label, checked }) {
     >
       <div
         css={`
+          flex-shrink: 0;
           display: flex;
           align-items: center;
           justify-content: center;
