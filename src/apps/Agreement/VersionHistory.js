@@ -50,15 +50,14 @@ function HistoryEntry({ title, date }) {
       <div>
         <h2
           css={`
-            line-height: 1.1;
-            margin-bottom: ${1 * GU}px;
+            /* Shift text node slightly to optically align with context menu */
+            margin-top: -${0.5 * GU}px;
           `}
         >
           {title}
         </h2>
         <p
           css={`
-            line-height: 1.1;
             color: ${theme.surfaceContentSecondary};
           `}
         >
