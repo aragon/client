@@ -208,17 +208,16 @@ export function RoutingProvider({ children }) {
   const getPathFromLocator = useCallback(
     locatorUpdate => {
       if (typeof locatorUpdate === 'function') {
-        locatorUpdate = locatorUpdate(locator)
+        locatorUpdate = locatorUpdate(locator) || {}
       }
 
       return getPath({
+        ...locator,
         ...locatorUpdate,
         mode: locatorUpdate.mode
           ? {
+              ...locator.mode,
               ...locatorUpdate.mode,
-
-              // If no mode name is set, use the current
-              name: locatorUpdate.mode.name || locator.mode.name,
             }
           : locator.mode,
       })
