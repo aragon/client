@@ -11,7 +11,7 @@ import {
 import DisputableApps from './DisputableApps/DisputableApps'
 import DisputableAppsEmpty from './DisputableApps/DisputableAppsEmpty'
 import AgreementDetails from './AgreementDetails'
-import AgreementDoc from './AgreementDoc'
+import AgreementDocument from './AgreementDocument'
 import AgreementHeader from './AgreementHeader'
 import ConfigurationChecklist from './ConfigurationChecklist'
 import VersionHistory from './VersionHistory'
@@ -145,7 +145,7 @@ const Agreement = React.memo(function Agreement() {
             ) : (
               <DisputableAppsEmpty />
             )}
-            <AgreementDoc title="DAO Agreement" />
+            <AgreementDocument title="DAO Agreement" />
           </React.Fragment>
         }
         secondary={

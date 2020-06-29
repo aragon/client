@@ -27,7 +27,7 @@ In case of any dispute between one or more ENT holders and one or more other ENT
 ### 2. Proposal guidelines
 These guidelines apply to all proposals put forth to the Ethical Network organization`
 
-function AgreementDoc({ title }) {
+function AgreementDocument({ title }) {
   return (
     <Box>
       <article>
@@ -51,8 +51,8 @@ function AgreementDoc({ title }) {
   )
 }
 
-AgreementDoc.propTypes = {
+AgreementDocument.propTypes = {
   title: PropTypes.string,
 }
 
-export default AgreementDoc
+export default AgreementDocument
