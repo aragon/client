@@ -20,6 +20,7 @@ const EXPANDABLE_ROW_GAP = `${3 * GU}px`
 const DisputableApps = React.memo(({ items }) => {
   const { layoutName } = useLayout()
   const theme = useTheme()
+  const compactMode = layoutName === 'small'
 
   return (
     <DataView
@@ -28,14 +29,14 @@ const DisputableApps = React.memo(({ items }) => {
         { label: 'Actions', align: 'left' },
       ]}
       entries={items}
-      renderEntry={entry => renderEntry(entry, layoutName)}
-      renderEntryExpansion={entry => renderEntryExpansion(entry, layoutName)}
+      renderEntry={entry => renderEntry(entry, compactMode)}
+      renderEntryExpansion={entry => renderEntryExpansion(entry, compactMode)}
       renderEntryActions={entry => renderEntryActions(entry, theme)}
     />
   )
 })
 
-function renderEntry({ allowedActions }, layoutName) {
+function renderEntry({ allowedActions }, compactMode) {
   return [
     <div
       css={`
@@ -43,9 +44,7 @@ function renderEntry({ allowedActions }, layoutName) {
         align-items: center;
 
         /* Height must match expansion button to align nicely */
-        ${(layoutName === 'medium' || layoutName === 'large') &&
-          'height: 32px;'}
-        
+        ${!compactMode && `height: ${4 * GU}px;`}
       `}
     >
       <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
@@ -85,7 +84,7 @@ function renderEntryActions(entry, theme) {
   )
 }
 
-function renderEntryExpansion(entry, layoutName) {
+function renderEntryExpansion(entry, compactMode) {
   const {
     actionCollateral,
     challengeCollateral,
@@ -106,7 +105,7 @@ function renderEntryExpansion(entry, layoutName) {
       <div
         css={`
           display: inline-grid;
-          grid-template-columns: ${layoutName === 'small' ? '1fr' : '1fr 1fr'};
+          grid-auto-flow: ${compactMode ? 'row' : 'column'};
           column-gap: ${8 * GU}px;
         `}
       >
