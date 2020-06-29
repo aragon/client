@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Box, textStyle, GU } from '@aragon/ui'
-import Markdown from '../../components/Markdown/Markdown'
+import styled from 'styled-components'
+import { Box, Markdown, textStyle, useTheme, GU } from '@aragon/ui'
 
 const exampleDoc = `
 ## Section 1. Background
@@ -28,6 +28,8 @@ In case of any dispute between one or more ENT holders and one or more other ENT
 These guidelines apply to all proposals put forth to the Ethical Network organization`
 
 function AgreementDocument({ title }) {
+  const theme = useTheme()
+
   return (
     <Box>
       <article>
@@ -43,13 +45,46 @@ function AgreementDocument({ title }) {
           </h1>
         </header>
 
-        <main>
-          <Markdown text={exampleDoc} />
-        </main>
+        <Wrapper theme={theme}>
+          <Markdown content={exampleDoc} />
+        </Wrapper>
       </article>
     </Box>
   )
 }
+
+const Wrapper = styled.main`
+  overflow-y: auto;
+  max-height: ${100 * GU}px;
+
+  h2,
+  h3,
+  h4 {
+    font-weight: bold;
+    margin-top: ${3 * GU}px;
+    ${textStyle('label2')};
+    color: ${({ theme }) => theme.contentSecondary};
+  }
+
+  p,
+  li {
+    margin: ${1 * GU}px 0;
+  }
+
+  ul {
+    margin: ${1 * GU}px ${2 * GU}px;
+    list-style: none;
+  }
+
+  ul li::before {
+    content: '•';
+    color: ${({ theme }) => theme.accent};
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+  }
+`
 
 AgreementDocument.propTypes = {
   title: PropTypes.string,
