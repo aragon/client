@@ -102,8 +102,7 @@ export function parsePath(pathname, search = '') {
 // Return a path string from a locator updater.
 export function getPath({ mode, preferences } = {}) {
   // Preferences
-  const search =
-    preferences && preferences.section ? getPreferencesSearch(preferences) : ''
+  const search = getPreferencesSearch(preferences)
 
   // Fallback if no expected path was found
   const fallbackPath = `/${search}`
@@ -137,7 +136,9 @@ export function getPath({ mode, preferences } = {}) {
     // Either the address of an app instance or the path of an internal app.
     const instancePart = staticApps.has(instanceId)
       ? staticApps.get(instanceId).route
-      : `/${instanceId}`
+      : instanceId
+      ? `/${instanceId}`
+      : ''
 
     return (
       '/' + orgAddress + instancePart + encodeAppPath(instancePath) + search
@@ -148,10 +149,13 @@ export function getPath({ mode, preferences } = {}) {
 }
 
 // Preferences
-function parsePreferences(search = '') {
+export function parsePreferences(search = '') {
   const searchParams = new URLSearchParams(search)
   const path = searchParams.get('preferences') || ''
-  const labels = searchParams.get('labels')
+  // Ignore labels if search does not contain a preferences path
+  const labels = searchParams.has('preferences')
+    ? searchParams.get('labels')
+    : ''
 
   const [, section = '', subsection = ''] = path.split('/')
 
@@ -167,6 +171,10 @@ function parsePreferences(search = '') {
 // For preferences, get the “search” part of the path (?=something)
 // This function will probably be unified with parsePath() later.
 export function getPreferencesSearch({ section, subsection, data = {} } = {}) {
+  if (!section) {
+    return ''
+  }
+
   const params = new URLSearchParams()
 
   params.append(
