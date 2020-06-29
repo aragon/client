@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import {
@@ -20,15 +20,11 @@ function countProgress(items) {
 const AnimatedDiv = animated.div
 
 function ConfigurationChecklist({ items, onClose }) {
-  const [progress, setProgress] = useState(countProgress(items))
   const theme = useTheme()
+  const progress = useMemo(() => countProgress(items), [items])
 
   const barProgress = (1 / items.length) * progress
   const checklistComplete = items.length === progress
-
-  useEffect(() => {
-    setProgress(countProgress(items))
-  }, [items])
 
   return (
     <Box heading="Configuration checklist" padding={0}>
