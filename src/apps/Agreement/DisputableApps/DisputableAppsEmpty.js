@@ -40,9 +40,9 @@ function DisputableAppsEmpty() {
           </h2>
           <p
             css={`
-                ${textStyle('body2')}
-                color: ${theme.surfaceContentSecondary};
-              `}
+              ${textStyle('body2')}
+              color: ${theme.surfaceContentSecondary};
+            `}
           >
             You can configure any of the available apps, upgrade or install new
             ones, to make their actions bound by the Agreement.

@@ -1,19 +1,17 @@
 import React from 'react'
 import {
-  DataView,
   ContextMenu,
   ContextMenuItem,
-  useTheme,
-  GU,
-  useLayout,
+  DataView,
   Help,
   TokenBadge,
+  useLayout,
+  useTheme,
+  GU,
 } from '@aragon/ui'
-import { KnownAppBadge } from '../../../templates/kit'
-import InfoField from './../InfoField'
 import { AppItemsType } from './../prop-types'
-import SubtleLabel from './SubtleLabel'
-import TokenAmount from './TokenAmount'
+import InfoField from './../InfoField'
+import { KnownAppBadge } from '../../../templates/kit'
 
 const EXPANDABLE_ROW_GAP = `${3 * GU}px`
 
@@ -83,6 +81,40 @@ function renderEntryActions(entry, theme) {
     </ContextMenu>
   )
 }
+
+/* eslint-disable react/prop-types */
+function SubtleLabel({ children }) {
+  const theme = useTheme()
+
+  return (
+    <span
+      css={`
+        color: ${theme.surfaceContentSecondary};
+      `}
+    >
+      {children}
+    </span>
+  )
+}
+
+function TokenAmount({ address, symbol, amount }) {
+  return (
+    <div
+      css={`
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        /* Align left edge against label */
+        margin-left: -${1 * GU}px;
+      `}
+    >
+      <TokenBadge name={amount} address={address} symbol={symbol} compact />
+      <SubtleLabel>(per action)</SubtleLabel>
+    </div>
+  )
+}
+/* eslint-disable react/prop-types */
 
 function renderEntryExpansion(entry, compactMode) {
   const {
@@ -190,18 +222,19 @@ function renderEntryExpansion(entry, compactMode) {
           margin-bottom: ${EXPANDABLE_ROW_GAP};
         `}
       >
-        Open to tokenholders with a minimun token balance of{' '}
-        {signerEligibility.amount}{' '}
+        Open to tokenholders with a minimun token balance of
         <div
           css={`
             display: inline-block;
             position: relative;
-            top: 3px;
+            top: ${0.5 * GU}px;
           `}
         >
           <TokenBadge
             address={signerEligibility.address}
+            name={signerEligibility.amount}
             symbol={signerEligibility.symbol}
+            compact
           />
         </div>
       </InfoField>
