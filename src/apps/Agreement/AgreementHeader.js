@@ -35,8 +35,8 @@ function AgreementHeader({ title, status, onSign, onShare }) {
 
   const dropdownItems = useMemo(
     () => [
-      <DropdownItem Icon={IconWrite} label="Sign" />,
-      <DropdownItem Icon={IconShare} label="Share" />,
+      <DropdownItem Icon={<IconWrite />} label="Sign" />,
+      <DropdownItem Icon={<IconShare />} label="Share" />,
     ],
     []
   )
@@ -148,7 +148,7 @@ function DropdownItem({ Icon, label }) {
           color: ${theme.surfaceIcon};
         `}
       >
-        <Icon />
+        {Icon}
       </span>
       <span
         css={`
