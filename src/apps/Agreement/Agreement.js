@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
   Box,
   Button,
@@ -10,15 +10,49 @@ import {
 } from '@aragon/ui'
 import { STATUS_ACTIVE, STATUS_PENDING } from './agreement-statuses'
 import AgreementDetails from './AgreementDetails'
+import AgreementDocument from './AgreementDocument'
 import AgreementHeader from './AgreementHeader'
+import ConfigurationChecklist from './ConfigurationChecklist'
 import DisputableApps from './DisputableApps/DisputableApps'
 import DisputableAppsEmpty from './DisputableApps/DisputableAppsEmpty'
+import VersionHistory from './VersionHistory'
+import VotePending from './VotePending'
 
 const Agreement = React.memo(function Agreement() {
+  const [checklistCompleted, setChecklistCompleted] = useState(false)
   const [agreementStatus, setAgreementStatus] = useState(STATUS_PENDING)
   const { layoutName } = useLayout()
 
   const compactMode = layoutName === 'small'
+
+  const handleChecklistClose = useCallback(() => {
+    setChecklistCompleted(true)
+  }, [])
+
+  // TODO: Replace with real data
+  const mockEndDate = useMemo(() => {
+    const NOW = Date.now()
+    const DAY = 1000 * 60 * 60 * 24
+
+    return new Date(NOW + 5 * DAY)
+  }, [])
+
+  // TODO: Replace with real data
+  const mockChecklistItems = useMemo(
+    () => [
+      ['Create Agreement', true],
+      ['Set permissions', true],
+      ['Set actions requirements', true],
+      ['Share with members', false],
+    ],
+    []
+  )
+
+  // TODO: Replace with real data
+  const mockHistoryItems = useMemo(
+    () => ['2020/05/22', '2020/05/21', '2020/05/20'],
+    []
+  )
 
   // TODO: Replace with real data
   const mockAppItem = useMemo(() => {
@@ -113,14 +147,26 @@ const Agreement = React.memo(function Agreement() {
             ) : (
               <DisputableAppsEmpty />
             )}
-            <Box>Agreement doc</Box>
+            <AgreementDocument title="DAO Agreement" />
           </React.Fragment>
         }
         secondary={
           <React.Fragment>
-            <Box>Checklist</Box>
+            {!checklistCompleted && (
+              <ConfigurationChecklist
+                items={mockChecklistItems}
+                onClose={handleChecklistClose}
+              />
+            )}
 
-            <Box>Version history</Box>
+            <Box heading="Version history" padding={0}>
+              {agreementStatus === STATUS_PENDING && (
+                <VotePending endDate={mockEndDate} />
+              )}
+              {agreementStatus === STATUS_ACTIVE && (
+                <VersionHistory items={mockHistoryItems} />
+              )}
+            </Box>
           </React.Fragment>
         }
       />
