@@ -1,18 +1,20 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import {
-  IconGrid,
-  textStyle,
-  GU,
   DropDown,
-  Tag,
-  useTheme,
   IconCheck,
-  useLayout,
-  IconWrite,
+  IconGrid,
   IconShare,
+  IconWrite,
+  Tag,
+  noop,
+  textStyle,
+  useLayout,
+  useTheme,
+  GU,
 } from '@aragon/ui'
+import { STATUS_ACTIVE, STATUS_PENDING } from './agreement-statuses'
+
 import PropTypes from 'prop-types'
-import { STATUS_PENDING, STATUS_ACTIVE } from './agreement-statuses'
 import icon from './assets/icon.svg'
 
 function AgreementHeader({ title, status, onSign, onShare }) {
@@ -188,6 +190,8 @@ function DecorativeIcon() {
 
 AgreementHeader.defaultProps = {
   status: STATUS_PENDING,
+  onSign: noop,
+  onShare: noop,
 }
 
 AgreementHeader.propTypes = {
