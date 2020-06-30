@@ -1,40 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import remark from 'remark'
-import remark2react from 'remark-react'
-import { Link, GU, textStyle, useTheme } from '@aragon/ui'
+import { textStyle, useTheme, Markdown, GU } from '@aragon/ui'
 
-const Markdown = React.memo(({ text }) => {
+const ContentMarkdown = React.memo(({ content }) => {
   const theme = useTheme()
 
   return (
     <Wrapper theme={theme}>
-      {
-        /* eslint-disable react/prop-types */
-        remark()
-          .use(remark2react, {
-            remarkReactComponents: {
-              a: ({ children, ...props }) => (
-                <Link external {...props}>
-                  {children}
-                </Link>
-              ),
-            },
-          })
-          .processSync(text).contents
-        /* eslint-enable react/prop-types */
-      }
+      <Markdown content={content} />
     </Wrapper>
   )
 })
 
-Markdown.propTypes = {
-  text: PropTypes.string,
+ContentMarkdown.propTypes = {
+  content: PropTypes.string,
 }
 
-Markdown.defaultProps = {
-  text: '',
+ContentMarkdown.defaultProps = {
+  content: '',
 }
 
 const Wrapper = styled.section`
@@ -69,4 +53,4 @@ const Wrapper = styled.section`
   }
 `
 
-export default Markdown
+export default ContentMarkdown
