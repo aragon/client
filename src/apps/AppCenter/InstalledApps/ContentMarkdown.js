@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { textStyle, useTheme, Markdown, GU } from '@aragon/ui'
+import { Markdown, textStyle, useTheme, GU } from '@aragon/ui'
 
 const ContentMarkdown = React.memo(({ content }) => {
   const theme = useTheme()

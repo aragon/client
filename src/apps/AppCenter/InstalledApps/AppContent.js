@@ -15,8 +15,8 @@ import {
   useTheme,
 } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
-import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import ContentMarkdown from './ContentMarkdown'
+import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { RepoType } from '../../../prop-types'
 import { useRepoDetails } from '../../../hooks'
 import { network } from '../../../environment'
