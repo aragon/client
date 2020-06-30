@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import { IdentityBadge, Link, useLayout, GU } from '@aragon/ui'
 import InfoField from './InfoField'
 
-function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
+function AgreementDetails({
+  ipfsLink,
+  authorAddress,
+  stakingAddress,
+  contractAddress,
+}) {
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
 
@@ -37,29 +42,29 @@ function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
               text-align: left;
             `}
           >
-            {IPFSLink}
+            {ipfsLink}
           </span>
         </Link>
       </InfoField>
       <InfoField label="Created by">
-        <IdentityBadge customLabel="Wesley Crusher" entity={AuthorHash} />
+        <IdentityBadge customLabel="Wesley Crusher" entity={authorAddress} />
       </InfoField>
       <InfoField label="Arbitrator">Aragon Court</InfoField>
       <InfoField label="Staking Pool">
-        <IdentityBadge entity={StakingHash} />
+        <IdentityBadge entity={stakingAddress} />
       </InfoField>
       <InfoField label="Agreement Contract">
-        <IdentityBadge entity={ContractHash} />
+        <IdentityBadge entity={contractAddress} />
       </InfoField>
     </div>
   )
 }
 
 AgreementDetails.propTypes = {
-  IPFSLink: PropTypes.string,
-  AuthorHash: PropTypes.string,
-  StakingHash: PropTypes.string,
-  ContractHash: PropTypes.string,
+  ipfsLink: PropTypes.string,
+  authorAddress: PropTypes.string,
+  stakingAddress: PropTypes.string,
+  contractAddress: PropTypes.string,
 }
 
 export default AgreementDetails

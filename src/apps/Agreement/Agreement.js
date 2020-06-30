@@ -47,10 +47,10 @@ const Agreement = React.memo(function Agreement() {
                 }}
               />
               <AgreementDetails
-                IPFSLink="QmXpcBiGZ7Uep2tmhxLhfA8ak1aYDUyevFSnpUa4Gc9kRn"
-                AuthorHash="0xc41e4c10b37d3397a99d4a90e7d85508a69a5c4c"
-                StakingHash="0x7c708ac7db979fa06705f8880f29f82cfc406993"
-                ContractHash="0x7c708ac7db979fa06705f8880f29f82cfc406993"
+                ipfsLink="QmXpcBiGZ7Uep2tmhxLhfA8ak1aYDUyevFSnpUa4Gc9kRn"
+                authorAddress="0xc41e4c10b37d3397a99d4a90e7d85508a69a5c4c"
+                stakingAddress="0x7c708ac7db979fa06705f8880f29f82cfc406993"
+                contractAddress="0x7c708ac7db979fa06705f8880f29f82cfc406993"
               />
             </Box>
             <Box>Disputable apps</Box>
