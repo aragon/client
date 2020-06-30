@@ -26,14 +26,14 @@ const Agreement = React.memo(function Agreement() {
           () => {
             console.log('Update disputable app')
           },
-          IconEdit,
+          <IconEdit />,
           'Update',
         ],
         [
           () => {
             console.log('Remove disputable app')
           },
-          IconTrash,
+          <IconTrash />,
           'Remove',
         ],
       ],

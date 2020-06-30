@@ -69,7 +69,7 @@ function renderEntryActions(entry, theme) {
               color: ${theme.surfaceIcon};
             `}
           >
-            <Icon />
+            {Icon}
           </span>
           <span
             css={`
