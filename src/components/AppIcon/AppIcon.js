@@ -4,6 +4,7 @@ import { useImageExists, RADIUS } from '@aragon/ui'
 import { appIconUrl, legacyAppIconUrl } from '../../utils'
 
 import iconSvgAcl from './assets/app-acl.svg'
+import iconSvgAgreement from './assets/app-agreement.svg'
 import iconSvgApps from './assets/app-apps.svg'
 import iconSvgDefault from './assets/app-default.svg'
 import iconSvgHome from './assets/app-home.svg'
@@ -20,6 +21,7 @@ const DEFAULT_RADIUS = RADIUS
 const DISPLAY_FALLBACK_DELAY = 50
 
 const KNOWN_ICONS = new Map([
+  ['agreement', iconSvgAgreement],
   ['apps', iconSvgApps],
   ['console', iconSvgConsole],
   ['home', iconSvgHome],
