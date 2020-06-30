@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { IdentityBadge, Link, useLayout, GU } from '@aragon/ui'
+import { EthereumAddressType } from '../../prop-types'
 import InfoField from './InfoField'
 
 function AgreementDetails({
@@ -62,9 +63,9 @@ function AgreementDetails({
 
 AgreementDetails.propTypes = {
   ipfsLink: PropTypes.string,
-  authorAddress: PropTypes.string,
-  stakingAddress: PropTypes.string,
-  contractAddress: PropTypes.string,
+  authorAddress: EthereumAddressType,
+  stakingAddress: EthereumAddressType,
+  contractAddress: EthereumAddressType,
 }
 
 export default AgreementDetails
