@@ -9,7 +9,7 @@ import {
   useTheme,
   GU,
 } from '@aragon/ui'
-import { AppItemsType } from './../prop-types'
+import { DisputableAppDetailsType } from './../prop-types'
 import InfoField from './../InfoField'
 import { KnownAppBadge } from '../../../templates/kit'
 
@@ -45,6 +45,7 @@ function renderEntry({ allowedActions }, compactMode) {
         ${!compactMode && `height: ${4 * GU}px;`}
       `}
     >
+      {/* TODO: Replace with LocalLabelAppBadge */}
       <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
     </div>,
     <React.Fragment>{allowedActions.join(', ')}</React.Fragment>,
@@ -247,7 +248,7 @@ function renderEntryExpansion(entry, compactMode) {
 }
 
 DisputableApps.propTypes = {
-  items: AppItemsType.isRequired,
+  items: DisputableAppDetailsType.isRequired,
 }
 
 export default DisputableApps

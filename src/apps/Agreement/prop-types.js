@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-const AppItemType = PropTypes.shape({
+const DisputableAppDetail = PropTypes.shape({
   actionCollateral: PropTypes.shape({
     address: PropTypes.string,
     amount: PropTypes.number,
@@ -24,4 +24,4 @@ const AppItemType = PropTypes.shape({
   settlementPeriod: PropTypes.number.isRequired,
 })
 
-export const AppItemsType = PropTypes.arrayOf(AppItemType)
+export const DisputableAppDetailsType = PropTypes.arrayOf(DisputableAppDetail)
