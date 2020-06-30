@@ -1,23 +1,24 @@
 import React from 'react'
-import {
-  GU,
-  useLayout,
-  Link,
-  IdentityBadge,
-  TransactionBadge,
-} from '@aragon/ui'
 import PropTypes from 'prop-types'
+import { IdentityBadge, Link, useLayout, GU } from '@aragon/ui'
+import { EthereumAddressType } from '../../prop-types'
 import InfoField from './InfoField'
 
-function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
+function AgreementDetails({
+  ipfsLink,
+  authorAddress,
+  stakingAddress,
+  contractAddress,
+}) {
   const { layoutName } = useLayout()
+  const compactMode = layoutName === 'small'
 
   return (
     <div
       css={`
         display: grid;
-        grid-gap: ${layoutName === 'small' ? 3 * GU : 4 * GU}px;
-        grid-template-columns: ${layoutName === 'small'
+        grid-gap: ${compactMode ? 3 * GU : 4 * GU}px;
+        grid-template-columns: ${compactMode
           ? 'minmax(0, 1fr)'
           : '1fr 1fr 1fr'};
       `}
@@ -25,8 +26,7 @@ function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
       <InfoField
         label="Agreement IPFS Link"
         css={`
-          ${(layoutName === 'medium' || layoutName === 'large') &&
-            'grid-column: span 2;'};
+          ${!compactMode && 'grid-column: span 2;'};
         `}
       >
         <Link
@@ -43,29 +43,29 @@ function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
               text-align: left;
             `}
           >
-            {IPFSLink}
+            {ipfsLink}
           </span>
         </Link>
       </InfoField>
       <InfoField label="Created by">
-        <IdentityBadge customLabel="Wesley Crusher" entity={AuthorHash} />
+        <IdentityBadge customLabel="Wesley Crusher" entity={authorAddress} />
       </InfoField>
       <InfoField label="Arbitrator">Aragon Court</InfoField>
       <InfoField label="Staking Pool">
-        <TransactionBadge transaction={StakingHash} />
+        <IdentityBadge entity={stakingAddress} />
       </InfoField>
       <InfoField label="Agreement Contract">
-        <TransactionBadge transaction={ContractHash} />
+        <IdentityBadge entity={contractAddress} />
       </InfoField>
     </div>
   )
 }
 
 AgreementDetails.propTypes = {
-  IPFSLink: PropTypes.string,
-  AuthorHash: PropTypes.string,
-  StakingHash: PropTypes.string,
-  ContractHash: PropTypes.string,
+  ipfsLink: PropTypes.string,
+  authorAddress: EthereumAddressType,
+  stakingAddress: EthereumAddressType,
+  contractAddress: EthereumAddressType,
 }
 
 export default AgreementDetails

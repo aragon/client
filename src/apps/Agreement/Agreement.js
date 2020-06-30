@@ -15,8 +15,10 @@ import DisputableApps from './DisputableApps/DisputableApps'
 import DisputableAppsEmpty from './DisputableApps/DisputableAppsEmpty'
 
 const Agreement = React.memo(function Agreement() {
-  const { layoutName } = useLayout()
   const [agreementStatus, setAgreementStatus] = useState(STATUS_PENDING)
+  const { layoutName } = useLayout()
+
+  const compactMode = layoutName === 'small'
 
   // TODO: Replace with real data
   const mockAppItem = useMemo(() => {
@@ -80,7 +82,7 @@ const Agreement = React.memo(function Agreement() {
               )
             }}
             icon={<IconEdit />}
-            display={layoutName === 'small' ? 'icon' : 'label'}
+            display={compactMode ? 'icon' : 'label'}
           />
         }
       />
@@ -100,10 +102,10 @@ const Agreement = React.memo(function Agreement() {
                 }}
               />
               <AgreementDetails
-                IPFSLink="QmXpcBiGZ7Uep2tmhxLhfA8ak1aYDUyevFSnpUa4Gc9kRn"
-                AuthorHash="0xc41e4c10b37d3397a99d4a90e7d85508a69a5c4c"
-                StakingHash="0x281c36aee917b24d8e5f59481f6639d81e4cf7125b09fb93a2b43c31ef3fc115"
-                ContractHash="0x281c36aee917b24d8e5f59481f6639d81e4cf7125b09fb93a2b43c31ef3fc115"
+                ipfsLink="QmXpcBiGZ7Uep2tmhxLhfA8ak1aYDUyevFSnpUa4Gc9kRn"
+                authorAddress="0xc41e4c10b37d3397a99d4a90e7d85508a69a5c4c"
+                stakingAddress="0x7c708ac7db979fa06705f8880f29f82cfc406993"
+                contractAddress="0x7c708ac7db979fa06705f8880f29f82cfc406993"
               />
             </Box>
             {mockAppItems.length > 0 ? (
