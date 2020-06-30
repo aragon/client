@@ -3,16 +3,16 @@ import {
   Box,
   Button,
   Header,
-  Split,
   IconEdit,
-  useLayout,
   IconTrash,
+  Split,
+  useLayout,
 } from '@aragon/ui'
-import DisputableApps from './DisputableApps/DisputableApps'
-import DisputableAppsEmpty from './DisputableApps/DisputableAppsEmpty'
+import { STATUS_ACTIVE, STATUS_PENDING } from './agreement-statuses'
 import AgreementDetails from './AgreementDetails'
 import AgreementHeader from './AgreementHeader'
-import { STATUS_PENDING, STATUS_ACTIVE } from './agreement-statuses'
+import DisputableApps from './DisputableApps/DisputableApps'
+import DisputableAppsEmpty from './DisputableApps/DisputableAppsEmpty'
 
 const Agreement = React.memo(function Agreement() {
   const { layoutName } = useLayout()
