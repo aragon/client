@@ -1,25 +1,24 @@
 import React from 'react'
 import {
-  DataView,
   ContextMenu,
   ContextMenuItem,
-  useTheme,
-  GU,
-  useLayout,
+  DataView,
   Help,
   TokenBadge,
+  useLayout,
+  useTheme,
+  GU,
 } from '@aragon/ui'
-import { KnownAppBadge } from '../../../templates/kit'
+import { DisputableAppDetailsType } from './../prop-types'
 import InfoField from './../InfoField'
-import { AppItemsType } from './../prop-types'
-import SubtleLabel from './SubtleLabel'
-import TokenAmount from './TokenAmount'
+import { KnownAppBadge } from '../../../templates/kit'
 
 const EXPANDABLE_ROW_GAP = `${3 * GU}px`
 
 const DisputableApps = React.memo(({ items }) => {
   const { layoutName } = useLayout()
   const theme = useTheme()
+  const compactMode = layoutName === 'small'
 
   return (
     <DataView
@@ -28,14 +27,14 @@ const DisputableApps = React.memo(({ items }) => {
         { label: 'Actions', align: 'left' },
       ]}
       entries={items}
-      renderEntry={entry => renderEntry(entry, layoutName)}
-      renderEntryExpansion={entry => renderEntryExpansion(entry, layoutName)}
+      renderEntry={entry => renderEntry(entry, compactMode)}
+      renderEntryExpansion={entry => renderEntryExpansion(entry, compactMode)}
       renderEntryActions={entry => renderEntryActions(entry, theme)}
     />
   )
 })
 
-function renderEntry({ allowedActions }, layoutName) {
+function renderEntry({ allowedActions }, compactMode) {
   return [
     <div
       css={`
@@ -43,11 +42,10 @@ function renderEntry({ allowedActions }, layoutName) {
         align-items: center;
 
         /* Height must match expansion button to align nicely */
-        ${(layoutName === 'medium' || layoutName === 'large') &&
-          'height: 32px;'}
-        
+        ${!compactMode && `height: ${4 * GU}px;`}
       `}
     >
+      {/* TODO: Replace with LocalLabelAppBadge */}
       <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
     </div>,
     <React.Fragment>{allowedActions.join(', ')}</React.Fragment>,
@@ -70,7 +68,7 @@ function renderEntryActions(entry, theme) {
               color: ${theme.surfaceIcon};
             `}
           >
-            <Icon />
+            {Icon}
           </span>
           <span
             css={`
@@ -85,7 +83,41 @@ function renderEntryActions(entry, theme) {
   )
 }
 
-function renderEntryExpansion(entry, layoutName) {
+/* eslint-disable react/prop-types */
+function SubtleLabel({ children }) {
+  const theme = useTheme()
+
+  return (
+    <span
+      css={`
+        color: ${theme.surfaceContentSecondary};
+      `}
+    >
+      {children}
+    </span>
+  )
+}
+
+function TokenAmount({ address, symbol, amount }) {
+  return (
+    <div
+      css={`
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        /* Align left edge against label */
+        margin-left: -${1 * GU}px;
+      `}
+    >
+      <TokenBadge name={amount} address={address} symbol={symbol} compact />
+      <SubtleLabel>(per action)</SubtleLabel>
+    </div>
+  )
+}
+/* eslint-disable react/prop-types */
+
+function renderEntryExpansion(entry, compactMode) {
   const {
     actionCollateral,
     challengeCollateral,
@@ -106,7 +138,7 @@ function renderEntryExpansion(entry, layoutName) {
       <div
         css={`
           display: inline-grid;
-          grid-template-columns: ${layoutName === 'small' ? '1fr' : '1fr 1fr'};
+          grid-auto-flow: ${compactMode ? 'row' : 'column'};
           column-gap: ${8 * GU}px;
         `}
       >
@@ -191,18 +223,19 @@ function renderEntryExpansion(entry, layoutName) {
           margin-bottom: ${EXPANDABLE_ROW_GAP};
         `}
       >
-        Open to tokenholders with a minimun token balance of{' '}
-        {signerEligibility.amount}{' '}
+        Open to tokenholders with a minimun token balance of
         <div
           css={`
             display: inline-block;
             position: relative;
-            top: 3px;
+            top: ${0.5 * GU}px;
           `}
         >
           <TokenBadge
             address={signerEligibility.address}
+            name={signerEligibility.amount}
             symbol={signerEligibility.symbol}
+            compact
           />
         </div>
       </InfoField>
@@ -215,7 +248,7 @@ function renderEntryExpansion(entry, layoutName) {
 }
 
 DisputableApps.propTypes = {
-  items: AppItemsType.isRequired,
+  items: DisputableAppDetailsType.isRequired,
 }
 
 export default DisputableApps

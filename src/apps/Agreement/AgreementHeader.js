@@ -1,23 +1,27 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import {
-  IconGrid,
-  textStyle,
-  GU,
   DropDown,
-  Tag,
-  useTheme,
   IconCheck,
-  useLayout,
-  IconWrite,
+  IconGrid,
   IconShare,
+  IconWrite,
+  Tag,
+  noop,
+  textStyle,
+  useLayout,
+  useTheme,
+  GU,
 } from '@aragon/ui'
+import { STATUS_ACTIVE, STATUS_PENDING } from './agreement-statuses'
+
 import PropTypes from 'prop-types'
-import { STATUS_PENDING, STATUS_ACTIVE } from './agreement-statuses'
 import icon from './assets/icon.svg'
 
 function AgreementHeader({ title, status, onSign, onShare }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
+
+  const compactMode = layoutName === 'small'
 
   const handleDropdownChange = useCallback(
     index => {
@@ -33,8 +37,8 @@ function AgreementHeader({ title, status, onSign, onShare }) {
 
   const dropdownItems = useMemo(
     () => [
-      <DropdownItem Icon={IconWrite} label="Sign" />,
-      <DropdownItem Icon={IconShare} label="Share" />,
+      <DropdownItem Icon={<IconWrite />} label="Sign" />,
+      <DropdownItem Icon={<IconShare />} label="Share" />,
     ],
     []
   )
@@ -44,10 +48,10 @@ function AgreementHeader({ title, status, onSign, onShare }) {
       css={`
         display: flex;
         align-items: center;
-        margin-bottom: ${layoutName === 'small' ? 4 * GU : 5 * GU}px;
+        margin-bottom: ${compactMode ? 4 * GU : 5 * GU}px;
       `}
     >
-      {layoutName !== 'small' && <DecorativeIcon />}
+      {!compactMode && <DecorativeIcon />}
       <div
         css={`
           display: flex;
@@ -58,11 +62,8 @@ function AgreementHeader({ title, status, onSign, onShare }) {
         <div>
           <h1
             css={`
-              ${layoutName === 'small'
-                ? textStyle('title3')
-                : textStyle('title2')};
-              line-height: 1.3;
-              margin-bottom: ${1 * GU}px;
+              ${compactMode ? textStyle('title3') : textStyle('title2')};
+              margin-bottom: ${0.5 * GU}px;
             `}
           >
             {title}
@@ -148,11 +149,11 @@ function DropdownItem({ Icon, label }) {
           color: ${theme.surfaceIcon};
         `}
       >
-        <Icon />
+        {Icon}
       </span>
       <span
         css={`
-          margin-left: ${GU}px;
+          margin-left: ${1 * GU}px;
         `}
       >
         {label}
@@ -176,8 +177,8 @@ function DecorativeIcon() {
       <img
         src={icon}
         alt=""
-        width="70"
-        height="70"
+        width={8.75 * GU}
+        height={8.75 * GU}
         css={`
           display: block;
         `}
@@ -188,6 +189,8 @@ function DecorativeIcon() {
 
 AgreementHeader.defaultProps = {
   status: STATUS_PENDING,
+  onSign: noop,
+  onShare: noop,
 }
 
 AgreementHeader.propTypes = {
