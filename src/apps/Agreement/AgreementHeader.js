@@ -63,8 +63,7 @@ function AgreementHeader({ title, status, onSign, onShare }) {
           <h1
             css={`
               ${compactMode ? textStyle('title3') : textStyle('title2')};
-              line-height: 1.3;
-              margin-bottom: ${1 * GU}px;
+              margin-bottom: ${0.5 * GU}px;
             `}
           >
             {title}
