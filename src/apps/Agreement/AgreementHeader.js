@@ -49,7 +49,7 @@ function AgreementHeader({ title, status, onSign, onShare }) {
         margin-bottom: ${compactMode ? 4 * GU : 5 * GU}px;
       `}
     >
-      {compactMode && <DecorativeIcon />}
+      {!compactMode && <DecorativeIcon />}
       <div
         css={`
           display: flex;

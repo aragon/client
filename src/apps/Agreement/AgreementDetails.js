@@ -1,23 +1,18 @@
 import React from 'react'
-import {
-  GU,
-  useLayout,
-  Link,
-  IdentityBadge,
-  TransactionBadge,
-} from '@aragon/ui'
 import PropTypes from 'prop-types'
+import { IdentityBadge, Link, useLayout, GU } from '@aragon/ui'
 import InfoField from './InfoField'
 
 function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
   const { layoutName } = useLayout()
+  const compactMode = layoutName === 'small'
 
   return (
     <div
       css={`
         display: grid;
-        grid-gap: ${layoutName === 'small' ? 3 * GU : 4 * GU}px;
-        grid-template-columns: ${layoutName === 'small'
+        grid-gap: ${compactMode ? 3 * GU : 4 * GU}px;
+        grid-template-columns: ${compactMode
           ? 'minmax(0, 1fr)'
           : '1fr 1fr 1fr'};
       `}
@@ -25,8 +20,7 @@ function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
       <InfoField
         label="Agreement IPFS Link"
         css={`
-          ${(layoutName === 'medium' || layoutName === 'large') &&
-            'grid-column: span 2;'};
+          ${!compactMode && 'grid-column: span 2;'};
         `}
       >
         <Link
@@ -52,10 +46,10 @@ function AgreementDetails({ IPFSLink, AuthorHash, StakingHash, ContractHash }) {
       </InfoField>
       <InfoField label="Arbitrator">Aragon Court</InfoField>
       <InfoField label="Staking Pool">
-        <TransactionBadge transaction={StakingHash} />
+        <IdentityBadge entity={StakingHash} />
       </InfoField>
       <InfoField label="Agreement Contract">
-        <TransactionBadge transaction={ContractHash} />
+        <IdentityBadge entity={ContractHash} />
       </InfoField>
     </div>
   )
