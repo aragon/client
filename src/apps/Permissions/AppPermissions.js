@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { BackButton, Bar, textStyle } from '@aragon/ui'
 import { AppType } from '../../prop-types'
@@ -13,6 +13,8 @@ function AppPermissions({
   onBack,
   onManageRole,
 }) {
+  const [page, setPage] = useState(0)
+
   const permissions = usePermissionsByRole()
 
   const appProxyAddress = app ? app.proxyAddress : null
@@ -27,6 +29,14 @@ function AppPermissions({
         : [],
     [permissions, appProxyAddress]
   )
+
+  const permissionsKey = appPermissions
+    .map(permission => `${permission.app.proxyAddress}-${permission.role.id}`)
+    .join(',')
+
+  useEffect(() => {
+    setPage(0)
+  }, [permissionsKey])
 
   if (loading || !appProxyAddress) {
     return <EmptyBlock>Loading permissions…</EmptyBlock>
@@ -60,6 +70,8 @@ function AppPermissions({
         }
         onAssignPermission={onAssignPermission}
         onManageRole={onManageRole}
+        onPageChange={setPage}
+        page={page}
         permissions={appPermissions}
         showApps={false}
       />
