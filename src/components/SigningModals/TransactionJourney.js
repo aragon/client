@@ -1,52 +1,56 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { css, keyframes } from 'styled-components'
-import { GU, RADIUS, textStyle, useTheme } from '@aragon/ui'
+import { useTheme, textStyle, RADIUS, GU } from '@aragon/ui'
+import { keyframes, css } from 'styled-components'
 
-const STATUS_DISABLED = 'STATUS_DISABLED'
-const STATUS_ACTIVE = 'STATUS_ACTIVE'
-const STATUS_PREVIOUS = 'STATUS_PREVIOUS'
+const PREVIOUS = 'PREVIOUS'
+const CURRENT = 'CURRENT'
+const NEXT = 'NEXT'
 
 const ITEM_SPACING = 3.5 * GU
 
-const pipPulseAnimation = css`
-  animation: ${keyframes`
-    from {
-      transform: scale3d(0.25, 0.25, 1);
-      opacity: 0.5;
-    }
+const pulseAnimation = keyframes`
+  from {
+    transform: scale3d(0.25, 0.25, 1);
+    opacity: 0.5;
+  }
 
-    to {
-      transform: scale3d(1.25, 1.25, 1);
-      opacity: 0;
-    }
-  `} 2s ease infinite;
+  to {
+    transform: scale3d(1.25, 1.25, 1);
+    opacity: 0;
+  }
 `
 
-function getItemStatus(i, activeIndex) {
-  if (i < activeIndex) {
-    return STATUS_PREVIOUS
+function getItemStatus(i, activeItem) {
+  if (i < activeItem) {
+    return PREVIOUS
   }
 
-  if (i === activeIndex) {
-    return STATUS_ACTIVE
+  if (i > activeItem) {
+    return NEXT
   }
 
-  if (i > activeIndex) {
-    return STATUS_DISABLED
-  }
+  return CURRENT
 }
 
-function TransactionJourney({ items }) {
-  // The active item is always second from last
-  const activeIndex = items.length - 2
+function TransactionJourney({ items, activeItem, pulse, themeColor }) {
+  const theme = useTheme()
+  const color = themeColor || theme.accent
 
   const renderItems = () =>
     items.map(([title, { icon, content }], i) => {
-      const status = getItemStatus(i, activeIndex)
+      const status = getItemStatus(i, activeItem)
 
       return (
-        <JourneyItem key={i} title={title} icon={icon} status={status}>
+        <JourneyItem
+          key={i}
+          title={title}
+          icon={icon}
+          status={status}
+          isLastItem={i === items.length - 1}
+          pulse={pulse}
+          themeColor={color}
+        >
           {content}
         </JourneyItem>
       )
@@ -63,21 +67,79 @@ function TransactionJourney({ items }) {
   )
 }
 
+TransactionJourney.defaultProps = {
+  items: [],
+  activeItem: 0,
+  pulse: false,
+}
+
+TransactionJourney.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.array),
+  activeItem: PropTypes.number,
+  pulse: PropTypes.bool,
+  themeColor: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+}
+
 /* eslint-disable react/prop-types */
-function ProgressBorder({ currentlyActive }) {
+function PulsePip({ className, size, themeColor }) {
+  return (
+    <div
+      className={className}
+      css={`
+        width: ${size}px;
+        height: ${size}px;
+
+        &:after,
+        &:before {
+          content: '';
+          position: absolute;
+          background-color: ${themeColor};
+          border-radius: 100%;
+
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+        }
+
+        &:after {
+          animation: ${pulseAnimation} 2s ease infinite;
+
+          top: -${size}px;
+          bottom: -${size}px;
+          left: -${size}px;
+          right: -${size}px;
+
+          opacity: 0.2;
+        }
+      `}
+    />
+  )
+}
+
+function ProgressLine({ status, pulse, themeColor }) {
   const theme = useTheme()
 
-  const PIP_OFFSET = ITEM_SPACING + 1.25 * GU
+  const pipSize = 1 * GU
+  const pipOffset = ITEM_SPACING + 1.25 * GU
 
-  // Offset GU by a pixel to align border perfectly center against pip
-  const PIP_SIZE = 1 * GU - 1
+  const highlight = css`
+    &::before {
+      content: '';
+
+      bottom: ${pulse && status === CURRENT ? pipOffset : 0}px;
+      border-left: 1px solid ${themeColor};
+
+      z-index: 1;
+    }
+  `
 
   return (
     <div
       css={`
         position: absolute;
 
-        bottom: ${currentlyActive ? PIP_OFFSET : -PIP_OFFSET}px;
+        bottom: 0px;
         top: 0;
         left: 50%;
 
@@ -85,63 +147,30 @@ function ProgressBorder({ currentlyActive }) {
         &::before {
           position: absolute;
 
-          content: '';
           top: 0;
           left: 0;
         }
 
         &::after {
+          content: '';
           bottom: 0;
-          border-left: 1px solid ${theme.accent};
+          border-left: 1px dashed ${theme.surfaceOpened};
         }
 
-        ${currentlyActive &&
-          `&::before {
-            bottom: -${PIP_OFFSET}px;
-            border-left: 1px dashed ${theme.surfaceOpened};
-          }`}
+        ${status !== NEXT && highlight}
       `}
     >
-      {currentlyActive && (
-        <div
+      {status === CURRENT && pulse && (
+        <PulsePip
+          size={pipSize}
+          themeColor={themeColor}
           css={`
             position: absolute;
 
-            left: -${PIP_SIZE / 2}px;
-            bottom: 0;
-
-            width: ${PIP_SIZE}px;
-            height: ${PIP_SIZE}px;
+            left: -${pipSize / 2}px;
+            bottom: ${pipOffset}px;
 
             z-index: 5;
-
-            &:after,
-            &:before {
-              content: '';
-              position: absolute;
-              background-color: ${theme.accent};
-              border-radius: 100%;
-            }
-
-            {/* Pulsing element */}
-            &:after {
-              ${pipPulseAnimation}
-
-              top: -${PIP_SIZE}px;
-              bottom: -${PIP_SIZE}px;
-              left: -${PIP_SIZE}px;
-              right: -${PIP_SIZE}px;
-
-              opacity: 0.2;
-            }
-
-            {/* Pip */}
-            &:before {
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-            }
           `}
         />
       )}
@@ -149,7 +178,15 @@ function ProgressBorder({ currentlyActive }) {
   )
 }
 
-function JourneyItem({ icon, title, children, status }) {
+function JourneyItem({
+  icon,
+  title,
+  children,
+  status,
+  isLastItem,
+  pulse,
+  themeColor,
+}) {
   const theme = useTheme()
 
   return (
@@ -164,37 +201,30 @@ function JourneyItem({ icon, title, children, status }) {
           margin-right: ${2.5 * GU}px;
         `}
       >
-        {status !== STATUS_DISABLED && (
-          <ProgressBorder currentlyActive={status === STATUS_ACTIVE} />
+        {!isLastItem && (
+          <ProgressLine status={status} pulse={pulse} themeColor={themeColor} />
         )}
         <div
           css={`
             position: relative;
+            display: flex;
 
             overflow: hidden;
 
-            z-index: 1;
             width: ${5 * GU}px;
             height: ${5 * GU}px;
 
             background-color: ${theme.badge};
-
             border-radius: ${RADIUS}px;
-
-            opacity: ${status === STATUS_DISABLED ? 0.75 : 1};
+            z-index: 1;
 
             &::after {
               content: '';
-              position: absolute;
-
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
 
               background-image: url(${icon});
+              flex: 1;
 
-              ${status === STATUS_DISABLED &&
+              ${status === NEXT &&
                 `filter: grayscale(97%);
                 mix-blend-mode: hard-light;
                 opacity: 0.8;
@@ -205,34 +235,31 @@ function JourneyItem({ icon, title, children, status }) {
       </div>
       <div
         css={`
-          ${status !== STATUS_DISABLED && `padding-bottom: ${ITEM_SPACING}px;`}
+          ${!isLastItem && `padding-bottom: ${ITEM_SPACING}px;`}
         `}
       >
         <h2
           css={`
             ${textStyle('body1')};
 
-            line-height: 1.2;
-            margin-top: ${0.5 * GU}px;
             margin-bottom: ${0.5 * GU}px;
 
-            color: ${status === STATUS_DISABLED
-              ? theme.contentSecondary
-              : theme.content};
+            color: ${status === NEXT ? theme.contentSecondary : theme.content};
           `}
         >
           {title}
         </h2>
-
-        {children}
+        <div
+          css={`
+            color: ${status === NEXT ? theme.contentSecondary : theme.content};
+          `}
+        >
+          {children}
+        </div>
       </div>
     </li>
   )
 }
 /* eslint-enable react/prop-types */
-
-TransactionJourney.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.array),
-}
 
 export default TransactionJourney
