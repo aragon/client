@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, textStyle, RADIUS, GU } from '@aragon/ui'
-import { keyframes, css } from 'styled-components'
+import { css, keyframes } from 'styled-components'
+import { textStyle, useTheme, GU, RADIUS } from '@aragon/ui'
 
 const PREVIOUS = 'PREVIOUS'
 const CURRENT = 'CURRENT'
