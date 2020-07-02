@@ -91,7 +91,7 @@ export function WalletProvider({ children }) {
 
   return (
     <UseWalletProvider
-      getLibrary={getCleanEthereum}
+      ethereum={window.cleanEthereum}
       chainId={network.chainId}
       connectors={{
         fortmatic: { apiKey: getFortmaticApiKey() },
