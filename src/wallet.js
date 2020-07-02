@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import BN from 'bn.js'
 import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
@@ -81,8 +87,11 @@ function WalletContextProvider({ children }) {
 WalletContextProvider.propTypes = { children: PropTypes.node }
 
 export function WalletProvider({ children }) {
+  const getCleanEthereum = useCallback(() => window.cleanEthereum, [])
+
   return (
     <UseWalletProvider
+      getLibrary={getCleanEthereum}
       chainId={network.chainId}
       connectors={{
         fortmatic: { apiKey: getFortmaticApiKey() },

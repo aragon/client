@@ -76,6 +76,7 @@ export const networkConfigs = {
       defaultEth: 'ws://localhost:8545',
     },
     settings: {
+      chainId: 1337,
       name: 'local testnet',
       shortName: 'Local',
       type: 'private',

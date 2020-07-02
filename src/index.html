@@ -29,6 +29,16 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
+    <script>
+      // Dragons 🐉 have been reintroduced into the client, but hear us out:
+      // Web3.js mutates the ethereum object, and this causes an issue when
+      // connecting to a local chain, as for some reason the send method stops
+      // working properly and can't get the chainId. This causes use-wallet
+      // and subsequently web3-react to fail. A solution we found was cloning
+      // the ethereum object before it can be mutated, and passing that to
+      // use-wallet.
+      window.cleanEthereum = { ...window.ethereum }
+    </script>
     <script src="./index.js"></script>
   </body>
 </html>
