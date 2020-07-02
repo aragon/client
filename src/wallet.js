@@ -83,12 +83,12 @@ WalletContextProvider.propTypes = { children: PropTypes.node }
 export function WalletProvider({ children }) {
   return (
     <UseWalletProvider
-      ethereum={window.cleanEthereum}
       chainId={network.chainId}
       connectors={{
         fortmatic: { apiKey: getFortmaticApiKey() },
         portis: { dAppId: getPortisDappId() },
       }}
+      ethereum={window.cleanEthereum}
     >
       <WalletContextProvider>{children}</WalletContextProvider>
     </UseWalletProvider>
