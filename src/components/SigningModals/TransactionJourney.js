@@ -139,7 +139,7 @@ function ProgressLine({ status, pulse, themeColor }) {
       css={`
         position: absolute;
 
-        bottom: 0px;
+        bottom: 0;
         top: 0;
         left: 50%;
 
