@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { css, keyframes } from 'styled-components'
-import { textStyle, useTheme, GU, RADIUS } from '@aragon/ui'
+import { keyframes, css } from 'styled-components'
+import { useTheme, textStyle, RADIUS, GU } from '@aragon/ui'
 
-const PREVIOUS = 'PREVIOUS'
-const CURRENT = 'CURRENT'
-const NEXT = 'NEXT'
+const PREVIOUS = Symbol('PREVIOUS')
+const CURRENT = Symbol('CURRENT')
+const NEXT = Symbol('NEXT')
 
 const ITEM_SPACING = 3.5 * GU
 
@@ -21,40 +21,26 @@ const pulseAnimation = keyframes`
   }
 `
 
-function getItemStatus(i, activeItem) {
-  if (i < activeItem) {
-    return PREVIOUS
-  }
-
-  if (i > activeItem) {
-    return NEXT
-  }
-
-  return CURRENT
-}
-
 function TransactionJourney({ items, activeItem, pulse, themeColor }) {
   const theme = useTheme()
   const color = themeColor || theme.accent
 
-  const renderItems = () =>
-    items.map(([title, { icon, content }], i) => {
-      const status = getItemStatus(i, activeItem)
+  const getItemPosition = useCallback(
+    itemIndex => {
+      if (itemIndex === activeItem) {
+        return CURRENT
+      }
 
-      return (
-        <JourneyItem
-          key={i}
-          title={title}
-          icon={icon}
-          status={status}
-          isLastItem={i === items.length - 1}
-          pulse={pulse}
-          themeColor={color}
-        >
-          {content}
-        </JourneyItem>
-      )
-    })
+      if (itemIndex < activeItem) {
+        return PREVIOUS
+      }
+
+      if (itemIndex > activeItem) {
+        return NEXT
+      }
+    },
+    [activeItem]
+  )
 
   return (
     <ul
@@ -62,19 +48,34 @@ function TransactionJourney({ items, activeItem, pulse, themeColor }) {
         list-style: none;
       `}
     >
-      {renderItems()}
+      {items.map(([title, { icon, content }], i) => {
+        const status = getItemPosition(i)
+
+        return (
+          <JourneyItem
+            key={i}
+            title={title}
+            icon={icon}
+            status={status}
+            isLastItem={i === items.length - 1}
+            pulse={pulse}
+            themeColor={color}
+          >
+            {content}
+          </JourneyItem>
+        )
+      })}
     </ul>
   )
 }
 
 TransactionJourney.defaultProps = {
-  items: [],
   activeItem: 0,
   pulse: false,
 }
 
 TransactionJourney.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.array),
+  items: PropTypes.arrayOf(PropTypes.array).isRequired,
   activeItem: PropTypes.number,
   pulse: PropTypes.bool,
   themeColor: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -86,11 +87,12 @@ function PulsePip({ className, size, themeColor }) {
     <div
       className={className}
       css={`
+        position: relative;
         width: ${size}px;
         height: ${size}px;
 
-        &:after,
-        &:before {
+        &::after,
+        &::before {
           content: '';
           position: absolute;
           background-color: ${themeColor};
@@ -102,7 +104,7 @@ function PulsePip({ className, size, themeColor }) {
           bottom: 0;
         }
 
-        &:after {
+        &::after {
           animation: ${pulseAnimation} 2s ease infinite;
 
           top: -${size}px;
@@ -170,7 +172,7 @@ function ProgressLine({ status, pulse, themeColor }) {
             left: -${pipSize / 2}px;
             bottom: ${pipOffset}px;
 
-            z-index: 5;
+            z-index: 2;
           `}
         />
       )}
@@ -236,26 +238,20 @@ function JourneyItem({
       <div
         css={`
           ${!isLastItem && `padding-bottom: ${ITEM_SPACING}px;`}
+          color: ${status === NEXT ? theme.contentSecondary : theme.content};
         `}
       >
         <h2
           css={`
-            ${textStyle('body1')};
-
             margin-bottom: ${0.5 * GU}px;
 
-            color: ${status === NEXT ? theme.contentSecondary : theme.content};
+            ${textStyle('body1')};
           `}
         >
           {title}
         </h2>
-        <div
-          css={`
-            color: ${status === NEXT ? theme.contentSecondary : theme.content};
-          `}
-        >
-          {children}
-        </div>
+
+        {children}
       </div>
     </li>
   )
