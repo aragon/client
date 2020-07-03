@@ -340,7 +340,7 @@ const Organization = React.memo(function Organization({
                   ? `select the ${sanitizeNetworkType(network.type)} network`
                   : 'unlock your account'
               } in ${getProviderString(
-                'your Ethereum provider',
+                'your Ethereum wallet',
                 wallet.providerInfo.id
               )}.`}
             </Info>

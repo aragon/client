@@ -49,7 +49,7 @@ export function NoWeb3Provider({ intent, onClose }) {
   const onElectron = isElectron()
   const neededText = onElectron
     ? 'You need to have Frame installed and enabled'
-    : 'You need to have an Ethereum provider installed and enabled'
+    : 'You need to have an Ethereum wallet installed and enabled'
 
   const actionText = (
     <span>
@@ -81,7 +81,7 @@ NoWeb3Provider.propTypes = {
 
 export function AccountLocked({ intent, onClose, walletProviderId }) {
   const providerMessage = getProviderString(
-    'your Ethereum provider',
+    'your Ethereum wallet',
     walletProviderId
   )
   return (
@@ -115,7 +115,7 @@ export function WrongNetwork({
     `}
       actionText={`
       Please connect ${getProviderString(
-        'your Ethereum provider',
+        'your Ethereum wallet',
         walletProviderId
       )} to the ${networkType} network.
     `}
