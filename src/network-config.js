@@ -25,7 +25,7 @@ export const networkConfigs = {
       type: 'main', // as returned by web3.eth.net.getNetworkType()
     },
     providers: [
-      { id: 'injected' },
+      { id: 'provided' },
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
@@ -47,7 +47,7 @@ export const networkConfigs = {
     },
     // providers: ['injected', 'frame'],
     providers: [
-      { id: 'injected' },
+      { id: 'provided' },
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
@@ -67,7 +67,7 @@ export const networkConfigs = {
       shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
   },
   local: {
     addresses: {
@@ -85,7 +85,7 @@ export const networkConfigs = {
       shortName: 'Local',
       type: 'private',
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
   },
   unknown: {
     addresses: {
@@ -99,7 +99,7 @@ export const networkConfigs = {
       shortName: 'Unknown',
       type: 'unknown',
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
   },
 }
 
