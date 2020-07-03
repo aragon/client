@@ -78,7 +78,7 @@ export const networkConfigs = {
     },
     settings: {
       // Local development environments by convention use
-      // a chainId of value 1337, but the sake of configuration
+      // a chainId of value 1337, but for the sake of configuration
       // we expose a way to change this value.
       chainId: Number(getLocalChainId()),
       name: 'local testnet',
