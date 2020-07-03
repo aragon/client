@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Modal,
+  noop,
   Viewport,
   springs,
   textStyle,
@@ -13,13 +14,13 @@ import { useSteps } from '../../hooks'
 
 const AnimatedDiv = animated.div
 
-const DEFAULT_MODAL_WIDTH = 700
+const DEFAULT_MODAL_WIDTH = 85 * GU
 
 function MultiScreenModal({ visible, screens, onClose }) {
   const steps = screens.length
   const { prev, step, next, direction } = useSteps(steps)
 
-  const [measuredHeight, setMeasuredHeight] = useState(false)
+  const [applyStaticHeight, setApplyStaticHeight] = useState(false)
   const [height, setHeight] = useState(null)
   const [firstStart, setFirstStart] = useState(true)
   const { below } = useViewport()
@@ -64,7 +65,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
       return
     }
 
-    setMeasuredHeight(true)
+    setApplyStaticHeight(true)
   }, [firstStart])
 
   const handleModalClose = useCallback(() => {
@@ -75,14 +76,14 @@ function MultiScreenModal({ visible, screens, onClose }) {
 
   return (
     <Viewport>
-      {({ width: viewportWidth }) => {
-        const gutter = 30
-        const containWidth = viewportWidth < modalWidth + gutter
+      {({ width }) => {
+        // Apply a small gutter when matching the viewport width
+        const viewportWidth = width - 4 * GU
 
         return (
           <Modal
             padding={0}
-            width={containWidth ? viewportWidth - gutter : modalWidth}
+            width={Math.min(viewportWidth, modalWidth)}
             onClose={handleModalClose}
             visible={visible}
             closeButton={!disableClose}
@@ -97,7 +98,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
                 <AnimatedDiv
                   style={{
                     position: 'relative',
-                    height: measuredHeight ? height : 'auto',
+                    height: applyStaticHeight ? height : 'auto',
                   }}
                 >
                   <Transition
@@ -120,7 +121,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
                     }}
                     onRest={(_, status) => {
                       if (status === 'update') {
-                        setMeasuredHeight(false)
+                        setApplyStaticHeight(false)
                       }
                     }}
                     onStart={onStart}
@@ -143,9 +144,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
                               currentStep === step ? 'static' : 'absolute',
                             transform: transform,
                             opacity: opacity,
-                            width: containWidth
-                              ? viewportWidth - gutter
-                              : screenWidth,
+                            width: Math.min(viewportWidth, screenWidth),
                             padding: smallMode ? 3 * GU : 5 * GU,
                           }}
                         >
@@ -164,6 +163,10 @@ function MultiScreenModal({ visible, screens, onClose }) {
   )
 }
 
+MultiScreenModal.defaultProps = {
+  onClose: noop,
+}
+
 MultiScreenModal.propTypes = {
   visible: PropTypes.bool,
   screens: PropTypes.arrayOf(
@@ -173,7 +176,7 @@ MultiScreenModal.propTypes = {
       disableClose: PropTypes.bool,
       width: PropTypes.number,
     })
-  ),
+  ).isRequired,
   onClose: PropTypes.func,
 }
 
