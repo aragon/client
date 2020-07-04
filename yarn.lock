@@ -12491,10 +12491,10 @@ use-inside@^0.2.0:
   dependencies:
     prop-types "^15.7.2"
 
-use-wallet@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.7.0.tgz#97ed2105edd2a3de2f684aa6468e3f5858339836"
-  integrity sha512-o3mu2fHHiCR5m7H5JPm4uV/fAf+yuGt/PZj4P3j+EUKMvryDwcaxtL0LKXmxA5EDFifQLqMjzvOiHbhofTguRg==
+use-wallet@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.7.1.tgz#aba6c4a0983ecb01da299a787d2faba636a80365"
+  integrity sha512-SQvfPmeoPhrHFEYNL5ciNWg8uLNdn2uawFJqTgS+UOzzbIGhQ4h56Rwk9I2YTx2eT/uE1hOuUPlYJ5uLD9joew==
   dependencies:
     "@aragon/provided-connector" "^6.0.7"
     "@web3-react/authereum-connector" "^6.1.1"
@@ -12508,7 +12508,6 @@ use-wallet@^0.7.0:
     "@web3-react/walletconnect-connector" "^6.1.4"
     "@web3-react/walletlink-connector" "^6.1.1"
     jsbi "^3.1.1"
-    prop-types "^15.7.2"
 
 use@^3.1.0:
   version "3.1.1"
