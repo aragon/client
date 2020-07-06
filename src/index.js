@@ -1,6 +1,9 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
+// Initialize Sentry immediately if enabled
+import './sentry'
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
@@ -24,12 +27,11 @@ const lastPackageVersion = getLastPackageVersion()
 const [currentMajorVersion, currentMinorVersion] = packageVersion.split('.')
 const [lastMajorVersion, lastMinorVersion] = lastPackageVersion.split('.')
 
-// Setting a package version also clears all local storage data.
+// Purge localstorage when upgrading between different minor versions.
 if (
   lastMajorVersion !== currentMajorVersion ||
   lastMinorVersion !== currentMinorVersion
 ) {
-  // Purge localstorage when upgrading between different minor versions.
   window.localStorage.clear()
 
   // Attempt to clean up indexedDB storage as well.
