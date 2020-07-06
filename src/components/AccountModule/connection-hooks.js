@@ -63,13 +63,26 @@ export function useWalletConnectionDetails(
 ) {
   const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
   const theme = useTheme()
-  let connectionDetails = {}
   const isWalletAndClientSynced =
     Math.abs(walletSyncDelay - clientSyncDelay) <= OK_PROVIDER_SYNC_DELAY
   const networkSlowdown =
     walletSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
     clientSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
     isWalletAndClientSynced
+  const networkName = network.shortName.toLowerCase()
+
+  let connectionDetails = {
+    connectionMessage: `Connected to ${walletNetworkName}`,
+    connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
+    connectionColor: theme.positive,
+  }
+
+  if (
+    clientListening &&
+    (networkName === 'local' || networkName === 'unknown')
+  ) {
+    return connectionDetails
+  }
 
   if (
     !clientListening ||
@@ -99,12 +112,6 @@ export function useWalletConnectionDetails(
       connectionMessage: 'Wrong network',
       connectionMessageLong: 'Wrong network',
       connectionColor: theme.warning,
-    }
-  } else {
-    connectionDetails = {
-      connectionMessage: `Connected to ${walletNetworkName}`,
-      connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
-      connectionColor: theme.positive,
     }
   }
   return connectionDetails
@@ -214,6 +221,18 @@ export function useSyncState(
   const currentBlock = getBlockNumber()
 
   const minimumTransactionBalance = new BN(0.005)
+  const networkName = network.shortName.toLowerCase()
+
+  if (
+    clientListening &&
+    (networkName === 'local' || networkName === 'unknown')
+  ) {
+    return {
+      header: 'Synced',
+      info: currentBlock ? `: current block ${currentBlock}` : '',
+      status: STATUS_CONNECTION_OK,
+    }
+  }
 
   if (!clientOnline || !clientListening) {
     return {
