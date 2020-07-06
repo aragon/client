@@ -70,14 +70,14 @@ export function useWalletConnectionDetails(
     clientSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
     isWalletAndClientSynced
 
-  const connectionDetails = {
+  const defaultOkConnectionDetails = {
     connectionMessage: `Connected to ${walletNetworkName}`,
     connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
     connectionColor: theme.positive,
   }
 
   if (clientListening && !network.live) {
-    return connectionDetails
+    return defaultOkConnectionDetails
   }
 
   if (
@@ -111,7 +111,7 @@ export function useWalletConnectionDetails(
     }
   }
 
-  return connectionDetails
+  return defaultOkConnectionDetails
 }
 
 export function useSyncInfo(wantedWeb3 = 'default') {
@@ -219,14 +219,14 @@ export function useSyncState(
 
   const minimumTransactionBalance = new BN(0.005)
 
-  const syncedStatus = {
+  const defaultSyncedStatus = {
     header: 'Synced',
     info: currentBlock ? `: current block ${currentBlock}` : '',
     status: STATUS_CONNECTION_OK,
   }
 
   if (clientListening && !network.live) {
-    return syncedStatus
+    return defaultSyncedStatus
   }
 
   if (!clientOnline || !clientListening) {
@@ -269,5 +269,5 @@ export function useSyncState(
     }
   }
 
-  return syncedStatus
+  return defaultSyncedStatus
 }
