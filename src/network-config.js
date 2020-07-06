@@ -87,6 +87,8 @@ export const networkConfigs = {
     },
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
+  // xDai is an experimental chain in the Aragon Client. It's possible
+  // and expected that a few things will break.
   xdai: {
     addresses: {
       ensRegistry:
