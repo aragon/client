@@ -67,9 +67,9 @@
   },
   "devDependencies": {
     "@aragon/os": "^4.0.0",
-    "@babel/core": "^7.10.2",
-    "@babel/preset-env": "^7.10.2",
-    "@babel/preset-react": "^7.10.1",
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^26.0.1",
     "babel-plugin-styled-components": "^1.10.6",
