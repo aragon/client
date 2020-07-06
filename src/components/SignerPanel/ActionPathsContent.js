@@ -79,13 +79,14 @@ class ActionPathsContent extends React.Component {
                   return (
                     <Link
                       key={index}
-                      href={`#${routing.path({
+                      href={`#${routing.path(({ mode }) => ({
                         mode: {
+                          ...mode,
                           name: 'org',
                           instanceId: 'permissions',
                           instancePath: `/app/${value.proxyAddress}`,
                         },
-                      })}`}
+                      }))}`}
                       focusRingSpacing={[3, 2]}
                       css="margin-right: 2px"
                     >
