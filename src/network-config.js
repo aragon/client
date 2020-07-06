@@ -87,6 +87,28 @@ export const networkConfigs = {
     },
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
+  // xDai is an experimental chain in the Aragon Client. It's possible
+  // and expected that a few things will break.
+  xdai: {
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0xaafca6b0c89521752e559650206d7c925fd0e530',
+    },
+    nodes: {
+      defaultEth: 'wss://xdai.poanetwork.dev/wss',
+    },
+    settings: {
+      chainId: 100,
+      name: 'xDai',
+      shortName: 'xdai',
+      type: 'private',
+    },
+    providers: [
+      { id: 'provided' },
+      { id: 'frame' },
+      portisDappId ? { id: 'portis', conf: portisDappId } : null,
+    ].filter(p => p),
+  },
   unknown: {
     addresses: {
       ensRegistry: localEnsRegistryAddress,
