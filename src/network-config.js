@@ -104,7 +104,6 @@ export const networkConfigs = {
     providers: [
       { id: 'provided' },
       { id: 'frame' },
-      fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
   },
