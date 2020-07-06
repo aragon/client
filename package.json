@@ -1,7 +1,7 @@
 {
   "name": "aragon",
   "description": "Aragon DApp",
-  "version": "0.8.10-hotfix",
+  "version": "0.8.12",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "author": "Aragon Association <legal@aragon.org>",
@@ -34,13 +34,13 @@
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
-    "@aragon/ui": "^1.4.0",
-    "@aragon/wrapper": "^5.0.0-rc.26",
-    "@sentry/browser": "^5.5.0",
+    "@aragon/ui": "^1.4.2",
+    "@aragon/wrapper": "^5.0.0-rc.28",
+    "@sentry/browser": "^5.17.0",
     "@ungap/event-target": "^0.1.0",
     "clipboard-polyfill": "^2.8.6",
     "core-js": "^3.3.2",
-    "dayjs": "^1.8.14",
+    "dayjs": "^1.8.28",
     "decimal.js": "^10.2.0",
     "dotenv": "^8.2.0",
     "eth-ens-namehash": "^2.0.8",
@@ -58,14 +58,12 @@
     "react-spring": "^7.2.10",
     "react-use-gesture": "^5.2.4",
     "regenerator-runtime": "^0.13.3",
-    "remark": "^10.0.1",
-    "remark-react": "^5.0.1",
     "resolve-pathname": "^3.0.0",
     "styled-components": "^4.1.3",
-    "use-wallet": "^0.4.4",
-    "web3": "^1.2.2",
-    "web3-eth-abi": "^1.2.4",
-    "web3-utils": "^1.2.2"
+    "use-wallet": "^0.7.1",
+    "web3": "^1.2.6",
+    "web3-eth-abi": "^1.2.6",
+    "web3-utils": "^1.2.6"
   },
   "devDependencies": {
     "@aragon/os": "^4.0.0",
@@ -98,6 +96,10 @@
     "ps-node": "^0.1.6",
     "rimraf": "^2.6.2"
   },
+  "resolutions": {
+    "@aragon/wrapper/web3": "1.2.6",
+    "@aragon/wrapper/web3-eth-abi": "1.2.6"
+  },
   "scripts": {
     "bundlewatch": "bundlewatch",
     "start": "node scripts/start",
@@ -106,12 +108,14 @@
     "start:rinkeby": "npm start",
     "start:staging": "cross-env ARAGON_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm start",
     "start:ropsten": "cross-env ARAGON_ETH_NETWORK_TYPE=ropsten npm start",
+    "start:xdai": "cross-env ARAGON_ETH_NETWORK_TYPE=xdai npm start",
     "build": "node scripts/build",
     "build:local": "node scripts/build-local",
     "build:mainnet": "cross-env ARAGON_ETH_NETWORK_TYPE=main npm run build",
     "build:rinkeby": "npm run build",
     "build:staging": "cross-env ARAGON_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm run build",
     "build:ropsten": "cross-env ARAGON_ETH_NETWORK_TYPE=ropsten npm run build",
+    "build:xdai": "cross-env ARAGON_ETH_NETWORK_TYPE=xdai npm run build",
     "lint": "eslint ./src",
     "test": "npm run lint && npm run jest",
     "jest": "jest",

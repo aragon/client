@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Info, Link, RadioList, GU, textStyle } from '@aragon/ui'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import { getProviderString } from '../../ethereum-providers'
-import { getAppPath } from '../../routing'
+import { useRouting } from '../../routing'
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
 
@@ -11,12 +11,12 @@ const RADIO_ITEM_TITLE_LENGTH = 30
 
 class ActionPathsContent extends React.Component {
   static propTypes = {
-    dao: PropTypes.string.isRequired,
     direct: PropTypes.bool.isRequired,
     intent: PropTypes.object.isRequired,
+    routing: PropTypes.object.isRequired,
+    onSign: PropTypes.func.isRequired,
     paths: PropTypes.array.isRequired,
     pretransaction: PropTypes.object,
-    onSign: PropTypes.func.isRequired,
     signingEnabled: PropTypes.bool,
     walletProviderId: PropTypes.string.isRequired,
   }
@@ -41,7 +41,7 @@ class ActionPathsContent extends React.Component {
     showPaths,
     { description, name, to, annotatedDescription }
   ) {
-    const { dao } = this.props
+    const { routing } = this.props
     return (
       <React.Fragment>
         <p>This transaction will {showPaths ? 'eventually' : ''} perform</p>
@@ -79,11 +79,14 @@ class ActionPathsContent extends React.Component {
                   return (
                     <Link
                       key={index}
-                      href={`#${getAppPath({
-                        dao,
-                        instanceId: 'permissions',
-                        params: `app.${value.proxyAddress}`,
-                      })}`}
+                      href={`#${routing.path(({ mode }) => ({
+                        mode: {
+                          ...mode,
+                          name: 'org',
+                          instanceId: 'permissions',
+                          instancePath: `/app/${value.proxyAddress}`,
+                        },
+                      }))}`}
                       focusRingSpacing={[3, 2]}
                       css="margin-right: 2px"
                     >
@@ -100,7 +103,7 @@ class ActionPathsContent extends React.Component {
                         font-style: italic;
                       `}
                     >
-                      {value.name}
+                      “{value.name}”
                     </span>
                   )
                 }
@@ -291,7 +294,7 @@ class ActionPathsContent extends React.Component {
           >
             <p>
               This action requires two transactions to be signed in{' '}
-              {getProviderString('your Ethereum provider', walletProviderId)}.{' '}
+              {getProviderString('your Ethereum wallet', walletProviderId)}.{' '}
               {approveTransactionMessage}
               Please confirm them one after another.
             </p>
@@ -301,8 +304,8 @@ class ActionPathsContent extends React.Component {
               `}
             >
               In some situations,{' '}
-              {getProviderString('your Ethereum provider', walletProviderId)}{' '}
-              may warn you that the second transaction will fail.{' '}
+              {getProviderString('your Ethereum wallet', walletProviderId)} may
+              warn you that the second transaction will fail.{' '}
               <strong css="font-weight: 800">Please ignore this warning</strong>
               .
             </p>
@@ -316,4 +319,7 @@ class ActionPathsContent extends React.Component {
   }
 }
 
-export default ActionPathsContent
+export default props => {
+  const routing = useRouting()
+  return <ActionPathsContent routing={routing} {...props} />
+}

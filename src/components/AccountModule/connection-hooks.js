@@ -63,13 +63,22 @@ export function useWalletConnectionDetails(
 ) {
   const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
   const theme = useTheme()
-  let connectionDetails = {}
   const isWalletAndClientSynced =
     Math.abs(walletSyncDelay - clientSyncDelay) <= OK_PROVIDER_SYNC_DELAY
   const networkSlowdown =
     walletSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
     clientSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
     isWalletAndClientSynced
+
+  const connectionDetails = {
+    connectionMessage: `Connected to ${walletNetworkName}`,
+    connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
+    connectionColor: theme.positive,
+  }
+
+  if (clientListening && !network.live) {
+    return connectionDetails
+  }
 
   if (
     !clientListening ||
@@ -80,7 +89,7 @@ export function useWalletConnectionDetails(
     clientSyncDelay >= MAX_PROVIDER_SYNC_DELAY ||
     walletSyncDelay >= MAX_PROVIDER_SYNC_DELAY
   ) {
-    connectionDetails = {
+    return {
       connectionMessage: 'No connection',
       connectionMessageLong: 'No connection',
       connectionColor: theme.negative,
@@ -89,24 +98,19 @@ export function useWalletConnectionDetails(
     walletSyncDelay >= OK_PROVIDER_SYNC_DELAY ||
     clientSyncDelay >= OK_PROVIDER_SYNC_DELAY
   ) {
-    connectionDetails = {
+    return {
       connectionMessage: 'Syncing issues',
       connectionMessageLong: 'Syncing issues',
       connectionColor: theme.warning,
     }
   } else if (hasNetworkMismatch) {
-    connectionDetails = {
+    return {
       connectionMessage: 'Wrong network',
       connectionMessageLong: 'Wrong network',
       connectionColor: theme.warning,
     }
-  } else {
-    connectionDetails = {
-      connectionMessage: `Connected to ${walletNetworkName}`,
-      connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
-      connectionColor: theme.positive,
-    }
   }
+
   return connectionDetails
 }
 
@@ -215,6 +219,16 @@ export function useSyncState(
 
   const minimumTransactionBalance = new BN(0.005)
 
+  const syncedStatus = {
+    header: 'Synced',
+    info: currentBlock ? `: current block ${currentBlock}` : '',
+    status: STATUS_CONNECTION_OK,
+  }
+
+  if (clientListening && !network.live) {
+    return syncedStatus
+  }
+
   if (!clientOnline || !clientListening) {
     return {
       header: '',
@@ -255,9 +269,5 @@ export function useSyncState(
     }
   }
 
-  return {
-    header: 'Synced',
-    info: currentBlock ? `: current block ${currentBlock}` : '',
-    status: STATUS_CONNECTION_OK,
-  }
+  return syncedStatus
 }

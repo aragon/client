@@ -1,29 +1,37 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   ButtonIcon,
-  IconMenu,
   GU,
+  IconMenu,
+  springs,
   useTheme,
   useViewport,
-  springs,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import {
-  AppInstanceGroupType,
-  AppsStatusType,
   AppType,
+  AppsStatusType,
+  AragonType,
   DaoAddressType,
   DaoStatusType,
+  RepoType,
 } from '../../prop-types'
+
 import { DAO_STATUS_LOADING } from '../../symbols'
 import { iOS, isSafari } from '../../utils'
 import { useClientTheme } from '../../client-theme'
-import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
-import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
+import { useRouting } from '../../routing'
 import ActivityButton from './ActivityButton/ActivityButton'
-import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
 import AccountModule from '../AccountModule/AccountModule'
+import GlobalPreferencesButton from './GlobalPreferencesButton/GlobalPreferencesButton'
+import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
+import OrgViewApp from './OrgViewApp'
+import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
+import SignerPanel from '../SignerPanel/SignerPanel'
+import UpgradeBanner from '../Upgrade/UpgradeBanner'
+import UpgradeModal from '../Upgrade/UpgradeModal'
+import UpgradeOrganizationPanel from '../Upgrade/UpgradeOrganizationPanel'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -31,38 +39,114 @@ const AppWidthContext = React.createContext(0)
 const AnimatedDiv = animated.div
 
 function OrgView({
-  activeInstanceId,
-  appInstanceGroups,
   apps,
   appsStatus,
-  children,
+  canUpgradeOrg,
   daoAddress,
   daoStatus,
-  locator,
-  onOpenApp,
-  onOpenPreferences,
+  historyBack,
+  repos,
+  permissionsLoading,
+  signatureBag,
+  transactionBag,
+  visible,
+  web3,
+  wrapper,
 }) {
   const theme = useTheme()
+  const routing = useRouting()
   const { appearance } = useClientTheme()
   const { width, below } = useViewport()
   const autoClosingPanel = below('medium')
-  const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
 
-  const toggleMenuPanel = useCallback(
-    () => setMenuPanelOpen(opened => !opened),
-    []
+  const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
+  const [orgUpgradePanelOpened, setOrgUpgradePanelOpened] = useState(false)
+  const [upgradeModalOpened, setUpgradeModalOpened] = useState(false)
+
+  const appInstanceGroups = useMemo(
+    () =>
+      apps.reduce((groups, app) => {
+        const group = groups.find(({ appId }) => appId === app.appId)
+
+        const {
+          // This is not technically fully true, but let's assume that only these
+          // aspects are different between multiple instances of the same app
+          codeAddress: instanceCodeAddress,
+          identifier: instanceIdentifier,
+          proxyAddress: instanceProxyAddress,
+          ...sharedAppInfo
+        } = app
+
+        const instance = {
+          codeAddress: instanceCodeAddress,
+          identifier: instanceIdentifier,
+          instanceId: instanceProxyAddress,
+          proxyAddress: instanceProxyAddress,
+        }
+
+        // Append the instance to the existing app group
+        if (group) {
+          group.instances.push(instance)
+          return groups
+        }
+
+        return groups.concat([
+          {
+            app: sharedAppInfo,
+            appId: app.appId,
+            name: app.name,
+            instances: [instance],
+            hasWebApp: app.hasWebApp,
+            repoName: app.appName,
+          },
+        ])
+      }, []),
+    [apps]
+  )
+
+  const openApp = useCallback(
+    (instanceId, { instancePath } = {}) => {
+      routing.update(({ mode }) => ({
+        mode: { ...mode, instanceId, instancePath },
+      }))
+    },
+    [routing]
   )
 
   const handleCloseMenuPanel = useCallback(() => setMenuPanelOpen(false), [])
+
+  const hideOrgUpgradePanel = useCallback(() => {
+    setOrgUpgradePanelOpened(false)
+  }, [])
 
   const handleOpenApp = useCallback(
     (...args) => {
       if (autoClosingPanel) {
         handleCloseMenuPanel()
       }
-      onOpenApp(args)
+
+      openApp(...args)
     },
-    [autoClosingPanel, handleCloseMenuPanel, onOpenApp]
+    [autoClosingPanel, handleCloseMenuPanel, openApp]
+  )
+
+  const handleUpgradeModalOpen = useCallback(() => {
+    setUpgradeModalOpened(true)
+  }, [])
+
+  const handleUpgradeModalClose = useCallback(() => {
+    setUpgradeModalOpened(false)
+  }, [])
+
+  const showOrgUpgradePanel = useCallback(() => {
+    // Only open the upgrade panel if the org can be upgraded
+    setOrgUpgradePanelOpened(canUpgradeOrg)
+    setUpgradeModalOpened(false)
+  }, [canUpgradeOrg])
+
+  const toggleMenuPanel = useCallback(
+    () => setMenuPanelOpen(opened => !opened),
+    []
   )
 
   useEffect(() => {
@@ -85,32 +169,54 @@ function OrgView({
   }, [appearance])
 
   return (
-    <AppWidthContext.Provider
-      value={autoClosingPanel ? width : width - MENU_PANEL_WIDTH}
+    <div
+      css={`
+        display: ${visible ? 'flex' : 'none'};
+        flex-direction: column;
+        position: relative;
+        z-index: 0;
+        height: 100vh;
+        min-width: ${45 * GU}px;
+      `}
     >
       <div
         css={`
-          display: flex;
-          flex-direction: column;
           position: relative;
-          height: 100%;
-          width: 100%;
-          background: ${theme.background};
+          z-index: 1;
+          flex-shrink: 0;
         `}
+      >
+        <UpgradeBanner
+          visible={canUpgradeOrg}
+          onMoreInfo={handleUpgradeModalOpen}
+        />
+      </div>
+      <AppWidthContext.Provider
+        value={autoClosingPanel ? width : width - MENU_PANEL_WIDTH}
       >
         <div
           css={`
-            flex-shrink: 0;
-            position: relative;
-            z-index: 2;
-            height: ${8 * GU}px;
             display: flex;
-            justify-content: space-between;
-            background: ${theme.surface};
-            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+            width: 100%;
+            background: ${theme.background};
+          `}
+        >
+          <div
+            css={`
+              flex-shrink: 0;
+              position: relative;
+              z-index: 2;
+              height: ${8 * GU}px;
+              display: flex;
+              justify-content: space-between;
+              background: ${theme.surface};
+              box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
 
-            ${menuPanelOpen && iOS
-              ? `
+              ${menuPanelOpen && iOS
+                ? `
                 /* behaviour only in iOS:
                  * with the nested div->div->div structure
                  * the 3rd div has positioned absolute
@@ -128,132 +234,179 @@ function OrgView({
                 width: 100%;
                 z-index: 0;
               `
-              : ''}
-          `}
-        >
-          {autoClosingPanel ? (
-            <ButtonIcon
-              label="Open menu"
-              onClick={toggleMenuPanel}
-              css={`
-                position: relative;
-                top: ${2 * GU}px;
-                left: ${2 * GU}px;
-              `}
-            >
-              <IconMenu />
-            </ButtonIcon>
-          ) : (
-            <OrganizationSwitcher
-              loading={daoStatus === DAO_STATUS_LOADING}
-              currentDao={{
-                name: daoAddress.domain,
-                address: daoAddress.address,
-              }}
-            />
-          )}
-          <div css="display: flex">
-            <AccountModule locator={locator} />
-            <GlobalPreferencesButton onOpen={onOpenPreferences} />
-            <ActivityButton apps={apps} />
+                : ''}
+            `}
+          >
+            {autoClosingPanel ? (
+              <ButtonIcon
+                label="Open menu"
+                onClick={toggleMenuPanel}
+                css={`
+                  position: relative;
+                  top: ${2 * GU}px;
+                  left: ${2 * GU}px;
+                `}
+              >
+                <IconMenu />
+              </ButtonIcon>
+            ) : (
+              <OrganizationSwitcher
+                loading={daoStatus === DAO_STATUS_LOADING}
+                currentDao={{
+                  name: daoAddress.domain,
+                  address: daoAddress.address,
+                }}
+              />
+            )}
+            <div css="display: flex">
+              <AccountModule />
+              <GlobalPreferencesButton />
+              <ActivityButton apps={apps} />
+            </div>
           </div>
-        </div>
-        <div
-          css={`
-            flex-grow: 1;
-            overflow-y: hidden;
-            margin-top: 2px;
-            ${menuPanelOpen && iOS
-              ? `
-                  padding-top: ${8 * GU}px;
-                `
-              : ''}
-          `}
-        >
           <div
             css={`
-              display: flex;
-              height: 100%;
-              ${iOS || isSafari
+              flex-grow: 1;
+              overflow-y: hidden;
+              margin-top: 2px;
+              ${menuPanelOpen && iOS
                 ? `
-                  height: calc(100vh - ${8 * GU}px);
+                  padding-top: ${8 * GU}px;
                 `
                 : ''}
             `}
           >
-            <MenuPanel
-              activeInstanceId={activeInstanceId}
-              appInstanceGroups={appInstanceGroups}
-              appsStatus={appsStatus}
-              autoClosing={autoClosingPanel}
-              daoAddress={daoAddress}
-              daoStatus={daoStatus}
-              onMenuPanelClose={handleCloseMenuPanel}
-              onOpenApp={handleOpenApp}
-              opened={menuPanelOpen}
-              css="z-index: 3"
-            />
             <div
               css={`
-                flex-grow: 1;
                 display: flex;
-                position: relative;
-                z-index: 1;
+                height: 100%;
+                ${iOS || isSafari
+                  ? `
+                  height: calc(100vh - ${8 * GU}px);
+                `
+                  : ''}
               `}
             >
-              <Transition
-                config={springs.lazy}
-                items={showAppOverlay}
-                immediate={showAppOverlay}
-                enter={{ opacity: 1 }}
-                leave={{ opacity: 0 }}
-              >
-                {show =>
-                  show &&
-                  (({ opacity }) => (
-                    <AnimatedDiv
-                      style={{ opacity }}
-                      css={`
-                        position: absolute;
-                        z-index: 2;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        background: ${theme.background};
-                      `}
-                    />
-                  ))
-                }
-              </Transition>
+              <MenuPanel
+                appInstanceGroups={appInstanceGroups}
+                appsStatus={appsStatus}
+                autoClosing={autoClosingPanel}
+                daoAddress={daoAddress}
+                daoStatus={daoStatus}
+                onMenuPanelClose={handleCloseMenuPanel}
+                onOpenApp={handleOpenApp}
+                opened={menuPanelOpen}
+                css="z-index: 3"
+              />
               <div
                 css={`
+                  flex-grow: 1;
+                  display: flex;
                   position: relative;
                   z-index: 1;
-                  flex-grow: 1;
-                  overflow: hidden;
                 `}
               >
-                {children}
+                <Transition
+                  config={springs.lazy}
+                  items={showAppOverlay}
+                  immediate={showAppOverlay}
+                  enter={{ opacity: 1 }}
+                  leave={{ opacity: 0 }}
+                >
+                  {show =>
+                    show &&
+                    (({ opacity }) => (
+                      <AnimatedDiv
+                        style={{ opacity }}
+                        css={`
+                          position: absolute;
+                          z-index: 2;
+                          top: 0;
+                          left: 0;
+                          right: 0;
+                          bottom: 0;
+                          background: ${theme.background};
+                        `}
+                      />
+                    ))
+                  }
+                </Transition>
+                <div
+                  css={`
+                    position: relative;
+                    z-index: 1;
+                    flex-grow: 1;
+                    overflow: hidden;
+                  `}
+                >
+                  <OrgViewApp
+                    apps={apps}
+                    appInstanceGroups={appInstanceGroups}
+                    appsStatus={appsStatus}
+                    canUpgradeOrg={canUpgradeOrg}
+                    daoAddress={daoAddress}
+                    daoStatus={daoStatus}
+                    historyBack={historyBack}
+                    onOpenApp={handleOpenApp}
+                    onShowOrgUpgradePanel={showOrgUpgradePanel}
+                    onUpgradeModalOpen={handleUpgradeModalOpen}
+                    permissionsLoading={permissionsLoading}
+                    repos={repos}
+                    wrapper={wrapper}
+                  />
+
+                  <SignerPanel
+                    apps={apps}
+                    transactionBag={transactionBag}
+                    signatureBag={signatureBag}
+                    web3={web3}
+                  />
+
+                  {canUpgradeOrg && (
+                    <UpgradeOrganizationPanel
+                      daoAddress={daoAddress}
+                      opened={orgUpgradePanelOpened}
+                      onClose={hideOrgUpgradePanel}
+                      repos={repos}
+                      wrapper={wrapper}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </AppWidthContext.Provider>
+      </AppWidthContext.Provider>
+
+      <UpgradeModal
+        visible={upgradeModalOpened}
+        onClose={handleUpgradeModalClose}
+        onUpgrade={showOrgUpgradePanel}
+        canUpgradeOrg={canUpgradeOrg}
+      />
+    </div>
   )
 }
+
 OrgView.propTypes = {
-  activeInstanceId: PropTypes.string,
   apps: PropTypes.arrayOf(AppType).isRequired,
-  appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
   appsStatus: AppsStatusType.isRequired,
-  children: PropTypes.node,
+  canUpgradeOrg: PropTypes.bool,
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,
-  locator: PropTypes.object,
-  onOpenApp: PropTypes.func.isRequired,
-  onOpenPreferences: PropTypes.func.isRequired,
+  historyBack: PropTypes.func.isRequired,
+  permissionsLoading: PropTypes.bool.isRequired,
+  repos: PropTypes.arrayOf(RepoType).isRequired,
+  signatureBag: PropTypes.object,
+  transactionBag: PropTypes.object,
+  visible: PropTypes.bool.isRequired,
+  web3: PropTypes.object,
+  wrapper: AragonType,
+}
+
+OrgView.defaultProps = {
+  transactionBag: null,
+  signatureBag: null,
 }
 
 export { AppWidthContext }

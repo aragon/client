@@ -28,7 +28,6 @@ function AccountModuleConnectedScreen({
   clientListening,
   clientOnline,
   clientSyncDelay,
-  locator,
   providerInfo,
   walletListening,
   walletOnline,
@@ -162,12 +161,7 @@ function AccountModuleConnectedScreen({
           Please connect to the Ethereum {clientNetworkName} Network.
         </div>
       ) : (
-        <WalletSyncedInfo
-          header={header}
-          info={info}
-          locator={locator}
-          status={status}
-        />
+        <WalletSyncedInfo header={header} info={info} status={status} />
       )}
 
       <Button
@@ -188,7 +182,6 @@ AccountModuleConnectedScreen.propTypes = {
   clientListening: PropTypes.bool,
   clientOnline: PropTypes.bool,
   clientSyncDelay: PropTypes.number,
-  locator: PropTypes.object,
   providerInfo: EthereumProviderType,
   walletListening: PropTypes.bool,
   walletOnline: PropTypes.bool,

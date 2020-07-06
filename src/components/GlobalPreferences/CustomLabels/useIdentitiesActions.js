@@ -1,46 +1,42 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { saveAs } from 'file-saver'
 import {
-  useIdentity,
   identityEventTypes,
+  useIdentity,
 } from '../../IdentityManager/IdentityManager'
-import { utoa } from '../../../string-utils'
-import { log } from '../../../utils'
-import { getAppPath, getPreferencesSearch } from '../../../routing'
 import { dateFormat } from '../../../date-utils'
-
-const CUSTOM_LABELS_PATH = 'custom-labels'
+import { log } from '../../../utils'
+import { useRouting } from '../../../routing'
+import { utoa } from '../../../string-utils'
 
 function useIdentitiesActions({
-  wrapper,
   filteredIdentities,
   identitiesSelected,
-  locator,
   someSelected,
+  wrapper,
 }) {
-  const { dao } = locator
   const { identityEvents$ } = useIdentity()
 
   // share
   const [shareModalOpened, setShareModalOpened] = useState(false)
 
+  const routing = useRouting()
+  const { orgAddress } = routing.mode
+
   const shareLink = useMemo(() => {
     const identitiesToShare = filteredIdentities.filter(({ address }) =>
       identitiesSelected.get(address)
     )
-
     try {
       const labels = utoa(JSON.stringify(identitiesToShare))
-      const path = `${window.location.origin}/#${getAppPath({
-        ...locator,
-        search: getPreferencesSearch(CUSTOM_LABELS_PATH, { labels }),
+      return `${window.location.origin}/#${routing.path({
+        preferences: { section: 'custom-labels', data: { labels } },
       })}`
-      return path
     } catch (err) {
       log('Error while creating the identities sharing link:', err)
       return ''
     }
-  }, [filteredIdentities, identitiesSelected, locator])
+  }, [filteredIdentities, identitiesSelected, routing])
 
   // import
   const handleImport = useCallback(
@@ -75,8 +71,8 @@ function useIdentitiesActions({
       ],
       { type: 'text/json' }
     )
-    saveAs(blob, `aragon-labels_${dao}_${today}.json`)
-  }, [someSelected, filteredIdentities, identitiesSelected, dao])
+    saveAs(blob, `aragon-labels_${orgAddress}_${today}.json`)
+  }, [someSelected, filteredIdentities, identitiesSelected, orgAddress])
 
   // remove
   const [removeModalOpened, setRemoveModalOpened] = useState(false)

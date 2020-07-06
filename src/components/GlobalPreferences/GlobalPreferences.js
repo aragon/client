@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
-  Bar,
   ButtonIcon,
   GU,
   Header,
   IconClose,
   Layout,
   Tabs,
+  noop,
   springs,
-  textStyle,
   useTheme,
   useToast,
   useViewport,
@@ -17,6 +16,7 @@ import {
 import { Transition, animated } from 'react-spring'
 import { AragonType, AppType } from '../../prop-types'
 import { useEsc } from '../../hooks'
+import { useRouting } from '../../routing'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
@@ -30,8 +30,8 @@ const SECTIONS = new Map([
   ['notifications', 'Notifications'],
   ['help-and-feedback', 'Help and feedback'],
 ])
-const PATHS = Array.from(SECTIONS.keys())
-const VALUES = Array.from(SECTIONS.values())
+const SECTION_PATHS = Array.from(SECTIONS.keys())
+const SECTION_VALUES = Array.from(SECTIONS.values())
 
 const CUSTOM_LABELS_INDEX = 0
 const NETWORK_INDEX = 1
@@ -40,21 +40,16 @@ const HELP_AND_FEEDBACK_INDEX = 3
 
 const AnimatedDiv = animated.div
 
-function GlobalPreferences({
+function GlobalPreferencesContent({
   apps,
   compact,
-  historyPush,
-  locator,
-  onClose,
   onNavigation,
-  onScreenChange,
   sectionIndex,
   subsection,
   wrapper,
 }) {
-  const theme = useTheme()
   const toast = useToast()
-  const { dao } = locator
+  const routing = useRouting()
 
   const {
     isSharedLink,
@@ -67,18 +62,18 @@ function GlobalPreferences({
     sharedIdentitiesSelected,
     sharedIdentitiesAllSelected,
     sharedIdentitiesSomeSelected,
-  } = useSharedLink({ wrapper, toast, locator, onScreenChange })
+  } = useSharedLink({ wrapper, toast })
+
+  const closePreferences = useCallback(() => {
+    routing.update(locator => ({ ...locator, preferences: {} }))
+  }, [routing])
 
   const handleSharedIdentitiesClose = () => {
     handleSharedIdentitiesCancel()
-    onClose()
+    closePreferences()
   }
 
-  useEsc(onClose)
-
-  const tabItems = VALUES.filter((_, index) =>
-    Boolean(wrapper || index === NETWORK_INDEX)
-  )
+  useEsc(closePreferences)
 
   const container = useRef()
   useEffect(() => {
@@ -87,12 +82,21 @@ function GlobalPreferences({
     }
   }, [])
 
+  const [menuItems, menuItemIndex] = useMemo(() => {
+    // Only show network preferences if the `wrapper` does not exist yet (for example, during onboarding)
+    return wrapper
+      ? [SECTION_VALUES, sectionIndex]
+      : [[SECTION_VALUES[NETWORK_INDEX]], 0]
+  }, [wrapper, sectionIndex])
+
   return (
     <div ref={container} tabIndex="0" css="outline: 0">
       <Layout css="z-index: 2">
         <Close
           compact={compact}
-          onClick={isSharedLink ? handleSharedIdentitiesClose : onClose}
+          onClick={
+            isSharedLink ? handleSharedIdentitiesClose : closePreferences
+          }
         />
         <Header
           primary={isSharedLink ? 'Save Custom Labels' : 'Global preferences'}
@@ -114,51 +118,25 @@ function GlobalPreferences({
           />
         ) : (
           <React.Fragment>
-            {tabItems.length > 1 ? (
-              <Tabs
-                items={tabItems}
-                onChange={onNavigation}
-                selected={sectionIndex}
-              />
-            ) : (
-              <Bar>
-                <div
-                  css={`
-                    display: flex;
-                    height: 100%;
-                    align-items: center;
-                    padding-left: ${compact ? 2 * GU : 3 * GU}px;
-                    color: ${compact
-                      ? theme.surfaceContent
-                      : theme.surfaceContentSecondary};
-                    ${textStyle('body2')}
-                  `}
-                >
-                  {tabItems[0]}
-                </div>
-              </Bar>
-            )}
+            <Tabs
+              items={menuItems}
+              onChange={wrapper ? onNavigation : noop}
+              selected={menuItemIndex}
+            />
             <main>
               {sectionIndex === CUSTOM_LABELS_INDEX && (
-                <CustomLabels dao={dao} wrapper={wrapper} locator={locator} />
+                <CustomLabels wrapper={wrapper} />
               )}
               {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
               {sectionIndex === NOTIFICATIONS_INDEX && (
                 <Notifications
                   apps={apps}
-                  dao={dao}
                   subsection={subsection}
                   handleNavigation={onNavigation}
                   navigationIndex={2}
                 />
               )}
-              {sectionIndex === HELP_AND_FEEDBACK_INDEX && (
-                <HelpAndFeedback
-                  historyPush={historyPush}
-                  locator={locator}
-                  onClose={onClose}
-                />
-              )}
+              {sectionIndex === HELP_AND_FEEDBACK_INDEX && <HelpAndFeedback />}
             </main>
           </React.Fragment>
         )}
@@ -167,48 +145,34 @@ function GlobalPreferences({
   )
 }
 
-GlobalPreferences.propTypes = {
+GlobalPreferencesContent.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   compact: PropTypes.bool,
-  historyPush: PropTypes.func.isRequired,
-  locator: PropTypes.object,
-  onClose: PropTypes.func.isRequired,
   onNavigation: PropTypes.func.isRequired,
-  onScreenChange: PropTypes.func.isRequired,
   sectionIndex: PropTypes.number,
   subsection: PropTypes.string,
   wrapper: AragonType,
 }
 
-function useGlobalPreferences({ locator = {}, onScreenChange, wrapper }) {
-  const [sectionIndex, setSectionIndex] = useState(null)
-  const [subsection, setSubsection] = useState(null)
+function useGlobalPreferences() {
+  const routing = useRouting()
+  const { preferences } = routing
+
   const handleNavigation = useCallback(
     index => {
-      onScreenChange(PATHS[index])
+      routing.update(locator => ({
+        ...locator,
+        preferences: { section: SECTION_PATHS[index] },
+      }))
     },
-    [onScreenChange]
+    [routing]
   )
 
-  useEffect(() => {
-    const { preferences: { path = '' } = {} } = locator
-    if (!path) {
-      setSectionIndex(null)
-      return
-    }
-    const index = PATHS.findIndex(item => path.startsWith(item))
+  const { subsection } = preferences
 
-    if (index !== NETWORK_INDEX && !wrapper) {
-      return
-    }
-    setSectionIndex(index === -1 ? null : index)
-
-    // subsection is the part after the PATH, e.g. for `?p=/notifications/verify` - `/verify`
-    const subsection = index !== -1 ? path.substring(PATHS[index].length) : null
-
-    setSubsection(subsection)
-    // Does the current path start with any of the declared route paths
-  }, [locator, sectionIndex, wrapper])
+  const sectionIndex = SECTION_PATHS.findIndex(
+    section => section === preferences.section
+  )
 
   return { sectionIndex, subsection, handleNavigation }
 }
@@ -246,12 +210,8 @@ Close.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-function AnimatedGlobalPreferences(props) {
-  const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences({
-    locator: props.locator,
-    onScreenChange: props.onScreenChange,
-    wrapper: props.wrapper,
-  })
+function GlobalPreferences(props) {
+  const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences()
 
   const { below, above } = useViewport()
   const compact = below('medium')
@@ -260,7 +220,7 @@ function AnimatedGlobalPreferences(props) {
   return (
     <Transition
       native
-      items={sectionIndex !== null}
+      items={sectionIndex > -1}
       from={{ opacity: 0, enterProgress: 0, blocking: false }}
       enter={{ opacity: 1, enterProgress: 1, blocking: true }}
       leave={{ opacity: 0, enterProgress: 1, blocking: false }}
@@ -300,7 +260,7 @@ function AnimatedGlobalPreferences(props) {
                 `}
             `}
           >
-            <GlobalPreferences
+            <GlobalPreferencesContent
               {...props}
               compact={compact}
               sectionIndex={sectionIndex}
@@ -315,10 +275,9 @@ function AnimatedGlobalPreferences(props) {
   )
 }
 
-AnimatedGlobalPreferences.propTypes = {
-  locator: PropTypes.object,
-  onScreenChange: PropTypes.func.isRequired,
+GlobalPreferences.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
   wrapper: PropTypes.object,
 }
 
-export default React.memo(AnimatedGlobalPreferences)
+export default React.memo(GlobalPreferences)

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -14,35 +14,13 @@ import IdentityBadgeWithNetwork from '../IdentityBadge/IdentityBadgeWithNetwork'
 import keycodes from '../../keycodes'
 import { EthereumAddressType } from '../../prop-types'
 
-const LocalIdentityModal = React.memo(
-  ({ opened, address, label, onCancel, onSave }) => {
-    return (
-      <Modal visible={opened} onClose={onCancel}>
-        <LocalModal
-          address={address}
-          label={label}
-          onCancel={onCancel}
-          onSave={onSave}
-        />
-      </Modal>
-    )
-  }
-)
+function LocalModal({ address, label, onCancel, onDelete, onSave }) {
+  const [action, setAction] = useState(null)
+  const [error, setError] = useState(null)
+  const labelInput = useRef(null)
 
-LocalIdentityModal.propTypes = {
-  opened: PropTypes.bool.isRequired,
-  address: EthereumAddressType,
-  label: PropTypes.string,
-  onCancel: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
-}
-
-function LocalModal({ address, label, onCancel, onSave }) {
-  const theme = useTheme()
   const { above } = useViewport()
-  const [action, setAction] = React.useState(null)
-  const [error, setError] = React.useState(null)
-  const labelInput = React.useRef(null)
+  const theme = useTheme()
 
   const handleCancel = useCallback(() => {
     onCancel()
@@ -53,11 +31,13 @@ function LocalModal({ address, label, onCancel, onSave }) {
       const label = labelInput.current.value.trim()
       if (label) {
         onSave({ address, label })
+      } else {
+        onDelete([address])
       }
     } catch (e) {
       setError(e)
     }
-  }, [address, labelInput, onSave])
+  }, [address, labelInput, onDelete, onSave])
 
   const handleKeyDown = useCallback(
     e => {
@@ -72,9 +52,12 @@ function LocalModal({ address, label, onCancel, onSave }) {
 
   useEffect(() => {
     setAction(label && label.trim() ? 'Edit' : 'Add')
+
     labelInput.current.focus()
     labelInput.current.select()
+
     window.addEventListener('keydown', handleKeyDown)
+
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [label, labelInput, handleKeyDown])
 
@@ -83,7 +66,7 @@ function LocalModal({ address, label, onCancel, onSave }) {
       <div
         css={`
           background: ${theme.surface};
-          max-width: calc(100vw - 32px);
+          max-width: calc(100vw - ${4 * GU}px);
 
           ${above('medium') &&
             `
@@ -102,13 +85,10 @@ function LocalModal({ address, label, onCancel, onSave }) {
         <p
           css={`
             margin: ${5 * GU}px 0;
-            & span {
-              font-weight: bold;
-            }
           `}
         >
           This label would be displayed instead of the following address and
-          only be <span>stored on this device</span>.
+          only be <strong>stored on this device</strong>.
         </p>
         <IdentityBadgeWithNetwork entity={address} />
         <Label>
@@ -171,20 +151,22 @@ LocalModal.propTypes = {
   address: EthereumAddressType,
   label: PropTypes.string,
   onCancel: PropTypes.func,
+  onDelete: PropTypes.func,
   onSave: PropTypes.func,
 }
 
 function Label(props) {
   const theme = useTheme()
+
   return (
     <label
       css={`
         display: block;
-        margin: 20px 0;
+        margin: ${3 * GU}px 0;
         color: ${theme.surfaceContentSecondary};
         ${textStyle('label2')};
         & > div {
-          margin: 5px 0;
+          margin: ${1 * GU}px 0;
         }
       `}
       {...props}
@@ -192,4 +174,15 @@ function Label(props) {
   )
 }
 
-export default LocalIdentityModal
+export default function LocalIdentityModal({ opened, onCancel, ...props }) {
+  return (
+    <Modal visible={opened} onClose={onCancel}>
+      <LocalModal onCancel={onCancel} {...props} />
+    </Modal>
+  )
+}
+
+LocalIdentityModal.propTypes = {
+  onCancel: PropTypes.func,
+  opened: PropTypes.bool,
+}

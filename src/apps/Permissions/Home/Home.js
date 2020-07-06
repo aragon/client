@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Tabs } from '@aragon/ui'
 import { AppType } from '../../../prop-types'
@@ -25,12 +25,16 @@ function Home({
     app => Boolean(app.isAragonOsInternalApp) === internalAppsOnly
   )
 
-  const permissionsFiltered = permissions.filter(
-    permission =>
-      permission.app &&
-      (permission.entities.length > 0 ||
-        permission.manager.type !== 'unassigned') &&
-      Boolean(permission.app.isAragonOsInternalApp) === internalAppsOnly
+  const permissionsFiltered = useMemo(
+    () =>
+      permissions.filter(
+        permission =>
+          permission.app &&
+          (permission.entities.length > 0 ||
+            permission.manager.type !== 'unassigned') &&
+          Boolean(permission.app.isAragonOsInternalApp) === internalAppsOnly
+      ),
+    [permissions, internalAppsOnly]
   )
 
   return (

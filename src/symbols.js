@@ -1,7 +1,3 @@
-export const APP_MODE_START = Symbol('APP_MODE_START')
-export const APP_MODE_ORG = Symbol('APP_MODE_ORG')
-export const APP_MODE_SETUP = Symbol('APP_MODE_SETUP')
-
 export const APPS_STATUS_ERROR = Symbol('APPS_STATUS_ERROR')
 export const APPS_STATUS_READY = Symbol('APPS_STATUS_READY')
 export const APPS_STATUS_LOADING = Symbol('APPS_STATUS_LOADING')

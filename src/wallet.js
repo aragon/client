@@ -87,6 +87,7 @@ export function WalletProvider({ children }) {
       connectors={{
         fortmatic: { apiKey: getFortmaticApiKey() },
         portis: { dAppId: getPortisDappId() },
+        provided: { provider: window.cleanEthereum },
       }}
     >
       <WalletContextProvider>{children}</WalletContextProvider>

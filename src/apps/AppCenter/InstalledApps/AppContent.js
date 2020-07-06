@@ -15,8 +15,8 @@ import {
   useTheme,
 } from '@aragon/ui'
 import AppIcon from '../../../components/AppIcon/AppIcon'
+import ContentMarkdown from './ContentMarkdown'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
-import Markdown from '../../../components/Markdown/Markdown'
 import { RepoType } from '../../../prop-types'
 import { useRepoDetails } from '../../../hooks'
 import { network } from '../../../environment'
@@ -154,7 +154,7 @@ const AppContent = React.memo(
                       {!!repoDetails && (
                         <React.Fragment>
                           <Heading2 theme={theme}>Details</Heading2>
-                          <Markdown text={repoDetails} />
+                          <ContentMarkdown content={repoDetails} />
                         </React.Fragment>
                       )}
                     </DetailsGroup>

@@ -1,4 +1,5 @@
 import {
+  getLocalChainId,
   getEnsRegistryAddress,
   getFortmaticApiKey,
   getPortisDappId,
@@ -22,9 +23,10 @@ export const networkConfigs = {
       name: 'Mainnet',
       shortName: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
+      live: true,
     },
     providers: [
-      { id: 'injected' },
+      { id: 'provided' },
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
@@ -43,10 +45,11 @@ export const networkConfigs = {
       name: 'Rinkeby testnet',
       shortName: 'Rinkeby',
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
+      live: true,
     },
     // providers: ['injected', 'frame'],
     providers: [
-      { id: 'injected' },
+      { id: 'provided' },
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
@@ -65,8 +68,9 @@ export const networkConfigs = {
       name: 'Ropsten testnet',
       shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
+      live: true,
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
   },
   local: {
     addresses: {
@@ -76,11 +80,39 @@ export const networkConfigs = {
       defaultEth: 'ws://localhost:8545',
     },
     settings: {
+      // Local development environments by convention use
+      // a chainId of value 1337, but for the sake of configuration
+      // we expose a way to change this value.
+      chainId: Number(getLocalChainId()),
       name: 'local testnet',
       shortName: 'Local',
       type: 'private',
+      live: false,
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
+  },
+  // xDai is an experimental chain in the Aragon Client. It's possible
+  // and expected that a few things will break.
+  xdai: {
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0xaafca6b0c89521752e559650206d7c925fd0e530',
+    },
+    nodes: {
+      defaultEth: 'wss://xdai.poanetwork.dev/wss',
+    },
+    settings: {
+      chainId: 100,
+      name: 'xDai',
+      shortName: 'xdai',
+      type: 'private',
+      live: true,
+    },
+    providers: [
+      { id: 'provided' },
+      { id: 'frame' },
+      portisDappId ? { id: 'portis', conf: portisDappId } : null,
+    ].filter(p => p),
   },
   unknown: {
     addresses: {
@@ -93,8 +125,9 @@ export const networkConfigs = {
       name: `Unknown network`,
       shortName: 'Unknown',
       type: 'unknown',
+      live: false,
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
   },
 }
 

@@ -92,8 +92,8 @@ function AccountModuleConnectingScreen({ onCancel, providerId }) {
             color: ${theme.surfaceContentSecondary};
           `}
         >
-          Log into {getProviderString('your Ethereum provider', provider.id)}.
-          You may be temporarily redirected to a new screen.
+          Log into {getProviderString('your Ethereum wallet', provider.id)}. You
+          may be temporarily redirected to a new screen.
         </p>
       </div>
       <div

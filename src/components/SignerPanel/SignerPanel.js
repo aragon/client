@@ -67,7 +67,6 @@ class SignerPanel extends React.PureComponent {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
     account: EthereumAddressType,
-    dao: PropTypes.string,
     addTransactionActivity: PropTypes.func.isRequired,
     setActivityConfirmed: PropTypes.func.isRequired,
     setActivityFailed: PropTypes.func.isRequired,
@@ -193,7 +192,7 @@ class SignerPanel extends React.PureComponent {
           // Get account count/nonce for the transaction and update the activity item.
           // May be useful in case there are multiple pending transactions to detect when
           // a pending transaction with a lower nonce was manually re-sent by the user
-          // (most likely done through their Ethereum provider directly with a different
+          // (most likely done through their Ethereum wallet directly with a different
           // gas price or transaction data that results in a different transaction hash).
 
           web3.eth
@@ -315,7 +314,6 @@ class SignerPanel extends React.PureComponent {
     const {
       account,
       apps,
-      dao,
       walletNetwork,
       walletProviderId,
       walletWeb3,
@@ -372,7 +370,6 @@ class SignerPanel extends React.PureComponent {
                         >
                           {isTransaction ? (
                             <ConfirmTransaction
-                              dao={dao}
                               direct={directPath}
                               intent={intent}
                               onClose={this.handleSignerClose}

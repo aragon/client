@@ -17,9 +17,9 @@ const ENTITY_TYPES = ['All entities', 'Accounts', 'Apps']
 
 function AllPermissions({
   loading,
-  permissions,
   onAssignPermission,
   onManageRole,
+  permissions,
 }) {
   const [selectedEntityType, setSelectedEntityType] = useState(-1)
   const [searchTerms, setSearchTerms] = useState('')

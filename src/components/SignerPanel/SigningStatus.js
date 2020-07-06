@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { GU, Info, textStyle, useTheme } from '@aragon/ui'
+import { Box, GU, Info, textStyle, useTheme } from '@aragon/ui'
 import { getProviderString } from '../../ethereum-providers'
 import FeedbackIndicator from '../FeedbackIndicator/FeedbackIndicator'
 import SignerButton from './SignerButton'
@@ -51,7 +51,7 @@ class SigningStatus extends React.Component {
       return (
         <p>
           {`Open ${getProviderString(
-            'your Ethereum provider',
+            'your Ethereum wallet',
             walletProviderId
           )} to sign your transaction.`}
         </p>
@@ -60,7 +60,7 @@ class SigningStatus extends React.Component {
     if (status === STATUS_MSG_SIGNING) {
       return (
         <p>{`Open ${getProviderString(
-          'your Ethereum provider',
+          'your Ethereum wallet',
           walletProviderId
         )} to sign your message.`}</p>
       )
@@ -102,7 +102,7 @@ class SigningStatus extends React.Component {
         {cleanedErrorMessage ? (
           <p>Error: “{cleanedErrorMessage}”</p>
         ) : (
-          <p>There may have been a problem with your Ethereum provider.</p>
+          <p>There may have been a problem with your Ethereum wallet.</p>
         )}
       </React.Fragment>
     )
@@ -111,28 +111,31 @@ class SigningStatus extends React.Component {
     const { theme, status } = this.props
     return (
       <div>
-        <Status
-          color={theme.feedbackContent}
-          background={theme.feedbackSurface}
+        <Box
+          css={`
+            margin-bottom: ${3 * GU}px;
+          `}
         >
-          <FeedbackIndicator
-            status={
-              isSignatureSuccess(status)
-                ? 'success'
-                : isSignatureError(status)
-                ? 'error'
-                : 'pending'
-            }
-          />
-          <p
-            css={`
-              margin-top: ${3.5 * GU}px;
-              ${textStyle('body2')};
-            `}
-          >
-            {this.getLabel()}
-          </p>
-        </Status>
+          <Status color={theme.surfaceContent}>
+            <FeedbackIndicator
+              status={
+                isSignatureSuccess(status)
+                  ? 'success'
+                  : isSignatureError(status)
+                  ? 'error'
+                  : 'pending'
+              }
+            />
+            <p
+              css={`
+                margin-top: ${2 * GU}px;
+                ${textStyle('body2')};
+              `}
+            >
+              {this.getLabel()}
+            </p>
+          </Status>
+        </Box>
         <Info>{this.getInfo()}</Info>
         {this.getCloseButton()}
       </div>
@@ -141,9 +144,7 @@ class SigningStatus extends React.Component {
 }
 
 const Status = styled.div`
-  background: ${({ background }) => background};
-  height: 360px;
-  margin-bottom: ${3 * GU}px;
+  height: ${38 * GU}px;
   display: flex;
   flex-direction: column;
   justify-content: center;

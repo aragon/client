@@ -13,16 +13,18 @@ import {
   useViewport,
 } from '@aragon/ui'
 import { useClientTheme } from '../../../client-theme'
+import { useRouting } from '../../../routing'
 
 import iconNetwork from '../../../assets/global-preferences-network.svg'
 import iconCustomLabels from '../../../assets/global-preferences-custom-labels.svg'
 import iconNotifications from '../../../assets/global-preferences-notifications.svg'
 import iconHelpAndFeedback from '../../../assets/global-preferences-help-and-feedback.svg'
 
-function GlobalPreferencesButton({ onOpen }) {
+function GlobalPreferencesButton() {
   const theme = useTheme()
   const clientTheme = useClientTheme()
   const { below } = useViewport()
+  const routing = useRouting()
 
   const [opened, setOpened] = useState(false)
   const containerRef = useRef()
@@ -30,11 +32,14 @@ function GlobalPreferencesButton({ onOpen }) {
   const handleToggle = useCallback(() => setOpened(opened => !opened), [])
   const handleClose = useCallback(() => setOpened(false), [])
   const handleItemClick = useCallback(
-    path => () => {
+    path => {
       setOpened(false)
-      onOpen(path)
+      routing.update(locator => ({
+        ...locator,
+        preferences: { section: path },
+      }))
     },
-    [onOpen]
+    [routing]
   )
 
   const toggleDarkMode = useCallback(() => {
@@ -94,22 +99,22 @@ function GlobalPreferencesButton({ onOpen }) {
             Global preferences
           </li>
           <Item
-            onClick={handleItemClick('custom-labels')}
+            onClick={() => handleItemClick('custom-labels')}
             icon={iconCustomLabels}
             label="Custom labels"
           />
           <Item
-            onClick={handleItemClick('network')}
+            onClick={() => handleItemClick('network')}
             icon={iconNetwork}
             label="Network"
           />
           <Item
-            onClick={handleItemClick('notifications')}
+            onClick={() => handleItemClick('notifications')}
             icon={iconNotifications}
             label="Notifications"
           />
           <Item
-            onClick={handleItemClick('help-and-feedback')}
+            onClick={() => handleItemClick('help-and-feedback')}
             icon={iconHelpAndFeedback}
             label="Help & Feedback"
           />
@@ -134,10 +139,6 @@ function GlobalPreferencesButton({ onOpen }) {
       </Popover>
     </React.Fragment>
   )
-}
-
-GlobalPreferencesButton.propTypes = {
-  onOpen: PropTypes.func.isRequired,
 }
 
 function Item({ icon, label, onClick, lastItem }) {

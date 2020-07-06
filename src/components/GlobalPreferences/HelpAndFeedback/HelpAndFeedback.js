@@ -1,35 +1,33 @@
 import React, { useCallback } from 'react'
-import PropTypes from 'prop-types'
 import { Box, Switch, Info, Link, GU, textStyle, useTheme } from '@aragon/ui'
+import { useRouting } from '../../../routing'
 import { useHelpScout } from '../../HelpScoutBeacon/useHelpScout'
 import helpAndFeedbackPng from './assets/help-and-feedback.png'
 import { useConsole } from '../../../apps/Console/useConsole'
-import { getAppPath } from '../../../routing'
 
-function HelpAndFeedback({ historyPush, locator, onClose }) {
+function HelpAndFeedback() {
   const theme = useTheme()
+  const routing = useRouting()
   const { optedOut, setOptedOut } = useHelpScout()
   const { consoleVisible, setConsoleVisible } = useConsole()
 
-  const handleOptOutChange = useCallback(
-    () => setOptedOut(optedOut => !optedOut),
-    [setOptedOut]
-  )
+  const toggleOptedOut = useCallback(() => {
+    setOptedOut(optedOut => !optedOut)
+  }, [setOptedOut])
 
-  const handleOptOutConsoleChange = useCallback(
-    () => setConsoleVisible(consoleVisible => !consoleVisible),
-    [setConsoleVisible]
-  )
+  const toggleConsole = useCallback(() => {
+    setConsoleVisible(visible => !visible)
+  }, [setConsoleVisible])
 
   const handleConsoleLinkClick = useCallback(() => {
-    onClose()
-    historyPush(
-      getAppPath({
-        dao: locator.dao,
+    routing.update({
+      mode: {
+        orgAddress: routing.mode.orgAddress,
         instanceId: 'console',
-      })
-    )
-  }, [historyPush, locator, onClose])
+      },
+      preferences: {},
+    })
+  }, [routing])
 
   return (
     <>
@@ -54,12 +52,11 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
         >
           <label
             css={`
-              cursor: pointer;
               display: flex;
               align-items: center;
             `}
           >
-            <Switch onChange={handleOptOutChange} checked={!optedOut} />
+            <Switch onChange={toggleOptedOut} checked={!optedOut} />
             <span
               css={`
                 color: ${theme.surfaceContent};
@@ -87,16 +84,12 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
         >
           <label
             css={`
-              cursor: pointer;
               display: flex;
               align-items: center;
               margin-bottom: ${2 * GU}px;
             `}
           >
-            <Switch
-              onChange={handleOptOutConsoleChange}
-              checked={consoleVisible}
-            />
+            <Switch onChange={toggleConsole} checked={consoleVisible} />
             <span
               css={`
                 color: ${theme.surfaceContent};
@@ -105,7 +98,12 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
                 ${textStyle('body2')}
               `}
             >
-              Display the <Link onClick={handleConsoleLinkClick}>console</Link>{' '}
+              Display the{' '}
+              {routing.locator.mode.name === 'org' ? (
+                <Link onClick={handleConsoleLinkClick}>console</Link>
+              ) : (
+                <>console</>
+              )}{' '}
               in the System apps menu
             </span>
           </label>
@@ -133,12 +131,6 @@ function HelpAndFeedback({ historyPush, locator, onClose }) {
       </Box>
     </>
   )
-}
-
-HelpAndFeedback.propTypes = {
-  historyPush: PropTypes.func,
-  onClose: PropTypes.func,
-  locator: PropTypes.object,
 }
 
 export default React.memo(HelpAndFeedback)

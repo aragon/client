@@ -57,7 +57,7 @@ function ErrorScreen({ children }) {
           {children}
         </Container>
       </div>
-      <HelpScoutBeacon locator={{}} apps={[]} />
+      <HelpScoutBeacon apps={[]} />
     </div>
   )
 }

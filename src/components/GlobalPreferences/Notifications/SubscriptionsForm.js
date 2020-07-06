@@ -11,6 +11,7 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { AppType } from '../../../prop-types'
+import { useRouting } from '../../../routing'
 import PropTypes from 'prop-types'
 import memoize from 'lodash.memoize'
 import styled from 'styled-components'
@@ -64,7 +65,6 @@ function getSubscribables(apps, subscriptions) {
 
 export default function SubscriptionsForm({
   apps,
-  dao,
   isFetchingSubscriptions,
   onApiError,
   fetchSubscriptions,
@@ -73,6 +73,8 @@ export default function SubscriptionsForm({
 }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
+  const { mode } = useRouting()
+  const { orgAddress } = mode
 
   const [selectedAppIdx, setSelectedAppIdx] = useState(-1)
   const [selectedEventIdx, setSelectedEventIdx] = useState(-1)
@@ -105,7 +107,7 @@ export default function SubscriptionsForm({
           abi: abiEventSubset,
           appName,
           appContractAddress: proxyAddress,
-          ensName: dao,
+          ensName: orgAddress,
           eventName,
           token,
         }
@@ -119,13 +121,13 @@ export default function SubscriptionsForm({
       setIsSubmitting(false)
     },
     [
-      selectedApp,
       eventNames,
-      selectedEventIdx,
-      dao,
-      token,
       fetchSubscriptions,
       onApiError,
+      orgAddress,
+      selectedApp,
+      selectedEventIdx,
+      token,
     ]
   )
   useEffect(() => {
@@ -149,8 +151,8 @@ export default function SubscriptionsForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apps, subscriptions])
 
+  // Every DAO must have apps, if apps.length is 0, the DAO is still loading
   if (apps.length === 0) {
-    // Every DAO must have apps, if apps.length is 0, the DAO is still loading
     return (
       <SubscriptionsFormBox>
         <div
@@ -287,7 +289,6 @@ export default function SubscriptionsForm({
 
 SubscriptionsForm.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
-  dao: PropTypes.string,
   isFetchingSubscriptions: PropTypes.bool,
   onApiError: PropTypes.func,
   fetchSubscriptions: PropTypes.func,

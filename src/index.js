@@ -13,6 +13,7 @@ import {
   getPackageVersion,
   setPackageVersion,
 } from './local-settings'
+import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
@@ -55,17 +56,19 @@ function Providers() {
   const { appearance } = useClientTheme()
   return (
     <Main layout={false} scrollView={false} theme={appearance}>
-      <WalletProvider>
-        <HelpScoutProvider>
-          <ConsoleVisibleProvider>
-            <GlobalErrorHandler>
-              <ClientBlockNumberProvider>
-                <App />
-              </ClientBlockNumberProvider>
-            </GlobalErrorHandler>
-          </ConsoleVisibleProvider>
-        </HelpScoutProvider>
-      </WalletProvider>
+      <RoutingProvider>
+        <WalletProvider>
+          <HelpScoutProvider>
+            <ConsoleVisibleProvider>
+              <GlobalErrorHandler>
+                <ClientBlockNumberProvider>
+                  <App />
+                </ClientBlockNumberProvider>
+              </GlobalErrorHandler>
+            </ConsoleVisibleProvider>
+          </HelpScoutProvider>
+        </WalletProvider>
+      </RoutingProvider>
     </Main>
   )
 }
