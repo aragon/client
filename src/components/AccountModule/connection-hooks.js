@@ -69,18 +69,14 @@ export function useWalletConnectionDetails(
     walletSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
     clientSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
     isWalletAndClientSynced
-  const networkName = network.shortName.toLowerCase()
 
-  let connectionDetails = {
+  const connectionDetails = {
     connectionMessage: `Connected to ${walletNetworkName}`,
     connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
     connectionColor: theme.positive,
   }
 
-  if (
-    clientListening &&
-    (networkName === 'local' || networkName === 'unknown')
-  ) {
+  if (clientListening && !network.live) {
     return connectionDetails
   }
 
@@ -93,7 +89,7 @@ export function useWalletConnectionDetails(
     clientSyncDelay >= MAX_PROVIDER_SYNC_DELAY ||
     walletSyncDelay >= MAX_PROVIDER_SYNC_DELAY
   ) {
-    connectionDetails = {
+    return {
       connectionMessage: 'No connection',
       connectionMessageLong: 'No connection',
       connectionColor: theme.negative,
@@ -102,18 +98,19 @@ export function useWalletConnectionDetails(
     walletSyncDelay >= OK_PROVIDER_SYNC_DELAY ||
     clientSyncDelay >= OK_PROVIDER_SYNC_DELAY
   ) {
-    connectionDetails = {
+    return {
       connectionMessage: 'Syncing issues',
       connectionMessageLong: 'Syncing issues',
       connectionColor: theme.warning,
     }
   } else if (hasNetworkMismatch) {
-    connectionDetails = {
+    return {
       connectionMessage: 'Wrong network',
       connectionMessageLong: 'Wrong network',
       connectionColor: theme.warning,
     }
   }
+
   return connectionDetails
 }
 
@@ -221,17 +218,15 @@ export function useSyncState(
   const currentBlock = getBlockNumber()
 
   const minimumTransactionBalance = new BN(0.005)
-  const networkName = network.shortName.toLowerCase()
 
-  if (
-    clientListening &&
-    (networkName === 'local' || networkName === 'unknown')
-  ) {
-    return {
-      header: 'Synced',
-      info: currentBlock ? `: current block ${currentBlock}` : '',
-      status: STATUS_CONNECTION_OK,
-    }
+  const syncedStatus = {
+    header: 'Synced',
+    info: currentBlock ? `: current block ${currentBlock}` : '',
+    status: STATUS_CONNECTION_OK,
+  }
+
+  if (clientListening && !network.live) {
+    return syncedStatus
   }
 
   if (!clientOnline || !clientListening) {
@@ -274,9 +269,5 @@ export function useSyncState(
     }
   }
 
-  return {
-    header: 'Synced',
-    info: currentBlock ? `: current block ${currentBlock}` : '',
-    status: STATUS_CONNECTION_OK,
-  }
+  return syncedStatus
 }

@@ -23,6 +23,7 @@ export const networkConfigs = {
       name: 'Mainnet',
       shortName: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
+      live: true,
     },
     providers: [
       { id: 'provided' },
@@ -44,6 +45,7 @@ export const networkConfigs = {
       name: 'Rinkeby testnet',
       shortName: 'Rinkeby',
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
+      live: true,
     },
     // providers: ['injected', 'frame'],
     providers: [
@@ -66,6 +68,7 @@ export const networkConfigs = {
       name: 'Ropsten testnet',
       shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
+      live: true,
     },
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
@@ -84,6 +87,7 @@ export const networkConfigs = {
       name: 'local testnet',
       shortName: 'Local',
       type: 'private',
+      live: false,
     },
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
@@ -102,6 +106,7 @@ export const networkConfigs = {
       name: 'xDai',
       shortName: 'xdai',
       type: 'private',
+      live: true,
     },
     providers: [
       { id: 'provided' },
@@ -120,6 +125,7 @@ export const networkConfigs = {
       name: `Unknown network`,
       shortName: 'Unknown',
       type: 'unknown',
+      live: false,
     },
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
