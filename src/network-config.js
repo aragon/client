@@ -101,7 +101,6 @@ export const networkConfigs = {
       shortName: 'xdai',
       type: 'xdai',
     },
-    // providers: ['injected', 'frame'],
     providers: [
       { id: 'provided' },
       { id: 'frame' },
