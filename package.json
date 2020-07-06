@@ -57,6 +57,7 @@
     "react-helmet": "^5.2.1",
     "react-spring": "^7.2.10",
     "react-use-gesture": "^5.2.4",
+    "react-use-measure": "^2.0.1",
     "regenerator-runtime": "^0.13.3",
     "resolve-pathname": "^3.0.0",
     "styled-components": "^4.1.3",
