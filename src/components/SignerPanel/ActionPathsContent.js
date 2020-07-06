@@ -294,7 +294,7 @@ class ActionPathsContent extends React.Component {
           >
             <p>
               This action requires two transactions to be signed in{' '}
-              {getProviderString('your Ethereum provider', walletProviderId)}.{' '}
+              {getProviderString('your Ethereum wallet', walletProviderId)}.{' '}
               {approveTransactionMessage}
               Please confirm them one after another.
             </p>
@@ -304,8 +304,8 @@ class ActionPathsContent extends React.Component {
               `}
             >
               In some situations,{' '}
-              {getProviderString('your Ethereum provider', walletProviderId)}{' '}
-              may warn you that the second transaction will fail.{' '}
+              {getProviderString('your Ethereum wallet', walletProviderId)} may
+              warn you that the second transaction will fail.{' '}
               <strong css="font-weight: 800">Please ignore this warning</strong>
               .
             </p>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 // The user need to confirm the transaction
 export const STATUS_TX_CONFIRMING = Symbol('STATUS_TX_CONFIRMING')
 
-// The user need to sign the transaction in the web3 provider
+// The user need to sign the transaction in their wallet
 export const STATUS_TX_SIGNING = Symbol('STATUS_TX_SIGNING')
 
 // The transaction has been successfully signed
@@ -15,7 +15,7 @@ export const STATUS_TX_ERROR = Symbol('STATUS_TX_ERROR')
 // The user need to confirm the message signature
 export const STATUS_MSG_CONFIRMING = Symbol('STATUS_MSG_CONFIRMING')
 
-// The user need to sign the message in the web3 provider
+// The user need to sign the message in their wallet
 export const STATUS_MSG_SIGNING = Symbol('STATUS_MSG_SIGNING')
 
 // The message has been successfully signed

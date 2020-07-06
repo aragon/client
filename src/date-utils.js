@@ -1,8 +1,10 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import duration from 'dayjs/plugin/duration'
 
 // dayjs plugins
 dayjs.extend(relativeTime)
+dayjs.extend(duration)
 
 const KNOWN_FORMATS = {
   onlyDate: 'YYYY-MM-DD',
@@ -21,4 +23,8 @@ export function getRelativeTime(from, to) {
     .replace(/minutes?/, 'min')
     .replace(/seconds?/, 'sec')
     .trim()
+}
+
+export function durationToHours(duration) {
+  return dayjs.duration(duration).asHours()
 }

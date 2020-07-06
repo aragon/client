@@ -1,4 +1,5 @@
 import {
+  getLocalChainId,
   getEnsRegistryAddress,
   getFortmaticApiKey,
   getPortisDappId,
@@ -24,7 +25,7 @@ export const networkConfigs = {
       type: 'main', // as returned by web3.eth.net.getNetworkType()
     },
     providers: [
-      { id: 'injected' },
+      { id: 'provided' },
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
@@ -46,7 +47,7 @@ export const networkConfigs = {
     },
     // providers: ['injected', 'frame'],
     providers: [
-      { id: 'injected' },
+      { id: 'provided' },
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
@@ -66,7 +67,7 @@ export const networkConfigs = {
       shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
   },
   local: {
     addresses: {
@@ -76,11 +77,37 @@ export const networkConfigs = {
       defaultEth: 'ws://localhost:8545',
     },
     settings: {
+      // Local development environments by convention use
+      // a chainId of value 1337, but for the sake of configuration
+      // we expose a way to change this value.
+      chainId: Number(getLocalChainId()),
       name: 'local testnet',
       shortName: 'Local',
       type: 'private',
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
+  },
+  // xDai is an experimental chain in the Aragon Client. It's possible
+  // and expected that a few things will break.
+  xdai: {
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0xaafca6b0c89521752e559650206d7c925fd0e530',
+    },
+    nodes: {
+      defaultEth: 'wss://xdai.poanetwork.dev/wss',
+    },
+    settings: {
+      chainId: 100,
+      name: 'xDai',
+      shortName: 'xdai',
+      type: 'private',
+    },
+    providers: [
+      { id: 'provided' },
+      { id: 'frame' },
+      portisDappId ? { id: 'portis', conf: portisDappId } : null,
+    ].filter(p => p),
   },
   unknown: {
     addresses: {
@@ -94,7 +121,7 @@ export const networkConfigs = {
       shortName: 'Unknown',
       type: 'unknown',
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
+    providers: [{ id: 'provided' }, { id: 'frame' }],
   },
 }
 

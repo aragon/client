@@ -6,6 +6,7 @@ const ENS_REGISTRY_ADDRESS = 'ENS_REGISTRY_ADDRESS'
 const ETH_NETWORK_TYPE = 'ETH_NETWORK_TYPE'
 const ETH_SUBSCRIPTION_EVENT_DELAY = 'ETH_SUBSCRIPTION_EVENT_DELAY'
 const IPFS_GATEWAY = 'IPFS_GATEWAY'
+const LOCAL_CHAIN_ID = 'LOCAL_CHAIN_ID'
 const PACKAGE_VERSION = 'PACKAGE_VERSION'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 const SENTRY_DSN = 'SENTRY_DSN'
@@ -56,8 +57,9 @@ const CONFIGURATION_VARS = [
     process.env.REACT_APP_PACKAGE_VERSION,
   ],
   [CLIENT_THEME, process.env.ARAGON_CLIENT_THEME],
-  [PORTIS_DAPP_ID, process.env.ARAGON_PORTIS_DAPP_ID],
+  [LOCAL_CHAIN_ID, process.env.LOCAL_CHAIN_ID],
   [FORTMATIC_API_KEY, process.env.ARAGON_FORTMATIC_API_KEY],
+  [PORTIS_DAPP_ID, process.env.ARAGON_PORTIS_DAPP_ID],
 ].reduce(
   (acc, [option, envValue, envValueCompat]) => ({
     ...acc,
@@ -91,6 +93,11 @@ function setLocalSetting(confKey, value) {
 
 export function getAppLocator() {
   return getLocalSetting(APP_LOCATOR) || ''
+}
+
+export function getLocalChainId() {
+  // Default to 1337 as used by most local development environments.
+  return getLocalSetting(LOCAL_CHAIN_ID) || 1337
 }
 
 export function getDefaultEthNode() {

@@ -51,7 +51,7 @@ class SigningStatus extends React.Component {
       return (
         <p>
           {`Open ${getProviderString(
-            'your Ethereum provider',
+            'your Ethereum wallet',
             walletProviderId
           )} to sign your transaction.`}
         </p>
@@ -60,7 +60,7 @@ class SigningStatus extends React.Component {
     if (status === STATUS_MSG_SIGNING) {
       return (
         <p>{`Open ${getProviderString(
-          'your Ethereum provider',
+          'your Ethereum wallet',
           walletProviderId
         )} to sign your message.`}</p>
       )
@@ -102,7 +102,7 @@ class SigningStatus extends React.Component {
         {cleanedErrorMessage ? (
           <p>Error: “{cleanedErrorMessage}”</p>
         ) : (
-          <p>There may have been a problem with your Ethereum provider.</p>
+          <p>There may have been a problem with your Ethereum wallet.</p>
         )}
       </React.Fragment>
     )

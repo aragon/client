@@ -17,7 +17,7 @@ const PROVIDERS = new Map(
       type: 'Desktop',
       image: frame,
       strings: {
-        'your Ethereum provider': 'Frame',
+        'your Ethereum wallet': 'Frame',
       },
     },
     {
@@ -26,7 +26,7 @@ const PROVIDERS = new Map(
       type: 'Desktop',
       image: metamask,
       strings: {
-        'your Ethereum provider': 'Metamask',
+        'your Ethereum wallet': 'Metamask',
       },
     },
     {
@@ -35,7 +35,7 @@ const PROVIDERS = new Map(
       type: 'Mobile',
       image: status,
       strings: {
-        'your Ethereum provider': 'Status',
+        'your Ethereum wallet': 'Status',
       },
     },
     {
@@ -44,7 +44,7 @@ const PROVIDERS = new Map(
       type: 'Mobile',
       image: cipher,
       strings: {
-        'your Ethereum provider': 'Cipher',
+        'your Ethereum wallet': 'Cipher',
       },
     },
     {
@@ -53,7 +53,7 @@ const PROVIDERS = new Map(
       type: 'Any',
       image: fortmatic,
       strings: {
-        'your Ethereum provider': 'Fortmatic',
+        'your Ethereum wallet': 'Fortmatic',
       },
     },
     {
@@ -62,7 +62,7 @@ const PROVIDERS = new Map(
       type: 'Any',
       image: portis,
       strings: {
-        'your Ethereum provider': 'Portis',
+        'your Ethereum wallet': 'Portis',
       },
     },
     {
@@ -71,7 +71,7 @@ const PROVIDERS = new Map(
       type: 'Desktop',
       image: wallet,
       strings: {
-        'your Ethereum provider': 'your provider',
+        'your Ethereum wallet': 'your wallet',
       },
     },
   ].map(provider => [provider.id, provider])
@@ -102,7 +102,7 @@ function identifyProvider(provider) {
 
 // Get a provider from its useWallet() identifier.
 function getProviderFromUseWalletId(id) {
-  if (id === 'injected') {
+  if (id === 'provided') {
     return (
       getProvider(identifyProvider(window.ethereum)) || getProvider('unknown')
     )

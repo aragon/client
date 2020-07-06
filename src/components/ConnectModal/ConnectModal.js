@@ -71,7 +71,7 @@ function ConnectModal({ account, onClose, onConnect, visible }) {
             `}
           >
             <Link href="https://www.ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">
-              What is a Ethereum provider?
+              What is an Ethereum wallet?
             </Link>
           </p>
         </header>
