@@ -87,6 +87,28 @@ export const networkConfigs = {
     },
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
+  xdai: {
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0xaafca6b0c89521752e559650206d7c925fd0e530',
+    },
+    nodes: {
+      defaultEth: 'wss://xdai.poanetwork.dev/wss',
+    },
+    settings: {
+      chainId: 100,
+      name: 'xDai',
+      shortName: 'xdai',
+      type: 'xdai',
+    },
+    // providers: ['injected', 'frame'],
+    providers: [
+      { id: 'provided' },
+      { id: 'frame' },
+      fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
+      portisDappId ? { id: 'portis', conf: portisDappId } : null,
+    ].filter(p => p),
+  },
   unknown: {
     addresses: {
       ensRegistry: localEnsRegistryAddress,
