@@ -10,7 +10,7 @@ import React, {
 import { createHashHistory as createHistory } from 'history'
 import { staticApps } from './static-apps'
 import { isAddress, isValidEnsName } from './web3-utils'
-import { addStartingSlash } from './utils'
+import { addStartingSlash, log } from './utils'
 
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 
@@ -120,6 +120,10 @@ export function getPath({ mode, preferences } = {}) {
     let { orgAddress } = mode
 
     if (!orgAddress) {
+      log(
+        "Routing(path): 'orgAddress' is a required component for 'org' mode. " +
+          `Defaulted to '${fallbackPath}'.`
+      )
       return fallbackPath
     }
 
@@ -131,19 +135,31 @@ export function getPath({ mode, preferences } = {}) {
       )
     }
 
-    const { instanceId = '', instancePath = '' } = mode
-
     // Either the address of an app instance or the path of an internal app.
+    const { instanceId = '' } = mode
     const instancePart = staticApps.has(instanceId)
       ? staticApps.get(instanceId).route
       : instanceId
       ? `/${instanceId}`
       : ''
 
+    let { instancePath = '' } = mode
+    if (instancePath && !instanceId) {
+      log(
+        "Routing(path): 'instancePath' can only be provided if an " +
+          `'instanceId' is provided in 'org' mode. Ignored '${instancePath}'.`
+      )
+      instancePath = ''
+    }
+
     return (
       '/' + orgAddress + instancePart + encodeAppPath(instancePath) + search
     )
   }
+
+  log(
+    `Routing(path): invalid mode '${mode.name}' set. Defaulted to '${fallbackPath}'.`
+  )
 
   return fallbackPath
 }
@@ -172,6 +188,12 @@ export function parsePreferences(search = '') {
 // This function will probably be unified with parsePath() later.
 export function getPreferencesSearch({ section, subsection, data = {} } = {}) {
   if (!section) {
+    if (subsection) {
+      log(
+        "Routing(preferences): 'subsection' can only be provided if 'section' " +
+          `is provided. Ignored '${subsection}'.`
+      )
+    }
     return ''
   }
 
@@ -219,16 +241,7 @@ export function RoutingProvider({ children }) {
         locatorUpdate = locatorUpdate(locator) || {}
       }
 
-      return getPath({
-        ...locator,
-        ...locatorUpdate,
-        mode: locatorUpdate.mode
-          ? {
-              ...locator.mode,
-              ...locatorUpdate.mode,
-            }
-          : locator.mode,
-      })
+      return getPath(locatorUpdate)
     },
     [locator]
   )
