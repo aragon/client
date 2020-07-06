@@ -10,7 +10,7 @@ import React, {
 import { createHashHistory as createHistory } from 'history'
 import { staticApps } from './static-apps'
 import { isAddress, isValidEnsName } from './web3-utils'
-import { addStartingSlash } from './utils'
+import { addStartingSlash, log } from './utils'
 
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 
@@ -101,52 +101,77 @@ export function parsePath(pathname, search = '') {
 
 // Return a path string from a locator updater.
 export function getPath({ mode, preferences } = {}) {
-  // preferences
-  const search =
-    preferences && preferences.section ? getPreferencesSearch(preferences) : ''
+  // Preferences
+  const search = getPreferencesSearch(preferences)
+
+  // Fallback if no expected path was found
+  const fallbackPath = `/${search}`
 
   if (!mode) {
-    return `/${search}`
+    return fallbackPath
   }
 
   if (mode.name === 'onboarding') {
-    return `/${
-      !mode.status || mode.status === 'welcome' ? '' : mode.status
-    }${search}`
+    const { status } = mode
+    return `/${!status || status === 'welcome' ? '' : status}${search}`
   }
 
-  if (mode.name !== 'org') {
-    return `/${search}`
-  }
+  if (mode.name === 'org') {
+    let { orgAddress } = mode
 
-  // Only keep the full address if it ends in aragonid.eth
-  let { orgAddress } = mode
-  if (orgAddress.endsWith(ARAGONID_ENS_DOMAIN)) {
-    orgAddress = orgAddress.substr(
-      0,
-      orgAddress.indexOf(ARAGONID_ENS_DOMAIN) - 1
+    if (!orgAddress) {
+      log(
+        "Routing(path): 'orgAddress' is a required component for 'org' mode. " +
+          `Defaulted to '${fallbackPath}'.`
+      )
+      return fallbackPath
+    }
+
+    // Only keep the full address if it ends in aragonid.eth
+    if (orgAddress.endsWith(ARAGONID_ENS_DOMAIN)) {
+      orgAddress = orgAddress.substr(
+        0,
+        orgAddress.indexOf(ARAGONID_ENS_DOMAIN) - 1
+      )
+    }
+
+    // Either the address of an app instance or the path of an internal app.
+    const { instanceId = '' } = mode
+    const instancePart = staticApps.has(instanceId)
+      ? staticApps.get(instanceId).route
+      : instanceId
+      ? `/${instanceId}`
+      : ''
+
+    let { instancePath = '' } = mode
+    if (instancePath && !instanceId) {
+      log(
+        "Routing(path): 'instancePath' can only be provided if an " +
+          `'instanceId' is provided in 'org' mode. Ignored '${instancePath}'.`
+      )
+      instancePath = ''
+    }
+
+    return (
+      '/' + orgAddress + instancePart + encodeAppPath(instancePath) + search
     )
   }
 
-  if (!orgAddress) {
-    return `/${search}`
-  }
+  log(
+    `Routing(path): invalid mode '${mode.name}' set. Defaulted to '${fallbackPath}'.`
+  )
 
-  const { instanceId = '', instancePath = '' } = mode
-
-  // Either the address of an app instance or the path of an internal app.
-  const instancePart = staticApps.has(instanceId)
-    ? staticApps.get(instanceId).route
-    : `/${instanceId}`
-
-  return '/' + orgAddress + instancePart + encodeAppPath(instancePath) + search
+  return fallbackPath
 }
 
 // Preferences
-function parsePreferences(search = '') {
+export function parsePreferences(search = '') {
   const searchParams = new URLSearchParams(search)
   const path = searchParams.get('preferences') || ''
-  const labels = searchParams.get('labels')
+  // Ignore labels if search does not contain a preferences path
+  const labels = searchParams.has('preferences')
+    ? searchParams.get('labels')
+    : ''
 
   const [, section = '', subsection = ''] = path.split('/')
 
@@ -162,6 +187,16 @@ function parsePreferences(search = '') {
 // For preferences, get the “search” part of the path (?=something)
 // This function will probably be unified with parsePath() later.
 export function getPreferencesSearch({ section, subsection, data = {} } = {}) {
+  if (!section) {
+    if (subsection) {
+      log(
+        "Routing(preferences): 'subsection' can only be provided if 'section' " +
+          `is provided. Ignored '${subsection}'.`
+      )
+    }
+    return ''
+  }
+
   const params = new URLSearchParams()
 
   params.append(
@@ -203,20 +238,10 @@ export function RoutingProvider({ children }) {
   const getPathFromLocator = useCallback(
     locatorUpdate => {
       if (typeof locatorUpdate === 'function') {
-        locatorUpdate = locatorUpdate(locator)
+        locatorUpdate = locatorUpdate(locator) || {}
       }
 
-      return getPath({
-        ...locatorUpdate,
-        mode: locatorUpdate.mode
-          ? {
-              ...locatorUpdate.mode,
-
-              // If no mode name is set, use the current
-              name: locatorUpdate.mode.name || locator.mode.name,
-            }
-          : locator.mode,
-      })
+      return getPath(locatorUpdate)
     },
     [locator]
   )
