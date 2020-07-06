@@ -234,7 +234,7 @@ class App extends React.Component {
         return wrapper
       })
       .catch(err => {
-        log(`Wrapper init, fatal error: ${err.name}. ${err.message}.`)
+        log('error')(`Wrapper init, fatal error: ${err.name}. ${err.message}.`)
         this.setState({
           appsStatus: APPS_STATUS_ERROR,
           daoStatus: DAO_STATUS_ERROR,

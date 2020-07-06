@@ -108,9 +108,19 @@ export function appendTrailingSlash(str) {
   return str + (str.endsWith('/') ? '' : '/')
 }
 
-export function log(...params) {
+const LOG_LEVELS = ['debug', 'info', 'log', 'warn', 'error']
+export function log(levelOrMessage, ...params) {
+  const level = LOG_LEVELS.includes(levelOrMessage) ? levelOrMessage : null
+  if (level && !params.length) {
+    return (...params) => log(level, ...params)
+  }
+
   if (process.env.NODE_ENV !== 'production') {
-    console.log(...params)
+    if (level) {
+      console[level](...params)
+    } else {
+      console.log(levelOrMessage, ...params)
+    }
   }
 }
 
@@ -121,6 +131,7 @@ export function isString(str) {
 export function isHumanReadable(str = '') {
   return !str.split(' ').some(word => word.length > 26)
 }
+
 // Thanks to https://stackoverflow.com/a/12646864
 export function shuffleArray(original) {
   const array = [...original]
