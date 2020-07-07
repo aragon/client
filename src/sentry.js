@@ -15,11 +15,12 @@ export function logWithSentry(message, level = 'warning') {
   }
 }
 
-// Automatically initialize if enabled
-if (sentryDsn) {
-  Sentry.init({
-    dsn: sentryDsn,
-    release: packageVersion,
-    environment: network.shortName,
-  })
+export default function initializeSentryIfEnabled() {
+  if (sentryDsn) {
+    Sentry.init({
+      dsn: sentryDsn,
+      release: packageVersion,
+      environment: network.shortName,
+    })
+  }
 }

@@ -1,9 +1,6 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
-// Initialize Sentry immediately if enabled
-import './sentry'
-
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
@@ -18,8 +15,12 @@ import {
 } from './local-settings'
 import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
+import initializeSentryIfEnabled from './sentry'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
+
+// Initialize Sentry as early as possible, if enabled
+initializeSentryIfEnabled()
 
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
