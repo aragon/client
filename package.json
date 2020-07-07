@@ -1,6 +1,6 @@
 {
   "name": "aragon",
-  "description": "Aragon DApp",
+  "description": "Aragon client",
   "version": "0.8.13",
   "private": true,
   "license": "AGPL-3.0-or-later",
