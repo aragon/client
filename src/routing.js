@@ -8,9 +8,10 @@ import React, {
   useRef,
 } from 'react'
 import { createHashHistory as createHistory } from 'history'
+import { logWithSentry } from './sentry'
 import { staticApps } from './static-apps'
 import { isAddress, isValidEnsName } from './web3-utils'
-import { addStartingSlash, log } from './utils'
+import { addStartingSlash } from './utils'
 
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 
@@ -120,7 +121,7 @@ export function getPath({ mode, preferences } = {}) {
     let { orgAddress } = mode
 
     if (!orgAddress) {
-      log(
+      logWithSentry(
         "Routing(path): 'orgAddress' is a required component for 'org' mode. " +
           `Defaulted to '${fallbackPath}'.`
       )
@@ -145,7 +146,7 @@ export function getPath({ mode, preferences } = {}) {
 
     let { instancePath = '' } = mode
     if (instancePath && !instanceId) {
-      log(
+      logWithSentry(
         "Routing(path): 'instancePath' can only be provided if an " +
           `'instanceId' is provided in 'org' mode. Ignored '${instancePath}'.`
       )
@@ -157,7 +158,7 @@ export function getPath({ mode, preferences } = {}) {
     )
   }
 
-  log(
+  logWithSentry(
     `Routing(path): invalid mode '${mode.name}' set. Defaulted to '${fallbackPath}'.`
   )
 
@@ -189,7 +190,7 @@ export function parsePreferences(search = '') {
 export function getPreferencesSearch({ section, subsection, data = {} } = {}) {
   if (!section) {
     if (subsection) {
-      log(
+      logWithSentry(
         "Routing(preferences): 'subsection' can only be provided if 'section' " +
           `is provided. Ignored '${subsection}'.`
       )

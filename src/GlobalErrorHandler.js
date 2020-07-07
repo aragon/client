@@ -1,15 +1,11 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import * as Sentry from '@sentry/browser'
+import PropTypes from 'prop-types'
 import GenericError from './components/Error/GenericError'
 import DAONotFoundError from './components/Error/DAONotFoundError'
-import { network } from './environment'
 import { DAONotFound } from './errors'
-import { getSentryDsn, getPackageVersion } from './local-settings'
+import { isSentryEnabled } from './sentry'
 import ErrorScreen from './components/Error/ErrorScreen'
-
-const SENTRY_DSN = getSentryDsn()
-const PACKAGE_VERSION = getPackageVersion()
 
 class GlobalErrorHandler extends React.Component {
   static propTypes = {
@@ -37,11 +33,6 @@ class GlobalErrorHandler extends React.Component {
     window.removeEventListener('hashchange', this.handleHashchange)
   }
   handleReportClick = () => {
-    Sentry.init({
-      dsn: SENTRY_DSN,
-      release: PACKAGE_VERSION,
-      environment: network.type,
-    })
     const eventId = Sentry.captureException(this.state.error)
     Sentry.showReportDialog({ eventId })
   }
@@ -60,7 +51,7 @@ class GlobalErrorHandler extends React.Component {
           <GenericError
             detailsTitle={error.message}
             detailsContent={errorStack}
-            reportCallback={SENTRY_DSN ? this.handleReportClick : null}
+            reportCallback={isSentryEnabled ? this.handleReportClick : null}
           />
         )}
       </ErrorScreen>

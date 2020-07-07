@@ -15,8 +15,12 @@ import {
 } from './local-settings'
 import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
+import initializeSentryIfEnabled from './sentry'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
+
+// Initialize Sentry as early as possible, if enabled
+initializeSentryIfEnabled()
 
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
@@ -24,12 +28,11 @@ const lastPackageVersion = getLastPackageVersion()
 const [currentMajorVersion, currentMinorVersion] = packageVersion.split('.')
 const [lastMajorVersion, lastMinorVersion] = lastPackageVersion.split('.')
 
-// Setting a package version also clears all local storage data.
+// Purge localstorage when upgrading between different minor versions.
 if (
   lastMajorVersion !== currentMajorVersion ||
   lastMinorVersion !== currentMinorVersion
 ) {
-  // Purge localstorage when upgrading between different minor versions.
   window.localStorage.clear()
 
   // Attempt to clean up indexedDB storage as well.
