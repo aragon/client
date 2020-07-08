@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Modal,
@@ -17,8 +17,9 @@ const AnimatedDiv = animated.div
 const DEFAULT_MODAL_WIDTH = 85 * GU
 
 function MultiScreenModal({ visible, screens, onClose }) {
-  const steps = screens.length
-  const { prev, step, next, direction } = useSteps(steps)
+  const { prev, step, next, direction, getScreen, currentScreen } = useScreens(
+    screens
+  )
   const [applyStaticHeight, setApplyStaticHeight] = useState(false)
   const [height, setHeight] = useState(null)
   const [firstStart, setFirstStart] = useState(true)
@@ -26,15 +27,8 @@ function MultiScreenModal({ visible, screens, onClose }) {
 
   const smallMode = below('medium')
 
-  // Store updates to screens in state
-  // This prevents issues with step updates being older than screens
-  const screensRef = useRef(screens)
+  const { disableClose, width } = currentScreen
 
-  useEffect(() => {
-    screensRef.current = screens
-  }, [screens])
-
-  const { disableClose, width } = screensRef.current[step]
   const modalWidth = width || DEFAULT_MODAL_WIDTH
 
   const renderScreen = useCallback(
@@ -137,7 +131,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
                     native
                   >
                     {currentStep => animProps => {
-                      const currentScreen = screensRef.current[currentStep]
+                      const currentScreen = getScreen(currentStep)
 
                       // Bail on rendering if screens is updated and currentScreen no longer exists
                       return currentScreen ? (
@@ -172,6 +166,28 @@ function MultiScreenModal({ visible, screens, onClose }) {
       }}
     </Viewport>
   )
+}
+
+function useScreens(screens) {
+  const { prev, step, next, direction } = useSteps(screens.length)
+  const [screensState, setScreensState] = useState(screens)
+
+  useEffect(() => {
+    setScreensState(screens)
+  }, [screens])
+
+  const getScreen = useCallback(step => screensState[step], [screensState])
+
+  const currentScreen = getScreen(step)
+
+  return {
+    prev,
+    step,
+    next,
+    direction,
+    getScreen,
+    currentScreen,
+  }
 }
 
 MultiScreenModal.defaultProps = {
