@@ -56,7 +56,6 @@ export function useArrows({ onUp, onLeft, onDown, onRight } = {}) {
 
 function stepsReducer(state, { type, value, steps }) {
   const { step } = state
-
   const stepsCount = steps - 1
 
   let newStep = null
