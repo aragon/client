@@ -169,7 +169,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
 }
 
 function useScreens(screens) {
-  const { prev, step, next, direction } = useSteps(screens.length)
+  const { direction, next, prev, step } = useSteps(screens.length)
   const [screensState, setScreensState] = useState(screens)
 
   useEffect(() => {
@@ -181,12 +181,12 @@ function useScreens(screens) {
   const currentScreen = getScreen(step)
 
   return {
-    prev,
-    step,
-    next,
+    currentScreen,
     direction,
     getScreen,
-    currentScreen,
+    next,
+    prev,
+    step,
   }
 }
 
