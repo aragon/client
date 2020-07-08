@@ -1,22 +1,23 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useLayoutEffect } from 'react'
 import useMeasure from 'react-use-measure'
 
 function useStepperLayout() {
   const [outerBoundsRef, outerBounds] = useMeasure()
   const innerBoundsRef = useRef()
   const [innerBounds, setInnerBounds] = useState(null)
-  const [measuring, setMeasuring] = useState(true)
 
   // First render must always be in "multiple" mode so that our measurement reference point is accurate
   const [layout, setLayout] = useState('multiple')
 
-  useEffect(() => {
-    const outerMeasured = outerBounds.width && outerBounds.width > 0
-
+  // It's important that we only query for the inner offsetWidth once so that our reference width remains constant
+  useLayoutEffect(() => {
     if (!innerBounds) {
       setInnerBounds(innerBoundsRef.current.offsetWidth)
-      setMeasuring(false)
     }
+  }, [innerBounds])
+
+  useEffect(() => {
+    const outerMeasured = outerBounds.width > 0
 
     if (outerMeasured && outerBounds.width < innerBounds) {
       setLayout('single')
@@ -27,7 +28,7 @@ function useStepperLayout() {
     }
   }, [outerBounds, innerBounds])
 
-  return { outerBoundsRef, innerBoundsRef, layout, measuring }
+  return { outerBoundsRef, innerBoundsRef, layout }
 }
 
 export default useStepperLayout

@@ -50,12 +50,7 @@ function TransactionStepper({ steps, onComplete, className }) {
   )
   const [firstStart, setFirstStart] = useState(true)
 
-  const {
-    outerBoundsRef,
-    innerBoundsRef,
-    layout,
-    measuring,
-  } = useStepperLayout()
+  const { outerBoundsRef, innerBoundsRef, layout } = useStepperLayout()
 
   const canPerformUpdate = useRef(true)
 
@@ -173,7 +168,6 @@ function TransactionStepper({ steps, onComplete, className }) {
             padding: 0;
             display: flex;
             flex-direction: ${layout === 'single' ? 'column' : 'row'};
-            visibility: ${measuring ? 'hidden' : 'visible'};
           `}
         >
           {layout === 'single' && (
