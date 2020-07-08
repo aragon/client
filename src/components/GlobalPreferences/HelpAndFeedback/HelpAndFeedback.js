@@ -20,13 +20,13 @@ function HelpAndFeedback() {
   }, [setConsoleVisible])
 
   const handleConsoleLinkClick = useCallback(() => {
-    routing.update({
+    routing.update(({ mode }) => ({
       mode: {
-        orgAddress: routing.mode.orgAddress,
+        ...mode,
         instanceId: 'console',
       },
       preferences: {},
-    })
+    }))
   }, [routing])
 
   return (
