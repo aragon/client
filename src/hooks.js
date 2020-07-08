@@ -57,16 +57,21 @@ export function useArrows({ onUp, onLeft, onDown, onRight } = {}) {
 function stepsReducer(state, { type, value, steps }) {
   const { step } = state
 
+  const stepsCount = steps - 1
+
   let newStep = null
 
   if (type === 'set') {
     newStep = value
   }
-  if (type === 'next' && step < steps - 1) {
+  if (type === 'next' && step < stepsCount) {
     newStep = step + 1
   }
   if (type === 'prev' && step > 0) {
     newStep = step - 1
+  }
+  if (type === 'remember') {
+    newStep = step <= stepsCount ? step : stepsCount
   }
 
   if (newStep !== null && step !== newStep) {
@@ -86,9 +91,10 @@ export function useSteps(steps) {
     direction: 0,
   })
 
-  // If the number of steps change, we reset the current step
+  // If the number of steps change, we remember the current step
+  // or use the closest value available
   useEffect(() => {
-    updateStep({ type: 'set', value: 0, steps })
+    updateStep({ type: 'remember', steps })
   }, [steps])
 
   const setStep = useCallback(
