@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   Modal,
@@ -19,20 +19,27 @@ const DEFAULT_MODAL_WIDTH = 85 * GU
 function MultiScreenModal({ visible, screens, onClose }) {
   const steps = screens.length
   const { prev, step, next, direction } = useSteps(steps)
-
   const [applyStaticHeight, setApplyStaticHeight] = useState(false)
   const [height, setHeight] = useState(null)
   const [firstStart, setFirstStart] = useState(true)
   const { below } = useViewport()
 
   const smallMode = below('medium')
-  const { disableClose, width } = screens[step]
 
+  // Store updates to screens in state
+  // This prevents issues with step updates being older than screens
+  const screensRef = useRef(screens)
+
+  useEffect(() => {
+    screensRef.current = screens
+  }, [screens])
+
+  const { disableClose, width } = screensRef.current[step]
   const modalWidth = width || DEFAULT_MODAL_WIDTH
 
   const renderScreen = useCallback(
-    step => {
-      const { title, content } = screens[step]
+    screen => {
+      const { title, content } = screen
 
       return (
         <React.Fragment>
@@ -54,7 +61,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
         </React.Fragment>
       )
     },
-    [prev, next, onClose, screens, smallMode]
+    [prev, next, onClose, smallMode]
   )
 
   const onStart = useCallback(() => {
@@ -114,10 +121,12 @@ function MultiScreenModal({ visible, screens, onClose }) {
                     enter={{
                       opacity: 1,
                       transform: 'translate3d(0, 0, 0)',
+                      position: 'static',
                     }}
                     leave={{
                       opacity: 0,
                       transform: `translate3d(${5 * GU * -direction}px, 0, 0)`,
+                      position: 'absolute',
                     }}
                     onRest={(_, status) => {
                       if (status === 'update') {
@@ -127,12 +136,11 @@ function MultiScreenModal({ visible, screens, onClose }) {
                     onStart={onStart}
                     native
                   >
-                    {currentStep => ({ opacity, transform }) => {
-                      // For better performance we avoid reflows between screen changes by matching the screen width with the modal width
-                      const screenWidth =
-                        screens[currentStep].width || DEFAULT_MODAL_WIDTH
+                    {currentStep => animProps => {
+                      const currentScreen = screensRef.current[currentStep]
 
-                      return (
+                      // Bail on rendering if screens is updated and currentScreen no longer exists
+                      return currentScreen ? (
                         <AnimatedDiv
                           ref={elt => {
                             if (elt) {
@@ -140,16 +148,19 @@ function MultiScreenModal({ visible, screens, onClose }) {
                             }
                           }}
                           style={{
-                            position:
-                              currentStep === step ? 'static' : 'absolute',
-                            transform: transform,
-                            opacity: opacity,
-                            width: Math.min(viewportWidth, screenWidth),
+                            // For better performance we avoid reflows between screen changes by matching the screen width with the modal width
+                            width: Math.min(
+                              viewportWidth,
+                              currentScreen.width || DEFAULT_MODAL_WIDTH
+                            ),
                             padding: smallMode ? 3 * GU : 5 * GU,
+                            ...animProps,
                           }}
                         >
-                          {renderScreen(currentStep)}
+                          {renderScreen(currentScreen)}
                         </AnimatedDiv>
+                      ) : (
+                        false
                       )
                     }}
                   </Transition>
