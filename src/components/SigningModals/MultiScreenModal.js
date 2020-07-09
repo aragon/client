@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   Modal,
@@ -115,12 +115,13 @@ function MultiScreenModal({ visible, screens, onClose }) {
                     enter={{
                       opacity: 1,
                       transform: 'translate3d(0, 0, 0)',
-                      position: 'static',
                     }}
                     leave={{
                       opacity: 0,
                       transform: `translate3d(${5 * GU * -direction}px, 0, 0)`,
                       position: 'absolute',
+                      top: 0,
+                      left: 0,
                     }}
                     onRest={(_, status) => {
                       if (status === 'update') {
@@ -130,31 +131,32 @@ function MultiScreenModal({ visible, screens, onClose }) {
                     onStart={onStart}
                     native
                   >
-                    {currentStep => animProps => {
-                      const currentScreen = getScreen(currentStep)
+                    {step => animProps => {
+                      const currentScreen = getScreen(step)
 
-                      // Bail on rendering if screens is updated and currentScreen no longer exists
-                      return currentScreen ? (
-                        <AnimatedDiv
-                          ref={elt => {
-                            if (elt) {
-                              setHeight(elt.clientHeight)
-                            }
-                          }}
-                          style={{
-                            // For better performance we avoid reflows between screen changes by matching the screen width with the modal width
-                            width: Math.min(
-                              viewportWidth,
-                              currentScreen.width || DEFAULT_MODAL_WIDTH
-                            ),
-                            padding: smallMode ? 3 * GU : 5 * GU,
-                            ...animProps,
-                          }}
-                        >
-                          {renderScreen(currentScreen)}
-                        </AnimatedDiv>
-                      ) : (
-                        false
+                      return (
+                        <React.Fragment>
+                          {currentScreen && (
+                            <AnimatedDiv
+                              ref={elt => {
+                                if (elt) {
+                                  setHeight(elt.clientHeight)
+                                }
+                              }}
+                              style={{
+                                // For better performance we avoid reflows between screen changes by matching the screen width with the modal width
+                                width: Math.min(
+                                  viewportWidth,
+                                  currentScreen.width || DEFAULT_MODAL_WIDTH
+                                ),
+                                padding: smallMode ? 3 * GU : 5 * GU,
+                                ...animProps,
+                              }}
+                            >
+                              {renderScreen(currentScreen)}
+                            </AnimatedDiv>
+                          )}
+                        </React.Fragment>
                       )
                     }}
                   </Transition>
@@ -195,7 +197,7 @@ function useScreens(screens) {
 
   const getScreen = useCallback(step => screensState[step], [screensState])
 
-  const currentScreen = getScreen(step)
+  const currentScreen = useMemo(() => getScreen(step), [getScreen, step])
 
   return {
     currentScreen,
