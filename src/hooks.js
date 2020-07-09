@@ -69,7 +69,7 @@ function stepsReducer(state, { type, value, steps }) {
   if (type === 'prev' && step > 0) {
     newStep = step - 1
   }
-  if (type === 'remember') {
+  if (type === 'adjustSize') {
     newStep = step <= stepsCount ? step : stepsCount
   }
 
@@ -90,10 +90,10 @@ export function useSteps(steps) {
     direction: 0,
   })
 
-  // If the number of steps change, we remember the current step
+  // If the number of steps change, we need to remember the current step
   // or use the closest value available
   useEffect(() => {
-    updateStep({ type: 'remember', steps })
+    updateStep({ type: 'adjustSize', steps })
   }, [steps])
 
   const setStep = useCallback(
