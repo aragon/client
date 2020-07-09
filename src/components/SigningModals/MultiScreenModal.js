@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   Modal,
@@ -17,22 +17,23 @@ const AnimatedDiv = animated.div
 const DEFAULT_MODAL_WIDTH = 85 * GU
 
 function MultiScreenModal({ visible, screens, onClose }) {
-  const steps = screens.length
-  const { prev, step, next, direction } = useSteps(steps)
-
+  const { prev, step, next, direction, getScreen, currentScreen } = useScreens(
+    screens
+  )
   const [applyStaticHeight, setApplyStaticHeight] = useState(false)
   const [height, setHeight] = useState(null)
   const [firstStart, setFirstStart] = useState(true)
   const { below } = useViewport()
 
   const smallMode = below('medium')
-  const { disableClose, width } = screens[step]
+
+  const { disableClose, width } = currentScreen
 
   const modalWidth = width || DEFAULT_MODAL_WIDTH
 
   const renderScreen = useCallback(
-    step => {
-      const { title, content } = screens[step]
+    screen => {
+      const { title, content } = screen
 
       return (
         <React.Fragment>
@@ -54,7 +55,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
         </React.Fragment>
       )
     },
-    [prev, next, onClose, screens, smallMode]
+    [prev, next, onClose, smallMode]
   )
 
   const onStart = useCallback(() => {
@@ -118,6 +119,9 @@ function MultiScreenModal({ visible, screens, onClose }) {
                     leave={{
                       opacity: 0,
                       transform: `translate3d(${5 * GU * -direction}px, 0, 0)`,
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
                     }}
                     onRest={(_, status) => {
                       if (status === 'update') {
@@ -127,29 +131,32 @@ function MultiScreenModal({ visible, screens, onClose }) {
                     onStart={onStart}
                     native
                   >
-                    {currentStep => ({ opacity, transform }) => {
-                      // For better performance we avoid reflows between screen changes by matching the screen width with the modal width
-                      const screenWidth =
-                        screens[currentStep].width || DEFAULT_MODAL_WIDTH
+                    {step => animProps => {
+                      const currentScreen = getScreen(step)
 
                       return (
-                        <AnimatedDiv
-                          ref={elt => {
-                            if (elt) {
-                              setHeight(elt.clientHeight)
-                            }
-                          }}
-                          style={{
-                            position:
-                              currentStep === step ? 'static' : 'absolute',
-                            transform: transform,
-                            opacity: opacity,
-                            width: Math.min(viewportWidth, screenWidth),
-                            padding: smallMode ? 3 * GU : 5 * GU,
-                          }}
-                        >
-                          {renderScreen(currentStep)}
-                        </AnimatedDiv>
+                        <React.Fragment>
+                          {currentScreen && (
+                            <AnimatedDiv
+                              ref={elt => {
+                                if (elt) {
+                                  setHeight(elt.clientHeight)
+                                }
+                              }}
+                              style={{
+                                // For better performance we avoid reflows between screen changes by matching the screen width with the modal width
+                                width: Math.min(
+                                  viewportWidth,
+                                  currentScreen.width || DEFAULT_MODAL_WIDTH
+                                ),
+                                padding: smallMode ? 3 * GU : 5 * GU,
+                                ...animProps,
+                              }}
+                            >
+                              {renderScreen(currentScreen)}
+                            </AnimatedDiv>
+                          )}
+                        </React.Fragment>
                       )
                     }}
                   </Transition>
@@ -178,6 +185,28 @@ MultiScreenModal.propTypes = {
     })
   ).isRequired,
   onClose: PropTypes.func,
+}
+
+function useScreens(screens) {
+  const { direction, next, prev, step } = useSteps(screens.length)
+  const [screensState, setScreensState] = useState(screens)
+
+  useEffect(() => {
+    setScreensState(screens)
+  }, [screens])
+
+  const getScreen = useCallback(step => screensState[step], [screensState])
+
+  const currentScreen = useMemo(() => getScreen(step), [getScreen, step])
+
+  return {
+    currentScreen,
+    direction,
+    getScreen,
+    next,
+    prev,
+    step,
+  }
 }
 
 export default React.memo(MultiScreenModal)
