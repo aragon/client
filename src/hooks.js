@@ -369,11 +369,11 @@ export function useDetectIsMounted() {
 
 // Simple hook for delaying Spring animations until after the first render
 export function useDeferredAnimation() {
-  const [immediateAnimation, setBlockAnimation] = useState(true)
+  const [immediateAnimation, setImmediateAnimation] = useState(true)
 
   const onAnimationStart = useCallback(() => {
     if (immediateAnimation) {
-      setBlockAnimation(false)
+      setImmediateAnimation(false)
     }
   }, [immediateAnimation])
 
