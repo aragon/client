@@ -49,9 +49,7 @@ function TransactionStepper({ steps, onComplete, className }) {
     initialStepState(steps)
   )
   const [firstStart, setFirstStart] = useState(true)
-
   const { outerBoundsRef, innerBoundsRef, layout } = useStepperLayout()
-
   const canPerformUpdate = useRef(true)
 
   const stepsCount = steps.length - 1
@@ -165,19 +163,21 @@ function TransactionStepper({ steps, onComplete, className }) {
           css={`
             padding: 0;
             display: flex;
-            flex-direction: ${layout === 'single' ? 'column' : 'row'};
+            flex-direction: ${layout === 'collapsed' ? 'column' : 'row'};
           `}
         >
-          {layout === 'single' && (
+          {layout === 'collapsed' && (
             <React.Fragment>
-              <p
-                css={`
-                  text-align: center;
-                  color: ${theme.contentSecondary};
-                `}
-              >
-                {stepperStage + 1} out of {steps.length} transactions
-              </p>
+              {steps.length > 1 && (
+                <p
+                  css={`
+                    text-align: center;
+                    color: ${theme.contentSecondary};
+                  `}
+                >
+                  {stepperStage + 1} out of {steps.length} transactions
+                </p>
+              )}
 
               <div
                 css={`
@@ -219,7 +219,7 @@ function TransactionStepper({ steps, onComplete, className }) {
               </div>
             </React.Fragment>
           )}
-          {layout === 'multiple' && renderSteps()}
+          {layout === 'expanded' && renderSteps()}
         </ul>
       </div>
     </div>

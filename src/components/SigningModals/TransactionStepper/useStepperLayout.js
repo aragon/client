@@ -8,7 +8,7 @@ function useStepperLayout() {
   const [innerBounds, setInnerBounds] = useState(null)
 
   // First render must always be in "multiple" mode so that our measurement reference point is accurate
-  const [layout, setLayout] = useState('multiple')
+  const [layout, setLayout] = useState('expanded')
 
   // It's important that we only query for the inner offsetWidth once so that our reference width remains constant
   useLayoutEffect(() => {
@@ -21,11 +21,11 @@ function useStepperLayout() {
     const outerMeasured = outerBounds.width > 0
 
     if (outerMeasured && outerBounds.width < innerBounds) {
-      setLayout('single')
+      setLayout('collapsed')
     }
 
     if (outerMeasured && outerBounds.width >= innerBounds) {
-      setLayout('multiple')
+      setLayout('expanded')
     }
   }, [outerBounds, innerBounds])
 
