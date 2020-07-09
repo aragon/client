@@ -354,3 +354,28 @@ export function useMatchMedia(query) {
 export function usePrefersDarkMode() {
   return useMatchMedia('(prefers-color-scheme: dark)')
 }
+
+export function useDetectIsMounted() {
+  const mounted = useRef(true)
+
+  useEffect(() => {
+    return () => {
+      mounted.current = false
+    }
+  }, [])
+
+  return () => mounted.current
+}
+
+// Simple hook for delaying Spring animations until after the first render
+export function useDeferredAnimation() {
+  const [immediateAnimation, setImmediateAnimation] = useState(true)
+
+  const onAnimationStart = useCallback(() => {
+    if (immediateAnimation) {
+      setImmediateAnimation(false)
+    }
+  }, [immediateAnimation])
+
+  return [immediateAnimation, onAnimationStart]
+}
