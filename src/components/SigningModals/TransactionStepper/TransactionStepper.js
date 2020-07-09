@@ -126,12 +126,10 @@ function TransactionStepper({ steps, onComplete, className }) {
         updateStepStatus(STEP_SUCCESS)
 
         // Advance to next step or fire complete callback
-        if (stepperStage !== stepsCount && canPerformUpdate.current) {
-          setStepperStage(stepperStage + 1)
-        }
-
-        if (stepperStage === stepsCount && canPerformUpdate.current) {
-          onComplete()
+        if (canPerformUpdate.current) {
+          stepperStage === stepsCount
+            ? onComplete()
+            : setStepperStage(stepperStage + 1)
         }
       },
     })
@@ -228,14 +226,14 @@ function TransactionStepper({ steps, onComplete, className }) {
   )
 }
 
-TransactionStepper.defaultProps = {
-  onComplete: noop,
-}
-
 TransactionStepper.propTypes = {
-  steps: PropTypes.arrayOf(PropTypes.array),
+  steps: PropTypes.arrayOf(PropTypes.array).isRequired,
   onComplete: PropTypes.func,
   className: PropTypes.string,
+}
+
+TransactionStepper.defaultProps = {
+  onComplete: noop,
 }
 
 export default TransactionStepper
