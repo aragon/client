@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import { PropTypes } from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { noop, useTheme, springs, GU } from '@aragon/ui'
@@ -15,6 +9,7 @@ import {
   STEP_WAITING,
   STEP_WORKING,
 } from './stepper-statuses'
+import { useDetectIsMounted, useDeferredAnimation } from '../../../hooks'
 import useStepperLayout from './useStepperLayout'
 import Step from './Step/Step'
 
@@ -43,23 +38,16 @@ function reduceSteps(steps, [action, stepIndex, value]) {
 
 function TransactionStepper({ steps, onComplete, className }) {
   const theme = useTheme()
+  const isMounted = useDetectIsMounted()
+  const [immediateAnimation, onAnimationStart] = useDeferredAnimation()
   const [stepperStage, setStepperStage] = useState(0)
   const [stepState, updateStep] = useReducer(
     reduceSteps,
     initialStepState(steps)
   )
-  const [firstStart, setFirstStart] = useState(true)
   const { outerBoundsRef, innerBoundsRef, layout } = useStepperLayout()
-  const canPerformUpdate = useRef(true)
 
   const stepsCount = steps.length - 1
-
-  const onStart = useCallback(() => {
-    // Don’t animate on first render
-    if (firstStart) {
-      setFirstStart(false)
-    }
-  }, [firstStart])
 
   const renderStep = (stepIndex, showDivider) => {
     const title = steps[stepIndex][0]
@@ -93,20 +81,20 @@ function TransactionStepper({ steps, onComplete, className }) {
 
   const updateStepStatus = useCallback(
     status => {
-      if (canPerformUpdate.current) {
+      if (isMounted()) {
         updateStep(['setStatus', stepperStage, status])
       }
     },
-    [stepperStage]
+    [stepperStage, isMounted]
   )
 
   const updateHash = useCallback(
     hash => {
-      if (canPerformUpdate.current) {
+      if (isMounted()) {
         updateStep(['setHash', stepperStage, hash])
       }
     },
-    [stepperStage]
+    [stepperStage, isMounted]
   )
 
   const handleSign = useCallback(() => {
@@ -124,7 +112,7 @@ function TransactionStepper({ steps, onComplete, className }) {
         updateStepStatus(STEP_SUCCESS)
 
         // Advance to next step or fire complete callback
-        if (canPerformUpdate.current) {
+        if (isMounted()) {
           stepperStage === stepsCount
             ? onComplete()
             : setStepperStage(stepperStage + 1)
@@ -138,16 +126,10 @@ function TransactionStepper({ steps, onComplete, className }) {
     updateHash,
     onComplete,
     stepsCount,
+    isMounted,
   ])
 
   useEffect(handleSign, [stepperStage])
-
-  // Prevent async state updates after unmount
-  useEffect(() => {
-    return () => {
-      canPerformUpdate.current = false
-    }
-  }, [])
 
   return (
     <div className={className}>
@@ -188,8 +170,8 @@ function TransactionStepper({ steps, onComplete, className }) {
                   config={springs.smooth}
                   delay={300}
                   items={stepperStage}
-                  immediate={firstStart}
-                  onStart={onStart}
+                  immediate={immediateAnimation}
+                  onStart={onAnimationStart}
                   from={{
                     opacity: 0,
                     transform: `translate3d(${10 * GU}px, 0, 0)`,

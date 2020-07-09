@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { css, keyframes } from 'styled-components'
@@ -10,6 +10,7 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
+import Illustration from './Illustration'
 import {
   STEP_ERROR,
   STEP_PROMPTING,
@@ -17,7 +18,7 @@ import {
   STEP_WAITING,
   STEP_WORKING,
 } from '../stepper-statuses'
-import Illustration from './Illustration'
+import { useDeferredAnimation } from '../../../../hooks'
 
 const STATUS_ICONS = {
   [STEP_ERROR]: IconCross,
@@ -53,14 +54,7 @@ const pulseAnimation = css`
 
 function StatusVisual({ status, color, number, className }) {
   const theme = useTheme()
-  const [firstStart, setFirstStart] = useState(true)
-
-  const onStart = useCallback(() => {
-    // Don’t animate on first render
-    if (firstStart) {
-      setFirstStart(false)
-    }
-  }, [firstStart])
+  const [immediateAnimation, onAnimationStart] = useDeferredAnimation()
 
   const [statusIcon, illustration] = useMemo(() => {
     const Icon = STATUS_ICONS[status]
@@ -106,8 +100,8 @@ function StatusVisual({ status, color, number, className }) {
                 state === 'enter' ? springs.smooth : springs.swift
               }
               items={statusIcon}
-              onStart={onStart}
-              immediate={firstStart}
+              onStart={onAnimationStart}
+              immediate={immediateAnimation}
               from={{
                 transform: 'scale3d(1.25, 1.25, 1)',
               }}

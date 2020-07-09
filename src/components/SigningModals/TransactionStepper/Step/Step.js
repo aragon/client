@@ -1,7 +1,8 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { GU, TransactionBadge, springs, textStyle, useTheme } from '@aragon/ui'
+import Divider from './Divider'
 import {
   STEP_ERROR,
   STEP_PROMPTING,
@@ -9,8 +10,7 @@ import {
   STEP_WAITING,
   STEP_WORKING,
 } from '../stepper-statuses'
-
-import Divider from './Divider'
+import { useDeferredAnimation } from '../../../../hooks'
 import StatusVisual from './StatusVisual'
 
 const BADGE_OFFSET = 4.5 * GU
@@ -26,7 +26,7 @@ function Step({
   showDivider,
 }) {
   const theme = useTheme()
-  const [firstStart, setFirstStart] = useState(true)
+  const [immediateAnimation, onAnimationStart] = useDeferredAnimation()
 
   const { desc, visualColor, descColor } = useMemo(() => {
     const appearance = {
@@ -65,13 +65,6 @@ function Step({
       descColor: `${descColor}`,
     }
   }, [status, theme])
-
-  const onStart = useCallback(() => {
-    // Don’t animate on first render
-    if (firstStart) {
-      setFirstStart(false)
-    }
-  }, [firstStart])
 
   return (
     <React.Fragment>
@@ -119,8 +112,8 @@ function Step({
           <Transition
             config={springs.smooth}
             items={desc}
-            onStart={onStart}
-            immediate={status === STEP_PROMPTING || firstStart}
+            onStart={onAnimationStart}
+            immediate={status === STEP_PROMPTING || immediateAnimation}
             from={{
               opacity: 0,
               transform: `translate3d(0, ${2 * GU}px, 0)`,
@@ -183,8 +176,8 @@ function Step({
               <Transition
                 config={springs.smooth}
                 items={transactionHash}
-                onStart={onStart}
-                immediate={firstStart}
+                onStart={onAnimationStart}
+                immediate={immediateAnimation}
                 from={{
                   opacity: 0,
                   transform: `translate3d(0, ${1 * GU}px, 0)`,
