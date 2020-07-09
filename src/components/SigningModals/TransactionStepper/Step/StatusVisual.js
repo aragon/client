@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { css, keyframes } from 'styled-components'
 import {
@@ -18,15 +19,6 @@ import {
 } from '../stepper-statuses'
 
 import Illustration from './Illustration'
-import PropTypes from 'prop-types'
-
-const ABSOLUTE_FILL = `
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-`
 
 const STATUS_ICONS = {
   [STEP_ERROR]: IconCross,
@@ -79,6 +71,7 @@ function StatusVisual({ status, color, number, className }) {
     <div
       className={className}
       css={`
+        display: flex;
         position: relative;
         width: ${13.5 * GU}px;
         height: ${13.5 * GU}px;
@@ -86,10 +79,8 @@ function StatusVisual({ status, color, number, className }) {
     >
       <div
         css={`
-          ${ABSOLUTE_FILL}
-
           display: flex;
-
+          flex: 1;
           align-items: center;
           justify-content: center;
         `}
@@ -182,15 +173,18 @@ function StatusVisual({ status, color, number, className }) {
         </div>
         <div
           css={`
-            ${ABSOLUTE_FILL}
-            ${status === STEP_PROMPTING && pulseAnimation}
-            ${status === STEP_WORKING && spinAnimation}
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
 
             border-radius: 100%;
+            border: 2px solid ${status === STEP_WAITING ? 'transparent' : color};
 
-            border: 2px solid
-            ${status === STEP_WAITING ? 'transparent' : color};
-        `}
+            ${status === STEP_PROMPTING && pulseAnimation}
+            ${status === STEP_WORKING && spinAnimation}
+          `}
         />
       </div>
     </div>
@@ -204,9 +198,9 @@ StatusVisual.propTypes = {
     STEP_WORKING,
     STEP_SUCCESS,
     STEP_ERROR,
-  ]),
-  color: PropTypes.string,
-  number: PropTypes.number,
+  ]).isRequired,
+  color: PropTypes.string.isRequired,
+  number: PropTypes.number.isRequired,
   className: PropTypes.string,
 }
 
