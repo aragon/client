@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, useLayoutEffect } from 'react'
 import useMeasure from 'react-use-measure'
+import { ResizeObserver } from '@juggle/resize-observer'
 
 function useStepperLayout() {
-  const [outerBoundsRef, outerBounds] = useMeasure()
+  const [outerBoundsRef, outerBounds] = useMeasure({ polyfill: ResizeObserver })
   const innerBoundsRef = useRef()
   const [innerBounds, setInnerBounds] = useState(null)
 
