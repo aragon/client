@@ -7,7 +7,7 @@ function useStepperLayout() {
   const innerBoundsRef = useRef()
   const [innerBounds, setInnerBounds] = useState(null)
 
-  // First render must always be in "multiple" mode so that our measurement reference point is accurate
+  // First render must always be in "expanded" mode so that our measurement reference point is accurate
   const [layout, setLayout] = useState('expanded')
 
   // It's important that we only query for the inner offsetWidth once so that our reference width remains constant
