@@ -197,7 +197,7 @@ function StepIllustration({ number, status }) {
       `}
     >
       {renderIllustration ? (
-        <Illustration status={status} />
+        <Illustration status={status} index={number} />
       ) : (
         <div
           css={`

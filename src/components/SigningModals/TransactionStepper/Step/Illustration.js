@@ -17,11 +17,15 @@ const gradients = {
   ],
 }
 
-function Illustration({ status }) {
+function Illustration({ status, index }) {
   const [backgroundFrom, backgroundTo] = gradients[status][0]
   const [foregroundFrom, foregroundTo] = gradients[status][1]
 
-  const gradientId = useCallback(id => `${status.description}-${id}`, [status])
+  // Inline SVGs don't scope their defs so we have to provide unique ids
+  const gradientId = useCallback(id => `${status.description}-${index}-${id}`, [
+    status,
+    index,
+  ])
 
   return (
     <svg
@@ -96,6 +100,7 @@ function Illustration({ status }) {
 
 Illustration.propTypes = {
   status: PropTypes.oneOf([STEP_WORKING, STEP_SUCCESS, STEP_ERROR]),
+  index: PropTypes.number,
 }
 
 export default Illustration
