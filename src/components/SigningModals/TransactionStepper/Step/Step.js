@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
+import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { GU, TransactionBadge, springs, textStyle, useTheme } from '@aragon/ui'
 import {
@@ -10,48 +11,9 @@ import {
 } from '../stepper-statuses'
 
 import Divider from './Divider'
-import PropTypes from 'prop-types'
 import StatusVisual from './StatusVisual'
 
 const BADGE_OFFSET = 4.5 * GU
-
-const getStepAppearance = (status, theme) => {
-  const appearance = {
-    [STEP_WAITING]: {
-      desc: 'Waiting for signature',
-      visualColor: theme.accent,
-      descColor: theme.contentSecondary,
-    },
-    [STEP_PROMPTING]: {
-      desc: 'Waiting for signature',
-      visualColor: theme.accent,
-      descColor: theme.contentSecondary,
-    },
-    [STEP_WORKING]: {
-      desc: 'Transaction being mined',
-      visualColor: theme.accent,
-      descColor: theme.accent,
-    },
-    [STEP_SUCCESS]: {
-      desc: 'Transaction confirmed',
-      visualColor: theme.positive,
-      descColor: theme.positive,
-    },
-    [STEP_ERROR]: {
-      desc: 'An error has occured',
-      visualColor: theme.negative,
-      descColor: theme.negative,
-    },
-  }
-
-  const { desc, descColor, visualColor } = appearance[status]
-
-  return {
-    desc,
-    visualColor: `${visualColor}`,
-    descColor: `${descColor}`,
-  }
-}
 
 const AnimatedSpan = animated.span
 
@@ -66,7 +28,43 @@ function Step({
   const theme = useTheme()
   const [firstStart, setFirstStart] = useState(true)
 
-  const { desc, visualColor, descColor } = getStepAppearance(status, theme)
+  const { desc, visualColor, descColor } = useMemo(() => {
+    const appearance = {
+      [STEP_WAITING]: {
+        desc: 'Waiting for signature',
+        visualColor: theme.accent,
+        descColor: theme.contentSecondary,
+      },
+      [STEP_PROMPTING]: {
+        desc: 'Waiting for signature',
+        visualColor: theme.accent,
+        descColor: theme.contentSecondary,
+      },
+      [STEP_WORKING]: {
+        desc: 'Transaction being mined',
+        visualColor: theme.accent,
+        descColor: theme.accent,
+      },
+      [STEP_SUCCESS]: {
+        desc: 'Transaction confirmed',
+        visualColor: theme.positive,
+        descColor: theme.positive,
+      },
+      [STEP_ERROR]: {
+        desc: 'An error has occured',
+        visualColor: theme.negative,
+        descColor: theme.negative,
+      },
+    }
+
+    const { desc, descColor, visualColor } = appearance[status]
+
+    return {
+      desc,
+      visualColor: `${visualColor}`,
+      descColor: `${descColor}`,
+    }
+  }, [status, theme])
 
   const onStart = useCallback(() => {
     // Don’t animate on first render
@@ -139,8 +137,8 @@ function Step({
             }}
             native
           >
-            {currentAppearance =>
-              currentAppearance &&
+            {description =>
+              description &&
               (props => (
                 <AnimatedSpan
                   style={{
@@ -152,7 +150,7 @@ function Step({
                     ...props,
                   }}
                 >
-                  {currentAppearance}
+                  {description}
                 </AnimatedSpan>
               ))
             }
@@ -160,6 +158,7 @@ function Step({
         </p>
         <div
           css={`
+            display: flex;
             position: relative;
 
             width: 100%;
@@ -171,18 +170,14 @@ function Step({
           {transactionHash && (
             <div
               css={`
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-
-                width: 100%;
-
                 display: flex;
+
+                flex: 1;
                 align-items: center;
                 justify-content: flex-end;
                 flex-direction: column;
+
+                width: 100%;
               `}
             >
               <Transition
