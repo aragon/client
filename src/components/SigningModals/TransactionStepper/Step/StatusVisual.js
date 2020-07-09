@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { css, keyframes } from 'styled-components'
@@ -17,7 +17,6 @@ import {
   STEP_WAITING,
   STEP_WORKING,
 } from '../stepper-statuses'
-
 import Illustration from './Illustration'
 
 const STATUS_ICONS = {
@@ -55,7 +54,6 @@ const pulseAnimation = css`
 function StatusVisual({ status, color, number, className }) {
   const theme = useTheme()
   const [firstStart, setFirstStart] = useState(true)
-  const StatusIcon = STATUS_ICONS[status]
 
   const onStart = useCallback(() => {
     // Don’t animate on first render
@@ -64,8 +62,14 @@ function StatusVisual({ status, color, number, className }) {
     }
   }, [firstStart])
 
-  const renderIllustration =
-    status === STEP_WORKING || status === STEP_ERROR || status === STEP_SUCCESS
+  const [statusIcon, illustration] = useMemo(() => {
+    const Icon = STATUS_ICONS[status]
+
+    return [
+      Icon && <Icon />,
+      <StepIllustration number={number} status={status} />,
+    ]
+  }, [status, number])
 
   return (
     <div
@@ -101,7 +105,7 @@ function StatusVisual({ status, color, number, className }) {
               config={(_, state) =>
                 state === 'enter' ? springs.smooth : springs.swift
               }
-              items={StatusIcon}
+              items={statusIcon}
               onStart={onStart}
               immediate={firstStart}
               from={{
@@ -118,58 +122,32 @@ function StatusVisual({ status, color, number, className }) {
               }}
               native
             >
-              {CurrentStatusIcon =>
-                CurrentStatusIcon &&
+              {currentStatusIcon =>
+                currentStatusIcon &&
                 (animProps => (
                   <AnimatedDiv
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      borderRadius: '100%',
-                      padding: `${0.25 * GU}px`,
-                      backgroundColor: theme.surface,
-                      border: '1px solid currentColor',
-                      bottom: 0,
-                      right: 0,
-                      color,
-                      ...animProps,
-                    }}
+                    css={`
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      border-radius: 100%;
+                      padding: ${0.25 * GU}px;
+                      background-color: ${theme.surface};
+                      color: ${color};
+                      border: 1px solid currentColor;
+                      bottom: 0;
+                      left: 0;
+                    `}
+                    style={animProps}
                   >
-                    <CurrentStatusIcon />
+                    {currentStatusIcon}
                   </AnimatedDiv>
                 ))
               }
             </Transition>
           </div>
 
-          <div
-            css={`
-              width: ${8.5 * GU}px;
-              height: ${8.5 * GU}px;
-            `}
-          >
-            {renderIllustration ? (
-              <Illustration status={status} />
-            ) : (
-              <div
-                css={`
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  background-color: ${theme.surfaceOpened};
-                  height: 100%;
-                  border-radius: 100%;
-                  color: ${theme.accentContent};
-
-                  ${textStyle('title3')}
-                  font-weight: 600;
-                `}
-              >
-                {number}
-              </div>
-            )}
-          </div>
+          {illustration}
         </div>
         <div
           css={`
@@ -203,5 +181,44 @@ StatusVisual.propTypes = {
   number: PropTypes.number.isRequired,
   className: PropTypes.string,
 }
+
+/* eslint-disable react/prop-types */
+function StepIllustration({ number, status }) {
+  const theme = useTheme()
+
+  const renderIllustration =
+    status === STEP_WORKING || status === STEP_ERROR || status === STEP_SUCCESS
+
+  return (
+    <div
+      css={`
+        width: ${8.5 * GU}px;
+        height: ${8.5 * GU}px;
+      `}
+    >
+      {renderIllustration ? (
+        <Illustration status={status} />
+      ) : (
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: ${theme.surfaceOpened};
+            height: 100%;
+            border-radius: 100%;
+            color: ${theme.accentContent};
+
+            ${textStyle('title3')}
+            font-weight: 600;
+          `}
+        >
+          {number}
+        </div>
+      )}
+    </div>
+  )
+}
+/* eslint-enable react/prop-types */
 
 export default StatusVisual
