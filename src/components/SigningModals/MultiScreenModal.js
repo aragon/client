@@ -168,6 +168,23 @@ function MultiScreenModal({ visible, screens, onClose }) {
   )
 }
 
+MultiScreenModal.defaultProps = {
+  onClose: noop,
+}
+
+MultiScreenModal.propTypes = {
+  visible: PropTypes.bool,
+  screens: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      content: PropTypes.func,
+      disableClose: PropTypes.bool,
+      width: PropTypes.number,
+    })
+  ).isRequired,
+  onClose: PropTypes.func,
+}
+
 function useScreens(screens) {
   const { direction, next, prev, step } = useSteps(screens.length)
   const [screensState, setScreensState] = useState(screens)
@@ -188,23 +205,6 @@ function useScreens(screens) {
     prev,
     step,
   }
-}
-
-MultiScreenModal.defaultProps = {
-  onClose: noop,
-}
-
-MultiScreenModal.propTypes = {
-  visible: PropTypes.bool,
-  screens: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      content: PropTypes.func,
-      disableClose: PropTypes.bool,
-      width: PropTypes.number,
-    })
-  ).isRequired,
-  onClose: PropTypes.func,
 }
 
 export default React.memo(MultiScreenModal)
