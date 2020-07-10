@@ -17,7 +17,6 @@ import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import initializeSentryIfEnabled from './sentry'
 import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
-import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
 
 // Initialize Sentry as early as possible, if enabled
 initializeSentryIfEnabled()
@@ -64,9 +63,7 @@ function Providers() {
           <HelpScoutProvider>
             <ConsoleVisibleProvider>
               <GlobalErrorHandler>
-                <ClientBlockNumberProvider>
-                  <App />
-                </ClientBlockNumberProvider>
+                <App />
               </GlobalErrorHandler>
             </ConsoleVisibleProvider>
           </HelpScoutProvider>
