@@ -10,11 +10,33 @@ import {
   GU,
 } from '@aragon/ui'
 import { Spring, Transition, animated } from 'react-spring'
-import { useSteps } from '../../hooks'
+import { useSteps, useDeferredAnimation } from '../../hooks'
 
 const AnimatedDiv = animated.div
 
 const DEFAULT_MODAL_WIDTH = 85 * GU
+
+function useScreens(screens) {
+  const { direction, next, prev, step } = useSteps(screens.length)
+  const [screensState, setScreensState] = useState(screens)
+
+  useEffect(() => {
+    setScreensState(screens)
+  }, [screens])
+
+  const getScreen = useCallback(step => screensState[step], [screensState])
+
+  const currentScreen = useMemo(() => getScreen(step), [getScreen, step])
+
+  return {
+    currentScreen,
+    direction,
+    getScreen,
+    next,
+    prev,
+    step,
+  }
+}
 
 function MultiScreenModal({ visible, screens, onClose }) {
   const { prev, step, next, direction, getScreen, currentScreen } = useScreens(
@@ -22,7 +44,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
   )
   const [applyStaticHeight, setApplyStaticHeight] = useState(false)
   const [height, setHeight] = useState(null)
-  const [firstStart, setFirstStart] = useState(true)
+  const [immediateAnimation, onAnimationStart] = useDeferredAnimation()
   const { below } = useViewport()
 
   const smallMode = below('medium')
@@ -58,17 +80,6 @@ function MultiScreenModal({ visible, screens, onClose }) {
     [prev, next, onClose, smallMode]
   )
 
-  const onStart = useCallback(() => {
-    // Don’t animate or set the static height when the modal first opens
-    if (firstStart) {
-      setFirstStart(false)
-
-      return
-    }
-
-    setApplyStaticHeight(true)
-  }, [firstStart])
-
   const handleModalClose = useCallback(() => {
     if (!disableClose) {
       onClose()
@@ -92,7 +103,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
             <Spring
               config={springs.swift}
               to={{ height }}
-              immediate={firstStart}
+              immediate={immediateAnimation}
               native
             >
               {({ height }) => (
@@ -107,7 +118,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
                       state === 'leave' ? springs.instant : springs.smooth
                     }
                     items={step}
-                    immediate={firstStart}
+                    immediate={immediateAnimation}
                     from={{
                       opacity: 0,
                       transform: `translate3d(${5 * GU * direction}px, 0, 0)`,
@@ -128,7 +139,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
                         setApplyStaticHeight(false)
                       }
                     }}
-                    onStart={onStart}
+                    onStart={onAnimationStart}
                     native
                   >
                     {step => animProps => {
@@ -185,28 +196,6 @@ MultiScreenModal.propTypes = {
     })
   ).isRequired,
   onClose: PropTypes.func,
-}
-
-function useScreens(screens) {
-  const { direction, next, prev, step } = useSteps(screens.length)
-  const [screensState, setScreensState] = useState(screens)
-
-  useEffect(() => {
-    setScreensState(screens)
-  }, [screens])
-
-  const getScreen = useCallback(step => screensState[step], [screensState])
-
-  const currentScreen = useMemo(() => getScreen(step), [getScreen, step])
-
-  return {
-    currentScreen,
-    direction,
-    getScreen,
-    next,
-    prev,
-    step,
-  }
 }
 
 export default React.memo(MultiScreenModal)
