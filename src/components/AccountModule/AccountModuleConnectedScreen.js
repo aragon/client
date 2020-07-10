@@ -16,11 +16,7 @@ import {
 import { EthereumAddressType, EthereumProviderType } from '../../prop-types'
 import { useCopyToClipboard } from '../../copy-to-clipboard'
 import { useWallet } from '../../wallet'
-import {
-  useNetworkConnectionData,
-  useSyncState,
-  useWalletConnectionDetails,
-} from './connection-hooks'
+import { useSyncState, useWalletConnectionDetails } from './connection-hooks'
 import WalletSyncedInfo from './WalletSyncedInfo'
 
 function AccountModuleConnectedScreen({
@@ -35,12 +31,6 @@ function AccountModuleConnectedScreen({
 }) {
   const wallet = useWallet()
   const theme = useTheme()
-
-  const {
-    walletNetworkName,
-    clientNetworkName,
-    hasNetworkMismatch,
-  } = useNetworkConnectionData()
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 
@@ -57,8 +47,7 @@ function AccountModuleConnectedScreen({
     clientOnline,
     walletOnline,
     clientSyncDelay,
-    walletSyncDelay,
-    walletNetworkName
+    walletSyncDelay
   )
 
   const handleDisconnect = useCallback(() => {
@@ -66,10 +55,6 @@ function AccountModuleConnectedScreen({
   }, [wallet])
 
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
-
-  const formattedConnectionMessage = connectionMessage.includes('Connected')
-    ? `Connected to Ethereum ${walletNetworkName} Network`
-    : connectionMessage
 
   return (
     <div
@@ -141,29 +126,15 @@ function AccountModuleConnectedScreen({
         `}
       >
         <Icon size="small" />
-        {walletNetworkName && (
-          <span
-            css={`
-              margin-left: ${0.5 * GU}px;
-            `}
-          >
-            {formattedConnectionMessage}
-          </span>
-        )}
-      </FlexWrapper>
-
-      {hasNetworkMismatch ? (
-        <div
+        <span
           css={`
-            margin-top: ${1 * GU}px;
+            margin-left: ${0.5 * GU}px;
           `}
         >
-          Please connect to the Ethereum {clientNetworkName} Network.
-        </div>
-      ) : (
-        <WalletSyncedInfo header={header} info={info} status={status} />
-      )}
-
+          {connectionMessage}
+        </span>
+      </FlexWrapper>
+      <WalletSyncedInfo header={header} info={info} status={status} />
       <Button
         onClick={handleDisconnect}
         wide

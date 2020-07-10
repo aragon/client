@@ -12,46 +12,17 @@ import {
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
-import { network, web3Providers } from '../../environment'
 import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
   OK_PROVIDER_SYNC_DELAY,
-  normalizeNetworkName,
 } from './utils'
+import { network, web3Providers } from '../../environment'
 import { pollEvery } from '../../utils'
 import { useWallet } from '../../wallet'
 import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
-
-export function useNetworkConnectionData() {
-  const { web3: walletWeb3 } = useWallet()
-  const [walletChainId, setWalletChainId] = useState(-1)
-  const clientChainId = network.chainId
-
-  useEffect(() => {
-    if (!walletWeb3) {
-      return
-    }
-
-    let cancelled = false
-    walletWeb3.eth.getChainId((err, chainId) => {
-      if (!err && !cancelled) {
-        setWalletChainId(chainId)
-      }
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [walletWeb3])
-
-  return {
-    walletNetworkName: normalizeNetworkName(walletChainId),
-    clientNetworkName: normalizeNetworkName(clientChainId),
-    hasNetworkMismatch: walletChainId !== -1 && walletChainId !== clientChainId,
-  }
-}
 
 export function useWalletConnectionDetails(
   clientListening,
@@ -61,7 +32,6 @@ export function useWalletConnectionDetails(
   clientSyncDelay,
   walletSyncDelay
 ) {
-  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
   const theme = useTheme()
   const isWalletAndClientSynced =
     Math.abs(walletSyncDelay - clientSyncDelay) <= OK_PROVIDER_SYNC_DELAY
@@ -71,8 +41,7 @@ export function useWalletConnectionDetails(
     isWalletAndClientSynced
 
   const defaultOkConnectionDetails = {
-    connectionMessage: `Connected to ${walletNetworkName}`,
-    connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
+    connectionMessage: `Connected to the ${network.name} network`,
     connectionColor: theme.positive,
   }
 
@@ -91,7 +60,6 @@ export function useWalletConnectionDetails(
   ) {
     return {
       connectionMessage: 'No connection',
-      connectionMessageLong: 'No connection',
       connectionColor: theme.negative,
     }
   } else if (
@@ -100,13 +68,6 @@ export function useWalletConnectionDetails(
   ) {
     return {
       connectionMessage: 'Syncing issues',
-      connectionMessageLong: 'Syncing issues',
-      connectionColor: theme.warning,
-    }
-  } else if (hasNetworkMismatch) {
-    return {
-      connectionMessage: 'Wrong network',
-      connectionMessageLong: 'Wrong network',
       connectionColor: theme.warning,
     }
   }

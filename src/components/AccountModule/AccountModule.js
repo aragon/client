@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useWallet } from '../../wallet'
 import { useLocalIdentity } from '../../hooks'
-import {
-  useNetworkConnectionData,
-  useSyncInfo,
-  useWalletConnectionDetails,
-} from './connection-hooks'
+import { useSyncInfo, useWalletConnectionDetails } from './connection-hooks'
 import AccountModulePopover from './AccountModulePopover'
 import ButtonConnect from './ButtonConnect'
 import ButtonAccount from './ButtonAccount'
@@ -58,10 +54,10 @@ function AccountModule() {
     clientSyncDelay,
     connectionColor,
     connectionMessage,
-    hasNetworkMismatch,
     label,
     walletConnectionStatus,
     walletListening,
+    walletOnline,
     walletSyncDelay,
   } = useConnectionInfo()
 
@@ -132,7 +128,6 @@ function AccountModule() {
         <ButtonAccount
           connectionColor={connectionColor}
           connectionMessage={connectionMessage}
-          hasNetworkMismatch={hasNetworkMismatch}
           label={label}
           onClick={toggle}
         />
@@ -189,7 +184,7 @@ function AccountModule() {
                 providerInfo={providerInfo}
                 walletConnectionStatus={walletConnectionStatus}
                 walletListening={walletListening}
-                walletOnline={walletListening}
+                walletOnline={walletOnline}
                 walletSyncDelay={walletSyncDelay}
               />
             )
@@ -222,16 +217,13 @@ function useConnectionInfo() {
     syncDelay: clientSyncDelay,
   } = useSyncInfo()
 
-  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
-
   const { connectionMessage, connectionColor } = useWalletConnectionDetails(
     clientListening,
     walletListening,
     clientOnline,
     walletOnline,
     clientSyncDelay,
-    walletSyncDelay,
-    walletNetworkName
+    walletSyncDelay
   )
 
   return {
@@ -241,11 +233,9 @@ function useConnectionInfo() {
     clientSyncDelay,
     connectionColor,
     connectionMessage,
-    hasNetworkMismatch,
     label,
     walletConnectionStatus,
     walletListening,
-    walletNetworkName,
     walletOnline,
     walletSyncDelay,
   }

@@ -14,7 +14,7 @@ import { shortenAddress } from '../../web3-utils'
 import { useWallet } from '../../wallet'
 
 const ButtonAccount = React.forwardRef(function ButtonAccount(
-  { connectionColor, connectionMessage, hasNetworkMismatch, label, onClick },
+  { connectionColor, connectionMessage, label, onClick },
   ref
 ) {
   const theme = useTheme()
@@ -92,7 +92,7 @@ const ButtonAccount = React.forwardRef(function ButtonAccount(
                   color: ${connectionColor};
                 `}
               >
-                {hasNetworkMismatch ? 'Wrong network' : connectionMessage}
+                {connectionMessage}
               </div>
             </div>
 
@@ -114,7 +114,6 @@ ButtonAccount.propTypes = {
     PropTypes.instanceOf(String),
   ]).isRequired,
   connectionMessage: PropTypes.string.isRequired,
-  hasNetworkMismatch: PropTypes.bool.isRequired,
   label: PropTypes.string,
   onClick: PropTypes.func.isRequired,
 }
