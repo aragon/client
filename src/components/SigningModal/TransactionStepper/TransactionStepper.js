@@ -15,6 +15,14 @@ import Step from './Step/Step'
 
 const AnimatedDiv = animated.div
 
+const DEFAULT_DESC = {
+  waiting: 'Waiting for signature',
+  prompting: 'Waiting for signature',
+  working: 'Transaction being mined',
+  success: 'Transaction confirmed',
+  error: 'An error has occured',
+}
+
 function initialStepState(steps) {
   return steps.map((_, i) => {
     return {
@@ -49,35 +57,52 @@ function TransactionStepper({ steps, onComplete, className }) {
 
   const stepsCount = steps.length - 1
 
-  const renderStep = (stepIndex, showDivider) => {
-    const title = steps[stepIndex][0]
-    const { status, hash } = stepState[stepIndex]
+  const renderStep = useCallback(
+    (stepIndex, showDivider) => {
+      const { title, descriptions } = steps[stepIndex]
+      const { status, hash } = stepState[stepIndex]
 
-    return (
-      <li
-        key={stepIndex}
-        css={`
-          display: flex;
-        `}
-      >
-        <Step
-          title={title}
-          number={stepIndex + 1}
-          status={status}
-          showDivider={showDivider}
-          transactionHash={hash}
-        />
-      </li>
-    )
-  }
+      const { waiting, prompting, working, success, error } =
+        descriptions || DEFAULT_DESC
 
-  const renderSteps = () => {
+      const descWithDefault = {
+        [STEP_WAITING]: waiting || DEFAULT_DESC['waiting'],
+        [STEP_PROMPTING]: prompting || DEFAULT_DESC['prompting'],
+        [STEP_WORKING]: working || DEFAULT_DESC['working'],
+        [STEP_SUCCESS]: success || DEFAULT_DESC['success'],
+        [STEP_ERROR]: error || DEFAULT_DESC['error'],
+      }
+
+      const desc = descWithDefault[status]
+
+      return (
+        <li
+          key={stepIndex}
+          css={`
+            display: flex;
+          `}
+        >
+          <Step
+            title={title}
+            desc={desc}
+            number={stepIndex + 1}
+            status={status}
+            showDivider={showDivider}
+            transactionHash={hash}
+          />
+        </li>
+      )
+    },
+    [stepState, steps]
+  )
+
+  const renderSteps = useCallback(() => {
     return steps.map((_, index) => {
       const showDivider = index < stepsCount
 
       return renderStep(index, showDivider)
     })
-  }
+  }, [steps, stepsCount, renderStep])
 
   const updateStepStatus = useCallback(
     status => {
@@ -98,13 +123,13 @@ function TransactionStepper({ steps, onComplete, className }) {
   )
 
   const handleSign = useCallback(() => {
-    const signProcess = steps[stepperStage][1]
+    const { handleSign } = steps[stepperStage]
 
     // Always start new step in the "Prompting" state
     updateStepStatus(STEP_PROMPTING)
 
     // Pass state updates as render props to signProcess
-    signProcess({
+    handleSign({
       setStepHash: hash => updateHash(hash),
       setStepWorking: () => updateStepStatus(STEP_WORKING),
       setStepError: () => updateStepStatus(STEP_ERROR),
@@ -209,7 +234,19 @@ function TransactionStepper({ steps, onComplete, className }) {
 }
 
 TransactionStepper.propTypes = {
-  steps: PropTypes.arrayOf(PropTypes.array).isRequired,
+  steps: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      handleSign: PropTypes.func.isRequired,
+      descriptions: PropTypes.shape({
+        waiting: PropTypes.string,
+        prompting: PropTypes.string,
+        working: PropTypes.string,
+        success: PropTypes.string,
+        error: PropTypes.string,
+      }),
+    })
+  ).isRequired,
   onComplete: PropTypes.func,
   className: PropTypes.string,
 }
