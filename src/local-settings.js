@@ -100,12 +100,17 @@ export function getLocalChainId() {
   return getLocalSetting(LOCAL_CHAIN_ID) || 1337
 }
 
-export function getDefaultEthNode() {
-  // Let the network configuration handle node defaults
+export function getEthEndpoint() {
+  // Note that the default endpoint is provided as part of the network configuration
+
+  // To avoid a breaking change in the environment variables,
+  // we continue using "node" in the environment variable's name
   return getLocalSetting(DEFAULT_ETH_NODE) || ''
 }
 
-export function setDefaultEthNode(node) {
+export function setEthEndpoint(node) {
+  // To avoid a breaking change in the environment variables,
+  // we continue using "node" in the environment variable's name
   return setLocalSetting(DEFAULT_ETH_NODE, node)
 }
 

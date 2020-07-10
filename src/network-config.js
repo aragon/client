@@ -1,6 +1,6 @@
 import {
-  getDefaultEthNode,
   getEnsRegistryAddress,
+  getEthEndpoint,
   getFortmaticApiKey,
   getLocalChainId,
   getPortisDappId,
@@ -9,7 +9,7 @@ import {
 const fortmaticApiKey = getFortmaticApiKey()
 const portisDappId = getPortisDappId()
 
-const providedDefaultEthNode = getDefaultEthNode()
+const providedEthEndpoint = getEthEndpoint()
 const providedEnsRegistryAddress = getEnsRegistryAddress()
 
 const networkConfigurations = {
@@ -21,7 +21,7 @@ const networkConfigurations = {
         '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     endpoints: {
-      read: providedDefaultEthNode || 'wss://mainnet.eth.aragon.network/ws',
+      read: providedEthEndpoint || 'wss://mainnet.eth.aragon.network/ws',
     },
     environment: {
       chainId: 1,
@@ -46,7 +46,7 @@ const networkConfigurations = {
         '0x98df287b6c145399aaa709692c8d308357bc085d',
     },
     endpoints: {
-      read: providedDefaultEthNode || 'wss://rinkeby.eth.aragon.network/ws',
+      read: providedEthEndpoint || 'wss://rinkeby.eth.aragon.network/ws',
     },
     environment: {
       chainId: 4,
@@ -72,7 +72,7 @@ const networkConfigurations = {
         '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
     },
     endpoints: {
-      read: providedDefaultEthNode || 'wss://ropsten.eth.aragon.network/ws',
+      read: providedEthEndpoint || 'wss://ropsten.eth.aragon.network/ws',
     },
     environment: {
       chainId: 3,
@@ -93,7 +93,7 @@ const networkConfigurations = {
         '0xaafca6b0c89521752e559650206d7c925fd0e530',
     },
     endpoints: {
-      read: providedDefaultEthNode || 'wss://xdai.poanetwork.dev/wss',
+      read: providedEthEndpoint || 'wss://xdai.poanetwork.dev/wss',
     },
     environment: {
       chainId: 100,
@@ -115,7 +115,7 @@ const networkConfigurations = {
       ensRegistry: providedEnsRegistryAddress,
     },
     endpoints: {
-      read: providedDefaultEthNode || 'ws://localhost:8545',
+      read: providedEthEndpoint || 'ws://localhost:8545',
     },
     environment: {
       // Local development environments by convention use
@@ -137,7 +137,7 @@ function unknownNetworkConfiguration(id) {
       ensRegistry: providedEnsRegistryAddress,
     },
     endpoints: {
-      read: providedDefaultEthNode || 'ws://localhost:8545',
+      read: providedEthEndpoint || 'ws://localhost:8545',
     },
     environment: {
       name: `unsupported (${id})`,

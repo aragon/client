@@ -92,8 +92,6 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-export const defaultEthNode = networkConfig.endpoints.read
-
 export const web3Providers = {
-  default: new Web3.providers.WebsocketProvider(defaultEthNode),
+  default: new Web3.providers.WebsocketProvider(networkConfig.endpoints.read),
 }

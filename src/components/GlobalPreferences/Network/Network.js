@@ -11,9 +11,9 @@ import {
   useLayout,
   useTheme,
 } from '@aragon/ui'
-import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
+import { ipfsDefaultConf, network } from '../../../environment'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
-import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
+import { setEthEndpoint, setIpfsGateway } from '../../../local-settings'
 import keycodes from '../../../keycodes'
 import { checkValidEthNode } from '../../../web3-utils'
 
@@ -121,7 +121,7 @@ Network.propTypes = {
 
 const useNetwork = wrapper => {
   const [networkError, setNetworkError] = useState(null)
-  const [ethNode, setEthNodeValue] = useState(defaultEthNode)
+  const [ethNode, setEthNodeValue] = useState(network.endpoints.read)
   const [ipfsGateway, setIpfsGatewayValue] = useState(ipfsDefaultConf.gateway)
 
   const handleNetworkChange = useCallback(async () => {
@@ -132,7 +132,7 @@ const useNetwork = wrapper => {
       return
     }
 
-    setDefaultEthNode(ethNode)
+    setEthEndpoint(ethNode)
     setIpfsGateway(ipfsGateway)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
@@ -146,7 +146,8 @@ const useNetwork = wrapper => {
     ({ keyCode }) => {
       if (
         keyCode === keycodes.enter &&
-        (ipfsGateway !== ipfsDefaultConf.gateway || ethNode !== defaultEthNode)
+        (ipfsGateway !== ipfsDefaultConf.gateway ||
+          ethNode !== network.endpoints.read)
       ) {
         handleNetworkChange()
       }
