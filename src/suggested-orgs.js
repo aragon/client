@@ -3,7 +3,7 @@ import { useFavoriteDaos } from './contexts/FavoriteDaosContext'
 import { getRecommendedOrganizations } from './known-organizations'
 import { network } from './environment'
 
-const RECOMMENDED_ORGS = getRecommendedOrganizations(network.type)
+const RECOMMENDED_ORGS = getRecommendedOrganizations(network.chainId)
 
 export function useSuggestedOrgs(maxSuggestions = 6) {
   const { favoriteDaos } = useFavoriteDaos()

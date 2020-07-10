@@ -1,3 +1,4 @@
+import CHAIN_IDS from '../../../../chain-ids'
 import { network } from '../../../../environment'
 
 export const ETHER_TOKEN_FAKE_ADDRESS =
@@ -10,9 +11,9 @@ const DAI_TOKEN = {
   symbol: 'DAI',
   name: 'Dai Stablecoin',
   address:
-    network.type === 'main'
+    network.chainId === CHAIN_IDS.ETHEREUM
       ? DAI_MAINNET_TOKEN_ADDRESS
-      : network.type === 'rinkeby'
+      : network.chainId === CHAIN_IDS.RINKEBY
       ? DAI_RINKEBY_TOKEN_ADDRESS
       : '',
 }

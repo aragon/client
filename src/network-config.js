@@ -1,3 +1,4 @@
+import CHAIN_IDS from './chain-ids'
 import {
   getEnsRegistryAddress,
   getEthEndpoint,
@@ -24,7 +25,7 @@ const networkConfigurations = {
       read: providedEthEndpoint || 'wss://mainnet.eth.aragon.network/ws',
     },
     environment: {
-      chainId: 1,
+      chainId: CHAIN_IDS.ETHEREUM,
       name: 'Ethereum',
       shortName: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
@@ -49,7 +50,7 @@ const networkConfigurations = {
       read: providedEthEndpoint || 'wss://rinkeby.eth.aragon.network/ws',
     },
     environment: {
-      chainId: 4,
+      chainId: CHAIN_IDS.RINKEBY,
       name: 'Ethereum Rinkeby test',
       shortName: 'Rinkeby',
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
@@ -75,7 +76,7 @@ const networkConfigurations = {
       read: providedEthEndpoint || 'wss://ropsten.eth.aragon.network/ws',
     },
     environment: {
-      chainId: 3,
+      chainId: CHAIN_IDS.ROPSTEN,
       name: 'Ethereum Ropsten test',
       shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
@@ -96,7 +97,7 @@ const networkConfigurations = {
       read: providedEthEndpoint || 'wss://xdai.poanetwork.dev/wss',
     },
     environment: {
-      chainId: 100,
+      chainId: CHAIN_IDS.XDAI,
       name: 'xDai',
       shortName: 'xDai',
       type: 'private',
@@ -131,24 +132,10 @@ const networkConfigurations = {
   },
 }
 
-function unknownNetworkConfiguration(id) {
-  return {
-    addresses: {
-      ensRegistry: providedEnsRegistryAddress,
-    },
-    endpoints: {
-      read: providedEthEndpoint || 'ws://localhost:8545',
-    },
-    environment: {
-      name: `unsupported (${id})`,
-      shortName: `unsupported (${id})`,
-      type: 'unknown',
-      live: false,
-    },
-    providers: [{ id: 'provided' }, { id: 'frame' }],
-  }
-}
-
 export function getNetworkConfig(id) {
-  return networkConfigurations[id] || unknownNetworkConfiguration(id)
+  const networkConfig = networkConfigurations[id]
+  if (!networkConfig) {
+    throw new Error(`Unsupported network '${id}'`)
+  }
+  return networkConfig
 }

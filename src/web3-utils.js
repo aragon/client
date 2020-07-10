@@ -5,6 +5,7 @@
 import Web3 from 'web3'
 import { toWei } from 'web3-utils'
 import BN from 'bn.js'
+import CHAIN_IDS from './chain-ids'
 import { InvalidChainId, InvalidURI, NoConnection } from './errors'
 import { network } from './environment'
 import { log } from './utils'
@@ -145,13 +146,18 @@ const gasPriceApi = 'https://ethgasstation.info/json/ethgasAPI.json'
 export async function getGasPrice({
   mainnet: { safeMinimum = '3', disableEstimate } = {},
 } = {}) {
-  if (network.type !== 'main') {
-    // Hardcode 10 for non-mainnet networks
+  if (network.chainId === CHAIN_IDS.XDAI) {
+    // Let the web3 provider handle gas price on xDai
+    return
+  }
+
+  if (network.chainId !== CHAIN_IDS.ETHEREUM) {
+    // Hardcode 10 for all other non-Ethereum mainnet networks
     return toWei('10', 'gwei')
   }
 
-  // Mainnet and gas estimation disabled; let the web3 provider handle gas price
   if (disableEstimate) {
+    // On Ethereum mainnet but gas estimation disabled; let the web3 provider handle gas price
     return
   }
 

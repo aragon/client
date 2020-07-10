@@ -99,33 +99,3 @@ AccountLocked.propTypes = {
   onClose: PropTypes.func.isRequired,
   walletProviderId: PropTypes.string.isRequired,
 }
-
-export function WrongNetwork({
-  intent,
-  networkType,
-  onClose,
-  walletProviderId,
-}) {
-  return (
-    <Web3ProviderError
-      intent={intent}
-      onClose={onClose}
-      neededText={`
-      You need to be connected to the ${networkType} network
-    `}
-      actionText={`
-      Please connect ${getProviderString(
-        'your Ethereum wallet',
-        walletProviderId
-      )} to the ${networkType} network.
-    `}
-    />
-  )
-}
-
-WrongNetwork.propTypes = {
-  intent: PropTypes.object.isRequired,
-  networkType: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
-  walletProviderId: PropTypes.string.isRequired,
-}

@@ -1,3 +1,5 @@
+import CHAIN_IDS from '../chain-ids'
+
 import aragonGovernanceImage from './images/aragon-governance.svg'
 import aragonMesh from './images/aragon-mesh.svg'
 import aragonNetworkImage from './images/aragon-network.svg'
@@ -22,8 +24,9 @@ const TEMPLATE_COMPANY = 'Company'
 const TEMPLATE_MEMBERSHIP = 'Membership'
 const TEMPLATE_DANDELION = 'Dandelion'
 
-export const KnownOrganizations = {
-  main: new Map(
+const KnownOrganizations = {
+  // Ethereum mainnet
+  [CHAIN_IDS.ETHEREUM]: new Map(
     [
       {
         address: '0xF47917B108ca4B820CCEA2587546fbB9f7564b56',
@@ -138,7 +141,9 @@ export const KnownOrganizations = {
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),
-  rinkeby: new Map(
+
+  // Ethereum Rinkeby
+  [CHAIN_IDS.ETHEREUM]: new Map(
     [
       {
         address: '0x43374144c33def77a0ebacec72e9c944a6c375fe',
@@ -186,13 +191,13 @@ export const KnownOrganizations = {
 
 // Get the organizations that might appear in the suggestions,
 // using the format `{ address, name }` where name is the ENS domain.
-export const getRecommendedOrganizations = (networkType, max = -1) => {
-  if (!KnownOrganizations[networkType]) {
+export const getRecommendedOrganizations = (chainId, max = -1) => {
+  if (!KnownOrganizations[chainId]) {
     return []
   }
 
   const recommended = []
-  for (const [address, org] of KnownOrganizations[networkType]) {
+  for (const [address, org] of KnownOrganizations[chainId]) {
     if (org.recommended) {
       recommended.push({ address, name: org.domain })
       if (recommended.length === max) {
@@ -204,7 +209,7 @@ export const getRecommendedOrganizations = (networkType, max = -1) => {
   return recommended
 }
 
-export const getKnownOrganization = (networkType, address) => {
-  if (!KnownOrganizations[networkType]) return null
-  return KnownOrganizations[networkType].get(address.toLowerCase()) || null
+export const getKnownOrganization = (chainId, address) => {
+  if (!KnownOrganizations[chainId]) return null
+  return KnownOrganizations[chainId].get(address.toLowerCase()) || null
 }

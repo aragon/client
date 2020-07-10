@@ -2,15 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
-import { EthereumAddressType, ClientThemeType } from './prop-types'
-import { useWallet } from './wallet'
+import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
+import CHAIN_IDS from './chain-ids'
 import { network, web3Providers } from './environment'
 import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
-import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import { Onboarding } from './onboarding'
-import { getWeb3 } from './web3-utils'
+import { EthereumAddressType, ClientThemeType } from './prop-types'
 import { log } from './utils'
+import { useWallet } from './wallet'
+import { getWeb3 } from './web3-utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { PermissionsProvider } from './contexts/PermissionsContext'
@@ -49,7 +50,7 @@ const SELECTOR_NETWORKS = [
   ['ethereum', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
   ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
 ]
-if (network.type === 'ropsten') {
+if (network.chainId === CHAIN_IDS.ROPSTEN) {
   SELECTOR_NETWORKS.push([
     'ropsten',
     'Ethereum Testnet (Ropsten)',
@@ -361,7 +362,7 @@ class App extends React.Component {
                     />
                     <FavoriteDaosProvider>
                       <ActivityProvider
-                        daoDomain={daoAddress.domain}
+                        daoAddress={daoAddress.address}
                         web3={web3}
                       >
                         <PermissionsProvider

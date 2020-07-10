@@ -266,7 +266,6 @@ export const WalletType = PropTypes.shape({
   enable: PropTypes.bool.isRequired,
   connected: PropTypes.bool.isRequired,
   isContract: PropTypes.bool.isRequired,
-  networkType: PropTypes.string.isRequired,
   providerInfo: PropTypes.object.isRequired,
   web3: PropTypes.object.isRequired,
 })

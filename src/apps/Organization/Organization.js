@@ -15,9 +15,10 @@ import {
   useTheme,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import appIds from '../../known-app-ids'
+import CHAIN_IDS from '../../chain-ids'
 import { network } from '../../environment'
 import { getProviderString } from '../../ethereum-providers'
+import appIds from '../../known-app-ids'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
@@ -103,9 +104,8 @@ const Organization = React.memo(function Organization({
   const hasFinanceApp = apps.some(app => app.appId === appIds.Finance)
   const checksummedDaoAddr =
     daoAddress.address && toChecksumAddress(daoAddress.address)
-  const enableTransactions =
-    wallet.connected && wallet.networkType === network.type
-  const isMainnet = network.type === 'main'
+  const enableTransactions = wallet.connected
+  const isMainnet = network.chainId === CHAIN_IDS.ETHEREUM
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (
@@ -290,7 +290,7 @@ const Organization = React.memo(function Organization({
           )}
         </React.Fragment>
       )}
-      {hasFinanceApp && testTokensEnabled(network.type) && (
+      {hasFinanceApp && testTokensEnabled() && (
         <Box heading="Request test tokens">
           <p
             css={`
@@ -334,11 +334,7 @@ const Organization = React.memo(function Organization({
             </Info>
           ) : (
             <Info mode="warning">
-              {`Please ${
-                wallet.networkType !== network.type
-                  ? `select the ${network.name} network`
-                  : 'unlock your account'
-              } in ${getProviderString(
+              {`Please unlock your account in ${getProviderString(
                 'your Ethereum wallet',
                 wallet.providerInfo.id
               )}.`}

@@ -27,26 +27,29 @@ const SymbolsByName = new Map(
   })
 )
 
-const getStoredList = (daoDomain, account) =>
-  new StoredList(`activity:${network.type}:${daoDomain}:${account}`, {
-    preStringify: activity => ({
-      ...activity,
-      status: activity.status.description.replace('ACTIVITY_STATUS_', ''),
-      type: activity.type.description.replace('ACTIVITY_TYPE_', ''),
-    }),
-    postParse: activity => ({
-      ...activity,
-      status: SymbolsByName.get(`ACTIVITY_STATUS_${activity.status}`),
-      type: SymbolsByName.get(`ACTIVITY_TYPE_${activity.type}`),
-    }),
-  })
+const getStoredList = (daoAddress, account) =>
+  new StoredList(
+    `activity:chainId-${network.chainId}:${daoAddress}:${account}`,
+    {
+      preStringify: activity => ({
+        ...activity,
+        status: activity.status.description.replace('ACTIVITY_STATUS_', ''),
+        type: activity.type.description.replace('ACTIVITY_TYPE_', ''),
+      }),
+      postParse: activity => ({
+        ...activity,
+        status: SymbolsByName.get(`ACTIVITY_STATUS_${activity.status}`),
+        type: SymbolsByName.get(`ACTIVITY_TYPE_${activity.type}`),
+      }),
+    }
+  )
 
 // Provides easy access to the user activities list
 class ActivityProviderBase extends React.Component {
   static propTypes = {
     account: EthereumAddressType, // Current wallet
     children: PropTypes.node,
-    daoDomain: PropTypes.string, // domain of current DAO
+    daoAddress: EthereumAddressType, // Address of current DAO
     web3: PropTypes.object,
   }
   static defaultProps = {
@@ -66,15 +69,15 @@ class ActivityProviderBase extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { daoDomain, account } = this.props
-    if (daoDomain !== prevProps.daoDomain || account !== prevProps.account) {
+    const { daoAddress, account } = this.props
+    if (daoAddress !== prevProps.daoAddress || account !== prevProps.account) {
       this.updateStoredList()
     }
   }
 
   updateStoredList() {
-    const { daoDomain, account } = this.props
-    this._storedList = getStoredList(daoDomain, account)
+    const { daoAddress, account } = this.props
+    this._storedList = getStoredList(daoAddress, account)
     this.setState(
       { activities: this._storedList.getItems() },
       this.refreshPendingActivities

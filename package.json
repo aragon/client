@@ -33,7 +33,6 @@
     ]
   },
   "dependencies": {
-    "@aragon/templates-tokens": "^1.2.1",
     "@aragon/ui": "^1.4.2",
     "@aragon/wrapper": "^5.0.0-rc.28",
     "@sentry/browser": "^5.17.0",

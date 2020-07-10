@@ -103,7 +103,7 @@ class Favorites extends React.Component {
     const currentDao = this.currentDaoWithFavoriteState()
 
     const allItems = localDaos.map(org => {
-      const knownOrg = getKnownOrganization(network.type, org.address)
+      const knownOrg = getKnownOrganization(network.chainId, org.address)
       return {
         ...org,
         id: org.address,

@@ -7,18 +7,21 @@ import {
   ExpiredTokenError,
   UnauthorizedError,
 } from './constants'
+import CHAIN_IDS from '../../../chain-ids'
 import { network } from '../../../environment'
 
-// The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
-const sanitizeNetworkType = networkType =>
-  networkType === 'main' ? 'mainnet' : 'rinkeby'
+// The notifications API expects 'mainnet' or 'rinkeby' rather than chain IDs.
+const NETWORK_SELECTOR =
+  network.chainId === CHAIN_IDS.ETHEREUM
+    ? 'mainnet'
+    : network.chainId === CHAIN_IDS.RINKEBY
+    ? 'rinkeby'
+    : 'invalid' // Should trigger an error in the service
 
 const isAuthTokenExpired = response =>
   response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
 
 const isUnauthorized = rawResponse => rawResponse.status === 401
-
-const NETWORK_NOTIFICATIONS = sanitizeNetworkType(network.type)
 
 export const login = async ({ email, dao }) => {
   try {
@@ -27,7 +30,7 @@ export const login = async ({ email, dao }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, dao, network: NETWORK_NOTIFICATIONS }),
+      body: JSON.stringify({ email, dao, network: NETWORK_SELECTOR }),
     })
     if (!rawResponse.ok) {
       throw new Error(rawResponse.statusText)
@@ -188,7 +191,7 @@ export async function deleteSubscriptions({ subscriptionIds, authToken } = {}) {
 
 export async function getSubscriptions(token) {
   const url = new URL(NOTIFICATION_SERVICE_SUBSCRIPTIONS)
-  url.searchParams.append('network', NETWORK_NOTIFICATIONS)
+  url.searchParams.append('network', NETWORK_SELECTOR)
 
   try {
     const rawResponse = await fetch(url, {
@@ -254,7 +257,7 @@ export const createSubscription = async ({
         ensName,
         abi,
         contractAddress: appContractAddress,
-        network: NETWORK_NOTIFICATIONS,
+        network: NETWORK_SELECTOR,
       }),
     })
 

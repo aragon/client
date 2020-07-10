@@ -53,7 +53,7 @@ function Suggestions({ suggestedOrgs }) {
     <Box heading="Explore" padding={0}>
       <FavoritesMenu
         items={suggestedOrgs.map(org => {
-          const knownOrg = getKnownOrganization(network.type, org.address)
+          const knownOrg = getKnownOrganization(network.chainId, org.address)
           return {
             favorited: isAddressFavorited(org.address),
             id: org.address,

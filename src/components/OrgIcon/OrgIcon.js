@@ -6,7 +6,7 @@ import { getKnownOrganization } from '../../known-organizations'
 import { EthereumAddressType } from '../../prop-types'
 
 function OrgIcon({ orgAddress, size }) {
-  const knownOrg = getKnownOrganization(network.type, orgAddress)
+  const knownOrg = getKnownOrganization(network.chainId, orgAddress)
   const knownOrgImage = knownOrg && knownOrg.image
 
   return (

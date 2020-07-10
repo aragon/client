@@ -11,7 +11,7 @@ class OrganizationItem extends React.Component {
   }
   render() {
     const { dao, ...props } = this.props
-    const knownOrg = getKnownOrganization(network.type, dao.address)
+    const knownOrg = getKnownOrganization(network.chainId, dao.address)
     return (
       <div
         css={`

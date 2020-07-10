@@ -85,11 +85,6 @@ if (process.env.NODE_ENV !== 'production') {
     )
     console.error('Current contract address configuration', contractAddresses)
   }
-  if (network.type === 'unknown') {
-    console.error(
-      'This app was configured to connect to an unsupported network. You most likely need to change your network environment variables.'
-    )
-  }
 }
 
 export const web3Providers = {

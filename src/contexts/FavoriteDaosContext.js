@@ -7,7 +7,7 @@ import { addressesEqual } from '../web3-utils'
 
 const FavoriteDaosContext = React.createContext()
 
-const storedList = new StoredList(`favorite-daos:${network.type}`)
+const storedList = new StoredList(`favorite-daos:chainId-${network.chainId}`)
 
 const filterFavoritesDaos = daos =>
   uniqby(
