@@ -114,7 +114,9 @@ export function getEnsRegistryAddress() {
   return getLocalSetting(ENS_REGISTRY_ADDRESS) || ''
 }
 
-export function getEthNetworkType() {
+export function getEthNetworkId() {
+  // To avoid a breaking change in the environment variables,
+  // we continue using "type" in the environment variable's name
   return getLocalSetting(ETH_NETWORK_TYPE) || 'rinkeby'
 }
 

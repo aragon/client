@@ -14,7 +14,7 @@ Address of the ENS registry that [aragonPM](https://hack.aragon.org/docs/apm-int
 
 ### `ARAGON_ETH_NETWORK_TYPE`
 
-Expected network type to connect to. Either one of `main`, `rinkeby` or `local`.
+Expected blockchain network to connect to. One of `mainnet`, `rinkeby`, or `local`. `xdai` and `ropsten` are also available but considered experimental networks.
 
 ### `ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY`
 

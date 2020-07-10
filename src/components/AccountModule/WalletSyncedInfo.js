@@ -92,9 +92,9 @@ function ConnectionInfoMessage({ connectionStatus }) {
   if (connectionStatus === STATUS_NETWORK_SYNC_ISSUES) {
     return (
       <span>
-        Your wallet may not accurately reflect the current state of Ethereum's{' '}
-        {network.name}. Please contact your wallet for support if this issue
-        persists.
+        Your wallet may not accurately reflect the current state of the{' '}
+        {network.name} network. Please contact your wallet for support if this
+        issue persists.
       </span>
     )
   }
@@ -102,8 +102,8 @@ function ConnectionInfoMessage({ connectionStatus }) {
   if (connectionStatus === STATUS_MAJOR_NETWORK_SLOWDOWN) {
     return (
       <span>
-        The Ethereum {network.name} may be experiencing a global slowdown.
-        Please avoid signing any transactions until this error is resolved.
+        The {network.name} network may be experiencing a global slowdown. Please
+        avoid signing any transactions until this error is resolved.
       </span>
     )
   }

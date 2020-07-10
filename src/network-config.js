@@ -1,26 +1,31 @@
 import {
-  getLocalChainId,
+  getDefaultEthNode,
   getEnsRegistryAddress,
   getFortmaticApiKey,
+  getLocalChainId,
   getPortisDappId,
 } from './local-settings'
 
-const localEnsRegistryAddress = getEnsRegistryAddress()
 const fortmaticApiKey = getFortmaticApiKey()
 const portisDappId = getPortisDappId()
 
-export const networkConfigs = {
-  main: {
+const providedDefaultEthNode = getDefaultEthNode()
+const providedEnsRegistryAddress = getEnsRegistryAddress()
+
+const networkConfigurations = {
+  // Mainnet
+  mainnet: {
     addresses: {
       ensRegistry:
-        localEnsRegistryAddress || '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+        providedEnsRegistryAddress ||
+        '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
-    nodes: {
-      defaultEth: 'wss://mainnet.eth.aragon.network/ws',
+    endpoints: {
+      read: providedDefaultEthNode || 'wss://mainnet.eth.aragon.network/ws',
     },
-    settings: {
+    environment: {
       chainId: 1,
-      name: 'Mainnet',
+      name: 'Ethereum',
       shortName: 'Mainnet',
       type: 'main', // as returned by web3.eth.net.getNetworkType()
       live: true,
@@ -32,17 +37,20 @@ export const networkConfigs = {
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
   },
+
+  // Rinkeby
   rinkeby: {
     addresses: {
       ensRegistry:
-        localEnsRegistryAddress || '0x98df287b6c145399aaa709692c8d308357bc085d',
+        providedEnsRegistryAddress ||
+        '0x98df287b6c145399aaa709692c8d308357bc085d',
     },
-    nodes: {
-      defaultEth: 'wss://rinkeby.eth.aragon.network/ws',
+    endpoints: {
+      read: providedDefaultEthNode || 'wss://rinkeby.eth.aragon.network/ws',
     },
-    settings: {
+    environment: {
       chainId: 4,
-      name: 'Rinkeby testnet',
+      name: 'Ethereum Rinkeby test',
       shortName: 'Rinkeby',
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
       live: true,
@@ -55,56 +63,42 @@ export const networkConfigs = {
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
   },
+
+  // Ropsten
   ropsten: {
     addresses: {
       ensRegistry:
-        localEnsRegistryAddress || '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
+        providedEnsRegistryAddress ||
+        '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
     },
-    nodes: {
-      defaultEth: 'wss://ropsten.eth.aragon.network/ws',
+    endpoints: {
+      read: providedDefaultEthNode || 'wss://ropsten.eth.aragon.network/ws',
     },
-    settings: {
+    environment: {
       chainId: 3,
-      name: 'Ropsten testnet',
+      name: 'Ethereum Ropsten test',
       shortName: 'Ropsten',
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
-  local: {
-    addresses: {
-      ensRegistry: localEnsRegistryAddress,
-    },
-    nodes: {
-      defaultEth: 'ws://localhost:8545',
-    },
-    settings: {
-      // Local development environments by convention use
-      // a chainId of value 1337, but for the sake of configuration
-      // we expose a way to change this value.
-      chainId: Number(getLocalChainId()),
-      name: 'local testnet',
-      shortName: 'Local',
-      type: 'private',
-      live: false,
-    },
-    providers: [{ id: 'provided' }, { id: 'frame' }],
-  },
-  // xDai is an experimental chain in the Aragon Client. It's possible
-  // and expected that a few things will break.
+
+  // xDai
+  // xDai is considered experimental and its settings may change in the future.
   xdai: {
     addresses: {
       ensRegistry:
-        localEnsRegistryAddress || '0xaafca6b0c89521752e559650206d7c925fd0e530',
+        providedEnsRegistryAddress ||
+        '0xaafca6b0c89521752e559650206d7c925fd0e530',
     },
-    nodes: {
-      defaultEth: 'wss://xdai.poanetwork.dev/wss',
+    endpoints: {
+      read: providedDefaultEthNode || 'wss://xdai.poanetwork.dev/wss',
     },
-    settings: {
+    environment: {
       chainId: 100,
       name: 'xDai',
-      shortName: 'xdai',
+      shortName: 'xDai',
       type: 'private',
       live: true,
     },
@@ -114,49 +108,47 @@ export const networkConfigs = {
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
   },
-  unknown: {
+
+  // Local development testnet
+  local: {
     addresses: {
-      ensRegistry: localEnsRegistryAddress,
+      ensRegistry: providedEnsRegistryAddress,
     },
-    nodes: {
-      defaultEth: 'ws://localhost:8545',
+    endpoints: {
+      read: providedDefaultEthNode || 'ws://localhost:8545',
     },
-    settings: {
-      name: `Unknown network`,
-      shortName: 'Unknown',
-      type: 'unknown',
+    environment: {
+      // Local development environments by convention use
+      // a chainId of value 1337, but for the sake of configuration
+      // we expose a way to change this value.
+      chainId: Number(getLocalChainId()),
+      name: 'local development',
+      shortName: 'local',
+      type: 'private',
       live: false,
     },
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
 }
 
-export function getNetworkConfig(type) {
-  return (
-    networkConfigs[type] || {
-      ...networkConfigs.unknown,
-      settings: {
-        ...networkConfigs.unknown.settings,
-        name: `Unsupported network (${type})`,
-      },
-    }
-  )
-}
-
-export function getNetworkByChainId(chainId = -1) {
-  chainId = Number(chainId)
-  return (
-    Object.values(networkConfigs).find(
-      network => network.settings.chainId === chainId
-    ) || networkConfigs.unknown
-  )
-}
-
-export function sanitizeNetworkType(networkType) {
-  if (networkType === 'private') {
-    return 'localhost'
-  } else if (networkType === 'main') {
-    return 'mainnet'
+function unknownNetworkConfiguration(id) {
+  return {
+    addresses: {
+      ensRegistry: providedEnsRegistryAddress,
+    },
+    endpoints: {
+      read: providedDefaultEthNode || 'ws://localhost:8545',
+    },
+    environment: {
+      name: `unsupported (${id})`,
+      shortName: `unsupported (${id})`,
+      type: 'unknown',
+      live: false,
+    },
+    providers: [{ id: 'provided' }, { id: 'frame' }],
   }
-  return networkType
+}
+
+export function getNetworkConfig(id) {
+  return networkConfigurations[id] || unknownNetworkConfiguration(id)
 }

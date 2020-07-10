@@ -34,7 +34,7 @@ function DAONotFoundError({ dao }) {
             the <strong>“{dao}”</strong> ENS domain
           </React.Fragment>
         )}{' '}
-        on the Ethereum {network.name}.
+        on the {network.name} network.
       </div>
       <Info>
         If you arrived here through a link, please double check that you were

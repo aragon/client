@@ -18,7 +18,6 @@ import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadg
 import appIds from '../../known-app-ids'
 import { network } from '../../environment'
 import { getProviderString } from '../../ethereum-providers'
-import { sanitizeNetworkType } from '../../network-config'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
@@ -111,7 +110,7 @@ const Organization = React.memo(function Organization({
 
   const organizationText = checksummedDaoAddr ? (
     <span>
-      This organization is deployed on the Ethereum {network.name}.{' '}
+      This organization is deployed on the {network.name} network.{' '}
       {canUpgradeOrg ? (
         <span>
           <Link onClick={onShowOrgVersionDetails}>
@@ -281,8 +280,8 @@ const Organization = React.memo(function Organization({
                   ) : (
                     <span>
                       Unfortunately, importing into Tenderly is not available on
-                      the {sanitizeNetworkType(network.type)} network. Please
-                      use Aragon on Ethereum mainnet instead.
+                      the {network.name} network. Please use Aragon on the
+                      Ethereum main network instead.
                     </span>
                   )}
                 </p>
@@ -337,7 +336,7 @@ const Organization = React.memo(function Organization({
             <Info mode="warning">
               {`Please ${
                 wallet.networkType !== network.type
-                  ? `select the ${sanitizeNetworkType(network.type)} network`
+                  ? `select the ${network.name} network`
                   : 'unlock your account'
               } in ${getProviderString(
                 'your Ethereum wallet',

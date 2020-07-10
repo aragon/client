@@ -15,7 +15,6 @@ import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
 import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
 import keycodes from '../../../keycodes'
-import { sanitizeNetworkType } from '../../../network-config'
 import { checkValidEthNode } from '../../../web3-utils'
 
 function Network({ wrapper }) {
@@ -57,9 +56,7 @@ function Network({ wrapper }) {
             >
               {(() => {
                 if (networkError instanceof InvalidNetworkType) {
-                  return `Node must be connected to ${sanitizeNetworkType(
-                    network.type
-                  )}`
+                  return `Node must be connected to the ${network.name} network`
                 }
                 if (networkError instanceof InvalidURI) {
                   return 'Must provide WebSocket endpoint to node'

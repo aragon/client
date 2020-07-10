@@ -3,15 +3,12 @@ import appIds from './known-app-ids'
 import { parseAppLocator } from './app-locator'
 import {
   getAppLocator,
-  getDefaultEthNode,
-  getEthNetworkType,
+  getEthNetworkId,
   getIpfsGateway,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Agent']
-
-const networkType = getEthNetworkType()
 
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
 export const sortAppsPair = (app1, app2) => {
@@ -71,8 +68,10 @@ export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
 }
 
-const networkConfig = getNetworkConfig(networkType)
-export const network = networkConfig.settings
+// Note that this is NOT a chainId; see the network configuration for possible networks
+const configuredNetworkId = getEthNetworkId()
+const networkConfig = getNetworkConfig(configuredNetworkId)
+export const network = networkConfig.environment
 export const providers = networkConfig.providers
 
 export const contractAddresses = {
@@ -93,8 +92,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-export const defaultEthNode =
-  getDefaultEthNode() || networkConfig.nodes.defaultEth
+export const defaultEthNode = networkConfig.endpoints.read
 
 export const web3Providers = {
   default: new Web3.providers.WebsocketProvider(defaultEthNode),
