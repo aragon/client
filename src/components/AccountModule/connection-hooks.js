@@ -75,11 +75,9 @@ export function useWalletConnectionDetails(
   return defaultOkConnectionDetails
 }
 
-export function useSyncInfo(wantedWeb3 = 'default') {
-  const wallet = useWallet()
-  const clientWeb3 = getWeb3(web3Providers.default)
-  const walletWeb3 = wallet.web3
-  const selectedWeb3 = wantedWeb3 === 'wallet' ? walletWeb3 : clientWeb3
+export function useSyncInfo(web3) {
+  // Default to client's web3
+  const selectedWeb3 = web3 || getWeb3(web3Providers.default)
 
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
-import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
+import initWrapper from './aragonjs-wrapper'
 import { web3Providers } from './environment'
 import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
@@ -55,20 +55,12 @@ class App extends React.Component {
 
   state = {
     ...INITIAL_DAO_STATE,
-    connected: false,
     fatalError: null,
     identityIntent: null,
     transactionBag: null,
     signatureBag: null,
     web3: getWeb3(web3Providers.default),
     wrapper: null,
-  }
-
-  componentDidMount() {
-    // Only the default, because the app can work without the wallet
-    pollConnectivity([web3Providers.default], connected => {
-      this.setState({ connected })
-    })
   }
 
   componentDidUpdate(prevProps, prevState) {

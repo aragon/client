@@ -16,7 +16,7 @@ import { NoConnection, DAONotFound } from './errors'
 import { getEthSubscriptionEventDelay } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
-import { noop, removeStartingSlash, pollEvery } from './utils'
+import { noop, removeStartingSlash } from './utils'
 import {
   getGasPrice,
   getWeb3,
@@ -25,8 +25,6 @@ import {
 } from './web3-utils'
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
-
-const POLL_DELAY_CONNECTIVITY = 2000
 
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
@@ -74,29 +72,6 @@ const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
     })
     .sort(sortAppsPair)
 }
-
-export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
-  let lastFound = null
-  return {
-    request: async () => {
-      try {
-        await Promise.all(
-          providers.map(p => getWeb3(p).eth.net.getNetworkType())
-        )
-        return true
-      } catch (err) {
-        return false
-      }
-    },
-    onResult: connected => {
-      if (connected !== lastFound) {
-        lastFound = connected
-        onConnectivity(connected)
-      }
-    },
-  }
-  // web.eth.net.isListening()
-}, POLL_DELAY_CONNECTIVITY)
 
 export const resolveEnsDomain = async domain => {
   try {

@@ -208,7 +208,7 @@ function useConnectionInfo() {
     isOnline: walletOnline,
     connectionStatus: walletConnectionStatus,
     syncDelay: walletSyncDelay,
-  } = useSyncInfo('wallet')
+  } = useSyncInfo(wallet.web3)
 
   const {
     isListening: clientListening,
