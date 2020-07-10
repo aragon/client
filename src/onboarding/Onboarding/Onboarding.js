@@ -33,7 +33,7 @@ const initialEmbeddedTemplates = sortedEmbeddedTemplates.map(template => ({
   status: TEMPLATE_LOADING,
 }))
 
-function Onboarding({ selectorNetworks, web3 }) {
+function Onboarding({ web3 }) {
   const theme = useTheme()
   const routing = useRouting()
 
@@ -262,7 +262,6 @@ function Onboarding({ selectorNetworks, web3 }) {
               onOpenOrg={goToOrg}
               onCreate={handleCreate}
               openMode={status === 'open'}
-              selectorNetworks={selectorNetworks}
             />
           )}
           {status === 'create' && Array.isArray(templates) && (
@@ -288,8 +287,6 @@ function Onboarding({ selectorNetworks, web3 }) {
 }
 
 Onboarding.propTypes = {
-  selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
-    .isRequired,
   web3: PropTypes.object,
 }
 

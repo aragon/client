@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
-import CHAIN_IDS from './chain-ids'
-import { network, web3Providers } from './environment'
+import { web3Providers } from './environment'
 import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
 import { Onboarding } from './onboarding'
@@ -46,18 +45,6 @@ const INITIAL_DAO_STATE = {
   repos: [],
 }
 
-const SELECTOR_NETWORKS = [
-  ['ethereum', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
-  ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
-]
-if (network.chainId === CHAIN_IDS.ROPSTEN) {
-  SELECTOR_NETWORKS.push([
-    'ropsten',
-    'Ethereum Testnet (Ropsten)',
-    'https://aragon.ropsten.aragonpm.com/',
-  ])
-}
-
 class App extends React.Component {
   static propTypes = {
     clientTheme: ClientThemeType.isRequired,
@@ -71,7 +58,6 @@ class App extends React.Component {
     connected: false,
     fatalError: null,
     identityIntent: null,
-    selectorNetworks: SELECTOR_NETWORKS,
     transactionBag: null,
     signatureBag: null,
     web3: getWeb3(web3Providers.default),
@@ -301,7 +287,6 @@ class App extends React.Component {
       permissions,
       permissionsLoading,
       repos,
-      selectorNetworks,
       transactionBag,
       signatureBag,
       web3,
@@ -390,10 +375,7 @@ class App extends React.Component {
                           </div>
                         </PermissionsProvider>
 
-                        <Onboarding
-                          selectorNetworks={selectorNetworks}
-                          web3={web3}
-                        />
+                        <Onboarding web3={web3} />
 
                         <GlobalPreferences
                           apps={appsWithIdentifiers}
