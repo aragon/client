@@ -5,7 +5,7 @@
 import Web3 from 'web3'
 import { toWei } from 'web3-utils'
 import BN from 'bn.js'
-import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
+import { InvalidChainId, InvalidURI, NoConnection } from './errors'
 import { network } from './environment'
 import { log } from './utils'
 
@@ -46,15 +46,15 @@ export function addressesEqual(first, second) {
 const websocketRegex = /^wss?:\/\/.+/
 
 /**
- * Check if the ETH node at the given URI is compatible for the current environment
- * @param {string} uri URI of the ETH node.
- * @param {string} expectedNetworkType The expected network type of the ETH node.
- * @returns {Promise} Resolves if the ETH node is compatible, otherwise throws:
+ * Check if the given URI is an Ethereum JSON-RPC endpoint compatible with the current environment
+ * @param {string} uri URI of the Ethereum JSON-RPC endpoint.
+ * @param {string} expectedChainId The expected chain id for the network represented by the JSON-RPC endpoint.
+ * @returns {Promise} Resolves if the URI is compatible, otherwise throws:
  *    - InvalidURI: URI given is not compatible (e.g. must be WebSockets)
- *    - InvalidNetworkType: ETH node connected to wrong network
+ *    - InvalidChainId: Endpoint represents wrong chain id
  *    - NoConnection: Couldn't connect to URI
  */
-export async function checkValidEthNode(uri, expectedNetworkType) {
+export async function checkValidEthEndpoint(uri, expectedChainId) {
   // Must be websocket connection
   if (!websocketRegex.test(uri)) {
     throw new InvalidURI('The URI must use the WebSocket protocol')
@@ -62,7 +62,7 @@ export async function checkValidEthNode(uri, expectedNetworkType) {
 
   try {
     const web3 = new Web3(uri)
-    const connectedNetworkType = await web3.eth.net.getNetworkType()
+    const connectedChainId = await web3.eth.getChainId()
     if (web3.currentProvider.disconnect) {
       web3.currentProvider.disconnect()
     } else {
@@ -70,11 +70,11 @@ export async function checkValidEthNode(uri, expectedNetworkType) {
       web3.currentProvider.connection.close()
     }
 
-    if (connectedNetworkType !== expectedNetworkType) {
-      throw new InvalidNetworkType()
+    if (connectedChainId !== expectedChainId) {
+      throw new InvalidChainId()
     }
   } catch (err) {
-    if (err instanceof InvalidNetworkType) {
+    if (err instanceof InvalidChainId) {
       throw err
     }
     throw new NoConnection()

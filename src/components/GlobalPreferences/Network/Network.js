@@ -12,21 +12,20 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { ipfsDefaultConf, network } from '../../../environment'
-import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
+import { InvalidChainId, InvalidURI, NoConnection } from '../../../errors'
 import { setEthEndpoint, setIpfsGateway } from '../../../local-settings'
 import keycodes from '../../../keycodes'
-import { checkValidEthNode } from '../../../web3-utils'
+import { checkValidEthEndpoint } from '../../../web3-utils'
 
 function Network({ wrapper }) {
   const {
-    ethNode,
+    ethEndpoint,
     ipfsGateway,
     handleNetworkChange,
     handleClearCache,
     networkError,
-    handleEthNodeChange,
+    handleEthEndpointChange,
     handleIpfsGatewayChange,
-    network,
   } = useNetwork(wrapper)
   const theme = useTheme()
   const { layoutName } = useLayout()
@@ -34,13 +33,13 @@ function Network({ wrapper }) {
 
   return (
     <React.Fragment>
-      <Box heading="Node settings">
+      <Box heading="Connection settings">
         <Label theme={theme}>
-          Ethereum node
+          Ethereum JSON-RPC Endpoint
           <TextInput
-            value={ethNode}
+            value={ethEndpoint}
             wide
-            onChange={handleEthNodeChange}
+            onChange={handleEthEndpointChange}
             css={`
               ${textStyle('body2')};
               color: ${theme.contentSecondary};
@@ -55,16 +54,16 @@ function Network({ wrapper }) {
               `}
             >
               {(() => {
-                if (networkError instanceof InvalidNetworkType) {
-                  return `Node must be connected to the ${network.name} network`
+                if (networkError instanceof InvalidChainId) {
+                  return `Endpoint must be connected to the ${network.name} network`
                 }
                 if (networkError instanceof InvalidURI) {
-                  return 'Must provide WebSocket endpoint to node'
+                  return 'Endpoint must be a WebSocket'
                 }
                 if (networkError instanceof NoConnection) {
-                  return 'Could not connect to node'
+                  return 'Could not connect to endpoint'
                 }
-                return 'URI does not seem to be a ETH node'
+                return 'Could not detect compatible JSON-RPC endpoint'
               })()}
             </span>
           )}
@@ -121,38 +120,40 @@ Network.propTypes = {
 
 const useNetwork = wrapper => {
   const [networkError, setNetworkError] = useState(null)
-  const [ethNode, setEthNodeValue] = useState(network.endpoints.read)
+  const [ethEndpoint, setEthEndpointValue] = useState(network.endpoints.read)
   const [ipfsGateway, setIpfsGatewayValue] = useState(ipfsDefaultConf.gateway)
 
   const handleNetworkChange = useCallback(async () => {
     try {
-      await checkValidEthNode(ethNode, network.type)
+      await checkValidEthEndpoint(ethEndpoint, network.chainId)
     } catch (err) {
       setNetworkError(err)
       return
     }
 
-    setEthEndpoint(ethNode)
+    setEthEndpoint(ethEndpoint)
     setIpfsGateway(ipfsGateway)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
-  }, [ethNode, ipfsGateway])
+  }, [ethEndpoint, ipfsGateway])
+
   const handleClearCache = useCallback(async () => {
     await wrapper.cache.clear()
     window.localStorage.clear()
     window.location.reload()
   }, [wrapper])
+
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
       if (
         keyCode === keycodes.enter &&
         (ipfsGateway !== ipfsDefaultConf.gateway ||
-          ethNode !== network.endpoints.read)
+          ethEndpoint !== network.endpoints.read)
       ) {
         handleNetworkChange()
       }
     },
-    [handleNetworkChange, ethNode, ipfsGateway]
+    [handleNetworkChange, ethEndpoint, ipfsGateway]
   )
 
   useEffect(() => {
@@ -161,14 +162,13 @@ const useNetwork = wrapper => {
   }, [handleKeyPress])
 
   return {
-    ethNode,
-    network,
+    ethEndpoint,
     ipfsGateway,
     handleNetworkChange,
     handleClearCache,
     networkError,
-    handleEthNodeChange: ({ currentTarget: { value } }) =>
-      setEthNodeValue(value),
+    handleEthEndpointChange: ({ currentTarget: { value } }) =>
+      setEthEndpointValue(value),
     handleIpfsGatewayChange: ({ currentTarget: { value } }) =>
       setIpfsGatewayValue(value),
   }
