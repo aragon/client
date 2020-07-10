@@ -13,8 +13,8 @@ const providedDefaultEthNode = getDefaultEthNode()
 const providedEnsRegistryAddress = getEnsRegistryAddress()
 
 const networkConfigurations = {
-  // Mainnet
-  mainnet: {
+  // Ethereum mainnet
+  ethereum: {
     addresses: {
       ensRegistry:
         providedEnsRegistryAddress ||

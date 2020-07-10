@@ -46,7 +46,7 @@ const INITIAL_DAO_STATE = {
 }
 
 const SELECTOR_NETWORKS = [
-  ['main', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
+  ['ethereum', 'Ethereum Mainnet', 'https://mainnet.aragon.org/'],
   ['rinkeby', 'Ethereum Testnet (Rinkeby)', 'https://rinkeby.aragon.org/'],
 ]
 if (network.type === 'ropsten') {
