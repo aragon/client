@@ -23,12 +23,12 @@ function WalletSyncedInfo({ header, info, status }) {
         >
           <span
             css={`
-              padding-right: ${1 * GU}px;
               opacity: 0.8;
             `}
           >
             {header}
           </span>
+          <span>:</span>
           <span>{info}</span>
         </div>
       )}

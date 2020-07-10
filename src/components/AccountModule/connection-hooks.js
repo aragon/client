@@ -16,7 +16,7 @@ import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
   OK_PROVIDER_SYNC_DELAY,
-} from './utils'
+} from './delay-thresholds'
 import { network, web3Providers } from '../../environment'
 import { pollEvery } from '../../utils'
 import { useWallet } from '../../wallet'
@@ -180,7 +180,7 @@ export function useSyncState(
 
   const defaultSyncedStatus = {
     header: 'Synced',
-    info: currentBlock ? `: current block ${currentBlock}` : '',
+    info: currentBlock ? `current block ${currentBlock}` : '',
     status: STATUS_CONNECTION_OK,
   }
 
@@ -207,7 +207,7 @@ export function useSyncState(
   if (clientSyncDelay >= 30 && walletSyncDelay >= 30) {
     return {
       header: 'Last known state',
-      info: `: ${clientSyncDelay} min behind`,
+      info: `${clientSyncDelay} min behind`,
       status: STATUS_MAJOR_NETWORK_SLOWDOWN,
     }
   }
@@ -215,7 +215,7 @@ export function useSyncState(
   if (clientSyncDelay >= 3 || walletSyncDelay >= 3) {
     return {
       header: 'Out of sync',
-      info: `: ${clientSyncDelay} min behind`,
+      info: `${clientSyncDelay} min behind`,
       status: STATUS_NETWORK_SYNC_ISSUES,
     }
   }
@@ -223,7 +223,7 @@ export function useSyncState(
   if (balance.lt(minimumTransactionBalance) && balance.gtn(-1)) {
     return {
       header: 'Synced',
-      info: currentBlock ? `:current block ${currentBlock}` : '',
+      info: currentBlock ? `current block ${currentBlock}` : '',
       status: STATUS_TOO_LITTLE_ETH,
     }
   }
