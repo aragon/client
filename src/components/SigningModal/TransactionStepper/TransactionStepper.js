@@ -61,19 +61,7 @@ function TransactionStepper({ steps, onComplete, className }) {
     (stepIndex, showDivider) => {
       const { title, descriptions } = steps[stepIndex]
       const { status, hash } = stepState[stepIndex]
-
-      const { waiting, prompting, working, success, error } =
-        descriptions || DEFAULT_DESC
-
-      const descWithDefault = {
-        [STEP_WAITING]: waiting || DEFAULT_DESC['waiting'],
-        [STEP_PROMPTING]: prompting || DEFAULT_DESC['prompting'],
-        [STEP_WORKING]: working || DEFAULT_DESC['working'],
-        [STEP_SUCCESS]: success || DEFAULT_DESC['success'],
-        [STEP_ERROR]: error || DEFAULT_DESC['error'],
-      }
-
-      const desc = descWithDefault[status]
+      const desc = descriptions[status] || DEFAULT_DESC[status]
 
       return (
         <li
@@ -239,11 +227,11 @@ TransactionStepper.propTypes = {
       title: PropTypes.string.isRequired,
       handleSign: PropTypes.func.isRequired,
       descriptions: PropTypes.shape({
-        waiting: PropTypes.string,
-        prompting: PropTypes.string,
-        working: PropTypes.string,
-        success: PropTypes.string,
-        error: PropTypes.string,
+        [STEP_WAITING]: PropTypes.string,
+        [STEP_PROMPTING]: PropTypes.string,
+        [STEP_WORKING]: PropTypes.string,
+        [STEP_SUCCESS]: PropTypes.string,
+        [STEP_ERROR]: PropTypes.string,
       }),
     })
   ).isRequired,
