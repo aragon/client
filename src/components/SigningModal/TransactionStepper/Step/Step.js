@@ -19,6 +19,7 @@ const AnimatedSpan = animated.span
 
 function Step({
   title,
+  desc,
   status,
   number,
   className,
@@ -28,39 +29,33 @@ function Step({
   const theme = useTheme()
   const [immediateAnimation, onAnimationStart] = useDeferredAnimation()
 
-  const { desc, visualColor, descColor } = useMemo(() => {
+  const { visualColor, descColor } = useMemo(() => {
     const appearance = {
       [STEP_WAITING]: {
-        desc: 'Waiting for signature',
         visualColor: theme.accent,
         descColor: theme.contentSecondary,
       },
       [STEP_PROMPTING]: {
-        desc: 'Waiting for signature',
         visualColor: theme.accent,
         descColor: theme.contentSecondary,
       },
       [STEP_WORKING]: {
-        desc: 'Transaction being mined',
         visualColor: theme.accent,
         descColor: theme.accent,
       },
       [STEP_SUCCESS]: {
-        desc: 'Transaction confirmed',
         visualColor: theme.positive,
         descColor: theme.positive,
       },
       [STEP_ERROR]: {
-        desc: 'An error has occured',
         visualColor: theme.negative,
         descColor: theme.negative,
       },
     }
 
-    const { desc, descColor, visualColor } = appearance[status]
+    const { descColor, visualColor } = appearance[status]
 
     return {
-      desc,
       visualColor: `${visualColor}`,
       descColor: `${descColor}`,
     }
@@ -227,6 +222,7 @@ function Step({
 
 Step.propTypes = {
   title: PropTypes.string,
+  desc: PropTypes.string,
   transactionHash: PropTypes.string,
   className: PropTypes.string,
   number: PropTypes.number,
