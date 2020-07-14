@@ -14,29 +14,7 @@ import { useSteps, useDeferredAnimation } from '../../hooks'
 
 const AnimatedDiv = animated.div
 
-const DEFAULT_MODAL_WIDTH = 85 * GU
-
-function useScreens(screens) {
-  const { direction, next, prev, step } = useSteps(screens.length)
-  const [screensState, setScreensState] = useState(screens)
-
-  useEffect(() => {
-    setScreensState(screens)
-  }, [screens])
-
-  const getScreen = useCallback(step => screensState[step], [screensState])
-
-  const currentScreen = useMemo(() => getScreen(step), [getScreen, step])
-
-  return {
-    currentScreen,
-    direction,
-    getScreen,
-    next,
-    prev,
-    step,
-  }
-}
+const DEFAULT_MODAL_WIDTH = 80 * GU
 
 function MultiScreenModal({ visible, screens, onClose }) {
   const { prev, step, next, direction, getScreen, currentScreen } = useScreens(
@@ -79,6 +57,14 @@ function MultiScreenModal({ visible, screens, onClose }) {
     },
     [prev, next, onClose, smallMode]
   )
+
+  const onStart = useCallback(() => {
+    onAnimationStart()
+
+    if (!immediateAnimation) {
+      setApplyStaticHeight(true)
+    }
+  }, [immediateAnimation, onAnimationStart])
 
   const handleModalClose = useCallback(() => {
     if (!disableClose) {
@@ -139,7 +125,7 @@ function MultiScreenModal({ visible, screens, onClose }) {
                         setApplyStaticHeight(false)
                       }
                     }}
-                    onStart={onAnimationStart}
+                    onStart={onStart}
                     native
                   >
                     {step => animProps => {
@@ -196,6 +182,28 @@ MultiScreenModal.propTypes = {
     })
   ).isRequired,
   onClose: PropTypes.func,
+}
+
+function useScreens(screens) {
+  const { direction, next, prev, step } = useSteps(screens.length)
+  const [screensState, setScreensState] = useState(screens)
+
+  useEffect(() => {
+    setScreensState(screens)
+  }, [screens])
+
+  const getScreen = useCallback(step => screensState[step], [screensState])
+
+  const currentScreen = useMemo(() => getScreen(step), [getScreen, step])
+
+  return {
+    currentScreen,
+    direction,
+    getScreen,
+    next,
+    prev,
+    step,
+  }
 }
 
 export default React.memo(MultiScreenModal)

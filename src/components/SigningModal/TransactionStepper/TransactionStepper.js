@@ -16,11 +16,11 @@ import Step from './Step/Step'
 const AnimatedDiv = animated.div
 
 const DEFAULT_DESC = {
-  waiting: 'Waiting for signature',
-  prompting: 'Waiting for signature',
-  working: 'Transaction being mined',
-  success: 'Transaction confirmed',
-  error: 'An error has occured',
+  [STEP_WAITING]: 'Waiting for signature',
+  [STEP_PROMPTING]: 'Waiting for signature',
+  [STEP_WORKING]: 'Transaction being mined',
+  [STEP_SUCCESS]: 'Transaction confirmed',
+  [STEP_ERROR]: 'An error has occured',
 }
 
 function initialStepState(steps) {
@@ -61,7 +61,8 @@ function TransactionStepper({ steps, onComplete, className }) {
     (stepIndex, showDivider) => {
       const { title, descriptions } = steps[stepIndex]
       const { status, hash } = stepState[stepIndex]
-      const desc = descriptions[status] || DEFAULT_DESC[status]
+      const desc =
+        (descriptions && descriptions[status]) || DEFAULT_DESC[status]
 
       return (
         <li
