@@ -29,14 +29,16 @@ function useIdentitiesActions({
     )
     try {
       const labels = utoa(JSON.stringify(identitiesToShare))
-      return `${window.location.origin}/#${routing.path({
+      // Embed the organization address as saving labels (on the receipient's side) requires an
+      // wrapper context (that is only created on an organization path)
+      return `${window.location.origin}/#${orgAddress}${routing.path({
         preferences: { section: 'custom-labels', data: { labels } },
       })}`
     } catch (err) {
       log('Error while creating the identities sharing link:', err)
       return ''
     }
-  }, [filteredIdentities, identitiesSelected, routing])
+  }, [filteredIdentities, identitiesSelected, orgAddress, routing])
 
   // import
   const handleImport = useCallback(
