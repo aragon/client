@@ -1,11 +1,11 @@
-# Aragon <a href="https://aragon.org/"><img align="right" src="https://github.com/aragon/design/blob/master/readme-logo.png" height="80px" /></a>
+# Aragon <a href="https://aragon.org/"><img align="right" src=".github/assets/aragon.svg" height="80px" /></a>
 
-[![Build Status](https://travis-ci.org/aragon/aragon.svg?branch=master)](https://travis-ci.org/aragon/aragon)
+[![Build Status](https://img.shields.io/github/workflow/status/aragon/aragon/Run%20tests?style=flat-square)](https://github.com/aragon/aragon/actions)
 [![All Contributors](https://img.shields.io/badge/all_contributors-47-orange.svg?style=flat-square)](#contributors)
 
 **🌎🚀 Trusted by over 1000 organizations, securing more than $20MM in funds. [Try it out.](https://mainnet.aragon.org)**
 
-<a href="https://mainnet.aragon.org/#/a1/"><img src=".github/screenshot.png" /></a>
+<a href="https://mainnet.aragon.org/#/a1/"><img src=".github/assets/screenshot.png" /></a>
 
 - 📚 Read the [User Guide](https://help.aragon.org/) first, if you have any questions as a user.
 - 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
@@ -162,6 +162,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 Amongst other dependencies, the Aragon client is built upon these packages that you may also find useful for your projects:
 
 - [aragonUI](https://github.com/aragon/aragon-ui): React component library used to build user interfaces within the [Aragon design system](https://blog.aragon.org/introducing-aragonds-the-new-aragon-design-system/)
+- [token-amount](http://github.com/aragon/token-amount): utility class for encapsulating and formatting a token amount
 - [use-inside](https://github.com/aragon/use-inside): React utility that allows a component to be aware of being "inside" the subtree of another component
 - [use-token](https://github.com/aragon/use-token): React utility for fetching information related to tokens on Ethereum
 - [use-viewport](https://github.com/aragon/use-viewport): React utility providing the current window size and convenient functions for responsive apps
