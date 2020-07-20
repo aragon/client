@@ -13,8 +13,6 @@ import {
 import { useDeferredAnimation } from '../../../../hooks'
 import StatusVisual from './StatusVisual'
 
-const BADGE_OFFSET = 4.5 * GU
-
 const AnimatedSpan = animated.span
 
 function Step({
@@ -70,8 +68,6 @@ function Step({
           flex-direction: column;
           align-items: center;
 
-          padding-top: ${BADGE_OFFSET}px;
-
           width: ${23 * GU}px;
         `}
       >
@@ -108,7 +104,7 @@ function Step({
             config={springs.smooth}
             items={desc}
             onStart={onAnimationStart}
-            immediate={status === STEP_PROMPTING || immediateAnimation}
+            immediate={immediateAnimation}
             from={{
               opacity: 0,
               transform: `translate3d(0, ${2 * GU}px, 0)`,
@@ -152,7 +148,7 @@ function Step({
             width: 100%;
 
             /* Avoid visual jump when showing tx by pre-filling space */
-            height: ${BADGE_OFFSET}px;
+            height: ${4.5 * GU}px;
           `}
         >
           {transactionHash && (
@@ -212,7 +208,7 @@ function Step({
           color={visualColor}
           css={`
             position: relative;
-            top: ${BADGE_OFFSET + 6 * GU}px;
+            top: ${6 * GU}px;
           `}
         />
       )}
