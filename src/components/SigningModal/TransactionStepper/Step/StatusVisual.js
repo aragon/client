@@ -97,7 +97,7 @@ function StatusVisual({ status, color, number, className }) {
           >
             <Transition
               config={(_, state) =>
-                state === 'enter' ? springs.smooth : springs.swift
+                state === 'enter' ? springs.smooth : springs.instant
               }
               items={statusIcon}
               onStart={onAnimationStart}
@@ -112,7 +112,6 @@ function StatusVisual({ status, color, number, className }) {
               leave={{
                 position: 'absolute',
                 opacity: 0,
-                transform: 'scale3d(0.8, 0.8, 1)',
               }}
               native
             >
@@ -130,7 +129,7 @@ function StatusVisual({ status, color, number, className }) {
                       color: ${color};
                       border: 1px solid currentColor;
                       bottom: 0;
-                      left: 0;
+                      right: 0;
                     `}
                     style={animProps}
                   >
