@@ -13,10 +13,10 @@ git clone git@github.com:aragon/aragon-ui.git
 cd aragon-ui
 yarn install
 yarn link
-yarn run dev
+yarn dev
 ```
 
-Note: `yarn run dev` is like `yarn run build`, but it rebuilds automtically when a file changes.
+Note: `yarn dev` is like `yarn build`, but it rebuilds automtically when a file changes.
 
 Install the devbox dependencies, link `@aragon/ui` to it, and start it:
 
@@ -46,7 +46,7 @@ If a change only impacts the Aragon client, the easiest is to run it connected t
 Run it:
 
 ```
-yarn run start:rinkeby
+yarn start:rinkeby
 ```
 
 The development server is now running on http://localhost:3000/, and file changes will trigger a rebuild and reload the page.
@@ -54,9 +54,9 @@ The development server is now running on http://localhost:3000/, and file change
 A few other commands are available to connect it to other networks:
 
 ```
-yarn run start:staging
-yarn run start:mainnet
-yarn run start:local # require a local node
+yarn start:staging
+yarn start:mainnet
+yarn start:local # require a local node
 ```
 
 If it requires the local version of aragonUI, link it:
@@ -106,7 +106,7 @@ Apps need to receive data from the client to run properly, and won’t work when
 
 ```
 cd aragon
-ARAGON_APP_LOCATOR=local yarn run start:rinkeby
+ARAGON_APP_LOCATOR=local yarn start:rinkeby
 ```
 
 Aragon client knows the local ports of every app, so loading any organization and trying to access e.g. the Token Manager will load it from the version running locally.
