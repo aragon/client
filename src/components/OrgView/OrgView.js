@@ -29,6 +29,7 @@ import MenuPanel, { MENU_PANEL_WIDTH } from '../MenuPanel/MenuPanel'
 import OrgViewApp from './OrgViewApp'
 import OrganizationSwitcher from '../MenuPanel/OrganizationSwitcher/OrganizationSwitcher'
 import SignerPanel from '../SignerPanel/SignerPanel'
+import SigningModal from '../SigningModal/SigningModal'
 import UpgradeBanner from '../Upgrade/UpgradeBanner'
 import UpgradeModal from '../Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from '../Upgrade/UpgradeOrganizationPanel'
@@ -355,7 +356,14 @@ function OrgView({
                     wrapper={wrapper}
                   />
 
-                  <SignerPanel
+                  {/* <SignerPanel
+                    apps={apps}
+                    transactionBag={transactionBag}
+                    signatureBag={signatureBag}
+                    web3={web3}
+                  /> */}
+
+                  <SigningModal
                     apps={apps}
                     transactionBag={transactionBag}
                     signatureBag={signatureBag}
