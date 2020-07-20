@@ -31,31 +31,31 @@ Which source to load app frontend assets from. Can be one of `ipfs` (uses the co
 It is also possible to define how every app is loaded individually using a comma-separated list, which contains a series of locations defined as `<app ID>:<app location>`.
 
 ```console
-ARAGON_APP_LOCATOR=0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae:http://localhost:1234,0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae:http://localhost:3333 npm start
+ARAGON_APP_LOCATOR=0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae:http://localhost:1234,0xbf8491150dafc5dcaee5b861414dca922de09ccffa344964ae167212e8c673ae:http://localhost:3333 yarn start
 ```
 
 Individual app locators can also use its “known name” if it exists. Known names are `Agent`, `Finance`, `Fundraising`, `Survey`, `TokenManager`, `Vault`, and `Voting`. When a known name is used without any location, they will be fetched from their [assigned local ports](src/known-app-ids.js), which are used by their respective development servers (see [aragon-apps](https://github.com/aragon/aragon-apps)).
 
 ```console
-ARAGON_APP_LOCATOR=Agent,Finance npm start
+ARAGON_APP_LOCATOR=Agent,Finance yarn start
 ```
 
 Another option is to use the ENS name of any app:
 
 ```console
-ARAGON_APP_LOCATOR=voting.aragonpm.eth:1234 npm start
+ARAGON_APP_LOCATOR=voting.aragonpm.eth:1234 yarn start
 ```
 
 Locations can also be a domain or an IP without the `http://` prefix, in which case it will get added:
 
 ```console
-ARAGON_APP_LOCATOR=Agent:localhost:1234,Finance:192.168.1.4 npm start
+ARAGON_APP_LOCATOR=Agent:localhost:1234,Finance:192.168.1.4 yarn start
 ```
 
 And they can also be a port, in which case `http://localhost` will get used:
 
 ```console
-ARAGON_APP_LOCATOR=Agent:3333,Finance:4444 npm start
+ARAGON_APP_LOCATOR=Agent:3333,Finance:4444 yarn start
 ```
 
 ## Ethereum Providers
