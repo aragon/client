@@ -10297,8 +10297,8 @@ quote-stream@^1.0.1, quote-stream@~1.0.2:
     through2 "^2.0.0"
 
 radspec@^1.5.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/radspec/-/radspec-1.8.0.tgz#462f25a2f3ada799bf9368462b8ccb6c5e89dc30"
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/radspec/-/radspec-1.9.0.tgz#356786b86f0c2bd50d6026aa00a0483673c26be3"
   integrity sha512-z36e6LG7o2dxrFLhaIBmy5ohUwtTJKXPBBqYdAMeF8bxKogPzcKbviZe4rdahA0jQSKOHkFp2cj2hXkOk65+6Q==
   dependencies:
     "@babel/runtime" "^7.1.2"
