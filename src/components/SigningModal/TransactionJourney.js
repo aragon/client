@@ -208,19 +208,6 @@ function JourneyItem({
   const disabledLight = disabled && appearance === 'light'
   const disabledDark = disabled && appearance === 'dark'
 
-  const disabledStyle = css`
-    filter: grayscale(100%);
-    mix-blend-mode: luminosity;
-  `
-
-  const disabledLightStyle = css`
-    opacity: 0.4;
-  `
-
-  const disabledDarkStyle = css`
-    opacity: 0.6;
-  `
-
   return (
     <li
       css={`
@@ -248,9 +235,9 @@ function JourneyItem({
         >
           <div
             css={`
-              ${disabled && disabledStyle};
-              ${disabledLight && disabledLightStyle};
-              ${disabledDark && disabledDarkStyle};
+              ${disabled && disabledIconStyle};
+              ${disabledLight && disabledLightIconStyle};
+              ${disabledDark && disabledDarkIconStyle};
             `}
           >
             <AppIcon app={app} radius={0} size={5 * GU} />
@@ -279,6 +266,20 @@ function JourneyItem({
     </li>
   )
 }
+
+const disabledIconStyle = css`
+  filter: grayscale(100%);
+  mix-blend-mode: luminosity;
+`
+
+const disabledLightIconStyle = css`
+  opacity: 0.4;
+`
+
+const disabledDarkIconStyle = css`
+  opacity: 0.6;
+`
+
 /* eslint-enable react/prop-types */
 
 export default TransactionJourney
