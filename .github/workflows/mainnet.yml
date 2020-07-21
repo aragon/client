@@ -1,9 +1,9 @@
-name: Mainnet deployment
+name: Agreement deployment
 
 on:
   push:
     branches:
-      - master
+      - agreement
 
 jobs:
   deploy:
@@ -22,6 +22,14 @@ jobs:
       run: >
         now
         -A now-mainnet.json
+        --confirm
+        --prod
+        --token=${{ secrets.ZEIT_TOKEN }}
+        --build-env NOW_GITHUB_COMMIT_SHA="$(git log --pretty=format:'%h' -n 1)"
+    - name: now
+      run: >
+        now
+        -A now
         --confirm
         --prod
         --token=${{ secrets.ZEIT_TOKEN }}
