@@ -26,8 +26,6 @@ import {
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 
-import { MOCK_AGREEMENTS } from './apps/Agreement/mock-data'
-
 const POLL_DELAY_CONNECTIVITY = 2000
 
 const applyAppOverrides = apps =>
@@ -144,7 +142,6 @@ const subscribe = (
   {
     onAppIdentifiers,
     onApps,
-    onAgreements,
     onForwarders,
     onIdentityIntent,
     onInstalledRepos,
@@ -171,9 +168,6 @@ const subscribe = (
 
   const subscriptions = {
     appIdentifiers: appIdentifiers.subscribe(onAppIdentifiers),
-
-    // Temporary entry point for mock agreements mock data
-    agreements: onAgreements(MOCK_AGREEMENTS),
     connectedApp: null,
     connectedWorkers: workerSubscriptionPool,
     forwarders: forwarders.subscribe(onForwarders),
@@ -262,7 +256,6 @@ const initWrapper = async (
     onRequestPath = noop,
     onSignatures = noop,
     onTransaction = noop,
-    onAgreements = noop,
     provider,
     walletAccount = null,
   } = {}
@@ -326,7 +319,6 @@ const initWrapper = async (
       onRequestPath,
       onSignatures,
       onTransaction,
-      onAgreements,
     },
     { ipfsConf }
   )

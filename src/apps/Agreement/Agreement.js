@@ -27,13 +27,13 @@ import { usePermissions } from '../../contexts/PermissionsContext'
 
 import { MOCK_AGREEMENTS, MOCK_AGREEMENT_DOC } from './mock-data'
 
-function Agreement({ apps, agreements }) {
+function Agreement({ apps }) {
   const [checklistCompleted, setChecklistCompleted] = useState(true)
   const { layoutName } = useLayout()
   const { getAppRoles } = usePermissions()
 
   // Temporarily provide mock data if initially undefined
-  const agreement = (agreements && agreements[0]) || MOCK_AGREEMENTS[0]
+  const agreement = MOCK_AGREEMENTS[0]
   const { appAddress, stakingPool, versions, connectedApps } = agreement
   const { title, content } = agreement.currentVersion
 
@@ -194,7 +194,6 @@ function Agreement({ apps, agreements }) {
 
 Agreement.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
-  agreements: PropTypes.array,
 }
 
 export default React.memo(Agreement)

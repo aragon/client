@@ -29,14 +29,7 @@ import {
 } from '../../prop-types'
 import { DAO_STATUS_LOADING, APPS_STATUS_LOADING } from '../../symbols'
 
-function OrgViewApp({
-  apps,
-  appsStatus,
-  agreements,
-  daoStatus,
-  wrapper,
-  ...props
-}) {
+function OrgViewApp({ apps, appsStatus, daoStatus, wrapper, ...props }) {
   const routing = useRouting()
   const [appLoading, setAppLoading] = useState(false)
 
@@ -58,7 +51,6 @@ function OrgViewApp({
       <App
         apps={apps}
         appsStatus={appsStatus}
-        agreements={agreements}
         daoStatus={daoStatus}
         setAppLoading={setAppLoading}
         wrapper={wrapper}
@@ -72,7 +64,6 @@ function App({
   appInstanceGroups,
   apps,
   appsStatus,
-  agreements,
   canUpgradeOrg,
   daoAddress,
   historyBack,
@@ -189,7 +180,7 @@ function App({
   if (instanceId === 'agreement') {
     return (
       <AppInternal>
-        <Agreement agreements={agreements} apps={apps} />
+        <Agreement apps={apps} />
       </AppInternal>
     )
   }
@@ -263,7 +254,6 @@ OrgViewApp.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
   appsStatus: AppsStatusType.isRequired,
-  agreements: PropTypes.array,
   canUpgradeOrg: PropTypes.bool,
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,
@@ -277,7 +267,6 @@ App.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appInstanceGroups: PropTypes.arrayOf(AppInstanceGroupType).isRequired,
   appsStatus: AppsStatusType.isRequired,
-  agreements: PropTypes.array,
   canUpgradeOrg: PropTypes.bool,
   daoAddress: DaoAddressType.isRequired,
   historyBack: PropTypes.func.isRequired,

@@ -153,12 +153,6 @@ class App extends React.Component {
           appsStatus: APPS_STATUS_READY,
         })
       },
-      onAgreements: agreements => {
-        log('agreements updated', agreements)
-        this.setState({
-          agreements,
-        })
-      },
       onPermissions: permissions => {
         log('permissions updated', permissions)
         this.setState({
@@ -298,7 +292,6 @@ class App extends React.Component {
       apps,
       appIdentifiers,
       appsStatus,
-      agreements,
       canUpgradeOrg,
       daoAddress,
       daoStatus,
@@ -380,7 +373,6 @@ class App extends React.Component {
                             <OrgView
                               apps={appsWithIdentifiers}
                               appsStatus={appsStatus}
-                              agreements={agreements}
                               canUpgradeOrg={canUpgradeOrg}
                               daoAddress={daoAddress}
                               daoStatus={daoStatus}
