@@ -1,3 +1,4 @@
+import isIPFS from 'is-ipfs'
 import { appLocator, ipfsDefaultConf } from './environment'
 import { appendTrailingSlash } from './utils'
 
@@ -75,4 +76,17 @@ export function sanitizeCodeRepositoryUrl(url) {
     }
   }
   return url
+}
+
+export function getIpfsCidFromUri(string) {
+  const ipfsCid = string.replace(/^ipfs:/, '')
+
+  if (isIPFS.cid(ipfsCid) || isIPFS.cidPath(ipfsCid)) {
+    return ipfsCid
+  }
+  return ''
+}
+
+export function getIpfsUrlfromUri(uri) {
+  return `${ipfsDefaultConf.gateway}/${getIpfsCidFromUri(uri)}`
 }
