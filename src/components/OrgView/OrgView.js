@@ -41,6 +41,7 @@ const AnimatedDiv = animated.div
 function OrgView({
   apps,
   appsStatus,
+  agreements,
   canUpgradeOrg,
   daoAddress,
   daoStatus,
@@ -343,6 +344,7 @@ function OrgView({
                     apps={apps}
                     appInstanceGroups={appInstanceGroups}
                     appsStatus={appsStatus}
+                    agreements={agreements}
                     canUpgradeOrg={canUpgradeOrg}
                     daoAddress={daoAddress}
                     daoStatus={daoStatus}
@@ -391,6 +393,7 @@ function OrgView({
 OrgView.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsStatus: AppsStatusType.isRequired,
+  agreements: PropTypes.array,
   canUpgradeOrg: PropTypes.bool,
   daoAddress: DaoAddressType.isRequired,
   daoStatus: DaoStatusType.isRequired,

@@ -1,28 +1,43 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import PropTypes from 'prop-types'
 import {
   Box,
   Button,
+  formatTokenAmount,
   Header,
   IconEdit,
   IconTrash,
+  noop,
   Split,
   useLayout,
 } from '@aragon/ui'
+import { addressesEqual } from '../../web3-utils'
 import { STATUS_ACTIVE, STATUS_PENDING } from './agreement-statuses'
 import AgreementDetails from './AgreementDetails'
 import AgreementDocument from './AgreementDocument'
 import AgreementHeader from './AgreementHeader'
+import { AppType } from '../../prop-types'
 import ConfigurationChecklist from './ConfigurationChecklist'
+import { dateFormat, durationToHours } from '../../date-utils'
 import DisputableApps from './DisputableApps/DisputableApps'
 import DisputableAppsEmpty from './DisputableApps/DisputableAppsEmpty'
 import VersionHistory from './VersionHistory'
 import VotePending from './VotePending'
+import { usePermissions } from '../../contexts/PermissionsContext'
 
-const Agreement = React.memo(function Agreement() {
-  const [checklistCompleted, setChecklistCompleted] = useState(false)
-  const [agreementStatus, setAgreementStatus] = useState(STATUS_PENDING)
+import { MOCK_AGREEMENTS, MOCK_AGREEMENT_DOC } from './mock-data'
+
+function Agreement({ apps, agreements }) {
+  const [checklistCompleted, setChecklistCompleted] = useState(true)
   const { layoutName } = useLayout()
+  const { getAppRoles } = usePermissions()
 
+  // Temporarily provide mock data if initially undefined
+  const agreement = (agreements && agreements[0]) || MOCK_AGREEMENTS[0]
+  const { appAddress, stakingPool, versions, connectedApps } = agreement
+  const { title, content } = agreement.currentVersion
+
+  const agreementStatus = STATUS_ACTIVE
   const compactMode = layoutName === 'small'
 
   const handleChecklistClose = useCallback(() => {
@@ -43,61 +58,71 @@ const Agreement = React.memo(function Agreement() {
       ['Create Agreement', true],
       ['Set permissions', true],
       ['Set actions requirements', true],
-      ['Share with members', false],
+      ['Share with members', true],
     ],
     []
   )
 
-  // TODO: Replace with real data
-  const mockHistoryItems = useMemo(
-    () => ['2020/05/22', '2020/05/21', '2020/05/20'],
-    []
+  const historyItems = useMemo(
+    () =>
+      versions.map(({ effectiveFrom }) =>
+        dateFormat(effectiveFrom, 'onlyDate')
+      ),
+    [versions]
   )
 
-  // TODO: Replace with real data
-  const mockAppItem = useMemo(() => {
-    return {
-      entryActions: [
-        [
-          () => {
-            console.log('Update disputable app')
-          },
-          <IconEdit />,
-          'Update',
-        ],
-        [
-          () => {
-            console.log('Remove disputable app')
-          },
-          <IconTrash />,
-          'Remove',
-        ],
-      ],
-      allowedActions: ['Action one', 'Action two', 'Action three'],
-      actionCollateral: {
-        amount: 100,
-        symbol: 'ANT',
-        address: '0x960b236A07cf122663c4303350609A66A7B288C0',
-      },
-      challengeCollateral: {
-        amount: 100,
-        symbol: 'ANT',
-        address: '0x960b236A07cf122663c4303350609A66A7B288C0',
-      },
-      signerEligibility: {
-        amount: 5,
-        symbol: 'ANT',
-        address: '0x960b236A07cf122663c4303350609A66A7B288C0',
-      },
-      challengeEligibility: 'Open to everyone',
-      challengePeriod: 48,
-      settlementPeriod: 24,
-    }
-  }, [])
+  const appItems = useMemo(
+    () =>
+      connectedApps.map(
+        ({
+          appAddress,
+          collateralToken: { address, decimals, symbol },
+          actionAmount,
+          challengeAmount,
+          challengeDuration,
+        }) => {
+          const app = apps.find(app =>
+            addressesEqual(app.proxyAddress, appAddress)
+          )
+          const roles = getAppRoles(app)
+            .filter(({ role }) => role && role.name)
+            .map(({ role }) => role.name)
 
-  const mockAppItems = useMemo(() => [mockAppItem, mockAppItem, mockAppItem], [
-    mockAppItem,
-  ])
+          return {
+            entryActions: [
+              [
+                () => {
+                  console.log('Update disputable app')
+                },
+                <IconEdit />,
+                'Update',
+              ],
+              [
+                () => {
+                  console.log('Remove disputable app')
+                },
+                <IconTrash />,
+                'Remove',
+              ],
+            ],
+            app: app,
+            allowedActions: roles,
+            actionCollateral: {
+              amount: formatTokenAmount(actionAmount, decimals),
+              symbol,
+              address,
+            },
+            challengeCollateral: {
+              amount: formatTokenAmount(challengeAmount, decimals),
+              symbol,
+              address,
+            },
+            settlementPeriod: durationToHours(challengeDuration),
+          }
+        }
+      ),
+    [connectedApps, apps, getAppRoles]
+  )
 
   return (
     <React.Fragment>
@@ -105,16 +130,10 @@ const Agreement = React.memo(function Agreement() {
         primary="Agreement"
         secondary={
           <Button
+            disabled
             mode="strong"
             label="Update Agreement"
-            onClick={() => {
-              // TODO: This is just for testing the status change effect on UI state
-              setAgreementStatus(
-                agreementStatus === STATUS_ACTIVE
-                  ? STATUS_PENDING
-                  : STATUS_ACTIVE
-              )
-            }}
+            onClick={noop}
             icon={<IconEdit />}
             display={compactMode ? 'icon' : 'label'}
           />
@@ -126,7 +145,7 @@ const Agreement = React.memo(function Agreement() {
           <React.Fragment>
             <Box>
               <AgreementHeader
-                title="DAO Agreement"
+                title={title}
                 status={agreementStatus}
                 onSign={() => {
                   console.log('Signed')
@@ -136,18 +155,17 @@ const Agreement = React.memo(function Agreement() {
                 }}
               />
               <AgreementDetails
-                ipfsLink="QmXpcBiGZ7Uep2tmhxLhfA8ak1aYDUyevFSnpUa4Gc9kRn"
-                authorAddress="0xc41e4c10b37d3397a99d4a90e7d85508a69a5c4c"
-                stakingAddress="0x7c708ac7db979fa06705f8880f29f82cfc406993"
-                contractAddress="0x7c708ac7db979fa06705f8880f29f82cfc406993"
+                ipfsUri={content}
+                stakingAddress={stakingPool}
+                contractAddress={appAddress}
               />
             </Box>
-            {mockAppItems.length > 0 ? (
-              <DisputableApps items={mockAppItems} />
+            {appItems.length > 0 ? (
+              <DisputableApps items={appItems} />
             ) : (
               <DisputableAppsEmpty />
             )}
-            <AgreementDocument title="DAO Agreement" />
+            <AgreementDocument content={MOCK_AGREEMENT_DOC} />
           </React.Fragment>
         }
         secondary={
@@ -164,7 +182,7 @@ const Agreement = React.memo(function Agreement() {
                 <VotePending endDate={mockEndDate} />
               )}
               {agreementStatus === STATUS_ACTIVE && (
-                <VersionHistory items={mockHistoryItems} />
+                <VersionHistory items={historyItems} />
               )}
             </Box>
           </React.Fragment>
@@ -172,6 +190,11 @@ const Agreement = React.memo(function Agreement() {
       />
     </React.Fragment>
   )
-})
+}
 
-export default Agreement
+Agreement.propTypes = {
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  agreements: PropTypes.array,
+}
+
+export default React.memo(Agreement)
