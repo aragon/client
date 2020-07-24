@@ -32,7 +32,7 @@ function Agreement({ apps }) {
   const { layoutName } = useLayout()
   const { getAppRoles } = usePermissions()
 
-  // Temporarily provide mock data if initially undefined
+  // TODO: Replace with real data
   const agreement = MOCK_AGREEMENTS[0]
   const { appAddress, stakingPool, versions, connectedApps } = agreement
   const { title, content } = agreement.currentVersion
