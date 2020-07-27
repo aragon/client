@@ -152,7 +152,7 @@ function RedemptionsScreen({
             <React.Fragment>
               Redeemable tokens
               <Help hint="What are redeemable tokens?">
-                <strong>Redeemable tokens</strong> are ERC20 tokens that can be
+                <strong>Redeemable tokens</strong> are tokens (ETH or ERC-20) that can be
                 redeemed in exchange for the organization's tokens. They
                 represent assets held by the organization.
               </Help>
@@ -187,7 +187,7 @@ function RedemptionsScreen({
           margin-bottom: ${3 * GU}px;
         `}
       >
-        These settings determine which ERC20 assets held by the organization
+        These settings determine which tokens (ETH and ERC-20) held by the organization
         will be eligible for redemption.
       </Info>
 
