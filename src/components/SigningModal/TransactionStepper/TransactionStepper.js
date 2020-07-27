@@ -1,21 +1,32 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import { PropTypes } from 'prop-types'
 import { Transition, animated } from 'react-spring'
-import { noop, useTheme, springs, GU } from '@aragon/ui'
+import {
+  Button,
+  IconRotateRight,
+  Info,
+  noop,
+  springs,
+  useTheme,
+  GU,
+} from '@aragon/ui'
+import Step from './Step/Step'
 import {
   STEP_ERROR,
   STEP_PROMPTING,
   STEP_SUCCESS,
   STEP_WAITING,
   STEP_WORKING,
+  STEPPER_WORKING,
+  STEPPER_SUCCESS,
+  STEPPER_ERROR,
 } from './stepper-statuses'
 import { useDetectIsMounted, useDeferredAnimation } from '../../../hooks'
 import useStepperLayout from './useStepperLayout'
-import Step from './Step/Step'
 
 const AnimatedDiv = animated.div
 
-const DEFAULT_DESC = {
+const DEFAULT_STEP_DESC = {
   [STEP_WAITING]: 'Waiting for signature',
   [STEP_PROMPTING]: 'Waiting for signature',
   [STEP_WORKING]: 'Transaction being mined',
@@ -44,10 +55,16 @@ function reduceSteps(steps, [action, stepIndex, value]) {
   return steps
 }
 
-function TransactionStepper({ steps, onComplete, className }) {
+function TransactionStepper({
+  steps,
+  onComplete,
+  infoDescriptions,
+  className,
+}) {
   const theme = useTheme()
   const isMounted = useDetectIsMounted()
   const [immediateAnimation, onAnimationStart] = useDeferredAnimation()
+  const [stepperStatus, setStepperStatus] = useState(STEPPER_WORKING)
   const [stepperStage, setStepperStage] = useState(0)
   const [stepState, updateStep] = useReducer(
     reduceSteps,
@@ -57,12 +74,15 @@ function TransactionStepper({ steps, onComplete, className }) {
 
   const stepsCount = steps.length - 1
 
+  const infoMessage =
+    (infoDescriptions && infoDescriptions[stepperStatus]) || ''
+
   const renderStep = useCallback(
     (stepIndex, showDivider) => {
       const { title, descriptions } = steps[stepIndex]
       const { status, hash } = stepState[stepIndex]
-      const desc =
-        (descriptions && descriptions[status]) || DEFAULT_DESC[status]
+      const stepDesc =
+        (descriptions && descriptions[status]) || DEFAULT_STEP_DESC[status]
 
       return (
         <li
@@ -73,7 +93,7 @@ function TransactionStepper({ steps, onComplete, className }) {
         >
           <Step
             title={title}
-            desc={desc}
+            desc={stepDesc}
             number={stepIndex + 1}
             status={status}
             showDivider={showDivider}
@@ -92,6 +112,15 @@ function TransactionStepper({ steps, onComplete, className }) {
       return renderStep(index, showDivider)
     })
   }, [steps, stepsCount, renderStep])
+
+  const updateStepperStatus = useCallback(
+    status => {
+      if (isMounted()) {
+        setStepperStatus(status)
+      }
+    },
+    [isMounted]
+  )
 
   const updateStepStatus = useCallback(
     status => {
@@ -116,20 +145,27 @@ function TransactionStepper({ steps, onComplete, className }) {
 
     // Always start new step in the "Prompting" state
     updateStepStatus(STEP_PROMPTING)
+    updateStepperStatus(STEPPER_WORKING)
 
     // Pass state updates as render props to signProcess
     handleSign({
       setStepHash: hash => updateHash(hash),
       setStepWorking: () => updateStepStatus(STEP_WORKING),
-      setStepError: () => updateStepStatus(STEP_ERROR),
+      setStepError: () => {
+        updateStepStatus(STEP_ERROR)
+        updateStepperStatus(STEPPER_ERROR)
+      },
       setStepSuccess: () => {
         updateStepStatus(STEP_SUCCESS)
 
         // Advance to next step or fire complete callback
         if (isMounted()) {
-          stepperStage === stepsCount
-            ? onComplete()
-            : setStepperStage(stepperStage + 1)
+          if (stepperStage === stepsCount) {
+            onComplete()
+            updateStepperStatus(STEPPER_SUCCESS)
+          } else {
+            setStepperStage(stepperStage + 1)
+          }
         }
       },
     })
@@ -137,6 +173,7 @@ function TransactionStepper({ steps, onComplete, className }) {
     steps,
     stepperStage,
     updateStepStatus,
+    updateStepperStatus,
     updateHash,
     onComplete,
     stepsCount,
@@ -218,6 +255,28 @@ function TransactionStepper({ steps, onComplete, className }) {
           {layout === 'expanded' && renderSteps()}
         </ul>
       </div>
+      {infoMessage && (
+        <Info
+          css={`
+            margin-top: ${4 * GU}px;
+          `}
+        >
+          {infoMessage}
+        </Info>
+      )}
+
+      {stepperStatus === STEPPER_ERROR && (
+        <Button
+          mode="strong"
+          wide
+          onMouseDown={handleSign}
+          icon={<IconRotateRight />}
+          label="Repeat transaction"
+          css={`
+            margin-top: ${1 * GU}px;
+          `}
+        />
+      )}
     </div>
   )
 }
@@ -236,6 +295,11 @@ TransactionStepper.propTypes = {
       }),
     })
   ).isRequired,
+  infoDescriptions: PropTypes.shape({
+    [STEPPER_WORKING]: PropTypes.string,
+    [STEPPER_SUCCESS]: PropTypes.string,
+    [STEPPER_ERROR]: PropTypes.string,
+  }).isRequired,
   onComplete: PropTypes.func,
   className: PropTypes.string,
 }
