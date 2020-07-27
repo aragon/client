@@ -27,15 +27,19 @@ For connecting to other chains / deployments, a few useful npm scripts are provi
 
 More [configuration options](docs/CONFIGURATION.md) are available, and depending on your needs, you may find the [frontend development setup guide](docs/FRONTEND_SETUP.md) helpful.
 
-## Deployments
+## Releases
 
 The Aragon client undergoes a number of different deployments, based on build environments, major release timelines, and quality assurance checks.
 
+For more information about each official release, see our [releases page](https://github.com/aragon/aragon/releases).
+
 ### aragonPM
 
-Regular updates, with incrementing minor or patch versions, are published onto the `aragon.aragonpm.eth` repo on all supported Ethereum environments.
+Regular updates, with incrementing minor or patch versions, are published onto the `aragon.aragonpm.eth` on-chain repository for all supported Ethereum environments.
 
 These should be seen as "official" builds, whose distributions are secured by IPFS. Most users see this version of the app, due to [mainnet.aragon.org](https://mainnet.aragon.org) and [rinkeby.aragon.org](https://rinkeby.aragon.org) pointing to these builds.
+
+Each incremental version released through this pipeline is documented in our [releases page](https://github.com/aragon/aragon/releases).
 
 #### Secrets
 
