@@ -2,6 +2,8 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { keyframes, css } from 'styled-components'
 import { useTheme, textStyle, RADIUS, GU } from '@aragon/ui'
+import AppIcon from '../AppIcon/AppIcon'
+import { useClientTheme } from '../../client-theme'
 
 const PREVIOUS = Symbol('PREVIOUS')
 const CURRENT = Symbol('CURRENT')
@@ -21,7 +23,13 @@ const pulseAnimation = keyframes`
   }
 `
 
-function TransactionJourney({ items, activeItem, pulse, themeColor }) {
+function TransactionJourney({
+  items,
+  activeItem,
+  pulse,
+  themeColor,
+  className,
+}) {
   const theme = useTheme()
   const color = themeColor || theme.accent
 
@@ -43,29 +51,31 @@ function TransactionJourney({ items, activeItem, pulse, themeColor }) {
   )
 
   return (
-    <ul
-      css={`
-        list-style: none;
-      `}
-    >
-      {items.map(([title, { icon, content }], i) => {
-        const status = getItemPosition(i)
+    <div className={className}>
+      <ul
+        css={`
+          list-style: none;
+        `}
+      >
+        {items.map(([title, { app, content }], i) => {
+          const status = getItemPosition(i)
 
-        return (
-          <JourneyItem
-            key={i}
-            title={title}
-            icon={icon}
-            status={status}
-            isLastItem={i === items.length - 1}
-            pulse={pulse}
-            themeColor={color}
-          >
-            {content}
-          </JourneyItem>
-        )
-      })}
-    </ul>
+          return (
+            <JourneyItem
+              key={i}
+              title={title}
+              app={app}
+              status={status}
+              isLastItem={i === items.length - 1}
+              pulse={pulse}
+              themeColor={color}
+            >
+              {content}
+            </JourneyItem>
+          )
+        })}
+      </ul>
+    </div>
   )
 }
 
@@ -75,8 +85,9 @@ TransactionJourney.defaultProps = {
 }
 
 TransactionJourney.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.array).isRequired,
   activeItem: PropTypes.number,
+  items: PropTypes.arrayOf(PropTypes.array).isRequired,
+  className: PropTypes.string,
   pulse: PropTypes.bool,
   themeColor: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 }
@@ -125,6 +136,7 @@ function ProgressLine({ status, pulse, themeColor }) {
   const pipSize = 1 * GU
   const pipOffset = ITEM_SPACING + 1.25 * GU
 
+  const showHighlight = status === PREVIOUS || (status === CURRENT && pulse)
   const highlight = css`
     &::before {
       content: '';
@@ -159,7 +171,7 @@ function ProgressLine({ status, pulse, themeColor }) {
           border-left: 1px dashed ${theme.surfaceOpened};
         }
 
-        ${status !== NEXT && highlight}
+        ${showHighlight && highlight};
       `}
     >
       {status === CURRENT && pulse && (
@@ -181,7 +193,7 @@ function ProgressLine({ status, pulse, themeColor }) {
 }
 
 function JourneyItem({
-  icon,
+  app,
   title,
   children,
   status,
@@ -190,6 +202,16 @@ function JourneyItem({
   themeColor,
 }) {
   const theme = useTheme()
+  const { appearance } = useClientTheme()
+
+  const disabled = status === NEXT
+
+  const disabledIconStyle =
+    appearance === 'light'
+      ? disabledLightIconStyle
+      : appearance === 'dark'
+      ? disabledDarkIconStyle
+      : ''
 
   return (
     <li
@@ -200,52 +222,43 @@ function JourneyItem({
       <div
         css={`
           position: relative;
-          margin-right: ${2.5 * GU}px;
+          margin-right: ${2 * GU}px;
         `}
       >
         {!isLastItem && (
           <ProgressLine status={status} pulse={pulse} themeColor={themeColor} />
         )}
+
         <div
           css={`
             position: relative;
-            display: flex;
-
             overflow: hidden;
-
-            width: ${5 * GU}px;
-            height: ${5 * GU}px;
-
-            background-color: ${theme.badge};
-            border-radius: ${RADIUS}px;
             z-index: 1;
-
-            &::after {
-              content: '';
-
-              background-image: url(${icon});
-              flex: 1;
-
-              ${status === NEXT &&
-                `filter: grayscale(97%);
-                mix-blend-mode: hard-light;
-                opacity: 0.8;
-              `}
-            }
+            border-radius: ${RADIUS}px;
+            background-color: ${theme.surfaceUnder};
           `}
-        />
+        >
+          <div
+            css={`
+              ${disabled && disabledIconStyle};
+            `}
+          >
+            <AppIcon app={app} radius={0} size={5 * GU} />
+          </div>
+        </div>
       </div>
       <div
         css={`
           ${!isLastItem && `padding-bottom: ${ITEM_SPACING}px;`}
-          color: ${status === NEXT ? theme.contentSecondary : theme.content};
+          color: ${disabled ? theme.contentSecondary : theme.content};
         `}
       >
         <h2
           css={`
-            margin-bottom: ${0.5 * GU}px;
+            margin-top: ${-0.25 * GU}px;
 
-            ${textStyle('body1')};
+            ${textStyle('body2')};
+            font-weight: 600;
           `}
         >
           {title}
@@ -256,6 +269,22 @@ function JourneyItem({
     </li>
   )
 }
+
 /* eslint-enable react/prop-types */
+
+const disabledIconStyle = css`
+  filter: grayscale(100%);
+  mix-blend-mode: luminosity;
+`
+
+const disabledLightIconStyle = css`
+  ${disabledIconStyle}
+  opacity: 0.4;
+`
+
+const disabledDarkIconStyle = css`
+  ${disabledIconStyle}
+  opacity: 0.6;
+`
 
 export default TransactionJourney
