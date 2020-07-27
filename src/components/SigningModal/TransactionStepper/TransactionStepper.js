@@ -2,14 +2,15 @@ import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import { PropTypes } from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import {
-  noop,
-  useTheme,
-  Info,
   Button,
-  springs,
   IconRotateRight,
+  Info,
+  noop,
+  springs,
+  useTheme,
   GU,
 } from '@aragon/ui'
+import Step from './Step/Step'
 import {
   STEP_ERROR,
   STEP_PROMPTING,
@@ -22,7 +23,6 @@ import {
 } from './stepper-statuses'
 import { useDetectIsMounted, useDeferredAnimation } from '../../../hooks'
 import useStepperLayout from './useStepperLayout'
-import Step from './Step/Step'
 
 const AnimatedDiv = animated.div
 
@@ -55,7 +55,12 @@ function reduceSteps(steps, [action, stepIndex, value]) {
   return steps
 }
 
-function TransactionStepper({ steps, onComplete, info, className }) {
+function TransactionStepper({
+  steps,
+  onComplete,
+  infoDescriptions,
+  className,
+}) {
   const theme = useTheme()
   const isMounted = useDetectIsMounted()
   const [immediateAnimation, onAnimationStart] = useDeferredAnimation()
@@ -69,7 +74,8 @@ function TransactionStepper({ steps, onComplete, info, className }) {
 
   const stepsCount = steps.length - 1
 
-  const infoMessage = (info && info[stepperStatus]) || ''
+  const infoMessage =
+    (infoDescriptions && infoDescriptions[stepperStatus]) || ''
 
   const renderStep = useCallback(
     (stepIndex, showDivider) => {
@@ -255,7 +261,6 @@ function TransactionStepper({ steps, onComplete, info, className }) {
             margin-top: ${4 * GU}px;
           `}
         >
-          {' '}
           {infoMessage}
         </Info>
       )}
@@ -290,7 +295,7 @@ TransactionStepper.propTypes = {
       }),
     })
   ).isRequired,
-  info: PropTypes.shape({
+  infoDescriptions: PropTypes.shape({
     [STEPPER_WORKING]: PropTypes.string,
     [STEPPER_SUCCESS]: PropTypes.string,
     [STEPPER_ERROR]: PropTypes.string,
