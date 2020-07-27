@@ -136,6 +136,7 @@ function ProgressLine({ status, pulse, themeColor }) {
   const pipSize = 1 * GU
   const pipOffset = ITEM_SPACING + 1.25 * GU
 
+  const showHighlight = status === PREVIOUS || (status === CURRENT && pulse)
   const highlight = css`
     &::before {
       content: '';
@@ -170,8 +171,7 @@ function ProgressLine({ status, pulse, themeColor }) {
           border-left: 1px dashed ${theme.surfaceOpened};
         }
 
-        ${status === PREVIOUS && highlight}
-        ${status === CURRENT && pulse && highlight}
+        ${showHighlight && highlight};
       `}
     >
       {status === CURRENT && pulse && (
@@ -205,8 +205,13 @@ function JourneyItem({
   const { appearance } = useClientTheme()
 
   const disabled = status === NEXT
-  const disabledLight = disabled && appearance === 'light'
-  const disabledDark = disabled && appearance === 'dark'
+
+  const disabledIconStyle =
+    appearance === 'light'
+      ? disabledLightIconStyle
+      : appearance === 'dark'
+      ? disabledDarkIconStyle
+      : ''
 
   return (
     <li
@@ -236,8 +241,6 @@ function JourneyItem({
           <div
             css={`
               ${disabled && disabledIconStyle};
-              ${disabledLight && disabledLightIconStyle};
-              ${disabledDark && disabledDarkIconStyle};
             `}
           >
             <AppIcon app={app} radius={0} size={5 * GU} />
@@ -247,7 +250,7 @@ function JourneyItem({
       <div
         css={`
           ${!isLastItem && `padding-bottom: ${ITEM_SPACING}px;`}
-          color: ${status === NEXT ? theme.contentSecondary : theme.content};
+          color: ${disabled ? theme.contentSecondary : theme.content};
         `}
       >
         <h2
@@ -267,19 +270,21 @@ function JourneyItem({
   )
 }
 
+/* eslint-enable react/prop-types */
+
 const disabledIconStyle = css`
   filter: grayscale(100%);
   mix-blend-mode: luminosity;
 `
 
 const disabledLightIconStyle = css`
+  ${disabledIconStyle}
   opacity: 0.4;
 `
 
 const disabledDarkIconStyle = css`
+  ${disabledIconStyle}
   opacity: 0.6;
 `
-
-/* eslint-enable react/prop-types */
 
 export default TransactionJourney
