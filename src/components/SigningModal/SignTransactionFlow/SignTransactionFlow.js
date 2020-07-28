@@ -1,10 +1,13 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { noop, GU } from '@aragon/ui'
+import { Info, noop, GU } from '@aragon/ui'
 import { addressesEqual } from '../../../web3-utils'
 import { AppType } from '../../../prop-types'
 import { getErrorMessage } from '../utils'
+import AnnotatedDescription from './AnnotatedDescription'
+import DetailField from '../DetailField'
 import MultiScreenModal from '../MultiScreenModal'
+import SignerButton from '../SignerButton'
 import {
   STEPPER_ERROR,
   STEPPER_SUCCESS,
@@ -138,7 +141,10 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
   const screens = useMemo(() => {
     const { actionPaths, intent, directPath } = reshapedBag
 
-    return [
+    const possible =
+      directPath || (Array.isArray(actionPaths) && actionPaths.length)
+
+    const transactionPrompt = [
       {
         title: 'Create transaction',
         content: modalProps => (
@@ -167,6 +173,34 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
         ),
       },
     ]
+
+    const impossibleAction = [
+      {
+        title: 'Create transaction',
+        content: modalProps => (
+          <React.Fragment>
+            <DetailField title="Action requirements">
+              Unfortunately, you dont meet all the requirements to submit this
+              action:
+              <div
+                css={`
+                  margin-top: ${0.5 * GU}px;
+                `}
+              >
+                <AnnotatedDescription intent={intent} />
+              </div>
+            </DetailField>
+            <Info mode="error" title="Action impossible">
+              The proposed action failed to execute. You may not have the
+              required permissions.
+            </Info>
+            <SignerButton onClick={modalProps.closeModal}>Close</SignerButton>
+          </React.Fragment>
+        ),
+      },
+    ]
+
+    return possible ? transactionPrompt : impossibleAction
   }, [transactionSteps, reshapedBag, apps, infoDescriptions])
 
   return (

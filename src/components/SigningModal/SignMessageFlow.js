@@ -1,11 +1,12 @@
 import React, { useMemo, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Info, IdentityBadge, textStyle, noop, GU } from '@aragon/ui'
+import { Info, IdentityBadge, textStyle, noop, GU } from '@aragon/ui'
 import { AppType } from '../../prop-types'
+import DetailField from './DetailField'
 import { getAppByProxyAddress, getErrorMessage } from './utils'
-import InfoField from './InfoField'
 import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
 import MultiScreenModal from './MultiScreenModal'
+import SignerButton from './SignerButton'
 import {
   STEPPER_WORKING,
   STEPPER_SUCCESS,
@@ -61,7 +62,7 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
   const modalScreens = useMemo(
     () => [
       {
-        title: 'Sign Message',
+        title: 'Sign message',
         content: modalProps => (
           <React.Fragment>
             <p
@@ -79,9 +80,9 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
                 `}
               />
             </p>
-            <InfoField title="Signature requested by">
+            <DetailField title="Signature requested by">
               <LocalLabelAppBadge app={requestingApp} apps={[]} noIdentifier />
-            </InfoField>
+            </DetailField>
 
             <Info mode="description" title="Message to be signed">
               {message}
@@ -97,21 +98,14 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
               associated with the signed message. This won’t cost you any ETH.
             </Info>
 
-            <Button
-              wide
-              mode="strong"
-              onClick={modalProps.nextScreen}
-              css={`
-                margin-top: ${2 * GU}px;
-              `}
-            >
+            <SignerButton onClick={modalProps.nextScreen}>
               Sign message
-            </Button>
+            </SignerButton>
           </React.Fragment>
         ),
       },
       {
-        title: 'Sign Message',
+        title: 'Sign message',
         content: () => (
           <div
             css={`

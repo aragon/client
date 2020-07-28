@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { textStyle, GU, useTheme } from '@aragon/ui'
+import { textStyle, useTheme, GU } from '@aragon/ui'
 
-function InfoField({ title, children }) {
+function DetailField({ title, children }) {
   const theme = useTheme()
   return (
     <div
       css={`
-        margin-bottom: ${3.5 * GU}px;
+        margin-bottom: ${3 * GU}px;
       `}
     >
       <h2
@@ -25,9 +25,9 @@ function InfoField({ title, children }) {
   )
 }
 
-InfoField.propTypes = {
+DetailField.propTypes = {
   title: PropTypes.string,
   children: PropTypes.node,
 }
 
-export default InfoField
+export default DetailField

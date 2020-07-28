@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { Spring, Transition, animated } from 'react-spring'
 import {
   Modal,
   noop,
@@ -9,7 +10,6 @@ import {
   useViewport,
   GU,
 } from '@aragon/ui'
-import { Spring, Transition, animated } from 'react-spring'
 import { useSteps, useDeferredAnimation } from '../../hooks'
 
 const AnimatedDiv = animated.div
