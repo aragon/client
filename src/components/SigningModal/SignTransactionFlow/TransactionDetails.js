@@ -1,43 +1,39 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { textStyle, Link, GU, Info, Button, useTheme } from '@aragon/ui'
+import { textStyle, Link, GU, Info, Button, noop, useTheme } from '@aragon/ui'
 import AddressLink from '../AddressLink'
 import { AppType } from '../../../prop-types'
 import { getAppByProxyAddress } from '../utils'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
-import { modalProps } from '../prop-types'
 import TransactionJourney from '../TransactionJourney'
 import { useRouting } from '../../../routing'
 
 function TransactionDetails({
-  modalProps,
   actionPaths,
-  intent,
-  directPath,
   apps,
+  directPath,
+  intent,
+  onCreate,
 }) {
-  const { nextScreen } = modalProps
   const showPaths = !directPath
 
   const pathItems = useMemo(
     () =>
       showPaths
-        ? actionPaths.map(({ name, description, to }, i) => {
-            return [
-              name,
-              {
-                app: getAppByProxyAddress(to, apps),
-                content: (
-                  <p>
-                    {/* Temporarily make last path description generic */}
-                    {i === actionPaths.length - 1
-                      ? 'The proposed action will be automatically executed if the previous step on the path is completed successfully'
-                      : description}
-                  </p>
-                ),
-              },
-            ]
-          })
+        ? actionPaths.map(({ name, description, to }, i) => [
+            name,
+            {
+              app: getAppByProxyAddress(to, apps),
+              content: (
+                <p>
+                  {/* Make last path description generic */}
+                  {i === actionPaths.length - 1
+                    ? 'The proposed action will be automatically executed if the previous step on the path is completed successfully'
+                    : description}
+                </p>
+              ),
+            },
+          ])
         : [
             [
               intent.name,
@@ -57,15 +53,15 @@ function TransactionDetails({
 
   return (
     <React.Fragment>
-      <InfoField title="Action requirements">
+      <DetailField title="Action requirements">
         <p>
           {showPaths
             ? 'You have met the requirements to propose this action through the following transaction path.'
             : 'The action is protected by a permission, and you hold that permission. '}
         </p>
-      </InfoField>
+      </DetailField>
 
-      <InfoField
+      <DetailField
         title={
           showPaths ? 'Indirect transaction path' : 'Direct transaction path'
         }
@@ -77,7 +73,7 @@ function TransactionDetails({
             max-width: ${60 * GU}px;
           `}
         />
-      </InfoField>
+      </DetailField>
 
       <ActionToBeTriggered showPaths={showPaths} intent={intent} />
 
@@ -94,7 +90,7 @@ function TransactionDetails({
       <Button
         wide
         mode="strong"
-        onClick={nextScreen}
+        onClick={onCreate}
         css={`
           margin-top: ${2 * GU}px;
         `}
@@ -106,15 +102,19 @@ function TransactionDetails({
 }
 
 TransactionDetails.propTypes = {
-  apps: PropTypes.arrayOf(AppType).isRequired,
-  modalProps: modalProps,
   actionPaths: PropTypes.array,
-  intent: PropTypes.object,
-  directPath: PropTypes.bool,
+  apps: PropTypes.arrayOf(AppType).isRequired,
+  directPath: PropTypes.bool.isRequired,
+  intent: PropTypes.object.isRequired,
+  onCreate: PropTypes.func,
+}
+
+TransactionDetails.defaultProps = {
+  onCreate: noop,
 }
 
 /* eslint-disable react/prop-types */
-function InfoField({ title, children }) {
+function DetailField({ title, children }) {
   const theme = useTheme()
   return (
     <div

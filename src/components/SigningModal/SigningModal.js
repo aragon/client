@@ -11,8 +11,6 @@ function SigningModal({ apps, transactionBag, signatureBag, web3 }) {
   const prevTxBag = useRef()
   const prevSigBag = useRef()
 
-  const handleClose = () => setModalVisible(false)
-
   const sigBagUpdate =
     signatureBag && signatureBag !== prevSigBag.current && signatureBag
   const txBagUpdate =
@@ -40,7 +38,7 @@ function SigningModal({ apps, transactionBag, signatureBag, web3 }) {
         ? transactionBag && (
             <SignTransactionFlow
               apps={apps}
-              onClose={handleClose}
+              onClose={() => setModalVisible(false)}
               transactionBag={transactionBag}
               visible={modalVisible}
               web3={web3}
@@ -49,7 +47,7 @@ function SigningModal({ apps, transactionBag, signatureBag, web3 }) {
         : signatureBag && (
             <SignMessageFlow
               apps={apps}
-              onClose={handleClose}
+              onClose={() => setModalVisible(false)}
               signatureBag={signatureBag}
               visible={modalVisible}
             />

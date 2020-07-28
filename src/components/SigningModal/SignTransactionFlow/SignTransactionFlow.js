@@ -20,11 +20,7 @@ function getAppName(apps, proxyAddress) {
   return (app && app.name) || ''
 }
 
-const STEP_DESC = {
-  [STEP_SUCCESS]: 'Transaction signed',
-}
-
-function transactionIntent(bag, apps) {
+function shapeTransactionIntent(bag, apps) {
   const { external, path, transaction = {} } = bag
 
   // If the path includes forwarders, the intent is always the last node
@@ -51,7 +47,7 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
   const [error, setError] = useState()
   const signTransaction = useSignTransaction(web3)
 
-  const infoMessages = useMemo(() => {
+  const infoDescriptions = useMemo(() => {
     return {
       [STEPPER_WORKING]: `Open your Ethereum provider (Metamask or similar) to sign the transactions. Do not close the web browser window until the process is finished.`,
       [STEPPER_SUCCESS]: `Success! The transaction has been sent to the network for processing. You can close this window.`,
@@ -72,14 +68,15 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
     }))
 
     return {
-      intent: (transaction && transactionIntent(transactionBag, apps)) || {},
+      intent:
+        (transaction && shapeTransactionIntent(transactionBag, apps)) || {},
       directPath: decoratedPaths.length === 1,
       actionPaths: decoratedPaths.length ? decoratedPaths : [],
       pretransaction: (transaction && transaction.pretransaction) || null,
     }
   }, [transactionBag, apps])
 
-  const getSignHandler = useCallback(
+  const getHandleSign = useCallback(
     (transaction, intent, isPretransaction) => async ({
       setStepHash,
       setStepSuccess,
@@ -110,11 +107,17 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
     const directTransaction = intent.transaction
     const indirectTransaction = actionPaths && actionPaths[0]
 
-    const stepsToRender = [
+    const stepDetails = {
+      title: 'Sign transaction',
+      descriptions: {
+        [STEP_SUCCESS]: 'Transaction signed',
+      },
+    }
+
+    const steps = [
       {
-        title: 'Sign transaction',
-        descriptions: STEP_DESC,
-        handleSign: getSignHandler(
+        ...stepDetails,
+        handleSign: getHandleSign(
           directPath ? directTransaction : indirectTransaction,
           intent,
           false
@@ -123,17 +126,16 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
     ]
 
     if (pretransaction) {
-      stepsToRender.unshift({
-        title: 'Sign transaction',
-        descriptions: STEP_DESC,
-        handleSign: getSignHandler(pretransaction, intent, true),
+      steps.unshift({
+        ...stepDetails,
+        handleSign: getHandleSign(pretransaction, intent, true),
       })
     }
 
-    return stepsToRender
-  }, [getSignHandler, reshapedBag])
+    return steps
+  }, [getHandleSign, reshapedBag])
 
-  const modalScreens = useMemo(() => {
+  const screens = useMemo(() => {
     const { actionPaths, intent, directPath } = reshapedBag
 
     return [
@@ -141,11 +143,11 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
         title: 'Create transaction',
         content: modalProps => (
           <TransactionDetails
-            actionPaths={actionPaths}
             apps={apps}
+            actionPaths={actionPaths}
             directPath={directPath}
             intent={intent}
-            modalProps={modalProps}
+            onCreate={modalProps.nextScreen}
           />
         ),
       },
@@ -157,28 +159,27 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
               padding-top: ${3 * GU}px;
             `}
           >
-            <TransactionStepper steps={transactionSteps} info={infoMessages} />
+            <TransactionStepper
+              steps={transactionSteps}
+              infoDescriptions={infoDescriptions}
+            />
           </div>
         ),
       },
     ]
-  }, [transactionSteps, reshapedBag, apps, infoMessages])
+  }, [transactionSteps, reshapedBag, apps, infoDescriptions])
 
   return (
-    <MultiScreenModal
-      visible={visible}
-      screens={modalScreens}
-      onClose={onClose}
-    />
+    <MultiScreenModal visible={visible} screens={screens} onClose={onClose} />
   )
 }
 
 SignTransactionFlow.propTypes = {
-  transactionBag: PropTypes.object,
   apps: PropTypes.arrayOf(AppType).isRequired,
-  web3: PropTypes.object.isRequired,
-  visible: PropTypes.bool,
   onClose: PropTypes.func,
+  transactionBag: PropTypes.object.isRequired,
+  visible: PropTypes.bool,
+  web3: PropTypes.object.isRequired,
 }
 
 SignTransactionFlow.defaultProps = {

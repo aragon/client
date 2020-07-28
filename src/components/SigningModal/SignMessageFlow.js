@@ -19,11 +19,14 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
   const [error, setError] = useState()
   const { web3: walletWeb3, account } = useWallet()
 
-  const infoMessages = useMemo(() => {
+  const infoDescriptions = useMemo(() => {
     return {
       [STEPPER_WORKING]: `Open your Ethereum provider (Metamask or similar) to sign the message. Do not close the web browser window until the process is finished.`,
       [STEPPER_SUCCESS]: `Success! The signature request was completed. You can close this window.`,
-      [STEPPER_ERROR]: getErrorMessage(`Your message wasn't signed.`, error),
+      [STEPPER_ERROR]: getErrorMessage(
+        `Your message wasn't signed.`,
+        error || ''
+      ),
     }
   }, [error])
 
@@ -53,19 +56,6 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
       }
     },
     [signatureBag, account, walletWeb3]
-  )
-
-  const transactionSteps = useMemo(
-    () => [
-      {
-        title: 'Sign message',
-        handleSign: handleMsgSign,
-        descriptions: {
-          [STEP_SUCCESS]: 'Message signed',
-        },
-      },
-    ],
-    [handleMsgSign]
   )
 
   const modalScreens = useMemo(
@@ -106,6 +96,7 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
               enabled account. Your Ethereum address will then be publicly
               associated with the signed message. This won’t cost you any ETH.
             </Info>
+
             <Button
               wide
               mode="strong"
@@ -127,12 +118,23 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
               padding-top: ${3 * GU}px;
             `}
           >
-            <TransactionStepper steps={transactionSteps} info={infoMessages} />
+            <TransactionStepper
+              steps={[
+                {
+                  title: 'Sign message',
+                  handleSign: handleMsgSign,
+                  descriptions: {
+                    [STEP_SUCCESS]: 'Message signed',
+                  },
+                },
+              ]}
+              infoDescriptions={infoDescriptions}
+            />
           </div>
         ),
       },
     ],
-    [transactionSteps, message, requestingApp, account, infoMessages]
+    [message, requestingApp, account, infoDescriptions, handleMsgSign]
   )
 
   return (

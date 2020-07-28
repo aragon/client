@@ -38,7 +38,7 @@ function useSignTransaction(web3) {
   } = useContext(ActivityContext)
 
   const signTransaction = useCallback(
-    (transaction, intent, isPretransaction = false, onSuccess) =>
+    (transaction, intent, isPretransaction = false) =>
       new Promise((resolve, reject) => {
         walletWeb3.eth
           .sendTransaction(sanitizeTxObject(transaction))
@@ -77,7 +77,6 @@ function useSignTransaction(web3) {
               setActivityFailed(receipt.transactionHash)
             } else {
               setActivityConfirmed(receipt.transactionHash)
-              onSuccess && onSuccess()
             }
           })
           .on('error', err => {
