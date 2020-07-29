@@ -36,10 +36,10 @@
   resolved "https://registry.yarnpkg.com/@aragon/templates-tokens/-/templates-tokens-1.3.0.tgz#ada5dd9b8bf2ebfc4a69df06e17e56b04eb503ba"
   integrity sha512-qS69Hy23uBTRh1b9qf8zXdJB+m5jzW1jGiorw+nU59+SVbk1tHCUeyD7UZACIhjvABFGMzcy8JQZ7nE8IdGavw==
 
-"@aragon/ui@^1.4.2":
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-1.4.2.tgz#35383631daa31a4a65f006a8afebd8c4cc275930"
-  integrity sha512-ZP83nnAmfu5z6VlvDwnJLF9CNZdEcmXxu5xk+SCnq27erPMUJV1gvDIIEbZIpIYCIRVSwKw+lXEpTifvtpCQ1A==
+"@aragon/ui@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-1.5.0.tgz#63a3d141161dda860a6bb8ba5d613f10323256df"
+  integrity sha512-4MNQ54HMGDsQ1NaQY8Uq2eaog9ei+m3LzzWRcy85fZQ+p0u6AAv5sJtkClTKPbXUiAQ9IP64Gx2i+AfPInRFDA==
   dependencies:
     "@babel/runtime" "^7.3.1"
     airbnb-prop-types "^2.9.0"
@@ -48,7 +48,7 @@
     dayjs "^1.8.14"
     js-sha3 "^0.8.0"
     jsbi "^3.1.2"
-    lodash "^4.17.15"
+    lodash "^4.17.19"
     markdown-to-jsx "^6.11.0"
     popper.js "^1.14.4"
     prop-types "^15.6.0"
@@ -8319,6 +8319,11 @@ lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+
+lodash@^4.17.19:
+  version "4.17.19"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
+  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
 
 log-symbols@^1.0.2:
   version "1.0.2"
