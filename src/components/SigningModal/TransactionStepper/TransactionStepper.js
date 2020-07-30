@@ -269,7 +269,7 @@ function TransactionStepper({
         <Button
           mode="strong"
           wide
-          onMouseDown={handleSign}
+          onClick={handleSign}
           icon={<IconRotateRight />}
           label="Repeat transaction"
           css={`
