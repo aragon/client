@@ -15,6 +15,7 @@ import {
 } from './TransactionStepper/stepper-statuses'
 import TransactionStepper from './TransactionStepper/TransactionStepper'
 import { useWallet } from '../../wallet'
+import useWalletError from './useWalletError'
 
 function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
   const [error, setError] = useState()
@@ -31,13 +32,15 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
     }
   }, [error])
 
-  const { message, requestingApp } = useMemo(() => {
+  const intent = useMemo(() => {
     const { requestingApp, message } = signatureBag
     return {
       message: message || '',
       requestingApp: getAppByProxyAddress(requestingApp, apps),
     }
   }, [signatureBag, apps])
+
+  const walletError = useWalletError({ intent, isTransaction: false })
 
   const handleMsgSign = useCallback(
     async ({ setStepWorking, setStepSuccess, setStepError }) => {
@@ -59,10 +62,12 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
     [signatureBag, account, walletWeb3]
   )
 
-  const modalScreens = useMemo(
-    () => [
+  const modalScreens = useMemo(() => {
+    const title = 'Sign message'
+
+    const signMessage = [
       {
-        title: 'Sign message',
+        title,
         content: modalProps => (
           <React.Fragment>
             <p
@@ -81,11 +86,15 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
               />
             </p>
             <DetailField title="Signature requested by">
-              <LocalLabelAppBadge app={requestingApp} apps={[]} noIdentifier />
+              <LocalLabelAppBadge
+                app={intent.requestingApp}
+                apps={[]}
+                noIdentifier
+              />
             </DetailField>
 
             <Info mode="description" title="Message to be signed">
-              {message}
+              {intent.message}
             </Info>
 
             <Info
@@ -105,7 +114,7 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
         ),
       },
       {
-        title: 'Sign message',
+        title,
         content: () => (
           <div
             css={`
@@ -115,7 +124,7 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
             <TransactionStepper
               steps={[
                 {
-                  title: 'Sign message',
+                  title,
                   handleSign: handleMsgSign,
                   descriptions: {
                     [STEP_SUCCESS]: 'Message signed',
@@ -127,9 +136,10 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
           </div>
         ),
       },
-    ],
-    [message, requestingApp, account, infoDescriptions, handleMsgSign]
-  )
+    ]
+
+    return walletError ? [{ title, content: walletError }] : signMessage
+  }, [intent, account, infoDescriptions, handleMsgSign, walletError])
 
   return (
     <MultiScreenModal
