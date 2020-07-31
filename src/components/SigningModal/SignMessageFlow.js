@@ -44,13 +44,12 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
   const walletError = useWalletError({ intent, isTransaction: false })
 
   const handleMsgSign = useCallback(
-    async ({ setStepWorking, setStepSuccess, setStepError }) => {
+    async ({ setStepSuccess, setStepError }) => {
       try {
         const signature = await walletWeb3.eth.personal.sign(
           signatureBag.message,
           account
         )
-        setStepWorking()
 
         signatureBag.resolve(signature)
         setStepSuccess()
