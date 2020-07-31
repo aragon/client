@@ -180,7 +180,7 @@ function App({
   if (instanceId === 'agreement') {
     return (
       <AppInternal>
-        <Agreement />
+        <Agreement apps={apps} />
       </AppInternal>
     )
   }

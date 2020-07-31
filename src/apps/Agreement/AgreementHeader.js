@@ -84,13 +84,14 @@ function AgreementHeader({ title, status, onSign, onShare }) {
               <Tag
                 icon={<IconCheck size="small" />}
                 label="Active"
-                color={`${theme.positiveSurfaceContent}`}
+                color={`${theme.positive}`}
                 background={`${theme.positiveSurface}`}
               />
             )}
           </div>
         </div>
         <DropDown
+          disabled
           header="Actions"
           items={dropdownItems}
           placeholder={

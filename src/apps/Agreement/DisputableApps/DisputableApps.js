@@ -11,9 +11,7 @@ import {
 } from '@aragon/ui'
 import { DisputableAppDetailsType } from './../prop-types'
 import InfoField from './../InfoField'
-import { KnownAppBadge } from '../../../templates/kit'
-
-const EXPANDABLE_ROW_GAP = `${3 * GU}px`
+import LocalLabelAppBadge from '../../../components/LocalLabelAppBadge/LocalLabelAppBadge'
 
 const DisputableApps = React.memo(({ items }) => {
   const { layoutName } = useLayout()
@@ -24,7 +22,7 @@ const DisputableApps = React.memo(({ items }) => {
     <DataView
       fields={[
         { label: 'App', priority: 1, childStart: true },
-        { label: 'Actions', align: 'left' },
+        { label: 'Allowed actions', align: 'left' },
       ]}
       entries={items}
       renderEntry={entry => renderEntry(entry, compactMode)}
@@ -34,7 +32,7 @@ const DisputableApps = React.memo(({ items }) => {
   )
 })
 
-function renderEntry({ allowedActions }, compactMode) {
+function renderEntry({ allowedActions, app }, compactMode) {
   return [
     <div
       css={`
@@ -45,10 +43,13 @@ function renderEntry({ allowedActions }, compactMode) {
         ${!compactMode && `height: ${4 * GU}px;`}
       `}
     >
-      {/* TODO: Replace with LocalLabelAppBadge */}
-      <KnownAppBadge appName="voting.aragonpm.eth" label="Voting" />
+      {app && <LocalLabelAppBadge app={app} apps={[]} noIdentifier />}
     </div>,
-    <React.Fragment>{allowedActions.join(', ')}</React.Fragment>,
+    <React.Fragment>
+      {allowedActions.length > 0
+        ? allowedActions.join(', ')
+        : 'No assigned actions to display'}
+    </React.Fragment>,
   ]
 }
 
@@ -56,7 +57,7 @@ function renderEntryActions(entry, theme) {
   const { entryActions } = entry
 
   return (
-    <ContextMenu>
+    <ContextMenu disabled>
       {entryActions.map(([onClick, Icon, label], index) => (
         <ContextMenuItem onClick={onClick} key={index}>
           <span
@@ -110,7 +111,13 @@ function TokenAmount({ address, symbol, amount }) {
         margin-left: -${1 * GU}px;
       `}
     >
-      <TokenBadge name={amount} address={address} symbol={symbol} compact />
+      <TokenBadge
+        name={amount}
+        address={address}
+        symbol={symbol}
+        compact
+        badgeOnly
+      />
       <SubtleLabel>(per action)</SubtleLabel>
     </div>
   )
@@ -118,14 +125,7 @@ function TokenAmount({ address, symbol, amount }) {
 /* eslint-disable react/prop-types */
 
 function renderEntryExpansion(entry, compactMode) {
-  const {
-    actionCollateral,
-    challengeCollateral,
-    settlementPeriod,
-    challengePeriod,
-    signerEligibility,
-    challengeEligibility,
-  } = entry
+  const { actionCollateral, challengeCollateral, settlementPeriod } = entry
 
   return (
     <div
@@ -138,111 +138,67 @@ function renderEntryExpansion(entry, compactMode) {
       <div
         css={`
           display: inline-grid;
-          grid-auto-flow: ${compactMode ? 'row' : 'column'};
-          column-gap: ${8 * GU}px;
+          grid-auto-flow: row;
+          grid-gap: ${3 * GU}px;
         `}
       >
-        <div>
-          <InfoField
-            label={
-              <React.Fragment>
-                Action Collateral
-                <Help hint="What is Action Collateral?">
-                  <strong>Action Collateral</strong>.
-                </Help>
-              </React.Fragment>
-            }
-            css={`
-              margin-bottom: ${EXPANDABLE_ROW_GAP};
-            `}
-          >
-            <TokenAmount
-              address={actionCollateral.address}
-              symbol={actionCollateral.symbol}
-              amount={actionCollateral.amount}
-            />
-          </InfoField>
-          <InfoField
-            label={
-              <React.Fragment>
-                Challenge Collateral
-                <Help hint="What is Challenge Collateral?">
-                  <strong>Challenge Collateral</strong>.
-                </Help>
-              </React.Fragment>
-            }
-            css={`
-              margin-bottom: ${EXPANDABLE_ROW_GAP};
-            `}
-          >
-            <TokenAmount
-              address={challengeCollateral.address}
-              symbol={challengeCollateral.symbol}
-              amount={challengeCollateral.amount}
-            />
-          </InfoField>
-        </div>
-        <div>
-          <InfoField
-            label={
-              <React.Fragment>
-                Challenge Period
-                <Help hint="What is Challenge Period?">
-                  <strong>Challenge Period</strong>.
-                </Help>
-              </React.Fragment>
-            }
-            css={`
-              margin-bottom: ${EXPANDABLE_ROW_GAP};
-            `}
-          >
-            {settlementPeriod} <SubtleLabel>Hours</SubtleLabel>
-          </InfoField>
-
-          <InfoField
-            label={
-              <React.Fragment>
-                Settlement Period
-                <Help hint="What is Settlement Period?">
-                  <strong>Settlement Period</strong>.
-                </Help>
-              </React.Fragment>
-            }
-            css={`
-              margin-bottom: ${EXPANDABLE_ROW_GAP};
-            `}
-          >
-            {challengePeriod} <SubtleLabel>Hours</SubtleLabel>
-          </InfoField>
-        </div>
-      </div>
-
-      <InfoField
-        label="Signer Eligibility"
-        css={`
-          margin-bottom: ${EXPANDABLE_ROW_GAP};
-        `}
-      >
-        Open to tokenholders with a minimun token balance of
-        <div
-          css={`
-            display: inline-block;
-            position: relative;
-            top: ${0.5 * GU}px;
-          `}
+        <InfoField
+          label={
+            <React.Fragment>
+              Action Collateral
+              <Help hint="What is Action Collateral?">
+                The <strong>action collateral</strong> is the amount of
+                collateral tokens required to be locked every time an action is
+                created. This amount will be automatically locked from the
+                staking pool balance given that access is granted to the
+                Agreements app as the Lock Manager.
+              </Help>
+            </React.Fragment>
+          }
         >
-          <TokenBadge
-            address={signerEligibility.address}
-            name={signerEligibility.amount}
-            symbol={signerEligibility.symbol}
-            compact
+          <TokenAmount
+            address={actionCollateral.address}
+            symbol={actionCollateral.symbol}
+            amount={actionCollateral.amount}
           />
-        </div>
-      </InfoField>
+        </InfoField>
 
-      <InfoField label="Challenger Eligibility">
-        {challengeEligibility}
-      </InfoField>
+        <InfoField
+          label={
+            <React.Fragment>
+              Challenge Collateral
+              <Help hint="What is Challenge Collateral?">
+                The <strong>challenge collateral</strong> is the amount of
+                collateral tokens required to be locked every time an action is
+                challenged.
+              </Help>
+            </React.Fragment>
+          }
+        >
+          <TokenAmount
+            address={challengeCollateral.address}
+            symbol={challengeCollateral.symbol}
+            amount={challengeCollateral.amount}
+          />
+        </InfoField>
+
+        <InfoField
+          label={
+            <React.Fragment>
+              Settlement Period
+              <Help hint="What is Settlement Period?">
+                The <strong>settlement period</strong> is the interval of time
+                that starts when a disputable action is challenged and lasts
+                until it’s resolved between the parties (submitter and
+                challenger), by accepting the settlement offer or by raising the
+                dispute to Aragon Court.
+              </Help>
+            </React.Fragment>
+          }
+        >
+          {settlementPeriod} <SubtleLabel>Hours</SubtleLabel>
+        </InfoField>
+      </div>
     </div>
   )
 }

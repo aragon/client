@@ -65,7 +65,7 @@ function HistoryEntry({ title, date }) {
         </p>
       </div>
       <div>
-        <ContextMenu>
+        <ContextMenu disabled>
           <ContextMenuItem>
             <span
               css={`
