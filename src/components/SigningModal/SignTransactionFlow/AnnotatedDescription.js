@@ -26,8 +26,8 @@ function AnnotatedDescription({ intent }) {
                   <LocalIdentityBadge
                     entity={type === 'any-account' ? 'Any account' : value}
                     labelStyle={`
-                            ${textStyle('body3')}
-                          `}
+                      ${textStyle('body3')}
+                    `}
                     compact
                   />
                 </span>

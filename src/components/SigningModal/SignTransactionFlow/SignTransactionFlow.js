@@ -48,7 +48,7 @@ function shapeTransactionIntent(bag, apps) {
 }
 
 function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
-  const [error, setError] = useState()
+  const [error, setError] = useState(null)
   const signTransaction = useSignTransaction(web3)
 
   const infoDescriptions = useMemo(() => {
@@ -186,7 +186,7 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
         content: modalProps => (
           <React.Fragment>
             <DetailField title="Action requirements">
-              Unfortunately, you dont meet all the requirements to submit this
+              Unfortunately, you don't meet all the requirements to submit this
               action:
               <div
                 css={`

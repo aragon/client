@@ -18,39 +18,38 @@ function TransactionDetails({
 }) {
   const showPaths = !directPath
 
-  const pathItems = useMemo(
-    () =>
-      showPaths
-        ? actionPaths.map(({ name, description, to }, i) => [
-            name,
-            {
-              app: getAppByProxyAddress(to, apps),
-              content: (
-                <p>
-                  {/* Make last path description generic */}
-                  {i === actionPaths.length - 1
-                    ? 'The proposed action will be automatically executed if the previous step on the path is completed successfully'
-                    : description}
-                </p>
-              ),
-            },
-          ])
-        : [
-            [
-              intent.name,
-              {
-                app: getAppByProxyAddress(intent.to, apps),
-                content: (
-                  <p>
-                    You are able to directly interact with the {intent.name}{' '}
-                    app.
-                  </p>
-                ),
-              },
-            ],
-          ],
-    [actionPaths, apps, showPaths, intent]
-  )
+  const pathItems = useMemo(() => {
+    // Indirect paths
+    if (showPaths) {
+      return actionPaths.map(({ name, description, to }, i) => [
+        name,
+        {
+          app: getAppByProxyAddress(to, apps),
+          content: (
+            <p>
+              {/* Make last path description generic */}
+              {i === actionPaths.length - 1
+                ? 'The proposed action will be automatically executed if the previous step on the path is completed successfully'
+                : description}
+            </p>
+          ),
+        },
+      ])
+    }
+
+    // Direct path
+    return [
+      [
+        intent.name,
+        {
+          app: getAppByProxyAddress(intent.to, apps),
+          content: (
+            <p>You are able to directly interact with the {intent.name} app.</p>
+          ),
+        },
+      ],
+    ]
+  }, [showPaths, actionPaths, apps, intent])
 
   return (
     <React.Fragment>
@@ -138,8 +137,8 @@ function ExternalMessage({ installed, to, className }) {
             <LocalIdentityBadge
               entity={to}
               labelStyle={`
-                      ${textStyle('body3')}
-                    `}
+                ${textStyle('body3')}
+              `}
               compact
             />{' '}
             before proceeding.

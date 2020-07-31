@@ -25,10 +25,7 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
     return {
       [STEPPER_WORKING]: `Open your Ethereum provider (Metamask or similar) to sign the message. Do not close the web browser window until the process is finished.`,
       [STEPPER_SUCCESS]: `Success! The signature request was completed. You can close this window.`,
-      [STEPPER_ERROR]: getErrorMessage(
-        `Your message wasn't signed.`,
-        error || ''
-      ),
+      [STEPPER_ERROR]: getErrorMessage(`Your message wasn't signed.`, error),
     }
   }, [error])
 
