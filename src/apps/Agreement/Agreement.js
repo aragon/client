@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import {
   Box,
   Button,
-  formatTokenAmount,
   Header,
   IconEdit,
   IconTrash,
-  noop,
   Split,
+  formatTokenAmount,
+  noop,
   useLayout,
 } from '@aragon/ui'
 import { addressesEqual } from '../../web3-utils'
