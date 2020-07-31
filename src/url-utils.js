@@ -78,7 +78,7 @@ export function sanitizeCodeRepositoryUrl(url) {
   return url
 }
 
-export function getIpfsCidFromUri(string) {
+export function getIpfsCidFromUri(uri) {
   const ipfsCid = string.replace(/^ipfs:/, '')
 
   if (isIPFS.cid(ipfsCid) || isIPFS.cidPath(ipfsCid)) {
