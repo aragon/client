@@ -17,6 +17,7 @@ import {
 import TransactionDetails from './TransactionDetails'
 import TransactionStepper from '../TransactionStepper/TransactionStepper'
 import useSignTransaction from './useSignTransaction'
+import useWalletError from '../useWalletError'
 
 function getAppName(apps, proxyAddress) {
   const app = apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
@@ -79,6 +80,11 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
     }
   }, [transactionBag, apps])
 
+  const walletError = useWalletError({
+    intent: reshapedBag.intent,
+    isTransaction: true,
+  })
+
   const getHandleSign = useCallback(
     (transaction, intent, isPretransaction) => async ({
       setStepHash,
@@ -140,13 +146,13 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
 
   const screens = useMemo(() => {
     const { actionPaths, intent, directPath } = reshapedBag
-
+    const title = 'Create transaction'
     const possible =
       directPath || (Array.isArray(actionPaths) && actionPaths.length)
 
-    const transactionPrompt = [
+    const signTransactions = [
       {
-        title: 'Create transaction',
+        title,
         content: modalProps => (
           <TransactionDetails
             apps={apps}
@@ -158,7 +164,7 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
         ),
       },
       {
-        title: 'Create transaction',
+        title,
         content: () => (
           <div
             css={`
@@ -176,7 +182,7 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
 
     const impossibleAction = [
       {
-        title: 'Create transaction',
+        title,
         content: modalProps => (
           <React.Fragment>
             <DetailField title="Action requirements">
@@ -200,8 +206,16 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
       },
     ]
 
-    return possible ? transactionPrompt : impossibleAction
-  }, [transactionSteps, reshapedBag, apps, infoDescriptions])
+    if (walletError) {
+      return [{ title, content: walletError }]
+    }
+
+    if (!possible) {
+      return impossibleAction
+    }
+
+    return signTransactions
+  }, [transactionSteps, reshapedBag, apps, infoDescriptions, walletError])
 
   return (
     <MultiScreenModal visible={visible} screens={screens} onClose={onClose} />
