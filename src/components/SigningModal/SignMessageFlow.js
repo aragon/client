@@ -4,6 +4,7 @@ import { Info, IdentityBadge, textStyle, noop, GU } from '@aragon/ui'
 import { AppType } from '../../prop-types'
 import DetailField from './DetailField'
 import { getAppByProxyAddress, getErrorMessage } from './utils'
+import { getProviderString } from '../../ethereum-providers'
 import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
 import MultiScreenModal from './MultiScreenModal'
 import SignerButton from './SignerButton'
@@ -19,15 +20,18 @@ import useWalletError from './useWalletError'
 
 function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
   const [error, setError] = useState()
-  const { web3: walletWeb3, account } = useWallet()
+  const { web3: walletWeb3, account, providerInfo } = useWallet()
 
   const infoDescriptions = useMemo(() => {
     return {
-      [STEPPER_WORKING]: `Open your Ethereum provider (Metamask or similar) to sign the message. Do not close the web browser window until the process is finished.`,
+      [STEPPER_WORKING]: `Open ${getProviderString(
+        'your Ethereum wallet',
+        providerInfo.id
+      )} to sign the message. Do not close the web browser window until the process is finished.`,
       [STEPPER_SUCCESS]: `Success! The signature request was completed. You can close this window.`,
       [STEPPER_ERROR]: getErrorMessage(`Your message wasn't signed.`, error),
     }
-  }, [error])
+  }, [error, providerInfo])
 
   const intent = useMemo(() => {
     const { requestingApp, message } = signatureBag

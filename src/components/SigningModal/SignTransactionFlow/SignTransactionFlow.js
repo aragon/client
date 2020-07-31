@@ -6,6 +6,7 @@ import { AppType } from '../../../prop-types'
 import { getErrorMessage } from '../utils'
 import AnnotatedDescription from './AnnotatedDescription'
 import DetailField from '../DetailField'
+import { getProviderString } from '../../../ethereum-providers'
 import MultiScreenModal from '../MultiScreenModal'
 import SignerButton from '../SignerButton'
 import {
@@ -17,6 +18,7 @@ import {
 import TransactionDetails from './TransactionDetails'
 import TransactionStepper from '../TransactionStepper/TransactionStepper'
 import useSignTransaction from './useSignTransaction'
+import { useWallet } from '../../../wallet'
 import useWalletError from '../useWalletError'
 
 function getAppName(apps, proxyAddress) {
@@ -50,17 +52,21 @@ function shapeTransactionIntent(bag, apps) {
 function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
   const [error, setError] = useState(null)
   const signTransaction = useSignTransaction(web3)
+  const { providerInfo } = useWallet()
 
   const infoDescriptions = useMemo(() => {
     return {
-      [STEPPER_WORKING]: `Open your Ethereum provider (Metamask or similar) to sign the transactions. Do not close the web browser window until the process is finished.`,
+      [STEPPER_WORKING]: `Open ${getProviderString(
+        'your Ethereum wallet',
+        providerInfo.id
+      )} to sign the transactions. Do not close the web browser window until the process is finished.`,
       [STEPPER_SUCCESS]: `Success! The transaction has been sent to the network for processing. You can close this window.`,
       [STEPPER_ERROR]: getErrorMessage(
         `Your transaction wasn't signed and no tokens were sent.`,
         error
       ),
     }
-  }, [error])
+  }, [error, providerInfo])
 
   // This is temporary to reshape the transaction bag
   // to the future format we expect from Aragon.js
