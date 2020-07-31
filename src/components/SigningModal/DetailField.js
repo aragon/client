@@ -12,11 +12,11 @@ function DetailField({ title, children }) {
     >
       <h2
         css={`
-            ${textStyle('label2')}
-  
-            color: ${theme.surfaceContentSecondary};
-            margin-bottom: ${1 * GU}px;
-          `}
+          ${textStyle('label2')}
+
+          color: ${theme.surfaceContentSecondary};
+          margin-bottom: ${1 * GU}px;
+        `}
       >
         {title}
       </h2>
