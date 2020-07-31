@@ -11,26 +11,24 @@ function SigningModal({ apps, transactionBag, signatureBag, web3 }) {
   const prevTxBag = useRef()
   const prevSigBag = useRef()
 
-  const sigBagUpdate =
-    signatureBag && signatureBag !== prevSigBag.current && signatureBag
-  const txBagUpdate =
-    transactionBag && transactionBag !== prevTxBag.current && transactionBag
-
   useEffect(() => {
-    if (txBagUpdate) {
+    // Show modal only when a bag is updated with values
+    if (transactionBag !== prevTxBag.current && transactionBag) {
       setModalVisible(true)
       setIsTransaction(true)
-      prevTxBag.current = txBagUpdate
     }
-  }, [txBagUpdate])
+
+    prevTxBag.current = transactionBag
+  }, [transactionBag])
 
   useEffect(() => {
-    if (sigBagUpdate) {
+    if (signatureBag !== prevSigBag.current && signatureBag) {
       setModalVisible(true)
       setIsTransaction(false)
-      prevSigBag.current = sigBagUpdate
     }
-  }, [sigBagUpdate])
+
+    prevSigBag.current = signatureBag
+  }, [signatureBag])
 
   return (
     <React.Fragment>
