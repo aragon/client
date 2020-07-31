@@ -186,7 +186,7 @@ function renderEntryExpansion(entry, compactMode) {
           label={
             <React.Fragment>
               Settlement Period
-              <Help hint="What is Challenge Period?">
+              <Help hint="What is Settlement Period?">
                 The <strong>settlement period</strong> is the interval of time
                 that starts when a disputable action is challenged and lasts
                 until it’s resolved between the parties (submitter and
