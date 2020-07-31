@@ -150,7 +150,7 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
     const possible =
       directPath || (Array.isArray(actionPaths) && actionPaths.length)
 
-    const transactionPrompt = [
+    const signTransactions = [
       {
         title,
         content: modalProps => (
@@ -206,9 +206,15 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
       },
     ]
 
-    const attemptTransaction = possible ? transactionPrompt : impossibleAction
+    if (walletError) {
+      return [{ title, content: walletError }]
+    }
 
-    return walletError ? [{ title, content: walletError }] : attemptTransaction
+    if (!possible) {
+      return impossibleAction
+    }
+
+    return signTransactions
   }, [transactionSteps, reshapedBag, apps, infoDescriptions, walletError])
 
   return (

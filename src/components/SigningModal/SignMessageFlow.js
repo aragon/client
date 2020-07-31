@@ -138,7 +138,11 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
       },
     ]
 
-    return walletError ? [{ title, content: walletError }] : signMessage
+    if (walletError) {
+      return [{ title, content: walletError }]
+    }
+
+    return signMessage
   }, [intent, account, infoDescriptions, handleMsgSign, walletError])
 
   return (
