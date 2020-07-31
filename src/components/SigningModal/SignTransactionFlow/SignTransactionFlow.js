@@ -156,6 +156,40 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
     const possible =
       directPath || (Array.isArray(actionPaths) && actionPaths.length)
 
+    if (walletError) {
+      return [{ title, content: walletError }]
+    }
+
+    const impossibleAction = [
+      {
+        title,
+        content: modalProps => (
+          <React.Fragment>
+            <DetailField title="Action requirements">
+              Unfortunately, you don't meet all the requirements to submit this
+              action:
+              <div
+                css={`
+                  margin-top: ${0.5 * GU}px;
+                `}
+              >
+                <AnnotatedDescription intent={intent} />
+              </div>
+            </DetailField>
+            <Info mode="error" title="Action impossible">
+              The proposed action failed to execute. You may not have the
+              required permissions.
+            </Info>
+            <SignerButton onClick={modalProps.closeModal}>Close</SignerButton>
+          </React.Fragment>
+        ),
+      },
+    ]
+
+    if (!possible) {
+      return impossibleAction
+    }
+
     const signTransactions = [
       {
         title,
@@ -185,40 +219,6 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
         ),
       },
     ]
-
-    const impossibleAction = [
-      {
-        title,
-        content: modalProps => (
-          <React.Fragment>
-            <DetailField title="Action requirements">
-              Unfortunately, you don't meet all the requirements to submit this
-              action:
-              <div
-                css={`
-                  margin-top: ${0.5 * GU}px;
-                `}
-              >
-                <AnnotatedDescription intent={intent} />
-              </div>
-            </DetailField>
-            <Info mode="error" title="Action impossible">
-              The proposed action failed to execute. You may not have the
-              required permissions.
-            </Info>
-            <SignerButton onClick={modalProps.closeModal}>Close</SignerButton>
-          </React.Fragment>
-        ),
-      },
-    ]
-
-    if (walletError) {
-      return [{ title, content: walletError }]
-    }
-
-    if (!possible) {
-      return impossibleAction
-    }
 
     return signTransactions
   }, [transactionSteps, reshapedBag, apps, infoDescriptions, walletError])

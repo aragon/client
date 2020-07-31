@@ -65,6 +65,10 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
   const modalScreens = useMemo(() => {
     const title = 'Sign message'
 
+    if (walletError) {
+      return [{ title, content: walletError }]
+    }
+
     const signMessage = [
       {
         title,
@@ -137,10 +141,6 @@ function SignMessageFlow({ signatureBag, visible, apps, onClose }) {
         ),
       },
     ]
-
-    if (walletError) {
-      return [{ title, content: walletError }]
-    }
 
     return signMessage
   }, [intent, account, infoDescriptions, handleMsgSign, walletError])
