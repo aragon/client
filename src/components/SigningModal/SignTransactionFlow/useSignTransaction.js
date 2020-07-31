@@ -13,10 +13,14 @@ const WEB3_TX_OBJECT_KEYS = new Set([
   'nonce',
 ])
 
+function lowerCaseFirstCharacter(string) {
+  return string.slice(0, 1).toLowerCase() + string.slice(1)
+}
+
 function getPretransactionDescription(intent) {
-  return `Allow ${intent.name} to ${intent.description
-    .slice(0, 1)
-    .toLowerCase() + intent.description.slice(1)}`
+  return `Allow ${intent.name} to ${lowerCaseFirstCharacter(
+    intent.description
+  )}`
 }
 
 // Clean up a transaction object removing all non-standard transaction parameters
