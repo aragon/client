@@ -200,7 +200,7 @@ class SignerPanel extends React.PureComponent {
             .then(({ nonce }) => setActivityNonce({ transactionHash, nonce }))
             .catch(console.error)
 
-          // Pretransactions are for so the app can get approval
+          // Pretransactions are handled separately from the intent itself, and are usually used to approve tokens for the intended action
           const description = isPretransaction
             ? getPretransactionDescription(intent)
             : intent.description
