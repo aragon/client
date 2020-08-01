@@ -104,7 +104,6 @@ function Step({
             config={springs.smooth}
             items={desc}
             onStart={onAnimationStart}
-            immediate={immediateAnimation}
             from={{
               opacity: 0,
               transform: `translate3d(0, ${2 * GU}px, 0)`,
