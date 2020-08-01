@@ -17,7 +17,7 @@ function lowerCaseFirstCharacter(string) {
   return string.slice(0, 1).toLowerCase() + string.slice(1)
 }
 
-function getPretransactionDescription(intent) {
+function getApprovalDescription(intent) {
   return `Allow ${intent.name} to ${lowerCaseFirstCharacter(
     intent.description
   )}`
@@ -42,7 +42,7 @@ function useSignTransaction(web3) {
   } = useContext(ActivityContext)
 
   const signTransaction = useCallback(
-    (transaction, intent, isPretransaction = false) =>
+    (transaction, intent) =>
       new Promise((resolve, reject) => {
         walletWeb3.eth
           .sendTransaction(sanitizeTxObject(transaction))
@@ -59,9 +59,11 @@ function useSignTransaction(web3) {
               .then(({ nonce }) => setActivityNonce({ transactionHash, nonce }))
               .catch(console.error)
 
-            // Pretransactions are handled separately from the intent itself, and are usually used to approve tokens for the intended action
-            const description = isPretransaction
-              ? getPretransactionDescription(intent)
+            // Adjust description for pretransaction approvals
+            const isApproval = transaction.data.startsWith('0x095ea7b3')
+
+            const description = isApproval
+              ? getApprovalDescription(intent)
               : intent.description
 
             const hasForwarder = intent.to !== intent.transaction.to

@@ -92,17 +92,13 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
   })
 
   const getHandleSign = useCallback(
-    (transaction, intent, isPretransaction) => async ({
+    (transaction, intent) => async ({
       setStepHash,
       setStepSuccess,
       setStepError,
     }) => {
       try {
-        const transactionHash = await signTransaction(
-          transaction,
-          intent,
-          isPretransaction
-        )
+        const transactionHash = await signTransaction(transaction, intent)
 
         setStepHash(transactionHash)
         setStepSuccess()
@@ -134,16 +130,16 @@ function SignTransactionFlow({ transactionBag, web3, apps, visible, onClose }) {
         ...stepDetails,
         handleSign: getHandleSign(
           directPath ? directTransaction : indirectTransaction,
-          intent,
-          false
+          intent
         ),
       },
     ]
 
+    // Pretransactions are handled separately from the intent itself, and are usually used to approve tokens for the intended action
     if (pretransaction) {
       steps.unshift({
         ...stepDetails,
-        handleSign: getHandleSign(pretransaction, intent, true),
+        handleSign: getHandleSign(pretransaction, intent),
       })
     }
 
