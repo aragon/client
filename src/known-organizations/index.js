@@ -15,6 +15,7 @@ import onehive from './images/1hive.svg'
 import saintFameImage from './images/saint-fame.svg'
 import pieDaoImage from './images/pie-dao.png'
 import valtechImage from './images/valtech.png'
+import pNetworkImage from './images/pnetwork.png'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -136,6 +137,13 @@ export const KnownOrganizations = {
         name: 'Valtech',
         template: TEMPLATE_COMPANY,
       },
+      {
+        address: '0x2732fD9fD5F0E84B1b774cf5E6f5c812EAfd455b',
+        domain: 'pnetwork.aragonid.eth',
+        image: pNetworkImage,
+        name: 'pNetwork',
+        template: null
+      }
     ].map(org => [org.address.toLowerCase(), org])
   ),
   rinkeby: new Map(
@@ -180,6 +188,13 @@ export const KnownOrganizations = {
         recommended: true,
         template: null,
       },
+      {
+        address: '0xf55DB37807a95C937A0c9c16941D19B54Ce046D2',
+        domain: 'pnetwork.aragonid.eth',
+        image: pNetworkImage,
+        name: 'pNetwork',
+        template: null
+      }
     ].map(org => [org.address.toLowerCase(), org])
   ),
 }
