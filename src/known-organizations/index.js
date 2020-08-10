@@ -142,8 +142,8 @@ export const KnownOrganizations = {
         domain: 'pnetwork.aragonid.eth',
         image: pNetworkImage,
         name: 'pNetwork',
-        template: null
-      }
+        template: null,
+      },
     ].map(org => [org.address.toLowerCase(), org])
   ),
   rinkeby: new Map(
@@ -193,8 +193,8 @@ export const KnownOrganizations = {
         domain: 'pnetwork.aragonid.eth',
         image: pNetworkImage,
         name: 'pNetwork',
-        template: null
-      }
+        template: null,
+      },
     ].map(org => [org.address.toLowerCase(), org])
   ),
 }
