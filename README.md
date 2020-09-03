@@ -3,9 +3,9 @@
 [![Build Status](https://img.shields.io/github/workflow/status/aragon/aragon/Run%20tests?style=flat-square)](https://github.com/aragon/aragon/actions)
 [![All Contributors](https://img.shields.io/badge/all_contributors-47-orange.svg?style=flat-square)](#contributors)
 
-**🌎🚀 Trusted by over 1000 organizations, securing more than $20MM in funds. [Try it out.](https://mainnet.aragon.org)**
+**🌎🚀 Trusted by over 1500 organizations, securing more than $300MM in funds. [Try it out](https://client.aragon.org).**
 
-<a href="https://mainnet.aragon.org/#/a1/"><img src=".github/assets/screenshot.png" /></a>
+<a href="https://client.aragon.org/#/a1/"><img src=".github/assets/screenshot.png" /></a>
 
 - 📚 Read the [User Guide](https://help.aragon.org/) first, if you have any questions as a user.
 - 🏗 If you'd like to develop an Aragon app, please visit the [Aragon Developer Portal](https://hack.aragon.org).
@@ -29,23 +29,19 @@ More [configuration options](docs/CONFIGURATION.md) are available, and depending
 
 ## Releases
 
-The Aragon client undergoes a number of different deployments, based on build environments, major release timelines, and quality assurance checks.
-
-For more information about each official release, see our [releases page](https://github.com/aragon/aragon/releases).
+The Aragon client is automatically deployed to IPFS with each new commit to `master`, via [Fleek](https://fleek.co/). The latest builds are available at [`client.aragon.org`](https://client.aragon.org/) or through an IPFS gateway, like [`ipfs.io/ipns/client.aragon.org`](https://ipfs.io/ipns/client.aragon.org/).
 
 ### aragonPM
 
-Regular updates, with incrementing minor or patch versions, are published onto the `aragon.aragonpm.eth` on-chain repository for all supported Ethereum environments.
+"Checkpointed" releases, tagged in our [releases page](https://github.com/aragon/aragon/releases), are published on-chain onto the `aragon.aragonpm.eth` aragonPM repository for all supported Ethereum environments (mainnet and Rinkeby testnet).
 
-These should be seen as "official" builds, whose distributions are secured by IPFS. Most users see this version of the app, due to [mainnet.aragon.org](https://mainnet.aragon.org) and [rinkeby.aragon.org](https://rinkeby.aragon.org) pointing to these builds.
-
-Each incremental version released through this pipeline is documented in our [releases page](https://github.com/aragon/aragon/releases).
+For a long time (2018-2020), these releases were our primary "official" builds. With [Fleek](https://fleek.co/), however, we now relegate these on-chain deployments as historical backups in case a user wants to use an older version.
 
 #### Secrets
 
 A number of environment secrets are required during publishing and these are sometimes different per network.
 
-You may either specify these secrets as environment variables or use a `.env`. An Aragon One encrypted file ([`.env.enc`](./.env.enc)) is included in this repo with the current secrets used in production.
+You may either specify these secrets as environment variables or use a `.env`. An Aragon One encrypted file ([`.env.enc`](./.env.enc)) is included in this repo with the current secrets used when publishing to aragonPM.
 
 To decrypt:
 
@@ -58,12 +54,6 @@ To encrypt:
 ```
 keybase encrypt --team aragonone -i .env -o .env.enc
 ```
-
-### Nightly / Per-PR builds
-
-Automatic [nightly.aragon.org](https://nightly.aragon.org) and [nightly-rinkeby.aragon.org](https://nightly-rinkeby.aragon.org) deployments will occur for each PR and merge to master through [Now](https://zeit.co/now). These are useful for quickly testing a new feature, change, or hotfix.
-
-The official [Now app for Github](https://zeit.co/github) is set up to publish nightlies against Rinkeby see [default Now configuration](./now.json). Travis is set up to publish nightlies against mainnet (see [mainnet Now configuration](./now-mainnet.json)).
 
 ## Contributing
 
