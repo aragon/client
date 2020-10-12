@@ -10,6 +10,11 @@
       "appName": "aragon.aragonpm.eth",
       "network": "rinkeby"
     },
+    "fuse": {
+      "registry": "TODO",
+      "appName": "aragon.aragonpm.eth",
+      "network": "fuse"
+    },
     "staging": {
       "registry": "0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939",
       "appName": "aragon.aragonpm.eth",

@@ -47,6 +47,7 @@ const INITIAL_DAO_STATE = {
 
 const SELECTOR_NETWORKS = [
   ['main', 'Ethereum Mainnet', 'https://client.aragon.org/'],
+  ['fuse', 'Fuse Mainnet', 'https://fuse.aragon.org/'],
   [
     'rinkeby',
     'Ethereum Testnet (Rinkeby)',

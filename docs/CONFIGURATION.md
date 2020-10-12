@@ -14,7 +14,7 @@ Address of the ENS registry that [aragonPM](https://hack.aragon.org/docs/apm-int
 
 ### `ARAGON_ETH_NETWORK_TYPE`
 
-Expected network type to connect to. Either one of `main`, `rinkeby` or `local`.
+Expected network type to connect to. Either one of `main`, `fuse`, `rinkeby` or `local`.
 
 ### `ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY`
 

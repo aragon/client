@@ -55,6 +55,28 @@ export const networkConfigs = {
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
   },
+  fuse: {
+    addresses: {
+      ensRegistry: localEnsRegistryAddress || 'TODO',
+    },
+    nodes: {
+      defaultEth: 'wss://fuse.eth.aragon.network/ws',
+    },
+    settings: {
+      chainId: 122,
+      name: 'Fuse mainnet',
+      shortName: 'Fuse',
+      type: 'fuse', // as returned by web3.eth.net.getNetworkType()
+      live: true,
+    },
+    // providers: ['injected', 'frame'],
+    providers: [
+      { id: 'provided' },
+      { id: 'frame' },
+      fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null, // TODO: check
+      portisDappId ? { id: 'portis', conf: portisDappId } : null, // TODO: check
+    ].filter(p => p),
+  },
   ropsten: {
     addresses: {
       ensRegistry:
