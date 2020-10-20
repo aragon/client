@@ -16,6 +16,7 @@ import saintFameImage from './images/saint-fame.svg'
 import pieDaoImage from './images/pie-dao.png'
 import valtechImage from './images/valtech.png'
 import pNetworkImage from './images/pnetwork.png'
+import cryptokekImage from './images/cryptokek.svg'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -143,6 +144,13 @@ export const KnownOrganizations = {
         image: pNetworkImage,
         name: 'pNetwork',
         template: null,
+      },
+      {
+        address: '0xe00F7B744AB8333d64ed940dd36ed9398D8eDBD2',
+        domain: 'kek.aragonid.eth',
+        image: cryptokekImage,
+        name: 'cryptokek',
+        template: TEMPLATE_COMPANY,
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),
