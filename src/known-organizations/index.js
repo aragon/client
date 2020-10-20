@@ -18,6 +18,7 @@ import valtechImage from './images/valtech.png'
 import pNetworkImage from './images/pnetwork.png'
 import nucypherDaoImage from './images/nucypher.svg'
 import nucypherIbexImage from './images/nucypher-ibex.png'
+import cryptokekImage from './images/cryptokek.svg'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -152,6 +153,13 @@ export const KnownOrganizations = {
         image: nucypherDaoImage,
         name: 'NuCypher DAO',
         template: null,
+      },
+      {
+        address: '0x3fa400483487A489EC9b1dB29C4129063EEC4654',
+        domain: 'cryptokek.eth',
+        image: cryptokekImage,
+        name: 'cryptokek',
+        template: TEMPLATE_COMPANY,
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),
