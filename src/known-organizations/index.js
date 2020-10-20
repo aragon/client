@@ -151,7 +151,7 @@ export const KnownOrganizations = {
         address: '0xe00F7B744AB8333d64ed940dd36ed9398D8eDBD2',
         domain: 'kek.aragonid.eth',
         image: cryptokekImage,
-        name: 'cryptokek',
+        name: 'Cryptokek',
         template: TEMPLATE_COMPANY,
       },
       {
