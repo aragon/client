@@ -16,6 +16,7 @@ import saintFameImage from './images/saint-fame.svg'
 import pieDaoImage from './images/pie-dao.png'
 import valtechImage from './images/valtech.png'
 import pNetworkImage from './images/pnetwork.png'
+import cryptokekImage from './images/cryptokek.svg'
 import nucypherDaoImage from './images/nucypher.svg'
 import nucypherIbexImage from './images/nucypher-ibex.png'
 
@@ -145,6 +146,13 @@ export const KnownOrganizations = {
         image: pNetworkImage,
         name: 'pNetwork',
         template: null,
+      },
+      {
+        address: '0xe00F7B744AB8333d64ed940dd36ed9398D8eDBD2',
+        domain: 'kek.aragonid.eth',
+        image: cryptokekImage,
+        name: 'Cryptokek',
+        template: TEMPLATE_COMPANY,
       },
       {
         address: '0x7809e69Cf83Fcb768dA9E7A698EDC9f159b7D6f4',
