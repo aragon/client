@@ -52,6 +52,7 @@ const SELECTOR_NETWORKS = [
     'Ethereum Testnet (Rinkeby)',
     'https://rinkeby.client.aragon.org/',
   ],
+  ['goerli', 'Ethereum Testnet (Göerli)', 'https://goerli.lido.fi/'],
 ]
 if (network.type === 'ropsten') {
   SELECTOR_NETWORKS.push([
