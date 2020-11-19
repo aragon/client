@@ -28,6 +28,12 @@ export const networkConfigs = {
     providers: [
       { id: 'provided' },
       { id: 'frame' },
+      {
+        id: 'walletconnect',
+        conf: {
+          rpcUrl: 'https://mainnet.eth.aragon.network',
+        },
+      },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
@@ -51,6 +57,12 @@ export const networkConfigs = {
     providers: [
       { id: 'provided' },
       { id: 'frame' },
+      {
+        id: 'walletconnect',
+        conf: {
+          rpcUrl: 'https://rinkeby.eth.aragon.network',
+        },
+      },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
@@ -159,4 +171,13 @@ export function sanitizeNetworkType(networkType) {
     return 'mainnet'
   }
   return networkType
+}
+
+export function getWalletConnectRPC(chainId = -1) {
+  chainId = Number(chainId)
+  const currentChain = getNetworkByChainId(chainId)
+  const walletConnect = currentChain.providers.find(
+    provider => provider.id === 'walletconnect'
+  )
+  return walletConnect.conf.rpcUrl
 }
