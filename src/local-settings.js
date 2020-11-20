@@ -186,3 +186,7 @@ export function getPortisDappId() {
 export function getFortmaticApiKey() {
   return getLocalSetting(FORTMATIC_API_KEY) || ''
 }
+
+export function getWalletConnectRPCEnv() {
+  return getLocalSetting(WALLET_CONNECT_RPC) || ''
+}

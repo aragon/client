@@ -3,6 +3,7 @@ import {
   getEnsRegistryAddress,
   getFortmaticApiKey,
   getPortisDappId,
+  getWalletConnectRPCEnv,
 } from './local-settings'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
@@ -31,7 +32,8 @@ export const networkConfigs = {
       {
         id: 'walletconnect',
         conf: {
-          rpcUrl: 'https://mainnet.eth.aragon.network',
+          rpcUrl:
+            getWalletConnectRPCEnv() || 'https://mainnet.eth.aragon.network',
         },
       },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
@@ -60,7 +62,8 @@ export const networkConfigs = {
       {
         id: 'walletconnect',
         conf: {
-          rpcUrl: 'https://rinkeby.eth.aragon.network',
+          rpcUrl:
+            getWalletConnectRPCEnv() || 'https://rinkeby.eth.aragon.network',
         },
       },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
