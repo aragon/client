@@ -3,11 +3,13 @@ import {
   getEnsRegistryAddress,
   getFortmaticApiKey,
   getPortisDappId,
+  getWalletconnectRpcUrl,
 } from './local-settings'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const fortmaticApiKey = getFortmaticApiKey()
 const portisDappId = getPortisDappId()
+const walletconnectRpcUrl = getWalletconnectRpcUrl()
 
 export const networkConfigs = {
   main: {
@@ -53,6 +55,9 @@ export const networkConfigs = {
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
+      walletconnectRpcUrl
+        ? { id: 'walletconnect', conf: walletconnectRpcUrl }
+        : null,
     ].filter(p => p),
   },
   ropsten: {

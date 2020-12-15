@@ -2,7 +2,11 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import BN from 'bn.js'
 import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
-import { getFortmaticApiKey, getPortisDappId } from './local-settings'
+import {
+  getFortmaticApiKey,
+  getPortisDappId,
+  getWalletconnectRpcUrl,
+} from './local-settings'
 import { getProviderFromUseWalletId } from './ethereum-providers'
 import { network } from './environment'
 import { getWeb3, filterBalanceValue } from './web3-utils'
@@ -88,6 +92,9 @@ export function WalletProvider({ children }) {
         fortmatic: { apiKey: getFortmaticApiKey() },
         portis: { dAppId: getPortisDappId() },
         provided: { provider: window.cleanEthereum },
+        walletconnect: {
+          rpcUrl: getWalletconnectRpcUrl(),
+        },
       }}
     >
       <WalletContextProvider>{children}</WalletContextProvider>
