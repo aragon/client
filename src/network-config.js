@@ -9,7 +9,6 @@ import {
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const fortmaticApiKey = getFortmaticApiKey()
 const portisDappId = getPortisDappId()
-const walletConnectRpcUrl = getWalletConnectRpcUrl()
 
 export const networkConfigs = {
   main: {
@@ -30,14 +29,12 @@ export const networkConfigs = {
     providers: [
       { id: 'provided' },
       { id: 'frame' },
+      {
+        id: 'walletconnect',
+        conf: getWalletConnectRpcUrl() || 'https://mainnet.eth.aragon.network',
+      },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
-      walletConnectRpcUrl
-        ? {
-            id: 'walletconnect',
-            conf: walletConnectRpcUrl || 'https://mainnet.eth.aragon.network',
-          }
-        : null,
     ].filter(p => p),
   },
   rinkeby: {
@@ -59,14 +56,12 @@ export const networkConfigs = {
     providers: [
       { id: 'provided' },
       { id: 'frame' },
+      {
+        id: 'walletconnect',
+        conf: getWalletConnectRpcUrl() || 'https://rinkeby.eth.aragon.network',
+      },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
-      walletConnectRpcUrl
-        ? {
-            id: 'walletconnect',
-            conf: walletConnectRpcUrl || 'https://rinkeby.eth.aragon.network',
-          }
-        : null,
     ].filter(p => p),
   },
   ropsten: {
@@ -181,5 +176,5 @@ export function getWalletConnectRPC(chainId = -1) {
   const walletConnect = currentChain.providers.find(
     provider => provider.id === 'walletconnect'
   )
-  return walletConnect.conf
+  return walletConnect ? walletConnect.conf : ''
 }
