@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ARAGON_IPFS_GATEWAY=http://localhost:8080/ipfs \
+ARAGON_DEFAULT_ETH_NODE=ws://localhost:8546 \
+ARAGON_APP_LOCATOR=ipfs \
+ARAGON_ETH_NETWORK_TYPE=local \
+ARAGON_ENS_REGISTRY_ADDRESS=0x5f6f7e8cc7346a11ca2def8f827b7a0b612c56a1 \
+TAG=local ./build.sh
