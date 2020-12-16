@@ -7,7 +7,7 @@ import status from './icons/Status.png'
 import wallet from './icons/wallet.svg'
 import fortmatic from './icons/Fortmatic.svg'
 import portis from './icons/Portis.svg'
-import walletconnect from './icons/Walletconnect.svg'
+import walletconnect from './icons/WalletConnect.svg'
 
 // See the corresponding prop type, EthereumProviderType, in prop-types.js.
 const PROVIDERS = new Map(

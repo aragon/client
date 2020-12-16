@@ -187,6 +187,6 @@ export function getFortmaticApiKey() {
   return getLocalSetting(FORTMATIC_API_KEY) || ''
 }
 
-export function getWalletconnectRpcUrl() {
+export function getWalletConnectRpcUrl() {
   return getLocalSetting(WALLETCONNECT_RPC_URL) || ''
 }
