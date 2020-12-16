@@ -4,7 +4,7 @@ set -e +u
 set -o pipefail
 
 : ${TAG:=rinkeby}
-IMG="lidofinance/aragon"
+IMG="lidofinance/aragon-client"
 export DOCKER_CONFIG=$HOME/.lidofinance
 
 # : ${ARAGON_APP_LOCATOR:=ipfs}
