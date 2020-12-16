@@ -32,7 +32,7 @@ export const KnownOrganizations = {
     [
       {
         address: '0x0000000000000000000000000000000000000000',
-        domain: 'lido.aragonid.eth',
+        domain: 'lido-dao.aragonid.eth',
         image: lidoImage,
         name: 'Lido',
         template: TEMPLATE_COMPANY,
@@ -174,6 +174,14 @@ export const KnownOrganizations = {
   ),
   rinkeby: new Map(
     [
+      {
+        address: '0x900f89ad80DEF8ffCAFE930B69Da111b0051Af6A',
+        domain: 'lido-dao-test-2.aragonid.eth',
+        image: lidoImage,
+        name: 'Lido',
+        template: TEMPLATE_COMPANY,
+        recommended: true,
+      },
       {
         address: '0x43374144c33def77a0ebacec72e9c944a6c375fe',
         domain: 'reputation08.aragonid.eth',
