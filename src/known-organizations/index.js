@@ -9,7 +9,7 @@ import millstoneImage from './images/millstone.png'
 import lexdaoImage from './images/lexdao.png'
 import lightwaveImage from './images/lightwave.svg'
 import livepeerImage from './images/livepeer.svg'
-import melonCouncilImage from './images/melon-council.svg'
+// import enzymeCouncilImage from './images/enzyme-council.svg'
 import myBitImage from './images/mybit.svg'
 import onehive from './images/1hive.svg'
 import saintFameImage from './images/saint-fame.svg'
@@ -36,13 +36,15 @@ export const KnownOrganizations = {
         name: 'Decentraland',
         template: TEMPLATE_DEMOCRACY,
       },
+      /*
       {
-        address: '0xfe1f2de598f42ce67bb9aad5ad473f0272d09b74',
-        domain: 'meloncouncil.eth',
-        image: melonCouncilImage,
-        name: 'Melon Council',
+        address: 'TBD',
+        domain: 'enzyme.aragonid.eth',
+        image: enzymeCouncilImage,
+        name: 'Enzyme Council',
         template: TEMPLATE_DEMOCRACY,
       },
+      */
       {
         address: '0x2de83b50af29678774d5abc4a7cb2a588762f28c',
         domain: 'governance.aragonproject.eth',
