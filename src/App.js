@@ -17,7 +17,6 @@ import { PermissionsProvider } from './contexts/PermissionsContext'
 import { IdentityProvider } from './components/IdentityManager/IdentityManager'
 import { LocalIdentityModalProvider } from './components/LocalIdentityModal/LocalIdentityModalManager'
 import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityModal'
-import HelpScoutBeacon from './components/HelpScoutBeacon/HelpScoutBeacon'
 import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import CustomToast from './components/CustomToast/CustomToast'
 import OrgView from './components/OrgView/OrgView'
@@ -402,8 +401,6 @@ class App extends React.Component {
                           apps={appsWithIdentifiers}
                           wrapper={wrapper}
                         />
-
-                        <HelpScoutBeacon apps={apps} />
                       </ActivityProvider>
                     </FavoriteDaosProvider>
                   </LocalIdentityModalProvider>
