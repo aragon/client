@@ -18,7 +18,6 @@ import { useRouting } from '../../../routing'
 import iconNetwork from '../../../assets/global-preferences-network.svg'
 import iconCustomLabels from '../../../assets/global-preferences-custom-labels.svg'
 import iconNotifications from '../../../assets/global-preferences-notifications.svg'
-import iconHelpAndFeedback from '../../../assets/global-preferences-help-and-feedback.svg'
 
 function GlobalPreferencesButton() {
   const theme = useTheme()
@@ -112,11 +111,6 @@ function GlobalPreferencesButton() {
             onClick={() => handleItemClick('notifications')}
             icon={iconNotifications}
             label="Notifications"
-          />
-          <Item
-            onClick={() => handleItemClick('help-and-feedback')}
-            icon={iconHelpAndFeedback}
-            label="Help & Feedback"
           />
           <Item
             onClick={toggleDarkMode}
