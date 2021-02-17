@@ -28,18 +28,20 @@ import {
   AUTH_AUTHENTICATING,
 } from './constants'
 
+import { ClientStorage } from '../../../cache'
+
 // Hook responsible for deriving the authState from localStorage values and
 // providing setters which update the localStorage
 function useAuthState() {
   const [authState, setAuthState] = useState(AUTH_UNAUTHENTICATED)
   const [email, setEmail] = useState(
-    localStorage.getItem(NOTIFICATION_SERVICE_EMAIL_KEY)
+    ClientStorage.getItem(NOTIFICATION_SERVICE_EMAIL_KEY)
   )
   const [token, setToken] = useState(
-    localStorage.getItem(NOTIFICATION_SERVICE_TOKEN_KEY)
+    ClientStorage.getItem(NOTIFICATION_SERVICE_TOKEN_KEY)
   )
   const [hasLoggedOut, setHasLoggedOut] = useState(
-    localStorage.getItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY) === '1'
+    ClientStorage.getItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY) === '1'
   )
 
   const handleAuthenticate = useCallback(() => {
@@ -77,20 +79,20 @@ function useAuthState() {
 
   useEffect(() => {
     token
-      ? localStorage.setItem(NOTIFICATION_SERVICE_TOKEN_KEY, token)
-      : localStorage.removeItem(NOTIFICATION_SERVICE_TOKEN_KEY)
+      ? ClientStorage.setItem(NOTIFICATION_SERVICE_TOKEN_KEY, token)
+      : ClientStorage.removeItem(NOTIFICATION_SERVICE_TOKEN_KEY)
   }, [token])
 
   useEffect(() => {
     email
-      ? localStorage.setItem(NOTIFICATION_SERVICE_EMAIL_KEY, email)
-      : localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
+      ? ClientStorage.setItem(NOTIFICATION_SERVICE_EMAIL_KEY, email)
+      : ClientStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
   }, [email])
 
   useEffect(() => {
     hasLoggedOut
-      ? localStorage.setItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY, '1')
-      : localStorage.removeItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY)
+      ? ClientStorage.setItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY, '1')
+      : ClientStorage.removeItem(NOTIFICATION_SERVICE_HAS_LOGGED_OUT_KEY)
   }, [hasLoggedOut])
 
   const handleLogout = useCallback(() => {

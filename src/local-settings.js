@@ -1,3 +1,5 @@
+import { ClientStorage } from './cache'
+
 // List of configurable settings
 const APP_LOCATOR = 'APP_LOCATOR'
 const CLIENT_THEME = 'THEME'
@@ -73,7 +75,7 @@ const CONFIGURATION_VARS = [
 
 // Get a setting from localStorage
 function getLocalStorageSetting(confKey) {
-  return window.localStorage.getItem(CONFIGURATION_VARS[confKey].storageKey)
+  return ClientStorage.getItem(CONFIGURATION_VARS[confKey].storageKey)
 }
 
 // Get a setting from the env vars
@@ -88,7 +90,7 @@ function getLocalSetting(confKey) {
 
 function setLocalSetting(confKey, value) {
   const confVar = CONFIGURATION_VARS[confKey]
-  return window.localStorage.setItem(confVar.storageKey, value)
+  return ClientStorage.setItem(confVar.storageKey, value)
 }
 
 export function getAppLocator() {

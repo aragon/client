@@ -20,6 +20,7 @@ import KEYCODES from '../../keycodes'
 import { clamp } from '../../math-utils'
 import { AragonType, AppType } from '../../prop-types'
 import { CONSOLE_COMMAND_HISTORY_KEY } from './useConsole'
+import { ClientStorage } from '../../cache'
 
 function Console({ apps, wrapper }) {
   const [command, setCommand] = useState('')
@@ -153,7 +154,7 @@ function Prompt({ command, loading, onChange, onSubmit }) {
     e => {
       if (e.keyCode === KEYCODES.enter && !isDisabled) {
         const newCommandHistory = [...commandHistory, command]
-        localStorage.setItem(
+        ClientStorage.setItem(
           CONSOLE_COMMAND_HISTORY_KEY,
           JSON.stringify(newCommandHistory)
         )
@@ -183,7 +184,7 @@ function Prompt({ command, loading, onChange, onSubmit }) {
   )
 
   useEffect(() => {
-    const historyArray = localStorage.getItem(CONSOLE_COMMAND_HISTORY_KEY)
+    const historyArray = ClientStorage.getItem(CONSOLE_COMMAND_HISTORY_KEY)
     if (!historyArray) {
       return
     }

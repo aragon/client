@@ -4,7 +4,9 @@ import 'regenerator-runtime/runtime'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
+import { Cache as WrapperCache } from '@aragon/wrapper'
 import App from './App'
+import { ClientStorage } from './cache'
 import GlobalErrorHandler from './GlobalErrorHandler'
 import { WalletProvider } from './wallet'
 import { ClientThemeProvider, useClientTheme } from './client-theme'
@@ -33,21 +35,8 @@ if (
   lastMajorVersion !== currentMajorVersion ||
   lastMinorVersion !== currentMinorVersion
 ) {
-  window.localStorage.clear()
-
-  // Attempt to clean up indexedDB storage as well.
-  if (
-    window.indexedDB &&
-    window.indexedDB.databases &&
-    window.indexedDB.deleteDatabase
-  ) {
-    // eslint-disable-next-line promise/catch-or-return
-    window.indexedDB
-      .databases()
-      .then(databases =>
-        databases.forEach(({ name }) => window.indexedDB.deleteDatabase(name))
-      )
-  }
+  ClientStorage.clear()
+  WrapperCache.clearAllCaches()
 }
 
 // Save the current package version

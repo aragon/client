@@ -1,10 +1,11 @@
 import { network, web3Providers } from '../environment'
 import { getWeb3 } from '../web3-utils'
+import { ClientStorage } from '../cache'
 
 const TEMPLATE_STATE_KEY = `create-org:${network.type}`
 
 export function loadTemplateState() {
-  const value = localStorage.getItem(TEMPLATE_STATE_KEY)
+  const value = ClientStorage.getItem(TEMPLATE_STATE_KEY)
   try {
     const data = JSON.parse(value)
     return {
@@ -18,7 +19,7 @@ export function loadTemplateState() {
 }
 
 export function saveTemplateState(state) {
-  localStorage.setItem(`create-org:${network.type}`, JSON.stringify(state))
+  ClientStorage.setItem(`create-org:${network.type}`, JSON.stringify(state))
 }
 
 export function prepareTransactionCreatorFromAbi(abi, toAddress) {

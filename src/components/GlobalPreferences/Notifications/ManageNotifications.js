@@ -20,6 +20,7 @@ import {
 import SubscriptionsForm from './SubscriptionsForm'
 import SubscriptionsTable from './SubscriptionsTable'
 import { DeleteAccountConfirmationModal } from './NotificationModals'
+import { ClientStorage } from '../../../cache'
 
 export default function ManageNotifications({
   apps,
@@ -146,8 +147,8 @@ function DeleteAccount({ token, onLogout, onApiError, toast }) {
     try {
       setIsFetching(true)
       await deleteAccount(token)
-      localStorage.removeItem(NOTIFICATION_SERVICE_TOKEN_KEY)
-      localStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
+      ClientStorage.removeItem(NOTIFICATION_SERVICE_TOKEN_KEY)
+      ClientStorage.removeItem(NOTIFICATION_SERVICE_EMAIL_KEY)
       setIsAccountDeleted(true)
       onLogout()
       toast('Email notifications account deleted')

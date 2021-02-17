@@ -24,6 +24,7 @@ import MenuPanelAppGroup from './MenuPanelAppGroup'
 import MenuPanelAppsLoader from './MenuPanelAppsLoader'
 import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher'
 import AppIcon from '../AppIcon/AppIcon'
+import { ClientStorage } from '../../cache'
 
 export const MENU_PANEL_SHADOW_WIDTH = 3
 export const MENU_PANEL_WIDTH = 28 * GU
@@ -39,10 +40,10 @@ const APP_PERMISSIONS = staticApps.get('permissions').app
 const systemAppsOpenedState = {
   key: 'SYSTEM_APPS_OPENED_STATE',
   isOpen: function() {
-    return localStorage.getItem(this.key) === '1'
+    return ClientStorage.getItem(this.key) === '1'
   },
   set: function(opened) {
-    localStorage.setItem(this.key, opened ? '1' : '0')
+    ClientStorage.setItem(this.key, opened ? '1' : '0')
   },
 }
 

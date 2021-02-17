@@ -23,6 +23,7 @@ import BeaconHeadScripts from './BeaconHeadScripts'
 import helpScoutHeaderPng from './assets/help-scout-header.png'
 import { useClickOutside, useOnBlur } from '../../hooks'
 import { AppType } from '../../prop-types'
+import { ClientStorage } from '../../cache'
 
 const HELPSCOUT_BEACON_KEY = 'helpscout-beacon'
 const CLOSED = Symbol('closed, user can open opt-in or beacon')
@@ -35,12 +36,12 @@ const Beacon = React.memo(function Beacon({ apps }) {
   const [beaconReady, setBeaconReady] = useState(false)
   const [openOnReady, setOpenOnReady] = useState(false)
   const [optedIn, setOptedIn] = useState(
-    localStorage.getItem(HELPSCOUT_BEACON_KEY) === '1'
+    ClientStorage.getItem(HELPSCOUT_BEACON_KEY) === '1'
   )
   const { above } = useViewport()
 
   const handleOptIn = () => {
-    localStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
+    ClientStorage.setItem(HELPSCOUT_BEACON_KEY, '1')
     setOptedIn(true)
     setOpenOnReady(true)
   }

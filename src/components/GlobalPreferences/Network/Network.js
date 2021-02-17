@@ -11,12 +11,14 @@ import {
   useLayout,
   useTheme,
 } from '@aragon/ui'
+import { Cache as WrapperCache } from '@aragon/wrapper'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
 import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
 import keycodes from '../../../keycodes'
 import { sanitizeNetworkType } from '../../../network-config'
 import { checkValidEthNode } from '../../../web3-utils'
+import { ClientStorage } from '../../../cache'
 
 function Network({ wrapper }) {
   const {
@@ -141,10 +143,9 @@ const useNetwork = wrapper => {
     window.location.reload()
   }, [ethNode, ipfsGateway])
   const handleClearCache = useCallback(async () => {
-    await wrapper.cache.clear()
-    window.localStorage.clear()
-    window.location.reload()
-  }, [wrapper])
+    await WrapperCache.clearAllCaches()
+    ClientStorage.clear()
+  }, [])
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
       if (

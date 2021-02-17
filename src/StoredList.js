@@ -1,4 +1,5 @@
 import { identity, log } from './utils'
+import { ClientStorage } from './cache'
 
 class StoredList {
   // name: the key used by StoredList to save the list in localStorage.
@@ -11,7 +12,7 @@ class StoredList {
   }
   loadItems() {
     let items = null
-    const value = localStorage.getItem(this.name)
+    const value = ClientStorage.getItem(this.name)
 
     if (value === null) {
       return []
@@ -31,7 +32,7 @@ class StoredList {
     return items === null ? [] : items.map(this.options.postParse)
   }
   saveItems() {
-    localStorage.setItem(
+    ClientStorage.setItem(
       this.name,
       JSON.stringify(this.items.map(this.options.preStringify))
     )

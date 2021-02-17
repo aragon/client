@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
+import { ClientStorage } from '../../cache'
 
 const CONSOLE_VISIBLE_KEY = 'CONSOLE_VISIBLE'
 export const CONSOLE_COMMAND_HISTORY_KEY = 'CONSOLE_COMMAND_HISTORY'
@@ -8,11 +9,14 @@ export const ConsoleVisibleContext = React.createContext()
 
 function ConsoleVisibleProvider({ children }) {
   const [consoleVisible, setConsoleVisible] = useState(
-    localStorage.getItem(CONSOLE_VISIBLE_KEY) === 'true'
+    ClientStorage.getItem(CONSOLE_VISIBLE_KEY) === 'true'
   )
 
   useEffect(() => {
-    localStorage.setItem(CONSOLE_VISIBLE_KEY, consoleVisible ? 'true' : 'false')
+    ClientStorage.setItem(
+      CONSOLE_VISIBLE_KEY,
+      consoleVisible ? 'true' : 'false'
+    )
   }, [consoleVisible])
 
   return (
