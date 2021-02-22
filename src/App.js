@@ -85,22 +85,10 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
-    const $zoho = $zoho || {}
-    $zoho.salesiq = $zoho.salesiq || {
-      widgetcode:
-        '8368321708326b3f205f6985224f65416311aafa35bf8cb06e7d9f50921fc950',
-      values: {},
-      ready: function() {},
-    }
-    const d = document
-    const s = d.createElement('script')
-    s.type = 'text/javascript'
-    s.id = 'zsiqscript'
-    s.defer = true
-    s.src = 'https://salesiq.zoho.eu/widget'
-    const t = d.getElementsByTagName('script')[0]
-    t.parentNode.insertBefore(s, t)
-    d.write("<div id='zsiqwidget'></div>")
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "./widgetLoader.js";
+    this.div.appendChild(script);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -352,24 +340,24 @@ class App extends React.Component {
         from={{ opacity: 0, scale: 0.98 }}
         to={{ opacity: 1, scale: 1 }}
         native
-      >
+        >
         {({ opacity, scale }) => (
           <animated.div
             style={{
               opacity,
               background: theme.background,
             }}
-          >
+            >
             <animated.div
               style={{
                 transform: scale.interpolate(v => `scale3d(${v}, ${v}, 1)`),
               }}
-            >
+              >
               <CustomToast>
                 <IdentityProvider onResolve={this.handleIdentityResolve}>
                   <LocalIdentityModalProvider
                     onShowLocalIdentityModal={this.handleOpenLocalIdentityModal}
-                  >
+                    >
                     <LocalIdentityModal
                       address={intentAddress}
                       label={intentLabel}
@@ -387,8 +375,8 @@ class App extends React.Component {
                           wrapper={wrapper}
                           apps={appsWithIdentifiers}
                           permissions={permissions}
-                        >
-                          <div css="position: relative; z-index: 0">
+                          >
+                          <div css="position: relative; z-index: 0" ref={el => (this.div = el)}>
                             <OrgView
                               apps={appsWithIdentifiers}
                               appsStatus={appsStatus}
