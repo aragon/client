@@ -12,16 +12,5 @@
       "ARAGON_SENTRY_DSN": "@aragon-client-sentry-dsn",
       "ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY": "3000"
     }
-  },
-  "builds": [
-    {
-      "src": "*.html",
-      "use": "@vercel/static",
-      "config": {
-        "optimization": {
-          "minimize": false
-        }
-      }
-    }
-  ]
+  }
 }
