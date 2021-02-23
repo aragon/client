@@ -8,7 +8,6 @@ function CustomToast({ children }) {
   const { below } = useViewport()
   return (
     <ToastHub
-      shift={true ? 0 : below('medium') ? 5.5 * GU : 6.5 * GU}
       timeout={TIMEOUT_TOAST}
     >
       {children}

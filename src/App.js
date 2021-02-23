@@ -85,10 +85,6 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
-    // const script = document.createElement("script");
-    // script.async = true;
-    // script.src = "./widgetLoader.js";
-    // this.div.appendChild(script);
   }
 
   componentDidUpdate(prevProps, prevState) {
