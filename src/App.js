@@ -85,10 +85,10 @@ class App extends React.Component {
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
     })
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = "./widgetLoader.js";
-    this.div.appendChild(script);
+    // const script = document.createElement("script");
+    // script.async = true;
+    // script.src = "./widgetLoader.js";
+    // this.div.appendChild(script);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -340,24 +340,24 @@ class App extends React.Component {
         from={{ opacity: 0, scale: 0.98 }}
         to={{ opacity: 1, scale: 1 }}
         native
-        >
+      >
         {({ opacity, scale }) => (
           <animated.div
             style={{
               opacity,
               background: theme.background,
             }}
-            >
+          >
             <animated.div
               style={{
                 transform: scale.interpolate(v => `scale3d(${v}, ${v}, 1)`),
               }}
-              >
+            >
               <CustomToast>
                 <IdentityProvider onResolve={this.handleIdentityResolve}>
                   <LocalIdentityModalProvider
                     onShowLocalIdentityModal={this.handleOpenLocalIdentityModal}
-                    >
+                  >
                     <LocalIdentityModal
                       address={intentAddress}
                       label={intentLabel}
@@ -375,8 +375,8 @@ class App extends React.Component {
                           wrapper={wrapper}
                           apps={appsWithIdentifiers}
                           permissions={permissions}
-                          >
-                          <div css="position: relative; z-index: 0" ref={el => (this.div = el)}>
+                        >
+                          <div css="position: relative; z-index: 0">
                             <OrgView
                               apps={appsWithIdentifiers}
                               appsStatus={appsStatus}
