@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Card, GU, useTheme, useViewport } from '@aragon/ui'
-import HelpScoutBeacon from '../HelpScoutBeacon/HelpScoutBeacon'
 import HomeButton from '../HomeButton/HomeButton'
 
 import eagleSvg from '../../assets/eagle.svg'
@@ -57,7 +56,6 @@ function ErrorScreen({ children }) {
           {children}
         </Container>
       </div>
-      <HelpScoutBeacon apps={[]} />
     </div>
   )
 }
