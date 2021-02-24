@@ -20,13 +20,15 @@ import { useRouting } from '../../routing'
 import Network from './Network/Network'
 import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
+import HelpAndFeedback from './HelpAndFeedback/HelpAndFeedback'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
 
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
   ['network', 'Network'],
-  ['notifications', 'Notifications']
+  ['notifications', 'Notifications'],
+  ['help-and-feedback', 'Help and feedback'],
 ])
 const SECTION_PATHS = Array.from(SECTIONS.keys())
 const SECTION_VALUES = Array.from(SECTIONS.values())
@@ -34,6 +36,7 @@ const SECTION_VALUES = Array.from(SECTIONS.values())
 const CUSTOM_LABELS_INDEX = 0
 const NETWORK_INDEX = 1
 const NOTIFICATIONS_INDEX = 2
+const HELP_AND_FEEDBACK_INDEX = 3
 
 const AnimatedDiv = animated.div
 
@@ -133,6 +136,7 @@ function GlobalPreferencesContent({
                   navigationIndex={2}
                 />
               )}
+              {sectionIndex === HELP_AND_FEEDBACK_INDEX && <HelpAndFeedback />}
             </main>
           </React.Fragment>
         )}
