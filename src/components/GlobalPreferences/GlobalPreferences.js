@@ -26,7 +26,7 @@ import useSharedLink from './SharedIdentities/useSharedLink'
 const SECTIONS = new Map([
   ['custom-labels', 'Custom Labels'],
   ['network', 'Network'],
-  ['notifications', 'Notifications']
+  ['notifications', 'Notifications'],
 ])
 const SECTION_PATHS = Array.from(SECTIONS.keys())
 const SECTION_VALUES = Array.from(SECTIONS.values())
