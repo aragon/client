@@ -1,13 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ToastHub as TH } from '@aragon/ui'
+import { ToastHub } from '@aragon/ui'
 
 const TIMEOUT_TOAST = 4000
 
 function CustomToast({ children }) {
-  return (
-    <TH timeout={TIMEOUT_TOAST}>{children}</TH>
-  )
+  return <ToastHub timeout={TIMEOUT_TOAST}>{children}</ToastHub>
 }
 
 CustomToast.propTypes = {
