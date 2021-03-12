@@ -10,6 +10,7 @@ import {
   textStyle,
   useLayout,
   useTheme,
+  useToast,
 } from '@aragon/ui'
 import { Cache as WrapperCache } from '@aragon/wrapper'
 import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
@@ -128,6 +129,7 @@ const useNetwork = wrapper => {
   const [networkError, setNetworkError] = useState(null)
   const [ethNode, setEthNodeValue] = useState(defaultEthNode)
   const [ipfsGateway, setIpfsGatewayValue] = useState(ipfsDefaultConf.gateway)
+  const toast = useToast()
 
   const handleNetworkChange = useCallback(async () => {
     try {
@@ -145,7 +147,8 @@ const useNetwork = wrapper => {
   const handleClearCache = useCallback(async () => {
     await WrapperCache.clearAllCaches()
     ClientStorage.clear()
-  }, [])
+    toast('Application cache cleared successfully')
+  }, [toast])
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
       if (
