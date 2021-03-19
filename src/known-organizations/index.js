@@ -31,7 +31,7 @@ export const KnownOrganizations = {
   main: new Map(
     [
       {
-        address: '0x0000000000000000000000000000000000000000',
+        address: '0xb8FFC3Cd6e7Cf5a098A1c92F48009765B24088Dc',
         domain: 'lido-dao.aragonid.eth',
         image: lidoImage,
         name: 'Lido',
@@ -238,6 +238,19 @@ export const KnownOrganizations = {
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),
+  goerli: new Map(
+    [
+      {
+        address: '0xE2Bb0843167da9672534cc939c59D6F6F31d3D42',
+        domain: 'lido-testnet.aragonid.eth',
+        image: lidoImage,
+        name: 'Lido',
+        template: TEMPLATE_COMPANY,
+        recommended: true,
+      },
+    ].map(org => [org.address.toLowerCase(), org])
+  ),
+
 }
 
 // Get the organizations that might appear in the suggestions,

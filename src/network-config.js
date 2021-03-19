@@ -128,7 +128,7 @@ export const networkConfigs = {
       ensRegistry: localEnsRegistryAddress,
     },
     nodes: {
-      defaultEth: 'ws://localhost:8545',
+      defaultEth: 'wss://goerli-light.eth.linkpool.io/ws',
     },
     settings: {
       chainId: 5,

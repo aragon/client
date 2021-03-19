@@ -45,13 +45,13 @@ const INITIAL_DAO_STATE = {
 }
 
 const SELECTOR_NETWORKS = [
-  ['main', 'Ethereum Mainnet', 'https://client.aragon.org/'],
+  ['main', 'Ethereum Mainnet', 'https://mainnet.lido.fi/'],
   [
     'rinkeby',
     'Ethereum Testnet (Rinkeby)',
     'https://rinkeby.client.aragon.org/',
   ],
-  ['goerli', 'Ethereum Testnet (Göerli)', 'https://goerli.lido.fi/'],
+  ['goerli', 'Ethereum Testnet (Göerli)', 'https://testnet.lido.fi/'],
 ]
 if (network.type === 'ropsten') {
   SELECTOR_NETWORKS.push([
