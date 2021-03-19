@@ -123,6 +123,22 @@ export const networkConfigs = {
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
   },
+  goerli: {
+    addresses: {
+      ensRegistry: localEnsRegistryAddress,
+    },
+    nodes: {
+      defaultEth: 'ws://localhost:8545',
+    },
+    settings: {
+      chainId: 5,
+      name: 'Göerli testnet',
+      shortName: 'Göerli',
+      type: 'goerli', // as returned by web3.eth.net.getNetworkType()
+      live: true,
+    },
+    providers: [{ id: 'provided' }, { id: 'frame' }],
+  },
   unknown: {
     addresses: {
       ensRegistry: localEnsRegistryAddress,
