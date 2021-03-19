@@ -12,6 +12,7 @@ const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
 const SENTRY_DSN = 'SENTRY_DSN'
 const PORTIS_DAPP_ID = 'PORTIS_DAPP_ID'
 const FORTMATIC_API_KEY = 'FORTMATIC_API_KEY'
+const WALLETCONNECT_RPC_URL = 'WALLETCONNECT_RPC_URL'
 
 // Parcel requires env vars to be declared statically.
 const CONFIGURATION_VARS = [
@@ -60,6 +61,7 @@ const CONFIGURATION_VARS = [
   [LOCAL_CHAIN_ID, process.env.LOCAL_CHAIN_ID],
   [FORTMATIC_API_KEY, process.env.ARAGON_FORTMATIC_API_KEY],
   [PORTIS_DAPP_ID, process.env.ARAGON_PORTIS_DAPP_ID],
+  [WALLETCONNECT_RPC_URL, process.env.ARAGON_WALLETCONNECT_RPC_URL],
 ].reduce(
   (acc, [option, envValue, envValueCompat]) => ({
     ...acc,
@@ -183,4 +185,8 @@ export function getPortisDappId() {
 
 export function getFortmaticApiKey() {
   return getLocalSetting(FORTMATIC_API_KEY) || ''
+}
+
+export function getWalletConnectRpcUrl() {
+  return getLocalSetting(WALLETCONNECT_RPC_URL) || ''
 }

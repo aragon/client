@@ -19,6 +19,6 @@ process.env.ARAGON_PACKAGE_VERSION = commitSha
   ? `${version}-${commitSha}`
   : version
 execute(
-  `parcel build src/index.html --out-dir ./${buildDir} --public-url ./ --no-cache`,
+  `parcel build src/index.html --out-dir ./${buildDir} --public-url ./ --no-cache --no-source-maps`,
   { stdio: 'inherit' }
 )

@@ -6,6 +6,7 @@ import { getFortmaticApiKey, getPortisDappId } from './local-settings'
 import { getProviderFromUseWalletId } from './ethereum-providers'
 import { network } from './environment'
 import { getWeb3, filterBalanceValue } from './web3-utils'
+import { getWalletConnectRPC } from './network-config'
 
 const NETWORK_TYPE_DEFAULT = 'private'
 
@@ -88,6 +89,7 @@ export function WalletProvider({ children }) {
         fortmatic: { apiKey: getFortmaticApiKey() },
         portis: { dAppId: getPortisDappId() },
         provided: { provider: window.cleanEthereum },
+        walletconnect: { rpcUrl: getWalletConnectRPC(network.chainId) },
       }}
     >
       <WalletContextProvider>{children}</WalletContextProvider>

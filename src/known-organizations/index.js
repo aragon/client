@@ -19,6 +19,7 @@ import pNetworkImage from './images/pnetwork.png'
 import cryptokekImage from './images/cryptokek.svg'
 import nucypherDaoImage from './images/nucypher.svg'
 import nucypherIbexImage from './images/nucypher-ibex.png'
+import lidoImage from './images/lido.svg'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -29,6 +30,14 @@ const TEMPLATE_DANDELION = 'Dandelion'
 export const KnownOrganizations = {
   main: new Map(
     [
+      {
+        address: '0x0000000000000000000000000000000000000000',
+        domain: 'lido-dao.aragonid.eth',
+        image: lidoImage,
+        name: 'Lido',
+        template: TEMPLATE_COMPANY,
+        recommended: true,
+      },
       {
         address: '0xF47917B108ca4B820CCEA2587546fbB9f7564b56',
         domain: 'dcl.eth',
@@ -165,6 +174,14 @@ export const KnownOrganizations = {
   ),
   rinkeby: new Map(
     [
+      {
+        address: '0x900f89ad80DEF8ffCAFE930B69Da111b0051Af6A',
+        domain: 'lido-dao-test-2.aragonid.eth',
+        image: lidoImage,
+        name: 'Lido',
+        template: TEMPLATE_COMPANY,
+        recommended: true,
+      },
       {
         address: '0x43374144c33def77a0ebacec72e9c944a6c375fe',
         domain: 'reputation08.aragonid.eth',
