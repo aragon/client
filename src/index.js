@@ -18,7 +18,6 @@ import {
 import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import initializeSentryIfEnabled from './sentry'
-import { HelpScoutProvider } from './components/HelpScoutBeacon/useHelpScout'
 import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
 
 // Initialize Sentry as early as possible, if enabled
@@ -50,15 +49,13 @@ function Providers() {
     <Main layout={false} scrollView={false} theme={appearance}>
       <RoutingProvider>
         <WalletProvider>
-          <HelpScoutProvider>
-            <ConsoleVisibleProvider>
-              <GlobalErrorHandler>
-                <ClientBlockNumberProvider>
-                  <App />
-                </ClientBlockNumberProvider>
-              </GlobalErrorHandler>
-            </ConsoleVisibleProvider>
-          </HelpScoutProvider>
+          <ConsoleVisibleProvider>
+            <GlobalErrorHandler>
+              <ClientBlockNumberProvider>
+                <App />
+              </ClientBlockNumberProvider>
+            </GlobalErrorHandler>
+          </ConsoleVisibleProvider>
         </WalletProvider>
       </RoutingProvider>
     </Main>
