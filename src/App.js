@@ -46,11 +46,11 @@ const INITIAL_DAO_STATE = {
 }
 
 const SELECTOR_NETWORKS = [
-  ['main', 'Ethereum Mainnet', 'https://client.aragon.org/'],
-  [
-    'rinkeby',
-    'Ethereum Testnet (Rinkeby)',
-    'https://rinkeby.client.aragon.org/',
+   ['main', 'BSC testnet', 'http://testnet-dao.easyswap.finance/'],
+   [
+    'bsc',
+    'BSC Smart Chain',
+    'http://testnet-dao.easyswap.finance/',
   ],
 ]
 if (network.type === 'ropsten') {

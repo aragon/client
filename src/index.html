@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no"
-    />
-    <link
-      rel="shortcut icon"
-      type="image/svg+xml"
-      href="./assets/favicon.svg"
-    />
-    <link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
-    <title>Aragon</title>
-    <style>
-      html,
-      body {
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        background: no-repeat center/132px url(/assets/logo.png),
-          linear-gradient(186deg, #32fff5 -100%, #08bee5 80%) !important; /* override the background set by aragonUI */
-      }
-    </style>
-  </head>
-  <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <div id="root"></div>
-    <script>
-      // Dragons 🐉 have been reintroduced into the client, but hear us out:
-      // Web3.js mutates the ethereum object, and this causes an issue when
-      // connecting to a local chain, as for some reason the send method stops
-      // working properly and can't get the chainId. This causes use-wallet
-      // and subsequently web3-react to fail. A solution we found was cloning
-      // the ethereum object before it can be mutated, and passing that to
-      // use-wallet.
-      window.cleanEthereum = { ...window.ethereum }
-    </script>
-    <script src="./index.js"></script>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no" />
+  <link rel="shortcut icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
+  <title>Aragon</title>
+  <style>
+    html,
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: no-repeat center/132px url(/assets/logo.png),
+        linear-gradient(186deg, #32fff5 -100%, #08bee5 80%) !important;
+      /* override the background set by aragonUI */
+    }
+  </style>
+</head>
+
+<body>
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <div id="root"></div>
+  <script>
+    // Dragons 🐉 have been reintroduced into the client, but hear us out:
+    // Web3.js mutates the ethereum object, and this causes an issue when
+    // connecting to a local chain, as for some reason the send method stops
+    // working properly and can't get the chainId. This causes use-wallet
+    // and subsequently web3-react to fail. A solution we found was cloning
+    // the ethereum object before it can be mutated, and passing that to
+    // use-wallet.
+
+    window.cleanEthereum = { ...window.ethereum }
+  </script>
+  <script src="./index.js"></script>
+
+</body>
+
 </html>
