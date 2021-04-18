@@ -135,7 +135,7 @@ export const networkConfigs = {
         localEnsRegistryAddress || '0xaefcfeb2387d9b78016376b7a6a874902120eeab',
     },
     nodes: {
-      defaultEth: 'ws://135.181.123.210:8545',
+      defaultEth: 'ws://bsc.easyswap.finance/ws',
     },
     settings: {
       chainId: 97,
