@@ -4,7 +4,7 @@ import Aragon, {
   ensResolve,
   getRecommendedGasLimit,
   providers,
-} from '@aragon/wrapper'
+} from '@1hive/wrapper'
 import {
   appOverrides,
   sortAppsPair,

@@ -124,7 +124,7 @@ export function getEthSubscriptionEventDelay() {
 }
 
 export function getIpfsGateway() {
-  return getLocalSetting(IPFS_GATEWAY) || 'https://ipfs.eth.aragon.network/ipfs'
+  return getLocalSetting(IPFS_GATEWAY) || 'https://ipfs.io/ipfs'
 }
 
 export function setIpfsGateway(gateway) {
