@@ -12,6 +12,7 @@ const portisDappId = getPortisDappId()
 // connectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
   main: {
+    enableMigrateBanner: false,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
@@ -36,6 +37,7 @@ export const networkConfigs = {
     ].filter(p => p),
   },
   rinkeby: {
+    enableMigrateBanner: true,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x98df287b6c145399aaa709692c8d308357bc085d',
@@ -61,6 +63,7 @@ export const networkConfigs = {
     ].filter(p => p),
   },
   ropsten: {
+    enableMigrateBanner: true,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
@@ -79,6 +82,7 @@ export const networkConfigs = {
     providers: [{ id: 'provided' }, { id: 'frame' }],
   },
   local: {
+    enableMigrateBanner: true,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
     },
@@ -101,6 +105,7 @@ export const networkConfigs = {
   // xDai is an experimental chain in the Aragon Client. It's possible
   // and expected that a few things will break.
   xdai: {
+    enableMigrateBanner: false,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0xaafca6b0c89521752e559650206d7c925fd0e530',
@@ -123,6 +128,7 @@ export const networkConfigs = {
     ].filter(p => p),
   },
   unknown: {
+    enableMigrateBanner: true,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
     },

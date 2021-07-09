@@ -4,7 +4,7 @@ import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
 import { EthereumAddressType, ClientThemeType } from './prop-types'
 import { useWallet } from './wallet'
-import { network, web3Providers } from './environment'
+import { network, web3Providers, enableMigrateBanner } from './environment'
 import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
@@ -34,10 +34,12 @@ import {
   DAO_STATUS_UNLOADED,
 } from './symbols'
 
-const MIGRATION_BANNER_SHOW = 'MIGRATION_BANNER_SHOW&'
+const MIGRATION_BANNER_HIDE = 'MIGRATION_BANNER_HIDE&'
 const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
   '2021-05-14T15:43:08Z'
 ).getTime()
+
+const getMigrateBannerKey = address => `${MIGRATION_BANNER_HIDE}${address}`
 
 const INITIAL_DAO_STATE = {
   apps: [],
@@ -150,15 +152,16 @@ class App extends React.Component {
       onDaoAddress: ({ address, domain, createdAt }) => {
         log('dao address', address)
         log('dao domain', domain)
-        const LOCAL_STORAGE_KEY = `${MIGRATION_BANNER_SHOW}${address}`
+        log('dao createdAt', createdAt)
+        const hideMigrateBanner = getMigrateBannerKey(address)
         if (
+          enableMigrateBanner &&
           createdAt &&
-          !localStorage.getItem(LOCAL_STORAGE_KEY) &&
+          !localStorage.getItem(hideMigrateBanner) &&
           createdAt < MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP
         ) {
           // show banner...
-          // TODO:LOO here to show banner..
-          localStorage.setItem(LOCAL_STORAGE_KEY, true)
+          this.setState({ showMigrateBanner: true })
         }
         this.setState({
           daoStatus: DAO_STATUS_READY,
@@ -262,6 +265,11 @@ class App extends React.Component {
       })
   }
 
+  closeMigrateBanner = address => {
+    this.setState({ showMigrateBanner: false })
+    localStorage.setItem(getMigrateBannerKey(address), String(true))
+  }
+
   handleIdentityCancel = () => {
     const { identityIntent } = this.state
     identityIntent.reject(new Error('Identity modification cancelled'))
@@ -324,6 +332,7 @@ class App extends React.Component {
       signatureBag,
       web3,
       wrapper,
+      showMigrateBanner,
     } = this.state
 
     const { address: intentAddress = null, label: intentLabel = '' } =
@@ -404,6 +413,10 @@ class App extends React.Component {
                               visible={routing.mode.name === 'org'}
                               web3={web3}
                               wrapper={wrapper}
+                              showMigrateBanner={showMigrateBanner}
+                              closeMigrateBanner={() =>
+                                this.closeMigrateBanner(daoAddress.address)
+                              }
                             />
                           </div>
                         </PermissionsProvider>
