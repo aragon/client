@@ -9,6 +9,7 @@ const localEnsRegistryAddress = getEnsRegistryAddress()
 const fortmaticApiKey = getFortmaticApiKey()
 const portisDappId = getPortisDappId()
 
+// connectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
   main: {
     addresses: {
@@ -18,6 +19,8 @@ export const networkConfigs = {
     nodes: {
       defaultEth: 'wss://mainnet.eth.aragon.network/ws',
     },
+    connectGraphEndpoint:
+      'https://api.thegraph.com/subgraphs/name/aragon/aragon-mainnet',
     settings: {
       chainId: 1,
       name: 'Mainnet',
@@ -40,6 +43,8 @@ export const networkConfigs = {
     nodes: {
       defaultEth: 'wss://rinkeby.eth.aragon.network/ws',
     },
+    connectGraphEndpoint:
+      'https://api.thegraph.com/subgraphs/name/aragon/aragon-rinkeby',
     settings: {
       chainId: 4,
       name: 'Rinkeby testnet',
@@ -63,6 +68,7 @@ export const networkConfigs = {
     nodes: {
       defaultEth: 'wss://ropsten.eth.aragon.network/ws',
     },
+    connectGraphEndpoint: null,
     settings: {
       chainId: 3,
       name: 'Ropsten testnet',
@@ -79,6 +85,7 @@ export const networkConfigs = {
     nodes: {
       defaultEth: 'ws://localhost:8545',
     },
+    connectGraphEndpoint: null,
     settings: {
       // Local development environments by convention use
       // a chainId of value 1337, but for the sake of configuration
@@ -101,6 +108,7 @@ export const networkConfigs = {
     nodes: {
       defaultEth: 'wss://xdai.poanetwork.dev/wss',
     },
+    connectGraphEndpoint: null,
     settings: {
       chainId: 100,
       name: 'xDai',
@@ -121,6 +129,7 @@ export const networkConfigs = {
     nodes: {
       defaultEth: 'ws://localhost:8545',
     },
+    connectGraphEndpoint: null,
     settings: {
       name: `Unknown network`,
       shortName: 'Unknown',

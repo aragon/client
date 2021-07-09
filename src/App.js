@@ -22,6 +22,7 @@ import CustomToast from './components/CustomToast/CustomToast'
 import OrgView from './components/OrgView/OrgView'
 
 import { isKnownRepo } from './repo-utils'
+
 import {
   APPS_STATUS_ERROR,
   APPS_STATUS_READY,
@@ -32,6 +33,11 @@ import {
   DAO_STATUS_LOADING,
   DAO_STATUS_UNLOADED,
 } from './symbols'
+
+const MIGRATION_BANNER_SHOW = 'MIGRATION_BANNER_SHOW&'
+const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
+  '2021-05-14T15:43:08Z'
+).getTime()
 
 const INITIAL_DAO_STATE = {
   apps: [],
@@ -141,9 +147,19 @@ class App extends React.Component {
       },
       provider: web3Providers.default,
       walletAccount,
-      onDaoAddress: ({ address, domain }) => {
+      onDaoAddress: ({ address, domain, createdAt }) => {
         log('dao address', address)
         log('dao domain', domain)
+        const LOCAL_STORAGE_KEY = `${MIGRATION_BANNER_SHOW}${address}`
+        if (
+          createdAt &&
+          !localStorage.getItem(LOCAL_STORAGE_KEY) &&
+          createdAt < MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP
+        ) {
+          // show banner...
+          // TODO:LOO here to show banner..
+          localStorage.setItem(LOCAL_STORAGE_KEY, true)
+        }
         this.setState({
           daoStatus: DAO_STATUS_READY,
           daoAddress: { address, domain },
