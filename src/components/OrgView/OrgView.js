@@ -193,7 +193,10 @@ function OrgView({
           visible={showMigrateBanner}
           onClose={closeMigrateBanner}
         />
-        <UpgradeBanner visible={true} onMoreInfo={handleUpgradeModalOpen} />
+        <UpgradeBanner
+          visible={canUpgradeOrg}
+          onMoreInfo={handleUpgradeModalOpen}
+        />
       </div>
       <AppWidthContext.Provider
         value={autoClosingPanel ? width : width - MENU_PANEL_WIDTH}
@@ -406,7 +409,7 @@ OrgView.propTypes = {
   visible: PropTypes.bool.isRequired,
   web3: PropTypes.object,
   wrapper: AragonType,
-  showMigrateBanner: PropTypes.bool.isRequired,
+  showMigrateBanner: PropTypes.bool,
   closeMigrateBanner: PropTypes.func.isRequired,
 }
 
