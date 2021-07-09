@@ -4147,11 +4147,6 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-custom-hooks@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/custom-hooks/-/custom-hooks-0.0.0.tgz#3003a13baa0d61cf3b6100ccbf0cb1d5eeeeac41"
-  integrity sha512-fW3oGgYoGvWOd5BX0GiqYSC6nYbrR7/emPt29ZPGHthP5zUIDmvq0Ulv8KqAJuUbOwHt47TjxF5Nild9Cn31Vw==
-
 d@1, d@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/d/-/d-1.0.1.tgz#8698095372d58dbee346ffd0c7093f99f8f9eb5a"
