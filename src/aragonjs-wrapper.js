@@ -29,8 +29,6 @@ import { getOrganizationByAddress } from './services/gql'
 
 const POLL_DELAY_CONNECTIVITY = 2000
 
-export const MIGRATION_BANNER_SHOWN = 'MIGRATION_BANNER_SHOWN'
-
 const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
