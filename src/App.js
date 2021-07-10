@@ -50,6 +50,7 @@ const INITIAL_DAO_STATE = {
   permissions: {},
   permissionsLoading: true,
   repos: [],
+  showMigrateBanner: false,
 }
 
 const SELECTOR_NETWORKS = [
@@ -154,16 +155,14 @@ class App extends React.Component {
         log('dao domain', domain)
         log('dao createdAt', createdAt)
         const hideMigrateBanner = getMigrateBannerKey(address)
-        if (
+        const showMigrateBanner =
           enableMigrateBanner &&
           createdAt &&
           !localStorage.getItem(hideMigrateBanner) &&
           createdAt < MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP
-        ) {
-          // show banner...
-          this.setState({ showMigrateBanner: true })
-        }
+
         this.setState({
+          showMigrateBanner,
           daoStatus: DAO_STATUS_READY,
           daoAddress: { address, domain },
         })

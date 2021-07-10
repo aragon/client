@@ -189,10 +189,12 @@ function OrgView({
           flex-shrink: 0;
         `}
       >
-        <MigrateBanner
-          visible={showMigrateBanner}
-          onClose={closeMigrateBanner}
-        />
+        {showMigrateBanner && (
+          <MigrateBanner
+            visible={showMigrateBanner}
+            onClose={closeMigrateBanner}
+          />
+        )}
         <UpgradeBanner
           visible={canUpgradeOrg}
           onMoreInfo={handleUpgradeModalOpen}
