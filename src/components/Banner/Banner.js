@@ -15,7 +15,7 @@ function Banner({ text, textColor, button, color }) {
         justify-content: center;
         height: ${BANNER_HEIGHT}px;
         padding: ${0.5 * GU}px ${1 * GU}px;
-        background: ${({ color }) => color};
+        background-color: ${({ color }) => color};
       `}
     >
       <div
