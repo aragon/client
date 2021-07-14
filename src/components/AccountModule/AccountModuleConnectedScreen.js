@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
@@ -22,6 +22,9 @@ import {
   useWalletConnectionDetails,
 } from './connection-hooks'
 import WalletSyncedInfo from './WalletSyncedInfo'
+import { identifyUser, trackEvent, EventType } from '../../analytics'
+
+let userIdentified = false
 
 function AccountModuleConnectedScreen({
   account,
@@ -62,8 +65,34 @@ function AccountModuleConnectedScreen({
   )
 
   const handleDisconnect = useCallback(() => {
+    // analytics test
+    trackEvent(EventType.WALLET_DISCONNECTED, {
+      wallet_address: wallet.account,
+      wallet_provider: wallet.providerInfo.name,
+      network: wallet.networkName,
+    })
+    userIdentified = false
     wallet.deactivate()
   }, [wallet])
+
+  // analytics
+  useEffect(() => {
+    if (
+      wallet.connected &&
+      typeof wallet.account === 'string' &&
+      wallet.providerInfo.id !== 'unknown' &&
+      wallet.networkName &&
+      !userIdentified
+    ) {
+      userIdentified = true
+      identifyUser(wallet.account, wallet.networkName, wallet.providerInfo.name)
+    }
+  }, [
+    wallet.networkName,
+    wallet.providerInfo,
+    wallet.connected,
+    wallet.account,
+  ])
 
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
 

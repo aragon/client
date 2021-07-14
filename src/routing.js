@@ -12,6 +12,7 @@ import { logWithSentry } from './sentry'
 import { staticApps } from './static-apps'
 import { isAddress, isValidEnsName } from './web3-utils'
 import { addStartingSlash } from './utils'
+import { trackPage } from './analytics'
 
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 
@@ -215,6 +216,8 @@ export function getPreferencesSearch({ section, subsection, data = {} } = {}) {
 
 const RoutingContext = React.createContext()
 
+let currentPath = ''
+
 export function RoutingProvider({ children }) {
   const history = useRef(null)
 
@@ -241,7 +244,6 @@ export function RoutingProvider({ children }) {
       if (typeof locatorUpdate === 'function') {
         locatorUpdate = locatorUpdate(locator) || {}
       }
-
       return getPath(locatorUpdate)
     },
     [locator]
@@ -253,6 +255,15 @@ export function RoutingProvider({ children }) {
     },
     [getPathFromLocator, updatePath]
   )
+
+  // analytics
+  useEffect(() => {
+    const path = getPath(locator)
+    if (currentPath !== path) {
+      currentPath = path
+      trackPage(path)
+    }
+  }, [locator])
 
   const handleLocation = useCallback(({ pathname, search, state = {} }) => {
     if (state.alreadyParsed) {
