@@ -1,10 +1,10 @@
-const MethodType = {
+const methods = {
   PAGE: 0,
   IDENTIFY: 1,
   EVENT: 2,
 }
 
-export const EventType = {
+export const events = {
   TEMPLATE_SELECTED: 'template_selected',
   WALLET_DISCONNECTED: 'wallet_disconnected',
 }
@@ -12,31 +12,31 @@ export const EventType = {
 /**
  * This private method extracts the necessary method from the global window object.
  *
- * @param {MethodType} methodType Type of analyts to track
+ * @param {methods} method Type of analyts to track
  * @returns {void} the corresponding analytics method
  */
-function getAnalyticsMethod(methodType) {
+function getAnalyticsMethod(method) {
   var windowAnalytics = window.analytics
   if (!windowAnalytics) {
     return
   }
-  if (methodType === MethodType.PAGE) return windowAnalytics.page
-  if (methodType === MethodType.IDENTIFY) return windowAnalytics.identify
-  if (methodType === MethodType.EVENT) return windowAnalytics.track
+  if (method === methods.PAGE) return windowAnalytics.page
+  if (method === methods.IDENTIFY) return windowAnalytics.identify
+  if (method === methods.EVENT) return windowAnalytics.track
 }
 /**
  * This method keeps track of certain events (like creation of proposals, etc.).
  *
- * @param {EventType} eventType name of the event to be tracked
+ * @param {events} event name of the event to be tracked
  * @param {Object} eventData relating to tracked event
  * @returns {void}
  */
-export function trackEvent(eventType, eventData) {
-  var trackerMethod = getAnalyticsMethod(MethodType.EVENT)
+export function trackEvent(event, eventData) {
+  var trackerMethod = getAnalyticsMethod(methods.EVENT)
   if (typeof trackerMethod !== 'function') {
     return
   }
-  trackerMethod(eventType, eventData)
+  trackerMethod(event, eventData)
 }
 
 /**
@@ -46,7 +46,7 @@ export function trackEvent(eventType, eventData) {
  * @returns {void}
  */
 export function trackPage(pathName) {
-  var trackerMethod = getAnalyticsMethod(MethodType.PAGE)
+  var trackerMethod = getAnalyticsMethod(methods.PAGE)
   if (typeof trackerMethod !== 'function') {
     return
   }
@@ -64,7 +64,7 @@ export function trackPage(pathName) {
  * @returns {void}
  */
 export function identifyUser(account, networkName, connector) {
-  var trackerMethod = getAnalyticsMethod(MethodType.IDENTIFY)
+  var trackerMethod = getAnalyticsMethod(methods.IDENTIFY)
   if (typeof trackerMethod !== 'function') {
     return
   }
