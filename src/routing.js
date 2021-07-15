@@ -255,7 +255,7 @@ export function RoutingProvider({ children }) {
 
   // history.current is set once, so we can use it for listening to changes in path
   useEffect(() => {
-    if (history.current) {
+    if (history && history.current) {
       history.current.listen(change => {
         trackPage(change.pathname)
       })

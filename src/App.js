@@ -429,6 +429,7 @@ export default function AppHooksWrapper(props) {
   const clientTheme = useClientTheme()
   const routing = useRouting()
 
+  // analytics
   useEffect(() => {
     if (
       connected &&
