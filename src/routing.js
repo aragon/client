@@ -216,8 +216,6 @@ export function getPreferencesSearch({ section, subsection, data = {} } = {}) {
 
 const RoutingContext = React.createContext()
 
-let currentPath = ''
-
 export function RoutingProvider({ children }) {
   const history = useRef(null)
 
@@ -233,7 +231,6 @@ export function RoutingProvider({ children }) {
   // Change the URL if needed
   const updatePath = useCallback(path => {
     const location = history.current && history.current.location
-
     if (location && path !== location.pathname + location.search) {
       history.current.push(path)
     }
@@ -256,14 +253,14 @@ export function RoutingProvider({ children }) {
     [getPathFromLocator, updatePath]
   )
 
-  // analytics
+  // history.current is set once, so we can use it for listening to changes in path
   useEffect(() => {
-    const path = getPath(locator)
-    if (currentPath !== path) {
-      currentPath = path
-      trackPage(path)
+    if (history.current) {
+      history.current.listen(change => {
+        trackPage(change.pathname)
+      })
     }
-  }, [locator])
+  }, [])
 
   const handleLocation = useCallback(({ pathname, search, state = {} }) => {
     if (state.alreadyParsed) {

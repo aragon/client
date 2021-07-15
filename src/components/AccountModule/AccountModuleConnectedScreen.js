@@ -22,9 +22,7 @@ import {
   useWalletConnectionDetails,
 } from './connection-hooks'
 import WalletSyncedInfo from './WalletSyncedInfo'
-import { identifyUser, trackEvent, events } from '../../analytics'
-
-let userIdentified = false
+import { trackEvent, events } from '../../analytics'
 
 function AccountModuleConnectedScreen({
   account,
@@ -71,22 +69,8 @@ function AccountModuleConnectedScreen({
       wallet_provider: wallet.providerInfo.name,
       network: wallet.networkName,
     })
-    userIdentified = false
-    wallet.deactivate()
-  }, [wallet])
 
-  // analytics
-  useEffect(() => {
-    if (
-      wallet.connected &&
-      typeof wallet.account === 'string' &&
-      wallet.providerInfo.id !== 'unknown' &&
-      wallet.networkName &&
-      !userIdentified
-    ) {
-      userIdentified = true
-      identifyUser(wallet.account, wallet.networkName, wallet.providerInfo.name)
-    }
+    wallet.deactivate()
   }, [wallet])
 
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
