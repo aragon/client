@@ -253,15 +253,6 @@ export function RoutingProvider({ children }) {
     [getPathFromLocator, updatePath]
   )
 
-  // history.current is set once, so we can use it for listening to changes in path
-  useEffect(() => {
-    if (history && history.current) {
-      history.current.listen(change => {
-        trackPage(change.pathname)
-      })
-    }
-  }, [])
-
   const handleLocation = useCallback(({ pathname, search, state = {} }) => {
     if (state.alreadyParsed) {
       return
@@ -299,6 +290,11 @@ export function RoutingProvider({ children }) {
     history.current = createHistory()
 
     handleLocation(history.current.location)
+
+    // analytics
+    history.current.listen(change => {
+      trackPage(change.pathname)
+    })
 
     // history.current.listen() returns a function to stop listening.
     return history.current.listen(handleLocation)
