@@ -18,6 +18,7 @@ import { TEMPLATE_LOADING, TEMPLATE_UNAVAILABLE } from '../symbols'
 import { stripUrlProtocol, sanitizeCodeRepositoryUrl } from '../../url-utils'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import KnownAppBadge from '../../templates/kit/KnownAppBadge'
+import { trackEvent, events } from '../../analytics'
 
 function TemplateDetails({ template, visible, onUse, onClose }) {
   const theme = useTheme()
@@ -29,6 +30,9 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
       .filter(([_, value]) => Boolean(value))
       .map(([appName]) => appName)
     onUse(template.id, selectedOptionalApps)
+
+    // analytics test
+    trackEvent(events.TEMPLATE_SELECTED, { name: template.name })
   }, [onUse, template, templateOptionalApps])
 
   const handleSectionRef = useCallback(element => {

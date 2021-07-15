@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
@@ -20,6 +20,7 @@ import LocalIdentityModal from './components/LocalIdentityModal/LocalIdentityMod
 import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import CustomToast from './components/CustomToast/CustomToast'
 import OrgView from './components/OrgView/OrgView'
+import { identifyUser } from './analytics'
 
 import { isKnownRepo } from './repo-utils'
 
@@ -90,6 +91,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    // analytics
+    if (process.env.REACT_APP_ANALYTICS_KEY) {
+      const script = document.createElement('script')
+      script.innerText = `!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics._writeKey="${process.env.REACT_APP_ANALYTICS_KEY}";analytics.SNIPPET_VERSION="4.13.2";analytics.load("${process.env.REACT_APP_ANALYTICS_KEY}");analytics.page();}}();`
+      document.body.appendChild(script)
+    }
+
     // Only the default, because the app can work without the wallet
     pollConnectivity([web3Providers.default], connected => {
       this.setState({ connected })
@@ -443,10 +451,23 @@ class App extends React.Component {
 }
 
 export default function AppHooksWrapper(props) {
-  const { account } = useWallet()
+  const { account, connected, networkName, providerInfo } = useWallet()
+
   const theme = useTheme()
   const clientTheme = useClientTheme()
   const routing = useRouting()
+
+  // analytics
+  useEffect(() => {
+    if (
+      connected &&
+      typeof account === 'string' &&
+      providerInfo.id !== 'unknown' &&
+      networkName
+    ) {
+      identifyUser(account, networkName, providerInfo.name)
+    }
+  }, [account, connected, networkName, providerInfo])
 
   return (
     <App

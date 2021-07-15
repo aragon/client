@@ -22,6 +22,7 @@ import {
   useWalletConnectionDetails,
 } from './connection-hooks'
 import WalletSyncedInfo from './WalletSyncedInfo'
+import { trackEvent, events } from '../../analytics'
 
 function AccountModuleConnectedScreen({
   account,
@@ -62,6 +63,13 @@ function AccountModuleConnectedScreen({
   )
 
   const handleDisconnect = useCallback(() => {
+    // analytics test
+    trackEvent(events.WALLET_DISCONNECTED, {
+      wallet_address: wallet.account,
+      wallet_provider: wallet.providerInfo.name,
+      network: wallet.networkName,
+    })
+
     wallet.deactivate()
   }, [wallet])
 
