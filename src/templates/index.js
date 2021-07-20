@@ -9,9 +9,9 @@ import dandelion from './dandelion'
 
 export default [
   company,
-  dandelion,
-  fundraising,
-  openEnterprise,
   membership,
   reputation,
+  openEnterprise,
+  dandelion,
+  fundraising,
 ]
