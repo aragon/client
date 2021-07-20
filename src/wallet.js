@@ -16,8 +16,8 @@ function WalletContextProvider({ children }) {
     account,
     balance,
     ethereum,
-    activated,
-    activating,
+    connector,
+    status,
     ...walletBaseRest
   } = useWalletBase()
 
@@ -53,24 +53,35 @@ function WalletContextProvider({ children }) {
     }
   }, [account, ethereum])
 
+  // on network change, use-wallet gives status == 'connected' but account==null.
+  // This condition causes error in rendering <ButtonAccount> as it expects an account.
+  // So, treat this as disconnected case
+  const adjustedStatus = useMemo(
+    () => (status === 'connected' && !account ? 'disconnected' : status),
+    [status, account]
+  )
+
   const wallet = useMemo(
     () => ({
       account,
       balance: new BN(filterBalanceValue(balance)),
       ethereum,
       networkType,
-      providerInfo: getProviderFromUseWalletId(activated),
+      providerInfo: getProviderFromUseWalletId(connector),
       web3: walletWeb3,
+      status: adjustedStatus,
+      connected: adjustedStatus === 'connected',
       ...walletBaseRest,
     }),
     [
-      activated,
       account,
       balance,
       ethereum,
       networkType,
+      connector,
       walletBaseRest,
       walletWeb3,
+      adjustedStatus,
     ]
   )
 
@@ -87,7 +98,7 @@ export function WalletProvider({ children }) {
       connectors={{
         fortmatic: { apiKey: getFortmaticApiKey() },
         portis: { dAppId: getPortisDappId() },
-        provided: { provider: window.cleanEthereum },
+        provided: { provider: window.ethereum },
       }}
     >
       <WalletContextProvider>{children}</WalletContextProvider>

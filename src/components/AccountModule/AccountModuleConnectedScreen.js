@@ -70,7 +70,7 @@ function AccountModuleConnectedScreen({
       network: wallet.networkName,
     })
 
-    wallet.deactivate()
+    wallet.reset()
   }, [wallet])
 
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck

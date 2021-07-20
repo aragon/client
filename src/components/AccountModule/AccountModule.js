@@ -24,32 +24,22 @@ const SCREENS = [
 
 function AccountModule() {
   const [opened, setOpened] = useState(false)
-  const [activatingDelayed, setActivatingDelayed] = useState(false)
-  const [activationError, setActivationError] = useState(null)
+  const [activatingDelayed, setActivatingDelayed] = useState(null)
   const buttonRef = useRef()
   const wallet = useWallet()
 
-  const { account, activating, providerInfo } = wallet
-
-  const clearError = useCallback(() => setActivationError(null), [])
+  const { account, error, status, providerInfo } = wallet
 
   const open = useCallback(() => setOpened(true), [])
   const toggle = useCallback(() => setOpened(opened => !opened), [])
 
-  const handleCancelConnection = useCallback(() => {
-    wallet.deactivate()
+  const handleResetConnection = useCallback(() => {
+    wallet.reset()
   }, [wallet])
 
-  const handleActivate = useCallback(
-    async providerId => {
-      try {
-        await wallet.activate(providerId)
-      } catch (error) {
-        setActivationError(error)
-      }
-    },
-    [wallet]
-  )
+  const handleActivate = useCallback(providerId => wallet.connect(providerId), [
+    wallet,
+  ])
 
   const {
     clientConnectionStatus,
@@ -67,37 +57,26 @@ function AccountModule() {
 
   // Always show the “connecting…” screen, even if there are no delay
   useEffect(() => {
-    if (activationError) {
+    let timer
+
+    if (status === 'error') {
       setActivatingDelayed(null)
     }
 
-    if (activating) {
-      setActivatingDelayed(activating)
-      return
+    if (status === 'connecting') {
+      setActivatingDelayed(providerInfo.id)
+      timer = setTimeout(() => {
+        setActivatingDelayed(null)
+      }, 400)
     }
-
-    const timer = setTimeout(() => {
-      setActivatingDelayed(null)
-    }, 400)
 
     return () => clearTimeout(timer)
-  }, [activating, activationError])
+  }, [providerInfo, status])
 
   const previousScreenIndex = useRef(-1)
 
   const { screenIndex, direction } = useMemo(() => {
-    const screenId = (() => {
-      if (activationError) {
-        return 'error'
-      }
-      if (activatingDelayed) {
-        return 'connecting'
-      }
-      if (account) {
-        return 'connected'
-      }
-      return 'providers'
-    })()
+    const screenId = status === 'disconnected' ? 'providers' : status
 
     const screenIndex = SCREENS.findIndex(screen => screen.id === screenId)
     const direction = previousScreenIndex.current > screenIndex ? -1 : 1
@@ -105,7 +84,7 @@ function AccountModule() {
     previousScreenIndex.current = screenIndex
 
     return { direction, screenIndex }
-  }, [account, activationError, activatingDelayed])
+  }, [status, account])
 
   const screen = SCREENS[screenIndex]
   const screenId = screen.id
@@ -116,7 +95,6 @@ function AccountModule() {
       return false
     }
     setOpened(false)
-    setActivationError(null)
   }, [screenId])
 
   return (
@@ -142,7 +120,7 @@ function AccountModule() {
       <AccountModulePopover
         direction={direction}
         heading={screen.title}
-        keys={({ screenId }) => screenId + activating + activationError.name}
+        keys={({ screenId }) => screenId + providerInfo.id + error.name}
         onClose={handlePopoverClose}
         onOpen={open}
         opener={buttonRef.current}
@@ -150,7 +128,7 @@ function AccountModule() {
         screenData={{
           account,
           activating: activatingDelayed,
-          activationError,
+          activationError: error,
           providerInfo,
           screenId,
         }}
@@ -174,7 +152,7 @@ function AccountModule() {
             return (
               <ConnectingScreen
                 providerId={activating}
-                onCancel={handleCancelConnection}
+                onCancel={handleResetConnection}
               />
             )
           }
@@ -195,7 +173,12 @@ function AccountModule() {
             )
           }
           if (screenId === 'error') {
-            return <ErrorScreen error={activationError} onBack={clearError} />
+            return (
+              <ErrorScreen
+                error={activationError}
+                onBack={handleResetConnection}
+              />
+            )
           }
           return <ProvidersScreen onActivate={handleActivate} />
         }}
