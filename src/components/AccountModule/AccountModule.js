@@ -84,7 +84,7 @@ function AccountModule() {
     previousScreenIndex.current = screenIndex
 
     return { direction, screenIndex }
-  }, [status, account])
+  }, [status])
 
   const screen = SCREENS[screenIndex]
   const screenId = screen.id
