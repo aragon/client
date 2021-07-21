@@ -4,10 +4,10 @@ import BN from 'bn.js'
 import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
 import { getFortmaticApiKey, getPortisDappId } from './local-settings'
 import { getProviderFromUseWalletId } from './ethereum-providers'
-import { network } from './environment'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 
 const NETWORK_TYPE_DEFAULT = 'private'
+const SUPPORTED_CHAIN_IDS = [1, 4]
 
 const WalletContext = React.createContext()
 
@@ -18,12 +18,14 @@ function WalletContextProvider({ children }) {
     ethereum,
     connector,
     status,
+    chainId,
     ...walletBaseRest
   } = useWalletBase()
 
   const [walletWeb3, setWalletWeb3] = useState(null)
   const [networkType, setNetworkType] = useState(NETWORK_TYPE_DEFAULT)
 
+  // get web3 and networkType whenever chainId changes
   useEffect(() => {
     let cancel = false
 
@@ -51,15 +53,7 @@ function WalletContextProvider({ children }) {
       setWalletWeb3(null)
       setNetworkType(NETWORK_TYPE_DEFAULT)
     }
-  }, [account, ethereum])
-
-  // on network change, use-wallet gives status == 'connected' but account==null.
-  // This condition causes error in rendering <ButtonAccount> as it expects an account.
-  // So, treat this as disconnected case
-  const adjustedStatus = useMemo(
-    () => (status === 'connected' && !account ? 'disconnected' : status),
-    [status, account]
-  )
+  }, [ethereum, chainId])
 
   const wallet = useMemo(
     () => ({
@@ -69,8 +63,9 @@ function WalletContextProvider({ children }) {
       networkType,
       providerInfo: getProviderFromUseWalletId(connector),
       web3: walletWeb3,
-      status: adjustedStatus,
-      connected: adjustedStatus === 'connected',
+      status,
+      chainId,
+      connected: status === 'connected',
       ...walletBaseRest,
     }),
     [
@@ -78,10 +73,11 @@ function WalletContextProvider({ children }) {
       balance,
       ethereum,
       networkType,
+      status,
+      chainId,
       connector,
       walletBaseRest,
       walletWeb3,
-      adjustedStatus,
     ]
   )
 
@@ -94,11 +90,13 @@ WalletContextProvider.propTypes = { children: PropTypes.node }
 export function WalletProvider({ children }) {
   return (
     <UseWalletProvider
-      chainId={network.chainId}
       connectors={{
-        fortmatic: { apiKey: getFortmaticApiKey() },
-        portis: { dAppId: getPortisDappId() },
-        provided: { provider: window.ethereum },
+        fortmatic: {
+          apiKey: getFortmaticApiKey(),
+          chainId: SUPPORTED_CHAIN_IDS,
+        },
+        portis: { dAppId: getPortisDappId(), chainId: SUPPORTED_CHAIN_IDS },
+        injected: { chainId: SUPPORTED_CHAIN_IDS },
       }}
     >
       <WalletContextProvider>{children}</WalletContextProvider>

@@ -60,7 +60,7 @@
     "regenerator-runtime": "^0.13.3",
     "resolve-pathname": "^3.0.0",
     "styled-components": "^4.1.3",
-    "use-wallet": "^0.9.0",
+    "use-wallet": "https://github.com/aragon/use-wallet#multichain",
     "web3": "^1.2.6",
     "web3-eth-abi": "^1.2.6",
     "web3-utils": "^1.2.6"

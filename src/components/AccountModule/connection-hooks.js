@@ -26,30 +26,30 @@ import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
 export function useNetworkConnectionData() {
-  const { web3: walletWeb3 } = useWallet()
+  const { web3: walletWeb3, chainId } = useWallet()
   const [walletChainId, setWalletChainId] = useState(-1)
-  const clientChainId = network.chainId
 
+  // get the wallet chainId whenever chainId changes to make
+  // sure web3 is connected to the same chain
   useEffect(() => {
     if (!walletWeb3) {
       return
     }
 
     let cancelled = false
-    walletWeb3.eth.getChainId((err, chainId) => {
+    walletWeb3.eth.getChainId((err, web3ChainId) => {
       if (!err && !cancelled) {
-        setWalletChainId(chainId)
+        setWalletChainId(web3ChainId)
       }
     })
     return () => {
       cancelled = true
     }
-  }, [walletWeb3])
+  }, [walletWeb3, chainId])
 
   return {
     walletNetworkName: normalizeNetworkName(walletChainId),
-    clientNetworkName: normalizeNetworkName(clientChainId),
-    hasNetworkMismatch: walletChainId !== -1 && walletChainId !== clientChainId,
+    hasNetworkMismatch: walletChainId !== chainId,
   }
 }
 

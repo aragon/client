@@ -14224,10 +14224,9 @@ use-inside@^0.2.0:
   dependencies:
     prop-types "^15.7.2"
 
-use-wallet@^0.9.0:
+"use-wallet@https://github.com/aragon/use-wallet#multichain":
   version "0.9.0"
-  resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.9.0.tgz#033b17f65c54f829e19f56f235afdb43937b14db"
-  integrity sha512-+G1KsKmmjF7eQoKX1lIGWuP5P1Aq/TZ/UlzoWJcHLkPZmhPSDGXaipvf+2mcSFTsxFdNaSZio25yjYXlq4N2RQ==
+  resolved "https://github.com/aragon/use-wallet#1fba857f817c1d2e57bb7003af377d9b7c4a9c29"
   dependencies:
     "@aragon/provided-connector" "^6.0.8"
     "@typescript-eslint/parser" "^4.1.0"
