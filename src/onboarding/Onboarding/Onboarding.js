@@ -19,16 +19,7 @@ import { useRouting } from '../../routing'
 import { useWallet } from '../../wallet'
 import validateCreationRequirements from '../validate-requirements'
 
-const sortedEmbeddedTemplates = Array.from(embeddedTemplates).sort(
-  (first, second) => {
-    // Put new templates first and disabled templates last
-    first = first.disabled ? -1 : first.new ? 1 : 0
-    second = second.disabled ? -1 : second.new ? 1 : 0
-    return second - first
-  }
-)
-
-const initialEmbeddedTemplates = sortedEmbeddedTemplates.map(template => ({
+const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
   status: TEMPLATE_LOADING,
 }))
@@ -162,7 +153,7 @@ function Onboarding({ selectorNetworks, web3 }) {
     let cancelled = false
     if (status === 'create' && !templatesResolved) {
       Promise.all(
-        sortedEmbeddedTemplates.map(async template => {
+        embeddedTemplates.map(async template => {
           let repoAddress
           try {
             repoAddress = await resolveEnsDomain(template.id)
