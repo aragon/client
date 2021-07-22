@@ -86,7 +86,12 @@ function renderEntry({ entities, app, role, manager }, showApps) {
         ${textStyle('body2')}
       `}
     >
-      {role.name || role.id?.toLowerCase().split("_").slice(0,-1).join(" ")}
+      {role.name ||
+        role.id
+          ?.toLowerCase()
+          .split('_')
+          .slice(0, -1)
+          .join(' ')}
     </span>,
     <LocalLabelAppBadge app={app} apps={[]} noIdentifier />,
     <EntryEntities entities={entities} />,
