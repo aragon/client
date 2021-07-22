@@ -79,13 +79,14 @@ PermissionsView.propTypes = {
 }
 
 function renderEntry({ entities, app, role, manager }, showApps) {
+  // if role.name doesn't exist, role.id looks like this: CHANGE_DURATION_ROLE
   const cells = [
     <span
       css={`
         ${textStyle('body2')}
       `}
     >
-      {role.name}
+      {role.name || role.id?.toLowerCase().split("_").slice(0,-1).join(" ")}
     </span>,
     <LocalLabelAppBadge app={app} apps={[]} noIdentifier />,
     <EntryEntities entities={entities} />,
