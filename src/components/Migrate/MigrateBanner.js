@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { Button, springs, useViewport } from '@aragon/ui'
@@ -14,24 +14,24 @@ const BANNER_TEXT = {
 
 const MigrateBanner = React.memo(({ visible, onClose }) => {
   const { width } = useViewport()
-  const compact = width < 570
-  const bannerHeight = compact ? 70 : BANNER_HEIGHT
+  const compact = useMemo(() => width < 570, [width])
+  const bannerHeight = useMemo(() => (compact ? 70 : BANNER_HEIGHT), [compact])
 
   return (
     <React.Fragment>
       <Transition
         items={visible}
-        from={{ height: 0 }}
-        enter={{ height: bannerHeight }}
-        leave={{ height: 0 }}
+        from={{ opacity: 0 }}
+        enter={{ opacity: 1 }}
+        leave={{ opacity: 0 }}
         config={springs.smooth}
         native
       >
         {visible =>
           visible &&
           /* eslint-disable react/prop-types */
-          (({ height }) => (
-            <animated.div style={{ overflow: 'hidden', height }}>
+          (({ opacity }) => (
+            <animated.div style={{ opacity }}>
               <Banner
                 text={compact ? BANNER_TEXT.compact : BANNER_TEXT.large}
                 button={
