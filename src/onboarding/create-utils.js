@@ -1,5 +1,4 @@
-import { network, web3Providers } from '../environment'
-import { getWeb3 } from '../web3-utils'
+import { network } from '../environment'
 
 const TEMPLATE_STATE_KEY = `create-org:${network.type}`
 
@@ -21,8 +20,7 @@ export function saveTemplateState(state) {
   localStorage.setItem(`create-org:${network.type}`, JSON.stringify(state))
 }
 
-export function prepareTransactionCreatorFromAbi(abi, toAddress) {
-  const web3 = getWeb3(web3Providers.default)
+export function prepareTransactionCreatorFromAbi(web3, abi, toAddress) {
   const contract = new web3.eth.Contract(abi)
 
   return function(methodName, paramsList) {

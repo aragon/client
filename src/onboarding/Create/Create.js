@@ -13,7 +13,7 @@ import {
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
 import { log } from '../../utils'
-import { getGasPrice } from '../../web3-utils'
+import { useWeb3, getGasPrice } from '../../web3-utils'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -172,6 +172,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
   ] = useState(false)
   const [templateAbi, setTemplateAbi] = useState(null)
   const [templateAddress, setTemplateAddress] = useState(null)
+  const web3 = useWeb3()
 
   // Fetch latest information about the template from its aragonPM repository
   useEffect(() => {
@@ -183,7 +184,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
 
     let cancelled = false
     const fetchArtifact = () => {
-      fetchApmArtifact(templateRepoAddress)
+      fetchApmArtifact(web3, templateRepoAddress)
         .then(templateInfo => {
           if (!cancelled) {
             setTemplateAddress(templateInfo.contractAddress)
@@ -205,7 +206,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
     return () => {
       cancelled = true
     }
-  }, [templateRepoAddress])
+  }, [web3, templateRepoAddress])
 
   return {
     fetchingTemplateInformation,
@@ -234,11 +235,15 @@ function useDeploymentState(
     () =>
       status === STATUS_DEPLOYMENT && templateAbi && templateAddress
         ? template.prepareTransactions(
-            prepareTransactionCreatorFromAbi(templateAbi, templateAddress),
+            prepareTransactionCreatorFromAbi(
+              walletWeb3,
+              templateAbi,
+              templateAddress
+            ),
             templateData
           )
         : null,
-    [status, templateAbi, templateAddress, template, templateData]
+    [status, templateAbi, templateAddress, template, templateData, walletWeb3]
   )
 
   // Call tx functions in the template, one after another.

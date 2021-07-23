@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 import appIds from './known-app-ids'
 import { parseAppLocator } from './app-locator'
 import {
@@ -97,7 +96,3 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const defaultEthNode =
   getDefaultEthNode() || networkConfig.nodes.defaultEth
-
-export const web3Providers = {
-  default: new Web3.providers.WebsocketProvider(defaultEthNode),
-}

@@ -9,7 +9,6 @@ import {
   appOverrides,
   sortAppsPair,
   ipfsDefaultConf,
-  web3Providers,
   contractAddresses,
 } from './environment'
 import { NoConnection, DAONotFound } from './errors'
@@ -99,10 +98,10 @@ export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
   // web.eth.net.isListening()
 }, POLL_DELAY_CONNECTIVITY)
 
-export const resolveEnsDomain = async domain => {
+export const resolveEnsDomain = async (provider, domain) => {
   try {
     return await ensResolve(domain, {
-      provider: web3Providers.default,
+      provider,
       registryAddress: contractAddresses.ensRegistry,
     })
   } catch (err) {
@@ -113,16 +112,17 @@ export const resolveEnsDomain = async domain => {
   }
 }
 
-export const isEnsDomainAvailable = async name => {
-  const addr = await resolveEnsDomain(name)
+export const isEnsDomainAvailable = async (web3Provider, name) => {
+  const addr = await resolveEnsDomain(web3Provider, name)
   return addr === '' || isEmptyAddress(addr)
 }
 
 export const fetchApmArtifact = async (
+  web3Provider,
   repoAddress,
   ipfsConf = ipfsDefaultConf
 ) => {
-  return apm(getWeb3(web3Providers.default), {
+  return apm(web3Provider, {
     ipfsGateway: ipfsConf.gateway,
   }).fetchLatestRepoContent(repoAddress)
 }
@@ -262,7 +262,7 @@ const initWrapper = async (
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
-  const daoAddress = isDomain ? await resolveEnsDomain(dao) : dao
+  const daoAddress = isDomain ? await resolveEnsDomain(provider, dao) : dao
 
   if (!daoAddress) {
     throw new DAONotFound(dao)

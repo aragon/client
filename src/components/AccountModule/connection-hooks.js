@@ -12,7 +12,7 @@ import {
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
-import { network, web3Providers } from '../../environment'
+import { network } from '../../environment'
 import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
@@ -21,7 +21,7 @@ import {
 } from './utils'
 import { pollEvery } from '../../utils'
 import { useWallet } from '../../wallet'
-import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
+import { useWeb3, getLatestBlockTimestamp } from '../../web3-utils'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
@@ -116,7 +116,7 @@ export function useWalletConnectionDetails(
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const wallet = useWallet()
-  const clientWeb3 = getWeb3(web3Providers.default)
+  const clientWeb3 = useWeb3()
   const walletWeb3 = wallet.web3
   const selectedWeb3 = wantedWeb3 === 'wallet' ? walletWeb3 : clientWeb3
 

@@ -6,7 +6,7 @@ import { getFortmaticApiKey, getPortisDappId } from './local-settings'
 import { getProviderFromUseWalletId } from './ethereum-providers'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 
-const NETWORK_TYPE_DEFAULT = 'private'
+const NETWORK_TYPE_DEFAULT = 'main'
 const SUPPORTED_CHAIN_IDS = [1, 4]
 
 const WalletContext = React.createContext()
@@ -60,7 +60,7 @@ function WalletContextProvider({ children }) {
       account,
       balance: new BN(filterBalanceValue(balance)),
       ethereum,
-      networkType,
+      networkType: status === 'connected' ? networkType : 'main',
       providerInfo: getProviderFromUseWalletId(connector),
       web3: walletWeb3,
       status,
@@ -93,8 +93,9 @@ export function WalletProvider({ children }) {
       connectors={{
         fortmatic: {
           apiKey: getFortmaticApiKey(),
-          chainId: SUPPORTED_CHAIN_IDS,
+          chainId: 1,
         },
+        frame: { chainId: SUPPORTED_CHAIN_IDS },
         portis: { dAppId: getPortisDappId(), chainId: SUPPORTED_CHAIN_IDS },
         injected: { chainId: SUPPORTED_CHAIN_IDS },
       }}
