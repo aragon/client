@@ -1,9 +1,8 @@
-import { network } from '../environment'
+const getTemplateStateKey = networkType => `create-org:${networkType}`
 
-const TEMPLATE_STATE_KEY = `create-org:${network.type}`
-
-export function loadTemplateState() {
-  const value = localStorage.getItem(TEMPLATE_STATE_KEY)
+export function loadTemplateState(networkType) {
+  const key = getTemplateStateKey(networkType)
+  const value = localStorage.getItem(key)
   try {
     const data = JSON.parse(value)
     return {
@@ -16,8 +15,8 @@ export function loadTemplateState() {
   }
 }
 
-export function saveTemplateState(state) {
-  localStorage.setItem(`create-org:${network.type}`, JSON.stringify(state))
+export function saveTemplateState(networkType, state) {
+  localStorage.setItem(`create-org:${networkType}`, JSON.stringify(state))
 }
 
 export function prepareTransactionCreatorFromAbi(web3, abi, toAddress) {

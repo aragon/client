@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { IconPlus, GU, RADIUS, useTheme } from '@aragon/ui'
-import { network } from '../../../environment'
 import { getKnownOrganization } from '../../../known-organizations'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
 import { addressesEqual } from '../../../web3-utils'
 import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
 import FavoritesMenuItemButton from '../../FavoritesMenu/FavoritesMenuItemButton'
 import OrgIcon from '../../OrgIcon/OrgIcon'
+import { useWallet } from '../../../wallet'
 
 class Favorites extends React.Component {
   static propTypes = {
@@ -15,6 +15,7 @@ class Favorites extends React.Component {
     currentDao: DaoItemType,
     onUpdate: PropTypes.func.isRequired,
     theme: PropTypes.object,
+    networkType: PropTypes.string.isRequired,
   }
 
   state = { localDaos: [] }
@@ -98,12 +99,12 @@ class Favorites extends React.Component {
   }
 
   render() {
-    const { theme } = this.props
+    const { theme, networkType } = this.props
     const { localDaos } = this.state
     const currentDao = this.currentDaoWithFavoriteState()
 
     const allItems = localDaos.map(org => {
-      const knownOrg = getKnownOrganization(network.type, org.address)
+      const knownOrg = getKnownOrganization(networkType, org.address)
       return {
         ...org,
         id: org.address,
@@ -163,5 +164,6 @@ class Favorites extends React.Component {
 
 export default props => {
   const theme = useTheme()
-  return <Favorites theme={theme} {...props} />
+  const { networkType } = useWallet()
+  return <Favorites networkType={networkType} theme={theme} {...props} />
 }

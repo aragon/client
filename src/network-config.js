@@ -4,6 +4,7 @@ import {
   getFortmaticApiKey,
   getPortisDappId,
 } from './local-settings'
+import { useWallet } from './wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const fortmaticApiKey = getFortmaticApiKey()
@@ -174,4 +175,17 @@ export function sanitizeNetworkType(networkType) {
     return 'mainnet'
   }
   return networkType
+}
+
+export function getNetworkName(networkType) {
+  return getNetworkConfig(networkType).settings.name
+}
+
+export function getNetworkSettings(networkType) {
+  return getNetworkConfig(networkType).settings
+}
+
+export function useNetworkConfig() {
+  const { networkType } = useWallet()
+  return getNetworkConfig(networkType)
 }

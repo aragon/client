@@ -11,7 +11,6 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
-import { network } from '../../environment'
 import { transformAddresses } from '../../web3-utils'
 import AppIcon from '../AppIcon/AppIcon'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
@@ -23,21 +22,23 @@ import {
   ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_TIMED_OUT,
 } from '../../symbols'
+import { useWallet } from '../../wallet'
 
 const ActivityItem = ({ activity }) => {
   const theme = useTheme()
+  const { networkType } = useWallet()
   const { clearActivity } = useContext(ActivityContext)
   const handleOpen = useCallback(() => {
     if (activity.transactionHash) {
       window.open(
         blockExplorerUrl('transaction', activity.transactionHash, {
-          networkType: network.type,
+          networkType,
         }),
         '_blank',
         'noopener'
       )
     }
-  }, [activity])
+  }, [activity, networkType])
   const handleClose = useCallback(() => {
     if (activity.transactionHash) {
       clearActivity(activity.transactionHash)

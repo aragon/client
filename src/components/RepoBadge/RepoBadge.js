@@ -1,15 +1,16 @@
 import React from 'react'
 import { LinkBase, GU, RADIUS, blockExplorerUrl, useTheme } from '@aragon/ui'
-import { network } from '../../environment'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { repoBaseUrl } from '../../url-utils'
 import { RepoVersionType } from '../../prop-types'
+import { useWallet } from '../../wallet'
 
 const RepoBadge = React.memo(function RepoBadge({
   displayVersion,
   latestVersion,
 }) {
   const theme = useTheme()
+  const { networkType } = useWallet()
 
   // If content from the display version isn't available, default to using the latest version
   const version = displayVersion || latestVersion
@@ -30,7 +31,7 @@ const RepoBadge = React.memo(function RepoBadge({
         focusRingSpacing={0}
         external
         href={blockExplorerUrl('address', contractAddress, {
-          networkType: network.type,
+          networkType,
         })}
         css={`
           display: flex;

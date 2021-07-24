@@ -12,7 +12,6 @@ import {
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
-import { network } from '../../environment'
 import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
@@ -22,6 +21,7 @@ import {
 import { pollEvery } from '../../utils'
 import { useWallet } from '../../wallet'
 import { useWeb3, getLatestBlockTimestamp } from '../../web3-utils'
+import { getNetworkSettings } from '../../network-config'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
@@ -63,6 +63,9 @@ export function useWalletConnectionDetails(
 ) {
   const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
   const theme = useTheme()
+  const { networkType } = useWallet()
+  const networkSettings = getNetworkSettings(networkType)
+
   const isWalletAndClientSynced =
     Math.abs(walletSyncDelay - clientSyncDelay) <= OK_PROVIDER_SYNC_DELAY
   const networkSlowdown =
@@ -76,7 +79,7 @@ export function useWalletConnectionDetails(
     connectionColor: theme.positive,
   }
 
-  if (clientListening && !network.live) {
+  if (clientListening && !networkSettings.live) {
     return defaultOkConnectionDetails
   }
 
@@ -214,7 +217,7 @@ export function useSyncState(
   clientSyncDelay,
   walletSyncDelay
 ) {
-  const { balance, getBlockNumber } = useWallet()
+  const { balance, getBlockNumber, networkType } = useWallet()
   const currentBlock = getBlockNumber()
 
   const minimumTransactionBalance = new BN(0.005)
@@ -225,7 +228,8 @@ export function useSyncState(
     status: STATUS_CONNECTION_OK,
   }
 
-  if (clientListening && !network.live) {
+  const networkSettings = getNetworkSettings(networkType)
+  if (clientListening && !networkSettings.live) {
     return defaultSyncedStatus
   }
 

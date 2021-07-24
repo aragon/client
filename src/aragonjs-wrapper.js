@@ -5,12 +5,7 @@ import Aragon, {
   getRecommendedGasLimit,
   providers,
 } from '@aragon/wrapper'
-import {
-  appOverrides,
-  sortAppsPair,
-  ipfsDefaultConf,
-  contractAddresses,
-} from './environment'
+import { appOverrides, sortAppsPair, ipfsDefaultConf } from './environment'
 import { NoConnection, DAONotFound } from './errors'
 import { getEthSubscriptionEventDelay } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
@@ -25,6 +20,7 @@ import {
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 import { getOrganizationByAddress } from './services/gql'
+import { getNetworkConfig } from './network-config'
 
 const POLL_DELAY_CONNECTIVITY = 2000
 
@@ -98,11 +94,12 @@ export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
   // web.eth.net.isListening()
 }, POLL_DELAY_CONNECTIVITY)
 
-export const resolveEnsDomain = async (provider, domain) => {
+export const resolveEnsDomain = async (networkType, provider, domain) => {
   try {
+    const registryAddress = getNetworkConfig(networkType).addresses.ensRegistry
     return await ensResolve(domain, {
       provider,
-      registryAddress: contractAddresses.ensRegistry,
+      registryAddress,
     })
   } catch (err) {
     if (err.message === 'ENS name not defined.') {
@@ -112,8 +109,8 @@ export const resolveEnsDomain = async (provider, domain) => {
   }
 }
 
-export const isEnsDomainAvailable = async (web3Provider, name) => {
-  const addr = await resolveEnsDomain(web3Provider, name)
+export const isEnsDomainAvailable = async (networkType, web3Provider, name) => {
+  const addr = await resolveEnsDomain(networkType, web3Provider, name)
   return addr === '' || isEmptyAddress(addr)
 }
 
@@ -245,6 +242,7 @@ const subscribe = (
 const initWrapper = async (
   dao,
   {
+    networkType,
     guiStyle = null,
     ipfsConf = ipfsDefaultConf,
     onAppIdentifiers = noop,
@@ -271,9 +269,10 @@ const initWrapper = async (
   const daoData = {
     address: daoAddress,
     domain: dao,
+    networkType,
   }
 
-  const data = await getOrganizationByAddress(daoAddress)
+  const data = await getOrganizationByAddress(networkType, daoAddress)
   if (data?.createdAt) {
     // transform into ml seconds
     daoData.createdAt = parseInt(data.createdAt) * 1000
@@ -285,9 +284,9 @@ const initWrapper = async (
     provider,
     // Let web3 provider handle gas estimations on mainnet
     defaultGasPriceFn: () =>
-      getGasPrice({ mainnet: { disableEstimate: true } }),
+      getGasPrice(networkType, { mainnet: { disableEstimate: true } }),
     apm: {
-      ensRegistryAddress: contractAddresses.ensRegistry,
+      ensRegistryAddress: getNetworkConfig(networkType).addresses.ensRegistry,
       ipfs: ipfsConf,
     },
     cache: {

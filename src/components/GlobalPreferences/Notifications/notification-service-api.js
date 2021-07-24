@@ -7,7 +7,6 @@ import {
   ExpiredTokenError,
   UnauthorizedError,
 } from './constants'
-import { network } from '../../../environment'
 
 // The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
 const sanitizeNetworkType = networkType =>
@@ -18,16 +17,18 @@ const isAuthTokenExpired = response =>
 
 const isUnauthorized = rawResponse => rawResponse.status === 401
 
-const NETWORK_NOTIFICATIONS = sanitizeNetworkType(network.type)
-
-export const login = async ({ email, dao }) => {
+export const login = async ({ networkType, email, dao }) => {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_LOGIN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, dao, network: NETWORK_NOTIFICATIONS }),
+      body: JSON.stringify({
+        email,
+        dao,
+        network: sanitizeNetworkType(networkType),
+      }),
     })
     if (!rawResponse.ok) {
       throw new Error(rawResponse.statusText)
@@ -186,9 +187,9 @@ export async function deleteSubscriptions({ subscriptionIds, authToken } = {}) {
   }
 }
 
-export async function getSubscriptions(token) {
+export async function getSubscriptions(networkType, token) {
   const url = new URL(NOTIFICATION_SERVICE_SUBSCRIPTIONS)
-  url.searchParams.append('network', NETWORK_NOTIFICATIONS)
+  url.searchParams.append('network', sanitizeNetworkType(networkType))
 
   try {
     const rawResponse = await fetch(url, {
@@ -240,6 +241,7 @@ export const createSubscription = async ({
   ensName,
   eventName,
   token,
+  networkType,
 } = {}) => {
   try {
     const rawResponse = await fetch(NOTIFICATION_SERVICE_SUBSCRIPTIONS, {
@@ -254,7 +256,7 @@ export const createSubscription = async ({
         ensName,
         abi,
         contractAddress: appContractAddress,
-        network: NETWORK_NOTIFICATIONS,
+        network: sanitizeNetworkType(networkType),
       }),
     })
 

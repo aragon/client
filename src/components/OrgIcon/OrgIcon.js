@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { GU, EthIdenticon } from '@aragon/ui'
-import { network } from '../../environment'
 import { getKnownOrganization } from '../../known-organizations'
 import { EthereumAddressType } from '../../prop-types'
+import { useWallet } from '../../wallet'
 
 function OrgIcon({ orgAddress, size }) {
-  const knownOrg = getKnownOrganization(network.type, orgAddress)
+  const { networkType } = useWallet()
+  const knownOrg = getKnownOrganization(networkType, orgAddress)
   const knownOrgImage = knownOrg && knownOrg.image
 
   return (

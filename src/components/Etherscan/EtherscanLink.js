@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types'
 import { blockExplorerUrl } from '@aragon/ui'
-import { network } from '../../environment'
 import { EthereumAddressType } from '../../prop-types'
+import { useWallet } from '../../wallet'
 
 // Render props component that injects an appropriate Etherscan url if possible
 const EtherscanLink = ({ address, children }) => {
+  const { networkType } = useWallet()
   const etherscanUrl = blockExplorerUrl('address', address, {
-    networkType: network.type,
+    networkType,
   })
   return children(etherscanUrl)
 }

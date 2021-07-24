@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import BN from 'bn.js'
-import { network } from '../../environment'
 import {
   ClaimDomainScreen,
   KnownAppBadge,
@@ -98,7 +97,7 @@ export default {
       },
     ],
   ],
-  prepareTransactions(createTx, data) {
+  prepareTransactions(createTx, data, networkType) {
     const financePeriod = 0 // default
     const hasPayroll = false
 
@@ -123,7 +122,7 @@ export default {
     // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
     // often not mined
     const forceMultipleTransactions =
-      network.type === 'rinkeby' && members.length > 1
+      networkType === 'rinkeby' && members.length > 1
 
     if (!hasPayroll && !forceMultipleTransactions) {
       return [

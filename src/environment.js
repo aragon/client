@@ -3,14 +3,11 @@ import { parseAppLocator } from './app-locator'
 import {
   getAppLocator,
   getDefaultEthNode,
-  getEthNetworkType,
   getIpfsGateway,
 } from './local-settings'
 import { getNetworkConfig } from './network-config'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Agent']
-
-const networkType = getEthNetworkType()
 
 // Utility to sort a pair of apps (to be used with Array.prototype.sort)
 export const sortAppsPair = (app1, app2) => {
@@ -64,35 +61,13 @@ export const appOverrides = {
   [appIds['TokenManager']]: { name: 'Tokens' },
 }
 
+// TODO - get network specify ipfs, network config and app locator
 export const appLocator = parseAppLocator(getAppLocator())
 
 export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
 }
 
-const networkConfig = getNetworkConfig(networkType)
-export const network = networkConfig.settings
-export const providers = networkConfig.providers
-export const connectGraphEndpoint = networkConfig.connectGraphEndpoint
-export const enableMigrateBanner = networkConfig.enableMigrateBanner || false
-
-export const contractAddresses = {
-  ensRegistry: networkConfig.addresses.ensRegistry,
-}
-if (process.env.NODE_ENV !== 'production') {
-  if (Object.values(contractAddresses).some(address => !address)) {
-    // Warn if any contracts are not given addresses in development
-    console.error(
-      'Some contracts are missing addresses in your environment! You most likely need to specify them as environment variables.'
-    )
-    console.error('Current contract address configuration', contractAddresses)
-  }
-  if (network.type === 'unknown') {
-    console.error(
-      'This app was configured to connect to an unsupported network. You most likely need to change your network environment variables.'
-    )
-  }
-}
-
+const networkConfig = getNetworkConfig('main')
 export const defaultEthNode =
   getDefaultEthNode() || networkConfig.nodes.defaultEth

@@ -13,6 +13,7 @@ import {
   ETHER_TOKEN_FAKE_ADDRESS,
 } from '../helpers/tokens'
 import { shortenAddress } from '../../../../web3-utils'
+import { useWallet } from '../../../../wallet'
 
 function validationError(redeemableTokens) {
   if (redeemableTokens.length === 0) {
@@ -30,7 +31,6 @@ function validationError(redeemableTokens) {
   return null
 }
 
-const DEFAULT_REDEEMABLE_TOKENS = getDefaultRedeemableTokens()
 const EMPTY_TOKEN = { token: { address: '' }, selectedIndex: -1 }
 
 function RedemptionsScreen({
@@ -40,6 +40,7 @@ function RedemptionsScreen({
   title,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
+  const { networkType } = useWallet()
 
   const [redeemableTokens, setRedeemableTokens] = useState(
     screenData.redeemableTokens && screenData.redeemableTokens.length > 0
@@ -167,7 +168,7 @@ function RedemptionsScreen({
           onRemoveToken={handleTokenRemoved}
           onUpdateToken={handleTokenUpdated}
           tokens={redeemableTokens}
-          items={DEFAULT_REDEEMABLE_TOKENS}
+          items={getDefaultRedeemableTokens(networkType)}
         />
       </div>
 

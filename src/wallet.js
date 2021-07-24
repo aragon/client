@@ -25,6 +25,8 @@ function WalletContextProvider({ children }) {
   const [walletWeb3, setWalletWeb3] = useState(null)
   const [networkType, setNetworkType] = useState(NETWORK_TYPE_DEFAULT)
 
+  const connected = useMemo(() => status === 'connected', [status])
+
   // get web3 and networkType whenever chainId changes
   useEffect(() => {
     let cancel = false
@@ -60,12 +62,12 @@ function WalletContextProvider({ children }) {
       account,
       balance: new BN(filterBalanceValue(balance)),
       ethereum,
-      networkType: status === 'connected' ? networkType : 'main',
+      networkType: connected ? networkType : 'main',
       providerInfo: getProviderFromUseWalletId(connector),
       web3: walletWeb3,
       status,
       chainId,
-      connected: status === 'connected',
+      connected,
       ...walletBaseRest,
     }),
     [
@@ -78,6 +80,7 @@ function WalletContextProvider({ children }) {
       connector,
       walletBaseRest,
       walletWeb3,
+      connected,
     ]
   )
 

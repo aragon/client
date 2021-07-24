@@ -12,12 +12,14 @@ import { DaoItemType } from '../../../prop-types'
 import { useFavoriteDaos } from '../../../contexts/FavoriteDaosContext'
 import OrganizationItem from './OrganizationItem'
 import Favorites from './Favorites'
+import { useWallet } from '../../../wallet'
 
 const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
   currentDao,
   loading,
 }) {
   const theme = useTheme()
+  const { networkType } = useWallet()
 
   const { favoriteDaos, updateFavoriteDaos } = useFavoriteDaos()
 
@@ -90,6 +92,7 @@ const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
         `}
       >
         <OrganizationItem
+          networkType={networkType}
           dao={currentDao}
           css={`
             ${textStyle('body1')}

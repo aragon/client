@@ -29,6 +29,7 @@ function Onboarding({ web3 }) {
   const routing = useRouting()
 
   const {
+    networkType,
     account,
     balance,
     isContract: isContractAccount,
@@ -94,7 +95,7 @@ function Onboarding({ web3 }) {
 
   const handleCreate = useCallback(() => {
     // reset the creation state
-    saveTemplateState({})
+    saveTemplateState(networkType, {})
 
     const requirementsError = validateCreationRequirements(
       account,
@@ -114,7 +115,7 @@ function Onboarding({ web3 }) {
     if (requirementsError[0] === null) {
       goToCreate()
     }
-  }, [account, balance, goToCreate, isContractAccount])
+  }, [account, balance, goToCreate, isContractAccount, networkType])
 
   const closeConnectModal = useCallback(
     provider => {

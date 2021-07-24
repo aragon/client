@@ -16,10 +16,10 @@ import {
   DAY_IN_SECONDS,
   MINUTE_IN_SECONDS,
 } from '../../../kit/kit-utils'
+import { useWallet } from '../../../../wallet'
 
 const DEFAULT_SPAM_PENALTY = 50
 const DEFAULT_DURATION = DAY_IN_SECONDS
-const DEFAULT_LOCK_TOKEN = getDefaultLockTokenByNetwork()
 const EMPTY_TOKEN = { data: { address: '' }, selectedIndex: -1 }
 
 function validationError(lockAmount, lockDuration, lockToken) {
@@ -42,6 +42,7 @@ function LockScreen({
   title,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
+  const { networkType } = useWallet()
 
   const [lockAmount, setLockAmount] = useState(screenData.lockAmount || -1)
   const [lockDuration, setLockDuration] = useState(
@@ -174,7 +175,7 @@ function LockScreen({
             selectedIndex={lockToken.selectedIndex}
             onChange={handleLockTokenChange}
             value={lockToken.data.address}
-            tokens={[DEFAULT_LOCK_TOKEN]}
+            tokens={[getDefaultLockTokenByNetwork(networkType)]}
           />
         </Field>
 
