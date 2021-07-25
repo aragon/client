@@ -134,9 +134,10 @@ export function shuffleArray(original) {
   return array
 }
 
+// https://www.regular-expressions.info/email.html
 export function validateEmail(email) {
   // eslint-disable-next-line no-useless-escape
-  return /^.+\@.+\..+$/.test(email)
+  return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(email)
 }
 
 export const iOS =
