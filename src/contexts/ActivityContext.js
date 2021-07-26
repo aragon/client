@@ -270,7 +270,6 @@ function ActivityProvider(props) {
     />
   )
 }
-ActivityProvider.propTypes = ActivityProviderBase.propTypes
 
 const ActivityConsumer = ActivityContext.Consumer
 
