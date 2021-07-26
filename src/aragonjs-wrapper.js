@@ -260,7 +260,9 @@ const initWrapper = async (
   } = {}
 ) => {
   const isDomain = isValidEnsName(dao)
-  const daoAddress = isDomain ? await resolveEnsDomain(provider, dao) : dao
+  const daoAddress = isDomain
+    ? await resolveEnsDomain(networkType, provider, dao)
+    : dao
 
   if (!daoAddress) {
     throw new DAONotFound(dao)

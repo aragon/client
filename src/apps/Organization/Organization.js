@@ -38,9 +38,7 @@ const Organization = React.memo(function Organization({
   const { mode } = useRouting()
   const { orgAddress } = mode
 
-  const {
-    settings: { network },
-  } = getNetworkConfig(wallet.networkType)
+  const { settings: network } = getNetworkConfig(wallet.networkType)
 
   const handleDepositTestTokens = useCallback(() => {
     const finance = apps.find(app => app.appId === appIds.Finance)

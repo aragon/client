@@ -68,6 +68,9 @@ export const ipfsDefaultConf = {
   gateway: getIpfsGateway(),
 }
 
-const networkConfig = getNetworkConfig('main')
-export const defaultEthNode =
-  getDefaultEthNode() || networkConfig.nodes.defaultEth
+export const getEthNode = (networkType = 'main') => {
+  return (
+    getDefaultEthNode(networkType) ||
+    getNetworkConfig(networkType).nodes.defaultEth
+  )
+}

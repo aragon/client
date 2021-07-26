@@ -157,7 +157,7 @@ function Onboarding({ web3 }) {
         embeddedTemplates.map(async template => {
           let repoAddress
           try {
-            repoAddress = await resolveEnsDomain(web3, template.id)
+            repoAddress = await resolveEnsDomain(networkType, web3, template.id)
           } catch (_) {}
 
           return repoAddress
@@ -186,7 +186,7 @@ function Onboarding({ web3 }) {
     return () => {
       cancelled = true
     }
-  }, [status, templatesResolved, web3])
+  }, [status, templatesResolved, web3, networkType])
 
   useEffect(() => {
     if (status !== 'create') {
