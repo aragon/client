@@ -98,8 +98,8 @@ function setLocalSetting(confKey, value, networkType) {
   return window.localStorage.setItem(key, value)
 }
 
-export function getAppLocator() {
-  return getLocalSetting(APP_LOCATOR) || ''
+export function getAppLocator(networkType) {
+  return getLocalSetting(APP_LOCATOR, networkType) || ''
 }
 
 export function getLocalChainId() {

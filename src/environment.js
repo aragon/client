@@ -1,10 +1,6 @@
 import appIds from './known-app-ids'
 import { parseAppLocator } from './app-locator'
-import {
-  getAppLocator,
-  getDefaultEthNode,
-  getIpfsGateway,
-} from './local-settings'
+import { getAppLocator, getDefaultEthNode } from './local-settings'
 import { getNetworkConfig } from './network-config'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Agent']
@@ -61,11 +57,8 @@ export const appOverrides = {
   [appIds['TokenManager']]: { name: 'Tokens' },
 }
 
-// TODO - get network specify ipfs, network config and app locator
-export const appLocator = parseAppLocator(getAppLocator())
-
-export const ipfsDefaultConf = {
-  gateway: getIpfsGateway(),
+export function getParsedAppLocator(networkType) {
+  return parseAppLocator(getAppLocator(networkType))
 }
 
 export const getEthNode = (networkType = 'main') => {

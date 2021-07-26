@@ -13,7 +13,7 @@ import {
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
 import { log } from '../../utils'
-import { useWeb3, getGasPrice } from '../../web3-utils'
+import { getGasPrice, getWeb3Provider } from '../../web3-utils'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -28,6 +28,7 @@ import {
   STATUS_DEPLOYMENT,
 } from './create-statuses'
 import { useWallet } from '../../wallet'
+import { getIpfsGateway } from '../../local-settings'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -173,7 +174,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
   ] = useState(false)
   const [templateAbi, setTemplateAbi] = useState(null)
   const [templateAddress, setTemplateAddress] = useState(null)
-  const web3 = useWeb3()
+  const { networkType } = useWallet()
 
   // Fetch latest information about the template from its aragonPM repository
   useEffect(() => {
@@ -185,7 +186,10 @@ function useTemplateRepoInformation(templateRepoAddress) {
 
     let cancelled = false
     const fetchArtifact = () => {
-      fetchApmArtifact(web3, templateRepoAddress)
+      const web3 = getWeb3Provider(networkType)
+      const ipfsGateway = getIpfsGateway(networkType)
+
+      fetchApmArtifact(web3, templateRepoAddress, ipfsGateway)
         .then(templateInfo => {
           if (!cancelled) {
             setTemplateAddress(templateInfo.contractAddress)
@@ -207,7 +211,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
     return () => {
       cancelled = true
     }
-  }, [web3, templateRepoAddress])
+  }, [networkType, templateRepoAddress])
 
   return {
     fetchingTemplateInformation,

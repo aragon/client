@@ -17,7 +17,7 @@ const RepoBadge = React.memo(function RepoBadge({
   const {
     content: { appId, contractAddress, name, icons },
   } = version
-  const baseUrl = repoBaseUrl(appId, version)
+  const baseUrl = repoBaseUrl(appId, version, networkType)
 
   return (
     <div
