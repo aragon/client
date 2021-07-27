@@ -20,8 +20,9 @@ import {
 } from './utils'
 import { pollEvery } from '../../utils'
 import { useWallet } from '../../wallet'
-import { useWeb3, getLatestBlockTimestamp } from '../../web3-utils'
+import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
 import { getNetworkSettings } from '../../network-config'
+import { useClientWeb3 } from '../../client-web3'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
@@ -119,9 +120,10 @@ export function useWalletConnectionDetails(
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const wallet = useWallet()
-  const clientWeb3 = useWeb3()
+  const clientWeb3 = useClientWeb3()
   const walletWeb3 = wallet.web3
-  const selectedWeb3 = wantedWeb3 === 'wallet' ? walletWeb3 : clientWeb3
+  const selectedWeb3 =
+    wantedWeb3 === 'wallet' ? walletWeb3 : getWeb3(clientWeb3)
 
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
