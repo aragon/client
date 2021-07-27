@@ -8,9 +8,7 @@ import connectionError from './assets/connection-error.png'
 function AccountModuleErrorScreen({ error, onBack }) {
   const theme = useTheme()
   const elementRef = useRef()
-  const {
-    settings: { network },
-  } = useNetworkConfig()
+  const { settings: network } = useNetworkConfig()
 
   const [title, secondary] = useMemo(() => {
     if (error instanceof ChainUnsupportedError) {
