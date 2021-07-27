@@ -5,15 +5,9 @@ import Aragon, {
   getRecommendedGasLimit,
   providers,
 } from '@aragon/wrapper'
-import {
-  appOverrides,
-  sortAppsPair,
-  ipfsDefaultConf,
-  web3Providers,
-  contractAddresses,
-} from './environment'
+import { appOverrides, sortAppsPair } from './environment'
 import { NoConnection, DAONotFound } from './errors'
-import { getEthSubscriptionEventDelay } from './local-settings'
+import { getEthSubscriptionEventDelay, getIpfsGateway } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './url-utils'
 import { noop, removeStartingSlash, pollEvery } from './utils'
@@ -26,6 +20,7 @@ import {
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 import { getOrganizationByAddress } from './services/gql'
+import { getNetworkConfig } from './network-config'
 
 const POLL_DELAY_CONNECTIVITY = 2000
 
@@ -33,7 +28,7 @@ const applyAppOverrides = apps =>
   apps.map(app => ({ ...app, ...(appOverrides[app.appId] || {}) }))
 
 // Sort apps, apply URL overrides, and attach data useful to the frontend
-const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
+const prepareAppsForFrontend = (apps, daoAddress, networkType) => {
   const hasWebApp = app => Boolean(app['start_url'])
 
   const getAPMRegistry = ({ appName = '' }) =>
@@ -58,7 +53,7 @@ const prepareAppsForFrontend = (apps, daoAddress, gateway) => {
 
   return applyAppOverrides(apps)
     .map(app => {
-      const baseUrl = appBaseUrl(app, gateway)
+      const baseUrl = appBaseUrl(app, networkType)
       // Remove the starting slash from the start_url field
       // so the absolute path can be resolved from baseUrl.
       const startUrl = removeStartingSlash(app['start_url'] || '')
@@ -99,11 +94,12 @@ export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
   // web.eth.net.isListening()
 }, POLL_DELAY_CONNECTIVITY)
 
-export const resolveEnsDomain = async domain => {
+export const resolveEnsDomain = async (networkType, provider, domain) => {
   try {
+    const registryAddress = getNetworkConfig(networkType).addresses.ensRegistry
     return await ensResolve(domain, {
-      provider: web3Providers.default,
-      registryAddress: contractAddresses.ensRegistry,
+      provider,
+      registryAddress,
     })
   } catch (err) {
     if (err.message === 'ENS name not defined.') {
@@ -113,17 +109,18 @@ export const resolveEnsDomain = async domain => {
   }
 }
 
-export const isEnsDomainAvailable = async name => {
-  const addr = await resolveEnsDomain(name)
+export const isEnsDomainAvailable = async (networkType, web3Provider, name) => {
+  const addr = await resolveEnsDomain(networkType, web3Provider, name)
   return addr === '' || isEmptyAddress(addr)
 }
 
 export const fetchApmArtifact = async (
+  web3Provider,
   repoAddress,
-  ipfsConf = ipfsDefaultConf
+  ipfsGateway
 ) => {
-  return apm(getWeb3(web3Providers.default), {
-    ipfsGateway: ipfsConf.gateway,
+  return apm(web3Provider, {
+    ipfsGateway,
   }).fetchLatestRepoContent(repoAddress)
 }
 
@@ -151,7 +148,7 @@ const subscribe = (
     onSignatures,
     onTransaction,
   },
-  { ipfsConf }
+  { networkType }
 ) => {
   const {
     appIdentifiers,
@@ -181,11 +178,7 @@ const subscribe = (
 
     apps: apps.subscribe(apps => {
       onApps(
-        prepareAppsForFrontend(
-          apps,
-          wrapper.kernelProxy.address,
-          ipfsConf.gateway
-        )
+        prepareAppsForFrontend(apps, wrapper.kernelProxy.address, networkType)
       )
     }),
     workers: apps.subscribe(apps => {
@@ -200,7 +193,7 @@ const subscribe = (
         .forEach(async app => {
           const { name, proxyAddress, script, updated } = app
           const workerName = `${name}(${proxyAddress})`
-          const baseUrl = appBaseUrl(app, ipfsConf.gateway)
+          const baseUrl = appBaseUrl(app, networkType)
 
           // If the app URL is empty, the script can’t be retrieved
           if (!baseUrl) {
@@ -245,8 +238,8 @@ const subscribe = (
 const initWrapper = async (
   dao,
   {
+    networkType,
     guiStyle = null,
-    ipfsConf = ipfsDefaultConf,
     onAppIdentifiers = noop,
     onApps = noop,
     onDaoAddress = noop,
@@ -261,8 +254,11 @@ const initWrapper = async (
     walletAccount = null,
   } = {}
 ) => {
+  const ipfsConf = { gateway: getIpfsGateway(networkType) }
   const isDomain = isValidEnsName(dao)
-  const daoAddress = isDomain ? await resolveEnsDomain(dao) : dao
+  const daoAddress = isDomain
+    ? await resolveEnsDomain(networkType, provider, dao)
+    : dao
 
   if (!daoAddress) {
     throw new DAONotFound(dao)
@@ -271,9 +267,10 @@ const initWrapper = async (
   const daoData = {
     address: daoAddress,
     domain: dao,
+    networkType,
   }
 
-  const data = await getOrganizationByAddress(daoAddress)
+  const data = await getOrganizationByAddress(networkType, daoAddress)
   if (data?.createdAt) {
     // transform into ml seconds
     daoData.createdAt = parseInt(data.createdAt) * 1000
@@ -285,9 +282,9 @@ const initWrapper = async (
     provider,
     // Let web3 provider handle gas estimations on mainnet
     defaultGasPriceFn: () =>
-      getGasPrice({ mainnet: { disableEstimate: true } }),
+      getGasPrice(networkType, { mainnet: { disableEstimate: true } }),
     apm: {
-      ensRegistryAddress: contractAddresses.ensRegistry,
+      ensRegistryAddress: getNetworkConfig(networkType).addresses.ensRegistry,
       ipfs: ipfsConf,
     },
     cache: {
@@ -332,7 +329,7 @@ const initWrapper = async (
       onSignatures,
       onTransaction,
     },
-    { ipfsConf }
+    { networkType }
   )
 
   wrapper.connectAppIFrame = async (iframeElt, proxyAddress) => {

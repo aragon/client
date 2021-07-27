@@ -4,12 +4,10 @@ import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
 import { EthereumAddressType, ClientThemeType } from './prop-types'
 import { useWallet } from './wallet'
-import { network, web3Providers, enableMigrateBanner } from './environment'
 import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import { Onboarding } from './onboarding'
-import { getWeb3 } from './web3-utils'
 import { log } from './utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
@@ -21,7 +19,7 @@ import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import CustomToast from './components/CustomToast/CustomToast'
 import OrgView from './components/OrgView/OrgView'
 import { identifyUser } from './analytics'
-
+import { networkConfigs } from './network-config'
 import { isKnownRepo } from './repo-utils'
 
 import {
@@ -34,13 +32,18 @@ import {
   DAO_STATUS_LOADING,
   DAO_STATUS_UNLOADED,
 } from './symbols'
+import { getWeb3Provider } from './web3-utils'
 
 const MIGRATION_BANNER_HIDE = 'MIGRATION_BANNER_HIDE&'
 const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
   '2021-05-14T15:43:08Z'
 ).getTime()
 
-const getMigrateBannerKey = address => `${MIGRATION_BANNER_HIDE}${address}`
+const getMigrateBannerKey = (networkType, address) =>
+  `${MIGRATION_BANNER_HIDE}${address}:${networkType}`
+
+const enableMigrateBanner = networkType =>
+  Boolean(networkConfigs[networkType]?.enableMigrateBanner)
 
 const INITIAL_DAO_STATE = {
   apps: [],
@@ -54,28 +57,14 @@ const INITIAL_DAO_STATE = {
   showMigrateBanner: false,
 }
 
-const SELECTOR_NETWORKS = [
-  ['main', 'Ethereum Mainnet', 'https://client.aragon.org/'],
-  [
-    'rinkeby',
-    'Ethereum Testnet (Rinkeby)',
-    'https://rinkeby.client.aragon.org/',
-  ],
-]
-if (network.type === 'ropsten') {
-  SELECTOR_NETWORKS.push([
-    'ropsten',
-    'Ethereum Testnet (Ropsten)',
-    'https://aragon.ropsten.aragonpm.com/',
-  ])
-}
-
 class App extends React.Component {
   static propTypes = {
     clientTheme: ClientThemeType.isRequired,
     routing: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     walletAccount: EthereumAddressType,
+    web3: PropTypes.object.isRequired,
+    networkType: PropTypes.string.isRequired,
   }
 
   state = {
@@ -83,10 +72,8 @@ class App extends React.Component {
     connected: false,
     fatalError: null,
     identityIntent: null,
-    selectorNetworks: SELECTOR_NETWORKS,
     transactionBag: null,
     signatureBag: null,
-    web3: getWeb3(web3Providers.default),
     wrapper: null,
   }
 
@@ -99,7 +86,7 @@ class App extends React.Component {
     }
 
     // Only the default, because the app can work without the wallet
-    pollConnectivity([web3Providers.default], connected => {
+    pollConnectivity([this.props.web3], connected => {
       this.setState({ connected })
     })
   }
@@ -127,7 +114,12 @@ class App extends React.Component {
   }
 
   updateDao(orgAddress) {
-    const { clientTheme, walletAccount } = this.props
+    const {
+      clientTheme,
+      walletAccount,
+      web3,
+      networkType: walletNetwork,
+    } = this.props
 
     // Cancel the subscriptions / unload the wrapper
     if (this.state.wrapper) {
@@ -152,19 +144,18 @@ class App extends React.Component {
 
     log('Init DAO', orgAddress)
     initWrapper(orgAddress, {
+      networkType: walletNetwork,
       guiStyle: {
         appearance: clientTheme.appearance,
         theme: clientTheme.theme,
       },
-      provider: web3Providers.default,
+      provider: web3,
       walletAccount,
-      onDaoAddress: ({ address, domain, createdAt }) => {
-        log('dao address', address)
-        log('dao domain', domain)
-        log('dao createdAt', createdAt)
-        const hideMigrateBanner = getMigrateBannerKey(address)
+      onDaoAddress: ({ networkType, address, domain, createdAt }) => {
+        log('dao', networkType, address, domain, createdAt)
+        const hideMigrateBanner = getMigrateBannerKey(networkType, address)
         const showMigrateBanner =
-          enableMigrateBanner &&
+          enableMigrateBanner(networkType) &&
           createdAt &&
           !localStorage.getItem(hideMigrateBanner) &&
           createdAt < MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP
@@ -321,7 +312,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { theme, routing } = this.props
+    const { theme, routing, web3 } = this.props
     const {
       apps,
       appIdentifiers,
@@ -334,10 +325,8 @@ class App extends React.Component {
       permissions,
       permissionsLoading,
       repos,
-      selectorNetworks,
       transactionBag,
       signatureBag,
-      web3,
       wrapper,
       showMigrateBanner,
     } = this.state
@@ -428,10 +417,7 @@ class App extends React.Component {
                           </div>
                         </PermissionsProvider>
 
-                        <Onboarding
-                          selectorNetworks={selectorNetworks}
-                          web3={web3}
-                        />
+                        <Onboarding web3={web3} />
 
                         <GlobalPreferences
                           apps={appsWithIdentifiers}
@@ -451,11 +437,18 @@ class App extends React.Component {
 }
 
 export default function AppHooksWrapper(props) {
-  const { account, connected, networkName, providerInfo } = useWallet()
+  const {
+    account,
+    connected,
+    networkType,
+    networkName,
+    providerInfo,
+  } = useWallet()
 
   const theme = useTheme()
   const clientTheme = useClientTheme()
   const routing = useRouting()
+  const web3 = getWeb3Provider(networkType)
 
   // analytics
   useEffect(() => {
@@ -475,6 +468,8 @@ export default function AppHooksWrapper(props) {
       routing={routing}
       theme={theme}
       walletAccount={account}
+      networkType={networkType}
+      web3={web3}
       {...props}
     />
   )

@@ -26,17 +26,6 @@
     You need to enable JavaScript to run this app.
   </noscript>
   <div id="root"></div>
-  <script>
-    // Dragons 🐉 have been reintroduced into the client, but hear us out:
-    // Web3.js mutates the ethereum object, and this causes an issue when
-    // connecting to a local chain, as for some reason the send method stops
-    // working properly and can't get the chainId. This causes use-wallet
-    // and subsequently web3-react to fail. A solution we found was cloning
-    // the ethereum object before it can be mutated, and passing that to
-    // use-wallet.
-
-    window.cleanEthereum = { ...window.ethereum }
-  </script>
   <script src="./index.js"></script>
 
 <script type="text/javascript">!function(e,t,n){function a(){var e=t.getElementsByTagName("script")[0],n=t.createElement("script");n.type="text/javascript",n.async=!0,n.src="https://beacon-v2.helpscout.net",e.parentNode.insertBefore(n,e)}if(e.Beacon=n=function(t,n,a){e.Beacon.readyQueue.push({method:t,options:n,data:a})},n.readyQueue=[],"complete"===t.readyState)return a();e.attachEvent?e.attachEvent("onload",a):e.addEventListener("load",a,!1)}(window,document,window.Beacon||function(){});</script>

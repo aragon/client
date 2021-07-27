@@ -13,7 +13,7 @@ import {
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
 import { log } from '../../utils'
-import { getGasPrice } from '../../web3-utils'
+import { getGasPrice, getWeb3Provider } from '../../web3-utils'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -27,6 +27,8 @@ import {
   STATUS_TEMPLATE_SCREENS,
   STATUS_DEPLOYMENT,
 } from './create-statuses'
+import { useWallet } from '../../wallet'
+import { getIpfsGateway } from '../../local-settings'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -59,6 +61,8 @@ function getTemplateById(templates, templateId) {
 
 // Handle and store everything related to a template state.
 function useConfigureState(templates, onScreenUpdate) {
+  const { networkType } = useWallet()
+
   // The current template
   const [template, setTemplate] = useState(null)
 
@@ -90,28 +94,26 @@ function useConfigureState(templates, onScreenUpdate) {
   )
 
   useEffect(() => {
-    const {
-      templateData,
-      templateId,
-      templateScreenIndex,
-    } = loadTemplateState()
+    const { templateData, templateId, templateScreenIndex } = loadTemplateState(
+      networkType
+    )
 
     if (templateId) {
       updateTemplateScreen(templateId, templateScreenIndex)
       setTemplateData(templateData)
     }
-  }, [updateTemplateScreen])
+  }, [updateTemplateScreen, networkType])
 
   // Save the template state
   useEffect(() => {
     if (template && template.id) {
-      saveTemplateState({
+      saveTemplateState(networkType, {
         templateData,
         templateId: template.id,
         templateScreenIndex,
       })
     }
-  }, [templateData, template, templateScreenIndex])
+  }, [templateData, template, templateScreenIndex, networkType])
 
   const relativeScreen = useCallback(
     diff => {
@@ -172,6 +174,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
   ] = useState(false)
   const [templateAbi, setTemplateAbi] = useState(null)
   const [templateAddress, setTemplateAddress] = useState(null)
+  const { networkType } = useWallet()
 
   // Fetch latest information about the template from its aragonPM repository
   useEffect(() => {
@@ -183,7 +186,10 @@ function useTemplateRepoInformation(templateRepoAddress) {
 
     let cancelled = false
     const fetchArtifact = () => {
-      fetchApmArtifact(templateRepoAddress)
+      const web3 = getWeb3Provider(networkType)
+      const ipfsGateway = getIpfsGateway(networkType)
+
+      fetchApmArtifact(web3, templateRepoAddress, ipfsGateway)
         .then(templateInfo => {
           if (!cancelled) {
             setTemplateAddress(templateInfo.contractAddress)
@@ -205,7 +211,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
     return () => {
       cancelled = true
     }
-  }, [templateRepoAddress])
+  }, [networkType, templateRepoAddress])
 
   return {
     fetchingTemplateInformation,
@@ -230,15 +236,30 @@ function useDeploymentState(
     error: -1,
   })
 
+  const { networkType } = useWallet()
+
   const deployTransactions = useMemo(
     () =>
       status === STATUS_DEPLOYMENT && templateAbi && templateAddress
         ? template.prepareTransactions(
-            prepareTransactionCreatorFromAbi(templateAbi, templateAddress),
-            templateData
+            prepareTransactionCreatorFromAbi(
+              walletWeb3,
+              templateAbi,
+              templateAddress
+            ),
+            templateData,
+            networkType
           )
         : null,
-    [status, templateAbi, templateAddress, template, templateData]
+    [
+      status,
+      templateAbi,
+      templateAddress,
+      template,
+      templateData,
+      walletWeb3,
+      networkType,
+    ]
   )
 
   // Call tx functions in the template, one after another.
@@ -345,6 +366,7 @@ const Create = React.memo(function Create({
   web3,
 }) {
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
+  const { networkType } = useWallet()
 
   const onScreenUpdate = useCallback((index, screens) => {
     if (index > -1 && index < screens.length) {
@@ -397,14 +419,14 @@ const Create = React.memo(function Create({
         estimatedGas,
         { gasFuzzFactor: 1.1 }
       )
-      const recommendedPrice = await getGasPrice()
+      const recommendedPrice = await getGasPrice(networkType)
       return {
         ...transaction,
         gas: recommendedLimit,
         gasPrice: recommendedPrice,
       }
     },
-    [web3]
+    [web3, networkType]
   )
 
   const [attempts, setAttempts] = useState(0)

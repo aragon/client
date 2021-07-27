@@ -19,14 +19,15 @@ import ContentMarkdown from './ContentMarkdown'
 import LocalIdentityBadge from '../../../components/IdentityBadge/LocalIdentityBadge'
 import { RepoType } from '../../../prop-types'
 import { useRepoDetails } from '../../../hooks'
-import { network } from '../../../environment'
 import Screenshots from '../Screenshots'
 import { sanitizeCodeRepositoryUrl } from '../../../url-utils'
+import { useWallet } from '../../../wallet'
 
 const AppContent = React.memo(
   ({ repo, repoVersions, onRequestUpgrade, onClose }) => {
     const theme = useTheme()
     const { layoutName } = useLayout()
+    const { networkType } = useWallet()
     const {
       name,
       instances,
@@ -196,7 +197,7 @@ const AppContent = React.memo(
                           <Link
                             external
                             href={blockExplorerUrl('address', repoAddress, {
-                              networkType: network.type,
+                              networkType,
                             })}
                           >
                             {repoName}

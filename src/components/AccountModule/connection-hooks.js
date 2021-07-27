@@ -12,7 +12,6 @@ import {
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
-import { network, web3Providers } from '../../environment'
 import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
@@ -21,35 +20,36 @@ import {
 } from './utils'
 import { pollEvery } from '../../utils'
 import { useWallet } from '../../wallet'
-import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
+import { useWeb3, getLatestBlockTimestamp } from '../../web3-utils'
+import { getNetworkSettings } from '../../network-config'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
 export function useNetworkConnectionData() {
-  const { web3: walletWeb3 } = useWallet()
+  const { web3: walletWeb3, chainId } = useWallet()
   const [walletChainId, setWalletChainId] = useState(-1)
-  const clientChainId = network.chainId
 
+  // get the wallet chainId whenever chainId changes to make
+  // sure web3 is connected to the same chain
   useEffect(() => {
     if (!walletWeb3) {
       return
     }
 
     let cancelled = false
-    walletWeb3.eth.getChainId((err, chainId) => {
+    walletWeb3.eth.getChainId((err, web3ChainId) => {
       if (!err && !cancelled) {
-        setWalletChainId(chainId)
+        setWalletChainId(web3ChainId)
       }
     })
     return () => {
       cancelled = true
     }
-  }, [walletWeb3])
+  }, [walletWeb3, chainId])
 
   return {
     walletNetworkName: normalizeNetworkName(walletChainId),
-    clientNetworkName: normalizeNetworkName(clientChainId),
-    hasNetworkMismatch: walletChainId !== -1 && walletChainId !== clientChainId,
+    hasNetworkMismatch: walletChainId !== chainId,
   }
 }
 
@@ -63,6 +63,9 @@ export function useWalletConnectionDetails(
 ) {
   const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
   const theme = useTheme()
+  const { networkType } = useWallet()
+  const networkSettings = getNetworkSettings(networkType)
+
   const isWalletAndClientSynced =
     Math.abs(walletSyncDelay - clientSyncDelay) <= OK_PROVIDER_SYNC_DELAY
   const networkSlowdown =
@@ -76,7 +79,7 @@ export function useWalletConnectionDetails(
     connectionColor: theme.positive,
   }
 
-  if (clientListening && !network.live) {
+  if (clientListening && !networkSettings.live) {
     return defaultOkConnectionDetails
   }
 
@@ -116,7 +119,7 @@ export function useWalletConnectionDetails(
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const wallet = useWallet()
-  const clientWeb3 = getWeb3(web3Providers.default)
+  const clientWeb3 = useWeb3()
   const walletWeb3 = wallet.web3
   const selectedWeb3 = wantedWeb3 === 'wallet' ? walletWeb3 : clientWeb3
 
@@ -214,7 +217,7 @@ export function useSyncState(
   clientSyncDelay,
   walletSyncDelay
 ) {
-  const { balance, getBlockNumber } = useWallet()
+  const { balance, getBlockNumber, networkType } = useWallet()
   const currentBlock = getBlockNumber()
 
   const minimumTransactionBalance = new BN(0.005)
@@ -225,7 +228,8 @@ export function useSyncState(
     status: STATUS_CONNECTION_OK,
   }
 
-  if (clientListening && !network.live) {
+  const networkSettings = getNetworkSettings(networkType)
+  if (clientListening && !networkSettings.live) {
     return defaultSyncedStatus
   }
 

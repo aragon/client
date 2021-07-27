@@ -4,10 +4,10 @@ import BN from 'bn.js'
 import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
 import { getFortmaticApiKey, getPortisDappId } from './local-settings'
 import { getProviderFromUseWalletId } from './ethereum-providers'
-import { network } from './environment'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 
-const NETWORK_TYPE_DEFAULT = 'private'
+const NETWORK_TYPE_DEFAULT = 'main'
+const SUPPORTED_CHAIN_IDS = [1, 4]
 
 const WalletContext = React.createContext()
 
@@ -16,14 +16,18 @@ function WalletContextProvider({ children }) {
     account,
     balance,
     ethereum,
-    activated,
-    activating,
+    connector,
+    status,
+    chainId,
     ...walletBaseRest
   } = useWalletBase()
 
   const [walletWeb3, setWalletWeb3] = useState(null)
   const [networkType, setNetworkType] = useState(NETWORK_TYPE_DEFAULT)
 
+  const connected = useMemo(() => status === 'connected', [status])
+
+  // get web3 and networkType whenever chainId changes
   useEffect(() => {
     let cancel = false
 
@@ -51,26 +55,32 @@ function WalletContextProvider({ children }) {
       setWalletWeb3(null)
       setNetworkType(NETWORK_TYPE_DEFAULT)
     }
-  }, [account, ethereum])
+  }, [ethereum, chainId])
 
   const wallet = useMemo(
     () => ({
       account,
       balance: new BN(filterBalanceValue(balance)),
       ethereum,
-      networkType,
-      providerInfo: getProviderFromUseWalletId(activated),
+      networkType: connected ? networkType : 'main',
+      providerInfo: getProviderFromUseWalletId(connector),
       web3: walletWeb3,
+      status,
+      chainId,
+      connected,
       ...walletBaseRest,
     }),
     [
-      activated,
       account,
       balance,
       ethereum,
       networkType,
+      status,
+      chainId,
+      connector,
       walletBaseRest,
       walletWeb3,
+      connected,
     ]
   )
 
@@ -83,11 +93,14 @@ WalletContextProvider.propTypes = { children: PropTypes.node }
 export function WalletProvider({ children }) {
   return (
     <UseWalletProvider
-      chainId={network.chainId}
       connectors={{
-        fortmatic: { apiKey: getFortmaticApiKey() },
-        portis: { dAppId: getPortisDappId() },
-        provided: { provider: window.cleanEthereum },
+        fortmatic: {
+          apiKey: getFortmaticApiKey(),
+          chainId: 1,
+        },
+        frame: { chainId: SUPPORTED_CHAIN_IDS },
+        portis: { dAppId: getPortisDappId(), chainId: SUPPORTED_CHAIN_IDS },
+        injected: { chainId: SUPPORTED_CHAIN_IDS },
       }}
     >
       <WalletContextProvider>{children}</WalletContextProvider>

@@ -4,7 +4,6 @@ import {
   parsePath,
   parsePreferences,
 } from './routing'
-import { web3Providers } from './environment'
 
 const ADDRESS = '0xc41e4c10b37d3397a99d4a90e7d85508a69a5c4c'
 
@@ -89,10 +88,6 @@ describe('getPath()', () => {
 })
 
 describe('parsePath()', () => {
-  afterAll(() => {
-    web3Providers.default.disconnect()
-  })
-
   test('handles modes', () => {
     expect(parsePath('/')).toEqual(
       locator({ name: 'onboarding', status: 'welcome' })

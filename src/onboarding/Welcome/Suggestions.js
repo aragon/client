@@ -4,9 +4,9 @@ import { Box } from '@aragon/ui'
 import FavoritesMenu from '../../components/FavoritesMenu/FavoritesMenu'
 import OrgIcon from '../../components/OrgIcon/OrgIcon'
 import { useFavoriteDaos } from '../../contexts/FavoriteDaosContext'
-import { network } from '../../environment'
 import { getKnownOrganization } from '../../known-organizations'
 import { addressesEqual } from '../../web3-utils'
+import { useWallet } from '../../wallet'
 
 function Suggestions({ suggestedOrgs }) {
   const {
@@ -14,6 +14,8 @@ function Suggestions({ suggestedOrgs }) {
     removeFavoriteByAddress,
     addFavorite,
   } = useFavoriteDaos()
+
+  const { networkType } = useWallet()
 
   const updateFavorite = useCallback(
     (address, favorite) => {
@@ -53,7 +55,7 @@ function Suggestions({ suggestedOrgs }) {
     <Box heading="Explore" padding={0}>
       <FavoritesMenu
         items={suggestedOrgs.map(org => {
-          const knownOrg = getKnownOrganization(network.type, org.address)
+          const knownOrg = getKnownOrganization(networkType, org.address)
           return {
             favorited: isAddressFavorited(org.address),
             id: org.address,

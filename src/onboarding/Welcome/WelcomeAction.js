@@ -16,7 +16,6 @@ function WelcomeAction({
       width="100%"
       height={150}
       css={`
-        margin-top: ${1.5 * GU}px;
         border: 1px solid ${hasError ? theme.negative : 'transparent'};
       `}
     >

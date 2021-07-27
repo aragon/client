@@ -1,5 +1,3 @@
-import { network } from '../../../../environment'
-
 // Estimates based on block propagation rates in Feb. 2020
 const NETWORK_TIMES = new Map([
   ['main', 13],
@@ -9,6 +7,6 @@ const NETWORK_TIMES = new Map([
   ['goerli', 15],
   ['private', 2],
 ])
-export default function getBlockTime() {
-  return network ? NETWORK_TIMES.get(network.type) : null
+export default function getBlockTime(networkType) {
+  return NETWORK_TIMES.get(networkType) || null
 }

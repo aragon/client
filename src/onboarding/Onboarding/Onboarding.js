@@ -19,25 +19,17 @@ import { useRouting } from '../../routing'
 import { useWallet } from '../../wallet'
 import validateCreationRequirements from '../validate-requirements'
 
-const sortedEmbeddedTemplates = Array.from(embeddedTemplates).sort(
-  (first, second) => {
-    // Put new templates first and disabled templates last
-    first = first.disabled ? -1 : first.new ? 1 : 0
-    second = second.disabled ? -1 : second.new ? 1 : 0
-    return second - first
-  }
-)
-
-const initialEmbeddedTemplates = sortedEmbeddedTemplates.map(template => ({
+const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
   status: TEMPLATE_LOADING,
 }))
 
-function Onboarding({ selectorNetworks, web3 }) {
+function Onboarding({ web3 }) {
   const theme = useTheme()
   const routing = useRouting()
 
   const {
+    networkType,
     account,
     balance,
     isContract: isContractAccount,
@@ -103,7 +95,7 @@ function Onboarding({ selectorNetworks, web3 }) {
 
   const handleCreate = useCallback(() => {
     // reset the creation state
-    saveTemplateState({})
+    saveTemplateState(networkType, {})
 
     const requirementsError = validateCreationRequirements(
       account,
@@ -123,7 +115,7 @@ function Onboarding({ selectorNetworks, web3 }) {
     if (requirementsError[0] === null) {
       goToCreate()
     }
-  }, [account, balance, goToCreate, isContractAccount])
+  }, [account, balance, goToCreate, isContractAccount, networkType])
 
   const closeConnectModal = useCallback(
     provider => {
@@ -162,10 +154,10 @@ function Onboarding({ selectorNetworks, web3 }) {
     let cancelled = false
     if (status === 'create' && !templatesResolved) {
       Promise.all(
-        sortedEmbeddedTemplates.map(async template => {
+        embeddedTemplates.map(async template => {
           let repoAddress
           try {
-            repoAddress = await resolveEnsDomain(template.id)
+            repoAddress = await resolveEnsDomain(networkType, web3, template.id)
           } catch (_) {}
 
           return repoAddress
@@ -194,7 +186,7 @@ function Onboarding({ selectorNetworks, web3 }) {
     return () => {
       cancelled = true
     }
-  }, [status, templatesResolved])
+  }, [status, templatesResolved, web3, networkType])
 
   useEffect(() => {
     if (status !== 'create') {
@@ -262,7 +254,6 @@ function Onboarding({ selectorNetworks, web3 }) {
               onOpenOrg={goToOrg}
               onCreate={handleCreate}
               openMode={status === 'open'}
-              selectorNetworks={selectorNetworks}
             />
           )}
           {status === 'create' && Array.isArray(templates) && (
@@ -288,8 +279,6 @@ function Onboarding({ selectorNetworks, web3 }) {
 }
 
 Onboarding.propTypes = {
-  selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
-    .isRequired,
   web3: PropTypes.object,
 }
 

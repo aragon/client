@@ -4,6 +4,7 @@ import {
   getFortmaticApiKey,
   getPortisDappId,
 } from './local-settings'
+import { useWallet } from './wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const fortmaticApiKey = getFortmaticApiKey()
@@ -30,7 +31,7 @@ export const networkConfigs = {
       live: true,
     },
     providers: [
-      { id: 'provided' },
+      { id: 'injected' },
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
@@ -56,7 +57,7 @@ export const networkConfigs = {
     },
     // providers: ['injected', 'frame'],
     providers: [
-      { id: 'provided' },
+      { id: 'injected' },
       { id: 'frame' },
       fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
@@ -79,7 +80,7 @@ export const networkConfigs = {
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
-    providers: [{ id: 'provided' }, { id: 'frame' }],
+    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
   local: {
     enableMigrateBanner: true,
@@ -100,7 +101,7 @@ export const networkConfigs = {
       type: 'private',
       live: false,
     },
-    providers: [{ id: 'provided' }, { id: 'frame' }],
+    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
   // xDai is an experimental chain in the Aragon Client. It's possible
   // and expected that a few things will break.
@@ -122,7 +123,7 @@ export const networkConfigs = {
       live: true,
     },
     providers: [
-      { id: 'provided' },
+      { id: 'injected' },
       { id: 'frame' },
       portisDappId ? { id: 'portis', conf: portisDappId } : null,
     ].filter(p => p),
@@ -142,7 +143,7 @@ export const networkConfigs = {
       type: 'unknown',
       live: false,
     },
-    providers: [{ id: 'provided' }, { id: 'frame' }],
+    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
 }
 
@@ -174,4 +175,17 @@ export function sanitizeNetworkType(networkType) {
     return 'mainnet'
   }
   return networkType
+}
+
+export function getNetworkName(networkType) {
+  return getNetworkConfig(networkType).settings.name
+}
+
+export function getNetworkSettings(networkType) {
+  return getNetworkConfig(networkType).settings
+}
+
+export function useNetworkConfig() {
+  const { networkType } = useWallet()
+  return getNetworkConfig(networkType)
 }

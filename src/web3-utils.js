@@ -6,8 +6,9 @@ import Web3 from 'web3'
 import { toWei } from 'web3-utils'
 import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
-import { network } from './environment'
 import { log } from './utils'
+import { getEthNode } from './environment'
+import { useWallet } from './wallet'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -142,10 +143,11 @@ export async function getIsContractAccount(web3, account) {
 }
 
 const gasPriceApi = 'https://ethgasstation.info/json/ethgasAPI.json'
-export async function getGasPrice({
-  mainnet: { safeMinimum = '3', disableEstimate } = {},
-} = {}) {
-  if (network.type !== 'main') {
+export async function getGasPrice(
+  networkType,
+  { mainnet: { safeMinimum = '3', disableEstimate } = {} } = {}
+) {
+  if (networkType !== 'main') {
     // Hardcode 10 for non-mainnet networks
     return toWei('10', 'gwei')
   }
@@ -232,6 +234,25 @@ export function getWeb3(provider) {
   const web3 = new Web3(provider)
   web3Cache.set(provider, web3)
   return web3
+}
+
+/**
+ * Get the web3 provider by the network type
+ * @param {string} networkType node network type, i.e. main, rinkeby
+ * @returns {object} web3 web socket provider
+ */
+export function getWeb3Provider(networkType = 'main') {
+  const host = getEthNode(networkType)
+  return new Web3.providers.WebsocketProvider(host)
+}
+
+/**
+ * get an instance of web3 provider based on the network type
+ * @returns {object} web3 provider
+ */
+export function useWeb3() {
+  const { networkType } = useWallet()
+  return getWeb3(getWeb3Provider(networkType))
 }
 
 export function isConnected(provider) {

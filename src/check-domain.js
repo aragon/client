@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { isEnsDomainAvailable } from './aragonjs-wrapper'
+import { useWallet } from './wallet'
+import { useWeb3 } from './web3-utils'
 
 const DOMAIN_CHECK = Symbol('DOMAIN_CHECK')
 const DOMAIN_LOADING = Symbol('DOMAIN_LOADING')
@@ -13,6 +15,8 @@ function completeDomain(domain) {
 function useCheckDomain(domain, invertCheck = false) {
   const [exists, setExists] = useState(false)
   const [loading, setLoading] = useState(true)
+  const { networkType } = useWallet()
+  const web3 = useWeb3()
 
   useEffect(() => {
     setExists(false)
@@ -22,7 +26,11 @@ function useCheckDomain(domain, invertCheck = false) {
 
     const check = async () => {
       try {
-        const available = await isEnsDomainAvailable(completeDomain(domain))
+        const available = await isEnsDomainAvailable(
+          networkType,
+          web3,
+          completeDomain(domain)
+        )
         if (!cancelled) {
           setExists(available)
           setLoading(false)
@@ -43,7 +51,7 @@ function useCheckDomain(domain, invertCheck = false) {
     return () => {
       cancelled = true
     }
-  }, [domain])
+  }, [domain, web3, networkType])
 
   const domainStatus = useMemo(() => {
     if (!domain) {

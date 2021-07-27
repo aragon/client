@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/browser'
-import { network } from './environment'
 import { getPackageVersion, getSentryDsn } from './local-settings'
 import { log } from './utils'
 
@@ -20,7 +19,7 @@ export default function initializeSentryIfEnabled() {
     Sentry.init({
       dsn: sentryDsn,
       release: packageVersion,
-      environment: network.shortName,
+      environment: process.env.NODE_ENV || 'unknown',
     })
   }
 }

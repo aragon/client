@@ -14,6 +14,7 @@ import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
+import { useWallet } from '../../wallet'
 
 const SCREENS = [
   { id: 'installed', label: 'Installed apps' },
@@ -69,7 +70,7 @@ function useUpgradeApp(wrapper, kernelAddress, { onDone }) {
 }
 
 // Extend, cache and return the repos
-function getExtendedRepos(appInstanceGroups, repos) {
+function getExtendedRepos(appInstanceGroups, repos, networkType) {
   return repos.map(repo => {
     const appGroup = appInstanceGroups.find(
       appGroup => appGroup.appId === repo.appId
@@ -79,7 +80,7 @@ function getExtendedRepos(appInstanceGroups, repos) {
     return {
       ...repo,
       // Use latest version’s assets
-      baseUrl: repoBaseUrl(repo.appId, repo.latestVersion),
+      baseUrl: repoBaseUrl(repo.appId, repo.latestVersion, networkType),
       instances: instances || [],
       name: name || '',
       repoName: repoName || '',
@@ -104,10 +105,11 @@ const AppCenter = React.memo(function AppCenter({
   wrapper,
 }) {
   const [upgradePanelOpened, setUpgradePanelOpened] = useState(false)
+  const { networkType } = useWallet()
 
   const extendedRepos = useMemo(
-    () => getExtendedRepos(appInstanceGroups, repos),
-    [appInstanceGroups, repos]
+    () => getExtendedRepos(appInstanceGroups, repos, networkType),
+    [appInstanceGroups, repos, networkType]
   )
 
   const { screen, openedRepo } = getLocation(localPath, extendedRepos)

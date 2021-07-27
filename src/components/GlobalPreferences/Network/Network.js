@@ -11,12 +11,17 @@ import {
   useLayout,
   useTheme,
 } from '@aragon/ui'
-import { defaultEthNode, ipfsDefaultConf, network } from '../../../environment'
+import { getEthNode } from '../../../environment'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../../../errors'
-import { setDefaultEthNode, setIpfsGateway } from '../../../local-settings'
+import {
+  setDefaultEthNode,
+  setIpfsGateway,
+  getIpfsGateway,
+} from '../../../local-settings'
 import keycodes from '../../../keycodes'
 import { sanitizeNetworkType } from '../../../network-config'
 import { checkValidEthNode } from '../../../web3-utils'
+import { useWallet } from '../../../wallet'
 
 function Network({ wrapper }) {
   const {
@@ -27,7 +32,7 @@ function Network({ wrapper }) {
     networkError,
     handleEthNodeChange,
     handleIpfsGatewayChange,
-    network,
+    networkType,
   } = useNetwork(wrapper)
   const theme = useTheme()
   const { layoutName } = useLayout()
@@ -58,7 +63,7 @@ function Network({ wrapper }) {
               {(() => {
                 if (networkError instanceof InvalidNetworkType) {
                   return `Node must be connected to ${sanitizeNetworkType(
-                    network.type
+                    networkType
                   )}`
                 }
                 if (networkError instanceof InvalidURI) {
@@ -123,23 +128,26 @@ Network.propTypes = {
 }
 
 const useNetwork = wrapper => {
+  const { networkType } = useWallet()
   const [networkError, setNetworkError] = useState(null)
-  const [ethNode, setEthNodeValue] = useState(defaultEthNode)
-  const [ipfsGateway, setIpfsGatewayValue] = useState(ipfsDefaultConf.gateway)
+  const [ethNode, setEthNodeValue] = useState(getEthNode(networkType))
+  const [ipfsGateway, setIpfsGatewayValue] = useState(
+    getIpfsGateway(networkType)
+  )
 
   const handleNetworkChange = useCallback(async () => {
     try {
-      await checkValidEthNode(ethNode, network.type)
+      await checkValidEthNode(ethNode, networkType)
     } catch (err) {
       setNetworkError(err)
       return
     }
 
-    setDefaultEthNode(ethNode)
-    setIpfsGateway(ipfsGateway)
+    setDefaultEthNode(ethNode, networkType)
+    setIpfsGateway(ipfsGateway, networkType)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
-  }, [ethNode, ipfsGateway])
+  }, [ethNode, ipfsGateway, networkType])
   const handleClearCache = useCallback(async () => {
     await wrapper.cache.clear()
     window.localStorage.clear()
@@ -147,14 +155,16 @@ const useNetwork = wrapper => {
   }, [wrapper])
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
+      const defaultEthNode = getEthNode(networkType)
+      const defaultIpfsGateway = getIpfsGateway(networkType)
       if (
         keyCode === keycodes.enter &&
-        (ipfsGateway !== ipfsDefaultConf.gateway || ethNode !== defaultEthNode)
+        (ipfsGateway !== defaultIpfsGateway || ethNode !== defaultEthNode)
       ) {
         handleNetworkChange()
       }
     },
-    [handleNetworkChange, ethNode, ipfsGateway]
+    [handleNetworkChange, ethNode, ipfsGateway, networkType]
   )
 
   useEffect(() => {
@@ -164,7 +174,7 @@ const useNetwork = wrapper => {
 
   return {
     ethNode,
-    network,
+    networkType,
     ipfsGateway,
     handleNetworkChange,
     handleClearCache,

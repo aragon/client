@@ -1,11 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
-import { network } from '../../environment'
 import { isAddress } from '../../web3-utils'
+import { useWallet } from '../../wallet'
+import { getNetworkName } from '../../network-config'
 
 function DAONotFoundError({ dao }) {
   const theme = useTheme()
+  const { networkType } = useWallet()
+
   return (
     <React.Fragment>
       <h1
@@ -34,7 +37,7 @@ function DAONotFoundError({ dao }) {
             the <strong>“{dao}”</strong> ENS domain
           </React.Fragment>
         )}{' '}
-        on the Ethereum {network.name}.
+        on the Ethereum {getNetworkName(networkType)}.
       </div>
       <Info>
         If you arrived here through a link, please double check that you were

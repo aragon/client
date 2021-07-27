@@ -18,6 +18,7 @@ import styled from 'styled-components'
 import { createSubscription } from './notification-service-api'
 import notificationImage from './notification.png'
 import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
+import { useWallet } from '../../../wallet'
 
 const getEventNamesFromAbi = memoize(abi =>
   abi.filter(item => item.type === 'event').map(item => item.name)
@@ -75,6 +76,7 @@ export default function SubscriptionsForm({
   const { layoutName } = useLayout()
   const { mode } = useRouting()
   const { orgAddress } = mode
+  const { networkType } = useWallet()
 
   const [selectedAppIdx, setSelectedAppIdx] = useState(-1)
   const [selectedEventIdx, setSelectedEventIdx] = useState(-1)
@@ -110,6 +112,7 @@ export default function SubscriptionsForm({
           ensName: orgAddress,
           eventName,
           token,
+          networkType,
         }
         await createSubscription(payload)
         setSelectedEventIdx(-1)
@@ -128,6 +131,7 @@ export default function SubscriptionsForm({
       selectedApp,
       selectedEventIdx,
       token,
+      networkType,
     ]
   )
   useEffect(() => {

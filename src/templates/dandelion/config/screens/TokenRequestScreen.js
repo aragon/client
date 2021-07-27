@@ -13,6 +13,7 @@ import {
   ETHER_TOKEN_FAKE_ADDRESS,
 } from '../helpers/tokens'
 import { shortenAddress } from '../../../../web3-utils'
+import { useWallet } from '../../../../wallet'
 
 function validationError(acceptedTokens) {
   if (acceptedTokens.length === 0) {
@@ -30,7 +31,6 @@ function validationError(acceptedTokens) {
   return null
 }
 
-const DEFAULT_ACCEPTED_TOKENS = getDefaultAcceptedTokens()
 const EMPTY_TOKEN = { token: { address: '' }, selectedIndex: -1 }
 
 function TokenRequestScreen({
@@ -40,6 +40,7 @@ function TokenRequestScreen({
   title,
 }) {
   const screenData = (dataKey ? data[dataKey] : data) || {}
+  const { networkType } = useWallet()
 
   const [acceptedTokens, setAcceptedTokens] = useState(
     screenData.acceptedTokens && screenData.acceptedTokens.length > 0
@@ -166,7 +167,7 @@ function TokenRequestScreen({
           onRemoveToken={handleTokenRemoved}
           onUpdateToken={handleTokenUpdated}
           tokens={acceptedTokens}
-          items={DEFAULT_ACCEPTED_TOKENS}
+          items={getDefaultAcceptedTokens(networkType)}
         />
       </div>
 

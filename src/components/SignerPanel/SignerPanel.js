@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { SidePanel, GU, springs } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
-import { network } from '../../environment'
 import { useWallet } from '../../wallet'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { AppType, EthereumAddressType } from '../../prop-types'
@@ -73,7 +72,6 @@ class SignerPanel extends React.PureComponent {
     setActivityNonce: PropTypes.func.isRequired,
     transactionBag: PropTypes.object,
     signatureBag: PropTypes.object,
-    walletNetwork: PropTypes.string.isRequired,
     walletWeb3: PropTypes.object,
     web3: PropTypes.object.isRequired,
     walletProviderId: PropTypes.string.isRequired,
@@ -311,13 +309,7 @@ class SignerPanel extends React.PureComponent {
   }
 
   render() {
-    const {
-      account,
-      apps,
-      walletNetwork,
-      walletProviderId,
-      walletWeb3,
-    } = this.props
+    const { account, apps, walletProviderId, walletWeb3 } = this.props
 
     const {
       actionPaths,
@@ -361,11 +353,8 @@ class SignerPanel extends React.PureComponent {
                       <Screen>
                         <ValidateWalletWeb3
                           intent={intent}
-                          isTransaction={isTransaction}
                           hasWeb3={Boolean(walletWeb3)}
-                          networkType={network.type}
                           onClose={this.handleSignerClose}
-                          walletNetworkType={walletNetwork}
                           walletProviderId={walletProviderId}
                         >
                           {isTransaction ? (
@@ -461,7 +450,6 @@ export default function SignerPanelWrapper(props) {
       setActivityConfirmed={setActivityConfirmed}
       setActivityFailed={setActivityFailed}
       setActivityNonce={setActivityNonce}
-      walletNetwork={wallet.networkType}
       walletProviderId={wallet.providerInfo.id}
       walletWeb3={wallet.web3}
     />

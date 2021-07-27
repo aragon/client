@@ -37,11 +37,7 @@ function AccountModuleConnectedScreen({
   const wallet = useWallet()
   const theme = useTheme()
 
-  const {
-    walletNetworkName,
-    clientNetworkName,
-    hasNetworkMismatch,
-  } = useNetworkConnectionData()
+  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 
@@ -70,7 +66,7 @@ function AccountModuleConnectedScreen({
       network: wallet.networkName,
     })
 
-    wallet.deactivate()
+    wallet.reset()
   }, [wallet])
 
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
@@ -166,7 +162,7 @@ function AccountModuleConnectedScreen({
             margin-top: ${1 * GU}px;
           `}
         >
-          Please connect to the Ethereum {clientNetworkName} Network.
+          Network error, please contact Aragon.
         </div>
       ) : (
         <WalletSyncedInfo header={header} info={info} status={status} />

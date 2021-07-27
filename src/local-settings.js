@@ -71,9 +71,15 @@ const CONFIGURATION_VARS = [
   {}
 )
 
+function toStorageKey(key, networkType) {
+  return networkType && networkType !== 'main' ? `${key}:${networkType}` : key
+}
+
 // Get a setting from localStorage
-function getLocalStorageSetting(confKey) {
-  return window.localStorage.getItem(CONFIGURATION_VARS[confKey].storageKey)
+function getLocalStorageSetting(confKey, networkType) {
+  const key = CONFIGURATION_VARS[confKey].storageKey
+  const storageKey = toStorageKey(key, networkType)
+  return window.localStorage.getItem(storageKey)
 }
 
 // Get a setting from the env vars
@@ -82,17 +88,18 @@ function getEnvSetting(confKey) {
 }
 
 // Get a local setting: from the local storage if available, or the env vars.
-function getLocalSetting(confKey) {
-  return getLocalStorageSetting(confKey) || getEnvSetting(confKey)
+function getLocalSetting(confKey, networkType) {
+  return getLocalStorageSetting(confKey, networkType) || getEnvSetting(confKey)
 }
 
-function setLocalSetting(confKey, value) {
+function setLocalSetting(confKey, value, networkType) {
   const confVar = CONFIGURATION_VARS[confKey]
-  return window.localStorage.setItem(confVar.storageKey, value)
+  const key = toStorageKey(confVar.storageKey, networkType)
+  return window.localStorage.setItem(key, value)
 }
 
-export function getAppLocator() {
-  return getLocalSetting(APP_LOCATOR) || ''
+export function getAppLocator(networkType) {
+  return getLocalSetting(APP_LOCATOR, networkType) || ''
 }
 
 export function getLocalChainId() {
@@ -100,13 +107,12 @@ export function getLocalChainId() {
   return getLocalSetting(LOCAL_CHAIN_ID) || 1337
 }
 
-export function getDefaultEthNode() {
-  // Let the network configuration handle node defaults
-  return getLocalSetting(DEFAULT_ETH_NODE) || ''
+export function getDefaultEthNode(networkType) {
+  return getLocalSetting(DEFAULT_ETH_NODE, networkType) || ''
 }
 
-export function setDefaultEthNode(node) {
-  return setLocalSetting(DEFAULT_ETH_NODE, node)
+export function setDefaultEthNode(node, networkType) {
+  return setLocalSetting(DEFAULT_ETH_NODE, node, networkType)
 }
 
 export function getEnsRegistryAddress() {
@@ -123,12 +129,15 @@ export function getEthSubscriptionEventDelay() {
   return Number.isFinite(delay) ? delay : 0
 }
 
-export function getIpfsGateway() {
-  return getLocalSetting(IPFS_GATEWAY) || 'https://ipfs.eth.aragon.network/ipfs'
+export function getIpfsGateway(networkType) {
+  return (
+    getLocalSetting(IPFS_GATEWAY, networkType) ||
+    'https://ipfs.eth.aragon.network/ipfs'
+  )
 }
 
-export function setIpfsGateway(gateway) {
-  return setLocalSetting(IPFS_GATEWAY, gateway)
+export function setIpfsGateway(gateway, networkType) {
+  return setLocalSetting(IPFS_GATEWAY, gateway, networkType)
 }
 
 export function getSelectedCurrency() {
