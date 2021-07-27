@@ -8,7 +8,6 @@ import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
 import { log } from './utils'
 import { getEthNode } from './environment'
-import { useWallet } from './wallet'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -244,15 +243,6 @@ export function getWeb3(provider) {
 export function getWeb3Provider(networkType = 'main') {
   const host = getEthNode(networkType)
   return new Web3.providers.WebsocketProvider(host)
-}
-
-/**
- * get an instance of web3 provider based on the network type
- * @returns {object} web3 provider
- */
-export function useWeb3() {
-  const { networkType } = useWallet()
-  return getWeb3(getWeb3Provider(networkType))
 }
 
 export function isConnected(provider) {

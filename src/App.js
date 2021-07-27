@@ -32,7 +32,7 @@ import {
   DAO_STATUS_LOADING,
   DAO_STATUS_UNLOADED,
 } from './symbols'
-import { getWeb3Provider } from './web3-utils'
+import { useClientWeb3 } from './client-web3'
 
 const MIGRATION_BANNER_HIDE = 'MIGRATION_BANNER_HIDE&'
 const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
@@ -448,7 +448,7 @@ export default function AppHooksWrapper(props) {
   const theme = useTheme()
   const clientTheme = useClientTheme()
   const routing = useRouting()
-  const web3 = getWeb3Provider(networkType)
+  const web3 = useClientWeb3()
 
   // analytics
   useEffect(() => {
