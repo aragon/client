@@ -27,6 +27,8 @@ import {
   STATUS_TEMPLATE_SCREENS,
   STATUS_DEPLOYMENT,
 } from './create-statuses'
+import { useWallet } from '../../wallet'
+import { trackEvent, events } from '../../analytics'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -225,9 +227,12 @@ function useDeploymentState(
   templateData,
   walletWeb3
 ) {
+  const { networkName } = useWallet()
+
   const [transactionProgress, setTransactionProgress] = useState({
     signing: 0,
     error: -1,
+    errorMessage: {},
   })
 
   const deployTransactions = useMemo(
@@ -276,6 +281,13 @@ function useDeploymentState(
               await walletWeb3.eth.sendTransaction(transaction)
 
               if (!cancelled) {
+                // analytics
+                trackEvent(events.DAO_CREATED, {
+                  network: networkName,
+                  template: template.name,
+                  daoIdentifier: templateData.domain,
+                })
+
                 setTransactionProgress(({ signed, errored }) => ({
                   signed: signed + 1,
                   errored,
@@ -283,10 +295,19 @@ function useDeploymentState(
               }
             } catch (err) {
               log('Failed onboarding transaction', err)
+
+              // analytics
+              trackEvent(events.DAO_CREATIONFAILED, {
+                network: networkName,
+                template: template.name,
+                error: err,
+              })
+
               if (!cancelled) {
                 setTransactionProgress(({ signed, errored }) => ({
                   errored: signed,
                   signed,
+                  errorMessage: err,
                 }))
               }
 
@@ -309,15 +330,29 @@ function useDeploymentState(
       return []
     }
 
-    const { signed, errored } = transactionProgress
+    const { signed, errored, errorMessage } = transactionProgress
     const status = index => {
       if (errored !== -1 && index >= errored) {
+        // // analytics
+        // trackEvent(events.DAO_CREATIONFAILED, {
+        //   network: networkName,
+        //   template: template.name,
+        //   error: errorMessage,
+        // })
+
         return TRANSACTION_STATUS_ERROR
       }
       if (index === signed) {
         return TRANSACTION_STATUS_PENDING
       }
       if (index < signed) {
+        // // analytics
+        // trackEvent(events.DAO_CREATED, {
+        //   network: networkName,
+        //   template: template.name,
+        //   daoIdentifier: templateData.domain,
+        // })
+
         return TRANSACTION_STATUS_SUCCESS
       }
       return TRANSACTION_STATUS_UPCOMING
