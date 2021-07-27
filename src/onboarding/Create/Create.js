@@ -232,7 +232,6 @@ function useDeploymentState(
   const [transactionProgress, setTransactionProgress] = useState({
     signing: 0,
     error: -1,
-    errorMessage: {},
   })
 
   const deployTransactions = useMemo(
@@ -307,7 +306,6 @@ function useDeploymentState(
                 setTransactionProgress(({ signed, errored }) => ({
                   errored: signed,
                   signed,
-                  errorMessage: err,
                 }))
               }
 
@@ -330,29 +328,15 @@ function useDeploymentState(
       return []
     }
 
-    const { signed, errored, errorMessage } = transactionProgress
+    const { signed, errored } = transactionProgress
     const status = index => {
       if (errored !== -1 && index >= errored) {
-        // // analytics
-        // trackEvent(events.DAO_CREATIONFAILED, {
-        //   network: networkName,
-        //   template: template.name,
-        //   error: errorMessage,
-        // })
-
         return TRANSACTION_STATUS_ERROR
       }
       if (index === signed) {
         return TRANSACTION_STATUS_PENDING
       }
       if (index < signed) {
-        // // analytics
-        // trackEvent(events.DAO_CREATED, {
-        //   network: networkName,
-        //   template: template.name,
-        //   daoIdentifier: templateData.domain,
-        // })
-
         return TRANSACTION_STATUS_SUCCESS
       }
       return TRANSACTION_STATUS_UPCOMING
