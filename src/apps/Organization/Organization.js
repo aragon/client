@@ -23,6 +23,7 @@ import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
 import { useWallet } from '../../wallet'
+import { isOnMainnet } from '../../network-config'
 
 const Organization = React.memo(function Organization({
   apps,
@@ -106,7 +107,7 @@ const Organization = React.memo(function Organization({
   const checksummedDaoAddr =
     daoAddress.address && toChecksumAddress(daoAddress.address)
   const enableTransactions = wallet.connected && wallet.account
-  const isMainnet = network.type === 'main'
+  const isMainnet = isOnMainnet(network.type)
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (
