@@ -2016,6 +2016,11 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
+"@types/estree@0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
+  integrity sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
+
 "@types/ethereum-protocol@*":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/ethereum-protocol/-/ethereum-protocol-1.0.2.tgz#e765d4c6f4b5ebe906932bd20333e307c56a9bc7"
@@ -5827,6 +5832,11 @@ estraverse@^4.0.0, estraverse@^4.1.0, estraverse@^4.1.1, estraverse@^4.2.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/estraverse/-/estraverse-4.3.0.tgz#398ad3f3c5a24948be7725e83d11a7de28cdbd1d"
   integrity sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==
+
+estree-walker@^0.6.0:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-0.6.1.tgz#53049143f40c6eb918b23671d1fe3219f3a1b362"
+  integrity sha512-SqmZANLWS0mnatqbSfRP5g8OXZC12Fgg1IwNtLsyHDzJizORW4khDfjPqJZsemPWBB2uqykUah5YpQ6epsqC/w==
 
 esutils@^2.0.0, esutils@^2.0.2:
   version "2.0.3"
@@ -12505,6 +12515,30 @@ rlp@^2.2.1, rlp@^2.2.2, rlp@^2.2.4:
   dependencies:
     bn.js "^4.11.1"
 
+rollup-plugin-image-files@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-image-files/-/rollup-plugin-image-files-1.4.2.tgz#0a329723bace95168a9a6efdacb51370c14fbfe5"
+  integrity sha512-tlydpQdGFssMWhPdWA9SFh4IGVSCzceNgJarJDID+km151IeIVzjATl8ZERNGS/QwMty25iammQqauxl1VUqDQ==
+  dependencies:
+    rollup "0.64.1"
+    rollup-pluginutils "2.4.1"
+
+rollup-pluginutils@2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/rollup-pluginutils/-/rollup-pluginutils-2.4.1.tgz#de43ab54965bbf47843599a7f3adceb723de38db"
+  integrity sha512-wesMQ9/172IJDIW/lYWm0vW0LiKe5Ekjws481R7z9WTRtmO59cqyM/2uUlxvf6yzm/fElFmHUobeQOYz46dZJw==
+  dependencies:
+    estree-walker "^0.6.0"
+    micromatch "^3.1.10"
+
+rollup@0.64.1:
+  version "0.64.1"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.64.1.tgz#9188ee368e5fcd43ffbc00ec414e72eeb5de87ba"
+  integrity sha512-+ThdVXrvonJdOTzyybMBipP0uz605Z8AnzWVY3rf+cSGnLO7uNkJBlN+9jXqWOomkvumXfm/esmBpA5d53qm7g==
+  dependencies:
+    "@types/estree" "0.0.39"
+    "@types/node" "*"
+
 rsvp@^4.8.4:
   version "4.8.5"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-4.8.5.tgz#c8f155311d167f68f21e168df71ec5b083113734"
@@ -14224,9 +14258,9 @@ use-inside@^0.2.0:
   dependencies:
     prop-types "^15.7.2"
 
-"use-wallet@https://github.com/aragon/use-wallet#multichain":
+"use-wallet@https://github.com/aragon/use-wallet.git#multichain":
   version "0.9.0"
-  resolved "https://github.com/aragon/use-wallet#358d609e812a37c4fce1c5b53a410e5f79b5f3e3"
+  resolved "https://github.com/aragon/use-wallet.git#1b60af6b2a14c1e36db492533c3edcee68a90b66"
   dependencies:
     "@aragon/provided-connector" "^6.0.8"
     "@typescript-eslint/parser" "^4.1.0"
@@ -14242,6 +14276,7 @@ use-inside@^0.2.0:
     jsbi "^3.1.4"
     prop-types "^15.7.2"
     regenerator-runtime "^0.13.7"
+    rollup-plugin-image-files "^1.4.2"
 
 use@^3.1.0:
   version "3.1.1"

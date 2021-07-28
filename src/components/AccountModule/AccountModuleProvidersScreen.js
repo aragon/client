@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { ButtonBase, GU, Link, RADIUS, useTheme, textStyle } from '@aragon/ui'
-import { getProviderFromUseWalletId } from '../../ethereum-providers'
-import { useNetworkConfig } from '../../network-config'
+import { getProviderFromUseWalletId } from 'use-wallet'
+import { connectors } from '../../ethereum-providers/connectors'
 
 function ProviderButton({ id, provider, onActivate }) {
   const theme = useTheme()
@@ -54,13 +54,12 @@ ProviderButton.propTypes = {
 }
 
 function AccountModuleProvidersScreen({ onActivate }) {
-  const { providers } = useNetworkConfig()
   const providersInfo = useMemo(() => {
-    return providers.map(provider => [
+    return connectors.map(provider => [
       provider.id,
       getProviderFromUseWalletId(provider.id),
     ])
-  }, [providers])
+  }, [])
 
   return (
     <div>
