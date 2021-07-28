@@ -17,13 +17,16 @@ import {
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import appIds from '../../known-app-ids'
 import { getProviderString } from 'use-wallet'
-import { sanitizeNetworkType, getNetworkConfig } from '../../network-config'
+import {
+  sanitizeNetworkType,
+  getNetworkConfig,
+  isOnMainnet,
+} from '../../network-config'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../web3-utils'
 import { useWallet } from '../../wallet'
-import { isOnMainnet } from '../../network-config'
 
 const Organization = React.memo(function Organization({
   apps,
