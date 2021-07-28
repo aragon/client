@@ -3,9 +3,13 @@ import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
+import { useWallet } from '../../wallet'
+import { isOnMainnet } from '../../network-config'
 
 function OnboardingTopBar({ status, solid }) {
   const theme = useTheme()
+  const { networkType } = useWallet()
+  const isMainnet = isOnMainnet(networkType)
 
   const handleSettingsClick = useCallback(() => {
     let path = '/'
@@ -71,13 +75,15 @@ function OnboardingTopBar({ status, solid }) {
           >
             <AccountModule />
           </div>
-          <Button
-            display="icon"
-            icon={<IconSettings />}
-            label="Settings"
-            size="medium"
-            onClick={handleSettingsClick}
-          />
+          {isMainnet && (
+            <Button
+              display="icon"
+              icon={<IconSettings />}
+              label="Settings"
+              size="medium"
+              onClick={handleSettingsClick}
+            />
+          )}
         </div>
       </div>
     </React.Fragment>
