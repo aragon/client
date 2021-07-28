@@ -4,6 +4,7 @@ import { Button } from '@aragon/ui'
 import {
   fetchApmArtifact,
   getRecommendedGasLimit,
+  resolveEnsDomain,
 } from '../../aragonjs-wrapper'
 import { EthereumAddressType } from '../../prop-types'
 import {
@@ -13,7 +14,7 @@ import {
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
 import { log } from '../../utils'
-import { getGasPrice } from '../../web3-utils'
+import { getGasPrice, isValidEnsName } from '../../web3-utils'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -29,8 +30,6 @@ import {
 } from './create-statuses'
 import { useWallet } from '../../wallet'
 import { trackEvent, events } from '../../analytics'
-import initWrapper, { resolveEnsDomain } from '../../aragonjs-wrapper'
-import { isValidEnsName } from '../../web3-utils'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
