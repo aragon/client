@@ -29,6 +29,8 @@ import {
 } from './create-statuses'
 import { useWallet } from '../../wallet'
 import { trackEvent, events } from '../../analytics'
+import initWrapper, { resolveEnsDomain } from '../../aragonjs-wrapper'
+import { isValidEnsName } from '../../web3-utils'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -281,10 +283,17 @@ function useDeploymentState(
 
               if (!cancelled) {
                 // analytics
+                const daoEns = `${templateData.domain}.aragonid.eth`
+                const isDomain = isValidEnsName(daoEns)
+                const daoAddress = isDomain
+                  ? await resolveEnsDomain(daoEns)
+                  : daoEns
+
                 trackEvent(events.DAO_CREATED, {
                   network: networkName,
                   template: template.name,
-                  daoIdentifier: templateData.domain,
+                  dao_identifier: templateData.domain,
+                  dao_address: daoAddress,
                 })
 
                 setTransactionProgress(({ signed, errored }) => ({
@@ -299,7 +308,7 @@ function useDeploymentState(
               trackEvent(events.DAO_CREATIONFAILED, {
                 network: networkName,
                 template: template.name,
-                error: err,
+                error: err.message || err.reason,
               })
 
               if (!cancelled) {
