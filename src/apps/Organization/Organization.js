@@ -16,7 +16,7 @@ import {
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import appIds from '../../known-app-ids'
-import { getProviderString } from '../../ethereum-providers'
+import { getProviderString } from 'use-wallet'
 import { sanitizeNetworkType, getNetworkConfig } from '../../network-config'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'

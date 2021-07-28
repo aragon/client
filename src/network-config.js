@@ -1,14 +1,7 @@
-import {
-  getLocalChainId,
-  getEnsRegistryAddress,
-  getFortmaticApiKey,
-  getPortisDappId,
-} from './local-settings'
+import { getLocalChainId, getEnsRegistryAddress } from './local-settings'
 import { useWallet } from './wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
-const fortmaticApiKey = getFortmaticApiKey()
-const portisDappId = getPortisDappId()
 
 // connectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
@@ -30,12 +23,6 @@ export const networkConfigs = {
       type: 'main', // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
-    providers: [
-      { id: 'injected' },
-      { id: 'frame' },
-      fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
-      portisDappId ? { id: 'portis', conf: portisDappId } : null,
-    ].filter(p => p),
   },
   rinkeby: {
     enableMigrateBanner: true,
@@ -55,13 +42,6 @@ export const networkConfigs = {
       type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
-    // providers: ['injected', 'frame'],
-    providers: [
-      { id: 'injected' },
-      { id: 'frame' },
-      fortmaticApiKey ? { id: 'fortmatic', conf: fortmaticApiKey } : null,
-      portisDappId ? { id: 'portis', conf: portisDappId } : null,
-    ].filter(p => p),
   },
   ropsten: {
     enableMigrateBanner: true,
@@ -80,7 +60,6 @@ export const networkConfigs = {
       type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
   local: {
     enableMigrateBanner: true,
@@ -101,7 +80,6 @@ export const networkConfigs = {
       type: 'private',
       live: false,
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
   // xDai is an experimental chain in the Aragon Client. It's possible
   // and expected that a few things will break.
@@ -122,11 +100,6 @@ export const networkConfigs = {
       type: 'private',
       live: true,
     },
-    providers: [
-      { id: 'injected' },
-      { id: 'frame' },
-      portisDappId ? { id: 'portis', conf: portisDappId } : null,
-    ].filter(p => p),
   },
   unknown: {
     enableMigrateBanner: true,
@@ -143,7 +116,6 @@ export const networkConfigs = {
       type: 'unknown',
       live: false,
     },
-    providers: [{ id: 'injected' }, { id: 'frame' }],
   },
 }
 

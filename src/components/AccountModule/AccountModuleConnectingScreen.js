@@ -2,10 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { keyframes } from 'styled-components'
 import { GU, useTheme, textStyle, Link } from '@aragon/ui'
-import {
-  getProviderFromUseWalletId,
-  getProviderString,
-} from '../../ethereum-providers'
+import { useWallet } from '../../wallet'
 
 import loadingRing from './assets/loading-ring.svg'
 
@@ -20,7 +17,8 @@ const spin = keyframes`
 
 function AccountModuleConnectingScreen({ onCancel, providerId }) {
   const theme = useTheme()
-  const provider = getProviderFromUseWalletId(providerId)
+  const { providerInfo } = useWallet()
+
   return (
     <section
       css={`
@@ -73,7 +71,7 @@ function AccountModuleConnectingScreen({ onCancel, providerId }) {
               right: 0;
               bottom: 0;
               background: 50% 50% / auto ${5 * GU}px no-repeat
-                url(${provider.image});
+                url(${providerInfo?.image});
             `}
           />
         </div>
@@ -84,7 +82,7 @@ function AccountModuleConnectingScreen({ onCancel, providerId }) {
             font-weight: 600;
           `}
         >
-          Connecting to {provider.name}
+          Connecting to {providerInfo?.name || 'Unknown'}
         </h1>
         <p
           css={`
@@ -92,7 +90,7 @@ function AccountModuleConnectingScreen({ onCancel, providerId }) {
             color: ${theme.surfaceContentSecondary};
           `}
         >
-          Log into {getProviderString('your Ethereum wallet', provider.id)}. You
+          Log into {providerInfo?.name || 'Unknown'}. You
           may be temporarily redirected to a new screen.
         </p>
       </div>
