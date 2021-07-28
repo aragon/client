@@ -264,8 +264,12 @@ class App extends React.Component {
   }
 
   closeMigrateBanner = address => {
+    const { networkType } = this.props
     this.setState({ showMigrateBanner: false })
-    localStorage.setItem(getMigrateBannerKey(address), String(true))
+    localStorage.setItem(
+      getMigrateBannerKey(networkType, address),
+      String(true)
+    )
   }
 
   handleIdentityCancel = () => {
