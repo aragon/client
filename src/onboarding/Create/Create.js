@@ -282,18 +282,23 @@ function useDeploymentState(
 
               if (!cancelled) {
                 // analytics
-                const daoEns = `${templateData.domain}.aragonid.eth`
-                const isDomain = isValidEnsName(daoEns)
-                const daoAddress = isDomain
-                  ? await resolveEnsDomain(daoEns)
-                  : daoEns
+                // only interested in the first tx of creating a DAO
+                if (
+                  transaction?.data === deployTransactions[0]?.transaction?.data
+                ) {
+                  const daoEns = `${templateData.domain}.aragonid.eth`
+                  const isDomain = isValidEnsName(daoEns)
+                  const daoAddress = isDomain
+                    ? await resolveEnsDomain(daoEns)
+                    : daoEns
 
-                trackEvent(events.DAO_CREATED, {
-                  network: networkName,
-                  template: template.name,
-                  dao_identifier: templateData.domain,
-                  dao_address: daoAddress,
-                })
+                  trackEvent(events.DAO_CREATED, {
+                    network: networkName,
+                    template: template.name,
+                    dao_identifier: templateData.domain,
+                    dao_address: daoAddress,
+                  })
+                }
 
                 setTransactionProgress(({ signed, errored }) => ({
                   signed: signed + 1,
@@ -303,12 +308,16 @@ function useDeploymentState(
             } catch (err) {
               log('Failed onboarding transaction', err)
 
-              // analytics
-              trackEvent(events.DAO_CREATIONFAILED, {
-                network: networkName,
-                template: template.name,
-                error: err.message || err.reason,
-              })
+              if (
+                transaction?.data === deployTransactions[0]?.transaction?.data
+              ) {
+                // analytics
+                trackEvent(events.DAO_CREATIONFAILED, {
+                  network: networkName,
+                  template: template.name,
+                  error: err.message || err.reason,
+                })
+              }
 
               if (!cancelled) {
                 setTransactionProgress(({ signed, errored }) => ({
@@ -452,6 +461,12 @@ const Create = React.memo(function Create({
     templateData,
     walletWeb3
   )
+
+  // useEffect(() => {
+  //   if (condition) {
+
+  //   }
+  // }, [transactionsStatus])
 
   const handleUseTemplate = useCallback(
     (id, optionalApps) => {
