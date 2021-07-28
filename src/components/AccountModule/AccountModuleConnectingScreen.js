@@ -90,8 +90,8 @@ function AccountModuleConnectingScreen({ onCancel, providerId }) {
             color: ${theme.surfaceContentSecondary};
           `}
         >
-          Log into {providerInfo?.name || 'Unknown'}. You
-          may be temporarily redirected to a new screen.
+          Log into {providerInfo?.name || 'Unknown'}. You may be temporarily
+          redirected to a new screen.
         </p>
       </div>
       <div
