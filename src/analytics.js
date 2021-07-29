@@ -7,6 +7,9 @@ const methods = {
 export const events = {
   TEMPLATE_SELECTED: 'template_selected',
   WALLET_DISCONNECTED: 'wallet_disconnected',
+  DAO_CREATEBTN_CLICKED: 'dao_createBtn_clicked',
+  DAO_CREATED: 'dao_created',
+  DAO_CREATIONFAILED: 'dao_creationFailed',
 }
 
 /**

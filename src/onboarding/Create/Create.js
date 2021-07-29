@@ -4,6 +4,7 @@ import { Button } from '@aragon/ui'
 import {
   fetchApmArtifact,
   getRecommendedGasLimit,
+  resolveEnsDomain,
 } from '../../aragonjs-wrapper'
 import { EthereumAddressType } from '../../prop-types'
 import {
@@ -27,6 +28,9 @@ import {
   STATUS_TEMPLATE_SCREENS,
   STATUS_DEPLOYMENT,
 } from './create-statuses'
+import { useWallet } from '../../wallet'
+import { trackEvent, events } from '../../analytics'
+import { completeDomain } from '../../check-domain'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -225,6 +229,8 @@ function useDeploymentState(
   templateData,
   walletWeb3
 ) {
+  const { networkName } = useWallet()
+
   const [transactionProgress, setTransactionProgress] = useState({
     signing: 0,
     error: -1,
@@ -276,6 +282,24 @@ function useDeploymentState(
               await walletWeb3.eth.sendTransaction(transaction)
 
               if (!cancelled) {
+                // analytics
+                // we are only interested in the first tx of creating a DAO
+                if (
+                  transaction?.data ===
+                    deployTransactions[0]?.transaction?.data &&
+                  transactionProgress.signed === 0
+                ) {
+                  const daoEns = completeDomain(templateData.domain)
+                  const daoAddress = (await resolveEnsDomain(daoEns)) || daoEns
+
+                  trackEvent(events.DAO_CREATED, {
+                    network: networkName,
+                    template: template.name,
+                    dao_identifier: templateData.domain,
+                    dao_address: daoAddress,
+                  })
+                }
+
                 setTransactionProgress(({ signed, errored }) => ({
                   signed: signed + 1,
                   errored,
@@ -283,6 +307,20 @@ function useDeploymentState(
               }
             } catch (err) {
               log('Failed onboarding transaction', err)
+
+              if (
+                transaction?.data ===
+                  deployTransactions[0]?.transaction?.data &&
+                transactionProgress.signed === 0
+              ) {
+                // analytics
+                trackEvent(events.DAO_CREATIONFAILED, {
+                  network: networkName,
+                  template: template.name,
+                  error: err.message || err.reason,
+                })
+              }
+
               if (!cancelled) {
                 setTransactionProgress(({ signed, errored }) => ({
                   errored: signed,
@@ -425,6 +463,12 @@ const Create = React.memo(function Create({
     templateData,
     walletWeb3
   )
+
+  // useEffect(() => {
+  //   if (condition) {
+
+  //   }
+  // }, [transactionsStatus])
 
   const handleUseTemplate = useCallback(
     (id, optionalApps) => {

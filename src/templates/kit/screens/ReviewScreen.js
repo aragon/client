@@ -10,6 +10,8 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '..'
+import { trackEvent, events } from '../../../analytics'
+import { useWallet } from '../../../wallet'
 
 function ReviewScreen({
   items,
@@ -18,10 +20,17 @@ function ReviewScreen({
   screenTitle,
 }) {
   const theme = useTheme()
+  const { networkName } = useWallet()
 
   const handleNext = useCallback(() => {
+    // analytics
+    trackEvent(events.DAO_CREATEBTN_CLICKED, {
+      network: networkName,
+      template: items[0].fields[0][1],
+    })
+
     next(data)
-  }, [data, next])
+  }, [data, next, items, networkName])
 
   const containerRef = useRef()
   const prevNextRef = useRef()
