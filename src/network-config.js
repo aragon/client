@@ -161,3 +161,7 @@ export function useNetworkConfig() {
   const { networkType } = useWallet()
   return getNetworkConfig(networkType)
 }
+
+export function isOnMainnet(networkType) {
+  return networkType === 'main'
+}

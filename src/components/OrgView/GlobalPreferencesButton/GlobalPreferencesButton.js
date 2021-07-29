@@ -18,6 +18,8 @@ import { useRouting } from '../../../routing'
 import iconNetwork from '../../../assets/global-preferences-network.svg'
 import iconCustomLabels from '../../../assets/global-preferences-custom-labels.svg'
 import iconNotifications from '../../../assets/global-preferences-notifications.svg'
+import { useWallet } from '../../../wallet'
+import { isOnMainnet } from '../../../network-config'
 
 function GlobalPreferencesButton() {
   const theme = useTheme()
@@ -27,6 +29,9 @@ function GlobalPreferencesButton() {
 
   const [opened, setOpened] = useState(false)
   const containerRef = useRef()
+
+  const { networkType } = useWallet()
+  const isMainnet = isOnMainnet(networkType)
 
   const handleToggle = useCallback(() => setOpened(opened => !opened), [])
   const handleClose = useCallback(() => setOpened(false), [])
@@ -102,11 +107,13 @@ function GlobalPreferencesButton() {
             icon={iconCustomLabels}
             label="Custom labels"
           />
-          <Item
-            onClick={() => handleItemClick('network')}
-            icon={iconNetwork}
-            label="Network"
-          />
+          {isMainnet && (
+            <Item
+              onClick={() => handleItemClick('network')}
+              icon={iconNetwork}
+              label="Network"
+            />
+          )}
           <Item
             onClick={() => handleItemClick('notifications')}
             icon={iconNotifications}

@@ -92,7 +92,7 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { clientTheme, routing, walletAccount } = this.props
+    const { clientTheme, routing, walletAccount, networkType } = this.props
     const { wrapper } = this.state
 
     if (wrapper && walletAccount !== prevProps.walletAccount) {
@@ -108,7 +108,11 @@ class App extends React.Component {
 
     const { mode } = routing
     const { mode: prevMode } = prevProps.routing
-    if (mode.name === 'org' && mode.orgAddress !== prevMode.orgAddress) {
+    if (
+      mode.name === 'org' &&
+      (mode.orgAddress !== prevMode.orgAddress ||
+        prevProps.networkType !== networkType)
+    ) {
       this.updateDao(mode.orgAddress)
     }
   }
@@ -264,8 +268,12 @@ class App extends React.Component {
   }
 
   closeMigrateBanner = address => {
+    const { networkType } = this.props
     this.setState({ showMigrateBanner: false })
-    localStorage.setItem(getMigrateBannerKey(address), String(true))
+    localStorage.setItem(
+      getMigrateBannerKey(networkType, address),
+      String(true)
+    )
   }
 
   handleIdentityCancel = () => {
