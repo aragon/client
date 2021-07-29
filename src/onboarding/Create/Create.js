@@ -29,7 +29,7 @@ import {
 } from './create-statuses'
 import { useWallet } from '../../wallet'
 import { getIpfsGateway } from '../../local-settings'
-import { useClientWeb3 } from '../../client-web3'
+import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -176,7 +176,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
   const [templateAbi, setTemplateAbi] = useState(null)
   const [templateAddress, setTemplateAddress] = useState(null)
   const { networkType } = useWallet()
-  const web3 = useClientWeb3()
+  const { web3 } = useClientWeb3()
 
   // Fetch latest information about the template from its aragonPM repository
   useEffect(() => {
