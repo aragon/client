@@ -30,6 +30,7 @@ import {
 } from './create-statuses'
 import { useWallet } from '../../wallet'
 import { trackEvent, events } from '../../analytics'
+import { completeDomain } from '../../check-domain'
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
@@ -282,11 +283,13 @@ function useDeploymentState(
 
               if (!cancelled) {
                 // analytics
-                // only interested in the first tx of creating a DAO
+                // we are only interested in the first tx of creating a DAO
                 if (
-                  transaction?.data === deployTransactions[0]?.transaction?.data
+                  transaction?.data ===
+                    deployTransactions[0]?.transaction?.data &&
+                  transactionProgress.signed === 0
                 ) {
-                  const daoEns = `${templateData.domain}.aragonid.eth`
+                  const daoEns = completeDomain(templateData.domain)
                   const daoAddress = (await resolveEnsDomain(daoEns)) || daoEns
 
                   trackEvent(events.DAO_CREATED, {
@@ -306,7 +309,9 @@ function useDeploymentState(
               log('Failed onboarding transaction', err)
 
               if (
-                transaction?.data === deployTransactions[0]?.transaction?.data
+                transaction?.data ===
+                  deployTransactions[0]?.transaction?.data &&
+                transactionProgress.signed === 0
               ) {
                 // analytics
                 trackEvent(events.DAO_CREATIONFAILED, {
