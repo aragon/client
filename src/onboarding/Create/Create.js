@@ -14,7 +14,7 @@ import {
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
 import { log } from '../../utils'
-import { getGasPrice, isValidEnsName } from '../../web3-utils'
+import { getGasPrice } from '../../web3-utils'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -287,10 +287,7 @@ function useDeploymentState(
                   transaction?.data === deployTransactions[0]?.transaction?.data
                 ) {
                   const daoEns = `${templateData.domain}.aragonid.eth`
-                  const isDomain = isValidEnsName(daoEns)
-                  const daoAddress = isDomain
-                    ? await resolveEnsDomain(daoEns)
-                    : daoEns
+                  const daoAddress = (await resolveEnsDomain(daoEns)) || daoEns
 
                   trackEvent(events.DAO_CREATED, {
                     network: networkName,
