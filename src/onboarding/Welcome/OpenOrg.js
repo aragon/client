@@ -39,7 +39,8 @@ function OpenOrg({ onOpenOrg, onBack }) {
   // focus on mount
   const handleDomainFieldRef = useCallback(ref => {
     if (ref) {
-      ref.focus()
+      // TODO: workaround
+      // ref.focus()
     }
   }, [])
 
