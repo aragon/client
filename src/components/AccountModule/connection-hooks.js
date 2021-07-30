@@ -144,13 +144,11 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     }
 
     if (selectedWeb3.currentProvider.on) {
-      selectedWeb3.currentProvider.on('end', handleWebsocketDrop)
       selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
     }
 
     return () => {
       if (selectedWeb3.currentProvider.removeEventListener) {
-        selectedWeb3.currentProvider.removeListener('end', handleWebsocketDrop)
         selectedWeb3.currentProvider.removeListener(
           'error',
           handleWebsocketDrop
@@ -224,6 +222,7 @@ export function useSyncState(
 
   const minimumTransactionBalance = new BN(0.005)
 
+ 
   const defaultSyncedStatus = {
     header: 'Synced',
     info: currentBlock ? `: current block ${currentBlock}` : '',
@@ -231,6 +230,7 @@ export function useSyncState(
   }
 
   const networkSettings = getNetworkSettings(networkType)
+  
   if (clientListening && !networkSettings.live) {
     return defaultSyncedStatus
   }

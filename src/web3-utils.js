@@ -227,12 +227,9 @@ const web3Cache = new WeakMap()
  * @returns {Web3} The web3 instance
  */
 export function getWeb3(provider) {
-  // TODO removing the cache to see if it's picking up disconnected provider..
-  /*
   if (web3Cache.has(provider)) {
     return web3Cache.get(provider)
   }
-  */
 
   const web3 = new Web3(provider)
   web3Cache.set(provider, web3)
