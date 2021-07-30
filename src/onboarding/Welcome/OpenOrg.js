@@ -39,7 +39,7 @@ function OpenOrg({ onOpenOrg, onBack }) {
   // focus on mount
   const handleDomainFieldRef = useCallback(ref => {
     if (ref) {
-      // TODO: workaround
+      // TODO: workaround see https://github.com/aragon/client/pull/1571
       // ref.focus()
     }
   }, [])
