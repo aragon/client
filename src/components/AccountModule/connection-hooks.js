@@ -222,7 +222,6 @@ export function useSyncState(
 
   const minimumTransactionBalance = new BN(0.005)
 
- 
   const defaultSyncedStatus = {
     header: 'Synced',
     info: currentBlock ? `: current block ${currentBlock}` : '',
@@ -230,7 +229,7 @@ export function useSyncState(
   }
 
   const networkSettings = getNetworkSettings(networkType)
-  
+
   if (clientListening && !networkSettings.live) {
     return defaultSyncedStatus
   }

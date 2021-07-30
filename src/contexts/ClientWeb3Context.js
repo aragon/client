@@ -9,7 +9,7 @@ function disconnect(web3) {
     return
   }
 
-  if(!web3.connected){
+  if (!web3.connected) {
     return
   }
 
@@ -20,24 +20,24 @@ function disconnect(web3) {
   }
 }
 
-
 function ClientWeb3Provider(props) {
   const { networkType } = useWallet()
 
   const [web3, setWeb3] = useState(null)
 
   useEffect(() => {
-      setWeb3(prevWeb3 => {
-        disconnect(prevWeb3)
-        return getWeb3Provider(networkType)
-      })
-    
+    setWeb3(prevWeb3 => {
+      disconnect(prevWeb3)
+      return getWeb3Provider(networkType)
+    })
   }, [networkType])
- 
 
-  const contextValue = useMemo(() => ({ 
-    web3: web3 || getWeb3Provider()
-   }), [web3])
+  const contextValue = useMemo(
+    () => ({
+      web3: web3 || getWeb3Provider(),
+    }),
+    [web3]
+  )
   return <ClientWeb3Context.Provider value={contextValue} {...props} />
 }
 
