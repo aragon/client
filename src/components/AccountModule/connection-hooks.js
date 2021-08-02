@@ -22,7 +22,7 @@ import { pollEvery } from '../../utils'
 import { useWallet } from '../../wallet'
 import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
 import { getNetworkSettings } from '../../network-config'
-import { useClientWeb3 } from '../../client-web3'
+import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
@@ -120,7 +120,7 @@ export function useWalletConnectionDetails(
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const wallet = useWallet()
-  const clientWeb3 = useClientWeb3()
+  const { web3: clientWeb3 } = useClientWeb3()
   const walletWeb3 = wallet.web3
   const selectedWeb3 =
     wantedWeb3 === 'wallet' ? walletWeb3 : getWeb3(clientWeb3)
@@ -144,13 +144,11 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     }
 
     if (selectedWeb3.currentProvider.on) {
-      selectedWeb3.currentProvider.on('end', handleWebsocketDrop)
       selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
     }
 
     return () => {
       if (selectedWeb3.currentProvider.removeEventListener) {
-        selectedWeb3.currentProvider.removeListener('end', handleWebsocketDrop)
         selectedWeb3.currentProvider.removeListener(
           'error',
           handleWebsocketDrop
@@ -231,6 +229,7 @@ export function useSyncState(
   }
 
   const networkSettings = getNetworkSettings(networkType)
+
   if (clientListening && !networkSettings.live) {
     return defaultSyncedStatus
   }
