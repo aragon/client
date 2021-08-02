@@ -8,7 +8,7 @@ import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import { Onboarding } from './onboarding'
-import { log } from './utils'
+import { getLocalStorageKey, log } from './utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { PermissionsProvider } from './contexts/PermissionsContext'
@@ -40,7 +40,7 @@ const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
 ).getTime()
 
 const getMigrateBannerKey = (networkType, address) =>
-  `${MIGRATION_BANNER_HIDE}${address}:${networkType}`
+  getLocalStorageKey(`${MIGRATION_BANNER_HIDE}${address}`, networkType)
 
 const enableMigrateBanner = networkType =>
   Boolean(networkConfigs[networkType]?.enableMigrateBanner)

@@ -72,7 +72,7 @@ const CONFIGURATION_VARS = [
 )
 
 function toStorageKey(key, networkType) {
-  return networkType && networkType !== 'main' ? `${key}:${networkType}` : key
+  return networkType && networkType !== 'main' ? `${networkType}:${key}` : key
 }
 
 // Get a setting from localStorage

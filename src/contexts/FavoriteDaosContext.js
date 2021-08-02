@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import StoredList from '../StoredList'
 import { addressesEqual } from '../web3-utils'
 import { useWallet } from '../wallet'
+import { getLocalStorageKey } from '../utils'
 
 const FavoriteDaosContext = React.createContext()
 
@@ -29,7 +30,7 @@ function FavoriteDaosProvider({ children }) {
   const [favoriteDaos, setFavoriteDaos] = useState([])
 
   const storedList = useMemo(() => {
-    return new StoredList(`favorite-daos:${networkType}`)
+    return new StoredList(getLocalStorageKey(`favorite-daos`, networkType))
   }, [networkType])
 
   useEffect(() => {

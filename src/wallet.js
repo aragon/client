@@ -4,7 +4,7 @@ import BN from 'bn.js'
 import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 import { useWalletConnectors } from './ethereum-providers/connectors'
-
+import { LocalStorageWrapper } from './local-storage-wrapper'
 const NETWORK_TYPE_DEFAULT = 'main'
 
 const WalletContext = React.createContext()
@@ -18,8 +18,11 @@ function WalletContextProvider({ children }) {
     status,
     chainId,
     providerInfo,
+    type,
     ...walletBaseRest
   } = useWalletBase()
+
+  console.log('========= ', type)
 
   const [walletWeb3, setWalletWeb3] = useState(null)
   const [networkType, setNetworkType] = useState(NETWORK_TYPE_DEFAULT)
@@ -31,6 +34,7 @@ function WalletContextProvider({ children }) {
     let cancel = false
 
     if (!ethereum) {
+      LocalStorageWrapper.setPrefix(NETWORK_TYPE_DEFAULT)
       return
     }
 
@@ -42,17 +46,20 @@ function WalletContextProvider({ children }) {
       .then(networkType => {
         if (!cancel) {
           setNetworkType(networkType)
+          LocalStorageWrapper.setPrefix(networkType)
         }
         return null
       })
       .catch(() => {
         setNetworkType(NETWORK_TYPE_DEFAULT)
+        LocalStorageWrapper.setPrefix(NETWORK_TYPE_DEFAULT)
       })
 
     return () => {
       cancel = true
       setWalletWeb3(null)
       setNetworkType(NETWORK_TYPE_DEFAULT)
+      LocalStorageWrapper.setPrefix(NETWORK_TYPE_DEFAULT)
     }
   }, [ethereum, chainId])
 

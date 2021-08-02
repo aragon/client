@@ -178,10 +178,10 @@
     recursive-copy "^2.0.9"
     use-inside "^0.2.0"
 
-"@aragon/wrapper@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-5.0.0.tgz#62284f054d1eca66cd37860bd362cde1d8703ef8"
-  integrity sha512-uNqkyzg/ZQrFjRQ4wNNT26pcOoOl/V3bYGZyI+V/Ecsbwh6AqCB6vE3P54K4OvkC5ONSLFA6LZWAIP2k91X6TQ==
+"@aragon/wrapper@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-5.1.0.tgz#b55d4f25bb0fdff2a4b522b7ef22ba7db37524bd"
+  integrity sha512-qnbjFkOpe5oWHlTfEI4EbB7KbTnbiYR2HE/RTvX2ZUeU0WX6p2ettTHabZ+zR5E5a16Er6LexlQW/sJvq7+5fg==
   dependencies:
     "@aragon/os" "^4.2.1"
     "@aragon/rpc-messenger" "^2.0.0"

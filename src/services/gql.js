@@ -1,4 +1,5 @@
 import { networkConfigs } from '../network-config'
+import { getLocalStorageKey } from '../utils'
 
 const getGraphEndpoint = networkType => {
   return networkConfigs[networkType].connectGraphEndpoint
@@ -15,7 +16,10 @@ const query = `query Organizations($id: ID!) {
 const ORGANIZATION_INFO = 'ORGANIZATION_INFO&'
 
 export async function getOrganizationByAddress(networkType, daoAddress) {
-  const LOCAL_STORAGE_KEY = `${ORGANIZATION_INFO}${daoAddress}:${networkType}`
+  const LOCAL_STORAGE_KEY = getLocalStorageKey(
+    `${ORGANIZATION_INFO}${daoAddress}`,
+    networkType
+  )
   if (localStorage.getItem(LOCAL_STORAGE_KEY)) {
     return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
   }
