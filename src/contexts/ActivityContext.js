@@ -10,6 +10,7 @@ import {
   ACTIVITY_STATUS_TIMED_OUT,
   ACTIVITY_TYPE_TRANSACTION,
 } from '../symbols'
+import { getLocalStorageKey } from '../utils'
 
 const ActivityContext = React.createContext()
 
@@ -27,18 +28,21 @@ const SymbolsByName = new Map(
 )
 
 const getStoredList = (networkType, daoDomain, account) =>
-  new StoredList(`activity:${networkType}:${daoDomain}:${account}`, {
-    preStringify: activity => ({
-      ...activity,
-      status: activity.status.description.replace('ACTIVITY_STATUS_', ''),
-      type: activity.type.description.replace('ACTIVITY_TYPE_', ''),
-    }),
-    postParse: activity => ({
-      ...activity,
-      status: SymbolsByName.get(`ACTIVITY_STATUS_${activity.status}`),
-      type: SymbolsByName.get(`ACTIVITY_TYPE_${activity.type}`),
-    }),
-  })
+  new StoredList(
+    getLocalStorageKey(`activity:${daoDomain}:${account}`, networkType),
+    {
+      preStringify: activity => ({
+        ...activity,
+        status: activity.status.description.replace('ACTIVITY_STATUS_', ''),
+        type: activity.type.description.replace('ACTIVITY_TYPE_', ''),
+      }),
+      postParse: activity => ({
+        ...activity,
+        status: SymbolsByName.get(`ACTIVITY_STATUS_${activity.status}`),
+        type: SymbolsByName.get(`ACTIVITY_TYPE_${activity.type}`),
+      }),
+    }
+  )
 
 // Provides easy access to the user activities list
 class ActivityProviderBase extends React.Component {
@@ -262,6 +266,7 @@ class ActivityProviderBase extends React.Component {
 
 function ActivityProvider(props) {
   const { account, networkType } = useWallet()
+
   return (
     <ActivityProviderBase
       networkType={networkType}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { isEnsDomainAvailable } from './aragonjs-wrapper'
-import { useClientWeb3 } from './client-web3'
+import { useClientWeb3 } from './contexts/ClientWeb3Context'
 import { useWallet } from './wallet'
 
 const DOMAIN_CHECK = Symbol('DOMAIN_CHECK')
@@ -16,7 +16,7 @@ function useCheckDomain(domain, invertCheck = false) {
   const [exists, setExists] = useState(false)
   const [loading, setLoading] = useState(true)
   const { networkType } = useWallet()
-  const web3 = useClientWeb3()
+  const { web3 } = useClientWeb3()
 
   useEffect(() => {
     setExists(false)
