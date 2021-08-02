@@ -95,7 +95,11 @@ function useConfigureState(templates, onScreenUpdate) {
   )
 
   useEffect(() => {
-    const { templateData, templateId, templateScreenIndex } = loadTemplateState()
+    const {
+      templateData,
+      templateId,
+      templateScreenIndex,
+    } = loadTemplateState()
 
     if (templateId) {
       updateTemplateScreen(templateId, templateScreenIndex)

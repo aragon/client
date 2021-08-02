@@ -1,6 +1,7 @@
 import { getLocalStorageKey } from '../utils'
 
-const getTemplateStateKey = networkType => getLocalStorageKey(`create-org`, networkType)
+const getTemplateStateKey = networkType =>
+  getLocalStorageKey(`create-org`, networkType)
 
 export function loadTemplateState(networkType) {
   const key = getTemplateStateKey(networkType)
