@@ -291,6 +291,7 @@ const initWrapper = async (
       // If the worker's origin sandbox is disabed, it has full access to IndexedDB.
       // We force a downgrade to localStorage to avoid using IndexedDB.
       forceLocalStorage: workerFrameSandboxDisabled,
+      prefix: networkType,
     },
     events: {
       // Infura hack: delay event processing for specified number of ms
