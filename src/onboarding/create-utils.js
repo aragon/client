@@ -1,4 +1,6 @@
-const getTemplateStateKey = networkType => `create-org:${networkType}`
+import { getLocalStorageKey } from '../utils'
+
+const getTemplateStateKey = networkType => getLocalStorageKey(`create-org`, networkType)
 
 export function loadTemplateState(networkType) {
   const key = getTemplateStateKey(networkType)
@@ -16,7 +18,7 @@ export function loadTemplateState(networkType) {
 }
 
 export function saveTemplateState(networkType, state) {
-  localStorage.setItem(`create-org:${networkType}`, JSON.stringify(state))
+  localStorage.setItem(getTemplateStateKey(networkType), JSON.stringify(state))
 }
 
 export function prepareTransactionCreatorFromAbi(web3, abi, toAddress) {
