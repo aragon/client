@@ -266,7 +266,7 @@ class ActivityProviderBase extends React.Component {
 
 function ActivityProvider(props) {
   const { account, networkType } = useWallet()
-  console.log(networkType, ' good')
+
   return (
     <ActivityProviderBase
       networkType={networkType}
@@ -275,7 +275,6 @@ function ActivityProvider(props) {
     />
   )
 }
-ActivityProvider.propTypes = ActivityProviderBase.propTypes
 
 const ActivityConsumer = ActivityContext.Consumer
 
