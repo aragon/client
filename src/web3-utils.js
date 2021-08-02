@@ -230,6 +230,7 @@ export function getWeb3(provider) {
   if (web3Cache.has(provider)) {
     return web3Cache.get(provider)
   }
+
   const web3 = new Web3(provider)
   web3Cache.set(provider, web3)
   return web3

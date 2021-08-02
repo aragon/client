@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useClientWeb3 } from '../../client-web3'
+import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 import { getWeb3 } from '../../web3-utils'
 import { pollEvery } from '../../utils'
 
@@ -8,7 +8,7 @@ const CLIENT_BLOCK_POLL_DELAY = 5000
 const ClientBlockNumberContext = React.createContext()
 export function ClientBlockNumberProvider(props) {
   const [blockNumber, setBlockNumber] = useState(-1)
-  const clientWeb3 = useClientWeb3()
+  const { web3: clientWeb3 } = useClientWeb3()
   const web3 = getWeb3(clientWeb3)
 
   useEffect(() => {

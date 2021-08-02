@@ -17,7 +17,7 @@ import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import initializeSentryIfEnabled from './sentry'
 import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
-import { ClientWeb3Provider } from './client-web3'
+import { ClientWeb3Provider } from './contexts/ClientWeb3Context'
 
 // Initialize Sentry as early as possible, if enabled
 initializeSentryIfEnabled()
