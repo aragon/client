@@ -5,7 +5,9 @@ import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 import { useWalletConnectors } from './ethereum-providers/connectors'
 import { LocalStorageWrapper } from './local-storage-wrapper'
-const NETWORK_TYPE_DEFAULT = 'main'
+import { NETWORK_TYPE } from './NetworkType'
+
+const NETWORK_TYPE_DEFAULT = NETWORK_TYPE.main
 
 const WalletContext = React.createContext()
 

@@ -109,17 +109,13 @@ export const resolveEnsDomain = async (networkType, provider, domain) => {
   }
 }
 
-export const isEnsDomainAvailable = async (networkType, web3Provider, name) => {
-  const addr = await resolveEnsDomain(networkType, web3Provider, name)
+export const isEnsDomainAvailable = async (networkType, provider, name) => {
+  const addr = await resolveEnsDomain(networkType, provider, name)
   return addr === '' || isEmptyAddress(addr)
 }
 
-export const fetchApmArtifact = async (
-  web3Provider,
-  repoAddress,
-  ipfsGateway
-) => {
-  return apm(web3Provider, {
+export const fetchApmArtifact = async (provider, repoAddress, ipfsGateway) => {
+  return apm(provider, {
     ipfsGateway,
   }).fetchLatestRepoContent(repoAddress)
 }
