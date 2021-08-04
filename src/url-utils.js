@@ -36,13 +36,13 @@ export function appBaseUrl(app, networkType) {
     return appLocator[app.appId]
   }
 
-  const gateway = getIpfsGateway(networkType)
+  const gateway = getIpfsGateway()
   return contentBaseUrl(app.content, gateway)
 }
 
 export function repoBaseUrl(appId, repoVersion, networkType) {
   const appLocator = getParsedAppLocator(networkType)
-  const gateway = getIpfsGateway(networkType)
+  const gateway = getIpfsGateway()
 
   // Support overriding app URLs, see network-config.js
   if (appLocator[appId]) {

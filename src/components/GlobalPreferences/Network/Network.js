@@ -131,9 +131,7 @@ const useNetwork = wrapper => {
   const { networkType } = useWallet()
   const [networkError, setNetworkError] = useState(null)
   const [ethNode, setEthNodeValue] = useState(getEthNode(networkType))
-  const [ipfsGateway, setIpfsGatewayValue] = useState(
-    getIpfsGateway(networkType)
-  )
+  const [ipfsGateway, setIpfsGatewayValue] = useState(getIpfsGateway())
 
   const handleNetworkChange = useCallback(async () => {
     try {
@@ -156,7 +154,7 @@ const useNetwork = wrapper => {
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
       const defaultEthNode = getEthNode(networkType)
-      const defaultIpfsGateway = getIpfsGateway(networkType)
+      const defaultIpfsGateway = getIpfsGateway()
       if (
         keyCode === keycodes.enter &&
         (ipfsGateway !== defaultIpfsGateway || ethNode !== defaultEthNode)

@@ -1,5 +1,6 @@
 import { getLocalChainId, getEnsRegistryAddress } from './local-settings'
 import { useWallet } from './wallet'
+import { NETWORK_TYPE } from './NetworkType'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 
@@ -20,7 +21,7 @@ export const networkConfigs = {
       chainId: 1,
       name: 'Mainnet',
       shortName: 'Mainnet',
-      type: 'main', // as returned by web3.eth.net.getNetworkType()
+      type: NETWORK_TYPE.main, // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
   },
@@ -143,7 +144,7 @@ export function getNetworkByChainId(chainId = -1) {
 export function sanitizeNetworkType(networkType) {
   if (networkType === 'private') {
     return 'localhost'
-  } else if (networkType === 'main') {
+  } else if (isOnMainnet(networkType)) {
     return 'mainnet'
   }
   return networkType
@@ -163,5 +164,5 @@ export function useNetworkConfig() {
 }
 
 export function isOnMainnet(networkType) {
-  return networkType === 'main'
+  return networkType === NETWORK_TYPE.main
 }
